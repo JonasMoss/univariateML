@@ -1,0 +1,33 @@
+{
+  "id": "fpareto",
+  "input_sha256": "aaf7556a887a3b96df40f59be1129095028ea857053bb84ea6ebc6fb417753fa",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 226430,
+    "points": 26,
+    "values": 491,
+    "quantiles": 1144
+  },
+  "after": {
+    "bytes": 235320,
+    "points": 27,
+    "values": 512,
+    "quantiles": 1188
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.0001414213562373095,
+        100000000.0,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 103.83002096298151
+    }
+  ]
+}

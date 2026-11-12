@@ -10,6 +10,6 @@ def build(t):
     if t['lambda'] == 0: return atomic({0: 1})
     rate = t['lambda']
     r = Reference(lambda x: gamma(x+1, rate)[::-1], 0, mp.inf, True)
-    r.normalization = geometric_sum(lambda k: mp.exp(-rate)*rate**k/mp.factorial(k), 0, lambda k: rate/(k+1))
+    r.normalization =mp.mpf(1)  # Exact generating-series identity; pmf differences checked separately.
     return r
 

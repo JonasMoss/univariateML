@@ -1,0 +1,20 @@
+{
+  "id": "invweibull",
+  "input_sha256": "f17dea8cfcb80028423563a2e514c5c385fbb6f26b6a47e71a62921790a9238b",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 187374,
+    "points": 21,
+    "values": 422,
+    "quantiles": 924
+  },
+  "after": {
+    "bytes": 187374,
+    "points": 21,
+    "values": 422,
+    "quantiles": 924
+  },
+  "records": []
+}

@@ -1,0 +1,14 @@
+{
+  "checks": 11431,
+  "api_calls": 11431,
+  "large_count_lattice_checks": 0,
+  "failures": 0,
+  "active_failures": 0,
+  "ranked": [],
+  "include_excluded": true,
+  "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+  "row_manifest_sha256": "7589d31e1ccc4aa3c4ec8979425be69f827c627d000e60c1a27e8384cca56703",
+  "table_sha256": {
+    "dgamma": "a267fa6d2f6274d6c40c457854ef17818dd10e9b1d33ba7daa169885518c1c51"
+  }
+}

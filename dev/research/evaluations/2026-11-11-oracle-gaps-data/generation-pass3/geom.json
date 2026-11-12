@@ -1,0 +1,29 @@
+{
+  "id": "geom",
+  "input_sha256": "95138490a38e08ebb48e52a5a2156fc37c57717652e8ee4d6571e7585a087ec3",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 119593,
+    "points": 5,
+    "values": 838,
+    "quantiles": 220
+  },
+  "after": {
+    "bytes": 149575,
+    "points": 6,
+    "values": 1055,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.5965581219643354
+    }
+  ]
+}

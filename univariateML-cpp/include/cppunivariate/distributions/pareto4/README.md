@@ -176,6 +176,13 @@ existence:
 
 Pareto type IV models sizes above a threshold $\mu$ with Burr-distributed excesses. The scale $\sigma$ sets the size unit. The shapes $\alpha$ and $\gamma$ give upper-tail exponent $\alpha\gamma$ and lower-end power $\gamma$.
 
+## d/p/q/r
+
+At shape2 $10^8$, density evaluation near the transition at `min + scale`
+must retain the displacement from that transition. Subtracting two logarithms
+loses accuracy even at scale 1000; a centered log ratio resolves the
+high-precision regression at x = 999.9976974175579.
+
 ## Details
 
 Fitting requires finite observations strictly above a held threshold. Subtracting that threshold gives [Burr](../burr/README.md) with unchanged shapes and scale. The joint fit uses the Burr global certificate, including root isolation, negative profile curvature, dual/chord envelopes and both tail exclusions. Certified finite results have a sample-specific unique global maximum certificate; unresolved comparisons retain a successful finite search as uncertified.

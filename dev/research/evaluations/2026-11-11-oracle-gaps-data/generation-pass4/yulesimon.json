@@ -1,0 +1,29 @@
+{
+  "id": "yulesimon",
+  "input_sha256": "52e39d7418949d696a9d34991373992597f59dc69eb25129897aa6cfc2cf5943",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 174239,
+    "points": 6,
+    "values": 1257,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 203371,
+    "points": 7,
+    "values": 1464,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.9068712600274011
+    }
+  ]
+}

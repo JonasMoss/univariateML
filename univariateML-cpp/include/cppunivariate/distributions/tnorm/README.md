@@ -152,6 +152,20 @@ existence:
 
 The truncated normal distribution models Gaussian measurements recorded or possible only within an interval. Its coefficients $\mu$ and $\sigma$ describe the parent normal distribution, rather than the mean and standard deviation after truncation.
 
+## d/p/q/r
+
+### Far one-sided probabilities
+
+At parent mean $-10^{16}$, standard deviation $10^8$ and lower bound zero,
+the conditional mass has physical width approximately one. A standardized
+boundary near $10^8$ cannot retain this displacement in an ordinary normal
+inverse. CDFs and quantiles therefore need the mode-centered integral on
+this one-sided face, just as on a finite concentrating interval.
+
+For the same member at x = $10^{100}$, log survival remains finite at
+approximately $-5\times10^{183}$. An underflowed mass in a distant local
+quadrature must not replace that logarithmic probability by minus infinity.
+
 ## Details
 
 Finite bounds are closed and use the density limit from within the interval. A bound may be held or estimated. Tightening a free bound increases the likelihood for every parent location and scale, so its estimate is exactly the corresponding sample extreme. Coincident bounds do not define a continuous density and are rejected.

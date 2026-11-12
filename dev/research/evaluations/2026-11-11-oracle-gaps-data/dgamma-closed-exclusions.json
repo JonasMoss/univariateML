@@ -1,0 +1,361 @@
+[
+  {
+    "family": "dgamma",
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "category": "values",
+    "selector": [
+      99629986.0
+    ],
+    "reason": "TASK-196 open: measured double d,p normalized error 4.393369261178842e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). A cancellation-free integral over a unit count bin and a large-shape gamma-tail error bound are missing.",
+    "measurements": [
+      {
+        "family": "dgamma",
+        "function": "d",
+        "input": 99629986.0,
+        "lower": true,
+        "log": true,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": -696.3688373418045,
+        "expected": -696.3688404012099,
+        "error": 4.393369261178842e-09,
+        "category": "values",
+        "row": [
+          10,
+          99629986.0,
+          -696.3688404012099,
+          -690.772030096084,
+          -1.0035039265781959e-300
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      },
+      {
+        "family": "dgamma",
+        "function": "p",
+        "input": 99629986.0,
+        "lower": true,
+        "log": false,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": 1.0035039252607448e-300,
+        "expected": 1.0035039265782007e-300,
+        "error": 1.3128556913724316e-09,
+        "category": "values",
+        "row": [
+          10,
+          99629986.0,
+          -696.3688404012099,
+          -690.772030096084,
+          -1.0035039265781959e-300
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      }
+    ]
+  },
+  {
+    "family": "dgamma",
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "category": "values",
+    "selector": [
+      99787415.0
+    ],
+    "reason": "TASK-196 open: measured double d,p normalized error 1.3672462169977414e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). A cancellation-free integral over a unit count bin and a large-shape gamma-tail error bound are missing.",
+    "measurements": [
+      {
+        "family": "dgamma",
+        "function": "d",
+        "input": 99787415.0,
+        "lower": true,
+        "log": true,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": -236.40875174276496,
+        "expected": -236.40874875658747,
+        "error": 1.2631417016731594e-08,
+        "category": "values",
+        "row": [
+          10,
+          99787415.0,
+          -236.40874875658747,
+          -230.25841961743,
+          -1.0000896859960955e-100
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      },
+      {
+        "family": "dgamma",
+        "function": "p",
+        "input": 99787415.0,
+        "lower": true,
+        "log": false,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": 1.000089672322421e-100,
+        "expected": 1.0000896859961094e-100,
+        "error": 1.3672462169977414e-08,
+        "category": "values",
+        "row": [
+          10,
+          99787415.0,
+          -236.40874875658747,
+          -230.25841961743,
+          -1.0000896859960955e-100
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      }
+    ]
+  },
+  {
+    "family": "dgamma",
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "category": "values",
+    "selector": [
+      99885403.0
+    ],
+    "reason": "TASK-196 open: measured double d,p normalized error 3.807841517534137e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). A cancellation-free integral over a unit count bin and a large-shape gamma-tail error bound are missing.",
+    "measurements": [
+      {
+        "family": "dgamma",
+        "function": "d",
+        "input": 99885403.0,
+        "lower": true,
+        "log": true,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": -75.84012563185107,
+        "expected": -75.84012851972297,
+        "error": 3.807841517534137e-08,
+        "category": "values",
+        "row": [
+          10,
+          99885403.0,
+          -75.84012851972297,
+          -69.07665556743049,
+          -1.0008976250152939e-30
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      },
+      {
+        "family": "dgamma",
+        "function": "p",
+        "input": 99885403.0,
+        "lower": true,
+        "log": false,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": 1.0008976214971113e-30,
+        "expected": 1.0008976250152928e-30,
+        "error": 3.515026374566208e-09,
+        "category": "values",
+        "row": [
+          10,
+          99885403.0,
+          -75.84012851972297,
+          -69.07665556743049,
+          -1.0008976250152939e-30
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      }
+    ]
+  },
+  {
+    "family": "dgamma",
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "category": "values",
+    "selector": [
+      100114683.0
+    ],
+    "reason": "TASK-196 open: measured double d,p normalized error 1.6627040561738975e-07 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). A cancellation-free integral over a unit count bin and a large-shape gamma-tail error bound are missing.",
+    "measurements": [
+      {
+        "family": "dgamma",
+        "function": "d",
+        "input": 100114683.0,
+        "lower": true,
+        "log": true,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": -75.84172829425978,
+        "expected": -75.84171568402695,
+        "error": 1.6627040561738975e-07,
+        "category": "values",
+        "row": [
+          10,
+          100114683.0,
+          -75.84171568402695,
+          -9.996832067290775e-31,
+          -69.07786963328188
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      },
+      {
+        "family": "dgamma",
+        "function": "p",
+        "input": 100114683.0,
+        "lower": false,
+        "log": false,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": 9.996832089948803e-31,
+        "expected": 9.996832067290807e-31,
+        "error": 2.2665176166647175e-09,
+        "category": "values",
+        "row": [
+          10,
+          100114683.0,
+          -75.84171568402695,
+          -9.996832067290775e-31,
+          -69.07786963328188
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      }
+    ]
+  },
+  {
+    "family": "dgamma",
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "category": "values",
+    "selector": [
+      100212885.0
+    ],
+    "reason": "TASK-196 open: measured double d,p normalized error 1.215377667232737e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). A cancellation-free integral over a unit count bin and a large-shape gamma-tail error bound are missing.",
+    "measurements": [
+      {
+        "family": "dgamma",
+        "function": "d",
+        "input": 100212885.0,
+        "lower": true,
+        "log": true,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": -236.41150000655173,
+        "expected": -236.4114977656929,
+        "error": 9.478637269253905e-09,
+        "category": "values",
+        "row": [
+          10,
+          100212885.0,
+          -236.4114977656929,
+          -9.980472090389494e-101,
+          -230.2604639995478
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      },
+      {
+        "family": "dgamma",
+        "function": "p",
+        "input": 100212885.0,
+        "lower": false,
+        "log": false,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": 9.98047196908893e-101,
+        "expected": 9.98047209038936e-101,
+        "error": 1.215377667232737e-08,
+        "category": "values",
+        "row": [
+          10,
+          100212885.0,
+          -236.4114977656929,
+          -9.980472090389494e-101,
+          -230.2604639995478
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      }
+    ]
+  },
+  {
+    "family": "dgamma",
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "category": "values",
+    "selector": [
+      100370928.0
+    ],
+    "reason": "TASK-196 open: measured double d normalized error 2.970860355332451e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). A cancellation-free integral over a unit count bin and a large-shape gamma-tail error bound are missing.",
+    "measurements": [
+      {
+        "family": "dgamma",
+        "function": "d",
+        "input": 100370928.0,
+        "lower": true,
+        "log": true,
+        "parameters": [
+          100000000.0,
+          1.0
+        ],
+        "actual": -696.3762855775869,
+        "expected": -696.3762835087502,
+        "error": 2.970860355332451e-09,
+        "category": "values",
+        "row": [
+          10,
+          100370928.0,
+          -696.3762835087502,
+          -9.972887529655364e-301,
+          -690.7782428273352
+        ],
+        "excluded_reason": null,
+        "lattice_ok": null,
+        "mode": "double"
+      }
+    ]
+  }
+]

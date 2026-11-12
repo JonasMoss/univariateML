@@ -102,6 +102,16 @@ existence:
 
 The zero-modified Poisson distribution assigns probability $p_0$ directly to zero. Conditional on being positive, a count follows a zero-truncated Poisson law with rate $\lambda$. This allows both more and fewer zeros than the corresponding ordinary Poisson distribution.
 
+## d/p/q/r
+
+### Large-rate probabilities
+
+At rate $10^8$ and zero probability one half, the mode log mass is
+-10.822426086574135. Cancellation in an uncentered Poisson log mass is
+visible at this scale. The same member has lower quantile 99916056 at the
+binary64 log-half input; its positive-component threshold must be retained
+before rounding the mixed CDF.
+
 ## Details
 
 The likelihood separates the zero indicators from the positive counts. A free zero probability is the empirical zero fraction, including zero when no zeros occur. The rate is fitted only to the positive observations. Holding either coefficient leaves the fit of the other unchanged.

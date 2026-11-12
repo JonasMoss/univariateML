@@ -1,0 +1,29 @@
+{
+  "id": "ztpois",
+  "input_sha256": "d90f5efc115db39ea16bed0c5fb361620e6af2424755c7a65070c7622545990c",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 164518,
+    "points": 7,
+    "values": 1241,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 189296,
+    "points": 8,
+    "values": 1462,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 114.01884378597606
+    }
+  ]
+}

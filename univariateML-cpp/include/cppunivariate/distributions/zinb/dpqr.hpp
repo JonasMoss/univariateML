@@ -35,6 +35,12 @@ inline double pzinb(double q,double size,double prob,double pi,bool lower_tail,b
 }
 inline double qzinb(double p,double size,double prob,double pi,bool lower_tail,bool log_p) {
   if (!(size>=0) || !std::isfinite(size) || !(prob>0 && prob<=1) || !(pi>=0 && pi<=1)) return special::kNaN;
+  if (std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
+  if (pi==0.5) {
+    const double offset=special::probability_minus_half(p,lower_tail,log_p);
+    if (offset<=0) return 0;
+    if (offset<0.25) return qnbinom(2*offset,size,prob,true,false);
+  }
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,
       size==0||pi==1||prob==1?0.0:special::kPosInf,[=](double x){return zinb_tails(x,size,prob,pi);},p,lower_tail,log_p);
 }

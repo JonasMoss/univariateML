@@ -1,0 +1,30 @@
+{
+  "id": "zmpois",
+  "input_sha256": "c8600e118d6ac64c6c4fdc2d2b50c2ba84db5adeb09ee87d06fc55296fae946d",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 277699,
+    "points": 12,
+    "values": 2072,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 307201,
+    "points": 13,
+    "values": 2285,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 56.339063435967546
+    }
+  ]
+}

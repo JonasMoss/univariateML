@@ -12,6 +12,12 @@ def build(t, logd):
     if lo > hi: raise ValueError('empty conditional support')
     if t['prob'] in (0, 1) or hi == lo:
         return atomic({lo if t['prob'] == 0 else hi: 1}, lo, hi)
+    if t['nu']==1:
+        from quality.truth_reference import binomial_reference
+        ref=binomial_reference(t['size'],t['prob'])
+        n,p=t['size'],t['prob']
+        ref.log_density=lambda x:mp.loggamma(n+1)-mp.loggamma(x+1)-mp.loggamma(n-x+1)+x*mp.log(p)+(n-x)*mp.log1p(-p)
+        return ref
     ref=finite_pmf(logd,0,t['size'])
     ordinary=ref.quantile
     def quantile(lp,lower):

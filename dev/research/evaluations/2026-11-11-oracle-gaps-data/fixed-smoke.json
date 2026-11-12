@@ -1,0 +1,790 @@
+[
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "pareto4",
+      0,
+      999.9976974175579,
+      true,
+      true,
+      [
+        1.0,
+        100000000.0,
+        1000.0,
+        0.0
+      ]
+    ],
+    "actual": -218.7455815369823,
+    "expected": -218.7455815369823,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "nbinom",
+      1,
+      138155105234.0,
+      true,
+      true,
+      [
+        1.0,
+        5e-09
+      ]
+    ],
+    "actual": -9.99999996274847e-301,
+    "expected": -9.999999962748696e-301,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "zip",
+      2,
+      -0.6931471805599453,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": 99916056.0,
+    "expected": 99916056.0,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "zip",
+      2,
+      -0.6931471805599453,
+      false,
+      true,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": 0.0,
+    "expected": 0.0,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "zip",
+      2,
+      0.5,
+      true,
+      false,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": 0.0,
+    "expected": 0.0,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "zip",
+      2,
+      -1.0,
+      true,
+      false,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": "nan",
+    "expected": "NaN",
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "zmpois",
+      0,
+      100000000.0,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": -10.822426086574135,
+    "expected": -10.822426086574135,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "zmpois",
+      2,
+      -0.6931471805599453,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": 99916056.0,
+    "expected": 99916056.0,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "zmnbinom",
+      2,
+      -0.6931471805599453,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5,
+        0.5
+      ]
+    ],
+    "actual": 99881304.0,
+    "expected": [
+      99881303.0,
+      99881304.0
+    ],
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "zinb",
+      2,
+      -0.6931471805599453,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5,
+        0.5
+      ]
+    ],
+    "actual": 99881304.0,
+    "expected": [
+      99881303.0,
+      99881304.0
+    ],
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "ztpois",
+      1,
+      99999999.0,
+      true,
+      true,
+      [
+        100000000.0
+      ]
+    ],
+    "actual": -0.6931737770656544,
+    "expected": -0.6931737770656575,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "ztpois",
+      0,
+      100000000.0,
+      true,
+      true,
+      [
+        100000000.0
+      ]
+    ],
+    "actual": -10.12927890601419,
+    "expected": -10.12927890601419,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "ztnbinom",
+      1,
+      99999998.0,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": -0.6932036011101209,
+    "expected": -0.6932036011101209,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "cmp",
+      1,
+      99629758.0,
+      true,
+      false,
+      [
+        100000000.0,
+        1.0
+      ]
+    ],
+    "actual": 1.0030148691229431e-300,
+    "expected": 1.0030148691227151e-300,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "pig",
+      1,
+      0.0,
+      true,
+      true,
+      [
+        1.0,
+        1e-08
+      ]
+    ],
+    "actual": -0.00014141135659086294,
+    "expected": -0.0001414113565908629,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "yulesimon",
+      1,
+      33.0,
+      true,
+      false,
+      [
+        1e-08
+      ]
+    ],
+    "actual": 4.088798134072771e-08,
+    "expected": 4.088798134072771e-08,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "tnorm",
+      1,
+      1.3862943611198904,
+      true,
+      true,
+      [
+        -1e+16,
+        100000000.0,
+        0.0,
+        "Inf"
+      ]
+    ],
+    "actual": -0.2876820724517797,
+    "expected": -0.28768207245178096,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "tnorm",
+      1,
+      -690.7755278981898,
+      true,
+      true,
+      [
+        1e+16,
+        100000000.0,
+        "-Inf",
+        0.0
+      ]
+    ],
+    "actual": -690.7755278982136,
+    "expected": -690.7755278982137,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "tnorm",
+      2,
+      -690.7755278982137,
+      false,
+      true,
+      [
+        -1e+16,
+        100000000.0,
+        0.0,
+        "Inf"
+      ]
+    ],
+    "actual": 690.7755278981897,
+    "expected": 690.7755278981898,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "nhyper",
+      1,
+      99999997.99999999,
+      false,
+      false,
+      [
+        5.0,
+        100000000.0,
+        3.0
+      ]
+    ],
+    "actual": 6.000000180000012e-23,
+    "expected": 6.000000180000012e-23,
+    "passed": true
+  },
+  {
+    "binary": "probe-fixed",
+    "binary_sha256": "8fbdba62ddd98979fd08a6fc1e1f7782b0839f3f92da4d5fd028261cfc64e717",
+    "job": [
+      "tnorm",
+      1,
+      1e+100,
+      false,
+      true,
+      [
+        -1e+16,
+        100000000.0,
+        0.0,
+        "Inf"
+      ]
+    ],
+    "actual": -5e+183,
+    "expected": -5e+183,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "pareto4",
+      0,
+      999.9976974175579,
+      true,
+      true,
+      [
+        1.0,
+        100000000.0,
+        1000.0,
+        0.0
+      ]
+    ],
+    "actual": -218.7455815369823,
+    "expected": -218.7455815369823,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "nbinom",
+      1,
+      138155105234.0,
+      true,
+      true,
+      [
+        1.0,
+        5e-09
+      ]
+    ],
+    "actual": -9.99999996274847e-301,
+    "expected": -9.999999962748696e-301,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "zip",
+      2,
+      -0.6931471805599453,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": 99916056.0,
+    "expected": 99916056.0,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "zip",
+      2,
+      -0.6931471805599453,
+      false,
+      true,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": 0.0,
+    "expected": 0.0,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "zip",
+      2,
+      0.5,
+      true,
+      false,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": 0.0,
+    "expected": 0.0,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "zip",
+      2,
+      -1.0,
+      true,
+      false,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": "nan",
+    "expected": "NaN",
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "zmpois",
+      0,
+      100000000.0,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": -10.822426086574135,
+    "expected": -10.822426086574135,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "zmpois",
+      2,
+      -0.6931471805599453,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": 99916056.0,
+    "expected": 99916056.0,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "zmnbinom",
+      2,
+      -0.6931471805599453,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5,
+        0.5
+      ]
+    ],
+    "actual": 99881304.0,
+    "expected": [
+      99881303.0,
+      99881304.0
+    ],
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "zinb",
+      2,
+      -0.6931471805599453,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5,
+        0.5
+      ]
+    ],
+    "actual": 99881304.0,
+    "expected": [
+      99881303.0,
+      99881304.0
+    ],
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "ztpois",
+      1,
+      99999999.0,
+      true,
+      true,
+      [
+        100000000.0
+      ]
+    ],
+    "actual": -0.6931737770656544,
+    "expected": -0.6931737770656575,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "ztpois",
+      0,
+      100000000.0,
+      true,
+      true,
+      [
+        100000000.0
+      ]
+    ],
+    "actual": -10.12927890601419,
+    "expected": -10.12927890601419,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "ztnbinom",
+      1,
+      99999998.0,
+      true,
+      true,
+      [
+        100000000.0,
+        0.5
+      ]
+    ],
+    "actual": -0.6932036011101206,
+    "expected": -0.6932036011101209,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "cmp",
+      1,
+      99629758.0,
+      true,
+      false,
+      [
+        100000000.0,
+        1.0
+      ]
+    ],
+    "actual": 1.0030148691229431e-300,
+    "expected": 1.0030148691227151e-300,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "pig",
+      1,
+      0.0,
+      true,
+      true,
+      [
+        1.0,
+        1e-08
+      ]
+    ],
+    "actual": -0.00014141135659086294,
+    "expected": -0.0001414113565908629,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "yulesimon",
+      1,
+      33.0,
+      true,
+      false,
+      [
+        1e-08
+      ]
+    ],
+    "actual": 4.088798134072771e-08,
+    "expected": 4.088798134072771e-08,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "tnorm",
+      1,
+      1.3862943611198904,
+      true,
+      true,
+      [
+        -1e+16,
+        100000000.0,
+        0.0,
+        "Inf"
+      ]
+    ],
+    "actual": -0.2876820724517797,
+    "expected": -0.28768207245178096,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "tnorm",
+      1,
+      -690.7755278981898,
+      true,
+      true,
+      [
+        1e+16,
+        100000000.0,
+        "-Inf",
+        0.0
+      ]
+    ],
+    "actual": -690.7755278982136,
+    "expected": -690.7755278982137,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "tnorm",
+      2,
+      -690.7755278982137,
+      false,
+      true,
+      [
+        -1e+16,
+        100000000.0,
+        0.0,
+        "Inf"
+      ]
+    ],
+    "actual": 690.7755278981897,
+    "expected": 690.7755278981898,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "nhyper",
+      1,
+      99999997.99999999,
+      false,
+      false,
+      [
+        5.0,
+        100000000.0,
+        3.0
+      ]
+    ],
+    "actual": 6.000000180000012e-23,
+    "expected": 6.000000180000012e-23,
+    "passed": true
+  },
+  {
+    "binary": "probe-double-fixed",
+    "binary_sha256": "13ec656c786c5d5111f24329a88467f09b6d49270603676667b82b1dc5b5665b",
+    "job": [
+      "tnorm",
+      1,
+      1e+100,
+      false,
+      true,
+      [
+        -1e+16,
+        100000000.0,
+        0.0,
+        "Inf"
+      ]
+    ],
+    "actual": -5e+183,
+    "expected": -5e+183,
+    "passed": true
+  }
+]

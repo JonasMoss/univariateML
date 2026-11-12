@@ -199,3 +199,9 @@ TEST_CASE("cmp: large geometric tails use the supplied probability scale") {
     }));
   }
 }
+
+TEST_CASE("cmp: the Poisson member retains a tiny natural tail") {
+  const double got=cppunivariate::distributions::pcmp(99629758,1e8,1,true,false);
+  CHECK(std::isfinite(got));
+  CHECK(std::abs(got/1.0030148691227151e-300-1)<1e-10);
+}

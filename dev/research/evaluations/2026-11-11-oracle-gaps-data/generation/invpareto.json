@@ -1,0 +1,30 @@
+{
+  "id": "invpareto",
+  "input_sha256": "9332c7c3378eb3d24cb9c1ee1ba18d20c3403e08e2200b056b807a5296adca2f",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 96863,
+    "points": 11,
+    "values": 226,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 103328,
+    "points": 12,
+    "values": 237,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.188303985982202
+    }
+  ]
+}

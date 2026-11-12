@@ -1,0 +1,63 @@
+{
+  "id": "trgamma",
+  "input_sha256": "1ffd08f52a20d5cb6ac4c26a13ae740fc3e24e9e9a5385ba5c97c4e8d4f7cba5",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 126952,
+    "points": 15,
+    "values": 289,
+    "quantiles": 628
+  },
+  "after": {
+    "bytes": 144568,
+    "points": 17,
+    "values": 331,
+    "quantiles": 716
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 116.07445254700724
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 63.73779052402824
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 43.45550257700961
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 52.168183141970076
+    }
+  ]
+}

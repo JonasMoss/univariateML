@@ -112,3 +112,9 @@ TEST_CASE("zmpois: logarithm before subnormal rounding") {
 TEST_CASE("zmpois: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qzmpois(.5,1e308,.1)));
 }
+
+TEST_CASE("zmpois: large-rate density and rounded log-half quantile") {
+  CHECK(cppunivariate::distributions::dzmpois(1e8,1e8,.5,true)==
+        doctest::Approx(-10.822426086574135).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::qzmpois(-0.6931471805599453,1e8,.5,true,true)==99916056);
+}

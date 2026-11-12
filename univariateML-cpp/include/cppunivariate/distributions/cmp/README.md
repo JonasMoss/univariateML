@@ -150,6 +150,13 @@ uses inversion with R's RNG.
 
 The normalizer and both tails are summed directly.
 
+### Poisson probability member
+
+At nu one, the normalizer is exactly the Poisson exponential series. At rate
+$10^8$, a fresh numerical normalizer can perturb a $10^{-300}$ tail beyond the
+relative probability contract even when its log error is small. This member
+therefore retains the Poisson probability evaluator directly.
+
 ## Stop details
 
 The public domain entry point retains adjacent-law witnesses, with held lambda fixing the Bernoulli odds. The shared legacy CMP solver is unchanged; the public domain wrapper now certifies its proposals. Attained geometric and zero-count members remain supported.

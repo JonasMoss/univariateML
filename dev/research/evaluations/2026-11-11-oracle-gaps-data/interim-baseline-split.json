@@ -1,0 +1,142 @@
+{
+  "beta": {
+    "new": 1,
+    "p": 1,
+    "nonfinite": 0
+  },
+  "betapr": {
+    "new": 2,
+    "p": 2,
+    "nonfinite": 0
+  },
+  "bnbinom": {
+    "new": 882,
+    "p": 762,
+    "nonfinite": 782,
+    "d": 100,
+    "q": 20
+  },
+  "cmp": {
+    "new": 1108,
+    "p": 860,
+    "nonfinite": 1101,
+    "d": 212,
+    "q": 36
+  },
+  "fpareto": {
+    "new": 2,
+    "p": 2,
+    "nonfinite": 0
+  },
+  "gb2": {
+    "new": 2,
+    "p": 2,
+    "nonfinite": 0
+  },
+  "invburr": {
+    "new": 1,
+    "d": 1,
+    "nonfinite": 1
+  },
+  "invparalogis": {
+    "new": 1,
+    "d": 1,
+    "nonfinite": 1
+  },
+  "invpareto": {
+    "new": 1,
+    "d": 1,
+    "nonfinite": 1
+  },
+  "invtrgamma": {
+    "new": 9,
+    "p": 9,
+    "nonfinite": 0
+  },
+  "nbinom": {
+    "new": 7,
+    "p": 3,
+    "nonfinite": 7,
+    "q": 4
+  },
+  "nhyper": {
+    "new": 1,
+    "p": 1,
+    "nonfinite": 0
+  },
+  "pareto4": {
+    "new": 10,
+    "d": 10,
+    "nonfinite": 0
+  },
+  "pig": {
+    "new": 863,
+    "p": 827,
+    "nonfinite": 863,
+    "q": 36
+  },
+  "sstd": {
+    "new": 6,
+    "p": 6,
+    "nonfinite": 6
+  },
+  "st": {
+    "new": 188,
+    "p": 116,
+    "nonfinite": 188,
+    "q": 72
+  },
+  "tnorm": {
+    "new": 114,
+    "p": 46,
+    "nonfinite": 0,
+    "q": 68
+  },
+  "trgamma": {
+    "new": 6,
+    "p": 6,
+    "nonfinite": 0
+  },
+  "zinb": {
+    "new": 8,
+    "p": 3,
+    "nonfinite": 7,
+    "q": 5
+  },
+  "zip": {
+    "new": 1,
+    "q": 1,
+    "nonfinite": 0
+  },
+  "zmlogarithmic": {
+    "new": 833,
+    "p": 816,
+    "nonfinite": 821,
+    "q": 17
+  },
+  "zmnbinom": {
+    "new": 21,
+    "p": 4,
+    "nonfinite": 21,
+    "q": 17
+  },
+  "zmpois": {
+    "new": 24,
+    "d": 7,
+    "nonfinite": 17,
+    "q": 17
+  },
+  "ztnbinom": {
+    "new": 270,
+    "p": 234,
+    "nonfinite": 68,
+    "q": 36
+  },
+  "ztpois": {
+    "new": 278,
+    "p": 230,
+    "nonfinite": 64,
+    "d": 12,
+    "q": 36
+  }
+}

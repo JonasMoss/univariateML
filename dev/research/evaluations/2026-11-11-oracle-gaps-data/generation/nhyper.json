@@ -1,0 +1,31 @@
+{
+  "id": "nhyper",
+  "input_sha256": "be6268bf8a09be8cba49263cf4d7a7a3a083b4ffc78185c18887417f3fd0783c",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 43079,
+    "points": 7,
+    "values": 74,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 73360,
+    "points": 8,
+    "values": 289,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        5.0,
+        100000000.0,
+        3.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 4.841884636960458
+    }
+  ]
+}

@@ -256,3 +256,9 @@ TEST_CASE("nbinom: held probability large-count logLik evaluates the public size
   CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
   CHECK(r.logLik==doctest::Approx(-42.09308040331988).epsilon(1e-12));
 }
+
+TEST_CASE("nbinom: diffuse geometric survival needs no positive tail sum") {
+  const double lower=cppunivariate::distributions::pnbinom(138155105234.0,1,5e-9,true,true);
+  CHECK(std::isfinite(lower));
+  CHECK(std::abs(lower/(-9.999999962748696e-301)-1)<1e-10);
+}

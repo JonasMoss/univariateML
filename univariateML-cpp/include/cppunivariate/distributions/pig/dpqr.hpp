@@ -147,6 +147,8 @@ inline double ppig(double q,double mean,double shape,bool lower_tail,bool log_p)
     return special::tail_probability(special::tails_from_log(pig_detail::asympt_upper(std::floor(q)+1,mean,shape),false),lower_tail,log_p);
   if(q>=pig_detail::sum_limit) return std::numeric_limits<double>::quiet_NaN();
   const int n=static_cast<int>(std::floor(q));
+  if(n==0) return special::tail_probability(
+      special::tails_from_log(pig_detail::MassStream(mean,shape).lmass,true),lower_tail,log_p);
   const double ll=pig_detail::log_lower(n,mean,shape);
   if(ll<-.6931471805599453) lp=lower_tail ? ll : cppunivariate::special::fs_log1mexp(ll);
   else {

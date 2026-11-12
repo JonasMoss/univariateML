@@ -1,0 +1,41 @@
+{
+  "id": "zinb",
+  "input_sha256": "866bb879f74701e7754157ea2b2031d39ec2a822ac713d49616d653d976d2631",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 392441,
+    "points": 16,
+    "values": 2717,
+    "quantiles": 704
+  },
+  "after": {
+    "bytes": 451640,
+    "points": 18,
+    "values": 3143,
+    "quantiles": 792
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.5,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 18.410886891011614
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.4627806229982525
+    }
+  ]
+}

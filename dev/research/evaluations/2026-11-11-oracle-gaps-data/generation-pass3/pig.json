@@ -1,0 +1,30 @@
+{
+  "id": "pig",
+  "input_sha256": "80d05a24e0f1b566dff0b08e7192ffd1eea5f4bcfb7fd1bc2e36e01c10a71fa8",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 289726,
+    "points": 11,
+    "values": 2088,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 319416,
+    "points": 12,
+    "values": 2300,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 104.46248241397552
+    }
+  ]
+}

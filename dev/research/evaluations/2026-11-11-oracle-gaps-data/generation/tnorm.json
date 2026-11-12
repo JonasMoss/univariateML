@@ -1,0 +1,54 @@
+{
+  "id": "tnorm",
+  "input_sha256": "667f4f720ce25b3694cd4749191c2ebf4d3cb9b7982778299d7696ad4bb54863",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 79989,
+    "points": 9,
+    "values": 170,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 105852,
+    "points": 12,
+    "values": 228,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        -1e+16,
+        100000000.0,
+        0.0,
+        "Inf"
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.253383692994248
+    },
+    {
+      "parameters": [
+        1e+16,
+        100000000.0,
+        "-Inf",
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.8817525200429372
+    },
+    {
+      "parameters": [
+        1e+16,
+        100000000.0,
+        0.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 5.007896961993538
+    }
+  ]
+}

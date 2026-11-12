@@ -24,7 +24,7 @@ inline double logd(int kind,double x,double a,double b) {
   if(!valid(kind,a,b)||std::isnan(x))return std::numeric_limits<double>::quiet_NaN();
   if(!std::isfinite(x)||x<1||x!=std::floor(x)||(kind==3 && x>a))return neg;
   if(point(kind,a,b))return x==1?0:neg;
-  if(kind==0)return -a+x*std::log(a)-special::lgamma(x+1)-std::log(-std::expm1(-a));
+  if(kind==0)return distributions::dpois(x,a,true)-std::log(-std::expm1(-a));
   if(kind==1)return std::log(a)+(x-1)*std::log1p(-a);
   if(kind==2 && a==0)return x*std::log1p(-b)-std::log(x)-std::log(-std::log(b));
   if(kind==2) return distributions::dnbinom(x,a,b,true)-std::log(-std::expm1(a*std::log(b)));
@@ -39,6 +39,17 @@ inline special::LogTails positive_tails(int kind,double q,double a,double b) {
   // Size-one NB conditioned positive is exactly geometric on 1,2,...
   if(kind==2 && a==1) return positive_tails(1,q,b,0);
   if(kind==1) return special::tails_from_log(q*std::log1p(-a),false);
+  if(kind==0 || (kind==2 && a>0) || kind==3) {
+    const double zero=kind==0 ? -a : kind==2 ? a*std::log(b) : a*std::log1p(-b);
+    const double base=kind==0 ? distributions::ppois(q,a,true,true) : kind==2
+        ? distributions::pnbinom(q,a,b,true,true) : distributions::pbinom(q,a,b,true,true);
+    // Subtract the zero mass only when the base lower tail is at least
+    // twice as large. The relative conditioning error is then bounded.
+    if(std::isfinite(base) && base<=-0.6931471805599453 && base-zero>0.6931471805599453) {
+      const double lower=base+special::log1mexp(zero-base)-special::log1mexp(zero);
+      return special::tails_from_log(std::min(0.0,lower),true);
+    }
+  }
   double upper;
   if(kind==0) upper=distributions::ppois(q,a,false,true)-std::log(-std::expm1(-a));
   else if(kind==2 && a>0) upper=distributions::pnbinom(q,a,b,false,true)-std::log(-std::expm1(a*std::log(b)));
@@ -89,6 +100,12 @@ inline double cdf(int kind,double q,double a,double b,double p0,bool lower,bool 
 }
 inline double quantile(int kind,double p,double a,double b,double p0,bool lower,bool log,double start=-1) {
   if(!valid(kind,a,b)||!(p0>=0 && p0<=1))return special::kNaN;
+  if(std::isnan(p)||(log ? p>0 : (p<0 || p>1)))return special::kNaN;
+  if(p0==0.5) {
+    const double offset=special::probability_minus_half(p,lower,log);
+    if(offset<=0)return 0;
+    if(offset<0.25)return quantile(kind,2*offset,a,b,0,true,false,1);
+  }
   // Modification wrappers explicitly retain zero even when its mass is zero.
   // The default preserves positive-truncation callers (including lgser).
   if(start<0) start=p0==0?1:0;

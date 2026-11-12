@@ -24,7 +24,7 @@ inline double logtail(double k,double rho) {
     a*special::digamma(static_cast<double>(b+1))+
       CPPUNIV_EXTENDED_LITERAL(.5,.5L)*a*a*special::trigamma(static_cast<double>(b+1)) :
     bnbinom_detail::increment(1+b,a);
-  return static_cast<double>((a<CPPUNIV_EXTENDED_LITERAL(1e-8,1e-8L) ? -CPPUNIV_EXTENDED_LITERAL(0.5772156649015328606,0.5772156649015328606L)*a+CPPUNIV_EXTENDED_LITERAL(0.8224670334241132182,0.8224670334241132182L)*a*a : std::lgamma(1+a))-increment);
+  return static_cast<double>((a<=CPPUNIV_EXTENDED_LITERAL(1e-7,1e-7L) ? -CPPUNIV_EXTENDED_LITERAL(0.5772156649015328606,0.5772156649015328606L)*a+CPPUNIV_EXTENDED_LITERAL(0.8224670334241132182,0.8224670334241132182L)*a*a : std::lgamma(1+a))-increment);
 }
 }
 namespace distributions {

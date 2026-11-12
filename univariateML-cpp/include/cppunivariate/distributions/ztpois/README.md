@@ -75,6 +75,16 @@ existence:
 
 The zero-truncated Poisson distribution describes Poisson counts observed only when positive. The rate $\lambda$ belongs to the underlying Poisson law before conditioning.
 
+## d/p/q/r
+
+### Concentrated probability evaluation
+
+At rate $10^8$, the omitted zero mass is $\exp(-10^8)$, while the body is
+near count $10^8$. Enumerating a positive prefix to the body is unnecessary:
+the base-CDF difference is well conditioned once its mass exceeds twice the
+zero mass. The mode density also needs the centered Poisson log mass rather
+than subtraction of terms of order $\lambda\log\lambda$.
+
 ## Details
 
 The fit matches the conditional mean to the sample mean by bisection between zero and the sample mean. Strict monotonicity gives a unique solution when any count exceeds one. The zero-rate member is the point mass at one and is attained when all counts are one.

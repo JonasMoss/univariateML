@@ -110,6 +110,12 @@ existence:
 
 The negative binomial distribution models nonnegative counts with overdispersion relative to a Poisson distribution. The size $r$ need not be an integer. The probability $p$ determines the mean together with $r$, through $r(1-p)/p$.
 
+## d/p/q/r
+
+At size one, the geometric survival identity remains available when a
+positive tail sum would exceed its work guard. This matters at probability
+$5\times10^{-9}$, where the opposite log tail can still be of order $10^{-300}$.
+
 ## Details
 
 With both coefficients free and a positive sample mean, the probability profiles out as $p=r/(r+\bar x)$. The size estimate solves a scalar score equation. A finite solution exists exactly when the sample variance, computed with divisor $n$, exceeds the sample mean. Equality also gives an unattained Poisson supremum. Holding a positive size removes this escape. Holding a probability strictly below one leaves a strictly decreasing size score and a unique finite solution when a count is positive.

@@ -1,0 +1,228 @@
+test_beta_fraction_against_hypergeometric (test_references.OracleGaps.test_beta_fraction_against_hypergeometric) ... ok
+test_bnbinom_factorial_moment_tail (test_references.OracleGaps.test_bnbinom_factorial_moment_tail) ... ok
+test_burr_change_of_variable (test_references.OracleGaps.test_burr_change_of_variable) ... ok
+test_centered_gamma_against_special_function (test_references.OracleGaps.test_centered_gamma_against_special_function) ... ok
+test_cmp_euler_maclaurin_tail_additivity (test_references.OracleGaps.test_cmp_euler_maclaurin_tail_additivity) ... ok
+test_derivative_check_follows_density_width (test_references.OracleGaps.test_derivative_check_follows_density_width) ... ok
+test_discrete_gamma_center_interval (test_references.OracleGaps.test_discrete_gamma_center_interval) ... ok
+test_explicit_ged_density_against_declaration (test_references.OracleGaps.test_explicit_ged_density_against_declaration) ... ok
+test_gamma_power_matches_readme (test_references.OracleGaps.test_gamma_power_matches_readme) ... ok
+test_integer_gamma_positive_polynomial (test_references.OracleGaps.test_integer_gamma_positive_polynomial) ... ok
+test_reciprocal_gamma_quantile_chart (test_references.OracleGaps.test_reciprocal_gamma_quantile_chart) ... ok
+test_skellam_asymmetric_convolution (test_references.OracleGaps.test_skellam_asymmetric_convolution) ... ok
+test_skew_t_wedge_against_density_integral (test_references.OracleGaps.test_skew_t_wedge_against_density_integral) ... ok
+test_squared_normal_extreme_inverse (test_references.OracleGaps.test_squared_normal_extreme_inverse) ... ok
+test_bnbinom_beta_geometric_identity (quality.test_truth_gaps.ControlledTails.test_bnbinom_beta_geometric_identity) ... ok
+test_bnbinom_swapped_beta_quadrature (quality.test_truth_gaps.ControlledTails.test_bnbinom_swapped_beta_quadrature) ... ok
+test_nan_truth_cells_rejected (quality.test_truth_gaps.ControlledTails.test_nan_truth_cells_rejected) ... ok
+test_pig_bessel_and_mixture_density (quality.test_truth_gaps.ControlledTails.test_pig_bessel_and_mixture_density) ... ok
+test_pig_integral_against_positive_sum (quality.test_truth_gaps.ControlledTails.test_pig_integral_against_positive_sum) ... ok
+test_skellam_poisson_convolution_and_symmetry (quality.test_truth_gaps.ControlledTails.test_skellam_poisson_convolution_and_symmetry) ... ok
+test_skellam_zero_rate_poisson_limits (quality.test_truth_gaps.ControlledTails.test_skellam_zero_rate_poisson_limits) ... ok
+test_sn_shape_one_identity_and_reflection (quality.test_truth_gaps.ControlledTails.test_sn_shape_one_identity_and_reflection) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 11.432s
+
+OK
+beta START
+binom START
+betapr START
+bnbinom START
+bnbinom 0 verified 0.76
+bnbinom DONE 1
+burr START
+burr 0 verified 0.17
+burr 0 verified 0.12
+burr 0 verified 0.1
+burr 0 verified 0.1
+burr DONE 4
+cmb START
+binom 0 verified 2.9
+binom DONE 1
+cmb 0 verified 0.75
+cmb DONE 1
+cmp START
+dgamma START
+beta DONE 1
+betapr DONE 1
+dlaplace START
+dnorm START
+dlaplace 0 verified 1.17
+dlaplace DONE 1
+dweibull START
+dnorm 0 verified 1.8
+dnorm DONE 1
+fpareto START
+dgamma DONE 1
+frechet START
+frechet DONE 0
+gamma START
+dweibull DONE 1
+gb2 START
+fpareto DONE 1
+cmp DONE 2
+ged START
+geom START
+geom 0 verified 0.58
+geom DONE 1
+ht START
+ht 0 verified 8.35
+ht 0 verified 27.57
+ht 0 verified 22.19
+ht 0 verified 22.48
+ht DONE 4
+invburr START
+invburr 0 verified 0.17
+invburr 0 verified 0.12
+invburr 0 verified 0.1
+invburr DONE 3
+invgamma START
+gb2 DONE 1
+invparalogis START
+invparalogis 0 verified 0.17
+invparalogis 0 verified 0.13
+invparalogis DONE 2
+invpareto START
+invpareto 0 verified 0.18
+invpareto DONE 1
+invtrgamma START
+ged DONE 4
+invweibull START
+invweibull DONE 0
+lgamma START
+gamma DONE 4
+lgser START
+invtrgamma 0 verified 0.57
+lgser DONE 1
+lomax START
+lomax 0 verified 0.16
+lomax DONE 1
+lgamma 0 verified 0.92
+lgamma DONE 3
+lst START
+naka START
+invtrgamma 0 verified 109.7
+invtrgamma 0 verified 0.59
+lst 0 verified 68.95
+lst 0 verified 74.04
+invgamma DONE 4
+nbinom START
+nbinom 0 verified 25.45
+nbinom 0 verified 0.19
+nbinom DONE 2
+nhyper START
+invtrgamma DONE 6
+paralogis START
+paralogis 0 verified 0.22
+paralogis 0 verified 0.14
+paralogis DONE 2
+pareto START
+pareto 0 verified 0.25
+pareto DONE 1
+pareto2 START
+pareto2 0 verified 0.19
+pareto2 DONE 1
+nhyper 0 verified 4.81
+nhyper DONE 1
+pareto4 START
+pig START
+pareto4 0 verified 0.21
+pareto4 0 verified 0.15
+pareto4 DONE 2
+pig 0 verified 0.37
+pois START
+lst 0 verified 82.02
+lst DONE 3
+power START
+power 0 verified 0.23
+power DONE 1
+sged START
+naka DONE 3
+skellam START
+pois 0 verified 109.27
+pois DONE 1
+sn START
+sn 0 verified 12.61
+sn 0 verified 20.38
+sn 0 verified 20.5
+sn DONE 3
+sstd START
+sstd 0 verified 58.12
+pig 0 verified 0.38
+pig DONE 4
+st START
+st 0 verified 2.62
+st 0 verified 8.81
+sstd 0 verified 43.18
+sged DONE 6
+std START
+st 0 verified 42.25
+sstd 0 verified 51.9
+skellam DONE 2
+tlambda START
+tlambda 0 verified 2.37
+tlambda DONE 1
+tnorm START
+std 0 verified 53.15
+tnorm 0 verified 1.42
+tnorm 0 verified 1.36
+tnorm 0 verified 2.39
+tnorm DONE 3
+trgamma START
+st 0 verified 41.25
+sstd 0 verified 32.92
+sstd 0 verified 35.95
+sstd DONE 5
+yulesimon START
+yulesimon 0 verified 0.89
+yulesimon DONE 1
+zib START
+st 0 verified 54.49
+zib 0 verified 3.29
+zib DONE 1
+zinb START
+std 0 verified 71.44
+zinb 0 verified 18.34
+zinb 0 verified 0.4
+zinb DONE 2
+zip START
+st 0 verified 55.62
+std 0 verified 77.48
+std DONE 3
+zmbinom START
+zip 0 verified 69.55
+zip DONE 1
+zmgeom START
+zmgeom 0 verified 0.36
+zmgeom DONE 1
+zmbinom 0 verified 2.98
+zmbinom DONE 1
+zmlogarithmic START
+zmnbinom START
+trgamma 0 verified 1.13
+st 0 verified 52.74
+st DONE 7
+zmnbinom 0 verified 15.65
+zmpois START
+zmnbinom 0 verified 0.45
+zmnbinom DONE 2
+ztbinom START
+ztbinom 0 verified 3.3
+ztbinom DONE 1
+ztgeom START
+ztgeom 0 verified 0.53
+ztgeom DONE 1
+ztnbinom START
+ztnbinom 0 verified 28.12
+ztnbinom 0 verified 0.57
+ztnbinom DONE 2
+ztpois START
+zmpois 0 verified 56.3
+zmpois DONE 1
+zmlogarithmic DONE 1
+trgamma 0 verified 1.06
+ztpois 0 verified 114.0
+ztpois DONE 1
+trgamma DONE 6
+ORACLE GAPS 44

@@ -569,3 +569,15 @@ TEST_CASE("tnorm: fitted bounds retain narrow-interval and translated public lik
   REQUIRE(s.status==cppunivariate::TnormStatus::Ok);
   CHECK(s.logLik==doctest::Approx(-2048891866.3134167).epsilon(1e-12));
 }
+
+TEST_CASE("tnorm: far one-sided faces retain physical CDF and quantile offsets") {
+  CHECK(cppunivariate::distributions::ptnorm(1.3862943611198904,-1e16,1e8,0,INFINITY,true,true)==
+        doctest::Approx(-0.28768207245178096).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::qtnorm(-690.7755278982137,-1e16,1e8,0,INFINITY,false,true)==
+        doctest::Approx(690.7755278981898).epsilon(1e-12));
+}
+
+TEST_CASE("tnorm: a distant query retains its finite extreme log survival") {
+  CHECK(cppunivariate::distributions::ptnorm(1e100,-1e16,1e8,0,INFINITY,false,true)==
+        doctest::Approx(-5e183).epsilon(1e-12));
+}

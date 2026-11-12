@@ -1,0 +1,30 @@
+{
+  "id": "zmlogarithmic",
+  "input_sha256": "4c49f8a09e08b17bc1180526a88e0b518bece5b1658eb0728b9e9b0cfd1cc68a",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 296909,
+    "points": 12,
+    "values": 2090,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 326822,
+    "points": 13,
+    "values": 2303,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        0.9999999999999999,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 560.2756924319547
+    }
+  ]
+}

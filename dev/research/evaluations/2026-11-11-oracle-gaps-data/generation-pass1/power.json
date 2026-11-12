@@ -1,0 +1,30 @@
+{
+  "id": "power",
+  "input_sha256": "3cb66d2e9c1a09429fa8f6f229eda8c41626e3b1f922823b7ccf9b1ba9ccc6a1",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 67828,
+    "points": 8,
+    "values": 141,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 73713,
+    "points": 9,
+    "values": 149,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.26107504399260506
+    }
+  ]
+}

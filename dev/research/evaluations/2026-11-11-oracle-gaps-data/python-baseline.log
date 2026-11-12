@@ -1,0 +1,41 @@
+FFEF
+======================================================================
+ERROR: test_cmb_workload_keeps_both_support_endpoints (quality.test_truth.AttainedBoundaries.test_cmb_workload_keeps_both_support_endpoints)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/jonas/Files/programming/univariateML.wt/oracle-gaps/build/scratch/oracle-baseline/dev/validation/quality/test_truth.py", line 332, in test_cmb_workload_keeps_both_support_endpoints
+    self.assertIsNone(route.truth_workload_exclusion(theta, 'values', [0, x]))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'truth_route_cmb' has no attribute 'truth_workload_exclusion'
+
+======================================================================
+FAIL: test_default_is_retained_when_stress_grid_reaches_cap (quality.test_truth.SamplerPoints.test_default_is_retained_when_stress_grid_reaches_cap)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/jonas/Files/programming/univariateML.wt/oracle-gaps/build/scratch/oracle-baseline/dev/validation/quality/test_truth.py", line 164, in test_default_is_retained_when_stress_grid_reaches_cap
+    self.assertEqual(len(pts), 9)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+AssertionError: 17 != 9
+
+======================================================================
+FAIL: test_all_tables_select_public_default_and_frozen_golden_fit (quality.test_truth.SamplerPoints.test_all_tables_select_public_default_and_frozen_golden_fit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/jonas/Files/programming/univariateML.wt/oracle-gaps/build/scratch/oracle-baseline/dev/validation/quality/test_truth.py", line 169, in test_all_tables_select_public_default_and_frozen_golden_fit
+    self.assertEqual(len(folders), 98)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 101 != 98
+
+======================================================================
+FAIL: test_stored_fingerprints_and_no_timings (quality.test_truth_metadata.TruthMetadataTests.test_stored_fingerprints_and_no_timings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/jonas/Files/programming/univariateML.wt/oracle-gaps/build/scratch/oracle-baseline/dev/validation/quality/test_truth_metadata.py", line 42, in test_stored_fingerprints_and_no_timings
+    self.assertEqual(len(tables), 98)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 101 != 98
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.060s
+
+FAILED (failures=3, errors=1)

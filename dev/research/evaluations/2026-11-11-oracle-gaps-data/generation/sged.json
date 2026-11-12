@@ -1,0 +1,76 @@
+{
+  "id": "sged",
+  "input_sha256": "c6d86521408c6e11c792ccd750c855b53028624bde09122831bb3b7b8434dadc",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 168487,
+    "points": 19,
+    "values": 345,
+    "quantiles": 836
+  },
+  "after": {
+    "bytes": 211584,
+    "points": 24,
+    "values": 436,
+    "quantiles": 1056
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 7.018326695018914
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 7.604317085002549
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 6.6136858310201205
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 8.134071134030819
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 9.347419539000839
+    }
+  ]
+}

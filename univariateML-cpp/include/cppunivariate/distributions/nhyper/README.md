@@ -106,6 +106,15 @@ The negative hypergeometric distribution counts total draws without
 replacement until the $r$th white ball from a population of $N$ balls,
 $K$ of them white. Each observation starts with the population restored.
 
+## d/p/q/r
+
+### Small marked populations
+
+With five marked positions in a population of $10^8$, the third marked
+position exceeds $N-3$ with probability $60/[N(N-1)(N-2)]$. This tail is
+sensitive to subtracting large gamma normalizers. A finite product over the
+marked positions retains it without enumerating the position support.
+
 ## Details
 
 Holding population and stopping count estimates the integer white-ball

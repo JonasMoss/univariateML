@@ -280,3 +280,8 @@ TEST_CASE("Coupled Weibull-limit pareto4 fallback retains coefficient accuracy")
     CHECK(s==doctest::Approx(102232319.87551729384381398004294937).scale(0.).epsilon(1e-10));
   }
 }
+
+TEST_CASE("pareto4: concentrated density retains the scale displacement") {
+  CHECK(cppunivariate::distributions::dpareto4(999.9976974175579,1,1e8,1000,0,true)==
+        doctest::Approx(-218.7455815369823).epsilon(1e-12));
+}

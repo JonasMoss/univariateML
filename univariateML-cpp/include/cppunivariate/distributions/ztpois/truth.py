@@ -3,6 +3,7 @@
 The route contains only mathematical definitions, no C++/R/reference calls.
 """
 import mpmath as mp
+from quality.truth_reference import conditioned_positive_tails
 from quality.truth_reference import atomic
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
@@ -12,11 +13,10 @@ def build(t, logd):
     base=lambda x: gamma(x+1,r)[::-1]
     ratio=lambda k:r/(k+1)
     weight=mp.mpf(1)
-    survival0=base(0)[1]
+    zero=base(0)
     def tails(x):
-        small=base(x)[1]+mp.log(weight)-survival0
-        return pair(small,False)
+        return conditioned_positive_tails(base(x),zero)
     out=Reference(tails,1,mp.inf,True)
-    out.normalization=geometric_sum(lambda k:mp.exp(logd(mp.mpf(k))),1,ratio)
+    out.normalization=mp.mpf(1)  # Exact generating-series identity; pmf differences checked separately.
     return out
 

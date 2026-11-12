@@ -212,3 +212,8 @@ TEST_CASE("pois: quantile search guards and representability") {
 TEST_CASE("pois: centered million-count density") {
  CHECK(cppunivariate::distributions::dpois(1000005.0,1000004.6,true)==doctest::Approx(-7.826696475513097).epsilon(1e-10));
 }
+
+TEST_CASE("pois: large-rate natural tail retains the integer gamma shape") {
+ CHECK(cppunivariate::distributions::ppois(99787341,1e8,true,false)==
+       doctest::Approx(1.0016275040224443e-100).epsilon(1e-10).scale(0));
+}

@@ -1,0 +1,61 @@
+{
+  "id": "burr",
+  "input_sha256": "afb859574de2a5cea8a616f0a4309bb3e377514484a61a3889e279d2d0e85ac5",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 127427,
+    "points": 15,
+    "values": 278,
+    "quantiles": 660
+  },
+  "after": {
+    "bytes": 160363,
+    "points": 19,
+    "values": 352,
+    "quantiles": 836
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.21622032404411584
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.16889895702479407
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.14840779302176088
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.14831724198302254
+    }
+  ]
+}

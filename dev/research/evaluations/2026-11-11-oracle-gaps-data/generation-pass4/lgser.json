@@ -1,0 +1,20 @@
+{
+  "id": "lgser",
+  "input_sha256": "2a34e2914653d1ba9a9832c90b8c53c67aede88613c5ba23795260a8669dfe7f",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 200411,
+    "points": 7,
+    "values": 1468,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 200411,
+    "points": 7,
+    "values": 1468,
+    "quantiles": 308
+  },
+  "records": []
+}

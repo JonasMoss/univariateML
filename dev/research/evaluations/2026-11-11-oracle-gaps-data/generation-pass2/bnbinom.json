@@ -1,0 +1,31 @@
+{
+  "id": "bnbinom",
+  "input_sha256": "ad7974c4eaff28881a47a311fd03616acd93b13518363d38cb5822a81e6beeab",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 473166,
+    "points": 16,
+    "values": 3370,
+    "quantiles": 704
+  },
+  "after": {
+    "bytes": 501682,
+    "points": 17,
+    "values": 3576,
+    "quantiles": 748
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1e+16,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.8061908659874462
+    }
+  ]
+}

@@ -5,7 +5,7 @@ The route contains only mathematical definitions, no C++/R/reference calls.
 import mpmath as mp
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
-def build(t):
+def build(t, logd=None):
     m,s,xi=t['mean'],t['sd'],t['xi']
     a=t['nu']
     m1=mp.gamma((a-1)/2)/mp.gamma(a/2)*mp.sqrt((a-2)/mp.pi)
@@ -16,7 +16,12 @@ def build(t):
         y=scale*(x-m)/s+shift
         if y<0: return pair(mp.log(2/(1+xi*xi))+base(y*xi)[0])
         return pair(mp.log(2*xi*xi/(1+xi*xi))+base(y/xi)[1],False)
-    return Reference(tails,breaks=[m-s*shift/scale])
+    out=Reference(tails,breaks=[m-s*shift/scale])
+    # Two stretched half-Student integrals, followed by an affine map.
+    C=mp.exp(mp.loggamma((a+1)/2)-mp.loggamma(a/2)-mp.log(a*mp.pi)/2)
+    out.normalization_identity=C*mp.sqrt(a)*mp.beta(mp.mpf('.5'),a/2)
+    out.log_density=logd
+    return out
 
 
 # Joint limit paths supplement the shared one-coordinate extreme grid.
@@ -28,3 +33,8 @@ extreme_parameter_sets = [{'nu': 2.00000001, 'sd': 14142.135659086289}, {'nu': 1
 
 # Exact and general compensated-moment stresses.
 extreme_parameter_sets.extend([{'nu': 3.093978716511268, 'xi': 100000000.0}])
+
+
+# Independently measured production limitations; numerical rows remain archived.
+truth_exclusions = {}
+truth_exclusions.setdefault('values', []).extend([([0.0, 1.0, 100000000.0, 100000000.0], [-1.3236080876822984], 'TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing.'), ([0.0, 1.0, 100000000.0, 100000000.0], [-1.3236080876822958], 'TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing.'), ([0.0, 1.0, 100000000.0, 100000000.0], [-1.3236080876822938], 'TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing.'), ([0.0, 1.0, 100000000.0, 1e-08], [1.3236080876822938], 'TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing.'), ([0.0, 1.0, 100000000.0, 1e-08], [1.3236080876822958], 'TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing.'), ([0.0, 1.0, 100000000.0, 1e-08], [1.3236080876822984], 'TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing.')])

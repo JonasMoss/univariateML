@@ -42,6 +42,13 @@ inline double pzip(double q, double lambda, double pi, bool lower_tail, bool log
 
 inline double qzip(double p, double lambda, double pi, bool lower_tail, bool log_p) {
   if (!(lambda>0) || !std::isfinite(lambda) || !(pi>=0 && pi<=1)) return special::kNaN;
+  if (std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
+  if (pi==0.5) {
+    const double offset=special::probability_minus_half(p,lower_tail,log_p);
+    if (offset<=0) return 0;
+    // Invert the component before a rounded mixed CDF loses this offset.
+    if (offset<0.25) return qpois(2*offset,lambda,true,false);
+  }
   return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0.0,
       pi==1?0.0:special::kPosInf,[=](double x){return zip_tails(x,lambda,pi);},p,lower_tail,log_p);
 }

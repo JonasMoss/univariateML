@@ -107,6 +107,15 @@ existence:
 
 The zero-inflated Poisson distribution mixes a Poisson count of rate $\lambda$ with a structural-zero component of probability $\pi$. The total zero probability also includes zeros from the Poisson component.
 
+## d/p/q/r
+
+### Half-inflation quantiles
+
+At inflation one half, the binary64 value of `log(0.5)` lies above the exact
+log half. Its positive-component CDF is approximately
+$2.3190468138462996\times10^{-17}$. Rounding the mixed CDF before inversion
+loses this threshold; at rate $10^8$ the required lower quantile is 99916056.
+
 ## Details
 
 When the empirical zero fraction is no greater than $e^{-\bar x}$, the free fit is the attained Poisson member $\pi=0$. Otherwise inflation is positive and the rate is determined by the mean of the positive observations. All-zero data identify only the point mass at zero, leaving the rate arbitrary.

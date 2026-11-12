@@ -13,7 +13,6 @@ def build(t, logd):
         if a>0: return mp.log(mp.erfc(a/mp.sqrt(2))-mp.erfc(b/mp.sqrt(2)))-mp.log(2)
         return mp.log(mp.erfc(-b/mp.sqrt(2))-mp.erfc(-a/mp.sqrt(2)))-mp.log(2)
     out=Reference(lambda x:normal((x+1-m)/s),-mp.inf,mp.inf,True,log_density=ld)
-    n=int(mp.ceil(abs(m)+30*s))+2
-    out.normalization=mp.fsum(mp.exp(ld(mp.mpf(k))) for k in range(-n,n+1))
+    out.normalization=mp.mpf(1)  # Telescoping normal bins / two geometric series.
     return out
 

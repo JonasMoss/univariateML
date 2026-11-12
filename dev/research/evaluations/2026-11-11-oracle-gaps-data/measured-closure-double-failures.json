@@ -1,0 +1,7508 @@
+[
+  {
+    "family": "beta",
+    "function": "p",
+    "input": 0.5013098104053413,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      100000000.0
+    ],
+    "actual": 9.99999986277113e-301,
+    "expected": 1.0000000000478858e-300,
+    "error": 1.3770772917461083e-08,
+    "category": "values",
+    "row": [
+      11,
+      0.5013098104053413,
+      -676.9125443518333,
+      -1.0000000000479406e-300,
+      -690.7755278981658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "betapr",
+    "function": "p",
+    "input": 0.9947744473451168,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      100000000.0,
+      1.0
+    ],
+    "actual": 9.99999986277113e-301,
+    "expected": 1.0000000000102556e-300,
+    "error": 1.3733142638245321e-08,
+    "category": "values",
+    "row": [
+      19,
+      0.9947744473451168,
+      -678.2936063218216,
+      -690.7755278982034,
+      -1.0000000000102431e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "betapr",
+    "function": "p",
+    "input": 1.0052530024960225,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      100000000.0,
+      1.0
+    ],
+    "actual": 9.99999986277113e-301,
+    "expected": 1.0000000000028659e-300,
+    "error": 1.372575295378571e-08,
+    "category": "values",
+    "row": [
+      19,
+      1.0052530024960225,
+      -678.304084829041,
+      -1.0000000000028462e-300,
+      -690.7755278982108
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "d",
+    "input": 99629986.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -696.3688373418045,
+    "expected": -696.3688404012099,
+    "error": 4.393369261178842e-09,
+    "category": "values",
+    "row": [
+      10,
+      99629986.0,
+      -696.3688404012099,
+      -690.772030096084,
+      -1.0035039265781959e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "p",
+    "input": 99629986.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": 1.0035039252607448e-300,
+    "expected": 1.0035039265782007e-300,
+    "error": 1.3128556913724316e-09,
+    "category": "values",
+    "row": [
+      10,
+      99629986.0,
+      -696.3688404012099,
+      -690.772030096084,
+      -1.0035039265781959e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "d",
+    "input": 99787415.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -236.40875174276496,
+    "expected": -236.40874875658747,
+    "error": 1.2631417016731594e-08,
+    "category": "values",
+    "row": [
+      10,
+      99787415.0,
+      -236.40874875658747,
+      -230.25841961743,
+      -1.0000896859960955e-100
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "p",
+    "input": 99787415.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": 1.000089672322421e-100,
+    "expected": 1.0000896859961094e-100,
+    "error": 1.3672462169977414e-08,
+    "category": "values",
+    "row": [
+      10,
+      99787415.0,
+      -236.40874875658747,
+      -230.25841961743,
+      -1.0000896859960955e-100
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "d",
+    "input": 99885403.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -75.84012563185107,
+    "expected": -75.84012851972297,
+    "error": 3.807841517534137e-08,
+    "category": "values",
+    "row": [
+      10,
+      99885403.0,
+      -75.84012851972297,
+      -69.07665556743049,
+      -1.0008976250152939e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "p",
+    "input": 99885403.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": 1.0008976214971113e-30,
+    "expected": 1.0008976250152928e-30,
+    "error": 3.515026374566208e-09,
+    "category": "values",
+    "row": [
+      10,
+      99885403.0,
+      -75.84012851972297,
+      -69.07665556743049,
+      -1.0008976250152939e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "d",
+    "input": 100114683.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -75.84172829425978,
+    "expected": -75.84171568402695,
+    "error": 1.6627040561738975e-07,
+    "category": "values",
+    "row": [
+      10,
+      100114683.0,
+      -75.84171568402695,
+      -9.996832067290775e-31,
+      -69.07786963328188
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "p",
+    "input": 100114683.0,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": 9.996832089948803e-31,
+    "expected": 9.996832067290807e-31,
+    "error": 2.2665176166647175e-09,
+    "category": "values",
+    "row": [
+      10,
+      100114683.0,
+      -75.84171568402695,
+      -9.996832067290775e-31,
+      -69.07786963328188
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "d",
+    "input": 100212885.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -236.41150000655173,
+    "expected": -236.4114977656929,
+    "error": 9.478637269253905e-09,
+    "category": "values",
+    "row": [
+      10,
+      100212885.0,
+      -236.4114977656929,
+      -9.980472090389494e-101,
+      -230.2604639995478
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "p",
+    "input": 100212885.0,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": 9.98047196908893e-101,
+    "expected": 9.98047209038936e-101,
+    "error": 1.215377667232737e-08,
+    "category": "values",
+    "row": [
+      10,
+      100212885.0,
+      -236.4114977656929,
+      -9.980472090389494e-101,
+      -230.2604639995478
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "dgamma",
+    "function": "d",
+    "input": 100370928.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -696.3762855775869,
+    "expected": -696.3762835087502,
+    "error": 2.970860355332451e-09,
+    "category": "values",
+    "row": [
+      10,
+      100370928.0,
+      -696.3762835087502,
+      -9.972887529655364e-301,
+      -690.7782428273352
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "fpareto",
+    "function": "p",
+    "input": 8.140316400604613e-17,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      0.0001414213562373095,
+      100000000.0,
+      1.0,
+      0.0
+    ],
+    "actual": 9.99999986277113e-301,
+    "expected": 1.0000000000000237e-300,
+    "error": 1.3722910805712196e-08,
+    "category": "values",
+    "row": [
+      26,
+      8.140316400604613e-17,
+      -650.1154948253474,
+      -690.7755278982137,
+      -9.999999999999999e-301
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "fpareto",
+    "function": "p",
+    "input": 1.2284534786949142e+16,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      0.0001414213562373095,
+      100000000.0,
+      1.0,
+      0.0
+    ],
+    "actual": 9.99999986277113e-301,
+    "expected": 1.0000000000000237e-300,
+    "error": 1.3722910805712196e-08,
+    "category": "values",
+    "row": [
+      26,
+      1.2284534786949142e+16,
+      -724.2097298889206,
+      -1.0000000000000015e-300,
+      -690.7755278982137
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "gb2",
+    "function": "p",
+    "input": 8.140316400604613e-17,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      0.0001414213562373095,
+      100000000.0,
+      1.0
+    ],
+    "actual": 9.99999986277113e-301,
+    "expected": 1.0000000000000237e-300,
+    "error": 1.3722910805712196e-08,
+    "category": "values",
+    "row": [
+      25,
+      8.140316400604613e-17,
+      -650.1154948253474,
+      -690.7755278982137,
+      -9.999999999999999e-301
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "gb2",
+    "function": "p",
+    "input": 1.2284534786949142e+16,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      0.0001414213562373095,
+      100000000.0,
+      1.0
+    ],
+    "actual": 9.99999986277113e-301,
+    "expected": 1.0000000000000237e-300,
+    "error": 1.3722910805712196e-08,
+    "category": "values",
+    "row": [
+      25,
+      1.2284534786949142e+16,
+      -724.2097298889206,
+      -1.0000000000000015e-300,
+      -690.7755278982137
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": -1732.0508688505893,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -672.6182663017332,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508688505893,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -690.7755211554064,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508688505893,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -1.000006742830028e-300,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508688505893,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.000006742830029e-300,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508688505893,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": -1732.050858671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -213.2732951964537,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.050858671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -230.25851185321952,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.050858671529,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999974461883072e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.050858671529,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 9.999974461883127e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.050858671529,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": -1732.0508456173109,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -53.583220577310954,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508456173109,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -69.07755223285577,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508456173109,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -1.000000556965765e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508456173109,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.00000055696576e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508456173109,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": -1732.0508279516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -14.058657311119775,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508279516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -27.631021147943205,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508279516423,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999999679858422e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508279516423,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 9.999999679853438e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.0508279516423,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": -1732.047343467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -8.150208603876138,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.047343467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -13.815510557936658,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.047343467262,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -1.00000050002795e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.047343467262,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000000000276158e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -1732.047343467262,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": 1732.047343467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -8.150208603876138,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.047343467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -1.00000050002795e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.047343467262,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -13.815510557936658,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.047343467262,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.047343467262,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000000000276158e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": 1732.0508279516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -14.058657311119775,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508279516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999999679858422e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508279516423,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -27.631021147943205,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508279516423,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508279516423,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 9.999999679853438e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": 1732.0508456173109,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -53.583220577310954,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508456173109,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -1.000000556965765e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508456173109,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -69.07755223285577,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508456173109,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508456173109,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.00000055696576e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": 1732.050858671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -213.2732951964537,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.050858671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999974461883072e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.050858671529,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -230.25851185321952,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.050858671529,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.050858671529,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 9.999974461883127e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": 1732.0508688505893,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -672.6182663017332,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508688505893,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -1.000006742830028e-300,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508688505893,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -690.7755211554064,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508688505893,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 1732.0508688505893,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.000006742830029e-300,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      15,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": -273205086.88505894,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -684.131201491528,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205086.88505894,
+      -684.131201491528,
+      -690.7755308948446,
+      -9.999970033736401e-301
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205086.88505894,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -690.7755308948446,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205086.88505894,
+      -684.131201491528,
+      -690.7755308948446,
+      -9.999970033736401e-301
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205086.88505894,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999970033736401e-301,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205086.88505894,
+      -684.131201491528,
+      -690.7755308948446,
+      -9.999970033736401e-301
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205086.88505894,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205086.88505894,
+      -684.131201491528,
+      -690.7755308948446,
+      -9.999970033736401e-301
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": -273205085.8671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -224.78622492499747,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205085.8671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -230.25851613747864,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205085.8671529,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999931619493228e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205085.8671529,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 9.999931619493113e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205085.8671529,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": -273205084.5617311,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -65.09614672973696,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205084.5617311,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -69.0775529351298,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205084.5617311,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999998546915797e-31,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205084.5617311,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 9.999998546915792e-31,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205084.5617311,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": -273205082.7951642,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -25.571582755886467,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205082.7951642,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -27.631021124721865,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205082.7951642,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999999912071824e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205082.7951642,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 9.99999991206683e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273205082.7951642,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": -273204734.3467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -19.663134068846364,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273204734.3467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -13.815510557889882,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273204734.3467262,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -1.0000005000747255e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273204734.3467262,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000000000743925e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": -273204734.3467262,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": 73204734.34672621,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -19.663134068846364,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73204734.34672621,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -1.0000004999886937e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73204734.34672621,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -13.815510557975914,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73204734.34672621,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73204734.34672621,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 9.9999999998836e-07,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": 73205082.79516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -25.571582755886467,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205082.79516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999999912071824e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205082.79516423,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -27.631021124721865,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205082.79516423,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205082.79516423,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 9.99999991206683e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": 73205084.5617311,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -65.09614672973696,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205084.5617311,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999998546915797e-31,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205084.5617311,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -69.0775529351298,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205084.5617311,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205084.5617311,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 9.999998546915792e-31,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": 73205085.8671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -224.78621786614656,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205085.8671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -1.0000002550242648e-100,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205085.8671529,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -230.25850904438033,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205085.8671529,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205085.8671529,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000002550242686e-100,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "d",
+    "input": 73205086.88505894,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -684.131201491528,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205086.88505894,
+      -684.131201491528,
+      -9.999970033736401e-301,
+      -690.7755308948446
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205086.88505894,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -9.999970033736401e-301,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205086.88505894,
+      -684.131201491528,
+      -9.999970033736401e-301,
+      -690.7755308948446
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205086.88505894,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": -690.7755308948446,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205086.88505894,
+      -684.131201491528,
+      -9.999970033736401e-301,
+      -690.7755308948446
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "ged",
+    "function": "p",
+    "input": 73205086.88505894,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      16,
+      73205086.88505894,
+      -684.131201491528,
+      -9.999970033736401e-301,
+      -690.7755308948446
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -1732.0508688505893,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -672.6182663017332,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508688505893,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -690.7755211554064,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508688505893,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -1.000006742830028e-300,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508688505893,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.000006742830029e-300,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508688505893,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -1732.050858671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -213.2732951964537,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.050858671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -230.25851185321952,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.050858671529,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999974461883072e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.050858671529,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 9.999974461883127e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.050858671529,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -1732.0508456173109,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -53.583220577310954,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508456173109,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -69.07755223285577,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508456173109,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -1.000000556965765e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508456173109,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.00000055696576e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508456173109,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -1732.0508279516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -14.058657311119775,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508279516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -27.631021147943205,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508279516423,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999999679858422e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508279516423,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 9.999999679853438e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.0508279516423,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -1732.047343467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -8.150208603876138,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.047343467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -13.815510557936658,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.047343467262,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -1.00000050002795e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.047343467262,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000000000276158e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1732.047343467262,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 1732.047343467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -8.150208603876138,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.047343467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -1.00000050002795e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.047343467262,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -13.815510557936658,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.047343467262,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.047343467262,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000000000276158e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 1732.0508279516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -14.058657311119775,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508279516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999999679858422e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508279516423,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -27.631021147943205,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508279516423,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508279516423,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 9.999999679853438e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 1732.0508456173109,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -53.583220577310954,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508456173109,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -1.000000556965765e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508456173109,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -69.07755223285577,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508456173109,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508456173109,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.00000055696576e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 1732.050858671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -213.2732951964537,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.050858671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999974461883072e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.050858671529,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -230.25851185321952,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.050858671529,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.050858671529,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 9.999974461883127e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 1732.0508688505893,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -672.6182663017332,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508688505893,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -1.000006742830028e-300,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508688505893,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -690.7755211554064,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508688505893,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1732.0508688505893,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.000006742830029e-300,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      20,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -273205086.88505894,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -684.131201491528,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205086.88505894,
+      -684.131201491528,
+      -690.7755308948446,
+      -9.999970033736401e-301
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205086.88505894,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -690.7755308948446,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205086.88505894,
+      -684.131201491528,
+      -690.7755308948446,
+      -9.999970033736401e-301
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205086.88505894,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999970033736401e-301,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205086.88505894,
+      -684.131201491528,
+      -690.7755308948446,
+      -9.999970033736401e-301
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205086.88505894,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205086.88505894,
+      -684.131201491528,
+      -690.7755308948446,
+      -9.999970033736401e-301
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -273205085.8671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -224.78622492499747,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205085.8671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -230.25851613747864,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205085.8671529,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999931619493228e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205085.8671529,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 9.999931619493113e-101,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205085.8671529,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -273205084.5617311,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -65.09614672973696,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205084.5617311,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -69.0775529351298,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205084.5617311,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999998546915797e-31,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205084.5617311,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 9.999998546915792e-31,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205084.5617311,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -273205082.7951642,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -25.571582755886467,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205082.7951642,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -27.631021124721865,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205082.7951642,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999999912071824e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205082.7951642,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 9.99999991206683e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273205082.7951642,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -273204734.3467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -19.663134068846364,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273204734.3467262,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -13.815510557889882,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273204734.3467262,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -1.0000005000747255e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273204734.3467262,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000000000743925e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -273204734.3467262,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 73204734.34672621,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -19.663134068846364,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73204734.34672621,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -1.0000004999886937e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73204734.34672621,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -13.815510557975914,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73204734.34672621,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73204734.34672621,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 9.9999999998836e-07,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 73205082.79516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -25.571582755886467,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205082.79516423,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999999912071824e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205082.79516423,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -27.631021124721865,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205082.79516423,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 0.999999999999,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205082.79516423,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 9.99999991206683e-13,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 73205084.5617311,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -65.09614672973696,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205084.5617311,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999998546915797e-31,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205084.5617311,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -69.0775529351298,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205084.5617311,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205084.5617311,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 9.999998546915792e-31,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 73205085.8671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -224.78621786614656,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205085.8671529,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -1.0000002550242648e-100,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205085.8671529,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -230.25850904438033,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205085.8671529,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205085.8671529,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000002550242686e-100,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 73205086.88505894,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -684.131201491528,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205086.88505894,
+      -684.131201491528,
+      -9.999970033736401e-301,
+      -690.7755308948446
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205086.88505894,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -9.999970033736401e-301,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205086.88505894,
+      -684.131201491528,
+      -9.999970033736401e-301,
+      -690.7755308948446
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205086.88505894,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": -690.7755308948446,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205086.88505894,
+      -684.131201491528,
+      -9.999970033736401e-301,
+      -690.7755308948446
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 73205086.88505894,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      -100000000.0,
+      100000000.0,
+      200000000.0,
+      1.0
+    ],
+    "actual": NaN,
+    "expected": 1.0,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      73205086.88505894,
+      -684.131201491528,
+      -9.999970033736401e-301,
+      -690.7755308948446
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 1.732047343467261,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": -1.2424533248939997,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.732047343467261,
+      -1.2424533248939997,
+      -1.0000005000138918e-06,
+      -13.815510557950716
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1.732047343467261,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": -13.815510557950716,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.732047343467261,
+      -1.2424533248939997,
+      -1.0000005000138918e-06,
+      -13.815510557950716
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1.732047343467261,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000000000135576e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.732047343467261,
+      -1.2424533248939997,
+      -1.0000005000138918e-06,
+      -13.815510557950716
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 1.732050895598884,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": -8.370175752767375,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.732050895598884,
+      -8.370175752767375,
+      -1.0000000018462156e-12,
+      -27.63102111408283
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1.732050895598884,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": -27.63102111408283,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.732050895598884,
+      -8.370175752767375,
+      -1.0000000018462156e-12,
+      -27.63102111408283
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1.732050895598884,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000000018457174e-12,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.732050895598884,
+      -8.370175752767375,
+      -1.0000000018462156e-12,
+      -27.63102111408283
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 1.7320509607824615,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": -48.03292013031212,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.7320509607824615,
+      -48.03292013031212,
+      -1.0000001027916492e-30,
+      -69.07755268702972
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1.7320509607824615,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": -69.07755268702972,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.7320509607824615,
+      -48.03292013031212,
+      -1.0000001027916492e-30,
+      -69.07755268702972
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1.7320509607824615,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.000000102791653e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.7320509607824615,
+      -48.03292013031212,
+      -1.0000001027916492e-30,
+      -69.07755268702972
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 1.7320510122116959,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": -207.7451604280846,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.7320510122116959,
+      -207.7451604280846,
+      -1.0000001309725457e-100,
+      -230.25850916843203
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1.7320510122116959,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": -230.25850916843203,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.7320510122116959,
+      -207.7451604280846,
+      -1.0000001309725457e-100,
+      -230.25850916843203
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1.7320510122116959,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000001309725495e-100,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.7320510122116959,
+      -207.7451604280846,
+      -1.0000001309725457e-100,
+      -230.25850916843203
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": 1.732051052767818,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": -667.0947331846743,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.732051052767818,
+      -667.0947331846743,
+      -1.000001055413354e-300,
+      -690.7755268428009
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1.732051052767818,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": -690.7755268428009,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.732051052767818,
+      -667.0947331846743,
+      -1.000001055413354e-300,
+      -690.7755268428009
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": 1.732051052767818,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.0000010554133618e-300,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.732051052767818,
+      -667.0947331846743,
+      -1.000001055413354e-300,
+      -690.7755268428009
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -1.732051052767818,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": -667.0947331846743,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.732051052767818,
+      -667.0947331846743,
+      -690.7755268428009,
+      -1.000001055413354e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1.732051052767818,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": -690.7755268428009,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.732051052767818,
+      -667.0947331846743,
+      -690.7755268428009,
+      -1.000001055413354e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1.732051052767818,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": 1.0000010554133618e-300,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.732051052767818,
+      -667.0947331846743,
+      -690.7755268428009,
+      -1.000001055413354e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -1.7320510122116959,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": -207.7451604280846,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.7320510122116959,
+      -207.7451604280846,
+      -230.25850916843203,
+      -1.0000001309725457e-100
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1.7320510122116959,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": -230.25850916843203,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.7320510122116959,
+      -207.7451604280846,
+      -230.25850916843203,
+      -1.0000001309725457e-100
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1.7320510122116959,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": 1.0000001309725495e-100,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.7320510122116959,
+      -207.7451604280846,
+      -230.25850916843203,
+      -1.0000001309725457e-100
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -1.7320509607824615,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": -48.03292013031212,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.7320509607824615,
+      -48.03292013031212,
+      -69.07755268702972,
+      -1.0000001027916492e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1.7320509607824615,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": -69.07755268702972,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.7320509607824615,
+      -48.03292013031212,
+      -69.07755268702972,
+      -1.0000001027916492e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1.7320509607824615,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": 1.000000102791653e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.7320509607824615,
+      -48.03292013031212,
+      -69.07755268702972,
+      -1.0000001027916492e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -1.732050895598884,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": -8.370175752767375,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.732050895598884,
+      -8.370175752767375,
+      -27.63102111408283,
+      -1.0000000018462156e-12
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1.732050895598884,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": -27.63102111408283,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.732050895598884,
+      -8.370175752767375,
+      -27.63102111408283,
+      -1.0000000018462156e-12
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1.732050895598884,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": 1.0000000018457174e-12,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.732050895598884,
+      -8.370175752767375,
+      -27.63102111408283,
+      -1.0000000018462156e-12
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "d",
+    "input": -1.732047343467261,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": -1.2424533248939997,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.732047343467261,
+      -1.2424533248939997,
+      -13.815510557950716,
+      -1.0000005000138918e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1.732047343467261,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": -13.815510557950716,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.732047343467261,
+      -1.2424533248939997,
+      -13.815510557950716,
+      -1.0000005000138918e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "p",
+    "input": -1.732047343467261,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": 1.0000000000135576e-06,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      23,
+      -1.732047343467261,
+      -1.2424533248939997,
+      -13.815510557950716,
+      -1.0000005000138918e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "q",
+    "input": -0.6931471805599453,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": -5.662441253662105e-15,
+    "expected": -2.447438646570303e-16,
+    "error": 22.136192858591645,
+    "category": "quantiles",
+    "row": [
+      22,
+      1,
+      1,
+      -0.6931471805599453,
+      -2.447438646570303e-16,
+      -2.4474386465703035e-16,
+      -2.447438646570303e-16,
+      0,
+      0.0
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "q",
+    "input": 0.5,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": -5.662441253662105e-15,
+    "expected": -2.8491093372415545e-16,
+    "error": 18.874425946546356,
+    "category": "quantiles",
+    "row": [
+      22,
+      1,
+      0,
+      0.5,
+      -2.8491093372415545e-16,
+      -2.849109337241555e-16,
+      -2.8491093372415545e-16,
+      0,
+      0.0
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "q",
+    "input": -0.6931471805599453,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": -5.662441253662105e-15,
+    "expected": -3.250780027912806e-16,
+    "error": 16.41871552378685,
+    "category": "quantiles",
+    "row": [
+      22,
+      0,
+      1,
+      -0.6931471805599453,
+      -3.250780027912806e-16,
+      -3.250780027912806e-16,
+      -3.2507800279128054e-16,
+      0,
+      0.0
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "q",
+    "input": 0.5,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": -5.662441253662105e-15,
+    "expected": -2.8491093372415545e-16,
+    "error": 18.874425946546356,
+    "category": "quantiles",
+    "row": [
+      22,
+      0,
+      0,
+      0.5,
+      -2.8491093372415545e-16,
+      -2.849109337241555e-16,
+      -2.8491093372415545e-16,
+      0,
+      0.0
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "q",
+    "input": -0.6931471805599453,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": 5.662441253662105e-15,
+    "expected": 3.250780027912806e-16,
+    "error": 16.41871552378685,
+    "category": "quantiles",
+    "row": [
+      23,
+      1,
+      1,
+      -0.6931471805599453,
+      3.250780027912806e-16,
+      3.2507800279128054e-16,
+      3.250780027912806e-16,
+      0,
+      0.0
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "q",
+    "input": 0.5,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": 5.662441253662105e-15,
+    "expected": 2.8491093372415545e-16,
+    "error": 18.874425946546356,
+    "category": "quantiles",
+    "row": [
+      23,
+      1,
+      0,
+      0.5,
+      2.8491093372415545e-16,
+      2.8491093372415545e-16,
+      2.849109337241555e-16,
+      0,
+      0.0
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "q",
+    "input": -0.6931471805599453,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": 5.662441253662105e-15,
+    "expected": 2.447438646570303e-16,
+    "error": 22.136192858591645,
+    "category": "quantiles",
+    "row": [
+      23,
+      0,
+      1,
+      -0.6931471805599453,
+      2.447438646570303e-16,
+      2.447438646570303e-16,
+      2.4474386465703035e-16,
+      0,
+      0.0
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sged",
+    "function": "q",
+    "input": 0.5,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": 5.662441253662105e-15,
+    "expected": 2.8491093372415545e-16,
+    "error": 18.874425946546356,
+    "category": "quantiles",
+    "row": [
+      23,
+      0,
+      0,
+      0.5,
+      2.8491093372415545e-16,
+      2.8491093372415545e-16,
+      2.849109337241555e-16,
+      0,
+      0.0
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": 99629757.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -690.7725105870646,
+    "expected": -690.7725106717877,
+    "error": 1.226497408916298e-10,
+    "category": "values",
+    "row": [
+      12,
+      99629757.0,
+      -696.3705538160286,
+      -690.7725106717877,
+      -1.0030217828350556e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": 99629757.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": 1.0030217673312527e-300,
+    "expected": 1.0030217828350785e-300,
+    "error": 1.5457117726600828e-08,
+    "category": "values",
+    "row": [
+      12,
+      99629757.0,
+      -696.3705538160286,
+      -690.7725106717877,
+      -1.0030217828350556e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 99787340.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -236.40792186435854,
+    "expected": -236.40792191833506,
+    "error": 2.2831942598441712e-10,
+    "category": "values",
+    "row": [
+      12,
+      99787340.0,
+      -236.40792191833506,
+      -230.25688084574486,
+      -1.0016297803104148e-100
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": 99787340.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": 1.0016297648196144e-100,
+    "expected": 1.0016297803104016e-100,
+    "error": 1.5465581744016224e-08,
+    "category": "values",
+    "row": [
+      12,
+      99787340.0,
+      -236.40792191833506,
+      -230.25688084574486,
+      -1.0016297803104148e-100
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 99885380.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -75.84139170188114,
+    "expected": -75.8413918413906,
+    "error": 1.8394898050064569e-09,
+    "category": "values",
+    "row": [
+      12,
+      99885380.0,
+      -75.8413918413906,
+      -69.07754352011615,
+      -1.0000092697481875e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": 99885380.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": 1.0000092638927631e-30,
+    "expected": 1.000009269748183e-30,
+    "error": 5.85536559273841e-09,
+    "category": "values",
+    "row": [
+      12,
+      99885380.0,
+      -75.8413918413906,
+      -69.07754352011615,
+      -1.0000092697481875e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 99929662.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -34.87119627325028,
+    "expected": -34.871196369988155,
+    "error": 2.774148530094894e-09,
+    "category": "values",
+    "row": [
+      12,
+      99929662.0,
+      -34.871196369988155,
+      -27.630836451397055,
+      -1.0001846815835383e-12
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 99952468.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -21.42681098215936,
+    "expected": -21.426811014331403,
+    "error": 1.5014853487095862e-09,
+    "category": "values",
+    "row": [
+      12,
+      99952468.0,
+      -21.426811014331403,
+      -13.81543929582933,
+      -1.00007176474575e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 99976736.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -12.835208173155104,
+    "expected": -12.835208244359283,
+    "error": 5.54756706690929e-09,
+    "category": "values",
+    "row": [
+      12,
+      99976736.0,
+      -12.835208244359283,
+      -4.605105278711726,
+      -0.010050991504048591
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 99993254.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -10.356725280551684,
+    "expected": -10.356725422174424,
+    "error": 1.3674470880397499e-08,
+    "category": "values",
+    "row": [
+      12,
+      99993254.0,
+      -10.356725422174424,
+      -1.3862322826814002,
+      -0.28770276612102563
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 100006744.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -10.356782629369526,
+    "expected": -10.356782643374665,
+    "error": 1.352267288461824e-09,
+    "category": "values",
+    "row": [
+      12,
+      100006744.0,
+      -10.356782643374665,
+      -0.2876526985175795,
+      -1.3863824880998177
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 100023263.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -12.835253688496188,
+    "expected": -12.835253848245522,
+    "error": 1.2446137462495117e-08,
+    "category": "values",
+    "row": [
+      12,
+      100023263.0,
+      -12.835253848245522,
+      -0.010049566388067676,
+      -4.605246365996965
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 100047537.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -21.427033410591264,
+    "expected": -21.427033588844257,
+    "error": 8.319070022997387e-09,
+    "category": "values",
+    "row": [
+      12,
+      100047537.0,
+      -21.427033588844257,
+      -9.9967516866589e-07,
+      -13.815835941905052
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 100070352.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -34.87155174432843,
+    "expected": -34.87155180218387,
+    "error": 1.6591015280176852e-09,
+    "category": "values",
+    "row": [
+      12,
+      100070352.0,
+      -34.87155180218387,
+      -9.995833537914922e-13,
+      -27.631437848958704
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": 100114661.0,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -69.0781501166929,
+    "expected": -69.07815010802855,
+    "error": 1.254281403809182e-10,
+    "category": "values",
+    "row": [
+      12,
+      100114661.0,
+      -75.84161178032349,
+      -9.994028601518263e-31,
+      -69.07815010802855
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": 100114661.0,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": 9.9940285149266e-31,
+    "expected": 9.994028601518244e-31,
+    "error": 8.664338284242485e-09,
+    "category": "values",
+    "row": [
+      12,
+      100114661.0,
+      -75.84161178032349,
+      -9.994028601518263e-31,
+      -69.07815010802855
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": 100212809.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -236.410361281402,
+    "expected": -236.4103614432449,
+    "error": 6.84584653192072e-10,
+    "category": "values",
+    "row": [
+      12,
+      100212809.0,
+      -236.4103614432449,
+      -9.984740519968996e-101,
+      -230.2600364128521
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": 100212809.0,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": 9.984740460074132e-101,
+    "expected": 9.984740519968904e-101,
+    "error": 5.998630855941545e-09,
+    "category": "values",
+    "row": [
+      12,
+      100212809.0,
+      -236.4103614432449,
+      -9.984740519968996e-101,
+      -230.2600364128521
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": 100370698.0,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "actual": -690.7756188579917,
+    "expected": -690.7756189436923,
+    "error": 1.2406423522986497e-10,
+    "category": "values",
+    "row": [
+      12,
+      100370698.0,
+      -696.3724249254567,
+      -9.999089586659145e-301,
+      -690.7756189436923
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": -100370698.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -690.771916028568,
+    "expected": -690.7719161139925,
+    "error": 1.2366530144749082e-10,
+    "category": "values",
+    "row": [
+      13,
+      -100370698.0,
+      -696.3724249254567,
+      -690.7719161139925,
+      -1.0036183145735257e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": -100370698.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": 1.0036183213059304e-300,
+    "expected": 1.0036183145735824e-300,
+    "error": 6.708076027583612e-09,
+    "category": "values",
+    "row": [
+      13,
+      -100370698.0,
+      -696.3724249254567,
+      -690.7719161139925,
+      -1.0036183145735257e-300
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -100212809.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -236.410361281402,
+    "expected": -236.4103614432449,
+    "error": 6.84584653192072e-10,
+    "category": "values",
+    "row": [
+      13,
+      -100212809.0,
+      -236.4103614432449,
+      -230.25790589558034,
+      -1.0006035859089475e-100
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": -100212809.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": 1.0006035797240056e-100,
+    "expected": 1.0006035859089415e-100,
+    "error": 6.181205071205494e-09,
+    "category": "values",
+    "row": [
+      13,
+      -100212809.0,
+      -236.4103614432449,
+      -230.25790589558034,
+      -1.0006035859089475e-100
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": -100114661.0,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": 1.0005573924221726e-30,
+    "expected": 1.0005573935619956e-30,
+    "error": 1.1391880261401467e-09,
+    "category": "values",
+    "row": [
+      13,
+      -100114661.0,
+      -75.84161178032349,
+      -69.07699555154547,
+      -1.0005573935620016e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -100070352.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -34.87155174432843,
+    "expected": -34.87155180218387,
+    "error": 1.6591015280176852e-09,
+    "category": "values",
+    "row": [
+      13,
+      -100070352.0,
+      -34.87155180218387,
+      -27.63072087602046,
+      -1.0003002849851e-12
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -100047537.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -21.427033410591264,
+    "expected": -21.427033588844257,
+    "error": 8.319070022997387e-09,
+    "category": "values",
+    "row": [
+      13,
+      -100047537.0,
+      -21.427033588844257,
+      -13.815341185503865,
+      -1.0001698869744688e-06
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -100023263.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -12.835253688496188,
+    "expected": -12.835253848245522,
+    "error": 1.2446137462495117e-08,
+    "category": "values",
+    "row": [
+      13,
+      -100023263.0,
+      -12.835253848245522,
+      -4.604979867174962,
+      -0.010052258450550678
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -100006744.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -10.356782629369526,
+    "expected": -10.356782643374665,
+    "error": 1.352267288461824e-09,
+    "category": "values",
+    "row": [
+      13,
+      -100006744.0,
+      -10.356782643374665,
+      -1.3862553788632266,
+      -0.28769506687503543
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -99993254.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -10.356725280551684,
+    "expected": -10.356725422174424,
+    "error": 1.3674470880397499e-08,
+    "category": "values",
+    "row": [
+      13,
+      -99993254.0,
+      -10.356725422174424,
+      -0.28766039501296603,
+      -1.3863593962559462
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -99976736.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -12.835208173155104,
+    "expected": -12.835208244359283,
+    "error": 5.54756706690929e-09,
+    "category": "values",
+    "row": [
+      13,
+      -99976736.0,
+      -12.835208244359283,
+      -0.010048299322205292,
+      -4.60537182311911
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -99952468.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -21.42681098215936,
+    "expected": -21.426811014331403,
+    "error": 1.5014853487095862e-09,
+    "category": "values",
+    "row": [
+      13,
+      -99952468.0,
+      -21.426811014331403,
+      -9.995769363132784e-07,
+      -13.815934210956112
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -99929662.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -34.87119627325028,
+    "expected": -34.871196369988155,
+    "error": 2.774148530094894e-09,
+    "category": "values",
+    "row": [
+      13,
+      -99929662.0,
+      -34.871196369988155,
+      -9.99467495524211e-13,
+      -27.631553762235697
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -99885380.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -75.84139170188114,
+    "expected": -75.8413918413906,
+    "error": 1.8394898050064569e-09,
+    "category": "values",
+    "row": [
+      13,
+      -99885380.0,
+      -75.8413918413906,
+      -9.988544823832399e-31,
+      -69.07869896404492
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": -99885380.0,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": 9.988544782013409e-31,
+    "expected": 9.988544823832422e-31,
+    "error": 4.186697248381694e-09,
+    "category": "values",
+    "row": [
+      13,
+      -99885380.0,
+      -75.8413918413906,
+      -9.988544823832399e-31,
+      -69.07869896404492
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "d",
+    "input": -99787340.0,
+    "lower": true,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -236.40792186435854,
+    "expected": -236.40792191833506,
+    "error": 2.2831942598441712e-10,
+    "category": "values",
+    "row": [
+      13,
+      -99787340.0,
+      -236.40792191833506,
+      -9.99495045005458e-101,
+      -230.25901438193182
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": -99787340.0,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": 9.994950359873485e-101,
+    "expected": 9.994950450054556e-101,
+    "error": 9.022663092247962e-09,
+    "category": "values",
+    "row": [
+      13,
+      -99787340.0,
+      -236.40792191833506,
+      -9.99495045005458e-101,
+      -230.25901438193182
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "skellam",
+    "function": "p",
+    "input": -99629757.0,
+    "lower": false,
+    "log": true,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "actual": -690.7762225746192,
+    "expected": -690.7762226596853,
+    "error": 1.2314577939244952e-10,
+    "category": "values",
+    "row": [
+      13,
+      -99629757.0,
+      -696.3705538160286,
+      -9.993054798192605e-301,
+      -690.7762226596853
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sstd",
+    "function": "p",
+    "input": -1.3236080876822984,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": 1.9489868132596592e-295,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -1.3236080876822984,
+      -638.6836065454883,
+      -678.5952927786416,
+      -1.9489868132596768e-295
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sstd",
+    "function": "p",
+    "input": -1.3236080876822958,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": 4.958509696162019e-102,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -1.3236080876822958,
+      -193.9463233966304,
+      -233.26257425428778,
+      -4.9585096961619624e-102
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sstd",
+    "function": "p",
+    "input": -1.3236080876822938,
+    "lower": true,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "actual": NaN,
+    "expected": 2.714793090254749e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      21,
+      -1.3236080876822938,
+      -29.697429051341533,
+      -68.07883704919051,
+      -2.7147930902547503e-30
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sstd",
+    "function": "p",
+    "input": 1.3236080876822938,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": 2.714793090254749e-30,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.3236080876822938,
+      -29.69742905134153,
+      -2.7147930902547562e-30,
+      -68.07883704919051
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sstd",
+    "function": "p",
+    "input": 1.3236080876822958,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": 4.958509696162019e-102,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.3236080876822958,
+      -193.94632339663036,
+      -4.9585096961620386e-102,
+      -233.26257425428778
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  },
+  {
+    "family": "sstd",
+    "function": "p",
+    "input": 1.3236080876822984,
+    "lower": false,
+    "log": false,
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      1e-08
+    ],
+    "actual": NaN,
+    "expected": 1.9489868132598809e-295,
+    "error": Infinity,
+    "category": "values",
+    "row": [
+      22,
+      1.3236080876822984,
+      -638.6836065454881,
+      -1.9489868132597779e-295,
+      -678.5952927786415
+    ],
+    "excluded_reason": null,
+    "lattice_ok": null
+  }
+]

@@ -1,0 +1,32 @@
+--- a/dev/validation/quality/truth_reference.py
++++ b/dev/validation/quality/truth_reference.py
+@@ -251,7 +251,7 @@
+         while not below(a): a *= 2
+         while below(b): b *= 2
+         mid=(a+b)/2
+-        for _ in range(220):
++        for _ in range(512):
+             x,jac=self.chart(mid)
+             value=self.tails(x)[0 if lower else 1]
+             if value<lp if lower else value>lp:a=mid
+@@ -269,7 +269,8 @@
+                 if -10000 < log_slope < 10000:
+                     slope=mp.exp(log_slope)*(1 if lower else -1)
+                     newton=mid-residual/slope
+-                    if a<newton<b:candidate=newton
++                    margin=(b-a)/4
++                    if a+margin<newton<b-margin:candidate=newton
+             xa, xb = self.chart(a)[0], self.chart(b)[0]
+             rounded = binary64(xa)
+             # Verification uses unrounded quantiles as integration cuts. Two
+--- a/univariateML-cpp/include/cppunivariate/distributions/skellam/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/skellam/truth.py
+@@ -81,6 +81,8 @@
+         if k==-mp.inf:return -mp.inf,mp.mpf(0)
+         if k==mp.inf:return mp.mpf(0),-mp.inf
+         q=mp.sqrt(B/A)+max(k,0)/A
++        # Termwise positive 0F1 comparison bounds I_(n+1)/I_n.
++        if k<=0:q=min(q,B/(1-k))
+         if q<mp.mpf('.5'):
+             first=mass(k);term=mp.mpf(1);total=term
+             for j in range(10000):

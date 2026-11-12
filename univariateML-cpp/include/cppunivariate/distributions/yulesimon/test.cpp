@@ -92,3 +92,8 @@ TEST_CASE("yulesimon: structured stop payloads") {
 TEST_CASE("yulesimon: quantile search guards and representability") {
   CHECK(cppunivariate::distributions::qyulesimon(.9,.001)==INFINITY);
 }
+
+TEST_CASE("yulesimon: small-shape CDF crosses the finite product boundary accurately") {
+  const double got=cppunivariate::distributions::pyulesimon(33,1e-8,true,false);
+  CHECK(std::abs(got/4.088798134072771e-8-1)<1e-10);
+}

@@ -1,0 +1,31 @@
+{
+  "id": "betapr",
+  "input_sha256": "86dc66dd8f41ebc900bec9ff4cfc113950c7b5613108c7fac785538fdc08f8d6",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 166161,
+    "points": 19,
+    "values": 370,
+    "quantiles": 836
+  },
+  "after": {
+    "bytes": 174860,
+    "points": 20,
+    "values": 391,
+    "quantiles": 880
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 43.89883667603135
+    }
+  ]
+}

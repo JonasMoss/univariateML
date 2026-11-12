@@ -1,0 +1,179 @@
+--- a/univariateML-cpp/include/cppunivariate/distributions/beta/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/beta/truth.py
+@@ -5,11 +5,12 @@
+ import mpmath as mp
+ from quality.truth_reference import beta_normalization, Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+ 
+-def build(t):
++def build(t, logd=None):
+     shape1 = t['shape1']
+     shape2 = t['shape2']
+     ref = Reference(lambda x: beta(shape1,shape2,x), 0, 1)
+ 
++    ref.log_density=logd
+     return beta_normalization(ref,shape1,shape2)
+ 
+ # Joint limit paths supplement the shared one-coordinate extreme grid.
+--- a/univariateML-cpp/include/cppunivariate/distributions/betapr/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/betapr/truth.py
+@@ -5,12 +5,13 @@
+ import mpmath as mp
+ from quality.truth_reference import beta_normalization, Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+ 
+-def build(t):
++def build(t, logd=None):
+     shape1 = t['shape1']
+     shape2 = t['shape2']
+     scale = t['scale']
+     ref = Reference(lambda x: beta(shape1,shape2,x/(scale+x),scale/(scale+x)), 0, mp.inf)
+ 
++    ref.log_density=logd
+     return beta_normalization(ref,shape1,shape2)
+ 
+ # Joint limit paths supplement the shared one-coordinate extreme grid.
+--- a/univariateML-cpp/include/cppunivariate/distributions/gb2/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/gb2/truth.py
+@@ -5,13 +5,14 @@
+ import mpmath as mp
+ from quality.truth_reference import beta_normalization, Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+ 
+-def build(t):
++def build(t, logd=None):
+     shape1 = t['shape1']
+     shape2 = t['shape2']
+     shape3 = t['shape3']
+     scale = t['scale']
+     ref = Reference(lambda x: beta(shape3,shape1,(x/scale)**shape2/(1+(x/scale)**shape2),1/(1+(x/scale)**shape2)), 0, mp.inf)
+ 
++    ref.log_density=logd
+     return beta_normalization(ref,shape3,shape1)
+ 
+ # Joint limit paths supplement the shared one-coordinate extreme grid.
+--- a/univariateML-cpp/include/cppunivariate/distributions/fpareto/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/fpareto/truth.py
+@@ -5,7 +5,7 @@
+ import mpmath as mp
+ from quality.truth_reference import beta_normalization, Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+ 
+-def build(t):
++def build(t, logd=None):
+     shape1 = t['shape1']
+     shape2 = t['shape2']
+     shape3 = t['shape3']
+@@ -13,6 +13,7 @@
+     min = t['min']
+     ref = Reference(lambda x: beta(shape3,shape1,((x-min)/scale)**shape2/(1+((x-min)/scale)**shape2),1/(1+((x-min)/scale)**shape2)), min, mp.inf)
+ 
++    ref.log_density=logd
+     return beta_normalization(ref,shape3,shape1)
+ 
+ # Joint limit paths supplement the shared one-coordinate extreme grid.
+--- a/univariateML-cpp/include/cppunivariate/distributions/ht/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/ht/truth.py
+@@ -5,7 +5,7 @@
+ import mpmath as mp
+ from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+ 
+-def build(t):
++def build(t, logd=None):
+     mu,nu,sigma=t['mu'],t['nu'],t['sigma']
+     def tails(x):
+         z=((x-mu)/sigma)**2
+@@ -15,4 +15,5 @@
+     # C sqrt(nu) B(1/2,nu/2), by z=sqrt(nu)*sqrt(u/(1-u)).
+     C=mp.exp(mp.loggamma((nu+1)/2)-mp.loggamma(nu/2)-mp.log(nu*mp.pi)/2)
+     out.normalization_identity=C*mp.sqrt(nu)*mp.beta(mp.mpf('.5'),nu/2)
++    out.log_density=logd
+     return out
+--- a/univariateML-cpp/include/cppunivariate/distributions/sstd/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/sstd/truth.py
+@@ -5,7 +5,7 @@
+ import mpmath as mp
+ from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+ 
+-def build(t):
++def build(t, logd=None):
+     m,s,xi=t['mean'],t['sd'],t['xi']
+     a=t['nu']
+     m1=mp.gamma((a-1)/2)/mp.gamma(a/2)*mp.sqrt((a-2)/mp.pi)
+@@ -20,6 +20,7 @@
+     # Two stretched half-Student integrals, followed by an affine map.
+     C=mp.exp(mp.loggamma((a+1)/2)-mp.loggamma(a/2)-mp.log(a*mp.pi)/2)
+     out.normalization_identity=C*mp.sqrt(a)*mp.beta(mp.mpf('.5'),a/2)
++    out.log_density=logd
+     return out
+ 
+ 
+--- a/univariateML-cpp/include/cppunivariate/distributions/lst/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/lst/truth.py
+@@ -5,9 +5,15 @@
+ import mpmath as mp
+ from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+ 
+-def build(t):
++def build(t, logd=None):
+     mu = t['mu']
+     sigma = t['sigma']
+     df = t['df']
+-    return Reference(lambda x: student(df,(x-mu)/sigma), -mp.inf, mp.inf)
++    out=Reference(lambda x: student(df,(x-mu)/sigma), -mp.inf, mp.inf)
++    out.log_density=logd
++    degrees=t['df']
++    C=mp.exp(mp.loggamma((degrees+1)/2)-mp.loggamma(degrees/2)-mp.log(degrees*mp.pi)/2)
++    # Complete Student beta integral after the location-scale map.
++    out.normalization_identity=C*mp.sqrt(degrees)*mp.beta(mp.mpf('.5'),degrees/2)
++    return out
+ 
+--- a/univariateML-cpp/include/cppunivariate/distributions/std/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/std/truth.py
+@@ -5,11 +5,17 @@
+ import mpmath as mp
+ from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+ 
+-def build(t):
++def build(t, logd=None):
+     mean = t['mean']
+     sd = t['sd']
+     nu = t['nu']
+-    return Reference(lambda x: student(nu,(x-mean)/sd*mp.sqrt(nu/(nu-2))), -mp.inf, mp.inf)
++    out=Reference(lambda x: student(nu,(x-mean)/sd*mp.sqrt(nu/(nu-2))), -mp.inf, mp.inf)
++    out.log_density=logd
++    degrees=t['nu']
++    C=mp.exp(mp.loggamma((degrees+1)/2)-mp.loggamma(degrees/2)-mp.log(degrees*mp.pi)/2)
++    # Complete Student beta integral after the location-scale map.
++    out.normalization_identity=C*mp.sqrt(degrees)*mp.beta(mp.mpf('.5'),degrees/2)
++    return out
+ 
+ 
+ # Approach nu=2 at fixed ordinary Student scale.
+--- a/dev/validation/quality/truth_reference.py
++++ b/dev/validation/quality/truth_reference.py
+@@ -57,7 +57,7 @@
+         end=min(end*2,limit)
+     else:raise ArithmeticError('gamma tangent tail bound')
+     cuts=sorted(set([mp.mpf(0),end]+[mp.mpf(v) for v in (1,4,16,64) if v<end]))
+-    value,error=mp.quad(lambda v:mp.exp(logkernel(v)),cuts,error=True)
++    value,error=mp.quad(lambda v:mp.exp(logkernel(v)),cuts,method='gauss-legendre',maxdegree=8,error=True)
+     if error>mp.mpf('1e-50')*value:raise ArithmeticError('centered gamma quadrature error')
+     lp=(a-1)*mp.log(z)-z-mp.loggamma(a)+mp.log(width*value)
+     return pair(lp,lower)
+--- a/univariateML-cpp/include/cppunivariate/distributions/frechet/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/frechet/truth.py
+@@ -17,7 +17,6 @@
+     # The endpoint limit is zero for every finite positive shape; bypass
+     # expensive symbolic endpoint limits with million/integer exponents.
+     out.log_density = lambda x: -mp.inf if x == m else mp.log(a/s)-(a+1)*mp.log((x-m)/s)-((x-m)/s)**(-a)
+-    out.quantile = lambda lp, lower: m+s*mp.exp(-mp.log(-(lp if lower else complement(lp)))/a) if lp not in (-mp.inf, 0) else (out.lower if (lp == -mp.inf) == lower else out.upper)
+     return out
+ 
+ 
+--- a/univariateML-cpp/include/cppunivariate/distributions/invweibull/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/invweibull/truth.py
+@@ -12,7 +12,6 @@
+     out.chart = lambda y: (scale*mp.exp(y/shape), mp.log(scale/shape)+y/shape)
+     out.unchart = lambda x: shape*mp.log(x/scale)
+     out.log_density = lambda x: -mp.inf if x == 0 else mp.log(shape/scale)-(shape+1)*mp.log(x/scale)-(x/scale)**(-shape)
+-    out.quantile = lambda lp, lower: scale*mp.exp(-mp.log(-(lp if lower else complement(lp)))/shape) if lp not in (-mp.inf, 0) else (out.lower if (lp == -mp.inf) == lower else out.upper)
+     return out
+ 
+ 

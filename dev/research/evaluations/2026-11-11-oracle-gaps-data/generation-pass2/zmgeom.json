@@ -1,0 +1,30 @@
+{
+  "id": "zmgeom",
+  "input_sha256": "9a61b264d434834397b72b70fee6a648725146a361763abb40526d823c3babf2",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 270675,
+    "points": 11,
+    "values": 1885,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 300352,
+    "points": 12,
+    "values": 2098,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.37684666499262676
+    }
+  ]
+}

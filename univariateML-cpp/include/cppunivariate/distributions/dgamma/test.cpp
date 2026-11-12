@@ -239,3 +239,8 @@ TEST_CASE("dgamma: ordinary starts keep their allowance despite remote shape pro
   CHECK(r.logLik==doctest::Approx(-313.98802931118206).epsilon(1e-10));
   CHECK(r.large_shape_iterations==0);
 }
+
+TEST_CASE("dgamma: concentrating bins retain accurate gamma endpoints") {
+ CHECK(cppunivariate::distributions::ddgamma(99629986,1e8,1,true)==doctest::Approx(-696.3688404012099).epsilon(1e-10));
+ CHECK(cppunivariate::distributions::pdgamma(100114683,1e8,1,false,false)==doctest::Approx(9.996832067290807e-31).epsilon(1e-10).scale(0));
+}

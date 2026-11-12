@@ -1,0 +1,30 @@
+{
+  "id": "gamma",
+  "input_sha256": "c3fe0d06a0a96b9ef8c69627a4c5b2da797f049ab0448677658196e72d8517bb",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 108030,
+    "points": 12,
+    "values": 250,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 114600,
+    "points": 13,
+    "values": 261,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 17.223995259962976
+    }
+  ]
+}

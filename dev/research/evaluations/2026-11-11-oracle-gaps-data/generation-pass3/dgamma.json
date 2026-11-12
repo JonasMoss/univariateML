@@ -1,0 +1,30 @@
+{
+  "id": "dgamma",
+  "input_sha256": "ded060e2d3cb47cbf14763341ce9da4f454812a89417cd7843de3862a2898484",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 277352,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 305070,
+    "points": 11,
+    "values": 2307,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 36.88332039100351
+    }
+  ]
+}

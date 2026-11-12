@@ -1,0 +1,15 @@
+cpp-dev simbox 75
+r-dev simbox 75
+r-full simbox 75
+cpp-double simbox 75
+cpp-dev workstation 0
+r-dev workstation 0
+r-full workstation 0
+cpp-double workstation 0
+site workstation 0
+js workstation 0
+dgamma-cpp-native workstation 0
+dgamma-cpp-double workstation 0
+dgamma-r-full workstation 0
+dgamma-site workstation 0
+dgamma-js workstation 0

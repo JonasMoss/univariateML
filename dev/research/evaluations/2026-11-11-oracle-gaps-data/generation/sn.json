@@ -1,0 +1,51 @@
+{
+  "id": "sn",
+  "input_sha256": "438409d355ecce68a65f310dde436ce9a6931f3a68afc11f6582b6f919889a7f",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 124832,
+    "points": 14,
+    "values": 266,
+    "quantiles": 616
+  },
+  "after": {
+    "bytes": 151402,
+    "points": 17,
+    "values": 323,
+    "quantiles": 748
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 12.652126045024488
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        -1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 20.4259399290313
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 20.545019962009974
+    }
+  ]
+}

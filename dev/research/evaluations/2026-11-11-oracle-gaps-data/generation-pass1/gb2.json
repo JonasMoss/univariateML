@@ -1,0 +1,33 @@
+{
+  "id": "gb2",
+  "input_sha256": "8d32c9eb6b005dd6d925579b187486a2191aeda727f441845c2568c4d1b91041",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 217001,
+    "points": 25,
+    "values": 471,
+    "quantiles": 1100
+  },
+  "after": {
+    "bytes": 216984,
+    "points": 25,
+    "values": 471,
+    "quantiles": 1100
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.0001414213562373095,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 444, in make\n    v = as_double(ref.quantile(mp.log(mp.mpf(u)), lower))\n                  ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 247, in quantile\n    value=self.tails(x)[0 if lower else 1]\n          ~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/gb2/truth.py\", line 13, in <lambda>\n    ref = Reference(lambda x: beta(shape3,shape1,(x/scale)**shape2/(1+(x/scale)**shape2),1/(1+(x/scale)**shape2)), 0, mp.inf)\n                              ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 130, in beta\n    lp=logpref+mp.log(beta_fraction(aa,bb,zz)/aa)\n                      ~~~~~~~~~~~~~^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 115, in beta_fraction\n    d=1/d;delta=d*c;h*=delta\n      ~^~\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/ctx_mp_python.py\", line 205, in __rdiv__\n    v._mpf_ = mpf_rdiv_int(t, s._mpf_, prec, rounding)\n              ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: independent reference exceeded 120 seconds per point\n",
+      "seconds": 120.00307025096845
+    }
+  ]
+}

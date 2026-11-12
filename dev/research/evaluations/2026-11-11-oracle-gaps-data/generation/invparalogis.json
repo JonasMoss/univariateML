@@ -1,0 +1,39 @@
+{
+  "id": "invparalogis",
+  "input_sha256": "56349d56f814a5d5b32938c748d5023e7d94a7e106f5dc4f573ce307efb734ce",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 78220,
+    "points": 9,
+    "values": 180,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 92655,
+    "points": 11,
+    "values": 207,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.19836136599769816
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.14561013103229925
+    }
+  ]
+}

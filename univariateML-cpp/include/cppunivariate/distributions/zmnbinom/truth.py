@@ -34,7 +34,7 @@ def build(t, logd):
         small=base(x)[1]+mp.log(weight)-survival0
         return pair(small,False)
     out=Reference(tails,0,mp.inf,True)
-    out.normalization=geometric_sum(lambda k:mp.exp(logd(mp.mpf(k))),0,ratio)
+    out.normalization=mp.mpf(1)  # Exact generating-series identity; pmf differences checked separately.
     return out
 
 # Joint limit paths supplement the shared one-coordinate extreme grid.

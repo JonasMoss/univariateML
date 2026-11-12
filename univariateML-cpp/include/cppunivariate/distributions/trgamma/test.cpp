@@ -604,3 +604,11 @@ TEST_CASE("trgamma: finite coupled power survives latent log overflow") {
  CHECK(cppunivariate::distributions::qtrgamma(.5,1e-309,1e308,1,true,false)==doctest::Approx(0.0009765625).epsilon(1e-9).scale(0));
  CHECK(cppunivariate::distributions::dtrgamma(1,1e-309,1e308,1,true)==doctest::Approx(-3.302585092994043).epsilon(1e-10));
 }
+
+TEST_CASE("trgamma: unit power retains the physical gamma coordinate") {
+ for (bool lower : {false,true}) for (bool log : {false,true}) {
+   const double q=100200000;
+   CHECK(cppunivariate::distributions::ptrgamma(q,1e8,1,1,lower,log)==
+         cppunivariate::distributions::pgamma(q,1e8,1,lower,log));
+ }
+}

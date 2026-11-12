@@ -1,0 +1,51 @@
+{
+  "id": "lst",
+  "input_sha256": "3dbef26ce0261ab11b8fc2cbffd3643eb8a0a66c7ae1d1dcbfab18859d91335c",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 122742,
+    "points": 14,
+    "values": 248,
+    "quantiles": 616
+  },
+  "after": {
+    "bytes": 148736,
+    "points": 17,
+    "values": 305,
+    "quantiles": 748
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        500000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 68.99244066898245
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        500000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 74.08178537903586
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        500000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 82.0651933279587
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "trgamma",
+  "input_sha256": "533696962ff6ffd8459e9e4e2a078fa5558bf17ae84423048775b62d82f538e2",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 144568,
+    "points": 17,
+    "values": 331,
+    "quantiles": 716
+  },
+  "after": {
+    "bytes": 144560,
+    "points": 17,
+    "values": 331,
+    "quantiles": 716
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: reference quantile bracket did not converge",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 450, in make\n    v = as_double(ref.quantile(mp.log(mp.mpf(u)), lower))\n                  ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 286, in quantile\n    raise ArithmeticError('reference quantile bracket did not converge')\nArithmeticError: reference quantile bracket did not converge\n",
+      "seconds": 3.386705211014487
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: reference quantile bracket did not converge",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 450, in make\n    v = as_double(ref.quantile(mp.log(mp.mpf(u)), lower))\n                  ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 286, in quantile\n    raise ArithmeticError('reference quantile bracket did not converge')\nArithmeticError: reference quantile bracket did not converge\n",
+      "seconds": 2.178695112990681
+    }
+  ]
+}

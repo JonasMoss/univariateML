@@ -1,6 +1,7 @@
 // Inverse transformed gamma d/p/q/r, actuar parameterisation:
 //   f(x) = shape2 * u^shape1 * exp(-u) / (x * Gamma(shape1)), u = (scale/x)^shape2.
 #pragma once
+#include "../invgamma/dpqr.hpp"
 
 #include "../trgamma/dpqr.hpp"
 
@@ -21,6 +22,7 @@ inline double dinvtrgamma(double x, double shape1, double shape2, double scale, 
 inline double pinvtrgamma(double q, double shape1, double shape2, double scale,
                           bool lower_tail, bool log_p) {
   if (!trgamma_valid(shape1,shape2,scale) || std::isnan(q)) return special::kNaN;
+  if (shape2==1) return pinvgamma(q,shape1,scale,lower_tail,log_p);
   const auto tails=q<=0?special::tails_from_log(special::kNegInf,false):
     trgamma_power_tails(special::log_positive_ratio(scale,q),shape1,shape2);
   return special::tail_probability(tails,!lower_tail,log_p);

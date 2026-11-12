@@ -2,6 +2,7 @@
 #include "../../core/precision.hpp"
 #include "../../special/cmp.hpp"
 #include "../../special/tails.hpp"
+#include "../pois/dpqr.hpp"
 namespace cppunivariate {
 namespace cmp_dpqr_detail {
 inline bool valid(double lambda,double nu) {
@@ -76,14 +77,17 @@ struct Law {
 namespace distributions {
 inline double dcmp(double x,double lambda,double nu,bool log=false) {
  if (!cmp_dpqr_detail::valid(lambda,nu) || std::isnan(x)) return special::kNaN;
+ if (nu==1) return dpois(x,lambda,log);
  return cmp_dpqr_detail::Law(lambda,nu).density(x,log);
 }
 inline double pcmp(double q,double lambda,double nu,bool lower_tail=true,bool log_p=false) {
  if (!cmp_dpqr_detail::valid(lambda,nu) || std::isnan(q)) return special::kNaN;
+ if (nu==1) return ppois(q,lambda,lower_tail,log_p);
  return cmp_dpqr_detail::Law(lambda,nu).cdf(q,lower_tail,log_p);
 }
 inline double qcmp(double p,double lambda,double nu,bool lower_tail=true,bool log_p=false) {
  if (!cmp_dpqr_detail::valid(lambda,nu)) return special::kNaN;
+ if (nu==1) return qpois(p,lambda,lower_tail,log_p);
  return cmp_dpqr_detail::Law(lambda,nu).quantile(p,lower_tail,log_p);
 }
 template <typename Rng>

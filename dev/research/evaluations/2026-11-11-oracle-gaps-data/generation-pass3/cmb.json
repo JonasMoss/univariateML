@@ -1,0 +1,31 @@
+{
+  "id": "cmb",
+  "input_sha256": "953b3e8ec6abd5c1a5152e67dc346732fe1ec304feafa272e25976f2552793a8",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 112347,
+    "points": 15,
+    "values": 418,
+    "quantiles": 660
+  },
+  "after": {
+    "bytes": 140846,
+    "points": 16,
+    "values": 624,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        10000.0,
+        0.0001,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.8052877690060996
+    }
+  ]
+}

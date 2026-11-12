@@ -8,5 +8,9 @@ from quality.truth_reference import Reference, pair, complement, normal, gamma, 
 def build(t):
     alpha = t['alpha']
     beta = t['beta']
-    return Reference(lambda x: pair(beta*mp.log(x/alpha)), 0, alpha)
+    out = Reference(lambda x: pair(beta*mp.log(x/alpha)), 0, alpha)
 
+    out.quantile=lambda lp,lower:alpha*mp.exp((lp if lower else complement(lp))/beta)
+    out.normalization_integrand=lambda y:mp.exp(-y)
+    out.normalization_domain=[0,1,10,120]
+    return out

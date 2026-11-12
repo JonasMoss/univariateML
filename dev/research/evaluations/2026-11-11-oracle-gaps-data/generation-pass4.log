@@ -1,0 +1,75 @@
+test_concentrated_discrete_weibull_mass_check (test_log_domain.LogDomain.test_concentrated_discrete_weibull_mass_check) ... ok
+test_far_count_bracket_keeps_the_last_lower_endpoint (test_log_domain.LogDomain.test_far_count_bracket_keeps_the_last_lower_endpoint) ... ok
+test_gamma_small_z_integral_bound (test_log_domain.LogDomain.test_gamma_small_z_integral_bound) ... ok
+test_ged_large_shape_bracket_fallback (test_log_domain.LogDomain.test_ged_large_shape_bracket_fallback) ... ok
+test_logarithmic_stieltjes_bound_against_hypergeometric (test_log_domain.LogDomain.test_logarithmic_stieltjes_bound_against_hypergeometric) ... ok
+test_natural_probability_jump_check_avoids_huge_exponent (test_log_domain.LogDomain.test_natural_probability_jump_check_avoids_huge_exponent) ... ok
+test_skellam_far_negative_count_bound (test_log_domain.LogDomain.test_skellam_far_negative_count_bound) ... ok
+test_beta_fraction_against_hypergeometric (test_references.OracleGaps.test_beta_fraction_against_hypergeometric) ... ok
+test_bnbinom_factorial_moment_tail (test_references.OracleGaps.test_bnbinom_factorial_moment_tail) ... ok
+test_burr_change_of_variable (test_references.OracleGaps.test_burr_change_of_variable) ... ok
+test_centered_gamma_against_special_function (test_references.OracleGaps.test_centered_gamma_against_special_function) ... ok
+test_cmp_euler_maclaurin_tail_additivity (test_references.OracleGaps.test_cmp_euler_maclaurin_tail_additivity) ... ok
+test_derivative_check_follows_density_width (test_references.OracleGaps.test_derivative_check_follows_density_width) ... ok
+test_discrete_gamma_center_interval (test_references.OracleGaps.test_discrete_gamma_center_interval) ... ok
+test_explicit_ged_density_against_declaration (test_references.OracleGaps.test_explicit_ged_density_against_declaration) ... ok
+test_gamma_power_matches_readme (test_references.OracleGaps.test_gamma_power_matches_readme) ... ok
+test_integer_gamma_positive_polynomial (test_references.OracleGaps.test_integer_gamma_positive_polynomial) ... ok
+test_reciprocal_gamma_quantile_chart (test_references.OracleGaps.test_reciprocal_gamma_quantile_chart) ... ok
+test_skellam_asymmetric_convolution (test_references.OracleGaps.test_skellam_asymmetric_convolution) ... ok
+test_skew_t_wedge_against_density_integral (test_references.OracleGaps.test_skew_t_wedge_against_density_integral) ... ok
+test_squared_normal_extreme_inverse (test_references.OracleGaps.test_squared_normal_extreme_inverse) ... ok
+test_bnbinom_beta_geometric_identity (quality.test_truth_gaps.ControlledTails.test_bnbinom_beta_geometric_identity) ... ok
+test_bnbinom_swapped_beta_quadrature (quality.test_truth_gaps.ControlledTails.test_bnbinom_swapped_beta_quadrature) ... ok
+test_nan_truth_cells_rejected (quality.test_truth_gaps.ControlledTails.test_nan_truth_cells_rejected) ... ok
+test_pig_bessel_and_mixture_density (quality.test_truth_gaps.ControlledTails.test_pig_bessel_and_mixture_density) ... ok
+test_pig_integral_against_positive_sum (quality.test_truth_gaps.ControlledTails.test_pig_integral_against_positive_sum) ... ok
+test_skellam_poisson_convolution_and_symmetry (quality.test_truth_gaps.ControlledTails.test_skellam_poisson_convolution_and_symmetry) ... ok
+test_skellam_zero_rate_poisson_limits (quality.test_truth_gaps.ControlledTails.test_skellam_zero_rate_poisson_limits) ... ok
+test_sn_shape_one_identity_and_reflection (quality.test_truth_gaps.ControlledTails.test_sn_shape_one_identity_and_reflection) ... ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 26.159s
+
+OK
+dweibull START
+ged START
+gamma START
+dweibull DONE 0
+invgamma START
+ged 0 verified 9.48
+invgamma 0 verified 15.69
+invgamma DONE 1
+invtrgamma START
+gamma 0 verified 17.2
+gamma DONE 1
+lgamma START
+lgamma DONE 0
+lgser START
+lgser DONE 0
+naka START
+ged 0 verified 9.17
+ged 0 verified 8.9
+ged DONE 3
+pig START
+pig DONE 0
+sged START
+naka 0 verified 15.56
+naka DONE 1
+invtrgamma 0 verified 17.37
+skellam START
+sged 0 verified 6.94
+sged 0 verified 7.55
+invtrgamma 0 verified 12.74
+invtrgamma DONE 2
+trgamma START
+sged 0 verified 6.53
+sged 0 verified 8.08
+trgamma 0 verified 18.88
+sged 0 verified 9.3
+sged DONE 5
+trgamma 0 verified 12.44
+trgamma DONE 2
+skellam 0 verified 51.85
+skellam DONE 1
+ORACLE GAPS 0

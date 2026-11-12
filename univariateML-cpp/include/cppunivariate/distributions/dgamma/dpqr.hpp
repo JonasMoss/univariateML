@@ -1,4 +1,5 @@
 #pragma once
+#include "../gamma/dpqr.hpp"
 #include "../../special/special.hpp"
 #include "../../special/tails.hpp"
 #include <algorithm>
@@ -8,7 +9,7 @@ namespace cppunivariate { namespace distributions {
 // Boost's log-CDF seam may underflow in the lower tail before taking logs.
 // The positive incomplete-gamma series restores that logarithm directly.
 inline double dgamma_logtail(double t,double shape,bool lower) {
-  const double value=special::fs_gamma_p(t,shape,lower,true);
+  const double value=pgamma(t,shape,1,lower,true);
   if (!lower || std::isfinite(value) || !(t>0) || !std::isfinite(t)) return value;
   double sum=1,term=1;
   for (int j=1;j<=100000;++j) {

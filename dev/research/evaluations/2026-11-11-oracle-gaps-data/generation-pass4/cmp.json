@@ -1,0 +1,39 @@
+{
+  "id": "cmp",
+  "input_sha256": "72d25670bab4e0f2a3a58b9a53e52e7311707f1336b60adf546eac1c12a7f0cb",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 269288,
+    "points": 11,
+    "values": 2082,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 327532,
+    "points": 13,
+    "values": 2519,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 37.74219933699351
+    },
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 177.5016098599881
+    }
+  ]
+}

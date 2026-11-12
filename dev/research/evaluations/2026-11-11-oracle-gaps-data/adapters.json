@@ -1,0 +1,507 @@
+{
+  "bbinom": [
+    "cppunivariate::distributions::dbbinom(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pbbinom(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qbbinom(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "beta": [
+    "cppunivariate::distributions::dbeta(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pbeta(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qbeta(x, p[0], p[1], lower, log)"
+  ],
+  "betapr": [
+    "cppunivariate::distributions::dbetapr(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pbetapr(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qbetapr(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "bhatt": [
+    "cppunivariate::distributions::dbhatt(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pbhatt(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qbhatt(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "binom": [
+    "cppunivariate::distributions::dbinom(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pbinom(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qbinom(x, p[0], p[1], lower, log)"
+  ],
+  "bnbinom": [
+    "cppunivariate::distributions::dbnbinom(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pbnbinom(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qbnbinom(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "burr": [
+    "cppunivariate::distributions::dburr(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pburr(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qburr(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "cauchy": [
+    "cppunivariate::distributions::dcauchy(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pcauchy(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qcauchy(x, p[0], p[1], lower, log)"
+  ],
+  "cmb": [
+    "cppunivariate::distributions::dcmb(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pcmb(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qcmb(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "cmp": [
+    "cppunivariate::distributions::dcmp(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pcmp(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qcmp(x, p[0], p[1], lower, log)"
+  ],
+  "dgamma": [
+    "cppunivariate::distributions::ddgamma(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pdgamma(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qdgamma(x, p[0], p[1], lower, log)"
+  ],
+  "dlaplace": [
+    "cppunivariate::distributions::ddlaplace(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pdlaplace(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qdlaplace(x, p[0], p[1], lower, log)"
+  ],
+  "dnorm": [
+    "cppunivariate::distributions::ddnorm(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pdnorm(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qdnorm(x, p[0], p[1], lower, log)"
+  ],
+  "dunif": [
+    "cppunivariate::distributions::ddunif(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pdunif(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qdunif(x, p[0], p[1], lower, log)"
+  ],
+  "dweibull": [
+    "cppunivariate::distributions::ddweibull(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pdweibull(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qdweibull(x, p[0], p[1], lower, log)"
+  ],
+  "emg": [
+    "cppunivariate::distributions::demg(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pemg(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qemg(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "exp": [
+    "cppunivariate::distributions::dexp(x, p[0], log)",
+    "cppunivariate::distributions::pexp(x, p[0], lower, log)",
+    "cppunivariate::distributions::qexp(x, p[0], lower, log)"
+  ],
+  "expweibull": [
+    "cppunivariate::distributions::dexpweibull(x,p[0],p[1],p[2],log)",
+    "cppunivariate::distributions::pexpweibull(x,p[0],p[1],p[2],lower,log)",
+    "cppunivariate::distributions::qexpweibull(x,p[0],p[1],p[2],lower,log)"
+  ],
+  "fatigue": [
+    "cppunivariate::distributions::dfatigue(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pfatigue(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qfatigue(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "foldnorm": [
+    "cppunivariate::distributions::dfoldnorm(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pfoldnorm(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qfoldnorm(x, p[0], p[1], lower, log)"
+  ],
+  "fpareto": [
+    "cppunivariate::distributions::dfpareto(x, p[0], p[1], p[2], p[3], p[4], log)",
+    "cppunivariate::distributions::pfpareto(x, p[0], p[1], p[2], p[3], p[4], lower, log)",
+    "cppunivariate::distributions::qfpareto(x, p[0], p[1], p[2], p[3], p[4], lower, log)"
+  ],
+  "frechet": [
+    "cppunivariate::distributions::dfrechet(x,p[0],p[1],p[2],log)",
+    "cppunivariate::distributions::pfrechet(x,p[0],p[1],p[2],lower,log)",
+    "cppunivariate::distributions::qfrechet(x,p[0],p[1],p[2],lower,log)"
+  ],
+  "gamma": [
+    "cppunivariate::distributions::dgamma(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pgamma(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qgamma(x, p[0], p[1], lower, log)"
+  ],
+  "gb2": [
+    "cppunivariate::distributions::dgb2(x, p[0], p[1], p[2], p[3], log)",
+    "cppunivariate::distributions::pgb2(x, p[0], p[1], p[2], p[3], lower, log)",
+    "cppunivariate::distributions::qgb2(x, p[0], p[1], p[2], p[3], lower, log)"
+  ],
+  "ged": [
+    "cppunivariate::distributions::dged(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pged(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qged(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "genbeta": [
+    "cppunivariate::distributions::dgenbeta(x, p[0], p[1], p[2], p[3], log)",
+    "cppunivariate::distributions::pgenbeta(x, p[0], p[1], p[2], p[3], lower, log)",
+    "cppunivariate::distributions::qgenbeta(x, p[0], p[1], p[2], p[3], lower, log)"
+  ],
+  "gengamma": [
+    "cppunivariate::distributions::dgengamma(x,p[0],p[1],p[2],log)",
+    "cppunivariate::distributions::pgengamma(x,p[0],p[1],p[2],lower,log)",
+    "cppunivariate::distributions::qgengamma(x,p[0],p[1],p[2],lower,log)"
+  ],
+  "geom": [
+    "cppunivariate::distributions::dgeom(x, p[0], log)",
+    "cppunivariate::distributions::pgeom(x, p[0], lower, log)",
+    "cppunivariate::distributions::qgeom(x, p[0], lower, log)"
+  ],
+  "gev": [
+    "cppunivariate::distributions::dgev(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pgev(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qgev(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "gompertz": [
+    "cppunivariate::distributions::dgompertz(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pgompertz(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qgompertz(x, p[0], p[1], lower, log)"
+  ],
+  "gpd": [
+    "cppunivariate::distributions::dgpd(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pgpd(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qgpd(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "gumbel": [
+    "cppunivariate::distributions::dgumbel(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pgumbel(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qgumbel(x, p[0], p[1], lower, log)"
+  ],
+  "hcauchy": [
+    "cppunivariate::distributions::dhcauchy(x, p[0], p[1], log)",
+    "cppunivariate::distributions::phcauchy(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qhcauchy(x, p[0], p[1], lower, log)"
+  ],
+  "hnorm": [
+    "cppunivariate::distributions::dhnorm(x, p[0], p[1], log)",
+    "cppunivariate::distributions::phnorm(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qhnorm(x, p[0], p[1], lower, log)"
+  ],
+  "ht": [
+    "cppunivariate::distributions::dht(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pht(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qht(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "huber": [
+    "cppunivariate::distributions::dhuber(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::phuber(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qhuber(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "hyper": [
+    "cppunivariate::distributions::dhyper(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::phyper(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qhyper(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "invburr": [
+    "cppunivariate::distributions::dinvburr(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pinvburr(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qinvburr(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "invexp": [
+    "cppunivariate::distributions::dinvexp(x, p[0], log)",
+    "cppunivariate::distributions::pinvexp(x, p[0], lower, log)",
+    "cppunivariate::distributions::qinvexp(x, p[0], lower, log)"
+  ],
+  "invgamma": [
+    "cppunivariate::distributions::dinvgamma(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pinvgamma(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qinvgamma(x, p[0], p[1], lower, log)"
+  ],
+  "invgauss": [
+    "cppunivariate::distributions::dinvgauss(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pinvgauss(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qinvgauss(x, p[0], p[1], lower, log)"
+  ],
+  "invparalogis": [
+    "cppunivariate::distributions::dinvparalogis(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pinvparalogis(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qinvparalogis(x, p[0], p[1], lower, log)"
+  ],
+  "invpareto": [
+    "cppunivariate::distributions::dinvpareto(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pinvpareto(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qinvpareto(x, p[0], p[1], lower, log)"
+  ],
+  "invtrgamma": [
+    "cppunivariate::distributions::dinvtrgamma(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pinvtrgamma(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qinvtrgamma(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "invweibull": [
+    "cppunivariate::distributions::dinvweibull(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pinvweibull(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qinvweibull(x, p[0], p[1], lower, log)"
+  ],
+  "kumar": [
+    "cppunivariate::distributions::dkumar(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pkumar(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qkumar(x, p[0], p[1], lower, log)"
+  ],
+  "laplace": [
+    "cppunivariate::distributions::dlaplace(x, p[0], p[1], log)",
+    "cppunivariate::distributions::plaplace(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qlaplace(x, p[0], p[1], lower, log)"
+  ],
+  "lgamma": [
+    "cppunivariate::distributions::dlgamma(x, p[0], p[1], log)",
+    "cppunivariate::distributions::plgamma(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qlgamma(x, p[0], p[1], lower, log)"
+  ],
+  "lgser": [
+    "cppunivariate::distributions::dlgser(x, p[0], log)",
+    "cppunivariate::distributions::plgser(x, p[0], lower, log)",
+    "cppunivariate::distributions::qlgser(x, p[0], lower, log)"
+  ],
+  "llogis": [
+    "cppunivariate::distributions::dllogis(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pllogis(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qllogis(x, p[0], p[1], lower, log)"
+  ],
+  "lnorm": [
+    "cppunivariate::distributions::dlnorm(x, p[0], p[1], log)",
+    "cppunivariate::distributions::plnorm(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qlnorm(x, p[0], p[1], lower, log)"
+  ],
+  "logis": [
+    "cppunivariate::distributions::dlogis(x, p[0], p[1], log)",
+    "cppunivariate::distributions::plogis(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qlogis(x, p[0], p[1], lower, log)"
+  ],
+  "logitnorm": [
+    "cppunivariate::distributions::dlogitnorm(x, p[0], p[1], log)",
+    "cppunivariate::distributions::plogitnorm(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qlogitnorm(x, p[0], p[1], lower, log)"
+  ],
+  "lomax": [
+    "cppunivariate::distributions::dlomax(x, p[0], p[1], log)",
+    "cppunivariate::distributions::plomax(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qlomax(x, p[0], p[1], lower, log)"
+  ],
+  "lst": [
+    "cppunivariate::distributions::dlst(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::plst(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qlst(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "naka": [
+    "cppunivariate::distributions::dnaka(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pnaka(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qnaka(x, p[0], p[1], lower, log)"
+  ],
+  "nbinom": [
+    "cppunivariate::distributions::dnbinom(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pnbinom(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qnbinom(x, p[0], p[1], lower, log)"
+  ],
+  "nhyper": [
+    "cppunivariate::distributions::dnhyper(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pnhyper(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qnhyper(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "norm": [
+    "cppunivariate::distributions::dnorm(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pnorm(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qnorm(x, p[0], p[1], lower, log)"
+  ],
+  "nsbeta": [
+    "cppunivariate::distributions::dnsbeta(x, p[0], p[1], p[2], p[3], log)",
+    "cppunivariate::distributions::pnsbeta(x, p[0], p[1], p[2], p[3], lower, log)",
+    "cppunivariate::distributions::qnsbeta(x, p[0], p[1], p[2], p[3], lower, log)"
+  ],
+  "paralogis": [
+    "cppunivariate::distributions::dparalogis(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pparalogis(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qparalogis(x, p[0], p[1], lower, log)"
+  ],
+  "pareto": [
+    "cppunivariate::distributions::dpareto(x, p[0], p[1], log)",
+    "cppunivariate::distributions::ppareto(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qpareto(x, p[0], p[1], lower, log)"
+  ],
+  "pareto2": [
+    "cppunivariate::distributions::dpareto2(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::ppareto2(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qpareto2(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "pareto3": [
+    "cppunivariate::distributions::dpareto3(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::ppareto3(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qpareto3(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "pareto4": [
+    "cppunivariate::distributions::dpareto4(x, p[0], p[1], p[2], p[3], log)",
+    "cppunivariate::distributions::ppareto4(x, p[0], p[1], p[2], p[3], lower, log)",
+    "cppunivariate::distributions::qpareto4(x, p[0], p[1], p[2], p[3], lower, log)"
+  ],
+  "pig": [
+    "cppunivariate::distributions::dpig(x, p[0], p[1], log)",
+    "cppunivariate::distributions::ppig(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qpig(x, p[0], p[1], lower, log)"
+  ],
+  "pois": [
+    "cppunivariate::distributions::dpois(x, p[0], log)",
+    "cppunivariate::distributions::ppois(x, p[0], lower, log)",
+    "cppunivariate::distributions::qpois(x, p[0], lower, log)"
+  ],
+  "power": [
+    "cppunivariate::distributions::dpower(x, p[0], p[1], log)",
+    "cppunivariate::distributions::ppower(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qpower(x, p[0], p[1], lower, log)"
+  ],
+  "rayleigh": [
+    "cppunivariate::distributions::drayleigh(x, p[0], log)",
+    "cppunivariate::distributions::prayleigh(x, p[0], lower, log)",
+    "cppunivariate::distributions::qrayleigh(x, p[0], lower, log)"
+  ],
+  "sged": [
+    "cppunivariate::distributions::dsged(x, p[0], p[1], p[2], p[3], log)",
+    "cppunivariate::distributions::psged(x, p[0], p[1], p[2], p[3], lower, log)",
+    "cppunivariate::distributions::qsged(x, p[0], p[1], p[2], p[3], lower, log)"
+  ],
+  "sgomp": [
+    "cppunivariate::distributions::dsgomp(x, p[0], p[1], log)",
+    "cppunivariate::distributions::psgomp(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qsgomp(x, p[0], p[1], lower, log)"
+  ],
+  "skellam": [
+    "cppunivariate::distributions::dskellam(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pskellam(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qskellam(x, p[0], p[1], lower, log)"
+  ],
+  "slash": [
+    "cppunivariate::distributions::dslash(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pslash(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qslash(x, p[0], p[1], lower, log)"
+  ],
+  "sn": [
+    "cppunivariate::distributions::dsn(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::psn(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qsn(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "snorm": [
+    "cppunivariate::distributions::dsnorm(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::psnorm(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qsnorm(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "sstd": [
+    "cppunivariate::distributions::dsstd(x, p[0], p[1], p[2], p[3], log)",
+    "cppunivariate::distributions::psstd(x, p[0], p[1], p[2], p[3], lower, log)",
+    "cppunivariate::distributions::qsstd(x, p[0], p[1], p[2], p[3], lower, log)"
+  ],
+  "st": [
+    "cppunivariate::distributions::dst(x,p[0],p[1],p[2],p[3],log)",
+    "cppunivariate::distributions::pst(x,p[0],p[1],p[2],p[3],lower,log)",
+    "cppunivariate::distributions::qst(x,p[0],p[1],p[2],p[3],lower,log)"
+  ],
+  "std": [
+    "cppunivariate::distributions::dstd(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pstd(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qstd(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "tbinom": [
+    "cppunivariate::distributions::dtbinom(x, p[0], p[1], p[2], p[3], log)",
+    "cppunivariate::distributions::ptbinom(x, p[0], p[1], p[2], p[3], lower, log)",
+    "cppunivariate::distributions::qtbinom(x, p[0], p[1], p[2], p[3], lower, log)"
+  ],
+  "tlambda": [
+    "cppunivariate::distributions::dtlambda(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::ptlambda(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qtlambda(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "tnorm": [
+    "cppunivariate::distributions::dtnorm(x, p[0], p[1], p[2], p[3], log)",
+    "cppunivariate::distributions::ptnorm(x, p[0], p[1], p[2], p[3], lower, log)",
+    "cppunivariate::distributions::qtnorm(x, p[0], p[1], p[2], p[3], lower, log)"
+  ],
+  "tpois": [
+    "cppunivariate::distributions::dtpois(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::ptpois(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qtpois(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "trgamma": [
+    "cppunivariate::distributions::dtrgamma(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::ptrgamma(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qtrgamma(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "triang": [
+    "cppunivariate::distributions::dtriang(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::ptriang(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qtriang(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "unif": [
+    "cppunivariate::distributions::dunif(x, p[0], p[1], log)",
+    "cppunivariate::distributions::punif(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qunif(x, p[0], p[1], lower, log)"
+  ],
+  "weibull": [
+    "cppunivariate::distributions::dweibull(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pweibull(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qweibull(x, p[0], p[1], lower, log)"
+  ],
+  "yulesimon": [
+    "cppunivariate::distributions::dyulesimon(x, p[0], log)",
+    "cppunivariate::distributions::pyulesimon(x, p[0], lower, log)",
+    "cppunivariate::distributions::qyulesimon(x, p[0], lower, log)"
+  ],
+  "zeta": [
+    "cppunivariate::distributions::dzeta(x, p[0], log)",
+    "cppunivariate::distributions::pzeta(x, p[0], lower, log)",
+    "cppunivariate::distributions::qzeta(x, p[0], lower, log)"
+  ],
+  "zib": [
+    "cppunivariate::distributions::dzib(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pzib(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qzib(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "zinb": [
+    "cppunivariate::distributions::dzinb(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pzinb(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qzinb(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "zip": [
+    "cppunivariate::distributions::dzip(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pzip(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qzip(x, p[0], p[1], lower, log)"
+  ],
+  "zipf": [
+    "cppunivariate::distributions::dzipf(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pzipf(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qzipf(x, p[0], p[1], lower, log)"
+  ],
+  "zmbinom": [
+    "cppunivariate::distributions::dzmbinom(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pzmbinom(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qzmbinom(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "zmgeom": [
+    "cppunivariate::distributions::dzmgeom(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pzmgeom(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qzmgeom(x, p[0], p[1], lower, log)"
+  ],
+  "zmlogarithmic": [
+    "cppunivariate::distributions::dzmlogarithmic(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pzmlogarithmic(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qzmlogarithmic(x, p[0], p[1], lower, log)"
+  ],
+  "zmnbinom": [
+    "cppunivariate::distributions::dzmnbinom(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pzmnbinom(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qzmnbinom(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "zmpois": [
+    "cppunivariate::distributions::dzmpois(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pzmpois(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qzmpois(x, p[0], p[1], lower, log)"
+  ],
+  "ztbinom": [
+    "cppunivariate::distributions::dztbinom(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pztbinom(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qztbinom(x, p[0], p[1], lower, log)"
+  ],
+  "ztgeom": [
+    "cppunivariate::distributions::dztgeom(x, p[0], log)",
+    "cppunivariate::distributions::pztgeom(x, p[0], lower, log)",
+    "cppunivariate::distributions::qztgeom(x, p[0], lower, log)"
+  ],
+  "ztnbinom": [
+    "cppunivariate::distributions::dztnbinom(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pztnbinom(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qztnbinom(x, p[0], p[1], lower, log)"
+  ],
+  "ztpois": [
+    "cppunivariate::distributions::dztpois(x, p[0], log)",
+    "cppunivariate::distributions::pztpois(x, p[0], lower, log)",
+    "cppunivariate::distributions::qztpois(x, p[0], lower, log)"
+  ]
+}

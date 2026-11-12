@@ -126,6 +126,15 @@ existence:
 
 The zero-inflated negative binomial distribution adds structural zeros with probability $\pi$ to a negative binomial count. The size $r$ controls dispersion and need not be an integer. The base probability $p$, together with size, determines the count scale.
 
+## d/p/q/r
+
+### Half-inflation probabilities
+
+At size $10^8$, probability one half and inflation one half, the rounded
+log-half input places its lower quantile near 99881304. The positive-component
+probability is about $2.319\times10^{-17}$; a mixed CDF rounded before
+inversion does not retain it.
+
 ## Details
 
 For a reduction to an ordinary negative binomial likelihood, the

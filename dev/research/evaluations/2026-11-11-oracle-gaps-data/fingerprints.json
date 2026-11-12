@@ -1,0 +1,507 @@
+[
+  {
+    "family": "bbinom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "beta",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "betapr",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "bhatt",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "binom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "bnbinom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "burr",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "cauchy",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "cmb",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "cmp",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "dgamma",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "dlaplace",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "dnorm",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "dunif",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "dweibull",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "emg",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "exp",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "expweibull",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "fatigue",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "foldnorm",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "fpareto",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "frechet",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "gamma",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "gb2",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "ged",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "genbeta",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "gengamma",
+    "checked": false,
+    "reason": "Explicit concurrent ownership; unchanged baseline table"
+  },
+  {
+    "family": "geom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "gev",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "gompertz",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "gpd",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "gumbel",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "hcauchy",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "hnorm",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "ht",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "huber",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "hyper",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "invburr",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "invexp",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "invgamma",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "invgauss",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "invparalogis",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "invpareto",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "invtrgamma",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "invweibull",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "kumar",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "laplace",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "lgamma",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "lgser",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "llogis",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "lnorm",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "logis",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "logitnorm",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "lomax",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "lst",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "naka",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "nbinom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "nhyper",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "norm",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "nsbeta",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "paralogis",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "pareto",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "pareto2",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "pareto3",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "pareto4",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "pig",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "pois",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "power",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "rayleigh",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "sged",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "sgomp",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "skellam",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "slash",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "sn",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "snorm",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "sstd",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "st",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "std",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "tbinom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "tlambda",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "tnorm",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "tpois",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "trgamma",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "triang",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "unif",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "weibull",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "yulesimon",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "zeta",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "zib",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "zinb",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "zip",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "zipf",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "zmbinom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "zmgeom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "zmlogarithmic",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "zmnbinom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "zmpois",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "ztbinom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "ztgeom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "ztnbinom",
+    "checked": true,
+    "reason": null
+  },
+  {
+    "family": "ztpois",
+    "checked": true,
+    "reason": null
+  }
+]

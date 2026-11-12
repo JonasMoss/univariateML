@@ -1,0 +1,41 @@
+{
+  "id": "trgamma",
+  "input_sha256": "62ce0d9ab57e652d9bc6b7e65fa2d1bb54b9b2e2c6e6a04e827006e6394795ed",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 144560,
+    "points": 17,
+    "values": 331,
+    "quantiles": 716
+  },
+  "after": {
+    "bytes": 160064,
+    "points": 19,
+    "values": 363,
+    "quantiles": 804
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 18.92248132399982
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 12.466373467002995
+    }
+  ]
+}

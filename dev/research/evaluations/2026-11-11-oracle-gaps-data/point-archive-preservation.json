@@ -1,0 +1,32 @@
+[
+  {
+    "family": "bnbinom",
+    "points": 1,
+    "numeric_payload_unchanged": true
+  },
+  {
+    "family": "cmp",
+    "points": 1,
+    "numeric_payload_unchanged": true
+  },
+  {
+    "family": "pig",
+    "points": 2,
+    "numeric_payload_unchanged": true
+  },
+  {
+    "family": "lgser",
+    "points": 1,
+    "numeric_payload_unchanged": true
+  },
+  {
+    "family": "zmlogarithmic",
+    "points": 1,
+    "numeric_payload_unchanged": true
+  },
+  {
+    "family": "st",
+    "points": 2,
+    "numeric_payload_unchanged": true
+  }
+]

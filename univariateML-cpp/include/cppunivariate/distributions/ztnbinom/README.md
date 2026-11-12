@@ -92,6 +92,16 @@ existence:
 
 The zero-truncated negative binomial distribution models negative-binomial counts observed only when positive. The size $r$ is a nonnegative shape coefficient that can be fractional, and $p$ is the underlying negative-binomial probability.
 
+## d/p/q/r
+
+### Concentrated count probabilities
+
+At size $10^8$ and probability one half, the excluded zero mass is
+$2^{-10^8}$ and the CDF body is near count $10^8$. A positive prefix would
+exceed the evaluator's work guard there, although the difference from the
+ordinary negative-binomial CDF is negligible. Subtraction of the zero mass
+is well conditioned when the base CDF exceeds twice that mass.
+
 ## Details
 
 Holding a positive size leaves a unique probability fit obtained by conditional-mean matching. Size zero is an attained logarithmic-series member with logarithmic parameter $1-p$. Probability one is the attained point mass at one. All-one samples therefore fail to identify a free size. Holding any finite size removes the infinite-size Poisson escape.
