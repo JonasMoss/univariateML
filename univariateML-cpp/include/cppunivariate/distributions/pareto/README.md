@@ -105,6 +105,10 @@ existence:
     $n\log\alpha-\alpha\sum_i\log(x_i/b)$. It is strictly concave and has maximizer
     $n/\sum_i\log(x_i/b)$ when that sum is positive; otherwise it increases
     without bound as $\alpha\to\infty$.
+modifiers:
+  censor:
+    right: {status: certified, requires_held: [b], requires_free: [a], note: "censored.hpp; minimum b held and a free"}
+
 ---
 
 The Pareto distribution models positive sizes above a lower endpoint $b$. The shape $\alpha$ controls the right tail, with smaller values giving heavier tails.

@@ -10,7 +10,7 @@ if(enabled){
  mkdirSync('public/binding',{recursive:true});
  for(const file of ['univariateML.mjs','univariateML.wasm'])cpSync(`../build/js/${file}`,`public/binding/${file}`);
  writeFileSync('public/binding/index.mjs',readFileSync('../bindings/js/index.mjs','utf8').replace('../../build/js/univariateML.mjs','./univariateML.mjs'));
- cpSync('../bindings/js/families.mjs','public/binding/families.mjs');
+ for(const file of ['families.mjs','modifiers.mjs','modifier-metadata.mjs'])cpSync(`../bindings/js/${file}`,`public/binding/${file}`);
 }else console.warn('WARNING: Emscripten unavailable (or SITE_WASM=0); explorers omitted.');
 mkdirSync('src/data',{recursive:true});
 writeFileSync('src/data/binding.json',JSON.stringify(enabled?families:[]));

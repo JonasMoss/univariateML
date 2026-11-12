@@ -484,3 +484,43 @@ Families that are not Hellinger-closed declare their `limits`; see
 `dev/research/ml-behaviour.tex`. `test_conformance.R` checks adapter arguments,
 required diagnostics and every holdable subset on golden data; it is not a
 proof for arbitrary samples.
+
+## Modifiers
+
+`modifiers` declares implementation coverage; it does not declare eligibility.
+Zero eligibility follows integer support with literal lower bound zero and no
+`truncation` or `modification` construction. `modifiers.zero_exception: true`
+allows the declared lgser hurdle exception. Truncation is eligible everywhere.
+An eligible absent configuration has status `not-implemented`.
+
+```yaml
+modifiers:
+  zero:
+    truncated: {status: implemented, certified: "yes", note: "conditional-mean bracket"}
+    modified: {status: implemented, certified: "yes", note: "Bernoulli hurdle"}
+    inflated: {status: implemented, certified: "partial", note: "mixture boundary comparison"}
+  truncate:
+    status: implemented
+    certified: "yes"
+    domain_bounded: "parent parameter domain"
+    requires_held: [size]
+  censor:
+    right: {status: certified, requires_held: [b], requires_free: [a]}
+```
+
+Zero/truncate statuses are `implemented`, `not-implemented`, `no-mle`;
+`certified` is a quoted `yes`, `partial`, `no`, or `unknown`. Censor schemes
+`right`, `left`, `interval` have status `certified`, `local`, or
+`not-implemented`. `requires_held` and `requires_free` constrain that capability;
+other base holds carry through. `holds` may give structural exceptions and
+`limits` uses the ordinary limit schema. `domain_bounded` states the allowed
+coefficient domain after finite truncation. A declaration is an evidence claim,
+not a substitute for the fitter's runtime status.
+
+`modifier_replacement: true` identifies a base-tagged family whose declared
+`relations.truncation_of` edge is a planned modifier replacement (zipf). Other
+retirements follow modification edges or truncation construction edges. General
+identities such as geom as truncated discrete Laplace do not retire a base.
+The generated configuration inventory and reduction map are
+`dev/validation/capabilities.csv` and `family-reductions.csv`; regenerate with
+`python3 dev/validation/modifier_capabilities.py` or `just gen`.

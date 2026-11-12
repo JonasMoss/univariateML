@@ -1,5 +1,6 @@
 ---
 id: zipf
+modifier_replacement: true
 inference_numeric:
   - regime: "size one"
     available: false

@@ -76,6 +76,10 @@ existence:
     Its derivative $(S/2-nt)/t^2$ is positive below $S/(2n)$ and negative
     above it, proving existence and uniqueness. At zero the density is
     zero for every positive scale, making the entire sample likelihood zero.
+modifiers:
+  censor:
+    right: {status: certified, requires_free: [sigma], note: "censored.hpp; sigma free"}
+
 ---
 
 The Rayleigh distribution describes the magnitude of a pair of independent centred normal variables with a common standard deviation $\sigma$.

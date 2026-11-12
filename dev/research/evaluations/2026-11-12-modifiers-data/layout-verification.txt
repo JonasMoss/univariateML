@@ -1,0 +1,1 @@
+Both extractions match baseline bb460787 after include-path substitution only.

@@ -63,6 +63,10 @@ for (folder in list.dirs(binding_dist_dir, full.names = TRUE, recursive = FALSE)
   }
 }
 
+# Test-only generated configuration inventory, for modifier refusal conformance.
+dir.create(file.path(PKG_DIR,"tests","testthat","fixtures"), recursive=TRUE, showWarnings=FALSE)
+file.copy("../../dev/validation/capabilities.csv",file.path(PKG_DIR,"tests","testthat","fixtures","capabilities.csv"),overwrite=TRUE)
+
 # Test-only evidence: front matter and all frozen JSON, never installed.
 fixtures <- file.path(PKG_DIR, "tests", "testthat", "fixtures")
 for (folder in list.dirs(dist_dir, full.names = TRUE, recursive = FALSE)) {

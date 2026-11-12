@@ -125,7 +125,7 @@ univariateML_fixed <- function(obj) {
 #' @return An integer.
 #' @keywords internal
 univariateML_df <- function(obj) {
-  length(obj) - length(univariateML_fixed(obj))
+  length(obj) - length(univariateML_fixed(obj)) + sum(attr(obj,"truncate_estimated"))
 }
 
 
@@ -245,6 +245,9 @@ univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
 
 univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
+  if (type %in% c("d", "p", "q", "r") &&
+      (!is.null(attr(obj,"modifier_variant")) || !is.null(attr(obj,"truncate"))))
+    return(ml_modifier_function(obj,type))
   string <- univariateML_to_string(obj, type = type)
   fun <- eval(parse(text = string))
   if (type %in% c("d", "p", "q", "r")) {

@@ -1,7 +1,7 @@
 <script>
  export let families=[];
  let query='', selected={};
- const dimensions=[['group','Group'],['support_shape','Support'],['support_dependence','Support bounds'],['coefficient_count','Coefficient count'],['coefficient_kinds','Coefficient kinds'],['existence_tags','Existence'],['construction','Construction'],['method','Fit method'],['certified','Fit certification'],['areas','Application areas'],['classification','Classification'],['relation_tags','Declared relations']];
+ const dimensions=[['group','Group'],['support_shape','Support'],['support_dependence','Support bounds'],['coefficient_count','Coefficient count'],['coefficient_kinds','Coefficient kinds'],['existence_tags','Existence'],['construction','Construction'],['modifier_tags','Modifiers'],['method','Fit method'],['certified','Fit certification'],['areas','Application areas'],['classification','Classification'],['relation_tags','Declared relations']];
  const values=(f,key)=>['method','certified'].includes(key)?[f.fit[key]]:Array.isArray(f[key])?f[key]:[f[key]];
  const choices=key=>[...new Set(families.flatMap(f=>values(f,key)))].sort();
  const matches=(f,except='')=>(!query || `${f.name} ${f.id} ${(f.aliases||[]).join(' ')}`.toLowerCase().includes(query.toLowerCase())) && dimensions.every(([key])=>key===except || !selected[key]?.length || selected[key].some(v=>values(f,key).includes(v)));

@@ -5,6 +5,7 @@
 #include <cmath>
 #include "cppunivariate/distributions/rng_std.hpp"
 #include "common/fit.hpp"
+#include "common/modifiers.hpp"
 #include "cppunivariate/core/inference_families.hpp"
 #include "generated/fit_includes.hpp"
 namespace {
@@ -83,8 +84,20 @@ emscripten::val vcov_output(emscripten::val data, const std::string& family,
   out.set("status",static_cast<int>(covariance.status)); out.set("validity",result.validity_conditions);
   return out;
 }
+emscripten::val fit_modifier_output(const std::string& family,emscripten::val lower,emscripten::val upper,
+    emscripten::val h,const std::string& zero,bool window,double a,double b,bool censored,double tol,int maxit) {
+  auto lo=input(lower),hi=input(upper);
+  std::vector<std::pair<std::string,umvl_binding::Held>> holds;
+  auto names=emscripten::val::global("Object").call<emscripten::val>("keys",h);
+  for(unsigned i=0;i<names["length"].as<unsigned>();++i) {
+    const auto name=names[i].as<std::string>();holds.push_back({name,held_arg(h,name.c_str())});
+  }
+  if(censored)return fit_output(umvl_binding::fit_censored(family,{{lo.data(),lo.size()},{hi.data(),hi.size()}},holds,tol,maxit));
+  return fit_output(umvl_binding::fit_modifier(family,{lo.data(),lo.size()},holds,zero,window,a,b,tol,maxit));
+}
 EMSCRIPTEN_BINDINGS(univariateML) {
   emscripten::function("vcov", &vcov_output);
+  emscripten::function("fitModifier", &fit_modifier_output);
 #include "generated/exports.hpp"
 #include "generated/fit_exports.hpp"
 }

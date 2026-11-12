@@ -1,0 +1,2 @@
+Inherited broken destinations: 45 (also present in bb460787)
+New broken destinations: 0

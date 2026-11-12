@@ -217,3 +217,80 @@ TEST_CASE("pois: large-rate natural tail retains the integer gamma shape") {
  CHECK(cppunivariate::distributions::ppois(99787341,1e8,true,false)==
        doctest::Approx(1.0016275040224443e-100).epsilon(1e-10).scale(0));
 }
+
+#include "cppunivariate/distributions/pois/zero.hpp"
+#include "cppunivariate/distributions/binom/zero.hpp"
+#include "cppunivariate/distributions/nbinom/zero.hpp"
+#include "cppunivariate/distributions/geom/zero.hpp"
+#include "cppunivariate/distributions/norm/truncation.hpp"
+#include "cppunivariate/distributions/tpois/mle.hpp"
+TEST_CASE("pois modifiers conditional exponential family certificate") {
+  const std::vector<int> x{1,1,2,2,3,4,5};
+  const cppunivariate::ispan data{x.data(),x.size()};
+  const auto p=cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(data,1,INFINITY);
+  REQUIRE(p.status==cppunivariate::TruncationStatus::Ok);
+  CHECK(p.parameter==doctest::Approx(cppunivariate::PoisZeroTraits::truncated(data).lambda).epsilon(1e-10).scale(0));
+  const auto b=cppunivariate::truncated<cppunivariate::BinomTruncationTraits>::fit(data,1,INFINITY,{10});
+  REQUIRE(b.status==cppunivariate::TruncationStatus::Ok);
+  CHECK(b.parameter==doctest::Approx(cppunivariate::BinomZeroTraits::truncated(data,1e-10,200,10).prob).epsilon(1e-10).scale(0));
+  const auto n=cppunivariate::truncated<cppunivariate::NbinomTruncationTraits>::fit(data,1,INFINITY,{2});
+  REQUIRE(n.status==cppunivariate::TruncationStatus::Ok);
+  CHECK(n.parameter==doctest::Approx(cppunivariate::NbinomZeroTraits::truncated(data,1e-10,200,2).prob).epsilon(1e-10).scale(0));
+  const auto g=cppunivariate::truncated<cppunivariate::GeomTruncationTraits>::fit(data,1,INFINITY);
+  REQUIRE(g.status==cppunivariate::TruncationStatus::Ok);
+  CHECK(g.parameter==doctest::Approx(cppunivariate::GeomZeroTraits::truncated(data).prob).epsilon(1e-10).scale(0));
+  const auto tiny=cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(data,1,INFINITY,{},NAN,1e-10,1);
+  CHECK(tiny.status==cppunivariate::TruncationStatus::NumericalFailure);
+  CHECK(cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(data,2,4).status==cppunivariate::TruncationStatus::InvalidInput);
+}
+TEST_CASE("pois modifiers legacy window golden") {
+  const auto g=mltest::load_distribution_golden("tpois");
+  const auto x=as_ints(g.data);
+  const auto old=cppunivariate::tpois_mle(as_ispan(x),0,10);
+  const auto fit=cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(as_ispan(x),1,10);
+  REQUIRE(old.status==cppunivariate::truncated_detail::Status::Ok);
+  REQUIRE(fit.status==cppunivariate::TruncationStatus::Ok);
+  CHECK(fit.parameter==doctest::Approx(old.parameter).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(old.logLik).epsilon(1e-10).scale(0));
+}
+TEST_CASE("pois modifiers generic hurdle agrees with modified golden") {
+  const auto g=mltest::load_distribution_golden("zmpois");
+  const auto x=as_ints(g.data);
+  const auto fit=cppunivariate::zero_modified<cppunivariate::PoisZeroTraits>::fit(as_ispan(x),NAN);
+  REQUIRE(fit.status==cppunivariate::HurdleStatus::Ok);
+  CHECK(fit.p0==doctest::Approx(g.estimates.at("p0")).epsilon(1e-10).scale(0));
+  CHECK(fit.positive.lambda==doctest::Approx(g.estimates.at("lambda")).epsilon(1e-10).scale(0));
+  CHECK(fit.logLik==doctest::Approx(g.logLik).epsilon(1e-10).scale(0));
+}
+TEST_CASE("pois modifiers attained atoms and singleton conditioning") {
+  const std::vector<int> zeros{0,0};const auto z=as_ispan(zeros);
+  const auto p=cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(z,0,INFINITY);
+  REQUIRE(p.status==cppunivariate::TruncationStatus::Ok);CHECK(p.parameter==0);CHECK(p.logLik==0);
+  const auto n=cppunivariate::truncated<cppunivariate::NbinomTruncationTraits>::fit(z,0,INFINITY,{0});
+  REQUIRE(n.status==cppunivariate::TruncationStatus::Ok);CHECK(n.logLik==0);
+  const auto b=cppunivariate::truncated<cppunivariate::BinomTruncationTraits>::fit(z,0,INFINITY,{0});
+  REQUIRE(b.status==cppunivariate::TruncationStatus::Ok);CHECK(b.logLik==0);
+  const std::vector<int> one{4,4};
+  const auto s=cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(as_ispan(one),4,4);
+  REQUIRE(s.status==cppunivariate::TruncationStatus::Ok);CHECK(s.logLik==0);
+  CHECK(cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(as_ispan(one),4,4,{},0).status==cppunivariate::TruncationStatus::InvalidInput);
+}
+#include "cppunivariate/distributions/geom/mle.hpp"
+TEST_CASE("pois modifiers geometric inflation fixes NB size one") {
+  const std::vector<int> x{0,0,0,1,2,4};
+  const auto r=cppunivariate::GeomZeroTraits::inflated(as_ispan(x));
+  REQUIRE(r.status==cppunivariate::ZinbStatus::Ok);CHECK(r.size==1);
+  const auto base=cppunivariate::GeomZeroTraits::inflated(as_ispan(x),1e-10,200,NAN,0);
+  REQUIRE(base.status==cppunivariate::ZinbStatus::Ok);
+  CHECK(base.prob==doctest::Approx(cppunivariate::geom_mle(as_ispan(x)).prob).epsilon(1e-10).scale(0));
+}
+TEST_CASE("pois modifiers reject coefficient rounding to an incompatible atom") {
+  const std::vector<int> x{1,2,3};
+  const auto r=cppunivariate::truncated<cppunivariate::NbinomTruncationTraits>::fit(as_ispan(x),0,INFINITY,{1e20});
+  CHECK(r.status==cppunivariate::TruncationStatus::NumericalFailure);
+}
+TEST_CASE("pois modifiers finite-window probability-zero faces are proved limits") {
+  const std::vector<int> x{2,3,4};
+  CHECK(cppunivariate::truncated<cppunivariate::GeomTruncationTraits>::fit(as_ispan(x),1,4).status==cppunivariate::TruncationStatus::UpperLimit);
+  CHECK(cppunivariate::truncated<cppunivariate::NbinomTruncationTraits>::fit(as_ispan(x),1,4,{1}).status==cppunivariate::TruncationStatus::UpperLimit);
+}

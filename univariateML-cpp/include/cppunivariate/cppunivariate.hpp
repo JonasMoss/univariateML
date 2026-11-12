@@ -132,3 +132,10 @@
 #include "distributions/gamma/score.hpp"
 #include "distributions/beta/score.hpp"
 #include "distributions/pois/score.hpp"
+
+// Conditional count laws and closed-window exponential families.
+#include "distributions/pois/zero.hpp"
+#include "distributions/binom/zero.hpp"
+#include "distributions/nbinom/zero.hpp"
+#include "distributions/geom/zero.hpp"
+#include "distributions/norm/truncation.hpp"

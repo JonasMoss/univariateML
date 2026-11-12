@@ -98,6 +98,10 @@ existence:
     If $S>0$, its unique maximum is $\hat\lambda=m/S$.
     If $S=0$, it increases without bound as $\lambda\to\infty$.
 
+modifiers:
+  censor:
+    right: {status: certified, note: "censored.hpp; all hold sets"}
+
 ---
 
 The exponential distribution models nonnegative waiting times with a constant hazard rate.

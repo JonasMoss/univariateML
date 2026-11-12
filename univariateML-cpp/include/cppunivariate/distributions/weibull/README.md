@@ -113,6 +113,10 @@ existence:
     $n/k+\sum_i r_i(1-e^{kr_i})$ has derivative
     $-n/k^2-\sum_i r_i^2e^{kr_i}<0$ and crosses zero unless every $r_i=0$.
     With shape held, $\hat\lambda=(n^{-1}\sum_i x_i^k)^{1/k}$.
+modifiers:
+  censor:
+    right: {status: certified, note: "censored.hpp; all hold sets"}
+
 ---
 
 The Weibull distribution models lifetimes and reliability data. Its scale $\lambda$ sets the time unit. Its shape $k$ gives a decreasing hazard when $k<1$, a constant hazard when $k=1$, and an increasing hazard when $k>1$.

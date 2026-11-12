@@ -67,9 +67,16 @@ model_select <- function(
   check_models(models)
   models <- filter_models(models, type)
 
+  if(is.matrix(x) && NCOL(x)==2L || inherits(x,"Surv")) {
+    x <- ml_interval_data(x,na.rm)
+    if(all(x[,1]==x[,2]))x<-x[,1]
+  }
   supplied <- names(list(...))
   reasons <- lapply(models, function(id) {
     meta <- univariateML_metadata[[paste0("ml", id)]]
+    if ((is.matrix(x) || inherits(x,"Surv")) &&
+        !identical(meta$modifiers$censor$right$status,"certified"))
+      return(paste0("censoring is not implemented for `ml",id,"`; see TASK-191 or its successor"))
     absent <- setdiff(meta$required, supplied)
     if (!length(absent)) return(NULL)
     paste(vapply(absent, function(p) {
@@ -94,6 +101,7 @@ model_select <- function(
     stop("Couldn't fit any model.\n", details)
   }
 
+  if (is.matrix(x) || inherits(x,"Surv")) skipped <- c(skipped, vapply(fits[error_inds],as.character,""))
   fits <- fits[!error_inds]
 
   if (return == "best") {
