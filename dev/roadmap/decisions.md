@@ -8,6 +8,25 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-12
 
+- **PGW is ordinary PGW** (Jonas: "Going with recommendations"). Id `pgw`,
+  coefficients `scale`, `shape`, `exponent`, all positive, with
+  $H(x)=\{1+(x/a)^b\}^c-1$. Adapted PGW is a different family and, for
+  negative `kappa`, defective; not added. Evidence:
+  [pgw-theory report](../research/evaluations/2026-11-11-pgw-theory-report.md);
+  work: TASK-182, TASK-183.
+- **Underflowed natural outputs round** (Jonas: "Going with recommendations").
+  Natural densities and probabilities below the normal range return the
+  correctly rounded subnormal or zero, exempt from the relative requirement;
+  log outputs keep it. Design:
+  [accuracy contract](../design/accuracy-contract.md#dpq); TASK-199.
+- **R evaluates all families through the generated d/p/q** (Jonas: "we go
+  with routing, the rule was made under assumptions"). `dml`, `pml` and `qml`
+  of the 14 families that called `stats` move to the C++ d/p/q, so one
+  contract covers every family and `logLik` agrees with the summed `dml`.
+  Supersedes the 2026-10-30 rule that kept `stats` for those families.
+  Evidence: [dpqr-extreme](../research/evaluations/2026-11-11-dpqr-extreme-report.md)
+  (386 `stats` misses), seam check (`stats::dbeta` relative 1.9e-7 at an
+  archived fit); work: TASK-198.
 - **Volkov is out of scope** (Jonas: "Yeah, lets bank volkov out"). The
   neutral-theory likelihood is a joint law for one community's abundance
   vector (it sums to $J$), not an iid univariate family; GUILDS (Etienne's

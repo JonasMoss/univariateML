@@ -69,8 +69,9 @@ docs, validation harness and site page
 ## R package
 
 ML-first: it exports fitters, `dml`/`pml`/`qml`/`rml`, model selection,
-bootstrap and plots, and no d/p/q/r of its own. The 14 stats families use
-`stats`; every other family's d/p/q/r is generated from `dpqr.hpp` at assembly.
+bootstrap and plots, and no d/p/q/r of its own. Every family's d/p/q is
+generated from `dpqr.hpp` at assembly; the 14 families that used to call
+`stats` are being moved over (TASK-198).
 Dependencies: Rcpp and BH only.
 
 ## Out of scope

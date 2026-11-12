@@ -95,9 +95,18 @@ conditioning. Fitted parameters are exact doubles, and near limit models the
 amplifying cancellation can usually be removed: for `x/s` in `[1/2, 2]`,
 `x - s` is exact, so `shape * log1p((x - s)/s)` replaces
 `shape * (log(x) - log(s))`. A region that cannot meet the contract returns
-`NaN` and is named in the dossier. The `stats` functions the R package uses
-for its 14 `stats` families are outside this contract; `stats::dweibull` and
-`stats::pweibull` miss it at large shapes.
+`NaN` and is named in the dossier.
+
+A natural density or probability whose exact value lies below the smallest
+normal double (about `2.2e-308`) cannot carry relative accuracy in binary64.
+There the function returns the correctly rounded subnormal or zero, and the
+relative requirement does not apply; the log output keeps the full
+requirement and is the one to use for such values.
+
+The R package evaluates every family's `dml`, `pml` and `qml` through these
+functions, including the 14 families that used to call `stats`, so fitted
+likelihoods and evaluations follow one contract (`stats::dweibull`,
+`stats::pweibull` and `stats::dbeta` miss it).
 
 ## Controls
 
