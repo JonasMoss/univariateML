@@ -1,0 +1,31 @@
+{
+  "id": "zib",
+  "input_sha256": "741e26591a3c22fffb6b4daa28b38ccbf6ed935df8d97fd3a34bd06e939463f1",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 90440,
+    "points": 14,
+    "values": 200,
+    "quantiles": 616
+  },
+  "after": {
+    "bytes": 118972,
+    "points": 15,
+    "values": 406,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1e-08,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.3684928430011496
+    }
+  ]
+}

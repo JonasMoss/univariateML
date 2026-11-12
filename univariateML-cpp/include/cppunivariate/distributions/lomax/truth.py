@@ -6,8 +6,8 @@ import mpmath as mp
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 def build(t):
-    rate, shape = t['lambda'], t['kappa']
-    return Reference(lambda x: pair(-shape*mp.log1p(rate*x), False), 0)
+    from quality.truth_reference import burr_reference
+    return burr_reference(t['kappa'], 1, 1/t['lambda'], 0, False)
 
 
 # Joint limit paths supplement the shared one-coordinate extreme grid.

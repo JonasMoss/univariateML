@@ -1,0 +1,30 @@
+{
+  "id": "lgser",
+  "input_sha256": "dd33e86fffaf7b02770963ab09946c7a9f89b9d1ba1f463d4e042f07ed20a9ef",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 170252,
+    "points": 6,
+    "values": 1253,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 170252,
+    "points": 6,
+    "values": 1253,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        0.9999999999999999
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 444, in make\n    v = as_double(ref.quantile(mp.log(mp.mpf(u)), lower))\n                  ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 234, in quantile\n    if below(mid): lo = mid\n       ~~~~~^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 214, in below\n    v = self.tails(x)[0 if lower else 1]\n        ~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/lgser/truth.py\", line 15, in tails\n    lp=logarithmic_tail(p,k)\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 357, in logarithmic_tail\n    integral,error=mp.quad(lambda v:mp.exp(-v)/(-mp.expm1(mp.log(p)-v/k)),\n                   ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                           [0,1,10,end],error=True)\n                           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/calculus/quadrature.py\", line 746, in quad\n    v, err = rule.summation(f, points[0], prec, epsilon, m, verbose)\n             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: independent reference exceeded 120 seconds per point\n",
+      "seconds": 120.00186995300464
+    }
+  ]
+}

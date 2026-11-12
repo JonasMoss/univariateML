@@ -215,3 +215,9 @@ TEST_CASE("ztnbinom: unresolved large-count Poisson-tail comparison stops") {
 TEST_CASE("ztnbinom: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qztnbinom(.5,1e308,.1)));
 }
+
+TEST_CASE("ztnbinom: large-size body CDF avoids enumerating its count") {
+  const double got=cppunivariate::distributions::pztnbinom(99999998,1e8,.5,true,true);
+  CHECK(std::isfinite(got));
+  CHECK(got==doctest::Approx(cppunivariate::distributions::pnbinom(99999998,1e8,.5,true,true)).epsilon(1e-12));
+}

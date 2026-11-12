@@ -15,6 +15,15 @@ inline double logadd(double a, double b) {
   if (a < b) std::swap(a, b);
   return std::isinf(a) ? a : a + std::log1p(std::exp(b-a));
 }
+// Place the m marked positions among q selected and N-q other positions.
+// All products are finite; no large gamma normalizers are subtracted.
+inline double small_marked_log_pmf(double v,double N,double m,double q) {
+  double out=0;
+  for(int j=1;j<=v;++j) out+=std::log((m-v+j)/j);
+  for(int j=0;j<v;++j) out+=std::log((q-j)/(N-j));
+  for(int j=0;j<m-v;++j) out+=std::log((N-q-j)/(N-v-j));
+  return out;
+}
 }
 inline double dnhyper(double x, double m, double N, double r, bool log) {
   if (!hyper_detail::is_count(N) || N < m) return std::numeric_limits<double>::quiet_NaN();
@@ -40,7 +49,8 @@ inline double pnhyper(double q, double m, double N, double r, bool lower_tail, b
     const double from = below ? r : std::max(0.0,q-n);
     const double to = below ? std::min(q,m) : r-1;
     for (double v = from; v <= to; ++v)
-      lp = nhyper_detail::logadd(lp,hyper_log_pmf(v,n+m,m,q));
+      lp = nhyper_detail::logadd(lp,m<=32
+          ? nhyper_detail::small_marked_log_pmf(v,N,m,q) : hyper_log_pmf(v,n+m,m,q));
     lp = std::min(0.0,lp);
     if (below != lower_tail)
       lp = lp < -0.6931471805599453 ? std::log1p(-std::exp(lp)) : std::log(-std::expm1(lp));

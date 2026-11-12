@@ -1,0 +1,39 @@
+{
+  "id": "paralogis",
+  "input_sha256": "8744fbd6b0ca1ffb8d599f51479fad4f03aef324ee45e512aa82f885fb5a240e",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 78343,
+    "points": 9,
+    "values": 180,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 92743,
+    "points": 11,
+    "values": 207,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.2509400679846294
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.1721744749811478
+    }
+  ]
+}

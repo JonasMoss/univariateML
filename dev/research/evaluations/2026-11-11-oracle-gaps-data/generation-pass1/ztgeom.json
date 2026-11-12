@@ -1,0 +1,29 @@
+{
+  "id": "ztgeom",
+  "input_sha256": "f7d15e5a252e93c922be3b519424c50b44de6b31c11066f2b0a2e0ceed8d5473",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 148709,
+    "points": 6,
+    "values": 1046,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 178716,
+    "points": 7,
+    "values": 1263,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.5414528279798105
+    }
+  ]
+}

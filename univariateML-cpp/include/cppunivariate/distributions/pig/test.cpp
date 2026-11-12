@@ -494,3 +494,8 @@ TEST_CASE("pig: unrepresentable subnormal shape is not Ok") {
   const auto r=cppunivariate::pig_mle({x.data(),x.size()},1e-10,200,1e-158,NAN);
   CHECK(r.status==cppunivariate::PigStatus::AccuracyFailure);
 }
+
+TEST_CASE("pig: the zero-count CDF is its atom even at tiny shape") {
+  CHECK(cppunivariate::distributions::ppig(0,1,1e-8,true,true)==
+        doctest::Approx(-0.0001414113565908629).epsilon(1e-12).scale(0));
+}

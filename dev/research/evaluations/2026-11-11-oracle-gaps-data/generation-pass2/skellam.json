@@ -1,0 +1,41 @@
+{
+  "id": "skellam",
+  "input_sha256": "5a7e3b31fe5c10198ecceee008a17ef9937165cc42594d7314a60827e1ce4d78",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 302305,
+    "points": 12,
+    "values": 2183,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 302295,
+    "points": 12,
+    "values": 2183,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 600 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 450, in make\n    v = as_double(ref.quantile(mp.log(mp.mpf(u)), lower))\n                  ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 234, in quantile\n    if below(mid): lo = mid\n       ~~~~~^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 214, in below\n    v = self.tails(x)[0 if lower else 1]\n        ~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/skellam/truth.py\", line 102, in tails\n    def tails(k):return canonical(k) if a>=b else canonical(-k-1)[::-1]\n                        ~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/skellam/truth.py\", line 99, in canonical\n    current=poisson(k+j+1)[index]\n            ~~~~~~~^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/skellam/truth.py\", line 78, in poisson\n    def poisson(k):return gamma(k+1,A)[::-1]\n                          ~~~~~^^^^^^^\nTimeoutError: independent reference exceeded 600 seconds per point\n",
+      "seconds": 600.0026305090287
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "ArithmeticError: Skellam lower-count geometric remainder",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 472, in make\n    ll, lu = ref.tails(v)\n             ~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/skellam/truth.py\", line 102, in tails\n    def tails(k):return canonical(k) if a>=b else canonical(-k-1)[::-1]\n                                                  ~~~~~~~~~^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/skellam/truth.py\", line 90, in canonical\n    raise ArithmeticError('Skellam lower-count geometric remainder')\nArithmeticError: Skellam lower-count geometric remainder\n",
+      "seconds": 464.49746067699743
+    }
+  ]
+}

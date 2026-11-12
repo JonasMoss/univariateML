@@ -1,0 +1,31 @@
+{
+  "id": "tlambda",
+  "input_sha256": "efbdae9debe187e27273af07557cc745b6c055046ee5c69a4c067faed0656886",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 114020,
+    "points": 13,
+    "values": 241,
+    "quantiles": 572
+  },
+  "after": {
+    "bytes": 123003,
+    "points": 14,
+    "values": 260,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1e-08,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.4209028080222197
+    }
+  ]
+}

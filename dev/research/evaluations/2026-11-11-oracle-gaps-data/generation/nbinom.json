@@ -1,0 +1,39 @@
+{
+  "id": "nbinom",
+  "input_sha256": "0689f6530dc7ed126a78c8353fec31368e0566b83c0c16444d78c59af86a07ab",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 272136,
+    "points": 11,
+    "values": 1893,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 329826,
+    "points": 13,
+    "values": 2331,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 25.48899641400203
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.2116995480027981
+    }
+  ]
+}

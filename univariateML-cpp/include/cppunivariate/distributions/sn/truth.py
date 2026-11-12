@@ -31,7 +31,10 @@ def build(p, logd):
         if shape<0:
             ll,lu=standard(-z,-shape);return lu,ll
         if shape==0:return normal(z)
-        if shape==1:return pair(2*normal(z)[0])
+        if shape==1:
+            ll,lu=normal(z)
+            if ll < -mp.log(2):return pair(2*ll)
+            return pair(lu+mp.log(2-mp.exp(lu)),False)
         left=z<0;t=abs(z)
         if t>mp.mpf('1e40'):
             if left:
@@ -86,16 +89,27 @@ def build(p, logd):
     ref.normalization_domain=[0,1,4,12,mp.inf]
     # Safeguarded Newton inversion uses this independently integrated CDF and
     # its analytic density; a final narrow bracket controls root error.
+    def gaussian_quantile(lp,lower):
+        ref=Reference(normal)
+        ref.high_precision_quantile=True
+        if lp>-mp.log(2):return ref.quantile(pair(lp)[1],not lower)
+        return ref.quantile(lp,lower)
     roots=[]
     @lru_cache(maxsize=1000)
     def quantile(lp,lower):
         if a==0:
             # Exact normal member: avoid Newton residuals around its zero median.
-            return xi+w*Reference(normal).quantile(lp,lower)
+            return xi+w*gaussian_quantile(lp,lower)
         if lp in (-mp.inf,0):
             return (-mp.inf if lower else mp.inf) if lp==-mp.inf else (mp.inf if lower else -mp.inf)
         if a==1 and lp==mp.log(mp.mpf("0.25")) and lower:return xi
         if a==-1 and lp==mp.log(mp.mpf("0.25")) and not lower:return xi
+        if abs(a)==1:
+            # F(z)=Phi(z)^2; negative shape is its reflected law.
+            canonical_lower=lower==(a==1)
+            target=lp/2 if canonical_lower else lp-mp.log1p(mp.exp(pair(lp)[1]/2))
+            z=gaussian_quantile(target,canonical_lower)
+            return xi+w*a*z
         index=0 if lower else 1
         def below(z):
             v=standard(z,a)[index]

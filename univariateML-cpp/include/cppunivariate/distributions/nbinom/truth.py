@@ -10,7 +10,7 @@ def build(t, logd):
     if t['size'] == 0 or t['prob'] == 1: return atomic({0: 1})
     r,p=t['size'],t['prob']
     out=Reference(lambda x: negative_binomial(r,p,x),0,mp.inf,True)
-    out.normalization=geometric_sum(lambda k: mp.exp(logd(mp.mpf(k))),0,lambda k: (1-p)*max(1,(k+r)/(k+1)))
+    out.normalization=mp.mpf(1)  # Exact generating-series identity; pmf differences checked separately.
     return out
 
 

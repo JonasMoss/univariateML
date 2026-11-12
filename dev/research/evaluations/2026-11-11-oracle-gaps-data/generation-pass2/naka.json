@@ -1,0 +1,49 @@
+{
+  "id": "naka",
+  "input_sha256": "4d229966e4aa6c62e9590d60654522d7be077d03fe7cdbcca670fcb806ee9ff5",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 81773,
+    "points": 9,
+    "values": 188,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 99398,
+    "points": 11,
+    "values": 230,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 42.322528175020125
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 110.6857740439591
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 29.024178815016057
+    }
+  ]
+}

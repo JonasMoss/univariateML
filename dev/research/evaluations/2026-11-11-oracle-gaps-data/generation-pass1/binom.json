@@ -1,0 +1,30 @@
+{
+  "id": "binom",
+  "input_sha256": "7895666e85693570fcbc8ddecbab50d73ed5b6bb9272dd1816a5eb372a2630ac",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 51799,
+    "points": 8,
+    "values": 116,
+    "quantiles": 352
+  },
+  "after": {
+    "bytes": 80073,
+    "points": 9,
+    "values": 322,
+    "quantiles": 396
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 2.9397421309840865
+    }
+  ]
+}

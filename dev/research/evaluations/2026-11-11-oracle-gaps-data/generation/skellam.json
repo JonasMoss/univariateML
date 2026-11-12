@@ -1,0 +1,30 @@
+{
+  "id": "skellam",
+  "input_sha256": "abff7ad44c478354e1aea13b1d78cd616e1f2aa72ca756ba398c95a3abd75ffb",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 329686,
+    "points": 13,
+    "values": 2403,
+    "quantiles": 572
+  },
+  "after": {
+    "bytes": 357176,
+    "points": 14,
+    "values": 2623,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        1.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 51.88368107995484
+    }
+  ]
+}

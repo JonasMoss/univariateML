@@ -1,0 +1,52 @@
+--- a/dev/validation/quality/truth.py
++++ b/dev/validation/quality/truth.py
+@@ -28,7 +28,7 @@
+ import sympy as sp
+ import yaml
+ from quality.density import density_expression
+-from quality.truth_reference import Reference
++from quality.truth_reference import Reference, complement
+ 
+ ROOT = Path(__file__).resolve().parents[3]
+ DISTS = ROOT/'univariateML-cpp/include/cppunivariate/distributions'
+@@ -311,13 +311,19 @@
+         for k in range(lo, min(int(ref.upper) if mp.isfinite(ref.upper) else lo+12, lo+12)+1):
+             before, after = ref.tails(k-1), ref.tails(k)
+             if after[0] == -mp.inf or before[1] == -mp.inf:
+-                observed = mp.mpf(0)
++                observed = -mp.inf
+             elif after[0] < -mp.log(2):
+-                observed = mp.exp(after[0])*(-mp.expm1(before[0]-after[0]))
++                observed = after[0]+complement(before[0]-after[0])
+             else:
+-                observed = mp.exp(before[1])*(-mp.expm1(after[1]-before[1]))
+-            expected = mp.exp(logd(mp.mpf(k)))
+-            if abs(observed-expected) > mp.mpf('1e-25')*max(expected, mp.mpf('1e-60')):
++                observed = before[1]+complement(after[1]-before[1])
++            expected = logd(mp.mpf(k))
++            if observed == expected:
++                continue
++            # Compare the original relative/absolute error in log arithmetic.
++            # exp(-k**b) need not be constructed when b is 100 million.
++            error = max(observed,expected)+complement(min(observed,expected)-max(observed,expected))
++            threshold = mp.log(mp.mpf('1e-25'))+max(expected,mp.log(mp.mpf('1e-60')))
++            if error > threshold:
+                 raise ArithmeticError(f'pmf/antiderivative mismatch at {k}')
+         return mass
+     if hasattr(ref, 'normalization_identity'):
+--- a/dev/validation/quality/truth_reference.py
++++ b/dev/validation/quality/truth_reference.py
+@@ -254,8 +254,11 @@
+                     delta=mp.mpf('1e-35')*max(1,abs(mid))
+                     if below(mid-delta) and not below(mid+delta):
+                         return self.chart(mid)[0]
+-                slope=mp.exp(self.log_density(x)+jac-value)*(1 if lower else -1)
+-                if mp.isfinite(slope) and slope!=0:
++                log_slope=self.log_density(x)+jac-value
++                # Extreme trial points can have log density -exp(1e10).
++                # Skip an unhelpful Newton proposal; keep the valid bracket.
++                if -10000 < log_slope < 10000:
++                    slope=mp.exp(log_slope)*(1 if lower else -1)
+                     newton=mid-residual/slope
+                     if a<newton<b:candidate=newton
+             xa, xb = self.chart(a)[0], self.chart(b)[0]

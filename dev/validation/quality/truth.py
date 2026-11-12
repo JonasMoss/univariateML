@@ -28,7 +28,7 @@ import mpmath as mp
 import sympy as sp
 import yaml
 from quality.density import density_expression
-from quality.truth_reference import Reference
+from quality.truth_reference import Reference, complement
 
 ROOT = Path(__file__).resolve().parents[3]
 DISTS = ROOT/'univariateML-cpp/include/cppunivariate/distributions'
@@ -311,16 +311,24 @@ def verify(ref, logd):
         for k in range(lo, min(int(ref.upper) if mp.isfinite(ref.upper) else lo+12, lo+12)+1):
             before, after = ref.tails(k-1), ref.tails(k)
             if after[0] == -mp.inf or before[1] == -mp.inf:
-                observed = mp.mpf(0)
+                observed = -mp.inf
             elif after[0] < -mp.log(2):
-                observed = mp.exp(after[0])*(-mp.expm1(before[0]-after[0]))
+                observed = after[0]+complement(before[0]-after[0])
             else:
-                observed = mp.exp(before[1])*(-mp.expm1(after[1]-before[1]))
-            expected = mp.exp(logd(mp.mpf(k)))
-            if abs(observed-expected) > mp.mpf('1e-25')*max(expected, mp.mpf('1e-60')):
+                observed = before[1]+complement(after[1]-before[1])
+            expected = logd(mp.mpf(k))
+            if observed == expected:
+                continue
+            # Compare the original relative/absolute error in log arithmetic.
+            # exp(-k**b) need not be constructed when b is 100 million.
+            error = max(observed,expected)+complement(min(observed,expected)-max(observed,expected))
+            threshold = mp.log(mp.mpf('1e-25'))+max(expected,mp.log(mp.mpf('1e-60')))
+            if error > threshold:
                 raise ArithmeticError(f'pmf/antiderivative mismatch at {k}')
         return mass
-    if hasattr(ref, 'normalization_integrand'):
+    if hasattr(ref, 'normalization_identity'):
+        mass, error = ref.normalization_identity, mp.mpf(0)
+    elif hasattr(ref, 'normalization_integrand'):
         mass, error = mp.quad(ref.normalization_integrand,
                               getattr(ref, 'normalization_domain', [0, mp.mpf('.1'), mp.mpf('.5'), mp.mpf('.9'), 1]), error=True)
     else:
@@ -344,6 +352,7 @@ def verify(ref, logd):
         if not mp.isfinite(x) or not ref.lower < x < ref.upper:
             x = ref.chart(mp.mpf(0))[0]
         scale = min([abs(x)+1]+([x-ref.lower] if mp.isfinite(ref.lower) else [])+([ref.upper-x] if mp.isfinite(ref.upper) else []))
+        scale = min(scale, 1/mp.exp(logd(x)))
         h = mp.mpf('1e-15')*scale
         if getattr(ref, 'numerical_tails', False):
             derivative = (mp.exp(ref.tails(x+h)[0])-mp.exp(ref.tails(x-h)[0]))/(2*h)
@@ -376,7 +385,7 @@ def quantile_acceptance(ref, logd, q, inp, lower, logp):
                 if not ref.lower <= j < ref.upper:
                     continue
                 tail = ref.tails(j)[0 if lower else 1]
-                value = tail if logp else mp.exp(tail)
+                value = tail if logp else (mp.mpf(0) if tail < -10000 else mp.exp(tail))
                 if abs(value-probe) <= abs(probe)*mp.mpf('1e-12'):
                     a, b, ambiguous = as_double(j), as_double(next_atom), 1
                     break

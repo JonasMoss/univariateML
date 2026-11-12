@@ -1,0 +1,30 @@
+{
+  "id": "ztbinom",
+  "input_sha256": "6cb0b35e380b7f082789d58216fc08e3a9bc7ca7f66129e7c24640884caba83c",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 56761,
+    "points": 9,
+    "values": 116,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 85067,
+    "points": 10,
+    "values": 322,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.331283211009577
+    }
+  ]
+}

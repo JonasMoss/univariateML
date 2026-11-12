@@ -6,9 +6,5 @@ import mpmath as mp
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 def build(t):
-    shape1 = t['shape1']
-    shape2 = t['shape2']
-    scale = t['scale']
-    min = t['min']
-    return Reference(lambda x: pair(-shape1*mp.log1p(((x-min)/scale)**shape2),False), min, mp.inf)
-
+    from quality.truth_reference import burr_reference
+    return burr_reference(t['shape1'], t['shape2'], t['scale'], t['min'], False)

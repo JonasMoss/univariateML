@@ -1,0 +1,30 @@
+{
+  "id": "zip",
+  "input_sha256": "f1c1fd17c5e2e16804e74365fbbad2b7c3c162e4b2b7e17cbaad0f01a614e578",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 243755,
+    "points": 10,
+    "values": 1859,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 273257,
+    "points": 11,
+    "values": 2072,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 69.58473078598035
+    }
+  ]
+}

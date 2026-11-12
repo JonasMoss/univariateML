@@ -310,3 +310,8 @@ TEST_CASE("zinb: certified zero-deficit delegate clears proposal diagnostics") {
 TEST_CASE("zinb: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qzinb(.5,1e308,.1,.1,true,false)));
 }
+
+TEST_CASE("zinb: half-inflation log quantile retains the positive component") {
+  const double got=cppunivariate::distributions::qzinb(-0.6931471805599453,1e8,.5,.5,true,true);
+  CHECK((got==99881303 || got==99881304));
+}

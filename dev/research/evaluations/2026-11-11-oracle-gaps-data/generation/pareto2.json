@@ -1,0 +1,31 @@
+{
+  "id": "pareto2",
+  "input_sha256": "74254c19d4a46965e967a3e92d7a8da27f5a082eb0244d3e7637411f7658ccdc",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 130525,
+    "points": 15,
+    "values": 292,
+    "quantiles": 660
+  },
+  "after": {
+    "bytes": 137174,
+    "points": 16,
+    "values": 303,
+    "quantiles": 704
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        0.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.23424938501557335
+    }
+  ]
+}

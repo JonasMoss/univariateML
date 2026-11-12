@@ -1,0 +1,30 @@
+{
+  "id": "dlaplace",
+  "input_sha256": "33e8a7d37d1bb05e66c34a10b6757c5012a637b20073ca36613279577641d623",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 172165,
+    "points": 6,
+    "values": 1254,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 203818,
+    "points": 7,
+    "values": 1473,
+    "quantiles": 308
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        0.9999999999999999
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1901175410021096
+    }
+  ]
+}

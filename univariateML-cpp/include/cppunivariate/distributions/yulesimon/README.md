@@ -79,6 +79,16 @@ existence:
 
 The Yule--Simon distribution models positive integer frequencies with a power-law tail. Its shape $\rho$ controls tail decay, with larger values concentrating probability closer to one.
 
+## d/p/q/r
+
+### Small-shape probabilities
+
+For shape at most $10^{-7}$, evaluating log Gamma after adding one can lose
+relative CDF accuracy beyond the direct finite-product range. The quadratic
+expansion of $\log\Gamma(1+\rho)$ has omitted magnitude at most
+$\zeta(3)\rho^3/3$. Together with the local digamma increment at counts above
+32, this leaves a relative CDF truncation margin below $2\times10^{-15}$.
+
 ## Details
 
 This is a beta negative binomial law with $r=1$, $\alpha=\rho$ and $\beta=1$, shifted upward by one. The score in log shape decreases strictly from the sample size to the sample size minus the sum of observations. It therefore has one finite root whenever any observation exceeds one. Other constant samples also have finite fits.

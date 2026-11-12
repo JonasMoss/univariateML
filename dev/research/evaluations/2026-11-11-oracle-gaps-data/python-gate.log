@@ -1,0 +1,76 @@
+Separately baseline-replayed inherited assertion: quality.test_truth.AttainedBoundaries.test_cmb_workload_keeps_both_support_endpoints
+Separately baseline-replayed inherited assertion: quality.test_truth.SamplerPoints.test_all_tables_select_public_default_and_frozen_golden_fit
+Separately baseline-replayed inherited assertion: quality.test_truth.SamplerPoints.test_default_is_retained_when_stress_grid_reaches_cap
+Separately baseline-replayed inherited assertion: quality.test_truth_metadata.TruthMetadataTests.test_stored_fingerprints_and_no_timings
+test_atomic_law_preserves_nominal_endpoints_and_zero_mass (quality.test_truth.AttainedBoundaries.test_atomic_law_preserves_nominal_endpoints_and_zero_mass) ... ok
+test_bounds_survive_historical_cap_and_project_dependent_domains (quality.test_truth.AttainedBoundaries.test_bounds_survive_historical_cap_and_project_dependent_domains) ... ok
+test_complete_law_archive_preserves_reference_and_remaps_points (quality.test_truth.AttainedBoundaries.test_complete_law_archive_preserves_reference_and_remaps_points) ... ok
+test_every_attained_face_has_a_stored_reference (quality.test_truth.AttainedBoundaries.test_every_attained_face_has_a_stored_reference) ... ok
+test_exclusions_preserve_the_independent_reference (quality.test_truth.AttainedBoundaries.test_exclusions_preserve_the_independent_reference) ... ok
+test_triangular_endpoint_modes_preserve_tiny_tails (quality.test_truth.AttainedBoundaries.test_triangular_endpoint_modes_preserve_tiny_tails) ... ok
+test_zero_rate_and_truncated_limits (quality.test_truth.AttainedBoundaries.test_zero_rate_and_truncated_limits) ... ok
+test_five_closed_forms (quality.test_truth.ClosedForms.test_five_closed_forms) ... ok
+test_normal_extreme_does_not_overflow (quality.test_truth.ClosedForms.test_normal_extreme_does_not_overflow) ... ok
+test_discrete_oracle_preserves_exact_and_binary64_log_half (quality.test_truth.ExactJumps.test_discrete_oracle_preserves_exact_and_binary64_log_half) ... ok
+test_normal_skew_normal_oracle_has_exact_median (quality.test_truth.ExactJumps.test_normal_skew_normal_oracle_has_exact_median) ... ok
+test_discretized_exponential_and_weibull (quality.test_truth.FarCountDensities.test_discretized_exponential_and_weibull) ... ok
+test_negative_binomial_closed_tails (quality.test_truth.FarCountDensities.test_negative_binomial_closed_tails) ... ok
+test_yule_rho_one (quality.test_truth.FarCountDensities.test_yule_rho_one) ... ok
+test_discrete_quantile_double_limit (quality.test_truth.OracleRegressions.test_discrete_quantile_double_limit) ... ok
+test_exact_zero_median (quality.test_truth.OracleRegressions.test_exact_zero_median) ... ok
+test_normal_quantile_rounding (quality.test_truth.OracleRegressions.test_normal_quantile_rounding) ... ok
+test_small_beta_shapes_normalize (quality.test_truth.OracleRegressions.test_small_beta_shapes_normalize) ... ok
+test_kumar_singular_endpoint_normalization (quality.test_truth.OracleValidation.test_kumar_singular_endpoint_normalization) ... ok
+test_small_shape_paralogistic_derivatives_at_extreme_body_quantiles (quality.test_truth.OracleValidation.test_small_shape_paralogistic_derivatives_at_extreme_body_quantiles) ... ok
+test_atomic_jump_bounds_skip_zero_mass_counts (quality.test_truth.QuantileAcceptance.test_atomic_jump_bounds_skip_zero_mass_counts) ... ok
+test_jump_ambiguity_uses_the_supplied_probability_scale (quality.test_truth.QuantileAcceptance.test_jump_ambiguity_uses_the_supplied_probability_scale) ... ok
+test_zero_floor_scales_with_the_model (quality.test_truth.QuantileAcceptance.test_zero_floor_scales_with_the_model) ... ok
+test_default_is_independent_of_golden_sampler_and_held_coordinates (quality.test_truth.SamplerPoints.test_default_is_independent_of_golden_sampler_and_held_coordinates) ... ok
+test_folded_normal_far_from_zero (quality.test_truth.TailCompositionRegressions.test_folded_normal_far_from_zero) ... ok
+test_half_normal_tiny_quantile (quality.test_truth.TailCompositionRegressions.test_half_normal_tiny_quantile) ... ok
+test_half_t_one_matches_half_cauchy (quality.test_truth.TailCompositionRegressions.test_half_t_one_matches_half_cauchy) ... ok
+test_shifted_gompertz_exponential_limit (quality.test_truth.TailCompositionRegressions.test_shifted_gompertz_exponential_limit) ... ok
+test_complements_keep_representable_log_tails (quality.test_truth_extreme.ExtremeGrid.test_complements_keep_representable_log_tails) ... ok
+test_endpoint_limit_keeps_exact_binary64_product (quality.test_truth_extreme.ExtremeGrid.test_endpoint_limit_keeps_exact_binary64_product) ... ok
+test_historical_prefix_and_domain_projection (quality.test_truth_extreme.ExtremeGrid.test_historical_prefix_and_domain_projection) ... ok
+test_late_coordinates_are_not_capped (quality.test_truth_extreme.ExtremeGrid.test_late_coordinates_are_not_capped) ... ok
+test_quantile_cut_beyond_binary64_does_not_stop_at_chart_cap (quality.test_truth_extreme.ExtremeGrid.test_quantile_cut_beyond_binary64_does_not_stop_at_chart_cap) ... ok
+test_bnbinom_beta_geometric_identity (quality.test_truth_gaps.ControlledTails.test_bnbinom_beta_geometric_identity) ... ok
+test_bnbinom_swapped_beta_quadrature (quality.test_truth_gaps.ControlledTails.test_bnbinom_swapped_beta_quadrature) ... ok
+test_nan_truth_cells_rejected (quality.test_truth_gaps.ControlledTails.test_nan_truth_cells_rejected) ... ok
+test_pig_bessel_and_mixture_density (quality.test_truth_gaps.ControlledTails.test_pig_bessel_and_mixture_density) ... ok
+test_pig_integral_against_positive_sum (quality.test_truth_gaps.ControlledTails.test_pig_integral_against_positive_sum) ... ok
+test_skellam_poisson_convolution_and_symmetry (quality.test_truth_gaps.ControlledTails.test_skellam_poisson_convolution_and_symmetry) ... ok
+test_skellam_zero_rate_poisson_limits (quality.test_truth_gaps.ControlledTails.test_skellam_zero_rate_poisson_limits) ... ok
+test_sn_shape_one_identity_and_reflection (quality.test_truth_gaps.ControlledTails.test_sn_shape_one_identity_and_reflection) ... ok
+test_payload_filter_preserves_numbers (quality.test_truth_metadata.TruthMetadataTests.test_payload_filter_preserves_numbers) ... ok
+test_semantic_inputs (quality.test_truth_metadata.TruthMetadataTests.test_semantic_inputs) ... ok
+test_beta_fraction_against_hypergeometric (test_references.OracleGaps.test_beta_fraction_against_hypergeometric) ... ok
+test_bnbinom_factorial_moment_tail (test_references.OracleGaps.test_bnbinom_factorial_moment_tail) ... ok
+test_burr_change_of_variable (test_references.OracleGaps.test_burr_change_of_variable) ... ok
+test_centered_gamma_against_special_function (test_references.OracleGaps.test_centered_gamma_against_special_function) ... ok
+test_cmp_euler_maclaurin_tail_additivity (test_references.OracleGaps.test_cmp_euler_maclaurin_tail_additivity) ... ok
+test_derivative_check_follows_density_width (test_references.OracleGaps.test_derivative_check_follows_density_width) ... ok
+test_discrete_gamma_center_interval (test_references.OracleGaps.test_discrete_gamma_center_interval) ... ok
+test_explicit_ged_density_against_declaration (test_references.OracleGaps.test_explicit_ged_density_against_declaration) ... ok
+test_gamma_power_matches_readme (test_references.OracleGaps.test_gamma_power_matches_readme) ... ok
+test_integer_gamma_positive_polynomial (test_references.OracleGaps.test_integer_gamma_positive_polynomial) ... ok
+test_reciprocal_gamma_quantile_chart (test_references.OracleGaps.test_reciprocal_gamma_quantile_chart) ... ok
+test_skellam_asymmetric_convolution (test_references.OracleGaps.test_skellam_asymmetric_convolution) ... ok
+test_skew_t_wedge_against_density_integral (test_references.OracleGaps.test_skew_t_wedge_against_density_integral) ... ok
+test_squared_normal_extreme_inverse (test_references.OracleGaps.test_squared_normal_extreme_inverse) ... ok
+test_concentrated_discrete_weibull_mass_check (test_log_domain.LogDomain.test_concentrated_discrete_weibull_mass_check) ... ok
+test_far_count_bracket_keeps_the_last_lower_endpoint (test_log_domain.LogDomain.test_far_count_bracket_keeps_the_last_lower_endpoint) ... ok
+test_far_truncation_retains_a_subnormal_interval (test_log_domain.LogDomain.test_far_truncation_retains_a_subnormal_interval) ... ok
+test_gamma_small_z_integral_bound (test_log_domain.LogDomain.test_gamma_small_z_integral_bound) ... ok
+test_ged_large_shape_bracket_fallback (test_log_domain.LogDomain.test_ged_large_shape_bracket_fallback) ... ok
+test_inverse_burr_endpoint_power (test_log_domain.LogDomain.test_inverse_burr_endpoint_power) ... ok
+test_logarithmic_stieltjes_bound_against_hypergeometric (test_log_domain.LogDomain.test_logarithmic_stieltjes_bound_against_hypergeometric) ... ok
+test_natural_probability_jump_check_avoids_huge_exponent (test_log_domain.LogDomain.test_natural_probability_jump_check_avoids_huge_exponent) ... ok
+test_positive_conditioning_keeps_tiny_lower_tail (test_log_domain.LogDomain.test_positive_conditioning_keeps_tiny_lower_tail) ... ok
+test_skellam_far_negative_count_bound (test_log_domain.LogDomain.test_skellam_far_negative_count_bound) ... ok
+
+----------------------------------------------------------------------
+Ran 67 tests in 43.396s
+
+OK

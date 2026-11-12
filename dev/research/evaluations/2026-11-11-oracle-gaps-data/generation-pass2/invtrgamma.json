@@ -1,0 +1,53 @@
+{
+  "id": "invtrgamma",
+  "input_sha256": "9fbe9d511901feceeefbfcfa8fe003bc3afbef4100867a4679751edf75cdee9d",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 136678,
+    "points": 16,
+    "values": 308,
+    "quantiles": 672
+  },
+  "after": {
+    "bytes": 145979,
+    "points": 17,
+    "values": 329,
+    "quantiles": 716
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 600 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 442, in make\n    mass = verify(ref, logd)\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 348, in verify\n    x = ref.quantile(mp.log(mp.mpf(u)), True)\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 247, in quantile\n    value=self.tails(x)[0 if lower else 1]\n          ~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 489, in <lambda>\n    ref=Reference(lambda x:gamma(a,mp.exp(sign*c*mp.log(x/s)))[::sign],0,log_density=density)\n                           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 90, in gamma\n    if lp>-mp.log(2):lower=not lower;lp=integral(lower)\n                                        ~~~~~~~~^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 88, in integral\n    else mp.gammainc(a,z,mp.inf)/mp.gamma(a))\n         ~~~~~~~~~~~^^^^^^^^^^^^\nTimeoutError: independent reference exceeded 600 seconds per point\n",
+      "seconds": 600.2343985869666
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 68.93497520900564
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 600 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 442, in make\n    mass = verify(ref, logd)\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 348, in verify\n    x = ref.quantile(mp.log(mp.mpf(u)), True)\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 247, in quantile\n    value=self.tails(x)[0 if lower else 1]\n          ~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 489, in <lambda>\n    ref=Reference(lambda x:gamma(a,mp.exp(sign*c*mp.log(x/s)))[::sign],0,log_density=density)\n                           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 90, in gamma\n    if lp>-mp.log(2):lower=not lower;lp=integral(lower)\n                                        ~~~~~~~~^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 88, in integral\n    else mp.gammainc(a,z,mp.inf)/mp.gamma(a))\n         ~~~~~~~~~~~^^^^^^^^^^^^\nTimeoutError: independent reference exceeded 600 seconds per point\n",
+      "seconds": 600.1457321610069
+    }
+  ]
+}

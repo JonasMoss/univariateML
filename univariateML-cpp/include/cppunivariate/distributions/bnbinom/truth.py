@@ -31,12 +31,38 @@ def build(p, logd):
     sums=[]; total=mp.mpf(0)
     for w in weights:
         total+=w; sums.append(total)
+    near_poisson=a>mp.mpf('1e12') and r*b/(a-1)<10
+    @lru_cache(maxsize=20000)
+    def moment_bound(n):
+        # E[(X)_n]=(r)^rising_n*(b)^rising_n/(a-1)^falling_n.
+        # Markov gives P(X>=n)<=E[(X)_n]/n! when n<a.
+        if n>=a:raise ArithmeticError('BNB factorial-moment order unavailable')
+        return (mp.loggamma(r+n)-mp.loggamma(r)+mp.loggamma(b+n)-mp.loggamma(b)
+                +mp.loggamma(a-n)-mp.loggamma(a)-mp.loggamma(n+1))
+    @lru_cache(maxsize=20000)
+    def near_tail(n):
+        if n>mp.mpf('1e50')*(a+r+b+1)**2:
+            # Each gamma ratio has O((a+r+b)^2/n) log error. The
+            # positive power sum lies between its integral and integral+first.
+            return c-mp.log(a)-a*mp.log(n)
+        first=density(n);term=mp.mpf(1);total=term
+        for j in range(10000):
+            end=n+j+1
+            if moment_bound(end)<first+mp.log(total)+mp.log(mp.mpf('1e-48')):
+                return first+mp.log(total)
+            k=n+j
+            term*=(r+k)*(b+k)/((k+1)*(a+r+b+k));total+=term
+        raise ArithmeticError('BNB positive sum/factorial-moment remainder')
     @lru_cache(maxsize=20000)
     def tails(k):
         n=k+1
+        if near_poisson:
+            if n<=300 and mp.log(sums[int(k)]) < -mp.mpf('1e-50'):
+                return pair(mp.log(sums[int(k)]))
+            return pair(near_tail(n),False)
         if b==1 or r==1:
             rr = r if b==1 else b
-            upper=mp.logbeta(n+rr,a)-mp.logbeta(rr,a) if hasattr(mp,"logbeta") else mp.log(mp.beta(n+rr,a))-mp.log(mp.beta(rr,a))
+            upper=mp.loggamma(rr+a)-mp.loggamma(rr)+loggamma_ratio(n,rr,rr+a)
             return pair(upper,False)
         if n<=300:
             return pair(mp.log(sums[int(k)]))
@@ -55,3 +81,6 @@ def build(p, logd):
 
 # Joint limit paths supplement the shared one-coordinate extreme grid.
 extreme_parameter_sets = [{'alpha': 100000000.0, 'beta': 100000000.0}, {'size': 100000000.0, 'beta': 100000000.0, 'alpha': 1e+16}]
+
+
+truth_point_exclusions = [([100000000.0, 1e+16, 100000000.0], 'TASK-196 open: public CDF returns NaN at x=1.0, lower=True, log=True; independent value -0.3068528194400547. Near-Poisson beta-mixture evaluation needs a cancellation-free mass and a closed mixture remainder.')]

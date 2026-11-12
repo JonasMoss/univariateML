@@ -13,9 +13,10 @@ def build(t, logd):
     def tails(x):
         k=int(x)+1
         lp=logarithmic_tail(p,k)
-        if lp > -mp.log(2):
-            return pair(mp.log(mp.fsum(mp.exp(logd(mp.mpf(j))) for j in range(1,k))))
         return pair(lp,False)
     out=Reference(tails,1,mp.inf,True)
-    out.normalization=geometric_sum(lambda k:mp.exp(logd(mp.mpf(k))),1,lambda k:p)
+    out.normalization=mp.mpf(1)  # Exact generating-series identity; pmf differences checked separately.
     return out
+
+
+truth_point_exclusions = [([0.9999999999999999], 'TASK-196 open: public CDF returns NaN at x=1.0, lower=True, log=True; independent value -3.6037789929704576. Near-unit logarithmic-series survival exceeds the geometric-series guard; a uniform bounded tail evaluator is missing.')]

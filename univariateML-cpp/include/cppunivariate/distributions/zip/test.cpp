@@ -208,3 +208,9 @@ TEST_CASE("zip: held tiny rate preserves the all-zero inflation maximum") {
 TEST_CASE("zip: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qzip(.5,1e308,.1,true,false)));
 }
+
+TEST_CASE("zip: rounded log half retains its component probability") {
+  CHECK(cppunivariate::distributions::qzip(-0.6931471805599453,1e8,.5,true,true)==99916056);
+  CHECK(cppunivariate::distributions::qzip(-0.6931471805599453,1e8,.5,false,true)==0);
+  CHECK(cppunivariate::distributions::qzip(.5,1e8,.5,true,false)==0);
+}

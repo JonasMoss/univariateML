@@ -1,0 +1,61 @@
+{
+  "id": "ht",
+  "input_sha256": "68f2208de370345a82d4973deeadc3ff84eadaf5240192a52924b49cd2866c99",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 100212,
+    "points": 11,
+    "values": 223,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 133084,
+    "points": 15,
+    "values": 294,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        5e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 8.387577705958392
+    },
+    {
+      "parameters": [
+        0.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 27.61482297803741
+    },
+    {
+      "parameters": [
+        0.0,
+        500000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 22.213568290986586
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        500000000.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 22.52263274299912
+    }
+  ]
+}

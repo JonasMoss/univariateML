@@ -252,3 +252,8 @@ TEST_CASE("pareto4 transports an unclosed held-power face") {
 TEST_CASE("pareto4: exact-input extreme arithmetic regression") {
   CHECK(cppunivariate::distributions::qpareto4(-0.6931471805599453,1.0,1e-08,1.0,0.0,true,true) == doctest::Approx(1.0000000046380937).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("pareto4: concentrated density retains the scale displacement") {
+  CHECK(cppunivariate::distributions::dpareto4(999.9976974175579,1,1e8,1000,0,true)==
+        doctest::Approx(-218.7455815369823).epsilon(1e-12));
+}

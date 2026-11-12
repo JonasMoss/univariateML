@@ -11,6 +11,9 @@ def build(t, logd):
     lo, hi = 0, t['size']
     if t['size'] == 0 or t['pi'] == 1 or t['prob'] == 0: return atomic({0: 1}, lo, hi)
     if t['prob'] == 1: return atomic({0: t['pi'], hi: 1-t['pi']}, lo, hi)
+    if t['size'] > 100000:
+        from quality.truth_reference import binomial_reference
+        return binomial_reference(t['size'],t['prob'],1-t['pi'],False)
     return finite_pmf(logd,0,t['size'])
 
 # Joint limit paths supplement the shared one-coordinate extreme grid.

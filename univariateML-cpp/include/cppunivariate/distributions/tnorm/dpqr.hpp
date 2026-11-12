@@ -111,8 +111,15 @@ inline double ptnorm(double q, double mean, double sd, double a, double b,
     }
     const double alpha=special::scaled_difference(a,mean,sd), beta=special::scaled_difference(b,mean,sd);
     const double z=special::scaled_difference(q,mean,sd);
+    // A distant query also separates the normal log tails safely. Close
+    // boundary queries need the mode-centred integral instead.
+    const bool normal_ratio_safe=(!std::isfinite(a) && !std::isfinite(b)) ||
+        (!std::isfinite(a) && std::isfinite(beta) && std::abs(beta)<100) ||
+        (!std::isfinite(b) && std::isfinite(alpha) && std::abs(alpha)<100) ||
+        (!std::isfinite(b) && alpha>=100 && z>2*alpha) ||
+        (!std::isfinite(a) && beta<=-100 && z<2*beta);
     if (beta-alpha>1e-4 && z>alpha && z<beta &&
-        (!std::isfinite(a) || !std::isfinite(b) ||
+        (normal_ratio_safe ||
          (std::max(std::abs(alpha),std::abs(beta))<100 &&
           std::abs(mean)<4*std::max(std::abs(a),std::abs(b))))) {
       const double total=tnorm_log_mass(alpha,beta);
@@ -170,8 +177,11 @@ inline double qtnorm(double p, double mean, double sd, double a, double b,
       return endpoint+(near_lower?1.0:-1.0)*std::exp(log_distance);
   }
   const double alpha0=special::scaled_difference(a,mean,sd), beta0=special::scaled_difference(b,mean,sd);
+  const bool ordinary_unbounded=(!std::isfinite(a) && !std::isfinite(b)) ||
+      (!std::isfinite(a) && std::isfinite(beta0) && std::abs(beta0)<100) ||
+      (!std::isfinite(b) && std::isfinite(alpha0) && std::abs(alpha0)<100);
   if (beta0-alpha0>1e-4 &&
-      (!std::isfinite(a) || !std::isfinite(b) ||
+      (ordinary_unbounded ||
        ((alpha0>4 || beta0< -4) &&
         std::max(std::abs(alpha0),std::abs(beta0))<100 &&
         std::abs(mean)<4*std::max(std::abs(a),std::abs(b))))) {

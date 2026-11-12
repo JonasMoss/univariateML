@@ -1,0 +1,30 @@
+{
+  "id": "naka",
+  "input_sha256": "06a0c5fbad1acc3cb0aec1e440d12e0ddfdbbd15b23f427ad26e91261b375327",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 99394,
+    "points": 11,
+    "values": 230,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 105956,
+    "points": 12,
+    "values": 241,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 15.586911663995124
+    }
+  ]
+}

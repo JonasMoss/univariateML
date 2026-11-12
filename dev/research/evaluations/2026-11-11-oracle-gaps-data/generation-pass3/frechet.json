@@ -1,0 +1,20 @@
+{
+  "id": "frechet",
+  "input_sha256": "4a23d7b9cf689a0f7fb092db5929aebdcb2aa0d2d73a0cc43952ab92bacc7b25",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 281459,
+    "points": 31,
+    "values": 627,
+    "quantiles": 1364
+  },
+  "after": {
+    "bytes": 281459,
+    "points": 31,
+    "values": 627,
+    "quantiles": 1364
+  },
+  "records": []
+}

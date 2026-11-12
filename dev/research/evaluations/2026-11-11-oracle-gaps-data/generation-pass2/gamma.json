@@ -1,0 +1,58 @@
+{
+  "id": "gamma",
+  "input_sha256": "7b5d463c21334f07ff19e90c1b1cc7013f0dc0f1efabab166150837b6e279959",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 81618,
+    "points": 9,
+    "values": 187,
+    "quantiles": 396
+  },
+  "after": {
+    "bytes": 108034,
+    "points": 12,
+    "values": 250,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 40.97361950803315
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 48.632299879041966
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 29.647662460047286
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 37.95187846600311
+    }
+  ]
+}

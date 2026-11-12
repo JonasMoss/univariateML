@@ -1,0 +1,30 @@
+{
+  "id": "dnorm",
+  "input_sha256": "b717b91c638efb8f22b4303f6db709acf271e4fbd01529a41cd481bf164d9aca",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 179587,
+    "points": 7,
+    "values": 1441,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 210104,
+    "points": 8,
+    "values": 1660,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.831125232973136
+    }
+  ]
+}

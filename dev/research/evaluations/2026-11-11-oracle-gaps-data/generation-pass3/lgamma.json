@@ -1,0 +1,30 @@
+{
+  "id": "lgamma",
+  "input_sha256": "ca435f237eb5d13f0dbfd2776ff2730f30311ce42492cd56c4d95d9601d7a4ea",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 79348,
+    "points": 10,
+    "values": 157,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 85744,
+    "points": 11,
+    "values": 167,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 9.53970444900915
+    }
+  ]
+}

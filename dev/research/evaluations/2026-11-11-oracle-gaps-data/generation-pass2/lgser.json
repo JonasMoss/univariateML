@@ -1,0 +1,30 @@
+{
+  "id": "lgser",
+  "input_sha256": "e1de7bb07b06ae8be80e9e4b8d516888042ed852ad643444177422f752c4fcd8",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 170252,
+    "points": 6,
+    "values": 1253,
+    "quantiles": 264
+  },
+  "after": {
+    "bytes": 170252,
+    "points": 6,
+    "values": 1253,
+    "quantiles": 264
+  },
+  "records": [
+    {
+      "parameters": [
+        0.9999999999999999
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 600 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 472, in make\n    ll, lu = ref.tails(v)\n             ~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/lgser/truth.py\", line 15, in tails\n    lp=logarithmic_tail(p,k)\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 360, in logarithmic_tail\n    integral,error=mp.quad(lambda v:mp.exp(-v)/(-mp.expm1(mp.log(p)-v/k)),\n                   ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                           [0,1,10,end],error=True)\n                           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/calculus/quadrature.py\", line 746, in quad\n    v, err = rule.summation(f, points[0], prec, epsilon, m, verbose)\n             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/calculus/quadrature.py\", line 233, in summation\n    result = self.sum_next(f, nodes, degree, prec, results, verbose)\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/calculus/quadrature.py\", line 308, in sum_next\n    S += self.ctx.fdot((w,f(x)) for (x,w) in nodes)\n         ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: independent reference exceeded 600 seconds per point\n",
+      "seconds": 600.0030336549971
+    }
+  ]
+}

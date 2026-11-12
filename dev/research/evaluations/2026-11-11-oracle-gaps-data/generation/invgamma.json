@@ -1,0 +1,30 @@
+{
+  "id": "invgamma",
+  "input_sha256": "d2badf389af594f65904c27ec143380670db4cf671f73e4d017235bf9fb3364b",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 109055,
+    "points": 12,
+    "values": 248,
+    "quantiles": 528
+  },
+  "after": {
+    "bytes": 115831,
+    "points": 13,
+    "values": 259,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 15.719410592981149
+    }
+  ]
+}

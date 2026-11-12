@@ -1,0 +1,76 @@
+{
+  "id": "sstd",
+  "input_sha256": "aa2f38727f4b02646c14b0cff56b40a3f2b2665826feb4a2f7313bbb4e32d0ed",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 164007,
+    "points": 18,
+    "values": 342,
+    "quantiles": 792
+  },
+  "after": {
+    "bytes": 207510,
+    "points": 23,
+    "values": 437,
+    "quantiles": 1012
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 58.251848077983595
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 43.25966020999476
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        500000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 51.97287499002414
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 33.03743825003039
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 36.07805827399716
+    }
+  ]
+}

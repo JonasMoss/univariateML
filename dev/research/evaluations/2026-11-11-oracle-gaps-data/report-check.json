@@ -1,0 +1,11 @@
+{
+  "report": "dev/research/evaluations/2026-11-11-oracle-gaps-report.md",
+  "sha256": "ba301d687711ee47c00c5b912dc8c5d4e23d9cd67437e57107ce64bcb2081759",
+  "families": 61,
+  "local_links": 32,
+  "references_closed": 127,
+  "remaining_reference_gaps": 4,
+  "production_open_points": 22,
+  "required_and_targeted_receipts": 11,
+  "checks": "green"
+}

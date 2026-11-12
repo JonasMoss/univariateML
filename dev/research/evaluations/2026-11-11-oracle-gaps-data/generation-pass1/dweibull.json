@@ -1,0 +1,31 @@
+{
+  "id": "dweibull",
+  "input_sha256": "7437dd436ef61eb7afcfb109fd5c736590f0471327284f4c5e399aa513c86993",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 279710,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 279710,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        0.5,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 436, in make\n    mass = verify(ref, logd)\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 318, in verify\n    observed = mp.exp(before[1])*(-mp.expm1(after[1]-before[1]))\n                                   ~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/ctx_mp_python.py\", line 1023, in f_wrapped\n    retval = f(ctx, *args, **kwargs)\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/functions/functions.py\", line 183, in expm1\n    return ctx.sum_accurately(lambda: iter([ctx.exp(x),-1]),1)\n           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/ctx_base.py\", line 362, in sum_accurately\n    for term in terms():\n                ~~~~~^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/functions/functions.py\", line 183, in <lambda>\n    return ctx.sum_accurately(lambda: iter([ctx.exp(x),-1]),1)\n                                            ~~~~~~~^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/ctx_mp_python.py\", line 1000, in f\n    return ctx.make_mpf(mpf_f(x._mpf_, prec, rounding))\n                        ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: independent reference exceeded 120 seconds per point\n",
+      "seconds": 120.01089102297556
+    }
+  ]
+}

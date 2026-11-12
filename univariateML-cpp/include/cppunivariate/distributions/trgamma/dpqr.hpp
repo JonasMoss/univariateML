@@ -3,6 +3,7 @@
 // Quantiles and draws are formed on the log scale, so scale * G^(1/shape2)
 // does not overflow when G^(1/shape2) alone would.
 #pragma once
+#include "../gamma/dpqr.hpp"
 
 #include "mle.hpp"
 
@@ -83,6 +84,7 @@ inline double dtrgamma(double x, double shape1, double shape2, double scale, boo
 inline double ptrgamma(double q, double shape1, double shape2, double scale, bool lower_tail,
                        bool log_p) {
   if (!trgamma_valid(shape1,shape2,scale) || std::isnan(q)) return special::kNaN;
+  if (shape2==1) return pgamma(q,shape1,scale,lower_tail,log_p);
   const auto tails=q<=0?special::tails_from_log(special::kNegInf,true):
     trgamma_power_tails(special::log_positive_ratio(q,scale),shape1,shape2);
   return special::tail_probability(tails,lower_tail,log_p);

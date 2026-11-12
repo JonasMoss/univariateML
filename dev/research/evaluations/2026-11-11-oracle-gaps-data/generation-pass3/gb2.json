@@ -1,0 +1,32 @@
+{
+  "id": "gb2",
+  "input_sha256": "c7de5823dc1d19844391b84bbe53647c0106970e7925178ea2cf69361a50f77c",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 216984,
+    "points": 25,
+    "values": 471,
+    "quantiles": 1100
+  },
+  "after": {
+    "bytes": 225876,
+    "points": 26,
+    "values": 492,
+    "quantiles": 1144
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.0001414213562373095,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 88.38000947498949
+    }
+  ]
+}

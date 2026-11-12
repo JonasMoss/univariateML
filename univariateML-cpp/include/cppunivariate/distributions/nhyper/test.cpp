@@ -239,3 +239,8 @@ TEST_CASE("nhyper: the first representable free stopping count is feasible") {
   REQUIRE(f.status==cppunivariate::NhyperStatus::Ok);
   CHECK(f.r==2);CHECK(f.N==f.m);CHECK(f.logLik==0);
 }
+
+TEST_CASE("nhyper: few marked positions retain an extreme endpoint survival") {
+  const double got=cppunivariate::distributions::pnhyper(99999997.99999999,5,1e8,3,false,false);
+  CHECK(std::abs(got/6.000000180000012e-23-1)<1e-10);
+}

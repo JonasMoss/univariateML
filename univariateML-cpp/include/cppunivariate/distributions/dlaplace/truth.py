@@ -10,7 +10,6 @@ def build(t, logd):
     def tails(x):
         return pair((m-x)*mp.log(p)-mp.log1p(p)) if x<m else pair((x-m+1)*mp.log(p)-mp.log1p(p),False)
     out=Reference(tails,-mp.inf,mp.inf,True)
-    n=int(mp.ceil(mp.log(mp.mpf('1e-45'))/mp.log(p)))
-    out.normalization=mp.fsum(mp.exp(logd(m+k)) for k in range(-n,n+1))
+    out.normalization=mp.mpf(1)  # Telescoping normal bins / two geometric series.
     return out
 

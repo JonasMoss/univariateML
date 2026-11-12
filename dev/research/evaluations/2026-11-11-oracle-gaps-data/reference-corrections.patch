@@ -1,0 +1,96 @@
+--- a/dev/validation/quality/truth_reference.py
++++ b/dev/validation/quality/truth_reference.py
+@@ -475,7 +475,9 @@
+         return mp.log(a*(max(v,0)+mp.log1p(mp.exp(-abs(v)))))
+     def density(x):
+         if x==m:
+-            if inverse:return -mp.inf
++            if inverse:
++                power=a*b-1
++                return mp.inf if power<0 else -mp.inf if power>0 else mp.log(a*b/s)
+             if b==1:return mp.log(a/s)
+             return mp.inf if b<1 else -mp.inf
+         z=mp.log((x-m)/s);v=sign*b*z
+@@ -541,3 +543,11 @@
+     ref.normalization_integrand=integrand
+     ref.normalization_domain=sorted(set([low,high]+[mp.mpf(v) for v in (-10,-1,0,1,10) if low<v<high]))
+     return ref
++
++
++def conditioned_positive_tails(tails, zero):
++    """Stable tails of a count law conditioned on X>0."""
++    ll,lu=tails;l0,u0=zero
++    if ll<-mp.log(2):
++        return pair(ll+complement(l0-ll)-u0)
++    return pair(lu-u0,False)
+--- a/univariateML-cpp/include/cppunivariate/distributions/ztpois/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/ztpois/truth.py
+@@ -3,6 +3,7 @@
+ The route contains only mathematical definitions, no C++/R/reference calls.
+ """
+ import mpmath as mp
++from quality.truth_reference import conditioned_positive_tails
+ from quality.truth_reference import atomic
+ from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+ 
+@@ -12,10 +13,9 @@
+     base=lambda x: gamma(x+1,r)[::-1]
+     ratio=lambda k:r/(k+1)
+     weight=mp.mpf(1)
+-    survival0=base(0)[1]
++    zero=base(0)
+     def tails(x):
+-        small=base(x)[1]+mp.log(weight)-survival0
+-        return pair(small,False)
++        return conditioned_positive_tails(base(x),zero)
+     out=Reference(tails,1,mp.inf,True)
+     out.normalization=mp.mpf(1)  # Exact generating-series identity; pmf differences checked separately.
+     return out
+--- a/univariateML-cpp/include/cppunivariate/distributions/ztnbinom/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/ztnbinom/truth.py
+@@ -3,6 +3,7 @@
+ The route contains only mathematical definitions, no C++/R/reference calls.
+ """
+ import mpmath as mp
++from quality.truth_reference import conditioned_positive_tails
+ from quality.truth_reference import atomic
+ from quality.truth_reference import negative_binomial, Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
+ 
+@@ -28,10 +29,9 @@
+     base=lambda x:negative_binomial(r,p,x)
+     ratio=lambda k:(1-p)*max(1,(k+r)/(k+1))
+     weight=mp.mpf(1)
+-    survival0=base(0)[1]
++    zero=base(0)
+     def tails(x):
+-        small=base(x)[1]+mp.log(weight)-survival0
+-        return pair(small,False)
++        return conditioned_positive_tails(base(x),zero)
+     out=Reference(tails,1,mp.inf,True)
+     out.normalization=mp.mpf(1)  # Exact generating-series identity; pmf differences checked separately.
+     return out
+--- a/univariateML-cpp/include/cppunivariate/distributions/tnorm/truth.py
++++ b/univariateML-cpp/include/cppunivariate/distributions/tnorm/truth.py
+@@ -19,10 +19,19 @@
+             u,v=normal(h)[0],normal(l)[0]
+             return u+mp.log(-mp.expm1(v-u)) if v!=-mp.inf else u
+         return mp.log((mp.erf(h/mp.sqrt(2))-mp.erf(l/mp.sqrt(2)))/2)
+-    z=interval((a-m)/s,(b-m)/s)
++    def physical_interval(l,h):
++        if mp.isfinite(l) and mp.isfinite(h):
++            width=(h-l)/s
++            start=(l-m)/s
++            if width*(1+abs(start)+abs(width))<mp.mpf('1e-35'):
++                # Keep the physical width before subtracting a huge mean.
++                # Midpoint relative error is below 1e-70 in this branch.
++                return mp.log(width)-mp.log(2*mp.pi)/2-start*start/2-start*width/2-width*width/8
++        return interval((l-m)/s,(h-m)/s)
++    z=physical_interval(a,b)
+     def tails(x):
+-        l=interval((a-m)/s,(x-m)/s)-z
+-        h=interval((x-m)/s,(b-m)/s)-z
++        l=physical_interval(a,x)-z
++        h=physical_interval(x,b)-z
+         return pair(l) if l<h else pair(h,False)
+     out=Reference(tails,a,b)
+     out.log_density=lambda x:-(x-m)**2/(2*s*s)-mp.log(s*mp.sqrt(2*mp.pi))-z

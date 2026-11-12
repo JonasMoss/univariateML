@@ -104,6 +104,13 @@ key_references:
 
 The discretized gamma distribution is the integer part of a continuous gamma variable. Each observation records the latent variable in an interval from the observed integer to the next integer. The coefficients $k$ and $\lambda$ are the shape and rate of the latent gamma variable. Its mean is $k/\lambda$ and its variance is $k/\lambda^2$, rather than the mean and variance of the observed counts. Holding shape fixes the relative dispersion of the latent variable. Holding rate fixes its inverse scale while shape remains free.
 
+## d/p/q/r
+
+At shape 1e8 and unit rate, generic incomplete-gamma endpoint errors were
+amplified by subtraction over one count bin. The CDF and bin endpoints use
+the protected unit-gamma CDF; the independent bin integrals resolve the
+previous double-precision discrepancies without a midpoint approximation.
+
 ## Details
 
 The [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) and the boundary argument in this dossier establish the existence conditions. Numerical face searches alone do not certify global optimality.

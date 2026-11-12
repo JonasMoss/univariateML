@@ -1,0 +1,93 @@
+{
+  "id": "sged",
+  "input_sha256": "802be8e760ea1e7b6f0013403a3076d17fd793a96b2663ccbfd228834ce90826",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 163043,
+    "points": 18,
+    "values": 340,
+    "quantiles": 792
+  },
+  "after": {
+    "bytes": 163026,
+    "points": 18,
+    "values": 340,
+    "quantiles": 792
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2e-08,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 475, in make\n    q = ref.quantile(lp, lower)\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 247, in quantile\n    value=self.tails(x)[0 if lower else 1]\n          ~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/sged/truth.py\", line 18, in tails\n    if y<0: return pair(mp.log(2/(1+xi*xi))+base(y*xi)[0])\n                                            ~~~~^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/sged/truth.py\", line 13, in <lambda>\n    base=lambda z:pair(gamma(1/a,(abs(z)/b)**a)[1]-mp.log(2),z<0)\n                       ~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 84, in gamma\n    if a>100000 and a/2<z<2*a:return concentrated_gamma(a,z)\n                                     ~~~~~~~~~~~~~~~~~~^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 60, in concentrated_gamma\n    value,error=mp.quad(lambda v:mp.exp(logkernel(v)),cuts,error=True)\n                ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: independent reference exceeded 120 seconds per point\n",
+      "seconds": 120.00207471504109
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 17.321477485005744
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 20.5128909299965
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        200000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 22.869719808979426
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 29.282858776976354
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 29.587582762003876
+    }
+  ]
+}

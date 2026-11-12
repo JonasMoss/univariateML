@@ -1,0 +1,31 @@
+{
+  "id": "zmbinom",
+  "input_sha256": "6ce6f4a2bfceca920d6c57e42eba0cedaf54df558953f6831d62c73209490841",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 90850,
+    "points": 14,
+    "values": 203,
+    "quantiles": 616
+  },
+  "after": {
+    "bytes": 119405,
+    "points": 15,
+    "values": 409,
+    "quantiles": 660
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        1e-08,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 3.043226034962572
+    }
+  ]
+}

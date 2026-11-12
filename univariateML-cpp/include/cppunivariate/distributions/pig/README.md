@@ -106,6 +106,14 @@ existence:
 
 The Poisson-inverse Gaussian distribution mixes a Poisson count with an inverse Gaussian mean. The coefficient $\mu$ is the mixing mean; smaller positive $\lambda$ gives more mixing variation. With both coefficients free, the fitted mean is exactly the sample mean.
 
+## d/p/q/r
+
+### Zero-count probability
+
+The CDF at zero is the closed zero-count mass. At mean one and shape
+$10^{-8}$ its log probability is -0.0001414113565908629; summing the opposite
+heavy count tail cannot replace this identity within the tail-series guard.
+
 ## Zero member and limit faces
 
 Shape zero is the attained zero point mass. All-zero data with free shape return $\lambda=0$, preserving held $\mu$ or choosing $\mu=1$ when it is unidentified. This supplies a counterexample to joint uniqueness: $(\mu,\lambda)=(1,0)$ and $(2,0)$ have the same maximum. With positive shape held and mean free, all-zero data instead have the unattained mean-zero supremum. With both coefficients held the likelihood is evaluated directly.

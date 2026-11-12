@@ -1,0 +1,64 @@
+{
+  "id": "ged",
+  "input_sha256": "b79c82d7d8e03e30b59f796cd01827d7d29c87ea564abe2237614efa2a3ddb9a",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 116379,
+    "points": 13,
+    "values": 247,
+    "quantiles": 572
+  },
+  "after": {
+    "bytes": 121862,
+    "points": 14,
+    "values": 252,
+    "quantiles": 616
+  },
+  "records": [
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        2e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 57.10986966401106
+    },
+    {
+      "parameters": [
+        0.0,
+        1.0,
+        200000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 14.811320617969614
+    },
+    {
+      "parameters": [
+        0.0,
+        1000.0,
+        200000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 14.86319766601082
+    },
+    {
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        200000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 22.926122471981216
+    }
+  ]
+}

@@ -246,3 +246,9 @@ TEST_CASE("nbinom: finite-size Poisson face log mass and tiny survival") {
 TEST_CASE("nbinom: exact-input density from likelihood seam replay") {
  CHECK(cppunivariate::distributions::dnbinom(1000001,10.391389312562472,1.0391233533535134e-05,true)==doctest::Approx(-13.571983521811106).epsilon(1e-10));
 }
+
+TEST_CASE("nbinom: diffuse geometric survival needs no positive tail sum") {
+  const double lower=cppunivariate::distributions::pnbinom(138155105234.0,1,5e-9,true,true);
+  CHECK(std::isfinite(lower));
+  CHECK(std::abs(lower/(-9.999999962748696e-301)-1)<1e-10);
+}

@@ -1,0 +1,31 @@
+{
+  "id": "beta",
+  "input_sha256": "af50642ea1612848c5e37f7a743c7323515ccb3468017e92891925dccda3eff5",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 89256,
+    "points": 11,
+    "values": 185,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 89239,
+    "points": 11,
+    "values": 185,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 444, in make\n    v = as_double(ref.quantile(mp.log(mp.mpf(u)), lower))\n                  ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 247, in quantile\n    value=self.tails(x)[0 if lower else 1]\n          ~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/univariateML-cpp/include/cppunivariate/distributions/beta/truth.py\", line 11, in <lambda>\n    ref = Reference(lambda x: beta(shape1,shape2,x), 0, 1)\n                              ~~~~^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 130, in beta\n    lp=logpref+mp.log(beta_fraction(aa,bb,zz)/aa)\n                      ~~~~~~~~~~~~~^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 113, in beta_fraction\n    if abs(d)<tiny:d=tiny\n       ^^^^^^^^^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/ctx_mp_python.py\", line 179, in __lt__\n    def __lt__(s, t): return s._cmp(t, mpf_lt)\n                             ~~~~~~^^^^^^^^^^^\nTimeoutError: independent reference exceeded 120 seconds per point\n",
+      "seconds": 120.01144394901348
+    }
+  ]
+}

@@ -1,0 +1,974 @@
+{
+  "baseline": "7825e912",
+  "totals": {
+    "values": 9400,
+    "quantiles": 5456,
+    "points": 124,
+    "normalizations": 124
+  },
+  "preexisting": [
+    {
+      "family": "frechet",
+      "parameters": [
+        100000000.0,
+        0.0,
+        1000.0
+      ],
+      "baseline_values": 21,
+      "baseline_quantiles": 44
+    },
+    {
+      "family": "frechet",
+      "parameters": [
+        100000000.0,
+        -100000000.0,
+        100000000.0
+      ],
+      "baseline_values": 21,
+      "baseline_quantiles": 44
+    },
+    {
+      "family": "invweibull",
+      "parameters": [
+        100000000.0,
+        1000.0
+      ],
+      "baseline_values": 21,
+      "baseline_quantiles": 44
+    }
+  ],
+  "families": [
+    {
+      "family": "bbinom",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "beta",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 21,
+      "added_quantiles": 44
+    },
+    {
+      "family": "betapr",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 21,
+      "added_quantiles": 44
+    },
+    {
+      "family": "bhatt",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "binom",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 206,
+      "added_quantiles": 44
+    },
+    {
+      "family": "bnbinom",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 206,
+      "added_quantiles": 44
+    },
+    {
+      "family": "burr",
+      "added_points": 4,
+      "added_normalizations": 4,
+      "added_values": 74,
+      "added_quantiles": 176
+    },
+    {
+      "family": "cauchy",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "cmb",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 206,
+      "added_quantiles": 44
+    },
+    {
+      "family": "cmp",
+      "added_points": 2,
+      "added_normalizations": 2,
+      "added_values": 437,
+      "added_quantiles": 88
+    },
+    {
+      "family": "dgamma",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 221,
+      "added_quantiles": 44
+    },
+    {
+      "family": "dlaplace",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 219,
+      "added_quantiles": 44
+    },
+    {
+      "family": "dnorm",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 219,
+      "added_quantiles": 44
+    },
+    {
+      "family": "dunif",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "dweibull",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 206,
+      "added_quantiles": 44
+    },
+    {
+      "family": "emg",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "exp",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "expweibull",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "fatigue",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "foldnorm",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "fpareto",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 21,
+      "added_quantiles": 44
+    },
+    {
+      "family": "frechet",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "gamma",
+      "added_points": 4,
+      "added_normalizations": 4,
+      "added_values": 74,
+      "added_quantiles": 176
+    },
+    {
+      "family": "gb2",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 21,
+      "added_quantiles": 44
+    },
+    {
+      "family": "ged",
+      "added_points": 4,
+      "added_normalizations": 4,
+      "added_values": 62,
+      "added_quantiles": 176
+    },
+    {
+      "family": "genbeta",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "gengamma",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "geom",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 217,
+      "added_quantiles": 44
+    },
+    {
+      "family": "gev",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "gompertz",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "gpd",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "gumbel",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "hcauchy",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "hnorm",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "ht",
+      "added_points": 4,
+      "added_normalizations": 4,
+      "added_values": 71,
+      "added_quantiles": 176
+    },
+    {
+      "family": "huber",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "hyper",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "invburr",
+      "added_points": 3,
+      "added_normalizations": 3,
+      "added_values": 53,
+      "added_quantiles": 132
+    },
+    {
+      "family": "invexp",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "invgamma",
+      "added_points": 4,
+      "added_normalizations": 4,
+      "added_values": 74,
+      "added_quantiles": 176
+    },
+    {
+      "family": "invgauss",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "invparalogis",
+      "added_points": 2,
+      "added_normalizations": 2,
+      "added_values": 27,
+      "added_quantiles": 88
+    },
+    {
+      "family": "invpareto",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 11,
+      "added_quantiles": 44
+    },
+    {
+      "family": "invtrgamma",
+      "added_points": 6,
+      "added_normalizations": 6,
+      "added_values": 116,
+      "added_quantiles": 264
+    },
+    {
+      "family": "invweibull",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "kumar",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "laplace",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "lgamma",
+      "added_points": 3,
+      "added_normalizations": 3,
+      "added_values": 24,
+      "added_quantiles": 132
+    },
+    {
+      "family": "lgser",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 215,
+      "added_quantiles": 44
+    },
+    {
+      "family": "llogis",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "lnorm",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "logis",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "logitnorm",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "lomax",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 11,
+      "added_quantiles": 44
+    },
+    {
+      "family": "lst",
+      "added_points": 3,
+      "added_normalizations": 3,
+      "added_values": 57,
+      "added_quantiles": 132
+    },
+    {
+      "family": "naka",
+      "added_points": 3,
+      "added_normalizations": 3,
+      "added_values": 53,
+      "added_quantiles": 132
+    },
+    {
+      "family": "nbinom",
+      "added_points": 2,
+      "added_normalizations": 2,
+      "added_values": 438,
+      "added_quantiles": 88
+    },
+    {
+      "family": "nhyper",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 215,
+      "added_quantiles": 44
+    },
+    {
+      "family": "norm",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "nsbeta",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "paralogis",
+      "added_points": 2,
+      "added_normalizations": 2,
+      "added_values": 27,
+      "added_quantiles": 88
+    },
+    {
+      "family": "pareto",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 8,
+      "added_quantiles": 44
+    },
+    {
+      "family": "pareto2",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 11,
+      "added_quantiles": 44
+    },
+    {
+      "family": "pareto3",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "pareto4",
+      "added_points": 2,
+      "added_normalizations": 2,
+      "added_values": 32,
+      "added_quantiles": 88
+    },
+    {
+      "family": "pig",
+      "added_points": 4,
+      "added_normalizations": 4,
+      "added_values": 835,
+      "added_quantiles": 176
+    },
+    {
+      "family": "pois",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 221,
+      "added_quantiles": 44
+    },
+    {
+      "family": "power",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 8,
+      "added_quantiles": 44
+    },
+    {
+      "family": "rayleigh",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "sged",
+      "added_points": 6,
+      "added_normalizations": 6,
+      "added_values": 96,
+      "added_quantiles": 264
+    },
+    {
+      "family": "sgomp",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "skellam",
+      "added_points": 2,
+      "added_normalizations": 2,
+      "added_values": 440,
+      "added_quantiles": 88
+    },
+    {
+      "family": "slash",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "sn",
+      "added_points": 3,
+      "added_normalizations": 3,
+      "added_values": 57,
+      "added_quantiles": 132
+    },
+    {
+      "family": "snorm",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "sstd",
+      "added_points": 5,
+      "added_normalizations": 5,
+      "added_values": 95,
+      "added_quantiles": 220
+    },
+    {
+      "family": "st",
+      "added_points": 7,
+      "added_normalizations": 7,
+      "added_values": 119,
+      "added_quantiles": 308
+    },
+    {
+      "family": "std",
+      "added_points": 3,
+      "added_normalizations": 3,
+      "added_values": 57,
+      "added_quantiles": 132
+    },
+    {
+      "family": "tbinom",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "tlambda",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 19,
+      "added_quantiles": 44
+    },
+    {
+      "family": "tnorm",
+      "added_points": 3,
+      "added_normalizations": 3,
+      "added_values": 58,
+      "added_quantiles": 132
+    },
+    {
+      "family": "tpois",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "trgamma",
+      "added_points": 6,
+      "added_normalizations": 6,
+      "added_values": 116,
+      "added_quantiles": 264
+    },
+    {
+      "family": "triang",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "unif",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "weibull",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "yulesimon",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 207,
+      "added_quantiles": 44
+    },
+    {
+      "family": "zeta",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "zib",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 206,
+      "added_quantiles": 44
+    },
+    {
+      "family": "zinb",
+      "added_points": 2,
+      "added_normalizations": 2,
+      "added_values": 426,
+      "added_quantiles": 88
+    },
+    {
+      "family": "zip",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 213,
+      "added_quantiles": 44
+    },
+    {
+      "family": "zipf",
+      "added_points": 0,
+      "added_normalizations": 0,
+      "added_values": 0,
+      "added_quantiles": 0
+    },
+    {
+      "family": "zmbinom",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 206,
+      "added_quantiles": 44
+    },
+    {
+      "family": "zmgeom",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 213,
+      "added_quantiles": 44
+    },
+    {
+      "family": "zmlogarithmic",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 213,
+      "added_quantiles": 44
+    },
+    {
+      "family": "zmnbinom",
+      "added_points": 2,
+      "added_normalizations": 2,
+      "added_values": 426,
+      "added_quantiles": 88
+    },
+    {
+      "family": "zmpois",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 213,
+      "added_quantiles": 44
+    },
+    {
+      "family": "ztbinom",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 206,
+      "added_quantiles": 44
+    },
+    {
+      "family": "ztgeom",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 217,
+      "added_quantiles": 44
+    },
+    {
+      "family": "ztnbinom",
+      "added_points": 2,
+      "added_normalizations": 2,
+      "added_values": 438,
+      "added_quantiles": 88
+    },
+    {
+      "family": "ztpois",
+      "added_points": 1,
+      "added_normalizations": 1,
+      "added_values": 221,
+      "added_quantiles": 44
+    }
+  ],
+  "production": [
+    {
+      "family": "beta",
+      "points": 1,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 2,
+      "nonfinite_actual": 0,
+      "maximum_finite_normalized_error": 1.3770772917461083e-08
+    },
+    {
+      "family": "betapr",
+      "points": 1,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 4,
+      "nonfinite_actual": 0,
+      "maximum_finite_normalized_error": 1.3733142638245321e-08
+    },
+    {
+      "family": "bnbinom",
+      "points": 1,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 2,
+      "nonfinite_actual": 2,
+      "maximum_finite_normalized_error": null
+    },
+    {
+      "family": "cmp",
+      "points": 1,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 2,
+      "nonfinite_actual": 2,
+      "maximum_finite_normalized_error": null
+    },
+    {
+      "family": "fpareto",
+      "points": 1,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 4,
+      "nonfinite_actual": 0,
+      "maximum_finite_normalized_error": 1.3722910805712196e-08
+    },
+    {
+      "family": "gb2",
+      "points": 1,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 4,
+      "nonfinite_actual": 0,
+      "maximum_finite_normalized_error": 1.3722910805712196e-08
+    },
+    {
+      "family": "ged",
+      "points": 2,
+      "functions": [
+        "d",
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 196,
+      "nonfinite_actual": 196,
+      "maximum_finite_normalized_error": null
+    },
+    {
+      "family": "lgser",
+      "points": 1,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 2,
+      "nonfinite_actual": 2,
+      "maximum_finite_normalized_error": null
+    },
+    {
+      "family": "pig",
+      "points": 2,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 4,
+      "nonfinite_actual": 4,
+      "maximum_finite_normalized_error": null
+    },
+    {
+      "family": "sged",
+      "points": 4,
+      "functions": [
+        "d",
+        "p",
+        "q"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 272,
+      "nonfinite_actual": 256,
+      "maximum_finite_normalized_error": 22.136192858591645
+    },
+    {
+      "family": "skellam",
+      "points": 2,
+      "functions": [
+        "d",
+        "p"
+      ],
+      "modes": [
+        "double"
+      ],
+      "measured_failed_scalars": 37,
+      "nonfinite_actual": 0,
+      "maximum_finite_normalized_error": 1.5465581744016224e-08
+    },
+    {
+      "family": "sstd",
+      "points": 2,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 12,
+      "nonfinite_actual": 12,
+      "maximum_finite_normalized_error": null
+    },
+    {
+      "family": "st",
+      "points": 2,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 4,
+      "nonfinite_actual": 4,
+      "maximum_finite_normalized_error": null
+    },
+    {
+      "family": "zmlogarithmic",
+      "points": 1,
+      "functions": [
+        "p"
+      ],
+      "modes": [
+        "double",
+        "native"
+      ],
+      "measured_failed_scalars": 2,
+      "nonfinite_actual": 2,
+      "maximum_finite_normalized_error": null
+    }
+  ],
+  "whole_point_exclusions": 8,
+  "new_scalar_row_exclusions": 99,
+  "unchanged_gengamma": true,
+  "forbidden_changes": [],
+  "required_receipts": [
+    "cpp-dev workstation 0",
+    "r-dev workstation 0",
+    "r-full workstation 0",
+    "cpp-double workstation 0",
+    "site workstation 0",
+    "js workstation 0",
+    "dgamma-cpp-native workstation 0",
+    "dgamma-cpp-double workstation 0",
+    "dgamma-r-full workstation 0",
+    "dgamma-site workstation 0",
+    "dgamma-js workstation 0"
+  ],
+  "environment": {
+    "python": "3.14.5",
+    "mpmath": "1.3.0",
+    "sympy": "1.14.0",
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "R": "R version 4.6.1 (2026-06-24) -- \"Happy Hop\""
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "ztnbinom",
+  "input_sha256": "492968e2c9145b86c2c73e56373d21872d5934a04ca51e9acc66046cae28224b",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 294105,
+    "points": 11,
+    "values": 2085,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 349454,
+    "points": 13,
+    "values": 2523,
+    "quantiles": 572
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 28.140193111030385
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.6126727850059979
+    }
+  ]
+}

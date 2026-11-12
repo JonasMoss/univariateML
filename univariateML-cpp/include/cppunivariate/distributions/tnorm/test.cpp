@@ -547,3 +547,15 @@ TEST_CASE("tnorm: uniform-limit endpoint distance") {
  CHECK(cppunivariate::distributions::ptnorm(0.9999999999999999,0,1e8,0,1,false,true)==
   doctest::Approx(-36.7368005696771).epsilon(1e-10));
 }
+
+TEST_CASE("tnorm: far one-sided faces retain physical CDF and quantile offsets") {
+  CHECK(cppunivariate::distributions::ptnorm(1.3862943611198904,-1e16,1e8,0,INFINITY,true,true)==
+        doctest::Approx(-0.28768207245178096).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::qtnorm(-690.7755278982137,-1e16,1e8,0,INFINITY,false,true)==
+        doctest::Approx(690.7755278981898).epsilon(1e-12));
+}
+
+TEST_CASE("tnorm: a distant query retains its finite extreme log survival") {
+  CHECK(cppunivariate::distributions::ptnorm(1e100,-1e16,1e8,0,INFINITY,false,true)==
+        doctest::Approx(-5e183).epsilon(1e-12));
+}

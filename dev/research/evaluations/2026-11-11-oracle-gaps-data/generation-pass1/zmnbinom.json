@@ -1,0 +1,41 @@
+{
+  "id": "zmnbinom",
+  "input_sha256": "d1a08d85f7ee02401e844b1b3d3c54a132a1db44876a72dea335dd4bbabc3a69",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 416706,
+    "points": 16,
+    "values": 2924,
+    "quantiles": 704
+  },
+  "after": {
+    "bytes": 475906,
+    "points": 18,
+    "values": 3350,
+    "quantiles": 792
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0,
+        0.5,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 15.679266393010039
+    },
+    {
+      "parameters": [
+        1.0,
+        5e-09,
+        0.5
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.5210168299963698
+    }
+  ]
+}

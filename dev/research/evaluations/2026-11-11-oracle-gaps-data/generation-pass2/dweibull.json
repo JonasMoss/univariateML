@@ -1,0 +1,31 @@
+{
+  "id": "dweibull",
+  "input_sha256": "af17877bef96892e746e8e3ec01652d5a333bb6239d3ea5d4e459e2d1cfad539",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 279710,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 279710,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "records": [
+    {
+      "parameters": [
+        0.5,
+        100000000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 600 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 483, in make\n    a, b, ambiguous, floor = quantile_acceptance(ref, logd, q, inp, lower, logp)\n                             ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 388, in quantile_acceptance\n    value = tail if logp else mp.exp(tail)\n                              ~~~~~~^^^^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/ctx_mp_python.py\", line 1000, in f\n    return ctx.make_mpf(mpf_f(x._mpf_, prec, rounding))\n                        ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/libmp/libelefun.py\", line 1176, in mpf_exp\n    lg2 = ln2_fixed(wpmod)\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/libmp/libelefun.py\", line 99, in g\n    f.memo_val = f(newprec, **kwargs)\n                 ~^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/libmp/libelefun.py\", line 168, in ln2_fixed\n    return machin([(18, 26), (-2, 4801), (8, 8749)], prec, True)\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/libmp/libelefun.py\", line 156, in machin\n    s += MPZ(a) * acot_fixed(MPZ(b), prec+extraprec, hyperbolic)\n                  ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: independent reference exceeded 600 seconds per point\n",
+      "seconds": 600.011720473005
+    }
+  ]
+}

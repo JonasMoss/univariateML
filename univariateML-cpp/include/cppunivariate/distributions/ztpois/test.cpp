@@ -149,3 +149,9 @@ TEST_CASE("ztpois: real-size interpolation shares stable beta kernel") {
   CHECK(std::abs(cppunivariate::zero_detail::bin_logpmf(500000000,1000000000.25,.5)
       -(-10.587424271524183))<1e-12);
 }
+
+TEST_CASE("ztpois: negligible zero mass preserves a large-rate body CDF") {
+  const double got=cppunivariate::distributions::pztpois(99999999,1e8,true,true);
+  CHECK(std::isfinite(got));
+  CHECK(got==doctest::Approx(cppunivariate::distributions::ppois(99999999,1e8,true,true)).epsilon(1e-12));
+}

@@ -1,0 +1,85 @@
+{
+  "id": "trgamma",
+  "input_sha256": "fb7091b473d6026b2714031b20e89e364f2af8de8cacf6572d826efc8289ca5e",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 109368,
+    "points": 13,
+    "values": 247,
+    "quantiles": 540
+  },
+  "after": {
+    "bytes": 126952,
+    "points": 15,
+    "values": 289,
+    "quantiles": 628
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 40.2068844329915
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 475, in make\n    q = ref.quantile(lp, lower)\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 247, in quantile\n    value=self.tails(x)[0 if lower else 1]\n          ~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 486, in <lambda>\n    ref=Reference(lambda x:gamma(a,mp.exp(sign*c*mp.log(x/s)))[::sign],0,log_density=density)\n                           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 84, in gamma\n    if a>100000 and a/2<z<2*a:return concentrated_gamma(a,z)\n                                     ~~~~~~~~~~~~~~~~~~^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 60, in concentrated_gamma\n    value,error=mp.quad(lambda v:mp.exp(logkernel(v)),cuts,error=True)\n                ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/.venvs/global/lib/python3.14/site-packages/mpmath/calculus/quadrature.py\", line 746, in quad\n    v, err = rule.summation(f, points[0], prec, epsilon, m, verbose)\n             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: independent reference exceeded 120 seconds per point\n",
+      "seconds": 120.00313202501275
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.1766601959825493
+    },
+    {
+      "parameters": [
+        100000000.0,
+        1.0,
+        1000.0
+      ],
+      "status": "oracle gap",
+      "reason": "TimeoutError: independent reference exceeded 120 seconds per point",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/research/evaluations/2026-11-11-oracle-gaps-data/generate.py\", line 49, in run\n    result=make(folder,[theta])\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth.py\", line 475, in make\n    q = ref.quantile(lp, lower)\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 255, in quantile\n    if below(mid-delta) and not below(mid+delta):\n                                ~~~~~^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 239, in below\n    v = self.tails(x)[0 if lower else 1]\n        ~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 179, in tails\n    return self.tails_fn(x)\n           ~~~~~~~~~~~~~^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 486, in <lambda>\n    ref=Reference(lambda x:gamma(a,mp.exp(sign*c*mp.log(x/s)))[::sign],0,log_density=density)\n                           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 84, in gamma\n    if a>100000 and a/2<z<2*a:return concentrated_gamma(a,z)\n                                     ~~~~~~~~~~~~~~~~~~^^^^^\n  File \"/home/jonas/Files/programming/univariateML.wt/oracle-gaps/dev/validation/quality/truth_reference.py\", line 60, in concentrated_gamma\n    value,error=mp.quad(lambda v:mp.exp(logkernel(v)),cuts,error=True)\n                ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: independent reference exceeded 120 seconds per point\n",
+      "seconds": 120.00215237902012
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 1.10245547600789
+    },
+    {
+      "parameters": [
+        1e-08,
+        100000000.0,
+        1.0
+      ],
+      "status": "oracle gap",
+      "reason": "MemoryError: reference exceeded the recorded address-space limit",
+      "traceback": "MemoryError\n",
+      "seconds": 42.09745474898955
+    }
+  ]
+}

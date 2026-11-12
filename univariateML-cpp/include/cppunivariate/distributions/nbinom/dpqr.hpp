@@ -59,6 +59,8 @@ inline special::LogTails nbinom_tails(double q,double size,double prob) {
   if(q<0) return special::tails_from_log(special::kNegInf,true);
   if(q==special::kPosInf || size==0 || prob==1) return special::tails_from_log(special::kNegInf,false);
   q=std::floor(q);
+  // Size one is geometric; its survival has an exact logarithmic form.
+  if(size==1) return special::tails_from_log((q+1)*std::log1p(-prob),false);
   const double lower=special::negative_binomial_cdf(q,size,prob,true);
   if (std::isnan(lower)) return {special::kNaN,special::kNaN,false};
   const bool small_lower=lower<=0.5;

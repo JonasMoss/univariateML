@@ -1,0 +1,30 @@
+{
+  "id": "dweibull",
+  "input_sha256": "053b13bd76671b52fcd0ae47b281ff19ce20d0c18f23d63b86498ac1f5d5df05",
+  "digits": 160,
+  "timeout": 600,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 279710,
+    "points": 10,
+    "values": 2086,
+    "quantiles": 440
+  },
+  "after": {
+    "bytes": 299758,
+    "points": 11,
+    "values": 2292,
+    "quantiles": 484
+  },
+  "records": [
+    {
+      "parameters": [
+        0.5,
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.11311796901281923
+    }
+  ]
+}

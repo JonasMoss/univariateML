@@ -1,0 +1,29 @@
+{
+  "id": "pois",
+  "input_sha256": "89d75e34d00afe60f8641b4f14c0f6b98fac6abcc46febd62973d9f61b16a719",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 164084,
+    "points": 7,
+    "values": 1241,
+    "quantiles": 308
+  },
+  "after": {
+    "bytes": 191206,
+    "points": 8,
+    "values": 1462,
+    "quantiles": 352
+  },
+  "records": [
+    {
+      "parameters": [
+        100000000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 109.28901719598798
+    }
+  ]
+}

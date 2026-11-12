@@ -86,6 +86,10 @@ The Poisson distribution models counts of independent events over a fixed observ
 
 At large counts the log mass combines the Stirling remainder with the nonnegative Poisson deviance lambda-k-k*log(lambda/k). Sterbenz subtraction retains lambda-k near the mode. This avoids subtracting a factorial log from two terms of order k*log(k), whose errors can exceed the entire log-density tolerance at million-count fits.
 
+For exactly representable integer shapes of at least 16, the CDF uses the
+physical-coordinate gamma tail identity. This avoids large-rate tail errors
+from the generic incomplete-gamma evaluation in double precision.
+
 ## Details
 
 The rate $\lambda$ describes the expected event count over that interval.

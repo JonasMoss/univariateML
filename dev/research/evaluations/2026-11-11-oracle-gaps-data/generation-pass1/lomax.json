@@ -1,0 +1,30 @@
+{
+  "id": "lomax",
+  "input_sha256": "cba364628472047883da6d298ae445146f2898a9937343b8a79130edd82fb8b6",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 97088,
+    "points": 11,
+    "values": 227,
+    "quantiles": 484
+  },
+  "after": {
+    "bytes": 103739,
+    "points": 12,
+    "values": 238,
+    "quantiles": 528
+  },
+  "records": [
+    {
+      "parameters": [
+        1.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.18924844096181914
+    }
+  ]
+}

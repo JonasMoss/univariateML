@@ -1,5 +1,6 @@
 #pragma once
 #include "../pareto3/dpqr.hpp"
+#include "../../special/tails.hpp"
 #include "../../special/special.hpp"
 #include <cmath>
 #include <limits>
@@ -11,7 +12,7 @@ inline double dpareto4(double x,double shape1,double shape2,double scale,double 
  const double c=std::log(shape1)+std::log(shape2)-std::log(scale);
  const double power=shape2*1-1;
  if(x==min) {const double ll=power<0 ? inf : (power>0 ? -inf : c); return log ? ll : std::exp(ll);}
- const double z=std::log(x-min)-std::log(scale),t=shape2*z;
+ const double z=special::log_shifted_positive_ratio(x,min,scale),t=shape2*z;
  const double sp=std::fmax(t,0)+std::log1p(std::exp(-std::abs(t)));
  const double ll=c+power*z-(1+shape1)*sp;
  return log ? ll : std::exp(ll);

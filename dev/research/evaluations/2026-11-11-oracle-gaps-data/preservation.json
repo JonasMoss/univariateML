@@ -1,0 +1,709 @@
+[
+  {
+    "family": "bbinom",
+    "before_points": 14,
+    "after_points": 14,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "beta",
+    "before_points": 11,
+    "after_points": 12,
+    "added_values": 20,
+    "added_quantiles": 44
+  },
+  {
+    "family": "betapr",
+    "before_points": 19,
+    "after_points": 20,
+    "added_values": 19,
+    "added_quantiles": 44
+  },
+  {
+    "family": "bhatt",
+    "before_points": 16,
+    "after_points": 16,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "binom",
+    "before_points": 8,
+    "after_points": 9,
+    "added_values": 206,
+    "added_quantiles": 44
+  },
+  {
+    "family": "bnbinom",
+    "before_points": 16,
+    "after_points": 16,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "burr",
+    "before_points": 15,
+    "after_points": 19,
+    "added_values": 74,
+    "added_quantiles": 176
+  },
+  {
+    "family": "cauchy",
+    "before_points": 8,
+    "after_points": 8,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "cmb",
+    "before_points": 15,
+    "after_points": 16,
+    "added_values": 206,
+    "added_quantiles": 44
+  },
+  {
+    "family": "cmp",
+    "before_points": 11,
+    "after_points": 12,
+    "added_values": 221,
+    "added_quantiles": 44
+  },
+  {
+    "family": "dgamma",
+    "before_points": 10,
+    "after_points": 11,
+    "added_values": 221,
+    "added_quantiles": 44
+  },
+  {
+    "family": "dlaplace",
+    "before_points": 6,
+    "after_points": 7,
+    "added_values": 219,
+    "added_quantiles": 44
+  },
+  {
+    "family": "dnorm",
+    "before_points": 7,
+    "after_points": 8,
+    "added_values": 219,
+    "added_quantiles": 44
+  },
+  {
+    "family": "dunif",
+    "before_points": 6,
+    "after_points": 6,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "dweibull",
+    "before_points": 10,
+    "after_points": 11,
+    "added_values": 206,
+    "added_quantiles": 44
+  },
+  {
+    "family": "emg",
+    "before_points": 12,
+    "after_points": 12,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "exp",
+    "before_points": 6,
+    "after_points": 6,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "expweibull",
+    "before_points": 20,
+    "after_points": 20,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "fatigue",
+    "before_points": 17,
+    "after_points": 17,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "foldnorm",
+    "before_points": 12,
+    "after_points": 12,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "fpareto",
+    "before_points": 26,
+    "after_points": 27,
+    "added_values": 19,
+    "added_quantiles": 44
+  },
+  {
+    "family": "frechet",
+    "before_points": 31,
+    "after_points": 31,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "gamma",
+    "before_points": 9,
+    "after_points": 13,
+    "added_values": 74,
+    "added_quantiles": 176
+  },
+  {
+    "family": "gb2",
+    "before_points": 25,
+    "after_points": 26,
+    "added_values": 19,
+    "added_quantiles": 44
+  },
+  {
+    "family": "ged",
+    "before_points": 13,
+    "after_points": 17,
+    "added_values": 42,
+    "added_quantiles": 176
+  },
+  {
+    "family": "genbeta",
+    "before_points": 19,
+    "after_points": 19,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "gengamma",
+    "before_points": 15,
+    "after_points": 15,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "geom",
+    "before_points": 5,
+    "after_points": 6,
+    "added_values": 217,
+    "added_quantiles": 44
+  },
+  {
+    "family": "gev",
+    "before_points": 16,
+    "after_points": 16,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "gompertz",
+    "before_points": 10,
+    "after_points": 10,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "gpd",
+    "before_points": 14,
+    "after_points": 14,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "gumbel",
+    "before_points": 11,
+    "after_points": 11,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "hcauchy",
+    "before_points": 8,
+    "after_points": 8,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "hnorm",
+    "before_points": 9,
+    "after_points": 9,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "ht",
+    "before_points": 11,
+    "after_points": 15,
+    "added_values": 71,
+    "added_quantiles": 176
+  },
+  {
+    "family": "huber",
+    "before_points": 11,
+    "after_points": 11,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "hyper",
+    "before_points": 8,
+    "after_points": 8,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "invburr",
+    "before_points": 16,
+    "after_points": 19,
+    "added_values": 53,
+    "added_quantiles": 132
+  },
+  {
+    "family": "invexp",
+    "before_points": 6,
+    "after_points": 6,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "invgamma",
+    "before_points": 9,
+    "after_points": 13,
+    "added_values": 74,
+    "added_quantiles": 176
+  },
+  {
+    "family": "invgauss",
+    "before_points": 11,
+    "after_points": 11,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "invparalogis",
+    "before_points": 9,
+    "after_points": 11,
+    "added_values": 27,
+    "added_quantiles": 88
+  },
+  {
+    "family": "invpareto",
+    "before_points": 11,
+    "after_points": 12,
+    "added_values": 11,
+    "added_quantiles": 44
+  },
+  {
+    "family": "invtrgamma",
+    "before_points": 13,
+    "after_points": 19,
+    "added_values": 116,
+    "added_quantiles": 264
+  },
+  {
+    "family": "invweibull",
+    "before_points": 21,
+    "after_points": 21,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "kumar",
+    "before_points": 11,
+    "after_points": 11,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "laplace",
+    "before_points": 8,
+    "after_points": 8,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "lgamma",
+    "before_points": 8,
+    "after_points": 11,
+    "added_values": 24,
+    "added_quantiles": 132
+  },
+  {
+    "family": "lgser",
+    "before_points": 6,
+    "after_points": 6,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "llogis",
+    "before_points": 13,
+    "after_points": 13,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "lnorm",
+    "before_points": 8,
+    "after_points": 8,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "logis",
+    "before_points": 8,
+    "after_points": 8,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "logitnorm",
+    "before_points": 11,
+    "after_points": 11,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "lomax",
+    "before_points": 11,
+    "after_points": 12,
+    "added_values": 11,
+    "added_quantiles": 44
+  },
+  {
+    "family": "lst",
+    "before_points": 14,
+    "after_points": 17,
+    "added_values": 57,
+    "added_quantiles": 132
+  },
+  {
+    "family": "naka",
+    "before_points": 9,
+    "after_points": 12,
+    "added_values": 53,
+    "added_quantiles": 132
+  },
+  {
+    "family": "nbinom",
+    "before_points": 11,
+    "after_points": 13,
+    "added_values": 438,
+    "added_quantiles": 88
+  },
+  {
+    "family": "nhyper",
+    "before_points": 7,
+    "after_points": 8,
+    "added_values": 215,
+    "added_quantiles": 44
+  },
+  {
+    "family": "norm",
+    "before_points": 8,
+    "after_points": 8,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "nsbeta",
+    "before_points": 15,
+    "after_points": 15,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "paralogis",
+    "before_points": 9,
+    "after_points": 11,
+    "added_values": 27,
+    "added_quantiles": 88
+  },
+  {
+    "family": "pareto",
+    "before_points": 8,
+    "after_points": 9,
+    "added_values": 8,
+    "added_quantiles": 44
+  },
+  {
+    "family": "pareto2",
+    "before_points": 15,
+    "after_points": 16,
+    "added_values": 11,
+    "added_quantiles": 44
+  },
+  {
+    "family": "pareto3",
+    "before_points": 15,
+    "after_points": 15,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "pareto4",
+    "before_points": 18,
+    "after_points": 20,
+    "added_values": 32,
+    "added_quantiles": 88
+  },
+  {
+    "family": "pig",
+    "before_points": 8,
+    "after_points": 10,
+    "added_values": 412,
+    "added_quantiles": 88
+  },
+  {
+    "family": "pois",
+    "before_points": 7,
+    "after_points": 8,
+    "added_values": 221,
+    "added_quantiles": 44
+  },
+  {
+    "family": "power",
+    "before_points": 8,
+    "after_points": 9,
+    "added_values": 8,
+    "added_quantiles": 44
+  },
+  {
+    "family": "rayleigh",
+    "before_points": 7,
+    "after_points": 7,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "sged",
+    "before_points": 18,
+    "after_points": 24,
+    "added_values": 66,
+    "added_quantiles": 256
+  },
+  {
+    "family": "sgomp",
+    "before_points": 12,
+    "after_points": 12,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "skellam",
+    "before_points": 12,
+    "after_points": 14,
+    "added_values": 412,
+    "added_quantiles": 88
+  },
+  {
+    "family": "slash",
+    "before_points": 8,
+    "after_points": 8,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "sn",
+    "before_points": 14,
+    "after_points": 17,
+    "added_values": 57,
+    "added_quantiles": 132
+  },
+  {
+    "family": "snorm",
+    "before_points": 15,
+    "after_points": 15,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "sstd",
+    "before_points": 18,
+    "after_points": 23,
+    "added_values": 89,
+    "added_quantiles": 220
+  },
+  {
+    "family": "st",
+    "before_points": 11,
+    "after_points": 16,
+    "added_values": 81,
+    "added_quantiles": 220
+  },
+  {
+    "family": "std",
+    "before_points": 15,
+    "after_points": 18,
+    "added_values": 57,
+    "added_quantiles": 132
+  },
+  {
+    "family": "tbinom",
+    "before_points": 11,
+    "after_points": 11,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "tlambda",
+    "before_points": 13,
+    "after_points": 14,
+    "added_values": 19,
+    "added_quantiles": 44
+  },
+  {
+    "family": "tnorm",
+    "before_points": 9,
+    "after_points": 12,
+    "added_values": 58,
+    "added_quantiles": 132
+  },
+  {
+    "family": "tpois",
+    "before_points": 8,
+    "after_points": 8,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "trgamma",
+    "before_points": 13,
+    "after_points": 19,
+    "added_values": 116,
+    "added_quantiles": 264
+  },
+  {
+    "family": "triang",
+    "before_points": 12,
+    "after_points": 12,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "unif",
+    "before_points": 6,
+    "after_points": 6,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "weibull",
+    "before_points": 13,
+    "after_points": 13,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "yulesimon",
+    "before_points": 6,
+    "after_points": 7,
+    "added_values": 207,
+    "added_quantiles": 44
+  },
+  {
+    "family": "zeta",
+    "before_points": 6,
+    "after_points": 6,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "zib",
+    "before_points": 14,
+    "after_points": 15,
+    "added_values": 206,
+    "added_quantiles": 44
+  },
+  {
+    "family": "zinb",
+    "before_points": 16,
+    "after_points": 18,
+    "added_values": 426,
+    "added_quantiles": 88
+  },
+  {
+    "family": "zip",
+    "before_points": 10,
+    "after_points": 11,
+    "added_values": 213,
+    "added_quantiles": 44
+  },
+  {
+    "family": "zipf",
+    "before_points": 9,
+    "after_points": 9,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "zmbinom",
+    "before_points": 14,
+    "after_points": 15,
+    "added_values": 206,
+    "added_quantiles": 44
+  },
+  {
+    "family": "zmgeom",
+    "before_points": 11,
+    "after_points": 12,
+    "added_values": 213,
+    "added_quantiles": 44
+  },
+  {
+    "family": "zmlogarithmic",
+    "before_points": 12,
+    "after_points": 12,
+    "added_values": 0,
+    "added_quantiles": 0
+  },
+  {
+    "family": "zmnbinom",
+    "before_points": 16,
+    "after_points": 18,
+    "added_values": 426,
+    "added_quantiles": 88
+  },
+  {
+    "family": "zmpois",
+    "before_points": 12,
+    "after_points": 13,
+    "added_values": 213,
+    "added_quantiles": 44
+  },
+  {
+    "family": "ztbinom",
+    "before_points": 9,
+    "after_points": 10,
+    "added_values": 206,
+    "added_quantiles": 44
+  },
+  {
+    "family": "ztgeom",
+    "before_points": 6,
+    "after_points": 7,
+    "added_values": 217,
+    "added_quantiles": 44
+  },
+  {
+    "family": "ztnbinom",
+    "before_points": 11,
+    "after_points": 13,
+    "added_values": 438,
+    "added_quantiles": 88
+  },
+  {
+    "family": "ztpois",
+    "before_points": 7,
+    "after_points": 8,
+    "added_values": 221,
+    "added_quantiles": 44
+  }
+]

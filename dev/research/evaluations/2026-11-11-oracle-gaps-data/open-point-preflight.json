@@ -1,0 +1,594 @@
+[
+  {
+    "family": "bnbinom",
+    "parameters": [
+      100000000.0,
+      1e+16,
+      100000000.0
+    ],
+    "missing": "Near-Poisson beta-mixture evaluation needs a cancellation-free mass and a closed mixture remainder.",
+    "job": [
+      "bnbinom",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        100000000.0,
+        1e+16,
+        100000000.0
+      ]
+    ],
+    "row": [
+      16,
+      1.0,
+      -1.00000001,
+      -0.3068528194400547,
+      -1.3308932682040544
+    ],
+    "expected": -0.3068528194400547,
+    "category": "values",
+    "function": "p",
+    "input": 1.0,
+    "lower": true,
+    "log": true,
+    "mode": "native",
+    "binary_sha256": "e9e6cb12f430cd14611e0881af0167a6558f852eb472a98ab2d5eb935bcdb5f9",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "cmp",
+    "parameters": [
+      1.0,
+      1e-08
+    ],
+    "missing": "Diffuse factorial-power normalization and count tails need a protected Euler--Maclaurin evaluator.",
+    "job": [
+      "cmp",
+      1,
+      0.0,
+      true,
+      true,
+      [
+        1.0,
+        1e-08
+      ]
+    ],
+    "row": [
+      12,
+      0.0,
+      -15.706714053010085,
+      -15.706714053010085,
+      -1.508901154091392e-07
+    ],
+    "expected": -15.706714053010085,
+    "category": "values",
+    "function": "p",
+    "input": 0.0,
+    "lower": true,
+    "log": true,
+    "mode": "native",
+    "binary_sha256": "e9e6cb12f430cd14611e0881af0167a6558f852eb472a98ab2d5eb935bcdb5f9",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "pig",
+    "parameters": [
+      1.0,
+      1e-08
+    ],
+    "missing": "Positive heavy count tails exceed the 10000000-cell remainder guard; a bounded tail integral is missing.",
+    "job": [
+      "pig",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        1.0,
+        1e-08
+      ]
+    ],
+    "row": [
+      10,
+      1.0,
+      -9.557055376112746,
+      -7.070317853112745e-05,
+      -9.557055379445844
+    ],
+    "expected": -7.070317853112745e-05,
+    "category": "values",
+    "function": "p",
+    "input": 1.0,
+    "lower": true,
+    "log": true,
+    "mode": "native",
+    "binary_sha256": "e9e6cb12f430cd14611e0881af0167a6558f852eb472a98ab2d5eb935bcdb5f9",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "pig",
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "missing": "Positive heavy count tails exceed the 10000000-cell remainder guard; a bounded tail integral is missing.",
+    "job": [
+      "pig",
+      1,
+      2.0,
+      true,
+      true,
+      [
+        100000000.0,
+        1.0
+      ]
+    ],
+    "row": [
+      11,
+      2.0,
+      -2.2657079167534153,
+      -0.6562700043193149,
+      -0.7314365258903004
+    ],
+    "expected": -0.6562700043193149,
+    "category": "values",
+    "function": "p",
+    "input": 2.0,
+    "lower": true,
+    "log": true,
+    "mode": "native",
+    "binary_sha256": "e9e6cb12f430cd14611e0881af0167a6558f852eb472a98ab2d5eb935bcdb5f9",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "lgser",
+    "parameters": [
+      0.9999999999999999
+    ],
+    "missing": "Near-unit logarithmic-series survival exceeds the geometric-series guard; a uniform bounded tail evaluator is missing.",
+    "job": [
+      "lgser",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        0.9999999999999999
+      ]
+    ],
+    "row": [
+      6,
+      1.0,
+      -3.6037789929704576,
+      -3.6037789929704576,
+      -0.027598006841226416
+    ],
+    "expected": -3.6037789929704576,
+    "category": "values",
+    "function": "p",
+    "input": 1.0,
+    "lower": true,
+    "log": true,
+    "mode": "native",
+    "binary_sha256": "e9e6cb12f430cd14611e0881af0167a6558f852eb472a98ab2d5eb935bcdb5f9",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "zmlogarithmic",
+    "parameters": [
+      0.9999999999999999,
+      0.5
+    ],
+    "missing": "Near-unit logarithmic-series survival exceeds the geometric-series guard; a uniform bounded tail evaluator is missing.",
+    "job": [
+      "zmlogarithmic",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        0.9999999999999999,
+        0.5
+      ]
+    ],
+    "row": [
+      12,
+      1.0,
+      -4.2969261735304025,
+      -0.6662904127618943,
+      -0.7207451874011718
+    ],
+    "expected": -0.6662904127618943,
+    "category": "values",
+    "function": "p",
+    "input": 1.0,
+    "lower": true,
+    "log": true,
+    "mode": "native",
+    "binary_sha256": "e9e6cb12f430cd14611e0881af0167a6558f852eb472a98ab2d5eb935bcdb5f9",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "st",
+    "parameters": [
+      0.0,
+      1.0,
+      -100000000.0,
+      100000000.0
+    ],
+    "missing": "The joint large-skew/large-degree angular tail is not resolved by the public evaluator.",
+    "job": [
+      "st",
+      1,
+      -37.06591528298065,
+      true,
+      true,
+      [
+        0.0,
+        1.0,
+        -100000000.0,
+        100000000.0
+      ]
+    ],
+    "row": [
+      17,
+      -37.06591528298065,
+      -687.1621172703826,
+      -690.7755278982137,
+      -1.0000000000000501e-300
+    ],
+    "expected": -690.7755278982137,
+    "category": "values",
+    "function": "p",
+    "input": -37.06591528298065,
+    "lower": true,
+    "log": true,
+    "mode": "native",
+    "binary_sha256": "e9e6cb12f430cd14611e0881af0167a6558f852eb472a98ab2d5eb935bcdb5f9",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "st",
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "missing": "The joint large-skew/large-degree angular tail is not resolved by the public evaluator.",
+    "job": [
+      "st",
+      1,
+      -3.644230579974875e-07,
+      true,
+      true,
+      [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ]
+    ],
+    "row": [
+      16,
+      -3.644230579974875e-07,
+      -668.757628622683,
+      -690.7755278982137,
+      -9.99999999999979e-301
+    ],
+    "expected": -690.7755278982137,
+    "category": "values",
+    "function": "p",
+    "input": -3.644230579974875e-07,
+    "lower": true,
+    "log": true,
+    "mode": "native",
+    "binary_sha256": "e9e6cb12f430cd14611e0881af0167a6558f852eb472a98ab2d5eb935bcdb5f9",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "bnbinom",
+    "parameters": [
+      100000000.0,
+      1e+16,
+      100000000.0
+    ],
+    "missing": "Near-Poisson beta-mixture evaluation needs a cancellation-free mass and a closed mixture remainder.",
+    "job": [
+      "bnbinom",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        100000000.0,
+        1e+16,
+        100000000.0
+      ]
+    ],
+    "row": [
+      16,
+      1.0,
+      -1.00000001,
+      -0.3068528194400547,
+      -1.3308932682040544
+    ],
+    "expected": -0.3068528194400547,
+    "category": "values",
+    "function": "p",
+    "input": 1.0,
+    "lower": true,
+    "log": true,
+    "mode": "double",
+    "binary_sha256": "8cd1f28521a95ab8f51f34c48bff023f4381dbedd6b64174dfc969dd37f55447",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "cmp",
+    "parameters": [
+      1.0,
+      1e-08
+    ],
+    "missing": "Diffuse factorial-power normalization and count tails need a protected Euler--Maclaurin evaluator.",
+    "job": [
+      "cmp",
+      1,
+      0.0,
+      true,
+      true,
+      [
+        1.0,
+        1e-08
+      ]
+    ],
+    "row": [
+      12,
+      0.0,
+      -15.706714053010085,
+      -15.706714053010085,
+      -1.508901154091392e-07
+    ],
+    "expected": -15.706714053010085,
+    "category": "values",
+    "function": "p",
+    "input": 0.0,
+    "lower": true,
+    "log": true,
+    "mode": "double",
+    "binary_sha256": "8cd1f28521a95ab8f51f34c48bff023f4381dbedd6b64174dfc969dd37f55447",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "pig",
+    "parameters": [
+      1.0,
+      1e-08
+    ],
+    "missing": "Positive heavy count tails exceed the 10000000-cell remainder guard; a bounded tail integral is missing.",
+    "job": [
+      "pig",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        1.0,
+        1e-08
+      ]
+    ],
+    "row": [
+      10,
+      1.0,
+      -9.557055376112746,
+      -7.070317853112745e-05,
+      -9.557055379445844
+    ],
+    "expected": -7.070317853112745e-05,
+    "category": "values",
+    "function": "p",
+    "input": 1.0,
+    "lower": true,
+    "log": true,
+    "mode": "double",
+    "binary_sha256": "8cd1f28521a95ab8f51f34c48bff023f4381dbedd6b64174dfc969dd37f55447",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "pig",
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "missing": "Positive heavy count tails exceed the 10000000-cell remainder guard; a bounded tail integral is missing.",
+    "job": [
+      "pig",
+      1,
+      2.0,
+      true,
+      true,
+      [
+        100000000.0,
+        1.0
+      ]
+    ],
+    "row": [
+      11,
+      2.0,
+      -2.2657079167534153,
+      -0.6562700043193149,
+      -0.7314365258903004
+    ],
+    "expected": -0.6562700043193149,
+    "category": "values",
+    "function": "p",
+    "input": 2.0,
+    "lower": true,
+    "log": true,
+    "mode": "double",
+    "binary_sha256": "8cd1f28521a95ab8f51f34c48bff023f4381dbedd6b64174dfc969dd37f55447",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "lgser",
+    "parameters": [
+      0.9999999999999999
+    ],
+    "missing": "Near-unit logarithmic-series survival exceeds the geometric-series guard; a uniform bounded tail evaluator is missing.",
+    "job": [
+      "lgser",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        0.9999999999999999
+      ]
+    ],
+    "row": [
+      6,
+      1.0,
+      -3.6037789929704576,
+      -3.6037789929704576,
+      -0.027598006841226416
+    ],
+    "expected": -3.6037789929704576,
+    "category": "values",
+    "function": "p",
+    "input": 1.0,
+    "lower": true,
+    "log": true,
+    "mode": "double",
+    "binary_sha256": "8cd1f28521a95ab8f51f34c48bff023f4381dbedd6b64174dfc969dd37f55447",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "zmlogarithmic",
+    "parameters": [
+      0.9999999999999999,
+      0.5
+    ],
+    "missing": "Near-unit logarithmic-series survival exceeds the geometric-series guard; a uniform bounded tail evaluator is missing.",
+    "job": [
+      "zmlogarithmic",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        0.9999999999999999,
+        0.5
+      ]
+    ],
+    "row": [
+      12,
+      1.0,
+      -4.2969261735304025,
+      -0.6662904127618943,
+      -0.7207451874011718
+    ],
+    "expected": -0.6662904127618943,
+    "category": "values",
+    "function": "p",
+    "input": 1.0,
+    "lower": true,
+    "log": true,
+    "mode": "double",
+    "binary_sha256": "8cd1f28521a95ab8f51f34c48bff023f4381dbedd6b64174dfc969dd37f55447",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "st",
+    "parameters": [
+      0.0,
+      1.0,
+      -100000000.0,
+      100000000.0
+    ],
+    "missing": "The joint large-skew/large-degree angular tail is not resolved by the public evaluator.",
+    "job": [
+      "st",
+      1,
+      -37.06591528298065,
+      true,
+      true,
+      [
+        0.0,
+        1.0,
+        -100000000.0,
+        100000000.0
+      ]
+    ],
+    "row": [
+      17,
+      -37.06591528298065,
+      -687.1621172703826,
+      -690.7755278982137,
+      -1.0000000000000501e-300
+    ],
+    "expected": -690.7755278982137,
+    "category": "values",
+    "function": "p",
+    "input": -37.06591528298065,
+    "lower": true,
+    "log": true,
+    "mode": "double",
+    "binary_sha256": "8cd1f28521a95ab8f51f34c48bff023f4381dbedd6b64174dfc969dd37f55447",
+    "actual": "nan",
+    "failed": true
+  },
+  {
+    "family": "st",
+    "parameters": [
+      0.0,
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "missing": "The joint large-skew/large-degree angular tail is not resolved by the public evaluator.",
+    "job": [
+      "st",
+      1,
+      -3.644230579974875e-07,
+      true,
+      true,
+      [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ]
+    ],
+    "row": [
+      16,
+      -3.644230579974875e-07,
+      -668.757628622683,
+      -690.7755278982137,
+      -9.99999999999979e-301
+    ],
+    "expected": -690.7755278982137,
+    "category": "values",
+    "function": "p",
+    "input": -3.644230579974875e-07,
+    "lower": true,
+    "log": true,
+    "mode": "double",
+    "binary_sha256": "8cd1f28521a95ab8f51f34c48bff023f4381dbedd6b64174dfc969dd37f55447",
+    "actual": "nan",
+    "failed": true
+  }
+]

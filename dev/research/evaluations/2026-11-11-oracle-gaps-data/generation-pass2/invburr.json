@@ -1,0 +1,51 @@
+{
+  "id": "invburr",
+  "input_sha256": "8a4b9d7f443e9651972f9225c1221a81adf36432d1729a62d47acfd016f11635",
+  "digits": 160,
+  "timeout": 120,
+  "memory_bytes": 1073741824,
+  "before": {
+    "bytes": 135313,
+    "points": 16,
+    "values": 298,
+    "quantiles": 704
+  },
+  "after": {
+    "bytes": 159684,
+    "points": 19,
+    "values": 351,
+    "quantiles": 836
+  },
+  "records": [
+    {
+      "parameters": [
+        1e-08,
+        1.0,
+        1.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.21715569699881598
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1000.0
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.16485207399819046
+    },
+    {
+      "parameters": [
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "status": "generated",
+      "digits": 160,
+      "seconds": 0.14743874402483925
+    }
+  ]
+}

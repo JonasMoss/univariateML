@@ -15,6 +15,8 @@ boundary_parameter_sets = [{'mu1': 0., 'mu2': 0.}]
 
 def build(p, logd):
     a,b=p['mu1'],p['mu2']
+    if max(a,b)>1000000 and 0<min(a,b)<max(a,b)/16:
+        return asymmetric_reference(a,b)
     @lru_cache(maxsize=20000)
     def mass(k, a=a, b=b):
         if k<0:return mass(-k,b,a)
@@ -49,3 +51,75 @@ def build(p, logd):
     if max(tails(-width-1)[0],tails(width)[1])>mp.log(mp.mpf('1e-40')):
         raise ArithmeticError('normalization tail bound')
     return ref
+
+
+def asymmetric_reference(a,b):
+    """Bessel masses and positive Poisson convolutions with geometric bounds.
+
+    Canonical rates A>=B. For the lower count tail, Bessel recurrence and
+    I_(n+1)(z)/I_n(z)<1 give mass(k-1)/mass(k)<sqrt(B/A)+max(k,0)/A.
+    The I ratio is the expectation of t in (-1,1) under the positive
+    integral weight exp(z*t)*(1-t*t)^(n-1/2); integration by parts proves
+    this representation and the strict bound.
+
+    Near the mode condition on the smaller Poisson count. The lower-CDF
+    convolution term ratio is <=B/(j+1)*(1+A/(k+j+1)); the upper one is
+    <=B/(j+1)*min(1,A/(k+j+2)). Both decrease, giving global geometric
+    majorants on omitted positive terms. No cancellation of tiny tails.
+    """
+    from quality.truth_reference import gamma
+    A,B=max(a,b),min(a,b)
+    if not 0<B<A/16:raise ArithmeticError('Skellam asymmetric route domain')
+    z=2*mp.sqrt(A*B);logratio=mp.log(A/B)/2
+    @lru_cache(maxsize=50000)
+    def mass(k):
+        return -A-B+k*logratio+mp.log(mp.besseli(abs(k),z))
+    @lru_cache(maxsize=50000)
+    def poisson(k):return gamma(k+1,A)[::-1]
+    @lru_cache(maxsize=20000)
+    def canonical(k):
+        if k==-mp.inf:return -mp.inf,mp.mpf(0)
+        if k==mp.inf:return mp.mpf(0),-mp.inf
+        q=mp.sqrt(B/A)+max(k,0)/A
+        # Termwise positive 0F1 comparison bounds I_(n+1)/I_n.
+        if k<=0:q=min(q,B/(1-k))
+        if q<mp.mpf('.5'):
+            first=mass(k);term=mp.mpf(1);total=term
+            for j in range(10000):
+                if term*q/(1-q)<total*mp.mpf('1e-50'):
+                    return pair(first+mp.log(total))
+                term=mp.exp(mass(k-j-1)-first);total+=term
+            raise ArithmeticError('Skellam lower-count geometric remainder')
+        lower=k<=A-B;index=0 if lower else 1
+        first=-B+poisson(k)[index]
+        term=mp.mpf(1);total=term
+        previous=poisson(k)[index]
+        poisson_mass=-A+k*mp.log(A)-mp.loggamma(k+1)
+        for j in range(10000):
+            majorant=B/(j+1)*(1+A/(k+j+1) if lower else min(1,A/(k+j+2)))
+            if majorant<1 and term*majorant/(1-majorant)<total*mp.mpf('1e-50'):
+                return pair(first+mp.log(total),lower)
+            # The adjacent Poisson cut differs by one positive PMF.
+            # Avoid recomputing a concentrated gamma integral at every cut.
+            poisson_mass+=mp.log(A)-mp.log(k+j+1)
+            ratio=mp.exp(poisson_mass-previous)
+            if lower:
+                current=previous+mp.log1p(ratio)
+            elif ratio<1-mp.mpf('1e-100'):
+                current=previous+mp.log1p(-ratio)
+            else:
+                current=poisson(k+j+1)[index]
+            term*=B/(j+1)*mp.exp(current-previous);total+=term;previous=current
+        raise ArithmeticError('Skellam positive convolution remainder')
+    def tails(k):return canonical(k) if a>=b else canonical(-k-1)[::-1]
+    ref=Reference(tails,-mp.inf,mp.inf,True,
+                  log_density=lambda k:mass(k if a>=b else -k))
+    # Independent Poisson masses each sum to one; their product law and
+    # the difference map preserve total mass (Tonelli's theorem).
+    ref.normalization=mp.mpf(1)
+    return ref
+
+
+# Independently measured production limitations; numerical rows remain archived.
+truth_exclusions = {}
+truth_exclusions.setdefault('values', []).extend([([100000000.0, 1.0], [99629757.0], 'TASK-196 open: measured double p normalized error 1.5457117726600828e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [99787340.0], 'TASK-196 open: measured double d,p normalized error 1.5465581744016224e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [99885380.0], 'TASK-196 open: measured double d,p normalized error 5.85536559273841e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [99929662.0], 'TASK-196 open: measured double d normalized error 2.774148530094894e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [99952468.0], 'TASK-196 open: measured double d normalized error 1.5014853487095862e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [99976736.0], 'TASK-196 open: measured double d normalized error 5.54756706690929e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [99993254.0], 'TASK-196 open: measured double d normalized error 1.3674470880397499e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [100006744.0], 'TASK-196 open: measured double d normalized error 1.352267288461824e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [100023263.0], 'TASK-196 open: measured double d normalized error 1.2446137462495117e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [100047537.0], 'TASK-196 open: measured double d normalized error 8.319070022997387e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [100070352.0], 'TASK-196 open: measured double d normalized error 1.6591015280176852e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [100114661.0], 'TASK-196 open: measured double p normalized error 8.664338284242485e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [100212809.0], 'TASK-196 open: measured double d,p normalized error 5.998630855941545e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([100000000.0, 1.0], [100370698.0], 'TASK-196 open: measured double p normalized error 1.2406423522986497e-10 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-100370698.0], 'TASK-196 open: measured double p normalized error 6.708076027583612e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-100212809.0], 'TASK-196 open: measured double d,p normalized error 6.181205071205494e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-100114661.0], 'TASK-196 open: measured double p normalized error 1.1391880261401467e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-100070352.0], 'TASK-196 open: measured double d normalized error 1.6591015280176852e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-100047537.0], 'TASK-196 open: measured double d normalized error 8.319070022997387e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-100023263.0], 'TASK-196 open: measured double d normalized error 1.2446137462495117e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-100006744.0], 'TASK-196 open: measured double d normalized error 1.352267288461824e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-99993254.0], 'TASK-196 open: measured double d normalized error 1.3674470880397499e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-99976736.0], 'TASK-196 open: measured double d normalized error 5.54756706690929e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-99952468.0], 'TASK-196 open: measured double d normalized error 1.5014853487095862e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-99929662.0], 'TASK-196 open: measured double d normalized error 2.774148530094894e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-99885380.0], 'TASK-196 open: measured double d,p normalized error 4.186697248381694e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-99787340.0], 'TASK-196 open: measured double d,p normalized error 9.022663092247962e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.'), ([1.0, 100000000.0], [-99629757.0], 'TASK-196 open: measured double p normalized error 1.2314577939244952e-10 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound.')])
