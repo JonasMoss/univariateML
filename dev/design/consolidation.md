@@ -41,6 +41,56 @@ Rules agreed with Jonas:
 The regime table in [relaxed-likelihood.tex](../research/relaxed-likelihood.tex)
 (R1 to R8) is the reference for the kinds and reasons.
 
+### Draft type (for review, not yet in the code)
+
+```cpp
+enum class OutcomeKind { Estimate, Limit, Nonexistence, Budget, Failure };
+enum class OutcomeReason {
+  None,
+  Unbounded,        // Nonexistence: the likelihood is unbounded (collapse, spike)
+  Unattained,       // Nonexistence: finite supremum, not attained, no limit model to name
+  InvalidInput,     // Failure: empty, non-finite or out-of-support data
+  InvalidArgument,  // Failure: a held value or control outside its domain
+  Unsupported,      // Failure: a hold subset the family does not implement
+  NoConvergence,    // Failure: a solver cap was reached or a search failed
+  Evaluation,       // Failure: NaN or overflow in the computation
+  Tolerance,        // Failure: tol below the binary64 spacing at the maximizer
+  Conditioning,     // Failure: rounding noise over curvature exceeds tol
+  Unresolved        // Failure: an undecided comparison with no candidate to return
+};
+struct Outcome {
+  OutcomeKind kind;
+  OutcomeReason reason;
+  bool certified;   // Estimate: global claim. Limit: proved, not margin-decided
+  bool unique;      // Estimate only
+};
+```
+
+`StopDetail` keeps the limit model, candidates and bounds. The limit model
+stays a `StopModel`; it is detail, not a kind.
+
+The bindings already use a small vocabulary of kinds, so the type mostly moves
+it into the core. Today's kinds and where they go:
+
+| binding kind today | outcome |
+|---|---|
+| success | `Estimate` |
+| `limit` | `Limit` |
+| `nomle` | `Nonexistence` |
+| `budget` | `Budget` |
+| `numerical`, `tolerance`, `conditioning` | `Failure` with `Evaluation`, `NoConvergence`, `Tolerance` or `Conditioning` |
+| `unresolved` | `Failure` with `Unresolved` |
+| `tie` | `Estimate` with `unique = false`; rendered as the `tie` stop until step 5 |
+| no kind (a plain error) | `Failure` with `InvalidInput`, `InvalidArgument`, `Unsupported` or `NoConvergence`; stays a plain error until step 5 |
+
+The per-family mappings are written by hand. Reading them off the binding
+sources was tried on 2026-11-12 and is not reliable: of 560 status enumerators
+in 85 families with their own enum, 202 are never named in their binding
+(defaults, ternaries and generic `!= Ok` checks decide them). The snapshot
+therefore records the outcome and the raw status of every case from step 4 on,
+which measures how many enumerators the inputs reach; an enumerator no input
+reaches gets a targeted case before its family enum is removed.
+
 ## Steps
 
 1. **Land the running jobs; freeze cross-cutting files.** Merge or park
