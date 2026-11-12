@@ -1,0 +1,1858 @@
+{
+  "checks_per_mode": 242,
+  "missing_from_main_corpus": [],
+  "modes": {
+    "native": {
+      "failures": [],
+      "worst_pass": 1.1369741262143368e-12
+    },
+    "double": {
+      "failures": [],
+      "worst_pass": 1.2505823469058851e-12
+    }
+  },
+  "points": [
+    {
+      "family": "ged",
+      "parameters": [
+        0.0,
+        1000.0,
+        200000000.0
+      ],
+      "rows": [
+        {
+          "operation": 0,
+          "input": -1732.0508688505893,
+          "lower": 1,
+          "log": 1,
+          "expected": -672.6182663017332
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508688505893,
+          "lower": 1,
+          "log": 1,
+          "expected": -690.7755211554064
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508688505893,
+          "lower": 0,
+          "log": 1,
+          "expected": -1.000006742830028e-300
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508688505893,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.000006742830029e-300
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508688505893,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -1732.050858671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -213.2732951964537
+        },
+        {
+          "operation": 1,
+          "input": -1732.050858671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -230.25851185321952
+        },
+        {
+          "operation": 1,
+          "input": -1732.050858671529,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999974461883072e-101
+        },
+        {
+          "operation": 1,
+          "input": -1732.050858671529,
+          "lower": 1,
+          "log": 0,
+          "expected": 9.999974461883127e-101
+        },
+        {
+          "operation": 1,
+          "input": -1732.050858671529,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -1732.0508456173109,
+          "lower": 1,
+          "log": 1,
+          "expected": -53.583220577310954
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508456173109,
+          "lower": 1,
+          "log": 1,
+          "expected": -69.07755223285577
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508456173109,
+          "lower": 0,
+          "log": 1,
+          "expected": -1.000000556965765e-30
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508456173109,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.00000055696576e-30
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508456173109,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -1732.0508279516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -14.058657311119775
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508279516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -27.631021147943205
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508279516423,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999999679858422e-13
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508279516423,
+          "lower": 1,
+          "log": 0,
+          "expected": 9.999999679853438e-13
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508279516423,
+          "lower": 0,
+          "log": 0,
+          "expected": 0.999999999999
+        },
+        {
+          "operation": 0,
+          "input": -1732.047343467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -8.150208603876138
+        },
+        {
+          "operation": 1,
+          "input": -1732.047343467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -13.815510557936658
+        },
+        {
+          "operation": 1,
+          "input": -1732.047343467262,
+          "lower": 0,
+          "log": 1,
+          "expected": -1.00000050002795e-06
+        },
+        {
+          "operation": 1,
+          "input": -1732.047343467262,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0000000000276158e-06
+        },
+        {
+          "operation": 1,
+          "input": -1732.047343467262,
+          "lower": 0,
+          "log": 0,
+          "expected": 0.999999
+        },
+        {
+          "operation": 0,
+          "input": 1732.047343467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -8.150208603876138
+        },
+        {
+          "operation": 1,
+          "input": 1732.047343467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.00000050002795e-06
+        },
+        {
+          "operation": 1,
+          "input": 1732.047343467262,
+          "lower": 0,
+          "log": 1,
+          "expected": -13.815510557936658
+        },
+        {
+          "operation": 1,
+          "input": 1732.047343467262,
+          "lower": 1,
+          "log": 0,
+          "expected": 0.999999
+        },
+        {
+          "operation": 1,
+          "input": 1732.047343467262,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0000000000276158e-06
+        },
+        {
+          "operation": 0,
+          "input": 1732.0508279516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -14.058657311119775
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508279516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -9.999999679858422e-13
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508279516423,
+          "lower": 0,
+          "log": 1,
+          "expected": -27.631021147943205
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508279516423,
+          "lower": 1,
+          "log": 0,
+          "expected": 0.999999999999
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508279516423,
+          "lower": 0,
+          "log": 0,
+          "expected": 9.999999679853438e-13
+        },
+        {
+          "operation": 0,
+          "input": 1732.0508456173109,
+          "lower": 1,
+          "log": 1,
+          "expected": -53.583220577310954
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508456173109,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.000000556965765e-30
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508456173109,
+          "lower": 0,
+          "log": 1,
+          "expected": -69.07755223285577
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508456173109,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508456173109,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.00000055696576e-30
+        },
+        {
+          "operation": 0,
+          "input": 1732.050858671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -213.2732951964537
+        },
+        {
+          "operation": 1,
+          "input": 1732.050858671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -9.999974461883072e-101
+        },
+        {
+          "operation": 1,
+          "input": 1732.050858671529,
+          "lower": 0,
+          "log": 1,
+          "expected": -230.25851185321952
+        },
+        {
+          "operation": 1,
+          "input": 1732.050858671529,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 1,
+          "input": 1732.050858671529,
+          "lower": 0,
+          "log": 0,
+          "expected": 9.999974461883127e-101
+        },
+        {
+          "operation": 0,
+          "input": 1732.0508688505893,
+          "lower": 1,
+          "log": 1,
+          "expected": -672.6182663017332
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508688505893,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.000006742830028e-300
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508688505893,
+          "lower": 0,
+          "log": 1,
+          "expected": -690.7755211554064
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508688505893,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508688505893,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.000006742830029e-300
+        }
+      ],
+      "worst_error": {
+        "native": 1.1372494509407024e-13,
+        "double": 1.1372494509407024e-13
+      }
+    },
+    {
+      "family": "ged",
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        200000000.0
+      ],
+      "rows": [
+        {
+          "operation": 0,
+          "input": -273205086.88505894,
+          "lower": 1,
+          "log": 1,
+          "expected": -684.131201491528
+        },
+        {
+          "operation": 1,
+          "input": -273205086.88505894,
+          "lower": 1,
+          "log": 1,
+          "expected": -690.7755308948446
+        },
+        {
+          "operation": 1,
+          "input": -273205086.88505894,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999970033736401e-301
+        },
+        {
+          "operation": 1,
+          "input": -273205086.88505894,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -273205085.8671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -224.78622492499747
+        },
+        {
+          "operation": 1,
+          "input": -273205085.8671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -230.25851613747864
+        },
+        {
+          "operation": 1,
+          "input": -273205085.8671529,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999931619493228e-101
+        },
+        {
+          "operation": 1,
+          "input": -273205085.8671529,
+          "lower": 1,
+          "log": 0,
+          "expected": 9.999931619493113e-101
+        },
+        {
+          "operation": 1,
+          "input": -273205085.8671529,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -273205084.5617311,
+          "lower": 1,
+          "log": 1,
+          "expected": -65.09614672973696
+        },
+        {
+          "operation": 1,
+          "input": -273205084.5617311,
+          "lower": 1,
+          "log": 1,
+          "expected": -69.0775529351298
+        },
+        {
+          "operation": 1,
+          "input": -273205084.5617311,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999998546915797e-31
+        },
+        {
+          "operation": 1,
+          "input": -273205084.5617311,
+          "lower": 1,
+          "log": 0,
+          "expected": 9.999998546915792e-31
+        },
+        {
+          "operation": 1,
+          "input": -273205084.5617311,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -273205082.7951642,
+          "lower": 1,
+          "log": 1,
+          "expected": -25.571582755886467
+        },
+        {
+          "operation": 1,
+          "input": -273205082.7951642,
+          "lower": 1,
+          "log": 1,
+          "expected": -27.631021124721865
+        },
+        {
+          "operation": 1,
+          "input": -273205082.7951642,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999999912071824e-13
+        },
+        {
+          "operation": 1,
+          "input": -273205082.7951642,
+          "lower": 1,
+          "log": 0,
+          "expected": 9.99999991206683e-13
+        },
+        {
+          "operation": 1,
+          "input": -273205082.7951642,
+          "lower": 0,
+          "log": 0,
+          "expected": 0.999999999999
+        },
+        {
+          "operation": 0,
+          "input": -273204734.3467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -19.663134068846364
+        },
+        {
+          "operation": 1,
+          "input": -273204734.3467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -13.815510557889882
+        },
+        {
+          "operation": 1,
+          "input": -273204734.3467262,
+          "lower": 0,
+          "log": 1,
+          "expected": -1.0000005000747255e-06
+        },
+        {
+          "operation": 1,
+          "input": -273204734.3467262,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0000000000743925e-06
+        },
+        {
+          "operation": 1,
+          "input": -273204734.3467262,
+          "lower": 0,
+          "log": 0,
+          "expected": 0.999999
+        },
+        {
+          "operation": 0,
+          "input": 73204734.34672621,
+          "lower": 1,
+          "log": 1,
+          "expected": -19.663134068846364
+        },
+        {
+          "operation": 1,
+          "input": 73204734.34672621,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.0000004999886937e-06
+        },
+        {
+          "operation": 1,
+          "input": 73204734.34672621,
+          "lower": 0,
+          "log": 1,
+          "expected": -13.815510557975914
+        },
+        {
+          "operation": 1,
+          "input": 73204734.34672621,
+          "lower": 1,
+          "log": 0,
+          "expected": 0.999999
+        },
+        {
+          "operation": 1,
+          "input": 73204734.34672621,
+          "lower": 0,
+          "log": 0,
+          "expected": 9.9999999998836e-07
+        },
+        {
+          "operation": 0,
+          "input": 73205082.79516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -25.571582755886467
+        },
+        {
+          "operation": 1,
+          "input": 73205082.79516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -9.999999912071824e-13
+        },
+        {
+          "operation": 1,
+          "input": 73205082.79516423,
+          "lower": 0,
+          "log": 1,
+          "expected": -27.631021124721865
+        },
+        {
+          "operation": 1,
+          "input": 73205082.79516423,
+          "lower": 1,
+          "log": 0,
+          "expected": 0.999999999999
+        },
+        {
+          "operation": 1,
+          "input": 73205082.79516423,
+          "lower": 0,
+          "log": 0,
+          "expected": 9.99999991206683e-13
+        },
+        {
+          "operation": 0,
+          "input": 73205084.5617311,
+          "lower": 1,
+          "log": 1,
+          "expected": -65.09614672973696
+        },
+        {
+          "operation": 1,
+          "input": 73205084.5617311,
+          "lower": 1,
+          "log": 1,
+          "expected": -9.999998546915797e-31
+        },
+        {
+          "operation": 1,
+          "input": 73205084.5617311,
+          "lower": 0,
+          "log": 1,
+          "expected": -69.0775529351298
+        },
+        {
+          "operation": 1,
+          "input": 73205084.5617311,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 1,
+          "input": 73205084.5617311,
+          "lower": 0,
+          "log": 0,
+          "expected": 9.999998546915792e-31
+        },
+        {
+          "operation": 0,
+          "input": 73205085.8671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -224.78621786614656
+        },
+        {
+          "operation": 1,
+          "input": 73205085.8671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.0000002550242648e-100
+        },
+        {
+          "operation": 1,
+          "input": 73205085.8671529,
+          "lower": 0,
+          "log": 1,
+          "expected": -230.25850904438033
+        },
+        {
+          "operation": 1,
+          "input": 73205085.8671529,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 1,
+          "input": 73205085.8671529,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0000002550242686e-100
+        },
+        {
+          "operation": 0,
+          "input": 73205086.88505894,
+          "lower": 1,
+          "log": 1,
+          "expected": -684.131201491528
+        },
+        {
+          "operation": 1,
+          "input": 73205086.88505894,
+          "lower": 1,
+          "log": 1,
+          "expected": -9.999970033736401e-301
+        },
+        {
+          "operation": 1,
+          "input": 73205086.88505894,
+          "lower": 0,
+          "log": 1,
+          "expected": -690.7755308948446
+        },
+        {
+          "operation": 1,
+          "input": 73205086.88505894,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        }
+      ],
+      "worst_error": {
+        "native": 8.52748239866562e-14,
+        "double": 8.52748239866562e-14
+      }
+    },
+    {
+      "family": "sged",
+      "parameters": [
+        0.0,
+        1000.0,
+        200000000.0,
+        1.0
+      ],
+      "rows": [
+        {
+          "operation": 0,
+          "input": -1732.0508688505893,
+          "lower": 1,
+          "log": 1,
+          "expected": -672.6182663017332
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508688505893,
+          "lower": 1,
+          "log": 1,
+          "expected": -690.7755211554064
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508688505893,
+          "lower": 0,
+          "log": 1,
+          "expected": -1.000006742830028e-300
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508688505893,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.000006742830029e-300
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508688505893,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -1732.050858671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -213.2732951964537
+        },
+        {
+          "operation": 1,
+          "input": -1732.050858671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -230.25851185321952
+        },
+        {
+          "operation": 1,
+          "input": -1732.050858671529,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999974461883072e-101
+        },
+        {
+          "operation": 1,
+          "input": -1732.050858671529,
+          "lower": 1,
+          "log": 0,
+          "expected": 9.999974461883127e-101
+        },
+        {
+          "operation": 1,
+          "input": -1732.050858671529,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -1732.0508456173109,
+          "lower": 1,
+          "log": 1,
+          "expected": -53.583220577310954
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508456173109,
+          "lower": 1,
+          "log": 1,
+          "expected": -69.07755223285577
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508456173109,
+          "lower": 0,
+          "log": 1,
+          "expected": -1.000000556965765e-30
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508456173109,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.00000055696576e-30
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508456173109,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -1732.0508279516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -14.058657311119775
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508279516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -27.631021147943205
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508279516423,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999999679858422e-13
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508279516423,
+          "lower": 1,
+          "log": 0,
+          "expected": 9.999999679853438e-13
+        },
+        {
+          "operation": 1,
+          "input": -1732.0508279516423,
+          "lower": 0,
+          "log": 0,
+          "expected": 0.999999999999
+        },
+        {
+          "operation": 0,
+          "input": -1732.047343467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -8.150208603876138
+        },
+        {
+          "operation": 1,
+          "input": -1732.047343467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -13.815510557936658
+        },
+        {
+          "operation": 1,
+          "input": -1732.047343467262,
+          "lower": 0,
+          "log": 1,
+          "expected": -1.00000050002795e-06
+        },
+        {
+          "operation": 1,
+          "input": -1732.047343467262,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0000000000276158e-06
+        },
+        {
+          "operation": 1,
+          "input": -1732.047343467262,
+          "lower": 0,
+          "log": 0,
+          "expected": 0.999999
+        },
+        {
+          "operation": 0,
+          "input": 1732.047343467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -8.150208603876138
+        },
+        {
+          "operation": 1,
+          "input": 1732.047343467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.00000050002795e-06
+        },
+        {
+          "operation": 1,
+          "input": 1732.047343467262,
+          "lower": 0,
+          "log": 1,
+          "expected": -13.815510557936658
+        },
+        {
+          "operation": 1,
+          "input": 1732.047343467262,
+          "lower": 1,
+          "log": 0,
+          "expected": 0.999999
+        },
+        {
+          "operation": 1,
+          "input": 1732.047343467262,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0000000000276158e-06
+        },
+        {
+          "operation": 0,
+          "input": 1732.0508279516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -14.058657311119775
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508279516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -9.999999679858422e-13
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508279516423,
+          "lower": 0,
+          "log": 1,
+          "expected": -27.631021147943205
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508279516423,
+          "lower": 1,
+          "log": 0,
+          "expected": 0.999999999999
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508279516423,
+          "lower": 0,
+          "log": 0,
+          "expected": 9.999999679853438e-13
+        },
+        {
+          "operation": 0,
+          "input": 1732.0508456173109,
+          "lower": 1,
+          "log": 1,
+          "expected": -53.583220577310954
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508456173109,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.000000556965765e-30
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508456173109,
+          "lower": 0,
+          "log": 1,
+          "expected": -69.07755223285577
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508456173109,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508456173109,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.00000055696576e-30
+        },
+        {
+          "operation": 0,
+          "input": 1732.050858671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -213.2732951964537
+        },
+        {
+          "operation": 1,
+          "input": 1732.050858671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -9.999974461883072e-101
+        },
+        {
+          "operation": 1,
+          "input": 1732.050858671529,
+          "lower": 0,
+          "log": 1,
+          "expected": -230.25851185321952
+        },
+        {
+          "operation": 1,
+          "input": 1732.050858671529,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 1,
+          "input": 1732.050858671529,
+          "lower": 0,
+          "log": 0,
+          "expected": 9.999974461883127e-101
+        },
+        {
+          "operation": 0,
+          "input": 1732.0508688505893,
+          "lower": 1,
+          "log": 1,
+          "expected": -672.6182663017332
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508688505893,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.000006742830028e-300
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508688505893,
+          "lower": 0,
+          "log": 1,
+          "expected": -690.7755211554064
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508688505893,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 1,
+          "input": 1732.0508688505893,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.000006742830029e-300
+        }
+      ],
+      "worst_error": {
+        "native": 1.1372494509407024e-13,
+        "double": 1.1372494509407024e-13
+      }
+    },
+    {
+      "family": "sged",
+      "parameters": [
+        -100000000.0,
+        100000000.0,
+        200000000.0,
+        1.0
+      ],
+      "rows": [
+        {
+          "operation": 0,
+          "input": -273205086.88505894,
+          "lower": 1,
+          "log": 1,
+          "expected": -684.131201491528
+        },
+        {
+          "operation": 1,
+          "input": -273205086.88505894,
+          "lower": 1,
+          "log": 1,
+          "expected": -690.7755308948446
+        },
+        {
+          "operation": 1,
+          "input": -273205086.88505894,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999970033736401e-301
+        },
+        {
+          "operation": 1,
+          "input": -273205086.88505894,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -273205085.8671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -224.78622492499747
+        },
+        {
+          "operation": 1,
+          "input": -273205085.8671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -230.25851613747864
+        },
+        {
+          "operation": 1,
+          "input": -273205085.8671529,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999931619493228e-101
+        },
+        {
+          "operation": 1,
+          "input": -273205085.8671529,
+          "lower": 1,
+          "log": 0,
+          "expected": 9.999931619493113e-101
+        },
+        {
+          "operation": 1,
+          "input": -273205085.8671529,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -273205084.5617311,
+          "lower": 1,
+          "log": 1,
+          "expected": -65.09614672973696
+        },
+        {
+          "operation": 1,
+          "input": -273205084.5617311,
+          "lower": 1,
+          "log": 1,
+          "expected": -69.0775529351298
+        },
+        {
+          "operation": 1,
+          "input": -273205084.5617311,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999998546915797e-31
+        },
+        {
+          "operation": 1,
+          "input": -273205084.5617311,
+          "lower": 1,
+          "log": 0,
+          "expected": 9.999998546915792e-31
+        },
+        {
+          "operation": 1,
+          "input": -273205084.5617311,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 0,
+          "input": -273205082.7951642,
+          "lower": 1,
+          "log": 1,
+          "expected": -25.571582755886467
+        },
+        {
+          "operation": 1,
+          "input": -273205082.7951642,
+          "lower": 1,
+          "log": 1,
+          "expected": -27.631021124721865
+        },
+        {
+          "operation": 1,
+          "input": -273205082.7951642,
+          "lower": 0,
+          "log": 1,
+          "expected": -9.999999912071824e-13
+        },
+        {
+          "operation": 1,
+          "input": -273205082.7951642,
+          "lower": 1,
+          "log": 0,
+          "expected": 9.99999991206683e-13
+        },
+        {
+          "operation": 1,
+          "input": -273205082.7951642,
+          "lower": 0,
+          "log": 0,
+          "expected": 0.999999999999
+        },
+        {
+          "operation": 0,
+          "input": -273204734.3467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -19.663134068846364
+        },
+        {
+          "operation": 1,
+          "input": -273204734.3467262,
+          "lower": 1,
+          "log": 1,
+          "expected": -13.815510557889882
+        },
+        {
+          "operation": 1,
+          "input": -273204734.3467262,
+          "lower": 0,
+          "log": 1,
+          "expected": -1.0000005000747255e-06
+        },
+        {
+          "operation": 1,
+          "input": -273204734.3467262,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0000000000743925e-06
+        },
+        {
+          "operation": 1,
+          "input": -273204734.3467262,
+          "lower": 0,
+          "log": 0,
+          "expected": 0.999999
+        },
+        {
+          "operation": 0,
+          "input": 73204734.34672621,
+          "lower": 1,
+          "log": 1,
+          "expected": -19.663134068846364
+        },
+        {
+          "operation": 1,
+          "input": 73204734.34672621,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.0000004999886937e-06
+        },
+        {
+          "operation": 1,
+          "input": 73204734.34672621,
+          "lower": 0,
+          "log": 1,
+          "expected": -13.815510557975914
+        },
+        {
+          "operation": 1,
+          "input": 73204734.34672621,
+          "lower": 1,
+          "log": 0,
+          "expected": 0.999999
+        },
+        {
+          "operation": 1,
+          "input": 73204734.34672621,
+          "lower": 0,
+          "log": 0,
+          "expected": 9.9999999998836e-07
+        },
+        {
+          "operation": 0,
+          "input": 73205082.79516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -25.571582755886467
+        },
+        {
+          "operation": 1,
+          "input": 73205082.79516423,
+          "lower": 1,
+          "log": 1,
+          "expected": -9.999999912071824e-13
+        },
+        {
+          "operation": 1,
+          "input": 73205082.79516423,
+          "lower": 0,
+          "log": 1,
+          "expected": -27.631021124721865
+        },
+        {
+          "operation": 1,
+          "input": 73205082.79516423,
+          "lower": 1,
+          "log": 0,
+          "expected": 0.999999999999
+        },
+        {
+          "operation": 1,
+          "input": 73205082.79516423,
+          "lower": 0,
+          "log": 0,
+          "expected": 9.99999991206683e-13
+        },
+        {
+          "operation": 0,
+          "input": 73205084.5617311,
+          "lower": 1,
+          "log": 1,
+          "expected": -65.09614672973696
+        },
+        {
+          "operation": 1,
+          "input": 73205084.5617311,
+          "lower": 1,
+          "log": 1,
+          "expected": -9.999998546915797e-31
+        },
+        {
+          "operation": 1,
+          "input": 73205084.5617311,
+          "lower": 0,
+          "log": 1,
+          "expected": -69.0775529351298
+        },
+        {
+          "operation": 1,
+          "input": 73205084.5617311,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 1,
+          "input": 73205084.5617311,
+          "lower": 0,
+          "log": 0,
+          "expected": 9.999998546915792e-31
+        },
+        {
+          "operation": 0,
+          "input": 73205085.8671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -224.78621786614656
+        },
+        {
+          "operation": 1,
+          "input": 73205085.8671529,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.0000002550242648e-100
+        },
+        {
+          "operation": 1,
+          "input": 73205085.8671529,
+          "lower": 0,
+          "log": 1,
+          "expected": -230.25850904438033
+        },
+        {
+          "operation": 1,
+          "input": 73205085.8671529,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        },
+        {
+          "operation": 1,
+          "input": 73205085.8671529,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0000002550242686e-100
+        },
+        {
+          "operation": 0,
+          "input": 73205086.88505894,
+          "lower": 1,
+          "log": 1,
+          "expected": -684.131201491528
+        },
+        {
+          "operation": 1,
+          "input": 73205086.88505894,
+          "lower": 1,
+          "log": 1,
+          "expected": -9.999970033736401e-301
+        },
+        {
+          "operation": 1,
+          "input": 73205086.88505894,
+          "lower": 0,
+          "log": 1,
+          "expected": -690.7755308948446
+        },
+        {
+          "operation": 1,
+          "input": 73205086.88505894,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0
+        }
+      ],
+      "worst_error": {
+        "native": 8.52748239866562e-14,
+        "double": 8.52748239866562e-14
+      }
+    },
+    {
+      "family": "sged",
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "rows": [
+        {
+          "operation": 0,
+          "input": 1.732047343467261,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.2424533248939997
+        },
+        {
+          "operation": 1,
+          "input": 1.732047343467261,
+          "lower": 0,
+          "log": 1,
+          "expected": -13.815510557950716
+        },
+        {
+          "operation": 1,
+          "input": 1.732047343467261,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0000000000135576e-06
+        },
+        {
+          "operation": 0,
+          "input": 1.732050895598884,
+          "lower": 1,
+          "log": 1,
+          "expected": -8.370175752767375
+        },
+        {
+          "operation": 1,
+          "input": 1.732050895598884,
+          "lower": 0,
+          "log": 1,
+          "expected": -27.63102111408283
+        },
+        {
+          "operation": 1,
+          "input": 1.732050895598884,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0000000018457174e-12
+        },
+        {
+          "operation": 0,
+          "input": 1.7320509607824615,
+          "lower": 1,
+          "log": 1,
+          "expected": -48.03292013031212
+        },
+        {
+          "operation": 1,
+          "input": 1.7320509607824615,
+          "lower": 0,
+          "log": 1,
+          "expected": -69.07755268702972
+        },
+        {
+          "operation": 1,
+          "input": 1.7320509607824615,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.000000102791653e-30
+        },
+        {
+          "operation": 0,
+          "input": 1.7320510122116959,
+          "lower": 1,
+          "log": 1,
+          "expected": -207.7451604280846
+        },
+        {
+          "operation": 1,
+          "input": 1.7320510122116959,
+          "lower": 0,
+          "log": 1,
+          "expected": -230.25850916843203
+        },
+        {
+          "operation": 1,
+          "input": 1.7320510122116959,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0000001309725495e-100
+        },
+        {
+          "operation": 0,
+          "input": 1.732051052767818,
+          "lower": 1,
+          "log": 1,
+          "expected": -667.0947331846743
+        },
+        {
+          "operation": 1,
+          "input": 1.732051052767818,
+          "lower": 0,
+          "log": 1,
+          "expected": -690.7755268428009
+        },
+        {
+          "operation": 1,
+          "input": 1.732051052767818,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.0000010554133618e-300
+        },
+        {
+          "operation": 2,
+          "input": -0.6931471805599453,
+          "lower": 1,
+          "log": 1,
+          "expected": -2.447438646570303e-16
+        },
+        {
+          "operation": 2,
+          "input": 0.5,
+          "lower": 1,
+          "log": 0,
+          "expected": -2.8491093372415545e-16
+        },
+        {
+          "operation": 2,
+          "input": -0.6931471805599453,
+          "lower": 0,
+          "log": 1,
+          "expected": -3.250780027912806e-16
+        },
+        {
+          "operation": 2,
+          "input": 0.5,
+          "lower": 0,
+          "log": 0,
+          "expected": -2.8491093372415545e-16
+        }
+      ],
+      "worst_error": {
+        "native": 1.4212472427523888e-13,
+        "double": 1.4212472427523888e-13
+      }
+    },
+    {
+      "family": "sged",
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "rows": [
+        {
+          "operation": 0,
+          "input": -1.732051052767818,
+          "lower": 1,
+          "log": 1,
+          "expected": -667.0947331846743
+        },
+        {
+          "operation": 1,
+          "input": -1.732051052767818,
+          "lower": 1,
+          "log": 1,
+          "expected": -690.7755268428009
+        },
+        {
+          "operation": 1,
+          "input": -1.732051052767818,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0000010554133618e-300
+        },
+        {
+          "operation": 0,
+          "input": -1.7320510122116959,
+          "lower": 1,
+          "log": 1,
+          "expected": -207.7451604280846
+        },
+        {
+          "operation": 1,
+          "input": -1.7320510122116959,
+          "lower": 1,
+          "log": 1,
+          "expected": -230.25850916843203
+        },
+        {
+          "operation": 1,
+          "input": -1.7320510122116959,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0000001309725495e-100
+        },
+        {
+          "operation": 0,
+          "input": -1.7320509607824615,
+          "lower": 1,
+          "log": 1,
+          "expected": -48.03292013031212
+        },
+        {
+          "operation": 1,
+          "input": -1.7320509607824615,
+          "lower": 1,
+          "log": 1,
+          "expected": -69.07755268702972
+        },
+        {
+          "operation": 1,
+          "input": -1.7320509607824615,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.000000102791653e-30
+        },
+        {
+          "operation": 0,
+          "input": -1.732050895598884,
+          "lower": 1,
+          "log": 1,
+          "expected": -8.370175752767375
+        },
+        {
+          "operation": 1,
+          "input": -1.732050895598884,
+          "lower": 1,
+          "log": 1,
+          "expected": -27.63102111408283
+        },
+        {
+          "operation": 1,
+          "input": -1.732050895598884,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0000000018457174e-12
+        },
+        {
+          "operation": 0,
+          "input": -1.732047343467261,
+          "lower": 1,
+          "log": 1,
+          "expected": -1.2424533248939997
+        },
+        {
+          "operation": 1,
+          "input": -1.732047343467261,
+          "lower": 1,
+          "log": 1,
+          "expected": -13.815510557950716
+        },
+        {
+          "operation": 1,
+          "input": -1.732047343467261,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.0000000000135576e-06
+        },
+        {
+          "operation": 2,
+          "input": -0.6931471805599453,
+          "lower": 1,
+          "log": 1,
+          "expected": 3.250780027912806e-16
+        },
+        {
+          "operation": 2,
+          "input": 0.5,
+          "lower": 1,
+          "log": 0,
+          "expected": 2.8491093372415545e-16
+        },
+        {
+          "operation": 2,
+          "input": -0.6931471805599453,
+          "lower": 0,
+          "log": 1,
+          "expected": 2.447438646570303e-16
+        },
+        {
+          "operation": 2,
+          "input": 0.5,
+          "lower": 0,
+          "log": 0,
+          "expected": 2.8491093372415545e-16
+        }
+      ],
+      "worst_error": {
+        "native": 1.4212472427523888e-13,
+        "double": 1.4212472427523888e-13
+      }
+    },
+    {
+      "family": "sstd",
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "rows": [
+        {
+          "operation": 1,
+          "input": -1.3236080876822984,
+          "lower": 1,
+          "log": 0,
+          "expected": 1.9489868132596592e-295
+        },
+        {
+          "operation": 1,
+          "input": -1.3236080876822958,
+          "lower": 1,
+          "log": 0,
+          "expected": 4.958509696162019e-102
+        },
+        {
+          "operation": 1,
+          "input": -1.3236080876822938,
+          "lower": 1,
+          "log": 0,
+          "expected": 2.714793090254749e-30
+        }
+      ],
+      "worst_error": {
+        "native": 1.023254415610548e-12,
+        "double": 1.1368626363021094e-12
+      }
+    },
+    {
+      "family": "sstd",
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        1e-08
+      ],
+      "rows": [
+        {
+          "operation": 1,
+          "input": 1.3236080876822938,
+          "lower": 0,
+          "log": 0,
+          "expected": 2.714793090254749e-30
+        },
+        {
+          "operation": 1,
+          "input": 1.3236080876822958,
+          "lower": 0,
+          "log": 0,
+          "expected": 4.958509696162019e-102
+        },
+        {
+          "operation": 1,
+          "input": 1.3236080876822984,
+          "lower": 0,
+          "log": 0,
+          "expected": 1.9489868132598809e-295
+        }
+      ],
+      "worst_error": {
+        "native": 1.1369741262143368e-12,
+        "double": 1.2505823469058851e-12
+      }
+    },
+    {
+      "family": "st",
+      "parameters": [
+        0.0,
+        1.0,
+        -100000000.0,
+        100000000.0
+      ],
+      "rows": [
+        {
+          "operation": 1,
+          "input": -37.06591528298065,
+          "lower": 1,
+          "log": 1,
+          "expected": -690.7755278982137
+        }
+      ],
+      "worst_error": {
+        "native": 0,
+        "double": 1.6457855429176102e-16
+      }
+    },
+    {
+      "family": "st",
+      "parameters": [
+        0.0,
+        1.0,
+        100000000.0,
+        100000000.0
+      ],
+      "rows": [
+        {
+          "operation": 1,
+          "input": -3.644230579974875e-07,
+          "lower": 1,
+          "log": 1,
+          "expected": -690.7755278982137
+        }
+      ],
+      "worst_error": {
+        "native": 1.6457855429176102e-16,
+        "double": 1.6457855429176102e-16
+      }
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 #pragma once
+#include "../../special/skew_probability.hpp"
 #include "wedge.hpp"
+#include "../../special/skew_t_angular.hpp"
 #include "../lst/dpqr.hpp"
 #include "../sn/dpqr.hpp"
 #include <cmath>
@@ -53,15 +55,44 @@ inline double pst(double q,double xi,double omega,double alpha,double nu,bool lo
   const double result=lower_tail?lp0:special::fs_log1mexp(lp0);
   return log_p?result:std::exp(result);
  }
+ // A subnormal h can lose the ray scale even when nu*h is ordinary.
+ // For rho=|z|/sin(theta)<=2, a Gamma mixture gives a relative CDF
+ // difference <=512*(1/sqrt(nu)+1/sqrt(nu0)). Evaluating at nu0
+ // keeps h representable; the allowance covers central and thin masses.
+ double bridge_error=0;
+ if(a>=1e6 && nu>1e32 && std::abs(z)<=2*std::sin(std::atan2(1.,a))) {
+  bridge_error=-std::log1p(-512*(1/std::sqrt(nu)+1/std::sqrt(1e32)));
+  nu=1e32;
+ }
  bool ok=true;
- const double thin=st_wedge_detail::thin_log(std::abs(z),a,nu,ok);
+ double thin_error=0;
+ const bool protected_wedge=a>=1e6;
+ const double thin=protected_wedge
+   ? special::skew_t_angular::thin_log(std::abs(z),a,nu,ok,thin_error)
+   : st_wedge_detail::thin_log(std::abs(z),a,nu,ok);
  if(!ok)return special::kNaN;
+ thin_error+=bridge_error;
+ if(protected_wedge && z<=0)
+  return special::skew_probability::enclose(thin,thin_error,true,lower_tail,log_p);
  double lp;
  if(z<=0)lp=lower_tail?thin:special::fs_log1mexp(thin);
  else {
   const double wide=std::log(2.)+student_detail::probability_log(std::log(z),true,nu,true,true);
   const double upper=wide+special::fs_log1mexp(thin-wide);
-  lp=lower_tail?special::fs_log1mexp(upper):upper;
+  if(protected_wedge) {
+   // F(z)=P(|T_nu|<=z)+thin(z). This avoids subtracting the
+   // nearly unit broad survival when the positive CDF is small.
+   const double lr=2*std::log(z)-std::log(nu);
+   const double central=missing_detail::beta_log(-special::softplus(-lr),-special::softplus(lr),.5,nu*.5,true);
+   const double lower=special::log_sum_exp(central,thin);
+   const bool from_lower=lower<upper;
+   const double base_margin=2e-12+bridge_error+16*std::numeric_limits<double>::epsilon()*(1+std::abs(from_lower?central:wide));
+   const double low=from_lower?special::log_sum_exp(central-base_margin,thin-thin_error)
+       :special::log_diff_exp(wide-base_margin,std::min(0.,thin+thin_error));
+   const double high=from_lower?special::log_sum_exp(central+base_margin,thin+thin_error)
+       :special::log_diff_exp(std::min(0.,wide+base_margin),thin-thin_error);
+   return special::skew_probability::bounds(from_lower?lower:upper,low,high,from_lower,lower_tail,log_p);
+  } else lp=lower_tail?special::fs_log1mexp(upper):upper;
  }
  return log_p?lp:std::exp(lp);
 }

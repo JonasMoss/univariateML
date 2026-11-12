@@ -475,3 +475,20 @@ TEST_CASE("st packed held df axis controls CDF derivative accuracy") {
  CHECK(r.xi==0.0); CHECK(r.omega==1.0); CHECK(r.alpha==2.0);
  CHECK(std::abs(r.nu-1000.0000000000064)<=1e-10*1000.0000000000064);
 }
+
+TEST_CASE("st narrow angular tails and positive central mass") {
+  CHECK(cppunivariate::distributions::pst(-3.644230579974875e-7,0,1,1e8,1e8,true,true)==doctest::Approx(-690.7755278982137).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::pst(1.2533141404491138e-6,0,1,1e8,1e8,true,false)/1e-6==doctest::Approx(1.).epsilon(1e-10));
+}
+
+TEST_CASE("st large skew preserves a small CDF at ordinary degrees of freedom") {
+ const double reference=8.412994158666847e-13;
+ CHECK(std::abs(cppunivariate::distributions::pst(1e-12,0,1,1e12,5,true,false)/reference-1)<1e-10);
+ CHECK(std::abs(cppunivariate::distributions::qst(reference,0,1,1e12,5,true,false)/1e-12-1)<1e-9);
+}
+
+TEST_CASE("st normal face retains a ray whose squared scaled coordinate underflows") {
+ const double nu=std::numeric_limits<double>::max();
+ CHECK(std::abs(cppunivariate::distributions::pst(-2e-16,0,1,1e8,nu,true,false)/3.183098782049451e-9-1)<1e-10);
+ CHECK(std::abs(cppunivariate::distributions::pst(2e-16,0,1,1e8,nu,true,false)/3.1830989416263634e-9-1)<1e-10);
+}

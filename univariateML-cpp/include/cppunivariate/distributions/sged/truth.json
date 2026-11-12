@@ -3094,6 +3094,230 @@
       "-Inf",
       0.0,
       "-Inf"
+    ],
+    [
+      17,
+      -1.5461574810135936,
+      -206.26226888330336,
+      -247.26547346994906,
+      -4.111206646631715e-108
+    ],
+    [
+      17,
+      -1.5461574810135932,
+      -38.094821355479475,
+      -77.84317265631219,
+      -1.5600541083276579e-34
+    ],
+    [
+      20,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    [
+      20,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    [
+      20,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    [
+      20,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    [
+      20,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    [
+      20,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    [
+      20,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    [
+      20,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    [
+      20,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    [
+      20,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    [
+      21,
+      -273205086.88505894,
+      -684.131201491528,
+      -690.7755308948446,
+      -9.999970033736401e-301
+    ],
+    [
+      21,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    [
+      21,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    [
+      21,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    [
+      21,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    [
+      21,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    [
+      21,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    [
+      21,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    [
+      21,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    [
+      21,
+      73205086.88505894,
+      -684.131201491528,
+      -9.999970033736401e-301,
+      -690.7755308948446
+    ],
+    [
+      22,
+      1.732047343467261,
+      -1.2424533248939997,
+      -1.0000005000138918e-06,
+      -13.815510557950716
+    ],
+    [
+      22,
+      1.732050895598884,
+      -8.370175752767375,
+      -1.0000000018462156e-12,
+      -27.63102111408283
+    ],
+    [
+      22,
+      1.7320509607824615,
+      -48.03292013031212,
+      -1.0000001027916492e-30,
+      -69.07755268702972
+    ],
+    [
+      22,
+      1.7320510122116959,
+      -207.7451604280846,
+      -1.0000001309725457e-100,
+      -230.25850916843203
+    ],
+    [
+      22,
+      1.732051052767818,
+      -667.0947331846743,
+      -1.000001055413354e-300,
+      -690.7755268428009
+    ],
+    [
+      23,
+      -1.732051052767818,
+      -667.0947331846743,
+      -690.7755268428009,
+      -1.000001055413354e-300
+    ],
+    [
+      23,
+      -1.7320510122116959,
+      -207.7451604280846,
+      -230.25850916843203,
+      -1.0000001309725457e-100
+    ],
+    [
+      23,
+      -1.7320509607824615,
+      -48.03292013031212,
+      -69.07755268702972,
+      -1.0000001027916492e-30
+    ],
+    [
+      23,
+      -1.732050895598884,
+      -8.370175752767375,
+      -27.63102111408283,
+      -1.0000000018462156e-12
+    ],
+    [
+      23,
+      -1.732047343467261,
+      -1.2424533248939997,
+      -13.815510557950716,
+      -1.0000005000138918e-06
     ]
   ],
   "quantiles": [
@@ -14624,6 +14848,94 @@
       "-Inf",
       0,
       0.0
+    ],
+    [
+      22,
+      1,
+      1,
+      -0.6931471805599453,
+      -2.447438646570303e-16,
+      -2.4474386465703035e-16,
+      -2.447438646570303e-16,
+      0,
+      0.0
+    ],
+    [
+      22,
+      1,
+      0,
+      0.5,
+      -2.8491093372415545e-16,
+      -2.849109337241555e-16,
+      -2.8491093372415545e-16,
+      0,
+      0.0
+    ],
+    [
+      22,
+      0,
+      1,
+      -0.6931471805599453,
+      -3.250780027912806e-16,
+      -3.250780027912806e-16,
+      -3.2507800279128054e-16,
+      0,
+      0.0
+    ],
+    [
+      22,
+      0,
+      0,
+      0.5,
+      -2.8491093372415545e-16,
+      -2.849109337241555e-16,
+      -2.8491093372415545e-16,
+      0,
+      0.0
+    ],
+    [
+      23,
+      1,
+      1,
+      -0.6931471805599453,
+      3.250780027912806e-16,
+      3.2507800279128054e-16,
+      3.250780027912806e-16,
+      0,
+      0.0
+    ],
+    [
+      23,
+      1,
+      0,
+      0.5,
+      2.8491093372415545e-16,
+      2.8491093372415545e-16,
+      2.849109337241555e-16,
+      0,
+      0.0
+    ],
+    [
+      23,
+      0,
+      1,
+      -0.6931471805599453,
+      2.447438646570303e-16,
+      2.447438646570303e-16,
+      2.4474386465703035e-16,
+      0,
+      0.0
+    ],
+    [
+      23,
+      0,
+      0,
+      0.5,
+      2.8491093372415545e-16,
+      2.8491093372415545e-16,
+      2.849109337241555e-16,
+      0,
+      0.0
     ]
   ],
   "quantile_limits": "nearest binary64; columns 7/8: jump ambiguity flag / zero absolute floor; ambiguous bounds are two acceptable lattice points; jump relative distance 1e-12 on input scale",
@@ -14634,328 +14946,6 @@
     [
       1
     ]
-  ],
-  "excluded_values": [
-    {
-      "row": [
-        17,
-        -1.5461574810135936,
-        -206.26226888330336,
-        -247.26547346994906,
-        -4.111206646631715e-108
-      ],
-      "reason": "TASK-189 open: natural lower-tail precision gate returns NaN; reference 4.111206646631721e-108; propagated log-tail margin 3.1645e-10 exceeds the 1e-10 contract."
-    },
-    {
-      "row": [
-        17,
-        -1.5461574810135932,
-        -38.094821355479475,
-        -77.84317265631219,
-        -1.5600541083276579e-34
-      ],
-      "reason": "TASK-189 open: natural lower-tail precision gate returns NaN; reference 1.5600541083276566e-34; propagated log-tail margin 9.1662e-11 exceeds the reserved 1e-11 coordinate budget; sharper moment enclosure remains open."
-    },
-    {
-      "row": [
-        20,
-        -1732.0508688505893,
-        -672.6182663017332,
-        -690.7755211554064,
-        -1.000006742830028e-300
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        20,
-        -1732.050858671529,
-        -213.2732951964537,
-        -230.25851185321952,
-        -9.999974461883072e-101
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        20,
-        -1732.0508456173109,
-        -53.583220577310954,
-        -69.07755223285577,
-        -1.000000556965765e-30
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        20,
-        -1732.0508279516423,
-        -14.058657311119775,
-        -27.631021147943205,
-        -9.999999679858422e-13
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        20,
-        -1732.047343467262,
-        -8.150208603876138,
-        -13.815510557936658,
-        -1.00000050002795e-06
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        20,
-        1732.047343467262,
-        -8.150208603876138,
-        -1.00000050002795e-06,
-        -13.815510557936658
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        20,
-        1732.0508279516423,
-        -14.058657311119775,
-        -9.999999679858422e-13,
-        -27.631021147943205
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        20,
-        1732.0508456173109,
-        -53.583220577310954,
-        -1.000000556965765e-30,
-        -69.07755223285577
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        20,
-        1732.050858671529,
-        -213.2732951964537,
-        -9.999974461883072e-101,
-        -230.25851185321952
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        20,
-        1732.0508688505893,
-        -672.6182663017332,
-        -1.000006742830028e-300,
-        -690.7755211554064
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        21,
-        -273205086.88505894,
-        -684.131201491528,
-        -690.7755308948446,
-        -9.999970033736401e-301
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        21,
-        -273205085.8671529,
-        -224.78622492499747,
-        -230.25851613747864,
-        -9.999931619493228e-101
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        21,
-        -273205084.5617311,
-        -65.09614672973696,
-        -69.0775529351298,
-        -9.999998546915797e-31
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        21,
-        -273205082.7951642,
-        -25.571582755886467,
-        -27.631021124721865,
-        -9.999999912071824e-13
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        21,
-        -273204734.3467262,
-        -19.663134068846364,
-        -13.815510557889882,
-        -1.0000005000747255e-06
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        21,
-        73204734.34672621,
-        -19.663134068846364,
-        -1.0000004999886937e-06,
-        -13.815510557975914
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        21,
-        73205082.79516423,
-        -25.571582755886467,
-        -9.999999912071824e-13,
-        -27.631021124721865
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        21,
-        73205084.5617311,
-        -65.09614672973696,
-        -9.999998546915797e-31,
-        -69.0775529351298
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        21,
-        73205085.8671529,
-        -224.78621786614656,
-        -1.0000002550242648e-100,
-        -230.25850904438033
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        21,
-        73205086.88505894,
-        -684.131201491528,
-        -9.999970033736401e-301,
-        -690.7755308948446
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        22,
-        1.732047343467261,
-        -1.2424533248939997,
-        -1.0000005000138918e-06,
-        -13.815510557950716
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        22,
-        1.732050895598884,
-        -8.370175752767375,
-        -1.0000000018462156e-12,
-        -27.63102111408283
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        22,
-        1.7320509607824615,
-        -48.03292013031212,
-        -1.0000001027916492e-30,
-        -69.07755268702972
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        22,
-        1.7320510122116959,
-        -207.7451604280846,
-        -1.0000001309725457e-100,
-        -230.25850916843203
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        22,
-        1.732051052767818,
-        -667.0947331846743,
-        -1.000001055413354e-300,
-        -690.7755268428009
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        23,
-        -1.732051052767818,
-        -667.0947331846743,
-        -690.7755268428009,
-        -1.000001055413354e-300
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        23,
-        -1.7320510122116959,
-        -207.7451604280846,
-        -230.25850916843203,
-        -1.0000001309725457e-100
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        23,
-        -1.7320509607824615,
-        -48.03292013031212,
-        -69.07755268702972,
-        -1.0000001027916492e-30
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        23,
-        -1.732050895598884,
-        -8.370175752767375,
-        -27.63102111408283,
-        -1.0000000018462156e-12
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        23,
-        -1.732047343467261,
-        -1.2424533248939997,
-        -13.815510557950716,
-        -1.0000005000138918e-06
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    }
   ],
   "historical_sampler_points": [
     [
@@ -14986,119 +14976,5 @@
       8
     ]
   ],
-  "input_sha256": "36a7827e7cc57e14af889457114328dacdfc560ec92306d77a9ae90775bd8d82",
-  "excluded_quantiles": [
-    {
-      "row": [
-        22,
-        1,
-        1,
-        -0.6931471805599453,
-        -2.447438646570303e-16,
-        -2.4474386465703035e-16,
-        -2.447438646570303e-16,
-        0,
-        0.0
-      ],
-      "reason": "TASK-196 open: measured double,native q normalized error 22.136192858591645 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        22,
-        1,
-        0,
-        0.5,
-        -2.8491093372415545e-16,
-        -2.849109337241555e-16,
-        -2.8491093372415545e-16,
-        0,
-        0.0
-      ],
-      "reason": "TASK-196 open: measured double,native q normalized error 18.874425946546356 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        22,
-        0,
-        1,
-        -0.6931471805599453,
-        -3.250780027912806e-16,
-        -3.250780027912806e-16,
-        -3.2507800279128054e-16,
-        0,
-        0.0
-      ],
-      "reason": "TASK-196 open: measured double,native q normalized error 16.41871552378685 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        22,
-        0,
-        0,
-        0.5,
-        -2.8491093372415545e-16,
-        -2.849109337241555e-16,
-        -2.8491093372415545e-16,
-        0,
-        0.0
-      ],
-      "reason": "TASK-196 open: measured double,native q normalized error 18.874425946546356 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        23,
-        1,
-        1,
-        -0.6931471805599453,
-        3.250780027912806e-16,
-        3.2507800279128054e-16,
-        3.250780027912806e-16,
-        0,
-        0.0
-      ],
-      "reason": "TASK-196 open: measured double,native q normalized error 16.41871552378685 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        23,
-        1,
-        0,
-        0.5,
-        2.8491093372415545e-16,
-        2.8491093372415545e-16,
-        2.849109337241555e-16,
-        0,
-        0.0
-      ],
-      "reason": "TASK-196 open: measured double,native q normalized error 18.874425946546356 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        23,
-        0,
-        1,
-        -0.6931471805599453,
-        2.447438646570303e-16,
-        2.447438646570303e-16,
-        2.4474386465703035e-16,
-        0,
-        0.0
-      ],
-      "reason": "TASK-196 open: measured double,native q normalized error 22.136192858591645 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    },
-    {
-      "row": [
-        23,
-        0,
-        0,
-        0.5,
-        2.8491093372415545e-16,
-        2.8491093372415545e-16,
-        2.849109337241555e-16,
-        0,
-        0.0
-      ],
-      "reason": "TASK-196 open: measured double,native q normalized error 18.874425946546356 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The skew moment/physical-coordinate transform and inverse need compensated evaluation and a propagated gamma-power sensitivity bound."
-    }
-  ]
+  "input_sha256": "c613abcb5b2136e195f0b69d0d277c63818443f799b51053bdee10265205c399"
 }

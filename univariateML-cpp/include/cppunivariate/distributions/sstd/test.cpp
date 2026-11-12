@@ -700,3 +700,11 @@ TEST_CASE("sstd exact-coefficient logLik seam replay 6876") {
  CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.0,std::abs(ll)));
  CHECK(std::abs(r.logLik-(128.26173677170738))<=1e-10*128.26173677170738);
 }
+
+TEST_CASE("sstd normal-limit sensitivity bound avoids intermediate overflow") {
+ const double nu=std::numeric_limits<double>::max();
+ // The moment and fixed-radius Student kernel differ from the normal
+ // limits by O(1/nu), far below binary64 resolution at these inputs.
+ for(double x:{0.,1.,10.})
+  CHECK(cppunivariate::distributions::dsstd(x,0,1,nu,1e8,true)==doctest::Approx(cppunivariate::distributions::dsnorm(x,0,1,1e8,true)).epsilon(1e-10));
+}

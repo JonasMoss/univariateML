@@ -456,3 +456,25 @@ At very large shape, the density and log tail can change within one double
 spacing near the uniform edge. The [edge references](../../../../../dev/research/evaluations/2026-11-09-tail-extreme-data/edge-oracle.py)
 use the exact binary64 observation. Affine or skew transforms that cannot
 resolve the relevant side of this edge return NaN.
+
+For $\nu\ge10^6$, the physical difference and logarithmic scale ratio
+are retained in three words before the gamma power is formed. This removes
+rounding of $(x-\mathrm{mean})/\mathrm{sd}$ at the uniform edge. If $w$ is
+the log radius and $E_w$ its propagated error, the density bounds the power
+change by $e^{\nu w}\operatorname{expm1}(\nu E_w)$. Probabilities compare
+both $w-E_w$ and $w+E_w$ in the gamma tail, then compare the requested
+tail at both probability endpoints. A rounded-zero center does not certify
+underflow if an endpoint still has representable mass. Their reserved evaluator allowance
+is $2\cdot10^{-12}+16\epsilon|\log Q|$; natural tails require the total
+log-tail error below $10^{-10}$. A failed bound returns NaN rather than a
+rounded edge decision. For $\nu\ge10^{30}$ the log-scale replacement
+$\log(3)/2$ carries the explicit error bound $2/\nu$.
+
+Representable natural tails retain this relative-error test even below
+log probability $-700$. For the rounded output $\widehat p$ and computed
+log probability $\ell$, rounding adds
+$|\log\widehat p-\ell|+8\epsilon\max(1,|\log\widehat p|)$
+to the propagated log error. This admits aligned subnormals rather than
+rejecting them from a worst-case half-spacing bound. If the total error
+exceeds the natural relative-error contract, the result is NaN. A zero is accepted only
+when the entire propagated enclosure rounds to zero.

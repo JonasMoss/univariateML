@@ -467,8 +467,10 @@ test_that("GED uniform edges retain the side of adjacent doubles", {
     expect_equal(pged(sqrt(3),0,1,nu[i],lower.tail=FALSE,log.p=TRUE),lp[i],tolerance=1e-12)
     expect_equal(pged(sqrt(3),0,1,nu[i],lower.tail=FALSE)/exp(lp[i]),1,tolerance=1e-10)
   }
-  expect_warning(expect_true(is.nan(pged(1+sqrt(3),1,1,.Machine$double.xmax))),"NaNs produced")
-  expect_warning(expect_true(is.nan(psged(sqrt(3),0,1,.Machine$double.xmax,2))),"NaNs produced")
+  expect_equal(pged(1+sqrt(3),1,1,.Machine$double.xmax),1)
+  expect_equal(pged(1+sqrt(3),1,1,.Machine$double.xmax,lower.tail=FALSE,log.p=TRUE),lp[3],tolerance=1e-12)
+  expect_equal(psged(sqrt(3),0,1,.Machine$double.xmax,2),1)
+  expect_equal(psged(sqrt(3),0,1,.Machine$double.xmax,2,lower.tail=FALSE,log.p=TRUE),lp[3],tolerance=1e-12)
 })
 
 test_that("GED retains a converged held-sd search with a logical flag", {

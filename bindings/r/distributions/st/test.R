@@ -81,3 +81,17 @@ test_that("st constant-data free-nu corner keeps both half-normal faces", {
   expect_lte(f$loglik_lower,bound)
   expect_gte(f$loglik_upper,bound)
 })
+
+test_that("st large skew preserves a small CDF at ordinary degrees of freedom", {
+  fit <- mlst(c(0, 1), xi = 0, omega = 1, alpha = 1e12, nu = 5)
+  reference <- 8.412994158666847e-13
+  expect_lt(abs(pml(1e-12, fit) / reference - 1), 1e-10)
+  expect_lt(abs(qml(reference, fit) / 1e-12 - 1), 1e-9)
+})
+
+test_that("st normal face retains its tiny angular ray", {
+  p <- getFromNamespace("pst_", "univariateML")(
+    c(-2e-16, 2e-16), 0, 1, 1e8, .Machine$double.xmax, TRUE, FALSE)
+  reference <- c(3.183098782049451e-9, 3.1830989416263634e-9)
+  expect_lt(max(abs(p / reference - 1)), 1e-10)
+})

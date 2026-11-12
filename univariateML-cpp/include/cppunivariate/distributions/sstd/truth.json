@@ -3259,6 +3259,48 @@
       "-Inf",
       0.0,
       "-Inf"
+    ],
+    [
+      21,
+      -1.3236080876822984,
+      -638.6836065454883,
+      -678.5952927786416,
+      -1.9489868132596768e-295
+    ],
+    [
+      21,
+      -1.3236080876822958,
+      -193.9463233966304,
+      -233.26257425428778,
+      -4.9585096961619624e-102
+    ],
+    [
+      21,
+      -1.3236080876822938,
+      -29.697429051341533,
+      -68.07883704919051,
+      -2.7147930902547503e-30
+    ],
+    [
+      22,
+      1.3236080876822938,
+      -29.69742905134153,
+      -2.7147930902547562e-30,
+      -68.07883704919051
+    ],
+    [
+      22,
+      1.3236080876822958,
+      -193.94632339663036,
+      -4.9585096961620386e-102,
+      -233.26257425428778
+    ],
+    [
+      22,
+      1.3236080876822984,
+      -638.6836065454881,
+      -1.9489868132597779e-295,
+      -678.5952927786415
     ]
   ],
   "quantiles": [
@@ -14404,68 +14446,6 @@
       1
     ]
   ],
-  "excluded_values": [
-    {
-      "row": [
-        21,
-        -1.3236080876822984,
-        -638.6836065454883,
-        -678.5952927786416,
-        -1.9489868132596768e-295
-      ],
-      "reason": "TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing."
-    },
-    {
-      "row": [
-        21,
-        -1.3236080876822958,
-        -193.9463233966304,
-        -233.26257425428778,
-        -4.9585096961619624e-102
-      ],
-      "reason": "TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing."
-    },
-    {
-      "row": [
-        21,
-        -1.3236080876822938,
-        -29.697429051341533,
-        -68.07883704919051,
-        -2.7147930902547503e-30
-      ],
-      "reason": "TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing."
-    },
-    {
-      "row": [
-        22,
-        1.3236080876822938,
-        -29.69742905134153,
-        -2.7147930902547562e-30,
-        -68.07883704919051
-      ],
-      "reason": "TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing."
-    },
-    {
-      "row": [
-        22,
-        1.3236080876822958,
-        -193.94632339663036,
-        -4.9585096961620386e-102,
-        -233.26257425428778
-      ],
-      "reason": "TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing."
-    },
-    {
-      "row": [
-        22,
-        1.3236080876822984,
-        -638.6836065454881,
-        -1.9489868132597779e-295,
-        -678.5952927786415
-      ],
-      "reason": "TASK-196 open: measured double,native p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The extreme skew moment transform exceeds the public natural-tail precision gate; a protected coordinate evaluation is missing."
-    }
-  ],
   "historical_sampler_points": [
     [
       0
@@ -14495,5 +14475,5 @@
       8
     ]
   ],
-  "input_sha256": "635b250a0b8a97dcda84ecd332fae47e782071925dff29082221f0c4fa48efaf"
+  "input_sha256": "c7eb38dc1e7c8ac306bde0e898e8af9f809b1f2244dfbf1840cb810aeb27d54f"
 }
