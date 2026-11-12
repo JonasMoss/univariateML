@@ -543,13 +543,14 @@ python3 dev/validation/fit-snapshot.py --diff build/snapshots/base build/snapsho
 
 `--family a,b` restricts the run, `--no-long-double` builds the double-only
 variant, and `--ignore message` leaves reworded messages out of a comparison.
-A case that uses more than `--cpu-limit` CPU seconds (default 60) is recorded
+A case that uses more than `--cpu-limit` CPU seconds (default 300) is recorded
 as `timeout`; this is an audit guard measured in CPU time, not a fitter
 status, and such records need not repeat exactly. Finished families are kept
 and skipped on a rerun while headers, bindings, goldens, archive and the script
 are unchanged; `provenance.json` records the source hash, commit, compiler and
-flags. Checked on 2026-11-12 for norm, gamma and pois only: two runs gave
-identical records (259 cases). A full run has not been made yet.
+flags. The baselines of master `8a702cc2` (native and double-only, 13,754 cases each,
+two native runs identical) are stored with the
+[baseline report](../research/evaluations/2026-11-12-fit-snapshot-report.md).
 
 Where an adapter reports the shared outcome
 ([consolidation plan](../design/consolidation.md), step 4), a record also

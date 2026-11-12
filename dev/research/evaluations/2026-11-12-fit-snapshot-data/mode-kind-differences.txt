@@ -1,0 +1,13 @@
+family source case mask n native double
+bhatt archive 000364 2 5 ok numerical
+bhatt archive 000428 6 5 ok numerical
+dgamma archive 001025 2 5 ok conditioning
+dgamma class wide 0 4 ok conditioning
+gamma class huge 0 6 ok error
+gompertz class huge 0 6 ok limit
+snorm archive 006576 1 5 limit numerical
+snorm archive 006587 2 5 tie numerical
+snorm archive 006590 2 12 limit numerical
+snorm class huge 0 6 limit error
+sstd archive 006717 2 12 error numerical
+st archive 007040 6 5 error ok

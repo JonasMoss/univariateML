@@ -364,7 +364,7 @@ def main():
     ap.add_argument('--output', type=Path, help='snapshot directory')
     ap.add_argument('--family', help='comma-separated family ids (default: all)')
     ap.add_argument('--jobs', type=int, default=1, help='families fitted in parallel (one core each)')
-    ap.add_argument('--cpu-limit', type=float, default=60, help='CPU seconds per case before "timeout"')
+    ap.add_argument('--cpu-limit', type=float, default=300, help='CPU seconds per case before "timeout"')
     ap.add_argument('--no-long-double', action='store_true', help='double-only intermediates')
     ap.add_argument('--diff', nargs=2, metavar=('OLD', 'NEW'), help='compare two snapshot directories')
     ap.add_argument('--outcomes', metavar='DIR', help='report shared-outcome coverage and consistency of a snapshot')
