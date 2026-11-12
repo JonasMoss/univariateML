@@ -12,6 +12,7 @@
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
+#include "../../core/outcome.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -121,6 +122,16 @@ inline NormResult norm_mle(span x, double mean, double sd) {
   const double ll=-static_cast<double>(x.size())*(std::log(s)+.5*std::log(2*cppunivariate::pi))-
       .5*residual.standardized_square(s);
   return {m,s,ll,std::isfinite(m) && std::isfinite(ll) ? NormStatus::Ok : NormStatus::IterationFailure};
+}
+
+inline FitOutcome outcome(const NormResult& r) {
+  switch (r.status) {
+    case NormStatus::Ok: return FitOutcome::estimate();
+    case NormStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case NormStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case NormStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
 }
 
 }  // namespace cppunivariate

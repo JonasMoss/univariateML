@@ -7,6 +7,7 @@
 #include <iomanip>
 #include "cppunivariate/core/span.hpp"
 #include "cppunivariate/core/stop_detail.hpp"
+#include "cppunivariate/core/outcome.hpp"
 namespace umvl_binding {
 struct NamedCandidate {
   std::vector<std::pair<std::string,double>> estimates;
@@ -28,6 +29,12 @@ struct FitResult {
   bool has_restricted = false;
   std::string error_kind, model;
   double attainable_tol=NAN;
+  // Shared outcome of the fit (dev/design/consolidation.md). outcome_set is
+  // false for adapters that do not report one yet. outcome_override marks a
+  // stop the adapter imposed on a core result that claimed success.
+  cppunivariate::FitOutcome outcome{};
+  bool outcome_set=false, outcome_override=false;
+  int core_status=-1;
   std::vector<NamedCandidate> candidates;
   std::vector<std::pair<std::string,double>> limit_estimates;
   double limit_loglik=NAN,loglik_lower=NAN,loglik_upper=NAN,segment_loglik_upper=NAN;
@@ -62,6 +69,37 @@ inline std::string binding_message(std::string pattern, const T&... values) {
 }
 inline FitResult failure(const std::string& message, const std::vector<std::string>& warnings = {}) {
   FitResult result; result.error = message; result.warnings = warnings; return result;
+}
+// The condition kind of an outcome. Invalid and unsupported requests have no
+// kind yet: they are plain errors until the uniform-controls step.
+inline std::string outcome_kind(const cppunivariate::FitOutcome& o) {
+  switch(o.kind) {
+    case cppunivariate::OutcomeKind::Estimate:return "";
+    case cppunivariate::OutcomeKind::Limit:return "limit";
+    case cppunivariate::OutcomeKind::Nonexistence:return "nomle";
+    case cppunivariate::OutcomeKind::Budget:return "budget";
+    case cppunivariate::OutcomeKind::Failure:break;
+  }
+  switch(o.reason) {
+    case cppunivariate::OutcomeReason::InvalidInput:
+    case cppunivariate::OutcomeReason::InvalidArgument:
+    case cppunivariate::OutcomeReason::Unsupported:return "";
+    case cppunivariate::OutcomeReason::Unresolved:return "unresolved";
+    default:return "numerical";
+  }
+}
+// Attach the core outcome and the family's raw status to a finished result.
+inline FitResult with_outcome(FitResult out,const cppunivariate::FitOutcome& o,int status) {
+  out.outcome=o;out.outcome_set=true;out.core_status=status;return out;
+}
+// A held value or control the adapter rejected before calling the core.
+inline FitResult invalid_argument(FitResult out) {
+  return with_outcome(std::move(out),cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::InvalidArgument),-1);
+}
+// The adapter refuses a core result that claimed success (a core defect).
+inline FitResult overridden(FitResult out,int status) {
+  out=with_outcome(std::move(out),cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation),status);
+  out.outcome_override=true;return out;
 }
 inline std::vector<std::pair<std::string,double>> named_coefficients(
     const std::vector<double>& values,const std::vector<std::string>& names) {

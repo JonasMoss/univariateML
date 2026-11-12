@@ -4,6 +4,7 @@
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
+#include "../../core/outcome.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -56,6 +57,16 @@ inline ExpResult exp_mle(span x,double rate) {
     return {rate, static_cast<double>(x.size()) * std::log(rate) - weighted};
   }
   return {rate,static_cast<double>(x.size()*std::log(rate)-rate*total)};
+}
+
+inline FitOutcome outcome(const ExpResult& r) {
+  switch (r.status) {
+    case ExpStatus::Ok: return FitOutcome::estimate();
+    case ExpStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case ExpStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ExpStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
 }
 
 }  // namespace cppunivariate
