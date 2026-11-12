@@ -154,6 +154,13 @@ score is solved by bracketing. With both shapes held, the likelihood is
 evaluated at the supplied values. Observations at zero or one are excluded
 in every case.
 
+For strongly concentrated beta samples, precision $t=\alpha+\beta$ amplifies
+restoration of the mean $\mu=\alpha/t$: the leading log-likelihood loss for
+a mean error $d$ is $ntd^2/(2\mu(1-\mu))$. Relative accuracy of each shape
+therefore does not by itself establish log-likelihood accuracy. The returned
+shape ratio must retain the mean closely enough for the likelihood target;
+this is a smooth-density requirement, with no cusp allowance.
+
 ## Decision history
 
 ### Diagnostic status contract (2026-10-31)

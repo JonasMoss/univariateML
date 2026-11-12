@@ -27,6 +27,7 @@
 #include <limits>
 
 namespace cppunivariate {
+namespace distributions { inline double dtnorm(double x,double mean,double sd,double a,double b,bool log); }
 
 enum class TnormStatus {
   Ok,
@@ -619,6 +620,18 @@ inline TnormResult tnorm_mle(span x,double a=-INFINITY,double b=INFINITY,double 
     r.stop_detail.loglik_lower=std::max(r.logLik-margin,r.limit_logLik-margin);
     r.stop_detail.loglik_upper=INFINITY;
   }
+  if(r.status==TnormStatus::Ok) {
+    double ll=0,correction=0;
+    for(double v:x) {
+      const double value=distributions::dtnorm(v,r.mean,r.sd,r.a,r.b,true)-correction;
+      const double next=ll+value;correction=(next-ll)-value;ll=next;
+    }
+    r.logLik=ll;
+    if(!std::isfinite(ll))r.status=TnormStatus::IterationFailure;
+  }
   return r;
 }
 }
+
+// dtnorm uses the quadrature above; both include orders remain self-contained.
+#include "dpqr.hpp"

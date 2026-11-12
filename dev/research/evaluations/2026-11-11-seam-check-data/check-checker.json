@@ -1,0 +1,86 @@
+{
+  "exact_support": [
+    {
+      "family": "gev",
+      "parameters": [
+        0.0,
+        1.0,
+        -3.0
+      ],
+      "data": [
+        0.3333333333333333,
+        0.33333333333333337
+      ],
+      "outside": [
+        1
+      ]
+    },
+    {
+      "family": "gpd",
+      "parameters": [
+        0.0,
+        1.0,
+        -1.0
+      ],
+      "data": [
+        0.0,
+        1.0,
+        1.0000000000000002
+      ],
+      "outside": [
+        2
+      ]
+    },
+    {
+      "family": "triang",
+      "parameters": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "data": [
+        0.0,
+        0.5,
+        1.0,
+        -5e-324
+      ],
+      "outside": [
+        3
+      ]
+    },
+    {
+      "family": "tpois",
+      "parameters": [
+        1.0,
+        0.0,
+        3.0
+      ],
+      "data": [
+        0.0,
+        1.0,
+        3.0,
+        4.0
+      ],
+      "outside": [
+        0,
+        3
+      ]
+    },
+    {
+      "family": "nsbeta",
+      "parameters": [
+        2.0,
+        3.0,
+        -1.0,
+        1.0
+      ],
+      "data": [
+        -1.0,
+        0.0,
+        1.0
+      ],
+      "outside": []
+    }
+  ],
+  "error_gate_checks": 4
+}

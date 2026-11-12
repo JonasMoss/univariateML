@@ -203,3 +203,9 @@ test_that("uncertified bbinom coefficients meet the local accuracy contract", {
   expect_lte(abs(unname(f["alpha"])-(3241086.8209925364)),1e-10*3241086.8209925364)
   expect_equal(unname(f["beta"]),1000000000.0,tolerance=0)
 })
+
+test_that("large-count beta-binomial logLik retains the exact-input reference", {
+  x <- c(1000000,1000001,1000003,1000008,1000011)
+  fit <- mlbbinom(x,size=NULL,alpha=1.9337387365835597,beta=2.9406650178896676)
+  expect_equal(as.numeric(logLik(fit)),-164.81779817797852,tolerance=1e-10)
+})

@@ -247,3 +247,10 @@ test_that("discrete preflight budgets are classed without fabricated candidates"
   expect_s3_class(e,"error")
   expect_false(inherits(e,"univariateML_stop"))
 })
+
+test_that("large-count held-probability binomial logLik crosses the binding intact", {
+  x <- c(1000000,1000001,1000003,1000008,1000011)
+  fit <- mlbinom(x,size=NULL,prob=0.5022)
+  ll <- sum(dml(x,fit,log=TRUE))
+  expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
+})

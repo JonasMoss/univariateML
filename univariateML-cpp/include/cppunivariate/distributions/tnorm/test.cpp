@@ -547,3 +547,25 @@ TEST_CASE("tnorm: uniform-limit endpoint distance") {
  CHECK(cppunivariate::distributions::ptnorm(0.9999999999999999,0,1e8,0,1,false,true)==
   doctest::Approx(-36.7368005696771).epsilon(1e-10));
 }
+
+TEST_CASE("tnorm: fitted bounds retain narrow-interval and translated public likelihoods") {
+  const std::vector<double> narrow{-.32742383907552863,-.3274238390752012,-.32742383907487377,
+      -.32742383907454636,-.3274238390738915};
+  const auto r=cppunivariate::tnorm_mle(mltest::as_span(narrow),NAN,NAN,1e-12,100,
+      -.062005588372027076,1.0043282104167566);
+  REQUIRE(r.status==cppunivariate::TnormStatus::Ok);
+  double ll=0;
+  for(double v:narrow) {
+    CHECK(v>=r.a);CHECK(v<=r.b);
+    ll+=cppunivariate::distributions::dtnorm(v,r.mean,r.sd,r.a,r.b,true);
+  }
+  CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
+  CHECK(r.logLik==doctest::Approx(135.6903671556374).epsilon(1e-12));
+  const std::vector<double> shifted{99999999.47359541,99999999.41124244,99999998.58484222,
+      100000000.75876366,100000000.60156275,100000000.08737502,100000000.44153574,
+      100000000.08409557,99999998.22634333,99999997.84260628,99999999.59340237,99999999.67257616};
+  const auto s=cppunivariate::tnorm_mle(mltest::as_span(shifted),NAN,NAN,1e-12,100,
+      -.062005588372027076,1.0043282104167566);
+  REQUIRE(s.status==cppunivariate::TnormStatus::Ok);
+  CHECK(s.logLik==doctest::Approx(-2048891866.3134167).epsilon(1e-12));
+}

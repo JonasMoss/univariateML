@@ -14,6 +14,7 @@
 #include "../../core/stop_detail.hpp"
 
 #include "../../core/span.hpp"
+#include "dpqr.hpp"
 #include "../../special/special.hpp"
 
 #include <algorithm>
@@ -94,23 +95,14 @@ inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
         r=lo+(hi-lo)/2;
       }
     }
-    double ll=0;
+    // Use the scalar law at the returned public size, including the
+    // certificate's final evaluation with both coefficients supplied.
+    double ll=0,correction=0;
     for(int v:x) {
-      // The generic log-gamma subtraction loses digits at large held-prob
-      // size roots. Sum the rising factorial, or its power expansion.
-      if(v<10000) {
-        double l=r*std::log(prob_fixed)-special::lgamma(v+1.0);
-        for(int j=0;j<v;++j)l+=std::log((r+j)*(1-prob_fixed));
-        ll+=l;
-      } else if(r>1e4 && v/r<1e-3) {
-        const double k=v-1.0, vv=v, s1=k*vv/2;
-        const double s2=k*vv*(2*vv-1)/6, s3=s1*s1;
-        const double s4=k*vv*(2*vv-1)*(3*k*k+3*k-1)/30;
-        ll+=r*std::log(prob_fixed)-special::lgamma(vv+1)+vv*std::log(r*(1-prob_fixed))
-            +s1/r-s2/(2*r*r)+s3/(3*r*r*r)-s4/(4*r*r*r*r);
-      } else ll+=special::dnbinom(v,r,prob_fixed,true);
+      const double value=distributions::dnbinom(v,r,prob_fixed,true)-correction;
+      const double next=ll+value;correction=(next-ll)-value;ll=next;
     }
-    return {r,prob_fixed,ll,0,false};
+    return {r,prob_fixed,ll,0,false,std::isfinite(ll)?NbinomStatus::Ok:NbinomStatus::PrecisionFailure};
   }
   if (!std::isnan(size_fixed)) {
     if (!(size_fixed > 0) || !std::isfinite(size_fixed))

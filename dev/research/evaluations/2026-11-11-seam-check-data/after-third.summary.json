@@ -1,0 +1,23 @@
+{
+  "records": 568,
+  "by_family": {
+    "tnorm": {
+      "stop": 60,
+      "pass": 197
+    },
+    "tpois": {
+      "pass": 117
+    },
+    "zmbinom": {
+      "pass": 125,
+      "stop": 4
+    },
+    "ztbinom": {
+      "pass": 63,
+      "stop": 2
+    }
+  },
+  "attributions": {},
+  "head": "3b2a16fed4787c71b96bf23b1cb86569973b0a9c",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

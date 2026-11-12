@@ -1,0 +1,19 @@
+{
+  "final-logs/cpp-test.log": "validation-logs/cpp-test.log.gz",
+  "final-logs/simbox-cpp-test-no-long-double.log": "validation-logs/simbox-cpp-test-no-long-double.log.gz",
+  "final-logs/workstation-cpp-test-no-long-double.log": "validation-logs/workstation-cpp-test-no-long-double.log.gz",
+  "final-logs/test.log": "validation-logs/test.log.gz",
+  "final-logs/test-full.log": "validation-logs/test-full.log.gz",
+  "beta-current-cpp.log": "validation-logs/beta-current-cpp.log.gz",
+  "beta-current-cpp-double.log": "validation-logs/beta-current-cpp-double.log.gz",
+  "verified-cpp-invgauss.log": "validation-logs/verified-cpp-invgauss.log.gz",
+  "verified-cpp-invgauss-double.log": "validation-logs/verified-cpp-invgauss-double.log.gz",
+  "current-r-beta-invgauss-dev.log": "validation-logs/current-r-beta-invgauss-dev.log.gz",
+  "late-site-check.log": "validation-logs/late-site-check.log.gz",
+  "final-js-test.log": "validation-logs/final-js-test.log.gz",
+  "current-js-beta-dependent-tests.log": "validation-logs/current-js-beta-dependent-tests.log.gz",
+  "verified-js-build.log": "validation-logs/verified-js-build.log.gz",
+  "verified-js-invgauss.log": "validation-logs/verified-js-invgauss.log.gz",
+  "final-simbox-invgauss-double.log": "validation-logs/final-simbox-invgauss-double.log.gz",
+  "final-links.log": "validation-logs/final-links.log.gz"
+}

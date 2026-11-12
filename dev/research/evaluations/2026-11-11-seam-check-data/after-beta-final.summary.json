@@ -1,0 +1,35 @@
+{
+  "records": 1658,
+  "by_family": {
+    "beta": {
+      "pass": 89
+    },
+    "betapr": {
+      "stop": 48,
+      "pass": 137
+    },
+    "fpareto": {
+      "stop": 264,
+      "open fit": 3,
+      "pass": 278
+    },
+    "gb2": {
+      "stop": 273,
+      "pass": 272
+    },
+    "genbeta": {
+      "pass": 119,
+      "stop": 73,
+      "mismatch": 1
+    },
+    "nsbeta": {
+      "pass": 81,
+      "stop": 20
+    }
+  },
+  "attributions": {
+    "fitter": 1
+  },
+  "head": "3b2a16fed4787c71b96bf23b1cb86569973b0a9c",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

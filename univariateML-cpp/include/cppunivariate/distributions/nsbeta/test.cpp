@@ -153,3 +153,12 @@ TEST_CASE("nsbeta: centered large-shape density") {
   CHECK(cppunivariate::distributions::dnsbeta(0.0,100000000.0,100000000.0,-1.0,1.0,true)==
         doctest::Approx(8.637975427801482).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("nsbeta: concentrated delegated beta logLik evaluates the public shapes") {
+  const std::vector<double> x{0.2499999999995,0.24999999999975,0.25,0.25000000000025,0.25000000000075};
+  const auto r=cppunivariate::nsbeta_mle(mltest::as_span(x),0.,1.,1.490116e-8,100);
+  REQUIRE(r.status==cppunivariate::BetaStatus::Ok);
+  double ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::dnsbeta(v,r.shape1,r.shape2,r.min,r.max,true);
+  CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
+}

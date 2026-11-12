@@ -1,0 +1,14 @@
+[
+  {
+    "name": "js-build",
+    "machine": "workstation (one CPU affinity)",
+    "returncode": 0,
+    "elapsed_seconds": 131.76248400000622
+  },
+  {
+    "name": "js-beta-dependent-tests",
+    "machine": "workstation (one CPU affinity)",
+    "returncode": 0,
+    "elapsed_seconds": 105.64178271696437
+  }
+]

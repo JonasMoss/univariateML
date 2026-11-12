@@ -1,0 +1,26 @@
+{
+  "source_sha256": "b3c3efbb40c15c4a673c0a0c5949d866b430221d072e044009595e51359a7ea5",
+  "families": [
+    "cmb",
+    "dgamma",
+    "fpareto",
+    "genbeta"
+  ],
+  "no_long_double": false,
+  "timeout": 120.0,
+  "case": [
+    837,
+    863,
+    889,
+    915,
+    997,
+    1599,
+    1600,
+    2495,
+    2497,
+    2499,
+    10717,
+    10757,
+    10762
+  ]
+}

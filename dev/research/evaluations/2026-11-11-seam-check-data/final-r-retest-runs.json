@@ -1,0 +1,14 @@
+[
+  {
+    "name": "regen",
+    "machine": "workstation",
+    "returncode": 0,
+    "elapsed_seconds": 120.91887455398683
+  },
+  {
+    "name": "r-beta-invgauss-dev",
+    "machine": "workstation",
+    "returncode": 0,
+    "elapsed_seconds": 2.61799705500016
+  }
+]

@@ -337,3 +337,13 @@ TEST_CASE("ztbinom: exact conditional means beyond size two meet sub-machine acc
   const auto f=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-18,200,3);
   REQUIRE(f.status==cppunivariate::ZtbinomStatus::Ok);CHECK(f.prob==.5);
 }
+
+TEST_CASE("ztbinom: free-size large-count logLik evaluates the returned public probability") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const auto r=cppunivariate::ztbinom_mle({x.data(),x.size()},1e-10,200);
+  REQUIRE(r.status==cppunivariate::ZtbinomStatus::Ok);
+  double ll=0;
+  for(int v:x)ll+=cppunivariate::distributions::dztbinom(v,r.size,r.prob,true);
+  CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
+  CHECK(r.logLik==doctest::Approx(-14.363696715670825).epsilon(1e-10));
+}

@@ -1,0 +1,20 @@
+{
+  "files": [
+    "dev/validation/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/beta/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/invgauss/README.md",
+    "dev/research/evaluations/2026-11-11-seam-check-report.md"
+  ],
+  "local_destinations_checked": 94,
+  "errors": [],
+  "repository_wide_existing_findings": 45,
+  "unchanged_files_with_existing_findings": [
+    "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+    "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+    "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+    "dev/research/evaluations/2026-11-10-relaxed-likelihood-lit-report.md",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+    "univariateML-cpp/notes/inference.md"
+  ]
+}

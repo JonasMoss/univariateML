@@ -1,0 +1,9 @@
+{
+  "source_sha256": "07f78b32e450d6fdc312faddf4dab4637b986c247e27efae5c32307ae03059b4",
+  "families": [
+    "invgauss"
+  ],
+  "no_long_double": true,
+  "timeout": 30,
+  "case": null
+}

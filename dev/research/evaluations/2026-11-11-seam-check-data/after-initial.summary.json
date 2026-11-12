@@ -1,0 +1,22 @@
+{
+  "records": 280,
+  "by_family": {
+    "bbinom": {
+      "pass": 113,
+      "stop": 12,
+      "mismatch": 1
+    },
+    "beta": {
+      "pass": 89
+    },
+    "binom": {
+      "pass": 63,
+      "stop": 2
+    }
+  },
+  "attributions": {
+    "dpqr": 1
+  },
+  "head": "3b2a16fed4787c71b96bf23b1cb86569973b0a9c",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

@@ -1,0 +1,12 @@
+{
+  "source_sha256": "1d0ca4a133657109304803d6c9edb5aaee88465a7be27100c1104e6ecfe7c320",
+  "families": [
+    "tnorm",
+    "tpois",
+    "zmbinom",
+    "ztbinom"
+  ],
+  "no_long_double": false,
+  "timeout": 30,
+  "case": null
+}

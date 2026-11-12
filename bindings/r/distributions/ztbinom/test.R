@@ -198,3 +198,10 @@ test_that("uncertified ztbinom coefficients meet the local accuracy contract", {
   expect_equal(unname(f["size"]),1000023.0,tolerance=0)
   expect_lte(abs(unname(f["prob"])-(0.9999816004231903)),1e-10*1)
 })
+
+test_that("free-size large-count zero-truncated binomial retains logLik", {
+  x <- c(1000000,1000001,1000003,1000008,1000011)
+  fit <- mlztbinom(x,size=NULL)
+  ll <- sum(dml(x,fit,log=TRUE))
+  expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
+})

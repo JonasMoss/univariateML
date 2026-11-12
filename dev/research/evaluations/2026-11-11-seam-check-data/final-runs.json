@@ -1,0 +1,42 @@
+[
+  {
+    "name": "cpp-test",
+    "recipe": "cpp-test",
+    "machine": "simbox",
+    "returncode": 0,
+    "started": "2026-11-11T19:05:29.227089+00:00",
+    "elapsed_seconds": 539.2601317400113
+  },
+  {
+    "name": "simbox-cpp-test-no-long-double",
+    "recipe": "cpp-test-no-long-double",
+    "machine": "simbox",
+    "returncode": 0,
+    "started": "2026-11-11T19:14:28.494368+00:00",
+    "elapsed_seconds": 538.3251188059803
+  },
+  {
+    "name": "workstation-cpp-test-no-long-double",
+    "recipe": "cpp-test-no-long-double",
+    "machine": "workstation",
+    "returncode": 0,
+    "started": "2026-11-11T19:23:26.819804+00:00",
+    "elapsed_seconds": 7308.6679286090075
+  },
+  {
+    "name": "test",
+    "recipe": "test",
+    "machine": "workstation (simbox exit 75)",
+    "returncode": 1,
+    "started": "2026-11-11T21:25:15.488013+00:00",
+    "elapsed_seconds": 3338.7152146720327
+  },
+  {
+    "name": "test-full",
+    "recipe": "test-full",
+    "machine": "workstation (simbox exit 75)",
+    "returncode": 0,
+    "started": "2026-11-11T22:20:54.203504+00:00",
+    "elapsed_seconds": 3982.040576823987
+  }
+]

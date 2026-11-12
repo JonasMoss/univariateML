@@ -1,0 +1,10 @@
+{
+  "source_sha256": "5a8fa0134ef4019284dfe39f5b82f90f2a7a3e2dcaa6fd4482c0b431cac3a5fd",
+  "families": [
+    "invgauss",
+    "nbinom"
+  ],
+  "no_long_double": false,
+  "timeout": 30,
+  "case": null
+}

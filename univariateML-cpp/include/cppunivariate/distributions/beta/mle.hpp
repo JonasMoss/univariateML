@@ -264,7 +264,12 @@ inline BetaResult beta_mle(span x, double tol, int maxit,
     sum_log_1mx += std::log1p(-v);
   }
   const auto loglik = [&](double a, double b) {
-    return (a-1)*sum_log_x + (b-1)*sum_log_1mx - dn*beta_detail::log_beta(a,b);
+    double total=0,correction=0;
+    for(double v:x) {
+      const double value=special::beta_log_density_positive(v,a,b)-correction;
+      const double next=total+value;correction=(next-total)-value;total=next;
+    }
+    return total;
   };
 
   if (!std::isnan(shape1) || !std::isnan(shape2)) {
@@ -301,7 +306,8 @@ inline BetaResult beta_mle(span x, double tol, int maxit,
       if (it == maxit) return {kNaN,kNaN,kNaN,it,BetaStatus::IterationFailure};
       if (fa) b = z; else a = z;
     }
-    return {a, b, loglik(a, b), it};
+    const double ll=loglik(a,b);
+    return {a,b,ll,it,std::isfinite(ll)?BetaStatus::Ok:BetaStatus::IterationFailure};
   }
 
   bool all_equal = true;
@@ -424,14 +430,35 @@ inline BetaResult beta_mle(span x, double tol, int maxit,
   const int iterations = static_cast<int>(std::min<std::int64_t>(work, std::numeric_limits<int>::max()));
   if (!solved)
     return {kNaN, kNaN, kNaN, iterations, BetaStatus::IterationFailure};
-  const double alpha = mu * t, beta = mc * t;
+  double alpha = mu * t, beta = mc * t;
   const double ll = -dn * t * kl - sum_log_x - sum_log_1mx +
       dn * (.5 * std::log(mu * mc * t / (2 * cppunivariate::pi)) +
             beta_detail::stirling_remainder(t) - beta_detail::stirling_remainder(alpha) -
             beta_detail::stirling_remainder(beta));
   if (!(alpha > 0 && std::isfinite(alpha) && beta > 0 && std::isfinite(beta) && std::isfinite(ll)))
     return {kNaN, kNaN, kNaN, iterations, BetaStatus::IterationFailure};
-  return {alpha, beta, ll, iterations};
+  // Evaluate the rounded public shapes, rather than the internal mean/precision.
+  double public_ll=loglik(alpha,beta);
+  const double likelihood_target=1e-10*std::max(1.0,std::abs(ll));
+  const bool replace_likelihood=!std::isfinite(public_ll) ||
+      std::abs(ll-public_ll)>likelihood_target;
+  // At large precision, rounding the two shapes changes their ratio enough
+  // to matter to logLik. Enumerate the adjacent representations of the same
+  // continuous solution, without changing the root solve or its controls.
+  if(std::isfinite(public_ll) && ll-public_ll>likelihood_target) {
+    const double a0=alpha,b0=beta;
+    for(double a:{std::nextafter(a0,0.0),a0,std::nextafter(a0,INFINITY)})
+      for(double b:{std::nextafter(b0,0.0),b0,std::nextafter(b0,INFINITY)}) {
+        if(!(a>0 && b>0 && std::isfinite(a) && std::isfinite(b)))continue;
+        const double value=loglik(a,b);
+        if(value>public_ll) {alpha=a;beta=b;public_ll=value;}
+      }
+  }
+  // The continuous value already meets the contract on ordinary samples.
+  // Keep it when the public-point check passes; replace a demonstrated miss.
+  const double reported_ll=replace_likelihood?public_ll:ll;
+  return {alpha,beta,reported_ll,iterations,
+      std::isfinite(reported_ll)?BetaStatus::Ok:BetaStatus::IterationFailure};
 }
 
 } // namespace cppunivariate

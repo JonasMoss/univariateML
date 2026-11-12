@@ -253,3 +253,20 @@ TEST_CASE("beta: centered large-shape density") {
   CHECK(cppunivariate::distributions::dbeta(0.5,100000000.0,100000000.0,true)==
         doctest::Approx(9.331122608361428).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("beta: concentrated fit logLik evaluates the returned binary64 shapes") {
+  const std::vector<double> x{0.2499999999995,0.24999999999975,0.25,0.25000000000025,0.25000000000075};
+  const auto r=cppunivariate::beta_mle(mltest::as_span(x),1.490116e-8,100);
+  REQUIRE(r.status==cppunivariate::BetaStatus::Ok);
+  double ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::dbeta(v,r.alpha,r.beta,true);
+  CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
+  // Independent 180-digit root of the two digamma scores. Strict concavity
+  // makes this stationary point the unique continuous maximum.
+  CHECK(r.logLik<=135.27888712924002+1e-12);
+  CHECK(135.27888712924002-r.logLik<=1e-10*135.27888712924002);
+  // Independent exact-input mpmath reference at the returned public shapes.
+  const auto held=cppunivariate::beta_mle(mltest::as_span(x),1e-10,100,
+      2.53375903435621e23,7.6012771030666e23);
+  CHECK(held.logLik==doctest::Approx(135.2788871075539).epsilon(1e-12));
+}

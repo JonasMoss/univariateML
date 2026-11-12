@@ -530,9 +530,24 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
     for(int v:x) {
       if(v<0)return out;
       if(v>size){out.status=BbinomStatus::SizeTooSmall;return out;}
-      // Rising-factorial differences avoid cancellation of large shapes.
-      for(int j=0;j<v;++j) ll+=std::log((size-j)/(j+1.)) + std::log(alpha_fixed+j)-std::log(alpha_fixed+beta_fixed+j);
-      for(int j=0;j<size-v;++j) ll+=std::log(beta_fixed+j)-std::log(alpha_fixed+beta_fixed+v+j);
+      // For small shapes and large counts the gamma-ratio identity has
+      // O(log size) terms, avoiding a million cancelling log increments.
+      if(size>1024 && alpha_fixed+beta_fixed<16) {
+        ll+=special::log_gamma_ratio(size,1,alpha_fixed+beta_fixed)
+          +(v==0?special::lgamma(alpha_fixed):special::log_gamma_ratio(v,alpha_fixed,1))
+          +(v==size?special::lgamma(beta_fixed):special::log_gamma_ratio(size-v,beta_fixed,1))
+          -special::log_beta_positive(alpha_fixed,beta_fixed);
+      } else {
+        // Rising-factorial differences avoid cancellation of large shapes.
+        double term=0,correction=0;
+        const auto add=[&](double value) {
+          const double y=value-correction,next=term+y;
+          correction=(next-term)-y;term=next;
+        };
+        for(int j=0;j<v;++j) add(std::log((size-j)/(j+1.)) + std::log(alpha_fixed+j)-std::log(alpha_fixed+beta_fixed+j));
+        for(int j=0;j<size-v;++j) add(std::log(beta_fixed+j)-std::log(alpha_fixed+beta_fixed+v+j));
+        ll+=term;
+      }
     }
     if(!std::isfinite(ll)){out.status=BbinomStatus::IterationFailure;return out;}
     return {size,alpha_fixed,beta_fixed,ll,0,BbinomStatus::Ok};

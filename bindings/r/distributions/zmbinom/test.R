@@ -196,3 +196,10 @@ test_that("uncertified zmbinom coefficients meet the local accuracy contract", {
   expect_lte(abs(unname(f["prob"])-(0.9999816004231903)),1e-10*1)
   expect_lte(abs(unname(f["p0"])-(0.0)),1e-10*1)
 })
+
+test_that("delegated large-count zero-modified binomial retains logLik", {
+  x <- c(1000000,1000001,1000003,1000008,1000011)
+  fit <- mlzmbinom(x,size=NULL,p0=.276)
+  ll <- sum(dml(x,fit,log=TRUE))
+  expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
+})

@@ -7,9 +7,12 @@
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
+#include "dpqr.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <initializer_list>
 #include <limits>
 
 namespace cppunivariate {
@@ -31,13 +34,9 @@ inline InvGaussResult invgauss_mle(span x) {
     return {kNaN,kNaN,kNaN,InvGaussStatus::InvalidInput};
 
   const double dn = static_cast<double>(n);
-  double sum_log = 0.0;
-  for (auto v : x) {
-    sum_log += std::log(v);
-  }
   CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (auto v : x) total += v;
-  const double mu = static_cast<double>(total / dn);
+  double mu = static_cast<double>(total / dn);
   double lambda;
   CPPUNIV_EXTENDED_REAL relative_ss = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (auto v : x) {
@@ -46,11 +45,62 @@ inline InvGaussResult invgauss_mle(span x) {
   }
   lambda = static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(mu) * dn / relative_ss);
   if (relative_ss == 0) return {mu,lambda,INFINITY,InvGaussStatus::Unbounded};
-  const double L = sum_log / dn;
-
-  // At the profiled lambda, the quadratic term equals n exactly.
-  const double logLik = -0.5 * dn *
-      (3.0 * L - std::log(lambda) + std::log(2.0 * cppunivariate::pi) + 1.0);
+  // The profiled quadratic equals n in exact arithmetic, but not after
+  // rounding mu and lambda. Evaluate the returned public point explicitly.
+  const auto likelihood=[&](double m,double s) {
+    double value=0,correction=0;
+    for(double v:x) {
+      const double term=distributions::dinvgauss(v,m,s,true)-correction;
+      const double next=value+term;correction=(next-value)-term;value=next;
+    }
+    return value;
+  };
+  double logLik=likelihood(mu,lambda);
+#ifdef BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
+  // The raw sum can round a concentrated sample mean one ulp away from
+  // its nearest representation. Resolve the shape at the continuous
+  // centered mean; Q is unimodal in each neighboring public mean.
+  if(std::isfinite(mu) && std::isfinite(logLik)) {
+    double centered=0,correction=0;
+    for(double v:x) {
+      const double term=(v-mu)-correction,next=centered+term;
+      correction=(next-centered)-term;centered=next;
+    }
+    const double offset=centered/dn,center=mu+offset;
+    const auto residual_sum=[&](double origin,double shift,double denominator) {
+      double q=0,carry=0;
+      for(double v:x) {
+        const double d=((v-origin)-shift)/denominator;
+        const double term=d*d/v-carry,next=q+term;
+        carry=(next-q)-term;q=next;
+      }
+      return q;
+    };
+    const double q0=residual_sum(mu,0,mu),qstar=residual_sum(mu,offset,center);
+    const double s=dn/qstar;
+    double best_mu=mu,best_shape=lambda,best_ll=logLik;
+    for(double m:{std::nextafter(center,0.0),center,
+        std::nextafter(center,std::numeric_limits<double>::infinity())}) {
+      if(!(m>0 && std::isfinite(m)))continue;
+      if(!(s>0 && std::isfinite(s)))continue;
+      const double value=likelihood(m,s);
+      if(value>best_ll) {best_mu=m;best_shape=s;best_ll=value;}
+    }
+    // The exact profiled gap is n/2 * [u-1-log(u)+log(Q(mu)/Q(mean))],
+    // u=lambda*Q(mu)/n. Use the centered mean offset for the Q ratio:
+    // Q(mu)-Q(mean)=n*offset^2/(mean*mu^2), without subtracting close sums.
+    double gap=best_ll-logLik;
+    const double u=lambda*q0/dn,relative_offset=offset/mu;
+    const double mean_ratio=dn/(center*qstar)*relative_offset*relative_offset;
+    if(u>0 && std::isfinite(u) && mean_ratio>=0 && std::isfinite(mean_ratio)) {
+      const double d=u-1;
+      gap=std::max(gap,.5*dn*(d-std::log1p(d)+std::log1p(mean_ratio)));
+    }
+    if(gap>1e-10*std::max(1.0,std::abs(best_ll))) {
+      mu=best_mu;lambda=best_shape;logLik=best_ll;
+    }
+  }
+#endif
   return {mu, lambda, logLik,
     std::isfinite(mu) && std::isfinite(lambda) && std::isfinite(logLik) ?
       InvGaussStatus::Ok : InvGaussStatus::IterationFailure};

@@ -98,3 +98,10 @@ test_that("TASK-134 finite conditioning designs retain quantile endpoints", {
   expect_equal(qtpois(c(0, .5, 1), 0, -1, 10), c(0, 0, 10))
   expect_equal(qtpois(c(0, 1), 0, -1, 10, lower.tail = FALSE), c(10, 0))
 })
+
+test_that("estimated large-count truncated-Poisson bounds retain logLik", {
+  x <- c(1000000,1000001,1000003,1000008,1000011)
+  fit <- mltpois(x,a=NULL,b=NULL)
+  ll <- sum(dml(x,fit,log=TRUE))
+  expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
+})

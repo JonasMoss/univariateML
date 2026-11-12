@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {writeFileSync} from 'node:fs';
+import create from '../../../../bindings/js/index.mjs';
+const api=await create();
+const x=new Float64Array([2.4377209513444593,2.4377209513468974,2.437720951349335,2.4377209513517726,2.4377209513566482]);
+const fit=api.invgauss.fit(x);
+const maximum=123.89205063011403;
+assert.equal(fit.status,'Ok');
+assert.ok(Math.abs(fit.logLik-maximum)<=1e-10*maximum);
+assert.ok(Math.abs(fit.estimates.shape/8.23530894536328e23-1)<=1e-10);
+const density=api.invgauss.d(x,Object.values(fit.estimates),{log:true});
+const sum=Array.from(density).reduce((a,b)=>a+b,0);
+assert.ok(Math.abs(sum-fit.logLik)<=1e-10*Math.max(1,Math.abs(sum)));
+writeFileSync(new URL('invgauss-wasm.json',import.meta.url),JSON.stringify({fit,maximum,sum},null,2)+'\n');
