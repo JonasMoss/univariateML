@@ -58,7 +58,7 @@ test_that("tbinom: all estimated-bound subsets match independent conditional fit
   expect_identical(unname(f["a"]),as.numeric(aa));expect_identical(unname(f["b"]),as.numeric(bb))
   expect_setequal(attr(f,"fixed"),c("size",if(fa)"a",if(fb)"b",if(fp)"prob"))
  }
- expect_error(mltbinom(1:3,a=NULL,b=NULL,size=NULL),"Use `mltpois")
+ expect_error(mltbinom(1:3,a=NULL,b=NULL,size=NULL),"Use `mlpois.*truncate")
  expect_error(mltbinom(rep(3,4),a=NULL,b=NULL,size=12,prob=0),"Invalid")
 })
 
@@ -108,7 +108,7 @@ test_that("tbinom: all four free-size probability profiles match reference oracl
     finite <- if(length(unique(x))==1) 0 else max(vapply(grid,ll,0.))
     saturated <- length(unique(x))==1 || bb-max(0,floor(aa)+1)==1
     if (!saturated && finite < face-1e-7) {
-      expect_error(mltbinom(x,a=a,b=b,size=NULL),"Use `mltpois")
+      expect_error(mltbinom(x,a=a,b=b,size=NULL),"Use `mlpois.*truncate")
     } else {
       f <- mltbinom(x,a=a,b=b,size=NULL)
       expect_gte(attr(f,"logLik"),finite-1e-6)
@@ -139,8 +139,8 @@ test_that("tbinom: uncapped size, exact attained faces and invalid free designs"
   expect_error(mltbinom(1:4,a=0,b=3,size=NULL),"Invalid")
   expect_error(mltbinom(1:4,a=NA_real_,b=10,size=NULL),"bounds")
   expect_error(mltbinom(1:4,a=Inf,b=Inf,size=NULL),"Invalid")
-  expect_error(mltbinom(c(0,0,0,9),a=-1,b=Inf,size=NULL),"Use `mltpois")
-  expect_error(mltbinom(c(0,0,0,9),a=-1,b=10,size=NULL),"Use `mltpois")
+  expect_error(mltbinom(c(0,0,0,9),a=-1,b=Inf,size=NULL),"Use `mlpois.*truncate")
+  expect_error(mltbinom(c(0,0,0,9),a=-1,b=10,size=NULL),"Use `mlpois.*truncate")
 })
 
 test_that("tbinom: a peak beyond the dense grid is refined over integer size", {
@@ -258,4 +258,15 @@ test_that("uncertified tbinom coefficients meet the local accuracy contract", {
   expect_true(size %in% c(1000011, 11224310574))
   ref <- if (size == 1000011) 0.9999933471248125 else 8.2524620502977025e-05
   expect_lte(abs(unname(f["prob"])-ref),1e-10*ref)
+})
+
+test_that("tbinom limit advice evaluates with an infinite conditioning bound", {
+  x<-c(0,0,0,9)
+  stopped<-tryCatch(mltbinom(x,a=-1,b=Inf,size=NULL),error=identity)
+  expect_s3_class(stopped,"univariateML_limit")
+  suggestion<-regmatches(conditionMessage(stopped),regexpr("mlpois\\(x, truncate = c\\([^`]+\\)\\)",conditionMessage(stopped)))
+  expect_length(suggestion,1L)
+  replacement<-eval(parse(text=suggestion))
+  expect_s3_class(replacement,"univariateML")
+  expect_equal(as.numeric(logLik(replacement)),sum(dpois(x,mean(x),log=TRUE)))
 })

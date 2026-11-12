@@ -30,7 +30,7 @@ test_that("zib agrees with a multi-start reference-density oracle", {
 
 test_that("zib declares its infinite-size escape", {
  x <- c(0,0,0,0,0,0,0,0,1,1,1,2,3,7,12)
- expect_error(mlzib(x, size = NULL), "Use `mlzip`")
+ expect_error(mlzib(x, size = NULL), "Use `mlpois.*zero = .inflated")
  expect_s3_class(mlzib(x,size=20), "univariateML")
 })
 
@@ -101,7 +101,7 @@ test_that("zib: free-size held-mixture fits and Poisson escapes", {
   oracle<-max(vapply(seq(max(x),50),function(k)max(c(ll(k,0),ll(k,1),vapply(c(.1,.5,.9),function(start)-optim(start,function(p)-ll(k,p),method="L-BFGS-B",lower=1e-8,upper=1-1e-8)$value,0.))),0.))
   expect_equal(attr(f,"logLik"),oracle,tolerance=1e-6)
  }
- expect_error(mlzib(c(1,1,1,2,3,7,12),size=NULL,pi=0),"mlzip")
+ expect_error(mlzib(c(1,1,1,2,3,7,12),size=NULL,pi=0),"mlpois.*zero = .inflated")
  f<-mlzib(rep(0,3),size=8,prob=.4,pi=.6)
  expect_identical(unname(f[c("prob","pi")]),c(.4,.6))
  expect_error(mlzib(1:3,size=8,prob=.4,iterlim=0))
@@ -149,7 +149,7 @@ test_that("zib: free size, probability and mixture agree with a reference-densit
     # not a failure); accept either outcome.
     fit <- tryCatch(suppressWarnings(mlzib(x, size = NULL)), error = identity)
     if (inherits(fit, "error")) {
-      expect_match(conditionMessage(fit), "mlzip")
+      expect_match(conditionMessage(fit), "mlpois.*zero = .inflated")
       next
     }
     expect_true(is.finite(attr(fit, "logLik")))

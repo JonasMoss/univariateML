@@ -29,6 +29,7 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
   meta <- univariateML_metadata[[name]]; id <- sub("^ml", "", name)
   if(length(dots) && (is.null(names(dots)) || any(!nzchar(names(dots)))))
     stop("Modifier holds and controls must be named")
+  if(anyDuplicated(names(dots)))stop("Duplicate coefficient or control arguments")
   if (!is.character(zero) || length(zero)!=1L || is.na(zero) ||
       !zero %in% c("none","truncated","modified","inflated"))
     stop('`zero` must be one of none, truncated, modified, inflated')
@@ -56,10 +57,15 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
   if (window && (!is.numeric(truncate) || length(truncate)!=2L ||
       any(is.nan(truncate)) || (!anyNA(truncate) && truncate[1]>truncate[2])))
     stop("`truncate` must be a closed window c(lower, upper); NA estimates a bound")
+  if(window && id=="zeta" &&
+     ((!is.na(truncate[1]) && max(1,ceiling(truncate[1]))!=1) ||
+      (!is.na(truncate[2]) && (!is.finite(truncate[2]) || floor(truncate[2])<1 || floor(truncate[2])>.Machine$integer.max))))
+    stop("finite zeta window requires [1,N], integer N in [1,INT_MAX]")
   extra <- if (zero=="modified") "p0" else if (zero=="inflated") "pi" else character()
-  modifier_controls<-if(window || censored)c("reltol","iterlim") else character()
+  modifier_controls<-if(window || censored)c("reltol","iterlim") else
+    intersect(c("reltol","iterlim"),names(formals(get(paste0("ml",ml_zero_variant(id,zero),"_")))))
   ml_check_args(get(paste0(name,"_")), dots[setdiff(names(dots),c(extra,modifier_controls))], name)
-  for(control in intersect(names(dots),c("reltol","iterlim"))) {
+  for(control in intersect(names(dots),c("reltol","abstol","iterlim"))) {
     v<-dots[[control]]
     if(!is.numeric(v) || length(v)!=1L || !is.finite(v) || v<=0 ||
        control=="iterlim" && (v!=floor(v) || v>.Machine$integer.max))
@@ -77,7 +83,7 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
       x <- ml_interval_data(x,na.rm)
       # An interval matrix of exact observations reduces to the ordinary API.
       if (all(x[,1]==x[,2])) return(do.call(get(name),c(list(x=x[,1],na.rm=na.rm),dots)))
-    } else x <- ml_check_modify(x,na.rm,name)
+    } else x <- ml_check_modify(x,na.rm,if(id=="lgser" && zero=="modified")"mlzmlogarithmic" else name)
   }
   if (window && anyNA(truncate)) {
     if (frozen) stop("A fixed model requires known truncation bounds")
@@ -90,24 +96,43 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
     if (zero != "none" || alias) {
       variant <- ml_zero_variant(id,if(alias)"truncated" else zero)
       if (id=="geom" && zero=="inflated") dots$size <- 1
+      if(id=="lgser") {if("theta" %in% names(dots))dots["prob"]<-dots["theta"];dots$theta<-NULL}
       out <- ml_fixed_model(paste0("ml",variant),dots,call,TRUE)
       if (id=="geom" && zero=="inflated") out <- out[names(out)!="size"]
+    } else if(id=="zeta") {
+      s<-if(!"s" %in% names(dots))meta$simulate[[1]] else dots$s
+      if(!is.numeric(s) || length(s)!=1L || !is.finite(s))stop("s must be a finite scalar")
+      out<-c(s=s)
     } else out <- ml_fixed_model(name,dots,call,TRUE)
     # Rebuild metadata after construction of the modifier's coefficient vector.
     values <- as.numeric(out); names(values) <- names(out)
+    if(id=="lgser")names(values)[names(values)=="prob"]<-"theta"
     fixed <- names(values)
     obj <- univariateML_construct(values,name,list(call=deparse(call),n=0,logLik=NA_real_),fixed=fixed)
     attr(obj,"frozen") <- TRUE
   } else {
     holds <- dots[intersect(names(dots),c(meta$names,extra))]
-    tol <- if (is.null(dots$reltol)) 1e-10 else dots$reltol
-    maxit <- if (is.null(dots$iterlim)) 400L else dots$iterlim
-    out <- ml_modifier_(id,if(censored) x[,1] else x,if(censored) x[,2] else numeric(),
-      holds,zero,window,if(window) truncate[1] else NaN,if(window) truncate[2] else NaN,censored,tol,maxit)
+    tol <- if (!is.null(dots$reltol))dots$reltol else if(!is.null(dots$abstol))dots$abstol else 1e-10
+    maxit <- if (is.null(dots$iterlim)) if(window && !alias && id=="binom" && is.null(holds$size))512L else if((window && !alias) || censored)400L else 200L else dots$iterlim
+    fully_held<-all(vapply(c(meta$names,extra),function(p)!is.null(holds[[p]]),logical(1)))
+    if(fully_held && (zero!="none" || alias)) {
+      variant<-ml_zero_variant(id,if(alias)"truncated" else zero)
+      legacy_args<-holds
+      if(id=="lgser") {legacy_args$prob<-legacy_args$theta;legacy_args$theta<-NULL}
+      if(id=="geom" && zero=="inflated")legacy_args$size<-1
+      legacy<-do.call(get(paste0("ml",variant)),c(list(x=x),legacy_args))
+      estimates<-as.numeric(legacy);names(estimates)<-names(legacy)
+      if(id=="geom" && zero=="inflated")estimates<-estimates[names(estimates)!="size"]
+      if(id=="lgser")names(estimates)[names(estimates)=="prob"]<-"theta"
+      out<-list(estimates=estimates,logLik=as.numeric(logLik(legacy)),fixed=c(meta$names,extra),restricted=attr(legacy,"restricted"))
+      if(alias && id=="binom" && anyNA(truncate_spec))out$certified<-TRUE
+    } else out <- ml_modifier_(id,if(censored) x[,1] else x,if(censored) x[,2] else numeric(),
+      holds,zero,window,if(window && !is.na(truncate_spec[1])) truncate[1] else NaN,if(window && !is.na(truncate_spec[2])) truncate[2] else NaN,censored,tol,maxit)
     if (inherits(out,"univariateML_stop")) stop(out)
+    if(fully_held && window && !anyNA(truncate_spec))attr(out$estimates,"certified")<-NULL
     obj <- univariateML_construct(out$estimates,name,list(logLik=out$logLik,call=deparse(call),n=if(censored)nrow(x) else length(x)),
       fixed=out$fixed,restricted=out$restricted,data=x)
-    if (!is.null(out$certified)) attr(obj,"certified") <- out$certified
+    if (!is.null(out$certified) && !(fully_held && window && !anyNA(truncate_spec))) attr(obj,"certified") <- out$certified
   }
   # Constructor obtains base coefficient names from metadata; add the atom's name.
   names(obj) <- c(meta$names,extra)
@@ -117,6 +142,7 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
     attr(obj,"truncate_estimated")<-is.na(truncate_spec)
   }
   support <- univariateML_support(obj)$bounds
+  if(id=="lgser" && zero=="modified")support[1]<-0
   if(zero=="truncated")support[1]<-max(1,support[1])
   if(window) {
     support <- c(max(support[1],truncate[1]),min(support[2],truncate[2]))
@@ -130,17 +156,41 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
   obj
 }
 ml_modifier_function <- function(obj,type) {
+  if(univariateML_name(obj)=="mlzeta" && !is.null(attr(obj,"truncate"))) {
+    window<-attr(obj,"truncate");window<-c(max(1,ceiling(window[1])),floor(window[2]));s<-unname(obj[["s"]])
+    if(window[1]!=1 || !is.finite(window[2]) || window[2]<1 || window[2]!=floor(window[2]) || window[2]>.Machine$integer.max)
+      stop("finite zeta window requires [1,N], integer N in [1,INT_MAX]")
+    evaluate<-function(x,lower=TRUE,log=FALSE)ml_zeta_window_(type,x,window[2],s,lower,log)
+    return(switch(type,d=function(x,log=FALSE)evaluate(x,TRUE,log),
+      p=function(q,lower.tail=TRUE,log.p=FALSE)evaluate(q,lower.tail,log.p),
+      q=function(p,lower.tail=TRUE,log.p=FALSE)evaluate(p,lower.tail,log.p),
+      r=function(n)ml_zeta_window_("q",runif(n),window[2],s,TRUE,FALSE)))
+  }
   variant <- attr(obj,"modifier_variant")
   if (!is.null(variant)) {
     name <- univariateML_name(obj)
     values <- stats::setNames(as.list(as.numeric(obj)),names(obj))
+    if(name=="mllgser") {values$prob<-values$theta;values$theta<-NULL}
     if(name=="mlgeom" && attr(obj,"zero")=="inflated") values$size <- 1
     if(variant %in% c("tpois","tbinom","tnorm")) {
       window<-attr(obj,"truncate")
       values$a<-if(variant=="tnorm")window[1] else ceiling(window[1])-1
       values$b<-if(variant=="tnorm")window[2] else floor(window[2])
     }
-    alt <- ml_fixed_model(paste0("ml",variant),values,quote(modifier),TRUE)
+    if(variant %in% c("tpois","tbinom","tnorm") && any(is.infinite(window))) {
+      # The closed-window API admits infinite design bounds. Parent
+      # coefficients were validated at construction or by the fitter; check
+      # joint constraints with the settled evaluator, without the retired
+      # wrapper's finite-only design-domain check.
+      alt_name<-paste0("ml",variant);alt_names<-univariateML_metadata[[alt_name]]$names
+      alt<-univariateML_construct(unlist(values[alt_names]),alt_name,
+        list(n=0,call="modifier"),fixed=alt_names)
+      median<-suppressWarnings(qml(.5,alt))
+      if(length(median)!=1L || is.na(median))stop(structure(
+        list(message=paste0("`",name,"`: median quantile evaluation failed: invalid held coefficients or numerical failure"),call=NULL,stage="median"),
+        class=c("univariateML_evaluation_error","error","condition")))
+      attr(alt,"frozen")<-TRUE
+    } else alt <- ml_fixed_model(paste0("ml",variant),values,quote(modifier),TRUE)
     return(univariateML_to_function(alt,type))
   }
   window <- attr(obj,"truncate")

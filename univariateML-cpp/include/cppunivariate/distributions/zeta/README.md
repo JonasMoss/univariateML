@@ -74,6 +74,12 @@ existence:
     exactly one score root and a strictly concave likelihood. If every
     observation is one, the score stays positive and the mass at one
     tends to one.
+modifiers:
+  truncate:
+    status: implemented
+    certified: "yes"
+    domain_bounded: "finite [1,N], integer N >= 1: every finite real s"
+    note: "Finite harmonic normalizer; strict concavity in s, endpoint point-mass escapes."
 ---
 
 The zeta distribution models unbounded positive integer frequencies following a pure power law. Its exponent $s>1$ controls tail decay, with larger values concentrating probability closer to one.
@@ -89,3 +95,20 @@ All-ones samples have an unattained point-mass supremum as $s\to\infty$. As $s\d
 A free-exponent fit to all-ones data stops. Supplying `s` holds the exponent.
 
 The probability functions evaluate upper tails directly and use bounded-memory integer inversion. Beyond $2^{53}$, quantiles use the representable double grid, which cannot distinguish every adjacent integer. Quantiles exceeding the largest finite double are returned as infinity. Support starts at one and has no finite upper endpoint.
+
+Finite windows `truncate = c(1, N)` admit every real exponent, since the
+normalizer is a finite positive sum. The score is
+$n(E_s[\log X]-\overline{\log x})$, strictly decreasing when $N>1$.
+Endpoint-only samples have an unattained point-mass supremum in the corresponding
+infinite-exponent direction. A singleton window leaves the exponent unidentified.
+This differs from the nonnegative-shape finite Zipf model: data favoring an
+increasing mass function have a negative exponent, rather than a uniform fit.
+
+Equal multiplicities on every retained integer give the exact exponent MLE
+$s=0$. The uniform empirical law attains the multinomial likelihood bound,
+providing a closed-form reference for repeated large histograms.
+
+For negative exponents, the finite sums are scaled at the upper endpoint.
+Geometric tails control concentrated laws; Euler--Maclaurin with a checked
+remainder controls broad laws on large supports. Both the normalizer and the
+centered log-count moment are bounded before a score comparison is accepted.

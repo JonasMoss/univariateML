@@ -138,7 +138,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-coun
 
 ## R notes
 
-Supplying `size` or `prob` holds that coefficient, while `NULL` estimates it. A held size may be zero. The attained members at `size = 0` and `prob = 1` follow actuar's conventions. Detected Poisson escapes stop with advice to use `mlztpois` and carry the limiting rate and likelihood. Invalid controls, incompatible held values, unresolved comparisons and certificate budget exhaustion stop. Increasing `iterlim` raises the subdivision budget; it does not make an unresolved comparison exact.
+Supplying `size` or `prob` holds that coefficient, while `NULL` estimates it. A held size may be zero. The attained members at `size = 0` and `prob = 1` follow actuar's conventions. Detected Poisson escapes stop with advice to use `mlpois(x, zero = "truncated")` and carry the limiting rate and likelihood. Invalid controls, incompatible held values, unresolved comparisons and certificate budget exhaustion stop. Increasing `iterlim` raises the subdivision budget; it does not make an unresolved comparison exact.
 
 ## Decision history
 

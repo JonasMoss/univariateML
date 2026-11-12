@@ -30,14 +30,14 @@ inline FitResult fit_zib(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   if(res.stop_detail.budget_exhausted)stop_kind="budget";
   if(stop_kind.empty() && !res.stop_detail.candidates.empty())stop_kind="numerical";
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
-    auto out=fail(stop_kind=="unresolved" ? "Finite-size versus limit comparison is unresolved; no maximizer is certified. Use `mlzip` only to fit the comparison face." : binding_message(format,arguments...));
+    auto out=fail(stop_kind=="unresolved" ? "Finite-size versus limit comparison is unresolved; no maximizer is certified. Use `mlpois(x, zero = \"inflated\")` only to fit the comparison face." : binding_message(format,arguments...));
     return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob","pi"});
   };
 
   if(res.status==cppunivariate::ZibStatus::InvalidInput)return stopped_fail("requires nonempty nonnegative integer count data and valid controls; held parameters must give positive likelihood");
   if(res.status==cppunivariate::ZibStatus::InvalidSize)return stopped_fail("`size` must be a nonnegative integer at least max(x).");
-  if(res.status==cppunivariate::ZibStatus::ZipLimit)return stopped_fail("The maximum likelihood estimator escapes to infinite size. Use `mlzip`.");
-  if(res.status==cppunivariate::ZibStatus::FaceTie)return stopped_fail("No finite-size maximizer exists; the winning ZIP face has rate maxima that cannot be ordered at the comparison margin. Use `mlzip` and inspect the retained face candidates.");
+  if(res.status==cppunivariate::ZibStatus::ZipLimit)return stopped_fail("The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = \"inflated\")`.");
+  if(res.status==cppunivariate::ZibStatus::FaceTie)return stopped_fail("No finite-size maximizer exists; the winning ZIP face has rate maxima that cannot be ordered at the comparison margin. Use `mlpois(x, zero = \"inflated\")` and inspect the retained face candidates.");
   if(res.status==cppunivariate::ZibStatus::IterationFailure)return stopped_fail("Profile optimizer IterationFailure: iteration limit, floating-point range or precision exhausted; increase iterlim only for work-limit failures. No capped size estimate is returned.");
   if(!std::isfinite(res.logLik))return stopped_fail("MLE cannot be resolved at floating-point precision.");
   std::vector<std::string> fixed;

@@ -1,0 +1,57 @@
+{
+  "baseline": "fe17e3b8",
+  "unchanged": [
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/burr/dpqr.hpp",
+      "sha256": "533322746b195ec58c47724125aba473d3b0747d3ede9d5a03e3f5af47484a6e"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/dpqr.hpp",
+      "sha256": "27743a1d4b365a47450d3d135f86c295ecfea9e493eabf561486c5b9f516295f"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/special/tails.hpp",
+      "sha256": "8b46043caa0e9dd33a3b6e8258abeeae303de861e4af72d915fa15d0aae3d24a"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp",
+      "sha256": "91636968614f48cebc95d54111da2c7cd9628b31493960e0361428138d308576"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp",
+      "sha256": "13f564f339880e141ee76521946180d29d60e30e873a7fa05a5febdf25014563"
+    }
+  ],
+  "runs": [
+    {
+      "optimization": "-O0",
+      "output": [
+        "-230.25850929941012",
+        "-230.25850929941012",
+        "-230.25850929941012"
+      ]
+    },
+    {
+      "optimization": "-O2",
+      "output": [
+        "-inf",
+        "-230.25850929941012",
+        "-inf"
+      ]
+    }
+  ],
+  "native_tests": [
+    {
+      "family": "burr",
+      "optimization": "-O2",
+      "exit": 1,
+      "output": "[doctest] doctest version is \"2.4.11\"\n[doctest] run with \"--help\" for options\n===============================================================================\n/home/jonas/Files/programming/univariateML.wt/modifiers-2/univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:147:\nTEST CASE:  burr: deep tails and log inversion regressions\n\n/home/jonas/Files/programming/univariateML.wt/modifiers-2/univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp:157: ERROR: CHECK( cppunivariate::distributions::pburr(1e100,1e-308,1e308,1,false,true) == doctest::Approx(-100*std::log(10.0)).scale(0.0).epsilon(1e-10) ) is NOT correct!\n  values: CHECK( -inf == Approx( -230.259 ) )\n\n===============================================================================\n[doctest] test cases: 1 | 0 passed | 1 failed | 37 skipped\n[doctest] assertions: 7 | 6 passed | 1 failed |\n[doctest] Status: FAILURE!\n"
+    },
+    {
+      "family": "invburr",
+      "optimization": "-O2",
+      "exit": 1,
+      "output": "[doctest] doctest version is \"2.4.11\"\n[doctest] run with \"--help\" for options\n===============================================================================\n/home/jonas/Files/programming/univariateML.wt/modifiers-2/univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:146:\nTEST CASE:  invburr: deep tails and log inversion regressions\n\n/home/jonas/Files/programming/univariateML.wt/modifiers-2/univariateML-cpp/include/cppunivariate/distributions/invburr/test.cpp:156: ERROR: CHECK( cppunivariate::distributions::pinvburr(1e-100,1e-308,1e308,1,true,true) == doctest::Approx(-100*std::log(10.0)).scale(0.0).epsilon(1e-10) ) is NOT correct!\n  values: CHECK( -inf == Approx( -230.259 ) )\n\n===============================================================================\n[doctest] test cases: 1 | 0 passed | 1 failed | 34 skipped\n[doctest] assertions: 7 | 6 passed | 1 failed |\n[doctest] Status: FAILURE!\n"
+    }
+  ]
+}

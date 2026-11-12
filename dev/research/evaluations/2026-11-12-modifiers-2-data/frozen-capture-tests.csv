@@ -1,0 +1,17 @@
+"family","tests","failed","errors","warnings"
+"tbinom",22,0,0,0
+"tnorm",8,0,0,0
+"tpois",9,0,0,0
+"zib",32,0,0,0
+"zinb",12,0,0,0
+"zip",8,0,0,0
+"zipf",10,0,0,0
+"zmbinom",15,0,0,0
+"zmgeom",4,0,0,0
+"zmlogarithmic",4,0,0,0
+"zmnbinom",11,0,0,0
+"zmpois",4,0,0,0
+"ztbinom",17,0,0,0
+"ztgeom",3,0,0,0
+"ztnbinom",10,0,0,0
+"ztpois",3,0,0,0

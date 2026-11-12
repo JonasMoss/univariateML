@@ -224,3 +224,157 @@ test_that("generic quantiles resolve endpoint atoms and refuse ill-conditioned t
   expect_error(qml(log(2e-9),f,log.p=TRUE),"quantile.*floating-point accuracy")
   expect_error(mlgeom(prob=1e-100,truncate=c(1e100,Inf)),"integer window.*floating-point accuracy")
 })
+test_that("retirement replacements cover free binomial size and logarithmic mapping", {
+  x<-c(1,1,2,3,3)
+  for(prob in list(NULL,.4)) {
+    old<-mltbinom(x,a=0,b=5,size=NULL,prob=prob)
+    new<-mlbinom(x,size=NULL,prob=prob,truncate=c(1,5))
+    expect_equal(as.numeric(new),as.numeric(old[c("size","prob")]),tolerance=1e-10)
+    expect_equal(attr(new,"certified"),attr(old,"certified"))
+    expect_equal(as.numeric(logLik(new)),as.numeric(logLik(old)),tolerance=1e-10)
+  }
+  for(theta in list(NULL,0,.4)) {
+    x<-if(identical(theta,0))c(0,0,1,1) else c(0,1,1,2,4)
+    a<-mllgser(x,zero="modified",theta=theta)
+    b<-mlzmlogarithmic(x,prob=theta)
+    expect_equal(as.numeric(a),as.numeric(b),tolerance=1e-10)
+    expect_equal(dml(0:5,a),dml(0:5,b),tolerance=1e-10)
+  }
+  a<-mllgser(theta=.4,p0=.2,zero="modified")
+  expect_equal(dml(0,a),.2)
+  expect_equal(attr(a,"support")[[1]],0)
+})
+test_that("finite zeta windows support every real exponent", {
+  x<-c(1,2,3,4,4,4)
+  a<-mlzeta(x,truncate=c(1,4))
+  expect_lt(a[["s"]],0)
+  expect_equal(sum(dml(1:4,a)),1,tolerance=1e-12)
+  expect_equal(sum(dml(x,a,log=TRUE)),as.numeric(logLik(a)),tolerance=1e-10)
+  expect_equal(qml(c(0,1),a),c(1,4))
+  expect_true(all(rml(10,a) %in% 1:4))
+  for(s in c(-100,-2,0,.5,1,2,100)) {
+    f<-mlzeta(s=s,truncate=c(1,4))
+    w<-exp(-s*log(1:4)-max(-s*log(1:4)));w<-w/sum(w)
+    expect_equal(dml(1:4,f),w,tolerance=1e-12)
+    expect_equal(pml(1:4,f),cumsum(w),tolerance=1e-12)
+  }
+  expect_error(mlzeta(c(4,4),truncate=c(1,4)),"point-mass")
+  expect_error(mlzeta(s=0),"must be in")
+})
+test_that("retirement replay preserves fully held density routes and controls", {
+  x<-c(1000000,1000001,1000003,1000008,1000011)
+  for(pair in list(c("zinb","nbinom","inflated"),c("zmnbinom","nbinom","modified"),c("ztnbinom","nbinom","truncated"))) {
+    held<-list(size=2,prob=.4)
+    if(pair[3]=="inflated")held$pi<-.2
+    if(pair[3]=="modified")held$p0<-.2
+    old<-do.call(get(paste0("ml",pair[1])),c(list(x=x),held))
+    new<-do.call(get(paste0("ml",pair[2])),c(list(x=x,zero=pair[3]),held))
+    expect_equal(as.numeric(new),as.numeric(old),tolerance=1e-10)
+    expect_equal(as.numeric(logLik(new)),as.numeric(logLik(old)),tolerance=1e-10)
+    expect_identical(attr(new,"certified"),attr(old,"certified"))
+  }
+  old<-tryCatch(mlztbinom(1:3,size=NULL,reltol=1e-18),error=identity)
+  new<-tryCatch(mlbinom(1:3,size=NULL,zero="truncated",reltol=1e-18),error=identity)
+  expect_equal(new$kind,old$kind)
+  f<-mlzeta(x,truncate=c(1,NA))
+  expect_lt(f[["s"]],0)
+  expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-10)
+})
+test_that("finite zeta reaches the integer endpoint and preserves tiny log complements", {
+  N<-.Machine$integer.max
+  f<-mlzeta(c(N-1,N),truncate=c(1,NA))
+  expect_lt(f[["s"]],0)
+  expect_equal(sum(dml(c(N-1,N),f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-10)
+  fixed<-mlzeta(s=-2,truncate=c(1,N))
+  expected<-log1p(-6/(N*(N+1)*(2*N+1)))
+  expect_lt(pml(1,fixed,lower.tail=FALSE,log.p=TRUE),0)
+  expect_equal(pml(1,fixed,lower.tail=FALSE,log.p=TRUE)/expected,1,tolerance=1e-10)
+  prefix<-mlzeta(s=-2,truncate=c(-Inf,4.9))
+  expect_equal(dml(1:4,prefix),(1:4)^2/30,tolerance=1e-12)
+  expect_warning(mlzeta(c(1,1),truncate=c(1,NA)),"not unique")
+})
+test_that("binomial window work controls reach both size routes", {
+  x<-c(1,1,2,3,3)
+  expect_error(mlbinom(x,size=NULL,truncate=c(1,5),iterlim=1),"budget|accuracy|precision")
+  expect_error(mlbinom(x,size=12,truncate=c(1,5),iterlim=1),"budget|accuracy|precision")
+  f<-mlbinom(x,size=NULL,truncate=c(1,5),iterlim=512)
+  expect_equal(as.numeric(f),as.numeric(mltbinom(x,a=0,b=5,size=NULL)[c("size","prob")]),tolerance=1e-10)
+})
+test_that("duplicate modifier holds are rejected", {
+  expect_error(mlpois(c(0,1,2),zero="modified",p0=.2,p0=.3),"Duplicate")
+})
+
+test_that("finite zeta windows keep huge held exponents and tiny log normalisers", {
+  fit<-mlzeta(c(1,1),s=1e308,truncate=c(1,.Machine$integer.max))
+  expect_equal(unname(fit[["s"]]),1e308)
+  expect_equal(as.numeric(logLik(fit)),0)
+  tiny<-mlzeta(c(1,1),s=100,truncate=c(1,.Machine$integer.max))
+  expect_lt(abs(as.numeric(logLik(tiny))/(-2*2^-100)-1),1e-10)
+})
+
+test_that("fully held windows evaluate density without an optimizer work budget", {
+  huge<-mlpois(c(0,0),lambda=1e300,truncate=c(0,Inf),iterlim=1)
+  expect_equal(as.numeric(logLik(huge)),-2e300)
+  tiny<-mlpois(c(1,1),lambda=1e-300,truncate=c(0,Inf),iterlim=1)
+  expect_equal(as.numeric(logLik(tiny)),2*log(1e-300))
+  held<-mlbinom(c(0,1),size=5,prob=.3,truncate=c(0,5),iterlim=1)
+  expect_equal(as.numeric(logLik(held)),sum(dbinom(c(0,1),5,.3,log=TRUE)))
+})
+
+test_that("fixed finite zeta models validate their window at construction", {
+  expect_error(mlzeta(s=-1,truncate=c(2,4)),"finite zeta window")
+  expect_error(mlzeta(s=-1,truncate=c(1,Inf)),"finite zeta window")
+  expect_error(mlzeta(s=-1,truncate=c(0,0)),"finite zeta window")
+})
+
+test_that("finite zeta statistics retain accuracy for large uniform histograms", {
+  x<-rep(1:4,each=1000000L)
+  fit<-mlzeta(x,truncate=c(1,4))
+  expect_lte(abs(fit[["s"]]),1e-10)
+  expect_equal(as.numeric(logLik(fit)),-length(x)*log(4),tolerance=1e-10)
+})
+
+test_that("unbounded window evaluation preserves the settled conditional kernels", {
+  x<-1:4
+  cases<-list(
+    list(old=mltpois(x,a=-1,b=Inf),fit=mlpois(x,truncate=c(0,Inf)),name="mlpois",parents="lambda",window=c(0,Inf),points=0:10),
+    list(old=mltbinom(x,a=-1,b=Inf,size=10),fit=mlbinom(x,size=10,truncate=c(0,Inf)),name="mlbinom",parents=c("size","prob"),window=c(0,Inf),points=0:10),
+    list(old=mltnorm(c(-1,-.3,.2,.8,1),a=-Inf,b=Inf),fit=mlnorm(c(-1,-.3,.2,.8,1),truncate=c(-Inf,Inf)),name="mlnorm",parents=c("mean","sd"),window=c(-Inf,Inf),points=seq(-2,2,length.out=11)))
+  for(c in cases) {
+    values<-stats::setNames(as.list(as.numeric(c$old[c$parents])),c$parents)
+    fixed<-do.call(get(c$name),c(values,list(truncate=c$window)))
+    for(model in list(c$fit,fixed)) {
+      expect_equal(dml(c$points,model,log=TRUE),dml(c$points,c$old,log=TRUE),tolerance=1e-10)
+      expect_equal(pml(c$points,model,lower.tail=FALSE,log.p=TRUE),pml(c$points,c$old,lower.tail=FALSE,log.p=TRUE),tolerance=1e-10)
+      expect_equal(qml(c(.01,.5,.99),model),qml(c(.01,.5,.99),c$old),tolerance=1e-10)
+    }
+  }
+  point<-mlpois(lambda=0,truncate=c(0,Inf))
+  expect_equal(dml(0:1,point),c(1,0))
+  expect_error(mlpois(lambda=0,truncate=c(1,5)),"median quantile evaluation failed")
+  expect_error(mlbinom(size=5,prob=0,truncate=c(1,5)),"median quantile evaluation failed")
+})
+
+test_that("finite zeta normalizer bounds cross integer powers without refusals", {
+  N<-3000L
+  for(r in c(7,7+.Machine$double.eps*4,8,8+.Machine$double.eps*8)) {
+    fit<-mlzeta(c(N-1L,N),s=-r,truncate=c(1,N))
+    reference<-r*log1p(-1/N)-2*log(sum(((1:N)/N)^r))
+    expect_equal(as.numeric(logLik(fit)),reference,tolerance=1e-10)
+    expect_true(is.finite(qml(.5,fit)))
+  }
+})
+test_that("explicit 512 work units retain the controlled binomial window solver", {
+  for(limit in c(400,511,512,513)) {
+    f<-mlbinom(0:3,size=1e308,truncate=c(0,Inf),iterlim=limit)
+    expect_equal(unname(f[["prob"]])/(1.5e-308),1,tolerance=1e-10)
+    expect_equal(as.numeric(logLik(f)),6*log(1.5)-6-lgamma(1)-lgamma(2)-lgamma(3)-lgamma(4),tolerance=1e-10)
+  }
+})
+test_that("finite zeta score roots justify very small requested tolerances", {
+  fit<-tryCatch(mlzeta(1:4,truncate=c(1,4),reltol=1e-20),error=identity)
+  if(inherits(fit,"error"))expect_match(conditionMessage(fit),"accuracy")
+  else expect_lte(abs(unname(fit[["s"]])),1e-20)
+  held<-mlzeta(1:4,s=0,truncate=c(1,4),reltol=1e-20)
+  expect_identical(unname(held[["s"]]),0)
+})

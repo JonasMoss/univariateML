@@ -35,7 +35,7 @@ test_that("zmnbinom agrees with a multi-start reference-density oracle", {
 
 test_that("zmnbinom declares its infinite-size escape", {
  x <- c(0,0,1,2,2,3,3,3)
- expect_error(mlzmnbinom(x), "Use `mlzmpois`")
+ expect_error(mlzmnbinom(x), "Use `mlpois.*zero = .modified")
  expect_s3_class(mlzmnbinom(x,size=20), "univariateML")
 })
 
@@ -146,7 +146,7 @@ test_that("P2 modified holds separate zero and positive likelihoods", {
 })
 
 test_that("P2 held p0 retains the conditional Poisson escape", {
-  expect_error(mlzmnbinom(c(0,0,1,2,2,3,3,3),p0=.25),"mlzmpois")
+  expect_error(mlzmnbinom(c(0,0,1,2,2,3,3,3),p0=.25),"mlpois.*zero = .modified")
   a<-mlzmnbinom(c(0,0,1,1,1,2,3,10,30),size=0,prob=.4,p0=.2)
   expect_identical(unname(as.numeric(a['size'])),0)
   expect_error(mlzmnbinom(c(0,1,2),size=-1,prob=.4),"size")

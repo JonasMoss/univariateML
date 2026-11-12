@@ -1,0 +1,123 @@
+{
+  "baseline": "fe17e3b83d52b73c2240e17dd285820f53d47a64",
+  "recorded_at": "2026-11-12T21:40:10.744622+00:00",
+  "final_suites": [
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "exit": 0,
+      "passed": 108,
+      "log_sha256": "5c885bd6c77c8a33c28dff1c09907ce4787806c0cc2b86f3fdc63caee618bcfc"
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "exit": 0,
+      "passed": 135,
+      "log_sha256": "cfc062af7d3e3f244fa64a0e2a629f9c4cf7375f812e6657277262641e29d552"
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "exit": 0,
+      "passed": 28844,
+      "skipped": 154,
+      "warnings": 0,
+      "failures": 0,
+      "log_sha256": "502fb2694ddd6c7ed70c43433a9e518ef8b3f6b0d2d1eaaf63ba0ead1b14975b"
+    },
+    {
+      "command": "just test-full",
+      "machine": "workstation",
+      "exit": 0,
+      "passed": 57362,
+      "skipped": 0,
+      "warnings": 0,
+      "failures": 0,
+      "log_sha256": "bf737419f607f45e0eff77de313f3a7b4d713d2fb429c4fbfca7c4551d5f7bf0"
+    },
+    {
+      "command": "just js-build; just js-test",
+      "machine": "workstation",
+      "exit": 0,
+      "passed": 626,
+      "log_sha256": "8a30663bb40e23a54971455d80e2de8b2c4911240b55ab2e7ebd1aae7af9310e"
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit": 0,
+      "compiled_examples": 99,
+      "log_sha256": "cb681a95180bceffdba7ecf52d518db2aff5639cfebd18f1089a67046cfaeb42"
+    },
+    {
+      "command": "just relations",
+      "machine": "workstation",
+      "exit": 0,
+      "records": 157,
+      "note": "Includes declared relations not numerically checked."
+    },
+    {
+      "command": "site/node_modules/.bin/tsc --noEmit --strict --target es2022 --module esnext --moduleResolution bundler dev/research/evaluations/2026-11-12-modifiers-2-data/modifier-api-types.ts",
+      "machine": "workstation",
+      "exit": 0
+    }
+  ],
+  "machines": [
+    "cpp-test workstation 0 (simbox exit 75)",
+    "cpp-test-no-long-double simbox unavailable (exit 75)",
+    "cpp-test-no-long-double workstation 0",
+    "test workstation 0 (simbox exit 75)",
+    "test-full workstation 0 (simbox exit 75)"
+  ],
+  "source_sha256": {
+    "bindings/common/distributions/tbinom/fit.hpp": "a1831289b0fb705dc70acc2818a2ee5f61bac29c2e28ac7c1b38053875b24012",
+    "bindings/common/distributions/zib/fit.hpp": "571070cd2b97a1f1814e505b2394830a7722e788be0a22ba16bdbfa57932300d",
+    "bindings/common/distributions/zinb/fit.hpp": "97ecaea31ddba8cde6134f48cc989ea80c219a65d941cdd85f04cedce475962d",
+    "bindings/common/distributions/zmbinom/fit.hpp": "f8c98b661e962ff86d9d5803589fde7b57c160cbce2b0c1d9d87d25d40d52bb0",
+    "bindings/common/distributions/zmnbinom/fit.hpp": "2848c790ac879687908d9bbcdf4fe9a2c03f47e8f23871fed2ca83276464ec6a",
+    "bindings/common/distributions/ztbinom/fit.hpp": "4a33a8f3fb25c854ae51b2b7f84dc06653f04697ae35319db35c79d51f36447b",
+    "bindings/common/distributions/ztnbinom/fit.hpp": "b84616b104bdaebd27706294359a5ea9dc804004cc4c48113be847240d6bbbcd",
+    "bindings/common/modifiers.hpp": "57b04f4ce49e9e8c16886177f975dbeaef8c6c61ca307e29c1a9be29f98d90d5",
+    "bindings/js/bindings.cpp": "9f0eb0823e4aa5f2e3c7b655cd8a5b984200a9ab91ede56c1dfd2d5a6deda80c",
+    "bindings/js/fit-test.mjs": "b835c4afa29a9779e7df7716179cf8c6a3b25a1fb02e522d10a02f01699f8602",
+    "bindings/js/index.d.ts": "b742e09caa602d382c4879ff72eabafd70923e5b7c61759844651def726390d6",
+    "bindings/js/modifier-metadata.mjs": "c47898dfb40a2bb0fb00964398c92a98ca1a24685b8a07afea42b948a40b5d2c",
+    "bindings/js/modifiers.mjs": "cbb068d90327efc5dbc4e2747391cf31d695075945ec363ba24e784f44dea17f",
+    "bindings/r/R/modifiers.R": "2681391e2d3957b84e5c944021cf233961575f18c6bc1dfd01128d9d926bbfdf",
+    "bindings/r/distributions/tbinom/test.R": "e71372d8f65e1e3700b8e6ee9c6af43f64d1a21af96a0b606dbc7e9e0012099d",
+    "bindings/r/distributions/zib/test.R": "d6aa57bd63bddbcdbf9ae3497e3ed6735581709bcd0eb7218f437c1d694facde",
+    "bindings/r/distributions/zinb/test.R": "fc1cb19d59bd2d68d0e08515e2ddb49bc1284b4248eaaa7a609aa21ba4fc0d2e",
+    "bindings/r/distributions/zmbinom/test.R": "ae1fe7fb4fce2114722ea31c3209fa95a832f00675b47f3d668de0d7f13f678e",
+    "bindings/r/distributions/zmnbinom/test.R": "c15a31c57069d3769e5249b96be253ae33e3cc5a58dfa3bfc3f2004caaecc8e3",
+    "bindings/r/distributions/ztbinom/test.R": "ee0131f6948139a05c15e055d7020e5f07ea0aeabfc95ff8c8b05116a0bde64d",
+    "bindings/r/distributions/ztnbinom/test.R": "e20b442b7f2daed79c815edf92da7ad5c06b9d1ede81c8dbfb101a74c4a2704d",
+    "bindings/r/src/modifiers.cpp": "6152c6959ef0efe7eec7d1c162a1e0a83432f7c717cc32a913fcb1ff9f11ea20",
+    "bindings/r/tests/testthat/test_modifiers.R": "b9207face2707717195247fcf52c0bf24ee62249034e913f4066f0914b5f771d",
+    "dev/design/modifiers.md": "eff895b1f94687d98ed5ec11969d0ad7f9213dcfa250ef262222b0ec9d1398b0",
+    "dev/validation/capabilities.csv": "4266d30c24189791975a76a3c1227a1433f106656d169cef6da2b9e51e5cd183",
+    "dev/validation/family-reductions.csv": "ce721fa0222f1961712f34acccbdebdeb8ddbd4d306ddd08d782ba95a7485c46",
+    "dev/validation/modifier_capabilities.py": "c0e7f9a5f7343a695d51e2db1c9c0c1a90044f7328a52f5f437600002da4ab9e",
+    "univariateML-cpp/include/cppunivariate/distributions/binom/README.md": "180f72650a7a2342bc986005b0ddbf42e199ae5e06c0560b14cb4eaba74c347f",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/README.md": "562a886e434838ea459f1b4b825b3f9118ed1271676aa069cbf5215539c22850",
+    "univariateML-cpp/include/cppunivariate/distributions/tbinom/README.md": "2ea928b1e8c4dcd9cfa33b947079a0d29900bb2fb3254bb02e2a7595f5161590",
+    "univariateML-cpp/include/cppunivariate/distributions/tbinom/accuracy.hpp": "061d5d187e815fd69657609b9d1b5e29ac1d2e68a34ed4adde64bf2bd78e6068",
+    "univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp": "657361cfdf7695c36b575a7666fd8411f1982c3e875948baba79326d11514ecc",
+    "univariateML-cpp/include/cppunivariate/distributions/tbinom/test.cpp": "992ef03925d880b871589c992817db0ac3f52c1b23fb297daffb0fb208b24853",
+    "univariateML-cpp/include/cppunivariate/distributions/zeta/README.md": "e1314d6376ebfe34122a4e5a86e66617eeb0947d549873496097da1f974e02cd",
+    "univariateML-cpp/include/cppunivariate/distributions/zeta/test.cpp": "9d864af3a040084b875890cde4dd0ec91f23a61f0cd51a91cb4f4e0e7e6e81b4",
+    "univariateML-cpp/include/cppunivariate/distributions/zinb/README.md": "f526083edccedbe255568ffc00511a3a5458b1003fb7e23ac046aaf8d8336ca6",
+    "univariateML-cpp/include/cppunivariate/distributions/zmnbinom/README.md": "43af17473bff51b597fdf2951d0fc60fde7577d4bee3bb3c65afbccdad649e6c",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/README.md": "ddba0e23289da21bb5c58ad466dc25da693d9ed03c079db9a56c6b666ec231e9",
+    "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/README.md": "05f7b8a82afcef596cdc76b45adf5036c8edabdecc30c371c2a3697c85ba3e67",
+    "univariateML-cpp/include/cppunivariate/distributions/zeta/truncation.hpp": "13c7cd3fa6d22c0b3178b47f16a59edd928cf7e245a42a95961e2a7b153d5449"
+  },
+  "protected_sources_unchanged": true,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "open_checks": [
+    "GCC 13 simbox unavailable (exit 75).",
+    "Optional GNU 15 -O2 isolated Burr/inverse-Burr baseline tail failures; see optimized-baseline.json.",
+    "45 pre-existing repository link findings; see source-checks.json.",
+    "Artifact viewer HTTP 403: this worktree is outside its readable roots."
+  ]
+}

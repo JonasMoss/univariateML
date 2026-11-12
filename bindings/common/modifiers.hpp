@@ -1,6 +1,13 @@
 // Additive modifier seam shared by R and JS. Default fits never enter here.
 #pragma once
 #include "fit.hpp"
+#include "distributions/tbinom/fit.hpp"
+#include "distributions/tpois/fit.hpp"
+#include "cppunivariate/distributions/tpois/dpqr.hpp"
+#include "cppunivariate/distributions/tbinom/dpqr.hpp"
+#include "cppunivariate/distributions/tnorm/dpqr.hpp"
+#include "distributions/zmlogarithmic/fit.hpp"
+#include "cppunivariate/distributions/zeta/truncation.hpp"
 #include "cppunivariate/distributions/pois/zero.hpp"
 #include "cppunivariate/distributions/binom/zero.hpp"
 #include "cppunivariate/distributions/nbinom/zero.hpp"
@@ -27,6 +34,18 @@ namespace umvl_binding {
 inline FitResult modifier_not_implemented(const std::string& family,const std::string& value) {
   return failure(value+" is not implemented for `ml"+family+"`; see TASK-191 or its successor");
 }
+template<class Density> inline FitResult held_window(FitResult out,cppunivariate::span x,Density density) {
+  if(x.empty())return failure("requires nonempty data");
+  double sum=0,correction=0;
+  for(double v:x) {
+    if(!std::isfinite(v))return failure("requires finite observations");
+    const double term=density(v);
+    if(!std::isfinite(term))return failure("invalid truncation window, observations or held coefficients");
+    const double y=term-correction,z=sum+y;correction=(z-sum)-y;sum=z;
+  }
+  if(!std::isfinite(sum))return failure("conditional log likelihood exceeds numerical range");
+  out.logLik=sum;out.has_fixed=true;return out;
+}
 template<class Traits> inline FitResult truncate_counts(cppunivariate::ispan x,double a,double b,
     Traits traits,Held held,const std::string& name,double tol,int maxit) {
   const auto r=cppunivariate::truncated<Traits>::fit(x,a,b,traits,held.supplied?held.value:NAN,tol,maxit);
@@ -51,20 +70,74 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
   if(!window && zero=="none")return modifier_not_implemented(family,"modifier");
   if(!(tol>0 && std::isfinite(tol)) || maxit<1)return failure("invalid modifier controls");
   if(family=="norm" && window) {
+    if(h("mean").supplied && h("sd").supplied && !x.empty()) {
+      if(std::isnan(a))a=*std::min_element(x.begin(),x.end());
+      if(std::isnan(b))b=*std::max_element(x.begin(),x.end());
+      FitResult out;out.estimates={{"mean",value("mean")},{"sd",value("sd")}};out.fixed={"mean","sd"};
+      return held_window(out,x,[&](double v){return cppunivariate::distributions::dtnorm(v,value("mean"),value("sd"),a,b,true);});
+    }
     auto out=fit_tnorm(x,h("mean"),h("sd"),{!std::isnan(a),a},{!std::isnan(b),b},tol,maxit);
     out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
     out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());return out;
   }
-  if(family!="pois" && family!="binom" && family!="nbinom" && family!="geom")
+  if(family!="zeta" && family!="lgser" && family!="pois" && family!="binom" && family!="nbinom" && family!="geom")
     return modifier_not_implemented(family,window?"`truncate`":"`zero = \""+zero+"\"`");
   std::vector<int> counts;counts.reserve(x.size());
   for(double v:x){if(!std::isfinite(v)||v<0||v>2147483647.||v!=std::floor(v))return failure("requires nonnegative representable integer counts");counts.push_back(static_cast<int>(v));}
   const cppunivariate::ispan ix{counts.data(),counts.size()};
+  if(window && !counts.empty()) {
+    if(std::isnan(a))a=*std::min_element(counts.begin(),counts.end());
+    if(std::isnan(b))b=*std::max_element(counts.begin(),counts.end());
+  }
+  if(family=="lgser" && !window && zero=="modified") {
+    auto out=fit_zmlogarithmic(ix,h("theta"),h("p0"));
+    for(auto& p:out.estimates)if(p.first=="prob")p.first="theta";
+    for(auto& p:out.fixed)if(p=="prob")p="theta";
+    return out;
+  }
+  if(family=="zeta" && window) {
+    const auto r=cppunivariate::zeta_window_mle(ix,a,b,value("s"),tol,maxit);
+    if(r.status!=cppunivariate::ZetaWindowStatus::Ok) {
+      if(r.status==cppunivariate::ZetaWindowStatus::LowerLimit || r.status==cppunivariate::ZetaWindowStatus::UpperLimit) {
+        return stop_failure(failure("No finite exponent: point-mass supremum at a window endpoint."),
+          cppunivariate::discrete_point(r.status==cppunivariate::ZetaWindowStatus::LowerLimit?1:std::floor(b)),"limit",{"s"});
+      }
+      return failure(r.status==cppunivariate::ZetaWindowStatus::InvalidInput ? "finite zeta window requires [1,N], integer N >= max(x), and finite s" : "finite zeta exponent solve failed to certify coefficient accuracy");
+    }
+    FitResult out;out.estimates={{"s",r.s}};out.logLik=r.logLik;out.has_fixed=true;
+    if(r.unidentified)out.warnings.push_back("All observations are equal to 1. The maximum likelihood estimator is not unique.");
+    if(h("s").supplied)out.fixed={"s"};
+    return out;
+  }
+  if(family=="lgser" || family=="zeta")return modifier_not_implemented(family,window?"`truncate`":"`zero`");
   if(window && a==1 && b==INFINITY){window=false;return fit_modifier(family,x,holds,"truncated",false,NAN,NAN,tol,maxit);}
   if(window) {
     FitResult out;
-    if(family=="pois")return truncate_counts(ix,a,b,cppunivariate::PoisTruncationTraits{},h("lambda"),"lambda",tol,maxit);
+    if(family=="pois" && h("lambda").supplied) {
+      out.estimates={{"lambda",value("lambda")}};out.fixed={"lambda"};
+      return held_window(out,x,[&](double v){return cppunivariate::distributions::dtpois(v,value("lambda"),std::max(-1.,std::ceil(a)-1),std::floor(b),true);});
+    }
+    if(family=="binom" && h("size").supplied && h("prob").supplied) {
+      out.estimates={{"size",value("size")},{"prob",value("prob")}};out.fixed={"size","prob"};out.extra.push_back({"certified",1});
+      return held_window(out,x,[&](double v){return cppunivariate::distributions::dtbinom(v,value("prob"),std::max(-1.,std::ceil(a)-1),std::floor(b),value("size"),true);});
+    }
+    if(family=="pois") {
+      const auto check=cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(ix,a,b,{},value("lambda"),tol,maxit);
+      if(check.status==cppunivariate::TruncationStatus::NumericalFailure)
+        return failure("truncation solve failed to certify coefficient accuracy");
+      if(check.status==cppunivariate::TruncationStatus::InvalidInput)
+        return failure("invalid truncation window, observations or held coefficients");
+      auto out=fit_tpois(ix,h("lambda"),{true,std::max(-1.0,std::ceil(a)-1)},{true,std::floor(b)});
+      out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
+      out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());return out;
+    }
     if(family=="geom")return truncate_counts(ix,a,b,cppunivariate::GeomTruncationTraits{},h("prob"),"prob",tol,maxit);
+    if(family=="binom") {
+      auto out=fit_tbinom_controlled(ix,h("prob"),{true,std::max(-1.0,std::ceil(a)-1)}, {true,std::floor(b)},h("size"),tol,maxit);
+      out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
+      std::reverse(out.estimates.begin(),out.estimates.end());
+      out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());return out;
+    }
     if(!h("size").supplied)return modifier_not_implemented(family,"`truncate` with size free");
     if(family=="binom")out=truncate_counts(ix,a,b,cppunivariate::BinomTruncationTraits{value("size")},h("prob"),"prob",tol,maxit);
     else out=truncate_counts(ix,a,b,cppunivariate::NbinomTruncationTraits{value("size")},h("prob"),"prob",tol,maxit);

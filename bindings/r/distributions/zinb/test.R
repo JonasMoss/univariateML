@@ -32,7 +32,7 @@ test_that("profiled ZINB agrees with multistart external oracle", {
 
 test_that("ZINB faces and fixed-size subset have the declared behavior", {
   # Underdispersed positive counts force the ZIP face; no moment test in fitter.
-  expect_error(mlzinb(c(rep(0,50),rep(4,50))), "Use `mlzip`")
+  expect_error(mlzinb(c(rep(0,50),rep(4,50))), "Use `mlpois.*zero = .inflated")
   expect_error(mlzinb(rep(2,100)), "Use `mlpois`")
   expect_s3_class(mlzinb(rep(2,100),size=1.5),"univariateML")
   for (bad in c(-1,Inf,-Inf,NaN))
@@ -127,7 +127,7 @@ test_that("P2 ZINB held boundaries, incompatible data and constrained faces", {
   expect_equal(mlzinb(rep(0,3),prob=.4,pi=.3)[["size"]],0)
   expect_equal(attr(suppressWarnings(mlzinb(rep(0,3),prob=.4)),"logLik"),0)
   expect_equal(attr(suppressWarnings(mlzinb(rep(0,3),pi=.3)),"logLik"),0)
-  expect_error(mlzinb(c(rep(0,50),rep(4,50)),pi=.5),"mlzip")
+  expect_error(mlzinb(c(rep(0,50),rep(4,50)),pi=.5),"mlpois.*zero = .inflated")
   expect_error(mlzinb(rep(2,100),pi=0),"mlpois")
   a<-mlzinb(c(0,1,5),size=2,prob=.4)
   z<-mean(c(0,1,5)==0); f0<-.4^2
