@@ -1,0 +1,204 @@
+{
+  "task": "TASK-150.2.8",
+  "completed_utc": "2026-11-12T02:29:46.075535+00:00",
+  "head": "c4ed89f6a4222e133c7524cf726fea4cb9369593",
+  "uncommitted": true,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "r_version": "Rscript (R) version 4.6.1 (2026-06-24)",
+  "source_sha256": {
+    "bindings/r/distributions/invgauss/test.R": "7c147f280e9ab00cb671ab523135f1151b3d32c36085f00531fb7e9e1bb2d9fd",
+    "univariateML-cpp/include/cppunivariate/distributions/invgauss/README.md": "27c46b44deff3ebb39b4237dba2f291986c5f172647aa76ce1a6f50e813095fb",
+    "univariateML-cpp/include/cppunivariate/distributions/invgauss/mle.hpp": "608bae60f8451c1be112916372dda805ebdd1e27a7c4020db340ad717d8ad0d3",
+    "univariateML-cpp/include/cppunivariate/distributions/invgauss/test.cpp": "ce08884197be0aee92476b5c6bacfd1d55ab7b00aa5e8b2249c8a5a4e4a7978d",
+    "dev/research/evaluations/2026-11-12-invgauss-shape-data/check.py": "8dd463567c3a0d77cee9e16ee0452ddd9fa163d6a84cfeeea716724d2064ccd2"
+  },
+  "runs": [
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "exit": 0,
+      "passed": 108,
+      "failed": 0,
+      "ctest_seconds": 634.8
+    },
+    {
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "workstation",
+      "exit": 0,
+      "passed": 135,
+      "failed": 0,
+      "ctest_seconds": 911.22
+    },
+    {
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "exit": 0,
+      "passed": 135,
+      "failed": 0,
+      "ctest_seconds": 602.45
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "exit": 0,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 154,
+      "passed": 25750
+    },
+    {
+      "command": "just test-full",
+      "machine": "workstation",
+      "exit": 0,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0,
+      "passed": 52508
+    },
+    {
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit": 0,
+      "family_pages": 99,
+      "cpp17_snippets": 99
+    },
+    {
+      "command": "just test-changed",
+      "machine": "workstation",
+      "exit": 0,
+      "families": [
+        "invgauss",
+        "pig"
+      ],
+      "cpp_shards": 2,
+      "r_passed": 510,
+      "r_failed": 0,
+      "r_warnings": 0,
+      "r_skipped": 8,
+      "js_passed": 208,
+      "js_failed": 0
+    }
+  ],
+  "seams": {
+    "native": {
+      "passed": 101,
+      "maximum_error": 1.6438319723591573e-16
+    },
+    "double": {
+      "passed": 101,
+      "maximum_error": 1.6473811577580583e-16
+    }
+  },
+  "coefficient_summary": [
+    {
+      "version": "before",
+      "mode": "native",
+      "group": "archive",
+      "requests": 400,
+      "max_relative_error": 1.0029854835558183e-08,
+      "coefficient_failures": 12,
+      "unexpected_stops": 0
+    },
+    {
+      "version": "before",
+      "mode": "native",
+      "group": "golden",
+      "requests": 4,
+      "max_relative_error": 0.0,
+      "coefficient_failures": 0,
+      "unexpected_stops": 0
+    },
+    {
+      "version": "before",
+      "mode": "native",
+      "group": "stress",
+      "requests": 356,
+      "max_relative_error": 0.9991237226184398,
+      "coefficient_failures": 36,
+      "unexpected_stops": 0
+    },
+    {
+      "version": "before",
+      "mode": "double",
+      "group": "archive",
+      "requests": 400,
+      "max_relative_error": 4.284015808764252e-09,
+      "coefficient_failures": 20,
+      "unexpected_stops": 0
+    },
+    {
+      "version": "before",
+      "mode": "double",
+      "group": "golden",
+      "requests": 4,
+      "max_relative_error": 1.1102230246251565e-15,
+      "coefficient_failures": 0,
+      "unexpected_stops": 0
+    },
+    {
+      "version": "before",
+      "mode": "double",
+      "group": "stress",
+      "requests": 356,
+      "max_relative_error": "inf",
+      "coefficient_failures": 21,
+      "unexpected_stops": 2
+    },
+    {
+      "version": "after",
+      "mode": "native",
+      "group": "archive",
+      "requests": 400,
+      "max_relative_error": 2.220446049250313e-16,
+      "coefficient_failures": 0,
+      "unexpected_stops": 0
+    },
+    {
+      "version": "after",
+      "mode": "native",
+      "group": "golden",
+      "requests": 4,
+      "max_relative_error": 2.220446049250313e-16,
+      "coefficient_failures": 0,
+      "unexpected_stops": 0
+    },
+    {
+      "version": "after",
+      "mode": "native",
+      "group": "stress",
+      "requests": 356,
+      "max_relative_error": 2.220446049250313e-16,
+      "coefficient_failures": 0,
+      "unexpected_stops": 0
+    },
+    {
+      "version": "after",
+      "mode": "double",
+      "group": "archive",
+      "requests": 400,
+      "max_relative_error": 4.440892098500626e-16,
+      "coefficient_failures": 0,
+      "unexpected_stops": 0
+    },
+    {
+      "version": "after",
+      "mode": "double",
+      "group": "golden",
+      "requests": 4,
+      "max_relative_error": 2.220446049250313e-16,
+      "coefficient_failures": 0,
+      "unexpected_stops": 0
+    },
+    {
+      "version": "after",
+      "mode": "double",
+      "group": "stress",
+      "requests": 356,
+      "max_relative_error": 5.551115123125783e-16,
+      "coefficient_failures": 0,
+      "unexpected_stops": 0
+    }
+  ],
+  "simbox": "Not used: final job instruction says simbox is off; all runs were local.",
+  "source_changed_after_full_runs": false
+}

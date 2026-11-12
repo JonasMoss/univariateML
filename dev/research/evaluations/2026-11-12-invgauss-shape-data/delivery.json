@@ -1,0 +1,8 @@
+{
+  "report": "dev/research/evaluations/2026-11-12-invgauss-shape-report.md",
+  "viewer_command": "/home/jonas/Files/work/misc/codex-math-web/bin/show dev/research/evaluations/2026-11-12-invgauss-shape-report.md",
+  "http_status": 403,
+  "reason": "Worktree is outside the viewer's configured readable roots.",
+  "configuration_changed": false,
+  "report_saved": true
+}

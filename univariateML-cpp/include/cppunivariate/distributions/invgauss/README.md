@@ -116,6 +116,12 @@ even a one-ulp mean error can exceed the likelihood accuracy target when
 $\lambda/\mu$ is large. The smooth maximum requires a sufficiently accurate
 public mean as well as an accurate residual calculation.
 
+The free shape is evaluated at the continuous sample mean, retaining its
+centered offset before rounding the reported mean. At extreme concentration,
+computing shape at the rounded mean can violate coefficient accuracy even
+when the resulting likelihood error is negligible. With the mean held, the
+shape instead maximizes the likelihood at that exact supplied value.
+
 ## R notes
 
 `mean = NULL` and `shape = NULL` estimate the corresponding coefficients. Held coefficients must be finite and positive. Both held coefficients evaluate the likelihood without estimation. Empty or invalid samples and unattained or numerically unrepresentable fits stop with an error.
