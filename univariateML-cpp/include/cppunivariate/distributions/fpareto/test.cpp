@@ -225,3 +225,72 @@ TEST_CASE("Comparable beta shapes fpareto transport propagates small-power error
   CHECK(r.scale==doctest::Approx(1.0000000065331610723249177026237890).scale(0.).epsilon(1e-10));
   CHECK(r.shape2==1e-4);CHECK(r.shape3==20000.45880248738);
 }
+
+// TASK-205: archived default fits; work bounds, never wall-clock assertions.
+TEST_CASE("Feller Pareto extreme all-free profiles have bounded nested work") {
+  SUBCASE("archive 1599") {
+    const std::vector<double> x{9.341081677852826e-151,4.595475734747349e-150,5.998711847579505e-151,1.056419269543656e-149,7.000746031939794e-151,1.112552433763363e-150,1.3300121914598085e-148,3.057685931487713e-151,9.471857714817827e-151,3.8097695246334955e-150,1.8225442484990885e-150,1.1865419401405472e-151};
+    const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000);
+    CHECK(r.status!=cppunivariate::Gb2Status::Ok);
+    CHECK(r.profile_evaluations>0);
+    CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
+    REQUIRE_FALSE(r.stop_detail.candidates.empty());
+    const auto& c=r.stop_detail.candidates.front();
+    REQUIRE(c.coef.size()==5);
+    CHECK(c.coef.back()==0);
+    CHECK(std::isfinite(c.loglik_lower));
+    CHECK(c.loglik_lower<=c.loglik_upper);
+    CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+  }
+  SUBCASE("archive 1600") {
+    const std::vector<double> x{9.341081677852825e+149,4.5954757347473486e+150,5.998711847579505e+149,1.056419269543656e+151,7.000746031939793e+149,1.1125524337633629e+150,1.3300121914598085e+152,3.057685931487713e+149,9.471857714817827e+149,3.809769524633495e+150,1.8225442484990886e+150,1.1865419401405473e+149};
+    const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000);
+    CHECK(r.status!=cppunivariate::Gb2Status::Ok);
+    CHECK(r.profile_evaluations>0);
+    CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
+    REQUIRE_FALSE(r.stop_detail.candidates.empty());
+    const auto& c=r.stop_detail.candidates.front();
+    REQUIRE(c.coef.size()==5);
+    CHECK(c.coef.back()==0);
+    CHECK(std::isfinite(c.loglik_lower));
+    CHECK(c.loglik_lower<=c.loglik_upper);
+    CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+  }
+  SUBCASE("archive 10717") {
+    const std::vector<double> x{1e-200,2e-200,3e-200,5e-200,9e-200};
+    const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000);
+    CHECK(r.status!=cppunivariate::Gb2Status::Ok);
+    CHECK(r.profile_evaluations>0);
+    CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
+    REQUIRE_FALSE(r.stop_detail.candidates.empty());
+    const auto& c=r.stop_detail.candidates.front();
+    REQUIRE(c.coef.size()==5);
+    CHECK(c.coef.back()==0);
+    CHECK(std::isfinite(c.loglik_lower));
+    CHECK(c.loglik_lower<=c.loglik_upper);
+    CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+  }
+}
+
+TEST_CASE("Feller Pareto completed grid profiles preserve Pareto limit decisions") {
+  SUBCASE("archive 1601") {
+    const std::vector<double> x{0.9341081677852825,4.595475734747349,0.5998711847579505,10.56419269543656,1112685.434982509};
+    const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000);
+    REQUIRE(r.status==cppunivariate::Gb2Status::ParetoBoundary);
+    CHECK(r.logLik==cppunivariate::pareto_mle(mltest::as_span(x)).logLik);
+    CHECK(r.logLik==doctest::Approx(-29.102002422134035).epsilon(2e-14));
+    CHECK(r.profile_evaluations>0);
+    CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
+    CHECK_FALSE(r.stop_detail.budget_exhausted);
+  }
+  SUBCASE("archive 10072") {
+    const std::vector<double> x{0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,1.0007086473905342,1.0007086473905342,1.0007086473905342,1.0007086473905342,1.0007086473905342};
+    const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000);
+    REQUIRE(r.status==cppunivariate::Gb2Status::ParetoBoundary);
+    CHECK(r.logLik==cppunivariate::pareto_mle(mltest::as_span(x)).logLik);
+    CHECK(r.logLik==doctest::Approx(77.219355967752222).epsilon(2e-14));
+    CHECK(r.profile_evaluations>0);
+    CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
+    CHECK_FALSE(r.stop_detail.budget_exhausted);
+  }
+}

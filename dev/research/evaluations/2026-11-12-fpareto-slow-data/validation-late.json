@@ -1,0 +1,73 @@
+[
+  {
+    "name": "cpp-build",
+    "command": [
+      "cmake",
+      "--build",
+      "univariateML-cpp/build",
+      "--target",
+      "distribution_tests",
+      "-j4"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T04:42:33.269500+00:00",
+    "seconds": 37.82669409096707,
+    "exit": 0,
+    "log": "build/scratch/late-cpp-build.log"
+  },
+  {
+    "name": "cpp",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "univariateML-cpp/build",
+      "--output-on-failure",
+      "--no-tests=error",
+      "-L",
+      "full",
+      "-R",
+      "^distribution_(fpareto|gb2)(_slow)?$"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T04:43:11.096557+00:00",
+    "seconds": 3.092225714994129,
+    "exit": 0,
+    "log": "build/scratch/late-cpp.log"
+  },
+  {
+    "name": "r",
+    "command": [
+      "just",
+      "test"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T04:43:14.189124+00:00",
+    "seconds": 381.2154279429815,
+    "exit": 0,
+    "log": "build/scratch/late-r.log"
+  },
+  {
+    "name": "js-build",
+    "command": [
+      "just",
+      "js-build"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T04:49:35.404936+00:00",
+    "seconds": 90.57417046098271,
+    "exit": 0,
+    "log": "build/scratch/late-js-build.log"
+  },
+  {
+    "name": "js",
+    "command": [
+      "just",
+      "js-test"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T04:51:05.979438+00:00",
+    "seconds": 86.02841639297549,
+    "exit": 0,
+    "log": "build/scratch/late-js.log"
+  }
+]

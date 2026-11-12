@@ -1,0 +1,46 @@
+{
+  "baseline": "bb46078757dad3538bfb263086d4e72cde163330",
+  "headers_identical": {
+    "univariateML-cpp/include/cppunivariate/distributions/invburr/dpqr.hpp": "27743a1d4b365a47450d3d135f86c295ecfea9e493eabf561486c5b9f516295f",
+    "univariateML-cpp/include/cppunivariate/special/tails.hpp": "8b46043caa0e9dd33a3b6e8258abeeae303de861e4af72d915fa15d0aae3d24a",
+    "univariateML-cpp/include/cppunivariate/special/gamma_centered.hpp": "09692cdcabcb5a2d3532f907544e2343d19accae55551fb36c01863a8ec61552",
+    "univariateML-cpp/include/cppunivariate/special/constants.hpp": "2e15efdce255d7a6a1c627d68b956a3bc06465948f5fe4c10cd9ef8d0c6d45a2",
+    "univariateML-cpp/include/cppunivariate/core/precision.hpp": "592be80dea12fb6feff33c2bd338853399040616e34fdc54fc7d97adde747a72",
+    "univariateML-cpp/include/cppunivariate/distributions/llogis/dpqr.hpp": "c4f267206bbc6718431375cab0880cd2a77f047c6fa1aca49ca78508fa9178ee",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/dpqr.hpp": "533322746b195ec58c47724125aba473d3b0747d3ede9d5a03e3f5af47484a6e"
+  },
+  "matrix": [
+    {
+      "flags": [
+        "-O0"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -230.25850929941012 -230.25850929941012\nconstant -230.25850929941012 -230.25850929941012\n"
+    },
+    {
+      "flags": [
+        "-O1"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -inf -inf\nconstant -inf -inf\n"
+    },
+    {
+      "flags": [
+        "-O2"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -inf -inf\nconstant -inf -inf\n"
+    },
+    {
+      "flags": [
+        "-O2",
+        "-fno-inline"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -230.25850929941012 -230.25850929941012\nconstant -230.25850929941012 -230.25850929941012\n"
+    },
+    {
+      "flags": [
+        "-O2",
+        "-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"
+      ],
+      "output": "ratio 230.25850929940458 product inf logproduct 714.63541127340216\nloga -709.19620864216608 lh 5.4392026312360713 tails -9.9999999999444675e-101 -230.25850929941012\nruntime -inf -inf\nconstant -inf -inf\n"
+    }
+  ]
+}

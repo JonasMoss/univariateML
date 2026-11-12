@@ -1,0 +1,18 @@
+{
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/test.cpp": {
+    "bytes": 35501,
+    "sha256": "7bd279067741479d1aec9274b194cf31598016da5a5b9f6e14804e24f91dc980"
+  },
+  "univariateML-cpp/include/cppunivariate/distributions/gb2/README.md": {
+    "bytes": 28731,
+    "sha256": "4e9e9f42b8cbf259d159e845550756b33a9e4b6646f235b7fc47a9eceec3800b"
+  },
+  "univariateML-cpp/include/cppunivariate/distributions/fpareto/test.cpp": {
+    "bytes": 17622,
+    "sha256": "ca01f31ae3cfee42552cd32c0581cbc4657636bac1ca3415f8ec33d21d0e826a"
+  },
+  "univariateML-cpp/include/cppunivariate/distributions/fpareto/README.md": {
+    "bytes": 21033,
+    "sha256": "75fcdfa5f74b002bd5574f44f0712f70a2bc7bb737f2ec20657fd5ba2f538993"
+  }
+}

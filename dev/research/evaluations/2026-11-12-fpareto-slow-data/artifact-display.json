@@ -1,0 +1,7 @@
+{
+  "action": "codex-math-web/bin/show",
+  "file": "dev/research/evaluations/2026-11-12-fpareto-slow-report.md",
+  "status": 403,
+  "reason": "Worktree outside viewer readable roots",
+  "missing": "Viewer root configuration or registration of the existing thread/worktree"
+}

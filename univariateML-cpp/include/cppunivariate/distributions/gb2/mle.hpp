@@ -24,6 +24,7 @@ struct Gb2Result {
   StopDetail stop_detail{};
   bool certified=true;
   bool accuracy_failure=false;
+  std::int64_t profile_evaluations=0;
 };
 } // namespace cppunivariate
 #include "transport_accuracy.hpp"
@@ -50,6 +51,16 @@ struct Point {
   std::array<double,4> h{{0,0,0,0}};
   bool ok=false;
   bool outer_done=false;
+};
+// One shared ledger covers nested profile and line-search evaluations.
+struct ProfileWork {
+  std::int64_t used=0, limit;
+  bool exhausted=false;
+  bool bounded=true;
+  bool take() {
+    if(bounded&&used>=limit){exhausted=true;return false;}
+    ++used;return true;
+  }
 };
 struct Inner {
   double ll, ga, gc, haa, hac, hcc, lp, lq, u, vu;
@@ -84,12 +95,13 @@ inline Inner evaluate(const trgamma_detail::LogData &d, double A, double c,
 }
 // Strict concavity in (A,c); a held scale restricts c to a line.
 inline Point profile(const trgamma_detail::LogData &d,double p,double q,
-                     double a,double b,int maxit=300) {
+                     double a,double b,int maxit,ProfileWork& work) {
   maxit = static_cast<int>(solver_budget(maxit));
   const bool ha=!std::isnan(a), hb=!std::isnan(b);
   const double offset=hb ? (d.mean-std::log(b))/d.sd : 0;
   double A=ha ? a*d.sd : std::sqrt(special::trigamma(p)+special::trigamma(q));
   double c=hb ? 0 : special::digamma(q)-special::digamma(p);
+  if(!work.take())return {};
   Inner e=evaluate(d,A,c,p,q,hb,offset);
   bool ok=false;
   for(int it=0;it<maxit;++it) {
@@ -102,6 +114,7 @@ inline Point profile(const trgamma_detail::LogData &d,double p,double q,
     } else if(!ha) da=-e.ga/e.haa;
     else if(!hb) dc=-e.gc/e.hcc;
     else {ok=true;break;}
+    if(!std::isfinite(da)||!std::isfinite(dc))break;
     const double residual=std::max(ha?0:std::abs(e.ga*A),hb?0:std::abs(e.gc));
     if(residual<1e-9*d.n) {ok=true;break;}
     double step=1;
@@ -109,6 +122,7 @@ inline Point profile(const trgamma_detail::LogData &d,double p,double q,
     for(int ls=0;ls<maxit;++ls) {
       if(A+step*da==A && c+step*dc==c)break;
       if(A+step*da>0) {
+        if(!work.take())return {};
         const Inner next=evaluate(d,A+step*da,c+step*dc,p,q,hb,offset);
         if(next.ll>=e.ll-1e-12*d.n) {
           A+=step*da;c+=step*dc;e=next;accepted=true;break;
@@ -138,6 +152,11 @@ inline Point profile(const trgamma_detail::LogData &d,double p,double q,
   return {A,hb ? A*(std::log(b)-d.mean)/d.sd : c,p,q,
     e.ll-d.n*std::log(d.sd)-d.sum,g,h,ok};
 }
+inline Point profile(const trgamma_detail::LogData &d,double p,double q,
+                     double a,double b,int maxit=300) {
+  ProfileWork work{0,certificate_budget(maxit)};
+  return profile(d,p,q,a,b,maxit,work);
+}
 // Exact kink profile, including both one-sided endpoint suprema.
 inline double double_pareto(const trgamma_detail::LogData &d,double b) {
   std::vector<double> y=d.u;
@@ -163,15 +182,21 @@ inline double double_pareto(const trgamma_detail::LogData &d,double b) {
 }
 // A small dimension BFGS with analytic envelope scores; no pointer API.
 inline Point refine(const trgamma_detail::LogData &d,std::array<double,2> v,
-                    double p,double q,double a,double b,double box,int maxit,int &evals) {
+                    double p,double q,double a,double b,double box,int maxit,int &evals,ProfileWork& work) {
   maxit = static_cast<int>(solver_budget(maxit));
   const std::array<bool,2> free{{std::isnan(p),std::isnan(q)}};
+  ProfileWork local{0,work.bounded?std::min(solver_budget(maxit),work.limit-work.used):0,false,work.bounded};
   auto get=[&](std::array<double,2> w) {
     ++evals;
     if((free[0] && std::abs(w[0])>box)||(free[1] && std::abs(w[1])>box)) return Point{};
-    return profile(d,free[0]?std::exp(w[0]):p,free[1]?std::exp(w[1]):q,a,b,maxit);
+    const auto before=local.used;
+    const auto out=profile(d,free[0]?std::exp(w[0]):p,free[1]?std::exp(w[1]):q,a,b,maxit,local);
+    work.used+=local.used-before;
+    work.exhausted=local.exhausted&&work.used>=work.limit;
+    return out;
   };
   Point cur=get(v);
+  if(local.exhausted)return cur;
   std::array<double,4> H{{1,0,0,1}};
   for(int it=0;it<maxit;++it) {
     // The existing completion rule already treats an outward box edge as
@@ -200,6 +225,7 @@ inline Point refine(const trgamma_detail::LogData &d,std::array<double,2> v,
       w={{v[0]+step*s[0],v[1]+step*s[1]}};
       if(w==v)break;
       next=get(w);
+      if(local.exhausted)return cur;
       if(next.ok && next.ll>=cur.ll+1e-4*d.n*step*(s[0]*g[0]+s[1]*g[1])){accepted=true;break;}
       step*=0.5;
     }
@@ -424,6 +450,8 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     if(!std::isnan(p)&&!std::isnan(q))starts={{{std::log(p),std::log(q)}}};
   }
   gb2_detail::Point best;
+  const bool all_free=std::isnan(a)&&std::isnan(b)&&std::isnan(p)&&std::isnan(q);
+  gb2_detail::ProfileWork work{0,certificate_budget(maxit),false,all_free};
   int evals=0;double box=8, searched_box=8;
   bool explored=false;
   for(int expansion=0;expansion<maxit;++expansion) {
@@ -433,8 +461,12 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     // following the same long, flat escape from many seeds.
     std::vector<gb2_detail::Point> basins;
     for(auto v:starts) {
-      const auto candidate=gb2_detail::refine(d,v,p,q,a,b,box,maxit,evals);
+      if(work.exhausted)break;
+      const auto candidate=gb2_detail::refine(d,v,p,q,a,b,box,maxit,evals,work);
       if(candidate.ok) {
+        // Completed grid refinements retain their face evidence even when
+        // a subsequent basin refinement exhausts its own allowance.
+        explored=explored||(all_free&&candidate.outer_done);
         basins.push_back(candidate);
         if(candidate.ll>best.ll)best=candidate;
       }
@@ -442,6 +474,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     std::sort(basins.begin(),basins.end(),[](const gb2_detail::Point &l,const gb2_detail::Point &r){return l.ll>r.ll;});
     std::vector<std::array<double,2>> selected;
     for(const auto &seed:basins) {
+      if(work.exhausted)break;
       const std::array<double,2> v{{std::log(seed.p),std::log(seed.q)}};
       bool distinct=true;
       for(const auto &w:selected) {
@@ -449,11 +482,12 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       }
       if(!distinct)continue;
       selected.push_back(v);
-      const auto candidate=gb2_detail::refine(d,v,p,q,a,b,box,maxit,evals);
+      const auto candidate=gb2_detail::refine(d,v,p,q,a,b,box,maxit,evals,work);
       explored=explored||(candidate.ok&&candidate.outer_done);
       if(candidate.ok&&candidate.ll>best.ll)best=candidate;
       if(selected.size()>=8)break;
     }
+    if(work.exhausted)break;
     const bool edge=(std::isnan(p)&&std::abs(std::log(best.p))>box-0.2)||
                     (std::isnan(q)&&std::abs(std::log(best.q))>box-0.2);
     if(!edge || basins.empty())break;
@@ -466,8 +500,50 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     starts={{{std::log(best.p),std::log(best.q)}},{{-box,-box}},{{box,box}},{{-box,box}},{{box,-box}}};
     box+=3;
   }
-  if(best.ok && explored && !face_failure && face_numerical_tie(face,best.ll,1e-8*d.n)) return {nan,nan,nan,nan,face,evals,Gb2Status::SearchUnresolved};
-  if(best.ok && explored && face>=best.ll-1e-8*d.n && !face_failure) return {nan,nan,nan,nan,face,evals,fs};
+  const auto retain_witness=[&](Gb2Result out) {
+    out.profile_evaluations=work.used;
+    if(!all_free)return out;
+    const double scale=std::exp(d.mean+d.sd*best.c/best.A);
+    if(best.ok&&scale>0&&std::isfinite(scale)&&std::isfinite(best.ll)) {
+      // Re-evaluate the literal physical coefficients, not the unrounded
+      // standardized location. Include cancellation and log-coordinate error
+      // in a practical floating-point margin; it may be wide near a seam.
+      const double power=best.A/d.sd, logscale=std::log(scale);
+      const double normalizer=std::log(power)-gb2_detail::logbeta(best.p,best.q);
+      CPPUNIV_EXTENDED_REAL ll=0, compensation=0, magnitude=1;
+      for(double value:x) {
+        const double logx=std::log(value), ratio=gb2_accuracy::log_ratio(value,scale);
+        const double t=power*ratio;
+        const double left=best.p*gb2_detail::softplus(-t),right=best.q*gb2_detail::softplus(t);
+        const CPPUNIV_EXTENDED_REAL term=normalizer-logx-left-right-compensation;
+        const CPPUNIV_EXTENDED_REAL next=ll+term;
+        compensation=(next-ll)-term;ll=next;
+        magnitude+=std::abs(normalizer)+std::abs(logx)+left+right+
+          (best.p+best.q)*power*(1+std::abs(logx)+std::abs(logscale)+std::abs(ratio));
+      }
+      const double physical_ll=static_cast<double>(ll);
+      const double margin=128*std::numeric_limits<double>::epsilon()*static_cast<double>(magnitude);
+      if(std::isfinite(physical_ll)&&std::isfinite(margin)) {
+        out.stop_detail.candidates.push_back({{best.q,power,best.p,scale},physical_ll-margin,physical_ll+margin});
+        out.stop_detail.loglik_lower=physical_ll-margin;
+        out.stop_detail.loglik_upper=INFINITY;
+      }
+    }
+    return out;
+  };
+  if(best.ok && (explored||work.exhausted) && !face_failure && face>=best.ll-1e-8*d.n) {
+    // An unfinished search whose best point does not beat a limit face has
+    // no interior fit to return: the face is at least as good.
+    if(!explored) {
+      Gb2Result out=bad;
+      out.status=Gb2Status::NumericalFailure;out.iterations=evals;
+      out.stop_detail.budget_exhausted=true;
+      return retain_witness(out);
+    }
+    auto out=retain_witness({nan,nan,nan,nan,face,evals,
+      face_numerical_tie(face,best.ll,1e-8*d.n)?Gb2Status::SearchUnresolved:fs});
+    return out;
+  }
   bool local_done=false;
   if(best.ok && std::isnan(q)&&!std::isnan(a)&&std::isnan(p)&&!std::isnan(b)) {
     // With power and scale held, the logit transform is exactly beta. Its
@@ -488,7 +564,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
         best.ll=beta.logLik;for(std::size_t i=0;i<logs.size();++i){double t=a*gb2_accuracy::log_ratio(x[i],b);best.ll+=std::log(a)-logs[i]-gb2_detail::softplus(-t)-gb2_detail::softplus(t);}
         local_done=true;
       } else if(beta.status==BetaStatus::Degenerate||(beta.status==BetaStatus::Ok&&std::min(beta.alpha,beta.beta)*std::numeric_limits<double>::epsilon()>tol*.125)) {
-        bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;return bad;
+        bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;if(work.exhausted){bad.stop_detail.budget_exhausted=true;return retain_witness(bad);}return bad;
       }
     }
   }
@@ -533,7 +609,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       if(free[3])e=std::max(e,std::abs(d.sd/t[1].v*(step[index[3]]+(shifted&&free[0]?step[index[0]]:0)-t[3].v*(free[1]?step[index[1]]:0))));
       return e;
     };
-    if(dim>0&&!local_accuracy::polish(v,dim,tol,maxit,objective,error)){bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;return bad;}
+    if(dim>0&&!local_accuracy::polish(v,dim,tol,maxit,objective,error)){bad.status=Gb2Status::NumericalFailure;bad.accuracy_failure=true;if(work.exhausted){bad.stop_detail.budget_exhausted=true;return retain_witness(bad);}return bad;}
     const auto t=unpack(local_accuracy::variables(v));
     local_done=true;best.q=t[0].v;best.A=t[1].v;best.p=t[2].v;best.c=t[3].v;
     best.ll=-objective(local_accuracy::variables(v)).v-d.n*std::log(d.sd)-d.sum;
@@ -547,6 +623,16 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   Gb2Result out{std::isnan(q)?best.q:q,std::isnan(a)?best.A/d.sd:a,
     std::isnan(p)?best.p:p,std::isnan(b)?std::exp(logb):b,best.ll,evals,status};
   if(out.status==Gb2Status::Ok&&std::isnan(b)&&!local_accuracy::represented(out.scale,out.scale,tol)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;}
+  out.profile_evaluations=work.used;
+  if(work.exhausted) {
+    // A successful locally checked nomination survives an unclosed search.
+    if(out.status==Gb2Status::Ok)out.certified=false;
+    else {
+      out.status=Gb2Status::NumericalFailure;
+      out.stop_detail.budget_exhausted=true;
+      return retain_witness(out);
+    }
+  }
   return out;
 }
 } // namespace cppunivariate

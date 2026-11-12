@@ -1,0 +1,85 @@
+[
+  {
+    "command": [
+      "cmake",
+      "-S",
+      "univariateML-cpp",
+      "-B",
+      "univariateML-cpp/build",
+      "-DCMAKE_BUILD_TYPE=",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG",
+      "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache",
+      "-DBoost_INCLUDE_DIR=/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T04:02:04.462264+00:00",
+    "seconds": 0.08598799398168921,
+    "exit": 0,
+    "log": "build/scratch/final-configure-native.log"
+  },
+  {
+    "command": [
+      "cmake",
+      "-S",
+      "univariateML-cpp",
+      "-B",
+      "build/cpp-no-long-double",
+      "-DCMAKE_BUILD_TYPE=",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG",
+      "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache",
+      "-DBoost_INCLUDE_DIR=/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include",
+      "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T04:02:04.548609+00:00",
+    "seconds": 0.0882110619568266,
+    "exit": 0,
+    "log": "build/scratch/final-configure-double.log"
+  },
+  {
+    "command": [
+      "just",
+      "cpp-test"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T04:02:04.637144+00:00",
+    "seconds": 664.8466947550187,
+    "exit": 0,
+    "log": "build/scratch/final-cpp-test.log"
+  },
+  {
+    "command": [
+      "env",
+      "UMVL_TEST_TIER=full",
+      "just",
+      "cpp-test"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T04:13:09.484168+00:00",
+    "seconds": 925.6498003290035,
+    "exit": 0,
+    "log": "build/scratch/final-cpp-test-full.log"
+  },
+  {
+    "command": [
+      "just",
+      "cpp-test-no-long-double"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T04:28:35.134260+00:00",
+    "seconds": 641.8237907830044,
+    "exit": 0,
+    "log": "build/scratch/final-cpp-test-no-long-double.log"
+  },
+  {
+    "command": [
+      "just",
+      "site-check"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T04:39:16.958441+00:00",
+    "seconds": 196.00849434995325,
+    "exit": 0,
+    "log": "build/scratch/final-site-check.log"
+  }
+]

@@ -1,0 +1,108 @@
+[
+  {
+    "name": "native-build",
+    "command": [
+      "cmake",
+      "--build",
+      "univariateML-cpp/build",
+      "--target",
+      "distribution_tests",
+      "-j4"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T05:37:19.727365+00:00",
+    "seconds": 33.22324237204157,
+    "exit": 0,
+    "log": "build/scratch/fpareto-review/check-native-build.log"
+  },
+  {
+    "name": "native-cpp",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "univariateML-cpp/build",
+      "--output-on-failure",
+      "--no-tests=error",
+      "-L",
+      "full",
+      "-R",
+      "^distribution_(fpareto|gb2)(_slow)?$"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T05:37:52.950908+00:00",
+    "seconds": 2.2413971920032054,
+    "exit": 0,
+    "log": "build/scratch/fpareto-review/check-native-cpp.log"
+  },
+  {
+    "name": "double-build",
+    "command": [
+      "cmake",
+      "--build",
+      "build/cpp-no-long-double",
+      "--target",
+      "distribution_tests",
+      "-j4"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T05:37:55.192604+00:00",
+    "seconds": 30.105552618042566,
+    "exit": 0,
+    "log": "build/scratch/fpareto-review/check-double-build.log"
+  },
+  {
+    "name": "double-cpp",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "build/cpp-no-long-double",
+      "--output-on-failure",
+      "--no-tests=error",
+      "-L",
+      "full",
+      "-R",
+      "^distribution_(fpareto|gb2)(_slow)?$"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T05:38:25.298524+00:00",
+    "seconds": 2.0003167100367136,
+    "exit": 0,
+    "log": "build/scratch/fpareto-review/check-double-cpp.log"
+  },
+  {
+    "name": "r",
+    "command": [
+      "just",
+      "test"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T05:38:27.299150+00:00",
+    "seconds": 333.4242981150164,
+    "exit": 0,
+    "log": "build/scratch/fpareto-review/check-r.log"
+  },
+  {
+    "name": "js-build",
+    "command": [
+      "just",
+      "js-build"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T05:44:00.723871+00:00",
+    "seconds": 110.57087403599871,
+    "exit": 0,
+    "log": "build/scratch/fpareto-review/check-js-build.log"
+  },
+  {
+    "name": "js",
+    "command": [
+      "just",
+      "js-test"
+    ],
+    "machine": "local workstation",
+    "start": "2026-11-12T05:45:51.295125+00:00",
+    "seconds": 92.28796956100268,
+    "exit": 0,
+    "log": "build/scratch/fpareto-review/check-js.log"
+  }
+]

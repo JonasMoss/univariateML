@@ -456,3 +456,11 @@ them. A final score and information check uses the original log observations;
 when its correction is appreciable, it refines that transformed point before
 returning it. The check uses the same rare-shape rate coordinate as the parent
 so the transformation check does not restore the cancelled gamma terms.
+
+The double-Pareto seam sends both beta shapes toward zero while power grows.
+The conditional power/scale Hessian becomes nearly singular there; small
+rounding differences after a change of units can greatly lengthen a grid
+refinement without changing the limiting likelihood. A partially explored
+refinement supplies no additional certificate of a finite maximum. The
+all-free search therefore shares an evaluation allowance across its nested
+power/scale solves, retaining finite witnesses when it cannot finish.
