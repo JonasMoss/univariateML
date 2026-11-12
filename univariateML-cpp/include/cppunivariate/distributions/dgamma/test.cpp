@@ -244,3 +244,22 @@ TEST_CASE("dgamma: concentrating bins retain accurate gamma endpoints") {
  CHECK(cppunivariate::distributions::ddgamma(99629986,1e8,1,true)==doctest::Approx(-696.3688404012099).epsilon(1e-10));
  CHECK(cppunivariate::distributions::pdgamma(100114683,1e8,1,false,false)==doctest::Approx(9.996832067290807e-31).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("dgamma: polish floor and score conditioning retain public witnesses") {
+  const std::vector<double> x{0,1,1,2,4};
+  for(double tol:{1e-20,5e-16}) {
+    const auto fit=cppunivariate::dgamma_mle({x.data(),x.size()},tol,400,2.);
+    REQUIRE(fit.status==cppunivariate::DgammaStatus::IterationFailure);
+    CHECK(fit.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+    CHECK(fit.stop_detail.attainable_tol>=4*std::numeric_limits<double>::epsilon());
+    REQUIRE(!fit.stop_detail.candidates.empty());
+    const auto& c=fit.stop_detail.candidates.back();CHECK(c.coef[0]==2.);
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::ddgamma(v,2.,c.coef[1],true);
+    CHECK(c.loglik_lower==doctest::Approx(ll).epsilon(1e-12));
+  }
+  const std::vector<double> large{1000000,1000001,1000003,1000008,1000011};
+  const auto fit=cppunivariate::dgamma_mle({large.data(),large.size()});
+  CHECK(fit.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Conditioning);
+  CHECK(fit.stop_detail.conditioning_bound>1e-10);
+  CHECK(cppunivariate::dgamma_mle({x.data(),x.size()},1e-30,400,2.,1.).status==cppunivariate::DgammaStatus::Ok);
+}

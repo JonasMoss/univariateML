@@ -113,3 +113,22 @@ test_that("exact multiplicative symmetry can certify the lognormal member", {
   expect_identical(unname(fit["Q"]),0)
   expect_true(isTRUE(attr(fit,"certified")))
 })
+
+test_that("gengamma transports public tolerance and conditioning witnesses", {
+  for (tol in c(1e-20,1e-14)) {
+    e <- tryCatch(mlgengamma(c(.2,.7,1,2,4),sigma=1,Q=0,tol=tol),error=identity)
+    expect_s3_class(e,if(tol<1e-16) "univariateML_tolerance" else "univariateML_conditioning")
+    expect_s3_class(e,"univariateML_numerical")
+    expect_gt(nrow(e$candidates),0L)
+    expect_equal(unname(unlist(tail(e$candidates,1)[c("sigma","Q")])),c(1,0))
+  }
+})
+
+test_that("internal gengamma conditional brackets retain public accuracy detail", {
+  tiny <- .Machine$double.xmin*.Machine$double.eps
+  e <- tryCatch(mlgengamma(c(1,1),mu=tiny),error=identity)
+  expect_s3_class(e,"univariateML_tolerance")
+  expect_gte(e$attainable_tol,1)
+  expect_true(all(e$candidates$sigma>0))
+  expect_true(all(is.finite(e$candidates$loglik_lower)))
+})

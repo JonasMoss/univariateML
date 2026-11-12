@@ -50,7 +50,7 @@ inline accuracy_detail::Jet penalty_jet(const accuracy_detail::Jet &w,
 inline bool polish_local(span y, double center, double unit,
                          std::array<double,3> &parameter,
                          const std::array<bool,3> &free, double tol, int maxit,
-                         double data_error=0) {
+                         double data_error, StopDetail& diagnostic) {
   if (y.empty() || !std::isfinite(center) || !(unit>0) || !std::isfinite(unit) ||
       !std::isfinite(parameter[0]) || !(parameter[1]>0) || !std::isfinite(parameter[1]) ||
       !std::isfinite(parameter[2]) || !(tol>0) || !std::isfinite(tol) || maxit<1 ||
@@ -76,8 +76,51 @@ inline bool polish_local(span y, double center, double unit,
   };
   // A location correction in normalized units must also fit the sigma
   // floor; using the smaller tolerance is conservative for all coordinates.
-  const double local_tol=tol*(free[0] ? std::min(1.0,parameter[1]/unit) : 1.0)*0.25;
-  if (!(local_tol>0) || !accuracy_detail::polish(local,free,local_tol,maxit,objective)) return false;
+  const double local_factor=free[0] ? std::min(1.0,parameter[1]/unit) : 1.0;
+  const double local_tol=tol*local_factor*0.25;
+  StopDetail detail;
+  const auto fail=[&](double bound=NAN) {
+    const double m=free[0]?center+unit*local[0]:parameter[0];
+    const double s=free[1]?unit*std::exp(local[1]):parameter[1];
+    const double q=free[2]?local[2]:parameter[2];
+    if(!std::isfinite(m) || !(s>0) || !std::isfinite(s) || !std::isfinite(q)) {
+      if(diagnostic.candidates.empty())
+        diagnostic=conditional_accuracy(y,parameter[0],parameter[1],parameter[2],free[0],0,0);
+      return false;
+    }
+    std::array<accuracy_detail::Jet,3> z;
+    for(int i=0;i<3;++i)z[i]=accuracy_detail::variable(local[i],i,free[i]);
+    const auto evaluated=objective(z);
+    bool finite=std::isfinite(evaluated.v);
+    for(int i=0;i<3;++i)if(free[i]) {
+      finite=finite && std::isfinite(evaluated.g[i]);
+      for(int j=0;j<3;++j)if(free[j])finite=finite && std::isfinite(evaluated.h[i][j]);
+    }
+    const double ll=conditional_loglik(y,m,s,q);
+    finite=finite && std::isfinite(ll);
+    if(!finite){detail.accuracy_stop=AccuracyStop::None;detail.conditioning_bound=NAN;bound=NAN;}
+    if(!std::isfinite(ll)) {
+      if(diagnostic.candidates.empty())
+        diagnostic=conditional_accuracy(y,parameter[0],parameter[1],parameter[2],free[0],0,0);
+      return false;
+    }
+    const double conversion=std::max({free[0]?unit/std::max(std::abs(m),s):0.,
+      free[1]?1.:0.,free[2]?1/std::max(1.,std::abs(q)):0.});
+    if(detail.accuracy_stop==AccuracyStop::Tolerance) {
+      // Round the converted floor upward: the rounded local request can be
+      // below its floor even when the inverse conversion rounds back to tol.
+      detail.attainable_tol=std::nextafter(std::max(tol,
+        detail.attainable_tol*(4/local_factor)),INFINITY);
+    }
+    if(std::isfinite(detail.conditioning_bound))detail.conditioning_bound*=conversion;
+    record_accuracy(detail,finite?tol:0,{m,s,q},ll,
+      {free[0]?std::max(std::abs(m),s):0,free[1]?s:0,free[2]?std::max(1.,std::abs(q)):0},bound);
+    if(!detail.candidates.empty() &&
+       (diagnostic.candidates.empty() || ll>diagnostic.candidates.back().loglik_lower))
+      diagnostic=detail;
+    return false;
+  };
+  if (!accuracy_detail::polish(local,free,local_tol,maxit,objective,detail))return fail();
   // Bound a practical score-roundoff allowance through the observed
   // information. This rejects ill-conditioned candidates for which a
   // small computed Newton correction cannot support the coefficient goal.
@@ -143,16 +186,29 @@ inline bool polish_local(span y, double center, double unit,
     }
     for(int i=0;i<count;++i)error[i]+=std::abs(solution[i])*allowance[column];
   }
-  for(int i=0;i<count;++i)if(!(error[i]<local_tol) || !std::isfinite(error[i]))return false;
+  double noise=0;
+  for(int i=0;i<count;++i) {
+    if(!std::isfinite(error[i]))return false;
+    const double scale=indices[i]==0?unit/std::max(std::abs(center+unit*local[0]),unit*std::exp(local[1])):
+      indices[i]==2?1/std::max(1.,std::abs(local[2])):1.;
+    noise=std::max(noise,4*static_cast<double>(error[i])*scale);
+  }
+  for(int i=0;i<count;++i)if(!(error[i]<local_tol))return fail(noise);
   const double mu=free[0] ? center+unit*local[0] : parameter[0];
   const double sigma=free[1] ? unit*std::exp(local[1]) : parameter[1];
   const double shape=free[2] ? local[2] : parameter[2];
   if (!std::isfinite(mu) || !(sigma>0) || !std::isfinite(sigma) || !std::isfinite(shape)) return false;
-  if (free[0] && local_tol > tol*std::min(1.0,sigma/unit)*0.5) return false;
-  if (free[0] && !accuracy_detail::location_projection(mu,center,unit,local[0],sigma,tol)) return false;
-  if (free[1] && !accuracy_detail::scale_projection(sigma,unit,local[1],tol)) return false;
+  if (free[0] && local_tol > tol*std::min(1.0,sigma/unit)*0.5) return fail();
+  if (free[0] && !accuracy_detail::location_projection(mu,center,unit,local[0],sigma,tol)) return fail();
+  if (free[1] && !accuracy_detail::scale_projection(sigma,unit,local[1],tol)) return fail();
   parameter={mu,sigma,shape};
   return true;
+}
+
+inline bool polish_local(span y,double center,double unit,std::array<double,3>& parameter,
+    const std::array<bool,3>& free,double tol,int maxit,double data_error=0) {
+  StopDetail detail;
+  return polish_local(y,center,unit,parameter,free,tol,maxit,data_error,detail);
 }
 
 }  // namespace gengamma_fit_detail

@@ -582,3 +582,68 @@ TEST_CASE("gengamma: exact multiplicative symmetry returns certified Q zero") {
   CHECK(r.Q==0.);
   CHECK(r.certified);
 }
+
+TEST_CASE("gengamma: public accuracy kinds retain held coordinates and a finite witness") {
+  const std::vector<double> x{.2,.7,1.,2.,4.};
+  for(double tol:{1e-20,1e-14}) {
+    const auto fit=cppunivariate::gengamma_mle({x.data(),x.size()},tol,100,NAN,1.,0.);
+    REQUIRE(fit.status==cppunivariate::GengammaStatus::IterationFailure);
+    CHECK(fit.stop_detail.accuracy_stop==(tol<1e-16?cppunivariate::AccuracyStop::Tolerance:cppunivariate::AccuracyStop::Conditioning));
+    REQUIRE(!fit.stop_detail.candidates.empty());
+    const auto& c=fit.stop_detail.candidates.back();
+    REQUIRE(c.coef.size()==3);CHECK(c.coef[1]==1.);CHECK(c.coef[2]==0.);
+    if(tol==1e-14)CHECK(fit.stop_detail.attainable_tol==cppunivariate::coefficient_spacing(c.coef[0],std::max(std::abs(c.coef[0]),1.)));
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dgengamma(v,c.coef[0],1.,0.,true);
+    CHECK(c.loglik_lower==doctest::Approx(ll).epsilon(1e-13));
+  }
+  const auto held=cppunivariate::gengamma_mle({x.data(),x.size()},1e-30,100,0.,1.,0.);
+  CHECK(held.status==cppunivariate::GengammaStatus::Ok);
+  const auto joint=cppunivariate::gengamma_mle({x.data(),x.size()},1e-30,100,NAN,NAN,.3);
+  CHECK(joint.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+}
+
+TEST_CASE("gengamma: an all-held log-input rejection has no coefficient conditioning kind") {
+  const std::vector<double> x{2.,2.};
+  const auto fit=cppunivariate::gengamma_mle({x.data(),x.size()},1e-20,100,std::log(2.),1.,0.);
+  CHECK(fit.status==cppunivariate::GengammaStatus::IterationFailure);
+  CHECK(fit.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::None);
+  CHECK(fit.stop_detail.attainable_tol==0.);
+}
+
+TEST_CASE("gengamma: an internal conditional bracket retains public tolerance detail") {
+  const std::vector<double> x{1.,1.};
+  const auto fit=cppunivariate::gengamma_mle({x.data(),x.size()},1e-10,100,std::numeric_limits<double>::denorm_min());
+  CHECK(fit.status==cppunivariate::GengammaStatus::IterationFailure);
+  CHECK(fit.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  CHECK(fit.stop_detail.attainable_tol>=1.);
+  REQUIRE(!fit.stop_detail.candidates.empty());
+  const auto& c=fit.stop_detail.candidates.back();
+  CHECK(c.coef[0]==std::numeric_limits<double>::denorm_min());
+  CHECK(c.coef[1]>0);CHECK(std::isfinite(c.loglik_lower));
+}
+
+TEST_CASE("gengamma: transformed tolerance underflow retains the method floor") {
+  const std::vector<double> x{.2,.7,1.,2.,4.};
+  const auto fit=cppunivariate::gengamma_mle({x.data(),x.size()},std::numeric_limits<double>::denorm_min(),100,NAN,1.,0.);
+  CHECK(fit.status==cppunivariate::GengammaStatus::IterationFailure);
+  CHECK(fit.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  CHECK(fit.stop_detail.attainable_tol>=16*std::numeric_limits<double>::epsilon());
+  REQUIRE(!fit.stop_detail.candidates.empty());
+  CHECK(std::isfinite(fit.stop_detail.candidates.back().loglik_lower));
+}
+
+TEST_CASE("gengamma: conversion rounding preserves a diagnosed local tolerance floor") {
+  const std::vector<double> y{-1.,1.};
+  const double unit=1.147;
+  const double factor=1/unit;
+  const double tol=16*std::numeric_limits<double>::epsilon()/factor;
+  REQUIRE(tol*factor*.25<4*std::numeric_limits<double>::epsilon());
+  std::array<double,3> parameter{0.,1.,0.};
+  cppunivariate::StopDetail detail;
+  CHECK_FALSE(cppunivariate::gengamma_fit_detail::polish_local(
+    {y.data(),y.size()},0.,unit,parameter,{true,true,false},tol,100,0.,detail));
+  CHECK(detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  CHECK(detail.attainable_tol>tol);
+  REQUIRE(!detail.candidates.empty());
+  CHECK(std::isfinite(detail.candidates.back().loglik_lower));
+}

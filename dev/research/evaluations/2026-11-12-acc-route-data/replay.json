@@ -1,0 +1,18 @@
+{
+  "baseline": "9e4a368577f752f3387ece249203fc40f7e022ca",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "modes": {
+    "extended": {
+      "fits": 16,
+      "successful": 16,
+      "bitwise_equal": true,
+      "output_sha256": "15185427494aa407e78265320b910707072dad3d3870ea7f3dfe223140d3aa3d"
+    },
+    "double": {
+      "fits": 16,
+      "successful": 16,
+      "bitwise_equal": true,
+      "output_sha256": "0751fd98f416fad5d9a53ea451280d9475622eb61ee20f73353d723ab648b965"
+    }
+  }
+}

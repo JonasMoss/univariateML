@@ -646,3 +646,76 @@ TEST_CASE("cmb: fitting-only large tables agree with dense independent tables") 
     for(int k:x)CHECK(sparse.lp[k]==doctest::Approx(dense.lp[k]).epsilon(1e-12));
   }
 }
+
+TEST_CASE("cmb: public accuracy kinds exclude size and held dispersion") {
+  const std::vector<int> x{0,1,1,2,4};
+  for(double tol:{1e-20,1e-14}) {
+    const auto fit=cppunivariate::cmb_mle({x.data(),x.size()},5,tol,2000,NAN,1.);
+    REQUIRE(fit.status==cppunivariate::CmbStatus::IterationFailure);
+    CHECK(fit.stop_detail.accuracy_stop==(tol<1e-16?cppunivariate::AccuracyStop::Tolerance:cppunivariate::AccuracyStop::Conditioning));
+    REQUIRE(!fit.stop_detail.candidates.empty());
+    const auto& c=fit.stop_detail.candidates.back();
+    REQUIRE(c.coef.size()==3);CHECK(c.coef[0]==5.);CHECK(c.coef[2]==1.);
+    CHECK(fit.stop_detail.attainable_tol==cppunivariate::coefficient_spacing(c.coef[1],c.coef[1]));
+    double ll=0;for(int v:x)ll+=cppunivariate::distributions::dcmb(v,5,c.coef[1],1.,true);
+    CHECK(c.loglik_lower==doctest::Approx(ll).epsilon(1e-13));
+  }
+  CHECK(cppunivariate::cmb_mle({x.data(),x.size()},5,1e-30,2000,.3,1.).status==cppunivariate::CmbStatus::Ok);
+  const auto failed=cppunivariate::cmb_mle({x.data(),x.size()},5,1e-10,1);
+  CHECK(failed.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::None);
+}
+
+TEST_CASE("cmb: profiled size preserves the failed continuous-coordinate diagnostic") {
+  const std::vector<int> x{0,1,1,2,4};
+  const auto fit=cppunivariate::cmb_size_fixed_nu_mle({x.data(),x.size()},1.,1e-20);
+  REQUIRE(fit.fit.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(fit.fit.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  REQUIRE(!fit.fit.stop_detail.candidates.empty());
+  const auto& c=fit.fit.stop_detail.candidates.back();
+  CHECK(c.coef[2]==1.);
+  CHECK(fit.fit.stop_detail.attainable_tol==cppunivariate::coefficient_spacing(c.coef[1],c.coef[1]));
+}
+
+TEST_CASE("cmb: an accuracy stop retains the finite search proposal") {
+  const std::vector<int> x{0,1,1,2,4};
+  std::uint64_t used=0;
+  const auto proposed=cppunivariate::cmb_mle_work({x.data(),x.size()},5,1e-20,2000,NAN,1.,used,cppunivariate::enumeration_budget(2000));
+  REQUIRE(proposed.status==cppunivariate::CmbStatus::Ok);
+  const auto stopped=cppunivariate::cmb_polish_work({x.data(),x.size()},5,proposed,1e-20,2000,NAN,1.,used);
+  REQUIRE(stopped.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  bool retained=false;
+  for(const auto& c:stopped.stop_detail.candidates)
+    if(c.coef==std::vector<double>{5.,proposed.prob,proposed.nu})retained=true;
+  CHECK(retained);
+}
+
+TEST_CASE("cmb: an unfinished search is numerical even below coefficient spacing") {
+  const std::vector<int> x{0,1,1,2,4};
+  double ll=0;for(int v:x)ll+=cppunivariate::distributions::dcmb(v,5,.9,1.,true);
+  const cppunivariate::CmbResult proposed{.9,1.,ll,0,cppunivariate::CmbStatus::Ok};
+  std::uint64_t used=0;
+  const auto fit=cppunivariate::cmb_polish_work({x.data(),x.size()},5,proposed,1e-20,1,NAN,1.,used);
+  CHECK(fit.status==cppunivariate::CmbStatus::IterationFailure);
+  CHECK(fit.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::None);
+  CHECK_FALSE(fit.stop_detail.budget_exhausted);
+}
+
+TEST_CASE("cmb: numerical and budget refinement failures keep an earlier proper witness") {
+  const std::vector<int> x{0,1,1,2,4};
+  double ll=0;for(int v:x)ll+=cppunivariate::distributions::dcmb(v,5,.9,1.,true);
+  const cppunivariate::CmbResult proposed{.9,1.,ll,0,cppunivariate::CmbStatus::Ok};
+  for(bool budget:{false,true}) {
+    std::uint64_t used=budget?cppunivariate::enumeration_budget(1):0;
+    const auto fit=cppunivariate::cmb_polish_work({x.data(),x.size()},5,proposed,1e-20,budget?1:10,NAN,1.,used);
+    CHECK(fit.status==cppunivariate::CmbStatus::IterationFailure);
+    CHECK(fit.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::None);
+    CHECK(fit.stop_detail.budget_exhausted==budget);
+    REQUIRE(!fit.stop_detail.candidates.empty());
+    for(const auto& c:fit.stop_detail.candidates) {
+      REQUIRE(c.coef.size()==3);
+      CHECK(c.coef[1]>0);CHECK(c.coef[1]<1);CHECK(c.coef[2]==1.);
+      CHECK(std::isfinite(c.loglik_lower));CHECK(std::isfinite(c.loglik_upper));
+    }
+    if(budget)CHECK(used==cppunivariate::enumeration_budget(1));
+  }
+}

@@ -156,6 +156,64 @@ inline double match_mean(int N,double nu,double m,int maxit,TableWork& work) {
   return NAN;
 }
 }
+// Diagnose only a finite public candidate. Moment roundoff is propagated
+// through the covariance matrix, with held and integer coordinates excluded.
+inline CmbResult cmb_accuracy_stop(ispan x,int N,double p,double nu,double tol,
+                                  bool held_prob,bool held_nu,const cmb_detail::Table& table,double eta) {
+  CmbResult out{p,nu,NAN,0,CmbStatus::IterationFailure};
+  if(!(p>0 && p<1) || !std::isfinite(nu))return out;
+  if(!std::isfinite(table.mean) || !std::isfinite(table.mh))return out;
+  double m=0,t=0,ll=0;for(int k:x){m+=k;t+=cmb_detail::logchoose(N,k);ll+=table.lp[k];}
+  m/=x.size();t/=x.size();out.logLik=ll;
+  if(!std::isfinite(ll) || !std::isfinite(table.mean) || !std::isfinite(table.mh) ||
+     !std::isfinite(table.vx) || !std::isfinite(table.vh) || !std::isfinite(table.cov))return out;
+  const double eps=64*std::numeric_limits<double>::epsilon();
+  const double ex=eps*(1+std::abs(m)+std::abs(table.mean));
+  const double eh=eps*(1+std::abs(t)+std::abs(table.mh));
+  const double gx=m-table.mean,gh=t-table.mh,det=table.vx*table.vh-table.cov*table.cov;
+  double noise=NAN,remaining=INFINITY;
+  if(held_prob && !held_nu && table.vh>0) {
+    noise=eh/table.vh/std::max(1.,std::abs(nu));remaining=std::abs(gh)/table.vh/std::max(1.,std::abs(nu));
+  } else if(held_nu && !held_prob && table.vx>0) {
+    noise=ex/table.vx*(1-p);remaining=std::abs(gx)/table.vx*(1-p);
+  } else if(!held_prob && !held_nu && table.vx>0 && table.vh>0 && det>0) {
+    noise=std::max((table.vh*ex+std::abs(table.cov)*eh)/det*(1-p),
+      (table.vx*eh+std::abs(table.cov)*ex)/det/std::max(1.,std::abs(nu)));
+    remaining=std::max(std::abs((table.vh*gx-table.cov*gh)/det)*(1-p),
+      std::abs((table.vx*gh-table.cov*gx)/det)/std::max(1.,std::abs(nu)));
+  }
+  const double bound=4*noise;
+  const bool noise_limited=std::isfinite(bound) && std::isfinite(remaining) && remaining<=bound;
+  record_accuracy(out,noise_limited?tol:0,{double(N),p,nu},
+    {0,held_prob?0:p,held_nu?0:std::max(1.,std::abs(nu))},noise_limited?bound:NAN);
+  // The evaluated canonical coordinate can differ from the returned log odds.
+  // |d ell/d eta| <= n*N bounds that projection without another table pass.
+  const double margin=x.size()*double(N)*std::abs(eta-(std::log(p)-std::log1p(-p)));
+  for(auto& candidate:out.stop_detail.candidates){candidate.loglik_lower-=margin;candidate.loglik_upper+=margin;}
+  return out;
+}
+
+inline void cmb_keep_candidate(StopDetail& detail,int N,double p,double nu,double ll,double margin) {
+  if(N<1 || !(p>0 && p<1) || !std::isfinite(nu) || !(margin>=0))return;
+  const double lower=ll-margin,upper=ll+margin;
+  if(!std::isfinite(lower) || !std::isfinite(upper))return;
+  const std::vector<double> coef{double(N),p,nu};
+  for(const auto& c:detail.candidates)if(c.model==StopModel::None && c.coef==coef)return;
+  detail.candidates.insert(detail.candidates.begin(),{coef,lower,upper,StopModel::None});
+}
+inline void cmb_keep_accuracy_witness(StopDetail& detail,int N,const cmb_detail::TableWork& work) {
+  cmb_keep_candidate(detail,N,work.best_prob,work.best_nu,work.best_loglik,work.best_error);
+}
+
+inline CmbResult cmb_projection_stop(int N,double tol,bool held_prob,bool held_nu,
+    const cmb_detail::TableWork& work) {
+  CmbResult out{work.best_prob,work.best_nu,work.best_loglik,0,CmbStatus::IterationFailure};
+  record_accuracy(out,tol,{double(N),out.prob,out.nu},
+    {0,held_prob?0:out.prob,held_nu?0:std::max(1.,std::abs(out.nu))});
+  for(auto& c:out.stop_detail.candidates){c.loglik_lower-=work.best_error;c.loglik_upper+=work.best_error;}
+  return out;
+}
+
 inline CmbResult cmb_mle_work(ispan x,int N,double tol,int maxit,
                         double prob,double nu,std::uint64_t& used,std::uint64_t budget) {
   std::map<int,std::uint64_t> counts;
@@ -210,8 +268,10 @@ inline CmbResult cmb_mle_work(ispan x,int N,double tol,int maxit,
     if (iterations==maxit) return fail(CmbStatus::IterationFailure);
   } else if (!fn) nu=1;
   const double eta=fp ? fixed_eta : cmb_detail::match_mean(N,nu,m,maxit,work);
+  if(!std::isfinite(eta) || !std::isfinite(nu))return fail(CmbStatus::IterationFailure);
   const double fitted_prob=fp ? prob : cmb_detail::probability(eta);
-  if (!(fitted_prob>0 && fitted_prob<1)) return fail(CmbStatus::IterationFailure);
+  if (!(fitted_prob>0 && fitted_prob<1))
+    return cmb_projection_stop(N,tol,fp,fn || N==1,work);
   // Evaluate the coordinates actually returned to the caller, including
   // the rounding incurred by converting canonical log odds to probability.
   const double reported_eta=std::log(fitted_prob)-std::log1p(-fitted_prob);
@@ -219,11 +279,13 @@ inline CmbResult cmb_mle_work(ispan x,int N,double tol,int maxit,
   if(work.exhausted)return fail(CmbStatus::IterationFailure);
   if ((!fp && std::abs(tab.mean-m)>1e-10*(1+m)) ||
       (!fn && N>1 && std::abs(tab.mh-t)>tol*(1+std::abs(t))))
-    return fail(CmbStatus::IterationFailure);
+    return cmb_accuracy_stop(x,N,fitted_prob,nu,tol,fp,fn || N==1,tab,reported_eta);
   double ll=0; for (int v:x) ll+=tab.lp[v];
   return {fitted_prob,nu,ll,iterations,CmbStatus::Ok};
 
   }();
+  if(stopped.status==CmbStatus::IterationFailure && !work.exhausted)
+    cmb_keep_accuracy_witness(stopped.stop_detail,N,work);
   if(stopped.status==CmbStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
   if(stopped.status==CmbStatus::AdjacentLimit || stopped.status==CmbStatus::EndpointLimit) {
     const double lo=stopped.status==CmbStatus::EndpointLimit?0:*std::min_element(x.begin(),x.end());
@@ -307,6 +369,14 @@ inline CmbResult cmb_polish_work(ispan x,int N,CmbResult out,double tol,int maxi
   for(int k:x){sx+=k;sh+=cmb_detail::logchoose(N,k);}
   const double m=static_cast<double>(sx/x.size()),t=static_cast<double>(sh/x.size());
   double eta=std::log(out.prob)-std::log1p(-out.prob),previous=INFINITY;
+  const double proposal_prob=out.prob,proposal_nu=out.nu,proposal_ll=out.logLik;
+  const auto accuracy_stop=[&](const cmb_detail::Table& q,double evaluated_eta) {
+    auto stopped=cmb_accuracy_stop(x,N,out.prob,out.nu,tol,fp,fn,q,evaluated_eta);
+    const double margin=64*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(proposal_ll));
+    cmb_keep_candidate(stopped.stop_detail,N,proposal_prob,proposal_nu,proposal_ll,margin);
+    cmb_keep_accuracy_witness(stopped.stop_detail,N,work);
+    return stopped;
+  };
   for(int it=0;it<maxit;++it) {
     const auto q=work.table(N,eta,out.nu);
     const double gx=m-q.mean,gh=t-q.mh,det=q.vx*q.vh-q.cov*q.cov;
@@ -316,17 +386,21 @@ inline CmbResult cmb_polish_work(ispan x,int N,CmbResult out,double tol,int maxi
     else {de=(q.vh*gx-q.cov*gh)/det;dn=(q.vx*gh-q.cov*gx)/det;}
     const bool positive_information=fp?q.vh>0:fn?q.vx>0:
       (q.vx>0 && q.vh>0 && det>0);
-    if(!positive_information || !std::isfinite(de+dn))break;
+    if(!positive_information || !std::isfinite(de+dn)) {
+      auto stopped=accuracy_stop(q,eta);
+      if(work.exhausted)stopped.stop_detail=discrete_budget(stopped.stop_detail);
+      return stopped;
+    }
     const double error=std::max(std::abs(de)*(1-out.prob),std::abs(dn)/std::max(1.,std::abs(out.nu)));
     if(error<=.01*tol && ((std::isfinite(previous) && error<=.25*previous) || error<128*std::numeric_limits<double>::epsilon())) {
       double ll=0;for(const auto& kv:counts)ll+=kv.second*q.lp[kv.first];
       out.logLik=ll;return out;
     }
+    if(it+1==maxit)return accuracy_stop(q,eta);
     previous=error;eta+=de;out.nu+=dn;
     if(!fp)out.prob=cmb_detail::probability(eta);
   }
   out.status=CmbStatus::IterationFailure;
-  if(work.exhausted)out.stop_detail=discrete_budget(out.stop_detail);
   return out;
 }
 
@@ -381,6 +455,12 @@ struct SizeRunner {
     if(other.fit.logLik>runner.fit.logLik)runner=other;
   }
 };
+inline void carry_accuracy(StopDetail& target,const StopDetail& source) {
+  target.accuracy_stop=target.budget_exhausted || source.budget_exhausted?
+    AccuracyStop::None:source.accuracy_stop;
+  target.attainable_tol=source.attainable_tol;
+  target.conditioning_bound=source.conditioning_bound;
+}
 inline CmbSizeResult finish_size(ispan x,CmbSizeResult best,const SizeRunner& seen,
     double prob,double nu,double tol,int maxit,std::uint64_t& work,const StopDetail& evidence) {
   const double before=best.fit.logLik;
@@ -393,6 +473,7 @@ inline CmbSizeResult finish_size(ispan x,CmbSizeResult best,const SizeRunner& se
     best.fit.stop_detail.loglik_lower=std::fmax(evidence.loglik_lower,acceptance.loglik_lower);
     best.fit.stop_detail.loglik_upper=INFINITY;
     best.fit.stop_detail.budget_exhausted=evidence.budget_exhausted || acceptance.budget_exhausted;
+    carry_accuracy(best.fit.stop_detail,acceptance);
     return best;
   }
   // A refinement cannot invalidate the tail's lower anchor. A larger
@@ -514,13 +595,13 @@ inline CmbResult size_candidate(ispan x,int N,double prob,double tol,int maxit,
     const double gx=m-tab.mean,gh=t-tab.mh;
     if((fixed || std::abs(gx)<=tol*(1+m)) && std::abs(gh)<=tol*(1+std::abs(t))) {
       const double p=fixed?prob:probability(eta);
-      if(!(p>0 && p<1))return fail(CmbStatus::IterationFailure);
+      if(!(p>0 && p<1))return cmb_accuracy_stop(x,N,p==1?std::nextafter(1.,0.):std::nextafter(0.,1.),nu,tol,fixed,false,tab,eta);
       if(cost>budget-work){auto out=fail(CmbStatus::IterationFailure);out.stop_detail=discrete_budget(out.stop_detail);return out;}
       work+=cost;
       const double reported_eta=std::log(p)-std::log1p(-p);
       const Table check=fit_table(N,reported_eta,nu,x);
       if((!fixed && std::abs(m-check.mean)>tol*(1+m)) ||
-         std::abs(t-check.mh)>tol*(1+std::abs(t)))return fail(CmbStatus::IterationFailure);
+         std::abs(t-check.mh)>tol*(1+std::abs(t)))return cmb_accuracy_stop(x,N,p,nu,tol,fixed,false,check,reported_eta);
       ll=0;for(int v:x)ll+=check.lp[v];
       return {p,nu,ll,it,CmbStatus::Ok};
     }
@@ -728,6 +809,7 @@ inline CmbSizeResult cmb_size_adjacent_fixed_prob(ispan x,int low,double prob,
     if(f.status==CmbStatus::AdjacentLimit || f.status==CmbStatus::EndpointLimit)return true;
     if(f.status!=CmbStatus::Ok) {
       if(f.stop_detail.budget_exhausted)evidence=discrete_budget(evidence);
+      cmb_detail::carry_accuracy(evidence,f.stop_detail);
       evidence.candidates.insert(evidence.candidates.end(),f.stop_detail.candidates.begin(),f.stop_detail.candidates.end());
       if(std::isfinite(f.stop_detail.loglik_lower) && (!std::isfinite(evidence.loglik_lower)||f.stop_detail.loglik_lower>evidence.loglik_lower))evidence.loglik_lower=f.stop_detail.loglik_lower;
     }
@@ -836,6 +918,7 @@ inline CmbSizeResult cmb_size_nonconstant_free_nu(ispan x,int mn,int mx,
       return true; // The only possible face here is the endpoint above.
     if(f.status!=CmbStatus::Ok) {
       if(f.stop_detail.budget_exhausted)evidence=discrete_budget(evidence);
+      cmb_detail::carry_accuracy(evidence,f.stop_detail);
       evidence.candidates.insert(evidence.candidates.end(),f.stop_detail.candidates.begin(),f.stop_detail.candidates.end());
       if(std::isfinite(f.stop_detail.loglik_lower) && (!std::isfinite(evidence.loglik_lower)||f.stop_detail.loglik_lower>evidence.loglik_lower))evidence.loglik_lower=f.stop_detail.loglik_lower;
     }
@@ -1134,6 +1217,7 @@ inline CmbSizeResult cmb_size_fixed_nu_mle(ispan x,double nu,
     f=cmb_finish_work(x,N,f,tol,maxit,nan,nu,work);
     if(f.status!=CmbStatus::Ok) {
       if(f.stop_detail.budget_exhausted)evidence=discrete_budget(evidence);
+      cmb_detail::carry_accuracy(evidence,f.stop_detail);
       evidence.candidates.insert(evidence.candidates.end(),f.stop_detail.candidates.begin(),f.stop_detail.candidates.end());
       if(std::isfinite(f.stop_detail.loglik_lower) && (!std::isfinite(evidence.loglik_lower)||f.stop_detail.loglik_lower>evidence.loglik_lower))evidence.loglik_lower=f.stop_detail.loglik_lower;
     }

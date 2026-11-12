@@ -374,3 +374,20 @@ test_that("CMB unsupported central design retains its attainable endpoint-face b
   expect_equal(e$model,"unavailable:two-point")
   expect_equal(e$limit_loglik,-2*log(2))
 })
+
+test_that("CMB transports public tolerance and conditioning witnesses", {
+  for (tol in c(1e-20,1e-14)) {
+    e <- tryCatch(mlcmb(c(0,1,1,2,4),size=5,nu=1,reltol=tol),error=identity)
+    expect_s3_class(e,if(tol<1e-16) "univariateML_tolerance" else "univariateML_conditioning")
+    expect_s3_class(e,"univariateML_numerical")
+    expect_gt(nrow(e$candidates),0L)
+    expect_equal(unname(unlist(tail(e$candidates,1)[c("size","nu")])),c(5,1))
+  }
+})
+
+test_that("free CMB size preserves the continuous-coordinate accuracy kind", {
+  e <- tryCatch(mlcmb(c(0,1,1,2,4),size=NULL,nu=1,reltol=1e-20),error=identity)
+  expect_s3_class(e,"univariateML_tolerance")
+  expect_gt(nrow(e$candidates),0L)
+  expect_equal(tail(e$candidates,1)$nu,1)
+})

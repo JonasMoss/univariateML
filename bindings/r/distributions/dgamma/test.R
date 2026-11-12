@@ -121,3 +121,17 @@ test_that("large-count dgamma numerical stops keep a feasible witness", {
   expect_true(nrow(e$candidates)>0)
   expect_true(all(is.finite(e$candidates$loglik_lower)))
 })
+
+test_that("dgamma transports the polish floor and large-shape conditioning", {
+  for (tol in c(1e-20,5e-16)) {
+    e <- tryCatch(mldgamma(c(0,1,1,2,4),shape=2,reltol=tol),error=identity)
+    expect_s3_class(e,"univariateML_tolerance")
+    expect_gte(e$attainable_tol,4*.Machine$double.eps)
+    expect_gt(nrow(e$candidates),0L)
+    expect_equal(unname(tail(e$candidates,1)$shape),2)
+  }
+  e <- tryCatch(mldgamma(c(1000000,1000001,1000003,1000008,1000011)),error=identity)
+  expect_s3_class(e,"univariateML_conditioning")
+  expect_s3_class(e,"univariateML_numerical")
+  expect_gt(nrow(e$candidates),0L)
+})

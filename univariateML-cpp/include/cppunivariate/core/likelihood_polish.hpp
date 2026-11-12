@@ -100,10 +100,21 @@ struct JetSum {
 template<class Objective>
 inline bool polish(std::array<double,3>& q,const std::array<bool,3>& free,
                    double tol,int maxit,const Objective& objective,StopDetail& detail) {
-  detail.accuracy_stop=AccuracyStop::None;detail.conditioning_bound=NAN;
+  detail.accuracy_stop=AccuracyStop::None;detail.conditioning_bound=NAN;detail.attainable_tol=NAN;
   std::array<int,3> indices{};int n=0;for(int i=0;i<3;++i)if(free[i])indices[n++]=i;
   if(n==0)return true;
-  if(tol<4*std::numeric_limits<double>::epsilon())return false;
+  if(tol<4*std::numeric_limits<double>::epsilon()) {
+    std::array<Jet,3> z;for(int i=0;i<3;++i)z[i]=variable(q[i],i,free[i]);
+    const auto f=objective(z);
+    if(!std::isfinite(f.v))return false;
+    for(int i=0;i<n;++i) {
+      if(!std::isfinite(f.g[indices[i]]))return false;
+      for(int j=0;j<n;++j)if(!std::isfinite(f.h[indices[i]][indices[j]]))return false;
+    }
+    detail.accuracy_stop=AccuracyStop::Tolerance;
+    detail.attainable_tol=4*std::numeric_limits<double>::epsilon();
+    return false;
+  }
   double previous=INFINITY;
   const auto advance=[&](bool update)->int {
     detail.conditioning_bound=NAN;

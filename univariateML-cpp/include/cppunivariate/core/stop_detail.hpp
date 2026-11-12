@@ -71,7 +71,11 @@ inline double coefficient_spacing(double value,double scale) {
 inline void record_accuracy(StopDetail& detail,double tol,
     const std::vector<double>& coef,double ll,const std::vector<double>& scales,
     double conditioning_bound=NAN) {
-  double floor=0;
+  // A method may require more than one public-coordinate spacing. Preserve
+  // its diagnosed floor when the caller records the public witness.
+  const bool method_limited=detail.accuracy_stop==AccuracyStop::Tolerance &&
+    std::isfinite(detail.attainable_tol);
+  double floor=method_limited?detail.attainable_tol:0;
   detail.accuracy_stop=AccuracyStop::None;detail.attainable_tol=NAN;
   if(!std::isfinite(ll)){detail.accuracy_stop=AccuracyStop::None;return;}
   if(coef.size()!=scales.size())return;
@@ -82,7 +86,7 @@ inline void record_accuracy(StopDetail& detail,double tol,
   detail.attainable_tol=floor;
   if(std::isfinite(conditioning_bound))detail.conditioning_bound=conditioning_bound;
   else conditioning_bound=detail.conditioning_bound;
-  if(tol>0 && tol<1e-10 && tol<floor)detail.accuracy_stop=AccuracyStop::Tolerance;
+  if(tol>0 && (method_limited || tol<1e-10) && tol<floor)detail.accuracy_stop=AccuracyStop::Tolerance;
   else if(std::isfinite(conditioning_bound) && conditioning_bound>tol)
     detail.accuracy_stop=AccuracyStop::Conditioning;
   if(std::isfinite(ll)) {

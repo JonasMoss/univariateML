@@ -31,7 +31,9 @@ inline FitResult fit_gengamma(cppunivariate::span x,Held mu_arg={},Held sigma_ar
     return stop_failure(result,fit.stop_detail,"limit",{"a","b"},"pareto");
   }
   if(fit.status!=cppunivariate::GengammaStatus::Ok)
-    return stop_failure(fail("The gengamma likelihood search failed its numerical accuracy or candidate comparison."),fit.stop_detail,"numerical",{"mu","sigma","Q"});
+    return stop_failure(fail(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None?
+      "The gengamma fit could not meet the requested coefficient accuracy in floating-point arithmetic.":
+      "The gengamma likelihood search failed its numerical accuracy or candidate comparison."),fit.stop_detail,"numerical",{"mu","sigma","Q"});
   if(!(std::isfinite(fit.mu)&&std::isfinite(fit.sigma)&&fit.sigma>0&&std::isfinite(fit.Q)&&std::isfinite(fit.logLik)))return fail("The gengamma fit is not representable.");
   FitResult out;
   out.estimates={{"mu",fit.mu},{"sigma",fit.sigma},{"Q",fit.Q}};

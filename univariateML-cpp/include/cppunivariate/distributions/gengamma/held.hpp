@@ -2,6 +2,8 @@
 #pragma once
 
 #include "../../core/span.hpp"
+#include "../../core/stop_detail.hpp"
+#include "dpqr.hpp"
 #include "../../core/work_budget.hpp"
 #include "../trgamma/mle.hpp"
 #include <algorithm>
@@ -16,7 +18,26 @@ enum class ConditionalStatus { Ok, Invalid, Unbounded, IterationFailure };
 struct ConditionalResult {
   double value;
   ConditionalStatus status;
+  StopDetail stop_detail{};
 };
+
+inline double conditional_loglik(span y,double mu,double sigma,double q) {
+  CPPUNIV_EXTENDED_REAL ll=0;
+  for(double v:y)ll-=distributions::gengamma_detail::penalty((v-mu)/sigma,q)+v+
+    std::log(sigma)+distributions::gengamma_detail::half_log_two_pi+
+    distributions::gengamma_detail::remainder(q);
+  return static_cast<double>(ll);
+}
+// A stalled representable bracket retains its finite public witness.
+inline StopDetail conditional_accuracy(span y,double mu,double sigma,double q,
+    bool free_mu,double tol,double floor) {
+  const double ll=conditional_loglik(y,mu,sigma,q);
+  StopDetail detail;
+  if(tol<floor){detail.accuracy_stop=AccuracyStop::Tolerance;detail.attainable_tol=floor;}
+  record_accuracy(detail,tol,{mu,sigma,q},static_cast<double>(ll),
+    {free_mu?std::max(std::abs(mu),sigma):0,sigma,0});
+  return detail;
+}
 
 // y contains log observations. For held sigma and Q, the location score is
 // strictly decreasing and its zero is mean(y) + sigma * K(Q/sigma) / Q.
@@ -100,7 +121,11 @@ inline ConditionalResult scale(span y, double mu, double q, double tol, int maxi
   for (int i = 0; i < budget; ++i) {
     const double mid = lo + (hi - lo) / 2;
     if (mid == lo || mid == hi || hi - lo <= 2 * tol) {
-      if (hi - lo > 2 * tol) return {nan, ConditionalStatus::IterationFailure};
+      if (hi - lo > 2 * tol) {
+        const double value=std::exp(mid);
+        return {value,ConditionalStatus::IterationFailure,
+          conditional_accuracy(y,mu,value,q,false,tol,coefficient_spacing(mid,1.))};
+      }
       const double out = std::exp(mid);
       return std::isfinite(out) && out > 0 ? ConditionalResult{out, ConditionalStatus::Ok}
                                            : ConditionalResult{nan, ConditionalStatus::IterationFailure};
@@ -110,8 +135,11 @@ inline ConditionalResult scale(span y, double mu, double q, double tol, int maxi
     if (f > 0) lo = mid; else if (f < 0) hi = mid;
     else {
       const double a = std::max(lo, mid - tol/2), b = std::min(hi, mid + tol/2);
-      if (!(a < mid && mid < b && score(a) > 0 && score(b) < 0))
-        return {nan, ConditionalStatus::IterationFailure};
+      if (!(a < mid && mid < b && score(a) > 0 && score(b) < 0)) {
+        const double value=std::exp(mid);
+        return {value,ConditionalStatus::IterationFailure,
+          conditional_accuracy(y,mu,value,q,false,tol,2*coefficient_spacing(mid,1.))};
+      }
       lo = a; hi = b;
     }
   }

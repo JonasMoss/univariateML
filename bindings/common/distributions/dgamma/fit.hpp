@@ -39,6 +39,8 @@ inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rat
     case cppunivariate::DgammaStatus::IterationFailure:
       if(std::isfinite(r.rate_score_roundoff))
         return stopped_fail("Large-shape log-rate score precision is insufficient for the requested coefficient accuracy.");
+      if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)
+        return stopped_fail("The discretized gamma fit could not meet the requested coefficient accuracy in floating-point arithmetic.");
       return stopped_fail("MLE failed to converge; increase iterlim.");
   }
   std::vector<std::string> fixed;

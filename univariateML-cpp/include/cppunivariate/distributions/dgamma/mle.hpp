@@ -350,6 +350,9 @@ inline DgammaResult dgamma_accuracy_search(span x,double tol=1e-8,int maxit=400,
        error>tol*(-derivative)) {
       cost.work.shape=a0;cost.work.rate=r;
       auto stopped=large_shape_stop();stopped.rate_score_roundoff=error;
+      stopped.shape=cost.best_shape;stopped.rate=cost.best_rate;stopped.logLik=cost.best_loglik;
+      record_accuracy(stopped,tol,{stopped.shape,stopped.rate},
+        {ha?0:stopped.shape,hr?0:stopped.rate},error/(-derivative));
       return stopped;
     }
   }
@@ -428,7 +431,29 @@ inline DgammaResult dgamma_mle(span x,double tol=1e-10,int maxit=400,double shap
     }
     return f.value;
   };
-  if(!accuracy_detail::polish(q,free,tol,maxit,objective)){r.status=DgammaStatus::IterationFailure;return r;}
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail)) {
+    r.status=DgammaStatus::IterationFailure;
+    std::array<accuracy_detail::Jet,3> z;
+    for(int i=0;i<3;++i)z[i]=accuracy_detail::variable(q[i],i,free[i]);
+    const auto evaluated=objective(z);
+    bool finite=std::isfinite(evaluated.v);
+    for(int i=0;i<3;++i)if(free[i]) {
+      finite=finite && std::isfinite(evaluated.g[i]);
+      for(int j=0;j<3;++j)if(free[j])finite=finite && std::isfinite(evaluated.h[i][j]);
+    }
+    if(!finite){r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.conditioning_bound=NAN;}
+    const double a=free[0]?std::exp(q[0]):r.shape,b=free[1]?std::exp(q[1]):r.rate;
+    const bool public_valid=a>0 && std::isfinite(a) && b>0 && std::isfinite(b);
+    double ll=NAN;
+    if(public_valid){ll=0;for(double v:x)ll+=distributions::ddgamma(v,a,b,true);}
+    if(!public_valid || !std::isfinite(ll)) {
+      r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.conditioning_bound=NAN;
+      record_accuracy(r.stop_detail,0,{r.shape,r.rate},r.logLik,{0,0});
+      return r;
+    }
+    record_accuracy(r.stop_detail,finite?tol:0,{a,b},ll,{free[0]?a:0,free[1]?b:0});
+    return r;
+  }
   if(free[0])r.shape=std::exp(q[0]);
   if(free[1])r.rate=std::exp(q[1]);
   r.logLik=0;for(double v:x)r.logLik+=distributions::ddgamma(v,r.shape,r.rate,true);
