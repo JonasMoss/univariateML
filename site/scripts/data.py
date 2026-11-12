@@ -149,6 +149,16 @@ for folder in sorted(FAMILIES.iterdir()):
     m.update(derived_tags(m))
     m['inference']=[r for r in inference['rows'] if r['family']==folder.name]
     out.append(clean(m))
+# Pending probability-only families have no catalogue route yet. Keep their
+# canonical relations for validation, but omit links to those absent pages.
+pending={folder.name for folder in FAMILIES.iterdir()
+         if (folder/'README.md').exists() and not (folder/'mle.hpp').exists()
+         and yaml.safe_load((folder/'README.md').read_text().split('---',2)[1]).get('stage')=='dpqr'}
+for m in out:
+    m['relations']={kind:[edge for edge in edges if edge.get('family') not in pending
+                         and not any(c['family'] in pending for c in edge.get('components',[]))
+                         and edge.get('mixing',{}).get('family') not in pending]
+                    for kind,edges in m.get('relations',{}).items()}
 # Invert relations once, retaining their direction and coefficient maps.
 relation_labels = {
     'special_case_of': ('Parent', 'Special case'),

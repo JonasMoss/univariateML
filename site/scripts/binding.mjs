@@ -1,6 +1,6 @@
 import {existsSync, mkdirSync, rmSync, cpSync, readFileSync, writeFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
-import {families} from '../../bindings/js/families.mjs';
+import {fitFamilies} from '../../bindings/js/families.mjs';
 const sdk=process.env.EMSDK || `${process.env.HOME}/emsdk`;
 const enabled=process.env.SITE_WASM !== '0' && existsSync(`${sdk}/emsdk_env.sh`);
 rmSync('public/binding',{recursive:true,force:true});
@@ -13,4 +13,6 @@ if(enabled){
  for(const file of ['families.mjs','modifiers.mjs','modifier-metadata.mjs'])cpSync(`../bindings/js/${file}`,`public/binding/${file}`);
 }else console.warn('WARNING: Emscripten unavailable (or SITE_WASM=0); explorers omitted.');
 mkdirSync('src/data',{recursive:true});
-writeFileSync('src/data/binding.json',JSON.stringify(enabled?families:[]));
+// The current explorer requires fitting; probability-only families stay in
+// the binding API until the catalogue supports evaluation-only pages.
+writeFileSync('src/data/binding.json',JSON.stringify(enabled?fitFamilies:[]));

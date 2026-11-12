@@ -13,6 +13,17 @@ goldens), by the validation harness, and later by the Python shell.
 
 ## Front matter
 
+A family implemented before its fitter declares `stage: dpqr` and omits
+fitter controls, `fit`, `holds`, fitting examples and escape statuses. Its
+internal R and JS d/p/q/r layer and truth consumers are generated; it is
+excluded from fitter metadata, wrappers and the fitted-family site catalogue.
+Minimal pending dossiers may omit presentation metadata entirely; a pending
+presentation block requires the ordinary taxonomy fields except `fit`.
+For `stage: dpqr` only, `limits` may contain descriptive `{name, when,
+firmness}` records without a detector or status. These assert distributional
+paths, not implemented fitter outcomes. A `closure_point` relation still
+requires its proved non-reachability scope.
+
 | key | required | meaning |
 |---|:-:|---|
 | `id` | yes | must equal the folder name |

@@ -1,0 +1,15 @@
+{
+  "changed_markdown_files": 4,
+  "checked_destinations": 14,
+  "broken": 0,
+  "repository_wide_broken": 45,
+  "repository_wide_error_files_unchanged_from_HEAD": [
+    "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+    "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+    "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+    "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+    "dev/research/evaluations/2026-11-10-relaxed-likelihood-lit-report.md",
+    "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+    "univariateML-cpp/notes/inference.md"
+  ]
+}

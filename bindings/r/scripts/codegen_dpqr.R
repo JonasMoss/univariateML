@@ -3,6 +3,16 @@
 # r.args and r.shift remain the resolver's responsibility.
 source(file.path("scripts", "load_distributions.R"))
 models <- load_distributions(dist_dir)
+# Pending fitters still expose the internal d/p/q/r layer, without creating
+# ml wrappers, fit metadata, or exported d/p/q/r functions.
+for (folder in sort(list.dirs(dist_dir, full.names=TRUE, recursive=FALSE))) {
+  if (file.exists(file.path(folder, "mle.hpp"))) next
+  fm <- .umvl_read_front_matter(file.path(folder, "README.md"))
+  if (identical(fm$front$stage, "dpqr")) {
+    id <- basename(folder)
+    models[[id]] <- .umvl_from_readme(file.path(folder, "README.md"), id)
+  }
+}
 # All core APIs must use the same positional contract, including stats
 # families. Catch metadata/signature drift before generating all-double calls.
 for (m in models) {
@@ -101,7 +111,11 @@ for (m in models) {
   # its own: every translation unit re-parses Rcpp and Boost.Math, so one per
   # family roughly halves the package's compile time. Sources stay separate.
   target <- file.path(PKG_DIR, "src", paste0("dist_", m$id, ".cpp"))
-  if (!file.exists(target)) stop("codegen_dpqr: missing adapter translation unit: ", target)
+  if (!file.exists(target)) {
+    if (file.exists(file.path(dist_dir, m$id, "mle.hpp")))
+      stop("codegen_dpqr: missing adapter translation unit: ", target)
+    file.create(target)
+  }
   writeLines(c(prelude, readLines(target, warn = FALSE), cpp), target)
 }
 writeLines(r_out, file.path(PKG_DIR, "R", "ml03_dpqr.R"))
