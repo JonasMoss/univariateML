@@ -140,7 +140,8 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   if (any(taxonomy_keys %in% names(f))) {
     if (is.null(f$inference_numeric))
       stop("load_distributions: missing numeric inference scopes for ", id)
-    absent <- setdiff(c(taxonomy_keys, "classification", "classification_reason"), names(f))
+    required_taxonomy <- if (identical(f$stage, "dpqr")) setdiff(taxonomy_keys, "fit") else taxonomy_keys
+    absent <- setdiff(c(required_taxonomy, "classification", "classification_reason"), names(f))
     if (length(absent)) stop("load_distributions: incomplete taxonomy for ", id, ": ", paste(absent, collapse=", "))
     # Taxonomy is presentation metadata; it does not enter generated R help.
     vocab <- list(
@@ -154,10 +155,11 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
           (key == "group" && length(values) != 1L) || (key == "areas" && length(values) > 3L))
         stop("load_distributions: invalid taxonomy ", key, " for ", id)
     }
-    if (!scalar_text(f$fit$method) || !f$fit$method %in%
+    if ((!identical(f$stage, "dpqr") || !is.null(f$fit)) &&
+        (!scalar_text(f$fit$method) || !f$fit$method %in%
         c("closed-form", "scalar-solve", "profile-search", "multistart", "integer-search", "delegation", "convex-solve") ||
         !scalar_text(f$fit$certified) || !f$fit$certified %in% c("yes", "partial", "no", "unknown") ||
-        !scalar_text(f$fit$note)) stop("load_distributions: invalid fit taxonomy for ", id)
+        !scalar_text(f$fit$note))) stop("load_distributions: invalid fit taxonomy for ", id)
     if (is.null(f$relations) || length(setdiff(names(f$relations), c("special_case_of", "transform_of", "truncation_of", "modification_of", "convolution_of", "mixture_of", "discretisation_of", "closure_point"))))
       stop("load_distributions: invalid relations for ", id)
     for (kind in names(f$relations)) for (edge in f$relations[[kind]]) {

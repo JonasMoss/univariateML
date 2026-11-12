@@ -2023,3 +2023,22 @@ test('Student legacy t2 limit keeps its class and uncertified flag', async () =>
     assert.match(error.message,/mllst/);return true;
   });
 });
+
+
+test('pgw tiny natural upper tails and inverse boundary handling',()=>{
+  // Independent 1000-digit references in the PGW job's check-ranges.json.
+  const points=[
+    [3e-300, 1e-300, 1.0, 4.7256055559161645, 2.6801379583380074e-304],
+    [6.551080335043532e-308, 1.0, 1.0, 9.999999999999807e+307, 2.680137958338261e-304],
+    [9.999999999999998e+199, 1e+200, 3e+18, 1.8188645488006158e+222, 2.6801379583375254e-304],
+    [3e+300, 1e+300, 5.963050297740191, 1.0, 9.859676543765704e-305]
+  ];
+  for(const [x,a,b,c,expected] of points) {
+    const actual=m.ppgw(new Float64Array([x]),[a,b,c],false,false)[0];
+    assert.ok(Number.isFinite(actual)&&Math.abs(actual/expected-1)<=1e-10,JSON.stringify({x,a,b,c,actual,expected}));
+  }
+  assert.ok(Number.isNaN(m.qpgw(new Float64Array([-3.000000004]),[1e-308,1e-12,2],false,true)[0]));
+  assert.equal(m.qpgw(new Float64Array([-1]),[2,1e-308,1],false,true)[0],2);
+  const center=m.qpgw(new Float64Array([-744.8065848419628]),[1,1e-4,Number.MIN_VALUE],true,true)[0];
+  assert.ok(Math.abs(center/1.0000000013261663-1)<=1e-9);
+});

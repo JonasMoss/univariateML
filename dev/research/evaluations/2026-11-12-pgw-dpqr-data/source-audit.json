@@ -1,0 +1,17 @@
+{
+  "header_sha256": "aa4a606c2a3f093f2e808a5696ff615410dea052fd5ae916058809dc93bc583b",
+  "truth_input_sha256": "cda6ec74c7d585153ee50a68fc34d7b6422a5c3f09227b37c968dcd410943d27",
+  "truth_counts": {
+    "parameter_names": 3,
+    "parameters": 25,
+    "normalization": 25,
+    "values": 469,
+    "quantiles": 1100,
+    "sampler_points": 2,
+    "historical_sampler_points": 17
+  },
+  "range_cases": 24,
+  "max_relative_upper_error": 9.859709502968935e-13,
+  "generated_r_matches": true,
+  "truth_fingerprint_matches": true
+}

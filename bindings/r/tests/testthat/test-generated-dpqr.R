@@ -59,9 +59,10 @@ test_that("generated d/p/q/r agree with independent truth tables", {
       v <- values[values[, 1] == point - 1L, , drop = FALSE]
       v <- v[pick(nrow(v), if (tier_at_least("dev")) 5L else 2L), , drop = FALSE]
       info <- paste(id, "point", point - 1L)
-      fit <- univariateML_construct(unlist(theta), paste0("ml", id),
+      has_fit <- !is.null(metadata[[paste0("ml", id)]])
+      if (has_fit) fit <- univariateML_construct(unlist(theta), paste0("ml", id),
                                     list(logLik = 0, n = 1L, call = NULL))
-      expect_equal(suppressWarnings(dml(v[, 2], fit, log = TRUE)),
+      if (has_fit) expect_equal(suppressWarnings(dml(v[, 2], fit, log = TRUE)),
                    suppressWarnings(do.call(fun[[1]], c(list(v[, 2]), theta, list(log = TRUE)))),
                    info = paste(info, "density dispatch"))
       expect_true(all(close_log(suppressWarnings(do.call(fun[[1]], c(list(v[, 2]), theta, list(log = TRUE)))), v[, 3])), info = info)
@@ -69,7 +70,7 @@ test_that("generated d/p/q/r agree with independent truth tables", {
         expected <- v[, if (lower) 4L else 5L]
         got <- do.call(fun[[2]], c(list(v[, 2]), theta, list(lower.tail = lower, log.p = TRUE)))
         expect_true(all(close_log(got, expected)), info = paste(info, "log tail", lower))
-        expect_equal(pml(v[, 2], fit, lower.tail = lower, log.p = TRUE), got,
+        if (has_fit) expect_equal(pml(v[, 2], fit, lower.tail = lower, log.p = TRUE), got,
                      info = paste(info, "CDF dispatch", lower))
         natural <- exp(expected)
         keep <- natural > 1e-300
@@ -82,14 +83,14 @@ test_that("generated d/p/q/r agree with independent truth tables", {
           if (!nrow(q)) next
           q <- q[pick(nrow(q), if (tier_at_least("dev")) 3L else 1L), , drop = FALSE]
           got <- suppressWarnings(do.call(fun[[3]], c(list(q[, 4]), theta, list(lower.tail = lower, log.p = log_input))))
-          expect_equal(suppressWarnings(qml(q[, 4], fit, lower.tail = lower, log.p = log_input)), got,
+          if (has_fit) expect_equal(suppressWarnings(qml(q[, 4], fit, lower.tail = lower, log.p = log_input)), got,
                        info = paste(info, "quantile dispatch", lower, log_input))
           expected <- q[, 5]
           good <- got == expected | (is.finite(got) & is.finite(expected) &
             abs(got - expected) <= pmax(1e-9 * abs(expected), q[, 9])) |
             ifelse(q[, 8] != 0, got == q[, 6] | got == q[, 7],
                    got >= q[, 6] & got <= q[, 7])
-          discrete <- metadata[[paste0("ml",id)]]$support$type == "Z"
+          discrete <- has_fit && metadata[[paste0("ml",id)]]$support$type == "Z"
           interior <- if (log_input) is.finite(q[,4]) & q[,4] < 0 else q[,4] > 0 & q[,4] < 1
           large <- discrete & interior & abs(expected) > 2^53
           good[is.na(good)] <- FALSE
@@ -111,9 +112,9 @@ test_that("generated d/p/q/r agree with independent truth tables", {
         }
       }
       if (!point %in% sampled) next
-      # These two inverse samplers consume exactly one uniform per draw.
+      # These inverse samplers consume exactly one uniform per draw.
       # Replay it to check every draw against the direct quantile.
-      inverse_rng <- id %in% c("zeta", "yulesimon")
+      inverse_rng <- id %in% c("zeta", "yulesimon", "pgw")
       draw_once <- function() do.call(fun[[4]], c(list(32L), theta))
       set.seed(20261029 + point)
       draws <- draw_once()

@@ -1,0 +1,195 @@
+{
+  "baseline_commit": "af824a98d78f2f2325c7a675c20c84c45e6bb826",
+  "checks": [
+    {
+      "name": "cpp-dev",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 10083.389586453035
+    },
+    {
+      "name": "cpp-double-simbox",
+      "machine": "simbox",
+      "exit": 75,
+      "seconds": 8.045325086975936
+    },
+    {
+      "name": "cpp-double-workstation",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 6309.646345930989
+    },
+    {
+      "name": "r-dev",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 519.8003969439887
+    },
+    {
+      "name": "r-full",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 1635.8406774040195
+    },
+    {
+      "name": "js-build",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 112.3732444109628
+    },
+    {
+      "name": "js-test",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 430.57926026999485
+    },
+    {
+      "name": "site-final",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 2332.938062675006
+    },
+    {
+      "name": "relations-final",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 194.90488479298074
+    },
+    {
+      "name": "cpp-pgw-rebuild",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 8.982500327983871
+    },
+    {
+      "name": "cpp-pgw-final",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 0.12745194596936926
+    }
+  ],
+  "initial_checks": [
+    {
+      "name": "cpp-dev",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 10083.389586453035
+    },
+    {
+      "name": "cpp-double-simbox",
+      "machine": "simbox",
+      "exit": 75,
+      "seconds": 8.045325086975936
+    },
+    {
+      "name": "cpp-double-workstation",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 6309.646345930989
+    },
+    {
+      "name": "r-dev",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 519.8003969439887
+    },
+    {
+      "name": "r-full",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 1635.8406774040195
+    },
+    {
+      "name": "js-build",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 112.3732444109628
+    },
+    {
+      "name": "js-test",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 430.57926026999485
+    },
+    {
+      "name": "site",
+      "machine": "workstation",
+      "exit": 1,
+      "seconds": 124.65493209700799
+    },
+    {
+      "name": "relations",
+      "machine": "workstation",
+      "exit": 1,
+      "seconds": 120.02758149302099
+    }
+  ],
+  "followup_checks": [
+    {
+      "name": "site-final",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 2332.938062675006
+    },
+    {
+      "name": "relations-final",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 194.90488479298074
+    },
+    {
+      "name": "cpp-pgw-rebuild",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 8.982500327983871
+    },
+    {
+      "name": "cpp-pgw-final",
+      "machine": "workstation",
+      "exit": 0,
+      "seconds": 0.12745194596936926
+    }
+  ],
+  "counts": {
+    "cpp_dev": 109,
+    "cpp_no_long_double": 136,
+    "pgw_cpp_cases": 11,
+    "pgw_cpp_assertions": 19857,
+    "r_dev": {
+      "pass_count": 29119,
+      "fail": 0,
+      "warn": 0,
+      "skip": 155
+    },
+    "r_full": {
+      "pass_count": 58341,
+      "fail": 0,
+      "warn": 0,
+      "skip": 0
+    },
+    "js": {
+      "pass_count": 627,
+      "fail": 0,
+      "skip": 0
+    },
+    "relations": {
+      "edges": 158,
+      "failed": 0
+    },
+    "targeted_r": {
+      "pass_count": 39,
+      "fail": 0,
+      "warn": 0,
+      "skip": 1
+    }
+  },
+  "simbox": "Unavailable: exit 75 for no-long-double and both R tiers; workstation fallbacks completed.",
+  "late_changes": "Relation direction and site staging only; final site/relations and targeted PGW C++ plus PGW/Weibull R checks passed.",
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/pgw/test.cpp": "9ad1494d029a341b57aebeee8e71f175f39b8bf9a77596107552122fc996a0f9",
+    "univariateML-cpp/include/cppunivariate/distributions/pgw/truth.py": "4ed52f98e53fcb67e71cb7013a15abaff9f5cc05cf273020161f2e620bc7075c",
+    "univariateML-cpp/include/cppunivariate/distributions/pgw/dpqr.hpp": "aa4a606c2a3f093f2e808a5696ff615410dea052fd5ae916058809dc93bc583b",
+    "univariateML-cpp/include/cppunivariate/distributions/pgw/truth.json": "a4cb47ca2151a28fb9fd4868b546b3a0a11da0158ed6a1d2f3edb8c39fccc702",
+    "univariateML-cpp/include/cppunivariate/distributions/pgw/README.md": "fd56585299e083992d47dce6a4b0c2c40e7138985c5593f0cb2df2252ffb0a7e"
+  }
+}

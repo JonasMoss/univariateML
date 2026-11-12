@@ -62,6 +62,8 @@ construction:
 - base
 relations:
   special_case_of:
+  - family: pgw
+    at: {scale: scale, shape: shape, exponent: 1}
   - family: trgamma
     at:
       shape1: 1
