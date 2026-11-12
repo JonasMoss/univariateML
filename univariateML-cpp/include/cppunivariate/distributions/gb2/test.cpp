@@ -569,3 +569,56 @@ TEST_CASE("Comparable beta shapes gb2 transport propagates small-power error") {
   CHECK(r.scale==doctest::Approx(1.0000000065331644083491598702927446).scale(0.).epsilon(1e-10));
   CHECK(r.shape2==1e-4);CHECK(r.shape3==20000.45880248738);
 }
+
+TEST_CASE("GB2 all-free profile ledger never overspends a nested allowance") {
+  const std::vector<double> logs{-2,-1,0,1,2};
+  cppunivariate::trgamma_detail::LogData d;
+  REQUIRE(cppunivariate::trgamma_detail::standardize(mltest::as_span(logs),d));
+  cppunivariate::gb2_detail::ProfileWork work{0,1};
+  const auto r=cppunivariate::gb2_detail::profile(d,.02,.02,NAN,NAN,1000,work);
+  CHECK_FALSE(r.ok);
+  CHECK(work.exhausted);
+  CHECK(work.used==1);
+  const auto again=cppunivariate::gb2_detail::profile(d,2,3,NAN,NAN,1000,work);
+  CHECK_FALSE(again.ok);
+  CHECK(work.used==1);
+  CHECK(cppunivariate::certificate_budget(100001)==12800000);
+}
+
+TEST_CASE("GB2 a stalled all-free start leaves allowance for later starts") {
+  const std::vector<double> logs{-2,-1,0,1,2};
+  cppunivariate::trgamma_detail::LogData d;
+  REQUIRE(cppunivariate::trgamma_detail::standardize(mltest::as_span(logs),d));
+  cppunivariate::gb2_detail::ProfileWork work{0,cppunivariate::certificate_budget(1)};
+  int evaluations=0;
+  const auto first=cppunivariate::gb2_detail::refine(d,{{-4,-4}},NAN,NAN,NAN,NAN,8,1,evaluations,work);
+  CHECK_FALSE(first.outer_done);
+  CHECK(work.used==1);
+  CHECK_FALSE(work.exhausted);
+  cppunivariate::gb2_detail::refine(d,{{0,0}},NAN,NAN,NAN,NAN,8,1,evaluations,work);
+  CHECK(work.used==2);
+  CHECK_FALSE(work.exhausted);
+}
+
+TEST_CASE("GB2 completed grid profiles preserve Pareto limit decisions") {
+  SUBCASE("archive 1601") {
+    const std::vector<double> x{0.9341081677852825,4.595475734747349,0.5998711847579505,10.56419269543656,1112685.434982509};
+    const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,1000);
+    REQUIRE(r.status==cppunivariate::Gb2Status::ParetoBoundary);
+    CHECK(r.logLik==cppunivariate::pareto_mle(mltest::as_span(x)).logLik);
+    CHECK(r.logLik==doctest::Approx(-29.102002422134035).epsilon(2e-14));
+    CHECK(r.profile_evaluations>0);
+    CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
+    CHECK_FALSE(r.stop_detail.budget_exhausted);
+  }
+  SUBCASE("archive 10072") {
+    const std::vector<double> x{0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,1.0007086473905342,1.0007086473905342,1.0007086473905342,1.0007086473905342,1.0007086473905342};
+    const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,1000);
+    REQUIRE(r.status==cppunivariate::Gb2Status::ParetoBoundary);
+    CHECK(r.logLik==cppunivariate::pareto_mle(mltest::as_span(x)).logLik);
+    CHECK(r.logLik==doctest::Approx(77.219355967752222).epsilon(2e-14));
+    CHECK(r.profile_evaluations>0);
+    CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
+    CHECK_FALSE(r.stop_detail.budget_exhausted);
+  }
+}

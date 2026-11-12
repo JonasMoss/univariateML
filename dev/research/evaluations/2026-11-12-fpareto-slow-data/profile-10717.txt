@@ -1,0 +1,1090 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 79.18      2.51     2.51 12946385     0.00     0.00  cppunivariate::gb2_detail::evaluate(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, bool, double)
+ 15.14      2.99     0.48 12946384     0.00     0.00  cppunivariate::gb2_detail::logbeta(double, double)
+  2.84      3.08     0.09                             _init
+  2.21      3.15     0.07    14898     0.00     0.00  cppunivariate::gb2_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, int)
+  0.32      3.16     0.01   509158     0.00     0.00  main::{lambda(int)#1}::_FUN(int)
+  0.32      3.17     0.01    77152     0.00     0.00  cppunivariate::betapr_joint_cert::Engine::point(double, double)
+  0.00      3.17     0.00   118844     0.00     0.00  cppunivariate::betapr_joint_cert::mul(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval)
+  0.00      3.17     0.00    81507     0.00     0.00  cppunivariate::betapr_cert_detail::increment(double, double)
+  0.00      3.17     0.00    51678     0.00     0.00  cppunivariate::betapr_joint_cert::add(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval)
+  0.00      3.17     0.00    19029     0.00     0.00  cppunivariate::betapr_joint_cert::Engine::tail(cppunivariate::betapr_joint_cert::Face const&, double, double, double)
+  0.00      3.17     0.00    14559     0.00     0.00  cppunivariate::betapr_joint_cert::Engine::hessian(cppunivariate::betapr_joint_cert::Cell const&)
+  0.00      3.17     0.00    12420     0.00     0.00  cppunivariate::betapr_joint_cert::log_beta(double, double)
+  0.00      3.17     0.00    12420     0.00     0.00  std::_Rb_tree<std::pair<double, double>, std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point>, std::_Select1st<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> >, std::less<std::pair<double, double> >, std::allocator<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> > >::_M_get_insert_hint_unique_pos(std::_Rb_tree_const_iterator<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> >, std::pair<double, double> const&)
+  0.00      3.17     0.00    10328     0.00     0.00  cppunivariate::betapr_joint_cert::sub(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval)
+  0.00      3.17     0.00     9595     0.00     0.00  cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&)
+  0.00      3.17     0.00     8930     0.00     0.00  cppunivariate::betapr_joint_cert::Engine::gamma_upper(cppunivariate::betapr_joint_cert::Face const&, double, double)
+  0.00      3.17     0.00     4870     0.00     0.00  std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::pop()
+  0.00      3.17     0.00     4870     0.00     0.00  std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::push(cppunivariate::betapr_joint_cert::Cell const&)
+  0.00      3.17     0.00     3224     0.00     0.00  cppunivariate::betapr_joint_cert::Engine::maximum_impossible(cppunivariate::betapr_joint_cert::Cell const&)
+  0.00      3.17     0.00     2768     0.00     0.00  cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval)
+  0.00      3.17     0.00     1623     0.00     0.00  cppunivariate::detail::l2_norm(double const*, int)
+  0.00      3.17     0.00     1440     0.00     0.00  cppunivariate::burr_cert_detail::padded(double, double)
+  0.00      3.17     0.00     1218     0.00     0.00  cppunivariate::BetaPrimeLogCost::operator()(double const*) const
+  0.00      3.17     0.00      945     0.00     0.00  cppunivariate::BetaPrimeLogCost::gradient(double const*, double*) const
+  0.00      3.17     0.00      731     0.00     0.00  cppunivariate::burr_cert_detail::intercept(std::vector<double, std::allocator<double> > const&, double, double, double&, double&, double&, int)
+  0.00      3.17     0.00      460     0.00     0.00  cppunivariate::trgamma_detail::cgf(cppunivariate::trgamma_detail::LogData const&, double)
+  0.00      3.17     0.00      358     0.00     0.00  cppunivariate::trgamma_detail::gamma_shape(double, int&, int)
+  0.00      3.17     0.00      358     0.00     0.00  cppunivariate::trgamma_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, int&, int)
+  0.00      3.17     0.00      247     0.00     0.00  cppunivariate::trgamma_detail::normal_profile_slope(cppunivariate::trgamma_detail::LogData const&, double, double)
+  0.00      3.17     0.00      242     0.00     0.00  cppunivariate::burr_cert_detail::operator-(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval)
+  0.00      3.17     0.00      211     0.00     0.00  cppunivariate::burr_cert_detail::operator/(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval)
+  0.00      3.17     0.00      110     0.00     0.00  cppunivariate::burr_cert_detail::log(cppunivariate::burr_cert_detail::Interval)
+  0.00      3.17     0.00      109     0.00     0.00  cppunivariate::burr_cert_detail::primal(std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> > const&, cppunivariate::burr_cert_detail::Proposal const&)
+  0.00      3.17     0.00      103     0.00     0.00  std::_Vector_base<double, std::allocator<double> >::~_Vector_base()
+  0.00      3.17     0.00      103     0.00     0.00  cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point)#3}::operator()(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point) const
+  0.00      3.17     0.00      102     0.00     0.00  std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::pop()
+  0.00      3.17     0.00      102     0.00     0.00  cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#3}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const
+  0.00      3.17     0.00       85     0.00     0.00  cppunivariate::burr_cert_detail::profile(std::vector<double, std::allocator<double> > const&, double, cppunivariate::burr_cert_detail::Proposal&, int)
+  0.00      3.17     0.00       59     0.00     0.00  cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(cppunivariate::betapr_cert_detail::Point const&)#1}::operator()(cppunivariate::betapr_cert_detail::Point const&) const
+  0.00      3.17     0.00       57     0.00     0.00  cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(double)#1}::operator()(double) const
+  0.00      3.17     0.00       55     0.00     0.00  cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(double, cppunivariate::burr_cert_detail::Node&)#1}::operator()(double, cppunivariate::burr_cert_detail::Node&) const
+  0.00      3.17     0.00       54     0.00     0.00  cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int)
+  0.00      3.17     0.00       54     0.00     0.00  std::_Rb_tree_iterator<std::pair<double const, cppunivariate::burr_cert_detail::Node> > std::_Rb_tree<double, std::pair<double const, cppunivariate::burr_cert_detail::Node>, std::_Select1st<std::pair<double const, cppunivariate::burr_cert_detail::Node> >, std::less<double>, std::allocator<std::pair<double const, cppunivariate::burr_cert_detail::Node> > >::_M_emplace_hint_unique<double&, cppunivariate::burr_cert_detail::Node&>(std::_Rb_tree_const_iterator<std::pair<double const, cppunivariate::burr_cert_detail::Node> >, double&, cppunivariate::burr_cert_detail::Node&)
+  0.00      3.17     0.00       41     0.00     0.00  void std::vector<double, std::allocator<double> >::_M_realloc_append<double>(double&&)
+  0.00      3.17     0.00       30     0.00     0.00  cppunivariate::burr_cert_detail::score_hessian(cppunivariate::burr_cert_detail::Data const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul>&, cppunivariate::burr_cert_detail::BoxMatrix&)
+  0.00      3.17     0.00       25     0.00     0.00  cppunivariate::transformed_detail::Sum::push(double)
+  0.00      3.17     0.00       25     0.00     0.00  cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, double, double)#2}::operator()(double, double, double) const
+  0.00      3.17     0.00       18     0.00     0.00  std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::~vector()
+  0.00      3.17     0.00       15     0.00     0.00  cppunivariate::burr_cert_detail::contraction(cppunivariate::burr_cert_detail::Matrix const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, cppunivariate::burr_cert_detail::BoxMatrix const&, std::array<double, 3ul> const&, int, int)
+  0.00      3.17     0.00       15     0.00     0.00  non-virtual thunk to boost::wrapexcept<std::overflow_error>::~wrapexcept()
+  0.00      3.17     0.00       13     0.00     0.00  cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&)#2}::operator()(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&) const
+  0.00      3.17     0.00       12     0.00     0.00  void std::vector<double, std::allocator<double> >::_M_realloc_append<double const&>(double const&)
+  0.00      3.17     0.00       11     0.00     0.00  void std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >::_M_realloc_append<cppunivariate::betapr_joint_cert::Cell const&>(cppunivariate::betapr_joint_cert::Cell const&)
+  0.00      3.17     0.00       10     0.00     0.00  cppunivariate::betapr_joint_detail::softplus(double)
+  0.00      3.17     0.00        9     0.00     0.00  void cppunivariate::finite_diff_gradient<cppunivariate::BurrProfileCost>(cppunivariate::BurrProfileCost&, double const*, double*)
+  0.00      3.17     0.00        9     0.00     0.00  cppunivariate::valid_stop_coefficients(cppunivariate::StopModel, std::vector<double, std::allocator<double> > const&)
+  0.00      3.17     0.00        9     0.00     0.00  cppunivariate::BurrCost::gradient(double const*, double*) const
+  0.00      3.17     0.00        8     0.00     0.00  void std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> >::_M_realloc_append<cppunivariate::burr_cert_detail::Interval>(cppunivariate::burr_cert_detail::Interval&&)
+  0.00      3.17     0.00        7     0.00     0.00  cppunivariate::transformed_detail::log_pair(double)
+  0.00      3.17     0.00        7     0.00     0.00  boost::math::rounding_error::~rounding_error()
+  0.00      3.17     0.00        7     0.00     0.00  void std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >::_M_realloc_append<cppunivariate::betapr_cert_detail::Segment>(cppunivariate::betapr_cert_detail::Segment&&)
+  0.00      3.17     0.00        7     0.00     0.00  cppunivariate::FitCandidate* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*>(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*)
+  0.00      3.17     0.00        6     0.00     0.00  cppunivariate::gamma_detail::log_minus_digamma(double)
+  0.00      3.17     0.00        6     0.00     0.00  void std::vector<std::array<double, 2ul>, std::allocator<std::array<double, 2ul> > >::_M_realloc_append<std::array<double, 2ul> >(std::array<double, 2ul>&&)
+  0.00      3.17     0.00        4     0.00     0.00  cppunivariate::transformed_detail::div(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair)
+  0.00      3.17     0.00        4     0.00     0.00  cppunivariate::transformed_detail::mul(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair)
+  0.00      3.17     0.00        4     0.00     0.00  void std::vector<unsigned long, std::allocator<unsigned long> >::_M_realloc_append<unsigned long const&>(unsigned long const&)
+  0.00      3.17     0.00        4     0.00     0.00  cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(double, cppunivariate::Gb2Status)#5}::operator()(double, cppunivariate::Gb2Status) const
+  0.00      3.17     0.00        3     0.00     0.00  cppunivariate::StopDetail::StopDetail(cppunivariate::StopDetail const&)
+  0.00      3.17     0.00        3     0.00     1.02  cppunivariate::gb2_detail::refine(cppunivariate::trgamma_detail::LogData const&, std::array<double, 2ul>, double, double, double, double, double, int, int&)
+  0.00      3.17     0.00        3     0.00     0.00  cppunivariate::trgamma_detail::standardize(cppunivariate::basic_span<double>, cppunivariate::trgamma_detail::LogData&)
+  0.00      3.17     0.00        3     0.00     0.00  cppunivariate::BetaPrimeResult::~BetaPrimeResult()
+  0.00      3.17     0.00        3     0.00     0.00  cppunivariate::burr_cert_detail::weibull_at(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval&, cppunivariate::burr_cert_detail::Interval&)
+  0.00      3.17     0.00        3     0.00     0.00  std::vector<std::vector<long double, std::allocator<long double> >, std::allocator<std::vector<long double, std::allocator<long double> > > >::~vector()
+  0.00      3.17     0.00        3     0.00     0.00  std::vector<double, std::allocator<double> >::_M_default_append(unsigned long)
+  0.00      3.17     0.00        3     0.00     0.00  std::vector<double, std::allocator<double> >::vector(std::vector<double, std::allocator<double> > const&)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::pareto_mle(cppunivariate::basic_span<double>)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::betapr_detail::accurate_fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::betapr_detail::fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::trgamma_detail::face_power(cppunivariate::trgamma_detail::LogData const&, int)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::TrGammaResult cppunivariate::trgamma_detail::check_represented<cppunivariate::TrGammaResult, cppunivariate::TrGammaStatus>(cppunivariate::basic_span<double>, cppunivariate::TrGammaResult, cppunivariate::TrGammaStatus, cppunivariate::TrGammaStatus, bool, double)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::trgamma_detail::normal_seam_upper(cppunivariate::trgamma_detail::LogData const&, double)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::trgamma_fit_log(cppunivariate::basic_span<double>, double, int, double, double)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::burr_cert_detail::inverse(cppunivariate::burr_cert_detail::Matrix, cppunivariate::burr_cert_detail::Matrix&, int)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::transformed_detail::add(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::betapr_joint_detail::gamma_tangent(double, double, double, double, double, int, int&, long)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::betapr_joint_detail::signed_cutoff(double, double, double, double, double, double, double, cppunivariate::betapr_joint_detail::GammaTangent const&, int, int&, long)
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(cppunivariate::betapr_joint_cert::Face const&)#1}::operator()(cppunivariate::betapr_joint_cert::Face const&) const
+  0.00      3.17     0.00        2     0.00     0.00  cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, bool)#1}::operator()(double, bool) const
+  0.00      3.17     0.00        1     0.00     0.01  cppunivariate::betapr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::gb2_detail::double_pareto(cppunivariate::trgamma_detail::LogData const&, double)
+  0.00      3.17     0.00        1     0.00     3.08  cppunivariate::fpareto_mle(cppunivariate::basic_span<double>, double, double, int, double, double, double, double)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::norm_detail::moments(cppunivariate::basic_span<double>)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::weibull_mle(cppunivariate::basic_span<double>, double, int, double)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::limit_detail(std::vector<double, std::allocator<double> >, double, cppunivariate::StopModel)
+  0.00      3.17     0.00        1     0.00     0.00  double cppunivariate::trgamma_detail::brent_zero<cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#1}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const::{lambda(double)#1}>(cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#1}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const::{lambda(double)#1}, double, double, double, double, double, int, bool&)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::BetaPrimeResult::BetaPrimeResult(cppunivariate::BetaPrimeResult&&)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::betapr_mle_holds(cppunivariate::basic_span<double>, double, double, double, double, int)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::burr_cert_detail::signed_tail(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull const&)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::burr_cert_detail::data(cppunivariate::basic_span<double>, cppunivariate::burr_cert_detail::Data&)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&)
+  0.00      3.17     0.00        1     0.00     0.01  cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::betapr_joint_cert::Engine::refine(cppunivariate::betapr_joint_cert::Point)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::betapr_joint_cert::Engine::~Engine()
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::fit_gumbel_newton(cppunivariate::basic_span<double>, double, int, double, bool)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::burr_mle_certified(cppunivariate::basic_span<double>, double, int, double, double, double, double, long)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::certificate_budget(int)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::transformed_detail::logs(cppunivariate::basic_span<double>, bool)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::transformed_detail::normal(cppunivariate::transformed_detail::Logs const&, double, double)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::betapr_joint_exterior_bounds(cppunivariate::basic_span<double>, double, double, double, int, double, long)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)
+  0.00      3.17     0.00        1     0.00     3.08  cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::special::lbeta(double, double)
+  0.00      3.17     0.00        1     0.00     0.00  cppunivariate::gamma_mle(cppunivariate::basic_span<double>, double, int)
+  0.00      3.17     0.00        1     0.00     0.00  std::_Vector_base<cppunivariate::burr_cert_detail::Segment, std::allocator<cppunivariate::burr_cert_detail::Segment> >::~_Vector_base()
+  0.00      3.17     0.00        1     0.00     0.00  std::_Vector_base<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> >::~_Vector_base()
+  0.00      3.17     0.00        1     0.00     0.00  std::_Vector_base<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >::~_Vector_base()
+  0.00      3.17     0.00        1     0.00     0.00  std::_Vector_base<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >::~_Vector_base()
+  0.00      3.17     0.00        1     0.00     0.00  std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&)
+  0.00      3.17     0.00        1     0.00     0.00  void std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::_M_realloc_append<cppunivariate::FitCandidate const&>(cppunivariate::FitCandidate const&)
+  0.00      3.17     0.00        1     0.00     0.00  std::vector<double, std::allocator<double> >::reserve(unsigned long)
+  0.00      3.17     0.00        1     0.00     0.00  __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > > std::__remove_if<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__ops::_Iter_pred<cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)::{lambda(cppunivariate::FitCandidate const&)#1}> >(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__ops::_Iter_pred<cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)::{lambda(cppunivariate::FitCandidate const&)#1}>)
+  0.00      3.17     0.00        1     0.00     0.00  void std::__insertion_sort<__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}> >(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}>)
+  0.00      3.17     0.00        1     0.00     0.00  void std::__introsort_loop<__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}> >(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}>)
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2026 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 4 byte(s) for 0.32% of 3.17 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     97.2    0.00    3.08                 main [1]
+                0.00    3.08       1/1           cppunivariate::fpareto_mle(cppunivariate::basic_span<double>, double, double, int, double, double, double, double) [2]
+                0.00    0.00       1/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    3.08       1/1           main [1]
+[2]     97.2    0.00    3.08       1         cppunivariate::fpareto_mle(cppunivariate::basic_span<double>, double, double, int, double, double, double, double) [2]
+                0.00    3.08       1/1           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+-----------------------------------------------
+                0.00    3.08       1/1           cppunivariate::fpareto_mle(cppunivariate::basic_span<double>, double, double, int, double, double, double, double) [2]
+[3]     97.2    0.00    3.08       1         cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+                0.00    3.07       3/3           cppunivariate::gb2_detail::refine(cppunivariate::trgamma_detail::LogData const&, std::array<double, 2ul>, double, double, double, double, double, int, int&) [5]
+                0.00    0.01       1/1           cppunivariate::betapr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [12]
+                0.00    0.00       2/2           cppunivariate::trgamma_fit_log(cppunivariate::basic_span<double>, double, int, double, double) [16]
+                0.00    0.00       1/1           cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [31]
+                0.00    0.00       1/1           cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+                0.00    0.00       1/1           cppunivariate::gb2_detail::double_pareto(cppunivariate::trgamma_detail::LogData const&, double) [48]
+                0.00    0.00       1/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       6/6           void std::vector<std::array<double, 2ul>, std::allocator<std::array<double, 2ul> > >::_M_realloc_append<std::array<double, 2ul> >(std::array<double, 2ul>&&) [98]
+                0.00    0.00       6/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+                0.00    0.00       4/4           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(double, cppunivariate::Gb2Status)#5}::operator()(double, cppunivariate::Gb2Status) const [102]
+                0.00    0.00       4/18          std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::~vector() [83]
+                0.00    0.00       1/3           cppunivariate::trgamma_detail::standardize(cppunivariate::basic_span<double>, cppunivariate::trgamma_detail::LogData&) [104]
+                0.00    0.00       1/1           cppunivariate::transformed_detail::logs(cppunivariate::basic_span<double>, bool) [126]
+                0.00    0.00       1/1           cppunivariate::transformed_detail::normal(cppunivariate::transformed_detail::Logs const&, double, double) [127]
+                0.00    0.00       1/2           cppunivariate::pareto_mle(cppunivariate::basic_span<double>) [110]
+                0.00    0.00       1/3           std::vector<double, std::allocator<double> >::vector(std::vector<double, std::allocator<double> > const&) [109]
+                0.00    0.00       1/3           cppunivariate::BetaPrimeResult::~BetaPrimeResult() [105]
+-----------------------------------------------
+                0.07    3.00   14898/14898       cppunivariate::gb2_detail::refine(cppunivariate::trgamma_detail::LogData const&, std::array<double, 2ul>, double, double, double, double, double, int, int&) [5]
+[4]     96.8    0.07    3.00   14898         cppunivariate::gb2_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, int) [4]
+                2.51    0.48 12946385/12946385     cppunivariate::gb2_detail::evaluate(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, bool, double) [6]
+                0.01    0.00  163871/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    3.07       3/3           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[5]     96.8    0.00    3.07       3         cppunivariate::gb2_detail::refine(cppunivariate::trgamma_detail::LogData const&, std::array<double, 2ul>, double, double, double, double, double, int, int&) [5]
+                0.07    3.00   14898/14898       cppunivariate::gb2_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, int) [4]
+-----------------------------------------------
+                2.51    0.48 12946385/12946385     cppunivariate::gb2_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, int) [4]
+[6]     94.3    2.51    0.48 12946385         cppunivariate::gb2_detail::evaluate(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, bool, double) [6]
+                0.48    0.00 12946384/12946384     cppunivariate::gb2_detail::logbeta(double, double) [7]
+-----------------------------------------------
+                0.48    0.00 12946384/12946384     cppunivariate::gb2_detail::evaluate(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, bool, double) [6]
+[7]     15.1    0.48    0.00 12946384         cppunivariate::gb2_detail::logbeta(double, double) [7]
+-----------------------------------------------
+                                                 <spontaneous>
+[8]      2.8    0.09    0.00                 _init [8]
+-----------------------------------------------
+[9]      0.6    0.02    0.00  368859+313518  <cycle 1 as a whole> [9]
+                0.01    0.00  509158+223781      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.01    0.00   77152             cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+                0.00    0.00   81507             cppunivariate::betapr_cert_detail::increment(double, double) <cycle 1> [60]
+                0.00    0.00   14559             cppunivariate::betapr_joint_cert::Engine::hessian(cppunivariate::betapr_joint_cert::Cell const&) <cycle 1> [62]
+                0.00    0.00       1             cppunivariate::betapr_joint_cert::Engine::refine(cppunivariate::betapr_joint_cert::Point) <cycle 1> [122]
+-----------------------------------------------
+                              223781             main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                              116472             cppunivariate::betapr_joint_cert::Engine::hessian(cppunivariate::betapr_joint_cert::Cell const&) <cycle 1> [62]
+                              141078             cppunivariate::betapr_cert_detail::increment(double, double) <cycle 1> [60]
+                0.00    0.00       1/368859      main [1]
+                0.00    0.00       1/368859      cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&) [52]
+                0.00    0.00       1/368859      cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+                0.00    0.00       2/368859      cppunivariate::limit_detail(std::vector<double, std::allocator<double> >, double, cppunivariate::StopModel) [51]
+                0.00    0.00       2/368859      cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(cppunivariate::betapr_joint_cert::Face const&)#1}::operator()(cppunivariate::betapr_joint_cert::Face const&) const [50]
+                0.00    0.00       2/368859      cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [31]
+                0.00    0.00       3/368859      cppunivariate::gb2_detail::double_pareto(cppunivariate::trgamma_detail::LogData const&, double) [48]
+                0.00    0.00       3/368859      cppunivariate::burr_cert_detail::data(cppunivariate::basic_span<double>, cppunivariate::burr_cert_detail::Data&) [49]
+                0.00    0.00       3/368859      cppunivariate::burr_mle_certified(cppunivariate::basic_span<double>, double, int, double, double, double, double, long) [32]
+                0.00    0.00       3/368859      cppunivariate::betapr_joint_exterior_bounds(cppunivariate::basic_span<double>, double, double, double, int, double, long) [39]
+                0.00    0.00       4/368859      cppunivariate::trgamma_detail::face_power(cppunivariate::trgamma_detail::LogData const&, int) [47]
+                0.00    0.00       6/368859      cppunivariate::gamma_detail::log_minus_digamma(double) [45]
+                0.00    0.00       6/368859      cppunivariate::gamma_mle(cppunivariate::basic_span<double>, double, int) [46]
+                0.00    0.00       6/368859      cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [28]
+                0.00    0.00      24/368859      cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&) [34]
+                0.00    0.00      25/368859      cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+                0.00    0.00      29/368859      cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00      63/368859      cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(double, cppunivariate::burr_cert_detail::Node&)#1}::operator()(double, cppunivariate::burr_cert_detail::Node&) const [36]
+                0.00    0.00      76/368859      cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, bool)#1}::operator()(double, bool) const [42]
+                0.00    0.00      81/368859      cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+                0.00    0.00      84/368859      cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#3}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const [41]
+                0.00    0.00      90/368859      cppunivariate::betapr_joint_detail::gamma_tangent(double, double, double, double, double, int, int&, long) [40]
+                0.00    0.00     101/368859      std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::pop() [38]
+                0.00    0.00     108/368859      cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [37]
+                0.00    0.00     113/368859      std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+                0.00    0.00     270/368859      cppunivariate::burr_cert_detail::score_hessian(cppunivariate::burr_cert_detail::Data const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul>&, cppunivariate::burr_cert_detail::BoxMatrix&) [35]
+                0.00    0.00     412/368859      cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point)#3}::operator()(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point) const [30]
+                0.00    0.00    2835/368859      cppunivariate::BetaPrimeLogCost::gradient(double const*, double*) const [26]
+                0.00    0.00    4868/368859      std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::pop() [22]
+                0.00    0.00    4870/368859      std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::push(cppunivariate::betapr_joint_cert::Cell const&) [21]
+                0.00    0.00    8930/368859      cppunivariate::betapr_joint_cert::Engine::gamma_upper(cppunivariate::betapr_joint_cert::Face const&, double, double) [20]
+                0.00    0.00   64715/368859      cppunivariate::trgamma_detail::gamma_shape(double, int&, int) [17]
+                0.01    0.00  163871/368859      cppunivariate::gb2_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, int) [4]
+[10]     0.3    0.01    0.00  509158+223781  main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00      72/118844      cppunivariate::betapr_joint_cert::mul(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [59]
+                0.00    0.00      38/51678       cppunivariate::betapr_joint_cert::add(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [61]
+                0.00    0.00       1/7           cppunivariate::FitCandidate* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*>(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*) [97]
+                                   7             cppunivariate::betapr_joint_cert::Engine::hessian(cppunivariate::betapr_joint_cert::Cell const&) <cycle 1> [62]
+                                   2             cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+                                   1             cppunivariate::betapr_joint_cert::Engine::refine(cppunivariate::betapr_joint_cert::Point) <cycle 1> [122]
+                              223781             main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                                   2             main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                                1000             cppunivariate::betapr_joint_cert::Engine::refine(cppunivariate::betapr_joint_cert::Point) <cycle 1> [122]
+                               29118             cppunivariate::betapr_joint_cert::Engine::hessian(cppunivariate::betapr_joint_cert::Cell const&) <cycle 1> [62]
+                0.00    0.00       3/368859      cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+                0.00    0.00      25/368859      cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, double, double)#2}::operator()(double, double, double) const [25]
+                0.00    0.00   47004/368859      cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+[11]     0.3    0.01    0.00   77152         cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+                0.00    0.00   12420/12420       cppunivariate::betapr_joint_cert::log_beta(double, double) [63]
+                0.00    0.00   12420/12420       std::_Rb_tree<std::pair<double, double>, std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point>, std::_Select1st<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> >, std::less<std::pair<double, double> >, std::allocator<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> > >::_M_get_insert_hint_unique_pos(std::_Rb_tree_const_iterator<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> >, std::pair<double, double> const&) [64]
+                0.00    0.00       1/7           boost::math::rounding_error::~rounding_error() [95]
+                               24840             cppunivariate::betapr_cert_detail::increment(double, double) <cycle 1> [60]
+-----------------------------------------------
+                0.00    0.01       1/1           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[12]     0.2    0.00    0.01       1         cppunivariate::betapr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [12]
+                0.00    0.01       1/1           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+                0.00    0.00       1/2           cppunivariate::betapr_detail::accurate_fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double) [111]
+-----------------------------------------------
+                0.00    0.01       1/1           cppunivariate::betapr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [12]
+[13]     0.2    0.00    0.01       1         cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+                0.00    0.01    9595/9595        cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+                0.00    0.00    4870/4870        std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::pop() [22]
+                0.00    0.00      25/25          cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, double, double)#2}::operator()(double, double, double) const [25]
+                0.00    0.00       1/1           cppunivariate::betapr_mle_holds(cppunivariate::basic_span<double>, double, double, double, double, int) [27]
+                0.00    0.00       1/1           cppunivariate::betapr_joint_exterior_bounds(cppunivariate::basic_span<double>, double, double, double, int, double, long) [39]
+                0.00    0.00      81/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       2/2           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, bool)#1}::operator()(double, bool) const [42]
+                0.00    0.00       6/6           cppunivariate::gamma_detail::log_minus_digamma(double) [45]
+                0.00    0.00       1/1           cppunivariate::gamma_mle(cppunivariate::basic_span<double>, double, int) [46]
+                0.00    0.00       3/368859      cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+                0.00    0.00       2/2           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(cppunivariate::betapr_joint_cert::Face const&)#1}::operator()(cppunivariate::betapr_joint_cert::Face const&) const [50]
+                0.00    0.00      25/25          cppunivariate::transformed_detail::Sum::push(double) [82]
+                0.00    0.00      11/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+                0.00    0.00      10/10          cppunivariate::betapr_joint_detail::softplus(double) [89]
+                0.00    0.00       8/41          void std::vector<double, std::allocator<double> >::_M_realloc_append<double>(double&&) [81]
+                0.00    0.00       8/12          void std::vector<double, std::allocator<double> >::_M_realloc_append<double const&>(double const&) [87]
+                0.00    0.00       4/4           cppunivariate::transformed_detail::div(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair) [99]
+                0.00    0.00       3/4           cppunivariate::transformed_detail::mul(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair) [100]
+                0.00    0.00       2/7           boost::math::rounding_error::~rounding_error() [95]
+                0.00    0.00       2/2           cppunivariate::transformed_detail::add(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair) [116]
+                0.00    0.00       1/1           cppunivariate::certificate_budget(int) [125]
+                0.00    0.00       1/1           cppunivariate::betapr_joint_cert::Engine::~Engine() [123]
+                0.00    0.00       1/1           std::_Vector_base<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >::~_Vector_base() [131]
+                0.00    0.00       1/3           cppunivariate::BetaPrimeResult::~BetaPrimeResult() [105]
+                0.00    0.00       1/7           cppunivariate::transformed_detail::log_pair(double) [94]
+-----------------------------------------------
+                0.00    0.01    9595/9595        cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[14]     0.2    0.00    0.01    9595         cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+                0.00    0.00   56404/368859      cppunivariate::betapr_cert_detail::increment(double, double) <cycle 1> [60]
+                0.00    0.00   47004/368859      cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+                0.00    0.00   10328/368859      cppunivariate::betapr_joint_cert::Engine::hessian(cppunivariate::betapr_joint_cert::Cell const&) <cycle 1> [62]
+                0.00    0.00   19029/19029       cppunivariate::betapr_joint_cert::Engine::tail(cppunivariate::betapr_joint_cert::Face const&, double, double, double) [19]
+                0.00    0.00    4870/4870        std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::push(cppunivariate::betapr_joint_cert::Cell const&) [21]
+                0.00    0.00    3224/3224        cppunivariate::betapr_joint_cert::Engine::maximum_impossible(cppunivariate::betapr_joint_cert::Cell const&) [23]
+                0.00    0.00  118772/118844      cppunivariate::betapr_joint_cert::mul(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [59]
+                0.00    0.00   51640/51678       cppunivariate::betapr_joint_cert::add(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [61]
+                0.00    0.00   10328/10328       cppunivariate::betapr_joint_cert::sub(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [65]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::trgamma_fit_log(cppunivariate::basic_span<double>, double, int, double, double) [16]
+[15]     0.1    0.00    0.00       2         cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long) [15]
+                0.00    0.00     342/358         cppunivariate::trgamma_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, int&, int) [18]
+                0.00    0.00       1/1           double cppunivariate::trgamma_detail::brent_zero<cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#1}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const::{lambda(double)#1}>(cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#1}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const::{lambda(double)#1}, double, double, double, double, double, int, bool&) [24]
+                0.00    0.00     102/102         cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#3}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const [41]
+                0.00    0.00       2/2           cppunivariate::trgamma_detail::face_power(cppunivariate::trgamma_detail::LogData const&, int) [47]
+                0.00    0.00       2/2           cppunivariate::trgamma_detail::normal_seam_upper(cppunivariate::trgamma_detail::LogData const&, double) [114]
+                0.00    0.00       2/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+                0.00    0.00       2/18          std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::~vector() [83]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[16]     0.1    0.00    0.00       2         cppunivariate::trgamma_fit_log(cppunivariate::basic_span<double>, double, int, double, double) [16]
+                0.00    0.00       2/2           cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long) [15]
+                0.00    0.00       4/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+                0.00    0.00       4/18          std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::~vector() [83]
+                0.00    0.00       2/3           cppunivariate::trgamma_detail::standardize(cppunivariate::basic_span<double>, cppunivariate::trgamma_detail::LogData&) [104]
+                0.00    0.00       2/3           cppunivariate::StopDetail::StopDetail(cppunivariate::StopDetail const&) [103]
+                0.00    0.00       2/2           cppunivariate::TrGammaResult cppunivariate::trgamma_detail::check_represented<cppunivariate::TrGammaResult, cppunivariate::TrGammaStatus>(cppunivariate::basic_span<double>, cppunivariate::TrGammaResult, cppunivariate::TrGammaStatus, cppunivariate::TrGammaStatus, bool, double) [113]
+-----------------------------------------------
+                0.00    0.00     358/358         cppunivariate::trgamma_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, int&, int) [18]
+[17]     0.1    0.00    0.00     358         cppunivariate::trgamma_detail::gamma_shape(double, int&, int) [17]
+                0.00    0.00   64715/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00      16/358         double cppunivariate::trgamma_detail::brent_zero<cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#1}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const::{lambda(double)#1}>(cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#1}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const::{lambda(double)#1}, double, double, double, double, double, int, bool&) [24]
+                0.00    0.00     342/358         cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long) [15]
+[18]     0.1    0.00    0.00     358         cppunivariate::trgamma_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, int&, int) [18]
+                0.00    0.00     358/358         cppunivariate::trgamma_detail::gamma_shape(double, int&, int) [17]
+                0.00    0.00     358/460         cppunivariate::trgamma_detail::cgf(cppunivariate::trgamma_detail::LogData const&, double) [71]
+                0.00    0.00     247/247         cppunivariate::trgamma_detail::normal_profile_slope(cppunivariate::trgamma_detail::LogData const&, double, double) [72]
+-----------------------------------------------
+                0.00    0.00   19029/19029       cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+[19]     0.0    0.00    0.00   19029         cppunivariate::betapr_joint_cert::Engine::tail(cppunivariate::betapr_joint_cert::Face const&, double, double, double) [19]
+                0.00    0.00    8930/8930        cppunivariate::betapr_joint_cert::Engine::gamma_upper(cppunivariate::betapr_joint_cert::Face const&, double, double) [20]
+-----------------------------------------------
+                0.00    0.00    8930/8930        cppunivariate::betapr_joint_cert::Engine::tail(cppunivariate::betapr_joint_cert::Face const&, double, double, double) [19]
+[20]     0.0    0.00    0.00    8930         cppunivariate::betapr_joint_cert::Engine::gamma_upper(cppunivariate::betapr_joint_cert::Face const&, double, double) [20]
+                0.00    0.00    8930/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00    4870/4870        cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+[21]     0.0    0.00    0.00    4870         std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::push(cppunivariate::betapr_joint_cert::Cell const&) [21]
+                0.00    0.00    4870/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00      11/11          void std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >::_M_realloc_append<cppunivariate::betapr_joint_cert::Cell const&>(cppunivariate::betapr_joint_cert::Cell const&) [88]
+-----------------------------------------------
+                0.00    0.00    4870/4870        cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[22]     0.0    0.00    0.00    4870         std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::pop() [22]
+                0.00    0.00    4868/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00    3224/3224        cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+[23]     0.0    0.00    0.00    3224         cppunivariate::betapr_joint_cert::Engine::maximum_impossible(cppunivariate::betapr_joint_cert::Cell const&) [23]
+                0.00    0.00    3224/368859      cppunivariate::betapr_joint_cert::Engine::hessian(cppunivariate::betapr_joint_cert::Cell const&) <cycle 1> [62]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long) [15]
+[24]     0.0    0.00    0.00       1         double cppunivariate::trgamma_detail::brent_zero<cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#1}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const::{lambda(double)#1}>(cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#1}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const::{lambda(double)#1}, double, double, double, double, double, int, bool&) [24]
+                0.00    0.00      16/358         cppunivariate::trgamma_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, int&, int) [18]
+-----------------------------------------------
+                0.00    0.00      25/25          cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[25]     0.0    0.00    0.00      25         cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, double, double)#2}::operator()(double, double, double) const [25]
+                0.00    0.00     945/945         cppunivariate::BetaPrimeLogCost::gradient(double const*, double*) const [26]
+                0.00    0.00      25/368859      cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+                0.00    0.00    1218/1218        cppunivariate::BetaPrimeLogCost::operator()(double const*) const [69]
+                0.00    0.00     920/1623        cppunivariate::detail::l2_norm(double const*, int) [67]
+-----------------------------------------------
+                0.00    0.00     945/945         cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, double, double)#2}::operator()(double, double, double) const [25]
+[26]     0.0    0.00    0.00     945         cppunivariate::BetaPrimeLogCost::gradient(double const*, double*) const [26]
+                0.00    0.00    2835/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[27]     0.0    0.00    0.00       1         cppunivariate::betapr_mle_holds(cppunivariate::basic_span<double>, double, double, double, double, int) [27]
+                0.00    0.00       1/1           cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [28]
+                0.00    0.00       1/7           cppunivariate::FitCandidate* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*>(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*) [97]
+                0.00    0.00       1/2           cppunivariate::betapr_detail::accurate_fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double) [111]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_mle_holds(cppunivariate::basic_span<double>, double, double, double, double, int) [27]
+[28]     0.0    0.00    0.00       1         cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [28]
+                0.00    0.00       1/1           std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+                0.00    0.00       6/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       4/41          void std::vector<double, std::allocator<double> >::_M_realloc_append<double>(double&&) [81]
+                0.00    0.00       1/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+                0.00    0.00       1/1           __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > > std::__remove_if<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__ops::_Iter_pred<cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)::{lambda(cppunivariate::FitCandidate const&)#1}> >(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__ops::_Iter_pred<cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)::{lambda(cppunivariate::FitCandidate const&)#1}>) [135]
+                0.00    0.00       1/9           cppunivariate::valid_stop_coefficients(cppunivariate::StopModel, std::vector<double, std::allocator<double> > const&) [91]
+                0.00    0.00       1/1           cppunivariate::BetaPrimeResult::BetaPrimeResult(cppunivariate::BetaPrimeResult&&) [120]
+                0.00    0.00       1/3           cppunivariate::BetaPrimeResult::~BetaPrimeResult() [105]
+-----------------------------------------------
+                                 102             std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+                0.00    0.00       1/1           cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [28]
+[29]     0.0    0.00    0.00       1+102     std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+                0.00    0.00     103/103         cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point)#3}::operator()(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point) const [30]
+                0.00    0.00     113/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00     102/102         std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::pop() [38]
+                0.00    0.00      57/57          cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(double)#1}::operator()(double) const [43]
+                0.00    0.00       1/1           cppunivariate::limit_detail(std::vector<double, std::allocator<double> >, double, cppunivariate::StopModel) [51]
+                0.00    0.00      59/59          cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(cppunivariate::betapr_cert_detail::Point const&)#1}::operator()(cppunivariate::betapr_cert_detail::Point const&) const [79]
+                0.00    0.00       7/7           void std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >::_M_realloc_append<cppunivariate::betapr_cert_detail::Segment>(cppunivariate::betapr_cert_detail::Segment&&) [96]
+                0.00    0.00       5/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+                0.00    0.00       4/41          void std::vector<double, std::allocator<double> >::_M_realloc_append<double>(double&&) [81]
+                0.00    0.00       1/18          std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::~vector() [83]
+                0.00    0.00       1/1           std::_Vector_base<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >::~_Vector_base() [132]
+                                 102             std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+-----------------------------------------------
+                0.00    0.00     103/103         std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+[30]     0.0    0.00    0.00     103         cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point)#3}::operator()(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point) const [30]
+                0.00    0.00     412/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00     206/368859      cppunivariate::betapr_cert_detail::increment(double, double) <cycle 1> [60]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[31]     0.0    0.00    0.00       1         cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [31]
+                0.00    0.00       1/1           cppunivariate::burr_mle_certified(cppunivariate::basic_span<double>, double, int, double, double, double, double, long) [32]
+                0.00    0.00       2/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       5/18          std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::~vector() [83]
+                0.00    0.00       4/41          void std::vector<double, std::allocator<double> >::_M_realloc_append<double>(double&&) [81]
+                0.00    0.00       4/4           void std::vector<unsigned long, std::allocator<unsigned long> >::_M_realloc_append<unsigned long const&>(unsigned long const&) [101]
+                0.00    0.00       1/1           void std::__introsort_loop<__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}> >(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}>) [137]
+                0.00    0.00       1/3           cppunivariate::StopDetail::StopDetail(cppunivariate::StopDetail const&) [103]
+                0.00    0.00       1/1           void std::__insertion_sort<__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}> >(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}>) [136]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [31]
+[32]     0.0    0.00    0.00       1         cppunivariate::burr_mle_certified(cppunivariate::basic_span<double>, double, int, double, double, double, double, long) [32]
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00       3/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       2/18          std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::~vector() [83]
+                0.00    0.00       2/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::burr_mle_certified(cppunivariate::basic_span<double>, double, int, double, double, double, double, long) [32]
+[33]     0.0    0.00    0.00       1         cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&) [34]
+                0.00    0.00      55/55          cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(double, cppunivariate::burr_cert_detail::Node&)#1}::operator()(double, cppunivariate::burr_cert_detail::Node&) const [36]
+                0.00    0.00      29/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::data(cppunivariate::basic_span<double>, cppunivariate::burr_cert_detail::Data&) [49]
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&) [52]
+                0.00    0.00      31/85          cppunivariate::burr_cert_detail::profile(std::vector<double, std::allocator<double> > const&, double, cppunivariate::burr_cert_detail::Proposal&, int) [78]
+                0.00    0.00      17/1440        cppunivariate::burr_cert_detail::padded(double, double) [68]
+                0.00    0.00      14/2768        cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [66]
+                0.00    0.00      13/13          cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&)#2}::operator()(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&) const [86]
+                0.00    0.00      12/242         cppunivariate::burr_cert_detail::operator-(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [73]
+                0.00    0.00       9/41          void std::vector<double, std::allocator<double> >::_M_realloc_append<double>(double&&) [81]
+                0.00    0.00       6/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+                0.00    0.00       4/211         cppunivariate::burr_cert_detail::operator/(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [74]
+                0.00    0.00       4/8           void std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> >::_M_realloc_append<cppunivariate::burr_cert_detail::Interval>(cppunivariate::burr_cert_detail::Interval&&) [93]
+                0.00    0.00       1/110         cppunivariate::burr_cert_detail::log(cppunivariate::burr_cert_detail::Interval) [75]
+                0.00    0.00       1/15          non-virtual thunk to boost::wrapexcept<std::overflow_error>::~wrapexcept() [85]
+                0.00    0.00       1/109         cppunivariate::burr_cert_detail::primal(std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> > const&, cppunivariate::burr_cert_detail::Proposal const&) [76]
+                0.00    0.00       1/1           std::_Vector_base<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> >::~_Vector_base() [130]
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::signed_tail(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull const&) [121]
+                0.00    0.00       1/1           std::_Vector_base<cppunivariate::burr_cert_detail::Segment, std::allocator<cppunivariate::burr_cert_detail::Segment> >::~_Vector_base() [129]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+[34]     0.0    0.00    0.00       1         cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&) [34]
+                0.00    0.00      30/30          cppunivariate::burr_cert_detail::score_hessian(cppunivariate::burr_cert_detail::Data const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul>&, cppunivariate::burr_cert_detail::BoxMatrix&) [35]
+                0.00    0.00      24/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00     649/2768        cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [66]
+                0.00    0.00      15/15          cppunivariate::burr_cert_detail::contraction(cppunivariate::burr_cert_detail::Matrix const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, cppunivariate::burr_cert_detail::BoxMatrix const&, std::array<double, 3ul> const&, int, int) [84]
+                0.00    0.00       5/1440        cppunivariate::burr_cert_detail::padded(double, double) [68]
+                0.00    0.00       2/2           cppunivariate::burr_cert_detail::inverse(cppunivariate::burr_cert_detail::Matrix, cppunivariate::burr_cert_detail::Matrix&, int) [115]
+                0.00    0.00       1/211         cppunivariate::burr_cert_detail::operator/(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [74]
+-----------------------------------------------
+                0.00    0.00      30/30          cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&) [34]
+[35]     0.0    0.00    0.00      30         cppunivariate::burr_cert_detail::score_hessian(cppunivariate::burr_cert_detail::Data const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul>&, cppunivariate::burr_cert_detail::BoxMatrix&) [35]
+                0.00    0.00     270/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00    1230/2768        cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [66]
+                0.00    0.00     480/1440        cppunivariate::burr_cert_detail::padded(double, double) [68]
+                0.00    0.00     120/211         cppunivariate::burr_cert_detail::operator/(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [74]
+                0.00    0.00     120/242         cppunivariate::burr_cert_detail::operator-(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [73]
+-----------------------------------------------
+                0.00    0.00      55/55          cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+[36]     0.0    0.00    0.00      55         cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(double, cppunivariate::burr_cert_detail::Node&)#1}::operator()(double, cppunivariate::burr_cert_detail::Node&) const [36]
+                0.00    0.00      54/54          cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [37]
+                0.00    0.00      63/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00      54/109         cppunivariate::burr_cert_detail::primal(std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> > const&, cppunivariate::burr_cert_detail::Proposal const&) [76]
+                0.00    0.00      54/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+                0.00    0.00      54/54          std::_Rb_tree_iterator<std::pair<double const, cppunivariate::burr_cert_detail::Node> > std::_Rb_tree<double, std::pair<double const, cppunivariate::burr_cert_detail::Node>, std::_Select1st<std::pair<double const, cppunivariate::burr_cert_detail::Node> >, std::less<double>, std::allocator<std::pair<double const, cppunivariate::burr_cert_detail::Node> > >::_M_emplace_hint_unique<double&, cppunivariate::burr_cert_detail::Node&>(std::_Rb_tree_const_iterator<std::pair<double const, cppunivariate::burr_cert_detail::Node> >, double&, cppunivariate::burr_cert_detail::Node&) [80]
+                0.00    0.00       1/1           void std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::_M_realloc_append<cppunivariate::FitCandidate const&>(cppunivariate::FitCandidate const&) [133]
+-----------------------------------------------
+                0.00    0.00      54/54          cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(double, cppunivariate::burr_cert_detail::Node&)#1}::operator()(double, cppunivariate::burr_cert_detail::Node&) const [36]
+[37]     0.0    0.00    0.00      54         cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [37]
+                0.00    0.00     108/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00     810/2768        cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [66]
+                0.00    0.00     648/1440        cppunivariate::burr_cert_detail::padded(double, double) [68]
+                0.00    0.00     108/110         cppunivariate::burr_cert_detail::log(cppunivariate::burr_cert_detail::Interval) [75]
+                0.00    0.00     108/242         cppunivariate::burr_cert_detail::operator-(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [73]
+                0.00    0.00      54/85          cppunivariate::burr_cert_detail::profile(std::vector<double, std::allocator<double> > const&, double, cppunivariate::burr_cert_detail::Proposal&, int) [78]
+                0.00    0.00      54/211         cppunivariate::burr_cert_detail::operator/(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [74]
+                0.00    0.00      54/109         cppunivariate::burr_cert_detail::primal(std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> > const&, cppunivariate::burr_cert_detail::Proposal const&) [76]
+-----------------------------------------------
+                0.00    0.00     102/102         std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+[38]     0.0    0.00    0.00     102         std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::pop() [38]
+                0.00    0.00     101/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[39]     0.0    0.00    0.00       1         cppunivariate::betapr_joint_exterior_bounds(cppunivariate::basic_span<double>, double, double, double, int, double, long) [39]
+                0.00    0.00       2/2           cppunivariate::betapr_joint_detail::gamma_tangent(double, double, double, double, double, int, int&, long) [40]
+                0.00    0.00       3/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       2/2           cppunivariate::betapr_joint_detail::signed_cutoff(double, double, double, double, double, double, double, cppunivariate::betapr_joint_detail::GammaTangent const&, int, int&, long) [117]
+                0.00    0.00       1/1           std::vector<double, std::allocator<double> >::reserve(unsigned long) [134]
+                0.00    0.00       1/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+                0.00    0.00       1/1           cppunivariate::special::lbeta(double, double) [128]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::betapr_joint_exterior_bounds(cppunivariate::basic_span<double>, double, double, double, int, double, long) [39]
+[40]     0.0    0.00    0.00       2         cppunivariate::betapr_joint_detail::gamma_tangent(double, double, double, double, double, int, int&, long) [40]
+                0.00    0.00      90/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00     102/102         cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long) [15]
+[41]     0.0    0.00    0.00     102         cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#3}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const [41]
+                0.00    0.00      84/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00     102/460         cppunivariate::trgamma_detail::cgf(cppunivariate::trgamma_detail::LogData const&, double) [71]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[42]     0.0    0.00    0.00       2         cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, bool)#1}::operator()(double, bool) const [42]
+                0.00    0.00      76/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       2/9           cppunivariate::valid_stop_coefficients(cppunivariate::StopModel, std::vector<double, std::allocator<double> > const&) [91]
+-----------------------------------------------
+                0.00    0.00      57/57          std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+[43]     0.0    0.00    0.00      57         cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(double)#1}::operator()(double) const [43]
+                0.00    0.00      57/368859      cppunivariate::betapr_cert_detail::increment(double, double) <cycle 1> [60]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[44]     0.0    0.00    0.00       1         cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+                0.00    0.00      25/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00      11/103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+                0.00    0.00       9/9           void cppunivariate::finite_diff_gradient<cppunivariate::BurrProfileCost>(cppunivariate::BurrProfileCost&, double const*, double*) [90]
+                0.00    0.00       9/9           cppunivariate::BurrCost::gradient(double const*, double*) const [92]
+                0.00    0.00       9/1623        cppunivariate::detail::l2_norm(double const*, int) [67]
+                0.00    0.00       8/41          void std::vector<double, std::allocator<double> >::_M_realloc_append<double>(double&&) [81]
+                0.00    0.00       2/3           std::vector<double, std::allocator<double> >::vector(std::vector<double, std::allocator<double> > const&) [109]
+                0.00    0.00       1/1           cppunivariate::weibull_mle(cppunivariate::basic_span<double>, double, int, double) [119]
+                0.00    0.00       1/2           cppunivariate::pareto_mle(cppunivariate::basic_span<double>) [110]
+-----------------------------------------------
+                0.00    0.00       6/6           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[45]     0.0    0.00    0.00       6         cppunivariate::gamma_detail::log_minus_digamma(double) [45]
+                0.00    0.00       6/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[46]     0.0    0.00    0.00       1         cppunivariate::gamma_mle(cppunivariate::basic_span<double>, double, int) [46]
+                0.00    0.00       6/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long) [15]
+[47]     0.0    0.00    0.00       2         cppunivariate::trgamma_detail::face_power(cppunivariate::trgamma_detail::LogData const&, int) [47]
+                0.00    0.00       4/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[48]     0.0    0.00    0.00       1         cppunivariate::gb2_detail::double_pareto(cppunivariate::trgamma_detail::LogData const&, double) [48]
+                0.00    0.00       3/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+[49]     0.0    0.00    0.00       1         cppunivariate::burr_cert_detail::data(cppunivariate::basic_span<double>, cppunivariate::burr_cert_detail::Data&) [49]
+                0.00    0.00       3/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       5/2768        cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [66]
+                0.00    0.00       5/211         cppunivariate::burr_cert_detail::operator/(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [74]
+                0.00    0.00       4/41          void std::vector<double, std::allocator<double> >::_M_realloc_append<double>(double&&) [81]
+                0.00    0.00       4/8           void std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> >::_M_realloc_append<cppunivariate::burr_cert_detail::Interval>(cppunivariate::burr_cert_detail::Interval&&) [93]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[50]     0.0    0.00    0.00       2         cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(cppunivariate::betapr_joint_cert::Face const&)#1}::operator()(cppunivariate::betapr_joint_cert::Face const&) const [50]
+                0.00    0.00       2/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       2/9           cppunivariate::valid_stop_coefficients(cppunivariate::StopModel, std::vector<double, std::allocator<double> > const&) [91]
+-----------------------------------------------
+                0.00    0.00       1/1           std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+[51]     0.0    0.00    0.00       1         cppunivariate::limit_detail(std::vector<double, std::allocator<double> >, double, cppunivariate::StopModel) [51]
+                0.00    0.00       2/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       1/9           cppunivariate::valid_stop_coefficients(cppunivariate::StopModel, std::vector<double, std::allocator<double> > const&) [91]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+[52]     0.0    0.00    0.00       1         cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&) [52]
+                0.00    0.00       1/368859      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00      17/2768        cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [66]
+                0.00    0.00      11/1440        cppunivariate::burr_cert_detail::padded(double, double) [68]
+                0.00    0.00       6/211         cppunivariate::burr_cert_detail::operator/(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [74]
+                0.00    0.00       3/3           cppunivariate::burr_cert_detail::weibull_at(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval&, cppunivariate::burr_cert_detail::Interval&) [106]
+                0.00    0.00       2/242         cppunivariate::burr_cert_detail::operator-(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [73]
+                0.00    0.00       1/110         cppunivariate::burr_cert_detail::log(cppunivariate::burr_cert_detail::Interval) [75]
+-----------------------------------------------
+                0.00    0.00      72/118844      main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00  118772/118844      cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+[59]     0.0    0.00    0.00  118844         cppunivariate::betapr_joint_cert::mul(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [59]
+-----------------------------------------------
+                               24840             cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+                0.00    0.00      57/368859      cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(double)#1}::operator()(double) const [43]
+                0.00    0.00     206/368859      cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point)#3}::operator()(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point) const [30]
+                0.00    0.00   56404/368859      cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+[60]     0.0    0.00    0.00   81507         cppunivariate::betapr_cert_detail::increment(double, double) <cycle 1> [60]
+                              141078             main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+-----------------------------------------------
+                0.00    0.00      38/51678       main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00   51640/51678       cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+[61]     0.0    0.00    0.00   51678         cppunivariate::betapr_joint_cert::add(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [61]
+-----------------------------------------------
+                                   7             main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                                1000             cppunivariate::betapr_joint_cert::Engine::refine(cppunivariate::betapr_joint_cert::Point) <cycle 1> [122]
+                0.00    0.00    3224/368859      cppunivariate::betapr_joint_cert::Engine::maximum_impossible(cppunivariate::betapr_joint_cert::Cell const&) [23]
+                0.00    0.00   10328/368859      cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+[62]     0.0    0.00    0.00   14559         cppunivariate::betapr_joint_cert::Engine::hessian(cppunivariate::betapr_joint_cert::Cell const&) <cycle 1> [62]
+                              116472             main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                               29118             cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+-----------------------------------------------
+                0.00    0.00   12420/12420       cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+[63]     0.0    0.00    0.00   12420         cppunivariate::betapr_joint_cert::log_beta(double, double) [63]
+-----------------------------------------------
+                0.00    0.00   12420/12420       cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+[64]     0.0    0.00    0.00   12420         std::_Rb_tree<std::pair<double, double>, std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point>, std::_Select1st<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> >, std::less<std::pair<double, double> >, std::allocator<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> > >::_M_get_insert_hint_unique_pos(std::_Rb_tree_const_iterator<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> >, std::pair<double, double> const&) [64]
+-----------------------------------------------
+                0.00    0.00   10328/10328       cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [14]
+[65]     0.0    0.00    0.00   10328         cppunivariate::betapr_joint_cert::sub(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [65]
+-----------------------------------------------
+                0.00    0.00       5/2768        cppunivariate::burr_cert_detail::data(cppunivariate::basic_span<double>, cppunivariate::burr_cert_detail::Data&) [49]
+                0.00    0.00       9/2768        cppunivariate::burr_cert_detail::weibull_at(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval&, cppunivariate::burr_cert_detail::Interval&) [106]
+                0.00    0.00      13/2768        cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&)#2}::operator()(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&) const [86]
+                0.00    0.00      14/2768        cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00      17/2768        cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&) [52]
+                0.00    0.00      21/2768        cppunivariate::burr_cert_detail::contraction(cppunivariate::burr_cert_detail::Matrix const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, cppunivariate::burr_cert_detail::BoxMatrix const&, std::array<double, 3ul> const&, int, int) [84]
+                0.00    0.00     649/2768        cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&) [34]
+                0.00    0.00     810/2768        cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [37]
+                0.00    0.00    1230/2768        cppunivariate::burr_cert_detail::score_hessian(cppunivariate::burr_cert_detail::Data const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul>&, cppunivariate::burr_cert_detail::BoxMatrix&) [35]
+[66]     0.0    0.00    0.00    2768         cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [66]
+-----------------------------------------------
+                0.00    0.00       9/1623        cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+                0.00    0.00     694/1623        void cppunivariate::finite_diff_gradient<cppunivariate::BurrProfileCost>(cppunivariate::BurrProfileCost&, double const*, double*) [90]
+                0.00    0.00     920/1623        cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, double, double)#2}::operator()(double, double, double) const [25]
+[67]     0.0    0.00    0.00    1623         cppunivariate::detail::l2_norm(double const*, int) [67]
+-----------------------------------------------
+                0.00    0.00       5/1440        cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&) [34]
+                0.00    0.00       6/1440        cppunivariate::burr_cert_detail::weibull_at(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval&, cppunivariate::burr_cert_detail::Interval&) [106]
+                0.00    0.00      11/1440        cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&) [52]
+                0.00    0.00      13/1440        cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&)#2}::operator()(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&) const [86]
+                0.00    0.00      17/1440        cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00      42/1440        cppunivariate::burr_cert_detail::contraction(cppunivariate::burr_cert_detail::Matrix const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, cppunivariate::burr_cert_detail::BoxMatrix const&, std::array<double, 3ul> const&, int, int) [84]
+                0.00    0.00     218/1440        cppunivariate::burr_cert_detail::primal(std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> > const&, cppunivariate::burr_cert_detail::Proposal const&) [76]
+                0.00    0.00     480/1440        cppunivariate::burr_cert_detail::score_hessian(cppunivariate::burr_cert_detail::Data const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul>&, cppunivariate::burr_cert_detail::BoxMatrix&) [35]
+                0.00    0.00     648/1440        cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [37]
+[68]     0.0    0.00    0.00    1440         cppunivariate::burr_cert_detail::padded(double, double) [68]
+-----------------------------------------------
+                0.00    0.00    1218/1218        cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, double, double)#2}::operator()(double, double, double) const [25]
+[69]     0.0    0.00    0.00    1218         cppunivariate::BetaPrimeLogCost::operator()(double const*) const [69]
+-----------------------------------------------
+                0.00    0.00     731/731         cppunivariate::burr_cert_detail::profile(std::vector<double, std::allocator<double> > const&, double, cppunivariate::burr_cert_detail::Proposal&, int) [78]
+[70]     0.0    0.00    0.00     731         cppunivariate::burr_cert_detail::intercept(std::vector<double, std::allocator<double> > const&, double, double, double&, double&, double&, int) [70]
+-----------------------------------------------
+                0.00    0.00     102/460         cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#3}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const [41]
+                0.00    0.00     358/460         cppunivariate::trgamma_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, int&, int) [18]
+[71]     0.0    0.00    0.00     460         cppunivariate::trgamma_detail::cgf(cppunivariate::trgamma_detail::LogData const&, double) [71]
+-----------------------------------------------
+                0.00    0.00     247/247         cppunivariate::trgamma_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, int&, int) [18]
+[72]     0.0    0.00    0.00     247         cppunivariate::trgamma_detail::normal_profile_slope(cppunivariate::trgamma_detail::LogData const&, double, double) [72]
+-----------------------------------------------
+                0.00    0.00       2/242         cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&) [52]
+                0.00    0.00      12/242         cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00     108/242         cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [37]
+                0.00    0.00     120/242         cppunivariate::burr_cert_detail::score_hessian(cppunivariate::burr_cert_detail::Data const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul>&, cppunivariate::burr_cert_detail::BoxMatrix&) [35]
+[73]     0.0    0.00    0.00     242         cppunivariate::burr_cert_detail::operator-(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [73]
+-----------------------------------------------
+                0.00    0.00       1/211         cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&) [34]
+                0.00    0.00       4/211         cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00       5/211         cppunivariate::burr_cert_detail::data(cppunivariate::basic_span<double>, cppunivariate::burr_cert_detail::Data&) [49]
+                0.00    0.00       6/211         cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&) [52]
+                0.00    0.00      21/211         cppunivariate::burr_cert_detail::contraction(cppunivariate::burr_cert_detail::Matrix const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, cppunivariate::burr_cert_detail::BoxMatrix const&, std::array<double, 3ul> const&, int, int) [84]
+                0.00    0.00      54/211         cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [37]
+                0.00    0.00     120/211         cppunivariate::burr_cert_detail::score_hessian(cppunivariate::burr_cert_detail::Data const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul>&, cppunivariate::burr_cert_detail::BoxMatrix&) [35]
+[74]     0.0    0.00    0.00     211         cppunivariate::burr_cert_detail::operator/(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [74]
+-----------------------------------------------
+                0.00    0.00       1/110         cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&) [52]
+                0.00    0.00       1/110         cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00     108/110         cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [37]
+[75]     0.0    0.00    0.00     110         cppunivariate::burr_cert_detail::log(cppunivariate::burr_cert_detail::Interval) [75]
+-----------------------------------------------
+                0.00    0.00       1/109         cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00      54/109         cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [37]
+                0.00    0.00      54/109         cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(double, cppunivariate::burr_cert_detail::Node&)#1}::operator()(double, cppunivariate::burr_cert_detail::Node&) const [36]
+[76]     0.0    0.00    0.00     109         cppunivariate::burr_cert_detail::primal(std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> > const&, cppunivariate::burr_cert_detail::Proposal const&) [76]
+                0.00    0.00     218/1440        cppunivariate::burr_cert_detail::padded(double, double) [68]
+-----------------------------------------------
+                0.00    0.00       1/103         cppunivariate::betapr_joint_exterior_bounds(cppunivariate::basic_span<double>, double, double, double, int, double, long) [39]
+                0.00    0.00       1/103         cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [28]
+                0.00    0.00       2/103         cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long) [15]
+                0.00    0.00       2/103         cppunivariate::burr_mle_certified(cppunivariate::basic_span<double>, double, int, double, double, double, double, long) [32]
+                0.00    0.00       4/103         cppunivariate::trgamma_fit_log(cppunivariate::basic_span<double>, double, int, double, double) [16]
+                0.00    0.00       5/103         std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+                0.00    0.00       6/103         cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00       6/103         cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+                0.00    0.00      11/103         cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+                0.00    0.00      11/103         cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+                0.00    0.00      54/103         cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(double, cppunivariate::burr_cert_detail::Node&)#1}::operator()(double, cppunivariate::burr_cert_detail::Node&) const [36]
+[77]     0.0    0.00    0.00     103         std::_Vector_base<double, std::allocator<double> >::~_Vector_base() [77]
+-----------------------------------------------
+                0.00    0.00      31/85          cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00      54/85          cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [37]
+[78]     0.0    0.00    0.00      85         cppunivariate::burr_cert_detail::profile(std::vector<double, std::allocator<double> > const&, double, cppunivariate::burr_cert_detail::Proposal&, int) [78]
+                0.00    0.00     731/731         cppunivariate::burr_cert_detail::intercept(std::vector<double, std::allocator<double> > const&, double, double, double&, double&, double&, int) [70]
+-----------------------------------------------
+                0.00    0.00      59/59          std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+[79]     0.0    0.00    0.00      59         cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(cppunivariate::betapr_cert_detail::Point const&)#1}::operator()(cppunivariate::betapr_cert_detail::Point const&) const [79]
+-----------------------------------------------
+                0.00    0.00      54/54          cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(double, cppunivariate::burr_cert_detail::Node&)#1}::operator()(double, cppunivariate::burr_cert_detail::Node&) const [36]
+[80]     0.0    0.00    0.00      54         std::_Rb_tree_iterator<std::pair<double const, cppunivariate::burr_cert_detail::Node> > std::_Rb_tree<double, std::pair<double const, cppunivariate::burr_cert_detail::Node>, std::_Select1st<std::pair<double const, cppunivariate::burr_cert_detail::Node> >, std::less<double>, std::allocator<std::pair<double const, cppunivariate::burr_cert_detail::Node> > >::_M_emplace_hint_unique<double&, cppunivariate::burr_cert_detail::Node&>(std::_Rb_tree_const_iterator<std::pair<double const, cppunivariate::burr_cert_detail::Node> >, double&, cppunivariate::burr_cert_detail::Node&) [80]
+                0.00    0.00       1/7           boost::math::rounding_error::~rounding_error() [95]
+-----------------------------------------------
+                0.00    0.00       4/41          cppunivariate::burr_cert_detail::data(cppunivariate::basic_span<double>, cppunivariate::burr_cert_detail::Data&) [49]
+                0.00    0.00       4/41          std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+                0.00    0.00       4/41          cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [28]
+                0.00    0.00       4/41          cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [31]
+                0.00    0.00       8/41          cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+                0.00    0.00       8/41          cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+                0.00    0.00       9/41          cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+[81]     0.0    0.00    0.00      41         void std::vector<double, std::allocator<double> >::_M_realloc_append<double>(double&&) [81]
+-----------------------------------------------
+                0.00    0.00      25/25          cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[82]     0.0    0.00    0.00      25         cppunivariate::transformed_detail::Sum::push(double) [82]
+-----------------------------------------------
+                0.00    0.00       1/18          std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+                0.00    0.00       2/18          cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long) [15]
+                0.00    0.00       2/18          cppunivariate::burr_mle_certified(cppunivariate::basic_span<double>, double, int, double, double, double, double, long) [32]
+                0.00    0.00       4/18          cppunivariate::trgamma_fit_log(cppunivariate::basic_span<double>, double, int, double, double) [16]
+                0.00    0.00       4/18          cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+                0.00    0.00       5/18          cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [31]
+[83]     0.0    0.00    0.00      18         std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::~vector() [83]
+-----------------------------------------------
+                0.00    0.00      15/15          cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&) [34]
+[84]     0.0    0.00    0.00      15         cppunivariate::burr_cert_detail::contraction(cppunivariate::burr_cert_detail::Matrix const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, cppunivariate::burr_cert_detail::BoxMatrix const&, std::array<double, 3ul> const&, int, int) [84]
+                0.00    0.00      42/1440        cppunivariate::burr_cert_detail::padded(double, double) [68]
+                0.00    0.00      21/2768        cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [66]
+                0.00    0.00      21/211         cppunivariate::burr_cert_detail::operator/(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [74]
+-----------------------------------------------
+                                1008             non-virtual thunk to boost::wrapexcept<std::overflow_error>::~wrapexcept() [85]
+                0.00    0.00       1/15          cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+                0.00    0.00      14/15          cppunivariate::betapr_joint_cert::Engine::~Engine() [123]
+[85]     0.0    0.00    0.00      15+1008    non-virtual thunk to boost::wrapexcept<std::overflow_error>::~wrapexcept() [85]
+                                1008             non-virtual thunk to boost::wrapexcept<std::overflow_error>::~wrapexcept() [85]
+-----------------------------------------------
+                0.00    0.00      13/13          cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+[86]     0.0    0.00    0.00      13         cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&)#2}::operator()(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&) const [86]
+                0.00    0.00      13/1440        cppunivariate::burr_cert_detail::padded(double, double) [68]
+                0.00    0.00      13/2768        cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [66]
+-----------------------------------------------
+                0.00    0.00       4/12          cppunivariate::transformed_detail::logs(cppunivariate::basic_span<double>, bool) [126]
+                0.00    0.00       8/12          cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[87]     0.0    0.00    0.00      12         void std::vector<double, std::allocator<double> >::_M_realloc_append<double const&>(double const&) [87]
+-----------------------------------------------
+                0.00    0.00      11/11          std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::push(cppunivariate::betapr_joint_cert::Cell const&) [21]
+[88]     0.0    0.00    0.00      11         void std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >::_M_realloc_append<cppunivariate::betapr_joint_cert::Cell const&>(cppunivariate::betapr_joint_cert::Cell const&) [88]
+-----------------------------------------------
+                0.00    0.00      10/10          cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[89]     0.0    0.00    0.00      10         cppunivariate::betapr_joint_detail::softplus(double) [89]
+-----------------------------------------------
+                                 703             void cppunivariate::finite_diff_gradient<cppunivariate::BurrProfileCost>(cppunivariate::BurrProfileCost&, double const*, double*) [90]
+                0.00    0.00       9/9           cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+[90]     0.0    0.00    0.00       9+703     void cppunivariate::finite_diff_gradient<cppunivariate::BurrProfileCost>(cppunivariate::BurrProfileCost&, double const*, double*) [90]
+                0.00    0.00     694/1623        cppunivariate::detail::l2_norm(double const*, int) [67]
+                                 703             void cppunivariate::finite_diff_gradient<cppunivariate::BurrProfileCost>(cppunivariate::BurrProfileCost&, double const*, double*) [90]
+-----------------------------------------------
+                0.00    0.00       1/9           cppunivariate::limit_detail(std::vector<double, std::allocator<double> >, double, cppunivariate::StopModel) [51]
+                0.00    0.00       1/9           cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [28]
+                0.00    0.00       2/9           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, bool)#1}::operator()(double, bool) const [42]
+                0.00    0.00       2/9           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(cppunivariate::betapr_joint_cert::Face const&)#1}::operator()(cppunivariate::betapr_joint_cert::Face const&) const [50]
+                0.00    0.00       3/9           __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > > std::__remove_if<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__ops::_Iter_pred<cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)::{lambda(cppunivariate::FitCandidate const&)#1}> >(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__ops::_Iter_pred<cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)::{lambda(cppunivariate::FitCandidate const&)#1}>) [135]
+[91]     0.0    0.00    0.00       9         cppunivariate::valid_stop_coefficients(cppunivariate::StopModel, std::vector<double, std::allocator<double> > const&) [91]
+-----------------------------------------------
+                0.00    0.00       9/9           cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+[92]     0.0    0.00    0.00       9         cppunivariate::BurrCost::gradient(double const*, double*) const [92]
+-----------------------------------------------
+                0.00    0.00       4/8           cppunivariate::burr_cert_detail::data(cppunivariate::basic_span<double>, cppunivariate::burr_cert_detail::Data&) [49]
+                0.00    0.00       4/8           cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+[93]     0.0    0.00    0.00       8         void std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> >::_M_realloc_append<cppunivariate::burr_cert_detail::Interval>(cppunivariate::burr_cert_detail::Interval&&) [93]
+-----------------------------------------------
+                0.00    0.00       1/7           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+                0.00    0.00       6/7           cppunivariate::transformed_detail::logs(cppunivariate::basic_span<double>, bool) [126]
+[94]     0.0    0.00    0.00       7         cppunivariate::transformed_detail::log_pair(double) [94]
+-----------------------------------------------
+                0.00    0.00       1/7           std::_Rb_tree_iterator<std::pair<double const, cppunivariate::burr_cert_detail::Node> > std::_Rb_tree<double, std::pair<double const, cppunivariate::burr_cert_detail::Node>, std::_Select1st<std::pair<double const, cppunivariate::burr_cert_detail::Node> >, std::less<double>, std::allocator<std::pair<double const, cppunivariate::burr_cert_detail::Node> > >::_M_emplace_hint_unique<double&, cppunivariate::burr_cert_detail::Node&>(std::_Rb_tree_const_iterator<std::pair<double const, cppunivariate::burr_cert_detail::Node> >, double&, cppunivariate::burr_cert_detail::Node&) [80]
+                0.00    0.00       1/7           cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+                0.00    0.00       2/7           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+                0.00    0.00       3/7           cppunivariate::trgamma_detail::standardize(cppunivariate::basic_span<double>, cppunivariate::trgamma_detail::LogData&) [104]
+[95]     0.0    0.00    0.00       7         boost::math::rounding_error::~rounding_error() [95]
+-----------------------------------------------
+                0.00    0.00       7/7           std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+[96]     0.0    0.00    0.00       7         void std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >::_M_realloc_append<cppunivariate::betapr_cert_detail::Segment>(cppunivariate::betapr_cert_detail::Segment&&) [96]
+-----------------------------------------------
+                0.00    0.00       1/7           main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+                0.00    0.00       1/7           cppunivariate::betapr_mle_holds(cppunivariate::basic_span<double>, double, double, double, double, int) [27]
+                0.00    0.00       2/7           cppunivariate::betapr_detail::accurate_fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double) [111]
+                0.00    0.00       3/7           cppunivariate::StopDetail::StopDetail(cppunivariate::StopDetail const&) [103]
+[97]     0.0    0.00    0.00       7         cppunivariate::FitCandidate* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*>(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*) [97]
+-----------------------------------------------
+                0.00    0.00       6/6           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[98]     0.0    0.00    0.00       6         void std::vector<std::array<double, 2ul>, std::allocator<std::array<double, 2ul> > >::_M_realloc_append<std::array<double, 2ul> >(std::array<double, 2ul>&&) [98]
+-----------------------------------------------
+                0.00    0.00       4/4           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[99]     0.0    0.00    0.00       4         cppunivariate::transformed_detail::div(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair) [99]
+-----------------------------------------------
+                0.00    0.00       1/4           cppunivariate::transformed_detail::logs(cppunivariate::basic_span<double>, bool) [126]
+                0.00    0.00       3/4           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[100]    0.0    0.00    0.00       4         cppunivariate::transformed_detail::mul(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair) [100]
+-----------------------------------------------
+                0.00    0.00       4/4           cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [31]
+[101]    0.0    0.00    0.00       4         void std::vector<unsigned long, std::allocator<unsigned long> >::_M_realloc_append<unsigned long const&>(unsigned long const&) [101]
+-----------------------------------------------
+                0.00    0.00       4/4           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[102]    0.0    0.00    0.00       4         cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(double, cppunivariate::Gb2Status)#5}::operator()(double, cppunivariate::Gb2Status) const [102]
+-----------------------------------------------
+                0.00    0.00       1/3           cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [31]
+                0.00    0.00       2/3           cppunivariate::trgamma_fit_log(cppunivariate::basic_span<double>, double, int, double, double) [16]
+[103]    0.0    0.00    0.00       3         cppunivariate::StopDetail::StopDetail(cppunivariate::StopDetail const&) [103]
+                0.00    0.00       3/7           cppunivariate::FitCandidate* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*>(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*) [97]
+-----------------------------------------------
+                0.00    0.00       1/3           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+                0.00    0.00       2/3           cppunivariate::trgamma_fit_log(cppunivariate::basic_span<double>, double, int, double, double) [16]
+[104]    0.0    0.00    0.00       3         cppunivariate::trgamma_detail::standardize(cppunivariate::basic_span<double>, cppunivariate::trgamma_detail::LogData&) [104]
+                0.00    0.00       3/7           boost::math::rounding_error::~rounding_error() [95]
+                0.00    0.00       3/3           std::vector<double, std::allocator<double> >::_M_default_append(unsigned long) [108]
+                0.00    0.00       3/3           std::vector<std::vector<long double, std::allocator<long double> >, std::allocator<std::vector<long double, std::allocator<long double> > > >::~vector() [107]
+-----------------------------------------------
+                0.00    0.00       1/3           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+                0.00    0.00       1/3           cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [28]
+                0.00    0.00       1/3           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[105]    0.0    0.00    0.00       3         cppunivariate::BetaPrimeResult::~BetaPrimeResult() [105]
+-----------------------------------------------
+                0.00    0.00       3/3           cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&) [52]
+[106]    0.0    0.00    0.00       3         cppunivariate::burr_cert_detail::weibull_at(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval&, cppunivariate::burr_cert_detail::Interval&) [106]
+                0.00    0.00       9/2768        cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [66]
+                0.00    0.00       6/1440        cppunivariate::burr_cert_detail::padded(double, double) [68]
+-----------------------------------------------
+                0.00    0.00       3/3           cppunivariate::trgamma_detail::standardize(cppunivariate::basic_span<double>, cppunivariate::trgamma_detail::LogData&) [104]
+[107]    0.0    0.00    0.00       3         std::vector<std::vector<long double, std::allocator<long double> >, std::allocator<std::vector<long double, std::allocator<long double> > > >::~vector() [107]
+-----------------------------------------------
+                0.00    0.00       3/3           cppunivariate::trgamma_detail::standardize(cppunivariate::basic_span<double>, cppunivariate::trgamma_detail::LogData&) [104]
+[108]    0.0    0.00    0.00       3         std::vector<double, std::allocator<double> >::_M_default_append(unsigned long) [108]
+-----------------------------------------------
+                0.00    0.00       1/3           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+                0.00    0.00       2/3           cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+[109]    0.0    0.00    0.00       3         std::vector<double, std::allocator<double> >::vector(std::vector<double, std::allocator<double> > const&) [109]
+-----------------------------------------------
+                0.00    0.00       1/2           cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+                0.00    0.00       1/2           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[110]    0.0    0.00    0.00       2         cppunivariate::pareto_mle(cppunivariate::basic_span<double>) [110]
+-----------------------------------------------
+                0.00    0.00       1/2           cppunivariate::betapr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [12]
+                0.00    0.00       1/2           cppunivariate::betapr_mle_holds(cppunivariate::basic_span<double>, double, double, double, double, int) [27]
+[111]    0.0    0.00    0.00       2         cppunivariate::betapr_detail::accurate_fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double) [111]
+                0.00    0.00       2/7           cppunivariate::FitCandidate* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*>(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*) [97]
+                0.00    0.00       2/2           cppunivariate::betapr_detail::fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double) [112]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::betapr_detail::accurate_fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double) [111]
+[112]    0.0    0.00    0.00       2         cppunivariate::betapr_detail::fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double) [112]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::trgamma_fit_log(cppunivariate::basic_span<double>, double, int, double, double) [16]
+[113]    0.0    0.00    0.00       2         cppunivariate::TrGammaResult cppunivariate::trgamma_detail::check_represented<cppunivariate::TrGammaResult, cppunivariate::TrGammaStatus>(cppunivariate::basic_span<double>, cppunivariate::TrGammaResult, cppunivariate::TrGammaStatus, cppunivariate::TrGammaStatus, bool, double) [113]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long) [15]
+[114]    0.0    0.00    0.00       2         cppunivariate::trgamma_detail::normal_seam_upper(cppunivariate::trgamma_detail::LogData const&, double) [114]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&) [34]
+[115]    0.0    0.00    0.00       2         cppunivariate::burr_cert_detail::inverse(cppunivariate::burr_cert_detail::Matrix, cppunivariate::burr_cert_detail::Matrix&, int) [115]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[116]    0.0    0.00    0.00       2         cppunivariate::transformed_detail::add(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair) [116]
+-----------------------------------------------
+                0.00    0.00       2/2           cppunivariate::betapr_joint_exterior_bounds(cppunivariate::basic_span<double>, double, double, double, int, double, long) [39]
+[117]    0.0    0.00    0.00       2         cppunivariate::betapr_joint_detail::signed_cutoff(double, double, double, double, double, double, double, cppunivariate::betapr_joint_detail::GammaTangent const&, int, int&, long) [117]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::fit_gumbel_newton(cppunivariate::basic_span<double>, double, int, double, bool) [124]
+[118]    0.0    0.00    0.00       1         cppunivariate::norm_detail::moments(cppunivariate::basic_span<double>) [118]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [44]
+[119]    0.0    0.00    0.00       1         cppunivariate::weibull_mle(cppunivariate::basic_span<double>, double, int, double) [119]
+                0.00    0.00       1/1           cppunivariate::fit_gumbel_newton(cppunivariate::basic_span<double>, double, int, double, bool) [124]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [28]
+[120]    0.0    0.00    0.00       1         cppunivariate::BetaPrimeResult::BetaPrimeResult(cppunivariate::BetaPrimeResult&&) [120]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+[121]    0.0    0.00    0.00       1         cppunivariate::burr_cert_detail::signed_tail(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull const&) [121]
+-----------------------------------------------
+                                   1             main::{lambda(int)#1}::_FUN(int) <cycle 1> [10]
+[122]    0.0    0.00    0.00       1         cppunivariate::betapr_joint_cert::Engine::refine(cppunivariate::betapr_joint_cert::Point) <cycle 1> [122]
+                                1000             cppunivariate::betapr_joint_cert::Engine::hessian(cppunivariate::betapr_joint_cert::Cell const&) <cycle 1> [62]
+                                1000             cppunivariate::betapr_joint_cert::Engine::point(double, double) <cycle 1> [11]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[123]    0.0    0.00    0.00       1         cppunivariate::betapr_joint_cert::Engine::~Engine() [123]
+                0.00    0.00      14/15          non-virtual thunk to boost::wrapexcept<std::overflow_error>::~wrapexcept() [85]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::weibull_mle(cppunivariate::basic_span<double>, double, int, double) [119]
+[124]    0.0    0.00    0.00       1         cppunivariate::fit_gumbel_newton(cppunivariate::basic_span<double>, double, int, double, bool) [124]
+                0.00    0.00       1/1           cppunivariate::norm_detail::moments(cppunivariate::basic_span<double>) [118]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[125]    0.0    0.00    0.00       1         cppunivariate::certificate_budget(int) [125]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[126]    0.0    0.00    0.00       1         cppunivariate::transformed_detail::logs(cppunivariate::basic_span<double>, bool) [126]
+                0.00    0.00       6/7           cppunivariate::transformed_detail::log_pair(double) [94]
+                0.00    0.00       4/12          void std::vector<double, std::allocator<double> >::_M_realloc_append<double const&>(double const&) [87]
+                0.00    0.00       1/4           cppunivariate::transformed_detail::mul(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair) [100]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [3]
+[127]    0.0    0.00    0.00       1         cppunivariate::transformed_detail::normal(cppunivariate::transformed_detail::Logs const&, double, double) [127]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_joint_exterior_bounds(cppunivariate::basic_span<double>, double, double, double, int, double, long) [39]
+[128]    0.0    0.00    0.00       1         cppunivariate::special::lbeta(double, double) [128]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+[129]    0.0    0.00    0.00       1         std::_Vector_base<cppunivariate::burr_cert_detail::Segment, std::allocator<cppunivariate::burr_cert_detail::Segment> >::~_Vector_base() [129]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [33]
+[130]    0.0    0.00    0.00       1         std::_Vector_base<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> >::~_Vector_base() [130]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [13]
+[131]    0.0    0.00    0.00       1         std::_Vector_base<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >::~_Vector_base() [131]
+-----------------------------------------------
+                0.00    0.00       1/1           std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&) [29]
+[132]    0.0    0.00    0.00       1         std::_Vector_base<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >::~_Vector_base() [132]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(double, cppunivariate::burr_cert_detail::Node&)#1}::operator()(double, cppunivariate::burr_cert_detail::Node&) const [36]
+[133]    0.0    0.00    0.00       1         void std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::_M_realloc_append<cppunivariate::FitCandidate const&>(cppunivariate::FitCandidate const&) [133]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_joint_exterior_bounds(cppunivariate::basic_span<double>, double, double, double, int, double, long) [39]
+[134]    0.0    0.00    0.00       1         std::vector<double, std::allocator<double> >::reserve(unsigned long) [134]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [28]
+[135]    0.0    0.00    0.00       1         __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > > std::__remove_if<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__ops::_Iter_pred<cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)::{lambda(cppunivariate::FitCandidate const&)#1}> >(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__ops::_Iter_pred<cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)::{lambda(cppunivariate::FitCandidate const&)#1}>) [135]
+                0.00    0.00       3/9           cppunivariate::valid_stop_coefficients(cppunivariate::StopModel, std::vector<double, std::allocator<double> > const&) [91]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [31]
+[136]    0.0    0.00    0.00       1         void std::__insertion_sort<__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}> >(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}>) [136]
+-----------------------------------------------
+                0.00    0.00       1/1           cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [31]
+[137]    0.0    0.00    0.00       1         void std::__introsort_loop<__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}> >(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}>) [137]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2026 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+ [103] cppunivariate::StopDetail::StopDetail(cppunivariate::StopDetail const&) [52] cppunivariate::burr_cert_detail::weibull(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull&) [129] std::_Vector_base<cppunivariate::burr_cert_detail::Segment, std::allocator<cppunivariate::burr_cert_detail::Segment> >::~_Vector_base()
+  [12] cppunivariate::betapr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [70] cppunivariate::burr_cert_detail::intercept(std::vector<double, std::allocator<double> > const&, double, double, double&, double&, double&, int) [130] std::_Vector_base<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> >::~_Vector_base()
+  [48] cppunivariate::gb2_detail::double_pareto(cppunivariate::trgamma_detail::LogData const&, double) [74] cppunivariate::burr_cert_detail::operator/(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [131] std::_Vector_base<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >::~_Vector_base()
+   [5] cppunivariate::gb2_detail::refine(cppunivariate::trgamma_detail::LogData const&, std::array<double, 2ul>, double, double, double, double, double, int, int&) [73] cppunivariate::burr_cert_detail::operator-(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [132] std::_Vector_base<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >::~_Vector_base()
+   [7] cppunivariate::gb2_detail::logbeta(double, double) [66] cppunivariate::burr_cert_detail::operator*(cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval) [77] std::_Vector_base<double, std::allocator<double> >::~_Vector_base()
+   [4] cppunivariate::gb2_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, int) [61] cppunivariate::betapr_joint_cert::add(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [22] std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::pop()
+   [6] cppunivariate::gb2_detail::evaluate(cppunivariate::trgamma_detail::LogData const&, double, double, double, double, bool, double) [13] cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double) [21] std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >::push(cppunivariate::betapr_joint_cert::Cell const&)
+ [110] cppunivariate::pareto_mle(cppunivariate::basic_span<double>) [59] cppunivariate::betapr_joint_cert::mul(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [38] std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::pop()
+   [2] cppunivariate::fpareto_mle(cppunivariate::basic_span<double>, double, double, int, double, double, double, double) [65] cppunivariate::betapr_joint_cert::sub(cppunivariate::betapr_joint_cert::Interval, cppunivariate::betapr_joint_cert::Interval) [29] std::priority_queue<cppunivariate::betapr_cert_detail::Segment, std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >, std::less<cppunivariate::betapr_cert_detail::Segment> >::push(cppunivariate::betapr_cert_detail::Segment&&)
+  [31] cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [20] cppunivariate::betapr_joint_cert::Engine::gamma_upper(cppunivariate::betapr_joint_cert::Face const&, double, double) [133] void std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::_M_realloc_append<cppunivariate::FitCandidate const&>(cppunivariate::FitCandidate const&)
+ [118] cppunivariate::norm_detail::moments(cppunivariate::basic_span<double>) [23] cppunivariate::betapr_joint_cert::Engine::maximum_impossible(cppunivariate::betapr_joint_cert::Cell const&) [83] std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> >::~vector()
+ [119] cppunivariate::weibull_mle(cppunivariate::basic_span<double>, double, int, double) [14] cppunivariate::betapr_joint_cert::Engine::cell(cppunivariate::betapr_joint_cert::Cell, std::priority_queue<cppunivariate::betapr_joint_cert::Cell, std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >, std::less<cppunivariate::betapr_joint_cert::Cell> >&) [93] void std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> >::_M_realloc_append<cppunivariate::burr_cert_detail::Interval>(cppunivariate::burr_cert_detail::Interval&&)
+  [45] cppunivariate::gamma_detail::log_minus_digamma(double) [19] cppunivariate::betapr_joint_cert::Engine::tail(cppunivariate::betapr_joint_cert::Face const&, double, double, double) [88] void std::vector<cppunivariate::betapr_joint_cert::Cell, std::allocator<cppunivariate::betapr_joint_cert::Cell> >::_M_realloc_append<cppunivariate::betapr_joint_cert::Cell const&>(cppunivariate::betapr_joint_cert::Cell const&)
+  [51] cppunivariate::limit_detail(std::vector<double, std::allocator<double> >, double, cppunivariate::StopModel) [11] cppunivariate::betapr_joint_cert::Engine::point(double, double) [96] void std::vector<cppunivariate::betapr_cert_detail::Segment, std::allocator<cppunivariate::betapr_cert_detail::Segment> >::_M_realloc_append<cppunivariate::betapr_cert_detail::Segment>(cppunivariate::betapr_cert_detail::Segment&&)
+ [111] cppunivariate::betapr_detail::accurate_fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double) [122] cppunivariate::betapr_joint_cert::Engine::refine(cppunivariate::betapr_joint_cert::Point) [107] std::vector<std::vector<long double, std::allocator<long double> >, std::allocator<std::vector<long double, std::allocator<long double> > > >::~vector()
+ [112] cppunivariate::betapr_detail::fallback(cppunivariate::BetaPrimeResult, cppunivariate::basic_span<double>, double, double, double, double, int, double, double, double) [62] cppunivariate::betapr_joint_cert::Engine::hessian(cppunivariate::betapr_joint_cert::Cell const&) [98] void std::vector<std::array<double, 2ul>, std::allocator<std::array<double, 2ul> > >::_M_realloc_append<std::array<double, 2ul> >(std::array<double, 2ul>&&)
+  [24] double cppunivariate::trgamma_detail::brent_zero<cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#1}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const::{lambda(double)#1}>(cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#1}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const::{lambda(double)#1}, double, double, double, double, double, int, bool&) [123] cppunivariate::betapr_joint_cert::Engine::~Engine() [108] std::vector<double, std::allocator<double> >::_M_default_append(unsigned long)
+  [47] cppunivariate::trgamma_detail::face_power(cppunivariate::trgamma_detail::LogData const&, int) [63] cppunivariate::betapr_joint_cert::log_beta(double, double) [87] void std::vector<double, std::allocator<double> >::_M_realloc_append<double const&>(double const&)
+  [17] cppunivariate::trgamma_detail::gamma_shape(double, int&, int) [124] cppunivariate::fit_gumbel_newton(cppunivariate::basic_span<double>, double, int, double, bool) [81] void std::vector<double, std::allocator<double> >::_M_realloc_append<double>(double&&)
+ [104] cppunivariate::trgamma_detail::standardize(cppunivariate::basic_span<double>, cppunivariate::trgamma_detail::LogData&) [60] cppunivariate::betapr_cert_detail::increment(double, double) [134] std::vector<double, std::allocator<double> >::reserve(unsigned long)
+ [113] cppunivariate::TrGammaResult cppunivariate::trgamma_detail::check_represented<cppunivariate::TrGammaResult, cppunivariate::TrGammaStatus>(cppunivariate::basic_span<double>, cppunivariate::TrGammaResult, cppunivariate::TrGammaStatus, cppunivariate::TrGammaStatus, bool, double) [32] cppunivariate::burr_mle_certified(cppunivariate::basic_span<double>, double, int, double, double, double, double, long) [109] std::vector<double, std::allocator<double> >::vector(std::vector<double, std::allocator<double> > const&)
+ [114] cppunivariate::trgamma_detail::normal_seam_upper(cppunivariate::trgamma_detail::LogData const&, double) [125] cppunivariate::certificate_budget(int) [101] void std::vector<unsigned long, std::allocator<unsigned long> >::_M_realloc_append<unsigned long const&>(unsigned long const&)
+  [72] cppunivariate::trgamma_detail::normal_profile_slope(cppunivariate::trgamma_detail::LogData const&, double, double) [82] cppunivariate::transformed_detail::Sum::push(double) [64] std::_Rb_tree<std::pair<double, double>, std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point>, std::_Select1st<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> >, std::less<std::pair<double, double> >, std::allocator<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> > >::_M_get_insert_hint_unique_pos(std::_Rb_tree_const_iterator<std::pair<std::pair<double, double> const, cppunivariate::betapr_joint_cert::Point> >, std::pair<double, double> const&)
+  [71] cppunivariate::trgamma_detail::cgf(cppunivariate::trgamma_detail::LogData const&, double) [116] cppunivariate::transformed_detail::add(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair) [80] std::_Rb_tree_iterator<std::pair<double const, cppunivariate::burr_cert_detail::Node> > std::_Rb_tree<double, std::pair<double const, cppunivariate::burr_cert_detail::Node>, std::_Select1st<std::pair<double const, cppunivariate::burr_cert_detail::Node> >, std::less<double>, std::allocator<std::pair<double const, cppunivariate::burr_cert_detail::Node> > >::_M_emplace_hint_unique<double&, cppunivariate::burr_cert_detail::Node&>(std::_Rb_tree_const_iterator<std::pair<double const, cppunivariate::burr_cert_detail::Node> >, double&, cppunivariate::burr_cert_detail::Node&)
+  [18] cppunivariate::trgamma_detail::profile(cppunivariate::trgamma_detail::LogData const&, double, int&, int) [99] cppunivariate::transformed_detail::div(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair) [135] __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > > std::__remove_if<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__ops::_Iter_pred<cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)::{lambda(cppunivariate::FitCandidate const&)#1}> >(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__ops::_Iter_pred<cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int)::{lambda(cppunivariate::FitCandidate const&)#1}>)
+  [15] cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long) [100] cppunivariate::transformed_detail::mul(cppunivariate::transformed_detail::Pair, cppunivariate::transformed_detail::Pair) [97] cppunivariate::FitCandidate* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*>(__gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, __gnu_cxx::__normal_iterator<cppunivariate::FitCandidate const*, std::vector<cppunivariate::FitCandidate, std::allocator<cppunivariate::FitCandidate> > >, cppunivariate::FitCandidate*)
+ [120] cppunivariate::BetaPrimeResult::BetaPrimeResult(cppunivariate::BetaPrimeResult&&) [126] cppunivariate::transformed_detail::logs(cppunivariate::basic_span<double>, bool) [136] void std::__insertion_sort<__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}> >(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}>)
+ [105] cppunivariate::BetaPrimeResult::~BetaPrimeResult() [127] cppunivariate::transformed_detail::normal(cppunivariate::transformed_detail::Logs const&, double, double) [137] void std::__introsort_loop<__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}> >(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, __gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<cppunivariate::invburr_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(unsigned long, unsigned long)#1}>)
+  [44] cppunivariate::burr_mle_legacy(cppunivariate::basic_span<double>, double, int, double, double, double, double, bool) [94] cppunivariate::transformed_detail::log_pair(double) [85] non-virtual thunk to boost::wrapexcept<std::overflow_error>::~wrapexcept()
+  [16] cppunivariate::trgamma_fit_log(cppunivariate::basic_span<double>, double, int, double, double) [40] cppunivariate::betapr_joint_detail::gamma_tangent(double, double, double, double, double, int, int&, long) [10] main::{lambda(int)#1}::_FUN(int)
+  [27] cppunivariate::betapr_mle_holds(cppunivariate::basic_span<double>, double, double, double, double, int) [117] cppunivariate::betapr_joint_detail::signed_cutoff(double, double, double, double, double, double, double, cppunivariate::betapr_joint_detail::GammaTangent const&, int, int&, long) [41] cppunivariate::trgamma_detail::fit_free(cppunivariate::trgamma_detail::LogData const&, double, int, long)::{lambda(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&)#3}::operator()(cppunivariate::trgamma_detail::ProfilePoint const&, cppunivariate::trgamma_detail::ProfilePoint const&) const
+ [106] cppunivariate::burr_cert_detail::weibull_at(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Interval, cppunivariate::burr_cert_detail::Interval&, cppunivariate::burr_cert_detail::Interval&) [89] cppunivariate::betapr_joint_detail::softplus(double) [86] cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&)#2}::operator()(cppunivariate::burr_cert_detail::Node const&, cppunivariate::burr_cert_detail::Node const&) const
+  [84] cppunivariate::burr_cert_detail::contraction(cppunivariate::burr_cert_detail::Matrix const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, cppunivariate::burr_cert_detail::BoxMatrix const&, std::array<double, 3ul> const&, int, int) [90] void cppunivariate::finite_diff_gradient<cppunivariate::BurrProfileCost>(cppunivariate::BurrProfileCost&, double const*, double*) [36] cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int)::{lambda(double, cppunivariate::burr_cert_detail::Node&)#1}::operator()(double, cppunivariate::burr_cert_detail::Node&) const
+ [121] cppunivariate::burr_cert_detail::signed_tail(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Weibull const&) [91] cppunivariate::valid_stop_coefficients(cppunivariate::StopModel, std::vector<double, std::allocator<double> > const&) [50] cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(cppunivariate::betapr_joint_cert::Face const&)#1}::operator()(cppunivariate::betapr_joint_cert::Face const&) const
+  [35] cppunivariate::burr_cert_detail::score_hessian(cppunivariate::burr_cert_detail::Data const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul> const&, std::array<cppunivariate::burr_cert_detail::Interval, 3ul>&, cppunivariate::burr_cert_detail::BoxMatrix&) [39] cppunivariate::betapr_joint_exterior_bounds(cppunivariate::basic_span<double>, double, double, double, int, double, long) [42] cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, bool)#1}::operator()(double, bool) const
+  [33] cppunivariate::burr_cert_detail::fit(cppunivariate::basic_span<double>, long, int) [28] cppunivariate::betapr_mle_holds_certificate(cppunivariate::basic_span<double>, double, double, double, double, int) [25] cppunivariate::betapr_joint_cert::fit(cppunivariate::basic_span<double>, double, int, double, double, double, double, double)::{lambda(double, double, double)#2}::operator()(double, double, double) const
+  [75] cppunivariate::burr_cert_detail::log(cppunivariate::burr_cert_detail::Interval) [67] cppunivariate::detail::l2_norm(double const*, int) [30] cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point)#3}::operator()(cppunivariate::betapr_cert_detail::Point, cppunivariate::betapr_cert_detail::Point) const
+  [49] cppunivariate::burr_cert_detail::data(cppunivariate::basic_span<double>, cppunivariate::burr_cert_detail::Data&) [3] cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double) [79] cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(cppunivariate::betapr_cert_detail::Point const&)#1}::operator()(cppunivariate::betapr_cert_detail::Point const&) const
+  [37] cppunivariate::burr_cert_detail::dual(cppunivariate::burr_cert_detail::Data const&, double, cppunivariate::burr_cert_detail::Node&, int) [128] cppunivariate::special::lbeta(double, double) [43] cppunivariate::betapr_cert_detail::fit(cppunivariate::basic_span<double>, double, double, int)::{lambda(double)#1}::operator()(double) const
+  [68] cppunivariate::burr_cert_detail::padded(double, double) [46] cppunivariate::gamma_mle(cppunivariate::basic_span<double>, double, int) [102] cppunivariate::gb2_mle(cppunivariate::basic_span<double>, double, int, double, double, double, double)::{lambda(double, cppunivariate::Gb2Status)#5}::operator()(double, cppunivariate::Gb2Status) const
+  [76] cppunivariate::burr_cert_detail::primal(std::vector<cppunivariate::burr_cert_detail::Interval, std::allocator<cppunivariate::burr_cert_detail::Interval> > const&, cppunivariate::burr_cert_detail::Proposal const&) [95] boost::math::rounding_error::~rounding_error() [8] _init
+ [115] cppunivariate::burr_cert_detail::inverse(cppunivariate::burr_cert_detail::Matrix, cppunivariate::burr_cert_detail::Matrix&, int) [26] cppunivariate::BetaPrimeLogCost::gradient(double const*, double*) const [9] <cycle 1>
+  [34] cppunivariate::burr_cert_detail::isolate(cppunivariate::burr_cert_detail::Data const&, cppunivariate::burr_cert_detail::Proposal, cppunivariate::burr_cert_detail::Root&) [69] cppunivariate::BetaPrimeLogCost::operator()(double const*) const
+  [78] cppunivariate::burr_cert_detail::profile(std::vector<double, std::allocator<double> > const&, double, cppunivariate::burr_cert_detail::Proposal&, int) [92] cppunivariate::BurrCost::gradient(double const*, double*) const

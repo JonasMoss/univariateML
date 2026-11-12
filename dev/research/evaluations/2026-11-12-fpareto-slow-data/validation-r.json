@@ -1,0 +1,24 @@
+[
+  {
+    "command": [
+      "just",
+      "test"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T03:45:59.098626+00:00",
+    "seconds": 721.2462011020398,
+    "exit": 0,
+    "log": "build/scratch/final-test.log"
+  },
+  {
+    "command": [
+      "just",
+      "test-full"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T03:58:00.345225+00:00",
+    "seconds": 908.9396688289708,
+    "exit": 0,
+    "log": "build/scratch/final-test-full.log"
+  }
+]

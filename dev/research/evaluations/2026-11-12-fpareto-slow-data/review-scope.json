@@ -1,0 +1,13 @@
+{
+  "only_solver_change": "Retain completed all-free grid directions in explored",
+  "defaults_budgets_and_numerical_solves_unchanged": true,
+  "tests_appended_only": true,
+  "dossiers_unchanged": true,
+  "fpareto_adapter_unchanged": true,
+  "source_hashes": {
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp": "4ac8784ca5d143b5f33b15002495ab51250e56433419ab672c20c7466f1608a8",
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/test.cpp": "b0b216bd925afc45a13683e7c07e6b8e0a68a5da2cef3dff529a01869a030efb",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp": "078232d4660ed832419c6d1d7fd63b3ec7c41db6982fb5f6df21e489347264cf",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/test.cpp": "a90f426f1a91514a4437e98ef103ae55a82d49caa817e30a640ade2c4915c561"
+  }
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "command": [
+      "cmake",
+      "-S",
+      "univariateML-cpp",
+      "-B",
+      "univariateML-cpp/build",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O2",
+      "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache",
+      "-DBoost_INCLUDE_DIR=/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T03:32:01.274710+00:00",
+    "seconds": 0.07549442595336586,
+    "exit": 0,
+    "log": "build/scratch/final-configure-native.log"
+  },
+  {
+    "command": [
+      "cmake",
+      "-S",
+      "univariateML-cpp",
+      "-B",
+      "build/cpp-no-long-double",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O2",
+      "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache",
+      "-DBoost_INCLUDE_DIR=/home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include",
+      "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T03:32:01.350495+00:00",
+    "seconds": 0.22635828400962055,
+    "exit": 0,
+    "log": "build/scratch/final-configure-double.log"
+  },
+  {
+    "command": [
+      "just",
+      "cpp-test"
+    ],
+    "machine": "local workstation (simbox off by brief)",
+    "start": "2026-11-12T03:32:01.577166+00:00",
+    "seconds": 555.5324820570531,
+    "exit": 8,
+    "log": "dev/research/evaluations/2026-11-12-fpareto-slow-data/optimized-ctest.log.gz"
+  }
+]

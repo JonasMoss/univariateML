@@ -1,0 +1,20 @@
+{
+  "baseline": "bb46078757dad3538bfb263086d4e72cde163330",
+  "version": "final",
+  "mode": "double",
+  "source_hashes": {
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp": "4ac8784ca5d143b5f33b15002495ab51250e56433419ab672c20c7466f1608a8",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp": "078232d4660ed832419c6d1d7fd63b3ec7c41db6982fb5f6df21e489347264cf"
+  },
+  "timeout": 120,
+  "controls": {
+    "fpareto": [
+      1e-07,
+      1000
+    ],
+    "gb2": [
+      1e-10,
+      300
+    ]
+  }
+}

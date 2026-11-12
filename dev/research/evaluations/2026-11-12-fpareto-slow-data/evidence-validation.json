@@ -1,0 +1,46 @@
+[
+  {
+    "command": [
+      "compare.py"
+    ],
+    "exit": 0,
+    "seconds": 0.17648246401222423,
+    "machine": "local workstation"
+  },
+  {
+    "command": [
+      "check_witnesses.py"
+    ],
+    "exit": 0,
+    "seconds": 0.15474669903051108,
+    "machine": "local workstation"
+  },
+  {
+    "command": [
+      "check_witnesses.py",
+      "--input",
+      "final-double.jsonl"
+    ],
+    "exit": 0,
+    "seconds": 0.13945023698033765,
+    "machine": "local workstation"
+  },
+  {
+    "command": [
+      "check_faces.py"
+    ],
+    "exit": 0,
+    "seconds": 0.09376999503001571,
+    "machine": "local workstation"
+  },
+  {
+    "command": [
+      "check_faces.py",
+      "--input",
+      "final-double.jsonl"
+    ],
+    "exit": 0,
+    "seconds": 0.09477545000845566,
+    "machine": "local workstation"
+  }
+]

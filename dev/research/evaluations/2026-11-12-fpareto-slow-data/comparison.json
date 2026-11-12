@@ -1,0 +1,188 @@
+{
+  "baseline": "bb46078757dad3538bfb263086d4e72cde163330",
+  "cases": 544,
+  "input_identity": true,
+  "default": {
+    "returned": 277,
+    "certified": 277,
+    "changed": []
+  },
+  "strict": {
+    "returned": 270,
+    "certified": 270,
+    "changed": []
+  },
+  "baseline_timeouts": [
+    1600
+  ],
+  "changed_stops": [
+    {
+      "index": 1600,
+      "before": {
+        "index": 1600,
+        "seconds": 120.10111867397791,
+        "timeout": true
+      },
+      "after": {
+        "index": 1600,
+        "seconds": 0.02688708301866427,
+        "result": "1600 6 1 nan nan nan nan -4173.5072841840456 7628 20077 0 1 5 0.00033546262790251185 2001.5149177560725 0.00056878957518072498 9.3401791526989749e+149 0 -4173.5079031055966 -4173.5079031045034"
+      }
+    },
+    {
+      "index": 1601,
+      "before": {
+        "index": 1601,
+        "seconds": 1.6697808009921573,
+        "result": "1601 4 1 nan nan nan nan -29.102002422134035 2381 0 0 0"
+      },
+      "after": {
+        "index": 1601,
+        "seconds": 0.01692903199000284,
+        "result": "1601 9 1 0.00068943457133011066 366.63378722834312 48.624362606453218 0.58444080811953258 -29.123043419742878 407 29036 0 0"
+      }
+    },
+    {
+      "index": 9580,
+      "before": {
+        "index": 9580,
+        "seconds": 9.32451977301389,
+        "result": "9580 9 1 0.00081459975737359705 2638.4369864454534 0.22680149566136909 1.0295034452732543 -8.8450006719467353 17164 0 0 0"
+      },
+      "after": {
+        "index": 9580,
+        "seconds": 0.06290031399112195,
+        "result": "9580 9 1 0.0033768269608681371 636.47624053898096 1.0792774550823561 1.0254701662282435 -8.9326822222048055 338 27426 0 0"
+      }
+    },
+    {
+      "index": 9596,
+      "before": {
+        "index": 9596,
+        "seconds": 10.42820565297734,
+        "result": "9596 9 1 0.22680149581737444 2638.4369864442556 0.00081459975737396676 0.97134206261432021 3.0476531970227478 13347 0 0 0"
+      },
+      "after": {
+        "index": 9596,
+        "seconds": 0.06496104504913092,
+        "result": "9596 9 1 1.0792774550852715 636.47624053889206 0.0033768269608686081 0.97516245029153814 2.9599716467402777 338 27426 0 0"
+      }
+    },
+    {
+      "index": 10072,
+      "before": {
+        "index": 10072,
+        "seconds": 2.217185546993278,
+        "result": "10072 4 1 nan nan nan nan 77.219355967752222 5137 0 0 0"
+      },
+      "after": {
+        "index": 10072,
+        "seconds": 0.08168910501990467,
+        "result": "10072 9 1 0.00043050194485189558 3934864.406922868 10.15142703847151 0.99928943443121221 77.179656388702355 924 30113 0 0"
+      }
+    }
+  ],
+  "target": {
+    "1599": {
+      "before": {
+        "index": 1599,
+        "seconds": 115.02425305102952,
+        "result": "1599 6 1 nan nan nan nan 4115.799050594519 270601 0 0 0"
+      },
+      "native": {
+        "index": 1599,
+        "seconds": 0.027929475996643305,
+        "result": "1599 6 1 nan nan nan nan 4115.799050594519 4662 18995 0 1 5 0.00033546262790251424 2001.5149177560211 0.00056878957518075772 9.3401791526981338e-151 0 4115.798431672968 4115.7984316740594"
+      },
+      "double": {
+        "index": 1599,
+        "seconds": 0.06265510601224378,
+        "result": "1599 6 1 nan nan nan nan 4115.799050594519 4699 19327 0 1 5 0.00033546262790260721 2001.5149177554692 0.00056878957518091287 9.3401791526981338e-151 0 4115.798431672968 4115.7984316740594"
+      }
+    },
+    "1600": {
+      "before": {
+        "index": 1600,
+        "seconds": 120.10111867397791,
+        "timeout": true
+      },
+      "native": {
+        "index": 1600,
+        "seconds": 0.02688708301866427,
+        "result": "1600 6 1 nan nan nan nan -4173.5072841840456 7628 20077 0 1 5 0.00033546262790251185 2001.5149177560725 0.00056878957518072498 9.3401791526989749e+149 0 -4173.5079031055966 -4173.5079031045034"
+      },
+      "double": {
+        "index": 1600,
+        "seconds": 0.06280016200616956,
+        "result": "1600 6 1 nan nan nan nan -4173.5072841840456 4815 20080 0 1 5 0.00033546262790610989 2001.5149177345941 0.0005687895751868337 9.3401791526989749e+149 0 -4173.5079031055966 -4173.5079031045034"
+      }
+    },
+    "10717": {
+      "before": {
+        "index": 10717,
+        "seconds": 54.09281662502326,
+        "result": "10717 5 1 nan nan nan nan 2291.613266847738 175030 0 0 0"
+      },
+      "native": {
+        "index": 10717,
+        "seconds": 0.05185276101110503,
+        "result": "10717 5 1 nan nan nan nan 2291.613266847738 462 12962 0 1 5 0.23934294151429791 137.73329393619161 0.006737946999085467 9.1211209378014116e-200 0 2291.3874931042819 2291.3874931132732"
+      },
+      "double": {
+        "index": 10717,
+        "seconds": 0.041099324997048825,
+        "result": "10717 5 1 nan nan nan nan 2291.6132668477385 462 12978 0 1 5 0.23934294151425223 137.73329393619161 0.006737946999085467 9.1211209378014116e-200 0 2291.3874931042819 2291.3874931132732"
+      }
+    }
+  },
+  "changed_stop_names": [
+    {
+      "index": 1600,
+      "before": "audit timeout",
+      "after": "DoubleParetoBoundary"
+    },
+    {
+      "index": 1601,
+      "before": "ParetoBoundary",
+      "after": "SearchUnresolved"
+    },
+    {
+      "index": 9580,
+      "before": "SearchUnresolved",
+      "after": "SearchUnresolved"
+    },
+    {
+      "index": 9596,
+      "before": "SearchUnresolved",
+      "after": "SearchUnresolved"
+    },
+    {
+      "index": 10072,
+      "before": "ParetoBoundary",
+      "after": "SearchUnresolved"
+    }
+  ],
+  "profiles": {
+    "1599": {
+      "sampled_cpu_percent": 88.62,
+      "eight_second_evaluations": 4379380
+    },
+    "1600": {
+      "sampled_cpu_percent": 84.79,
+      "eight_second_evaluations": 3865767
+    },
+    "10717": {
+      "sampled_cpu_percent": 79.18,
+      "eight_second_evaluations": 12946385
+    }
+  },
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "files": {
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/README.md": "4e9e9f42b8cbf259d159e845550756b33a9e4b6646f235b7fc47a9eceec3800b",
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp": "00ce3e86365cbeecd72a6ca9e1ffaad60a1990d112b46ab1e395d6d1412d3e27",
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/test.cpp": "7bd279067741479d1aec9274b194cf31598016da5a5b9f6e14804e24f91dc980",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/README.md": "75fcdfa5f74b002bd5574f44f0712f70a2bc7bb737f2ec20657fd5ba2f538993",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp": "078232d4660ed832419c6d1d7fd63b3ec7c41db6982fb5f6df21e489347264cf",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/test.cpp": "ca01f31ae3cfee42552cd32c0581cbc4657636bac1ca3415f8ec33d21d0e826a"
+  }
+}

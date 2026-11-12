@@ -334,3 +334,8 @@ Subtracting a held minimum can round even when the original observations are
 represented exactly. Uncertified GB2 transport checks the TwoSum residual of
 each subtraction. A nonzero residual is carried into the original-excess log
 ratios before the information check; exact subtractions retain the parent fit.
+
+Extreme excess-data units can magnify rounding differences in GB2's nearly
+singular double-Pareto power/scale profiles even for a small sample. These
+searches retain a finite excess-data witness with the held minimum appended;
+the witness likelihood is in the original observation units.

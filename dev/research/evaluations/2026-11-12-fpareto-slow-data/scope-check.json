@@ -1,0 +1,13 @@
+{
+  "changed": [
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp",
+    "univariateML-cpp/include/cppunivariate/distributions/fpareto/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/mle.hpp",
+    "univariateML-cpp/include/cppunivariate/distributions/gb2/test.cpp"
+  ],
+  "appended_tests_only": true,
+  "fit_sources_unchanged_since_replay": true,
+  "no_forbidden_tracked_edits": true
+}
