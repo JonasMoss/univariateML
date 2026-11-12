@@ -3324,6 +3324,25 @@
       "historical_validation": ""
     },
     {
+      "family": "expweibull",
+      "regime": "finite positive interior",
+      "target": "Other hypotheses: not reviewed",
+      "status": "unreviewed",
+      "procedures": "No audited procedure for this scope",
+      "theory": "Unreviewed estimator limit; DQM alone is insufficient",
+      "assumptions": "scale, shape, exponent finite and positive; any coordinate subset free",
+      "dqm": "Unreviewed",
+      "information": "Unreviewed",
+      "rank": "Unreviewed",
+      "evidence": "dev/research/evaluations/2026-11-10-ew-theory-report.md#interior-regularity-and-inference",
+      "calibration": "",
+      "implementation": [],
+      "checks": [],
+      "gap": "Regular with full-rank information; no validated numerical inference adapter.",
+      "historical_sources": "",
+      "historical_validation": ""
+    },
+    {
       "family": "gengamma",
       "regime": "finite interior including Q=0",
       "target": "Other hypotheses: not reviewed",
@@ -5944,6 +5963,46 @@
           "failure_count": 0
         }
       ],
+      "historical_sources": "",
+      "historical_validation": ""
+    },
+    {
+      "family": "expweibull",
+      "regime": "finite positive interior",
+      "kind": "covariance",
+      "target": "Free-coefficient covariance",
+      "status": "invalid for the procedure",
+      "procedures": "Sandwich and observed covariance \u00b7 C++ and R vcov (default sandwich)",
+      "theory": "Implemented numerical covariance scope; availability does not establish estimator asymptotics or coverage",
+      "assumptions": "scale, shape, exponent finite and positive; any coordinate subset free; IID; successful fit interior to the stated free submodel, correct free mask and nonsingular well-conditioned sensitivity. Observed inference requires correct specification and regular estimator asymptotics; robust sandwich inference additionally requires finite score variance, an identifiable KL target and an estimating-equation expansion.",
+      "dqm": "Conditional classification in the linked source",
+      "information": "Derivative eligibility only; no automatic finite-information claim",
+      "rank": "Available scopes exclude structural null directions; runtime singular, indefinite and ill-conditioned solves still fail",
+      "evidence": "dev/research/evaluations/2026-11-10-ew-theory-report.md#interior-regularity-and-inference",
+      "calibration": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check",
+      "evidence_links": [
+        {
+          "label": "Canonical dossier",
+          "path": "univariateML-cpp/include/cppunivariate/distributions/expweibull/README.md"
+        },
+        {
+          "label": "Independent derivative validation",
+          "path": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#independent-derivative-validation"
+        },
+        {
+          "label": "Pilot Monte Carlo table",
+          "path": "dev/research/evaluations/2026-11-01-vcov-scores-report.md#monte-carlo-sanity-check"
+        },
+        {
+          "label": "R vcov interface and assumptions",
+          "path": "dev/research/evaluations/2026-11-01-vcov-r-report.md#interface-and-mathematical-scope"
+        }
+      ],
+      "implementation": [],
+      "checks": [],
+      "gap": "Regular with full-rank information; no validated numerical inference adapter. Pointwise SE/SD comparisons are not coverage validation. Evidence uses recorded truth points and held subsets, not every regime; failed replications can select results. Near-singular sn/bhatt members, bnbinom weak identification at n = 500 and invtrgamma finite-sample bias require caution.",
+      "caveats": [],
+      "monte_carlo": [],
       "historical_sources": "",
       "historical_validation": ""
     },
@@ -21951,6 +22010,15 @@
         "condition": "rate zero or nonfinite",
         "reason": "rate is on a boundary or outside the proper finite model",
         "classification": "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
+      }
+    ],
+    "expweibull": [
+      {
+        "regime": "finite positive interior",
+        "available": false,
+        "condition": "scale, shape, exponent finite and positive; any coordinate subset free",
+        "reason": "Regular with full-rank information; no validated numerical inference adapter.",
+        "classification": "dev/research/evaluations/2026-11-10-ew-theory-report.md#interior-regularity-and-inference"
       }
     ],
     "fatigue": [

@@ -1,0 +1,4 @@
+PYTHONPATH=/home/jonas/Files/programming/univariateML.wt/ew-fit/dev/validation python3 -m quality reference --write expweibull
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+expweibull     worst rel 2.8e-16  dlogLik +2.7e-14  score 6.81e-59  nd True  local only  not refined -

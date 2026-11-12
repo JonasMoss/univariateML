@@ -28,6 +28,7 @@
 #include "distributions/cauchy/mle.hpp"
 #include "distributions/dunif/mle.hpp"
 #include "distributions/exp/mle.hpp"
+#include "distributions/expweibull/mle.hpp"
 #include "distributions/fatigue/mle.hpp"
 #include "distributions/gamma/mle.hpp"
 #include "distributions/ged/mle.hpp"

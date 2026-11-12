@@ -1,0 +1,12 @@
+[
+  {
+    "mode": "native",
+    "output": "0 1.4142135623730951 EW 0 1.4142135623730951 expected near 1.4142135623730951",
+    "ew_relative_error": 0.0
+  },
+  {
+    "mode": "double",
+    "output": "0 1.4715177646857691 EW 0 1.4142135623730951 expected near 1.4142135623730951",
+    "ew_relative_error": 0.0
+  }
+]

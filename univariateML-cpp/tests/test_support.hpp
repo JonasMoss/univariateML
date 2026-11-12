@@ -70,6 +70,8 @@ constexpr double kGolden_dweibull = 2e-16;
 // emg: analytic Newton correction; measured native/double/R/WASM reference checks.
 constexpr double kGolden_emg = 5e-14;
 constexpr double kGolden_exp = 5e-16;
+// expweibull: local coefficient accuracy contract.
+constexpr double kGolden_expweibull = 1e-10;
 constexpr double kGolden_fatigue = 5e-13;
 constexpr double kGolden_foldnorm = 1e-14;
 constexpr double kGolden_fpareto = 1e-11;
