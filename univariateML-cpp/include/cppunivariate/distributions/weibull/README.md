@@ -26,7 +26,7 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: stats::dweibull
+  density: core_dweibull
   sampler: stats::rweibull
   control:
     shape: Optional held shape; NULL estimates it.

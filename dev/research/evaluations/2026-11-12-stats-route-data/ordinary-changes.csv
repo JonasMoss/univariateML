@@ -1,0 +1,47 @@
+"id","point","parameters","kind","lower","logged","at","input_hex","core","core_hex","stats","stats_hex","relative"
+"hyper","golden","m=20;N=50;k=10","q",TRUE,TRUE,-Inf,"-Inf",0,"0x0p+0",NA,"NaN",Inf
+"hyper","golden","m=20;N=50;k=10","q",FALSE,TRUE,-Inf,"-Inf",10,"0x1.4p+3",NA,"NaN",Inf
+"hyper","simulate","m=5;N=10;k=5","q",TRUE,TRUE,-Inf,"-Inf",0,"0x0p+0",NA,"NaN",Inf
+"hyper","simulate","m=5;N=10;k=5","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",3,"0x1.8p+1",2,"0x1p+1",0.5
+"hyper","simulate","m=5;N=10;k=5","q",TRUE,FALSE,0.5,"0x1.fffffffffffffp-2",3,"0x1.8p+1",2,"0x1p+1",0.5
+"hyper","simulate","m=5;N=10;k=5","q",FALSE,TRUE,-Inf,"-Inf",5,"0x1.4p+2",NA,"NaN",Inf
+"logis","simulate","location=0;scale=1","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.75663668648105e-16,"-0x1.950d871319ffp-53",-2.22044604925031e-16,"-0x1p-52",0.208881167333859
+"logis","simulate","location=0;scale=1","q",TRUE,FALSE,0.5,"0x1.fffffffffffffp-2",-2.22044604925031e-16,"-0x1p-52",-1.11022302462516e-16,"-0x1p-53",1
+"logis","simulate","location=0;scale=1","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",1.75663668648105e-16,"0x1.950d871319ffp-53",2.22044604925031e-16,"0x1p-52",0.208881167333859
+"logis","location 0","location=0;scale=1","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.75663668648105e-16,"-0x1.950d871319ffp-53",-2.22044604925031e-16,"-0x1p-52",0.208881167333859
+"logis","location 0","location=0;scale=1","q",TRUE,FALSE,0.5,"0x1.fffffffffffffp-2",-2.22044604925031e-16,"-0x1p-52",-1.11022302462516e-16,"-0x1p-53",1
+"logis","location 0","location=0;scale=1","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",1.75663668648105e-16,"0x1.950d871319ffp-53",2.22044604925031e-16,"0x1p-52",0.208881167333859
+"logis","scale 0.1","location=0;scale=0.1","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.75663668648105e-17,"-0x1.440ad275ae65ap-56",-2.22044604925031e-17,"-0x1.999999999999ap-56",0.208881167333859
+"logis","scale 0.1","location=0;scale=0.1","q",TRUE,FALSE,0.5,"0x1.fffffffffffffp-2",-2.22044604925031e-17,"-0x1.999999999999ap-56",-1.11022302462516e-17,"-0x1.999999999999ap-57",1
+"logis","scale 0.1","location=0;scale=0.1","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",1.75663668648105e-17,"0x1.440ad275ae65ap-56",2.22044604925031e-17,"0x1.999999999999ap-56",0.208881167333859
+"logis","scale 0.5","location=0;scale=0.5","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-8.78318343240527e-17,"-0x1.950d871319ffp-54",-1.11022302462516e-16,"-0x1p-53",0.208881167333859
+"logis","scale 0.5","location=0;scale=0.5","q",TRUE,FALSE,0.5,"0x1.fffffffffffffp-2",-1.11022302462516e-16,"-0x1p-53",-5.55111512312578e-17,"-0x1p-54",1
+"logis","scale 0.5","location=0;scale=0.5","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",8.78318343240527e-17,"0x1.950d871319ffp-54",1.11022302462516e-16,"0x1p-53",0.208881167333859
+"logis","scale 1","location=0;scale=1","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.75663668648105e-16,"-0x1.950d871319ffp-53",-2.22044604925031e-16,"-0x1p-52",0.208881167333859
+"logis","scale 1","location=0;scale=1","q",TRUE,FALSE,0.5,"0x1.fffffffffffffp-2",-2.22044604925031e-16,"-0x1p-52",-1.11022302462516e-16,"-0x1p-53",1
+"logis","scale 1","location=0;scale=1","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",1.75663668648105e-16,"0x1.950d871319ffp-53",2.22044604925031e-16,"0x1p-52",0.208881167333859
+"logis","scale 2","location=0;scale=2","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-3.51327337296211e-16,"-0x1.950d871319ffp-52",-4.44089209850063e-16,"-0x1p-51",0.208881167333859
+"logis","scale 2","location=0;scale=2","q",TRUE,FALSE,0.5,"0x1.fffffffffffffp-2",-4.44089209850063e-16,"-0x1p-51",-2.22044604925031e-16,"-0x1p-52",1
+"logis","scale 2","location=0;scale=2","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",3.51327337296211e-16,"0x1.950d871319ffp-52",4.44089209850063e-16,"0x1p-51",0.208881167333859
+"logis","scale 10","location=0;scale=10","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.75663668648105e-15,"-0x1.fa50e8d7e07ecp-50",-2.22044604925031e-15,"-0x1.4p-49",0.208881167333859
+"logis","scale 10","location=0;scale=10","q",TRUE,FALSE,0.5,"0x1.fffffffffffffp-2",-2.22044604925031e-15,"-0x1.4p-49",-1.11022302462516e-15,"-0x1.4p-50",1
+"logis","scale 10","location=0;scale=10","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",1.75663668648105e-15,"0x1.fa50e8d7e07ecp-50",2.22044604925031e-15,"0x1.4p-49",0.208881167333859
+"logis","scale 100","location=0;scale=100","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.75663668648105e-14,"-0x1.3c729186ec4f4p-46",-2.22044604925031e-14,"-0x1.9p-46",0.208881167333859
+"logis","scale 100","location=0;scale=100","q",TRUE,FALSE,0.5,"0x1.fffffffffffffp-2",-2.22044604925031e-14,"-0x1.9p-46",-1.11022302462516e-14,"-0x1.9p-47",1
+"logis","scale 100","location=0;scale=100","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",1.75663668648105e-14,"0x1.3c729186ec4f4p-46",2.22044604925031e-14,"0x1.9p-46",0.208881167333859
+"geom","simulate","prob=0.5","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",1,"0x1p+0",0,"0x0p+0",1
+"geom","simulate","prob=0.5","q",FALSE,FALSE,0.5,"0x1.fffffffffffffp-2",1,"0x1p+0",0,"0x0p+0",1
+"geom","prob 0.5","prob=0.5","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",1,"0x1p+0",0,"0x0p+0",1
+"geom","prob 0.5","prob=0.5","q",FALSE,FALSE,0.5,"0x1.fffffffffffffp-2",1,"0x1p+0",0,"0x0p+0",1
+"nbinom","simulate","size=1;prob=0.5","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",1,"0x1p+0",0,"0x0p+0",1
+"nbinom","simulate","size=1;prob=0.5","q",FALSE,FALSE,0.5,"0x1.fffffffffffffp-2",1,"0x1p+0",0,"0x0p+0",1
+"nbinom","prob 0.5","size=1;prob=0.5","q",FALSE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",1,"0x1p+0",0,"0x0p+0",1
+"nbinom","prob 0.5","size=1;prob=0.5","q",FALSE,FALSE,0.5,"0x1.fffffffffffffp-2",1,"0x1p+0",0,"0x0p+0",1
+"norm","simulate","mean=0;sd=1","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.10080879664688e-16,"-0x1.fba8906b0ac5p-54",-1.39145821233588e-16,"-0x1.40d931ff62707p-53",0.208881167333859
+"norm","mean 0","mean=0;sd=1","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.10080879664688e-16,"-0x1.fba8906b0ac5p-54",-1.39145821233588e-16,"-0x1.40d931ff62707p-53",0.208881167333859
+"norm","sd 0.1","mean=0;sd=0.1","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.10080879664688e-17,"-0x1.96207388d56a7p-57",-1.39145821233588e-17,"-0x1.00adc1991b8d3p-56",0.208881167333859
+"norm","sd 0.5","mean=0;sd=0.5","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-5.5040439832344e-17,"-0x1.fba8906b0ac5p-55",-6.95729106167942e-17,"-0x1.40d931ff62707p-54",0.208881167333859
+"norm","sd 1","mean=0;sd=1","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.10080879664688e-16,"-0x1.fba8906b0ac5p-54",-1.39145821233588e-16,"-0x1.40d931ff62707p-53",0.208881167333859
+"norm","sd 2","mean=0;sd=2","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-2.20161759329376e-16,"-0x1.fba8906b0ac5p-53",-2.78291642467177e-16,"-0x1.40d931ff62707p-52",0.208881167333859
+"norm","sd 10","mean=0;sd=10","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.10080879664688e-15,"-0x1.3d495a42e6bb2p-50",-1.39145821233588e-15,"-0x1.910f7e7f3b0c9p-50",0.208881167333859
+"norm","sd 100","mean=0;sd=100","q",TRUE,TRUE,-0.693147180559945,"-0x1.62e42fefa39fp-1",-1.10080879664688e-14,"-0x1.8c9bb0d3a069ep-47",-1.39145821233588e-14,"-0x1.f5535e1f09cfbp-47",0.208881167333859

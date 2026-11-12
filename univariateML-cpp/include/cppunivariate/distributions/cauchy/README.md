@@ -26,7 +26,7 @@ params:
   simulate: 1.0
   kind: regular
 r:
-  density: stats::dcauchy
+  density: core_dcauchy
   sampler: stats::rcauchy
   control:
     scale: Optional held scale; NULL estimates it.

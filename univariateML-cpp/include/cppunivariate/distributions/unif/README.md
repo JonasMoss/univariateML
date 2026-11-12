@@ -24,7 +24,7 @@ params:
   bound: upper
   kind: endpoint
 r:
-  density: stats::dunif
+  density: core_dunif
   sampler: stats::runif
   control:
     min: Optional held min; `NULL` estimates it.

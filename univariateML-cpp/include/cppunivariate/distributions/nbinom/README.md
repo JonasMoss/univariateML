@@ -21,7 +21,7 @@ params:
   simulate: 0.5
   kind: regular
 r:
-  density: stats::dnbinom
+  density: core_dnbinom
   sampler: stats::rnbinom
   control:
     reltol: "Relative tolerance on the Newton proposal; the certificate uses its own fixed accuracy."

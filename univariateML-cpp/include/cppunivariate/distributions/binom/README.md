@@ -27,7 +27,7 @@ params:
   simulate: 0.5
   kind: regular
 r:
-  density: stats::dbinom
+  density: core_dbinom
   sampler: stats::rbinom
   control:
     size: "Optional fixed number of trials; NULL estimates size."

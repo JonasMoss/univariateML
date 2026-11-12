@@ -20,7 +20,7 @@ params:
   simulate: 0.5
   kind: regular
 r:
-  density: stats::dgeom
+  density: core_dgeom
   sampler: stats::rgeom
   control:
     prob: "Optional held prob; NULL estimates it."

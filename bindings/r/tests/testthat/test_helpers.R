@@ -9,9 +9,9 @@ names <- c("model", "density", "support", "simulate", "params")
 expect_equal(names(attributes(decorated))[1:5], names)
 
 
-expect_equal(univariateML_to_string(obj, "d"), "stats::dnorm")
-expect_equal(univariateML_to_string(obj, "p"), "stats::pnorm")
-expect_equal(univariateML_to_string(obj, "q"), "stats::qnorm")
+expect_equal(univariateML_to_string(obj, "d"), "core_dnorm")
+expect_equal(univariateML_to_string(obj, "p"), "core_pnorm")
+expect_equal(univariateML_to_string(obj, "q"), "core_qnorm")
 expect_equal(univariateML_to_string(obj, "r"), "stats::rnorm")
 expect_equal(univariateML_to_string(obj, "ml"), "mlnorm")
 

@@ -34,9 +34,11 @@ test_that("generated d/p/q/r agree with independent truth tables", {
     if (!length(umvl_filter_families(basename(folder)))) next
     id <- basename(folder)
     filename <- file.path(folder, "truth.json")
-    # Stats families have no generated functions. Checking binding ownership
-    # avoids accidentally picking up a function imported from another package.
-    if (!exists(paste0("d", id), ns, inherits = FALSE) || !file.exists(filename)) next
+    # Check ownership so imported reference functions cannot satisfy coverage.
+    model <- metadata[[paste0("ml", id)]]
+    if (is.null(model)) next
+    prefix <- if (startsWith(model$density, "core_")) "core_" else ""
+    if (!exists(paste0(prefix, "d", id), ns, inherits = FALSE) || !file.exists(filename)) next
     checked <- checked + 1L
     truth <- jsonlite::fromJSON(filename, simplifyVector = FALSE)
     matrix_of <- function(rows) do.call(rbind, lapply(rows, function(row)
@@ -44,7 +46,8 @@ test_that("generated d/p/q/r agree with independent truth tables", {
     parameters <- matrix_of(truth$parameters)
     values <- matrix_of(truth$values)
     quantiles <- matrix_of(truth$quantiles)
-    fun <- lapply(paste0(c("d", "p", "q", "r"), id), get, envir = ns, inherits = FALSE)
+    fun <- lapply(paste0(prefix, c("d", "p", "q"), id), get, envir = ns, inherits = FALSE)
+    if (!nzchar(prefix)) fun[[4]] <- get(paste0("r", id), ns, inherits = FALSE)
     points <- if (tier_at_least("full")) seq_len(nrow(parameters)) else
       pick(nrow(parameters), if (tier_at_least("dev")) 3L else 1L)
     # TASK-189 adds d/p/q stresses. Preserve every historical sampler case
@@ -110,7 +113,7 @@ test_that("generated d/p/q/r agree with independent truth tables", {
           expect_true(all(good), info = paste(info, "quantile", lower, log_input))
         }
       }
-      if (!point %in% sampled) next
+      if (nzchar(prefix) || !point %in% sampled) next
       # These two inverse samplers consume exactly one uniform per draw.
       # Replay it to check every draw against the direct quantile.
       inverse_rng <- id %in% c("zeta", "yulesimon")

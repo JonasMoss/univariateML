@@ -181,21 +181,25 @@ univariateML_name <- function(obj) {
   if (length(hit) == 1L) hit else NULL
 }
 
-#' Map estimates onto the arguments of the reference d/p/q/r functions.
+#' Map estimates onto evaluation or sampler arguments.
 #'
 #' Most models pass their coefficients by name. A model whose reference
 #' functions use other argument names declares `r.args` in its `README.md`
 #' (argument name to coefficient expression, collected in `univariateML_args`),
-#' e.g. the stats hypergeometric reference maps `n` to `N - m`.
+#' e.g. the stats hypergeometric sampler maps `n` to `N - m`.
+#' Generated core d/p/q use coefficient names directly.
 #' The resolver also supports `r.shift` for references without a location coefficient.
 #'
 #' @param estimates Named numeric vector of coefficients.
 #' @param name Name of the `ml***` function, or `NULL`.
+#' @param type Evaluation kind: d, p, q or r (the default).
 #' @return A named list of argument values.
 #' @keywords internal
 
-univariateML_dpqr_args <- function(estimates, name) {
+univariateML_dpqr_args <- function(estimates, name, type = "r") {
   map <- if (is.null(name)) NULL else univariateML_args[[name]]
+  density <- if (is.null(name)) NULL else univariateML_metadata[[name]]$density
+  if (type != "r" && !is.null(density) && startsWith(density, "core_")) map <- NULL
   values <- stats::setNames(as.list(as.numeric(estimates)), names(estimates))
   if (is.null(map)) {
     shift <- if (is.null(name)) NULL else univariateML_shifts[[name]]
@@ -215,7 +219,14 @@ univariateML_dpqr_args <- function(estimates, name) {
 
 univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
-  density <- attr(obj, "density")
+  if (type == "r") {
+    name <- univariateML_name(obj)
+    sampler <- if (is.null(name)) NULL else univariateML_samplers[[name]]
+    if (!is.null(sampler) && !is.na(sampler)) return(sampler)
+  }
+  name <- univariateML_name(obj)
+  density <- if (is.null(name)) NULL else univariateML_metadata[[name]]$density
+  if (is.null(density)) density <- attr(obj, "density")
   parts <- strsplit(density, "::", fixed = TRUE)[[1]]
   # Density may be either "pkg::dfoo" (external function) or just "dfoo"
   # (lives in our namespace).
@@ -227,7 +238,8 @@ univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
     pkg <- NULL
   }
   if (type %in% c("d", "p", "q", "r")) {
-    substring(fname, first = 1, last = 1) <- type
+    if (startsWith(fname, "core_")) substring(fname, first = 6, last = 6) <- type
+    else substring(fname, first = 1, last = 1) <- type
     if (is.null(pkg)) fname else paste0(pkg, "::", fname)
   } else {
     name <- univariateML_name(obj)
@@ -251,7 +263,7 @@ univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   string <- univariateML_to_string(obj, type = type)
   fun <- eval(parse(text = string))
   if (type %in% c("d", "p", "q", "r")) {
-    values <- univariateML_dpqr_args(obj, univariateML_name(obj))
+    values <- univariateML_dpqr_args(obj, univariateML_name(obj), type)
     for (arg in names(values)) formals(fun)[[arg]] <- values[[arg]]
     model_name <- univariateML_name(obj)
     shift_name <- if (is.null(model_name)) NULL else univariateML_shifts[[model_name]]

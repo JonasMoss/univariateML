@@ -26,7 +26,7 @@ params:
   simulate: 1
   kind: regular
 r:
-  density: stats::dbeta
+  density: core_dbeta
   sampler: stats::rbeta
   control:
     shape1: Optional held shape1; `NULL` estimates it.

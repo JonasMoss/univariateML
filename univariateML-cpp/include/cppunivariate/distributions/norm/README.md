@@ -26,7 +26,7 @@ params:
   simulate: 1.0
   kind: regular
 r:
-  density: stats::dnorm
+  density: core_dnorm
   sampler: stats::rnorm
   control:
     sd: Optional held sd; NULL estimates it.

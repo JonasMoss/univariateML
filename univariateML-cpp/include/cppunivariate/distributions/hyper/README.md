@@ -32,7 +32,7 @@ params:
   integer: yes
   kind: design
 r:
-  density: stats::dhyper
+  density: core_dhyper
   args: {m: m, "n": "N - m", k: k}
   sampler: stats::rhyper
   control:

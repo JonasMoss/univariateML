@@ -26,7 +26,7 @@ params:
   simulate: 1.0
   kind: regular
 r:
-  density: stats::dlogis
+  density: core_dlogis
   sampler: stats::rlogis
   control:
     scale: Optional held scale; NULL estimates it.

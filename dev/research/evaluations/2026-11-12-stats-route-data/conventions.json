@@ -1,0 +1,7442 @@
+{
+  "beta d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "beta d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "beta d near_integer": {
+    "core": {
+      "value": [8.5813840750201204e-20, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [8.5813840750201806e-20, 0],
+      "warnings": []
+    }
+  },
+  "beta d near_integer_tiny": {
+    "core": {
+      "value": [5.1360968626076991e-30, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [5.1360968626076991e-30, 0],
+      "warnings": []
+    }
+  },
+  "beta d fractional": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "beta d outside_fractional": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "beta d shape1 NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "beta d shape1 NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "beta d shape1 Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "beta d shape1 -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta d shape1 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "beta d shape1 -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta d shape2 NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "beta d shape2 NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "beta d shape2 Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "beta d shape2 -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta d shape2 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "beta d shape2 -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "beta p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "beta p near_integer": {
+    "core": {
+      "value": [1, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1, 1],
+      "warnings": []
+    }
+  },
+  "beta p near_integer_tiny": {
+    "core": {
+      "value": [1, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1, 1],
+      "warnings": []
+    }
+  },
+  "beta p fractional": {
+    "core": {
+      "value": [1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "beta p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "beta p shape1 NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "beta p shape1 NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "beta p shape1 Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "beta p shape1 -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta p shape1 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "beta p shape1 -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta p shape2 NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "beta p shape2 NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "beta p shape2 Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "beta p shape2 -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta p shape2 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "beta p shape2 -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "beta q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta q near_integer": {
+    "core": {
+      "value": [0.99670734664616356, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.99670734664616356, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta q near_integer_tiny": {
+    "core": {
+      "value": [0.99975327944700831, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.99975327944700831, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta q shape1 NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "beta q shape1 NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "beta q shape1 Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "beta q shape1 -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta q shape1 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "beta q shape1 -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta q shape2 NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "beta q shape2 NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "beta q shape2 Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "beta q shape2 -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "beta q shape2 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "beta q shape2 -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "gamma d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "gamma d near_integer": {
+    "core": {
+      "value": [0.54237076848693677, 0.5423707569119447],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.54237076848693655, 0.54237075691194458],
+      "warnings": []
+    }
+  },
+  "gamma d near_integer_tiny": {
+    "core": {
+      "value": [0.54237076270001938, 0.54237076269886175],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.54237076270001927, 0.54237076269886164],
+      "warnings": []
+    }
+  },
+  "gamma d fractional": {
+    "core": {
+      "value": [0.28911597982723963],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.28911597982723969],
+      "warnings": []
+    }
+  },
+  "gamma d outside_fractional": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "gamma d shape NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "gamma d shape NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "gamma d shape Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "gamma d shape -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma d shape 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "gamma d shape -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma d scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "gamma d scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "gamma d scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "gamma d scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma d scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma d scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "gamma p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "gamma p near_integer": {
+    "core": {
+      "value": [0.61154284158584549, 0.61154285243326079],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.61154284158584549, 0.61154285243326068],
+      "warnings": []
+    }
+  },
+  "gamma p near_integer_tiny": {
+    "core": {
+      "value": [0.61154284700901085, 0.61154284701009565],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.61154284700901074, 0.61154284701009565],
+      "warnings": []
+    }
+  },
+  "gamma p fractional": {
+    "core": {
+      "value": [0.81562834520143357],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.81562834520143357],
+      "warnings": []
+    }
+  },
+  "gamma p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "gamma p shape NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "gamma p shape NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "gamma p shape Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "gamma p shape -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma p shape 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "gamma p shape -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma p scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "gamma p scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "gamma p scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "gamma p scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma p scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma p scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "gamma q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma q near_integer": {
+    "core": {
+      "value": [10.37785112097523, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [10.37785112097523, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma q near_integer_tiny": {
+    "core": {
+      "value": [14.981745219178348, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [14.981745219039302, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma q shape NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "gamma q shape NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "gamma q shape Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["Inf"],
+      "warnings": []
+    }
+  },
+  "gamma q shape -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma q shape 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "gamma q shape -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma q scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "gamma q scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "gamma q scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["Inf"],
+      "warnings": []
+    }
+  },
+  "gamma q scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma q scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "gamma q scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "hyper d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "hyper d near_integer": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": ["non-integer x = 1.000000", "non-integer x = 1.000000"]
+    }
+  },
+  "hyper d near_integer_tiny": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0.027855846119478653, 0.027855846119478653],
+      "warnings": []
+    }
+  },
+  "hyper d fractional": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 1.500000"]
+    }
+  },
+  "hyper d outside_fractional": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": ["non-integer x = 1000000.500000"]
+    }
+  },
+  "hyper d m NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "hyper d m NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "hyper d m Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper d m -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper d m 0": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "hyper d m -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper d m 19.999999999999002": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "hyper d m 20.000000000000998": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "hyper d N NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "hyper d N NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "hyper d N Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "hyper d N -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper d N 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper d N -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper d N 49.999999999998998": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "hyper d N 50.000000000001002": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "hyper d k NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "hyper d k NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "hyper d k Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper d k -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper d k 0": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "hyper d k -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper d k 9.9999999999989999": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "hyper d k 10.000000000001": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "hyper p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "hyper p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "hyper p near_integer": {
+    "core": {
+      "value": [0.0029248638425452638, 0.030780709962023894],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.030780709962023912, 0.030780709962023912],
+      "warnings": []
+    }
+  },
+  "hyper p near_integer_tiny": {
+    "core": {
+      "value": [0.0029248638425452638, 0.030780709962023894],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.030780709962023912, 0.030780709962023912],
+      "warnings": []
+    }
+  },
+  "hyper p fractional": {
+    "core": {
+      "value": [0.030780709962023894],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.030780709962023912],
+      "warnings": []
+    }
+  },
+  "hyper p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "hyper p m NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "hyper p m NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "hyper p m Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper p m -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper p m 0": {
+    "core": {
+      "value": [1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "hyper p m -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper p m 19.999999999999002": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.0029248638425452625],
+      "warnings": []
+    }
+  },
+  "hyper p m 20.000000000000998": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.0029248638425452625],
+      "warnings": []
+    }
+  },
+  "hyper p N NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "hyper p N NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "hyper p N Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper p N -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper p N 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper p N -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper p N 49.999999999998998": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.0029248638425452625],
+      "warnings": []
+    }
+  },
+  "hyper p N 50.000000000001002": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.0029248638425452625],
+      "warnings": []
+    }
+  },
+  "hyper p k NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "hyper p k NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "hyper p k Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper p k -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper p k 0": {
+    "core": {
+      "value": [1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "hyper p k -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper p k 9.9999999999989999": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.0029248638425452625],
+      "warnings": []
+    }
+  },
+  "hyper p k 10.000000000001": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.0029248638425452625],
+      "warnings": []
+    }
+  },
+  "hyper q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "hyper q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q near_integer": {
+    "core": {
+      "value": [10, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [10, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q near_integer_tiny": {
+    "core": {
+      "value": [10, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [10, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q m NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "hyper q m NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "hyper q m Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q m -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q m 0": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "hyper q m -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q m 19.999999999999002": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [4],
+      "warnings": []
+    }
+  },
+  "hyper q m 20.000000000000998": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [4],
+      "warnings": []
+    }
+  },
+  "hyper q N NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "hyper q N NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "hyper q N Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q N -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q N 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q N -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q N 49.999999999998998": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [4],
+      "warnings": []
+    }
+  },
+  "hyper q N 50.000000000001002": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [4],
+      "warnings": []
+    }
+  },
+  "hyper q k NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "hyper q k NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "hyper q k Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q k -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q k 0": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "hyper q k -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "hyper q k 9.9999999999989999": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [4],
+      "warnings": []
+    }
+  },
+  "hyper q k 10.000000000001": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [4],
+      "warnings": []
+    }
+  },
+  "lnorm d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "lnorm d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "lnorm d near_integer": {
+    "core": {
+      "value": [0.39406068340707434, 0.39406067580912019],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.3940606834070744, 0.39406067580912019],
+      "warnings": []
+    }
+  },
+  "lnorm d near_integer_tiny": {
+    "core": {
+      "value": [0.39406067960847713, 0.39406067960771735],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.39406067960847718, 0.39406067960771735],
+      "warnings": []
+    }
+  },
+  "lnorm d fractional": {
+    "core": {
+      "value": [0.2459934571578504],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.2459934571578504],
+      "warnings": []
+    }
+  },
+  "lnorm d outside_fractional": {
+    "core": {
+      "value": [0, 2.0858096522142735e-47],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 2.0858096522142475e-47],
+      "warnings": []
+    }
+  },
+  "lnorm d meanlog NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "lnorm d meanlog NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "lnorm d meanlog Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "lnorm d meanlog -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "lnorm d meanlog 0": {
+    "core": {
+      "value": [0.62366889094351929],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.62366889094351929],
+      "warnings": []
+    }
+  },
+  "lnorm d meanlog -1": {
+    "core": {
+      "value": [0.75319051458702457],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.75319051458702468],
+      "warnings": []
+    }
+  },
+  "lnorm d sdlog NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "lnorm d sdlog NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "lnorm d sdlog Inf": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "lnorm d sdlog -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm d sdlog 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "lnorm d sdlog -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "lnorm p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "lnorm p near_integer": {
+    "core": {
+      "value": [0.48549674210742244, 0.48549674998863601],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.48549674210742244, 0.48549674998863601],
+      "warnings": []
+    }
+  },
+  "lnorm p near_integer_tiny": {
+    "core": {
+      "value": [0.48549674604763521, 0.48549674604842336],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.48549674604763521, 0.48549674604842336],
+      "warnings": []
+    }
+  },
+  "lnorm p fractional": {
+    "core": {
+      "value": [0.642222675663491],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.642222675663491],
+      "warnings": []
+    }
+  },
+  "lnorm p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "lnorm p meanlog NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "lnorm p meanlog NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "lnorm p meanlog Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "lnorm p meanlog -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "lnorm p meanlog 0": {
+    "core": {
+      "value": [0.2466346144349067],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.2466346144349067],
+      "warnings": []
+    }
+  },
+  "lnorm p meanlog -1": {
+    "core": {
+      "value": [0.61916880729899115],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.61916880729899115],
+      "warnings": []
+    }
+  },
+  "lnorm p sdlog NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "lnorm p sdlog NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "lnorm p sdlog Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.5],
+      "warnings": []
+    }
+  },
+  "lnorm p sdlog -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm p sdlog 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "lnorm p sdlog -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "lnorm q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm q near_integer": {
+    "core": {
+      "value": [303.24951080134633, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [303.24951080134633, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm q near_integer_tiny": {
+    "core": {
+      "value": [1278.843611199934, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1278.8436111999329, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm q meanlog NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "lnorm q meanlog NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "lnorm q meanlog Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["Inf"],
+      "warnings": []
+    }
+  },
+  "lnorm q meanlog -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "lnorm q meanlog 0": {
+    "core": {
+      "value": [1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "lnorm q meanlog -1": {
+    "core": {
+      "value": [0.36787944117144233],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.36787944117144233],
+      "warnings": []
+    }
+  },
+  "lnorm q sdlog NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "lnorm q sdlog NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "lnorm q sdlog Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm q sdlog -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "lnorm q sdlog 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1.0374734709411511],
+      "warnings": []
+    }
+  },
+  "lnorm q sdlog -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "cauchy d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "cauchy d near_integer": {
+    "core": {
+      "value": [0.15578070874329009, 0.15578070580209405],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.15578070874329011, 0.15578070580209402],
+      "warnings": []
+    }
+  },
+  "cauchy d near_integer_tiny": {
+    "core": {
+      "value": [0.15578070727283908, 0.15578070727254498],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.1557807072728391, 0.15578070727254498],
+      "warnings": []
+    }
+  },
+  "cauchy d fractional": {
+    "core": {
+      "value": [0.098124316513429941],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.098124316513429968],
+      "warnings": []
+    }
+  },
+  "cauchy d outside_fractional": {
+    "core": {
+      "value": [0.10186023154708669, 3.369652886835567e-13],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.10186023154708672, 3.36965288683557e-13],
+      "warnings": []
+    }
+  },
+  "cauchy d location NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "cauchy d location NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "cauchy d location Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "cauchy d location -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "cauchy d location 0": {
+    "core": {
+      "value": [0.2458432232165205],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.2458432232165205],
+      "warnings": []
+    }
+  },
+  "cauchy d location -1": {
+    "core": {
+      "value": [0.099970446436332697],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.099970446436332697],
+      "warnings": []
+    }
+  },
+  "cauchy d scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "cauchy d scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "cauchy d scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "cauchy d scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy d scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy d scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "cauchy p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "cauchy p near_integer": {
+    "core": {
+      "value": [0.74424286184410948, 0.74424286495972358],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.74424286184410948, 0.74424286495972358],
+      "warnings": []
+    }
+  },
+  "cauchy p near_integer_tiny": {
+    "core": {
+      "value": [0.74424286340176071, 0.74424286340207235],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.74424286340176082, 0.74424286340207235],
+      "warnings": []
+    }
+  },
+  "cauchy p fractional": {
+    "core": {
+      "value": [0.80645623301330571],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.80645623301330582],
+      "warnings": []
+    }
+  },
+  "cauchy p outside_fractional": {
+    "core": {
+      "value": [0.19774119530920534, 0.9999996630345358],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.19774119530920536, 0.9999996630345358],
+      "warnings": []
+    }
+  },
+  "cauchy p location NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "cauchy p location NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "cauchy p location Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "cauchy p location -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "cauchy p location 0": {
+    "core": {
+      "value": [0.64045672211902815],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.64045672211902815],
+      "warnings": []
+    }
+  },
+  "cauchy p location -1": {
+    "core": {
+      "value": [0.80437712390567628],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.80437712390567628],
+      "warnings": []
+    }
+  },
+  "cauchy p scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "cauchy p scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "cauchy p scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.5],
+      "warnings": []
+    }
+  },
+  "cauchy p scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy p scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy p scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "cauchy q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy q near_integer": {
+    "core": {
+      "value": [33696563.789325401, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [33696563.789325342, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy q near_integer_tiny": {
+    "core": {
+      "value": [336973094220.80072, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [336973094220.80078, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy q location NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "cauchy q location NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "cauchy q location Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["Inf"],
+      "warnings": []
+    }
+  },
+  "cauchy q location -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["-Inf"],
+      "warnings": []
+    }
+  },
+  "cauchy q location 0": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "cauchy q location -1": {
+    "core": {
+      "value": [-1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [-1],
+      "warnings": []
+    }
+  },
+  "cauchy q scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "cauchy q scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "cauchy q scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy q scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "cauchy q scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [-0.020991818112298621],
+      "warnings": []
+    }
+  },
+  "cauchy q scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "logis d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "logis d near_integer": {
+    "core": {
+      "value": [0.19087340214501786, 0.1908734003278709],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.19087340214501783, 0.1908734003278709],
+      "warnings": []
+    }
+  },
+  "logis d near_integer_tiny": {
+    "core": {
+      "value": [0.19087340123653523, 0.19087340123635349],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.19087340123653523, 0.19087340123635355],
+      "warnings": []
+    }
+  },
+  "logis d fractional": {
+    "core": {
+      "value": [0.14404434054333753],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.14404434054333756],
+      "warnings": []
+    }
+  },
+  "logis d outside_fractional": {
+    "core": {
+      "value": [0.15416057123343055, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.15416057123343058, 0],
+      "warnings": []
+    }
+  },
+  "logis d location NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "logis d location NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "logis d location Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "logis d location -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "logis d location 0": {
+    "core": {
+      "value": [0.23333531333430149],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.23333531333430149],
+      "warnings": []
+    }
+  },
+  "logis d location -1": {
+    "core": {
+      "value": [0.14908134676616533],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.1490813467661653],
+      "warnings": []
+    }
+  },
+  "logis d scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "logis d scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "logis d scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "logis d scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis d scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis d scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "logis p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "logis p near_integer": {
+    "core": {
+      "value": [0.73994229406428624, 0.73994229788175436],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.73994229406428635, 0.73994229788175425],
+      "warnings": []
+    }
+  },
+  "logis p near_integer_tiny": {
+    "core": {
+      "value": [0.73994229597282946, 0.73994229597321115],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.73994229597282957, 0.73994229597321126],
+      "warnings": []
+    }
+  },
+  "logis p fractional": {
+    "core": {
+      "value": [0.82370155682942392],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.82370155682942392],
+      "warnings": []
+    }
+  },
+  "logis p outside_fractional": {
+    "core": {
+      "value": [0.19245473481064895, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.19245473481064893, 1],
+      "warnings": []
+    }
+  },
+  "logis p location NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "logis p location NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "logis p location Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "logis p location -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "logis p location 0": {
+    "core": {
+      "value": [0.62150976686552739],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.62150976686552739],
+      "warnings": []
+    }
+  },
+  "logis p location -1": {
+    "core": {
+      "value": [0.81576047097782334],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.81576047097782323],
+      "warnings": []
+    }
+  },
+  "logis p scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "logis p scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "logis p scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.5],
+      "warnings": []
+    }
+  },
+  "logis p scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis p scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis p scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "logis q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis q near_integer": {
+    "core": {
+      "value": [18.516497817450155, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [18.516497817450155, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis q near_integer_tiny": {
+    "core": {
+      "value": [27.801860851686229, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [27.801860851686232, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis q location NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "logis q location NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "logis q location Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["Inf"],
+      "warnings": []
+    }
+  },
+  "logis q location -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["-Inf"],
+      "warnings": []
+    }
+  },
+  "logis q location 0": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "logis q location -1": {
+    "core": {
+      "value": [-1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [-1],
+      "warnings": []
+    }
+  },
+  "logis q scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "logis q scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "logis q scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis q scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "logis q scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [-0.054183601372143085],
+      "warnings": []
+    }
+  },
+  "logis q scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "unif d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "unif d near_integer": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "unif d near_integer_tiny": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "unif d fractional": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "unif d outside_fractional": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "unif d min NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "unif d min NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "unif d min Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif d min -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "unif d min 0": {
+    "core": {
+      "value": [1.0022709843575222],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1.0022709843575222],
+      "warnings": []
+    }
+  },
+  "unif d min -1": {
+    "core": {
+      "value": [0.50056710214932543],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.50056710214932543],
+      "warnings": []
+    }
+  },
+  "unif d max NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "unif d max NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "unif d max Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "unif d max -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif d max 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif d max -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "unif p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "unif p near_integer": {
+    "core": {
+      "value": [1, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1, 1],
+      "warnings": []
+    }
+  },
+  "unif p near_integer_tiny": {
+    "core": {
+      "value": [1, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1, 1],
+      "warnings": []
+    }
+  },
+  "unif p fractional": {
+    "core": {
+      "value": [1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "unif p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "unif p min NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "unif p min NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "unif p min Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif p min -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif p min 0": {
+    "core": {
+      "value": [0.50113549217876108],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.50113549217876108],
+      "warnings": []
+    }
+  },
+  "unif p min -1": {
+    "core": {
+      "value": [0.75085065322398814],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.75085065322398814],
+      "warnings": []
+    }
+  },
+  "unif p max NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "unif p max NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "unif p max Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif p max -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif p max 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif p max -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "unif q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q near_integer": {
+    "core": {
+      "value": [0.9977341513542296, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.9977341513542296, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q near_integer_tiny": {
+    "core": {
+      "value": [0.9977341613256645, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.9977341613256645, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q min NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "unif q min NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "unif q min Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q min -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q min 0": {
+    "core": {
+      "value": [0.49886708066333085],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.49886708066333085],
+      "warnings": []
+    }
+  },
+  "unif q min -1": {
+    "core": {
+      "value": [-0.001132919336669147],
+      "warnings": []
+    },
+    "stats": {
+      "value": [-0.001132919336669147],
+      "warnings": []
+    }
+  },
+  "unif q max NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "unif q max NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "unif q max Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q max -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q max 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "unif q max -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "exp d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "exp d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "exp d near_integer": {
+    "core": {
+      "value": [0.36752621121914358, 0.36752620418612192],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.36752621121914353, 0.36752620418612197],
+      "warnings": []
+    }
+  },
+  "exp d near_integer_tiny": {
+    "core": {
+      "value": [0.36752620770298439, 0.367526207702281],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.36752620770298433, 0.367526207702281],
+      "warnings": []
+    }
+  },
+  "exp d fractional": {
+    "core": {
+      "value": [0.22778265365586864],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.22778265365586861],
+      "warnings": []
+    }
+  },
+  "exp d outside_fractional": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "exp d rate NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "exp d rate NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "exp d rate Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "exp d rate -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "exp d rate 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "exp d rate -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "exp p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "exp p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "exp p near_integer": {
+    "core": {
+      "value": [0.61588198692114393, 0.61588199427166812],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.61588198692114393, 0.61588199427166812],
+      "warnings": []
+    }
+  },
+  "exp p near_integer_tiny": {
+    "core": {
+      "value": [0.61588199059603854, 0.61588199059677362],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.61588199059603854, 0.61588199059677362],
+      "warnings": []
+    }
+  },
+  "exp p fractional": {
+    "core": {
+      "value": [0.76193420315278981],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.76193420315278981],
+      "warnings": []
+    }
+  },
+  "exp p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "exp p rate NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "exp p rate NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "exp p rate Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "exp p rate -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["-Inf"],
+      "warnings": []
+    }
+  },
+  "exp p rate 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "exp p rate -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "exp q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "exp q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "exp q near_integer": {
+    "core": {
+      "value": [19.252273903201463, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [19.252273903201466, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "exp q near_integer_tiny": {
+    "core": {
+      "value": [28.878433983330336, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [28.878433983330336, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "exp q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "exp q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "exp q rate NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "exp q rate NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "exp q rate Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "exp q rate -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [-0],
+      "warnings": []
+    }
+  },
+  "exp q rate 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["Inf"],
+      "warnings": []
+    }
+  },
+  "exp q rate -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "binom d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "binom d near_integer": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": ["non-integer x = 1.000000", "non-integer x = 1.000000"]
+    }
+  },
+  "binom d near_integer_tiny": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0.0094269399112275314, 0.0094269399112275314],
+      "warnings": []
+    }
+  },
+  "binom d fractional": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 1.500000"]
+    }
+  },
+  "binom d outside_fractional": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": ["non-integer x = -1.500000", "non-integer x = 1000000.500000"]
+    }
+  },
+  "binom d size NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "binom d size NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "binom d size Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "binom d size -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom d size 0": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "binom d size -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom d size 9.9999999999989999": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "binom d size 10.000000000001": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "binom d prob NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "binom d prob NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "binom d prob Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom d prob -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom d prob 0": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "binom d prob -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "binom p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "binom p near_integer": {
+    "core": {
+      "value": [0.00093443462521088658, 0.010361374536438426],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.01036137453643843, 0.01036137453643843],
+      "warnings": []
+    }
+  },
+  "binom p near_integer_tiny": {
+    "core": {
+      "value": [0.00093443462521088658, 0.010361374536438426],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.01036137453643843, 0.01036137453643843],
+      "warnings": []
+    }
+  },
+  "binom p fractional": {
+    "core": {
+      "value": [0.010361374536438426],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.01036137453643843],
+      "warnings": []
+    }
+  },
+  "binom p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "binom p size NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "binom p size NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "binom p size Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom p size -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom p size 0": {
+    "core": {
+      "value": [1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "binom p size -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom p size 9.9999999999989999": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.00093443462521088593],
+      "warnings": []
+    }
+  },
+  "binom p size 10.000000000001": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.00093443462521088593],
+      "warnings": []
+    }
+  },
+  "binom p prob NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "binom p prob NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "binom p prob Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom p prob -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom p prob 0": {
+    "core": {
+      "value": [1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "binom p prob -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "binom q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q near_integer": {
+    "core": {
+      "value": [10, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [10, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q near_integer_tiny": {
+    "core": {
+      "value": [10, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [10, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q size NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "binom q size NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "binom q size Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q size -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q size 0": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "binom q size -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q size 9.9999999999989999": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [5],
+      "warnings": []
+    }
+  },
+  "binom q size 10.000000000001": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [5],
+      "warnings": []
+    }
+  },
+  "binom q prob NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "binom q prob NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "binom q prob Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q prob -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "binom q prob 0": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "binom q prob -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "pois d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "pois d near_integer": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": ["non-integer x = 1.000000", "non-integer x = 1.000000"]
+    }
+  },
+  "pois d near_integer_tiny": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0.26228499102120773, 0.26228499102120773],
+      "warnings": []
+    }
+  },
+  "pois d fractional": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 1.500000"]
+    }
+  },
+  "pois d outside_fractional": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": ["non-integer x = -1.500000", "non-integer x = 1000000.500000"]
+    }
+  },
+  "pois d lambda NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "pois d lambda NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "pois d lambda Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "pois d lambda -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois d lambda 0": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "pois d lambda -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "pois p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "pois p near_integer": {
+    "core": {
+      "value": [0.12719931669311721, 0.38948430771432491],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.38948430771432496, 0.38948430771432496],
+      "warnings": []
+    }
+  },
+  "pois p near_integer_tiny": {
+    "core": {
+      "value": [0.12719931669311721, 0.38948430771432491],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.38948430771432496, 0.38948430771432496],
+      "warnings": []
+    }
+  },
+  "pois p fractional": {
+    "core": {
+      "value": [0.38948430771432491],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.38948430771432496],
+      "warnings": []
+    }
+  },
+  "pois p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "pois p lambda NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "pois p lambda NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "pois p lambda Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "pois p lambda -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois p lambda 0": {
+    "core": {
+      "value": [1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "pois p lambda -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "pois q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois q near_integer": {
+    "core": {
+      "value": [14, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [14, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois q near_integer_tiny": {
+    "core": {
+      "value": [19, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [19, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois q lambda NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "pois q lambda NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "pois q lambda Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois q lambda -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "pois q lambda 0": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "pois q lambda -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "weibull d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "weibull d near_integer": {
+    "core": {
+      "value": [0.051748488615360633, 0.051748490543380564],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.051748488615360647, 0.051748490543380529],
+      "warnings": []
+    }
+  },
+  "weibull d near_integer_tiny": {
+    "core": {
+      "value": [0.0517484895792742, 0.051748489579467004],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.051748489579274186, 0.051748489579466997],
+      "warnings": []
+    }
+  },
+  "weibull d fractional": {
+    "core": {
+      "value": [0.10800972100480694],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.10800972100480694],
+      "warnings": []
+    }
+  },
+  "weibull d outside_fractional": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "weibull d shape NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "weibull d shape NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "weibull d shape Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull d shape -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull d shape 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull d shape -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull d scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "weibull d scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "weibull d scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "weibull d scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull d scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull d scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "weibull p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "weibull p near_integer": {
+    "core": {
+      "value": [0.017910383172827258, 0.017910384207797055],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.017910383172827251, 0.017910384207797038],
+      "warnings": []
+    }
+  },
+  "weibull p near_integer_tiny": {
+    "core": {
+      "value": [0.017910383690260392, 0.017910383690363903],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.017910383690260396, 0.017910383690363896],
+      "warnings": []
+    }
+  },
+  "weibull p fractional": {
+    "core": {
+      "value": [0.057239134370405016],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.05723913437040503],
+      "warnings": []
+    }
+  },
+  "weibull p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "weibull p shape NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "weibull p shape NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "weibull p shape Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "weibull p shape -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull p shape 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull p shape -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull p scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "weibull p scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "weibull p scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "weibull p scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull p scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull p scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "weibull q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q near_integer": {
+    "core": {
+      "value": [10.759691217237469, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [10.759691217237471, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q near_integer_tiny": {
+    "core": {
+      "value": [12.365077108079729, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [12.365077108079733, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q shape NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "weibull q shape NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "weibull q shape Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [3.9611127884541628],
+      "warnings": []
+    }
+  },
+  "weibull q shape -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q shape 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q shape -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q scale NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "weibull q scale NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "weibull q scale Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["Inf"],
+      "warnings": []
+    }
+  },
+  "weibull q scale -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q scale 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "weibull q scale -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "geom d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "geom d near_integer": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": ["non-integer x = 1.000000", "non-integer x = 1.000000"]
+    }
+  },
+  "geom d near_integer_tiny": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0.24982185698805492, 0.24982185698805492],
+      "warnings": []
+    }
+  },
+  "geom d fractional": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 1.500000"]
+    }
+  },
+  "geom d outside_fractional": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": ["non-integer x = -1.500000", "non-integer x = 1000000.500000"]
+    }
+  },
+  "geom d prob NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "geom d prob NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "geom d prob Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom d prob -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom d prob 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom d prob -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "geom p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "geom p near_integer": {
+    "core": {
+      "value": [0.51334702258726894, 0.76316887957532387],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.76316887957532387, 0.76316887957532387],
+      "warnings": []
+    }
+  },
+  "geom p near_integer_tiny": {
+    "core": {
+      "value": [0.51334702258726894, 0.76316887957532387],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.76316887957532387, 0.76316887957532387],
+      "warnings": []
+    }
+  },
+  "geom p fractional": {
+    "core": {
+      "value": [0.76316887957532387],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.76316887957532387],
+      "warnings": []
+    }
+  },
+  "geom p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "geom p prob NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "geom p prob NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "geom p prob Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom p prob -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom p prob 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom p prob -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "geom q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom q near_integer": {
+    "core": {
+      "value": [25, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [25, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom q near_integer_tiny": {
+    "core": {
+      "value": [38, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [38, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom q prob NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "geom q prob NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "geom q prob Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom q prob -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom q prob 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "geom q prob -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "nbinom d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "nbinom d near_integer": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": ["non-integer x = 1.000000", "non-integer x = 1.000000"]
+    }
+  },
+  "nbinom d near_integer_tiny": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [3.2765368819024463e-05, 3.2765368819024463e-05],
+      "warnings": []
+    }
+  },
+  "nbinom d fractional": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 1.500000"]
+    }
+  },
+  "nbinom d outside_fractional": {
+    "core": {
+      "value": [0, 0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": ["non-integer x = -1.500000", "non-integer x = 1000000.500000"]
+    }
+  },
+  "nbinom d size NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "nbinom d size NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "nbinom d size Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "nbinom d size -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom d size 0": {
+    "core": {
+      "value": [0],
+      "warnings": ["non-integer x"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": ["non-integer x = 0.500000"]
+    }
+  },
+  "nbinom d size -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom d prob NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "nbinom d prob NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "nbinom d prob Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom d prob -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom d prob 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom d prob -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced", "non-integer x"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "nbinom p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "nbinom p near_integer": {
+    "core": {
+      "value": [4.5440832601518451e-06, 3.7309452079176352e-05],
+      "warnings": []
+    },
+    "stats": {
+      "value": [3.7309452079176291e-05, 3.7309452079176291e-05],
+      "warnings": []
+    }
+  },
+  "nbinom p near_integer_tiny": {
+    "core": {
+      "value": [4.5440832601518451e-06, 3.7309452079176352e-05],
+      "warnings": []
+    },
+    "stats": {
+      "value": [3.7309452079176291e-05, 3.7309452079176291e-05],
+      "warnings": []
+    }
+  },
+  "nbinom p fractional": {
+    "core": {
+      "value": [3.7309452079176352e-05],
+      "warnings": []
+    },
+    "stats": {
+      "value": [3.7309452079176291e-05],
+      "warnings": []
+    }
+  },
+  "nbinom p outside_fractional": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "nbinom p size NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "nbinom p size NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "nbinom p size Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom p size -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom p size 0": {
+    "core": {
+      "value": [1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "nbinom p size -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom p prob NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "nbinom p prob NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "nbinom p prob Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom p prob -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom p prob 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom p prob -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "nbinom q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q near_integer": {
+    "core": {
+      "value": [103, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [103, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q near_integer_tiny": {
+    "core": {
+      "value": [135, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [135, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q size NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "nbinom q size NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "nbinom q size Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q size -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q size 0": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "nbinom q size -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q prob NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "nbinom q prob NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "nbinom q prob Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q prob -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q prob 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "nbinom q prob -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm d missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "norm d edges": {
+    "core": {
+      "value": [0, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 0],
+      "warnings": []
+    }
+  },
+  "norm d near_integer": {
+    "core": {
+      "value": [0.24174178614406325, 0.2417417809617774],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.24174178614406328, 0.24174178096177742],
+      "warnings": []
+    }
+  },
+  "norm d near_integer_tiny": {
+    "core": {
+      "value": [0.24174178355317941, 0.24174178355266121],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.24174178355317943, 0.24174178355266124],
+      "warnings": []
+    }
+  },
+  "norm d fractional": {
+    "core": {
+      "value": [0.12370729244428262],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.12370729244428261],
+      "warnings": []
+    }
+  },
+  "norm d outside_fractional": {
+    "core": {
+      "value": [0.12359757133476194, 0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.12359757133476197, 0],
+      "warnings": []
+    }
+  },
+  "norm d mean NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "norm d mean NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "norm d mean Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "norm d mean -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "norm d mean 0": {
+    "core": {
+      "value": [0.36127313973770919],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.36127313973770919],
+      "warnings": []
+    }
+  },
+  "norm d mean -1": {
+    "core": {
+      "value": [0.12365242476442245],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.12365242476442248],
+      "warnings": []
+    }
+  },
+  "norm d sd NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "norm d sd NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "norm d sd Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "norm d sd -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm d sd 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "norm d sd -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm p missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "norm p edges": {
+    "core": {
+      "value": [0, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0, 1],
+      "warnings": []
+    }
+  },
+  "norm p near_integer": {
+    "core": {
+      "value": [0.84970425154826235, 0.8497042563830981],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.84970425154826235, 0.8497042563830981],
+      "warnings": []
+    }
+  },
+  "norm p near_integer_tiny": {
+    "core": {
+      "value": [0.84970425396543847, 0.84970425396592197],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.84970425396543847, 0.84970425396592197],
+      "warnings": []
+    }
+  },
+  "norm p fractional": {
+    "core": {
+      "value": [0.93977547242628012],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.93977547242628023],
+      "warnings": []
+    }
+  },
+  "norm p outside_fractional": {
+    "core": {
+      "value": [0.060156303213922978, 1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.060156303213922985, 1],
+      "warnings": []
+    }
+  },
+  "norm p mean NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "norm p mean NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "norm p mean Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "norm p mean -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "norm p mean 0": {
+    "core": {
+      "value": [0.69767517505843712],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.69767517505843724],
+      "warnings": []
+    }
+  },
+  "norm p mean -1": {
+    "core": {
+      "value": [0.9398095921734102],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0.9398095921734102],
+      "warnings": []
+    }
+  },
+  "norm p sd NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "norm p sd NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "norm p sd Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.5],
+      "warnings": []
+    }
+  },
+  "norm p sd -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm p sd 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [1],
+      "warnings": []
+    }
+  },
+  "norm p sd -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm q missing": {
+    "core": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA", "NaN"],
+      "warnings": []
+    }
+  },
+  "norm q edges": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm q near_integer": {
+    "core": {
+      "value": [5.4201352842406907, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [5.4201352842406916, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm q near_integer_tiny": {
+    "core": {
+      "value": [6.7939183602131807, "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [6.7939183602131807, "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm q fractional": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm q outside_fractional": {
+    "core": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN", "NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm q mean NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "norm q mean NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "norm q mean Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["Inf"],
+      "warnings": []
+    }
+  },
+  "norm q mean -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["-Inf"],
+      "warnings": []
+    }
+  },
+  "norm q mean 0": {
+    "core": {
+      "value": [0],
+      "warnings": []
+    },
+    "stats": {
+      "value": [0],
+      "warnings": []
+    }
+  },
+  "norm q mean -1": {
+    "core": {
+      "value": [-1],
+      "warnings": []
+    },
+    "stats": {
+      "value": [-1],
+      "warnings": []
+    }
+  },
+  "norm q sd NA": {
+    "core": {
+      "value": ["NA"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NA"],
+      "warnings": []
+    }
+  },
+  "norm q sd NaN": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": []
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": []
+    }
+  },
+  "norm q sd Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm q sd -Inf": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  },
+  "norm q sd 0": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": [0.00027587149470132197],
+      "warnings": []
+    }
+  },
+  "norm q sd -1": {
+    "core": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    },
+    "stats": {
+      "value": ["NaN"],
+      "warnings": ["NaNs produced"]
+    }
+  }
+}
