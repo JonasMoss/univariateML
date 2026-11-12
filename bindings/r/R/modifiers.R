@@ -208,6 +208,9 @@ ml_modifier_function <- function(obj,type) {
   complement<-function(v)ifelse(v<log(.5),log1p(-exp(v)),log(-expm1(v)))
   diff <- function(big,small) { z <- big+complement(pmin(0,small-big));z[is.infinite(small)&small<0] <- big[is.infinite(small)&small<0];z }
   mass <- function(lo,hi) {
+    # Either endpoint may be the scalar window bound; the branch choices below
+    # are elementwise, so both must have the common length (TASK-216).
+    n <- max(length(lo),length(hi));lo <- rep_len(lo,n);hi <- rep_len(hi,n)
     flo <- p(lo,log.p=TRUE);fhi <- p(hi,log.p=TRUE)
     slo <- p(lo,lower.tail=FALSE,log.p=TRUE);shi <- p(hi,lower.tail=FALSE,log.p=TRUE)
     use_lower<-fhi<log(.5)
