@@ -478,6 +478,9 @@ inline void ged_uniform_certificate(GedResult& r,span x,double mean,double tol,i
 
 #include "shape_certificate.hpp"
 
+} // namespace cppunivariate
+#include "accuracy.hpp"
+namespace cppunivariate {
 // Keep local convergence separate from the global/accuracy certificate.
 inline GedResult ged_uncertified(GedResult certificate,span x,double tol,int maxit,
     double mean,double sd,double nu) {
@@ -491,6 +494,7 @@ inline GedResult ged_uncertified(GedResult certificate,span x,double tol,int max
   auto searched=ged_mle_impl(x,tol,maxit,mean,sd,nu,true);
   if(searched.status!=GedStatus::Ok || !(searched.sigma>0 && searched.nu>0) ||
       !std::isfinite(searched.mu+searched.sigma+searched.nu+searched.logLik))return certificate;
+  if(!ged_local_accuracy(searched,x,mean,sd,nu,tol,maxit)){searched.status=GedStatus::TransformFailure;searched.certified=false;return searched;}
   const double ll=ged_detail::conditional_loglik(x,searched.mu,searched.sigma,searched.nu);
   if(std::isfinite(nu) && nu>1) {
     const double lambda=dens::ged_lambda(nu);
@@ -506,7 +510,7 @@ inline GedResult ged_uncertified(GedResult certificate,span x,double tol,int max
     if(!(score<1e-3))return certificate;
   }
   const double margin=2048*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(ll)+std::abs(searched.logLik))*(1+searched.nu);
-  if(!std::isfinite(ll) || std::abs(ll-searched.logLik)>margin ||
+  if(!std::isfinite(ll) ||
       certificate.stop_detail.loglik_lower>ll+margin)return certificate;
   searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;return searched;
 }

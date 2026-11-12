@@ -430,3 +430,15 @@ likelihood and inner-shape bounds are recomputed on the contracted interval.
 Cells without a verified sign retain the general global subdivision.
 
 Held-power beta-prime transport applies coefficient enclosures only to certified parents. A rounded crossing between separated stationary profiles does not prove exact equality. Successful uncertified beta-prime and unit-first-beta-shape Burr results retain their flag; nonfinite transformed estimates or likelihoods still fail.
+
+In the fixed-power beta-prime delegate, the public scale is the parent scale
+raised to the reciprocal power. The local scale correction therefore
+divides the parent log-scale correction by the held power. This native
+coefficient bound and the final exponential map are checked separately from
+the parent shape equations.
+
+The powered observations are rounded before the beta-prime delegate sees
+them. A final score and information check uses the original log observations;
+when its correction is appreciable, it refines that transformed point before
+returning it. The check uses the same rare-shape rate coordinate as the parent
+so the transformation check does not restore the cancelled gamma terms.

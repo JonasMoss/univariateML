@@ -1,0 +1,542 @@
+[
+  {
+    "id": "census-genbeta-23",
+    "hash": 4253441980,
+    "expected": 4253441980,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-24",
+    "hash": 1216629878,
+    "expected": 1216629878,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-28",
+    "hash": 1309430907,
+    "expected": 1309430907,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-29",
+    "hash": 1685213789,
+    "expected": 1685213789,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-30",
+    "hash": 442728800,
+    "expected": 442728800,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-35",
+    "hash": 3666490083,
+    "expected": 3666490083,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-38",
+    "hash": 1351805347,
+    "expected": 1351805347,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-42",
+    "hash": 2397217699,
+    "expected": 2397217699,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-47",
+    "hash": 827425328,
+    "expected": 827425328,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-50",
+    "hash": 3686912207,
+    "expected": 3686912207,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-51",
+    "hash": 1837989748,
+    "expected": 1837989748,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-52",
+    "hash": 170063692,
+    "expected": 170063692,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-53",
+    "hash": 1573404472,
+    "expected": 1573404472,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-54",
+    "hash": 75077783,
+    "expected": 75077783,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-55",
+    "hash": 2632993287,
+    "expected": 2632993287,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-56",
+    "hash": 570552256,
+    "expected": 570552256,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-57",
+    "hash": 543801910,
+    "expected": 543801910,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-58",
+    "hash": 3558011892,
+    "expected": 3558011892,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-59",
+    "hash": 1784160562,
+    "expected": 1784160562,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-71",
+    "hash": 2411470298,
+    "expected": 2411470298,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-72",
+    "hash": 1734830345,
+    "expected": 1734830345,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-73",
+    "hash": 4131881822,
+    "expected": 4131881822,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-76",
+    "hash": 4053193649,
+    "expected": 4053193649,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-77",
+    "hash": 3398106511,
+    "expected": 3398106511,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-78",
+    "hash": 901038266,
+    "expected": 901038266,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-80",
+    "hash": 2292283476,
+    "expected": 2292283476,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-81",
+    "hash": 207009315,
+    "expected": 207009315,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-82",
+    "hash": 2805127723,
+    "expected": 2805127723,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-83",
+    "hash": 472617197,
+    "expected": 472617197,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-84",
+    "hash": 150799396,
+    "expected": 150799396,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-85",
+    "hash": 3929491423,
+    "expected": 3929491423,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-86",
+    "hash": 3955033121,
+    "expected": 3955033121,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-87",
+    "hash": 26873228,
+    "expected": 26873228,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-88",
+    "hash": 3745192231,
+    "expected": 3745192231,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-89",
+    "hash": 4114212856,
+    "expected": 4114212856,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-92",
+    "hash": 622709204,
+    "expected": 622709204,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-97",
+    "hash": 678162544,
+    "expected": 678162544,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-101",
+    "hash": 2332137070,
+    "expected": 2332137070,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-104",
+    "hash": 3775224711,
+    "expected": 3775224711,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-106",
+    "hash": 1757562696,
+    "expected": 1757562696,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-109",
+    "hash": 2632484958,
+    "expected": 2632484958,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-110",
+    "hash": 1091952627,
+    "expected": 1091952627,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-111",
+    "hash": 3894160262,
+    "expected": 3894160262,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-112",
+    "hash": 2878381365,
+    "expected": 2878381365,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-113",
+    "hash": 766078209,
+    "expected": 766078209,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-114",
+    "hash": 1760206120,
+    "expected": 1760206120,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-115",
+    "hash": 2337235601,
+    "expected": 2337235601,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-116",
+    "hash": 593214738,
+    "expected": 593214738,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-117",
+    "hash": 2317186515,
+    "expected": 2317186515,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-118",
+    "hash": 1312101909,
+    "expected": 1312101909,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-119",
+    "hash": 2536492286,
+    "expected": 2536492286,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-130",
+    "hash": 815912285,
+    "expected": 815912285,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-132",
+    "hash": 1455521656,
+    "expected": 1455521656,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-133",
+    "hash": 2210457991,
+    "expected": 2210457991,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-134",
+    "hash": 1397771263,
+    "expected": 1397771263,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-135",
+    "hash": 252544161,
+    "expected": 252544161,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-137",
+    "hash": 4170751806,
+    "expected": 4170751806,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-138",
+    "hash": 1465014607,
+    "expected": 1465014607,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-139",
+    "hash": 1265670636,
+    "expected": 1265670636,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-140",
+    "hash": 473421637,
+    "expected": 473421637,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-141",
+    "hash": 1397271805,
+    "expected": 1397271805,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-142",
+    "hash": 1247585130,
+    "expected": 1247585130,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-143",
+    "hash": 381651998,
+    "expected": 381651998,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-144",
+    "hash": 666569810,
+    "expected": 666569810,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-145",
+    "hash": 531992711,
+    "expected": 531992711,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-146",
+    "hash": 360453330,
+    "expected": 360453330,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-147",
+    "hash": 1483439006,
+    "expected": 1483439006,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-148",
+    "hash": 3379705904,
+    "expected": 3379705904,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-149",
+    "hash": 3023238898,
+    "expected": 3023238898,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-151",
+    "hash": 3106987786,
+    "expected": 3106987786,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-154",
+    "hash": 3549468526,
+    "expected": 3549468526,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-156",
+    "hash": 1773070785,
+    "expected": 1773070785,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-159",
+    "hash": 3324881209,
+    "expected": 3324881209,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-160",
+    "hash": 2179663697,
+    "expected": 2179663697,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-163",
+    "hash": 1334993829,
+    "expected": 1334993829,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-165",
+    "hash": 1038995354,
+    "expected": 1038995354,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-167",
+    "hash": 1477597318,
+    "expected": 1477597318,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-168",
+    "hash": 3629217810,
+    "expected": 3629217810,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-170",
+    "hash": 3893901172,
+    "expected": 3893901172,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-172",
+    "hash": 2204918371,
+    "expected": 2204918371,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-173",
+    "hash": 843649910,
+    "expected": 843649910,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-175",
+    "hash": 1574185555,
+    "expected": 1574185555,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-177",
+    "hash": 58652539,
+    "expected": 58652539,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-178",
+    "hash": 401772561,
+    "expected": 401772561,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-195",
+    "hash": 777574107,
+    "expected": 777574107,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-211",
+    "hash": 879510289,
+    "expected": 879510289,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-213",
+    "hash": 472264861,
+    "expected": 472264861,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-214",
+    "hash": 2179904527,
+    "expected": 2179904527,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-216",
+    "hash": 3996805674,
+    "expected": 3996805674,
+    "equal": true
+  },
+  {
+    "id": "census-genbeta-218",
+    "hash": 226678831,
+    "expected": 226678831,
+    "equal": true
+  }
+]

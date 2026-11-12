@@ -454,3 +454,8 @@ At very large shape, the density and log tail can change within one double
 spacing near the uniform edge. The [edge references](../../../../../dev/research/evaluations/2026-11-09-tail-extreme-data/edge-oracle.py)
 use the exact binary64 observation. Affine or skew transforms that cannot
 resolve the relevant side of this edge return NaN.
+
+In the finite fallback, the smooth coordinates are location in units of the
+fitted scale, log scale and log shape. At a held subunit shape the enumerated
+knot location stays exact; at the Laplace restriction the median stays fixed.
+Only the remaining smooth coordinates enter the observed-information solve.

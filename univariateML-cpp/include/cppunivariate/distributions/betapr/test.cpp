@@ -696,3 +696,126 @@ TEST_CASE("unit face bounds survive unrepresentable face coefficients") {
    CHECK(r.logLik+margin>=r.stop_detail.loglik_lower);
  } else CHECK(r.status==cppunivariate::BetaPrimeStatus::BfgsFailure);
 }
+
+TEST_CASE("beta-prime unit-shape fallback meets coefficient accuracy") {
+  const std::vector<double> x{1,1,1,1,6.0001};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),1,NAN,NAN,1e-10,1000);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK_FALSE(r.certified);
+  CHECK(r.beta==doctest::Approx(66667.7187444793946102).scale(0.).epsilon(1e-10));
+  CHECK(r.scale==doctest::Approx(133334.770828333628047).scale(0.).epsilon(1e-10));
+}
+
+TEST_CASE("beta-prime final fallback preserves both held unit-submodel shapes") {
+  const std::vector<double> x{.2,.5,1,2,4};
+  cppunivariate::BetaPrimeResult certificate{NAN,NAN,NAN,NAN,0,cppunivariate::BetaPrimeStatus::BfgsFailure};
+  const auto r=cppunivariate::betapr_detail::accurate_fallback(certificate,mltest::as_span(x),1,2,NAN,1e-10,1000);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
+  CHECK(r.alpha==1);CHECK(r.beta==2);CHECK_FALSE(r.certified);
+}
+
+TEST_CASE("Beta prime inverse gamma fallback meets coefficient accuracy") {
+  const std::vector<double> x{3.5683567301379977,0.7442648518071554,2.880159054558412,4.095577748896918,2.652381900463434,1.4633342070949795,1.592765277780328,2.6279516564115144,2.7223800014956954,3.3937893573070728,0.6120919878044578,1.9980530142818287,3.8994368272706015,3.2798665448184368,2.3171372383296265,2.9260503468715076,1.587384819687631,2.4674396654683,2.458406773589118,2.1170688145931207,4.227256414107402,3.7836152553654694,1.0957551431340367,3.0626517877222734,2.1373387721806885,6.14191569649817,2.639677950445818,1.1967920560612015,3.0087011065787896,3.0911044592690122,1.9494470850389507,1.6031645910906915,3.4000506022898462,1.8889713803351542,1.060903263019697,0.8100370816246663,3.437204311811297,1.2494318713873003,1.734286683306988,1.4942797629277036,4.890544758422772,2.0393563265448234,6.22216893080286,1.6176619587247874,4.410668239506283,7.833761503714881,2.3993729018706067,2.463367642679781,1.1847498880106104,4.874483186567535,2.023173898965016,3.8182189286196504,3.8057937270924778,1.107132443189249,1.3758506134765434,3.496081936121262,0.6909870503454336,0.9757868281412991,3.6321863636230045,4.289442821588824,0.7087139332465692,2.290024896469534,1.3074555691703778,5.728764665355511,3.9513256732981747,3.454254202011315,0.7685338432041671,1.765095020807763,3.8959116676647465,3.1202435945892217,4.2258380449731145,1.667039105934716,3.733668422970268,1.9869138152912504,1.454590604231618,3.1109614711740083,7.036797026131488,1.2209746735093583,2.435483282512738,1.7420272728380046,4.7322278486037375,3.0241247719266116,2.6362376491451576,1.4105943836446617,0.46989254782052675,4.69388842336335,0.6019165823090994,4.48904664163116,3.452591720771803,0.14973557628964068,3.2899608647122696,3.509494900108931,2.461581684525066,4.523135646980922,1.969138198680061,5.492698256433353,3.7404926380124066,1.1095884742902893,3.0893756821909837,1.37462450561447};
+  const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),NAN,0.6611055385779123,NAN,1e-10,64);
+  REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(r.certified);
+  // Independent high-precision stationary point of the original density.
+  CHECK(r.alpha==doctest::Approx(903.4245984850465401617863215484544388420379575287735626554719464).scale(0.).epsilon(1e-10));
+  CHECK(r.scale==doctest::Approx(0.001264250680378879150812707124035623646577326098999374020035308876).scale(0.).epsilon(1e-10));
+  CHECK(r.beta==0.6611055385779123);
+}
+
+TEST_CASE("Beta prime compensated Gamma departure bounds coefficient error") {
+  { const std::vector<double> x{1.0,1.0,1.0,1.0,8.985168161033918};
+    const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),0.6611055385779123,NAN,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok); CHECK_FALSE(r.certified);
+    CHECK(r.beta==doctest::Approx(71618.47142739572031154388700920621).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(281336.2936878014405012764396800171).scale(0.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{1.0,1.0,1.0,1.0,8.985105265485746};
+    const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),0.6611055385779123,NAN,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok); CHECK_FALSE(r.certified);
+    CHECK(r.beta==doctest::Approx(238725.6884041646489954132088074790).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(937782.2533692742702742166843418656).scale(0.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{1.0,1.0,1.0,1.0,8.985087295329125};
+    const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),0.6611055385779123,NAN,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok); CHECK_FALSE(r.certified);
+    CHECK(r.beta==doctest::Approx(716174.8798100404613229502093774770).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(2813342.138375284610124319377009914).scale(0.).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("Beta prime compensated finish handles non-small observation ratios") {
+  { std::vector<double> x(99,1.); x.push_back(7.374830600608956);
+    double p=3,q=64,s=64*(99+x.back())/300,ll=NAN;
+    REQUIRE(cppunivariate::burr_power_one_detail::beta_gamma_fit(mltest::as_span(x),p,q,s,{{false,true,true}},1e-10,1000,ll));
+    CHECK(q==doctest::Approx(374.88836755126440990156921771869741).scale(0.).epsilon(1e-10));
+    CHECK(s==doctest::Approx(132.56954076665546204386005735725110).scale(0.).epsilon(1e-10));
+  }
+  { std::vector<double> x(99,1.); x.push_back(7.518031194795538);
+    double p=3,q=64,s=64*(99+x.back())/300,ll=NAN;
+    REQUIRE(cppunivariate::burr_power_one_detail::beta_gamma_fit(mltest::as_span(x),p,q,s,{{false,true,true}},1e-10,1000,ll));
+    CHECK(q==doctest::Approx(228.25013545547284050334007997895613).scale(0.).epsilon(1e-10));
+    CHECK(s==doctest::Approx(80.679419633580429980858623485156981).scale(0.).epsilon(1e-10));
+  }
+  { std::vector<double> x(99,1.); x.push_back(7.73283208607541);
+    double p=3,q=64,s=64*(99+x.back())/300,ll=NAN;
+    REQUIRE(cppunivariate::burr_power_one_detail::beta_gamma_fit(mltest::as_span(x),p,q,s,{{false,true,true}},1e-10,1000,ll));
+    CHECK(q==doctest::Approx(145.74713059697825275709911646626930).scale(0.).epsilon(1e-10));
+    CHECK(s==doctest::Approx(51.484748772168213396011330564120988).scale(0.).epsilon(1e-10));
+  }
+  { std::vector<double> x(99,1.); x.push_back(8.019233274448574);
+    double p=3,q=64,s=64*(99+x.back())/300,ll=NAN;
+    REQUIRE(cppunivariate::burr_power_one_detail::beta_gamma_fit(mltest::as_span(x),p,q,s,{{false,true,true}},1e-10,1000,ll));
+    CHECK(q==doctest::Approx(99.889444145470257136063353453462679).scale(0.).epsilon(1e-10));
+    CHECK(s==doctest::Approx(35.257748983085543278573452640287820).scale(0.).epsilon(1e-10));
+  }
+  { std::vector<double> x(99,1.); x.push_back(8.5920356511949);
+    double p=3,q=64,s=64*(99+x.back())/300,ll=NAN;
+    REQUIRE(cppunivariate::burr_power_one_detail::beta_gamma_fit(mltest::as_span(x),p,q,s,{{false,true,true}},1e-10,1000,ll));
+    CHECK(q==doctest::Approx(63.159620835798900632837502463984144).scale(0.).epsilon(1e-10));
+    CHECK(s==doctest::Approx(22.261237871687099335545528442514219).scale(0.).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("Beta prime comparable large shapes retain coefficient accuracy") {
+  { const std::vector<double> x{0.9799722532057399,0.9852508068243196,0.9881961522676651,0.9903994220407385,0.9922328226931237,0.9938488332290568,0.9953271554482268,0.9967163631459319,0.99804979742889,0.9993529413517348,1.0006474776042487,1.0019540132928577,1.0032944546467601,1.0046947825407908,1.006189237804866,1.0078279786046531,1.0096936425300809,1.011944842838386,1.0149699884268253,1.0204370549561421};
+    cppunivariate::BetaPrimeResult proposal{20000.458802487380216880751993739499*(1+1e-5),20000.458802500447702104752173266946*(1-1e-5),1.0000000000006533977848971577682253*(1+1e-5),0,0,cppunivariate::BetaPrimeStatus::Ok};proposal.certified=false;
+    const auto r=cppunivariate::betapr_detail::accurate_fallback(proposal,mltest::as_span(x),NAN,NAN,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.alpha==doctest::Approx(20000.458802487380216880751993739499).scale(0.).epsilon(1e-10));
+    CHECK(r.beta==doctest::Approx(20000.458802500447702104752173266946).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(1.0000000000006533977848971577682253).scale(0.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{0.9939490748014492,0.9955522076553079,0.9964441173014446,0.9971100956520769,0.997663484230479,0.9981506631933517,0.9985958478192408,0.999013774694044,0.9994145394413054,0.9998058384274802,1.0001941992785572,1.0005858035235526,1.0009871989064998,1.0014061265964862,1.0018527631898093,1.0023419878610904,1.0028982801001862,1.0035685721224241,1.0044676635845822,1.0060877617897672};
+    cppunivariate::BetaPrimeResult proposal{222222.68102745302314514004796877808*(1+1e-5),222222.68103211733738557870874340043*(1-1e-5),1.0000000000209894311796031276671251*(1+1e-5),0,0,cppunivariate::BetaPrimeStatus::Ok};proposal.certified=false;
+    const auto r=cppunivariate::betapr_detail::accurate_fallback(proposal,mltest::as_span(x),NAN,NAN,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.alpha==doctest::Approx(222222.68102745302314514004796877808).scale(0.).epsilon(1e-10));
+    CHECK(r.beta==doctest::Approx(222222.68103211733738557870874340043).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(1.0000000000209894311796031276671251).scale(0.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{0.9799722532057399,0.9852508068243196,0.9881961522676651,0.9903994220407385,0.9922328226931237,0.9938488332290568,0.9953271554482268,0.9967163631459319,0.99804979742889,0.9993529413517348,1.0006474776042487,1.0019540132928577,1.0032944546467601,1.0046947825407908,1.006189237804866,1.0078279786046531,1.0096936425300809,1.011944842838386,1.0149699884268253,1.0204370549561421};
+    cppunivariate::BetaPrimeResult proposal{20000.45880248738,20000.458802500446883557820750074264*(1-1e-5),1.0000000000006533159283185190268680*(1+1e-5),0,0,cppunivariate::BetaPrimeStatus::Ok};proposal.certified=false;
+    const auto r=cppunivariate::betapr_detail::accurate_fallback(proposal,mltest::as_span(x),20000.45880248738,NAN,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.alpha==doctest::Approx(20000.458802487381035462021827697753).scale(0.).epsilon(1e-10));
+    CHECK(r.beta==doctest::Approx(20000.458802500446883557820750074264).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(1.0000000000006533159283185190268680).scale(0.).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("Beta prime deeper Gamma face uses coefficient-specific error bounds") {
+  { const std::vector<double> x{1.0,1.0,1.0,1.0,8.985079208758647};
+    const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),0.6611055385779123,NAN,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.beta==doctest::Approx(7161738.9593434688).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(28133400.568535466).scale(0.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{1.0,1.0,1.0,1.0,8.985078400101598};
+    const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),0.6611055385779123,NAN,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.beta==doctest::Approx(71617380.19217217).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(281333986.58875811).scale(0.).epsilon(1e-10));
+  }
+}

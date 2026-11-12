@@ -1,0 +1,192 @@
+[
+  {
+    "id": "burr-2.0",
+    "family": "burr",
+    "data": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      2.4494897448244197
+    ],
+    "power": 2.0,
+    "shift": 0.0,
+    "inverse": false,
+    "digits": 120,
+    "reference": {
+      "shape1": "666666610.92630697381779917077968275295298369167313287087387395132677813352875519665091381025665",
+      "shape2": "2.0",
+      "scale": "36514.835631369714294825408120922276675386090363445046754314358011288694714220507288532125474644"
+    },
+    "builds": {
+      "native": {
+        "row": "burr-2.0\tburr\tuncertified\t-4.1041202695526398\tshape1=666666610.62397492\tshape2=2\tscale=36514.835623090017",
+        "status": "uncertified",
+        "errors": {
+          "shape1": 4.5349811966519196e-10,
+          "scale": 2.2674885350488886e-10
+        },
+        "max_error": 4.5349811966519196e-10
+      },
+      "double": {
+        "row": "burr-2.0\tburr\tuncertified\t-4.1041202695526486\tshape1=666666789.38580704\tshape2=2\tscale=36514.840518684287",
+        "status": "uncertified",
+        "errors": {
+          "shape1": 2.676892724769481e-07,
+          "scale": 1.3384462747010928e-07
+        },
+        "max_error": 2.676892724769481e-07
+      }
+    }
+  },
+  {
+    "id": "burr-0.5",
+    "family": "burr",
+    "data": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      36.00000012
+    ],
+    "power": 0.5,
+    "shift": 0.0,
+    "inverse": false,
+    "digits": 120,
+    "reference": {
+      "shape1": "666666652.58865502197420083662392759859342796035022394941588076282966536099986062466890461021225",
+      "shape2": "0.5",
+      "scale": "1777777700917272060.6654163176664120044564896171320992198583887770446808939526040220326876030463"
+    },
+    "builds": {
+      "native": {
+        "row": "burr-0.5\tburr\tuncertified\t-13.723231281494176\tshape1=666666652.26884222\tshape2=0.5\tscale=1.777777699211604e+18",
+        "status": "uncertified",
+        "errors": {
+          "shape1": 4.797192126319455e-10,
+          "scale": 9.59438343604687e-10
+        },
+        "max_error": 9.59438343604687e-10
+      },
+      "double": {
+        "row": "burr-0.5\tburr\tuncertified\t-13.723231281494165\tshape1=666666789.38580704\tshape2=0.5\tscale=1.7777784305021414e+18",
+        "status": "uncertified",
+        "errors": {
+          "shape1": 2.0519573235619084e-07,
+          "scale": 4.1039150676875627e-07
+        },
+        "max_error": 4.1039150676875627e-07
+      }
+    }
+  },
+  {
+    "id": "burr-3.141592653589793",
+    "family": "burr",
+    "data": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.7688590836615325
+    ],
+    "power": 3.141592653589793,
+    "shift": 0.0,
+    "inverse": false,
+    "digits": 120,
+    "reference": {
+      "shape1": "666666667.89315058989582895932224763845393917523352091454951786377841719505145358266361848939366",
+      "shape2": "3.141592653589793115997963468544185161590576171875",
+      "scale": "802.70914516744934322181353673911291509246224796875392553960405621104121272397593883894593180991"
+    },
+    "builds": {
+      "native": {
+        "row": "burr-3.141592653589793\tburr\tuncertified\t-1.5206617609072322\tshape1=666666668.27961755\tshape2=3.1415926535897931\tscale=802.70914531556832",
+        "status": "uncertified",
+        "errors": {
+          "shape1": 5.79700436073104e-10,
+          "scale": 1.8452384507653625e-10
+        },
+        "max_error": 5.79700436073104e-10
+      },
+      "double": {
+        "row": "burr-3.141592653589793\tburr\tstop:numerical\tnan\tmessage=Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE.",
+        "status": "stop:numerical"
+      }
+    }
+  },
+  {
+    "id": "invburr-2",
+    "family": "invburr",
+    "data": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.4082482901236561
+    ],
+    "power": 2.0,
+    "shift": 0.0,
+    "inverse": true,
+    "digits": 120,
+    "reference": {
+      "shape1": "666666650.01596999902864576510519211198631200946603741515973657427225830905570223690072561952842",
+      "shape2": "2.0",
+      "scale": "0.000027386128224103425414908024682107091131694539456662484097560568791741451025593339960663166514415"
+    },
+    "builds": {
+      "native": {
+        "row": "invburr-2\tinvburr\tuncertified\t-2.3123607986579175\tshape1=666666650.21062732\tshape2=2\tscale=2.7386128220105237e-05",
+        "status": "uncertified",
+        "errors": {
+          "shape1": 2.9198598489256976e-10,
+          "scale": 1.45993205190699e-10
+        },
+        "max_error": 2.9198598489256976e-10
+      },
+      "double": {
+        "row": "invburr-2\tinvburr\tuncertified\t-2.3123607986579238\tshape1=666666789.38580704\tshape2=2\tscale=2.7386125361503627e-05",
+        "status": "uncertified",
+        "errors": {
+          "shape1": 2.0905476077884843e-07,
+          "scale": 1.0452736419827105e-07
+        },
+        "max_error": 2.0905476077884843e-07
+      }
+    }
+  },
+  {
+    "id": "pareto4-2",
+    "family": "pareto4",
+    "data": [
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      3.4494897448244197
+    ],
+    "power": 2.0,
+    "shift": 1.0,
+    "inverse": false,
+    "digits": 120,
+    "reference": {
+      "shape1": "666666610.92630697381779917077968275295298369167313287087387395132677813352875519665091381025665",
+      "shape2": "2.0",
+      "scale": "36514.835631369714294825408120922276675386090363445046754314358011288694714220507288532125474644"
+    },
+    "builds": {
+      "native": {
+        "row": "pareto4-2\tpareto4\tstop:numerical\tnan\tmessage=Pareto IV certificate numerical failure; no verified MLE.",
+        "status": "stop:numerical"
+      },
+      "double": {
+        "row": "pareto4-2\tpareto4\tuncertified\t-4.1041202695526486\tshape1=666666789.38580704\tshape2=2\tscale=36514.840518684287\tmin=1",
+        "status": "uncertified",
+        "errors": {
+          "shape1": 2.676892724769481e-07,
+          "scale": 1.3384462747010928e-07
+        },
+        "max_error": 2.676892724769481e-07
+      }
+    }
+  }
+]

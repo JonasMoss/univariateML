@@ -281,3 +281,9 @@ certificate. A proposed concavity shortcut was rejected: dividing the
 likelihood by $a+1$ does not produce the needed softplus perspective.
 The implementation therefore excludes competitors explicitly. See the
 [validation report](../../../../../dev/research/evaluations/2026-11-06-paralogis-cert-report.md).
+
+For concentrated log data, the coordinates
+$E=a\log(s/u)-\log a$ and $\log a$ keep the finite Gumbel rate resolved
+as $a$ grows. The log-moment identity supplies a spread-dependent starting
+point if the finite-difference search has lost the sample spread. Complementary
+logistic terms and $\log(1+r)-r$ retain the shape curvature in this limit.

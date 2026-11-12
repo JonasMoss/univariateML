@@ -260,11 +260,16 @@ test_that("bhatt held certificates require quantitative convergence", {
 
 test_that("bhatt tiny requested tolerance preserves a successful uncertified search", {
   x <- c(-3,-1,0,1,2)
-  f <- mlbhatt(x,sigma=1,a=2,reltol=1e-30)
-  expect_identical(attr(f,"certified"),FALSE)
-  expect_true(all(is.finite(f)))
-  expect_equal(as.numeric(f)[2:3],c(1,2))
-  expect_equal(attr(f,"logLik"),sum(bhatt_oracle_density(x,f[["mu"]],1,2)),tolerance=1e-10)
+  e <- tryCatch(mlbhatt(x,sigma=1,a=2,reltol=1e-30),univariateML_numerical=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"numerical accuracy failure")
+  expect_gt(nrow(e$candidates),0L)
+  best <- e$candidates[which.max(e$candidates$loglik_lower),,drop=FALSE]
+  expect_true(all(is.finite(unlist(best[c("mu","sigma","a","loglik_lower","loglik_upper")]))))
+  expect_equal(c(best$sigma,best$a),c(1,2))
+  ll <- sum(bhatt_oracle_density(x,best$mu,1,2))
+  expect_lte(best$loglik_lower,ll+1e-11)
+  expect_gte(best$loglik_upper,ll-1e-11)
 })
 
 test_that("bhatt RMS domination certifies the conditional normal member", {

@@ -265,3 +265,9 @@ historical proposal's looser coefficient tolerance.
 The held-first-shape route retains finite estimates with an explicit uncertified
 flag when the binary64 scale grid prevents transfer of its latent likelihood
 certificate. The reported likelihood still evaluates the returned coefficients.
+
+For held power, the normalized inverse rate is
+$r=(s/x_{\min})^c$. Its relative error contributes $1/c$ times as much to
+the public scale error. The original log ratios retain the input spacings
+before this map; a rounded reciprocal sample can otherwise perturb the
+weak shape direction while preserving the parent's numerical convergence.

@@ -315,3 +315,8 @@ transfers on positive excesses, including finite constant-excess maxima,
 upper-side concentration, endpoint ties and above-one held-shape endpoint
 domination. Finite witnesses append held `min`; face witnesses retain their
 excess-data coordinates.
+
+Subtracting a held minimum can round even when the original observations are
+represented exactly. Uncertified GB2 transport checks the TwoSum residual of
+each subtraction. A nonzero residual is carried into the original-excess log
+ratios before the information check; exact subtractions retain the parent fit.

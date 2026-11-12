@@ -190,3 +190,10 @@ The implementation therefore excludes competitors explicitly. See the
 [validation report](../../../../../dev/research/evaluations/2026-11-06-paralogis-cert-report.md).
 
 Reciprocal joint and held-scale fits preserve the paralogistic parent's per-fit certification flag together with its physical likelihood and transformed witnesses.
+
+In concentrated samples, the identifiable rate is
+$w=a(x/s)^{-a}$. Forming it from original log spacings separates the rate
+from the large common shape and retains the spacing lost by reciprocation.
+The native scale correction reverses the sign of the parent's log-scale
+correction; errors in the transformed observations require a separate check
+on the original likelihood.

@@ -1,0 +1,22 @@
+{
+  "native": {
+    "shape1": 4.597253044032787e-09,
+    "shape2": 139008118.3399254,
+    "scale": 0.1999999748257368,
+    "logLik": -7.015676381133071,
+    "proposal_status": 0,
+    "final_status": 9,
+    "witnesses": 1,
+    "box_below_minimum": true
+  },
+  "double": {
+    "shape1": 4.597253044032787e-09,
+    "shape2": 139008118.3399254,
+    "scale": 0.1999999748257368,
+    "logLik": -7.015676381133071,
+    "proposal_status": 0,
+    "final_status": 9,
+    "witnesses": 1,
+    "box_below_minimum": true
+  }
+}

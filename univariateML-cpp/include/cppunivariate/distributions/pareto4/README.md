@@ -251,3 +251,9 @@ held-scale excess fits transport Burr's per-fit flag with the held threshold.
 Subtracting the held threshold transports the certificate to excess data with Jacobian one; artificial ties or overflow in this subtraction stop.
 
 Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.
+
+For a rounded excess $y_i=\operatorname{fl}(x_i-\mu)$, the exact
+subtraction residual $e_i=(x_i-\mu)-y_i$ contributes
+$\log(1+e_i/y_i)$ to its log excess. This term can affect the weak shape
+direction of an uncertified fit even when every support classification is
+unchanged. The local correction therefore retains the subtraction residual.

@@ -1,0 +1,13 @@
+{
+  "baseline": "bc8ff7be2e3bc4b9186a56fc4f2e8ee45c163714",
+  "flags": [
+    "-O2",
+    "-std=c++17",
+    "-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"
+  ],
+  "workers": 4,
+  "source_input_fingerprint": "e9939483d94c988572e0cab79a965011e633d8efb3c57ff639cc731e2f30a9cf",
+  "fit_wall_seconds": 233.58497624797747,
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "machine": "JonasBI"
+}

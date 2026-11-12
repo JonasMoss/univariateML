@@ -1,6 +1,7 @@
 // Three-parameter Burr XII MLE, with shape1 profiled exactly.
 #pragma once
 #include "../../core/work_budget.hpp"
+#include "accuracy.hpp"
 #include "../../core/stop_detail.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/multistart.hpp"
@@ -207,18 +208,30 @@ inline BurrMLE burr_mle_legacy(span x, double tol, int maxit,
 
 // An inconclusive certificate does not invalidate a converged finite search.
 // A separated feasible lower bound does invalidate it.
-inline BurrMLE burr_uncertified(BurrMLE certificate, BurrMLE searched, span x) {
+inline BurrMLE burr_uncertified(BurrMLE certificate, BurrMLE searched, span x, double tol=1e-10, int maxit=1000,
+    const std::array<bool,3>& free={{true,true,true}}) {
   if(searched.status!=BurrStatus::Ok) return certificate;
   if(!(searched.shape1>0 && searched.shape2>0 && searched.scale>0) ||
       !std::isfinite(searched.shape1+searched.shape2+searched.scale+searched.logLik))return certificate;
-  double ll=0;
-  for(double v:x) {
-    const double z=searched.shape2*(std::log(v)-std::log(searched.scale));
-    ll+=std::log(searched.shape1)+std::log(searched.shape2)-std::log(v)-
-      burr_softplus(-z)-searched.shape1*burr_softplus(z);
+  double physical=0;
+  for(double v:x){const double z=searched.shape2*(std::log(v)-std::log(searched.scale));
+    physical+=std::log(searched.shape1)+std::log(searched.shape2)-std::log(v)-burr_softplus(-z)-searched.shape1*burr_softplus(z);}
+  const double search_margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(physical)+std::abs(searched.logLik));
+  if(!std::isfinite(physical)||std::abs(physical-searched.logLik)>search_margin||certificate.stop_detail.loglik_lower>physical+search_margin)return certificate;
+  const std::array<double,3> proposal{{searched.shape1,searched.shape2,searched.scale}};
+  if(!burr_local_accuracy(x,searched.shape1,searched.shape2,searched.scale,free,tol,maxit)) {
+    certificate.status=BurrStatus::NumericalFailure;certificate.certified=false;
+    certificate.shape1=certificate.shape2=certificate.scale=certificate.logLik=NAN;
+    certificate.stop_detail.budget_exhausted=false;
+    certificate.stop_detail.comparison_tie=false;
+    const double witness=burr_local_loglik(x,proposal[0],proposal[1],proposal[2]);
+    const double padding=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(witness))*(1+proposal[1]);
+    if(std::isfinite(witness)&&std::isfinite(padding))certificate.stop_detail.candidates.push_back({{proposal[0],proposal[1],proposal[2]},witness-padding,witness+padding,StopModel::None});
+    return certificate;
   }
+  const double ll=burr_local_loglik(x,searched.shape1,searched.shape2,searched.scale);
   const double margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(ll)+std::abs(searched.logLik));
-  if(!std::isfinite(ll) || std::abs(ll-searched.logLik)>margin ||
+  if(!std::isfinite(ll) ||
       certificate.stop_detail.loglik_lower>ll+margin)return certificate;
   searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;
   return searched;
@@ -257,7 +270,7 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     out.stop_detail.limit_coef=face.coef;out.stop_detail.limit_loglik=r.logLik;
   }
   if(status==BurrStatus::CertificateTie || status==BurrStatus::CertificateBudget || status==BurrStatus::NumericalFailure)
-    return burr_uncertified(out,burr_mle_legacy(x,tol,maxit,shape10,shape20,scale0,reltol,true),x);
+    return burr_uncertified(out,burr_mle_legacy(x,tol,maxit,shape10,shape20,scale0,reltol,true),x,tol,maxit,{{true,true,true}});
   return out;
 }
 inline BurrMLE burr_mle(span x, double tol, int maxit,
@@ -302,7 +315,7 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
   auto detail=r.stop_detail;detail.budget_exhausted=status==BurrStatus::CertificateBudget;
   BurrMLE out{r.k,r.c,scale,r.logLik,r.profiles,status,detail};
   if(status==BurrStatus::CertificateTie || status==BurrStatus::CertificateBudget || status==BurrStatus::NumericalFailure)
-    return burr_uncertified(out,searched,x);
+    return burr_uncertified(out,searched,x,tol,maxit,{{true,true,false}});
   return out;
 }
 } // namespace cppunivariate
@@ -375,7 +388,7 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
      const auto candidate=lomax_newton_candidate(span{y.data(),y.size()},tol,maxit);
      BurrMLE searched{candidate.kappa,b,std::exp(mx-std::log(candidate.lambda)/b),
        candidate.logLik+jac,std::min(candidate.iterations,maxit),fallback_lomax_search_accepted(span{y.data(),y.size()},candidate)?BurrStatus::Ok:BurrStatus::IterationFailure};
-     return burr_uncertified(bad,searched,x);
+     return burr_uncertified(bad,searched,x,tol,maxit,{{true,false,true}});
    }
    a=r.kappa;s=std::exp(mx-std::log(r.lambda)/b);
    if(!(a>0 && std::isfinite(a) && s>0 && std::isfinite(s) && std::isfinite(r.logLik+jac))){bad.status=BurrStatus::NumericalFailure;return bad;}

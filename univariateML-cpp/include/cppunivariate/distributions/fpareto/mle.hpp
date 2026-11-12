@@ -1,6 +1,7 @@
 #pragma once
 #include "../../core/work_budget.hpp"
 #include "../gb2/mle.hpp"
+#include "accuracy.hpp"
 #include <vector>
 #include <cmath>
 namespace cppunivariate {
@@ -33,6 +34,7 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
         return {NAN,NAN,NAN,scale,min,NAN,0,Gb2Status::NumericalFailure};
   }
   auto r=gb2_mle(span{y.data(),y.size()},tol,maxit,shape1,shape2,shape3,scale);
+  if(r.status==Gb2Status::Ok&&!r.certified&&!fpareto_transport_accuracy(x,min,r,{{std::isnan(shape1),std::isnan(shape2),std::isnan(shape3),std::isnan(scale)}},tol,maxit))r.status=Gb2Status::NumericalFailure;
   auto detail=r.stop_detail;
   for(auto& c:detail.candidates)if(c.model==StopModel::None && c.coef.size()==4)c.coef.push_back(min);
   return {r.shape1,r.shape2,r.shape3,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};

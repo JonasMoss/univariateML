@@ -147,4 +147,7 @@ The logarithm of the distance from the held minimum converts scale into a
 logistic location. Coefficient accuracy must therefore account for the coupled
 shape/location errors and the exponential map back to the public scale.
 
-When the represented log-logistic scale loses its latent likelihood certificate, a failed correction or scale projection retains the accepted finite parent. A successful correction replaces it only when its finite physical likelihood, evaluated with centered log ratios, is at least as large. Its flag remains uncertified. Certified parent fits keep their existing coefficient refinement and scale-projection checks.
+For an uncertified log-logistic parent, the local correction uses centered
+log ratios of the original excesses. A rounded likelihood comparison cannot
+undo that correction: adjacent scales can have indistinguishable likelihoods
+while the shape error remains resolvable through the information matrix.

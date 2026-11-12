@@ -1,0 +1,14 @@
+{
+  "native": {
+    "cases": 365,
+    "mismatches": []
+  },
+  "double": {
+    "cases": 365,
+    "mismatches": []
+  },
+  "wasm": {
+    "cases": 365,
+    "mismatches": []
+  }
+}

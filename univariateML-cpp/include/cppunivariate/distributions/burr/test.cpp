@@ -211,13 +211,43 @@ TEST_CASE("burr: constant data off a held scale collapse only with both shapes f
 
 namespace {
 #include "certificate-fixtures.inc"
+void check_burr_refutation_witness(const cppunivariate::BurrMLE& stopped,
+    const cppunivariate::BurrMLE& proposal) {
+  REQUIRE(stopped.status==cppunivariate::BurrStatus::NumericalFailure);
+  CHECK_FALSE(stopped.certified);CHECK_FALSE(stopped.stop_detail.budget_exhausted);
+  CHECK_FALSE(stopped.stop_detail.comparison_tie);
+  CHECK(std::isnan(stopped.shape1));CHECK(std::isnan(stopped.logLik));
+  REQUIRE(proposal.status==cppunivariate::BurrStatus::Ok);
+  CHECK((std::isfinite(proposal.shape1)&&proposal.shape1>0));
+  CHECK((std::isfinite(proposal.shape2)&&proposal.shape2>0));
+  CHECK((std::isfinite(proposal.scale)&&proposal.scale>0));
+  double nomination_lower=NAN;
+  for(const auto& c:stopped.stop_detail.candidates) {
+    if(c.model==cppunivariate::StopModel::None&&c.coef==std::vector<double>{proposal.shape1,proposal.shape2,proposal.scale}) {
+      CHECK(std::isfinite(c.loglik_lower));CHECK(std::isfinite(c.loglik_upper));
+      CHECK(c.loglik_lower<=c.loglik_upper);nomination_lower=c.loglik_lower;
+    }
+  }
+  REQUIRE(std::isfinite(nomination_lower));
+  for(const auto& c:stopped.stop_detail.candidates)if(c.model==cppunivariate::StopModel::Weibull) {
+    REQUIRE(c.coef.size()==2);CHECK(c.coef[0]>0);CHECK(c.coef[1]>0);
+    CHECK((std::isfinite(c.coef[0])&&std::isfinite(c.coef[1])));
+    CHECK(std::isfinite(c.loglik_lower));CHECK(std::isfinite(c.loglik_upper));
+    CHECK(c.loglik_lower<=c.loglik_upper);
+    // The independently measured closure improvement is smaller than these
+    // floating enclosures: preserve both witnesses without claiming separation.
+    CHECK(c.loglik_upper>=nomination_lower);
+    CHECK(stopped.stop_detail.loglik_lower>=c.loglik_lower);
+  }
+}
 }
 TEST_CASE("burr: certified retained workloads and guarded stops") {
   for (const auto& fixture : burr_certificate_fixtures) {
     CAPTURE(fixture.name);
     const auto fit=cppunivariate::burr_mle(mltest::as_span(fixture.x),1e-8,1000);
     if(fixture.name=="nearly-constant") {
-      REQUIRE(fit.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(fit.certified);
+      const auto proposal=cppunivariate::burr_mle_legacy(mltest::as_span(fixture.x),1e-8,1000,NAN,NAN,NAN,1e-12,true);
+      check_burr_refutation_witness(fit,proposal);
     } else CHECK(fit.status==fixture.status);
     if(fit.status==cppunivariate::BurrStatus::Ok){
       CHECK(fit.shape1>0);CHECK(fit.shape2>0);CHECK(fit.scale>0);
@@ -242,8 +272,9 @@ TEST_CASE("burr: certificate arithmetic and failure gates") {
   CHECK_FALSE(cert::inverse(singular,inverse,3));
   const std::vector<double> x={.2,.5,1,2,4};
   auto a=cppunivariate::burr_mle_certified(mltest::as_span(x),1e-8,1000,NAN,NAN,NAN,1e-12,0);
-  REQUIRE(a.status==cppunivariate::BurrStatus::Ok);
-  CHECK_FALSE(a.certified);CHECK(std::isfinite(a.logLik));
+  const auto proposal=cppunivariate::burr_mle_legacy(mltest::as_span(x),1e-8,1000,NAN,NAN,NAN,1e-12,true);
+  check_burr_refutation_witness(a,proposal);
+  CHECK(proposal.scale/(1-1e-8)<x.front());
   for(const std::vector<double>& bad:std::vector<std::vector<double>>{{},{1},{0,1},{1,INFINITY},{1,NAN}})
     CHECK(cppunivariate::burr_mle(mltest::as_span(bad),1e-8,1000).status==cppunivariate::BurrStatus::InvalidInit);
   for(double tol:std::array<double,4>{{0.,-1.,INFINITY,NAN}})
@@ -385,7 +416,8 @@ TEST_CASE("Burr uncertified fallback rejects a refuted or failed search") {
  REQUIRE(candidate.status==cppunivariate::BurrStatus::Ok);
  cppunivariate::BurrMLE certificate{NAN,NAN,NAN,NAN,0,cppunivariate::BurrStatus::CertificateBudget};
  auto fallback=cppunivariate::burr_uncertified(certificate,candidate,data);
- REQUIRE(fallback.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(fallback.certified);
+ check_burr_refutation_witness(fallback,candidate);
+ CHECK(candidate.scale/(1-1e-10)<x.front());
  certificate.stop_detail.loglik_lower=candidate.logLik+1;
  CHECK(cppunivariate::burr_uncertified(certificate,candidate,data).status==certificate.status);
  candidate.status=cppunivariate::BurrStatus::IterationFailure;
@@ -421,4 +453,140 @@ TEST_CASE("held-power fallback score gate rejects an unchecked finite Lomax poin
  const std::vector<double> near{1,1,1,1,6.0001};
  const auto r=cppunivariate::lomax_newton_candidate(mltest::as_span(near),1e-14,1000);
  CHECK(cppunivariate::fallback_lomax_search_accepted(mltest::as_span(near),r));
+}
+
+TEST_CASE("Burr held-power fallback bounds coefficients near the exponential face") {
+  // Independent 90-digit log-density stationary point, exact binary64 input.
+  const std::vector<double> x{1,1,1,1,6.0001};
+  const auto r=cppunivariate::burr_mle_holds(mltest::as_span(x),NAN,1,NAN,1e-10,1000);
+  REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+  CHECK_FALSE(r.certified);
+  CHECK(r.shape1==doctest::Approx(66667.7187444793946102).scale(0.).epsilon(1e-10));
+  CHECK(r.scale==doctest::Approx(133334.770828333628047).scale(0.).epsilon(1e-10));
+}
+
+TEST_CASE("Burr unit-power information survives double-only shape cancellation") {
+  const std::vector<double> x{1,1,1,1,6.00000001};
+  double shape=7e8,scale=1.4e9;
+  REQUIRE(cppunivariate::burr_power_one_detail::fit(mltest::as_span(x),shape,scale,1e-14,1000,false));
+  CHECK(shape==doctest::Approx(666666671.770397338004).epsilon(1e-14));
+  CHECK(scale==doctest::Approx(1333333342.87412800995).epsilon(1e-14));
+}
+
+TEST_CASE("Burr uncertified held-scale root meets an explicit accuracy target") {
+  const std::vector<double> x{std::exp(-1.1),std::exp(-1.)};
+  const auto r=cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1,1e-10,1000);
+  REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
+  // Independent 101-digit likelihood score with scale held exactly.
+  CHECK(r.shape1==doctest::Approx(48258140354.1866752246650177026654).scale(0.).epsilon(1e-10));
+  CHECK(r.shape2==doctest::Approx(23.993572806535416190638122614245).scale(0.).epsilon(1e-10));
+  CHECK(r.scale==1);
+}
+
+TEST_CASE("Burr large-shape coefficient box has a separated local refutation") {
+  for(const auto& fixture:burr_certificate_fixtures)if(fixture.name=="nearly-constant") {
+    const auto x=mltest::as_span(fixture.x);
+    const auto proposed=cppunivariate::burr_mle_legacy(x,1e-8,1000,NAN,NAN,NAN,1e-12,true);
+    REQUIRE(proposed.status==cppunivariate::BurrStatus::Ok);
+    CHECK(cppunivariate::burr_shape_box_refuted(x,proposed.shape1,proposed.shape2,1e-8));
+  }
+  const std::vector<double> x{.2,.5,1,2,4};
+  const auto proposed=cppunivariate::burr_mle_legacy(mltest::as_span(x),1e-8,1000,NAN,NAN,NAN,1e-12,true);
+  REQUIRE(proposed.status==cppunivariate::BurrStatus::Ok);
+  // The fixed-scale all-above theorem excludes every stationary point in
+  // this entire requested scale box, independently of the other coefficients.
+  CHECK(proposed.scale/(1-1e-8)<x.front());
+}
+
+TEST_CASE("Burr nonunit held-power fallback meets native coefficient accuracy") {
+  const std::vector<double> x{1,1,1,1,2.4495101551126504};
+  const auto r=cppunivariate::burr_mle_holds(mltest::as_span(x),NAN,2,NAN,1e-10,1000);
+  REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
+  // Independent high-precision stationary point of the original density.
+  CHECK(r.shape1==doctest::Approx(66667.71874405320055825545018026647679833294733177931493178952973).scale(0.).epsilon(1e-10));
+  CHECK(r.scale==doctest::Approx(365.15034003473314572567979882839772936854697211830511199867490983).scale(0.).epsilon(1e-10));
+  CHECK(r.shape2==2);
+}
+
+TEST_CASE("Burr local accuracy retains its target under a legacy search tolerance") {
+  const std::vector<double> x{1,1,1,1,6.0001};
+  double shape=60000,power=1,scale=120000;
+  REQUIRE(cppunivariate::burr_local_accuracy(mltest::as_span(x),shape,power,scale,{{true,false,true}},1.220703e-4,1000));
+  // Independent 90-digit root; the loose control belongs to the search.
+  CHECK(shape==doctest::Approx(66667.71874447939461023856773531186459536977558075677731627344142672063202245712091942).scale(0.).epsilon(1e-10));
+  CHECK(scale==doctest::Approx(133334.7708283336280471370552934774438962200637402300276785163578466626638319176309549).scale(0.).epsilon(1e-10));
+}
+
+TEST_CASE("burr: Weak exponential-limit held powers retain native coefficient accuracy") {
+  {
+    const std::vector<double> x{1.0,1.0,1.0,1.0,2.4494897448244197};
+    const auto r=cppunivariate::burr_mle_holds(mltest::as_span(x),NAN,2.0,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.shape1==doctest::Approx(666666610.92630697381779917077968275295298369167313287087387395132677813352875519665091381025665).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(36514.835631369714294825408120922276675386090363445046754314358011288694714220507288532125474644).scale(0.).epsilon(1e-10));
+    CHECK(r.shape2==2.0);
+  }
+  {
+    const std::vector<double> x{1.0,1.0,1.0,1.0,36.00000012};
+    const auto r=cppunivariate::burr_mle_holds(mltest::as_span(x),NAN,0.5,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.shape1==doctest::Approx(666666652.58865502197420083662392759859342796035022394941588076282966536099986062466890461021225).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(1777777700917272060.6654163176664120044564896171320992198583887770446808939526040220326876030463).scale(0.).epsilon(1e-10));
+    CHECK(r.shape2==0.5);
+  }
+  {
+    const std::vector<double> x{1.0,1.0,1.0,1.0,1.7688590836615325};
+    const auto r=cppunivariate::burr_mle_holds(mltest::as_span(x),NAN,3.141592653589793,NAN,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BurrStatus::Ok);CHECK_FALSE(r.certified);
+    CHECK(r.shape1==doctest::Approx(666666667.89315058989582895932224763845393917523352091454951786377841719505145358266361848939366).scale(0.).epsilon(1e-10));
+    CHECK(r.scale==doctest::Approx(802.70914516744934322181353673911291509246224796875392553960405621104121272397593883894593180991).scale(0.).epsilon(1e-10));
+    CHECK(r.shape2==3.141592653589793);
+  }
+}
+
+TEST_CASE("Coupled Weibull-limit burr fallback retains coefficient accuracy") {
+  { const std::vector<double> x{0.022944204006919947,0.07796154146971186,0.13353139262452263,0.19237189264745608,0.25489224962879004,0.3215836241274623,0.39304258810960724,0.4700036292457356,0.5533852381847866,0.6443570163905133,0.7444404749474959,0.8556661100577202,0.9808292530117262,1.1239300966523995,1.2909841813155658,1.491654876777717,1.742969305058623,2.0794415416798357,2.5902671654458267,4.249486463117075};
+    double k=1011514.4448902489594276495020804652*(1+1e-5),c=1.0000003493627439985941339660820916*(1+1e-8),s=1022318.8474620781567707270823607141*(1+1e-5);
+    REQUIRE(cppunivariate::burr_local_accuracy(mltest::as_span(x),k,c,s,{{true,true,true}},1e-10,1000,false,0));
+    CHECK(k==doctest::Approx(1011514.4448902489594276495020804652).scale(0.).epsilon(1e-10));
+    CHECK(c==doctest::Approx(1.0000003493627439985941339660820916).scale(0.).epsilon(1e-10));
+    CHECK(s==doctest::Approx(1022318.8474620781567707270823607141).scale(0.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{0.022944204006919947,0.07796154146971186,0.13353139262452263,0.19237189264745608,0.25489224962879004,0.3215836241274623,0.39304258810960724,0.4700036292457356,0.5533852381847866,0.6443570163905133,0.7444404749474959,0.8556661100577202,0.9808292530117262,1.1239300966523995,1.2909841813155658,1.491654876777717,1.742969305058623,2.0794415416798357,2.5902671654458267,4.249482256129683};
+    double k=101151327.20202118000696486694120576*(1+1e-5),c=1.0000000034936317628298799937559361*(1+1e-8),s=102232317.10398401209558647161117913*(1+1e-5);
+    REQUIRE(cppunivariate::burr_local_accuracy(mltest::as_span(x),k,c,s,{{true,true,true}},1e-10,1000,false,0));
+    CHECK(k==doctest::Approx(101151327.20202118000696486694120576).scale(0.).epsilon(1e-10));
+    CHECK(c==doctest::Approx(1.0000000034936317628298799937559361).scale(0.).epsilon(1e-10));
+    CHECK(s==doctest::Approx(102232317.10398401209558647161117913).scale(0.).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("Burr weak-coordinate holds preserve native coefficient accuracy") {
+  { const std::vector<double> x{0.5,0.5,1.0,1.0,2.0};
+    double k=1.00000000000000005250476025520442025e+300;
+    double c=1.9735125038192624698070750534821045*(1+1e-6);
+    double scale=1.17165737357432157840259370205389208e+152*(1+1e-6);
+    REQUIRE(cppunivariate::burr_local_accuracy(mltest::as_span(x),k,c,scale,{{false,true,true}},1e-10,1000,false));
+    CHECK(k==doctest::Approx(1.00000000000000005250476025520442025e+300).scale(0.).epsilon(1e-10));
+    CHECK(c==doctest::Approx(1.9735125038192624698070750534821045).scale(0.).epsilon(1e-10));
+    CHECK(scale==doctest::Approx(1.17165737357432157840259370205389208e+152).scale(0.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{0.5,0.5,1.0,1.0,2.0};
+    double k=1.74409805514458174346163609070365999e+197*(1+1e-6);
+    double c=1.9735125038192624698070750534821045*(1+1e-6);
+    double scale=1.00000000000000001590289110975991805e+100;
+    REQUIRE(cppunivariate::burr_local_accuracy(mltest::as_span(x),k,c,scale,{{true,true,false}},1e-10,1000,false));
+    CHECK(k==doctest::Approx(1.74409805514458174346163609070365999e+197).scale(0.).epsilon(1e-10));
+    CHECK(c==doctest::Approx(1.9735125038192624698070750534821045).scale(0.).epsilon(1e-10));
+    CHECK(scale==doctest::Approx(1.00000000000000001590289110975991805e+100).scale(0.).epsilon(1e-10));
+  }
+  { const std::vector<double> x{2.0,2.0,1.0,1.0,0.5};
+    double k=1.00000000000000005250476025520442025e+300;
+    double c=1.9735125038192624698070750534821045*(1+1e-6);
+    double scale=8.53491833495099102690809415626554753e-153*(1+1e-6);
+    REQUIRE(cppunivariate::burr_local_accuracy(mltest::as_span(x),k,c,scale,{{false,true,true}},1e-10,1000,true));
+    CHECK(k==doctest::Approx(1.00000000000000005250476025520442025e+300).scale(0.).epsilon(1e-10));
+    CHECK(c==doctest::Approx(1.9735125038192624698070750534821045).scale(0.).epsilon(1e-10));
+    CHECK(scale==doctest::Approx(8.53491833495099102690809415626554753e-153).scale(0.).epsilon(1e-10));
+  }
 }

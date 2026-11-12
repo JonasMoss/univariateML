@@ -292,4 +292,49 @@ inline BhattResult legacy_candidate(span x,double tol=1e-8,int maxit=500,double 
 }
 
 } // namespace cppunivariate
+#include "accuracy.hpp"
+namespace cppunivariate { namespace bhatt_detail {
+inline BhattResult accurate_candidate(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN,bool finite_only=false) {
+  auto r=legacy_candidate(x,tol,maxit,sigma,a,mu,finite_only);
+  if(r.status!=BhattStatus::Ok)return r;
+  const auto before=r;
+  accuracy_detail::ScalarSum physical,magnitude;
+  for(double v:x){const double term=distributions::dbhatt(v,r.mu,r.sigma,r.a,true);physical.add(term);magnitude.add(std::abs(term));}
+  const double margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+magnitude.value);
+  if(!std::isfinite(physical.value)){r.status=BhattStatus::NumericalFailure;return r;}
+  if(!std::isfinite(r.logLik)||std::abs(physical.value-r.logLik)>margin) {
+    // Preserve the existing refusal of a displaced recovered centre. With
+    // location held exactly, repair only the normalized likelihood value.
+    if(std::isnan(mu)){r.status=BhattStatus::NumericalFailure;return r;}
+    r.logLik=static_cast<double>(physical.value);
+  }
+  if(!local_accuracy(r,x,mu,sigma,a,tol,maxit)) {
+    if(std::isnan(a)&&before.a==0) {
+      if(std::isnan(sigma)) {
+        accuracy_detail::ScalarSum fourth,offset;
+        if(std::isnan(mu))for(double v:x)offset.add((static_cast<ExtendedReal>(v)-before.mu)/before.sigma/x.size());
+        for(double v:x){const ExtendedReal z=(static_cast<ExtendedReal>(v)-before.mu)/before.sigma-offset.value,z2=z*z;fourth.add(z2*z2-6*z2+3);}
+        if(fourth.value<0) {
+          // Gaussian + uniform fourth cumulant: kappa4 = -2*a^4/15.
+          const double ratio=std::min(std::sqrt(2.5),std::pow(static_cast<double>(-7.5*fourth.value/x.size()),.25));
+          auto finite=before;finite.a=before.sigma*ratio;finite.sigma=before.sigma*std::sqrt(1-ratio*ratio/3);
+          if(local_accuracy(finite,x,mu,sigma,a,tol,maxit)) {
+            accuracy_detail::ScalarSum sum;for(double v:x)sum.add(distributions::dbhatt(v,finite.mu,finite.sigma,finite.a,true));finite.logLik=static_cast<double>(sum.value);return finite;
+          }
+        }
+      }
+      auto finite=legacy_candidate(x,tol,maxit,sigma,a,mu,true);
+      if(finite.status==BhattStatus::Ok&&local_accuracy(finite,x,mu,sigma,a,tol,maxit)) {
+        accuracy_detail::ScalarSum sum;for(double v:x)sum.add(distributions::dbhatt(v,finite.mu,finite.sigma,finite.a,true));finite.logLik=static_cast<double>(sum.value);return finite;
+      }
+    }
+    r.status=tol<4*std::numeric_limits<double>::epsilon()?BhattStatus::NumericalFailure:BhattStatus::IterationFailure;return r;
+  }
+  if(r.mu!=before.mu||r.sigma!=before.sigma||r.a!=before.a) {
+    accuracy_detail::ScalarSum sum;for(double v:x)sum.add(distributions::dbhatt(v,r.mu,r.sigma,r.a,true));
+    r.logLik=static_cast<double>(sum.value);
+  }
+  return r;
+}
+}}
 #include "certificate.hpp"

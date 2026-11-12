@@ -36,7 +36,21 @@ inline InvParalogisResult invparalogis_mle(span x, double tol, int maxit, double
   // distinct adjacent doubles; that is loss of resolution, not nonexistence.
   if(r.status==ParalogisStatus::Unbounded)
     return {NAN,NAN,NAN,r.iterations,ParalogisStatus::NumericalFailure};
-  return {r.shape, 1.0/r.scale, r.logLik+jacobian, r.iterations, r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
+  double physical=1/r.scale,ll=r.logLik+jacobian;
+  if(r.status==ParalogisStatus::Ok&&!r.certified) {
+    tol=std::min(tol,1e-10);
+    double shape=r.shape,s=physical,value=ll;
+    if(!paralogis_local_accuracy(x,shape,s,value,tol,maxit,false,true))r.status=ParalogisStatus::NumericalFailure;
+    else if(std::abs(shape/r.shape-1)>tol*.125||std::abs(s/physical-1)>tol*.125){r.shape=shape;physical=s;ll=value;}
+  }
+  if(r.status==ParalogisStatus::Ok&&!r.certified) {
+    tol=std::min(tol,1e-10);
+    const double actual=burr_local_loglik(x,r.shape,r.shape,physical,true);
+    const double margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(actual));
+    if(!std::isfinite(actual))r.status=ParalogisStatus::NumericalFailure;
+    else if(std::abs(actual-ll)>margin)ll=actual;
+  }
+  return {r.shape,physical,ll,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
 }
 inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
     double tol=1e-10, int maxit=100,
@@ -56,7 +70,21 @@ inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
   double jacobian=0;
   for (std::size_t i=0; i<x.size(); ++i) { y[i]=1/x[i]; jacobian-=2*std::log(x[i]); }
   auto r=paralogis_mle_fixed_scale(span{y.data(),y.size()},1/scale,tol,maxit,shape0);
-  return {r.shape,scale,r.logLik+jacobian,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
+  double physical=scale,ll=r.logLik+jacobian;
+  if(r.status==ParalogisStatus::Ok&&!r.certified) {
+    tol=std::min(tol,1e-10);
+    double shape=r.shape,s=physical,value=ll;
+    if(!paralogis_local_accuracy(x,shape,s,value,tol,maxit,true,true))r.status=ParalogisStatus::NumericalFailure;
+    else if(std::abs(shape/r.shape-1)>tol*.125){r.shape=shape;ll=value;}
+  }
+  if(r.status==ParalogisStatus::Ok&&!r.certified) {
+    tol=std::min(tol,1e-10);
+    const double actual=burr_local_loglik(x,r.shape,r.shape,scale,true);
+    const double margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(actual));
+    if(!std::isfinite(actual))r.status=ParalogisStatus::NumericalFailure;
+    else if(std::abs(actual-ll)>margin)ll=actual;
+  }
+  return {r.shape,scale,ll,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
 }
 } // namespace cppunivariate
 

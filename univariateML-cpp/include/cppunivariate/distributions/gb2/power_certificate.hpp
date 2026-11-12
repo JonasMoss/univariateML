@@ -62,6 +62,12 @@ inline Gb2Result fit(span x,double q,double a,double p,double tol,int maxit) {
     out.status=Gb2Status::NumericalFailure;
   out.shape1=std::isnan(q)?r.beta:q;out.shape3=std::isnan(p)?r.alpha:p;
   out.scale=scale(r.scale);
+  if(out.status==Gb2Status::Ok&&!out.certified) {
+    const ExtendedReal coordinate=static_cast<ExtendedReal>(center)+std::log(static_cast<ExtendedReal>(r.scale))/a;
+    out.scale=static_cast<double>(std::exp(coordinate));
+    if(!(out.scale>0)||!std::isfinite(out.scale)||std::abs(std::log(static_cast<ExtendedReal>(out.scale))-coordinate)>tol*.25)out.status=Gb2Status::NumericalFailure;
+  }
+  if(out.status==Gb2Status::Ok&&!out.certified&&!gb2_transport_accuracy(x,0,out,{{std::isnan(q),false,std::isnan(p),true}},tol,maxit,true)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;}
   auto& d=out.stop_detail;
   d.loglik_lower+=jac_sum.value-jac_error;d.loglik_upper+=jac_sum.value+jac_error;
   d.segment_loglik_upper+=jac_sum.value+jac_error;d.limit_loglik+=jac_sum.value;

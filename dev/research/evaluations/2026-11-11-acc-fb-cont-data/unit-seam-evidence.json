@@ -1,0 +1,6 @@
+{
+  "exact_ratio": "6",
+  "moment_profile_constant": "0",
+  "moment_profile_linear": "2/81",
+  "conclusion": "The normalized profile score divided by rate is strictly positive in the small-rate enclosure; the returned finite small-rate point is not stationary."
+}

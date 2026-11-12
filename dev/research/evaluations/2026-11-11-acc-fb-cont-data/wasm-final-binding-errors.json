@@ -1,0 +1,931 @@
+[
+  {
+    "binding": "wasm",
+    "id": "2388",
+    "family": "ged",
+    "error": "",
+    "errors": {
+      "mean": 1.0908610723005667e-16,
+      "nu": 4.025156554687757e-12
+    },
+    "max": 4.025156554687757e-12
+  },
+  {
+    "binding": "wasm",
+    "id": "5388",
+    "family": "paralogis",
+    "error": "",
+    "errors": {
+      "shape": 2.5696533812748424e-14,
+      "scale": 5.0687611742206516e-17
+    },
+    "max": 2.5696533812748424e-14
+  },
+  {
+    "binding": "wasm",
+    "id": "golden-pareto4-16",
+    "family": "pareto4",
+    "error": "",
+    "errors": {
+      "shape1": 2.523251138876648e-17,
+      "shape2": 6.114470981402829e-17,
+      "scale": 2.7946776506874094e-16
+    },
+    "max": 2.7946776506874094e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "golden-betapr-16",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape1": 3.273820383911164e-16,
+      "shape2": 1.6255389564121795e-15,
+      "scale": 2.3035355903762807e-15
+    },
+    "max": 2.3035355903762807e-15
+  },
+  {
+    "binding": "wasm",
+    "id": "golden-ged-16",
+    "family": "ged",
+    "error": "",
+    "errors": {
+      "mean": 1.1307596995112566e-15,
+      "sd": 1.4303154363840107e-15,
+      "nu": 1.969663683707042e-15
+    },
+    "max": 1.969663683707042e-15
+  },
+  {
+    "binding": "wasm",
+    "id": "route-held-power-unproved-face",
+    "family": "burr",
+    "error": "",
+    "errors": {
+      "shape1": 2.4807061734524964e-17,
+      "scale": 2.2071202515117493e-17
+    },
+    "max": 2.4807061734524964e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "route-conditional-budget64",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 2.7680366351968245e-13,
+      "scale": 2.7701873348080977e-13
+    },
+    "max": 2.7701873348080977e-13
+  },
+  {
+    "binding": "wasm",
+    "id": "route-bhatt-uniform-comparison",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 7.551543692787646e-17,
+      "sigma": 1.7786475462324311e-16,
+      "a": 1.846389216209116e-17
+    },
+    "max": 1.7786475462324311e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "route-ged-central-knot",
+    "family": "ged",
+    "error": "",
+    "errors": {
+      "mean": 0.0,
+      "sd": 2.7946290304814363e-16
+    },
+    "max": 2.7946290304814363e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "route-burr-held-scale",
+    "family": "burr",
+    "error": "",
+    "errors": {
+      "shape1": 1.659255001167626e-17,
+      "shape2": 5.801523183802546e-17
+    },
+    "max": 5.801523183802546e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "route-invburr-held-scale",
+    "family": "invburr",
+    "error": "",
+    "errors": {
+      "shape1": 6.487676999981116e-19,
+      "shape2": 3.5856850236260524e-17
+    },
+    "max": 3.5856850236260524e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "delegate-audit-3914",
+    "family": "invparalogis",
+    "error": "",
+    "errors": {
+      "shape": 1.600773921724452e-15,
+      "scale": 1.435313642216947e-17
+    },
+    "max": 1.600773921724452e-15
+  },
+  {
+    "binding": "wasm",
+    "id": "delegate-grid-1.0-2",
+    "family": "pareto3",
+    "error": "",
+    "errors": {
+      "shape": 3.374085645472628e-15,
+      "scale": 1.1102230246251564e-16
+    },
+    "max": 3.374085645472628e-15
+  },
+  {
+    "binding": "wasm",
+    "id": "delegate-rounded-power-gb2",
+    "family": "gb2",
+    "error": "",
+    "errors": {
+      "shape1": 1.241567060263323e-16,
+      "scale": 1.480797150555911e-17
+    },
+    "max": 1.241567060263323e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "delegate-rounded-power-fpareto",
+    "family": "fpareto",
+    "error": "",
+    "errors": {
+      "shape1": 1.241567060263323e-16,
+      "scale": 1.480797150555911e-17
+    },
+    "max": 1.241567060263323e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "sn-audit-6448",
+    "family": "sn",
+    "error": "",
+    "errors": {
+      "omega": 6.89196147550623e-17,
+      "alpha": 4.935482194166102e-17
+    },
+    "max": 6.89196147550623e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "census-genbeta-23",
+    "family": "genbeta",
+    "error": "",
+    "errors": {
+      "shape1": 3.7159721147933517e-14,
+      "shape2": 3.893876728905367e-14,
+      "shape3": 3.549375621502573e-14
+    },
+    "max": 3.893876728905367e-14
+  },
+  {
+    "binding": "wasm",
+    "id": "spot-burr-weak-curvature",
+    "family": "burr",
+    "error": "",
+    "errors": {
+      "shape1": 4.8773507324112465e-17,
+      "scale": 6.998265635647359e-17
+    },
+    "max": 6.998265635647359e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "census-bhatt-170",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 4.288670130433521e-17,
+      "sigma": 6.497452819316226e-17,
+      "a": 6.61387324705023e-16
+    },
+    "max": 6.61387324705023e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-gb2-small-power",
+    "family": "gb2",
+    "error": "",
+    "errors": {
+      "shape1": 1.527998500794938e-14,
+      "scale": 3.213345815282814e-14
+    },
+    "max": 3.213345815282814e-14
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-fpareto-small-power",
+    "family": "fpareto",
+    "error": "",
+    "errors": {
+      "shape1": 3.8634309475238843e-13,
+      "scale": 7.729583867110298e-13
+    },
+    "max": 7.729583867110298e-13
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-gb2-inverse-unit",
+    "family": "gb2",
+    "error": "",
+    "errors": {
+      "shape2": 1.6102681935692323e-16,
+      "shape3": 3.893269502231765e-16,
+      "scale": 2.744819179827304e-16
+    },
+    "max": 3.893269502231765e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-betapr-reverse-rare",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape1": 5.065404629186588e-18,
+      "scale": 6.358689075388438e-17
+    },
+    "max": 6.358689075388438e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-gb2-small-reverse-rare",
+    "family": "gb2",
+    "error": "",
+    "errors": {
+      "shape3": 2.749219975360998e-13,
+      "scale": 5.511842141444936e-13
+    },
+    "max": 5.511842141444936e-13
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-fpareto-small-reverse-rare",
+    "family": "fpareto",
+    "error": "",
+    "errors": {
+      "shape3": 3.096977804102126e-13,
+      "scale": 6.203564438852084e-13
+    },
+    "max": 6.203564438852084e-13
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-2388",
+    "family": "ged",
+    "error": "",
+    "errors": {
+      "mean": 1.0908610723005667e-16,
+      "nu": 4.025156554687757e-12
+    },
+    "max": 4.025156554687757e-12
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-5388",
+    "family": "paralogis",
+    "error": "",
+    "errors": {
+      "shape": 2.5696533812748424e-14,
+      "scale": 5.0687611742206516e-17
+    },
+    "max": 2.5696533812748424e-14
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-golden-betapr-16",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape1": 3.273820383911164e-16,
+      "shape2": 1.6255389564121795e-15,
+      "scale": 2.3035355903762807e-15
+    },
+    "max": 2.3035355903762807e-15
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-golden-ged-16",
+    "family": "ged",
+    "error": "",
+    "errors": {
+      "mean": 1.1307596995112566e-15,
+      "sd": 1.4303154363840107e-15,
+      "nu": 1.969663683707042e-15
+    },
+    "max": 1.969663683707042e-15
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-route-held-power-unproved-face",
+    "family": "burr",
+    "error": "",
+    "errors": {
+      "shape1": 2.4807061734524964e-17,
+      "scale": 2.2071202515117493e-17
+    },
+    "max": 2.4807061734524964e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-route-conditional-budget64",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 2.7680366351968245e-13,
+      "scale": 2.7701873348080977e-13
+    },
+    "max": 2.7701873348080977e-13
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-route-bhatt-uniform-comparison",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 7.551543692787646e-17,
+      "sigma": 2.683388076749021e-17,
+      "a": 1.846389216209116e-17
+    },
+    "max": 7.551543692787646e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-route-ged-central-knot",
+    "family": "ged",
+    "error": "",
+    "errors": {
+      "mean": 0.0,
+      "sd": 2.7946290304814363e-16
+    },
+    "max": 2.7946290304814363e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-route-burr-held-scale",
+    "family": "burr",
+    "error": "",
+    "errors": {
+      "shape1": 1.659255001167626e-17,
+      "shape2": 5.801523183802546e-17
+    },
+    "max": 5.801523183802546e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-route-invburr-held-scale",
+    "family": "invburr",
+    "error": "",
+    "errors": {
+      "shape1": 6.487676999981116e-19,
+      "shape2": 3.5856850236260524e-17
+    },
+    "max": 3.5856850236260524e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-delegate-audit-3914",
+    "family": "invparalogis",
+    "error": "",
+    "errors": {
+      "shape": 1.600773921724452e-15,
+      "scale": 1.435313642216947e-17
+    },
+    "max": 1.600773921724452e-15
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-delegate-rounded-power-fpareto",
+    "family": "fpareto",
+    "error": "",
+    "errors": {
+      "shape1": 1.241567060263323e-16,
+      "scale": 1.480797150555911e-17
+    },
+    "max": 1.241567060263323e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-spot-burr-weak-curvature",
+    "family": "burr",
+    "error": "",
+    "errors": {
+      "shape1": 4.8773507324112465e-17,
+      "scale": 6.998265635647359e-17
+    },
+    "max": 6.998265635647359e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-census-bhatt-170",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 4.288670130433521e-17,
+      "sigma": 6.497452819316226e-17,
+      "a": 6.61387324705023e-16
+    },
+    "max": 6.61387324705023e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-strict-seed-fpareto-small-power",
+    "family": "fpareto",
+    "error": "",
+    "errors": {
+      "shape1": 3.8634309475238843e-13,
+      "scale": 7.729583867110298e-13
+    },
+    "max": 7.729583867110298e-13
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-strict-seed-betapr-reverse-rare",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape1": 5.065404629186588e-18,
+      "scale": 6.358689075388438e-17
+    },
+    "max": 6.358689075388438e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-default-strict-seed-fpareto-small-reverse-rare",
+    "family": "fpareto",
+    "error": "",
+    "errors": {
+      "shape3": 3.096977804102126e-13,
+      "scale": 6.203564438852084e-13
+    },
+    "max": 6.203564438852084e-13
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-edge-burr-2.0",
+    "family": "burr",
+    "error": "",
+    "errors": {
+      "shape1": 1.6276321699072813e-17,
+      "scale": 1.8611622186371928e-17
+    },
+    "max": 1.8611622186371928e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-edge-burr-0.5",
+    "family": "burr",
+    "error": "",
+    "errors": {
+      "shape1": 4.051440269641674e-17,
+      "scale": 1.8757034024068687e-18
+    },
+    "max": 4.051440269641674e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-edge-burr-3.141592653589793",
+    "family": "burr",
+    "error": "",
+    "errors": {
+      "shape1": 3.283110910123938e-17,
+      "scale": 4.367174716861298e-17
+    },
+    "max": 4.367174716861298e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-edge-invburr-2",
+    "family": "invburr",
+    "error": "",
+    "errors": {
+      "shape1": 1.101702898141335e-17,
+      "scale": 9.669324230039855e-20
+    },
+    "max": 1.101702898141335e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-edge-pareto4-2",
+    "family": "pareto4",
+    "error": "",
+    "errors": {
+      "shape1": 1.6276321699072813e-17,
+      "scale": 1.8611622186371928e-17
+    },
+    "max": 1.8611622186371928e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-betapr-gamma-0.001",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 4.6016798253758346e-18,
+      "scale": 5.302244198281293e-17
+    },
+    "max": 5.302244198281293e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-betapr-gamma-0.0001",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 4.813127170728831e-15,
+      "scale": 4.799408978781724e-15
+    },
+    "max": 4.813127170728831e-15
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-betapr-gamma-1e-05",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 1.7267794116116852e-17,
+      "scale": 1.4159596019889361e-16
+    },
+    "max": 1.4159596019889361e-16
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-betapr-gamma-3e-06",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 2.277109276539427e-14,
+      "scale": 2.2792431579926422e-14
+    },
+    "max": 2.2792431579926422e-14
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-betapr-gamma-1e-06",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 1.064541452594325e-12,
+      "scale": 1.0644499714606656e-12
+    },
+    "max": 1.064541452594325e-12
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-gamma-gb2",
+    "family": "gb2",
+    "error": "",
+    "errors": {
+      "shape1": 7.998261737438247e-17,
+      "scale": 2.3257964168141156e-17
+    },
+    "max": 7.998261737438247e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-gamma-fpareto",
+    "family": "fpareto",
+    "error": "",
+    "errors": {
+      "shape1": 7.998261737438247e-17,
+      "scale": 2.3257964168141156e-17
+    },
+    "max": 7.998261737438247e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-gamma-moderate-0.03",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 2.3169943714251187e-11,
+      "scale": 2.322981274931372e-11
+    },
+    "max": 2.322981274931372e-11
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-gamma-moderate-0.05",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 2.1844808438637635e-11,
+      "scale": 2.1932133661097317e-11
+    },
+    "max": 2.1932133661097317e-11
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-gamma-moderate-0.08",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 7.213303517750394e-12,
+      "scale": 7.258863480047074e-12
+    },
+    "max": 7.258863480047074e-12
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-gamma-moderate-0.12",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 5.690563691416984e-12,
+      "scale": 5.7374485744636985e-12
+    },
+    "max": 5.7374485744636985e-12
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-gamma-moderate-0.2",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 2.6379169860134152e-11,
+      "scale": 2.6717662099863066e-11
+    },
+    "max": 2.6717662099863066e-11
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-coupled-burr-0",
+    "family": "burr",
+    "error": "",
+    "expected_stop": "budget",
+    "actual_error": "Burr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-coupled-invburr-0",
+    "family": "invburr",
+    "error": "",
+    "errors": {
+      "shape1": 3.7898275924482026e-17,
+      "shape2": 6.887292475885855e-17,
+      "scale": 3.090800948706977e-17
+    },
+    "max": 6.887292475885855e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-coupled-pareto4-0",
+    "family": "pareto4",
+    "error": "",
+    "expected_stop": "budget",
+    "actual_error": "Pareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-coupled-burr-1",
+    "family": "burr",
+    "error": "",
+    "expected_stop": "budget",
+    "actual_error": "Burr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-coupled-invburr-1",
+    "family": "invburr",
+    "error": "",
+    "expected_stop": "budget",
+    "actual_error": "invburr certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-coupled-pareto4-1",
+    "family": "pareto4",
+    "error": "",
+    "expected_stop": "budget",
+    "actual_error": "Pareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-comparable-betapr-0",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape1": 4.0928124595429503e-17,
+      "shape2": 4.766052381599269e-17,
+      "scale": 7.948739720931953e-17
+    },
+    "max": 7.948739720931953e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-comparable-betapr-1",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape1": 3.9378841142552723e-17,
+      "shape2": 1.0785749234284115e-17,
+      "scale": 1.2347502317975912e-18
+    },
+    "max": 3.9378841142552723e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-comparable-betapr-held",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 8.858693153024264e-17,
+      "scale": 6.070062907687883e-17
+    },
+    "max": 8.858693153024264e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-betapr-gamma-1e-07",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 5.351897677108124e-13,
+      "scale": 5.352335995398091e-13
+    },
+    "max": 5.352335995398091e-13
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-betapr-gamma-1e-08",
+    "family": "betapr",
+    "error": "",
+    "errors": {
+      "shape2": 8.940722704728095e-17,
+      "scale": 5.062796686531057e-17
+    },
+    "max": 8.940722704728095e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sym-1e-06",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 3.0814958739184204e-33,
+      "sigma": 3.3675666743447667e-17,
+      "a": 2.3044079639212144e-19
+    },
+    "max": 3.3675666743447667e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sym-1e-08",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 5.483872472606963e-33,
+      "sigma": 6.238530476086312e-17,
+      "a": 2.661301285732752e-20
+    },
+    "max": 6.238530476086312e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sym-1e-10",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 1.3216131673187538e-33,
+      "sigma": 3.796645450072751e-17,
+      "a": 2.923716154425116e-21
+    },
+    "max": 3.796645450072751e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sym-1e-12",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 4.4371163150332e-33,
+      "sigma": 1.2700170698682287e-17,
+      "a": 9.817357283995349e-23
+    },
+    "max": 1.2700170698682287e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sym-1e-14",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 4.916518196222895e-34,
+      "sigma": 8.260386111000196e-17,
+      "a": 1.806126149195301e-23
+    },
+    "max": 8.260386111000196e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-asym-1e-08",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 1.9692351010260229e-19,
+      "sigma": 5.88865976252625e-17,
+      "a": 5.148051289773686e-19
+    },
+    "max": 5.88865976252625e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-asym-1e-12",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 8.394765012761892e-20,
+      "sigma": 3.6740687546733334e-17,
+      "a": 6.298656848870191e-23
+    },
+    "max": 3.6740687546733334e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-held-mu",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "sigma": 6.238530476086312e-17,
+      "a": 2.661301285732752e-20
+    },
+    "max": 6.238530476086312e-17
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sigma-1e-06",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 0.0,
+      "a": 6.3714730991070976e-21
+    },
+    "max": 6.3714730991070976e-21
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sigma-1e-08",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 0.0,
+      "a": 2.204855382230468e-19
+    },
+    "max": 2.204855382230468e-19
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sigma-1e-10",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 0.0,
+      "a": 9.220969474556362e-22
+    },
+    "max": 9.220969474556362e-22
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sigma-1e-12",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 0.0,
+      "a": 2.6078679667625486e-23
+    },
+    "max": 2.6078679667625486e-23
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sigma-1e-14",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "mu": 0.0,
+      "a": 1.7864546843580583e-23
+    },
+    "max": 1.7864546843580583e-23
+  },
+  {
+    "binding": "wasm",
+    "id": "strict-seed-bhatt-critical-sigma-held-mu",
+    "family": "bhatt",
+    "error": "",
+    "errors": {
+      "a": 1.7864546843580583e-23
+    },
+    "max": 1.7864546843580583e-23
+  }
+]

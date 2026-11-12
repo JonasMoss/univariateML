@@ -1,0 +1,116 @@
+{
+  "checks": [
+    {
+      "check": "cpp-build-native",
+      "command": [
+        "cmake",
+        "--build",
+        "univariateML-cpp/build",
+        "--target",
+        "distribution_tests",
+        "-j4"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 8.59046334103914,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "cpp-families-native",
+      "command": [
+        "ctest",
+        "--test-dir",
+        "univariateML-cpp/build",
+        "--output-on-failure",
+        "-j4",
+        "-R",
+        "^distribution_(burr|invburr|pareto4|bhatt|ged)(_|$)"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 77.72482323402073,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "cpp-build-double",
+      "command": [
+        "cmake",
+        "--build",
+        "build/cpp-no-long-double",
+        "--target",
+        "distribution_tests",
+        "-j4"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 9.59908400697168,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "cpp-families-double",
+      "command": [
+        "ctest",
+        "--test-dir",
+        "build/cpp-no-long-double",
+        "--output-on-failure",
+        "-j4",
+        "-R",
+        "^distribution_(burr|invburr|pareto4|bhatt|ged)(_|$)"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 57.1996544910362,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "r-regen",
+      "command": [
+        "just",
+        "regen"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 24.982285633974243,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "r-families",
+      "command": [
+        "Rscript",
+        "-e",
+        "options(pkg.build_extra_flags=FALSE); testthat::test_local(\"univariateML-r\", filter=\"^dist-(burr|invburr|pareto4|bhatt|ged)$\", stop_on_failure=TRUE)"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 34.61963796598138,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "js-full",
+      "command": [
+        "just",
+        "js-test"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 283.3754388950183,
+      "machine": "JonasBI"
+    },
+    {
+      "check": "ged-reference-and-bindings",
+      "command": [
+        "python3",
+        "/home/jonas/Files/programming/univariateML.wt/acc-fb-cont/dev/research/evaluations/2026-11-11-acc-fb-cont-data/review_ged_measure.py"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 1.103119912033435,
+      "machine": "JonasBI"
+    }
+  ],
+  "authorized_test_changes": [
+    "bindings/js/stop-test.mjs",
+    "bindings/js/test.mjs",
+    "bindings/r/distributions/bhatt/test.R",
+    "bindings/r/distributions/burr/test.R",
+    "bindings/r/distributions/ged/test.R",
+    "bindings/r/distributions/invburr/test.R",
+    "bindings/r/distributions/pareto4/test.R",
+    "univariateML-cpp/include/cppunivariate/distributions/bhatt/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/burr/test.cpp",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/test.cpp"
+  ],
+  "production_source_unchanged": true
+}

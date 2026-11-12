@@ -510,3 +510,16 @@ test_that("GED point-score fallback preserves a held shape and scale", {
   expect_identical(unname(f["nu"]),3.016645308327854)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+test_that("GED held-scale accuracy reaches SGED unit skew case 31101", {
+  x <- c(0.7321666961121761,2.2766042947262384,-0.5491691631533211)
+  sd <- 1.0178559902092952
+  parent <- mlged(x,sd=sd)
+  child <- mlsged(x,sd=sd,xi=1)
+  expect_lte(abs(parent[["mean"]]-(0.8637175657864586408862805910629875338342774))/max(abs(0.8637175657864586408862805910629875338342774),sd),1e-10)
+  expect_lte(abs(parent[["nu"]]/(27.497336616831684338668525265498056683345282)-1),1e-10)
+  expect_identical(unname(parent["sd"]),sd)
+  expect_identical(unname(child["xi"]),1)
+  expect_identical(unname(child[c("mean","sd","nu")]),unname(parent[c("mean","sd","nu")]))
+  expect_identical(attr(child,"certified"),attr(parent,"certified"))
+})

@@ -499,6 +499,6 @@ inline BetaPrimeResult fit(span x,double tol,int maxit,double startp,double star
 } // namespace betapr_joint_cert
 inline BetaPrimeResult betapr_mle(span x,double tol,int maxit,double shape1,
     double shape2,double scale,double reltol,double abstol) {
-  return betapr_detail::fallback(betapr_joint_cert::fit(x,tol,maxit,shape1,shape2,scale,reltol,abstol),x,NAN,NAN,NAN,tol,maxit,shape1,shape2,scale);
+  return betapr_detail::accurate_fallback(betapr_joint_cert::fit(x,tol,maxit,shape1,shape2,scale,reltol,abstol),x,NAN,NAN,NAN,tol,maxit,shape1,shape2,scale);
 }
 } // namespace cppunivariate

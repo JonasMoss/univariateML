@@ -1,0 +1,91 @@
+strict-route-betapr-inclusion	betapr	uncertified	-13.697419161387012	shape1=0.66525330302155083	shape2=1.8469329010137823	scale=3.7692162419297426
+strict-route-bhatt-normal-inclusion	bhatt	uncertified	-10.56042856882309	mu=0	sigma=2	a=0
+strict-route-held-power-unproved-face	burr	uncertified	-8.465785902174737	shape1=66667.718744479396	shape2=1	scale=133334.77082833363
+strict-route-bhatt-uniform-comparison	bhatt	uncertified	-15.249237972318573	mu=-1.3877787807814457e-17	sigma=0.18377418409257038	a=0.80855569262980531
+strict-route-invburr-held-power-face	invburr	uncertified	-4.8822336306630678	shape1=66667.718744289756	shape2=1	scale=7.4999191417993169e-06
+strict-route-pareto4-held-power-face	pareto4	uncertified	-8.465785902174737	shape1=66667.718744479396	shape2=1	scale=133334.77082833363	min=0
+strict-delegate-merge-route-held-power-unproved-face	burr	uncertified	-8.465785902174737	shape1=66667.718744479396	shape2=1	scale=133334.77082833363
+strict-delegate-merge-route-invburr-held-power-face	invburr	uncertified	-4.8822336306630678	shape1=66667.718744289756	shape2=1	scale=7.4999191417993169e-06
+strict-delegate-merge-route-pareto4-held-power-face	pareto4	uncertified	-8.465785902174737	shape1=66667.718744479396	shape2=1	scale=133334.77082833363	min=0
+strict-seed-invburr-held-shape	invburr	uncertified	70.486020748984316	shape1=2	shape2=12127724612122366	scale=1
+strict-seed-fpareto-rounding	fpareto	uncertified	-27.983051235186768	shape1=0.16883269139674439	shape2=2	shape3=0.22690393135372058	scale=1.0073726482985528	min=-1
+strict-seed-pareto4-rounding	pareto4	uncertified	-8.4657859021747388	shape1=66667.718744414626	shape2=1	scale=133334.77082820408	min=-0.10000000000000001
+strict-seed-fpareto-rare	fpareto	uncertified	-60.456866897590359	shape1=903.42459848468025	shape2=1	shape3=0.66110553857791232	scale=790.98237044247253	min=-1
+strict-seed-gb2-unit-joint	gb2	uncertified	-613.67979675082995	shape1=1.3346374721018279	shape2=1.8604177041344641	shape3=1	scale=1.1969911178454207
+strict-seed-gb2-inverse-unit	gb2	uncertified	-675.31219724319681	shape1=1	shape2=1.8604177041344652	shape3=1.3346374721018301	scale=0.83542808721922479
+strict-seed-gb2-unit-power	gb2	uncertified	-8.465785902174737	shape1=66667.718744479396	shape2=1	shape3=1	scale=133334.77082833363
+strict-seed-gb2-small-power	gb2	uncertified	-47.172033618535039	shape1=903.42459848502187	shape2=0.5	shape3=0.66110553857791232	scale=625653.11035126506
+strict-seed-gb2-reverse-power	gb2	uncertified	-25.846507125828744	shape1=0.22690393135372058	shape2=2	shape3=0.16883269139674437	scale=0.99268130983007608
+strict-seed-fpareto-unit-joint	fpareto	uncertified	-613.67979675082995	shape1=1.3346374721018279	shape2=1.8604177041344641	shape3=1	scale=1.1969911178454207	min=0
+strict-seed-fpareto-inverse-unit	fpareto	uncertified	-675.31219724319681	shape1=1	shape2=1.8604177041344652	shape3=1.3346374721018301	scale=0.83542808721922479	min=0
+strict-seed-fpareto-unit-power	fpareto	uncertified	-8.465785902174737	shape1=66667.718744479396	shape2=1	shape3=1	scale=133334.77082833363	min=0
+strict-seed-fpareto-small-power	fpareto	uncertified	-47.172033618535032	shape1=903.4245984850171	shape2=0.5	shape3=0.66110553857791232	scale=625653.11035125842	min=-1
+strict-seed-fpareto-reverse-power	fpareto	uncertified	-25.846507125828744	shape1=0.22690393135372058	shape2=2	shape3=0.16883269139674437	scale=0.99268130983007608	min=0
+strict-seed-burr-nonunit-power	burr	uncertified	-4.1041619314970958	shape1=66667.7187440532	shape2=2	scale=365.15034003473312
+strict-seed-invburr-nonunit-power	invburr	uncertified	-2.3123857957412572	shape1=66667.718743857637	shape2=2	scale=0.0027385980248747586
+strict-seed-pareto4-nonunit-power	pareto4	uncertified	-4.1041619314970958	shape1=66667.7187440532	shape2=2	scale=365.15034003473312	min=0
+strict-seed-bhatt-equiv-1.0	bhatt	uncertified	-37.068058816497356	mu=3.1978415345832607	sigma=1.1223614094387011	a=0.2780983070872669
+strict-seed-bhatt-equiv-0.0001	bhatt	uncertified	183.98011011093101	mu=0.00031978415345832606	sigma=0.00011223614094387007	a=2.7809830708727047e-05
+strict-seed-bhatt-equiv-10000.0	bhatt	uncertified	-258.11622774392578	mu=31978.415345832607	sigma=11223.61409438701	a=2780.9830708726695
+strict-seed-betapr-reverse-rare	betapr	uncertified	-225.65596956768988	shape1=903.42459848504654	shape2=0.66110553857791232	scale=0.0012642506803788791
+strict-seed-gb2-small-reverse-rare	gb2	uncertified	-377.57023895873436	shape1=0.66110553857791232	shape2=0.5	shape3=903.42459848479871	scale=1.5983297828393379e-06
+strict-seed-fpareto-small-reverse-rare	fpareto	uncertified	-377.57023895873431	shape1=0.66110553857791232	shape2=0.5	shape3=903.42459848520571	scale=1.5983297828378954e-06	min=-1
+strict-default-2388	ged	uncertified	-15.121495715294476	mean=0.57512328045579564	sd=1.0178559902092952	nu=267.11635464071031
+strict-default-5388	paralogis	uncertified	82.074217424529763	shape=58639944.712392688	scale=0.95175763078475473
+strict-default-golden-betapr-16	betapr	uncertified	-439.61585993236332	shape1=2.0142714432972615	shape2=3.260009867187486	scale=1.0594104492923104
+strict-default-golden-ged-16	ged	uncertified	-711.69346056327277	mean=-0.017698927434958798	sd=1.0178559615968288	nu=3.0166441190762727
+strict-default-route-held-power-unproved-face	burr	uncertified	-8.465785902174737	shape1=66667.718744479396	shape2=1	scale=133334.77082833363
+strict-default-route-conditional-budget64	betapr	uncertified	-60.456866897590245	shape1=0.66110553857791232	shape2=903.42459848478586	scale=790.98237044256484
+strict-default-route-bhatt-uniform-comparison	bhatt	uncertified	-15.249237972318573	mu=-1.3877787807814457e-17	sigma=0.1837741840925704	a=0.80855569262980531
+strict-default-route-ged-central-knot	ged	uncertified	-7.6746314776398883	mean=-0.96295235253631051	sd=1.7200920482178035	nu=0.5
+strict-default-route-burr-held-scale	burr	uncertified	5.268729820755202	shape1=48258140354.186676	shape2=23.993572806535415	scale=1
+strict-default-route-invburr-held-scale	invburr	uncertified	1.0687298207552041	shape1=48258140354.187141	shape2=23.993572806535425	scale=1
+strict-default-delegate-audit-3914	invparalogis	uncertified	82.13982512839307	shape=70766413.915623009	scale=1.0681310464044695
+strict-default-delegate-rounded-power-fpareto	fpareto	uncertified	-27.983051235186764	shape1=0.16883269139674439	shape2=2	shape3=0.22690393135372058	scale=1.0073726482985528	min=0
+strict-default-spot-burr-weak-curvature	burr	uncertified	-8.4657359077997203	shape1=666666671.77039731	shape2=1	scale=1333333342.8741281
+strict-default-census-bhatt-170	bhatt	uncertified	-203.56678620022876	mu=0.21178922756971993	sigma=1.8442976769631148	a=0.30813481716996466
+strict-default-strict-seed-fpareto-small-power	fpareto	uncertified	-47.172033618535032	shape1=903.4245984850171	shape2=0.5	shape3=0.66110553857791232	scale=625653.11035125842	min=-1
+strict-default-strict-seed-betapr-reverse-rare	betapr	uncertified	-225.65596956768988	shape1=903.42459848504654	shape2=0.66110553857791232	scale=0.0012642506803788791
+strict-default-strict-seed-fpareto-small-reverse-rare	fpareto	uncertified	-377.57023895873431	shape1=0.66110553857791232	shape2=0.5	shape3=903.42459848520571	scale=1.5983297828378954e-06	min=-1
+strict-seed-edge-burr-2.0	burr	uncertified	-4.1041202695526549	shape1=666666610.92630696	shape2=2	scale=36514.835631369715
+strict-seed-edge-burr-0.5	burr	uncertified	-13.723231281494163	shape1=666666652.58865499	shape2=0.5	scale=1.7777777009172721e+18
+strict-seed-edge-burr-3.141592653589793	burr	uncertified	-1.5206617609072313	shape1=666666667.89315057	shape2=3.1415926535897931	scale=802.70914516744938
+strict-seed-edge-invburr-2	invburr	uncertified	-2.3123607986579278	shape1=666666650.01596999	shape2=2	scale=2.7386128224103425e-05
+strict-seed-edge-pareto4-2	pareto4	uncertified	-4.1041202695526549	shape1=666666610.92630696	shape2=2	scale=36514.835631369715	min=1
+strict-seed-betapr-gamma-0.001	betapr	uncertified	-10.12749916931145	shape1=0.66110553857791232	shape2=717.2656963600765	scale=2815.6492509728223
+strict-seed-betapr-gamma-0.0001	betapr	uncertified	-10.125137557249849	shape1=0.66110553857791232	shape2=7162.8305213301937	scale=28135.709102260764
+strict-seed-betapr-gamma-1e-05	betapr	uncertified	-10.124901221544572	shape1=0.66110553857791232	shape2=71618.471427395678	scale=281336.29368780128
+strict-seed-betapr-gamma-3e-06	betapr	uncertified	-10.124882838547448	shape1=0.66110553857791232	shape2=238725.68840415921	scale=937782.2533692529
+strict-seed-betapr-gamma-1e-06	betapr	uncertified	-10.124877586227271	shape1=0.66110553857791232	shape2=716174.87980927806	scale=2813342.1383722899
+strict-seed-gamma-gb2	gb2	uncertified	-15.786179724889115	shape1=716174.87980698573	shape2=0.5	shape3=0.66110553857791232	scale=7914893987490.501
+strict-seed-gamma-fpareto	fpareto	uncertified	-15.786179724889115	shape1=716174.87980698573	shape2=0.5	shape3=0.66110553857791232	scale=7914893987490.501	min=5
+strict-seed-gamma-moderate-0.03	betapr	certified	-54.261463353966775	shape1=3	shape2=374.88836755995055	scale=132.56954076973503
+strict-seed-gamma-moderate-0.05	betapr	certified	-54.604024834337515	shape1=3	shape2=228.25013546045892	scale=80.679419635349902
+strict-seed-gamma-moderate-0.08	betapr	certified	-55.098907186610937	shape1=3	shape2=145.74713059802957	scale=51.484748772541934
+strict-seed-gamma-moderate-0.12	betapr	certified	-55.726010446827367	shape1=3	shape2=99.889444146038684	scale=35.257748983287833
+strict-seed-gamma-moderate-0.2	betapr	certified	-56.881000779696222	shape1=3	shape2=63.159620837464999	scale=22.261237872281868
+strict-seed-coupled-burr-0	burr	stop:budget	nan	message=Burr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.
+strict-seed-coupled-invburr-0	invburr	uncertified	-42.655455848265362	shape1=1011514.444916054	shape2=1.0000003493627441	scale=9.7816840847354391e-07
+strict-seed-coupled-pareto4-0	pareto4	stop:budget	nan	message=Pareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.
+strict-seed-coupled-burr-1	burr	stop:budget	nan	message=Burr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.
+strict-seed-coupled-invburr-1	invburr	stop:budget	nan	message=invburr certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.
+strict-seed-coupled-pareto4-1	pareto4	stop:budget	nan	message=Pareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop.
+strict-seed-comparable-betapr-0	betapr	uncertified	63.724612460189753	shape1=20000.458802487381	shape2=20000.458802500449	scale=1.0000000000006535
+strict-seed-comparable-betapr-1	betapr	uncertified	87.804087289667208	shape1=222222.68102745301	shape2=222222.68103211734	scale=1.0000000000209894
+strict-seed-comparable-betapr-held	betapr	uncertified	63.72461245960222	shape1=20000.458802487381	shape2=20000.458802500445	scale=1.0000000000006533
+strict-seed-betapr-gamma-1e-07	betapr	uncertified	-10.124875222678067	shape1=0.66110553857791232	shape2=7161738.9593396354	scale=28133400.568520408
+strict-seed-betapr-gamma-1e-08	betapr	uncertified	-10.124874986322961	shape1=0.66110553857791232	shape2=71617380.19217217	scale=281333986.58875811
+strict-seed-bhatt-critical-sym-1e-06	bhatt	uncertified	-29.160283771019273	mu=3.2042825875417083e-33	sigma=1.0398464637459186	a=0.0040944963677814073
+strict-seed-bhatt-critical-sym-1e-08	bhatt	uncertified	-29.160293418918592	mu=5.7024027373101685e-33	sigma=1.039849625569305	a=0.00040944978041506503
+strict-seed-bhatt-critical-sym-1e-10	bhatt	uncertified	-29.160293515397584	mu=-1.3742789989709078e-33	sigma=1.0398496571875118	a=4.0944970155445934e-05
+strict-seed-bhatt-critical-sym-1e-12	bhatt	uncertified	-29.160293516362373	mu=4.6139338804913236e-33	sigma=1.0398496575036935	a=4.0946543767188231e-06
+strict-seed-bhatt-critical-sym-1e-14	bhatt	uncertified	-29.160293516372022	mu=5.1124397624685991e-34	sigma=1.0398496575068552	a=4.1119379729510504e-07
+strict-seed-bhatt-critical-asym-1e-08	bhatt	uncertified	-29.032331436592973	mu=0.0031865301823295407	sigma=1.0332178172794599	a=0.00027469386501053229
+strict-seed-bhatt-critical-asym-1e-12	bhatt	uncertified	-29.032331484327585	mu=0.0031865313117701078	sigma=1.0332178319160545	a=2.7469108923574145e-06
+strict-seed-bhatt-critical-held-mu	bhatt	uncertified	-29.160293418918592	mu=0	sigma=1.039849625569305	a=0.00040944978041506503
+strict-seed-bhatt-critical-sigma-1e-06	bhatt	uncertified	-8.5136371992250375	mu=0	sigma=1	a=0.0024494895153309416
+strict-seed-bhatt-critical-sigma-1e-08	bhatt	uncertified	-8.5136312592280348	mu=0	sigma=1	a=0.00024494897378790691
+strict-seed-bhatt-critical-sigma-1e-10	bhatt	uncertified	-8.513631199828037	mu=0	sigma=1	a=2.4494900739001137e-05
+strict-seed-bhatt-critical-sigma-1e-12	bhatt	uncertified	-8.5136311992340357	mu=0	sigma=1	a=2.449503039613454e-06
+strict-seed-bhatt-critical-sigma-1e-14	bhatt	uncertified	-8.5136311992280955	mu=0	sigma=1	a=2.4423105924627815e-07
+strict-seed-bhatt-critical-sigma-held-mu	bhatt	uncertified	-8.5136311992280955	mu=0	sigma=1	a=2.4423105924627815e-07

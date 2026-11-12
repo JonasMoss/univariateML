@@ -562,3 +562,27 @@ its physical scale is recovered directly. This avoids overflowing a Lomax
 rate whose reciprocal beta-prime scale is representable. A finite face
 value still supplies a lower bound when its coefficients cannot be encoded;
 only representable face coefficients enter the witness list.
+
+When the second shape grows, the locally refined coordinates use
+$\log(s/q)$ and the normalizer $\log B(p,q)+p\log q$. The reciprocal
+orientation exchanges the shapes and reverses log scale, so the same
+remainder controls the inverse-gamma approach when the first shape grows.
+A gamma-ratio remainder removes the cancelling leading shape terms before
+differentiation. Held unit shapes use the Burr unit-power rate equation;
+reciprocal transport evaluates that equation on the original observations.
+
+Near a Gamma face, the local check retains raw observation logarithms and
+Gamma-ratio scores as compensated pairs. The first omitted Stirling terms
+and arithmetic margins are propagated through inverse observed information;
+the scale check includes its shared large-shape coordinate. This avoids
+losing the small finite departure when a large shape and scale nearly cancel.
+
+With both shapes large, shape asymmetry approaches a location shift in the
+concentrated log-data likelihood. Compensated digamma increments and raw
+logarithms also retain that weak direction. Complementary logistic terms
+keep its score and information finite without forming a large raw power.
+
+The large-shape normalizer score uses `psi(q+p) - psi(q)`; it does not
+contain `psi(p)`. The log-rate score is elementary. Their separate
+arithmetic and remainder allowances avoid transferring small-shape error
+into the weak large-shape direction when that small shape is held.
