@@ -39,6 +39,7 @@ GOLDEN_TOLERANCE <- c(
   gb2 = 8e-14, # analytic Newton refinement; acc-allfree measurements
   ged = 3e-11,
   genbeta = 1e-14, # analytic Newton refinement
+  gengamma = 5e-14, # 50-digit reference; worst coefficient relative error 8.5e-16
   geom = 5e-15,
   gev = 1e-13,
   gompertz = 5e-13,
@@ -142,6 +143,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   gb2 = 1e-10,
   ged = 0.0001220703,
   genbeta = 1e-10,
+  gengamma = 1e-10,
   geom = 0,
   gev = 1e-10,
   gompertz = 0.0001220703,

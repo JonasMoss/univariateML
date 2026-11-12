@@ -2,6 +2,18 @@
 #include "cppunivariate/distributions/gengamma/dpqr.hpp"
 #include "cppunivariate/distributions/rng_std.hpp"
 #include <cmath>
+#include "cppunivariate/distributions/gengamma/held.hpp"
+#include "cppunivariate/distributions/gengamma/held_joint.hpp"
+#include "cppunivariate/distributions/gengamma/shape_score.hpp"
+#include "cppunivariate/distributions/gengamma/profile_root.hpp"
+#include "cppunivariate/distributions/gengamma/local.hpp"
+#include "cppunivariate/distributions/gengamma/shape_candidate.hpp"
+#include "cppunivariate/distributions/gengamma/shape_scan.hpp"
+#include "cppunivariate/distributions/gengamma/free_certificate.hpp"
+#include "cppunivariate/distributions/gengamma/face_certificate.hpp"
+#include "cppunivariate/distributions/gengamma/zero_certificate.hpp"
+#include "cppunivariate/distributions/gengamma/mle.hpp"
+#include "cppunivariate/distributions/invtrgamma/mle.hpp"
 
 TEST_CASE("gengamma: normal seam and reflection") {
   for (double w : {-6.,-1.,0.,1.,6.}) {
@@ -202,4 +214,371 @@ TEST_CASE("gengamma: seeded log moments") {
     CHECK(std::abs(sum/n-mean)<6*std::sqrt(variance/n));
     CHECK(std::abs(sum2/n-(variance+mean*mean))<(std::abs(Q)==1 ? .25 : .12));
   }
+}
+
+TEST_CASE("gengamma: conditional location and scale") {
+  const std::vector<double> y{-1.4, -0.3, 0.2, 0.6, 1.1, 1.8};
+  const cppunivariate::span data{y.data(), y.size()};
+  for (double q : {-2., -0.2, -1e-8, 0., 1e-8, 0.2, 2.}) {
+    const auto loc = cppunivariate::gengamma_fit_detail::location(data, 1.2, q);
+    REQUIRE(loc.status == cppunivariate::gengamma_fit_detail::ConditionalStatus::Ok);
+    const auto sc = cppunivariate::gengamma_fit_detail::scale(data, loc.value, q, 1e-12, 100);
+    REQUIRE(sc.status == cppunivariate::gengamma_fit_detail::ConditionalStatus::Ok);
+    double score_mu = 0, score_sigma = 0;
+    for (double v : y) {
+      const double w = (v - loc.value) / 1.2;
+      const double z = q * w;
+      score_mu += w * (z == 0 ? 1 : std::expm1(z) / z);
+      const double ws = (v - loc.value) / sc.value;
+      const double zs = q * ws;
+      score_sigma += ws * ws * (zs == 0 ? 1 : std::expm1(zs) / zs) - 1;
+    }
+    CHECK(std::abs(score_mu) < 1e-10);
+    CHECK(std::abs(score_sigma) < 1e-9);
+  }
+  const std::vector<double> constant{2., 2., 2.};
+  const cppunivariate::span repeated{constant.data(), constant.size()};
+  CHECK(cppunivariate::gengamma_fit_detail::scale(repeated, 2., 0.5, 1e-10, 100).status ==
+        cppunivariate::gengamma_fit_detail::ConditionalStatus::Unbounded);
+  CHECK(cppunivariate::gengamma_fit_detail::location(repeated, 1., -1e-8).value == 2.);
+  CHECK(cppunivariate::gengamma_fit_detail::scale(data, 0., 1., 1e-10, 1).status ==
+        cppunivariate::gengamma_fit_detail::ConditionalStatus::IterationFailure);
+}
+
+TEST_CASE("gengamma: fixed shape joint profile") {
+  const std::vector<double> y{-1.4, -0.3, 0.2, 0.6, 1.1, 1.8};
+  const cppunivariate::span data{y.data(), y.size()};
+  for (double q : {-2., -0.2, -1e-8, 0., 1e-8, 0.2, 2.}) {
+    const auto fit = cppunivariate::gengamma_fit_detail::location_scale(data, q, 1e-10, 100);
+    REQUIRE(fit.status == cppunivariate::gengamma_fit_detail::ConditionalStatus::Ok);
+    double score_mu = 0, score_sigma = 0;
+    for (double v : y) {
+      const double w = (v - fit.mu) / fit.sigma;
+      const double z = q * w;
+      const double exprel = z == 0 ? 1 : std::expm1(z) / z;
+      score_mu += w * exprel;
+      score_sigma += w * w * exprel - 1;
+    }
+    CHECK(std::abs(score_mu) < 1e-9);
+    CHECK(std::abs(score_sigma) < 1e-8);
+  }
+  const std::vector<double> constant{2., 2., 2.};
+  CHECK(cppunivariate::gengamma_fit_detail::location_scale(
+      {constant.data(), constant.size()}, -1., 1e-10, 100).status ==
+      cppunivariate::gengamma_fit_detail::ConditionalStatus::Unbounded);
+}
+
+TEST_CASE("gengamma: shape score is smooth across the lognormal seam") {
+  const std::vector<double> y{-1.4, -0.3, 0.2, 0.6, 1.1, 1.8};
+  const cppunivariate::span data{y.data(), y.size()};
+  const double mu=0.2, sigma=1.3;
+  double expected=0;
+  for (double v : y) expected -= std::pow((v-mu)/sigma, 3)/(6*y.size());
+  const auto seam=cppunivariate::gengamma_fit_detail::shape_score(data,mu,sigma,0.);
+  REQUIRE(seam.valid);
+  CHECK(seam.value == doctest::Approx(expected).epsilon(1e-13));
+  for (double q : {-0.4,-0.1,-1e-8,1e-8,0.1,0.4}) {
+    const auto score=cppunivariate::gengamma_fit_detail::shape_score(data,mu,sigma,q);
+    REQUIRE(score.valid);
+    const double h=1e-5;
+    double llplus=0, llminus=0;
+    for (double v : y) {
+      llplus += cppunivariate::distributions::dgengamma(std::exp(v),mu,sigma,q+h,true);
+      llminus += cppunivariate::distributions::dgengamma(std::exp(v),mu,sigma,q-h,true);
+    }
+    const double fd=(llplus-llminus)/(2*h*y.size());
+    CHECK(std::abs(score.value-fd)<2e-8);
+  }
+}
+
+TEST_CASE("gengamma: conditional brackets reject unrepresentable tolerance") {
+  const std::vector<double> y{-1.4, -0.3, 0.2, 0.6, 1.1, 1.8};
+  const cppunivariate::span data{y.data(), y.size()};
+  CHECK(cppunivariate::gengamma_fit_detail::scale(data, 0.2, 0.3, 1e-30, 100).status ==
+        cppunivariate::gengamma_fit_detail::ConditionalStatus::IterationFailure);
+  CHECK(cppunivariate::gengamma_fit_detail::location_scale(data, 0.3, 1e-30, 100).status ==
+        cppunivariate::gengamma_fit_detail::ConditionalStatus::IterationFailure);
+}
+
+TEST_CASE("gengamma: held-Q zero reduces to normal likelihood") {
+  const std::vector<double> y{-1., 0., 1., 2.};
+  const cppunivariate::span data{y.data(), y.size()};
+  const auto joint=cppunivariate::gengamma_fit_detail::location_scale(data,0.,1e-10,100);
+  REQUIRE(joint.status == cppunivariate::gengamma_fit_detail::ConditionalStatus::Ok);
+  CHECK(joint.mu == doctest::Approx(0.5));
+  CHECK(joint.sigma == doctest::Approx(std::sqrt(1.25)).epsilon(1e-14));
+  const auto scale=cppunivariate::gengamma_fit_detail::scale(data,0.,0.,1e-10,100);
+  REQUIRE(scale.status == cppunivariate::gengamma_fit_detail::ConditionalStatus::Ok);
+  CHECK(scale.value == doctest::Approx(std::sqrt(1.5)).epsilon(1e-10));
+}
+
+TEST_CASE("gengamma: signed profile encloses a near-seam local maximum") {
+  const std::vector<double> reflected{2., 1., 0., -1., -2.1};
+  cppunivariate::trgamma_detail::LogData d;
+  REQUIRE(cppunivariate::trgamma_detail::standardize({reflected.data(),reflected.size()},d));
+  int eval=0;
+  double left=1e-5;
+  auto a=cppunivariate::trgamma_detail::profile(d,left,eval,100);
+  REQUIRE(a.slope>0);
+  double right=left;
+  cppunivariate::trgamma_detail::ProfilePoint b=a;
+  for (int i=0;i<100 && b.slope>0;++i) {
+    right*=1.5;
+    b=cppunivariate::trgamma_detail::profile(d,right,eval,100);
+  }
+  REQUIRE(b.slope<0);
+  const auto fit=cppunivariate::gengamma_fit_detail::profile_root(d,left,right,1e-10,100);
+  REQUIRE(fit.ok);
+  CHECK(fit.q>0);
+  CHECK(fit.sigma>0);
+  CHECK(fit.t>left);
+  CHECK(fit.t<right);
+  const auto at=cppunivariate::trgamma_detail::profile(d,fit.t,eval,100);
+  CHECK(std::abs(at.slope)<1e-8);
+}
+
+TEST_CASE("gengamma: local profile refuses invalid or exhausted brackets") {
+  const std::vector<double> y{2., 1., 0., -1., -2.1};
+  cppunivariate::trgamma_detail::LogData d;
+  REQUIRE(cppunivariate::trgamma_detail::standardize({y.data(),y.size()},d));
+  CHECK_FALSE(cppunivariate::gengamma_fit_detail::profile_root(d,1.,1.,1e-10,100).ok);
+  CHECK_FALSE(cppunivariate::gengamma_fit_detail::profile_root(d,1e-5,1.,1e-10,1).ok);
+}
+
+TEST_CASE("gengamma: local information check refines the symmetric seam") {
+  const std::vector<double> y{-2., -1., 0., 1., 2.};
+  const cppunivariate::span data{y.data(),y.size()};
+  const double sd=std::sqrt(2.);
+  std::array<double,3> p{0.001,sd*1.001,0.001};
+  REQUIRE(cppunivariate::gengamma_fit_detail::polish_local(
+      data,0.,sd,p,{true,true,true},1e-10,100));
+  CHECK(std::abs(p[0])<1e-10);
+  CHECK(p[1]==doctest::Approx(sd).epsilon(1e-10));
+  CHECK(std::abs(p[2])<1e-10);
+  std::array<double,3> invalid{0.,sd,0.};
+  CHECK_FALSE(cppunivariate::gengamma_fit_detail::polish_local(
+      data,0.,sd,invalid,{true,true,true},1e-30,100));
+}
+
+TEST_CASE("gengamma: held location and scale nominate the seam") {
+  const std::vector<double> y{-2., -1., 0., 1., 2.};
+  const cppunivariate::span data{y.data(),y.size()};
+  const auto left=cppunivariate::gengamma_fit_detail::shape_point(data,-0.5,0.,1.,false,false,1e-10,100);
+  const auto right=cppunivariate::gengamma_fit_detail::shape_point(data,0.5,0.,1.,false,false,1e-10,100);
+  REQUIRE(left.valid);
+  REQUIRE(right.valid);
+  REQUIRE(left.score>0);
+  REQUIRE(right.score<0);
+  const auto fit=cppunivariate::gengamma_fit_detail::shape_candidate(data,left,right,false,false,0.,1.,1e-10,100);
+  REQUIRE(fit.valid);
+  CHECK(std::abs(fit.q)<1e-10);
+  CHECK(fit.mu==0.);
+  CHECK(fit.sigma==1.);
+}
+
+TEST_CASE("gengamma: shape scan retains a checked symmetric candidate") {
+  const std::vector<double> y{-2., -1., 0., 1., 2.};
+  const cppunivariate::span data{y.data(),y.size()};
+  const auto candidates=cppunivariate::gengamma_fit_detail::shape_candidates(
+      data,0.,1.,false,false,0.,1.,1e-3,1.,1e-10,100);
+  REQUIRE(candidates.scan_completed);
+  REQUIRE_FALSE(candidates.values.empty());
+  CHECK(std::abs(candidates.values.front().q)<1e-10);
+}
+
+TEST_CASE("gengamma: transformed-gamma side can certify a separated candidate") {
+  const auto g=mltest::load_distribution_golden("trgamma");
+  const auto parent=cppunivariate::trgamma_mle(mltest::as_span(g.data));
+  REQUIRE(parent.status==cppunivariate::TrGammaStatus::Ok);
+  std::vector<double> y; y.reserve(g.data.size());
+  for(double x:g.data)y.push_back(std::log(x));
+  const double q=1/std::sqrt(parent.shape1);
+  const double sigma=q/parent.shape2;
+  const double mu=parent.log_scale+std::log(parent.shape1)/parent.shape2;
+  const cppunivariate::span data{y.data(),y.size()};
+  const auto point=cppunivariate::gengamma_fit_detail::shape_point(data,q,mu,sigma,false,false,1e-10,100);
+  REQUIRE(point.valid);
+  CHECK(point.mean_loglik*y.size()==doctest::Approx(parent.logLik).epsilon(1e-10));
+  CHECK(cppunivariate::gengamma_fit_detail::certify_free_candidate(data,point,1e-10,100));
+  CHECK_FALSE(cppunivariate::gengamma_fit_detail::certify_free_candidate(data,point,1e-10,1));
+}
+
+TEST_CASE("gengamma: strict signed face certificate") {
+  const std::vector<double> y{0.,std::log(2.),std::log(3.)};
+  std::vector<double> reflected;
+  for(double v:y)reflected.push_back(-v);
+  const auto power=cppunivariate::gengamma_fit_detail::strict_winning_face({y.data(),y.size()},100);
+  const auto pareto=cppunivariate::gengamma_fit_detail::strict_winning_face({reflected.data(),reflected.size()},100);
+  CHECK(power.winner==cppunivariate::gengamma_fit_detail::FaceWinner::Power);
+  CHECK(pareto.winner==cppunivariate::gengamma_fit_detail::FaceWinner::Pareto);
+  const std::vector<double> equal_faces{-1.,1.};
+  CHECK(cppunivariate::gengamma_fit_detail::strict_winning_face({equal_faces.data(),equal_faces.size()},100).winner==
+        cppunivariate::gengamma_fit_detail::FaceWinner::None);
+}
+TEST_CASE("gengamma: fixed Q and all held subsets") {
+  cppunivariate::distributions::StdRng<> rng(12470);
+  std::vector<double> x;
+  for(int i=0;i<120;++i)x.push_back(cppunivariate::distributions::rgengamma(rng,0.,1.,0.4));
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(int mask=0;mask<8;++mask) {
+    const auto r=cppunivariate::gengamma_mle({x.data(),x.size()},1e-10,100,
+        mask&1?0.:nan,mask&2?1.:nan,mask&4?0.4:nan);
+    REQUIRE(r.status==cppunivariate::GengammaStatus::Ok);
+    if(mask&1)CHECK(r.mu==0.);
+    if(mask&2)CHECK(r.sigma==1.);
+    if(mask&4)CHECK(r.Q==0.4);
+    double ll=0;
+    for(double value:x)ll+=cppunivariate::distributions::dgengamma(value,r.mu,r.sigma,r.Q,true);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
+  }
+}
+
+TEST_CASE("gengamma: parent fits map to signed coordinates") {
+  const auto golden=mltest::load_distribution_golden("trgamma");
+  const auto p=cppunivariate::trgamma_mle(mltest::as_span(golden.data));
+  REQUIRE(p.status==cppunivariate::TrGammaStatus::Ok);
+  const auto g=cppunivariate::gengamma_mle(mltest::as_span(golden.data));
+  REQUIRE(g.status==cppunivariate::GengammaStatus::Ok);
+  const double shape=1/std::sqrt(p.shape1);
+  CHECK(g.Q==doctest::Approx(shape).epsilon(2e-9));
+  CHECK(g.sigma==doctest::Approx(shape/p.shape2).epsilon(2e-9));
+  CHECK(g.mu==doctest::Approx(p.log_scale+std::log(p.shape1)/p.shape2).epsilon(2e-9));
+  CHECK(g.logLik==doctest::Approx(p.logLik).epsilon(1e-10));
+  std::vector<double> inverse;for(double x:golden.data)inverse.push_back(1/x);
+  const auto r=cppunivariate::gengamma_mle({inverse.data(),inverse.size()});
+  REQUIRE(r.status==cppunivariate::GengammaStatus::Ok);
+  const auto inverse_parent=cppunivariate::invtrgamma_mle({inverse.data(),inverse.size()});
+  REQUIRE(inverse_parent.status==cppunivariate::InvTrGammaStatus::Ok);
+  CHECK(r.Q==doctest::Approx(-g.Q).epsilon(2e-9));
+  CHECK(r.sigma==doctest::Approx(g.sigma).epsilon(2e-9));
+  CHECK(r.mu==doctest::Approx(-g.mu).epsilon(2e-9));
+  const double inverse_q=-1/std::sqrt(inverse_parent.shape1);
+  CHECK(r.Q==doctest::Approx(inverse_q).epsilon(2e-9));
+  CHECK(r.sigma==doctest::Approx(-inverse_q/inverse_parent.shape2).epsilon(2e-9));
+  CHECK(r.mu==doctest::Approx(inverse_parent.log_scale-std::log(inverse_parent.shape1)/inverse_parent.shape2).epsilon(2e-9));
+}
+
+TEST_CASE("gengamma: constant data and strict power and Pareto faces") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> one(5,1.);
+  CHECK(cppunivariate::gengamma_mle({one.data(),one.size()}).status==cppunivariate::GengammaStatus::Unbounded);
+  CHECK(cppunivariate::gengamma_mle({one.data(),one.size()},1e-10,100,0.,nan,nan).status==cppunivariate::GengammaStatus::Unbounded);
+  const auto held=cppunivariate::gengamma_mle({one.data(),one.size()},1e-10,100,nan,1.,nan);
+  REQUIRE(held.status==cppunivariate::GengammaStatus::Ok);
+  CHECK(held.mu==0.);
+  CHECK(held.Q==0.);
+  const std::vector<double> x{1.,2.,3.},inverse{1.,.5,1./3.};
+  CHECK(cppunivariate::gengamma_mle({x.data(),x.size()}).status==cppunivariate::GengammaStatus::PowerBoundary);
+  CHECK(cppunivariate::gengamma_mle({inverse.data(),inverse.size()}).status==cppunivariate::GengammaStatus::ParetoBoundary);
+}
+
+TEST_CASE("gengamma: signed seam and zero-skew samples") {
+  const int n=101;
+  std::vector<double> z;
+  double square=0;
+  for(int i=0;i<n;++i){const double v=-3.+6.*i/(n-1);z.push_back(v);square+=v*v/n;}
+  for(double perturbation:{-1e-4,-1e-8,0.,1e-8,1e-4}) {
+    std::vector<double> x;
+    for(double v:z)x.push_back(std::exp(v+perturbation*(v*v-square)));
+    const auto r=cppunivariate::gengamma_mle({x.data(),x.size()});
+    REQUIRE(r.status==cppunivariate::GengammaStatus::Ok);
+    if(perturbation==0)CHECK(std::abs(r.Q)<1e-8);
+    else {
+      CHECK(r.Q*perturbation<0);
+      CHECK(std::abs(r.Q)>1e-10);
+      CHECK(std::abs(r.Q)<0.01);
+    }
+  }
+}
+
+TEST_CASE("gengamma: log-input accuracy is checked against fitted scale") {
+  std::vector<double> stable,ill_conditioned;
+  for(double z:{-2.,-1.,0.,1.,2.}) {
+    stable.push_back(std::exp(1e-6*z));
+    ill_conditioned.push_back(std::exp(100.+1e-10*z));
+  }
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto good=cppunivariate::gengamma_mle({stable.data(),stable.size()},1e-10,100,nan,nan,0.);
+  const auto bad=cppunivariate::gengamma_mle({ill_conditioned.data(),ill_conditioned.size()},1e-10,100,nan,nan,0.);
+  CHECK(good.status==cppunivariate::GengammaStatus::Ok);
+  CHECK(bad.status==cppunivariate::GengammaStatus::IterationFailure);
+}
+
+TEST_CASE("gengamma: shape-score Stirling switch is continuous") {
+  const std::vector<double> y{-1.4,-0.3,0.2,0.6,1.1,1.8};
+  const cppunivariate::span data{y.data(),y.size()};
+  for(double sign:{-1.,1.}) {
+    const double q=sign*0.25;
+    const auto a=cppunivariate::gengamma_fit_detail::shape_score(data,0.2,1.3,q);
+    const auto b=cppunivariate::gengamma_fit_detail::shape_score(data,0.2,1.3,std::nextafter(q,sign));
+    REQUIRE(a.valid);
+    REQUIRE(b.valid);
+    CHECK(std::abs(a.value-b.value)<1e-11);
+  }
+}
+
+TEST_CASE("gengamma: shallow seam keeps an uncertified nonzero candidate") {
+  const int n=101;
+  std::vector<double> z,x;double square=0;
+  for(int i=0;i<n;++i){const double v=-3.+6.*i/(n-1);z.push_back(v);square+=v*v/n;}
+  for(double v:z)x.push_back(std::exp(v+1e-8*(v*v-square)));
+  const auto fit=cppunivariate::gengamma_mle({x.data(),x.size()});
+  REQUIRE(fit.status==cppunivariate::GengammaStatus::Ok);
+  CHECK(fit.Q<0);
+  CHECK(std::abs(fit.Q)>1e-10);
+  CHECK_FALSE(fit.certified);
+}
+
+TEST_CASE("gengamma: certificate allowance retains a checked candidate") {
+  const std::vector<double> y{-2., -1., 0., 1., 2.};
+  const auto candidates=cppunivariate::gengamma_fit_detail::shape_candidates(
+      {y.data(),y.size()},0.,1.,false,false,0.,1.,1e-3,1.,1e-10,100,1);
+  CHECK_FALSE(candidates.scan_completed);
+  REQUIRE(candidates.values.size()==1);
+  CHECK(std::abs(candidates.values[0].q)<1e-10);
+}
+
+TEST_CASE("gengamma: log-location equivariance") {
+  const auto golden=mltest::load_distribution_golden("trgamma");
+  const auto base=cppunivariate::gengamma_mle(mltest::as_span(golden.data));
+  REQUIRE(base.status==cppunivariate::GengammaStatus::Ok);
+  std::vector<double> moved;
+  for(double x:golden.data)moved.push_back(x*1e50);
+  const auto fit=cppunivariate::gengamma_mle({moved.data(),moved.size()});
+  REQUIRE(fit.status==cppunivariate::GengammaStatus::Ok);
+  CHECK(std::abs(fit.mu-base.mu-std::log(1e50))<1e-8);
+  CHECK(fit.sigma==doctest::Approx(base.sigma).epsilon(1e-9));
+  CHECK(fit.Q==doctest::Approx(base.Q).epsilon(1e-9));
+  CHECK(std::abs(fit.logLik-base.logLik+golden.data.size()*std::log(1e50))<1e-7);
+}
+
+TEST_CASE("gengamma: frozen sample matches independent reference") {
+  const auto g=mltest::load_distribution_golden("gengamma");
+  const auto r=cppunivariate::gengamma_mle(mltest::as_span(g.data));
+  REQUIRE(r.status==cppunivariate::GengammaStatus::Ok);
+  const double mu=g.estimates.at("mu"),sigma=g.estimates.at("sigma"),q=g.estimates.at("Q");
+  CHECK(std::abs(r.mu-mu)<=1e-10*std::max(std::abs(mu),sigma));
+  CHECK(std::abs(r.sigma-sigma)<=1e-10*sigma);
+  CHECK(std::abs(r.Q-q)<=1e-10*std::max(1.,std::abs(q)));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+}
+
+TEST_CASE("gengamma: exact symmetry can certify the zero member") {
+  std::vector<double> x,y;
+  for(int k=-5;k<=5;++k){const double v=std::ldexp(1.,k);x.push_back(v);y.push_back(std::log(v));}
+  REQUIRE(cppunivariate::gengamma_fit_detail::multiplicatively_symmetric({x.data(),x.size()}));
+  const auto certificate=cppunivariate::gengamma_fit_detail::certify_zero(
+      {x.data(),x.size()},{y.data(),y.size()},100);
+  CHECK(certificate.certified);
+  x.back()=std::nextafter(x.back(),std::numeric_limits<double>::infinity());
+  CHECK_FALSE(cppunivariate::gengamma_fit_detail::multiplicatively_symmetric({x.data(),x.size()}));
+}
+
+TEST_CASE("gengamma: exact multiplicative symmetry returns certified Q zero") {
+  std::vector<double> x;
+  for(int k=-5;k<=5;++k)x.push_back(std::ldexp(1.,k));
+  const auto r=cppunivariate::gengamma_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::GengammaStatus::Ok);
+  CHECK(r.Q==0.);
+  CHECK(r.certified);
 }

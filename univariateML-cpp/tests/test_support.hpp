@@ -80,6 +80,8 @@ constexpr double kGolden_gb2 = 8e-14;
 constexpr double kGolden_ged = 3e-11;
 // genbeta: analytic Newton correction; measured native/double/R/WASM reference checks.
 constexpr double kGolden_genbeta = 1e-14;
+// gengamma: 50-digit reference; measured native relative coefficient error 8.5e-16.
+constexpr double kGolden_gengamma = 5e-14;
 constexpr double kGolden_geom = 5e-15;
 constexpr double kGolden_gev = 1e-13;
 constexpr double kGolden_gompertz = 5e-13;

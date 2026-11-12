@@ -136,6 +136,9 @@ distribution of $aG^{1/p}$ for a unit-scale gamma variable $G$ with shape $k$; i
 
 ## Details
 
+The lognormal limit is an interior member of the Prentice generalized gamma
+family, at $Q=0$; this transformed-gamma family contains only its $Q>0$ side.
+
 With $k\downarrow0$, $p\to\infty$ and $kp\to d>0$, $p/\Gamma(k)\to d$. In the displayed density,
 put $u=x/a$. For $u<1$, $u^p\to0$ and the density tends to
 $d u^d/x$; for $u>1$ it tends to zero. This is the power density
