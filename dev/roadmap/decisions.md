@@ -26,6 +26,12 @@ Active work lives on the board (`~/boards/univariateML`), not here.
   of scope"). Members with mass at infinity, such as flexsurv's Gompertz with
   negative shape, are not supported; our gompertz keeps both coefficients
   positive and escapes to the exponential.
+  When the likelihood of a proper family is maximized only along a
+  defective limit (possible with complete data: Geyer 1990, Examples
+  4.4-4.5, [TASK-171](../research/evaluations/2026-11-10-defective-limit-lit-report.md)),
+  the fit stops with a nonexistence error that names the escaping mass; it
+  never names a defective model to use instead (Jonas: "we would rather have
+  errors with explanation").
 - **Retiring families go as soon as their replacement lands** (Jonas: "we'll
   remove all redundant truncated and zero-mod/trunc/infl distributions once
   they land"). Each of the 16 families in
