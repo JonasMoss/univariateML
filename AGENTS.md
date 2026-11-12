@@ -110,6 +110,9 @@ Open items and test status: [dev/STATUS.md](dev/STATUS.md). Decisions:
   "later" ideas go in `dev/roadmap/` as one dated file each.
 - Coordinate through the board (`~/.local/bin/board`); check In Progress tasks
   before touching the same files.
+- Board statuses: To Do is ready to start; Later is scoped work deliberately
+  deferred, with its trigger in a comment. Unscheduled ideas live only in
+  `dev/roadmap/`; their card is created when they are scheduled.
 - After merging a job branch, delete the branch (`git branch -d`), remove its
   worktree once `git status --short` shows nothing outside ignored build
   products, and remove its simbox mirror (`simbox:umvl-wt/<name>`). Unmerged
