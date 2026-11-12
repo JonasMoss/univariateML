@@ -8,6 +8,24 @@ the [decision log](../roadmap/decisions.md) under 2026-11-12.
 Everything here is a target until its step lands. Each step says what must be
 true when it is done.
 
+## Progress
+
+| step | state on 2026-11-13 |
+|---|---|
+| 1 | Jobs merged; master `8a702cc2` passed the C++ dev tier, the R dev tier and the JS tests. Left: the policy for tracked generated JS metadata, and stale family counts in the validation guide and JS README. |
+| 2 | Recorded. Open with Jonas: whether the family status enums stay as detail or are removed. |
+| 3 | Done. [Baselines](../research/evaluations/2026-11-12-fit-snapshot-report.md) of `8a702cc2`, native and double-only. |
+| 4 | Pilot merged (`400dfb08`): `core/outcome.hpp` and the mapping for norm, exp, gamma, laplace; snapshot identical to the baselines. The other 97 fitted families wait for the enum decision. |
+| 5 to 8 | Not started. |
+
+The pattern of the pilot, for the remaining families: an overload
+`outcome(const <Family>Result&)` next to the fitter; in the adapter,
+`with_outcome` on every return that follows the core call, `invalid_argument`
+on rejections before it, `overridden` where the adapter refuses a core result
+that claimed success, and `outcome_kind(o)` in place of a literal kind. The
+check is `fit-snapshot.py --diff` against the baseline (ignoring `outcome`,
+`core_status`, `outcome_override`) and `--outcomes` with zero disagreements.
+
 ## Outcome model (target)
 
 One outcome type for every family, in the core, replacing the per-family
