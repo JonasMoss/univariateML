@@ -523,8 +523,9 @@ Inputs are deterministic: the frozen fit-audit archive (every hold subset,
 $n$ from 2 to 12), each golden sample, seeded resamples of it ($n$ = 3 and 7),
 and magnitude and tie classes built from fixed order statistics of the golden
 sample (subnormal, tiny, huge, near-constant, wide spread, large offset, ties,
-half ties, one, two and constant observations; integer and unit-interval
-families get their own variants). The classes use the default fit only; hold
+half ties, one, two and constant observations, and invalid samples: empty,
+negative, zeros, NaN and infinite; integer and unit-interval families get
+their own variants). The classes use the default fit only; hold
 subsets are covered by the archive. A class can violate a family's support or
 a held design value, and the resulting stop is recorded like any other.
 
@@ -549,3 +550,11 @@ and skipped on a rerun while headers, bindings, goldens, archive and the script
 are unchanged; `provenance.json` records the source hash, commit, compiler and
 flags. Checked on 2026-11-12 for norm, gamma and pois only: two runs gave
 identical records (259 cases). A full run has not been made yet.
+
+Where an adapter reports the shared outcome
+([consolidation plan](../design/consolidation.md), step 4), a record also
+holds it, the family's raw status and whether the adapter overrode a core
+success. `--outcomes DIR` lists the families that report an outcome on every
+case, the raw statuses the inputs reached, and every case whose outcome
+disagrees with the kind the adapter emitted; it exits nonzero on a
+disagreement.

@@ -10,7 +10,8 @@ Inputs, all deterministic:
   golden    each family's golden sample with its frozen fit arguments
   class     magnitude and tie classes derived from the golden sample, default
             fit only: subnormal, tiny, huge, near-constant, wide spread,
-            large offset, ties, half ties, one, two and constant samples
+            large offset, ties, half ties, one, two and constant samples, and
+            invalid ones (empty, negative, zeros, NaN, infinite)
   resample  seeded draws with replacement from the golden sample (n = 3, 7)
 
 Every case goes through the binding-neutral adapter umvl_binding::fit_<id> with
@@ -68,7 +69,8 @@ def classes(meta, golden):
     base = [q10, q25, q50, q60, q75, q90]
     kind = domain(meta, data)
     out = {'base6': base, 'one': [q50], 'two': [q25, q75], 'constant': [q50]*4,
-           'ties': [q50]*4+[q25, q75], 'half-ties': [q50]*3+[q10, q25, q75]}
+           'ties': [q50]*4+[q25, q75], 'half-ties': [q50]*3+[q10, q25, q75],
+           'empty': [], 'negative': [-abs(v)-1 for v in base]}
     if kind == 'integer':
         c = int(q50); lo = int(data[0])
         out.update({'near-constant': [c, c, c+1], 'zeros': [0]*4,
@@ -78,6 +80,8 @@ def classes(meta, golden):
         return out
     c = q50 if q50 != 0 else 1.0
     out['near-constant'] = [c, c, math.nextafter(c, math.inf)]
+    out.update({'zeros': [0.0]*4, 'nan': [math.nan, q50, q75], 'inf': [math.inf, q50, q75],
+                'neginf': [-math.inf, q50, q75]})
     out['subnormal'] = [DENORM*k for k in (1, 2, 3)]
     if kind == 'unit':
         out.update({'tiny': [v*1e-300 for v in base],
@@ -159,7 +163,16 @@ int main(){
     for(std::size_t i=0;i<r.candidates.size();++i){const auto&c=r.candidates[i];
       o+=(i?",":"")+std::string("{\"model\":")+str(c.model)+",\"estimates\":"+named(c.estimates)+
          ",\"loglik_lower\":"+num(c.loglik_lower)+",\"loglik_upper\":"+num(c.loglik_upper)+"}";}
-    std::cout<<o<<"]}"<<std::endl;
+    o+="]";
+#if __has_include("cppunivariate/core/outcome.hpp")
+    o+=",\"outcome\":";
+    if(r.outcome_set)o+=std::string("{\"kind\":")+str(cppunivariate::outcome_kind_name(r.outcome.kind))+",\"reason\":"+
+      str(cppunivariate::outcome_reason_name(r.outcome.reason))+",\"certified\":"+(r.outcome.certified?"true":"false")+
+      ",\"unique\":"+(r.outcome.unique?"true":"false")+"}";
+    else o+="null";
+    o+=",\"core_status\":"+std::to_string(r.core_status)+",\"outcome_override\":"+(r.outcome_override?"true":"false");
+#endif
+    std::cout<<o<<"}"<<std::endl;
   }
 }
 '''
@@ -315,6 +328,37 @@ def diff(args):
         print('by field:', dict(sorted(by_field.items(), key=lambda kv: -kv[1])))
     sys.exit(1 if changed else 0)
 
+def outcomes(args):
+    """Which adapters report the shared outcome, and whether it agrees with the kind they emit."""
+    rows = load(args.outcomes)
+    expected = lambda o: {'estimate': 'ok', 'limit': 'limit', 'nonexistence': 'nomle', 'budget': 'budget'}.get(o['kind']) or (
+        'error' if o['reason'] in ('invalid-input', 'invalid-argument', 'unsupported') else
+        'unresolved' if o['reason'] == 'unresolved' else 'numerical')
+    families = {}; table = {}; disagree = []; plain = {}; overrides = {}; statuses = {}
+    for (family, source, case), r in sorted(rows.items()):
+        res = r['result']; o = res.get('outcome')
+        state = families.setdefault(family, [0, 0]); state[o is not None] += 1
+        if res['kind'] in ('timeout', 'crash') or o is None: continue
+        statuses.setdefault(family, set()).add(res['core_status'])
+        key = (o['kind'], o['reason'], res['kind']); table[key] = table.get(key, 0)+1
+        if res.get('outcome_override'): overrides[family] = overrides.get(family, 0)+1
+        want = expected(o); got = 'numerical' if res['kind'] in ('tolerance', 'conditioning') else res['kind']
+        if got == want: continue
+        if want == 'numerical' and got == 'error': plain[family] = plain.get(family, 0)+1
+        else: disagree.append((family, source, case, o, res['kind']))
+    done = sorted(f for f, (unset, has) in families.items() if has and not unset)
+    partial = sorted(f for f, (unset, has) in families.items() if has and unset)
+    print('%d of %d families report an outcome on every case: %s' % (len(done), len(families), ' '.join(done)))
+    if partial: print('partly:', {f: families[f] for f in partial})
+    print('\noutcome kind, reason, emitted kind: cases')
+    for key, count in sorted(table.items()): print('  %-13s %-17s %-10s %d' % (*key, count))
+    print('\nraw statuses reached:', {f: sorted(s) for f, s in sorted(statuses.items())})
+    print('plain errors that become numerical stops in step 5:', plain)
+    print('adapter overrides of a core success (core defects):', overrides)
+    print('\n%d disagreements between outcome and emitted kind' % len(disagree))
+    for d in disagree[:40]: print(' ', *d)
+    sys.exit(1 if disagree else 0)
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--output', type=Path, help='snapshot directory')
@@ -323,11 +367,13 @@ def main():
     ap.add_argument('--cpu-limit', type=float, default=60, help='CPU seconds per case before "timeout"')
     ap.add_argument('--no-long-double', action='store_true', help='double-only intermediates')
     ap.add_argument('--diff', nargs=2, metavar=('OLD', 'NEW'), help='compare two snapshot directories')
+    ap.add_argument('--outcomes', metavar='DIR', help='report shared-outcome coverage and consistency of a snapshot')
     ap.add_argument('--ignore', help='comma-separated result fields to ignore in --diff, e.g. message')
     args = ap.parse_args()
-    if args.diff: diff(args)
+    if args.outcomes: outcomes(args)
+    elif args.diff: diff(args)
     elif args.output: snapshot(args)
-    else: ap.error('give --output or --diff')
+    else: ap.error('give --output, --diff or --outcomes')
 
 if __name__ == '__main__':
     main()
