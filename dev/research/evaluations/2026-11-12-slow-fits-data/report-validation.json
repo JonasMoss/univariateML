@@ -1,0 +1,9 @@
+{
+  "report_links": "all targets exist",
+  "final_source_hashes": "all match tested source",
+  "initial_full_r_failure": "resolved by family-only fix and full-tier targeted recheck",
+  "final_rechecks": "all passed",
+  "machine": "workstation",
+  "simbox": "off per brief",
+  "artifact_pane": "HTTP 403: worktree outside configured readable roots; no retry or external writes"
+}

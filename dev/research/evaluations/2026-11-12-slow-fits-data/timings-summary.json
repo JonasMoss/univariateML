@@ -1,0 +1,17 @@
+{
+  "837": {
+    "median_seconds": 8.496204478,
+    "min_seconds": 4.478281344,
+    "max_seconds": 16.146679054
+  },
+  "915": {
+    "median_seconds": 1.577970341,
+    "min_seconds": 1.532386257,
+    "max_seconds": 1.795970394
+  },
+  "997": {
+    "median_seconds": 0.081049713,
+    "min_seconds": 0.078980628,
+    "max_seconds": 0.222552308
+  }
+}

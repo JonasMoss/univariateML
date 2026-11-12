@@ -113,3 +113,11 @@ test_that("dgamma certified search preserves likelihood and stops on exhaustion"
   }
   expect_error(mldgamma(c(0,0,1,2,4,8),iterlim=1),"converge")
 })
+
+test_that("large-count dgamma numerical stops keep a feasible witness", {
+  e <- tryCatch(mldgamma(c(1000000,1000001,1000003,1000008,1000011)), error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"precision")
+  expect_true(nrow(e$candidates)>0)
+  expect_true(all(is.finite(e$candidates$loglik_lower)))
+})

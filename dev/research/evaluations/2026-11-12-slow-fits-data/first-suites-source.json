@@ -1,0 +1,5 @@
+{
+  "univariateML-cpp/include/cppunivariate/distributions/cmb/mle.hpp": "9497224240a30469434faf64de33fa693ce1378dd5396b3c2f83c2c1a04fd46f",
+  "univariateML-cpp/include/cppunivariate/distributions/dgamma/mle.hpp": "885a17f8998444e5ed8598bcf0ea1766d3dd965eb28abc92109b4c480e10890a",
+  "bindings/common/distributions/dgamma/fit.hpp": "9dd19c123fdcc316afc25ef3b03cd692e1fcd1bf325deb0fab3653b4cfe941f9"
+}

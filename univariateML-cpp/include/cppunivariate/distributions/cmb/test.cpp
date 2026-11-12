@@ -605,3 +605,44 @@ TEST_CASE("cmb: symmetric median survives interior underflow") {
  CHECK(cppunivariate::distributions::qcmb(.5,10,.5,-1e8,true,false)==5);
  CHECK(cppunivariate::distributions::qcmb(.5,10,.5,-1e8,false,false)==5);
 }
+
+TEST_CASE("cmb: million-count searches exhaust a shared cell ledger with witnesses") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const cppunivariate::ispan data{x.data(),x.size()};
+  for(const auto& r:{cppunivariate::cmb_size_free_nu_mle(data),
+      cppunivariate::cmb_size_mle(data,.2777362750324292,1.683599466457963)}) {
+    REQUIRE(r.fit.status==cppunivariate::CmbStatus::IterationFailure);
+    CHECK(r.fit.stop_detail.budget_exhausted);
+    REQUIRE(!r.fit.stop_detail.candidates.empty());
+    CHECK(std::isfinite(r.fit.stop_detail.candidates.front().loglik_lower));
+  }
+  // Independent of elapsed time: a large table spends its entire support,
+  // and a second table cannot spend beyond the remaining allowance.
+  std::uint64_t used=0;
+  const std::map<int,std::uint64_t> counts{{1000000,1}};
+  cppunivariate::cmb_detail::TableWork work{used,2000024,counts};
+  CHECK(std::isfinite(work.table(1000011,0,1).mean));
+  CHECK(used==1000012);
+  CHECK(std::isfinite(work.table(1000011,0,1).mean));
+  const auto first=work.table(1000011,0,1);
+  CHECK(work.exhausted);
+  CHECK(used==2000024);
+  CHECK(!std::isfinite(first.mean));
+}
+
+TEST_CASE("cmb: fitting-only large tables agree with dense independent tables") {
+  const int N=100000;
+  const std::vector<int> x{0,1,10,49999,50000,99999,100000};
+  for(const auto& coordinate:std::vector<std::pair<double,double>>{{0,1},{-.95,1.68},{0,-1},{.01,-.01},{0,0}}) {
+    const auto sparse=cppunivariate::cmb_detail::fit_table(N,coordinate.first,coordinate.second,{x.data(),x.size()});
+    const cppunivariate::cmb_detail::Table dense(N,coordinate.first,coordinate.second);
+    CHECK(sparse.lc.empty());CHECK(sparse.uc.empty());
+    CHECK(sparse.logZ==doctest::Approx(dense.logZ).epsilon(1e-13));
+    CHECK(sparse.mean==doctest::Approx(dense.mean).epsilon(1e-13));
+    CHECK(sparse.mh==doctest::Approx(dense.mh).epsilon(1e-13));
+    CHECK(sparse.vx==doctest::Approx(dense.vx).epsilon(1e-12));
+    CHECK(sparse.vh==doctest::Approx(dense.vh).epsilon(1e-12));
+    CHECK(sparse.cov==doctest::Approx(dense.cov).epsilon(1e-12));
+    for(int k:x)CHECK(sparse.lp[k]==doctest::Approx(dense.lp[k]).epsilon(1e-12));
+  }
+}

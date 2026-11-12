@@ -1,0 +1,27 @@
+{
+  "baseline": "c4ed89f6a4222e133c7524cf726fea4cb9369593",
+  "machine": "workstation",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "replay_flags": [
+    "-std=c++17",
+    "-O2"
+  ],
+  "baseline_profile_flags": [
+    "-std=c++17",
+    "-O1",
+    "-pg"
+  ],
+  "baseline_profile_guard_seconds": 12,
+  "source_sha256": {
+    "bindings/common/distributions/dgamma/fit.hpp": "9dd19c123fdcc316afc25ef3b03cd692e1fcd1bf325deb0fab3653b4cfe941f9",
+    "bindings/r/distributions/dgamma/test.R": "e415aa0de3e16c64a6e83b0a84df6c992a184355f1b82641b581b3d77f5ecbaa",
+    "univariateML-cpp/include/cppunivariate/distributions/cmb/README.md": "afa39a5328a12a1abf44ad0f90b0c74c22ef9ed4e66d7ddd130b861dfad2dd0d",
+    "univariateML-cpp/include/cppunivariate/distributions/cmb/mle.hpp": "9497224240a30469434faf64de33fa693ce1378dd5396b3c2f83c2c1a04fd46f",
+    "univariateML-cpp/include/cppunivariate/distributions/cmb/test.cpp": "1591cb4fe20fadcc9bf102c111a407e547308c0539a5c19f9594fff34f234ff9",
+    "univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md": "dfafc95a14a2e9771e86cb2fadeaa9e16574ea5ab5552d92b31442c096efa862",
+    "univariateML-cpp/include/cppunivariate/distributions/dgamma/mle.hpp": "8a7a5765cbda6f36cf6496bd855e928044c266df6b40706f2bae6f9af4457fd0",
+    "univariateML-cpp/include/cppunivariate/distributions/dgamma/test.cpp": "b8bdf763beb4c2f9e3b9a3b1655c5a1c146351306f98c69b48d26144bbd255e6"
+  },
+  "case_archive_sha256": "aa3b053c49681fb06f28cfdceebb0ee2c10ec950f4bb34af94352fc652227df7",
+  "final_machine": "workstation; simbox off per brief"
+}

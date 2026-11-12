@@ -1,0 +1,89 @@
+[
+  {
+    "command": "just cpp-test",
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 797.078,
+    "log": "build/scratch/slow-fits-final/cpp-test.log"
+  },
+  {
+    "command": "just test",
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 632.316,
+    "log": "build/scratch/slow-fits-final/test.log"
+  },
+  {
+    "command": "just test-full",
+    "machine": "workstation",
+    "exit": 1,
+    "seconds": 853.25,
+    "log": "build/scratch/slow-fits-final/test-full.log"
+  },
+  {
+    "command": "cmake --build univariateML-cpp/build --target distribution_tests -j4",
+    "name": "cpp-dgamma-build",
+    "environment": {},
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 32.167,
+    "log": "build/scratch/slow-fits-final/cpp-dgamma-build.log"
+  },
+  {
+    "command": "ctest --test-dir univariateML-cpp/build --output-on-failure --no-tests=error -L full -R ^distribution_dgamma(_slow)?$",
+    "name": "cpp-dgamma-full",
+    "environment": {},
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 6.961,
+    "log": "build/scratch/slow-fits-final/cpp-dgamma-full.log"
+  },
+  {
+    "command": "just test",
+    "name": "test-dgamma-full",
+    "environment": {
+      "UMVL_TEST_FAMILIES": "dgamma",
+      "UMVL_TEST_TIER": "full"
+    },
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 114.525,
+    "log": "build/scratch/slow-fits-final/test-dgamma-full.log"
+  },
+  {
+    "command": "just cpp-test-no-long-double",
+    "name": "cpp-test-no-long-double",
+    "environment": {},
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 884.962,
+    "log": "build/scratch/slow-fits-final/cpp-test-no-long-double.log"
+  },
+  {
+    "command": "just js-build",
+    "name": "js-build",
+    "environment": {},
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 120.786,
+    "log": "build/scratch/slow-fits-final/js-build.log"
+  },
+  {
+    "command": "just js-test",
+    "name": "js-test",
+    "environment": {},
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 176.947,
+    "log": "build/scratch/slow-fits-final/js-test.log"
+  },
+  {
+    "command": "just site-check",
+    "name": "site-check",
+    "environment": {},
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 127.704,
+    "log": "build/scratch/slow-fits-final/site-check.log"
+  }
+]

@@ -620,3 +620,13 @@ At the selected integer size, a final canonical Newton solve uses the covariance
 For the symmetric overdispersed law, each interior binomial coefficient is at least N. Thus its total interior probability is bounded by (N-1) N^nu / 2. This bound can distinguish a log-probability input from the exact half even when all computed interior masses underflow; exact half inputs use symmetry.
 
 The inverse sampler retains the original enumerated transform, including its rounding, so the public quantile correction does not change seeded draws.
+
+The log weights are concave for positive dispersion and convex for
+nonpositive dispersion. A modal interval, or two endpoint intervals in the
+convex case, can therefore bound every omitted relative weight by the
+crossing weights. There are at most $N+1$ omitted cells, with $|X|\leq N$
+and $\log\binom{N}{X}\leq N\log 2$. A relative-weight cutoff of
+$10^{-24}/[(N+1)\{1+N^2+(N\log 2)^2\}]$ bounds the omitted normalizer and
+raw moments through order two by $10^{-24}$ relative to the modal weight.
+This bound is conditional on computed crossing comparisons; the existing
+practical likelihood and coefficient margins still apply.

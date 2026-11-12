@@ -1,0 +1,49 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 67.23      0.80     0.80       16     0.05     0.07  cppunivariate::cmb_detail::Table::Table(int, double, double)
+ 17.65      1.01     0.21       15     0.01     0.02  cppunivariate::cmb_detail::Table::cumulative()
+ 11.76      1.15     0.14       30     0.00     0.00  std::vector<double, std::allocator<double> >::_M_default_append(unsigned long)
+  3.36      1.19     0.04                             _init
+  0.00      1.19     0.00        1     0.00     0.00  cppunivariate::cmb_detail::probability(double)
+  0.00      1.19     0.00        1     0.00     1.15  cppunivariate::cmb_detail::size_candidate(cppunivariate::basic_span<int>, int, double, double, int, unsigned long&, unsigned long)
+  0.00      1.19     0.00        1     0.00     1.15  cppunivariate::cmb_size_free_nu_mle(cppunivariate::basic_span<int>, double, double, int)
+  0.00      1.19     0.00        1     0.00     1.15  cppunivariate::cmb_size_nonconstant_free_nu(cppunivariate::basic_span<int>, int, int, double, double, int)
+  0.00      1.19     0.00        1     0.00     1.15  cppunivariate::cmb_size_nonconstant_free_nu(cppunivariate::basic_span<int>, int, int, double, double, int)::{lambda(int)#1}::operator()(int) const
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2026 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     

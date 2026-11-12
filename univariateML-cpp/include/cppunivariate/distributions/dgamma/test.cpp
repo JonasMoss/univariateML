@@ -194,3 +194,48 @@ TEST_CASE("dgamma: extreme lattice scaling has no translated subtraction") {
   CHECK(cppunivariate::distributions::pdgamma(1e308,1,2)==1);
   CHECK(cppunivariate::distributions::pdgamma(1e308,1,2,false)==0);
 }
+
+TEST_CASE("dgamma: million-count profiles stop at a witnessed precision limit") {
+  const std::vector<double> x{1000000,1000001,1000003,1000008,1000011};
+  const auto r=cppunivariate::dgamma_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::DgammaStatus::IterationFailure);
+  CHECK(r.large_shape_iterations==1);
+  cppunivariate::dnorm_detail::Cells cells;
+  REQUIRE(cells.init({x.data(),x.size()}));
+  double derivative=0;
+  cppunivariate::dgamma_detail::rate_score(cells,r.failed_shape,std::log(r.failed_rate),derivative);
+  CHECK(derivative<0);
+  CHECK(r.rate_score_roundoff>1e-10*(-derivative));
+  CHECK(!r.stop_detail.budget_exhausted); // solver failure, not certificate exhaustion
+  CHECK(std::isfinite(r.failed_shape));CHECK(std::isfinite(r.failed_rate));
+  REQUIRE(!r.stop_detail.candidates.empty());
+  const auto& c=r.stop_detail.candidates.front();
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::ddgamma(v,c.coef[0],c.coef[1],true);
+  CHECK(ll>=c.loglik_lower);CHECK(ll<=c.loglik_upper);
+  cppunivariate::dgamma_detail::RateWork work{0,cppunivariate::solver_budget(1)};
+  CHECK(work.take(1e8,1));CHECK_FALSE(work.take(1e8,1));CHECK(work.used==1);
+  work.cap=cppunivariate::solver_budget(2);work.exhausted=false;
+  CHECK(work.take(1e8,1));CHECK_FALSE(work.take(1e8,1));CHECK(work.used==2);
+}
+
+TEST_CASE("dgamma: ordinary starts keep their allowance despite remote shape probes") {
+  // Existing full-tier R reference sample: seed 617, after 80 shape-.4 draws.
+  const std::vector<double> x{
+    9,7,9,9,11,9,11,13,7,11,11,8,8,13,12,
+    13,10,12,10,8,7,11,4,8,13,8,13,8,9,9,
+    11,14,10,9,12,9,9,13,10,12,12,7,7,9,6,
+    8,8,6,11,9,11,11,14,10,10,12,11,11,11,6,
+    9,11,10,12,9,11,7,10,9,13,8,9,8,8,8,
+    12,9,10,7,8,13,12,10,10,8,9,9,8,8,8,
+    8,9,8,14,7,8,11,8,11,7,13,8,11,9,9,
+    10,11,8,8,6,9,9,9,10,11,12,6,7,7,10,
+    9,9,11,5,11,8,9,11,7,9,10,10,9,9,8,
+    11,9,9,10,11,11,6,9,8,11,11,9,7,9,9
+  };
+  const auto r=cppunivariate::dgamma_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::DgammaStatus::Ok);
+  CHECK(r.shape==doctest::Approx(25.822383475083964).epsilon(1e-10));
+  CHECK(r.rate==doctest::Approx(2.5873969195174773).epsilon(1e-10));
+  CHECK(r.logLik==doctest::Approx(-313.98802931118206).epsilon(1e-10));
+  CHECK(r.large_shape_iterations==0);
+}

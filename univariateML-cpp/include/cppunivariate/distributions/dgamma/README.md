@@ -268,7 +268,7 @@ allowance and the worst permitted slope over each half interval. It discards
 an interval only when this upper bound is within $5\times10^{-9}$ per
 observation of the best candidate. The returned parameter's recomputed
 likelihood must be within another $5\times10^{-9}$ per observation of that
-candidate. The subdivision budget is one thousand times the iteration limit in intervals. Invalid or
+candidate. The subdivision budget is 128 times the capped iteration limit in intervals. Invalid or
 nonfinite bounds, collapsed secants and an exhausted budget report
 numerical failure. The secant step is $10^{-4}A$; its computed bounds are
 widened by 64 machine epsilons times the magnitude of the summed terms,
@@ -308,3 +308,19 @@ The shape score differentiates the incomplete-gamma integral over the whole
 unit cell. The gamma density at a cell midpoint is not a substitute, and an
 accurate conditional rate does not remove the shape/rate cross-information.
 This distinction matters when likelihood rounding obscures shape errors.
+
+The log-rate score subtracts two endpoint-density terms. At large shape,
+each term's exponent subtracts quantities of order $a\log a$, so a finite
+cell probability alone does not establish score accuracy. Resolving a
+relative rate displacement $\varepsilon$ requires resolving the score at
+scale $\varepsilon I_{\log r}$, where $I_{\log r}$ is the observed
+log-rate information. A practical allowance of 64 machine epsilons times
+the exponent magnitudes, propagated through the endpoint subtraction,
+checks this arithmetic requirement. It is a precision diagnostic, not a
+proof of nonexistence or an outward-rounded score enclosure.
+
+The likelihood witness needs a corresponding gamma-prefix allowance:
+64 machine epsilons times the summed prefix magnitudes. A fixed small
+likelihood pad alone does not cover cancellation at shapes of order
+$10^{10}$. The same allowance lowers the feasible likelihood anchor in
+the shape-tail comparison.
