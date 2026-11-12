@@ -510,3 +510,42 @@ the source identity, so simultaneous replays cannot overwrite one another.
 The frozen input archive is
 `dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz`.
 This is a finite regression census, not a proof over all data or hold values.
+
+## Fit snapshot
+
+`fit-snapshot.py` records what every fitter returns on a fixed set of hard
+inputs and judges nothing. It exists so that a refactor which must not change
+any fit can be checked: take a snapshot before, one after, and compare
+([consolidation plan](../design/consolidation.md), steps 3 and 4). It is not
+evidence that any recorded result is right.
+
+Inputs are deterministic: the frozen fit-audit archive (every hold subset,
+$n$ from 2 to 12), each golden sample, seeded resamples of it ($n$ = 3 and 7),
+and magnitude and tie classes built from fixed order statistics of the golden
+sample (subnormal, tiny, huge, near-constant, wide spread, large offset, ties,
+half ties, one, two and constant observations; integer and unit-interval
+families get their own variants). The classes use the default fit only; hold
+subsets are covered by the archive. A class can violate a family's support or
+a held design value, and the resulting stop is recorded like any other.
+
+Each case goes through the binding-neutral adapter `umvl_binding::fit_<id>`
+with default controls, compiled with the shipped flags (`-O2 -DNDEBUG`,
+gnu++17), one executable per family. A record holds the estimates, log
+likelihood, iterations and flags, or the stop's kind, model, bounds, candidates
+and message. Doubles are hexadecimal floats, so comparison is exact.
+
+```sh
+/tmp/umvl-cpu/run4 nice -n 10 python3 dev/validation/fit-snapshot.py \
+  --output build/snapshots/base --jobs 4
+python3 dev/validation/fit-snapshot.py --diff build/snapshots/base build/snapshots/new
+```
+
+`--family a,b` restricts the run, `--no-long-double` builds the double-only
+variant, and `--ignore message` leaves reworded messages out of a comparison.
+A case that uses more than `--cpu-limit` CPU seconds (default 60) is recorded
+as `timeout`; this is an audit guard measured in CPU time, not a fitter
+status, and such records need not repeat exactly. Finished families are kept
+and skipped on a rerun while headers, bindings, goldens, archive and the script
+are unchanged; `provenance.json` records the source hash, commit, compiler and
+flags. Checked on 2026-11-12 for norm, gamma and pois only: two runs gave
+identical records (259 cases). A full run has not been made yet.
