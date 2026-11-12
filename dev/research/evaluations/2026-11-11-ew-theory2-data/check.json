@@ -1,0 +1,157 @@
+{
+  "method": "float64 multistart exploratory profile; not a certificate",
+  "cases": {
+    "two_point_equal": {
+      "log_data": [
+        0,
+        1
+      ],
+      "power_loglik": -1.6137056388801094,
+      "invweibull_loglik": -2.436440365226564,
+      "invweibull_shape": 2.399357278970146,
+      "best_search_loglik": -1.644994080567862,
+      "best_search_coordinates_vmin_logb": [
+        -699.999999999987,
+        6.5446650581247905
+      ],
+      "successful_starts": 11,
+      "finite_minus_best_face": -0.03128844168775258
+    },
+    "two_point_unbalanced": {
+      "log_data": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "power_loglik": -4.8842822434289515,
+      "invweibull_loglik": -1.8453374274944192,
+      "invweibull_shape": 5.0406959398454765,
+      "best_search_loglik": -1.8561032576845085,
+      "best_search_coordinates_vmin_logb": [
+        6.550763841090635,
+        -4.938865869966596
+      ],
+      "successful_starts": 11,
+      "finite_minus_best_face": -0.010765830190089254
+    },
+    "near_ties": {
+      "log_data": [
+        0,
+        1e-05,
+        1e-05,
+        1,
+        1
+      ],
+      "power_loglik": -4.445858547725601,
+      "invweibull_loglik": -5.096232019852,
+      "invweibull_shape": 2.7766122690193993,
+      "best_search_loglik": -4.510607654196832,
+      "best_search_coordinates_vmin_logb": [
+        -699.9999999999957,
+        6.544727327945619
+      ],
+      "successful_starts": 11,
+      "finite_minus_best_face": -0.06474910647123089
+    },
+    "wide": {
+      "log_data": [
+        0,
+        0.001,
+        2,
+        10,
+        30
+      ],
+      "power_loglik": -62.36442027693996,
+      "invweibull_loglik": -60.18442258340802,
+      "invweibull_shape": 0.1434478783946012,
+      "best_search_loglik": -60.18961518714369,
+      "best_search_coordinates_vmin_logb": [
+        6.550352097030222,
+        -8.49554834545748
+      ],
+      "successful_starts": 11,
+      "finite_minus_best_face": -0.005192603735665102
+    },
+    "small_shape": {
+      "log_data": [
+        0,
+        0.1,
+        0.4,
+        2,
+        9,
+        20
+      ],
+      "power_loglik": -53.647458496714975,
+      "invweibull_loglik": -50.591626800158565,
+      "invweibull_shape": 0.22719295525705496,
+      "best_search_loglik": -50.598234165858166,
+      "best_search_coordinates_vmin_logb": [
+        6.550376841913479,
+        -8.035881110269974
+      ],
+      "successful_starts": 11,
+      "finite_minus_best_face": -0.0066073656996010754
+    },
+    "endpoint_ties": {
+      "log_data": [
+        0,
+        0.3,
+        1,
+        1,
+        1
+      ],
+      "power_loglik": -2.9059516931403495,
+      "invweibull_loglik": -6.618665668827571,
+      "invweibull_shape": 2.381304282027979,
+      "best_search_loglik": -3.01648615204782,
+      "best_search_coordinates_vmin_logb": [
+        -699.9999999999995,
+        6.544946700271544
+      ],
+      "successful_starts": 11,
+      "finite_minus_best_face": -0.1105344589074706
+    },
+    "near_constant": {
+      "log_data": [
+        0,
+        1e-06,
+        2e-06,
+        3e-06,
+        5e-06
+      ],
+      "power_loglik": 58.92944470391558,
+      "invweibull_loglik": 59.4435166877675,
+      "invweibull_shape": 707664.174381977,
+      "best_search_loglik": 59.44668586053574,
+      "best_search_coordinates_vmin_logb": [
+        3.356262296038782,
+        10.066942606876886
+      ],
+      "successful_starts": 13,
+      "finite_minus_best_face": 0.0031691727682385817
+    },
+    "mixed": {
+      "log_data": [
+        0,
+        0.2,
+        0.35,
+        0.7,
+        1,
+        1.8,
+        3
+      ],
+      "power_loglik": -18.876985514484428,
+      "invweibull_loglik": -15.816716054024777,
+      "invweibull_shape": 1.479224920891075,
+      "best_search_loglik": -15.820489787510276,
+      "best_search_coordinates_vmin_logb": [
+        6.549872539981056,
+        -6.161159329862182
+      ],
+      "successful_starts": 11,
+      "finite_minus_best_face": -0.003773733485498809
+    }
+  }
+}
