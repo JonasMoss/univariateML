@@ -1,0 +1,65 @@
+{
+  "baseline": "af824a98d78f2f2325c7a675c20c84c45e6bb826",
+  "date": "2026-11-12",
+  "python": "3.14.5",
+  "mpmath": "1.3.0",
+  "evidence_precision_digits": 80,
+  "simbox": {
+    "attempts": [
+      "just cpp-test",
+      "just test",
+      "just cpp-test-no-long-double"
+    ],
+    "exit_code_each": 75,
+    "reason": "unreachable",
+    "gcc13_exercised": false
+  },
+  "tests": [
+    {
+      "command": "just cpp-test",
+      "machine": "workstation",
+      "compiler": "GNU 15.2.0",
+      "exit_code": 0,
+      "passed": 108,
+      "total": 108
+    },
+    {
+      "command": "just cpp-test-no-long-double (simbox fallback)",
+      "machine": "workstation",
+      "compiler": "GNU 15.2.0",
+      "exit_code": 0,
+      "passed": 135,
+      "total": 135
+    },
+    {
+      "command": "just cpp-test-no-long-double (redundant workstation repeat)",
+      "machine": "workstation",
+      "compiler": "GNU 15.2.0",
+      "exit_code": 0,
+      "passed": 135,
+      "total": 135
+    },
+    {
+      "command": "just test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "fail": 0,
+      "warn": 0,
+      "skip": 155,
+      "pass": 29000
+    }
+  ],
+  "evidence_hashes": {
+    "check.py": "0df333e144d0397440dedf4b472f32045d1f7f64cc74276ad79afae9d89bf5b3",
+    "check.json": "5498e97051dcfc2ae5fd3a4bdbd840e2b9e5514d657c11c58f8eea48f1990e5a"
+  },
+  "report_local_links": {
+    "checked": 9,
+    "missing": 0
+  },
+  "artifact_pane": {
+    "attempted": true,
+    "http_status": 403,
+    "reason": "worktree outside configured readable roots"
+  }
+}
