@@ -123,6 +123,10 @@ The beta negative binomial mixes a negative binomial success probability with a 
 
 ## d/p/q/r
 
+For a near-Poisson mixture, a mixed Taylor difference of log Gamma avoids subtracting increments of order size when the zero-count log mass is of order one. It is used for alpha at least $10^6$ and $(r+\beta)/\alpha\le10^{-3}$. The degree-12 remainder is bounded geometrically; the omitted mixed Stirling correction is of relative order $\alpha^{-4}$. For $r,\beta\ge1$, the positive mass ratios satisfy $R_j\le(j+D)/(j+E)$ for $j\ge k$, where $D=r+\beta-1+(r-1)(\beta-1)/(k+1)$ and $E=\alpha+r+\beta$. If $E>D+1$, telescoping bounds the uncomputed upper tail by $p_kR_k(k+E)/(E-D-1)$. The sum closes at relative remainder $2\times10^{-14}$ or returns NaN after 100000 cells. The new route covers cuts below 10000; the existing far-count restrictions still apply.
+
+For near-Poisson masses beyond the prefix, the rising-factorial form retains extended precision through the final subtraction. Its practical cancellation margin is $32\epsilon_{\rm ext}$ times the sum of absolute terms, plus four binary64 rounding units on the result and an $8\times10^{-15}$ Stirling allowance. If this cannot meet the density contract, the far-count gamma-ratio form is used only when its analogous $32\epsilon_{64}$ margin closes. Otherwise the mass is NaN. This closes, for example, the large-alpha cancellation at counts 10000 and $10^6$ without claiming accuracy in unresolved subtraction regions.
+
 ### Far-count beta normalization
 
 The beta factor in the far-count tail prefactor is evaluated through a shifted gamma ratio, avoiding cancellation of large log-gamma values when a mixing shape diverges. This addresses the normalizing factor only; the extreme mixing-tail and quantile limitations recorded by the audit remain separate.

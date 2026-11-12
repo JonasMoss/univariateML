@@ -1,0 +1,56 @@
+{
+  "records_per_mode": 113,
+  "fit_changes": [],
+  "density_sum_changes": [],
+  "inherited_open_seams": [
+    {
+      "mode": "double",
+      "baseline": {
+        "family": "bnbinom",
+        "index": 579,
+        "source": "archive",
+        "status": "Ok",
+        "logLik": -86.55337674075822,
+        "coefficients": [
+          1.0672234787479615,
+          0.0825043451682516,
+          5.36473383510874
+        ]
+      },
+      "final": {
+        "index": 579,
+        "family": "bnbinom",
+        "mask": 5,
+        "held": {
+          "size": 1.0672234787479615,
+          "beta": 5.36473383510874
+        },
+        "sample": "large-count",
+        "data": [
+          1000000,
+          1000001,
+          1000003,
+          1000008,
+          1000011
+        ],
+        "source": "archive",
+        "outcome": "mismatch",
+        "parameters": [
+          1.0672234787479615,
+          0.0825043451682516,
+          5.36473383510874
+        ],
+        "reported": -86.55337674075822,
+        "dpqr": -86.55337672897528,
+        "error": 1.361350052795792e-10,
+        "outside_support": [],
+        "reference": -86.5533767289753,
+        "fitter_error": 1.36134841093556e-10,
+        "dpqr_error": 1.6418602314847257e-16,
+        "attribution": "fitter"
+      },
+      "baseline_density_sum": -86.55337672897528,
+      "baseline_binary_sha256": "4119ec4c18fbdcc463ec7ad900b5dddbdc8156f31de1bbc5b47238b09dc3a95f"
+    }
+  ]
+}

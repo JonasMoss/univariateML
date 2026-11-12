@@ -171,3 +171,7 @@ coefficient errors.
 On a one-sided Poisson face the free rate is the compensated sample mean.
 For constant integer observations $k>0$, its exact value is $\mu_1=k$,
 $\mu_2=0$, including when the unnormalized integer sum exceeds $2^{53}$.
+
+## d/p/q/r
+
+When one rate is at most 16 and the positive count exceeds $10^6$ with dominant rate/count below two, a positive Poisson convolution evaluates the mass without cancellation of large Debye exponents. Its successive term ratios decrease, giving a geometric remainder below $2\times10^{-16}$. Large-rate CDFs in this regime use a scaled, compensated positive sum for the smaller tail, using log concavity of the Skellam masses and a geometric remainder below $2\times10^{-14}$. A nonfinite seed log mass, or exhaustion of the million-cell guard without closing the bound, returns NaN. Near the mean, the Debye exponent also has the cancellation-free identity $-d^2\int_0^1(1-t)/\operatorname{hypot}(m+td,z)\,dt$, where $m=\mu_1-\mu_2$, $d=k-m$ and $z=2\sqrt{\mu_1\mu_2}$; a bounded Simpson rule evaluates it for $|d|/(\mu_1+\mu_2)<0.01$. Remainder certification is conditional on the computed floating-point comparisons.

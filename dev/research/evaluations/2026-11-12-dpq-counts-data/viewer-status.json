@@ -1,0 +1,6 @@
+{
+  "displayed": false,
+  "http_status": 403,
+  "reason": "Worktree outside every artifact-viewer readable root",
+  "worktree": "/home/jonas/Files/programming/univariateML.wt/dpq-counts"
+}

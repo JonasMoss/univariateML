@@ -11,17 +11,75 @@ inline bool valid(double lambda,double nu) {
 inline double log_complement(double x) {
  return x < -0.6931471805599453 ? std::log1p(-std::exp(x)) : std::log(-std::expm1(x));
 }
+// Scale before forming x*log(x), which can overflow although nu*log(x!)
+// is representable. Stirling's omitted correction is between 0 and nu/(12*x).
+inline double diffuse_log_weight(double x,double nu) {
+ if(x<1e305) return -nu*std::lgamma(x+1);
+ const double lx=std::log(x);
+ return -(nu*x)*(lx-1)-.5*nu*(lx+1.83787706640934548356);
+}
+// Unit-rate diffuse tail: Euler--Maclaurin with a bounded trapezoid
+// remainder, plus positive Simpson integration with an analytic fourth-derivative bound.
+inline double diffuse_tail(double start,double nu) {
+ const double delta=nu*special::digamma(start+1), lg=std::lgamma(start+1);
+ if(!(delta>0)) return special::kNaN;
+ const auto f=[&](double y) {return std::exp(-nu*(std::lgamma(start+1+y/delta)-lg));};
+ struct Panel {double a,b; int depth;};
+ std::vector<Panel> stack{{0,80,0}};
+ double integral=0,error=0;
+ int work=0;
+ while(!stack.empty() && work++<1000000) {
+   const auto panel=stack.back();stack.pop_back();
+   const double a=panel.a,b=panel.b,h=b-a, x=start+a/delta;
+   const double A=nu/delta*std::log(start+1+b/delta);
+   const double B=nu/(delta*delta)*(1/x+1/(x*x));
+   const double C=nu/std::pow(delta,3)*(1/(x*x)+2/std::pow(x,3));
+   const double D=nu/std::pow(delta,4)*(2/std::pow(x,3)+6/std::pow(x,4));
+   const double bound=f(a)*(std::pow(A,4)+6*A*A*B+3*B*B+4*A*C+D)*std::pow(h,5)/2880;
+   if(bound<=2e-13*h*f(b)) {
+     integral+=h*(f(a)+4*f((a+b)/2)+f(b))/6;error+=bound;
+   } else {
+     if(panel.depth>=50) return special::kNaN;
+     stack.push_back({(a+b)/2,b,panel.depth+1});stack.push_back({a,(a+b)/2,panel.depth+1});
+   }
+ }
+ if(!stack.empty()) return special::kNaN;
+ integral/=delta;error=(error+std::exp(-80))/delta;
+ // |psi|<=log(x+1), psi'<=1/x+1/x^2; concavity of log f
+ // supplies f(start+t)<=f(start)*exp(-delta*t).
+ const double L=std::log(start+1), u=1/(start+1);
+ const double rem=(nu*nu*(L*L/delta+2*L*u/(delta*delta)+2*u*u/std::pow(delta,3))+
+                   nu*(1/start+1/(start*start))/delta)/12;
+ const double value=integral+.5;
+ if((rem+error)>value*2e-12) return special::kNaN;
+ return -nu*lg+std::log(value);
+}
+inline double diffuse_log_z(double nu) {
+ // One-entry cache; scalar binding calls commonly repeat the same law.
+ static thread_local double cached_nu=special::kNaN,cached_z=special::kNaN;
+ if(nu==cached_nu) return cached_z;
+ double sum=0,correction=0;
+ for(int k=0;k<100000;++k) {
+   const double y=std::exp(-nu*std::lgamma(k+1.0))-correction,next=sum+y;
+   correction=(next-sum)-y;sum=next;
+ }
+ cached_z=special::log_sum_exp(std::log(sum),diffuse_tail(100000,nu));
+ cached_nu=nu;return cached_z;
+}
 struct Law {
  double lambda,nu,eta;
  CmpMoments moments;
+ double diffuse_z=special::kNaN;
  Law(double l,double n):lambda(l),nu(n),eta(std::log(l)) {
-  if (l>0 && n>0) moments=cmp_moments(eta,n);
+  if(l==1 && n>0 && n<=1e-7) diffuse_z=diffuse_log_z(n);
+  else if (l>0 && n>0) moments=cmp_moments(eta,n);
  }
  double density(double x,bool log) const {
   if (x<0 || !std::isfinite(x) || x!=std::floor(x)) return log ? special::kNegInf : 0;
   CPPUNIV_EXTENDED_REAL lp;
   if (lambda==0) lp=x==0 ? 0 : special::kNegInf;
   else if (nu==0) lp=x*static_cast<CPPUNIV_EXTENDED_REAL>(eta)+std::log1p(-lambda);
+  else if(std::isfinite(diffuse_z)) lp=diffuse_log_weight(x,nu)-diffuse_z;
   else {
    if (moments.status!=CmpStatus::Ok) return special::kNaN;
    lp=(x-moments.center)*(static_cast<CPPUNIV_EXTENDED_REAL>(eta)-nu*moments.slope)-
@@ -39,6 +97,23 @@ struct Law {
    const double upper=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(q)+1)*eta);
    const double lp=lower ? log_complement(upper) : upper;
    return log ? lp : std::exp(lp);
+  }
+  if(std::isfinite(diffuse_z)) {
+   double small;bool down=q<100000;
+   if(down) {
+     double sum=0,correction=0;
+     for(int k=0;k<=q;++k) {
+       const double y=std::exp(-nu*std::lgamma(k+1.0))-correction,next=sum+y;
+       correction=(next-sum)-y;sum=next;
+     }
+     small=std::log(sum)-diffuse_z;
+   } else if(q>1e40) {
+     const double first=diffuse_log_weight(q+1,nu)-diffuse_z;
+     const double width=-std::log(-std::expm1(-nu*std::log(q+2)));
+     if(width>1e-12*std::max(1.0,std::abs(first))) return special::kNaN;
+     small=first;
+   } else small=diffuse_tail(q+1,nu)-diffuse_z;
+   return special::tail_probability(special::tails_from_log(small,down),lower,log);
   }
   if (moments.status!=CmpStatus::Ok) return special::kNaN;
   const bool down=q<moments.center;

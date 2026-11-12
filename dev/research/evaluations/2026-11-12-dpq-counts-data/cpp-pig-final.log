@@ -1,0 +1,39 @@
+[  3%] Built target bfgs_tests
+[  3%] Built target sample_tests
+[  5%] Built target no_throw_tests
+[  7%] Built target tails_tests
+[  9%] Built target cmp_tests
+[ 11%] Built target diagnostics_tests
+[ 12%] Building CXX object tests/CMakeFiles/distribution_tests.dir/__/include/cppunivariate/distributions/pig/test.cpp.o
+/home/jonas/Files/programming/univariateML.wt/dpq-counts/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp: In function ‘void DOCTEST_ANON_FUNC_12()’:
+/home/jonas/Files/programming/univariateML.wt/dpq-counts/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp:32:31: warning: loop variable ‘x’ creates a copy from type ‘const std::vector<int>’ [-Wrange-loop-construct]
+   32 |   for (const std::vector<int> x: {std::vector<int>{1,1,1}, {0,1,1,2}, {0,2}, {0,0,0}}) {
+      |                               ^
+/home/jonas/Files/programming/univariateML.wt/dpq-counts/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp:32:31: note: use reference type to prevent copying
+   32 |   for (const std::vector<int> x: {std::vector<int>{1,1,1}, {0,1,1,2}, {0,2}, {0,0,0}}) {
+      |                               ^
+      |                               &
+/home/jonas/Files/programming/univariateML.wt/dpq-counts/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp: In function ‘void DOCTEST_ANON_FUNC_36()’:
+/home/jonas/Files/programming/univariateML.wt/dpq-counts/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp:221:30: warning: loop variable ‘x’ creates a copy from type ‘const std::vector<int>’ [-Wrange-loop-construct]
+  221 |   for(const std::vector<int> x : {std::vector<int>{1}, {0,0,0,0,10}, {1,2,3,5}, {0,1,2,3}}) {
+      |                              ^
+/home/jonas/Files/programming/univariateML.wt/dpq-counts/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp:221:30: note: use reference type to prevent copying
+  221 |   for(const std::vector<int> x : {std::vector<int>{1}, {0,0,0,0,10}, {1,2,3,5}, {0,1,2,3}}) {
+      |                              ^
+      |                              &
+/home/jonas/Files/programming/univariateML.wt/dpq-counts/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp: In function ‘void DOCTEST_ANON_FUNC_48()’:
+/home/jonas/Files/programming/univariateML.wt/dpq-counts/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp:308:30: warning: loop variable ‘x’ creates a copy from type ‘const std::vector<int>’ [-Wrange-loop-construct]
+  308 |   for(const std::vector<int> x : {std::vector<int>{1}, {0,1}, {0,1,1}}) {
+      |                              ^
+/home/jonas/Files/programming/univariateML.wt/dpq-counts/univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp:308:30: note: use reference type to prevent copying
+  308 |   for(const std::vector<int> x : {std::vector<int>{1}, {0,1}, {0,1,1}}) {
+      |                              ^
+      |                              &
+[ 13%] Linking CXX executable distribution_tests
+[100%] Built target distribution_tests
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 2 | 2 passed | 0 failed | 2435 skipped
+[doctest] assertions: 4 | 4 passed | 0 failed |
+[doctest] Status: SUCCESS!

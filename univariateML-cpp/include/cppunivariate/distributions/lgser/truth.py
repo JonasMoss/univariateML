@@ -17,6 +17,3 @@ def build(t, logd):
     out=Reference(tails,1,mp.inf,True)
     out.normalization=mp.mpf(1)  # Exact generating-series identity; pmf differences checked separately.
     return out
-
-
-truth_point_exclusions = [([0.9999999999999999], 'TASK-196 open: public CDF returns NaN at x=1.0, lower=True, log=True; independent value -3.6037789929704576. Near-unit logarithmic-series survival exceeds the geometric-series guard; a uniform bounded tail evaluator is missing.')]

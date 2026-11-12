@@ -1,0 +1,7 @@
+{
+  "bnbinom": [
+    "cppunivariate::distributions::dbnbinom(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pbnbinom(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qbnbinom(x, p[0], p[1], p[2], lower, log)"
+  ]
+}

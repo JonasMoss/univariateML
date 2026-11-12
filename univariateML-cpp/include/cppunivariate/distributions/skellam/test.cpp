@@ -146,3 +146,8 @@ TEST_CASE("skellam: large replication preserves the Poisson boundary mean") {
   REQUIRE(r.status==cppunivariate::SkellamStatus::Ok);
   CHECK(r.mu1==k);CHECK(r.mu2==0);
 }
+
+TEST_CASE("skellam: extreme count-tail regression") {
+  CHECK(cppunivariate::distributions::pskellam(99629757,1e8,1,true,false) == doctest::Approx(1.0030217828350785e-300).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::dskellam(99629757,1e8,1,true) == doctest::Approx(-696.3705538160286).epsilon(1e-12));
+}

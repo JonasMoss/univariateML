@@ -1,0 +1,17 @@
+site-check	workstation	0
+cpp-dev	workstation-fallback	0
+cpp-pig-final	workstation	0
+cpp-no-long-double-gcc15	workstation	0
+r-dev	workstation	0
+r-full	workstation	0
+js-build	workstation	0
+js-test	workstation	0
+site-check-final	workstation	0
+cpp-cmp-final	workstation	0
+cpp-no-long-double-cmp-final	workstation	0
+cpp-bnbinom-final	workstation	0
+cpp-no-long-double-bnbinom-final	workstation	0
+r-bnbinom-cmp-final	workstation	0
+js-build-final	workstation	0
+js-bnbinom-cmp-final	workstation	0
+site-check-last	workstation	0

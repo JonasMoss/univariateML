@@ -1,0 +1,54 @@
+{
+  "records": 313,
+  "baseline": "217ab8b533cac25ccc8eba8d66eccde1b376f0b4",
+  "changes": [
+    {
+      "before": {
+        "family": "skellam",
+        "index": 6337,
+        "source": "archive",
+        "status": "Ok",
+        "logLik": -39.13354101552793,
+        "coefficients": [
+          1000007.6872715929,
+          3.087274679562562
+        ]
+      },
+      "after": {
+        "family": "skellam",
+        "index": 6337,
+        "source": "archive",
+        "status": "Ok",
+        "logLik": -39.13354101328325,
+        "coefficients": [
+          1000007.6872715929,
+          3.087274679562562
+        ]
+      }
+    },
+    {
+      "before": {
+        "family": "skellam",
+        "index": 6351,
+        "source": "archive",
+        "status": "Ok",
+        "logLik": -56839467.09056249,
+        "coefficients": [
+          4.253274679562562,
+          3.087274679562562
+        ]
+      },
+      "after": {
+        "family": "skellam",
+        "index": 6351,
+        "source": "archive",
+        "status": "Ok",
+        "logLik": -56839467.09056248,
+        "coefficients": [
+          4.253274679562562,
+          3.087274679562562
+        ]
+      }
+    }
+  ]
+}

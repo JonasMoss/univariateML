@@ -29,6 +29,63 @@ inline double asympt_mass(double x,double mean,double shape) {
   return .5*(std::log(shape)-std::log(2*3.14159265358979323846))+shape/mean-.5*la
     +x*la+special::log_gamma_ratio(x,-.5,1)+std::log(asympt_series(x,c));
 }
+// Sum the Bessel inverse-gamma Taylor expansion through Euler's beta
+// integral. The next absolute Taylor term bounds the integrated error.
+inline double integral_upper(double n,double mean,double shape) {
+  const double la=log_a(mean,shape), gap=-std::expm1(la), A=std::exp(la);
+  const double c=shape*.5+(shape/mean)*(shape/mean)*.25;
+  if(!(n>100000 && c<n*.25 && gap>0)) return special::kNaN;
+  std::vector<double> coefficients{1};double term=1,next=0;
+  for(int j=1;j<200;++j) {
+    next=-term*(c/(n-.5-j))/j;
+    if(std::abs(next)<2e-16) break;
+    coefficients.push_back(next);term=next;
+  }
+  if(std::abs(next)>=2e-16) return special::kNaN;
+  const double delta=n*gap/A;
+  if(!std::isfinite(delta)) return special::kNaN;
+  const double end=80+std::abs(std::log(std::min(delta,1.0))), last=std::log1p(end/delta);
+  const auto value=[&](double w) {
+    const double v=delta*std::expm1(w), h=gap/(gap-A*std::expm1(-v/n));
+    double polynomial=0;
+    for(auto it=coefficients.rbegin();it!=coefficients.rend();++it) polynomial=polynomial*h+*it;
+    return std::exp(w-v)*std::pow(h,1.5)*polynomial;
+  };
+  struct Panel {double a,b;int depth;};
+  std::vector<Panel> stack{{0,last,0}};
+  double integral=0,error=0;
+  int work=0;
+  while(!stack.empty() && work++<1000000) {
+    const auto p=stack.back();stack.pop_back();
+    const double width=p.b-p.a, va=delta*std::expm1(p.a), vb=delta*std::expm1(p.b);
+    const double H=gap-A*std::expm1(-va/n), hb=gap/(gap-A*std::expm1(-vb/n));
+    const double vp=delta*std::exp(p.b), u=vp/n, t=A*std::exp(-va/n)/H;
+    const double d1=t*u,d2=t*(u+u*u),d3=t*(u+3*u*u+u*u*u),d4=t*(u+7*u*u+6*u*u*u+u*u*u*u);
+    const double q1=d1,q2=d2+d1*d1,q3=d3+3*d2*d1+2*d1*d1*d1;
+    const double q4=d4+4*d3*d1+3*d2*d2+12*d2*d1*d1+6*std::pow(d1,4);
+    double fourth=0;
+    for(std::size_t j=0;j<coefficients.size();++j) {
+      const double power=j+1.5,g1=1+vp+power*q1,g2=vp+power*q2,g3=vp+power*q3,g4=vp+power*q4;
+      fourth+=std::abs(coefficients[j])*std::exp(p.b-va)*std::pow(gap/H,power)*
+        (std::pow(g1,4)+6*g1*g1*g2+3*g2*g2+4*g1*g3+g4);
+    }
+    const double bound=fourth*std::pow(width,5)/2880;
+    const double lower=std::exp(p.a-vb)*std::pow(hb,1.5)*(1-c/(n-1.5));
+    if(bound<=2e-13*width*lower) {
+      integral+=width*(value(p.a)+4*value((p.a+p.b)/2)+value(p.b))/6;error+=bound;
+    } else {
+      if(p.depth>=50) return special::kNaN;
+      stack.push_back({(p.a+p.b)/2,p.b,p.depth+1});stack.push_back({p.a,(p.a+p.b)/2,p.depth+1});
+    }
+  }
+  if(!stack.empty()) return special::kNaN;
+  const double value_integral=delta*integral;
+  // h<=1; the omitted v>end contribution is <=exp(-end)*sum|c_j|.
+  double absolute=0;for(double coefficient:coefficients) absolute+=std::abs(coefficient);
+  if((delta*error+std::exp(-end)*absolute)>value_integral*1e-11) return special::kNaN;
+  return .5*(std::log(shape)-std::log(2*3.14159265358979323846))+shape/mean-.5*la+n*la+
+    special::log_gamma_ratio(n,-.5,1)-std::log(gap)+std::log(value_integral);
+}
 inline double asympt_upper(double n,double mean,double shape) {
   const double la=log_a(mean,shape), a=std::exp(la);
   const double c=shape*.5+(shape/mean)*(shape/mean)*.25;
@@ -36,6 +93,7 @@ inline double asympt_upper(double n,double mean,double shape) {
   // O(1/(n*(1-A))); use it only below rounding error.
   if(n*(-std::expm1(la))>1e16)
     return asympt_mass(n,mean,shape)-special::log1mexp(la);
+  if(la>-.001) return integral_upper(n,mean,shape);
   const double C=mean/std::sqrt(1+2*mean*mean/shape);
   return special::log_series(asympt_mass(n,mean,shape),n,
     [&](double k) {return a*((k-.5)/(k+1))*asympt_series(k+1,c)/asympt_series(k,c);},
@@ -128,6 +186,10 @@ inline double log_upper(int n,double mean,double shape) {
  MassStream s(mean,shape);
  while(s.k<=n) s.next();
  double total=s.lmass;
+ if(s.la>-.001 && use_asympt(100001,mean,shape) && n<100000) {
+   while(s.k<100000) {s.next();total=logadd(total,s.lmass);}
+   return logadd(total,integral_upper(100001,mean,shape));
+ }
  while(s.k<sum_limit) {
   if(s.remainder_bound()<total+std::log(2e-16)) return total;
   s.next();total=logadd(total,s.lmass);
@@ -150,7 +212,9 @@ inline double ppig(double q,double mean,double shape,bool lower_tail,bool log_p)
   if(n==0) return special::tail_probability(
       special::tails_from_log(pig_detail::MassStream(mean,shape).lmass,true),lower_tail,log_p);
   const double ll=pig_detail::log_lower(n,mean,shape);
-  if(ll<-.6931471805599453) lp=lower_tail ? ll : cppunivariate::special::fs_log1mexp(ll);
+  // A finite prefix has no truncation remainder. Complement it only
+  // while its roundoff amplification is below the probability contract.
+  if(ll<-.6931471805599453 || (n<=200 && ll < -.1)) lp=lower_tail ? ll : cppunivariate::special::fs_log1mexp(ll);
   else {
    const double lu=pig_detail::log_upper(n,mean,shape);
    lp=lower_tail ? cppunivariate::special::fs_log1mexp(lu) : lu;

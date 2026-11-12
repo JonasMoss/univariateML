@@ -1,0 +1,17 @@
+{
+  "records": 313,
+  "outcomes": {
+    "stop": 66,
+    "pass": 247
+  },
+  "changes": [
+    {
+      "family": "skellam",
+      "index": 6337,
+      "source": "archive",
+      "field": "reported",
+      "before": -39.133541013284436,
+      "after": -39.13354101328325
+    }
+  ]
+}

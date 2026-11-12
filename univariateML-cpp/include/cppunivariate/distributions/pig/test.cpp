@@ -499,3 +499,18 @@ TEST_CASE("pig: the zero-count CDF is its atom even at tiny shape") {
   CHECK(cppunivariate::distributions::ppig(0,1,1e-8,true,true)==
         doctest::Approx(-0.0001414113565908629).epsilon(1e-12).scale(0));
 }
+
+TEST_CASE("pig: extreme count-tail regression") {
+  CHECK(cppunivariate::distributions::ppig(1,1,1e-8,true,true) == doctest::Approx(-7.070317853112745e-05).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::ppig(2,1e8,1,true,true) == doctest::Approx(-0.6562700043193149).epsilon(1e-11));
+}
+
+TEST_CASE("pig: representable large integration coordinate") {
+  // n*(1-A)<1e16 while n*(1-A)/A>1e16: a representable coordinate
+  // must reach the remainder check rather than an arbitrary size refusal.
+  const double upper=cppunivariate::distributions::ppig(2.0004e19,10,.1,false,true);
+  CHECK(std::isfinite(upper));
+  // Independent positive-mass/geometric bounds put the exact log tail
+  // between -9999500333187631.753 and -9999500333187624.150.
+  CHECK(upper == doctest::Approx(-9999500333187624.0).epsilon(1e-12).scale(0));
+}

@@ -1,0 +1,14 @@
+{
+  "comparisons_per_mode": {
+    "bnbinom": 18387,
+    "cmp": 11915,
+    "lgser": 7450,
+    "pig": 11762,
+    "skellam": 13093
+  },
+  "total_comparisons_per_mode": 62607,
+  "all_suite_exits_zero": true,
+  "report_links_valid": true,
+  "whitespace_check_passed": true,
+  "artifact_displayed": false
+}
