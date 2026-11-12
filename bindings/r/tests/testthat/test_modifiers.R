@@ -378,3 +378,27 @@ test_that("finite zeta score roots justify very small requested tolerances", {
   held<-mlzeta(1:4,s=0,truncate=c(1,4),reltol=1e-20)
   expect_identical(unname(held[["s"]]),0)
 })
+
+test_that("truncated d/p/q evaluate vectors elementwise (TASK-216)", {
+  # A scalar window bound used to decide the tail branch for the whole vector,
+  # so pml() repeated its first value.
+  x <- c(2, 2, 3, 3, 3, 4, 5, 5, 6, 7)
+  fits <- list(
+    geom = mlgeom(x, truncate = c(2, 7)),
+    nbinom = mlnbinom(x, size = 2, truncate = c(2, 7)),
+    pois = mlpois(x, truncate = c(2, 7)))
+  for (id in names(fits)) {
+    fit <- fits[[id]]
+    q <- 1:8
+    for (lower in c(TRUE, FALSE)) for (log.p in c(TRUE, FALSE)) {
+      whole <- pml(q, fit, lower.tail = lower, log.p = log.p)
+      each <- vapply(q, function(v) pml(v, fit, lower.tail = lower, log.p = log.p), numeric(1))
+      expect_identical(whole, each, info = paste(id, lower, log.p))
+    }
+    # The conditional CDF is the running sum of the conditional masses.
+    expect_equal(pml(2:7, fit), cumsum(dml(2:7, fit)), tolerance = 1e-12, info = id)
+    expect_equal(pml(7, fit), 1, info = id)
+    p <- c(0.1, 0.5, 0.9)
+    expect_identical(qml(p, fit), vapply(p, function(v) qml(v, fit), numeric(1)), info = id)
+  }
+})
