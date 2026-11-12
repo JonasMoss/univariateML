@@ -244,3 +244,12 @@ TEST_CASE("dgamma: concentrating bins retain accurate gamma endpoints") {
  CHECK(cppunivariate::distributions::ddgamma(99629986,1e8,1,true)==doctest::Approx(-696.3688404012099).epsilon(1e-10));
  CHECK(cppunivariate::distributions::pdgamma(100114683,1e8,1,false,false)==doctest::Approx(9.996832067290807e-31).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("dgamma: archived density seam 997") {
+  const std::vector<double> data{1000000.0,1000001.0,1000003.0,1000008.0,1000011.0};
+  const std::vector<double> expected{-2.9522765294664786,-2.723526528249071,-2.4334063588578383,-2.684477037085153,-3.5046303887118335};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::ddgamma(data[i],56054383409.52971,56054.09753363229,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}

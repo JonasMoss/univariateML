@@ -1,0 +1,94 @@
+[
+  {
+    "name": "cpp-dev",
+    "args": [
+      "just",
+      "cpp-test"
+    ],
+    "machine": "workstation (simbox exit 75)",
+    "returncode": 0,
+    "seconds": 1599.9565125259687
+  },
+  {
+    "name": "cpp-full",
+    "args": [
+      "env",
+      "UMVL_TEST_TIER=full",
+      "just",
+      "cpp-test"
+    ],
+    "machine": "workstation (simbox exit 75)",
+    "returncode": 0,
+    "seconds": 4034.7154761879938
+  },
+  {
+    "name": "cpp-double-simbox",
+    "args": [
+      "just",
+      "cpp-test-no-long-double"
+    ],
+    "machine": "workstation (simbox exit 75)",
+    "returncode": 0,
+    "seconds": 11588.824972530012
+  },
+  {
+    "name": "cpp-double-workstation",
+    "args": [
+      "just",
+      "cpp-test-no-long-double"
+    ],
+    "machine": "workstation",
+    "returncode": 0,
+    "seconds": 648.5511380379903
+  },
+  {
+    "name": "r-dev",
+    "args": [
+      "just",
+      "test"
+    ],
+    "machine": "workstation (simbox exit 75)",
+    "returncode": 0,
+    "seconds": 4461.672261307016
+  },
+  {
+    "name": "r-full",
+    "args": [
+      "just",
+      "test-full"
+    ],
+    "machine": "workstation (simbox exit 75)",
+    "returncode": 0,
+    "seconds": 1952.8936470540357
+  },
+  {
+    "name": "js-build",
+    "args": [
+      "just",
+      "js-build"
+    ],
+    "machine": "workstation",
+    "returncode": 0,
+    "seconds": 158.9122112970217
+  },
+  {
+    "name": "js-test",
+    "args": [
+      "just",
+      "js-test"
+    ],
+    "machine": "workstation",
+    "returncode": 0,
+    "seconds": 247.47019591700519
+  },
+  {
+    "name": "site-check",
+    "args": [
+      "just",
+      "site-check"
+    ],
+    "machine": "workstation",
+    "returncode": 0,
+    "seconds": 128.9216285800212
+  }
+]

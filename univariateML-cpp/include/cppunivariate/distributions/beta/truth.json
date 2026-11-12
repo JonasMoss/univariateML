@@ -1523,6 +1523,13 @@
     ],
     [
       11,
+      0.5013098104053413,
+      -676.9125443518333,
+      -1.0000000000479406e-300,
+      -690.7755278981658
+    ],
+    [
+      11,
       0.9999999999999999,
       -3535050576.1740923,
       0.0,
@@ -7385,17 +7392,5 @@
       6
     ]
   ],
-  "input_sha256": "81798c397ce98eb4c832c2fd9d96d7ac9221abbe527e3c1a77da65f4c2a7132f",
-  "excluded_values": [
-    {
-      "row": [
-        11,
-        0.5013098104053413,
-        -676.9125443518333,
-        -1.0000000000479406e-300,
-        -690.7755278981658
-      ],
-      "reason": "TASK-196 open: measured double,native p normalized error 1.3770772917461083e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). A uniform large-shape incomplete-beta tail with a verified relative-error remainder is missing."
-    }
-  ]
+  "input_sha256": "429205910575310c711db5584ff209a2b8eb234bbb292e633774a079b0b406da"
 }

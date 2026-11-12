@@ -14,11 +14,29 @@ inline double logprob(double p,bool log_p) {
 }
 // Evaluate the favourable incomplete-beta continued fraction. The prefactor
 // remains in log coordinates even when exp(lx) underflows to zero.
+inline double beta_logit_density(double t,double a,double b,double coordinate_error);
 inline double beta_small(double lx,double ly,double a,double b,double p) {
  const double x=std::exp(lx);
  if(p>=1e-290 && lx>std::log(std::numeric_limits<double>::min())) return std::log(p);
- return a*lx+b*ly-cppunivariate::special::log_beta_positive(a,b)
-   +std::log(cppunivariate::special::fs_beta_fraction(a,b,x)/a);
+ const double prefix=a>=16 && b>=16
+   ? beta_logit_density(lx-ly,a,b,0)
+   : a*lx+b*ly-cppunivariate::special::log_beta_positive(a,b);
+ // Positive hypergeometric series. For b>1 its successive ratio
+ // x*(a+b+n)/(a+1+n) decreases, so term*r/(1-r) bounds the
+ // entire remaining sum. Unlike a last-update continued-fraction test,
+ // this is an exact-arithmetic relative remainder certificate.
+ if(a>=16 && b>=16 && x*(1+b/a)<.999) {
+   double term=1,sum=1,correction=0;
+   for(int n=0;n<100000;++n) {
+     const double ratio=x*(1+(b-1)/(a+1+n));
+     if(term*ratio/(1-ratio)<=1e-14*sum) return prefix+std::log(sum/a);
+     term*=ratio;
+     const double y=term-correction,next=sum+y;
+     correction=(next-sum)-y;sum=next;
+   }
+   return cppunivariate::special::kNaN;
+ }
+ return prefix+std::log(cppunivariate::special::fs_beta_fraction(a,b,x)/a);
 }
 inline double beta_log(double lx,double ly,double a,double b,bool lower) {
  // Exact unit/two-shape antiderivatives bypass backend normalizers that

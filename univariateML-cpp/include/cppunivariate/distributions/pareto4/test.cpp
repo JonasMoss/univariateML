@@ -285,3 +285,39 @@ TEST_CASE("pareto4: concentrated density retains the scale displacement") {
   CHECK(cppunivariate::distributions::dpareto4(999.9976974175579,1,1e8,1000,0,true)==
         doctest::Approx(-218.7455815369823).epsilon(1e-12));
 }
+
+TEST_CASE("pareto4: archived density seam 5665") {
+  const std::vector<double> data{57.95719713182328,57.95719771139526,57.95719829096724,57.95719887053922,57.95720002968319};
+  const std::vector<double> expected{12.27889959374499,13.045079346465263,12.919212765394823,12.436220911877216,11.308505069224625};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::dpareto4(data[i],0.3157266252310832,181397157.91800258,57.95719750520992,0.0,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}
+
+TEST_CASE("pareto4: archived density seam 5666") {
+  const std::vector<double> data{57.95719829085132,57.95719829090928,57.95719829096724,57.9571982910252,57.95719829114111};
+  const std::vector<double> expected{21.489228490519867,22.2554047373488,22.12952272425259,21.646520330786835,20.51886044379439};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::dpareto4(data[i],0.3157266252310832,1813936513691.6497,57.95719829088866,0.0,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}
+
+TEST_CASE("pareto4: archived density seam 5668") {
+  const std::vector<double> data{57.95719713182328,57.95719771139526,57.95719829096724,57.95719887053922,57.95720002968319};
+  const std::vector<double> expected{12.27889959374499,13.045079346465263,12.919212765394823,12.436220911877216,11.308505069224625};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::dpareto4(data[i],0.3157266252310832,181397157.91800258,57.95719750520992,0.0,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}
+
+TEST_CASE("pareto4: archived density seam 5669") {
+  const std::vector<double> data{57.95719829085132,57.95719829090928,57.95719829096724,57.9571982910252,57.95719829114111};
+  const std::vector<double> expected{21.489228490519867,22.2554047373488,22.12952272425259,21.646520330786835,20.51886044379439};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::dpareto4(data[i],0.3157266252310832,1813936513691.6497,57.95719829088866,0.0,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}

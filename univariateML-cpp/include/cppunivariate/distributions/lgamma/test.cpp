@@ -202,3 +202,21 @@ TEST_CASE("lgamma: raw transform audit case 4442") {
   CHECK(fit.ratelog==doctest::Approx(0.15519193754309563).epsilon(1e-10).scale(0));
   CHECK(fit.logLik==doctest::Approx(-28.521381431876165).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("lgamma: archived density seam 4435") {
+  const std::vector<double> data{1.953632517309603,1.9536325173115567,1.9536325173135103,1.9536325173154638,1.9536325173193712};
+  const std::vector<double> expected{24.682202729864894,25.256572030183143,25.493044961914787,25.391705999939152,24.175484883178914};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::dlgamma(data[i],1.515167188134916e+23,2.262488803638903e+23,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}
+
+TEST_CASE("lgamma: archived density seam 4438") {
+  const std::vector<double> data{1.953632517309603,1.9536325173115567,1.9536325173135103,1.9536325173154638,1.9536325173193712};
+  const std::vector<double> expected{24.682202729864894,25.256572030183143,25.493044961914787,25.391705999939152,24.175484883178914};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::dlgamma(data[i],1.515167188134916e+23,2.262488803638903e+23,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}

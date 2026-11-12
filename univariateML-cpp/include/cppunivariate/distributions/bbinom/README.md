@@ -144,6 +144,10 @@ existence:
 
 The beta-binomial distribution is a binomial distribution whose success probability is itself beta distributed. It models overdispersed counts out of a known number of trials $n$.
 
+## d/p/q/r
+
+The mass factors as `Gamma(N+1)/Gamma(N+alpha+beta) * Gamma(x+alpha)/Gamma(x+1) * Gamma(N-x+beta)/Gamma(N-x+1) / B(alpha,beta)`. For bounded shapes, these gamma-ratio logarithms grow only as `log(N)`, whereas separate factorial logarithms grow as `N log(N)`.
+
 ## Details
 
 The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md). The number of trials $n$ is normally known. A binomial-limit declaration requires the signed certificate below; a small finite likelihood gain is never discarded in favour of that limit.

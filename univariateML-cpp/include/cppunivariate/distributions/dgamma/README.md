@@ -106,6 +106,8 @@ The discretized gamma distribution is the integer part of a continuous gamma var
 
 ## d/p/q/r
 
+For a cell midpoint `m` and `s=(a-1)/m-r`, the normalized gamma density is analytic on `|z|<m`. On a circle of radius `R<m`, its modulus is bounded by `exp(R*abs(s)+(a-1)*(R/m)^2/(2*(1-R/m)))` for `a>=1`. Cauchy coefficient bounds then control the integrated Taylor remainder without subtracting nearby tails.
+
 At shape 1e8 and unit rate, generic incomplete-gamma endpoint errors were
 amplified by subtraction over one count bin. The CDF and bin endpoints use
 the protected unit-gamma CDF; the independent bin integrals resolve the

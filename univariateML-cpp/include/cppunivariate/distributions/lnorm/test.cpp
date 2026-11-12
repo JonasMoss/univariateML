@@ -233,3 +233,30 @@ TEST_CASE("lnorm: held rounded log mean retains the exact log-anchor residual") 
   CHECK(fit.certified);
   CHECK(fit.sdlog==doctest::Approx(2.3190468138462995584e-17).epsilon(1e-13).scale(0));
 }
+
+TEST_CASE("lnorm: archived density seam 4601") {
+  const std::vector<double> data{1.445187510724387,1.445187510725832,1.4451875107272774,1.4451875107287226,1.445187510731613};
+  const std::vector<double> expected{24.98369496621756,25.557963718005563,25.794473754393234,25.693110880659308,24.476911743005058};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::dlnorm(data[i],0.3682390783550075,1.7204957773060612e-12,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}
+
+TEST_CASE("lnorm: archived density seam 4604") {
+  const std::vector<double> data{1.445187510724387,1.445187510725832,1.4451875107272774,1.4451875107287226,1.445187510731613};
+  const std::vector<double> expected{24.98369496621756,25.557963718005563,25.794473754393234,25.693110880659308,24.476911743005058};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::dlnorm(data[i],0.3682390783550075,1.7204957773060612e-12,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}
+
+TEST_CASE("lnorm: archived density seam 4611") {
+  const std::vector<double> data{100000001.46643509,100000000.44635502,100000001.90765181,100000002.98407541,100000001.44518751,100000000.48315705,100000001.20661016,100000000.26392101,100000004.95617464,100000000.76818824,100000001.8055238,100000000.58251828};
+  const std::vector<double> expected{-1.16377710513958,-1.5208373378511117,-1.207331656273921,-1.8152561449375666,-1.1646971771579882,-1.4968429927951936,-1.194064013308219,-1.652063727719262,-4.77523300126032,-1.3391771050897925,-1.1866155401635061,-1.4362157466157353};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::dlnorm(data[i],18.42068075921553,1.276009224197664e-08,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "checks": 29308,
+  "api_calls": 29308,
+  "large_count_lattice_checks": 0,
+  "failures": 0,
+  "active_failures": 0,
+  "ranked": [],
+  "include_excluded": false,
+  "binary_sha256": "a74057e295a81fb7451fc3762a6bae1fbbe2d9f96b338e4ec6eac9ab36a3774f",
+  "row_manifest_sha256": "b12a7f79017a03d6b914a1408929a8d1dc9775e6405cf79d6e87fa4bc848fe28",
+  "table_sha256": {
+    "bbinom": "3f51137e16b942d4b0cb6d129f9c02ef2b44a2c52d8c0f3643037fefbe259d73",
+    "beta": "4963fea45c7f20565c4fa4f75350b7321fa718d19b585704b836d9458936f1f8",
+    "betapr": "03d92265a0e0fbd8921929daf2b217e344065fbc60cf0ee7b9b73707efada376",
+    "dgamma": "024a8628dded9c9094d01a35b2c94713afb3b2dbbb0ed919a7191580ed9aeafb",
+    "fpareto": "f89199e070b1bedf2bbb80ba1ffed825e0cd84f7185cd26594d655b6169b9674",
+    "gb2": "fc25fe4fdcf1bff6c2263ce7e6f0ee49baf7996f1e3a5dd90422e60507d3eedf",
+    "lgamma": "1b92d45d78ecc7197c43d29db8301e4947a1d7f634136cfb91858b8afbcf94a4",
+    "lnorm": "b33d3ff3aca60a5c5012c5fb26333fbdad6be4b539141b06180d6290e176af14",
+    "pareto4": "839b0f40aa1bf0d6587a3cbfd322b304b05ede632b2ba3bc33949a43d73928ec"
+  }
+}

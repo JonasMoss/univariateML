@@ -1,0 +1,29 @@
+{
+  "rows": 1906,
+  "compared": 1906,
+  "changes": [],
+  "allowed_likelihood_changes": [
+    {
+      "key": [
+        "dgamma",
+        "archive",
+        1025
+      ],
+      "field": "reported",
+      "before": -39.20439046995113,
+      "after": -39.204390469886675
+    },
+    {
+      "key": [
+        "dgamma",
+        "archive",
+        1027
+      ],
+      "field": "reported",
+      "before": -16.199612771090962,
+      "after": -16.1996127710909
+    }
+  ],
+  "opens": [],
+  "final_mismatches": []
+}

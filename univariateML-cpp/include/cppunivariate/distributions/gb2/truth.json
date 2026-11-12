@@ -3593,6 +3593,13 @@
     ],
     [
       25,
+      8.140316400604613e-17,
+      -650.1154948253474,
+      -690.7755278982137,
+      -9.999999999999999e-301
+    ],
+    [
+      25,
       5.768391838957747e-10,
       -205.9253947064084,
       -230.25850929940458,
@@ -3681,6 +3688,13 @@
       -248.47230990444854,
       -9.999999999999985e-101,
       -230.25850929940458
+    ],
+    [
+      25,
+      1.2284534786949142e+16,
+      -724.2097298889206,
+      -1.0000000000000015e-300,
+      -690.7755278982137
     ],
     [
       25,
@@ -16328,27 +16342,5 @@
       8
     ]
   ],
-  "input_sha256": "ebde599a21c0b45cb7e932a81d4964b20124789537335598d609297b422b41d1",
-  "excluded_values": [
-    {
-      "row": [
-        25,
-        8.140316400604613e-17,
-        -650.1154948253474,
-        -690.7755278982137,
-        -9.999999999999999e-301
-      ],
-      "reason": "TASK-196 open: measured double,native p normalized error 1.3722910805712196e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The inherited large-shape beta tail needs a verified relative-error remainder."
-    },
-    {
-      "row": [
-        25,
-        1.2284534786949142e+16,
-        -724.2097298889206,
-        -1.0000000000000015e-300,
-        -690.7755278982137
-      ],
-      "reason": "TASK-196 open: measured double,native p normalized error 1.3722910805712196e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The inherited large-shape beta tail needs a verified relative-error remainder."
-    }
-  ]
+  "input_sha256": "bdda1bfc671dded5b325213af5c85442b791ef65bf7837d63e17e636e15dbd3b"
 }

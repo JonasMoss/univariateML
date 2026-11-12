@@ -1,0 +1,47 @@
+{
+  "bbinom": [
+    "cppunivariate::distributions::dbbinom(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pbbinom(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qbbinom(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "beta": [
+    "cppunivariate::distributions::dbeta(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pbeta(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qbeta(x, p[0], p[1], lower, log)"
+  ],
+  "betapr": [
+    "cppunivariate::distributions::dbetapr(x, p[0], p[1], p[2], log)",
+    "cppunivariate::distributions::pbetapr(x, p[0], p[1], p[2], lower, log)",
+    "cppunivariate::distributions::qbetapr(x, p[0], p[1], p[2], lower, log)"
+  ],
+  "dgamma": [
+    "cppunivariate::distributions::ddgamma(x, p[0], p[1], log)",
+    "cppunivariate::distributions::pdgamma(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qdgamma(x, p[0], p[1], lower, log)"
+  ],
+  "fpareto": [
+    "cppunivariate::distributions::dfpareto(x, p[0], p[1], p[2], p[3], p[4], log)",
+    "cppunivariate::distributions::pfpareto(x, p[0], p[1], p[2], p[3], p[4], lower, log)",
+    "cppunivariate::distributions::qfpareto(x, p[0], p[1], p[2], p[3], p[4], lower, log)"
+  ],
+  "gb2": [
+    "cppunivariate::distributions::dgb2(x, p[0], p[1], p[2], p[3], log)",
+    "cppunivariate::distributions::pgb2(x, p[0], p[1], p[2], p[3], lower, log)",
+    "cppunivariate::distributions::qgb2(x, p[0], p[1], p[2], p[3], lower, log)"
+  ],
+  "lgamma": [
+    "cppunivariate::distributions::dlgamma(x, p[0], p[1], log)",
+    "cppunivariate::distributions::plgamma(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qlgamma(x, p[0], p[1], lower, log)"
+  ],
+  "lnorm": [
+    "cppunivariate::distributions::dlnorm(x, p[0], p[1], log)",
+    "cppunivariate::distributions::plnorm(x, p[0], p[1], lower, log)",
+    "cppunivariate::distributions::qlnorm(x, p[0], p[1], lower, log)"
+  ],
+  "pareto4": [
+    "cppunivariate::distributions::dpareto4(x, p[0], p[1], p[2], p[3], log)",
+    "cppunivariate::distributions::ppareto4(x, p[0], p[1], p[2], p[3], lower, log)",
+    "cppunivariate::distributions::qpareto4(x, p[0], p[1], p[2], p[3], lower, log)"
+  ]
+}

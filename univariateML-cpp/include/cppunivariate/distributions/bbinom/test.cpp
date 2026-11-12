@@ -617,3 +617,12 @@ TEST_CASE("bbinom: gamma-ratio likelihood retains tiny-shape endpoint terms") {
   // and log f(0)=O(alpha log N); omitted terms here are below 1e-296.
   CHECK(r.logLik==doctest::Approx(2*std::log(1e-300)-std::log(1000.)-std::log(2000.)).epsilon(1e-12));
 }
+
+TEST_CASE("bbinom: archived density seam 75") {
+  const std::vector<double> data{1000000.0,1000001.0,1000003.0,1000008.0,1000011.0};
+  const std::vector<double> expected{-32.39044527010248,-32.487698320393214,-32.698183664856316,-33.353183800415,-33.888287122211494};
+  for(std::size_t i=0;i<data.size();++i) {
+    const double actual=cppunivariate::distributions::dbbinom(data[i],1000019.0,1.9337387365835597,2.9406650178896676,true);
+    CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
+  }
+}

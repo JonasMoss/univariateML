@@ -26,6 +26,11 @@ inline bool bbinom_valid(double size, double alpha, double beta) {
 
 // log f(x) for integer 0 <= x <= size.
 inline double bbinom_log_pmf(int x, int size, double alpha, double beta) {
+  if (size > 1024 && alpha + beta < 16)
+    return special::log_gamma_ratio(size,1,alpha+beta)
+      +(x==0?special::lgamma(alpha):special::log_gamma_ratio(x,alpha,1))
+      +(x==size?special::lgamma(beta):special::log_gamma_ratio(size-x,beta,1))
+      -special::log_beta_positive(alpha,beta);
   const double scale = std::max(alpha, beta);
   const double total = alpha / scale + beta / scale;
   const double p = (alpha / scale) / total, q = (beta / scale) / total;

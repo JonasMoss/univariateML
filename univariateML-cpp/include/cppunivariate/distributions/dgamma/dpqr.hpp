@@ -18,13 +18,37 @@ inline double dgamma_logtail(double t,double shape,bool lower) {
   }
   return value;
 }
+// Integrate a centered Taylor series over one physical cell. On |z|=2,
+// |f(mid+z)/f(mid)| <= exp(2|s|+(shape-1)*(2/mid)^2/(2*(1-2/mid))).
+// Cauchy's coefficient bound controls the omitted terms after degree 32.
+inline bool dgamma_centered_cell(double x,double shape,double rate,double &lp) {
+  if(!(shape>=16 && x>4 && x<4503599627370496.0)) return false;
+  const double mid=x+.5, displacement=std::fma(mid,rate,-shape);
+  const double u=displacement/shape;
+  if(std::abs(u)>.5) return false;
+  const double slope=-(displacement+1)/mid, r=2/mid;
+  const double log_bound=2*std::abs(slope)+(shape-1)*r*r/(2*(1-r));
+  if(log_bound>10) return false;
+  double previous=1,current=.5*slope,sum=1;
+  for(int n=1;n<32;++n) {
+    const double next=((.5*slope-.5*n/mid)*current-(.25*rate/mid)*previous)/(n+1);
+    if((n+1)%2==0) sum+=next/(n+2);
+    previous=current;current=next;
+  }
+  const double remainder=std::exp(log_bound)*std::pow(.25,33)/.75;
+  if(!(sum>0 && remainder<=1e-13*sum)) return false;
+  lp=.5*std::log(shape)-std::log(mid)-.91893853320467274178
+    -special::density_stirling_remainder(shape)-special::scaled_positive_deviance(shape,u)+std::log(sum);
+  return true;
+}
 inline double ddgamma(double x, double shape, double rate, bool log = false) {
   if (!(shape > 0 && rate > 0) || !std::isfinite(shape) || !std::isfinite(rate) || std::isnan(x))
     return std::numeric_limits<double>::quiet_NaN();
   double lp = -std::numeric_limits<double>::infinity();
   if (std::isfinite(x) && x >= 0 && x == std::floor(x)) {
     const double a=x*rate, b=(x+1)*rate;
-    if (x>1e16*std::max(1.0,shape))
+    if (dgamma_centered_cell(x,shape,rate,lp)) {}
+    else if (x>1e16*std::max(1.0,shape))
       lp=(shape-1)*(std::log(x)+std::log(rate))-x*rate-special::lgamma(shape)+special::log1mexp(-rate);
     else if (x == 0) lp=dgamma_logtail(b,shape,true);
     else {

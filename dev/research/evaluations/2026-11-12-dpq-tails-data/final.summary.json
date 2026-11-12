@@ -1,0 +1,41 @@
+{
+  "records": 1906,
+  "by_family": {
+    "bbinom": {
+      "pass": 114,
+      "stop": 12
+    },
+    "beta": {
+      "pass": 89
+    },
+    "betapr": {
+      "stop": 48,
+      "pass": 137
+    },
+    "dgamma": {
+      "pass": 44,
+      "stop": 13
+    },
+    "fpareto": {
+      "stop": 267,
+      "pass": 278
+    },
+    "gb2": {
+      "stop": 273,
+      "pass": 272
+    },
+    "lgamma": {
+      "pass": 81
+    },
+    "lnorm": {
+      "pass": 101
+    },
+    "pareto4": {
+      "stop": 49,
+      "pass": 128
+    }
+  },
+  "attributions": {},
+  "head": "217ab8b533cac25ccc8eba8d66eccde1b376f0b4",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

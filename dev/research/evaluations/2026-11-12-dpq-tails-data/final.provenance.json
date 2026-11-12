@@ -1,0 +1,17 @@
+{
+  "source_sha256": "585c10b8aa39576305783b0fea15ecbcb6718b17d32d6bbd5cd557fd678ad007",
+  "families": [
+    "bbinom",
+    "beta",
+    "betapr",
+    "dgamma",
+    "fpareto",
+    "gb2",
+    "lgamma",
+    "lnorm",
+    "pareto4"
+  ],
+  "no_long_double": false,
+  "timeout": 180.0,
+  "case": null
+}
