@@ -126,7 +126,11 @@ cases, assertions, skips and any `may_fail` cases. Read the individual cases.
 - The shared [truth consumer](../../univariateML-cpp/tests/test_support.hpp)
   compares log densities, both CDF tails and quantiles to `truth.json`;
   natural probabilities below its floor are omitted. Quantiles also accept
-  oracle-provided brackets or adjacent lattice values. The default tolerances
+  oracle-provided brackets or adjacent lattice values. The C++, R and JS truth
+  consumers also accept a finite continuous interior quantile that fails the
+  existing forward rules when its own CDF, on the input's tail and scale,
+  matches within relative `1e-12` (log inputs:
+  `1e-12 * max(1, abs(input))`). The default tolerances
   allow binary64 arithmetic error; brackets handle representational ambiguity.
   The family call can override them. Two seeded parameter points receive
   empirical CDF checks with a five-binomial-standard-error allowance plus

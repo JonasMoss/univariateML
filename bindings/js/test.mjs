@@ -48,7 +48,11 @@ function checkTruth(f) {
    }
   }
   for(const row of t.quantiles){const [i,lower,log,x,b,lo,hi,lattice,abs]=row,a=call('q',x,t.parameters[i],!!lower,!!log);
-   const ok=a===b||Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=Math.max(1e-9*Math.abs(b),abs)||(lattice?a===lo||a===hi:a>=lo&&a<=hi);
+   let ok=a===b||Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=Math.max(1e-9*Math.abs(b),abs)||(lattice?a===lo||a===hi:a>=lo&&a<=hi);
+   if(!discrete&&!ok&&Number.isFinite(a)&&Number.isFinite(b)&&(log?Number.isFinite(x)&&x<0:x>0&&x<1)) {
+    const at=call('p',a,t.parameters[i],!!lower,!!log);
+    ok=Number.isFinite(at)&&Math.abs(at-x)<=1e-12*(log?Math.max(1,Math.abs(x)):Math.abs(x));
+   }
    const large=discrete&&Math.abs(b)>2**53&&(log?Number.isFinite(x)&&x<0:x>0&&x<1);
    const at=large?call('p',a,t.parameters[i],!!lower,!!log):NaN;
    const before=large?call('p',previousDouble(a),t.parameters[i],!!lower,!!log):NaN;

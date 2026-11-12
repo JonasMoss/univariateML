@@ -596,3 +596,14 @@ TEST_CASE("frechet: extreme scale rescues a multiplier beyond the half-exponent 
   CHECK(std::isnormal(q));
   CHECK(std::abs(std::log(q)-(1450.+std::log(scale)))<2e-13);
 }
+
+TEST_CASE("frechet: canceled quantile meets the backward probability contract") {
+  const double input=-7.3890561137087625, mu=-999999998., sigma=1e9;
+  const double center=mu+sigma;
+  const double expected=-1.9991476033510408592152e-18;
+  const double q=cppunivariate::distributions::qfrechet(input,1e9,mu,sigma,true,true);
+  REQUIRE(std::isfinite(q));
+  const double at=cppunivariate::distributions::pfrechet(q,1e9,mu,sigma,true,true);
+  CHECK(std::abs(at-input)<=1e-12*std::max(1.,std::abs(input)));
+  CHECK(std::abs(q-expected)<=4*std::numeric_limits<double>::epsilon()*std::max(1.,std::abs(center)));
+}

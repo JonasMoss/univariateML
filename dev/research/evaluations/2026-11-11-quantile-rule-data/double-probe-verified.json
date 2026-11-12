@@ -1,0 +1,38 @@
+[
+  {
+    "family": "frechet",
+    "index": "regression probe (not a truth row)",
+    "row": [
+      0,
+      1,
+      1,
+      -7.3890561137087625,
+      -1.999147603351041e-18,
+      -1.9991476033510414e-18,
+      -1.9991476033510406e-18,
+      0,
+      0
+    ],
+    "parameters": [
+      1000000000.0,
+      -999999998.0,
+      1000000000.0
+    ],
+    "actual": -1.2456318291555971e-16,
+    "cdf": -7.389056113708763,
+    "forward_relative_error": 61.308147085669184,
+    "oracle_probability_error": 1.2256403555733674e-16,
+    "cdf_error": 2.3621578029769966e-18,
+    "stored_root_probability_error": 1.7408184862435562e-34,
+    "precision_delta": 1.211636249575338e-82,
+    "relative_condition_number": 5.0021318902304416e+17,
+    "ill_conditioning_amplification": 8028054314234176.0,
+    "independent_quantile": "-0.00000000000000000199914760335104085921520005056309247620312404109902060090514",
+    "stored_root_error_ulps": 0.4519423169662039,
+    "center": 2.0,
+    "absolute_quantile_error": 1.2256403531220867e-16,
+    "center_error_bound": 1.7763568394002505e-15,
+    "forward_accepted": false,
+    "backward_accepted": true
+  }
+]
