@@ -99,6 +99,10 @@ existence:
 
 The log-gamma distribution models observations above one whose logarithms follow a gamma distribution.
 
+## d/p/q/r
+
+At large shape `a`, the leading centered gamma penalty is `(r log(x)-a)^2/(2a)`, where `r` is the log-rate. Absolute error in the log transform is therefore amplified by `r/sqrt(a)` in the standardized coordinate.
+
 ## Details
 
 The coefficients $k$ and $\lambda$ are the gamma shape and rate of the logarithms. This is the actuarial log-gamma convention. Fitting forms gamma sufficient statistics from centered log differences $\log1p((x_i-x_0)/x_0)$, without first rounding the absolute logarithms. A two-component log anchor restores the rate and the likelihood is evaluated at the returned coefficients, including the Jacobian. A finite fit whose rounded public rate prevents transfer of the centered-statistic likelihood certificate is retained as uncertified.

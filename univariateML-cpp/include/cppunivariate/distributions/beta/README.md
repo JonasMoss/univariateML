@@ -109,6 +109,8 @@ The beta distribution models proportions and other continuous quantities strictl
 
 ## d/p/q/r
 
+The identity `I_x(a,b)=x^a*(1-x)^b/(a*B(a,b)) * sum(c_n)` has `c_0=1` and `c_(n+1)/c_n=x*(a+b+n)/(a+1+n)`. For `b>1` these ratios decrease; once their value is below one, a geometric majorant bounds the entire remaining positive sum.
+
 ### Probability normalization and central inversion
 
 A difference of three log-gamma values loses the beta normalizer when one shape is large. Probability code uses exact unit-shape identities and a shifted gamma ratio or a Stirling expression with an omitted term below 3e-17. Near the median of a symmetric beta, the log-odds density is proportional to cosh(t/2)^(-2a); log(cosh(t/2)) <= t^2/8 bounds the relative error of the local linear inverse. This preserves the offset of an exact binary64 logarithmic probability from one half.

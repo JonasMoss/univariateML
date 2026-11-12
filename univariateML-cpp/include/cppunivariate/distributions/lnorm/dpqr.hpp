@@ -9,6 +9,7 @@
 
 #include "../../special/constants.hpp"
 #include "../norm/dpqr.hpp"
+#include "../../special/compensated_log.hpp"
 
 #include <cmath>
 
@@ -25,10 +26,10 @@ inline double dlnorm(double x, double meanlog, double sdlog, bool log) {
   if (x <= 0.0 || x == special::kPosInf) {
     return log ? kNegInf : 0.0;
   }
-  // log f = log dnorm(log(x); meanlog, sdlog) - log(x)
-  const double log_density =
-      cppunivariate::distributions::dnorm(std::log(x), meanlog, sdlog, /*log=*/true) -
-      std::log(x);
+  const auto lx=special::compensated_log::logarithm(x);
+  const auto residual=special::compensated_log::add(lx,{-meanlog,0});
+  const double z=(residual.high+residual.low)/sdlog;
+  const double log_density=-.5*z*z-std::log(sdlog)-.91893853320467274178-lx.high;
   return log ? log_density : std::exp(log_density);
 }
 

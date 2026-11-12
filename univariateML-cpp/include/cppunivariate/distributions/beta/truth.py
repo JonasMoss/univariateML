@@ -15,8 +15,3 @@ def build(t, logd=None):
 
 # Joint limit paths supplement the shared one-coordinate extreme grid.
 extreme_parameter_sets = [{'shape1': 100000000.0, 'shape2': 100000000.0}]
-
-
-# Independently measured production limitations; numerical rows remain archived.
-truth_exclusions = {}
-truth_exclusions.setdefault('values', []).extend([([100000000.0, 100000000.0], [0.5013098104053413], 'TASK-196 open: measured double,native p normalized error 1.3770772917461083e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). A uniform large-shape incomplete-beta tail with a verified relative-error remainder is missing.')])

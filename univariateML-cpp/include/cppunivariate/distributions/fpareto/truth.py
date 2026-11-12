@@ -28,8 +28,3 @@ def endpoint_log_density(t, x):
         power=a*c-1
         return -mp.inf if power>0 else mp.inf if power<0 else mp.log(c)-mp.log(s)-mp.log(mp.beta(a,b))
     return None
-
-
-# Independently measured production limitations; numerical rows remain archived.
-truth_exclusions = {}
-truth_exclusions.setdefault('values', []).extend([([100000000.0, 0.0001414213562373095, 100000000.0, 1.0, 0.0], [8.140316400604613e-17], 'TASK-196 open: measured double,native p normalized error 1.3722910805712196e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The inherited large-shape beta tail needs a verified relative-error remainder.'), ([100000000.0, 0.0001414213562373095, 100000000.0, 1.0, 0.0], [1.2284534786949142e+16], 'TASK-196 open: measured double,native p normalized error 1.3722910805712196e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). The inherited large-shape beta tail needs a verified relative-error remainder.')])

@@ -101,6 +101,10 @@ existence:
 
 The lognormal distribution models positive quantities whose logarithms follow a normal distribution.
 
+## d/p/q/r
+
+Absolute error in `log(x)` is amplified by `1/sdlog` in the standardized coordinate. Consequently, a correctly rounded logarithm alone need not give an accurate density for a concentrated lognormal law.
+
 ## Details
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.

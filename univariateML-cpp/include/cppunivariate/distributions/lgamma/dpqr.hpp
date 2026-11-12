@@ -8,6 +8,7 @@
 
 #include "../../special/constants.hpp"
 #include "../gamma/dpqr.hpp"
+#include "../../special/compensated_log.hpp"
 #include <cmath>
 
 namespace cppunivariate {
@@ -23,11 +24,17 @@ inline double dlgamma(double x, double shapelog, double ratelog, bool log) {
   if (x < 1.0 || !std::isfinite(x)) {
     return log ? kNegInf : 0.0;
   }
-  // f_lgamma(x) = f_gamma(log(x); shapelog, scale=1/ratelog) / x
-  const double log_density = cppunivariate::distributions::dgamma(
-                                 std::log(x), shapelog, 1.0 / ratelog,
-                                 /*log=*/true) -
-                             std::log(x);
+  if(x==1) return dgamma(0,shapelog,1/ratelog,log);
+  const auto lx=special::compensated_log::logarithm(x);
+  double log_density;
+  if(shapelog>=16) {
+    const auto product=special::compensated_log::multiply(lx,{ratelog,0});
+    const auto displacement=special::compensated_log::add(product,{-shapelog,0});
+    const double u=(displacement.high+displacement.low)/shapelog;
+    if(std::abs(u)>.5) log_density=dgamma(lx.high,shapelog,1/ratelog,true)-lx.high;
+    else log_density=.5*std::log(shapelog)-std::log(lx.high)-.91893853320467274178
+      -special::density_stirling_remainder(shapelog)-special::scaled_positive_deviance(shapelog,u)-lx.high;
+  } else log_density=dgamma(lx.high,shapelog,1/ratelog,true)-lx.high;
   return log ? log_density : std::exp(log_density);
 }
 

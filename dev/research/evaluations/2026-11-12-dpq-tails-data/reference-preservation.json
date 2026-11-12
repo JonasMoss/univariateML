@@ -1,0 +1,22 @@
+[
+  {
+    "family": "beta",
+    "restored": 1,
+    "references_preserved": true
+  },
+  {
+    "family": "betapr",
+    "restored": 2,
+    "references_preserved": true
+  },
+  {
+    "family": "fpareto",
+    "restored": 2,
+    "references_preserved": true
+  },
+  {
+    "family": "gb2",
+    "restored": 2,
+    "references_preserved": true
+  }
+]
