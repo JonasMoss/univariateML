@@ -1,0 +1,68 @@
+{
+  "final_checks_green": true,
+  "suites": [
+    [
+      "cpp-test",
+      "workstation",
+      "0"
+    ],
+    [
+      "test",
+      "workstation",
+      "0"
+    ],
+    [
+      "test-full",
+      "workstation",
+      "0"
+    ],
+    [
+      "cpp-test-no-long-double",
+      "workstation",
+      "0"
+    ],
+    [
+      "cpp-test-no-long-double-workstation",
+      "workstation",
+      "0"
+    ]
+  ],
+  "cpp_dev": 108,
+  "cpp_double_fallback": 135,
+  "cpp_double_workstation": 135,
+  "R_dev": {
+    "passed": 29000,
+    "skipped": 155,
+    "fail": 0,
+    "warn": 0
+  },
+  "R_full": {
+    "passed": 57824,
+    "skipped": 0,
+    "fail": 0,
+    "warn": 0
+  },
+  "R_targeted": {
+    "passed": 675,
+    "skipped": 7,
+    "fail": 0,
+    "warn": 0
+  },
+  "JS": {
+    "tests": 212,
+    "pass": 212,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "paired_replays": 240,
+  "changed_log_likelihoods": 100,
+  "reference_rechecks": 100,
+  "symmetry_checks": 8,
+  "tracked_changes": [
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/mle.hpp",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp"
+  ],
+  "commits_created": false
+}

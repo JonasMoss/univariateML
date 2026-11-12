@@ -1,0 +1,4 @@
+ M univariateML-cpp/include/cppunivariate/distributions/bnbinom/mle.hpp
+ M univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp
+?? dev/research/evaluations/2026-11-12-bnb-loglik-data/
+?? dev/research/evaluations/2026-11-12-bnb-loglik-report.md

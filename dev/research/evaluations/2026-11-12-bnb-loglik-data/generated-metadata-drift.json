@@ -1,0 +1,6 @@
+{
+  "file": "bindings/js/modifier-metadata.mjs",
+  "generator_drift": "Adds an empty gengamma modifier metadata entry; unrelated to bnbinom.",
+  "action": "Regenerated for JS validation; restored byte-for-byte from HEAD after JS tests.",
+  "initial_test_failure": "Restoring the artifact before JS tests caused facade eligibility reads to fail."
+}

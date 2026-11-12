@@ -1,0 +1,54 @@
+{
+  "native": [
+    {
+      "held": 1.0,
+      "size_held_logLik": -1275.6804660633939,
+      "beta_held_logLik": -1275.6804660633939,
+      "passed": true
+    },
+    {
+      "held": 5.0,
+      "size_held_logLik": -1275.656801243996,
+      "beta_held_logLik": -1275.656801243996,
+      "passed": true
+    },
+    {
+      "held": 1.0672234787479615,
+      "size_held_logLik": -1275.6474863695587,
+      "beta_held_logLik": -1275.6474863695587,
+      "passed": true
+    },
+    {
+      "held": 5.36473383510874,
+      "size_held_logLik": -1275.6474863695587,
+      "beta_held_logLik": -1275.6474863695587,
+      "passed": true
+    }
+  ],
+  "double": [
+    {
+      "held": 1.0,
+      "size_held_logLik": -1275.680466063394,
+      "beta_held_logLik": -1275.680466063394,
+      "passed": true
+    },
+    {
+      "held": 5.0,
+      "size_held_logLik": -1275.6568012439943,
+      "beta_held_logLik": -1275.6568012439943,
+      "passed": true
+    },
+    {
+      "held": 1.0672234787479615,
+      "size_held_logLik": -1275.6474863695578,
+      "beta_held_logLik": -1275.6474863695578,
+      "passed": true
+    },
+    {
+      "held": 5.36473383510874,
+      "size_held_logLik": -1275.6474863695594,
+      "beta_held_logLik": -1275.6474863695594,
+      "passed": true
+    }
+  ]
+}

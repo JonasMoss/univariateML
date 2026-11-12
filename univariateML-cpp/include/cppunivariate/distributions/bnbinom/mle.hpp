@@ -881,6 +881,17 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-10, int maxit=600,
       if(std::isnan(size_fixed)&&std::isnan(beta_fixed)&&stopped.size!=stopped.beta)stopped.stop_detail.candidates.push_back({{stopped.beta,stopped.alpha,stopped.size},stopped.logLik-margin,stopped.logLik+margin,StopModel::None});
     } else {stopped.status=BnbinomStatus::NumericalFailure;stopped.accuracy_failure=true;{if(stopped.size>0 && stopped.alpha>0 && stopped.beta>0)record_accuracy(stopped,tol,{stopped.size,stopped.alpha,stopped.beta},{std::isnan(size_fixed)?stopped.size:0,std::isnan(alpha_fixed)?stopped.alpha:0,std::isnan(beta_fixed)?stopped.beta:0});else{stopped.stop_detail.accuracy_stop=AccuracyStop::None;stopped.stop_detail.attainable_tol=NAN;}}}
   }
+  // Reporting only: leave search objectives and certificate comparisons intact.
+  // The density's large-count gamma ratios avoid rising-factorial cancellation.
+  if(stopped.status==BnbinomStatus::Ok) {
+    const double r=std::min(stopped.size,stopped.beta),b=std::max(stopped.size,stopped.beta);
+    std::map<int,double> counts;
+    for(int v:x)counts[v]+=1;
+    CPPUNIV_EXTENDED_REAL loglik=0;
+    for(const auto& v:counts)loglik+=static_cast<CPPUNIV_EXTENDED_REAL>(v.second)*
+      distributions::dbnbinom(v.first,r,stopped.alpha,b,true);
+    stopped.logLik=static_cast<double>(loglik);
+  }
   return stopped;
 }
 }

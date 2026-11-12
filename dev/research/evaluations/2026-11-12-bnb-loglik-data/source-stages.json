@@ -1,0 +1,5 @@
+{
+  "final_mle_sha256": "10f50f5ccf769dd351676f09b2760d1e1c725528ae9dd9cb21b693697a6d6261",
+  "dev_suite_mle_sha256_before_frequency_grouping": "ad189e4d445d3806664806ef0283ddb7cbf529a2454dcb96c093864872a410ac",
+  "prior_stage_reconstruction": "Exact reversal of the final frequency-grouping block; all other source lines were identical."
+}
