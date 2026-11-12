@@ -8,6 +8,40 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-12
 
+- **Consolidation before breadth** (Jonas: "cleanup first, then add fuzzers,
+  then have two layers of testing while developing"; "We can hold off (at
+  least partly!) new breadth"). Order amended in discussion: a snapshot fuzzer
+  comes before the cross-family refactor, as its safety net. The stricter
+  layer keeps a list of known failures that may only shrink. Plan and steps:
+  [consolidation](../design/consolidation.md); evidence:
+  [repository audit](../research/evaluations/2026-11-12-repo-audit-report.md).
+  The entries below are targets; none is implemented yet.
+- **One outcome type for every family** (Jonas: "I strongly agree enum output
+  should be the same"). It replaces the per-family status enums and lives in
+  the core, so classification no longer happens in the bindings.
+  `AGENTS.md` Principle 1 now lists the outcomes, including the uncertified
+  estimate of the 2026-11-09 decision.
+- **A limit decided only by the margin is a limit stop with
+  `certified = FALSE`** (Jonas: "i dont know", then "lets go" on the
+  recommendation). Its message says that no improvement above the margin was
+  found, not that none exists. Alternative considered: an "unresolved" stop,
+  rejected because naming the limit model is the useful answer when the gain
+  is below anything a likelihood-ratio test could detect.
+- **Proved non-unique maxima are estimates with `unique = FALSE`, returned in
+  full** (Jonas: "shouldn't we return all with a flag?"). A finite set is
+  listed, a continuum described; each family states its representative for
+  `coef()`; `vcov` and `confint` refuse. Supersedes the tie stops of SGED,
+  ZINB and bnbinom ("proved distinct tied maxima still stops", 2026-11-09).
+  Candidates a certificate cannot separate remain the uncertified case.
+- **`tol` is a ceiling on the coefficient error** (Jonas: "this is kinda
+  arbitrary and much stricter than what im used to"). A fitter may deliver
+  more accuracy than asked, so clamping is within the contract. The default
+  stays `1e-10` and is revisited when the strict layer shows how often default
+  fits stop on tolerance or conditioning.
+- **Pathological families use the shared outcome type; no mixtures for now**
+  (Jonas: "Its probably cleanest to do without mixtures"). Families where ML
+  fails for every sample, such as the sine family, are added after the outcome
+  type as its acceptance test and as teaching examples.
 - **PGW is ordinary PGW** (Jonas: "Going with recommendations"). Id `pgw`,
   coefficients `scale`, `shape`, `exponent`, all positive, with
   $H(x)=\{1+(x/a)^b\}^c-1$. Adapted PGW is a different family and, for

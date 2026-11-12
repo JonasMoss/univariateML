@@ -3,17 +3,23 @@
 ## Purpose
 
 univariateML is a proof of concept for **solid maximum likelihood**: across
-about a hundred univariate families, every fit either returns a verified MLE or
-says correctly and specifically why there is none. The library is the evidence.
+about a hundred univariate families, every fit returns a verified MLE, a
+plainly flagged unverified one, or says correctly and specifically why there is
+none. The library is the evidence.
 The research behind it covers escapes to limit models, nonexistence, multiple
 maxima, when standard inference holds, and eventually numerical certificates.
 See [the ML-difficulties paper plan](dev/roadmap/2026-11-02-ml-difficulties-paper.md).
 
 ## Principles
 
-1. **No silent failures.** A fit ends as a verified estimate, an escape to a
-   named limit model ("use `mlX`"), a proved nonexistence, an exhausted budget,
-   or a reported failure. A wrong answer with status `Ok` is the worst bug.
+1. **No silent failures.** A fit ends in one of a fixed set of outcomes, the
+   same for every family: an estimate (certified, or uncertified and flagged),
+   an escape to a named limit model ("use `mlX`", proved or flagged as decided
+   by a margin), a proved nonexistence, an exhausted budget, or a reported
+   failure. Proved non-unique maxima are returned in full with a flag. A wrong
+   answer with status `Ok` is the worst bug; an unflagged uncertified answer is
+   the next. The shared outcome type is being introduced:
+   [consolidation plan](dev/design/consolidation.md).
 2. **Fitters follow the likelihood's structure.** Use what is known about it:
    concavity, exponential-family form, monotone scores, escape analysis.
    Heuristic starts and ad hoc profiling are not a design.
