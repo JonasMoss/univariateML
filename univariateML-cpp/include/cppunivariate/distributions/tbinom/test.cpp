@@ -447,3 +447,23 @@ TEST_CASE("tbinom: half probability retains a subnormal conditional odds displac
  CHECK(cppunivariate::distributions::qtbinom(std::log(.5),p,-1,1,n,true,true)==1);
  CHECK(cppunivariate::distributions::qtbinom(std::log(.5),p,-1,1,n,false,true)==0);
 }
+
+TEST_CASE("tbinom: optional work controls meter the replacement route") {
+  std::vector<int> x{1,1,2,3,3};
+  const auto free=cppunivariate::tbinom_design_mle({x.data(),x.size()},0,5,NAN,NAN,1e-10,1);
+  CHECK(free.status!=cppunivariate::TbinomStatus::Ok);
+  const auto held=cppunivariate::tbinom_design_mle({x.data(),x.size()},0,5,12,NAN,1e-10,1);
+  CHECK(held.status!=cppunivariate::TbinomStatus::Ok);
+  const auto solved=cppunivariate::tbinom_design_mle({x.data(),x.size()},0,5,NAN,NAN,1e-10,512);
+  CHECK(solved.status==cppunivariate::TbinomStatus::Ok);
+}
+
+TEST_CASE("tbinom: explicit 512 work units use the controlled held-size solver") {
+  const std::vector<int> x{0,1,2,3};
+  for(int limit:{400,511,512,513}) {
+    const auto r=cppunivariate::tbinom_design_mle({x.data(),x.size()},-1,INFINITY,1e308,NAN,1e-10,limit);
+    CHECK(r.status==cppunivariate::TbinomStatus::Ok);
+    CHECK(r.prob/(1.5e-308)==doctest::Approx(1).epsilon(1e-10));
+  }
+  CHECK(cppunivariate::tbinom_design_mle({x.data(),x.size()},-1,INFINITY,1e308).status==cppunivariate::TbinomStatus::NumericalFailure);
+}

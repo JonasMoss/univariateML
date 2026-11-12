@@ -17,7 +17,7 @@ inline FitResult fit_zmnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
   const auto res=cppunivariate::zmnbinom_mle(x, reltol, iterlim, fixed_size,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
   if(res.status==cppunivariate::ZmnbinomStatus::InvalidInput)return fail("requires nonempty nonnegative integer count data and valid controls and parameter domains; held values must be compatible with the observations");
   if(res.status==cppunivariate::ZmnbinomStatus::InvalidSize)return fail("`size` must be a nonnegative finite value.");
-  if(res.status==cppunivariate::ZmnbinomStatus::PoissonLimit)return stop_failure(fail("The maximum likelihood estimator escapes to infinite size. Use `mlzmpois`."),res.stop_detail,"limit",{"lambda","p0"},"zmpois");
+  if(res.status==cppunivariate::ZmnbinomStatus::PoissonLimit)return stop_failure(fail("The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = \"modified\")`."),res.stop_detail,"limit",{"lambda","p0"},"zmpois");
   if(res.status==cppunivariate::ZmnbinomStatus::AllZero)warnings.push_back(binding_message("all observations are zero: base parameters are unidentified; supplied values are preserved."));
   if(res.status==cppunivariate::ZmnbinomStatus::TwoPoint)warnings.push_back(binding_message("positives are all one: the attained two-point law is also fitted exactly by mlbinom(x, size = 1)."));
   if(res.status==cppunivariate::ZmnbinomStatus::IterationFailure) {

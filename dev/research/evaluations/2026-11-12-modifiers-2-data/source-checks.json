@@ -1,0 +1,289 @@
+{
+  "baseline": "fe17e3b8",
+  "authored_files": [
+    "dev/design/modifiers.md",
+    "univariateML-cpp/include/cppunivariate/distributions/binom/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/tbinom/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/zeta/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/zinb/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/zmnbinom/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/ztbinom/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/README.md",
+    "dev/research/evaluations/2026-11-12-modifiers-2-report.md"
+  ],
+  "authored_destinations": 61,
+  "new_broken": [],
+  "existing_broken": [
+    {
+      "path": "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+      "line": 5,
+      "destination": "../boundary-points.pdf",
+      "sha256": "cd351c4120a8ba7d1181ac10498c470cbddfce532947ab4b019380224c24ba3e"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 198,
+      "destination": "double",
+      "sha256": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 316,
+      "destination": "double",
+      "sha256": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 317,
+      "destination": "double",
+      "sha256": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 416,
+      "destination": "double",
+      "sha256": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 571,
+      "destination": "double",
+      "sha256": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 572,
+      "destination": "double",
+      "sha256": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 596,
+      "destination": "const",
+      "sha256": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 672,
+      "destination": "double",
+      "sha256": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 939,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1055,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1077,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1112,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1186,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1446,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 9947,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 10911,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 12511,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 13402,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 13836,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 13857,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14277,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14415,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14524,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14876,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 15756,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 15795,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 15888,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 16243,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 16365,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 16546,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17137,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17283,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17377,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17735,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17836,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17899,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17917,
+      "destination": "double",
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+      "line": 70,
+      "destination": "../../../local/literature/1990-geyer-likelihood-exponential-families.pdf",
+      "sha256": "6b8802d54274284d216794e72ae45f6bf962dd0add2c161350b025deb44e1cd8"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+      "line": 71,
+      "destination": "../../../local/literature/2016-chen-consistency-mixture-models.pdf",
+      "sha256": "6b8802d54274284d216794e72ae45f6bf962dd0add2c161350b025deb44e1cd8"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+      "line": 72,
+      "destination": "../../../local/literature/1990-lecam-maximum-likelihood.pdf",
+      "sha256": "6b8802d54274284d216794e72ae45f6bf962dd0add2c161350b025deb44e1cd8"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-10-relaxed-likelihood-lit-report.md",
+      "line": 13,
+      "destination": "../../../local/literature/",
+      "sha256": "7b051da0cc97008955b843822a19b1fe722e2bb434bdbe3875eddf69d1725cf5"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+      "line": 309,
+      "destination": "1+m/r",
+      "sha256": "6bdb44404ae001934114c091717ab8f8669a3728b9ea521d97a297e26dc011fb"
+    },
+    {
+      "path": "univariateML-cpp/notes/inference.md",
+      "line": 3,
+      "destination": "/inference/",
+      "sha256": "9843db90c9a907959bca5b1013da1d5b9379df11db218324d6ed1476601dd9d1"
+    },
+    {
+      "path": "univariateML-cpp/notes/inference.md",
+      "line": 95,
+      "destination": "/inference/",
+      "sha256": "9843db90c9a907959bca5b1013da1d5b9379df11db218324d6ed1476601dd9d1"
+    }
+  ]
+}

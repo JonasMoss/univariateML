@@ -65,12 +65,12 @@ Zero eligibility is derived from integer support with literal lower bound zero,
 excluding existing modification/truncation constructions. This gives 11 bases:
 bbinom, binom, bnbinom, cmb, cmp, dgamma, dweibull, geom, nbinom, pig, pois.
 The declared lgser exception additionally exposes the zero argument, with
-unimplemented values refused. Every family exposes `truncate`.
+`zero="modified"` implemented and the other values refused. Every family exposes `truncate`.
 
 All zero values are implemented for pois, binom, nbinom and geom, retaining the
 existing conditional and mixture fitters and their status/certification scope.
-General truncation is implemented for pois, geom, norm, and binom/nbinom with
-size held. `[1,Inf]` takes exactly the same route as `zero="truncated"`, including
+General truncation is implemented for pois, geom, norm, binom with size free or held,
+nbinom with size held, and zeta on finite `[1,N]` windows. `[1,Inf]` takes exactly the same route as `zero="truncated"`, including
 free-size fits and attained positive-truncation boundary extensions.
 The generic conditional-family solver is independently checked against that
 route. Other eligible values are reserved and raise these exact messages:
@@ -78,7 +78,6 @@ route. Other eligible values are reserved and raise these exact messages:
 ```text
 `zero = "modified"` is not implemented for `mlcmp`; see TASK-191 or its successor
 `truncate` is not implemented for `mlgamma`; see TASK-191 or its successor
-`truncate` with size free is not implemented for `mlbinom`; see TASK-191 or its successor
 zero + truncate is not implemented for `mlpois`; see TASK-191 or its successor
 censor + zero is not implemented for `mlpois`; see TASK-191 or its successor
 censor + truncate is not implemented for `mlnorm`; see TASK-191 or its successor
@@ -90,9 +89,10 @@ Ineligible zero arguments follow the existing unknown-argument diagnostic.
 Refusals never drop the modifier and fit the base law. Zero plus truncate and
 censor plus zero/truncate are reserved compositions; holds compose with every
 supported modifier. A truncation domain is declared separately from the parent's
-because bounded conditioning can enlarge it. This implementation retains the
-parent domains; zeta's finite-window extension to s <= 1 is still required
-before zipf can retire.
+because bounded conditioning can enlarge it. Finite `[1,N]` zeta windows allow every finite real exponent. The other
+implemented windows retain the parent domains. The lgser hurdle exception also
+includes theta zero, the attained two-point law, and maps theta to the positive
+logarithmic law's probability parameter.
 
 ## Interval observations
 
@@ -224,3 +224,30 @@ Bernoulli log likelihood. `HurdleStatus::AllZero` explicitly reports unidentifie
 positive coefficients; `PositiveFitFailure` retains the positive fitter's
 specific status in the nested result. Legacy wrappers retain their established
 all-zero representatives and warnings during coexistence.
+
+
+Binomial windows reuse `tbinom_design_mle`, including integer-size searches,
+retained-support certificates, exact factorial-moment face comparisons and
+successful uncertified finite fallbacks. This preserves the reference fitter's
+certificate scope. Free-size windows default to the reference 512-unit work
+allowance; held-size windows retain the generic 400-unit default. Explicit
+controls reach the search, certificate and coefficient checks. Poisson windows preserve the tpois stop
+details and representative fits, with the generic root check retaining modifier
+work-control failures. The `[1,Inf]` alias retains the previously declared
+positive-truncation boundary extensions.
+
+Finite zeta windows use a strictly decreasing log-count score on the full real
+line. A sign bracket certifies the unique interior maximum, conditional on
+computed moment comparisons; endpoint-only data have infinite-exponent
+point-mass suprema. Negative-exponent sums are scaled at N. Concentrated laws
+use descending ratios and geometric bounds on mass and centered log moments;
+broad laws use Euler--Maclaurin through B8 with an eighth-derivative remainder
+check. Fits charge evaluated cells to `enumeration_budget(iterlim)` and fail if
+the coefficient bracket cannot close. Nonnegative exponents reuse the settled
+finite-harmonic normalizer. Conditional tails use the smaller log tail and its
+stable complement, including tiny log probabilities near zero. These are practical
+floating-point comparisons, not outward-rounded interval arithmetic.
+The final finite-zeta coefficient neighbourhood also requires opposite score
+signs beyond `128 * eps * (abs(model mean) + abs(empirical mean))`, in the
+corresponding log-count coordinate. This rejects precision requests below the
+score's practical resolution even when rounded-score bisection closes.

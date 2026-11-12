@@ -154,7 +154,7 @@ The [count-family analysis](../../../../../dev/research/evaluations/2026-10-29-p
 
 A supplied coefficient is held; `NULL` estimates it. Fractional nonnegative size values are allowed. All-zero data with free size return `size = 0`, preserve holds and use `prob = 0.5, pi = 0` for unidentified free coordinates. With positive size held, a free probability is one. If probability is held below one, free inflation is one. These boundary fits are silent.
 
-An infinite-size report stops with advice to use `mlzip`, or `mlpois` when the selected limiting inflation is zero. Numerical search failure also stops.
+An infinite-size report stops with advice to use `mlpois(x, zero = "inflated")`, or `mlpois` when the selected limiting inflation is zero. Numerical search failure also stops.
 
 ## Fixed-size branch certificate
 

@@ -1,0 +1,193 @@
+{
+  "cases": 25427,
+  "differences": 106,
+  "unclassified": 0,
+  "categories": {
+    "held-window density improvement": 1,
+    "zeta accuracy refinement": 7,
+    "widened exponent domain": 24,
+    "held-size numerical improvement": 1,
+    "estimated window bounds": 5,
+    "closed-window rounding": 6,
+    "positive-window extension": 16,
+    "unbounded window accepted": 46
+  },
+  "families": {
+    "tbinom": {
+      "cases": 12976,
+      "differences": 45,
+      "sources": {
+        "golden": 16,
+        "archive": 240,
+        "native": 8656,
+        "old": 149,
+        "edge": 3915
+      }
+    },
+    "tnorm": {
+      "cases": 999,
+      "differences": 2,
+      "sources": {
+        "golden": 16,
+        "archive": 256,
+        "native": 110,
+        "old": 80,
+        "edge": 537
+      }
+    },
+    "tpois": {
+      "cases": 626,
+      "differences": 21,
+      "sources": {
+        "golden": 8,
+        "archive": 116,
+        "native": 21,
+        "old": 86,
+        "edge": 395
+      }
+    },
+    "zib": {
+      "cases": 2278,
+      "differences": 0,
+      "sources": {
+        "golden": 8,
+        "archive": 128,
+        "native": 554,
+        "old": 123,
+        "edge": 1465
+      }
+    },
+    "zinb": {
+      "cases": 1716,
+      "differences": 0,
+      "sources": {
+        "golden": 8,
+        "archive": 128,
+        "native": 29,
+        "old": 86,
+        "edge": 1465
+      }
+    },
+    "zip": {
+      "cases": 282,
+      "differences": 0,
+      "sources": {
+        "golden": 4,
+        "archive": 56,
+        "native": 31,
+        "old": 46,
+        "edge": 145
+      }
+    },
+    "zipf": {
+      "cases": 314,
+      "differences": 38,
+      "sources": {
+        "golden": 4,
+        "archive": 56,
+        "native": 9,
+        "old": 40,
+        "edge": 205
+      }
+    },
+    "zmbinom": {
+      "cases": 1810,
+      "differences": 0,
+      "sources": {
+        "golden": 8,
+        "archive": 128,
+        "native": 124,
+        "old": 85,
+        "edge": 1465
+      }
+    },
+    "zmgeom": {
+      "cases": 311,
+      "differences": 0,
+      "sources": {
+        "golden": 4,
+        "archive": 56,
+        "native": 12,
+        "old": 34,
+        "edge": 205
+      }
+    },
+    "zmlogarithmic": {
+      "cases": 312,
+      "differences": 0,
+      "sources": {
+        "golden": 4,
+        "archive": 56,
+        "native": 13,
+        "old": 34,
+        "edge": 205
+      }
+    },
+    "zmnbinom": {
+      "cases": 1698,
+      "differences": 0,
+      "sources": {
+        "golden": 8,
+        "archive": 128,
+        "native": 26,
+        "old": 71,
+        "edge": 1465
+      }
+    },
+    "zmpois": {
+      "cases": 251,
+      "differences": 0,
+      "sources": {
+        "golden": 4,
+        "archive": 56,
+        "native": 12,
+        "old": 34,
+        "edge": 145
+      }
+    },
+    "ztbinom": {
+      "cases": 1330,
+      "differences": 0,
+      "sources": {
+        "golden": 4,
+        "archive": 64,
+        "native": 974,
+        "old": 48,
+        "edge": 240
+      }
+    },
+    "ztgeom": {
+      "cases": 71,
+      "differences": 0,
+      "sources": {
+        "golden": 2,
+        "archive": 16,
+        "native": 9,
+        "old": 14,
+        "edge": 30
+      }
+    },
+    "ztnbinom": {
+      "cases": 380,
+      "differences": 0,
+      "sources": {
+        "golden": 4,
+        "archive": 64,
+        "native": 30,
+        "old": 42,
+        "edge": 240
+      }
+    },
+    "ztpois": {
+      "cases": 73,
+      "differences": 0,
+      "sources": {
+        "golden": 2,
+        "archive": 28,
+        "native": 9,
+        "old": 14,
+        "edge": 20
+      }
+    }
+  }
+}

@@ -70,3 +70,74 @@ TEST_CASE("zeta: structured stop payloads") {
 TEST_CASE("zeta: quantile search guards and representability") {
   CHECK(cppunivariate::distributions::qzeta(.9,1.001)==INFINITY);
 }
+
+#include "truncation.hpp"
+TEST_CASE("finite zeta windows widen the exponent domain") {
+  std::vector<int> x{1,2,3,4,4,4};
+  const auto r=cppunivariate::zeta_window_mle({x.data(),x.size()},1,4);
+  CHECK(r.status==cppunivariate::ZetaWindowStatus::Ok);
+  CHECK(r.s<0);
+  double total=0;
+  for(int k=1;k<=4;++k)total+=cppunivariate::zeta_window_eval('d',k,4,r.s);
+  CHECK(total==doctest::Approx(1));
+  std::vector<int> edge{4,4};
+  CHECK(cppunivariate::zeta_window_mle({edge.data(),edge.size()},1,4).status==cppunivariate::ZetaWindowStatus::UpperLimit);
+  CHECK(cppunivariate::zeta_window_mle({x.data(),x.size()},1,4,-2).s==-2);
+  CHECK(cppunivariate::zeta_window_mle({x.data(),x.size()},1,4,NAN,1e-10,1).status==cppunivariate::ZetaWindowStatus::NumericalFailure);
+}
+
+TEST_CASE("finite zeta endpoint counts and log complements remain resolved") {
+  const int N=2147483647;
+  std::vector<int> x{N-1,N};
+  const auto r=cppunivariate::zeta_window_mle({x.data(),x.size()},1,N);
+  CHECK(r.status==cppunivariate::ZetaWindowStatus::Ok);
+  CHECK(r.s<0);
+  const double denominator=double(N)*(double(N)+1)*(2.*N+1)/6;
+  CHECK(cppunivariate::zeta_window_eval('d',1,N,-2,true,true)==doctest::Approx(-std::log(denominator)).epsilon(1e-12));
+  const double tail=cppunivariate::zeta_window_eval('p',1,N,-2,false,true);
+  CHECK(tail<0);
+  CHECK(tail/std::log1p(-1/denominator)==doctest::Approx(1).epsilon(1e-12));
+  const double mode=cppunivariate::zeta_window_eval('d',4,4,-100,true,true);
+  const double exact=-std::log1p(std::pow(.75,100)+std::pow(.5,100)+std::pow(.25,100));
+  CHECK(mode/exact==doctest::Approx(1).epsilon(1e-12));
+}
+
+TEST_CASE("zeta finite window: huge held exponent retains the endpoint law") {
+  const std::vector<int> x{1,1};
+  const auto fit=cppunivariate::zeta_window_mle({x.data(),x.size()},1,2147483647.,1e308);
+  CHECK(fit.status==cppunivariate::ZetaWindowStatus::Ok);
+  CHECK(fit.s==1e308);
+  CHECK(fit.logLik==0);
+  const auto concentrated=cppunivariate::zeta_window_mle({x.data(),x.size()},1,2147483647.,100.);
+  CHECK(concentrated.logLik==doctest::Approx(-2*std::pow(2.,-100)).scale(0.).epsilon(1e-10));
+}
+
+TEST_CASE("zeta finite window: uniform likelihood at four million observations") {
+  std::vector<int> x;x.reserve(4000000);
+  for(int k=1;k<=4;++k)x.insert(x.end(),1000000,k);
+  const auto fit=cppunivariate::zeta_window_mle({x.data(),x.size()},1,4);
+  CHECK(fit.status==cppunivariate::ZetaWindowStatus::Ok);
+  CHECK(std::abs(fit.s)<=1e-10);
+  CHECK(fit.logLik==doctest::Approx(-double(x.size())*std::log(4.)).epsilon(1e-10));
+}
+
+TEST_CASE("zeta finite window: normalizer bounds across integer powers") {
+  const int N=3000;const std::vector<int>x{N-1,N};
+  for(double r:{7.,std::nextafter(7.,INFINITY),8.,std::nextafter(8.,INFINITY)}) {
+    double den=0;for(int k=1;k<=N;++k)den+=std::pow(double(k)/N,r);
+    const auto fit=cppunivariate::zeta_window_mle({x.data(),x.size()},1,N,-r);
+    CHECK(fit.status==cppunivariate::ZetaWindowStatus::Ok);
+    CHECK(fit.logLik==doctest::Approx(r*std::log1p(-1./N)-2*std::log(den)).epsilon(1e-10));
+    CHECK(std::isfinite(cppunivariate::zeta_window_eval('q',.5,N,-r)));
+  }
+}
+
+TEST_CASE("zeta finite window: rounded score roots must justify requested precision") {
+  const std::vector<int> x{1,2,3,4};
+  const auto tight=cppunivariate::zeta_window_mle({x.data(),x.size()},1,4,NAN,1e-20,400);
+  CHECK((tight.status==cppunivariate::ZetaWindowStatus::Ok || tight.status==cppunivariate::ZetaWindowStatus::NumericalFailure));
+  if(tight.status==cppunivariate::ZetaWindowStatus::Ok)CHECK(std::abs(tight.s)<=1e-20);
+  const auto held=cppunivariate::zeta_window_mle({x.data(),x.size()},1,4,0,1e-20,400);
+  CHECK(held.status==cppunivariate::ZetaWindowStatus::Ok);
+  CHECK(held.s==0);
+}

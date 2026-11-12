@@ -1,0 +1,198 @@
+family,status,stop_kind,certified,message,cases
+tbinom,Ok,,True,,9077
+tbinom,Ok,,,,123
+tbinom,stop,limit,,"The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(4, 6))` instead.",3
+tbinom,Ok,,False,,11
+tbinom,stop,,,Invalid design parameters or observations outside truncation bounds a < x <= b.,3132
+tbinom,stop,numerical,,Truncated normalizer cannot be resolved within numerical precision or work budget.,1
+tbinom,stop,limit,,MLE escapes to a point mass at the lowest support point.,6
+tbinom,stop,limit,,MLE escapes to a point mass at the highest support point.,5
+tbinom,stop,limit,,"The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(2, 4))` instead.",4
+tbinom,stop,limit,,"The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(1, Inf))` instead.",1
+tbinom,stop,limit,,"The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(0, 2))` instead.",2
+tbinom,stop,limit,,"The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(0, 3))` instead.",3
+tbinom,stop,limit,,"The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(0, 4))` instead.",4
+tbinom,stop,,,"`mltbinom` requires `a` (design). Hold a value, e.g. `a = 0`, or use `a = NULL` to estimate it where supported.",1
+tbinom,stop,limit,,"The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(1, 3))` instead.",4
+tbinom,stop,,,`size` must be a finite nonnegative integer.,561
+tbinom,stop,limit,,"The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(1, 10))` instead.",4
+tbinom,stop,,,Held bounds must not be missing.,1
+tbinom,stop,limit,,"The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(0, Inf))` instead.",1
+tbinom,stop,limit,,"The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(0, 10))` instead.",1
+tbinom,stop,,,"`mltbinom`: held `a` must be in (-inf, inf)",26
+tbinom,stop,,,"`mltbinom`: held `b` must be in (-inf, inf)",5
+tnorm,Ok,,,,342
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(0.380309 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",2
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(1.49566e-13 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(2.03797 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(0.240272 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(6.16344 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-4436.49 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-4.43649e+07 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-4.43512e+11 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-1452.61 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-1.45261e+07 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-1.45253e+11 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(3.80309e+149 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(3.80309e-151 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-4.80097e-06 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(0.000194172 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"With `mean` held fixed, the truncated normal fit escapes to, or is numerically tied with, the uniform distribution on (a, b) as sd -> Inf; no finite MLE is returned (mean squared distance is at least the uniform's, or a likelihood tie within 1e-8 per observation).",13
+tnorm,stop,numerical,,Truncated normal Newton iteration did not converge; increase `iterlim`.,34
+tnorm,stop,limit,,"The truncated normal fit on (-Inf, b) escapes to, or is numerically tied with, b - Y, Y exponential with rate 32.0755, as sd -> Inf; no finite MLE is returned (variance >= (b - mean(x))^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(b - x)` to fit the limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (-Inf, b) escapes to, or is numerically tied with, b - Y, Y exponential with rate 3.15422, as sd -> Inf; no finite MLE is returned (variance >= (b - mean(x))^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(b - x)` to fit the limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (-Inf, b) escapes to, or is numerically tied with, b - Y, Y exponential with rate 6.30844, as sd -> Inf; no finite MLE is returned (variance >= (b - mean(x))^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(b - x)` to fit the limit.",1
+tnorm,stop,tie,,"The truncated normal fit on (a, Inf) escapes to, or is numerically tied with, a + Y, Y exponential with rate 32.0755, as sd -> Inf; no finite MLE is returned (variance >= (mean(x) - a)^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(x - a)` to fit the limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, Inf) escapes to, or is numerically tied with, a + Y, Y exponential with rate 4.99997e-06, as sd -> Inf; no finite MLE is returned (variance >= (mean(x) - a)^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(x - a)` to fit the limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, Inf) escapes to, or is numerically tied with, a + Y, Y exponential with rate 0.957711, as sd -> Inf; no finite MLE is returned (variance >= (mean(x) - a)^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(x - a)` to fit the limit.",3
+tnorm,stop,limit,,"The truncated normal fit on (-Inf, b) escapes to, or is numerically tied with, b - Y, Y exponential with rate 0.957711, as sd -> Inf; no finite MLE is returned (variance >= (b - mean(x))^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(b - x)` to fit the limit.",1
+tnorm,stop,tie,,"The truncated normal fit on (a, Inf) escapes to, or is numerically tied with, a + Y, Y exponential with rate 0.957711, as sd -> Inf; no finite MLE is returned (variance >= (mean(x) - a)^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(x - a)` to fit the limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-0.0600036 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",2
+tnorm,stop,tie,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(0.700006 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(0.700006 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,nomle,,"Truncated normal likelihood is unbounded as sd -> 0: all observations equal the fitted mean or the projection of the held mean onto [a, b].",36
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-1.80285 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",2
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(2.11417 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,,,"Truncated normal observations must lie within the closed bounds [a, b].",3
+tnorm,stop,,,"Truncated normal bounds must satisfy a < b, with a < Inf and b > -Inf.",71
+tnorm,stop,,,`mean` must be finite.,272
+tnorm,stop,,,`sd` must be finite and positive.,168
+tnorm,stop,,,x must have positive length,1
+tnorm,stop,,,NA in input when na.rm = FALSE,1
+tnorm,stop,,,"Truncated normal MLE requires finite data, positive `reltol` and positive `iterlim`.",3
+tnorm,stop,nomle,,Truncated normal likelihood is unbounded with held `sd`: all observations equal a finite endpoint and the parent mean escapes beyond that endpoint.,14
+tnorm,stop,nomle,,"Truncated normal bounds must satisfy a < b, with a < Inf and b > -Inf.",2
+tnorm,stop,limit,,"The truncated normal fit on (-Inf, b) escapes to, or is numerically tied with, b - Y, Y exponential with rate 0.4, as sd -> Inf; no finite MLE is returned (variance >= (b - mean(x))^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(b - x)` to fit the limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, Inf) escapes to, or is numerically tied with, a + Y, Y exponential with rate 0.4, as sd -> Inf; no finite MLE is returned (variance >= (mean(x) - a)^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(x - a)` to fit the limit.",1
+tnorm,stop,,,Truncated normal bounds must not be missing.,1
+tnorm,stop,limit,,"The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(-1.29237e-15 * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (a, Inf) escapes to, or is numerically tied with, a + Y, Y exponential with rate 0.985222, as sd -> Inf; no finite MLE is returned (variance >= (mean(x) - a)^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(x - a)` to fit the limit.",1
+tnorm,stop,limit,,"The truncated normal fit on (-Inf, b) escapes to, or is numerically tied with, b - Y, Y exponential with rate 0.985222, as sd -> Inf; no finite MLE is returned (variance >= (b - mean(x))^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(b - x)` to fit the limit.",1
+tpois,Ok,,,,270
+tpois,stop,,,Invalid design parameters or observations outside truncation bounds a < x <= b.,323
+tpois,stop,limit,,MLE escapes to a point mass at the lowest support point.,9
+tpois,stop,limit,,MLE escapes to a point mass at the highest support point.,5
+tpois,stop,,,"`mltpois` requires `a` (design). Hold a value, e.g. `a = 0`, or use `a = NULL` to estimate it where supported.",1
+tpois,stop,,,Held bounds must not be missing.,2
+tpois,stop,,,Fixed parameter must not be missing.,1
+tpois,stop,,,"`mltpois`: held `a` must be in (-inf, inf)",12
+tpois,stop,,,"`mltpois`: held `b` must be in (-inf, inf)",3
+zib,Ok,,True,,677
+zib,Ok,,,,162
+zib,Ok,,False,,25
+zib,stop,,,`size` must be a nonnegative integer at least max(x).,278
+zib,stop,,,`size` must be finite and in its parameter domain.,213
+zib,stop,,,x must have positive length,1
+zib,stop,,,x not in the support of the data,1
+zib,stop,limit,,"The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = ""inflated"")`.",27
+zib,stop,,,"`prob` must be finite and in [0, 1].",545
+zib,stop,numerical,,"Profile optimizer IterationFailure: iteration limit, floating-point range or precision exhausted; increase iterlim only for work-limit failures. No capped size estimate is returned.",5
+zib,stop,tie,,"No finite-size maximizer exists; the winning ZIP face has rate maxima that cannot be ordered at the comparison margin. Use `mlpois(x, zero = ""inflated"")` and inspect the retained face candidates.",2
+zib,stop,numerical,,"`mlzib`: median quantile evaluation failed: invalid held coefficients or numerical failure; Profile optimizer IterationFailure: iteration limit, floating-point range or precision exhausted; increase iterlim only for work-limit failures. No capped size estimate is returned.",2
+zib,stop,tolerance,,zib numerical accuracy failure: requested coefficient accuracy cannot be established. tol must be at least 3.7007434154171883e-17 here.,4
+zib,stop,tolerance,,zib numerical accuracy failure: requested coefficient accuracy cannot be established. tol must be at least 5.5511151231257827e-17 here.,3
+zib,stop,,,requires nonempty nonnegative integer count data and valid controls; held parameters must give positive likelihood,90
+zib,stop,,,"`pi` must be finite and in [0, 1].",243
+zinb,Ok,,,,324
+zinb,stop,numerical,,"Zero-inflated negative binomial MLE failed: unresolved arithmetic, root enclosure or curvature; no verified maximum.",2
+zinb,stop,limit,,"The maximum likelihood estimator does not exist, but converges to a Poisson. Use `mlpois` instead.",17
+zinb,stop,numerical,,"Zero-inflated negative binomial MLE failed: certificate workload limit (maximum count 100000, total count 2^52); no verified maximum.",8
+zinb,stop,limit,,"The maximum likelihood estimator does not exist, but converges to a zero-inflated Poisson. Use `mlpois(x, zero = ""inflated"")` instead.",23
+zinb,stop,unresolved,,Zero-inflated negative binomial MLE failed: infinite-size tail is not excluded at the comparison margin; no verified maximum.,1
+zinb,stop,,,"ZINB requires nonempty nonnegative count data, positive reltol and iterlim, prob in (0,1], pi in [0,1], and compatible holds",756
+zinb,stop,budget,,Zero-inflated negative binomial MLE failed: certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop.,5
+zinb,stop,tie,,Zero-inflated negative binomial MLE failed: competing maxima overlap at the comparison margin; no unique verified maximum.,2
+zinb,stop,,,size must be a finite nonnegative number,364
+zinb,stop,,,`prob` must be finite and in its parameter domain.,212
+zinb,stop,,,`pi` must be finite and in its parameter domain.,2
+zip,Ok,,,,135
+zip,stop,limit,,"With pi held below one and all-zero data, lambda tends to zero, undefined by the reference; use `mlpois`.",8
+zip,stop,,,x must have positive length,1
+zip,stop,,,x not in the support of the data,1
+zip,stop,,,"Zero-inflated Poisson MLE requires nonempty nonnegative count data, lambda positive and finite, pi in [0,1], and compatible holds.",95
+zip,stop,tie,,Zero-inflated Poisson competing rate maxima overlap at the comparison margin.,2
+zip,stop,budget,,Zero-inflated Poisson rate certificate exhausted its budget. Raising iterlim may resolve this stop.,2
+zip,stop,numerical,,Zero-inflated Poisson MLE failed to produce a finite valid fit.,3
+zip,stop,,,`lambda` must be finite and in its parameter domain.,32
+zip,stop,,,`pi` must be finite and in its parameter domain.,2
+zip,stop,,,iterlim must be positive.,1
+zipf,Ok,,,,123
+zipf,stop,limit,,The MLE does not exist: point mass at one with held N > 1.,6
+zipf,stop,,,"Zipf requires positive integer observations, integer N >= max(x) at most INT_MAX, and finite s >= 0.",63
+zipf,stop,,,Held coefficients must be finite.,40
+zipf,stop,,,x not in the support of the data,82
+zmbinom,Ok,,True,,230
+zmbinom,Ok,,,,145
+zmbinom,Ok,,False,,14
+zmbinom,stop,limit,,"The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = ""modified"")`.",14
+zmbinom,stop,,,`size` must be a positive integer at least max(x).,294
+zmbinom,stop,,,`size` must be finite and in its parameter domain.,213
+zmbinom,stop,,,x must have positive length,1
+zmbinom,stop,,,x not in the support of the data,1
+zmbinom,stop,,,"`prob` must be finite and in [0, 1].",545
+zmbinom,stop,numerical,,Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.,2
+zmbinom,stop,tolerance,,zmbinom numerical accuracy failure: requested coefficient accuracy cannot be established. tol must be at least 1.8503717077085941e-17 here.,2
+zmbinom,stop,,,requires nonempty nonnegative integer count data and valid controls; held parameters must give positive likelihood,106
+zmbinom,stop,,,"`p0` must be finite and in [0, 1].",243
+zmgeom,Ok,,,,119
+zmgeom,stop,,,x must have positive length,1
+zmgeom,stop,,,x not in the support of the data,1
+zmgeom,stop,,,requires nonempty nonnegative integer count data and valid controls and parameter domains; held values must be compatible with the observations,156
+zmgeom,stop,,,`p0` must be finite and in its parameter domain.,2
+zmgeom,stop,,,`prob` must be finite and in its parameter domain.,32
+zmlogarithmic,Ok,,,,120
+zmlogarithmic,stop,,,x must have positive length,1
+zmlogarithmic,stop,,,x not in the support of the data,1
+zmlogarithmic,stop,,,requires nonempty nonnegative integer count data and valid controls and parameter domains; held values must be compatible with the observations,156
+zmlogarithmic,stop,,,`p0` must be finite and in its parameter domain.,2
+zmlogarithmic,stop,,,`prob` must be finite and in its parameter domain.,32
+zmnbinom,Ok,,,,328
+zmnbinom,stop,limit,,"The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = ""modified"")`.",31
+zmnbinom,stop,numerical,,Profile certificate workload limit: maximum count 100000 and total count 2^52; no verified maximum.,7
+zmnbinom,stop,,,`size` must be a nonnegative finite value.,42
+zmnbinom,stop,,,`size` must be finite and in its parameter domain.,183
+zmnbinom,stop,,,x must have positive length,1
+zmnbinom,stop,,,x not in the support of the data,1
+zmnbinom,stop,,,requires nonempty nonnegative integer count data and valid controls and parameter domains; held values must be compatible with the observations,888
+zmnbinom,stop,numerical,,Profile certificate has an unresolved floating-point comparison; no verified maximum.,3
+zmnbinom,stop,,,`p0` must be finite and in its parameter domain.,2
+zmnbinom,stop,,,`prob` must be finite and in its parameter domain.,212
+zmpois,Ok,,,,119
+zmpois,stop,,,x must have positive length,1
+zmpois,stop,,,x not in the support of the data,1
+zmpois,stop,,,requires nonempty nonnegative integer count data and valid controls and parameter domains; held values must be compatible with the observations,96
+zmpois,stop,,,`p0` must be finite and in its parameter domain.,2
+zmpois,stop,,,`lambda` must be finite and in its parameter domain.,32
+ztbinom,Ok,,True,,928
+ztbinom,Ok,,,,129
+ztbinom,Ok,,False,,10
+ztbinom,stop,limit,,"The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = ""truncated"")`.",11
+ztbinom,stop,,,`size` must be a positive integer at least max(x).,50
+ztbinom,stop,,,`size` must be finite and in its parameter domain.,24
+ztbinom,stop,,,x must have positive length,1
+ztbinom,stop,,,x not in the support of the data,99
+ztbinom,stop,,,"`prob` must be finite and in [0, 1].",59
+ztbinom,stop,numerical,,Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.,5
+ztbinom,stop,tolerance,,ztbinom numerical accuracy failure: requested coefficient accuracy cannot be established. tol must be at least 1.1102230246251565e-16 here.,2
+ztbinom,stop,,,requires nonempty positive integer count data and valid controls; held parameters must give positive likelihood,12
+ztgeom,Ok,,,,34
+ztgeom,stop,,,x must have positive length,1
+ztgeom,stop,,,x not in the support of the data,15
+ztgeom,stop,,,"requires nonempty positive integer count data, a held coefficient in its domain, and compatible observations",15
+ztgeom,stop,,,`prob` must be finite and in its parameter domain.,6
+ztnbinom,Ok,,,,127
+ztnbinom,stop,limit,,"The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = ""truncated"")`.",14
+ztnbinom,stop,budget,,"Profile search exhausted: certificate iteration budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop.",2
+ztnbinom,stop,numerical,,Profile certificate workload limit: maximum count 100000 and total count 2^52; no verified maximum.,4
+ztnbinom,stop,,,`size` must be a nonnegative finite value.,22
+ztnbinom,stop,,,`size` must be finite and in its parameter domain.,21
+ztnbinom,stop,,,x must have positive length,1
+ztnbinom,stop,,,x not in the support of the data,100
+ztnbinom,stop,,,requires nonempty positive integer count data and valid controls and parameter domains; held values must be compatible with the observations,62
+ztnbinom,stop,numerical,,Profile certificate has an unresolved floating-point comparison; no verified maximum.,4
+ztnbinom,stop,,,`prob` must be finite and in its parameter domain.,23
+ztpois,Ok,,,,46
+ztpois,stop,,,x must have positive length,1
+ztpois,stop,,,x not in the support of the data,11
+ztpois,stop,,,"requires nonempty positive integer count data, a held coefficient in its domain, and compatible observations",9
+ztpois,stop,,,`lambda` must be finite and in its parameter domain.,6

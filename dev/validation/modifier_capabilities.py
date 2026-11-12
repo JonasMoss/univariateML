@@ -75,12 +75,20 @@ def generate():
             if id!=base:
                 kind='modification_of' if value.startswith('zero=') else 'truncation_of'
                 edge=m['relations'][kind][0];mapping=edge['at'];condition=edge.get('when','')
+                if m.get('modifier_replacement') and kind=='truncation_of':
+                    condition=models[base].get('modifiers',{}).get('truncate',{}).get('domain_bounded',condition)
                 if kind=='modification_of':
                     arguments='zero = "'+edge['type'].removeprefix('zero-')+'"'
                     if edge.get('mass'): arguments+=', '+('pi' if edge['type']=='zero-inflated' else 'p0')+' = '+str(edge['mass'])
                 else:
                     def bound(v): return str(v).replace('inf','Inf')
-                    arguments='truncate = c('+bound(m['support']['lower'])+', '+bound(m['support']['upper'])+')'
+                    upper=m['support']['upper']
+                    # The parent already clips to its support. Preserve the
+                    # conditioning design when that support coefficient is free.
+                    prefix='min('+str(models[base]['support']['upper'])+', '
+                    if isinstance(upper,str) and upper.startswith(prefix) and upper.endswith(')'):
+                        upper=upper[len(prefix):-1]
+                    arguments='truncate = c('+bound(m['support']['lower'])+', '+bound(upper)+')'
             writer.writerow([id,base,value,arguments,json.dumps(mapping,sort_keys=True) if mapping else '',condition,'pending' if id!=base else ''])
     print(json.dumps(dict(families=len(models),retirements=sum(id!=b for id,(b,v) in reductions.items()),
                           remaining=sum(id==b for id,(b,v) in reductions.items()),configurations=len(rows))))

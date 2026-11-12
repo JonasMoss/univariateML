@@ -1,0 +1,77 @@
+{
+  "cases": 1375,
+  "differences": 36,
+  "unclassified": 0,
+  "old_R_calls": 3,
+  "categories": {
+    "proper unbounded window; old fixed-model metadata required finite design bounds": 30,
+    "closed integer window floors its upper endpoint": 2,
+    "finite-window exponent domain includes negative s": 4
+  },
+  "families": {
+    "tbinom": {
+      "cases": 340,
+      "differences": 24
+    },
+    "tnorm": {
+      "cases": 64,
+      "differences": 0
+    },
+    "tpois": {
+      "cases": 44,
+      "differences": 6
+    },
+    "zib": {
+      "cases": 191,
+      "differences": 0
+    },
+    "zinb": {
+      "cases": 158,
+      "differences": 0
+    },
+    "zip": {
+      "cases": 24,
+      "differences": 0
+    },
+    "zipf": {
+      "cases": 28,
+      "differences": 6
+    },
+    "zmbinom": {
+      "cases": 188,
+      "differences": 0
+    },
+    "zmgeom": {
+      "cases": 34,
+      "differences": 0
+    },
+    "zmlogarithmic": {
+      "cases": 34,
+      "differences": 0
+    },
+    "zmnbinom": {
+      "cases": 158,
+      "differences": 0
+    },
+    "zmpois": {
+      "cases": 24,
+      "differences": 0
+    },
+    "ztbinom": {
+      "cases": 40,
+      "differences": 0
+    },
+    "ztgeom": {
+      "cases": 8,
+      "differences": 0
+    },
+    "ztnbinom": {
+      "cases": 34,
+      "differences": 0
+    },
+    "ztpois": {
+      "cases": 6,
+      "differences": 0
+    }
+  }
+}

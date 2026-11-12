@@ -16,7 +16,7 @@ inline FitResult fit_ztnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
   if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("ztnbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"size","prob"});
   if(res.status==cppunivariate::ZtnbinomStatus::InvalidInput)return fail("requires nonempty positive integer count data and valid controls and parameter domains; held values must be compatible with the observations");
   if(res.status==cppunivariate::ZtnbinomStatus::InvalidSize)return fail("`size` must be a nonnegative finite value.");
-  if(res.status==cppunivariate::ZtnbinomStatus::PoissonLimit)return stop_failure(fail("The maximum likelihood estimator escapes to infinite size. Use `mlztpois`."),res.stop_detail,"limit",{"lambda"},"ztpois");
+  if(res.status==cppunivariate::ZtnbinomStatus::PoissonLimit)return stop_failure(fail("The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = \"truncated\")`."),res.stop_detail,"limit",{"lambda"},"ztpois");
   if(res.status==cppunivariate::ZtnbinomStatus::IterationFailure) {
     std::string message="Profile certificate has an unresolved floating-point comparison; no verified maximum.";
     if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::Budget)message="Profile search exhausted: certificate iteration budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop.";

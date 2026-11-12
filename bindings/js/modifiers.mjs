@@ -9,7 +9,7 @@ export function modifierAPI(module, id, eligibility, capabilities) {
     if (truncate && capabilities.truncate?.status !== 'implemented') refusal('`truncate`');
     if (truncate && (!Array.isArray(truncate) || truncate.length !== 2 || truncate.some(v => typeof v !== 'number') || truncate[0] > truncate[1])) throw new Error('truncate requires a closed [lower, upper] window');
   };
-  const variant = zero => zero === 'truncated' ? `zt${id}` : zero === 'modified' ? `zm${id}` : ({pois:'zip',binom:'zib',nbinom:'zinb',geom:'zinb'})[id];
+  const variant = zero => zero === 'truncated' ? `zt${id}` : zero === 'modified' ? (id==='lgser'?'zmlogarithmic':`zm${id}`) : ({pois:'zip',binom:'zib',nbinom:'zinb',geom:'zinb'})[id];
   const parameters = (zero,p) => id==='geom' && zero==='inflated' ? [1,...p] : p;
   const complement=v=>v<-Math.LN2?Math.log1p(-Math.exp(v)):Math.log(-Math.expm1(v));
   const logdiff = (a,b) => b===-Infinity?a:a+complement(Math.min(0,b-a));
@@ -18,6 +18,10 @@ export function modifierAPI(module, id, eligibility, capabilities) {
     const {zero='none',truncate=null,lower=true,log=false}=flags;
     validate(zero,truncate);
     if (zero!=='none') return module[`${kind}${variant(zero)}`](x,parameters(zero,p),lower,log);
+    if(id==='zeta' && truncate) {
+      if(Math.max(1,Math.ceil(truncate[0]))!==1 || !Number.isFinite(truncate[1]) || truncate[1]<1 || truncate[1]>2147483647) throw new Error('finite zeta window requires [1,N]');
+      return module.zetaWindow(kind,x,Math.floor(truncate[1]),p[0],lower,log);
+    }
     if (!truncate) return module[`${kind}${id}`](x,p,lower,log);
     if(truncate[0]===1 && truncate[1]===Infinity && ['pois','binom','nbinom','geom'].includes(id)) return module[`${kind}zt${id}`](x,p,lower,log);
     if(['pois','binom','norm'].includes(id)) {
@@ -60,10 +64,12 @@ export function modifierAPI(module, id, eligibility, capabilities) {
   return {evaluate,fit(x,held,control) {
     const {zero='none',truncate=null}=control;validate(zero,truncate);
     if(control.reltol!==undefined && (!Number.isFinite(control.reltol) || control.reltol<=0) || control.iterlim!==undefined && (!Number.isInteger(control.iterlim) || control.iterlim<1 || control.iterlim>2147483647)) throw new Error('invalid modifier controls');
+    if(control.abstol!==undefined && (!Number.isFinite(control.abstol) || control.abstol<=0)) throw new Error('invalid modifier controls');
     const censor=x && !ArrayBuffer.isView(x) && !Array.isArray(x) && 'lower' in x;
     if(censor && zero!=='none')refusal('censor + zero');
     if(censor && truncate)refusal('censor + truncate');
-    const result=module.fitModifier(id,censor?x.lower:x,censor?x.upper:[],held,zero,!!truncate,truncate?.[0]??NaN,truncate?.[1]??NaN,!!censor,control.reltol??1e-10,control.iterlim??400);
+    const positiveWindow=truncate?.[0]===1 && truncate?.[1]===Infinity && ['pois','binom','nbinom','geom'].includes(id);
+    const result=module.fitModifier(id,censor?x.lower:x,censor?x.upper:[],held,zero,!!truncate,truncate?.[0]??NaN,truncate?.[1]??NaN,!!censor,control.reltol??control.abstol??1e-10,control.iterlim??(truncate&&!positiveWindow&&id==='binom'&&held.size==null?512:truncate&&!positiveWindow||censor?400:200));
     if (!result.error) {
       result.zero=zero;result.truncate=truncate;result.truncate_spec=truncate;result.truncate_estimated=truncate?.map(Number.isNaN)??[];result.censored=!!censor;
       if (truncate?.some(Number.isNaN)) {result.truncate=[...truncate];const data=Array.from(x);if(Number.isNaN(result.truncate[0]))result.truncate[0]=Math.min(...data);if(Number.isNaN(result.truncate[1]))result.truncate[1]=Math.max(...data);}

@@ -1,0 +1,2884 @@
+{
+  "cases": 104,
+  "differences": 2,
+  "results": [
+    {
+      "family": "tbinom",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "binom",
+      "modifier_arguments": {
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "prob": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "a": 0
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "a": 0
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 4,
+      "explicit_old_arguments": {
+        "b": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 5,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "b": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 6,
+      "explicit_old_arguments": {
+        "a": 0,
+        "b": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 7,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 8,
+      "explicit_old_arguments": {
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "size": 10,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 9,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 10,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 10,
+      "explicit_old_arguments": {
+        "a": 0,
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "size": 10,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 11,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "a": 0,
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 10,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 12,
+      "explicit_old_arguments": {
+        "b": 10,
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "size": 10,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 13,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "b": 10,
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 10,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 14,
+      "explicit_old_arguments": {
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "size": 10,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tbinom",
+      "subset": 15,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 10,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "a": 0,
+        "b": 10,
+        "size": 10
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "norm",
+      "modifier_arguments": {
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "mean": 0
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "mean": 0,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "sd": 1
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "sd": 1,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "mean": 0,
+        "sd": 1
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "mean": 0,
+        "sd": 1,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 4,
+      "explicit_old_arguments": {
+        "a": "-Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 5,
+      "explicit_old_arguments": {
+        "mean": 0,
+        "a": "-Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "mean": 0,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 6,
+      "explicit_old_arguments": {
+        "sd": 1,
+        "a": "-Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "sd": 1,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 7,
+      "explicit_old_arguments": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "mean": 0,
+        "sd": 1,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 8,
+      "explicit_old_arguments": {
+        "b": "Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 9,
+      "explicit_old_arguments": {
+        "mean": 0,
+        "b": "Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "mean": 0,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 10,
+      "explicit_old_arguments": {
+        "sd": 1,
+        "b": "Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "sd": 1,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 11,
+      "explicit_old_arguments": {
+        "mean": 0,
+        "sd": 1,
+        "b": "Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "mean": 0,
+        "sd": 1,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 12,
+      "explicit_old_arguments": {
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 13,
+      "explicit_old_arguments": {
+        "mean": 0,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "mean": 0,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 14,
+      "explicit_old_arguments": {
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "sd": 1,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tnorm",
+      "subset": 15,
+      "explicit_old_arguments": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "replacement": "norm",
+      "modifier_arguments": {
+        "mean": 0,
+        "sd": 1,
+        "truncate": ["-Inf", "Inf"]
+      },
+      "old_coefficients": {
+        "mean": 0,
+        "sd": 1,
+        "a": "-Inf",
+        "b": "Inf"
+      },
+      "mapped_old_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "new_default_coefficients": {
+        "mean": 0,
+        "sd": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tpois",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "pois",
+      "modifier_arguments": {
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "a": 0,
+        "b": 10
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1
+      },
+      "new_default_coefficients": {
+        "lambda": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tpois",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "lambda": 1
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "lambda": 1,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "a": 0,
+        "b": 10
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1
+      },
+      "new_default_coefficients": {
+        "lambda": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tpois",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "a": 0
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "a": 0,
+        "b": 10
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1
+      },
+      "new_default_coefficients": {
+        "lambda": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tpois",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "lambda": 1,
+        "a": 0
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "lambda": 1,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "a": 0,
+        "b": 10
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1
+      },
+      "new_default_coefficients": {
+        "lambda": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tpois",
+      "subset": 4,
+      "explicit_old_arguments": {
+        "b": 10
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "a": 0,
+        "b": 10
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1
+      },
+      "new_default_coefficients": {
+        "lambda": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tpois",
+      "subset": 5,
+      "explicit_old_arguments": {
+        "lambda": 1,
+        "b": 10
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "lambda": 1,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "a": 0,
+        "b": 10
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1
+      },
+      "new_default_coefficients": {
+        "lambda": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tpois",
+      "subset": 6,
+      "explicit_old_arguments": {
+        "a": 0,
+        "b": 10
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "a": 0,
+        "b": 10
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1
+      },
+      "new_default_coefficients": {
+        "lambda": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "tpois",
+      "subset": 7,
+      "explicit_old_arguments": {
+        "lambda": 1,
+        "a": 0,
+        "b": 10
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "lambda": 1,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "a": 0,
+        "b": 10
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1
+      },
+      "new_default_coefficients": {
+        "lambda": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zib",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "binom",
+      "modifier_arguments": {
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zib",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "size": 10,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zib",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "prob": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zib",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 10,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zib",
+      "subset": 4,
+      "explicit_old_arguments": {
+        "pi": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "pi": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zib",
+      "subset": 5,
+      "explicit_old_arguments": {
+        "size": 10,
+        "pi": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "size": 10,
+        "pi": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zib",
+      "subset": 6,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "pi": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zib",
+      "subset": 7,
+      "explicit_old_arguments": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 10,
+        "pi": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zinb",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zinb",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "size": 1
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "size": 1,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zinb",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "prob": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zinb",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 1,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zinb",
+      "subset": 4,
+      "explicit_old_arguments": {
+        "pi": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "pi": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zinb",
+      "subset": 5,
+      "explicit_old_arguments": {
+        "size": 1,
+        "pi": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "size": 1,
+        "pi": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zinb",
+      "subset": 6,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "pi": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zinb",
+      "subset": 7,
+      "explicit_old_arguments": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 1,
+        "pi": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zip",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "pois",
+      "modifier_arguments": {
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zip",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "lambda": 1
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "lambda": 1,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zip",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "pi": 0.5
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "pi": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zip",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "lambda": 1,
+        "pi": 0.5,
+        "zero": "inflated"
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "new_default_coefficients": {
+        "lambda": 1,
+        "pi": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zipf",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "zeta",
+      "modifier_arguments": {
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "N": 10,
+        "s": 1
+      },
+      "mapped_old_coefficients": {
+        "s": 1
+      },
+      "new_default_coefficients": {
+        "s": 2
+      },
+      "difference": true,
+      "reason": "The base zeta simulation default remains s=2; the old finite Zipf default was s=1. Supply s=1 explicitly to reproduce that data-free default law."
+    },
+    {
+      "family": "zipf",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "N": 10
+      },
+      "replacement": "zeta",
+      "modifier_arguments": {
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "N": 10,
+        "s": 1
+      },
+      "mapped_old_coefficients": {
+        "s": 1
+      },
+      "new_default_coefficients": {
+        "s": 2
+      },
+      "difference": true,
+      "reason": "The base zeta simulation default remains s=2; the old finite Zipf default was s=1. Supply s=1 explicitly to reproduce that data-free default law."
+    },
+    {
+      "family": "zipf",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "s": 1
+      },
+      "replacement": "zeta",
+      "modifier_arguments": {
+        "s": 1,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "N": 10,
+        "s": 1
+      },
+      "mapped_old_coefficients": {
+        "s": 1
+      },
+      "new_default_coefficients": {
+        "s": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zipf",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "N": 10,
+        "s": 1
+      },
+      "replacement": "zeta",
+      "modifier_arguments": {
+        "s": 1,
+        "truncate": [1, 10]
+      },
+      "old_coefficients": {
+        "N": 10,
+        "s": 1
+      },
+      "mapped_old_coefficients": {
+        "s": 1
+      },
+      "new_default_coefficients": {
+        "s": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmbinom",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "binom",
+      "modifier_arguments": {
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmbinom",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "size": 10,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmbinom",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "prob": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmbinom",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 10,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmbinom",
+      "subset": 4,
+      "explicit_old_arguments": {
+        "p0": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmbinom",
+      "subset": 5,
+      "explicit_old_arguments": {
+        "size": 10,
+        "p0": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "size": 10,
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmbinom",
+      "subset": 6,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmbinom",
+      "subset": 7,
+      "explicit_old_arguments": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 10,
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmgeom",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "geom",
+      "modifier_arguments": {
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmgeom",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "prob": 0.5
+      },
+      "replacement": "geom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmgeom",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "p0": 0.5
+      },
+      "replacement": "geom",
+      "modifier_arguments": {
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmgeom",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "replacement": "geom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmlogarithmic",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "lgser",
+      "modifier_arguments": {
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "theta": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "theta": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmlogarithmic",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "prob": 0.5
+      },
+      "replacement": "lgser",
+      "modifier_arguments": {
+        "theta": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "theta": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "theta": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmlogarithmic",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "p0": 0.5
+      },
+      "replacement": "lgser",
+      "modifier_arguments": {
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "theta": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "theta": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmlogarithmic",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "replacement": "lgser",
+      "modifier_arguments": {
+        "theta": 0.5,
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "theta": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "theta": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmnbinom",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmnbinom",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "size": 1
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "size": 1,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmnbinom",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "prob": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmnbinom",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 1,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmnbinom",
+      "subset": 4,
+      "explicit_old_arguments": {
+        "p0": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmnbinom",
+      "subset": 5,
+      "explicit_old_arguments": {
+        "size": 1,
+        "p0": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "size": 1,
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmnbinom",
+      "subset": 6,
+      "explicit_old_arguments": {
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmnbinom",
+      "subset": 7,
+      "explicit_old_arguments": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 1,
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmpois",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "pois",
+      "modifier_arguments": {
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmpois",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "lambda": 1
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "lambda": 1,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmpois",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "p0": 0.5
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "zmpois",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "lambda": 1,
+        "p0": 0.5,
+        "zero": "modified"
+      },
+      "old_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "new_default_coefficients": {
+        "lambda": 1,
+        "p0": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztbinom",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "binom",
+      "modifier_arguments": {
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztbinom",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "size": 10
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "size": 10,
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztbinom",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "prob": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztbinom",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "replacement": "binom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 10,
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 10,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztgeom",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "geom",
+      "modifier_arguments": {
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "prob": 0.5
+      },
+      "mapped_old_coefficients": {
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztgeom",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "prob": 0.5
+      },
+      "replacement": "geom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "prob": 0.5
+      },
+      "mapped_old_coefficients": {
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztnbinom",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztnbinom",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "size": 1
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "size": 1,
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztnbinom",
+      "subset": 2,
+      "explicit_old_arguments": {
+        "prob": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztnbinom",
+      "subset": 3,
+      "explicit_old_arguments": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "replacement": "nbinom",
+      "modifier_arguments": {
+        "prob": 0.5,
+        "size": 1,
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "mapped_old_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "new_default_coefficients": {
+        "size": 1,
+        "prob": 0.5
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztpois",
+      "subset": 0,
+      "explicit_old_arguments": {},
+      "replacement": "pois",
+      "modifier_arguments": {
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "lambda": 1
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1
+      },
+      "new_default_coefficients": {
+        "lambda": 1
+      },
+      "difference": false,
+      "reason": ""
+    },
+    {
+      "family": "ztpois",
+      "subset": 1,
+      "explicit_old_arguments": {
+        "lambda": 1
+      },
+      "replacement": "pois",
+      "modifier_arguments": {
+        "lambda": 1,
+        "zero": "truncated"
+      },
+      "old_coefficients": {
+        "lambda": 1
+      },
+      "mapped_old_coefficients": {
+        "lambda": 1
+      },
+      "new_default_coefficients": {
+        "lambda": 1
+      },
+      "difference": false,
+      "reason": ""
+    }
+  ]
+}

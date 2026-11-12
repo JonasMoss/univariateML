@@ -1,5 +1,6 @@
 import type {GeneratedAPI} from './family-types';
 export interface Modifiers { zero?: 'none' | 'truncated' | 'modified' | 'inflated'; truncate?: [number, number] }
+export interface ModifierControls extends Modifiers { reltol?: number; iterlim?: number }
 export interface IntervalData {lower: Float64Array; upper: Float64Array}
 export interface Tail extends Modifiers { lower?: boolean; log?: boolean }
 export interface Fit<P> { estimates: P; logLik: number; iterations: number; status: 'Ok'; fixed: (keyof P)[]; warnings: string[]; restricted: Record<string, string>; [field: string]: unknown }
@@ -28,7 +29,7 @@ export interface Evaluation<A extends number[] = number[]> {
 }
 export interface Family<P, A extends number[], C> extends Evaluation<A> {
   vcov(x: Float64Array, fit: Fit<P>, type?: 'sandwich' | 'observed'): Covariance<P>;
-  fit(x: Float64Array | IntervalData, held?: Partial<{[K in keyof P]: number | null}> & {p0?: number | null; pi?: number | null}, control?: C & Modifiers): Fit<P & {p0?: number; pi?: number}>;
+  fit(x: Float64Array | IntervalData, held?: Partial<{[K in keyof P]: number | null}> & {p0?: number | null; pi?: number | null}, control?: C extends Record<string, never> ? ModifierControls : C & ModifierControls): Fit<P & {p0?: number; pi?: number}>;
 }
 export default function create(options?: Record<string, unknown>): Promise<Record<string, Evaluation> & GeneratedAPI>;
 /** Generated family IDs with d/p/q/r coverage. */

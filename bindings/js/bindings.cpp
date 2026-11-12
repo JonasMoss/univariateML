@@ -95,7 +95,13 @@ emscripten::val fit_modifier_output(const std::string& family,emscripten::val lo
   if(censored)return fit_output(umvl_binding::fit_censored(family,{{lo.data(),lo.size()},{hi.data(),hi.size()}},holds,tol,maxit));
   return fit_output(umvl_binding::fit_modifier(family,{lo.data(),lo.size()},holds,zero,window,a,b,tol,maxit));
 }
+emscripten::val zeta_window_output(const std::string& kind,emscripten::val values,int N,double s,bool lower,bool log) {
+  auto x=input(values);
+  for(auto& v:x)v=cppunivariate::zeta_window_eval(kind[0],v,N,s,lower,log);
+  return output(x);
+}
 EMSCRIPTEN_BINDINGS(univariateML) {
+  emscripten::function("zetaWindow", &zeta_window_output);
   emscripten::function("vcov", &vcov_output);
   emscripten::function("fitModifier", &fit_modifier_output);
 #include "generated/exports.hpp"

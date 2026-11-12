@@ -35,7 +35,7 @@ test_that("zmbinom agrees with a multi-start reference-density oracle", {
 
 test_that("zmbinom declares its infinite-size escape", {
  x <- c(0,0,1,1,1,2,3,7,12)
- expect_error(mlzmbinom(x, size = NULL), "Use `mlzmpois`")
+ expect_error(mlzmbinom(x, size = NULL), "Use `mlpois.*zero = .modified")
  expect_s3_class(mlzmbinom(x,size=20), "univariateML")
 })
 
@@ -99,7 +99,7 @@ test_that("zmbinom: free-size held-mixture fits and Poisson escapes", {
   oracle<-max(vapply(seq(max(x),50),function(k)max(c(ll(k,0),ll(k,1),vapply(c(.1,.5,.9),function(start)-optim(start,function(p)-ll(k,p),method="L-BFGS-B",lower=1e-8,upper=1-1e-8)$value,0.))),0.))
   expect_equal(attr(f,"logLik"),oracle,tolerance=1e-6)
  }
- expect_error(mlzmbinom(c(1,1,1,2,3,7,12),size=NULL,p0=.2),"mlzmpois")
+ expect_error(mlzmbinom(c(1,1,1,2,3,7,12),size=NULL,p0=.2),"mlpois.*zero = .modified")
  f<-mlzmbinom(rep(0,3),size=8,prob=.4,p0=.6)
  expect_identical(unname(f[c("prob","p0")]),c(.4,.6))
  expect_error(mlzmbinom(1:3,size=8,prob=.4,iterlim=0))
@@ -141,7 +141,7 @@ test_that("zmbinom: free size and probability agree with a reference-density ora
     # mlzmpois", not a failure); accept either outcome.
     fit <- tryCatch(suppressWarnings(mlzmbinom(x, size = NULL)), error = identity)
     if (inherits(fit, "error")) {
-      expect_match(conditionMessage(fit), "mlzmpois")
+      expect_match(conditionMessage(fit), "mlpois.*zero = .modified")
       next
     }
     expect_true(is.finite(attr(fit, "logLik")))

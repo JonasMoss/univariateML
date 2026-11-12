@@ -76,7 +76,7 @@ key_references:
 modifiers:
   zero_exception: true
   zero:
-    modified: {status: not-implemented, certified: "unknown", note: "zmlogarithmic remains until the exception is routed."}
+    modified: {status: implemented, certified: "yes", note: "Logarithmic positive law with theta = prob; attained theta = 0 hurdle extension."}
 
 ---
 
@@ -114,3 +114,5 @@ Empty or invalid input carries a non-success status. Degenerate samples depend
 on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+The zero-modified exception includes `theta = 0`, the attained law on zero and one, and uses `p0` for the total zero probability. Positive-data fitting retains the logarithmic mean equation; all-zero data leave theta unidentified.

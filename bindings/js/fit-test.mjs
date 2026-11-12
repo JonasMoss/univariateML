@@ -275,3 +275,64 @@ test('conditional tails preserve tiny log complements and refuse unstable normal
   assert.ok(Math.abs(actual/expected-1)<1e-10);
   assert.throws(()=>api.geom.d(new Float64Array([1e9]),[.3],{truncate:[1e9,1e9+10]}),/normalization.*floating-point accuracy/);
 });
+
+test('all remaining retirement routes preserve held coefficients and widened domains', async () => {
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi();
+  const x=new Float64Array([1,1,2,3,3]);
+  const old=api.tbinom.fit(x,{a:0,b:5}),fit=api.binom.fit(x,{}, {truncate:[1,5]});
+  assert.equal(fit.estimates.size,old.estimates.size);
+  assert.equal(fit.estimates.prob,old.estimates.prob);
+  assert.equal(fit.certified,old.certified);
+  const counts=new Float64Array([0,1,1,2,4]);
+  const log=api.lgser.fit(counts,{}, {zero:'modified'}),legacy=api.zmlogarithmic.fit(counts);
+  assert.equal(log.estimates.theta,legacy.estimates.prob);
+  assert.equal(log.estimates.p0,legacy.estimates.p0);
+  assert.deepEqual(api.lgser.d(counts,[log.estimates.theta,log.estimates.p0],{zero:'modified'}),
+    api.zmlogarithmic.d(counts,[legacy.estimates.prob,legacy.estimates.p0]));
+  const data=new Float64Array([1,2,3,4,4,4]);
+  const z=api.zeta.fit(data,{}, {truncate:[1,4]});
+  assert.ok(z.estimates.s<0);
+  const d=api.zeta.d(new Float64Array([1,2,3,4]),[z.estimates.s],{truncate:[1,4]});
+  assert.ok(Math.abs(Array.from(d).reduce((a,b)=>a+b,0)-1)<1e-12);
+  assert.deepEqual(Array.from(api.zeta.q(new Float64Array([0,1]),[-2],{truncate:[1,4]})),[1,4]);
+});
+
+test('binomial window iteration limits reach free and held size',async()=>{
+  const {default:createApi}=await import('./index.mjs');
+  const api=await createApi(),x=new Float64Array([1,1,2,3,3]);
+  assert.throws(()=>api.binom.fit(x,{}, {truncate:[1,5],iterlim:1}),/budget|accuracy|precision/);
+  assert.throws(()=>api.binom.fit(x,{size:12}, {truncate:[1,5],iterlim:1}),/budget|accuracy|precision/);
+});
+
+test('held windows and extreme finite zeta exponents bypass irrelevant searches',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const p=api.pois.fit(new Float64Array([0,0]),{lambda:1e300},{truncate:[0,Infinity],iterlim:1});
+  assert.equal(p.logLik,-2e300);
+  const z=api.zeta.fit(new Float64Array([1,1]),{s:1e308},{truncate:[1,2147483647]});
+  assert.equal(z.estimates.s,1e308);assert.ok(z.logLik===0);
+});
+
+test('finite zeta statistics retain accuracy for large uniform histograms',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const x=new Float64Array(4000000);for(let k=0;k<4;k++)x.fill(k+1,k*1000000,(k+1)*1000000);
+  const fit=api.zeta.fit(x,{}, {truncate:[1,4]});
+  assert.ok(Math.abs(fit.estimates.s)<=1e-10);
+  assert.ok(Math.abs(fit.logLik+x.length*Math.log(4))<=1e-10*x.length*Math.log(4));
+});
+
+test('explicit 512 work units retain the controlled binomial window solver',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const fit=api.binom.fit(new Float64Array([0,1,2,3]),{size:1e308},{truncate:[0,Infinity],iterlim:512});
+  assert.ok(Math.abs(fit.estimates.prob/(1.5e-308)-1)<1e-10);
+  assert.ok(Math.abs(fit.logLik-(6*Math.log(1.5)-6-Math.log(12)))<1e-10);
+});
+
+test('finite zeta rounded score roots justify the requested tolerance',async()=>{
+  const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  const x=new Float64Array([1,2,3,4]);let fit;
+  try {fit=api.zeta.fit(x,{}, {truncate:[1,4],reltol:1e-20});}
+  catch(error) {assert.match(error.message,/accuracy/);}
+  if(fit)assert.ok(Math.abs(fit.estimates.s)<=1e-20);
+  assert.equal(api.zeta.fit(x,{s:0},{truncate:[1,4],reltol:1e-20}).estimates.s,0);
+});

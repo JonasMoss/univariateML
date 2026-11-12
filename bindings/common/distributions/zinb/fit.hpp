@@ -22,7 +22,7 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
   if (fit.status == cppunivariate::ZinbStatus::InvalidInput)
     return fail("ZINB requires nonempty nonnegative count data, positive reltol and iterlim, prob in (0,1], pi in [0,1], and compatible holds");
   if (fit.status == cppunivariate::ZinbStatus::ZipLimit)
-    return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a zero-inflated Poisson. Use `mlzip` instead."),fit.stop_detail,"limit",{"size","prob","pi"});
+    return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a zero-inflated Poisson. Use `mlpois(x, zero = \"inflated\")` instead."),fit.stop_detail,"limit",{"size","prob","pi"});
   if (fit.status == cppunivariate::ZinbStatus::PoissonLimit)
     return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a Poisson. Use `mlpois` instead."),fit.stop_detail,"limit",{"size","prob","pi"});
   if (fit.status != cppunivariate::ZinbStatus::Ok) {

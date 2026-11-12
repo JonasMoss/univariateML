@@ -32,7 +32,7 @@ test_that("ztbinom agrees with a multi-start reference-density oracle", {
 
 test_that("ztbinom declares its infinite-size escape", {
  x <- c(1,1,1,2,3,7,12)
- expect_error(mlztbinom(x, size = NULL), "Use `mlztpois`")
+ expect_error(mlztbinom(x, size = NULL), "Use `mlpois.*zero = .truncated")
  expect_s3_class(mlztbinom(x,size=20), "univariateML")
 })
 
@@ -112,7 +112,7 @@ test_that("ztbinom: free size and probability agree with a reference-density ora
     # mlztpois", not a failure); accept either outcome.
     fit <- tryCatch(mlztbinom(x, size = NULL), error = identity)
     if (inherits(fit, "error")) {
-      expect_match(conditionMessage(fit), "mlztpois")
+      expect_match(conditionMessage(fit), "mlpois.*zero = .truncated")
       next
     }
     expect_true(is.finite(attr(fit, "logLik")))

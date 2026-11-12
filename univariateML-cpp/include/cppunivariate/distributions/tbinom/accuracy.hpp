@@ -9,13 +9,13 @@ namespace cppunivariate { namespace tbinom_detail {
 // Conditional mean minus the empirical mean, centred at the mode so a
 // large integer observation never masks a small score by mean subtraction.
 struct AccuracyScore { ExtendedReal value,margin; };
-inline AccuracyScore accuracy_score(ispan x,double N,double L,double U,double p) {
+inline AccuracyScore accuracy_score(ispan x,double N,double L,double U,double p,int maxit=512) {
   const ExtendedReal odds=static_cast<ExtendedReal>(p)/(1-static_cast<ExtendedReal>(p));
   const double mode=std::floor(std::max(L,std::min(U,(N+1)*p)));
   ExtendedReal total=1,offset=0,absolute=0,target=0;
   for(int v:x)target+=static_cast<ExtendedReal>(v)-mode;
   target/=x.size();
-  std::int64_t remaining=enumeration_budget(512);
+  std::int64_t remaining=enumeration_budget(maxit);
   for(int direction:{-1,1}) {
     double k=mode;ExtendedReal w=1;
     while((direction<0 && k>L)||(direction>0 && k<U)) {
@@ -31,20 +31,20 @@ inline AccuracyScore accuracy_score(ispan x,double N,double L,double U,double p)
   }
   return {offset/total-target,128*std::numeric_limits<ExtendedReal>::epsilon()*(1+std::abs(target)+absolute/total)};
 }
-inline bool fallback_accuracy(ispan x,double N,double a,double b,double& p) {
+inline bool fallback_accuracy(ispan x,double N,double a,double b,double& p,double tol=1e-10,int maxit=512) {
   if(p==0||p==1)return true;
   const double L=std::max(0.,std::floor(a)+1),U=std::min(N,std::floor(b));
-  double lo=0,hi=1;constexpr double tol=1e-10;
+  double lo=0,hi=1;
   // The binomial conditional mean is strictly increasing in probability.
-  for(int j=0;j<512;++j) {
+  for(std::int64_t j=0;j<solver_budget(maxit);++j) {
     const double mid=lo+(hi-lo)/2;
     if(hi-lo<=tol/32*std::max(lo,std::numeric_limits<double>::min())) {
       if(!(p>=lo&&p<=hi))p=mid;
-      const auto l=accuracy_score(x,N,L,U,std::max(0.,p-tol*p/16));
-      const auto h=accuracy_score(x,N,L,U,std::min(1.,p+tol*p/16));
+      const auto l=accuracy_score(x,N,L,U,std::max(0.,p-tol*p/16),maxit);
+      const auto h=accuracy_score(x,N,L,U,std::min(1.,p+tol*p/16),maxit);
       return l.value+l.margin<0 && h.value-h.margin>0;
     }
-    const auto score=accuracy_score(x,N,L,U,mid);
+    const auto score=accuracy_score(x,N,L,U,mid,maxit);
     if(!std::isfinite(score.value))return false;
     if(score.value<0)lo=mid;else hi=mid;
   }

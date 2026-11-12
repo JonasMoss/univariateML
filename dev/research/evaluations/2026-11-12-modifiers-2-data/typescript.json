@@ -1,0 +1,10 @@
+{
+  "before_exit": 2,
+  "before_diagnostics": "dev/research/evaluations/2026-11-12-modifiers-2-data/modifier-api-types.ts(4,22): error TS2345: Argument of type '{ zero: \"modified\"; }' is not assignable to parameter of type 'Record<string, never> & ModifierControls'.\n  Type '{ zero: \"modified\"; }' is not assignable to type 'Record<string, never>'.\n    Property 'zero' is incompatible with index signature.\n      Type '\"modified\"' is not assignable to type 'never'.\ndev/research/evaluations/2026-11-12-modifiers-2-data/modifier-api-types.ts(5,21): error TS2345: Argument of type '{ truncate: [number, number]; iterlim: number; }' is not assignable to parameter of type 'Record<string, never> & ModifierControls'.\n  Type '{ truncate: [number, number]; iterlim: number; }' is not assignable to type 'Record<string, never>'.\n    Property 'truncate' is incompatible with index signature.\n      Type '[number, number]' is not assignable to type 'never'.\n",
+  "after_exit": 0,
+  "command": "site/node_modules/.bin/tsc --noEmit --strict --target es2022 --module esnext --moduleResolution bundler dev/research/evaluations/2026-11-12-modifiers-2-data/modifier-api-types.ts",
+  "after_build_exit": 0,
+  "after_build_diagnostics": "",
+  "after_final_build_exit": 0,
+  "after_final_build_diagnostics": ""
+}

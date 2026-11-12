@@ -1,0 +1,84 @@
+[
+  {
+    "mode": "standard",
+    "rows": [
+      {
+        "n": 4000,
+        "status": 0,
+        "computed": -4.547473508864641e-13,
+        "naive_ablation": 4.547473508864641e-13,
+        "reference": 0
+      },
+      {
+        "n": 400000,
+        "status": 0,
+        "computed": -4.547473508864641e-13,
+        "naive_ablation": -4.547473508864641e-13,
+        "reference": 0
+      },
+      {
+        "n": 2000000,
+        "status": 0,
+        "computed": -4.547473508864641e-13,
+        "naive_ablation": -4.547473508864641e-13,
+        "reference": 0
+      },
+      {
+        "n": 4000000,
+        "status": 0,
+        "computed": -4.547473508864641e-13,
+        "naive_ablation": -1.141415850725025e-10,
+        "reference": 0
+      }
+    ],
+    "doctest_exit": 0,
+    "doctest_summary": [
+      "[doctest] run with \"--help\" for options",
+      "===============================================================================",
+      "[doctest] test cases:    12 |    12 passed | 0 failed | 0 skipped",
+      "[doctest] assertions: 16174 | 16174 passed | 0 failed |",
+      "[doctest] Status: SUCCESS!"
+    ]
+  },
+  {
+    "mode": "no-long-double",
+    "rows": [
+      {
+        "n": 4000,
+        "status": 0,
+        "computed": -4.547473508864641e-13,
+        "naive_ablation": 4.547473508864641e-13,
+        "reference": 0
+      },
+      {
+        "n": 400000,
+        "status": 0,
+        "computed": -4.547473508864641e-13,
+        "naive_ablation": -4.547473508864641e-13,
+        "reference": 0
+      },
+      {
+        "n": 2000000,
+        "status": 0,
+        "computed": -4.547473508864641e-13,
+        "naive_ablation": -4.547473508864641e-13,
+        "reference": 0
+      },
+      {
+        "n": 4000000,
+        "status": 0,
+        "computed": -4.547473508864641e-13,
+        "naive_ablation": -1.141415850725025e-10,
+        "reference": 0
+      }
+    ],
+    "doctest_exit": 0,
+    "doctest_summary": [
+      "[doctest] run with \"--help\" for options",
+      "===============================================================================",
+      "[doctest] test cases:    12 |    12 passed | 0 failed | 0 skipped",
+      "[doctest] assertions: 16174 | 16174 passed | 0 failed |",
+      "[doctest] Status: SUCCESS!"
+    ]
+  }
+]

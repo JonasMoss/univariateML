@@ -14,3 +14,10 @@ Rcpp::List ml_modifier_(std::string family,Rcpp::NumericVector lower,Rcpp::Numer
   if(censored)return common_result(umvl_binding::fit_censored(family,{lo,hi},holds,tol,maxit));
   return common_result(umvl_binding::fit_modifier(family,lo,holds,zero,window,a,b,tol,maxit));
 }
+// [[Rcpp::export]]
+Rcpp::NumericVector ml_zeta_window_(std::string kind,Rcpp::NumericVector x,double N,double s,bool lower=true,bool log=false) {
+  Rcpp::NumericVector out(x.size());
+  if(!std::isfinite(N)||N<1||N>2147483647.||N!=std::floor(N))Rcpp::stop("finite zeta window requires integer N in [1,INT_MAX]");
+  for(int i=0;i<x.size();++i)out[i]=cppunivariate::zeta_window_eval(kind[0],x[i],static_cast<int>(N),s,lower,log);
+  return out;
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "family": "tbinom",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 8656
+  },
+  {
+    "family": "tnorm",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 110
+  },
+  {
+    "family": "tpois",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 21
+  },
+  {
+    "family": "zib",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 554
+  },
+  {
+    "family": "zinb",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 29
+  },
+  {
+    "family": "zip",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 31
+  },
+  {
+    "family": "zipf",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 9
+  },
+  {
+    "family": "zmbinom",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 124
+  },
+  {
+    "family": "zmgeom",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 12
+  },
+  {
+    "family": "zmlogarithmic",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 13
+  },
+  {
+    "family": "zmnbinom",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 26
+  },
+  {
+    "family": "zmpois",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 12
+  },
+  {
+    "family": "ztbinom",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 974
+  },
+  {
+    "family": "ztgeom",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 9
+  },
+  {
+    "family": "ztnbinom",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 30
+  },
+  {
+    "family": "ztpois",
+    "baseline": "fe17e3b8",
+    "exit": 0,
+    "calls": 9
+  }
+]

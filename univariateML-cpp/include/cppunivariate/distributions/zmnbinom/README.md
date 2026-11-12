@@ -127,7 +127,7 @@ The positive-count fit delegates to the [ztnbinom certificate](../ztnbinom/READM
 
 Supply any coefficient to hold it; `NULL` estimates it. Fractional nonnegative sizes, including `size = 0`, are allowed. All-zero samples warn that base parameters are unidentified. Supplied values are preserved, and free base coefficients use the representatives `size = 1`, `prob = 0.5`. With free zero probability they return `p0 = 1`. A free fit with positives all equal to one warns that `mlbinom(x, size = 1)` fits the attained two-point law exactly.
 
-The infinite-size report stops with advice to use `mlzmpois`. A search that exhausts floating-point resolution or its certificate budget also stops, preserving the delegated diagnostic and likelihood bounds.
+The infinite-size report stops with advice to use `mlpois(x, zero = "modified")`. A search that exhausts floating-point resolution or its certificate budget also stops, preserving the delegated diagnostic and likelihood bounds.
 
 ## Decision history
 

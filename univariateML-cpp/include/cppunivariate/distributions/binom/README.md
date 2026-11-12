@@ -191,15 +191,10 @@ modifiers:
         - pi
   truncate:
     status: implemented
-    certified: 'yes'
-    requires_held:
-    - size
+    certified: 'partial'
     domain_bounded: parent parameter domain
-    note: Concave conditional exponential family; size held only.
-    holds:
-    - held: []
-      status: not-implemented
-      reason: General truncation requires size held; zero truncation also supports size free.
+    note: Fixed-size concavity; free-size retained-support and Poisson-face certificates, with uncertified search fallback.
+
     limits:
     - name: point mass at lowest support point
       firmness: proved

@@ -1,0 +1,24 @@
+[
+  {
+    "mode": "standard",
+    "exit": 0,
+    "summary": [
+      "[doctest] run with \"--help\" for options",
+      "===============================================================================",
+      "[doctest] test cases:   37 |   37 passed | 0 failed | 0 skipped",
+      "[doctest] assertions: 4806 | 4806 passed | 0 failed |",
+      "[doctest] Status: SUCCESS!"
+    ]
+  },
+  {
+    "mode": "no-long-double",
+    "exit": 0,
+    "summary": [
+      "[doctest] run with \"--help\" for options",
+      "===============================================================================",
+      "[doctest] test cases:   37 |   37 passed | 0 failed | 0 skipped",
+      "[doctest] assertions: 4806 | 4806 passed | 0 failed |",
+      "[doctest] Status: SUCCESS!"
+    ]
+  }
+]

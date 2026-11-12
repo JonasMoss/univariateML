@@ -32,7 +32,7 @@ test_that("ztnbinom agrees with a multi-start reference-density oracle", {
 
 test_that("ztnbinom declares its infinite-size escape", {
  x <- c(1,2,2,3,3,3)
- expect_error(mlztnbinom(x), "Use `mlztpois`")
+ expect_error(mlztnbinom(x), "Use `mlpois.*zero = .truncated")
  expect_s3_class(mlztnbinom(x,size=20), "univariateML")
 })
 
