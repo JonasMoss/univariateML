@@ -1,0 +1,79 @@
+[
+  {
+    "command": "cpp-test",
+    "machine": "simbox",
+    "exit": 75,
+    "seconds": 8.061316484003328,
+    "log": "final-cpp-test-simbox.log"
+  },
+  {
+    "command": "cpp-test",
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 5283.273218542978,
+    "log": "final-cpp-test-local.log"
+  },
+  {
+    "command": "test",
+    "machine": "simbox",
+    "exit": 75,
+    "seconds": 8.065184903971385,
+    "log": "final-test-simbox.log"
+  },
+  {
+    "command": "test",
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 2898.1497539749835,
+    "log": "final-test-local.log"
+  },
+  {
+    "command": "test-full",
+    "machine": "simbox",
+    "exit": 75,
+    "seconds": 8.065185557992663,
+    "log": "final-test-full-simbox.log"
+  },
+  {
+    "command": "test-full",
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 3058.7657165580313,
+    "log": "final-test-full-local.log"
+  },
+  {
+    "command": "cpp-test-no-long-double",
+    "machine": "simbox",
+    "exit": 75,
+    "seconds": 8.056354689993896,
+    "log": "final-cpp-test-no-long-double-simbox.log"
+  },
+  {
+    "command": "cpp-test-no-long-double",
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 3157.482902289019,
+    "log": "final-cpp-test-no-long-double-local.log"
+  },
+  {
+    "command": "js-build",
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 144.0640317160287,
+    "log": "final-js-build-local.log"
+  },
+  {
+    "command": "js-test",
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 365.04148504900513,
+    "log": "final-js-test-local.log"
+  },
+  {
+    "command": "site-check",
+    "machine": "workstation",
+    "exit": 0,
+    "seconds": 221.318131168955,
+    "log": "final-site-check-local.log"
+  }
+]

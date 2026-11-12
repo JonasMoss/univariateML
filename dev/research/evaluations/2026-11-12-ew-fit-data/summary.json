@@ -1,0 +1,457 @@
+{
+  "held-study": {
+    "fits": 96,
+    "statuses": {
+      "Ok": 74,
+      "IterationFailure": 5,
+      "PowerBoundaryTied": 2,
+      "PowerBoundary": 3,
+      "Unbounded": 12
+    },
+    "holds": [
+      {
+        "mask": 0,
+        "statuses": {
+          "Ok uncertified": 5,
+          "IterationFailure uncertified": 4,
+          "Unbounded certified": 3
+        },
+        "median_ms": 35.747288,
+        "max_ms": 106.587618
+      },
+      {
+        "mask": 1,
+        "statuses": {
+          "Ok uncertified": 5,
+          "PowerBoundaryTied certified": 2,
+          "PowerBoundary certified": 3,
+          "Unbounded certified": 2
+        },
+        "median_ms": 0.0037,
+        "max_ms": 35.927659
+      },
+      {
+        "mask": 2,
+        "statuses": {
+          "Ok uncertified": 8,
+          "Unbounded certified": 3,
+          "IterationFailure uncertified": 1
+        },
+        "median_ms": 0.9914645,
+        "max_ms": 17.384291
+      },
+      {
+        "mask": 3,
+        "statuses": {
+          "Ok certified": 12
+        },
+        "median_ms": 0.2335895,
+        "max_ms": 4.365836
+      },
+      {
+        "mask": 4,
+        "statuses": {
+          "Ok certified": 9,
+          "Unbounded certified": 3
+        },
+        "median_ms": 0.634773,
+        "max_ms": 9.754266
+      },
+      {
+        "mask": 5,
+        "statuses": {
+          "Ok certified": 11,
+          "Unbounded certified": 1
+        },
+        "median_ms": 0.5361575000000001,
+        "max_ms": 9.070445
+      },
+      {
+        "mask": 6,
+        "statuses": {
+          "Ok certified": 12
+        },
+        "median_ms": 0.1742485,
+        "max_ms": 3.443241
+      },
+      {
+        "mask": 7,
+        "statuses": {
+          "Ok certified": 12
+        },
+        "median_ms": 0.026605999999999998,
+        "max_ms": 0.427915
+      }
+    ]
+  },
+  "held-study-budget1000": {
+    "fits": 96,
+    "statuses": {
+      "Ok": 74,
+      "IterationFailure": 5,
+      "PowerBoundaryTied": 2,
+      "PowerBoundary": 3,
+      "Unbounded": 12
+    },
+    "holds": [
+      {
+        "mask": 0,
+        "statuses": {
+          "Ok uncertified": 5,
+          "IterationFailure uncertified": 4,
+          "Unbounded certified": 3
+        },
+        "median_ms": 4892.1456465,
+        "max_ms": 16041.195003
+      },
+      {
+        "mask": 1,
+        "statuses": {
+          "Ok uncertified": 5,
+          "PowerBoundaryTied certified": 2,
+          "PowerBoundary certified": 3,
+          "Unbounded certified": 2
+        },
+        "median_ms": 0.0030575,
+        "max_ms": 28.859433
+      },
+      {
+        "mask": 2,
+        "statuses": {
+          "Ok uncertified": 8,
+          "Unbounded certified": 3,
+          "IterationFailure uncertified": 1
+        },
+        "median_ms": 1.3773905,
+        "max_ms": 11.518725
+      },
+      {
+        "mask": 3,
+        "statuses": {
+          "Ok certified": 12
+        },
+        "median_ms": 0.2485985,
+        "max_ms": 3.27557
+      },
+      {
+        "mask": 4,
+        "statuses": {
+          "Ok certified": 9,
+          "Unbounded certified": 3
+        },
+        "median_ms": 0.5508415,
+        "max_ms": 7.809497
+      },
+      {
+        "mask": 5,
+        "statuses": {
+          "Ok certified": 11,
+          "Unbounded certified": 1
+        },
+        "median_ms": 0.5069395,
+        "max_ms": 7.51845
+      },
+      {
+        "mask": 6,
+        "statuses": {
+          "Ok certified": 12
+        },
+        "median_ms": 0.156323,
+        "max_ms": 3.022235
+      },
+      {
+        "mask": 7,
+        "statuses": {
+          "Ok certified": 12
+        },
+        "median_ms": 0.0250925,
+        "max_ms": 0.382772
+      }
+    ]
+  },
+  "held-study-double": {
+    "fits": 96,
+    "statuses": {
+      "Ok": 73,
+      "IterationFailure": 5,
+      "PowerBoundaryTied": 2,
+      "PowerBoundary": 3,
+      "Unbounded": 12,
+      "AccuracyFailure": 1
+    },
+    "holds": [
+      {
+        "mask": 0,
+        "statuses": {
+          "Ok uncertified": 4,
+          "IterationFailure uncertified": 4,
+          "Unbounded certified": 3,
+          "AccuracyFailure uncertified": 1
+        },
+        "median_ms": 3.7241295,
+        "max_ms": 11.959231
+      },
+      {
+        "mask": 1,
+        "statuses": {
+          "Ok uncertified": 5,
+          "PowerBoundaryTied certified": 2,
+          "PowerBoundary certified": 3,
+          "Unbounded certified": 2
+        },
+        "median_ms": 0.0018005,
+        "max_ms": 3.369747
+      },
+      {
+        "mask": 2,
+        "statuses": {
+          "Ok uncertified": 8,
+          "Unbounded certified": 3,
+          "IterationFailure uncertified": 1
+        },
+        "median_ms": 0.0844295,
+        "max_ms": 1.252119
+      },
+      {
+        "mask": 3,
+        "statuses": {
+          "Ok certified": 12
+        },
+        "median_ms": 0.0249535,
+        "max_ms": 0.388159
+      },
+      {
+        "mask": 4,
+        "statuses": {
+          "Ok certified": 9,
+          "Unbounded certified": 3
+        },
+        "median_ms": 0.071053,
+        "max_ms": 0.858865
+      },
+      {
+        "mask": 5,
+        "statuses": {
+          "Ok certified": 11,
+          "Unbounded certified": 1
+        },
+        "median_ms": 0.054947499999999996,
+        "max_ms": 0.851418
+      },
+      {
+        "mask": 6,
+        "statuses": {
+          "Ok certified": 12
+        },
+        "median_ms": 0.019327,
+        "max_ms": 0.301312
+      },
+      {
+        "mask": 7,
+        "statuses": {
+          "Ok certified": 12
+        },
+        "median_ms": 0.0037895,
+        "max_ms": 0.044388
+      }
+    ]
+  },
+  "archive": {
+    "fits": 328,
+    "statuses": {
+      "Ok": 265,
+      "IterationFailure": 33,
+      "PowerBoundaryTied": 3,
+      "PowerBoundary": 15,
+      "Unbounded": 12
+    },
+    "holds": [
+      {
+        "mask": 0,
+        "statuses": {
+          "Ok uncertified": 17,
+          "IterationFailure uncertified": 21,
+          "Unbounded certified": 3
+        },
+        "median_ms": 40.285201,
+        "max_ms": 300.461779
+      },
+      {
+        "mask": 1,
+        "statuses": {
+          "Ok uncertified": 21,
+          "PowerBoundaryTied certified": 3,
+          "PowerBoundary certified": 15,
+          "Unbounded certified": 2
+        },
+        "median_ms": 1.607522,
+        "max_ms": 33.602993
+      },
+      {
+        "mask": 2,
+        "statuses": {
+          "Ok uncertified": 28,
+          "Unbounded certified": 3,
+          "IterationFailure uncertified": 10
+        },
+        "median_ms": 1.641403,
+        "max_ms": 45.03003
+      },
+      {
+        "mask": 3,
+        "statuses": {
+          "Ok certified": 39,
+          "IterationFailure uncertified": 2
+        },
+        "median_ms": 0.345588,
+        "max_ms": 3.745169
+      },
+      {
+        "mask": 4,
+        "statuses": {
+          "Ok certified": 38,
+          "Unbounded certified": 3
+        },
+        "median_ms": 1.003608,
+        "max_ms": 9.847665
+      },
+      {
+        "mask": 5,
+        "statuses": {
+          "Ok certified": 40,
+          "Unbounded certified": 1
+        },
+        "median_ms": 0.77176,
+        "max_ms": 9.045247
+      },
+      {
+        "mask": 6,
+        "statuses": {
+          "Ok certified": 41
+        },
+        "median_ms": 0.233214,
+        "max_ms": 14.794224
+      },
+      {
+        "mask": 7,
+        "statuses": {
+          "Ok certified": 41
+        },
+        "median_ms": 0.038301,
+        "max_ms": 0.507224
+      }
+    ]
+  },
+  "archive-double": {
+    "fits": 328,
+    "statuses": {
+      "Ok": 263,
+      "IterationFailure": 33,
+      "PowerBoundaryTied": 3,
+      "PowerBoundary": 15,
+      "Unbounded": 12,
+      "AccuracyFailure": 2
+    },
+    "holds": [
+      {
+        "mask": 0,
+        "statuses": {
+          "Ok uncertified": 15,
+          "IterationFailure uncertified": 21,
+          "Unbounded certified": 3,
+          "AccuracyFailure uncertified": 2
+        },
+        "median_ms": 3.913984,
+        "max_ms": 21.290065
+      },
+      {
+        "mask": 1,
+        "statuses": {
+          "Ok uncertified": 21,
+          "PowerBoundaryTied certified": 3,
+          "PowerBoundary certified": 15,
+          "Unbounded certified": 2
+        },
+        "median_ms": 0.147385,
+        "max_ms": 2.471622
+      },
+      {
+        "mask": 2,
+        "statuses": {
+          "Ok uncertified": 28,
+          "Unbounded certified": 3,
+          "IterationFailure uncertified": 10
+        },
+        "median_ms": 0.13816,
+        "max_ms": 4.894003
+      },
+      {
+        "mask": 3,
+        "statuses": {
+          "Ok certified": 39,
+          "IterationFailure uncertified": 2
+        },
+        "median_ms": 0.03922,
+        "max_ms": 0.281534
+      },
+      {
+        "mask": 4,
+        "statuses": {
+          "Ok certified": 38,
+          "Unbounded certified": 3
+        },
+        "median_ms": 0.111049,
+        "max_ms": 0.704549
+      },
+      {
+        "mask": 5,
+        "statuses": {
+          "Ok certified": 40,
+          "Unbounded certified": 1
+        },
+        "median_ms": 0.086862,
+        "max_ms": 0.675277
+      },
+      {
+        "mask": 6,
+        "statuses": {
+          "Ok certified": 41
+        },
+        "median_ms": 0.026494,
+        "max_ms": 1.640329
+      },
+      {
+        "mask": 7,
+        "statuses": {
+          "Ok certified": 41
+        },
+        "median_ms": 0.004962,
+        "max_ms": 0.034968
+      }
+    ]
+  },
+  "reference-check": {
+    "roots": 74,
+    "worst_relative_coefficient_error": 3.5146512914551806e-13,
+    "worst_relative_or_absolute_logLik_error": 2.299227575881572e-15
+  },
+  "held-study-double-reference": {
+    "roots": 73,
+    "worst_relative_coefficient_error": 3.5146512914551806e-13,
+    "worst_relative_or_absolute_logLik_error": 8.629058529438823e-15
+  },
+  "archive-reference": {
+    "roots": 265,
+    "worst_relative_coefficient_error": 8.628256391201136e-13,
+    "worst_relative_or_absolute_logLik_error": 3.878714950269548e-14
+  },
+  "archive-double-reference": {
+    "roots": 263,
+    "worst_relative_coefficient_error": 1.1285429411676712e-12,
+    "worst_relative_or_absolute_logLik_error": 3.891393232213844e-14
+  },
+  "frozen_sample_sha256": {
+    "held-samples.csv": "940fa8e72f272f1a5ec5127bcc5dd67af354f4771cc25b94ed9788088eabbf33",
+    "archive-samples.csv": "8c72e58575692e2f5ebb0f3d44dd81a967d580f10aab19cf4a83cf39b212f933"
+  }
+}

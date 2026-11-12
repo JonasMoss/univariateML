@@ -1,0 +1,192 @@
+{
+  "baseline": "af824a98d78f2f2325c7a675c20c84c45e6bb826",
+  "samples": 41,
+  "fits": 328,
+  "statuses": {
+    "Ok": 263,
+    "IterationFailure": 33,
+    "PowerBoundaryTied": 3,
+    "PowerBoundary": 15,
+    "Unbounded": 12,
+    "AccuracyFailure": 2
+  },
+  "worst_relative_or_absolute_logLik_error": 3.891393232213844e-14,
+  "violations": [],
+  "numerical_or_accuracy_failures": [
+    {
+      "sample": "two_point",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "below_endpoint",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "endpoint_ties",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "near_constant",
+      "mask": 0,
+      "status": "AccuracyFailure"
+    },
+    {
+      "sample": "near_constant",
+      "mask": 2,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "wide",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "random_b0.300000_c0.050000",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "random_b1.500000_c0.050000",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "random_b8.000000_c0.200000",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "random_b0.300000_c50.000000",
+      "mask": 0,
+      "status": "AccuracyFailure"
+    },
+    {
+      "sample": "ties_0.001000_1",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.001000_1",
+      "mask": 2,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.001000_3",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.001000_3",
+      "mask": 2,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.001000_8",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.001000_8",
+      "mask": 2,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000001_1",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000001_1",
+      "mask": 2,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000001_3",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000001_3",
+      "mask": 2,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000001_8",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000001_8",
+      "mask": 2,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000000_1",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000000_1",
+      "mask": 2,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000000_3",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000000_3",
+      "mask": 2,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000000_8",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "ties_0.000000_8",
+      "mask": 2,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "rescaled_-100.000000",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "rescaled_-6.000000",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "rescaled_0.000000",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "rescaled_6.000000",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "rescaled_6.000000",
+      "mask": 3,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "rescaled_100.000000",
+      "mask": 0,
+      "status": "IterationFailure"
+    },
+    {
+      "sample": "rescaled_100.000000",
+      "mask": 3,
+      "status": "IterationFailure"
+    }
+  ]
+}

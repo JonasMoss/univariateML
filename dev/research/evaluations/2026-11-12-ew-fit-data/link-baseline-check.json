@@ -1,0 +1,284 @@
+{
+  "baseline": "af824a98d78f2f2325c7a675c20c84c45e6bb826",
+  "findings": 47,
+  "all_source_files_unchanged": true,
+  "files": [
+    {
+      "path": "dev/research/evaluations/2026-10-31-inference-6-report.md",
+      "baseline_identical": true,
+      "sha256": "2ca5110ca996e69a872009ef4b80716d6f9ef8a087c2a93eb4bc04cf7d11be91"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+      "baseline_identical": true,
+      "sha256": "cd351c4120a8ba7d1181ac10498c470cbddfce532947ab4b019380224c24ba3e"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "baseline_identical": true,
+      "sha256": "34ae937b7ec2783016dffa90ee33595a761cceecf62c26efa9f63214ad889c1d"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "baseline_identical": true,
+      "sha256": "b8f1c71407be40dd591791b52c669386ddd237b9d0b3465d7c375b5f15915859"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+      "baseline_identical": true,
+      "sha256": "6b8802d54274284d216794e72ae45f6bf962dd0add2c161350b025deb44e1cd8"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-10-relaxed-likelihood-lit-report.md",
+      "baseline_identical": true,
+      "sha256": "7b051da0cc97008955b843822a19b1fe722e2bb434bdbe3875eddf69d1725cf5"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+      "baseline_identical": true,
+      "sha256": "6bdb44404ae001934114c091717ab8f8669a3728b9ea521d97a297e26dc011fb"
+    },
+    {
+      "path": "univariateML-cpp/notes/inference.md",
+      "baseline_identical": true,
+      "sha256": "9843db90c9a907959bca5b1013da1d5b9379df11db218324d6ed1476601dd9d1"
+    }
+  ],
+  "entries": [
+    {
+      "path": "dev/research/evaluations/2026-10-31-inference-6-report.md",
+      "line": 133,
+      "target": "../../../build/scratch/inference-6/desktop.png"
+    },
+    {
+      "path": "dev/research/evaluations/2026-10-31-inference-6-report.md",
+      "line": 135,
+      "target": "../../../build/scratch/inference-6/mobile-evidence.png"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+      "line": 5,
+      "target": "../boundary-points.pdf"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 198,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 316,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 317,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 416,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 571,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 572,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 596,
+      "target": "const"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 672,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 939,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1055,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1077,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1112,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1186,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1446,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 9947,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 10911,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 12511,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 13402,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 13836,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 13857,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14277,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14415,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14524,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14876,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 15756,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 15795,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 15888,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 16243,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 16365,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 16546,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17137,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17283,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17377,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17735,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17836,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17899,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17917,
+      "target": "double"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+      "line": 70,
+      "target": "../../../local/literature/1990-geyer-likelihood-exponential-families.pdf"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+      "line": 71,
+      "target": "../../../local/literature/2016-chen-consistency-mixture-models.pdf"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+      "line": 72,
+      "target": "../../../local/literature/1990-lecam-maximum-likelihood.pdf"
+    },
+    {
+      "path": "dev/research/evaluations/2026-11-10-relaxed-likelihood-lit-report.md",
+      "line": 13,
+      "target": "../../../local/literature/"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+      "line": 309,
+      "target": "1+m/r"
+    },
+    {
+      "path": "univariateML-cpp/notes/inference.md",
+      "line": 3,
+      "target": "/inference/"
+    },
+    {
+      "path": "univariateML-cpp/notes/inference.md",
+      "line": 95,
+      "target": "/inference/"
+    }
+  ]
+}

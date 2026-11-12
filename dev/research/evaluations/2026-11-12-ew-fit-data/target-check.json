@@ -1,0 +1,14 @@
+[
+  {
+    "mode": "native",
+    "seconds": 3.0427785150241107,
+    "golden_present": true,
+    "common_binding": true
+  },
+  {
+    "mode": "double",
+    "seconds": 2.6639760930556804,
+    "golden_present": true,
+    "common_binding": true
+  }
+]

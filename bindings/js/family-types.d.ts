@@ -18,7 +18,7 @@ export interface GeneratedAPI {
   dweibull: Family<{shape1: number; shape2: number}, [shape1: number, shape2: number], {reltol?: number; iterlim?: number}>;
   emg: Family<{mu: number; sigma: number; lambda: number}, [mu: number, sigma: number, lambda: number], {reltol?: number; iterlim?: number}>;
   exp: Family<{rate: number}, [rate: number], Record<string, never>>;
-  expweibull: Evaluation<[scale: number, shape: number, exponent: number]>;
+  expweibull: Family<{scale: number; shape: number; exponent: number}, [scale: number, shape: number, exponent: number], {tol?: number; iterlim?: number}>;
   fatigue: Family<{alpha: number; beta: number; mu: number}, [alpha: number, beta: number, mu: number], {abstol?: number; iterlim?: number}>;
   foldnorm: Family<{mu: number; sigma: number}, [mu: number, sigma: number], {reltol?: number; iterlim?: number}>;
   fpareto: Family<{shape1: number; shape2: number; shape3: number; scale: number; min: number}, [shape1: number, shape2: number, shape3: number, scale: number, min: number], {reltol?: number; iterlim?: number}>;

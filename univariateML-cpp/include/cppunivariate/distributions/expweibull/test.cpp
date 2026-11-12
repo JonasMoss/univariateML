@@ -88,3 +88,174 @@ TEST_CASE("expweibull: exact-ratio hazard meets natural probability tolerance") 
  CHECK(cppunivariate::distributions::pexpweibull(2.0122736097839593,2,1000,1e200,true,false)==
   doctest::Approx(1.0000000086536384e-300).epsilon(1e-10).scale(0));
 }
+
+#include "cppunivariate/distributions/expweibull/mle.hpp"
+TEST_CASE("expweibull: all holds density agreement and conditional certificates") {
+  std::vector<double> x;
+  for(int i=0;i<100;++i)x.push_back(cppunivariate::distributions::qexpweibull((i+.5)/100,2,1.5,2.5,true,false));
+  for(int mask=0;mask<8;++mask) {
+    const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,mask&1?2:NAN,mask&2?1.5:NAN,mask&4?2.5:NAN);
+    REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+    CHECK(r.certified==bool((mask&4) || (mask&3)==3));
+    if(mask&1)CHECK(r.scale==2);
+    if(mask&2)CHECK(r.shape==1.5);
+    if(mask&4)CHECK(r.exponent==2.5);
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dexpweibull(v,r.scale,r.shape,r.exponent,true);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-11));
+  }
+}
+TEST_CASE("expweibull: Weibull submodel and rescaling") {
+  const std::vector<double> x{.4,.7,1.2,1.3,2.4,2.8,4.,6.};
+  const auto w=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100);
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,NAN,NAN,1);
+  REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+  CHECK(r.certified);
+  CHECK(r.shape==doctest::Approx(w.shape).epsilon(1e-10));
+  CHECK(r.scale==doctest::Approx(w.scale).epsilon(1e-10));
+  for(double factor:{1e-100,1e100}) {
+    auto y=x;for(double& v:y)v*=factor;
+    const auto s=cppunivariate::expweibull_mle(mltest::as_span(y),1e-10,100,NAN,NAN,1);
+    REQUIRE(s.status==cppunivariate::ExpweibullStatus::Ok);
+    CHECK(s.scale/factor==doctest::Approx(r.scale).epsilon(1e-10));
+    CHECK(s.shape==doctest::Approx(r.shape).epsilon(1e-10));
+    CHECK(std::abs(s.logLik-r.logLik+x.size()*std::log(factor))<1e-9);
+  }
+}
+TEST_CASE("expweibull: concentration depends on free coordinates") {
+  const std::vector<double> x(5,2.);
+  for(int mask:{0,2,4})CHECK(cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,mask&1?2:NAN,mask&2?1.5:NAN,mask&4?2.5:NAN).status==cppunivariate::ExpweibullStatus::Unbounded);
+  CHECK(cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,2).status==cppunivariate::ExpweibullStatus::Unbounded);
+  CHECK(cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,1).status==cppunivariate::ExpweibullStatus::Unbounded);
+  for(int mask:{3,6,7}) {
+    const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,mask&1?2:NAN,mask&2?1.5:NAN,mask&4?2.5:NAN);
+    CHECK(r.status==cppunivariate::ExpweibullStatus::Ok);
+  }
+  // A held scale above constant data has a finite unattained envelope.
+  CHECK(cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,3).status==cppunivariate::ExpweibullStatus::PowerBoundary);
+}
+TEST_CASE("expweibull: held-endpoint power envelope including repeated ties") {
+  for(const std::vector<double>& x:{std::vector<double>{1,1.5,2},std::vector<double>{1,2,3,3}}) {
+    const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,3);
+    const bool tied=x.back()==3;
+    REQUIRE(r.status==(tied?cppunivariate::ExpweibullStatus::PowerBoundaryTied:cppunivariate::ExpweibullStatus::PowerBoundary));
+    CHECK(r.certified);
+    double gap=0,logs=0;int ties=0;for(double v:x){gap+=std::log(3/v);logs+=std::log(v);ties+=v==3;}
+    const double beta=x.size()/gap;
+    CHECK(r.logLik==doctest::Approx(x.size()*(std::log(beta)-1)-logs-ties*std::log(std::expm1(1.))).epsilon(1e-12));
+    CHECK(r.stop_detail.limit_model==(tied?cppunivariate::StopModel::None:cppunivariate::StopModel::Power));
+    for(double b:{10.,100.,1000.}) {
+      double ll=0;for(double v:x)ll+=cppunivariate::distributions::dexpweibull(v,3,b,beta/b,true);
+      CHECK(ll<=r.logLik+1e-10);
+      if(b==10.)CHECK(ll<r.logLik);
+    }
+  }
+}
+TEST_CASE("expweibull: invalid inputs tight tolerance and exhausted search") {
+  const std::vector<double> x{.5,1,2,3,5};
+  CHECK(cppunivariate::expweibull_mle({}).status==cppunivariate::ExpweibullStatus::InvalidData);
+  CHECK(cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,-1).status==cppunivariate::ExpweibullStatus::InvalidFixed);
+  CHECK(cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,1).status!=cppunivariate::ExpweibullStatus::Ok);
+  CHECK(cppunivariate::expweibull_mle(mltest::as_span(x),1e-30).status!=cppunivariate::ExpweibullStatus::Ok);
+}
+TEST_CASE("expweibull: golden") {
+  const auto g=mltest::load_distribution_golden("expweibull");
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(g.data));
+  REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+  CHECK(r.scale==doctest::Approx(g.estimates.at("scale")).epsilon(1e-10));
+  CHECK(r.shape==doctest::Approx(g.estimates.at("shape")).epsilon(1e-10));
+  CHECK(r.exponent==doctest::Approx(g.estimates.at("exponent")).epsilon(1e-10));
+  CHECK(r.logLik==doctest::Approx(g.logLik).epsilon(1e-10));
+}
+TEST_CASE("expweibull: held shape uses its natural scale on nearly constant data") {
+  std::vector<double> x;
+  for(double z:{0.,1e-6,2e-6,3e-6,5e-6})x.push_back(std::exp(z));
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,NAN,1.5,2.5);
+  REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+  CHECK(r.certified);
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dexpweibull(v,r.scale,r.shape,r.exponent,true);
+  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
+}
+TEST_CASE("expweibull: single-free shape with remote held scale") {
+  for(double value:{1e-100,1e100}) {
+    const std::vector<double> x(4,value);
+    const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,1,NAN,2.5);
+    REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+    CHECK(r.certified);
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dexpweibull(v,r.scale,r.shape,r.exponent,true);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
+  }
+}
+TEST_CASE("expweibull: held coordinates do not constrain exponent accuracy") {
+  const std::vector<double> x{.5,1,2,4};
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,2,1e-8);
+  REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+  double sum=0;for(double v:x)sum+=std::log(-std::expm1(-std::pow(v/2,1e-8)));
+  CHECK(r.exponent==doctest::Approx(-static_cast<double>(x.size())/sum).epsilon(1e-10));
+  CHECK(r.scale==2);
+  CHECK(r.shape==1e-8);
+}
+TEST_CASE("expweibull: public likelihood restoration at adjacent observations") {
+  const std::vector<double> x{1,std::nextafter(1.,2.),std::nextafter(std::nextafter(1.,2.),2.)};
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,NAN,NAN,1);
+  if(r.status==cppunivariate::ExpweibullStatus::Ok) {
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dexpweibull(v,r.scale,r.shape,r.exponent,true);
+    CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(r.logLik)));
+  } else CHECK(r.status==cppunivariate::ExpweibullStatus::AccuracyFailure);
+}
+TEST_CASE("expweibull: tiny held Weibull shape retains the closed scale equation") {
+  const std::vector<double> x{.5,1,2,4};
+  const auto w=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,NAN,1e-8,NAN);
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,NAN,1e-8,1);
+  REQUIRE(w.status==cppunivariate::WeibullStatus::Ok);
+  REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+  CHECK(r.scale==w.scale);
+  CHECK(r.shape==1e-8);
+  CHECK(r.certified);
+}
+TEST_CASE("expweibull: inconclusive arithmetic allowance retains a verified local root") {
+  // Frozen binary64 inputs; independent 100-digit root in the evaluation data.
+  const std::vector<double> x{1,1.0000010000005,1.000002000002,1.0000030000044999,1.0000050000125};
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(x));
+#if !defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS) && LDBL_MANT_DIG>DBL_MANT_DIG
+  REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+#endif
+  if(r.status==cppunivariate::ExpweibullStatus::Ok) {
+    CHECK_FALSE(r.certified);
+    CHECK(r.scale==doctest::Approx(std::exp(-.0001425075388296187915)).epsilon(1e-10));
+    CHECK(r.shape==doctest::Approx(std::exp(10.066943359084830593)).epsilon(1e-10));
+    CHECK(r.exponent==doctest::Approx(std::exp(29.646289260797796367)).epsilon(1e-10));
+  } else {
+    CHECK(r.status==cppunivariate::ExpweibullStatus::AccuracyFailure);
+    CHECK(r.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Conditioning);
+    CHECK_FALSE(r.stop_detail.candidates.empty());
+  }
+}
+TEST_CASE("expweibull: relaxed coefficient tolerance is honored") {
+  const std::vector<double> x{1,1.0000010000005,1.000002000002,1.0000030000044999,1.0000050000125};
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-6);
+  REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+  CHECK_FALSE(r.certified);
+  CHECK(r.scale==doctest::Approx(std::exp(-.0001425075388296187915)).epsilon(1e-6));
+  CHECK(r.shape==doctest::Approx(std::exp(10.066943359084830593)).epsilon(1e-6));
+  CHECK(r.exponent==doctest::Approx(std::exp(29.646289260797796367)).epsilon(1e-6));
+}
+TEST_CASE("expweibull: subnormal held Weibull shape has a scale enclosure") {
+  const std::vector<double> x{.5,1,2,4};
+  const double b=std::numeric_limits<double>::denorm_min();
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,NAN,b,1);
+  REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+  CHECK(r.scale==doctest::Approx(std::sqrt(2.)).epsilon(1e-10));
+  CHECK(r.shape==b);
+  CHECK(r.exponent==1);
+  CHECK(r.certified);
+}
+TEST_CASE("expweibull: exact scale roots and sub-spacing requests") {
+  const std::vector<double> constant(5,2.5),fractional{1,1,2,2,2};
+  const auto exact=cppunivariate::expweibull_mle(mltest::as_span(constant),1e-30,100,NAN,1.5,1);
+  REQUIRE(exact.status==cppunivariate::ExpweibullStatus::Ok);
+  CHECK(exact.scale==2.5);
+  CHECK(exact.certified);
+  const auto fraction=cppunivariate::expweibull_mle(mltest::as_span(fractional),1e-30,100,NAN,1,1);
+  CHECK(fraction.status==cppunivariate::ExpweibullStatus::AccuracyFailure);
+  CHECK(fraction.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+}

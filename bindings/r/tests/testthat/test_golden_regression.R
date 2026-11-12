@@ -31,6 +31,7 @@ GOLDEN_TOLERANCE <- c(
   dweibull = 2e-16,
   emg = 5e-14, # analytic Newton refinement
   exp = 5e-16,
+  expweibull = 1e-10,
   fatigue = 5e-13,
   foldnorm = 1e-14,
   fpareto = 1e-11,
@@ -135,6 +136,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   dweibull = 1e-12,
   emg = 1e-10,
   exp = 0,
+  expweibull = 1e-10,
   fatigue = 1e-10,
   foldnorm = 1e-10,
   fpareto = 1e-07,

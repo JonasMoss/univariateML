@@ -1,0 +1,22 @@
+START cpp-test simbox
+END {'command': 'cpp-test', 'machine': 'simbox', 'exit': 75, 'seconds': 8.061316484003328, 'log': 'build/scratch/final-cpp-test-simbox.log'}
+START cpp-test workstation
+END {'command': 'cpp-test', 'machine': 'workstation', 'exit': 0, 'seconds': 5283.273218542978, 'log': 'build/scratch/final-cpp-test-local.log'}
+START test simbox
+END {'command': 'test', 'machine': 'simbox', 'exit': 75, 'seconds': 8.065184903971385, 'log': 'build/scratch/final-test-simbox.log'}
+START test workstation
+END {'command': 'test', 'machine': 'workstation', 'exit': 0, 'seconds': 2898.1497539749835, 'log': 'build/scratch/final-test-local.log'}
+START test-full simbox
+END {'command': 'test-full', 'machine': 'simbox', 'exit': 75, 'seconds': 8.065185557992663, 'log': 'build/scratch/final-test-full-simbox.log'}
+START test-full workstation
+END {'command': 'test-full', 'machine': 'workstation', 'exit': 0, 'seconds': 3058.7657165580313, 'log': 'build/scratch/final-test-full-local.log'}
+START cpp-test-no-long-double simbox
+END {'command': 'cpp-test-no-long-double', 'machine': 'simbox', 'exit': 75, 'seconds': 8.056354689993896, 'log': 'build/scratch/final-cpp-test-no-long-double-simbox.log'}
+START cpp-test-no-long-double workstation
+END {'command': 'cpp-test-no-long-double', 'machine': 'workstation', 'exit': 0, 'seconds': 3157.482902289019, 'log': 'build/scratch/final-cpp-test-no-long-double-local.log'}
+START js-build workstation
+END {'command': 'js-build', 'machine': 'workstation', 'exit': 0, 'seconds': 144.0640317160287, 'log': 'build/scratch/final-js-build-local.log'}
+START js-test workstation
+END {'command': 'js-test', 'machine': 'workstation', 'exit': 0, 'seconds': 365.04148504900513, 'log': 'build/scratch/final-js-test-local.log'}
+START site-check workstation
+END {'command': 'site-check', 'machine': 'workstation', 'exit': 0, 'seconds': 221.318131168955, 'log': 'build/scratch/final-site-check-local.log'}

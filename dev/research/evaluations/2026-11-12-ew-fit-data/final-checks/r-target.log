@@ -1,0 +1,14 @@
+✔ | F W  S  OK | Context
+
+⠏ |          0 | dist-expweibull                                                
+⠋ |          1 | dist-expweibull                                                
+⠙ |         12 | dist-expweibull                                                
+⠋ |         31 | dist-expweibull                                                
+⠧ |         38 | dist-expweibull                                                
+⠴ |         56 | dist-expweibull                                                
+⠙ |         72 | dist-expweibull                                                
+✔ |         74 | dist-expweibull
+
+══ Results ═════════════════════════════════════════════════════════════════════
+[ FAIL 0 | WARN 0 | SKIP 0 | PASS 74 ]
+Ran 1/1 deferred expressions
