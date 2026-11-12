@@ -1,0 +1,26 @@
+[
+  {
+    "label": "late-st-build-tests",
+    "machine": "workstation",
+    "command": [
+      "/tmp/umvl-cpu/run4",
+      "python3",
+      "dev/research/evaluations/2026-11-12-dpq-skew-data/late-st-batch.py"
+    ],
+    "exit_code": 0,
+    "seconds": 6750.498250484467,
+    "log": "build/scratch/dpq-skew/final-logs/late-st-build-tests.log"
+  },
+  {
+    "label": "late-st-site-evidence",
+    "machine": "workstation",
+    "command": [
+      "/tmp/umvl-cpu/run",
+      "python3",
+      "dev/research/evaluations/2026-11-12-dpq-skew-data/late-st-finish.py"
+    ],
+    "exit_code": 0,
+    "seconds": 378.9988534450531,
+    "log": "build/scratch/dpq-skew/final-logs/late-st-site-evidence.log"
+  }
+]

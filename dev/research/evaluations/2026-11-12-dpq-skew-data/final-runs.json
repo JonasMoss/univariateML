@@ -1,0 +1,159 @@
+[
+  {
+    "label": "simbox-cpp-test",
+    "machine": "simbox",
+    "command": [
+      "/tmp/umvl-cpu/simbox-run",
+      "env",
+      "CMAKE_BUILD_PARALLEL_LEVEL=4",
+      "CTEST_PARALLEL_LEVEL=4",
+      "just",
+      "cpp-test"
+    ],
+    "exit_code": 75,
+    "seconds": 8.06345796585083,
+    "log": "build/scratch/dpq-skew/final-logs/simbox-cpp-test.log"
+  },
+  {
+    "label": "workstation-cpp-test",
+    "machine": "workstation",
+    "command": [
+      "/tmp/umvl-cpu/run4",
+      "just",
+      "cpp-test"
+    ],
+    "exit_code": 0,
+    "seconds": 8135.485733509064,
+    "log": "build/scratch/dpq-skew/final-logs/workstation-cpp-test.log"
+  },
+  {
+    "label": "simbox-cpp-test-no-long-double",
+    "machine": "simbox",
+    "command": [
+      "/tmp/umvl-cpu/simbox-run",
+      "env",
+      "CMAKE_BUILD_PARALLEL_LEVEL=4",
+      "CTEST_PARALLEL_LEVEL=4",
+      "just",
+      "cpp-test-no-long-double"
+    ],
+    "exit_code": 75,
+    "seconds": 8.055909395217896,
+    "log": "build/scratch/dpq-skew/final-logs/simbox-cpp-test-no-long-double.log"
+  },
+  {
+    "label": "workstation-cpp-test-no-long-double",
+    "machine": "workstation",
+    "command": [
+      "/tmp/umvl-cpu/run4",
+      "just",
+      "cpp-test-no-long-double"
+    ],
+    "exit_code": 0,
+    "seconds": 3348.941609621048,
+    "log": "build/scratch/dpq-skew/final-logs/workstation-cpp-test-no-long-double.log"
+  },
+  {
+    "label": "simbox-test",
+    "machine": "simbox",
+    "command": [
+      "/tmp/umvl-cpu/simbox-run",
+      "env",
+      "CMAKE_BUILD_PARALLEL_LEVEL=4",
+      "CTEST_PARALLEL_LEVEL=4",
+      "just",
+      "test"
+    ],
+    "exit_code": 75,
+    "seconds": 8.060388326644897,
+    "log": "build/scratch/dpq-skew/final-logs/simbox-test.log"
+  },
+  {
+    "label": "workstation-test",
+    "machine": "workstation",
+    "command": [
+      "/tmp/umvl-cpu/run4",
+      "just",
+      "test"
+    ],
+    "exit_code": 0,
+    "seconds": 4161.997256994247,
+    "log": "build/scratch/dpq-skew/final-logs/workstation-test.log"
+  },
+  {
+    "label": "simbox-test-full",
+    "machine": "simbox",
+    "command": [
+      "/tmp/umvl-cpu/simbox-run",
+      "env",
+      "CMAKE_BUILD_PARALLEL_LEVEL=4",
+      "CTEST_PARALLEL_LEVEL=4",
+      "just",
+      "test-full"
+    ],
+    "exit_code": 75,
+    "seconds": 8.060478448867798,
+    "log": "build/scratch/dpq-skew/final-logs/simbox-test-full.log"
+  },
+  {
+    "label": "workstation-test-full",
+    "machine": "workstation",
+    "command": [
+      "/tmp/umvl-cpu/run4",
+      "just",
+      "test-full"
+    ],
+    "exit_code": 0,
+    "seconds": 3779.6866993904114,
+    "log": "build/scratch/dpq-skew/final-logs/workstation-test-full.log"
+  },
+  {
+    "label": "workstation-js-build",
+    "machine": "workstation",
+    "command": [
+      "/tmp/umvl-cpu/run4",
+      "just",
+      "js-build"
+    ],
+    "exit_code": 0,
+    "seconds": 87.72366428375244,
+    "log": "build/scratch/dpq-skew/final-logs/workstation-js-build.log"
+  },
+  {
+    "label": "workstation-js-test",
+    "machine": "workstation",
+    "command": [
+      "/tmp/umvl-cpu/run4",
+      "just",
+      "js-test"
+    ],
+    "exit_code": 0,
+    "seconds": 231.90381383895874,
+    "log": "build/scratch/dpq-skew/final-logs/workstation-js-test.log"
+  },
+  {
+    "label": "workstation-site-check",
+    "machine": "workstation",
+    "command": [
+      "/tmp/umvl-cpu/run",
+      "just",
+      "site-check"
+    ],
+    "exit_code": 1,
+    "seconds": 157.37938356399536,
+    "log": "build/scratch/dpq-skew/final-logs/workstation-site-check.log"
+  },
+  {
+    "label": "workstation-site-check",
+    "machine": "workstation",
+    "command": [
+      "/tmp/umvl-cpu/run",
+      "just",
+      "site-check"
+    ],
+    "exit_code": 0,
+    "seconds": 429.72639632225037,
+    "log": "build/scratch/dpq-skew/final-logs/workstation-site-check-retry.log",
+    "reason": "Remove three dossier fragments stripped by catalogue rendering."
+  }
+]

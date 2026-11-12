@@ -1109,9 +1109,9 @@ TEST_CASE("sged: compensated standardized moment at nu 3.8792797496374307") {
  CHECK(cppunivariate::distributions::dsged(-1.4843850018264122,-0.032496865700421936,0.9390299202739361,3.8792797496374307,2915.386800631478,true)==doctest::Approx(-1.4732605478515564).epsilon(1e-10));
 }
 
-TEST_CASE("sged natural thin-tail precision region is explicit") {
-  CHECK(std::isnan(cppunivariate::distributions::psged(-1.5461574810135936,0,1,3.8792797496374307,1e8,true,false)));
-  CHECK(std::isnan(cppunivariate::distributions::psged(-1.5461574810135932,0,1,3.8792797496374307,1e8,true,false)));
+TEST_CASE("sged compensated natural thin tails meet the frozen references") {
+  CHECK(cppunivariate::distributions::psged(-1.5461574810135936,0,1,3.8792797496374307,1e8,true,false)/4.111206646631721e-108==doctest::Approx(1.).epsilon(1e-10));
+  CHECK(cppunivariate::distributions::psged(-1.5461574810135932,0,1,3.8792797496374307,1e8,true,false)/1.5600541083276566e-34==doctest::Approx(1.).epsilon(1e-10));
 }
 
 // Independent 110-digit density stationary roots; see sged-acc evidence.
@@ -1393,4 +1393,17 @@ TEST_CASE("sged loose tolerance cannot certify a displaced public mean") {
  else
   CHECK((r.status==cppunivariate::SgedStatus::CertificateFailure ||
          r.status==cppunivariate::SgedStatus::BfgsFailure));
+}
+
+TEST_CASE("sged central inverse retains the centering residual") {
+  // Frozen independent oracle, exact binary64 p and parameters.
+  CHECK(cppunivariate::distributions::qsged(.5,0,1,1e8,1e8,true,false)/-2.8491093372415545e-16==doctest::Approx(1.).epsilon(1e-9));
+  CHECK(cppunivariate::distributions::qsged(-.6931471805599453,0,1,1e8,1e8,true,true)/-2.447438646570303e-16==doctest::Approx(1.).epsilon(1e-9));
+}
+
+TEST_CASE("sged unresolved skew-join side remains a named precision region") {
+ // N ~ 7.1e-45, propagated centering margin ~ 2.3e-42.
+ CHECK(std::isnan(cppunivariate::distributions::dsged(-1,0,1,1,1e22,true)));
+ for(bool log:{false,true})
+  CHECK(std::isnan(cppunivariate::distributions::psged(-1,0,1,1,1e22,true,log)));
 }

@@ -1,0 +1,29 @@
+[
+  {
+    "label": "final-simbox-guard",
+    "command": [
+      "/tmp/umvl-cpu/simbox-run",
+      "env",
+      "CMAKE_BUILD_PARALLEL_LEVEL=4",
+      "CTEST_PARALLEL_LEVEL=4",
+      "python3",
+      "dev/research/evaluations/2026-11-12-dpq-skew-data/post-guard-batch.py"
+    ],
+    "machine": "simbox",
+    "exit_code": 75,
+    "seconds": 8.062939405441284,
+    "log": "build/scratch/dpq-skew/final-logs/final-simbox-guard.log"
+  },
+  {
+    "label": "final-workstation-guard",
+    "command": [
+      "/tmp/umvl-cpu/run4",
+      "python3",
+      "dev/research/evaluations/2026-11-12-dpq-skew-data/post-guard-batch.py"
+    ],
+    "machine": "workstation",
+    "exit_code": 0,
+    "seconds": 6103.443564176559,
+    "log": "build/scratch/dpq-skew/final-logs/final-workstation-guard.log"
+  }
+]

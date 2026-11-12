@@ -93,6 +93,49 @@ skewness and $\nu$ controls tail weight. Zero skewness gives the ordinary
 location-scale Student distribution. This skewing construction differs from
 the Fernandez--Steel skew-t.
 
+## d/p/q/r
+
+For $|\alpha|\ge10^6$, the narrow angular wedge uses
+$r=\theta e^{-v/k}$, $\theta=\arctan(1/|\alpha|)$ and
+$k=1+\nu h(1-\theta^2)$, with
+$h=t^2/(\nu\sin^2\theta+t^2)$. The kernel ratio is evaluated directly:
+$[1+h\{(\sin\theta/\sin r)^2-1\}]^{-\nu/2}$.
+This resolves the endpoint layer without subtracting large log kernels.
+The transformed integrand has logarithmic decay at least one; truncation
+at $v=64$ omits at most $e^{-64}/k$. The small-angle log-sinc expansion has
+remainder $O(\theta^6)$, below $10^{-36}$ in this branch.
+Adaptive quadrature must converge, and the propagated kernel margin plus
+$2\cdot10^{-11}$ must satisfy the requested tail allowance; otherwise the
+CDF returns NaN. This is a practical floating-point check, with independent
+numerical evidence in the [frozen-reference replay](../../../../../dev/research/evaluations/2026-11-12-dpq-skew-data/check.py), not an outward-rounded quadrature enclosure.
+
+On the positive broad side, the CDF is the sum of the central Student mass
+and the thin wedge. Using that sum for a small CDF avoids complement
+cancellation. Both previously archived large-skew/large-degree members now
+have active truth tables. Quantile bracketing uses the corrected CDF and
+retains its failed-evaluation checks.
+The [subnormal rounding limit](../ged/README.md) also applies in this
+angular branch. Both endpoints of the wedge error are transformed into the
+requested tail before accepting a natural or logarithmic probability.
+
+This angular scaling depends on the skew angle, including at ordinary
+degrees of freedom. At $\nu=5$, $\alpha=10^{12}$ and $x=10^{-12}$
+with location zero and scale one, the lower CDF is
+$8.412994158666847\cdot10^{-13}$. The central-mass representation
+preserves it without subtracting a rounded half probability. Independent
+density and angular integrals agree in the [small-CDF check](../../../../../dev/research/evaluations/2026-11-12-dpq-skew-data/st-small-cdf.py).
+
+Near the normal face, $h$ can underflow while $\nu h$ remains significant.
+For $\nu>10^{32}$ and $\rho=|t|/\sin\theta\le2$, evaluation at
+$\nu_0=10^{32}$ carries the relative probability allowance
+$512(\nu^{-1/2}+\nu_0^{-1/2})$. The kernel is a Gamma mixture with
+mean-one mixing variable and variance $2/\nu$. Its normalized Gaussian
+angular integral has derivative bounded by $1.3$ and is above $0.02$
+on this ray range; the central mass has the same coupling bound.
+This gives the stated allowance, which participates in both tail checks.
+The [normal-face check](../../../../../dev/research/evaluations/2026-11-12-dpq-skew-data/st-normal-face.py)
+retains the finite-degree comparison bound for the normal reference.
+
 ## Details
 
 The all-free interior accuracy check differentiates the Student probability through

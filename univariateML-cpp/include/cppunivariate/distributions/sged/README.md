@@ -781,6 +781,8 @@ scores: the positive $|c-x_i|^p$ cost dominates smooth perturbations. The
 tangent fit uses variance-scaled side lengths to avoid overflowing gamma
 moments when the shape is small.
 
+## d/p/q/r
+
 ### Normal-member centering
 
 At nu = 2 the standardized law is exactly the skew-normal member. Its d/p evaluations use the compensated skew-normal moment and residual calculation, including the documented forward-error gate and NaN precision regions in [the skew-normal dossier](../snorm/README.md#extreme-dpq-arithmetic). This preserves the thin-side residual before division by xi² instead of rounding the Gaussian absolute moment inside the generalized-Gaussian calculation.
@@ -791,4 +793,41 @@ At nu=1 the standardized base is Laplace, with first absolute moment 1/sqrt(2). 
 
 For the other members with representable moments, two-word log-Gamma values retain the standardized first absolute moment before centering. Recurrence reaches arguments of at least 32; the first omitted Stirling term is below 5.2e-35. Its propagated practical moment margin participates in the coordinate gate. The symmetric member delegates directly to GED, and the large-nu radius precision gate remains in force after compensated standardization.
 
-The natural-tail precision region includes nu=3.8792797496374307, xi=1e8, mean=0, sd=1 at x=-1.5461574810135936 and x=-1.5461574810135932. The propagated moment/coordinate margins are respectively 3.165e-10 and 9.167e-11 in the log tail. Natural lower tails return NaN under the reserved 1e-11 coordinate budget; their independently computed probabilities remain in the truth exclusions. Log tails retain their scaled error allowance. A sharper first-moment enclosure could reduce this region.
+When $\nu\ge10^6$, or $\nu\ge0.05$ and
+$\min(\xi,1/\xi)<10^{-6}$, d/p retains the moment, variance and centered
+residual in three words. With $t=\min(\xi,1/\xi)$ and the reflected
+standardized physical coordinate $w$, the numerator is
+$N=w s-m(1-t^2)$, where
+$s^2=(1-m^2)(1+t^4)+(2m^2-1)t^2$. Its practical centering margin is
+$B_3(|w|+|m|)+(1+2|w|)E_m$, with
+$B_3(M)=32768\epsilon^3(1+M)+128\,\mathrm{denorm\_min}$.
+The thin-side radius divides this margin by $t^2$ before the GED power
+sensitivity test. Stirling recurrence reaches 64 with 20 correction terms;
+its omitted term is below the practical arithmetic margin. For
+$\nu\ge10^{24}$, $m=\sqrt3/2$ carries the bound $32/\nu^2+B_3(1)$.
+The two formerly excluded natural tails at
+$\nu=3.8792797496374307$, $\xi=10^8$ now satisfy this test.
+
+At extreme skew and $\nu\ge10^6$, central quantiles retain the input
+probability and the centering subtraction in three words. In the branch
+$\nu\log c<-100$, the gamma-power inverse is explicit up to a displacement
+bounded by $\lambda\Gamma(1+1/\nu)e^{-100}/(\nu+1)$, where $c$ is the
+central base mass. The returned quantile must pass either its relative
+error bound or the probability-error bound using $f\le2/\mathrm{sd}$.
+This resolves cancellation to a nearly zero median.
+
+NaN remains the outcome when the propagated radius/power or tail bound
+exceeds its allowance, the centering sign cannot be resolved, or the moment
+or logarithmic coordinate is unrepresentable. The symmetric member uses
+GED and the normal member uses skew-normal, including their own gates.
+All archived precision exclusions and the 195 SGED skew witnesses are
+resolved by the [exact-input replay](../../../../../dev/research/evaluations/2026-11-12-dpq-skew-data/check.py).
+
+The broad-side gamma central mass has logarithmic derivative at most one
+with respect to the log radius: integrating $e^{-xu}\ge e^{-x}$ over
+$0\le u\le1$ proves this for $P(1/\nu,e^{\nu w})$.
+The skew-join side is used only when $|N|>E_N$. For example, at
+$\nu=1$, $\xi=10^{22}$, mean zero, sd one and $x=-1$,
+$N\simeq7.1\cdot10^{-45}$ is below the practical centering margin
+$E_N\simeq2.3\cdot10^{-42}$. This remaining precision region returns
+NaN on both probability scales; it lies beyond the archived skew witnesses.

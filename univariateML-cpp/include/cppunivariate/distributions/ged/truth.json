@@ -2187,6 +2187,146 @@
       "-Inf",
       0.0,
       "-Inf"
+    ],
+    [
+      15,
+      -1732.0508688505893,
+      -672.6182663017332,
+      -690.7755211554064,
+      -1.000006742830028e-300
+    ],
+    [
+      15,
+      -1732.050858671529,
+      -213.2732951964537,
+      -230.25851185321952,
+      -9.999974461883072e-101
+    ],
+    [
+      15,
+      -1732.0508456173109,
+      -53.583220577310954,
+      -69.07755223285577,
+      -1.000000556965765e-30
+    ],
+    [
+      15,
+      -1732.0508279516423,
+      -14.058657311119775,
+      -27.631021147943205,
+      -9.999999679858422e-13
+    ],
+    [
+      15,
+      -1732.047343467262,
+      -8.150208603876138,
+      -13.815510557936658,
+      -1.00000050002795e-06
+    ],
+    [
+      15,
+      1732.047343467262,
+      -8.150208603876138,
+      -1.00000050002795e-06,
+      -13.815510557936658
+    ],
+    [
+      15,
+      1732.0508279516423,
+      -14.058657311119775,
+      -9.999999679858422e-13,
+      -27.631021147943205
+    ],
+    [
+      15,
+      1732.0508456173109,
+      -53.583220577310954,
+      -1.000000556965765e-30,
+      -69.07755223285577
+    ],
+    [
+      15,
+      1732.050858671529,
+      -213.2732951964537,
+      -9.999974461883072e-101,
+      -230.25851185321952
+    ],
+    [
+      15,
+      1732.0508688505893,
+      -672.6182663017332,
+      -1.000006742830028e-300,
+      -690.7755211554064
+    ],
+    [
+      16,
+      -273205086.88505894,
+      -684.131201491528,
+      -690.7755308948446,
+      -9.999970033736401e-301
+    ],
+    [
+      16,
+      -273205085.8671529,
+      -224.78622492499747,
+      -230.25851613747864,
+      -9.999931619493228e-101
+    ],
+    [
+      16,
+      -273205084.5617311,
+      -65.09614672973696,
+      -69.0775529351298,
+      -9.999998546915797e-31
+    ],
+    [
+      16,
+      -273205082.7951642,
+      -25.571582755886467,
+      -27.631021124721865,
+      -9.999999912071824e-13
+    ],
+    [
+      16,
+      -273204734.3467262,
+      -19.663134068846364,
+      -13.815510557889882,
+      -1.0000005000747255e-06
+    ],
+    [
+      16,
+      73204734.34672621,
+      -19.663134068846364,
+      -1.0000004999886937e-06,
+      -13.815510557975914
+    ],
+    [
+      16,
+      73205082.79516423,
+      -25.571582755886467,
+      -9.999999912071824e-13,
+      -27.631021124721865
+    ],
+    [
+      16,
+      73205084.5617311,
+      -65.09614672973696,
+      -9.999998546915797e-31,
+      -69.0775529351298
+    ],
+    [
+      16,
+      73205085.8671529,
+      -224.78621786614656,
+      -1.0000002550242648e-100,
+      -230.25850904438033
+    ],
+    [
+      16,
+      73205086.88505894,
+      -684.131201491528,
+      -9.999970033736401e-301,
+      -690.7755308948446
     ]
   ],
   "quantiles": [
@@ -10457,207 +10597,5 @@
       8
     ]
   ],
-  "input_sha256": "2697324227e4d4ca1ed2c297143b46cde4949da9f337e30d7faf9d600817466d",
-  "excluded_values": [
-    {
-      "row": [
-        15,
-        -1732.0508688505893,
-        -672.6182663017332,
-        -690.7755211554064,
-        -1.000006742830028e-300
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        15,
-        -1732.050858671529,
-        -213.2732951964537,
-        -230.25851185321952,
-        -9.999974461883072e-101
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        15,
-        -1732.0508456173109,
-        -53.583220577310954,
-        -69.07755223285577,
-        -1.000000556965765e-30
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        15,
-        -1732.0508279516423,
-        -14.058657311119775,
-        -27.631021147943205,
-        -9.999999679858422e-13
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        15,
-        -1732.047343467262,
-        -8.150208603876138,
-        -13.815510557936658,
-        -1.00000050002795e-06
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        15,
-        1732.047343467262,
-        -8.150208603876138,
-        -1.00000050002795e-06,
-        -13.815510557936658
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        15,
-        1732.0508279516423,
-        -14.058657311119775,
-        -9.999999679858422e-13,
-        -27.631021147943205
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        15,
-        1732.0508456173109,
-        -53.583220577310954,
-        -1.000000556965765e-30,
-        -69.07755223285577
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        15,
-        1732.050858671529,
-        -213.2732951964537,
-        -9.999974461883072e-101,
-        -230.25851185321952
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        15,
-        1732.0508688505893,
-        -672.6182663017332,
-        -1.000006742830028e-300,
-        -690.7755211554064
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        16,
-        -273205086.88505894,
-        -684.131201491528,
-        -690.7755308948446,
-        -9.999970033736401e-301
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        16,
-        -273205085.8671529,
-        -224.78622492499747,
-        -230.25851613747864,
-        -9.999931619493228e-101
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        16,
-        -273205084.5617311,
-        -65.09614672973696,
-        -69.0775529351298,
-        -9.999998546915797e-31
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        16,
-        -273205082.7951642,
-        -25.571582755886467,
-        -27.631021124721865,
-        -9.999999912071824e-13
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        16,
-        -273204734.3467262,
-        -19.663134068846364,
-        -13.815510557889882,
-        -1.0000005000747255e-06
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        16,
-        73204734.34672621,
-        -19.663134068846364,
-        -1.0000004999886937e-06,
-        -13.815510557975914
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        16,
-        73205082.79516423,
-        -25.571582755886467,
-        -9.999999912071824e-13,
-        -27.631021124721865
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        16,
-        73205084.5617311,
-        -65.09614672973696,
-        -9.999998546915797e-31,
-        -69.0775529351298
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        16,
-        73205085.8671529,
-        -224.78621786614656,
-        -1.0000002550242648e-100,
-        -230.25850904438033
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    },
-    {
-      "row": [
-        16,
-        73205086.88505894,
-        -684.131201491528,
-        -9.999970033736401e-301,
-        -690.7755308948446
-      ],
-      "reason": "TASK-196 open: measured double,native d,p normalized error inf (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Compensated physical standardization and a propagated gamma-power sensitivity bound are missing; the precision gate returns NaN."
-    }
-  ]
+  "input_sha256": "3df53ec012686345846e8ba9bf903940ae6161325437df50c502c84cda33a1ae"
 }

@@ -1,0 +1,45 @@
+{
+  "baseline": "217ab8b533cac25ccc8eba8d66eccde1b376f0b4",
+  "unchanged": [
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ged/mle.hpp",
+      "sha256": "9514118b015cf2a499f986729e6a596fc268b079d270f78be56d82231641de16"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/ged/golden.json",
+      "sha256": "748a58fd7861de328cca9a22d0ac55c403f09b6b636e5c3b3ad00a7fb653472c"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/mle.hpp",
+      "sha256": "eda7ada85b2c39df2e446383893ae89b3c48e259e0a5baaff0f9b6af822cbd2f"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sged/golden.json",
+      "sha256": "f1755bb713fac5d9f48446202a234ee0710675ebb3b6fd06fc0c67c6626a5373"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp",
+      "sha256": "3acd04784baefd20b9c53722494f6cc994e93b1c8d3c8d49032638ef65317e9d"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/sstd/golden.json",
+      "sha256": "aba6f1a8c0b69aedf13056424bbc2ad3d0a1824b3025bb1dfef9ee9046b1e010"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/std/mle.hpp",
+      "sha256": "08c041d7b88dd52359909985d26ed6f8b40cdda8ecf12fd36403af506d6f880d"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/std/golden.json",
+      "sha256": "5246c37f9ce4a30791b9a0247af42b082ee29d14b3d78d4d7cfa8cb29877602b"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/st/mle.hpp",
+      "sha256": "4399ccda2f5d623afe95b27b5e778d0d7183d0a8fe82b73841dd026f21dcb15c"
+    },
+    {
+      "path": "univariateML-cpp/include/cppunivariate/distributions/st/golden.json",
+      "sha256": "15a5518299961eb5b2df211845ca424f5eae56f357d8e7040d33eb51a67b21ab"
+    }
+  ]
+}

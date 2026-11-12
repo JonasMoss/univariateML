@@ -80,8 +80,71 @@ inline double sged_logradius_probability(const snorm_detail::Coordinate &c,doubl
  if(std::isfinite(selected) && selected!=0 && (log || selected>-700) && margin>(log?1e-11*std::max(1.0,std::abs(selected)):1e-11))return special::kNaN;
  return special::tail_probability(tails,lower,log);
 }
+// Recompute the moment and the physical residual before rounding the radius.
+inline double sged_precise(double x,double mean,double sd,double nu,double xi,bool density,bool lower,bool log) {
+ if(!std::isfinite(x))return density?(log?special::kNegInf:0):special::tail_probability(special::tails_from_log(special::kNegInf,x<0),lower,log);
+ const auto m=special::skew_coordinate::ged(nu);
+ const auto c=special::skew_coordinate::coordinate(x,mean,sd,xi,m);
+ if(!c.valid)return special::kNaN;
+ if(!std::isfinite(c.value))return density?sged_logradius_density({c.value,c.log_normalizer,c.error,c.centering_error,c.square,c.log_value,c.log_error,c.thin,c.negative,c.valid},nu,log):sged_logradius_probability({c.value,c.log_normalizer,c.error,c.centering_error,c.square,c.log_value,c.log_error,c.thin,c.negative,c.valid},nu,xi,lower,log);
+ const auto r=ged_detail::radius_precise(c.radius,nu,c.arithmetic_error);
+ if(density)return ged_detail::density_precise(r,nu,c.log_normalizer,log);
+ const double lt=xi<=1?std::log(xi):-std::log(xi);
+ if(!c.thin) {
+  const double central=ged_detail::gamma_power_log(r.value,nu,true);
+  const double opposite=special::log_sum_exp(2*lt,central)-std::log1p(c.square);
+  if(opposite<-.6931471805599453) {
+   // For P(a,exp(nu*w)), a=1/nu, 0 <= d log(P)/dw <= 1:
+   // integrate exp(-x*u) >= exp(-x) over u in [0,1]. Adding
+   // the thin-side mass can only decrease this log sensitivity.
+   const double margin=r.error+ged_detail::gamma_log_margin(central);
+   const double weight_error=32*std::numeric_limits<double>::epsilon()*(1+std::abs(lt));
+   const double left=special::log_sum_exp(2*lt,central-margin)-std::log1p(c.square)-weight_error;
+   const double right=std::min(0.,special::log_sum_exp(2*lt,std::min(0.,central+margin))-std::log1p(c.square)+weight_error);
+   const auto tails=special::tails_from_log(opposite,!c.negative);
+   const auto low=special::tails_from_log(left,!c.negative),high=special::tails_from_log(right,!c.negative);
+   const double selected=lower?tails.lower:tails.upper;
+   if(!ged_detail::probability_interval(selected,lower?low.lower:low.upper,lower?high.lower:high.upper,log))return special::kNaN;
+   return special::tail_probability(tails,lower,log);
+  }
+ }
+ return ged_detail::probability_precise(r,nu,-std::log1p(c.square)+(c.thin?2*lt:0),c.negative,lower,log);
+}
+inline double sged_central_quantile(double p,double mean,double sd,double nu,double xi,bool lower,bool log) {
+ if(nu<1e6 || !(log?p>-.92 && p<-.51:p>.4 && p<.6))return special::kNaN;
+ const auto m=special::skew_coordinate::ged(nu);
+ if(!m.valid)return special::kNaN;
+ const auto t=xi<=1?special::three_word::Number{xi}:special::three_word::divide({1},{xi});
+ const auto t2=special::three_word::multiply(t,t),m2=special::three_word::multiply(m.value,m.value);
+ const auto sigma=special::three_word::root(special::three_word::add(special::three_word::multiply(special::three_word::add({1},special::three_word::negative(m2)),special::three_word::add({1},special::three_word::multiply(t2,t2))),special::three_word::multiply(special::three_word::add(special::three_word::multiply({2},m2),{-1}),t2)));
+ auto probability=log?special::three_word::exponential({p}):special::three_word::Number{p};
+ if(!lower)probability=special::three_word::add({1},special::three_word::negative(probability));
+ const auto side=xi<=1?probability:special::three_word::add({1},special::three_word::negative(probability));
+ const auto central=special::three_word::add({1},special::three_word::negative(special::three_word::multiply(side,special::three_word::add({1},t2))));
+ if(!(central.high>0))return special::kNaN;
+ const auto lc=special::three_word::logarithm(central);
+ // P(a,y)=y^a/Gamma(1+a)*(1+O(y/(nu+1))). Here y is
+ // below exp(-100), so this explicit inverse has negligible remainder.
+ if(nu*lc.high>=-100)return special::kNaN;
+ const auto a=special::three_word::divide({1},{nu});
+ const auto scale=special::three_word::exponential(special::three_word::add(ged_detail::logscale_precise(nu),special::three_word::log_gamma(special::three_word::add({1},a))));
+ const auto v=special::three_word::multiply(scale,central);
+ auto offset=special::three_word::divide(special::three_word::add(special::three_word::multiply(m.value,special::three_word::add({1},special::three_word::negative(t2))),special::three_word::negative(v)),sigma);
+ offset=special::three_word::multiply(offset,{(xi<=1?1.:-1.)*sd});
+ const double q=special::three_word::add({mean},offset).high;
+ const double eps=std::numeric_limits<double>::epsilon();
+ const double unit_error=10*m.error+special::three_word::margin(64)+(nu>=1e30?4/nu:0)+scale.high*std::exp(nu*lc.high)/(nu+1);
+ const double sum_error=32768*eps*eps*eps*(std::abs(mean)+std::abs(offset.high))+128*std::numeric_limits<double>::denorm_min();
+ const double physical_error=sd*unit_error/sigma.high+sum_error+eps*std::abs(q);
+ // Either relative quantile accuracy or the probability criterion closes
+ // the near-zero cancellation. In this central region f(x) <= 2/sd.
+ if(physical_error<=1e-10*std::abs(q) || 2*(unit_error/sigma.high+sum_error/sd+eps*(std::abs(q)/sd))<=1e-13)return q;
+ return special::kNaN;
+}
 inline double dsged(double x, double mean, double sd, double nu, double xi, bool log) {
   if (!(fs::valid(mean, sd, nu, xi)) || std::isnan(x)) return cppunivariate::special::kNaN;
+  if(xi==1)return dged(x,mean,sd,nu,log);
+  if(nu!=2 && nu>=.05 && (nu>=1e6 || xi<1e-6 || xi>1e6))return sged_precise(x,mean,sd,nu,xi,true,true,log);
   if(nu==1) {
     if(!std::isfinite(x))return log?special::kNegInf:0;
     const auto c=snorm_detail::coordinate_with_moment(x,mean,sd,xi,{0.7071067811865476,-4.833646656726457e-17},0);
@@ -92,7 +155,6 @@ inline double dsged(double x, double mean, double sd, double nu, double xi, bool
     return log?ld:std::exp(ld);
   }
   if(nu==2) return dsnorm(x,mean,sd,xi,log);
-  if(xi==1) return dged(x,mean,sd,nu,log);
   const auto moment=special::skew_moments::ged(nu);
   if(moment.valid) {
     if(!std::isfinite(x))return log?special::kNegInf:0;
@@ -130,6 +192,8 @@ inline double dsged(double x, double mean, double sd, double nu, double xi, bool
 }
 inline double psged(double q, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
   if (!(fs::valid(mean, sd, nu, xi)) || std::isnan(q)) return cppunivariate::special::kNaN;
+  if(xi==1)return pged(q,mean,sd,nu,lower_tail,log_p);
+  if(nu!=2 && nu>=.05 && (nu>=1e6 || xi<1e-6 || xi>1e6))return sged_precise(q,mean,sd,nu,xi,false,lower_tail,log_p);
   if(nu==1) {
    const auto c=snorm_detail::coordinate_with_moment(q,mean,sd,xi,{0.7071067811865476,-4.833646656726457e-17},0);
    if(c.valid && !std::isfinite(c.value))return sged_logradius_probability(c,nu,xi,lower_tail,log_p);
@@ -139,7 +203,6 @@ inline double psged(double q, double mean, double sd, double nu, double xi, bool
     [](double,double){return 1.4142135623730950488;});
   }
   if(nu==2) return psnorm(q,mean,sd,xi,lower_tail,log_p);
-  if(xi==1) return pged(q,mean,sd,nu,lower_tail,log_p);
   const auto moment=special::skew_moments::ged(nu);
   if(moment.valid) {
     const double ls=fs::ged_logscale(nu);
@@ -187,6 +250,8 @@ inline double qsged(double p, double mean, double sd, double nu, double xi, bool
   if (!(fs::valid(mean, sd, nu, xi))) return cppunivariate::special::kNaN;
   // Exact symmetric member avoids rounded log-tail splitting at the median.
   if (xi==1) return qged(p,mean,sd,nu,lower_tail,log_p);
+  if(nu>=1e6 && (xi<1e-6 || xi>1e6) && (log_p?p>-.92 && p<-.51:p>.4 && p<.6))
+    return sged_central_quantile(p,mean,sd,nu,xi,lower_tail,log_p);
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
   const double z = fs::skew_q(p, xi, lower_tail, log_p, [&](double v) { return qged(v, 0.0, 1.0, nu, true, true); });

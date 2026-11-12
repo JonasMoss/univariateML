@@ -6,6 +6,7 @@
 #include "../../special/special.hpp"
 #include "../std/dpqr.hpp"
 #include "../../special/skew_moments.hpp"
+#include "../../special/skew_coordinate.hpp"
 namespace cppunivariate {
 namespace distributions {
 inline double sstd_logradius_density(const snorm_detail::Coordinate &c,double nu,bool log) {
@@ -21,16 +22,39 @@ inline double sstd_logradius_probability(const snorm_detail::Coordinate &c,doubl
  const double lt=xi<=1?std::log(xi):-std::log(xi);
  const double base=student_detail::probability_log(c.log_value+.5*(std::log(nu)-std::log(nu-2)),true,nu,true,true);
  const double direct=std::log(2.0)-std::log1p(c.square)+(c.thin?2*lt:0)+base;
- const auto tails=special::tails_from_log(direct,c.negative);
- const double selected=lower?tails.lower:tails.upper;
- double margin=nu*c.log_error;
- if(selected>-.6931471805599453)margin=direct<-745?0:margin*std::exp(direct-selected);
- if(std::isfinite(selected) && selected!=0 && (log || selected>-700) && margin>(log?1e-11*std::max(1.0,std::abs(selected)):1e-11))return special::kNaN;
- return special::tail_probability(tails,lower,log);
+ const double margin=nu*c.log_error+2e-12+16*std::numeric_limits<double>::epsilon()*(1+std::abs(direct));
+ return special::skew_probability::enclose(direct,margin,c.negative,lower,log);
+}
+inline double sstd_precise(double x,double mean,double sd,double nu,double xi,bool density,bool lower,bool log) {
+ if(!std::isfinite(x))return density?(log?special::kNegInf:0):special::tail_probability(special::tails_from_log(special::kNegInf,x<0),lower,log);
+ const auto c=special::skew_coordinate::coordinate(x,mean,sd,xi,special::skew_coordinate::student(nu));
+ if(!c.valid)return special::kNaN;
+ if(!std::isfinite(c.value))return density?sstd_logradius_density({c.value,c.log_normalizer,c.error,c.centering_error,c.square,c.log_value,c.log_error,c.thin,c.negative,c.valid},nu,log):sstd_logradius_probability({c.value,c.log_normalizer,c.error,c.centering_error,c.square,c.log_value,c.log_error,c.thin,c.negative,c.valid},nu,xi,lower,log);
+ if(density) {
+  const double ld=c.log_normalizer+fs::std_logdensity(c.value,nu);
+  // |d log f/dv| <= min((nu+1)/v, (nu+1)*v/(nu-2)).
+  const double low=std::max(0.,c.value-c.error),high=c.value+c.error;
+  const double derivative=low>0?std::min((nu+1)/low,((nu+1)/(nu-2))*high):((nu+1)/(nu-2))*high;
+  if(!log && ld+c.error*derivative<special::skew_probability::zero_rounding_threshold())return 0;
+  if(c.error*derivative>(log?1e-11*std::max(1.,std::abs(ld)):1e-11))return special::kNaN;
+  return log?ld:std::exp(ld);
+ }
+ return special::skew_coordinate::probability(c,xi,lower,log,
+  [nu](double v){return pstd(v,0,1,nu,false,true);},
+  [nu](double v){
+   const double lr=2*std::log(v)-std::log(nu-2);
+   return missing_detail::beta_log(-special::softplus(-lr),-special::softplus(lr),.5,nu*.5,true);
+  },
+  [nu](double v,double e){
+   const double low=std::max(0.,v-e),high=v+e;
+   const double density=fs::std_logdensity(low,nu),tail=pstd(high,0,1,nu,false,true);
+   return std::exp(density-tail+16*std::numeric_limits<double>::epsilon()*(1+std::abs(density)+std::abs(tail)));
+  });
 }
 inline double dsstd(double x, double mean, double sd, double nu, double xi, bool log) {
   if (!(fs::valid(mean, sd, nu, xi) && nu > 2.0) || std::isnan(x)) return cppunivariate::special::kNaN;
   if(xi==1)return dstd(x,mean,sd,nu,log);
+  if(xi<1e-6 || xi>1e6)return sstd_precise(x,mean,sd,nu,xi,true,true,log);
   if(nu==5) {
     if(!std::isfinite(x))return log?special::kNegInf:0;
     const auto c=snorm_detail::coordinate_with_moment(x,mean,sd,xi,{0.7351051938957227,2.4362428464894153e-17},0);
@@ -69,6 +93,7 @@ inline double dsstd(double x, double mean, double sd, double nu, double xi, bool
 inline double psstd(double q, double mean, double sd, double nu, double xi, bool lower_tail=true, bool log_p=false) {
   if (!(fs::valid(mean, sd, nu, xi) && nu > 2.0) || std::isnan(q)) return cppunivariate::special::kNaN;
   if(xi==1)return pstd(q,mean,sd,nu,lower_tail,log_p);
+  if(xi<1e-6 || xi>1e6)return sstd_precise(q,mean,sd,nu,xi,false,lower_tail,log_p);
   if(nu==5) {
    const auto c=snorm_detail::coordinate_with_moment(q,mean,sd,xi,{0.7351051938957227,2.4362428464894153e-17},0);
    if(c.valid && !std::isfinite(c.value))return sstd_logradius_probability(c,nu,xi,lower_tail,log_p);

@@ -1601,7 +1601,8 @@ for(const [nu,ld,lp] of edgeRows) {
  assert.ok(Math.abs(m.pged(x,p,false,true)[0]-lp)<1e-11,'GED edge tail');
  assert.ok(Math.abs(m.pged(x,p,false,false)[0]/Math.exp(lp)-1)<1e-10,'GED edge natural tail');
 }
-assert.ok(Number.isNaN(m.psged(new Float64Array([Math.sqrt(3)]),[0,1,Number.MAX_VALUE,2],true,false)[0]),'uncertain skew-GED edge');
+assert.equal(m.psged(new Float64Array([Math.sqrt(3)]),[0,1,Number.MAX_VALUE,2],true,false)[0],1,'skew-GED broad CDF');
+assert.ok(Math.abs(m.psged(new Float64Array([Math.sqrt(3)]),[0,1,Number.MAX_VALUE,2],false,true)[0]+38.080312530773824)<1e-11,'compensated skew-GED edge');
 assert.ok(Number.isNaN(m.pged(new Float64Array([1]),[0,1,4e-306],false,true)[0]),'GED unsupported log scale');
 for(const [f,p] of [['lst',[0,1,Number.MIN_VALUE]],['ht',[0,Number.MIN_VALUE,1]],['st',[0,1,2,Number.MIN_VALUE]]])
  assert.ok([...m['r'+f](1,p,163)].every(Number.isNaN),f+' subnormal gamma shape');
@@ -2022,4 +2023,15 @@ test('Student legacy t2 limit keeps its class and uncertified flag', async () =>
     assert.equal(error.certified,0);assert.equal(error.loglik_upper,Infinity);
     assert.match(error.message,/mllst/);return true;
   });
+});
+
+test('st large skew preserves a small CDF at ordinary degrees of freedom',()=>{
+ const p=[0,1,1e12,5],reference=8.412994158666847e-13;
+ assert.ok(Math.abs(m.pst(new Float64Array([1e-12]),p,true,false)[0]/reference-1)<1e-10);
+ assert.ok(Math.abs(m.qst(new Float64Array([reference]),p,true,false)[0]/1e-12-1)<1e-9);
+});
+
+test('st normal face retains its tiny angular ray',()=>{
+ const p=m.pst(new Float64Array([-2e-16,2e-16]),[0,1,1e8,Number.MAX_VALUE],true,false);
+ for(const [i,b] of [3.183098782049451e-9,3.1830989416263634e-9].entries())assert.ok(Math.abs(p[i]/b-1)<1e-10);
 });

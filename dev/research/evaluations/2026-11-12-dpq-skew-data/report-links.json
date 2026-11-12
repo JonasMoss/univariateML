@@ -1,0 +1,239 @@
+{
+  "baseline": "217ab8b533cac25ccc8eba8d66eccde1b376f0b4",
+  "owned_files": [
+    "dev/research/evaluations/2026-11-12-dpq-skew-report.md",
+    "univariateML-cpp/include/cppunivariate/distributions/ged/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/sged/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/sstd/README.md",
+    "univariateML-cpp/include/cppunivariate/distributions/st/README.md"
+  ],
+  "new_failures": [],
+  "global_existing_failures": [
+    {
+      "file": "dev/research/evaluations/2026-11-03-boundary-lit-report.md",
+      "line": 5,
+      "destination": "../boundary-points.pdf"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 198,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 316,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 317,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 416,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 571,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 572,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 596,
+      "destination": "const"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-07-fit-audit-data/static-inventory.md",
+      "line": 672,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 939,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1055,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1077,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1112,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1186,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 1446,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 9947,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 10911,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 12511,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 13402,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 13836,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 13857,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14277,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14415,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14524,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 14876,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 15756,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 15795,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 15888,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 16243,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 16365,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 16546,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17137,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17283,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17377,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17735,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17836,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17899,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-09-fit-audit-rerun-data/silent-failures.md",
+      "line": 17917,
+      "destination": "double"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+      "line": 70,
+      "destination": "../../../local/literature/1990-geyer-likelihood-exponential-families.pdf"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+      "line": 71,
+      "destination": "../../../local/literature/2016-chen-consistency-mixture-models.pdf"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-10-defective-limit-lit-report.md",
+      "line": 72,
+      "destination": "../../../local/literature/1990-lecam-maximum-likelihood.pdf"
+    },
+    {
+      "file": "dev/research/evaluations/2026-11-10-relaxed-likelihood-lit-report.md",
+      "line": 13,
+      "destination": "../../../local/literature/"
+    },
+    {
+      "file": "univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md",
+      "line": 240,
+      "destination": "1+m/r"
+    },
+    {
+      "file": "univariateML-cpp/notes/inference.md",
+      "line": 3,
+      "destination": "/inference/"
+    },
+    {
+      "file": "univariateML-cpp/notes/inference.md",
+      "line": 95,
+      "destination": "/inference/"
+    }
+  ],
+  "failure_files_byte_identical_to_baseline": true
+}

@@ -94,6 +94,3 @@ def build(p, logd):
 
 # Joint limit paths supplement the shared one-coordinate extreme grid.
 extreme_parameter_sets = [{'nu': 100000000.0, 'alpha': 100000000.0}, {'nu': 100000000.0, 'alpha': -100000000.0}, {'alpha': 100000000.0}, {'alpha': -100000000.0}]
-
-
-truth_point_exclusions = [([0.0, 1.0, -100000000.0, 100000000.0], 'TASK-196 open: public CDF returns NaN at x=-37.06591528298065, lower=True, log=True; independent value -690.7755278982137. The joint large-skew/large-degree angular tail is not resolved by the public evaluator.'), ([0.0, 1.0, 100000000.0, 100000000.0], 'TASK-196 open: public CDF returns NaN at x=-3.644230579974875e-07, lower=True, log=True; independent value -690.7755278982137. The joint large-skew/large-degree angular tail is not resolved by the public evaluator.')]

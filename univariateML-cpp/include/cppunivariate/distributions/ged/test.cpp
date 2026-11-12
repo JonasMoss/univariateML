@@ -667,13 +667,14 @@ TEST_CASE("GED uniform-edge neighbors match high precision") {
     CHECK(cppunivariate::distributions::psged(-row.x,0,1,row.nu,1,true,true)==lp);
   }
 }
-TEST_CASE("GED uncertain transformed uniform edges report failure") {
+TEST_CASE("GED compensated physical and skew uniform edges") {
+  // Exact-input uniform-limit bounds: dpq-skew-data/edge.py (400 digits).
   const double nu=std::numeric_limits<double>::max(),x=std::sqrt(3.);
-  CHECK(std::isnan(cppunivariate::distributions::pged(1+x,1,1,nu,false,true)));
-  CHECK(std::isnan(cppunivariate::distributions::dged(1+x,1,1,nu,true)));
+  CHECK(cppunivariate::distributions::pged(1+x,1,1,nu,false,true)==doctest::Approx(-38.080312530773824).epsilon(1e-12));
+  CHECK(cppunivariate::distributions::dged(1+x,1,1,nu,true)==doctest::Approx(-1.2424533248940002).epsilon(1e-12));
   for(double sign:{-1.,1.}) {
-    CHECK(std::isnan(cppunivariate::distributions::psged(sign*x,0,1,nu,2)));
-    CHECK(std::isnan(cppunivariate::distributions::dsged(sign*x,0,1,nu,2,true)));
+    CHECK(cppunivariate::distributions::psged(sign*x,0,1,nu,2,sign<0,true)==doctest::Approx(-38.080312530773824).epsilon(1e-12));
+    CHECK(cppunivariate::distributions::dsged(sign*x,0,1,nu,2,true)==doctest::Approx(-1.2424533248940002).epsilon(1e-12));
   }
 }
 
@@ -747,4 +748,23 @@ TEST_CASE("GED held-scale accuracy propagates to SGED unit skew case 31101") {
   CHECK(parent.sigma==sd);CHECK(child.sigma==sd);CHECK(child.xi==1.);
   CHECK(child.mu==parent.mu);CHECK(child.nu==parent.nu);
   CHECK(child.logLik==parent.logLik);CHECK(child.certified==parent.certified);
+}
+
+TEST_CASE("GED tail enclosure cannot certify a false underflowed center") {
+ // The center lies outside the uniform edge, but its uncertainty interval
+ // also contains radii inside it. Neither requested tail is certified.
+ const cppunivariate::ged_detail::Radius r{1e-4,.01,.5493061443340549};
+ for(bool lower:{false,true})for(bool log:{false,true})
+  CHECK(std::isnan(cppunivariate::ged_detail::probability_precise(r,1e8,-std::log(2.),false,lower,log)));
+}
+
+TEST_CASE("GED representable tiny tails retain the relative error gate") {
+ CHECK_FALSE(cppunivariate::ged_detail::probability_interval(-701.,-702.,-700.5,false));
+ CHECK_FALSE(cppunivariate::ged_detail::probability_interval(-740.,-740.-1e-12,-740.+1e-12,false));
+ CHECK(cppunivariate::ged_detail::probability_interval(-750.,-750.-1e-8,-750.+1e-8,false));
+ const cppunivariate::ged_detail::Radius r{std::log(680.)/1e8,1e-14,.5493061443340549};
+ CHECK(std::isnan(cppunivariate::ged_detail::probability_precise(r,1e8,-std::log(2.),true,true,false)));
+ CHECK(std::isnan(cppunivariate::special::skew_probability::bounds(-701.,NAN,-702.,true,true,false)));
+ const double aligned=16*std::numeric_limits<double>::denorm_min(),lp=std::log(aligned);
+ CHECK(cppunivariate::special::skew_probability::bounds(lp,lp-1e-12,lp+1e-12,true,true,false)==aligned);
 }
