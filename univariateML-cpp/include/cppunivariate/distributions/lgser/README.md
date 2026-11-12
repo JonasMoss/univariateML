@@ -114,3 +114,7 @@ Empty or invalid input carries a non-success status. Degenerate samples depend
 on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+## d/p/q/r
+
+A compensated finite prefix resolves small cuts even when theta is the largest binary64 value below one. For larger cuts, integrating the partial-fraction expansion of coth gives a Stieltjes expansion of the survival in terms of $e^xE_1(x)$, $x=-k\log\theta$. The first omitted Bernoulli term bounds the error for every positive x; the scaled exponential integral uses its own signed next-term bound when x is large. The implementation keeps terms through $B_6$ and requires the $B_8$ bound below $10^{-12}$ of the sum; otherwise the geometric-series evaluator is retained and returns NaN if its bound cannot close. Quantiles invert these bounded tails. Zero-modified evaluators have a separate routing layer and are not changed by this route.

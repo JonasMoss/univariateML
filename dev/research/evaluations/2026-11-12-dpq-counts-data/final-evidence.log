@@ -1,0 +1,57 @@
+CMP far log weights, JS: [ -1.2741738170775241e+303, -1.2741738170775241e+303 ]
+Late BNB and PIG coordinates, JS: [ -82108.92817013599, -12805552.582318526 ] -9999500333187624
+{
+  "reference_log_mass": "-1.27417381707752417859976263825518995936384964450115362189626112457389467409e+303",
+  "upper_tail_log_width": "11.85572540784604201988995530550956776292",
+  "records": [
+    {
+      "mode": "native",
+      "op": "d",
+      "actual": -1.2741738170775241e+303,
+      "normalized_error": "6.51202165827070502778163821564e-17",
+      "binary_sha256": "3051ae6e651cb36b111b1697aa791ff63457ee3bcfdc4210c150d0a0ebef66b3"
+    },
+    {
+      "mode": "native",
+      "op": "p-upper",
+      "actual": -1.2741738170775241e+303,
+      "normalized_error": "6.51202165827070502778163821564e-17",
+      "binary_sha256": "3051ae6e651cb36b111b1697aa791ff63457ee3bcfdc4210c150d0a0ebef66b3"
+    },
+    {
+      "mode": "double",
+      "op": "d",
+      "actual": -1.2741738170775241e+303,
+      "normalized_error": "6.51202165827070502778163821564e-17",
+      "binary_sha256": "8e2ab037cd0e64b4e6cedf229a4b0b2b0beb255154a205b48099fc2edaa86b2b"
+    },
+    {
+      "mode": "double",
+      "op": "p-upper",
+      "actual": -1.2741738170775241e+303,
+      "normalized_error": "6.51202165827070502778163821564e-17",
+      "binary_sha256": "8e2ab037cd0e64b4e6cedf229a4b0b2b0beb255154a205b48099fc2edaa86b2b"
+    },
+    {
+      "mode": "JS",
+      "op": "d",
+      "actual": -1.2741738170775241e+303,
+      "normalized_error": "6.51202165827070502778163821564e-17"
+    },
+    {
+      "mode": "JS",
+      "op": "p-upper",
+      "actual": -1.2741738170775241e+303,
+      "normalized_error": "6.51202165827070502778163821564e-17"
+    }
+  ]
+}
+near-Poisson mass references: 12 passed
+Witnesses: 18 maximum normalized error: 4.773959005888173e-15
+building 1 families
+replaying frozen inputs
+{'records': 113, 'by_family': {'bnbinom': {'stop': 35, 'pass': 78}}, 'attributions': {}, 'head': '217ab8b533cac25ccc8eba8d66eccde1b376f0b4', 'compiler': 'c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0'}
+building 1 families
+replaying frozen inputs
+{'records': 113, 'by_family': {'bnbinom': {'stop': 35, 'pass': 77, 'mismatch': 1}}, 'attributions': {'fitter': 1}, 'head': '217ab8b533cac25ccc8eba8d66eccde1b376f0b4', 'compiler': 'c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0'}
+Final fit, frozen-payload and source checks passed

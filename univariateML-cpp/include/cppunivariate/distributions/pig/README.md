@@ -108,6 +108,8 @@ The Poisson-inverse Gaussian distribution mixes a Poisson count with an inverse 
 
 ## d/p/q/r
 
+For cuts at most 200, a finite positive prefix is complemented only when its upper probability exceeds $1-e^{-0.1}$ (about 0.095), limiting roundoff amplification. For large orders, the inverse-gamma representation of the Bessel factor supplies an alternating expansion whose next absolute term bounds its error. Euler's beta integral sums each term over the count tail. With $A=2\mu^2/(s+2\mu^2)$, $v=n(1-A)(e^w-1)/A$ resolves the heavy-tail boundary layer. Bounds on four log derivatives certify each positive Simpson panel; the omitted $v>V$ integral is at most $e^{-V}$ times the sum of absolute coefficients. The integrated route requires $n>100000$, $c<n/4$, where $c=s/2+(s/\mu)^2/4$, and combined relative quadrature/truncation bound below $10^{-11}$. It returns NaN if $1-A$ underflows, the scaled integration coordinate is not representable, or its depth-50 or million-panel guard cannot close. Smaller heavy-tail cuts bridge to this tail by positive recurrence, without subtracting a near-one CDF.
+
 ### Zero-count probability
 
 The CDF at zero is the closed zero-count mass. At mean one and shape

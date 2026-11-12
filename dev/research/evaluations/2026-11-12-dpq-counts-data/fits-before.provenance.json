@@ -1,0 +1,13 @@
+{
+  "source_sha256": "da874a8d5291bd28ccb108021c37007fbaa80e8590731020159aa1d8fcb2e593",
+  "families": [
+    "bnbinom",
+    "cmp",
+    "lgser",
+    "pig",
+    "skellam"
+  ],
+  "no_long_double": false,
+  "timeout": 30,
+  "case": null
+}

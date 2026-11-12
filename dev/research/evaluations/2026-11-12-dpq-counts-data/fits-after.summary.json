@@ -1,0 +1,26 @@
+{
+  "records": 313,
+  "by_family": {
+    "bnbinom": {
+      "stop": 35,
+      "pass": 78
+    },
+    "cmp": {
+      "pass": 46,
+      "stop": 11
+    },
+    "lgser": {
+      "pass": 29
+    },
+    "pig": {
+      "pass": 37,
+      "stop": 20
+    },
+    "skellam": {
+      "pass": 57
+    }
+  },
+  "attributions": {},
+  "head": "217ab8b533cac25ccc8eba8d66eccde1b376f0b4",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

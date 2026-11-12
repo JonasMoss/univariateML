@@ -111,6 +111,3 @@ def build(p, logd):
     # O(z^2) recurrence entries merely to recheck this analytic identity.
     ref.normalization=mp.mpf(1)
     return ref
-
-
-truth_point_exclusions = [([1.0, 1e-08], 'TASK-196 open: public CDF returns NaN at x=1.0, lower=True, log=True; independent value -7.070317853112745e-05. Positive heavy count tails exceed the 10000000-cell remainder guard; a bounded tail integral is missing.'), ([100000000.0, 1.0], 'TASK-196 open: public CDF returns NaN at x=2.0, lower=True, log=True; independent value -0.6562700043193149. Positive heavy count tails exceed the 10000000-cell remainder guard; a bounded tail integral is missing.')]

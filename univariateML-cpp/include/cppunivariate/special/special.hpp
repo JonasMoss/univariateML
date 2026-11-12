@@ -20,6 +20,7 @@
 #include <boost/math/special_functions/owens_t.hpp>
 #include <boost/math/special_functions/digamma.hpp>
 #include <boost/math/special_functions/polygamma.hpp>
+#include <boost/math/special_functions/expint.hpp>
 #include <boost/math/special_functions/trigamma.hpp>
 #include <boost/math/distributions/beta.hpp>
 #include <boost/math/distributions/binomial.hpp>
@@ -65,6 +66,8 @@ inline double pnchisq(double x, double df, double ncp, bool lower) {
 }
 
 // --- log-gamma family ------------------------------------------------------
+
+inline double expint_e1(double x) { return boost::math::expint(1, x, NoThrowPolicy{}); }
 
 inline double digamma(double x) { return boost::math::digamma(x, NoThrowPolicy{}); }
 

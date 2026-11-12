@@ -795,3 +795,15 @@ TEST_CASE("bnbinom: unit-shape zero CDF and unresolved count increment") {
  CHECK(cppunivariate::distributions::pbnbinom(0,1e308,1e308,1,true,false)==doctest::Approx(.5));
  CHECK(cppunivariate::distributions::pbnbinom(1,1e308,1e308,1,true,false)==doctest::Approx(.75));
 }
+
+TEST_CASE("bnbinom: extreme count-tail regression") {
+  CHECK(cppunivariate::distributions::pbnbinom(1,1e8,1e16,1e8,true,true) == doctest::Approx(-0.3068528194400547).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("bnbinom: near-Poisson mass beyond prefix chart") {
+  // Independent 100-digit gamma identity at the exact binary64 inputs.
+  CHECK(cppunivariate::distributions::dbnbinom(10000,1e8,1e16,1e8,true) ==
+    doctest::Approx(-82108.928170136018222).epsilon(1e-10).scale(0));
+  CHECK(cppunivariate::distributions::dbnbinom(1e6,1e8,1e16,1e8,true) ==
+    doctest::Approx(-12805552.582318537508).epsilon(1e-10).scale(0));
+}

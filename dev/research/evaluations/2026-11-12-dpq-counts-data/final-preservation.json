@@ -1,0 +1,53 @@
+{
+  "baseline": "217ab8b533cac25ccc8eba8d66eccde1b376f0b4",
+  "families": [
+    {
+      "family": "bnbinom",
+      "numeric_payload_preserved": true,
+      "fitter_golden_generator_unchanged": true
+    },
+    {
+      "family": "cmp",
+      "numeric_payload_preserved": true,
+      "fitter_golden_generator_unchanged": true
+    },
+    {
+      "family": "lgser",
+      "numeric_payload_preserved": true,
+      "fitter_golden_generator_unchanged": true
+    },
+    {
+      "family": "pig",
+      "numeric_payload_preserved": true,
+      "fitter_golden_generator_unchanged": true
+    },
+    {
+      "family": "skellam",
+      "numeric_payload_preserved": true,
+      "fitter_golden_generator_unchanged": true
+    }
+  ],
+  "source_sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/README.md": "d5d796be69229d6c249188fbdb2fb7210f9096b1dd59a5ef33e44c6b95b0e9d8",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/dpqr.hpp": "158f90d5368f287efa913fa30df1d7c70ade3847d32fe062e87089a50b36c91e",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp": "75327d6665174db32c63b9fba8488167c7cff54da9e8d60bb24378843a30c666",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/truth.json": "7922ca32fb279900a4a61bcd050b8b26b8228701b68f6147aa2f11aeef1e395e",
+    "univariateML-cpp/include/cppunivariate/distributions/cmp/README.md": "d16972416d02d269a403a449b3f216a31304bb3fb15868bf7603c37931d2f959",
+    "univariateML-cpp/include/cppunivariate/distributions/cmp/dpqr.hpp": "8dbd270c61fceeec0b9a66cbe5142feb9fef87df6f6e7ec1aad367502ca1db2e",
+    "univariateML-cpp/include/cppunivariate/distributions/cmp/test.cpp": "8a3c9638f7f4a6d5f96b835e8f5efa1ceb523f6b712ebf3127648e05dbd4c824",
+    "univariateML-cpp/include/cppunivariate/distributions/cmp/truth.json": "3a95c3760d0672fdde0f85270f5e14b534e1b081d63efc0b4743fbb0811dd620",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/README.md": "38ad5f7380bf1016c88e0aece427f65d6153e2f7cf6aaf56b58ce371fd955c9e",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/dpqr.hpp": "4ab2bf5c1ea65128e6b747df0616d170c10d8d220db455f3197b01aecbd2c548",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/test.cpp": "9673593f3effc88eac177d79bcb422bf4723317d7baf2c88ea6e4e45ae90a643",
+    "univariateML-cpp/include/cppunivariate/distributions/lgser/truth.json": "10f7b914d527ea5601d319d3fe0d1f7e9af67d88cc355bfab7b1a7b1652a3925",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/README.md": "e0c06272e683d98798dd3ff6c0813337cea2231952d31af8111a10b9a7f3d72a",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/dpqr.hpp": "dadc7d1a1ee6e049014bdb78b3707f456c6ca12392f5099534b168672dcf9e4a",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/test.cpp": "949d30ce32c72263e984557b875c08a2d60f7db049092065d922b4c6f6a005fd",
+    "univariateML-cpp/include/cppunivariate/distributions/pig/truth.json": "9bc344506092fdc55269231cbadd2c1272952866c25d9eefdfdd4bb6f882099e",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/README.md": "f7db5a86a0fdb7b6d78a9661ea34d8e80799fafd72bf0212aad753b9b3a121e8",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/dpqr.hpp": "e011457b03af2e6ba43ee853e3592ffa9ec59d3dcb6c2c4df18da674afeaa092",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/test.cpp": "7ea96de4430c45f458459acda5822edcfa7ea54345318076cac66e1b053d55fc",
+    "univariateML-cpp/include/cppunivariate/distributions/skellam/truth.json": "fb2d385701606b69b942addd0ac68ec9b7f2d6905c4479bc5a9b3a63d6d6be76",
+    "univariateML-cpp/include/cppunivariate/special/special.hpp": "abe6425d7ea5817d8c91a385901b9ed0cee1a7053c2d79a2e589d3d18df6c154"
+  }
+}

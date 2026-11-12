@@ -1,0 +1,1273 @@
+python3 bindings/js/run-tests.py
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+TAP version 13
+# Subtest: sstd xi-only certificate, reflection, budget and half-t comparison
+ok 1 - sstd xi-only certificate, reflection, budget and half-t comparison
+  ---
+  duration_ms: 39.468865
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal sign-uncertain-seam structured tie
+ok 2 - Burr and reciprocal sign-uncertain-seam structured tie
+  ---
+  duration_ms: 33.37927
+  type: 'test'
+  ...
+# Subtest: std certificate distinguishes ordinary t2 and collapse paths
+ok 3 - std certificate distinguishes ordinary t2 and collapse paths
+  ---
+  duration_ms: 1405.092425
+  type: 'test'
+  ...
+# Subtest: lst and std fixed-scale location certificates transport equal maxima
+ok 4 - lst and std fixed-scale location certificates transport equal maxima
+  ---
+  duration_ms: 80.936032
+  type: 'test'
+  ...
+# Subtest: lst and std uncertified held free-shape searches preserve golden fits
+ok 5 - lst and std uncertified held free-shape searches preserve golden fits
+  ---
+  duration_ms: 40937.759099
+  type: 'test'
+  ...
+# Subtest: binomial probability solves stop numerically before returning an unresolved coefficient
+ok 6 - binomial probability solves stop numerically before returning an unresolved coefficient
+  ---
+  duration_ms: 77.353321
+  type: 'test'
+  ...
+# Subtest: genbeta rounded log ties are a numerical stop
+ok 7 - genbeta rounded log ties are a numerical stop
+  ---
+  duration_ms: 61.868429
+  type: 'test'
+  ...
+# Subtest: EMG certified conditional routes and numerical location stops
+ok 8 - EMG certified conditional routes and numerical location stops
+  ---
+  duration_ms: 55.723966
+  type: 'test'
+  ...
+# Subtest: GED free-scale uniform stops include certified global bounds
+ok 9 - GED free-scale uniform stops include certified global bounds
+  ---
+  duration_ms: 57.195567
+  type: 'test'
+  ...
+# Subtest: GED finite free-shape golden subsets pass the global certificate
+ok 10 - GED finite free-shape golden subsets pass the global certificate
+  ---
+  duration_ms: 899.300714
+  type: 'test'
+  ...
+# Subtest: higher-order binomial face signs retain proved stops or uncertified fits
+ok 11 - higher-order binomial face signs retain proved stops or uncertified fits
+  ---
+  duration_ms: 93.252703
+  type: 'test'
+  ...
+# Subtest: ZIB tiny held probabilities preserve the unique all-zero inflation
+ok 12 - ZIB tiny held probabilities preserve the unique all-zero inflation
+  ---
+  duration_ms: 65.802763
+  type: 'test'
+  ...
+# Subtest: binomial relatives retain certified Poisson limit witnesses
+ok 13 - binomial relatives retain certified Poisson limit witnesses
+  ---
+  duration_ms: 117.218518
+  type: 'test'
+  ...
+# Subtest: genbeta held q uses certified finite maxima and terminal neighborhood stops
+ok 14 - genbeta held q uses certified finite maxima and terminal neighborhood stops
+  ---
+  duration_ms: 106.467027
+  type: 'test'
+  ...
+# Subtest: bnbinom signed Poisson faces and budget fallbacks keep their labels
+ok 15 - bnbinom signed Poisson faces and budget fallbacks keep their labels
+  ---
+  duration_ms: 241.712417
+  type: 'test'
+  ...
+# Subtest: transformed profiles retain finite ulp-wide fits with explicit uncertified flags
+ok 16 - transformed profiles retain finite ulp-wide fits with explicit uncertified flags
+  ---
+  duration_ms: 71.817582
+  type: 'test'
+  ...
+# Subtest: genbeta gamma face preserves its structured legacy payload
+ok 17 - genbeta gamma face preserves its structured legacy payload
+  ---
+  duration_ms: 28319.657826
+  type: 'test'
+  ...
+# Subtest: GEV and Frechet held nuisance certificate markers cross the common seam
+ok 18 - GEV and Frechet held nuisance certificate markers cross the common seam
+  ---
+  duration_ms: 562.716207
+  type: 'test'
+  ...
+# Subtest: cmp shared golden
+ok 19 - cmp shared golden
+  ---
+  duration_ms: 19.170074
+  type: 'test'
+  ...
+# Subtest: ZINB certified ZIP and Poisson stops name their limiting coefficients
+ok 20 - ZINB certified ZIP and Poisson stops name their limiting coefficients
+  ---
+  duration_ms: 49.381285
+  type: 'test'
+  ...
+# Subtest: genbeta critical held p one half preserves the small-power quadratic score
+ok 21 - genbeta critical held p one half preserves the small-power quadratic score
+  ---
+  duration_ms: 75.494909
+  type: 'test'
+  ...
+# Subtest: fatigue subnormal coefficient reconstruction must retain relative accuracy
+ok 22 - fatigue subnormal coefficient reconstruction must retain relative accuracy
+  ---
+  duration_ms: 76.845105
+  type: 'test'
+  ...
+# Subtest: lst Cauchy equality checks and projects the represented maximizing curve
+ok 23 - lst Cauchy equality checks and projects the represented maximizing curve
+  ---
+  duration_ms: 67.387508
+  type: 'test'
+  ...
+# Subtest: GEV and Frechet half-minimum certificates distinguish attainment
+ok 24 - GEV and Frechet half-minimum certificates distinguish attainment
+  ---
+  duration_ms: 77.920631
+  type: 'test'
+  ...
+# Subtest: bnbinom alpha-free pair certificates transport the actual held value
+ok 25 - bnbinom alpha-free pair certificates transport the actual held value
+  ---
+  duration_ms: 521.031747
+  type: 'test'
+  ...
+# Subtest: betapr all-free certificate returns verified fits and structured global stops
+ok 26 - betapr all-free certificate returns verified fits and structured global stops
+  ---
+  duration_ms: 136.859852
+  type: 'test'
+  ...
+# Subtest: GB2 constant held-shape scale rejects tiny-power log-ratio amplification
+ok 27 - GB2 constant held-shape scale rejects tiny-power log-ratio amplification
+  ---
+  duration_ms: 65.679376
+  type: 'test'
+  ...
+# Subtest: GB2 subunit held-shape endpoint ties retain their likelihood penalty
+ok 28 - GB2 subunit held-shape endpoint ties retain their likelihood penalty
+  ---
+  duration_ms: 71.108644
+  type: 'test'
+  ...
+# Subtest: diagnostics and vector flags
+ok 29 - diagnostics and vector flags
+  ---
+  duration_ms: 42.163864
+  type: 'test'
+  ...
+# Subtest: conditional scalar fits retain coefficient accuracy
+ok 30 - conditional scalar fits retain coefficient accuracy
+  ---
+  duration_ms: 5.769147
+  type: 'test'
+  ...
+# Subtest: sn conditional certificates and nonunique shape have shared stops
+ok 31 - sn conditional certificates and nonunique shape have shared stops
+  ---
+  duration_ms: 106.103462
+  type: 'test'
+  ...
+# Subtest: trgamma held endpoint comparisons stop without asserting nonattainment
+ok 32 - trgamma held endpoint comparisons stop without asserting nonattainment
+  ---
+  duration_ms: 78.732851
+  type: 'test'
+  ...
+# Subtest: SGED subunit asymmetric scale certificates agree with independent fixtures
+ok 33 - SGED subunit asymmetric scale certificates agree with independent fixtures
+  ---
+  duration_ms: 88.061461
+  type: 'test'
+  ...
+# Subtest: extreme scalar certificates expose common binding stops
+ok 34 - extreme scalar certificates expose common binding stops
+  ---
+  duration_ms: 75.866059
+  type: 'test'
+  ...
+# Subtest: GED Laplace median intervals retain the original observation endpoints
+ok 35 - GED Laplace median intervals retain the original observation endpoints
+  ---
+  duration_ms: 84.923373
+  type: 'test'
+  ...
+# Subtest: SGED balanced endpoint uniform proof covers asymmetric and free skew
+ok 36 - SGED balanced endpoint uniform proof covers asymmetric and free skew
+  ---
+  duration_ms: 62.916844
+  type: 'test'
+  ...
+# Subtest: Bhatt per-fit certification preserves successful searches
+ok 37 - Bhatt per-fit certification preserves successful searches
+  ---
+  duration_ms: 19390.68041
+  type: 'test'
+  ...
+# Subtest: genbeta signed squared-power certificate selects a global gamma face
+ok 38 - genbeta signed squared-power certificate selects a global gamma face
+  ---
+  duration_ms: 15879.563894
+  type: 'test'
+  ...
+# Subtest: GB2 held power transfers non-unit conditional certificates and gamma witnesses
+ok 39 - GB2 held power transfers non-unit conditional certificates and gamma witnesses
+  ---
+  duration_ms: 13.556597
+  type: 'test'
+  ...
+# Subtest: continuous fallback carries the per-fit certification flag
+ok 40 - continuous fallback carries the per-fit certification flag
+  ---
+  duration_ms: 6.133289
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal nearly-constant uncertified fallback
+ok 41 - Burr and reciprocal nearly-constant uncertified fallback
+  ---
+  duration_ms: 1419.402723
+  type: 'test'
+  ...
+# Subtest: Skellam tail-cover budget preserves a feasible witness
+ok 42 - Skellam tail-cover budget preserves a feasible witness
+  ---
+  duration_ms: 3.950775
+  type: 'test'
+  ...
+# Subtest: conditional free coefficients reject unrepresentable subnormals
+ok 43 - conditional free coefficients reject unrepresentable subnormals
+  ---
+  duration_ms: 2.046285
+  type: 'test'
+  ...
+# Subtest: lst and std iterlim scales the certificate and preserves budget witnesses
+ok 44 - lst and std iterlim scales the certificate and preserves budget witnesses
+  ---
+  duration_ms: 329.701315
+  type: 'test'
+  ...
+# Subtest: trgamma certificates preserve held endpoints and reciprocal likelihoods
+ok 45 - trgamma certificates preserve held endpoints and reciprocal likelihoods
+  ---
+  duration_ms: 65.64698
+  type: 'test'
+  ...
+# Subtest: trgamma limit witnesses preserve raw support endpoints
+ok 46 - trgamma limit witnesses preserve raw support endpoints
+  ---
+  duration_ms: 70.908921
+  type: 'test'
+  ...
+# Subtest: Bhattacharjee normal member distinguishes residual underflow and precision
+ok 47 - Bhattacharjee normal member distinguishes residual underflow and precision
+  ---
+  duration_ms: 65.092834
+  type: 'test'
+  ...
+# Subtest: Bhattacharjee physical comparisons and stopped likelihood witnesses
+ok 48 - Bhattacharjee physical comparisons and stopped likelihood witnesses
+  ---
+  duration_ms: 94.622158
+  type: 'test'
+  ...
+# Subtest: SGED symmetric free-shape delegate transports fits and structured stops
+ok 49 - SGED symmetric free-shape delegate transports fits and structured stops
+  ---
+  duration_ms: 1674.853812
+  type: 'test'
+  ...
+# Subtest: heavy-tail inverse samplers replay finite quantiles beyond 2^53
+ok 50 - heavy-tail inverse samplers replay finite quantiles beyond 2^53
+  ---
+  duration_ms: 1390.771013
+  type: 'test'
+  ...
+# Subtest: GEV negative-shape coefficient corners preserve the gap dependency
+ok 51 - GEV negative-shape coefficient corners preserve the gap dependency
+  ---
+  duration_ms: 66.755896
+  type: 'test'
+  ...
+# Subtest: Student held subsets expose proved symmetry nonuniqueness
+ok 52 - Student held subsets expose proved symmetry nonuniqueness
+  ---
+  duration_ms: 75.291119
+  type: 'test'
+  ...
+# Subtest: bnbinom shared golden
+ok 53 - bnbinom shared golden
+  ---
+  duration_ms: 3219.193887
+  type: 'test'
+  ...
+# Subtest: bnbinom held-value diagnostic
+ok 54 - bnbinom held-value diagnostic
+  ---
+  duration_ms: 1.525308
+  type: 'test'
+  ...
+# Subtest: cmp all held subsets
+ok 55 - cmp all held subsets
+  ---
+  duration_ms: 4.62668
+  type: 'test'
+  ...
+# Subtest: scaled normal residuals preserve extreme units in every held subset
+ok 56 - scaled normal residuals preserve extreme units in every held subset
+  ---
+  duration_ms: 4.858402
+  type: 'test'
+  ...
+# Subtest: discrete empty preflight budget has no invented candidate
+ok 57 - discrete empty preflight budget has no invented candidate
+  ---
+  duration_ms: 10.493085
+  type: 'test'
+  ...
+# Subtest: conditional snorm and skew-t ambiguities retain both compared models
+ok 58 - conditional snorm and skew-t ambiguities retain both compared models
+  ---
+  duration_ms: 16.087311
+  type: 'test'
+  ...
+# Subtest: snorm constant sample with held mean has a constrained half-normal supremum
+ok 59 - snorm constant sample with held mean has a constrained half-normal supremum
+  ---
+  duration_ms: 1.596643
+  type: 'test'
+  ...
+# Subtest: unresolved folded-normal quartic identification is conditioning
+ok 60 - unresolved folded-normal quartic identification is conditioning
+  ---
+  duration_ms: 12.660326
+  type: 'test'
+  ...
+# Subtest: betapr flat gamma-adjacent profile retains coefficient accuracy in WASM
+ok 61 - betapr flat gamma-adjacent profile retains coefficient accuracy in WASM
+  ---
+  duration_ms: 241.697014
+  type: 'test'
+  ...
+# Subtest: bnbinom alpha-held global certificate keeps both labels and the diagonal witness
+ok 62 - bnbinom alpha-held global certificate keeps both labels and the diagonal witness
+  ---
+  duration_ms: 700.791987
+  type: 'test'
+  ...
+# Subtest: ZIB unrepresentable finite log likelihoods stop numerically
+ok 63 - ZIB unrepresentable finite log likelihoods stop numerically
+  ---
+  duration_ms: 72.100461
+  type: 'test'
+  ...
+# Subtest: skew-t and skew-GED retain large-shape gamma moments
+ok 64 - skew-t and skew-GED retain large-shape gamma moments
+  ---
+  duration_ms: 12.917906
+  type: 'test'
+  ...
+# Subtest: bnbinom Bernstein supporting polynomials prove additional all-free and pair faces
+ok 65 - bnbinom Bernstein supporting polynomials prove additional all-free and pair faces
+  ---
+  duration_ms: 69.304025
+  type: 'test'
+  ...
+# Subtest: ZINB certificate transports competing maxima and terminal budgets
+ok 66 - ZINB certificate transports competing maxima and terminal budgets
+  ---
+  duration_ms: 11.389217
+  type: 'test'
+  ...
+# Subtest: snorm reflected finite modes remain a comparison tie
+ok 67 - snorm reflected finite modes remain a comparison tie
+  ---
+  duration_ms: 5.321666
+  type: 'test'
+  ...
+# Subtest: CMB shared CMP work remains available at higher iterlim
+ok 68 - CMB shared CMP work remains available at higher iterlim
+  ---
+  duration_ms: 16.921101
+  type: 'test'
+  ...
+# Subtest: fatigue rounded threshold translations stop numerically rather than claiming nonexistence
+ok 69 - fatigue rounded threshold translations stop numerically rather than claiming nonexistence
+  ---
+  duration_ms: 52.320098
+  type: 'test'
+  ...
+# Subtest: exact factorial moments certify a nonsaturated truncated Poisson face
+ok 70 - exact factorial moments certify a nonsaturated truncated Poisson face
+  ---
+  duration_ms: 51.725526
+  type: 'test'
+  ...
+# Subtest: GB2 subunit held shapes certify endpoint faces with held-endpoint advice
+ok 71 - GB2 subunit held shapes certify endpoint faces with held-endpoint advice
+  ---
+  duration_ms: 48.458119
+  type: 'test'
+  ...
+# Subtest: bnbinom legacy fallbacks and proved decisions expose certification labels
+ok 72 - bnbinom legacy fallbacks and proved decisions expose certification labels
+  ---
+  duration_ms: 3053.094677
+  type: 'test'
+  ...
+# Subtest: genbeta all-free finite certificate preserves the golden and never certifies unattainable precision
+ok 73 - genbeta all-free finite certificate preserves the golden and never certifies unattainable precision
+  ---
+  duration_ms: 316.648346
+  type: 'test'
+  ...
+# Subtest: cmp generated truth and sampler
+ok 74 - cmp generated truth and sampler
+  ---
+  duration_ms: 30504.855309
+  type: 'test'
+  ...
+# Subtest: st constant-data location-skew faces retain the sharp global bound
+ok 75 - st constant-data location-skew faces retain the sharp global bound
+  ---
+  duration_ms: 4.837179
+  type: 'test'
+  ...
+# Subtest: trgamma held-scale concentration and numerical stops have distinct kinds
+ok 76 - trgamma held-scale concentration and numerical stops have distinct kinds
+  ---
+  duration_ms: 63.989084
+  type: 'test'
+  ...
+# Subtest: GED held-shape arithmetic losses produce numerical stops
+ok 77 - GED held-shape arithmetic losses produce numerical stops
+  ---
+  duration_ms: 46.68814
+  type: 'test'
+  ...
+# Subtest: binomial relatives retain proved finite and Poisson witnesses
+ok 78 - binomial relatives retain proved finite and Poisson witnesses
+  ---
+  duration_ms: 102.651251
+  type: 'test'
+  ...
+# Subtest: GB2 constant mixed-power finite regime has a certified fit
+ok 79 - GB2 constant mixed-power finite regime has a certified fit
+  ---
+  duration_ms: 47.75089
+  type: 'test'
+  ...
+# Subtest: bnbinom unproved all-free face comparisons retain the legacy limit
+ok 80 - bnbinom unproved all-free face comparisons retain the legacy limit
+  ---
+  duration_ms: 226.224438
+  type: 'test'
+  ...
+# Subtest: raw transformed sufficient statistics match independent concentrated references
+ok 81 - raw transformed sufficient statistics match independent concentrated references
+  ---
+  duration_ms: 53.218973
+  type: 'test'
+  ...
+# Subtest: bnbinom generated truth and sampler
+ok 82 - bnbinom generated truth and sampler
+  ---
+  duration_ms: 2205.695878
+  type: 'test'
+  ...
+# Subtest: structured stops survive the JS Error facade
+ok 83 - structured stops survive the JS Error facade
+  ---
+  duration_ms: 14.681182
+  type: 'test'
+  ...
+# Subtest: Power face payload follows public endpoint-then-shape order
+ok 84 - Power face payload follows public endpoint-then-shape order
+  ---
+  duration_ms: 642.432752
+  type: 'test'
+  ...
+# Subtest: tlambda free-shape half ties retain a finite improvement and an unresolved global bound
+ok 85 - tlambda free-shape half ties retain a finite improvement and an unresolved global bound
+  ---
+  duration_ms: 1.985567
+  type: 'test'
+  ...
+# Subtest: st symmetric all-nuisance reduction transports the normal face
+ok 86 - st symmetric all-nuisance reduction transports the normal face
+  ---
+  duration_ms: 6.317188
+  type: 'test'
+  ...
+# Subtest: st unresolved thin-tail score arithmetic remains a numerical stop
+ok 87 - st unresolved thin-tail score arithmetic remains a numerical stop
+  ---
+  duration_ms: 0.817491
+  type: 'test'
+  ...
+# Subtest: accuracy stops distinguish binary64 tolerance from conditioning
+ok 88 - accuracy stops distinguish binary64 tolerance from conditioning
+  ---
+  duration_ms: 8.364482
+  type: 'test'
+  ...
+# Subtest: GEV two-point count certificate avoids a rounded sample mean
+ok 89 - GEV two-point count certificate avoids a rounded sample mean
+  ---
+  duration_ms: 72.291281
+  type: 'test'
+  ...
+# Subtest: GED analytic held-sd shape fits and median ties agree across bindings
+ok 90 - GED analytic held-sd shape fits and median ties agree across bindings
+  ---
+  duration_ms: 75.599141
+  type: 'test'
+  ...
+# Subtest: SGED weighted median and smooth reflected half-GED ties retain their witnesses
+ok 91 - SGED weighted median and smooth reflected half-GED ties retain their witnesses
+  ---
+  duration_ms: 93.426014
+  type: 'test'
+  ...
+# Subtest: transformed normal and normalized scale families preserve extreme units
+ok 92 - transformed normal and normalized scale families preserve extreme units
+  ---
+  duration_ms: 13.008088
+  type: 'test'
+  ...
+# Subtest: an unordered Frechet Gumbel comparison retains the finite search
+ok 93 - an unordered Frechet Gumbel comparison retains the finite search
+  ---
+  duration_ms: 45.36501
+  type: 'test'
+  ...
+# Subtest: covariance diagnostics and input ownership
+ok 94 - covariance diagnostics and input ownership
+  ---
+  duration_ms: 53.099529
+  type: 'test'
+  ...
+# Subtest: Lomax budget witnesses retain public delegate coordinates and bounds
+ok 95 - Lomax budget witnesses retain public delegate coordinates and bounds
+  ---
+  duration_ms: 25.649867
+  type: 'test'
+  ...
+# Subtest: GB2 delegated budget keeps transformed-gamma witness names
+ok 96 - GB2 delegated budget keeps transformed-gamma witness names
+  ---
+  duration_ms: 15.877153
+  type: 'test'
+  ...
+# Subtest: CMP ledger budget retains witnesses; huge modes are numerical
+ok 97 - CMP ledger budget retains witnesses; huge modes are numerical
+  ---
+  duration_ms: 42.465449
+  type: 'test'
+  ...
+# Subtest: std certificate resolves the shallow quantile maximum
+ok 98 - std certificate resolves the shallow quantile maximum
+  ---
+  duration_ms: 2978.071027
+  type: 'test'
+  ...
+# Subtest: GED rounded held-sd endpoints cannot select a uniform face
+ok 99 - GED rounded held-sd endpoints cannot select a uniform face
+  ---
+  duration_ms: 59.477951
+  type: 'test'
+  ...
+# Subtest: GED constant data away from a held mean have a uniform limit
+ok 100 - GED constant data away from a held mean have a uniform limit
+  ---
+  duration_ms: 68.314833
+  type: 'test'
+  ...
+# Subtest: GED rounded residual ties cannot select an invalid uniform support
+ok 101 - GED rounded residual ties cannot select an invalid uniform support
+  ---
+  duration_ms: 74.831142
+  type: 'test'
+  ...
+# Subtest: bnbinom NB delegate precision failures remain structured numerical stops
+ok 102 - bnbinom NB delegate precision failures remain structured numerical stops
+  ---
+  duration_ms: 74.219422
+  type: 'test'
+  ...
+# Subtest: signed binomial face certificates have finite global bounds
+ok 103 - signed binomial face certificates have finite global bounds
+  ---
+  duration_ms: 133.771247
+  type: 'test'
+  ...
+# Subtest: binomial relatives certify Poisson limits and retain finite witnesses
+ok 104 - binomial relatives certify Poisson limits and retain finite witnesses
+  ---
+  duration_ms: 122.19716
+  type: 'test'
+  ...
+# Subtest: SGED weighted free-shape and smooth free-skew profiles certify golden fits
+ok 105 - SGED weighted free-shape and smooth free-skew profiles certify golden fits
+  ---
+  duration_ms: 3569.522948
+  type: 'test'
+  ...
+# Subtest: CMB finite-size ties retain two distinct witnesses and nu-held census certifies
+ok 106 - CMB finite-size ties retain two distinct witnesses and nu-held census certifies
+  ---
+  duration_ms: 360.57632
+  type: 'test'
+  ...
+# Subtest: translated lattice normal and Laplace tails survive overflowing differences
+ok 107 - translated lattice normal and Laplace tails survive overflowing differences
+  ---
+  duration_ms: 1.885007
+  type: 'test'
+  ...
+# Subtest: EVT two-point certificates preserve public holds and typed Gumbel face
+ok 108 - EVT two-point certificates preserve public holds and typed Gumbel face
+  ---
+  duration_ms: 60.832965
+  type: 'test'
+  ...
+# Subtest: GEV public support rejects a negative zero residual
+ok 109 - GEV public support rejects a negative zero residual
+  ---
+  duration_ms: 67.921888
+  type: 'test'
+  ...
+# Subtest: delegate follow-up keeps successful uncertified parent fits
+ok 110 - delegate follow-up keeps successful uncertified parent fits
+  ---
+  duration_ms: 48.722915
+  type: 'test'
+  ...
+# Subtest: GEV coupled support corners survive normalization and outer coverage
+ok 111 - GEV coupled support corners survive normalization and outer coverage
+  ---
+  duration_ms: 58.094287
+  type: 'test'
+  ...
+# Subtest: snorm held certificate preserves opposite-face ties and root failures
+ok 112 - snorm held certificate preserves opposite-face ties and root failures
+  ---
+  duration_ms: 12.995323
+  type: 'test'
+  ...
+# Subtest: Fully held CMP evaluation uses its fixed cap and fails numerically
+ok 113 - Fully held CMP evaluation uses its fixed cap and fails numerically
+  ---
+  duration_ms: 361.196677
+  type: 'test'
+  ...
+# Subtest: fatigue certificate stops when rounding hides alpha resolution
+ok 114 - fatigue certificate stops when rounding hides alpha resolution
+  ---
+  duration_ms: 81.154868
+  type: 'test'
+  ...
+# Subtest: lst and std held solver caps return structured numerical stops
+ok 115 - lst and std held solver caps return structured numerical stops
+  ---
+  duration_ms: 85.037509
+  type: 'test'
+  ...
+# Subtest: betapr non-unit conditional certificate transports finite fits and gamma faces
+ok 116 - betapr non-unit conditional certificate transports finite fits and gamma faces
+  ---
+  duration_ms: 78.994486
+  type: 'test'
+  ...
+# Subtest: binomial relatives prove their Poisson-type limits with finite witnesses
+ok 117 - binomial relatives prove their Poisson-type limits with finite witnesses
+  ---
+  duration_ms: 161.41995
+  type: 'test'
+  ...
+# Subtest: SGED normal face conversion rejects rounded subnormal scales
+ok 118 - SGED normal face conversion rejects rounded subnormal scales
+  ---
+  duration_ms: 81.465441
+  type: 'test'
+  ...
+# Subtest: EMG outer certificate preserves budget and unresolved witnesses
+ok 119 - EMG outer certificate preserves budget and unresolved witnesses
+  ---
+  duration_ms: 82.672159
+  type: 'test'
+  ...
+# Subtest: Bhattacharjee held certificates and quantitative numerical stops
+ok 120 - Bhattacharjee held certificates and quantitative numerical stops
+  ---
+  duration_ms: 86.563247
+  type: 'test'
+  ...
+# Subtest: zib quantiles stop on extreme numerical failure
+ok 121 - zib quantiles stop on extreme numerical failure
+  ---
+  duration_ms: 7.643665
+  type: 'test'
+  ...
+# Subtest: bnbinom all-free finite certificate bounds an independent high-precision maximizer
+ok 122 - bnbinom all-free finite certificate bounds an independent high-precision maximizer
+  ---
+  duration_ms: 2441.467837
+  type: 'test'
+  ...
+# Subtest: Student legacy t2 limit keeps its class and uncertified flag
+ok 123 - Student legacy t2 limit keeps its class and uncertified flag
+  ---
+  duration_ms: 79.919264
+  type: 'test'
+  ...
+# Subtest: public facade
+ok 124 - public facade
+  ---
+  duration_ms: 834.020161
+  type: 'test'
+  ...
+# Subtest: GEV and Frechet all-free fits expose per-fit certificate markers
+ok 125 - GEV and Frechet all-free fits expose per-fit certificate markers
+  ---
+  duration_ms: 49.320349
+  type: 'test'
+  ...
+# Subtest: held-power faces retain transformed coefficients
+ok 126 - held-power faces retain transformed coefficients
+  ---
+  duration_ms: 6.49752
+  type: 'test'
+  ...
+# Subtest: translated and reciprocal delegates preserve certified stops
+ok 127 - translated and reciprocal delegates preserve certified stops
+  ---
+  duration_ms: 9.83957
+  type: 'test'
+  ...
+# Subtest: bbinom near-binomial shape enclosure survives double-width WASM arithmetic
+ok 128 - bbinom near-binomial shape enclosure survives double-width WASM arithmetic
+  ---
+  duration_ms: 19.931937
+  type: 'test'
+  ...
+# Subtest: st constant-data free-nu corner keeps both half-normal faces
+ok 129 - st constant-data free-nu corner keeps both half-normal faces
+  ---
+  duration_ms: 4.645756
+  type: 'test'
+  ...
+# Subtest: sn checks likelihood after restoring large held shapes
+ok 130 - sn checks likelihood after restoring large held shapes
+  ---
+  duration_ms: 147.699627
+  type: 'test'
+  ...
+# Subtest: genbeta power certificate keeps tiny held beta shapes in double precision
+ok 131 - genbeta power certificate keeps tiny held beta shapes in double precision
+  ---
+  duration_ms: 91.953604
+  type: 'test'
+  ...
+# Subtest: GEV shape-only certificate handles flat shapes and typed solve failure
+ok 132 - GEV shape-only certificate handles flat shapes and typed solve failure
+  ---
+  duration_ms: 79.373724
+  type: 'test'
+  ...
+# Subtest: GED a completed low-budget certificate can prove the Laplace face
+ok 133 - GED a completed low-budget certificate can prove the Laplace face
+  ---
+  duration_ms: 89.164719
+  type: 'test'
+  ...
+# Subtest: noninflated ZIP faces include the equal-moment binomial escape
+ok 134 - noninflated ZIP faces include the equal-moment binomial escape
+  ---
+  duration_ms: 108.575371
+  type: 'test'
+  ...
+# Subtest: Bhattacharjee all-held evaluation keeps a finite extreme log likelihood
+ok 135 - Bhattacharjee all-held evaluation keeps a finite extreme log likelihood
+  ---
+  duration_ms: 93.479574
+  type: 'test'
+  ...
+# Subtest: all-free Frechet minimum-majority collapse is typed nonexistence
+ok 136 - all-free Frechet minimum-majority collapse is typed nonexistence
+  ---
+  duration_ms: 77.43361
+  type: 'test'
+  ...
+# Subtest: GB2 held-scale free-power profiles use global coefficient enclosures
+ok 137 - GB2 held-scale free-power profiles use global coefficient enclosures
+  ---
+  duration_ms: 82.528418
+  type: 'test'
+  ...
+# Subtest: binomial near-critical ZIP inputs return uncertified fits
+ok 138 - binomial near-critical ZIP inputs return uncertified fits
+  ---
+  duration_ms: 150.510676
+  type: 'test'
+  ...
+# Subtest: truncated binomial certifies the finite zero-second-order boundary
+ok 139 - truncated binomial certifies the finite zero-second-order boundary
+  ---
+  duration_ms: 6466.953161
+  type: 'test'
+  ...
+# Subtest: genbeta moving-power certificate transports global likelihood bounds
+ok 140 - genbeta moving-power certificate transports global likelihood bounds
+  ---
+  duration_ms: 1093.268797
+  type: 'test'
+  ...
+# Subtest: std and lst shape certificates distinguish uncertified joint fits
+ok 141 - std and lst shape certificates distinguish uncertified joint fits
+  ---
+  duration_ms: 29004.184051
+  type: 'test'
+  ...
+# Subtest: Gaussian face witnesses retain extreme residual scales
+ok 142 - Gaussian face witnesses retain extreme residual scales
+  ---
+  duration_ms: 12.303592
+  type: 'test'
+  ...
+# Subtest: Frechet finite two-point cancellation retains an uncertified fit
+ok 143 - Frechet finite two-point cancellation retains an uncertified fit
+  ---
+  duration_ms: 3.918173
+  type: 'test'
+  ...
+# Subtest: continuous structured nonexistence and fitted faces
+ok 144 - continuous structured nonexistence and fitted faces
+  ---
+  duration_ms: 43.08601
+  type: 'test'
+  ...
+# Subtest: Newton-family unrepresentable coefficients are numerical stops
+ok 145 - Newton-family unrepresentable coefficients are numerical stops
+  ---
+  duration_ms: 5.06728
+  type: 'test'
+  ...
+# Subtest: folded-normal boundary likelihood tie receives local score polish
+ok 146 - folded-normal boundary likelihood tie receives local score polish
+  ---
+  duration_ms: 6.331094
+  type: 'test'
+  ...
+# Subtest: inverse paralogistic reciprocal overflow stays numerical
+ok 147 - inverse paralogistic reciprocal overflow stays numerical
+  ---
+  duration_ms: 1.997936
+  type: 'test'
+  ...
+# Subtest: sn finite normalization overflow is a numerical stop
+ok 148 - sn finite normalization overflow is a numerical stop
+  ---
+  duration_ms: 52.230549
+  type: 'test'
+  ...
+# Subtest: trgamma unrepresentable scales retain numerical stop details
+ok 149 - trgamma unrepresentable scales retain numerical stop details
+  ---
+  duration_ms: 127.797132
+  type: 'test'
+  ...
+# Subtest: genbeta power certificate retains a large-shape weighted exponential tail
+ok 150 - genbeta power certificate retains a large-shape weighted exponential tail
+  ---
+  duration_ms: 54.417599
+  type: 'test'
+  ...
+# Subtest: std held-shape sd overflow retains a proper ordinary-scale witness
+ok 151 - std held-shape sd overflow retains a proper ordinary-scale witness
+  ---
+  duration_ms: 53.610137
+  type: 'test'
+  ...
+# Subtest: SGED fixed-shape free-skew certificates share core routing
+ok 152 - SGED fixed-shape free-skew certificates share core routing
+  ---
+  duration_ms: 72.121222
+  type: 'test'
+  ...
+# Subtest: GEV held-minimum half ties retain the attained member
+ok 153 - GEV held-minimum half ties retain the attained member
+  ---
+  duration_ms: 101.801324
+  type: 'test'
+  ...
+# Subtest: GED inverse normalization rejects a rounded location with a different likelihood
+ok 154 - GED inverse normalization rejects a rounded location with a different likelihood
+  ---
+  duration_ms: 483.415341
+  type: 'test'
+  ...
+# Subtest: large held skew-t shape retains a certified fit and finite skew covariance
+ok 155 - large held skew-t shape retains a certified fit and finite skew covariance
+  ---
+  duration_ms: 69.887575
+  type: 'test'
+  ...
+# Subtest: count fallback exposes per-fit certification
+ok 156 - count fallback exposes per-fit certification
+  ---
+  duration_ms: 17.271206
+  type: 'test'
+  ...
+# Subtest: Frechet held scale keeps coefficient accuracy at large shape
+ok 157 - Frechet held scale keeps coefficient accuracy at large shape
+  ---
+  duration_ms: 96.851947
+  type: 'test'
+  ...
+# Subtest: join family held-subset covariance parity at the same parameter point
+ok 158 - join family held-subset covariance parity at the same parameter point
+  ---
+  duration_ms: 1024.074139
+  type: 'test'
+  ...
+# Subtest: join regimes: free symmetric skew, negative shape and free shape zero
+ok 159 - join regimes: free symmetric skew, negative shape and free shape zero
+  ---
+  duration_ms: 711.331186
+  type: 'test'
+  ...
+# Subtest: CMB fixed-size normalizers spend and raise the cell budget
+ok 160 - CMB fixed-size normalizers spend and raise the cell budget
+  ---
+  duration_ms: 10.01127
+  type: 'test'
+  ...
+# Subtest: ZIP certified rate ties, budgets and numerical stops
+ok 161 - ZIP certified rate ties, budgets and numerical stops
+  ---
+  duration_ms: 2.706156
+  type: 'test'
+  ...
+# Subtest: tlambda certificates keep contact ties, budget and collapse witnesses
+ok 162 - tlambda certificates keep contact ties, budget and collapse witnesses
+  ---
+  duration_ms: 62.581221
+  type: 'test'
+  ...
+# Subtest: small positive folded-normal basin retains coefficient accuracy
+ok 163 - small positive folded-normal basin retains coefficient accuracy
+  ---
+  duration_ms: 3.933184
+  type: 'test'
+  ...
+# Subtest: lst and std certificate normal stops name the fitted face
+ok 164 - lst and std certificate normal stops name the fitted face
+  ---
+  duration_ms: 47.691262
+  type: 'test'
+  ...
+# Subtest: J6 tnorm CMB and CMP quantitative acceptance uses common binding routes
+ok 165 - J6 tnorm CMB and CMP quantitative acceptance uses common binding routes
+  ---
+  duration_ms: 184.396439
+  type: 'test'
+  ...
+# Subtest: sn rounded residuals cannot fabricate held-endpoint factors
+ok 166 - sn rounded residuals cannot fabricate held-endpoint factors
+  ---
+  duration_ms: 68.603536
+  type: 'test'
+  ...
+# Subtest: scalar-trio certificates expose fatigue ties and solve held scalar roots
+ok 167 - scalar-trio certificates expose fatigue ties and solve held scalar roots
+  ---
+  duration_ms: 84.84974
+  type: 'test'
+  ...
+# Subtest: betapr rounded conditional peaks retain an uncertified search
+ok 168 - betapr rounded conditional peaks retain an uncertified search
+  ---
+  duration_ms: 68.405269
+  type: 'test'
+  ...
+# Subtest: GED exhausted finite root certificates stop on budget and retain witnesses
+ok 169 - GED exhausted finite root certificates stop on budget and retain witnesses
+  ---
+  duration_ms: 211.167207
+  type: 'test'
+  ...
+# Subtest: bnbinom supporting-polynomial proofs select reachable faces
+ok 170 - bnbinom supporting-polynomial proofs select reachable faces
+  ---
+  duration_ms: 61.03396
+  type: 'test'
+  ...
+# Subtest: globally winning tied ZIP faces retain both rate candidates
+ok 171 - globally winning tied ZIP faces retain both rate candidates
+  ---
+  duration_ms: 126.759553
+  type: 'test'
+  ...
+# Subtest: Frechet bounded two-point solve cap preserves numerical stop details
+ok 172 - Frechet bounded two-point solve cap preserves numerical stop details
+  ---
+  duration_ms: 78.954161
+  type: 'test'
+  ...
+# Subtest: std and lst held free-shape solver caps preserve finite diagnostic witnesses
+ok 173 - std and lst held free-shape solver caps preserve finite diagnostic witnesses
+  ---
+  duration_ms: 9439.316272
+  type: 'test'
+  ...
+# Subtest: Student signed held-location normal faces expose certification
+ok 174 - Student signed held-location normal faces expose certification
+  ---
+  duration_ms: 57.124571
+  type: 'test'
+  ...
+# Subtest: cmp held-value diagnostic
+ok 175 - cmp held-value diagnostic
+  ---
+  duration_ms: 5.190889
+  type: 'test'
+  ...
+# Subtest: unit beta-prime fallback keeps the scalar search beyond the generic shape guard
+ok 176 - unit beta-prime fallback keeps the scalar search beyond the generic shape guard
+  ---
+  duration_ms: 7.282479
+  type: 'test'
+  ...
+# Subtest: discrete stops retain fitted package and non-package faces
+ok 177 - discrete stops retain fitted package and non-package faces
+  ---
+  duration_ms: 24.612468
+  type: 'test'
+  ...
+# Subtest: held subunit GED shape retains the certified reflected half face
+ok 178 - held subunit GED shape retains the certified reflected half face
+  ---
+  duration_ms: 106.201923
+  type: 'test'
+  ...
+# Subtest: shifted Gompertz unfinished bracket preserves a finite witness
+ok 179 - shifted Gompertz unfinished bracket preserves a finite witness
+  ---
+  duration_ms: 73.034941
+  type: 'test'
+  ...
+# Subtest: SGED subunit scale ties and exhausted certificates stop in the common binding
+ok 180 - SGED subunit scale ties and exhausted certificates stop in the common binding
+  ---
+  duration_ms: 81.693763
+  type: 'test'
+  ...
+# Subtest: genbeta preserves a parent budget without a finite witness
+ok 181 - genbeta preserves a parent budget without a finite witness
+  ---
+  duration_ms: 66.185062
+  type: 'test'
+  ...
+# Subtest: GED overlapping finite shape roots retain an uncertified search
+ok 182 - GED overlapping finite shape roots retain an uncertified search
+  ---
+  duration_ms: 226.461784
+  type: 'test'
+  ...
+# Subtest: large geometric quantiles preserve the supplied probability scale
+ok 183 - large geometric quantiles preserve the supplied probability scale
+  ---
+  duration_ms: 5.295178
+  type: 'test'
+  ...
+# Subtest: EVT compatible holds keep certificate failures and constrained witnesses
+ok 184 - EVT compatible holds keep certificate failures and constrained witnesses
+  ---
+  duration_ms: 93.788396
+  type: 'test'
+  ...
+# Subtest: extreme t and GED shapes terminate in WASM and retain inversion
+ok 185 - extreme t and GED shapes terminate in WASM and retain inversion
+  ---
+  duration_ms: 1155.665186
+  type: 'test'
+  ...
+# Subtest: bnbinom all-free results expose a certified global inner profile interval
+ok 186 - bnbinom all-free results expose a certified global inner profile interval
+  ---
+  duration_ms: 3282.10257
+  type: 'test'
+  ...
+# Subtest: triangular public rounding loss is a numerical failure
+ok 187 - triangular public rounding loss is a numerical failure
+  ---
+  duration_ms: 62.199044
+  type: 'test'
+  ...
+# Subtest: Feller Pareto held-endpoint power face keeps its model identity
+ok 188 - Feller Pareto held-endpoint power face keeps its model identity
+  ---
+  duration_ms: 10.518481
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal burr-k1000-r0 structured limit
+ok 189 - Burr and reciprocal burr-k1000-r0 structured limit
+  ---
+  duration_ms: 151.79416
+  type: 'test'
+  ...
+# Subtest: unrepresentable delegate reductions stop as numerical failures
+ok 190 - unrepresentable delegate reductions stop as numerical failures
+  ---
+  duration_ms: 6.723052
+  type: 'test'
+  ...
+# Subtest: PIG binary closed form and small positive Poisson improvement survive WASM
+ok 191 - PIG binary closed form and small positive Poisson improvement survive WASM
+  ---
+  duration_ms: 4.752591
+  type: 'test'
+  ...
+# Subtest: trgamma partial logarithmic ties stop numerically
+ok 192 - trgamma partial logarithmic ties stop numerically
+  ---
+  duration_ms: 66.033403
+  type: 'test'
+  ...
+# Subtest: SGED normal face conversion reports scale overflow numerically
+ok 193 - SGED normal face conversion reports scale overflow numerically
+  ---
+  duration_ms: 69.960035
+  type: 'test'
+  ...
+# Subtest: genbeta held p one shares the Kumaraswamy certificate and stop transport
+ok 194 - genbeta held p one shares the Kumaraswamy certificate and stop transport
+  ---
+  duration_ms: 74.49679
+  type: 'test'
+  ...
+# Subtest: genbeta held p uses the complete power-profile certificate
+ok 195 - genbeta held p uses the complete power-profile certificate
+  ---
+  duration_ms: 99.778392
+  type: 'test'
+  ...
+# Subtest: bbinom signed face and small finite gains agree with the shared fitter
+ok 196 - bbinom signed face and small finite gains agree with the shared fitter
+  ---
+  duration_ms: 126.632069
+  type: 'test'
+  ...
+# Subtest: two-point binomial windows attain a finite member despite their face tie
+ok 197 - two-point binomial windows attain a finite member despite their face tie
+  ---
+  duration_ms: 135.129233
+  type: 'test'
+  ...
+# Subtest: general Frechet certificate transports the Gumbel closure in public coordinates
+ok 198 - general Frechet certificate transports the Gumbel closure in public coordinates
+  ---
+  duration_ms: 113.817474
+  type: 'test'
+  ...
+# Subtest: bnbinom delegated NB precision failures retain NB candidate names
+ok 199 - bnbinom delegated NB precision failures retain NB candidate names
+  ---
+  duration_ms: 99.626299
+  type: 'test'
+  ...
+# Subtest: bnbinom all held subsets
+ok 200 - bnbinom all held subsets
+  ---
+  duration_ms: 3993.870195
+  type: 'test'
+  ...
+# Subtest: PIG global certificate transports Poisson, tie, budget and numerical stops
+ok 201 - PIG global certificate transports Poisson, tie, budget and numerical stops
+  ---
+  duration_ms: 7.949758
+  type: 'test'
+  ...
+# Subtest: ZIP held tiny rate attains all-zero inflation maximum
+ok 202 - ZIP held tiny rate attains all-zero inflation maximum
+  ---
+  duration_ms: 4.1415
+  type: 'test'
+  ...
+# Subtest: bbinom fixed-size coefficient certificate and uncertified inclusion fallback
+ok 203 - bbinom fixed-size coefficient certificate and uncertified inclusion fallback
+  ---
+  duration_ms: 33.060894
+  type: 'test'
+  ...
+# Subtest: st conditional location and alpha-scale certificates retain stops
+ok 204 - st conditional location and alpha-scale certificates retain stops
+  ---
+  duration_ms: 18.220753
+  type: 'test'
+  ...
+# Subtest: Pareto II reciprocal scale overflow remains numerical at tight tolerance
+ok 205 - Pareto II reciprocal scale overflow remains numerical at tight tolerance
+  ---
+  duration_ms: 2.341941
+  type: 'test'
+  ...
+# Subtest: std collapse comparisons preserve the sign at binary64 rational shapes
+ok 206 - std collapse comparisons preserve the sign at binary64 rational shapes
+  ---
+  duration_ms: 77.066396
+  type: 'test'
+  ...
+# Subtest: bnbinom alpha-held range exhaustion has numerical stop details
+ok 207 - bnbinom alpha-held range exhaustion has numerical stop details
+  ---
+  duration_ms: 158.787794
+  type: 'test'
+  ...
+# Subtest: ZIB subnormal held inflation preserves log masses and its probability root
+ok 208 - ZIB subnormal held inflation preserves log masses and its probability root
+  ---
+  duration_ms: 77.454254
+  type: 'test'
+  ...
+# Subtest: GEV joint cover isolates the seam maximum and keeps precision stops
+ok 209 - GEV joint cover isolates the seam maximum and keeps precision stops
+  ---
+  duration_ms: 96.554517
+  type: 'test'
+  ...
+# Subtest: genbeta shallow coverage retains the uncertified legacy finite fit
+ok 210 - genbeta shallow coverage retains the uncertified legacy finite fit
+  ---
+  duration_ms: 41024.146704
+  type: 'test'
+  ...
+1..210
+# tests 210
+# suites 0
+# pass 210
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 92005.966743

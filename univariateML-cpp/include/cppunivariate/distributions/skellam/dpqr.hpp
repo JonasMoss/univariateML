@@ -30,6 +30,18 @@ inline double logmass(double k,double a,double b) {
   if (k<0) {k=-k;std::swap(a,b);}
   if (b==0) return poisson_log(k,a);
   if (a==0) return k==0 ? -b : -INFINITY;
+  if(k>1e6 && b<=16 && a/k<2) {
+    // Positive Poisson convolution; after j the remaining ratio is at
+    // most (a/(k+j+1))*b/(j+1), decreasing to zero.
+    double term=1,total=1;
+    for(int j=0;j<1000;++j) {
+      const double ratio=(a/(k+j+1))*b/(j+1);
+      if(ratio<1 && term*ratio/(1-ratio)<total*2e-16)
+        return distributions::dpois(k,a,true)-b+std::log(total);
+      term*=ratio;total+=term;
+    }
+    return special::kNaN;
+  }
   const CPPUNIV_EXTENDED_REAL n=k,aa=a,bb=b,z=2*std::sqrt(aa)*std::sqrt(bb);
   const CPPUNIV_EXTENDED_REAL r=std::hypot(n,z);
   if (r>10000) {
@@ -37,8 +49,20 @@ inline double logmass(double k,double a,double b) {
     const CPPUNIV_EXTENDED_REAL u1=(3-5*t2)/(24*r);
     const CPPUNIV_EXTENDED_REAL u2=(81-462*t2+385*t2*t2)/(1152*r*r);
     const CPPUNIV_EXTENDED_REAL u3=(30375-369603*t2+765765*t2*t2-425425*t2*t2*t2)/(414720*r*r*r);
-    const CPPUNIV_EXTENDED_REAL exponent=((n-(aa-bb))/r)*(n+(aa-bb))/(1+(aa+bb)/r)
+    CPPUNIV_EXTENDED_REAL exponent=((n-(aa-bb))/r)*(n+(aa-bb))/(1+(aa+bb)/r)
         +n*(std::asinh((aa-bb)/z)-(std::isfinite(n/z) ? std::asinh(n/z) : std::log(n)-std::log(z)+std::log(static_cast<CPPUNIV_EXTENDED_REAL>(2))));
+    const CPPUNIV_EXTENDED_REAL d=n-(aa-bb), scale=aa+bb;
+    if(std::abs(d)<scale*.01) {
+      // Taylor's integral form: exponent=-d^2 int_0^1 (1-t)/r(m+td) dt.
+      // Composite Simpson, 256 panels. On |d|/scale<.01, the
+      // fourth derivative bound gives relative error < 2e-15.
+      CPPUNIV_EXTENDED_REAL integral=0;
+      for(int j=0;j<=256;++j) {
+        const CPPUNIV_EXTENDED_REAL t=static_cast<CPPUNIV_EXTENDED_REAL>(j)/256;
+        integral+=(j==0||j==256?1:(j%2?4:2))*(1-t)/std::hypot(aa-bb+t*d,z);
+      }
+      exponent=-d*d*integral/(3*256);
+    }
     return static_cast<double>(exponent-CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*(std::log(CPPUNIV_EXTENDED_LITERAL(6.283185307179586476925286766559,6.283185307179586476925286766559L))+std::log(r))+std::log1p(u1+u2+u3));
   }
   const CPPUNIV_EXTENDED_REAL product=aa*bb;
@@ -82,6 +106,36 @@ inline double pskellam(double q,double mu1,double mu2,bool lower_tail=true,bool 
   if(mu1==0 && mu2==0) return log_p ? (k>=0?0:-INFINITY) : (k>=0?1:0);
   if(mu2==0 && k<0) return log_p ? -INFINITY : 0;
   if(mu1==0 && k>=0) return log_p ? 0 : 1;
+  if(std::min(mu1,mu2)<=16 && std::max(mu1,mu2)>=1e6) {
+    // Evaluate the smaller tail by positive masses, avoiding the
+    // noncentral-chi-square mixture's large-rate cancellation.
+    if(k>mu1-mu2) {
+      const double other=pskellam(-k-1,mu2,mu1,true,true);
+      const double value=special::log1mexp(other);
+      return log_p?value:std::exp(value);
+    }
+    const double anchor=skellam_detail::logmass(k,mu1,mu2);
+    if(!std::isfinite(anchor)) return special::kNaN;
+    double sum=0,correction=0;
+    for(int j=0;j<1000000;++j) {
+      const double v=k-j, term=skellam_detail::logmass(v,mu1,mu2);
+      const double weight=std::exp(term-anchor),adjusted=weight-correction,next_sum=sum+adjusted;
+      correction=(next_sum-sum)-adjusted;sum=next_sum;
+      if(!std::isfinite(sum)) return special::kNaN;
+      const double total=anchor+std::log(sum);
+      if(v<=0) {
+        const double lr=std::log(mu2)-std::log1p(-v);
+        if(lr<0 && term-total+lr-special::log1mexp(lr)<std::log(2e-14))
+          return log_p?total:std::exp(total);
+      }
+      if(v-1==v) return special::kNaN;
+      const double next=skellam_detail::logmass(v-1,mu1,mu2);
+      const double lr=next-term;
+      if(lr<0 && next-total-special::log1mexp(lr)<std::log(2e-14))
+        return log_p?total:std::exp(total);
+    }
+    return special::kNaN;
+  }
   const double prob=mu2==0 ? special::poisson_cdf(k,mu1,true) :
       mu1==0 ? special::poisson_cdf(-k-1,mu2,false) : k>=0 ? special::pnchisq(2*mu1,2*(k+1),2*mu2,false)
                         : special::pnchisq(2*mu2,-2*k,2*mu1,true);

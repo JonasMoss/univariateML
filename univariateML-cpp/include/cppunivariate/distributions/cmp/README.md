@@ -148,7 +148,7 @@ uses inversion with R's RNG.
 
 ## d/p/q/r
 
-The normalizer and both tails are summed directly.
+At unit rate and $0<\nu\le10^{-7}$, the probability evaluator uses a compensated 100000-cell prefix and an Euler--Maclaurin tail for $f(x)=\Gamma(x+1)^{-\nu}$. Writing $\delta=\nu\psi(N+1)$, log concavity bounds $f(N+t)/f(N)$ by $e^{-\delta t}$. The trapezoid remainder is at most $\int_N^\infty|f''(x)|\,dx/12$; $\psi(x+1)\le\log(x+1)$ and $\psi'(x+1)\le1/x+1/x^2$ give its explicit integrated bound. Positive Simpson panels use bounds on the first four log derivatives, and omit at most $e^{-80}/\delta$ after scaling. Acceptance requires the combined relative remainder below $2\times10^{-12}$. A panel-depth limit of 50 or one million panels without closure returns NaN. This probability-only route does not change the fitting moment evaluator. For counts at least $10^{305}$, the log weight scales the Stirling leading term before multiplication by $\log x$; the omitted correction is bounded by $\nu/(12x)$. This avoids overflowing log Gamma when the requested log weight is finite.
 
 ### Poisson probability member
 

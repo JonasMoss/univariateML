@@ -22,6 +22,27 @@ inline CPPUNIV_EXTENDED_REAL increment(CPPUNIV_EXTENDED_REAL z, CPPUNIV_EXTENDED
 }
 inline CPPUNIV_EXTENDED_REAL zero(CPPUNIV_EXTENDED_REAL r, CPPUNIV_EXTENDED_REAL a, CPPUNIV_EXTENDED_REAL b) {
   if (r > b) std::swap(r,b);
+  // Mixed Taylor difference of log Gamma. For (r+b)/a <= 1e-3,
+  // the polygamma series gives a geometric majorant for omitted terms.
+  if (a>=1e6 && (r+b)/a<=1e-3) {
+    const CPPUNIV_EXTENDED_REAL u=r/a,v=b/a;
+    CPPUNIV_EXTENDED_REAL total=0;
+    for(int n=2;n<=12;++n) {
+      CPPUNIV_EXTENDED_REAL cross=0,choose=1;
+      for(int j=1;j<n;++j) {
+        choose*=static_cast<CPPUNIV_EXTENDED_REAL>(n-j+1)/j;
+        cross+=choose*std::pow(u,j)*std::pow(v,n-j);
+      }
+      const CPPUNIV_EXTENDED_REAL coefficient=a/(n*(n-1.0))+0.5/n;
+      total+=(n%2?1:-1)*cross*coefficient;
+    }
+    // The first mixed Stirling correction has magnitude rb/(6a^3), with
+    // relative error O((r+b)/a); include its convergent binomial series.
+    CPPUNIV_EXTENDED_REAL corr=0;
+    for(int n=2;n<=12;++n)
+      corr+=(n%2?-1:1)*(std::pow(u+v,n)-std::pow(u,n)-std::pow(v,n));
+    return total-corr/(12*a);
+  }
   CPPUNIV_EXTENDED_REAL correction = 0;
   while (a < 16) {
     correction += std::log(a/(a+r)) + std::log1p(r/(a+b));
@@ -76,6 +97,29 @@ inline double log_mass(double x,double r,double a,double b) {
     if(16*std::numeric_limits<double>::epsilon()*(std::abs(first)+std::abs(second))>1e-10*std::max(1.0,std::abs(value))) return special::kNaN;
     return value;
   }
+  if(r>=1 && b>=1 && (r+b)/a<=1e-3) {
+    // Rising-factorial form: keep the huge common alpha gamma factors
+    // cancelled before evaluation. Reject cancellation beyond the practical
+    // floating-point margin; a far-count gamma-ratio chart follows below.
+    const CPPUNIV_EXTENDED_REAL R=r,A=a,B=b,X=x;
+    const CPPUNIV_EXTENDED_REAL z=zero(R,A,B),u=increment(R,X),v=increment(B,X),
+      w=increment(A+R+B,X),f=std::lgamma(X+1);
+    const CPPUNIV_EXTENDED_REAL value=z+u+v-w-f;
+    const CPPUNIV_EXTENDED_REAL work=std::abs(z)+std::abs(u)+std::abs(v)+std::abs(w)+std::abs(f);
+    const double result=static_cast<double>(value);
+    const double target=1e-10*(result>=-745?1:std::max(1.0,std::abs(result)));
+    const CPPUNIV_EXTENDED_REAL error=32*std::numeric_limits<CPPUNIV_EXTENDED_REAL>::epsilon()*work+
+      4*std::numeric_limits<double>::epsilon()*std::max(1.0,std::abs(result))+8e-15;
+    if(result<=0 && std::isfinite(result) && error<target) return result;
+    const double g1=special::lgamma(a+r),g2=special::lgamma(a+b),g3=special::lgamma(r),
+      g4=special::lgamma(a),g5=special::lgamma(b),
+      c1=special::log_gamma_ratio(x,r,1),c2=special::log_gamma_ratio(x,b,a+r+b);
+    const double far=g1+g2-g3-g4-g5+c1+c2;
+    const double far_work=std::abs(g1)+std::abs(g2)+std::abs(g3)+std::abs(g4)+std::abs(g5)+std::abs(c1)+std::abs(c2);
+    if(far<=0 && std::isfinite(far) && 32*std::numeric_limits<double>::epsilon()*far_work<
+       1e-10*(far>=-745?1:std::max(1.0,std::abs(far)))) return far;
+    return special::kNaN;
+  }
   if(x<100) return logpmf(static_cast<int>(x),r,a,b);
   return special::lgamma(a+r)+special::lgamma(a+b)-special::lgamma(r)-special::lgamma(a)-special::lgamma(b)
     +special::log_gamma_ratio(x,r,1)+special::log_gamma_ratio(x,b,a+r+b);
@@ -110,6 +154,30 @@ inline special::LogTails tails(double x,double r,double a,double b) {
     if(upper>=0 || -upper<std::numeric_limits<double>::denorm_min()/1e-12)
       return {special::kNaN,special::kNaN,false};
     return special::tails_from_log(upper,false);
+  }
+  if(r>=1 && b>=1 && (r+b)/a<=1e-3 && x<10000) {
+    // Positive upper sum. For j>=k, R_j <= (j+D)/(j+E),
+    // D=r+b-1+(r-1)(b-1)/(k+1), E=a+r+b. Gauss's
+    // telescoping sum bounds the remaining tail by
+    // p_k R_k (k+E)/(E-D-1) whenever E>D+1.
+    double mass=log_mass(0,r,a,b),lower=mass;
+    for(int j=0;j<x;++j) {
+      mass+=std::log((r+j)/(j+1.0))+std::log((b+j)/(a+r+b+j));
+      lower=special::log_sum_exp(lower,mass);
+    }
+    if(lower<-.6931471805599453) return special::tails_from_log(lower,true);
+    double upper=special::kNegInf;
+    for(int k=static_cast<int>(x)+1;k<100000;++k) {
+      mass+=std::log((r+k-1)/k)+std::log((b+k-1)/(a+r+b+k-1));
+      upper=special::log_sum_exp(upper,mass);
+      const double E=a+r+b,D=r+b-1+(r-1)*((b-1)/(k+1));
+      if(E>D+1) {
+        const double ratio=((r+k)/(k+1.0))*((b+k)/(E+k));
+        const double remainder=mass+std::log(ratio)+std::log((k+E)/(E-D-1));
+        if(remainder<upper+std::log(2e-14)) return special::tails_from_log(upper,false);
+      }
+    }
+    return {special::kNaN,special::kNaN,false};
   }
   if(x<300) {
     double lm=log_mass(0,r,a,b), sum=lm;

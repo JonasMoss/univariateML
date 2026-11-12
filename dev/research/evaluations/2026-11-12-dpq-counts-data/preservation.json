@@ -1,0 +1,32 @@
+[
+  {
+    "family": "bnbinom",
+    "numeric_payload_preserved": true,
+    "values": 3576,
+    "quantiles": 748
+  },
+  {
+    "family": "cmp",
+    "numeric_payload_preserved": true,
+    "values": 2519,
+    "quantiles": 572
+  },
+  {
+    "family": "lgser",
+    "numeric_payload_preserved": true,
+    "values": 1468,
+    "quantiles": 308
+  },
+  {
+    "family": "pig",
+    "numeric_payload_preserved": true,
+    "values": 2300,
+    "quantiles": 528
+  },
+  {
+    "family": "skellam",
+    "numeric_payload_preserved": true,
+    "values": 2623,
+    "quantiles": 616
+  }
+]

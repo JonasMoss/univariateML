@@ -1,0 +1,15 @@
+{
+  "records": 113,
+  "by_family": {
+    "bnbinom": {
+      "stop": 35,
+      "pass": 77,
+      "mismatch": 1
+    }
+  },
+  "attributions": {
+    "fitter": 1
+  },
+  "head": "217ab8b533cac25ccc8eba8d66eccde1b376f0b4",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

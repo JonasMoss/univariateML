@@ -113,3 +113,7 @@ TEST_CASE("lgser: inverse sampler stops when its recurrence cannot finish") {
   CHECK(std::isnan(cppunivariate::distributions::rlgser(rng,std::nextafter(1.,0.))));
   CHECK(cppunivariate::distributions::rlgser(rng,.1)==3);
 }
+
+TEST_CASE("lgser: extreme count-tail regression") {
+  CHECK(cppunivariate::distributions::plgser(1,0.9999999999999999,true,true) == doctest::Approx(-3.6037789929704576).epsilon(1e-10).scale(0));
+}

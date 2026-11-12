@@ -1,0 +1,24 @@
+{
+  "checks": 74467,
+  "api_calls": 74787,
+  "large_count_lattice_checks": 160,
+  "failures": 833,
+  "active_failures": 0,
+  "ranked": [
+    [
+      "zmlogarithmic",
+      833
+    ]
+  ],
+  "include_excluded": true,
+  "binary_sha256": "d20cd196cb153b7133d10599ebe7809890c9e33450e8a20d81a973b62959e1a0",
+  "row_manifest_sha256": "d06e5a252755ddd705ca2b4026760f7a486911246b49f1878a54b3d96b613adc",
+  "table_sha256": {
+    "bnbinom": "7922ca32fb279900a4a61bcd050b8b26b8228701b68f6147aa2f11aeef1e395e",
+    "cmp": "3a95c3760d0672fdde0f85270f5e14b534e1b081d63efc0b4743fbb0811dd620",
+    "lgser": "10f7b914d527ea5601d319d3fe0d1f7e9af67d88cc355bfab7b1a7b1652a3925",
+    "pig": "9bc344506092fdc55269231cbadd2c1272952866c25d9eefdfdd4bb6f882099e",
+    "skellam": "fb2d385701606b69b942addd0ac68ec9b7f2d6905c4479bc5a9b3a63d6d6be76",
+    "zmlogarithmic": "ca27f63ff6a4a6a9df0843ddfe6c58c88d96db88c09bf999351fcc9e8ecc3741"
+  }
+}

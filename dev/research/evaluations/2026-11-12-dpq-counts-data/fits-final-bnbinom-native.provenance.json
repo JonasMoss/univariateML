@@ -1,0 +1,9 @@
+{
+  "source_sha256": "a6a88dd0d063b6014cae8f59ed515c65144f6c76f8e4eaa4c02e7e3d6d6338e9",
+  "families": [
+    "bnbinom"
+  ],
+  "no_long_double": false,
+  "timeout": 30,
+  "case": null
+}

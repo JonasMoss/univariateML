@@ -205,3 +205,19 @@ TEST_CASE("cmp: the Poisson member retains a tiny natural tail") {
   CHECK(std::isfinite(got));
   CHECK(std::abs(got/1.0030148691227151e-300-1)<1e-10);
 }
+
+TEST_CASE("cmp: extreme count-tail regression") {
+  CHECK(cppunivariate::distributions::pcmp(0,1,1e-8,true,true) == doctest::Approx(-15.706714053010085).epsilon(1e-10).scale(0));
+}
+
+TEST_CASE("cmp: scaled diffuse far log weights") {
+  const double x=std::numeric_limits<double>::max();
+  const double mass=cppunivariate::distributions::dcmp(x,1,1e-8,true);
+  const double upper=cppunivariate::distributions::pcmp(x,1,1e-8,false,true);
+  CHECK(std::isfinite(mass));
+  CHECK(std::isfinite(upper));
+  CHECK(mass > -1.3e303);
+  CHECK(mass < -1.2e303);
+  CHECK(upper > -1.3e303);
+  CHECK(upper < -1.2e303);
+}

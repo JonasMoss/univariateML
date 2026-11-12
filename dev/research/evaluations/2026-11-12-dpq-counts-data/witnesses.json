@@ -1,0 +1,326 @@
+[
+  {
+    "mode": "native",
+    "job": [
+      "bnbinom",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        100000000.0,
+        1e+16,
+        100000000.0
+      ]
+    ],
+    "actual": -0.30685281944005427,
+    "expected": -0.3068528194400547,
+    "error": 4.440892098500626e-16,
+    "binary_sha256": "28afb22c194a815e13284228ff47b4dff4c82b72203985712535b174f3942b8a"
+  },
+  {
+    "mode": "native",
+    "job": [
+      "cmp",
+      1,
+      0.0,
+      true,
+      true,
+      [
+        1.0,
+        1e-08
+      ]
+    ],
+    "actual": -15.706714053010062,
+    "expected": -15.706714053010085,
+    "error": 1.4702399772648633e-15,
+    "binary_sha256": "d20cd196cb153b7133d10599ebe7809890c9e33450e8a20d81a973b62959e1a0"
+  },
+  {
+    "mode": "native",
+    "job": [
+      "lgser",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        0.9999999999999999
+      ]
+    ],
+    "actual": -3.6037789929704576,
+    "expected": -3.6037789929704576,
+    "error": 0.0,
+    "binary_sha256": "1a29bde30f016ff2cf1542d735dad4a11abf7ce550ab179e1bb8acf41f44f57a"
+  },
+  {
+    "mode": "native",
+    "job": [
+      "pig",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        1.0,
+        1e-08
+      ]
+    ],
+    "actual": -7.07031785311011e-05,
+    "expected": -7.070317853112745e-05,
+    "error": 2.6359665318553827e-17,
+    "binary_sha256": "e291a6cf3e0bcc61fc6982ecb8a6e763353fdcaa606a9f2199db951ecadb47b3"
+  },
+  {
+    "mode": "native",
+    "job": [
+      "pig",
+      1,
+      2.0,
+      true,
+      true,
+      [
+        100000000.0,
+        1.0
+      ]
+    ],
+    "actual": -0.6562700043193102,
+    "expected": -0.6562700043193149,
+    "error": 4.773959005888173e-15,
+    "binary_sha256": "e291a6cf3e0bcc61fc6982ecb8a6e763353fdcaa606a9f2199db951ecadb47b3"
+  },
+  {
+    "mode": "native",
+    "job": [
+      "skellam",
+      0,
+      99629757.0,
+      true,
+      false,
+      [
+        100000000.0,
+        1.0
+      ]
+    ],
+    "actual": 3.716303015795054e-303,
+    "expected": 3.716303015795054e-303,
+    "error": 0.0,
+    "binary_sha256": "919daf8ec837216e39672982e33a8c3fd84e08543535752c871c578e2d454434"
+  },
+  {
+    "mode": "native",
+    "job": [
+      "skellam",
+      1,
+      99629757.0,
+      true,
+      false,
+      [
+        100000000.0,
+        1.0
+      ]
+    ],
+    "actual": 1.0030217828350785e-300,
+    "expected": 1.0030217828350785e-300,
+    "error": 0.0,
+    "binary_sha256": "919daf8ec837216e39672982e33a8c3fd84e08543535752c871c578e2d454434"
+  },
+  {
+    "mode": "native",
+    "job": [
+      "skellam",
+      0,
+      -99629757.0,
+      true,
+      false,
+      [
+        1.0,
+        100000000.0
+      ]
+    ],
+    "actual": 3.716303015795054e-303,
+    "expected": 3.716303015795054e-303,
+    "error": 0.0,
+    "binary_sha256": "919daf8ec837216e39672982e33a8c3fd84e08543535752c871c578e2d454434"
+  },
+  {
+    "mode": "native",
+    "job": [
+      "skellam",
+      1,
+      -99629757.0,
+      false,
+      false,
+      [
+        1.0,
+        100000000.0
+      ]
+    ],
+    "actual": 9.993054798192281e-301,
+    "expected": 9.993054798192281e-301,
+    "error": 0.0,
+    "binary_sha256": "919daf8ec837216e39672982e33a8c3fd84e08543535752c871c578e2d454434"
+  },
+  {
+    "mode": "double",
+    "job": [
+      "bnbinom",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        100000000.0,
+        1e+16,
+        100000000.0
+      ]
+    ],
+    "actual": -0.30685281944005427,
+    "expected": -0.3068528194400547,
+    "error": 4.440892098500626e-16,
+    "binary_sha256": "89d69032d4e5657e8c0827acc19a549be4adb3c9003cbf824843b01da168a30a"
+  },
+  {
+    "mode": "double",
+    "job": [
+      "cmp",
+      1,
+      0.0,
+      true,
+      true,
+      [
+        1.0,
+        1e-08
+      ]
+    ],
+    "actual": -15.706714053010062,
+    "expected": -15.706714053010085,
+    "error": 1.4702399772648633e-15,
+    "binary_sha256": "7807579f66c0d54a76943f019e4b33c492d728e81e366829e15434326a6e221b"
+  },
+  {
+    "mode": "double",
+    "job": [
+      "lgser",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        0.9999999999999999
+      ]
+    ],
+    "actual": -3.6037789929704576,
+    "expected": -3.6037789929704576,
+    "error": 0.0,
+    "binary_sha256": "a853d98e730c34d59743b9e8fc5d314385093d226ed36bbc947c00e7ec07bf9b"
+  },
+  {
+    "mode": "double",
+    "job": [
+      "pig",
+      1,
+      1.0,
+      true,
+      true,
+      [
+        1.0,
+        1e-08
+      ]
+    ],
+    "actual": -7.07031785311011e-05,
+    "expected": -7.070317853112745e-05,
+    "error": 2.6359665318553827e-17,
+    "binary_sha256": "e291a6cf3e0bcc61fc6982ecb8a6e763353fdcaa606a9f2199db951ecadb47b3"
+  },
+  {
+    "mode": "double",
+    "job": [
+      "pig",
+      1,
+      2.0,
+      true,
+      true,
+      [
+        100000000.0,
+        1.0
+      ]
+    ],
+    "actual": -0.6562700043193102,
+    "expected": -0.6562700043193149,
+    "error": 4.773959005888173e-15,
+    "binary_sha256": "e291a6cf3e0bcc61fc6982ecb8a6e763353fdcaa606a9f2199db951ecadb47b3"
+  },
+  {
+    "mode": "double",
+    "job": [
+      "skellam",
+      0,
+      99629757.0,
+      true,
+      false,
+      [
+        100000000.0,
+        1.0
+      ]
+    ],
+    "actual": 3.716303015795054e-303,
+    "expected": 3.716303015795054e-303,
+    "error": 0.0,
+    "binary_sha256": "52086b92b8c00a46aa410dfca364e197261a4a5d69f8d2de00627445ea477b3d"
+  },
+  {
+    "mode": "double",
+    "job": [
+      "skellam",
+      1,
+      99629757.0,
+      true,
+      false,
+      [
+        100000000.0,
+        1.0
+      ]
+    ],
+    "actual": 1.0030217828350785e-300,
+    "expected": 1.0030217828350785e-300,
+    "error": 0.0,
+    "binary_sha256": "52086b92b8c00a46aa410dfca364e197261a4a5d69f8d2de00627445ea477b3d"
+  },
+  {
+    "mode": "double",
+    "job": [
+      "skellam",
+      0,
+      -99629757.0,
+      true,
+      false,
+      [
+        1.0,
+        100000000.0
+      ]
+    ],
+    "actual": 3.716303015795054e-303,
+    "expected": 3.716303015795054e-303,
+    "error": 0.0,
+    "binary_sha256": "52086b92b8c00a46aa410dfca364e197261a4a5d69f8d2de00627445ea477b3d"
+  },
+  {
+    "mode": "double",
+    "job": [
+      "skellam",
+      1,
+      -99629757.0,
+      false,
+      false,
+      [
+        1.0,
+        100000000.0
+      ]
+    ],
+    "actual": 9.993054798192281e-301,
+    "expected": 9.993054798192281e-301,
+    "error": 0.0,
+    "binary_sha256": "52086b92b8c00a46aa410dfca364e197261a4a5d69f8d2de00627445ea477b3d"
+  }
+]

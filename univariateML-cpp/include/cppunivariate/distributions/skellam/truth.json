@@ -18287,6 +18287,202 @@
       "-Inf",
       0.0,
       "-Inf"
+    ],
+    [
+      12,
+      99629757.0,
+      -696.3705538160286,
+      -690.7725106717877,
+      -1.0030217828350556e-300
+    ],
+    [
+      12,
+      99787340.0,
+      -236.40792191833506,
+      -230.25688084574486,
+      -1.0016297803104148e-100
+    ],
+    [
+      12,
+      99885380.0,
+      -75.8413918413906,
+      -69.07754352011615,
+      -1.0000092697481875e-30
+    ],
+    [
+      12,
+      99929662.0,
+      -34.871196369988155,
+      -27.630836451397055,
+      -1.0001846815835383e-12
+    ],
+    [
+      12,
+      99952468.0,
+      -21.426811014331403,
+      -13.81543929582933,
+      -1.00007176474575e-06
+    ],
+    [
+      12,
+      99976736.0,
+      -12.835208244359283,
+      -4.605105278711726,
+      -0.010050991504048591
+    ],
+    [
+      12,
+      99993254.0,
+      -10.356725422174424,
+      -1.3862322826814002,
+      -0.28770276612102563
+    ],
+    [
+      12,
+      100006744.0,
+      -10.356782643374665,
+      -0.2876526985175795,
+      -1.3863824880998177
+    ],
+    [
+      12,
+      100023263.0,
+      -12.835253848245522,
+      -0.010049566388067676,
+      -4.605246365996965
+    ],
+    [
+      12,
+      100047537.0,
+      -21.427033588844257,
+      -9.9967516866589e-07,
+      -13.815835941905052
+    ],
+    [
+      12,
+      100070352.0,
+      -34.87155180218387,
+      -9.995833537914922e-13,
+      -27.631437848958704
+    ],
+    [
+      12,
+      100114661.0,
+      -75.84161178032349,
+      -9.994028601518263e-31,
+      -69.07815010802855
+    ],
+    [
+      12,
+      100212809.0,
+      -236.4103614432449,
+      -9.984740519968996e-101,
+      -230.2600364128521
+    ],
+    [
+      12,
+      100370698.0,
+      -696.3724249254567,
+      -9.999089586659145e-301,
+      -690.7756189436923
+    ],
+    [
+      13,
+      -100370698.0,
+      -696.3724249254567,
+      -690.7719161139925,
+      -1.0036183145735257e-300
+    ],
+    [
+      13,
+      -100212809.0,
+      -236.4103614432449,
+      -230.25790589558034,
+      -1.0006035859089475e-100
+    ],
+    [
+      13,
+      -100114661.0,
+      -75.84161178032349,
+      -69.07699555154547,
+      -1.0005573935620016e-30
+    ],
+    [
+      13,
+      -100070352.0,
+      -34.87155180218387,
+      -27.63072087602046,
+      -1.0003002849851e-12
+    ],
+    [
+      13,
+      -100047537.0,
+      -21.427033588844257,
+      -13.815341185503865,
+      -1.0001698869744688e-06
+    ],
+    [
+      13,
+      -100023263.0,
+      -12.835253848245522,
+      -4.604979867174962,
+      -0.010052258450550678
+    ],
+    [
+      13,
+      -100006744.0,
+      -10.356782643374665,
+      -1.3862553788632266,
+      -0.28769506687503543
+    ],
+    [
+      13,
+      -99993254.0,
+      -10.356725422174424,
+      -0.28766039501296603,
+      -1.3863593962559462
+    ],
+    [
+      13,
+      -99976736.0,
+      -12.835208244359283,
+      -0.010048299322205292,
+      -4.60537182311911
+    ],
+    [
+      13,
+      -99952468.0,
+      -21.426811014331403,
+      -9.995769363132784e-07,
+      -13.815934210956112
+    ],
+    [
+      13,
+      -99929662.0,
+      -34.871196369988155,
+      -9.99467495524211e-13,
+      -27.631553762235697
+    ],
+    [
+      13,
+      -99885380.0,
+      -75.8413918413906,
+      -9.988544823832399e-31,
+      -69.07869896404492
+    ],
+    [
+      13,
+      -99787340.0,
+      -236.40792191833506,
+      -9.99495045005458e-101,
+      -230.25901438193182
+    ],
+    [
+      13,
+      -99629757.0,
+      -696.3705538160286,
+      -9.993054798192605e-301,
+      -690.7762226596853
     ]
   ],
   "quantiles": [
@@ -25108,287 +25304,5 @@
       9
     ]
   ],
-  "input_sha256": "232fa9ef868613f5e6ba7730f7d803024a63181450ca5185e4b3a57f0334b1d0",
-  "excluded_values": [
-    {
-      "row": [
-        12,
-        99629757.0,
-        -696.3705538160286,
-        -690.7725106717877,
-        -1.0030217828350556e-300
-      ],
-      "reason": "TASK-196 open: measured double p normalized error 1.5457117726600828e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        99787340.0,
-        -236.40792191833506,
-        -230.25688084574486,
-        -1.0016297803104148e-100
-      ],
-      "reason": "TASK-196 open: measured double d,p normalized error 1.5465581744016224e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        99885380.0,
-        -75.8413918413906,
-        -69.07754352011615,
-        -1.0000092697481875e-30
-      ],
-      "reason": "TASK-196 open: measured double d,p normalized error 5.85536559273841e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        99929662.0,
-        -34.871196369988155,
-        -27.630836451397055,
-        -1.0001846815835383e-12
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 2.774148530094894e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        99952468.0,
-        -21.426811014331403,
-        -13.81543929582933,
-        -1.00007176474575e-06
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 1.5014853487095862e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        99976736.0,
-        -12.835208244359283,
-        -4.605105278711726,
-        -0.010050991504048591
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 5.54756706690929e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        99993254.0,
-        -10.356725422174424,
-        -1.3862322826814002,
-        -0.28770276612102563
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 1.3674470880397499e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        100006744.0,
-        -10.356782643374665,
-        -0.2876526985175795,
-        -1.3863824880998177
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 1.352267288461824e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        100023263.0,
-        -12.835253848245522,
-        -0.010049566388067676,
-        -4.605246365996965
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 1.2446137462495117e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        100047537.0,
-        -21.427033588844257,
-        -9.9967516866589e-07,
-        -13.815835941905052
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 8.319070022997387e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        100070352.0,
-        -34.87155180218387,
-        -9.995833537914922e-13,
-        -27.631437848958704
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 1.6591015280176852e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        100114661.0,
-        -75.84161178032349,
-        -9.994028601518263e-31,
-        -69.07815010802855
-      ],
-      "reason": "TASK-196 open: measured double p normalized error 8.664338284242485e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        100212809.0,
-        -236.4103614432449,
-        -9.984740519968996e-101,
-        -230.2600364128521
-      ],
-      "reason": "TASK-196 open: measured double d,p normalized error 5.998630855941545e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        12,
-        100370698.0,
-        -696.3724249254567,
-        -9.999089586659145e-301,
-        -690.7756189436923
-      ],
-      "reason": "TASK-196 open: measured double p normalized error 1.2406423522986497e-10 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -100370698.0,
-        -696.3724249254567,
-        -690.7719161139925,
-        -1.0036183145735257e-300
-      ],
-      "reason": "TASK-196 open: measured double p normalized error 6.708076027583612e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -100212809.0,
-        -236.4103614432449,
-        -230.25790589558034,
-        -1.0006035859089475e-100
-      ],
-      "reason": "TASK-196 open: measured double d,p normalized error 6.181205071205494e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -100114661.0,
-        -75.84161178032349,
-        -69.07699555154547,
-        -1.0005573935620016e-30
-      ],
-      "reason": "TASK-196 open: measured double p normalized error 1.1391880261401467e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -100070352.0,
-        -34.87155180218387,
-        -27.63072087602046,
-        -1.0003002849851e-12
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 1.6591015280176852e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -100047537.0,
-        -21.427033588844257,
-        -13.815341185503865,
-        -1.0001698869744688e-06
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 8.319070022997387e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -100023263.0,
-        -12.835253848245522,
-        -4.604979867174962,
-        -0.010052258450550678
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 1.2446137462495117e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -100006744.0,
-        -10.356782643374665,
-        -1.3862553788632266,
-        -0.28769506687503543
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 1.352267288461824e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -99993254.0,
-        -10.356725422174424,
-        -0.28766039501296603,
-        -1.3863593962559462
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 1.3674470880397499e-08 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -99976736.0,
-        -12.835208244359283,
-        -0.010048299322205292,
-        -4.60537182311911
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 5.54756706690929e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -99952468.0,
-        -21.426811014331403,
-        -9.995769363132784e-07,
-        -13.815934210956112
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 1.5014853487095862e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -99929662.0,
-        -34.871196369988155,
-        -9.99467495524211e-13,
-        -27.631553762235697
-      ],
-      "reason": "TASK-196 open: measured double d normalized error 2.774148530094894e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -99885380.0,
-        -75.8413918413906,
-        -9.988544823832399e-31,
-        -69.07869896404492
-      ],
-      "reason": "TASK-196 open: measured double d,p normalized error 4.186697248381694e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -99787340.0,
-        -236.40792191833506,
-        -9.99495045005458e-101,
-        -230.25901438193182
-      ],
-      "reason": "TASK-196 open: measured double d,p normalized error 9.022663092247962e-09 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    },
-    {
-      "row": [
-        13,
-        -99629757.0,
-        -696.3705538160286,
-        -9.993054798192605e-301,
-        -690.7762226596853
-      ],
-      "reason": "TASK-196 open: measured double p normalized error 1.2314577939244952e-10 (log outputs use abs(error)/max(1,abs(reference)); natural tails use relative error). Large-rate log-mass cancellation and the difference-of-Poisson tail need a protected expansion with an error bound."
-    }
-  ]
+  "input_sha256": "880ceeecde2fc1ee1def65921ed87d6fbc1ce55d2d8681dbbc0ee3c4efffc554"
 }

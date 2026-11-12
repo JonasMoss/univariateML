@@ -81,6 +81,3 @@ def build(p, logd):
 
 # Joint limit paths supplement the shared one-coordinate extreme grid.
 extreme_parameter_sets = [{'alpha': 100000000.0, 'beta': 100000000.0}, {'size': 100000000.0, 'beta': 100000000.0, 'alpha': 1e+16}]
-
-
-truth_point_exclusions = [([100000000.0, 1e+16, 100000000.0], 'TASK-196 open: public CDF returns NaN at x=1.0, lower=True, log=True; independent value -0.3068528194400547. Near-Poisson beta-mixture evaluation needs a cancellation-free mass and a closed mixture remainder.')]

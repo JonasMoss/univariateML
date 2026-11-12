@@ -117,6 +117,3 @@ def unit_rate_reference(nu):
     ref.normalizer=z
     ref.em_tail=tail
     return ref
-
-
-truth_point_exclusions = [([1.0, 1e-08], 'TASK-196 open: public CDF returns NaN at x=0.0, lower=True, log=True; independent value -15.706714053010085. Diffuse factorial-power normalization and count tails need a protected Euler--Maclaurin evaluator.')]
