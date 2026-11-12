@@ -1,0 +1,35 @@
+{
+  "warning": "Feasible log-likelihood lower bounds from finite-box searches; no estimates or global claims.",
+  "samples": {
+    "spread": {
+      "ordinary": {
+        "feasible_loglik_lower_bound": -7.294263979176629,
+        "at_box_edge": true
+      },
+      "adapted": {
+        "feasible_loglik_lower_bound": -7.921345698564053,
+        "at_box_edge": false
+      }
+    },
+    "two_point": {
+      "ordinary": {
+        "feasible_loglik_lower_bound": -1.7222970774516424,
+        "at_box_edge": true
+      },
+      "adapted": {
+        "feasible_loglik_lower_bound": -1.7261253092378142,
+        "at_box_edge": true
+      }
+    },
+    "skew": {
+      "ordinary": {
+        "feasible_loglik_lower_bound": -10.46104464738153,
+        "at_box_edge": true
+      },
+      "adapted": {
+        "feasible_loglik_lower_bound": -12.055940093520684,
+        "at_box_edge": true
+      }
+    }
+  }
+}
