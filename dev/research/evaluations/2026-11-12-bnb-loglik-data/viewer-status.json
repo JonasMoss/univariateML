@@ -1,0 +1,10 @@
+{
+  "report_complete": true,
+  "show_exit_code": 1,
+  "http_status": 403,
+  "reason": "The worktree is outside the artifact viewer registered readable roots.",
+  "report_path": "/home/jonas/Files/programming/univariateML.wt/bnb-loglik/dev/research/evaluations/2026-11-12-bnb-loglik-report.md",
+  "required_external_action": "Open a Nook agent thread in this worktree, or add the worktree to the server CODEX_MATH_WEB_VIEW_ROOTS configuration.",
+  "viewer_configuration_changed": false,
+  "other_worktree_modified": false
+}

@@ -1,0 +1,42 @@
+{
+  "baseline": "af824a98d78f2f2325c7a675c20c84c45e6bb826",
+  "machine": "workstation",
+  "os": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+  "os_release": "PRETTY_NAME=\"Ubuntu 26.04.1 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"26.04\"\nVERSION=\"26.04.1 LTS (Resolute Raccoon)\"\nVERSION_CODENAME=resolute\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=resolute\nLOGO=ubuntu-logo\n",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "python": "3.14.5 (main, Jun  2 2026, 22:25:17) [Clang 22.1.3 ]",
+  "mpmath": "1.3.0",
+  "scipy": "1.18.0",
+  "R": "R version 4.6.1 (2026-06-24)\nBH 1.90.0.1\nRcpp 1.1.2",
+  "boost_version_header": "//  Boost version.hpp configuration header file  ------------------------------//\n\n//  (C) Copyright John maddock 1999. Distributed under the Boost\n//  Software License, Version 1.0. (See accompanying file\n//  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)\n\n//  See http://www.boost.org/libs/config for documentation\n\n#ifndef BOOST_VERSION_HPP\n#define BOOST_VERSION_HPP\n\n//\n//  Caution: this is the only Boost header that is guaranteed\n//  to change with every Boost release. Including this header\n//  will cause a recompile every time a new Boost version is\n//  used.\n//\n//  BOOST_VERSION % 100 is the patch level\n//  BOOST_VERSION / 100 % 1000 is the minor version\n//  BOOST_VERSION / 100000 is the major version\n\n#define BOOST_VERSION 109000\n\n//\n//  BOOST_LIB_VERSION must be defined to be the same as BOOST_VERSION\n//  but as a *string* in the form \"x_y[_z]\" where x is the major version\n//  number, y is the minor version number, and z is the patch level if not 0.\n//  This is used by <config/auto_link.hpp> to select which library version to link to.\n\n#define BOOST_LIB_VERSION \"1_90\"\n\n#endif\n",
+  "node": "v22.22.1",
+  "emscripten": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.13 (e13ee988ce3d87a738dd8f3661d02223308c412a)\nCopyright (C) 2026 the Emscripten authors (see AUTHORS.txt)\nThis is free and open source software under the MIT license.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "precision_modes": {
+    "native": "CPPUNIV_EXTENDED_REAL = long double",
+    "double": "-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS; CPPUNIV_EXTENDED_REAL = double"
+  },
+  "replay_controls": {
+    "tol": 1e-10,
+    "maxit": 600,
+    "cpp_flags": [
+      "-std=c++17",
+      "-O2",
+      "-DNDEBUG"
+    ]
+  },
+  "reference_digits": [
+    100,
+    200
+  ],
+  "sha256": {
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/mle.hpp": "10f50f5ccf769dd351676f09b2760d1e1c725528ae9dd9cb21b693697a6d6261",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/test.cpp": "a310f36725988620d7bc68f6102b7fd533194b03d1bcf957b422b960c9150d95",
+    "univariateML-cpp/include/cppunivariate/distributions/bnbinom/golden.json": "05085959b6e4a679e94c608a01d87cf1e02a4634a51c9bf1ce233e446e575d08",
+    "dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz": "aa3b053c49681fb06f28cfdceebb0ee2c10ec950f4bb34af94352fc652227df7",
+    "dev/research/evaluations/2026-11-12-bnb-loglik-data/record_environment.py": "74d1c6435bb265c2f623c92428b875707b7d59af693dd84457b36a5b1b856d28",
+    "dev/research/evaluations/2026-11-12-bnb-loglik-data/make_report.py": "1311b9098f506a27828ba35911a22e6ea4edf1c6175c970e9c40ef0d12060db4",
+    "dev/research/evaluations/2026-11-12-bnb-loglik-data/check_references.py": "12c42ad3fe48a8d95ca751defc510402b32c2f4b61663c849a903615c733c5f9",
+    "dev/research/evaluations/2026-11-12-bnb-loglik-data/check_symmetry.py": "67f181f8fd9a517075e2cdf1d2dc3d7b3012b213b3934d6877072d1c614199cb",
+    "dev/research/evaluations/2026-11-12-bnb-loglik-data/replay.py": "1385092abfc2a3458b0bd54fbf8d0eda474bc9bafc41e68e065c55057d638d4b"
+  }
+}

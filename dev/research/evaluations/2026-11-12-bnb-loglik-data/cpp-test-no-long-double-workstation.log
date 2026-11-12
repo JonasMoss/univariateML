@@ -1,0 +1,291 @@
+-- Boost.Math headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/jonas/Files/programming/univariateML.wt/bnb-loglik/build/cpp-no-long-double
+[  2%] Built target no_throw_tests
+[  3%] Built target bfgs_tests
+[  5%] Built target sample_tests
+[  7%] Built target cmp_tests
+[ 11%] Built target diagnostics_tests
+[ 11%] Built target tails_tests
+[100%] Built target distribution_tests
+Test project /home/jonas/Files/programming/univariateML.wt/bnb-loglik/build/cpp-no-long-double
+        Start 107: distribution_tlambda_slow
+        Start  86: distribution_pig
+        Start  34: distribution_genbeta
+        Start 110: distribution_trgamma
+  1/135 Test #110: distribution_trgamma .............   Passed   76.79 sec
+        Start  18: distribution_dgamma
+  2/135 Test  #34: distribution_genbeta .............   Passed  119.56 sec
+        Start   7: distribution_bhatt
+  3/135 Test  #18: distribution_dgamma ..............   Passed   57.70 sec
+        Start 104: distribution_std_slow
+  4/135 Test   #7: distribution_bhatt ...............   Passed   24.01 sec
+        Start  94: distribution_skellam
+  5/135 Test #104: distribution_std_slow ............   Passed   17.12 sec
+        Start  16: distribution_cmb
+  6/135 Test  #94: distribution_skellam .............   Passed   53.09 sec
+        Start  91: distribution_sged
+  7/135 Test  #16: distribution_cmb .................   Passed   77.16 sec
+        Start 103: distribution_std
+  8/135 Test  #86: distribution_pig .................   Passed  238.21 sec
+        Start  77: distribution_norm
+  9/135 Test #103: distribution_std .................   Passed   33.90 sec
+        Start  17: distribution_cmp
+ 10/135 Test  #77: distribution_norm ................   Passed   39.49 sec
+        Start  10: distribution_bnbinom
+ 11/135 Test  #17: distribution_cmp .................   Passed   22.57 sec
+        Start  36: distribution_gengamma
+ 12/135 Test  #36: distribution_gengamma ............   Passed   15.38 sec
+        Start 105: distribution_tbinom
+ 13/135 Test  #10: distribution_bnbinom .............   Passed   29.98 sec
+        Start  96: distribution_slash
+ 14/135 Test #105: distribution_tbinom ..............   Passed   12.00 sec
+        Start  39: distribution_gev_slow
+ 15/135 Test  #39: distribution_gev_slow ............   Passed    8.14 sec
+        Start 125: distribution_zmpois
+ 16/135 Test  #96: distribution_slash ...............   Passed   26.14 sec
+        Start  72: distribution_lst
+ 17/135 Test #125: distribution_zmpois ..............   Passed   13.45 sec
+        Start  46: distribution_ht
+ 18/135 Test  #91: distribution_sged ................   Passed  155.80 sec
+        Start  49: distribution_hyper
+ 19/135 Test  #46: distribution_ht ..................   Passed   20.58 sec
+        Start  30: distribution_gamma
+ 20/135 Test #107: distribution_tlambda_slow ........   Passed  356.54 sec
+        Start 130: distribution_ztpois
+ 21/135 Test  #30: distribution_gamma ...............   Passed    7.78 sec
+        Start  47: distribution_huber
+ 22/135 Test  #49: distribution_hyper ...............   Passed   14.51 sec
+        Start 119: distribution_zip
+ 23/135 Test #130: distribution_ztpois ..............   Passed   14.95 sec
+        Start  73: distribution_lst_slow
+ 24/135 Test  #47: distribution_huber ...............   Passed   10.23 sec
+        Start  98: distribution_sn
+ 25/135 Test #119: distribution_zip .................   Passed    8.83 sec
+        Start 101: distribution_sstd_slow
+ 26/135 Test  #72: distribution_lst .................   Passed   45.21 sec
+        Start  88: distribution_pois
+ 27/135 Test  #98: distribution_sn ..................   Passed    9.13 sec
+        Start 121: distribution_zmbinom
+ 28/135 Test  #73: distribution_lst_slow ............   Passed   11.83 sec
+        Start  53: distribution_invgamma
+ 29/135 Test #121: distribution_zmbinom .............   Passed    1.57 sec
+        Start  85: distribution_pareto4
+ 30/135 Test  #88: distribution_pois ................   Passed    8.21 sec
+        Start  41: distribution_gpd
+ 31/135 Test #101: distribution_sstd_slow ...........   Passed   12.74 sec
+        Start 102: distribution_st
+ 32/135 Test  #53: distribution_invgamma ............   Passed    8.33 sec
+        Start  57: distribution_invtrgamma
+ 33/135 Test  #85: distribution_pareto4 .............   Passed    8.72 sec
+        Start  76: distribution_nhyper
+ 34/135 Test  #57: distribution_invtrgamma ..........   Passed    6.18 sec
+        Start 100: distribution_sstd
+ 35/135 Test  #41: distribution_gpd .................   Passed   11.93 sec
+        Start  38: distribution_gev
+ 36/135 Test #102: distribution_st ..................   Passed   11.30 sec
+        Start  12: distribution_burr
+ 37/135 Test  #76: distribution_nhyper ..............   Passed    8.49 sec
+        Start  50: distribution_invburr
+ 38/135 Test #100: distribution_sstd ................   Passed    4.25 sec
+        Start 115: distribution_zeta
+ 39/135 Test  #12: distribution_burr ................   Passed    4.09 sec
+        Start  23: distribution_emg
+ 40/135 Test  #38: distribution_gev .................   Passed    5.06 sec
+        Start  35: distribution_genbeta_slow
+ 41/135 Test  #23: distribution_emg .................   Passed    1.57 sec
+        Start  63: distribution_lgamma
+ 42/135 Test #115: distribution_zeta ................   Passed    3.49 sec
+        Start  32: distribution_ged
+ 43/135 Test  #35: distribution_genbeta_slow ........   Passed    2.82 sec
+        Start 135: diagnostics_tests
+ 44/135 Test  #32: distribution_ged .................   Passed    3.10 sec
+        Start 106: distribution_tlambda
+ 45/135 Test  #50: distribution_invburr .............   Passed    8.30 sec
+        Start   8: distribution_bhatt_slow
+ 46/135 Test #106: distribution_tlambda .............   Passed    2.07 sec
+        Start   3: distribution_bbinom
+ 47/135 Test  #63: distribution_lgamma ..............   Passed    5.30 sec
+        Start  54: distribution_invgauss
+ 48/135 Test #135: diagnostics_tests ................   Passed    4.53 sec
+        Start 108: distribution_tnorm
+ 49/135 Test   #3: distribution_bbinom ..............   Passed    2.33 sec
+        Start  22: distribution_dweibull
+ 50/135 Test #108: distribution_tnorm ...............   Passed    1.86 sec
+        Start   5: distribution_betapr
+ 51/135 Test  #54: distribution_invgauss ............   Passed    2.81 sec
+        Start  95: distribution_skellam_slow
+ 52/135 Test  #22: distribution_dweibull ............   Passed    1.43 sec
+        Start  31: distribution_gb2
+ 53/135 Test  #95: distribution_skellam_slow ........   Passed    1.00 sec
+        Start  29: distribution_frechet
+ 54/135 Test  #29: distribution_frechet .............   Passed    0.53 sec
+        Start  74: distribution_naka
+ 55/135 Test  #74: distribution_naka ................   Passed    1.04 sec
+        Start   6: distribution_betapr_slow
+ 56/135 Test   #5: distribution_betapr ..............   Passed    2.78 sec
+        Start 126: distribution_ztbinom
+ 57/135 Test   #6: distribution_betapr_slow .........   Passed    0.53 sec
+        Start 129: distribution_ztnbinom
+ 58/135 Test  #31: distribution_gb2 .................   Passed    2.61 sec
+        Start  28: distribution_fpareto
+ 59/135 Test #129: distribution_ztnbinom ............   Passed    0.73 sec
+        Start  48: distribution_huber_slow
+ 60/135 Test  #48: distribution_huber_slow ..........   Passed    0.28 sec
+        Start  33: distribution_ged_slow
+ 61/135 Test  #28: distribution_fpareto .............   Passed    0.76 sec
+        Start  99: distribution_snorm
+ 62/135 Test  #33: distribution_ged_slow ............   Passed    0.34 sec
+        Start 133: cmp_tests
+ 63/135 Test #133: cmp_tests ........................   Passed    0.30 sec
+        Start 124: distribution_zmnbinom
+ 64/135 Test #124: distribution_zmnbinom ............   Passed    0.20 sec
+        Start 118: distribution_zinb
+ 65/135 Test  #99: distribution_snorm ...............   Passed    0.78 sec
+        Start 116: distribution_zib
+ 66/135 Test #118: distribution_zinb ................   Passed    0.41 sec
+        Start  15: distribution_cauchy_slow
+ 67/135 Test #116: distribution_zib .................   Passed    0.50 sec
+        Start 109: distribution_tpois
+ 68/135 Test  #15: distribution_cauchy_slow .........   Passed    0.27 sec
+        Start  92: distribution_sgomp
+ 69/135 Test #126: distribution_ztbinom .............   Passed    3.08 sec
+        Start  80: distribution_paralogis
+ 70/135 Test #109: distribution_tpois ...............   Passed    0.17 sec
+        Start  93: distribution_sgomp_slow
+ 71/135 Test  #92: distribution_sgomp ...............   Passed    0.10 sec
+        Start 120: distribution_zipf
+ 72/135 Test #120: distribution_zipf ................   Passed    0.06 sec
+        Start  70: distribution_lomax
+ 73/135 Test  #93: distribution_sgomp_slow ..........   Passed    0.15 sec
+        Start   9: distribution_binom
+ 74/135 Test  #70: distribution_lomax ...............   Passed    0.10 sec
+        Start  27: distribution_foldnorm
+ 75/135 Test  #27: distribution_foldnorm ............   Passed    0.05 sec
+        Start  75: distribution_nbinom
+ 76/135 Test   #9: distribution_binom ...............   Passed    0.10 sec
+        Start   4: distribution_beta
+ 77/135 Test  #75: distribution_nbinom ..............   Passed    0.05 sec
+        Start  51: distribution_invburr_slow
+ 78/135 Test   #4: distribution_beta ................   Passed    0.10 sec
+        Start 123: distribution_zmlogarithmic
+ 79/135 Test  #51: distribution_invburr_slow ........   Passed    0.08 sec
+        Start 111: distribution_triang
+ 80/135 Test #111: distribution_triang ..............   Passed    0.07 sec
+        Start  55: distribution_invparalogis
+ 81/135 Test #123: distribution_zmlogarithmic .......   Passed    0.07 sec
+        Start  97: distribution_slash_slow
+ 82/135 Test  #80: distribution_paralogis ...........   Passed    0.47 sec
+        Start  13: distribution_burr_slow
+ 83/135 Test  #13: distribution_burr_slow ...........   Passed    0.04 sec
+        Start 122: distribution_zmgeom
+ 84/135 Test #122: distribution_zmgeom ..............   Passed    0.03 sec
+        Start  19: distribution_dlaplace
+ 85/135 Test  #19: distribution_dlaplace ............   Passed    0.03 sec
+        Start 114: distribution_yulesimon
+ 86/135 Test #114: distribution_yulesimon ...........   Passed    0.03 sec
+        Start  65: distribution_llogis
+ 87/135 Test  #55: distribution_invparalogis ........   Passed    0.14 sec
+        Start  25: distribution_expweibull
+ 88/135 Test  #97: distribution_slash_slow ..........   Passed    0.15 sec
+        Start  26: distribution_fatigue
+ 89/135 Test  #25: distribution_expweibull ..........   Passed    0.05 sec
+        Start  58: distribution_invweibull
+ 90/135 Test  #65: distribution_llogis ..............   Passed    0.05 sec
+        Start  79: distribution_nsbeta
+ 91/135 Test  #26: distribution_fatigue .............   Passed    0.05 sec
+        Start 128: distribution_ztgeom
+ 92/135 Test  #79: distribution_nsbeta ..............   Passed    0.03 sec
+        Start  21: distribution_dunif
+ 93/135 Test  #58: distribution_invweibull ..........   Passed    0.05 sec
+        Start  37: distribution_geom
+ 94/135 Test  #21: distribution_dunif ...............   Passed    0.02 sec
+        Start  20: distribution_dnorm
+ 95/135 Test  #20: distribution_dnorm ...............   Passed    0.02 sec
+        Start  52: distribution_invexp
+ 96/135 Test #128: distribution_ztgeom ..............   Passed    0.06 sec
+ 97/135 Test  #37: distribution_geom ................   Passed    0.03 sec
+        Start  59: distribution_kumar
+        Start  69: distribution_logitnorm
+ 98/135 Test  #52: distribution_invexp ..............   Passed    0.02 sec
+        Start  66: distribution_lnorm
+ 99/135 Test  #69: distribution_logitnorm ...........   Passed    0.04 sec
+        Start  44: distribution_hcauchy
+100/135 Test  #66: distribution_lnorm ...............   Passed    0.03 sec
+        Start  24: distribution_exp
+101/135 Test  #59: distribution_kumar ...............   Passed    0.05 sec
+        Start  56: distribution_invpareto
+102/135 Test  #44: distribution_hcauchy .............   Passed    0.02 sec
+        Start  14: distribution_cauchy
+103/135 Test  #24: distribution_exp .................   Passed    0.03 sec
+        Start  84: distribution_pareto3
+104/135 Test  #14: distribution_cauchy ..............   Passed    0.02 sec
+        Start 113: distribution_weibull
+105/135 Test  #56: distribution_invpareto ...........   Passed    0.04 sec
+        Start  71: distribution_lomax_slow
+106/135 Test #113: distribution_weibull .............   Passed    0.02 sec
+        Start  40: distribution_gompertz
+107/135 Test  #84: distribution_pareto3 .............   Passed    0.04 sec
+        Start  64: distribution_lgser
+108/135 Test  #71: distribution_lomax_slow ..........   Passed    0.03 sec
+        Start  45: distribution_hnorm
+109/135 Test  #40: distribution_gompertz ............   Passed    0.02 sec
+        Start 127: distribution_ztbinom_slow
+110/135 Test #127: distribution_ztbinom_slow ........   Passed    0.02 sec
+        Start  87: distribution_pig_slow
+111/135 Test  #45: distribution_hnorm ...............   Passed    0.03 sec
+        Start  42: distribution_gumbel
+112/135 Test  #64: distribution_lgser ...............   Passed    0.04 sec
+        Start  61: distribution_laplace
+113/135 Test  #42: distribution_gumbel ..............   Passed    0.02 sec
+        Start  89: distribution_power
+114/135 Test  #87: distribution_pig_slow ............   Passed    0.02 sec
+        Start  82: distribution_pareto
+115/135 Test  #61: distribution_laplace .............   Passed    0.03 sec
+        Start  90: distribution_rayleigh
+116/135 Test  #89: distribution_power ...............   Passed    0.02 sec
+        Start  11: distribution_bnbinom_slow
+117/135 Test  #11: distribution_bnbinom_slow ........   Passed    0.01 sec
+        Start  83: distribution_pareto2
+118/135 Test  #82: distribution_pareto ..............   Passed    0.03 sec
+        Start  43: distribution_gumbel_slow
+119/135 Test  #90: distribution_rayleigh ............   Passed    0.03 sec
+        Start 117: distribution_zib_slow
+120/135 Test  #83: distribution_pareto2 .............   Passed    0.02 sec
+        Start  60: distribution_kumar_slow
+121/135 Test  #43: distribution_gumbel_slow .........   Passed    0.02 sec
+        Start  67: distribution_logis
+122/135 Test  #60: distribution_kumar_slow ..........   Passed    0.01 sec
+        Start  68: distribution_logis_slow
+123/135 Test #117: distribution_zib_slow ............   Passed    0.03 sec
+        Start 112: distribution_unif
+124/135 Test  #67: distribution_logis ...............   Passed    0.03 sec
+        Start  62: distribution_laplace_slow
+125/135 Test  #68: distribution_logis_slow ..........   Passed    0.02 sec
+        Start  78: distribution_norm_slow
+126/135 Test #112: distribution_unif ................   Passed    0.02 sec
+        Start  81: distribution_paralogis_slow
+127/135 Test  #81: distribution_paralogis_slow ......   Passed    0.01 sec
+        Start 131: distribution_support
+128/135 Test  #62: distribution_laplace_slow ........   Passed    0.03 sec
+        Start   2: sample_tests
+129/135 Test  #78: distribution_norm_slow ...........   Passed    0.02 sec
+        Start 134: tails_tests
+130/135 Test #131: distribution_support .............   Passed    0.01 sec
+        Start   1: bfgs_tests
+131/135 Test #134: tails_tests ......................   Passed    0.00 sec
+        Start 132: no_throw_tests
+132/135 Test   #2: sample_tests .....................   Passed    0.01 sec
+133/135 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+134/135 Test #132: no_throw_tests ...................   Passed    0.00 sec
+135/135 Test   #8: distribution_bhatt_slow ..........   Passed   11.87 sec
+
+100% tests passed, 0 tests failed out of 135
+
+Label Time Summary:
+cran    = 1253.16 sec*proc (107 tests)
+dev     = 1257.69 sec*proc (108 tests)
+full    = 1681.83 sec*proc (135 tests)
+
+Total Test time (real) = 420.91 sec

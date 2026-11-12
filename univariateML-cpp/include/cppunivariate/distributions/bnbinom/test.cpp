@@ -807,3 +807,18 @@ TEST_CASE("bnbinom: near-Poisson mass beyond prefix chart") {
   CHECK(cppunivariate::distributions::dbnbinom(1e6,1e8,1e16,1e8,true) ==
     doctest::Approx(-12805552.582318537508).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("bnbinom: audit 579 reported large-count likelihood") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const auto fit=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-10,600,
+    1.0672234787479615,NAN,5.36473383510874);
+  REQUIRE(fit.status==cppunivariate::BnbinomStatus::Ok);
+  CHECK(fit.size==1.0672234787479615);
+  CHECK(fit.beta==5.36473383510874);
+  CHECK(fit.alpha==doctest::Approx(0.0825043451682516).epsilon(1e-10));
+  // Independent 100-digit log-gamma identity at the returned binary64 inputs.
+  CHECK(fit.logLik==doctest::Approx(-86.5533767289753).epsilon(1e-10).scale(0));
+  double density_sum=0;
+  for(int v:x)density_sum+=cppunivariate::distributions::dbnbinom(v,fit.size,fit.alpha,fit.beta,true);
+  CHECK(fit.logLik==doctest::Approx(density_sum).epsilon(1e-14).scale(0));
+}
