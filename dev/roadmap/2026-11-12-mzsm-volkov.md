@@ -2,7 +2,8 @@
 
 **Status:** banked at low priority, 2026-11-12 (Jonas: "add dmzsm to low
 priority"), from the [sads survey](../research/evaluations/2026-11-12-sads-survey.md).
-Volkov is recorded here for context only and is not proposed.
+Volkov is out of scope ([decision 2026-11-12](decisions.md#2026-11-12)) and
+recorded here for context only.
 
 ## MZSM (metacommunity zero-sum multinomial)
 
@@ -63,3 +64,16 @@ quadrature in C) and fits $(\theta,m)$ with $J$ held. Reasons not to add it:
 - The same composite-likelihood caveat applies, more strongly: Etienne's
   (2005) sampling formula is the exact likelihood, and GUILDS and untb
   implement it for the users who want this model.
+
+**Out of scope** (Jonas, 2026-11-12). The exact likelihood is a joint law for
+the whole abundance vector of one community, not an iid univariate family.
+Where to send users:
+
+- **GUILDS** 1.4.7 (Janzen; CRAN; Rcpp, nloptr, pracma):
+  `logLikelihood.ESF`, `maxLikelihood.ESF` (fit $\theta$, $m$),
+  `generate.ESF`, `expected.SAD`; `calcKDA` computes the sampling-formula
+  coefficients $K(D,A)$. The `*.Guilds*` functions add two dispersal guilds
+  (Janzen, Haegeman and Etienne 2015).
+- **untb** 1.7-7-1 (Hankin 2007, *J. Stat. Softw.*; Brobdingnag, partitions,
+  polynom): neutral-drift simulation, `etienne()` with `optimal.params()`,
+  `volkov()`, Fisher's $\alpha$.

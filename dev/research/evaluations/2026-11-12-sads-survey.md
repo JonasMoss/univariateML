@@ -20,6 +20,6 @@ library; signatures and bodies read from the installed package.
 | `dpowbend` | — | [banked, preferred](../../roadmap/2026-11-12-powbend.md) |
 | `dmand` (Zipf–Mandelbrot) | — | [banked](../../roadmap/2026-11-12-zipf-mandelbrot.md) |
 | `dmzsm` | — | [banked, low](../../roadmap/2026-11-12-mzsm-volkov.md) |
-| `dvolkov` | — | not proposed; see the same file |
+| `dvolkov` | — | out of scope ([decision](../../roadmap/decisions.md#2026-11-12)): joint community likelihood; GUILDS, untb |
 
 Power-bend checks: [`powbend_check.py`](2026-11-12-sads-survey/powbend_check.py).

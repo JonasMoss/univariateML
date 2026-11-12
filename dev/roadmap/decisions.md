@@ -8,6 +8,13 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-12
 
+- **Volkov is out of scope** (Jonas: "Yeah, lets bank volkov out"). The
+  neutral-theory likelihood is a joint law for one community's abundance
+  vector (it sums to $J$), not an iid univariate family; GUILDS (Etienne's
+  sampling formula, `maxLikelihood.ESF`) and untb serve it. MZSM stays
+  banked at low priority as an iid model whose dossier must call the fit a
+  composite approximation. Reasons and the unresolved $m\to1$ discrepancy:
+  [MZSM and Volkov](2026-11-12-mzsm-volkov.md#volkov-neutral-local-community-with-immigration).
 - **Family coverage: parity with extraDistr, actuar and flexsurv** (Jonas:
   "we want parity with it for eligible distros i think? along with actuar and
   flexsurv?"). Every in-scope univariate family of the three is included;
