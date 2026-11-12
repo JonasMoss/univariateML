@@ -1,0 +1,17 @@
+{
+  "records": 386,
+  "by_family": {
+    "burr": {
+      "stop": 52,
+      "pass": 141
+    },
+    "genbeta": {
+      "pass": 120,
+      "stop": 70,
+      "open fit": 3
+    }
+  },
+  "attributions": {},
+  "head": "63bc2200ead3cab6c957543b2f1765d419bb9c89",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

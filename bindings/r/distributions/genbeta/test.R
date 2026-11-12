@@ -359,3 +359,9 @@ test_that("genbeta signed squared-power certificate selects a global gamma face"
   expect_lte(e$loglik_lower,e$limit_loglik)
   expect_gte(e$loglik_upper,e$limit_loglik)
 })
+
+test_that("concentrated held-power generalized-beta logLik agrees with dml", {
+  x <- c(.24995,.249975,.25,.250025,.250075)
+  f <- mlgenbeta(x,scale=1,shape3=4.084996007320842)
+  expect_equal(attr(f,"logLik"),sum(dml(x,f,log=TRUE)),tolerance=1e-11)
+})

@@ -1,0 +1,34 @@
+{
+  "name": "r-full",
+  "command": [
+    "just",
+    "test-full"
+  ],
+  "attempts": [
+    {
+      "machine": "simbox",
+      "command": [
+        "/tmp/umvl-cpu/simbox-run",
+        "env",
+        "CMAKE_BUILD_PARALLEL_LEVEL=4",
+        "CTEST_PARALLEL_LEVEL=4",
+        "just",
+        "test-full"
+      ],
+      "exit": 75,
+      "seconds": 8.05974793434143,
+      "log": "build/scratch/seam-rerun/r-full-simbox.log"
+    },
+    {
+      "machine": "workstation",
+      "command": [
+        "just",
+        "test-full"
+      ],
+      "exit": 0,
+      "seconds": 1090.120329618454,
+      "log": "build/scratch/seam-rerun/r-full-workstation.log",
+      "reservation_record": "local-final-batch-reservation.json"
+    }
+  ]
+}

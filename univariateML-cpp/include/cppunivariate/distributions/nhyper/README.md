@@ -211,3 +211,8 @@ each face separately.
 The growing-urn face is a negative binomial translated by r, since observations count total draws. Its payload explicitly records the shift and the absence of a corresponding package family.
 
 With composition held, a constant draw count $c\le m$ attains likelihood one at $N=m$, $r=c$. This exact member also settles the case at the largest represented population. Outside such attained cases, omitting stopping counts whose feasible populations exceed the representation range leaves the finite prefix uncertified. A large growing-urn preflight retains the population-prefix winner at the smallest admissible stopping count; it makes no claim to have optimized all stopping counts.
+
+The finite-grid combination sums can cancel at large counts in double-only
+arithmetic. Once the grid selects a winner, its reported likelihood uses the
+hypergeometric saddle-point identity for the mass, retaining the search and
+tie decisions from the grid.

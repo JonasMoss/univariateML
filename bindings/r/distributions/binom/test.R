@@ -254,3 +254,9 @@ test_that("large-count held-probability binomial logLik crosses the binding inta
   ll <- sum(dml(x,fit,log=TRUE))
   expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
 })
+
+test_that("large-count free-size binomial logLik agrees with its exact-input sum", {
+  f <- mlbinom(c(1000000,1000001,1000003,1000008,1000011),size=NULL)
+  expect_equal(unname(f["size"]),1000023)
+  expect_equal(attr(f,"logLik"),-14.363696715670825,tolerance=1e-12)
+})

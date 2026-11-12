@@ -474,9 +474,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-10,int maxit=
       if(!ok){return accuracy_failure();}
       if(std::isnan(a))r.shape1=lo+(hi-lo)/2;else r.shape2=lo+(hi-lo)/2;
     }
-    std::vector<double> logdata;ExtendedReal jacobian=0;
-    for(double v:x){logdata.push_back(v>scale*.5?-std::log1p((v-scale)/scale):std::log(scale)-std::log(v));jacobian-=std::log(v);}
-    r.logLik=genbeta_detail::profile(logdata,r.shape3,r.shape1,r.shape2,maxit).ll+static_cast<double>(jacobian);
+    r.logLik=genbeta_detail::public_loglik(x,r.shape1,r.shape2,r.shape3,scale);
     return r;
   }
   // Product coordinates cancel the common gamma-limit score terms.
@@ -499,9 +497,7 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-10,int maxit=
   if(free[1])r.shape2=std::exp(q[1]);
   if(free[2])r.shape3=std::exp(q[2]);
 
-  std::vector<double> logdata;ExtendedReal jacobian=0;
-  for(double v:x){logdata.push_back(v>scale*.5?-std::log1p((v-scale)/scale):std::log(scale)-std::log(v));jacobian-=std::log(v);}
-  r.logLik=genbeta_detail::profile(logdata,r.shape3,r.shape1,r.shape2,maxit).ll+static_cast<double>(jacobian);
+  r.logLik=genbeta_detail::public_loglik(x,r.shape1,r.shape2,r.shape3,scale);
   return r;
 }
 }

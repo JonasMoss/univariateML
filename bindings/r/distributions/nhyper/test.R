@@ -205,3 +205,11 @@ test_that("nhyper finds the attained constant law at the representation boundary
   expect_equal(unname(f[c("m","N","r")]),c(2^53-1,2^53-1,2),tolerance=0)
   expect_equal(as.numeric(logLik(f)),0)
 })
+
+test_that("negative-hypergeometric large-count grid likelihoods use stable masses", {
+  x <- c(1000000,1000001,1000003,1000008,1000011)
+  a <- mlnhyper(x,m=20,N=NULL,r=NULL)
+  b <- mlnhyper(x,m=20,N=NULL,r=3)
+  expect_equal(attr(a,"logLik"),sum(dml(x,a,log=TRUE)),tolerance=1e-12)
+  expect_equal(attr(b,"logLik"),sum(dml(x,b,log=TRUE)),tolerance=1e-12)
+})

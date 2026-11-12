@@ -354,3 +354,9 @@ test_that("Burr retains a finite log tail after intermediate power overflow", {
   expect_equal(pburr(x,1e-308,1e308,1,FALSE,TRUE),-log(x),tolerance=1e-10)
   expect_equal(dburr(x,1e-308,1e308,1,TRUE),-2*log(x),tolerance=1e-10)
 })
+
+test_that("concentrated held-shape Burr logLik agrees with its exact-input sum", {
+  x <- c(2.0428454965886376,2.0428454965906804,2.042845496592723,2.042845496594766,2.0428454965988516)
+  f <- mlburr(x,shape1=1.334637717604056)
+  expect_equal(attr(f,"logLik"),sum(dml(x,f,log=TRUE)),tolerance=1e-11)
+})

@@ -414,3 +414,8 @@ A reachable Weibull face remains a likelihood lower bound when the strict
 comparison does not close. Its value can refute a finite search point by a
 separated gap even without proving that the face wins globally; the
 unclosed face is retained as a witness, not a selected limit payload.
+
+For concentrated samples, the held-shape likelihood must retain the small
+log ratio of each observation to the fitted scale: subtracting separately
+rounded logarithms can alter the reported value appreciably when the power
+is large. Final values use the public coefficients and close-ratio arithmetic.

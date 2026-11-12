@@ -1,0 +1,20 @@
+{
+  "name": "cpp-dev-binomial-retest",
+  "command": [
+    "bash",
+    "dev/research/evaluations/2026-11-12-seam-rerun-data/binom-retest.sh"
+  ],
+  "attempts": [
+    {
+      "machine": "workstation",
+      "command": [
+        "/tmp/umvl-cpu/run",
+        "bash",
+        "dev/research/evaluations/2026-11-12-seam-rerun-data/binom-retest.sh"
+      ],
+      "exit": 0,
+      "seconds": 24.181854963302612,
+      "log": "build/scratch/seam-rerun/cpp-dev-binomial-retest-workstation.log"
+    }
+  ]
+}

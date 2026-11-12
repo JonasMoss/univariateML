@@ -1,0 +1,138 @@
+[
+  {
+    "original": "build/scratch/seam-rerun/after-double.log",
+    "retained": "after-double.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/after-native.log",
+    "retained": "after-native.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/analysis.log",
+    "retained": "analysis.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/before-double.log",
+    "retained": "before-double.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/before-native.log",
+    "retained": "before-native.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/binom-double-retest-driver.log",
+    "retained": "binom-double-retest-driver.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/binom-retest-driver.log",
+    "retained": "binom-retest-driver.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/changed-selection.log",
+    "retained": "changed-selection.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/cpp-binomial-double-retest-workstation.log",
+    "retained": "cpp-binomial-double-retest-workstation.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/cpp-dev-binomial-retest-workstation.log",
+    "retained": "cpp-dev-binomial-retest-workstation.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/cpp-dev-simbox.log",
+    "retained": "cpp-dev-simbox.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/cpp-dev-workstation.log",
+    "retained": "cpp-dev-workstation.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/cpp-no-long-double-simbox.log",
+    "retained": "cpp-no-long-double-simbox.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/cpp-no-long-double-workstation.log",
+    "retained": "cpp-no-long-double-workstation.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/final-checks.log",
+    "retained": "final-checks.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/high-precision.log",
+    "retained": "high-precision.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/late-after-double.log",
+    "retained": "late-after-double.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/late-after-native.log",
+    "retained": "late-after-native.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/maximum-check.log",
+    "retained": "maximum-check.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/owned-before-native.log",
+    "retained": "focused-after-native.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/policy-check.log",
+    "retained": "policy-check.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/r-dev-simbox.log",
+    "retained": "r-dev-simbox.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/r-dev-workstation.log",
+    "retained": "r-dev-workstation.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/r-full-simbox.log",
+    "retained": "r-full-simbox.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/r-full-workstation.log",
+    "retained": "r-full-workstation.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/retain.log",
+    "retained": "retain.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/retry-after-double.log",
+    "retained": "retry-after-double.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/retry-after-native.log",
+    "retained": "retry-after-native.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/retry-before-double.log",
+    "retained": "retry-before-double.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/retry-before-native.log",
+    "retained": "retry-before-native.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/retry2-after-double.log",
+    "retained": "retry2-after-double.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/retry2-after-native.log",
+    "retained": "retry2-after-native.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/retry2-before-double.log",
+    "retained": "retry2-before-double.log.gz"
+  },
+  {
+    "original": "build/scratch/seam-rerun/site-check-workstation.log",
+    "retained": "site-check-workstation.log.gz"
+  }
+]

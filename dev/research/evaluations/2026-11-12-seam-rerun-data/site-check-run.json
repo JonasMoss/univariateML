@@ -1,0 +1,20 @@
+{
+  "name": "site-check",
+  "command": [
+    "just",
+    "site-check"
+  ],
+  "attempts": [
+    {
+      "machine": "workstation",
+      "command": [
+        "just",
+        "site-check"
+      ],
+      "exit": 0,
+      "seconds": 317.3814513683319,
+      "log": "build/scratch/seam-rerun/site-check-workstation.log",
+      "reservation_record": "local-final-batch-reservation.json"
+    }
+  ]
+}
