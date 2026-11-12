@@ -42,3 +42,26 @@ TEST_CASE("truth checks require the minimal finite representable quantile") {
   CHECK_FALSE(mltest::truth_lattice_quantile(std::nextafter(h,-INFINITY),.5,true,cdf));
   CHECK(mltest::truth_lattice_quantile(h,.5,false,[&](double x) {return 1-cdf(x);}));
 }
+
+#include "cppunivariate/core/likelihood_polish.hpp"
+TEST_CASE("polish method floor survives public recording and excludes evaluation breakdown") {
+  std::array<double,3> q{0.,0.,0.};
+  const std::array<bool,3> free{true,false,false};
+  cppunivariate::StopDetail detail;
+  const auto objective=[](const std::array<cppunivariate::accuracy_detail::Jet,3>& z) {
+    return -z[0]*z[0];
+  };
+  CHECK_FALSE(cppunivariate::accuracy_detail::polish(q,free,5e-16,100,objective,detail));
+  cppunivariate::record_accuracy(detail,5e-16,{1.,1000000.},0.,{1.,0.});
+  CHECK(detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  CHECK(detail.attainable_tol==4*std::numeric_limits<double>::epsilon());
+  detail.accuracy_stop=cppunivariate::AccuracyStop::Tolerance;detail.attainable_tol=1e-8;
+  cppunivariate::record_accuracy(detail,1e-10,{1.},0.,{1.});
+  CHECK(detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  CHECK(detail.attainable_tol==1e-8);
+  const auto invalid=[](const std::array<cppunivariate::accuracy_detail::Jet,3>&) {
+    return cppunivariate::accuracy_detail::Jet(NAN);
+  };
+  CHECK_FALSE(cppunivariate::accuracy_detail::polish(q,free,5e-16,100,invalid,detail));
+  CHECK(detail.accuracy_stop==cppunivariate::AccuracyStop::None);
+}

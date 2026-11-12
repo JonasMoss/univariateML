@@ -10,6 +10,7 @@ namespace gengamma_fit_detail {
 struct ShapePoint {
   double mu, sigma, q, mean_loglik, objective, score;
   bool valid;
+  StopDetail stop_detail{};
 };
 
 inline ShapePoint shape_point(span y, double q, double mu, double sigma,
@@ -18,17 +19,30 @@ inline ShapePoint shape_point(span y, double q, double mu, double sigma,
   const ShapePoint bad{nan,nan,q,nan,nan,nan,false};
   if (y.empty() || !std::isfinite(q) || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
   const double inner_tol=std::max(tol*0.01,64*std::numeric_limits<double>::epsilon());
+  const auto conditional_failure=[&](const StopDetail& detail) {
+    ShapePoint stopped=bad;stopped.stop_detail=detail;
+    if(!stopped.stop_detail.candidates.empty()) {
+      if(stopped.stop_detail.accuracy_stop==AccuracyStop::Tolerance)
+        stopped.stop_detail.attainable_tol=std::nextafter(std::max(tol,
+          stopped.stop_detail.attainable_tol*std::max(1.,tol/inner_tol)),INFINITY);
+      const auto c=stopped.stop_detail.candidates.back();
+      record_accuracy(stopped.stop_detail,tol,c.coef,c.loglik_lower,
+        {free_mu?std::max(std::abs(c.coef[0]),c.coef[1]):0,
+         free_sigma?c.coef[1]:0,std::max(1.,std::abs(q))});
+    }
+    return stopped;
+  };
   if (free_mu && free_sigma) {
     const auto fit=location_scale(y,q,inner_tol,maxit);
-    if (fit.status!=ConditionalStatus::Ok) return bad;
+    if (fit.status!=ConditionalStatus::Ok) return conditional_failure(fit.stop_detail);
     mu=fit.mu;sigma=fit.sigma;
   } else if (free_mu) {
     const auto fit=location(y,sigma,q);
-    if (fit.status!=ConditionalStatus::Ok) return bad;
+    if (fit.status!=ConditionalStatus::Ok) return conditional_failure(fit.stop_detail);
     mu=fit.value;
   } else if (free_sigma) {
     const auto fit=scale(y,mu,q,inner_tol,maxit);
-    if (fit.status!=ConditionalStatus::Ok) return bad;
+    if (fit.status!=ConditionalStatus::Ok) return conditional_failure(fit.stop_detail);
     sigma=fit.value;
   }
   const auto score=shape_score(y,mu,sigma,q);
@@ -56,7 +70,7 @@ inline ShapePoint shape_point(span y, double q, double mu, double sigma,
 // shallow comparison with Q=0.
 inline ShapePoint shape_candidate(span y, ShapePoint left, ShapePoint right,
                                   bool free_mu, bool free_sigma,
-                                  double center, double unit, double tol, int maxit) {
+                                  double center, double unit, double tol, int maxit, StopDetail& diagnostic) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const ShapePoint bad{nan,nan,nan,nan,nan,nan,false};
   if (!(left.valid && right.valid && left.q<right.q && left.score>0 && right.score<0 &&
@@ -73,7 +87,7 @@ inline ShapePoint shape_candidate(span y, ShapePoint left, ShapePoint right,
       const auto root=profile_root(d,std::min(a,b),std::max(a,b),tol,maxit);
       if (root.ok) {
         std::array<double,3> parameter{sign*root.mu,root.sigma,sign*root.q};
-        if (polish_local(y,center,unit,parameter,{true,true,true},tol,maxit)) {
+        if (polish_local(y,center,unit,parameter,{true,true,true},tol,maxit,0,diagnostic)) {
           const auto candidate=shape_point(y,parameter[2],parameter[0],parameter[1],false,false,tol,maxit);
           if (candidate.valid) return candidate;
         }
@@ -87,16 +101,35 @@ inline ShapePoint shape_candidate(span y, ShapePoint left, ShapePoint right,
     const double q=left.q+(right.q-left.q)/2;
     if (!(q>left.q && q<right.q)) break;
     mid=shape_point(y,q,left.mu,left.sigma,free_mu,free_sigma,tol,maxit);
-    if (!mid.valid) return bad;
+    if (!mid.valid) {
+      if(!mid.stop_detail.candidates.empty() && diagnostic.candidates.empty())diagnostic=mid.stop_detail;
+      return bad;
+    }
     if (mid.score>0) left=mid;
     else if (mid.score<0) right=mid;
     else { narrowed=true;break; }
     if (right.q-left.q <= 0.05*tol*std::max(1.0,std::abs(q))) { narrowed=true;break; }
   }
-  if (!narrowed) return bad;
+  if (!narrowed) {
+    if(!(left.q+(right.q-left.q)/2>left.q && left.q+(right.q-left.q)/2<right.q)) {
+      StopDetail detail;
+      const double floor=20*coefficient_spacing(mid.q,std::max(1.,std::abs(mid.q)));
+      if(tol<floor){detail.accuracy_stop=AccuracyStop::Tolerance;detail.attainable_tol=floor;}
+      record_accuracy(detail,tol,{mid.mu,mid.sigma,mid.q},mid.mean_loglik*y.size(),
+        {free_mu?std::max(std::abs(mid.mu),mid.sigma):0,free_sigma?mid.sigma:0,std::max(1.,std::abs(mid.q))});
+      if(diagnostic.candidates.empty())diagnostic=detail;
+    }
+    return bad;
+  }
   std::array<double,3> parameter{mid.mu,mid.sigma,mid.q};
-  if (!polish_local(y,center,unit,parameter,{free_mu,free_sigma,true},tol,maxit)) return bad;
+  if (!polish_local(y,center,unit,parameter,{free_mu,free_sigma,true},tol,maxit,0,diagnostic)) return bad;
   return shape_point(y,parameter[2],parameter[0],parameter[1],false,false,tol,maxit);
+}
+
+inline ShapePoint shape_candidate(span y,ShapePoint left,ShapePoint right,
+    bool free_mu,bool free_sigma,double center,double unit,double tol,int maxit) {
+  StopDetail detail;
+  return shape_candidate(y,left,right,free_mu,free_sigma,center,unit,tol,maxit,detail);
 }
 
 }  // namespace gengamma_fit_detail

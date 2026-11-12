@@ -54,6 +54,14 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
   const span logs{y.data(),y.size()};
   if (trgamma_detail::lost_log_distinctions(x,logs)) {out.status=GengammaStatus::IterationFailure;return out;}
   const double mean=static_cast<double>(total/y.size());
+  const auto accuracy_failure=[&](double m,double s,double shape,double bound=NAN) {
+    out.status=GengammaStatus::IterationFailure;
+    record_accuracy(out.stop_detail,tol,{m,s,shape},
+      gengamma_fit_detail::mean_loglik(logs,m,s,shape)*y.size(),
+      {fm?std::max(std::abs(m),s):0,fs?s:0,fq?std::max(1.,std::abs(shape)):0},
+      (fm || fs || fq)?bound:NAN);
+    return out;
+  };
   const bool constant=std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];});
   const bool log_at_mu=!fm && std::all_of(y.begin(),y.end(),[&](double v){return v==mu;});
   const bool at_mu=log_at_mu && mu==0 && std::all_of(x.begin(),x.end(),[](double v){return v==1;});
@@ -65,27 +73,26 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
   if (!fq) {
     if (fm && fs) {
       const auto r=gengamma_fit_detail::location_scale(logs,q,tol,maxit);
-      if(r.status!=gengamma_fit_detail::ConditionalStatus::Ok){out.status=GengammaStatus::IterationFailure;return out;}
+      if(r.status!=gengamma_fit_detail::ConditionalStatus::Ok){out.status=GengammaStatus::IterationFailure;out.stop_detail=r.stop_detail;return out;}
       mu=r.mu;sigma=r.sigma;
     } else if(fm) {
       const auto r=gengamma_fit_detail::location(logs,sigma,q);
-      if(r.status!=gengamma_fit_detail::ConditionalStatus::Ok){out.status=GengammaStatus::IterationFailure;return out;}
+      if(r.status!=gengamma_fit_detail::ConditionalStatus::Ok){out.status=GengammaStatus::IterationFailure;out.stop_detail=r.stop_detail;return out;}
       mu=r.value;
     } else if(fs) {
       const auto r=gengamma_fit_detail::scale(logs,mu,q,tol,maxit);
-      if(r.status!=gengamma_fit_detail::ConditionalStatus::Ok){out.status=GengammaStatus::IterationFailure;return out;}
+      if(r.status!=gengamma_fit_detail::ConditionalStatus::Ok){out.status=GengammaStatus::IterationFailure;out.stop_detail=r.stop_detail;return out;}
       sigma=r.value;
     }
     if (fm || fs) {
       std::array<double,3> p{mu,sigma,q};
-      if(!gengamma_fit_detail::polish_local(logs,mean,sigma,p,{fm,fs,false},tol,maxit,log_error)) {
+      if(!gengamma_fit_detail::polish_local(logs,mean,sigma,p,{fm,fs,false},tol,maxit,log_error,out.stop_detail)) {
         out.status=GengammaStatus::IterationFailure;return out;
       }
       mu=p[0];sigma=p[1];
     }
-    if (rounded_ties && 8*std::numeric_limits<double>::epsilon()*(1+std::abs(mu))>0.01*tol*sigma) {
-      out.status=GengammaStatus::IterationFailure;return out;
-    }
+    if (rounded_ties && 8*std::numeric_limits<double>::epsilon()*(1+std::abs(mu))>0.01*tol*sigma)
+      return accuracy_failure(mu,sigma,q,800*std::numeric_limits<double>::epsilon()*(1+std::abs(mu))/sigma);
     const double ll=gengamma_fit_detail::mean_loglik(logs,mu,sigma,q)*y.size();
     if (!std::isfinite(ll)) {out.status=GengammaStatus::IterationFailure;return out;}
     out.mu=mu;out.sigma=sigma;out.Q=q;out.logLik=ll;out.status=GengammaStatus::Ok;
@@ -93,9 +100,8 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
   }
   if (!fs && constant && (fm || at_mu)) {
     mu=fm?y[0]:mu;q=0;
-    if(fm && log_error>tol*0.25*std::max(std::abs(mu),sigma)) {
-      out.status=GengammaStatus::IterationFailure;return out;
-    }
+    if(fm && log_error>tol*0.25*std::max(std::abs(mu),sigma))
+      return accuracy_failure(mu,sigma,q,4*log_error/std::max(std::abs(mu),sigma));
     out.mu=mu;out.sigma=sigma;out.Q=q;
     out.logLik=gengamma_fit_detail::mean_loglik(logs,mu,sigma,q)*y.size();
     if(!std::isfinite(out.logLik)){out.status=GengammaStatus::IterationFailure;return out;}
@@ -112,7 +118,7 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
     const auto certificate=gengamma_fit_detail::certify_zero(x,logs,maxit,log_error);
     if(certificate.certified) {
       std::array<double,3> p{mean,unit,0};
-      if(gengamma_fit_detail::polish_local(logs,mean,unit,p,{true,true,false},tol,maxit,log_error)) {
+      if(gengamma_fit_detail::polish_local(logs,mean,unit,p,{true,true,false},tol,maxit,log_error,out.stop_detail)) {
         const double ll=gengamma_fit_detail::mean_loglik(logs,p[0],p[1],0)*y.size();
         if(std::isfinite(ll)) {
           out.mu=p[0];out.sigma=p[1];out.Q=0;out.logLik=ll;
@@ -122,7 +128,7 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
     }
   }
   const auto zero=gengamma_fit_detail::shape_point(logs,0,mu,sigma,fm,fs,tol,maxit);
-  if(!zero.valid){out.status=GengammaStatus::IterationFailure;return out;}
+  if(!zero.valid){out.status=GengammaStatus::IterationFailure;out.stop_detail=zero.stop_detail;return out;}
   const double qmin=std::max(1e-100,std::min(1e-5,std::abs(zero.score)*1e-5));
   double qmax=1;
   const int budget=static_cast<int>(solver_budget(maxit));
@@ -180,20 +186,24 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
   };
   if(candidates.values.empty()){
     if(strict_face())return out;
-    out.status=GengammaStatus::IterationFailure;return out;
+    out.status=GengammaStatus::IterationFailure;
+    if(!candidates.stop_detail.candidates.empty())out.stop_detail=candidates.stop_detail;
+    return out;
   }
   gengamma_fit_detail::ShapePoint best{};
   bool have_best=false;
   for(const auto& candidate:candidates.values) {
     std::array<double,3> p{candidate.mu,candidate.sigma,candidate.q};
-    if(!gengamma_fit_detail::polish_local(logs,mean,unit,p,{fm,fs,true},tol,maxit,log_error))continue;
+    if(!gengamma_fit_detail::polish_local(logs,mean,unit,p,{fm,fs,true},tol,maxit,log_error,out.stop_detail))continue;
     const auto refined=gengamma_fit_detail::shape_point(logs,p[2],p[0],p[1],false,false,tol,maxit);
     if(refined.valid && (!have_best || refined.objective>best.objective)) {best=refined;have_best=true;}
   }
   if(!have_best){if(strict_face())return out;out.status=GengammaStatus::IterationFailure;return out;}
-  if (rounded_ties && 8*std::numeric_limits<double>::epsilon()*(1+std::abs(mu))>0.01*tol*best.sigma) {
-    out.status=GengammaStatus::IterationFailure;return out;
-  }
+  // Failed alternative proposals do not diagnose this accepted local fit
+  // or any subsequent comparison with a face.
+  out.stop_detail={};
+  if (rounded_ties && 8*std::numeric_limits<double>::epsilon()*(1+std::abs(mu))>0.01*tol*best.sigma)
+    return accuracy_failure(best.mu,best.sigma,best.q,800*std::numeric_limits<double>::epsilon()*(1+std::abs(mu))/best.sigma);
   // Every reachable face supplies a lower bound, even when it is not known
   // to be the globally winning unattained supremum.
   double face=-std::numeric_limits<double>::infinity();
@@ -225,7 +235,7 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
   }
   out.mu=best.mu;out.sigma=best.sigma;out.Q=best.q;out.logLik=best.mean_loglik*y.size();
   if (!std::isfinite(out.logLik)) {out.status=GengammaStatus::IterationFailure;return out;}
-  out.status=GengammaStatus::Ok;
+  out.status=GengammaStatus::Ok;out.stop_detail={};
   out.certified=fm && fs && gengamma_fit_detail::certify_free_candidate(logs,best,tol,maxit,log_error);
   return out;
 }

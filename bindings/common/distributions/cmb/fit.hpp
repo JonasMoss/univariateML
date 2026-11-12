@@ -77,6 +77,8 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
     case cppunivariate::CmbStatus::NotImplemented:
       return stopped_fail("Free size with free dispersion is not implemented for this sample within the supported size range.");
     default:
+      if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)
+        return stopped_fail("CMB could not meet the requested coefficient accuracy in floating-point arithmetic.");
       if (!size.supplied && !prob.supplied && nu.supplied && v>0)
         return stopped_fail("CMB MLE failed to converge or exhausted its normalizer work budget; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed.");
       return stopped_fail("CMB MLE failed to converge or exhausted its normalizer work budget.");

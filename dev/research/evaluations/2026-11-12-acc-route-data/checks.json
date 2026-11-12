@@ -1,0 +1,159 @@
+{
+  "baseline": "9e4a368577f752f3387ece249203fc40f7e022ca",
+  "machine": "workstation",
+  "compiler": "GCC 15.2.0",
+  "checks": [
+    {
+      "name": "C++ dev",
+      "command": "just test-changed master",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 108,
+      "failed": 0
+    },
+    {
+      "name": "R dev",
+      "command": "just test-changed master",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 29040,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 155
+    },
+    {
+      "name": "C++ full",
+      "command": "UMVL_TEST_TIER=full just cpp-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 135,
+      "failed": 0
+    },
+    {
+      "name": "C++ no-long-double",
+      "command": "just cpp-test-no-long-double",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 135,
+      "failed": 0
+    },
+    {
+      "name": "R full",
+      "command": "just test-full",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 57772,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 0
+    },
+    {
+      "name": "Final gengamma and cmb native doctests",
+      "command": "standalone C++17 doctest build of both family test.cpp files",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed_cases": 93,
+      "passed_assertions": 266461,
+      "failed": 0
+    },
+    {
+      "name": "Final gengamma and cmb double doctests",
+      "command": "same build with BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed_cases": 93,
+      "passed_assertions": 266461,
+      "failed": 0
+    },
+    {
+      "name": "Dgamma public-witness regression",
+      "command": "standalone dgamma doctest --test-case=\"dgamma: polish floor*\"",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed_cases": 1,
+      "passed_assertions": 15,
+      "failed": 0
+    },
+    {
+      "name": "Final gengamma R",
+      "command": "UMVL_TEST_FAMILIES=gengamma UMVL_TEST_TIER=full just test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 547,
+      "failed": 0,
+      "warnings": 0,
+      "skipped": 6
+    },
+    {
+      "name": "JS build",
+      "command": "just js-build",
+      "machine": "workstation",
+      "exit_code": 0
+    },
+    {
+      "name": "JS full",
+      "command": "just js-test",
+      "machine": "workstation",
+      "exit_code": 0,
+      "passed": 627,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "Site",
+      "command": "just site-check",
+      "machine": "workstation",
+      "exit_code": 0,
+      "family_pages": 100,
+      "compiled_and_linked_cpp_examples": 100
+    },
+    {
+      "name": "Successful-fit replay",
+      "command": "python3 dev/research/evaluations/2026-11-12-acc-route-data/replay.py",
+      "machine": "workstation",
+      "exit_code": 0,
+      "successful_per_mode": 16,
+      "modes": 2,
+      "bitwise_equal": true
+    }
+  ],
+  "late_changes": "After full suites, family-only diagnostic refinements were checked with the current gengamma/cmb native and double doctests, dgamma witness regression, final gengamma R file/shared loops, full JS, site and replay. No shared code changed after the full suites.",
+  "simbox": {
+    "exit_code": 75,
+    "status": "unreachable",
+    "gcc13_no_long_double": "not run; initial attempt and two explicit retries unavailable; workstation fallback passed"
+  },
+  "source_sha256": {
+    "bindings/common/distributions/cmb/fit.hpp": "0db36a56874015c9820e93b6d6e8e19a62837d8abf1ee7f1282d2089b489f7db",
+    "bindings/common/distributions/dgamma/fit.hpp": "44addc597873a5c9dffd82689751d2cf4864c50091a242562d94077004cc6a25",
+    "bindings/common/distributions/gengamma/fit.hpp": "f2fcb443778e072a319c885ec68beebc395c638ec973adca61411bc8fd8d5509",
+    "bindings/js/modifier-metadata.mjs": "06850650c1b5211df46242476dfe2ccf4edede337ff320d5c808f56df041c776",
+    "bindings/js/stop-test.mjs": "f7b65dce2bb4941f6447d9dc7a7c6e74ea77cff564fe057ff541ef0dfd959ef6",
+    "bindings/r/distributions/cmb/test.R": "3e08950e27903522a6d919a79f49e1d43d7e5bd6bdbaa54d1cdd587442618fe3",
+    "bindings/r/distributions/dgamma/test.R": "303b3fb672255703ddef8ae93137c93b5765ba3603878988961ce186d1b28ce4",
+    "bindings/r/distributions/gengamma/test.R": "b2e1230405a1664017721d79adb20e9802efafe2b437a631a3eba360713040ec",
+    "dev/design/accuracy-contract.md": "eb9773f06b27d3ce6553e87c1042a863ec418b9df7133806ed7ec8e5911eacf9",
+    "dev/design/structured-stop-details.md": "455f56e960404c6b2391f6f5e3f1f57946e7f08659281193b95899f940f95661",
+    "univariateML-cpp/include/cppunivariate/core/likelihood_polish.hpp": "4acca4ef1fdbb01a2993c93155b0a38bdfdf2dca0beb15de47ebc8ba4853a241",
+    "univariateML-cpp/include/cppunivariate/core/stop_detail.hpp": "2861ed4e4240cb0638c5db1b514b6aef19f270f85dc9ee83d01452ea3ae160cb",
+    "univariateML-cpp/include/cppunivariate/distributions/cmb/mle.hpp": "318aaa38cee63773ce38dce8f152fe49ab533d147c0fe2b771b401f13c1d6014",
+    "univariateML-cpp/include/cppunivariate/distributions/cmb/test.cpp": "91ce0635879c226334c2609cd4e316f48c0ea5698493bcffea70f56f49aab042",
+    "univariateML-cpp/include/cppunivariate/distributions/dgamma/mle.hpp": "4d00d94cb7bd895cd54614bbe5279b0abe9d51ca77af4c2b3c923cf814220d3a",
+    "univariateML-cpp/include/cppunivariate/distributions/dgamma/test.cpp": "c44f449a9edafe658cef5d54ca0cca9e4592729139b49f0fc70ddfb9e783649c",
+    "univariateML-cpp/include/cppunivariate/distributions/gengamma/held.hpp": "6f9a0be1cd72a67cedb8193dbc9cfc723da1e1e40c4c1fdbbce0820826cca01d",
+    "univariateML-cpp/include/cppunivariate/distributions/gengamma/held_joint.hpp": "58917c702d123258b43ed09ca913ea7468df920c21b908fce9884e37a02cf5dc",
+    "univariateML-cpp/include/cppunivariate/distributions/gengamma/local.hpp": "a3088b735e204eecf9ffe51aaaca301305d9a91f82c3fdbfee7beaaa641ef05a",
+    "univariateML-cpp/include/cppunivariate/distributions/gengamma/mle.hpp": "5ed21fcc19ca0793d40b311817ed7593c630d51fc22b0962a8c53017d9f4a3a8",
+    "univariateML-cpp/include/cppunivariate/distributions/gengamma/shape_candidate.hpp": "a34cc3557af80fba437df70c3eebe44cc2ce18c731062380701800997274b3e3",
+    "univariateML-cpp/include/cppunivariate/distributions/gengamma/shape_scan.hpp": "5227886b7dc24a432874452a048af49eb0136b5e08557a812509ac9e8bd2f8c7",
+    "univariateML-cpp/include/cppunivariate/distributions/gengamma/test.cpp": "4bf9d0c645827ce63526dd7940c9d6981fdc78d8d230b1553588ce69c4ee0e06",
+    "univariateML-cpp/include/cppunivariate/distributions/trgamma/README.md": "5403f5fd6034b8da8bf811b0e29d7f4d79348de9c93cfe5f0e3ec7e1be7ee599",
+    "univariateML-cpp/tests/distribution_tests_main.cpp": "b74a58843908ee572577469bfbb372ec91c9127d9a0293c4ea6e4422837015a3"
+  },
+  "auxiliary_documentation_scan": {
+    "global_exit_code": 1,
+    "preexisting_missing_destinations": 45,
+    "unchanged_baseline_sources": 7,
+    "changed_markdown_missing_destinations": 0
+  }
+}

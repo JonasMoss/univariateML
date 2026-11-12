@@ -10,6 +10,7 @@ struct ShapeCandidates {
   std::vector<ShapePoint> values;
   int evaluations=0;
   bool scan_completed=false;
+  StopDetail stop_detail{};
 };
 
 // The caller supplies the scanned range and remains responsible for the
@@ -31,9 +32,9 @@ inline ShapeCandidates shape_candidates(span y, double mu, double sigma,
   if (budget<1) return out;
   const auto zero=shape_point(y,0,mu,sigma,free_mu,free_sigma,tol,maxit);
   ++out.evaluations;
-  if (!zero.valid) return out;
+  if (!zero.valid){out.stop_detail=zero.stop_detail;return out;}
   std::array<double,3> start{zero.mu,zero.sigma,0};
-  if (polish_local(y,center,unit,start,{free_mu,free_sigma,true},tol,maxit)) {
+  if (polish_local(y,center,unit,start,{free_mu,free_sigma,true},tol,maxit,0,out.stop_detail)) {
     const auto candidate=shape_point(y,start[2],start[0],start[1],false,false,tol,maxit);
     if (candidate.valid) out.values.push_back(candidate);
   }
@@ -45,14 +46,17 @@ inline ShapeCandidates shape_candidates(span y, double mu, double sigma,
     const auto neg=shape_point(y,-q,zero.mu,zero.sigma,free_mu,free_sigma,tol,maxit);
     out.evaluations+=2;
     if (prev_pos.valid && pos.valid && prev_pos.score>0 && pos.score<0) {
-      const auto candidate=shape_candidate(y,prev_pos,pos,free_mu,free_sigma,center,unit,tol,maxit);
+      const auto candidate=shape_candidate(y,prev_pos,pos,free_mu,free_sigma,center,unit,tol,maxit,out.stop_detail);
       if (candidate.valid) out.values.push_back(candidate); else all_valid=false;
     }
     if (prev_neg.valid && neg.valid && neg.score>0 && prev_neg.score<0) {
-      const auto candidate=shape_candidate(y,neg,prev_neg,free_mu,free_sigma,center,unit,tol,maxit);
+      const auto candidate=shape_candidate(y,neg,prev_neg,free_mu,free_sigma,center,unit,tol,maxit,out.stop_detail);
       if (candidate.valid) out.values.push_back(candidate); else all_valid=false;
     }
     if (!pos.valid || !neg.valid) all_valid=false;
+    for(const auto& failed:{pos,neg})if(!failed.stop_detail.candidates.empty() &&
+       (out.stop_detail.candidates.empty() || failed.stop_detail.candidates.back().loglik_lower>
+        out.stop_detail.candidates.back().loglik_lower))out.stop_detail=failed.stop_detail;
     prev_pos=pos;prev_neg=neg;
     if (q==qmax) {out.scan_completed=all_valid;break;}
     const double next=q<=qmax/2 ? q*2 : qmax;

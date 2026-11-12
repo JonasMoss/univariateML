@@ -8,6 +8,7 @@ namespace gengamma_fit_detail {
 struct JointResult {
   double mu, sigma;
   ConditionalStatus status;
+  StopDetail stop_detail{};
 };
 
 // In standardized reflected data, t=|Q|*sd/sigma and the profiled
@@ -54,15 +55,21 @@ inline JointResult location_scale(span y, double q, double tol, int maxit) {
   for (int i = 0; i < budget; ++i) {
     const double mid = lo + (hi - lo) / 2;
     if (mid == lo || mid == hi || hi - lo <= tol) {
-      if (hi - lo > tol) return {nan, nan, ConditionalStatus::IterationFailure};
+      if (hi - lo > tol) {
+        const double value=std::exp(mid);const auto m=location(y,value,q);
+        return {m.value,value,ConditionalStatus::IterationFailure,
+          conditional_accuracy(y,m.value,value,q,true,tol,coefficient_spacing(mid,1.))};
+      }
       const double sigma = std::exp(mid);
       const auto center = location(y, sigma, q);
       const auto left = location(y, std::exp(lo), q);
       const auto right = location(y, std::exp(hi), q);
       if (!(sigma > 0) || !std::isfinite(sigma) || center.status != ConditionalStatus::Ok ||
-          left.status != ConditionalStatus::Ok || right.status != ConditionalStatus::Ok ||
-          std::abs(left.value - right.value) > tol * std::max(sigma, std::abs(center.value)))
+          left.status != ConditionalStatus::Ok || right.status != ConditionalStatus::Ok)
         return {nan, nan, ConditionalStatus::IterationFailure};
+      if(std::abs(left.value-right.value)>tol*std::max(sigma,std::abs(center.value)))
+        return {center.value,sigma,ConditionalStatus::IterationFailure,
+          conditional_accuracy(y,center.value,sigma,q,true,tol,0)};
       return {center.value, sigma, ConditionalStatus::Ok};
     }
     const double f = score(mid);
@@ -70,8 +77,11 @@ inline JointResult location_scale(span y, double q, double tol, int maxit) {
     if (f > 0) lo = mid; else if (f < 0) hi = mid;
     else {
       const double a = std::max(lo, mid - tol/4), b = std::min(hi, mid + tol/4);
-      if (!(a < mid && mid < b && score(a) > 0 && score(b) < 0))
-        return {nan, nan, ConditionalStatus::IterationFailure};
+      if (!(a < mid && mid < b && score(a) > 0 && score(b) < 0)) {
+        const double value=std::exp(mid);const auto m=location(y,value,q);
+        return {m.value,value,ConditionalStatus::IterationFailure,
+          conditional_accuracy(y,m.value,value,q,true,tol,4*coefficient_spacing(mid,1.))};
+      }
       lo = a; hi = b;
     }
   }

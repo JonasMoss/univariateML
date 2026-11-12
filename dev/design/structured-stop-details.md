@@ -249,12 +249,15 @@ reported half-normal and half-t densities in original coordinates.
 ## Accuracy stops
 
 Accuracy is independent of the family status enum: `StopDetail::accuracy_stop`
-distinguishes an explicitly unrepresentable tolerance from measured conditioning.
+distinguishes a request below representation or method resolution from measured conditioning.
 Both retain the finite candidate in public coordinates. Historical family status
 names and message text do not classify the cause; consumers inspect the kind. Bindings use `tolerance`
 and `conditioning`; R additionally inherits `univariateML_numerical`, preserving
 existing numerical-error handlers. `attainable_tol` travels as a numeric field;
 a tolerance message also gives it in round-trip decimal precision.
+An explicit method floor survives public-witness recording and can exceed the
+candidate's adjacent-double spacing. Callers using transformed coordinates
+convert that floor, as well as noise bounds, to the public accuracy scale.
 
 A failed iteration or nonpositive information matrix alone does not establish
 conditioning. Those search failures remain numerical unless a propagated score

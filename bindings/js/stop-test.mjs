@@ -532,3 +532,40 @@ test('inverse paralogistic reciprocal overflow stays numerical', () => {
     assert.ok(e.candidates.every(c=>c.scale===undefined||Number.isFinite(c.scale)));return true;
   });
 });
+
+test('gengamma, CMB and discretized gamma retain public accuracy witnesses', () => {
+  for(const [family,x,held,control] of [
+    ['gengamma',[.2,.7,1,2,4],{sigma:1,Q:0},{tol:1e-20}],
+    ['cmb',[0,1,1,2,4],{size:5,nu:1},{reltol:1e-20}],
+    ['dgamma',[0,1,1,2,4],{shape:2},{reltol:5e-16}]
+  ]) assert.throws(()=>api[family].fit(x,held,control),e=>{
+    assert.equal(e.kind,'tolerance');assert.ok(e.attainable_tol>1e-16);
+    assert.ok(e.candidates.length>0);
+    assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));
+    for(const [name,value] of Object.entries(held))assert.equal(e.candidates.at(-1)[name],value);
+    return true;
+  });
+  for(const [family,x,held,control] of [
+    ['gengamma',[.2,.7,1,2,4],{sigma:1,Q:0},{tol:1e-14}],
+    ['cmb',[0,1,1,2,4],{size:5,nu:1},{reltol:1e-14}],
+    ['dgamma',[1000000,1000001,1000003,1000008,1000011],{},{}]
+  ]) assert.throws(()=>api[family].fit(x,held,control),e=>{
+    assert.equal(e.kind,'conditioning');assert.ok(e.candidates.length>0);
+    assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;
+  });
+});
+
+test('free CMB size preserves the continuous-coordinate accuracy kind', () => {
+  assert.throws(()=>api.cmb.fit([0,1,1,2,4],{size:null,nu:1},{reltol:1e-20}),e=>{
+    assert.equal(e.kind,'tolerance');assert.ok(e.candidates.length>0);
+    assert.equal(e.candidates.at(-1).nu,1);return true;
+  });
+});
+
+test('internal gengamma conditional brackets retain public accuracy detail', () => {
+  assert.throws(()=>api.gengamma.fit([1,1],{mu:Number.MIN_VALUE}),e=>{
+    assert.equal(e.kind,'tolerance');assert.ok(e.attainable_tol>=1);
+    assert.ok(e.candidates.length>0);
+    assert.ok(e.candidates.every(c=>c.sigma>0 && Number.isFinite(c.loglik_lower)));return true;
+  });
+});
