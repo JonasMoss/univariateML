@@ -6,6 +6,29 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-13
+
+- **The family status enums stay, as family detail under the shared outcome**
+  (Jonas: "lets keep in"). Each fitter keeps its `<Id>Status` and gains an
+  `outcome()` mapping to the shared type; bindings and generic code read only
+  the outcome. This amends "it replaces the per-family status enums" of
+  2026-11-12: the outcome is the one cross-family vocabulary, and the enum is
+  the family's own explanation of how it got there. Reason: about 34,000 lines
+  of C++ tests assert on the enums, and a status such as `ScaleCollapse` says
+  more than `Nonexistence(Unbounded)`. Cost accepted: an enumerator can still
+  be mapped to the wrong outcome, which the snapshot's `--outcomes` check and,
+  later, the strict layer have to catch.
+- **The draft kinds and reasons of `core/outcome.hpp` are accepted** (Jonas:
+  "lets keep"): five kinds, the reasons of the pilot, flags `certified` and
+  `unique`.
+- **The 16 retiring families are removed before the outcome mapping reaches
+  them** (Jonas: "remove first"). Replacement calls and the removal list:
+  [modifiers-2 report](../research/evaluations/2026-11-12-modifiers-2-report.md).
+- **`zero` and `truncate` become explicit formals** of the generated fitters
+  (`zero = "none"`, `truncate = NULL`) instead of entries in `...` (Jonas:
+  "explict entries i think, breaking changes are fine"). Done with the uniform
+  controls, step 5 of the [consolidation plan](../design/consolidation.md).
+
 ## 2026-11-12
 
 - **Consolidation before breadth** (Jonas: "cleanup first, then add fuzzers,

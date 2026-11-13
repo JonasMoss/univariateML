@@ -54,8 +54,10 @@ docs, validation harness and site page
 
 - C++17, header-only, depending only on the standard library and Boost.Math.
   Boost only through `special/special.hpp`, with its no-throw policy.
-- No exceptions, printing or logging. Report outcomes through each fitter's
-  `<Id>Status` enum. `Rcpp::stop` belongs in R adapters only.
+- No exceptions, printing or logging. A fitter reports through its
+  `<Id>Status` enum and an `outcome()` overload that maps the result to the
+  shared `FitOutcome` (`core/outcome.hpp`); bindings and generic code read the
+  outcome. `Rcpp::stop` belongs in R adapters only.
 - No `using` declarations, no raw pointers (take `cppunivariate::span`), no
   Armadillo.
 - Accuracy contract ([design](dev/design/accuracy-contract.md)): an `Ok`

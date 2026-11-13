@@ -12,10 +12,10 @@ true when it is done.
 
 | step | state on 2026-11-13 |
 |---|---|
-| 1 | Jobs merged; master `8a702cc2` passed the C++ dev tier, the R dev tier and the JS tests. Left: the policy for tracked generated JS metadata, and stale family counts in the validation guide and JS README. |
-| 2 | Recorded. Open with Jonas: whether the family status enums stay as detail or are removed. |
+| 1 | Done. Master `8a702cc2` passed the C++ dev tier, the R dev tier and the JS tests. Generated JS metadata stays tracked (regeneration is deterministic). |
+| 2 | Done. Added 2026-11-13: the family status enums stay as family detail; the draft kinds and reasons are accepted; the 16 retiring families go first; `zero` and `truncate` become explicit formals in step 5. |
 | 3 | Done. [Baselines](../research/evaluations/2026-11-12-fit-snapshot-report.md) of `8a702cc2`, native and double-only. |
-| 4 | Pilot merged (`400dfb08`): `core/outcome.hpp` and the mapping for norm, exp, gamma, laplace; snapshot identical to the baselines. The other 97 fitted families wait for the enum decision. |
+| 4 | Pilot merged (`400dfb08`): `core/outcome.hpp` and the mapping for norm, exp, gamma, laplace; snapshot identical to the baselines. In progress: removal of the 16 retiring families (job `retire-16`), and the mapping for the other 75 families in three jobs (`outcome-a`, `-b`, `-c`). The six base families the removal touches (pois, binom, nbinom, geom, zeta, lgser) follow it. |
 | 5 to 8 | Not started. |
 
 The pattern of the pilot, for the remaining families: an overload
@@ -26,10 +26,22 @@ that claimed success, and `outcome_kind(o)` in place of a literal kind. The
 check is `fit-snapshot.py --diff` against the baseline (ignoring `outcome`,
 `core_status`, `outcome_override`) and `--outcomes` with zero disagreements.
 
+Two rules for the mapping, so that it changes nothing a user sees:
+
+- **`certified`.** A result type that carries `bool certified` passes it on. A
+  family without the flag is mapped from its dossier: `fit.certified: "yes"`
+  gives `true`, anything else `false`. Nothing reads this value before step 5,
+  where the families mapped to `false` are reviewed one by one.
+- **Ties.** A status that today ends in a `tie` stop maps to an estimate with
+  `unique = false` (the maximizers are proved equal) or `certified = false`
+  (the certificate cannot separate two candidates). The adapter keeps emitting
+  the `tie` stop until step 5; `--outcomes` accepts that pairing.
+
 ## Outcome model (target)
 
-One outcome type for every family, in the core, replacing the per-family
-status enums. Kinds:
+One outcome type for every family, in the core. The per-family status enums
+stay as family detail (decided 2026-11-13); bindings and generic code read only
+the outcome. Kinds:
 
 | kind | meaning | flags and payload |
 |---|---|---|
@@ -59,7 +71,7 @@ Rules agreed with Jonas:
 The regime table in [relaxed-likelihood.tex](../research/relaxed-likelihood.tex)
 (R1 to R8) is the reference for the kinds and reasons.
 
-### Draft type (for review, not yet in the code)
+### The type (accepted 2026-11-13; in `core/outcome.hpp` as `FitOutcome`)
 
 ```cpp
 enum class OutcomeKind { Estimate, Limit, Nonexistence, Budget, Failure };
@@ -76,7 +88,7 @@ enum class OutcomeReason {
   Conditioning,     // Failure: rounding noise over curvature exceeds tol
   Unresolved        // Failure: an undecided comparison with no candidate to return
 };
-struct Outcome {
+struct FitOutcome {
   OutcomeKind kind;
   OutcomeReason reason;
   bool certified;   // Estimate: global claim. Limit: proved, not margin-decided
@@ -107,7 +119,7 @@ in 85 families with their own enum, 202 are never named in their binding
 (defaults, ternaries and generic `!= Ok` checks decide them). The snapshot
 therefore records the outcome and the raw status of every case from step 4 on,
 which measures how many enumerators the inputs reach; an enumerator no input
-reaches gets a targeted case before its family enum is removed.
+reaches gets a targeted case in the strict layer.
 
 ## Steps
 
@@ -126,10 +138,11 @@ reaches gets a targeted case before its family enum is removed.
    native and double-only builds are each recorded.
 4. **Shared outcome type, no numerical change.** First a per-family mapping
    from the existing enum to the outcome, in the core, checked against the kind
-   strings the bindings produce today. Then the bindings read the outcome.
-   Then the family enums go. The snapshot is unchanged at every commit.
+   strings the bindings produce today. Then the bindings read the outcome
+   and stop classifying statuses themselves. The family enums stay. The
+   snapshot is unchanged at every commit.
 5. **Uniform controls and visible flags.** `tol` and `iterlim` only
-   (TASK-150.1); `certified` and `unique` in `print`, `summary` and
+   (TASK-150.1); `zero` and `truncate` as explicit formals; `certified` and `unique` in `print`, `summary` and
    `model_select`; the flag forwarded for `st` and `tlambda`; ties become
    estimates with `unique = FALSE`. Behaviour changes, so the snapshot diff is
    reviewed and recorded.

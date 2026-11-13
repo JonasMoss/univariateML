@@ -346,6 +346,11 @@ def outcomes(args):
         key = (o['kind'], o['reason'], res['kind']); table[key] = table.get(key, 0)+1
         if res.get('outcome_override'): overrides[family] = overrides.get(family, 0)+1
         want = expected(o); got = 'numerical' if res['kind'] in ('tolerance', 'conditioning') else res['kind']
+        # Until step 5 a tie stop is how an estimate that is not unique, or not certified, is rendered.
+        if got == 'tie' and o['kind'] == 'estimate' and not (o['unique'] and o['certified']): continue
+        flag = res['extra'].get('certified') if got == 'ok' else None
+        if flag is not None and (float.fromhex(flag) != 0) != o['certified']:
+            disagree.append((family, source, case, o, 'certified flag %s' % flag)); continue
         if got == want: continue
         if want == 'numerical' and got == 'error': plain[family] = plain.get(family, 0)+1
         else: disagree.append((family, source, case, o, res['kind']))
