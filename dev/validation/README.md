@@ -541,7 +541,8 @@ and message. Doubles are hexadecimal floats, so comparison is exact.
 python3 dev/validation/fit-snapshot.py --diff build/snapshots/base build/snapshots/new
 ```
 
-`--family a,b` restricts the run, `--no-long-double` builds the double-only
+`--diff` and `--outcomes` take a snapshot directory or a stored
+`snapshot.jsonl.gz`. `--family a,b` restricts the run, `--no-long-double` builds the double-only
 variant, and `--ignore message` leaves reworded messages out of a comparison.
 A case that uses more than `--cpu-limit` CPU seconds (default 300) is recorded
 as `timeout`; this is an audit guard measured in CPU time, not a fitter

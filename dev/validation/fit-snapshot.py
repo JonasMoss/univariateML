@@ -291,6 +291,11 @@ def snapshot(args):
 
 def load(folder):
     rows = {}
+    if Path(folder).is_file():  # a stored snapshot.jsonl.gz
+        with gzip.open(folder, 'rt') as source:
+            for text in source:
+                r = json.loads(text); rows[(r['family'], r['source'], r['case'])] = r
+        return rows
     for part in sorted(Path(folder).glob('*.jsonl')):
         for text in part.read_text().splitlines()[1:]:
             r = json.loads(text); rows[(r['family'], r['source'], r['case'])] = r
@@ -374,7 +379,7 @@ def main():
     ap.add_argument('--jobs', type=int, default=1, help='families fitted in parallel (one core each)')
     ap.add_argument('--cpu-limit', type=float, default=300, help='CPU seconds per case before "timeout"')
     ap.add_argument('--no-long-double', action='store_true', help='double-only intermediates')
-    ap.add_argument('--diff', nargs=2, metavar=('OLD', 'NEW'), help='compare two snapshot directories')
+    ap.add_argument('--diff', nargs=2, metavar=('OLD', 'NEW'), help='compare two snapshots (directories or stored .jsonl.gz files)')
     ap.add_argument('--outcomes', metavar='DIR', help='report shared-outcome coverage and consistency of a snapshot')
     ap.add_argument('--ignore', help='comma-separated result fields to ignore in --diff, e.g. message')
     args = ap.parse_args()
