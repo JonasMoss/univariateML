@@ -39,9 +39,7 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
-- Known wrong answers on master, each with a card: the tie rule for discrete
-  quantiles is not yet applied to the `zero` and `truncate` routes (TASK-215,
-  job `qtie-2`; the 20 public discrete families have it); fits that miss the accuracy
+- Known wrong answers on master, each with a card: fits that miss the accuracy
   contract or return `Ok` with a non-finite value (TASK-214.3, TASK-214.5);
   stop kinds that depend on the precision mode (TASK-214.13).
 - Nothing is published to CRAN, and `origin/master` is the old published
