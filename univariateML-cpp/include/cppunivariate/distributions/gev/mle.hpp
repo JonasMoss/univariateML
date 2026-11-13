@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/likelihood_polish.hpp"
 #include "../../core/stop_detail.hpp"
@@ -689,4 +690,29 @@ inline GevResult gev_mle(span x,double tol=1e-10,int maxit=100,double xi=std::nu
   if(r.status==GevStatus::Ok && (std::isnan(xi)) && r.xi==kGevXiUpper) r.restricted|=32u;
   return r;
 }
+
+inline FitOutcome outcome(const GevResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.status == GevStatus::SearchContradicted) return FitOutcome::failure(OutcomeReason::NoConvergence);
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  switch (r.status) {
+    case GevStatus::Ok: return FitOutcome::estimate(r.certified);
+    case GevStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case GevStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
+    case GevStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GevStatus::NoMLE:
+      // Half-tie certificates retain the finite supremum as equal bounds;
+      // the other collapse stops have no finite bound.
+      return FitOutcome::nonexistence(std::isfinite(r.stop_detail.loglik_upper) &&
+          r.stop_detail.loglik_lower == r.stop_detail.loglik_upper ?
+          OutcomeReason::Unattained : OutcomeReason::Unbounded);
+    case GevStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case GevStatus::SearchContradicted: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+
+
 } // namespace cppunivariate

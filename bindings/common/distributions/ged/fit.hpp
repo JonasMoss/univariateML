@@ -25,37 +25,50 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   const double nan=std::numeric_limits<double>::quiet_NaN();
   std::vector<std::string> fixed;
   const double held_mean=mean.supplied?mean.value:nan;
-  if(mean.supplied && (!std::isfinite(held_mean)))return fail("Invalid held `mean`.");
+  if(mean.supplied && (!std::isfinite(held_mean)))return invalid_argument(fail("Invalid held `mean`."));
   if(mean.supplied)fixed.push_back("mean");
   const double held_sd=sd.supplied?sd.value:nan;
-  if(sd.supplied && (!std::isfinite(held_sd)||!(held_sd>0)))return fail("Invalid held `sd`.");
+  if(sd.supplied && (!std::isfinite(held_sd)||!(held_sd>0)))return invalid_argument(fail("Invalid held `sd`."));
   if(sd.supplied)fixed.push_back("sd");
   const double held_nu=nu.supplied?nu.value:nan;
-  if(nu.supplied && (!std::isfinite(held_nu)||!(held_nu>0)))return fail("Invalid held `nu`.");
+  if(nu.supplied && (!std::isfinite(held_nu)||!(held_nu>0)))return invalid_argument(fail("Invalid held `nu`."));
   if(nu.supplied)fixed.push_back("nu");
   auto res = cppunivariate::ged_mle(x, gradtol, iterlim, held_mean, held_sd, held_nu);
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("ged numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"mean","sd","nu"});
-  if(res.status==cppunivariate::GedStatus::InvalidShape)return fail("Held `nu` must be at least 1 under the existing GED restriction.");
+  const auto o = cppunivariate::outcome(res);
+  const auto done = [&](FitResult out) {
+    if (res.status == cppunivariate::GedStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+      return overridden(std::move(out), static_cast<int>(res.status));
+    // The adapter's sample/hold checks distinguish collapse from invalid input.
+    if (out.error_kind == "nomle" && o.kind != cppunivariate::OutcomeKind::Nonexistence)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded), static_cast<int>(res.status));
+    // Preserve the classifier's refusal of a structured stop (invalid context
+    // or missing finite payload); the core result does not retain that context.
+    if (!out.error.empty() && out.error_kind.empty() && o.kind != cppunivariate::OutcomeKind::Failure)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+  };
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("ged numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
+  if(res.status==cppunivariate::GedStatus::InvalidShape)return done(fail("Held `nu` must be at least 1 under the existing GED restriction."));
   if(res.sigma==0 && (mean.supplied||sd.supplied||nu.supplied))
-    return classify(fail("GED scale likelihood is unbounded: all observations equal the fitted or held location."),{},"nomle",{});
-  if(res.status!=cppunivariate::GedStatus::Ok && res.stop_detail.budget_exhausted)return classify(fail("GED shape certificate did not converge within its work budget; increase iterlim."),res.stop_detail,"budget",{"mean","sd","nu"});
-  if(res.status==cppunivariate::GedStatus::UniformUnresolved)return classify(fail("GED held-sd uniform comparison is unresolved by the shape certificate."),res.stop_detail,"numerical",{"mean","sd","nu"});
-  if(res.status==cppunivariate::GedStatus::Nonunique)return classify(fail("GED maxima are not unique or their comparison is unresolved, including a possible Laplace median interval."),res.stop_detail,"tie",{"mean","sd","nu"});
-  if(res.status!=cppunivariate::GedStatus::Ok && res.stop_detail.comparison_tie)return classify(fail("Conditional GED search did not converge; increase iterlim."),res.stop_detail,"tie",{"mean","sd","nu"});
+    return done(classify(fail("GED scale likelihood is unbounded: all observations equal the fitted or held location."),{},"nomle",{}));
+  if(res.status!=cppunivariate::GedStatus::Ok && res.stop_detail.budget_exhausted)return done(classify(fail("GED shape certificate did not converge within its work budget; increase iterlim."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
+  if(res.status==cppunivariate::GedStatus::UniformUnresolved)return done(classify(fail("GED held-sd uniform comparison is unresolved by the shape certificate."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
+  if(res.status==cppunivariate::GedStatus::Nonunique)return done(classify(fail("GED maxima are not unique or their comparison is unresolved, including a possible Laplace median interval."),res.stop_detail,"tie",{"mean","sd","nu"}));
+  if(res.status!=cppunivariate::GedStatus::Ok && res.stop_detail.comparison_tie)return done(classify(fail("Conditional GED search did not converge; increase iterlim."),res.stop_detail,"tie",{"mean","sd","nu"}));
   if (res.status == cppunivariate::GedStatus::InvalidStart) {
-    if(!sd.supplied && gradtol>0 && std::isfinite(gradtol) && iterlim>0 && !x.empty() && std::isfinite(x[0]) && (!mean.supplied || held_mean==x[0]) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return classify(fail("GED MLE requires at least 2 finite observations with positive "
-               "variance."),{},"nomle",{});
-    return fail("GED MLE requires at least 2 finite observations with positive "
-               "variance.");
+    if(!sd.supplied && gradtol>0 && std::isfinite(gradtol) && iterlim>0 && !x.empty() && std::isfinite(x[0]) && (!mean.supplied || held_mean==x[0]) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return done(classify(fail("GED MLE requires at least 2 finite observations with positive "
+               "variance."),{},"nomle",{}));
+    return done(fail("GED MLE requires at least 2 finite observations with positive "
+               "variance."));
   }
   if (res.status == cppunivariate::GedStatus::UniformBoundary) {
-    return classify(fail("GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead."),res.stop_detail,"limit",{"a","b"},"unif");
+    return done(classify(fail("GED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead."),res.stop_detail,outcome_kind(o),{"a","b"},"unif"));
   }
-  if(res.status==cppunivariate::GedStatus::TransformFailure)return classify(fail("GED normalization loses coefficient or likelihood accuracy; no finite fit is certified."),res.stop_detail,"numerical",{"mean","sd","nu"});
-  if(res.status==cppunivariate::GedStatus::BfgsFailure)return classify(fail("Conditional GED search did not converge; increase iterlim."),res.stop_detail,"numerical",{"mean","sd","nu"});
+  if(res.status==cppunivariate::GedStatus::TransformFailure)return done(classify(fail("GED normalization loses coefficient or likelihood accuracy; no finite fit is certified."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
+  if(res.status==cppunivariate::GedStatus::BfgsFailure)return done(classify(fail("Conditional GED search did not converge; increase iterlim."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
   if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||
       !std::isfinite(res.nu)) {
-    return fail("GED MLE failed to converge (check inputs)");
+    return done(fail("GED MLE failed to converge (check inputs)"));
   }
   std::vector<std::pair<std::string,std::string>> restricted;
   if(res.restricted & 1u) restricted.emplace_back("mean","lower");
@@ -64,7 +77,7 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   if(res.restricted & 8u) restricted.emplace_back("sd","upper");
   if(res.restricted & 16u) restricted.emplace_back("nu","lower");
   if(res.restricted & 32u) restricted.emplace_back("nu","upper");
-  return [&]() { FitResult out; out.extra.emplace_back("certified",res.certified?1.:0.); out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu}}; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; return out; }();
+  return done([&]() { FitResult out; out.extra.emplace_back("certified",res.certified?1.:0.); out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu}}; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; return out; }());
 
 }
 }

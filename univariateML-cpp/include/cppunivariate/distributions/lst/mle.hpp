@@ -1,5 +1,6 @@
 // Location-scale Student t, constrained to df >= 1.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "accuracy.hpp"
 #include "certificate.hpp"
@@ -652,4 +653,28 @@ inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,doub
  }
  return r;
 }
+
+inline FitOutcome outcome(const LstResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
+  switch (r.status) {
+    case LstStatus::Ok: return FitOutcome::estimate(r.certified);
+    case LstStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case LstStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LstStatus::NoMLE: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LstStatus::NormalBoundary: return FitOutcome::limit(r.certified);
+    case LstStatus::InvalidDf: return FitOutcome::failure(OutcomeReason::InvalidArgument);
+    case LstStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case LstStatus::ScaleBoundary: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case LstStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case LstStatus::CertificateBudget: return FitOutcome::budget();
+    case LstStatus::CertificateTie: return FitOutcome::estimate(false);
+    case LstStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case LstStatus::NonUniqueSymmetry: return FitOutcome::estimate(r.certified, false);
+  }
+  return {};
+}
+
+
 } // namespace cppunivariate

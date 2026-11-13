@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../gb2/mle.hpp"
 #include "accuracy.hpp"
@@ -39,4 +40,32 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   for(auto& c:detail.candidates)if(c.model==StopModel::None && c.coef.size()==4)c.coef.push_back(min);
   return {r.shape1,r.shape2,r.shape3,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified,r.profile_evaluations};
 }
+
+inline FitOutcome outcome(const FparetoResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  // The generic face search returns no coefficients and compares by a
+  // likelihood margin; exact delegate faces retain held/limit coefficients.
+  switch (r.status) {
+    case Gb2Status::Ok: return FitOutcome::estimate(r.certified);
+    case Gb2Status::TrGammaBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
+    case Gb2Status::InvTrGammaBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
+    case Gb2Status::LognormalBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case Gb2Status::ParetoBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
+    case Gb2Status::PowerBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
+    case Gb2Status::DoubleParetoBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case Gb2Status::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case Gb2Status::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case Gb2Status::SearchUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case Gb2Status::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case Gb2Status::WeibullBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
+    case Gb2Status::InvWeibullBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
+    case Gb2Status::CertificateTie: return FitOutcome::estimate(false);
+    case Gb2Status::CertificateBudget: return FitOutcome::budget();
+    case Gb2Status::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
+
 }

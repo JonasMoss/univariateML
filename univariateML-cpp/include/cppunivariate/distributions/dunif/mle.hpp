@@ -1,6 +1,7 @@
 // Discrete Uniform MLE: a = min(x), b = max(x), pmf = 1 / (b - a + 1).
 
 #pragma once
+#include "../../core/outcome.hpp"
 
 #include "../../core/span.hpp"
 
@@ -45,5 +46,15 @@ inline DiscreteUnifResult dunif_mle(ispan x, double held_min=std::numeric_limits
       std::log(upper - lower + 1.0);
   return {lower, upper, logLik};
 }
+
+
+inline FitOutcome outcome(const DiscreteUnifResult& r) {
+  switch (r.status) {
+    case DiscreteUnifStatus::Ok: return FitOutcome::estimate(true);
+    case DiscreteUnifStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+  }
+  return {};
+}
+
 
 }  // namespace cppunivariate

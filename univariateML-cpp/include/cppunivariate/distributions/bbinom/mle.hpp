@@ -32,6 +32,7 @@
 // 128 * min(maxit, 100000) interval evaluations); no unimodality assumption is made.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
@@ -864,5 +865,28 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
   }
   return out;
 }
+
+
+inline FitOutcome outcome(const BbinomResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
+  if (r.status != BbinomStatus::Ok && r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  switch (r.status) {
+    case BbinomStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case BbinomStatus::SizeTooSmall: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case BbinomStatus::BinomialLimit: return FitOutcome::limit(true);
+    case BbinomStatus::TwoPointLimit: return FitOutcome::limit(true);
+    case BbinomStatus::PointMass: return FitOutcome::limit(true);
+    case BbinomStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
+    case BbinomStatus::SizeBudget: return FitOutcome::budget();
+    case BbinomStatus::ProfileTie: return FitOutcome::estimate(false);
+    case BbinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case BbinomStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
+  }
+  return {};
+}
+
 
 }  // namespace cppunivariate

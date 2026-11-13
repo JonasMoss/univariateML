@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/span.hpp"
 #include "../../core/likelihood_polish.hpp"
 #include "../invweibull/mle.hpp"
@@ -359,4 +360,22 @@ inline ExpweibullResult expweibull_mle(span x,double tol=1e-10,int maxit=100,
   out.certified=(!free[2] || (!free[0] && !free[1])) && winner_margin;
   return out;
 }
+
+inline FitOutcome outcome(const ExpweibullResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case ExpweibullStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ExpweibullStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ExpweibullStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ExpweibullStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case ExpweibullStatus::PowerBoundary: return FitOutcome::limit(true);
+    case ExpweibullStatus::PowerBoundaryTied: return FitOutcome::limit(true);
+    case ExpweibullStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case ExpweibullStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
+
 }

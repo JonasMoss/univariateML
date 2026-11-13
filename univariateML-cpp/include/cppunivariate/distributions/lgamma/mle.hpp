@@ -1,6 +1,7 @@
 // Log-gamma: Y=log(X) is gamma; log f_X = log f_Y - log(X).
 // Preserve the gamma solver's status and held rate exactly.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../gamma/transformed.hpp"
 #include <vector>
@@ -39,4 +40,16 @@ inline LgammaResult lgamma_mle(span x, double tol, int maxit,
     r.status==GammaStatus::TransformFailure?LgammaStatus::TransformFailure:LgammaStatus::IterationFailure;
   return {r.shape,r.scale,r.logLik,r.iterations,status,r.certified};
 }
+
+inline FitOutcome outcome(const LgammaResult& r) {
+  switch (r.status) {
+    case LgammaStatus::Ok: return FitOutcome::estimate(r.certified);
+    case LgammaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case LgammaStatus::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case LgammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+
+
 } // namespace cppunivariate

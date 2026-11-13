@@ -1,0 +1,38 @@
+bbinom         147  (7 s)
+bhatt          172  (27 s)
+cauchy         100  (31 s)
+dgamma         78  (92 s)
+dunif          86  (93 s)
+expweibull     27  (98 s)
+fpareto        571  (285 s)
+ged            172  (294 s)
+gev            180  (305 s)
+gumbel         112  (310 s)
+ht             227  (318 s)
+invburr        219  (332 s)
+invgauss       127  (338 s)
+invtrgamma     179  (348 s)
+lgamma         107  (353 s)
+logis          100  (357 s)
+lst            172  (371 s)
+nsbeta         127  (377 s)
+pareto2        115  (384 s)
+pig            78  (393 s)
+sged           284  (421 s)
+slash          92  (441 s)
+sstd           284  (462 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/outcome-a/univariateML-cpp/include/cppunivariate/distributions/tlambda/dpqr.hpp:3,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-a/univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp:5,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-a/bindings/common/distributions/tlambda/fit.hpp:3,
+                 from build/snap/native/build/tlambda.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/outcome-a/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/outcome-a/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/outcome-a/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+tlambda        204  (489 s)
+unif           121  (492 s)

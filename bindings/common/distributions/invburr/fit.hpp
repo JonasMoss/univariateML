@@ -9,9 +9,9 @@ inline FitResult fit_invburr(cppunivariate::span x, Held shape1_arg = {}, Held s
   const Held shape2 = shape2_arg;
   const Held scale = scale_arg;
 
- if(shape1.supplied && (!(shape1.value>0)||!std::isfinite(shape1.value))) return fail("`shape1` must be positive and finite.");
- if(shape2.supplied && (!(shape2.value>0)||!std::isfinite(shape2.value))) return fail("`shape2` must be positive and finite.");
- if(scale.supplied && (!(scale.value>0)||!std::isfinite(scale.value))) return fail("invburr requires a positive finite fixed scale.");
+ if(shape1.supplied && (!(shape1.value>0)||!std::isfinite(shape1.value))) return invalid_argument(fail("`shape1` must be positive and finite."));
+ if(shape2.supplied && (!(shape2.value>0)||!std::isfinite(shape2.value))) return invalid_argument(fail("`shape2` must be positive and finite."));
+ if(scale.supplied && (!(scale.value>0)||!std::isfinite(scale.value))) return invalid_argument(fail("invburr requires a positive finite fixed scale."));
 
  auto start = [](const Held &v) {
    return v.supplied ? v.value : NAN;
@@ -21,22 +21,28 @@ inline FitResult fit_invburr(cppunivariate::span x, Held shape1_arg = {}, Held s
  cppunivariate::invburr_mle_fixed_scale(x,start(scale),abstol,iterlim) :
  cppunivariate::invburr_mle(x,gradtol,iterlim,
  start(shape10),start(shape20),start(scale0),reltol);
- if (res.status == cppunivariate::InvBurrStatus::Unbounded) return stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),res.stop_detail,"nomle",{"shape1","shape2","scale"},"");
- if (res.status == cppunivariate::InvBurrStatus::AllLeOne) return stop_failure(fail("The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale."),res.stop_detail,"limit",{"shape1","shape2","scale"},"power");
- if (res.status == cppunivariate::InvBurrStatus::InvWeibullBoundary) return stop_failure(fail("The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"invweibull");
- if (res.status == cppunivariate::InvBurrStatus::PowerBoundary) return stop_failure(fail("The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model."),res.stop_detail,"limit",{"shape1","shape2","scale"},"power");
- if (res.status == cppunivariate::InvBurrStatus::CertificateTie) return stop_failure(fail("invburr certificate unresolved at a tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"shape1","shape2","scale"},"");
- if (res.status == cppunivariate::InvBurrStatus::CertificateBudget) return stop_failure(fail("invburr certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"shape1","shape2","scale"},"");
- if (res.status == cppunivariate::InvBurrStatus::NumericalFailure) return stop_failure(fail("invburr certificate numerical failure; no verified MLE."),res.stop_detail,"numerical",{"shape1","shape2","scale"},"");
- if (res.status == cppunivariate::InvBurrStatus::IterationFailure) return stop_failure(fail("Constrained likelihood search failed to converge."),res.stop_detail,"unresolved",{"shape1","shape2","scale"},"");
+  const auto o = cppunivariate::outcome(res);
+  const auto done = [&](FitResult out) {
+    if (res.status == cppunivariate::InvBurrStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+      return overridden(std::move(out), static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+  };
+ if (res.status == cppunivariate::InvBurrStatus::Unbounded) return done(stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},""));
+ if (res.status == cppunivariate::InvBurrStatus::AllLeOne) return done(stop_failure(fail("The fixed-scale invburr MLE does not exist when all observations <= scale. Use `mlpower` to fit this model with endpoint scale."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},"power"));
+ if (res.status == cppunivariate::InvBurrStatus::InvWeibullBoundary) return done(stop_failure(fail("The invburr likelihood is maximised at a limit. Use `mlinvweibull` to fit this model."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},"invweibull"));
+ if (res.status == cppunivariate::InvBurrStatus::PowerBoundary) return done(stop_failure(fail("The invburr likelihood is maximised at a limit. Use `mlpower` to fit this model."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},"power"));
+ if (res.status == cppunivariate::InvBurrStatus::CertificateTie) return done(stop_failure(fail("invburr certificate unresolved at a tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"shape1","shape2","scale"},""));
+ if (res.status == cppunivariate::InvBurrStatus::CertificateBudget) return done(stop_failure(fail("invburr certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},""));
+ if (res.status == cppunivariate::InvBurrStatus::NumericalFailure) return done(stop_failure(fail("invburr certificate numerical failure; no verified MLE."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},""));
+ if (res.status == cppunivariate::InvBurrStatus::IterationFailure) return done(stop_failure(fail("Constrained likelihood search failed to converge."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},""));
  if (res.status == cppunivariate::InvBurrStatus::InvalidInit ||
  !std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale))
- return fail("invburr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale");
+ return done(fail("invburr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale"));
  std::vector<std::string> fixed;
  if(shape1.supplied) fixed.push_back("shape1");
  if(shape2.supplied) fixed.push_back("shape2");
  if(scale.supplied) fixed.push_back("scale");
- return [&]() { FitResult out; out.extra.emplace_back("certified",res.certified?1.:0.); out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+ return done([&]() { FitResult out; out.extra.emplace_back("certified",res.certified?1.:0.); out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

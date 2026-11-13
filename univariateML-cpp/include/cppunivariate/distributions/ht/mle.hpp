@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -273,4 +274,24 @@ inline HtResult ht_mle(span x,double mu,double nu,double sigma) {
   double logscale=std::log(r.sigma);r.logLik=ht_detail::profile({y.data(),y.size()},r.nu,logscale,true);
   return r;
 }
+
+inline FitOutcome outcome(const HtResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.budget_exhausted && r.status != HtStatus::Unbounded && r.status != HtStatus::ScaleBoundary && r.status != HtStatus::NormalLimit) return FitOutcome::budget();
+  switch (r.status) {
+    case HtStatus::Ok: return FitOutcome::estimate(true);
+    case HtStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case HtStatus::InvalidParameter: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case HtStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case HtStatus::ScaleBoundary: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case HtStatus::NormalLimit: return FitOutcome::limit(false);
+    case HtStatus::SearchFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case HtStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case HtStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
+
 }

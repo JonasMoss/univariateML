@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "dpqr.hpp"
@@ -68,4 +69,26 @@ inline TlambdaResult tlambda_mle(span x,double tol,int maxit,double lambda,doubl
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaUpper) r.restricted|=32u;
   return r;
 }
+
+inline FitOutcome outcome(const TlambdaResult& r) {
+  if (r.status == TlambdaStatus::CertificateFailure) {
+    if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+    if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  }
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case TlambdaStatus::Ok: return FitOutcome::estimate(r.certified);
+    case TlambdaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TlambdaStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
+    case TlambdaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case TlambdaStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case TlambdaStatus::CollapseLimit: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case TlambdaStatus::InvalidSupport: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TlambdaStatus::CertificateFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
+
 }

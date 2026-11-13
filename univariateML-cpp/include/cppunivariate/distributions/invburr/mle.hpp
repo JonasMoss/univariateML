@@ -1,5 +1,6 @@
 // Inverse Burr is the reciprocal of a Burr with reciprocal scale.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/transformed_location.hpp"
@@ -312,5 +313,25 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
    out.stop_detail.limit_coef={std::isnan(s)?1/r.stop_detail.limit_coef[1]:s,r.stop_detail.limit_coef[0]};
  return out;
 }
+
+
+inline FitOutcome outcome(const InvBurrResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case InvBurrStatus::Ok: return FitOutcome::estimate(r.certified);
+    case InvBurrStatus::InvWeibullBoundary: return FitOutcome::limit(true);
+    case InvBurrStatus::PowerBoundary: return FitOutcome::limit(true);
+    case InvBurrStatus::InvalidInit: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case InvBurrStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case InvBurrStatus::AllLeOne: return FitOutcome::limit(true);
+    case InvBurrStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case InvBurrStatus::CertificateTie: return FitOutcome::estimate(false);
+    case InvBurrStatus::CertificateBudget: return FitOutcome::budget();
+    case InvBurrStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
 
 }

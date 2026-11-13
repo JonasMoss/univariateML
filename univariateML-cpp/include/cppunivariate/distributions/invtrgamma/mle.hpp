@@ -4,6 +4,7 @@
 // -2 sum(log(x)). Faces mirror: lognormal stays lognormal, the power face
 // with endpoint 1/min(x) becomes Pareto with minimum min(x).
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 
@@ -162,5 +163,25 @@ inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=
   }
   return trgamma_detail::check_represented({y.data(),y.size()},out,InvTrGammaStatus::Ok,InvTrGammaStatus::IterationFailure,true,jac);
 }
+
+
+inline FitOutcome outcome(const InvTrGammaResult& r) {
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  if (r.transformation_failure || r.reconstruction_failure) return FitOutcome::failure(OutcomeReason::Evaluation);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case InvTrGammaStatus::Ok: return FitOutcome::estimate(true);
+    case InvTrGammaStatus::LognormalBoundary: return FitOutcome::limit(true);
+    case InvTrGammaStatus::ParetoBoundary: return FitOutcome::limit(true);
+    case InvTrGammaStatus::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case InvTrGammaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case InvTrGammaStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case InvTrGammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+
 
 }

@@ -1,6 +1,7 @@
 // Uniform MLE: a = min(x), b = max(x).
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -51,5 +52,17 @@ inline UnifResult unif_mle(span x,
   const double logLik = -static_cast<double>(n) * log_width;
   return {a, b, logLik};
 }
+
+
+inline FitOutcome outcome(const UnifResult& r) {
+  switch (r.status) {
+    case UnifStatus::Ok: return FitOutcome::estimate(true);
+    case UnifStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case UnifStatus::Incompatible: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case UnifStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+  }
+  return {};
+}
+
 
 }  // namespace cppunivariate

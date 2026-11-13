@@ -5,6 +5,7 @@
 // downstream estimators.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
@@ -188,5 +189,20 @@ inline GumbelResult fit_gumbel_held(span x,double tol,int maxit,double mu,double
   if(it==maxit)return {nan,nan,nan,it,GumbelStatus::IterationFailure};
   return {m,s,ll,it};
 }
+
+
+inline FitOutcome outcome(const GumbelResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case GumbelStatus::Ok: return FitOutcome::estimate(true);
+    case GumbelStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case GumbelStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case GumbelStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GumbelStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
 
 }  // namespace cppunivariate

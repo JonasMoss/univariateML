@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
@@ -336,5 +337,29 @@ inline BhattResult accurate_candidate(span x,double tol=1e-8,int maxit=500,doubl
   }
   return r;
 }
+
+
 }}
+namespace cppunivariate {
+
+inline FitOutcome outcome(const BhattResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.stop_detail.comparison_tie && r.status != BhattStatus::BudgetExhausted && r.status != BhattStatus::Unresolved && r.status != BhattStatus::NumericalFailure && r.status != BhattStatus::IterationFailure) return FitOutcome::estimate(false);
+  switch (r.status) {
+    case BhattStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BhattStatus::NormalLimit: return FitOutcome::limit(r.certified);
+    case BhattStatus::UniformLimit: return FitOutcome::limit(r.certified);
+    case BhattStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case BhattStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case BhattStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case BhattStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case BhattStatus::BudgetExhausted: return FitOutcome::budget();
+    case BhattStatus::Unresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case BhattStatus::Tie: return FitOutcome::estimate(false);
+  }
+  return {};
+}
+
+}
 #include "certificate.hpp"

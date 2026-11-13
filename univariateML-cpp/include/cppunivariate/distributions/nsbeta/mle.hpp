@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../beta/mle.hpp"
 #include <vector>
@@ -45,4 +46,16 @@ inline NsbetaResult nsbeta_mle(span x, double min, double max, double tol, int m
   if(r.status==BetaStatus::Ok && !std::isfinite(r.logLik))r.status=BetaStatus::IterationFailure;
   return {r.alpha,r.beta,min,max,r.logLik,r.iterations,r.status};
 }
+
+inline FitOutcome outcome(const NsbetaResult& r) {
+  switch (r.status) {
+    case BetaStatus::Ok: return FitOutcome::estimate(true);
+    case BetaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case BetaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case BetaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+  }
+  return {};
+}
+
+
 }
