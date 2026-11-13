@@ -1,6 +1,7 @@
 // Lomax profile search on the dimensionless bounded existence interval.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
@@ -315,3 +316,20 @@ inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda0,double l
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const LomaxResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.status != LomaxStatus::ExponentialLimit && r.certificate_failure == LomaxCertificateFailure::Budget) return FitOutcome::budget();
+  if (r.status != LomaxStatus::ExponentialLimit && r.certificate_failure == LomaxCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
+  switch (r.status) {
+    case LomaxStatus::Ok: return FitOutcome::estimate(true);
+    case LomaxStatus::ExponentialLimit: return FitOutcome::limit(false);
+    case LomaxStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LomaxStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case LomaxStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Tolerance);
+  }
+  return {};
+}
+} // namespace cppunivariate

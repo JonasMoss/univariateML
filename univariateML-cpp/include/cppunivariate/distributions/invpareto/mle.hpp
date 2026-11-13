@@ -1,5 +1,6 @@
 // Actuar (shape, scale) maps to Lomax (kappa, lambda) on 1/x.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../lomax/mle.hpp"
 #include <cmath>
@@ -42,4 +43,21 @@ inline InvParetoResult invpareto_mle(span x,double tol,int maxit,double scale0,d
   return {r.kappa,r.lambda,r.logLik+jac,r.iterations,r.status,invpareto_stop_detail(r.stop_detail,jac),r.certificate_failure};
 }
 
+} // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const InvParetoResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.status == LomaxStatus::IterationFailure && r.certificate_failure == LomaxCertificateFailure::Budget) return FitOutcome::budget();
+  if (r.status == LomaxStatus::IterationFailure && r.certificate_failure == LomaxCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
+  switch (r.status) {
+    case LomaxStatus::Ok: return FitOutcome::estimate(true);
+    case LomaxStatus::ExponentialLimit: return FitOutcome::limit(false);
+    case LomaxStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LomaxStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case LomaxStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Tolerance);
+  }
+  return {};
+}
 } // namespace cppunivariate

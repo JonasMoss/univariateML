@@ -1,6 +1,7 @@
 // Pareto MLE: closed form. xmin = min(x); shape = n / sum(log(x/xmin)).
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -71,3 +72,15 @@ inline ParetoResult pareto_mle(span x,double a,double b) {
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const ParetoResult& r) {
+  switch (r.status) {
+    case ParetoStatus::Ok: return FitOutcome::estimate(true);
+    case ParetoStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ParetoStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case ParetoStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+} // namespace cppunivariate

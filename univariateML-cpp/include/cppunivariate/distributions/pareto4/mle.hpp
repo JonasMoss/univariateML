@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include <vector>
@@ -79,3 +80,23 @@ inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int m
 }
 
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const Pareto4Result& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case BurrStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BurrStatus::WeibullBoundary: return FitOutcome::limit();
+    case BurrStatus::ParetoBoundary: return FitOutcome::limit();
+    case BurrStatus::InvalidInit: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case BurrStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case BurrStatus::AllGeOne: return FitOutcome::limit();
+    case BurrStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case BurrStatus::CertificateTie: return FitOutcome::estimate(false);
+    case BurrStatus::CertificateBudget: return FitOutcome::budget();
+    case BurrStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+} // namespace cppunivariate

@@ -1,5 +1,6 @@
 // Beta-prime fitters: certified conditional profiles and all-free cover.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "joint_bounds.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/face_compare.hpp"
@@ -333,3 +334,26 @@ inline BetaPrimeResult betapr_mle_holds(span x,double a,double b,double s,double
   return betapr_detail::accurate_fallback(r,x,a,b,s,tol,maxit);
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const BetaPrimeResult& r) {
+  if (r.status == BetaPrimeStatus::BfgsFailure) {
+    if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+    if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  }
+  if (r.status == BetaPrimeStatus::BfgsFailure && r.certificate_failure == LomaxCertificateFailure::Budget) return FitOutcome::budget();
+  if (r.status == BetaPrimeStatus::BfgsFailure && r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  if (r.status == BetaPrimeStatus::BfgsFailure && r.certificate_failure == LomaxCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
+  if ((r.status == BetaPrimeStatus::GammaBoundary || r.status == BetaPrimeStatus::InvGammaBoundary) && r.stop_detail.limit_coef.empty()) return FitOutcome::failure(OutcomeReason::Evaluation);
+  switch (r.status) {
+    case BetaPrimeStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BetaPrimeStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case BetaPrimeStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case BetaPrimeStatus::GammaBoundary: return FitOutcome::limit(true);
+    case BetaPrimeStatus::InvGammaBoundary: return FitOutcome::limit(true);
+    case BetaPrimeStatus::ExpBoundary: return FitOutcome::limit(false);
+    case BetaPrimeStatus::InvExpBoundary: return FitOutcome::limit(false);
+  }
+  return {};
+}
+} // namespace cppunivariate

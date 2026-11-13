@@ -12,20 +12,30 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   const Held r = r_arg;
 
   const double design=!r.supplied ? std::numeric_limits<double>::quiet_NaN() : r.value;
-  if (r.supplied && std::isnan(design)) return fail("`r` must be a whole number or NULL, not NA.");
+  if (r.supplied && std::isnan(design)) return invalid_argument(fail("`r` must be a whole number or NULL, not NA."));
   const double held = !m.supplied ? std::numeric_limits<double>::quiet_NaN() : m.value;
-  if (m.supplied && std::isnan(held)) return fail("`m` must be a whole number or NULL, not NA.");
+  if (m.supplied && std::isnan(held)) return invalid_argument(fail("`m` must be a whole number or NULL, not NA."));
   const double population = !N.supplied ? std::numeric_limits<double>::quiet_NaN() : N.value;
-  if (N.supplied && std::isnan(population)) return fail("`N` must be a whole number or NULL, not NA.");
+  if (N.supplied && std::isnan(population)) return invalid_argument(fail("`N` must be a whole number or NULL, not NA."));
   const auto fit = cppunivariate::nhyper_mle(x, design, population, held);
+  const auto o = cppunivariate::outcome(fit);
+  const auto done = [&](FitResult out) {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+      if (fit.status == cppunivariate::NhyperStatus::Ok)
+        return overridden(std::move(out), static_cast<int>(fit.status));
+      // A legacy classifier can suppress a tie kind using caller-only information.
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(fit.status));
+    }
+    return with_outcome(std::move(out), o, static_cast<int>(fit.status));
+  };
   std::string stop_kind;
   switch(fit.status) {
     case cppunivariate::NhyperStatus::FaceTie: stop_kind="tie";break;
-    case cppunivariate::NhyperStatus::FaceUnresolved: stop_kind="unresolved";break;
-    case cppunivariate::NhyperStatus::Infeasible: stop_kind="nomle";break;
+    case cppunivariate::NhyperStatus::FaceUnresolved: stop_kind=outcome_kind(o);break;
+    case cppunivariate::NhyperStatus::Infeasible: stop_kind=outcome_kind(o);break;
     default:break;
   }
-  if(fit.stop_detail.budget_exhausted) stop_kind="budget";
+  if(fit.stop_detail.budget_exhausted) stop_kind=outcome_kind(o);
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
     return stop_kind.empty()?out:stop_failure(out,fit.stop_detail,stop_kind,{"m","N","r"});
@@ -33,15 +43,15 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
 
   switch (fit.status) {
     case cppunivariate::NhyperStatus::FaceUnresolved:
-      return stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. For the negative-binomial growing-urn limit use mlnbinom(x - r, size = r).");
+      return done(stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. For the negative-binomial growing-urn limit use mlnbinom(x - r, size = r)."));
     case cppunivariate::NhyperStatus::FaceTie:
-      return stopped_fail("A finite likelihood matched the negative-binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlnbinom(x - r, size = r) for the limit model.");
+      return done(stopped_fail("A finite likelihood matched the negative-binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlnbinom(x - r, size = r) for the limit model."));
     case cppunivariate::NhyperStatus::NumericalFailure:
-      return stopped_fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
+      return done(stopped_fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded."));
     case cppunivariate::NhyperStatus::InvalidInput:
-      return stopped_fail("Counts must be whole numbers from 0 to 2^53 - 1, with r <= m <= N.");
+      return done(stopped_fail("Counts must be whole numbers from 0 to 2^53 - 1, with r <= m <= N."));
     case cppunivariate::NhyperStatus::Infeasible:
-      return stopped_fail("No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0).");
+      return done(stopped_fail("No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0)."));
     case cppunivariate::NhyperStatus::Tie:
       warnings.push_back(binding_message("Likelihood tied between adjacent counts; returning the smaller.")); break;
     case cppunivariate::NhyperStatus::Unidentified:
@@ -52,7 +62,7 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   if (m.supplied) fixed.push_back("m");
   if (N.supplied) fixed.push_back("N");
   if (r.supplied) fixed.push_back("r");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"m",fit.m},{"N",fit.N},{"r",fit.r}}; out.extra.push_back({"certified", fit.certified ? 1.0 : 0.0}); out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"m",fit.m},{"N",fit.N},{"r",fit.r}}; out.extra.push_back({"certified", fit.certified ? 1.0 : 0.0}); out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

@@ -4,6 +4,7 @@
 // encloses the final root in both public coefficients.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 
@@ -232,3 +233,16 @@ inline KumarResult kumar_candidate_mle(span x, double tol, int maxit,
 }  // namespace cppunivariate
 
 #include "certificate.hpp"
+
+namespace cppunivariate {
+inline FitOutcome outcome(const KumarResult& r) {
+  if (r.certificate_failure == KumarCertificateFailure::Budget) return FitOutcome::budget();
+  switch (r.status) {
+    case KumarStatus::Ok: return FitOutcome::estimate(true);
+    case KumarStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case KumarStatus::Unbounded: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case KumarStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate

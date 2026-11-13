@@ -1,5 +1,6 @@
 // The log-rho score is strictly decreasing; unique counts cache repeated work.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "dpqr.hpp"
@@ -70,3 +71,15 @@ inline YulesimonResult yulesimon_mle(ispan x,double tol=1e-10,int maxit=200, dou
   return stopped;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const YulesimonResult& r) {
+  switch (r.status) {
+    case YulesimonStatus::Ok: return FitOutcome::estimate(true);
+    case YulesimonStatus::PointMass: return FitOutcome::limit();
+    case YulesimonStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case YulesimonStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate

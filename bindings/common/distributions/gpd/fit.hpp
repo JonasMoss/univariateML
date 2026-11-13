@@ -11,33 +11,43 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   const Held sigma = sigma_arg;
   const Held xi = xi_arg;
 
-  if (!mu.supplied) return fail("Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus.");
+  if (!mu.supplied) return invalid_argument(fail("Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus."));
   const double threshold = mu.value;
   const double shape = xi.supplied ? xi.value :
       std::numeric_limits<double>::quiet_NaN();
   if (xi.supplied && (!std::isfinite(shape) || (shape < -1 && !sigma.supplied)))
-    return fail("`xi` must be finite and at least -1.");
+    return invalid_argument(fail("`xi` must be finite and at least -1."));
   const double scale=sigma.supplied ? sigma.value : std::numeric_limits<double>::quiet_NaN();
-  if(sigma.supplied && (!(scale>0) || !std::isfinite(scale))) return fail("`sigma` must be positive and finite.");
+  if(sigma.supplied && (!(scale>0) || !std::isfinite(scale))) return invalid_argument(fail("`sigma` must be positive and finite."));
   std::vector<std::string> fixed{"mu"};
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
   auto res = cppunivariate::gpd_mle(x, reltol, iterlim, threshold, shape, scale);
+  const auto o = cppunivariate::outcome(res);
+  const auto done = [&](FitResult out) {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+      if (res.status == cppunivariate::GpdStatus::Ok)
+        return overridden(std::move(out), static_cast<int>(res.status));
+      // A legacy classifier can suppress a tie kind using caller-only information.
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+    }
+    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+  };
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::ThresholdCollapse) {
     if(std::isfinite(res.stop_detail.limit_loglik))
-      return stop_failure(fail("Generalized Pareto has no finite maximum: scale collapse at the threshold gives a finite unattained fixed-shape supremum."), res.stop_detail, "limit", {"mu","sigma","xi"});
-    return stop_failure(fail("Generalized Pareto has unbounded likelihood from scale collapse at the threshold."), res.stop_detail, "nomle", {"mu","sigma","xi"});
+      return done(stop_failure(fail("Generalized Pareto has no finite maximum: scale collapse at the threshold gives a finite unattained fixed-shape supremum."), res.stop_detail, outcome_kind(o), {"mu","sigma","xi"}));
+    return done(stop_failure(fail("Generalized Pareto has unbounded likelihood from scale collapse at the threshold."), res.stop_detail, outcome_kind(o), {"mu","sigma","xi"}));
   }
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Budget)
-    return stop_failure(fail("Generalized Pareto MLE failed to converge: global certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop."), res.stop_detail, "budget", {"mu","sigma","xi"});
+    return done(stop_failure(fail("Generalized Pareto MLE failed to converge: global certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop."), res.stop_detail, outcome_kind(o), {"mu","sigma","xi"}));
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Tie)
-    return stop_failure(fail("Generalized Pareto MLE failed to converge: competing maxima tie within the certificate margin (1e-8 per observation), or shape is unidentified."), res.stop_detail, "tie", {"mu","sigma","xi"});
+    return done(stop_failure(fail("Generalized Pareto MLE failed to converge: competing maxima tie within the certificate margin (1e-8 per observation), or shape is unidentified."), res.stop_detail, "tie", {"mu","sigma","xi"}));
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Arithmetic)
-    return stop_failure(fail("Generalized Pareto MLE failed to converge: certificate comparisons unresolved or coefficients unrepresentable."), res.stop_detail, "numerical", {"mu","sigma","xi"});
+    return done(stop_failure(fail("Generalized Pareto MLE failed to converge: certificate comparisons unresolved or coefficients unrepresentable."), res.stop_detail, outcome_kind(o), {"mu","sigma","xi"}));
   if (res.status == cppunivariate::GpdStatus::InvalidData)
-    return fail("Generalized Pareto requires finite data at or above `mu`, compatible support and holds, no scale collapse at the threshold, a finite threshold, positive `reltol` and positive `iterlim`.");
+    return done(fail("Generalized Pareto requires finite data at or above `mu`, compatible support and holds, no scale collapse at the threshold, a finite threshold, positive `reltol` and positive `iterlim`."));
   if (res.status != cppunivariate::GpdStatus::Ok || !std::isfinite(res.logLik))
-    return fail("Generalized Pareto MLE failed to converge.");
+    return done(fail("Generalized Pareto MLE failed to converge."));
   std::vector<std::pair<std::string,std::string>> restricted;
   if(res.restricted & 1u) restricted.emplace_back("mu","lower");
   if(res.restricted & 2u) restricted.emplace_back("mu","upper");
@@ -45,7 +55,7 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(res.restricted & 8u) restricted.emplace_back("sigma","upper");
   if(res.restricted & 16u) restricted.emplace_back("xi","lower");
   if(res.restricted & 32u) restricted.emplace_back("xi","upper");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma},{"xi",res.xi}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma},{"xi",res.xi}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

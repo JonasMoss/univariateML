@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 
 #include "../../core/span.hpp"
 #include <algorithm>
@@ -44,5 +45,16 @@ inline HnormResult hnorm_mle(span x, double held_mu = std::numeric_limits<double
   const double ll = static_cast<double>(x.size()) *
       (0.5 * std::log(2.0 / std::acos(-1.0)) - std::log(sigma) - 0.5);
   return {mu, sigma, ll, 0, HnormStatus::Ok};
+}
+} // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const HnormResult& r) {
+  switch (r.status) {
+    case HnormStatus::Ok: return FitOutcome::estimate(true);
+    case HnormStatus::DegenerateData: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case HnormStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+  }
+  return {};
 }
 } // namespace cppunivariate

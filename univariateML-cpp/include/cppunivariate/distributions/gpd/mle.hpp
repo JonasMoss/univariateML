@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
@@ -177,5 +178,21 @@ inline GpdResult gpd_mle(span x,double tol=1e-12,int maxit=200,double mu=0,doubl
   auto r=gpd_mle_impl(x,tol,maxit,mu,xi,sigma);
   if(r.status==GpdStatus::Ok && (std::isnan(xi)) && r.xi==kGpdXiLower) r.restricted|=16u;
   return r;
+}
+} // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const GpdResult& r) {
+  if (r.certificate_failure == GpdCertificateFailure::Budget) return FitOutcome::budget();
+  if (r.certificate_failure == GpdCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
+  if (r.certificate_failure == GpdCertificateFailure::Tie) return FitOutcome::estimate(false);
+  if (r.certificate_failure == GpdCertificateFailure::ThresholdCollapse) return std::isfinite(r.stop_detail.limit_loglik) ? FitOutcome::limit() : FitOutcome::nonexistence(OutcomeReason::Unbounded);
+  switch (r.status) {
+    case GpdStatus::Ok: return FitOutcome::estimate(true);
+    case GpdStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case GpdStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
+    case GpdStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
 }
 } // namespace cppunivariate

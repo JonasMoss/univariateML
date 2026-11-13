@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/stop_detail.hpp"
@@ -178,3 +179,18 @@ inline SkellamResult skellam_mle(span x,double tol=1e-10,int maxit=150,double mu
   return r;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const SkellamResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  switch (r.status) {
+    case SkellamStatus::Ok: return FitOutcome::estimate(true);
+    case SkellamStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case SkellamStatus::Impossible: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case SkellamStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate

@@ -2,6 +2,7 @@
 // standardised (mean, sd, xi) coordinates.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
@@ -183,3 +184,35 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int maxit,
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const SnormResult& r) {
+  if (r.status == SnormStatus::RightHalfNormalBoundary ||
+      r.status == SnormStatus::LeftHalfNormalBoundary) {
+    const auto& d = r.stop_detail;
+    if (d.limit_coef.empty() || !std::isfinite(d.limit_loglik))
+      return FitOutcome::failure(OutcomeReason::Evaluation);
+    for (double v : d.limit_coef) if (!std::isfinite(v))
+      return FitOutcome::failure(OutcomeReason::Evaluation);
+    for (const auto& c : d.candidates) {
+      if (!valid_stop_coefficients(c.model, c.coef) ||
+          !std::isfinite(c.loglik_lower) || !std::isfinite(c.loglik_upper) ||
+          c.loglik_lower > c.loglik_upper)
+        return FitOutcome::failure(OutcomeReason::Evaluation);
+      for (double v : c.coef) if (!std::isfinite(v))
+        return FitOutcome::failure(OutcomeReason::Evaluation);
+    }
+  }
+  if (r.status != SnormStatus::Unbounded && r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.status != SnormStatus::Unbounded && r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  switch (r.status) {
+    case SnormStatus::Ok: return FitOutcome::estimate(true);
+    case SnormStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case SnormStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case SnormStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case SnormStatus::RightHalfNormalBoundary: return FitOutcome::limit();
+    case SnormStatus::LeftHalfNormalBoundary: return FitOutcome::limit();
+  }
+  return {};
+}
+} // namespace cppunivariate
