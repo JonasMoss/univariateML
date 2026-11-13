@@ -32,43 +32,44 @@
 #include "cppunivariate/distributions/lomax/censored.hpp"
 namespace umvl_binding {
 inline FitResult modifier_not_implemented(const std::string& family,const std::string& value) {
-  return failure(value+" is not implemented for `ml"+family+"`; see TASK-191 or its successor");
+  return invalid_argument(failure(value+" is not implemented for `ml"+family+"`; see TASK-191 or its successor"));
 }
 template<class Density> inline FitResult held_window(FitResult out,cppunivariate::span x,Density density) {
-  if(x.empty())return failure("requires nonempty data");
+  if(x.empty())return invalid_argument(failure("requires nonempty data"));
   double sum=0,correction=0;
   for(double v:x) {
-    if(!std::isfinite(v))return failure("requires finite observations");
+    if(!std::isfinite(v))return invalid_argument(failure("requires finite observations"));
     const double term=density(v);
-    if(!std::isfinite(term))return failure("invalid truncation window, observations or held coefficients");
+    if(!std::isfinite(term))return invalid_argument(failure("invalid truncation window, observations or held coefficients"));
     const double y=term-correction,z=sum+y;correction=(z-sum)-y;sum=z;
   }
-  if(!std::isfinite(sum))return failure("conditional log likelihood exceeds numerical range");
-  out.logLik=sum;out.has_fixed=true;return out;
+  if(!std::isfinite(sum))return with_outcome(failure("conditional log likelihood exceeds numerical range"),cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation),-1);
+  out.logLik=sum;out.has_fixed=true;return with_outcome(std::move(out),cppunivariate::FitOutcome::estimate(true),-1);
 }
 template<class Traits> inline FitResult truncate_counts(cppunivariate::ispan x,double a,double b,
     Traits traits,Held held,const std::string& name,double tol,int maxit) {
   const auto r=cppunivariate::truncated<Traits>::fit(x,a,b,traits,held.supplied?held.value:NAN,tol,maxit);
+  const auto o=cppunivariate::outcome(r);
   if(r.status!=cppunivariate::TruncationStatus::Ok) {
     const std::string reason=r.status==cppunivariate::TruncationStatus::LowerLimit?"lower point-mass limit: no finite parent MLE":
       r.status==cppunivariate::TruncationStatus::UpperLimit?"upper boundary limit: no finite parent MLE":
       r.status==cppunivariate::TruncationStatus::NumericalFailure?"truncation solve failed to certify coefficient accuracy":"invalid truncation window, observations or held coefficients";
-    return failure(reason);
+    return with_outcome(failure(reason),o,static_cast<int>(r.status));
   }
   FitResult out;out.estimates={{name,r.parameter}};out.logLik=r.logLik;
   out.iterations=r.iterations;out.has_iterations=true;out.has_fixed=true;
-  out.extra.push_back({"certified",1});if(held.supplied)out.fixed.push_back(name);return out;
+  out.extra.push_back({"certified",1});if(held.supplied)out.fixed.push_back(name);return with_outcome(std::move(out),o,static_cast<int>(r.status));
 }
 inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     const std::vector<std::pair<std::string,Held>>& holds,const std::string& zero,
     bool window,double a,double b,double tol=1e-10,int maxit=200) {
   for(const auto& p:holds)if(p.second.supplied && !std::isfinite(p.second.value))
-    return failure("held coefficients must be finite scalars");
+    return invalid_argument(failure("held coefficients must be finite scalars"));
   const auto h=[&](const std::string& name){for(const auto& p:holds)if(p.first==name)return p.second;return Held{};};
   const auto value=[&](const std::string& name){const auto p=h(name);return p.supplied?p.value:NAN;};
   if(window && zero!="none")return modifier_not_implemented(family,"zero + truncate");
   if(!window && zero=="none")return modifier_not_implemented(family,"modifier");
-  if(!(tol>0 && std::isfinite(tol)) || maxit<1)return failure("invalid modifier controls");
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1)return invalid_argument(failure("invalid modifier controls"));
   if(family=="norm" && window) {
     if(h("mean").supplied && h("sd").supplied && !x.empty()) {
       if(std::isnan(a))a=*std::min_element(x.begin(),x.end());
@@ -83,7 +84,7 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
   if(family!="zeta" && family!="lgser" && family!="pois" && family!="binom" && family!="nbinom" && family!="geom")
     return modifier_not_implemented(family,window?"`truncate`":"`zero = \""+zero+"\"`");
   std::vector<int> counts;counts.reserve(x.size());
-  for(double v:x){if(!std::isfinite(v)||v<0||v>2147483647.||v!=std::floor(v))return failure("requires nonnegative representable integer counts");counts.push_back(static_cast<int>(v));}
+  for(double v:x){if(!std::isfinite(v)||v<0||v>2147483647.||v!=std::floor(v))return invalid_argument(failure("requires nonnegative representable integer counts"));counts.push_back(static_cast<int>(v));}
   const cppunivariate::ispan ix{counts.data(),counts.size()};
   if(window && !counts.empty()) {
     if(std::isnan(a))a=*std::min_element(counts.begin(),counts.end());
@@ -97,17 +98,18 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
   }
   if(family=="zeta" && window) {
     const auto r=cppunivariate::zeta_window_mle(ix,a,b,value("s"),tol,maxit);
+    const auto o=cppunivariate::outcome(r);
     if(r.status!=cppunivariate::ZetaWindowStatus::Ok) {
       if(r.status==cppunivariate::ZetaWindowStatus::LowerLimit || r.status==cppunivariate::ZetaWindowStatus::UpperLimit) {
-        return stop_failure(failure("No finite exponent: point-mass supremum at a window endpoint."),
-          cppunivariate::discrete_point(r.status==cppunivariate::ZetaWindowStatus::LowerLimit?1:std::floor(b)),"limit",{"s"});
+        return with_outcome(stop_failure(failure("No finite exponent: point-mass supremum at a window endpoint."),
+          cppunivariate::discrete_point(r.status==cppunivariate::ZetaWindowStatus::LowerLimit?1:std::floor(b)),outcome_kind(o),{"s"}),o,static_cast<int>(r.status));
       }
-      return failure(r.status==cppunivariate::ZetaWindowStatus::InvalidInput ? "finite zeta window requires [1,N], integer N >= max(x), and finite s" : "finite zeta exponent solve failed to certify coefficient accuracy");
+      return with_outcome(failure(r.status==cppunivariate::ZetaWindowStatus::InvalidInput ? "finite zeta window requires [1,N], integer N >= max(x), and finite s" : "finite zeta exponent solve failed to certify coefficient accuracy"),o,static_cast<int>(r.status));
     }
     FitResult out;out.estimates={{"s",r.s}};out.logLik=r.logLik;out.has_fixed=true;
     if(r.unidentified)out.warnings.push_back("All observations are equal to 1. The maximum likelihood estimator is not unique.");
     if(h("s").supplied)out.fixed={"s"};
-    return out;
+    return with_outcome(std::move(out),o,static_cast<int>(r.status));
   }
   if(family=="lgser" || family=="zeta")return modifier_not_implemented(family,window?"`truncate`":"`zero`");
   if(window && a==1 && b==INFINITY){window=false;return fit_modifier(family,x,holds,"truncated",false,NAN,NAN,tol,maxit);}
@@ -124,9 +126,9 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     if(family=="pois") {
       const auto check=cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(ix,a,b,{},value("lambda"),tol,maxit);
       if(check.status==cppunivariate::TruncationStatus::NumericalFailure)
-        return failure("truncation solve failed to certify coefficient accuracy");
+        return with_outcome(failure("truncation solve failed to certify coefficient accuracy"),cppunivariate::outcome(check),static_cast<int>(check.status));
       if(check.status==cppunivariate::TruncationStatus::InvalidInput)
-        return failure("invalid truncation window, observations or held coefficients");
+        return with_outcome(failure("invalid truncation window, observations or held coefficients"),cppunivariate::outcome(check),static_cast<int>(check.status));
       auto out=fit_tpois(ix,h("lambda"),{true,std::max(-1.0,std::ceil(a)-1)},{true,std::floor(b)});
       out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
       out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());return out;
@@ -165,7 +167,7 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     }
     return out;
   }
-  return failure("`zero` must be one of none, truncated, modified, inflated");
+  return invalid_argument(failure("`zero` must be one of none, truncated, modified, inflated"));
 }
 template<class Result> inline FitResult censored_result(const std::string& family,const Result& r,
     std::vector<std::pair<std::string,double>> estimates,const std::vector<std::pair<std::string,Held>>& holds) {

@@ -8,24 +8,31 @@ namespace umvl_binding {
 inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_arg = {}, int iterlim = 200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
-  if(iterlim<=0)return fail("iterlim must be positive.");
+  if(iterlim<=0)return invalid_argument(fail("iterlim must be positive."));
   const Held lambda = lambda_arg;
   const Held pi = pi_arg;
 
-  if(lambda.supplied && !std::isfinite(lambda.value))return fail("`lambda` must be finite and in its parameter domain.");
-  if(pi.supplied && !std::isfinite(pi.value))return fail("`pi` must be finite and in its parameter domain.");
+  if(lambda.supplied && !std::isfinite(lambda.value))return invalid_argument(fail("`lambda` must be finite and in its parameter domain."));
+  if(pi.supplied && !std::isfinite(pi.value))return invalid_argument(fail("`pi` must be finite and in its parameter domain."));
 
   if (x.size() > 0 &&
       std::all_of(x.begin(), x.end(), [](int v) { return v == 0; })) {
     warnings.push_back(binding_message("all observations are zero"));
   }
   auto res = cppunivariate::zip_mle(x,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN(),iterlim);
+  const auto o=cppunivariate::outcome(res);
+  const auto done=[&](FitResult out) {
+    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+      return overridden(std::move(out),static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+  };
+  return done([&]() -> FitResult {
   std::string stop_kind;
   switch(res.status) {
-    case cppunivariate::ZipStatus::Budget: stop_kind="budget";break;
+    case cppunivariate::ZipStatus::Budget: stop_kind=outcome_kind(o);break;
     case cppunivariate::ZipStatus::Tie: stop_kind="tie";break;
-    case cppunivariate::ZipStatus::NumericalFailure: stop_kind="numerical";break;
-    case cppunivariate::ZipStatus::ZeroLimit: stop_kind="limit";break;
+    case cppunivariate::ZipStatus::NumericalFailure: stop_kind=outcome_kind(o);break;
+    case cppunivariate::ZipStatus::ZeroLimit: stop_kind=outcome_kind(o);break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
@@ -45,5 +52,6 @@ inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_a
   if(pi.supplied)fixed.push_back("pi");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",res.lambda},{"pi",res.pi}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }();
 
+  }());
 }
 }

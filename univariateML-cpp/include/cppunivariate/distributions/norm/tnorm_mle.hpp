@@ -15,6 +15,7 @@
 // the exponent is within kCut of its maximum. This is accurate in both tails
 // and near t2 = 0, where differences of normal CDFs cancel.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../cmb/acceptance.hpp"
@@ -635,3 +636,26 @@ inline TnormResult tnorm_mle(span x,double a=-INFINITY,double b=INFINITY,double 
 
 // dtnorm uses the quadrature above; both include orders remain self-contained.
 #include "tnorm_dpqr.hpp"
+
+namespace cppunivariate {
+inline FitOutcome outcome(const TnormResult& r) {
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
+  if(r.status!=TnormStatus::Ok && r.stop_detail.comparison_tie)return FitOutcome::estimate(false);
+  switch(r.status) {
+    case TnormStatus::Ok: return FitOutcome::estimate(true);
+    case TnormStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TnormStatus::InvalidBounds: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TnormStatus::OutsideBounds: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TnormStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TnormStatus::DegenerateData: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case TnormStatus::ExponentialBoundary: return FitOutcome::limit(true);
+    case TnormStatus::ReflectedExponentialBoundary: return FitOutcome::limit(true);
+    case TnormStatus::TruncatedExponentialBoundary: return FitOutcome::limit(true);
+    case TnormStatus::UniformBoundary: return FitOutcome::limit(true);
+    case TnormStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case TnormStatus::UnboundedLocation: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+  }
+  return {};
+}
+} // namespace cppunivariate

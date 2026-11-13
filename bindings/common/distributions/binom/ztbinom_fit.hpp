@@ -9,16 +9,23 @@ inline FitResult fit_ztbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   const Held prob = prob_arg;
 
   const double fixed_size=size.supplied?size.value:std::numeric_limits<double>::quiet_NaN();
-  if(size.supplied && !std::isfinite(fixed_size))return fail("`size` must be finite and in its parameter domain.");
+  if(size.supplied && !std::isfinite(fixed_size))return invalid_argument(fail("`size` must be finite and in its parameter domain."));
   const double held_prob=prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN();
-  if(prob.supplied && (!std::isfinite(held_prob)||held_prob<0||held_prob>1))return fail("`prob` must be finite and in [0, 1].");
+  if(prob.supplied && (!std::isfinite(held_prob)||held_prob<0||held_prob>1))return invalid_argument(fail("`prob` must be finite and in [0, 1]."));
   const auto res=cppunivariate::ztbinom_mle(x, reltol, iterlim, fixed_size, held_prob);
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("ztbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"size","prob"});
-  if(res.accuracy_failure)return stop_failure(fail("ztbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,"numerical",{"size","prob"});
+  const auto o=cppunivariate::outcome(res);
+  const auto done=[&](FitResult out) {
+    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+      return overridden(std::move(out),static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+  };
+  return done([&]() -> FitResult {
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("ztbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"size","prob"});
+  if(res.accuracy_failure)return stop_failure(fail("ztbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,outcome_kind(o),{"size","prob"});
   std::string stop_kind;
   switch(res.status) {
-    case cppunivariate::ZtbinomStatus::PoissonLimit: stop_kind="limit";break;
-    case cppunivariate::ZtbinomStatus::IterationFailure: stop_kind="numerical";break;
+    case cppunivariate::ZtbinomStatus::PoissonLimit: stop_kind=outcome_kind(o);break;
+    case cppunivariate::ZtbinomStatus::IterationFailure: stop_kind=outcome_kind(o);break;
     default:break;
   }
   if(res.stop_detail.budget_exhausted)stop_kind="budget";
@@ -40,5 +47,6 @@ inline FitResult fit_ztbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   if(prob.supplied)fixed.push_back("prob");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob}}; out.extra.push_back({"certified", res.certified ? 1.0 : 0.0}); out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
+  }());
 }
 }

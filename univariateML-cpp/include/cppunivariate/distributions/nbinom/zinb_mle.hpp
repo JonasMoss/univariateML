@@ -1,5 +1,6 @@
 // Historical proposal; the certified public dispatcher is included below.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../nbinom/mle.hpp"
 #include "../../core/stop_detail.hpp"
@@ -217,3 +218,25 @@ inline ZinbResult zinb_mle(ispan x,double tol,int maxit,double size,double prob,
   return r;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const ZinbResult& r) {
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
+  if(r.status==ZinbStatus::IterationFailure || r.status==ZinbStatus::ZeroLimit) {
+    if(r.certificate_failure==ZinbCertificateFailure::Budget)return FitOutcome::budget();
+    if(r.certificate_failure==ZinbCertificateFailure::ComparisonTie)return FitOutcome::estimate(false);
+    if(r.certificate_failure==ZinbCertificateFailure::TailUnresolved)return FitOutcome::failure(OutcomeReason::Unresolved);
+  }
+  switch(r.status) {
+    case ZinbStatus::Ok: return FitOutcome::estimate(true);
+    case ZinbStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZinbStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZinbStatus::IterationFailure: return FitOutcome::failure(r.certificate_failure==ZinbCertificateFailure::Arithmetic ? OutcomeReason::Evaluation : OutcomeReason::NoConvergence);
+    case ZinbStatus::ZipLimit: return FitOutcome::limit(true);
+    case ZinbStatus::PoissonLimit: return FitOutcome::limit(true);
+    case ZinbStatus::ZeroLimit: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate

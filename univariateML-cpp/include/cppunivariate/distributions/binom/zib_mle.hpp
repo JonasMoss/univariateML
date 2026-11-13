@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "zib_face_certificate.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
@@ -574,4 +575,25 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
   return checked_precision(best);
 }
 
+} // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const ZibResult& r) {
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
+  if(r.accuracy_failure)return FitOutcome::failure(OutcomeReason::NoConvergence);
+  if(r.status!=ZibStatus::Ok) {
+    if(r.stop_detail.budget_exhausted)return FitOutcome::budget();
+    if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
+  }
+  switch(r.status) {
+    case ZibStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ZibStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZibStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZibStatus::ZipLimit: return FitOutcome::limit(true);
+    case ZibStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case ZibStatus::FaceTie: return FitOutcome::estimate(false);
+  }
+  return {};
+}
 } // namespace cppunivariate

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -74,3 +75,17 @@ inline Result fit(ispan x,double a,double b,double size) {
 }
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const truncated_detail::Result& r) {
+  switch(r.status) {
+    case truncated_detail::Status::Ok: return FitOutcome::estimate(true);
+    case truncated_detail::Status::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case truncated_detail::Status::LowerPointMass: return FitOutcome::limit(true);
+    case truncated_detail::Status::UpperPointMass: return FitOutcome::limit(true);
+    case truncated_detail::Status::Unidentified: return FitOutcome::estimate(true, false);
+    case truncated_detail::Status::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+} // namespace cppunivariate

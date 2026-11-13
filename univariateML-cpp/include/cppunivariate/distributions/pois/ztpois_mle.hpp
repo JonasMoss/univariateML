@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "ztpois_profile.hpp"
 namespace cppunivariate {
 enum class ZtpoisStatus { Ok, InvalidInput };
@@ -24,3 +25,13 @@ inline ZtpoisResult ztpois_mle(ispan x, double fixed=std::numeric_limits<double>
   return {l,ll,100,ZtpoisStatus::Ok};
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const ZtpoisResult& r) {
+  switch(r.status) {
+    case ZtpoisStatus::Ok: return FitOutcome::estimate(true);
+    case ZtpoisStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+  }
+  return {};
+}
+} // namespace cppunivariate

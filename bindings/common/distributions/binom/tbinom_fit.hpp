@@ -13,23 +13,30 @@ inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, He
   const Held size = size_arg;
 
   const double held=!prob.supplied?std::numeric_limits<double>::quiet_NaN():prob.value;
-  if(prob.supplied&&std::isnan(held))return fail("Fixed parameter must not be missing.");
+  if(prob.supplied&&std::isnan(held))return invalid_argument(fail("Fixed parameter must not be missing."));
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  if(x.size()==0)return fail("requires nonempty data");
+  if(x.size()==0)return invalid_argument(fail("requires nonempty data"));
   const double lower=a.supplied?a.value:double(*std::min_element(x.begin(),x.end()))-1;
   const double upper=b.supplied?b.value:double(*std::max_element(x.begin(),x.end()));
   const double trials=size.supplied?size.value:nan;
-  if((a.supplied&&std::isnan(lower))||(b.supplied&&std::isnan(upper)))return fail("Held bounds must not be missing.");
-  if(size.supplied && !std::isfinite(trials))return fail("`size` must be a finite nonnegative integer.");
+  if((a.supplied&&std::isnan(lower))||(b.supplied&&std::isnan(upper)))return invalid_argument(fail("Held bounds must not be missing."));
+  if(size.supplied && !std::isfinite(trials))return invalid_argument(fail("`size` must be a finite nonnegative integer."));
   auto r=legacy_default?cppunivariate::tbinom_design_mle(x,lower,upper,trials,held):
     cppunivariate::tbinom_design_mle(x,lower,upper,trials,held,tol,maxit);
+  const auto o=cppunivariate::outcome(r);
+  const auto done=[&](FitResult out) {
+    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+      return overridden(std::move(out),static_cast<int>(r.status));
+    return with_outcome(std::move(out),o,static_cast<int>(r.status));
+  };
+  return done([&]() -> FitResult {
   std::string stop_kind;
   switch(r.status) {
-    case cppunivariate::TbinomStatus::LowerPointMass: stop_kind="limit";break;
-    case cppunivariate::TbinomStatus::UpperPointMass: stop_kind="limit";break;
-    case cppunivariate::TbinomStatus::TpoisLimit: stop_kind="limit";break;
+    case cppunivariate::TbinomStatus::LowerPointMass: stop_kind=outcome_kind(o);break;
+    case cppunivariate::TbinomStatus::UpperPointMass: stop_kind=outcome_kind(o);break;
+    case cppunivariate::TbinomStatus::TpoisLimit: stop_kind=outcome_kind(o);break;
     case cppunivariate::TbinomStatus::Unidentified: stop_kind="tie";break;
-    case cppunivariate::TbinomStatus::NumericalFailure: stop_kind="numerical";break;
+    case cppunivariate::TbinomStatus::NumericalFailure: stop_kind=outcome_kind(o);break;
     default:break;
   }
   if(r.stop_detail.comparison_tie)stop_kind="unresolved";
@@ -61,5 +68,6 @@ inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, He
   if(prob.supplied)fixed.push_back("prob");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"prob",r.prob},{"a",lower},{"b",upper},{"size",r.size}}; out.extra.push_back({"certified", r.certified ? 1.0 : 0.0}); out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
+  }());
 }
 }

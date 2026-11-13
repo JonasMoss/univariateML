@@ -9,6 +9,7 @@
 // enum surfaces SizeTooSmall, Underdispersed, IterationFailure.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
@@ -321,3 +322,16 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const BinomResult& r) {
+  switch(r.status) {
+    case BinomStatus::Ok: return FitOutcome::estimate(true);
+    case BinomStatus::SizeTooSmall: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case BinomStatus::Underdispersed: return FitOutcome::limit(true);
+    case BinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case BinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+  }
+  return {};
+}
+} // namespace cppunivariate

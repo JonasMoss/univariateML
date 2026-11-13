@@ -10,6 +10,7 @@
 // score is bracketed on a log scale and bisected.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 
@@ -241,3 +242,17 @@ inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
 }  // namespace cppunivariate
 
 #include "certificate.hpp"
+
+namespace cppunivariate {
+inline FitOutcome outcome(const NbinomResult& r) {
+  if(r.certificate_failure==NbinomCertificateFailure::Budget)return FitOutcome::budget();
+  switch(r.status) {
+    case NbinomStatus::Ok: return FitOutcome::estimate(true);
+    case NbinomStatus::Underdispersed: return FitOutcome::limit(true);
+    case NbinomStatus::ZeroLimit: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case NbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case NbinomStatus::PrecisionFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+} // namespace cppunivariate

@@ -9,6 +9,7 @@
 // (theta -> 0); flagged via the result struct.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/discrete_stop.hpp"
 
 #include "../../core/span.hpp"
@@ -83,3 +84,15 @@ inline LgserResult lgser_mle(ispan x, double fixed=std::numeric_limits<double>::
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const LgserResult& r) {
+  switch(r.status) {
+    case LgserStatus::Ok: return FitOutcome::estimate(true);
+    case LgserStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LgserStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case LgserStatus::PointMass: return FitOutcome::limit(true);
+  }
+  return {};
+}
+} // namespace cppunivariate

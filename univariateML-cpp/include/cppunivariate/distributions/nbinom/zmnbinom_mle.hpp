@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../pois/zmpois_profile.hpp"
 namespace cppunivariate {
@@ -51,3 +52,23 @@ inline ZmnbinomResult zmnbinom_mle(ispan x, double tol=1e-10,int maxit=200,doubl
  return out;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const ZmnbinomResult& r) {
+  if(r.status==ZmnbinomStatus::IterationFailure) {
+    if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
+    if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
+  }
+  if(r.status==ZmnbinomStatus::IterationFailure && r.budget_exhausted)return FitOutcome::budget();
+  switch(r.status) {
+    case ZmnbinomStatus::Ok: return FitOutcome::estimate(true);
+    case ZmnbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZmnbinomStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZmnbinomStatus::PoissonLimit: return FitOutcome::limit(true);
+    case ZmnbinomStatus::AllZero: return FitOutcome::estimate(true);
+    case ZmnbinomStatus::TwoPoint: return FitOutcome::estimate(true);
+    case ZmnbinomStatus::IterationFailure: return FitOutcome::failure(r.certificate_failure==ZtnbinomCertificateFailure::Arithmetic ? OutcomeReason::Evaluation : OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate

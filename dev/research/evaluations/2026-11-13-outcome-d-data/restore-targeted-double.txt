@@ -1,0 +1,14 @@
+Test project /home/jonas/Files/programming/univariateML.wt/outcome-d/build/cpp-no-long-double
+    Start 10: distribution_bnbinom
+1/2 Test #10: distribution_bnbinom .............   Passed   12.85 sec
+    Start 17: distribution_cmp
+2/2 Test #17: distribution_cmp .................   Passed   27.82 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Label Time Summary:
+cran    =  40.67 sec*proc (2 tests)
+dev     =  40.67 sec*proc (2 tests)
+full    =  40.67 sec*proc (2 tests)
+
+Total Test time (real) =  40.68 sec

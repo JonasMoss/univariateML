@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "ztbinom_dpqr.hpp"
 #include "ztbinom_face_certificate.hpp"
 #include "ztbinom_accuracy.hpp"
@@ -284,4 +285,24 @@ inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
   return best;
 }
 
+} // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const ZtbinomResult& r) {
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
+  if(r.accuracy_failure)return FitOutcome::failure(OutcomeReason::NoConvergence);
+  if(r.status!=ZtbinomStatus::Ok) {
+    if(r.stop_detail.budget_exhausted)return FitOutcome::budget();
+    if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
+  }
+  switch(r.status) {
+    case ZtbinomStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ZtbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZtbinomStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZtbinomStatus::PoissonLimit: return FitOutcome::limit(true);
+    case ZtbinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
 } // namespace cppunivariate
