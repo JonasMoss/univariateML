@@ -21,7 +21,9 @@
 
 namespace cppunivariate {
 
-enum class GumbelStatus { Ok, InvalidInput, Unbounded, IterationFailure, AccuracyFailure };
+// NumericalFailure: the log likelihood at the returned (or held)
+// coefficients lies outside binary64; the coefficients are kept.
+enum class GumbelStatus { Ok, InvalidInput, Unbounded, IterationFailure, AccuracyFailure, NumericalFailure };
 
 struct GumbelResult {
   double mu;
@@ -129,6 +131,7 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
   }
   const double logLik =
       -dn * std::log(sigma) - sum_z - sum_exp_neg_z;
+  if (converged && !std::isfinite(logLik)) return {mu, sigma, NAN, iter, GumbelStatus::NumericalFailure};
   return {mu, sigma, logLik, iter,
       converged ? GumbelStatus::Ok : GumbelStatus::IterationFailure};
 }
@@ -187,6 +190,9 @@ inline GumbelResult fit_gumbel_held(span x,double tol,int maxit,double mu,double
   }
   double ll=0;for(double v:x){const double z=(v-m)/s;ll-=std::log(s)+z+std::exp(-z);}
   if(it==maxit)return {nan,nan,nan,it,GumbelStatus::IterationFailure};
+  // exp(-z) can exceed binary64 at held coefficients (archive case 3008,
+  // data near 1e150: logLik about -10^(3.66e149)): unrepresentable.
+  if(!std::isfinite(ll))return {m,s,nan,it,GumbelStatus::NumericalFailure};
   return {m,s,ll,it};
 }
 
@@ -200,6 +206,7 @@ inline FitOutcome outcome(const GumbelResult& r) {
     case GumbelStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GumbelStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GumbelStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case GumbelStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }
   return {};
 }

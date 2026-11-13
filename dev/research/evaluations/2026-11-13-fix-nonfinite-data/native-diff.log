@@ -1,0 +1,21 @@
+cauchy class empty: core_status 1 -> 2; kind "nomle" -> "error"; message "Cauchy MLE does not exist: a sample atom has at least half the mass, except for balanced two-point samples" -> "Cauchy fit requires finite data, positive tolerance and iterlim, and valid held coefficients."; outcome.certified true -> false; outcome.kind "nonexistence" -> "failure"; outcome.reason "unbounded" -> "invalid-input" 
+gamma class subnormal: core_status 0 -> 4; message "Gamma MLE failed" -> "Gamma transformed observations exceed double precision."; outcome.reason "evaluation" -> "tolerance"; outcome_override true -> false 
+gompertz class empty: core_status 2 -> 5; outcome.reason "no-convergence" -> "invalid-input" 
+gompertz class inf: core_status 1 -> 5; message "The Gompertz maximum likelihood estimator escapes to an exponential when the score at b=0 is nonpositive. Use `mlexp` instead." -> "Gompertz MLE failed to converge or data exceed double precision." 
+gompertz class nan: core_status 2 -> 5; outcome.reason "no-convergence" -> "invalid-input" 
+gompertz class negative: core_status 2 -> 5; outcome.reason "no-convergence" -> "invalid-input" 
+gompertz class neginf: core_status 1 -> 5; message "The Gompertz maximum likelihood estimator escapes to an exponential when the score at b=0 is nonpositive. Use `mlexp` instead." -> "Gompertz MLE failed to converge or data exceed double precision." 
+gompertz class subnormal: core_status 0 -> 4; outcome_override true -> false 
+gumbel archive 003008: core_status 0 -> 5; outcome_override true -> false 
+logis archive 004719: core_status 2 -> 0; estimates.location null -> 100000000.11620703; estimates.scale null -> 1.0081430589945095; fixed [] -> ["scale"]; iterations null -> 27; kind "error" -> "ok" (+5 more)
+logis class constant: core_status 1 -> 3 
+logis class one: core_status 1 -> 3 
+logis class zeros: core_status 1 -> 3 
+norm archive 005268: estimates.sd 1.7204734560276088e-12 -> 1.720473455884323e-12; logLik 128.3474153232234 -> 128.34741532363978 
+norm class near-constant: estimates.sd 2.0030861316495456e-18 -> 1.6355129777955994e-18; logLik 117.99871225081864 -> 118.60690991298088 
+norm class offset: estimates.sd 0.84779124789065852 -> 0.846766726370899; logLik -7.5229061386163067 -> -7.5156509960234619 
+weibull archive 008443: core_status 0 -> 5; outcome_override true -> false 
+
+17 of 896 cases differ
+by family: {'gompertz': 6, 'logis': 4, 'norm': 3, 'cauchy': 1, 'gamma': 1, 'gumbel': 1, 'weibull': 1}
+by field: {'core_status': 14, 'outcome': 10, 'message': 5, 'estimates': 5, 'outcome_override': 4, 'logLik': 4, 'kind': 2, 'fixed': 1, 'iterations': 1}

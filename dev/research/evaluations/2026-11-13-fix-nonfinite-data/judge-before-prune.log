@@ -1,0 +1,6 @@
+$ python3 dev/validation/fit-judge.py build/snap/native build/snap/double --prune
+896 cases judged in each of two modes; failures by check: {'mode': 1}
+1 listed as known, 0 new, 3 listed but passing
+  FIXED invalid-input|double|cauchy|class|empty (TASK-214.3)
+  FIXED invalid-input|native|cauchy|class|empty (TASK-214.3)
+  FIXED mode|both|gamma|class|huge (TASK-214.13)

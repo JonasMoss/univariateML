@@ -1,0 +1,254 @@
+[
+ {
+  "mode": "native",
+  "family": "logis",
+  "source": "archive",
+  "case": "004719",
+  "n": 12,
+  "location": {
+   "baseline": null,
+   "new": 100000000.11620703,
+   "reference": "100000000.11620703441",
+   "baseline_rel_error": null,
+   "new_rel_error": 1.0094148232770343e-17
+  },
+  "logLik": {
+   "baseline": null,
+   "new": -22.93818887915538,
+   "reference": "-22.938188879155377108",
+   "baseline_rel_error": null,
+   "new_rel_error": 1.1958648930904398e-16
+  },
+  "scale": {
+   "baseline": null,
+   "new": 1.0081430589945095,
+   "reference": "1.0081430589945095111",
+   "baseline_rel_error": null,
+   "new_rel_error": 0.0
+  }
+ },
+ {
+  "mode": "native",
+  "family": "norm",
+  "source": "archive",
+  "case": "005268",
+  "n": 5,
+  "logLik": {
+   "baseline": 128.3474153232234,
+   "new": 128.34741532363978,
+   "reference": "128.34741532363980733",
+   "baseline_rel_error": 3.2443637276579493e-12,
+   "new_rel_error": 2.1547499946611269e-16
+  },
+  "mean": {
+   "baseline": 1.0000000000002,
+   "new": 1.0000000000002,
+   "reference": "1.00000000000020004",
+   "baseline_rel_error": 2.220446049249869e-17,
+   "new_rel_error": 2.220446049249869e-17
+  },
+  "sd": {
+   "baseline": 1.7204734560276088e-12,
+   "new": 1.720473455884323e-12,
+   "reference": "1.7204734558843230236e-12",
+   "baseline_rel_error": 8.328275406701671e-11,
+   "new_rel_error": 2.8686590754705997e-17
+  }
+ },
+ {
+  "mode": "native",
+  "family": "norm",
+  "source": "class",
+  "case": "near-constant",
+  "n": 3,
+  "logLik": {
+   "baseline": 117.99871225081864,
+   "new": 118.60690991298088,
+   "reference": "118.60690991298087672",
+   "baseline_rel_error": 0.005127843416614221,
+   "new_rel_error": 4.387393612173236e-17
+  },
+  "mean": {
+   "baseline": 0.024824210097551543,
+   "new": 0.024824210097551543,
+   "reference": "0.024824210097551543721",
+   "baseline_rel_error": 4.658687276546766e-17,
+   "new_rel_error": 4.658687276546766e-17
+  },
+  "sd": {
+   "baseline": 2.0030861316495456e-18,
+   "new": 1.6355129777955994e-18,
+   "reference": "1.6355129777955990202e-18",
+   "baseline_rel_error": 0.22474487139158897,
+   "new_rel_error": 2.253673324449967e-16
+  }
+ },
+ {
+  "mode": "native",
+  "family": "norm",
+  "source": "class",
+  "case": "offset",
+  "n": 6,
+  "logLik": {
+   "baseline": -7.522906138616307,
+   "new": -7.515650996023462,
+   "reference": "-7.515650996023461",
+   "baseline_rel_error": 0.0009653378791384076,
+   "new_rel_error": 1.1598758902685394e-16
+  },
+  "mean": {
+   "baseline": 1301550747930902.2,
+   "new": 1301550747930902.2,
+   "reference": "1301550747930902.2917",
+   "baseline_rel_error": 3.201309417470267e-17,
+   "new_rel_error": 3.201309417470267e-17
+  },
+  "sd": {
+   "baseline": 0.8477912478906585,
+   "new": 0.846766726370899,
+   "reference": "0.84676672637089896985",
+   "baseline_rel_error": 0.0012099217976484216,
+   "new_rel_error": 3.951244421212329e-17
+  }
+ },
+ {
+  "mode": "double",
+  "family": "gamma",
+  "source": "class",
+  "case": "huge",
+  "n": 6,
+  "logLik": {
+   "baseline": null,
+   "new": -4258.952905145048,
+   "reference": "-4258.9529051450471956",
+   "baseline_rel_error": null,
+   "new_rel_error": 2.2050699298950457e-16
+  },
+  "scale": {
+   "baseline": null,
+   "new": 3.163213400119558e+307,
+   "reference": "3.1632134001196774387e+307",
+   "baseline_rel_error": null,
+   "new_rel_error": 3.7785863542366027e-14
+  },
+  "shape": {
+   "baseline": null,
+   "new": 2.6999293645745466,
+   "reference": "2.6999293645744443754",
+   "baseline_rel_error": null,
+   "new_rel_error": 3.785280204583998e-14
+  }
+ },
+ {
+  "mode": "double",
+  "family": "logis",
+  "source": "archive",
+  "case": "004719",
+  "n": 12,
+  "location": {
+   "baseline": null,
+   "new": 100000000.11620703,
+   "reference": "100000000.11620703441",
+   "baseline_rel_error": null,
+   "new_rel_error": 1.0094148232770343e-17
+  },
+  "logLik": {
+   "baseline": null,
+   "new": -22.93818887915538,
+   "reference": "-22.938188879155377108",
+   "baseline_rel_error": null,
+   "new_rel_error": 1.1958648930904398e-16
+  },
+  "scale": {
+   "baseline": null,
+   "new": 1.0081430589945095,
+   "reference": "1.0081430589945095111",
+   "baseline_rel_error": null,
+   "new_rel_error": 0.0
+  }
+ },
+ {
+  "mode": "double",
+  "family": "norm",
+  "source": "archive",
+  "case": "005268",
+  "n": 5,
+  "logLik": {
+   "baseline": 128.3474153232234,
+   "new": 128.34741532363978,
+   "reference": "128.34741532363980733",
+   "baseline_rel_error": 3.2443637276579493e-12,
+   "new_rel_error": 2.1547499946611269e-16
+  },
+  "mean": {
+   "baseline": 1.0000000000002,
+   "new": 1.0000000000002,
+   "reference": "1.00000000000020004",
+   "baseline_rel_error": 2.220446049249869e-17,
+   "new_rel_error": 2.220446049249869e-17
+  },
+  "sd": {
+   "baseline": 1.7204734560276088e-12,
+   "new": 1.720473455884323e-12,
+   "reference": "1.7204734558843230236e-12",
+   "baseline_rel_error": 8.328275406701671e-11,
+   "new_rel_error": 2.8686590754705997e-17
+  }
+ },
+ {
+  "mode": "double",
+  "family": "norm",
+  "source": "class",
+  "case": "near-constant",
+  "n": 3,
+  "logLik": {
+   "baseline": 117.99871225081864,
+   "new": 118.60690991298088,
+   "reference": "118.60690991298087672",
+   "baseline_rel_error": 0.005127843416614221,
+   "new_rel_error": 4.387393612173236e-17
+  },
+  "mean": {
+   "baseline": 0.024824210097551543,
+   "new": 0.024824210097551543,
+   "reference": "0.024824210097551543721",
+   "baseline_rel_error": 4.658687276546766e-17,
+   "new_rel_error": 4.658687276546766e-17
+  },
+  "sd": {
+   "baseline": 2.0030861316495456e-18,
+   "new": 1.6355129777955994e-18,
+   "reference": "1.6355129777955990202e-18",
+   "baseline_rel_error": 0.22474487139158897,
+   "new_rel_error": 2.253673324449967e-16
+  }
+ },
+ {
+  "mode": "double",
+  "family": "norm",
+  "source": "class",
+  "case": "offset",
+  "n": 6,
+  "logLik": {
+   "baseline": -7.522906138616307,
+   "new": -7.515650996023462,
+   "reference": "-7.515650996023461",
+   "baseline_rel_error": 0.0009653378791384076,
+   "new_rel_error": 1.1598758902685394e-16
+  },
+  "mean": {
+   "baseline": 1301550747930902.2,
+   "new": 1301550747930902.2,
+   "reference": "1301550747930902.2917",
+   "baseline_rel_error": 3.201309417470267e-17,
+   "new_rel_error": 3.201309417470267e-17
+  },
+  "sd": {
+   "baseline": 0.8477912478906585,
+   "new": 0.846766726370899,
+   "reference": "0.84676672637089896985",
+   "baseline_rel_error": 0.0012099217976484216,
+   "new_rel_error": 3.951244421212329e-17
+  }
+ }
+]

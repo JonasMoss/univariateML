@@ -111,7 +111,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locs
 
 With both coefficients free, location profiles out exactly and scale solves a strictly monotone scalar equation. Nonconstant samples have a unique finite maximum. Constant data allow scale to shrink to zero at their common value, giving unbounded likelihood.
 
-Holding location leaves a strictly concave likelihood in inverse scale. It has a unique maximum unless all observations equal the supplied location. Holding positive scale gives an explicit unique location estimate and permits constant samples. Holding both coefficients evaluates the likelihood.
+Holding location leaves a strictly concave likelihood in inverse scale. It has a unique maximum unless all observations equal the supplied location. Holding positive scale gives an explicit unique location estimate and permits constant samples. Holding both coefficients evaluates the likelihood. A log likelihood beyond binary64 at the returned or held coefficients, such as $\exp(-z)$ for data $10^{150}$ scales below the location, stops with `NumericalFailure`.
 
 ## R notes
 

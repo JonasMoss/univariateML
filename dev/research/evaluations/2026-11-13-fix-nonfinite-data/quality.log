@@ -1,0 +1,10 @@
+PYTHONPATH=/home/jonas/Files/programming/univariateML.wt/fix-nonfinite/dev/validation python3 -m quality check gamma norm lnorm logis weibull gumbel gompertz cauchy
+gamma pass 
+norm pass 
+lnorm pass 
+logis pass 
+weibull pass 
+gumbel pass 
+gompertz pass 
+cauchy pass 
+exit 0

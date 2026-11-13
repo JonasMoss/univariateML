@@ -263,3 +263,47 @@ TEST_CASE("gamma: compensated concentrating density") {
 TEST_CASE("gamma: centered high-shape probability") {
   CHECK(cppunivariate::distributions::pgamma(1e12,1e12,1,true,true) == doctest::Approx(-0.6931469145984605).epsilon(1e-10));
 }
+
+TEST_CASE("gamma: subnormal data, scale below binary64 resolution, overflowing sums") {
+  // TASK-214.3. References: dev/research/evaluations/2026-11-13-fix-nonfinite-data/references.json.
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  const double shape_ref=5.375209483690757399469522;  // (1, 2, 3) * any unit
+  // (1, 2, 3) * denorm_min: the scale MLE is 0.372 denorm_min, which rounds
+  // to zero. It used to return Ok with scale 0 and a NaN log likelihood.
+  const std::vector<double> x{tiny,2*tiny,3*tiny};
+  const auto r=cppunivariate::gamma_mle(mltest::as_span(x),mltest::kFitTol,mltest::kFitMaxit,nan,nan);
+  CHECK(r.status==cppunivariate::GammaStatus::TransformFailure);
+  CHECK(std::isnan(r.scale));
+  CHECK(r.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  CHECK(r.stop_detail.attainable_tol==doctest::Approx(1/0.3720785219754353539790749).epsilon(1e-9));
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Tolerance);
+  CHECK(r.shape==doctest::Approx(shape_ref).epsilon(1e-12));
+  CHECK(r.logLik==doctest::Approx(2229.701528936673674596429).epsilon(1e-12));
+  // A subnormal mean is rounded to a multiple of denorm_min ((1, 1, 2) has
+  // mean 4/3): the shape must still come from the exact relative deviations.
+  const std::vector<double> y{tiny,tiny,2*tiny},w{1,1,2};
+  const auto ry=cppunivariate::gamma_mle(mltest::as_span(y),1e-10,100);
+  const auto rw=cppunivariate::gamma_mle(mltest::as_span(w),1e-10,100);
+  REQUIRE(rw.status==cppunivariate::GammaStatus::Ok);
+  CHECK(ry.shape==doctest::Approx(rw.shape).epsilon(1e-12));
+  // Subnormal mean, subnormal scale still resolved to 1e-10: Ok.
+  const double unit=std::ldexp(1.0,-1036);
+  const std::vector<double> z{unit,2*unit,3*unit};
+  const auto rz=cppunivariate::gamma_mle(mltest::as_span(z),1e-10,100);
+  REQUIRE(rz.status==cppunivariate::GammaStatus::Ok);
+  CHECK(rz.scale<std::numeric_limits<double>::min());
+  CHECK(rz.shape==doctest::Approx(shape_ref).epsilon(1e-12));
+  CHECK(rz.scale/unit==doctest::Approx(2/shape_ref).epsilon(2e-11));
+  CHECK(rz.logLik==doctest::Approx(-3.6186868274701123459+3*1036*std::log(2.0)).epsilon(1e-12));
+  // A sum that overflows (snapshot class 'huge'): the double-only build used
+  // to stop with IterationFailure.
+  const std::vector<double> h{2.1929206633396517e+307,4.316903372290887e+307,7.156392554778722e+307,
+      8.806638121904167e+307,1.1769861760077501e+308,1.7000000000000001e+308};
+  const auto rh=cppunivariate::gamma_mle(mltest::as_span(h),1e-10,100);
+  REQUIRE(rh.status==cppunivariate::GammaStatus::Ok);
+  CHECK(rh.shape==doctest::Approx(2.6999293645744443753921).epsilon(1e-12));
+  CHECK(rh.scale==doctest::Approx(3.163213400119677438739919e+307).epsilon(1e-12));
+  CHECK(rh.logLik==doctest::Approx(-4258.952905145047195598505).epsilon(1e-12));
+}

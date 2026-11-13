@@ -43,7 +43,7 @@ limits:
     firmness: proved
     when: '$s$ tends to zero at the fitted or held location $\mu$'
     detect: '$s$ is free and every observation equals the fitted or held location $\mu$'
-    status: InvalidInput
+    status: Unbounded
     message: "unbounded"
 examples: |
   set.seed(1)
@@ -103,6 +103,6 @@ The logistic distribution models symmetric errors with heavier tails than the no
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
-For nonconstant data the joint fit has a unique maximum. The likelihood is strictly concave in location divided by scale and inverse scale, although it need not be concave in location and scale themselves. The fit uses Newton iteration with a line search.
+For nonconstant data the joint fit has a unique maximum. The likelihood is strictly concave in location divided by scale and inverse scale, although it need not be concave in location and scale themselves. The fit uses Newton iteration with a line search. Its absolute step target applies to location and log scale; when that target lies within $2^{12}$ binary64 spacings of $\max(|\bar x|,\mathrm{sd})$, the iteration runs on $(x-\bar x)/\mathrm{sd}$, where the target bounds the location step relative to sd.
 
-Holding location leaves a unique scale maximum unless every observation equals that location, when scale can collapse to zero. Holding scale gives a unique location maximum even for constant samples. Both conditional scores are solved by bisection. Holding both evaluates the likelihood.
+Holding location leaves a unique scale maximum unless every observation equals that location, when scale can collapse to zero. Holding scale gives a unique location maximum even for constant samples. Both conditional scores are solved by bisection. Holding both evaluates the likelihood. A location bracket that narrows to adjacent doubles before its width target is accepted only when the computed scores at both ends exceed their rounding bound. When the data spread is many orders of magnitude beyond the held scale, the computed score is exactly zero between the middle observations; no bracket certifies and the fit reports `IterationFailure`, although the maximum exists near their midpoint.

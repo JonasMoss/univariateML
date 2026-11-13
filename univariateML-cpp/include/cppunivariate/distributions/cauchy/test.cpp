@@ -34,7 +34,8 @@ TEST_CASE("cauchy: three observations and nonexistent MLE") {
   CHECK(r.mu == doctest::Approx(-2.369470147).epsilon(1e-4));
   CHECK(r.scale == doctest::Approx(0.272740500).epsilon(1e-4));
   CHECK(r.logLik >= -4.99686179 - 1e-6);
-  for (const std::vector<double> &bad : {std::vector<double>{}, {1}, {1, 1}, {1, 1, 2}, {1, 1, 2, 3}}) {
+  // The empty sample is invalid input (TASK-214.3); see the last test case.
+  for (const std::vector<double> &bad : {std::vector<double>{1}, {1, 1}, {1, 1, 2}, {1, 1, 2, 3}}) {
     CHECK(cppunivariate::fit_cauchy(mltest::as_span(bad), mltest::kFitTol, mltest::kFitMaxit).status == cppunivariate::CauchyStatus::NoMLE);
   }
 }
@@ -250,4 +251,18 @@ TEST_CASE("cauchy: structured tie candidates retain locations and likelihood bou
   const auto no=cppunivariate::fit_cauchy(mltest::as_span(atom),1e-8,100);
   CHECK(no.status==cppunivariate::CauchyStatus::NoMLE);
   CHECK(no.stop_detail.candidates.empty());
+}
+
+TEST_CASE("cauchy: an empty sample is invalid input, one observation an unbounded atom") {
+  // TASK-214.3: the empty sample used to end in the nonexistence status.
+  const std::vector<double> empty;
+  const auto r=cppunivariate::fit_cauchy(mltest::as_span(empty),1e-10,100);
+  CHECK(r.status==cppunivariate::CauchyStatus::InvalidInput);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::InvalidInput);
+  CHECK(cppunivariate::fit_cauchy(mltest::as_span(empty),1e-10,100,NAN,NAN).status==
+        cppunivariate::CauchyStatus::InvalidInput);
+  const std::vector<double> one{3.5},bad{std::numeric_limits<double>::quiet_NaN()};
+  CHECK(cppunivariate::fit_cauchy(mltest::as_span(one),1e-10,100).status==cppunivariate::CauchyStatus::NoMLE);
+  CHECK(cppunivariate::fit_cauchy(mltest::as_span(bad),1e-10,100).status==cppunivariate::CauchyStatus::InvalidInput);
 }

@@ -22,7 +22,11 @@
 
 namespace cppunivariate {
 
-enum class GompertzStatus { Ok = 0, Overdispersed, IterationFailure, Unbounded };
+// NumericalFailure: the MLE of the rescaled data does not map back into
+// binary64 (a coefficient overflows, or with a tolerance detail lies below
+// binary64 resolution). InvalidInput: an empty sample, or an observation
+// that is not finite or lies below the support.
+enum class GompertzStatus { Ok = 0, Overdispersed, IterationFailure, Unbounded, NumericalFailure, InvalidInput };
 
 // Negative log-likelihood of Gompertz(a, b) [actuar: shape=a, rate=b]:
 //   log f = log(a) + b*x - (a/b) * (exp(b*x) - 1)
@@ -46,6 +50,8 @@ inline FitOutcome outcome(const GompertzResult& r) {
     case GompertzStatus::Overdispersed: return FitOutcome::limit(true);
     case GompertzStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GompertzStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case GompertzStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case GompertzStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
   }
   return {};
 }
@@ -63,7 +69,24 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
     std::vector<double> z(n);
     for (std::size_t i = 0; i < n; ++i) z[i] = x[i] / unit;
     const auto r = gompertz_mle_impl(span{z.data(), n}, tol, maxit, true);
-    return {r.a/unit, r.b/unit, r.logLik-static_cast<double>(n)*std::log(unit), r.iterations, r.status};
+    GompertzResult out{r.a/unit, r.b/unit, r.logLik-static_cast<double>(n)*std::log(unit), r.iterations, r.status};
+    if (out.status != GompertzStatus::Ok) return out;
+    // a and b scale as 1/unit. On (1, 2, 3)*denorm_min they are 1.5e322 and
+    // 2.5e323 (TASK-214.3): above binary64. Below the normal range the
+    // relative spacing is denorm_min/coefficient.
+    const double log_tiny = std::log(std::numeric_limits<double>::denorm_min()) + std::log(unit);
+    const double floor = std::exp(log_tiny - std::min(std::log(r.a), std::log(r.b)));
+    if (!(std::isfinite(out.a) && std::isfinite(out.b) && out.a > 0.0 && out.b > 0.0 &&
+          std::isfinite(out.logLik) && floor <= std::min(tol, 1e-10))) {
+      const bool tiny = std::isfinite(out.a) && std::isfinite(out.b) && std::isfinite(out.logLik);
+      GompertzResult bad{kNaN, kNaN, tiny ? out.logLik : kNaN, r.iterations, GompertzStatus::NumericalFailure};
+      if (tiny) {
+        bad.stop_detail.accuracy_stop = AccuracyStop::Tolerance;
+        bad.stop_detail.attainable_tol = floor;
+      }
+      return bad;
+    }
+    return out;
   }
 
   const double dn = static_cast<double>(n);
@@ -122,7 +145,10 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
 
 inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
-  if(!x.empty() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
+  const double invalid = std::numeric_limits<double>::quiet_NaN();
+  if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return v>=0 && std::isfinite(v);}))
+    return {invalid,invalid,invalid,0,GompertzStatus::InvalidInput};
+  if(std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
     const double nan=std::numeric_limits<double>::quiet_NaN();
     return {nan,nan,nan,0,GompertzStatus::Unbounded};
   }
@@ -139,10 +165,12 @@ inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b
   maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(a) && std::isnan(b))return gompertz_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(a) && !(a>0 && std::isfinite(a))) ||
+  if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return v>=0 && std::isfinite(v);}))
+    return {nan,nan,nan,0,GompertzStatus::InvalidInput};
+  if(!(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(a) && !(a>0 && std::isfinite(a))) ||
      (!std::isnan(b) && !(b>0 && std::isfinite(b))))return {nan,nan,nan,0,GompertzStatus::IterationFailure};
   double big=0;
-  for(double v:x){if(!(v>=0 && std::isfinite(v)))return {nan,nan,nan,0,GompertzStatus::IterationFailure};big=std::max(big,v);}
+  for(double v:x){if(!(v>=0 && std::isfinite(v)))return {nan,nan,nan,0,GompertzStatus::InvalidInput};big=std::max(big,v);}
   const double n=static_cast<double>(x.size());int iterations=0;
   if(std::isnan(b)) {
     if(big==0) return {a,1.0,n*std::log(a),0,GompertzStatus::Ok}; // flat likelihood

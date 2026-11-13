@@ -89,6 +89,53 @@ inline Moments moments(span x) {
   // Profile at the representable mean actually returned, including near ties.
   return {mean_hat, residuals(x, mean_hat).rms(n)};
 }
+
+// v - mean_hat split exactly into a double and its rounding error (TwoSum).
+inline double residual_error(double v, double mean_hat, double d) {
+  const double back = d - v;
+  return (v - (d - back)) + (-mean_hat - back);
+}
+
+// Rounding error of a returned mean: the exact sample mean minus mean_hat.
+// Residuals about mean_hat are split exactly and summed with compensation,
+// so the result stays accurate far below the spacing of mean_hat. Zero when
+// a residual overflows; the correction is then negligible against the spread.
+inline double mean_rounding(span x, double mean_hat) {
+  double hi = 0, lo = 0;
+  for (double v : x) {
+    const double d = v - mean_hat;
+    if (!std::isfinite(d)) return 0;
+    const double t = hi + d, back = t - hi;
+    lo += residual_error(v, mean_hat, d) + ((hi - (t - back)) + (d - back));
+    hi = t;
+  }
+  return (hi + lo) / static_cast<double>(x.size());
+}
+
+// Root mean square of the residuals about the exact mean mean_hat + delta.
+inline double centered_rms(span x, double mean_hat, double delta) {
+  const auto residual = [&](double v) {
+    const double d = v - mean_hat;
+    return d + (residual_error(v, mean_hat, d) - delta);
+  };
+  double big = 0;
+  for (double v : x) big = std::max(big, std::abs(residual(v)));
+  if (!(big > 0)) return 0;
+  double square = 0;
+  for (double v : x) { const double z = residual(v) / big; square += z * z; }
+  return big * std::sqrt(square / static_cast<double>(x.size()));
+}
+
+// Residuals about the rounded mean overstate the MLE sd: sd_r^2 = sd^2 +
+// delta^2, delta the rounding error of the mean. For |delta| <= 2^-27 sd_r
+// the relative effect is below 2^-55 and sd_r stands; beyond it (near ties,
+// e.g. (1, 1, 1 + 2^-52): sd_r = 2^-52/sqrt(3), sd = 2^-52 sqrt(2)/3) the
+// residuals are recomputed about the exact mean.
+inline double exact_center_rms(span x, double mean_hat, double rms_rounded) {
+  const double delta = mean_rounding(x, mean_hat);
+  if (!(std::abs(delta) > 0x1p-27 * rms_rounded)) return rms_rounded;
+  return centered_rms(x, mean_hat, delta);
+}
 }  // namespace norm_detail
 
 inline NormResult norm_mle(span x) {
@@ -99,9 +146,11 @@ inline NormResult norm_mle(span x) {
   }
   for (double v : x) if (!std::isfinite(v)) return {NAN,NAN,NAN,NormStatus::InvalidInput};
   const auto m = norm_detail::moments(x);
+  // The MLE sd is the residual RMS about the exact mean, not the rounded one.
+  const double sd = norm_detail::exact_center_rms(x, m.mean, m.sd);
   const double dn = static_cast<double>(n);
-  const double logLik = -0.5 * dn * (std::log(2.0 * cppunivariate::pi) + 1.0) - dn * std::log(m.sd);
-  return {m.mean, m.sd, logLik, std::all_of(x.begin(),x.end(),[&](double v){return v==m.mean;}) ? NormStatus::Unbounded : std::isfinite(m.mean) && m.sd>=std::numeric_limits<double>::min() && std::isfinite(m.sd) && std::isfinite(logLik) ? NormStatus::Ok : NormStatus::IterationFailure};
+  const double logLik = -0.5 * dn * (std::log(2.0 * cppunivariate::pi) + 1.0) - dn * std::log(sd);
+  return {m.mean, sd, logLik, std::all_of(x.begin(),x.end(),[&](double v){return v==m.mean;}) ? NormStatus::Unbounded : std::isfinite(m.mean) && sd>=std::numeric_limits<double>::min() && std::isfinite(sd) && std::isfinite(logLik) ? NormStatus::Ok : NormStatus::IterationFailure};
 }
 
 
@@ -119,8 +168,14 @@ inline NormResult norm_mle(span x, double mean, double sd) {
   if (std::isnan(sd) && residual.zero) return {m,0,INFINITY,NormStatus::Unbounded};
   const double s=std::isnan(sd)?residual.rms(x.size()):sd;
   if (!(s>0 && std::isfinite(s)) || (std::isnan(sd) && s<std::numeric_limits<double>::min())) return {m,s,nan,NormStatus::IterationFailure};
+  // With the mean free, the maximized value uses residuals about the exact
+  // mean (see exact_center_rms); the rounded mean would lower it near ties.
+  const double rms=residual.rms(x.size());
+  const double exact=std::isnan(mean)?norm_detail::exact_center_rms(x,m,rms):rms;
+  const double penalty=exact==rms?residual.standardized_square(s):
+      static_cast<double>(x.size())*(exact/s)*(exact/s);
   const double ll=-static_cast<double>(x.size())*(std::log(s)+.5*std::log(2*cppunivariate::pi))-
-      .5*residual.standardized_square(s);
+      .5*penalty;
   return {m,s,ll,std::isfinite(m) && std::isfinite(ll) ? NormStatus::Ok : NormStatus::IterationFailure};
 }
 

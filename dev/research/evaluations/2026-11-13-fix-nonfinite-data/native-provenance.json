@@ -1,0 +1,23 @@
+{
+  "source_sha256": "95ed3e857049fc06a034d8e6c9ceff94a073c5b31c9868c1951276b8ce5b2ee8",
+  "commit": "bbe1b13a03320e13084361790bd465e1d00b16ca",
+  "dirty": true,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    "-std=gnu++17",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "no_long_double": false,
+  "cpu_limit": 300,
+  "families": [
+    "cauchy",
+    "gamma",
+    "gompertz",
+    "gumbel",
+    "lnorm",
+    "logis",
+    "norm",
+    "weibull"
+  ]
+}
