@@ -15,8 +15,10 @@ true when it is done.
 | 1 | Done. Master `8a702cc2` passed the C++ dev tier, the R dev tier and the JS tests. Generated JS metadata stays tracked (regeneration is deterministic). |
 | 2 | Done. Added 2026-11-13: the family status enums stay as family detail; the draft kinds and reasons are accepted; the 16 retiring families go first; `zero` and `truncate` become explicit formals in step 5. |
 | 3 | Done. [Baselines](../research/evaluations/2026-11-12-fit-snapshot-report.md) of `8a702cc2`, native and double-only. |
-| 4 | Pilot merged (`400dfb08`): `core/outcome.hpp` and the mapping for norm, exp, gamma, laplace; snapshot identical to the baselines. In progress: removal of the 16 retiring families (job `retire-16`), and the mapping for the other 75 families in three jobs (`outcome-a`, `-b`, `-c`). The six base families the removal touches (pois, binom, nbinom, geom, zeta, lgser) follow it. |
-| 5 to 8 | Not started. |
+| 4 | Mapping done: all 85 fitted families and the 16 modifier routes report the outcome; the 16 retiring families are removed (86 families). [Baselines with outcomes](../research/evaluations/2026-11-13-fit-snapshot-report.md) of `c167a975`: no fit changed. Left: the adapters still decide the rendered kind themselves; that moves to step 5, because making them follow the outcome changes what users see. |
+| 5 | Not started. Inputs: the list of statuses whose rendering and name disagree (baseline report), 665 margin-decided limits not distinguished from proved ones, 25 certified non-unique estimates returned with no flag, 882 plain errors. |
+| 6 | Started: [`fit-judge.py`](../validation/README.md#judging-a-snapshot-strict-layer-first-part) judges stored snapshots (termination, finite estimates, held values, invalid input, mode agreement, nesting) against `strict-known.json`, 21 entries. Left: the checks that need a density or a refit. |
+| 7, 8 | Not started. |
 
 The pattern of the pilot, for the remaining families: an overload
 `outcome(const <Family>Result&)` next to the fitter; in the adapter,
