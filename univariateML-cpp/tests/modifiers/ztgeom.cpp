@@ -81,3 +81,99 @@ TEST_CASE("ztgeom: overflow quantiles reach the target beyond DBL_MAX") {
   CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qztgeom(.5,std::numeric_limits<double>::denorm_min()),.5,true,
       [](double x) {return cppunivariate::distributions::pztgeom(x,std::numeric_limits<double>::denorm_min());},true));
 }
+
+#include "roundtrips.hpp"
+TEST_CASE("ztgeom: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("ztgeom",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::pztgeom(x,p[0],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qztgeom(x,p[0],l,g);});
+}
+
+TEST_CASE("ztgeom: public fuzz does not change the sampling inverse") {
+  struct FixedRng {double runif(double,double) {return .5+std::numeric_limits<double>::epsilon();}} rng;
+  CHECK(cppunivariate::distributions::qztgeom(rng.runif(0,1),.5)==1);
+  CHECK(cppunivariate::distributions::rztgeom(rng,.5)==2);
+}
+
+TEST_CASE("ztgeom: exact rational modifier ties") {
+ CHECK(cppunivariate::distributions::qztgeom(0.5,0.5,true,false)==1);
+ CHECK(cppunivariate::distributions::qztgeom(-0.6931471805599453,0.5,true,true)==1);
+ CHECK(cppunivariate::distributions::qztgeom(0.5,0.5,false,false)==1);
+ CHECK(cppunivariate::distributions::qztgeom(-0.6931471805599453,0.5,false,true)==1);
+ CHECK(cppunivariate::distributions::qztgeom(0.75,0.5,true,false)==2);
+ CHECK(cppunivariate::distributions::qztgeom(-0.2876820724517809,0.5,true,true)==2);
+ CHECK(cppunivariate::distributions::qztgeom(0.25,0.5,false,false)==2);
+ CHECK(cppunivariate::distributions::qztgeom(-1.3862943611198906,0.5,false,true)==2);
+ CHECK(cppunivariate::distributions::qztgeom(0.875,0.5,true,false)==3);
+ CHECK(cppunivariate::distributions::qztgeom(-0.13353139262452263,0.5,true,true)==3);
+ CHECK(cppunivariate::distributions::qztgeom(0.125,0.5,false,false)==3);
+ CHECK(cppunivariate::distributions::qztgeom(-2.0794415416798357,0.5,false,true)==3);
+ CHECK(cppunivariate::distributions::qztgeom(0.9375,0.5,true,false)==4);
+ CHECK(cppunivariate::distributions::qztgeom(-0.06453852113757118,0.5,true,true)==4);
+ CHECK(cppunivariate::distributions::qztgeom(0.0625,0.5,false,false)==4);
+ CHECK(cppunivariate::distributions::qztgeom(-2.772588722239781,0.5,false,true)==4);
+ CHECK(cppunivariate::distributions::qztgeom(0.96875,0.5,true,false)==5);
+ CHECK(cppunivariate::distributions::qztgeom(-0.0317486983145803,0.5,true,true)==5);
+ CHECK(cppunivariate::distributions::qztgeom(0.03125,0.5,false,false)==5);
+ CHECK(cppunivariate::distributions::qztgeom(-3.4657359027997265,0.5,false,true)==5);
+ CHECK(cppunivariate::distributions::qztgeom(0.984375,0.5,true,false)==6);
+ CHECK(cppunivariate::distributions::qztgeom(-0.015748356968139168,0.5,true,true)==6);
+ CHECK(cppunivariate::distributions::qztgeom(0.015625,0.5,false,false)==6);
+ CHECK(cppunivariate::distributions::qztgeom(-4.1588830833596715,0.5,false,true)==6);
+ CHECK(cppunivariate::distributions::qztgeom(0.9921875,0.5,true,false)==7);
+ CHECK(cppunivariate::distributions::qztgeom(-0.007843177461025893,0.5,true,true)==7);
+ CHECK(cppunivariate::distributions::qztgeom(0.0078125,0.5,false,false)==7);
+ CHECK(cppunivariate::distributions::qztgeom(-4.852030263919617,0.5,false,true)==7);
+ CHECK(cppunivariate::distributions::qztgeom(0.99609375,0.5,true,false)==8);
+ CHECK(cppunivariate::distributions::qztgeom(-0.003913899321136329,0.5,true,true)==8);
+ CHECK(cppunivariate::distributions::qztgeom(0.00390625,0.5,false,false)==8);
+ CHECK(cppunivariate::distributions::qztgeom(-5.545177444479562,0.5,false,true)==8);
+ CHECK(cppunivariate::distributions::qztgeom(0.998046875,0.5,true,false)==9);
+ CHECK(cppunivariate::distributions::qztgeom(-0.0019550348358033506,0.5,true,true)==9);
+ CHECK(cppunivariate::distributions::qztgeom(0.001953125,0.5,false,false)==9);
+ CHECK(cppunivariate::distributions::qztgeom(-6.238324625039508,0.5,false,true)==9);
+ CHECK(cppunivariate::distributions::qztgeom(0.9990234375,0.5,true,false)==10);
+ CHECK(cppunivariate::distributions::qztgeom(-0.0009770396478266127,0.5,true,true)==10);
+ CHECK(cppunivariate::distributions::qztgeom(0.0009765625,0.5,false,false)==10);
+ CHECK(cppunivariate::distributions::qztgeom(-6.931471805599453,0.5,false,true)==10);
+ CHECK(cppunivariate::distributions::qztgeom(0.99951171875,0.5,true,false)==11);
+ CHECK(cppunivariate::distributions::qztgeom(-0.0004884004981088745,0.5,true,true)==11);
+ CHECK(cppunivariate::distributions::qztgeom(0.00048828125,0.5,false,false)==11);
+ CHECK(cppunivariate::distributions::qztgeom(-7.6246189861593985,0.5,false,true)==11);
+ CHECK(cppunivariate::distributions::qztgeom(0.999755859375,0.5,true,false)==12);
+ CHECK(cppunivariate::distributions::qztgeom(-0.0002441704321739145,0.5,true,true)==12);
+ CHECK(cppunivariate::distributions::qztgeom(0.000244140625,0.5,false,false)==12);
+ CHECK(cppunivariate::distributions::qztgeom(-8.317766166719343,0.5,false,true)==12);
+ CHECK(cppunivariate::distributions::qztgeom(0.9998779296875,0.5,true,false)==13);
+ CHECK(cppunivariate::distributions::qztgeom(-0.00012207776368698225,0.5,true,true)==13);
+ CHECK(cppunivariate::distributions::qztgeom(0.0001220703125,0.5,false,false)==13);
+ CHECK(cppunivariate::distributions::qztgeom(-9.010913347279288,0.5,false,true)==13);
+ CHECK(cppunivariate::distributions::qztgeom(0.99993896484375,0.5,true,false)==14);
+ CHECK(cppunivariate::distributions::qztgeom(-6.103701897094392e-05,0.5,true,true)==14);
+ CHECK(cppunivariate::distributions::qztgeom(6.103515625e-05,0.5,false,false)==14);
+ CHECK(cppunivariate::distributions::qztgeom(-9.704060527839234,0.5,false,true)==14);
+ CHECK(cppunivariate::distributions::qztgeom(0.999969482421875,0.5,true,false)==15);
+ CHECK(cppunivariate::distributions::qztgeom(-3.0518043795761425e-05,0.5,true,true)==15);
+ CHECK(cppunivariate::distributions::qztgeom(3.0517578125e-05,0.5,false,false)==15);
+ CHECK(cppunivariate::distributions::qztgeom(-10.39720770839918,0.5,false,true)==15);
+ CHECK(cppunivariate::distributions::qztgeom(0.9999847412109375,0.5,true,false)==16);
+ CHECK(cppunivariate::distributions::qztgeom(-1.5258905479006077e-05,0.5,true,true)==16);
+ CHECK(cppunivariate::distributions::qztgeom(1.52587890625e-05,0.5,false,false)==16);
+ CHECK(cppunivariate::distributions::qztgeom(-11.090354888959125,0.5,false,true)==16);
+ CHECK(cppunivariate::distributions::qztgeom(0.9999923706054688,0.5,true,false)==17);
+ CHECK(cppunivariate::distributions::qztgeom(-7.629423635228488e-06,0.5,true,true)==17);
+ CHECK(cppunivariate::distributions::qztgeom(7.62939453125e-06,0.5,false,false)==17);
+ CHECK(cppunivariate::distributions::qztgeom(-11.78350206951907,0.5,false,true)==17);
+ CHECK(cppunivariate::distributions::qztgeom(0.9999961853027344,0.5,true,false)==18);
+ CHECK(cppunivariate::distributions::qztgeom(-3.814704541601118e-06,0.5,true,true)==18);
+ CHECK(cppunivariate::distributions::qztgeom(3.814697265625e-06,0.5,false,false)==18);
+ CHECK(cppunivariate::distributions::qztgeom(-12.476649250079015,0.5,false,true)==18);
+ CHECK(cppunivariate::distributions::qztgeom(0.9999980926513672,0.5,true,false)==19);
+ CHECK(cppunivariate::distributions::qztgeom(-1.9073504518042164e-06,0.5,true,true)==19);
+ CHECK(cppunivariate::distributions::qztgeom(1.9073486328125e-06,0.5,false,false)==19);
+ CHECK(cppunivariate::distributions::qztgeom(-13.16979643063896,0.5,false,true)==19);
+ CHECK(cppunivariate::distributions::qztgeom(0.9999990463256836,0.5,true,false)==20);
+ CHECK(cppunivariate::distributions::qztgeom(-9.5367477115389e-07,0.5,true,true)==20);
+ CHECK(cppunivariate::distributions::qztgeom(9.5367431640625e-07,0.5,false,false)==20);
+ CHECK(cppunivariate::distributions::qztgeom(-13.862943611198906,0.5,false,true)==20);
+}

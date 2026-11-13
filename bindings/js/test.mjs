@@ -1352,7 +1352,7 @@ test('inflated binomial quantiles stop on extreme numerical failure',async()=>{
  const q=law.q(new Float64Array([.5]),[1e308,.9,0])[0];
  assert.ok(Number.isNaN(q));
  assert.equal(law.q(new Float64Array([.5]),[1e308,1,0])[0],1e308);
- assert.equal(law.q(new Float64Array([Math.log(.5)]),[10,1,.5],{log:true})[0],10);
+ assert.equal(law.q(new Float64Array([Math.log(.5)]),[10,1,.5],{log:true})[0],0);
 });
 test('genbeta held q uses certified finite maxima and terminal neighborhood stops', async () => {
   const {default: createApi} = await import('./index.mjs');

@@ -337,3 +337,45 @@ test('finite zeta rounded score roots justify the requested tolerance',async()=>
   if(fit)assert.ok(Math.abs(fit.estimates.s)<=1e-20);
   assert.equal(api.zeta.fit(x,{s:0},{truncate:[1,4],reltol:1e-20}).estimates.s,0);
 });
+
+test('discrete modifier windows use the conditional probability band in all modes', async()=>{
+  const api=await (await import('./index.mjs')).default();
+  for(const [id,p] of [['geom',[.5]],['nbinom',[2,.5]]])
+    for(const truncate of [[2,5],[2,Infinity],[0,Infinity]])
+      for(const lower of [true,false])for(const log of [false,true]) {
+        const k=new Float64Array([2,3,4]);
+        const flags={truncate,lower,log};
+        const probability=api[id].p(k,p,flags),q=api[id].q(probability,p,flags);
+        assert.deepEqual(Array.from(q),Array.from(k),`${id} ${truncate} ${lower} ${log}`);
+      }
+  for(const lower of [true,false])for(const log of [false,true]) {
+    const p=Float64Array.from(lower?[8/15,12/15,14/15]:[7/15,3/15,1/15],v=>log?Math.log(v):v);
+    assert.deepEqual(Array.from(api.geom.q(p,[.5],{truncate:[2,5],lower,log})),[2,3,4]);
+  }
+  const first=api.geom.q(new Float64Array([Math.log(1e-100)]),[1e-9],{truncate:[1e9,Infinity],log:true});
+  assert.equal(first[0],1e9);
+  assert.throws(()=>api.geom.q(new Float64Array([Math.log(2e-9)]),[1e-9],{truncate:[1e9,Infinity],log:true}),/quantile.*floating-point accuracy/);
+  assert.ok(Number.isFinite(api.geom.q(new Float64Array([.8]),[1e-308],{truncate:[0,Infinity]})[0]));
+});
+
+test('modifier sampling inversion excludes the public conditional band', async()=>{
+  const {modifierAPI}=await import('./modifiers.mjs');
+  const module={
+    pgeom:(x,p,lower,log)=>Float64Array.from(x,k=>{
+      const ls=k<0?0:(Math.floor(k)+1)*Math.log1p(-p[0]);
+      const v=lower?Math.log(-Math.expm1(ls)):ls;return log?v:Math.exp(v);
+    }),
+    dgeom:(x,p,log)=>Float64Array.from(x,k=>{const v=Math.log(p[0])+k*Math.log1p(-p[0]);return log?v:Math.exp(v);}),
+    qgeom:()=>new Float64Array([Infinity]),
+  };
+  const modifier=modifierAPI(module,'geom',{zero:true,integer:true},{truncate:{status:'implemented'}});
+  const u=new Float64Array([.5+Number.EPSILON]);
+  assert.equal(modifier.evaluate('q',u,[.5],{truncate:[0,Infinity]})[0],0);
+  assert.equal(modifier.sampleQuantile(u,[.5],{truncate:[0,Infinity]})[0],1);
+  const zeta=modifierAPI(m,'zeta',{zero:false,integer:true},{truncate:{status:'implemented'}});
+  for(const [N,s,k] of [[4,0,1],[8,-1,3]]) {
+    const p=m.zetaWindow('p',[k],N,s,true,false)[0]+Number.EPSILON;
+    assert.equal(zeta.evaluate('q',[p],[s],{truncate:[1,N]})[0],k);
+    assert.equal(zeta.sampleQuantile([p],[s],{truncate:[1,N]})[0],k+1);
+  }
+});

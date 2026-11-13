@@ -1,0 +1,34 @@
+{
+  "cpp-test": {
+    "exit_code": 0,
+    "summary": "109/109 passed",
+    "log": "final-cpp-test.log"
+  },
+  "cpp-test-no-long-double": {
+    "exit_code": 0,
+    "summary": "153/153 passed (workstation GCC 15)",
+    "log": "final-cpp-test-no-long-double.log.gz"
+  },
+  "test": {
+    "exit_code": 1,
+    "corrective_exit_code": 0,
+    "summary": "Initial: 1 stale tie expectation; targeted correction: 280 passed, 0 failures/warnings, 3 full-only skips; subsequent full suite green",
+    "log": "final-test.log.gz"
+  },
+  "test-full": {
+    "exit_code": 0,
+    "summary": "65,256 passed; 0 failures/warnings; 1 missing-reference skip",
+    "log": "final-test-full.log.gz"
+  },
+  "js-build": {
+    "exit_code": 0,
+    "summary": "Build passed",
+    "log": "final-js-build.log"
+  },
+  "js-test": {
+    "exit_code": 1,
+    "summary": "Initial: 579 passed, 1 stale ZIB tie expectation; targeted correction and modifier rechecks: 5/5 passed",
+    "log": "final-js-test.log",
+    "corrective_exit_code": 0
+  }
+}

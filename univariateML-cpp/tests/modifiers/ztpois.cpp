@@ -155,3 +155,10 @@ TEST_CASE("ztpois: negligible zero mass preserves a large-rate body CDF") {
   CHECK(std::isfinite(got));
   CHECK(got==doctest::Approx(cppunivariate::distributions::ppois(99999999,1e8,true,true)).epsilon(1e-12));
 }
+
+#include "roundtrips.hpp"
+TEST_CASE("ztpois: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("ztpois",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::pztpois(x,p[0],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qztpois(x,p[0],l,g);});
+}

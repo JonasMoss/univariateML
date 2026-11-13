@@ -92,3 +92,17 @@ TEST_CASE("tpois: estimated large-count bounds logLik uses relative conditional 
   CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
   CHECK(r.logLik==doctest::Approx(-12.253430677034801).epsilon(1e-12));
 }
+
+#include "roundtrips.hpp"
+TEST_CASE("tpois: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("tpois",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::ptpois(x,p[0],p[1],p[2],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qtpois(x,p[0],p[1],p[2],l,g);});
+}
+
+TEST_CASE("tpois: one-sided and whole modifier windows round trip") {
+  for(const auto window : {std::pair<double,double>{1,12},{1,INFINITY},{-1,5},{-1,INFINITY}})
+    mltest::modifier_roundtrips("ztpois",
+      [=](double x,const std::vector<double>& p,bool l,bool g) {return cppunivariate::distributions::ptpois(x,p[0],window.first,window.second,l,g);},
+      [=](double x,const std::vector<double>& p,bool l,bool g) {return cppunivariate::distributions::qtpois(x,p[0],window.first,window.second,l,g);},false,2);
+}

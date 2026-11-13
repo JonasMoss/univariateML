@@ -1,0 +1,34 @@
+{
+  "cpp-before": {
+    "n": 58072,
+    "up": 913,
+    "earlier": 627,
+    "invalid": 0,
+    "crossing_failure": 914,
+    "raw_misses": 1540
+  },
+  "cpp-after": {
+    "n": 58072,
+    "up": 0,
+    "earlier": 628,
+    "invalid": 0,
+    "crossing_failure": 0,
+    "raw_misses": 628
+  },
+  "r-before": {
+    "n": 59234,
+    "up": 998,
+    "earlier": 627,
+    "invalid": 0,
+    "crossing_failure": 999,
+    "raw_misses": 1625
+  },
+  "r-after": {
+    "n": 59234,
+    "up": 0,
+    "earlier": 628,
+    "invalid": 0,
+    "crossing_failure": 0,
+    "raw_misses": 628
+  }
+}

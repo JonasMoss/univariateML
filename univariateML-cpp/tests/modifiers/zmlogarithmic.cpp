@@ -96,3 +96,10 @@ TEST_CASE("zmlogarithmic: P2 held zero share and incompatible positive component
 TEST_CASE("zmlogarithmic: failed integer inversion reports NaN") {
   CHECK(std::isnan(cppunivariate::distributions::qzmlogarithmic(.5,std::nextafter(1.,0.),.1)));
 }
+
+#include "roundtrips.hpp"
+TEST_CASE("zmlogarithmic: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("zmlogarithmic",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::pzmlogarithmic(x,p[0],p[1],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qzmlogarithmic(x,p[0],p[1],l,g);});
+}

@@ -308,10 +308,10 @@ test_that("zib fixed models surface failed median evaluations", {
 })
 
 
-test_that("zib log half respects the exact side of a two-point jump", {
+test_that("zib log half uses the public band at a two-point jump", {
   model <- .modifier_zib(size=10,prob=1,pi=.5)
   expect_equal(qml(.5,model),0)
-  expect_equal(qml(log(.5),model,log.p=TRUE),10)
+  expect_equal(qml(log(.5),model,log.p=TRUE),0)
   expect_equal(qml(log(.5),model,lower.tail=FALSE,log.p=TRUE),0)
 })
 

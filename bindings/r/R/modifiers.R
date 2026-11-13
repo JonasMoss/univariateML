@@ -164,7 +164,7 @@ ml_modifier_function <- function(obj,type) {
     return(switch(type,d=function(x,log=FALSE)evaluate(x,TRUE,log),
       p=function(q,lower.tail=TRUE,log.p=FALSE)evaluate(q,lower.tail,log.p),
       q=function(p,lower.tail=TRUE,log.p=FALSE)evaluate(p,lower.tail,log.p),
-      r=function(n)ml_zeta_window_("q",runif(n),window[2],s,TRUE,FALSE)))
+      r=function(n)ml_zeta_window_("r",runif(n),window[2],s,TRUE,FALSE)))
   }
   variant <- attr(obj,"modifier_variant")
   if (!is.null(variant)) {
@@ -236,7 +236,66 @@ ml_modifier_function <- function(obj,type) {
     if(log.p)v else exp(v)
   }
   add <- function(a,b) { m <- pmax(a,b); v <- m+log1p(exp(pmin(a,b)-m));v[is.infinite(m)&m<0] <- -Inf;v }
-  qfun <- function(p,lower.tail=TRUE,log.p=FALSE) {
+  qfun <- function(p,lower.tail=TRUE,log.p=FALSE,fuzz=TRUE) {
+    if(integer) {
+      # Compare the conditional tail itself. Fuzzing a transformed parent
+      # probability would scale the band by the discarded prefix/window mass.
+      valid<-!is.na(p) & (if(log.p)p<=0 else p>=0 & p<=1)
+      at_zero<-valid & p==(if(log.p)-Inf else 0)
+      at_one<-valid & p==(if(log.p)0 else 1)
+      v<-rep(NaN,length(p));v[is.na(p)]<-p[is.na(p)]
+      v[if(lower.tail)at_zero else at_one]<-a+1
+      v[if(lower.tail)at_one else at_zero]<-upper_endpoint
+      active<-which(valid & !at_zero & !at_one)
+      if(!length(active))return(v)
+      target<-p[active];e<-64*.Machine$double.eps
+      if(fuzz) {
+        if(log.p) {
+          if(lower.tail)target<-ifelse(target > -.Machine$double.xmax/(1+e),target*(1+e),target)
+          else target<-target*(1-e)
+        } else if(lower.tail)target<-target*(1-e)
+        else target<-ifelse(1-target>4*e,target*(1+e),target)
+      }
+      # At the first atom, d/Z avoids subtracting two almost equal parent
+      # tails. Interior interval evaluations retain their resolution guard.
+      first_value<-tryCatch(pfun(a+1,lower.tail=lower.tail,log.p=log.p),error=function(e) {
+        if(!grepl("Conditional interval probability cannot be resolved",conditionMessage(e),fixed=TRUE))stop(e)
+        first_log<-pmin(0,d(a+1,log=TRUE)-z)
+        value<-if(lower.tail)first_log else complement(first_log)
+        if(log.p)value else exp(value)
+      })
+      reached<-function(k,idx) {
+        value<-rep_len(first_value,length(k));interior<-k!=a+1
+        if(any(interior))value[interior]<-tryCatch(
+          pfun(k[interior],lower.tail=lower.tail,log.p=log.p),error=function(e)
+            stop("Conditional quantile cannot be resolved at the required floating-point accuracy: ",conditionMessage(e)))
+        if(anyNA(value))stop("Conditional quantile probability evaluation failed")
+        if(lower.tail)value>=target[idx] else value<=target[idx]
+      }
+      lo<-rep(a,length(active));hi<-rep(min(b,max(a+1,1)),length(active))
+      idx<-seq_along(active)
+      pending<-idx[!reached(hi,idx)]
+      while(length(pending)) {
+        lo[pending]<-hi[pending]
+        next_hi<-pmin(b,.Machine$double.xmax,pmax(hi[pending]+1,2*hi[pending]+1))
+        if(any(!is.finite(next_hi) | next_hi<=hi[pending]))
+          stop("Conditional quantile cannot be resolved on the floating-point lattice")
+        hi[pending]<-next_hi
+        pending<-pending[!reached(hi[pending],pending)]
+      }
+      pending<-which(hi-lo>1)
+      while(length(pending)) {
+        mid<-lo[pending]+floor((hi[pending]-lo[pending])/2)
+        moving<-mid>lo[pending] & mid<hi[pending]
+        pending<-pending[moving];mid<-mid[moving]
+        if(!length(pending))break
+        hit<-reached(mid,pending)
+        hi[pending[hit]]<-mid[hit];lo[pending[!hit]]<-mid[!hit]
+        pending<-which(hi-lo>1)
+      }
+      v[active]<-hi
+      return(v)
+    }
     lp <- if(log.p)p else log(p)
     ls <- if(log.p)complement(p) else log1p(-p)
     if(!lower.tail){tmp<-lp;lp<-ls;ls<-tmp}
@@ -262,7 +321,7 @@ ml_modifier_function <- function(obj,type) {
     v[lp==-Inf] <- if(integer)a+1 else a;v[ls==-Inf] <- upper_endpoint
     v
   }
-  switch(type,d=dfun,p=pfun,q=qfun,r=function(n)qfun(stats::runif(if(length(n)>1)length(n) else n)))
+  switch(type,d=dfun,p=pfun,q=qfun,r=function(n)qfun(stats::runif(if(length(n)>1)length(n) else n),fuzz=FALSE))
 }
 
 ml_print_modifiers <- function(object) {

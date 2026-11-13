@@ -105,3 +105,68 @@ TEST_CASE("finite zeta modifier preserves the frozen retirement golden route") {
   CHECK(fit.s==0x1.978388597ep-2);
   CHECK(fit.logLik==-0x1.0e7b587b99b83p+9);
 }
+
+#include "roundtrips.hpp"
+TEST_CASE("zipf: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("zipf",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::pzipf(x,p[0],p[1],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qzipf(x,p[0],p[1],l,g);});
+}
+
+#include "cppunivariate/distributions/zeta/truncation.hpp"
+TEST_CASE("zipf: signed finite zeta window modifier round trips") {
+  for(double s : {0.,-1.,-2.,2.})for(int N : {8,20})
+    for(bool lower : {true,false})for(bool log : {false,true})
+      for(int k=1;k<N;++k) {
+        const double p=cppunivariate::zeta_window_eval('p',k,N,s,lower,log);
+        const double q=cppunivariate::zeta_window_eval('q',p,N,s,lower,log);
+        CHECK(q==k);
+        CHECK(cppunivariate::special::discrete_reached(cppunivariate::zeta_window_eval('p',q,N,s,lower,log),p,lower,log)==1);
+        CHECK(cppunivariate::special::discrete_reached(cppunivariate::zeta_window_eval('p',q-1,N,s,lower,log),p,lower,log)==0);
+      }
+}
+
+TEST_CASE("zipf: public fuzz does not change the sampling inverse") {
+  struct FixedRng {double runif(double,double) {return .25+std::numeric_limits<double>::epsilon();}} rng;
+  CHECK(cppunivariate::distributions::qzipf(rng.runif(0,1),4,0)==1);
+  CHECK(cppunivariate::distributions::rzipf(rng,4,0)==2);
+}
+
+#include "cppunivariate/distributions/zeta/truncation.hpp"
+
+TEST_CASE("zipf: exact rational modifier ties") {
+ CHECK(cppunivariate::zeta_window_eval('q',0.027777777777777776,8,-1,true,false)==1);
+ CHECK(cppunivariate::zeta_window_eval('q',-3.58351893845611,8,-1,true,true)==1);
+ CHECK(cppunivariate::zeta_window_eval('q',0.9722222222222222,8,-1,false,false)==1);
+ CHECK(cppunivariate::zeta_window_eval('q',-0.02817087696669632,8,-1,false,true)==1);
+ CHECK(cppunivariate::zeta_window_eval('q',0.08333333333333333,8,-1,true,false)==2);
+ CHECK(cppunivariate::zeta_window_eval('q',-2.4849066497880004,8,-1,true,true)==2);
+ CHECK(cppunivariate::zeta_window_eval('q',0.9166666666666666,8,-1,false,false)==2);
+ CHECK(cppunivariate::zeta_window_eval('q',-0.08701137698962977,8,-1,false,true)==2);
+ CHECK(cppunivariate::zeta_window_eval('q',0.16666666666666666,8,-1,true,false)==3);
+ CHECK(cppunivariate::zeta_window_eval('q',-1.791759469228055,8,-1,true,true)==3);
+ CHECK(cppunivariate::zeta_window_eval('q',0.8333333333333334,8,-1,false,false)==3);
+ CHECK(cppunivariate::zeta_window_eval('q',-0.18232155679395462,8,-1,false,true)==3);
+ CHECK(cppunivariate::zeta_window_eval('q',0.2777777777777778,8,-1,true,false)==4);
+ CHECK(cppunivariate::zeta_window_eval('q',-1.2809338454620642,8,-1,true,true)==4);
+ CHECK(cppunivariate::zeta_window_eval('q',0.7222222222222222,8,-1,false,false)==4);
+ CHECK(cppunivariate::zeta_window_eval('q',-0.32542240043462795,8,-1,false,true)==4);
+ CHECK(cppunivariate::zeta_window_eval('q',0.4166666666666667,8,-1,true,false)==5);
+ CHECK(cppunivariate::zeta_window_eval('q',-0.8754687373539,8,-1,true,true)==5);
+ CHECK(cppunivariate::zeta_window_eval('q',0.5833333333333334,8,-1,false,false)==5);
+ CHECK(cppunivariate::zeta_window_eval('q',-0.538996500732687,8,-1,false,true)==5);
+ CHECK(cppunivariate::zeta_window_eval('q',0.5833333333333334,8,-1,true,false)==6);
+ CHECK(cppunivariate::zeta_window_eval('q',-0.538996500732687,8,-1,true,true)==6);
+ CHECK(cppunivariate::zeta_window_eval('q',0.4166666666666667,8,-1,false,false)==6);
+ CHECK(cppunivariate::zeta_window_eval('q',-0.8754687373539,8,-1,false,true)==6);
+ CHECK(cppunivariate::zeta_window_eval('q',0.7777777777777778,8,-1,true,false)==7);
+ CHECK(cppunivariate::zeta_window_eval('q',-0.25131442828090605,8,-1,true,true)==7);
+ CHECK(cppunivariate::zeta_window_eval('q',0.2222222222222222,8,-1,false,false)==7);
+ CHECK(cppunivariate::zeta_window_eval('q',-1.5040773967762742,8,-1,false,true)==7);
+}
+
+TEST_CASE("zipf: signed-window sampling excludes the public band") {
+  const double p=cppunivariate::zeta_window_eval('p',3,8,-1)+std::numeric_limits<double>::epsilon();
+  CHECK(cppunivariate::zeta_window_eval('q',p,8,-1)==3);
+  CHECK(cppunivariate::zeta_window_eval('r',p,8,-1)==4);
+}

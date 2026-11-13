@@ -1,0 +1,82 @@
+[
+  {
+    "id": "pois-window-[2, 12]",
+    "point": 5,
+    "error": "NaN density: invalid conditioning event"
+  },
+  {
+    "id": "pois-window-[2, 'Inf']",
+    "point": 5,
+    "error": "NaN density: invalid conditioning event"
+  },
+  {
+    "id": "binom-window-[2, 12]",
+    "point": 5,
+    "error": "NaN density: invalid conditioning event"
+  },
+  {
+    "id": "binom-window-[2, 'Inf']",
+    "point": 5,
+    "error": "NaN density: invalid conditioning event"
+  },
+  {
+    "id": "binom-window-[2, 12]",
+    "point": 6,
+    "error": "NaN density: invalid conditioning event"
+  },
+  {
+    "id": "binom-window-[2, 'Inf']",
+    "point": 6,
+    "error": "NaN density: invalid conditioning event"
+  },
+  {
+    "id": "binom-window-[0, 5]",
+    "point": 7,
+    "error": "NaN density: invalid conditioning event"
+  },
+  {
+    "id": "geom-window-[2, 12]",
+    "point": 5,
+    "error": "Truncation event has zero or unresolved probability"
+  },
+  {
+    "id": "geom-window-[2, 'Inf']",
+    "point": 5,
+    "error": "Truncation event has zero or unresolved probability"
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 7,
+    "error": "Truncation event has zero or unresolved probability"
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 7,
+    "error": "Truncation event has zero or unresolved probability"
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 8,
+    "error": "Truncation event has zero or unresolved probability"
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 8,
+    "error": "Truncation event has zero or unresolved probability"
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 11,
+    "error": "Conditional normalization cannot be resolved at the required floating-point accuracy"
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 11,
+    "error": "Conditional normalization cannot be resolved at the required floating-point accuracy"
+  },
+  {
+    "id": "lgser-none",
+    "point": 7,
+    "error": "NaN density: invalid conditioning event"
+  }
+]

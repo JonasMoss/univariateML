@@ -1,0 +1,5 @@
+Workstation GCC15, unchanged c167a975, -O2 C++17, one reserved CPU slot.
+qtbinom(0.8, prob=1e-8, a=1, b=Inf, size=1e8): answer 3, 14.4125 seconds.
+This motivated five-count supplemental-window grids instead of 201-count
+supplemental grids. Original frozen-fixture grids retain all 201 counts.
+All configurations, parameter points and four modes remain included.

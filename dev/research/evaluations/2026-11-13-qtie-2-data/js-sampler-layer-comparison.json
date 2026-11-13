@@ -1,0 +1,3584 @@
+[
+  {
+    "id": "ztpois",
+    "point": 0,
+    "seed": 215,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztpois",
+    "point": 1,
+    "seed": 216,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztpois",
+    "point": 2,
+    "seed": 217,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztpois",
+    "point": 3,
+    "seed": 218,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztpois",
+    "point": 4,
+    "seed": 219,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztpois",
+    "point": 5,
+    "seed": 220,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztpois",
+    "point": 6,
+    "seed": 221,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztpois",
+    "point": 7,
+    "seed": 222,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 0,
+    "seed": 223,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 1,
+    "seed": 224,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 2,
+    "seed": 225,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 3,
+    "seed": 226,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 4,
+    "seed": 227,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 5,
+    "seed": 228,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 6,
+    "seed": 229,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 7,
+    "seed": 230,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 8,
+    "seed": 231,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 9,
+    "seed": 232,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 10,
+    "seed": 233,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 11,
+    "seed": 234,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmpois",
+    "point": 12,
+    "seed": 235,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 0,
+    "seed": 236,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 1,
+    "seed": 237,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 2,
+    "seed": 238,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 3,
+    "seed": 239,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 4,
+    "seed": 240,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 5,
+    "seed": 241,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 6,
+    "seed": 242,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 7,
+    "seed": 243,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 8,
+    "seed": 244,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 9,
+    "seed": 245,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zip",
+    "point": 10,
+    "seed": 246,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tpois",
+    "point": 0,
+    "seed": 247,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tpois",
+    "point": 1,
+    "seed": 248,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tpois",
+    "point": 2,
+    "seed": 249,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tpois",
+    "point": 3,
+    "seed": 250,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tpois",
+    "point": 4,
+    "seed": 251,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tpois",
+    "point": 5,
+    "seed": 252,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tpois",
+    "point": 6,
+    "seed": 253,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tpois",
+    "point": 7,
+    "seed": 254,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztbinom",
+    "point": 0,
+    "seed": 255,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztbinom",
+    "point": 1,
+    "seed": 256,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztbinom",
+    "point": 2,
+    "seed": 257,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztbinom",
+    "point": 3,
+    "seed": 258,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztbinom",
+    "point": 4,
+    "seed": 259,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztbinom",
+    "point": 5,
+    "seed": 260,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztbinom",
+    "point": 6,
+    "seed": 261,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztbinom",
+    "point": 7,
+    "seed": 262,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztbinom",
+    "point": 8,
+    "seed": 263,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztbinom",
+    "point": 9,
+    "seed": 264,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 0,
+    "seed": 265,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 1,
+    "seed": 266,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 2,
+    "seed": 267,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 3,
+    "seed": 268,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 4,
+    "seed": 269,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 5,
+    "seed": 270,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 6,
+    "seed": 271,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 7,
+    "seed": 272,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 8,
+    "seed": 273,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 9,
+    "seed": 274,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 10,
+    "seed": 275,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 11,
+    "seed": 276,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 12,
+    "seed": 277,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 13,
+    "seed": 278,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmbinom",
+    "point": 14,
+    "seed": 279,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 0,
+    "seed": 280,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 1,
+    "seed": 281,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 2,
+    "seed": 282,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 3,
+    "seed": 283,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 4,
+    "seed": 284,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 5,
+    "seed": 285,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 6,
+    "seed": 286,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 7,
+    "seed": 287,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 8,
+    "seed": 288,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 9,
+    "seed": 289,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 10,
+    "seed": 290,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 11,
+    "seed": 291,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 12,
+    "seed": 292,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 13,
+    "seed": 293,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zib",
+    "point": 14,
+    "seed": 294,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 0,
+    "seed": 295,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 1,
+    "seed": 296,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 2,
+    "seed": 297,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 3,
+    "seed": 298,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 4,
+    "seed": 299,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 5,
+    "seed": 300,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 6,
+    "seed": 301,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 7,
+    "seed": 302,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 8,
+    "seed": 303,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 9,
+    "seed": 304,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "tbinom",
+    "point": 10,
+    "seed": 305,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 0,
+    "seed": 306,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 1,
+    "seed": 307,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 2,
+    "seed": 308,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 3,
+    "seed": 309,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 4,
+    "seed": 310,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 5,
+    "seed": 311,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 6,
+    "seed": 312,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 7,
+    "seed": 313,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 8,
+    "seed": 314,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 9,
+    "seed": 315,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 10,
+    "seed": 316,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 11,
+    "seed": 317,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztnbinom",
+    "point": 12,
+    "seed": 318,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 0,
+    "seed": 319,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 1,
+    "seed": 320,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 2,
+    "seed": 321,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 3,
+    "seed": 322,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 4,
+    "seed": 323,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 5,
+    "seed": 324,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 6,
+    "seed": 325,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 7,
+    "seed": 326,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 8,
+    "seed": 327,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 9,
+    "seed": 328,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 10,
+    "seed": 329,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 11,
+    "seed": 330,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 12,
+    "seed": 331,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 13,
+    "seed": 332,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 14,
+    "seed": 333,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 15,
+    "seed": 334,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 16,
+    "seed": 335,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmnbinom",
+    "point": 17,
+    "seed": 336,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 0,
+    "seed": 337,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 1,
+    "seed": 338,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 2,
+    "seed": 339,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 3,
+    "seed": 340,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 4,
+    "seed": 341,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 5,
+    "seed": 342,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 6,
+    "seed": 343,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 7,
+    "seed": 344,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 8,
+    "seed": 345,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 9,
+    "seed": 346,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 10,
+    "seed": 347,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 11,
+    "seed": 348,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 12,
+    "seed": 349,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 13,
+    "seed": 350,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 14,
+    "seed": 351,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 15,
+    "seed": 352,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 16,
+    "seed": 353,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zinb",
+    "point": 17,
+    "seed": 354,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztgeom",
+    "point": 0,
+    "seed": 355,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztgeom",
+    "point": 1,
+    "seed": 356,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztgeom",
+    "point": 2,
+    "seed": 357,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztgeom",
+    "point": 3,
+    "seed": 358,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztgeom",
+    "point": 4,
+    "seed": 359,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztgeom",
+    "point": 5,
+    "seed": 360,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "ztgeom",
+    "point": 6,
+    "seed": 361,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 0,
+    "seed": 362,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 1,
+    "seed": 363,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 2,
+    "seed": 364,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 3,
+    "seed": 365,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 4,
+    "seed": 366,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 5,
+    "seed": 367,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 6,
+    "seed": 368,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 7,
+    "seed": 369,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 8,
+    "seed": 370,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 9,
+    "seed": 371,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 10,
+    "seed": 372,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmgeom",
+    "point": 11,
+    "seed": 373,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 0,
+    "seed": 374,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 1,
+    "seed": 375,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 2,
+    "seed": 376,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 3,
+    "seed": 377,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 4,
+    "seed": 378,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 5,
+    "seed": 379,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 6,
+    "seed": 380,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 7,
+    "seed": 381,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 8,
+    "seed": 382,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 9,
+    "seed": 383,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 10,
+    "seed": 384,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zmlogarithmic",
+    "point": 11,
+    "seed": 385,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zipf",
+    "point": 0,
+    "seed": 386,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zipf",
+    "point": 1,
+    "seed": 387,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zipf",
+    "point": 2,
+    "seed": 388,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zipf",
+    "point": 3,
+    "seed": 389,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zipf",
+    "point": 4,
+    "seed": 390,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zipf",
+    "point": 5,
+    "seed": 391,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zipf",
+    "point": 6,
+    "seed": 392,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zipf",
+    "point": 7,
+    "seed": 393,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zipf",
+    "point": 8,
+    "seed": 394,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 12]",
+    "point": 0,
+    "seed": 395,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 'Inf']",
+    "point": 0,
+    "seed": 396,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 5]",
+    "point": 0,
+    "seed": 397,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 'Inf']",
+    "point": 0,
+    "seed": 398,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 12]",
+    "point": 1,
+    "seed": 399,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 'Inf']",
+    "point": 1,
+    "seed": 400,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 5]",
+    "point": 1,
+    "seed": 401,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 'Inf']",
+    "point": 1,
+    "seed": 402,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 12]",
+    "point": 2,
+    "seed": 403,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 'Inf']",
+    "point": 2,
+    "seed": 404,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 5]",
+    "point": 2,
+    "seed": 405,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 'Inf']",
+    "point": 2,
+    "seed": 406,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 12]",
+    "point": 3,
+    "seed": 407,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 'Inf']",
+    "point": 3,
+    "seed": 408,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 5]",
+    "point": 3,
+    "seed": 409,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 'Inf']",
+    "point": 3,
+    "seed": 410,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 12]",
+    "point": 4,
+    "seed": 411,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 'Inf']",
+    "point": 4,
+    "seed": 412,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 5]",
+    "point": 4,
+    "seed": 413,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 'Inf']",
+    "point": 4,
+    "seed": 414,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 5]",
+    "point": 5,
+    "seed": 417,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 'Inf']",
+    "point": 5,
+    "seed": 418,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 12]",
+    "point": 6,
+    "seed": 419,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 'Inf']",
+    "point": 6,
+    "seed": 420,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 5]",
+    "point": 6,
+    "seed": 421,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 'Inf']",
+    "point": 6,
+    "seed": 422,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 12]",
+    "point": 7,
+    "seed": 423,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[2, 'Inf']",
+    "point": 7,
+    "seed": 424,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 5]",
+    "point": 7,
+    "seed": 425,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-window-[0, 'Inf']",
+    "point": 7,
+    "seed": 426,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 12]",
+    "point": 0,
+    "seed": 427,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 'Inf']",
+    "point": 0,
+    "seed": 428,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 5]",
+    "point": 0,
+    "seed": 429,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 'Inf']",
+    "point": 0,
+    "seed": 430,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 12]",
+    "point": 1,
+    "seed": 431,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 'Inf']",
+    "point": 1,
+    "seed": 432,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 5]",
+    "point": 1,
+    "seed": 433,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 'Inf']",
+    "point": 1,
+    "seed": 434,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 12]",
+    "point": 2,
+    "seed": 435,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 'Inf']",
+    "point": 2,
+    "seed": 436,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 5]",
+    "point": 2,
+    "seed": 437,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 'Inf']",
+    "point": 2,
+    "seed": 438,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 12]",
+    "point": 3,
+    "seed": 439,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 'Inf']",
+    "point": 3,
+    "seed": 440,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 5]",
+    "point": 3,
+    "seed": 441,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 'Inf']",
+    "point": 3,
+    "seed": 442,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 12]",
+    "point": 4,
+    "seed": 443,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 'Inf']",
+    "point": 4,
+    "seed": 444,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 5]",
+    "point": 4,
+    "seed": 445,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 'Inf']",
+    "point": 4,
+    "seed": 446,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 5]",
+    "point": 5,
+    "seed": 449,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 'Inf']",
+    "point": 5,
+    "seed": 450,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 5]",
+    "point": 6,
+    "seed": 453,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 'Inf']",
+    "point": 6,
+    "seed": 454,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 12]",
+    "point": 7,
+    "seed": 455,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 'Inf']",
+    "point": 7,
+    "seed": 456,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 'Inf']",
+    "point": 7,
+    "seed": 458,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 12]",
+    "point": 8,
+    "seed": 459,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 'Inf']",
+    "point": 8,
+    "seed": 460,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 5]",
+    "point": 8,
+    "seed": 461,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 'Inf']",
+    "point": 8,
+    "seed": 462,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 12]",
+    "point": 9,
+    "seed": 463,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[2, 'Inf']",
+    "point": 9,
+    "seed": 464,
+    "n": 1,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 5]",
+    "point": 9,
+    "seed": 465,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-window-[0, 'Inf']",
+    "point": 9,
+    "seed": 466,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 12]",
+    "point": 0,
+    "seed": 467,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 'Inf']",
+    "point": 0,
+    "seed": 468,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 5]",
+    "point": 0,
+    "seed": 469,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 'Inf']",
+    "point": 0,
+    "seed": 470,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 12]",
+    "point": 1,
+    "seed": 471,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 'Inf']",
+    "point": 1,
+    "seed": 472,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 5]",
+    "point": 1,
+    "seed": 473,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 'Inf']",
+    "point": 1,
+    "seed": 474,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 12]",
+    "point": 2,
+    "seed": 475,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 'Inf']",
+    "point": 2,
+    "seed": 476,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 5]",
+    "point": 2,
+    "seed": 477,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 'Inf']",
+    "point": 2,
+    "seed": 478,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 12]",
+    "point": 3,
+    "seed": 479,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 'Inf']",
+    "point": 3,
+    "seed": 480,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 5]",
+    "point": 3,
+    "seed": 481,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 'Inf']",
+    "point": 3,
+    "seed": 482,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 12]",
+    "point": 4,
+    "seed": 483,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 'Inf']",
+    "point": 4,
+    "seed": 484,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 5]",
+    "point": 4,
+    "seed": 485,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 'Inf']",
+    "point": 4,
+    "seed": 486,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 5]",
+    "point": 5,
+    "seed": 489,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 'Inf']",
+    "point": 5,
+    "seed": 490,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 12]",
+    "point": 6,
+    "seed": 491,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[2, 'Inf']",
+    "point": 6,
+    "seed": 492,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 5]",
+    "point": 6,
+    "seed": 493,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-window-[0, 'Inf']",
+    "point": 6,
+    "seed": 494,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 0,
+    "seed": 495,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 0,
+    "seed": 496,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 0,
+    "seed": 497,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 0,
+    "seed": 498,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 1,
+    "seed": 499,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 1,
+    "seed": 500,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 1,
+    "seed": 501,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 1,
+    "seed": 502,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 2,
+    "seed": 503,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 2,
+    "seed": 504,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 2,
+    "seed": 505,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 2,
+    "seed": 506,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 3,
+    "seed": 507,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 3,
+    "seed": 508,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 3,
+    "seed": 509,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 3,
+    "seed": 510,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 4,
+    "seed": 511,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 4,
+    "seed": 512,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 4,
+    "seed": 513,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 4,
+    "seed": 514,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 5,
+    "seed": 515,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 5,
+    "seed": 516,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 5,
+    "seed": 517,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 5,
+    "seed": 518,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 6,
+    "seed": 519,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 6,
+    "seed": 520,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 6,
+    "seed": 521,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 6,
+    "seed": 522,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 7,
+    "seed": 525,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 7,
+    "seed": 526,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 8,
+    "seed": 529,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 8,
+    "seed": 530,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 9,
+    "seed": 531,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 9,
+    "seed": 532,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 9,
+    "seed": 533,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 9,
+    "seed": 534,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 10,
+    "seed": 535,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 10,
+    "seed": 536,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 10,
+    "seed": 537,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 10,
+    "seed": 538,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 11,
+    "seed": 540,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 11,
+    "seed": 542,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 12]",
+    "point": 12,
+    "seed": 543,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[2, 'Inf']",
+    "point": 12,
+    "seed": 544,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 5]",
+    "point": 12,
+    "seed": 545,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-window-[0, 'Inf']",
+    "point": 12,
+    "seed": 546,
+    "n": 16,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 0,
+    "seed": 547,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 0,
+    "seed": 548,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 0,
+    "seed": 549,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 0,
+    "seed": 550,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 1,
+    "seed": 551,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 1,
+    "seed": 552,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 1,
+    "seed": 553,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 1,
+    "seed": 554,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 2,
+    "seed": 555,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 2,
+    "seed": 556,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 2,
+    "seed": 557,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 2,
+    "seed": 558,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 3,
+    "seed": 559,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 3,
+    "seed": 560,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 3,
+    "seed": 561,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 3,
+    "seed": 562,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 4,
+    "seed": 563,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 4,
+    "seed": 564,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 4,
+    "seed": 565,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 4,
+    "seed": 566,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 5,
+    "seed": 567,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 5,
+    "seed": 568,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 5,
+    "seed": 569,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 5,
+    "seed": 570,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 6,
+    "seed": 571,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 6,
+    "seed": 572,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 6,
+    "seed": 573,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-inflated",
+    "point": 6,
+    "seed": 574,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-none",
+    "point": 0,
+    "seed": 575,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-none",
+    "point": 1,
+    "seed": 576,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-none",
+    "point": 2,
+    "seed": 577,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-none",
+    "point": 3,
+    "seed": 578,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-none",
+    "point": 4,
+    "seed": 579,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-none",
+    "point": 5,
+    "seed": 580,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-none",
+    "point": 6,
+    "seed": 581,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "pois-none",
+    "point": 7,
+    "seed": 582,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-none",
+    "point": 0,
+    "seed": 583,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-none",
+    "point": 1,
+    "seed": 584,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-none",
+    "point": 2,
+    "seed": 585,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-none",
+    "point": 3,
+    "seed": 586,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-none",
+    "point": 4,
+    "seed": 587,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-none",
+    "point": 5,
+    "seed": 588,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-none",
+    "point": 6,
+    "seed": 589,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-none",
+    "point": 7,
+    "seed": 590,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-none",
+    "point": 8,
+    "seed": 591,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "binom-none",
+    "point": 9,
+    "seed": 592,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 0,
+    "seed": 593,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 1,
+    "seed": 594,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 2,
+    "seed": 595,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 3,
+    "seed": 596,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 4,
+    "seed": 597,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 5,
+    "seed": 598,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 6,
+    "seed": 599,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 7,
+    "seed": 600,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 8,
+    "seed": 601,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 9,
+    "seed": 602,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 10,
+    "seed": 603,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 11,
+    "seed": 604,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "nbinom-none",
+    "point": 12,
+    "seed": 605,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-none",
+    "point": 0,
+    "seed": 606,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-none",
+    "point": 1,
+    "seed": 607,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-none",
+    "point": 2,
+    "seed": 608,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-none",
+    "point": 3,
+    "seed": 609,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-none",
+    "point": 4,
+    "seed": 610,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-none",
+    "point": 5,
+    "seed": 611,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "geom-none",
+    "point": 6,
+    "seed": 612,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 0,
+    "seed": 613,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 1,
+    "seed": 614,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 2,
+    "seed": 615,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 3,
+    "seed": 616,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 4,
+    "seed": 617,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 5,
+    "seed": 618,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 6,
+    "seed": 619,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 8,
+    "seed": 621,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 9,
+    "seed": 622,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 10,
+    "seed": 623,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "lgser-none",
+    "point": 11,
+    "seed": 624,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zeta-window",
+    "point": 0,
+    "seed": 625,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zeta-window",
+    "point": 1,
+    "seed": 626,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zeta-window",
+    "point": 2,
+    "seed": 627,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  },
+  {
+    "id": "zeta-window",
+    "point": 3,
+    "seed": 628,
+    "n": 512,
+    "invalidBefore": 0,
+    "invalidAfter": 0,
+    "differences": []
+  }
+]

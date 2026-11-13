@@ -1,0 +1,417 @@
+ztpois point 0
+ztpois point 1
+ztpois point 2
+ztpois point 3
+ztpois point 4
+ztpois point 5
+ztpois point 6
+ztpois point 7
+zmpois point 0
+zmpois point 1
+zmpois point 2
+zmpois point 3
+zmpois point 4
+zmpois point 5
+zmpois point 6
+zmpois point 7
+zmpois point 8
+zmpois point 9
+zmpois point 10
+zmpois point 11
+zmpois point 12
+zip point 0
+zip point 1
+zip point 2
+zip point 3
+zip point 4
+zip point 5
+zip point 6
+zip point 7
+zip point 8
+zip point 9
+zip point 10
+tpois point 0
+tpois point 1
+tpois point 2
+tpois point 3
+tpois point 4
+tpois point 5
+tpois point 6
+tpois point 7
+ztbinom point 0
+ztbinom point 1
+ztbinom point 2
+ztbinom point 3
+ztbinom point 4
+ztbinom point 5
+ztbinom point 6
+ztbinom point 7
+ztbinom point 8
+ztbinom point 9
+zmbinom point 0
+zmbinom point 1
+zmbinom point 2
+zmbinom point 3
+zmbinom point 4
+zmbinom point 5
+zmbinom point 6
+zmbinom point 7
+zmbinom point 8
+zmbinom point 9
+zmbinom point 10
+zmbinom point 11
+zmbinom point 12
+zmbinom point 13
+zmbinom point 14
+zib point 0
+zib point 1
+zib point 2
+zib point 3
+zib point 4
+zib point 5
+zib point 6
+zib point 7
+zib point 8
+zib point 9
+zib point 10
+zib point 11
+zib point 12
+zib point 13
+zib point 14
+tbinom point 0
+tbinom point 1
+tbinom point 2
+tbinom point 3
+tbinom point 4
+tbinom point 5
+tbinom point 6
+tbinom point 7
+tbinom point 8
+tbinom point 9
+tbinom point 10
+ztnbinom point 0
+ztnbinom point 1
+ztnbinom point 2
+ztnbinom point 3
+ztnbinom point 4
+ztnbinom point 5
+ztnbinom point 6
+ztnbinom point 7
+ztnbinom point 8
+ztnbinom point 9
+ztnbinom point 10
+ztnbinom point 11
+ztnbinom point 12
+zmnbinom point 0
+zmnbinom point 1
+zmnbinom point 2
+zmnbinom point 3
+zmnbinom point 4
+zmnbinom point 5
+zmnbinom point 6
+zmnbinom point 7
+zmnbinom point 8
+zmnbinom point 9
+zmnbinom point 10
+zmnbinom point 11
+zmnbinom point 12
+zmnbinom point 13
+zmnbinom point 14
+zmnbinom point 15
+zmnbinom point 16
+zmnbinom point 17
+zinb point 0
+zinb point 1
+zinb point 2
+zinb point 3
+zinb point 4
+zinb point 5
+zinb point 6
+zinb point 7
+zinb point 8
+zinb point 9
+zinb point 10
+zinb point 11
+zinb point 12
+zinb point 13
+zinb point 14
+zinb point 15
+zinb point 16
+zinb point 17
+ztgeom point 0
+ztgeom point 1
+ztgeom point 2
+ztgeom point 3
+ztgeom point 4
+ztgeom point 5
+ztgeom point 6
+zmgeom point 0
+zmgeom point 1
+zmgeom point 2
+zmgeom point 3
+zmgeom point 4
+zmgeom point 5
+zmgeom point 6
+zmgeom point 7
+zmgeom point 8
+zmgeom point 9
+zmgeom point 10
+zmgeom point 11
+zmlogarithmic point 0
+zmlogarithmic point 1
+zmlogarithmic point 2
+zmlogarithmic point 3
+zmlogarithmic point 4
+zmlogarithmic point 5
+zmlogarithmic point 6
+zmlogarithmic point 7
+zmlogarithmic point 8
+zmlogarithmic point 9
+zmlogarithmic point 10
+zmlogarithmic point 11
+zipf point 0
+zipf point 1
+zipf point 2
+zipf point 3
+zipf point 4
+zipf point 5
+zipf point 6
+zipf point 7
+zipf point 8
+pois-window-[2, 12] point 0
+pois-window-[2, 'Inf'] point 0
+pois-window-[0, 5] point 0
+pois-window-[0, 'Inf'] point 0
+pois-window-[2, 12] point 1
+pois-window-[2, 'Inf'] point 1
+pois-window-[0, 5] point 1
+pois-window-[0, 'Inf'] point 1
+pois-window-[2, 12] point 2
+pois-window-[2, 'Inf'] point 2
+pois-window-[0, 5] point 2
+pois-window-[0, 'Inf'] point 2
+pois-window-[2, 12] point 3
+pois-window-[2, 'Inf'] point 3
+pois-window-[0, 5] point 3
+pois-window-[0, 'Inf'] point 3
+pois-window-[2, 12] point 4
+pois-window-[2, 'Inf'] point 4
+pois-window-[0, 5] point 4
+pois-window-[0, 'Inf'] point 4
+pois-window-[2, 12] point 5
+pois-window-[2, 'Inf'] point 5
+pois-window-[0, 5] point 5
+pois-window-[0, 'Inf'] point 5
+pois-window-[2, 12] point 6
+pois-window-[2, 'Inf'] point 6
+pois-window-[0, 5] point 6
+pois-window-[0, 'Inf'] point 6
+pois-window-[2, 12] point 7
+pois-window-[2, 'Inf'] point 7
+pois-window-[0, 5] point 7
+pois-window-[0, 'Inf'] point 7
+binom-window-[2, 12] point 0
+binom-window-[2, 'Inf'] point 0
+binom-window-[0, 5] point 0
+binom-window-[0, 'Inf'] point 0
+binom-window-[2, 12] point 1
+binom-window-[2, 'Inf'] point 1
+binom-window-[0, 5] point 1
+binom-window-[0, 'Inf'] point 1
+binom-window-[2, 12] point 2
+binom-window-[2, 'Inf'] point 2
+binom-window-[0, 5] point 2
+binom-window-[0, 'Inf'] point 2
+binom-window-[2, 12] point 3
+binom-window-[2, 'Inf'] point 3
+binom-window-[0, 5] point 3
+binom-window-[0, 'Inf'] point 3
+binom-window-[2, 12] point 4
+binom-window-[2, 'Inf'] point 4
+binom-window-[0, 5] point 4
+binom-window-[0, 'Inf'] point 4
+binom-window-[2, 12] point 5
+binom-window-[2, 'Inf'] point 5
+binom-window-[0, 5] point 5
+binom-window-[0, 'Inf'] point 5
+binom-window-[2, 12] point 6
+binom-window-[2, 'Inf'] point 6
+binom-window-[0, 5] point 6
+binom-window-[0, 'Inf'] point 6
+binom-window-[2, 12] point 7
+binom-window-[2, 'Inf'] point 7
+binom-window-[0, 5] point 7
+binom-window-[0, 'Inf'] point 7
+binom-window-[2, 12] point 8
+binom-window-[2, 'Inf'] point 8
+binom-window-[0, 5] point 8
+binom-window-[0, 'Inf'] point 8
+binom-window-[2, 12] point 9
+binom-window-[2, 'Inf'] point 9
+binom-window-[0, 5] point 9
+binom-window-[0, 'Inf'] point 9
+geom-window-[2, 12] point 0
+geom-window-[2, 'Inf'] point 0
+geom-window-[0, 5] point 0
+geom-window-[0, 'Inf'] point 0
+geom-window-[2, 12] point 1
+geom-window-[2, 'Inf'] point 1
+geom-window-[0, 5] point 1
+geom-window-[0, 'Inf'] point 1
+geom-window-[2, 12] point 2
+geom-window-[2, 'Inf'] point 2
+geom-window-[0, 5] point 2
+geom-window-[0, 'Inf'] point 2
+geom-window-[2, 12] point 3
+geom-window-[2, 'Inf'] point 3
+geom-window-[0, 5] point 3
+geom-window-[0, 'Inf'] point 3
+geom-window-[2, 12] point 4
+geom-window-[2, 'Inf'] point 4
+geom-window-[0, 5] point 4
+geom-window-[0, 'Inf'] point 4
+geom-window-[2, 12] point 5
+geom-window-[2, 'Inf'] point 5
+geom-window-[0, 5] point 5
+geom-window-[0, 'Inf'] point 5
+geom-window-[2, 12] point 6
+geom-window-[2, 'Inf'] point 6
+geom-window-[0, 5] point 6
+geom-window-[0, 'Inf'] point 6
+nbinom-window-[2, 12] point 0
+nbinom-window-[2, 'Inf'] point 0
+nbinom-window-[0, 5] point 0
+nbinom-window-[0, 'Inf'] point 0
+nbinom-window-[2, 12] point 1
+nbinom-window-[2, 'Inf'] point 1
+nbinom-window-[0, 5] point 1
+nbinom-window-[0, 'Inf'] point 1
+nbinom-window-[2, 12] point 2
+nbinom-window-[2, 'Inf'] point 2
+nbinom-window-[0, 5] point 2
+nbinom-window-[0, 'Inf'] point 2
+nbinom-window-[2, 12] point 3
+nbinom-window-[2, 'Inf'] point 3
+nbinom-window-[0, 5] point 3
+nbinom-window-[0, 'Inf'] point 3
+nbinom-window-[2, 12] point 4
+nbinom-window-[2, 'Inf'] point 4
+nbinom-window-[0, 5] point 4
+nbinom-window-[0, 'Inf'] point 4
+nbinom-window-[2, 12] point 5
+nbinom-window-[2, 'Inf'] point 5
+nbinom-window-[0, 5] point 5
+nbinom-window-[0, 'Inf'] point 5
+nbinom-window-[2, 12] point 6
+nbinom-window-[2, 'Inf'] point 6
+nbinom-window-[0, 5] point 6
+nbinom-window-[0, 'Inf'] point 6
+nbinom-window-[2, 12] point 7
+nbinom-window-[2, 'Inf'] point 7
+nbinom-window-[0, 5] point 7
+nbinom-window-[0, 'Inf'] point 7
+nbinom-window-[2, 12] point 8
+nbinom-window-[2, 'Inf'] point 8
+nbinom-window-[0, 5] point 8
+nbinom-window-[0, 'Inf'] point 8
+nbinom-window-[2, 12] point 9
+nbinom-window-[2, 'Inf'] point 9
+nbinom-window-[0, 5] point 9
+nbinom-window-[0, 'Inf'] point 9
+nbinom-window-[2, 12] point 10
+nbinom-window-[2, 'Inf'] point 10
+nbinom-window-[0, 5] point 10
+nbinom-window-[0, 'Inf'] point 10
+nbinom-window-[2, 12] point 11
+nbinom-window-[2, 'Inf'] point 11
+nbinom-window-[0, 5] point 11
+nbinom-window-[0, 'Inf'] point 11
+nbinom-window-[2, 12] point 12
+nbinom-window-[2, 'Inf'] point 12
+nbinom-window-[0, 5] point 12
+nbinom-window-[0, 'Inf'] point 12
+geom-inflated point 0
+geom-inflated point 0
+geom-inflated point 0
+geom-inflated point 0
+geom-inflated point 1
+geom-inflated point 1
+geom-inflated point 1
+geom-inflated point 1
+geom-inflated point 2
+geom-inflated point 2
+geom-inflated point 2
+geom-inflated point 2
+geom-inflated point 3
+geom-inflated point 3
+geom-inflated point 3
+geom-inflated point 3
+geom-inflated point 4
+geom-inflated point 4
+geom-inflated point 4
+geom-inflated point 4
+geom-inflated point 5
+geom-inflated point 5
+geom-inflated point 5
+geom-inflated point 5
+geom-inflated point 6
+geom-inflated point 6
+geom-inflated point 6
+geom-inflated point 6
+pois-none point 0
+pois-none point 1
+pois-none point 2
+pois-none point 3
+pois-none point 4
+pois-none point 5
+pois-none point 6
+pois-none point 7
+binom-none point 0
+binom-none point 1
+binom-none point 2
+binom-none point 3
+binom-none point 4
+binom-none point 5
+binom-none point 6
+binom-none point 7
+binom-none point 8
+binom-none point 9
+nbinom-none point 0
+nbinom-none point 1
+nbinom-none point 2
+nbinom-none point 3
+nbinom-none point 4
+nbinom-none point 5
+nbinom-none point 6
+nbinom-none point 7
+nbinom-none point 8
+nbinom-none point 9
+nbinom-none point 10
+nbinom-none point 11
+nbinom-none point 12
+geom-none point 0
+geom-none point 1
+geom-none point 2
+geom-none point 3
+geom-none point 4
+geom-none point 5
+geom-none point 6
+lgser-none point 0
+lgser-none point 1
+lgser-none point 2
+lgser-none point 3
+lgser-none point 4
+lgser-none point 5
+lgser-none point 6
+lgser-none point 7
+lgser-none point 8
+lgser-none point 9
+lgser-none point 10
+lgser-none point 11
+zeta-window point 0
+zeta-window point 1
+zeta-window point 2
+zeta-window point 3
+before { n: 59218, up: 989, earlier: 627, invalid: 0, crossing_failure: 990 }
+after { n: 59218, up: 0, earlier: 628, invalid: 0, crossing_failure: 0 }
+samplers 135809 different 0

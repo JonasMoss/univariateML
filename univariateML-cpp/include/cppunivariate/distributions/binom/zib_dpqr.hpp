@@ -26,7 +26,7 @@ inline double pzib(double q,double size,double prob,double pi,bool lower_tail=tr
   return special::tail_probability(lo<up ? special::tails_from_log(lo,true)
                                         : special::tails_from_log(up,false),lower_tail,log_p);
 }
-inline double qzib(double p,double size,double prob,double pi,bool lower_tail=true,bool log_p=false) {
+inline double zib_quantile(double p,double size,double prob,double pi,bool lower_tail,bool log_p,bool fuzz) {
   if(!zib_valid(size,prob)||!(pi>=0 && pi<=1)||std::isnan(p)||
       (log_p?p>0:(p<0||p>1)))return std::numeric_limits<double>::quiet_NaN();
   const double ls=special::discrete_log_tails(p,lower_tail,log_p).upper;
@@ -35,6 +35,7 @@ inline double qzib(double p,double size,double prob,double pi,bool lower_tail=tr
   if(size==0||prob==0||pi==1)return 0;
   if(prob==1 && pi==0)return size;
   return special::discrete_search(0,size,[&](double x) {
+    if(fuzz)return special::discrete_reached(pzib(x,size,prob,pi,lower_tail,log_p),p,lower_tail,log_p);
     if (x>9007199254740992.0) {
       const double f=pzib(x,size,prob,pi,lower_tail,log_p);
       return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
@@ -43,9 +44,12 @@ inline double qzib(double p,double size,double prob,double pi,bool lower_tail=tr
     return std::isnan(f) ? -1 : int(f<=ls);
   });
 }
+inline double qzib(double p,double size,double prob,double pi,bool lower_tail=true,bool log_p=false) {
+  return zib_quantile(p,size,prob,pi,lower_tail,log_p,true);
+}
 template <typename Rng> inline double rzib(Rng &rng,double size,double prob,double pi) {
   if (size==0 || prob==0 || pi==1 || (pi==0 && prob==1))
-    return qzib(.5,size,prob,pi);
-  return qzib(rng.runif(0,1),size,prob,pi);
+    return zib_quantile(.5,size,prob,pi,true,false,false);
+  return zib_quantile(rng.runif(0,1),size,prob,pi,true,false,false);
 }
 } }
