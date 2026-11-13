@@ -8,6 +8,7 @@
 // engine of Log-Logistic via a log-transform.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
@@ -217,5 +218,16 @@ inline LogisticResult logistic_mle(span x,double tol,int maxit,double location,d
   }
   const double p[]={m,s};return {m,s,-LogisticCost{x}(p),it,it<maxit?LogisticStatus::Ok:LogisticStatus::IterationFailure};
 }
+
+
+inline FitOutcome outcome(const LogisticResult& r) {
+  switch (r.status) {
+    case LogisticStatus::Ok: return FitOutcome::estimate(true);
+    case LogisticStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LogisticStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+
 
 }  // namespace cppunivariate

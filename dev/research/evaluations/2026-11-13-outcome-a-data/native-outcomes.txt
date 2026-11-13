@@ -1,0 +1,23 @@
+25 of 25 families report an outcome on every case: bbinom bhatt cauchy dgamma dunif expweibull fpareto ged gev gumbel ht invburr invgauss invtrgamma lgamma logis lst nsbeta pareto2 pig sged slash sstd tlambda unif
+
+outcome kind, reason, emitted kind: cases
+  budget        none              budget     15
+  estimate      none              ok         2637
+  estimate      none              tie        11
+  failure       conditioning      conditioning 8
+  failure       evaluation        error      173
+  failure       evaluation        numerical  113
+  failure       invalid-argument  error      36
+  failure       invalid-input     error      153
+  failure       no-convergence    error      46
+  failure       no-convergence    numerical  57
+  failure       unresolved        unresolved 30
+  limit         none              limit      743
+  nonexistence  unattained        nomle      1
+  nonexistence  unbounded         nomle      58
+
+raw statuses reached: {'bbinom': [0, 1, 2, 3, 4, 5, 7], 'bhatt': [0, 2, 3, 4], 'cauchy': [0, 1, 2, 3, 4], 'dgamma': [0, 1, 3, 4, 5], 'dunif': [0, 1], 'expweibull': [0, 1, 3, 6, 7], 'fpareto': [-1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 14, 15], 'ged': [0, 1, 2, 3, 5, 6, 7], 'gev': [0, 1, 3, 5], 'gumbel': [0, 1, 2, 4], 'ht': [0, 1, 3, 5, 7], 'invburr': [0, 1, 2, 3, 4, 5, 6, 7, 9], 'invgauss': [0, 1, 2, 3], 'invtrgamma': [0, 1, 2, 4, 6], 'lgamma': [0, 1, 3], 'logis': [0, 1, 2], 'lst': [0, 2, 4, 6, 7, 8, 10, 11], 'nsbeta': [-1, 0, 1, 2, 3], 'pareto2': [-1, 0, 1, 2], 'pig': [0, 1, 3, 4], 'sged': [0, 1, 2, 6, 7, 8, 9], 'slash': [0, 1, 3, 4], 'sstd': [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12], 'tlambda': [0, 1, 3, 6, 7], 'unif': [0, 1, 2, 3]}
+plain errors that become numerical stops in step 5: {'cauchy': 2, 'fpareto': 29, 'gumbel': 1, 'ht': 6, 'invgauss': 1, 'lgamma': 9, 'logis': 2, 'nsbeta': 1, 'sged': 3, 'slash': 4, 'sstd': 161}
+adapter overrides of a core success (core defects): {'gumbel': 1}
+
+0 disagreements between outcome and emitted kind

@@ -7,6 +7,7 @@
 // where f_unit is the standardised GED used by dged().
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
@@ -540,4 +541,24 @@ inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,doubl
   if(r.status==GedStatus::Ok && (std::isnan(nu)) && r.nu==kGedNuLower) r.restricted|=16u;
   return r;
 }
+
+inline FitOutcome outcome(const GedResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.status != GedStatus::Ok && r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.status != GedStatus::Ok && r.status != GedStatus::UniformUnresolved && r.stop_detail.comparison_tie) return FitOutcome::estimate(r.certified && r.proved_tie, !r.proved_tie);
+  switch (r.status) {
+    case GedStatus::Ok: return FitOutcome::estimate(r.certified);
+    case GedStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GedStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case GedStatus::UniformBoundary: return FitOutcome::limit(r.certified);
+    case GedStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
+    case GedStatus::Nonunique: return FitOutcome::estimate(r.certified && r.proved_tie, !r.proved_tie);
+    case GedStatus::UniformUnresolved: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GedStatus::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
+
 }  // namespace cppunivariate

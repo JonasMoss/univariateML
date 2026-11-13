@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include "../lomax/mle.hpp"
@@ -34,4 +35,19 @@ inline Pareto2Result pareto2_mle(span x, double min, double tol, int maxit, doub
     record_accuracy(out,tol,{out.shape,out.scale,min},{std::isnan(shape)?out.shape:0,std::isnan(scale)?out.scale:0,0});
   return out;
 }
+
+inline FitOutcome outcome(const Pareto2Result& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case LomaxStatus::Ok: return FitOutcome::estimate(true);
+    case LomaxStatus::ExponentialLimit: return FitOutcome::limit(true);
+    case LomaxStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LomaxStatus::IterationFailure: return r.certificate_failure == LomaxCertificateFailure::Budget ? FitOutcome::budget() : FitOutcome::failure(OutcomeReason::NoConvergence);
+    case LomaxStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
+
 }

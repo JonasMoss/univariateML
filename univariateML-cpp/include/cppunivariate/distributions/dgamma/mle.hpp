@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
@@ -459,4 +460,21 @@ inline DgammaResult dgamma_mle(span x,double tol=1e-10,int maxit=400,double shap
   r.logLik=0;for(double v:x)r.logLik+=distributions::ddgamma(v,r.shape,r.rate,true);
   return r;
 }
+
+inline FitOutcome outcome(const DgammaResult& r) {
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case DgammaStatus::Ok: return FitOutcome::estimate(true);
+    case DgammaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case DgammaStatus::InvalidControl: return FitOutcome::failure(OutcomeReason::InvalidArgument);
+    case DgammaStatus::PointMass: return FitOutcome::limit(true);
+    case DgammaStatus::TwoPointLimit: return FitOutcome::limit(true);
+    case DgammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+
+
 }

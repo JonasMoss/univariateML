@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../sstd/local_accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -427,4 +428,21 @@ inline SlashResult slash_mle(span x,double tol=1e-10,int maxit=500,double sigma=
   if(best.status==SlashStatus::Ok&&(!local_accuracy::represented(best.mu,std::max(std::abs(best.mu),best.sigma),tol)||(std::isnan(sigma)&&!local_accuracy::represented(best.sigma,best.sigma,tol)))){best.status=SlashStatus::IterationFailure;best.accuracy_failure=true;{if(best.sigma>0)record_accuracy(best,tol,{best.mu,best.sigma},{std::isnan(mu)?std::max(std::abs(best.mu),best.sigma):0,std::isnan(sigma)?best.sigma:0});else{best.stop_detail.accuracy_stop=AccuracyStop::None;best.stop_detail.attainable_tol=NAN;}}}
   return best;
 }
+
+inline FitOutcome outcome(const SlashResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
+  if (r.budget_exhausted && r.status != SlashStatus::Unbounded && r.status != SlashStatus::CollapseLimit) return FitOutcome::budget();
+  switch (r.status) {
+    case SlashStatus::Ok: return FitOutcome::estimate(true);
+    case SlashStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case SlashStatus::CollapseLimit: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case SlashStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case SlashStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+
+
 }

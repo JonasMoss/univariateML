@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "dpqr.hpp"
 #include "../sstd/local_accuracy.hpp"
 #include "../../core/work_budget.hpp"
@@ -572,4 +573,29 @@ inline SgedResult sged_mle(span x,double tol,int maxit,double mean= std::numeric
   if(r.status==SgedStatus::Ok && (std::isnan(nu)) && r.nu==kSgedNuLower) r.restricted|=16u;
   return r;
 }
+
+inline FitOutcome outcome(const SgedResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
+  if (r.status == SgedStatus::CertificateFailure) {
+    if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+    if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  }
+  switch (r.status) {
+    case SgedStatus::Ok: return FitOutcome::estimate(r.certified);
+    case SgedStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case SgedStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case SgedStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case SgedStatus::ScaleBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case SgedStatus::UnsupportedHold: return FitOutcome::failure(OutcomeReason::Unsupported);
+    case SgedStatus::UniformBoundary: return r.stop_detail.comparison_tie ? FitOutcome::estimate(false) : r.stop_detail.limit_coef.empty() ? FitOutcome::failure(OutcomeReason::Evaluation) : FitOutcome::limit(r.certified);
+    case SgedStatus::RightHalfGedBoundary: return r.stop_detail.comparison_tie ? FitOutcome::estimate(false) : r.stop_detail.limit_coef.empty() ? FitOutcome::failure(OutcomeReason::Evaluation) : FitOutcome::limit(r.certified);
+    case SgedStatus::LeftHalfGedBoundary: return r.stop_detail.comparison_tie ? FitOutcome::estimate(false) : r.stop_detail.limit_coef.empty() ? FitOutcome::failure(OutcomeReason::Evaluation) : FitOutcome::limit(r.certified);
+    case SgedStatus::CertificateFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
+
 }  // namespace cppunivariate

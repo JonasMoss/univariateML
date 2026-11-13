@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "scalar_search.hpp"
@@ -755,5 +756,37 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
   }
   return sstd_cert_detail::fit(x,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
 }
+
+
+inline FitOutcome outcome(const SstdResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
+  if (r.certified) {
+    if (r.stop_detail.limit_model == StopModel::Ht || r.stop_detail.limit_model == StopModel::ReflectedHt || r.stop_detail.limit_model == StopModel::Norm || r.stop_detail.limit_model == StopModel::Lst) return FitOutcome::limit(true);
+    if (r.stop_detail.limit_model == StopModel::TCollapsePath) return FitOutcome::nonexistence(OutcomeReason::Unattained);
+  }
+  if (r.status == SstdStatus::CertificateFailure) {
+    if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+    if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  }
+  switch (r.status) {
+    case SstdStatus::Ok: return FitOutcome::estimate(r.certified);
+    case SstdStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case SstdStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case SstdStatus::UnsupportedHold: return FitOutcome::failure(OutcomeReason::Unsupported);
+    case SstdStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case SstdStatus::ScaleBoundary: return r.certified ? FitOutcome::nonexistence(OutcomeReason::Unattained) : FitOutcome::failure(OutcomeReason::NoConvergence);
+    case SstdStatus::SnormBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case SstdStatus::RightHalfNormalBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case SstdStatus::LeftHalfNormalBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case SstdStatus::RightHalfTBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case SstdStatus::LeftHalfTBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case SstdStatus::DfTwoBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case SstdStatus::CertificateFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
 
 }  // namespace cppunivariate

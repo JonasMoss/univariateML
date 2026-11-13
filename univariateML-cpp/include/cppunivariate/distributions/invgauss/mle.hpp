@@ -3,6 +3,7 @@
 //   1/lambda = mean(1/x) - 1/mu
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
@@ -102,5 +103,17 @@ inline InvGaussResult invgauss_mle(span x) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   return invgauss_mle(x,nan,nan);
 }
+
+
+inline FitOutcome outcome(const InvGaussResult& r) {
+  switch (r.status) {
+    case InvGaussStatus::Ok: return FitOutcome::estimate(true);
+    case InvGaussStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case InvGaussStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case InvGaussStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
 
 }  // namespace cppunivariate

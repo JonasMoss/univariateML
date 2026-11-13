@@ -5,6 +5,7 @@
 // Nonexistent MLEs and numerical failures are reported through CauchyStatus.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "cppunivariate/core/constants.hpp"
@@ -444,5 +445,21 @@ inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,doubl
   }
   return {m,s,ll(m,s),it,it<maxit?CauchyStatus::Ok:CauchyStatus::IterationFailure};
 }
+
+
+inline FitOutcome outcome(const CauchyResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  switch (r.status) {
+    case CauchyStatus::Ok: return FitOutcome::estimate(true);
+    case CauchyStatus::NoMLE: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case CauchyStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case CauchyStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case CauchyStatus::AmbiguousMaximum: return FitOutcome::estimate(false);
+  }
+  return {};
+}
+
 
 }  // namespace cppunivariate

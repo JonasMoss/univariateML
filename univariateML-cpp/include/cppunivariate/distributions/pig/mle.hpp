@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
@@ -393,4 +394,24 @@ inline PigResult pig_mle(ispan x, double tol=1e-10, int maxit=200,
   if (!fs)return pig_detail::free_shape(data,mean,!fm,tol,maxit);
   return pig_detail::held_shape(data,shape,tol,maxit);
 }
+
+inline FitOutcome outcome(const PigResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.status == PigStatus::SearchFailure) {
+    if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+    if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  }
+  switch (r.status) {
+    case PigStatus::Ok: return FitOutcome::estimate(true);
+    case PigStatus::PoissonLimit: return FitOutcome::limit(true);
+    case PigStatus::ZeroLimit: return FitOutcome::limit(true);
+    case PigStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case PigStatus::SearchFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case PigStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+
+
 }
