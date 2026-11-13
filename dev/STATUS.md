@@ -1,6 +1,6 @@
 # Status and open items
 
-Updated 2026-11-12, master `8a702cc2`. Decisions and their evidence:
+Updated 2026-11-13, master `c167a975`. Decisions and their evidence:
 `dev/roadmap/decisions.md`. Deferred design ideas live in `dev/roadmap/`; work in
 flight and planned work are on the board (`~/.local/bin/board`). The current
 priority is the [consolidation plan](design/consolidation.md) (TASK-214), which
@@ -12,28 +12,39 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
 
 ## Status
 
-- 102 families, one folder each: 101 with fitters and one, pgw, with d/p/q/r
-  only (dossier `stage: dpqr`). Coverage of extraDistr and actuar:
+- 86 families, one folder each: 85 with fitters and one, pgw, with d/p/q/r
+  only (dossier `stage: dpqr`). The 16 truncated, zero-modified and
+  zero-inflated families were removed on 2026-11-13 (TASK-191); their laws are
+  `zero` and `truncate` settings of the base families
+  ([modifiers](design/modifiers.md), migration entry in `bindings/r/NEWS.md`).
+  Coverage of extraDistr and actuar (before that removal):
   `dev/research/evaluations/2026-10-29-density-coverage.html` (rebuild with
   `python3 dev/research/evaluations/2026-10-29-density-coverage.py`). actuar is
   fully covered except `dphtype` (out of scope); extraDistr except the
   dropped vector-parameter families and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master 8a702cc2 (workstation, GCC 15.2, 2026-11-12, after merging
-  TASK-180, 182, 191, 198, 212 and 213): `just cpp-test` 109/109 ctest entries;
-  `just test` `[ FAIL 0 | WARN 0 | SKIP 156 | PASS 31494 ]`; `just js-test`
-  641/641. Not run on this revision: the R full tier, the double-only C++
-  build, `just quality`, the site check, and any second compiler or platform.
+- Tests on master c167a975 (workstation, GCC 15.2, 2026-11-13, after the
+  outcome mapping, the family removal and the quantile-tie change):
+  `just cpp-test` 109/109 ctest entries; `just cpp-test-no-long-double`
+  153/153; `just test` `[ FAIL 0 | WARN 0 | SKIP 157 | PASS 28842 ]`;
+  `just test-full` `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 57977 ]`; `just js-test`
+  578/578; `just relations` 158 edges, 0 failed; `just site-check` green.
+  `just quality` passed for all 101 then-fitted families on `6a757613`, before
+  the removal. Fit snapshots of `c167a975`, with the shared outcome of every
+  case: [baseline report](research/evaluations/2026-11-13-fit-snapshot-report.md);
+  `dev/validation/fit-judge.py` passes against its 21 known failures. Not run:
+  any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
-- simbox was unreachable on 2026-11-12; the jobs of that day were
-  validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
+- simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
+  days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
-- Known wrong answers on master, each with a card: hypergeometric quantile at
-  an exact CDF tie (TASK-215); vector `pml` on truncated geometric and negative
-  binomial fits (TASK-216); fits that miss the accuracy contract (TASK-214.3,
-  TASK-214.5).
-- Nothing is published. Master is about 1,260 commits ahead of `origin/master`;
+- Known wrong answers on master, each with a card: the tie rule for discrete
+  quantiles is not yet applied to the `zero` and `truncate` routes (TASK-215,
+  job `qtie-2`; the 20 public discrete families have it); fits that miss the accuracy
+  contract or return `Ok` with a non-finite value (TASK-214.3, TASK-214.5);
+  stop kinds that depend on the precision mode (TASK-214.13).
+- Nothing is published. Master is 1293 commits ahead of `origin/master`;
   the backup branch `origin/cpp-core` was last updated before the six merges of
   2026-11-12.
 
