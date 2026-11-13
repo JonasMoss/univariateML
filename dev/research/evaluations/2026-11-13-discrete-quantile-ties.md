@@ -30,9 +30,13 @@ Separately, `qhyper(0.5, m = 5, N = 10, k = 5)` returns 3. The masses are
 ## Cause
 
 `special::discrete_quantile` compares log tails: it searches for the first `x`
-with `log F(x) >= log p`. `p(k)` returns `exp` of that log tail, rounded, and
-the logarithm of the rounded value can exceed the log tail by an ulp. The
-comparison then fails at `k` and the search returns `k + 1`. hyper compares
+whose smaller log tail reaches that of `p`. `p(k)` returns `exp` of the log
+tail, rounded, and the logarithm of the rounded value can exceed the log tail
+by an ulp. The comparison then fails at `k` and the search returns `k + 1`.
+Checked on the 41 Poisson failures
+([cause.cpp](2026-11-13-discrete-quantile-ties-data/cause.cpp)): in 39,
+`log(p(k))` exceeds the lower log tail at `k`; the other two were not traced
+and presumably compare the upper tail. hyper compares
 the computed probability with `p` itself, so its round trip holds, but its
 computed `F(2)` falls a rounding error below `1/2`.
 
