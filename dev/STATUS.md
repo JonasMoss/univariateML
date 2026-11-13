@@ -44,9 +44,9 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   job `qtie-2`; the 20 public discrete families have it); fits that miss the accuracy
   contract or return `Ok` with a non-finite value (TASK-214.3, TASK-214.5);
   stop kinds that depend on the precision mode (TASK-214.13).
-- Nothing is published. Master is 1293 commits ahead of `origin/master`;
-  the backup branch `origin/cpp-core` was last updated before the six merges of
-  2026-11-12.
+- Nothing is published to CRAN, and `origin/master` is the old published
+  tree (about 1,300 commits behind). The backup branch `origin/cpp-core`
+  mirrors master; pushed on 2026-11-13 at Jonas's request.
 
 ## Decisions for Jonas
 
