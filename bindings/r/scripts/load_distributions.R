@@ -373,7 +373,13 @@ load_distributions <- function(dist_dir) {
   for (folder in folders) {
     id <- basename(folder)
     readme <- file.path(folder, "README.md")
-    if (!file.exists(readme)) stop("load_distributions: ", folder, " has no README.md")
+    if (!file.exists(readme)) {
+      # A removed family can leave an ignored cache folder behind in an old
+      # checkout; a folder holding nothing else is not a family.
+      rest <- setdiff(list.files(folder, all.files = TRUE, no.. = TRUE), "__pycache__")
+      if (!length(rest)) next
+      stop("load_distributions: ", folder, " has no README.md")
+    }
     if (!file.exists(file.path(folder, "mle.hpp")) &&
         identical(.umvl_read_front_matter(readme)$front$stage, "dpqr")) next
     models[[id]] <- .umvl_from_readme(readme, id)
