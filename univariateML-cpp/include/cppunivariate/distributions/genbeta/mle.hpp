@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
@@ -38,6 +39,23 @@ struct GenbetaResult {
  GenbetaConditionalBounds conditional_bounds{};
  GenbetaTailBounds tail_bounds{};
  bool allfree_certified=false; };
+
+inline FitOutcome outcome(const GenbetaResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  switch (r.status) {
+    case GenbetaStatus::Ok: return FitOutcome::estimate(r.allfree_certified);
+    case GenbetaStatus::UnitGammaBoundary: return FitOutcome::limit(r.allfree_certified);
+    case GenbetaStatus::PowerBoundary: return FitOutcome::limit(r.allfree_certified);
+    case GenbetaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case GenbetaStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidArgument);
+    case GenbetaStatus::SearchUnresolved: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GenbetaStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+  }
+  return {};
+}
 namespace genbeta_detail {
 struct Point { double a=1,b=1,t=1,ll=-std::numeric_limits<double>::infinity(),score=0; bool ok=false; };
 // Concave beta exponential-family problem from sufficient statistics, without

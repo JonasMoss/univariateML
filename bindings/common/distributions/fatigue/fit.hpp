@@ -19,39 +19,47 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
   };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held alpha = alpha_arg;
   const Held beta = beta_arg;
   const Held mu = mu_arg;
 
-  if (!mu.supplied) return fail("The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu.");
+  if (!mu.supplied) return invalid_argument(fail("The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu."));
   const double threshold = mu.value;
-  if (!std::isfinite(threshold)) return fail("`mu` must be finite.");
+  if (!std::isfinite(threshold)) return invalid_argument(fail("`mu` must be finite."));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const double a=alpha.supplied?alpha.value:nan;
   const double b=beta.supplied?beta.value:nan;
   if ((alpha.supplied&&(!(a>0)||!std::isfinite(a))) ||
       (beta.supplied&&(!(b>0)||!std::isfinite(b))))
-    return fail("Held `alpha` and `beta` must be positive finite numbers.");
+    return invalid_argument(fail("Held `alpha` and `beta` must be positive finite numbers."));
   auto res = cppunivariate::fatigue_mle_shifted(x, threshold, abstol, iterlim,a,b);
+  const auto o = cppunivariate::outcome(res);
+  const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+      return overridden(std::move(out), static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+  };
+
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+
   if (res.status == cppunivariate::FatigueStatus::InvalidInput)
-    return fail("Fatigue observations must be finite and strictly above `mu`.");
+    return done(fail("Fatigue observations must be finite and strictly above `mu`."));
   if (res.status == cppunivariate::FatigueStatus::SearchFailure) {
     for(auto& candidate:res.stop_detail.candidates)candidate.coef.push_back(threshold);
-    if(res.stop_detail.budget_exhausted)return classify(fail("Fatigue optimizer SearchFailure: certificate budget exhausted; increase iterlim."),res.stop_detail,"budget",{"alpha","beta","mu"});
-    if(res.stop_detail.comparison_tie)return classify(fail("Fatigue optimizer SearchFailure: competing global maxima cannot be distinguished."),res.stop_detail,"tie",{"alpha","beta","mu"});
-    return classify(fail("Fatigue optimizer SearchFailure: profile search did not converge or floating-point coefficient resolution failed; increase iterlim for unresolved searches."),res.stop_detail,"numerical",{"alpha","beta","mu"});
+    if(res.stop_detail.budget_exhausted)return done(classify(fail("Fatigue optimizer SearchFailure: certificate budget exhausted; increase iterlim."),res.stop_detail,outcome_kind(o),{"alpha","beta","mu"}));
+    if(res.stop_detail.comparison_tie)return done(classify(fail("Fatigue optimizer SearchFailure: competing global maxima cannot be distinguished."),res.stop_detail,"tie",{"alpha","beta","mu"}));
+    return done(classify(fail("Fatigue optimizer SearchFailure: profile search did not converge or floating-point coefficient resolution failed; increase iterlim for unresolved searches."),res.stop_detail,outcome_kind(o),{"alpha","beta","mu"}));
   }
   if (!(res.alpha>0.0) || !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
     if (res.status==cppunivariate::FatigueStatus::Unbounded)
-      return nomle("The fatigue maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
-    return fail("Fatigue MLE failed: data exceed double precision or profile search did not converge; increase iterlim.");
+      return done(nomle("The fatigue maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."));
+    return done(fail("Fatigue MLE failed: data exceed double precision or profile search did not converge; increase iterlim."));
   }
   std::vector<std::string> fixed;
   if(alpha.supplied) fixed.push_back("alpha");
   if(beta.supplied) fixed.push_back("beta");
   fixed.push_back("mu");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"alpha",res.alpha},{"beta",res.beta},{"mu",threshold}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"alpha",res.alpha},{"beta",res.beta},{"mu",threshold}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

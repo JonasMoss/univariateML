@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
@@ -9,6 +10,17 @@ namespace cppunivariate {
 enum class DlaplaceStatus { Ok, InvalidInput, PointMass };
 struct DlaplaceResult { double location, scale, logLik; bool not_unique; DlaplaceStatus status;   StopDetail stop_detail{};
 };
+
+inline FitOutcome outcome(const DlaplaceResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case DlaplaceStatus::Ok: return FitOutcome::estimate(true, !r.not_unique);
+    case DlaplaceStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case DlaplaceStatus::PointMass: return FitOutcome::limit(true);
+  }
+  return {};
+}
 inline DlaplaceResult dlaplace_mle(ispan x, double location=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
   auto stopped = [&]() -> DlaplaceResult {
   DlaplaceResult r{location,scale,0,false,DlaplaceStatus::InvalidInput};

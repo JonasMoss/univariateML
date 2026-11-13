@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
@@ -17,6 +18,22 @@ struct HuberResult {
   int iterations;
   HuberStatus status;
  StopDetail stop_detail{}; };
+
+inline FitOutcome outcome(const HuberResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  switch (r.status) {
+    case HuberStatus::Ok: return FitOutcome::estimate(true);
+    case HuberStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case HuberStatus::UnboundedLikelihood: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case HuberStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case HuberStatus::NormalLimit: return FitOutcome::limit(true);
+    case HuberStatus::LaplaceLimit: return FitOutcome::limit(true);
+  }
+  return {};
+}
 inline double huber_rho(double z, double epsilon) {
   const double a = std::abs(z);
   return a <= epsilon ? z*z/2 : epsilon*(a-epsilon/2);

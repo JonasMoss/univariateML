@@ -20,11 +20,11 @@ inline FitResult fit_genbeta(cppunivariate::span x, Held shape1_arg = {}, Held s
   const Held shape1 = shape1_arg;
   const Held shape2 = shape2_arg;
   const Held shape3 = shape3_arg;
-  if (!scale_arg.supplied) return failure("Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale.");
+  if (!scale_arg.supplied) return invalid_argument(failure("Estimating scale is not supported. The unrestricted likelihood is unbounded when shape2 is free or below one. With other held shapes, a finite MLE may exist but is not computed. Supply scale."));
   const double scale = scale_arg.value;
 
   if(!(gradtol>0)||!std::isfinite(gradtol)||iterlim<1)
-    return fail("`gradtol` must be positive and finite and `iterlim` must be positive.");
+    return invalid_argument(fail("`gradtol` must be positive and finite and `iterlim` must be positive."));
   std::vector<std::string> fixed;
     double checked_value_0 = std::numeric_limits<double>::quiet_NaN();
   if (shape1.supplied) {
@@ -32,7 +32,7 @@ const Held v = shape1;
 const std::string name = "shape1";
 
     const double z=v.value;
-    if(!(z>0)||!std::isfinite(z))return fail("`%s` must be a positive finite number.",name);
+    if(!(z>0)||!std::isfinite(z))return invalid_argument(fail("`%s` must be a positive finite number.",name));
     fixed.push_back(name);checked_value_0 = z;
 
   }
@@ -42,7 +42,7 @@ const Held v = shape2;
 const std::string name = "shape2";
 
     const double z=v.value;
-    if(!(z>0)||!std::isfinite(z))return fail("`%s` must be a positive finite number.",name);
+    if(!(z>0)||!std::isfinite(z))return invalid_argument(fail("`%s` must be a positive finite number.",name));
     fixed.push_back(name);checked_value_1 = z;
 
   }
@@ -52,7 +52,7 @@ const Held v = shape3;
 const std::string name = "shape3";
 
     const double z=v.value;
-    if(!(z>0)||!std::isfinite(z))return fail("`%s` must be a positive finite number.",name);
+    if(!(z>0)||!std::isfinite(z))return invalid_argument(fail("`%s` must be a positive finite number.",name));
     fixed.push_back(name);checked_value_2 = z;
 
   }
@@ -61,20 +61,27 @@ const std::string name = "shape3";
   if(b==1&&std::isnan(a)&&std::isnan(t))fixed.push_back("shape3");
   fixed.push_back("scale");
   const auto r=cppunivariate::genbeta_mle(x,scale,gradtol,iterlim,a,b,t);
-  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("genbeta numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"});
-  if(r.stop_detail.budget_exhausted)return classify(fail("Generalized beta certificate budget exhausted; increase iterlim."),r.stop_detail,"budget",{"shape1","shape2","shape3","scale"});
-  if(r.stop_detail.comparison_tie)return classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,"tie",{"shape1","shape2","shape3","scale"});
+  const auto o = cppunivariate::outcome(r);
+  const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+      return overridden(std::move(out), static_cast<int>(r.status));
+    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+  };
+
+  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("genbeta numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_kind(o),{"shape1","shape2","shape3","scale"}));
+  if(r.stop_detail.budget_exhausted)return done(classify(fail("Generalized beta certificate budget exhausted; increase iterlim."),r.stop_detail,outcome_kind(o),{"shape1","shape2","shape3","scale"}));
+  if(r.stop_detail.comparison_tie)return done(classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,"tie",{"shape1","shape2","shape3","scale"}));
   switch(r.status) {
     case cppunivariate::GenbetaStatus::Ok:break;
     case cppunivariate::GenbetaStatus::UnitGammaBoundary:
-      if(!std::isnan(b))return classify(fail("Generalized beta selects the unit-gamma limit with shapelog held at shape2. `mllgamma(scale / x)` fits the unrestricted loggamma; holding shapelog there is not supported."),r.stop_detail,"limit",{"shape","scale","upper"},"unavailable:unit-gamma");
-      return classify(fail(r.allfree_certified?"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.":"Generalized beta selects the unit-gamma limit (uncertified global comparison). Use `mllgamma(scale / x)`."),r.stop_detail,"limit",{"shape","scale","upper"},"unavailable:unit-gamma");
+      if(!std::isnan(b))return done(classify(fail("Generalized beta selects the unit-gamma limit with shapelog held at shape2. `mllgamma(scale / x)` fits the unrestricted loggamma; holding shapelog there is not supported."),r.stop_detail,outcome_kind(o),{"shape","scale","upper"},"unavailable:unit-gamma"));
+      return done(classify(fail(r.allfree_certified?"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.":"Generalized beta selects the unit-gamma limit (uncertified global comparison). Use `mllgamma(scale / x)`."),r.stop_detail,outcome_kind(o),{"shape","scale","upper"},"unavailable:unit-gamma"));
     case cppunivariate::GenbetaStatus::PowerBoundary:
-      if(!std::isnan(b))return classify(fail("Generalized beta selects power with the endpoint held: use `mlgenbeta(x, scale = scale, shape2 = 1)`. `mlpower` estimates its endpoint."),r.stop_detail,"limit",{"alpha","beta"},"power");
-      return classify(fail(r.allfree_certified?"Generalized beta selects a limiting power law. Use `mlpower`.":"Generalized beta selects a limiting power law (uncertified global comparison). Use `mlpower`."),r.stop_detail,"limit",{"alpha","beta"},"power");
-    case cppunivariate::GenbetaStatus::Unbounded:return classify(fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded)."),{},"nomle",{});
-    case cppunivariate::GenbetaStatus::InvalidData:return fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded).");
-    case cppunivariate::GenbetaStatus::InvalidFixed:return fail("Generalized beta held parameters must be positive finite numbers.");
+      if(!std::isnan(b))return done(classify(fail("Generalized beta selects power with the endpoint held: use `mlgenbeta(x, scale = scale, shape2 = 1)`. `mlpower` estimates its endpoint."),r.stop_detail,outcome_kind(o),{"alpha","beta"},"power"));
+      return done(classify(fail(r.allfree_certified?"Generalized beta selects a limiting power law. Use `mlpower`.":"Generalized beta selects a limiting power law (uncertified global comparison). Use `mlpower`."),r.stop_detail,outcome_kind(o),{"alpha","beta"},"power"));
+    case cppunivariate::GenbetaStatus::Unbounded:return done(classify(fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded)."),{},outcome_kind(o),{}));
+    case cppunivariate::GenbetaStatus::InvalidData:return done(fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded)."));
+    case cppunivariate::GenbetaStatus::InvalidFixed:return done(fail("Generalized beta held parameters must be positive finite numbers."));
     case cppunivariate::GenbetaStatus::SearchUnresolved: {
       const char* message="Generalized beta search unresolved; increase iterlim or hold shapes.";
       switch(r.certificate_failure) {
@@ -89,10 +96,10 @@ const std::string name = "shape3";
         case cppunivariate::GenbetaCertificateFailure::Arithmetic:message="Generalized beta certificate arithmetic unresolved; hold shapes.";break;
         default:break;
       }
-      return classify(fail(message),r.stop_detail,"numerical",{"shape1","shape2","shape3","scale"});
+      return done(classify(fail(message),r.stop_detail,outcome_kind(o),{"shape1","shape2","shape3","scale"}));
     }
   }
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",r.shape1},{"shape2",r.shape2},{"shape3",r.shape3},{"scale",r.scale}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; if(std::isnan(a)&&std::isnan(b)&&std::isnan(t))out.extra.emplace_back("certified",r.allfree_certified?1.:0.); out.extra_vectors.emplace_back("support", std::vector<double>{0,scale}); return out; }();
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",r.shape1},{"shape2",r.shape2},{"shape3",r.shape3},{"scale",r.scale}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; if(std::isnan(a)&&std::isnan(b)&&std::isnan(t))out.extra.emplace_back("certified",r.allfree_certified?1.:0.); out.extra_vectors.emplace_back("support", std::vector<double>{0,scale}); return out; }());
 
 }
 }

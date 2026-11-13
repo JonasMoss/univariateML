@@ -3,6 +3,7 @@
 // Complete rational-score inclusion in beta; alpha profiles analytically.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
@@ -29,6 +30,20 @@ struct FatigueResult {
   FatigueStatus status = FatigueStatus::Ok;
   StopDetail stop_detail{};
 };
+
+inline FitOutcome outcome(const FatigueResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.status == FatigueStatus::SearchFailure && r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.status == FatigueStatus::SearchFailure && r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  switch (r.status) {
+    case FatigueStatus::Ok: return FitOutcome::estimate(true);
+    case FatigueStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case FatigueStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case FatigueStatus::SearchFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
 
 #include "certificate.hpp"
 

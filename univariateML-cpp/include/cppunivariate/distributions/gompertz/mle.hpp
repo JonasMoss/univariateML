@@ -6,6 +6,7 @@
 // maximiser given b.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
@@ -36,6 +37,18 @@ struct GompertzResult {
   int iterations;
   GompertzStatus status;
  StopDetail stop_detail{}; };
+
+inline FitOutcome outcome(const GompertzResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case GompertzStatus::Ok: return FitOutcome::estimate(true);
+    case GompertzStatus::Overdispersed: return FitOutcome::limit(true);
+    case GompertzStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GompertzStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+  }
+  return {};
+}
 
 inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool standardized) {
   maxit = static_cast<int>(solver_budget(maxit));

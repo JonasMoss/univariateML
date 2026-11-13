@@ -2,6 +2,7 @@
 // shape = 1/sigma, scale = exp(-mu + s) where s = -mean(log_x).
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
@@ -26,6 +27,19 @@ struct WeibullResult {
   int iterations;
   WeibullStatus status = WeibullStatus::Ok;
  StopDetail stop_detail{}; };
+
+inline FitOutcome outcome(const WeibullResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case WeibullStatus::Ok: return FitOutcome::estimate(true);
+    case WeibullStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case WeibullStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case WeibullStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case WeibullStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
 
 // shape0 is an optional positive starting shape; NaN keeps the automatic start.
 inline WeibullResult weibull_mle(span x, double tol, int maxit,

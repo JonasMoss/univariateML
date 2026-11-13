@@ -21,6 +21,7 @@
 //               alpha0 = max(1.5, 2 / sd(log(x / theta0))).
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include "certificate.hpp"
@@ -50,6 +51,20 @@ struct ParalogisResult {
   StopDetail stop_detail = {};
   bool certified=true;
 };
+
+inline FitOutcome outcome(const ParalogisResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case ParalogisStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ParalogisStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case ParalogisStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ParalogisStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case ParalogisStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case ParalogisStatus::CertificateBudget: return FitOutcome::budget();
+  }
+  return {};
+}
 
 // Negative log-likelihood as a BFGS Cost, parameterised in phi-space:
 //   phi[0] = u = log(shape), phi[1] = v = log(scale).

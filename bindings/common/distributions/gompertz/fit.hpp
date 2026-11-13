@@ -19,37 +19,51 @@ inline FitResult fit_gompertz(cppunivariate::span x, Held a_arg = {}, Held b_arg
   };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held a = a_arg;
   const Held b = b_arg;
 
   std::vector<std::string> fixed;
   const double a_held = !a.supplied ? std::numeric_limits<double>::quiet_NaN() : a.value;
   if (a.supplied) {
-    if (!(std::isfinite(a_held) && a_held > 0.0)) return fail("Held `a` must be positive and finite.");
+    if (!(std::isfinite(a_held) && a_held > 0.0)) return invalid_argument(fail("Held `a` must be positive and finite."));
     fixed.push_back("a");
   }
   const double b_held = !b.supplied ? std::numeric_limits<double>::quiet_NaN() : b.value;
   if (b.supplied) {
-    if (!(std::isfinite(b_held) && b_held > 0.0)) return fail("Held `b` must be positive and finite.");
+    if (!(std::isfinite(b_held) && b_held > 0.0)) return invalid_argument(fail("Held `b` must be positive and finite."));
     fixed.push_back("b");
   }
 
   auto res = cppunivariate::gompertz_mle(x, reltol, iterlim, a_held, b_held);
+  const auto o = cppunivariate::outcome(res);
+  const auto done = [&](FitResult out) {
+    // The classification guard also needs the original data and controls.
+    if (res.status == cppunivariate::GompertzStatus::Overdispersed && out.error_kind.empty()) {
+      const bool valid = !x.empty() && std::all_of(x.begin(), x.end(), [](double v) { return std::isfinite(v) && v >= 0; }) &&
+        reltol > 0 && std::isfinite(reltol) && iterlim > 0;
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(valid ? cppunivariate::OutcomeReason::Evaluation : cppunivariate::OutcomeReason::InvalidInput), static_cast<int>(res.status));
+    }
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+      return overridden(std::move(out), static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+  };
+
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+
   if(res.status==cppunivariate::GompertzStatus::Unbounded)
-    return nomle("The Gompertz maximum likelihood estimator does not exist for constant data: the likelihood is unbounded.");
+    return done(nomle("The Gompertz maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."));
 
   if (res.status == cppunivariate::GompertzStatus::Overdispersed) {
-    return classify(fail("The Gompertz maximum likelihood estimator escapes to an exponential "
-               "when the score at b=0 is nonpositive. Use `mlexp` instead."),res.stop_detail,"limit",{"rate"},"exp");
+    return done(classify(fail("The Gompertz maximum likelihood estimator escapes to an exponential "
+               "when the score at b=0 is nonpositive. Use `mlexp` instead."),res.stop_detail,outcome_kind(o),{"rate"},"exp"));
   }
   if (res.status != cppunivariate::GompertzStatus::Ok || !std::isfinite(res.a) ||
       !std::isfinite(res.b)) {
     if (!a.supplied && std::all_of(x.begin(),x.end(),[](double v){return v==0;}))
-      return fail("The Gompertz likelihood is unbounded for all-zero data with a free.");
-    return fail("Gompertz MLE failed to converge or data exceed double precision.");
+      return done(fail("The Gompertz likelihood is unbounded for all-zero data with a free."));
+    return done(fail("Gompertz MLE failed to converge or data exceed double precision."));
   }
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"a",res.a},{"b",res.b}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"a",res.a},{"b",res.b}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

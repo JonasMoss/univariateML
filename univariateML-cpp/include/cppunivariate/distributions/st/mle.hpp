@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "local_accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../sstd/scalar_search.hpp"
@@ -18,6 +19,27 @@
 namespace cppunivariate {
 enum class StStatus {Ok, InvalidInput, Unbounded, ScaleBoundary, NumericalFailure, SkewNormalBoundary, RightHalfTBoundary, LeftHalfTBoundary, RightHalfNormalBoundary, LeftHalfNormalBoundary};
 struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;bool certified=false;bool accuracy_failure=false;};
+
+inline FitOutcome outcome(const StResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
+  if (r.stop_detail.comparison_tie) return FitOutcome::estimate(r.certified, !r.certified);
+  if (r.budget_exhausted) return FitOutcome::budget();
+  switch (r.status) {
+    case StStatus::Ok: return FitOutcome::estimate(r.certified);
+    case StStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case StStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case StStatus::ScaleBoundary: return r.reason == 6 ? FitOutcome::nonexistence(OutcomeReason::Unattained) : FitOutcome::failure(OutcomeReason::NoConvergence);
+    case StStatus::NumericalFailure: return FitOutcome::failure(r.reason >= 1 && r.reason <= 4 ? OutcomeReason::NoConvergence : OutcomeReason::Evaluation);
+    case StStatus::SkewNormalBoundary: return FitOutcome::limit(r.certified);
+    case StStatus::RightHalfTBoundary: return FitOutcome::limit(r.certified);
+    case StStatus::LeftHalfTBoundary: return FitOutcome::limit(r.certified);
+    case StStatus::RightHalfNormalBoundary: return FitOutcome::limit(r.certified);
+    case StStatus::LeftHalfNormalBoundary: return FitOutcome::limit(r.certified);
+  }
+  return {};
+}
 namespace st_detail {
 // Transport a stopped limiting-family search, preserving its witnesses rather
 // than treating subdivision exhaustion as a generic optimizer failure.

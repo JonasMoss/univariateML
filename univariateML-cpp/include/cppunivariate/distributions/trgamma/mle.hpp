@@ -25,6 +25,7 @@
 // reciprocal fit passes -log(x) without forming 1/x.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
@@ -61,6 +62,24 @@ struct TrGammaResult {
  StopDetail stop_detail{};
  bool reconstruction_failure=false;
  bool transformation_failure=false; };
+
+inline FitOutcome outcome(const TrGammaResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  if (r.transformation_failure || r.reconstruction_failure) return FitOutcome::failure(OutcomeReason::Evaluation);
+  switch (r.status) {
+    case TrGammaStatus::Ok: return FitOutcome::estimate(true);
+    case TrGammaStatus::LognormalBoundary: return FitOutcome::limit(false);
+    case TrGammaStatus::PowerBoundary: return FitOutcome::limit(false);
+    case TrGammaStatus::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case TrGammaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TrGammaStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidArgument);
+    case TrGammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
 
 namespace trgamma_detail {
 
