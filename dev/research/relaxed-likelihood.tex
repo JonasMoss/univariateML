@@ -32,7 +32,8 @@ existence, escape and consistency}
 \maketitle
 
 \section*{Purpose and status}
-This note records a discussion of 10 November 2026 (Jonas Moss and Claude).
+This note records a discussion of 10 November 2026 (Jonas Moss and Claude),
+extended on 13 November 2026 (Section~\ref{sec:hellinger}).
 The aim is classification and understanding, not novelty: one picture of
 what maximum likelihood (ML) does, at finite $n$ and as $n\to\infty$, built
 on the weak closure of the model in the probability measures on the
@@ -63,6 +64,11 @@ firmness grade).
 \item Under domination, inconsistency needs a positive relaxation gap
   somewhere (Corollary~\ref{cor:spikes-gaps}): ML fails through spikes
   (domination, Ferguson) or excess (gaps, the sine family), nothing else.
+\item The weak closure decides existence and classification; Hellinger
+  (total variation) decides inference (Section~\ref{sec:hellinger}). An
+  acceptable escape need not be a Hellinger limit, and at Hellinger faces
+  with a diverging coordinate every valid confidence set is unbounded with
+  probability at least $1-\alpha$ (Proposition~\ref{prop:gh}).
 \end{enumerate}
 
 Related material: \texttt{boundary-points.tex} (this folder); the boundary
@@ -557,13 +563,220 @@ $g$ is a member or a point of $\bM$ without gap at $x$, then $\bL_n(\bP;x)=c^n\b
 $\bP$ is not a maximiser when $\bL_n(g;x)>0$. \status{proved here}
 \end{lemma}
 
-\paragraph{Hellinger.} Hellinger limits are weak limits of signature
-$(1,0,0)$; Hellinger closures are not compact, and a Hellinger limit can
-have infinite excess (Example~\ref{ex:spike}). Locally uniform convergence
-near the data to a density of mass one gives both Hellinger convergence
-(Scheff\'e) and absence of gaps; neither converse holds. Hellinger geometry
-belongs to inference near a boundary point: DQM, LAN, rates, seams and
-cusps, boundary tests \cite{selfliang}.
+\paragraph{Hellinger.} See Section~\ref{sec:hellinger}.
+
+\section{Weak closure and Hellinger closure: existence versus inference}
+\label{sec:hellinger}
+Added 13 November 2026. The two closures answer different questions. The
+weak closure is where maximising sequences go: it is compact, and it
+decides existence and the finite-sample outcome. Hellinger distance, or
+equivalently total variation, is the topology of statistical
+distinguishability at a fixed sample size. With
+$H^2(P,Q)=\frac12\int(\sqrt p-\sqrt q)^2\,d\nu$,
+\[
+ H^2\le\mathrm{TV}\le\sqrt2\,H,\qquad
+ H^2(P^n,Q^n)=1-\bigl(1-H^2(P,Q)\bigr)^n\le n\,H^2(P,Q),
+\]
+so $\mathrm{TV}(P^n,Q^n)\le\sqrt{2n}\,H(P,Q)$. Hellinger limits are weak
+limits of signature $(1,0,0)$. The Hellinger closure is not compact, and a
+Hellinger limit can have infinite excess (Example~\ref{ex:spike}).
+
+\paragraph{Outcomes in terms of relaxed maximisers.} By
+Theorem~\ref{thm:main}(i) the relaxed likelihood always has maximisers on
+$\bM$, possibly with value $+\infty$. Call a maximiser \emph{acceptable} if
+its value is finite and it has no gap, so that
+$\bL_n(\bP;x)=\prod_i\bar p(x_i)<\infty$. No gap excludes excess and
+deficit alike. The outcomes of Table~\ref{tab:outcomes} then read:
+\begin{itemize}
+\item an acceptable maximiser that is a member: MLE;
+\item an acceptable proper maximiser that is not a member: escape to the
+  family containing it;
+\item an acceptable defective maximiser: escape to a non-model (R4);
+\item every maximiser has a gap: R3, R10;
+\item $\sup L_n=\infty$: the maximisers form the level set
+  $A_n=\{\bP\in\bM:\bL_n(\bP)=\infty\}$, which is nonempty and closed (an
+  intersection of the closed sets $\{\bL_n\ge c\}$). The outcome is
+  described by the shape of $A_n$.
+\end{itemize}
+The shape of $A_n$ separates informative from uninformative infinities.
+\begin{itemize}
+\item \emph{Normal, constant sample (or $n=1$)}: $A_n=\{\delta_x\}$. Members
+  have finite likelihood, and $\bL_n=0$ at $\delta_y$, $y\ne x$, and at
+  $\delta_\infty$. The relaxed maximiser is unique and meaningful: an escape
+  to the point mass, structurally like NB to Poisson. \status{proved here}
+\item \emph{Weibull3 with free shape}: $A_n$ is the closure of the members
+  pinned at $x_{(1)}$. It contains every pinned member with shape $k<1$;
+  the pinned shifted exponential ($k=1$, approached with $k_j\uparrow1$ and
+  threshold gap $\varepsilon_j=e^{-1/(1-k_j)^2}$, so
+  $\varepsilon_j^{k_j-1}=e^{1/(1-k_j)}\to\infty$), a member with finite own
+  likelihood and hence excess; the limits
+  $a\,\delta_{x_{(1)}}+(1-a)\,\delta_\infty$, $a\in[0,1]$, as $k\to0$ (with
+  $X-\mu=\lambda E^{1/k}$, $E$ exponential, fixed $\lambda$ gives
+  $a=1-e^{-1}$, $\lambda=c^{1/k}$ gives $a=1-e^{-1/c}$, and $\lambda^k\to0$
+  gives $\delta_{x_{(1)}}$); and $\delta_\infty$ itself, as $\lambda\to\infty$
+  with the threshold pinned. \status{sketch}
+\item \emph{Normal mixtures}: $A_n$ contains every
+  $w\,\delta_{x_i}+(1-w)N(\mu,\sigma^2)$, $w\in(0,1)$, and every single
+  normal through a vanishing spike (Example~\ref{ex:spike}).
+  \status{proved here}
+\end{itemize}
+A singleton $A_n$ (total collapse) is an informative relaxed maximiser and
+can be reported as an escape to a point mass. A large $A_n$, containing
+$\delta_\infty$, members with finite own likelihood, or whole families
+(partial collapse, poles, spikes), means the infinite value carries no
+information about the data.
+
+\paragraph{Acceptable does not imply Hellinger.} No gap is a condition at
+the $n$ data points; Hellinger convergence is a condition on the whole
+sample space.
+
+\begin{example}[An acceptable escape outside the Hellinger closure]
+\label{ex:half-sine}
+On $[0,1]$ and for integers $j\ge1$ let
+\[
+ p_j(x)=\begin{cases}
+ (1+\frac1j)\bigl(1+\sin(4\pi jx)\bigr), & x\le\frac12,\\
+ 1-\frac1j, & x>\frac12.
+ \end{cases}
+\]
+The sine integrates to zero over $[0,\frac12]$, so each $p_j$ is a density,
+$p_j\Rightarrow U$, and $\bM=\{p_j\}\cup\{U\}$. For every sample with all
+$x_i>\frac12$, members give $(1-\frac1j)^n<1$ and $\bL_n(U)=1=\prod_iu(x_i)$:
+$U$ is the unique maximiser, finite and without gap, a proper escape. The
+event has positive probability under every member. One period of
+$\sqrt{1+\sin}$ averages $2\sqrt2/\pi$, so
+\[
+ \int\sqrt{p_j\,u}\to\tfrac12\cdot\tfrac{2\sqrt2}{\pi}+\tfrac12\approx0.950<1,
+\]
+and $U$ is not in the Hellinger closure. \status{proved here}
+\end{example}
+
+\begin{example}[No gap at almost every sample, still not Hellinger]
+\label{ex:rademacher-comb}
+On $[0,1)$ let $A_k$ be the set where the $k$-th binary digit is $0$, let
+$c_k=k^2\mathbf 1_{S_k}$ be a comb with evenly spread teeth of total length
+$k^{-2}$, and put $h_k=\mathbf 1_{A_k}+\frac12c_k$. Then
+$\mathbf 1_{A_k}\Rightarrow\frac12U$ (Rademacher functions) and
+$\frac12c_k\Rightarrow\frac12U$, so $h_k\Rightarrow U$. For almost every
+sample, all $x_i$ lie in $A_k$ for infinitely many $k$ (the events are
+independent with probability $2^{-n}$; Borel--Cantelli), and the sample
+meets only finitely many $S_k$ ($\sum k^{-2}<\infty$). So
+$\bL_n(U;x)=\limsup_k\prod_ih_k(x_i)=1$ for every $n$ and almost every $x$:
+no gap. The affinity $\int\sqrt{h_k}$ tends to $\frac12$, so $U$ is not a
+Hellinger limit. Whether $U$ is also the maximiser is not claimed.
+\status{proved here}
+\end{example}
+
+\begin{lemma}[Scheff\'e]\label{lem:scheffe}
+If $\bP$ is proper and some members $P_k\Rightarrow\bP$ have densities
+$p_k\to\bar p$ $\nu$-almost everywhere, then $H(P_k,\bP)\to0$. In particular,
+on countable $X$ with counting measure every proper point of $\bM$ is a
+Hellinger limit. \status{proved here}
+\end{lemma}
+\begin{proof}
+Scheff\'e's lemma gives $\int|p_k-\bar p|\to0$, and $H^2\le\mathrm{TV}$. On
+countable $X$ weak convergence gives $p_k(x)\to\bar p(x)$ at every $x$
+(Lemma~\ref{lem:exact}(b)).
+\end{proof}
+The library's escapes are of this kind wherever the density extends
+continuously to the face: NB to Poisson, Lomax to exponential, Student $t$
+to normal, the Burr faces. So in practice their targets are Hellinger
+limits, but that is a property of the families, not of acceptability; a
+dossier claiming an escape with standard boundary inference should check
+both. \status{sketch; not yet recorded per dossier}
+
+\paragraph{Impossibility at Hellinger faces.} The Gleser--Hwang phenomenon
+\cite{gleserhwang,dufour,bertanhamoreira} lives in the testing topology.
+
+\begin{proposition}[Unbounded confidence sets]\label{prop:gh}
+Let $g:\Theta\to\mathbb R$ and $\theta_k\in\Theta$ with $g(\theta_k)\to\infty$
+and $H(P_{\theta_k},P^*)\to0$ for a law $P^*$ on $X$, a member or a boundary
+point. Let $C$ be a confidence set for $g$ from $n$ observations with
+$P_{\theta_k}(g(\theta_k)\in C)\ge1-\alpha$ for all $k$ and measurable events
+$\{\sup C>B\}$. Then
+\[
+ P^{*n}\bigl(\sup C=\infty\bigr)\ge1-\alpha,\qquad
+ P_\theta^n\bigl(\sup C=\infty\bigr)\ge1-\alpha-\sqrt{2n}\,H(P_\theta,P^*)
+ \ \text{for every }\theta.
+\]
+\status{proved here; the argument is Gleser and Hwang's
+\cite{gleserhwang} (lit, unverified)}
+\end{proposition}
+\begin{proof}
+Fix $B$. Once $g(\theta_k)>B$,
+$P^n_{\theta_k}(\sup C>B)\ge P_{\theta_k}(g(\theta_k)\in C)\ge1-\alpha$. Since
+$\mathrm{TV}(P^n_{\theta_k},P^{*n})\le\sqrt{2n}\,H(P_{\theta_k},P^*)\to0$,
+$P^{*n}(\sup C>B)\ge1-\alpha$. Let $B\to\infty$. The second bound is the same
+total-variation step from $P^*$ to $P_\theta$.
+\end{proof}
+This applies at nearly every library face. Under Poisson data, any valid
+confidence set for the NB size $r$ is unbounded with probability at least
+$1-\alpha$; likewise for the Student $t$ degrees of freedom under normal
+data and the Lomax shape under exponential data, and nearly so for truths
+near these faces. By Lemma~\ref{lem:scheffe} it holds at every proper face
+of a count family. Intervals should therefore be reported in a coordinate
+where the face is finite ($1/r$, $1/\nu$), or allow $\infty$ as an endpoint
+by design.
+
+\begin{proposition}[Weak-only limits, regular procedures]\label{prop:gh-weak}
+If in Proposition~\ref{prop:gh} only $P_{\theta_k}\Rightarrow P^*$ weakly,
+with $P^*$ proper, the conclusion $P^{*n}(\sup C=\infty)\ge1-\alpha$ still
+holds when the upper endpoint $u(x)=\sup C(x)$ is upper semicontinuous on
+$X^n$. \status{proved here}
+\end{proposition}
+\begin{proof}
+$P^n_{\theta_k}\Rightarrow P^{*n}$ on $\bX^n$ (products of weakly convergent
+laws on separable spaces). The set $\{u\ge B\}$ is closed in $X^n$; its
+closure in $\bX^n$ adds only points with a coordinate at $\infty$, which
+are $P^{*n}$-null. Portmanteau gives
+$P^{*n}(u\ge B)\ge\limsup_kP^n_{\theta_k}(u\ge B)\ge1-\alpha$; let
+$B\to\infty$.
+\end{proof}
+Without such regularity a weak-only limit forces nothing in general:
+weak convergence does not make $P^n_{\theta_k}$ and $P^{*n}$ close in total
+variation (the comb has $\mathrm{TV}\to1$, the sine family
+$\mathrm{TV}=1/\pi$), so a procedure that uses the fine structure of the data
+may escape. Whether the sine family forces unbounded confidence sets for
+$\theta$ is a property of that family and is open.
+
+\paragraph{Escape frequencies.} At a Hellinger face, members within
+$n^{-1/2}$ (or the cusp scale) are indistinguishable from the face, which
+produces the non-degenerate escape probabilities of
+Table~\ref{tab:asymptotic} ($c=\frac12$ at a seam, $0.971$ at the Burr
+cusp). At a boundary point approached only weakly, members stay at total
+variation distance bounded below, and by Pinsker
+$\mathrm{KL}(P^*\,\|\,P_k)\ge2\,\mathrm{TV}(P^*,P_k)^2$, so each fixed member loses
+to $P^*$ exponentially fast; only a supremum over infinitely many members
+can compete.
+
+\begin{conjecture}[Crisp escapes at weak-only boundary points]
+\label{conj:crisp}
+A limiting escape probability $c\in(0,1)$ at a boundary truth requires
+members approaching it in Hellinger distance (a non-degenerate local
+experiment). At a boundary truth approached only weakly, the limiting
+escape probability is $0$ or $1$. \status{conjecture}
+\end{conjecture}
+Example~\ref{ex:half-sine} is consistent with this: under any member its
+clean escape needs all observations above $\frac12$, an event of
+exponentially small probability.
+
+\begin{center}\small
+\begin{tabular}{@{}p{4.2cm}p{4.9cm}p{4.9cm}@{}}
+\toprule
+ & Hellinger (TV) face & weak-only boundary point\\
+\midrule
+nearby members at fixed $n$ & indistinguishable in the limit & separated, TV bounded below\\
+Gleser--Hwang for diverging coordinates & yes (Proposition~\ref{prop:gh}) & for regular procedures (Proposition~\ref{prop:gh-weak}); otherwise family-specific\\
+local experiment (LAN, DQM, cusp) & exists; rows A4--A4$''$ & none\\
+asymptotic escape probability & $c\in(0,1)$ possible & $0$ or $1$ (Conjecture~\ref{conj:crisp})\\
+role & inference & existence and classification\\
+\bottomrule
+\end{tabular}
+\end{center}
+Other impossibility results also live in the testing topology: Bahadur and
+Savage on tests for a mean \cite{bahadursavage}, Donoho on one-sided
+inference for functionals such as the number of modes \cite{donoho88}
+(both \status{lit, unverified}).
 
 \section{Representative examples}
 
@@ -840,6 +1053,8 @@ Geyer 1994 \cite{geyer94} & n/a & hypoconvergence of likelihoods; usc hull = clo
 Dupa\v cov\'a--Wets 1988 \cite{dw} & n/a & epi-convergence and consistency of estimators (\status{lit, unverified})\\
 Csisz\'ar--Mat\'u\v s 2005 \cite{cm} & laws, variation & faces of the convex core\\
 Chen 2017 \cite{chen} & mixing laws, vague & subdistributions\\
+Gleser--Hwang 1987 \cite{gleserhwang}; Dufour 1997 \cite{dufour}; Bertanha--Moreira 2020 \cite{bertanhamoreira} & laws, TV & unbounded confidence sets near poorly identified points (\status{lit, unverified})\\
+Bahadur--Savage 1956 \cite{bahadursavage}; Donoho 1988 \cite{donoho88} & laws, TV & impossibility in the testing topology (\status{lit, unverified})\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -866,7 +1081,7 @@ level & object & decides\\
 model & $\bM$, signature, members coinciding with boundary points & existence of any consistent estimator \cite{lecamschwartz}\\
 ML, finite $n$ & $\bL_n$, gap, membership & outcome (Table~\ref{tab:outcomes})\\
 ML, $n\to\infty$ & $\E_0\log\bL_m$, $\gamma$ & consistency (Theorem~\ref{thm:main})\\
-local & Hellinger, DQM & rates and inference\\
+local & Hellinger (TV), DQM & rates, inference, unbounded confidence sets (Section~\ref{sec:hellinger})\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -888,6 +1103,12 @@ local & Hellinger, DQM & rates and inference\\
 \item Pole pinning: confirm Smith's two-step treatment for shape below one
   \cite{smith}, and whether other pinned-coordinate cases exist among the
   families (an endpoint parameter whose density has a pole).
+\item Section~\ref{sec:hellinger}: check Gleser and Hwang, Dufour, and
+  Bertanha and Moreira in the originals; Conjecture~\ref{conj:crisp};
+  whether the sine family forces unbounded confidence sets for $\theta$;
+  record per dossier whether each escape face is a Hellinger limit
+  (Lemma~\ref{lem:scheffe}); interval endpoints at $\infty$ in the
+  inference plan.
 \end{enumerate}
 
 \begin{thebibliography}{99}
@@ -959,6 +1180,22 @@ of nonregular cases. \emph{Biometrika} 72(1), 67--90.
 \bibitem{strasser} H. Strasser (1981). Consistency of maximum likelihood and
 Bayes estimates. \emph{Annals of Statistics} 9(5), 1107--1113.
 \doi{10.1214/aos/1176345590}.
+\bibitem{gleserhwang} L. J. Gleser and J. T. Hwang (1987). The nonexistence
+of $100(1-\alpha)\%$ confidence sets of finite expected diameter in
+errors-in-variables and related models. \emph{Annals of Statistics} 15(4).
+(Details not checked.)
+\bibitem{dufour} J.-M. Dufour (1997). Some impossibility theorems in
+econometrics with applications to structural and dynamic models.
+\emph{Econometrica} 65(6). (Details not checked.)
+\bibitem{bertanhamoreira} M. Bertanha and M. J. Moreira (2020). Impossible
+inference in econometrics: theory and applications. \emph{Journal of
+Econometrics}. (Details not checked.)
+\bibitem{bahadursavage} R. R. Bahadur and L. J. Savage (1956). The
+nonexistence of certain statistical procedures in nonparametric problems.
+\emph{Annals of Mathematical Statistics} 27(4). (Details not checked.)
+\bibitem{donoho88} D. L. Donoho (1988). One-sided inference about
+functionals of a density. \emph{Annals of Statistics} 16(4). (Details not
+checked.)
 \bibitem{wald} A. Wald (1949). Note on the consistency of the maximum
 likelihood estimate. \emph{Annals of Mathematical Statistics} 20(4),
 595--601. \doi{10.1214/aoms/1177729952}.
