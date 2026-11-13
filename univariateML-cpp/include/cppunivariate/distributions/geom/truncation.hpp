@@ -1,5 +1,6 @@
 // Exponential-family traits for closed-window truncation.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/truncation.hpp"
 #include "../../special/special.hpp"
 namespace cppunivariate {
@@ -29,3 +30,19 @@ struct GeomTruncationTraits {
   double reference() const {return .5;}
 };
 }
+
+namespace cppunivariate {
+// Shared closed-window result used by the count modifier routes. Boundary
+// statuses retain the seam's existing plain-error rendering.
+inline FitOutcome outcome(const TruncationResult& r) {
+  switch(r.status) {
+    case TruncationStatus::Ok: return FitOutcome::estimate(true);
+    case TruncationStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TruncationStatus::NotImplemented: return FitOutcome::failure(OutcomeReason::Unsupported);
+    case TruncationStatus::LowerLimit: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case TruncationStatus::UpperLimit: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case TruncationStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate

@@ -30,15 +30,28 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   const double lower = a.supplied ? a.value : nan;
   const double upper = b.supplied ? b.value : nan;
   if ((a.supplied && std::isnan(lower)) || (b.supplied && std::isnan(upper)))
-    return fail("Truncated normal bounds must not be missing.");
+    return invalid_argument(fail("Truncated normal bounds must not be missing."));
   const double held_mean = mean.supplied ? mean.value : nan;
   const double held_sd = sd.supplied ? sd.value : nan;
   if (mean.supplied && !std::isfinite(held_mean))
-    return fail("`mean` must be finite.");
+    return invalid_argument(fail("`mean` must be finite."));
   if (sd.supplied && !(std::isfinite(held_sd) && held_sd > 0))
-    return fail("`sd` must be finite and positive.");
+    return invalid_argument(fail("`sd` must be finite and positive."));
   const auto res = cppunivariate::tnorm_mle(x, lower, upper, reltol, iterlim,
                                             held_mean, held_sd);
+  const auto o=cppunivariate::outcome(res);
+  const auto done=[&](FitResult out) {
+    if(!out.error.empty() && res.status==cppunivariate::TnormStatus::Ok)
+      return overridden(std::move(out),static_cast<int>(res.status));
+    // InvalidBounds also represents an adapter-recognized constant-data collapse.
+    if(out.error_kind=="nomle")return with_outcome(std::move(out),cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded),static_cast<int>(res.status));
+    if(!out.error.empty() && out.error_kind.empty() && o.kind!=cppunivariate::OutcomeKind::Failure)
+      return with_outcome(std::move(out),cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation),static_cast<int>(res.status));
+    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+      return overridden(std::move(out),static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+  };
+  return done([&]() -> FitResult {
   const std::string rate = binding_message("%.6g", res.limit_rate);
   const std::string decay = binding_message("%.6g", -res.limit_rate);
   switch (res.status) {
@@ -52,19 +65,19 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
     case cppunivariate::TnormStatus::UnboundedLocation:
       return nomle("Truncated normal likelihood is unbounded with held `sd`: all observations equal a finite endpoint and the parent mean escapes beyond that endpoint.");
     case cppunivariate::TnormStatus::ExponentialBoundary:
-      return classify(fail("The truncated normal fit on (a, Inf) escapes to, or is numerically tied with, a + Y, Y exponential with rate " + decay + ", as sd -> Inf; no finite MLE is returned (variance >= (mean(x) - a)^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(x - a)` to fit the limit."),res.stop_detail,"limit",{"mu","rate"},"unavailable:translated-exponential");
+      return classify(fail("The truncated normal fit on (a, Inf) escapes to, or is numerically tied with, a + Y, Y exponential with rate " + decay + ", as sd -> Inf; no finite MLE is returned (variance >= (mean(x) - a)^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(x - a)` to fit the limit."),res.stop_detail,outcome_kind(o),{"mu","rate"},"unavailable:translated-exponential");
     case cppunivariate::TnormStatus::ReflectedExponentialBoundary:
-      return classify(fail("The truncated normal fit on (-Inf, b) escapes to, or is numerically tied with, b - Y, Y exponential with rate " + rate + ", as sd -> Inf; no finite MLE is returned (variance >= (b - mean(x))^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(b - x)` to fit the limit."),res.stop_detail,"limit",{"mu","rate"},"unavailable:reflected-exponential");
+      return classify(fail("The truncated normal fit on (-Inf, b) escapes to, or is numerically tied with, b - Y, Y exponential with rate " + rate + ", as sd -> Inf; no finite MLE is returned (variance >= (b - mean(x))^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(b - x)` to fit the limit."),res.stop_detail,outcome_kind(o),{"mu","rate"},"unavailable:reflected-exponential");
     case cppunivariate::TnormStatus::TruncatedExponentialBoundary:
-      return classify(fail("The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(" + rate + " * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit."),res.stop_detail,"limit",{"a","b","rate"},"unavailable:truncated-exponential");
+      return classify(fail("The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(" + rate + " * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit."),res.stop_detail,outcome_kind(o),{"a","b","rate"},"unavailable:truncated-exponential");
     case cppunivariate::TnormStatus::UniformBoundary:
-      return classify(fail("With `mean` held fixed, the truncated normal fit escapes to, or is numerically tied with, the uniform distribution on (a, b) as sd -> Inf; no finite MLE is returned (mean squared distance is at least the uniform's, or a likelihood tie within 1e-8 per observation)."),res.stop_detail,"limit",{"a","b"},"unif");
+      return classify(fail("With `mean` held fixed, the truncated normal fit escapes to, or is numerically tied with, the uniform distribution on (a, b) as sd -> Inf; no finite MLE is returned (mean squared distance is at least the uniform's, or a likelihood tie within 1e-8 per observation)."),res.stop_detail,outcome_kind(o),{"a","b"},"unif");
     case cppunivariate::TnormStatus::InvalidFixed:
       return fail("`mean` must be finite and `sd` finite and positive.");
     case cppunivariate::TnormStatus::IterationFailure:
       return stop_failure(
         fail("Truncated normal Newton iteration did not converge; increase `iterlim`."),
-        res.stop_detail,"numerical",{"mean","sd","a","b"});
+        res.stop_detail,outcome_kind(o),{"mean","sd","a","b"});
     case cppunivariate::TnormStatus::InvalidInput:
     default:
       return fail("Truncated normal MLE requires finite data, positive `reltol` and positive `iterlim`.");
@@ -76,5 +89,6 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   if (b.supplied) fixed.push_back("b");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",res.mean},{"sd",res.sd},{"a",res.a},{"b",res.b}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
+  }());
 }
 }

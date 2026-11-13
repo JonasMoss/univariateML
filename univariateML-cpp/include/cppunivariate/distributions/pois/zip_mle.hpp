@@ -2,6 +2,7 @@
 // zero-rate exceeds exp(-mean), the principal branch W_0 yields the MLE.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/discrete_stop.hpp"
 
 #include "../../core/lambert_w.hpp"
@@ -148,3 +149,17 @@ inline ZipResult zip_mle(ispan x,
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const ZipResult& r) {
+  switch(r.status) {
+    case ZipStatus::Ok: return FitOutcome::estimate(true);
+    case ZipStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZipStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case ZipStatus::ZeroLimit: return FitOutcome::limit(true);
+    case ZipStatus::Budget: return FitOutcome::budget();
+    case ZipStatus::Tie: return FitOutcome::estimate(false);
+  }
+  return {};
+}
+} // namespace cppunivariate

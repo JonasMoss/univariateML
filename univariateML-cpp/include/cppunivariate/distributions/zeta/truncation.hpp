@@ -1,5 +1,6 @@
 // Finite [1,N] zeta exponential family, with the full real exponent domain.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../special/special.hpp"
 #include "../../special/tails.hpp"
 #include "finite_harmonic.hpp"
@@ -218,3 +219,16 @@ inline double zeta_window_eval(char kind,double v,int N,double s,bool lower=true
   return lo;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const ZetaWindowResult& r) {
+  switch(r.status) {
+    case ZetaWindowStatus::Ok: return FitOutcome::estimate(true, !r.unidentified);
+    case ZetaWindowStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZetaWindowStatus::LowerLimit: return FitOutcome::limit(true);
+    case ZetaWindowStatus::UpperLimit: return FitOutcome::limit(true);
+    case ZetaWindowStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate

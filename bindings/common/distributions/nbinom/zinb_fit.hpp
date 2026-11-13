@@ -9,22 +9,29 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
   const Held prob = prob_arg;
   const Held pi = pi_arg;
 
-  if(prob.supplied && !std::isfinite(prob.value))return fail("`prob` must be finite and in its parameter domain.");
-  if(pi.supplied && !std::isfinite(pi.value))return fail("`pi` must be finite and in its parameter domain.");
+  if(prob.supplied && !std::isfinite(prob.value))return invalid_argument(fail("`prob` must be finite and in its parameter domain."));
+  if(pi.supplied && !std::isfinite(pi.value))return invalid_argument(fail("`pi` must be finite and in its parameter domain."));
 
   if (size.supplied && (!std::isfinite(size.value) || size.value < 0))
-    return fail("size must be a finite nonnegative number");
+    return invalid_argument(fail("size must be a finite nonnegative number"));
   const auto fit = cppunivariate::zinb_mle(x, reltol, iterlim,
       size.supplied ? size.value : NAN,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN());
-  if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("zinb numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,"numerical",{"size","prob","pi"});
+  const auto o=cppunivariate::outcome(fit);
+  const auto done=[&](FitResult out) {
+    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+      return overridden(std::move(out),static_cast<int>(fit.status));
+    return with_outcome(std::move(out),o,static_cast<int>(fit.status));
+  };
+  return done([&]() -> FitResult {
+  if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("zinb numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,outcome_kind(o),{"size","prob","pi"});
   if (fit.status == cppunivariate::ZinbStatus::InvalidSize)
     return fail("size must be a finite nonnegative number");
   if (fit.status == cppunivariate::ZinbStatus::InvalidInput)
     return fail("ZINB requires nonempty nonnegative count data, positive reltol and iterlim, prob in (0,1], pi in [0,1], and compatible holds");
   if (fit.status == cppunivariate::ZinbStatus::ZipLimit)
-    return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a zero-inflated Poisson. Use `mlpois(x, zero = \"inflated\")` instead."),fit.stop_detail,"limit",{"size","prob","pi"});
+    return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a zero-inflated Poisson. Use `mlpois(x, zero = \"inflated\")` instead."),fit.stop_detail,outcome_kind(o),{"size","prob","pi"});
   if (fit.status == cppunivariate::ZinbStatus::PoissonLimit)
-    return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a Poisson. Use `mlpois` instead."),fit.stop_detail,"limit",{"size","prob","pi"});
+    return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a Poisson. Use `mlpois` instead."),fit.stop_detail,outcome_kind(o),{"size","prob","pi"});
   if (fit.status != cppunivariate::ZinbStatus::Ok) {
     std::string kind="numerical",message="Zero-inflated negative binomial MLE failed: unresolved arithmetic, root enclosure or curvature; no verified maximum.";
     if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::Budget){kind="budget";message="Zero-inflated negative binomial MLE failed: certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop.";}
@@ -39,5 +46,6 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
   if(pi.supplied)fixed.push_back("pi");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",fit.size},{"prob",fit.prob},{"pi",fit.pi}}; out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
+  }());
 }
 }

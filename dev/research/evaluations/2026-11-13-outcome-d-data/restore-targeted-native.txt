@@ -1,0 +1,14 @@
+Test project /home/jonas/Files/programming/univariateML.wt/outcome-d/univariateML-cpp/build
+    Start 10: distribution_bnbinom
+1/2 Test #10: distribution_bnbinom .............   Passed   49.05 sec
+    Start 17: distribution_cmp
+2/2 Test #17: distribution_cmp .................   Passed   21.63 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Label Time Summary:
+cran    =  70.68 sec*proc (2 tests)
+dev     =  70.68 sec*proc (2 tests)
+full    =  70.68 sec*proc (2 tests)
+
+Total Test time (real) =  70.68 sec

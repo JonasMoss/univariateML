@@ -1,0 +1,6 @@
+binom          86  (6 s)
+geom           50  (10 s)
+lgser          50  (13 s)
+nbinom         86  (19 s)
+pois           50  (23 s)
+zeta           38  (28 s)

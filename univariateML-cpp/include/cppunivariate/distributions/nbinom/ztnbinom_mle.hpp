@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../pois/ztpois_mle.hpp"
 #include "../../core/stop_detail.hpp"
@@ -95,3 +96,19 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,double
   return r;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const ZtnbinomResult& r) {
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
+  if(r.status==ZtnbinomStatus::IterationFailure && r.budget_exhausted)return FitOutcome::budget();
+  switch(r.status) {
+    case ZtnbinomStatus::Ok: return FitOutcome::estimate(true);
+    case ZtnbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZtnbinomStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZtnbinomStatus::PoissonLimit: return FitOutcome::limit(true);
+    case ZtnbinomStatus::IterationFailure: return FitOutcome::failure(r.certificate_failure==ZtnbinomCertificateFailure::Arithmetic ? OutcomeReason::Evaluation : OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate

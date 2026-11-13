@@ -1,0 +1,19 @@
+16 of 16 families report an outcome on every case: binom +truncate=tbinom binom+zero=inflated binom+zero=modified binom+zero=truncated geom+zero=modified geom+zero=truncated lgser+zero=modified nbinom+zero=inflated nbinom+zero=modified nbinom+zero=truncated norm +truncate=tnorm pois +truncate=tpois pois+zero=inflated pois+zero=modified pois+zero=truncated zeta +truncate=zipf
+
+outcome kind, reason, emitted kind: cases
+  budget        none              budget     1
+  estimate      none              ok         1677
+  estimate      none              tie        1
+  failure       evaluation        numerical  2
+  failure       invalid-argument  error      20
+  failure       invalid-input     error      43
+  failure       no-convergence    numerical  59
+  failure       unresolved        unresolved 1
+  limit         none              limit      127
+  nonexistence  unbounded         nomle      3
+
+raw statuses reached: {'binom +truncate=tbinom': [-1, 0, 1, 6], 'binom+zero=inflated': [-1, 0, 1], 'binom+zero=modified': [-1, 0, 1, 3, 4, 5], 'binom+zero=truncated': [-1, 0, 1, 3], 'geom+zero=modified': [-1, 0, 1, 4, 5], 'geom+zero=truncated': [-1, 0, 1], 'lgser+zero=modified': [-1, 0, 1, 4, 5], 'nbinom+zero=inflated': [-1, 0, 1, 3, 4, 5], 'nbinom+zero=modified': [-1, 0, 1, 3, 4, 5, 6], 'nbinom+zero=truncated': [-1, 0, 1, 3, 4], 'norm +truncate=tnorm': [-1, 0, 1, 5, 6, 7, 8, 9, 10], 'pois +truncate=tpois': [-1, 0, 1], 'pois+zero=inflated': [-1, 0, 1, 3], 'pois+zero=modified': [-1, 0, 1, 4, 5], 'pois+zero=truncated': [-1, 0, 1], 'zeta +truncate=zipf': [-1, 0, 1, 2, 3]}
+plain errors that become numerical stops in step 5: {}
+adapter overrides of a core success (core defects): {}
+
+0 disagreements between outcome and emitted kind

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../pois/zmpois_profile.hpp"
 namespace cppunivariate {
@@ -73,3 +74,25 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
  return out;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const ZmbinomResult& r) {
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
+  if(r.accuracy_failure)return FitOutcome::failure(OutcomeReason::NoConvergence);
+  if(r.status!=ZmbinomStatus::Ok) {
+    if(r.stop_detail.budget_exhausted)return FitOutcome::budget();
+    if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
+  }
+  switch(r.status) {
+    case ZmbinomStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ZmbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZmbinomStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ZmbinomStatus::PoissonLimit: return FitOutcome::limit(true);
+    case ZmbinomStatus::AllZero: return FitOutcome::estimate(r.certified);
+    case ZmbinomStatus::TwoPoint: return FitOutcome::estimate(r.certified);
+    case ZmbinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate

@@ -1,0 +1,36 @@
+{
+  "native": [
+    {
+      "type": "TruncationResult",
+      "status": 1,
+      "cases": 5
+    },
+    {
+      "type": "before core or held-window evaluation",
+      "status": -1,
+      "cases": 59
+    },
+    {
+      "type": "truncated_detail::Result",
+      "status": 0,
+      "cases": 74
+    }
+  ],
+  "double": [
+    {
+      "type": "TruncationResult",
+      "status": 1,
+      "cases": 5
+    },
+    {
+      "type": "before core or held-window evaluation",
+      "status": -1,
+      "cases": 59
+    },
+    {
+      "type": "truncated_detail::Result",
+      "status": 0,
+      "cases": 74
+    }
+  ]
+}

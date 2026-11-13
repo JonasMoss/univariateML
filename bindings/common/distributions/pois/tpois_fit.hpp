@@ -10,16 +10,23 @@ inline FitResult fit_tpois(cppunivariate::ispan x, Held lambda_arg = {}, Held a_
   const Held b = b_arg;
 
   const double held=!lambda.supplied?std::numeric_limits<double>::quiet_NaN():lambda.value;
-  if(lambda.supplied&&std::isnan(held))return fail("Fixed parameter must not be missing.");
+  if(lambda.supplied&&std::isnan(held))return invalid_argument(fail("Fixed parameter must not be missing."));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   double lower=!a.supplied?nan:a.value, upper=!b.supplied?nan:b.value;
   if((a.supplied&&std::isnan(lower))||(b.supplied&&std::isnan(upper)))
-    return fail("Held bounds must not be missing.");
+    return invalid_argument(fail("Held bounds must not be missing."));
   auto r=cppunivariate::tpois_mle(x,lower,upper,held);
+  const auto o=cppunivariate::outcome(r);
+  const auto done=[&](FitResult out) {
+    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+      return overridden(std::move(out),static_cast<int>(r.status));
+    return with_outcome(std::move(out),o,static_cast<int>(r.status));
+  };
+  return done([&]() -> FitResult {
   std::string stop_kind;
   switch(r.status) {
-    case cppunivariate::truncated_detail::Status::LowerPointMass: stop_kind="limit";break;
-    case cppunivariate::truncated_detail::Status::UpperPointMass: stop_kind="limit";break;
+    case cppunivariate::truncated_detail::Status::LowerPointMass: stop_kind=outcome_kind(o);break;
+    case cppunivariate::truncated_detail::Status::UpperPointMass: stop_kind=outcome_kind(o);break;
     case cppunivariate::truncated_detail::Status::Unidentified: stop_kind="tie";break;
     default:break;
   }
@@ -43,5 +50,6 @@ inline FitResult fit_tpois(cppunivariate::ispan x, Held lambda_arg = {}, Held a_
   if(lambda.supplied)fixed.push_back("lambda");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",r.parameter},{"a",lower},{"b",upper}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
+  }());
 }
 }

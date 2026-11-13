@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "tbinom_face_certificate.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../pois/tpois_profile.hpp"
@@ -595,4 +596,25 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
   return tbinom_detail::design_mle_impl(x,a,b,size,prob,tol,maxit,false);
 }
 
+} // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const TbinomDesignResult& r) {
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
+  if(r.status!=TbinomStatus::Ok) {
+    if(r.stop_detail.budget_exhausted)return FitOutcome::budget();
+    if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
+  }
+  switch(r.status) {
+    case TbinomStatus::Ok: return FitOutcome::estimate(r.certified);
+    case TbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TbinomStatus::LowerPointMass: return FitOutcome::limit(true);
+    case TbinomStatus::UpperPointMass: return FitOutcome::limit(true);
+    case TbinomStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
+    case TbinomStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case TbinomStatus::TpoisLimit: return FitOutcome::limit(true);
+  }
+  return {};
+}
 } // namespace cppunivariate

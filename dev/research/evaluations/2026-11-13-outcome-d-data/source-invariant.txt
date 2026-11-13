@@ -1,0 +1,4 @@
+21 core headers: original contents preserved; only an include and appended outcome mapping added.
+Outcome switches cover every enumerator, have distinct cases, no default, and a fallback return {}.
+Binding scope: six base adapters, fifteen private adapters, and the modifier seam only.
+Baseline: 423aea9be43b9a325432bc170474557f665b33f8

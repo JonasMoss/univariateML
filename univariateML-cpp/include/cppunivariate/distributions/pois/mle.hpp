@@ -2,6 +2,7 @@
 // bit-identical reproduction of pre-port behaviour.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
@@ -69,3 +70,14 @@ inline PoisResult pois_mle(ispan x, double fixed=std::numeric_limits<double>::qu
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const PoisResult& r) {
+  switch(r.status) {
+    case PoisStatus::Ok: return FitOutcome::estimate(true);
+    case PoisStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case PoisStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+} // namespace cppunivariate
