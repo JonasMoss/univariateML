@@ -1,0 +1,5 @@
+emg archive 001311: attainable_tol "nan" -> null; candidates [{"estimates": {"lambda": "0x1.37b329f7bb948p-1", "mu": "0x1.7d7840039c8e5p+26", "sigma": "0x1.0d43bacad5c76p+0"}, "loglik_lower": "-0x1.7a020e694a536p+4", "loglik_upper": "-0x1.7a020e694a0c2p+4", "model": ""}, {"estimates": {"mean": "0x1.7d78406bff6f1p+26", "sd": "0x1.0d43bacad5c76p+0"}, "loglik_lower": "-0x1.eb82d8af027bdp+4", "loglik_upper": "-0x1.eb82d8af02247p+4", "model": "norm"}] -> null; fixed [] -> null; kind "numerical" -> "timeout"; limit_loglik "nan" -> null; logLik "nan" -> null (+6 more)
+
+1 of 212 cases differ
+by family: {'emg': 1}
+by field: {'attainable_tol': 1, 'candidates': 1, 'fixed': 1, 'kind': 1, 'limit_loglik': 1, 'logLik': 1, 'loglik_lower': 1, 'loglik_upper': 1, 'message': 1, 'model': 1, 'segment_loglik_upper': 1, 'warnings': 1}

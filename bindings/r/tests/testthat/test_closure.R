@@ -19,23 +19,23 @@ test_that("closed endpoints give the exact fitted likelihood", {
 test_that("truncation bounds profile to sample extremes and retain closed density", {
   x <- c(-2,-.3,0,.1,.2,2)
   for (a in list(NULL,-2)) for (b in list(NULL,2)) {
-    f <- mltnorm(x,a=a,b=b,mean=0,sd=1)
+    f <- .modifier_tnorm(x,a=a,b=b,mean=0,sd=1)
     expect_equal(as.numeric(f[c("a","b")]),c(-2,2))
     expect_setequal(attr(f,"fixed"),c("mean","sd",if(!is.null(a))"a",if(!is.null(b))"b"))
     expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-10)
     expect_equal(dml(c(-2,2),f),dnorm(c(-2,2))/(pnorm(2)-pnorm(-2)),tolerance=1e-10)
   }
   x <- c(-2,rep(0,15),2)
-  f <- mltnorm(x,a=NULL,b=NULL)
+  f <- .modifier_tnorm(x,a=NULL,b=NULL)
   expect_equal(as.numeric(f[c("a","b")]),range(x))
   expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-9)
-  expect_error(mltnorm(c(0,0,10),a=NULL,b=Inf),"exponential")
-  expect_error(mltnorm(c(0,1),a=NULL,b=NULL),"truncated exponential")
+  expect_error(.modifier_tnorm(c(0,0,10),a=NULL,b=Inf),"exponential")
+  expect_error(.modifier_tnorm(c(0,1),a=NULL,b=NULL),"truncated exponential")
 })
 
 test_that("resolved endpoints agree in both probability tails and log modes", {
   fits <- list(mlhnorm(c(-2,0,1),mu=NULL), mlpower(c(1,2,3)),
-               mltnorm(c(-2,0,2),a=NULL,b=NULL,mean=0,sd=1),
+               .modifier_tnorm(c(-2,0,2),a=NULL,b=NULL,mean=0,sd=1),
                mlunif(c(-2,0,2)))
   for (f in fits) {
     bounds <- univariateML:::univariateML_support(f)$bounds
@@ -61,7 +61,7 @@ test_that("GPD and GEV endpoint limits include the uniform xi=-1 member", {
 })
 
 test_that("tpois support preserves its strict lower truncation", {
-  f <- mltpois(c(2,3,4),a=NULL,b=NULL,lambda=3)
+  f <- .modifier_tpois(c(2,3,4),a=NULL,b=NULL,lambda=3)
   expect_equal(as.numeric(f[c("a","b")]),c(1,4))
   expect_equal(univariateML:::univariateML_support(f)$bounds,c(2,4))
   expect_equal(dml(1,f),0)

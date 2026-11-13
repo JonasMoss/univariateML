@@ -84,12 +84,33 @@ relations:
       mu: mean
       sigma: sd
       a: 0
-  - family: tnorm
+  - family: norm
     at:
+      mean: mean
+      sd: sd
+    configuration:
+      kernel: tnorm
+      truncate:
+      - -Inf
+      - Inf
+    coefficient_map:
       mean: mean
       sd: sd
       a: -Inf
       b: Inf
+  truncation_of:
+  - family: norm
+    at:
+      mean: mean
+      sd: sd
+    source_configuration:
+      kernel: tnorm
+      truncate:
+      - a
+      - b
+      coefficient_map:
+        mean: mean
+        sd: sd
 fit:
   method: closed-form
   certified: 'yes'

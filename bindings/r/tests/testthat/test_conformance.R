@@ -164,7 +164,7 @@ test_that('constant-collapse limits are recorded for free fits', {
 })
 
  test_that('R6 normal-related collapse records match fitter statuses', {
-  expected <- c(mltnorm='DegenerateData',mlsnorm='Unbounded',
+  expected <- c(mlsnorm='Unbounded',
     mlfoldnorm='Unbounded',mllgamma='Degenerate',mlllogis='Unbounded')
   for (id in umvl_filter_families(names(expected))) {
     limits <- univariateML_metadata[[id]]$limits
@@ -172,6 +172,9 @@ test_that('constant-collapse limits are recorded for free fits', {
       identical(l$status,unname(expected[id])) && identical(l$firmness,'proved') &&
       is.null(l$fixed),logical(1))),info=id)
   }
-  expect_true(any(vapply(univariateML_metadata$mltnorm$limits,function(l)
+  limits<-univariateML_metadata$mlnorm$modifiers$truncate$limits
+  expect_true(any(vapply(limits,function(l)
+    identical(l$status,'DegenerateData') && identical(l$firmness,'proved') && is.null(l$fixed),logical(1))))
+  expect_true(any(vapply(limits,function(l)
     identical(l$status,'UnboundedLocation') && identical(unlist(l$fixed,use.names=FALSE),'sd'),logical(1))))
 })

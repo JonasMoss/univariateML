@@ -5,7 +5,7 @@ export function graphData(families) {
  const nodes=[...families].sort((a,b)=>a.id.localeCompare(b.id,'en'));
  const groups=[...new Set(nodes.map(f=>f.group))].sort();
  const edges=nodes.flatMap(f=>[
-  ...Object.entries(f.relations||{}).filter(([kind])=>kind!=='closure_point').flatMap(([kind,es])=>es.flatMap((e,i)=>[...new Set(kind==='convolution_of'?e.components.map(c=>c.family):kind==='mixture_of'?[e.family,e.mixing.family]:[e.family])].map((target,j)=>({id:`${f.id}-${kind}-${i}-${j}`,source:f.id,target,kind,conditional:!!e.when,note:JSON.stringify(e)})))),
+  ...Object.entries(f.relations||{}).filter(([kind])=>kind!=='closure_point').flatMap(([kind,es])=>es.flatMap((e,i)=>[...new Set(kind==='convolution_of'?e.components.map(c=>c.family):kind==='mixture_of'?[e.family,e.mixing.family]:[e.family])].map((target,j)=>({id:`${f.id}-${kind}-${i}-${j}`,source:f.id,target,kind,conditional:!!e.when,note:JSON.stringify(e,(key,value)=>key==='kernel'?undefined:value)})))),
   ...(f.limits||[]).flatMap((e,i)=>e.model?[{id:`${f.id}-limit-${i}`,source:f.id,target:e.model,kind:'limit',note:e.when}]:[])
  ]);
  return {nodes:nodes.map(({id,name,group})=>({id,name,group})),groups,edges};

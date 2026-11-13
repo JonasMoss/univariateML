@@ -1,3 +1,4 @@
+import {modifierRoute} from './modifier-test-routes.mjs';
 import {readFileSync} from 'node:fs';
 import test from './test-register.mjs';
 import assert from 'node:assert/strict';
@@ -25,7 +26,7 @@ test('structured stops survive the JS Error facade', () => {
   });
   for (const [family,x,model,names] of [
     ['burr',[1,2,4],'pareto',['a','b']],['invburr',[1,.5,.25],'power',['alpha','beta']]]) {
-    assert.throws(() => api[family].fit(x, {scale:1}), e => {
+    assert.throws(() => modifierRoute(api,family).fit(x, {scale:1}), e => {
       assert.equal(e.kind,'limit');assert.equal(e.model,model);
       assert.deepEqual(Object.keys(e.estimates),names);assert.ok(Number.isFinite(e.limit_loglik));return true;
     });
@@ -35,7 +36,7 @@ test('structured stops survive the JS Error facade', () => {
 test('Burr and reciprocal sign-uncertain-seam structured tie', () => {
   const x=[0.0049057434842350416,0.042501201178458653,0.19481544379842536,0.29869422522389177,0.40386521559557592,0.49096570363940406,0.5326256684997116,0.72206471601197653,0.74104603671600355,0.82688168528714312,0.98659907210500519,1.1056048590023038,1.140076235502067,1.1606952121643113,1.4300263464615877,1.4793399841671804,1.5655241685783525,1.6390163836698108,2.0838622791695847,5.1042846241626947];
   for (const [family,data] of [['burr',x],['invburr',x.map(v=>1/v)]]) {
-    assert.throws(() => api[family].fit(data), e => {
+    assert.throws(() => modifierRoute(api,family).fit(data), e => {
       assert.equal(e.kind,'tie');assert.ok(e.candidates.length>=2);
       for(const c of e.candidates)assert.ok(c.loglik_lower<=c.loglik_upper);
       return true;
@@ -46,7 +47,7 @@ test('Burr and reciprocal sign-uncertain-seam structured tie', () => {
 test('Burr and reciprocal nearly-constant uncertified fallback', () => {
   const x=[0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005];
   for (const [family,data] of [['burr',x],['invburr',x.map(v=>1/v)]]) {
-    assert.throws(()=>api[family].fit(data),e=>{
+    assert.throws(()=>modifierRoute(api,family).fit(data),e=>{
       assert.equal(e.kind,'numerical');
       const finite=e.candidates.filter(c=>Number.isFinite(c.shape1)&&Number.isFinite(c.shape2)&&Number.isFinite(c.scale));
       assert.ok(finite.length>0);
@@ -69,7 +70,7 @@ test('Burr and reciprocal nearly-constant uncertified fallback', () => {
 test('Burr and reciprocal burr-k1000-r0 structured limit', () => {
   const x=[1.9964892694079062,1.4200005950190642,1.9743019980704946,1.2197287005958721,1.4225995479881626,1.3157966553088341,0.73993727475227145,0.54722770691864697,0.45191337211974208,1.2873097597929237,0.82121203961716593,0.71742472173341532,0.49662546185097139,0.50362133862028513,1.9039605277382454,0.44113984974587089,0.70433800798072665,1.0510023394724524,0.86043036041400101,1.6667673885263476,0.77702711842775052,1.9593669373814471,0.26458369013083416,0.45464268934386737,0.21491182426553512,1.7015469399366296,1.1819465625871135,0.8586733698248058,0.59167998109529263,0.44017579526839962,0.62624828047368308,0.98655801970217505,0.57139631035053795,0.51337745151115244,0.75748588358755875,0.43771943358567916,0.98605461903315861,1.3018311813985106,1.1866216948888411,0.42924863858380002,0.44140052283539877,1.196264737299584,1.07766835322611,1.4443112646323752,1.2516989419471247,1.0680479247006633,1.051768161411192,0.5465700675904327,1.6020198955375378,0.90951835946016879];
   for (const [family,data] of [['burr',x],['invburr',x.map(v=>1/v)]]) {
-    assert.throws(() => api[family].fit(data), e => {
+    assert.throws(() => modifierRoute(api,family).fit(data), e => {
       assert.equal(e.kind,'limit');assert.ok(e.candidates.length>=2);
       for(const c of e.candidates)assert.ok(c.loglik_lower<=c.loglik_upper);
       return true;
@@ -79,7 +80,7 @@ test('Burr and reciprocal burr-k1000-r0 structured limit', () => {
 
 test('held-power faces retain transformed coefficients', () => {
   for(const [family,x,scale] of [['burr',3,3],['invburr',1/3,1/3]]) {
-    assert.throws(()=>api[family].fit([x,x,x],{shape2:2}), e=> {
+    assert.throws(()=>modifierRoute(api,family).fit([x,x,x],{shape2:2}), e=> {
       assert.equal(e.kind,'limit');assert.equal(e.estimates.shape,2);
       assert.ok(Math.abs(e.estimates.scale-scale)<1e-12);return true;
     });
@@ -95,7 +96,7 @@ test('translated and reciprocal delegates preserve certified stops', () => {
     ['fpareto',[4,4,4],{min:1,shape3:1,shape2:2},'weibull',{shape:2,scale:3},3*(Math.log(2/3)-1)],
     ['betapr',[2,2,2],{shape1:1},'exp',{rate:.5},-3*(1+Math.log(2))]
   ]) {
-    assert.throws(()=>api[family].fit(data,held),e=>{
+    assert.throws(()=>modifierRoute(api,family).fit(data,held),e=>{
       assert.equal(e.kind,'limit');assert.equal(e.model,model);
       for(const [name,value] of Object.entries(coef))assert.ok(Math.abs(e.estimates[name]-value)<1e-10);
       assert.ok(Math.abs(e.limit_loglik-ll)<1e-10);return true;
@@ -117,7 +118,7 @@ test('Lomax budget witnesses retain public delegate coordinates and bounds', () 
     ['betapr',y,{shape1:1},['shape1','shape2','scale']],
     ['betapr',y.map(v=>1/v),{shape2:1},['shape1','shape2','scale']]
   ]) {
-    assert.throws(()=>api[family].fit(data,held,{iterlim:1}),e=>{
+    assert.throws(()=>modifierRoute(api,family).fit(data,held,{iterlim:1}),e=>{
       assert.equal(e.kind,'budget',family);assert.ok(e.candidates.length>0,family);
       assert.ok(e.loglik_lower<=e.loglik_upper,family);
       for(const c of e.candidates){
@@ -137,7 +138,7 @@ test('unrepresentable delegate reductions stop as numerical failures', () => {
     ['gb2',[1e-300,1e300],{shape3:1,shape2:2}],
     ['fpareto',[1e-300,1e300],{min:0,shape3:1,shape2:2}],
     ['pareto4',[1e308,1.1e308],{min:-1e308}]
-  ])assert.throws(()=>api[family].fit(data,held),e=>e.kind==='numerical');
+  ])assert.throws(()=>modifierRoute(api,family).fit(data,held),e=>e.kind==='numerical');
 });
 
 test('discrete stops retain fitted package and non-package faces', () => {
@@ -147,7 +148,7 @@ test('discrete stops retain fitted package and non-package faces', () => {
     ['dgamma',[2,2,3],{},'unavailable:two-point',{lower:2,upper:3,prob:1/3}],
     ['zip',[0,0],{pi:.5},'pois',{lambda:0}],
     ['dnorm',[1,1],{},'unavailable:point-mass',{point:1}]
-  ]) assert.throws(()=>api[family].fit(x,held),e=>{
+  ]) assert.throws(()=>modifierRoute(api,family).fit(x,held),e=>{
     assert.equal(e.kind,'limit');assert.equal(e.model,model);
     assert.deepEqual(e.estimates,estimates);assert.ok(Number.isFinite(e.limit_loglik));
     assert.ok(e.candidates.length>0);return true;
@@ -167,7 +168,7 @@ test('discrete empty preflight budget has no invented candidate', () => {
 
 test('continuous structured nonexistence and fitted faces', () => {
   for (const [family,x] of [['exp',[0,0,0]],['norm',[1,1,1]],['gamma',[1,1,1]],['beta',[.5,.5,.5]]]) {
-    assert.throws(() => api[family].fit(x), e => {
+    assert.throws(() => modifierRoute(api,family).fit(x), e => {
       assert.equal(e.kind,'nomle');assert.deepEqual(e.estimates,{});assert.deepEqual(e.candidates,[]);return true;
     });
   }
@@ -176,7 +177,7 @@ test('continuous structured nonexistence and fitted faces', () => {
     ['gompertz',[0,0,1,9],{},'exp',{rate:.4},4*(Math.log(.4)-1)],
     ['tnorm',[2,2,3,11],{a:2,b:Infinity},'unavailable:translated-exponential',{mu:2,rate:.4},4*(Math.log(.4)-1)],
     ['sn',[0,.1,.2,.4,3],{},'hnorm',{mu:0,sigma:Math.sqrt(9.21/5)},2.5*(Math.log(2/Math.PI)-Math.log(9.21/5)-1)]
-  ]) assert.throws(() => api[family].fit(x,held), e => {
+  ]) assert.throws(() => modifierRoute(api,family).fit(x,held), e => {
     assert.equal(e.kind,'limit');assert.equal(e.model,model);
     assert.deepEqual(Object.keys(e.estimates),Object.keys(estimates));
     for(const k of Object.keys(estimates))assert.ok(Math.abs(e.estimates[k]-estimates[k])<1e-8);
@@ -209,7 +210,7 @@ test('held subunit GED shape retains the certified reflected half face', () => {
 
 test('conditional snorm and skew-t ambiguities retain both compared models', () => {
   for(const [family,held,model] of [['snorm',{mean:0,sd:1e-4},'hnorm'],['st',{xi:0,omega:1e-4,nu:1e20},'ht']])
-    assert.throws(()=>api[family].fit([1,2],held),e=>{
+    assert.throws(()=>modifierRoute(api,family).fit([1,2],held),e=>{
       assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);
       assert.ok(e.candidates.some(c=>c.model===model));assert.equal(e.loglik_upper,Infinity);
       assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;
@@ -217,26 +218,26 @@ test('conditional snorm and skew-t ambiguities retain both compared models', () 
 });
 
 test('ZINB certificate transports competing maxima and terminal budgets', () => {
-  assert.throws(() => api.zinb.fit([...Array(99).fill(0),10], {size:10,pi:.76839477568758077746}), e => {
+  assert.throws(() => modifierRoute(api,'zinb').fit([...Array(99).fill(0),10], {size:10,pi:.76839477568758077746}), e => {
     assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);
     for(const c of e.candidates){assert.equal(c.size,10);assert.equal(c.pi,.76839477568758077746);assert.ok(c.loglik_lower<=c.loglik_upper);}
     assert.equal(e.loglik_upper,Infinity);return true;
   });
-  assert.throws(() => api.zinb.fit([0,1,2,5], {prob:.4}, {iterlim:1}), e => {
+  assert.throws(() => modifierRoute(api,'zinb').fit([0,1,2,5], {prob:.4}, {iterlim:1}), e => {
     assert.equal(e.kind,'budget');assert.equal(e.loglik_upper,Infinity);return true;
   });
-  assert.throws(() => api.zinb.fit([0,100001], {size:2}), e => {
+  assert.throws(() => modifierRoute(api,'zinb').fit([0,100001], {size:2}), e => {
     assert.equal(e.kind,'numerical');return /workload limit/.test(e.message);
   });
 });
 
 test('ZINB certified ZIP and Poisson stops name their limiting coefficients', () => {
-  assert.throws(() => api.zinb.fit([...Array(50).fill(0),...Array(50).fill(4)], {pi:.5}), e => {
+  assert.throws(() => modifierRoute(api,'zinb').fit([...Array(50).fill(0),...Array(50).fill(4)], {pi:.5}), e => {
     assert.equal(e.kind,'limit');assert.equal(e.model,'zip');assert.equal(e.estimates.pi,.5);
     assert.ok(e.estimates.lambda>2 && e.estimates.lambda<4);
     assert.ok(e.loglik_lower<=e.limit_loglik && e.limit_loglik<=e.loglik_upper);return true;
   });
-  assert.throws(() => api.zinb.fit(Array(100).fill(2)), e => {
+  assert.throws(() => modifierRoute(api,'zinb').fit(Array(100).fill(2)), e => {
     assert.equal(e.kind,'limit');assert.equal(e.model,'pois');assert.equal(e.estimates.lambda,2);return true;
   });
 });
@@ -307,19 +308,19 @@ test('ZIP certified rate ties, budgets and numerical stops', () => {
   for(const [pi,controls,kind,count] of [
     [.7254971052291191,{},'tie',2],[.1,{iterlim:1},'budget',2],
     [.7901867873967294,{},'numerical',1]]) {
-    assert.throws(()=>api.zip.fit(x,{pi},controls),e=> {
+    assert.throws(()=>modifierRoute(api,'zip').fit(x,{pi},controls),e=> {
       assert.equal(e.kind,kind);assert.equal(e.candidates.length,count);
       assert.ok(Number.isFinite(e.loglik_lower));assert.ok(e.loglik_upper>=e.loglik_lower);
       for(const c of e.candidates)assert.equal(c.pi,pi);
       return true;
     });
   }
-  const fit=api.zip.fit(x,{pi:.9});
+  const fit=modifierRoute(api,'zip').fit(x,{pi:.9});
   assert.ok(Math.abs(fit.estimates.lambda-9.994983435397758)<1e-10);
 });
 
 test('ZIP held tiny rate attains all-zero inflation maximum', () => {
-  const fit=api.zip.fit([0,0],{lambda:1e-20});
+  const fit=modifierRoute(api,'zip').fit([0,0],{lambda:1e-20});
   assert.equal(fit.estimates.pi,1);assert.equal(fit.logLik,0);
 });
 
@@ -467,7 +468,7 @@ test('Newton-family unrepresentable coefficients are numerical stops', () => {
   const u=Number.MIN_VALUE;
   for(const [family,x,held] of [['gumbel',[0,u],{}],['weibull',[u,2*u],{}],
       ['foldnorm',[0,u],{}],['pig',[0,2],{mean:1e-158}]]) {
-    assert.throws(()=>api[family].fit(x,held),e=>
+    assert.throws(()=>modifierRoute(api,family).fit(x,held),e=>
       e.kind==='numerical' && /requested coefficient accuracy/.test(e.message));
   }
 });
@@ -501,11 +502,11 @@ test('conditional free coefficients reject unrepresentable subnormals', () => {
   const u=Number.MIN_VALUE;
   for(const [family,data,held] of [['gumbel',[0,u],{sigma:u}],['weibull',[u,2*u],{shape:1}],
       ['lomax',[1e158,2e158],{kappa:1e158}]])
-    assert.throws(()=>api[family].fit(data,held),e=>e.kind==='numerical');
+    assert.throws(()=>modifierRoute(api,family).fit(data,held),e=>e.kind==='numerical');
 });
 
 test('accuracy stops distinguish binary64 tolerance from conditioning', () => {
-  assert.throws(()=>api.zib.fit([0,1,1],{size:1,pi:0},{reltol:1e-20}),e=>{
+  assert.throws(()=>modifierRoute(api,'zib').fit([0,1,1],{size:1,pi:0},{reltol:1e-20}),e=>{
     assert.equal(e.kind,'tolerance');
     assert.ok(Math.abs(e.attainable_tol/(1/27021597764222976)-1)<1e-14);
     assert.match(e.message,/tol must be at least .* here/);
@@ -538,7 +539,7 @@ test('gengamma, CMB and discretized gamma retain public accuracy witnesses', () 
     ['gengamma',[.2,.7,1,2,4],{sigma:1,Q:0},{tol:1e-20}],
     ['cmb',[0,1,1,2,4],{size:5,nu:1},{reltol:1e-20}],
     ['dgamma',[0,1,1,2,4],{shape:2},{reltol:5e-16}]
-  ]) assert.throws(()=>api[family].fit(x,held,control),e=>{
+  ]) assert.throws(()=>modifierRoute(api,family).fit(x,held,control),e=>{
     assert.equal(e.kind,'tolerance');assert.ok(e.attainable_tol>1e-16);
     assert.ok(e.candidates.length>0);
     assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));
@@ -549,7 +550,7 @@ test('gengamma, CMB and discretized gamma retain public accuracy witnesses', () 
     ['gengamma',[.2,.7,1,2,4],{sigma:1,Q:0},{tol:1e-14}],
     ['cmb',[0,1,1,2,4],{size:5,nu:1},{reltol:1e-14}],
     ['dgamma',[1000000,1000001,1000003,1000008,1000011],{},{}]
-  ]) assert.throws(()=>api[family].fit(x,held,control),e=>{
+  ]) assert.throws(()=>modifierRoute(api,family).fit(x,held,control),e=>{
     assert.equal(e.kind,'conditioning');assert.ok(e.candidates.length>0);
     assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;
   });

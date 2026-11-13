@@ -1,6 +1,6 @@
 #pragma once
 #include "../sstd/local_accuracy.hpp"
-#include "../ztbinom/accuracy.hpp"
+#include "../binom/ztbinom_accuracy.hpp"
 #include "../../core/span.hpp"
 #include <vector>
 namespace cppunivariate { namespace bbinom_detail {

@@ -17,17 +17,17 @@ export function modifierAPI(module, id, eligibility, capabilities) {
   const evaluate = (kind,x,p,flags={}) => {
     const {zero='none',truncate=null,lower=true,log=false}=flags;
     validate(zero,truncate);
-    if (zero!=='none') return module[`${kind}${variant(zero)}`](x,parameters(zero,p),lower,log);
+    if (zero!=='none') return module[`modifier_${kind}${variant(zero)}`](x,parameters(zero,p),lower,log);
     if(id==='zeta' && truncate) {
       if(Math.max(1,Math.ceil(truncate[0]))!==1 || !Number.isFinite(truncate[1]) || truncate[1]<1 || truncate[1]>2147483647) throw new Error('finite zeta window requires [1,N]');
       return module.zetaWindow(kind,x,Math.floor(truncate[1]),p[0],lower,log);
     }
     if (!truncate) return module[`${kind}${id}`](x,p,lower,log);
-    if(truncate[0]===1 && truncate[1]===Infinity && ['pois','binom','nbinom','geom'].includes(id)) return module[`${kind}zt${id}`](x,p,lower,log);
+    if(truncate[0]===1 && truncate[1]===Infinity && ['pois','binom','nbinom','geom'].includes(id)) return module[`modifier_${kind}zt${id}`](x,p,lower,log);
     if(['pois','binom','norm'].includes(id)) {
       const a=id==='norm'?truncate[0]:Math.ceil(truncate[0])-1,b=id==='norm'?truncate[1]:Math.floor(truncate[1]);
       const params=id==='binom'?[p[1],a,b,p[0]]:[...p,a,b];
-      return module[`${kind}t${id}`](x,params,lower,log);
+      return module[`modifier_${kind}t${id}`](x,params,lower,log);
     }
     if (truncate.some(Number.isNaN)) throw new Error('Evaluation requires known truncation bounds');
     if(eligibility.integer && Math.max(0,Math.ceil(truncate[0]))>=2**53) throw new Error('Conditional integer window cannot be resolved at the required floating-point accuracy');

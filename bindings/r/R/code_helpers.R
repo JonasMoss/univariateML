@@ -47,7 +47,7 @@ decorator <- function(name) {
     univariateML_construct(out$estimates, name = name, params = params, fixed = out$fixed,
                            restricted = out$restricted, data = x)
   }
-  meta <- univariateML_metadata[[name]]
+  meta <- ml_law_metadata(name)
   meta$parameters <- meta$names
   meta$names <- NULL
   attributes(fun) <- c(meta, attributes(fun))
@@ -67,7 +67,7 @@ decorator <- function(name) {
 univariateML_construct <- function(estimates, name, params, fixed = NULL, restricted = NULL, data = NULL) {
   estimates <- unname(estimates)
   class <- "univariateML"
-  args <- c(.Data = list(estimates), params, univariateML_metadata[[name]], class = class)
+  args <- c(.Data = list(estimates), params, ml_law_metadata(name), class = class)
   object <- do.call(structure, args)
   attr(object, "call") <- if (length(attr(object, "call")) == 1) {
     str2lang(attr(object, "call"))
@@ -75,8 +75,8 @@ univariateML_construct <- function(estimates, name, params, fixed = NULL, restri
     NULL
   }
 
-  attr(object, "continuous") <- (univariateML_metadata[[name]]$support$type == "R")
-  attr(object, "support") <- univariateML_metadata[[name]]$support$bounds
+  attr(object, "continuous") <- (ml_law_metadata(name)$support$type == "R")
+  attr(object, "support") <- ml_law_metadata(name)$support$bounds
   attr(object, "fixed") <- as.character(fixed)
   if (!is.null(data)) {
     attr(object, "inference_data") <- data
@@ -89,7 +89,7 @@ univariateML_construct <- function(estimates, name, params, fixed = NULL, restri
 
 # Emit one structured warning per fit, using the README-derived metadata.
 univariateML_warn_restricted <- function(name, restricted) {
-  params <- univariateML_metadata[[name]]$params
+  params <- ml_law_metadata(name)$params
   declared <- vapply(params, function(p) !is.null(p$fit_domain), logical(1))
   coefs <- intersect(names(restricted), vapply(params[declared], `[[`, "", "name"))
   if (!length(coefs)) return(invisible(NULL))
@@ -139,7 +139,7 @@ ml_check_modify <- function(x, na.rm, name) {
   # the fitters return NaN estimates.
   if (!length(x)) stop("x must have positive length")
 
-  support <- univariateML_metadata[[name]]$support
+  support <- ml_law_metadata(name)$support
 
   msg <- "x not in the support of the data"
   if (support$closed[1]) {
@@ -176,7 +176,7 @@ ml_check_modify <- function(x, na.rm, name) {
 
 univariateML_name <- function(obj) {
   model <- attr(obj, "model")
-  models <- vapply(univariateML_metadata, function(m) m$model, character(1))
+  models <- vapply(c(univariateML_metadata,modifier_law_metadata), function(m) m$model, character(1))
   hit <- names(models)[models == model]
   if (length(hit) == 1L) hit else NULL
 }
@@ -198,7 +198,7 @@ univariateML_name <- function(obj) {
 
 univariateML_dpqr_args <- function(estimates, name, type = "r") {
   map <- if (is.null(name)) NULL else univariateML_args[[name]]
-  density <- if (is.null(name)) NULL else univariateML_metadata[[name]]$density
+  density <- if (is.null(name)) NULL else ml_law_metadata(name)$density
   if (type != "r" && !is.null(density) && startsWith(density, "core_")) map <- NULL
   values <- stats::setNames(as.list(as.numeric(estimates)), names(estimates))
   if (is.null(map)) {
@@ -221,11 +221,11 @@ univariateML_to_string <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   type <- match.arg(type)
   if (type == "r") {
     name <- univariateML_name(obj)
-    sampler <- if (is.null(name)) NULL else univariateML_samplers[[name]]
+    sampler <- if (is.null(name) || !name %in% names(univariateML_samplers)) NULL else univariateML_samplers[[name]]
     if (!is.null(sampler) && !is.na(sampler)) return(sampler)
   }
   name <- univariateML_name(obj)
-  density <- if (is.null(name)) NULL else univariateML_metadata[[name]]$density
+  density <- if (is.null(name)) NULL else ml_law_metadata(name)$density
   if (is.null(density)) density <- attr(obj, "density")
   parts <- strsplit(density, "::", fixed = TRUE)[[1]]
   # Density may be either "pkg::dfoo" (external function) or just "dfoo"
@@ -331,7 +331,7 @@ ml_check_args <- function(adapter, dots, name) {
   allowed <- setdiff(names(formals(adapter)), "x")
   bad <- setdiff(given, allowed)
   if (!length(bad)) return(invisible(NULL))
-  coefs <- univariateML_metadata[[name]]$names
+  coefs <- ml_law_metadata(name)$names
   held <- intersect(bad, coefs)
   why <- if (length(held)) {
     paste0("`", name, "` cannot hold ", paste0("`", held, "`", collapse = ", "),
@@ -347,7 +347,7 @@ ml_check_args <- function(adapter, dots, name) {
 # The numeric metadata bounds remain the envelope used before fitting.
 univariateML_support <- function(obj) {
   name <- univariateML_name(obj)
-  s <- if (is.null(name)) NULL else univariateML_metadata[[name]]$support
+  s <- if (is.null(name)) NULL else ml_law_metadata(name)$support
   if (is.null(s)) return(NULL)
   values <- stats::setNames(as.list(as.numeric(obj)), names(obj))
   expressions <- s$expressions
@@ -359,7 +359,7 @@ univariateML_support <- function(obj) {
 }
 
 # Close only coefficient-dependent continuous endpoints. Discrete support
-# expressions already describe actual included lattice points (tpois: a+1).
+# expressions already describe actual included lattice points (count-window kernels: a+1).
 univariateML_close_function <- function(fun, obj, type) {
   force(fun)
   s <- univariateML_support(obj)

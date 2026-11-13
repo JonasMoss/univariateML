@@ -2,9 +2,9 @@
 #include "truncation.hpp"
 #include "../../core/zero_hurdle.hpp"
 #include "dpqr.hpp"
-#include "../ztgeom/mle.hpp"
-#include "../zmgeom/mle.hpp"
-#include "../zinb/mle.hpp"
+#include "ztgeom_mle.hpp"
+#include "zmgeom_mle.hpp"
+#include "../nbinom/zinb_mle.hpp"
 namespace cppunivariate {
 struct GeomZeroTraits {
   static bool positive_ok(const ZtgeomResult& r) {return r.status==ZtgeomStatus::Ok;}

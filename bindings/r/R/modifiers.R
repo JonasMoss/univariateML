@@ -26,7 +26,7 @@ ml_zero_variant <- function(id, zero) {
   NULL
 }
 ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call) {
-  meta <- univariateML_metadata[[name]]; id <- sub("^ml", "", name)
+  meta <- ml_law_metadata(name); id <- sub("^ml", "", name)
   if(length(dots) && (is.null(names(dots)) || any(!nzchar(names(dots)))))
     stop("Modifier holds and controls must be named")
   if(anyDuplicated(names(dots)))stop("Duplicate coefficient or control arguments")
@@ -63,7 +63,7 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
     stop("finite zeta window requires [1,N], integer N in [1,INT_MAX]")
   extra <- if (zero=="modified") "p0" else if (zero=="inflated") "pi" else character()
   modifier_controls<-if(window || censored)c("reltol","iterlim") else
-    intersect(c("reltol","iterlim"),names(formals(get(paste0("ml",ml_zero_variant(id,zero),"_")))))
+    intersect(c("reltol","iterlim"),names(formals(get(paste0("modifier_",ml_zero_variant(id,zero),"_")))))
   ml_check_args(get(paste0(name,"_")), dots[setdiff(names(dots),c(extra,modifier_controls))], name)
   for(control in intersect(names(dots),c("reltol","abstol","iterlim"))) {
     v<-dots[[control]]
@@ -83,7 +83,7 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
       x <- ml_interval_data(x,na.rm)
       # An interval matrix of exact observations reduces to the ordinary API.
       if (all(x[,1]==x[,2])) return(do.call(get(name),c(list(x=x[,1],na.rm=na.rm),dots)))
-    } else x <- ml_check_modify(x,na.rm,if(id=="lgser" && zero=="modified")"mlzmlogarithmic" else name)
+    } else x <- ml_check_modify(x,na.rm,if(id=="lgser" && zero=="modified")".modifier_zmlogarithmic" else name)
   }
   if (window && anyNA(truncate)) {
     if (frozen) stop("A fixed model requires known truncation bounds")
@@ -97,7 +97,7 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
       variant <- ml_zero_variant(id,if(alias)"truncated" else zero)
       if (id=="geom" && zero=="inflated") dots$size <- 1
       if(id=="lgser") {if("theta" %in% names(dots))dots["prob"]<-dots["theta"];dots$theta<-NULL}
-      out <- ml_fixed_model(paste0("ml",variant),dots,call,TRUE)
+      out <- ml_fixed_model(paste0(".modifier_",variant),dots,call,TRUE)
       if (id=="geom" && zero=="inflated") out <- out[names(out)!="size"]
     } else if(id=="zeta") {
       s<-if(!"s" %in% names(dots))meta$simulate[[1]] else dots$s
@@ -120,7 +120,7 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
       legacy_args<-holds
       if(id=="lgser") {legacy_args$prob<-legacy_args$theta;legacy_args$theta<-NULL}
       if(id=="geom" && zero=="inflated")legacy_args$size<-1
-      legacy<-do.call(get(paste0("ml",variant)),c(list(x=x),legacy_args))
+      legacy<-ml_fixed_model(paste0(".modifier_",variant),legacy_args,call,FALSE,x)
       estimates<-as.numeric(legacy);names(estimates)<-names(legacy)
       if(id=="geom" && zero=="inflated")estimates<-estimates[names(estimates)!="size"]
       if(id=="lgser")names(estimates)[names(estimates)=="prob"]<-"theta"
@@ -182,7 +182,7 @@ ml_modifier_function <- function(obj,type) {
       # coefficients were validated at construction or by the fitter; check
       # joint constraints with the settled evaluator, without the retired
       # wrapper's finite-only design-domain check.
-      alt_name<-paste0("ml",variant);alt_names<-univariateML_metadata[[alt_name]]$names
+      alt_name<-paste0(".modifier_",variant);alt_names<-ml_law_metadata(alt_name)$names
       alt<-univariateML_construct(unlist(values[alt_names]),alt_name,
         list(n=0,call="modifier"),fixed=alt_names)
       median<-suppressWarnings(qml(.5,alt))
@@ -190,7 +190,7 @@ ml_modifier_function <- function(obj,type) {
         list(message=paste0("`",name,"`: median quantile evaluation failed: invalid held coefficients or numerical failure"),call=NULL,stage="median"),
         class=c("univariateML_evaluation_error","error","condition")))
       attr(alt,"frozen")<-TRUE
-    } else alt <- ml_fixed_model(paste0("ml",variant),values,quote(modifier),TRUE)
+    } else alt <- ml_fixed_model(paste0(".modifier_",variant),values,quote(modifier),TRUE)
     return(univariateML_to_function(alt,type))
   }
   window <- attr(obj,"truncate")

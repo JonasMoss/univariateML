@@ -15,7 +15,41 @@ DISTS = ROOT/'univariateML-cpp/include/cppunivariate/distributions'
 
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--generate',type=pathlib.Path,required=True)
-    out=ap.parse_args().generate.resolve(); out.mkdir(parents=True,exist_ok=True)
+    ap.add_argument('--retire-existing',type=pathlib.Path,
+                    help='prune removed public ids from an existing generated sweep, preserving its surviving routes verbatim')
+    args=ap.parse_args()
+    out=args.generate.resolve(); out.mkdir(parents=True,exist_ok=True)
+    if args.retire_existing:
+        source=args.retire_existing.read_text()
+        live={p.name for p in DISTS.iterdir() if (p/'mle.hpp').exists()}
+        retired=set(re.findall(r'audit::family="([^"]+)"',source))-live
+        def block_end(text,start):
+            depth=0;quoted=False;escape=False
+            for i in range(start,len(text)):
+                c=text[i]
+                if escape:escape=False;continue
+                if quoted and c=='\\':escape=True;continue
+                if c=='"':quoted=not quoted;continue
+                if quoted:continue
+                if c=='{':depth+=1
+                elif c=='}':
+                    depth-=1
+                    if depth==0:return i+1
+            raise ValueError('unclosed generated diagnostic block')
+        for id in sorted(retired):
+            marker=re.search(r'inline void route_'+re.escape(id)+r'\(',source)
+            if marker:
+                body=source.index('{',source.index(') {',marker.start()))
+                end=block_end(source,body)
+                source=source[:marker.start()]+source[end:]
+            marker=source.index('audit::family="'+id+'";')
+            start=source.rfind('{',0,marker)
+            source=source[:start]+source[block_end(source,start):]
+        source='\n'.join(line for line in source.splitlines()
+                         if not (line.startswith('#include') and any('/'+id+'_' in line for id in retired)))+'\n'
+        (out/'audit.cpp').write_text(source)
+        print('Pruned retired diagnostic ids:',','.join(sorted(retired)))
+        return
     observer=r'''#pragma once
 #include <cmath>
 #include <iostream>

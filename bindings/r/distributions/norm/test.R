@@ -129,7 +129,7 @@ test_that("scaled residuals preserve every normal hold at extreme units", {
     expect_equal(unname(f["sd"]) / unit, s, tolerance = 1e-14)
     ll <- -2 * (log(unit) + log(s) + log(2*pi)/2) - sum((c(1,2)-m)^2)/(2*s*s)
     expect_equal(attr(f, "logLik"), ll, tolerance = 1e-14)
-    t <- do.call(mltnorm, c(args, list(a=-Inf, b=Inf)))
+    t <- do.call(mlnorm, c(args, list(truncate=c(-Inf,Inf))))
     expect_equal(as.numeric(t[c("mean", "sd")]) / unit, c(m,s), tolerance=1e-14)
     expect_equal(attr(t, "logLik"), ll, tolerance=1e-14)
   }

@@ -73,7 +73,7 @@ field names remain internal.
 | hnorm      | Translated Half-Normal | mu, sigma | dhnorm | [mu, ∞), mu required |
 | hcauchy    | Half-Cauchy             | mu, sigma        | dhcauchy       | [mu, ∞), mu required |
 | ht         | Half-t                  | mu, nu, sigma    | dht            | [mu, ∞), mu required |
-| tnorm      | Truncated Normal        | mean, sd, a, b    | dtnorm         | (a, b) open, known bounds |
+| norm with `truncate=c(a,b)` | Configured norm | mean, sd | `dml` | Base support intersected with the configured law |
 | norm       | Normal                  | mean, sd           | stats::dnorm              | (-∞, ∞) open     |
 | paralogis  | Paralogistic            | shape, scale [†]   | dparalogis        | (0, ∞) open      |
 | pareto     | Pareto                  | a, b               | dpareto       | [0, ∞)           |
@@ -94,23 +94,23 @@ field names remain internal.
 | trgamma    | Transformed gamma       | shape1, shape2, scale | dtrgamma       | (0, ∞) open      |
 | unif       | Uniform                 | min, max           | stats::dunif              | (-∞, ∞) open     |
 | weibull    | Weibull                 | shape, scale       | stats::dweibull           | (0, ∞) open      |
-| zip        | Zero-inflated Poisson   | lambda, pi         | dzip          | [0, ∞) integer   |
-| zinb       | Zero-inflated negative binomial | size, prob, pi | dzinb | [0, Inf) integer |
-| zipf       | Zipf                    | N, s               | dzipf (package-defined)               | [1, ∞) integer   |
-| ztpois | Zero-truncated Poisson | lambda | dztpois | [1, ∞) integer |
-| ztgeom | Zero-truncated geometric | prob | dztgeom | [1, ∞) integer |
-| ztnbinom | Zero-truncated negative binomial | size, prob | dztnbinom | [1, ∞) integer |
-| ztbinom | Zero-truncated binomial | size, prob | dztbinom | [1, ∞) integer |
-| zmpois | Zero-modified Poisson | lambda, p0 | dzmpois | [0, ∞) integer |
-| zmgeom | Zero-modified geometric | prob, p0 | dzmgeom | [0, ∞) integer |
-| zmnbinom | Zero-modified negative binomial | size, prob, p0 | dzmnbinom | [0, ∞) integer |
+| pois with `zero="inflated"` | Configured pois | lambda, pi | `dml` | Base support intersected with the configured law |
+| nbinom with `zero="inflated"` | Configured nbinom | size, prob, pi | `dml` | Base support intersected with the configured law |
+| zeta with `truncate=c(1,N)` | Configured zeta | s | `dml` | Base support intersected with the configured law |
+| pois with `zero="truncated"` | Configured pois | lambda | `dml` | Base support intersected with the configured law |
+| geom with `zero="truncated"` | Configured geom | prob | `dml` | Base support intersected with the configured law |
+| nbinom with `zero="truncated"` | Configured nbinom | size, prob | `dml` | Base support intersected with the configured law |
+| binom with `zero="truncated"` | Configured binom | size, prob | `dml` | Base support intersected with the configured law |
+| pois with `zero="modified"` | Configured pois | lambda, p0 | `dml` | Base support intersected with the configured law |
+| geom with `zero="modified"` | Configured geom | prob, p0 | `dml` | Base support intersected with the configured law |
+| nbinom with `zero="modified"` | Configured nbinom | size, prob, p0 | `dml` | Base support intersected with the configured law |
 | genbeta | Generalized beta of the first kind | shape1, shape2, shape3, scale | dgenbeta | (0, scale), scale required |
 | gb2 | Transformed beta (GB2) | shape1, shape2, shape3, scale | dgb2 | (0, ∞) |
-| zmbinom | Zero-modified binomial | size, prob, p0 | dzmbinom | [0, ∞) integer |
-| zmlogarithmic | Zero-modified logarithmic | prob, p0 | dzmlogarithmic | [0, ∞) integer |
-| zib | Zero-inflated binomial | size, prob, pi | dzib | [0, ∞) integer |
-| tpois | Truncated Poisson | lambda, a, b | dtpois | [0, ∞) integer |
-| tbinom | Truncated binomial | prob, a, b, size | dtbinom | [0, ∞) integer |
+| binom with `zero="modified"` | Configured binom | size, prob, p0 | `dml` | Base support intersected with the configured law |
+| lgser with `zero="modified"` | Configured lgser | theta, p0 | `dml` | Base support intersected with the configured law |
+| binom with `zero="inflated"` | Configured binom | size, prob, pi | `dml` | Base support intersected with the configured law |
+| pois with `truncate=c(max(0,floor(a)+1),floor(b))` | Configured pois | lambda | `dml` | Base support intersected with the configured law |
+| binom with `truncate=c(max(0,floor(a)+1),floor(b))` | Configured binom | prob, size | `dml` | Base support intersected with the configured law |
 | dlaplace | Discrete Laplace | location, scale | ddlaplace | (-∞, ∞) integer |
 
 [†] **Drift**: historic c0b9949 fitted only `shape` with rate fixed at
@@ -135,7 +135,7 @@ names while the R interface uses historic ones; the bridge lives in
 | invgauss  | mu, lambda         | mean, shape       |
 | logis     | mu, scale          | location, scale   |
 | pareto    | shape, min         | a, b              |
-| zipf      | N, shape           | N, s              |
+| zeta with `truncate=c(1,N)`      | N, shape           | N, s              |
 
 These divergences are **intentional**: the C++ struct names follow
 the natural-mathematics convention for that distribution, while the

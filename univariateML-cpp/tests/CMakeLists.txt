@@ -39,13 +39,16 @@ set(DISTRIBUTIONS_DIR
   "${CMAKE_SOURCE_DIR}/include/cppunivariate/distributions")
 file(GLOB DISTRIBUTION_TEST_SOURCES CONFIGURE_DEPENDS
   "${DISTRIBUTIONS_DIR}/*/test.cpp")
+file(GLOB MODIFIER_TEST_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/modifiers/*.cpp")
 add_executable(distribution_tests distribution_tests_main.cpp
+  ${MODIFIER_TEST_SOURCES}
   ${DISTRIBUTION_TEST_SOURCES})
 target_link_libraries(distribution_tests PRIVATE cppunivariate)
 target_include_directories(distribution_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_options(distribution_tests PRIVATE ${_CPPUNIV_TEST_FLAGS})
 target_compile_definitions(distribution_tests PRIVATE
-  CPPUNIV_DISTRIBUTIONS_DIR="${DISTRIBUTIONS_DIR}")
+  CPPUNIV_DISTRIBUTIONS_DIR="${DISTRIBUTIONS_DIR}"
+  CPPUNIV_MODIFIER_FIXTURES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/modifiers/fixtures")
 # Shard by source file and complementary expensive-case filters. No case is
 # dropped: full selects both shards, smaller tiers select the core shard.
 set(_slow_cases "*oracle*,*multistart*,*replication*,*large sample*,*large-sample*,*every held golden subset*,*slow*reference*,*240 seeded*")
@@ -107,3 +110,15 @@ if(EXISTS "${_diagnostics_source}")
   add_test(NAME diagnostics_tests COMMAND diagnostics_tests)
   set_tests_properties(diagnostics_tests PROPERTIES LABELS "dev;full" TIMEOUT 60)
 endif()
+
+foreach(source IN LISTS MODIFIER_TEST_SOURCES)
+  get_filename_component(id "${source}" NAME_WE)
+  add_test(NAME modifier_${id} COMMAND distribution_tests "--source-file=*modifiers/${id}.cpp" "--test-case-exclude=${_slow_cases}")
+  set_tests_properties(modifier_${id} PROPERTIES WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" LABELS "cran;dev;full")
+  file(READ "${source}" contents)
+  string(TOLOWER "${contents}" contents)
+  if(contents MATCHES "test_case\\(\"[^\"]*(oracle|multistart|replication|large.sample|every held golden subset|slow[^\"]*reference|240 seeded)")
+    add_test(NAME modifier_${id}_slow COMMAND distribution_tests "--source-file=*modifiers/${id}.cpp" "--test-case=${_slow_cases}")
+    set_tests_properties(modifier_${id}_slow PROPERTIES WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" LABELS "full")
+  endif()
+endforeach()

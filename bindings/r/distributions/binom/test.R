@@ -231,10 +231,10 @@ test_that("discrete limit stops expose fitted faces without changing messages", 
   expect_s3_class(e,"univariateML_tie")
   expect_identical(e$model,"binom")
   expect_equal(e$estimates,c(size=1,prob=.5))
-  e <- tryCatch(mlztbinom(c(1,1,1,2,3,7,12),size=NULL),error=identity)
+  e <- tryCatch(mlbinom(c(1,1,1,2,3,7,12),size=NULL,zero="truncated"),error=identity)
   expect_s3_class(e,"univariateML_limit")
   expect_identical(e$model,"ztpois")
-  expect_equal(e$estimates,unclass(mlztpois(c(1,1,1,2,3,7,12)))["lambda"],ignore_attr=TRUE)
+  expect_equal(e$estimates,unclass(mlpois(c(1,1,1,2,3,7,12),zero="truncated"))["lambda"],ignore_attr=TRUE)
 })
 
 test_that("discrete preflight budgets are classed without fabricated candidates", {

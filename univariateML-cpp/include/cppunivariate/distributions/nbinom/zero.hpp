@@ -2,9 +2,9 @@
 #include "truncation.hpp"
 #include "../../core/zero_hurdle.hpp"
 #include "dpqr.hpp"
-#include "../ztnbinom/mle.hpp"
-#include "../zmnbinom/mle.hpp"
-#include "../zinb/mle.hpp"
+#include "ztnbinom_mle.hpp"
+#include "zmnbinom_mle.hpp"
+#include "zinb_mle.hpp"
 namespace cppunivariate {
 struct NbinomZeroTraits {
   static bool positive_ok(const ZtnbinomResult& r) {return r.status==ZtnbinomStatus::Ok;}

@@ -11,7 +11,7 @@ REG=ROOT/'univariateML-cpp/include/cppunivariate/core/inference_numeric_generate
 OUT=ROOT/'univariateML-cpp/tests/inference_goldens.inc'
 generated=re.findall(r'#include "\.\./distributions/([^/]+)/dpqr.hpp"',REG.read_text())
 base='norm gamma beta pois exp geom lnorm logitnorm lgamma rayleigh binom'.split()
-special='laplace gev gpd ged sged snorm sstd tnorm cmb cmp tbinom tpois zmbinom'.split()
+special='laplace gev gpd ged sged snorm sstd cmb cmp'.split()
 families=sorted(set(base+generated+special))
 rows=[]
 for family in families:

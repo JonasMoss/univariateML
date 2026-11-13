@@ -174,10 +174,19 @@ def relation_targets(kind, edge):
     if kind == 'mixture_of': return list(dict.fromkeys([edge['family'], edge['mixing']['family']]))
     return [edge['family']]
 
-def relation_display(edge):
+def relation_display(edge, reverse=False):
     # Presentation copy: dossier relation records retain their exact schema.
     shown=dict(edge)
     shown['at']=dict(edge.get('at',{}))
+    def setting(c):
+        if not c:return ''
+        if 'zero' in c:return 'zero="'+c['zero']+'"'
+        return 'truncate=['+', '.join(map(str,c['truncate']))+']'
+    source=setting(edge.get('source_configuration'))
+    target=setting(edge.get('configuration'))
+    shown['source_setting'],shown['target_setting']=(target,source) if reverse else (source,target)
+    if edge.get('source_configuration',{}).get('coefficient_map'):
+        shown['at']['source coefficients']=', '.join(k+' = '+str(v) for k,v in edge['source_configuration']['coefficient_map'].items())
     for i,c in enumerate(edge.get('components',[])):
         shown['at'][f"{edge['operation']} component {i+1} ({c['family']})"]=', '.join(f'{k} = {v}' for k,v in c['at'].items())
     if 'mixing' in edge:
@@ -197,7 +206,7 @@ for m in out:
     for child in out:
         for kind,edges in child.get('relations',{}).items():
             if kind == 'closure_point': continue
-            related.extend(dict(family=child['id'],kind=relation_labels[kind][1],edge=relation_display(e)) for e in edges if m['id'] in relation_targets(kind,e))
+            related.extend(dict(family=child['id'],kind=relation_labels[kind][1],edge=relation_display(e,reverse=True)) for e in edges if m['id'] in relation_targets(kind,e))
     related.extend(dict(family=e['model'],kind='Limit model',note=e['when']) for e in m.get('limits',[]) if e.get('model'))
     m['related']=[dict(r,name=next(f['name'] for f in out if f['id']==r['family'])) for r in related]
     m['unlinked_limits']=[e for e in m.get('limits',[]) if not e.get('model')]

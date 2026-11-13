@@ -1,0 +1,137 @@
+START cpp-test 2026-11-13T08:25:43+01:00
+PASS cpp-test 2026-11-13T08:35:46+01:00
+START cpp-test-no-long-double 2026-11-13T08:35:46+01:00
+PASS cpp-test-no-long-double 2026-11-13T08:46:34+01:00
+START test 2026-11-13T08:46:34+01:00
+FAIL test 1 2026-11-13T08:51:23+01:00
+  'test-dist-logis.R:122:3', 'test-dist-logitnorm.R:95:3',
+  'test-dist-lomax.R:132:3', 'test-dist-lomax.R:174:3', 'test-dist-lst.R:2:3',
+  'test-dist-lst.R:58:3', 'test-dist-lst.R:96:3',
+  'test-dist-invtrgamma.R:86:3', 'test-dist-naka.R:121:3',
+  'test-dist-nbinom.R:63:3', 'test-dist-norm.R:64:3',
+  'test-dist-nsbeta.R:56:3', 'test-dist-paralogis.R:39:3',
+  'test-dist-paralogis.R:77:3', 'test-dist-paralogis.R:87:3',
+  'test-dist-pareto.R:61:3', 'test-dist-pareto2.R:47:3',
+  'test-dist-pareto3.R:40:3', 'test-dist-pareto4.R:55:3',
+  'test-dist-pig.R:15:3', 'test-dist-pig.R:62:3', 'test-dist-pois.R:21:3',
+  'test-dist-power.R:71:3', 'test-dist-rayleigh.R:52:3',
+  'test-dist-sgomp.R:56:3', 'test-dist-sgomp.R:77:3', 'test-dist-slash.R:2:3',
+  'test-dist-sged.R:69:3', 'test-dist-sged.R:113:3', 'test-dist-sged.R:223:3',
+  'test-dist-slash.R:126:3', 'test-dist-slash.R:189:3',
+  'test-dist-sged.R:281:3', 'test-dist-slash.R:233:3', 'test-dist-sn.R:74:3',
+  'test-dist-snorm.R:77:3', 'test-dist-snorm.R:212:3',
+  'test-dist-sstd.R:109:3', 'test-dist-sstd.R:152:3', 'test-dist-sstd.R:276:3',
+  'test-dist-sstd.R:335:3', 'test-dist-tlambda.R:66:3',
+  'test-dist-tlambda.R:191:3', 'test-dist-trgamma.R:24:3',
+  'test-dist-std.R:83:3', 'test-dist-std.R:103:3', 'test-dist-std.R:137:3',
+  'test-dist-std.R:256:3', 'test-dist-trgamma.R:142:3',
+  'test-dist-triang.R:85:3', 'test-dist-weibull.R:73:3',
+  'test-dist-yulesimon.R:2:3', 'test-dist-zeta.R:2:3',
+  'test-modifier-kernel-tbinom.R:87:3', 'test-modifier-kernel-tnorm.R:16:3',
+  'test-modifier-kernel-tpois.R:43:3', 'test-modifier-kernel-zib.R:2:3',
+  'test-modifier-kernel-zib.R:55:3', 'test-modifier-kernel-zib.R:118:3',
+  'test-modifier-kernel-zinb.R:17:3', 'test-modifier-kernel-zinb.R:57:3',
+  'test-modifier-kernel-zip.R:9:3', 'test-modifier-kernel-zip.R:56:3',
+  'test-modifier-kernel-zipf.R:25:3', 'test-modifier-kernel-zipf.R:122:3',
+  'test-modifier-kernel-zmbinom.R:2:3', 'test-modifier-kernel-zmbinom.R:52:3',
+  'test-modifier-kernel-zmgeom.R:2:3', 'test-modifier-kernel-zmgeom.R:36:3',
+  'test-modifier-kernel-zmlogarithmic.R:2:3',
+  'test-modifier-kernel-zmlogarithmic.R:36:3',
+  'test-modifier-kernel-zmbinom.R:115:3',
+  'test-modifier-kernel-zmnbinom.R:2:3',
+  'test-modifier-kernel-zmnbinom.R:60:3',
+  'test-modifier-kernel-zmnbinom.R:75:3', 'test-modifier-kernel-zmpois.R:2:3',
+  'test-modifier-kernel-zmpois.R:36:3', 'test-modifier-kernel-ztbinom.R:2:3',
+  'test-modifier-kernel-ztbinom.R:49:3', 'test-modifier-kernel-ztgeom.R:2:3',
+  'test-modifier-kernel-ztgeom.R:33:3', 'test-modifier-kernel-ztbinom.R:91:3',
+  'test-modifier-kernel-ztnbinom.R:2:3',
+  'test-modifier-kernel-ztnbinom.R:57:3',
+  'test-modifier-kernel-ztnbinom.R:72:3', 'test-modifier-kernel-ztpois.R:2:3',
+  'test-modifier-kernel-ztpois.R:33:3', 'test-dist-genbeta.R:127:3'
+
+── Failed tests ────────────────────────────────────────────────────────────────
+Error ('test_model_select.R:46:1'): (code run outside of `test_that()`)
+Error in `check_models(models)`: The following families are not implemented: zipf.
+ See `print(univariateML_models)` for allowed values.
+Backtrace:
+    ▆
+ 1. └─univariateML::model_select(...) at test_model_select.R:46:1
+ 2.   └─univariateML:::check_models(models) at univariateML-r/R/code_model_select.R:67:3
+
+[ FAIL 1 | WARN 0 | SKIP 157 | PASS 28492 ]
+Error:
+! Test failures.
+Timing stopped at: 533.3 3.18 267.6
+Execution halted
+error: Recipe `test` failed on line 71 with exit code 1
+START test-full 2026-11-13T09:23:30+01:00
+PASS test-full 2026-11-13T09:34:08+01:00
+START js-build 2026-11-13T09:34:08+01:00
+PASS js-build 2026-11-13T09:35:37+01:00
+START js-test 2026-11-13T09:35:37+01:00
+FAIL js-test 1 2026-11-13T09:39:49+01:00
+  ...
+# Subtest: ZIP held tiny rate attains all-zero inflation maximum
+ok 569 - ZIP held tiny rate attains all-zero inflation maximum
+  ---
+  duration_ms: 6.474218
+  type: 'test'
+  ...
+# Subtest: bbinom fixed-size coefficient certificate and uncertified inclusion fallback
+ok 570 - bbinom fixed-size coefficient certificate and uncertified inclusion fallback
+  ---
+  duration_ms: 16.763911
+  type: 'test'
+  ...
+# Subtest: st conditional location and alpha-scale certificates retain stops
+ok 571 - st conditional location and alpha-scale certificates retain stops
+  ---
+  duration_ms: 4.318266
+  type: 'test'
+  ...
+# Subtest: Pareto II reciprocal scale overflow remains numerical at tight tolerance
+ok 572 - Pareto II reciprocal scale overflow remains numerical at tight tolerance
+  ---
+  duration_ms: 0.835543
+  type: 'test'
+  ...
+# Subtest: std collapse comparisons preserve the sign at binary64 rational shapes
+ok 573 - std collapse comparisons preserve the sign at binary64 rational shapes
+  ---
+  duration_ms: 42.097478
+  type: 'test'
+  ...
+# Subtest: bnbinom alpha-held range exhaustion has numerical stop details
+ok 574 - bnbinom alpha-held range exhaustion has numerical stop details
+  ---
+  duration_ms: 50.809446
+  type: 'test'
+  ...
+# Subtest: ZIB subnormal held inflation preserves log masses and its probability root
+ok 575 - ZIB subnormal held inflation preserves log masses and its probability root
+  ---
+  duration_ms: 48.821187
+  type: 'test'
+  ...
+# Subtest: GEV joint cover isolates the seam maximum and keeps precision stops
+ok 576 - GEV joint cover isolates the seam maximum and keeps precision stops
+  ---
+  duration_ms: 59.872814
+  type: 'test'
+  ...
+# Subtest: genbeta shallow coverage retains the uncertified legacy finite fit
+ok 577 - genbeta shallow coverage retains the uncertified legacy finite fit
+  ---
+  duration_ms: 29511.273714
+  type: 'test'
+  ...
+1..577
+# tests 577
+# suites 0
+# pass 576
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 251170.158274
+error: Recipe `js-test` failed on line 209 with exit code 1

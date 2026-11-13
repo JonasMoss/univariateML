@@ -63,6 +63,12 @@ for (folder in list.dirs(binding_dist_dir, full.names = TRUE, recursive = FALSE)
   }
 }
 
+# Private modifier kernels have no public family dossier or wrapper.
+for (adapter in list.files("modifier-adapters",full.names=TRUE))
+  file.copy(adapter,file.path(PKG_DIR,"src",paste0("modifier_",basename(adapter))))
+for (test in list.files("modifier-tests",full.names=TRUE))
+  file.copy(test,file.path(PKG_DIR,"tests","testthat",paste0("test-modifier-kernel-",basename(test))))
+
 # Test-only generated configuration inventory, for modifier refusal conformance.
 dir.create(file.path(PKG_DIR,"tests","testthat","fixtures"), recursive=TRUE, showWarnings=FALSE)
 file.copy("../../dev/validation/capabilities.csv",file.path(PKG_DIR,"tests","testthat","fixtures","capabilities.csv"),overwrite=TRUE)
@@ -83,6 +89,11 @@ for (folder in list.dirs(dist_dir, full.names = TRUE, recursive = FALSE)) {
   if (length(json)) file.copy(json, target)
 }
 
+for (folder in list.dirs("../../univariateML-cpp/tests/modifiers/fixtures",full.names=TRUE,recursive=FALSE)) {
+  target<-file.path(fixtures,paste0(".modifier_",basename(folder)))
+  dir.create(target,recursive=TRUE,showWarnings=FALSE)
+  file.copy(list.files(folder,full.names=TRUE),target)
+}
 source(file.path("scripts", "codegen_dpqr.R"))
 
 source(file.path("scripts", "unity_build.R"))

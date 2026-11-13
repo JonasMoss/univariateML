@@ -121,6 +121,7 @@ def covariance_rows(eligibility):
 def generate():
     rows = []
     for r in csv.DictReader((ROOT / INVENTORY).open()):
+        if not (ROOT/PREFIX/r['id']/'README.md').exists(): continue
         rows.append(dict(family=r['id'], regime=r['regime'], target='Other hypotheses: not reviewed',
             status='unreviewed', procedures='No audited procedure for this inventory scope',
             theory='Unreviewed estimator limit; DQM alone is insufficient',

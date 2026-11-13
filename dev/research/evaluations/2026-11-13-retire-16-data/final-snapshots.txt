@@ -1,0 +1,319 @@
+tnorm          284  (19 s)
+tbinom         262  (23 s)
+tpois          138  (24 s)
+zib            150  (27 s)
+zinb           150  (39 s)
+zip            78  (43 s)
+zipf           78  (52 s)
+zmbinom        150  (53 s)
+zmgeom         78  (61 s)
+zmlogarithmic  78  (68 s)
+zmnbinom       150  (76 s)
+zmpois         78  (78 s)
+ztbinom        86  (82 s)
+ztgeom         38  (91 s)
+ztnbinom       86  (97 s)
+ztpois         50  (99 s)
+
+0 of 1934 cases differ
+tbinom         262  (18 s)
+zib            150  (21 s)
+tpois          138  (27 s)
+tnorm          284  (27 s)
+zinb           150  (42 s)
+zip            78  (50 s)
+zmbinom        150  (52 s)
+zipf           78  (57 s)
+zmgeom         78  (65 s)
+zmnbinom       150  (77 s)
+zmlogarithmic  78  (81 s)
+zmpois         78  (83 s)
+ztbinom        86  (97 s)
+ztgeom         38  (99 s)
+ztpois         50  (106 s)
+ztnbinom       86  (109 s)
+
+0 of 1934 cases differ
+beta           114  (6 s)
+bbinom         147  (11 s)
+binom          86  (12 s)
+betapr         211  (16 s)
+cauchy         100  (18 s)
+burr           219  (26 s)
+cmp            78  (45 s)
+cmb            134  (49 s)
+bhatt          172  (51 s)
+dlaplace       78  (52 s)
+dunif          86  (53 s)
+dnorm          78  (55 s)
+dweibull       78  (56 s)
+exp            69  (58 s)
+expweibull     27  (64 s)
+fatigue        115  (69 s)
+foldnorm       123  (73 s)
+bnbinom        134  (85 s)
+emg            212  (86 s)
+gamma          123  (91 s)
+frechet        207  (93 s)
+ged            172  (100 s)
+dgamma         78  (113 s)
+gengamma       27  (120 s)
+geom           50  (123 s)
+gev            180  (131 s)
+gompertz       111  (133 s)
+gpd            107  (136 s)
+gumbel         112  (139 s)
+hcauchy        127  (145 s)
+hnorm          109  (147 s)
+ht             227  (154 s)
+gb2            571  (155 s)
+huber          172  (158 s)
+invburr        219  (167 s)
+invexp         71  (169 s)
+invgamma       123  (173 s)
+invgauss       127  (176 s)
+hyper          138  (186 s)
+invpareto      115  (189 s)
+invparalogis   115  (190 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/mle.hpp:11,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp:10,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/bindings/common/distributions/invweibull/fit.hpp:3,
+                 from build/scratch/survivors-native/build/invweibull.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+invweibull     111  (194 s)
+invtrgamma     179  (195 s)
+kumar          106  (199 s)
+laplace        100  (199 s)
+lgser          50  (201 s)
+llogis         115  (204 s)
+lgamma         107  (204 s)
+lnorm          127  (206 s)
+logis          100  (207 s)
+logitnorm      114  (208 s)
+lomax          103  (210 s)
+naka           123  (214 s)
+nbinom         86  (218 s)
+lst            172  (219 s)
+norm           100  (221 s)
+nsbeta         127  (225 s)
+paralogis      103  (236 s)
+pareto         109  (238 s)
+pareto2        115  (242 s)
+fpareto        571  (244 s)
+pareto3        103  (248 s)
+nhyper         146  (249 s)
+pois           50  (251 s)
+power          111  (254 s)
+pareto4        203  (255 s)
+pig            78  (255 s)
+rayleigh       75  (256 s)
+sgomp          115  (259 s)
+skellam        78  (266 s)
+sn             188  (273 s)
+slash          92  (275 s)
+snorm          156  (280 s)
+sged           284  (283 s)
+sstd           284  (292 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/tlambda/dpqr.hpp:3,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp:4,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/bindings/common/distributions/tlambda/fit.hpp:3,
+                 from build/scratch/survivors-native/build/tlambda.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+std            172  (294 s)
+trgamma        203  (299 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/triang/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp:5,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/bindings/common/distributions/triang/fit.hpp:3,
+                 from build/scratch/survivors-native/build/triang.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+triang         195  (301 s)
+unif           121  (303 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/weibull/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp:11,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/bindings/common/distributions/weibull/fit.hpp:3,
+                 from build/scratch/survivors-native/build/weibull.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+weibull        123  (305 s)
+tlambda        204  (308 s)
+yulesimon      38  (310 s)
+zeta           38  (311 s)
+st             284  (318 s)
+genbeta        219  (319 s)
+
+0 of 11820 cases differ
+beta           114  (4 s)
+binom          86  (7 s)
+bbinom         147  (10 s)
+betapr         211  (17 s)
+bhatt          172  (17 s)
+burr           219  (20 s)
+cauchy         100  (21 s)
+cmp            78  (26 s)
+dlaplace       78  (28 s)
+bnbinom        134  (30 s)
+dnorm          78  (31 s)
+dunif          86  (32 s)
+dweibull       78  (33 s)
+cmb            134  (34 s)
+exp            69  (36 s)
+expweibull     27  (39 s)
+fatigue        115  (39 s)
+foldnorm       123  (43 s)
+frechet        207  (53 s)
+gamma          123  (56 s)
+gb2            571  (89 s)
+ged            172  (97 s)
+fpareto        571  (108 s)
+dgamma         78  (108 s)
+geom           50  (112 s)
+gengamma       27  (114 s)
+gompertz       111  (116 s)
+gpd            107  (119 s)
+gev            180  (120 s)
+gumbel         112  (122 s)
+hcauchy        127  (124 s)
+hnorm          109  (124 s)
+huber          172  (128 s)
+ht             227  (128 s)
+hyper          138  (133 s)
+invexp         71  (134 s)
+invgamma       123  (138 s)
+invburr        219  (139 s)
+invgauss       127  (141 s)
+invpareto      115  (145 s)
+invparalogis   115  (149 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/mle.hpp:11,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp:10,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/bindings/common/distributions/invweibull/fit.hpp:3,
+                 from build/scratch/survivors-double/build/invweibull.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+invtrgamma     179  (151 s)
+invweibull     111  (151 s)
+laplace        100  (154 s)
+kumar          106  (155 s)
+lgser          50  (157 s)
+lgamma         107  (159 s)
+llogis         115  (161 s)
+lnorm          127  (162 s)
+logis          100  (164 s)
+logitnorm      114  (165 s)
+lomax          103  (167 s)
+naka           123  (172 s)
+nbinom         86  (176 s)
+lst            172  (177 s)
+norm           100  (181 s)
+nsbeta         127  (184 s)
+nhyper         146  (192 s)
+pareto         109  (194 s)
+paralogis      103  (195 s)
+pareto2        115  (199 s)
+pareto3        103  (199 s)
+pig            78  (205 s)
+pois           50  (208 s)
+pareto4        203  (208 s)
+rayleigh       75  (210 s)
+power          111  (210 s)
+sgomp          115  (216 s)
+skellam        78  (223 s)
+sged           284  (231 s)
+slash          92  (235 s)
+sn             188  (238 s)
+snorm          156  (240 s)
+sstd           284  (252 s)
+st             284  (261 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/tlambda/dpqr.hpp:3,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp:4,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/bindings/common/distributions/tlambda/fit.hpp:3,
+                 from build/scratch/survivors-double/build/tlambda.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+std            172  (264 s)
+trgamma        203  (268 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/triang/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp:5,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/bindings/common/distributions/triang/fit.hpp:3,
+                 from build/scratch/survivors-double/build/triang.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+triang         195  (271 s)
+unif           121  (273 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/weibull/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp:11,
+                 from /home/jonas/Files/programming/univariateML.wt/retire-16/bindings/common/distributions/weibull/fit.hpp:3,
+                 from build/scratch/survivors-double/build/weibull.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/retire-16/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+weibull        123  (276 s)
+yulesimon      38  (279 s)
+tlambda        204  (280 s)
+zeta           38  (283 s)
+genbeta        219  (291 s)
+emg            212  (357 s)
+emg archive 001311: attainable_tol "nan" -> null; candidates [{"estimates": {"lambda": "0x1.37b329f7bb948p-1", "mu": "0x1.7d7840039c8e5p+26", "sigma": "0x1.0d43bacad5c76p+0"}, "loglik_lower": "-0x1.7a020e694a536p+4", "loglik_upper": "-0x1.7a020e694a0c2p+4", "model": ""}, {"estimates": {"mean": "0x1.7d78406bff6f1p+26", "sd": "0x1.0d43bacad5c76p+0"}, "loglik_lower": "-0x1.eb82d8af027bdp+4", "loglik_upper": "-0x1.eb82d8af02247p+4", "model": "norm"}] -> null; fixed [] -> null; kind "numerical" -> "timeout"; limit_loglik "nan" -> null; logLik "nan" -> null (+6 more)
+
+1 of 11820 cases differ
+by family: {'emg': 1}
+by field: {'attainable_tol': 1, 'candidates': 1, 'fixed': 1, 'kind': 1, 'limit_loglik': 1, 'logLik': 1, 'loglik_lower': 1, 'loglik_upper': 1, 'message': 1, 'model': 1, 'segment_loglik_upper': 1, 'warnings': 1}

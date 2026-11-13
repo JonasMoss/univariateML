@@ -24,7 +24,7 @@ affine_models <- c("mlbhatt", "mlcauchy", "mlemg", "mlfrechet", "mlged",
                    "mlgev", "mlgumbel", "mlhnorm", "mlhuber", "mllaplace",
                    "mllogis", "mllst", "mlnorm", "mlsged", "mlslash",
                    "mlsn", "mlst", "mlsnorm", "mlsstd", "mlstd", "mltlambda",
-                   "mltnorm", "mltriang", "mlunif")
+                   "mltriang", "mlunif")
 
 pull_back_scale_fit <- function(fit, model, a, b) {
   p <- setNames(as.numeric(fit), names(fit))
@@ -175,4 +175,17 @@ test_that("Gompertz fits the original large-scale failure sample", {
   x <- ml_simulate("mlgompertz", 400)
   expect_equal(pull_back_scale_fit(mlgompertz(1e3*x), "mlgompertz", 0, 1e3),
                as.numeric(mlgompertz(x)), tolerance = 2e-7)
+})
+
+test_that("normal windows retain the retired infinite-window affine regression", {
+  skip_unless_tier("dev")
+  set.seed(7)
+  x<-rml(80,mlnorm(mean=0,sd=1,truncate=c(-Inf,Inf)))
+  base<-mlnorm(x,truncate=c(-Inf,Inf))
+  for(b in c(1e-4,1e4)) {
+    a<-3*b
+    got<-mlnorm(a+b*x,truncate=c(-Inf,Inf))
+    expect_equal(c((got[["mean"]]-a)/b,got[["sd"]]/b),as.numeric(base),tolerance=2e-7)
+    expect_equal(attr(got,"logLik")+length(x)*log(b)-attr(base,"logLik"),0,tolerance=1e-7*length(x))
+  }
 })

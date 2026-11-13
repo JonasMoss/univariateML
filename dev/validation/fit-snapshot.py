@@ -37,6 +37,9 @@ ROOT = Path(__file__).resolve().parents[2]
 DISTS = ROOT/'univariateML-cpp/include/cppunivariate/distributions'
 COMMON = ROOT/'bindings/common'
 ARCHIVE = ROOT/'dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz'
+ROUTES = json.loads((ROOT/'dev/research/evaluations/2026-11-13-retire-16-data/route-inputs.json').read_text())
+ROUTE_MODE = False
+
 FLAGS = ['-std=gnu++17', '-O2', '-DNDEBUG']   # as shipped (R, WASM, cpp-test)
 TICK = os.sysconf('SC_CLK_TCK')
 DENORM = 5e-324
@@ -48,6 +51,7 @@ def families():
                   if (f/'golden.json').exists() and (COMMON/'distributions'/f.name/'fit.hpp').exists())
 
 def read(ident):
+    if ROUTE_MODE and ident in ROUTES: return ROUTES[ident]['meta'], ROUTES[ident]['golden']
     meta = yaml.safe_load((DISTS/ident/'README.md').read_text().split('---', 2)[1])
     return meta, json.loads((DISTS/ident/'golden.json').read_text())
 
@@ -183,12 +187,31 @@ def boost_include():
 
 def build(ident, work, double, boost):
     meta, _ = read(ident)
-    header = (COMMON/'distributions'/ident/'fit.hpp').read_text()
+    header = (COMMON/'distributions'/ident/'fit.hpp').read_text() if not ROUTE_MODE else ''
     integer = bool(re.search(r'fit_'+ident+r'\(cppunivariate::ispan', header))
+    if ROUTE_MODE: integer = False
     k = len(meta['params'])
     args = ','.join('umvl_binding::Held{bool(mask&%du),holds[%d]}' % (1 << i, i) for i in range(k))
     text = (PROBE.replace('@ID@', ident).replace('@K@', str(k)).replace('@ARGS@', args)
             .replace('@TYPE@', 'int' if integer else 'double').replace('@SPAN@', 'ispan' if integer else 'span'))
+    if ROUTE_MODE:
+        route = ROUTES[ident]
+        names = [p['name'] for p in meta['params']]
+        h = lambda name: 'umvl_binding::Held{bool(mask&%du),holds[%d]}' % (1 << names.index(name), names.index(name))
+        entries = []
+        for name in names:
+            if name in ('a','b','N'): continue
+            entries.append('{"%s",%s}' % ('theta' if ident=='zmlogarithmic' and name=='prob' else name,h(name)))
+        endpoint = lambda name: '(mask&%du?holds[%d]:NAN)' % (1 << names.index(name),names.index(name))
+        a,b = 'NAN','NAN'
+        if ident in ('tpois','tbinom'):
+            a='(mask&%du?std::max(0.,std::floor(holds[%d])+1):NAN)' % (1 << names.index('a'),names.index('a'))
+            b='(mask&%du?std::floor(holds[%d]):NAN)' % (1 << names.index('b'),names.index('b'))
+        elif ident=='tnorm': a,b=endpoint('a'),endpoint('b')
+        elif ident=='zipf': a,b='1',endpoint('N')
+        call='umvl_binding::fit_modifier("%s",cppunivariate::span{data.data(),data.size()},{%s},"%s",%s,%s,%s)' % (route['base'],','.join(entries),route['zero'],'true' if route['zero']=='none' else 'false',a,b)
+        text=text.replace('#include "bindings/common/distributions/'+ident+'/fit.hpp"','#include "bindings/common/modifiers.hpp"')
+        text=re.sub(r'umvl_binding::fit_'+ident+r'\(.*?;',''+call+';',text,count=1)
     source = work/(ident+'.cpp'); exe = work/ident
     source.write_text(text)
     env = dict(os.environ)
@@ -244,7 +267,7 @@ def run_family(ident, args, archive, work, boost, tag):
         result = probe.ask(text, args.cpu_limit)
         if isinstance(result, str):
             result = dict(kind=result.split(':')[0], exit=result.partition(':')[2] or None)
-        record = dict(family=ident, source=case['source'], case=case['case'], mask=case['mask'],
+        record = dict(family=ROUTES[ident]['id'] if ROUTE_MODE else ident, source=case['source'], case=case['case'], mask=case['mask'],
                       held=case['held'], n=len(case['data']),
                       input_sha256=hashlib.sha256(text.encode()).hexdigest()[:16])
         if case['source'] in ('class', 'resample'): record['data'] = case['data']
@@ -269,7 +292,7 @@ def fingerprint(args):
         flags=FLAGS, no_long_double=args.no_long_double, cpu_limit=args.cpu_limit)
 
 def snapshot(args):
-    selected = sorted(args.family.split(',')) if args.family else families()
+    selected = sorted(args.family.split(',')) if args.family else sorted(ROUTES) if ROUTE_MODE else families()
     args.output.mkdir(parents=True, exist_ok=True)
     work = args.output/'build'; work.mkdir(exist_ok=True)
     provenance = fingerprint(args)
@@ -382,7 +405,10 @@ def main():
     ap.add_argument('--diff', nargs=2, metavar=('OLD', 'NEW'), help='compare two snapshots (directories or stored .jsonl.gz files)')
     ap.add_argument('--outcomes', metavar='DIR', help='report shared-outcome coverage and consistency of a snapshot')
     ap.add_argument('--ignore', help='comma-separated result fields to ignore in --diff, e.g. message')
+    ap.add_argument('--modifier-routes', action='store_true', help='replay frozen retirement inputs through the modifier seam')
     args = ap.parse_args()
+    global ROUTE_MODE
+    ROUTE_MODE = args.modifier_routes
     if args.outcomes: outcomes(args)
     elif args.diff: diff(args)
     elif args.output: snapshot(args)

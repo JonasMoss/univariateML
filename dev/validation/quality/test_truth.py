@@ -2,7 +2,7 @@
 import unittest
 import mpmath as mp
 from quality.truth_reference import normal, pair, gamma, Reference, beta_normalization, complement, negative_binomial
-from quality.truth import DISTS, module_at, points, read, declarative, verify, number, quantile_acceptance
+from quality.truth import ROOT, DISTS, module_at, points, read, declarative, verify, number, quantile_acceptance
 import json
 import inspect
 from types import SimpleNamespace
@@ -363,7 +363,9 @@ class AttainedBoundaries(unittest.TestCase):
                 ('ztpois', {'lambda': 0}, 1),
                 ('tpois', {'lambda': 0, 'a': 2, 'b': 8}, 3),
                 ('nbinom', {'size': 0, 'prob': .5}, 0)):
-                route = module_at(DISTS/id/'truth.py')
+                folder=DISTS/id
+                if not folder.exists():folder=ROOT/'univariateML-cpp/tests/modifiers/fixtures'/id
+                route = module_at(folder/'truth.py')
                 values = {k: number(v) for k,v in theta.items()}
                 ref = (route.build(values, None) if len(inspect.signature(route.build).parameters) == 2
                        else route.build(values))

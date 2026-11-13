@@ -68,7 +68,7 @@ relations:
 fit:
   method: delegation
   certified: 'yes'
-  note: 'logitnorm/README.md, Details; logitnorm/mle.hpp (public fitter and held overloads); logitnorm/test.cpp:
+  note: 'loginorm/README.md, Details; loginorm/tnorm_mle.hpp (public fitter and held overloads); logitnorm/test.cpp:
     Closed-form maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - proportions

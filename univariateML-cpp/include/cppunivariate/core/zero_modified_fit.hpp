@@ -2,10 +2,10 @@
 #pragma once
 #include "work_budget.hpp"
 #include "discrete_stop.hpp"
-#include "../distributions/ztpois/mle.hpp"
-#include "../distributions/ztgeom/mle.hpp"
-#include "../distributions/ztnbinom/mle.hpp"
-#include "../distributions/ztbinom/mle.hpp"
+#include "../distributions/pois/ztpois_mle.hpp"
+#include "../distributions/geom/ztgeom_mle.hpp"
+#include "../distributions/nbinom/ztnbinom_mle.hpp"
+#include "../distributions/binom/ztbinom_mle.hpp"
 namespace cppunivariate {
 namespace zero_detail {
 enum class ModifiedStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, AllZero, TwoPoint, IterationFailure };

@@ -1,3 +1,4 @@
+import {modifierRoute} from './modifier-test-routes.mjs';
 import {selectedFamily} from './test-register.mjs';
 import test from './test-register.mjs';
 import assert from 'node:assert/strict';
@@ -101,7 +102,7 @@ test('lst and std certificate normal stops name the fitted face', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for (const family of ['lst', 'std']) {
-    assert.throws(() => api[family].fit(new Float64Array([-1, -1, 1, 1])), (error) => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array([-1, -1, 1, 1])), (error) => {
       assert.equal(error.kind, 'limit');
       assert.equal(error.model, 'norm');
       assert.equal(error.estimates.mean, 0);
@@ -155,14 +156,14 @@ test('lst and std iterlim scales the certificate and preserves budget witnesses'
   const api = await createApi();
   const x = new Float64Array([0.050954662455960954,-0.41009991819347347,-0.27514948570271125,1.738894665940981,0.7827929830488856,-0.6094885407586247,0.16676804415486185,2.1605246276102874,-0.2387465089482371,-2.306020779595189,0.7712778390740149,0.868444961637359,1.0920372377409862,-0.6483986076864828,0.46991123089786935,-0.42877220249733083,-0.6711991838272713,-0.02262549573968949,-1.4089791730105745,0.03065718253139144,0.7394838316847435,-0.9188201716268543,-0.9824239413172151,-1.2717118121176605,0.7072827328968989,1.1005705147845657,-0.31552546144261623,0.24877221879696262,-0.7638326991319095,-0.8839285063895818,0.6899451665252806,-0.06974028824316554,-0.497841648238298,0.8381413762133866,-0.26457437687827884,-0.38679889567518655,-0.1278879326472602,-0.06134395969980899,-1.9342834627670904,-0.9650194594318576,0.12782341531106875,-0.5397482053246428,1.393079864160065,-1.8866780642217882,0.48159934707033075,0.37619107597635915,-0.7842379492323549,0.16661327780961455,0.06570257810373901,1.5033378387590548,-1.5584653425173214,0.5575584145186088,-0.7733568166152429,0.17687773844287813,-0.453478962001212,-2.6420087840828708,-2.0359122776319354,0.40101402508509254,2.637322231411576,-1.2594962766931357,0.896216299275718,-1.124759799790428,-0.31742515720096587,-0.3950423506433641,2.0094231968658294,0.6377817892826372,1.362962386207389,0.4899601440673617,0.7184328548359303,0.7179914812225302,0.616123650652679,0.2661075130421014,-0.6585341582181332,-1.012868755256849,-0.5993024660073559,1.0810268064227586,0.5679558382979852,1.3096494218560304,0.8540889501811413,-1.3334550306342379]);
   for (const family of ['lst','std']) {
-    assert.throws(() => api[family].fit(x, {}, {iterlim: 7}), error => {
+    assert.throws(() => modifierRoute(api,family).fit(x, {}, {iterlim: 7}), error => {
       assert.equal(error.kind, 'budget');
       assert.match(error.message, /Raising iterlim may resolve/);
       assert.ok(Number.isFinite(error.loglik_lower));
       assert.ok(error.candidates.length > 0);
       return true;
     });
-    assert.equal(api[family].fit(x, {}, {iterlim: 20}).status, 'Ok');
+    assert.equal(modifierRoute(api,family).fit(x, {}, {iterlim: 20}).status, 'Ok');
   }
 });
 
@@ -176,13 +177,13 @@ test('J6 tnorm CMB and CMP quantitative acceptance uses common binding routes', 
     ['cmp', {}, [{},{lambda:2},{nu:1},{lambda:2,nu:1}], ['lambda','nu']],
   ];
   for (const [family, design, subsets, names] of cases) for (const held of subsets) {
-    const fit = api[family].fit(x, {...design,...held});
+    const fit = modifierRoute(api,family).fit(x, {...design,...held});
     assert.equal(fit.status, 'Ok');
-    const parameters = names.map(name => fit.estimates[name]);
-    const ll = api[family].d(x, parameters, {log:true}).reduce((a,b) => a+b, 0);
+    const parameters = names.map(name => fit.estimates[name]??design[name]);
+    const ll = modifierRoute(api,family).d(x, parameters, {log:true}).reduce((a,b) => a+b, 0);
     assert.ok(Math.abs(fit.logLik-ll) < 1e-9*(1+Math.abs(ll)));
   }
-  assert.throws(() => api.tnorm.fit(x, {a:-2,b:8}, {iterlim:1}), error => error.kind==='numerical');
+  assert.throws(() => modifierRoute(api,'tnorm').fit(x, {a:-2,b:8}, {iterlim:1}), error => error.kind==='numerical');
   assert.throws(() => api.cmb.fit(x, {size:8}, {reltol:.1,iterlim:1}), error => error.kind==='numerical');
   assert.throws(() => api.cmp.fit(x, {}, {reltol:.1}), error => error.kind==='numerical');
   const geometric = new Float64Array([0,0,0,20000]);
@@ -274,7 +275,7 @@ test('trgamma held-scale concentration and numerical stops have distinct kinds',
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for (const [family,value] of [['trgamma',2],['invtrgamma',.5]]) {
-    assert.throws(() => api[family].fit(new Float64Array([value,value,value]), {scale: 1}), error => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array([value,value,value]), {scale: 1}), error => {
       assert.equal(error.kind, 'nomle');
       return true;
     });
@@ -290,7 +291,7 @@ test('trgamma held endpoint comparisons stop without asserting nonattainment', a
   const api = await createApi();
   const x = new Float64Array([Math.exp(-1),1-Number.EPSILON/2,1]);
   for (const [family,data] of [['trgamma',x],['invtrgamma',Float64Array.from(x,v=>1/v)]]) {
-    assert.throws(() => api[family].fit(data,{scale:1}),error => {
+    assert.throws(() => modifierRoute(api,family).fit(data,{scale:1}),error => {
       assert.equal(error.kind,'tie');
       assert.equal(error.candidates.length,2);
       assert.ok(error.loglik_upper>=error.loglik_lower);
@@ -304,7 +305,7 @@ test('trgamma partial logarithmic ties stop numerically', async () => {
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
   const x=Float64Array.from({length:16},(_,i)=>7-i*4*Number.EPSILON);
-  for(const family of ['trgamma','invtrgamma'])assert.throws(()=>api[family].fit(x),error=>{
+  for(const family of ['trgamma','invtrgamma'])assert.throws(()=>modifierRoute(api,family).fit(x),error=>{
     assert.equal(error.kind,'numerical');
     assert.match(error.message,/taking logarithms/);
     return true;
@@ -330,7 +331,7 @@ test('trgamma unrepresentable scales retain numerical stop details', async () =>
   const z=api.norm.q(Float64Array.from({length:201},(_,i)=>(i+.5)/201),[0,1]);
   const x=Float64Array.from(z,v=>Math.exp(v-.001*(v*v-1)));
   for(const [family,data] of [['trgamma',x],['invtrgamma',Float64Array.from(x,v=>1/v)]])
-    assert.throws(()=>api[family].fit(data),error=>{
+    assert.throws(()=>modifierRoute(api,family).fit(data),error=>{
       assert.equal(error.kind,'numerical');assert.match(error.message,/log\(scale\)/);
       assert.equal(error.loglik_upper,Infinity);return true;
     });
@@ -425,7 +426,7 @@ test('lst and std fixed-scale location certificates transport equal maxima', asy
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for (const [family, held] of [['lst', {sigma: 1, df: 3}], ['std', {sd: 1, nu: 3}]]) {
-    assert.throws(() => api[family].fit(new Float64Array([-3, 3]), held), error => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array([-3, 3]), held), error => {
       assert.equal(error.kind, 'tie');
       assert.equal(error.candidates.length, 2);
       assert.ok(Number.isFinite(error.loglik_lower));
@@ -442,12 +443,12 @@ test('lst and std uncertified held free-shape searches preserve golden fits', as
     const g = read(family,'golden'), names = Object.keys(g.estimates);
     for (const mask of [1,2,3]) {
       const held = Object.fromEntries(names.filter((_,i) => mask >> i & 1).map(k => [k,g.estimates[k]]));
-      const fit = api[family].fit(new Float64Array(g.data), held, {iterlim: 1000});
+      const fit = modifierRoute(api,family).fit(new Float64Array(g.data), held, {iterlim: 1000});
       assert.equal(fit.status, 'Ok');
       for (const [key,value] of Object.entries(held)) assert.equal(fit.estimates[key],value);
       assert.ok(Object.values(fit.estimates).every(Number.isFinite));
       assert.ok(fit.logLik >= g.logLik - 1e-6*g.data.length);
-      assert.throws(() => api[family].fit(new Float64Array(g.data), held, {iterlim: 1}), error => {
+      assert.throws(() => modifierRoute(api,family).fit(new Float64Array(g.data), held, {iterlim: 1}), error => {
         assert.equal(error.kind, family === 'lst' && mask === 2 ? 'budget' : 'numerical');
         return true;
       });
@@ -500,7 +501,7 @@ test('lst and std held solver caps return structured numerical stops', async () 
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for (const [family, held] of [['lst', {df: 3}], ['lst', {mu: 0, df: 3}], ['std', {nu: 3}], ['std', {mean: 0, nu: 3}]]) {
-    assert.throws(() => api[family].fit(new Float64Array([-3,-1,.2,1,8]), held, {iterlim: 1}), error => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array([-3,-1,.2,1,8]), held, {iterlim: 1}), error => {
       assert.equal(error.kind, 'numerical');
       assert.ok(Number.isFinite(error.loglik_lower));
       assert.equal(error.loglik_upper, Infinity);
@@ -551,11 +552,11 @@ test('extreme scalar certificates expose common binding stops', async () => {
     ['frechet',[0,.2,.5,1,3,20],{lambda:2}],
     ['gev',[-2,0,.3,1,5],{sigma:2,xi:-.3}]
   ]) {
-    assert.throws(() => api[family].fit(new Float64Array(x),held,{iterlim:1}), e => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array(x),held,{iterlim:1}), e => {
       assert.equal(e.kind,'numerical');assert.equal(e.loglik_upper,Infinity);
       assert.ok(e.candidates.length>0);return true;
     });
-    assert.equal(api[family].fit(new Float64Array(x),held).status,'Ok');
+    assert.equal(modifierRoute(api,family).fit(new Float64Array(x),held).status,'Ok');
   }
   assert.throws(() => api.frechet.fit(new Float64Array([0,0,1,2]),{lambda:1}), e => {
     assert.equal(e.kind,'nomle');assert.ok(Number.isFinite(e.loglik_upper));return true;
@@ -633,7 +634,7 @@ test('binomial relatives prove their Poisson-type limits with finite witnesses',
     ['zib',[0,0,0,0,0,0,0,0,1,1,1,2,3,7,12],{pi:.2}],
     ['tbinom',[1,2,3],{}]
   ]) {
-    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array(x),held),error => {
       assert.equal(error.kind,'limit');
       assert.ok(Number.isFinite(error.loglik_upper));
       assert.ok(error.candidates.length>=2);
@@ -647,14 +648,14 @@ test('binomial probability solves stop numerically before returning an unresolve
   const api = await createApi();
   for(const [family,face,values] of [['ztbinom','ztpois',[1,2,3]],['zib','zip',[0,0,0,0,1,2,3,4]]]) {
     const x=new Float64Array(values);
-    assert.throws(() => api[family].fit(x,{size:1e100}),error => {
+    assert.throws(() => modifierRoute(api,family).fit(x,{size:1e100}),error => {
       assert.equal(error.kind,'numerical');
       assert.equal(error.loglik_upper,Infinity);
       assert.equal(error.candidates.length,1);
       return true;
     });
-    const f=api[family].fit(x,{size:1e100},{iterlim:1000});
-    const limiting=api[face].fit(x);
+    const f=modifierRoute(api,family).fit(x,{size:1e100},{iterlim:1000});
+    const limiting=modifierRoute(api,face).fit(x);
     assert.ok(Math.abs(f.estimates.prob*1e100-limiting.estimates.lambda)<1e-9);
   }
 });
@@ -791,7 +792,7 @@ test('GEV and Frechet half-minimum certificates distinguish attainment', async (
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for(const family of ['gev','frechet']) {
-    assert.throws(() => api[family].fit(new Float64Array([0,0,1,2]),{}), e => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array([0,0,1,2]),{}), e => {
       assert.equal(e.kind,'nomle');
       assert.ok(Math.abs(e.loglik_upper-(4*Math.log(2)-4-2*Math.log(2)))<1e-12);
       assert.equal(e.loglik_lower,e.loglik_upper);
@@ -1085,7 +1086,7 @@ test('signed binomial face certificates have finite global bounds', async () => 
     ['tbinom',[0,1,1,2,2],{a:-1,b:2},'tpois'],
     ['zib',[0,0,0,0,0,1,1,2,2,4],{pi:.2},'zip']
   ]) {
-    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array(x),held),error => {
       assert.equal(error.kind,'limit');
       assert.equal(error.model,model);
       assert.ok(Number.isFinite(error.loglik_upper));
@@ -1110,12 +1111,12 @@ test('higher-order binomial face signs retain proved stops or uncertified fits',
     ['zib',[0,0,0,0,0,1,1,2,2,4],{pi}]
   ]) {
     if(family==='zib') {
-      const f=api[family].fit(new Float64Array(x),held);
+      const f=modifierRoute(api,family).fit(new Float64Array(x),held);
       assert.equal(f.status,'Ok');assert.equal(f.certified,0);
       assert.equal(f.estimates.pi,pi);assert.ok(Number.isFinite(f.logLik));
       continue;
     }
-    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array(x),held),error => {
       assert.equal(error.kind,family==='tbinom'?'limit':'unresolved');
       if(family==='tbinom')assert.ok(Number.isFinite(error.loglik_upper));
       else assert.equal(error.loglik_upper,Infinity);
@@ -1129,7 +1130,7 @@ test('higher-order binomial face signs retain proved stops or uncertified fits',
 test('two-point binomial windows attain a finite member despite their face tie', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
-  const fit=api.tbinom.fit(new Float64Array([2,2,3,3]),{a:1,b:3});
+  const fit=modifierRoute(api,'tbinom').fit(new Float64Array([2,2,3,3]),{a:1,b:3});
   assert.equal(fit.estimates.size,3);
   assert.ok(Math.abs(fit.logLik+4*Math.log(2))<1e-10);
 });
@@ -1138,7 +1139,7 @@ test('exact factorial moments certify a nonsaturated truncated Poisson face', as
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   const x=[0,...Array(9).fill(1),...Array(6).fill(2),...Array(10).fill(3)];
-  assert.throws(() => api.tbinom.fit(new Float64Array(x),{a:-1,b:3}),error => {
+  assert.throws(() => modifierRoute(api,'tbinom').fit(new Float64Array(x),{a:-1,b:3}),error => {
     assert.equal(error.kind,'limit');
     assert.equal(error.estimates.lambda,3);
     assert.ok(Number.isFinite(error.loglik_upper));
@@ -1149,7 +1150,7 @@ test('exact factorial moments certify a nonsaturated truncated Poisson face', as
 test('globally winning tied ZIP faces retain both rate candidates', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
-  assert.throws(() => api.zib.fit(new Float64Array([...Array(198).fill(0),1,19]),{pi:.7254971052291191}),error => {
+  assert.throws(() => modifierRoute(api,'zib').fit(new Float64Array([...Array(198).fill(0),1,19]),{pi:.7254971052291191}),error => {
     assert.equal(error.kind,'tie');
     assert.equal(error.model,'zip');
     assert.ok(Number.isFinite(error.loglik_upper));
@@ -1162,7 +1163,7 @@ test('noninflated ZIP faces include the equal-moment binomial escape', async () 
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for(const x of [[0,1,1,1,2,4],[0,1,1,1,2,3,4,4]]) {
-    assert.throws(() => api.zib.fit(new Float64Array(x)),error => {
+    assert.throws(() => modifierRoute(api,'zib').fit(new Float64Array(x)),error => {
       assert.equal(error.kind,'limit');
       assert.equal(error.estimates.pi,0);
       assert.ok(Number.isFinite(error.loglik_upper));
@@ -1175,12 +1176,12 @@ test('ZIB subnormal held inflation preserves log masses and its probability root
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   const mix=Number.MIN_VALUE;
-  const f=api.zib.fit(new Float64Array([0,500]),{size:1075,prob:.5,pi:mix});
+  const f=modifierRoute(api,'zib').fit(new Float64Array([0,500]),{size:1075,prob:.5,pi:mix});
   assert.ok(Math.abs(f.logLik+750.36663618821149)<1e-9);
-  const g=api.zib.fit(new Float64Array([...Array(1000).fill(535),0]),{size:1075,pi:mix});
+  const g=modifierRoute(api,'zib').fit(new Float64Array([...Array(1000).fill(535),0]),{size:1075,pi:mix});
   assert.ok(Math.abs(g.estimates.prob/.4971795798757613128165584136-1)<1e-10);
   assert.ok(Math.abs(g.logLik+4455.659181549239638934)<1e-7);
-  const tiny=api.zib.fit(new Float64Array([0]),{size:1,prob:1e-300,pi:.5});
+  const tiny=modifierRoute(api,'zib').fit(new Float64Array([0]),{size:1,prob:1e-300,pi:.5});
   assert.ok(tiny.logLik<0);
   assert.ok(Math.abs(tiny.logLik/(-5e-301)-1)<1e-10);
 });
@@ -1188,7 +1189,7 @@ test('ZIB subnormal held inflation preserves log masses and its probability root
 test('ZIB unrepresentable finite log likelihoods stop numerically', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
-  assert.throws(() => api.zib.fit(new Float64Array([0]),{size:1e308,prob:.9,pi:0}),error => {
+  assert.throws(() => modifierRoute(api,'zib').fit(new Float64Array([0]),{size:1e308,prob:.9,pi:0}),error => {
     assert.equal(error.kind,'numerical');
     assert.equal(error.loglik_upper,Infinity);
     return true;
@@ -1198,7 +1199,7 @@ test('ZIB unrepresentable finite log likelihoods stop numerically', async () => 
 test('ZIB tiny held probabilities preserve the unique all-zero inflation', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
-  const f=api.zib.fit(new Float64Array([0]),{size:1,prob:1e-300});
+  const f=modifierRoute(api,'zib').fit(new Float64Array([0]),{size:1,prob:1e-300});
   assert.equal(f.estimates.pi,1);
   assert.equal(f.logLik,0);
 });
@@ -1274,7 +1275,7 @@ test('binomial relatives retain proved finite and Poisson witnesses', async () =
     ['zib',[0,0,0,0,0,0,0,0,1,1,1,2,3,7,12],{pi:.2}],
     ['tbinom',[1,2,3],{}]
   ]) {
-    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array(x),held),error => {
       assert.equal(error.kind,'limit');
       assert.ok(Number.isFinite(error.loglik_upper));
       assert.ok(error.candidates.length>=2);
@@ -1292,7 +1293,7 @@ test('binomial relatives certify Poisson limits and retain finite witnesses', as
     ['zib',[0,0,0,0,0,0,0,0,1,1,1,2,3,7,12],{pi:.2},'zip'],
     ['tbinom',[1,2,3],{},'tpois']
   ]) {
-    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array(x),held),error => {
       assert.equal(error.kind,'limit');
       assert.equal(error.model,model);
       assert.ok(Number.isFinite(error.loglik_lower));
@@ -1316,7 +1317,7 @@ test('binomial relatives retain certified Poisson limit witnesses', async () => 
     ['zib',[0,0,0,0,0,0,0,0,1,1,1,2,3,7,12],{pi:.2},'zip'],
     ['tbinom',[1,2,3],{},'tpois']
   ]) {
-    assert.throws(() => api[family].fit(new Float64Array(x),held),error => {
+    assert.throws(() => modifierRoute(api,family).fit(new Float64Array(x),held),error => {
       assert.equal(error.kind,'limit');
       assert.equal(error.model,model);
       assert.ok(Number.isFinite(error.loglik_upper));
@@ -1328,11 +1329,13 @@ test('binomial relatives retain certified Poisson limit witnesses', async () => 
   }
 });
 
-test('zib quantiles stop on extreme numerical failure',()=>{
- const q=m.qzib(new Float64Array([.5]),[1e308,.9,0],true,false)[0];
+test('inflated binomial quantiles stop on extreme numerical failure',async()=>{
+ const {default:createApi}=await import('./index.mjs');
+ const law=modifierRoute(await createApi(),'zib');
+ const q=law.q(new Float64Array([.5]),[1e308,.9,0])[0];
  assert.ok(Number.isNaN(q));
- assert.equal(m.qzib(new Float64Array([.5]),[1e308,1,0],true,false)[0],1e308);
- assert.equal(m.qzib(new Float64Array([Math.log(.5)]),[10,1,.5],true,true)[0],10);
+ assert.equal(law.q(new Float64Array([.5]),[1e308,1,0])[0],1e308);
+ assert.equal(law.q(new Float64Array([Math.log(.5)]),[10,1,.5],{log:true})[0],10);
 });
 test('genbeta held q uses certified finite maxima and terminal neighborhood stops', async () => {
   const {default: createApi} = await import('./index.mjs');
@@ -1771,7 +1774,7 @@ test('bnbinom legacy fallbacks and proved decisions expose certification labels'
 test('binomial near-critical ZIP inputs return uncertified fits',async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
   for(const pi of [.3772146069463776,.37721460694637765]) {
-    const f=api.zib.fit(new Float64Array([0,0,0,0,0,1,1,2,2,4]),{size:null,pi});
+    const f=modifierRoute(api,'zib').fit(new Float64Array([0,0,0,0,0,1,1,2,2,4]),{size:null,pi});
     assert.equal(f.status,'Ok');assert.equal(f.certified,0);
     assert.equal(f.estimates.pi,pi);assert.ok(Number.isFinite(f.logLik));
   }
@@ -1782,7 +1785,7 @@ test('truncated binomial certifies the finite zero-second-order boundary',async(
   const counts=[242187,60672,121344,1488980,406274];
   const x=new Float64Array(counts.reduce((a,b)=>a+b,0));let at=0;
   for(let k=0;k<counts.length;++k){x.fill(k,at,at+counts[k]);at+=counts[k];}
-  const f=api.tbinom.fit(x,{a:-1,b:4,size:null});
+  const f=modifierRoute(api,'tbinom').fit(x,{a:-1,b:4,size:null});
   assert.equal(f.status,'Ok');assert.equal(f.estimates.size,7);
   assert.ok(Math.abs(f.estimates.prob-.44715659335717363398)<1e-10);
   assert.ok(Math.abs(f.logLik+3379063.91960425442105)<1e-7);
@@ -1850,7 +1853,7 @@ test('raw transformed sufficient statistics match independent concentrated refer
     ['invweibull',[.5071697345584799,.5071697345589871,.5071697345594942,.5071697345600014,.5071697345610158],
       {shape:707675622377.0812,scale:.5071697345591792610},131.91568101929355]];
   for(const [family,x,coefficients,ll] of cases){
-    const fit=api[family].fit(new Float64Array(x));
+    const fit=modifierRoute(api,family).fit(new Float64Array(x));
     for(const [name,value] of Object.entries(coefficients))assert.ok(Math.abs(fit.estimates[name]/value-1)<1e-10,`${family}.${name}`);
     assert.ok(Math.abs(fit.logLik/ll-1)<1e-10,family);
   }
@@ -1944,13 +1947,13 @@ test('std and lst shape certificates distinguish uncertified joint fits', async 
   for (const family of ['lst','std']) {
     const g = read(family,'golden'), names = Object.keys(g.estimates);
     const held = Object.fromEntries(names.slice(0,2).map(k => [k,g.estimates[k]]));
-    const fit = api[family].fit(new Float64Array(g.data), held);
+    const fit = modifierRoute(api,family).fit(new Float64Array(g.data), held);
     assert.equal(fit.status,'Ok');
     assert.equal(fit.certified,1);
     assert.ok(fit.logLik >= g.logLik - 1e-6*g.data.length);
     for (const [key,value] of Object.entries(held)) assert.equal(fit.estimates[key],value);
     for (const key of names.slice(0,2)) {
-      const joint=api[family].fit(new Float64Array(g.data),{[key]:g.estimates[key]});
+      const joint=modifierRoute(api,family).fit(new Float64Array(g.data),{[key]:g.estimates[key]});
       assert.equal(joint.status,'Ok');
       assert.equal(joint.certified,0);
       assert.equal(joint.estimates[key],g.estimates[key]);
@@ -1973,7 +1976,7 @@ test('std and lst held free-shape solver caps preserve finite diagnostic witness
     const g=read(family,'golden'), names=Object.keys(g.estimates);
     for (const mask of [1,2,3]) {
       const held=Object.fromEntries(names.filter((_,i)=>mask>>i&1).map(k=>[k,g.estimates[k]]));
-      assert.throws(()=>api[family].fit(new Float64Array(g.data),held,{iterlim:1}),error=>{
+      assert.throws(()=>modifierRoute(api,family).fit(new Float64Array(g.data),held,{iterlim:1}),error=>{
         assert.equal(error.kind,family==='lst'&&mask===2?'budget':'numerical');
         assert.ok(Number.isFinite(error.loglik_lower));
         assert.equal(error.loglik_upper,Infinity);
@@ -1989,7 +1992,7 @@ test('Student held subsets expose proved symmetry nonuniqueness', async () => {
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
   for(const [family,x,held] of [['std',[-100,100],{sd:1}],['lst',[-100,-99,0,99,100],{df:.5}]]){
-    assert.throws(()=>api[family].fit(new Float64Array(x),held),error=>{
+    assert.throws(()=>modifierRoute(api,family).fit(new Float64Array(x),held),error=>{
       assert.equal(error.kind,'tie');
       assert.ok(Number.isFinite(error.loglik_lower));
       assert.equal(error.loglik_upper,Infinity);
@@ -2003,7 +2006,7 @@ test('Student signed held-location normal faces expose certification', async () 
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
   for(const [family,held] of [['lst',{mu:.2}],['std',{mean:.2}]]) {
-    assert.throws(()=>api[family].fit(new Float64Array([-1,2]),held),error=>{
+    assert.throws(()=>modifierRoute(api,family).fit(new Float64Array([-1,2]),held),error=>{
       assert.equal(error.kind,'limit');
       assert.equal(error.model,'norm');
       assert.equal(error.certified,1);

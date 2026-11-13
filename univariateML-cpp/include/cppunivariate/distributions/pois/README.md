@@ -44,12 +44,70 @@ relations:
     at:
       mu1: lambda
       mu2: 0
+  - family: pois
+    at:
+      lambda: lambda
+      p0: 0
+    source_configuration:
+      kernel: ztpois
+      zero: truncated
+      coefficient_map:
+        lambda: lambda
+    configuration:
+      kernel: zmpois
+      zero: modified
+    coefficient_map:
+      lambda: lambda
+      p0: 0
   transform_of:
   - family: skellam
     at:
       mu1: 0
       mu2: lambda
     transform: negate
+  truncation_of:
+  - family: pois
+    at:
+      lambda: lambda
+    source_configuration:
+      kernel: tpois
+      truncate:
+      - max(0, floor(a)+1)
+      - floor(b)
+      coefficient_map:
+        lambda: lambda
+  modification_of:
+  - family: pois
+    at:
+      lambda: lambda
+    type: zero-inflated
+    mass: pi
+    source_configuration:
+      kernel: zip
+      zero: inflated
+      coefficient_map:
+        lambda: lambda
+        pi: pi
+  - family: pois
+    at:
+      lambda: lambda
+    type: zero-modified
+    mass: p0
+    source_configuration:
+      kernel: zmpois
+      zero: modified
+      coefficient_map:
+        lambda: lambda
+        p0: p0
+  - family: pois
+    at:
+      lambda: lambda
+    type: zero-truncated
+    source_configuration:
+      kernel: ztpois
+      zero: truncated
+      coefficient_map:
+        lambda: lambda
 fit:
   method: closed-form
   certified: 'yes'

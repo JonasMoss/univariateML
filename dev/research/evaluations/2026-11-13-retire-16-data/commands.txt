@@ -1,0 +1,18 @@
+Baseline worktree commit: 1e0f5185 (git rev-parse is recorded in each provenance JSON).
+All computations used workstation /tmp/umvl-cpu/run or run4. No simbox commands.
+Set TMPDIR, JUST_TEMPDIR and XDG_RUNTIME_DIR to $PWD/build/tmp before running just.
+
+Before moving any kernel:
+run4 python3 dev/validation/fit-snapshot.py --modifier-routes --output build/scratch/routes-before-native --jobs 4
+run4 python3 dev/validation/fit-snapshot.py --modifier-routes --no-long-double --output build/scratch/routes-before-double --jobs 4
+The merged snapshots and provenance are retained here as modifier-routes-{native,double}.*.
+
+After removal:
+run4 python3 dev/validation/fit-snapshot.py --modifier-routes --output build/scratch/routes-after-native --jobs 4
+run4 python3 dev/validation/fit-snapshot.py --modifier-routes --no-long-double --output build/scratch/routes-after-double --jobs 4
+run python3 dev/validation/fit-snapshot.py --diff <saved-before.jsonl.gz> <after-directory>
+run4 python3 dev/validation/fit-snapshot.py --output build/scratch/survivors-native --jobs 4
+run4 python3 dev/validation/fit-snapshot.py --no-long-double --output build/scratch/survivors-double --jobs 4
+run python3 dev/validation/fit-snapshot.py --diff <2026-11-12-baseline.jsonl.gz> <survivors-directory> --family <85-survivor-ids> --ignore outcome,core_status,outcome_override
+run python3 dev/research/evaluations/2026-11-13-retire-16-data/compare-old-routes.py
+run python3 dev/research/evaluations/2026-11-13-retire-16-data/check-preserved-fixtures.py

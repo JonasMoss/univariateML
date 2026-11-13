@@ -141,7 +141,7 @@ supply it along with the draw count `k` or stopping count `r`. To estimate
 | Transformed gamma | `mltrgamma` | univariateML |
 | Translated Half-Normal | `mlhnorm` | univariateML |
 | Triangular | `mltriang` | univariateML |
-| Truncated Normal | `mltnorm` | univariateML |
+| Truncated Normal | `mlnorm(x, truncate = c(a, b))` | univariateML |
 | Tukey lambda | `mltlambda` | univariateML |
 | Uniform | `mlunif` | stats |
 | Weibull | `mlweibull` | stats |
@@ -168,23 +168,23 @@ supply it along with the draw count `k` or stopping count `r`. To estimate
 | Poisson | `mlpois` | stats |
 | Poisson-inverse Gaussian | `mlpig` | univariateML |
 | Skellam | `mlskellam` | univariateML |
-| Truncated binomial | `mltbinom` | univariateML |
-| Truncated Poisson | `mltpois` | univariateML |
+| Truncated binomial | `mlbinom(x, truncate = c(max(0, floor(a)+1), floor(b)))` | univariateML |
+| Truncated Poisson | `mlpois(x, truncate = c(max(0, floor(a)+1), floor(b)))` | univariateML |
 | Yule--Simon | `mlyulesimon` | univariateML |
-| Zero-inflated binomial | `mlzib` | univariateML |
-| Zero-inflated negative binomial | `mlzinb` | univariateML |
-| Zero-inflated Poisson | `mlzip` | univariateML |
-| Zero-modified binomial | `mlzmbinom` | univariateML |
-| Zero-modified geometric | `mlzmgeom` | univariateML |
-| Zero-modified logarithmic | `mlzmlogarithmic` | univariateML |
-| Zero-modified negative binomial | `mlzmnbinom` | univariateML |
-| Zero-modified Poisson | `mlzmpois` | univariateML |
-| Zero-truncated binomial | `mlztbinom` | univariateML |
-| Zero-truncated geometric | `mlztgeom` | univariateML |
-| Zero-truncated negative binomial | `mlztnbinom` | univariateML |
-| Zero-truncated Poisson | `mlztpois` | univariateML |
+| Zero-inflated binomial | `mlbinom(x, zero = "inflated")` | univariateML |
+| Zero-inflated negative binomial | `mlnbinom(x, zero = "inflated")` | univariateML |
+| Zero-inflated Poisson | `mlpois(x, zero = "inflated")` | univariateML |
+| Zero-modified binomial | `mlbinom(x, zero = "modified")` | univariateML |
+| Zero-modified geometric | `mlgeom(x, zero = "modified")` | univariateML |
+| Zero-modified logarithmic | `mllgser(x, zero = "modified")` | univariateML |
+| Zero-modified negative binomial | `mlnbinom(x, zero = "modified")` | univariateML |
+| Zero-modified Poisson | `mlpois(x, zero = "modified")` | univariateML |
+| Zero-truncated binomial | `mlbinom(x, zero = "truncated")` | univariateML |
+| Zero-truncated geometric | `mlgeom(x, zero = "truncated")` | univariateML |
+| Zero-truncated negative binomial | `mlnbinom(x, zero = "truncated")` | univariateML |
+| Zero-truncated Poisson | `mlpois(x, zero = "truncated")` | univariateML |
 | Zeta | `mlzeta` | univariateML |
-| Zipf | `mlzipf` | univariateML |
+| Zipf | `mlzeta(x, truncate = c(1, N))` | univariateML |
 
 <!-- distributions: end -->
 

@@ -80,27 +80,11 @@ export interface GeneratedAPI {
   sstd: Family<{mean: number; sd: number; nu: number; xi: number}, [mean: number, sd: number, nu: number, xi: number], {gradtol?: number; iterlim?: number}>;
   st: Family<{xi: number; omega: number; alpha: number; nu: number}, [xi: number, omega: number, alpha: number, nu: number], {reltol?: number; iterlim?: number}>;
   std: Family<{mean: number; sd: number; nu: number}, [mean: number, sd: number, nu: number], {gradtol?: number; iterlim?: number}>;
-  tbinom: Family<{prob: number; a: number; b: number; size: number}, [prob: number, a: number, b: number, size: number], Record<string, never>>;
   tlambda: Family<{mu: number; sigma: number; lambda: number}, [mu: number, sigma: number, lambda: number], {reltol?: number; iterlim?: number}>;
-  tnorm: Family<{mean: number; sd: number; a: number; b: number}, [mean: number, sd: number, a: number, b: number], {reltol?: number; iterlim?: number}>;
-  tpois: Family<{lambda: number; a: number; b: number}, [lambda: number, a: number, b: number], Record<string, never>>;
   trgamma: Family<{shape1: number; shape2: number; scale: number}, [shape1: number, shape2: number, scale: number], {reltol?: number; iterlim?: number}>;
   triang: Family<{a: number; b: number; c: number}, [a: number, b: number, c: number], {reltol?: number; iterlim?: number}>;
   unif: Family<{min: number; max: number}, [min: number, max: number], Record<string, never>>;
   weibull: Family<{shape: number; scale: number}, [shape: number, scale: number], {shape0?: number | null; reltol?: number; iterlim?: number}>;
   yulesimon: Family<{rho: number}, [rho: number], {reltol?: number; iterlim?: number}>;
   zeta: Family<{s: number}, [s: number], {reltol?: number; iterlim?: number}>;
-  zib: Family<{size: number; prob: number; pi: number}, [size: number, prob: number, pi: number], {reltol?: number; iterlim?: number}>;
-  zinb: Family<{size: number; prob: number; pi: number}, [size: number, prob: number, pi: number], {reltol?: number; iterlim?: number}>;
-  zip: Family<{lambda: number; pi: number}, [lambda: number, pi: number], {iterlim?: number}>;
-  zipf: Family<{N: number; s: number}, [N: number, s: number], {reltol?: number; iterlim?: number}>;
-  zmbinom: Family<{size: number; prob: number; p0: number}, [size: number, prob: number, p0: number], {reltol?: number; iterlim?: number}>;
-  zmgeom: Family<{prob: number; p0: number}, [prob: number, p0: number], Record<string, never>>;
-  zmlogarithmic: Family<{prob: number; p0: number}, [prob: number, p0: number], Record<string, never>>;
-  zmnbinom: Family<{size: number; prob: number; p0: number}, [size: number, prob: number, p0: number], {reltol?: number; iterlim?: number}>;
-  zmpois: Family<{lambda: number; p0: number}, [lambda: number, p0: number], Record<string, never>>;
-  ztbinom: Family<{size: number; prob: number}, [size: number, prob: number], {reltol?: number; iterlim?: number}>;
-  ztgeom: Family<{prob: number}, [prob: number], Record<string, never>>;
-  ztnbinom: Family<{size: number; prob: number}, [size: number, prob: number], {reltol?: number; iterlim?: number}>;
-  ztpois: Family<{lambda: number}, [lambda: number], Record<string, never>>;
 }

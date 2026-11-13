@@ -43,7 +43,7 @@ expect_equal(class(est), "univariateML")
 
 
 ## Test data frame version
-est <- model_select(small_data, models = c("norm", "cauchy", "zipf"), type = "continuous", return = "all")
+est <- model_select(small_data, models = c("norm", "cauchy", "zeta"), type = "continuous", return = "all")
 expect(est |> inherits("data.frame"), "est is not a data frame")
 expect_equal(est$model, c("Normal", "Cauchy"))
 expect_equal(

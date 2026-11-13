@@ -17,7 +17,7 @@ test_that("continuous mathematical stops retain classes and original-unit faces"
   expect_identical(e$model, "exp")
   expect_equal(e$estimates, c(rate=.4))
   expect_equal(e$limit_loglik, 4*(log(.4)-1))
-  e <- caught(mltnorm(c(2,2,3,11), a=2, b=Inf))
+  e <- caught(.modifier_tnorm(c(2,2,3,11), a=2, b=Inf))
   expect_s3_class(e, "univariateML_limit")
   expect_identical(e$model, "unavailable:translated-exponential")
   expect_equal(e$estimates, c(mu=2,rate=.4))

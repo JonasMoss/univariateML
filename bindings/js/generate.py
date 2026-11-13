@@ -22,20 +22,23 @@ def golden_tolerance(expression, test_source):
 
 def generate(selected=None):
     wrappers, exports, ids = [], [], []
-    for folder in sorted(DOSSIERS.iterdir()):
+    private=json.loads((ROOT/'bindings/common/modifier-laws.json').read_text())
+    entries=[(folder,None) for folder in sorted(DOSSIERS.iterdir())]+[(DOSSIERS/info['base'],info) for info in private.values() if info['id']!='zipf']
+    for folder, internal in entries:
         if not (folder / 'README.md').exists():
             continue
-        model = yaml.safe_load((folder / 'README.md').read_text().split('---', 2)[1])
+        model = internal or yaml.safe_load((folder / 'README.md').read_text().split('---', 2)[1])
         if not (folder / 'mle.hpp').exists() and model.get('stage') != 'dpqr':
             continue
         family = model['id']
-        if selected and family not in selected:
+        if selected and family not in selected and (not internal or internal['base'] not in selected):
             continue
-        ids.append(family)
+        if not internal: ids.append(family)
         names = [p['name'] for p in model['params']]
-        header = (folder / 'dpqr.hpp').read_text()
-        wrappers.append(f'#include "cppunivariate/distributions/{family}/dpqr.hpp"\n')
-        for kind in 'dpqr':
+        header_path=internal['header'] if internal else family+'/dpqr.hpp'
+        header=(DOSSIERS/header_path).read_text()
+        wrappers.append(f'#include "cppunivariate/distributions/{header_path}"\n')
+        for kind in ('dpq' if internal else 'dpqr'):
             match = re.search(r'inline\s+double\s+' + kind + family + r'\s*\(([^)]*)\)', header)
             if not match:
                 raise ValueError(f'missing core signature: {kind}{family}')
@@ -62,7 +65,7 @@ def generate(selected=None):
   auto v=input(x); for(auto &z:v) z=cppunivariate::distributions::{kind}{family}(z,{params},{flags}); return output(v);
 }}'''
             wrappers.append(body)
-            exports.append(f'  emscripten::function("{kind}{family}",&js_{kind}{family});')
+            exports.append(f'  emscripten::function("{"modifier_" if internal else ""}{kind}{family}",&js_{kind}{family});')
     return '\n'.join(wrappers), '\n'.join(exports), ids
 
 
@@ -181,7 +184,7 @@ if __name__ == '__main__':
         for family in ids:
             meta = yaml.safe_load((DOSSIERS / family / 'README.md').read_text().split('---', 2)[1])
             support = meta['support']
-            eligible = (support['type'] == 'integer' and support['lower'] == 0 and
+            eligible = (support['type'] == 'integer' and str(support['lower']) in ('0','0.0') and
                         not set(meta.get('construction', [])) & {'truncation', 'modification'}) or meta.get('modifiers', {}).get('zero_exception', False)
             modifier_registry[family] = dict(eligibility=dict(zero=eligible, truncate=True, integer=support['type']=='integer'), capabilities=meta.get('modifiers', {}))
         (ROOT / 'bindings/js/modifier-metadata.mjs').write_text('// Generated from dossiers.\nexport const modifiers = ' + json.dumps(modifier_registry) + ';\n')

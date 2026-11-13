@@ -1,3 +1,39 @@
+# Migration to 2.0: zero and truncation modifiers
+
+The following fitters have been removed, with no aliases or redirects. Use the
+base fitter with named modifier arguments (all calls below take data `x`):
+
+- `mltbinom`: `mlbinom(x, truncate = c(max(0, floor(a) + 1), floor(b)), size = ...)`.
+- `mltnorm`: `mlnorm(x, truncate = c(a, b))`.
+- `mltpois`: `mlpois(x, truncate = c(max(0, floor(a) + 1), floor(b)))`.
+- `mlzipf`: `mlzeta(x, truncate = c(1, N))`.
+- `mlzib`: `mlbinom(x, zero = "inflated", size = ...)`.
+- `mlzinb`: `mlnbinom(x, zero = "inflated")`.
+- `mlzip`: `mlpois(x, zero = "inflated")`.
+- `mlzmbinom`: `mlbinom(x, zero = "modified", size = ...)`.
+- `mlzmgeom`: `mlgeom(x, zero = "modified")`.
+- `mlzmlogarithmic`: `mllgser(x, zero = "modified")`.
+- `mlzmnbinom`: `mlnbinom(x, zero = "modified")`.
+- `mlzmpois`: `mlpois(x, zero = "modified")`.
+- `mlztbinom`: `mlbinom(x, zero = "truncated", size = ...)`.
+- `mlztgeom`: `mlgeom(x, zero = "truncated")`.
+- `mlztnbinom`: `mlnbinom(x, zero = "truncated")`.
+- `mlztpois`: `mlpois(x, zero = "truncated")`.
+
+The retained window is closed. Old strict integer bounds `(a,b]` map to
+`[max(0,floor(a)+1),floor(b)]`; infinite endpoints remain unbounded. Free
+old bounds map to `NA` endpoints, and free binomial size requires explicit
+`size = NULL`. Normal bounds keep their values. Old Zipf `N` becomes the upper
+window endpoint (`NA` when estimated); bounds are attributes, not coefficients.
+For zero-modified logarithmic fits, old `prob` is now `theta`; all other parent
+and zero-atom coefficient names are retained.
+
+Finite zeta windows allow every finite real exponent, including negative `s`.
+Uniformity is `s = 0`; endpoint-only samples can have an infinite-exponent
+point-mass supremum. The old nonnegative-shape Zipf boundary claim does not
+apply to this wider domain. To reproduce the old data-free Zipf default use
+`mlzeta(s = 1, truncate = c(1, 10))`.
+
 # Development version
 
 * Fitters now build fixed distributions when data are omitted, using README defaults. Fully held models with data evaluate the likelihood with zero estimated parameters. Use `rml(n, mlX())` for simulation.

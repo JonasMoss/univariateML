@@ -1,3 +1,4 @@
+import {modifierRoute} from './modifier-test-routes.mjs';
 import {selectedFamily} from './test-register.mjs';
 import test from './test-register.mjs';
 import assert from 'node:assert/strict';
@@ -94,7 +95,7 @@ test('scaled normal residuals preserve extreme units in every held subset',()=>{
   const mean=mask&1?0:1.5,sd=mask&2?1:mask&1?Math.sqrt(2.5):.5;
   const ll=-2*(Math.log(unit)+Math.log(sd)+.5*Math.log(2*Math.PI))-((1-mean)**2+(2-mean)**2)/(2*sd*sd);
   for(const [family,extra] of [['norm',{}],['tnorm',{a:-Infinity,b:Infinity}]]) {
-   const r=m['fit'+family](new Float64Array([unit,2*unit]),{...held,...extra},{});
+   const r=family==='tnorm'?m.fitModifier('norm',new Float64Array([unit,2*unit]),[],held,'none',true,-Infinity,Infinity,false,1e-10,400):m['fit'+family](new Float64Array([unit,2*unit]),{...held,...extra},{});
    assert.equal(r.error,undefined,r.error);assert.equal(r.status,'Ok');
    assert.ok(Math.abs(r.estimates.mean/unit-mean)<1e-13);
    assert.ok(Math.abs(r.estimates.sd/unit-sd)<1e-13);
@@ -182,7 +183,7 @@ test('count fallback exposes per-fit certification',()=>{
  assert.equal(r.certified,0);
  assert.ok(Number.isFinite(r.logLik));
  assert.equal(r.estimates.k,5);
- const f=m.fitztbinom(new Float64Array([1,2,2,3]),{size:5},{});
+ const f=m.fitModifier('binom',new Float64Array([1,2,2,3]),[],{size:5},'truncated',false,NaN,NaN,false,1e-10,200);
  assert.equal(f.status,'Ok');assert.equal(f.certified,1);
 });
 
@@ -249,9 +250,9 @@ test('modifier knobs preserve zero fits, window likelihood and censoring', async
   const x=new Float64Array([0,0,1,2,3,5]);
   const z=api.pois.fit(x,{}, {zero:'modified'});
   assert.ok(Math.abs(z.estimates.p0-1/3)<1e-14);
-  const old=api.zmpois.fit(x);
+  const old=modifierRoute(api,'zmpois').fit(x);
   assert.ok(Math.abs(z.estimates.lambda/old.estimates.lambda-1)<1e-10);
-  assert.deepEqual(api.pois.d(x,[z.estimates.lambda,z.estimates.p0],{zero:'modified'}),api.zmpois.d(x,[old.estimates.lambda,old.estimates.p0]));
+  assert.deepEqual(api.pois.d(x,[z.estimates.lambda,z.estimates.p0],{zero:'modified'}),modifierRoute(api,'zmpois').d(x,[old.estimates.lambda,old.estimates.p0]));
   const pos=new Float64Array([1,1,2,3,5]);
   const a=api.pois.fit(pos,{}, {zero:'truncated'}),b=api.pois.fit(pos,{}, {truncate:[1,Infinity]});
   assert.equal(a.estimates.lambda,b.estimates.lambda);
@@ -280,16 +281,16 @@ test('all remaining retirement routes preserve held coefficients and widened dom
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
   const x=new Float64Array([1,1,2,3,3]);
-  const old=api.tbinom.fit(x,{a:0,b:5}),fit=api.binom.fit(x,{}, {truncate:[1,5]});
+  const old=modifierRoute(api,'tbinom').fit(x,{a:0,b:5}),fit=api.binom.fit(x,{}, {truncate:[1,5]});
   assert.equal(fit.estimates.size,old.estimates.size);
   assert.equal(fit.estimates.prob,old.estimates.prob);
   assert.equal(fit.certified,old.certified);
   const counts=new Float64Array([0,1,1,2,4]);
-  const log=api.lgser.fit(counts,{}, {zero:'modified'}),legacy=api.zmlogarithmic.fit(counts);
-  assert.equal(log.estimates.theta,legacy.estimates.prob);
+  const log=api.lgser.fit(counts,{}, {zero:'modified'}),legacy=modifierRoute(api,'zmlogarithmic').fit(counts);
+  assert.equal(log.estimates.theta,legacy.estimates.theta);
   assert.equal(log.estimates.p0,legacy.estimates.p0);
   assert.deepEqual(api.lgser.d(counts,[log.estimates.theta,log.estimates.p0],{zero:'modified'}),
-    api.zmlogarithmic.d(counts,[legacy.estimates.prob,legacy.estimates.p0]));
+    modifierRoute(api,'zmlogarithmic').d(counts,[legacy.estimates.theta,legacy.estimates.p0]));
   const data=new Float64Array([1,2,3,4,4,4]);
   const z=api.zeta.fit(data,{}, {truncate:[1,4]});
   assert.ok(z.estimates.s<0);

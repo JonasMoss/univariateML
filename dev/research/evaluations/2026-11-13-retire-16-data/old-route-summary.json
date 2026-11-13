@@ -1,0 +1,30 @@
+{
+  "native": {
+    "counts": {
+      "equal": 1912,
+      "Unclassified finding": 2,
+      "held-window density improvement": 1,
+      "zeta accuracy refinement": 1,
+      "widened exponent domain": 18
+    },
+    "fields": {
+      "coefficients": 19,
+      "logLik": 18,
+      "kind": 3
+    }
+  },
+  "double": {
+    "counts": {
+      "equal": 1912,
+      "Unclassified finding": 2,
+      "held-window density improvement": 1,
+      "zeta accuracy refinement": 1,
+      "widened exponent domain": 18
+    },
+    "fields": {
+      "coefficients": 19,
+      "logLik": 18,
+      "kind": 3
+    }
+  }
+}

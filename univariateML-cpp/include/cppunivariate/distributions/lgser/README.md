@@ -38,14 +38,56 @@ construction:
 - base
 relations:
   special_case_of:
-  - family: zmlogarithmic
+  - family: lgser
     at:
+      p0: 0
+      theta: theta
+    configuration:
+      kernel: zmlogarithmic
+      zero: modified
+    coefficient_map:
       prob: theta
       p0: 0
-  - family: ztnbinom
+  - family: nbinom
     at:
       size: 0
       prob: 1-theta
+    configuration:
+      kernel: ztnbinom
+      zero: truncated
+    coefficient_map:
+      size: 0
+      prob: 1-theta
+  - family: nbinom
+    at:
+      size: 0
+      prob: 1-prob
+      p0: p0
+    source_configuration:
+      kernel: zmlogarithmic
+      zero: modified
+      coefficient_map:
+        theta: prob
+        p0: p0
+    configuration:
+      kernel: zmnbinom
+      zero: modified
+    coefficient_map:
+      size: 0
+      prob: 1-prob
+      p0: p0
+  modification_of:
+  - family: lgser
+    at:
+      theta: prob
+    type: zero-modified
+    mass: p0
+    source_configuration:
+      kernel: zmlogarithmic
+      zero: modified
+      coefficient_map:
+        theta: prob
+        p0: p0
 fit:
   method: scalar-solve
   certified: 'yes'

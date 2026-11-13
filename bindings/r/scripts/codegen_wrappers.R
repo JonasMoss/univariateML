@@ -70,7 +70,15 @@ limit_sentence <- function(lim, model) {
                  else lim$name %||% lim$model
   held <- unlist(lim$fixed)
   scope <- if (length(held)) nl("This limit applies with ", and_list(held), " held fixed. ") else ""
+  configured_call <- NULL
+  if(has_target && !is.null(lim$configuration)) {
+    setting<-lim$configuration
+    argument<-if(!is.null(setting$zero))paste0('zero = "',setting$zero,'"') else
+      paste0("truncate = c(",paste(unlist(setting$truncate),collapse=", "),")")
+    configured_call<-paste0("ml",lim$model,"(x, ",argument,")")
+  }
   stop_text <- nl("`ml", model$id, "()` stops with an error",
+    if(!is.null(configured_call))nl("; use `",configured_call,"` to fit the limit model; see [ml",lim$model,"()].") else
     if (has_target) nl("; use [ml", lim$model, "()] to fit the limit model.") else ".")
   lead <- if (identical(lim$kind, "nonexistence")) {
     "The likelihood is unbounded and no finite maximum likelihood estimator exists. "

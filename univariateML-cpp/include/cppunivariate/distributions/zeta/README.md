@@ -42,7 +42,19 @@ examples: |
 group: discrete heavy-tailed
 construction:
 - base
-relations: {}
+relations:
+  truncation_of:
+  - family: zeta
+    at:
+      s: s
+    when: s > 1
+    source_configuration:
+      kernel: zipf
+      truncate:
+      - 1
+      - N
+      coefficient_map:
+        s: s
 fit:
   method: scalar-solve
   certified: 'yes'

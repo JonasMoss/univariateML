@@ -52,12 +52,19 @@ relations:
       beta: 1
     transform: shift
     shift: min
-  - family: zipf
+  - family: zeta
     at:
-      'N': max-min+1
       s: 0
     transform: shift
     shift: min-1
+    configuration:
+      kernel: zipf
+      truncate:
+      - 1
+      - max-min+1
+    coefficient_map:
+      N: max-min+1
+      s: 0
 fit:
   method: closed-form
   certified: 'yes'
