@@ -11,6 +11,15 @@ previous_double <- function(x) {
   result
 }
 
+# Same declared scale adjustment as the core, independently written in R.
+discrete_quantile_reached <- function(f,p,lower,log) {
+  e <- 64*.Machine$double.eps
+  target <- if (log) {
+    if (lower) ifelse(p > -.Machine$double.xmax/(1+e),p*(1+e),p) else p*(1-e)
+  } else if (lower) p*(1-e) else ifelse(1-p>4*e,p*(1+e),p)
+  if (lower) f>=target else f<=target
+}
+
 # Independent truth checks of the generated R shell, never the selected
 # reference. Per parameter point: five evenly spaced value rows;
 # three evenly spaced quantile rows in EACH tail/scale group; 32 RNG draws.
@@ -110,7 +119,28 @@ test_that("generated d/p/q/r agree with independent truth tables", {
             at <- do.call(fun[[2]], c(list(got[large]), theta, list(lower.tail=lower, log.p=log_input)))
             before <- do.call(fun[[2]], c(list(previous_double(got[large])), theta, list(lower.tail=lower, log.p=log_input)))
             target <- q[large,4]
-            good[large] <- good[large] & (is.finite(got[large]) | (expected[large]==Inf & got[large]==Inf)) & if (lower) at>=target & before<target else at<=target & before>target
+            good[large] <- good[large] &
+              (is.finite(got[large]) | (expected[large]==Inf & got[large]==Inf)) &
+              discrete_quantile_reached(at,target,lower,log_input) &
+              !discrete_quantile_reached(before,target,lower,log_input)
+          }
+          good[is.na(good)] <- FALSE
+          moved <- discrete & !good & interior & is.finite(got) & got<expected
+          if (any(moved)) {
+            at <- do.call(fun[[2]],c(list(got[moved]),theta,list(lower.tail=lower,log.p=log_input)))
+            prev <- floor(previous_double(got[moved]))
+            prev[got[moved]==0] <- -1
+            before <- do.call(fun[[2]],c(list(prev),theta,list(lower.tail=lower,log.p=log_input)))
+            target <- q[moved,4]
+            oracle <- do.call(fun[[2]],c(list(expected[moved]),theta,list(lower.tail=lower,log.p=log_input)))
+            oracle_prev <- floor(previous_double(expected[moved]))
+            oracle_prev[expected[moved]==0] <- -1
+            oracle_before <- do.call(fun[[2]],c(list(oracle_prev),theta,list(lower.tail=lower,log.p=log_input)))
+            plateau <- at==target & (oracle==at | (q[moved,8]!=0 & oracle_before==at))
+            plateau[is.na(plateau)] <- FALSE
+            good[moved] <- ((if (lower) at<target else at>target) | plateau) &
+              discrete_quantile_reached(at,target,lower,log_input) &
+              !discrete_quantile_reached(before,target,lower,log_input)
           }
           expect_true(all(good), info = paste(info, "quantile", lower, log_input))
         }
@@ -129,7 +159,14 @@ test_that("generated d/p/q/r agree with independent truth tables", {
         set.seed(20261029 + point)
         uniforms <- stats::runif(length(draws))
         replay <- do.call(fun[[3]], c(list(uniforms), theta))
-        expect_identical(draws, replay, info = paste(info, "inverse RNG replay"))
+        if (id=="pgw") expect_identical(draws,replay,info=paste(info,"inverse RNG replay")) else {
+          # Samplers retain the unfuzzed inversion stream. Quantiles may
+          # move left inside the declared band, especially beyond 2^53.
+          expect_true(all(draws>=replay),info=paste(info,"inverse RNG order"))
+          moved <- is.finite(replay) & draws!=replay
+          at <- do.call(fun[[2]],c(list(replay[moved]),theta))
+          expect_true(all(abs(at-uniforms[moved])<=64*.Machine$double.eps),info=paste(info,"inverse RNG band"))
+        }
       }
       lo <- do.call(fun[[3]], c(list(0), theta))
       hi <- do.call(fun[[3]], c(list(1), theta))
@@ -196,6 +233,73 @@ test_that("heavy-tail inverse samplers return finite quantiles on replayed unifo
     uniforms <- runif(4096L)
     expect_true(all(is.finite(draws)))
     expect_true(any(draws>2^53))
-    expect_identical(draws,q(uniforms,shape))
+    replay <- q(uniforms,shape)
+    expect_true(all(draws>=replay))
+    moved <- draws!=replay
+    p <- getFromNamespace(paste0("p",id),"univariateML")
+    expect_true(all(abs(p(replay[moved],shape)-uniforms[moved])<=64*.Machine$double.eps))
+  }
+})
+
+# TASK-215: generated dispatch must keep computed jump ties in all four
+# modes. A jump smaller than the declared fuzz can deliberately move left;
+# in that case require the first adjusted crossing, too.
+test_that("discrete qml pml round trips respect left continuity", {
+  skip_if_not_installed("jsonlite")
+  directory <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
+  skip_if(!nzchar(directory) || !dir.exists(directory), "distribution dossiers absent")
+  metadata <- getFromNamespace("univariateML_metadata", "univariateML")
+  retired <- c("tbinom", "tpois", "zipf", "zib", "zinb", "zip", "zmbinom",
+               "zmgeom", "zmlogarithmic", "zmnbinom", "zmpois", "ztbinom",
+               "ztgeom", "ztnbinom", "ztpois")
+  reached <- discrete_quantile_reached
+  for (name in names(metadata)) {
+    id <- sub("^ml", "", name)
+    if (id %in% retired || !length(umvl_filter_families(id)) ||
+        !identical(metadata[[name]]$support$type, "Z")) next
+    truth <- jsonlite::fromJSON(file.path(directory,id,"truth.json"),simplifyVector=FALSE)
+    matrix_of <- function(rows) do.call(rbind,lapply(rows,function(row) vapply(row,as.numeric,numeric(1))))
+    truth$parameters <- matrix_of(truth$parameters)
+    truth$parameter_names <- unlist(truth$parameter_names)
+    truth$quantiles <- matrix_of(truth$quantiles)
+    points <- if (tier_at_least("full")) seq_len(nrow(truth$parameters)) else seq_len(min(2L,nrow(truth$parameters)))
+    for (point in points) {
+      theta <- setNames(as.numeric(truth$parameters[point,]),truth$parameter_names)
+      fit <- univariateML_construct(theta,name,list(logLik=0,n=1L,call=NULL))
+      rows <- truth$quantiles
+      centre <- rows[rows[,1]==point-1 & rows[,2]==1 & rows[,3]==0 & rows[,4]==.5,5]
+      centre <- if (length(centre) && is.finite(centre[1]) && abs(centre[1]) < 2^53-101) floor(centre[1]) else 0
+      k <- centre + (-100:100)
+      for (lower in c(TRUE,FALSE)) for (log in c(FALSE,TRUE)) {
+        p <- pml(k,fit,lower.tail=lower,log.p=log)
+        before <- pml(k-1,fit,lower.tail=lower,log.p=log)
+        keep <- if (log) is.finite(p) & p<0 else is.finite(p) & p>0 & p<1
+        keep <- keep & !is.na(before) & p!=before
+        if (!any(keep)) next
+        x <- k[keep]; p <- p[keep]; before <- before[keep]
+        q <- qml(p,fit,lower.tail=lower,log.p=log)
+        info <- paste(id,point,lower,log)
+        expect_true(all(is.finite(q) & q<=x),info=info)
+        at <- pml(q,fit,lower.tail=lower,log.p=log)
+        prev <- pml(q-1,fit,lower.tail=lower,log.p=log)
+        expect_true(all(reached(at,p,lower,log) & !reached(prev,p,lower,log)),info=info)
+        moved <- q!=x
+        if (any(moved)) expect_true(all(reached(before[moved],p[moved],lower,log)),info=info)
+      }
+    }
+  }
+})
+
+test_that("discrete log neighbours use accurate CDF tails", {
+  if (length(umvl_filter_families("pois"))) {
+    f <- univariateML_construct(c(lambda=20),"mlpois",list(logLik=0,n=1L,call=NULL))
+    expect_equal(qml(-.17021094871159989,f,lower.tail=FALSE,log.p=TRUE),16)
+  }
+  if (length(umvl_filter_families("hyper"))) {
+    f <- univariateML_construct(c(m=50,N=100,k=20),"mlhyper",list(logLik=0,n=1L,call=NULL))
+    expect_equal(qml(-8.7930366634649135e-08,f,lower.tail=FALSE,log.p=TRUE),0)
+    half <- univariateML_construct(c(m=5,N=10,k=5),"mlhyper",list(logLik=0,n=1L,call=NULL))
+    for (lower in c(TRUE,FALSE)) for (log in c(FALSE,TRUE))
+      expect_equal(qml(if (log) log(.5) else .5,half,lower.tail=lower,log.p=log),2)
   }
 })

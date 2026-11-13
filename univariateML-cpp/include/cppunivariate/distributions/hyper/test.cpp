@@ -349,7 +349,7 @@ TEST_CASE("hyper dpqr: CDF tails, quantile inversion, sampler support") {
     CHECK(lower + upper == doctest::Approx(1.0).epsilon(1e-14));
     if (q >= 0 && q <= 12 && lower > 0) {
       CHECK(dist::qhyper(lower, m, N, k, true, false) == q);
-      CHECK(dist::qhyper(std::log(lower), m, N, k, true, true) == q);
+      CHECK(dist::qhyper(dist::phyper(q,m,N,k,true,true), m, N, k, true, true) == q);
     }
   }
   CHECK(dist::qhyper(0, m, N, k, true, false) == 0);
@@ -571,4 +571,115 @@ TEST_CASE("hyper: uncertified growing-population profiles preserve either held c
 
 TEST_CASE("hyper: small upper tail inverse retains requested tail") {
  CHECK(cppunivariate::distributions::qhyper(-69.07755278982137,5,1e8,5,false,true)==4);
+}
+
+TEST_CASE("hyper: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("hyper",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::phyper(x,t[0], t[1], t[2],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qhyper(x,t[0], t[1], t[2],l,g);});
+}
+
+TEST_CASE("hyper: rational jump ties") {
+  // Expected indices computed with Fraction in 2026-11-13-qtie-data/exact.py.
+  CHECK(cppunivariate::distributions::qhyper(0.003968253968253968,5.0,10.0,5.0,true,false)==0);
+  CHECK(cppunivariate::distributions::qhyper(-5.529429087511423,5.0,10.0,5.0,true,true)==0);
+  CHECK(cppunivariate::distributions::qhyper(0.996031746031746,5.0,10.0,5.0,false,false)==0);
+  CHECK(cppunivariate::distributions::qhyper(-0.00397614837963942,5.0,10.0,5.0,false,true)==0);
+  CHECK(cppunivariate::distributions::qhyper(0.10317460317460317,5.0,10.0,5.0,true,false)==1);
+  CHECK(cppunivariate::distributions::qhyper(-2.2713325494899412,5.0,10.0,5.0,true,true)==1);
+  CHECK(cppunivariate::distributions::qhyper(0.8968253968253969,5.0,10.0,5.0,false,false)==1);
+  CHECK(cppunivariate::distributions::qhyper(-0.10889408823913743,5.0,10.0,5.0,false,true)==1);
+  CHECK(cppunivariate::distributions::qhyper(0.5,5.0,10.0,5.0,true,false)==2);
+  CHECK(cppunivariate::distributions::qhyper(-0.6931471805599453,5.0,10.0,5.0,true,true)==2);
+  CHECK(cppunivariate::distributions::qhyper(0.5,5.0,10.0,5.0,false,false)==2);
+  CHECK(cppunivariate::distributions::qhyper(-0.6931471805599453,5.0,10.0,5.0,false,true)==2);
+  CHECK(cppunivariate::distributions::qhyper(0.8968253968253969,5.0,10.0,5.0,true,false)==3);
+  CHECK(cppunivariate::distributions::qhyper(-0.10889408823913743,5.0,10.0,5.0,true,true)==3);
+  CHECK(cppunivariate::distributions::qhyper(0.10317460317460317,5.0,10.0,5.0,false,false)==3);
+  CHECK(cppunivariate::distributions::qhyper(-2.2713325494899412,5.0,10.0,5.0,false,true)==3);
+  CHECK(cppunivariate::distributions::qhyper(0.996031746031746,5.0,10.0,5.0,true,false)==4);
+  CHECK(cppunivariate::distributions::qhyper(-0.00397614837963942,5.0,10.0,5.0,true,true)==4);
+  CHECK(cppunivariate::distributions::qhyper(0.003968253968253968,5.0,10.0,5.0,false,false)==4);
+  CHECK(cppunivariate::distributions::qhyper(-5.529429087511423,5.0,10.0,5.0,false,true)==4);
+  CHECK(cppunivariate::distributions::qhyper(0.05,3.0,6.0,3.0,true,false)==0);
+  CHECK(cppunivariate::distributions::qhyper(-2.995732273553991,3.0,6.0,3.0,true,true)==0);
+  CHECK(cppunivariate::distributions::qhyper(0.95,3.0,6.0,3.0,false,false)==0);
+  CHECK(cppunivariate::distributions::qhyper(-0.051293294387550536,3.0,6.0,3.0,false,true)==0);
+  CHECK(cppunivariate::distributions::qhyper(0.5,3.0,6.0,3.0,true,false)==1);
+  CHECK(cppunivariate::distributions::qhyper(-0.6931471805599453,3.0,6.0,3.0,true,true)==1);
+  CHECK(cppunivariate::distributions::qhyper(0.5,3.0,6.0,3.0,false,false)==1);
+  CHECK(cppunivariate::distributions::qhyper(-0.6931471805599453,3.0,6.0,3.0,false,true)==1);
+  CHECK(cppunivariate::distributions::qhyper(0.95,3.0,6.0,3.0,true,false)==2);
+  CHECK(cppunivariate::distributions::qhyper(-0.051293294387550536,3.0,6.0,3.0,true,true)==2);
+  CHECK(cppunivariate::distributions::qhyper(0.05,3.0,6.0,3.0,false,false)==2);
+  CHECK(cppunivariate::distributions::qhyper(-2.995732273553991,3.0,6.0,3.0,false,true)==2);
+  CHECK(cppunivariate::distributions::qhyper(0.0002913752913752914,7.0,14.0,7.0,true,false)==0);
+  CHECK(cppunivariate::distributions::qhyper(-8.140898460607852,7.0,14.0,7.0,true,true)==0);
+  CHECK(cppunivariate::distributions::qhyper(0.9997086247086248,7.0,14.0,7.0,false,false)==0);
+  CHECK(cppunivariate::distributions::qhyper(-0.00029141774940318386,7.0,14.0,7.0,false,true)==0);
+  CHECK(cppunivariate::distributions::qhyper(0.014568764568764568,7.0,14.0,7.0,true,false)==1);
+  CHECK(cppunivariate::distributions::qhyper(-4.228875455179707,7.0,14.0,7.0,true,true)==1);
+  CHECK(cppunivariate::distributions::qhyper(0.9854312354312355,7.0,14.0,7.0,false,false)==1);
+  CHECK(cppunivariate::distributions::qhyper(-0.014675931149327292,7.0,14.0,7.0,false,true)==1);
+  CHECK(cppunivariate::distributions::qhyper(0.14306526806526806,7.0,14.0,7.0,true,false)==2);
+  CHECK(cppunivariate::distributions::qhyper(-1.9444543328133324,7.0,14.0,7.0,true,true)==2);
+  CHECK(cppunivariate::distributions::qhyper(0.8569347319347319,7.0,14.0,7.0,false,false)==2);
+  CHECK(cppunivariate::distributions::qhyper(-0.15439352205385787,7.0,14.0,7.0,false,true)==2);
+  CHECK(cppunivariate::distributions::qhyper(0.5,7.0,14.0,7.0,true,false)==3);
+  CHECK(cppunivariate::distributions::qhyper(-0.6931471805599453,7.0,14.0,7.0,true,true)==3);
+  CHECK(cppunivariate::distributions::qhyper(0.5,7.0,14.0,7.0,false,false)==3);
+  CHECK(cppunivariate::distributions::qhyper(-0.6931471805599453,7.0,14.0,7.0,false,true)==3);
+  CHECK(cppunivariate::distributions::qhyper(0.8569347319347319,7.0,14.0,7.0,true,false)==4);
+  CHECK(cppunivariate::distributions::qhyper(-0.15439352205385787,7.0,14.0,7.0,true,true)==4);
+  CHECK(cppunivariate::distributions::qhyper(0.14306526806526806,7.0,14.0,7.0,false,false)==4);
+  CHECK(cppunivariate::distributions::qhyper(-1.9444543328133324,7.0,14.0,7.0,false,true)==4);
+  CHECK(cppunivariate::distributions::qhyper(0.9854312354312355,7.0,14.0,7.0,true,false)==5);
+  CHECK(cppunivariate::distributions::qhyper(-0.014675931149327292,7.0,14.0,7.0,true,true)==5);
+  CHECK(cppunivariate::distributions::qhyper(0.014568764568764568,7.0,14.0,7.0,false,false)==5);
+  CHECK(cppunivariate::distributions::qhyper(-4.228875455179707,7.0,14.0,7.0,false,true)==5);
+  CHECK(cppunivariate::distributions::qhyper(0.9997086247086248,7.0,14.0,7.0,true,false)==6);
+  CHECK(cppunivariate::distributions::qhyper(-0.00029141774940318386,7.0,14.0,7.0,true,true)==6);
+  CHECK(cppunivariate::distributions::qhyper(0.0002913752913752914,7.0,14.0,7.0,false,false)==6);
+  CHECK(cppunivariate::distributions::qhyper(-8.140898460607852,7.0,14.0,7.0,false,true)==6);
+  CHECK(cppunivariate::distributions::qhyper(2.0567667626491154e-05,9.0,18.0,9.0,true,false)==0);
+  CHECK(cppunivariate::distributions::qhyper(-10.791790247870114,9.0,18.0,9.0,true,true)==0);
+  CHECK(cppunivariate::distributions::qhyper(0.9999794323323735,9.0,18.0,9.0,false,false)==0);
+  CHECK(cppunivariate::distributions::qhyper(-2.0567879143867238e-05,9.0,18.0,9.0,false,true)==0);
+  CHECK(cppunivariate::distributions::qhyper(0.0016865487453722747,9.0,18.0,9.0,true,false)==1);
+  CHECK(cppunivariate::distributions::qhyper(-6.385071000605861,9.0,18.0,9.0,true,true)==1);
+  CHECK(cppunivariate::distributions::qhyper(0.9983134512546277,9.0,18.0,9.0,false,false)==1);
+  CHECK(cppunivariate::distributions::qhyper(-0.0016879725698323066,9.0,18.0,9.0,false,true)==1);
+  CHECK(cppunivariate::distributions::qhyper(0.028342245989304814,9.0,18.0,9.0,true,false)==2);
+  CHECK(cppunivariate::distributions::qhyper(-3.5634017962965103,9.0,18.0,9.0,true,true)==2);
+  CHECK(cppunivariate::distributions::qhyper(0.9716577540106952,9.0,18.0,9.0,false,false)==2);
+  CHECK(cppunivariate::distributions::qhyper(-0.028751641452461122,9.0,18.0,9.0,false,true)==2);
+  CHECK(cppunivariate::distributions::qhyper(0.1734677087618264,9.0,18.0,9.0,true,false)==3);
+  CHECK(cppunivariate::distributions::qhyper(-1.751763813563609,9.0,18.0,9.0,true,true)==3);
+  CHECK(cppunivariate::distributions::qhyper(0.8265322912381736,9.0,18.0,9.0,false,false)==3);
+  CHECK(cppunivariate::distributions::qhyper(-0.190516292625616,9.0,18.0,9.0,false,true)==3);
+  CHECK(cppunivariate::distributions::qhyper(0.5,9.0,18.0,9.0,true,false)==4);
+  CHECK(cppunivariate::distributions::qhyper(-0.6931471805599453,9.0,18.0,9.0,true,true)==4);
+  CHECK(cppunivariate::distributions::qhyper(0.5,9.0,18.0,9.0,false,false)==4);
+  CHECK(cppunivariate::distributions::qhyper(-0.6931471805599453,9.0,18.0,9.0,false,true)==4);
+  CHECK(cppunivariate::distributions::qhyper(0.8265322912381736,9.0,18.0,9.0,true,false)==5);
+  CHECK(cppunivariate::distributions::qhyper(-0.190516292625616,9.0,18.0,9.0,true,true)==5);
+  CHECK(cppunivariate::distributions::qhyper(0.1734677087618264,9.0,18.0,9.0,false,false)==5);
+  CHECK(cppunivariate::distributions::qhyper(-1.751763813563609,9.0,18.0,9.0,false,true)==5);
+  CHECK(cppunivariate::distributions::qhyper(0.9716577540106952,9.0,18.0,9.0,true,false)==6);
+  CHECK(cppunivariate::distributions::qhyper(-0.028751641452461122,9.0,18.0,9.0,true,true)==6);
+  CHECK(cppunivariate::distributions::qhyper(0.028342245989304814,9.0,18.0,9.0,false,false)==6);
+  CHECK(cppunivariate::distributions::qhyper(-3.5634017962965103,9.0,18.0,9.0,false,true)==6);
+  CHECK(cppunivariate::distributions::qhyper(0.9983134512546277,9.0,18.0,9.0,true,false)==7);
+  CHECK(cppunivariate::distributions::qhyper(-0.0016879725698323066,9.0,18.0,9.0,true,true)==7);
+  CHECK(cppunivariate::distributions::qhyper(0.0016865487453722747,9.0,18.0,9.0,false,false)==7);
+  CHECK(cppunivariate::distributions::qhyper(-6.385071000605861,9.0,18.0,9.0,false,true)==7);
+  CHECK(cppunivariate::distributions::qhyper(0.9999794323323735,9.0,18.0,9.0,true,false)==8);
+  CHECK(cppunivariate::distributions::qhyper(-2.0567879143867238e-05,9.0,18.0,9.0,true,true)==8);
+  CHECK(cppunivariate::distributions::qhyper(2.0567667626491154e-05,9.0,18.0,9.0,false,false)==8);
+  CHECK(cppunivariate::distributions::qhyper(-10.791790247870114,9.0,18.0,9.0,false,true)==8);
+}
+
+TEST_CASE("hyper: near-one log tail retains its small complement") {
+  // Exact P(X=0)=choose(50,20)/choose(100,20); 400-digit log1p reference.
+  CHECK(cppunivariate::distributions::qhyper(-8.7930366634649135e-08,50,100,20,false,true)==0);
 }

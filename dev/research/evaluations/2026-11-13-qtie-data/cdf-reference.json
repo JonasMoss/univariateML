@@ -1,0 +1,34 @@
+{
+  "pois": {
+    "reference": "-0.1702109487115944635058358072890591247752864227947770200341919378900161767485970326155048298996905909",
+    "expected_quantile": 16,
+    "before": {
+      "log_tail": "-0.17021094871159748",
+      "relative_error_eps": 79.71241629604638,
+      "public_quantile": 16.0,
+      "new_policy_on_this_cdf": 15.0
+    },
+    "after": {
+      "log_tail": "-0.17021094871159445",
+      "relative_error_eps": 0.3353133190808279,
+      "public_quantile": 16.0,
+      "new_policy_on_this_cdf": 16.0
+    }
+  },
+  "hyper": {
+    "reference": "-0.00000008793036672107448930783732482306972401342177433903418746008880875242218705941920459266490947922290248",
+    "expected_quantile": 0,
+    "before": {
+      "log_tail": "-8.7930366634647878e-08",
+      "relative_error_eps": 4426580.604078043,
+      "public_quantile": 1.0,
+      "new_policy_on_this_cdf": 1.0
+    },
+    "after": {
+      "log_tail": "-8.7930366721074448e-08",
+      "relative_error_eps": 2.1300059978951196,
+      "public_quantile": 0.0,
+      "new_policy_on_this_cdf": 0.0
+    }
+  }
+}

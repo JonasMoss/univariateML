@@ -1,0 +1,2644 @@
+[
+  {
+    "family": "bbinom",
+    "point": 0,
+    "parameters": [
+      10.0,
+      2.0,
+      3.0
+    ],
+    "oracle_median": "4.0",
+    "centre": 4,
+    "first": -96,
+    "last": 104,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 1,
+    "parameters": [
+      10.0,
+      1.9337387365835597,
+      2.9406650178896676
+    ],
+    "oracle_median": "4.0",
+    "centre": 4,
+    "first": -96,
+    "last": 104,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 2,
+    "parameters": [
+      10.0,
+      0.2,
+      3.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 3,
+    "parameters": [
+      10.0,
+      20.0,
+      3.0
+    ],
+    "oracle_median": "9.0",
+    "centre": 9,
+    "first": -91,
+    "last": 109,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 4,
+    "parameters": [
+      10.0,
+      2.0,
+      0.3
+    ],
+    "oracle_median": "10.0",
+    "centre": 10,
+    "first": -90,
+    "last": 110,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 5,
+    "parameters": [
+      10.0,
+      2.0,
+      30.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 6,
+    "parameters": [
+      10.0,
+      1.0,
+      1.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 7,
+    "parameters": [
+      0.0,
+      1.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 8,
+    "parameters": [
+      10.0,
+      1e-08,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 9,
+    "parameters": [
+      10.0,
+      100000000.0,
+      1.0
+    ],
+    "oracle_median": "10.0",
+    "centre": 10,
+    "first": -90,
+    "last": 110,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 10,
+    "parameters": [
+      10.0,
+      1.0,
+      1e-08
+    ],
+    "oracle_median": "10.0",
+    "centre": 10,
+    "first": -90,
+    "last": 110,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 11,
+    "parameters": [
+      10.0,
+      1.0,
+      100000000.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 12,
+    "parameters": [
+      10.0,
+      100000000.0,
+      100000000.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bbinom",
+    "point": 13,
+    "parameters": [
+      10.0,
+      1e-08,
+      1e-08
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "binom",
+    "point": 0,
+    "parameters": [
+      10.0,
+      0.5
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "binom",
+    "point": 1,
+    "parameters": [
+      10.0,
+      0.5022
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "binom",
+    "point": 2,
+    "parameters": [
+      10.0,
+      0.05
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "binom",
+    "point": 3,
+    "parameters": [
+      10.0,
+      0.95
+    ],
+    "oracle_median": "10.0",
+    "centre": 10,
+    "first": -90,
+    "last": 110,
+    "reason": "oracle median"
+  },
+  {
+    "family": "binom",
+    "point": 4,
+    "parameters": [
+      0.0,
+      0.5
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "binom",
+    "point": 5,
+    "parameters": [
+      10.0,
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "binom",
+    "point": 6,
+    "parameters": [
+      10.0,
+      1.0
+    ],
+    "oracle_median": "10.0",
+    "centre": 10,
+    "first": -90,
+    "last": 110,
+    "reason": "oracle median"
+  },
+  {
+    "family": "binom",
+    "point": 7,
+    "parameters": [
+      10.0,
+      5e-09
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "binom",
+    "point": 8,
+    "parameters": [
+      100000000.0,
+      1e-08
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 0,
+    "parameters": [
+      1.0,
+      2.0,
+      5.0
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 1,
+    "parameters": [
+      1.0672234787479615,
+      2.141979154644717,
+      5.36473383510874
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 2,
+    "parameters": [
+      0.1,
+      2.0,
+      5.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 3,
+    "parameters": [
+      10.0,
+      2.0,
+      5.0
+    ],
+    "oracle_median": "27.0",
+    "centre": 27,
+    "first": -73,
+    "last": 127,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 4,
+    "parameters": [
+      1.0,
+      0.2,
+      5.0
+    ],
+    "oracle_median": "142.0",
+    "centre": 142,
+    "first": 42,
+    "last": 242,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 5,
+    "parameters": [
+      1.0,
+      20.0,
+      5.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 6,
+    "parameters": [
+      1.0,
+      2.0,
+      0.5
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 7,
+    "parameters": [
+      1.0,
+      2.0,
+      50.0
+    ],
+    "oracle_median": "20.0",
+    "centre": 20,
+    "first": -80,
+    "last": 120,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 8,
+    "parameters": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 9,
+    "parameters": [
+      1e-08,
+      1.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 10,
+    "parameters": [
+      100000000.0,
+      1.0,
+      1.0
+    ],
+    "oracle_median": "99999999.0",
+    "centre": 99999999,
+    "first": 99999899,
+    "last": 100000099,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 11,
+    "parameters": [
+      1.0,
+      1e-08,
+      1.0
+    ],
+    "oracle_median": "inf",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "bulk outside finite binary64 range"
+  },
+  {
+    "family": "bnbinom",
+    "point": 12,
+    "parameters": [
+      1.0,
+      100000000.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 13,
+    "parameters": [
+      1.0,
+      1.0,
+      1e-08
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 14,
+    "parameters": [
+      1.0,
+      1.0,
+      100000000.0
+    ],
+    "oracle_median": "99999999.0",
+    "centre": 99999999,
+    "first": 99999899,
+    "last": 100000099,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 15,
+    "parameters": [
+      1.0,
+      100000000.0,
+      100000000.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "bnbinom",
+    "point": 16,
+    "parameters": [
+      100000000.0,
+      1e+16,
+      100000000.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 0,
+    "parameters": [
+      10.0,
+      0.3,
+      1.5
+    ],
+    "oracle_median": "4.0",
+    "centre": 4,
+    "first": -96,
+    "last": 104,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 1,
+    "parameters": [
+      10.0,
+      0.2777362750324292,
+      1.683599466457963
+    ],
+    "oracle_median": "4.0",
+    "centre": 4,
+    "first": -96,
+    "last": 104,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 2,
+    "parameters": [
+      10.0,
+      0.03,
+      1.5
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 3,
+    "parameters": [
+      10.0,
+      0.93,
+      1.5
+    ],
+    "oracle_median": "9.0",
+    "centre": 9,
+    "first": -91,
+    "last": 109,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 4,
+    "parameters": [
+      10.0,
+      0.3,
+      0.15
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 5,
+    "parameters": [
+      10.0,
+      0.3,
+      15.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 6,
+    "parameters": [
+      10.0,
+      0.5,
+      1.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 7,
+    "parameters": [
+      0.0,
+      0.5,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 8,
+    "parameters": [
+      10000000.0,
+      0.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 9,
+    "parameters": [
+      10.0,
+      0.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 10,
+    "parameters": [
+      10.0,
+      1.0,
+      1.0
+    ],
+    "oracle_median": "10.0",
+    "centre": 10,
+    "first": -90,
+    "last": 110,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 11,
+    "parameters": [
+      10.0,
+      5e-09,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 12,
+    "parameters": [
+      10.0,
+      0.5,
+      -1.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 13,
+    "parameters": [
+      10.0,
+      0.5,
+      100000000.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 14,
+    "parameters": [
+      10.0,
+      0.5,
+      -100000000.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmb",
+    "point": 15,
+    "parameters": [
+      10000.0,
+      0.0001,
+      1.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 0,
+    "parameters": [
+      4.0,
+      1.5
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 1,
+    "parameters": [
+      4.8929110545673415,
+      1.6896118716342547
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 2,
+    "parameters": [
+      0.4,
+      1.5
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 3,
+    "parameters": [
+      40.0,
+      1.5
+    ],
+    "oracle_median": "11.0",
+    "centre": 11,
+    "first": -89,
+    "last": 111,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 4,
+    "parameters": [
+      4.0,
+      0.15
+    ],
+    "oracle_median": "10323.0",
+    "centre": 10323,
+    "first": 10223,
+    "last": 10423,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 5,
+    "parameters": [
+      4.0,
+      15.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 6,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 7,
+    "parameters": [
+      0.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 8,
+    "parameters": [
+      0.5,
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 9,
+    "parameters": [
+      1e-08,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 10,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 11,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "oracle_median": "100000000.0",
+    "centre": 100000000,
+    "first": 99999900,
+    "last": 100000100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "cmp",
+    "point": 12,
+    "parameters": [
+      1.0,
+      1e-08
+    ],
+    "oracle_median": "4420024.0",
+    "centre": 4420024,
+    "first": 4419924,
+    "last": 4420124,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 0,
+    "parameters": [
+      2.0,
+      1.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 1,
+    "parameters": [
+      2.0040822543578156,
+      0.9720518551425348
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 2,
+    "parameters": [
+      0.2,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 3,
+    "parameters": [
+      20.0,
+      1.0
+    ],
+    "oracle_median": "19.0",
+    "centre": 19,
+    "first": -81,
+    "last": 119,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 4,
+    "parameters": [
+      2.0,
+      0.1
+    ],
+    "oracle_median": "16.0",
+    "centre": 16,
+    "first": -84,
+    "last": 116,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 5,
+    "parameters": [
+      2.0,
+      10.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 6,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 7,
+    "parameters": [
+      1e-08,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 8,
+    "parameters": [
+      1.0,
+      1e-08
+    ],
+    "oracle_median": "69314718.0",
+    "centre": 69314718,
+    "first": 69314618,
+    "last": 69314818,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 9,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dgamma",
+    "point": 10,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "oracle_median": "99999999.0",
+    "centre": 99999999,
+    "first": 99999899,
+    "last": 100000099,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dlaplace",
+    "point": 0,
+    "parameters": [
+      0.0,
+      0.4
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dlaplace",
+    "point": 1,
+    "parameters": [
+      0.0,
+      0.3850017061798494
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dlaplace",
+    "point": 2,
+    "parameters": [
+      0.0,
+      0.04
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dlaplace",
+    "point": 3,
+    "parameters": [
+      0.0,
+      0.94
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dlaplace",
+    "point": 4,
+    "parameters": [
+      0.0,
+      0.5
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dlaplace",
+    "point": 5,
+    "parameters": [
+      0.0,
+      5e-09
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dlaplace",
+    "point": 6,
+    "parameters": [
+      0.0,
+      0.9999999999999999
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dnorm",
+    "point": 0,
+    "parameters": [
+      0.0,
+      1.0
+    ],
+    "oracle_median": "-1.0",
+    "centre": -1,
+    "first": -101,
+    "last": 99,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dnorm",
+    "point": 1,
+    "parameters": [
+      0.03807058175630603,
+      1.0184636363492858
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dnorm",
+    "point": 2,
+    "parameters": [
+      -1.0,
+      1.0
+    ],
+    "oracle_median": "-2.0",
+    "centre": -2,
+    "first": -102,
+    "last": 98,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dnorm",
+    "point": 3,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dnorm",
+    "point": 4,
+    "parameters": [
+      0.0,
+      0.1
+    ],
+    "oracle_median": "-1.0",
+    "centre": -1,
+    "first": -101,
+    "last": 99,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dnorm",
+    "point": 5,
+    "parameters": [
+      0.0,
+      10.0
+    ],
+    "oracle_median": "-1.0",
+    "centre": -1,
+    "first": -101,
+    "last": 99,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dnorm",
+    "point": 6,
+    "parameters": [
+      0.0,
+      1e-08
+    ],
+    "oracle_median": "-1.0",
+    "centre": -1,
+    "first": -101,
+    "last": 99,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dnorm",
+    "point": 7,
+    "parameters": [
+      0.0,
+      100000000.0
+    ],
+    "oracle_median": "-1.0",
+    "centre": -1,
+    "first": -101,
+    "last": 99,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dunif",
+    "point": 0,
+    "parameters": [
+      2.0,
+      10.0
+    ],
+    "oracle_median": "6.0",
+    "centre": 6,
+    "first": -94,
+    "last": 106,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dunif",
+    "point": 1,
+    "parameters": [
+      0.0,
+      10.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dunif",
+    "point": 2,
+    "parameters": [
+      10.0,
+      10.0
+    ],
+    "oracle_median": "10.0",
+    "centre": 10,
+    "first": -90,
+    "last": 110,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dunif",
+    "point": 3,
+    "parameters": [
+      0.0,
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dunif",
+    "point": 4,
+    "parameters": [
+      0.0,
+      100000000.0
+    ],
+    "oracle_median": "50000000.0",
+    "centre": 50000000,
+    "first": 49999900,
+    "last": 50000100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dunif",
+    "point": 5,
+    "parameters": [
+      -100000000.0,
+      10.0
+    ],
+    "oracle_median": "-49999995.0",
+    "centre": -49999995,
+    "first": -50000095,
+    "last": -49999895,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 0,
+    "parameters": [
+      0.8,
+      1.5
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 1,
+    "parameters": [
+      0.8066268416300256,
+      1.5688432472349678
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 2,
+    "parameters": [
+      0.08,
+      1.5
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 3,
+    "parameters": [
+      0.98,
+      1.5
+    ],
+    "oracle_median": "10.0",
+    "centre": 10,
+    "first": -90,
+    "last": 110,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 4,
+    "parameters": [
+      0.8,
+      0.15
+    ],
+    "oracle_median": "1912.0",
+    "centre": 1912,
+    "first": 1812,
+    "last": 2012,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 5,
+    "parameters": [
+      0.8,
+      15.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 6,
+    "parameters": [
+      0.5,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 7,
+    "parameters": [
+      5e-09,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 8,
+    "parameters": [
+      0.9999999999999999,
+      1.0
+    ],
+    "oracle_median": "6243314768165358.0",
+    "centre": 6243314768165358,
+    "first": 6243314768165258,
+    "last": 6243314768165458,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 9,
+    "parameters": [
+      0.5,
+      1e-08
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "dweibull",
+    "point": 10,
+    "parameters": [
+      0.5,
+      100000000.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "geom",
+    "point": 0,
+    "parameters": [
+      0.5
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "geom",
+    "point": 1,
+    "parameters": [
+      0.513347022587269
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "geom",
+    "point": 2,
+    "parameters": [
+      0.05
+    ],
+    "oracle_median": "13.0",
+    "centre": 13,
+    "first": -87,
+    "last": 113,
+    "reason": "oracle median"
+  },
+  {
+    "family": "geom",
+    "point": 3,
+    "parameters": [
+      0.95
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "geom",
+    "point": 4,
+    "parameters": [
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "geom",
+    "point": 5,
+    "parameters": [
+      5e-09
+    ],
+    "oracle_median": "138629435.0",
+    "centre": 138629435,
+    "first": 138629335,
+    "last": 138629535,
+    "reason": "oracle median"
+  },
+  {
+    "family": "hyper",
+    "point": 0,
+    "parameters": [
+      20.0,
+      50.0,
+      10.0
+    ],
+    "oracle_median": "4.0",
+    "centre": 4,
+    "first": -96,
+    "last": 104,
+    "reason": "oracle median"
+  },
+  {
+    "family": "hyper",
+    "point": 1,
+    "parameters": [
+      5.0,
+      10.0,
+      5.0
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "hyper",
+    "point": 2,
+    "parameters": [
+      0.0,
+      10.0,
+      5.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "hyper",
+    "point": 3,
+    "parameters": [
+      10.0,
+      10.0,
+      5.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "hyper",
+    "point": 4,
+    "parameters": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "hyper",
+    "point": 5,
+    "parameters": [
+      5.0,
+      10.0,
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "hyper",
+    "point": 6,
+    "parameters": [
+      5.0,
+      10.0,
+      10.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "hyper",
+    "point": 7,
+    "parameters": [
+      5.0,
+      100000000.0,
+      5.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "lgser",
+    "point": 0,
+    "parameters": [
+      0.9
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "lgser",
+    "point": 1,
+    "parameters": [
+      0.9058534720544701
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "lgser",
+    "point": 2,
+    "parameters": [
+      0.09
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "lgser",
+    "point": 3,
+    "parameters": [
+      0.99
+    ],
+    "oracle_median": "6.0",
+    "centre": 6,
+    "first": -94,
+    "last": 106,
+    "reason": "oracle median"
+  },
+  {
+    "family": "lgser",
+    "point": 4,
+    "parameters": [
+      0.5
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "lgser",
+    "point": 5,
+    "parameters": [
+      5e-09
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "lgser",
+    "point": 6,
+    "parameters": [
+      0.9999999999999999
+    ],
+    "oracle_median": "53286023.0",
+    "centre": 53286023,
+    "first": 53285923,
+    "last": 53286123,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 0,
+    "parameters": [
+      10.0,
+      0.3
+    ],
+    "oracle_median": "22.0",
+    "centre": 22,
+    "first": -78,
+    "last": 122,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 1,
+    "parameters": [
+      10.391389312562472,
+      0.30610275261187947
+    ],
+    "oracle_median": "23.0",
+    "centre": 23,
+    "first": -77,
+    "last": 123,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 2,
+    "parameters": [
+      1.0,
+      0.3
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 3,
+    "parameters": [
+      100.0,
+      0.3
+    ],
+    "oracle_median": "232.0",
+    "centre": 232,
+    "first": 132,
+    "last": 332,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 4,
+    "parameters": [
+      10.0,
+      0.03
+    ],
+    "oracle_median": "312.0",
+    "centre": 312,
+    "first": 212,
+    "last": 412,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 5,
+    "parameters": [
+      10.0,
+      0.93
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 6,
+    "parameters": [
+      1.0,
+      0.5
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 7,
+    "parameters": [
+      0.0,
+      0.5
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 8,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 9,
+    "parameters": [
+      1e-08,
+      0.5
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 10,
+    "parameters": [
+      100000000.0,
+      0.9999999900000001
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 11,
+    "parameters": [
+      100000000.0,
+      0.5
+    ],
+    "oracle_median": "99999999.0",
+    "centre": 99999999,
+    "first": 99999899,
+    "last": 100000099,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nbinom",
+    "point": 12,
+    "parameters": [
+      1.0,
+      5e-09
+    ],
+    "oracle_median": "138629435.0",
+    "centre": 138629435,
+    "first": 138629335,
+    "last": 138629535,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nhyper",
+    "point": 0,
+    "parameters": [
+      20.0,
+      50.0,
+      3.0
+    ],
+    "oracle_median": "7.0",
+    "centre": 7,
+    "first": -93,
+    "last": 107,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nhyper",
+    "point": 1,
+    "parameters": [
+      5.0,
+      10.0,
+      3.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nhyper",
+    "point": 2,
+    "parameters": [
+      0.0,
+      10.0,
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nhyper",
+    "point": 3,
+    "parameters": [
+      10.0,
+      10.0,
+      3.0
+    ],
+    "oracle_median": "3.0",
+    "centre": 3,
+    "first": -97,
+    "last": 103,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nhyper",
+    "point": 4,
+    "parameters": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nhyper",
+    "point": 5,
+    "parameters": [
+      5.0,
+      10.0,
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nhyper",
+    "point": 6,
+    "parameters": [
+      5.0,
+      10.0,
+      5.0
+    ],
+    "oracle_median": "9.0",
+    "centre": 9,
+    "first": -91,
+    "last": 109,
+    "reason": "oracle median"
+  },
+  {
+    "family": "nhyper",
+    "point": 7,
+    "parameters": [
+      5.0,
+      100000000.0,
+      3.0
+    ],
+    "oracle_median": "50000000.0",
+    "centre": 50000000,
+    "first": 49999900,
+    "last": 50000100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 0,
+    "parameters": [
+      2.0,
+      3.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 1,
+    "parameters": [
+      1.978,
+      3.511967455404767
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 2,
+    "parameters": [
+      0.2,
+      3.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 3,
+    "parameters": [
+      20.0,
+      3.0
+    ],
+    "oracle_median": "5.0",
+    "centre": 5,
+    "first": -95,
+    "last": 105,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 4,
+    "parameters": [
+      2.0,
+      0.3
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 5,
+    "parameters": [
+      2.0,
+      30.0
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 6,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 7,
+    "parameters": [
+      1.0,
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 8,
+    "parameters": [
+      1e-08,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 9,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 10,
+    "parameters": [
+      1.0,
+      1e-08
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pig",
+    "point": 11,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pois",
+    "point": 0,
+    "parameters": [
+      2.0
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pois",
+    "point": 1,
+    "parameters": [
+      2.062
+    ],
+    "oracle_median": "2.0",
+    "centre": 2,
+    "first": -98,
+    "last": 102,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pois",
+    "point": 2,
+    "parameters": [
+      0.2
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pois",
+    "point": 3,
+    "parameters": [
+      20.0
+    ],
+    "oracle_median": "20.0",
+    "centre": 20,
+    "first": -80,
+    "last": 120,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pois",
+    "point": 4,
+    "parameters": [
+      1.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pois",
+    "point": 5,
+    "parameters": [
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pois",
+    "point": 6,
+    "parameters": [
+      1e-08
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "pois",
+    "point": 7,
+    "parameters": [
+      100000000.0
+    ],
+    "oracle_median": "100000000.0",
+    "centre": 100000000,
+    "first": 99999900,
+    "last": 100000100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 0,
+    "parameters": [
+      4.0,
+      3.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 1,
+    "parameters": [
+      4.253274679562562,
+      3.087274679562562
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 2,
+    "parameters": [
+      0.4,
+      3.0
+    ],
+    "oracle_median": "-2.0",
+    "centre": -2,
+    "first": -102,
+    "last": 98,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 3,
+    "parameters": [
+      40.0,
+      3.0
+    ],
+    "oracle_median": "37.0",
+    "centre": 37,
+    "first": -63,
+    "last": 137,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 4,
+    "parameters": [
+      4.0,
+      0.3
+    ],
+    "oracle_median": "4.0",
+    "centre": 4,
+    "first": -96,
+    "last": 104,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 5,
+    "parameters": [
+      4.0,
+      30.0
+    ],
+    "oracle_median": "-26.0",
+    "centre": -26,
+    "first": -126,
+    "last": 74,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 6,
+    "parameters": [
+      1.0,
+      1.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 7,
+    "parameters": [
+      0.0,
+      1.0
+    ],
+    "oracle_median": "-1.0",
+    "centre": -1,
+    "first": -101,
+    "last": 99,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 8,
+    "parameters": [
+      1.0,
+      0.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 9,
+    "parameters": [
+      0.0,
+      0.0
+    ],
+    "oracle_median": "0.0",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 10,
+    "parameters": [
+      1e-08,
+      1.0
+    ],
+    "oracle_median": "-1.0",
+    "centre": -1,
+    "first": -101,
+    "last": 99,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 11,
+    "parameters": [
+      1.0,
+      1e-08
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 12,
+    "parameters": [
+      100000000.0,
+      1.0
+    ],
+    "oracle_median": "99999999.0",
+    "centre": 99999999,
+    "first": 99999899,
+    "last": 100000099,
+    "reason": "oracle median"
+  },
+  {
+    "family": "skellam",
+    "point": 13,
+    "parameters": [
+      1.0,
+      100000000.0
+    ],
+    "oracle_median": "-99999999.0",
+    "centre": -99999999,
+    "first": -100000099,
+    "last": -99999899,
+    "reason": "oracle median"
+  },
+  {
+    "family": "yulesimon",
+    "point": 0,
+    "parameters": [
+      2.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "yulesimon",
+    "point": 1,
+    "parameters": [
+      1.8816298572601173
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "yulesimon",
+    "point": 2,
+    "parameters": [
+      0.2
+    ],
+    "oracle_median": "21.0",
+    "centre": 21,
+    "first": -79,
+    "last": 121,
+    "reason": "oracle median"
+  },
+  {
+    "family": "yulesimon",
+    "point": 3,
+    "parameters": [
+      20.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "yulesimon",
+    "point": 4,
+    "parameters": [
+      1.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "yulesimon",
+    "point": 5,
+    "parameters": [
+      100000000.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "yulesimon",
+    "point": 6,
+    "parameters": [
+      1e-08
+    ],
+    "oracle_median": "inf",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "bulk outside finite binary64 range"
+  },
+  {
+    "family": "zeta",
+    "point": 0,
+    "parameters": [
+      2.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "zeta",
+    "point": 1,
+    "parameters": [
+      1.961296321474947
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "zeta",
+    "point": 2,
+    "parameters": [
+      1.1
+    ],
+    "oracle_median": "580.0",
+    "centre": 580,
+    "first": 480,
+    "last": 680,
+    "reason": "oracle median"
+  },
+  {
+    "family": "zeta",
+    "point": 3,
+    "parameters": [
+      11.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  },
+  {
+    "family": "zeta",
+    "point": 4,
+    "parameters": [
+      1.0000000000000002
+    ],
+    "oracle_median": "inf",
+    "centre": 0,
+    "first": -100,
+    "last": 100,
+    "reason": "bulk outside finite binary64 range"
+  },
+  {
+    "family": "zeta",
+    "point": 5,
+    "parameters": [
+      200000000.0
+    ],
+    "oracle_median": "1.0",
+    "centre": 1,
+    "first": -99,
+    "last": 101,
+    "reason": "oracle median"
+  }
+]

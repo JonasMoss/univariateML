@@ -28,13 +28,22 @@ inline double qdlaplace(double p,double location,double scale,bool lower_tail=tr
  if(std::isnan(lp)||lp>0||(!log_p&&p<0)||!(scale>0&&scale<1)||!std::isfinite(location)||location!=std::floor(location))return std::numeric_limits<double>::quiet_NaN();
  if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
  return special::discrete_signed_search(location,1,[&](double q) {
-   if (std::abs(q)>9007199254740992.0) {
-     const double f=pdlaplace(q,location,scale,lower_tail,log_p);
-     return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
-   }
-   const double v=pdlaplace(q,location,scale,lower_tail,true);
-   return std::isnan(v) ? -1 : int(lower_tail ? v>=lp : v<=lp);
+    return special::discrete_reached(pdlaplace(q,location,scale,lower_tail,log_p),p,lower_tail,log_p);
  });
 }
-template<typename Rng> inline double rdlaplace(Rng &rng,double location,double scale){return qdlaplace(rng.runif(0,1),location,scale);}
+// Preserve the established inverse-sampler stream, independently of quantile fuzz.
+inline double dlaplace_sampling_quantile(double p,double location,double scale,bool lower_tail=true,bool log_p=false){
+ double lp=log_p?p:std::log(p);
+ if(std::isnan(lp)||lp>0||(!log_p&&p<0)||!(scale>0&&scale<1)||!std::isfinite(location)||location!=std::floor(location))return std::numeric_limits<double>::quiet_NaN();
+ if(lp==-INFINITY)return lower_tail?-INFINITY:INFINITY;if(lp==0)return lower_tail?INFINITY:-INFINITY;
+ return special::discrete_signed_search(location,1,[&](double q) {
+   if (std::abs(q)>9007199254740992.0) {
+     const double f=pdlaplace(q,location,scale,lower_tail,log_p);
+     return special::discrete_reached(f,p,lower_tail,log_p,false);
+   }
+   const double v=pdlaplace(q,location,scale,lower_tail,true);
+   return special::discrete_reached(v,lp,lower_tail,true,false);
+ });
+}
+template<typename Rng> inline double rdlaplace(Rng &rng,double location,double scale){return dlaplace_sampling_quantile(rng.runif(0,1),location,scale);}
 } }

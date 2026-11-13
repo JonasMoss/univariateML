@@ -34,6 +34,13 @@ function previousDouble(x) {
   view.setBigUint64(0,view.getBigUint64(0)+(x>0 ? -1n : 1n));
   return view.getFloat64(0);
 }
+// TASK-215: independently spell out the supplied-scale left-continuity band.
+function discreteReached(f,p,lower,log) {
+  const e=64*Number.EPSILON;
+  const target=log ? (lower ? (p>-Number.MAX_VALUE/(1+e)?p*(1+e):p) : p*(1-e))
+    : lower?p*(1-e):1-p>4*e?p*(1+e):p;
+  return lower?f>=target:f<=target;
+}
 const dpqrFamilies=JSON.parse(readFileSync(new URL('../../build/js/generated/families.json',import.meta.url),'utf8'));
 for(const f of dpqrFamilies.filter(selectedFamily)) test(`${f} generated truth and sampler`,()=>checkTruth(f));
 function checkTruth(f) {
@@ -56,7 +63,17 @@ function checkTruth(f) {
    const large=discrete&&Math.abs(b)>2**53&&(log?Number.isFinite(x)&&x<0:x>0&&x<1);
    const at=large?call('p',a,t.parameters[i],!!lower,!!log):NaN;
    const before=large?call('p',previousDouble(a),t.parameters[i],!!lower,!!log):NaN;
-   check('q',row,a,b,large ? ok&&(Number.isFinite(a)||b===Infinity&&a===Infinity)&&(lower?at>=x&&before<x:at<=x&&before>x) : ok);
+   let moved=false;
+   if(discrete&&a<b&&Number.isFinite(a)) {
+    const v=call('p',a,t.parameters[i],!!lower,!!log);
+    const prev=a===0?-1:Math.floor(previousDouble(a));
+    const vprev=call('p',prev,t.parameters[i],!!lower,!!log);
+    const oracle=call('p',b,t.parameters[i],!!lower,!!log);
+    const oracleBefore=call('p',b===0?-1:Math.floor(previousDouble(b)),t.parameters[i],!!lower,!!log);
+    const plateau=v===x&&(oracle===v||lattice&&oracleBefore===v);
+    moved=((lower?v<x:v>x)||plateau)&&discreteReached(v,x,!!lower,!!log)&&!discreteReached(vprev,x,!!lower,!!log);
+   }
+   check('q',row,a,b,large ? (ok||moved)&&(Number.isFinite(a)||b===Infinity&&a===Infinity)&&discreteReached(at,x,!!lower,!!log)&&!discreteReached(before,x,!!lower,!!log) : ok||moved);
   }
   for(const [i] of t.sampler_points){const n=20000,seed=20261029+i,draw=m[`r${f}`](n,t.parameters[i],seed);assert.ok(draw instanceof Float64Array);assert.deepEqual(draw,m[`r${f}`](n,t.parameters[i],seed));assert.ok([...draw].every(x=>!Number.isNaN(x)));
    for(const row of t.values){if(row[0]!==i)continue;const p=Math.exp(row[3]);if(p<1e-3||p>1-1e-3)continue;const got=draw.reduce((s,x)=>s+(x<=row[1]),0)/n;check('r_cdf',row,got,p,Math.abs(got-p)<=5*Math.sqrt(p*(1-p)/n)+1/n);}
@@ -1434,7 +1451,12 @@ test('heavy-tail inverse samplers replay finite quantiles beyond 2^53',()=>{
     const draws=m[`r${family}`](n,[shape],seed);
     assert.ok([...draws].every(Number.isFinite));
     assert.ok([...draws].some(x=>x>2**53));
-    assert.deepEqual(draws,m[`q${family}`](uniforms,[shape],true,false));
+    const replay=m[`q${family}`](uniforms,[shape],true,false);
+    const at=m[`p${family}`](replay,[shape],true,false);
+    for(let i=0;i<n;++i) {
+      assert.ok(draws[i]>=replay[i]);
+      if(draws[i]!==replay[i]) assert.ok(Math.abs(at[i]-uniforms[i])<=64*Number.EPSILON);
+    }
   }
 });
 
@@ -1446,7 +1468,7 @@ test('large geometric quantiles preserve the supplied probability scale',()=>{
       const h=m[`q${family}`](new Float64Array([p]),parameters,lower,log)[0];
       assert.ok(Number.isFinite(h)&&h>2**53);
       const f=m[`p${family}`](new Float64Array([h,previousDouble(h)]),parameters,lower,log);
-      assert.ok(lower?f[0]>=p&&f[1]<p:f[0]<=p&&f[1]>p);
+      assert.ok(discreteReached(f[0],p,lower,log)&&!discreteReached(f[1],p,lower,log));
     }
   }
 });
@@ -1462,8 +1484,11 @@ test('translated lattice normal and Laplace tails survive overflowing difference
       const h=m.qdnorm(new Float64Array([p]),[mean,1e308],lower,log)[0];
       assert.ok(Number.isFinite(h));
       const f=m.pdnorm(new Float64Array([h,previousDouble(h)]),[mean,1e308],lower,log);
-      assert.ok(lower?f[0]>=p&&f[1]<p:f[0]<=p&&f[1]>p);
-      assert.ok(Math.abs(h/1e308-(mean/1e308+(lower?-1:1)*2.3263478740408408))<2e-14);
+      assert.ok(discreteReached(f[0],p,lower,log)&&!discreteReached(f[1],p,lower,log));
+      const e=64*Number.EPSILON;
+      const adjusted=p*(log?(lower?1+e:1-e):(lower?1-e:1+e));
+      const z=m.qnorm(new Float64Array([adjusted]),[0,1],lower,log)[0];
+      assert.ok(Math.abs(h/1e308-(mean/1e308+z))<2e-14);
     }
     assert.ok(Math.abs(m.ddnorm(x,[-sign*1e308,1e308],true,true)[0]+712.11514717537074343)<2e-13);
     const params=[-sign*1e308,1-2**-53],expected=-2.2204460492503132285e292;
@@ -2052,4 +2077,11 @@ test('pgw tiny natural upper tails and inverse boundary handling',()=>{
   assert.equal(m.qpgw(new Float64Array([-1]),[2,1e-308,1],false,true)[0],2);
   const center=m.qpgw(new Float64Array([-744.8065848419628]),[1,1e-4,Number.MIN_VALUE],true,true)[0];
   assert.ok(Math.abs(center/1.0000000013261663-1)<=1e-9);
+});
+
+test('discrete log neighbours use accurate CDF tails',()=>{
+  assert.equal(m.qpois(new Float64Array([-.17021094871159989]),[20],false,true)[0],16);
+  assert.equal(m.qhyper(new Float64Array([-8.7930366634649135e-08]),[50,100,20],false,true)[0],0);
+  for(const lower of [false,true]) for(const log of [false,true])
+    assert.equal(m.qhyper(new Float64Array([log?Math.log(.5):.5]),[5,10,5],lower,log)[0],2);
 });

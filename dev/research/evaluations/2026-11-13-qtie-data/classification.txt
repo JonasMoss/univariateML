@@ -1,0 +1,28 @@
+{
+  "pois": {
+    "stats exact; C++ specified fuzz band": 7533,
+    "stats exact; C++ specified fuzz band; computed CDF rounding at adjusted boundary": 44,
+    "C++ exact; stats fuzz/closed-form rounding": 17
+  },
+  "binom": {
+    "stats exact; C++ specified fuzz band": 7570,
+    "stats exact; C++ specified fuzz band; computed CDF rounding at adjusted boundary": 45,
+    "C++ exact; stats fuzz/closed-form rounding": 119
+  },
+  "geom": {
+    "C++ exact; stats fuzz/closed-form rounding; computed CDF rounding at adjusted boundary": 82,
+    "C++ exact; stats fuzz/closed-form rounding": 2625,
+    "stats exact; C++ specified fuzz band": 974
+  },
+  "nbinom": {
+    "stats exact; C++ specified fuzz band": 7525,
+    "stats exact; C++ specified fuzz band; computed CDF rounding at adjusted boundary": 36,
+    "C++ exact; stats fuzz/closed-form rounding": 13
+  },
+  "hyper": {
+    "C++ exact; stats fuzz/closed-form rounding; computed CDF rounding at adjusted boundary": 28,
+    "C++ exact; stats fuzz/closed-form rounding": 2168,
+    "stats exact; C++ specified fuzz band": 792,
+    "stats exact; C++ specified fuzz band; computed CDF rounding at adjusted boundary": 4
+  }
+}

@@ -1,0 +1,22 @@
+[
+  "bbinom",
+  "binom",
+  "bnbinom",
+  "cmb",
+  "cmp",
+  "dgamma",
+  "dlaplace",
+  "dnorm",
+  "dunif",
+  "dweibull",
+  "geom",
+  "hyper",
+  "lgser",
+  "nbinom",
+  "nhyper",
+  "pig",
+  "pois",
+  "skellam",
+  "yulesimon",
+  "zeta"
+]

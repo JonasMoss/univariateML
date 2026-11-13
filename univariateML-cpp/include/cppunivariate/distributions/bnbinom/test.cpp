@@ -103,7 +103,7 @@ TEST_CASE("bnbinom: CDF and quantile beyond the former count budget") {
     CHECK(cppunivariate::distributions::pbnbinom(q,1,2,5,true,false)>=u);
   }
   CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qbnbinom(.99,1,.01,1,true,false),.99,true,
-      [](double x) {return cppunivariate::distributions::pbnbinom(x,1,.01,1,true,false);}));
+      [](double x) {return cppunivariate::distributions::pbnbinom(x,1,.01,1,true,false);},false,true,false));
   CHECK(std::isfinite(cppunivariate::distributions::pbnbinom(1e12,1,2,5,true,true)));
 }
 
@@ -135,12 +135,12 @@ TEST_CASE("bnbinom: power law across double counts and log quantiles") {
   CHECK(cppunivariate::distributions::dbnbinom(1e100,1,2,5,true)==doctest::Approx(-686.6811833359916045).epsilon(2e-15));
   CHECK(cppunivariate::distributions::pbnbinom(1e100,1,2,5,false,true)==doctest::Approx(-457.1158212171469814).epsilon(2e-15));
   CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qbnbinom(1e-300,1,2,5,false,false),1e-300,false,
-      [](double x) {return cppunivariate::distributions::pbnbinom(x,1,2,5,false,false);}));
+      [](double x) {return cppunivariate::distributions::pbnbinom(x,1,2,5,false,false);},false,true,false));
   CHECK(cppunivariate::distributions::pbnbinom(5.477225575051661e150,1,2,5,false,true)==doctest::Approx(std::log(1e-300)).epsilon(2e-13));
   for(double lp:{-800.,-10000.}) {
     const double q=cppunivariate::distributions::qbnbinom(lp,1,20,5,false,true);
     CHECK(mltest::truth_lattice_quantile(q,lp,false,
-        [](double x) {return cppunivariate::distributions::pbnbinom(x,1,20,5,false,true);}));
+        [](double x) {return cppunivariate::distributions::pbnbinom(x,1,20,5,false,true);},false,true,true));
   }
   CHECK(std::isfinite(cppunivariate::distributions::dbnbinom(std::numeric_limits<double>::max(),1,2,5,true)));
   CHECK(std::isfinite(cppunivariate::distributions::pbnbinom(std::numeric_limits<double>::max(),1,2,5,false,true)));
@@ -183,7 +183,7 @@ TEST_CASE("bnbinom: unit member quantiles allow adjacent answers at jumps") {
   CHECK(adjacent(cppunivariate::distributions::qbnbinom(.25,1,1,1,false,false),2));
   CHECK(cppunivariate::distributions::qbnbinom(-800,1,1,1,false,true)==INFINITY);
   CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qbnbinom(1e-300,1,1,1,false,false),1e-300,false,
-      [](double x) {return cppunivariate::distributions::pbnbinom(x,1,1,1,false,false);}));
+      [](double x) {return cppunivariate::distributions::pbnbinom(x,1,1,1,false,false);},false,true,false));
   for(double k:{0.,1.,98.,999998.,1e100}) {
     CHECK(cppunivariate::distributions::pbnbinom(k,1,1,1,false,true)==doctest::Approx(-std::log(k+2)).epsilon(1e-13));
     CHECK(cppunivariate::distributions::dbnbinom(k,1,1,1,true)==doctest::Approx(-std::log(k+1)-std::log(k+2)).epsilon(1e-13));
@@ -821,4 +821,10 @@ TEST_CASE("bnbinom: audit 579 reported large-count likelihood") {
   double density_sum=0;
   for(int v:x)density_sum+=cppunivariate::distributions::dbnbinom(v,fit.size,fit.alpha,fit.beta,true);
   CHECK(fit.logLik==doctest::Approx(density_sum).epsilon(1e-14).scale(0));
+}
+
+TEST_CASE("bnbinom: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("bnbinom",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pbnbinom(x,t[0], t[1], t[2],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qbnbinom(x,t[0], t[1], t[2],l,g);});
 }

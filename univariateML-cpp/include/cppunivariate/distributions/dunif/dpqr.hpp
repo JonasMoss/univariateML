@@ -63,7 +63,9 @@ inline double rdunif(Rng &rng, double min, double max) {
   if (min==max) return min;
   const double u = rng.runif(0.0, 1.0);
   const double k=std::ceil(u * (max - min + 1.0) + min - 1.0);
-  return std::abs(k)<9007199254740992.0 ? k : qdunif(u,min,max,true,false);
+  if(std::abs(k)<9007199254740992.0) return k;
+  return special::discrete_quantile(special::discrete_log_tails(u,true,false),min,max,
+    [=](double x){return special::LogTails{pdunif(x,min,max,true,true),pdunif(x,min,max,false,true),true};},u,true,false,false);
 }
 
 } // namespace distributions

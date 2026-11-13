@@ -1,0 +1,4251 @@
+[
+  {
+    "family": "hyper",
+    "parameters": [
+      5,
+      10,
+      5
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 252
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      5,
+      10,
+      5
+    ],
+    "k": 1,
+    "numerator": 13,
+    "denominator": 126
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      5,
+      10,
+      5
+    ],
+    "k": 2,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      5,
+      10,
+      5
+    ],
+    "k": 3,
+    "numerator": 113,
+    "denominator": 126
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      5,
+      10,
+      5
+    ],
+    "k": 4,
+    "numerator": 251,
+    "denominator": 252
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      3,
+      6,
+      3
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 20
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      3,
+      6,
+      3
+    ],
+    "k": 1,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      3,
+      6,
+      3
+    ],
+    "k": 2,
+    "numerator": 19,
+    "denominator": 20
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      7,
+      14,
+      7
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 3432
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      7,
+      14,
+      7
+    ],
+    "k": 1,
+    "numerator": 25,
+    "denominator": 1716
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      7,
+      14,
+      7
+    ],
+    "k": 2,
+    "numerator": 491,
+    "denominator": 3432
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      7,
+      14,
+      7
+    ],
+    "k": 3,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      7,
+      14,
+      7
+    ],
+    "k": 4,
+    "numerator": 2941,
+    "denominator": 3432
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      7,
+      14,
+      7
+    ],
+    "k": 5,
+    "numerator": 1691,
+    "denominator": 1716
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      7,
+      14,
+      7
+    ],
+    "k": 6,
+    "numerator": 3431,
+    "denominator": 3432
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      9,
+      18,
+      9
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 48620
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      9,
+      18,
+      9
+    ],
+    "k": 1,
+    "numerator": 41,
+    "denominator": 24310
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      9,
+      18,
+      9
+    ],
+    "k": 2,
+    "numerator": 53,
+    "denominator": 1870
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      9,
+      18,
+      9
+    ],
+    "k": 3,
+    "numerator": 4217,
+    "denominator": 24310
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      9,
+      18,
+      9
+    ],
+    "k": 4,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      9,
+      18,
+      9
+    ],
+    "k": 5,
+    "numerator": 20093,
+    "denominator": 24310
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      9,
+      18,
+      9
+    ],
+    "k": 6,
+    "numerator": 1817,
+    "denominator": 1870
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      9,
+      18,
+      9
+    ],
+    "k": 7,
+    "numerator": 24269,
+    "denominator": 24310
+  },
+  {
+    "family": "hyper",
+    "parameters": [
+      9,
+      18,
+      9
+    ],
+    "k": 8,
+    "numerator": 48619,
+    "denominator": 48620
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 4
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 9,
+    "denominator": 16
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 15,
+    "denominator": 16
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 4
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 16
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 1,
+    "numerator": 7,
+    "denominator": 16
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 6561,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 24057,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 44469,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 58077,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 63747,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 65259,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 65511,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 65535,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 256
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 9,
+    "denominator": 256
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 37,
+    "denominator": 256
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 93,
+    "denominator": 256
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 163,
+    "denominator": 256
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 219,
+    "denominator": 256
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 247,
+    "denominator": 256
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 255,
+    "denominator": 256
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.75
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.75
+    ],
+    "k": 1,
+    "numerator": 25,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.75
+    ],
+    "k": 2,
+    "numerator": 277,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.75
+    ],
+    "k": 3,
+    "numerator": 1789,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.75
+    ],
+    "k": 4,
+    "numerator": 7459,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.75
+    ],
+    "k": 5,
+    "numerator": 21067,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.75
+    ],
+    "k": 6,
+    "numerator": 41479,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      8,
+      0.75
+    ],
+    "k": 7,
+    "numerator": 58975,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 43046721,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 272629233,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 846585513,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 1739406393,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 2706629013,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 3480407109,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 3953271501,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 4178445021,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 8,
+    "numerator": 4262885091,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 9,
+    "numerator": 4287904371,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 10,
+    "numerator": 4293742203,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 11,
+    "numerator": 4294803627,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 12,
+    "numerator": 4294951047,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 13,
+    "numerator": 4294966167,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 14,
+    "numerator": 4294967247,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.25
+    ],
+    "k": 15,
+    "numerator": 4294967295,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 17,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 137,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 697,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 2517,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 6885,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 14893,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 26333,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 8,
+    "numerator": 39203,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 9,
+    "numerator": 50643,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 10,
+    "numerator": 58651,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 11,
+    "numerator": 63019,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 12,
+    "numerator": 64839,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 13,
+    "numerator": 65399,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 14,
+    "numerator": 65519,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.5
+    ],
+    "k": 15,
+    "numerator": 65535,
+    "denominator": 65536
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 1,
+    "numerator": 49,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 2,
+    "numerator": 1129,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 3,
+    "numerator": 16249,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 4,
+    "numerator": 163669,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 5,
+    "numerator": 1225093,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 6,
+    "numerator": 7062925,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 7,
+    "numerator": 32082205,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 8,
+    "numerator": 116522275,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 9,
+    "numerator": 341695795,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 10,
+    "numerator": 814560187,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 11,
+    "numerator": 1588338283,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 12,
+    "numerator": 2555560903,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 13,
+    "numerator": 3448381783,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 14,
+    "numerator": 4022338063,
+    "denominator": 4294967296
+  },
+  {
+    "family": "binom",
+    "parameters": [
+      16,
+      0.75
+    ],
+    "k": 15,
+    "numerator": 4251920575,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 4
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 7,
+    "denominator": 16
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 37,
+    "denominator": 64
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 175,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 781,
+    "denominator": 1024
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 3367,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 14197,
+    "denominator": 16384
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 58975,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 8,
+    "numerator": 242461,
+    "denominator": 262144
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 9,
+    "numerator": 989527,
+    "denominator": 1048576
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 10,
+    "numerator": 4017157,
+    "denominator": 4194304
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 11,
+    "numerator": 16245775,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 12,
+    "numerator": 65514541,
+    "denominator": 67108864
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 13,
+    "numerator": 263652487,
+    "denominator": 268435456
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 14,
+    "numerator": 1059392917,
+    "denominator": 1073741824
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 15,
+    "numerator": 4251920575,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 16,
+    "numerator": 17050729021,
+    "denominator": 17179869184
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 17,
+    "numerator": 68332056247,
+    "denominator": 68719476736
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 18,
+    "numerator": 273715645477,
+    "denominator": 274877906944
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 19,
+    "numerator": 1096024843375,
+    "denominator": 1099511627776
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 20,
+    "numerator": 4387586157901,
+    "denominator": 4398046511104
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 21,
+    "numerator": 17560804984807,
+    "denominator": 17592186044416
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 22,
+    "numerator": 70274600998837,
+    "denominator": 70368744177664
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 23,
+    "numerator": 281192547174175,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.25
+    ],
+    "k": 24,
+    "numerator": 1125052618233181,
+    "denominator": 1125899906842624
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 7,
+    "denominator": 8
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 15,
+    "denominator": 16
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 31,
+    "denominator": 32
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 63,
+    "denominator": 64
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 127,
+    "denominator": 128
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 255,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 8,
+    "numerator": 511,
+    "denominator": 512
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 9,
+    "numerator": 1023,
+    "denominator": 1024
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 10,
+    "numerator": 2047,
+    "denominator": 2048
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 11,
+    "numerator": 4095,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 12,
+    "numerator": 8191,
+    "denominator": 8192
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 13,
+    "numerator": 16383,
+    "denominator": 16384
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 14,
+    "numerator": 32767,
+    "denominator": 32768
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 15,
+    "numerator": 65535,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 16,
+    "numerator": 131071,
+    "denominator": 131072
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 17,
+    "numerator": 262143,
+    "denominator": 262144
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 18,
+    "numerator": 524287,
+    "denominator": 524288
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 19,
+    "numerator": 1048575,
+    "denominator": 1048576
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 20,
+    "numerator": 2097151,
+    "denominator": 2097152
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 21,
+    "numerator": 4194303,
+    "denominator": 4194304
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 22,
+    "numerator": 8388607,
+    "denominator": 8388608
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 23,
+    "numerator": 16777215,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.5
+    ],
+    "k": 24,
+    "numerator": 33554431,
+    "denominator": 33554432
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 0,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 1,
+    "numerator": 15,
+    "denominator": 16
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 2,
+    "numerator": 63,
+    "denominator": 64
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 3,
+    "numerator": 255,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 4,
+    "numerator": 1023,
+    "denominator": 1024
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 5,
+    "numerator": 4095,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 6,
+    "numerator": 16383,
+    "denominator": 16384
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 7,
+    "numerator": 65535,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 8,
+    "numerator": 262143,
+    "denominator": 262144
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 9,
+    "numerator": 1048575,
+    "denominator": 1048576
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 10,
+    "numerator": 4194303,
+    "denominator": 4194304
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 11,
+    "numerator": 16777215,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 12,
+    "numerator": 67108863,
+    "denominator": 67108864
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 13,
+    "numerator": 268435455,
+    "denominator": 268435456
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 14,
+    "numerator": 1073741823,
+    "denominator": 1073741824
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 15,
+    "numerator": 4294967295,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 16,
+    "numerator": 17179869183,
+    "denominator": 17179869184
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 17,
+    "numerator": 68719476735,
+    "denominator": 68719476736
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 18,
+    "numerator": 274877906943,
+    "denominator": 274877906944
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 19,
+    "numerator": 1099511627775,
+    "denominator": 1099511627776
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 20,
+    "numerator": 4398046511103,
+    "denominator": 4398046511104
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 21,
+    "numerator": 17592186044415,
+    "denominator": 17592186044416
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 22,
+    "numerator": 70368744177663,
+    "denominator": 70368744177664
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 23,
+    "numerator": 281474976710655,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      1,
+      0.75
+    ],
+    "k": 24,
+    "numerator": 1125899906842623,
+    "denominator": 1125899906842624
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 16
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 5,
+    "denominator": 32
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 67,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 47,
+    "denominator": 128
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 1909,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 4547,
+    "denominator": 8192
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 41479,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 45853,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 8,
+    "numerator": 792697,
+    "denominator": 1048576
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 9,
+    "numerator": 1683809,
+    "denominator": 2097152
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 10,
+    "numerator": 14120011,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 11,
+    "numerator": 3662863,
+    "denominator": 4194304
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 12,
+    "numerator": 241331965,
+    "denominator": 268435456
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 13,
+    "numerator": 493824191,
+    "denominator": 536870912
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 14,
+    "numerator": 4022338063,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 15,
+    "numerator": 4079733691,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 16,
+    "numerator": 66007533313,
+    "denominator": 68719476736
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 17,
+    "numerator": 133177328093,
+    "denominator": 137438953472
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 18,
+    "numerator": 1072779614035,
+    "denominator": 1099511627776
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 19,
+    "numerator": 539295460685,
+    "denominator": 549755813888
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 20,
+    "numerator": 17330677214341,
+    "denominator": 17592186044416
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 21,
+    "numerator": 34776418313915,
+    "denominator": 35184372088832
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 22,
+    "numerator": 278933110882327,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 23,
+    "numerator": 279497969955289,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.25
+    ],
+    "k": 24,
+    "numerator": 4479028257696649,
+    "denominator": 4503599627370496
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 4
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 11,
+    "denominator": 16
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 13,
+    "denominator": 16
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 57,
+    "denominator": 64
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 15,
+    "denominator": 16
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 247,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 251,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 8,
+    "numerator": 1013,
+    "denominator": 1024
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 9,
+    "numerator": 509,
+    "denominator": 512
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 10,
+    "numerator": 4083,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 11,
+    "numerator": 4089,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 12,
+    "numerator": 16369,
+    "denominator": 16384
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 13,
+    "numerator": 2047,
+    "denominator": 2048
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 14,
+    "numerator": 65519,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 15,
+    "numerator": 65527,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 16,
+    "numerator": 262125,
+    "denominator": 262144
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 17,
+    "numerator": 131067,
+    "denominator": 131072
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 18,
+    "numerator": 1048555,
+    "denominator": 1048576
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 19,
+    "numerator": 1048565,
+    "denominator": 1048576
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 20,
+    "numerator": 4194281,
+    "denominator": 4194304
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 21,
+    "numerator": 1048573,
+    "denominator": 1048576
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 22,
+    "numerator": 16777191,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 23,
+    "numerator": 16777203,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.5
+    ],
+    "k": 24,
+    "numerator": 67108837,
+    "denominator": 67108864
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 0,
+    "numerator": 9,
+    "denominator": 16
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 1,
+    "numerator": 27,
+    "denominator": 32
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 2,
+    "numerator": 243,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 3,
+    "numerator": 63,
+    "denominator": 64
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 4,
+    "numerator": 4077,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 5,
+    "numerator": 8181,
+    "denominator": 8192
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 6,
+    "numerator": 65511,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 7,
+    "numerator": 65529,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 8,
+    "numerator": 1048545,
+    "denominator": 1048576
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 9,
+    "numerator": 2097135,
+    "denominator": 2097152
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 10,
+    "numerator": 16777179,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 11,
+    "numerator": 8388603,
+    "denominator": 8388608
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 12,
+    "numerator": 268435413,
+    "denominator": 268435456
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 13,
+    "numerator": 536870889,
+    "denominator": 536870912
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 14,
+    "numerator": 4294967247,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 15,
+    "numerator": 4294967283,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 16,
+    "numerator": 68719476681,
+    "denominator": 68719476736
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 17,
+    "numerator": 137438953443,
+    "denominator": 137438953472
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 18,
+    "numerator": 1099511627715,
+    "denominator": 1099511627776
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 19,
+    "numerator": 68719476735,
+    "denominator": 68719476736
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 20,
+    "numerator": 17592186044349,
+    "denominator": 17592186044416
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 21,
+    "numerator": 35184372088797,
+    "denominator": 35184372088832
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 22,
+    "numerator": 281474976710583,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 23,
+    "numerator": 281474976710637,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      2,
+      0.75
+    ],
+    "k": 24,
+    "numerator": 4503599627370417,
+    "denominator": 4503599627370496
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 1,
+    "denominator": 64
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 77,
+    "denominator": 2048
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 289,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 7459,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 10861,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 58753,
+    "denominator": 262144
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 150311,
+    "denominator": 524288
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 8,
+    "numerator": 5892517,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 9,
+    "numerator": 3487541,
+    "denominator": 8388608
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 10,
+    "numerator": 64244663,
+    "denominator": 134217728
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 11,
+    "numerator": 144609703,
+    "denominator": 268435456
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 12,
+    "numerator": 2555560903,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 13,
+    "numerator": 2778766123,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 14,
+    "numerator": 5964084611,
+    "denominator": 8589934592
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 15,
+    "numerator": 12659963479,
+    "denominator": 17179869184
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 16,
+    "numerator": 851949935305,
+    "denominator": 1099511627776
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 17,
+    "numerator": 27773590055,
+    "denominator": 34359738368
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 18,
+    "numerator": 7367673679265,
+    "denominator": 8796093022208
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 19,
+    "numerator": 15182818023325,
+    "denominator": 17592186044416
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 20,
+    "numerator": 249100183547371,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 21,
+    "numerator": 254393122268089,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 22,
+    "numerator": 1035616598347531,
+    "denominator": 1125899906842624
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 23,
+    "numerator": 2101829729813837,
+    "denominator": 2251799813685248
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.25
+    ],
+    "k": 24,
+    "numerator": 68084657748249709,
+    "denominator": 72057594037927936
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 16
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 3,
+    "denominator": 16
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 11,
+    "denominator": 32
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 163,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 191,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 53,
+    "denominator": 64
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 227,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 8,
+    "numerator": 3797,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 9,
+    "numerator": 3907,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 10,
+    "numerator": 7957,
+    "denominator": 8192
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 11,
+    "numerator": 503,
+    "denominator": 512
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 12,
+    "numerator": 64839,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 13,
+    "numerator": 65119,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 14,
+    "numerator": 65289,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 15,
+    "numerator": 65391,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 16,
+    "numerator": 1047225,
+    "denominator": 1048576
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 17,
+    "numerator": 1047795,
+    "denominator": 1048576
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 18,
+    "numerator": 2096255,
+    "denominator": 2097152
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 19,
+    "numerator": 4095,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 20,
+    "numerator": 16774891,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 21,
+    "numerator": 16775903,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 22,
+    "numerator": 8388239,
+    "denominator": 8388608
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 23,
+    "numerator": 16776803,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.5
+    ],
+    "k": 24,
+    "numerator": 268431773,
+    "denominator": 268435456
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 0,
+    "numerator": 81,
+    "denominator": 256
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 1,
+    "numerator": 81,
+    "denominator": 128
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 2,
+    "numerator": 1701,
+    "denominator": 2048
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 3,
+    "numerator": 3807,
+    "denominator": 4096
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 4,
+    "numerator": 63747,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 5,
+    "numerator": 64881,
+    "denominator": 65536
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 6,
+    "numerator": 261225,
+    "denominator": 262144
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 7,
+    "numerator": 523665,
+    "denominator": 524288
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 8,
+    "numerator": 16770645,
+    "denominator": 16777216
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 9,
+    "numerator": 4193775,
+    "denominator": 4194304
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 10,
+    "numerator": 134212383,
+    "denominator": 134217728
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 11,
+    "numerator": 268432137,
+    "denominator": 268435456
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 12,
+    "numerator": 4294951047,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 13,
+    "numerator": 4294962387,
+    "denominator": 4294967296
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 14,
+    "numerator": 8589931659,
+    "denominator": 8589934592
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 15,
+    "numerator": 17179867449,
+    "denominator": 17179869184
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 16,
+    "numerator": 1099511595225,
+    "denominator": 1099511627776
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 17,
+    "numerator": 549755809155,
+    "denominator": 549755813888
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 18,
+    "numerator": 8796093000345,
+    "denominator": 8796093022208
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 19,
+    "numerator": 17592186031875,
+    "denominator": 17592186044416
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 20,
+    "numerator": 281474976653451,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 21,
+    "numerator": 281474976694437,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 22,
+    "numerator": 1125899906824323,
+    "denominator": 1125899906842624
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 23,
+    "numerator": 2251799813674971,
+    "denominator": 2251799813685248
+  },
+  {
+    "family": "nbinom",
+    "parameters": [
+      4,
+      0.75
+    ],
+    "k": 24,
+    "numerator": 72057594037835997,
+    "denominator": 72057594037927936
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 4
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 1,
+    "numerator": 7,
+    "denominator": 16
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 2,
+    "numerator": 37,
+    "denominator": 64
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 3,
+    "numerator": 175,
+    "denominator": 256
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 4,
+    "numerator": 781,
+    "denominator": 1024
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 5,
+    "numerator": 3367,
+    "denominator": 4096
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 6,
+    "numerator": 14197,
+    "denominator": 16384
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 7,
+    "numerator": 58975,
+    "denominator": 65536
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 8,
+    "numerator": 242461,
+    "denominator": 262144
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 9,
+    "numerator": 989527,
+    "denominator": 1048576
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 10,
+    "numerator": 4017157,
+    "denominator": 4194304
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 11,
+    "numerator": 16245775,
+    "denominator": 16777216
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 12,
+    "numerator": 65514541,
+    "denominator": 67108864
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 13,
+    "numerator": 263652487,
+    "denominator": 268435456
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 14,
+    "numerator": 1059392917,
+    "denominator": 1073741824
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 15,
+    "numerator": 4251920575,
+    "denominator": 4294967296
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 16,
+    "numerator": 17050729021,
+    "denominator": 17179869184
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 17,
+    "numerator": 68332056247,
+    "denominator": 68719476736
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 18,
+    "numerator": 273715645477,
+    "denominator": 274877906944
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 19,
+    "numerator": 1096024843375,
+    "denominator": 1099511627776
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 20,
+    "numerator": 4387586157901,
+    "denominator": 4398046511104
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 21,
+    "numerator": 17560804984807,
+    "denominator": 17592186044416
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 22,
+    "numerator": 70274600998837,
+    "denominator": 70368744177664
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 23,
+    "numerator": 281192547174175,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.25
+    ],
+    "k": 24,
+    "numerator": 1125052618233181,
+    "denominator": 1125899906842624
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 1,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 2,
+    "numerator": 7,
+    "denominator": 8
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 3,
+    "numerator": 15,
+    "denominator": 16
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 4,
+    "numerator": 31,
+    "denominator": 32
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 5,
+    "numerator": 63,
+    "denominator": 64
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 6,
+    "numerator": 127,
+    "denominator": 128
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 7,
+    "numerator": 255,
+    "denominator": 256
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 8,
+    "numerator": 511,
+    "denominator": 512
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 9,
+    "numerator": 1023,
+    "denominator": 1024
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 10,
+    "numerator": 2047,
+    "denominator": 2048
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 11,
+    "numerator": 4095,
+    "denominator": 4096
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 12,
+    "numerator": 8191,
+    "denominator": 8192
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 13,
+    "numerator": 16383,
+    "denominator": 16384
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 14,
+    "numerator": 32767,
+    "denominator": 32768
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 15,
+    "numerator": 65535,
+    "denominator": 65536
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 16,
+    "numerator": 131071,
+    "denominator": 131072
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 17,
+    "numerator": 262143,
+    "denominator": 262144
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 18,
+    "numerator": 524287,
+    "denominator": 524288
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 19,
+    "numerator": 1048575,
+    "denominator": 1048576
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 20,
+    "numerator": 2097151,
+    "denominator": 2097152
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 21,
+    "numerator": 4194303,
+    "denominator": 4194304
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 22,
+    "numerator": 8388607,
+    "denominator": 8388608
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 23,
+    "numerator": 16777215,
+    "denominator": 16777216
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.5
+    ],
+    "k": 24,
+    "numerator": 33554431,
+    "denominator": 33554432
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 0,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 1,
+    "numerator": 15,
+    "denominator": 16
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 2,
+    "numerator": 63,
+    "denominator": 64
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 3,
+    "numerator": 255,
+    "denominator": 256
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 4,
+    "numerator": 1023,
+    "denominator": 1024
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 5,
+    "numerator": 4095,
+    "denominator": 4096
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 6,
+    "numerator": 16383,
+    "denominator": 16384
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 7,
+    "numerator": 65535,
+    "denominator": 65536
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 8,
+    "numerator": 262143,
+    "denominator": 262144
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 9,
+    "numerator": 1048575,
+    "denominator": 1048576
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 10,
+    "numerator": 4194303,
+    "denominator": 4194304
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 11,
+    "numerator": 16777215,
+    "denominator": 16777216
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 12,
+    "numerator": 67108863,
+    "denominator": 67108864
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 13,
+    "numerator": 268435455,
+    "denominator": 268435456
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 14,
+    "numerator": 1073741823,
+    "denominator": 1073741824
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 15,
+    "numerator": 4294967295,
+    "denominator": 4294967296
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 16,
+    "numerator": 17179869183,
+    "denominator": 17179869184
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 17,
+    "numerator": 68719476735,
+    "denominator": 68719476736
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 18,
+    "numerator": 274877906943,
+    "denominator": 274877906944
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 19,
+    "numerator": 1099511627775,
+    "denominator": 1099511627776
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 20,
+    "numerator": 4398046511103,
+    "denominator": 4398046511104
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 21,
+    "numerator": 17592186044415,
+    "denominator": 17592186044416
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 22,
+    "numerator": 70368744177663,
+    "denominator": 70368744177664
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 23,
+    "numerator": 281474976710655,
+    "denominator": 281474976710656
+  },
+  {
+    "family": "geom",
+    "parameters": [
+      0.75
+    ],
+    "k": 24,
+    "numerator": 1125899906842623,
+    "denominator": 1125899906842624
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      3
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 4
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      3
+    ],
+    "k": 1,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      3
+    ],
+    "k": 2,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      7
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 8
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      7
+    ],
+    "k": 1,
+    "numerator": 1,
+    "denominator": 4
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      7
+    ],
+    "k": 2,
+    "numerator": 3,
+    "denominator": 8
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      7
+    ],
+    "k": 3,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      7
+    ],
+    "k": 4,
+    "numerator": 5,
+    "denominator": 8
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      7
+    ],
+    "k": 5,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      7
+    ],
+    "k": 6,
+    "numerator": 7,
+    "denominator": 8
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 0,
+    "numerator": 1,
+    "denominator": 16
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 1,
+    "numerator": 1,
+    "denominator": 8
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 2,
+    "numerator": 3,
+    "denominator": 16
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 3,
+    "numerator": 1,
+    "denominator": 4
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 4,
+    "numerator": 5,
+    "denominator": 16
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 5,
+    "numerator": 3,
+    "denominator": 8
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 6,
+    "numerator": 7,
+    "denominator": 16
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 7,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 8,
+    "numerator": 9,
+    "denominator": 16
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 9,
+    "numerator": 5,
+    "denominator": 8
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 10,
+    "numerator": 11,
+    "denominator": 16
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 11,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 12,
+    "numerator": 13,
+    "denominator": 16
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 13,
+    "numerator": 7,
+    "denominator": 8
+  },
+  {
+    "family": "dunif",
+    "parameters": [
+      0,
+      15
+    ],
+    "k": 14,
+    "numerator": 15,
+    "denominator": 16
+  }
+]

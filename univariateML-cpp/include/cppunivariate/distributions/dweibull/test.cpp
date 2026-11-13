@@ -242,18 +242,12 @@ TEST_CASE("dweibull dpqr: stable log pmf, floored CDF, generalized inverse") {
       const double k = d::qdweibull(p, 0.6, b, true, false);
       CHECK(k >= 0);
       CHECK(d::pdweibull(k, 0.6, b, true, false) >= p * (1 - 1e-12));
-      // Ordinary counts retain exact equality across probability scales.
-      if (k > 0 && k < 9007199254740992.0)
-        CHECK(d::pdweibull(k - 1, 0.6, b, true, false) < p);
-      if (k<=9007199254740992.0) {
-        CHECK(d::qdweibull(std::log(p), 0.6, b, true, true) == k);
-        if (p >= 0.001) CHECK(d::qdweibull(1 - p, 0.6, b, false, false) == k);
-      } else {
-        for (bool lower : {false,true}) for (bool log : {false,true}) {
-          const double target=log ? std::log(lower ? p : 1-p) : lower ? p : 1-p;
-          CHECK(mltest::truth_lattice_quantile(d::qdweibull(target,.6,b,lower,log),target,lower,
-              [&](double x) {return d::pdweibull(x,.6,b,lower,log);}));
-        }
+      // Different supplied scales have different relative bands; each
+      // answer must be its own first adjusted crossing, even below 2^53.
+      for (bool lower : {false,true}) for (bool log : {false,true}) {
+        const double target=log ? std::log(lower ? p : 1-p) : lower ? p : 1-p;
+        CHECK(mltest::truth_lattice_quantile(d::qdweibull(target,.6,b,lower,log),target,lower,
+            [&](double x) {return d::pdweibull(x,.6,b,lower,log);},false,true,log));
       }
     }
   }
@@ -334,7 +328,8 @@ TEST_CASE("dweibull quantiles above 2^53 are minimal representable doubles") {
     REQUIRE(std::abs(h)>9007199254740992.0);
     const double at=cppunivariate::distributions::pdweibull(h,.5,.01,lower,log);
     const double before=cppunivariate::distributions::pdweibull(std::nextafter(h,-INFINITY),.5,.01,lower,log);
-    CHECK((lower ? at>=p && before<p : at<=p && before>p));
+    CHECK(cppunivariate::special::discrete_reached(at,p,lower,log)==1);
+    CHECK(cppunivariate::special::discrete_reached(before,p,lower,log)==0);
   }
 }
 
@@ -349,7 +344,7 @@ TEST_CASE("dweibull: rounded seeds cannot bypass inversion at 2^53") {
       REQUIRE(std::isfinite(h));
       CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
         return cppunivariate::distributions::pdweibull(x,.5,.05,lower,log);
-      }));
+      },false,true,log));
     }
   }
 }
@@ -362,4 +357,20 @@ TEST_CASE("dweibull: extreme lattice hazards avoid power overflow") {
         ==doctest::Approx(-std::expm1(-h)).epsilon(2e-14));
   CHECK(cppunivariate::distributions::pdweibull(1e308,.5,2,true,false)==1);
   CHECK(cppunivariate::distributions::pdweibull(1e308,.5,2,false,false)==0);
+}
+
+TEST_CASE("dweibull: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("dweibull",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pdweibull(x,t[0], t[1],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qdweibull(x,t[0], t[1],l,g);});
+}
+
+TEST_CASE("dweibull: large inverse samples retain the unfuzzed log crossing") {
+  struct FixedRng {double runif(double,double) {return .5;}} rng;
+  const double draw=cppunivariate::distributions::rdweibull(rng,.9,.05);
+  const double target=std::log(.5);
+  CHECK(draw>9007199254740992.);
+  CHECK(cppunivariate::distributions::pdweibull(draw,.9,.05,false,true)<=target);
+  CHECK(cppunivariate::distributions::pdweibull(std::nextafter(draw,-INFINITY),.9,.05,false,true)>target);
+  CHECK(draw>cppunivariate::distributions::qdweibull(target,.9,.05,false,true));
 }

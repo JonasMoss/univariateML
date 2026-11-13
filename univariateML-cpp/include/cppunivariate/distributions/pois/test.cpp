@@ -294,3 +294,14 @@ TEST_CASE("pois modifiers finite-window probability-zero faces are proved limits
   CHECK(cppunivariate::truncated<cppunivariate::GeomTruncationTraits>::fit(as_ispan(x),1,4).status==cppunivariate::TruncationStatus::UpperLimit);
   CHECK(cppunivariate::truncated<cppunivariate::NbinomTruncationTraits>::fit(as_ispan(x),1,4,{1}).status==cppunivariate::TruncationStatus::UpperLimit);
 }
+
+TEST_CASE("pois: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("pois",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::ppois(x,t[0],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qpois(x,t[0],l,g);});
+}
+
+TEST_CASE("pois: log neighbour outside the fuzz band keeps the next atom") {
+  // 400-digit finite Poisson sum: cdf-probe.cpp and classify.py in qtie-data.
+  CHECK(cppunivariate::distributions::qpois(-.17021094871159989,20,false,true)==16);
+}

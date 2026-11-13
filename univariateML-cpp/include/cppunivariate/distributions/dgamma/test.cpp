@@ -151,7 +151,7 @@ TEST_CASE("dgamma: translated adjacent limit retains original support") {
 #include "cppunivariate/distributions/dgamma/dpqr.hpp"
 TEST_CASE("dgamma: bounded seed corrections require inverse inequalities") {
   CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qdgamma(.5,2,1e-300),.5,true,
-      [](double x) {return cppunivariate::distributions::pdgamma(x,2,1e-300,true,false);}));
+      [](double x) {return cppunivariate::distributions::pdgamma(x,2,1e-300,true,false);},false,true,false));
   CHECK(cppunivariate::distributions::qdgamma(.5,1,1)==0);
 }
 
@@ -163,7 +163,8 @@ TEST_CASE("dgamma quantiles above 2^53 are minimal representable doubles") {
     REQUIRE(std::abs(h)>9007199254740992.0);
     const double at=cppunivariate::distributions::pdgamma(h,2,1e-20,lower,log);
     const double before=cppunivariate::distributions::pdgamma(std::nextafter(h,-INFINITY),2,1e-20,lower,log);
-    CHECK((lower ? at>=p && before<p : at<=p && before>p));
+    CHECK(cppunivariate::special::discrete_reached(at,p,lower,log)==1);
+    CHECK(cppunivariate::special::discrete_reached(before,p,lower,log)==0);
   }
 }
 
@@ -178,7 +179,7 @@ TEST_CASE("dgamma: rounded seeds cannot bypass inversion at 2^53") {
       REQUIRE(std::isfinite(h));
       CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
         return cppunivariate::distributions::pdgamma(x,2,1e-16,lower,log);
-      }));
+      },false,true,log));
     }
   }
 }
@@ -271,4 +272,10 @@ TEST_CASE("dgamma: polish floor and score conditioning retain public witnesses")
   CHECK(fit.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Conditioning);
   CHECK(fit.stop_detail.conditioning_bound>1e-10);
   CHECK(cppunivariate::dgamma_mle({x.data(),x.size()},1e-30,400,2.,1.).status==cppunivariate::DgammaStatus::Ok);
+}
+
+TEST_CASE("dgamma: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("dgamma",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pdgamma(x,t[0], t[1],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qdgamma(x,t[0], t[1],l,g);});
 }

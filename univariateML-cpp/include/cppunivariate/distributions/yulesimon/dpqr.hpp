@@ -47,15 +47,18 @@ inline double pyulesimon(double q,double rho,bool lower_tail=true,bool log_p=fal
   }
   return log_p ? lp : std::exp(lp);
 }
-inline double qyulesimon(double p,double rho,bool lower_tail=true,bool log_p=false) {
+inline double yulesimon_quantile(double p,double rho,bool lower_tail,bool log_p,bool fuzz) {
   if (!yulesimon_detail::valid(rho) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
   if (p==(log_p ? special::kNegInf : 0)) return lower_tail ? 1 : special::kPosInf;
   if (p==(log_p ? 0 : 1)) return lower_tail ? special::kPosInf : 1;
   return special::discrete_search(1,special::kPosInf,[&](double k) {
     const double f=pyulesimon(k,rho,lower_tail,log_p);
-    return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+    return special::discrete_reached(f,p,lower_tail,log_p,fuzz);
   });
 }
-template <typename Rng> inline double ryulesimon(Rng &rng,double rho) { return qyulesimon(rng.runif(0,1),rho); }
+inline double qyulesimon(double p,double rho,bool lower_tail=true,bool log_p=false) {
+  return yulesimon_quantile(p,rho,lower_tail,log_p,true);
+}
+template <typename Rng> inline double ryulesimon(Rng &rng,double rho) { return yulesimon_quantile(rng.runif(0,1),rho,true,false,false); }
 }
 }

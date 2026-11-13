@@ -183,8 +183,8 @@ TEST_CASE("CMP consumable ledger shares actual 64-bit work and separates numeric
 TEST_CASE("cmp: quantile search guards and representability") {
   const double q=cppunivariate::distributions::qcmp(.5,std::nextafter(1.,0.),0);
   REQUIRE(std::isfinite(q));
-  CHECK(cppunivariate::distributions::pcmp(q,std::nextafter(1.,0.),0)>=.5);
-  CHECK(cppunivariate::distributions::pcmp(q-1,std::nextafter(1.,0.),0)<.5);
+  CHECK(cppunivariate::special::discrete_reached(cppunivariate::distributions::pcmp(q,std::nextafter(1.,0.),0),.5,true,false)==1);
+  CHECK(cppunivariate::special::discrete_reached(cppunivariate::distributions::pcmp(q-1,std::nextafter(1.,0.),0),.5,true,false)==0);
 }
 
 TEST_CASE("cmp: large geometric tails use the supplied probability scale") {
@@ -196,7 +196,7 @@ TEST_CASE("cmp: large geometric tails use the supplied probability scale") {
     REQUIRE(h>9007199254740992.0);
     CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
       return cppunivariate::distributions::pcmp(x,std::nextafter(1.0,0.0),0,lower,log);
-    }));
+    },false,true,log));
   }
 }
 
@@ -220,4 +220,37 @@ TEST_CASE("cmp: scaled diffuse far log weights") {
   CHECK(mass < -1.2e303);
   CHECK(upper > -1.3e303);
   CHECK(upper < -1.2e303);
+}
+
+TEST_CASE("cmp: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("cmp",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pcmp(x,t[0], t[1],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qcmp(x,t[0], t[1],l,g);});
+}
+
+TEST_CASE("cmp: diffuse CDF cache retains parameter and tail distinctions") {
+  for(bool lower:{false,true}) for(bool log:{false,true}) {
+    const double first=cppunivariate::distributions::pcmp(7,1,1e-8,lower,log);
+    CHECK(cppunivariate::distributions::pcmp(7,1,1e-8,lower,log)==first);
+    CHECK(std::isfinite(cppunivariate::distributions::pcmp(7,1,5e-9,lower,log)));
+    CHECK(cppunivariate::distributions::pcmp(7,1,1e-8,lower,log)==first);
+  }
+}
+
+TEST_CASE("cmp: invalid inverse sampling retains uniform consumption") {
+  struct CountingRng {
+    int calls=0;
+    double runif(double,double) {++calls;return .25;}
+  } rng;
+  CHECK(std::isnan(cppunivariate::distributions::rcmp(rng,-1,1)));
+  CHECK(rng.calls==1);
+}
+
+TEST_CASE("cmp: Poisson inverse sampling keeps the unfuzzed jump") {
+  struct FixedRng {
+    double value;
+    double runif(double,double) {return value;}
+  } rng{cppunivariate::distributions::ppois(0,1,true,false)*(1+32*std::numeric_limits<double>::epsilon())};
+  CHECK(cppunivariate::distributions::qcmp(rng.value,1,1)==0);
+  CHECK(cppunivariate::distributions::rcmp(rng,1,1)==1);
 }

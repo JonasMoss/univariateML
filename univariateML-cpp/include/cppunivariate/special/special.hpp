@@ -329,6 +329,8 @@ inline double binomial_cdf(double x, double a, double b, bool lower_tail) {
 // Boost's discrete quantile rounding can keep advancing after a failed root
 // or NaN CDF. Keep its no-throw CDF seam, but own bounded integer inversion.
 template <typename Cdf>
+// Backend inverses retain their unfuzzed comparisons for RNG streams.
+// The family q* entry points apply the public left-continuity convention.
 inline double discrete_cdf_quantile(double p, double maximum, bool lower, Cdf cdf) {
   return discrete_quantile(discrete_log_tails(p,lower,false),0,maximum,[&](double x) {
     const double left=cdf(x,true);
@@ -337,7 +339,7 @@ inline double discrete_cdf_quantile(double p, double maximum, bool lower, Cdf cd
     const double small=small_left ? left : cdf(x,false);
     if (!(small>=0 && small<=1)) return LogTails{kNaN,kNaN,false};
     return tails_from_log(std::log(small),small_left);
-  },p,lower,false);
+  },p,lower,false,false);
 }
 
 inline double binomial_quantile(double x, double a, double b, bool lower_tail) {

@@ -57,15 +57,18 @@ inline double pzeta(double q,double s,bool lower_tail=true,bool log_p=false) {
   }
   return log_p ? lp : std::exp(lp);
 }
-inline double qzeta(double p,double s,bool lower_tail=true,bool log_p=false) {
+inline double zeta_quantile(double p,double s,bool lower_tail,bool log_p,bool fuzz) {
   if (!zeta_detail::valid(s) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
   if (p==(log_p ? special::kNegInf : 0)) return lower_tail ? 1 : special::kPosInf;
   if (p==(log_p ? 0 : 1)) return lower_tail ? special::kPosInf : 1;
   return special::discrete_search(1,special::kPosInf,[&](double k) {
     const double f=pzeta(k,s,lower_tail,log_p);
-    return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+    return special::discrete_reached(f,p,lower_tail,log_p,fuzz);
   });
 }
-template <typename Rng> inline double rzeta(Rng &rng,double s) { return qzeta(rng.runif(0,1),s); }
+inline double qzeta(double p,double s,bool lower_tail=true,bool log_p=false) {
+  return zeta_quantile(p,s,lower_tail,log_p,true);
+}
+template <typename Rng> inline double rzeta(Rng &rng,double s) { return zeta_quantile(rng.runif(0,1),s,true,false,false); }
 }
 }

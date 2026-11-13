@@ -514,3 +514,18 @@ TEST_CASE("pig: representable large integration coordinate") {
   // between -9999500333187631.753 and -9999500333187624.150.
   CHECK(upper == doctest::Approx(-9999500333187624.0).epsilon(1e-12).scale(0));
 }
+
+TEST_CASE("pig: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("pig",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::ppig(x,t[0], t[1],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qpig(x,t[0], t[1],l,g);});
+}
+
+TEST_CASE("pig: cached CDF preserves uncached values across parameters and scales") {
+  for(double mean:{1.,2.}) for(double shape:{.3,3.})
+    for(bool lower:{false,true}) for(bool log:{false,true}) {
+      const double expected=cppunivariate::distributions::pig_probability_uncached(7,mean,shape,lower,log);
+      CHECK(cppunivariate::distributions::ppig(7,mean,shape,lower,log)==expected);
+      CHECK(cppunivariate::distributions::ppig(7,mean,shape,lower,log)==expected);
+    }
+}

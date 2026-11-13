@@ -1,0 +1,6 @@
+
+ binom   geom  hyper nbinom   pois 
+ 25588  25588  25072  25588  25588 
+
+ binom   geom  hyper nbinom   pois 
+  7734   3681   2992   7574   7594 

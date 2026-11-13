@@ -8,7 +8,9 @@ test_that("CMP Poisson and geometric members have accurate tails", {
       z <- qcmp(p = u, lambda = l, nu = 1, lower.tail = tail)
       expect_equal(z[2:4],qpois(u[2:4],l,tail))
       f <- pcmp(q = z, lambda = l, nu = 1, lower.tail = tail); prev <- pcmp(q = z - 1, lambda = l, nu = 1, lower.tail = tail)
-      expect_true(all(if(tail) f>=u & prev<u else f<=u & prev>u))
+      e <- 64*.Machine$double.eps
+      target <- if(tail) u*(1-e) else ifelse(1-u>4*e,u*(1+e),u)
+      expect_true(all(if(tail) f>=target & prev<target else f<=target & prev>target))
     }
   }
   for (l in c(.01,.8,.999999)) for (tail in c(TRUE,FALSE)) {
@@ -26,7 +28,8 @@ test_that("CMP inversion preserves both tail inequalities", {
     u <- c(-1000,-30,-5,-1,-.01)
     z <- qcmp(p = u, lambda = l, nu = n, lower.tail = tail, log.p = TRUE)
     f <- pcmp(q = z, lambda = l, nu = n, lower.tail = tail, log.p = TRUE); prev <- pcmp(q = z - 1, lambda = l, nu = n, lower.tail = tail, log.p = TRUE)
-    expect_true(all(if(tail) f>=u & prev<u else f<=u & prev>u))
+    target <- u*if(tail) (1+64*.Machine$double.eps) else (1-64*.Machine$double.eps)
+    expect_true(all(if(tail) f>=target & prev<target else f<=target & prev>target))
   }
 })
 test_that("CMP fitting agrees with a slow independent series oracle", {

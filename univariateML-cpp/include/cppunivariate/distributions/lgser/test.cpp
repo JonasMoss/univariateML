@@ -117,3 +117,9 @@ TEST_CASE("lgser: inverse sampler stops when its recurrence cannot finish") {
 TEST_CASE("lgser: extreme count-tail regression") {
   CHECK(cppunivariate::distributions::plgser(1,0.9999999999999999,true,true) == doctest::Approx(-3.6037789929704576).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("lgser: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("lgser",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::plgser(x,t[0],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qlgser(x,t[0],l,g);});
+}

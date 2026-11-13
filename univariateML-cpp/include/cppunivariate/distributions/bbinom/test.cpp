@@ -626,3 +626,9 @@ TEST_CASE("bbinom: archived density seam 75") {
     CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
   }
 }
+
+TEST_CASE("bbinom: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("bbinom",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pbbinom(x,t[0], t[1], t[2],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qbbinom(x,t[0], t[1], t[2],l,g);});
+}

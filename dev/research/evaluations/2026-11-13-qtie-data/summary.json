@@ -1,0 +1,1493 @@
+{
+  "roundtrip-before": [
+    {
+      "family": "bbinom",
+      "lower": true,
+      "log": false,
+      "cases": 122,
+      "up": 25,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bbinom",
+      "lower": true,
+      "log": true,
+      "cases": 122,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bbinom",
+      "lower": false,
+      "log": false,
+      "cases": 123,
+      "up": 26,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bbinom",
+      "lower": false,
+      "log": true,
+      "cases": 123,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "binom",
+      "lower": true,
+      "log": false,
+      "cases": 60,
+      "up": 16,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "binom",
+      "lower": true,
+      "log": true,
+      "cases": 152,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "binom",
+      "lower": false,
+      "log": false,
+      "cases": 152,
+      "up": 7,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "binom",
+      "lower": false,
+      "log": true,
+      "cases": 152,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bnbinom",
+      "lower": true,
+      "log": false,
+      "cases": 1803,
+      "up": 531,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bnbinom",
+      "lower": true,
+      "log": true,
+      "cases": 2016,
+      "up": 19,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bnbinom",
+      "lower": false,
+      "log": false,
+      "cases": 2016,
+      "up": 142,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bnbinom",
+      "lower": false,
+      "log": true,
+      "cases": 2069,
+      "up": 3,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmb",
+      "lower": true,
+      "log": false,
+      "cases": 99,
+      "up": 11,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmb",
+      "lower": true,
+      "log": true,
+      "cases": 196,
+      "up": 1,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmb",
+      "lower": false,
+      "log": false,
+      "cases": 191,
+      "up": 2,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmb",
+      "lower": false,
+      "log": true,
+      "cases": 196,
+      "up": 1,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmp",
+      "lower": true,
+      "log": false,
+      "cases": 768,
+      "up": 160,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmp",
+      "lower": true,
+      "log": true,
+      "cases": 1284,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmp",
+      "lower": false,
+      "log": false,
+      "cases": 1284,
+      "up": 96,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmp",
+      "lower": false,
+      "log": true,
+      "cases": 1529,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dgamma",
+      "lower": true,
+      "log": false,
+      "cases": 773,
+      "up": 198,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dgamma",
+      "lower": true,
+      "log": true,
+      "cases": 1221,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dgamma",
+      "lower": false,
+      "log": false,
+      "cases": 1220,
+      "up": 65,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dgamma",
+      "lower": false,
+      "log": true,
+      "cases": 1348,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dlaplace",
+      "lower": true,
+      "log": false,
+      "cases": 932,
+      "up": 1,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dlaplace",
+      "lower": true,
+      "log": true,
+      "cases": 994,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dlaplace",
+      "lower": false,
+      "log": false,
+      "cases": 936,
+      "up": 1,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dlaplace",
+      "lower": false,
+      "log": true,
+      "cases": 999,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dnorm",
+      "lower": true,
+      "log": false,
+      "cases": 578,
+      "up": 64,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dnorm",
+      "lower": true,
+      "log": true,
+      "cases": 1163,
+      "up": 7,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dnorm",
+      "lower": false,
+      "log": false,
+      "cases": 578,
+      "up": 101,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dnorm",
+      "lower": false,
+      "log": true,
+      "cases": 1165,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dunif",
+      "lower": true,
+      "log": false,
+      "cases": 420,
+      "up": 59,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dunif",
+      "lower": true,
+      "log": true,
+      "cases": 420,
+      "up": 2,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dunif",
+      "lower": false,
+      "log": false,
+      "cases": 420,
+      "up": 54,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dunif",
+      "lower": false,
+      "log": true,
+      "cases": 420,
+      "up": 1,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dweibull",
+      "lower": true,
+      "log": false,
+      "cases": 535,
+      "up": 207,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dweibull",
+      "lower": true,
+      "log": true,
+      "cases": 808,
+      "up": 112,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dweibull",
+      "lower": false,
+      "log": false,
+      "cases": 808,
+      "up": 111,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dweibull",
+      "lower": false,
+      "log": true,
+      "cases": 1029,
+      "up": 107,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "geom",
+      "lower": true,
+      "log": false,
+      "cases": 431,
+      "up": 90,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "geom",
+      "lower": true,
+      "log": true,
+      "cases": 618,
+      "up": 4,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "geom",
+      "lower": false,
+      "log": false,
+      "cases": 618,
+      "up": 27,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "geom",
+      "lower": false,
+      "log": true,
+      "cases": 618,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "hyper",
+      "lower": true,
+      "log": false,
+      "cases": 17,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "hyper",
+      "lower": true,
+      "log": true,
+      "cases": 17,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "hyper",
+      "lower": false,
+      "log": false,
+      "cases": 20,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "hyper",
+      "lower": false,
+      "log": true,
+      "cases": 20,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "lgser",
+      "lower": true,
+      "log": false,
+      "cases": 574,
+      "up": 188,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "lgser",
+      "lower": true,
+      "log": true,
+      "cases": 751,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "lgser",
+      "lower": false,
+      "log": false,
+      "cases": 751,
+      "up": 25,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "lgser",
+      "lower": false,
+      "log": true,
+      "cases": 814,
+      "up": 1,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nbinom",
+      "lower": true,
+      "log": false,
+      "cases": 1266,
+      "up": 286,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nbinom",
+      "lower": true,
+      "log": true,
+      "cases": 1559,
+      "up": 12,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nbinom",
+      "lower": false,
+      "log": false,
+      "cases": 1559,
+      "up": 145,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nbinom",
+      "lower": false,
+      "log": true,
+      "cases": 1559,
+      "up": 6,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nhyper",
+      "lower": true,
+      "log": false,
+      "cases": 241,
+      "up": 7,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nhyper",
+      "lower": true,
+      "log": true,
+      "cases": 241,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nhyper",
+      "lower": false,
+      "log": false,
+      "cases": 241,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nhyper",
+      "lower": false,
+      "log": true,
+      "cases": 241,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pig",
+      "lower": true,
+      "log": false,
+      "cases": 737,
+      "up": 325,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pig",
+      "lower": true,
+      "log": true,
+      "cases": 1058,
+      "up": 1,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pig",
+      "lower": false,
+      "log": false,
+      "cases": 1058,
+      "up": 4,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pig",
+      "lower": false,
+      "log": true,
+      "cases": 1124,
+      "up": 1,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pois",
+      "lower": true,
+      "log": false,
+      "cases": 343,
+      "up": 78,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pois",
+      "lower": true,
+      "log": true,
+      "cases": 766,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pois",
+      "lower": false,
+      "log": false,
+      "cases": 766,
+      "up": 38,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pois",
+      "lower": false,
+      "log": true,
+      "cases": 832,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "skellam",
+      "lower": true,
+      "log": false,
+      "cases": 1594,
+      "up": 160,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "skellam",
+      "lower": true,
+      "log": true,
+      "cases": 2349,
+      "up": 110,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "skellam",
+      "lower": false,
+      "log": false,
+      "cases": 1596,
+      "up": 184,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "skellam",
+      "lower": false,
+      "log": true,
+      "cases": 2350,
+      "up": 117,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "yulesimon",
+      "lower": true,
+      "log": false,
+      "cases": 567,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "yulesimon",
+      "lower": true,
+      "log": true,
+      "cases": 673,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "yulesimon",
+      "lower": false,
+      "log": false,
+      "cases": 673,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "yulesimon",
+      "lower": false,
+      "log": true,
+      "cases": 726,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "zeta",
+      "lower": true,
+      "log": false,
+      "cases": 533,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "zeta",
+      "lower": true,
+      "log": true,
+      "cases": 604,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "zeta",
+      "lower": false,
+      "log": false,
+      "cases": 513,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "zeta",
+      "lower": false,
+      "log": true,
+      "cases": 705,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    }
+  ],
+  "roundtrip-after": [
+    {
+      "family": "bbinom",
+      "lower": true,
+      "log": false,
+      "cases": 122,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bbinom",
+      "lower": true,
+      "log": true,
+      "cases": 122,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bbinom",
+      "lower": false,
+      "log": false,
+      "cases": 123,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bbinom",
+      "lower": false,
+      "log": true,
+      "cases": 123,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "binom",
+      "lower": true,
+      "log": false,
+      "cases": 60,
+      "up": 0,
+      "down": 1,
+      "invalid": 0
+    },
+    {
+      "family": "binom",
+      "lower": true,
+      "log": true,
+      "cases": 152,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "binom",
+      "lower": false,
+      "log": false,
+      "cases": 152,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "binom",
+      "lower": false,
+      "log": true,
+      "cases": 152,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bnbinom",
+      "lower": true,
+      "log": false,
+      "cases": 1803,
+      "up": 0,
+      "down": 28,
+      "invalid": 0
+    },
+    {
+      "family": "bnbinom",
+      "lower": true,
+      "log": true,
+      "cases": 2016,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bnbinom",
+      "lower": false,
+      "log": false,
+      "cases": 2016,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "bnbinom",
+      "lower": false,
+      "log": true,
+      "cases": 2069,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmb",
+      "lower": true,
+      "log": false,
+      "cases": 99,
+      "up": 0,
+      "down": 1,
+      "invalid": 0
+    },
+    {
+      "family": "cmb",
+      "lower": true,
+      "log": true,
+      "cases": 196,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmb",
+      "lower": false,
+      "log": false,
+      "cases": 191,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmb",
+      "lower": false,
+      "log": true,
+      "cases": 196,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmp",
+      "lower": true,
+      "log": false,
+      "cases": 768,
+      "up": 0,
+      "down": 14,
+      "invalid": 0
+    },
+    {
+      "family": "cmp",
+      "lower": true,
+      "log": true,
+      "cases": 1284,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmp",
+      "lower": false,
+      "log": false,
+      "cases": 1284,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "cmp",
+      "lower": false,
+      "log": true,
+      "cases": 1529,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dgamma",
+      "lower": true,
+      "log": false,
+      "cases": 773,
+      "up": 0,
+      "down": 34,
+      "invalid": 0
+    },
+    {
+      "family": "dgamma",
+      "lower": true,
+      "log": true,
+      "cases": 1221,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dgamma",
+      "lower": false,
+      "log": false,
+      "cases": 1220,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dgamma",
+      "lower": false,
+      "log": true,
+      "cases": 1348,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dlaplace",
+      "lower": true,
+      "log": false,
+      "cases": 932,
+      "up": 0,
+      "down": 170,
+      "invalid": 0
+    },
+    {
+      "family": "dlaplace",
+      "lower": true,
+      "log": true,
+      "cases": 994,
+      "up": 0,
+      "down": 151,
+      "invalid": 0
+    },
+    {
+      "family": "dlaplace",
+      "lower": false,
+      "log": false,
+      "cases": 936,
+      "up": 0,
+      "down": 151,
+      "invalid": 0
+    },
+    {
+      "family": "dlaplace",
+      "lower": false,
+      "log": true,
+      "cases": 999,
+      "up": 0,
+      "down": 151,
+      "invalid": 0
+    },
+    {
+      "family": "dnorm",
+      "lower": true,
+      "log": false,
+      "cases": 578,
+      "up": 0,
+      "down": 6,
+      "invalid": 0
+    },
+    {
+      "family": "dnorm",
+      "lower": true,
+      "log": true,
+      "cases": 1163,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dnorm",
+      "lower": false,
+      "log": false,
+      "cases": 578,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dnorm",
+      "lower": false,
+      "log": true,
+      "cases": 1165,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dunif",
+      "lower": true,
+      "log": false,
+      "cases": 420,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dunif",
+      "lower": true,
+      "log": true,
+      "cases": 420,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dunif",
+      "lower": false,
+      "log": false,
+      "cases": 420,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dunif",
+      "lower": false,
+      "log": true,
+      "cases": 420,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "dweibull",
+      "lower": true,
+      "log": false,
+      "cases": 535,
+      "up": 0,
+      "down": 15,
+      "invalid": 0
+    },
+    {
+      "family": "dweibull",
+      "lower": true,
+      "log": true,
+      "cases": 808,
+      "up": 0,
+      "down": 4,
+      "invalid": 0
+    },
+    {
+      "family": "dweibull",
+      "lower": false,
+      "log": false,
+      "cases": 808,
+      "up": 0,
+      "down": 4,
+      "invalid": 0
+    },
+    {
+      "family": "dweibull",
+      "lower": false,
+      "log": true,
+      "cases": 1029,
+      "up": 0,
+      "down": 4,
+      "invalid": 0
+    },
+    {
+      "family": "geom",
+      "lower": true,
+      "log": false,
+      "cases": 431,
+      "up": 0,
+      "down": 16,
+      "invalid": 0
+    },
+    {
+      "family": "geom",
+      "lower": true,
+      "log": true,
+      "cases": 618,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "geom",
+      "lower": false,
+      "log": false,
+      "cases": 618,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "geom",
+      "lower": false,
+      "log": true,
+      "cases": 618,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "hyper",
+      "lower": true,
+      "log": false,
+      "cases": 17,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "hyper",
+      "lower": true,
+      "log": true,
+      "cases": 20,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "hyper",
+      "lower": false,
+      "log": false,
+      "cases": 20,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "hyper",
+      "lower": false,
+      "log": true,
+      "cases": 20,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "lgser",
+      "lower": true,
+      "log": false,
+      "cases": 574,
+      "up": 0,
+      "down": 8,
+      "invalid": 0
+    },
+    {
+      "family": "lgser",
+      "lower": true,
+      "log": true,
+      "cases": 751,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "lgser",
+      "lower": false,
+      "log": false,
+      "cases": 751,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "lgser",
+      "lower": false,
+      "log": true,
+      "cases": 814,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nbinom",
+      "lower": true,
+      "log": false,
+      "cases": 1266,
+      "up": 0,
+      "down": 32,
+      "invalid": 0
+    },
+    {
+      "family": "nbinom",
+      "lower": true,
+      "log": true,
+      "cases": 1559,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nbinom",
+      "lower": false,
+      "log": false,
+      "cases": 1559,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nbinom",
+      "lower": false,
+      "log": true,
+      "cases": 1559,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nhyper",
+      "lower": true,
+      "log": false,
+      "cases": 241,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nhyper",
+      "lower": true,
+      "log": true,
+      "cases": 241,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nhyper",
+      "lower": false,
+      "log": false,
+      "cases": 241,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "nhyper",
+      "lower": false,
+      "log": true,
+      "cases": 241,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pig",
+      "lower": true,
+      "log": false,
+      "cases": 737,
+      "up": 0,
+      "down": 48,
+      "invalid": 0
+    },
+    {
+      "family": "pig",
+      "lower": true,
+      "log": true,
+      "cases": 1058,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pig",
+      "lower": false,
+      "log": false,
+      "cases": 1058,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pig",
+      "lower": false,
+      "log": true,
+      "cases": 1124,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pois",
+      "lower": true,
+      "log": false,
+      "cases": 343,
+      "up": 0,
+      "down": 8,
+      "invalid": 0
+    },
+    {
+      "family": "pois",
+      "lower": true,
+      "log": true,
+      "cases": 766,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pois",
+      "lower": false,
+      "log": false,
+      "cases": 766,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "pois",
+      "lower": false,
+      "log": true,
+      "cases": 832,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "skellam",
+      "lower": true,
+      "log": false,
+      "cases": 1594,
+      "up": 0,
+      "down": 16,
+      "invalid": 0
+    },
+    {
+      "family": "skellam",
+      "lower": true,
+      "log": true,
+      "cases": 2349,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "skellam",
+      "lower": false,
+      "log": false,
+      "cases": 1596,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "skellam",
+      "lower": false,
+      "log": true,
+      "cases": 2350,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "yulesimon",
+      "lower": true,
+      "log": false,
+      "cases": 567,
+      "up": 0,
+      "down": 12,
+      "invalid": 0
+    },
+    {
+      "family": "yulesimon",
+      "lower": true,
+      "log": true,
+      "cases": 673,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "yulesimon",
+      "lower": false,
+      "log": false,
+      "cases": 673,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "yulesimon",
+      "lower": false,
+      "log": true,
+      "cases": 726,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "zeta",
+      "lower": true,
+      "log": false,
+      "cases": 533,
+      "up": 0,
+      "down": 12,
+      "invalid": 0
+    },
+    {
+      "family": "zeta",
+      "lower": true,
+      "log": true,
+      "cases": 604,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "zeta",
+      "lower": false,
+      "log": false,
+      "cases": 513,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    },
+    {
+      "family": "zeta",
+      "lower": false,
+      "log": true,
+      "cases": 705,
+      "up": 0,
+      "down": 0,
+      "invalid": 0
+    }
+  ],
+  "samplers": {
+    "samplers-before": {
+      "rows": 44032,
+      "sha256": "70b92b245cf67df7be07252aef077e3f04b16b895a8386e92d6abc964d5f74e4"
+    },
+    "samplers-after": {
+      "rows": 44032,
+      "sha256": "70b92b245cf67df7be07252aef077e3f04b16b895a8386e92d6abc964d5f74e4"
+    }
+  },
+  "comparison": {
+    "pois": {
+      "disagreements": 7594,
+      "cpp_exact": 17,
+      "stats_exact": 7577,
+      "adjusted_boundary_rounding": 44,
+      "max_boundary_error_eps": 0.827615317355581
+    },
+    "binom": {
+      "disagreements": 7734,
+      "cpp_exact": 119,
+      "stats_exact": 7615,
+      "adjusted_boundary_rounding": 45,
+      "max_boundary_error_eps": 1.0581158718581776
+    },
+    "geom": {
+      "disagreements": 3681,
+      "cpp_exact": 2707,
+      "stats_exact": 974,
+      "adjusted_boundary_rounding": 82,
+      "max_boundary_error_eps": 3.6953537718892617
+    },
+    "nbinom": {
+      "disagreements": 7574,
+      "cpp_exact": 13,
+      "stats_exact": 7561,
+      "adjusted_boundary_rounding": 36,
+      "max_boundary_error_eps": 1.9999999999999991
+    },
+    "hyper": {
+      "disagreements": 2992,
+      "cpp_exact": 2196,
+      "stats_exact": 796,
+      "adjusted_boundary_rounding": 32,
+      "max_boundary_error_eps": 2.828605722306218
+    }
+  }
+}

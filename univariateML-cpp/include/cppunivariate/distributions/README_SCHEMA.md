@@ -447,7 +447,12 @@ For an explicit finite design support, quantiles at lower-tail probability zero
 and one return its nominal minimum and maximum, respectively, even when a
 parameter makes one of those endpoints have zero mass. Upper-tail probabilities
 reverse these endpoints; log probabilities use the identical rule. Interior
-probabilities invert the actual CDF. Positive truncation has minimum one;
+probabilities use the first computed crossing after a left-continuity fuzz: with
+`e = 64 * DBL_EPSILON`, linear lower targets become `p*(1-e)` and upper targets
+become `p*(1+e)` only when `1-p > 4*e`; log targets become `p*(1+e)` for lower
+and `p*(1-e)` for upper (the lower multiplication is suppressed on overflow).
+The adjustment acts on the supplied scale, as in R, and can cross multiple
+atoms when their masses are smaller than its band; exact endpoints stay unchanged. Positive truncation has minimum one;
 zero modification includes zero even at zero modification mass. An unbounded
 law that collapses to finitely many atoms uses its actual last atom as maximum.
 

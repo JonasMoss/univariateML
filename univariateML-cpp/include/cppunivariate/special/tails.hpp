@@ -4,9 +4,11 @@
 // derive its complement with log1mexp, never 1-p near p=1. Quantiles use
 // the accurate log tail, including log inputs -1e4 and below; do not first
 // exponentiate them. Handle p=0/1 (log p=-Inf/0) at support endpoints.
-// Discrete quantiles return the smallest integer k with F(k) >= p while
-// k <= 2^53; beyond, the smallest representable double h with F(h) >= p
-// (relative error <= 2^-52). NaN only for invalid input or a failed CDF evaluation.
+// Discrete quantiles use discrete_reached below for left-continuity fuzz.
+// They return the first adjusted crossing on the integer lattice while
+// k <= 2^53; beyond, the smallest representable double crossing
+// (relative lattice spacing <= 2^-52; the fuzz can cross multiple points).
+// NaN only for invalid input or a failed CDF evaluation.
 // Preserve logarithms of underflowed intermediates analytically when needed.
 // Double only: guard range with log-space algebra; CPPUNIV_EXTENDED_REAL equals
 // double on some CRAN platforms. Extended precision may improve rounding,
@@ -522,25 +524,50 @@ inline double discrete_signed_search(double centre, double step, Reached reached
   }
   return bracketed ? discrete_bisect(lo,hi,reached) : kNaN;
 }
-// Exact integer inversion uses the accurate smaller log tail.
+// Left-continuity comparison shared by every discrete quantile. On the
+// supplied scale, e=64*DBL_EPSILON: linear lower uses p*(1-e), upper
+// uses p*(1+e) only if 1-p>4*e (R's guard against crossing one).
+// Log lower uses p*(1+e), log upper p*(1-e); at -DBL_MAX leave the
+// lower target finite instead of overflowing. Endpoints are handled by
+// callers BEFORE fuzzing. This follows R's scale-dependent adjustment,
+// with a uniform 64-epsilon factor (R 4.6 uses 8 linear / 2 log).
+// A band larger than a jump may select earlier support points, however
+// many the first adjusted crossing requires; never clamp it to one jump.
+// Subnormal linear multiplication can round back to p; log inputs retain
+// their range without exponentiation. NaN CDF evaluations remain failures.
+inline int discrete_reached(double value, double p, bool lower, bool log, bool fuzz=true) {
+  if (std::isnan(value) || std::isnan(p)) return -1;
+  if (!fuzz) return int(lower ? value>=p : value<=p);
+  constexpr double e=64*std::numeric_limits<double>::epsilon();
+  double target=p;
+  if (log) {
+    if (lower) {
+      if (p > -std::numeric_limits<double>::max()/(1+e)) target=p*(1+e);
+    } else target=p*(1-e);
+  } else if (lower) target=p*(1-e);
+  else if (1-p>4*e) target=p*(1+e);
+  return int(lower ? value>=target : value<=target);
+}
+// First adjusted crossing on the integer / representable-double lattice.
 template <typename Tails>
 inline double discrete_quantile(const LogTails &target, double minimum,
                                 double maximum, Tails tails, double p=kNaN,
-                                bool input_lower=true, bool input_log=true) {
+                                bool input_lower=true, bool input_log=true, bool fuzz=true) {
   if (!target.valid) return kNaN;
   if (target.lower==kNegInf) return minimum;
   if (target.upper==kNegInf) return maximum;
-  const bool lower=target.lower < target.upper;
+  const bool supplied=!std::isnan(p);
+  const bool lower=supplied && fuzz ? input_lower : target.lower<target.upper;
+  const bool log=supplied && fuzz ? input_log : true;
+  const double goal=supplied && fuzz ? p : (lower ? target.lower : target.upper);
   return discrete_search(minimum,maximum,[&](double x) {
     const LogTails t=tails(x);
     if (!t.valid || std::isnan(t.lower) || std::isnan(t.upper)) return -1;
-    // Above the exact integer range, preserve the selected probability scale:
-    // rounding a complementary tail can move the first representable crossing.
-    if (std::abs(x)>9007199254740992.0 && !std::isnan(p)) {
-      const double f=tail_probability(t,input_lower,input_log);
-      return std::isnan(f) ? -1 : int(input_lower ? f>=p : f<=p);
-    }
-    return int(lower ? t.lower>=target.lower : t.upper<=target.upper);
+    // Samplers retain the original smaller-log-tail comparison below 2^53
+    // and the supplied-scale comparison above it. Public quantiles use fuzz.
+    if(!fuzz && supplied && std::abs(x)>9007199254740992.0)
+      return discrete_reached(tail_probability(t,input_lower,input_log),p,input_lower,input_log,false);
+    return discrete_reached(tail_probability(t,lower,log),goal,lower,log,fuzz);
   });
 }
 

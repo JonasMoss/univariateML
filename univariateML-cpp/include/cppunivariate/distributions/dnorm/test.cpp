@@ -100,19 +100,20 @@ TEST_CASE("dnorm: extreme tails and discrete support") {
 TEST_CASE("dnorm: exact and rounded half probabilities") {
   // mp.dps=100; print(erfc(0)/2); print(exp(mpf(-0.6931471805599453))-mpf('.5'))
   CHECK(cppunivariate::distributions::qdnorm(0.5,0,1,true,false)==-1);
-  CHECK(cppunivariate::distributions::qdnorm(-0.6931471805599453,0,1,true,true)==0);
+  CHECK(cppunivariate::distributions::qdnorm(-0.6931471805599453,0,1,true,true)==-1);
 }
 
-TEST_CASE("dnorm: exact half and rounded log half straddle the CDF jump") {
+TEST_CASE("dnorm: exact and rounded half inputs stay inside the continuity band") {
   // At mean=0, sd=1, P(X<=-1) is exactly 1/2. The binary64
-  // logarithm -0x1.62e42fefa39efp-1 exceeds exact log(1/2).
+  // logarithm -0x1.62e42fefa39efp-1 exceeds exact log(1/2),
+  // but this and its neighbours are inside the continuity band.
   const double lh=-0x1.62e42fefa39efp-1;
   CHECK(cppunivariate::distributions::pdnorm(-1,0,1)==.5);
   CHECK(cppunivariate::distributions::qdnorm(.5,0,1)==-1);
-  CHECK(cppunivariate::distributions::qdnorm(lh,0,1,true,true)==0);
+  CHECK(cppunivariate::distributions::qdnorm(lh,0,1,true,true)==-1);
   CHECK(cppunivariate::distributions::qdnorm(std::nextafter(lh,-INFINITY),0,1,true,true)==-1);
   CHECK(cppunivariate::distributions::qdnorm(lh,0,1,false,true)==-1);
-  CHECK(cppunivariate::distributions::qdnorm(std::nextafter(lh,-INFINITY),0,1,false,true)==0);
+  CHECK(cppunivariate::distributions::qdnorm(std::nextafter(lh,-INFINITY),0,1,false,true)==-1);
 }
 
 TEST_CASE("dnorm: structured stop payloads") {
@@ -154,7 +155,7 @@ TEST_CASE("dnorm: held mean zero-scale face uses discretization cells") {
 #include "cppunivariate/distributions/dnorm/dpqr.hpp"
 TEST_CASE("dnorm: bounded seed corrections require a representable jump") {
   CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qdnorm(.5,1e308,1),.5,true,
-      [](double x) {return cppunivariate::distributions::pdnorm(x,1e308,1,true,false);}));
+      [](double x) {return cppunivariate::distributions::pdnorm(x,1e308,1,true,false);},false,true,false));
   CHECK(cppunivariate::distributions::qdnorm(.5,0,1)==-1);
 }
 
@@ -166,7 +167,8 @@ TEST_CASE("dnorm quantiles above 2^53 are minimal representable doubles") {
     REQUIRE(std::abs(h)>9007199254740992.0);
     const double at=cppunivariate::distributions::pdnorm(h,0,1e20,lower,log);
     const double before=cppunivariate::distributions::pdnorm(std::nextafter(h,-INFINITY),0,1e20,lower,log);
-    CHECK((lower ? at>=p && before<p : at<=p && before>p));
+    CHECK(cppunivariate::special::discrete_reached(at,p,lower,log)==1);
+    CHECK(cppunivariate::special::discrete_reached(before,p,lower,log)==0);
   }
 }
 
@@ -181,7 +183,7 @@ TEST_CASE("dnorm: rounded seeds cannot bypass inversion at 2^53") {
       REQUIRE(std::isfinite(h));
       CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
         return cppunivariate::distributions::pdnorm(x,0,1e20,lower,log);
-      }));
+      },false,true,log));
     }
   }
 }
@@ -216,10 +218,16 @@ TEST_CASE("dnorm: overflowing translated lattice differences retain finite stand
       REQUIRE(std::isfinite(h));
       CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
         return cppunivariate::distributions::pdnorm(x,mean,1e308,lower,log);
-      }));
+      },false,true,log));
       const double z=h/1e308-mean/1e308;
       CHECK(std::erfc((lower ? -z : z)/std::sqrt(2.0))/2
             ==doctest::Approx(.01).epsilon(2e-13));
     }
   }
+}
+
+TEST_CASE("dnorm: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("dnorm",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pdnorm(x,t[0], t[1],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qdnorm(x,t[0], t[1],l,g);});
 }

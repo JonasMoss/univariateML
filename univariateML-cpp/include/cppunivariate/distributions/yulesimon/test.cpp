@@ -97,3 +97,9 @@ TEST_CASE("yulesimon: small-shape CDF crosses the finite product boundary accura
   const double got=cppunivariate::distributions::pyulesimon(33,1e-8,true,false);
   CHECK(std::abs(got/4.088798134072771e-8-1)<1e-10);
 }
+
+TEST_CASE("yulesimon: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("yulesimon",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pyulesimon(x,t[0],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qyulesimon(x,t[0],l,g);});
+}
