@@ -32,6 +32,7 @@
 // at most 2^53 - 1.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
 
@@ -704,3 +705,24 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
   return out;
 }
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const HyperResult& r) {
+  if (r.stop_detail.budget_exhausted && r.status != HyperStatus::Ok &&
+      r.status != HyperStatus::Tie && r.status != HyperStatus::Unidentified) return FitOutcome::budget();
+  switch (r.status) {
+    case HyperStatus::Ok: return FitOutcome::estimate(r.certified);
+    case HyperStatus::Tie: return FitOutcome::estimate(r.certified, false);
+    case HyperStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
+    case HyperStatus::AllZero: return FitOutcome::limit();
+    case HyperStatus::BothFree: return FitOutcome::failure(OutcomeReason::Unsupported);
+    case HyperStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case HyperStatus::FaceTie: return FitOutcome::estimate(false);
+    case HyperStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case HyperStatus::Infeasible: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case HyperStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case HyperStatus::TooLarge: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
+} // namespace cppunivariate

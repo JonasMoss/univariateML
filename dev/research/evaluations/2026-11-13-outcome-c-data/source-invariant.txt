@@ -1,0 +1,3 @@
+PASS: all 25 original core-header bodies preserved byte-for-byte, apart from the outcome include and appended overloads.
+PASS: 26 result-type overloads; all 170 family/status entries mapped, with no default case.
+PASS: tracked source changes are exactly the 25 assigned mle.hpp and 25 assigned common adapters.

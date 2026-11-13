@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "cppunivariate/distributions/gengamma/shape_scan.hpp"
 #include "cppunivariate/distributions/gengamma/free_certificate.hpp"
 #include "cppunivariate/distributions/gengamma/face_certificate.hpp"
@@ -240,3 +241,20 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
   return out;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const GengammaResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case GengammaStatus::Ok: return FitOutcome::estimate(r.certified);
+    case GengammaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case GengammaStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case GengammaStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case GengammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GengammaStatus::PowerBoundary: return FitOutcome::limit();
+    case GengammaStatus::ParetoBoundary: return FitOutcome::limit();
+  }
+  return {};
+}
+} // namespace cppunivariate

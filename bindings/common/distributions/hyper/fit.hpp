@@ -18,7 +18,7 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
                             std::make_pair(std::string("N"), N),
                             std::make_pair(std::string("m"), m)}) {
     if (named.second.supplied && std::isnan(named.second.value))
-      return fail("`%s` must be a whole number or NULL, not NA.", named.first);
+      return invalid_argument(fail("`%s` must be a whole number or NULL, not NA.", named.first));
   }
   const auto held_value = [](const Held& value, const std::string&) {
     return value.supplied ? value.value : std::numeric_limits<double>::quiet_NaN();
@@ -31,15 +31,28 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   const double design=held_value(k, "k");
   const double N_held = held_value(N, "N"), m_held = held_value(m, "m");
   const auto res = cppunivariate::hyper_mle(x, design, N_held, m_held);
+  const auto o = cppunivariate::outcome(res);
+  const auto done = [&](FitResult out) {
+    // The all-free exploratory route deliberately emits a plain error.
+    if (out.error_kind.empty() && o.reason == cppunivariate::OutcomeReason::Unresolved)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+      if (res.status == cppunivariate::HyperStatus::Ok)
+        return overridden(std::move(out), static_cast<int>(res.status));
+      // A legacy classifier can suppress a tie kind using caller-only information.
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+    }
+    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+  };
   std::string stop_kind;
   switch(res.status) {
     case cppunivariate::HyperStatus::FaceTie: stop_kind="tie";break;
-    case cppunivariate::HyperStatus::FaceUnresolved: stop_kind="unresolved";break;
-    case cppunivariate::HyperStatus::AllZero: stop_kind="limit";break;
-    case cppunivariate::HyperStatus::Infeasible: stop_kind="nomle";break;
+    case cppunivariate::HyperStatus::FaceUnresolved: stop_kind=outcome_kind(o);break;
+    case cppunivariate::HyperStatus::AllZero: stop_kind=outcome_kind(o);break;
+    case cppunivariate::HyperStatus::Infeasible: stop_kind=outcome_kind(o);break;
     default:break;
   }
-  if(res.stop_detail.budget_exhausted) stop_kind="budget";
+  if(res.stop_detail.budget_exhausted) stop_kind=outcome_kind(o);
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
     return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"m","N","k"});
@@ -49,37 +62,37 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   switch (res.status) {
     case cppunivariate::HyperStatus::FaceUnresolved:
       if (!N.supplied && !m.supplied && !k.supplied)
-        return res.tie == 0 ? fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.") :
-          fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size %s may dominate; use mlbinom for the limit model.", whole(res.tie));
-      return stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count).");
+        return done(res.tie == 0 ? fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.") :
+          fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size %s may dominate; use mlbinom for the limit model.", whole(res.tie)));
+      return done(stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count)."));
     case cppunivariate::HyperStatus::FaceTie:
       if (!N.supplied && !m.supplied && !k.supplied)
-        return res.tie == 0 ? fail("A finite likelihood matched the Poisson face within numerical tolerance; a larger finite maximum is not excluded. Use mlpois for the limit model.") :
-          fail("A finite likelihood matched the binomial face of size %s within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.", whole(res.tie));
-      return stopped_fail("A finite likelihood matched the binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.");
+        return done(res.tie == 0 ? fail("A finite likelihood matched the Poisson face within numerical tolerance; a larger finite maximum is not excluded. Use mlpois for the limit model.") :
+          fail("A finite likelihood matched the binomial face of size %s within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.", whole(res.tie)));
+      return done(stopped_fail("A finite likelihood matched the binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model."));
     case cppunivariate::HyperStatus::NumericalFailure:
-      return stopped_fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded.");
+      return done(stopped_fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded."));
     case cppunivariate::HyperStatus::BothFree:
-      return stopped_fail("Supply the population size `N` or the number of successes `m` "
+      return done(stopped_fail("Supply the population size `N` or the number of successes `m` "
                  "as well as `k`: estimating both is not supported. As `N` grows "
                  "with `m / N` fixed the model tends to the binomial; use "
-                 "`mlbinom(x, size = k)`.");
+                 "`mlbinom(x, size = k)`."));
     case cppunivariate::HyperStatus::InvalidInput:
-      return stopped_fail("`k`, `N` and `m` must be whole numbers from 0 to 2^53 - 1, with "
-                 "`k <= N` and `m <= N`; so must the observations.");
+      return done(stopped_fail("`k`, `N` and `m` must be whole numbers from 0 to 2^53 - 1, with "
+                 "`k <= N` and `m <= N`; so must the observations."));
     case cppunivariate::HyperStatus::Infeasible:
-      return stopped_fail("No admissible value of `%s` gives every observation positive "
+      return done(stopped_fail("No admissible value of `%s` gives every observation positive "
                  "probability: observations must lie between max(0, k - (N - m)) "
-                 "and min(k, m).", estimated);
+                 "and min(k, m).", estimated));
     case cppunivariate::HyperStatus::AllZero:
-      return stopped_fail("All observations are 0: with `m` and `k` positive the likelihood "
+      return done(stopped_fail("All observations are 0: with `m` and `k` positive the likelihood "
                  "increases toward a point mass at zero as `N` grows, so the "
-                 "maximum likelihood estimator of `N` does not exist.");
+                 "maximum likelihood estimator of `N` does not exist."));
     case cppunivariate::HyperStatus::TooLarge:
-      return stopped_fail("The required population size or likelihood maximiser exceeds "
+      return done(stopped_fail("The required population size or likelihood maximiser exceeds "
                  "2^53 - 1; double precision does not represent every integer "
                  "beyond that, so the "
-                 "estimate of `N` cannot be computed exactly.");
+                 "estimate of `N` cannot be computed exactly."));
     case cppunivariate::HyperStatus::Tie:
       warnings.push_back(binding_message("The likelihood is tied (to rounding) between `%s` = %s and %s; "
                     "returning the smaller.", estimated,
@@ -105,7 +118,7 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   if (m.supplied) fixed.push_back("m");
   if (N.supplied) fixed.push_back("N");
   if (k.supplied) fixed.push_back("k");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"m",res.m},{"N",res.N},{"k",res.k}}; out.extra.push_back({"certified", res.certified ? 1.0 : 0.0}); out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"m",res.m},{"N",res.N},{"k",res.k}}; out.extra.push_back({"certified", res.certified ? 1.0 : 0.0}); out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

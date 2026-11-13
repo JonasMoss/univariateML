@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
 
@@ -330,3 +331,21 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
   return out;
 }
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const NhyperResult& r) {
+  if (r.stop_detail.budget_exhausted && r.status != NhyperStatus::Ok &&
+      r.status != NhyperStatus::Tie && r.status != NhyperStatus::Unidentified) return FitOutcome::budget();
+  switch (r.status) {
+    case NhyperStatus::Ok: return FitOutcome::estimate(r.certified);
+    case NhyperStatus::Tie: return FitOutcome::estimate(r.certified, false);
+    case NhyperStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
+    case NhyperStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case NhyperStatus::Infeasible: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case NhyperStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case NhyperStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case NhyperStatus::FaceTie: return FitOutcome::estimate(false);
+  }
+  return {};
+}
+} // namespace cppunivariate

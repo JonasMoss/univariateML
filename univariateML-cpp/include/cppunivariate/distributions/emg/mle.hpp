@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../norm/mle.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -106,3 +107,25 @@ inline EmgResult emg_mle(span x,double tol=1e-10,int maxit=500,double mu=NAN,dou
   return r;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const EmgResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.stop_detail.comparison_tie && r.status == EmgStatus::IterationFailure) return FitOutcome::estimate(false);
+  switch (r.status) {
+    case EmgStatus::Ok: return FitOutcome::estimate(true);
+    case EmgStatus::NormalLimit: return FitOutcome::limit();
+    case EmgStatus::TranslatedExponentialLimit: return FitOutcome::limit();
+    case EmgStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case EmgStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case EmgStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case EmgStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case EmgStatus::BudgetExhausted: return FitOutcome::budget();
+    case EmgStatus::Unresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case EmgStatus::Tie: return FitOutcome::estimate(false);
+    case EmgStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Tolerance);
+  }
+  return {};
+}
+} // namespace cppunivariate

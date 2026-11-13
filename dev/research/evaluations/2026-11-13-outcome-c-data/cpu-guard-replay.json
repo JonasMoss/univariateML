@@ -1,0 +1,17 @@
+{
+  "family": "emg",
+  "source": "archive",
+  "case": "001311",
+  "held": {
+    "sigma": 1.0518147225573364
+  },
+  "n": 12,
+  "input_sha256": "84ec4995dfd31737",
+  "mode": "double",
+  "initial_cpu_limit_seconds": 300,
+  "observed_initial_kind": "timeout",
+  "replay_cpu_limit_seconds": 1800,
+  "completed_kind": "numerical",
+  "completed_core_status": 6,
+  "final_full_double_diff": "0 of 3619 cases differ"
+}

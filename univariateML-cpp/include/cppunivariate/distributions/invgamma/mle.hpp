@@ -2,6 +2,7 @@
 // differences; the public scale is the gamma rate on 1/X.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 
 #include "../../core/span.hpp"
@@ -29,4 +30,17 @@ inline InvGammaResult invgamma_mle(span x,double tol,int maxit,double shape,doub
   return {g.shape,g.scale,g.logLik,g.iterations,g.status,g.certified};
 }
 inline InvGammaResult invgamma_mle(span x,double tol,int maxit) {return invgamma_mle(x,tol,maxit,NAN,NAN);}
+} // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const InvGammaResult& r) {
+  switch (r.status) {
+    case GammaStatus::Ok: return FitOutcome::estimate(r.certified);
+    case GammaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case GammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GammaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case GammaStatus::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
 } // namespace cppunivariate

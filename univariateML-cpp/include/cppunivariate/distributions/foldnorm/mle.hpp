@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
@@ -298,3 +299,19 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
   return out;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const FoldnormResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  switch (r.status) {
+    case FoldnormStatus::Ok: return FitOutcome::estimate(true);
+    case FoldnormStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case FoldnormStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case FoldnormStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case FoldnormStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Tolerance);
+  }
+  return {};
+}
+} // namespace cppunivariate

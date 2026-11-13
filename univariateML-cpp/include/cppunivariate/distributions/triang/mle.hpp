@@ -1,5 +1,6 @@
 // Exact finite mode enumeration with concave endpoint solves and interval bounds.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/span.hpp"
 #include "dpqr.hpp"
@@ -322,5 +323,19 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
       (success?TriangStatus::Ok:TriangStatus::IterationFailure);
   out.not_unique=second>=best-tie;
   return out;
+}
+} // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const TriangResult& r) {
+  switch (r.status) {
+    case TriangStatus::Ok: return FitOutcome::estimate(true);
+    case TriangStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TriangStatus::Incompatible: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case TriangStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case TriangStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case TriangStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
 }
 } // namespace cppunivariate

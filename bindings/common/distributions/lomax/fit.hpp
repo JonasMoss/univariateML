@@ -13,12 +13,12 @@ inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kap
   std::vector<std::string> fixed;
   const double lambda_held = !lambda.supplied ? std::numeric_limits<double>::quiet_NaN() : lambda.value;
   if (lambda.supplied) {
-    if (!(std::isfinite(lambda_held) && lambda_held > 0.0)) return fail("Held `lambda` must be positive and finite.");
+    if (!(std::isfinite(lambda_held) && lambda_held > 0.0)) return invalid_argument(fail("Held `lambda` must be positive and finite."));
     fixed.push_back("lambda");
   }
   const double kappa_held = !kappa.supplied ? std::numeric_limits<double>::quiet_NaN() : kappa.value;
   if (kappa.supplied) {
-    if (!(std::isfinite(kappa_held) && kappa_held > 0.0)) return fail("Held `kappa` must be positive and finite.");
+    if (!(std::isfinite(kappa_held) && kappa_held > 0.0)) return invalid_argument(fail("Held `kappa` must be positive and finite."));
     fixed.push_back("kappa");
   }
 
@@ -26,25 +26,35 @@ inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kap
   if (lambda0.supplied) {
     start = lambda0.value;
     if (!(start > 0.0) || !std::isfinite(start)) {
-      return fail("`lambda0` must be a positive finite number.");
+      return invalid_argument(fail("`lambda0` must be a positive finite number."));
     }
   }
   auto res = cppunivariate::lomax_mle(x, reltol, iterlim, start, lambda_held, kappa_held);
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("lomax numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,"numerical",{"lambda","kappa"});
+  const auto o = cppunivariate::outcome(res);
+  const auto done = [&](FitResult out) {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+      if (res.status == cppunivariate::LomaxStatus::Ok)
+        return overridden(std::move(out), static_cast<int>(res.status));
+      // A legacy classifier can suppress a tie kind using caller-only information.
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+    }
+    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+  };
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("lomax numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"lambda","kappa"}));
   if (res.status == cppunivariate::LomaxStatus::AccuracyFailure)
-    return stop_failure(fail("Lomax could not verify the requested coefficient accuracy in binary64."),res.stop_detail,"numerical",{"lambda","kappa"});
+    return done(stop_failure(fail("Lomax could not verify the requested coefficient accuracy in binary64."),res.stop_detail,outcome_kind(o),{"lambda","kappa"}));
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
-    return stop_failure(fail("The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model."),res.stop_detail,"limit",{"lambda","kappa"},"exp");
+    return done(stop_failure(fail("The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model."),res.stop_detail,outcome_kind(o),{"lambda","kappa"},"exp"));
   }
   if (res.certificate_failure == cppunivariate::LomaxCertificateFailure::Budget)
-    return stop_failure(fail("Lomax MLE failed to converge: global certificate budget exhausted (128 * min(iterlim, 100000) subdivision evaluations); no verified maximum. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"lambda","kappa"},"");
+    return done(stop_failure(fail("Lomax MLE failed to converge: global certificate budget exhausted (128 * min(iterlim, 100000) subdivision evaluations); no verified maximum. Raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"lambda","kappa"},""));
   if (res.certificate_failure == cppunivariate::LomaxCertificateFailure::Arithmetic)
-    return fail("Lomax MLE failed to converge: numerical certificate comparisons unresolved or coefficients unrepresentable; no verified maximum.");
+    return done(fail("Lomax MLE failed to converge: numerical certificate comparisons unresolved or coefficients unrepresentable; no verified maximum."));
   if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.lambda) ||
       !std::isfinite(res.kappa)) {
-    return fail("Lomax MLE failed to converge (check dispersion/inputs).");
+    return done(fail("Lomax MLE failed to converge (check dispersion/inputs)."));
   }
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",res.lambda},{"kappa",res.kappa}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",res.lambda},{"kappa",res.kappa}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

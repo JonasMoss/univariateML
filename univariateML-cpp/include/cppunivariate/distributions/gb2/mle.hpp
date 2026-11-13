@@ -1,5 +1,6 @@
 // GB2 in actuar order (q,a,p,b). All optimisation uses standardized logs.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "local_accuracy.hpp"
 #include "../beta/mle.hpp"
 #include "../../core/work_budget.hpp"
@@ -636,5 +637,34 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     }
   }
   return out;
+}
+} // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const Gb2Result& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
+  // Delegated/endpoint certificates carry a limit witness. The exploratory
+  // face-versus-search comparison carries no limit coefficients and uses a margin.
+  switch (r.status) {
+    case Gb2Status::Ok: return FitOutcome::estimate(r.certified);
+    case Gb2Status::TrGammaBoundary: return FitOutcome::limit(!r.stop_detail.limit_coef.empty());
+    case Gb2Status::InvTrGammaBoundary: return FitOutcome::limit(!r.stop_detail.limit_coef.empty());
+    case Gb2Status::LognormalBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case Gb2Status::ParetoBoundary: return FitOutcome::limit(!r.stop_detail.limit_coef.empty());
+    case Gb2Status::PowerBoundary: return FitOutcome::limit(!r.stop_detail.limit_coef.empty());
+    case Gb2Status::DoubleParetoBoundary: return FitOutcome::failure(OutcomeReason::Unsupported);
+    case Gb2Status::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case Gb2Status::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case Gb2Status::SearchUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case Gb2Status::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case Gb2Status::WeibullBoundary: return FitOutcome::limit();
+    case Gb2Status::InvWeibullBoundary: return FitOutcome::limit();
+    case Gb2Status::CertificateTie: return FitOutcome::estimate(false);
+    case Gb2Status::CertificateBudget: return FitOutcome::budget();
+    case Gb2Status::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
 }
 } // namespace cppunivariate

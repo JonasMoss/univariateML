@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
@@ -151,3 +152,18 @@ inline DnormResult dnorm_mle(span x,double tol=1e-9,int maxit=200,
   return stopped;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const DnormResult& r) {
+  switch (r.status) {
+    case DnormStatus::Ok: return FitOutcome::estimate(true);
+    case DnormStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case DnormStatus::InvalidControl: return FitOutcome::failure(OutcomeReason::InvalidArgument);
+    case DnormStatus::PointMass: return FitOutcome::limit();
+    case DnormStatus::TwoPointLimit: return FitOutcome::limit();
+    case DnormStatus::ScaleLimit: return FitOutcome::limit();
+    case DnormStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate

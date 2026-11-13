@@ -3,6 +3,7 @@
 // overflow nor underflow.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -57,3 +58,14 @@ inline RayleighResult rayleigh_mle(span x,double sigma) {
 }
 
 }  // namespace cppunivariate
+
+namespace cppunivariate {
+inline FitOutcome outcome(const RayleighResult& r) {
+  switch (r.status) {
+    case RayleighStatus::Ok: return FitOutcome::estimate(true);
+    case RayleighStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case RayleighStatus::ZeroLikelihood: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+  }
+  return {};
+}
+} // namespace cppunivariate

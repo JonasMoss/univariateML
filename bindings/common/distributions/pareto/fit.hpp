@@ -22,23 +22,33 @@ inline FitResult fit_pareto(cppunivariate::span x, Held a_arg = {}, Held b_arg =
   std::vector<std::string> fixed;
   const double a_held = !a.supplied ? std::numeric_limits<double>::quiet_NaN() : a.value;
   if (a.supplied) {
-    if (!(std::isfinite(a_held) && a_held > 0.0)) return fail("Held `a` must be positive and finite.");
+    if (!(std::isfinite(a_held) && a_held > 0.0)) return invalid_argument(fail("Held `a` must be positive and finite."));
     fixed.push_back("a");
   }
   const double b_held = !b.supplied ? std::numeric_limits<double>::quiet_NaN() : b.value;
   if (b.supplied) {
-    if (!(std::isfinite(b_held) && b_held > 0.0)) return fail("Held `b` must be positive and finite.");
+    if (!(std::isfinite(b_held) && b_held > 0.0)) return invalid_argument(fail("Held `b` must be positive and finite."));
     fixed.push_back("b");
   }
-  if (b.supplied && std::any_of(x.begin(),x.end(),[&](double v){return v<b_held;})) return fail("Held b exceeds the sample minimum: zero likelihood.");
+  if (b.supplied && std::any_of(x.begin(),x.end(),[&](double v){return v<b_held;})) return invalid_argument(fail("Held b exceeds the sample minimum: zero likelihood."));
 
   auto res = cppunivariate::pareto_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, a_held, b_held);
-  if (res.status == cppunivariate::ParetoStatus::InvalidInput) return fail("Pareto requires nonempty positive finite data and compatible held parameters.");
-  if(res.status==cppunivariate::ParetoStatus::Unbounded)return classify(fail("The Pareto maximum likelihood estimator does not exist for constant data; other data may exceed double precision."),{},"nomle",{});
+  const auto o = cppunivariate::outcome(res);
+  const auto done = [&](FitResult out) {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+      if (res.status == cppunivariate::ParetoStatus::Ok)
+        return overridden(std::move(out), static_cast<int>(res.status));
+      // A legacy classifier can suppress a tie kind using caller-only information.
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+    }
+    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+  };
+  if (res.status == cppunivariate::ParetoStatus::InvalidInput) return done(fail("Pareto requires nonempty positive finite data and compatible held parameters."));
+  if(res.status==cppunivariate::ParetoStatus::Unbounded)return done(classify(fail("The Pareto maximum likelihood estimator does not exist for constant data; other data may exceed double precision."),{},outcome_kind(o),{}));
   if (res.status != cppunivariate::ParetoStatus::Ok || !(res.shape>0.0) || !std::isfinite(res.shape) || !std::isfinite(res.logLik))
-    return fail("The Pareto maximum likelihood estimator does not exist for constant data; other data may exceed double precision.");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"a",res.shape},{"b",res.min}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }();
+    return done(fail("The Pareto maximum likelihood estimator does not exist for constant data; other data may exceed double precision."));
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"a",res.shape},{"b",res.min}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

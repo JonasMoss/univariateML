@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../special/cmp.hpp"
 #include "dpqr.hpp"
@@ -112,3 +113,35 @@ inline CmpDomainResult cmp_domain_mle(span x, const CmpFitControl& ctl = {}) {
   return out;
 }
 }
+
+namespace cppunivariate {
+inline FitOutcome outcome(const CmpResult& r) {
+  if (r.stop_detail.budget_exhausted && r.status != CmpStatus::Ok) return FitOutcome::budget();
+  switch (r.status) {
+    case CmpStatus::Ok: return FitOutcome::estimate(true);
+    case CmpStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case CmpStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case CmpStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case CmpStatus::GeometricLimit: return FitOutcome::limit();
+    case CmpStatus::TwoPointLimit: return FitOutcome::limit();
+    case CmpStatus::PointMassLimit: return FitOutcome::limit();
+    case CmpStatus::BudgetLimit: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+
+inline FitOutcome outcome(const CmpDomainResult& r) {
+  if (r.stop_detail.budget_exhausted && r.status != CmpStatus::Ok) return FitOutcome::budget();
+  switch (r.status) {
+    case CmpStatus::Ok: return FitOutcome::estimate(true);
+    case CmpStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case CmpStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case CmpStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case CmpStatus::GeometricLimit: return FitOutcome::limit();
+    case CmpStatus::TwoPointLimit: return FitOutcome::limit();
+    case CmpStatus::PointMassLimit: return FitOutcome::limit();
+    case CmpStatus::BudgetLimit: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
+} // namespace cppunivariate
