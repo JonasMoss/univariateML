@@ -171,17 +171,27 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
       }
       target <- file.path(dirname(dirname(path)), edge$family, "README.md")
       if (!scalar_text(edge$family) || !edge$family %in% basename(list.dirs(dirname(dirname(path)), recursive=FALSE)) ||
-          !file.exists(target) || edge$family == id)
+          !file.exists(target) || (edge$family == id && is.null(edge$configuration) && is.null(edge$source_configuration)))
         stop("load_distributions: invalid relation target for ", id)
       parent <- .umvl_read_front_matter(target)$front
       parent_names <- vapply(parent$params, `[[`, "", "name")
-      child_names <- vapply(f$params, `[[`, "", "name")
+      if (!is.null(edge$configuration$zero)) parent_names <- c(parent_names,
+        switch(edge$configuration$zero, modified="p0", inflated="pi", character()))
+      source_params <- f$params
+      if (!is.null(edge$source_configuration)) {
+        # Configured source coordinates include window endpoints and zero atoms.
+        private <- dget(file.path(dirname(dirname(path)), "../../../../bindings/r/scripts/modifier_laws.R"))
+        source_params <- private[[edge$source_configuration$kernel]]$params
+        if(is.null(source_params))stop("load_distributions: unknown configured source for ",id)
+      }
+      child_names <- vapply(source_params, `[[`, "", "name")
       validate_map <- function(spec, variables) {
         target_path <- file.path(dirname(dirname(path)), spec$family, "README.md")
-        if (!scalar_text(spec$family) || !file.exists(target_path) || spec$family == id)
+        if (!scalar_text(spec$family) || !file.exists(target_path) || (spec$family == id && is.null(edge$configuration) && is.null(edge$source_configuration)))
           stop("load_distributions: invalid construction target for ", id)
         meta <- .umvl_read_front_matter(target_path)$front
         expected <- vapply(meta$params, `[[`, "", "name")
+        if(!is.null(spec$configuration$zero)) expected<-c(expected,switch(spec$configuration$zero,modified="p0",inflated="pi",character()))
         if (!setequal(names(spec$at), expected) || anyDuplicated(names(spec$at)))
           stop("load_distributions: invalid relation coefficient map for ", id)
         for (value in spec$at) .umvl_support_expr(value, variables)
@@ -190,7 +200,7 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
       if (!is.null(edge$when)) {
         if (!scalar_text(edge$when)) stop("load_distributions: invalid relation condition for ", id)
         .umvl_support_expr(edge$when, child_names)
-        probe <- setNames(lapply(f$params, `[[`, "simulate"), child_names)
+        probe <- setNames(lapply(source_params, `[[`, "simulate"), child_names)
         probe$expit <- function(x) stats::plogis(x)
         result <- eval(parse(text=edge$when), envir=probe)
         if (!is.logical(result) || length(result)!=1L || is.na(result))

@@ -1,0 +1,258 @@
+{
+  "baseline": "1e0f5185",
+  "headers": [
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/tbinom/accuracy.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/tbinom_accuracy.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/tbinom/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/tbinom_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/tbinom/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/tbinom_mle.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/tbinom/face_certificate.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/tbinom_face_certificate.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/tbinom/fit.hpp",
+      "new": "bindings/common/distributions/binom/tbinom_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/tnorm/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/norm/tnorm_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/tnorm/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/norm/tnorm_mle.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/tnorm/fit.hpp",
+      "new": "bindings/common/distributions/norm/tnorm_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/tpois/dpqr_core.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/tpois_dpqr_core.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/tpois/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/tpois_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/tpois/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/tpois_mle.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/tpois/profile.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/tpois_profile.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/tpois/fit.hpp",
+      "new": "bindings/common/distributions/pois/tpois_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zipf/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/zeta/zipf_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zipf/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/zeta/finite_harmonic.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zib/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/zib_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zib/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/zib_mle.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zib/face_certificate.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/zib_face_certificate.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/zib/fit.hpp",
+      "new": "bindings/common/distributions/binom/zib_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zinb/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/nbinom/zinb_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zinb/global_certificate.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/nbinom/zinb_global_certificate.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zinb/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/nbinom/zinb_mle.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zinb/certificate.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/nbinom/zinb_certificate.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/zinb/fit.hpp",
+      "new": "bindings/common/distributions/nbinom/zinb_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zip/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/zip_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zip/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/zip_mle.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zip/certificate.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/zip_certificate.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/zip/fit.hpp",
+      "new": "bindings/common/distributions/pois/zip_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmbinom/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/zmbinom_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmbinom/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/zmbinom_mle.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/zmbinom/fit.hpp",
+      "new": "bindings/common/distributions/binom/zmbinom_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmgeom/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/geom/zmgeom_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmgeom/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/geom/zmgeom_mle.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/zmgeom/fit.hpp",
+      "new": "bindings/common/distributions/geom/zmgeom_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmlogarithmic/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/lgser/zmlogarithmic_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmlogarithmic/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/lgser/zmlogarithmic_mle.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/zmlogarithmic/fit.hpp",
+      "new": "bindings/common/distributions/lgser/zmlogarithmic_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmnbinom/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/nbinom/zmnbinom_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmnbinom/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/nbinom/zmnbinom_mle.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/zmnbinom/fit.hpp",
+      "new": "bindings/common/distributions/nbinom/zmnbinom_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmpois/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/zmpois_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmpois/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/zmpois_mle.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/zmpois/profile.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/zmpois_profile.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/zmpois/fit.hpp",
+      "new": "bindings/common/distributions/pois/zmpois_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/accuracy.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/ztbinom_accuracy.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/ztbinom_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/ztbinom_mle.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/face_certificate.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/ztbinom_face_certificate.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztbinom/certificate.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/binom/ztbinom_certificate.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/ztbinom/fit.hpp",
+      "new": "bindings/common/distributions/binom/ztbinom_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztgeom/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/geom/ztgeom_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztgeom/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/geom/ztgeom_mle.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/ztgeom/fit.hpp",
+      "new": "bindings/common/distributions/geom/ztgeom_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/accuracy.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/nbinom/ztnbinom_accuracy.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/nbinom/ztnbinom_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/nbinom/ztnbinom_mle.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztnbinom/certificate.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/nbinom/ztnbinom_certificate.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/ztnbinom/fit.hpp",
+      "new": "bindings/common/distributions/nbinom/ztnbinom_fit.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztpois/dpqr_core.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/ztpois_dpqr_core.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztpois/dpqr.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/ztpois_dpqr.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztpois/mle.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/ztpois_mle.hpp"
+    },
+    {
+      "old": "univariateML-cpp/include/cppunivariate/distributions/ztpois/profile.hpp",
+      "new": "univariateML-cpp/include/cppunivariate/distributions/pois/ztpois_profile.hpp"
+    },
+    {
+      "old": "bindings/common/distributions/ztpois/fit.hpp",
+      "new": "bindings/common/distributions/pois/ztpois_fit.hpp"
+    }
+  ],
+  "differences": 0
+}

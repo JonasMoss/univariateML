@@ -2,8 +2,8 @@
 #pragma once
 #include "../../special/special.hpp"
 #include "../../special/tails.hpp"
-#include "../zipf/mle.hpp"
-#include "../zipf/dpqr.hpp"
+#include "finite_harmonic.hpp"
+#include "zipf_dpqr.hpp"
 namespace cppunivariate {
 enum class ZetaWindowStatus { Ok, InvalidInput, LowerLimit, UpperLimit, NumericalFailure };
 struct ZetaWindowResult { double s=NAN, logLik=NAN; ZetaWindowStatus status=ZetaWindowStatus::InvalidInput; bool unidentified=false; };

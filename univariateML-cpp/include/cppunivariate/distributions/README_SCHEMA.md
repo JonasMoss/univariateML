@@ -30,7 +30,7 @@ requires its proved non-reachability scope.
 | `name` | yes | display name, e.g. `Lomax`; the R title is "<name> distribution maximum likelihood estimation" |
 | `support` | yes | `{type: real\|integer, lower, upper, closed: [bool, bool]}`; bounds may be `inf` / `-inf` or coefficient expressions (see below) |
 | `params` | yes | list of `{name, role, domain, simulate}`; names are the R coefficient names (see `bindings/r/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
-| `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dzipf` or `core_dnorm` for package-defined functions; `p`/`q` replace the density prefix (`d` or `core_d`); sampling uses `r.sampler` |
+| `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dgb2` or `core_dnorm` for package-defined functions; `p`/`q` replace the density prefix (`d` or `core_d`); sampling uses `r.sampler` |
 | `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma}` for a stats reference; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `rml` applies it; generated d/p/q take coefficient names directly |
 | `r.control` | yes (may be `{}`) | one entry per non-coefficient argument of the Rcpp adapter `ml<id>_` other than `x` (coefficient descriptions are optional), mapping name to a one-line description; codegen fails if the names differ from the adapter's |
 | `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
@@ -459,9 +459,9 @@ quantiles need not be continuous at an atomic probability jump. A nominal
 endpoint is a quantile convention, not an assertion of positive endpoint mass.
 
 An inclusive coefficient bound does not override the requirement that a
-conditioning event have positive probability. The tpois/tbinom dossiers exclude
+conditioning event have positive probability. The Poisson/binomial general-window kernels exclude
 zero-probability conditioning events; their archived positive-truncation weak
-limits are not public members. The ztpois/ztbinom dossiers separately include
+limits are not public members. Their `zero="truncated"` routes separately include
 those limits.
 
 ## Structured fit stops
@@ -535,9 +535,23 @@ coefficient domain after finite truncation. A declaration is an evidence claim,
 not a substitute for the fitter's runtime status.
 
 `modifier_replacement: true` identifies a base-tagged family whose declared
-`relations.truncation_of` edge is a planned modifier replacement (zipf). Other
+`relations.truncation_of` edge declares a modifier replacement. Retired families now use configured base-law endpoints. Other
 retirements follow modification edges or truncation construction edges. General
 identities such as geom as truncated discrete Laplace do not retire a base.
 The generated configuration inventory and reduction map are
 `dev/validation/capabilities.csv` and `family-reductions.csv`; regenerate with
 `python3 dev/validation/modifier_capabilities.py` or `just gen`.
+
+## Configured relation laws
+
+An edge may declare `configuration` on its target and `source_configuration` on
+its source. Each is a mapping with `zero` or a closed `truncate` window. The
+private `kernel` key selects the retained symbolic law for relation validation;
+it does not register a public family. `coefficient_map` preserves the full
+coordinate map, including old endpoint coordinates, when `at` now contains only
+base and atom coefficients. A self-edge requires at least one configuration.
+The relation checker expands these laws only inside its symbolic validation
+registry. In particular, size zero in positive-conditioned negative binomial
+means the logarithmic boundary law; positive conditioning of geometric is its
+unit shift; exponent zero in a finite zeta window is uniform; and a normal
+window with infinite endpoints is the ordinary normal law.

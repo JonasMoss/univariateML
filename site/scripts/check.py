@@ -273,7 +273,7 @@ for f in DATA:
     subprocess.run(['g++',str(file.with_suffix('.o')),'-o',str(file.with_suffix('.exe'))],check=True)
 print(f'PASS: {len(DATA)} generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).')
 # Representative HTML inspection assertions: pilots plus ten contrasting laws.
-spots=['exp','gamma','gb2','binom','beta','hyper','sstd','gev','gpd','tnorm','pois','unif','pareto']
+spots=['exp','gamma','gb2','binom','beta','hyper','sstd','gev','gpd','norm','pois','unif','pareto']
 for id in spots:
     p=DIST/f'distributions/{id}/index.html';text=p.read_text();d=pages[p]
     assert d.math>0 and 'Definition' in text and 'Usage' in text and 'Implementation' in text,id

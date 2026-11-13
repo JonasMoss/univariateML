@@ -180,8 +180,13 @@ constexpr int kFitMaxit = 100;
 // Legacy allowance for non-golden finite-difference comparisons.
 constexpr double kFdTol = 3e-5;
 
+inline std::string fixture_directory(const std::string& id) {
+  const std::string ordinary=std::string(CPPUNIV_DISTRIBUTIONS_DIR)+"/"+id;
+  std::ifstream check(ordinary+"/README.md");
+  return check.good()?ordinary:std::string(CPPUNIV_MODIFIER_FIXTURES_DIR)+"/"+id;
+}
 inline Golden load_distribution_golden(const std::string &id) {
-  return load_golden(std::string(CPPUNIV_DISTRIBUTIONS_DIR) + "/" + id + "/golden.json");
+  return load_golden(fixture_directory(id) + "/golden.json");
 }
 
 }  // namespace mltest
@@ -235,12 +240,12 @@ inline void check_dpqr_truth(const std::string &id, D density, P probability,
                             double q_tolerance = 1e-9,
                             std::size_t draws = 20000,
                             const std::string &report_directory = MLTEST_TRUTH_REPORT_DIR) {
-  const std::string filename = std::string(CPPUNIV_DISTRIBUTIONS_DIR)+"/"+id+"/truth.json";
+  const std::string filename = fixture_directory(id)+"/truth.json";
   const std::string source = detail::slurp(filename);
   const auto params = truth_matrix(source,"parameters");
   const auto values = truth_matrix(source,"values");
   const auto qs = truth_matrix(source,"quantiles");
-  const std::string dossier=detail::slurp(std::string(CPPUNIV_DISTRIBUTIONS_DIR)+"/"+id+"/README.md");
+  const std::string dossier=detail::slurp(fixture_directory(id)+"/README.md");
   const bool discrete=dossier.find("type: integer")!=std::string::npos;
   REQUIRE_FALSE(params.empty());
   REQUIRE_FALSE(values.empty());
@@ -371,7 +376,7 @@ namespace mltest {
 template <typename D>
 inline void check_density_truth(const std::string &id, D density,
                                const std::string &report_directory = MLTEST_TRUTH_REPORT_DIR) {
-  const std::string source=detail::slurp(std::string(CPPUNIV_DISTRIBUTIONS_DIR)+"/"+id+"/truth.json");
+  const std::string source=detail::slurp(fixture_directory(id)+"/truth.json");
   const auto params=truth_matrix(source,"parameters");
   const auto values=truth_matrix(source,"values");
   REQUIRE_FALSE(params.empty());

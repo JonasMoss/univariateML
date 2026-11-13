@@ -1,0 +1,336 @@
+[
+  {
+    "source": "nbinom",
+    "kind": "special_case_of",
+    "family": "zinb",
+    "at": {
+      "size": "size",
+      "prob": "prob",
+      "pi": 0
+    }
+  },
+  {
+    "source": "binom",
+    "kind": "special_case_of",
+    "family": "zib",
+    "at": {
+      "size": "size",
+      "prob": "prob",
+      "pi": 0
+    }
+  },
+  {
+    "source": "binom",
+    "kind": "special_case_of",
+    "family": "tbinom",
+    "at": {
+      "size": "size",
+      "prob": "prob",
+      "a": -1,
+      "b": "size"
+    }
+  },
+  {
+    "source": "lgser",
+    "kind": "special_case_of",
+    "family": "zmlogarithmic",
+    "at": {
+      "prob": "theta",
+      "p0": 0
+    }
+  },
+  {
+    "source": "lgser",
+    "kind": "special_case_of",
+    "family": "ztnbinom",
+    "at": {
+      "size": 0,
+      "prob": "1-theta"
+    }
+  },
+  {
+    "source": "dunif",
+    "kind": "transform_of",
+    "family": "zipf",
+    "at": {
+      "N": "max-min+1",
+      "s": 0
+    },
+    "transform": "shift",
+    "shift": "min-1"
+  },
+  {
+    "source": "geom",
+    "kind": "special_case_of",
+    "family": "zmgeom",
+    "at": {
+      "prob": "prob",
+      "p0": "prob"
+    }
+  },
+  {
+    "source": "norm",
+    "kind": "special_case_of",
+    "family": "tnorm",
+    "at": {
+      "mean": "mean",
+      "sd": "sd",
+      "a": "-Inf",
+      "b": "Inf"
+    }
+  },
+  {
+    "source": "tbinom",
+    "kind": "truncation_of",
+    "family": "binom",
+    "at": {
+      "size": "size",
+      "prob": "prob"
+    }
+  },
+  {
+    "source": "tnorm",
+    "kind": "truncation_of",
+    "family": "norm",
+    "at": {
+      "mean": "mean",
+      "sd": "sd"
+    }
+  },
+  {
+    "source": "tpois",
+    "kind": "truncation_of",
+    "family": "pois",
+    "at": {
+      "lambda": "lambda"
+    }
+  },
+  {
+    "source": "zipf",
+    "kind": "truncation_of",
+    "family": "zeta",
+    "at": {
+      "s": "s"
+    },
+    "when": "s > 1"
+  },
+  {
+    "source": "zib",
+    "kind": "modification_of",
+    "family": "binom",
+    "at": {
+      "size": "size",
+      "prob": "prob"
+    },
+    "type": "zero-inflated",
+    "mass": "pi"
+  },
+  {
+    "source": "zinb",
+    "kind": "modification_of",
+    "family": "nbinom",
+    "at": {
+      "size": "size",
+      "prob": "prob"
+    },
+    "type": "zero-inflated",
+    "mass": "pi"
+  },
+  {
+    "source": "zinb",
+    "kind": "special_case_of",
+    "family": "zmnbinom",
+    "at": {
+      "size": "size",
+      "prob": "prob",
+      "p0": "pi+(1-pi)*prob**size"
+    }
+  },
+  {
+    "source": "zip",
+    "kind": "modification_of",
+    "family": "pois",
+    "at": {
+      "lambda": "lambda"
+    },
+    "type": "zero-inflated",
+    "mass": "pi"
+  },
+  {
+    "source": "zmbinom",
+    "kind": "modification_of",
+    "family": "binom",
+    "at": {
+      "size": "size",
+      "prob": "prob"
+    },
+    "type": "zero-modified",
+    "mass": "p0"
+  },
+  {
+    "source": "zmgeom",
+    "kind": "modification_of",
+    "family": "geom",
+    "at": {
+      "prob": "prob"
+    },
+    "type": "zero-modified",
+    "mass": "p0"
+  },
+  {
+    "source": "zmgeom",
+    "kind": "special_case_of",
+    "family": "zmnbinom",
+    "at": {
+      "size": 1,
+      "prob": "prob",
+      "p0": "p0"
+    }
+  },
+  {
+    "source": "zmlogarithmic",
+    "kind": "modification_of",
+    "family": "lgser",
+    "at": {
+      "theta": "prob"
+    },
+    "type": "zero-modified",
+    "mass": "p0"
+  },
+  {
+    "source": "zmlogarithmic",
+    "kind": "special_case_of",
+    "family": "zmnbinom",
+    "at": {
+      "size": 0,
+      "prob": "1-prob",
+      "p0": "p0"
+    }
+  },
+  {
+    "source": "zmnbinom",
+    "kind": "modification_of",
+    "family": "nbinom",
+    "at": {
+      "size": "size",
+      "prob": "prob"
+    },
+    "type": "zero-modified",
+    "mass": "p0"
+  },
+  {
+    "source": "zmpois",
+    "kind": "modification_of",
+    "family": "pois",
+    "at": {
+      "lambda": "lambda"
+    },
+    "type": "zero-modified",
+    "mass": "p0"
+  },
+  {
+    "source": "ztbinom",
+    "kind": "modification_of",
+    "family": "binom",
+    "at": {
+      "size": "size",
+      "prob": "prob"
+    },
+    "type": "zero-truncated"
+  },
+  {
+    "source": "ztbinom",
+    "kind": "special_case_of",
+    "family": "zmbinom",
+    "at": {
+      "size": "size",
+      "prob": "prob",
+      "p0": 0
+    }
+  },
+  {
+    "source": "ztgeom",
+    "kind": "modification_of",
+    "family": "geom",
+    "at": {
+      "prob": "prob"
+    },
+    "type": "zero-truncated"
+  },
+  {
+    "source": "ztgeom",
+    "kind": "special_case_of",
+    "family": "ztnbinom",
+    "at": {
+      "size": 1,
+      "prob": "prob"
+    }
+  },
+  {
+    "source": "ztgeom",
+    "kind": "special_case_of",
+    "family": "zmgeom",
+    "at": {
+      "prob": "prob",
+      "p0": 0
+    }
+  },
+  {
+    "source": "ztgeom",
+    "kind": "transform_of",
+    "family": "geom",
+    "at": {
+      "prob": "prob"
+    },
+    "transform": "shift",
+    "shift": 1
+  },
+  {
+    "source": "ztgeom",
+    "kind": "truncation_of",
+    "family": "dlaplace",
+    "at": {
+      "location": 1,
+      "scale": "1-prob"
+    },
+    "when": "prob < 1"
+  },
+  {
+    "source": "ztnbinom",
+    "kind": "modification_of",
+    "family": "nbinom",
+    "at": {
+      "size": "size",
+      "prob": "prob"
+    },
+    "type": "zero-truncated"
+  },
+  {
+    "source": "ztnbinom",
+    "kind": "special_case_of",
+    "family": "zmnbinom",
+    "at": {
+      "size": "size",
+      "prob": "prob",
+      "p0": 0
+    }
+  },
+  {
+    "source": "ztpois",
+    "kind": "modification_of",
+    "family": "pois",
+    "at": {
+      "lambda": "lambda"
+    },
+    "type": "zero-truncated"
+  },
+  {
+    "source": "ztpois",
+    "kind": "special_case_of",
+    "family": "zmpois",
+    "at": {
+      "lambda": "lambda",
+      "p0": 0
+    }
+  }
+]

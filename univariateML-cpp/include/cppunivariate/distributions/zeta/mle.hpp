@@ -2,7 +2,7 @@
 #pragma once
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
-#include "../zipf/mle.hpp"
+#include "finite_harmonic.hpp"
 #include "../../special/special.hpp"
 namespace cppunivariate {
 enum class ZetaStatus { Ok, PointMass, InvalidInput, IterationFailure };

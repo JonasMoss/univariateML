@@ -3,11 +3,11 @@ test_that("zero knobs reproduce legacy fixtures and coefficient holds", {
                 nbinom=c("ztnbinom","zmnbinom","zinb"),geom=c("ztgeom","zmgeom"))
   for(id in names(pairs)) for(i in seq_along(pairs[[id]])) {
     old <- pairs[[id]][i]
-    g <- jsonlite::fromJSON(file.path("fixtures",old,"golden.json"),simplifyVector=TRUE)
+    g <- jsonlite::fromJSON(file.path("fixtures",paste0(".modifier_",old),"golden.json"),simplifyVector=TRUE)
     args <- lapply(g$fit_args,function(v) if(is.character(v) && v %in% c("Inf","-Inf"))as.numeric(v) else v)
     if(is.null(args)) args <- list()
     zero <- c("truncated","modified","inflated")[i]
-    legacy <- do.call(get(paste0("ml",old)),c(list(x=g$data),args))
+    legacy <- do.call(get(paste0(".modifier_",old)),c(list(x=g$data),args))
     fit <- do.call(get(paste0("ml",id)),c(list(x=g$data,zero=zero),args))
     expect_equal(as.numeric(fit),as.numeric(legacy),tolerance=1e-10,info=old)
     expect_equal(as.numeric(logLik(fit)),as.numeric(logLik(legacy)),tolerance=1e-10)
@@ -52,7 +52,7 @@ test_that("truncation is closed and honours holds and estimated bounds", {
   expect_error(mlpois(x,zero="modified",p0=c(.1,.2)),"finite scalars")
   expect_error(mlpois(x,zero="nonsense"),"must be one of")
   n <- mlnorm(c(-1,-.2,.1,.3,.4,.9),truncate=c(-2,2))
-  expect_equal(as.numeric(n),as.numeric(mltnorm(c(-1,-.2,.1,.3,.4,.9),a=-2,b=2)[c("mean","sd")]),tolerance=1e-10)
+  expect_equal(as.numeric(n),as.numeric(.modifier_tnorm(c(-1,-.2,.1,.3,.4,.9),a=-2,b=2)[c("mean","sd")]),tolerance=1e-10)
 })
 test_that("eligible unimplemented values have specific refusals", {
   for(name in names(univariateML:::univariateML_metadata)) {
@@ -88,10 +88,10 @@ test_that("censoring reaches native fits and never fits recorded values", {
 })
 test_that("ordinary truncation reproduces frozen t-family goldens", {
   for(old in c("tpois","tbinom","tnorm")) {
-    g <- jsonlite::fromJSON(file.path("fixtures",old,"golden.json"))
+    g <- jsonlite::fromJSON(file.path("fixtures",paste0(".modifier_",old),"golden.json"))
     args <- lapply(g$fit_args,function(v) if(is.character(v) && v %in% c("Inf","-Inf"))as.numeric(v) else v)
     if(is.null(args)) args <- list()
-    legacy <- do.call(get(paste0("ml",old)),c(list(x=g$data),args))
+    legacy <- do.call(get(paste0(".modifier_",old)),c(list(x=g$data),args))
     a <- unname(legacy[["a"]]);b <- unname(legacy[["b"]])
     if(old!="tnorm")a<-floor(a)+1
     args$a <- NULL;args$b <- NULL
@@ -121,7 +121,7 @@ test_that("fixed modifier evaluation keeps small upper tails", {
 test_that("geometric inflation and fixed atom holds are exposed", {
   x <- c(0,0,0,1,2,4)
   a <- mlgeom(x,zero="inflated")
-  b <- mlzinb(x,size=1)
+  b <- .modifier_zinb(x,size=1)
   expect_equal(as.numeric(a),as.numeric(b[c("prob","pi")]),tolerance=1e-10)
   expect_equal(dml(0:4,a),dml(0:4,b),tolerance=1e-10)
   f <- mlgeom(prob=.4,zero="inflated",pi=.2)
@@ -227,7 +227,7 @@ test_that("generic quantiles resolve endpoint atoms and refuse ill-conditioned t
 test_that("retirement replacements cover free binomial size and logarithmic mapping", {
   x<-c(1,1,2,3,3)
   for(prob in list(NULL,.4)) {
-    old<-mltbinom(x,a=0,b=5,size=NULL,prob=prob)
+    old<-.modifier_tbinom(x,a=0,b=5,size=NULL,prob=prob)
     new<-mlbinom(x,size=NULL,prob=prob,truncate=c(1,5))
     expect_equal(as.numeric(new),as.numeric(old[c("size","prob")]),tolerance=1e-10)
     expect_equal(attr(new,"certified"),attr(old,"certified"))
@@ -236,7 +236,7 @@ test_that("retirement replacements cover free binomial size and logarithmic mapp
   for(theta in list(NULL,0,.4)) {
     x<-if(identical(theta,0))c(0,0,1,1) else c(0,1,1,2,4)
     a<-mllgser(x,zero="modified",theta=theta)
-    b<-mlzmlogarithmic(x,prob=theta)
+    b<-.modifier_zmlogarithmic(x,prob=theta)
     expect_equal(as.numeric(a),as.numeric(b),tolerance=1e-10)
     expect_equal(dml(0:5,a),dml(0:5,b),tolerance=1e-10)
   }
@@ -267,13 +267,13 @@ test_that("retirement replay preserves fully held density routes and controls", 
     held<-list(size=2,prob=.4)
     if(pair[3]=="inflated")held$pi<-.2
     if(pair[3]=="modified")held$p0<-.2
-    old<-do.call(get(paste0("ml",pair[1])),c(list(x=x),held))
+    old<-do.call(get(paste0(".modifier_",pair[1])),c(list(x=x),held))
     new<-do.call(get(paste0("ml",pair[2])),c(list(x=x,zero=pair[3]),held))
     expect_equal(as.numeric(new),as.numeric(old),tolerance=1e-10)
     expect_equal(as.numeric(logLik(new)),as.numeric(logLik(old)),tolerance=1e-10)
     expect_identical(attr(new,"certified"),attr(old,"certified"))
   }
-  old<-tryCatch(mlztbinom(1:3,size=NULL,reltol=1e-18),error=identity)
+  old<-tryCatch(.modifier_ztbinom(1:3,size=NULL,reltol=1e-18),error=identity)
   new<-tryCatch(mlbinom(1:3,size=NULL,zero="truncated",reltol=1e-18),error=identity)
   expect_equal(new$kind,old$kind)
   f<-mlzeta(x,truncate=c(1,NA))
@@ -298,7 +298,7 @@ test_that("binomial window work controls reach both size routes", {
   expect_error(mlbinom(x,size=NULL,truncate=c(1,5),iterlim=1),"budget|accuracy|precision")
   expect_error(mlbinom(x,size=12,truncate=c(1,5),iterlim=1),"budget|accuracy|precision")
   f<-mlbinom(x,size=NULL,truncate=c(1,5),iterlim=512)
-  expect_equal(as.numeric(f),as.numeric(mltbinom(x,a=0,b=5,size=NULL)[c("size","prob")]),tolerance=1e-10)
+  expect_equal(as.numeric(f),as.numeric(.modifier_tbinom(x,a=0,b=5,size=NULL)[c("size","prob")]),tolerance=1e-10)
 })
 test_that("duplicate modifier holds are rejected", {
   expect_error(mlpois(c(0,1,2),zero="modified",p0=.2,p0=.3),"Duplicate")
@@ -337,9 +337,9 @@ test_that("finite zeta statistics retain accuracy for large uniform histograms",
 test_that("unbounded window evaluation preserves the settled conditional kernels", {
   x<-1:4
   cases<-list(
-    list(old=mltpois(x,a=-1,b=Inf),fit=mlpois(x,truncate=c(0,Inf)),name="mlpois",parents="lambda",window=c(0,Inf),points=0:10),
-    list(old=mltbinom(x,a=-1,b=Inf,size=10),fit=mlbinom(x,size=10,truncate=c(0,Inf)),name="mlbinom",parents=c("size","prob"),window=c(0,Inf),points=0:10),
-    list(old=mltnorm(c(-1,-.3,.2,.8,1),a=-Inf,b=Inf),fit=mlnorm(c(-1,-.3,.2,.8,1),truncate=c(-Inf,Inf)),name="mlnorm",parents=c("mean","sd"),window=c(-Inf,Inf),points=seq(-2,2,length.out=11)))
+    list(old=.modifier_tpois(x,a=-1,b=Inf),fit=mlpois(x,truncate=c(0,Inf)),name="mlpois",parents="lambda",window=c(0,Inf),points=0:10),
+    list(old=.modifier_tbinom(x,a=-1,b=Inf,size=10),fit=mlbinom(x,size=10,truncate=c(0,Inf)),name="mlbinom",parents=c("size","prob"),window=c(0,Inf),points=0:10),
+    list(old=.modifier_tnorm(c(-1,-.3,.2,.8,1),a=-Inf,b=Inf),fit=mlnorm(c(-1,-.3,.2,.8,1),truncate=c(-Inf,Inf)),name="mlnorm",parents=c("mean","sd"),window=c(-Inf,Inf),points=seq(-2,2,length.out=11)))
   for(c in cases) {
     values<-stats::setNames(as.list(as.numeric(c$old[c$parents])),c$parents)
     fixed<-do.call(get(c$name),c(values,list(truncate=c$window)))

@@ -32,7 +32,7 @@ COMMON=ROOT/'bindings/common'
 registry=(INC/'core/inference_numeric_generated.hpp').read_text()
 generated=re.findall(r'#include "\.\./distributions/([^/]+)/dpqr.hpp"',registry)
 base='norm gamma beta pois exp geom lnorm logitnorm lgamma rayleigh binom'.split()
-special='laplace gev gpd ged sged snorm sstd tnorm cmb cmp tbinom tpois zmbinom'.split()
+special='laplace gev gpd ged sged snorm sstd cmb cmp'.split()
 families=sorted(set(base+generated+special))
 selected=sys.argv[1:] or families
 if any(f not in families for f in selected): raise SystemExit('unknown or unavailable family requested')

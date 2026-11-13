@@ -45,10 +45,6 @@ relations:
     at:
       lambda: 1-prob
       nu: 0
-  - family: zmgeom
-    at:
-      prob: prob
-      p0: prob
   - family: dgamma
     at:
       shape: 1
@@ -59,12 +55,112 @@ relations:
       shape1: 1-prob
       shape2: 1
     when: prob < 1
+  - family: geom
+    at:
+      prob: prob
+      p0: prob
+    configuration:
+      kernel: zmgeom
+      zero: modified
+    coefficient_map:
+      prob: prob
+      p0: prob
+  - family: nbinom
+    at:
+      size: 1
+      prob: prob
+      p0: p0
+    source_configuration:
+      kernel: zmgeom
+      zero: modified
+      coefficient_map:
+        prob: prob
+        p0: p0
+    configuration:
+      kernel: zmnbinom
+      zero: modified
+    coefficient_map:
+      size: 1
+      prob: prob
+      p0: p0
+  - family: nbinom
+    at:
+      size: 1
+      prob: prob
+    source_configuration:
+      kernel: ztgeom
+      zero: truncated
+      coefficient_map:
+        prob: prob
+    configuration:
+      kernel: ztnbinom
+      zero: truncated
+    coefficient_map:
+      size: 1
+      prob: prob
+  - family: geom
+    at:
+      prob: prob
+      p0: 0
+    source_configuration:
+      kernel: ztgeom
+      zero: truncated
+      coefficient_map:
+        prob: prob
+    configuration:
+      kernel: zmgeom
+      zero: modified
+    coefficient_map:
+      prob: prob
+      p0: 0
   truncation_of:
   - family: dlaplace
     at:
       location: 0
       scale: 1-prob
     when: prob < 1
+  - family: dlaplace
+    at:
+      location: 1
+      scale: 1-prob
+    when: prob < 1
+    source_configuration:
+      kernel: ztgeom
+      zero: truncated
+      coefficient_map:
+        prob: prob
+  modification_of:
+  - family: geom
+    at:
+      prob: prob
+    type: zero-modified
+    mass: p0
+    source_configuration:
+      kernel: zmgeom
+      zero: modified
+      coefficient_map:
+        prob: prob
+        p0: p0
+  - family: geom
+    at:
+      prob: prob
+    type: zero-truncated
+    source_configuration:
+      kernel: ztgeom
+      zero: truncated
+      coefficient_map:
+        prob: prob
+  transform_of:
+  - family: geom
+    at:
+      prob: prob
+    transform: shift
+    shift: 1
+    source_configuration:
+      kernel: ztgeom
+      zero: truncated
+      coefficient_map:
+        prob: prob
 fit:
   method: closed-form
   certified: 'yes'
@@ -107,7 +203,8 @@ modifiers:
       certified: 'yes'
       note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
       limits:
-      - model: zip
+      - model: pois
+        configuration: {zero: inflated}
         firmness: proved
         when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed and positive inflation.
         detect: Size and probability are free; a signed Poisson-tail bound and complete finite-rectangle coverage

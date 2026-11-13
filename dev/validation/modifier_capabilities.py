@@ -18,11 +18,11 @@ def inventory():
 
 def reduction(id, m):
     relations = m.get('relations', {})
-    edges = relations.get('modification_of', [])
+    edges = [e for e in relations.get('modification_of', []) if not e.get('source_configuration')]
     if edges:
         e = edges[0]
         return e['family'], 'zero=' + e['type'].removeprefix('zero-')
-    edges = relations.get('truncation_of', []) if 'truncation' in m.get('construction', []) or m.get('modifier_replacement',False) else []
+    edges = [e for e in relations.get('truncation_of', []) if not e.get('source_configuration')] if 'truncation' in m.get('construction', []) or m.get('modifier_replacement',False) else []
     if edges:
         return edges[0]['family'], 'truncate=closed-window'
     return id, 'none'
@@ -30,11 +30,12 @@ def reduction(id, m):
 def generate():
     models = inventory()
     reductions = {id: reduction(id, m) for id, m in models.items()}
-    inverse = {(base, value): id for id, (base, value) in reductions.items() if base != id}
+    private=json.loads((ROOT/'bindings/common/modifier-laws.json').read_text())
+    inverse = {(m['base'],'zero='+m['zero'] if m['zero']!='none' else 'truncate=closed-window'): id for id,m in private.items()}
     rows = []
     for id, m in models.items():
         s = m['support']; declared = m.get('modifiers', {})
-        eligible = (s['type'] == 'integer' and s['lower'] == 0 and
+        eligible = (s['type'] == 'integer' and str(s['lower']) in ('0','0.0') and
                     not set(m.get('construction', [])) & {'truncation', 'modification'}) or declared.get('zero_exception', False)
         names = [p['name'] for p in m['params']]
         configs = [('none', True, m.get('fit', {}))]
@@ -59,6 +60,7 @@ def generate():
                     golden = ''
                     if fixture and (DOSSIERS/fixture/'golden.json').exists():
                         golden = fixture + '/golden.json'
+                    if fixture in private: golden='univariateML-cpp/tests/modifiers/fixtures/'+fixture+'/golden.json'
                     rows.append(dict(family=id, base_family=reductions[id][0], family_modifier=reductions[id][1],
                                      retirement='pending' if reductions[id][0]!=id else '', held=';'.join(held), modifier=config,
                                      eligible=str(eligible).lower(), status=status, certified=cert,

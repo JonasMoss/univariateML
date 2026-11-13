@@ -1,6 +1,6 @@
 #pragma once
 #include "../../core/truncation.hpp"
-#include "../tnorm/mle.hpp"
+#include "tnorm_mle.hpp"
 namespace cppunivariate {
 struct NormTruncationTraits {};
 // Joint concavity in (mean/sd^2, -1/(2 sd^2)); the existing solver also

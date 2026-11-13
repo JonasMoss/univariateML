@@ -19,7 +19,7 @@ ml_fixed_model <- function(name, supplied, call, frozen = FALSE, x = numeric()) 
   # and controls. Successful models always use the density path below; the
   # legacy all-held adapter is consulted only to diagnose rejected input.
   diagnose <- function() tryCatch(
-    do.call(get(paste0(name, "_"), mode = "function"), c(list(x = x), supplied)),
+    do.call(get(paste0(if(startsWith(name,".modifier_"))sub("^\\.","",name) else name, "_"), mode = "function"), c(list(x = x), supplied)),
     error = identity)
   controls <- intersect(names(supplied), c("reltol", "abstol", "gradtol", "iterlim"))
   invalid <- vapply(supplied[controls], function(v)
@@ -44,11 +44,12 @@ ml_fixed_model <- function(name, supplied, call, frozen = FALSE, x = numeric()) 
 }
 
 ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
+  display_name <- if(startsWith(name,".modifier_")) "conditional law" else name
   evaluation_error <- function(detail, stage = "median") {
-    stop(structure(list(message = paste0("`", name, "`: ", detail), call = NULL, stage = stage),
+    stop(structure(list(message = paste0("`", display_name, "`: ", detail), call = NULL, stage = stage),
       class = c("univariateML_evaluation_error", "error", "condition")))
   }
-  meta <- univariateML_metadata[[name]]
+  meta <- ml_law_metadata(name)
   if (frozen && length(supplied) &&
       (is.null(names(supplied)) || any(!nzchar(names(supplied)))))
     stop("Without data every argument must be named", call. = FALSE)
@@ -60,7 +61,7 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
   for (p in meta$params) {
     v <- values[[p$name]]
     if (!is.numeric(v) || length(v) != 1L || is.na(v))
-      stop("`", name, "`: held `", p$name, "` must be in ", p$domain, call. = FALSE)
+      stop("`", display_name, "`: held `", p$name, "` must be in ", p$domain, call. = FALSE)
   }
   env <- c(values, list(inf = Inf))
   for (p in meta$params) {
@@ -70,7 +71,7 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
     bounds <- vapply(ends, function(e) eval(parse(text = e), env), numeric(1))
     valid <- (if (substr(domain, 1, 1) == "[") v >= bounds[1] else v > bounds[1]) &&
       (if (substr(domain, nchar(domain), nchar(domain)) == "]") v <= bounds[2] else v < bounds[2])
-    if (!isTRUE(valid)) stop("`", name, "`: held `", p$name, "` must be in ", domain, call. = FALSE)
+    if (!isTRUE(valid)) stop("`", display_name, "`: held `", p$name, "` must be in ", domain, call. = FALSE)
   }
   obj <- univariateML_construct(unlist(values), name,
     list(n = length(x), call = deparse(call)), fixed = meta$names,
@@ -88,7 +89,7 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
     density <- get(meta$density, mode = "function")
     ld <- do.call(density, c(list(x), values, list(log = TRUE)))
     if (anyNA(ld) || any(ld == -Inf))
-      stop("`", name, "`: observations incompatible with held coefficients", call. = FALSE)
+      stop("`", display_name, "`: observations incompatible with held coefficients", call. = FALSE)
     ll <- sum(ld)
     if (!is.finite(ll))
       evaluation_error("nonfinite log likelihood for held coefficients", "likelihood")

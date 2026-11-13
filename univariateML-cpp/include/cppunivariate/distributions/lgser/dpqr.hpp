@@ -8,7 +8,7 @@
 #pragma once
 #include "../../special/tails.hpp"
 
-#include "../ztpois/dpqr_core.hpp"
+#include "../pois/ztpois_dpqr_core.hpp"
 #include <cmath>
 
 namespace cppunivariate {

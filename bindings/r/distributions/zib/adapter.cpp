@@ -1,6 +1,0 @@
-#include "common/distributions/zib/fit.hpp"
-#include "common_fit.h"
-// [[Rcpp::export]]
-Rcpp::List mlzib_(const Rcpp::IntegerVector &x, Rcpp::Nullable<double> size, double reltol = 1e-10, int iterlim = 200, Rcpp::Nullable<double> prob = R_NilValue, Rcpp::Nullable<double> pi = R_NilValue) {
-  return common_result(umvl_binding::fit_zib(cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())}, common_held(size), common_held(prob), common_held(pi), reltol, iterlim));
-}

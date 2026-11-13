@@ -2,7 +2,7 @@
 #pragma once
 #include "../../core/truncation.hpp"
 #include "../../special/special.hpp"
-#include "../ztnbinom/mle.hpp"
+#include "ztnbinom_mle.hpp"
 namespace cppunivariate {
 struct NbinomTruncationTraits {
   double size=1;

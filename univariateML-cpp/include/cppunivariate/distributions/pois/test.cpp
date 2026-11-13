@@ -223,7 +223,7 @@ TEST_CASE("pois: large-rate natural tail retains the integer gamma shape") {
 #include "cppunivariate/distributions/nbinom/zero.hpp"
 #include "cppunivariate/distributions/geom/zero.hpp"
 #include "cppunivariate/distributions/norm/truncation.hpp"
-#include "cppunivariate/distributions/tpois/mle.hpp"
+#include "cppunivariate/distributions/pois/tpois_mle.hpp"
 TEST_CASE("pois modifiers conditional exponential family certificate") {
   const std::vector<int> x{1,1,2,2,3,4,5};
   const cppunivariate::ispan data{x.data(),x.size()};

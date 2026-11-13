@@ -50,11 +50,55 @@ construction:
 - compounding
 relations:
   special_case_of:
-  - family: zinb
+  - family: nbinom
     at:
       size: size
       prob: prob
       pi: 0
+    configuration:
+      kernel: zinb
+      zero: inflated
+    coefficient_map:
+      size: size
+      prob: prob
+      pi: 0
+  - family: nbinom
+    at:
+      size: size
+      prob: prob
+      p0: pi+(1-pi)*prob**size
+    source_configuration:
+      kernel: zinb
+      zero: inflated
+      coefficient_map:
+        size: size
+        prob: prob
+        pi: pi
+    configuration:
+      kernel: zmnbinom
+      zero: modified
+    coefficient_map:
+      size: size
+      prob: prob
+      p0: pi+(1-pi)*prob**size
+  - family: nbinom
+    at:
+      size: size
+      prob: prob
+      p0: 0
+    source_configuration:
+      kernel: ztnbinom
+      zero: truncated
+      coefficient_map:
+        size: size
+        prob: prob
+    configuration:
+      kernel: zmnbinom
+      zero: modified
+    coefficient_map:
+      size: size
+      prob: prob
+      p0: 0
   mixture_of:
   - family: pois
     at:
@@ -66,6 +110,44 @@ relations:
         shape: size
         scale: (1-prob)/prob
     when: size > 0 && prob < 1
+  modification_of:
+  - family: nbinom
+    at:
+      size: size
+      prob: prob
+    type: zero-inflated
+    mass: pi
+    source_configuration:
+      kernel: zinb
+      zero: inflated
+      coefficient_map:
+        size: size
+        prob: prob
+        pi: pi
+  - family: nbinom
+    at:
+      size: size
+      prob: prob
+    type: zero-modified
+    mass: p0
+    source_configuration:
+      kernel: zmnbinom
+      zero: modified
+      coefficient_map:
+        size: size
+        prob: prob
+        p0: p0
+  - family: nbinom
+    at:
+      size: size
+      prob: prob
+    type: zero-truncated
+    source_configuration:
+      kernel: ztnbinom
+      zero: truncated
+      coefficient_map:
+        size: size
+        prob: prob
 fit:
   method: scalar-solve
   certified: 'yes'
@@ -113,7 +195,8 @@ modifiers:
       certified: partial
       note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
       limits:
-      - model: ztpois
+      - model: pois
+        configuration: {zero: truncated}
         firmness: proved
         when: As $r\to\infty$ and $p\to1$ with $r(1-p)/p\to\lambda>0$, the law tends to a zero-truncated Poisson
           law.
@@ -125,7 +208,8 @@ modifiers:
       certified: partial
       note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
       limits:
-      - model: zmpois
+      - model: pois
+        configuration: {zero: modified}
         firmness: proved
         when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ tending to a finite positive rate
           and $p_0$ unchanged.
@@ -137,7 +221,8 @@ modifiers:
       certified: partial
       note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
       limits:
-      - model: zip
+      - model: pois
+        configuration: {zero: inflated}
         firmness: proved
         when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed and positive inflation.
         detect: Size and probability are free; a signed Poisson-tail bound and complete finite-rectangle coverage

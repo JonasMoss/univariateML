@@ -73,7 +73,7 @@ local({
       fit <- tryCatch(suppressWarnings(do.call(get(paste0("ml",id)),c(list(x=x),fixed))),error=identity)
       if (inherits(fit,"error")) {
         # Only declared non-existence faces are allowed in these valid holds.
-        expect_match(conditionMessage(fit),"mlpois|mlzip|mlztpois|mlzmpois",info=label)
+        expect_match(conditionMessage(fit),"mlpois",info=label)
         next
       }
       expect_identical(as.numeric(fit[held]),as.numeric(base[held]),info=label)
@@ -89,9 +89,8 @@ local({
       # Independently enumerate attainable free endpoints as well as interiors.
       endpoints <- lapply(free,function(p) {
         if(p %in% c("pi","p0")) return(c(NA,0,1))
-        if(p=="prob") return(c(NA,if(id=="zmlogarithmic") 0 else 1))
-        if(p=="size" && id %in% c("ztnbinom","zmnbinom")) return(c(NA,0))
-        if(p=="lambda" && id %in% c("pois","ztpois","zmpois"))return(c(NA,0))
+        if(p=="prob") return(c(NA,1))
+        if(p=="lambda" && id=="pois")return(c(NA,0))
         NA_real_
       })
       grid <- expand.grid(endpoints)

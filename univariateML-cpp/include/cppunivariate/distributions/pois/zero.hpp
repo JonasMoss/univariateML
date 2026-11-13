@@ -2,9 +2,9 @@
 #include "truncation.hpp"
 #include "../../core/zero_hurdle.hpp"
 #include "dpqr.hpp"
-#include "../ztpois/mle.hpp"
-#include "../zmpois/mle.hpp"
-#include "../zip/mle.hpp"
+#include "ztpois_mle.hpp"
+#include "zmpois_mle.hpp"
+#include "zip_mle.hpp"
 namespace cppunivariate {
 struct PoisZeroTraits {
   static bool positive_ok(const ZtpoisResult& r) {return r.status==ZtpoisStatus::Ok;}

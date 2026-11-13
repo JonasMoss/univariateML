@@ -21,8 +21,53 @@ TOL = 2e-9
 
 
 def read_models():
-    return {p.parent.name: yaml.safe_load(p.read_text().split('---', 2)[1])
-            for p in sorted(FAMILIES.glob('*/README.md'))}
+    models = {p.parent.name: yaml.safe_load(p.read_text().split('---', 2)[1])
+              for p in sorted(FAMILIES.glob('*/README.md'))}
+    private=json.loads((ROOT/'bindings/common/modifier-laws.json').read_text())
+    expanded={i: dict(m, relations={}) for i,m in private.items()}
+    symbols={p['name']:sp.Symbol('configured_'+p['name'],real=True)
+             for m in list(models.values())+list(private.values()) for p in m['params']}
+    def configured(c,family,coordinates=None):
+        law=private[c['kernel']]
+        if law['base']!=family:raise ValueError('configured relation base does not match its kernel')
+        names=[p['name'] for p in law['params']]
+        at=coordinates if coordinates is not None else {p:p for p in names}
+        if set(at)!=set(names):raise ValueError('configured relation has an incomplete coordinate map')
+        if law['zero']!='none':
+            if c.get('zero')!=law['zero'] or 'truncate' in c:raise ValueError('configured zero law does not match its kernel')
+        else:
+            if c['kernel']=='zipf':expected=[1,at['N']]
+            elif c['kernel']=='tnorm':expected=[at['a'],at['b']]
+            else:expected=['max(0, floor('+str(at['a'])+')+1)','floor('+str(at['b'])+')']
+            actual=c.get('truncate',[])
+            if len(actual)!=2:raise ValueError('configured window needs two closed endpoints')
+            for a,b in zip(actual,expected):
+                left,right=expression(a,symbols),expression(b,symbols)
+                if left!=right and sp.simplify(left-right)!=0:raise ValueError('configured window disagrees with its coordinate map')
+        base_map={('theta' if c['kernel']=='zmlogarithmic' and k=='prob' else k):v
+                  for k,v in at.items() if k not in ('a','b','N')}
+        if coordinates is None and c.get('coefficient_map')!=base_map:
+            raise ValueError('configured source has an incomplete base coefficient map')
+        return base_map
+    for id,m in models.items():
+        ordinary={}
+        for kind,edges in m.get('relations',{}).items():
+            for original in edges:
+                edge=dict(original)
+                source=edge.pop('source_configuration',None)
+                target=edge.pop('configuration',None)
+                if source:configured(source,id)
+                child=expanded[source['kernel']] if source else None
+                if target:
+                    base_map=configured(target,edge['family'],edge['coefficient_map'])
+                    if edge['at']!=base_map:raise ValueError('configured target has an incorrect base coefficient map')
+                    edge['family']=target['kernel']
+                    edge['at']=edge.pop('coefficient_map',edge.get('at',{}))
+                if child is not None:child['relations'].setdefault(kind,[]).append(edge)
+                else:ordinary.setdefault(kind,[]).append(edge)
+        m['relations']=ordinary
+    models.update(expanded)
+    return models
 
 
 def expression(value, symbols):
@@ -32,7 +77,7 @@ def expression(value, symbols):
     # Prefix coefficient identifiers, including Python keywords such as lambda.
     for name in sorted(symbols, key=len, reverse=True):
         alias='_relation_'+name
-        source=re.sub(r'\b'+re.escape(name)+r'\b',alias,source)
+        source=re.sub(r'\b'+re.escape(name)+r'\b(?!\s*\()',alias,source)
         local[alias]=symbols[name]
     return sp.sympify(source, locals=local)
 

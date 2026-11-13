@@ -253,15 +253,12 @@ template<class... T> std::string binding_message(std::string s,const T&...){retu
 #include "cppunivariate/distributions/std/mle.hpp"
 #include <cmath>
 #include <limits>
-#include "cppunivariate/distributions/tbinom/mle.hpp"
 #include <algorithm>
 #include <sstream>
 #include "cppunivariate/distributions/tlambda/mle.hpp"
-#include "cppunivariate/distributions/tnorm/mle.hpp"
 #include <cmath>
 #include <limits>
 #include <string>
-#include "cppunivariate/distributions/tpois/mle.hpp"
 #include "cppunivariate/distributions/lnorm/mle.hpp"
 #include "cppunivariate/distributions/trgamma/mle.hpp"
 #include <cmath>
@@ -279,25 +276,13 @@ template<class... T> std::string binding_message(std::string s,const T&...){retu
 #include <vector>
 #include "cppunivariate/distributions/yulesimon/mle.hpp"
 #include "cppunivariate/distributions/zeta/mle.hpp"
-#include "cppunivariate/distributions/zib/mle.hpp"
-#include "cppunivariate/distributions/zinb/mle.hpp"
-#include "cppunivariate/distributions/zip/mle.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include "cppunivariate/distributions/zipf/mle.hpp"
+#include "cppunivariate/distributions/zeta/finite_harmonic.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include "cppunivariate/distributions/zmbinom/mle.hpp"
-#include "cppunivariate/distributions/zmgeom/mle.hpp"
-#include "cppunivariate/distributions/zmlogarithmic/mle.hpp"
-#include "cppunivariate/distributions/zmnbinom/mle.hpp"
-#include "cppunivariate/distributions/zmpois/mle.hpp"
-#include "cppunivariate/distributions/ztbinom/mle.hpp"
-#include "cppunivariate/distributions/ztgeom/mle.hpp"
-#include "cppunivariate/distributions/ztnbinom/mle.hpp"
-#include "cppunivariate/distributions/ztpois/mle.hpp"
 inline void route_bbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held alpha_arg = {}, audit::Held beta_arg = {}, double reltol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held size = size_arg;
@@ -1682,24 +1667,7 @@ inline void route_std(cppunivariate::span x, audit::Held mean_arg = {}, audit::H
   auto res=cppunivariate::student_t_mle(x,gradtol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"nu",res.nu,2,INFINITY,false,false}});
 }
 
-inline void route_tbinom(cppunivariate::ispan x, audit::Held prob_arg = {}, audit::Held a_arg = {}, audit::Held b_arg = {}, audit::Held size_arg = {}) {
-  std::vector<std::string> warnings;
-  const audit::Held prob = prob_arg;
-  const audit::Held a = a_arg;
-  const audit::Held b = b_arg;
-  const audit::Held size = size_arg;
 
-  const double held=!prob.supplied?std::numeric_limits<double>::quiet_NaN():prob.value;
-  if(prob.supplied&&std::isnan(held))(void)0;
-  const double nan=std::numeric_limits<double>::quiet_NaN();
-  if(x.size()==0)(void)0;
-  const double lower=a.supplied?a.value:(x.empty()?0.0:double(*std::min_element(x.begin(),x.end())))-1;
-  const double upper=b.supplied?b.value:(x.empty()?0.0:double(*std::max_element(x.begin(),x.end())));
-  const double trials=size.supplied?size.value:nan;
-  if((a.supplied&&std::isnan(lower))||(b.supplied&&std::isnan(upper)))(void)0;
-  if(size.supplied && !std::isfinite(trials))(void)0;
-  auto r=cppunivariate::tbinom_design_mle(x,lower,upper,trials,held); audit::observe(r, {{"prob",r.prob,0,1,true,true},{"a",lower,-INFINITY,INFINITY,false,false},{"b",upper,-INFINITY,INFINITY,false,false},{"size",r.size,0,INFINITY,true,false}});
-}
 
 inline void route_tlambda(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held lambda_arg = {}, double reltol=1e-7, int iterlim=1000) {
   std::vector<std::string> warnings;
@@ -1716,42 +1684,9 @@ inline void route_tlambda(cppunivariate::span x, audit::Held mu_arg = {}, audit:
   const auto f=cppunivariate::tlambda_mle(x,reltol,iterlim,l,m,s); audit::observe(f, {{"mu",f.mu,-INFINITY,INFINITY,false,false},{"sigma",f.sigma,0,INFINITY,false,false},{"lambda",f.lambda,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_tnorm(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held a_arg = {}, audit::Held b_arg = {}, double reltol = 1e-12, int iterlim = 100) {
-  std::vector<std::string> warnings;
-  const audit::Held mean = mean_arg;
-  const audit::Held sd = sd_arg;
-  const audit::Held a = a_arg;
-  const audit::Held b = b_arg;
 
-  const double nan = std::numeric_limits<double>::quiet_NaN();
-  const double lower = a.supplied ? a.value : nan;
-  const double upper = b.supplied ? b.value : nan;
-  if ((a.supplied && std::isnan(lower)) || (b.supplied && std::isnan(upper)))
-    (void)0;
-  const double held_mean = mean.supplied ? mean.value : nan;
-  const double held_sd = sd.supplied ? sd.value : nan;
-  if (mean.supplied && !std::isfinite(held_mean))
-    (void)0;
-  if (sd.supplied && !(std::isfinite(held_sd) && held_sd > 0))
-    (void)0;
-  const auto res = cppunivariate::tnorm_mle(x, lower, upper, reltol, iterlim,
-                                            held_mean, held_sd); audit::observe(res, {{"mean",res.mean,-INFINITY,INFINITY,false,false},{"sd",res.sd,0,INFINITY,false,false},{"a",res.a,-INFINITY,INFINITY,true,false},{"b",res.b,-INFINITY,INFINITY,false,true}});
-}
 
-inline void route_tpois(cppunivariate::ispan x, audit::Held lambda_arg = {}, audit::Held a_arg = {}, audit::Held b_arg = {}) {
-  std::vector<std::string> warnings;
-  const audit::Held lambda = lambda_arg;
-  const audit::Held a = a_arg;
-  const audit::Held b = b_arg;
 
-  const double held=!lambda.supplied?std::numeric_limits<double>::quiet_NaN():lambda.value;
-  if(lambda.supplied&&std::isnan(held))(void)0;
-  const double nan=std::numeric_limits<double>::quiet_NaN();
-  double lower=!a.supplied?nan:a.value, upper=!b.supplied?nan:b.value;
-  if((a.supplied&&std::isnan(lower))||(b.supplied&&std::isnan(upper)))
-    (void)0;
-  auto r=cppunivariate::tpois_mle(x,lower,upper,held); audit::observe(r, {{"lambda",r.parameter,0,INFINITY,true,false},{"a",(a.supplied?a.value:(x.empty()?NAN:double(*std::min_element(x.begin(),x.end()))-1)),-INFINITY,INFINITY,false,false},{"b",(b.supplied?b.value:(x.empty()?NAN:double(*std::max_element(x.begin(),x.end())))),-INFINITY,INFINITY,false,false}});
-}
 
 inline void route_trgamma(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double reltol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
@@ -1875,174 +1810,31 @@ inline void route_zeta(cppunivariate::ispan x, audit::Held s_arg = {}, double re
   const auto fit=cppunivariate::zeta_mle(x,reltol,iterlim,held); audit::observe(fit, {{"s",fit.s,1,INFINITY,false,false}});
 }
 
-inline void route_zib(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, audit::Held pi_arg = {}, double reltol = 1e-10, int iterlim = 200) {
-  std::vector<std::string> warnings;
-  const audit::Held size = size_arg;
-  const audit::Held prob = prob_arg;
-  const audit::Held pi = pi_arg;
 
-  const double fixed_size=size.supplied?size.value:std::numeric_limits<double>::quiet_NaN();
-  if(size.supplied && !std::isfinite(fixed_size))(void)0;
-  const double held_prob=prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN();
-  if(prob.supplied && (!std::isfinite(held_prob)||held_prob<0||held_prob>1))(void)0;
-  const double held_pi=pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN();
-  if(pi.supplied && (!std::isfinite(held_pi)||held_pi<0||held_pi>1))(void)0;
-  const auto res=cppunivariate::zib_mle(x, reltol, iterlim, fixed_size, held_prob, held_pi); audit::observe(res, {{"size",res.size,0,INFINITY,true,false},{"prob",res.prob,0,1,true,true},{"pi",res.pi,0,1,true,true}});
-}
 
-inline void route_zinb(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, audit::Held pi_arg = {}, double reltol = 1e-10, int iterlim = 200) {
-  std::vector<std::string> warnings;
-  const audit::Held size = size_arg;
-  const audit::Held prob = prob_arg;
-  const audit::Held pi = pi_arg;
 
-  if(prob.supplied && !std::isfinite(prob.value))(void)0;
-  if(pi.supplied && !std::isfinite(pi.value))(void)0;
 
-  if (size.supplied && (!std::isfinite(size.value) || size.value < 0))
-    (void)0;
-  const auto fit = cppunivariate::zinb_mle(x, reltol, iterlim,
-      size.supplied ? size.value : NAN,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(fit, {{"size",fit.size,0,INFINITY,true,false},{"prob",fit.prob,0,1,false,true},{"pi",fit.pi,0,1,true,true}});
-}
 
-inline void route_zip(cppunivariate::ispan x, audit::Held lambda_arg = {}, audit::Held pi_arg = {}) {
-  std::vector<std::string> warnings;
-  const audit::Held lambda = lambda_arg;
-  const audit::Held pi = pi_arg;
 
-  if(lambda.supplied && !std::isfinite(lambda.value))(void)0;
-  if(pi.supplied && !std::isfinite(pi.value))(void)0;
 
-  if (x.size() > 0 &&
-      std::all_of(x.begin(), x.end(), [](int v) { return v == 0; })) {
-    warnings.push_back(binding_message("all observations are zero"));
-  }
-  auto res = cppunivariate::zip_mle(x,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"lambda",res.lambda,0,INFINITY,false,false},{"pi",res.pi,0,1,true,true}});
-}
 
-inline void route_zipf(cppunivariate::ispan x, audit::Held N_arg = {}, audit::Held s_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
-  std::vector<std::string> warnings;
-  const audit::Held N = N_arg;
-  const audit::Held s = s_arg;
 
-  if (x.size() == 0) {
-    (void)0;
-  }
-  if (x.size() > 0 &&
-      std::all_of(x.begin(), x.end(), [](int v) { return v == 0; })) {
-    warnings.push_back(binding_message("all observations are zero"));
-  }
 
-  const double nan=std::numeric_limits<double>::quiet_NaN();
-  const double hn=!N.supplied?nan:N.value, hs=!s.supplied?nan:s.value;
-  if ((N.supplied&&!std::isfinite(hn)) || (s.supplied&&!std::isfinite(hs)))
-    (void)0;
-  auto res = cppunivariate::zipf_mle(x, reltol, iterlim,hn,hs); audit::observe(res, {{"N",res.N,1,INFINITY,true,false},{"s",res.shape,0,INFINITY,true,false}});
-}
 
-inline void route_zmbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, audit::Held p0_arg = {}, double reltol = 1e-10, int iterlim = 200) {
-  std::vector<std::string> warnings;
-  const audit::Held size = size_arg;
-  const audit::Held prob = prob_arg;
-  const audit::Held p0 = p0_arg;
 
-  const double fixed_size=size.supplied?size.value:std::numeric_limits<double>::quiet_NaN();
-  if(size.supplied && !std::isfinite(fixed_size))(void)0;
-  const double held_prob=prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN();
-  if(prob.supplied && (!std::isfinite(held_prob)||held_prob<0||held_prob>1))(void)0;
-  const double held_p0=p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN();
-  if(p0.supplied && (!std::isfinite(held_p0)||held_p0<0||held_p0>1))(void)0;
-  const auto res=cppunivariate::zmbinom_mle(x, reltol, iterlim, fixed_size, held_prob, held_p0); audit::observe(res, {{"size",res.size,1,INFINITY,true,false},{"prob",res.prob,0,1,true,true},{"p0",res.p0,0,1,true,true}});
-}
 
-inline void route_zmgeom(cppunivariate::ispan x, audit::Held prob_arg = {}, audit::Held p0_arg = {}) {
-  std::vector<std::string> warnings;
-  const audit::Held prob = prob_arg;
-  const audit::Held p0 = p0_arg;
 
-  if(prob.supplied && !std::isfinite(prob.value))(void)0;
-  if(p0.supplied && !std::isfinite(p0.value))(void)0;
 
-  const auto res=cppunivariate::zmgeom_mle(x,1e-10,200,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"prob",res.prob,0,1,false,true},{"p0",res.p0,0,1,true,true}});
-}
 
-inline void route_zmlogarithmic(cppunivariate::ispan x, audit::Held prob_arg = {}, audit::Held p0_arg = {}) {
-  std::vector<std::string> warnings;
-  const audit::Held prob = prob_arg;
-  const audit::Held p0 = p0_arg;
 
-  if(prob.supplied && !std::isfinite(prob.value))(void)0;
-  if(p0.supplied && !std::isfinite(p0.value))(void)0;
 
-  const auto res=cppunivariate::zmlogarithmic_mle(x,1e-10,200,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"prob",res.prob,0,1,true,false},{"p0",res.p0,0,1,true,true}});
-}
 
-inline void route_zmnbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, audit::Held p0_arg = {}, double reltol = 1e-10, int iterlim = 200) {
-  std::vector<std::string> warnings;
-  const audit::Held size = size_arg;
-  const audit::Held prob = prob_arg;
-  const audit::Held p0 = p0_arg;
 
-  if(prob.supplied && !std::isfinite(prob.value))(void)0;
-  if(p0.supplied && !std::isfinite(p0.value))(void)0;
 
-  const double fixed_size=size.supplied?size.value:std::numeric_limits<double>::quiet_NaN();
-  if(size.supplied && !std::isfinite(fixed_size))(void)0;
-  const auto res=cppunivariate::zmnbinom_mle(x, reltol, iterlim, fixed_size,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"size",res.size,0,INFINITY,true,false},{"prob",res.prob,0,1,false,true},{"p0",res.p0,0,1,true,true}});
-}
 
-inline void route_zmpois(cppunivariate::ispan x, audit::Held lambda_arg = {}, audit::Held p0_arg = {}) {
-  std::vector<std::string> warnings;
-  const audit::Held lambda = lambda_arg;
-  const audit::Held p0 = p0_arg;
 
-  if(lambda.supplied && !std::isfinite(lambda.value))(void)0;
-  if(p0.supplied && !std::isfinite(p0.value))(void)0;
 
-  const auto res=cppunivariate::zmpois_mle(x,1e-10,200,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"lambda",res.lambda,0,INFINITY,true,false},{"p0",res.p0,0,1,true,true}});
-}
 
-inline void route_ztbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, double reltol = 1e-10, int iterlim = 200) {
-  std::vector<std::string> warnings;
-  const audit::Held size = size_arg;
-  const audit::Held prob = prob_arg;
-
-  const double fixed_size=size.supplied?size.value:std::numeric_limits<double>::quiet_NaN();
-  if(size.supplied && !std::isfinite(fixed_size))(void)0;
-  const double held_prob=prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN();
-  if(prob.supplied && (!std::isfinite(held_prob)||held_prob<0||held_prob>1))(void)0;
-  const auto res=cppunivariate::ztbinom_mle(x, reltol, iterlim, fixed_size, held_prob); audit::observe(res, {{"size",res.size,1,INFINITY,true,false},{"prob",res.prob,0,1,true,true}});
-}
-
-inline void route_ztgeom(cppunivariate::ispan x, audit::Held prob_arg = {}) {
-  std::vector<std::string> warnings;
-  const audit::Held prob = prob_arg;
-
-  if(prob.supplied && !std::isfinite(prob.value))(void)0;
-
-  const auto res=cppunivariate::ztgeom_mle(x,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"prob",res.prob,0,1,false,true}});
-}
-
-inline void route_ztnbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, double reltol = 1e-10, int iterlim = 200) {
-  std::vector<std::string> warnings;
-  const audit::Held size = size_arg;
-  const audit::Held prob = prob_arg;
-
-  if(prob.supplied && !std::isfinite(prob.value))(void)0;
-
-  const double fixed_size=size.supplied?size.value:std::numeric_limits<double>::quiet_NaN();
-  if(size.supplied && !std::isfinite(fixed_size))(void)0;
-  const auto res=cppunivariate::ztnbinom_mle(x, reltol, iterlim, fixed_size,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"size",res.size,0,INFINITY,true,false},{"prob",res.prob,0,1,false,true}});
-}
-
-inline void route_ztpois(cppunivariate::ispan x, audit::Held lambda_arg = {}) {
-  std::vector<std::string> warnings;
-  const audit::Held lambda = lambda_arg;
-
-  if(lambda.supplied && !std::isfinite(lambda.value))(void)0;
-
-  const auto res=cppunivariate::ztpois_mle(x,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"lambda",res.lambda,0,INFINITY,true,false}});
-}
 
 int main(){std::cout<<"family,held,input,status,finite,domain,invalid,defect,logLik,estimates\n";
 {
@@ -4056,36 +3848,7 @@ for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
 route_std(cppunivariate::span{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?-0.0062603717426506856:NAN},audit::Held{bool(mask&2),mask&2?0.8395065634734545:NAN},audit::Held{bool(mask&4),mask&4?3.977653882598804:NAN});
 if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
 }}}
-{
-audit::family="tbinom";
-for(unsigned mask=0;mask<16;++mask){
-audit::held="";
-if(mask&1)audit::held+="prob+";
-if(mask&2)audit::held+="a+";
-if(mask&4)audit::held+="b+";
-if(mask&8)audit::held+="size+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {4}},
-{"constant", {4,4,4,4}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {1,1,1,1}},
-{"below", {0,0,0,0}},
-{"upper", {10,10,10,10}},
-{"above", {11,11,11,11}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if((mask&2))audit::invalid=audit::invalid||(v<1.0);
-if((mask&4) && (mask&8))audit::invalid=audit::invalid||(v>10.0);
-}
-route_tbinom(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?0.4004693386746923:NAN},audit::Held{bool(mask&2),mask&2?0:NAN},audit::Held{bool(mask&4),mask&4?10:NAN},audit::Held{bool(mask&8),mask&8?12:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
+
 {
 audit::family="tlambda";
 for(unsigned mask=0;mask<8;++mask){
@@ -4111,61 +3874,8 @@ for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
 route_tlambda(cppunivariate::span{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?0.04752470610558923:NAN},audit::Held{bool(mask&2),mask&2?1.0988151244928166:NAN},audit::Held{bool(mask&4),mask&4?0.184478447547003:NAN});
 if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
 }}}
-{
-audit::family="tnorm";
-for(unsigned mask=0;mask<16;++mask){
-audit::held="";
-if(mask&1)audit::held+="mean+";
-if(mask&2)audit::held+="sd+";
-if(mask&4)audit::held+="a+";
-if(mask&8)audit::held+="b+";
-std::vector<std::pair<std::string,std::vector<double>>> cases={
-{"empty", {}},
-{"one", {-0.5264045906833672}},
-{"constant", {-0.5264045906833672,-0.5264045906833672,-0.5264045906833672,-0.5264045906833672}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"nan", {NAN,-0.5264045906833672}},
-{"posinf", {INFINITY,-0.5264045906833672}},
-{"neginf", {-INFINITY,-0.5264045906833672}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-}
-route_tnorm(cppunivariate::span{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?-0.062005588372027076:NAN},audit::Held{bool(mask&2),mask&2?1.0043282104167566:NAN},audit::Held{bool(mask&4),mask&4?-INFINITY:NAN},audit::Held{bool(mask&8),mask&8?INFINITY:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="tpois";
-for(unsigned mask=0;mask<8;++mask){
-audit::held="";
-if(mask&1)audit::held+="lambda+";
-if(mask&2)audit::held+="a+";
-if(mask&4)audit::held+="b+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {5}},
-{"constant", {5,5,5,5}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {1,1,1,1}},
-{"below", {0,0,0,0}},
-{"upper", {10,10,10,10}},
-{"above", {11,11,11,11}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if((mask&2))audit::invalid=audit::invalid||(v<1.0);
-if((mask&4))audit::invalid=audit::invalid||(v>10.0);
-}
-route_tpois(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?2.9605593598095785:NAN},audit::Held{bool(mask&2),mask&2?0:NAN},audit::Held{bool(mask&4),mask&4?10:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
+
+
 {
 audit::family="trgamma";
 for(unsigned mask=0;mask<8;++mask){
@@ -4324,343 +4034,17 @@ if(true)audit::invalid=audit::invalid||(v<1.0);
 route_zeta(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?1.961296321474947:NAN});
 if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
 }}}
-{
-audit::family="zib";
-for(unsigned mask=0;mask<8;++mask){
-audit::held="";
-if(mask&1)audit::held+="size+";
-if(mask&2)audit::held+="prob+";
-if(mask&4)audit::held+="pi+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {0}},
-{"constant", {0,0,0,0}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {0,0,0,0}},
-{"below", {-1,-1,-1,-1}},
-{"upper", {8,8,8,8}},
-{"above", {9,9,9,9}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<0.0);
-if((mask&1))audit::invalid=audit::invalid||(v>8.0);
-}
-route_zib(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?8:NAN},audit::Held{bool(mask&2),mask&2?0.4180129724418685:NAN},audit::Held{bool(mask&4),mask&4?0.3899710850828634:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="zinb";
-for(unsigned mask=0;mask<8;++mask){
-audit::held="";
-if(mask&1)audit::held+="size+";
-if(mask&2)audit::held+="prob+";
-if(mask&4)audit::held+="pi+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {2}},
-{"constant", {2,2,2,2}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {0,0,0,0}},
-{"below", {-1,-1,-1,-1}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<0.0);
-}
-route_zinb(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?1.5215075359537307:NAN},audit::Held{bool(mask&2),mask&2?0.34428034505775573:NAN},audit::Held{bool(mask&4),mask&4?0.2573876163521669:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="zip";
-for(unsigned mask=0;mask<4;++mask){
-audit::held="";
-if(mask&1)audit::held+="lambda+";
-if(mask&2)audit::held+="pi+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {1}},
-{"constant", {1,1,1,1}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {0,0,0,0}},
-{"below", {-1,-1,-1,-1}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<0.0);
-}
-route_zip(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?0.927085844817755:NAN},audit::Held{bool(mask&2),mask&2?0.4671475109221307:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="zipf";
-for(unsigned mask=0;mask<4;++mask){
-audit::held="";
-if(mask&1)audit::held+="N+";
-if(mask&2)audit::held+="s+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {1}},
-{"constant", {1,1,1,1}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {1,1,1,1}},
-{"below", {0,0,0,0}},
-{"upper", {3,3,3,3}},
-{"above", {4,4,4,4}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<1.0);
-if((mask&1))audit::invalid=audit::invalid||(v>3.0);
-}
-route_zipf(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?3:NAN},audit::Held{bool(mask&2),mask&2?0.3979626946090187:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="zmbinom";
-for(unsigned mask=0;mask<8;++mask){
-audit::held="";
-if(mask&1)audit::held+="size+";
-if(mask&2)audit::held+="prob+";
-if(mask&4)audit::held+="p0+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {0}},
-{"constant", {0,0,0,0}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {0,0,0,0}},
-{"below", {-1,-1,-1,-1}},
-{"upper", {8,8,8,8}},
-{"above", {9,9,9,9}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<0.0);
-if((mask&1))audit::invalid=audit::invalid||(v>8.0);
-}
-route_zmbinom(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?8:NAN},audit::Held{bool(mask&2),mask&2?0.41072177895283224:NAN},audit::Held{bool(mask&4),mask&4?0.276:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="zmgeom";
-for(unsigned mask=0;mask<4;++mask){
-audit::held="";
-if(mask&1)audit::held+="prob+";
-if(mask&2)audit::held+="p0+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {2}},
-{"constant", {2,2,2,2}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {0,0,0,0}},
-{"below", {-1,-1,-1,-1}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<0.0);
-}
-route_zmgeom(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?0.3892969569779643:NAN},audit::Held{bool(mask&2),mask&2?0.258:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="zmlogarithmic";
-for(unsigned mask=0;mask<4;++mask){
-audit::held="";
-if(mask&1)audit::held+="prob+";
-if(mask&2)audit::held+="p0+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {2}},
-{"constant", {2,2,2,2}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {0,0,0,0}},
-{"below", {-1,-1,-1,-1}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<0.0);
-}
-route_zmlogarithmic(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?0.3852620621412276:NAN},audit::Held{bool(mask&2),mask&2?0.264:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="zmnbinom";
-for(unsigned mask=0;mask<8;++mask){
-audit::held="";
-if(mask&1)audit::held+="size+";
-if(mask&2)audit::held+="prob+";
-if(mask&4)audit::held+="p0+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {6}},
-{"constant", {6,6,6,6}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {0,0,0,0}},
-{"below", {-1,-1,-1,-1}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<0.0);
-}
-route_zmnbinom(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?2.326926892246514:NAN},audit::Held{bool(mask&2),mask&2?0.41499877689089204:NAN},audit::Held{bool(mask&4),mask&4?0.314:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="zmpois";
-for(unsigned mask=0;mask<4;++mask){
-audit::held="";
-if(mask&1)audit::held+="lambda+";
-if(mask&2)audit::held+="p0+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {0}},
-{"constant", {0,0,0,0}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {0,0,0,0}},
-{"below", {-1,-1,-1,-1}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<0.0);
-}
-route_zmpois(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?1.9832099451065273:NAN},audit::Held{bool(mask&2),mask&2?0.306:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="ztbinom";
-for(unsigned mask=0;mask<4;++mask){
-audit::held="";
-if(mask&1)audit::held+="size+";
-if(mask&2)audit::held+="prob+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {3}},
-{"constant", {3,3,3,3}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {1,1,1,1}},
-{"below", {0,0,0,0}},
-{"upper", {8,8,8,8}},
-{"above", {9,9,9,9}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<1.0);
-if((mask&1))audit::invalid=audit::invalid||(v>8.0);
-}
-route_ztbinom(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?8:NAN},audit::Held{bool(mask&2),mask&2?0.40988208060294373:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="ztgeom";
-for(unsigned mask=0;mask<2;++mask){
-audit::held="";
-if(mask&1)audit::held+="prob+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {2}},
-{"constant", {2,2,2,2}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {1,1,1,1}},
-{"below", {0,0,0,0}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<1.0);
-}
-route_ztgeom(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?0.41254125412541254:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="ztnbinom";
-for(unsigned mask=0;mask<4;++mask){
-audit::held="";
-if(mask&1)audit::held+="size+";
-if(mask&2)audit::held+="prob+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {5}},
-{"constant", {5,5,5,5}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {1,1,1,1}},
-{"below", {0,0,0,0}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<1.0);
-}
-route_ztnbinom(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?2.1894042903107165:NAN},audit::Held{bool(mask&2),mask&2?0.4269728320855304:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
-{
-audit::family="ztpois";
-for(unsigned mask=0;mask<2;++mask){
-audit::held="";
-if(mask&1)audit::held+="lambda+";
-std::vector<std::pair<std::string,std::vector<int>>> cases={
-{"empty", {}},
-{"one", {1}},
-{"constant", {1,1,1,1}},
-{"zero", {0,0,0,0}},
-{"negative", {-1,-2,-3}},
-{"unit-boundary", {0,1,0,1}},
-{"lower", {1,1,1,1}},
-{"below", {0,0,0,0}},
-};
-for(const auto& item:cases){const auto& x=item.second;
-audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
-for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
-audit::invalid=audit::invalid||(v!=std::floor(v));
-if(true)audit::invalid=audit::invalid||(v<1.0);
-}
-route_ztpois(cppunivariate::ispan{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?2.008760837832246:NAN});
-if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
-}}}
+
+
+
+
+
+
+
+
+
+
+
+
+
 return audit::defects?1:0;}

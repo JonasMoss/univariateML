@@ -69,7 +69,8 @@ condition handling so the existing expectation contracts remain comparable.
 All unlisted/new tests default to all tiers; use `skip_unless_tier("full")`
 inside expensive test bodies, preserving inexpensive checks in the same file.
 [Measured inventory](test-tier-inventory.csv) classifies every baseline test by
-cost and purpose. Oracle comparisons and replication stress checks run in full;
+cost and purpose. Its measured labels retain their original names; retired-law
+kernel tests now live in the modifier test files. Oracle comparisons and replication stress checks run in full;
 Cheap API/identity/face checks remain in all tiers even in expensive family files.
 The measured GB2/shifted-Pareto face sweeps, CMB profile grid and shared scale
 transformation sweeps start in dev.
@@ -354,7 +355,7 @@ and machine, not implied by accuracy or convergence.
   `test.cpp`; a table's endpoint observations are not a boundary-parameter grid.
   The [reviewed baseline inventory](../research/evaluations/2026-10-30-migration-baseline.md)
   found only quantile-endpoint evidence for, for example, fatigue and hnorm,
-  and fitter-only closed forms for zip and ztpois. Those categories do not
+  and fitter-only closed forms for `mlpois(x, zero="inflated")` and `mlpois(x, zero="truncated")`. Those categories do not
   establish density closure at their boundaries.
 - Holds are generically exercised on golden data only. Unbounded size/design
   searches and limit faces remain open in the [hold reports](../research/evaluations/2026-10-30-holds-cmb-report.md)

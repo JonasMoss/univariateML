@@ -1,0 +1,16 @@
+{
+  "commit": "1e0f5185432e858b39ceffa18f043ce4d54993b1",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    "-std=gnu++17",
+    "-O2",
+    "-DNDEBUG",
+    "-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"
+  ],
+  "family": "emg",
+  "cases": 212,
+  "cpu_limit": 300,
+  "comparison_to_retired_tree": 0,
+  "comparison_to_supplied_older_baseline": 1,
+  "different_case": "archive 001311"
+}

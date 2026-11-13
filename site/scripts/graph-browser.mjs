@@ -23,7 +23,7 @@ try{
 
  if(await page.locator('[data-map-edge][data-kind=limit]:visible').count())throw Error('Limits initially visible');
  await page.locator('[data-map-node=norm]').focus();
- await page.waitForFunction(()=>document.querySelector('[data-map-node=zipf]').style.opacity==='0.18');
+ await page.waitForFunction(()=>document.querySelector('[data-map-node=zeta]').style.opacity==='0.18');
  await page.locator('[data-map-node=norm]').press('Enter');
  await page.waitForFunction(()=>document.querySelector('.selection').open);
  if(!await page.locator('.neighbourhood').innerText().then(s=>s.includes('Normal')))throw Error('Map selection');

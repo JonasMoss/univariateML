@@ -19,7 +19,7 @@ COMMON=ROOT/'bindings/common';DRIVER=ROOT/'dev/validation/inference-numeric-mc.p
 registry=(INC/'core/inference_numeric_generated.hpp').read_text()
 generated=re.findall(r'#include "\.\./distributions/([^/]+)/dpqr.hpp"',registry)
 base='norm gamma beta pois exp geom lnorm logitnorm lgamma rayleigh binom'.split()
-special='laplace gev gpd ged sged snorm sstd tnorm cmb cmp tbinom tpois zmbinom'.split()
+special='laplace gev gpd ged sged snorm sstd cmb cmp'.split()
 families=sorted(set(base+generated+special))
 h=hashlib.sha256(DRIVER.read_bytes())
 for directory in (INC,COMMON):

@@ -66,23 +66,107 @@ construction:
 - base
 relations:
   special_case_of:
-  - family: zib
-    at:
-      size: size
-      prob: prob
-      pi: 0
-  - family: tbinom
-    at:
-      size: size
-      prob: prob
-      a: -1
-      b: size
   - family: cmb
     at:
       size: size
       prob: prob
       nu: 1
     when: size <= 10000000
+  - family: binom
+    at:
+      size: size
+      prob: prob
+      pi: 0
+    configuration:
+      kernel: zib
+      zero: inflated
+    coefficient_map:
+      size: size
+      prob: prob
+      pi: 0
+  - family: binom
+    at:
+      size: size
+      prob: prob
+    configuration:
+      kernel: tbinom
+      truncate:
+      - max(0, floor(-1)+1)
+      - floor(size)
+    coefficient_map:
+      size: size
+      prob: prob
+      a: -1
+      b: size
+  - family: binom
+    at:
+      size: size
+      prob: prob
+      p0: 0
+    source_configuration:
+      kernel: ztbinom
+      zero: truncated
+      coefficient_map:
+        size: size
+        prob: prob
+    configuration:
+      kernel: zmbinom
+      zero: modified
+    coefficient_map:
+      size: size
+      prob: prob
+      p0: 0
+  truncation_of:
+  - family: binom
+    at:
+      size: size
+      prob: prob
+    source_configuration:
+      kernel: tbinom
+      truncate:
+      - max(0, floor(a)+1)
+      - floor(b)
+      coefficient_map:
+        prob: prob
+        size: size
+  modification_of:
+  - family: binom
+    at:
+      size: size
+      prob: prob
+    type: zero-inflated
+    mass: pi
+    source_configuration:
+      kernel: zib
+      zero: inflated
+      coefficient_map:
+        size: size
+        prob: prob
+        pi: pi
+  - family: binom
+    at:
+      size: size
+      prob: prob
+    type: zero-modified
+    mass: p0
+    source_configuration:
+      kernel: zmbinom
+      zero: modified
+      coefficient_map:
+        size: size
+        prob: prob
+        p0: p0
+  - family: binom
+    at:
+      size: size
+      prob: prob
+    type: zero-truncated
+    source_configuration:
+      kernel: ztbinom
+      zero: truncated
+      coefficient_map:
+        size: size
+        prob: prob
 fit:
   method: integer-search
   certified: 'yes'
@@ -127,7 +211,8 @@ modifiers:
       certified: partial
       note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
       limits:
-      - model: ztpois
+      - model: pois
+        configuration: {zero: truncated}
         firmness: proved
         when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated
           Poisson law.
@@ -140,14 +225,16 @@ modifiers:
       certified: partial
       note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
       limits:
-      - model: zmpois
+      - model: pois
+        configuration: {zero: modified}
         firmness: proved
         when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated
           Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
         detect: The positive-count fit passes the signed-tail and complete finite-prefix face certificate in ztbinom;
           the Bernoulli zero-indicator likelihood is added with the same held or fitted zero probability.
         status: PoissonLimit
-      - model: zmpois
+      - model: pois
+        configuration: {zero: modified}
         firmness: proved
         when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated
           Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
@@ -161,7 +248,8 @@ modifiers:
       certified: partial
       note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
       limits:
-      - model: zip
+      - model: pois
+        configuration: {zero: inflated}
         firmness: proved
         when: The trial count $n$ tends to infinity and $p$ tends to zero with $np$ tending to a finite positive
           rate.
@@ -170,7 +258,8 @@ modifiers:
           a compact rate certificate that proves inflation is inactive near the Poisson optimum. Other comparisons
           remain unresolved.
         status: ZipLimit
-      - model: zip
+      - model: pois
+        configuration: {zero: inflated}
         firmness: proved
         when: The trial count $n$ tends to infinity and $p$ tends to zero with $np$ tending to a finite positive
           rate.
@@ -180,7 +269,8 @@ modifiers:
         status: ZipLimit
         fixed:
         - pi
-      - model: zip
+      - model: pois
+        configuration: {zero: inflated}
         firmness: proved
         when: As trial count tends to infinity and success probability tends to zero with their product fixed, the
           law tends to zero-inflated Poisson with the same inflation.
@@ -216,7 +306,8 @@ modifiers:
       fixed:
       - prob
       status: UpperPointMass
-    - model: tpois
+    - model: pois
+      configuration: {truncate: [a, b]}
       firmness: proved
       when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
         truncation window.
@@ -225,7 +316,8 @@ modifiers:
         comparison remains unresolved.
       fixed: []
       status: TpoisLimit
-    - model: tpois
+    - model: pois
+      configuration: {truncate: [a, b]}
       firmness: proved
       when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
         truncation window.
@@ -235,7 +327,8 @@ modifiers:
       fixed:
       - a
       status: TpoisLimit
-    - model: tpois
+    - model: pois
+      configuration: {truncate: [a, b]}
       firmness: proved
       when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
         truncation window.
@@ -245,7 +338,8 @@ modifiers:
       fixed:
       - b
       status: TpoisLimit
-    - model: tpois
+    - model: pois
+      configuration: {truncate: [a, b]}
       firmness: proved
       when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
         truncation window.

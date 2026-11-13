@@ -1,0 +1,45 @@
+mode,family,source,case,fields,reason,old_kind,route_kind
+native,tbinom,archive,007339,coefficients;logLik,Unclassified finding,ok,ok
+native,tbinom,archive,007366,coefficients;logLik,Unclassified finding,ok,ok
+native,tnorm,archive,007709,kind,held-window density improvement,numerical,ok
+native,zipf,archive,008750,coefficients,zeta accuracy refinement,ok,ok
+native,zipf,archive,008751,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,archive,008752,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,archive,008753,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,archive,008754,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,archive,008755,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,archive,008756,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,archive,008757,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,archive,008758,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,archive,011154,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,archive,011156,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,class,one,kind,widened exponent domain,ok,limit
+native,zipf,class,constant,kind,widened exponent domain,ok,limit
+native,zipf,class,ties,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,class,near-constant,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,class,large,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,class,huge,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,resample,n3-s1,coefficients;logLik,widened exponent domain,ok,ok
+native,zipf,resample,n7-s3,coefficients;logLik,widened exponent domain,ok,ok
+double,tbinom,archive,007339,coefficients;logLik,Unclassified finding,ok,ok
+double,tbinom,archive,007366,coefficients;logLik,Unclassified finding,ok,ok
+double,tnorm,archive,007709,kind,held-window density improvement,numerical,ok
+double,zipf,archive,008750,coefficients,zeta accuracy refinement,ok,ok
+double,zipf,archive,008751,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,archive,008752,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,archive,008753,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,archive,008754,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,archive,008755,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,archive,008756,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,archive,008757,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,archive,008758,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,archive,011154,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,archive,011156,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,class,one,kind,widened exponent domain,ok,limit
+double,zipf,class,constant,kind,widened exponent domain,ok,limit
+double,zipf,class,ties,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,class,near-constant,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,class,large,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,class,huge,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,resample,n3-s1,coefficients;logLik,widened exponent domain,ok,ok
+double,zipf,resample,n7-s3,coefficients;logLik,widened exponent domain,ok,ok

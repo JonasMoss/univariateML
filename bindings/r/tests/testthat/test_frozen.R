@@ -1,5 +1,5 @@
-test_that("all 101 families build, evaluate, simulate and hold coefficients", {
-  expect_length(univariateML_metadata, 101L)
+test_that("all 85 families build, evaluate, simulate and hold coefficients", {
+  expect_length(univariateML_metadata, 85L)
   directory <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
   for (name in umvl_filter_families(names(univariateML_metadata))) {
     meta <- univariateML_metadata[[name]]

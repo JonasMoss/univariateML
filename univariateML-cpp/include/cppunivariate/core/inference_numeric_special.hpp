@@ -5,12 +5,8 @@
 #include "../distributions/laplace/dpqr.hpp"
 #include "../distributions/ged/dpqr.hpp"
 #include "../distributions/sged/dpqr.hpp"
-#include "../distributions/tnorm/dpqr.hpp"
 #include "../distributions/cmb/dpqr.hpp"
 #include "../distributions/cmp/dpqr.hpp"
-#include "../distributions/tbinom/dpqr.hpp"
-#include "../distributions/tpois/dpqr.hpp"
-#include "../distributions/zmbinom/dpqr.hpp"
 namespace cppunivariate {
 template<class Emit=inference_detail::Discard>
 inline InferenceResult special_family_inference(span data,const std::string& family,
@@ -21,12 +17,8 @@ inline InferenceResult special_family_inference(span data,const std::string& fam
   if(family=="laplace") {n=2;allowed=2;}
   else if(family=="ged") {n=3;allowed=7;}
   else if(family=="sged") {n=4;allowed=15;}
-  else if(family=="tnorm") {n=4;allowed=3;}
   else if(family=="cmb") {n=3;allowed=6;}
   else if(family=="cmp") {n=2;allowed=3;}
-  else if(family=="tbinom") {n=4;allowed=1;}
-  else if(family=="tpois") {n=3;allowed=1;}
-  else if(family=="zmbinom") {n=3;allowed=6;}
   if(!n) {
     InferenceResult r;r.status=InferenceStatus::FamilyUnavailable;
     if(family=="triang") r.validity_conditions="the mode has a moving kink and endpoint directions are non-DQM";
@@ -55,24 +47,20 @@ inline InferenceResult special_family_inference(span data,const std::string& fam
       p[2].coordinate=NumericCoordinate::LowerBounded;
       p[2].lower=(!symmetric || (mask & 1u)) ? 2 : 1;
     }
-  } else if(family=="tnorm") {
-    set(0,"mean",NumericCoordinate::Real);set(1,"sd",NumericCoordinate::Positive);
-    set(2,"a",NumericCoordinate::Real);set(3,"b",NumericCoordinate::Real);
-    valid=std::isfinite(v[0]) && std::isfinite(v[1]) && v[1]>0 && !std::isnan(v[2]) && !std::isnan(v[3]) && v[2]<v[3];
-  } else if(family=="cmb" || family=="zmbinom") {
+  } else if(family=="cmb") {
     set(0,"size",NumericCoordinate::Real);set(1,"prob",NumericCoordinate::UnitInterval);
-    set(2,family=="cmb"?"nu":"p0",family=="cmb"?NumericCoordinate::Real:NumericCoordinate::UnitInterval);
+    set(2,"nu",NumericCoordinate::Real);
     const bool prob_interior=v[1]>0 && v[1]<1;
     if(family=="cmb" && v[0]==0 && mask && prob_interior && std::isfinite(v[2]))
       return inference_numeric_detail::singular_integer_support(data,0,0,"size zero is a point mass");
-    const bool known_binomial_edge=family=="zmbinom" && (v[1]==0 || v[1]==1) && !(mask & 2u);
+    const bool known_binomial_edge=false;
     valid=std::isfinite(v[0]) && v[0]>=1 && v[0]==std::floor(v[0]) && (prob_interior || known_binomial_edge) && std::isfinite(v[2]) &&
       (family=="cmb" || (v[2]>0 && v[2]<1) || ((v[2]==0 || v[2]==1) && !(mask & 4u)));
-    if(valid && family=="zmbinom" && v[2]==1 && mask) {
+    if(valid && false && v[2]==1 && mask) {
       return inference_numeric_detail::singular_integer_support(data,0,0,"known p0 = 1 yields a point mass");
     }
-    if(valid && v[0]==1 && ((family=="cmb" && (mask & 4u)) || (family=="zmbinom" && (mask & 2u)))) {
-      const double lo=family=="zmbinom" && v[2]==0 ? 1 : 0;
+    if(valid && v[0]==1 && ((family=="cmb" && (mask & 4u)) || (false && (mask & 2u)))) {
+      const double lo=false && v[2]==0 ? 1 : 0;
       return inference_numeric_detail::singular_integer_support(data,lo,1,"a free coefficient has zero information at size one");
     }
   } else if(family=="cmp") {
@@ -80,36 +68,11 @@ inline InferenceResult special_family_inference(span data,const std::string& fam
     set(1,"nu",NumericCoordinate::Positive);
     valid=std::isfinite(v[0]) && v[0]>0 && std::isfinite(v[1]) &&
       (v[1]>0 || (v[1]==0 && !(mask & 2u) && v[0]<1));
-  } else if(family=="tbinom") {
-    set(0,"prob",NumericCoordinate::UnitInterval);set(1,"a",NumericCoordinate::Real);
-    set(2,"b",NumericCoordinate::Real);set(3,"size",NumericCoordinate::Real);
-    valid=v[0]>0 && v[0]<1 && !std::isnan(v[1]) && !std::isnan(v[2]) && v[1]<v[2] &&
-      std::isfinite(v[3]) && v[3]>=1 && v[3]==std::floor(v[3]);
-    if(valid) {
-      const double span=std::min(v[3],std::floor(v[2]))-std::max(0.0,std::floor(v[1])+1);
-      if(span==0 && mask) {
-        const double point=std::max(0.0,std::floor(v[1])+1);
-        return inference_numeric_detail::singular_integer_support(data,point,point,"retained support is a singleton");
-      }
-      regime=span>=1;
-    }
-  } else if(family=="tpois") {
-    set(0,"lambda",NumericCoordinate::Positive);set(1,"a",NumericCoordinate::Real);set(2,"b",NumericCoordinate::Real);
-    valid=std::isfinite(v[0]) && v[0]>0 && !std::isnan(v[1]) && !std::isnan(v[2]) && v[1]<v[2];
-    if(valid) {
-      const double span=std::floor(v[2])-std::max(0.0,std::floor(v[1])+1);
-      if(span==0 && mask) {
-        const double point=std::max(0.0,std::floor(v[1])+1);
-        return inference_numeric_detail::singular_integer_support(data,point,point,"retained support is a singleton");
-      }
-      regime=span>=1;
-    }
   }
   if(!valid) {InferenceResult r;r.status=InferenceStatus::BoundaryOrLimit;r.validity_conditions="invalid or boundary parameters for the classified scope";return r;}
   if(!regime) {
     InferenceResult r;r.status=InferenceStatus::RegimeUnavailable;
     if(family=="ged" || family=="sged") r.validity_conditions="DQM holds above nu = 1/2; ordinary moving-location Hessians are invalid for nu <= 1; remaining excluded fitted cusp derivatives are unvalidated or on a fitting restriction";
-    else if(family=="tbinom" || family=="tpois") r.validity_conditions="the retained support has no eligible observations";
     else r.validity_conditions="the requested held subset or regime is not classified for ordinary observed information";
     return r;
   }
@@ -117,12 +80,8 @@ inline InferenceResult special_family_inference(span data,const std::string& fam
     if(family=="laplace") return distributions::dlaplace(x,a[0],a[1],true);
     if(family=="ged") return distributions::dged(x,a[0],a[1],a[2],true);
     if(family=="sged") return distributions::dsged(x,a[0],a[1],a[2],a[3],true);
-    if(family=="tnorm") return distributions::dtnorm(x,a[0],a[1],a[2],a[3],true);
     if(family=="cmb") return distributions::dcmb(x,a[0],a[1],a[2],true);
     if(family=="cmp") return distributions::dcmp(x,a[0],a[1],true);
-    if(family=="tbinom") return distributions::dtbinom(x,a[0],a[1],a[2],a[3],true);
-    if(family=="tpois") return distributions::dtpois(x,a[0],a[1],a[2],true);
-    if(family=="zmbinom") return distributions::dzmbinom(x,a[0],a[1],a[2],true);
     return std::numeric_limits<double>::quiet_NaN();
   };
   const NumericEligibility eligibility{InferenceStatus::Ok,allowed,"classified interior submodel; structural coefficients held"};

@@ -1,7 +1,7 @@
 // Direct Euler--Maclaurin tails; no support enumeration or integer narrowing.
 #pragma once
 #include "mle.hpp"
-#include "../zipf/dpqr.hpp"
+#include "zipf_dpqr.hpp"
 namespace cppunivariate {
 namespace zeta_detail {
 inline double log_complement(double lp) {

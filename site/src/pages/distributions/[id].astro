@@ -47,7 +47,7 @@ const hasHistory=sections.some((s:any)=>s.title.toLowerCase()==='decision histor
 
 // Relations: limit models go to the ML section; the rest is structure.
 const seen=new Set<string>();
-const relations=f.related.filter((r:any)=>r.kind!=='Limit model').filter((r:any)=>{const k=r.kind+r.family;if(seen.has(k))return false;seen.add(k);return true;});
+const relations=f.related.filter((r:any)=>r.kind!=='Limit model').filter((r:any)=>{const k=r.kind+r.family+JSON.stringify(r.edge);if(seen.has(k))return false;seen.add(k);return true;});
 const mapping=(r:any)=>r.edge ? `${r.edge.type ? r.edge.type+': ' : ''}${r.edge.mass ? 'mass = '+r.edge.mass+'; ' : ''}${r.edge.shift && r.edge.transform==='abs' ? 'shift = '+r.edge.shift+'; ' : ''}${r.edge.transform ? r.edge.transform+': ' : ''}${Object.entries(r.edge.at).map(([k,v])=>`${k} = ${v}`).join(', ')}` : '';
 const byKind=(k:string)=>relations.filter((r:any)=>r.kind===k);
 
@@ -148,7 +148,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length||closure
  <h2 id="relations">Relations</h2>
  {closurePoints.map((r:any)=><p>Closure point: {r.name}. <span set:html={r.pathHtml}/> Never a likelihood supremum in the stated scope: {r.reason}</p>)}
  {relations.length>0 && <table><thead><tr><th>Relation</th><th>Family</th><th>Mapping</th></tr></thead><tbody>
-  {relRows.map((r:any)=><tr><td>{r.kind}</td><td><a href={`/distributions/${r.family}/`}>{r.name}</a></td><td><code>{mapping(r)}</code>{r.noteHtml && <span set:html={r.noteHtml}/>}</td></tr>)}
+  {relRows.map((r:any)=><tr><td>{r.kind}{r.edge?.source_setting && <small> ({r.edge.source_setting})</small>}</td><td><a href={`/distributions/${r.family}/`}>{r.name}</a>{r.edge?.target_setting && <small> ({r.edge.target_setting})</small>}</td><td><code>{mapping(r)}</code>{r.noteHtml && <span set:html={r.noteHtml}/>}</td></tr>)}
  </tbody></table>}
  {seeAlsoHtml.map(h=><div set:html={h}/>)}
 </section>}
