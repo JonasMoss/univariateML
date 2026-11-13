@@ -560,3 +560,30 @@ success. `--outcomes DIR` lists the families that report an outcome on every
 case, the raw statuses the inputs reached, and every case whose outcome
 disagrees with the kind the adapter emitted; it exits nonzero on a
 disagreement.
+
+### Judging a snapshot (strict layer, first part)
+
+`fit-judge.py` applies the checks that need no refit to one or two stored
+snapshots: no case hits the CPU guard or crashes; an estimate has finite
+coefficients and log likelihood (an infinite coefficient only where the caller
+held it there) and returns held coefficients unchanged; empty, NaN and
+infinite samples end in a plain error; the native and double-only builds end
+in the same kind; and, on the same archive data, a fit with fewer held
+coefficients has a log likelihood at least that of a fit that holds more. The
+last check is evidence against a claimed maximizer and needs no oracle. It
+skips fits on a restriction boundary, whose parameter space is smaller, and
+uses a relative margin of `1e-8`.
+
+```sh
+B=dev/research/evaluations/2026-11-12-fit-snapshot-data
+python3 dev/validation/fit-judge.py $B/native.jsonl.gz $B/double.jsonl.gz
+```
+
+Failures are compared with `strict-known.json`: one not listed makes the run
+fail; a listed one that passes is reported and removed with `--prune`. Adding
+entries (`--add <card>`) is a reviewed decision. On the baselines of
+`8a702cc2` the checks find 20 failures: the 12 cases whose kind depends on the
+precision mode, 3 nesting failures in each mode (nhyper twice, tbinom once;
+all three fits are flagged uncertified, and lie 5 to 10 log-likelihood units
+below a fit that holds more), and cauchy returning a nonexistence stop for an
+empty sample. The list is seeded once the 16 retiring families are gone.
