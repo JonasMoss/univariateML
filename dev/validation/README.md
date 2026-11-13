@@ -576,15 +576,23 @@ skips fits on a restriction boundary, whose parameter space is smaller, and
 uses a relative margin of `1e-8`.
 
 ```sh
-B=dev/research/evaluations/2026-11-12-fit-snapshot-data
-python3 dev/validation/fit-judge.py $B/native.jsonl.gz $B/double.jsonl.gz
+python3 dev/validation/fit-judge.py build/snapshots/native,build/snapshots/routes-native \
+  build/snapshots/double,build/snapshots/routes-double
 ```
+
+Each argument is one precision mode: snapshot directories or stored
+`.jsonl.gz` files, comma-separated, here the families and the modifier routes
+(`fit-snapshot.py --modifier-routes`). A route takes its inputs in the retired
+family's coordinates, so a held window bound is not looked for among its
+estimates.
 
 Failures are compared with `strict-known.json`: one not listed makes the run
 fail; a listed one that passes is reported and removed with `--prune`. Adding
-entries (`--add <card>`) is a reviewed decision. On the baselines of
-`8a702cc2` the checks find 20 failures: the 12 cases whose kind depends on the
-precision mode, 3 nesting failures in each mode (nhyper twice, tbinom once;
-all three fits are flagged uncertified, and lie 5 to 10 log-likelihood units
-below a fit that holds more), and cauchy returning a nonexistence stop for an
-empty sample. The list is seeded once the 16 retiring families are gone.
+entries (`--add <card>`) is a reviewed decision. The list was seeded on master
+`423aea9b` (85 fitted families and the 16 modifier routes, 13,754 cases per
+mode) with 21 entries: the 12 cases whose kind depends on the precision mode
+(TASK-214.13); 3 nesting failures in each mode (nhyper twice, the free-size
+binomial window once; all flagged uncertified, 3.5 to 10 log-likelihood units
+below a fit that holds more) and the double-only EMG case that hits the CPU
+guard (TASK-214.5); and cauchy returning a nonexistence stop for an empty
+sample (TASK-214.3).

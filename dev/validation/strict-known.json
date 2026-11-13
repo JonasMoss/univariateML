@@ -1,0 +1,89 @@
+{
+ "note": "Known failures of the strict layer (fit-judge.py). Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
+ "known": {
+  "invalid-input|double|cauchy|class|empty": {
+   "ref": "TASK-214.3",
+   "detail": "ends in nomle"
+  },
+  "invalid-input|native|cauchy|class|empty": {
+   "ref": "TASK-214.3",
+   "detail": "ends in nomle"
+  },
+  "mode|both|bhatt|archive|000364": {
+   "ref": "TASK-214.13",
+   "detail": "native ok, double-only numerical"
+  },
+  "mode|both|bhatt|archive|000428": {
+   "ref": "TASK-214.13",
+   "detail": "native ok, double-only numerical"
+  },
+  "mode|both|dgamma|archive|001025": {
+   "ref": "TASK-214.13",
+   "detail": "native ok, double-only conditioning"
+  },
+  "mode|both|dgamma|class|wide": {
+   "ref": "TASK-214.13",
+   "detail": "native ok, double-only conditioning"
+  },
+  "mode|both|gamma|class|huge": {
+   "ref": "TASK-214.13",
+   "detail": "native ok, double-only error"
+  },
+  "mode|both|gompertz|class|huge": {
+   "ref": "TASK-214.13",
+   "detail": "native ok, double-only limit"
+  },
+  "mode|both|snorm|archive|006576": {
+   "ref": "TASK-214.13",
+   "detail": "native limit, double-only numerical"
+  },
+  "mode|both|snorm|archive|006587": {
+   "ref": "TASK-214.13",
+   "detail": "native tie, double-only numerical"
+  },
+  "mode|both|snorm|archive|006590": {
+   "ref": "TASK-214.13",
+   "detail": "native limit, double-only numerical"
+  },
+  "mode|both|snorm|class|huge": {
+   "ref": "TASK-214.13",
+   "detail": "native limit, double-only error"
+  },
+  "mode|both|sstd|archive|006717": {
+   "ref": "TASK-214.13",
+   "detail": "native error, double-only numerical"
+  },
+  "mode|both|st|archive|007040": {
+   "ref": "TASK-214.13",
+   "detail": "native error, double-only ok"
+  },
+  "nesting|double|binom +truncate=tbinom|archive|007325": {
+   "ref": "TASK-214.5",
+   "detail": "case 007353 holds more and is higher by 3.468; this fit is uncertified"
+  },
+  "nesting|double|nhyper|archive|005161": {
+   "ref": "TASK-214.5",
+   "detail": "case 005217 holds more and is higher by 5.493; this fit is uncertified"
+  },
+  "nesting|double|nhyper|archive|005175": {
+   "ref": "TASK-214.5",
+   "detail": "case 005230 holds more and is higher by 9.614; this fit is uncertified"
+  },
+  "nesting|native|binom +truncate=tbinom|archive|007325": {
+   "ref": "TASK-214.5",
+   "detail": "case 007353 holds more and is higher by 3.468; this fit is uncertified"
+  },
+  "nesting|native|nhyper|archive|005161": {
+   "ref": "TASK-214.5",
+   "detail": "case 005217 holds more and is higher by 5.493; this fit is uncertified"
+  },
+  "nesting|native|nhyper|archive|005175": {
+   "ref": "TASK-214.5",
+   "detail": "case 005230 holds more and is higher by 9.614; this fit is uncertified"
+  },
+  "terminates|double|emg|archive|001311": {
+   "ref": "TASK-214.5",
+   "detail": "timeout"
+  }
+ }
+}

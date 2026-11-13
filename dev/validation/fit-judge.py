@@ -26,7 +26,8 @@ Usage:
   fit-judge.py NATIVE [DOUBLE] --prune    also drop listed failures that pass
   fit-judge.py NATIVE [DOUBLE] --add REF  list the new failures under REF
                                           (a card id; deliberate, reviewed)
-NATIVE and DOUBLE are snapshot directories or stored snapshot.jsonl.gz files.
+NATIVE and DOUBLE are snapshot directories or stored snapshot.jsonl.gz files;
+several can be given separated by commas (families and modifier routes).
 """
 import argparse, gzip, json, math, sys
 from pathlib import Path
@@ -37,7 +38,12 @@ KNOWN = ROOT/'dev/validation/strict-known.json'
 INVALID = ('empty', 'nan', 'inf', 'neginf')
 NEST_TOL = 1e-8   # relative to max(1, |logLik|); far above rounding, far below any real gap
 
-def load(path):
+def load(paths):
+    rows = {}
+    for path in str(paths).split(','): rows.update(load_one(path))
+    return rows
+
+def load_one(path):
     rows = {}
     path = Path(path)
     if path.is_file():
@@ -65,7 +71,12 @@ def judge_one(mode, rows, data):
                    if not math.isfinite(number(v)) and not (n in r['held'] and r['held'][n] == number(v))]
             if bad or not math.isfinite(number(res['logLik'])):
                 fail('finite', key, 'non-finite: '+', '.join(bad or ['logLik']))
-            moved = [n for n, v in r['held'].items() if n not in res['estimates'] or number(res['estimates'][n]) != v]
+            # A modifier route ('base +modifier=kernel') takes its inputs in the retired
+            # family's coordinates; a held name that is not a coefficient of the base
+            # family (a window bound) is not an estimate there.
+            route = '+' in key[0]
+            moved = [n for n, v in r['held'].items()
+                     if (n not in res['estimates'] and not route) or (n in res['estimates'] and number(res['estimates'][n]) != v)]
             if moved: fail('held', key, 'held changed: '+', '.join(moved))
         if r['source'] == 'class' and key[2] in INVALID and kind != 'error':
             fail('invalid-input', key, 'ends in '+kind)
@@ -74,7 +85,7 @@ def judge_one(mode, rows, data):
     for members in groups.values():
         for key, larger in members:
             res = larger['result']
-            if res['restricted']: continue
+            if res['kind'] in ('timeout', 'crash') or res['restricted']: continue
             if res['kind'] == 'ok': top = number(res['logLik'])
             elif res['kind'] == 'limit' and res['limit_loglik'] != 'nan': top = number(res['limit_loglik'])
             else: continue
