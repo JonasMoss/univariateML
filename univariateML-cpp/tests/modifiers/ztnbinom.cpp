@@ -221,3 +221,10 @@ TEST_CASE("ztnbinom: large-size body CDF avoids enumerating its count") {
   CHECK(std::isfinite(got));
   CHECK(got==doctest::Approx(cppunivariate::distributions::pnbinom(99999998,1e8,.5,true,true)).epsilon(1e-12));
 }
+
+#include "roundtrips.hpp"
+TEST_CASE("ztnbinom: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("ztnbinom",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::pztnbinom(x,p[0],p[1],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qztnbinom(x,p[0],p[1],l,g);});
+}

@@ -1,0 +1,426 @@
+-- Boost.Math headers: /home/jonas/R/x86_64-pc-linux-gnu-library/4.6/BH/include
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/jonas/Files/programming/univariateML.wt/qtie-2/univariateML-cpp/build
+[  2%] Building CXX object tests/CMakeFiles/sample_tests.dir/test_sampling.cpp.o
+[  2%] Building CXX object tests/CMakeFiles/bfgs_tests.dir/test_bfgs.cpp.o
+[  2%] Building CXX object tests/CMakeFiles/no_throw_tests.dir/test_no_throw.cpp.o
+[  3%] Linking CXX executable sample_tests
+[  4%] Linking CXX executable bfgs_tests
+[  5%] Linking CXX executable no_throw_tests
+[ 94%] Built target distribution_tests
+[ 95%] Building CXX object tests/CMakeFiles/cmp_tests.dir/test_cmp.cpp.o
+[ 96%] Linking CXX executable cmp_tests
+[ 96%] Built target sample_tests
+[ 96%] Built target no_throw_tests
+[ 97%] Building CXX object tests/CMakeFiles/tails_tests.dir/test_tails.cpp.o
+In file included from ../../tests/test_tails.cpp:3:
+../../include/cppunivariate/special/tails.hpp:640:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  640 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+../../include/cppunivariate/special/tails.hpp:638:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  638 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+../../include/cppunivariate/special/tails.hpp:639:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  639 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+[ 97%] Built target bfgs_tests
+[ 98%] Building CXX object tests/CMakeFiles/diagnostics_tests.dir/home/jonas/Files/programming/univariateML.wt/qtie-2/dev/validation/diagnostics-audit.cpp.o
+[ 99%] Linking CXX executable tails_tests
+[ 99%] Built target cmp_tests
+[ 99%] Built target tails_tests
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void audit::observe(const T&, std::initializer_list<Value>)’:
+../../../dev/validation/diagnostics-audit.cpp:16:2: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   16 |  if(seen)return;seen=true;
+      |  ^~
+../../../dev/validation/diagnostics-audit.cpp:16:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   16 |  if(seen)return;seen=true;
+      |                 ^~~~
+In file included from ../../include/cppunivariate/distributions/betapr/fallback.hpp:5,
+                 from ../../include/cppunivariate/distributions/betapr/mle.hpp:327,
+                 from ../../../dev/validation/diagnostics-audit.cpp:39:
+../../include/cppunivariate/distributions/betapr/gamma_accuracy.hpp: In function ‘cppunivariate::burr_power_one_detail::Pair cppunivariate::burr_power_one_detail::gamma_log(Pair)’:
+../../include/cppunivariate/distributions/betapr/gamma_accuracy.hpp:35:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   35 |   for(int j=0;j<n;++j)sum=sum-logarithm(x+Pair(j));return sum;
+      |   ^~~
+../../include/cppunivariate/distributions/betapr/gamma_accuracy.hpp:35:52: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   35 |   for(int j=0;j<n;++j)sum=sum-logarithm(x+Pair(j));return sum;
+      |                                                    ^~~~~~
+../../include/cppunivariate/distributions/betapr/fallback.hpp: In lambda function:
+../../include/cppunivariate/distributions/betapr/fallback.hpp:63:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   63 |     if(std::isnan(a))t.push_back(std::log(p));if(std::isnan(b))t.push_back(std::log(q));
+      |     ^~
+../../include/cppunivariate/distributions/betapr/fallback.hpp:63:47: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   63 |     if(std::isnan(a))t.push_back(std::log(p));if(std::isnan(b))t.push_back(std::log(q));
+      |                                               ^~
+../../include/cppunivariate/distributions/betapr/fallback.hpp: In function ‘cppunivariate::BetaPrimeResult cppunivariate::betapr_detail::accurate_fallback(cppunivariate::BetaPrimeResult, cppunivariate::span, double, double, double, double, int, double, double, double)’:
+../../include/cppunivariate/distributions/betapr/fallback.hpp:152:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  152 |     if(free[0])c[0]=std::exp(q[0]);if(free[1])c[1]=std::exp(q[1]);
+      |     ^~
+../../include/cppunivariate/distributions/betapr/fallback.hpp:152:36: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  152 |     if(free[0])c[0]=std::exp(q[0]);if(free[1])c[1]=std::exp(q[1]);
+      |                                    ^~
+In file included from ../../include/cppunivariate/distributions/bhatt/accuracy.hpp:5,
+                 from ../../include/cppunivariate/distributions/bhatt/mle.hpp:296,
+                 from ../../../dev/validation/diagnostics-audit.cpp:41:
+../../include/cppunivariate/distributions/bhatt/pair_variance_accuracy.hpp: In function ‘bool cppunivariate::bhatt_detail::pair_variance_accuracy(cppunivariate::BhattResult&, cppunivariate::span, double, double, int, bool)’:
+../../include/cppunivariate/distributions/bhatt/pair_variance_accuracy.hpp:111:3: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  111 |   if(!sigma_held)r.sigma=burr_power_one_detail::value(sigma);r.a=burr_power_one_detail::value(S*E);
+      |   ^~
+../../include/cppunivariate/distributions/bhatt/pair_variance_accuracy.hpp:111:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  111 |   if(!sigma_held)r.sigma=burr_power_one_detail::value(sigma);r.a=burr_power_one_detail::value(S*E);
+      |                                                              ^
+In file included from ../../include/cppunivariate/distributions/lst/mle.hpp:6,
+                 from ../../../dev/validation/diagnostics-audit.cpp:188:
+../../include/cppunivariate/distributions/lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::data(cppunivariate::span, Data&)’:
+../../include/cppunivariate/distributions/lst/certificate.hpp:140:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |   ^~~
+../../include/cppunivariate/distributions/lst/certificate.hpp:140:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  140 |   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
+      |                                          ^
+../../include/cppunivariate/distributions/lst/certificate.hpp: In function ‘bool cppunivariate::t_cert_detail::inverse(const System&, int, std::array<std::array<double, 3>, 3>&)’:
+../../include/cppunivariate/distributions/lst/certificate.hpp:161:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |     ^~
+../../include/cppunivariate/distributions/lst/certificate.hpp:161:51: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  161 |     if(!(std::abs(a[k][j])>eps*norm))return false;std::swap(a[k],a[j]);double z=a[j][j];for(int q=0;q<2*dim;++q)a[j][q]/=z;
+      |                                                   ^~~
+In file included from ../../include/cppunivariate/distributions/sged/../sstd/../snorm/mle.hpp:36,
+                 from ../../include/cppunivariate/distributions/sged/../sstd/hold_search.hpp:4,
+                 from ../../include/cppunivariate/distributions/sged/mle.hpp:16,
+                 from ../../../dev/validation/diagnostics-audit.cpp:238:
+../../include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::add(Poly, Poly, long double)’:
+../../include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |   ^~~
+../../include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:24:62: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   24 |   for(std::size_t i=0;i<a.b.size();++i)a.b[i]+=factor*b.b[i];return a;
+      |                                                              ^~~~~~
+../../include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘cppunivariate::snorm_certificate::Poly cppunivariate::snorm_certificate::derivative(const Poly&)’:
+../../include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |   ^~~
+../../include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:39:58: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   39 |   for(std::size_t i=0;i<n;++i)p.b[i]=n*(a.b[i+1]-a.b[i]);return p;
+      |                                                          ^~~~~~
+../../include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp: In function ‘long double cppunivariate::snorm_certificate::value(Poly, long double)’:
+../../include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:3: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |   ^~~
+../../include/cppunivariate/distributions/sged/../sstd/../snorm/certificate.hpp:42:101: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   42 |   for(std::size_t n=p.b.size()-1;n>0;--n)for(std::size_t i=0;i<n;++i)p.b[i]=(1-t)*p.b[i]+t*p.b[i+1];return p.b[0];
+      |                                                                                                     ^~~~~~
+In file included from ../../include/cppunivariate/distributions/sged/free_shape_certificate.hpp:75,
+                 from ../../include/cppunivariate/distributions/sged/mle.hpp:454:
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_weighted_shape::fit(cppunivariate::span, double, int, double)’:
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  186 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:186:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  186 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:190:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  190 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:195:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  195 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |     ^~
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:215:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  215 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,w,maxit);
+      |                                       ^~
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |         ^~
+../../include/cppunivariate/distributions/sged/weighted_shape_certificate.hpp:220:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,w,maxit);if(!sc.valid)break;
+      |                                           ^~
+In file included from ../../include/cppunivariate/distributions/sged/free_shape_certificate.hpp:76:
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp: In function ‘cppunivariate::SgedResult cppunivariate::sged_mode_skew::fit(cppunivariate::span, double, int, double)’:
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |     ^~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:120:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  120 |     if(work>=cap)return stopped(true);++work;const auto v=point(y,c,p);if(!v.valid)return stopped(false);
+      |                                       ^~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  131 |     if(work>=cap)return stopped(true);++work;
+      |     ^~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:131:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  131 |     if(work>=cap)return stopped(true);++work;
+      |                                       ^~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |       ^~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:135:42: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  135 |       if(work+2>cap)return stopped(true);work+=2;
+      |                                          ^~~~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:9: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |         ^~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:140:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  140 |         if(work>=cap)return stopped(true);++work;const double c=a/2+h/2;const auto sc=box(y,c,c,p);if(!sc.valid)break;
+      |                                           ^~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |     ^~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:156:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  156 |     if(work>=cap)return stopped(true);++work;const auto enclosure=box(y,cell.lo,cell.hi,p);
+      |                                       ^~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:7: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |       ^~
+../../include/cppunivariate/distributions/sged/mode_skew_certificate.hpp:160:41: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  160 |       if(work>=cap)return stopped(true);++work;const double mid=a/2+h/2;const auto sc=box(y,mid,mid,p);if(!sc.valid)break;
+      |                                         ^~
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void route_hyper(cppunivariate::span, audit::Held, audit::Held, audit::Held)’:
+../../../dev/validation/diagnostics-audit.cpp:916:14: warning: variable ‘whole’ set but not used [-Wunused-but-set-variable]
+  916 |   const auto whole = [](double v) {
+      |              ^~~~~
+../../../dev/validation/diagnostics-audit.cpp: In function ‘void route_triang(cppunivariate::span, audit::Held, audit::Held, audit::Held, double, int)’:
+../../../dev/validation/diagnostics-audit.cpp:1715:16: warning: unused variable ‘nan’ [-Wunused-variable]
+ 1715 |   const double nan=std::numeric_limits<double>::quiet_NaN();
+      |                ^~~
+../../../dev/validation/diagnostics-audit.cpp: In function ‘int main()’:
+../../../dev/validation/diagnostics-audit.cpp:1839:5: note: variable tracking size limit exceeded with ‘-fvar-tracking-assignments’, retrying without
+ 1839 | int main(){std::cout<<"family,held,input,status,finite,domain,invalid,defect,logLik,estimates\n";
+      |     ^~~~
+[100%] Linking CXX executable diagnostics_tests
+[100%] Built target diagnostics_tests
+Test project /home/jonas/Files/programming/univariateML.wt/qtie-2/univariateML-cpp/build
+        Start 153: modifier_ztpois
+        Start 138: modifier_tpois
+        Start 136: modifier_tbinom
+        Start 152: modifier_ztnbinom
+  1/109 Test #152: modifier_ztnbinom ................   Passed    7.33 sec
+        Start 147: modifier_zmnbinom
+  2/109 Test #136: modifier_tbinom ..................   Passed    9.08 sec
+        Start 144: modifier_zmbinom
+  3/109 Test #147: modifier_zmnbinom ................   Passed    1.95 sec
+        Start 149: modifier_ztbinom
+  4/109 Test #149: modifier_ztbinom .................   Passed    2.84 sec
+        Start 137: modifier_tnorm
+  5/109 Test #137: modifier_tnorm ...................   Passed    1.46 sec
+        Start 148: modifier_zmpois
+  6/109 Test #144: modifier_zmbinom .................   Passed    4.99 sec
+        Start 141: modifier_zinb
+  7/109 Test #138: modifier_tpois ...................   Passed   14.10 sec
+        Start 142: modifier_zip
+  8/109 Test #141: modifier_zinb ....................   Passed    0.63 sec
+        Start 139: modifier_zib
+  9/109 Test #142: modifier_zip .....................   Passed    0.79 sec
+        Start 146: modifier_zmlogarithmic
+ 10/109 Test #146: modifier_zmlogarithmic ...........   Passed    0.09 sec
+        Start 143: modifier_zipf
+ 11/109 Test #143: modifier_zipf ....................   Passed    0.10 sec
+        Start 145: modifier_zmgeom
+ 12/109 Test #139: modifier_zib .....................   Passed    0.40 sec
+        Start 151: modifier_ztgeom
+ 13/109 Test #145: modifier_zmgeom ..................   Passed    0.04 sec
+        Start   1: bfgs_tests
+ 14/109 Test   #1: bfgs_tests .......................   Passed    0.00 sec
+        Start   2: sample_tests
+ 15/109 Test   #2: sample_tests .....................   Passed    0.00 sec
+        Start   3: distribution_bbinom
+ 16/109 Test #151: modifier_ztgeom ..................   Passed    0.06 sec
+        Start   5: distribution_beta
+ 17/109 Test   #5: distribution_beta ................   Passed    0.11 sec
+        Start   6: distribution_betapr
+ 18/109 Test #148: modifier_zmpois ..................   Passed    1.82 sec
+        Start   8: distribution_bhatt
+ 19/109 Test   #3: distribution_bbinom ..............   Passed    0.96 sec
+        Start  10: distribution_binom
+ 20/109 Test   #6: distribution_betapr ..............   Passed    1.46 sec
+        Start  12: distribution_bnbinom
+ 21/109 Test  #10: distribution_binom ...............   Passed    0.74 sec
+        Start  14: distribution_burr
+ 22/109 Test  #14: distribution_burr ................   Passed    3.40 sec
+        Start  16: distribution_cauchy
+ 23/109 Test  #16: distribution_cauchy ..............   Passed    0.03 sec
+        Start  18: distribution_cmb
+ 24/109 Test #153: modifier_ztpois ..................   Passed   27.37 sec
+        Start  20: distribution_cmp
+ 25/109 Test  #20: distribution_cmp .................   Passed   17.50 sec
+        Start  22: distribution_dgamma
+ 26/109 Test  #12: distribution_bnbinom .............   Passed   42.41 sec
+        Start  24: distribution_dlaplace
+ 27/109 Test  #24: distribution_dlaplace ............   Passed    0.04 sec
+        Start  26: distribution_dnorm
+ 28/109 Test  #26: distribution_dnorm ...............   Passed    0.03 sec
+        Start  28: distribution_dunif
+ 29/109 Test  #28: distribution_dunif ...............   Passed    0.03 sec
+        Start  30: distribution_dweibull
+ 30/109 Test  #30: distribution_dweibull ............   Passed    1.09 sec
+        Start  32: distribution_emg
+ 31/109 Test  #32: distribution_emg .................   Passed    3.09 sec
+        Start  33: distribution_exp
+ 32/109 Test  #33: distribution_exp .................   Passed    0.02 sec
+        Start  34: distribution_expweibull
+ 33/109 Test  #34: distribution_expweibull ..........   Passed    0.41 sec
+        Start  35: distribution_fatigue
+ 34/109 Test  #35: distribution_fatigue .............   Passed    0.04 sec
+        Start  36: distribution_foldnorm
+ 35/109 Test  #36: distribution_foldnorm ............   Passed    0.08 sec
+        Start  37: distribution_fpareto
+ 36/109 Test  #37: distribution_fpareto .............   Passed    0.68 sec
+        Start  38: distribution_frechet
+ 37/109 Test  #38: distribution_frechet .............   Passed    0.89 sec
+        Start  39: distribution_gamma
+ 38/109 Test  #18: distribution_cmb .................   Passed   46.44 sec
+        Start  40: distribution_gb2
+ 39/109 Test  #40: distribution_gb2 .................   Passed    2.13 sec
+        Start  41: distribution_ged
+ 40/109 Test  #39: distribution_gamma ...............   Passed    4.61 sec
+        Start  43: distribution_genbeta
+ 41/109 Test  #41: distribution_ged .................   Passed    4.58 sec
+        Start  45: distribution_gengamma
+ 42/109 Test  #45: distribution_gengamma ............   Passed   14.50 sec
+        Start  46: distribution_geom
+ 43/109 Test  #46: distribution_geom ................   Passed    0.02 sec
+        Start  48: distribution_gev
+ 44/109 Test  #22: distribution_dgamma ..............   Passed   45.28 sec
+        Start  50: distribution_gompertz
+ 45/109 Test  #50: distribution_gompertz ............   Passed    0.03 sec
+        Start  51: distribution_gpd
+ 46/109 Test  #48: distribution_gev .................   Passed    3.02 sec
+        Start  52: distribution_gumbel
+ 47/109 Test  #52: distribution_gumbel ..............   Passed    0.04 sec
+        Start  54: distribution_hcauchy
+ 48/109 Test  #54: distribution_hcauchy .............   Passed    0.03 sec
+        Start  55: distribution_hnorm
+ 49/109 Test  #55: distribution_hnorm ...............   Passed    0.02 sec
+        Start  56: distribution_ht
+ 50/109 Test  #51: distribution_gpd .................   Passed    4.75 sec
+        Start  57: distribution_huber
+ 51/109 Test  #56: distribution_ht ..................   Passed   10.64 sec
+        Start  59: distribution_hyper
+ 52/109 Test  #57: distribution_huber ...............   Passed   10.78 sec
+        Start  61: distribution_invburr
+ 53/109 Test  #61: distribution_invburr .............   Passed    3.47 sec
+        Start  63: distribution_invexp
+ 54/109 Test  #63: distribution_invexp ..............   Passed    0.02 sec
+        Start  64: distribution_invgamma
+ 55/109 Test  #64: distribution_invgamma ............   Passed    9.80 sec
+        Start  65: distribution_invgauss
+ 56/109 Test  #65: distribution_invgauss ............   Passed    2.80 sec
+        Start  66: distribution_invparalogis
+ 57/109 Test  #66: distribution_invparalogis ........   Passed    0.11 sec
+        Start  67: distribution_invpareto
+ 58/109 Test  #67: distribution_invpareto ...........   Passed    0.03 sec
+        Start  68: distribution_invtrgamma
+ 59/109 Test  #68: distribution_invtrgamma ..........   Passed    4.41 sec
+        Start  69: distribution_invweibull
+ 60/109 Test  #69: distribution_invweibull ..........   Passed    0.04 sec
+        Start  70: distribution_kumar
+ 61/109 Test  #70: distribution_kumar ...............   Passed    0.04 sec
+        Start  72: distribution_laplace
+ 62/109 Test  #72: distribution_laplace .............   Passed    0.02 sec
+        Start  74: distribution_lgamma
+ 63/109 Test  #59: distribution_hyper ...............   Passed   24.75 sec
+        Start  75: distribution_lgser
+ 64/109 Test  #75: distribution_lgser ...............   Passed    0.03 sec
+        Start  77: distribution_llogis
+ 65/109 Test  #77: distribution_llogis ..............   Passed    0.09 sec
+        Start  78: distribution_lnorm
+ 66/109 Test  #78: distribution_lnorm ...............   Passed    0.04 sec
+        Start  79: distribution_logis
+ 67/109 Test  #79: distribution_logis ...............   Passed    0.02 sec
+        Start  81: distribution_logitnorm
+ 68/109 Test  #81: distribution_logitnorm ...........   Passed    0.03 sec
+        Start  82: distribution_lomax
+ 69/109 Test  #82: distribution_lomax ...............   Passed    0.18 sec
+        Start  84: distribution_lst
+ 70/109 Test  #74: distribution_lgamma ..............   Passed    2.00 sec
+        Start  86: distribution_naka
+ 71/109 Test  #86: distribution_naka ................   Passed    1.21 sec
+        Start  87: distribution_nbinom
+ 72/109 Test  #87: distribution_nbinom ..............   Passed    0.12 sec
+        Start  89: distribution_nhyper
+ 73/109 Test  #84: distribution_lst .................   Passed   17.41 sec
+        Start  91: distribution_norm
+ 74/109 Test  #89: distribution_nhyper ..............   Passed   30.21 sec
+        Start  93: distribution_nsbeta
+ 75/109 Test  #93: distribution_nsbeta ..............   Passed    0.07 sec
+        Start  94: distribution_paralogis
+ 76/109 Test  #94: distribution_paralogis ...........   Passed    0.37 sec
+        Start  96: distribution_pareto
+ 77/109 Test  #96: distribution_pareto ..............   Passed    0.02 sec
+        Start  97: distribution_pareto2
+ 78/109 Test  #97: distribution_pareto2 .............   Passed    0.03 sec
+        Start  98: distribution_pareto3
+ 79/109 Test  #98: distribution_pareto3 .............   Passed    0.04 sec
+        Start  99: distribution_pareto4
+ 80/109 Test  #99: distribution_pareto4 .............   Passed    5.63 sec
+        Start 100: distribution_pgw
+ 81/109 Test #100: distribution_pgw .................   Passed    0.04 sec
+        Start 101: distribution_pig
+ 82/109 Test  #91: distribution_norm ................   Passed   23.46 sec
+        Start 103: distribution_pois
+ 83/109 Test #103: distribution_pois ................   Passed    2.19 sec
+        Start 105: distribution_power
+ 84/109 Test #105: distribution_power ...............   Passed    0.03 sec
+        Start 106: distribution_rayleigh
+ 85/109 Test #106: distribution_rayleigh ............   Passed    0.02 sec
+        Start 107: distribution_sged
+ 86/109 Test #107: distribution_sged ................   Passed   36.77 sec
+        Start 108: distribution_sgomp
+ 87/109 Test #108: distribution_sgomp ...............   Passed    0.15 sec
+        Start 110: distribution_skellam
+ 88/109 Test #101: distribution_pig .................   Passed   47.82 sec
+        Start 112: distribution_slash
+ 89/109 Test #110: distribution_skellam .............   Passed    9.73 sec
+        Start 114: distribution_sn
+ 90/109 Test  #43: distribution_genbeta .............   Passed  149.69 sec
+        Start 115: distribution_snorm
+ 91/109 Test #115: distribution_snorm ...............   Passed    0.82 sec
+        Start 116: distribution_sstd
+ 92/109 Test #114: distribution_sn ..................   Passed    6.51 sec
+        Start 118: distribution_st
+ 93/109 Test #112: distribution_slash ...............   Passed    9.89 sec
+        Start 119: distribution_std
+ 94/109 Test #116: distribution_sstd ................   Passed    4.74 sec
+        Start 121: distribution_tlambda
+ 95/109 Test #121: distribution_tlambda .............   Passed    1.61 sec
+        Start 123: distribution_trgamma
+ 96/109 Test   #8: distribution_bhatt ...............   Passed  212.35 sec
+        Start 124: distribution_triang
+ 97/109 Test #124: distribution_triang ..............   Passed    0.10 sec
+        Start 125: distribution_unif
+ 98/109 Test #125: distribution_unif ................   Passed    0.02 sec
+        Start 126: distribution_weibull
+ 99/109 Test #126: distribution_weibull .............   Passed    0.09 sec
+        Start 127: distribution_yulesimon
+100/109 Test #127: distribution_yulesimon ...........   Passed    0.08 sec
+        Start 129: distribution_zeta
+101/109 Test #129: distribution_zeta ................   Passed    5.48 sec
+        Start 131: distribution_support
+102/109 Test #131: distribution_support .............   Passed    0.01 sec
+        Start 132: no_throw_tests
+103/109 Test #132: no_throw_tests ...................   Passed    0.00 sec
+        Start 133: cmp_tests
+104/109 Test #133: cmp_tests ........................   Passed    4.08 sec
+        Start 134: tails_tests
+105/109 Test #134: tails_tests ......................   Passed    0.00 sec
+        Start 135: diagnostics_tests
+106/109 Test #119: distribution_std .................   Passed   17.29 sec
+107/109 Test #135: diagnostics_tests ................   Passed    4.93 sec
+108/109 Test #118: distribution_st ..................   Passed   20.59 sec
+109/109 Test #123: distribution_trgamma .............   Passed   31.50 sec
+
+100% tests passed, 0 tests failed out of 109
+
+Label Time Summary:
+cran    = 981.06 sec*proc (108 tests)
+dev     = 985.99 sec*proc (109 tests)
+full    = 985.99 sec*proc (109 tests)
+
+Total Test time (real) = 258.54 sec

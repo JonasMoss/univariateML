@@ -69,15 +69,18 @@ inline double pzipf(double q,double N,double s,bool lower_tail=true,bool log_p=f
   }
   return log_p ? lp : std::exp(lp);
 }
-inline double qzipf(double p,double N,double s,bool lower_tail=true,bool log_p=false) {
+inline double zipf_quantile(double p,double N,double s,bool lower_tail,bool log_p,bool fuzz) {
   if (!zipf_dpqr_detail::valid(N,s) || std::isnan(p) ||
       (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
   if (p==(log_p ? special::kNegInf : 0)) return lower_tail ? 1 : N;
   if (p==(log_p ? 0 : 1)) return lower_tail ? N : 1;
   return special::discrete_search(1,N,[&](double k) {
     const double f=pzipf(k,N,s,lower_tail,log_p);
-    return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+    return special::discrete_reached(f,p,lower_tail,log_p,fuzz);
   });
+}
+inline double qzipf(double p,double N,double s,bool lower_tail=true,bool log_p=false) {
+  return zipf_quantile(p,N,s,lower_tail,log_p,true);
 }
 inline std::vector<double> zipf_cdf(int N,double s) {
   std::vector<double> out(static_cast<std::size_t>(N));
@@ -89,6 +92,6 @@ inline int rzipf_from_cdf(Rng &rng,const std::vector<double> &cum) {
   return static_cast<int>(std::lower_bound(cum.begin(),cum.end(),rng.runif(0,1))-cum.begin())+1;
 }
 template <typename Rng>
-inline double rzipf(Rng &rng,double N,double s) { return qzipf(rng.runif(0,1),N,s); }
+inline double rzipf(Rng &rng,double N,double s) { return zipf_quantile(rng.runif(0,1),N,s,true,false,false); }
 }
 }

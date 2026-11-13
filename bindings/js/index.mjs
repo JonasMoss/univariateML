@@ -19,7 +19,7 @@ export default async function create(options = {}) {
       if(flags.zero && flags.zero!=="none" || flags.truncate) {
         // The seeded uniform source remains native and deterministic.
         const u=module.runif(n,[0,1],seed);
-        return modifier.evaluate("q",u,params,flags);
+        return modifier.sampleQuantile(u,params,flags);
       }
       return module[`r${id}`](n, params, seed);
     },

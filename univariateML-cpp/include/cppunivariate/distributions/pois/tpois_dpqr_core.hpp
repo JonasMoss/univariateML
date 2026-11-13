@@ -98,19 +98,27 @@ inline double evaluate(bool cdf,double x,double parameter,double a,double b,doub
  }
  return logarithm?lp:std::exp(lp);
 }
-inline double quantile(double p,double parameter,double a,double b,double size,bool lower,bool logp) {
+inline double quantile(double p,double parameter,double a,double b,double size,bool lower,bool logp,bool fuzz=true) {
   const double lp=logp?p:std::log(p),lo=std::max(0.,std::floor(a)+1),hi=std::min(std::floor(b),size<0?INFINITY:size);
   if(std::isnan(lp)||lp>0||(!logp&&p<0))return std::numeric_limits<double>::quiet_NaN();
   if(std::isnan(evaluate(false,lo,parameter,a,b,size,true,true)))return std::numeric_limits<double>::quiet_NaN();
   if(lo==0 && ((size<0 && hi==INFINITY)||(size>=0 && hi==size)))
-    return size<0?distributions::qpois(p,parameter,lower,logp):distributions::qbinom(p,size,parameter,lower,logp);
+    return special::discrete_quantile(special::discrete_log_tails(p,lower,logp),0.,
+      size<0?(parameter==0?0.:special::kPosInf):size,
+      [=](double x){return size<0?distributions::pois_tails(x,parameter):distributions::binom_tails(x,size,parameter);},p,lower,logp,fuzz);
   if(size<0 && parameter==0 && !std::isfinite(hi))return 0;
   if(lp==-INFINITY)return lower?lo:hi;if(lp==0)return lower?hi:lo;
   if(parameter==0 || (size>=0 && parameter==1))return parameter==0?0:size;
   const double offset=special::probability_minus_half(p,true,logp);
   double target=std::abs(offset)<.25?2*std::atanh(2*offset):lp-special::log1mexp(lp);
   if(!lower)target=-target;
-  return special::discrete_search(lo,hi,[&](double q) {
+  // Expand from the retained lower bound; a remote finite design endpoint
+  // need not force likelihood-ratio walks far from the conditional mass.
+  return special::discrete_search(lo,special::kPosInf,[&](double q) {
+    if(fuzz) {
+      if(q>=hi)return 1;
+      return special::discrete_reached(evaluate(true,q,parameter,a,b,size,lower,logp),p,lower,logp);
+    }
     if(q<lo)return 0;
     if(q>=hi)return 1;
     if(size>=0 && parameter==.5 && lo+hi==size && 2*q+1==size)return int(target<=0);

@@ -1,0 +1,2340 @@
+[
+  {
+    "id": "ztbinom",
+    "args": [
+      2,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 6,
+    "denominator": 7
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.25,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 43,
+    "denominator": 64
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.25,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 61,
+    "denominator": 64
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.25,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 25,
+    "denominator": 32
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.25,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 31,
+    "denominator": 32
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      2,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 2,
+    "denominator": 3
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.5,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 7,
+    "denominator": 16
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.5,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 13,
+    "denominator": 16
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.5,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 5,
+    "denominator": 8
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.5,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 7,
+    "denominator": 8
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      2,
+      0.75
+    ],
+    "k": 1,
+    "numerator": 2,
+    "denominator": 5
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.75,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 19,
+    "denominator": 64
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.75,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 37,
+    "denominator": 64
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.75,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 17,
+    "denominator": 32
+  },
+  {
+    "id": "zib",
+    "args": [
+      2,
+      0.75,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 23,
+    "denominator": 32
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      3,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 27,
+    "denominator": 37
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      3,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 36,
+    "denominator": 37
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.25,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 145,
+    "denominator": 256
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.25,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 113,
+    "denominator": 128
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.25,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 253,
+    "denominator": 256
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.25,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 91,
+    "denominator": 128
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.25,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 59,
+    "denominator": 64
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.25,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 127,
+    "denominator": 128
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      3,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 3,
+    "denominator": 7
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      3,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 6,
+    "denominator": 7
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.5,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 11,
+    "denominator": 32
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.5,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 5,
+    "denominator": 8
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.5,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 29,
+    "denominator": 32
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.5,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 9,
+    "denominator": 16
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.5,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.5,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 15,
+    "denominator": 16
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      3,
+      0.75
+    ],
+    "k": 1,
+    "numerator": 1,
+    "denominator": 7
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      3,
+      0.75
+    ],
+    "k": 2,
+    "numerator": 4,
+    "denominator": 7
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.75,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 67,
+    "denominator": 256
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.75,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 47,
+    "denominator": 128
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.75,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 175,
+    "denominator": 256
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.75,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 65,
+    "denominator": 128
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.75,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 37,
+    "denominator": 64
+  },
+  {
+    "id": "zib",
+    "args": [
+      3,
+      0.75,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 101,
+    "denominator": 128
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 17496,
+    "denominator": 58975
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 37908,
+    "denominator": 58975
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 51516,
+    "denominator": 58975
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 57186,
+    "denominator": 58975
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 58698,
+    "denominator": 58975
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 2358,
+    "denominator": 2359
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 58974,
+    "denominator": 58975
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 85219,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 137707,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 198943,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 239767,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 256777,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 261313,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 262069,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 262141,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 72097,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 89593,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 110005,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 123613,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 129283,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 130795,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 131047,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.25,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 131071,
+    "denominator": 131072
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 8,
+    "denominator": 255
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 12,
+    "denominator": 85
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 92,
+    "denominator": 255
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 54,
+    "denominator": 85
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 218,
+    "denominator": 255
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 82,
+    "denominator": 85
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 254,
+    "denominator": 255
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 259,
+    "denominator": 1024
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 283,
+    "denominator": 1024
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 367,
+    "denominator": 1024
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 535,
+    "denominator": 1024
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 745,
+    "denominator": 1024
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 913,
+    "denominator": 1024
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 997,
+    "denominator": 1024
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 1021,
+    "denominator": 1024
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 257,
+    "denominator": 512
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 265,
+    "denominator": 512
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 293,
+    "denominator": 512
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 349,
+    "denominator": 512
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 419,
+    "denominator": 512
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 475,
+    "denominator": 512
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 503,
+    "denominator": 512
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.5,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 511,
+    "denominator": 512
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.75
+    ],
+    "k": 1,
+    "numerator": 8,
+    "denominator": 21845
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.75
+    ],
+    "k": 2,
+    "numerator": 92,
+    "denominator": 21845
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.75
+    ],
+    "k": 3,
+    "numerator": 596,
+    "denominator": 21845
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.75
+    ],
+    "k": 4,
+    "numerator": 2486,
+    "denominator": 21845
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.75
+    ],
+    "k": 5,
+    "numerator": 7022,
+    "denominator": 21845
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.75
+    ],
+    "k": 6,
+    "numerator": 13826,
+    "denominator": 21845
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      8,
+      0.75
+    ],
+    "k": 7,
+    "numerator": 19658,
+    "denominator": 21845
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 65539,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 65611,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 66367,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 70903,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 87913,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 128737,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 189973,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 242461,
+    "denominator": 262144
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 65537,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 65561,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 65813,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 67325,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 72995,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 86603,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 107015,
+    "denominator": 131072
+  },
+  {
+    "id": "zib",
+    "args": [
+      8,
+      0.75,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 124511,
+    "denominator": 131072
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 196830,
+    "denominator": 989527
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 492075,
+    "denominator": 989527
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 754515,
+    "denominator": 989527
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 907605,
+    "denominator": 989527
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 968841,
+    "denominator": 989527
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 985851,
+    "denominator": 989527
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 989091,
+    "denominator": 989527
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.25
+    ],
+    "k": 8,
+    "numerator": 989496,
+    "denominator": 989527
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.25
+    ],
+    "k": 9,
+    "numerator": 989526,
+    "denominator": 989527
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 1225723,
+    "denominator": 4194304
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 1816213,
+    "denominator": 4194304
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 675487,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 872317,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 1974269,
+    "denominator": 2097152
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 2066123,
+    "denominator": 2097152
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 1045819,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 1048249,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.25
+    ],
+    "k": 8,
+    "numerator": 4194211,
+    "denominator": 4194304
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.25
+    ],
+    "k": 9,
+    "numerator": 4194301,
+    "denominator": 4194304
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1107625,
+    "denominator": 2097152
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 1304455,
+    "denominator": 2097152
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 399925,
+    "denominator": 524288
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 465535,
+    "denominator": 524288
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 1007615,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 1038233,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 523369,
+    "denominator": 524288
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 524179,
+    "denominator": 524288
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.5
+    ],
+    "k": 8,
+    "numerator": 2097121,
+    "denominator": 2097152
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.25,
+      0.5
+    ],
+    "k": 9,
+    "numerator": 2097151,
+    "denominator": 2097152
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 10,
+    "denominator": 1023
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 5,
+    "denominator": 93
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 175,
+    "denominator": 1023
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 35,
+    "denominator": 93
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 637,
+    "denominator": 1023
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 77,
+    "denominator": 93
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 967,
+    "denominator": 1023
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.5
+    ],
+    "k": 8,
+    "numerator": 92,
+    "denominator": 93
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.5
+    ],
+    "k": 9,
+    "numerator": 1022,
+    "denominator": 1023
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 1027,
+    "denominator": 4096
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 1057,
+    "denominator": 4096
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 149,
+    "denominator": 512
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 97,
+    "denominator": 256
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 1091,
+    "denominator": 2048
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 1469,
+    "denominator": 2048
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 223,
+    "denominator": 256
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 491,
+    "denominator": 512
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.25
+    ],
+    "k": 8,
+    "numerator": 4063,
+    "denominator": 4096
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.25
+    ],
+    "k": 9,
+    "numerator": 4093,
+    "denominator": 4096
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1025,
+    "denominator": 2048
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 1035,
+    "denominator": 2048
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 135,
+    "denominator": 256
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 75,
+    "denominator": 128
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 705,
+    "denominator": 1024
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 831,
+    "denominator": 1024
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 117,
+    "denominator": 128
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 249,
+    "denominator": 256
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.5
+    ],
+    "k": 8,
+    "numerator": 2037,
+    "denominator": 2048
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.5,
+      0.5
+    ],
+    "k": 9,
+    "numerator": 2047,
+    "denominator": 2048
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.75
+    ],
+    "k": 1,
+    "numerator": 2,
+    "denominator": 69905
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.75
+    ],
+    "k": 2,
+    "numerator": 29,
+    "denominator": 69905
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.75
+    ],
+    "k": 3,
+    "numerator": 49,
+    "denominator": 13981
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.75
+    ],
+    "k": 4,
+    "numerator": 1379,
+    "denominator": 69905
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.75
+    ],
+    "k": 5,
+    "numerator": 27307,
+    "denominator": 349525
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.75
+    ],
+    "k": 6,
+    "numerator": 2527,
+    "denominator": 11275
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.75
+    ],
+    "k": 7,
+    "numerator": 165817,
+    "denominator": 349525
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.75
+    ],
+    "k": 8,
+    "numerator": 264232,
+    "denominator": 349525
+  },
+  {
+    "id": "ztbinom",
+    "args": [
+      10,
+      0.75
+    ],
+    "k": 9,
+    "numerator": 329842,
+    "denominator": 349525
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.25
+    ],
+    "k": 0,
+    "numerator": 1048579,
+    "denominator": 4194304
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.25
+    ],
+    "k": 1,
+    "numerator": 1048669,
+    "denominator": 4194304
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.25
+    ],
+    "k": 2,
+    "numerator": 262471,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.25
+    ],
+    "k": 3,
+    "numerator": 264901,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.25
+    ],
+    "k": 4,
+    "numerator": 555317,
+    "denominator": 2097152
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.25
+    ],
+    "k": 5,
+    "numerator": 647171,
+    "denominator": 2097152
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.25
+    ],
+    "k": 6,
+    "numerator": 438403,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.25
+    ],
+    "k": 7,
+    "numerator": 635233,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.25
+    ],
+    "k": 8,
+    "numerator": 3426667,
+    "denominator": 4194304
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.25
+    ],
+    "k": 9,
+    "numerator": 4017157,
+    "denominator": 4194304
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.5
+    ],
+    "k": 0,
+    "numerator": 1048577,
+    "denominator": 2097152
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.5
+    ],
+    "k": 1,
+    "numerator": 1048607,
+    "denominator": 2097152
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.5
+    ],
+    "k": 2,
+    "numerator": 262253,
+    "denominator": 524288
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.5
+    ],
+    "k": 3,
+    "numerator": 263063,
+    "denominator": 524288
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.5
+    ],
+    "k": 4,
+    "numerator": 534631,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.5
+    ],
+    "k": 5,
+    "numerator": 565249,
+    "denominator": 1048576
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.5
+    ],
+    "k": 6,
+    "numerator": 320897,
+    "denominator": 524288
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.5
+    ],
+    "k": 7,
+    "numerator": 386507,
+    "denominator": 524288
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.5
+    ],
+    "k": 8,
+    "numerator": 1841273,
+    "denominator": 2097152
+  },
+  {
+    "id": "zib",
+    "args": [
+      10,
+      0.75,
+      0.5
+    ],
+    "k": 9,
+    "numerator": 2038103,
+    "denominator": 2097152
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 1,
+    "numerator": 1,
+    "denominator": 2
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 2,
+    "numerator": 3,
+    "denominator": 4
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 3,
+    "numerator": 7,
+    "denominator": 8
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 4,
+    "numerator": 15,
+    "denominator": 16
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 5,
+    "numerator": 31,
+    "denominator": 32
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 6,
+    "numerator": 63,
+    "denominator": 64
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 7,
+    "numerator": 127,
+    "denominator": 128
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 8,
+    "numerator": 255,
+    "denominator": 256
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 9,
+    "numerator": 511,
+    "denominator": 512
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 10,
+    "numerator": 1023,
+    "denominator": 1024
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 11,
+    "numerator": 2047,
+    "denominator": 2048
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 12,
+    "numerator": 4095,
+    "denominator": 4096
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 13,
+    "numerator": 8191,
+    "denominator": 8192
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 14,
+    "numerator": 16383,
+    "denominator": 16384
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 15,
+    "numerator": 32767,
+    "denominator": 32768
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 16,
+    "numerator": 65535,
+    "denominator": 65536
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 17,
+    "numerator": 131071,
+    "denominator": 131072
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 18,
+    "numerator": 262143,
+    "denominator": 262144
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 19,
+    "numerator": 524287,
+    "denominator": 524288
+  },
+  {
+    "id": "ztgeom",
+    "args": [
+      0.5
+    ],
+    "k": 20,
+    "numerator": 1048575,
+    "denominator": 1048576
+  },
+  {
+    "id": "zeta-window",
+    "args": [
+      8,
+      -1
+    ],
+    "k": 1,
+    "numerator": 1,
+    "denominator": 36
+  },
+  {
+    "id": "zeta-window",
+    "args": [
+      8,
+      -1
+    ],
+    "k": 2,
+    "numerator": 1,
+    "denominator": 12
+  },
+  {
+    "id": "zeta-window",
+    "args": [
+      8,
+      -1
+    ],
+    "k": 3,
+    "numerator": 1,
+    "denominator": 6
+  },
+  {
+    "id": "zeta-window",
+    "args": [
+      8,
+      -1
+    ],
+    "k": 4,
+    "numerator": 5,
+    "denominator": 18
+  },
+  {
+    "id": "zeta-window",
+    "args": [
+      8,
+      -1
+    ],
+    "k": 5,
+    "numerator": 5,
+    "denominator": 12
+  },
+  {
+    "id": "zeta-window",
+    "args": [
+      8,
+      -1
+    ],
+    "k": 6,
+    "numerator": 7,
+    "denominator": 12
+  },
+  {
+    "id": "zeta-window",
+    "args": [
+      8,
+      -1
+    ],
+    "k": 7,
+    "numerator": 7,
+    "denominator": 9
+  }
+]

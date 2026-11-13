@@ -1,0 +1,1 @@
+{"case":{"id":"nbinom-none","base":"nbinom","point":7,"args":{"size":0,"prob":0.5},"config":{"zero":"none"},"centre":4},"invalid":512} 

@@ -150,3 +150,10 @@ TEST_CASE("zmnbinom: certificate details survive default and held zero share") {
 TEST_CASE("zmnbinom: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qzmnbinom(.5,1e308,.1,.1)));
 }
+
+#include "roundtrips.hpp"
+TEST_CASE("zmnbinom: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("zmnbinom",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::pzmnbinom(x,p[0],p[1],p[2],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qzmnbinom(x,p[0],p[1],p[2],l,g);});
+}

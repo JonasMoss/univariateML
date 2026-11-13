@@ -209,8 +209,15 @@ TEST_CASE("zip: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qzip(.5,1e308,.1,true,false)));
 }
 
-TEST_CASE("zip: rounded log half retains its component probability") {
-  CHECK(cppunivariate::distributions::qzip(-0.6931471805599453,1e8,.5,true,true)==99916056);
+TEST_CASE("zip: rounded log half uses the supplied-scale band") {
+  CHECK(cppunivariate::distributions::qzip(-0.6931471805599453,1e8,.5,true,true)==0);
   CHECK(cppunivariate::distributions::qzip(-0.6931471805599453,1e8,.5,false,true)==0);
   CHECK(cppunivariate::distributions::qzip(.5,1e8,.5,true,false)==0);
+}
+
+#include "roundtrips.hpp"
+TEST_CASE("zip: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("zip",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::pzip(x,p[0],p[1],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qzip(x,p[0],p[1],l,g);});
 }

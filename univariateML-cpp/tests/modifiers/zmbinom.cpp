@@ -212,3 +212,10 @@ TEST_CASE("zmbinom: delegated large-count logLik retains the truncated-binomial 
     CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
   }
 }
+
+#include "roundtrips.hpp"
+TEST_CASE("zmbinom: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("zmbinom",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::pzmbinom(x,p[0],p[1],p[2],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qzmbinom(x,p[0],p[1],p[2],l,g);});
+}

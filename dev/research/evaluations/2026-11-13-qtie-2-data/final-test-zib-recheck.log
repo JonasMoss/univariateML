@@ -1,0 +1,27 @@
+✔ | F W  S  OK | Context
+
+⠏ |          0 | modifier-kernel-zib                                            
+⠹ |      1   2 | modifier-kernel-zib                                            
+⠼ |      2  13 | modifier-kernel-zib                                            
+⠹ |      2  51 | modifier-kernel-zib                                            
+⠋ |      2  59 | modifier-kernel-zib                                            
+⠼ |      2  63 | modifier-kernel-zib                                            
+⠇ |      2  67 | modifier-kernel-zib                                            
+⠙ |      3  69 | modifier-kernel-zib                                            
+⠏ |      3 127 | modifier-kernel-zib                                            
+⠇ |      3 186 | modifier-kernel-zib                                            
+⠙ |      3 209 | modifier-kernel-zib                                            
+⠇ |      3 216 | modifier-kernel-zib                                            
+⠦ |      3 244 | modifier-kernel-zib                                            
+⠹ |      3 260 | modifier-kernel-zib                                            
+✔ |      3 280 | modifier-kernel-zib [1.7s]
+
+══ Results ═════════════════════════════════════════════════════════════════════
+Duration: 1.7 s
+
+── Skipped tests (3) ───────────────────────────────────────────────────────────
+• requires full test tier (3): 'test-modifier-kernel-zib.R:2:3',
+  'test-modifier-kernel-zib.R:55:3', 'test-modifier-kernel-zib.R:118:3'
+
+[ FAIL 0 | WARN 0 | SKIP 3 | PASS 280 ]
+Ran 1/1 deferred expressions

@@ -1,3 +1,47 @@
+// First computed crossing, on the integer/binary64 lattice. Sampling omits
+// the public band; the caller supplies the already conditioned probability.
+function discreteInverse(values, minimum, maximum, upperEndpoint, lower, log, fuzz, probability, firstDensity) {
+  if(!values.length)return new Float64Array();
+  const e=64*Number.EPSILON;
+  const adjusted=p=>log?(lower?(p>-Number.MAX_VALUE/(1+e)?p*(1+e):p):p*(1-e)):
+    lower?p*(1-e):(1-p>4*e?p*(1+e):p);
+  let first;
+  try {first=probability(minimum);} catch(error) {
+    if(!/Conditional interval probability cannot be resolved/.test(error.message))throw error;
+    const mass=Math.min(0,firstDensity());
+    const tail=lower?mass:(mass<-Math.LN2?Math.log1p(-Math.exp(mass)):Math.log(-Math.expm1(mass)));
+    first=log?tail:Math.exp(tail);
+  }
+  return Float64Array.from(values,p=>{
+    if(Number.isNaN(p)||(log?p>0:p<0||p>1))return NaN;
+    if(p===(log?-Infinity:0))return lower?minimum:upperEndpoint;
+    if(p===(log?0:1))return lower?upperEndpoint:minimum;
+    const target=fuzz?adjusted(p):p;
+    const reached=k=>{
+      let value;
+      try {value=k===minimum?first:probability(k);} catch(error) {
+        throw new Error(`Conditional quantile cannot be resolved at the required floating-point accuracy: ${error.message}`);
+      }
+      if(Number.isNaN(value))throw new Error('Conditional quantile probability evaluation failed');
+      return lower?value>=target:value<=target;
+    };
+    if(reached(minimum))return minimum;
+    let lo=minimum,hi=Math.min(maximum,Math.max(1,minimum));
+    while(!reached(hi)) {
+      lo=hi;
+      const next=Math.min(maximum,Number.MAX_VALUE,Math.max(hi+1,2*hi+1));
+      if(!Number.isFinite(next)||next<=hi)throw new Error('Conditional quantile cannot be resolved on the floating-point lattice');
+      hi=next;
+    }
+    while(hi-lo>1) {
+      const mid=lo+Math.floor((hi-lo)/2);
+      if(!(mid>lo&&mid<hi))break;
+      if(reached(mid))hi=mid;else lo=mid;
+    }
+    return hi;
+  });
+}
+
 // Modifier operations use the same native seam as R.
 export function modifierAPI(module, id, eligibility, capabilities) {
   const refusal = value => { throw new Error(`${value} is not implemented for \`ml${id}\`; see TASK-191 or its successor`); };
@@ -37,6 +81,12 @@ export function modifierAPI(module, id, eligibility, capabilities) {
     const z=mass(a,b);
     if(!Number.isFinite(z)) throw new Error('Truncation event has zero or unresolved probability');
     if(64*Number.EPSILON*Math.max(1,Math.abs(z))>1e-10) throw new Error('Conditional normalization cannot be resolved at the required floating-point accuracy');
+    if(kind==='q' && integer) {
+      const probability=k=>evaluate('p',[k],p,{...flags,lower,log})[0];
+      const density=()=>module[`d${id}`]([a+1],p,true,true)[0]-z;
+      const end=Number.isFinite(b)?b:module[`q${id}`]([1],p,true,false)[0];
+      return discreteInverse(x,a+1,b,end,lower,log,true,probability,density);
+    }
     return Float64Array.from(x,v=>{
       if(kind==='d') {const d=v<truncate[0]||v>truncate[1]?-Infinity:module[`d${id}`]([v],p,true,true)[0]-z;return log?d:Math.exp(d);}
       if(kind==='p') {
@@ -61,7 +111,23 @@ export function modifierAPI(module, id, eligibility, capabilities) {
       return module[`q${id}`]([lf<Math.log(.5)?lf:sf],p,lf<Math.log(.5),true)[0];
     });
   };
-  return {evaluate,fit(x,held,control) {
+  const sampleQuantile=(u,p,flags)=>{
+    if(!eligibility.integer)return evaluate('q',u,p,flags);
+    const {zero='none',truncate=null}=flags;
+    validate(zero,truncate);
+    if(id==='zeta'&&truncate) {
+      if(Math.max(1,Math.ceil(truncate[0]))!==1 || !Number.isFinite(truncate[1]) || truncate[1]<1 || truncate[1]>2147483647) throw new Error('finite zeta window requires [1,N]');
+      // Keep the native sampling inverse, including its historical Zipf CDF.
+      return module.zetaWindow('r',u,Math.floor(truncate[1]),p[0],true,false);
+    }
+    const physical=id==='lgser'||id==='zeta'?1:0;
+    const minimum=truncate?Math.max(physical,Math.ceil(truncate[0])):zero==='truncated'?1:zero==='none'?physical:0;
+    const maximum=Math.min(id==='binom'?p[0]:Infinity,truncate?Math.floor(truncate[1]):Infinity);
+    const probability=k=>evaluate('p',[k],p,{...flags,lower:true,log:false})[0];
+    const density=()=>evaluate('d',[minimum],p,{...flags,log:true})[0];
+    return discreteInverse(u,minimum,maximum,maximum,true,false,false,probability,density);
+  };
+  return {evaluate,sampleQuantile,fit(x,held,control) {
     const {zero='none',truncate=null}=control;validate(zero,truncate);
     if(control.reltol!==undefined && (!Number.isFinite(control.reltol) || control.reltol<=0) || control.iterlim!==undefined && (!Number.isInteger(control.iterlim) || control.iterlim<1 || control.iterlim>2147483647)) throw new Error('invalid modifier controls');
     if(control.abstol!==undefined && (!Number.isFinite(control.abstol) || control.abstol<=0)) throw new Error('invalid modifier controls');

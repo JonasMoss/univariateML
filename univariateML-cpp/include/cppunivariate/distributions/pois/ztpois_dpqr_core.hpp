@@ -98,20 +98,22 @@ inline special::LogTails zero_tails(int kind,double q,double a,double b,double p
 inline double cdf(int kind,double q,double a,double b,double p0,bool lower,bool log) {
   return special::tail_probability(zero_tails(kind,q,a,b,p0),lower,log);
 }
-inline double quantile(int kind,double p,double a,double b,double p0,bool lower,bool log,double start=-1) {
+inline double quantile(int kind,double p,double a,double b,double p0,bool lower,bool log,double start=-1,bool fuzz=true) {
   if(!valid(kind,a,b)||!(p0>=0 && p0<=1))return special::kNaN;
   if(std::isnan(p)||(log ? p>0 : (p<0 || p>1)))return special::kNaN;
-  if(p0==0.5) {
+  // Retain the component map only for sampling. Public ties are compared
+  // on the supplied modified-law scale, including its atom at zero.
+  if(!fuzz && p0==0.5) {
     const double offset=special::probability_minus_half(p,lower,log);
     if(offset<=0)return 0;
-    if(offset<0.25)return quantile(kind,2*offset,a,b,0,true,false,1);
+    if(offset<0.25)return quantile(kind,2*offset,a,b,0,true,false,1,false);
   }
   // Modification wrappers explicitly retain zero even when its mass is zero.
   // The default preserves positive-truncation callers (including lgser).
   if(start<0) start=p0==0?1:0;
   const double end=kind==3?a:(p0==1?0:(point(kind,a,b)?1:special::kPosInf));
   return special::discrete_quantile(special::discrete_log_tails(p,lower,log),start,end,
-      [=](double x){return zero_tails(kind,x,a,b,p0);},p,lower,log);
+      [=](double x){return zero_tails(kind,x,a,b,p0);},p,lower,log,fuzz);
 }
 }
 }

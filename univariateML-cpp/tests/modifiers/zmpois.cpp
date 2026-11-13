@@ -116,5 +116,12 @@ TEST_CASE("zmpois: quantile search guards and representability") {
 TEST_CASE("zmpois: large-rate density and rounded log-half quantile") {
   CHECK(cppunivariate::distributions::dzmpois(1e8,1e8,.5,true)==
         doctest::Approx(-10.822426086574135).epsilon(1e-12));
-  CHECK(cppunivariate::distributions::qzmpois(-0.6931471805599453,1e8,.5,true,true)==99916056);
+  CHECK(cppunivariate::distributions::qzmpois(-0.6931471805599453,1e8,.5,true,true)==0);
+}
+
+#include "roundtrips.hpp"
+TEST_CASE("zmpois: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("zmpois",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::pzmpois(x,p[0],p[1],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qzmpois(x,p[0],p[1],l,g);});
 }

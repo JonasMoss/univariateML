@@ -440,12 +440,16 @@ TEST_CASE("tbinom: uncertified coefficients meet the local accuracy contract") {
   }
 }
 
-TEST_CASE("tbinom: half probability retains a subnormal conditional odds displacement") {
+TEST_CASE("tbinom: public half band covers a subnormal conditional odds displacement") {
  const double n=std::ldexp(1.,1022),p=std::ldexp(1.,-1022);
- CHECK(cppunivariate::distributions::qtbinom(.5,p,-1,1,n,true,false)==1);
- CHECK(cppunivariate::distributions::qtbinom(.5,p,-1,1,n,false,false)==1);
- CHECK(cppunivariate::distributions::qtbinom(std::log(.5),p,-1,1,n,true,true)==1);
+ CHECK(cppunivariate::distributions::qtbinom(.5,p,-1,1,n,true,false)==0);
+ CHECK(cppunivariate::distributions::qtbinom(.5,p,-1,1,n,false,false)==0);
+ CHECK(cppunivariate::distributions::qtbinom(std::log(.5),p,-1,1,n,true,true)==0);
  CHECK(cppunivariate::distributions::qtbinom(std::log(.5),p,-1,1,n,false,true)==0);
+ // The historical unadjusted comparison still resolves that displacement.
+ CHECK(cppunivariate::truncated_detail::quantile(.5,p,-1,1,n,true,false,false)==1);
+ CHECK(cppunivariate::truncated_detail::quantile(.5,p,-1,1,n,false,false,false)==1);
+ CHECK(cppunivariate::truncated_detail::quantile(std::log(.5),p,-1,1,n,true,true,false)==1);
 }
 
 TEST_CASE("tbinom: optional work controls meter the replacement route") {
@@ -466,4 +470,24 @@ TEST_CASE("tbinom: explicit 512 work units use the controlled held-size solver")
     CHECK(r.prob/(1.5e-308)==doctest::Approx(1).epsilon(1e-10));
   }
   CHECK(cppunivariate::tbinom_design_mle({x.data(),x.size()},-1,INFINITY,1e308).status==cppunivariate::TbinomStatus::NumericalFailure);
+}
+
+#include "roundtrips.hpp"
+TEST_CASE("tbinom: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("tbinom",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::ptbinom(x,p[0],p[1],p[2],p[3],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qtbinom(x,p[0],p[1],p[2],p[3],l,g);});
+}
+
+TEST_CASE("tbinom: public fuzz does not change the sampling inverse") {
+  struct FixedRng {double runif(double,double) {return 2./3+std::numeric_limits<double>::epsilon();}} rng;
+  CHECK(cppunivariate::distributions::qtbinom(rng.runif(0,1),.5,0,2,2)==1);
+  CHECK(cppunivariate::distributions::rtbinom(rng,.5,0,2,2)==2);
+}
+
+TEST_CASE("tbinom: one-sided and whole modifier windows round trip") {
+  for(const auto window : {std::pair<double,double>{1,12},{1,INFINITY},{-1,5},{-1,INFINITY}})
+    mltest::modifier_roundtrips("ztbinom",
+      [=](double x,const std::vector<double>& p,bool l,bool g) {return cppunivariate::distributions::ptbinom(x,p[1],window.first,window.second,p[0],l,g);},
+      [=](double x,const std::vector<double>& p,bool l,bool g) {return cppunivariate::distributions::qtbinom(x,p[1],window.first,window.second,p[0],l,g);},false,2);
 }

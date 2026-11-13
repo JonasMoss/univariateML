@@ -1,0 +1,22 @@
+Setting up EMSDK environment (suppress these messages with EMSDK_QUIET=1)
+Adding directories to PATH:
+PATH += /home/jonas/emsdk
+PATH += /home/jonas/emsdk/upstream/emscripten
+
+Setting environment variables:
+PATH = /home/jonas/emsdk:/home/jonas/emsdk/upstream/emscripten:/home/jonas/.npm-global/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/jonas/.npm-global/bin:/home/jonas/.venvs/global/bin:/home/jonas/.local/bin:/home/jonas/.codex/tmp/arg0-linux/codex-arg0glWF72:/home/jonas/Files/work/misc/codex-math-web/node_modules/.bin:/home/jonas/Files/work/misc/node_modules/.bin:/home/jonas/Files/work/node_modules/.bin:/home/jonas/Files/node_modules/.bin:/home/jonas/node_modules/.bin:/home/node_modules/.bin:/node_modules/.bin:/usr/share/nodejs/@npmcli/run-script/lib/node-gyp-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/jonas/mplusdemo:/home/jonas/.fzf/bin
+EMSDK = /home/jonas/emsdk
+EMSDK_NODE = /home/jonas/emsdk/node/24.19.0_64bit/bin/node
+emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.13 (e13ee988ce3d87a738dd8f3661d02223308c412a)
+Copyright (C) 2026 the Emscripten authors (see AUTHORS.txt)
+This is free and open source software under the MIT license.
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+In file included from /home/jonas/Files/programming/univariateML.wt/qtie-2/bindings/js/bindings.cpp:8:
+In file included from /home/jonas/Files/programming/univariateML.wt/qtie-2/bindings/common/modifiers.hpp:4:
+In file included from /home/jonas/Files/programming/univariateML.wt/qtie-2/bindings/common/distributions/binom/tbinom_fit.hpp:3:
+In file included from /home/jonas/Files/programming/univariateML.wt/qtie-2/build/scratch/qtie-2-js-baseline/univariateML-cpp/include/cppunivariate/distributions/binom/tbinom_mle.hpp:7:
+/home/jonas/Files/programming/univariateML.wt/qtie-2/build/scratch/qtie-2-js-baseline/univariateML-cpp/include/cppunivariate/distributions/binom/../binom/mle.hpp:162:60: warning: self-comparison always evaluates to true [-Wtautological-compare]
+  162 |     if (std::numeric_limits<CPPUNIV_EXTENDED_REAL>::digits <=
+      |                                                            ^
+1 warning generated.

@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: discrete modifier windows use the conditional probability band in all modes
+ok 1 - discrete modifier windows use the conditional probability band in all modes
+  ---
+  duration_ms: 181.605875
+  type: 'test'
+  ...
+# Subtest: modifier sampling inversion excludes the public conditional band
+ok 2 - modifier sampling inversion excludes the public conditional band
+  ---
+  duration_ms: 4.214687
+  type: 'test'
+  ...
+# Subtest: discrete modifier windows use the conditional probability band in all modes
+ok 3 - discrete modifier windows use the conditional probability band in all modes
+  ---
+  duration_ms: 208.482898
+  type: 'test'
+  ...
+# Subtest: modifier sampling inversion excludes the public conditional band
+ok 4 - modifier sampling inversion excludes the public conditional band
+  ---
+  duration_ms: 3.803206
+  type: 'test'
+  ...
+# Subtest: inflated binomial quantiles stop on extreme numerical failure
+ok 5 - inflated binomial quantiles stop on extreme numerical failure
+  ---
+  duration_ms: 69.929921
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 998.866638

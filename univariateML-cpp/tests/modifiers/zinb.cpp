@@ -311,7 +311,25 @@ TEST_CASE("zinb: quantile search guards and representability") {
   CHECK(std::isnan(cppunivariate::distributions::qzinb(.5,1e308,.1,.1,true,false)));
 }
 
-TEST_CASE("zinb: half-inflation log quantile retains the positive component") {
+TEST_CASE("zinb: half-inflation log quantile uses the supplied-scale band") {
   const double got=cppunivariate::distributions::qzinb(-0.6931471805599453,1e8,.5,.5,true,true);
-  CHECK((got==99881303 || got==99881304));
+  CHECK(got==0);
+}
+
+#include "roundtrips.hpp"
+TEST_CASE("zinb: modifier four-mode round trips") {
+ mltest::modifier_roundtrips("zinb",
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::pzinb(x,p[0],p[1],p[2],l,g);},
+ [](double x,const std::vector<double>& p,bool l,bool g){return cppunivariate::distributions::qzinb(x,p[0],p[1],p[2],l,g);});
+}
+
+TEST_CASE("zinb: geometric inflation modifier round trips") {
+  for(double pi : {0.,.25,.5,1.})
+    mltest::modifier_roundtrips("ztgeom",
+      [=](double x,const std::vector<double>& p,bool l,bool g) {
+        return cppunivariate::distributions::pzinb(x,1,p[0],pi,l,g);
+      },
+      [=](double x,const std::vector<double>& p,bool l,bool g) {
+        return cppunivariate::distributions::qzinb(x,1,p[0],pi,l,g);
+      });
 }

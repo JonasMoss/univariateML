@@ -1,0 +1,18 @@
+{
+  "sampler_draws": 135809,
+  "sampler_differences": 0,
+  "before": {
+    "n": 59218,
+    "up": 989,
+    "earlier": 627,
+    "invalid": 0,
+    "crossing_failure": 990
+  },
+  "after": {
+    "n": 59218,
+    "up": 0,
+    "earlier": 628,
+    "invalid": 0,
+    "crossing_failure": 0
+  }
+}

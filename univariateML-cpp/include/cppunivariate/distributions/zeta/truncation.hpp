@@ -183,10 +183,11 @@ inline ZetaWindowResult zeta_window_mle(ispan x,double a,double b,double held=NA
   return out;
 }
 // Conditional evaluation is separate from zeta's improper s<=1 parent.
-inline double zeta_window_eval(char kind,double v,int N,double s,bool lower=true,bool log=false) {
+inline double zeta_window_eval(char kind,double v,int N,double s,bool lower=true,bool log=false,bool fuzz=true) {
+  if(kind=='r')return zeta_window_eval('q',v,N,s,lower,log,false);
   if(N<1 || !std::isfinite(s) || std::isnan(v))return NAN;
   if(s>=0 && kind=='d')return distributions::dzipf(v,N,s,log);
-  if(s>=0 && kind!='d' && kind!='p')return distributions::qzipf(v,N,s,lower,log);
+  if(!fuzz && s>=0 && kind!='d' && kind!='p')return distributions::zipf_quantile(v,N,s,lower,log,false);
   const double den=kind=='d'||kind=='p'?zeta_window_detail::log_range(1,N,N,s):0;
   if(kind=='d') {
     const double lp=v<1||v>N||v!=std::floor(v)?-INFINITY:-s*zeta_window_detail::log_ratio(v,N)-den;
@@ -204,19 +205,9 @@ inline double zeta_window_eval(char kind,double v,int N,double s,bool lower=true
   if(log?v>0:(v<0||v>1))return NAN;
   if(v==(log?-INFINITY:0))return lower?1:N;
   if(v==(log?0:1))return lower?N:1;
-  const double lp=log?(lower?v:special::log1mexp(v)):(lower?std::log(v):std::log1p(-v));
-  const double ls=log?(lower?special::log1mexp(v):v):(lower?std::log1p(-v):std::log(v));
-  const bool use_lower=lp<=ls;
-  const double target=use_lower?lp:ls;
-  int lo=1,hi=N;
-  while(lo<hi) {
-    const int mid=lo+(hi-lo)/2;
-    const double p=zeta_window_eval('p',mid,N,s,use_lower,true);
-    if(std::isnan(p))return NAN;
-    // Resolve probability ties within the discrete-quantile tail criterion.
-    if(use_lower?p>=target-5e-13:p<=target+5e-13)hi=mid;else lo=mid+1;
-  }
-  return lo;
+  return special::discrete_search(1,N,[&](double k) {
+    return special::discrete_reached(zeta_window_eval('p',k,N,s,lower,log),v,lower,log,fuzz);
+  });
 }
 }
 
