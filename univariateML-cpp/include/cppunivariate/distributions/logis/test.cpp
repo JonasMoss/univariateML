@@ -27,10 +27,15 @@ TEST_CASE("logis: seeded sample with outlier") {
 }
 
 TEST_CASE("logis: invalid inputs never report success") {
-  for (const std::vector<double> &x : {std::vector<double>{}, {1}, {1, 1},
+  for (const std::vector<double> &x : {std::vector<double>{},
        {0, std::numeric_limits<double>::infinity()}}) {
     const auto r = cppunivariate::logistic_mle(mltest::as_span(x), mltest::kFitTol, mltest::kFitMaxit);
     CHECK(r.status == cppunivariate::LogisticStatus::InvalidInput);
+  }
+  // Constant samples are a scale collapse, not invalid input (TASK-214.3).
+  for (const std::vector<double> &x : {std::vector<double>{1}, {1, 1}}) {
+    const auto r = cppunivariate::logistic_mle(mltest::as_span(x), mltest::kFitTol, mltest::kFitMaxit);
+    CHECK(r.status == cppunivariate::LogisticStatus::Unbounded);
   }
 }
 
@@ -90,4 +95,53 @@ TEST_CASE("logis: held profiles preserve extreme units") {
     CHECK(fit.scale/unit==doctest::Approx(base.scale).epsilon(1e-8));
     CHECK(fit.logLik+x.size()*std::log(unit)==doctest::Approx(base.logLik).epsilon(1e-8));
   }
+}
+
+TEST_CASE("logis: an absolute tol below the location's resolution; constant data collapse") {
+  // TASK-214.3. (1e-8, 1, 1e8) at tol 1e-10 used to end in IterationFailure
+  // after 100 iterations: the absolute location step cannot fall below 1e-10
+  // near 2.6e7. Reference: 50-digit score equations (fix-nonfinite data).
+  const std::vector<double> x{1e-8,1,1e8};
+  const auto r=cppunivariate::logistic_mle(mltest::as_span(x),1e-10,100);
+  REQUIRE(r.status==cppunivariate::LogisticStatus::Ok);
+  CHECK(r.mu==doctest::Approx(26275335.36836199439710978).epsilon(1e-12));
+  CHECK(r.scale==doctest::Approx(28619993.76342037092873051).epsilon(1e-12));
+  CHECK(r.logLik==doctest::Approx(-57.41148262342058850475964).epsilon(1e-13));
+  // Constant data, and a held location every observation equals: the scale
+  // collapses (used to be InvalidInput).
+  const std::vector<double> c{2,2,2};
+  const auto rc=cppunivariate::logistic_mle(mltest::as_span(c),1e-10,100);
+  CHECK(rc.status==cppunivariate::LogisticStatus::Unbounded);
+  CHECK(cppunivariate::outcome(rc).kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(cppunivariate::outcome(rc).reason==cppunivariate::OutcomeReason::Unbounded);
+  const auto rh=cppunivariate::logistic_mle(mltest::as_span(c),1e-10,100,2.0,NAN);
+  CHECK(rh.status==cppunivariate::LogisticStatus::Unbounded);
+  CHECK(cppunivariate::logistic_mle(mltest::as_span(c),1e-10,100,1.0,NAN).status==cppunivariate::LogisticStatus::Ok);
+  CHECK(cppunivariate::logistic_mle(mltest::as_span(c),1e-10,100,NAN,1.0).status==cppunivariate::LogisticStatus::Ok);
+}
+
+TEST_CASE("logis: held scale, location bracket at adjacent doubles") {
+  // Archive case 4719 (offset 1e8, scale held at 1.008): the width 1e-12*s
+  // is below the spacing near 1e8, so the bisection stalled into
+  // IterationFailure. Signs certified at adjacent doubles now end it.
+  const auto read=[](std::initializer_list<const char*> words) {
+    std::vector<double> v;for(const char* w:words)v.push_back(std::strtod(w,nullptr));return v;
+  };
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto x=read({"0x1.7d783f609d127p+26","0x1.7d7840110d012p+26","0x1.7d7840000db82p+26",
+      "0x1.7d783fc2b056ap+26","0x1.7d7840351a593p+26","0x1.7d783f61e5240p+26","0x1.7d7840acdca3bp+26",
+      "0x1.7d78407da7befp+26","0x1.7d783fce71df4p+26","0x1.7d783fdce8cc5p+26","0x1.7d78402f7065cp+26",
+      "0x1.7d78407729152p+26"});
+  const auto r=cppunivariate::logistic_mle(mltest::as_span(x),mltest::kFitTol,mltest::kFitMaxit,nan,1.0081430589945095);
+  REQUIRE(r.status==cppunivariate::LogisticStatus::Ok);
+  CHECK(std::abs(r.mu-100000000.116207034405182)<=4*(std::nextafter(1e8,2e8)-1e8));
+  CHECK(r.logLik==doctest::Approx(-22.93818887915537710812935).epsilon(1e-13));
+  // Archive case 4718 (spread 1e150, scale 1): the computed score is exactly
+  // zero between the middle order statistics, so no bracket certifies.
+  const auto y=read({"-0x1.8588474a3c164p+499","0x1.4d5ec9a539d1fp+496","0x1.0c3bdee89a5a3p+488",
+      "-0x1.2baecb9b165f4p+498","0x1.038fca903d996p+498","-0x1.82667ef7aeb8ap+499","0x1.a677329ce2dc6p+499",
+      "0x1.3318554c44384p+499","-0x1.e47100bd6e2b8p+497","-0x1.5709f3c33f45cp+497","0x1.cfc127e5d264cp+497",
+      "0x1.2338de5d01383p+499"});
+  CHECK(cppunivariate::logistic_mle(mltest::as_span(y),mltest::kFitTol,mltest::kFitMaxit,nan,1.0081430589945095).status!=
+        cppunivariate::LogisticStatus::Ok);
 }

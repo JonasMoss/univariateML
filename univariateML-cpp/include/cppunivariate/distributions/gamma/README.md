@@ -130,6 +130,15 @@ shape held, scale is analytic; with scale held, the monotone digamma
 equation is bisected. This establishes uniqueness of the mathematical
 solution, subject to floating-point and solver tolerances.
 
+With both coefficients free the shape is scale-free, and the scale is
+$\bar x/k$. Its MLE can lie below binary64 resolution: on $(1,2,3)$ times
+the smallest subnormal it is $0.372$ of that number and rounds to zero.
+Such a fit stops with `TransformFailure` and a tolerance detail giving the
+attainable relative accuracy; a scale above the binary64 range stops with
+`TransformFailure` alone. A subnormal sample mean is itself a rounded
+multiple of the smallest subnormal, so the shape score then comes from
+relative deviations.
+
 ## Decision history
 
 The historical Newton initialization and absolute step tolerance were kept

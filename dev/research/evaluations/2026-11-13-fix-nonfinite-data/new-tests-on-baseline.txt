@@ -1,0 +1,26 @@
+New test.cpp cases compiled against the baseline headers (git archive bbe1b13a,
+native build, GCC 15.2.0, -std=gnu++17 -O2 -DNDEBUG); test_support.hpp and
+goldens from the working tree (unchanged). The same cases pass on the fixed
+headers in both builds (scratch doctest binaries and `just cpp-test`,
+`just cpp-test-no-long-double`).
+
+== norm and cauchy (compile against the baseline; the new cases fail)
+TEST CASE:  cauchy: an empty sample is invalid input, one observation an unbounded atom
+cauchy/test.cpp:260: ERROR: CHECK( r.status==cppunivariate::CauchyStatus::InvalidInput ) is NOT correct!
+cauchy/test.cpp:261: ERROR: CHECK( cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Failure ) is NOT correct!
+cauchy/test.cpp:262: ERROR: CHECK( cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::InvalidInput ) is NOT correct!
+cauchy/test.cpp:263: ERROR: CHECK( fit_cauchy(empty,...,NaN,NaN).status==CauchyStatus::InvalidInput ) is NOT correct!
+cauchy/test.cpp:267: ERROR: CHECK( cppunivariate::fit_cauchy(mltest::as_span(bad),1e-10,100).status==cppunivariate::CauchyStatus::InvalidInput ) is NOT correct!
+TEST CASE:  norm: the sd is profiled at the exact mean, not the rounded one
+norm/test.cpp:640: ERROR: CHECK( std::abs(r.sd/sd-1)<1e-14 ) is NOT correct!
+norm/test.cpp:641: ERROR: CHECK( r.logLik==doctest::Approx(106.1302606629018611538071).epsilon(1e-14) ) is NOT correct!
+norm/test.cpp:646: ERROR: CHECK( h.logLik==doctest::Approx(-3*(std::log(s)+0.5*std::log(2*cppunivariate::pi))-1.5*(sd/s)*(sd/s)).epsilon(1e-14) ) is NOT correct!
+norm/test.cpp:652: ERROR: CHECK( std::abs(ry.sd/(gap/2)-1)<1e-14 ) is NOT correct!
+
+== gamma, logis, weibull, gumbel, gompertz (assert statuses or fields the baseline lacks)
+gamma: does not compile against baseline: 'GammaResult' has no member named 'stop_detail'; 'AccuracyStop' has not been declared
+logis: does not compile against baseline: 'Unbounded' is not a member of 'LogisticStatus'
+weibull: does not compile against baseline: 'NumericalFailure' is not a member of 'WeibullStatus'
+gumbel: does not compile against baseline: 'NumericalFailure' is not a member of 'GumbelStatus'
+gompertz: does not compile against baseline: 'NumericalFailure' is not a member of 'GompertzStatus'
+Their baseline behaviour on the same inputs is in before-after.txt.

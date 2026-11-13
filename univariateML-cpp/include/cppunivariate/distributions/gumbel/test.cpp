@@ -176,3 +176,23 @@ TEST_CASE("gumbel: held scale does not hide an unrepresentable location") {
   const std::vector<double> x{0,u};
   CHECK(cppunivariate::fit_gumbel_held({x.data(),x.size()},1e-10,100,NAN,u).status==cppunivariate::GumbelStatus::AccuracyFailure);
 }
+
+TEST_CASE("gumbel: unrepresentable log likelihood at held values") {
+  // TASK-214.3, archive case 3008: data near 1e150 of both signs with both
+  // coefficients held; exp(-z) overflows and the log likelihood is about
+  // -10^(3.66e149). It used to return Ok with logLik -Inf.
+  std::vector<double> x;
+  for(const char* h:{"0x1.6b51ab798eca6p+499","-0x1.92c1ac345ade0p+494","-0x1.5b83e24bb8ee8p+498",
+      "0x1.0a95335440d9fp+500","0x1.2dccd5b1619dap+500","0x1.88bb91b93e758p+500","0x1.b3aa95091712ep+499",
+      "-0x1.8dfeed445558ep+499","0x1.81af676c8cfdap+499","0x1.d783fe789fa5dp+497","0x1.62e0db47c3f33p+500",
+      "0x1.7c1201c5ee206p+501"})x.push_back(std::strtod(h,nullptr));
+  const auto r=cppunivariate::fit_gumbel_held(mltest::as_span(x),1e-10,100,2.964923020698754,3.021078660513882);
+  CHECK(r.status==cppunivariate::GumbelStatus::NumericalFailure);
+  CHECK(std::isnan(r.logLik));
+  CHECK(r.mu==2.964923020698754);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+  const std::vector<double> y{-1000,0,1000};
+  CHECK(cppunivariate::fit_gumbel_held(mltest::as_span(y),1e-10,100,0,1).status==cppunivariate::GumbelStatus::NumericalFailure);
+  CHECK(cppunivariate::fit_gumbel_held(mltest::as_span(y),1e-10,100,0,1000).status==cppunivariate::GumbelStatus::Ok);
+}

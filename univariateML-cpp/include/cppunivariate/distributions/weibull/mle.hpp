@@ -18,7 +18,9 @@
 
 namespace cppunivariate {
 
-enum class WeibullStatus { Ok, InvalidInput, Unbounded, IterationFailure, AccuracyFailure };
+// NumericalFailure: the log likelihood at the returned (or held)
+// coefficients lies outside binary64; the coefficients are kept.
+enum class WeibullStatus { Ok, InvalidInput, Unbounded, IterationFailure, AccuracyFailure, NumericalFailure };
 
 struct WeibullResult {
   double shape;
@@ -37,6 +39,7 @@ inline FitOutcome outcome(const WeibullResult& r) {
     case WeibullStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case WeibullStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case WeibullStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case WeibullStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }
   return {};
 }
@@ -86,7 +89,9 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
       g.status == GumbelStatus::Unbounded ? WeibullStatus::Unbounded :
       g.status == GumbelStatus::AccuracyFailure ? WeibullStatus::AccuracyFailure :
       g.status == GumbelStatus::InvalidInput ? WeibullStatus::InvalidInput :
+      g.status == GumbelStatus::NumericalFailure ? WeibullStatus::NumericalFailure :
       WeibullStatus::IterationFailure};
+  if(out.status==WeibullStatus::Ok && !std::isfinite(out.logLik)) {out.logLik=NAN;out.status=WeibullStatus::NumericalFailure;}
   if(out.status==WeibullStatus::AccuracyFailure){if(out.shape>0 && out.scale>0)record_accuracy(out,tol,{shape,scale},{out.shape,out.scale});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}
   return out;
 }
@@ -111,12 +116,34 @@ inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape0,doubl
   int iterations=0;
   if(std::isnan(scale)) {
     double top=logs[0];for(double v:logs)top=std::max(top,v);
+    double ideal;
+    // scale^k = mean(x^k). Products k*(log x - top) below the working
+    // type's normal range keep only absolute accuracy, which dividing by k
+    // magnifies (k = denorm_min gave scale 1.4715 for sqrt(2), double-only
+    // build, TASK-214.3). Below that k, divide k out analytically:
+    // log scale = top + A*log1p(k*A)/(k*A), A = mean(d*expm1(k*d)/(k*d)),
+    // d = log x - top; both ratios are 1 + O(k*d) there.
+    typedef CPPUNIV_EXTENDED_REAL Ext;
+    if(shape<2*std::numeric_limits<Ext>::denorm_min()/std::numeric_limits<Ext>::epsilon()) {
+      const auto relative=[](Ext u,bool log_form) {
+        if(std::abs(u)<Ext(1e-5))return log_form?1-u/2+u*u/3:1+u/2+u*u/6;
+        return log_form?std::log1p(u)/u:std::expm1(u)/u;
+      };
+      Ext mean_d=0,c=0;
+      for(double v:logs) {
+        const Ext d=static_cast<Ext>(v)-top;
+        const Ext y=d*relative(static_cast<Ext>(shape)*d,false)/n-c,t=mean_d+y;
+        c=(t-mean_d)-y;mean_d=t;
+      }
+      ideal=top+static_cast<double>(mean_d*relative(static_cast<Ext>(shape)*mean_d,true));
+    } else {
     CPPUNIV_EXTENDED_REAL shifted=0,c=0;
     for(double v:logs) {
       const CPPUNIV_EXTENDED_REAL y=std::expm1(static_cast<CPPUNIV_EXTENDED_REAL>(shape)*(v-top))-c,t=shifted+y;
       c=(t-shifted)-y;shifted=t;
     }
-    const double ideal=top+static_cast<double>(std::log1p(shifted/n)/shape);
+    ideal=top+static_cast<double>(std::log1p(shifted/n)/shape);
+    }
     scale=std::exp(ideal);
     if(!(scale>0 && std::isfinite(scale)) || std::abs(std::log(scale)-ideal)>.25*tol)
       {WeibullResult out{shape,scale,nan,0,WeibullStatus::AccuracyFailure};if(!std::isfinite(out.logLik)&&shape>0&&scale>0&&std::isfinite(shape+scale)){out.logLik=0;for(double v:x)out.logLik+=distributions::dweibull(v,shape,scale,true);}
@@ -170,6 +197,9 @@ inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape0,doubl
     const CPPUNIV_EXTENDED_REAL y=std::log(shape)-logs[i]+z-std::exp(z)-c,t=ll+y;
     c=(t-ll)-y;ll=t;
   }
+  // (x/scale)^shape can exceed binary64 at held coefficients (archive case
+  // 8443: logLik -1.8e438): the log likelihood is unrepresentable.
+  if(!std::isfinite(static_cast<double>(ll)))return {shape,scale,nan,iterations,WeibullStatus::NumericalFailure};
   return {shape,scale,static_cast<double>(ll),iterations};
 }
 

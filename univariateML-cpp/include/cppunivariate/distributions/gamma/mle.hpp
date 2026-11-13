@@ -17,6 +17,13 @@
 // log(k) inside (1/(2s), 1/s) (Alzer 1997: 1/(2k) < log k - psi(k) < 1/k),
 // with asymptotic series for large k, and the log-likelihood uses the
 // Stirling form. Constant data have s = 0: no MLE (point-mass limit).
+//
+// Range. A sum that overflows is formed from data scaled by an exact power
+// of two. A subnormal sample mean is rounded to a multiple of denorm_min, so
+// s comes from relative deviations there too. When the scale mean/shape
+// leaves the normal binary64 range it is formed by power-of-two scaling;
+// below binary64 resolution the fit stops with TransformFailure and a
+// tolerance detail, above the range with TransformFailure alone.
 
 #pragma once
 #include "../../core/work_budget.hpp"
@@ -27,6 +34,7 @@
 #include "../../core/reductions.hpp"
 #include "../../core/span.hpp"
 #include "../../core/outcome.hpp"
+#include "../../core/stop_detail.hpp"
 #include "../../special/special.hpp"
 
 #include <cmath>
@@ -43,6 +51,7 @@ struct GammaResult {
   double logLik;
   int iterations;
   GammaStatus status = GammaStatus::Ok;
+  StopDetail stop_detail{};
 };
 
 namespace gamma_detail {
@@ -92,6 +101,44 @@ inline double robust_s(span x, double mean_hat) {
   return sum_phi / dn - phi(m_d, 1.0 + m_d);
 }
 
+// Scale and log likelihood when shape/mean_hat is not a normal binary64
+// rate: a subnormal sample mean or a scale outside the normal range. The
+// mean is c (1 + m), m the mean relative deviation from c = mean_hat, exact
+// to rounding for any c; the log likelihood depends on the data only
+// through s and mean(log x).
+inline GammaResult finish(span x, double shape, double s, double lx_bar, double mean_hat,
+                          double tol, int iterations) {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const double dn = static_cast<double>(x.size());
+  const double per_obs =
+      shape >= 100.0
+          ? 0.5 * std::log(shape) - 0.5 * std::log(2.0 * cppunivariate::pi) - stirlerr(shape) - shape * s - lx_bar
+          : shape * std::log(shape) - shape - std::lgamma(shape) - shape * s - lx_bar;
+  const double logLik = dn * per_obs;
+  if (!(shape > 0.0 && std::isfinite(shape)) || !std::isfinite(logLik) || !(mean_hat > 0.0 && std::isfinite(mean_hat)))
+    return {nan, nan, nan, iterations, GammaStatus::IterationFailure};
+  double m = 0.0;
+  for (auto v : x) m += (v - mean_hat) / mean_hat;
+  m /= dn;
+  int e = 0;
+  const double f = std::frexp(mean_hat, &e);  // mean_hat = f 2^e, f in [1/2, 1)
+  const double mantissa = f * (1.0 + m) / shape;
+  const double scale = std::ldexp(mantissa, e);
+  if (std::isfinite(scale) && scale >= std::numeric_limits<double>::min()) return {shape, scale, logLik, iterations};
+  GammaResult out{shape, nan, logLik, iterations, GammaStatus::TransformFailure};
+  if (std::isfinite(scale)) {
+    // Below the normal range the binary64 spacing is denorm_min: relative
+    // resolution denorm_min/scale at the exact scale. (1, 2, 3)*denorm_min
+    // has scale 0.372 denorm_min, which rounds to zero (TASK-214.3).
+    const double log_scale = std::log(mantissa) + e * std::log(2.0);
+    const double floor = std::exp(std::log(std::numeric_limits<double>::denorm_min()) - log_scale);
+    if (scale > 0.0 && floor <= std::min(tol, 1e-10)) return {shape, scale, logLik, iterations};
+    out.stop_detail.accuracy_stop = AccuracyStop::Tolerance;
+    out.stop_detail.attainable_tol = floor;
+  }
+  return out;
+}
+
 }  // namespace gamma_detail
 
 inline GammaResult gamma_mle(span x, double tol, int maxit) {
@@ -106,9 +153,15 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   const double dn = static_cast<double>(n);
   double mean_hat = cppunivariate::mean(x);
   if (!std::isfinite(mean_hat)) {
+    // The sum overflows. Add the data scaled by 2^-k with 2^k >= 2n, which
+    // keeps a double sum finite; in extended precision the scaling is exact
+    // and the result equals the unscaled extended sum.
+    int k = 0;
+    std::frexp(dn, &k);
+    ++k;
     CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
-    for (auto v : x) total += v;
-    mean_hat = static_cast<double>(total / dn);
+    for (auto v : x) total += std::ldexp(static_cast<CPPUNIV_EXTENDED_REAL>(v), -k);
+    mean_hat = std::ldexp(static_cast<double>(total / dn), k);
   }
   const double lx_bar = cppunivariate::mean_log(x);
   double s = std::log(mean_hat) - lx_bar;
@@ -118,7 +171,9 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   if (all_equal) return {kNaN, kNaN, kNaN, 0, GammaStatus::Degenerate};
 
   int iterations = 0;
-  if (s >= 1e-3 && std::isfinite(s)) {
+  // The direct s needs a mean with full relative accuracy; a subnormal mean
+  // is rounded to a multiple of denorm_min.
+  if (s >= 1e-3 && std::isfinite(s) && mean_hat >= std::numeric_limits<double>::min()) {
     auto f_over_df = [s](double shape) {
       return (std::log(shape) - cppunivariate::special::digamma(shape) - s) /
              (1.0 / shape - cppunivariate::special::trigamma(shape));
@@ -132,7 +187,10 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
       const double rate = nr.x / mean_hat;
       const double logLik = dn * (nr.x * std::log(rate) - std::lgamma(nr.x) +
                                   (nr.x - 1.0) * lx_bar - rate * mean_hat);
-      return {nr.x, 1.0 / rate, logLik, nr.iterations};
+      if (std::isfinite(logLik) && rate >= std::numeric_limits<double>::min() &&
+          rate <= 1.0 / std::numeric_limits<double>::min())
+        return {nr.x, 1.0 / rate, logLik, nr.iterations};
+      return gamma_detail::finish(x, nr.x, s, lx_bar, mean_hat, tol, nr.iterations);
     }
     iterations = nr.iterations;
   } else {
@@ -159,9 +217,12 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
                 gamma_detail::stirlerr(shape) - shape * s - lx_bar
           : shape * std::log(shape) - shape - std::lgamma(shape) - shape * s - lx_bar;
   const double logLik = dn * per_obs;
-  if (!std::isfinite(shape) || !std::isfinite(rate) || !std::isfinite(logLik)) {
+  if (!std::isfinite(shape) || !std::isfinite(logLik)) {
     return {kNaN, kNaN, kNaN, iterations, GammaStatus::IterationFailure};
   }
+  if (!(mean_hat >= std::numeric_limits<double>::min() && rate >= std::numeric_limits<double>::min() &&
+        rate <= 1.0 / std::numeric_limits<double>::min()))
+    return gamma_detail::finish(x, shape, s, lx_bar, mean_hat, tol, iterations);
   return {shape, 1.0 / rate, logLik, iterations};
 }
 
@@ -212,7 +273,11 @@ inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double
   return {shape,scale,ll,iterations,std::isfinite(ll)?GammaStatus::Ok:GammaStatus::IterationFailure};
 }
 
+// TransformFailure: the data or the scale estimate exceed binary64; with a
+// tolerance detail, the scale lies below binary64 resolution.
 inline FitOutcome outcome(const GammaResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     case GammaStatus::Ok: return FitOutcome::estimate();
     case GammaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

@@ -137,7 +137,7 @@ The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-2
 
 The joint fit transforms the observations to $-\log x$ and fits a Gumbel distribution. This reduces the problem to a unique scalar root after profiling location. Constant data instead allow the shape to grow without bound while scale remains at their common value, so no finite MLE exists.
 
-Holding shape gives an explicit scale estimate. Holding scale leaves a strictly decreasing shape score, solved by bracketing. This fit is finite unless all observations equal the held scale. Holding both evaluates the likelihood.
+Holding shape gives an explicit scale estimate, $\lambda^k=\overline{x^k}$. Holding scale leaves a strictly decreasing shape score, solved by bracketing. This fit is finite unless all observations equal the held scale. Holding both evaluates the likelihood. A log likelihood beyond binary64 at the returned or held coefficients (data near $2^{500}$ with shape near 3 give $-1.8\times10^{438}$) stops with `NumericalFailure`.
 
 ## R notes
 
@@ -153,4 +153,4 @@ The Gumbel delegate bounds sigma relatively and mu absolutely before applying sh
 
 Scale recovery multiplies the data anchor by the fitted log-ratio factor when representable. Reconstruction is checked before accepting a subnormal scale.
 
-With scale held, the shape score uses relative logarithms computed before subtracting large common log scales. Its positive term and negative exponential terms are accumulated with compensation; strict monotonicity gives the final log-shape enclosure. With shape held, the power-mean scale is checked against its ideal log coordinate after reconstruction. A rounded subnormal scale can fail this check even though the mathematical conditional maximum is finite.
+With scale held, the shape score uses relative logarithms computed before subtracting large common log scales. Its positive term and negative exponential terms are accumulated with compensation; strict monotonicity gives the final log-shape enclosure. With shape held, the power-mean scale is checked against its ideal log coordinate after reconstruction. A rounded subnormal scale can fail this check even though the mathematical conditional maximum is finite. For a held shape below about $4\times10^{-308}$ in a build without long double, the products $k\log x_i$ are subnormal and keep only absolute accuracy, so $k$ is divided out of $\log\lambda=\log(\overline{x^k})/k$ analytically; at the smallest subnormal shape, $(0.5,1,2,4)$ has scale $\sqrt2$.

@@ -148,3 +148,46 @@ TEST_CASE("gompertz: structured face payloads") {
     CHECK(r.stop_detail.limit_loglik==doctest::Approx(4*std::log(rate)-10*rate));
   }
 }
+
+TEST_CASE("gompertz: coefficients that leave binary64 after rescaling") {
+  // TASK-214.3. On (1, 2, 3)*denorm_min the MLE is a = 1.45e322,
+  // b = 2.48e323 (references.json): above binary64. It used to return Ok
+  // with both coefficients infinite and a finite log likelihood.
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{tiny,2*tiny,3*tiny};
+  const auto r=cppunivariate::gompertz_mle(mltest::as_span(x),mltest::kFitTol,mltest::kFitMaxit,nan,nan);
+  CHECK(r.status==cppunivariate::GompertzStatus::NumericalFailure);
+  CHECK(std::isnan(r.a));
+  CHECK(std::isnan(r.b));
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+  // Representable rescalings stay exact to rounding.
+  const std::vector<double> one{1,2,3},small{1e-300,2e-300,3e-300};
+  const auto r1=cppunivariate::gompertz_mle(mltest::as_span(one),1e-10,100);
+  const auto rs=cppunivariate::gompertz_mle(mltest::as_span(small),1e-10,100);
+  REQUIRE(r1.status==cppunivariate::GompertzStatus::Ok);
+  REQUIRE(rs.status==cppunivariate::GompertzStatus::Ok);
+  CHECK(rs.a*1e-300==doctest::Approx(r1.a).epsilon(1e-13));
+  CHECK(rs.b*1e-300==doctest::Approx(r1.b).epsilon(1e-13));
+  CHECK(rs.logLik-3*std::log(1e300)==doctest::Approx(r1.logLik).epsilon(1e-13));
+}
+
+TEST_CASE("gompertz: empty, non-finite and negative samples are invalid input") {
+  // TASK-214.3 (coordinator addition): these ended in IterationFailure
+  // (no-convergence), and infinite data in the exponential-face status.
+  const double nan=std::numeric_limits<double>::quiet_NaN(),inf=std::numeric_limits<double>::infinity();
+  for(const std::vector<double>& x:{std::vector<double>{},{nan,1,2},{inf,1,2},{-inf,1,2},{-1,1,2}}) {
+    CAPTURE(x.size());
+    const auto r=cppunivariate::gompertz_mle(mltest::as_span(x),mltest::kFitTol,mltest::kFitMaxit,nan,nan);
+    CHECK(r.status==cppunivariate::GompertzStatus::InvalidInput);
+    CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Failure);
+    CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::InvalidInput);
+    CHECK(cppunivariate::gompertz_mle(mltest::as_span(x),1e-10,100,1.0,nan).status==cppunivariate::GompertzStatus::InvalidInput);
+    CHECK(cppunivariate::gompertz_mle(mltest::as_span(x),1e-10,100,nan,1.0).status==cppunivariate::GompertzStatus::InvalidInput);
+  }
+  // All-zero data stay a scale collapse with both coefficients free.
+  const std::vector<double> zeros{0,0,0};
+  CHECK(cppunivariate::gompertz_mle(mltest::as_span(zeros),mltest::kFitTol,mltest::kFitMaxit,nan,nan).status==
+        cppunivariate::GompertzStatus::Unbounded);
+}

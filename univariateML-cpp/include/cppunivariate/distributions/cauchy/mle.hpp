@@ -97,10 +97,13 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kEps = std::numeric_limits<double>::epsilon();
   const std::size_t n = x.size();
-  if (n < 2) return {kNaN, kNaN, kNaN, 0, CauchyStatus::NoMLE};
+  // An empty sample is invalid input; one finite observation is an atom
+  // carrying all the mass, so the likelihood is unbounded.
+  if (n == 0) return {kNaN, kNaN, kNaN, 0, CauchyStatus::InvalidInput};
   for (auto v : x) {
     if (!std::isfinite(v)) return {kNaN, kNaN, kNaN, 0, CauchyStatus::InvalidInput};
   }
+  if (n < 2) return {kNaN, kNaN, kNaN, 0, CauchyStatus::NoMLE};
 
   std::vector<double> data(x.begin(), x.end());
   std::sort(data.begin(), data.end());

@@ -628,3 +628,30 @@ TEST_CASE("norm scaled residuals: every held subset at extreme units") {
   const std::vector<double> sub={0,std::numeric_limits<double>::denorm_min()};
   CHECK(cppunivariate::norm_mle(mltest::as_span(sub),0,NAN).status!=cppunivariate::NormStatus::Unbounded);
 }
+
+TEST_CASE("norm: the sd is profiled at the exact mean, not the rounded one") {
+  // TASK-214.3: (1, 1, 1 + 2^-52) has mean 1 + 2^-52/3, which rounds to 1.
+  // Residuals about 1 gave sd 2^-52/sqrt(3); the MLE is 2^-52 sqrt(2)/3.
+  const std::vector<double> x{1,1,1+0x1p-52};
+  const double sd=0x1p-52*std::sqrt(2.0)/3;
+  const auto r=cppunivariate::norm_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::NormStatus::Ok);
+  CHECK(r.mean==1);
+  CHECK(std::abs(r.sd/sd-1)<1e-14);  // relative: Approx adds an absolute 1e-14
+  CHECK(r.logLik==doctest::Approx(106.1302606629018611538071).epsilon(1e-14));
+  // Held sd, free mean: the maximized value uses the exact mean as well.
+  const double s=1e-16;
+  const auto h=cppunivariate::norm_mle(mltest::as_span(x),NAN,s);
+  REQUIRE(h.status==cppunivariate::NormStatus::Ok);
+  CHECK(h.logLik==doctest::Approx(-3*(std::log(s)+0.5*std::log(2*cppunivariate::pi))-1.5*(sd/s)*(sd/s)).epsilon(1e-14));
+  // Offset ties: the same correction far from 1.
+  const std::vector<double> y{1e6,1e6,std::nextafter(1e6,2e6),std::nextafter(1e6,2e6)};
+  const double gap=std::nextafter(1e6,2e6)-1e6;
+  const auto ry=cppunivariate::norm_mle(mltest::as_span(y));
+  REQUIRE(ry.status==cppunivariate::NormStatus::Ok);
+  CHECK(std::abs(ry.sd/(gap/2)-1)<1e-14);
+  // Ordinary data keep the rounded-mean profile bit for bit.
+  const std::vector<double> z{0.3,1.7,2.2,-0.4,5.1};
+  const auto rz=cppunivariate::norm_mle(mltest::as_span(z));
+  CHECK(rz.sd==cppunivariate::norm_detail::moments(mltest::as_span(z)).sd);
+}

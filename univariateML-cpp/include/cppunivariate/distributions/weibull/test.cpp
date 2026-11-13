@@ -308,3 +308,35 @@ TEST_CASE("weibull: small-shape inverse at unit hazard") {
   CHECK(cppunivariate::distributions::qweibull(0.36787944117144233,1e-16,1.0,false,false) == doctest::Approx(0.7133033076559511).epsilon(1e-10).scale(0));
   CHECK(cppunivariate::distributions::qweibull(-0.4586751453870819,1e-16,1.0,true,true) == doctest::Approx(1.3657063511383019).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("weibull: subnormal held shape; unrepresentable log likelihood at held values") {
+  // TASK-214.3. scale^k = mean(x^k): at k = denorm_min the products
+  // k*log(x) are subnormal in a double-only build and gave scale 1.4715;
+  // the exact scale is sqrt(2) to 1e-76 (references.json).
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{0.5,1,2,4};
+  for(double shape:{std::numeric_limits<double>::denorm_min(),1e-310,1e-300,1e-20}) {
+    CAPTURE(shape);
+    const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,nan,shape,nan);
+    REQUIRE(r.status==cppunivariate::WeibullStatus::Ok);
+    CHECK(r.scale==doctest::Approx(std::sqrt(2.0)).epsilon(1e-15));
+  }
+  const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,nan,std::numeric_limits<double>::denorm_min(),nan);
+  CHECK(r.scale==std::sqrt(2.0));
+  CHECK(r.logLik==doctest::Approx(-2983.146582046644939875264).epsilon(1e-14));
+  // Archive case 8443: both held, data near 2^500. The log likelihood is
+  // -1.8e438; it used to return Ok with -Inf (NaN double-only).
+  std::vector<double> y;
+  for(const char* h:{"0x1.4d91d33b60d64p+500","0x1.56ed2f1ffbd0dp+500","0x1.7fae0540168e1p+499",
+      "0x1.15ada6d2f5b03p+499","0x1.716897c08000fp+499","0x1.43932c103ad40p+499","0x1.c41da698e91b3p+499",
+      "0x1.2b09ec555a47ep+500","0x1.755a8917d40afp+500","0x1.bf79f040d7eacp+498","0x1.7e81ff53c34b1p+498",
+      "0x1.8c351a591e363p+500"})y.push_back(std::strtod(h,nullptr));
+  const auto held=cppunivariate::weibull_mle(mltest::as_span(y),1e-10,100,nan,2.9155677520153174,3.961112786792183);
+  CHECK(held.status==cppunivariate::WeibullStatus::NumericalFailure);
+  CHECK(std::isnan(held.logLik));
+  CHECK(cppunivariate::outcome(held).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(held).reason==cppunivariate::OutcomeReason::Evaluation);
+  // Held shape only: the profiled scale keeps the likelihood finite.
+  CHECK(cppunivariate::weibull_mle(mltest::as_span(y),1e-10,100,nan,2.9155677520153174,nan).status==
+        cppunivariate::WeibullStatus::Ok);
+}

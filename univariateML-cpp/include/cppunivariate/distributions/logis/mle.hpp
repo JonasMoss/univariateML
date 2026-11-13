@@ -4,8 +4,10 @@
 // scale ≈ sqrt(var) * sqrt(3) / pi (matches Logistic distribution variance).
 //
 // Convergence is absolute on max(|dmu|, |dtheta|) -- a 2D Newton, so
-// outside the scope of cppunivariate::newton_raphson_1d. Used as the inner
-// engine of Log-Logistic via a log-transform.
+// outside the scope of cppunivariate::newton_raphson_1d. The fit moves to
+// standardized coordinates (x - mean)/sd when the data's magnitude would
+// make that absolute target unattainable in binary64; the target then
+// applies relative to sd.
 
 #pragma once
 #include "../../core/outcome.hpp"
@@ -17,13 +19,16 @@
 #include "../norm/mle.hpp"
 #include <vector>
 
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <limits>
 
 namespace cppunivariate {
 
-enum class LogisticStatus { Ok, InvalidInput, IterationFailure };
+// Unbounded: the scale collapses at the common value of constant data (one
+// observation included) or at a held location every observation equals.
+enum class LogisticStatus { Ok, InvalidInput, IterationFailure, Unbounded };
 
 struct LogisticResult {
   double mu;
@@ -99,25 +104,12 @@ struct LogisticCost {
   }
 };
 
-inline LogisticResult logistic_mle(span x, double tol, int maxit) {
-  maxit = static_cast<int>(solver_budget(maxit));
+namespace logistic_detail {
+// Damped Newton on (mu, log scale) from a Welford start. The caller has
+// checked n >= 2, finite and non-constant data.
+inline LogisticResult newton(span x, double tol, int maxit) {
   const std::size_t n = x.size();
-
   const double nan = std::numeric_limits<double>::quiet_NaN();
-  if (n < 2) return {nan, nan, nan, 0, LogisticStatus::InvalidInput};
-  for (auto v : x) {
-    if (!std::isfinite(v)) return {nan, nan, nan, 0, LogisticStatus::InvalidInput};
-  }
-  const auto moments = norm_detail::moments(x);
-  if (moments.sd > 0.0 && std::isfinite(moments.sd) &&
-      (moments.sd < 1e-100 || moments.sd > 1e100 || std::abs(moments.mean) > 1e6 * moments.sd)) {
-    std::vector<double> z(n);
-    for (std::size_t i = 0; i < n; ++i)
-      z[i] = static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(x[i]) - moments.mean) / moments.sd);
-    const auto r = logistic_mle(span{z.data(), n}, tol, maxit);
-    return {moments.mean + moments.sd*r.mu, moments.sd*r.scale,
-            r.logLik - static_cast<double>(n)*std::log(moments.sd), r.iterations, r.status};
-  }
   // One-pass Welford mean/variance for the seed.
   double mean = 0.0;
   double M2 = 0.0;
@@ -195,6 +187,41 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
   return {mu, scale, logLik, iter == maxit ? maxit : iter + 1,
           finite && iter < maxit ? LogisticStatus::Ok : LogisticStatus::IterationFailure};
 }
+}  // namespace logistic_detail
+
+inline LogisticResult logistic_mle(span x, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
+  const std::size_t n = x.size();
+
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  if (n == 0) return {nan, nan, nan, 0, LogisticStatus::InvalidInput};
+  for (auto v : x) {
+    if (!std::isfinite(v)) return {nan, nan, nan, 0, LogisticStatus::InvalidInput};
+  }
+  // Constant data (one observation included): the likelihood is unbounded
+  // as the scale tends to zero at the common value.
+  if (std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
+    return {nan, nan, nan, 0, LogisticStatus::Unbounded};
+  const auto moments = norm_detail::moments(x);
+  // Standardize when moments or Newton products would overflow/underflow,
+  // when a large offset hides the spread, or when the absolute step target
+  // tol is within 2^12 binary64 spacings of the location scale
+  // max(|mean|, sd): there the rounding noise of the Newton location step,
+  // a few spacings of that scale, can keep the step above tol indefinitely
+  // (TASK-214.3: (1e-8, 1, 1e8) at tol 1e-10). In standardized coordinates
+  // the same target bounds the step relative to sd.
+  if (moments.sd > 0.0 && std::isfinite(moments.sd) &&
+      (moments.sd < 1e-100 || moments.sd > 1e100 || std::abs(moments.mean) > 1e6 * moments.sd ||
+       tol < 0x1p-40 * std::max(std::abs(moments.mean), moments.sd))) {
+    std::vector<double> z(n);
+    for (std::size_t i = 0; i < n; ++i)
+      z[i] = static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(x[i]) - moments.mean) / moments.sd);
+    const auto r = logistic_detail::newton(span{z.data(), n}, tol, maxit);
+    return {moments.mean + moments.sd*r.mu, moments.sd*r.scale,
+            r.logLik - static_cast<double>(n)*std::log(moments.sd), r.iterations, r.status};
+  }
+  return logistic_detail::newton(x, tol, maxit);
+}
 
 
 // Both conditional scores are monotone: bisect the unique root.
@@ -208,10 +235,26 @@ inline LogisticResult logistic_mle(span x,double tol,int maxit,double location,d
   for(double v:x){if(!std::isfinite(v))return bad;lo=std::min(lo,v);hi=std::max(hi,v);if(!std::isnan(location))radius=std::max(radius,std::abs(v-location));}
   double m=location,s=scale;int it=0;
   if(std::isnan(m)) {
-    for(;it<maxit;++it){m=lo/2+hi/2;double score=0;for(double v:x)score+=std::tanh((v-m)/(2*s));if(score>0)lo=m;else hi=m;if(hi-lo<=1e-12*s)break;}
+    const auto location_score=[&](double c){double g=0;for(double v:x)g+=std::tanh((v-c)/(2*s));return g;};
+    bool adjacent=false;
+    for(;it<maxit;++it){m=lo/2+hi/2;double score=0;for(double v:x)score+=std::tanh((v-m)/(2*s));if(score>0)lo=m;else hi=m;if(hi-lo<=1e-12*s)break;
+      // No double lies strictly between lo and hi: the absolute width
+      // 1e-12*s is below the spacing of the location (|m| > ~4500 s).
+      if(lo/2+hi/2==lo || lo/2+hi/2==hi){adjacent=true;break;}}
     m=lo/2+hi/2;
+    if(adjacent) {
+      // Accept the bracket only with signs above the score's rounding bound
+      // (n terms, each within ~2 eps, summed): the root then lies in it, so
+      // m is within a few spacings. A computed score that saturates to 0
+      // (spread >> s, archive case 4718) never certifies and stays a failure.
+      const double bound=4*static_cast<double>(x.size())*static_cast<double>(x.size())*std::numeric_limits<double>::epsilon();
+      double a=lo,b=hi;
+      for(int k=0;k<4 && !(location_score(a)>bound);++k)a=std::nextafter(a,-INFINITY);
+      for(int k=0;k<4 && !(location_score(b)<-bound);++k)b=std::nextafter(b,INFINITY);
+      if(location_score(a)>bound && location_score(b)<-bound)m=a/2+b/2;else it=maxit;
+    }
   } else if(std::isnan(s)) {
-    if(!(radius>0))return bad;
+    if(!(radius>0)) {bad.status=LogisticStatus::Unbounded;return bad;}  // collapse at the held location
     lo=std::max(std::log(radius)-350,std::log(std::numeric_limits<double>::denorm_min()));hi=std::log(radius)+2;
     for(;it<maxit;++it){const double t=lo/2+hi/2;s=std::exp(t);double score=-static_cast<double>(x.size());for(double v:x){const double z=(v-m)/s;score+=z*std::tanh(z/2);}if(score>0)lo=t;else hi=t;if(hi-lo<1e-12)break;}
     s=std::exp(lo/2+hi/2);
@@ -225,6 +268,7 @@ inline FitOutcome outcome(const LogisticResult& r) {
     case LogisticStatus::Ok: return FitOutcome::estimate(true);
     case LogisticStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case LogisticStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case LogisticStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
   }
   return {};
 }

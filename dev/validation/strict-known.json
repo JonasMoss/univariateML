@@ -1,14 +1,6 @@
 {
  "note": "Known failures of the strict layer (fit-judge.py). Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
  "known": {
-  "invalid-input|double|cauchy|class|empty": {
-   "ref": "TASK-214.3",
-   "detail": "ends in nomle"
-  },
-  "invalid-input|native|cauchy|class|empty": {
-   "ref": "TASK-214.3",
-   "detail": "ends in nomle"
-  },
   "mode|both|bhatt|archive|000364": {
    "ref": "TASK-214.13",
    "detail": "native ok, double-only numerical"
@@ -24,10 +16,6 @@
   "mode|both|dgamma|class|wide": {
    "ref": "TASK-214.13",
    "detail": "native ok, double-only conditioning"
-  },
-  "mode|both|gamma|class|huge": {
-   "ref": "TASK-214.13",
-   "detail": "native ok, double-only error"
   },
   "mode|both|gompertz|class|huge": {
    "ref": "TASK-214.13",

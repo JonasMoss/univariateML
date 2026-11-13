@@ -1,0 +1,32 @@
+$ /tmp/umvl-cpu/run4 just test-changed master --no-long-double   (workstation, GCC 15.2.0; strict-known.json changed, so the unfiltered recipes ran)
+100% tests passed, 0 tests failed out of 109
+100% tests passed, 0 tests failed out of 153
+[ FAIL 0 | WARN 0 | SKIP 157 | PASS 28842 ]
+# tests 578
+# pass 578
+# fail 0
+Results: [{"command": ["just", "cpp-test"], "exit": 0, "seconds": 647.27}, {"command": ["just", "cpp-test-no-long-double"], "exit": 0, "seconds": 823.9}, {"command": ["just", "test"], "exit": 0, "seconds": 613.04}, {"command": ["just", "js-build"], "exit": 0, "seconds": 75.77}, {"command": ["just", "js-test"], "exit": 0, "seconds": 178.39}]
+
+$ targeted gompertz reruns after the late gompertz change (native build rebuilt; double-only build had compiled the edited sources)
+== univariateML-cpp/build
+fatigue/test.cpp.o
+beta/test.cpp.o
+burr/test.cpp.o
+ged/test.cpp.o
+gompertz/test.cpp.o
+invburr/test.cpp.o
+kumar/test.cpp.o
+snorm/test.cpp.o
+std/test.cpp.o
+1/1 Test #50: distribution_gompertz ............   Passed    0.02 sec
+100% tests passed, 0 tests failed out of 1
+== build/cpp-no-long-double
+1/1 Test #50: distribution_gompertz ............   Passed    0.02 sec
+100% tests passed, 0 tests failed out of 1
+2/9 Test #115: distribution_snorm ...............   Passed    0.84 sec
+9/9 Test #119: distribution_std .................   Passed   15.47 sec
+100% tests passed, 0 tests failed out of 9
+
+$ /tmp/umvl-cpu/run4 just test-full   (workstation; after every source change except comment-only edits in gumbel)
+[ FAIL 0 | WARN 0 | SKIP 1 | PASS 57977 ]
+exit 0

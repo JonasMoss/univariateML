@@ -112,6 +112,8 @@ The hazard is $a\exp(bx)$, with both coefficients positive. The exponential law 
 
 Holding $a$ also leaves a strictly concave likelihood in $b$ whenever the sample sum is positive. For all-zero data with $a$ held the likelihood is flat in $b$. Holding $b$ gives an explicit estimate of $a$ when the sample sum is positive, and unbounded likelihood otherwise. Holding both evaluates the likelihood. With both free, a constant positive sample has unbounded likelihood as $b$ increases and $a$ decreases to concentrate the density at its common value.
 
+The free fit runs on data divided by their mean, and $a$ and $b$ scale with its reciprocal. On subnormal data they can exceed binary64 ($(1,2,3)$ times the smallest subnormal gives $a=1.5\times10^{322}$, $b=2.5\times10^{323}$); a coefficient that overflows stops with `NumericalFailure`, and one below binary64 resolution with `NumericalFailure` and a tolerance detail.
+
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
 ## R notes

@@ -1,0 +1,76 @@
+== baseline bbe1b13a, native
+1 gamma subnormal: st=0 estimate/none shape=5.3752094818123552 scale=0x0p+0 ll=-nan
+2 norm near-const: st=0 mean=1 sd=1.2819751242557092e-16 (MLE 1.0467283057891835e-16) ll=105.52206300073962
+  lnorm analogue: st=0 sdlog=7.7013964838411082e-17 cert=0
+3 logis wide tol1e-10: st=2 failure mu=26275335.368361995 s=28619993.763420407 ll=-57.411482623420589 it=100
+  logis wide default tol: st=0 mu=26275335.368361998 s=28619993.763420407 ll=-57.411482623420589 it=5
+  logis constant: st=1 failure/invalid-input
+  logis one: st=1 failure/invalid-input
+  logis constant at held location: st=1 failure/invalid-input
+4 weibull shape=denorm: st=0 estimate scale=1.4142135623730951 (sqrt2 1.4142135623730951) ll=-2983.1465820466447
+5 weibull 8443 held: st=0 estimate/none ll=-inf
+6 gumbel 3008 held: st=0 estimate/none ll=-inf
+7 gompertz subnormal: st=0 estimate/none a=inf b=inf ll=2229.7535612405054
+8 cauchy empty: st=1 nonexistence/unbounded
+  cauchy one: st=1 nonexistence/unbounded
+  cauchy one NaN: st=1 nonexistence/unbounded
+9 gamma huge: st=0 estimate shape=0x1.599749112dca3p+1 scale=0x1.685d7fdf03878p+1021 ll=-0x1.0a2f3f197722cp+12
+L4719 logis held scale: st=2 mu=100000000.11620703 ll=-22.93818887915538 it=100
+L4718 logis held scale: st=2 failure mu=8.3735869502227154e+146 it=100
+== baseline bbe1b13a, double
+1 gamma subnormal: st=0 estimate/none shape=5.3752094818123552 scale=0x0p+0 ll=-nan
+2 norm near-const: st=0 mean=1 sd=1.2819751242557092e-16 (MLE 1.0467283057891835e-16) ll=105.52206300073962
+  lnorm analogue: st=0 sdlog=7.7013964838411082e-17 cert=0
+3 logis wide tol1e-10: st=2 failure mu=26275335.368361995 s=28619993.763420407 ll=-57.411482623420589 it=100
+  logis wide default tol: st=0 mu=26275335.368361998 s=28619993.763420407 ll=-57.411482623420589 it=5
+  logis constant: st=1 failure/invalid-input
+  logis one: st=1 failure/invalid-input
+  logis constant at held location: st=1 failure/invalid-input
+4 weibull shape=denorm: st=0 estimate scale=1.4715177646857691 (sqrt2 1.4142135623730951) ll=-2983.1465820466447
+5 weibull 8443 held: st=0 estimate/none ll=-nan
+6 gumbel 3008 held: st=0 estimate/none ll=-inf
+7 gompertz subnormal: st=0 estimate/none a=inf b=inf ll=2229.7535612405054
+8 cauchy empty: st=1 nonexistence/unbounded
+  cauchy one: st=1 nonexistence/unbounded
+  cauchy one NaN: st=1 nonexistence/unbounded
+9 gamma huge: st=2 failure shape=nan scale=nan ll=nan
+L4719 logis held scale: st=2 mu=100000000.11620703 ll=-22.93818887915538 it=100
+L4718 logis held scale: st=2 failure mu=8.3735869502227154e+146 it=100
+== fix, native
+1 gamma subnormal: st=4 failure/tolerance shape=5.3752094836907656 scale=nan ll=2229.7015289366736
+2 norm near-const: st=0 mean=1 sd=1.0467283057891836e-16 (MLE 1.0467283057891835e-16) ll=106.13026066290186
+  lnorm analogue: st=0 sdlog=7.7013964838411082e-17 cert=0
+3 logis wide tol1e-10: st=0 estimate mu=26275335.368361574 s=28619993.763420258 ll=-57.411482623420589 it=5
+  logis wide default tol: st=0 mu=26275335.368361998 s=28619993.763420407 ll=-57.411482623420589 it=5
+  logis constant: st=3 nonexistence/unbounded
+  logis one: st=3 nonexistence/unbounded
+  logis constant at held location: st=3 nonexistence/unbounded
+4 weibull shape=denorm: st=0 estimate scale=1.4142135623730951 (sqrt2 1.4142135623730951) ll=-2983.1465820466447
+5 weibull 8443 held: st=5 failure/evaluation ll=nan
+6 gumbel 3008 held: st=5 failure/evaluation ll=nan
+7 gompertz subnormal: st=4 failure/evaluation a=nan b=nan ll=nan
+8 cauchy empty: st=2 failure/invalid-input
+  cauchy one: st=1 nonexistence/unbounded
+  cauchy one NaN: st=2 failure/invalid-input
+9 gamma huge: st=0 estimate shape=0x1.599749112dca3p+1 scale=0x1.685d7fdf03878p+1021 ll=-0x1.0a2f3f197722cp+12
+L4719 logis held scale: st=0 mu=100000000.11620703 ll=-22.93818887915538 it=27
+L4718 logis held scale: st=2 failure mu=8.3735869502227154e+146 it=100
+== fix, double
+1 gamma subnormal: st=4 failure/tolerance shape=5.3752094836907567 scale=nan ll=2229.7015289366736
+2 norm near-const: st=0 mean=1 sd=1.0467283057891836e-16 (MLE 1.0467283057891835e-16) ll=106.13026066290186
+  lnorm analogue: st=0 sdlog=7.7013964838411082e-17 cert=0
+3 logis wide tol1e-10: st=0 estimate mu=26275335.368361995 s=28619993.763420369 ll=-57.411482623420589 it=5
+  logis wide default tol: st=0 mu=26275335.368361998 s=28619993.763420407 ll=-57.411482623420589 it=5
+  logis constant: st=3 nonexistence/unbounded
+  logis one: st=3 nonexistence/unbounded
+  logis constant at held location: st=3 nonexistence/unbounded
+4 weibull shape=denorm: st=0 estimate scale=1.4142135623730951 (sqrt2 1.4142135623730951) ll=-2983.1465820466447
+5 weibull 8443 held: st=5 failure/evaluation ll=nan
+6 gumbel 3008 held: st=5 failure/evaluation ll=nan
+7 gompertz subnormal: st=4 failure/evaluation a=nan b=nan ll=nan
+8 cauchy empty: st=2 failure/invalid-input
+  cauchy one: st=1 nonexistence/unbounded
+  cauchy one NaN: st=2 failure/invalid-input
+9 gamma huge: st=0 estimate shape=0x1.599749112dca6p+1 scale=0x1.685d7fdf03875p+1021 ll=-0x1.0a2f3f197722cp+12
+L4719 logis held scale: st=0 mu=100000000.11620703 ll=-22.93818887915538 it=27
+L4718 logis held scale: st=2 failure mu=8.3735869502227154e+146 it=100

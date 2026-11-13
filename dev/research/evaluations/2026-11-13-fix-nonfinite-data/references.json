@@ -1,0 +1,58 @@
+{
+ "gamma-subnormal": {
+  "evidence": "closed-form score equations, 50 digits",
+  "shape": "5.375209483690757399469522",
+  "scale": "1.838312152634499130936354e-324",
+  "scale_over_denorm_min": "0.3720785219754353539790749",
+  "logLik": "2229.701528936673674596429",
+  "note": "the scale lies below half of denorm_min: it rounds to zero in binary64"
+ },
+ "norm-near-constant": {
+  "evidence": "closed form, 50 digits",
+  "mean": "1.000000000000000074014868",
+  "sd": "1.046728305789183372928922e-16",
+  "logLik": "106.1302606629018611538071",
+  "sd_profiled_at_mean_1": "1.281975124255709285201796e-16"
+ },
+ "logis-wide": {
+  "evidence": "score equations, 50 digits",
+  "location": "26275335.36836199439710978",
+  "scale": "28619993.76342037092873051",
+  "logLik": "-57.41148262342058850475964"
+ },
+ "logis-archive-004719": {
+  "evidence": "location score equation, 50 digits",
+  "location": "100000000.116207034405182",
+  "logLik": "-22.93818887915537710812935"
+ },
+ "weibull-shape-denorm": {
+  "evidence": "closed-form scale profile, 400 digits",
+  "scale": "1.414213562373095048801689",
+  "scale_over_sqrt2_minus_1": "4.0953e-79",
+  "logLik": "-2983.146582046644939875264"
+ },
+ "weibull-archive-008443": {
+  "evidence": "README log density, 50 digits",
+  "logLik": "-1.830030713007254754683609e+438",
+  "below_minus_dbl_max": true
+ },
+ "gumbel-archive-003008": {
+  "evidence": "README log density, 50 digits",
+  "logLik": "-5.993679596e+365787320114544478389227278750615591212480999417152180701941829486390261984354975233094244756423539973255435972939124725524424428379575088739740062879",
+  "below_minus_dbl_max": true
+ },
+ "gompertz-subnormal": {
+  "evidence": "profile score, 50 digits, scale equivariance",
+  "a": "1.450845178616632093906112e+322",
+  "b": "2.476028123238916411221511e+323",
+  "a_exceeds_dbl_max": true,
+  "b_exceeds_dbl_max": true,
+  "logLik": "2229.753561240505201506576"
+ },
+ "gamma-huge": {
+  "evidence": "closed-form score equations, 50 digits",
+  "shape": "2.6999293645744443753921",
+  "scale": "3.163213400119677438739919e+307",
+  "logLik": "-4258.952905145047195598505"
+ }
+}
