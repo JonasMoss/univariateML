@@ -1,0 +1,6 @@
+pois   318 0 0 
+binom  590 0 0 
+geom   424 0 0 
+nbinom 1612 0 0 
+qpois(F(k) * (1 + 4 eps)) == k in 21 of 21 
+R version 4.6.1 (2026-06-24) 

@@ -1,0 +1,7 @@
+pois     cases     318  q(p(k)) = k+1:    41 (12.89%)  below k: 0  other: 0
+binom    cases     590  q(p(k)) = k+1:    61 (10.34%)  below k: 0  other: 0
+geom     cases     424  q(p(k)) = k+1:   113 (26.65%)  below k: 0  other: 0
+nbinom   cases    1612  q(p(k)) = k+1:   355 (22.02%)  below k: 0  other: 0
+hyper    cases     291  q(p(k)) = k+1:     0 (0.00%)  below k: 0  other: 0
+qhyper(0.5; m=5, N=10, k=5) = 3 (exact 2)
+qbinom(0.5; 1, 0.5) = 0 (exact 0)   qbinom(0.75; 2, 0.5) = 1 (exact 1)
