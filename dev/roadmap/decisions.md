@@ -28,6 +28,16 @@ Active work lives on the board (`~/boards/univariateML`), not here.
   (`zero = "none"`, `truncate = NULL`) instead of entries in `...` (Jonas:
   "explict entries i think, breaking changes are fine"). Done with the uniform
   controls, step 5 of the [consolidation plan](../design/consolidation.md).
+- **q-Gaussian adopted as proposed; `lst` stays** (Jonas: "we keep the lst
+  and adopt this"; not high priority). Coefficients `(mu, sigma, eta)` with
+  `eta` the signed inverse degrees of freedom (normal at 0, Student t with
+  `df = 1/eta` above, Pearson II below, uniform at -1), not Tsallis `q`; id
+  `qgauss`, quantile `qqgauss`; all-free domain `-1 <= eta <= 1` (below -1
+  endpoint spikes make the likelihood unbounded; above 1 the Student scale
+  collapses, exempt when `mu` or `sigma` is held); no restriction at `-1/3`.
+  `lst` remains its own family although it is `qgauss` with `eta > 0`
+  held. Analysis: [qgauss theory](../research/evaluations/2026-11-12-qgauss-theory-report.md).
+  Work (TASK-202, TASK-203) waits for step 8 of the consolidation plan.
 - **Discrete quantiles resolve ties with the left-continuity fuzz of `stats`**
   (Jonas: "lets do 1"): the smallest support point whose computed tail reaches
   `p` reduced by a relative `64 * DBL_EPSILON`. A `p` inside that band above a
