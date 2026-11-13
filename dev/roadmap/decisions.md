@@ -28,6 +28,15 @@ Active work lives on the board (`~/boards/univariateML`), not here.
   (`zero = "none"`, `truncate = NULL`) instead of entries in `...` (Jonas:
   "explict entries i think, breaking changes are fine"). Done with the uniform
   controls, step 5 of the [consolidation plan](../design/consolidation.md).
+- **Discrete quantiles resolve ties with the left-continuity fuzz of `stats`**
+  (Jonas: "lets do 1"): the smallest support point whose computed tail reaches
+  `p` reduced by a relative `64 * DBL_EPSILON`. A `p` inside that band above a
+  jump returns the lower value, as in `stats`. Alternatives considered:
+  comparing on the scale `p` was given (the round trip holds, exact ties stay
+  wrong), and a band equal to each CDF's error bound (narrowest, but needs a
+  bound per family). Evidence:
+  [quantile ties](../research/evaluations/2026-11-13-discrete-quantile-ties.md).
+  Not implemented yet (TASK-215).
 
 ## 2026-11-12
 
