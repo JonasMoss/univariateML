@@ -239,7 +239,7 @@ test_that("held-scale Cauchy roots are certified or fail explicitly", {
     expect_equal(as.numeric(logLik(f)),sum(dcauchy(c(-2,2),0,s,log=TRUE)),tolerance=1e-12)
   }
   for (x in list(c(-2,2),c(-2,-2,2,2),c(-3,-2,2,3))) {
-    expect_error(mlcauchy(x,scale=1),"global maxima are tied or numerically indistinguishable")
+    expect_match(attr(mlcauchy(x,scale=1),"outcome_message"),"global maxima are tied or numerically indistinguishable")
   }
   expect_error(mlcauchy(c(-1,1),scale=1),"numerical certificate")
   expect_error(mlcauchy(c(-2,-.5,0,.7,3),scale=1,iterlim=1),"converge")
@@ -277,18 +277,18 @@ test_that("held-scale Cauchy selects the winning separated mode", {
 })
 
 test_that("structured Cauchy stops can be caught by class", {
-  e <- tryCatch(mlcauchy(c(-2,2),scale=1),univariateML_tie=identity)
-  expect_s3_class(e,"univariateML_stop")
-  expect_s3_class(e,"error")
-  expect_match(conditionMessage(e),"Held-scale Cauchy global maxima are tied")
-  expect_true(is.nan(e$segment_loglik_upper))
-  expect_equal(nrow(e$candidates),2L)
-  expect_equal(sort(e$candidates$location),c(-sqrt(3),sqrt(3)),tolerance=1e-7)
-  expect_equal(e$candidates$scale,c(1,1))
-  expect_true(all(e$candidates$loglik_lower <= e$candidates$loglik_upper))
+  e <- tryCatch(mlcauchy(c(-2,2),scale=1),error=identity)
+  expect_s3_class(e,"univariateML")
+  expect_false(attr(e,"certified"))
+  expect_match(fit_diagnostic(e),"Held-scale Cauchy global maxima are tied")
+  expect_true(is.nan(fit_payload(e)$segment_loglik_upper))
+  expect_equal(nrow(fit_payload(e)$candidates),2L)
+  expect_equal(sort(fit_payload(e)$candidates$location),c(-sqrt(3),sqrt(3)),tolerance=1e-7)
+  expect_equal(fit_payload(e)$candidates$scale,c(1,1))
+  expect_true(all(fit_payload(e)$candidates$loglik_lower <= fit_payload(e)$candidates$loglik_upper))
   n <- tryCatch(mlcauchy(c(1,1,2)),univariateML_nomle=identity)
   expect_s3_class(n,"univariateML_stop")
-  expect_equal(nrow(n$candidates),0L)
+  expect_equal(nrow(fit_payload(n)$candidates),0L)
   h <- tryCatch(mlcauchy(c(1,1,2),location=1),univariateML_nomle=identity)
-  expect_match(conditionMessage(h),"With location held")
+  expect_match(fit_diagnostic(h),"With location held")
 })

@@ -164,20 +164,20 @@ test_that("bhatt new holds agree with independent multistart likelihoods", {
     if(inherits(f,"error")) {
       if(inherits(f,c("univariateML_numerical","univariateML_budget","univariateML_unresolved","univariateML_tie"))) {
         expect_s3_class(f,"univariateML_stop")
-        expect_gt(nrow(f$candidates),0)
-        expect_true(all(is.finite(f$candidates$loglik_lower)))
-        expect_true(all(f$candidates$loglik_lower<=f$candidates$loglik_upper))
-        expect_lte(f$loglik_lower,f$loglik_upper)
-        for(j in seq_len(nrow(f$candidates))) {
-          candidate <- unlist(f$candidates[j,c("mu","sigma","a")])
+        expect_gt(nrow(fit_payload(f)$candidates),0)
+        expect_true(all(is.finite(fit_payload(f)$candidates$loglik_lower)))
+        expect_true(all(fit_payload(f)$candidates$loglik_lower<=fit_payload(f)$candidates$loglik_upper))
+        expect_lte(fit_payload(f)$loglik_lower,fit_payload(f)$loglik_upper)
+        for(j in seq_len(nrow(fit_payload(f)$candidates))) {
+          candidate <- unlist(fit_payload(f)$candidates[j,c("mu","sigma","a")])
           if(all(is.finite(candidate))) {
             evaluated <- sum(ld(x,unname(candidate)))
-            expect_lte(f$candidates$loglik_lower[j],evaluated+1e-8)
-            expect_gte(f$candidates$loglik_upper[j],evaluated-1e-8)
+            expect_lte(fit_payload(f)$candidates$loglik_lower[j],evaluated+1e-8)
+            expect_gte(fit_payload(f)$candidates$loglik_upper[j],evaluated-1e-8)
           }
         }
       } else {
-        expect_match(conditionMessage(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
+        expect_match(fit_diagnostic(f),"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive")
       }
       next
     }

@@ -58,7 +58,7 @@ template<class Traits> inline FitResult truncate_counts(cppunivariate::ispan x,d
   }
   FitResult out;out.estimates={{name,r.parameter}};out.logLik=r.logLik;
   out.iterations=r.iterations;out.has_iterations=true;out.has_fixed=true;
-  out.extra.push_back({"certified",1});if(held.supplied)out.fixed.push_back(name);return with_outcome(std::move(out),o,static_cast<int>(r.status));
+  if(held.supplied)out.fixed.push_back(name);return with_outcome(std::move(out),o,static_cast<int>(r.status));
 }
 inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     const std::vector<std::pair<std::string,Held>>& holds,const std::string& zero,
@@ -102,7 +102,7 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     if(r.status!=cppunivariate::ZetaWindowStatus::Ok) {
       if(r.status==cppunivariate::ZetaWindowStatus::LowerLimit || r.status==cppunivariate::ZetaWindowStatus::UpperLimit) {
         return with_outcome(stop_failure(failure("No finite exponent: point-mass supremum at a window endpoint."),
-          cppunivariate::discrete_point(r.status==cppunivariate::ZetaWindowStatus::LowerLimit?1:std::floor(b)),outcome_kind(o),{"s"}),o,static_cast<int>(r.status));
+          cppunivariate::discrete_point(r.status==cppunivariate::ZetaWindowStatus::LowerLimit?1:std::floor(b)),outcome_payload(o),{"s"}),o,static_cast<int>(r.status));
       }
       return with_outcome(failure(r.status==cppunivariate::ZetaWindowStatus::InvalidInput ? "finite zeta window requires [1,N], integer N >= max(x), and finite s" : "finite zeta exponent solve failed to certify coefficient accuracy"),o,static_cast<int>(r.status));
     }
@@ -120,7 +120,7 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
       return held_window(out,x,[&](double v){return cppunivariate::distributions::dtpois(v,value("lambda"),std::max(-1.,std::ceil(a)-1),std::floor(b),true);});
     }
     if(family=="binom" && h("size").supplied && h("prob").supplied) {
-      out.estimates={{"size",value("size")},{"prob",value("prob")}};out.fixed={"size","prob"};out.extra.push_back({"certified",1});
+      out.estimates={{"size",value("size")},{"prob",value("prob")}};out.fixed={"size","prob"};
       return held_window(out,x,[&](double v){return cppunivariate::distributions::dtbinom(v,value("prob"),std::max(-1.,std::ceil(a)-1),std::floor(b),value("size"),true);});
     }
     if(family=="pois") {
@@ -172,19 +172,23 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
 template<class Result> inline FitResult censored_result(const std::string& family,const Result& r,
     std::vector<std::pair<std::string,double>> estimates,const std::vector<std::pair<std::string,Held>>& holds) {
   const auto status=r.status;
+  const auto o=status==decltype(status)::Ok ? cppunivariate::FitOutcome::estimate() :
+    cppunivariate::FitOutcome::failure(status==decltype(status)::InvalidInput ? cppunivariate::OutcomeReason::InvalidInput :
+      status==decltype(status)::NotImplemented ? cppunivariate::OutcomeReason::Unsupported : cppunivariate::OutcomeReason::Evaluation);
+  const auto done=[&](FitResult out){return with_outcome(std::move(out),o,static_cast<int>(status));};
   if(status!=decltype(status)::Ok) {
-    if(status==decltype(status)::NotImplemented)return modifier_not_implemented(family,"censoring scheme or hold set");
-    return failure(status==decltype(status)::InvalidInput?"invalid censored observations or held coefficients":status==decltype(status)::AllCensored?"AllCensored: no exact observations":status==decltype(status)::Unbounded?"censored likelihood is unbounded":"censored solve failed to certify coefficient accuracy");
+    if(status==decltype(status)::NotImplemented)return done(modifier_not_implemented(family,"censoring scheme or hold set"));
+    return done(failure(status==decltype(status)::InvalidInput?"invalid censored observations or held coefficients":status==decltype(status)::AllCensored?"AllCensored: no exact observations":status==decltype(status)::Unbounded?"censored likelihood is unbounded":"censored solve failed to certify coefficient accuracy"));
   }
   FitResult out;out.estimates=estimates;out.logLik=r.logLik;out.has_fixed=true;
-  out.extra.push_back({"certified",1});
+
   for(const auto& p:holds)if(p.second.supplied)out.fixed.push_back(p.first);
-  return out;
+  return done(out);
 }
 inline FitResult fit_censored(const std::string& family,cppunivariate::CensoredData x,
     const std::vector<std::pair<std::string,Held>>& holds,double tol=1e-10,int maxit=400) {
   for(const auto& p:holds)if(p.second.supplied && !std::isfinite(p.second.value))
-    return failure("held coefficients must be finite scalars");
+    return invalid_argument(failure("held coefficients must be finite scalars"));
   const auto v=[&](const std::string& name) -> double {for(const auto& p:holds)if(p.first==name && p.second.supplied)return p.second.value;return NAN;};
   if(family=="exp"){auto r=cppunivariate::exp_censored_mle(x,v("rate"));return censored_result(family,r,{{"rate",r.rate}},holds);}
   if(family=="weibull"){auto r=cppunivariate::weibull_censored_mle(x,v("shape"),v("scale"),tol,maxit);return censored_result(family,r,{{"shape",r.shape},{"scale",r.scale}},holds);}

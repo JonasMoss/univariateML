@@ -32,19 +32,19 @@ inline FitResult fit_invpareto(cppunivariate::span x, Held shape_arg = {}, Held 
   auto res = cppunivariate::invpareto_mle(x, reltol, iterlim, start, shape_held, scale_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (res.status == cppunivariate::LomaxStatus::Ok)
         return overridden(std::move(out), static_cast<int>(res.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied}});
   };
-  if(res.status==cppunivariate::LomaxStatus::AccuracyFailure)return done(stop_failure(fail("Lomax delegate requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"shape","scale"}));
+  if(res.status==cppunivariate::LomaxStatus::AccuracyFailure)return done(stop_failure(fail("Lomax delegate requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"shape","scale"}));
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
-    return done(stop_failure(fail("The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model."),res.stop_detail,outcome_kind(o),{"shape","scale"},"invexp"));
+    return done(stop_failure(fail("The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model."),res.stop_detail,outcome_payload(o),{"shape","scale"},"invexp"));
   }
-  if(res.status==cppunivariate::LomaxStatus::IterationFailure) return done(stop_failure(fail("Certified Lomax delegate failed; no verified maximum. Raising iterlim may resolve a budget stop."),res.stop_detail,outcome_kind(o),{"shape","scale"},""));
+  if(res.status==cppunivariate::LomaxStatus::IterationFailure) return done(stop_failure(fail("Certified Lomax delegate failed; no verified maximum. Raising iterlim may resolve a budget stop."),res.stop_detail,outcome_payload(o),{"shape","scale"},""));
   if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.scale) ||
       !std::isfinite(res.shape)) {
     return done(fail("Inverse Pareto MLE failed to converge (check dispersion/inputs)"));

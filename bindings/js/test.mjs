@@ -9,6 +9,14 @@ const m=await create();
 for(const f of ['exp','gamma','gb2']) {const raw=m[`fit${f}`];m[`fit${f}`]=(...args)=>{const r=raw(...args);if(r.error)throw new Error(r.error);return r;};}
 export const dossier=new URL('../../univariateML-cpp/include/cppunivariate/distributions/',import.meta.url);
 export const read=(f,n)=>JSON.parse(readFileSync(new URL(`${f}/${n}.json`,dossier),'utf8'),(_,v)=>['Infinity','Inf'].includes(v)?Infinity:['-Infinity','-Inf'].includes(v)?-Infinity:v==='NaN'?NaN:v);
+
+function comparisonFit(run, check) {
+  const fit=run();
+  assert.equal(fit.status,'Ok');assert.ok(!fit.certified || !fit.unique);
+  const payload={...fit,candidates:fit.candidates ?? fit.maximizers,message:fit.outcome_message};
+  assert.equal(check(payload),true);
+}
+
 test('public facade',async()=>{
  const facade=await import('./index.mjs');
  const api=await facade.default();
@@ -223,8 +231,8 @@ test('sn conditional certificates and nonunique shape have shared stops', async 
     assert.ok(Math.abs(f.estimates.alpha) < 1e-9);
     assert.ok(Math.abs(f.estimates.omega - (held.omega ?? Math.sqrt(2))) < 1e-10);
   }
-  assert.throws(() => api.sn.fit(new Float64Array([3,3,3,3,3]), {xi: 3, omega: 2}), e => {
-    assert.equal(e.kind, 'tie');
+  comparisonFit(() => api.sn.fit(new Float64Array([3,3,3,3,3]), {xi: 3, omega: 2}), e => {
+    assert.equal(e.status,'Ok');
     assert.equal(e.candidates.length, 2);
     assert.equal(e.loglik_lower, e.loglik_upper);
     assert.notEqual(e.candidates[0].alpha, e.candidates[1].alpha);
@@ -308,8 +316,8 @@ test('trgamma held endpoint comparisons stop without asserting nonattainment', a
   const api = await createApi();
   const x = new Float64Array([Math.exp(-1),1-Number.EPSILON/2,1]);
   for (const [family,data] of [['trgamma',x],['invtrgamma',Float64Array.from(x,v=>1/v)]]) {
-    assert.throws(() => modifierRoute(api,family).fit(data,{scale:1}),error => {
-      assert.equal(error.kind,'tie');
+    comparisonFit(() => modifierRoute(api,family).fit(data,{scale:1}),error => {
+      assert.equal(error.status,'Ok');
       assert.equal(error.candidates.length,2);
       assert.ok(error.loglik_upper>=error.loglik_lower);
       assert.ok(error.loglik_upper-error.loglik_lower<1e-7);
@@ -357,8 +365,8 @@ test('trgamma unrepresentable scales retain numerical stop details', async () =>
 test('scalar-trio certificates expose fatigue ties and solve held scalar roots', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
-  assert.throws(() => api.fatigue.fit(new Float64Array([1]), {alpha: 3, mu: 0}), error => {
-    assert.equal(error.kind, 'tie');
+  comparisonFit(() => api.fatigue.fit(new Float64Array([1]), {alpha: 3, mu: 0}), error => {
+    assert.equal(error.status,'Ok');
     assert.equal(error.candidates.length, 2);
     return true;
   });
@@ -443,8 +451,8 @@ test('lst and std fixed-scale location certificates transport equal maxima', asy
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for (const [family, held] of [['lst', {sigma: 1, df: 3}], ['std', {sd: 1, nu: 3}]]) {
-    assert.throws(() => modifierRoute(api,family).fit(new Float64Array([-3, 3]), held), error => {
-      assert.equal(error.kind, 'tie');
+    comparisonFit(() => modifierRoute(api,family).fit(new Float64Array([-3, 3]), held), error => {
+      assert.equal(error.status,'Ok');
       assert.equal(error.candidates.length, 2);
       assert.ok(Number.isFinite(error.loglik_lower));
       assert.ok(Number.isFinite(error.loglik_upper));
@@ -550,8 +558,8 @@ test('SGED subunit scale ties and exhausted certificates stop in the common bind
   let lo=4,hi=6;
   for(let j=0;j<60;++j){const r=(lo+hi)/2;if(Math.log(r)>2*(1-1/r))hi=r;else lo=r;}
   const r=(lo+hi)/2,k=2*Math.sqrt(r-1)/r,xi=Math.sqrt(1+k*k/6);
-  assert.throws(()=>api.sged.fit(new Float64Array([-1,-1,-1]),{mean: 0,nu: .5,xi},{iterlim: 400}),error=>{
-    assert.equal(error.kind,'tie');
+  comparisonFit(()=>api.sged.fit(new Float64Array([-1,-1,-1]),{mean: 0,nu: .5,xi},{iterlim: 400}),error=>{
+    assert.equal(error.status,'Ok');
     assert.ok(error.candidates.length>=2);
     const scales=error.candidates.map(c=>c.sd);
     assert.ok(Math.abs(Math.max(...scales)/Math.min(...scales)/r-1)<2e-6);
@@ -607,7 +615,7 @@ test('betapr rounded conditional peaks retain an uncertified search', async () =
     12.288342947780086,942.976056905759,16.239512580216314,2.898690421966857,
     1.2684036923492177,400970.63293690106*Math.exp(5.646438395028704)]);
   const f=api.betapr.fit(x,{shape1: .22690393135372058});
-  assert.equal(f.status,'Ok');assert.equal(f.certified,0);assert.ok(Number.isFinite(f.logLik));
+  assert.equal(f.status,'Ok');assert.equal(f.certified,false);assert.ok(Number.isFinite(f.logLik));
 });
 
 test('betapr flat gamma-adjacent profile retains coefficient accuracy in WASM', async () => {
@@ -639,7 +647,7 @@ test('betapr flat gamma-adjacent profile retains coefficient accuracy in WASM', 
   assert.ok(Math.abs(f.estimates.scale/78.232314-1)<1e-6);
   assert.ok(Math.abs(f.logLik+58.0668187021122)<1e-8);
   const fallback=api.betapr.fit(x,{shape1: .66110553857791232},{iterlim:64});
-  assert.equal(fallback.status,'Ok');assert.equal(fallback.certified,0);
+  assert.equal(fallback.status,'Ok');assert.equal(fallback.certified,false);
   assert.ok(Number.isFinite(fallback.logLik));
 });
 test('binomial relatives prove their Poisson-type limits with finite witnesses', async () => {
@@ -684,8 +692,8 @@ test('SGED fixed-shape free-skew certificates share core routing', async () => {
   const fit = api.sged.fit(x,{nu:.5});
   assert.ok(Math.abs(fit.logLik+5.836273250972211)<2e-7);
   assert.ok(Math.abs(fit.estimates.xi-Math.sqrt(.05211963387596999/.06917655828196827))<1e-10);
-  assert.throws(()=>api.sged.fit(new Float64Array([-1,1]),{nu:.5}),error=>{
-    assert.equal(error.kind,'tie');assert.equal(error.candidates.length,2);
+  comparisonFit(()=>api.sged.fit(new Float64Array([-1,1]),{nu:.5}),error=>{
+    assert.equal(error.status,'Ok');assert.equal(error.candidates.length,2);
     assert.ok(Number.isFinite(error.loglik_upper));return true;
   });
   const y = new Float64Array([-3,-1,-.5,0,.1,.2,.4,1,2,4]);
@@ -852,7 +860,7 @@ test('GEV two-point count certificate avoids a rounded sample mean', async () =>
   assert.ok(Math.abs(f.estimates.sigma*101-1)<1e-10);
   assert.ok(Math.abs(f.estimates.mu-100/101)<1e-10);
   const centered=api.gev.fit(new Float64Array([-9,...Array(9).fill(1)]));
-  assert.equal(centered.certified,0);
+  assert.equal(centered.certified,false);
   assert.equal(centered.estimates.mu,0);assert.equal(centered.estimates.sigma,1);
   assert.equal(centered.estimates.xi,-1);
 });
@@ -887,7 +895,7 @@ test('EMG outer certificate preserves budget and unresolved witnesses', async ()
     assert.ok(e.candidates.length>=2);assert.ok(e.loglik_lower<=e.loglik_upper);return true;
   });
   assert.throws(()=>api.emg.fit(x,{mu:0}),e=>{
-    assert.equal(e.kind,'unresolved');assert.ok(e.candidates.length>=2);
+    assert.equal(e.kind,'unresolved');assert.equal(e.reason,'unresolved');assert.ok(e.candidates.length>=2);
     assert.ok(e.loglik_lower<=e.loglik_upper);return true;
   });
 });
@@ -921,8 +929,8 @@ test('GED analytic held-sd shape fits and median ties agree across bindings', as
   const odd=api.ged.fit(new Float64Array([-3,-1,0,1,4]),{sd:.1},{iterlim:1});
   assert.equal(odd.estimates.mean,0);
   assert.equal(odd.estimates.nu,1);
-  assert.throws(()=>api.ged.fit(new Float64Array([-1,1]),{sd:.1},{iterlim:1}),error=>{
-    assert.equal(error.kind,'tie');
+  comparisonFit(()=>api.ged.fit(new Float64Array([-1,1]),{sd:.1},{iterlim:1}),error=>{
+    assert.equal(error.status,'Ok');
     assert.match(error.message,/median interval/);
     assert.deepEqual(error.candidates.map(c=>c.mean),[-1,1]);
     assert.ok(Number.isFinite(error.loglik_upper));
@@ -998,7 +1006,7 @@ test('GED overlapping finite shape roots retain an uncertified search', async ()
   for(let j=0;j<12;j++)values.push(-1.4239025460520294,1.4239025460520294);
   for(const held of [{mean:0,sd:1},{sd:1}]) {
     const f=api.ged.fit(new Float64Array(values),held);
-    assert.equal(f.status,'Ok');assert.equal(f.certified,0);
+    assert.equal(f.status,'Ok');assert.equal(f.certified,false);
     assert.ok(Number.isFinite(f.logLik));
   }
 });
@@ -1044,8 +1052,8 @@ test('GED rounded residual ties cannot select an invalid uniform support', async
 test('GED Laplace median intervals retain the original observation endpoints', async () => {
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
   const x=Float64Array.from([...Array.from({length:19},(_,j)=>j+1),1e308]);
-  assert.throws(()=>api.ged.fit(x),error=>{
-    assert.equal(error.kind,'tie');
+  comparisonFit(()=>api.ged.fit(x),error=>{
+    assert.equal(error.status,'Ok');
     assert.deepEqual(error.candidates.map(c=>c.mean),[10,11]);
     return true;
   });
@@ -1129,7 +1137,7 @@ test('higher-order binomial face signs retain proved stops or uncertified fits',
   ]) {
     if(family==='zib') {
       const f=modifierRoute(api,family).fit(new Float64Array(x),held);
-      assert.equal(f.status,'Ok');assert.equal(f.certified,0);
+      assert.equal(f.status,'Ok');assert.equal(f.certified,false);
       assert.equal(f.estimates.pi,pi);assert.ok(Number.isFinite(f.logLik));
       continue;
     }
@@ -1167,8 +1175,8 @@ test('exact factorial moments certify a nonsaturated truncated Poisson face', as
 test('globally winning tied ZIP faces retain both rate candidates', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
-  assert.throws(() => modifierRoute(api,'zib').fit(new Float64Array([...Array(198).fill(0),1,19]),{pi:.7254971052291191}),error => {
-    assert.equal(error.kind,'tie');
+  comparisonFit(() => modifierRoute(api,'zib').fit(new Float64Array([...Array(198).fill(0),1,19]),{pi:.7254971052291191}),error => {
+    assert.equal(error.status,'Ok');
     assert.equal(error.model,'zip');
     assert.ok(Number.isFinite(error.loglik_upper));
     assert.ok(error.candidates.length>=3);
@@ -1243,7 +1251,7 @@ test('Bhattacharjee held certificates and quantitative numerical stops', async (
     return true;
   });
   const normal=api.bhatt.fit(new Float64Array([-10,...Array(20).fill(0),10]),{mu:0,sigma:4});
-  assert.equal(normal.certified,1);
+  assert.equal(normal.certified,true);
   assert.deepEqual(normal.estimates,{mu:0,sigma:4,a:0});
 });
 
@@ -1378,8 +1386,8 @@ test('SGED symmetric free-shape delegate transports fits and structured stops', 
     for(const name of ['mean','sd','nu'])assert.equal(a.estimates[name],b.estimates[name]);
     assert.equal(a.estimates.xi,1);assert.equal(a.logLik,b.logLik);
   }
-  assert.throws(()=>api.sged.fit(new Float64Array([-1,1]),{sd:.1,xi:1},{iterlim:1}),e=>{
-    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);
+  comparisonFit(()=>api.sged.fit(new Float64Array([-1,1]),{sd:.1,xi:1},{iterlim:1}),e=>{
+    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);
     for(const c of e.candidates){assert.equal(c.xi,1);assert.equal(c.nu,1);}
     return true;
   });
@@ -1421,13 +1429,13 @@ test('SGED weighted free-shape and smooth free-skew profiles certify golden fits
 });
 test('SGED weighted median and smooth reflected half-GED ties retain their witnesses', async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
-  assert.throws(()=>api.sged.fit(new Float64Array([-100,...Array(3).fill(-.01),...Array(15).fill(.01),100]),{xi:2}),e=>{
-    assert.equal(e.kind,'tie');assert.ok(e.candidates.length>=2);
+  comparisonFit(()=>api.sged.fit(new Float64Array([-100,...Array(3).fill(-.01),...Array(15).fill(.01),100]),{xi:2}),e=>{
+    assert.equal(e.status,'Ok');assert.ok(e.candidates.length>=2);
     for(const c of e.candidates){assert.equal(c.nu,1);assert.equal(c.xi,2);}return true;
   });
   for(const nu of [1.1,1.7,4,20])
-    assert.throws(()=>api.sged.fit(new Float64Array([-1,1]),{nu}),e=>{
-      assert.equal(e.kind,'tie');assert.ok(Number.isFinite(e.loglik_upper));
+    comparisonFit(()=>api.sged.fit(new Float64Array([-1,1]),{nu}),e=>{
+      assert.equal(e.status,'Ok');assert.ok(Number.isFinite(e.loglik_upper));
       assert.deepEqual(new Set(e.candidates.map(c=>c.model)),new Set(['unavailable:half-ged','unavailable:reflected-half-ged']));return true;
     });
 });
@@ -1435,8 +1443,8 @@ test('SGED weighted median and smooth reflected half-GED ties retain their witne
 test('CMB finite-size ties retain two distinct witnesses and nu-held census certifies',async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
   for(const [data,held] of [[[1,1],{prob:.5,nu:1}],[[0,0],{}],[[0,0],{nu:2}],[[0,0],{prob:0,nu:2}]])
-    assert.throws(()=>api.cmb.fit(new Float64Array(data),held),e=>{
-      assert.equal(e.kind,'tie');assert.match(e.message,/Distinct finite sizes/);
+    comparisonFit(()=>api.cmb.fit(new Float64Array(data),held),e=>{
+      assert.equal(e.status,'Ok');assert.match(e.message,/Distinct finite sizes/);
       assert.equal(e.candidates.length,2);
       assert.equal(new Set(e.candidates.map(c=>c.size)).size,2);
       assert.equal(e.loglik_upper,Infinity);return true;
@@ -1536,8 +1544,8 @@ test('betapr all-free certificate returns verified fits and structured global st
   assert.throws(()=>api.betapr.fit(new Float64Array([1,2,3,4])),e=>{
     assert.equal(e.kind,'limit');assert.equal(e.model,'gamma');assert.ok(Number.isFinite(e.loglik_upper));return true;
   });
-  assert.throws(()=>api.betapr.fit(new Float64Array([.5,1,2])),e=>{
-    assert.equal(e.kind,'tie');assert.ok(e.candidates.length>=2);return true;
+  comparisonFit(()=>api.betapr.fit(new Float64Array([.5,1,2])),e=>{
+    assert.equal(e.status,'Ok');assert.ok(e.candidates.length>=2);return true;
   });
   assert.throws(()=>api.betapr.fit(new Float64Array([.03,.1,.4,.7,1,2,4,12]),{},{iterlim:1}),e=>{
     assert.equal(e.kind,'budget');assert.ok(e.candidates.length>0);return true;
@@ -1790,9 +1798,9 @@ test('bnbinom legacy fallbacks and proved decisions expose certification labels'
   });
   const x=read('bnbinom','golden').data;
   const legacy=api.bnbinom.fit(x,{}, {iterlim:200});
-  assert.equal(legacy.certified,0);
+  assert.equal(legacy.certified,false);
   assert.equal(legacy.global_coefficient_lower,undefined);
-  assert.equal(api.bnbinom.fit(x).certified,1);
+  assert.equal(api.bnbinom.fit(x).certified,true);
 });
 
 
@@ -1800,7 +1808,7 @@ test('binomial near-critical ZIP inputs return uncertified fits',async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
   for(const pi of [.3772146069463776,.37721460694637765]) {
     const f=modifierRoute(api,'zib').fit(new Float64Array([0,0,0,0,0,1,1,2,2,4]),{size:null,pi});
-    assert.equal(f.status,'Ok');assert.equal(f.certified,0);
+    assert.equal(f.status,'Ok');assert.equal(f.certified,false);
     assert.equal(f.estimates.pi,pi);assert.ok(Number.isFinite(f.logLik));
   }
 });
@@ -1848,11 +1856,11 @@ test('Bhatt per-fit certification preserves successful searches',async ()=>{
   const api=await createApi();
   const x=new Float64Array([-10,...Array(20).fill(0),10]);
   const f=api.bhatt.fit(x);
-  assert.equal(f.estimates.a,0);assert.equal(f.certified,0);
+  assert.equal(f.estimates.a,0);assert.equal(f.certified,false);
   const g=api.bhatt.fit(new Float64Array(read('bhatt','golden').data));
-  assert.equal(g.certified,1);
+  assert.equal(g.certified,true);
   const seed=api.bhatt.fit(new Float64Array([1.5186427188633,-.893644554187554,-1.08058198203889,-.639737926177478,.655034880479549,-2.35672046800855,2.46887599116556,.273853493748292,2.5355294429514,-.299436099194099,-.160890965931292,-.201888161544889,.6721053216777,-.344350831779183,1.51377727236596,.163578425435854,1.41905463032963,.838599300343392,-.0826733918168545,-1.34035410608697,-.343170308885225,.824451373169256,-.404339571078608,.0120556813316649]));
-  assert.equal(seed.status,"Ok");assert.equal(seed.certified,0);
+  assert.equal(seed.status,"Ok");assert.equal(seed.certified,false);
   assert.ok(Object.values(seed.estimates).every(Number.isFinite));
   assert.throws(()=>api.bhatt.fit(new Float64Array([-3,-1,0,1,2]),{}, {iterlim:1}));
 });
@@ -1865,7 +1873,7 @@ test('transformed profiles retain finite ulp-wide fits with explicit uncertified
     api.invburr.fit(x,{shape1:.855},{gradtol:1e-10}),
     api.gb2.fit(x,{shape1:1,shape3:.855},{gradtol:1e-10}),
     api.fpareto.fit(x,{min:0,shape1:1,shape3:.855},{reltol:1e-10})];
-  for(const fit of fits){assert.equal(fit.status,'Ok');assert.equal(fit.certified,0);assert.ok(Number.isFinite(fit.logLik));}
+  for(const fit of fits){assert.equal(fit.status,'Ok');assert.equal(fit.certified,false);assert.ok(Number.isFinite(fit.logLik));}
 });
 
 test('raw transformed sufficient statistics match independent concentrated references',async()=>{
@@ -1894,7 +1902,7 @@ test('genbeta all-free finite certificate preserves the golden and never certifi
   assert.ok(Math.abs(f.logLik-g.logLik)<1e-8);
   try {
     const tight=api.genbeta.fit(x,{scale:1},{gradtol:1e-20});
-    assert.equal(tight.certified,0);
+    assert.equal(tight.certified,false);
     for(const key of ['shape1','shape2','shape3'])
       assert.ok(Math.abs(tight.estimates[key]/g.estimates[key]-1)<1e-5);
   } catch(e) {
@@ -1938,10 +1946,10 @@ test('genbeta shallow coverage retains the uncertified legacy finite fit', async
   const u=Float64Array.from({length:300},(_,i)=>(i+.5)/300);
   const x=api.genbeta.q(u,[3,2,.7,1]);
   const f=api.genbeta.fit(x,{scale:1});
-  assert.equal(f.certified,0);
+  assert.equal(f.certified,false);
   assert.ok(Math.abs(f.estimates.shape1/5.364602384807961-1)<1e-10);
   const g=read('genbeta','golden');
-  assert.equal(api.genbeta.fit(new Float64Array(g.data),{scale:1}).certified,1);
+  assert.equal(api.genbeta.fit(new Float64Array(g.data),{scale:1}).certified,true);
 });
 
 test('genbeta signed squared-power certificate selects a global gamma face', async () => {
@@ -1960,11 +1968,11 @@ test('GEV and Frechet held nuisance certificate markers cross the common seam',(
  const x=new Float64Array(p.map(v=>Math.expm1(-.5*Math.log(-Math.log(v)))/.5));
  for(const held of [{mu:0},{sigma:1}]) {
   const r=m.fitgev(x,held,{});
-  assert.equal(r.status,'Ok');assert.equal(r.certified,1);
+  assert.equal(r.status,'Ok');assert.equal(r.certified,true);
   for(const [key,value] of Object.entries(held))assert.equal(r.estimates[key],value);
  }
  const f=m.fitfrechet(new Float64Array(p.map(v=>Math.pow(-Math.log(v),-.5))),{sigma:1},{});
- assert.equal(f.status,'Ok');assert.equal(f.certified,1);assert.equal(f.estimates.sigma,1);
+ assert.equal(f.status,'Ok');assert.equal(f.certified,true);assert.equal(f.estimates.sigma,1);
 });
 test('std and lst shape certificates distinguish uncertified joint fits', async () => {
   const {default: createApi} = await import('./index.mjs');
@@ -1974,13 +1982,13 @@ test('std and lst shape certificates distinguish uncertified joint fits', async 
     const held = Object.fromEntries(names.slice(0,2).map(k => [k,g.estimates[k]]));
     const fit = modifierRoute(api,family).fit(new Float64Array(g.data), held);
     assert.equal(fit.status,'Ok');
-    assert.equal(fit.certified,1);
+    assert.equal(fit.certified,true);
     assert.ok(fit.logLik >= g.logLik - 1e-6*g.data.length);
     for (const [key,value] of Object.entries(held)) assert.equal(fit.estimates[key],value);
     for (const key of names.slice(0,2)) {
       const joint=modifierRoute(api,family).fit(new Float64Array(g.data),{[key]:g.estimates[key]});
       assert.equal(joint.status,'Ok');
-      assert.equal(joint.certified,0);
+      assert.equal(joint.certified,false);
       assert.equal(joint.estimates[key],g.estimates[key]);
     }
   }
@@ -2017,8 +2025,8 @@ test('Student held subsets expose proved symmetry nonuniqueness', async () => {
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
   for(const [family,x,held] of [['std',[-100,100],{sd:1}],['lst',[-100,-99,0,99,100],{df:.5}]]){
-    assert.throws(()=>modifierRoute(api,family).fit(new Float64Array(x),held),error=>{
-      assert.equal(error.kind,'tie');
+    comparisonFit(()=>modifierRoute(api,family).fit(new Float64Array(x),held),error=>{
+      assert.equal(error.status,'Ok');
       assert.ok(Number.isFinite(error.loglik_lower));
       assert.equal(error.loglik_upper,Infinity);
       assert.equal(error.candidates.length,2);
@@ -2034,7 +2042,7 @@ test('Student signed held-location normal faces expose certification', async () 
     assert.throws(()=>modifierRoute(api,family).fit(new Float64Array([-1,2]),held),error=>{
       assert.equal(error.kind,'limit');
       assert.equal(error.model,'norm');
-      assert.equal(error.certified,1);
+      assert.equal(error.certified,true);
       assert.ok(Number.isFinite(error.loglik_upper));
       return true;
     });
@@ -2048,7 +2056,7 @@ test('Student legacy t2 limit keeps its class and uncertified flag', async () =>
   const x=[-20,...Array(10).fill(-.1),...Array(10).fill(.1),20];
   assert.throws(()=>api.std.fit(new Float64Array(x),{mean:0}),error=>{
     assert.equal(error.kind,'limit');assert.equal(error.model,'lst');
-    assert.equal(error.certified,0);assert.equal(error.loglik_upper,Infinity);
+    assert.equal(error.certified,false);assert.equal(error.loglik_upper,Infinity);
     assert.match(error.message,/mllst/);return true;
   });
 });

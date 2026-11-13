@@ -30,6 +30,7 @@
 #' vcov(fit, type = "observed")
 #' @export
 vcov.univariateML <- function(object, type = c("sandwich", "observed"), ...) {
+  ml_require_unique(object)
   if (isTRUE(attr(object,"censored")) || !is.null(attr(object,"truncate")) ||
       (!is.null(attr(object,"zero")) && attr(object,"zero")!="none"))
     stop("Covariance for modified or censored fits is not implemented", call. = FALSE)

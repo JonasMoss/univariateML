@@ -25,8 +25,8 @@ test_that("continuous mathematical stops retain classes and original-unit faces"
   expect_s3_class(e, "univariateML_limit")
   expect_identical(e$model, "hnorm")
   expect_equal(e$estimates, c(mu=0,sigma=sqrt(9.21/5)), tolerance=1e-8)
-  expect_false(inherits(caught(mlexp(c(-1,2))), "univariateML_stop"))
-  expect_false(inherits(caught(mlgamma(c(1,1,1), abstol=0)), "univariateML_stop"))
+  expect_s3_class(caught(mlexp(c(-1,2))), "univariateML_invalid")
+  expect_s3_class(caught(mlgamma(c(1,1,1), abstol=0)), "univariateML_nomle")
   expect_s3_class(caught(mlgev(c(0,0,0,1,2))), "univariateML_nomle")
 })
 
@@ -53,11 +53,11 @@ test_that("conditional snorm and skew-t ambiguities retain compared models", {
                function() mlst(c(1,2),xi=0,omega=1e-4,nu=1e20))
   for (i in seq_along(fits)) {
     e <- tryCatch(fits[[i]](),error=identity)
-    expect_s3_class(e,"univariateML_tie")
-    expect_equal(nrow(e$candidates),2L)
-    expect_true(c("hnorm","ht")[[i]] %in% e$candidates$model)
-    expect_equal(e$loglik_upper,Inf)
-    expect_true(all(is.finite(e$candidates$loglik_lower)))
+    expect_s3_class(e,"univariateML")
+    expect_equal(nrow(fit_payload(e)$candidates),2L)
+    expect_true(c("hnorm","ht")[[i]] %in% fit_payload(e)$candidates$model)
+    expect_equal(fit_payload(e)$loglik_upper,Inf)
+    expect_true(all(is.finite(fit_payload(e)$candidates$loglik_lower)))
   }
 })
 

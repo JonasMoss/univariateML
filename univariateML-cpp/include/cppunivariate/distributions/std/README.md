@@ -328,3 +328,5 @@ cover densities where the observation's square overflows but its ratio to
 shape remains finite.
 
 With held standard deviation, shape refinement differentiates the ordinary scale factor $\sqrt{(\nu-2)/\nu}$ as well as the Student kernel; treating that factor as constant solves a different likelihood.
+
+For balanced separated atoms with held sd, `coef()` takes the first listed Student-t witness and attaches both as `maximizers`; these witnesses do not establish coefficient accuracy at the actual maximizers.

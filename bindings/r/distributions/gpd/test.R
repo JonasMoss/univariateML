@@ -137,8 +137,8 @@ test_that("GPD exhausted tail bracket is a numerical stop", {
     expect_false(inherits(err,"univariateML_budget"))
   }
   flat <- tryCatch(mlgpd(c(0,0,0),mu=0,sigma=2),error=identity)
-  expect_s3_class(flat,"univariateML_stop")
-  expect_equal(flat$kind,"tie")
+  expect_s3_class(flat,"univariateML")
+  expect_equal(fit_payload(flat)$kind,"estimate")
   collapse <- tryCatch(mlgpd(c(0,1,2),mu=0),error=identity)
   expect_s3_class(collapse,"univariateML_stop")
   expect_equal(collapse$kind,"nomle")
@@ -166,10 +166,10 @@ test_that("GPD arithmetic guards expose a structured numerical stop", {
 test_that("GPD finite competing maxima give a structured tie", {
   a <- 0.07880675592383729
   err <- tryCatch(mlgpd(c(a,a,1),mu=0),error=identity)
-  expect_s3_class(err,"univariateML_tie")
-  expect_gte(nrow(err$candidates),2L)
-  expect_true(all(err$candidates$loglik_lower<=err$candidates$loglik_upper))
-  expect_lt(err$loglik_upper-err$loglik_lower,1e-7)
+  expect_s3_class(err,"univariateML")
+  expect_gte(nrow(fit_payload(err)$candidates),2L)
+  expect_true(all(fit_payload(err)$candidates$loglik_lower<=fit_payload(err)$candidates$loglik_upper))
+  expect_lt(fit_payload(err)$loglik_upper-fit_payload(err)$loglik_lower,1e-7)
 })
 
 test_that("GPD exponential scale rejects an inaccurate subnormal mean", {

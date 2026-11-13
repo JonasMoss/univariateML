@@ -10,11 +10,11 @@ inline FitResult fit_gumbel(cppunivariate::span x, Held mu_arg = {}, Held sigma_
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -35,18 +35,18 @@ inline FitResult fit_gumbel(cppunivariate::span x, Held mu_arg = {}, Held sigma_
   cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_held(x,reltol,iterlim,held_mu,held_sigma);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (res.status == cppunivariate::GumbelStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (res.status == cppunivariate::GumbelStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
     // Preserve the classifier's refusal of a structured stop (invalid context
     // or missing finite payload); the core result does not retain that context.
-    if (!out.error.empty() && out.error_kind.empty() && o.kind != cppunivariate::OutcomeKind::Failure)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    if (!out.error.empty() && (out.payload_kind==PayloadKind::None) && o.kind != cppunivariate::OutcomeKind::Failure)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if (res.status==cppunivariate::GumbelStatus::AccuracyFailure)
-    return done(stop_failure(fail("Gumbel requested coefficient accuracy cannot be represented after rescaling."),res.stop_detail,outcome_kind(o),{"mu","sigma"}));
+    return done(stop_failure(fail("Gumbel requested coefficient accuracy cannot be represented after rescaling."),res.stop_detail,outcome_payload(o),{"mu","sigma"}));
   if (res.status == cppunivariate::GumbelStatus::InvalidInput) return done(fail("Gumbel requires nonempty finite data, valid held parameters, a positive tolerance and positive iterlim."));
   if (res.status == cppunivariate::GumbelStatus::Unbounded) return done(nomle("The Gumbel maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."));
   if (res.status == cppunivariate::GumbelStatus::IterationFailure)

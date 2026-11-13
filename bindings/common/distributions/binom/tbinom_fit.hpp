@@ -25,26 +25,26 @@ inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, He
     cppunivariate::tbinom_design_mle(x,lower,upper,trials,held,tol,maxit);
   const auto o=cppunivariate::outcome(r);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(r.status));
-    return with_outcome(std::move(out),o,static_cast<int>(r.status));
+    return with_outcome(std::move(out),o,static_cast<int>(r.status),{{"prob",prob_arg.supplied},{"a",a_arg.supplied},{"b",b_arg.supplied},{"size",size_arg.supplied}});
   };
   return done([&]() -> FitResult {
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(r.status) {
-    case cppunivariate::TbinomStatus::LowerPointMass: stop_kind=outcome_kind(o);break;
-    case cppunivariate::TbinomStatus::UpperPointMass: stop_kind=outcome_kind(o);break;
-    case cppunivariate::TbinomStatus::TpoisLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::TbinomStatus::Unidentified: stop_kind="tie";break;
-    case cppunivariate::TbinomStatus::NumericalFailure: stop_kind=outcome_kind(o);break;
+    case cppunivariate::TbinomStatus::LowerPointMass: stop_kind=outcome_payload(o);break;
+    case cppunivariate::TbinomStatus::UpperPointMass: stop_kind=outcome_payload(o);break;
+    case cppunivariate::TbinomStatus::TpoisLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::TbinomStatus::Unidentified: stop_kind=PayloadKind::Comparison;break;
+    case cppunivariate::TbinomStatus::NumericalFailure: stop_kind=outcome_payload(o);break;
     default:break;
   }
-  if(r.stop_detail.comparison_tie)stop_kind="unresolved";
-  if(r.stop_detail.budget_exhausted)stop_kind="budget";
-  if(stop_kind.empty() && !r.stop_detail.candidates.empty())stop_kind="numerical";
+  if(r.stop_detail.comparison_tie)stop_kind=PayloadKind::Unresolved;
+  if(r.stop_detail.budget_exhausted)stop_kind=PayloadKind::Budget;
+  if((stop_kind==PayloadKind::None) && !r.stop_detail.candidates.empty())stop_kind=PayloadKind::Numerical;
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
-    auto out=fail(stop_kind=="unresolved" ? "Global likelihood comparison is unresolved; no maximizer is certified. Use `mlpois(x, truncate = c(max(0, floor(a) + 1), floor(b)))` only to fit the comparison face." : binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,r.stop_detail,stop_kind,{"prob","a","b","size"});
+    auto out=fail(stop_kind==PayloadKind::Unresolved ? "Global likelihood comparison is unresolved; no maximizer is certified. Use `mlpois(x, truncate = c(max(0, floor(a) + 1), floor(b)))` only to fit the comparison face." : binding_message(format,arguments...));
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,r.stop_detail,stop_kind,{"prob","a","b","size"});
   };
 
   if(r.status==cppunivariate::TbinomStatus::LowerPointMass) return stopped_fail("MLE escapes to a point mass at the lowest support point.");
@@ -66,7 +66,7 @@ inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, He
   if(a.supplied)fixed.push_back("a");
   if(b.supplied)fixed.push_back("b");
   if(prob.supplied)fixed.push_back("prob");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"prob",r.prob},{"a",lower},{"b",upper},{"size",r.size}}; out.extra.push_back({"certified", r.certified ? 1.0 : 0.0}); out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"prob",r.prob},{"a",lower},{"b",upper},{"size",r.size}};  out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
   }());
 }

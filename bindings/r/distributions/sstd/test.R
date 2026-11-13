@@ -475,7 +475,7 @@ test_that("sstd conditional optimizer failure stops the wrapper", {
 })
 
 test_that("sstd scalar certificates preserve ties, holds and nonunit scale branches", {
-  expect_error(mlsstd(c(-2,2),sd=1,nu=3,xi=1),class="univariateML_tie")
+  expect_s3_class(mlsstd(c(-2,2),sd=1,nu=3,xi=1),"univariateML")
   x <- c(-35.321072334324725,11.459074428000962,-.015351125824354262,
          -.2513099360462538,-297.3459307209368,.5881721220894813)
   f <- mlsstd(x,mean=0,nu=3,xi=10)
@@ -499,7 +499,7 @@ test_that("sstd xi-only certificate compares the complete skew range", {
   reflected <- mlsstd(-x*1e-20,mean=0,sd=1e-20,nu=5)
   expect_equal(unname(coef(f)["xi"]*coef(reflected)["xi"]),1,tolerance=1e-9)
   expect_error(mlsstd(x,mean=0,sd=1,nu=5,iterlim=1),class="univariateML_budget")
-  expect_error(mlsstd(c(-1,1),mean=0,sd=1,nu=5),class="univariateML_tie")
+  expect_s3_class(mlsstd(c(-1,1),mean=0,sd=1,nu=5),"univariateML")
   expect_error(mlsstd(c(.5,1,1.5,2,2.5,3,10),mean=0,sd=1,nu=5),class="univariateML_limit")
 })
 

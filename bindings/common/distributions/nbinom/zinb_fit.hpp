@@ -18,26 +18,26 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
       size.supplied ? size.value : NAN,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(fit);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(fit.status));
-    return with_outcome(std::move(out),o,static_cast<int>(fit.status));
+    return with_outcome(std::move(out),o,static_cast<int>(fit.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"pi",pi_arg.supplied}});
   };
   return done([&]() -> FitResult {
-  if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("zinb numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,outcome_kind(o),{"size","prob","pi"});
+  if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("zinb numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,outcome_payload(o),{"size","prob","pi"});
   if (fit.status == cppunivariate::ZinbStatus::InvalidSize)
     return fail("size must be a finite nonnegative number");
   if (fit.status == cppunivariate::ZinbStatus::InvalidInput)
     return fail("ZINB requires nonempty nonnegative count data, positive reltol and iterlim, prob in (0,1], pi in [0,1], and compatible holds");
   if (fit.status == cppunivariate::ZinbStatus::ZipLimit)
-    return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a zero-inflated Poisson. Use `mlpois(x, zero = \"inflated\")` instead."),fit.stop_detail,outcome_kind(o),{"size","prob","pi"});
+    return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a zero-inflated Poisson. Use `mlpois(x, zero = \"inflated\")` instead."),fit.stop_detail,outcome_payload(o),{"size","prob","pi"});
   if (fit.status == cppunivariate::ZinbStatus::PoissonLimit)
-    return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a Poisson. Use `mlpois` instead."),fit.stop_detail,outcome_kind(o),{"size","prob","pi"});
+    return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a Poisson. Use `mlpois` instead."),fit.stop_detail,outcome_payload(o),{"size","prob","pi"});
   if (fit.status != cppunivariate::ZinbStatus::Ok) {
-    std::string kind="numerical",message="Zero-inflated negative binomial MLE failed: unresolved arithmetic, root enclosure or curvature; no verified maximum.";
-    if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::Budget){kind="budget";message="Zero-inflated negative binomial MLE failed: certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop.";}
-    if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::ComparisonTie){kind="tie";message="Zero-inflated negative binomial MLE failed: competing maxima overlap at the comparison margin; no unique verified maximum.";}
+    PayloadKind kind=PayloadKind::Numerical;std::string message="Zero-inflated negative binomial MLE failed: unresolved arithmetic, root enclosure or curvature; no verified maximum.";
+    if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::Budget){kind=PayloadKind::Budget;message="Zero-inflated negative binomial MLE failed: certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop.";}
+    if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::ComparisonTie){kind=PayloadKind::Comparison;message="Zero-inflated negative binomial MLE failed: competing maxima overlap at the comparison margin; no unique verified maximum.";}
     if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::Workload)message="Zero-inflated negative binomial MLE failed: certificate workload limit (maximum count 100000, total count 2^52); no verified maximum.";
-    if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::TailUnresolved){kind="unresolved";message="Zero-inflated negative binomial MLE failed: infinite-size tail is not excluded at the comparison margin; no verified maximum.";}
+    if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::TailUnresolved){kind=PayloadKind::Unresolved;message="Zero-inflated negative binomial MLE failed: infinite-size tail is not excluded at the comparison margin; no verified maximum.";}
     return stop_failure(fail(message),fit.stop_detail,kind,{"size","prob","pi"});
   }
   std::vector<std::string> fixed;

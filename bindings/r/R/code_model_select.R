@@ -30,6 +30,7 @@
 #'     `d_loglik, d_aic, d_bic`}. So, the model with the lowest aic will
 #'     have `d_aic` of 0; the `d_aic` of all the other models shows how much higher
 #'     their aics are from the minimum. The same goes with `d_loglik` and `d_bic`.
+#'     \item{`certified`, `unique`}{Logical outcome flags for each estimate.}
 #'     \item{`ml`}{The internal code name for the model.}
 #'     \item{`univariateML`}{The `univariateML` object for the model. This is
 #'     `return = "all"`, this object is returned for all tested models.}
@@ -122,6 +123,8 @@ model_select <- function(
     AIC = unname(sapply(fits, stats::AIC)),
     BIC = unname(sapply(fits, stats::BIC)),
     p = unname(p_vec),
+    certified = unname(vapply(fits, function(x) isTRUE(attr(x,"certified")), logical(1))),
+    unique = unname(vapply(fits, function(x) !identical(attr(x,"unique"),FALSE), logical(1))),
     ml = gsub("^ml", "", names(fits)),
     univariateML = I(fits),
     stringsAsFactors = FALSE
@@ -136,7 +139,7 @@ model_select <- function(
   fits$logLik <- -fits$LOGLIK
 
   fits <- fits[, c(
-    "model", "d_logLik", "d_AIC", "d_BIC", "logLik", "p", "AIC", "BIC", "ml", "univariateML"
+    "model", "d_logLik", "d_AIC", "d_BIC", "logLik", "p", "AIC", "BIC", "ml", "certified", "unique", "univariateML"
   ), drop = FALSE]
 
   attr(fits, "skipped") <- skipped

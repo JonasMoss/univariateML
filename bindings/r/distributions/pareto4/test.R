@@ -137,7 +137,7 @@ test_that("P2 pareto4 validates new held values", {
   x <- c(.2,.5,1,2,4)
   expect_error(mlpareto4(x,min=0,iterlim=2), "certificate numerical failure.*no verified MLE")
   x <- c(0.0049057434842350416,0.042501201178458653,0.19481544379842536,0.29869422522389177,0.40386521559557592,0.49096570363940406,0.5326256684997116,0.72206471601197653,0.74104603671600355,0.82688168528714312,0.98659907210500519,1.1056048590023038,1.140076235502067,1.1606952121643113,1.4300263464615877,1.4793399841671804,1.5655241685783525,1.6390163836698108,2.0838622791695847,5.1042846241626947)
-  expect_error(mlpareto4(x,min=0), "certificate unresolved.*sign-uncertain seam; no verified MLE")
+  expect_match(attr(mlpareto4(x,min=0),"outcome_message"), "certificate unresolved.*sign-uncertain seam; no verified MLE")
   expect_error(mlpareto4(rep(2,3),min=0), "unbounded.*constant sample; no MLE")
 })
 

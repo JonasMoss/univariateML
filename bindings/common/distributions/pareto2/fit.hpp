@@ -23,19 +23,19 @@ inline FitResult fit_pareto2(cppunivariate::span x, Held shape_arg = {}, Held sc
  auto res=cppunivariate::pareto2_mle(x,min,reltol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (res.status == cppunivariate::LomaxStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (res.status == cppunivariate::LomaxStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied},{"min",min_arg.supplied}});
   };
   if(res.status==cppunivariate::LomaxStatus::IterationFailure && std::isinf(res.scale) && res.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic)
-    return done(stop_failure(fail("Pareto II numerical failure: the fitted scale cannot be represented in binary64."),res.stop_detail,outcome_kind(o),{"shape","scale","min"}));
-  if(res.status==cppunivariate::LomaxStatus::AccuracyFailure)return done(stop_failure(fail("Lomax delegate requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"shape","scale","min"}));
+    return done(stop_failure(fail("Pareto II numerical failure: the fitted scale cannot be represented in binary64."),res.stop_detail,outcome_payload(o),{"shape","scale","min"}));
+  if(res.status==cppunivariate::LomaxStatus::AccuracyFailure)return done(stop_failure(fail("Lomax delegate requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"shape","scale","min"}));
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
     return done(stop_failure(fail("The Lomax maximum likelihood estimator does not exist for data "
                "whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an "
-               "exponential distribution."),res.stop_detail,outcome_kind(o),{"shape","scale","min"},"exp"));
+               "exponential distribution."),res.stop_detail,outcome_payload(o),{"shape","scale","min"},"exp"));
   }
-  if(res.status==cppunivariate::LomaxStatus::IterationFailure) return done(stop_failure(fail("Certified Lomax delegate failed; no verified maximum. Raising iterlim may resolve a budget stop."),res.stop_detail,outcome_kind(o),{"shape","scale","min"},""));
+  if(res.status==cppunivariate::LomaxStatus::IterationFailure) return done(stop_failure(fail("Certified Lomax delegate failed; no verified maximum. Raising iterlim may resolve a budget stop."),res.stop_detail,outcome_payload(o),{"shape","scale","min"},""));
   if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.scale) || !(res.scale>0) ||
       !std::isfinite(res.shape)) {
     return done(fail("Lomax MLE failed to converge (check dispersion/inputs)"));

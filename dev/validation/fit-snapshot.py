@@ -150,8 +150,8 @@ int main(){
     std::vector<double> holds(@K@);std::vector<@TYPE@> data;
     for(double&v:holds){std::cin>>token;v=std::strtod(token.c_str(),nullptr);}
     for(std::size_t i=0;i<n;++i){std::cin>>token;data.push_back(static_cast<@TYPE@>(std::strtod(token.c_str(),nullptr)));}
-    const auto r=umvl_binding::fit_@ID@(cppunivariate::@SPAN@{data.data(),data.size()},@ARGS@);
-    std::string o="{\"kind\":"+str(r.error.empty()?"ok":r.error_kind.empty()?"error":r.error_kind);
+    const auto r=umvl_binding::render_fit(umvl_binding::fit_@ID@(cppunivariate::@SPAN@{data.data(),data.size()},@ARGS@));
+    std::string o="{\"kind\":"+str(r.error_kind.empty()?"ok":r.error_kind);
     o+=",\"estimates\":"+named(r.estimates)+",\"logLik\":"+num(r.logLik);
     o+=",\"iterations\":"+std::string(r.has_iterations?std::to_string(r.iterations):"null");
     o+=",\"fixed\":[";for(std::size_t i=0;i<r.fixed.size();++i)o+=(i?",":"")+str(r.fixed[i]);
@@ -168,6 +168,10 @@ int main(){
       o+=(i?",":"")+std::string("{\"model\":")+str(c.model)+",\"estimates\":"+named(c.estimates)+
          ",\"loglik_lower\":"+num(c.loglik_lower)+",\"loglik_upper\":"+num(c.loglik_upper)+"}";}
     o+="]";
+    o+=",\"reason\":"+str(cppunivariate::outcome_reason_name(r.outcome.reason));
+    if(r.outcome.kind==cppunivariate::OutcomeKind::Estimate || r.outcome.kind==cppunivariate::OutcomeKind::Limit)
+      o+=",\"certified\":"+std::string(r.outcome.certified?"true":"false");
+    if(r.outcome.kind==cppunivariate::OutcomeKind::Estimate)o+=",\"unique\":"+std::string(r.outcome.unique?"true":"false");
 #if __has_include("cppunivariate/core/outcome.hpp")
     o+=",\"outcome\":";
     if(r.outcome_set)o+=std::string("{\"kind\":")+str(cppunivariate::outcome_kind_name(r.outcome.kind))+",\"reason\":"+
@@ -211,7 +215,7 @@ def build(ident, work, double, boost):
         elif ident=='zipf': a,b='1',endpoint('N')
         call='umvl_binding::fit_modifier("%s",cppunivariate::span{data.data(),data.size()},{%s},"%s",%s,%s,%s)' % (route['base'],','.join(entries),route['zero'],'true' if route['zero']=='none' else 'false',a,b)
         text=text.replace('#include "bindings/common/distributions/'+ident+'/fit.hpp"','#include "bindings/common/modifiers.hpp"')
-        text=re.sub(r'umvl_binding::fit_'+ident+r'\(.*?;',''+call+';',text,count=1)
+        text=re.sub(r'umvl_binding::fit_'+ident+r'\(.*?;',''+call+');',text,count=1)
     source = work/(ident+'.cpp'); exe = work/ident
     source.write_text(text)
     env = dict(os.environ)
@@ -373,9 +377,15 @@ def outcomes(args):
         statuses.setdefault(family, set()).add(res['core_status'])
         key = (o['kind'], o['reason'], res['kind']); table[key] = table.get(key, 0)+1
         if res.get('outcome_override'): overrides[family] = overrides.get(family, 0)+1
-        want = expected(o); got = 'numerical' if res['kind'] in ('tolerance', 'conditioning') else res['kind']
+        rendered = 'reason' in res
+        want = ({'invalid-input':'invalid','invalid-argument':'invalid','unsupported':'unsupported'}.get(o['reason']) if rendered and o['kind']=='failure' else None) or expected(o)
+        got = 'numerical' if res['kind'] in ('tolerance', 'conditioning') else res['kind']
         # Until step 5 a tie stop is how an estimate that is not unique, or not certified, is rendered.
         if got == 'tie' and o['kind'] == 'estimate' and not (o['unique'] and o['certified']): continue
+        if rendered and (res['reason'] != o['reason'] or
+                         o['kind'] in ('estimate','limit') and res.get('certified') != o['certified'] or
+                         o['kind'] == 'estimate' and res.get('unique') != o['unique']):
+            disagree.append((family, source, case, o, 'rendered fields disagree')); continue
         flag = res['extra'].get('certified') if got == 'ok' else None
         if flag is not None and (float.fromhex(flag) != 0) != o['certified']:
             disagree.append((family, source, case, o, 'certified flag %s' % flag)); continue

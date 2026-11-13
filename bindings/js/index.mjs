@@ -24,6 +24,7 @@ export default async function create(options = {}) {
       return module[`r${id}`](n, params, seed);
     },
     ...(fitFamilies.includes(id) ? {vcov: (x, fit, type = 'sandwich') => {
+      if(fit?.unique===false) throw Object.assign(new Error('Inference requires a unique maximizer; this fit has multiple maximizers.'),{kind:'unsupported',reason:'non-unique'});
       if(fit?.censored || fit?.truncate || fit?.zero && fit.zero!=='none') throw new Error('Covariance for modified or censored fits is not implemented');
       if (!['sandwich', 'observed'].includes(type)) throw new Error('type must be "sandwich" or "observed"');
       if (x == null) throw new Error('Covariance requires the observations from a fitted model');
@@ -46,6 +47,7 @@ export default async function create(options = {}) {
         condition: result.condition, validity: result.validity,
         warnings: result.condition > 1e6 ? ['Observed information is poorly conditioned in natural coordinates; covariance may be numerically sensitive'] : []};
     }, fit: (x, held = {}, control = {}) => {
+      try {
       if(x && 'lower' in x && x.lower.length===x.upper?.length &&
           Array.from(x.lower).every((v,i)=>v===x.upper[i])) x=x.lower;
       if(control.zero && control.zero!=="none" || control.truncate || x && "lower" in x) {
@@ -56,13 +58,17 @@ export default async function create(options = {}) {
       const result = control.zero && control.zero!=="none" || control.truncate ||
         (x && !ArrayBuffer.isView(x) && !Array.isArray(x) && "lower" in x) ?
         modifier.fit(x,held,control) : module[`fit${id}`](x, held, control);
-      if (result.error) {
+      if (result.error !== undefined) {
         const error = new Error(result.error);
-        for (const key of ['kind', 'attainable_tol', 'model', 'estimates', 'candidates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'segment_loglik_upper', 'certified'])
+        for (const key of ['kind', 'reason', 'attainable_tol', 'model', 'estimates', 'candidates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'segment_loglik_upper', 'certified'])
           if (key in result) error[key] = result[key];
         error.warnings = result.warnings || []; throw error;
       }
       return result;
+      } catch (error) {
+        if (!error.kind) Object.assign(error,{kind:"invalid",reason:"invalid-argument"});
+        throw error;
+      }
     }} : {}),
   }];}));
 }

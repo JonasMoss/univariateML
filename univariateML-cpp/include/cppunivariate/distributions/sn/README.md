@@ -307,3 +307,5 @@ With $\alpha=0$, held $\omega=d$ and observations $(0,0,0,d)$, the
 conditional location maximizer is $d/4$. If $d$ is the smallest positive
 double, no double location meets the scale-relative accuracy contract.
 This is a numerical accuracy failure, rather than nonexistence of the MLE.
+
+When shape is proved unidentified at the held location, `coef()` uses the first listed `(xi, omega, alpha)` representative and attaches both listed representatives as `maximizers`.

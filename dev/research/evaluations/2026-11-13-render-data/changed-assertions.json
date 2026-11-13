@@ -1,0 +1,2018 @@
+[
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "sstd xi-only certificate, reflection, budget and half-t comparison",
+  "old": "assert.equal(tied.kind,'tie')",
+  "new": "assert.equal(tied.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "continuous fallback carries the per-fit certification flag",
+  "old": "assert.equal(r.certified,0)",
+  "new": "assert.equal(r.certified,false)"
+ },
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "unit beta-prime fallback keeps the scalar search beyond the generic shape guard",
+  "old": "assert.equal(f.certified,0)",
+  "new": "assert.equal(f.certified,false)"
+ },
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "count fallback exposes per-fit certification",
+  "old": "assert.equal(r.certified,0)",
+  "new": "assert.equal(r.certified,false)"
+ },
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "count fallback exposes per-fit certification",
+  "old": "assert.equal(f.certified,1)",
+  "new": "assert.equal(f.certified,true)"
+ },
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "delegate follow-up keeps successful uncertified parent fits",
+  "old": "assert.equal(r.certified,0,id)",
+  "new": "assert.equal(r.certified,false,id)"
+ },
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "GEV and Frechet all-free fits expose per-fit certificate markers",
+  "old": "assert.equal(g.certified,1)",
+  "new": "assert.equal(g.certified,true)"
+ },
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "GEV and Frechet all-free fits expose per-fit certificate markers",
+  "old": "assert.equal(f.certified,1)",
+  "new": "assert.equal(f.certified,true)"
+ },
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "Frechet finite two-point cancellation retains an uncertified fit",
+  "old": "assert.equal(f.certified,0)",
+  "new": "assert.equal(f.certified,false)"
+ },
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "an unordered Frechet Gumbel comparison retains the finite search",
+  "old": "assert.equal(f.certified,0)",
+  "new": "assert.equal(f.certified,false)"
+ },
+ {
+  "file": "bindings/js/fit-test.mjs",
+  "test": "GEV coupled support corners survive normalization and outer coverage",
+  "old": "assert.equal(f.certified,1)",
+  "new": "assert.equal(f.certified,true)"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "structured stops survive the JS Error facade",
+  "old": "assert.throws(() => api.cauchy.fit([-2,2], {scale:1}), e => {\n    assert.ok(e instanceof Error);assert.equal(e.kind,'tie');\n    assert.ok(Number.isNaN(e.segment_loglik_upper));\n    assert.equal(e.candidates.length,2);\n    for (const c of e.candidates) {\n      assert.ok(Math.abs(Math.abs(c.location)-Math.sqrt(3))<1e-7);\n      assert.equal(c.scale,1);assert.ok(c.loglik_lower<=c.loglik_upper);\n    }\n    return /Held-scale Cauchy global maxima are tied/.test(e.message);\n  })",
+  "new": "comparisonFit(() => api.cauchy.fit([-2,2], {scale:1}), e => {\n    assert.equal(e.status,'Ok');assert.ok(!e.certified || !e.unique);\n    assert.deepEqual(e.fixed,['scale']);\n    assert.ok(Number.isNaN(e.segment_loglik_upper));\n    assert.equal(e.candidates.length,2);\n    for (const c of e.candidates) {\n      assert.ok(Math.abs(Math.abs(c.location)-Math.sqrt(3))<1e-7);\n      assert.equal(c.scale,1);assert.ok(c.loglik_lower<=c.loglik_upper);\n    }\n    return /Held-scale Cauchy global maxima are tied/.test(e.message);\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "structured stops survive the JS Error facade",
+  "old": "assert.ok(e instanceof Error)",
+  "new": "assert.ok(!e.certified || !e.unique)"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "structured stops survive the JS Error facade",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.deepEqual(e.fixed,['scale'])"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "Burr and reciprocal sign-uncertain-seam structured tie",
+  "old": "assert.throws(() => modifierRoute(api,family).fit(data), e => {\n      assert.equal(e.kind,'tie');assert.ok(e.candidates.length>=2);\n      for(const c of e.candidates)assert.ok(c.loglik_lower<=c.loglik_upper);\n      return true;\n    })",
+  "new": "comparisonFit(() => modifierRoute(api,family).fit(data), e => {\n      assert.equal(e.status,'Ok');assert.ok(e.candidates.length>=2);\n      for(const c of e.candidates)assert.ok(c.loglik_lower<=c.loglik_upper);\n      return true;\n    })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "Burr and reciprocal sign-uncertain-seam structured tie",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "unrepresentable delegate reductions stop as numerical failures",
+  "old": "assert.throws(()=>modifierRoute(api,family).fit(data,held),e=>e.kind==='numerical')",
+  "new": "assert.throws(()=>modifierRoute(api,family).fit(data,held),e=>e.kind===(family==='lomax'?'tolerance':'numerical'))"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "discrete stops retain fitted package and non-package faces",
+  "old": "assert.throws(()=>api.cmb.fit([0,1]),e=>{\n    assert.equal(e.kind,'tie');assert.equal(e.model,'binom');\n    assert.deepEqual(e.estimates,{size:1,prob:.5});return true;\n  })",
+  "new": "comparisonFit(()=>api.cmb.fit([0,1]),e=>{\n    assert.equal(e.status,'Ok');assert.equal(e.model,'binom');\n    assert.deepEqual(e.estimates,{size:1,prob:.5});return true;\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "discrete stops retain fitted package and non-package faces",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "continuous structured nonexistence and fitted faces",
+  "old": "assert.throws(() => api.exp.fit([-1,2]), e => !e.kind)",
+  "new": "assert.throws(() => api.exp.fit([-1,2]), e => e.kind==='invalid' && e.reason==='invalid-input')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "continuous structured nonexistence and fitted faces",
+  "old": "assert.throws(() => api.gamma.fit([1,1,1],{}, {abstol:0}), e => !e.kind)",
+  "new": "assert.throws(() => api.gamma.fit([1,1,1],{}, {abstol:0}), e => e.kind==='nomle')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "conditional snorm and skew-t ambiguities retain both compared models",
+  "old": "assert.throws(()=>modifierRoute(api,family).fit([1,2],held),e=>{\n      assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);\n      assert.ok(e.candidates.some(c=>c.model===model));assert.equal(e.loglik_upper,Infinity);\n      assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;\n    })",
+  "new": "comparisonFit(()=>modifierRoute(api,family).fit([1,2],held),e=>{\n      assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);\n      assert.ok(e.candidates.some(c=>c.model===model));assert.equal(e.loglik_upper,Infinity);\n      assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;\n    })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "conditional snorm and skew-t ambiguities retain both compared models",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "ZINB certificate transports competing maxima and terminal budgets",
+  "old": "assert.throws(() => modifierRoute(api,'zinb').fit([...Array(99).fill(0),10], {size:10,pi:.76839477568758077746}), e => {\n    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);\n    for(const c of e.candidates){assert.equal(c.size,10);assert.equal(c.pi,.76839477568758077746);assert.ok(c.loglik_lower<=c.loglik_upper);}\n    assert.equal(e.loglik_upper,Infinity);return true;\n  })",
+  "new": "comparisonFit(() => modifierRoute(api,'zinb').fit([...Array(99).fill(0),10], {size:10,pi:.76839477568758077746}), e => {\n    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);\n    for(const c of e.candidates){assert.equal(c.size,10);assert.equal(c.pi,.76839477568758077746);assert.ok(c.loglik_lower<=c.loglik_upper);}\n    assert.equal(e.loglik_upper,Infinity);return true;\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "ZINB certificate transports competing maxima and terminal budgets",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "PIG global certificate transports Poisson, tie, budget and numerical stops",
+  "old": "assert.throws(() => api.pig.fit([0,1,2],{mean:1+Math.sqrt(1/3)}),e=>{\n    assert.equal(e.kind,'tie');assert.equal(e.candidates[0].model,'pois');\n    assert.equal(e.loglik_upper,Infinity);return true;\n  })",
+  "new": "comparisonFit(() => api.pig.fit([0,1,2],{mean:1+Math.sqrt(1/3)}),e=>{\n    assert.equal(e.status,'Ok');assert.equal(e.candidates[0].model,'pois');\n    assert.equal(e.loglik_upper,Infinity);return true;\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "PIG global certificate transports Poisson, tie, budget and numerical stops",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "tlambda certificates keep contact ties, budget and collapse witnesses",
+  "old": "assert.throws(()=>api.tlambda.fit([-.25,.25],{sigma:1,lambda:1.5}), e=> {\n    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);\n    assert.ok(Math.abs(e.candidates[0].mu+5/12)<1e-12);\n    assert.ok(Math.abs(e.candidates[1].mu-5/12)<1e-12);return true;\n  })",
+  "new": "comparisonFit(()=>api.tlambda.fit([-.25,.25],{sigma:1,lambda:1.5}), e=> {\n    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);\n    assert.ok(Math.abs(e.candidates[0].mu+5/12)<1e-12);\n    assert.ok(Math.abs(e.candidates[1].mu-5/12)<1e-12);return true;\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "tlambda certificates keep contact ties, budget and collapse witnesses",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "snorm held certificate preserves opposite-face ties and root failures",
+  "old": "assert.throws(()=>api.snorm.fit([0,0,0],{sd:1}),e=> {\n    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);\n    assert.deepEqual(new Set(e.candidates.map(c=>c.model)),new Set(['hnorm','unavailable:reflected-half-normal']));return true;\n  })",
+  "new": "comparisonFit(()=>api.snorm.fit([0,0,0],{sd:1}),e=> {\n    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);\n    assert.deepEqual(new Set(e.candidates.map(c=>c.model)),new Set(['hnorm','unavailable:reflected-half-normal']));return true;\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "snorm held certificate preserves opposite-face ties and root failures",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "snorm reflected finite modes remain a comparison tie",
+  "old": "assert.throws(()=>api.snorm.fit([-1,0,1],{mean:0,sd:.755}),e=> {\n    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);\n    assert.ok(e.candidates.every(c=>c.model===''));\n    assert.ok(Math.abs(e.candidates[0].xi*e.candidates[1].xi-1)<1e-7);return true;\n  })",
+  "new": "comparisonFit(()=>api.snorm.fit([-1,0,1],{mean:0,sd:.755}),e=> {\n    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);\n    assert.ok(e.candidates.every(c=>c.model===''));\n    assert.ok(Math.abs(e.candidates[0].xi*e.candidates[1].xi-1)<1e-7);return true;\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "snorm reflected finite modes remain a comparison tie",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "st conditional location and alpha-scale certificates retain stops",
+  "old": "assert.throws(()=>api.st.fit([-2,2],{omega:1,alpha:0,nu:1}), e=>{\n    assert.equal(e.kind,'tie');\n    assert.ok(e.candidates.some(c=>Math.abs(c.xi-Math.sqrt(3))<1e-8));\n    assert.ok(e.candidates.some(c=>Math.abs(c.xi+Math.sqrt(3))<1e-8));return true;\n  })",
+  "new": "comparisonFit(()=>api.st.fit([-2,2],{omega:1,alpha:0,nu:1}), e=>{\n    assert.equal(e.status,'Ok');\n    assert.ok(e.candidates.some(c=>Math.abs(c.xi-Math.sqrt(3))<1e-8));\n    assert.ok(e.candidates.some(c=>Math.abs(c.xi+Math.sqrt(3))<1e-8));return true;\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "st conditional location and alpha-scale certificates retain stops",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "st constant-data location-skew faces retain the sharp global bound",
+  "old": "assert.throws(()=>api.st.fit([2,2,2],{omega:1,nu:4}),e=>{\n    assert.equal(e.kind,'tie');assert.deepEqual(e.candidates.map(c=>c.model),['ht','unavailable:reflected-half-t']);\n    assert.ok(Number.isFinite(e.loglik_lower));assert.ok(Number.isFinite(e.loglik_upper));return true;\n  })",
+  "new": "comparisonFit(()=>api.st.fit([2,2,2],{omega:1,nu:4}),e=>{\n    assert.equal(e.status,'Ok');assert.deepEqual(e.candidates.map(c=>c.model),['ht','unavailable:reflected-half-t']);\n    assert.ok(Number.isFinite(e.loglik_lower));assert.ok(Number.isFinite(e.loglik_upper));return true;\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "st constant-data location-skew faces retain the sharp global bound",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "st constant-data free-nu corner keeps both half-normal faces",
+  "old": "assert.throws(()=>api.st.fit([2,2,2],{omega:1}),e=>{\n    assert.equal(e.kind,'tie');assert.deepEqual(e.candidates.map(c=>c.model),['hnorm','unavailable:reflected-half-normal']);\n    assert.ok(Number.isFinite(e.loglik_lower));assert.ok(Number.isFinite(e.loglik_upper));return true;\n  })",
+  "new": "comparisonFit(()=>api.st.fit([2,2,2],{omega:1}),e=>{\n    assert.equal(e.status,'Ok');assert.deepEqual(e.candidates.map(c=>c.model),['hnorm','unavailable:reflected-half-normal']);\n    assert.ok(Number.isFinite(e.loglik_lower));assert.ok(Number.isFinite(e.loglik_upper));return true;\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "st constant-data free-nu corner keeps both half-normal faces",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "Newton-family unrepresentable coefficients are numerical stops",
+  "old": "assert.throws(()=>modifierRoute(api,family).fit(x,held),e=>\n      e.kind==='numerical' && /requested coefficient accuracy/.test(e.message))",
+  "new": "assert.throws(()=>modifierRoute(api,family).fit(x,held),e=>\n      e.kind===(family==='foldnorm'?'tolerance':'numerical') && /requested coefficient accuracy/.test(e.message))"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "conditional free coefficients reject unrepresentable subnormals",
+  "old": "assert.throws(()=>modifierRoute(api,family).fit(data,held),e=>e.kind==='numerical')",
+  "new": "assert.throws(()=>modifierRoute(api,family).fit(data,held),e=>e.kind===(family==='lomax'?'tolerance':'numerical'))"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "accuracy stops distinguish binary64 tolerance from conditioning",
+  "old": "assert.throws(()=>modifierRoute(api,'zib').fit([0,1,1],{size:1,pi:0},{reltol:1e-20}),e=>{\n    assert.equal(e.kind,'tolerance');\n    assert.ok(Math.abs(e.attainable_tol/(1/27021597764222976)-1)<1e-14);\n    assert.match(e.message,/tol must be at least .* here/);\n    assert.ok(e.candidates.some(c=>c.prob===2/3));return true;\n  })",
+  "new": "assert.throws(()=>modifierRoute(api,'zib').fit([0,1,1],{size:1,pi:0},{reltol:1e-20}),e=>{\n    assert.equal(e.kind,'tolerance');assert.equal(e.reason,'tolerance');\n    assert.ok(Math.abs(e.attainable_tol/(1/27021597764222976)-1)<1e-14);\n    assert.match(e.message,/tol must be at least .* here/);\n    assert.ok(e.candidates.some(c=>c.prob===2/3));return true;\n  })"
+ },
+ {
+  "file": "bindings/js/stop-test.mjs",
+  "test": "accuracy stops distinguish binary64 tolerance from conditioning",
+  "old": "assert.throws(()=>api.foldnorm.fit([1,1,1,Math.sqrt(9+4*Math.sqrt(6))]),e=>{\n    assert.equal(e.kind,'conditioning');\n    assert.ok(e.attainable_tol<1e-10);\n    assert.ok(e.candidates.length>0);\n    assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;\n  })",
+  "new": "assert.throws(()=>api.foldnorm.fit([1,1,1,Math.sqrt(9+4*Math.sqrt(6))]),e=>{\n    assert.equal(e.kind,'conditioning');assert.equal(e.reason,'conditioning');\n    assert.ok(e.attainable_tol<1e-10);\n    assert.ok(e.candidates.length>0);\n    assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "sn conditional certificates and nonunique shape have shared stops",
+  "old": "assert.throws(() => api.sn.fit(new Float64Array([3,3,3,3,3]), {xi: 3, omega: 2}), e => {\n    assert.equal(e.kind, 'tie');\n    assert.equal(e.candidates.length, 2);\n    assert.equal(e.loglik_lower, e.loglik_upper);\n    assert.notEqual(e.candidates[0].alpha, e.candidates[1].alpha);\n    return true;\n  })",
+  "new": "comparisonFit(() => api.sn.fit(new Float64Array([3,3,3,3,3]), {xi: 3, omega: 2}), e => {\n    assert.equal(e.status,'Ok');\n    assert.equal(e.candidates.length, 2);\n    assert.equal(e.loglik_lower, e.loglik_upper);\n    assert.notEqual(e.candidates[0].alpha, e.candidates[1].alpha);\n    return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "sn conditional certificates and nonunique shape have shared stops",
+  "old": "assert.equal(e.kind, 'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "trgamma held endpoint comparisons stop without asserting nonattainment",
+  "old": "assert.throws(() => modifierRoute(api,family).fit(data,{scale:1}),error => {\n      assert.equal(error.kind,'tie');\n      assert.equal(error.candidates.length,2);\n      assert.ok(error.loglik_upper>=error.loglik_lower);\n      assert.ok(error.loglik_upper-error.loglik_lower<1e-7);\n      return true;\n    })",
+  "new": "comparisonFit(() => modifierRoute(api,family).fit(data,{scale:1}),error => {\n      assert.equal(error.status,'Ok');\n      assert.equal(error.candidates.length,2);\n      assert.ok(error.loglik_upper>=error.loglik_lower);\n      assert.ok(error.loglik_upper-error.loglik_lower<1e-7);\n      return true;\n    })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "trgamma held endpoint comparisons stop without asserting nonattainment",
+  "old": "assert.equal(error.kind,'tie')",
+  "new": "assert.equal(error.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "scalar-trio certificates expose fatigue ties and solve held scalar roots",
+  "old": "assert.throws(() => api.fatigue.fit(new Float64Array([1]), {alpha: 3, mu: 0}), error => {\n    assert.equal(error.kind, 'tie');\n    assert.equal(error.candidates.length, 2);\n    return true;\n  })",
+  "new": "comparisonFit(() => api.fatigue.fit(new Float64Array([1]), {alpha: 3, mu: 0}), error => {\n    assert.equal(error.status,'Ok');\n    assert.equal(error.candidates.length, 2);\n    return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "scalar-trio certificates expose fatigue ties and solve held scalar roots",
+  "old": "assert.equal(error.kind, 'tie')",
+  "new": "assert.equal(error.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "lst and std fixed-scale location certificates transport equal maxima",
+  "old": "assert.throws(() => modifierRoute(api,family).fit(new Float64Array([-3, 3]), held), error => {\n      assert.equal(error.kind, 'tie');\n      assert.equal(error.candidates.length, 2);\n      assert.ok(Number.isFinite(error.loglik_lower));\n      assert.ok(Number.isFinite(error.loglik_upper));\n      return true;\n    })",
+  "new": "comparisonFit(() => modifierRoute(api,family).fit(new Float64Array([-3, 3]), held), error => {\n      assert.equal(error.status,'Ok');\n      assert.equal(error.candidates.length, 2);\n      assert.ok(Number.isFinite(error.loglik_lower));\n      assert.ok(Number.isFinite(error.loglik_upper));\n      return true;\n    })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "lst and std fixed-scale location certificates transport equal maxima",
+  "old": "assert.equal(error.kind, 'tie')",
+  "new": "assert.equal(error.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "SGED subunit scale ties and exhausted certificates stop in the common binding",
+  "old": "assert.throws(()=>api.sged.fit(new Float64Array([-1,-1,-1]),{mean: 0,nu: .5,xi},{iterlim: 400}),error=>{\n    assert.equal(error.kind,'tie');\n    assert.ok(error.candidates.length>=2);\n    const scales=error.candidates.map(c=>c.sd);\n    assert.ok(Math.abs(Math.max(...scales)/Math.min(...scales)/r-1)<2e-6);\n    assert.ok(Number.isFinite(error.loglik_upper));\n    return true;\n  })",
+  "new": "comparisonFit(()=>api.sged.fit(new Float64Array([-1,-1,-1]),{mean: 0,nu: .5,xi},{iterlim: 400}),error=>{\n    assert.equal(error.status,'Ok');\n    assert.ok(error.candidates.length>=2);\n    const scales=error.candidates.map(c=>c.sd);\n    assert.ok(Math.abs(Math.max(...scales)/Math.min(...scales)/r-1)<2e-6);\n    assert.ok(Number.isFinite(error.loglik_upper));\n    return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "SGED subunit scale ties and exhausted certificates stop in the common binding",
+  "old": "assert.equal(error.kind,'tie')",
+  "new": "assert.equal(error.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "betapr rounded conditional peaks retain an uncertified search",
+  "old": "assert.equal(f.certified,0)",
+  "new": "assert.equal(f.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "betapr flat gamma-adjacent profile retains coefficient accuracy in WASM",
+  "old": "assert.equal(fallback.certified,0)",
+  "new": "assert.equal(fallback.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "SGED fixed-shape free-skew certificates share core routing",
+  "old": "assert.throws(()=>api.sged.fit(new Float64Array([-1,1]),{nu:.5}),error=>{\n    assert.equal(error.kind,'tie');assert.equal(error.candidates.length,2);\n    assert.ok(Number.isFinite(error.loglik_upper));return true;\n  })",
+  "new": "comparisonFit(()=>api.sged.fit(new Float64Array([-1,1]),{nu:.5}),error=>{\n    assert.equal(error.status,'Ok');assert.equal(error.candidates.length,2);\n    assert.ok(Number.isFinite(error.loglik_upper));return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "SGED fixed-shape free-skew certificates share core routing",
+  "old": "assert.equal(error.kind,'tie')",
+  "new": "assert.equal(error.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "GEV two-point count certificate avoids a rounded sample mean",
+  "old": "assert.equal(centered.certified,0)",
+  "new": "assert.equal(centered.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "EMG outer certificate preserves budget and unresolved witnesses",
+  "old": "assert.throws(()=>api.emg.fit(x,{mu:0}),e=>{\n    assert.equal(e.kind,'unresolved');assert.ok(e.candidates.length>=2);\n    assert.ok(e.loglik_lower<=e.loglik_upper);return true;\n  })",
+  "new": "assert.throws(()=>api.emg.fit(x,{mu:0}),e=>{\n    assert.equal(e.kind,'unresolved');assert.equal(e.reason,'unresolved');assert.ok(e.candidates.length>=2);\n    assert.ok(e.loglik_lower<=e.loglik_upper);return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "GED analytic held-sd shape fits and median ties agree across bindings",
+  "old": "assert.throws(()=>api.ged.fit(new Float64Array([-1,1]),{sd:.1},{iterlim:1}),error=>{\n    assert.equal(error.kind,'tie');\n    assert.match(error.message,/median interval/);\n    assert.deepEqual(error.candidates.map(c=>c.mean),[-1,1]);\n    assert.ok(Number.isFinite(error.loglik_upper));\n    assert.ok(error.loglik_lower<=error.loglik_upper);\n    return true;\n  })",
+  "new": "comparisonFit(()=>api.ged.fit(new Float64Array([-1,1]),{sd:.1},{iterlim:1}),error=>{\n    assert.equal(error.status,'Ok');\n    assert.match(error.message,/median interval/);\n    assert.deepEqual(error.candidates.map(c=>c.mean),[-1,1]);\n    assert.ok(Number.isFinite(error.loglik_upper));\n    assert.ok(error.loglik_lower<=error.loglik_upper);\n    return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "GED analytic held-sd shape fits and median ties agree across bindings",
+  "old": "assert.equal(error.kind,'tie')",
+  "new": "assert.equal(error.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "GED overlapping finite shape roots retain an uncertified search",
+  "old": "assert.equal(f.certified,0)",
+  "new": "assert.equal(f.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "GED Laplace median intervals retain the original observation endpoints",
+  "old": "assert.throws(()=>api.ged.fit(x),error=>{\n    assert.equal(error.kind,'tie');\n    assert.deepEqual(error.candidates.map(c=>c.mean),[10,11]);\n    return true;\n  })",
+  "new": "comparisonFit(()=>api.ged.fit(x),error=>{\n    assert.equal(error.status,'Ok');\n    assert.deepEqual(error.candidates.map(c=>c.mean),[10,11]);\n    return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "GED Laplace median intervals retain the original observation endpoints",
+  "old": "assert.equal(error.kind,'tie')",
+  "new": "assert.equal(error.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "higher-order binomial face signs retain proved stops or uncertified fits",
+  "old": "assert.equal(f.certified,0)",
+  "new": "assert.equal(f.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "globally winning tied ZIP faces retain both rate candidates",
+  "old": "assert.throws(() => modifierRoute(api,'zib').fit(new Float64Array([...Array(198).fill(0),1,19]),{pi:.7254971052291191}),error => {\n    assert.equal(error.kind,'tie');\n    assert.equal(error.model,'zip');\n    assert.ok(Number.isFinite(error.loglik_upper));\n    assert.ok(error.candidates.length>=3);\n    return true;\n  })",
+  "new": "comparisonFit(() => modifierRoute(api,'zib').fit(new Float64Array([...Array(198).fill(0),1,19]),{pi:.7254971052291191}),error => {\n    assert.equal(error.status,'Ok');\n    assert.equal(error.model,'zip');\n    assert.ok(Number.isFinite(error.loglik_upper));\n    assert.ok(error.candidates.length>=3);\n    return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "globally winning tied ZIP faces retain both rate candidates",
+  "old": "assert.equal(error.kind,'tie')",
+  "new": "assert.equal(error.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "Bhattacharjee held certificates and quantitative numerical stops",
+  "old": "assert.equal(normal.certified,1)",
+  "new": "assert.equal(normal.certified,true)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "SGED symmetric free-shape delegate transports fits and structured stops",
+  "old": "assert.throws(()=>api.sged.fit(new Float64Array([-1,1]),{sd:.1,xi:1},{iterlim:1}),e=>{\n    assert.equal(e.kind,'tie');assert.equal(e.candidates.length,2);\n    for(const c of e.candidates){assert.equal(c.xi,1);assert.equal(c.nu,1);}\n    return true;\n  })",
+  "new": "comparisonFit(()=>api.sged.fit(new Float64Array([-1,1]),{sd:.1,xi:1},{iterlim:1}),e=>{\n    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);\n    for(const c of e.candidates){assert.equal(c.xi,1);assert.equal(c.nu,1);}\n    return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "SGED symmetric free-shape delegate transports fits and structured stops",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "SGED weighted median and smooth reflected half-GED ties retain their witnesses",
+  "old": "assert.throws(()=>api.sged.fit(new Float64Array([-100,...Array(3).fill(-.01),...Array(15).fill(.01),100]),{xi:2}),e=>{\n    assert.equal(e.kind,'tie');assert.ok(e.candidates.length>=2);\n    for(const c of e.candidates){assert.equal(c.nu,1);assert.equal(c.xi,2);}return true;\n  })",
+  "new": "comparisonFit(()=>api.sged.fit(new Float64Array([-100,...Array(3).fill(-.01),...Array(15).fill(.01),100]),{xi:2}),e=>{\n    assert.equal(e.status,'Ok');assert.ok(e.candidates.length>=2);\n    for(const c of e.candidates){assert.equal(c.nu,1);assert.equal(c.xi,2);}return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "SGED weighted median and smooth reflected half-GED ties retain their witnesses",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "SGED weighted median and smooth reflected half-GED ties retain their witnesses",
+  "old": "assert.throws(()=>api.sged.fit(new Float64Array([-1,1]),{nu}),e=>{\n      assert.equal(e.kind,'tie');assert.ok(Number.isFinite(e.loglik_upper));\n      assert.deepEqual(new Set(e.candidates.map(c=>c.model)),new Set(['unavailable:half-ged','unavailable:reflected-half-ged']));return true;\n    })",
+  "new": "comparisonFit(()=>api.sged.fit(new Float64Array([-1,1]),{nu}),e=>{\n      assert.equal(e.status,'Ok');assert.ok(Number.isFinite(e.loglik_upper));\n      assert.deepEqual(new Set(e.candidates.map(c=>c.model)),new Set(['unavailable:half-ged','unavailable:reflected-half-ged']));return true;\n    })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "SGED weighted median and smooth reflected half-GED ties retain their witnesses",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "CMB finite-size ties retain two distinct witnesses and nu-held census certifies",
+  "old": "assert.throws(()=>api.cmb.fit(new Float64Array(data),held),e=>{\n      assert.equal(e.kind,'tie');assert.match(e.message,/Distinct finite sizes/);\n      assert.equal(e.candidates.length,2);\n      assert.equal(new Set(e.candidates.map(c=>c.size)).size,2);\n      assert.equal(e.loglik_upper,Infinity);return true;\n    })",
+  "new": "comparisonFit(()=>api.cmb.fit(new Float64Array(data),held),e=>{\n      assert.equal(e.status,'Ok');assert.match(e.message,/Distinct finite sizes/);\n      assert.equal(e.candidates.length,2);\n      assert.equal(new Set(e.candidates.map(c=>c.size)).size,2);\n      assert.equal(e.loglik_upper,Infinity);return true;\n    })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "CMB finite-size ties retain two distinct witnesses and nu-held census certifies",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "betapr all-free certificate returns verified fits and structured global stops",
+  "old": "assert.throws(()=>api.betapr.fit(new Float64Array([.5,1,2])),e=>{\n    assert.equal(e.kind,'tie');assert.ok(e.candidates.length>=2);return true;\n  })",
+  "new": "comparisonFit(()=>api.betapr.fit(new Float64Array([.5,1,2])),e=>{\n    assert.equal(e.status,'Ok');assert.ok(e.candidates.length>=2);return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "betapr all-free certificate returns verified fits and structured global stops",
+  "old": "assert.equal(e.kind,'tie')",
+  "new": "assert.equal(e.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "bnbinom legacy fallbacks and proved decisions expose certification labels",
+  "old": "assert.equal(legacy.certified,0)",
+  "new": "assert.equal(legacy.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "bnbinom legacy fallbacks and proved decisions expose certification labels",
+  "old": "assert.equal(api.bnbinom.fit(x).certified,1)",
+  "new": "assert.equal(api.bnbinom.fit(x).certified,true)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "binomial near-critical ZIP inputs return uncertified fits",
+  "old": "assert.equal(f.certified,0)",
+  "new": "assert.equal(f.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "Bhatt per-fit certification preserves successful searches",
+  "old": "assert.equal(f.certified,0)",
+  "new": "assert.equal(f.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "Bhatt per-fit certification preserves successful searches",
+  "old": "assert.equal(g.certified,1)",
+  "new": "assert.equal(g.certified,true)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "Bhatt per-fit certification preserves successful searches",
+  "old": "assert.equal(seed.certified,0)",
+  "new": "assert.equal(seed.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "transformed profiles retain finite ulp-wide fits with explicit uncertified flags",
+  "old": "assert.equal(fit.certified,0)",
+  "new": "assert.equal(fit.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "genbeta all-free finite certificate preserves the golden and never certifies unattainable precision",
+  "old": "assert.equal(tight.certified,0)",
+  "new": "assert.equal(tight.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "genbeta shallow coverage retains the uncertified legacy finite fit",
+  "old": "assert.equal(f.certified,0)",
+  "new": "assert.equal(f.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "genbeta shallow coverage retains the uncertified legacy finite fit",
+  "old": "assert.equal(api.genbeta.fit(new Float64Array(g.data),{scale:1}).certified,1)",
+  "new": "assert.equal(api.genbeta.fit(new Float64Array(g.data),{scale:1}).certified,true)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "GEV and Frechet held nuisance certificate markers cross the common seam",
+  "old": "assert.equal(r.certified,1)",
+  "new": "assert.equal(r.certified,true)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "GEV and Frechet held nuisance certificate markers cross the common seam",
+  "old": "assert.equal(f.certified,1)",
+  "new": "assert.equal(f.certified,true)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "std and lst shape certificates distinguish uncertified joint fits",
+  "old": "assert.equal(fit.certified,1)",
+  "new": "assert.equal(fit.certified,true)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "std and lst shape certificates distinguish uncertified joint fits",
+  "old": "assert.equal(joint.certified,0)",
+  "new": "assert.equal(joint.certified,false)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "Student held subsets expose proved symmetry nonuniqueness",
+  "old": "assert.throws(()=>modifierRoute(api,family).fit(new Float64Array(x),held),error=>{\n      assert.equal(error.kind,'tie');\n      assert.ok(Number.isFinite(error.loglik_lower));\n      assert.equal(error.loglik_upper,Infinity);\n      assert.equal(error.candidates.length,2);\n      return true;\n    })",
+  "new": "comparisonFit(()=>modifierRoute(api,family).fit(new Float64Array(x),held),error=>{\n      assert.equal(error.status,'Ok');\n      assert.ok(Number.isFinite(error.loglik_lower));\n      assert.equal(error.loglik_upper,Infinity);\n      assert.equal(error.candidates.length,2);\n      return true;\n    })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "Student held subsets expose proved symmetry nonuniqueness",
+  "old": "assert.equal(error.kind,'tie')",
+  "new": "assert.equal(error.status,'Ok')"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "Student signed held-location normal faces expose certification",
+  "old": "assert.throws(()=>modifierRoute(api,family).fit(new Float64Array([-1,2]),held),error=>{\n      assert.equal(error.kind,'limit');\n      assert.equal(error.model,'norm');\n      assert.equal(error.certified,1);\n      assert.ok(Number.isFinite(error.loglik_upper));\n      return true;\n    })",
+  "new": "assert.throws(()=>modifierRoute(api,family).fit(new Float64Array([-1,2]),held),error=>{\n      assert.equal(error.kind,'limit');\n      assert.equal(error.model,'norm');\n      assert.equal(error.certified,true);\n      assert.ok(Number.isFinite(error.loglik_upper));\n      return true;\n    })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "Student signed held-location normal faces expose certification",
+  "old": "assert.equal(error.certified,1)",
+  "new": "assert.equal(error.certified,true)"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "Student legacy t2 limit keeps its class and uncertified flag",
+  "old": "assert.throws(()=>api.std.fit(new Float64Array(x),{mean:0}),error=>{\n    assert.equal(error.kind,'limit');assert.equal(error.model,'lst');\n    assert.equal(error.certified,0);assert.equal(error.loglik_upper,Infinity);\n    assert.match(error.message,/mllst/);return true;\n  })",
+  "new": "assert.throws(()=>api.std.fit(new Float64Array(x),{mean:0}),error=>{\n    assert.equal(error.kind,'limit');assert.equal(error.model,'lst');\n    assert.equal(error.certified,false);assert.equal(error.loglik_upper,Infinity);\n    assert.match(error.message,/mllst/);return true;\n  })"
+ },
+ {
+  "file": "bindings/js/test.mjs",
+  "test": "Student legacy t2 limit keeps its class and uncertified flag",
+  "old": "assert.equal(error.certified,0)",
+  "new": "assert.equal(error.certified,false)"
+ },
+ {
+  "file": "bindings/r/distributions/bbinom/test.R",
+  "test": "faces and nonidentification are explicit",
+  "old": "expect_error(mlbbinom(c(0,1,1,0),size=1), \"not identified\")",
+  "new": "expect_match(attr(mlbbinom(c(0,1,1,0),size=1),\"outcome_message\"),\"not identified\")"
+ },
+ {
+  "file": "bindings/r/distributions/bbinom/test.R",
+  "test": "faces and nonidentification are explicit",
+  "old": "expect_error(mlbbinom(c(0,0),size=0), \"not identified\")",
+  "new": "expect_match(attr(mlbbinom(c(0,0),size=0),\"outcome_message\"),\"not identified\")"
+ },
+ {
+  "file": "bindings/r/distributions/bbinom/test.R",
+  "test": "held beta free-size fit has a certified tail",
+  "old": "expect_error(mlbbinom(c(0,0),size=NULL,beta=2), \"not identified\")",
+  "new": "expect_match(attr(mlbbinom(c(0,0),size=NULL,beta=2),\"outcome_message\"),\"not identified\")"
+ },
+ {
+  "file": "bindings/r/distributions/bbinom/test.R",
+  "test": "held alpha free-size certificates and stopping outcomes",
+  "old": "expect_error(mlbbinom(c(0,0),size=NULL,alpha=1), \"not identified\")",
+  "new": "expect_match(attr(mlbbinom(c(0,0),size=NULL,alpha=1),\"outcome_message\"),\"not identified\")"
+ },
+ {
+  "file": "bindings/r/distributions/betapr/test.R",
+  "test": "all-free certificate stops carry witnesses and selected faces are proper",
+  "old": "expect_identical(g$model,\"gamma\")",
+  "new": "expect_identical(fit_payload(g)$model,\"gamma\")"
+ },
+ {
+  "file": "bindings/r/distributions/betapr/test.R",
+  "test": "all-free certificate stops carry witnesses and selected faces are proper",
+  "old": "expect_true(is.finite(g$loglik_upper))",
+  "new": "expect_true(is.finite(fit_payload(g)$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/betapr/test.R",
+  "test": "all-free certificate stops carry witnesses and selected faces are proper",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/betapr/test.R",
+  "test": "all-free certificate stops carry witnesses and selected faces are proper",
+  "old": "expect_true(nrow(e$candidates)>=2)",
+  "new": "expect_true(nrow(fit_payload(e)$candidates)>=2)"
+ },
+ {
+  "file": "bindings/r/distributions/betapr/test.R",
+  "test": "all-free certificate stops carry witnesses and selected faces are proper",
+  "old": "expect_true(nrow(e$candidates)>0)",
+  "new": "expect_true(nrow(fit_payload(e)$candidates)>0)"
+ },
+ {
+  "file": "bindings/r/distributions/bhatt/test.R",
+  "test": "bhatt new holds agree with independent multistart likelihoods",
+  "old": "expect_gt(nrow(f$candidates),0)",
+  "new": "expect_gt(nrow(fit_payload(f)$candidates),0)"
+ },
+ {
+  "file": "bindings/r/distributions/bhatt/test.R",
+  "test": "bhatt new holds agree with independent multistart likelihoods",
+  "old": "expect_true(all(is.finite(f$candidates$loglik_lower)))",
+  "new": "expect_true(all(is.finite(fit_payload(f)$candidates$loglik_lower)))"
+ },
+ {
+  "file": "bindings/r/distributions/bhatt/test.R",
+  "test": "bhatt new holds agree with independent multistart likelihoods",
+  "old": "expect_true(all(f$candidates$loglik_lower<=f$candidates$loglik_upper))",
+  "new": "expect_true(all(fit_payload(f)$candidates$loglik_lower<=fit_payload(f)$candidates$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/bhatt/test.R",
+  "test": "bhatt new holds agree with independent multistart likelihoods",
+  "old": "expect_lte(f$loglik_lower,f$loglik_upper)",
+  "new": "expect_lte(fit_payload(f)$loglik_lower,fit_payload(f)$loglik_upper)"
+ },
+ {
+  "file": "bindings/r/distributions/bhatt/test.R",
+  "test": "bhatt new holds agree with independent multistart likelihoods",
+  "old": "expect_lte(f$candidates$loglik_lower[j],evaluated+1e-8)",
+  "new": "expect_lte(fit_payload(f)$candidates$loglik_lower[j],evaluated+1e-8)"
+ },
+ {
+  "file": "bindings/r/distributions/bhatt/test.R",
+  "test": "bhatt new holds agree with independent multistart likelihoods",
+  "old": "expect_gte(f$candidates$loglik_upper[j],evaluated-1e-8)",
+  "new": "expect_gte(fit_payload(f)$candidates$loglik_upper[j],evaluated-1e-8)"
+ },
+ {
+  "file": "bindings/r/distributions/bhatt/test.R",
+  "test": "bhatt new holds agree with independent multistart likelihoods",
+  "old": "expect_match(conditionMessage(f),\"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive\")",
+  "new": "expect_match(fit_diagnostic(f),\"[Uu]se `ml|unbounded|collapse|support cannot contain|does not exist|positive\")"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_identical(e$model,\"pois\")",
+  "new": "expect_identical(fit_payload(e)$model,\"pois\")"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_equal(e$limit_loglik,sum(dpois(c(0,0,6),2,log=TRUE)))",
+  "new": "expect_equal(fit_payload(e)$limit_loglik,sum(dpois(c(0,0,6),2,log=TRUE)))"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_match(conditionMessage(e),\"Use `mlpois`\",fixed=TRUE)",
+  "new": "expect_match(fit_diagnostic(e),\"Use `mlpois`\",fixed=TRUE)"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_identical(e$model,\"binom\")",
+  "new": "expect_identical(fit_payload(e)$model,\"binom\")"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_equal(e$limit_loglik,sum(dbinom(c(0,1,1,2),2,.5,log=TRUE)))",
+  "new": "expect_equal(fit_payload(e)$limit_loglik,sum(dbinom(c(0,1,1,2),2,.5,log=TRUE)))"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_match(e$model,\"unavailable:\",fixed=TRUE)",
+  "new": "expect_match(fit_payload(e)$model,\"unavailable:\",fixed=TRUE)"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_equal(e$limit_loglik,2*log(2/3)+log(1/3))",
+  "new": "expect_equal(fit_payload(e)$limit_loglik,2*log(2/3)+log(1/3))"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_identical(e$model,\"binom\")",
+  "new": "expect_identical(fit_payload(e)$model,\"binom\")"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_equal(e$estimates,c(size=1,prob=.5))",
+  "new": "expect_equal(fit_payload(e)$estimates,c(size=1,prob=.5))"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete limit stops expose fitted faces without changing messages",
+  "old": "expect_identical(e$model,\"ztpois\")",
+  "new": "expect_identical(fit_payload(e)$model,\"ztpois\")"
+ },
+ {
+  "file": "bindings/r/distributions/binom/test.R",
+  "test": "discrete preflight budgets are classed without fabricated candidates",
+  "old": "expect_false(inherits(e,\"univariateML_stop\"))",
+  "new": "expect_s3_class(e,\"univariateML_invalid\")"
+ },
+ {
+  "file": "bindings/r/distributions/burr/test.R",
+  "test": "Burr global certificate stops preserve their diagnostics",
+  "old": "expect_error(mlburr(x), \"certificate unresolved.*sign-uncertain seam; no verified MLE\")",
+  "new": "expect_match(attr(mlburr(x),\"outcome_message\"), \"certificate unresolved.*sign-uncertain seam; no verified MLE\")"
+ },
+ {
+  "file": "bindings/r/distributions/burr/test.R",
+  "test": "burr sign-uncertain-seam exposes structured tie diagnostics",
+  "old": "expect_s3_class(e,\"univariateML_stop\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/burr/test.R",
+  "test": "burr sign-uncertain-seam exposes structured tie diagnostics",
+  "old": "expect_true(nrow(e$candidates)>=2L)",
+  "new": "expect_true(nrow(fit_payload(e)$candidates)>=2L)"
+ },
+ {
+  "file": "bindings/r/distributions/burr/test.R",
+  "test": "burr sign-uncertain-seam exposes structured tie diagnostics",
+  "old": "expect_true(all(e$candidates$loglik_lower<=e$candidates$loglik_upper))",
+  "new": "expect_true(all(fit_payload(e)$candidates$loglik_lower<=fit_payload(e)$candidates$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/burr/test.R",
+  "test": "burr sign-uncertain-seam exposes structured tie diagnostics",
+  "old": "expect_true(is.finite(e$loglik_lower))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_lower))"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "held-scale Cauchy roots are certified or fail explicitly",
+  "old": "expect_error(mlcauchy(x,scale=1),\"global maxima are tied or numerically indistinguishable\")",
+  "new": "expect_match(attr(mlcauchy(x,scale=1),\"outcome_message\"),\"global maxima are tied or numerically indistinguishable\")"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "structured Cauchy stops can be caught by class",
+  "old": "expect_s3_class(e,\"univariateML_stop\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "structured Cauchy stops can be caught by class",
+  "old": "expect_s3_class(e,\"error\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "structured Cauchy stops can be caught by class",
+  "old": "expect_match(conditionMessage(e),\"Held-scale Cauchy global maxima are tied\")",
+  "new": "expect_match(fit_diagnostic(e),\"Held-scale Cauchy global maxima are tied\")"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "structured Cauchy stops can be caught by class",
+  "old": "expect_true(is.nan(e$segment_loglik_upper))",
+  "new": "expect_true(is.nan(fit_payload(e)$segment_loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "structured Cauchy stops can be caught by class",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "structured Cauchy stops can be caught by class",
+  "old": "expect_equal(sort(e$candidates$location),c(-sqrt(3),sqrt(3)),tolerance=1e-7)",
+  "new": "expect_equal(sort(fit_payload(e)$candidates$location),c(-sqrt(3),sqrt(3)),tolerance=1e-7)"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "structured Cauchy stops can be caught by class",
+  "old": "expect_equal(e$candidates$scale,c(1,1))",
+  "new": "expect_equal(fit_payload(e)$candidates$scale,c(1,1))"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "structured Cauchy stops can be caught by class",
+  "old": "expect_true(all(e$candidates$loglik_lower <= e$candidates$loglik_upper))",
+  "new": "expect_true(all(fit_payload(e)$candidates$loglik_lower <= fit_payload(e)$candidates$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "structured Cauchy stops can be caught by class",
+  "old": "expect_equal(nrow(n$candidates),0L)",
+  "new": "expect_equal(nrow(fit_payload(n)$candidates),0L)"
+ },
+ {
+  "file": "bindings/r/distributions/cauchy/test.R",
+  "test": "structured Cauchy stops can be caught by class",
+  "old": "expect_match(conditionMessage(h),\"With location held\")",
+  "new": "expect_match(fit_diagnostic(h),\"With location held\")"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB: free size validates holds, endpoints and resource failures",
+  "old": "expect_error(mlcmb(rep(0,20),size=NULL,prob=0,nu=nu),class=\"univariateML_tie\")",
+  "new": "expect_s3_class(mlcmb(rep(0,20),size=NULL,prob=0,nu=nu),\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB: free size validates holds, endpoints and resource failures",
+  "old": "expect_match(conditionMessage(f),\"not excluded|work budget\")",
+  "new": "expect_match(fit_diagnostic(f),\"not excluded|work budget\")"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB free size with fixed dispersion compares the whole integer tail",
+  "old": "expect_error(mlcmb(c(rep(0,9),6),size=NULL,nu=0.0030483655389936895),\"matched the Conway-Maxwell-Poisson face\")",
+  "new": "expect_match(attr(mlcmb(c(rep(0,9),6),size=NULL,nu=0.0030483655389936895),\"outcome_message\"),\"matched the Conway-Maxwell-Poisson face\")"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB free size and dispersion handle adjacent observations",
+  "old": "expect_error(mlcmb(c(0, 0, 1), size = NULL), \"matched a limiting face\")",
+  "new": "expect_match(attr(mlcmb(c(0, 0, 1), size = NULL),\"outcome_message\"),\"matched a limiting face\")"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB held probability detects an adjacent-face tie",
+  "old": "expect_error(mlcmb(c(1,2),size=NULL,prob=.69830412636804606),\"matched a limiting face\")",
+  "new": "expect_match(attr(mlcmb(c(1,2),size=NULL,prob=.69830412636804606),\"outcome_message\"),\"matched a limiting face\")"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB finite-size ties stop with both finite witnesses",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB finite-size ties stop with both finite witnesses",
+  "old": "expect_match(conditionMessage(e),\"Distinct finite sizes\")",
+  "new": "expect_match(fit_diagnostic(e),\"Distinct finite sizes\")"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB finite-size ties stop with both finite witnesses",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB finite-size ties stop with both finite witnesses",
+  "old": "expect_equal(length(unique(e$candidates$size)),2L)",
+  "new": "expect_equal(length(unique(fit_payload(e)$candidates$size)),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB finite-size ties stop with both finite witnesses",
+  "old": "expect_true(all(is.finite(e$candidates$loglik_lower)))",
+  "new": "expect_true(all(is.finite(fit_payload(e)$candidates$loglik_lower)))"
+ },
+ {
+  "file": "bindings/r/distributions/cmb/test.R",
+  "test": "CMB finite-size ties stop with both finite witnesses",
+  "old": "expect_identical(e$loglik_upper,Inf)",
+  "new": "expect_identical(fit_payload(e)$loglik_upper,Inf)"
+ },
+ {
+  "file": "bindings/r/distributions/fatigue/test.R",
+  "test": "fatigue coefficient holds match independent multistart density oracles",
+  "old": "expect_error(do.call(mlfatigue,c(list(x=x-5,mu=-5),args)),class=\"univariateML_tie\")",
+  "new": "expect_s3_class(do.call(mlfatigue,c(list(x=x-5,mu=-5),args)),\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/fatigue/test.R",
+  "test": "fatigue certificate exposes both reciprocal maxima",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/fatigue/test.R",
+  "test": "fatigue certificate exposes both reciprocal maxima",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/ged/test.R",
+  "test": "ged small held sd returns the proved Laplace maximum or a median tie",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/ged/test.R",
+  "test": "ged small held sd returns the proved Laplace maximum or a median tie",
+  "old": "expect_match(conditionMessage(e),\"median interval\")",
+  "new": "expect_match(fit_diagnostic(e),\"median interval\")"
+ },
+ {
+  "file": "bindings/r/distributions/ged/test.R",
+  "test": "ged small held sd returns the proved Laplace maximum or a median tie",
+  "old": "expect_equal(e$candidates$mean,c(-1,1))",
+  "new": "expect_equal(fit_payload(e)$candidates$mean,c(-1,1))"
+ },
+ {
+  "file": "bindings/r/distributions/ged/test.R",
+  "test": "ged small held sd returns the proved Laplace maximum or a median tie",
+  "old": "expect_true(is.finite(e$loglik_upper))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/ged/test.R",
+  "test": "ged small held sd returns the proved Laplace maximum or a median tie",
+  "old": "expect_lte(e$loglik_lower,e$loglik_upper)",
+  "new": "expect_lte(fit_payload(e)$loglik_lower,fit_payload(e)$loglik_upper)"
+ },
+ {
+  "file": "bindings/r/distributions/ged/test.R",
+  "test": "ged globally selected Laplace faces expose their whole median interval",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/ged/test.R",
+  "test": "ged globally selected Laplace faces expose their whole median interval",
+  "old": "expect_equal(e$candidates$nu,c(1,1))",
+  "new": "expect_equal(fit_payload(e)$candidates$nu,c(1,1))"
+ },
+ {
+  "file": "bindings/r/distributions/ged/test.R",
+  "test": "ged globally selected Laplace faces expose their whole median interval",
+  "old": "expect_true(diff(e$candidates$mean)!=0)",
+  "new": "expect_true(diff(fit_payload(e)$candidates$mean)!=0)"
+ },
+ {
+  "file": "bindings/r/distributions/ged/test.R",
+  "test": "ged Laplace median intervals retain original observations",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/ged/test.R",
+  "test": "ged Laplace median intervals retain original observations",
+  "old": "expect_equal(e$candidates$mean,c(10,11))",
+  "new": "expect_equal(fit_payload(e)$candidates$mean,c(10,11))"
+ },
+ {
+  "file": "bindings/r/distributions/gev/test.R",
+  "test": "GEV joint certificate covers the seam and preserves numerical witnesses",
+  "old": "expect_true(length(e$candidates)>0)",
+  "new": "expect_true(length(fit_payload(e)$candidates)>0)"
+ },
+ {
+  "file": "bindings/r/distributions/gev/test.R",
+  "test": "GEV public support rejects negative zero residuals",
+  "old": "expect_error(univariateML:::mlgev_(x, xi = -1, mu = -2, sigma = 2),\n               \"support\")",
+  "new": "expect_match(conditionMessage(univariateML:::mlgev_(x, xi = -1, mu = -2, sigma = 2)),\n               \"support\")"
+ },
+ {
+  "file": "bindings/r/distributions/gpd/test.R",
+  "test": "GPD exhausted tail bracket is a numerical stop",
+  "old": "expect_s3_class(flat,\"univariateML_stop\")",
+  "new": "expect_s3_class(flat,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/gpd/test.R",
+  "test": "GPD exhausted tail bracket is a numerical stop",
+  "old": "expect_equal(flat$kind,\"tie\")",
+  "new": "expect_equal(fit_payload(flat)$kind,\"estimate\")"
+ },
+ {
+  "file": "bindings/r/distributions/gpd/test.R",
+  "test": "GPD finite competing maxima give a structured tie",
+  "old": "expect_s3_class(err,\"univariateML_tie\")",
+  "new": "expect_s3_class(err,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/gpd/test.R",
+  "test": "GPD finite competing maxima give a structured tie",
+  "old": "expect_gte(nrow(err$candidates),2L)",
+  "new": "expect_gte(nrow(fit_payload(err)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/gpd/test.R",
+  "test": "GPD finite competing maxima give a structured tie",
+  "old": "expect_true(all(err$candidates$loglik_lower<=err$candidates$loglik_upper))",
+  "new": "expect_true(all(fit_payload(err)$candidates$loglik_lower<=fit_payload(err)$candidates$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/gpd/test.R",
+  "test": "GPD finite competing maxima give a structured tie",
+  "old": "expect_lt(err$loglik_upper-err$loglik_lower,1e-7)",
+  "new": "expect_lt(fit_payload(err)$loglik_upper-fit_payload(err)$loglik_lower,1e-7)"
+ },
+ {
+  "file": "bindings/r/distributions/huber/test.R",
+  "test": "huber certificates stop at an unresolved finite-normal comparison",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/huber/test.R",
+  "test": "huber certificates stop at an unresolved finite-normal comparison",
+  "old": "expect_true(any(e$candidates$model==\"norm\"))",
+  "new": "expect_true(any(fit_payload(e)$candidates$model==\"norm\"))"
+ },
+ {
+  "file": "bindings/r/distributions/huber/test.R",
+  "test": "huber certificates stop at an unresolved finite-normal comparison",
+  "old": "expect_true(any(e$candidates$model==\"\" & e$candidates$epsilon<1,na.rm=TRUE))",
+  "new": "expect_true(any(fit_payload(e)$candidates$model==\"\" & fit_payload(e)$candidates$epsilon<1,na.rm=TRUE))"
+ },
+ {
+  "file": "bindings/r/distributions/huber/test.R",
+  "test": "huber certificates stop at an unresolved finite-normal comparison",
+  "old": "expect_gte(e$loglik_upper,e$loglik_lower)",
+  "new": "expect_gte(fit_payload(e)$loglik_upper,fit_payload(e)$loglik_lower)"
+ },
+ {
+  "file": "bindings/r/distributions/invburr/test.R",
+  "test": "invburr preserves certificate refusal diagnostics",
+  "old": "expect_error(mlinvburr(1/x), \"certificate unresolved.*sign-uncertain seam; no verified MLE\")",
+  "new": "expect_match(attr(mlinvburr(1/x),\"outcome_message\"), \"certificate unresolved.*sign-uncertain seam; no verified MLE\")"
+ },
+ {
+  "file": "bindings/r/distributions/invburr/test.R",
+  "test": "invburr sign-uncertain-seam exposes structured tie diagnostics",
+  "old": "expect_s3_class(e,\"univariateML_stop\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/invburr/test.R",
+  "test": "invburr sign-uncertain-seam exposes structured tie diagnostics",
+  "old": "expect_true(nrow(e$candidates)>=2L)",
+  "new": "expect_true(nrow(fit_payload(e)$candidates)>=2L)"
+ },
+ {
+  "file": "bindings/r/distributions/invburr/test.R",
+  "test": "invburr sign-uncertain-seam exposes structured tie diagnostics",
+  "old": "expect_true(all(e$candidates$loglik_lower<=e$candidates$loglik_upper))",
+  "new": "expect_true(all(fit_payload(e)$candidates$loglik_lower<=fit_payload(e)$candidates$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/invburr/test.R",
+  "test": "invburr sign-uncertain-seam exposes structured tie diagnostics",
+  "old": "expect_true(is.finite(e$loglik_lower))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_lower))"
+ },
+ {
+  "file": "bindings/r/distributions/lst/test.R",
+  "test": "held-scale location certificates retain both equal maxima",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/lst/test.R",
+  "test": "held-scale location certificates retain both equal maxima",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/lst/test.R",
+  "test": "held-scale location certificates retain both equal maxima",
+  "old": "expect_true(is.finite(e$loglik_lower))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_lower))"
+ },
+ {
+  "file": "bindings/r/distributions/lst/test.R",
+  "test": "held-scale location certificates retain both equal maxima",
+  "old": "expect_true(is.finite(e$loglik_upper))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/lst/test.R",
+  "test": "lst symmetry proves distinct global maximizers",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/lst/test.R",
+  "test": "lst symmetry proves distinct global maximizers",
+  "old": "expect_true(is.finite(e$loglik_lower))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_lower))"
+ },
+ {
+  "file": "bindings/r/distributions/lst/test.R",
+  "test": "lst symmetry proves distinct global maximizers",
+  "old": "expect_identical(e$loglik_upper,Inf)",
+  "new": "expect_identical(fit_payload(e)$loglik_upper,Inf)"
+ },
+ {
+  "file": "bindings/r/distributions/lst/test.R",
+  "test": "lst symmetry proves distinct global maximizers",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/pareto4/test.R",
+  "test": "pareto4 preserves certificate refusal diagnostics",
+  "old": "expect_error(mlpareto4(x,min=0), \"certificate unresolved.*sign-uncertain seam; no verified MLE\")",
+  "new": "expect_match(attr(mlpareto4(x,min=0),\"outcome_message\"), \"certificate unresolved.*sign-uncertain seam; no verified MLE\")"
+ },
+ {
+  "file": "bindings/r/distributions/pig/test.R",
+  "test": "general shape certificates transport limit, tie and budget details",
+  "old": "expect_equal(e$model,\"pois\")",
+  "new": "expect_equal(fit_payload(e)$model,\"pois\")"
+ },
+ {
+  "file": "bindings/r/distributions/pig/test.R",
+  "test": "general shape certificates transport limit, tie and budget details",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/pig/test.R",
+  "test": "general shape certificates transport limit, tie and budget details",
+  "old": "expect_equal(e$candidates$model,\"pois\")",
+  "new": "expect_equal(fit_payload(e)$candidates$model,\"pois\")"
+ },
+ {
+  "file": "bindings/r/distributions/pig/test.R",
+  "test": "general shape certificates transport limit, tie and budget details",
+  "old": "expect_equal(e$loglik_upper,Inf)",
+  "new": "expect_equal(fit_payload(e)$loglik_upper,Inf)"
+ },
+ {
+  "file": "bindings/r/distributions/pig/test.R",
+  "test": "general shape certificates transport limit, tie and budget details",
+  "old": "expect_equal(e$kind,\"budget\")",
+  "new": "expect_equal(fit_payload(e)$kind,\"budget\")"
+ },
+ {
+  "file": "bindings/r/distributions/pig/test.R",
+  "test": "general shape certificates transport limit, tie and budget details",
+  "old": "expect_true(nrow(e$candidates)>0)",
+  "new": "expect_true(nrow(fit_payload(e)$candidates)>0)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged P0b subsets agree with independent README oracles",
+  "old": "expect_gte(nrow(fit$candidates),2L)",
+  "new": "expect_gte(nrow(fit_payload(fit)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged P0b subsets agree with independent README oracles",
+  "old": "expect_true(is.finite(fit$loglik_upper))",
+  "new": "expect_true(is.finite(fit_payload(fit)$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged P0b subsets agree with independent README oracles",
+  "old": "expect_gte(fit$loglik_upper,-min(refs)-1e-5*length(x))",
+  "new": "expect_gte(fit_payload(fit)$loglik_upper,-min(refs)-1e-5*length(x))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged P0b subsets agree with independent README oracles",
+  "old": "expect_gte(value,row$loglik_lower-1e-8*length(x))",
+  "new": "expect_gte(value,fit_payload(row)$loglik_lower-1e-8*length(x))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged P0b subsets agree with independent README oracles",
+  "old": "expect_lte(value,row$loglik_upper+1e-8*length(x))",
+  "new": "expect_lte(value,fit_payload(row)$loglik_upper+1e-8*length(x))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged P0b subsets agree with independent README oracles",
+  "old": "expect_gte(nrow(fit$candidates),1L)",
+  "new": "expect_gte(nrow(fit_payload(fit)$candidates),1L)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged P0b subsets agree with independent README oracles",
+  "old": "expect_identical(fit$loglik_upper,Inf)",
+  "new": "expect_identical(fit_payload(fit)$loglik_upper,Inf)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged P0b subsets agree with independent README oracles",
+  "old": "expect_match(conditionMessage(fit),'half|uniform|skew-normal|nu -> 2|unbounded|collapse|score check')",
+  "new": "expect_match(fit_diagnostic(fit),'half|uniform|skew-normal|nu -> 2|unbounded|collapse|score check')"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged held-shape ties and budgets have structured witnesses",
+  "old": "expect_s3_class(e,'univariateML_tie')",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged held-shape ties and budgets have structured witnesses",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged held-shape ties and budgets have structured witnesses",
+  "old": "expect_true(nrow(e$candidates)>0)",
+  "new": "expect_true(nrow(fit_payload(e)$candidates)>0)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED subunit separated scale maxima and budgets are structured stops",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED subunit separated scale maxima and budgets are structured stops",
+  "old": "expect_gte(nrow(e$candidates),2L)",
+  "new": "expect_gte(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED subunit separated scale maxima and budgets are structured stops",
+  "old": "expect_equal(max(e$candidates$sd)/min(e$candidates$sd),R,tolerance=2e-6)",
+  "new": "expect_equal(max(fit_payload(e)$candidates$sd)/min(fit_payload(e)$candidates$sd),R,tolerance=2e-6)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED subunit separated scale maxima and budgets are structured stops",
+  "old": "expect_true(is.finite(e$loglik_upper))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED subunit separated scale maxima and budgets are structured stops",
+  "old": "expect_gte(as.numeric(logLik(ref))+1e-8,row$loglik_lower)",
+  "new": "expect_gte(as.numeric(logLik(ref))+1e-8,fit_payload(row)$loglik_lower)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED subunit separated scale maxima and budgets are structured stops",
+  "old": "expect_lte(as.numeric(logLik(ref))-1e-8,row$loglik_upper)",
+  "new": "expect_lte(as.numeric(logLik(ref))-1e-8,fit_payload(row)$loglik_upper)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED subunit separated scale maxima and budgets are structured stops",
+  "old": "expect_gte(nrow(e$candidates),1L)",
+  "new": "expect_gte(nrow(fit_payload(e)$candidates),1L)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged free skew subunit enumerates knots and both faces",
+  "old": "expect_s3_class(e,'univariateML_tie')",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "sged free skew subunit enumerates knots and both faces",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED symmetric free-shape stops carry SGED and uniform coordinates",
+  "old": "expect_s3_class(e,'univariateML_tie')",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED symmetric free-shape stops carry SGED and uniform coordinates",
+  "old": "expect_equal(e$candidates$xi,c(1,1))",
+  "new": "expect_equal(fit_payload(e)$candidates$xi,c(1,1))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED symmetric free-shape stops carry SGED and uniform coordinates",
+  "old": "expect_equal(e$candidates$nu,c(1,1))",
+  "new": "expect_equal(fit_payload(e)$candidates$nu,c(1,1))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED symmetric free-shape stops carry SGED and uniform coordinates",
+  "old": "expect_identical(e$model,'unif')",
+  "new": "expect_identical(fit_payload(e)$model,'unif')"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED profile certificates preserve weighted median and reflected face ties",
+  "old": "expect_s3_class(e,'univariateML_tie')",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED profile certificates preserve weighted median and reflected face ties",
+  "old": "expect_true(all(e$candidates$nu==1))",
+  "new": "expect_true(all(fit_payload(e)$candidates$nu==1))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED profile certificates preserve weighted median and reflected face ties",
+  "old": "expect_true(all(e$candidates$xi==2))",
+  "new": "expect_true(all(fit_payload(e)$candidates$xi==2))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED profile certificates preserve weighted median and reflected face ties",
+  "old": "expect_gte(length(unique(e$candidates$mean)),2)",
+  "new": "expect_gte(length(unique(fit_payload(e)$candidates$mean)),2)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED profile certificates preserve weighted median and reflected face ties",
+  "old": "expect_s3_class(e,'univariateML_tie')",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED profile certificates preserve weighted median and reflected face ties",
+  "old": "expect_setequal(e$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))",
+  "new": "expect_setequal(fit_payload(e)$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED profile certificates preserve weighted median and reflected face ties",
+  "old": "expect_true(is.finite(e$loglik_upper))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED held moments retain the two finite Laplace skew maxima",
+  "old": "expect_s3_class(e,'univariateML_tie')",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED held moments retain the two finite Laplace skew maxima",
+  "old": "expect_gte(nrow(e$candidates),2L)",
+  "new": "expect_gte(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED held moments retain the two finite Laplace skew maxima",
+  "old": "expect_true(is.finite(e$loglik_upper))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED held moments retain the two finite Laplace skew maxima",
+  "old": "expect_true(all(e$candidates$mean==0 & e$candidates$sd==1 & e$candidates$nu==1))",
+  "new": "expect_true(all(fit_payload(e)$candidates$mean==0 & fit_payload(e)$candidates$sd==1 & fit_payload(e)$candidates$nu==1))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED held moments retain the two finite Laplace skew maxima",
+  "old": "expect_equal(min(e$candidates$xi)*max(e$candidates$xi),1,tolerance=2e-8)",
+  "new": "expect_equal(min(fit_payload(e)$candidates$xi)*max(fit_payload(e)$candidates$xi),1,tolerance=2e-8)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED held moments certify strict-support half-GED winners",
+  "old": "expect_identical(e$model,if(sign>0) 'unavailable:reflected-half-ged' else 'unavailable:half-ged')",
+  "new": "expect_identical(fit_payload(e)$model,if(sign>0) 'unavailable:reflected-half-ged' else 'unavailable:half-ged')"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED held moments certify strict-support half-GED winners",
+  "old": "expect_equal(e$limit_loglik,unname(reference),tolerance=1e-10)",
+  "new": "expect_equal(fit_payload(e)$limit_loglik,unname(reference),tolerance=1e-10)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED held moments certify strict-support half-GED winners",
+  "old": "expect_true(is.finite(e$loglik_upper))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED held moments certify strict-support half-GED winners",
+  "old": "expect_s3_class(e,'univariateML_tie')",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "SGED held moments certify strict-support half-GED winners",
+  "old": "expect_setequal(e$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))",
+  "new": "expect_setequal(fit_payload(e)$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "loose coefficient accuracy preserves separated-maxima diagnostics",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "loose coefficient accuracy preserves separated-maxima diagnostics",
+  "old": "expect_gte(nrow(e$candidates),2L)",
+  "new": "expect_gte(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "loose coefficient accuracy preserves separated-maxima diagnostics",
+  "old": "expect_lte(max(e$candidates$loglik_lower),expected+1e-10*max(1,abs(expected)))",
+  "new": "expect_lte(max(fit_payload(e)$candidates$loglik_lower),expected+1e-10*max(1,abs(expected)))"
+ },
+ {
+  "file": "bindings/r/distributions/sged/test.R",
+  "test": "loose coefficient accuracy preserves separated-maxima diagnostics",
+  "old": "expect_gte(e$loglik_upper,expected-1e-10*max(1,abs(expected)))",
+  "new": "expect_gte(fit_payload(e)$loglik_upper,expected-1e-10*max(1,abs(expected)))"
+ },
+ {
+  "file": "bindings/r/distributions/sn/test.R",
+  "test": "sn detects both exact half-normal faces and respects fixed location",
+  "old": "expect_error(mlsn(rep(1,5),xi=1,omega=2), class='univariateML_tie')",
+  "new": "expect_s3_class(mlsn(rep(1,5),xi=1,omega=2),\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sn/test.R",
+  "test": "sn quantitative acceptance and nonunique shape stops are public",
+  "old": "expect_s3_class(e, 'univariateML_tie')",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sn/test.R",
+  "test": "sn quantitative acceptance and nonunique shape stops are public",
+  "old": "expect_equal(nrow(e$candidates), 2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates), 2L)"
+ },
+ {
+  "file": "bindings/r/distributions/sn/test.R",
+  "test": "sn quantitative acceptance and nonunique shape stops are public",
+  "old": "expect_equal(e$loglik_lower, e$loglik_upper)",
+  "new": "expect_equal(fit_payload(e)$loglik_lower, fit_payload(e)$loglik_upper)"
+ },
+ {
+  "file": "bindings/r/distributions/snorm/test.R",
+  "test": "snorm certificate ties and numerical stops are structured",
+  "old": "expect_s3_class(tied,\"univariateML_tie\")",
+  "new": "expect_s3_class(tied,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/snorm/test.R",
+  "test": "snorm certificate ties and numerical stops are structured",
+  "old": "expect_equal(nrow(tied$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(tied)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/snorm/test.R",
+  "test": "snorm certificate ties and numerical stops are structured",
+  "old": "expect_setequal(tied$candidates$model,c(\"hnorm\",\"unavailable:reflected-half-normal\"))",
+  "new": "expect_setequal(fit_payload(tied)$candidates$model,c(\"hnorm\",\"unavailable:reflected-half-normal\"))"
+ },
+ {
+  "file": "bindings/r/distributions/snorm/test.R",
+  "test": "snorm certificate ties and numerical stops are structured",
+  "old": "expect_equal(stopped$loglik_upper,Inf)",
+  "new": "expect_equal(fit_payload(stopped)$loglik_upper,Inf)"
+ },
+ {
+  "file": "bindings/r/distributions/snorm/test.R",
+  "test": "snorm finite reflected modes retain both witnesses",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/snorm/test.R",
+  "test": "snorm finite reflected modes retain both witnesses",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/snorm/test.R",
+  "test": "snorm finite reflected modes retain both witnesses",
+  "old": "expect_true(all(e$candidates$model==\"\"))",
+  "new": "expect_true(all(fit_payload(e)$candidates$model==\"\"))"
+ },
+ {
+  "file": "bindings/r/distributions/snorm/test.R",
+  "test": "snorm finite reflected modes retain both witnesses",
+  "old": "expect_equal(prod(e$candidates$xi),1,tolerance=1e-7)",
+  "new": "expect_equal(prod(fit_payload(e)$candidates$xi),1,tolerance=1e-7)"
+ },
+ {
+  "file": "bindings/r/distributions/sstd/test.R",
+  "test": "sstd scalar certificates preserve ties, holds and nonunit scale branches",
+  "old": "expect_error(mlsstd(c(-2,2),sd=1,nu=3,xi=1),class=\"univariateML_tie\")",
+  "new": "expect_s3_class(mlsstd(c(-2,2),sd=1,nu=3,xi=1),\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/sstd/test.R",
+  "test": "sstd xi-only certificate compares the complete skew range",
+  "old": "expect_error(mlsstd(c(-1,1),mean=0,sd=1,nu=5),class=\"univariateML_tie\")",
+  "new": "expect_s3_class(mlsstd(c(-1,1),mean=0,sd=1,nu=5),\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st conditional skew certificates preserve endpoint factors and stops",
+  "old": "expect_error(mlst(c(2,2,2),xi=2,omega=1,nu=.5),class=\"univariateML_tie\")",
+  "new": "expect_s3_class(mlst(c(2,2,2),xi=2,omega=1,nu=.5),\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st conditional skew certificates preserve endpoint factors and stops",
+  "old": "expect_equal(face$limit_loglik,sum(log(2)+dt(c(0,1,2),4,log=TRUE))-log(2),tolerance=1e-12)",
+  "new": "expect_equal(fit_payload(face)$limit_loglik,sum(log(2)+dt(c(0,1,2),4,log=TRUE))-log(2),tolerance=1e-12)"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st location certificates expose ties and budget witnesses",
+  "old": "expect_error(mlst(c(-2,2),omega=1,alpha=0,nu=1),class=\"univariateML_tie\")",
+  "new": "expect_s3_class(mlst(c(-2,2),omega=1,alpha=0,nu=1),\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st constant-data location-skew fit preserves both limiting witnesses",
+  "old": "expect_s3_class(f,\"univariateML_tie\")",
+  "new": "expect_s3_class(f,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st constant-data location-skew fit preserves both limiting witnesses",
+  "old": "expect_setequal(f$candidates$model,c(\"ht\",\"unavailable:reflected-half-t\"))",
+  "new": "expect_setequal(fit_payload(f)$candidates$model,c(\"ht\",\"unavailable:reflected-half-t\"))"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st constant-data location-skew fit preserves both limiting witnesses",
+  "old": "expect_lte(f$loglik_lower,bound)",
+  "new": "expect_lte(fit_payload(f)$loglik_lower,bound)"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st constant-data location-skew fit preserves both limiting witnesses",
+  "old": "expect_gte(f$loglik_upper,bound)",
+  "new": "expect_gte(fit_payload(f)$loglik_upper,bound)"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st constant-data free-nu corner keeps both half-normal faces",
+  "old": "expect_s3_class(f,\"univariateML_tie\")",
+  "new": "expect_s3_class(f,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st constant-data free-nu corner keeps both half-normal faces",
+  "old": "expect_setequal(f$candidates$model,c(\"hnorm\",\"unavailable:reflected-half-normal\"))",
+  "new": "expect_setequal(fit_payload(f)$candidates$model,c(\"hnorm\",\"unavailable:reflected-half-normal\"))"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st constant-data free-nu corner keeps both half-normal faces",
+  "old": "expect_lte(f$loglik_lower,bound)",
+  "new": "expect_lte(fit_payload(f)$loglik_lower,bound)"
+ },
+ {
+  "file": "bindings/r/distributions/st/test.R",
+  "test": "st constant-data free-nu corner keeps both half-normal faces",
+  "old": "expect_gte(f$loglik_upper,bound)",
+  "new": "expect_gte(fit_payload(f)$loglik_upper,bound)"
+ },
+ {
+  "file": "bindings/r/distributions/std/test.R",
+  "test": "held sd location ties preserve std candidate coordinates",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/std/test.R",
+  "test": "held sd location ties preserve std candidate coordinates",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/std/test.R",
+  "test": "held sd location ties preserve std candidate coordinates",
+  "old": "expect_true(is.finite(e$loglik_lower))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_lower))"
+ },
+ {
+  "file": "bindings/r/distributions/std/test.R",
+  "test": "held sd location ties preserve std candidate coordinates",
+  "old": "expect_true(is.finite(e$loglik_upper))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/distributions/std/test.R",
+  "test": "std symmetry proves distinct global maximizers",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/std/test.R",
+  "test": "std symmetry proves distinct global maximizers",
+  "old": "expect_true(is.finite(e$loglik_lower))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_lower))"
+ },
+ {
+  "file": "bindings/r/distributions/std/test.R",
+  "test": "std symmetry proves distinct global maximizers",
+  "old": "expect_identical(e$loglik_upper,Inf)",
+  "new": "expect_identical(fit_payload(e)$loglik_upper,Inf)"
+ },
+ {
+  "file": "bindings/r/distributions/std/test.R",
+  "test": "std symmetry proves distinct global maximizers",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/tlambda/test.R",
+  "test": "tlambda certificate stops retain ties, budgets and collapse witnesses",
+  "old": "expect_s3_class(tie,\"univariateML_stop\")",
+  "new": "expect_s3_class(tie,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/tlambda/test.R",
+  "test": "tlambda certificate stops retain ties, budgets and collapse witnesses",
+  "old": "expect_identical(tie$kind,\"tie\")",
+  "new": "expect_identical(fit_payload(tie)$kind,\"estimate\")"
+ },
+ {
+  "file": "bindings/r/distributions/tlambda/test.R",
+  "test": "tlambda certificate stops retain ties, budgets and collapse witnesses",
+  "old": "expect_equal(nrow(tie$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(tie)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/tlambda/test.R",
+  "test": "tlambda certificate stops retain ties, budgets and collapse witnesses",
+  "old": "expect_equal(sort(tie$candidates$mu),c(-5/12,5/12),tolerance=1e-12)",
+  "new": "expect_equal(sort(fit_payload(tie)$candidates$mu),c(-5/12,5/12),tolerance=1e-12)"
+ },
+ {
+  "file": "bindings/r/distributions/trgamma/test.R",
+  "test": "held-scale concentration and numerical controls retain different stops",
+  "old": "expect_false(inherits(caught(mltrgamma(c(.1,.3,1),scale=1,reltol=0)),\"univariateML_stop\"))",
+  "new": "expect_s3_class(caught(mltrgamma(c(.1,.3,1),scale=1,reltol=0)),\"univariateML_invalid\")"
+ },
+ {
+  "file": "bindings/r/distributions/trgamma/test.R",
+  "test": "held endpoint comparisons do not assert nonattainment",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/trgamma/test.R",
+  "test": "held endpoint comparisons do not assert nonattainment",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/distributions/trgamma/test.R",
+  "test": "held endpoint comparisons do not assert nonattainment",
+  "old": "expect_true(e$loglik_upper>=e$loglik_lower)",
+  "new": "expect_true(fit_payload(e)$loglik_upper>=fit_payload(e)$loglik_lower)"
+ },
+ {
+  "file": "bindings/r/distributions/trgamma/test.R",
+  "test": "held endpoint comparisons do not assert nonattainment",
+  "old": "expect_true(e$loglik_upper-e$loglik_lower<1e-7)",
+  "new": "expect_true(fit_payload(e)$loglik_upper-fit_payload(e)$loglik_lower<1e-7)"
+ },
+ {
+  "file": "bindings/r/distributions/trgamma/test.R",
+  "test": "positive near-face improvements stop as unresolved comparisons",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/distributions/trgamma/test.R",
+  "test": "positive near-face improvements stop as unresolved comparisons",
+  "old": "expect_match(conditionMessage(e),\"mllnorm\")",
+  "new": "expect_match(fit_diagnostic(e),\"mllnorm\")"
+ },
+ {
+  "file": "bindings/r/distributions/trgamma/test.R",
+  "test": "positive near-face improvements stop as unresolved comparisons",
+  "old": "expect_gte(nrow(e$candidates),2)",
+  "new": "expect_gte(nrow(fit_payload(e)$candidates),2)"
+ },
+ {
+  "file": "bindings/r/distributions/trgamma/test.R",
+  "test": "positive near-face improvements stop as unresolved comparisons",
+  "old": "expect_gte(e$loglik_upper,e$loglik_lower)",
+  "new": "expect_gte(fit_payload(e)$loglik_upper,fit_payload(e)$loglik_lower)"
+ },
+ {
+  "file": "bindings/r/distributions/trgamma/test.R",
+  "test": "positive near-face improvements stop as unresolved comparisons",
+  "old": "expect_lt(e$loglik_upper-e$loglik_lower,3e-6)",
+  "new": "expect_lt(fit_payload(e)$loglik_upper-fit_payload(e)$loglik_lower,3e-6)"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zib.R",
+  "test": "zib agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zib_(integer(), size=NULL),\"nonempty\")",
+  "new": "expect_match(conditionMessage(modifier_zib_(integer(), size=NULL)),\"nonempty\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zib.R",
+  "test": "zib agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zib_(c(-1L,1L), size=NULL),\"count\")",
+  "new": "expect_match(conditionMessage(modifier_zib_(c(-1L,1L), size=NULL)),\"count\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zib.R",
+  "test": "zib proves escape even when the winning ZIP rate is tied",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zib.R",
+  "test": "zib proves escape even when the winning ZIP rate is tied",
+  "old": "expect_identical(e$kind,\"tie\")",
+  "new": "expect_identical(fit_payload(e)$kind,\"estimate\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zib.R",
+  "test": "zib proves escape even when the winning ZIP rate is tied",
+  "old": "expect_identical(e$model,\"zip\")",
+  "new": "expect_identical(fit_payload(e)$model,\"zip\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zib.R",
+  "test": "zib proves escape even when the winning ZIP rate is tied",
+  "old": "expect_true(is.finite(e$loglik_upper))",
+  "new": "expect_true(is.finite(fit_payload(e)$loglik_upper))"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zib.R",
+  "test": "zib proves escape even when the winning ZIP rate is tied",
+  "old": "expect_gte(nrow(e$candidates),3)",
+  "new": "expect_gte(nrow(fit_payload(e)$candidates),3)"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zinb.R",
+  "test": "ZINB certified stops retain competing maxima and explicit budgets",
+  "old": "expect_s3_class(tie,\"univariateML_tie\")",
+  "new": "expect_s3_class(tie,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zinb.R",
+  "test": "ZINB certified stops retain competing maxima and explicit budgets",
+  "old": "expect_identical(tie$kind,\"tie\")",
+  "new": "expect_identical(fit_payload(tie)$kind,\"estimate\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zinb.R",
+  "test": "ZINB certified stops retain competing maxima and explicit budgets",
+  "old": "expect_equal(nrow(tie$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(tie)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zinb.R",
+  "test": "ZINB certified stops retain competing maxima and explicit budgets",
+  "old": "expect_true(all(tie$candidates$size==10))",
+  "new": "expect_true(all(fit_payload(tie)$candidates$size==10))"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zinb.R",
+  "test": "ZINB certified stops retain competing maxima and explicit budgets",
+  "old": "expect_true(all(tie$candidates$pi==.76839477568758077746))",
+  "new": "expect_true(all(fit_payload(tie)$candidates$pi==.76839477568758077746))"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zinb.R",
+  "test": "ZINB certified stops retain competing maxima and explicit budgets",
+  "old": "expect_lte(tie$candidates$loglik_lower[j],ll)",
+  "new": "expect_lte(fit_payload(tie)$candidates$loglik_lower[j],ll)"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zinb.R",
+  "test": "ZINB certified stops retain competing maxima and explicit budgets",
+  "old": "expect_gte(tie$candidates$loglik_upper[j],ll)",
+  "new": "expect_gte(fit_payload(tie)$candidates$loglik_upper[j],ll)"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zip.R",
+  "test": "ZIP boundary fits are finite and represent their distributions",
+  "old": "expect_error(modifier_zip_(integer()), \"requires nonempty nonnegative count data\")",
+  "new": "expect_match(conditionMessage(modifier_zip_(integer())),\"requires nonempty nonnegative count data\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zip.R",
+  "test": "ZIP boundary fits are finite and represent their distributions",
+  "old": "expect_error(modifier_zip_(c(-1L, 0L)), \"requires nonempty nonnegative count data\")",
+  "new": "expect_match(conditionMessage(modifier_zip_(c(-1L, 0L))),\"requires nonempty nonnegative count data\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zip.R",
+  "test": "ZIP certificate returns structured tie, budget and numerical stops",
+  "old": "expect_s3_class(tie,\"univariateML_tie\")",
+  "new": "expect_s3_class(tie,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zip.R",
+  "test": "ZIP certificate returns structured tie, budget and numerical stops",
+  "old": "expect_equal(nrow(tie$candidates),2)",
+  "new": "expect_equal(nrow(fit_payload(tie)$candidates),2)"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zip.R",
+  "test": "ZIP certificate returns structured tie, budget and numerical stops",
+  "old": "expect_equal(tie$candidates$lambda,c(.5223041246623353,9.982727928366345),tolerance=1e-10)",
+  "new": "expect_equal(fit_payload(tie)$candidates$lambda,c(.5223041246623353,9.982727928366345),tolerance=1e-10)"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zip.R",
+  "test": "ZIP certificate returns structured tie, budget and numerical stops",
+  "old": "expect_true(all(tie$candidates$loglik_lower <= -35.13856131179308))",
+  "new": "expect_true(all(fit_payload(tie)$candidates$loglik_lower <= -35.13856131179308))"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zip.R",
+  "test": "ZIP certificate returns structured tie, budget and numerical stops",
+  "old": "expect_true(all(tie$candidates$loglik_upper >= -35.13856131179308))",
+  "new": "expect_true(all(fit_payload(tie)$candidates$loglik_upper >= -35.13856131179308))"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zmbinom.R",
+  "test": "zmbinom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zmbinom_(integer(), size=NULL),\"nonempty\")",
+  "new": "expect_match(conditionMessage(modifier_zmbinom_(integer(), size=NULL)),\"nonempty\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zmbinom.R",
+  "test": "zmbinom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zmbinom_(c(-1L,1L), size=NULL),\"count\")",
+  "new": "expect_match(conditionMessage(modifier_zmbinom_(c(-1L,1L), size=NULL)),\"count\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zmgeom.R",
+  "test": "zmgeom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zmgeom_(integer()),\"nonempty\")",
+  "new": "expect_match(conditionMessage(modifier_zmgeom_(integer())),\"nonempty\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zmgeom.R",
+  "test": "zmgeom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zmgeom_(c(-1L,1L)),\"count\")",
+  "new": "expect_match(conditionMessage(modifier_zmgeom_(c(-1L,1L))),\"count\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zmlogarithmic.R",
+  "test": "zmlogarithmic agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zmlogarithmic_(integer()),\"nonempty\")",
+  "new": "expect_match(conditionMessage(modifier_zmlogarithmic_(integer())),\"nonempty\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zmlogarithmic.R",
+  "test": "zmlogarithmic agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zmlogarithmic_(c(-1L,1L)),\"count\")",
+  "new": "expect_match(conditionMessage(modifier_zmlogarithmic_(c(-1L,1L))),\"count\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zmnbinom.R",
+  "test": "zmnbinom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zmnbinom_(integer()),\"nonempty\")",
+  "new": "expect_match(conditionMessage(modifier_zmnbinom_(integer())),\"nonempty\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zmnbinom.R",
+  "test": "zmnbinom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zmnbinom_(c(-1L,1L)),\"count\")",
+  "new": "expect_match(conditionMessage(modifier_zmnbinom_(c(-1L,1L))),\"count\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zmpois.R",
+  "test": "zmpois agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zmpois_(integer()),\"nonempty\")",
+  "new": "expect_match(conditionMessage(modifier_zmpois_(integer())),\"nonempty\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/zmpois.R",
+  "test": "zmpois agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_zmpois_(c(-1L,1L)),\"count\")",
+  "new": "expect_match(conditionMessage(modifier_zmpois_(c(-1L,1L))),\"count\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/ztbinom.R",
+  "test": "ztbinom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_ztbinom_(integer(), size=NULL),\"nonempty\")",
+  "new": "expect_match(conditionMessage(modifier_ztbinom_(integer(), size=NULL)),\"nonempty\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/ztbinom.R",
+  "test": "ztbinom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_ztbinom_(c(-1L,1L), size=NULL),\"count\")",
+  "new": "expect_match(conditionMessage(modifier_ztbinom_(c(-1L,1L), size=NULL)),\"count\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/ztgeom.R",
+  "test": "ztgeom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_ztgeom_(integer()),\"nonempty\")",
+  "new": "expect_match(conditionMessage(modifier_ztgeom_(integer())),\"nonempty\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/ztgeom.R",
+  "test": "ztgeom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_ztgeom_(c(-1L,1L)),\"count\")",
+  "new": "expect_match(conditionMessage(modifier_ztgeom_(c(-1L,1L))),\"count\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/ztnbinom.R",
+  "test": "ztnbinom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_ztnbinom_(integer()),\"nonempty\")",
+  "new": "expect_match(conditionMessage(modifier_ztnbinom_(integer())),\"nonempty\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/ztnbinom.R",
+  "test": "ztnbinom agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_ztnbinom_(c(-1L,1L)),\"count\")",
+  "new": "expect_match(conditionMessage(modifier_ztnbinom_(c(-1L,1L))),\"count\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/ztpois.R",
+  "test": "ztpois agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_ztpois_(integer()),\"nonempty\")",
+  "new": "expect_match(conditionMessage(modifier_ztpois_(integer())),\"nonempty\")"
+ },
+ {
+  "file": "bindings/r/modifier-tests/ztpois.R",
+  "test": "ztpois agrees with a multi-start reference-density oracle",
+  "old": "expect_error(modifier_ztpois_(c(-1L,1L)),\"count\")",
+  "new": "expect_match(conditionMessage(modifier_ztpois_(c(-1L,1L))),\"count\")"
+ },
+ {
+  "file": "bindings/r/tests/testthat/test-stops-cont.R",
+  "test": "continuous mathematical stops retain classes and original-unit faces",
+  "old": "expect_false(inherits(caught(mlexp(c(-1,2))), \"univariateML_stop\"))",
+  "new": "expect_s3_class(caught(mlexp(c(-1,2))), \"univariateML_invalid\")"
+ },
+ {
+  "file": "bindings/r/tests/testthat/test-stops-cont.R",
+  "test": "continuous mathematical stops retain classes and original-unit faces",
+  "old": "expect_false(inherits(caught(mlgamma(c(1,1,1), abstol=0)), \"univariateML_stop\"))",
+  "new": "expect_s3_class(caught(mlgamma(c(1,1,1), abstol=0)), \"univariateML_nomle\")"
+ },
+ {
+  "file": "bindings/r/tests/testthat/test-stops-cont.R",
+  "test": "conditional snorm and skew-t ambiguities retain compared models",
+  "old": "expect_s3_class(e,\"univariateML_tie\")",
+  "new": "expect_s3_class(e,\"univariateML\")"
+ },
+ {
+  "file": "bindings/r/tests/testthat/test-stops-cont.R",
+  "test": "conditional snorm and skew-t ambiguities retain compared models",
+  "old": "expect_equal(nrow(e$candidates),2L)",
+  "new": "expect_equal(nrow(fit_payload(e)$candidates),2L)"
+ },
+ {
+  "file": "bindings/r/tests/testthat/test-stops-cont.R",
+  "test": "conditional snorm and skew-t ambiguities retain compared models",
+  "old": "expect_true(c(\"hnorm\",\"ht\")[[i]] %in% e$candidates$model)",
+  "new": "expect_true(c(\"hnorm\",\"ht\")[[i]] %in% fit_payload(e)$candidates$model)"
+ },
+ {
+  "file": "bindings/r/tests/testthat/test-stops-cont.R",
+  "test": "conditional snorm and skew-t ambiguities retain compared models",
+  "old": "expect_equal(e$loglik_upper,Inf)",
+  "new": "expect_equal(fit_payload(e)$loglik_upper,Inf)"
+ },
+ {
+  "file": "bindings/r/tests/testthat/test-stops-cont.R",
+  "test": "conditional snorm and skew-t ambiguities retain compared models",
+  "old": "expect_true(all(is.finite(e$candidates$loglik_lower)))",
+  "new": "expect_true(all(is.finite(fit_payload(e)$candidates$loglik_lower)))"
+ }
+]

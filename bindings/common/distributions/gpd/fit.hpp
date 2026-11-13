@@ -25,25 +25,25 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   auto res = cppunivariate::gpd_mle(x, reltol, iterlim, threshold, shape, scale);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (res.status == cppunivariate::GpdStatus::Ok)
         return overridden(std::move(out), static_cast<int>(res.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
   };
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::ThresholdCollapse) {
     if(std::isfinite(res.stop_detail.limit_loglik))
-      return done(stop_failure(fail("Generalized Pareto has no finite maximum: scale collapse at the threshold gives a finite unattained fixed-shape supremum."), res.stop_detail, outcome_kind(o), {"mu","sigma","xi"}));
-    return done(stop_failure(fail("Generalized Pareto has unbounded likelihood from scale collapse at the threshold."), res.stop_detail, outcome_kind(o), {"mu","sigma","xi"}));
+      return done(stop_failure(fail("Generalized Pareto has no finite maximum: scale collapse at the threshold gives a finite unattained fixed-shape supremum."), res.stop_detail, outcome_payload(o), {"mu","sigma","xi"}));
+    return done(stop_failure(fail("Generalized Pareto has unbounded likelihood from scale collapse at the threshold."), res.stop_detail, outcome_payload(o), {"mu","sigma","xi"}));
   }
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Budget)
-    return done(stop_failure(fail("Generalized Pareto MLE failed to converge: global certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop."), res.stop_detail, outcome_kind(o), {"mu","sigma","xi"}));
+    return done(stop_failure(fail("Generalized Pareto MLE failed to converge: global certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop."), res.stop_detail, outcome_payload(o), {"mu","sigma","xi"}));
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Tie)
-    return done(stop_failure(fail("Generalized Pareto MLE failed to converge: competing maxima tie within the certificate margin (1e-8 per observation), or shape is unidentified."), res.stop_detail, "tie", {"mu","sigma","xi"}));
+    return done(stop_failure(fail("Generalized Pareto MLE failed to converge: competing maxima tie within the certificate margin (1e-8 per observation), or shape is unidentified."), res.stop_detail, PayloadKind::Comparison, {"mu","sigma","xi"}));
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Arithmetic)
-    return done(stop_failure(fail("Generalized Pareto MLE failed to converge: certificate comparisons unresolved or coefficients unrepresentable."), res.stop_detail, outcome_kind(o), {"mu","sigma","xi"}));
+    return done(stop_failure(fail("Generalized Pareto MLE failed to converge: certificate comparisons unresolved or coefficients unrepresentable."), res.stop_detail, outcome_payload(o), {"mu","sigma","xi"}));
   if (res.status == cppunivariate::GpdStatus::InvalidData)
     return done(fail("Generalized Pareto requires finite data at or above `mu`, compatible support and holds, no scale collapse at the threshold, a finite threshold, positive `reltol` and positive `iterlim`."));
   if (res.status != cppunivariate::GpdStatus::Ok || !std::isfinite(res.logLik))

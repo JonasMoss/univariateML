@@ -411,3 +411,5 @@ Newton solve.
 ### Extreme d/p/q arithmetic
 
 In the mass recurrence the remaining integer count is formed before adding beta. Subtracting the counts after adding a tiny beta can discard its significant digits at the last cell, contaminating both summed tails.
+
+When zero size or a one-trial submodel leaves beta-binomial shapes unidentified, the canonical coefficient vector is the first listed witness; the remaining listed representatives are attached as `maximizers`.

@@ -407,10 +407,10 @@ test_that("iterlim controls the global certificate and keeps budget witnesses", 
 
 test_that("held sd location ties preserve std candidate coordinates", {
   e <- tryCatch(mlstd(c(-3,3),sd=1,nu=3),error=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_equal(nrow(e$candidates),2L)
-  expect_true(is.finite(e$loglik_lower))
-  expect_true(is.finite(e$loglik_upper))
+  expect_s3_class(e,"univariateML")
+  expect_equal(nrow(fit_payload(e)$candidates),2L)
+  expect_true(is.finite(fit_payload(e)$loglik_lower))
+  expect_true(is.finite(fit_payload(e)$loglik_upper))
 })
 
 
@@ -476,10 +476,10 @@ test_that("std free-shape held solver stops retain a finite witness", {
 
 test_that("std symmetry proves distinct global maximizers", {
   e <- tryCatch(mlstd(c(-100,100),sd=1),error=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_true(is.finite(e$loglik_lower))
-  expect_identical(e$loglik_upper,Inf)
-  expect_equal(nrow(e$candidates),2L)
+  expect_s3_class(e,"univariateML")
+  expect_true(is.finite(fit_payload(e)$loglik_lower))
+  expect_identical(fit_payload(e)$loglik_upper,Inf)
+  expect_equal(nrow(fit_payload(e)$candidates),2L)
 })
 
 test_that("std held normal and legacy lower faces retain classes and certification", {

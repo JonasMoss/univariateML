@@ -32,22 +32,22 @@ inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kap
   auto res = cppunivariate::lomax_mle(x, reltol, iterlim, start, lambda_held, kappa_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (res.status == cppunivariate::LomaxStatus::Ok)
         return overridden(std::move(out), static_cast<int>(res.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"kappa",kappa_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"kappa",kappa_arg.supplied}});
   };
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("lomax numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"lambda","kappa"}));
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("lomax numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"lambda","kappa"}));
   if (res.status == cppunivariate::LomaxStatus::AccuracyFailure)
-    return done(stop_failure(fail("Lomax could not verify the requested coefficient accuracy in binary64."),res.stop_detail,outcome_kind(o),{"lambda","kappa"}));
+    return done(stop_failure(fail("Lomax could not verify the requested coefficient accuracy in binary64."),res.stop_detail,outcome_payload(o),{"lambda","kappa"}));
   if (res.status == cppunivariate::LomaxStatus::ExponentialLimit) {
-    return done(stop_failure(fail("The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model."),res.stop_detail,outcome_kind(o),{"lambda","kappa"},"exp"));
+    return done(stop_failure(fail("The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model."),res.stop_detail,outcome_payload(o),{"lambda","kappa"},"exp"));
   }
   if (res.certificate_failure == cppunivariate::LomaxCertificateFailure::Budget)
-    return done(stop_failure(fail("Lomax MLE failed to converge: global certificate budget exhausted (128 * min(iterlim, 100000) subdivision evaluations); no verified maximum. Raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"lambda","kappa"},""));
+    return done(stop_failure(fail("Lomax MLE failed to converge: global certificate budget exhausted (128 * min(iterlim, 100000) subdivision evaluations); no verified maximum. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"lambda","kappa"},""));
   if (res.certificate_failure == cppunivariate::LomaxCertificateFailure::Arithmetic)
     return done(fail("Lomax MLE failed to converge: numerical certificate comparisons unresolved or coefficients unrepresentable; no verified maximum."));
   if (res.status != cppunivariate::LomaxStatus::Ok || !std::isfinite(res.lambda) ||

@@ -284,7 +284,7 @@ test_that("GEV joint certificate covers the seam and preserves numerical witness
   }
   e <- tryCatch(mlgev(x,reltol=1e-16),error=identity)
   expect_s3_class(e,"univariateML_numerical")
-  expect_true(length(e$candidates)>0)
+  expect_true(length(fit_payload(e)$candidates)>0)
   expect_false(inherits(e,"univariateML_tie"))
   face <- suppressWarnings(mlgev(c(0,1,2,3,3)))
   expect_equal(unname(face["xi"]),-1)
@@ -453,7 +453,7 @@ test_that("GEV public support rejects negative zero residuals", {
   fit <- mlgev(x, sigma = 2, xi = -1)
   expect_equal(unname(fit["sigma"]), 2)
   expect_gt(unname(fit["mu"] + fit["sigma"]), 0)
-  expect_error(univariateML:::mlgev_(x, xi = -1, mu = -2, sigma = 2),
+  expect_match(conditionMessage(univariateML:::mlgev_(x, xi = -1, mu = -2, sigma = 2)),
                "support")
 })
 

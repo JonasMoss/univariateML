@@ -1,0 +1,2902 @@
+{
+ "native": {
+  "ties": [
+   {
+    "family": "betapr",
+    "source": "archive",
+    "case": "000167",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta"
+    ],
+    "held": {}
+   },
+   {
+    "family": "betapr",
+    "source": "archive",
+    "case": "000171",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta"
+    ],
+    "held": {}
+   },
+   {
+    "family": "betapr",
+    "source": "archive",
+    "case": "000174",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta"
+    ],
+    "held": {}
+   },
+   {
+    "family": "betapr",
+    "source": "archive",
+    "case": "000184",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "betapr",
+    "source": "class",
+    "case": "two",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "betapr",
+    "source": "class",
+    "case": "wide",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "burr",
+    "source": "archive",
+    "case": "000701",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape1",
+     "shape2"
+    ],
+    "held": {
+     "scale": 1.1969913095113565
+    }
+   },
+   {
+    "family": "cauchy",
+    "source": "archive",
+    "case": "000795",
+    "core_status": 4,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "location",
+     "scale"
+    ],
+    "held": {
+     "scale": 1.0586087784963103
+    }
+   },
+   {
+    "family": "cmb",
+    "source": "archive",
+    "case": "000838",
+    "core_status": 8,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "binom",
+     ""
+    ],
+    "coefficients": [
+     "prob",
+     "size"
+    ],
+    "held": {}
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001457",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001458",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001459",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001460",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001461",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001462",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001469",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001471",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "009357",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "009817",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "ged",
+    "source": "archive",
+    "case": "002399",
+    "core_status": 5,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": false
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "nu",
+     "sd"
+    ],
+    "held": {
+     "sd": 1.0178559902092952
+    }
+   },
+   {
+    "family": "ged",
+    "source": "archive",
+    "case": "002400",
+    "core_status": 5,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": false
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "nu",
+     "sd"
+    ],
+    "held": {
+     "sd": 1.0178559902092952
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003332",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {}
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003335",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003339",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003340",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {}
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003353",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {
+     "mu": 0.023684182562090508
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003356",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mu": 0.023684182562090508
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003371",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {
+     "sigma": 1.089043634045728
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003372",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sigma": 1.089043634045728
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003386",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mu": 0.023684182562090508,
+     "sigma": 1.089043634045728
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003387",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mu": 0.023684182562090508,
+     "sigma": 1.089043634045728
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003388",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mu": 0.023684182562090508,
+     "sigma": 1.089043634045728
+    }
+   },
+   {
+    "family": "invburr",
+    "source": "archive",
+    "case": "003569",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "power",
+     "invweibull",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "invburr",
+    "source": "archive",
+    "case": "003572",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "power",
+     "invweibull",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "invburr",
+    "source": "archive",
+    "case": "003654",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape1",
+     "shape2"
+    ],
+    "held": {
+     "scale": 1.1483262751193506
+    }
+   },
+   {
+    "family": "invburr",
+    "source": "archive",
+    "case": "010480",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "power",
+     "invweibull",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "lst",
+    "source": "archive",
+    "case": "004897",
+    "core_status": 10,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "lst"
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "lst",
+    "source": "archive",
+    "case": "004900",
+    "core_status": 10,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "lst"
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "pareto4",
+    "source": "archive",
+    "case": "005651",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "pareto",
+     "weibull",
+     ""
+    ],
+    "coefficients": [
+     "a",
+     "b"
+    ],
+    "held": {
+     "min": 0.0
+    }
+   },
+   {
+    "family": "pareto4",
+    "source": "archive",
+    "case": "005654",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "pareto",
+     "weibull",
+     ""
+    ],
+    "coefficients": [
+     "a",
+     "b"
+    ],
+    "held": {
+     "min": 0.0
+    }
+   },
+   {
+    "family": "pareto4",
+    "source": "archive",
+    "case": "010640",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     ""
+    ],
+    "coefficients": [
+     "min",
+     "scale",
+     "shape1",
+     "shape2"
+    ],
+    "held": {
+     "min": 0.0,
+     "scale": 1.0887481860644432
+    }
+   },
+   {
+    "family": "sged",
+    "source": "archive",
+    "case": "006031",
+    "core_status": 9,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:half-ged",
+     "unavailable:reflected-half-ged"
+    ],
+    "coefficients": [
+     "mu",
+     "nu",
+     "scale"
+    ],
+    "held": {
+     "nu": 3.4208324500711944
+    }
+   },
+   {
+    "family": "sged",
+    "source": "archive",
+    "case": "006045",
+    "core_status": 9,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:half-ged",
+     "unavailable:reflected-half-ged"
+    ],
+    "coefficients": [
+     "mu",
+     "nu",
+     "scale"
+    ],
+    "held": {
+     "nu": 3.4208324500711944
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006579",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:reflected-half-normal",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006583",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:reflected-half-normal",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006587",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:reflected-half-normal",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006589",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:reflected-half-normal",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006593",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:reflected-half-normal",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006607",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mean": -0.020798452221064478,
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006608",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mean": -0.020798452221064478,
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "std",
+    "source": "archive",
+    "case": "007193",
+    "core_status": 10,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "lst"
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "std",
+    "source": "archive",
+    "case": "007196",
+    "core_status": 10,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "lst"
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   }
+  ],
+  "existing_nonunique": [
+   {
+    "family": "dlaplace",
+    "source": "class",
+    "case": "two",
+    "core_status": 0
+   },
+   {
+    "family": "dlaplace",
+    "source": "class",
+    "case": "negative",
+    "core_status": 0
+   },
+   {
+    "family": "dlaplace",
+    "source": "class",
+    "case": "wide",
+    "core_status": 0
+   },
+   {
+    "family": "hyper",
+    "source": "archive",
+    "case": "003525",
+    "core_status": 1
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004364",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004365",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004375",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004376",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004377",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004396",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004397",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004407",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004408",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004409",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "009772",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "009774",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "010232",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "010234",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "golden",
+    "case": "golden",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "base6",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "two",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "negative",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "tiny",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "offset",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "wide",
+    "core_status": 0
+   }
+  ],
+  "ties_per_family": {
+   "betapr": 6,
+   "burr": 1,
+   "cauchy": 1,
+   "cmb": 1,
+   "fatigue": 10,
+   "ged": 2,
+   "huber": 11,
+   "invburr": 4,
+   "lst": 2,
+   "pareto4": 3,
+   "sged": 2,
+   "snorm": 7,
+   "std": 2
+  },
+  "existing_nonunique_per_family": {
+   "dlaplace": 3,
+   "hyper": 1,
+   "laplace": 21
+  }
+ },
+ "double": {
+  "ties": [
+   {
+    "family": "betapr",
+    "source": "archive",
+    "case": "000167",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "betapr",
+    "source": "archive",
+    "case": "000171",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta"
+    ],
+    "held": {}
+   },
+   {
+    "family": "betapr",
+    "source": "archive",
+    "case": "000174",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta"
+    ],
+    "held": {}
+   },
+   {
+    "family": "betapr",
+    "source": "archive",
+    "case": "000184",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "betapr",
+    "source": "class",
+    "case": "two",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta"
+    ],
+    "held": {}
+   },
+   {
+    "family": "betapr",
+    "source": "class",
+    "case": "wide",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "gamma",
+     "invgamma",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "burr",
+    "source": "archive",
+    "case": "000701",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape1",
+     "shape2"
+    ],
+    "held": {
+     "scale": 1.1969913095113565
+    }
+   },
+   {
+    "family": "cauchy",
+    "source": "archive",
+    "case": "000795",
+    "core_status": 4,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "location",
+     "scale"
+    ],
+    "held": {
+     "scale": 1.0586087784963103
+    }
+   },
+   {
+    "family": "cmb",
+    "source": "archive",
+    "case": "000838",
+    "core_status": 8,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "binom",
+     ""
+    ],
+    "coefficients": [
+     "prob",
+     "size"
+    ],
+    "held": {}
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001457",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001458",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001459",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001460",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001461",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001462",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001469",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "001471",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "009357",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "fatigue",
+    "source": "archive",
+    "case": "009817",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "alpha",
+     "beta",
+     "mu"
+    ],
+    "held": {
+     "alpha": 2.858368126583106,
+     "mu": 0.0
+    }
+   },
+   {
+    "family": "ged",
+    "source": "archive",
+    "case": "002399",
+    "core_status": 5,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": false
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "nu",
+     "sd"
+    ],
+    "held": {
+     "sd": 1.0178559902092952
+    }
+   },
+   {
+    "family": "ged",
+    "source": "archive",
+    "case": "002400",
+    "core_status": 5,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": false
+    },
+    "models": [
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "nu",
+     "sd"
+    ],
+    "held": {
+     "sd": 1.0178559902092952
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003332",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003335",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003339",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003340",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {}
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003353",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {
+     "mu": 0.023684182562090508
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003356",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "laplace",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mu": 0.023684182562090508
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003371",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {
+     "sigma": 1.089043634045728
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003372",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sigma": 1.089043634045728
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003386",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mu": 0.023684182562090508,
+     "sigma": 1.089043634045728
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003387",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mu": 0.023684182562090508,
+     "sigma": 1.089043634045728
+    }
+   },
+   {
+    "family": "huber",
+    "source": "archive",
+    "case": "003388",
+    "core_status": 3,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "",
+     "",
+     "",
+     ""
+    ],
+    "coefficients": [
+     "epsilon",
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mu": 0.023684182562090508,
+     "sigma": 1.089043634045728
+    }
+   },
+   {
+    "family": "invburr",
+    "source": "archive",
+    "case": "003569",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "power",
+     "invweibull",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "invburr",
+    "source": "archive",
+    "case": "003572",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "power",
+     "invweibull",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "invburr",
+    "source": "archive",
+    "case": "003654",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape1",
+     "shape2"
+    ],
+    "held": {
+     "scale": 1.1483262751193506
+    }
+   },
+   {
+    "family": "invburr",
+    "source": "archive",
+    "case": "010480",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "power",
+     "invweibull",
+     ""
+    ],
+    "coefficients": [
+     "scale",
+     "shape"
+    ],
+    "held": {}
+   },
+   {
+    "family": "lst",
+    "source": "archive",
+    "case": "004897",
+    "core_status": 10,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "lst"
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "lst",
+    "source": "archive",
+    "case": "004900",
+    "core_status": 10,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "lst"
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "pareto4",
+    "source": "archive",
+    "case": "005651",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "pareto",
+     "weibull",
+     ""
+    ],
+    "coefficients": [
+     "a",
+     "b"
+    ],
+    "held": {
+     "min": 0.0
+    }
+   },
+   {
+    "family": "pareto4",
+    "source": "archive",
+    "case": "005654",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "pareto",
+     "weibull",
+     ""
+    ],
+    "coefficients": [
+     "a",
+     "b"
+    ],
+    "held": {
+     "min": 0.0
+    }
+   },
+   {
+    "family": "pareto4",
+    "source": "archive",
+    "case": "010640",
+    "core_status": 7,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     ""
+    ],
+    "coefficients": [
+     "min",
+     "scale",
+     "shape1",
+     "shape2"
+    ],
+    "held": {
+     "min": 0.0,
+     "scale": 1.0887481860644432
+    }
+   },
+   {
+    "family": "sged",
+    "source": "archive",
+    "case": "006031",
+    "core_status": 9,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:half-ged",
+     "unavailable:reflected-half-ged"
+    ],
+    "coefficients": [
+     "mu",
+     "nu",
+     "scale"
+    ],
+    "held": {
+     "nu": 3.4208324500711944
+    }
+   },
+   {
+    "family": "sged",
+    "source": "archive",
+    "case": "006045",
+    "core_status": 9,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:half-ged",
+     "unavailable:reflected-half-ged"
+    ],
+    "coefficients": [
+     "mu",
+     "nu",
+     "scale"
+    ],
+    "held": {
+     "nu": 3.4208324500711944
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006579",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:reflected-half-normal",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006583",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:reflected-half-normal",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006589",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:reflected-half-normal",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006593",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:reflected-half-normal",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006607",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mean": -0.020798452221064478,
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "snorm",
+    "source": "archive",
+    "case": "006608",
+    "core_status": 1,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "",
+     "hnorm"
+    ],
+    "coefficients": [
+     "mu",
+     "sigma"
+    ],
+    "held": {
+     "mean": -0.020798452221064478,
+     "sd": 0.9992068963337329
+    }
+   },
+   {
+    "family": "std",
+    "source": "archive",
+    "case": "007193",
+    "core_status": 10,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "lst"
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   },
+   {
+    "family": "std",
+    "source": "archive",
+    "case": "007196",
+    "core_status": 10,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "norm",
+     "lst"
+    ],
+    "coefficients": [
+     "mean",
+     "sd"
+    ],
+    "held": {}
+   }
+  ],
+  "existing_nonunique": [
+   {
+    "family": "dlaplace",
+    "source": "class",
+    "case": "two",
+    "core_status": 0
+   },
+   {
+    "family": "dlaplace",
+    "source": "class",
+    "case": "negative",
+    "core_status": 0
+   },
+   {
+    "family": "dlaplace",
+    "source": "class",
+    "case": "wide",
+    "core_status": 0
+   },
+   {
+    "family": "hyper",
+    "source": "archive",
+    "case": "003525",
+    "core_status": 1
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004364",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004365",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004375",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004376",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004377",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004396",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004397",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004407",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004408",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "004409",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "009772",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "009774",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "010232",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "archive",
+    "case": "010234",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "golden",
+    "case": "golden",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "base6",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "two",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "negative",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "tiny",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "offset",
+    "core_status": 0
+   },
+   {
+    "family": "laplace",
+    "source": "class",
+    "case": "wide",
+    "core_status": 0
+   }
+  ],
+  "ties_per_family": {
+   "betapr": 6,
+   "burr": 1,
+   "cauchy": 1,
+   "cmb": 1,
+   "fatigue": 10,
+   "ged": 2,
+   "huber": 11,
+   "invburr": 4,
+   "lst": 2,
+   "pareto4": 3,
+   "sged": 2,
+   "snorm": 6,
+   "std": 2
+  },
+  "existing_nonunique_per_family": {
+   "dlaplace": 3,
+   "hyper": 1,
+   "laplace": 21
+  }
+ },
+ "routes-native": {
+  "ties": [
+   {
+    "family": "norm +truncate=tnorm",
+    "source": "archive",
+    "case": "007779",
+    "core_status": 6,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:translated-exponential",
+     ""
+    ],
+    "coefficients": [
+     "mu",
+     "rate"
+    ],
+    "held": {
+     "b": Infinity
+    }
+   }
+  ],
+  "existing_nonunique": [
+   {
+    "family": "zeta +truncate=zipf",
+    "source": "archive",
+    "case": "008747",
+    "core_status": 0
+   }
+  ],
+  "ties_per_family": {
+   "norm +truncate=tnorm": 1
+  },
+  "existing_nonunique_per_family": {
+   "zeta +truncate=zipf": 1
+  }
+ },
+ "routes-double": {
+  "ties": [
+   {
+    "family": "norm +truncate=tnorm",
+    "source": "archive",
+    "case": "007779",
+    "core_status": 6,
+    "outcome": {
+     "certified": false,
+     "kind": "estimate",
+     "reason": "none",
+     "unique": true
+    },
+    "models": [
+     "unavailable:translated-exponential",
+     ""
+    ],
+    "coefficients": [
+     "mu",
+     "rate"
+    ],
+    "held": {
+     "b": Infinity
+    }
+   }
+  ],
+  "existing_nonunique": [
+   {
+    "family": "zeta +truncate=zipf",
+    "source": "archive",
+    "case": "008747",
+    "core_status": 0
+   }
+  ],
+  "ties_per_family": {
+   "norm +truncate=tnorm": 1
+  },
+  "existing_nonunique_per_family": {
+   "zeta +truncate=zipf": 1
+  }
+ }
+}

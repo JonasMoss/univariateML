@@ -4,7 +4,7 @@
 namespace umvl_binding {
 inline FitResult fit_hcauchy(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}) {
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
     if(!finite_stop_payload(detail,kind))return out;
@@ -23,17 +23,17 @@ inline FitResult fit_hcauchy(cppunivariate::span x, Held mu_arg = {}, Held sigma
   const auto r=cppunivariate::hcauchy_mle(x,held_mu,sc);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+    return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if(r.status==cppunivariate::HcauchyStatus::Unbounded)
     return done(nomle("Half-Cauchy likelihood is unbounded as sigma -> 0 when more than half the observations equal the free or held endpoint (including all equal to it)."));
   if(r.status==cppunivariate::HcauchyStatus::ScaleBoundary)
-    return done(classify(fail("Half-Cauchy likelihood has a finite unattained supremum as sigma -> 0 when exactly half the observations equal the free or held endpoint."),{},outcome_kind(o),{},""));
+    return done(classify(fail("Half-Cauchy likelihood has a finite unattained supremum as sigma -> 0 when exactly half the observations equal the free or held endpoint."),{},outcome_payload(o),{},""));
   if(mu_held && r.status==cppunivariate::HcauchyStatus::InvalidData)
     return done(fail("Half-Cauchy observations must be finite and at least the held mu."));
   if(r.status!=cppunivariate::HcauchyStatus::Ok)

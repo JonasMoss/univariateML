@@ -6,12 +6,12 @@ inline FitResult fit_genbeta(cppunivariate::span x, Held shape1_arg = {}, Held s
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(gradtol>0 && std::isfinite(gradtol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(kind=="budget"&&detail.budget_exhausted&&detail.candidates.empty())return stop_failure(out,detail,kind,names,model);
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Budget&&detail.budget_exhausted&&detail.candidates.empty())return stop_failure(out,detail,kind,names,model);
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -63,23 +63,23 @@ const std::string name = "shape3";
   const auto r=cppunivariate::genbeta_mle(x,scale,gradtol,iterlim,a,b,t);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+    return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"shape3",shape3_arg.supplied},{"scale",scale_arg.supplied}});
   };
 
-  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("genbeta numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_kind(o),{"shape1","shape2","shape3","scale"}));
-  if(r.stop_detail.budget_exhausted)return done(classify(fail("Generalized beta certificate budget exhausted; increase iterlim."),r.stop_detail,outcome_kind(o),{"shape1","shape2","shape3","scale"}));
-  if(r.stop_detail.comparison_tie)return done(classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,"tie",{"shape1","shape2","shape3","scale"}));
+  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("genbeta numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"}));
+  if(r.stop_detail.budget_exhausted)return done(classify(fail("Generalized beta certificate budget exhausted; increase iterlim."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"}));
+  if(r.stop_detail.comparison_tie)return done(classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,PayloadKind::Comparison,{"shape1","shape2","shape3","scale"}));
   switch(r.status) {
     case cppunivariate::GenbetaStatus::Ok:break;
     case cppunivariate::GenbetaStatus::UnitGammaBoundary:
-      if(!std::isnan(b))return done(classify(fail("Generalized beta selects the unit-gamma limit with shapelog held at shape2. `mllgamma(scale / x)` fits the unrestricted loggamma; holding shapelog there is not supported."),r.stop_detail,outcome_kind(o),{"shape","scale","upper"},"unavailable:unit-gamma"));
-      return done(classify(fail(r.allfree_certified?"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.":"Generalized beta selects the unit-gamma limit (uncertified global comparison). Use `mllgamma(scale / x)`."),r.stop_detail,outcome_kind(o),{"shape","scale","upper"},"unavailable:unit-gamma"));
+      if(!std::isnan(b))return done(classify(fail("Generalized beta selects the unit-gamma limit with shapelog held at shape2. `mllgamma(scale / x)` fits the unrestricted loggamma; holding shapelog there is not supported."),r.stop_detail,outcome_payload(o),{"shape","scale","upper"},"unavailable:unit-gamma"));
+      return done(classify(fail(r.allfree_certified?"Generalized beta selects the unit-gamma limit. Use `mllgamma(scale / x)`.":"Generalized beta selects the unit-gamma limit (uncertified global comparison). Use `mllgamma(scale / x)`."),r.stop_detail,outcome_payload(o),{"shape","scale","upper"},"unavailable:unit-gamma"));
     case cppunivariate::GenbetaStatus::PowerBoundary:
-      if(!std::isnan(b))return done(classify(fail("Generalized beta selects power with the endpoint held: use `mlgenbeta(x, scale = scale, shape2 = 1)`. `mlpower` estimates its endpoint."),r.stop_detail,outcome_kind(o),{"alpha","beta"},"power"));
-      return done(classify(fail(r.allfree_certified?"Generalized beta selects a limiting power law. Use `mlpower`.":"Generalized beta selects a limiting power law (uncertified global comparison). Use `mlpower`."),r.stop_detail,outcome_kind(o),{"alpha","beta"},"power"));
-    case cppunivariate::GenbetaStatus::Unbounded:return done(classify(fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded)."),{},outcome_kind(o),{}));
+      if(!std::isnan(b))return done(classify(fail("Generalized beta selects power with the endpoint held: use `mlgenbeta(x, scale = scale, shape2 = 1)`. `mlpower` estimates its endpoint."),r.stop_detail,outcome_payload(o),{"alpha","beta"},"power"));
+      return done(classify(fail(r.allfree_certified?"Generalized beta selects a limiting power law. Use `mlpower`.":"Generalized beta selects a limiting power law (uncertified global comparison). Use `mlpower`."),r.stop_detail,outcome_payload(o),{"alpha","beta"},"power"));
+    case cppunivariate::GenbetaStatus::Unbounded:return done(classify(fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded)."),{},outcome_payload(o),{}));
     case cppunivariate::GenbetaStatus::InvalidData:return done(fail("Generalized beta requires observations strictly between 0 and scale; constant samples with free beta shapes are not supported (the unrestricted likelihood is unbounded)."));
     case cppunivariate::GenbetaStatus::InvalidFixed:return done(fail("Generalized beta held parameters must be positive finite numbers."));
     case cppunivariate::GenbetaStatus::SearchUnresolved: {
@@ -96,10 +96,10 @@ const std::string name = "shape3";
         case cppunivariate::GenbetaCertificateFailure::Arithmetic:message="Generalized beta certificate arithmetic unresolved; hold shapes.";break;
         default:break;
       }
-      return done(classify(fail(message),r.stop_detail,outcome_kind(o),{"shape1","shape2","shape3","scale"}));
+      return done(classify(fail(message),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"}));
     }
   }
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",r.shape1},{"shape2",r.shape2},{"shape3",r.shape3},{"scale",r.scale}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; if(std::isnan(a)&&std::isnan(b)&&std::isnan(t))out.extra.emplace_back("certified",r.allfree_certified?1.:0.); out.extra_vectors.emplace_back("support", std::vector<double>{0,scale}); return out; }());
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",r.shape1},{"shape2",r.shape2},{"shape3",r.shape3},{"scale",r.scale}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;  out.extra_vectors.emplace_back("support", std::vector<double>{0,scale}); return out; }());
 
 }
 }

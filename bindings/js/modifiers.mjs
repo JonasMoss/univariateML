@@ -1,6 +1,6 @@
 // Modifier operations use the same native seam as R.
 export function modifierAPI(module, id, eligibility, capabilities) {
-  const refusal = value => { throw new Error(`${value} is not implemented for \`ml${id}\`; see TASK-191 or its successor`); };
+  const refusal = value => { throw Object.assign(new Error(`${value} is not implemented for \`ml${id}\`; see TASK-191 or its successor`),{kind:"unsupported",reason:"unsupported"}); };
   const validate = (zero, truncate) => {
     if (!['none','truncated','modified','inflated'].includes(zero)) throw new Error('`zero` must be one of none, truncated, modified, inflated');
     if (zero !== 'none' && !eligibility.zero) throw new Error(`ml${id} has no argument zero`);
@@ -70,7 +70,7 @@ export function modifierAPI(module, id, eligibility, capabilities) {
     if(censor && truncate)refusal('censor + truncate');
     const positiveWindow=truncate?.[0]===1 && truncate?.[1]===Infinity && ['pois','binom','nbinom','geom'].includes(id);
     const result=module.fitModifier(id,censor?x.lower:x,censor?x.upper:[],held,zero,!!truncate,truncate?.[0]??NaN,truncate?.[1]??NaN,!!censor,control.reltol??control.abstol??1e-10,control.iterlim??(truncate&&!positiveWindow&&id==='binom'&&held.size==null?512:truncate&&!positiveWindow||censor?400:200));
-    if (!result.error) {
+    if (result.error === undefined) {
       result.zero=zero;result.truncate=truncate;result.truncate_spec=truncate;result.truncate_estimated=truncate?.map(Number.isNaN)??[];result.censored=!!censor;
       if (truncate?.some(Number.isNaN)) {result.truncate=[...truncate];const data=Array.from(x);if(Number.isNaN(result.truncate[0]))result.truncate[0]=Math.min(...data);if(Number.isNaN(result.truncate[1]))result.truncate[1]=Math.max(...data);}
     }

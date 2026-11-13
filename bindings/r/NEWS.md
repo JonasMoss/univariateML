@@ -1,5 +1,12 @@
 # Migration to 2.0: zero and truncation modifiers
 
+Every fit now renders its shared outcome. Estimates carry `certified` and
+`unique` flags, shown by print and summary and included in model selection.
+Tied candidates return an estimate with maximizers or candidates attached;
+inference refuses proved non-unique estimates. Every fit stop is classed and
+carries its kind and reason; margin-decided limits explicitly say so. See
+`?univariateML_outcomes`.
+
 The following fitters have been removed, with no aliases or redirects. Use the
 base fitter with named modifier arguments (all calls below take data `x`):
 

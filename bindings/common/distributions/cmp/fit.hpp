@@ -31,26 +31,26 @@ inline FitResult fit_cmp(cppunivariate::span x, Held lambda_arg = {}, Held nu_ar
  }();
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (res.status == cppunivariate::CmpStatus::Ok)
         return overridden(std::move(out), static_cast<int>(res.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"nu",nu_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"nu",nu_arg.supplied}});
   };
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(res.status) {
-    case cppunivariate::CmpStatus::GeometricLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::CmpStatus::TwoPointLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::CmpStatus::PointMassLimit: stop_kind=outcome_kind(o);break;
+    case cppunivariate::CmpStatus::GeometricLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::CmpStatus::TwoPointLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::CmpStatus::PointMassLimit: stop_kind=outcome_payload(o);break;
     default:break;
   }
-  if(res.status==cppunivariate::CmpStatus::IterationFailure || res.status==cppunivariate::CmpStatus::NumericalFailure || res.status==cppunivariate::CmpStatus::BudgetLimit)stop_kind=outcome_kind(o);
-  if(res.stop_detail.budget_exhausted)stop_kind=outcome_kind(o);
+  if(res.status==cppunivariate::CmpStatus::IterationFailure || res.status==cppunivariate::CmpStatus::NumericalFailure || res.status==cppunivariate::CmpStatus::BudgetLimit)stop_kind=outcome_payload(o);
+  if(res.stop_detail.budget_exhausted)stop_kind=outcome_payload(o);
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"lambda","nu"});
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"lambda","nu"});
   };
 
  switch(res.status) {

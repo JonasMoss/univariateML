@@ -23,16 +23,16 @@ inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held 
   cppunivariate::CauchyResult res = cppunivariate::fit_cauchy(x,abstol,iterlim,held_location,held_scale);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (res.status == cppunivariate::CauchyStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (res.status == cppunivariate::CauchyStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"location",location_arg.supplied},{"scale",scale_arg.supplied}});
   };
-  if(res.stop_detail.budget_exhausted)return done(stop_failure(failure("Conditional fit did not converge: numerical certificate work budget exhausted. Raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"location","scale"}));
+  if(res.stop_detail.budget_exhausted)return done(stop_failure(failure("Conditional fit did not converge: numerical certificate work budget exhausted. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"location","scale"}));
   if(res.status==cppunivariate::CauchyStatus::NoMLE && location.supplied)
-    return done(stop_failure(fail("With location held the Cauchy scale MLE does not exist when at least half the observations equal that location."),res.stop_detail,outcome_kind(o),{"location","scale"},""));
+    return done(stop_failure(fail("With location held the Cauchy scale MLE does not exist when at least half the observations equal that location."),res.stop_detail,outcome_payload(o),{"location","scale"},""));
   if (res.status == cppunivariate::CauchyStatus::NoMLE)
-    return done(stop_failure(fail("Cauchy MLE does not exist: a sample atom has at least half the mass, except for balanced two-point samples"),res.stop_detail,outcome_kind(o),{"location","scale"},""));
-  if(res.status==cppunivariate::CauchyStatus::AmbiguousMaximum)return done(stop_failure(fail("Held-scale Cauchy global maxima are tied or numerically indistinguishable; no unique certified location returned."),res.stop_detail,"tie",{"location","scale"},""));
+    return done(stop_failure(fail("Cauchy MLE does not exist: a sample atom has at least half the mass, except for balanced two-point samples"),res.stop_detail,outcome_payload(o),{"location","scale"},""));
+  if(res.status==cppunivariate::CauchyStatus::AmbiguousMaximum)return done(stop_failure(fail("Held-scale Cauchy global maxima are tied or numerically indistinguishable; no unique certified location returned."),res.stop_detail,PayloadKind::Comparison,{"location","scale"},""));
   if(res.status==cppunivariate::CauchyStatus::InvalidInput)return done(fail("Cauchy fit requires finite data, positive tolerance and iterlim, and valid held coefficients."));
   if(res.status==cppunivariate::CauchyStatus::IterationFailure)return done(fail("Conditional fit did not converge: numerical certificate, scale bracket or iteration failure; increase iterlim only for iteration exhaustion."));
   if (!std::isfinite(res.mu) || !std::isfinite(res.scale) || !(res.scale > 0.0))

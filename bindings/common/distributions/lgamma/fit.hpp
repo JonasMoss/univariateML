@@ -10,11 +10,11 @@ inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held 
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(abstol>0 && std::isfinite(abstol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -38,16 +38,16 @@ inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held 
   const auto res=cppunivariate::lgamma_mle(x,abstol,iterlim,shapelog_held,ratelog_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (res.status == cppunivariate::LgammaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (res.status == cppunivariate::LgammaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
     // Preserve the classifier's refusal of a structured stop (invalid context
     // or missing finite payload); the core result does not retain that context.
-    if (!out.error.empty() && out.error_kind.empty() && o.kind != cppunivariate::OutcomeKind::Failure)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    if (!out.error.empty() && (out.payload_kind==PayloadKind::None) && o.kind != cppunivariate::OutcomeKind::Failure)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status),{{"shapelog",shapelog_arg.supplied},{"ratelog",ratelog_arg.supplied}});
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shapelog",shapelog_arg.supplied},{"ratelog",ratelog_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if(res.status==cppunivariate::LgammaStatus::IterationFailure)
     return done(fail("Gamma delegate optimizer IterationFailure; increase iterlim."));
   if(res.status==cppunivariate::LgammaStatus::TransformFailure)
@@ -56,7 +56,7 @@ inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held 
     return done(nomle("The loggamma maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as the shape grows."));
   if(!std::isfinite(res.shapelog) || !std::isfinite(res.ratelog) || !std::isfinite(res.logLik))
     return done(fail("Loggamma MLE failed"));
-  return done([&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"shapelog",res.shapelog},{"ratelog",res.ratelog}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"shapelog",res.shapelog},{"ratelog",res.ratelog}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

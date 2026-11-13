@@ -18,8 +18,8 @@ test_that("zmgeom agrees with a multi-start reference-density oracle", {
   }
   best <- oracle()
   expect_gte(attr(fit,"logLik"), -best-1e-6)
-  expect_error(modifier_zmgeom_(integer()),"nonempty")
-  expect_error(modifier_zmgeom_(c(-1L,1L)),"count")
+  expect_match(conditionMessage(modifier_zmgeom_(integer())),"nonempty")
+  expect_match(conditionMessage(modifier_zmgeom_(c(-1L,1L))),"count")
   expect_warning(zero <- .modifier_zmgeom(c(0,0,0)),"unidentified")
   expect_equal(unname(zero["p0"]),1)
   expect_warning(two <- .modifier_zmgeom(c(0,0,1,1)),"mlbinom")

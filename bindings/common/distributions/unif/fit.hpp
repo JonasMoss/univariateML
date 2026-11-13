@@ -6,10 +6,10 @@
 namespace umvl_binding {
 inline FitResult fit_unif(cppunivariate::span x, Held min_arg = {}, Held max_arg = {}) {
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -32,16 +32,16 @@ inline FitResult fit_unif(cppunivariate::span x, Held min_arg = {}, Held max_arg
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, checked_min, checked_max);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (res.status == cppunivariate::UnifStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (res.status == cppunivariate::UnifStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
     // Preserve the classifier's refusal of a structured stop (invalid context
     // or missing finite payload); the core result does not retain that context.
-    if (!out.error.empty() && out.error_kind.empty() && o.kind != cppunivariate::OutcomeKind::Failure)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    if (!out.error.empty() && (out.payload_kind==PayloadKind::None) && o.kind != cppunivariate::OutcomeKind::Failure)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status),{{"min",min_arg.supplied},{"max",max_arg.supplied}});
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"min",min_arg.supplied},{"max",max_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if (res.status == cppunivariate::UnifStatus::InvalidInput)
     return done(fail("Invalid held uniform endpoints: require finite min < max."));
   if (res.status == cppunivariate::UnifStatus::Incompatible)

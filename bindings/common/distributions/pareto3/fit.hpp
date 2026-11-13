@@ -23,20 +23,20 @@ inline FitResult fit_pareto3(cppunivariate::span x, Held shape_arg = {}, Held sc
  auto res=cppunivariate::pareto3_mle(x,min,reltol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied},{"min",min_arg.supplied}});
   };
 
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("pareto3 numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"shape","scale","min"}));
-  if(res.status==cppunivariate::Pareto3Status::AccuracyFailure)return done(stop_failure(fail("pareto3 numerical accuracy failure: coefficients cannot be represented at the requested accuracy."),res.stop_detail,outcome_kind(o),{"shape","scale","min"}));
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("pareto3 numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"shape","scale","min"}));
+  if(res.status==cppunivariate::Pareto3Status::AccuracyFailure)return done(stop_failure(fail("pareto3 numerical accuracy failure: coefficients cannot be represented at the requested accuracy."),res.stop_detail,outcome_payload(o),{"shape","scale","min"}));
   if(res.status==cppunivariate::Pareto3Status::IterationFailure) return done(fail("Pareto III delegate search failed to converge."));
   if (!(res.shape>0.0) || !((1/res.scale)>0.0) || !std::isfinite(res.shape) || !std::isfinite(res.scale) || !(res.scale>0) || !std::isfinite(res.logLik)) {
     if (std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
       return done(fail("The log-logistic maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."));
     return done(fail("Log-logistic MLE failed: data exceed double precision."));
   }
-  return done([&]() { FitResult out; out.extra.push_back({"certified",res.certified?1.:0.}); out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale},{"min",min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale},{"min",min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

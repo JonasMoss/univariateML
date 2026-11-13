@@ -6,7 +6,7 @@ inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},H
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
@@ -20,34 +20,34 @@ inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},H
  const auto r=cppunivariate::st_mle(x,reltol,iterlim,xi,omega,alpha,nu);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+    return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"xi",xi_arg.supplied},{"omega",omega_arg.supplied},{"alpha",alpha_arg.supplied},{"nu",nu_arg.supplied}});
   };
 
-  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("st numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_kind(o),{"xi","omega","alpha","nu"}));
-  if(r.accuracy_failure)return done(stop_failure(fail("st numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),r.stop_detail,outcome_kind(o),{"xi","omega","alpha","nu"}));
+  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("st numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"xi","omega","alpha","nu"}));
+  if(r.accuracy_failure)return done(stop_failure(fail("st numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),r.stop_detail,outcome_payload(o),{"xi","omega","alpha","nu"}));
  if(r.stop_detail.comparison_tie || r.budget_exhausted) {
   const std::string message=r.certified&&r.stop_detail.comparison_tie?"Skew-t constant-data supremum is tied between the two limiting faces.":r.budget_exhausted?"Skew-t certificate budget exhausted; increase `iterlim`.":r.reason==2?"Skew-normal limiting-face comparison failed.":r.reason==3?"Half-t limiting-face comparison failed.":"Skew-t numerical search reached an unresolved limiting region.";
-  return done(classify(fail(message),r.stop_detail,r.stop_detail.comparison_tie?"tie":outcome_kind(o),{"xi","omega","alpha","nu"}));
+  return done(classify(fail(message),r.stop_detail,r.stop_detail.comparison_tie?PayloadKind::Comparison:outcome_payload(o),{"xi","omega","alpha","nu"}));
  }
  switch(r.status){
  case cppunivariate::StStatus::InvalidInput:return done(fail("Skew-t fitting requires finite data and valid parameters."));
- case cppunivariate::StStatus::Unbounded:return done(classify(fail("Skew-t likelihood is unbounded through scale collapse at a tied observation."),r.stop_detail,outcome_kind(o),{},""));
+ case cppunivariate::StStatus::Unbounded:return done(classify(fail("Skew-t likelihood is unbounded through scale collapse at a tied observation."),r.stop_detail,outcome_payload(o),{},""));
  case cppunivariate::StStatus::ScaleBoundary:
-  if(r.reason==6)return done(stop_failure(fail("Skew-t likelihood has an unattained scale-collapse supremum."),r.stop_detail,outcome_kind(o),{"xi","omega","alpha","nu"}));
+  if(r.reason==6)return done(stop_failure(fail("Skew-t likelihood has an unattained scale-collapse supremum."),r.stop_detail,outcome_payload(o),{"xi","omega","alpha","nu"}));
   return done(fail("Skew-t scale collapse is at equality; a regular maximum is not resolved."));
  case cppunivariate::StStatus::NumericalFailure:
   if(r.reason==1)return done(fail("Skew-t location-scale profiles failed the score check."));
   if(r.reason==2)return done(fail("Skew-normal limiting-face comparison failed."));
   if(r.reason==3)return done(fail("Half-t limiting-face comparison failed."));
   if(r.reason==4)return done(fail("Skew-t joint search did not resolve a finite maximum above the profiled candidates."));
-  return done(stop_failure(fail("Skew-t numerical search reached an unresolved limiting region."),r.stop_detail,outcome_kind(o),{"xi","omega","alpha","nu"}));
- case cppunivariate::StStatus::SkewNormalBoundary:return done(classify(fail("The degrees of freedom escape to infinity; use `mlsn`."),r.stop_detail,outcome_kind(o),{"xi","omega","alpha"},"sn"));
- case cppunivariate::StStatus::RightHalfTBoundary:return done(classify(fail("The shape escapes to infinity; use `mlht`."),r.stop_detail,outcome_kind(o),{"nu","mu","sigma"},"ht"));
- case cppunivariate::StStatus::LeftHalfTBoundary:return done(classify(fail("The shape escapes to minus infinity; use `mlht` on `-x`."),r.stop_detail,outcome_kind(o),{"nu","mu","sigma"},"unavailable:reflected-half-t"));
- case cppunivariate::StStatus::RightHalfNormalBoundary:return done(classify(fail("The shape and degrees of freedom escape to infinity; use `mlhnorm`."),r.stop_detail,outcome_kind(o),{"mu","sigma"},"hnorm"));
- case cppunivariate::StStatus::LeftHalfNormalBoundary:return done(classify(fail("The shape and degrees of freedom escape jointly; use `mlhnorm` on `-x`."),r.stop_detail,outcome_kind(o),{"mu","sigma"},"unavailable:reflected-half-normal"));
+  return done(stop_failure(fail("Skew-t numerical search reached an unresolved limiting region."),r.stop_detail,outcome_payload(o),{"xi","omega","alpha","nu"}));
+ case cppunivariate::StStatus::SkewNormalBoundary:return done(classify(fail("The degrees of freedom escape to infinity; use `mlsn`."),r.stop_detail,outcome_payload(o),{"xi","omega","alpha"},"sn"));
+ case cppunivariate::StStatus::RightHalfTBoundary:return done(classify(fail("The shape escapes to infinity; use `mlht`."),r.stop_detail,outcome_payload(o),{"nu","mu","sigma"},"ht"));
+ case cppunivariate::StStatus::LeftHalfTBoundary:return done(classify(fail("The shape escapes to minus infinity; use `mlht` on `-x`."),r.stop_detail,outcome_payload(o),{"nu","mu","sigma"},"unavailable:reflected-half-t"));
+ case cppunivariate::StStatus::RightHalfNormalBoundary:return done(classify(fail("The shape and degrees of freedom escape to infinity; use `mlhnorm`."),r.stop_detail,outcome_payload(o),{"mu","sigma"},"hnorm"));
+ case cppunivariate::StStatus::LeftHalfNormalBoundary:return done(classify(fail("The shape and degrees of freedom escape jointly; use `mlhnorm` on `-x`."),r.stop_detail,outcome_payload(o),{"mu","sigma"},"unavailable:reflected-half-normal"));
  case cppunivariate::StStatus::Ok:break;
  }
  FitResult out;out.estimates={{"xi",r.xi},{"omega",r.omega},{"alpha",r.alpha},{"nu",r.nu}};out.logLik=r.logLik;out.iterations=r.iterations;out.has_iterations=true;out.has_fixed=true;

@@ -25,31 +25,31 @@ inline FitResult fit_sstd(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   auto res=cppunivariate::sstd_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (res.status == cppunivariate::SstdStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (res.status == cppunivariate::SstdStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied},{"xi",xi_arg.supplied}});
   };
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sstd numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"mean","sd","nu","xi"}));
-  if(res.accuracy_failure)return done(stop_failure(fail("sstd numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,outcome_kind(o),{"mean","sd","nu","xi"}));
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sstd numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
+  if(res.accuracy_failure)return done(stop_failure(fail("sstd numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
   if(res.certified && (res.stop_detail.limit_model==cppunivariate::StopModel::Ht || res.stop_detail.limit_model==cppunivariate::StopModel::ReflectedHt))
-    return done(stop_failure(fail("The skew Student-t likelihood has its supremum on the constrained half-t face; no finite skew MLE. Use `mlht` on signed endpoint distances."),res.stop_detail,outcome_kind(o),{"mean","sd","nu","xi"}));
+    return done(stop_failure(fail("The skew Student-t likelihood has its supremum on the constrained half-t face; no finite skew MLE. Use `mlht` on signed endpoint distances."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
   if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::Norm)
-    return done(stop_failure(fail("The symmetric Student-t likelihood is maximised as nu -> Inf; use `mlnorm`."),res.stop_detail,outcome_kind(o),{"mean","sd","nu","xi"},"norm"));
+    return done(stop_failure(fail("The symmetric Student-t likelihood is maximised as nu -> Inf; use `mlnorm`."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"},"norm"));
   if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::Lst)
-    return done(stop_failure(fail("The symmetric Student-t likelihood is maximised as nu -> 2 (infinite variance); use `mllst`."),res.stop_detail,outcome_kind(o),{"mean","sd","nu","xi"},"lst"));
+    return done(stop_failure(fail("The symmetric Student-t likelihood is maximised as nu -> 2 (infinite variance); use `mllst`."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"},"lst"));
   if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::TCollapsePath)
-    return done(stop_failure(fail("Tie equality scale-collapse boundary; the symmetric Student-t supremum is unattained."),res.stop_detail,outcome_kind(o),{"mean","sd","nu","xi"}));
+    return done(stop_failure(fail("Tie equality scale-collapse boundary; the symmetric Student-t supremum is unattained."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
   if(res.status==cppunivariate::SstdStatus::CertificateFailure) {
     const auto& d=res.stop_detail;
-    const std::string kind=!d.budget_exhausted && d.comparison_tie ? "tie" : outcome_kind(o);
+    const PayloadKind kind=!d.budget_exhausted && d.comparison_tie ? PayloadKind::Comparison : outcome_payload(o);
     const std::string message=d.budget_exhausted?"Skew Student-t certificate budget exhausted; increase `iterlim`.":d.comparison_tie?"Skew Student-t maxima are tied or numerically indistinguishable.":res.certificate_reason==1?"Nonunit-skew scale-collapse equality needs an unresolved finite/face likelihood comparison.":res.certificate_reason==3?"Skew Student-t constrained half-t endpoint contact needs a removable shrinking-side density calculation.":res.certificate_reason==2?"Skew Student-t exterior scale-score bracket failed; increase `iterlim`.":"Skew Student-t certificate could not resolve the root enclosure or arithmetic; increase `iterlim`.";
     return done(stop_failure(fail(message),d,kind,{"mean","sd","nu","xi"}));
   }
   if(res.status==cppunivariate::SstdStatus::UnsupportedHold) return done(fail("Unsupported conditional fit."));
   if (res.status == cppunivariate::SstdStatus::Unbounded)
-    return done(stop_failure(fail("Likelihood is unbounded at a tie of multiplicity k > nu*(n-k) with nu held, or k > 2*(n-k) with nu free; no MLE."),res.stop_detail,outcome_kind(o),{"mean","sd","nu","xi"}));
+    return done(stop_failure(fail("Likelihood is unbounded at a tie of multiplicity k > nu*(n-k) with nu held, or k > 2*(n-k) with nu free; no MLE."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
   if (res.status == cppunivariate::SstdStatus::ScaleBoundary)
-    return done(stop_failure(fail(res.certified?"At tie equality the scale-collapse supremum is finite and unattained; no MLE.":"Tie equality scale-collapse boundary; a regular MLE is not certified."),res.stop_detail,outcome_kind(o),{"mean","sd","nu","xi"}));
+    return done(stop_failure(fail(res.certified?"At tie equality the scale-collapse supremum is finite and unattained; no MLE.":"Tie equality scale-collapse boundary; a regular MLE is not certified."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
   if (res.status == cppunivariate::SstdStatus::InvalidStart) {
     return done(fail("Skew Student-t MLE requires at least 2 finite observations "
                "with positive variance."));

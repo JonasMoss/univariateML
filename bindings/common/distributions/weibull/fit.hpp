@@ -10,11 +10,11 @@ inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held sc
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -45,16 +45,16 @@ inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held sc
   auto res = cppunivariate::weibull_mle(x, reltol, iterlim, start, shape_held, scale_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("weibull numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"shape","scale"}));
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("weibull numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"shape","scale"}));
   if (res.status==cppunivariate::WeibullStatus::AccuracyFailure)
-    return done(stop_failure(fail("Weibull requested coefficient accuracy cannot be represented after rescaling."),res.stop_detail,outcome_kind(o),{"shape","scale"}));
+    return done(stop_failure(fail("Weibull requested coefficient accuracy cannot be represented after rescaling."),res.stop_detail,outcome_payload(o),{"shape","scale"}));
   if (res.status == cppunivariate::WeibullStatus::InvalidInput)
     return done(fail("Weibull requires nonempty positive finite data, valid held parameters, positive reltol and positive iterlim."));
   if (res.status == cppunivariate::WeibullStatus::Unbounded)

@@ -471,3 +471,5 @@ When only df is free, derivative convergence in the Student-CDF fractions
 follows the packed df axis. Near the normal face its practical arithmetic
 floor scales with df; the final information-weighted score check still
 controls the public df error.
+
+When its outcome proves a location-skew tie, the skew-t binding uses the first listed witness as its canonical representative, retaining the listed half-t or half-normal models in `maximizers`.

@@ -19,9 +19,9 @@ inline FitResult fit_invexp(cppunivariate::span x, Held scale_arg = {}) {
   auto r=cppunivariate::invexp_mle(x, scale_held);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+    return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"scale",scale_arg.supplied}});
   };
 
   if (r.status == cppunivariate::InvExpStatus::InvalidInput) return done(fail("Inverse exponential requires nonempty positive finite data and a valid held scale."));

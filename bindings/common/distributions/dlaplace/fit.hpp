@@ -14,19 +14,19 @@ inline FitResult fit_dlaplace(cppunivariate::ispan x, Held location_arg = {}, He
   auto r=cppunivariate::dlaplace_mle(x,mu,p);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+    return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"location",location_arg.supplied},{"scale",scale_arg.supplied}});
   };
 
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(r.status) {
-    case cppunivariate::DlaplaceStatus::PointMass: stop_kind=outcome_kind(o);break;
+    case cppunivariate::DlaplaceStatus::PointMass: stop_kind=outcome_payload(o);break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,r.stop_detail,stop_kind,{"location","scale"});
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,r.stop_detail,stop_kind,{"location","scale"});
   };
 
   if(r.status==cppunivariate::DlaplaceStatus::PointMass) return done(stopped_fail("MLE escapes to a point mass (scale tends to zero)."));

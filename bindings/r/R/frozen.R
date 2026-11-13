@@ -73,7 +73,12 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
       (if (substr(domain, nchar(domain), nchar(domain)) == "]") v <= bounds[2] else v < bounds[2])
     if (!isTRUE(valid)) stop("`", display_name, "`: held `", p$name, "` must be in ", domain, call. = FALSE)
   }
-  obj <- univariateML_construct(unlist(values), name,
+  coefficients <- unlist(values)
+  if (frozen) {
+    attr(coefficients,"certified") <- TRUE
+    attr(coefficients,"unique") <- TRUE
+  }
+  obj <- univariateML_construct(coefficients, name,
     list(n = length(x), call = deparse(call)), fixed = meta$names,
     data = if (frozen) NULL else x)
   # A median evaluation also checks joint parameter constraints and lattice
@@ -93,7 +98,10 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
     ll <- sum(ld)
     if (!is.finite(ll))
       evaluation_error("nonfinite log likelihood for held coefficients", "likelihood")
+    rendered <- ml_evaluated_result_(coefficients,ll)
     attr(obj, "logLik") <- ll
+    attr(obj, "certified") <- attr(rendered$estimates,"certified")
+    attr(obj, "unique") <- attr(rendered$estimates,"unique")
   }
   obj
 }

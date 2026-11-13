@@ -13,19 +13,19 @@ inline FitResult fit_zeta(cppunivariate::ispan x, Held s_arg = {}, double reltol
   const auto fit=cppunivariate::zeta_mle(x,reltol,iterlim,held);
   const auto o=cppunivariate::outcome(fit);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(fit.status));
-    return with_outcome(std::move(out),o,static_cast<int>(fit.status));
+    return with_outcome(std::move(out),o,static_cast<int>(fit.status),{{"s",s_arg.supplied}});
   };
   return done([&]() -> FitResult {
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(fit.status) {
-    case cppunivariate::ZetaStatus::PointMass: stop_kind=outcome_kind(o);break;
+    case cppunivariate::ZetaStatus::PointMass: stop_kind=outcome_payload(o);break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,fit.stop_detail,stop_kind,{"s"});
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,fit.stop_detail,stop_kind,{"s"});
   };
 
   if (fit.status==cppunivariate::ZetaStatus::PointMass)

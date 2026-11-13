@@ -6,7 +6,7 @@ inline FitResult fit_slash(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
@@ -25,21 +25,21 @@ inline FitResult fit_slash(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   const auto f=cppunivariate::slash_mle(x,reltol,iterlim,f_sigma,f_mu);
   const auto o = cppunivariate::outcome(f);
   const auto done = [&](FitResult out) {
-    if (f.status == cppunivariate::SlashStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (f.status == cppunivariate::SlashStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(f.status));
     // Preserve the classifier's refusal of a structured stop (invalid context
     // or missing finite payload); the core result does not retain that context.
-    if (!out.error.empty() && out.error_kind.empty() && o.kind != cppunivariate::OutcomeKind::Failure)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(f.status));
-    return with_outcome(std::move(out), o, static_cast<int>(f.status));
+    if (!out.error.empty() && (out.payload_kind==PayloadKind::None) && o.kind != cppunivariate::OutcomeKind::Failure)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(f.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
+    return with_outcome(std::move(out), o, static_cast<int>(f.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
-  if(f.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("slash numerical accuracy failure: requested coefficient accuracy cannot be established."),f.stop_detail,outcome_kind(o),{"mu","sigma"}));
-  if(f.accuracy_failure)return done(stop_failure(fail("slash numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),f.stop_detail,outcome_kind(o),{"mu","sigma"}));
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  if(f.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("slash numerical accuracy failure: requested coefficient accuracy cannot be established."),f.stop_detail,outcome_payload(o),{"mu","sigma"}));
+  if(f.accuracy_failure)return done(stop_failure(fail("slash numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),f.stop_detail,outcome_payload(o),{"mu","sigma"}));
   if(f.status==cppunivariate::SlashStatus::Unbounded)return done(nomle("Slash likelihood is unbounded: a value has more than half the sample mass."));
-  if(f.status==cppunivariate::SlashStatus::CollapseLimit)return done(classify(fail("Slash likelihood selects scale collapse; no finite fit is returned."),{},"nomle",{},""));
-  if(f.budget_exhausted)return done(classify(fail("Slash fit failed: check inputs, reltol and iterlim. Raising iterlim may resolve this stop."),f.stop_detail,outcome_kind(o),{"mu","sigma"}));
+  if(f.status==cppunivariate::SlashStatus::CollapseLimit)return done(classify(fail("Slash likelihood selects scale collapse; no finite fit is returned."),{},PayloadKind::Nonexistence,{},""));
+  if(f.budget_exhausted)return done(classify(fail("Slash fit failed: check inputs, reltol and iterlim. Raising iterlim may resolve this stop."),f.stop_detail,outcome_payload(o),{"mu","sigma"}));
   if(f.status!=cppunivariate::SlashStatus::Ok)return done(fail("Slash fit failed: check inputs, reltol and iterlim."));
   std::vector<std::string> fixed;
   if(mu.supplied)fixed.push_back("mu");

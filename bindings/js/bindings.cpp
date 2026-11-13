@@ -24,8 +24,9 @@ emscripten::val diagnostic(const std::string& message) {
 
 }
 #include "generated/dpqr.hpp"
-emscripten::val fit_output(const umvl_binding::FitResult& result) {
-  if(!result.error.empty()) {
+emscripten::val fit_output(const umvl_binding::FitResult& input_result) {
+  const auto result=umvl_binding::render_fit(input_result);
+  if(!result.error_kind.empty()) {
     auto out=diagnostic(result.error), warnings=emscripten::val::array();
     for(const auto& message:result.warnings) warnings.call<void>("push",message);
     out.set("warnings",warnings);
@@ -43,6 +44,8 @@ emscripten::val fit_output(const umvl_binding::FitResult& result) {
       out.set("segment_loglik_upper",result.segment_loglik_upper);
       out.set("limit_loglik",result.limit_loglik);out.set("loglik_lower",result.loglik_lower);out.set("loglik_upper",result.loglik_upper);
     }
+    out.set("reason",std::string(cppunivariate::outcome_reason_name(result.outcome.reason)));
+    if(result.outcome.kind==cppunivariate::OutcomeKind::Limit)out.set("certified",result.outcome.certified);
     for(const auto& item:result.extra) out.set(item.first,item.second);
     return out;
   }
@@ -54,9 +57,26 @@ emscripten::val fit_output(const umvl_binding::FitResult& result) {
   for(const auto& item:result.restricted) restricted.set(item.first,item.second);
   for(const auto& item:result.extra) out.set(item.first,item.second);
   for(const auto& item:result.extra_vectors) out.set(item.first,output(item.second));
+  out.set("certified",result.outcome.certified);out.set("unique",result.outcome.unique);
+  if(!result.candidates.empty()) {
+    auto candidates=emscripten::val::array();
+    for(const auto& candidate:result.candidates) {
+      auto row=emscripten::val::object();row.set("model",candidate.model);
+      for(const auto& item:candidate.estimates)row.set(item.first,item.second);
+      row.set("loglik_lower",candidate.loglik_lower);row.set("loglik_upper",candidate.loglik_upper);
+      candidates.call<void>("push",row);
+    }
+    out.set(result.outcome.unique ? "candidates" : "maximizers",candidates);
+    out.set("outcome_message",input_result.error);out.set("model",result.model);
+    out.set("loglik_lower",result.loglik_lower);out.set("loglik_upper",result.loglik_upper);
+    out.set("segment_loglik_upper",result.segment_loglik_upper);out.set("limit_loglik",result.limit_loglik);
+  }
   out.set("warnings",warnings); out.set("restricted",restricted);
   out.set("estimates",estimates); out.set("fixed",fixed); out.set("logLik",result.logLik);
   out.set("iterations",result.iterations); out.set("status",std::string("Ok")); return out;
+}
+emscripten::val fit_diagnostic(const std::string& message,cppunivariate::OutcomeReason reason) {
+  return fit_output(umvl_binding::with_outcome(umvl_binding::failure(message),cppunivariate::FitOutcome::failure(reason),-1));
 }
 umvl_binding::Held held_arg(emscripten::val h,const char* name) {
   auto v=h[name]; return v.isUndefined() || v.isNull() ? umvl_binding::Held{} : umvl_binding::Held{true,v.as<double>()};

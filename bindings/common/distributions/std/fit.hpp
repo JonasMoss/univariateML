@@ -9,7 +9,7 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   bool face_flag=false;double certified=0;
   const auto fail = [&](const std::string& format, const auto&... arguments) {
     auto out=failure(binding_message(format, arguments...), warnings);
-    if(face_flag)out.extra.emplace_back("certified",certified);
+
     return out;
   };
   const Held mean = mean_arg;
@@ -29,40 +29,40 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   auto res=cppunivariate::student_t_mle(x,gradtol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (res.status == cppunivariate::StudentTStatus::Ok)
         return overridden(std::move(out), static_cast<int>(res.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied}});
   };
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("std numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("std numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
   certified=res.certified?1.:0.;
-  if(res.accuracy_failure)return done(stop_failure(fail("Student-t numerical accuracy failure: observed-information Newton refinement could not justify the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
+  if(res.accuracy_failure)return done(stop_failure(fail("Student-t numerical accuracy failure: observed-information Newton refinement could not justify the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
   face_flag=res.status==cppunivariate::StudentTStatus::NormalBoundary||res.status==cppunivariate::StudentTStatus::DfTwoBoundary||res.status==cppunivariate::StudentTStatus::ScaleBoundary;
-  if(res.status==cppunivariate::StudentTStatus::CertificateBudget)return done(stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
-  if(res.status==cppunivariate::StudentTStatus::NonUniqueHeldSd)return done(stop_failure(fail("With sd held, this balanced two-point sample has distinct global Student-t maximizers by symmetry and the variance bound. Candidates are finite likelihood witnesses."),res.stop_detail,"tie",{"mean","sd","nu"}));
-  if(res.status==cppunivariate::StudentTStatus::CertificateTie)return done(stop_failure(fail("Student-t global certificate unresolved tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"mean","sd","nu"}));
+  if(res.status==cppunivariate::StudentTStatus::CertificateBudget)return done(stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
+  if(res.status==cppunivariate::StudentTStatus::NonUniqueHeldSd)return done(stop_failure(fail("With sd held, this balanced two-point sample has distinct global Student-t maximizers by symmetry and the variance bound. Candidates are finite likelihood witnesses."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","nu"}));
+  if(res.status==cppunivariate::StudentTStatus::CertificateTie)return done(stop_failure(fail("Student-t global certificate unresolved tie or sign-uncertain seam; no verified MLE."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","nu"}));
   if(res.status==cppunivariate::StudentTStatus::NumericalFailure && !nu.supplied && (mean.supplied || sd.supplied))
-    return done(stop_failure(fail(sd.supplied ? "Student-t held-subset global certificate unresolved: normal (`mlnorm`) or scale-collapse comparisons, finite roots or arithmetic bounds remain unresolved; no verified MLE." : "Student-t held-subset global certificate unresolved: normal (`mlnorm`) or positive-scale t2 (`mllst`) comparisons, finite roots or arithmetic bounds remain unresolved; no verified MLE."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
-  if(res.status==cppunivariate::StudentTStatus::NumericalFailure)return done(stop_failure(fail("Student-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
+    return done(stop_failure(fail(sd.supplied ? "Student-t held-subset global certificate unresolved: normal (`mlnorm`) or scale-collapse comparisons, finite roots or arithmetic bounds remain unresolved; no verified MLE." : "Student-t held-subset global certificate unresolved: normal (`mlnorm`) or positive-scale t2 (`mllst`) comparisons, finite roots or arithmetic bounds remain unresolved; no verified MLE."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
+  if(res.status==cppunivariate::StudentTStatus::NumericalFailure)return done(stop_failure(fail("Student-t global certificate numerical failure: score/root, enclosure, domain or linear solve unresolved; no verified MLE."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
   if (res.status == cppunivariate::StudentTStatus::InvalidNu)
     return done(fail("`nu` must be finite and greater than 2."));
   if (res.status == cppunivariate::StudentTStatus::Unbounded)
-    return done(stop_failure(fail("Likelihood is unbounded at a tie of excessive multiplicity k > nu*(n-k) (free df: k > 2*(n-k)); no MLE."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
+    return done(stop_failure(fail("Likelihood is unbounded at a tie of excessive multiplicity k > nu*(n-k) (free df: k > 2*(n-k)); no MLE."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
   if (res.status == cppunivariate::StudentTStatus::ScaleBoundary)
-    return done(stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"},(!mean.supplied&&!sd.supplied&&!nu.supplied)?"unavailable:t-scale-collapse":""));
+    return done(stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"},(!mean.supplied&&!sd.supplied&&!nu.supplied)?"unavailable:t-scale-collapse":""));
   if (res.status == cppunivariate::StudentTStatus::IterationFailure)
-    return done(stop_failure(fail("Student-t optimizer IterationFailure: did not converge to the score tolerance; increase iterlim."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"}));
+    return done(stop_failure(fail("Student-t optimizer IterationFailure: did not converge to the score tolerance; increase iterlim."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
   if (res.status == cppunivariate::StudentTStatus::NormalBoundary) {
     return done(stop_failure(fail("The Student-t likelihood is maximised as nu -> Inf, i.e. by the "
-               "normal distribution. Use `mlnorm` to fit this model."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"},"norm"));
+               "normal distribution. Use `mlnorm` to fit this model."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"},"norm"));
   }
   if (res.status == cppunivariate::StudentTStatus::DfTwoBoundary) {
     return done(stop_failure(fail("The Student-t likelihood is maximised as nu -> 2 (infinite "
                "variance); the MLE does not exist in the mean/sd parameterisation. "
-               "Use `mllst` to fit a location-scale t distribution with free degrees of freedom."),res.stop_detail,outcome_kind(o),{"mean","sd","nu"},"lst"));
+               "Use `mllst` to fit a location-scale t distribution with free degrees of freedom."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"},"lst"));
   }
   if (res.status == cppunivariate::StudentTStatus::BfgsFailure)
     return done(fail("StudentT optimizer BfgsFailure: score check failed; increase iterlim."));
@@ -74,7 +74,7 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
       !std::isfinite(res.nu)) {
     return done(fail("Student-t MLE failed to converge (check inputs)"));
   }
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; out.extra.emplace_back("certified",res.certified?1.:0.); return out; }());
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;  return out; }());
 
 }
 }

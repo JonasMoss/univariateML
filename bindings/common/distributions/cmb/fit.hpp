@@ -31,26 +31,26 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
 
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"nu",nu_arg.supplied}});
   };
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(res.status) {
-    case cppunivariate::CmbStatus::PointMass: stop_kind=outcome_kind(o);break;
-    case cppunivariate::CmbStatus::AdjacentLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::CmbStatus::EndpointLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::CmbStatus::FaceTie: stop_kind="tie";break;
-    case cppunivariate::CmbStatus::FaceUnresolved: stop_kind=outcome_kind(o);break;
+    case cppunivariate::CmbStatus::PointMass: stop_kind=outcome_payload(o);break;
+    case cppunivariate::CmbStatus::AdjacentLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::CmbStatus::EndpointLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::CmbStatus::FaceTie: stop_kind=PayloadKind::Comparison;break;
+    case cppunivariate::CmbStatus::FaceUnresolved: stop_kind=outcome_payload(o);break;
     default:break;
   }
-  if(res.status==cppunivariate::CmbStatus::IterationFailure)stop_kind=outcome_kind(o);
-  if(res.stop_detail.budget_exhausted) stop_kind=outcome_kind(o);
+  if(res.status==cppunivariate::CmbStatus::IterationFailure)stop_kind=outcome_payload(o);
+  if(res.stop_detail.budget_exhausted) stop_kind=outcome_payload(o);
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto message=binding_message(format,arguments...);
     if(res.stop_detail.budget_exhausted)message+=" Raising iterlim may resolve this stop.";
     auto out=fail(message);
-    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob","nu"});
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob","nu"});
   };
 
   switch (res.status) {

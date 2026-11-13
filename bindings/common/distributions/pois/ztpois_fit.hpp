@@ -12,9 +12,9 @@ inline FitResult fit_ztpois(cppunivariate::ispan x, Held lambda_arg = {}) {
   const auto res=cppunivariate::ztpois_mle(x,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(res.status));
-    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"lambda",lambda_arg.supplied}});
   };
   return done([&]() -> FitResult {
   if(res.status==cppunivariate::ZtpoisStatus::InvalidInput)return fail("requires nonempty positive integer count data, a held coefficient in its domain, and compatible observations");

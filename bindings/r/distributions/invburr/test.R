@@ -233,7 +233,7 @@ test_that("invburr detects constant off-scale collapse only with both shapes fre
   x <- c(.2,.5,1,2,4)
   expect_error(mlinvburr(1/x,iterlim=2), "certificate numerical failure.*no verified MLE")
   x <- c(0.0049057434842350416,0.042501201178458653,0.19481544379842536,0.29869422522389177,0.40386521559557592,0.49096570363940406,0.5326256684997116,0.72206471601197653,0.74104603671600355,0.82688168528714312,0.98659907210500519,1.1056048590023038,1.140076235502067,1.1606952121643113,1.4300263464615877,1.4793399841671804,1.5655241685783525,1.6390163836698108,2.0838622791695847,5.1042846241626947)
-  expect_error(mlinvburr(1/x), "certificate unresolved.*sign-uncertain seam; no verified MLE")
+  expect_match(attr(mlinvburr(1/x),"outcome_message"), "certificate unresolved.*sign-uncertain seam; no verified MLE")
   expect_error(mlinvburr(rep(2,3)), "unbounded.*constant sample; no MLE")
 })
 
@@ -253,11 +253,11 @@ test_that("structured invburr endpoint limit uses public model names", {
 })
 
 test_that("invburr sign-uncertain-seam exposes structured tie diagnostics", {
-  e <- tryCatch(mlinvburr(1/c(0.0049057434842350416,0.042501201178458653,0.19481544379842536,0.29869422522389177,0.40386521559557592,0.49096570363940406,0.5326256684997116,0.72206471601197653,0.74104603671600355,0.82688168528714312,0.98659907210500519,1.1056048590023038,1.140076235502067,1.1606952121643113,1.4300263464615877,1.4793399841671804,1.5655241685783525,1.6390163836698108,2.0838622791695847,5.1042846241626947)),univariateML_tie=identity)
-  expect_s3_class(e,"univariateML_stop")
-  expect_true(nrow(e$candidates)>=2L)
-  expect_true(all(e$candidates$loglik_lower<=e$candidates$loglik_upper))
-  expect_true(is.finite(e$loglik_lower))
+  e <- tryCatch(mlinvburr(1/c(0.0049057434842350416,0.042501201178458653,0.19481544379842536,0.29869422522389177,0.40386521559557592,0.49096570363940406,0.5326256684997116,0.72206471601197653,0.74104603671600355,0.82688168528714312,0.98659907210500519,1.1056048590023038,1.140076235502067,1.1606952121643113,1.4300263464615877,1.4793399841671804,1.5655241685783525,1.6390163836698108,2.0838622791695847,5.1042846241626947)),error=identity)
+  expect_s3_class(e,"univariateML")
+  expect_true(nrow(fit_payload(e)$candidates)>=2L)
+  expect_true(all(fit_payload(e)$candidates$loglik_lower<=fit_payload(e)$candidates$loglik_upper))
+  expect_true(is.finite(fit_payload(e)$loglik_lower))
 })
 
 test_that("invburr nearly-constant retains an uncertified finite search", {

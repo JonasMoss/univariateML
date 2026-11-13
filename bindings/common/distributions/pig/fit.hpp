@@ -17,28 +17,28 @@ inline FitResult fit_pig(cppunivariate::ispan x, Held mean_arg = {}, Held shape_
    shape.supplied?shape.value:nan);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (r.status == cppunivariate::PigStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (r.status == cppunivariate::PigStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+    return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mean",mean_arg.supplied},{"shape",shape_arg.supplied}});
   };
-  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("pig numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_kind(o),{"mean","shape"}));
+  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("pig numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"mean","shape"}));
   if (r.status==cppunivariate::PigStatus::AccuracyFailure)
-    return done(stop_failure(fail("Pig requested coefficient accuracy cannot be represented after rescaling."),r.stop_detail,outcome_kind(o),{"mean","shape"}));
+    return done(stop_failure(fail("Pig requested coefficient accuracy cannot be represented after rescaling."),r.stop_detail,outcome_payload(o),{"mean","shape"}));
  if (r.status==cppunivariate::PigStatus::PoissonLimit) {
    if (mean.supplied)
-     return done(stop_failure(fail("The PIG likelihood is maximised at the Poisson limit with the supplied mean fixed. Use `mlpois` for an unrestricted Poisson fit."),r.stop_detail,outcome_kind(o),{"mean","shape"}));
-   return done(stop_failure(fail("The PIG likelihood is maximised at the Poisson limit. Use `mlpois` instead."),r.stop_detail,outcome_kind(o),{"mean","shape"}));
+     return done(stop_failure(fail("The PIG likelihood is maximised at the Poisson limit with the supplied mean fixed. Use `mlpois` for an unrestricted Poisson fit."),r.stop_detail,outcome_payload(o),{"mean","shape"}));
+   return done(stop_failure(fail("The PIG likelihood is maximised at the Poisson limit. Use `mlpois` instead."),r.stop_detail,outcome_payload(o),{"mean","shape"}));
  }
  if (r.status==cppunivariate::PigStatus::ZeroLimit)
-   return done(stop_failure(fail("All-zero data have an unattained point-mass supremum. Use `mlpois` for the zero point mass."),r.stop_detail,outcome_kind(o),{"mean","shape"}));
+   return done(stop_failure(fail("All-zero data have an unattained point-mass supremum. Use `mlpois` for the zero point mass."),r.stop_detail,outcome_payload(o),{"mean","shape"}));
  if (r.status==cppunivariate::PigStatus::InvalidInput)
    return done(fail("PIG requires nonnegative integer data, positive finite fixed parameters, reltol > 0 and iterlim >= 1."));
  if (r.status==cppunivariate::PigStatus::SearchFailure) {
    if(r.stop_detail.budget_exhausted)
-     return done(stop_failure(fail("PIG certificate exhausted its count budget; increase iterlim."),r.stop_detail,outcome_kind(o),{"mean","shape"}));
+     return done(stop_failure(fail("PIG certificate exhausted its count budget; increase iterlim."),r.stop_detail,outcome_payload(o),{"mean","shape"}));
    if(r.stop_detail.comparison_tie)
-     return done(stop_failure(fail("PIG Poisson-boundary score is numerically unresolved; relax the comparison or inspect the data."),r.stop_detail,"tie",{"mean","shape"}));
-   return done(stop_failure(fail("PIG scalar search did not converge; increase iterlim or inspect the parameter range."),r.stop_detail,outcome_kind(o),{"mean","shape"}));
+     return done(stop_failure(fail("PIG Poisson-boundary score is numerically unresolved; relax the comparison or inspect the data."),r.stop_detail,PayloadKind::Comparison,{"mean","shape"}));
+   return done(stop_failure(fail("PIG scalar search did not converge; increase iterlim or inspect the parameter range."),r.stop_detail,outcome_payload(o),{"mean","shape"}));
  }
  std::vector<std::string> fixed;
  if (mean.supplied) fixed.push_back("mean");

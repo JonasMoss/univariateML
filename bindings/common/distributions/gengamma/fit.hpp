@@ -18,32 +18,32 @@ inline FitResult fit_gengamma(cppunivariate::span x,Held mu_arg={},Held sigma_ar
   const auto fit=cppunivariate::gengamma_mle(x,tol,iterlim,mu,sigma,q);
   const auto o = cppunivariate::outcome(fit);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (fit.status == cppunivariate::GengammaStatus::Ok)
         return overridden(std::move(out), static_cast<int>(fit.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(fit.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(fit.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"Q",Q_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(fit.status));
+    return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"Q",Q_arg.supplied}});
   };
   if(fit.status==cppunivariate::GengammaStatus::InvalidData)return done(fail("gengamma requires nonempty positive finite data."));
   if(fit.status==cppunivariate::GengammaStatus::InvalidFixed)return done(fail("Invalid held gengamma coefficients."));
   if(fit.status==cppunivariate::GengammaStatus::Unbounded)
-    return done(stop_failure(fail("The gengamma likelihood is unbounded as scale shrinks to zero."),{},outcome_kind(o),{}));
+    return done(stop_failure(fail("The gengamma likelihood is unbounded as scale shrinks to zero."),{},outcome_payload(o),{}));
   if(fit.status==cppunivariate::GengammaStatus::PowerBoundary) {
     auto result=fail("The gengamma likelihood has a power limit. Use `mlpower`.");
-    result.extra.push_back({"certified",1});
-    return done(stop_failure(result,fit.stop_detail,outcome_kind(o),{"alpha","beta"},"power"));
+
+    return done(stop_failure(result,fit.stop_detail,outcome_payload(o),{"alpha","beta"},"power"));
   }
   if(fit.status==cppunivariate::GengammaStatus::ParetoBoundary) {
     auto result=fail("The gengamma likelihood has a Pareto limit. Use `mlpareto`.");
-    result.extra.push_back({"certified",1});
-    return done(stop_failure(result,fit.stop_detail,outcome_kind(o),{"a","b"},"pareto"));
+
+    return done(stop_failure(result,fit.stop_detail,outcome_payload(o),{"a","b"},"pareto"));
   }
   if(fit.status!=cppunivariate::GengammaStatus::Ok)
     return done(stop_failure(fail(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None?
       "The gengamma fit could not meet the requested coefficient accuracy in floating-point arithmetic.":
-      "The gengamma likelihood search failed its numerical accuracy or candidate comparison."),fit.stop_detail,outcome_kind(o),{"mu","sigma","Q"}));
+      "The gengamma likelihood search failed its numerical accuracy or candidate comparison."),fit.stop_detail,outcome_payload(o),{"mu","sigma","Q"}));
   if(!(std::isfinite(fit.mu)&&std::isfinite(fit.sigma)&&fit.sigma>0&&std::isfinite(fit.Q)&&std::isfinite(fit.logLik)))return done(fail("The gengamma fit is not representable."));
   FitResult out;
   out.estimates={{"mu",fit.mu},{"sigma",fit.sigma},{"Q",fit.Q}};
@@ -51,7 +51,7 @@ inline FitResult fit_gengamma(cppunivariate::span x,Held mu_arg={},Held sigma_ar
   if(mu_arg.supplied)out.fixed.push_back("mu");
   if(sigma_arg.supplied)out.fixed.push_back("sigma");
   if(Q_arg.supplied)out.fixed.push_back("Q");
-  out.has_fixed=true;out.extra.push_back({"certified",fit.certified?1.0:0.0});
+  out.has_fixed=true;
   return done(out);
 }
 }

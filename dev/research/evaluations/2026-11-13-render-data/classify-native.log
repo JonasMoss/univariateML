@@ -1,0 +1,19 @@
+{
+ "cases": 11820,
+ "categories": {
+  "estimate flags added": 8330,
+  "plain error to classed stop": 819,
+  "tie stop to estimate": 52,
+  "extra field removed": 249,
+  "margin sentence added": 665
+ },
+ "derived_metadata_only": 1704,
+ "defects": [
+  {
+   "family": "foldnorm",
+   "source": "class",
+   "case": "subnormal",
+   "defect": "unapproved payload changes: ['kind']"
+  }
+ ]
+}

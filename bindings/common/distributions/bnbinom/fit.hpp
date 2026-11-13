@@ -24,29 +24,29 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     beta.supplied?beta.value:nan);
   const auto o = cppunivariate::outcome(fit);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(fit.status));
-    return with_outcome(std::move(out), o, static_cast<int>(fit.status));
+    return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"size",size_arg.supplied},{"alpha",alpha_arg.supplied},{"beta",beta_arg.supplied}});
   };
 
-  if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("bnbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,outcome_kind(o),{"size","alpha","beta"}));
-  if(fit.accuracy_failure)return done(stop_failure(fail("bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),fit.stop_detail,outcome_kind(o),{"size","alpha","beta"}));
-  std::string stop_kind;
+  if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("bnbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,outcome_payload(o),{"size","alpha","beta"}));
+  if(fit.accuracy_failure)return done(stop_failure(fail("bnbinom numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),fit.stop_detail,outcome_payload(o),{"size","alpha","beta"}));
+  PayloadKind stop_kind=PayloadKind::None;
   switch(fit.status) {
-    case cppunivariate::BnbinomStatus::NegativeBinomialLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::BnbinomStatus::PoissonLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::BnbinomStatus::PointMass: stop_kind=outcome_kind(o);break;
-    case cppunivariate::BnbinomStatus::IterationFailure: if(fit.stop_detail.budget_exhausted)stop_kind=outcome_kind(o);break;
-    case cppunivariate::BnbinomStatus::NumericalFailure: stop_kind=outcome_kind(o);break;
-    case cppunivariate::BnbinomStatus::ComparisonTie: stop_kind="tie";break;
+    case cppunivariate::BnbinomStatus::NegativeBinomialLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::BnbinomStatus::PoissonLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::BnbinomStatus::PointMass: stop_kind=outcome_payload(o);break;
+    case cppunivariate::BnbinomStatus::IterationFailure: if(fit.stop_detail.budget_exhausted)stop_kind=outcome_payload(o);break;
+    case cppunivariate::BnbinomStatus::NumericalFailure: stop_kind=outcome_payload(o);break;
+    case cppunivariate::BnbinomStatus::ComparisonTie: stop_kind=PayloadKind::Comparison;break;
     default:break;
   }
-  if(fit.stop_detail.budget_exhausted)stop_kind=outcome_kind(o);
+  if(fit.stop_detail.budget_exhausted)stop_kind=outcome_payload(o);
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
-    const std::string qualification=stop_kind=="limit"?(fit.certified?"Certified global comparison: ":"Uncertified legacy comparison: "):"";
+    const std::string qualification=stop_kind==PayloadKind::Limit?(fit.certified?"Certified global comparison: ":"Uncertified legacy comparison: "):"";
     auto out=fail(qualification+binding_message(format,arguments...));
-    out.extra.emplace_back("certified",fit.certified?1.:0.);
-    return stop_kind.empty()?out:stop_failure(out,fit.stop_detail,stop_kind,{"size","alpha","beta"});
+
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,fit.stop_detail,stop_kind,{"size","alpha","beta"});
   };
 
   switch (fit.status) {
@@ -73,7 +73,7 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
   if (alpha.supplied) fixed.push_back("alpha");
   if (beta.supplied) fixed.push_back("beta");
   return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",fit.size},{"alpha",fit.alpha},{"beta",fit.beta}}; out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
-    out.extra.emplace_back("certified",fit.certified?1.:0.);
+
     if(std::isfinite(fit.global_interval[0])) {
       out.extra_vectors.emplace_back("global_loglik_interval",std::vector<double>{fit.global_interval[0],fit.global_interval[1]});
       const double radius=fit.global_coefficient_radius;

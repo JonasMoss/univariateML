@@ -18,8 +18,8 @@ test_that("ztpois agrees with a multi-start reference-density oracle", {
   }
   best <- oracle()
   expect_gte(attr(fit,"logLik"), -best-1e-6)
-  expect_error(modifier_ztpois_(integer()),"nonempty")
-  expect_error(modifier_ztpois_(c(-1L,1L)),"count")
+  expect_match(conditionMessage(modifier_ztpois_(integer())),"nonempty")
+  expect_match(conditionMessage(modifier_ztpois_(c(-1L,1L))),"count")
   expect_error(.modifier_ztpois(c(0,1,2)))
   expect_equal(attr(.modifier_ztpois(rep(1,4)),"logLik"),0)
 })

@@ -1,0 +1,4 @@
+native ties: {'betapr': 6, 'burr': 1, 'cauchy': 1, 'cmb': 1, 'fatigue': 10, 'ged': 2, 'huber': 11, 'invburr': 4, 'lst': 2, 'pareto4': 3, 'sged': 2, 'snorm': 7, 'std': 2} existing nonunique: {'dlaplace': 3, 'hyper': 1, 'laplace': 21}
+double ties: {'betapr': 6, 'burr': 1, 'cauchy': 1, 'cmb': 1, 'fatigue': 10, 'ged': 2, 'huber': 11, 'invburr': 4, 'lst': 2, 'pareto4': 3, 'sged': 2, 'snorm': 6, 'std': 2} existing nonunique: {'dlaplace': 3, 'hyper': 1, 'laplace': 21}
+routes-native ties: {'norm +truncate=tnorm': 1} existing nonunique: {'zeta +truncate=zipf': 1}
+routes-double ties: {'norm +truncate=tnorm': 1} existing nonunique: {'zeta +truncate=zipf': 1}

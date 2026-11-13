@@ -17,14 +17,14 @@ inline FitResult fit_zmnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
   const auto res=cppunivariate::zmnbinom_mle(x, reltol, iterlim, fixed_size,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(res.status));
-    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"p0",p0_arg.supplied}});
   };
   return done([&]() -> FitResult {
   if(res.status==cppunivariate::ZmnbinomStatus::InvalidInput)return fail("requires nonempty nonnegative integer count data and valid controls and parameter domains; held values must be compatible with the observations");
   if(res.status==cppunivariate::ZmnbinomStatus::InvalidSize)return fail("`size` must be a nonnegative finite value.");
-  if(res.status==cppunivariate::ZmnbinomStatus::PoissonLimit)return stop_failure(fail("The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = \"modified\")`."),res.stop_detail,outcome_kind(o),{"lambda","p0"},"zmpois");
+  if(res.status==cppunivariate::ZmnbinomStatus::PoissonLimit)return stop_failure(fail("The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = \"modified\")`."),res.stop_detail,outcome_payload(o),{"lambda","p0"},"zmpois");
   if(res.status==cppunivariate::ZmnbinomStatus::AllZero)warnings.push_back(binding_message("all observations are zero: base parameters are unidentified; supplied values are preserved."));
   if(res.status==cppunivariate::ZmnbinomStatus::TwoPoint)warnings.push_back(binding_message("positives are all one: the attained two-point law is also fitted exactly by mlbinom(x, size = 1)."));
   if(res.status==cppunivariate::ZmnbinomStatus::IterationFailure) {
@@ -32,7 +32,7 @@ inline FitResult fit_zmnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
     if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::Budget)message="Profile search exhausted: certificate iteration budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop.";
     if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::Workload)message="Profile certificate workload limit: maximum count 100000 and total count 2^52; no verified maximum.";
     if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::AdditionalExtrema)message="Profile certificate found additional extrema requiring a global likelihood comparison; no verified maximum.";
-    return stop_failure(fail(message),res.stop_detail,outcome_kind(o),{"size","prob"});
+    return stop_failure(fail(message),res.stop_detail,outcome_payload(o),{"size","prob"});
   }
   if(!std::isfinite(res.logLik))return fail("MLE cannot be resolved at floating-point precision.");
   std::vector<std::string> fixed;

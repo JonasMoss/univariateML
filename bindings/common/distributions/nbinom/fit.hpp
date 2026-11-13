@@ -19,17 +19,17 @@ inline FitResult fit_nbinom(cppunivariate::ispan x, Held size_arg = {}, Held pro
       size.supplied?size.value:nan,prob.supplied?prob.value:nan);
   const auto o=cppunivariate::outcome(r);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(r.status));
-    return with_outcome(std::move(out),o,static_cast<int>(r.status));
+    return with_outcome(std::move(out),o,static_cast<int>(r.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied}});
   };
   return done([&]() -> FitResult {
   if(r.certificate_failure==cppunivariate::NbinomCertificateFailure::Budget)
-    return stop_failure(fail("Negative binomial MLE failed convergence: insufficient precision or certificate budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop."),r.stop_detail,outcome_kind(o),{"size","prob"});
+    return stop_failure(fail("Negative binomial MLE failed convergence: insufficient precision or certificate budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop."),r.stop_detail,outcome_payload(o),{"size","prob"});
   if(r.status==cppunivariate::NbinomStatus::PrecisionFailure)
     return fail(size.supplied && r.certificate_failure==cppunivariate::NbinomCertificateFailure::None ? "Negative binomial MLE probability rounds to one: held size exceeds double precision for these data." : "Negative binomial MLE failed: insufficient precision to resolve the size estimate.");
   if(r.status==cppunivariate::NbinomStatus::Underdispersed)
-    return [&]() { auto out=stop_failure(fail("The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead."),r.stop_detail,outcome_kind(o),{"lambda"},"pois"); return out; }();
+    return [&]() { auto out=stop_failure(fail("The maximum likelihood estimator does not exist for underdispersed data, but converges to a Poisson. Use `mlpois` instead."),r.stop_detail,outcome_payload(o),{"lambda"},"pois"); return out; }();
   if(r.status!=cppunivariate::NbinomStatus::Ok || !std::isfinite(r.logLik))
     return fail("Negative binomial MLE failed: invalid or incompatible holds, inputs or convergence.");
   std::vector<std::string> fixed;

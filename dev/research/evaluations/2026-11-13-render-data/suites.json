@@ -1,0 +1,44 @@
+[
+ {
+  "command": "just cpp-test",
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "cpp-test.log.gz"
+ },
+ {
+  "command": "just cpp-test-no-long-double",
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "cpp-test-no-long-double.log.gz"
+ },
+ {
+  "command": "just js-build",
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "js-build.log.gz"
+ },
+ {
+  "command": "just test",
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "test.log.gz"
+ },
+ {
+  "command": "just test-full",
+  "exit_code": 1,
+  "machine": "workstation",
+  "log": "test-full.log.gz"
+ },
+ {
+  "command": "just js-test",
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "js-test.log.gz"
+ },
+ {
+  "command": "just site-check",
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "site-check.log.gz"
+ }
+]

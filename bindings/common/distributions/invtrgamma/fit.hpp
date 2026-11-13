@@ -9,13 +9,13 @@ inline FitResult fit_invtrgamma(cppunivariate::span x, Held shape1_arg = {}, Hel
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     auto payload=detail;
-    if(kind=="budget" && payload.candidates.empty() &&
+    if(kind==PayloadKind::Budget && payload.candidates.empty() &&
        cppunivariate::valid_stop_coefficients(payload.limit_model,payload.limit_coef) && std::isfinite(payload.limit_loglik))
       payload.candidates.push_back({payload.limit_coef,payload.limit_loglik,payload.limit_loglik,payload.limit_model});
     if(!finite_stop_payload(payload,kind))return out;
@@ -39,45 +39,45 @@ inline FitResult fit_invtrgamma(cppunivariate::span x, Held shape1_arg = {}, Hel
   auto res = scale.supplied ? cppunivariate::invtrgamma_mle_fixed_scale(xs,scale.value,a,b,reltol,iterlim) : cppunivariate::invtrgamma_mle(xs, reltol, iterlim, a, b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (res.status == cppunivariate::InvTrGammaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (res.status == cppunivariate::InvTrGammaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
     // The adapter's sample/hold checks distinguish collapse from invalid input.
-    if (out.error_kind == "nomle" && o.kind != cppunivariate::OutcomeKind::Nonexistence)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded), static_cast<int>(res.status));
+    if (out.payload_kind == PayloadKind::Nonexistence && o.kind != cppunivariate::OutcomeKind::Nonexistence)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded), static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
     // Preserve the classifier's refusal of a structured stop (invalid context
     // or missing finite payload); the core result does not retain that context.
-    if (!out.error.empty() && out.error_kind.empty() && o.kind != cppunivariate::OutcomeKind::Failure)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    if (!out.error.empty() && (out.payload_kind==PayloadKind::None) && o.kind != cppunivariate::OutcomeKind::Failure)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
   };
-  if(res.stop_detail.budget_exhausted)return done(classify(fail("Constrained likelihood search failed to converge. Raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"}));
+  if(res.stop_detail.budget_exhausted)return done(classify(fail("Constrained likelihood search failed to converge. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));
   if(res.stop_detail.comparison_tie) {
-    if(scale.supplied)return done(classify(fail("The held-scale interior maximum is too close to the fixed-endpoint Pareto face to certify its coefficients."),res.stop_detail,"tie",{"shape1","shape2","scale"}));
+    if(scale.supplied)return done(classify(fail("The held-scale interior maximum is too close to the fixed-endpoint Pareto face to certify its coefficients."),res.stop_detail,PayloadKind::Comparison,{"shape1","shape2","scale"}));
     return done(classify(fail(res.stop_detail.limit_model==cppunivariate::StopModel::Lnorm ?
       "The interior and lognormal likelihoods cannot be distinguished at the comparison tolerance. Use `mllnorm` for the limiting fit." :
-      "The interior and endpoint likelihoods cannot be distinguished at the comparison tolerance. Use `mlpareto` for the limiting fit."),res.stop_detail,"tie",{"shape1","shape2","scale"}));
+      "The interior and endpoint likelihoods cannot be distinguished at the comparison tolerance. Use `mlpareto` for the limiting fit."),res.stop_detail,PayloadKind::Comparison,{"shape1","shape2","scale"}));
   }
-  if(res.transformation_failure)return done(classify(fail("Distinct observations or the held endpoint became indistinguishable after taking logarithms."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"}));
-  if(res.reconstruction_failure)return done(classify(fail("Cannot certify the likelihood after reconstructing the coefficients in double precision."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"}));
+  if(res.transformation_failure)return done(classify(fail("Distinct observations or the held endpoint became indistinguishable after taking logarithms."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));
+  if(res.reconstruction_failure)return done(classify(fail("Cannot certify the likelihood after reconstructing the coefficients in double precision."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));
   if (res.status == cppunivariate::InvTrGammaStatus::InvalidData)
     return done((x.size()>=2 && std::isfinite(x[0]) && (res.logLik==INFINITY || (!scale.supplied && (std::isnan(a)||std::isnan(b)))) && reltol>0 && std::isfinite(reltol) && iterlim>0 && x[0]>0 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) ? classify(fail("invtrgamma requires at least two distinct positive finite observations, "
-               "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood."),{},"nomle",{}) : fail("invtrgamma requires at least two distinct positive finite observations, "
+               "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood."),{},PayloadKind::Nonexistence,{}) : fail("invtrgamma requires at least two distinct positive finite observations, "
                "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood."));
   if (res.status == cppunivariate::InvTrGammaStatus::LognormalBoundary)
-    return done(classify(fail("The invtrgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model."),res.stop_detail,outcome_kind(o),{"meanlog","sdlog"},"lnorm"));
+    return done(classify(fail("The invtrgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model."),res.stop_detail,outcome_payload(o),{"meanlog","sdlog"},"lnorm"));
   if (res.status == cppunivariate::InvTrGammaStatus::ParetoBoundary && scale.supplied)
-    return done(classify(fail("The held-scale likelihood selects the limiting fixed-endpoint Pareto face at scale; no matching held-endpoint fitter is available."),res.stop_detail,outcome_kind(o),{"a","b"},"pareto"));
+    return done(classify(fail("The held-scale likelihood selects the limiting fixed-endpoint Pareto face at scale; no matching held-endpoint fitter is available."),res.stop_detail,outcome_payload(o),{"a","b"},"pareto"));
   if (res.status == cppunivariate::InvTrGammaStatus::ParetoBoundary)
-    return done(classify(fail("The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model."),res.stop_detail,outcome_kind(o),{"a","b"},"pareto"));
+    return done(classify(fail("The invtrgamma likelihood is maximised at a limit. Use `mlpareto` to fit this model."),res.stop_detail,outcome_payload(o),{"a","b"},"pareto"));
   if (res.status == cppunivariate::InvTrGammaStatus::ScaleOutOfRange) {
     const double gap = res.logLik - cppunivariate::lognormal_mle(xs).logLik;
     auto detail=res.stop_detail;detail.loglik_upper=INFINITY;
     return done(classify(fail("The invtrgamma maximum likelihood fit lies so close to the lognormal limit "
                "that `scale` is not representable with normal double precision (log(scale) = %g). "
                "Use `mllnorm`: its log-likelihood is lower by only %g.",
-               res.log_scale, gap),detail,outcome_kind(o),{"shape1","shape2","scale"}));
+               res.log_scale, gap),detail,outcome_payload(o),{"shape1","shape2","scale"}));
   }
-  if (res.status == cppunivariate::InvTrGammaStatus::IterationFailure) return done(classify(fail("Constrained likelihood search failed to converge."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"}));
+  if (res.status == cppunivariate::InvTrGammaStatus::IterationFailure) return done(classify(fail("Constrained likelihood search failed to converge."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));
   if (!std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale) ||
       !std::isfinite(res.logLik))
     return done(fail("invtrgamma MLE failed to converge."));
