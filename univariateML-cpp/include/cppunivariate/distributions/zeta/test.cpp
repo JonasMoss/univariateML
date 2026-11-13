@@ -141,3 +141,9 @@ TEST_CASE("zeta finite window: rounded score roots must justify requested precis
   CHECK(held.status==cppunivariate::ZetaWindowStatus::Ok);
   CHECK(held.s==0);
 }
+
+TEST_CASE("zeta: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("zeta",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pzeta(x,t[0],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qzeta(x,t[0],l,g);});
+}

@@ -65,3 +65,40 @@ TEST_CASE("polish method floor survives public recording and excludes evaluation
   CHECK_FALSE(cppunivariate::accuracy_detail::polish(q,free,5e-16,100,invalid,detail));
   CHECK(detail.accuracy_stop==cppunivariate::AccuracyStop::None);
 }
+
+TEST_CASE("discrete quantile fuzz: scales, endpoints and bands wider than atoms") {
+  const double e=64*std::numeric_limits<double>::epsilon();
+  CHECK(cppunivariate::special::discrete_reached(.5,.5,true,false)==1);
+  CHECK(cppunivariate::special::discrete_reached(.5,.5+e/4,true,false)==1);
+  CHECK(cppunivariate::special::discrete_reached(.5,.5-e/4,false,false)==1);
+  CHECK(cppunivariate::special::discrete_reached(.5,.5+e,true,false)==0);
+  CHECK(cppunivariate::special::discrete_reached(-1,-1,true,true)==1);
+  CHECK(cppunivariate::special::discrete_reached(-1,-1,false,true)==1);
+  CHECK(cppunivariate::special::discrete_reached(-1,-1+e/2,true,true)==1);
+  CHECK(cppunivariate::special::discrete_reached(-1,-1-e/2,false,true)==1);
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  CHECK(cppunivariate::special::discrete_reached(0,tiny,true,false)==0);
+  CHECK(cppunivariate::special::discrete_reached(tiny,tiny,true,false)==1);
+  const double almost_one=std::nextafter(1.,0.);
+  CHECK(cppunivariate::special::discrete_reached(1,almost_one,false,false)==0);
+  CHECK(cppunivariate::special::discrete_reached(-std::numeric_limits<double>::max(),-std::numeric_limits<double>::max(),true,true)==1);
+  CHECK(cppunivariate::special::discrete_reached(NAN,.5,true,false)==-1);
+  CHECK(cppunivariate::special::discrete_reached(.5,NAN,true,false)==-1);
+}
+
+TEST_CASE("discrete quantile band may cross more than one atom") {
+  const double eps=std::numeric_limits<double>::epsilon();
+  const double target=.5+100*eps;
+  const double q=cppunivariate::special::discrete_search(0,200,[&](double k) {
+    return cppunivariate::special::discrete_reached(.5+k*eps,target,true,false);
+  });
+  CHECK(q==68);
+  CHECK(cppunivariate::special::discrete_reached(-10000,-10000+1e-11,true,true)==1);
+}
+
+TEST_CASE("discrete quantile preserves failure when either computed tail is NaN") {
+  const auto target=cppunivariate::special::discrete_log_tails(.5,true,false);
+  CHECK(std::isnan(cppunivariate::special::discrete_quantile(target,0,10,[](double) {
+    return cppunivariate::special::LogTails{std::log(.75),NAN,true};
+  },.5,true,false)));
+}

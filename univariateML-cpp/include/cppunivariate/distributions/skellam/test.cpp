@@ -151,3 +151,17 @@ TEST_CASE("skellam: extreme count-tail regression") {
   CHECK(cppunivariate::distributions::pskellam(99629757,1e8,1,true,false) == doctest::Approx(1.0030217828350785e-300).epsilon(1e-10).scale(0));
   CHECK(cppunivariate::distributions::dskellam(99629757,1e8,1,true) == doctest::Approx(-696.3705538160286).epsilon(1e-12));
 }
+
+TEST_CASE("skellam: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("skellam",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pskellam(x,t[0], t[1],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qskellam(x,t[0], t[1],l,g);});
+}
+
+TEST_CASE("skellam: cached CDF preserves uncached large-rate tail values") {
+  for(bool lower:{false,true}) for(bool log:{false,true}) {
+    const double expected=cppunivariate::distributions::skellam_probability_uncached(999998,1e6,1,lower,log);
+    CHECK(cppunivariate::distributions::pskellam(999998,1e6,1,lower,log)==expected);
+    CHECK(cppunivariate::distributions::pskellam(999998,1e6,1,lower,log)==expected);
+  }
+}

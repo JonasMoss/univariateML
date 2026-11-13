@@ -1,4 +1,6 @@
 #pragma once
+#include <map>
+#include <array>
 #include "../../core/precision.hpp"
 #include "../pois/dpqr.hpp"
 #include "../../special/special.hpp"
@@ -96,7 +98,8 @@ inline double dskellam(double x,double mu1,double mu2,bool log=false) {
   const double lp=skellam_detail::logmass(x,mu1,mu2);
   return log ? lp : std::exp(lp);
 }
-inline double pskellam(double q,double mu1,double mu2,bool lower_tail=true,bool log_p=false) {
+inline double pskellam(double q,double mu1,double mu2,bool lower_tail=true,bool log_p=false);
+inline double skellam_probability_uncached(double q,double mu1,double mu2,bool lower_tail=true,bool log_p=false) {
   if(!skellam_detail::valid(mu1,mu2) || std::isnan(q)) return special::kNaN;
   if(!std::isfinite(q)) {const bool one=(q>0)==lower_tail;return log_p ? (one?0:-INFINITY) : (one?1:0);}
   const double k=std::floor(q);
@@ -165,21 +168,28 @@ inline double pskellam(double q,double mu1,double mu2,bool lower_tail=true,bool 
   }
   return count==1000000 ? special::kNaN : total;
 }
+inline double pskellam(double q,double mu1,double mu2,bool lower_tail,bool log_p) {
+ if(!skellam_detail::valid(mu1,mu2) || !std::isfinite(q) ||
+    !(std::min(mu1,mu2)<=16 && std::max(mu1,mu2)>=1e6))
+   return skellam_probability_uncached(q,mu1,mu2,lower_tail,log_p);
+ // Large-rate tail sums are expensive; preserve their bits across the many
+ // repeated nodes of scalar inversions in a vector quantile call.
+ static thread_local std::map<std::array<double,4>,double> cached;
+ const std::array<double,4> key{{std::floor(q),mu1,mu2,lower_tail?1.:0.}};
+ const auto found=cached.find(key);
+ if(found!=cached.end()) return log_p?found->second:std::exp(found->second);
+ const double value=skellam_probability_uncached(q,mu1,mu2,lower_tail,true);
+ if(cached.size()>=4096) cached.clear();
+ if(!std::isnan(value)) cached.emplace(key,value);
+ return log_p?value:std::exp(value);
+}
+
 inline double qskellam(double p,double mu1,double mu2,bool lower_tail=true,bool log_p=false) {
   if(!skellam_detail::valid(mu1,mu2) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return special::kNaN;
-  double target=log_p ? p : std::log(p);
-  if(!lower_tail) target=log_p ? std::log(-std::expm1(p)) : std::log1p(-p);
   if((log_p && p==-INFINITY) || (!log_p && p==0)) return lower_tail ? (mu2==0?0:-INFINITY) : (mu1==0?0:INFINITY);
   if((log_p && p==0) || (!log_p && p==1)) return lower_tail ? (mu1==0?0:INFINITY) : (mu2==0?0:-INFINITY);
-  const bool use_lower=target < -0.6931471805599453;
-  const double goal=use_lower ? target : (lower_tail ? (log_p?std::log(-std::expm1(p)):std::log1p(-p)) : (log_p?p:std::log(p)));
   return special::discrete_signed_search(mu1-mu2,std::max(1.0,std::hypot(std::sqrt(mu1),std::sqrt(mu2))),[&](double k) {
-    if (std::abs(k)>9007199254740992.0) {
-      const double f=pskellam(k,mu1,mu2,lower_tail,log_p);
-      return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
-    }
-    const double f=pskellam(k,mu1,mu2,use_lower,true);
-    return std::isnan(f) ? -1 : int(use_lower ? f>=goal : f<=goal);
+    return special::discrete_reached(pskellam(k,mu1,mu2,lower_tail,log_p),p,lower_tail,log_p);
   });
 }
 template<class RNG> inline double rskellam(RNG& rng,double mu1,double mu2) {

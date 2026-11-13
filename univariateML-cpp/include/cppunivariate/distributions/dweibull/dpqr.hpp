@@ -103,14 +103,12 @@ inline double qdweibull(double p, double shape1, double shape2, bool lower_tail,
   const double seed=dweibull_dpqr_detail::quantile_from_hazard(
       y, std::log(-std::log(shape1)), shape2);
   if (y==0 || std::isinf(y)) return seed;
-  if (seed<9007199254740992.0) {
-    const double edge=pdweibull(9007199254740992.0,shape1,shape2,lower_tail,log_p);
-    if (std::isnan(edge)) return kNaN;
-    if (lower_tail ? edge>=p : edge<=p) return seed;
-  }
+  if (seed<9007199254740992.0 &&
+      special::discrete_reached(pdweibull(seed,shape1,shape2,lower_tail,log_p),p,lower_tail,log_p)==1 &&
+      (seed==0 || special::discrete_reached(pdweibull(seed-1,shape1,shape2,lower_tail,log_p),p,lower_tail,log_p)==0)) return seed;
   return special::discrete_search(0,INFINITY,[&](double k) {
     const double f=pdweibull(k,shape1,shape2,lower_tail,log_p);
-    return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+    return special::discrete_reached(f,p,lower_tail,log_p);
   });
 }
 
@@ -123,9 +121,13 @@ inline double rdweibull(Rng &rng, double shape1, double shape2) {
   const double y = -std::log(rng.runif(0.0, 1.0));
   const double seed=dweibull_dpqr_detail::quantile_from_hazard(
       y, std::log(-std::log(shape1)), shape2);
+  if(y==0 || std::isinf(y)) return seed;
   if (seed<9007199254740992.0 &&
       pdweibull(9007199254740992.0,shape1,shape2,false,true)<=-y) return seed;
-  return qdweibull(-y,shape1,shape2,false,true);
+  // Preserve the large-count inverse sampler's original unfuzzed target.
+  return special::discrete_search(0,INFINITY,[&](double k) {
+    return special::discrete_reached(pdweibull(k,shape1,shape2,false,true),-y,false,true,false);
+  });
 }
 
 }  // namespace distributions

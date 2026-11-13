@@ -109,5 +109,125 @@ TEST_CASE("dunif singleton is a point law including RNG endpoints") {
 #include "cppunivariate/distributions/dunif/dpqr.hpp"
 TEST_CASE("dunif: quantile search guards and representability") {
   CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qdunif(.5,1e308,std::numeric_limits<double>::max(),true,false),.5,true,
-      [](double x) {return cppunivariate::distributions::pdunif(x,1e308,std::numeric_limits<double>::max(),true,false);}));
+      [](double x) {return cppunivariate::distributions::pdunif(x,1e308,std::numeric_limits<double>::max(),true,false);},false,true,false));
+}
+
+TEST_CASE("dunif: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("dunif",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pdunif(x,t[0], t[1],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qdunif(x,t[0], t[1],l,g);});
+}
+
+TEST_CASE("dunif: rational jump ties") {
+  // Expected indices computed with Fraction in 2026-11-13-qtie-data/exact.py.
+  CHECK(cppunivariate::distributions::qdunif(0.25,0.0,3.0,true,false)==0);
+  CHECK(cppunivariate::distributions::qdunif(-1.3862943611198906,0.0,3.0,true,true)==0);
+  CHECK(cppunivariate::distributions::qdunif(0.75,0.0,3.0,false,false)==0);
+  CHECK(cppunivariate::distributions::qdunif(-0.2876820724517809,0.0,3.0,false,true)==0);
+  CHECK(cppunivariate::distributions::qdunif(0.5,0.0,3.0,true,false)==1);
+  CHECK(cppunivariate::distributions::qdunif(-0.6931471805599453,0.0,3.0,true,true)==1);
+  CHECK(cppunivariate::distributions::qdunif(0.5,0.0,3.0,false,false)==1);
+  CHECK(cppunivariate::distributions::qdunif(-0.6931471805599453,0.0,3.0,false,true)==1);
+  CHECK(cppunivariate::distributions::qdunif(0.75,0.0,3.0,true,false)==2);
+  CHECK(cppunivariate::distributions::qdunif(-0.2876820724517809,0.0,3.0,true,true)==2);
+  CHECK(cppunivariate::distributions::qdunif(0.25,0.0,3.0,false,false)==2);
+  CHECK(cppunivariate::distributions::qdunif(-1.3862943611198906,0.0,3.0,false,true)==2);
+  CHECK(cppunivariate::distributions::qdunif(0.125,0.0,7.0,true,false)==0);
+  CHECK(cppunivariate::distributions::qdunif(-2.0794415416798357,0.0,7.0,true,true)==0);
+  CHECK(cppunivariate::distributions::qdunif(0.875,0.0,7.0,false,false)==0);
+  CHECK(cppunivariate::distributions::qdunif(-0.13353139262452263,0.0,7.0,false,true)==0);
+  CHECK(cppunivariate::distributions::qdunif(0.25,0.0,7.0,true,false)==1);
+  CHECK(cppunivariate::distributions::qdunif(-1.3862943611198906,0.0,7.0,true,true)==1);
+  CHECK(cppunivariate::distributions::qdunif(0.75,0.0,7.0,false,false)==1);
+  CHECK(cppunivariate::distributions::qdunif(-0.2876820724517809,0.0,7.0,false,true)==1);
+  CHECK(cppunivariate::distributions::qdunif(0.375,0.0,7.0,true,false)==2);
+  CHECK(cppunivariate::distributions::qdunif(-0.9808292530117262,0.0,7.0,true,true)==2);
+  CHECK(cppunivariate::distributions::qdunif(0.625,0.0,7.0,false,false)==2);
+  CHECK(cppunivariate::distributions::qdunif(-0.4700036292457356,0.0,7.0,false,true)==2);
+  CHECK(cppunivariate::distributions::qdunif(0.5,0.0,7.0,true,false)==3);
+  CHECK(cppunivariate::distributions::qdunif(-0.6931471805599453,0.0,7.0,true,true)==3);
+  CHECK(cppunivariate::distributions::qdunif(0.5,0.0,7.0,false,false)==3);
+  CHECK(cppunivariate::distributions::qdunif(-0.6931471805599453,0.0,7.0,false,true)==3);
+  CHECK(cppunivariate::distributions::qdunif(0.625,0.0,7.0,true,false)==4);
+  CHECK(cppunivariate::distributions::qdunif(-0.4700036292457356,0.0,7.0,true,true)==4);
+  CHECK(cppunivariate::distributions::qdunif(0.375,0.0,7.0,false,false)==4);
+  CHECK(cppunivariate::distributions::qdunif(-0.9808292530117262,0.0,7.0,false,true)==4);
+  CHECK(cppunivariate::distributions::qdunif(0.75,0.0,7.0,true,false)==5);
+  CHECK(cppunivariate::distributions::qdunif(-0.2876820724517809,0.0,7.0,true,true)==5);
+  CHECK(cppunivariate::distributions::qdunif(0.25,0.0,7.0,false,false)==5);
+  CHECK(cppunivariate::distributions::qdunif(-1.3862943611198906,0.0,7.0,false,true)==5);
+  CHECK(cppunivariate::distributions::qdunif(0.875,0.0,7.0,true,false)==6);
+  CHECK(cppunivariate::distributions::qdunif(-0.13353139262452263,0.0,7.0,true,true)==6);
+  CHECK(cppunivariate::distributions::qdunif(0.125,0.0,7.0,false,false)==6);
+  CHECK(cppunivariate::distributions::qdunif(-2.0794415416798357,0.0,7.0,false,true)==6);
+  CHECK(cppunivariate::distributions::qdunif(0.0625,0.0,15.0,true,false)==0);
+  CHECK(cppunivariate::distributions::qdunif(-2.772588722239781,0.0,15.0,true,true)==0);
+  CHECK(cppunivariate::distributions::qdunif(0.9375,0.0,15.0,false,false)==0);
+  CHECK(cppunivariate::distributions::qdunif(-0.06453852113757118,0.0,15.0,false,true)==0);
+  CHECK(cppunivariate::distributions::qdunif(0.125,0.0,15.0,true,false)==1);
+  CHECK(cppunivariate::distributions::qdunif(-2.0794415416798357,0.0,15.0,true,true)==1);
+  CHECK(cppunivariate::distributions::qdunif(0.875,0.0,15.0,false,false)==1);
+  CHECK(cppunivariate::distributions::qdunif(-0.13353139262452263,0.0,15.0,false,true)==1);
+  CHECK(cppunivariate::distributions::qdunif(0.1875,0.0,15.0,true,false)==2);
+  CHECK(cppunivariate::distributions::qdunif(-1.6739764335716716,0.0,15.0,true,true)==2);
+  CHECK(cppunivariate::distributions::qdunif(0.8125,0.0,15.0,false,false)==2);
+  CHECK(cppunivariate::distributions::qdunif(-0.2076393647782445,0.0,15.0,false,true)==2);
+  CHECK(cppunivariate::distributions::qdunif(0.25,0.0,15.0,true,false)==3);
+  CHECK(cppunivariate::distributions::qdunif(-1.3862943611198906,0.0,15.0,true,true)==3);
+  CHECK(cppunivariate::distributions::qdunif(0.75,0.0,15.0,false,false)==3);
+  CHECK(cppunivariate::distributions::qdunif(-0.2876820724517809,0.0,15.0,false,true)==3);
+  CHECK(cppunivariate::distributions::qdunif(0.3125,0.0,15.0,true,false)==4);
+  CHECK(cppunivariate::distributions::qdunif(-1.1631508098056809,0.0,15.0,true,true)==4);
+  CHECK(cppunivariate::distributions::qdunif(0.6875,0.0,15.0,false,false)==4);
+  CHECK(cppunivariate::distributions::qdunif(-0.3746934494414107,0.0,15.0,false,true)==4);
+  CHECK(cppunivariate::distributions::qdunif(0.375,0.0,15.0,true,false)==5);
+  CHECK(cppunivariate::distributions::qdunif(-0.9808292530117262,0.0,15.0,true,true)==5);
+  CHECK(cppunivariate::distributions::qdunif(0.625,0.0,15.0,false,false)==5);
+  CHECK(cppunivariate::distributions::qdunif(-0.4700036292457356,0.0,15.0,false,true)==5);
+  CHECK(cppunivariate::distributions::qdunif(0.4375,0.0,15.0,true,false)==6);
+  CHECK(cppunivariate::distributions::qdunif(-0.8266785731844679,0.0,15.0,true,true)==6);
+  CHECK(cppunivariate::distributions::qdunif(0.5625,0.0,15.0,false,false)==6);
+  CHECK(cppunivariate::distributions::qdunif(-0.5753641449035618,0.0,15.0,false,true)==6);
+  CHECK(cppunivariate::distributions::qdunif(0.5,0.0,15.0,true,false)==7);
+  CHECK(cppunivariate::distributions::qdunif(-0.6931471805599453,0.0,15.0,true,true)==7);
+  CHECK(cppunivariate::distributions::qdunif(0.5,0.0,15.0,false,false)==7);
+  CHECK(cppunivariate::distributions::qdunif(-0.6931471805599453,0.0,15.0,false,true)==7);
+  CHECK(cppunivariate::distributions::qdunif(0.5625,0.0,15.0,true,false)==8);
+  CHECK(cppunivariate::distributions::qdunif(-0.5753641449035618,0.0,15.0,true,true)==8);
+  CHECK(cppunivariate::distributions::qdunif(0.4375,0.0,15.0,false,false)==8);
+  CHECK(cppunivariate::distributions::qdunif(-0.8266785731844679,0.0,15.0,false,true)==8);
+  CHECK(cppunivariate::distributions::qdunif(0.625,0.0,15.0,true,false)==9);
+  CHECK(cppunivariate::distributions::qdunif(-0.4700036292457356,0.0,15.0,true,true)==9);
+  CHECK(cppunivariate::distributions::qdunif(0.375,0.0,15.0,false,false)==9);
+  CHECK(cppunivariate::distributions::qdunif(-0.9808292530117262,0.0,15.0,false,true)==9);
+  CHECK(cppunivariate::distributions::qdunif(0.6875,0.0,15.0,true,false)==10);
+  CHECK(cppunivariate::distributions::qdunif(-0.3746934494414107,0.0,15.0,true,true)==10);
+  CHECK(cppunivariate::distributions::qdunif(0.3125,0.0,15.0,false,false)==10);
+  CHECK(cppunivariate::distributions::qdunif(-1.1631508098056809,0.0,15.0,false,true)==10);
+  CHECK(cppunivariate::distributions::qdunif(0.75,0.0,15.0,true,false)==11);
+  CHECK(cppunivariate::distributions::qdunif(-0.2876820724517809,0.0,15.0,true,true)==11);
+  CHECK(cppunivariate::distributions::qdunif(0.25,0.0,15.0,false,false)==11);
+  CHECK(cppunivariate::distributions::qdunif(-1.3862943611198906,0.0,15.0,false,true)==11);
+  CHECK(cppunivariate::distributions::qdunif(0.8125,0.0,15.0,true,false)==12);
+  CHECK(cppunivariate::distributions::qdunif(-0.2076393647782445,0.0,15.0,true,true)==12);
+  CHECK(cppunivariate::distributions::qdunif(0.1875,0.0,15.0,false,false)==12);
+  CHECK(cppunivariate::distributions::qdunif(-1.6739764335716716,0.0,15.0,false,true)==12);
+  CHECK(cppunivariate::distributions::qdunif(0.875,0.0,15.0,true,false)==13);
+  CHECK(cppunivariate::distributions::qdunif(-0.13353139262452263,0.0,15.0,true,true)==13);
+  CHECK(cppunivariate::distributions::qdunif(0.125,0.0,15.0,false,false)==13);
+  CHECK(cppunivariate::distributions::qdunif(-2.0794415416798357,0.0,15.0,false,true)==13);
+  CHECK(cppunivariate::distributions::qdunif(0.9375,0.0,15.0,true,false)==14);
+  CHECK(cppunivariate::distributions::qdunif(-0.06453852113757118,0.0,15.0,true,true)==14);
+  CHECK(cppunivariate::distributions::qdunif(0.0625,0.0,15.0,false,false)==14);
+  CHECK(cppunivariate::distributions::qdunif(-2.772588722239781,0.0,15.0,false,true)==14);
+}
+
+TEST_CASE("dunif: large inverse samples retain the unfuzzed crossing") {
+  struct FixedRng {double runif(double,double) {return .5;}} rng;
+  const double maximum=std::ldexp(1.,60);
+  const double draw=cppunivariate::distributions::rdunif(rng,0,maximum);
+  CHECK(draw>9007199254740992.);
+  CHECK(cppunivariate::distributions::pdunif(draw,0,maximum,true,false)>=.5);
+  CHECK(cppunivariate::distributions::pdunif(std::nextafter(draw,-INFINITY),0,maximum,true,false)<.5);
+  CHECK(draw>cppunivariate::distributions::qdunif(.5,0,maximum,true,false));
 }

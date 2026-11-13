@@ -41,7 +41,10 @@ inline special::LogTails pois_tails(double q,double lambda) {
   q=std::floor(q);
   // F_Poisson(k;lambda)=Q_Gamma(k+1;lambda). Keep the physical
   // argument when the integer shape is exact, as in the gamma API.
-  if (q>=15 && q+1-q==1) {
+  // Boost supplies the direct smaller tail at ordinary counts. The
+  // physical gamma chart is needed for large shapes, where rounding the
+  // standardized argument loses meaningful count offsets.
+  if (q>=15 && (q>=1e6 || lambda>=1e6) && q+1-q==1) {
     special::LogTails gamma;
     if (!special::gamma_laplace_tails(lambda,q+1,1,gamma))
       gamma=special::gamma_centered_physical_tails(lambda,q+1,1);

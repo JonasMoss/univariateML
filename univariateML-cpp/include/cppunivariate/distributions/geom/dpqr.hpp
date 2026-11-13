@@ -48,7 +48,9 @@ inline double rgeom(Rng &rng, double prob) {
   // Inverse-CDF via Uniform.
   const double u = rng.runif(0.0, 1.0);
   const double k = std::ceil(std::log1p(-u) / std::log1p(-prob)) - 1.0;
-  if (k>=9007199254740992.0) return qgeom(u,prob,true,false);
+  if (k>=9007199254740992.0)
+    return special::discrete_quantile(special::discrete_log_tails(u,true,false),0,
+      prob==1?0:special::kPosInf,[=](double x){return geom_tails(x,prob);},u,true,false,false);
   return k < 0.0 ? 0.0 : k;
 }
 

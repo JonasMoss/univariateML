@@ -105,7 +105,7 @@ struct Table {
     const double v=own<other ? own : std::log(-std::expm1(other));
     return log ? v : std::exp(v);
   }
-  double quantile(double p,bool lower,bool log) const {
+  double quantile(double p,bool lower,bool log,bool fuzz=true) const {
     if (std::isnan(p) || (log ? p>0 : p<0 || p>1)) return special::kNaN;
     if (p==(log ? special::kNegInf : 0)) return lower ? 0 : lp.size()-1;
     if (p==(log ? 0 : 1)) return lower ? lp.size()-1 : 0;
@@ -114,7 +114,7 @@ struct Table {
       const int mid=a+(b-a)/2;
       const double f=cdf(mid,lower,log);
     if (std::isnan(f)) return std::numeric_limits<double>::quiet_NaN();
-      if (lower ? f>=p : f<=p) b=mid; else a=mid;
+      if (special::discrete_reached(f,p,lower,log,fuzz)==1) b=mid; else a=mid;
     }
     return b;
   }
@@ -152,30 +152,23 @@ inline double pcmb(double q,double size,double prob,double nu,bool lower_tail=tr
   if(nu==1 || size==1) return pbinom(q,size,prob,lower_tail,log_p);
   return cmb_detail::table(static_cast<int>(size),prob,nu).cdf(q,lower_tail,log_p);
 }
-inline double cmb_sampling_quantile(double p,double size,double prob,double nu,bool lower_tail=true,bool log_p=false) {
+inline double cmb_sampling_quantile(double p,double size,double prob,double nu,bool lower_tail=true,bool log_p=false,bool fuzz=false) {
   if (!cmb_detail::valid(size,prob,nu)) return special::kNaN;
-  if(size==0 || prob==0 || prob==1 || nu==1 || size==1)
-    return qbinom(p,size,prob,lower_tail,log_p);
+  if(size==0 || prob==0 || prob==1 || nu==1 || size==1) {
+    if(fuzz) return qbinom(p,size,prob,lower_tail,log_p);
+    return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0,size,
+        [=](double q){return binom_tails(q,size,prob);},p,lower_tail,log_p,false);
+  }
   if(nu==0) {
     const double eta=std::log(prob)-std::log1p(-prob);
     return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0,size,
-        [=](double q){return cmb_detail::geometric_tails(q,size,eta);},p,lower_tail,log_p);
+        [=](double q){return cmb_detail::geometric_tails(q,size,eta);},p,lower_tail,log_p,fuzz);
   }
-  return cmb_detail::table(static_cast<int>(size),prob,nu).quantile(p,lower_tail,log_p);
+  return cmb_detail::table(static_cast<int>(size),prob,nu).quantile(p,lower_tail,log_p,fuzz);
 }
 inline double qcmb(double p,double size,double prob,double nu,bool lower_tail=true,bool log_p=false) {
   if(!cmb_detail::valid(size,prob,nu)) return special::kNaN;
-  if(size>1 && prob==.5 && nu<0) {
-    const auto tails=special::quantile_log_tails(p,lower_tail,log_p);
-    if(!tails.valid) return special::kNaN;
-    const double offset=special::probability_offset(p,log_p)*(lower_tail?1:-1);
-    if(offset==0) return std::floor(size/2);
-    // Each interior binomial coefficient is >= size. Normalize by at
-    // least the two endpoint weights; bound the entire omitted body.
-    const double log_body=std::log(size-1)+nu*std::log(size)-std::log(2.0);
-    if(log_body<std::log(std::abs(offset))-std::log(2.0)) return offset<0?0:size;
-  }
-  return cmb_sampling_quantile(p,size,prob,nu,lower_tail,log_p);
+  return cmb_sampling_quantile(p,size,prob,nu,lower_tail,log_p,true);
 }
 template <typename Rng>
 inline double rcmb(Rng &rng,double size,double prob,double nu) {

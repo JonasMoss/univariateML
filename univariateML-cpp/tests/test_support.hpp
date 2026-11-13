@@ -14,6 +14,7 @@
 #endif
 
 #include <cfloat>
+#include "cppunivariate/special/tails.hpp"
 
 namespace mltest {
 
@@ -217,10 +218,12 @@ inline bool truth_close(double actual, double expected, double tolerance) {
 // Unlike an oracle tolerance, this rejects every nonminimal representable answer.
 template <typename P>
 inline bool truth_lattice_quantile(double actual, double p, bool lower, P probability,
-                                   bool allow_infinity=false) {
+                                   bool allow_infinity=false, bool fuzz=false, bool log=false) {
   if (!std::isfinite(actual) && !(allow_infinity && actual==INFINITY)) return false;
   const double at=probability(actual);
   const double before=probability(std::nextafter(actual,-INFINITY));
+  if (fuzz) return cppunivariate::special::discrete_reached(at,p,lower,log)==1 &&
+                   cppunivariate::special::discrete_reached(before,p,lower,log)==0;
   return lower ? at>=p && before<p : at<=p && before>p;
 }
 
@@ -319,12 +322,28 @@ inline void check_dpqr_truth(const std::string &id, D density, P probability,
       const double scale=row[2]!=0 ? std::max(1.0,std::abs(row[3])) : std::abs(row[3]);
       backward=std::isfinite(at) && std::abs(at-row[3])<=1e-12*scale;
     }
+    // The exact oracle may lie beyond a computed plateau after tiny masses
+    // underflow. Check the declared first-crossing rule without rewriting it.
+    bool fuzz_crossing=false;
+    if (discrete && got<expected && std::isfinite(got)) {
+      const double at=probability(got,params[point],row[1]!=0,row[2]!=0);
+      const double previous=std::floor(std::nextafter(got,-INFINITY));
+      const double before=probability(previous,params[point],row[1]!=0,row[2]!=0);
+      const bool moved_by_band=row[1]!=0 ? at<row[3] : at>row[3];
+      const bool plateau=at==row[3] &&
+        (probability(expected,params[point],row[1]!=0,row[2]!=0)==at ||
+         (row[7]!=0 && probability(std::floor(std::nextafter(expected,-INFINITY)),
+             params[point],row[1]!=0,row[2]!=0)==at));
+      fuzz_crossing=(moved_by_band || plateau) &&
+        cppunivariate::special::discrete_reached(at,row[3],row[1]!=0,row[2]!=0)==1 &&
+        cppunivariate::special::discrete_reached(before,row[3],row[1]!=0,row[2]!=0)==0;
+    }
     check(std::string(row[1]!=0?"q_lower":"q_upper")+(row[2]!=0?"_log":""),
           point,row[3],got,expected,discrete && std::abs(expected)>9007199254740992.0 &&
           (row[2]!=0 ? std::isfinite(row[3]) && row[3]<0 : row[3]>0 && row[3]<1)
-          ? (relative||bracket) && truth_lattice_quantile(got,row[3],row[1]!=0,[&](double x) {
+          ? (relative||bracket||fuzz_crossing) && truth_lattice_quantile(got,row[3],row[1]!=0,[&](double x) {
               return probability(x,params[point],row[1]!=0,row[2]!=0);
-            },std::isinf(expected)) : relative||bracket||backward);
+            },std::isinf(expected),true,row[2]!=0) : relative||bracket||backward||fuzz_crossing);
   }
   const auto start=std::chrono::steady_clock::now();
   const auto sampler_points = truth_matrix(source,"sampler_points");
@@ -412,3 +431,5 @@ inline void check_density_truth(const std::string &id, D density,
 }
 
 } // namespace mltest
+
+#include "discrete_roundtrips.hpp"

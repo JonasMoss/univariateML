@@ -80,28 +80,18 @@ inline double qdgamma(double p,double shape,double rate,bool lower_tail=true,boo
   const auto search=[&]() {
     return special::discrete_search(0,INFINITY,[&](double k) {
       const double f=pdgamma(k,shape,rate,lower_tail,log_p);
-      return std::isnan(f) ? -1 : int(lower_tail ? f>=p : f<=p);
+      return special::discrete_reached(f,p,lower_tail,log_p);
     });
   };
   if (!std::isfinite(z) || std::abs(z)>=9007199254740992.0) return search();
   double q=std::max(0.0,std::ceil(z)-1);
-  for (int i=0;i<2;++i) {
-    const double at=pdgamma(q,shape,rate,lower_tail,true);
-    if (lower_tail ? at<lp : at>lp) q+=1;
-    else break;
-  }
-  for (int i=0;i<2 && q>0;++i) {
-    const double at=pdgamma(q-1,shape,rate,lower_tail,true);
-    if (lower_tail ? at>=lp : at<=lp) q-=1;
-    else break;
-  }
-  // Verify the bounded seed correction; if it cannot certify the jump,
-  // use guarded inversion. Failed CDF evaluations still propagate.
-  const double at=pdgamma(q,shape,rate,lower_tail,true);
-  const double before=q>0 ? pdgamma(q-1,shape,rate,lower_tail,true) : (lower_tail ? -INFINITY : 0);
-  if (std::isnan(at) || std::isnan(before)) return std::numeric_limits<double>::quiet_NaN();
-  if ((q>0 && q-1==q) || !(lower_tail ? at>=lp && before<lp : at<=lp && before>lp))
-    return search();
+  const auto hit=[&](double x) {
+    return special::discrete_reached(pdgamma(x,shape,rate,lower_tail,log_p),p,lower_tail,log_p);
+  };
+  for(int i=0;i<2 && hit(q)==0;++i) q+=1;
+  for(int i=0;i<2 && q>0 && hit(q-1)==1;++i) q-=1;
+  if(hit(q)<0 || hit(q-1)<0) return std::numeric_limits<double>::quiet_NaN();
+  if(q-1==q || hit(q)!=1 || hit(q-1)!=0) return search();
   return q;
 }
 template <typename Rng> inline double rdgamma(Rng &rng,double shape,double rate) {

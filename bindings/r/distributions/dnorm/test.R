@@ -61,16 +61,15 @@ test_that("dnorm log tails, integer quantiles and seeded sampling", {
     u <- c(1e-12,.1,.5,.9,1-1e-12)
     q <- univariateML_to_function(f,"q")(if (logp) log(u) else u,lower.tail=lower,log.p=logp)
     expect_equal(q,floor(q))
-    # binary64 log(.5) lies above exact log(.5): its lower-tail
-    # quantile is 0, whereas the quantile of ordinary .5 is -1.
-    # Comparing to rounded exp(log(.5)) would erase that distinction.
-    if (lower) {
-      expect_true(all(univariateML_to_function(f,"p")(q)>=u-1e-15))
-      ordinary <- !(logp & u == .5)
-      expect_true(all(univariateML_to_function(f,"p")(q[ordinary]-1)<u[ordinary]))
-      if (logp) expect_equal(q[u==.5],0)
-    }
-    else { expect_true(all(univariateML_to_function(f,"p")(q,lower.tail=FALSE)<=u+1e-15)); expect_true(all(univariateML_to_function(f,"p")(q-1,lower.tail=FALSE)>u)) }
+    # Use the input scale's declared band, including rounded log(.5).
+    input <- if(logp) log(u) else u
+    e <- 64*.Machine$double.eps
+    target <- if(logp) input*if(lower) (1+e) else (1-e) else
+      if(lower) input*(1-e) else ifelse(1-input>4*e,input*(1+e),input)
+    at <- univariateML_to_function(f,"p")(q,lower.tail=lower,log.p=logp)
+    before <- univariateML_to_function(f,"p")(q-1,lower.tail=lower,log.p=logp)
+    expect_true(all(if(lower) at>=target & before<target else at<=target & before>target))
+    if(lower) expect_equal(q[u==.5],-1)
   }
   set.seed(123); a <- univariateML_to_function(f,"r")(20)
   set.seed(123); b <- rdnorm(n = 20, mean = 0, sd = 1)

@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include "../../core/precision.hpp"
 #include "../../special/cmp.hpp"
 #include "../../special/tails.hpp"
@@ -99,7 +100,16 @@ struct Law {
    return log ? lp : std::exp(lp);
   }
   if(std::isfinite(diffuse_z)) {
-   double small;bool down=q<100000;
+   // Vector quantiles revisit the same expensive quadrature nodes. This
+   // bounded per-thread cache stores evaluator results without changing them.
+   static thread_local double cached_nu=special::kNaN;
+   static thread_local std::map<double,double> cached;
+   if(nu!=cached_nu) {cached.clear();cached_nu=nu;}
+   const bool down=q<100000;
+   const auto found=cached.find(q);
+   if(found!=cached.end())
+     return special::tail_probability(special::tails_from_log(found->second,down),lower,log);
+   double small;
    if(down) {
      double sum=0,correction=0;
      for(int k=0;k<=q;++k) {
@@ -113,6 +123,8 @@ struct Law {
      if(width>1e-12*std::max(1.0,std::abs(first))) return special::kNaN;
      small=first;
    } else small=diffuse_tail(q+1,nu)-diffuse_z;
+   if(cached.size()>=4096) cached.clear();
+   if(small<=0) cached.emplace(q,small);
    return special::tail_probability(special::tails_from_log(small,down),lower,log);
   }
   if (moments.status!=CmpStatus::Ok) return special::kNaN;
@@ -137,14 +149,24 @@ struct Law {
   if (lambda==0) return 0;
   if (p==(log ? special::kNegInf : 0)) return lower ? 0 : special::kPosInf;
   if (p==(log ? 0 : 1)) return lower ? special::kPosInf : 0;
+  return special::discrete_search(0,special::kPosInf,[&](double k) {
+    return special::discrete_reached(cdf(k,lower,log),p,lower,log);
+  });
+ }
+ // Inversion stream retained on its original comparison scale.
+ double sampling_quantile(double p,bool lower,bool log) const {
+  if (std::isnan(p) || (log ? p>0 : p<0 || p>1)) return special::kNaN;
+  if (lambda==0) return 0;
+  if (p==(log ? special::kNegInf : 0)) return lower ? 0 : special::kPosInf;
+  if (p==(log ? 0 : 1)) return lower ? special::kPosInf : 0;
   const double target=log ? p : std::log(p);
   return special::discrete_search(0,special::kPosInf,[&](double k) {
    if (k>9007199254740992.0) {
      const double f=cdf(k,lower,log);
-     return std::isnan(f) ? -1 : int(lower ? f>=p : f<=p);
+     return special::discrete_reached(f,p,lower,log,false);
    }
    const double f=cdf(k,lower,true);
-   return std::isnan(f) ? -1 : int(lower ? f>=target : f<=target);
+   return special::discrete_reached(f,target,lower,true,false);
   });
  }
 };
@@ -166,6 +188,12 @@ inline double qcmp(double p,double lambda,double nu,bool lower_tail=true,bool lo
  return cmp_dpqr_detail::Law(lambda,nu).quantile(p,lower_tail,log_p);
 }
 template <typename Rng>
-inline double rcmp(Rng &rng,double lambda,double nu) {return qcmp(rng.runif(0,1),lambda,nu);}
+inline double rcmp(Rng &rng,double lambda,double nu) {
+ const double p=rng.runif(0,1);
+ if(!cmp_dpqr_detail::valid(lambda,nu)) return special::kNaN;
+ if(nu==1) return special::discrete_quantile(special::discrete_log_tails(p,true,false),0,
+   lambda==0?0:special::kPosInf,[=](double x){return pois_tails(x,lambda);},p,true,false,false);
+ return cmp_dpqr_detail::Law(lambda,nu).sampling_quantile(p,true,false);
+}
 }
 }

@@ -56,7 +56,7 @@ TEST_CASE("dlaplace: structured stop payloads") {
 #include "cppunivariate/distributions/dlaplace/dpqr.hpp"
 TEST_CASE("dlaplace: quantile search guards and representability") {
   CHECK(mltest::truth_lattice_quantile(cppunivariate::distributions::qdlaplace(.25,1e308,.5),.25,true,
-      [](double x) {return cppunivariate::distributions::pdlaplace(x,1e308,.5,true,false);}));
+      [](double x) {return cppunivariate::distributions::pdlaplace(x,1e308,.5,true,false);},false,true,false));
   CHECK(cppunivariate::distributions::qdlaplace(.5,0,.5)==0);
 }
 
@@ -69,7 +69,7 @@ TEST_CASE("dlaplace: large geometric tails use the supplied probability scale") 
     REQUIRE(h>9007199254740992.0);
     CHECK(mltest::truth_lattice_quantile(h,p,lower,[&](double x) {
       return cppunivariate::distributions::pdlaplace(x,0,std::nextafter(1.0,0.0),lower,log);
-    }));
+    },false,true,log));
   }
 }
 
@@ -87,4 +87,10 @@ TEST_CASE("dlaplace: overflowing distances retain finite geometric log tails") {
     CHECK(cppunivariate::distributions::pdlaplace(x,location,scale,sign<0,false)==0);
     CHECK(cppunivariate::distributions::ddlaplace(x,location,scale,false)==0);
   }
+}
+
+TEST_CASE("dlaplace: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("dlaplace",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pdlaplace(x,t[0], t[1],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qdlaplace(x,t[0], t[1],l,g);});
 }

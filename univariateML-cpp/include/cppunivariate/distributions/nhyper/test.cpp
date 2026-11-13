@@ -260,3 +260,9 @@ TEST_CASE("nhyper: large-count grid winners report the stable final likelihood")
     CHECK(reference==doctest::Approx(std::isnan(r)?-80.37826906358457:-70.76431387220237).epsilon(1e-12));
   }
 }
+
+TEST_CASE("nhyper: slow reference discrete quantile round trips on every truth point") {
+  mltest::discrete_roundtrips("nhyper",
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pnhyper(x,t[0], t[1], t[2],l,g);},
+    [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qnhyper(x,t[0], t[1], t[2],l,g);});
+}

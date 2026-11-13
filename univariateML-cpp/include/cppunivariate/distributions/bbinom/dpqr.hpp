@@ -112,14 +112,13 @@ inline double qbbinom(double p, double size, double alpha, double beta, bool low
   if (p == (log_p ? -std::numeric_limits<double>::infinity() : 0.0))
     return lower_tail ? 0 : N;
   if (p == (log_p ? 0.0 : 1.0)) return lower_tail ? N : 0;
-  const double target = log_p ? p : std::log(p);
   const std::vector<double> lf = bbinom_log_pmf_all(N, alpha, beta);
   int lo = -1, hi = N;
   while (hi - lo > 1) {
     const int mid = lo + (hi - lo) / 2;
     const double tail = lower_tail ? bbinom_log_sum(lf, 0, mid) : bbinom_log_sum(lf, mid + 1, N);
     if (std::isnan(tail)) return std::numeric_limits<double>::quiet_NaN();
-    const bool hit = lower_tail ? tail >= target : tail <= target;
+    const bool hit = special::discrete_reached(log_p ? tail : std::exp(tail),p,lower_tail,log_p)==1;
     if (hit) hi = mid; else lo = mid;
   }
   return hi;

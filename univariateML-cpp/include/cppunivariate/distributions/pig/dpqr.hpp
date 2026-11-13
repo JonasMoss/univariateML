@@ -1,5 +1,7 @@
 // Stable PIG log masses and tail probabilities.
 #pragma once
+#include <map>
+#include <array>
 #include <cmath>
 #include <limits>
 #include <vector>
@@ -198,7 +200,7 @@ inline double log_upper(int n,double mean,double shape) {
  return std::numeric_limits<double>::quiet_NaN();
 }
 } namespace distributions {
-inline double ppig(double q,double mean,double shape,bool lower_tail,bool log_p) {
+inline double pig_probability_uncached(double q,double mean,double shape,bool lower_tail,bool log_p) {
  if(!(mean>0 && shape>=0) || !std::isfinite(mean) || !std::isfinite(shape) || std::isnan(q)) return std::numeric_limits<double>::quiet_NaN();
  const double inf=std::numeric_limits<double>::infinity();
  double lp;
@@ -222,6 +224,21 @@ inline double ppig(double q,double mean,double shape,bool lower_tail,bool log_p)
  }
  return log_p ? lp : std::exp(lp);
 }
+inline double ppig(double q,double mean,double shape,bool lower_tail,bool log_p) {
+ if(!(mean>0 && shape>0) || !std::isfinite(mean) || !std::isfinite(shape) ||
+    !std::isfinite(q) || q<0) return pig_probability_uncached(q,mean,shape,lower_tail,log_p);
+ // Repeated inversion nodes share exactly the same log evaluator result.
+ // Bound memory independently of the number of calls; eviction affects speed only.
+ static thread_local std::map<std::array<double,4>,double> cached;
+ const std::array<double,4> key{{std::floor(q),mean,shape,lower_tail?1.:0.}};
+ const auto found=cached.find(key);
+ if(found!=cached.end()) return log_p?found->second:std::exp(found->second);
+ const double value=pig_probability_uncached(q,mean,shape,lower_tail,true);
+ if(cached.size()>=4096) cached.clear();
+ if(!std::isnan(value)) cached.emplace(key,value);
+ return log_p?value:std::exp(value);
+}
+
 inline double qpig(double p,double mean,double shape,bool lower_tail,bool log_p) {
  if(!(mean>0 && shape>=0) || !std::isfinite(mean) || !std::isfinite(shape) || std::isnan(p) || (log_p ? p>0 : (p<0 || p>1))) return std::numeric_limits<double>::quiet_NaN();
  return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),0,shape==0?0:special::kPosInf,
