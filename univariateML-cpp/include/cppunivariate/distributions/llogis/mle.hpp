@@ -2,6 +2,7 @@
 // in centered raw log ratios, then checks the restored public scale.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 
@@ -26,6 +27,16 @@ struct LogLogisticResult {
   LogLogisticStatus status = LogLogisticStatus::Ok;
   bool certified=true;
 };
+
+inline FitOutcome outcome(const LogLogisticResult& r) {
+  switch (r.status) {
+    case LogLogisticStatus::Ok: return FitOutcome::estimate(r.certified);
+    case LogLogisticStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LogLogisticStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case LogLogisticStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
 
 inline LogLogisticResult loglogistic_mle(span x,double tol,int maxit,double shape,double scale) {
   const auto r=transformed_detail::location_fit(x,shape,scale,1,false,1,tol,maxit);

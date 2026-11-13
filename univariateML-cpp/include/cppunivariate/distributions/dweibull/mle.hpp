@@ -14,6 +14,7 @@
 // Escapes are exact data conditions (sample range; see README limits).
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 
@@ -48,6 +49,24 @@ struct DweibullResult {
   DweibullStatus status;
   StopDetail stop_detail{};
 };
+
+inline FitOutcome outcome(const DweibullResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case DweibullStatus::Ok: return FitOutcome::estimate(true);
+    case DweibullStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case DweibullStatus::InvalidControl: return FitOutcome::failure(OutcomeReason::InvalidArgument);
+    case DweibullStatus::PointMass: return FitOutcome::limit(true);
+    case DweibullStatus::BernoulliLimit: return FitOutcome::limit(true);
+    case DweibullStatus::TwoPointLimit: return FitOutcome::limit(true);
+    case DweibullStatus::HeldBernoulliLimit: return FitOutcome::limit(true);
+    case DweibullStatus::ShapeUnidentified: return FitOutcome::estimate(true, false);
+    case DweibullStatus::Unrepresentable: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case DweibullStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
 
 namespace dweibull_detail {
 

@@ -1,0 +1,30 @@
+In file included from /home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp:12,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-b/build/scratch/outcome-b-overrides/replay.cpp:2:
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+native
+gompertz class subnormal: status=0 a=inf b=inf logLik=0x1.16b81d2c76702p+11 iterations=4
+weibull archive 008443: status=0 shape=0x1.753152f816c99p+1 scale=0x1.fb05be698519bp+1 logLik=-inf iterations=0
+In file included from /home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp:12,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-b/build/scratch/outcome-b-overrides/replay.cpp:2:
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+double
+gompertz class subnormal: status=0 a=inf b=inf logLik=0x1.16b81d2c76702p+11 iterations=4
+weibull archive 008443: status=0 shape=0x1.753152f816c99p+1 scale=0x1.fb05be698519bp+1 logLik=-nan iterations=0

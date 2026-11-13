@@ -2,6 +2,7 @@
 // likelihood includes the change-of-variable Jacobian -sum(log(x*(1-x))).
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
 
@@ -25,6 +26,16 @@ struct LogitnormResult {
   LogitnormStatus status = LogitnormStatus::Ok;
   bool certified=true;
 };
+
+inline FitOutcome outcome(const LogitnormResult& r) {
+  switch (r.status) {
+    case LogitnormStatus::Ok: return FitOutcome::estimate(r.certified);
+    case LogitnormStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LogitnormStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case LogitnormStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
 
 inline LogitnormResult logitnorm_mle(span x,
     double mu = std::numeric_limits<double>::quiet_NaN(),

@@ -1,5 +1,6 @@
 // Full finite exponential family in (logit(prob), nu).
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "dpqr.hpp"
@@ -15,6 +16,25 @@ enum class CmbStatus { Ok, InvalidInput, PointMass, AdjacentLimit, EndpointLimit
                        NotImplemented };
 struct CmbResult { double prob,nu,logLik; int iterations; CmbStatus status;   StopDetail stop_detail{};
 };
+
+inline FitOutcome outcome(const CmbResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  switch (r.status) {
+    case CmbStatus::Ok: return FitOutcome::estimate(true);
+    case CmbStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case CmbStatus::PointMass: return FitOutcome::limit(true);
+    case CmbStatus::AdjacentLimit: return FitOutcome::limit(true);
+    case CmbStatus::EndpointLimit: return FitOutcome::limit(true);
+    case CmbStatus::Unidentified: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case CmbStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case CmbStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case CmbStatus::FaceTie: return FitOutcome::estimate(false);
+    case CmbStatus::NotImplemented: return FitOutcome::failure(OutcomeReason::Unsupported);
+  }
+  return {};
+}
 namespace cmb_detail {
 inline double probability(double eta) {
   return eta>=0 ? 1/(1+std::exp(-eta)) : std::exp(eta)/(1+std::exp(eta));
@@ -442,6 +462,9 @@ inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=2000,
 }
 
 struct CmbSizeResult { double size; CmbResult fit; };
+inline FitOutcome outcome(const CmbSizeResult& r) {
+  return outcome(r.fit);
+}
 
 namespace cmb_detail {
 // Every enumerated profile has likelihood error at most 1e-8*(n+|ell|)

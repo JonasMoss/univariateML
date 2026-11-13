@@ -8,11 +8,23 @@
 // See notes/evaluations/2026-10-29-p0-halfthreshold.md ("hcauchy
 // (translated)") and 2026-10-29-p4-report.md.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../ht/mle.hpp"
 #include <algorithm>
 namespace cppunivariate {
 enum class HcauchyStatus { Ok, InvalidData, Unbounded, ScaleBoundary, SearchFailure };
 struct HcauchyResult { double mu, sigma, logLik; int iterations; HcauchyStatus status; };
+
+inline FitOutcome outcome(const HcauchyResult& r) {
+  switch (r.status) {
+    case HcauchyStatus::Ok: return FitOutcome::estimate(true);
+    case HcauchyStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case HcauchyStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case HcauchyStatus::ScaleBoundary: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case HcauchyStatus::SearchFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
 inline HcauchyResult hcauchy_mle(span x, double held_mu = std::numeric_limits<double>::quiet_NaN(),
                                   double held_sigma = std::numeric_limits<double>::quiet_NaN()) {
   const double nan = std::numeric_limits<double>::quiet_NaN();

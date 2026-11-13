@@ -1,0 +1,22 @@
+25 of 25 families report an outcome on every case: beta bnbinom cmb dlaplace dweibull fatigue frechet genbeta gompertz hcauchy huber invexp invparalogis invweibull llogis logitnorm naka paralogis pareto3 power sgomp sn st trgamma weibull
+
+outcome kind, reason, emitted kind: cases
+  budget        none              budget     5
+  estimate      none              ok         2476
+  estimate      none              tie        22
+  failure       evaluation        error      14
+  failure       evaluation        numerical  40
+  failure       invalid-argument  error      4
+  failure       invalid-input     error      131
+  failure       no-convergence    error      35
+  failure       no-convergence    numerical  136
+  failure       unresolved        unresolved 2
+  limit         none              limit      453
+  nonexistence  unattained        nomle      1
+  nonexistence  unbounded         nomle      49
+
+raw statuses reached: {'beta': [0, 1, 2, 3], 'bnbinom': [0, 1, 2, 3, 4, 6], 'cmb': [0, 1, 2, 3, 6, 7, 8], 'dlaplace': [0, 1, 2], 'dweibull': [0, 1, 3, 4, 5, 6, 8], 'fatigue': [0, 1, 2, 3], 'frechet': [0, 1, 2, 5], 'genbeta': [0, 1, 2, 3, 5, 6], 'gompertz': [0, 1, 2, 3], 'hcauchy': [0, 1, 2, 3], 'huber': [0, 1, 2, 3, 4, 5], 'invexp': [0, 1, 3], 'invparalogis': [0, 1, 2, 3, 4], 'invweibull': [0, 1, 2, 3], 'llogis': [0, 1, 2, 3], 'logitnorm': [0, 1, 2], 'naka': [0, 1, 3, 4], 'paralogis': [0, 1, 2, 3, 4], 'pareto3': [-1, 0, 1, 2, 3], 'power': [0, 1, 2], 'sgomp': [0, 1, 2, 3], 'sn': [0, 1, 2, 3, 4], 'st': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 'trgamma': [0, 1, 2, 4, 6], 'weibull': [0, 1, 2, 4]}
+plain errors that become numerical stops in step 5: {'beta': 1, 'dweibull': 3, 'gompertz': 17, 'invexp': 1, 'invweibull': 2, 'llogis': 1, 'naka': 6, 'pareto3': 3, 'st': 14, 'weibull': 1}
+adapter overrides of a core success (core defects): {'gompertz': 1, 'weibull': 1}
+
+0 disagreements between outcome and emitted kind

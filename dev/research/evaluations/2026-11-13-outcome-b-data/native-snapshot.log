@@ -1,0 +1,52 @@
+beta           114  (5 s)
+bnbinom        134  (57 s)
+cmb            134  (72 s)
+dlaplace       78  (74 s)
+dweibull       78  (76 s)
+fatigue        115  (79 s)
+frechet        207  (86 s)
+genbeta        219  (266 s)
+gompertz       111  (268 s)
+hcauchy        127  (271 s)
+huber          172  (275 s)
+invexp         71  (276 s)
+invparalogis   115  (286 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/mle.hpp:12,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/invweibull/mle.hpp:11,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-b/bindings/common/distributions/invweibull/fit.hpp:3,
+                 from build/snap/native/build/invweibull.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/invweibull/../weibull/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+invweibull     111  (288 s)
+llogis         115  (290 s)
+logitnorm      114  (292 s)
+naka           123  (296 s)
+paralogis      103  (305 s)
+pareto3        103  (308 s)
+power          111  (310 s)
+sgomp          115  (315 s)
+sn             188  (323 s)
+st             284  (359 s)
+trgamma        203  (366 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/dpqr.hpp:9,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp:12,
+                 from /home/jonas/Files/programming/univariateML.wt/outcome-b/bindings/common/distributions/weibull/fit.hpp:3,
+                 from build/snap/native/build/weibull.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:613:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  613 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:611:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  611 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/outcome-b/univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:612:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  612 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+weibull        123  (369 s)

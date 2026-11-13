@@ -29,6 +29,7 @@
 // decreasing and is solved by bracketed bisection.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
@@ -53,6 +54,16 @@ struct BetaResult {
   int iterations;
   BetaStatus status = BetaStatus::Ok;
 };
+
+inline FitOutcome outcome(const BetaResult& r) {
+  switch (r.status) {
+    case BetaStatus::Ok: return FitOutcome::estimate(true);
+    case BetaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case BetaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case BetaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+  }
+  return {};
+}
 
 namespace beta_detail {
 

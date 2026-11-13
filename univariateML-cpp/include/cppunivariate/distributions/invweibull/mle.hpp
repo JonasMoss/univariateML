@@ -2,6 +2,7 @@
 // log ratios, with a checked restoration of the public scale.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 
 #include "../../core/span.hpp"
@@ -26,6 +27,16 @@ struct InvWeibullResult {
   InvWeibullStatus status = InvWeibullStatus::Ok;
   bool certified=true;
 };
+
+inline FitOutcome outcome(const InvWeibullResult& r) {
+  switch (r.status) {
+    case InvWeibullStatus::Ok: return FitOutcome::estimate(r.certified);
+    case InvWeibullStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case InvWeibullStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case InvWeibullStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
 
 // A starting shape is retained in the API; the bracketed profile does not
 // need it. A nonpositive supplied start remains invalid input.

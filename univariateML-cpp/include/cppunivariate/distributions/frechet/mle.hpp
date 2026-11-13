@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../gev/mle.hpp"
@@ -61,6 +62,24 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
 
 enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure, SearchContradicted };
 struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified=true; };
+
+inline FitOutcome outcome(const FrechetResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.status == FrechetStatus::SearchContradicted) return FitOutcome::failure(OutcomeReason::Evaluation);
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  switch (r.status) {
+    case FrechetStatus::Ok: return FitOutcome::estimate(r.certified);
+    case FrechetStatus::InvalidData: return !std::isnan(r.stop_detail.loglik_upper) ? FitOutcome::nonexistence(r.stop_detail.loglik_upper == INFINITY ? OutcomeReason::Unbounded : OutcomeReason::Unattained) : FitOutcome::failure(OutcomeReason::InvalidInput);
+    case FrechetStatus::GumbelLimit: return FitOutcome::limit(true);
+    case FrechetStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case FrechetStatus::NoMLE: return FitOutcome::nonexistence(r.stop_detail.loglik_upper == INFINITY ? OutcomeReason::Unbounded : OutcomeReason::Unattained);
+    case FrechetStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case FrechetStatus::SearchContradicted: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
 inline double frechet_loglik(span x,double lambda,double mu,double sigma) {
  if(!(lambda>0) || !(sigma>0)) return -std::numeric_limits<double>::infinity();
  double ll=x.size()*(std::log(lambda)-std::log(sigma));

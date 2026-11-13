@@ -27,52 +27,62 @@ inline FitResult fit_trgamma(cppunivariate::span x, Held shape1_arg = {}, Held s
   const Held shape2 = shape2_arg;
   const Held scale = scale_arg;
 
- if(scale.supplied && (!(scale.value>0)||!std::isfinite(scale.value))) return fail("`scale` must be positive and finite.");
+ if(scale.supplied && (!(scale.value>0)||!std::isfinite(scale.value))) return invalid_argument(fail("`scale` must be positive and finite."));
 
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double a = shape1.supplied ? shape1.value : nan;
   const double b = shape2.supplied ? shape2.value : nan;
   if ((shape1.supplied && (!(a > 0.0) || !std::isfinite(a))) ||
       (shape2.supplied && (!(b > 0.0) || !std::isfinite(b))))
-    return fail("`shape1` and `shape2` must be positive finite numbers when supplied.");
+    return invalid_argument(fail("`shape1` and `shape2` must be positive finite numbers when supplied."));
   const cppunivariate::span xs = x;
   auto res = scale.supplied ? cppunivariate::trgamma_mle_fixed_scale(xs,scale.value,a,b,reltol,iterlim) : cppunivariate::trgamma_mle(xs, reltol, iterlim, a, b);
-  if(res.stop_detail.budget_exhausted)return classify(fail("Constrained likelihood search failed to converge. Raising iterlim may resolve this stop."),res.stop_detail,"budget",{"shape1","shape2","scale"});
+  const auto o = cppunivariate::outcome(res);
+  const auto done = [&](FitResult out) {
+    // This classification uses observations/holds absent from the core result.
+    if (out.error_kind == "nomle" && o.reason == cppunivariate::OutcomeReason::InvalidInput)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded), static_cast<int>(res.status));
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+      return overridden(std::move(out), static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+  };
+
+  if(res.stop_detail.budget_exhausted)return done(classify(fail("Constrained likelihood search failed to converge. Raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"}));
   if(res.stop_detail.comparison_tie) {
-    if(scale.supplied)return classify(fail("The held-scale interior maximum is too close to the fixed-endpoint power face to certify its coefficients."),res.stop_detail,"tie",{"shape1","shape2","scale"});
-    return classify(fail(res.stop_detail.limit_model==cppunivariate::StopModel::Lnorm ?
+    if(scale.supplied)return done(classify(fail("The held-scale interior maximum is too close to the fixed-endpoint power face to certify its coefficients."),res.stop_detail,"tie",{"shape1","shape2","scale"}));
+    return done(classify(fail(res.stop_detail.limit_model==cppunivariate::StopModel::Lnorm ?
       "The interior and lognormal likelihoods cannot be distinguished at the comparison tolerance. Use `mllnorm` for the limiting fit." :
-      "The interior and endpoint likelihoods cannot be distinguished at the comparison tolerance. Use `mlpower` for the limiting fit."),res.stop_detail,"tie",{"shape1","shape2","scale"});
+      "The interior and endpoint likelihoods cannot be distinguished at the comparison tolerance. Use `mlpower` for the limiting fit."),res.stop_detail,"tie",{"shape1","shape2","scale"}));
   }
-  if(res.transformation_failure)return classify(fail("Distinct observations or the held endpoint became indistinguishable after taking logarithms."),res.stop_detail,"numerical",{"shape1","shape2","scale"});
-  if(res.reconstruction_failure)return classify(fail("Cannot certify the likelihood after reconstructing the coefficients in double precision."),res.stop_detail,"numerical",{"shape1","shape2","scale"});
+  if(res.transformation_failure)return done(classify(fail("Distinct observations or the held endpoint became indistinguishable after taking logarithms."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"}));
+  if(res.reconstruction_failure)return done(classify(fail("Cannot certify the likelihood after reconstructing the coefficients in double precision."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"}));
   if (res.status == cppunivariate::TrGammaStatus::InvalidData)
-    return (x.size()>=2 && std::isfinite(x[0]) && (res.logLik==INFINITY || (!scale.supplied && (std::isnan(a)||std::isnan(b)))) && reltol>0 && std::isfinite(reltol) && iterlim>0 && x[0]>0 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) ? classify(fail("trgamma requires at least two distinct positive finite observations, "
+    return done((x.size()>=2 && std::isfinite(x[0]) && (res.logLik==INFINITY || (!scale.supplied && (std::isnan(a)||std::isnan(b)))) && reltol>0 && std::isfinite(reltol) && iterlim>0 && x[0]>0 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) ? classify(fail("trgamma requires at least two distinct positive finite observations, "
                "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood."),{},"nomle",{}) : fail("trgamma requires at least two distinct positive finite observations, "
-               "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood.");
+               "positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood."));
   if (res.status == cppunivariate::TrGammaStatus::LognormalBoundary)
-    return classify(fail("The trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model."),res.stop_detail,"limit",{"meanlog","sdlog"},"lnorm");
+    return done(classify(fail("The trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model."),res.stop_detail,outcome_kind(o),{"meanlog","sdlog"},"lnorm"));
   if (res.status == cppunivariate::TrGammaStatus::PowerBoundary && scale.supplied)
-    return classify(fail("The held-scale likelihood selects the limiting fixed-endpoint power face at scale; no matching held-endpoint fitter is available."),res.stop_detail,"limit",{"alpha","beta"},"power");
+    return done(classify(fail("The held-scale likelihood selects the limiting fixed-endpoint power face at scale; no matching held-endpoint fitter is available."),res.stop_detail,outcome_kind(o),{"alpha","beta"},"power"));
   if (res.status == cppunivariate::TrGammaStatus::PowerBoundary)
-    return classify(fail("The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model."),res.stop_detail,"limit",{"alpha","beta"},"power");
+    return done(classify(fail("The trgamma likelihood is maximised at a limit. Use `mlpower` to fit this model."),res.stop_detail,outcome_kind(o),{"alpha","beta"},"power"));
   if (res.status == cppunivariate::TrGammaStatus::ScaleOutOfRange) {
     const double gap = res.logLik - cppunivariate::lognormal_mle(xs).logLik;
     auto detail=res.stop_detail;detail.loglik_upper=INFINITY;
-    return classify(fail("The trgamma maximum likelihood fit lies so close to the lognormal limit "
+    return done(classify(fail("The trgamma maximum likelihood fit lies so close to the lognormal limit "
                "that `scale` is not representable with normal double precision (log(scale) = %g). "
                "Use `mllnorm`: its log-likelihood is lower by only %g.",
-               res.log_scale, gap),detail,"numerical",{"shape1","shape2","scale"});
+               res.log_scale, gap),detail,outcome_kind(o),{"shape1","shape2","scale"}));
   }
-  if (res.status == cppunivariate::TrGammaStatus::IterationFailure) return classify(fail("Constrained likelihood search failed to converge."),res.stop_detail,"numerical",{"shape1","shape2","scale"});
+  if (res.status == cppunivariate::TrGammaStatus::IterationFailure) return done(classify(fail("Constrained likelihood search failed to converge."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"}));
   if (!std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale) ||
       !std::isfinite(res.logLik))
-    return fail("trgamma MLE failed to converge.");
+    return done(fail("trgamma MLE failed to converge."));
   std::vector<std::string> fixed;
   if (scale.supplied) fixed.push_back("scale");
   if (shape1.supplied) fixed.push_back("shape1");
   if (shape2.supplied) fixed.push_back("shape2");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

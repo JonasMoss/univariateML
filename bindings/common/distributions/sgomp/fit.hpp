@@ -15,27 +15,35 @@ inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg 
   };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, "nomle", {}); };
   const Held b = b_arg;
   const Held eta = eta_arg;
 
   const double bv=b.supplied ? b.value : cppunivariate::sgomp_detail::nan();
   const double ev=eta.supplied ? eta.value : cppunivariate::sgomp_detail::nan();
-  if (b.supplied && !(bv>0 && std::isfinite(bv))) return fail("fixed `b` must be positive and finite.");
-  if (eta.supplied && !(ev>=0 && std::isfinite(ev))) return fail("fixed `eta` must be nonnegative and finite.");
+  if (b.supplied && !(bv>0 && std::isfinite(bv))) return invalid_argument(fail("fixed `b` must be positive and finite."));
+  if (eta.supplied && !(ev>=0 && std::isfinite(ev))) return invalid_argument(fail("fixed `eta` must be nonnegative and finite."));
   const auto f=cppunivariate::sgomp_mle(x,reltol,iterlim,bv,ev);
-  if(f.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("sgomp numerical accuracy failure: requested coefficient accuracy cannot be established."),f.stop_detail,"numerical",{"b","eta"});
-  if (f.status==cppunivariate::SgompStatus::Collapse) return nomle("The shifted Gompertz MLE does not exist: constant data have unbounded likelihood.");
-  if (f.status==cppunivariate::SgompStatus::InvalidInput) return fail("Shifted Gompertz requires finite nonnegative data, positive reltol and positive iterlim.");
+  const auto o = cppunivariate::outcome(f);
+  const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+      return overridden(std::move(out), static_cast<int>(f.status));
+    return with_outcome(std::move(out), o, static_cast<int>(f.status));
+  };
+
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+
+  if(f.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sgomp numerical accuracy failure: requested coefficient accuracy cannot be established."),f.stop_detail,outcome_kind(o),{"b","eta"}));
+  if (f.status==cppunivariate::SgompStatus::Collapse) return done(nomle("The shifted Gompertz MLE does not exist: constant data have unbounded likelihood."));
+  if (f.status==cppunivariate::SgompStatus::InvalidInput) return done(fail("Shifted Gompertz requires finite nonnegative data, positive reltol and positive iterlim."));
   if (f.status!=cppunivariate::SgompStatus::Ok) {
-    if(f.stop_detail.budget_exhausted)return classify(fail("Shifted Gompertz certificate budget exhausted; increase iterlim."),f.stop_detail,"budget",{"b","eta"});
-    if(f.stop_detail.comparison_tie)return classify(fail("Shifted Gompertz competing global maxima cannot be distinguished; increase iterlim."),f.stop_detail,"tie",{"b","eta"});
-    return classify(fail("Shifted Gompertz MLE failed to converge; increase iterlim."),f.stop_detail,"numerical",{"b","eta"});
+    if(f.stop_detail.budget_exhausted)return done(classify(fail("Shifted Gompertz certificate budget exhausted; increase iterlim."),f.stop_detail,outcome_kind(o),{"b","eta"}));
+    if(f.stop_detail.comparison_tie)return done(classify(fail("Shifted Gompertz competing global maxima cannot be distinguished; increase iterlim."),f.stop_detail,"tie",{"b","eta"}));
+    return done(classify(fail("Shifted Gompertz MLE failed to converge; increase iterlim."),f.stop_detail,outcome_kind(o),{"b","eta"}));
   }
   std::vector<std::string> fixed;
   if (b.supplied) fixed.push_back("b");
   if (eta.supplied) fixed.push_back("eta");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"b",f.b},{"eta",f.eta}}; out.logLik = f.logLik; out.iterations = f.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"b",f.b},{"eta",f.eta}}; out.logLik = f.logLik; out.iterations = f.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

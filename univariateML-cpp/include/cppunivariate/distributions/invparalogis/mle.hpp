@@ -1,6 +1,7 @@
 // Actuar scale is the reciprocal of the paralogistic scale on 1/x.
 // The fixed-scale path preserves the supplied value exactly.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../paralogis/mle.hpp"
 #include <cmath>
@@ -8,6 +9,20 @@
 #include <vector>
 namespace cppunivariate {
 struct InvParalogisResult { double shape, scale; double logLik; int iterations; ParalogisStatus status; StopDetail stop_detail = {}; bool certified=true; };
+
+inline FitOutcome outcome(const InvParalogisResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case ParalogisStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ParalogisStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case ParalogisStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ParalogisStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case ParalogisStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case ParalogisStatus::CertificateBudget: return FitOutcome::budget();
+  }
+  return {};
+}
 inline StopDetail invparalogis_stop_detail(StopDetail d,double jacobian) {
   for(auto& c:d.candidates){if(c.coef.size()==2)c.coef[1]=1/c.coef[1];
     c.loglik_lower+=jacobian;c.loglik_upper+=jacobian;}

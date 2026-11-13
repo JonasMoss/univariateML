@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "dpqr.hpp"
@@ -7,6 +8,20 @@
 namespace cppunivariate {
 enum class SgompStatus { Ok, InvalidInput, Collapse, IterationFailure };
 struct SgompResult { double b,eta,logLik; int iterations; SgompStatus status; StopDetail stop_detail{}; };
+
+inline FitOutcome outcome(const SgompResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.status == SgompStatus::IterationFailure && r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  if (r.status == SgompStatus::IterationFailure && r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  switch (r.status) {
+    case SgompStatus::Ok: return FitOutcome::estimate(true);
+    case SgompStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case SgompStatus::Collapse: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case SgompStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+  }
+  return {};
+}
 namespace sgomp_detail {
 struct Candidate { double b,k,ll; int iterations; bool converged; };
 // Compare ell(a)-ell(b) before adding the potentially enormous common

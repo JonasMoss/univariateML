@@ -22,24 +22,31 @@ inline FitResult fit_beta(cppunivariate::span x, Held shape1_arg = {}, Held shap
 
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double checked_shape1 = shape1.supplied ? shape1.value : nan;
-  if (shape1.supplied && (!std::isfinite(checked_shape1) || (true && !(checked_shape1 > 0)))) return failure("Held parameters must be finite and shapes/scales positive.");
+  if (shape1.supplied && (!std::isfinite(checked_shape1) || (true && !(checked_shape1 > 0)))) return invalid_argument(failure("Held parameters must be finite and shapes/scales positive."));
   const double checked_shape2 = shape2.supplied ? shape2.value : nan;
-  if (shape2.supplied && (!std::isfinite(checked_shape2) || (true && !(checked_shape2 > 0)))) return failure("Held parameters must be finite and shapes/scales positive.");
+  if (shape2.supplied && (!std::isfinite(checked_shape2) || (true && !(checked_shape2 > 0)))) return invalid_argument(failure("Held parameters must be finite and shapes/scales positive."));
 
 
   std::vector<std::string> fixed;
   if (shape1.supplied) fixed.push_back("shape1");
   if (shape2.supplied) fixed.push_back("shape2");
   auto res = cppunivariate::beta_mle(x, reltol, iterlim, checked_shape1, checked_shape2);
-  if (res.status == cppunivariate::BetaStatus::InvalidInput) return failure("Beta requires nonempty finite data strictly between zero and one and valid held parameters.");
+  const auto o = cppunivariate::outcome(res);
+  const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+      return overridden(std::move(out), static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+  };
+
+  if (res.status == cppunivariate::BetaStatus::InvalidInput) return done(failure("Beta requires nonempty finite data strictly between zero and one and valid held parameters."));
   if (res.status == cppunivariate::BetaStatus::Degenerate) {
-    return classify(failure("The beta maximum likelihood estimator does not exist for constant data: "
-               "the likelihood is unbounded as both shapes grow."),{},"nomle",{},"");
+    return done(classify(failure("The beta maximum likelihood estimator does not exist for constant data: "
+               "the likelihood is unbounded as both shapes grow."),{},outcome_kind(o),{},""));
   }
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
-    return failure("Beta MLE failed: iteration limit or shapes cannot be resolved in double precision; increase iterlim.");
+    return done(failure("Beta MLE failed: iteration limit or shapes cannot be resolved in double precision; increase iterlim."));
   }
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",res.alpha},{"shape2",res.beta}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; return out; }();
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",res.alpha},{"shape2",res.beta}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; return out; }());
 
 }
 }

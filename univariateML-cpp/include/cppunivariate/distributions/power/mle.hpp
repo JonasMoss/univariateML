@@ -4,6 +4,7 @@
 // Returns NaN params if min(x) <= 0; the caller turns that into an error.
 
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -25,6 +26,16 @@ struct PowerResult {
   int iterations;
   PowerStatus status = PowerStatus::Ok;
 };
+
+inline FitOutcome outcome(const PowerResult& r) {
+  switch (r.status) {
+    case PowerStatus::Ok: return FitOutcome::estimate(true);
+    case PowerStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case PowerStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case PowerStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
 
 // epsilon is retained for source compatibility and no longer moves endpoints.
 inline PowerResult power_mle(span x, double epsilon, double alpha, double beta) {

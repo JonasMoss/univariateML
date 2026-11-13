@@ -1,0 +1,17 @@
+{
+  "source_sha256": "448f765a43803dd7b435cf8594c00af2315d974f528afc2c49425ca2b25532de",
+  "commit": "1e0f5185432e858b39ceffa18f043ce4d54993b1",
+  "dirty": true,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    "-std=gnu++17",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "no_long_double": true,
+  "cpu_limit": 300,
+  "families": [
+    "invparalogis",
+    "paralogis"
+  ]
+}

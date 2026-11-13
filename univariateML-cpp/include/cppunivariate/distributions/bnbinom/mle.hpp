@@ -1,6 +1,7 @@
 // Global scalar, pair and finite all-free covers. General winning all-free
 // NB faces retain the legacy comparison when unproved. Faces are fitted separately.
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../sstd/local_accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
@@ -30,6 +31,24 @@ struct BnbinomResult {
   bool accuracy_failure=false;
   bool local_accuracy_fallback=false;
 };
+
+inline FitOutcome outcome(const BnbinomResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
+  if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
+  switch (r.status) {
+    case BnbinomStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BnbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case BnbinomStatus::NegativeBinomialLimit: return FitOutcome::limit(r.certified);
+    case BnbinomStatus::PoissonLimit: return FitOutcome::limit(r.certified);
+    case BnbinomStatus::PointMass: return FitOutcome::limit(r.certified);
+    case BnbinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case BnbinomStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case BnbinomStatus::ComparisonTie: return FitOutcome::estimate(false);
+  }
+  return {};
+}
 namespace bnbinom_detail {
 struct Data {
   std::vector<int> x;

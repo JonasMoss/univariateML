@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
@@ -10,6 +11,22 @@
 namespace cppunivariate {
 enum class SnStatus { Ok, InvalidInput, IterationFailure, RightHalfNormalBoundary, LeftHalfNormalBoundary, AccuracyFailure };
 struct SnResult { double xi,omega,alpha,logLik; int iterations; SnStatus status;  StopDetail stop_detail{}; bool budget_exhausted=false; };
+
+inline FitOutcome outcome(const SnResult& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  if (r.stop_detail.comparison_tie) return (std::isfinite(r.stop_detail.loglik_upper) && r.stop_detail.loglik_lower == r.stop_detail.loglik_upper) ? FitOutcome::estimate(true, false) : FitOutcome::estimate(false);
+  if (r.status == SnStatus::IterationFailure && r.budget_exhausted) return FitOutcome::budget();
+  switch (r.status) {
+    case SnStatus::Ok: return FitOutcome::estimate(true);
+    case SnStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case SnStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case SnStatus::RightHalfNormalBoundary: return FitOutcome::limit(false);
+    case SnStatus::LeftHalfNormalBoundary: return FitOutcome::limit(false);
+    case SnStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
 namespace sn_detail {
 struct Inner { double eta,h,ll; bool converged; };
 // Normalized free-coordinate score, evaluated at the point actually returned.

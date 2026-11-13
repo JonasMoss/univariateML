@@ -1,6 +1,7 @@
 // Actuar scale is the exponential rate on 1/x (the reciprocal of the old
 // actuar rate, which was the reciprocal of that same exponential rate).
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../exp/mle.hpp"
 #include <cmath>
 #include <limits>
@@ -10,6 +11,17 @@ enum class InvExpStatus { Ok, InvalidInput, Unbounded, IterationFailure };
 
 struct InvExpResult { double scale; double logLik; int iterations;    InvExpStatus status = InvExpStatus::Ok;
 };
+
+inline FitOutcome outcome(const InvExpResult& r) {
+  switch (r.status) {
+    case InvExpStatus::Ok: return FitOutcome::estimate(true);
+    case InvExpStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    // The adapter currently exposes this status as a plain range/fitting error.
+    case InvExpStatus::Unbounded: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case InvExpStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
 inline InvExpResult invexp_mle(span x) {
   for (double v : x) {
     if (!(v > 0) || !std::isfinite(v)) {

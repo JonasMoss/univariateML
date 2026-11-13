@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/outcome.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
@@ -8,6 +9,20 @@
 namespace cppunivariate {
 enum class Pareto3Status { Ok, InvalidData, Unbounded, IterationFailure, AccuracyFailure };
 struct Pareto3Result { double shape,scale,min,logLik; int iterations; Pareto3Status status; bool certified=true;  StopDetail stop_detail{}; };
+
+inline FitOutcome outcome(const Pareto3Result& r) {
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
+  switch (r.status) {
+    case Pareto3Status::Ok: return FitOutcome::estimate(r.certified);
+    case Pareto3Status::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    // The adapter currently exposes this status as a plain range/fitting error.
+    case Pareto3Status::Unbounded: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case Pareto3Status::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case Pareto3Status::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
+  return {};
+}
 
 inline Pareto3Result pareto3_accuracy_search(span x, double min, double tol, int maxit, double shape=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
