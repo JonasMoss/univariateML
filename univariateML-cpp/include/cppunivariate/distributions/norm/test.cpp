@@ -638,12 +638,16 @@ TEST_CASE("norm: the sd is profiled at the exact mean, not the rounded one") {
   REQUIRE(r.status==cppunivariate::NormStatus::Ok);
   CHECK(r.mean==1);
   CHECK(std::abs(r.sd/sd-1)<1e-14);  // relative: Approx adds an absolute 1e-14
-  CHECK(r.logLik==doctest::Approx(106.1302606629018611538071).epsilon(1e-14));
-  // Held sd, free mean: the maximized value uses the exact mean as well.
+  // logLik is the value at the returned coefficients (decision 2026-11-14):
+  // the supremum 106.1302606629018611538071 less n delta^2/(2 sd^2) = 3/4,
+  // delta = 2^-52/3 being the rounding of the mean.
+  CHECK(r.logLik==doctest::Approx(105.3802606629018611538071).epsilon(1e-14));
+  // Held sd, free mean: likewise at the returned (rounded) mean.
   const double s=1e-16;
   const auto h=cppunivariate::norm_mle(mltest::as_span(x),NAN,s);
   REQUIRE(h.status==cppunivariate::NormStatus::Ok);
-  CHECK(h.logLik==doctest::Approx(-3*(std::log(s)+0.5*std::log(2*cppunivariate::pi))-1.5*(sd/s)*(sd/s)).epsilon(1e-14));
+  CHECK(h.mean==1);
+  CHECK(h.logLik==doctest::Approx(-3*(std::log(s)+0.5*std::log(2*cppunivariate::pi))-0.5*(0x1p-52/s)*(0x1p-52/s)).epsilon(1e-14));
   // Offset ties: the same correction far from 1.
   const std::vector<double> y{1e6,1e6,std::nextafter(1e6,2e6),std::nextafter(1e6,2e6)};
   const double gap=std::nextafter(1e6,2e6)-1e6;

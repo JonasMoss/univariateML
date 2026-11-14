@@ -149,7 +149,14 @@ inline NormResult norm_mle(span x) {
   // The MLE sd is the residual RMS about the exact mean, not the rounded one.
   const double sd = norm_detail::exact_center_rms(x, m.mean, m.sd);
   const double dn = static_cast<double>(n);
-  const double logLik = -0.5 * dn * (std::log(2.0 * cppunivariate::pi) + 1.0) - dn * std::log(sd);
+  // logLik is the log likelihood at the returned coefficients (accuracy
+  // contract). When the exact mean rounds by delta, the returned point lies
+  // n delta^2 / (2 sd^2) below the supremum; the squared residuals about the
+  // returned mean carry that term. sd == m.sd is the ordinary case.
+  const double logLik = sd == m.sd
+      ? -0.5 * dn * (std::log(2.0 * cppunivariate::pi) + 1.0) - dn * std::log(sd)
+      : -dn * (std::log(sd) + 0.5 * std::log(2.0 * cppunivariate::pi)) -
+            0.5 * norm_detail::residuals(x, m.mean).standardized_square(sd);
   return {m.mean, sd, logLik, std::all_of(x.begin(),x.end(),[&](double v){return v==m.mean;}) ? NormStatus::Unbounded : std::isfinite(m.mean) && sd>=std::numeric_limits<double>::min() && std::isfinite(sd) && std::isfinite(logLik) ? NormStatus::Ok : NormStatus::IterationFailure};
 }
 
@@ -168,14 +175,9 @@ inline NormResult norm_mle(span x, double mean, double sd) {
   if (std::isnan(sd) && residual.zero) return {m,0,INFINITY,NormStatus::Unbounded};
   const double s=std::isnan(sd)?residual.rms(x.size()):sd;
   if (!(s>0 && std::isfinite(s)) || (std::isnan(sd) && s<std::numeric_limits<double>::min())) return {m,s,nan,NormStatus::IterationFailure};
-  // With the mean free, the maximized value uses residuals about the exact
-  // mean (see exact_center_rms); the rounded mean would lower it near ties.
-  const double rms=residual.rms(x.size());
-  const double exact=std::isnan(mean)?norm_detail::exact_center_rms(x,m,rms):rms;
-  const double penalty=exact==rms?residual.standardized_square(s):
-      static_cast<double>(x.size())*(exact/s)*(exact/s);
+  // logLik at the returned coefficients: residuals about the returned mean.
   const double ll=-static_cast<double>(x.size())*(std::log(s)+.5*std::log(2*cppunivariate::pi))-
-      .5*penalty;
+      .5*residual.standardized_square(s);
   return {m,s,ll,std::isfinite(m) && std::isfinite(ll) ? NormStatus::Ok : NormStatus::IterationFailure};
 }
 
