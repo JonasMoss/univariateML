@@ -69,7 +69,10 @@ inline InvGaussResult invgauss_mle(span x,double mu,double shape) {
         (static_cast<CPPUNIV_EXTENDED_REAL>(v)-mu)/mu;
       add(d*d/(static_cast<CPPUNIV_EXTENDED_REAL>(v)/scale),q,carry);
     }
-    if(q==0)return {mu,nan,INFINITY,InvGaussStatus::Unbounded};
+    if(q==0) {
+      const bool constant=std::all_of(x.begin(),x.end(),[&](double v){return v==mu;});
+      return {mu,nan,constant?INFINITY:nan,constant?InvGaussStatus::Unbounded:InvGaussStatus::IterationFailure};
+    }
     shape=static_cast<double>((n/q)*scale);
   }
   // The returned likelihood belongs to the public (rounded) coefficients.

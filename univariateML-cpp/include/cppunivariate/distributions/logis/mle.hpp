@@ -10,6 +10,7 @@
 // applies relative to sd.
 
 #pragma once
+#include "dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
@@ -28,7 +29,7 @@ namespace cppunivariate {
 
 // Unbounded: the scale collapses at the common value of constant data (one
 // observation included) or at a held location every observation equals.
-enum class LogisticStatus { Ok, InvalidInput, IterationFailure, Unbounded };
+enum class LogisticStatus { Ok, InvalidInput, IterationFailure, Unbounded, NumericalFailure };
 
 struct LogisticResult {
   double mu;
@@ -190,6 +191,9 @@ inline LogisticResult newton(span x, double tol, int maxit) {
 }  // namespace logistic_detail
 
 inline LogisticResult logistic_mle(span x, double tol, int maxit) {
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,0,LogisticStatus::InvalidInput};
+
+  auto result = [&]() -> LogisticResult {
   maxit = static_cast<int>(solver_budget(maxit));
   const std::size_t n = x.size();
 
@@ -221,11 +225,24 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
             r.logLik - static_cast<double>(n)*std::log(moments.sd), r.iterations, r.status};
   }
   return logistic_detail::newton(x, tol, maxit);
+
+  }();
+  if(result.status==LogisticStatus::Ok) {
+    double sum=0,carry=0;
+    for(double v:x) {const double term=distributions::dlogis(v,result.mu,result.scale,true)-carry;
+      const double next=sum+term;carry=(next-sum)-term;sum=next;}
+    result.logLik=sum;
+    if(!std::isfinite(sum))result.status=LogisticStatus::NumericalFailure;
+  }
+  return result;
 }
 
 
 // Both conditional scores are monotone: bisect the unique root.
 inline LogisticResult logistic_mle(span x,double tol,int maxit,double location,double scale) {
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,0,LogisticStatus::InvalidInput};
+
+  auto result = [&]() -> LogisticResult {
   maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(location)&&std::isnan(scale))return logistic_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -260,11 +277,22 @@ inline LogisticResult logistic_mle(span x,double tol,int maxit,double location,d
     s=std::exp(lo/2+hi/2);
   }
   const double p[]={m,s};return {m,s,-LogisticCost{x}(p),it,it<maxit?LogisticStatus::Ok:LogisticStatus::IterationFailure};
+
+  }();
+  if(result.status==LogisticStatus::Ok) {
+    double sum=0,carry=0;
+    for(double v:x) {const double term=distributions::dlogis(v,result.mu,result.scale,true)-carry;
+      const double next=sum+term;carry=(next-sum)-term;sum=next;}
+    result.logLik=sum;
+    if(!std::isfinite(sum))result.status=LogisticStatus::NumericalFailure;
+  }
+  return result;
 }
 
 
 inline FitOutcome outcome(const LogisticResult& r) {
   switch (r.status) {
+    case LogisticStatus::NumericalFailure:return FitOutcome::failure(OutcomeReason::Evaluation);
     case LogisticStatus::Ok: return FitOutcome::estimate(true);
     case LogisticStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case LogisticStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

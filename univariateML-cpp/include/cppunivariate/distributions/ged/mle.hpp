@@ -7,6 +7,11 @@
 // where f_unit is the standardised GED used by dged().
 
 #pragma once
+#include "../norm/dpqr.hpp"
+#include "../unif/dpqr.hpp"
+#include "../hnorm/dpqr.hpp"
+#include "../lnorm/dpqr.hpp"
+#include "../pareto/dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -33,7 +38,7 @@ namespace cppunivariate {
 inline constexpr double kGedNuLower = 1.0;
 
 
-enum class GedStatus { Ok = 0, BfgsFailure, InvalidStart, UniformBoundary, InvalidShape, Nonunique, UniformUnresolved, TransformFailure };
+enum class GedStatus { Ok = 0, BfgsFailure, InvalidStart, UniformBoundary, InvalidShape, Nonunique, UniformUnresolved, TransformFailure, Unbounded };
 
 struct GedResult {
   double mu;
@@ -47,7 +52,8 @@ struct GedResult {
   bool certified = false;
   // Internal distinction between an exact tie and overlapping numerical bounds.
   bool proved_tie = false;
-  bool search_failed = false; };
+  bool search_failed = false;
+  double comparison_logLik=NAN; };
 
 #include "free_shape_bounds.hpp"
 
@@ -517,6 +523,13 @@ inline GedResult ged_uncertified(GedResult certificate,span x,double tol,int max
 }
 
 inline GedResult ged_mle(span x,double tol,int maxit) {
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,0,GedStatus::InvalidStart};
+
+  if(!x.empty() && tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(x[0]) &&
+      true && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    return {NAN,0,NAN,INFINITY,0,GedStatus::Unbounded};
+
+  auto result = [&]() -> GedResult {
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=ged_shape_certificate(x,tol,maxit,NAN,NAN);
   ged_uniform_certificate(r,x,NAN,tol,maxit);
@@ -524,8 +537,52 @@ inline GedResult ged_mle(span x,double tol,int maxit) {
   r=ged_uncertified(r,x,tol,maxit,NAN,NAN,NAN);
   if(r.status==GedStatus::Ok && (true) && r.nu==kGedNuLower) r.restricted|=16u;
   return r;
+
+  }();
+  if(result.proved_tie && !result.stop_detail.candidates.empty()) {
+    const auto preferred=[](const FitCandidate& c){return c.model==StopModel::None && c.coef.size()==3 && std::isfinite(c.coef[0]) && std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1]>0 && c.coef[2]>0;};
+    const auto& c=result.stop_detail.candidates[better_candidate(result.stop_detail,preferred)];
+    if(preferred(c)) {
+      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
+      result.comparison_logLik=ged_detail::conditional_loglik({y.data(),y.size()},c.coef[0],c.coef[1],c.coef[2]);
+    }
+  }
+  auto& detail=result.stop_detail;
+  auto& coef=detail.limit_coef;
+  if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
+    if(detail.limit_model==StopModel::Unif && !x.empty()) {
+      // Endpoints are public coordinates; round outwards to retain sample support.
+      coef[0]=std::min(coef[0],*std::min_element(x.begin(),x.end()));
+      coef[1]=std::max(coef[1],*std::max_element(x.begin(),x.end()));
+    }
+    double sum=0,carry=0;bool evaluated=true;
+    for(double v:x) {
+      double term=0;
+      switch(detail.limit_model) {
+        case StopModel::Norm:term=distributions::dnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Unif:term=distributions::dunif(v,coef[0],coef[1],true);break;
+        case StopModel::Hnorm:term=distributions::dhnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Lnorm:term=distributions::dlnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Pareto:term=distributions::dpareto(v,coef[0],coef[1],true);break;
+        default:evaluated=false;break;
+      }
+      term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated) {detail.limit_loglik=sum;
+      if(!std::isfinite(sum))result.status=GedStatus::TransformFailure;}
+  }
+  return result;
 }
 inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,double nu) {
+  if((!std::isnan(mean)&&!std::isfinite(mean)) || (!std::isnan(sd)&&!(sd>0&&std::isfinite(sd))) || (!std::isnan(nu)&&!(nu>0&&std::isfinite(nu))))return {NAN,NAN,NAN,NAN,0,GedStatus::InvalidShape};
+
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,0,GedStatus::InvalidStart};
+
+  if(!x.empty() && tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(x[0]) &&
+      std::isnan(sd) && (std::isnan(mean)||mean==x[0]) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    return {NAN,0,NAN,INFINITY,0,GedStatus::Unbounded};
+
+  auto result = [&]() -> GedResult {
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=std::isnan(nu)?ged_shape_certificate(x,tol,maxit,mean,sd):ged_conditional_certificate(x,tol,maxit,mean,sd,nu);
   if(std::isnan(nu) && std::isfinite(sd) && r.status==GedStatus::UniformBoundary) {
@@ -540,6 +597,41 @@ inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,doubl
   r=ged_uncertified(r,x,tol,maxit,mean,sd,nu);
   if(r.status==GedStatus::Ok && (std::isnan(nu)) && r.nu==kGedNuLower) r.restricted|=16u;
   return r;
+
+  }();
+  if(result.proved_tie && !result.stop_detail.candidates.empty()) {
+    const auto preferred=[](const FitCandidate& c){return c.model==StopModel::None && c.coef.size()==3 && std::isfinite(c.coef[0]) && std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1]>0 && c.coef[2]>0;};
+    const auto& c=result.stop_detail.candidates[better_candidate(result.stop_detail,preferred)];
+    if(preferred(c)) {
+      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
+      result.comparison_logLik=ged_detail::conditional_loglik({y.data(),y.size()},c.coef[0],c.coef[1],c.coef[2]);
+    }
+  }
+  auto& detail=result.stop_detail;
+  auto& coef=detail.limit_coef;
+  if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
+    if(detail.limit_model==StopModel::Unif && !x.empty()) {
+      // Endpoints are public coordinates; round outwards to retain sample support.
+      coef[0]=std::min(coef[0],*std::min_element(x.begin(),x.end()));
+      coef[1]=std::max(coef[1],*std::max_element(x.begin(),x.end()));
+    }
+    double sum=0,carry=0;bool evaluated=true;
+    for(double v:x) {
+      double term=0;
+      switch(detail.limit_model) {
+        case StopModel::Norm:term=distributions::dnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Unif:term=distributions::dunif(v,coef[0],coef[1],true);break;
+        case StopModel::Hnorm:term=distributions::dhnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Lnorm:term=distributions::dlnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Pareto:term=distributions::dpareto(v,coef[0],coef[1],true);break;
+        default:evaluated=false;break;
+      }
+      term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated) {detail.limit_loglik=sum;
+      if(!std::isfinite(sum))result.status=GedStatus::TransformFailure;}
+  }
+  return result;
 }
 
 inline bool family_point(const GedResult&, const FitCandidate& c) {
@@ -563,6 +655,7 @@ inline FitOutcome outcome(const GedResult& r) {
   switch (r.status) {
     case GedStatus::Ok: return FitOutcome::estimate(r.certified);
     case GedStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GedStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GedStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GedStatus::UniformBoundary: return FitOutcome::limit(r.certified);
     case GedStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);

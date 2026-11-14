@@ -439,7 +439,7 @@ rescaled mode-score magnitude and its exponent conditioning factor
 $10^{-10}(n+|\ell|)$ per evaluated candidate ($10^{-7}(n+|\ell|)$ for
 $\nu<1$, allowing for the cusp's sensitivity to mode reconstruction).
 Overlapping likelihood allowances or an uncertain weighted-median slope
-produce a comparison-tie stop. These are numerical allowances, not
+retain the competing likelihood-bound witnesses. These are numerical allowances, not
 outward-rounded interval bounds. Nonfinite normalizers, powers, scales or
 failed coordinate reconstruction produce a numerical stop. The settled
 log-gamma moment helper used by d/p/q/r supplies the certificate's shift
@@ -573,7 +573,7 @@ accepted with the GED parent's certification flag. Unclosed held-sd endpoint
 comparisons retain an accepted finite GED search as uncertified; failed or refuted parent searches remain stops. Free-shape uniqueness is false: at
 $x=(-1,1)$, held $\sigma=0.1$ and $\xi=1$, the entire Laplace
 median interval maximizes likelihood; the fitter retains its two endpoints
-in a tie stop.
+as likelihood-bound comparison witnesses.
 
 For asymmetric held skew with a held public moment, a free shape changes
 the mode-to-mean and scale-to-sd conversions. Those holds cannot be replaced

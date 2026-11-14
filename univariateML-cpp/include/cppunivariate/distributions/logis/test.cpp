@@ -145,3 +145,12 @@ TEST_CASE("logis: held scale, location bracket at adjacent doubles") {
   CHECK(cppunivariate::logistic_mle(mltest::as_span(y),mltest::kFitTol,mltest::kFitMaxit,nan,1.0081430589945095).status!=
         cppunivariate::LogisticStatus::Ok);
 }
+
+TEST_CASE("logis: log likelihood belongs to represented coefficients") {
+  const std::vector<double> x{1e12,1e12+1,1e12+3};
+  const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::logistic_mle(data,1e-8,100);
+  REQUIRE(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  double sum=0;for(double v:x)sum+=cppunivariate::distributions::dlogis(v,r.mu,r.scale,true);
+  CHECK(r.logLik==doctest::Approx(sum).epsilon(1e-14));
+}

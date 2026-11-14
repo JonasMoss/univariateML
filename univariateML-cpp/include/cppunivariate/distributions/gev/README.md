@@ -444,3 +444,20 @@ location have a compact scale superlevel region even when at least half the obse
 location. Together with the minimum-tie classifiers this closes the
 $2j\le n$ compactness gap in exact arithmetic; general inner scale-root
 uniqueness is not assumed.
+
+For fixed positive $\xi$, write $\alpha=1/\xi$ and let $k$ observations
+equal the minimum $m$. At the critical multiplicity
+$\alpha(n-k)=k$, profiling the Fréchet scale with lower endpoint
+$m-\delta$ leaves, up to constants,
+$-n\log[k+\sum_{x_i>m}(\delta/(x_i-m+\delta))^\alpha]
+-(\alpha+1)\sum_{x_i>m}\log(x_i-m+\delta)$.
+Both terms decrease strictly for $\delta>0$, proving finite nonattainment.
+Its supremum is $n[\log(1+\alpha)-1]
+-(\alpha+1)\sum_{x_i>m}\log(x_i-m)$.
+When GEV location is held at $m$, the corresponding constant is
+$-k-n\log\xi$ instead. Strictly greater multiplicity gives divergence.
+
+The multiplicity comparison uses a fused residual when the rounded product
+$\xi k$ equals $n-k$. Its sign distinguishes a strict inequality from exact
+binary64 equality. The finite-supremum log bound uses a practical
+$512\epsilon(n+\sum|\text{log-likelihood terms}|)$ margin.

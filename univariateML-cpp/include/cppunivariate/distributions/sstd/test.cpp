@@ -126,7 +126,10 @@ TEST_CASE("sstd: skewed Cauchy data escape to the df-2 face") {
   const auto r = fit(x);
   CHECK(r.status == cppunivariate::SstdStatus::DfTwoBoundary);
   CHECK(r.nu == 2.0);
-  CHECK(std::isinf(r.sigma));
+  CHECK(std::isfinite(r.sigma));
+  CHECK(r.sigma>0);
+  REQUIRE(r.stop_detail.limit_coef.size()==4);
+  CHECK(r.stop_detail.limit_coef[1]==r.sigma);
   CHECK(r.xi > 1.0);
 }
 
@@ -419,7 +422,7 @@ TEST_CASE("sstd: held unit skew delegates the complete certified std model") {
  const auto parent=cppunivariate::student_t_mle_certified(mltest::as_span(g.data),1e-6,200);
  const auto r=cppunivariate::sstd_mle(mltest::as_span(g.data),1e-6,200,NAN,NAN,NAN,1);
  REQUIRE(parent.status==cppunivariate::StudentTStatus::Ok);
- REQUIRE(r.status==cppunivariate::SstdStatus::Ok);CHECK(r.certified);
+ REQUIRE(r.status==cppunivariate::SstdStatus::Ok);CHECK(r.certified==parent.certified);
  CHECK(r.mu==parent.mu);CHECK(r.sigma==parent.sigma);CHECK(r.nu==parent.nu);CHECK(r.logLik==parent.logLik);CHECK(r.xi==1);
  const auto b=cppunivariate::sstd_mle(mltest::as_span(g.data),1e-6,1,NAN,NAN,NAN,1);
  REQUIRE(b.status==cppunivariate::SstdStatus::CertificateFailure);
@@ -430,7 +433,9 @@ TEST_CASE("sstd: held unit skew delegates the complete certified std model") {
  CHECK_FALSE(b.stop_detail.candidates.empty());
  const std::vector<double> normal{-2,-1,0,1,2};
  const auto f=cppunivariate::sstd_mle(mltest::as_span(normal),1e-6,200,NAN,NAN,NAN,1);
- REQUIRE(f.status==cppunivariate::SstdStatus::SnormBoundary);CHECK(f.certified);
+ REQUIRE(f.status==cppunivariate::SstdStatus::SnormBoundary);
+ const auto normal_parent=cppunivariate::student_t_mle_certified(mltest::as_span(normal),1e-6,200);
+ CHECK(f.certified==normal_parent.certified);
  CHECK(f.stop_detail.limit_model==cppunivariate::StopModel::Norm);
 }
 
@@ -707,4 +712,70 @@ TEST_CASE("sstd normal-limit sensitivity bound avoids intermediate overflow") {
  // limits by O(1/nu), far below binary64 resolution at these inputs.
  for(double x:{0.,1.,10.})
   CHECK(cppunivariate::distributions::dsstd(x,0,1,nu,1e8,true)==doctest::Approx(cppunivariate::distributions::dsnorm(x,0,1,1e8,true)).epsilon(1e-10));
+}
+
+TEST_CASE("sstd: singleton collapse is a core statistical outcome") {
+  const std::vector<double> x{2};const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::sstd_mle(data,1e-8,100);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
+}
+
+#include "cppunivariate/distributions/ht/dpqr.hpp"
+TEST_CASE("sstd: held-sd half-t payload uses its face coefficients") {
+  const std::vector<double> x{-0.10690873946095238,-0.10689805072475353,-0.10688736198855467,-0.10687667325235581,-0.1068552957799581};
+  const double sd=1.0184483076867987,nu=2.9622019441967624;
+  const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-10,200,NAN,sd,nu,NAN);
+  REQUIRE(r.status==cppunivariate::SstdStatus::LeftHalfTBoundary);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  const auto& p=r.stop_detail.limit_coef;
+  CHECK(p[0]==x.back());CHECK(p[1]==nu);
+  const double mean=std::sqrt(nu/cppunivariate::pi)*cppunivariate::special::gamma_delta_ratio((nu-1)/2,.5);
+  CHECK(p[2]*std::sqrt(nu/(nu-2)-mean*mean)==doctest::Approx(sd).epsilon(1e-12));
+  double sum=0;for(double v:x)sum+=cppunivariate::distributions::dht(-v,-p[0],p[1],p[2],true);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(sum).epsilon(1e-12));
+}
+
+TEST_CASE("sstd: independently solved faces survive an exhausted interior restart") {
+  for(const auto& x:std::vector<std::vector<double>>{
+      {.9998,.9999,1.,1.0001,1.0003},
+      {.99999998,.99999999,1.,1.00000001,1.00000003},
+      {.999999999998,.999999999999,1.,1.000000000001,1.000000000003}}) {
+    const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-10,500,.012734271748561354);
+    CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Limit);
+    CHECK_FALSE(cppunivariate::outcome(r).certified);
+    REQUIRE(r.stop_detail.limit_coef.size()==3);
+    CHECK(std::isfinite(r.stop_detail.limit_loglik));
+    CHECK(r.stop_detail.limit_coef[0]>=x.back());
+  }
+}
+
+TEST_CASE("sstd: an unfinished interior restart cannot be replaced by a face") {
+  const std::vector<double> x{-2,-1,-.4,0,.2,.3,.5,1,2,5};
+  const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-10,1,NAN,1,4);
+  CHECK(r.status==cppunivariate::SstdStatus::BfgsFailure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::NoConvergence);
+}
+
+TEST_CASE("sstd: status meaning takes precedence over retained face metadata") {
+  cppunivariate::SstdResult r{0,1,4,1,0,0,cppunivariate::SstdStatus::CertificateFailure};
+  r.certified=true;r.stop_detail=cppunivariate::limit_detail({0,1},0,cppunivariate::StopModel::Norm);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+  r.status=cppunivariate::SstdStatus::Ok;
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  r.status=cppunivariate::SstdStatus::DfTwoBoundary;
+  r.stop_detail=cppunivariate::limit_detail({0,1,2},0,cppunivariate::StopModel::Lst);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Limit);
+  CHECK(cppunivariate::outcome(r).certified);
+}
+
+TEST_CASE("sstd: an unproved scale face is an unresolved comparison") {
+  cppunivariate::SstdResult r{0,0,2,1,0,0,cppunivariate::SstdStatus::ScaleBoundary};
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unresolved);
+  r.certified=true;
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unattained);
 }

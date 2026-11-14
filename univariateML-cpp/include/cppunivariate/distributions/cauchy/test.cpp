@@ -36,7 +36,7 @@ TEST_CASE("cauchy: three observations and nonexistent MLE") {
   CHECK(r.logLik >= -4.99686179 - 1e-6);
   // The empty sample is invalid input (TASK-214.3); see the last test case.
   for (const std::vector<double> &bad : {std::vector<double>{1}, {1, 1}, {1, 1, 2}, {1, 1, 2, 3}}) {
-    CHECK(cppunivariate::fit_cauchy(mltest::as_span(bad), mltest::kFitTol, mltest::kFitMaxit).status == cppunivariate::CauchyStatus::NoMLE);
+    CHECK(cppunivariate::fit_cauchy(mltest::as_span(bad), mltest::kFitTol, mltest::kFitMaxit).status == (bad.size()==4?cppunivariate::CauchyStatus::Unattained:cppunivariate::CauchyStatus::NoMLE));
   }
 }
 
@@ -265,4 +265,24 @@ TEST_CASE("cauchy: an empty sample is invalid input, one observation an unbounde
   const std::vector<double> one{3.5},bad{std::numeric_limits<double>::quiet_NaN()};
   CHECK(cppunivariate::fit_cauchy(mltest::as_span(one),1e-10,100).status==cppunivariate::CauchyStatus::NoMLE);
   CHECK(cppunivariate::fit_cauchy(mltest::as_span(bad),1e-10,100).status==cppunivariate::CauchyStatus::InvalidInput);
+}
+
+TEST_CASE("cauchy: log likelihood belongs to represented coefficients") {
+  const std::vector<double> x{1e12,1e12+1,1e12+3};
+  const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::fit_cauchy(data,1e-8,100);
+  REQUIRE(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  double sum=0;for(double v:x)sum+=cppunivariate::distributions::dcauchy(v,r.mu,r.scale,true);
+  CHECK(r.logLik==doctest::Approx(sum).epsilon(1e-14));
+}
+
+TEST_CASE("cauchy: exact half atom distinguishes finite nonattainment") {
+  const std::vector<double> x{0,0,1,2};
+  const auto r=cppunivariate::fit_cauchy(mltest::as_span(x),1e-10,100);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unattained);
+  const std::vector<double> two{0,2};
+  const auto attained=cppunivariate::fit_cauchy(mltest::as_span(two),1e-10,100);
+  CHECK(cppunivariate::outcome(attained).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(cppunivariate::outcome(attained).unique);
+  CHECK(attained.maximizer_support==std::vector<double>{0,2});
 }

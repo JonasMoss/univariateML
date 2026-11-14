@@ -14,8 +14,6 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   const double N = size.supplied?size.value:std::numeric_limits<double>::quiet_NaN();
   if (size.supplied && (!std::isfinite(N) || N < 0 || N != std::floor(N) || N > 1e7))
     return invalid_argument(failure("`size` must be a nonnegative integer (at most 1e7)."));
-  if (!size.supplied && !alpha.supplied && !beta.supplied)
-    return invalid_argument(failure("Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known."));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double a = alpha.supplied ? alpha.value : nan;
   const double b = beta.supplied ? beta.value : nan;
@@ -26,10 +24,13 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   const auto res = cppunivariate::bbinom_mle(x, N, reltol, iterlim, a, b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
+    if(!res.maximizer_shape_ray.empty())out.extra_vectors.push_back({"maximizer_shape_ray",res.maximizer_shape_ray});
+    if(!res.free_positive_shapes.empty())out.extra_vectors.push_back({"free_positive_shapes",res.free_positive_shapes});
     if (res.status == cppunivariate::BbinomStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"size",size_arg.supplied},{"alpha",alpha_arg.supplied},{"beta",beta_arg.supplied}});
   };
+  if(res.status==cppunivariate::BbinomStatus::Unsupported)return done(failure("Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known."));
   if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("bbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"size","alpha","beta"}));
   if(res.accuracy_failure)return done(stop_failure(failure("bbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,outcome_payload(o),{"size","alpha","beta"}));
   if(res.status!=cppunivariate::BbinomStatus::Ok && res.stop_detail.budget_exhausted)return done(stop_failure(failure("Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"size","alpha","beta"}));

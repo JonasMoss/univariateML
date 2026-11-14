@@ -1,0 +1,180 @@
+[
+  {
+    "name": "held-zero",
+    "kind": "estimate",
+    "reason": "none",
+    "values": [
+      2,
+      3,
+      -1.2163953243244934
+    ],
+    "reference_shape": "2.0",
+    "reference_scale": "3.0",
+    "reference_loglik": "-1.216395324324493145934039346393047409715971270387482592842042972432302013746742753803257283451940204",
+    "mode": "native",
+    "passed": true
+  },
+  {
+    "name": "scale-root",
+    "kind": "estimate",
+    "reason": "none",
+    "values": [
+      2,
+      0.5000000000035804,
+      -0.5232481437645475
+    ],
+    "reference_shape": "2.0",
+    "reference_scale": "0.5",
+    "reference_loglik": "-0.5232481437645478365168243168882977516558985049347689484858938901883329269598410665846525012795882083",
+    "mode": "native",
+    "passed": true
+  },
+  {
+    "name": "shape-root",
+    "kind": "estimate",
+    "reason": "none",
+    "values": [
+      2.8853900817779268,
+      1,
+      -0.5738269782767262
+    ],
+    "reference_shape": "2.885390081777926814719849362003784274853291908305971868270898813862218438362370159771053245787012689",
+    "reference_scale": "1.0",
+    "reference_loglik": "-0.5738269782767260365578895620764846920855146271351017936188661200711927599488967326758846477445683251",
+    "mode": "native",
+    "passed": true
+  },
+  {
+    "name": "pareto-critical",
+    "kind": "nonexistence",
+    "reason": "unattained",
+    "values": [
+      -2.2737367544323206e-13,
+      2.2737367544323206e-13
+    ],
+    "reference": "0.0",
+    "mode": "native",
+    "passed": true
+  },
+  {
+    "name": "gev-free-critical",
+    "kind": "nonexistence",
+    "reason": "unattained",
+    "values": [
+      -2.7041631339967958,
+      -2.7041631339945478
+    ],
+    "reference": "-2.704163133995670925814264289232422886057528326531751644795916999087517120344173099379152735558803734",
+    "mode": "native",
+    "passed": true
+  },
+  {
+    "name": "gev-held-critical",
+    "kind": "nonexistence",
+    "reason": "unattained",
+    "values": [
+      -3.1369537826457323,
+      -3.136953782643583
+    ],
+    "reference": "-3.136953782644657217682342982018517705489470867306716830480002943952121147837658606985667302462684141",
+    "mode": "native",
+    "passed": true
+  },
+  {
+    "name": "fpareto-constant",
+    "kind": "nonexistence",
+    "reason": "unbounded",
+    "values": [],
+    "mode": "native",
+    "passed": true
+  },
+  {
+    "name": "held-zero",
+    "kind": "estimate",
+    "reason": "none",
+    "values": [
+      2,
+      3,
+      -1.2163953243244934
+    ],
+    "reference_shape": "2.0",
+    "reference_scale": "3.0",
+    "reference_loglik": "-1.216395324324493145934039346393047409715971270387482592842042972432302013746742753803257283451940204",
+    "mode": "double",
+    "passed": true
+  },
+  {
+    "name": "scale-root",
+    "kind": "estimate",
+    "reason": "none",
+    "values": [
+      2,
+      0.5000000000035804,
+      -0.5232481437645475
+    ],
+    "reference_shape": "2.0",
+    "reference_scale": "0.5",
+    "reference_loglik": "-0.5232481437645478365168243168882977516558985049347689484858938901883329269598410665846525012795882083",
+    "mode": "double",
+    "passed": true
+  },
+  {
+    "name": "shape-root",
+    "kind": "estimate",
+    "reason": "none",
+    "values": [
+      2.8853900817779268,
+      1,
+      -0.5738269782767262
+    ],
+    "reference_shape": "2.885390081777926814719849362003784274853291908305971868270898813862218438362370159771053245787012689",
+    "reference_scale": "1.0",
+    "reference_loglik": "-0.5738269782767260365578895620764846920855146271351017936188661200711927599488967326758846477445683251",
+    "mode": "double",
+    "passed": true
+  },
+  {
+    "name": "pareto-critical",
+    "kind": "nonexistence",
+    "reason": "unattained",
+    "values": [
+      -2.2737367544323206e-13,
+      2.2737367544323206e-13
+    ],
+    "reference": "0.0",
+    "mode": "double",
+    "passed": true
+  },
+  {
+    "name": "gev-free-critical",
+    "kind": "nonexistence",
+    "reason": "unattained",
+    "values": [
+      -2.7041631339967958,
+      -2.7041631339945478
+    ],
+    "reference": "-2.704163133995670925814264289232422886057528326531751644795916999087517120344173099379152735558803734",
+    "mode": "double",
+    "passed": true
+  },
+  {
+    "name": "gev-held-critical",
+    "kind": "nonexistence",
+    "reason": "unattained",
+    "values": [
+      -3.1369537826457323,
+      -3.136953782643583
+    ],
+    "reference": "-3.136953782644657217682342982018517705489470867306716830480002943952121147837658606985667302462684141",
+    "mode": "double",
+    "passed": true
+  },
+  {
+    "name": "fpareto-constant",
+    "kind": "nonexistence",
+    "reason": "unbounded",
+    "values": [],
+    "mode": "double",
+    "passed": true
+  }
+]

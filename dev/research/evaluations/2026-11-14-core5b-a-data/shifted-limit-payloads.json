@@ -1,0 +1,52 @@
+[
+  {
+    "family": "fpareto",
+    "data": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "held": {
+      "min": 2,
+      "shape2": 2,
+      "shape3": 2
+    },
+    "kind": "limit",
+    "model": "trgamma",
+    "estimates": {
+      "shape1": 2,
+      "shape2": 2,
+      "scale": 1.414213562373095
+    },
+    "limit_loglik": -4.909645111040875
+  },
+  {
+    "family": "pareto2",
+    "data": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "held": {
+      "min": 2
+    },
+    "kind": "limit",
+    "model": "exp",
+    "estimates": {
+      "rate": 0.18181818181818177
+    },
+    "limit_loglik": -27.047480922384253
+  }
+]

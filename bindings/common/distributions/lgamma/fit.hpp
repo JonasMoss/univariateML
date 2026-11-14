@@ -7,17 +7,7 @@
 #include <vector>
 namespace umvl_binding {
 inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held ratelog_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
-  // Invalid controls remain ordinary errors, even if a legacy fitter reports
-  // a statistical status before checking them.
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(!(abstol>0 && std::isfinite(abstol) && iterlim>0))return out;
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shapelog = shapelog_arg;
@@ -40,14 +30,10 @@ inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held 
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::LgammaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    // Preserve the classifier's refusal of a structured stop (invalid context
-    // or missing finite payload); the core result does not retain that context.
-    if (!out.error.empty() && (out.payload_kind==PayloadKind::None) && o.kind != cppunivariate::OutcomeKind::Failure)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status),{{"shapelog",shapelog_arg.supplied},{"ratelog",ratelog_arg.supplied}});
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shapelog",shapelog_arg.supplied},{"ratelog",ratelog_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if(res.status==cppunivariate::LgammaStatus::InvalidInput)
     return done(fail("Loggamma fitting needs nonempty finite observations greater than 1, positive abstol and positive iterlim."));
   if(res.status==cppunivariate::LgammaStatus::IterationFailure)

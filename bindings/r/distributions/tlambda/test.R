@@ -38,7 +38,7 @@ test_that("Tukey lambda existence guards and exact uniform faces", {
     expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)))
   }
   expect_error(suppressWarnings(mltlambda(c(0,0,1,2)), classes = "univariateML_restricted"),"tie multiplicity")
-  expect_error(suppressWarnings(mltlambda(1:2), classes = "univariateML_restricted"),"three")
+  expect_error(suppressWarnings(mltlambda(1:2), classes = "univariateML_restricted"),"global/collapse comparison is unresolved")
   expect_error(suppressWarnings(mltlambda(x,lambda=Inf), classes = "univariateML_restricted"),"Fixed lambda")
   expect_error(suppressWarnings(mltlambda(x,lambda=NA_real_), classes = "univariateML_restricted"),"finite")
   expect_error(suppressWarnings(mltlambda(x,reltol=0), classes = "univariateML_restricted"),"positive")

@@ -1,36 +1,6 @@
 {
  "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
  "known": {
-  "density:limit|double|bhatt|archive|000334": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -20.904298225896255; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|bhatt|archive|000337": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -8.710124260790105; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|bhatt|archive|000341": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 3.77225585450597; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|bhatt|archive|000345": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 58.555068951448256; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|bhatt|archive|000346": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -4165.541479604501; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|bhatt|archive|000347": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -229.3659354366812; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
   "density:limit|double|burr|archive|000616": {
    "ref": "TASK-214.16",
    "detail": "reported 79.589398482013451, summed density 79.589398469812579, relative 1.53e-10; independent 79.589398469812565: reported off 1.5e-10, density off 1.8e-16 (fitter)",
@@ -51,57 +21,7 @@
    "detail": "reported 125.64121095151593, summed density 125.641186328516, relative 1.96e-07; independent 125.641186328516: reported off 2e-07, density off 0 (fitter)",
    "finding": "limit-loglik-off-density"
   },
-  "density:limit|double|ged|archive|002362": {
-   "ref": "TASK-214.16",
-   "detail": "reported 103.29215996025371, summed density 103.29215997651195, relative 1.57e-10; independent 103.29215997651194: reported off 1.6e-10, density off 1.4e-16 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|double|ged|archive|002363": {
-   "ref": "TASK-214.16",
-   "detail": "reported 149.34380563200594, summed density 149.34396821512658, relative 1.09e-06; independent 149.34396821512658: reported off 1.1e-06, density off 0 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|double|ged|archive|002365": {
-   "ref": "TASK-214.16",
-   "detail": "reported 84.056214143569761, summed density 84.056214154671977, relative 1.32e-10; independent 84.056214154671991: reported off 1.3e-10, density off 1.7e-16 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|double|ged|class|offset": {
-   "ref": "TASK-214.16",
-   "detail": "reported -6.5916737320086582, summed density -6.0696054700708792, relative 0.0792; independent -6.0696054700708792: reported off 0.086, density off 0 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|double|ht|class|subnormal": {
-   "ref": "TASK-214.16",
-   "detail": "reported 2228.832174144789, summed density 2228.8134001645299, relative 8.42e-06; independent 2228.8134001645299: reported off 8.4e-06, density off 0 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|double|invtrgamma|archive|004067": {
-   "ref": "TASK-214.16",
-   "detail": "reported 136.83404653523652, summed density 136.83410255939168, relative 4.09e-07; independent 136.83410255939165: reported off 4.1e-07, density off 2.1e-16 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|double|invtrgamma|class|near-constant": {
-   "ref": "TASK-214.16",
-   "detail": "reported 112.50050200608815, summed density 112.58448226184579, relative 0.000746; independent 112.58448226184579: reported off 0.00075, density off 0 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
   "density:limit|double|lomax|class|subnormal": {
-   "ref": "TASK-214.16",
-   "detail": "summed density nan, reported 2228.240774222464; independent: InvalidFit: rate=+inf outside (0, inf)",
-   "finding": "limit-coefficient-infinite"
-  },
-  "density:limit|double|lst|class|subnormal": {
-   "ref": "TASK-214.16",
-   "detail": "reported 2229.6715978266921, summed density 2229.5634001645294, relative 4.85e-05; independent 2229.5634001645299: reported off 4.9e-05, density off 2e-16 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|double|lst|class|subnormal-signed": {
-   "ref": "TASK-214.16",
-   "detail": "reported 2228.400651036111, summed density 2228.0634001645294, relative 0.000151; independent 2228.0634001645299: reported off 0.00015, density off 2e-16 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|double|pareto2|class|subnormal": {
    "ref": "TASK-214.16",
    "detail": "summed density nan, reported 2228.240774222464; independent: InvalidFit: rate=+inf outside (0, inf)",
    "finding": "limit-coefficient-infinite"
@@ -115,46 +35,6 @@
    "ref": "TASK-214.16",
    "detail": "reported 62.862593050232988, summed density 62.862593014913188, relative 5.62e-10; independent 62.862593014913188: reported off 5.6e-10, density off 0 (fitter)",
    "finding": "limit-loglik-off-density"
-  },
-  "density:limit|double|sged|archive|005966": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -13.351816139659453; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|sged|archive|005968": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 1.8565774085250986; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|sged|archive|005969": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 3.094295680875164; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|sged|archive|005978": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -4158.004983528941; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|sged|archive|006121": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 32.80157344468982; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|sged|resample|n3-s0": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -2.9062715305732327; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|sged|resample|n3-s3": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 0.22948831057490926; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|double|sged|resample|n7-s0": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -6.700244099880683; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
   },
   "density:limit|double|snorm|class|subnormal": {
    "ref": "TASK-214.16",
@@ -206,36 +86,6 @@
    "detail": "reported 120.83014544292739, summed density 120.83022330699154, relative 6.44e-07; independent 120.83022330699154: reported off 6.4e-07, density off 0 (fitter)",
    "finding": "limit-loglik-off-density"
   },
-  "density:limit|native|bhatt|archive|000334": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -20.904298225896255; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|bhatt|archive|000337": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -8.710124260790105; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|bhatt|archive|000341": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 3.77225585450597; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|bhatt|archive|000345": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 58.555068951448256; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|bhatt|archive|000346": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -4165.541479604501; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|bhatt|archive|000347": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -229.3659354366812; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
   "density:limit|native|burr|archive|000616": {
    "ref": "TASK-214.16",
    "detail": "reported 79.589398482013451, summed density 79.589398469812579, relative 1.53e-10; independent 79.589398469812565: reported off 1.5e-10, density off 1.8e-16 (fitter)",
@@ -256,57 +106,7 @@
    "detail": "reported 125.64121095151593, summed density 125.641186328516, relative 1.96e-07; independent 125.641186328516: reported off 2e-07, density off 0 (fitter)",
    "finding": "limit-loglik-off-density"
   },
-  "density:limit|native|ged|archive|002362": {
-   "ref": "TASK-214.16",
-   "detail": "reported 103.29215996025371, summed density 103.29215997651195, relative 1.57e-10; independent 103.29215997651194: reported off 1.6e-10, density off 1.4e-16 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|native|ged|archive|002363": {
-   "ref": "TASK-214.16",
-   "detail": "reported 149.34380563200594, summed density 149.34396821512658, relative 1.09e-06; independent 149.34396821512658: reported off 1.1e-06, density off 0 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|native|ged|archive|002365": {
-   "ref": "TASK-214.16",
-   "detail": "reported 84.056214143569761, summed density 84.056214154671977, relative 1.32e-10; independent 84.056214154671991: reported off 1.3e-10, density off 1.7e-16 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|native|ged|class|offset": {
-   "ref": "TASK-214.16",
-   "detail": "reported -6.5916737320086582, summed density -6.0696054700708792, relative 0.0792; independent -6.0696054700708792: reported off 0.086, density off 0 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|native|ht|class|subnormal": {
-   "ref": "TASK-214.16",
-   "detail": "reported 2228.832174144789, summed density 2228.8134001645299, relative 8.42e-06; independent 2228.8134001645299: reported off 8.4e-06, density off 0 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|native|invtrgamma|archive|004067": {
-   "ref": "TASK-214.16",
-   "detail": "reported 136.83404653523652, summed density 136.83410255939168, relative 4.09e-07; independent 136.83410255939165: reported off 4.1e-07, density off 2.1e-16 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|native|invtrgamma|class|near-constant": {
-   "ref": "TASK-214.16",
-   "detail": "reported 112.50050200608815, summed density 112.58448226184579, relative 0.000746; independent 112.58448226184579: reported off 0.00075, density off 0 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
   "density:limit|native|lomax|class|subnormal": {
-   "ref": "TASK-214.16",
-   "detail": "summed density nan, reported 2228.240774222464; independent: InvalidFit: rate=+inf outside (0, inf)",
-   "finding": "limit-coefficient-infinite"
-  },
-  "density:limit|native|lst|class|subnormal": {
-   "ref": "TASK-214.16",
-   "detail": "reported 2229.6715978266921, summed density 2229.5634001645294, relative 4.85e-05; independent 2229.5634001645299: reported off 4.9e-05, density off 2e-16 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|native|lst|class|subnormal-signed": {
-   "ref": "TASK-214.16",
-   "detail": "reported 2228.400651036111, summed density 2228.0634001645294, relative 0.000151; independent 2228.0634001645299: reported off 0.00015, density off 2e-16 (fitter)",
-   "finding": "limit-loglik-off-density"
-  },
-  "density:limit|native|pareto2|class|subnormal": {
    "ref": "TASK-214.16",
    "detail": "summed density nan, reported 2228.240774222464; independent: InvalidFit: rate=+inf outside (0, inf)",
    "finding": "limit-coefficient-infinite"
@@ -320,46 +120,6 @@
    "ref": "TASK-214.16",
    "detail": "reported 62.862593050232988, summed density 62.862593014913188, relative 5.62e-10; independent 62.862593014913188: reported off 5.6e-10, density off 0 (fitter)",
    "finding": "limit-loglik-off-density"
-  },
-  "density:limit|native|sged|archive|005966": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -13.351816139659453; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|sged|archive|005968": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 1.8565774085250986; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|sged|archive|005969": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 3.094295680875164; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|sged|archive|005978": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -4158.004983528941; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|sged|archive|006121": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 32.80157344468982; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|sged|resample|n3-s0": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -2.9062715305732327; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|sged|resample|n3-s3": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported 0.22948831057490926; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
-  },
-  "density:limit|native|sged|resample|n7-s0": {
-   "ref": "TASK-214.16",
-   "detail": "support: summed density -inf, reported -6.700244099880683; independent -inf: reported off inf, density off 0 (fitter)",
-   "finding": "limit-coefficients-exclude-observation"
   },
   "density:limit|native|snorm|class|subnormal": {
    "ref": "TASK-214.16",
@@ -411,21 +171,6 @@
    "detail": "reported 120.83014544292739, summed density 120.83022330699154, relative 6.44e-07; independent 120.83022330699154: reported off 6.4e-07, density off 0 (fitter)",
    "finding": "limit-loglik-off-density"
   },
-  "density|double|cauchy|class|offset": {
-   "ref": "TASK-214.15",
-   "detail": "reported -13.386100919334671, summed density -13.387458911694992, relative 0.000101; independent -13.387458911694992: reported off 0.0001, density off 0 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|double|cauchy|class|subnormal": {
-   "ref": "TASK-214.15",
-   "detail": "reported 2228.761355817358, summed density 2228.4997317454754, relative 0.000117; independent 2228.4997317454759: reported off 0.00012, density off 2e-16 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|double|cauchy|class|subnormal-signed": {
-   "ref": "TASK-214.15",
-   "detail": "reported 2227.6627435286896, summed density 2227.5834410136013, relative 3.56e-05; independent 2227.5834410136017: reported off 3.6e-05, density off 2e-16 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
   "density|double|gamma|class|near-constant": {
    "ref": "TASK-214.15",
    "detail": "reported 108.2097022045817, summed density 104.32049537463749, relative 0.0359; independent 104.32049537463747: reported off 0.037, density off 1.4e-16 (fitter)",
@@ -434,16 +179,6 @@
   "density|double|gamma|class|offset": {
    "ref": "TASK-214.15",
    "detail": "reported -4.6941760841680065, summed density -4.8874146007343473, relative 0.0412; independent -4.887414600734358: reported off 0.04, density off 2.2e-15 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|double|gumbel|class|near-constant": {
-   "ref": "TASK-214.15",
-   "detail": "reported 104.49684725144328, summed density 104.30035886002871, relative 0.00188; independent 104.30035886002872: reported off 0.0019, density off 1.4e-16 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|double|gumbel|class|offset": {
-   "ref": "TASK-214.15",
-   "detail": "reported -15.606465211076202, summed density -15.608931472198648, relative 0.000158; independent -15.608931472198648: reported off 0.00016, density off 0 (fitter)",
    "finding": "ok-loglik-off-density"
   },
   "density|double|hcauchy|class|subnormal": {
@@ -464,26 +199,6 @@
   "density|double|lgser|class|huge": {
    "ref": "TASK-214.15",
    "detail": "reported -123.67311738073835, summed density -123.673117687588, relative 2.48e-09; independent -123.67311768758799: reported off 2.5e-09, density off 1.1e-16 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|double|logis|class|near-constant": {
-   "ref": "TASK-214.15",
-   "detail": "reported 116.37872746918715, summed density 115.95486216405349, relative 0.00364; independent 115.95486216405348: reported off 0.0037, density off 1.2e-16 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|double|logis|class|offset": {
-   "ref": "TASK-214.15",
-   "detail": "reported -10.326093903725283, summed density -10.351446848544908, relative 0.00246; independent -10.351446848544908: reported off 0.0024, density off 0 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|double|logis|class|subnormal": {
-   "ref": "TASK-214.15",
-   "detail": "reported 2229.5058793133053, summed density 2228.6808746529509, relative 0.00037; independent 2228.6808746529509: reported off 0.00037, density off 0 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|double|logis|class|subnormal-signed": {
-   "ref": "TASK-214.15",
-   "detail": "reported 2228.2397312354256, summed density 2228.0535420059014, relative 8.36e-05; independent 2228.0535420059014: reported off 8.4e-05, density off 0 (fitter)",
    "finding": "ok-loglik-off-density"
   },
   "density|double|pois+zero=modified|class|huge": {
@@ -511,21 +226,6 @@
    "detail": "reported -9.486845670933775, summed density -9.5109333020286346, relative 0.00254; independent -9.5109333020286169: reported off 0.0025, density off 1.9e-15 (fitter)",
    "finding": "ok-loglik-off-density"
   },
-  "density|native|cauchy|class|offset": {
-   "ref": "TASK-214.15",
-   "detail": "reported -13.386100919334671, summed density -13.387458911694992, relative 0.000101; independent -13.387458911694992: reported off 0.0001, density off 0 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|native|cauchy|class|subnormal": {
-   "ref": "TASK-214.15",
-   "detail": "reported 2228.761355817358, summed density 2228.4997317454754, relative 0.000117; independent 2228.4997317454759: reported off 0.00012, density off 2e-16 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|native|cauchy|class|subnormal-signed": {
-   "ref": "TASK-214.15",
-   "detail": "reported 2227.6627435286896, summed density 2227.5834410136013, relative 3.56e-05; independent 2227.5834410136017: reported off 3.6e-05, density off 2e-16 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
   "density|native|gamma|class|near-constant": {
    "ref": "TASK-214.15",
    "detail": "reported 108.2097022045817, summed density 104.32049537463749, relative 0.0359; independent 104.32049537463747: reported off 0.037, density off 1.4e-16 (fitter)",
@@ -534,16 +234,6 @@
   "density|native|gamma|class|offset": {
    "ref": "TASK-214.15",
    "detail": "reported -4.6941760841680065, summed density -4.8874146007343473, relative 0.0412; independent -4.887414600734358: reported off 0.04, density off 2.2e-15 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|native|gumbel|class|near-constant": {
-   "ref": "TASK-214.15",
-   "detail": "reported 104.49684725144328, summed density 104.30035886002871, relative 0.00188; independent 104.30035886002872: reported off 0.0019, density off 1.4e-16 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|native|gumbel|class|offset": {
-   "ref": "TASK-214.15",
-   "detail": "reported -15.606465211076202, summed density -15.608931472198648, relative 0.000158; independent -15.608931472198648: reported off 0.00016, density off 0 (fitter)",
    "finding": "ok-loglik-off-density"
   },
   "density|native|hcauchy|class|subnormal": {
@@ -564,26 +254,6 @@
   "density|native|lgser|class|huge": {
    "ref": "TASK-214.15",
    "detail": "reported -123.67311738073835, summed density -123.673117687588, relative 2.48e-09; independent -123.67311768758799: reported off 2.5e-09, density off 1.1e-16 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|native|logis|class|near-constant": {
-   "ref": "TASK-214.15",
-   "detail": "reported 116.37872746918715, summed density 115.95486216405349, relative 0.00364; independent 115.95486216405348: reported off 0.0037, density off 1.2e-16 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|native|logis|class|offset": {
-   "ref": "TASK-214.15",
-   "detail": "reported -10.326093903725283, summed density -10.351446848544908, relative 0.00246; independent -10.351446848544908: reported off 0.0024, density off 0 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|native|logis|class|subnormal": {
-   "ref": "TASK-214.15",
-   "detail": "reported 2229.5058793133053, summed density 2228.6808746529509, relative 0.00037; independent 2228.6808746529509: reported off 0.00037, density off 0 (fitter)",
-   "finding": "ok-loglik-off-density"
-  },
-  "density|native|logis|class|subnormal-signed": {
-   "ref": "TASK-214.15",
-   "detail": "reported 2228.2397312354256, summed density 2228.0535420059014, relative 8.36e-05; independent 2228.0535420059014: reported off 8.4e-05, density off 0 (fitter)",
    "finding": "ok-loglik-off-density"
   },
   "density|native|pois+zero=modified|class|huge": {
@@ -695,41 +365,6 @@
    "detail": "ends in F:invalid-argument",
    "finding": "invalid-data-wrong-reason"
   },
-  "phenomenon:non-finite|double|fpareto|class|nan": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|double|fpareto|class|neginf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|double|nsbeta|class|inf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|double|nsbeta|class|nan": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|double|nsbeta|class|neginf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|double|pareto2|class|nan": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|double|pareto2|class|neginf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
   "phenomenon:non-finite|double|pareto3|class|nan": {
    "ref": "TASK-214.17",
    "detail": "ends in F:invalid-argument",
@@ -746,41 +381,6 @@
    "finding": "invalid-data-wrong-reason"
   },
   "phenomenon:non-finite|double|pareto4|class|neginf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|fpareto|class|nan": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|fpareto|class|neginf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|nsbeta|class|inf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|nsbeta|class|nan": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|nsbeta|class|neginf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|pareto2|class|nan": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|pareto2|class|neginf": {
    "ref": "TASK-214.17",
    "detail": "ends in F:invalid-argument",
    "finding": "invalid-data-wrong-reason"
@@ -815,37 +415,12 @@
    "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
    "finding": "valid-sample-refused-as-invalid"
   },
-  "phenomenon:one-constant|double|gev|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:one-constant|double|invburr|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:one-constant|double|invtrgamma|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
-   "finding": "valid-sample-refused-as-invalid"
-  },
   "phenomenon:one-constant|double|pareto4|class|one": {
    "ref": "TASK-214.17",
    "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
    "finding": "valid-sample-refused-as-invalid"
   },
   "phenomenon:one-constant|double|sn|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:one-constant|double|sstd|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:one-constant|double|tlambda|class|one": {
    "ref": "TASK-214.17",
    "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
    "finding": "valid-sample-refused-as-invalid"
@@ -865,37 +440,12 @@
    "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
    "finding": "valid-sample-refused-as-invalid"
   },
-  "phenomenon:one-constant|native|gev|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:one-constant|native|invburr|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:one-constant|native|invtrgamma|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
-   "finding": "valid-sample-refused-as-invalid"
-  },
   "phenomenon:one-constant|native|pareto4|class|one": {
    "ref": "TASK-214.17",
    "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
    "finding": "valid-sample-refused-as-invalid"
   },
   "phenomenon:one-constant|native|sn|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:one-constant|native|sstd|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:one-constant|native|tlambda|class|one": {
    "ref": "TASK-214.17",
    "detail": "'one' ends in F:invalid-input, 'constant' in N:unbounded",
    "finding": "valid-sample-refused-as-invalid"
@@ -921,11 +471,6 @@
    "finding": "invalid-data-wrong-reason"
   },
   "phenomenon:outside-support|double|binom+zero=truncated|class|negative": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:outside-support|double|fpareto|class|negative": {
    "ref": "TASK-214.17",
    "detail": "data beyond a fixed support bound end in F:invalid-argument",
    "finding": "invalid-data-wrong-reason"
@@ -963,16 +508,6 @@
   "phenomenon:outside-support|double|nhyper|class|zeros": {
    "ref": "TASK-214.17",
    "detail": "data beyond a fixed support bound end in N:unattained",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:outside-support|double|nsbeta|class|negative": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:outside-support|double|pareto2|class|negative": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:invalid-argument",
    "finding": "invalid-data-wrong-reason"
   },
   "phenomenon:outside-support|double|pareto3|class|negative": {
@@ -1030,11 +565,6 @@
    "detail": "data beyond a fixed support bound end in F:invalid-argument",
    "finding": "invalid-data-wrong-reason"
   },
-  "phenomenon:outside-support|native|fpareto|class|negative": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
   "phenomenon:outside-support|native|geom+zero=modified|class|negative": {
    "ref": "TASK-214.17",
    "detail": "data beyond a fixed support bound end in F:invalid-argument",
@@ -1068,16 +598,6 @@
   "phenomenon:outside-support|native|nhyper|class|zeros": {
    "ref": "TASK-214.17",
    "detail": "data beyond a fixed support bound end in N:unattained",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:outside-support|native|nsbeta|class|negative": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:outside-support|native|pareto2|class|negative": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:invalid-argument",
    "finding": "invalid-data-wrong-reason"
   },
   "phenomenon:outside-support|native|pareto3|class|negative": {
@@ -1120,16 +640,6 @@
    "detail": "valid observations end in F:invalid-input",
    "finding": "valid-sample-refused-as-invalid"
   },
-  "phenomenon:valid-data|double|fpareto|class|constant": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|double|fpareto|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
   "phenomenon:valid-data|double|frechet|class|one": {
    "ref": "TASK-214.17",
    "detail": "valid observations end in F:invalid-input",
@@ -1150,26 +660,6 @@
    "detail": "valid observations end in F:invalid-input",
    "finding": "valid-sample-refused-as-invalid"
   },
-  "phenomenon:valid-data|double|gev|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|double|gev|class|two": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|double|invburr|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|double|invtrgamma|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
   "phenomenon:valid-data|double|kumar|class|constant": {
    "ref": "TASK-214.17",
    "detail": "valid observations end in F:invalid-input",
@@ -1178,11 +668,6 @@
   "phenomenon:valid-data|double|kumar|class|one": {
    "ref": "TASK-214.17",
    "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|double|pareto2|class|zeros": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-argument",
    "finding": "valid-sample-refused-as-invalid"
   },
   "phenomenon:valid-data|double|pareto4|class|one": {
@@ -1195,47 +680,12 @@
    "detail": "valid observations end in F:invalid-input",
    "finding": "valid-sample-refused-as-invalid"
   },
-  "phenomenon:valid-data|double|sstd|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|double|tlambda|class|near-constant": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|double|tlambda|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|double|tlambda|class|ties": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|double|tlambda|class|two": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
   "phenomenon:valid-data|double|trgamma|class|one": {
    "ref": "TASK-214.17",
    "detail": "valid observations end in F:invalid-input",
    "finding": "valid-sample-refused-as-invalid"
   },
   "phenomenon:valid-data|native|burr|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|native|fpareto|class|constant": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|native|fpareto|class|one": {
    "ref": "TASK-214.17",
    "detail": "valid observations end in F:invalid-input",
    "finding": "valid-sample-refused-as-invalid"
@@ -1260,26 +710,6 @@
    "detail": "valid observations end in F:invalid-input",
    "finding": "valid-sample-refused-as-invalid"
   },
-  "phenomenon:valid-data|native|gev|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|native|gev|class|two": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|native|invburr|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|native|invtrgamma|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
   "phenomenon:valid-data|native|kumar|class|constant": {
    "ref": "TASK-214.17",
    "detail": "valid observations end in F:invalid-input",
@@ -1290,42 +720,12 @@
    "detail": "valid observations end in F:invalid-input",
    "finding": "valid-sample-refused-as-invalid"
   },
-  "phenomenon:valid-data|native|pareto2|class|zeros": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-argument",
-   "finding": "valid-sample-refused-as-invalid"
-  },
   "phenomenon:valid-data|native|pareto4|class|one": {
    "ref": "TASK-214.17",
    "detail": "valid observations end in F:invalid-input",
    "finding": "valid-sample-refused-as-invalid"
   },
   "phenomenon:valid-data|native|sn|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|native|sstd|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|native|tlambda|class|near-constant": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|native|tlambda|class|one": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|native|tlambda|class|ties": {
-   "ref": "TASK-214.17",
-   "detail": "valid observations end in F:invalid-input",
-   "finding": "valid-sample-refused-as-invalid"
-  },
-  "phenomenon:valid-data|native|tlambda|class|two": {
    "ref": "TASK-214.17",
    "detail": "valid observations end in F:invalid-input",
    "finding": "valid-sample-refused-as-invalid"

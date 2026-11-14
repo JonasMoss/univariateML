@@ -131,12 +131,12 @@ inline TlambdaResult profile(span x,double tol,int maxit,double l=NAN,double mu=
   TlambdaResult bad{NAN,NAN,l,NAN,0,TlambdaStatus::InvalidData};
   const bool hl=!std::isnan(l),hm=!std::isnan(mu),hs=!std::isnan(sigma);
   if(hl && !std::isfinite(l)){bad.status=TlambdaStatus::InvalidShape;return bad;}
-  if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1 || (!hm && !hs && x.size()<3))return bad;
+  if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1)return bad;
   std::vector<double> y(x.begin(),x.end());for(double v:y)if(!std::isfinite(v))return bad;std::sort(y.begin(),y.end());
   if(!hs && hm && !hl && std::count(y.begin(),y.end(),mu)){bad.status=TlambdaStatus::Unbounded;return bad;}
   if(!hm && !hs) {
     std::size_t run=1;
-    for(std::size_t j=1;j<y.size();++j){run=y[j]==y[j-1]?run+1:1;if(hl&&l<0?run*std::abs(l)>=y.size()-run:2*run>=y.size())return bad;}
+    for(std::size_t j=1;j<y.size();++j){run=y[j]==y[j-1]?run+1:1;if(hl&&l<0?run*std::abs(l)>=y.size()-run:2*run>=y.size()) {if(!hl && 2*run>y.size())bad.status=TlambdaStatus::Unbounded;return bad;}}
   }
   const double centre=y.front()/2+y.back()/2;
   const double origin=hm?mu:y[y.size()/2];

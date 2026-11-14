@@ -150,3 +150,16 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genb
 ## R notes
 
 With `min = 0`, the fit agrees with `mllomax(x)` after reciprocal conversion of the rate. Numerical comparisons prefer the exponential face within $10^{-8}n$ log-likelihood units, so a tied or slightly better finite maximum can be rejected. A detected face stops with a recommendation to use `mlexp(x - min)`. Unresolved searches stop.
+
+The held lower endpoint is included in the support. If $k>0$ observations
+are exactly there, free shape and scale give unbounded likelihood. With
+shape $a$ held and scale free, the collapse exponent is $a(n-k)-k$.
+A negative exponent gives divergence; equality leaves the strictly decreasing
+profile $n\log a-(a+1)\sum_{x_i>\min}\log(\sigma+x_i-\min)$ and a finite
+unattained supremum. A positive exponent gives a unique scale root: its
+log-scale score divided by $a+1$ is
+$[a(n-k)-k]/(a+1)-\sum_{x_i>\min}\sigma/(\sigma+x_i-\min)$,
+which is strictly decreasing. The score's practical sign margin is
+$128\epsilon[n+|\text{constant}|+\sum|\text{terms}|]$.
+With scale held, the free shape is $n/\sum\log(1+(x_i-\min)/\sigma)$;
+when every observation equals the endpoint, a free shape diverges instead.

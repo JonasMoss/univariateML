@@ -49,7 +49,7 @@ TEST_CASE("P2 fpareto constant conditional shape fits") {
  for(int mask=0;mask<3;++mask) {
    double q=mask==0?nan:2,a=mask==2?nan:3,p=mask==1?nan:2;
    auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,300,q,a,p,1);
-   REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+   REQUIRE(r.status==cppunivariate::FparetoStatus::Ok);
    CHECK(std::isfinite(r.logLik));
    CHECK(r.scale==1);
    if(mask!=0) CHECK(r.shape1==q);
@@ -70,19 +70,19 @@ TEST_CASE("fpareto: d/p/q/r against the truth table") {
 TEST_CASE("Feller Pareto held unit beta shape and scale inherit scalar certificate") {
  const std::vector<double> x{2.1,2.2,2.4,2.8};
  const auto a=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-9,1000,NAN,NAN,1,1);
- REQUIRE(a.status==cppunivariate::Gb2Status::Ok);
+ REQUIRE(a.status==cppunivariate::FparetoStatus::Ok);
  REQUIRE(a.stop_detail.candidates.size()==1);
  CHECK(a.stop_detail.candidates[0].coef.size()==5);
  const auto stop=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-9,1,NAN,NAN,1,1);
- CHECK(stop.status==cppunivariate::Gb2Status::Ok);
+ CHECK(stop.status==cppunivariate::FparetoStatus::Ok);
  CHECK(std::isfinite(stop.stop_detail.loglik_lower));
  const std::vector<double> close{1,std::nextafter(1.,INFINITY),2};
- CHECK(cppunivariate::fpareto_mle(mltest::as_span(close),-1e100,1e-9,1000,NAN,NAN,1,1e100).status==cppunivariate::Gb2Status::NumericalFailure);
+ CHECK(cppunivariate::fpareto_mle(mltest::as_span(close),-1e100,1e-9,1000,NAN,NAN,1,1e100).status==cppunivariate::FparetoStatus::NumericalFailure);
 }
 
 TEST_CASE("Feller Pareto refuses inexact threshold subtraction onto held scale") {
  const std::vector<double> x{1.1,2,3};
- CHECK(cppunivariate::fpareto_mle(mltest::as_span(x),.1,1e-9,1000,NAN,NAN,1,1).status==cppunivariate::Gb2Status::NumericalFailure);
+ CHECK(cppunivariate::fpareto_mle(mltest::as_span(x),.1,1e-9,1000,NAN,NAN,1,1).status==cppunivariate::FparetoStatus::NumericalFailure);
 }
 
 TEST_CASE("Feller Pareto transports held-power certificates and excess face coordinates") {
@@ -90,7 +90,7 @@ TEST_CASE("Feller Pareto transports held-power certificates and excess face coor
  std::vector<double> y;for(double v:x)y.push_back(v-2);
  const auto a=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,1000,NAN,.7,2,NAN);
  const auto b=cppunivariate::gb2_mle(mltest::as_span(y),1e-7,1000,NAN,.7,2,NAN);
- CHECK(a.status==b.status);CHECK(a.logLik==b.logLik);
+ CHECK(static_cast<int>(a.status)==static_cast<int>(b.status));CHECK(a.logLik==b.logLik);
  REQUIRE(a.stop_detail.candidates.size()==b.stop_detail.candidates.size());
  for(std::size_t i=0;i<a.stop_detail.candidates.size();++i) {
   auto expected=b.stop_detail.candidates[i].coef;
@@ -100,7 +100,7 @@ TEST_CASE("Feller Pareto transports held-power certificates and excess face coor
  }
  const std::vector<double>constant(5,4);
  const auto face=cppunivariate::fpareto_mle(mltest::as_span(constant),2,1e-7,300,NAN,2,2,NAN);
- CHECK(face.status==cppunivariate::Gb2Status::TrGammaBoundary);
+ CHECK(face.status==cppunivariate::FparetoStatus::TrGammaBoundary);
  CHECK(face.stop_detail.limit_model==cppunivariate::StopModel::Trgamma);
  REQUIRE_FALSE(face.stop_detail.candidates.empty());
  CHECK(face.stop_detail.candidates[0].model==cppunivariate::StopModel::Trgamma);
@@ -110,14 +110,14 @@ TEST_CASE("Feller Pareto transports held-power certificates and excess face coor
 TEST_CASE("Feller Pareto held-power subtraction cannot invent a gamma face") {
  const std::vector<double>x{1,std::nextafter(1.,2.)};
  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),-1e100,1e-7,300,NAN,2,2,NAN);
- CHECK(r.status==cppunivariate::Gb2Status::NumericalFailure);
+ CHECK(r.status==cppunivariate::FparetoStatus::NumericalFailure);
 }
 
 TEST_CASE("Feller Pareto generic budget faces also stay on the excess scale") {
  const auto g=mltest::load_distribution_golden("trgamma");
  auto x=g.data;for(double& v:x)v+=2;
  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-8,1);
- REQUIRE(r.status==cppunivariate::Gb2Status::CertificateBudget);
+ REQUIRE(r.status==cppunivariate::FparetoStatus::CertificateBudget);
  bool found=false;
  for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::Trgamma) {
   found=true;CHECK(c.coef.size()==3);
@@ -130,20 +130,20 @@ TEST_CASE("Feller Pareto transports held-shape concavity certificate and numeric
  auto y=x;for(double&v:y)v-=2;
  const auto a=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,300,2,NAN,3,NAN);
  const auto b=cppunivariate::gb2_mle(mltest::as_span(y),1e-7,300,2,NAN,3,NAN);
- REQUIRE(a.status==cppunivariate::Gb2Status::Ok);
+ REQUIRE(a.status==cppunivariate::FparetoStatus::Ok);
  CHECK(a.shape2==b.shape2);CHECK(a.scale==b.scale);CHECK(a.logLik==b.logLik);
  REQUIRE(a.stop_detail.candidates.size()==1);
  CHECK(a.stop_detail.candidates[0].coef.size()==5);
  CHECK(a.stop_detail.candidates[0].coef.back()==2);
  const auto low=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,1,2,NAN,3,NAN);
- CHECK(low.status==cppunivariate::Gb2Status::NumericalFailure);
+ CHECK(low.status==cppunivariate::FparetoStatus::NumericalFailure);
  CHECK_FALSE(low.stop_detail.budget_exhausted);
 }
 
 TEST_CASE("Feller Pareto subunit held beta shape selects the excess endpoint face") {
  const std::vector<double>x{2.1,2.2,2.4,2.8};
  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,1,.4,NAN,NAN,1);
- REQUIRE(r.status==cppunivariate::Gb2Status::PowerBoundary);
+ REQUIRE(r.status==cppunivariate::FparetoStatus::PowerBoundary);
  REQUIRE(r.stop_detail.limit_coef.size()==2);
  CHECK(r.stop_detail.limit_coef[0]==1);
  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Power);
@@ -156,7 +156,7 @@ TEST_CASE("Feller Pareto transports global held-scale mixed-power certificates")
  auto y=x;for(double&v:y)v-=2;
  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,300,2,NAN,NAN,1);
  const auto s=cppunivariate::gb2_mle(mltest::as_span(y),1e-7,300,2,NAN,NAN,1);
- REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
+ REQUIRE(r.status==cppunivariate::FparetoStatus::Ok);
  CHECK(r.shape2==s.shape2);CHECK(r.shape3==s.shape3);CHECK(r.logLik==s.logLik);
  REQUIRE(r.stop_detail.candidates.size()==1);
  REQUIRE(r.stop_detail.candidates[0].coef.size()==5);
@@ -167,7 +167,7 @@ TEST_CASE("fpareto: preserves the GB2 uncertified restoration flag") {
   const double e=std::numeric_limits<double>::epsilon();
   const std::vector<double> data{1,1+e,1+2*e,1+3*e,1+4*e};
   const auto fit=cppunivariate::fpareto_mle(mltest::as_span(data),0,1e-10,100,1,NAN,.855,NAN);
-  REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+  REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
   CHECK_FALSE(fit.certified);
   CHECK(std::isfinite(fit.logLik));
 }
@@ -176,7 +176,7 @@ TEST_CASE("Feller Pareto keeps an uncertified GB2 delegate") {
  const std::vector<double> x{std::exp(-1.1),std::exp(-1.)};const auto d=mltest::as_span(x);
  const auto p=cppunivariate::gb2_mle(d,1e-8,1000,NAN,NAN,1,1);
  const auto r=cppunivariate::fpareto_mle(d,0,1e-8,1000,NAN,NAN,1,1);
- REQUIRE(p.status==cppunivariate::Gb2Status::Ok);REQUIRE(r.status==p.status);
+ REQUIRE(p.status==cppunivariate::Gb2Status::Ok);REQUIRE(static_cast<int>(r.status)==static_cast<int>(p.status));
  CHECK_FALSE(p.certified);CHECK(r.certified==p.certified);CHECK(r.shape1==p.shape1);CHECK(r.shape2==p.shape2);CHECK(r.shape3==p.shape3);CHECK(r.scale==p.scale);CHECK(r.logLik==p.logLik);
 }
 
@@ -208,7 +208,7 @@ TEST_CASE("fpareto: exact-input density from likelihood seam replay") {
 TEST_CASE("Feller Pareto shifted small-power delegate preserves coefficient accuracy") {
   const std::vector<double> x{-0.9214649596795436,0.8052817030312258,-0.8794500440544186,-0.94038306419953,-0.8578562107426755,-0.5330042262055368,-0.6058183156150942,-0.8552011020269872,-0.8650718678225906,-0.9131779105776012,1.6691108495205547,-0.7495125418805053,-0.9342347883565515,-0.9070418110427749,-0.8137499120449846,-0.8832017297669015,-0.6031416207431743,-0.8357494184006476,-0.8345401934239036,-0.7768843416522309,-0.9440393414775035,-0.9301468388918922,-0.16713815926646924,-0.8933883275895507,-0.7810962145460771,-0.973491063922652,-0.8564847306035056,-0.3018277157710706,-0.8895306220601406,-0.8953419504699215,-0.7368659214847622,-0.6109156382164084,-0.9134973845491653,-0.7197476622532691,-0.1115184175143471,0.5240183611033451,-0.915357339803346,-0.3594178394401816,-0.6675255921229256,-0.5521462960848786,-0.9581894843135835,-0.7595560959239014,-0.9741704759253846,-0.6178582794004865,-0.9485966746158716,-0.9837048144865806,-0.8262981273151637,-0.8352059470163766,-0.2875627028269807,-0.9579134964998978,-0.7556943151040054,-0.9314072290592983,-0.9309586129077811,-0.18416779494913804,-0.47172818978401465,-0.9181842727552808,1.0944026714447435,0.05024372935570964,-0.9242009517124405,-0.9456501645041582,0.9909394766284128,-0.8093136559727943,-0.4150131260714647,-0.9695296083850372,-0.9359507059271471,-0.9161908548566309,0.6930664596676608,-0.6790304596326251,-0.9341157211021279,-0.8972875710975925,-0.9440017696678997,-0.6401608398490215,-0.9282654288365675,-0.74669606234718,-0.5273730915206909,-0.8966737340210387,-0.9798047166128145,-0.32920983114635627,-0.831410821562459,-0.670473686290163,-0.9553451426837769,-0.8906545821269859,-0.8561099101226859,-0.4974309967093806,3.529005885777762,-0.9546126866303658,1.7601163143875178,-0.950376000426306,-0.9161101243863532,43.601555292678334,-0.9076113680700507,-0.9188084619165454,-0.8349667333008088,-0.9511211729568833,-0.7421022186468236,-0.9668541991293433,-0.9285269374835531,-0.18777542381117185,-0.8952247869528144,-0.4707853765488056};
   const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),-1,1e-10,64,NAN,.5,0.6611055385779123,NAN);
-  REQUIRE(r.status==cppunivariate::Gb2Status::Ok);CHECK_FALSE(r.certified);
+  REQUIRE(r.status==cppunivariate::FparetoStatus::Ok);CHECK_FALSE(r.certified);
   // Independent high-precision stationary point of the original density.
   CHECK(r.shape1==doctest::Approx(903.42459848503018709681433141762496194656947889977050180189860907).scale(0.).epsilon(1e-10));
   CHECK(r.scale==doctest::Approx(625653.11035127752986411643771357591891618246514876143687797578969).scale(0.).epsilon(1e-10));
@@ -231,7 +231,7 @@ TEST_CASE("Feller Pareto extreme all-free profiles have bounded nested work") {
   SUBCASE("archive 1599") {
     const std::vector<double> x{9.341081677852826e-151,4.595475734747349e-150,5.998711847579505e-151,1.056419269543656e-149,7.000746031939794e-151,1.112552433763363e-150,1.3300121914598085e-148,3.057685931487713e-151,9.471857714817827e-151,3.8097695246334955e-150,1.8225442484990885e-150,1.1865419401405472e-151};
     const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000);
-    CHECK(r.status!=cppunivariate::Gb2Status::Ok);
+    CHECK(r.status!=cppunivariate::FparetoStatus::Ok);
     CHECK(r.profile_evaluations>0);
     CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
     REQUIRE_FALSE(r.stop_detail.candidates.empty());
@@ -245,7 +245,7 @@ TEST_CASE("Feller Pareto extreme all-free profiles have bounded nested work") {
   SUBCASE("archive 1600") {
     const std::vector<double> x{9.341081677852825e+149,4.5954757347473486e+150,5.998711847579505e+149,1.056419269543656e+151,7.000746031939793e+149,1.1125524337633629e+150,1.3300121914598085e+152,3.057685931487713e+149,9.471857714817827e+149,3.809769524633495e+150,1.8225442484990886e+150,1.1865419401405473e+149};
     const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000);
-    CHECK(r.status!=cppunivariate::Gb2Status::Ok);
+    CHECK(r.status!=cppunivariate::FparetoStatus::Ok);
     CHECK(r.profile_evaluations>0);
     CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
     REQUIRE_FALSE(r.stop_detail.candidates.empty());
@@ -259,7 +259,7 @@ TEST_CASE("Feller Pareto extreme all-free profiles have bounded nested work") {
   SUBCASE("archive 10717") {
     const std::vector<double> x{1e-200,2e-200,3e-200,5e-200,9e-200};
     const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000);
-    CHECK(r.status!=cppunivariate::Gb2Status::Ok);
+    CHECK(r.status!=cppunivariate::FparetoStatus::Ok);
     CHECK(r.profile_evaluations>0);
     CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
     REQUIRE_FALSE(r.stop_detail.candidates.empty());
@@ -276,7 +276,7 @@ TEST_CASE("Feller Pareto completed grid profiles preserve Pareto limit decisions
   SUBCASE("archive 1601") {
     const std::vector<double> x{0.9341081677852825,4.595475734747349,0.5998711847579505,10.56419269543656,1112685.434982509};
     const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000);
-    REQUIRE(r.status==cppunivariate::Gb2Status::ParetoBoundary);
+    REQUIRE(r.status==cppunivariate::FparetoStatus::ParetoBoundary);
     CHECK(r.logLik==cppunivariate::pareto_mle(mltest::as_span(x)).logLik);
     CHECK(r.logLik==doctest::Approx(-29.102002422134035).epsilon(2e-14));
     CHECK(r.profile_evaluations>0);
@@ -286,11 +286,45 @@ TEST_CASE("Feller Pareto completed grid profiles preserve Pareto limit decisions
   SUBCASE("archive 10072") {
     const std::vector<double> x{0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,0.9992918544349726,1.0007086473905342,1.0007086473905342,1.0007086473905342,1.0007086473905342,1.0007086473905342};
     const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000);
-    REQUIRE(r.status==cppunivariate::Gb2Status::ParetoBoundary);
+    REQUIRE(r.status==cppunivariate::FparetoStatus::ParetoBoundary);
     CHECK(r.logLik==cppunivariate::pareto_mle(mltest::as_span(x)).logLik);
     CHECK(r.logLik==doctest::Approx(77.219355967752222).epsilon(2e-14));
     CHECK(r.profile_evaluations>0);
     CHECK(r.profile_evaluations<=cppunivariate::certificate_budget(1000));
     CHECK_FALSE(r.stop_detail.budget_exhausted);
   }
+}
+
+TEST_CASE("fpareto: a feasible point refutes the held-scale lognormal face") {
+  const std::vector<double> x{9.341081677852825e149,4.5954757347473486e150,5.998711847579505e149,1.056419269543656e151,7.000746031939793e149,1.1125524337633629e150,1.3300121914598085e152,3.057685931487713e149,9.471857714817827e149,3.809769524633495e150,1.8225442484990886e150,1.1865419401405473e149};
+  const double scale=1.0087842921157315;
+  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-7,1000,NAN,NAN,NAN,scale);
+  REQUIRE(r.status==cppunivariate::FparetoStatus::FaceRefuted);
+  REQUIRE_FALSE(r.stop_detail.candidates.empty());
+  const auto& witness=r.stop_detail.candidates.front();
+  CHECK(witness.coef[3]==scale);CHECK(witness.coef[4]==0);
+  CHECK(witness.loglik_lower>r.stop_detail.limit_loglik);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::NoConvergence);
+}
+
+TEST_CASE("fpareto: constant fixed-beta data diverge with free power and scale") {
+  for(auto x:std::vector<std::vector<double>>{{2},{2,2,2}}) {
+    const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-10,1000,.3,NAN,.4,NAN);
+    CHECK(r.status==cppunivariate::FparetoStatus::Unbounded);
+    CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+  }
+}
+
+TEST_CASE("fpareto: rounded excess equality is not a concentration proof") {
+  const std::vector<double> x{1,1};
+  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),1e-20,1e-10,1000,.3,NAN,.4,1);
+  CHECK(r.status==cppunivariate::FparetoStatus::NumericalFailure);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Failure);
+}
+
+TEST_CASE("fpareto: excess overflow does not invalidate finite supported data") {
+  const std::vector<double> x{1e308,1.2e308};
+  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),-1e308,1e-10,500);
+  CHECK(r.status==cppunivariate::FparetoStatus::NumericalFailure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
 }

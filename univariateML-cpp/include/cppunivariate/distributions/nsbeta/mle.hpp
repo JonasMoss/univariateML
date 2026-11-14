@@ -5,15 +5,16 @@
 #include <vector>
 #include <cmath>
 namespace cppunivariate {
-struct NsbetaResult { double shape1,shape2,min,max,logLik; int iterations; BetaStatus status; };
+struct NsbetaResult { double shape1,shape2,min,max,logLik; int iterations; BetaStatus status; bool unsupported_bounds=false; };
 
 inline NsbetaResult nsbeta_mle(span x, double min, double max, double tol, int maxit, double a=std::numeric_limits<double>::quiet_NaN(), double b=std::numeric_limits<double>::quiet_NaN()) {
+  if(std::isnan(min)||std::isnan(max)) {NsbetaResult out{a,b,min,max,NAN,0,BetaStatus::InvalidInput};out.unsupported_bounds=true;return out;}
   maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   for (std::size_t i=0;i<x.size();++i) y[i]=(x[i]-min)/(max-min);
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min) && std::isfinite(max) && max>min;
   for(double v:x) valid=valid && std::isfinite(v) && v>min && v<max;
-  if(!valid) y.clear();
+  if(!valid || x.empty())return {a,b,min,max,NAN,0,BetaStatus::InvalidInput};
   if(!std::isnan(a)||!std::isnan(b)){
     const double nan=std::numeric_limits<double>::quiet_NaN();
     for(double v:{a,b})if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))valid=false;
@@ -48,6 +49,7 @@ inline NsbetaResult nsbeta_mle(span x, double min, double max, double tol, int m
 }
 
 inline FitOutcome outcome(const NsbetaResult& r) {
+  if(r.unsupported_bounds)return FitOutcome::failure(OutcomeReason::Unsupported);
   switch (r.status) {
     case BetaStatus::Ok: return FitOutcome::estimate(true);
     case BetaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

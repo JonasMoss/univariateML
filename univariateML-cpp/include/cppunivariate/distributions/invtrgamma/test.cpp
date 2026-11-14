@@ -269,3 +269,18 @@ TEST_CASE("invtrgamma: unit power retains the physical gamma coordinate") {
          cppunivariate::distributions::pinvgamma(q,1e8,1,lower,log));
  }
 }
+
+TEST_CASE("invtrgamma: singleton collapse is a core statistical outcome") {
+  const std::vector<double> x{2};const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::invtrgamma_mle(data);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
+}
+
+TEST_CASE("invtrgamma: held endpoint retains the delegate concentration proof") {
+  const std::vector<double> x(5,1.);
+  const auto r=cppunivariate::invtrgamma_mle_fixed_scale(mltest::as_span(x),1.,2.);
+  CHECK(r.status==cppunivariate::InvTrGammaStatus::Unbounded);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+}

@@ -662,7 +662,7 @@ inline TlambdaResult fit(span x,double tol,int maxit,double l,double mu=NAN,doub
   }
   if(!hl && std::isnan(l) && hm && hs)return shape_only(x,tol,maxit,mu,sigma);
   const auto legacy=tlambda_mle_impl(x,tol,maxit,l,mu,sigma);
-  if(legacy.status==TlambdaStatus::InvalidData && std::isnan(l) && !hm && !hs && x.size()>=3 && tol>0 && std::isfinite(tol) && maxit>0) {
+  if(legacy.status==TlambdaStatus::InvalidData && std::isnan(l) && !hm && !hs && x.size()>=2 && tol>0 && std::isfinite(tol) && maxit>0) {
     std::vector<double> y(x.begin(),x.end());
     if(std::all_of(y.begin(),y.end(),[](double v){return std::isfinite(v);})) {
       std::sort(y.begin(),y.end());std::size_t largest=1,run=1;

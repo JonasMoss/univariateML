@@ -1,4 +1,9 @@
 #pragma once
+#include "../norm/dpqr.hpp"
+#include "../unif/dpqr.hpp"
+#include "../hnorm/dpqr.hpp"
+#include "../lnorm/dpqr.hpp"
+#include "../pareto/dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/span.hpp"
@@ -247,6 +252,7 @@ inline HtResult ht_accuracy_search(span x, double mu, double nu, double sigma) {
 #include "accuracy.hpp"
 namespace cppunivariate {
 inline HtResult ht_mle(span x,double mu,double nu,double sigma) {
+  auto result = [&]() -> HtResult {
   auto r=ht_accuracy_search(x,mu,nu,sigma);
   if(r.status!=HtStatus::Ok)return r;
   const double unit=r.sigma;
@@ -273,6 +279,33 @@ inline HtResult ht_mle(span x,double mu,double nu,double sigma) {
   std::vector<double> y;for(double v:x)y.push_back(v-r.mu);
   double logscale=std::log(r.sigma);r.logLik=ht_detail::profile({y.data(),y.size()},r.nu,logscale,true);
   return r;
+
+  }();
+  auto& detail=result.stop_detail;
+  auto& coef=detail.limit_coef;
+  if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
+    if(detail.limit_model==StopModel::Unif && !x.empty()) {
+      // Endpoints are public coordinates; round outwards to retain sample support.
+      coef[0]=std::min(coef[0],*std::min_element(x.begin(),x.end()));
+      coef[1]=std::max(coef[1],*std::max_element(x.begin(),x.end()));
+    }
+    double sum=0,carry=0;bool evaluated=true;
+    for(double v:x) {
+      double term=0;
+      switch(detail.limit_model) {
+        case StopModel::Norm:term=distributions::dnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Unif:term=distributions::dunif(v,coef[0],coef[1],true);break;
+        case StopModel::Hnorm:term=distributions::dhnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Lnorm:term=distributions::dlnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Pareto:term=distributions::dpareto(v,coef[0],coef[1],true);break;
+        default:evaluated=false;break;
+      }
+      term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated) {detail.limit_loglik=sum;
+      if(!std::isfinite(sum))result.status=HtStatus::SearchFailure;}
+  }
+  return result;
 }
 
 inline FitOutcome outcome(const HtResult& r) {
@@ -282,7 +315,7 @@ inline FitOutcome outcome(const HtResult& r) {
   switch (r.status) {
     case HtStatus::Ok: return FitOutcome::estimate(true);
     case HtStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    case HtStatus::InvalidParameter: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case HtStatus::InvalidParameter: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case HtStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case HtStatus::ScaleBoundary: return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case HtStatus::NormalLimit: return FitOutcome::limit(false);

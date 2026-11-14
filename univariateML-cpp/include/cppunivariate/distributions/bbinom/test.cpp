@@ -142,7 +142,7 @@ TEST_CASE("bbinom: input validation") {
   CHECK(fit(x, 2).status == cppunivariate::BbinomStatus::SizeTooSmall);
   CHECK(fit(x, 3.5).status == cppunivariate::BbinomStatus::InvalidInput);
   CHECK(fit(x, -1).status == cppunivariate::BbinomStatus::InvalidInput);
-  CHECK(fit(x, kNaN).status == cppunivariate::BbinomStatus::InvalidInput);
+  CHECK(fit(x, kNaN).status == cppunivariate::BbinomStatus::Unsupported);
   CHECK(fit(x, 5, 1.0, 1.0).status == cppunivariate::BbinomStatus::Ok);
   CHECK(fit(x, 5, -1.0).status == cppunivariate::BbinomStatus::InvalidInput);
   CHECK(fit({-1, 2}, 5).status == cppunivariate::BbinomStatus::InvalidInput);
@@ -281,7 +281,7 @@ TEST_CASE("bbinom: unsupported free-size shape profiles never return an estimate
   for (const auto &shapes : std::vector<std::pair<double, double>>{
            {kNaN, kNaN}}) {
     const auto result = fit(x, kNaN, shapes.first, shapes.second);
-    CHECK(result.status == cppunivariate::BbinomStatus::InvalidInput);
+    CHECK(result.status == cppunivariate::BbinomStatus::Unsupported);
   }
 }
 
@@ -631,4 +631,15 @@ TEST_CASE("bbinom: slow reference discrete quantile round trips on every truth p
   mltest::discrete_roundtrips("bbinom",
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pbbinom(x,t[0], t[1], t[2],l,g);},
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qbbinom(x,t[0], t[1], t[2],l,g);});
+}
+
+TEST_CASE("bbinom: unidentified shapes have an exact representative") {
+  const std::vector<int> x{0,1,0,1};
+  const auto r=cppunivariate::bbinom_mle({x.data(),x.size()},1);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(o.unique);
+  REQUIRE(r.stop_detail.candidates.size()==1);
+  CHECK(r.alpha/(r.alpha+r.beta)==.5);
+  CHECK(r.logLik==doctest::Approx(-4*std::log(2.)));
 }

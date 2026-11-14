@@ -367,7 +367,7 @@ inline FitOutcome outcome(const ExpweibullResult& r) {
   switch (r.status) {
     case ExpweibullStatus::Ok: return FitOutcome::estimate(r.certified);
     case ExpweibullStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    case ExpweibullStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case ExpweibullStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case ExpweibullStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case ExpweibullStatus::PowerBoundary: return FitOutcome::limit(true);
     case ExpweibullStatus::PowerBoundaryTied: return FitOutcome::limit(true);

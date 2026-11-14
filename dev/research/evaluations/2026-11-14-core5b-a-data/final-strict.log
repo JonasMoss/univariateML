@@ -1,0 +1,53 @@
+4081 cases judged in each of two modes
+fit-judge: failures by check: {'mode': 4}
+fit-judge: 4 listed as known, 0 new, 0 listed but passing
+
+not checked (no C++ density for the model, or coefficients missing):
+  double bbinom: limit model has no C++ density: 3
+  double dgamma: limit model has no C++ density: 5
+  double fpareto: limit model has no C++ density: 5
+  double sged: limit model has no C++ density: 92
+  double sstd: limit model has no C++ density: 38
+  native bbinom: limit model has no C++ density: 3
+  native dgamma: limit model has no C++ density: 5
+  native fpareto: limit model has no C++ density: 5
+  native sged: limit model has no C++ density: 92
+  native sstd: limit model has no C++ density: 38
+
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing
+fit-consistency: failures by check: none
+fit-consistency: 0 listed as known, 0 new, 0 listed but passing
+open (refinement could not settle the case; not a failure):
+  bhatt: log-likelihood not finite at the golden estimates: 20
+  bhatt: singular scaled information: 2
+  dgamma: AssertionError: : 2
+  dgamma: case guard of 120 s: 2
+  ged: scaled line search failed: 2
+  ged: singular scaled information: 16
+  gev: no free regular coefficient left to refine: 12
+  ht: no free regular coefficient left to refine: 2
+  lgamma: scaled line search failed: 2
+  sged: scaled line search failed: 6
+  slash: log-likelihood not finite at the golden estimates: 2
+  slash: scaled line search failed: 4
+  tlambda: no free regular coefficient left to refine: 24
+  tlambda: singular scaled information: 6
+coefficients not refined (no independent value; not judged):
+  bbinom size: integer: 32
+  ged nu: at domain bound (one-sided score checked): 2
+  gev xi: at domain bound (one-sided score checked): 8
+  ht mu: on the support bound (sample minimum): 36
+  ht nu: at domain bound: 4
+  lst df: at domain bound (one-sided score checked): 2
+  tlambda lambda: at domain bound (one-sided score checked): 4
+833 cases judged
+fit-refine: failures by check: {'refine': 8}
+fit-refine: 8 listed as known, 0 new, 0 listed but passing
+seam-check native: 5 guarded fits replayed with a 300 s guard
+seam-check native: {'pass': 7333, 'stop': 2361}
+seam-check double: 5 guarded fits replayed with a 300 s guard
+seam-check double: {'pass': 7331, 'stop': 2362, 'open fit': 1}
+strict-seam: failures by check: {'seam-open': 1}
+strict-seam: 1 listed as known, 0 new, 0 listed but passing
+strict layer: no failure outside the known list

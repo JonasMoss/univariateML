@@ -296,6 +296,11 @@ struct WidthCertificate {
       witnesses.push_back(cert_witness(x,m,s,a));
     }
     auto out=cert_stop(status,witnesses,static_cast<int>(work.used));
+    for(const auto& winner:winners)if(winner.root.accurate) {
+      double m,s,a;model.coordinates(winner.root.center,m,s,a);
+      if(!std::isnan(mu))m=mu;if(!std::isnan(sigma))s=sigma;
+      out.accurate_points.push_back({m,s,a});
+    }
     out.stop_detail.segment_loglik_upper=last_upper;
     // The unexcluded normal neighbourhood makes +infinity intentional
     // until the small-width bound has been closed.
@@ -508,6 +513,9 @@ inline BhattResult certificate_mle(span x,double tol=1e-8,int maxit=500,double s
       return bhatt_detail::cert_stop(BhattStatus::NumericalFailure,{witness});
     out.logLik=(witness.loglik_lower/2+witness.loglik_upper/2);
   }else{
+    for(auto& point:out.accurate_points) {
+      point={std::isnan(mu)?std::fma(scale,point[0],center):mu,std::isnan(sigma)?scale*point[1]:sigma,std::isnan(a)?scale*point[2]:a};
+    }
     for(auto& c:out.stop_detail.candidates){
       if(c.model==StopModel::None&&c.coef.size()==3){
         const double cm=std::isnan(mu)?std::fma(scale,c.coef[0],center):mu,cs=std::isnan(sigma)?scale*c.coef[1]:sigma,ca=std::isnan(a)?scale*c.coef[2]:a;
@@ -528,7 +536,7 @@ inline BhattResult certificate_mle(span x,double tol=1e-8,int maxit=500,double s
 }
 } // namespace bhatt_detail
 
-inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
+inline BhattResult bhatt_mle_search(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
   auto certificate=bhatt_detail::certificate_mle(x,tol,maxit,sigma,a,mu);
   if(certificate.status==BhattStatus::Ok||certificate.status==BhattStatus::UniformLimit||
       certificate.status==BhattStatus::NormalLimit||certificate.status==BhattStatus::Unbounded){
@@ -611,3 +619,31 @@ inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=s
   return certificate;
 }
 } // namespace cppunivariate
+
+namespace cppunivariate {
+inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
+  auto r=bhatt_mle_search(x,tol,maxit,sigma,a,mu);
+  // The normal face is an attained family member when width is free: a=0.
+  // Canonicalize the legacy face label only after the normal coefficient gate.
+  if(r.status==BhattStatus::NormalLimit && std::isnan(a)) {
+    const bool global=r.certified;
+    r=bhatt_detail::normal_member_certificate(x,mu,sigma,tol);r.certified=r.certified&&global;
+  }
+  auto& d=r.stop_detail;
+  if(r.status==BhattStatus::UniformLimit && d.limit_coef.size()==2 && !x.empty()) {
+    d.limit_coef[0]=std::min(d.limit_coef[0],*std::min_element(x.begin(),x.end()));
+    d.limit_coef[1]=std::max(d.limit_coef[1],*std::max_element(x.begin(),x.end()));
+    d.limit_loglik=0;for(double v:x)d.limit_loglik+=distributions::dunif(v,d.limit_coef[0],d.limit_coef[1],true);
+  }
+  if(outcome(r).kind==OutcomeKind::Estimate && r.status!=BhattStatus::Ok && !r.stop_detail.candidates.empty()) {
+    const auto& point=r.stop_detail.candidates[comparison_choice(r)];
+    if(accurate_point(r,point)) {
+      double sum=0,carry=0;
+      for(double v:x){const double term=distributions::dbhatt(v,point.coef[0],point.coef[1],point.coef[2],true)-carry;
+        const double next=sum+term;carry=(next-sum)-term;sum=next;}
+      if(std::isfinite(sum))r.comparison_logLik=sum;else r.status=BhattStatus::NumericalFailure;
+    }
+  }
+  return r;
+}
+}

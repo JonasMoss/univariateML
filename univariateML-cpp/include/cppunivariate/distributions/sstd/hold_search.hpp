@@ -143,6 +143,7 @@ struct Result {
   // 0 interior; 1 failure; 2 invalid; 3 collapse; 4 equality/tail guard;
   // 5 normal; 6 uniform; 7/8 half; 9 df2.
   int status=2,iterations=0;
+  StopDetail face_detail{};
 };
 
 inline Result fit(span x, bool student, double fm, double fs, double fn, double fx,
@@ -352,15 +353,38 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
   // Independently solved closure faces remain competitors even when an
   // interior restart fails. A failed finite estimate keeps status 1 and
   // is never returned unless the free-score or rescue gate passed.
+  double finite_witness=inf;
+  if(student) {
+    double mean=0;for(double a:y)mean+=a/n;
+    if(hm)mean=0;
+    double variance=0;for(double a:y)variance+=(a-mean)*(a-mean)/n;
+    const double sd=hs?fs/unit:std::sqrt(variance),nu=hn?fn:4,xi=hx?fx:1;
+    const double m=moment(true,nu),v=skew_hold_detail::variance(true,nu),q=xi-1/xi;
+    const double base=sd/std::sqrt(v+(v-m*m)*q*q);
+    // A feasible member is a lower likelihood bound, never a replacement
+    // estimate. It can refute a face after an unfinished finite search.
+    finite_witness=density_cost(z,true,mean-base*m*q,base/xi,base*xi,nu);
+  }
   auto accept=[&](double f,int status,double nu) {
-    if(out.status==1 && interior.iterations>=maxit)return;
-    if(std::isfinite(f) && f<=out.f+tie) { out.f=f; out.status=status; out.nu=nu; }
+    if(out.status==1 && interior.iterations>=maxit) {
+      if(!student)return false;
+      const double margin=1024*std::numeric_limits<double>::epsilon()*(n+std::abs(f)+std::abs(finite_witness));
+      if(std::isfinite(finite_witness) && finite_witness<f-margin)return false;
+    }
+    if(std::isfinite(f) && f<=out.f+tie) { out.f=f; out.status=status; out.nu=nu;out.face_detail={};return true; }
+    return false;
   };
   if(!hn && student) {
     const auto r=snorm_mle(z,tol,maxit,hm ? 0 : fm,hs ? fs/unit : fs,fx);
-    if(r.status==SnormStatus::Ok) accept(-r.logLik,5,inf);
-    if(r.status==SnormStatus::RightHalfNormalBoundary) accept(-r.logLik,7,inf);
-    if(r.status==SnormStatus::LeftHalfNormalBoundary) accept(-r.logLik,8,inf);
+    if(r.status==SnormStatus::Ok && accept(-r.logLik,5,inf))out.face_detail=limit_detail({origin+unit*r.mu,unit*r.sigma,r.xi},r.logLik-n*std::log(unit));
+    if(r.status==SnormStatus::RightHalfNormalBoundary && accept(-r.logLik,7,inf)) {
+      out.face_detail=r.stop_detail;
+      if(out.face_detail.limit_coef.size()==2) {out.face_detail.limit_coef[0]=hm?origin+unit*out.face_detail.limit_coef[0]:lo;out.face_detail.limit_coef[1]*=unit;out.face_detail.limit_loglik-=n*std::log(unit);}
+    }
+    if(r.status==SnormStatus::LeftHalfNormalBoundary && accept(-r.logLik,8,inf)) {
+      out.face_detail=r.stop_detail;
+      if(out.face_detail.limit_coef.size()==2) {out.face_detail.limit_coef[0]=hm?origin+unit*out.face_detail.limit_coef[0]:hi;out.face_detail.limit_coef[1]*=unit;out.face_detail.limit_loglik-=n*std::log(unit);}
+    }
   }
   if(!hn && !student) {
     double width=hs ? std::sqrt(12.0)*fs/unit : hm ? 2*std::max(-yl,yh) : yh-yl;
@@ -378,7 +402,9 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
   if(!hx) for(int side:std::vector<int>{1,-1}) {
     // Half family in ordinary base coordinates: mean=c+side*m*t,
     // sd=t*sqrt(v-m^2). Endpoint is free only when mean is free.
+    StopDetail selected_half;
     auto half=[&](double nu) {
+      selected_half={};double best_half=inf;
       const double m=moment(student,nu),v=variance(student,nu);
       const double forced=hs ? fs/unit/std::sqrt(v-m*m) : 0;
       const double endpoint=side==1 ? yl : yh;
@@ -395,6 +421,12 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
           if(hm && hs && std::abs(a-c)<1e-14*(1+std::abs(c)))
             w=m*v/(2*(v-m*m));
           f-=kernel(student,nu,w);
+        }
+        if(std::isfinite(f) && f<best_half) {
+          best_half=f;
+          const double physical_endpoint=hm?origin+unit*c:(side==1?lo:hi);
+          selected_half=limit_detail(student?std::vector<double>{physical_endpoint,nu,unit*t}:std::vector<double>{physical_endpoint,unit*t,nu},-f-n*std::log(unit),
+            student?(side==1?StopModel::Ht:StopModel::ReflectedHt):(side==1?StopModel::HalfGed:StopModel::ReflectedHalfGed));
         }
         return std::isfinite(f) ? f : inf;
       };
@@ -429,11 +461,11 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
       const double t=scan(at,left,24,96,maxit);
       return std::min(at(left),at(t));
     };
-    if(hn) accept(half(fn),side==1 ? 7 : 8,fn);
+    if(hn) {if(accept(half(fn),side==1 ? 7 : 8,fn))out.face_detail=selected_half;}
     else {
       auto profile=[&](double t) { return half(student ? 2+std::exp(t) : std::exp(t)); };
       const double t=scan(profile,student ? -18 : 0,11,96,maxit);
-      accept(profile(t),side==1 ? 7 : 8,student ? 2+std::exp(t) : std::exp(t));
+      if(accept(profile(t),side==1 ? 7 : 8,student ? 2+std::exp(t) : std::exp(t)))out.face_detail=selected_half;
     }
   }
   if(student && !hn && !hs) {
@@ -459,7 +491,13 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
       return density_cost(z,true,mean-std::sqrt(2.0)*s*(xi-1/xi),s/xi,s*xi,2);
     };
     auto r=solve(face,seeds,low,up,tol,maxit);
-    if(r.ok) accept(r.f,9,2);
+    if(r.ok && accept(r.f,9,2)) {
+      double mean=0,scale=1,xi=fx;
+      for(std::size_t j=0;j<coords.size();++j) {
+        if(coords[j]==0)mean=r.theta[j];else if(coords[j]==1)scale=std::exp(r.theta[j]);else xi=std::exp(r.theta[j]);
+      }
+      out.face_detail=limit_detail({origin+unit*(mean-std::sqrt(2.)*scale*(xi-1/xi)),unit*scale,xi,2},-r.f-n*std::log(unit));
+    }
   }
   if(out.status==0 && hits_guard(out)) out.status=1;
   out.mean=hm ? fm : origin+unit*out.mean;

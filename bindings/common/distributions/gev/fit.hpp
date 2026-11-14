@@ -5,16 +5,7 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held xi_arg = {}, double reltol = 1e-10, int iterlim = 100) {
-  // Invalid controls remain ordinary errors, even if a legacy fitter reports
-  // a statistical status before checking them.
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mu = mu_arg;
@@ -37,13 +28,6 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   const auto done = [&](FitResult out) {
     if (r.status == cppunivariate::GevStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    // The adapter's sample/hold checks distinguish collapse from invalid input.
-    if (out.payload_kind == PayloadKind::Nonexistence && o.kind != cppunivariate::OutcomeKind::Nonexistence)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded), static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
-    // Preserve the classifier's refusal of a structured stop (invalid context
-    // or missing finite payload); the core result does not retain that context.
-    if (!out.error.empty() && (out.payload_kind==PayloadKind::None) && o.kind != cppunivariate::OutcomeKind::Failure)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
   };
   if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("gev numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"mu","sigma","xi"}));
@@ -57,17 +41,9 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
      (r.status==cppunivariate::GevStatus::IterationFailure && !std::isnan(r.stop_detail.loglik_upper)))
     return done(stop_failure(fail("Generalized extreme value certificate failed to converge or resolve the maximum numerically; raise iterlim for an exhausted solve."),r.stop_detail,outcome_payload(o),{"mu","sigma","xi"}));
   if(r.status==cppunivariate::GevStatus::NoMLE)
-    return done(classify(fail("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse."),r.stop_detail,outcome_payload(o),{"mu","sigma","xi"}));
-  const bool valid_sample=x.size()>=3 && reltol>0 && std::isfinite(reltol) && iterlim>0 &&
-    std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);});
-  bool minimum_collapse=false;
-  if(valid_sample && !mu.supplied && !sigma.supplied) {
-    const double minimum=*std::min_element(x.begin(),x.end());
-    const double k=static_cast<double>(std::count(x.begin(),x.end(),minimum));
-    minimum_collapse=std::isnan(shape)?2*k>x.size():shape>0 && shape*k>=x.size()-k;
-  }
+    return done(stop_failure(fail("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse."),r.stop_detail,outcome_payload(o),{"mu","sigma","xi"}));
   if(r.status==cppunivariate::GevStatus::InvalidData)
-    return done((minimum_collapse || (x.size()>=3 && std::isfinite(x[0]) && !sigma.supplied && (!mu.supplied || location==x[0]) && reltol>0 && std::isfinite(reltol) && iterlim>0 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))) ? classify(fail("Generalized extreme value requires at least three finite observations, an admissible multiplicity at the minimum, finite range, compatible support and holds, positive finite `reltol` and positive `iterlim`."),{},PayloadKind::Nonexistence,{}) : fail("Generalized extreme value requires at least three finite observations, an admissible multiplicity at the minimum, finite range, compatible support and holds, positive finite `reltol` and positive `iterlim`."));
+    return done(fail("Generalized extreme value requires finite observations, compatible support and holds, positive finite `reltol` and positive `iterlim`."));
   if(r.status!=cppunivariate::GevStatus::Ok || !std::isfinite(r.logLik))
     return done(fail("Generalized extreme value MLE failed to converge."));
   std::vector<std::pair<std::string,std::string>> restricted;

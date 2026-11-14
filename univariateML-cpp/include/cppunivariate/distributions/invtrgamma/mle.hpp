@@ -4,6 +4,11 @@
 // -2 sum(log(x)). Faces mirror: lognormal stays lognormal, the power face
 // with endpoint 1/min(x) becomes Pareto with minimum min(x).
 #pragma once
+#include "../norm/dpqr.hpp"
+#include "../unif/dpqr.hpp"
+#include "../hnorm/dpqr.hpp"
+#include "../lnorm/dpqr.hpp"
+#include "../pareto/dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -24,7 +29,8 @@ enum class InvTrGammaStatus {
   ScaleOutOfRange,
   InvalidData,
   InvalidFixed,
-  IterationFailure
+  IterationFailure,
+  Unbounded
 };
 
 struct InvTrGammaResult {
@@ -71,6 +77,13 @@ inline StopDetail invtrgamma_transport_detail(StopDetail detail,double jacobian)
 inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 100,
                                        double shape1 = std::numeric_limits<double>::quiet_NaN(),
                                        double shape2 = std::numeric_limits<double>::quiet_NaN()) {
+  if((!std::isnan(shape1)&&!(shape1>0&&std::isfinite(shape1))) || (!std::isnan(shape2)&&!(shape2>0&&std::isfinite(shape2))))return {NAN,NAN,NAN,NAN,NAN,0,InvTrGammaStatus::InvalidFixed};
+
+  if(tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() && std::isfinite(x[0]) && x[0]>0 &&
+      (std::isnan(shape1)||std::isnan(shape2)) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    return {NAN,NAN,NAN,NAN,NAN,0,InvTrGammaStatus::Unbounded};
+
+  auto result = [&]() -> InvTrGammaResult {
   maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   double jacobian = 0.0;
@@ -123,6 +136,33 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
     if(out.status==InvTrGammaStatus::ParetoBoundary){out.scale=endpoint;out.log_scale=std::log(endpoint);}
   }
   return trgamma_detail::check_represented({y.data(),y.size()},out,InvTrGammaStatus::Ok,InvTrGammaStatus::IterationFailure,true,jacobian);
+
+  }();
+  auto& detail=result.stop_detail;
+  auto& coef=detail.limit_coef;
+  if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
+    if(detail.limit_model==StopModel::Unif && !x.empty()) {
+      // Endpoints are public coordinates; round outwards to retain sample support.
+      coef[0]=std::min(coef[0],*std::min_element(x.begin(),x.end()));
+      coef[1]=std::max(coef[1],*std::max_element(x.begin(),x.end()));
+    }
+    double sum=0,carry=0;bool evaluated=true;
+    for(double v:x) {
+      double term=0;
+      switch(detail.limit_model) {
+        case StopModel::Norm:term=distributions::dnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Unif:term=distributions::dunif(v,coef[0],coef[1],true);break;
+        case StopModel::Hnorm:term=distributions::dhnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Lnorm:term=distributions::dlnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Pareto:term=distributions::dpareto(v,coef[0],coef[1],true);break;
+        default:evaluated=false;break;
+      }
+      term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated) {detail.limit_loglik=sum;
+      if(!std::isfinite(sum))result.status=InvTrGammaStatus::IterationFailure;}
+  }
+  return result;
 }
 
 }  // namespace cppunivariate
@@ -130,6 +170,7 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
 namespace cppunivariate {
 
 inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=std::numeric_limits<double>::quiet_NaN(),double b=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=100) {
+  auto result = [&]() -> InvTrGammaResult {
   std::vector<double> y;
   double jac=0;
   for(double v:x) {
@@ -147,6 +188,8 @@ inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=
   }
   auto r=trgamma_fixed_scale_log({y.data(),y.size()},-std::log(scale),a,b,tol,maxit);
   InvTrGammaResult out={r.shape1,r.shape2,scale,std::log(scale),r.logLik+jac,r.iterations,invtrgamma_status(r.status)};
+  // The reciprocal delegate proves concentration by its +Inf sentinel.
+  if(r.status==TrGammaStatus::InvalidData && r.logLik==INFINITY)out.status=InvTrGammaStatus::Unbounded;
   out.stop_detail=invtrgamma_transport_detail(r.stop_detail,jac);
   out.reconstruction_failure=r.reconstruction_failure;
   out.transformation_failure=r.transformation_failure;
@@ -162,6 +205,34 @@ inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=
     if(c.model==StopModel::Pareto && c.coef.size()==2)c.coef[1]=scale;
   }
   return trgamma_detail::check_represented({y.data(),y.size()},out,InvTrGammaStatus::Ok,InvTrGammaStatus::IterationFailure,true,jac);
+
+  }();
+  auto& detail=result.stop_detail;
+  auto& coef=detail.limit_coef;
+  if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
+    if(detail.limit_model==StopModel::Unif && !x.empty()) {
+      // Endpoints are public coordinates; round outwards to retain sample support.
+      coef[0]=std::min(coef[0],*std::min_element(x.begin(),x.end()));
+      coef[1]=std::max(coef[1],*std::max_element(x.begin(),x.end()));
+    }
+    double sum=0,carry=0;bool evaluated=true;
+    for(double v:x) {
+      double term=0;
+      switch(detail.limit_model) {
+        case StopModel::Norm:term=distributions::dnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Unif:term=distributions::dunif(v,coef[0],coef[1],true);break;
+        case StopModel::Hnorm:term=distributions::dhnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Lnorm:term=distributions::dlnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Pareto:term=distributions::dpareto(v,coef[0],coef[1],true);break;
+        default:evaluated=false;break;
+      }
+      term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated) {detail.limit_loglik=sum;
+      if(!std::isfinite(sum))result.status=InvTrGammaStatus::IterationFailure;}
+  }
+
+  return result;
 }
 
 
@@ -184,8 +255,9 @@ inline FitOutcome outcome(const InvTrGammaResult& r) {
     case InvTrGammaStatus::LognormalBoundary: return FitOutcome::limit(true);
     case InvTrGammaStatus::ParetoBoundary: return FitOutcome::limit(true);
     case InvTrGammaStatus::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case InvTrGammaStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case InvTrGammaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    case InvTrGammaStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case InvTrGammaStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case InvTrGammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
   }
   return {};

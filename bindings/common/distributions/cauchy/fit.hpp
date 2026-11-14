@@ -24,20 +24,19 @@ inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held 
   cppunivariate::CauchyResult res = cppunivariate::fit_cauchy(x,abstol,iterlim,held_location,held_scale);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
+    if(!res.maximizer_support.empty())out.extra_vectors.push_back({"maximizer_support",res.maximizer_support});
     if (res.status == cppunivariate::CauchyStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"location",location_arg.supplied},{"scale",scale_arg.supplied}});
   };
+  if(res.status==cppunivariate::CauchyStatus::NumericalFailure)return done(fail("Cauchy likelihood cannot be evaluated at the represented coefficients."));
   if(res.stop_detail.budget_exhausted)return done(stop_failure(failure("Conditional fit did not converge: numerical certificate work budget exhausted. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"location","scale"}));
-  if(res.status==cppunivariate::CauchyStatus::NoMLE && location.supplied)
+  if((res.status==cppunivariate::CauchyStatus::NoMLE || res.status==cppunivariate::CauchyStatus::Unattained) && location.supplied)
     return done(stop_failure(fail("With location held the Cauchy scale MLE does not exist when at least half the observations equal that location."),res.stop_detail,outcome_payload(o),{"location","scale"},""));
-  if (res.status == cppunivariate::CauchyStatus::NoMLE)
+  if (res.status == cppunivariate::CauchyStatus::NoMLE || res.status==cppunivariate::CauchyStatus::Unattained)
     return done(stop_failure(fail("Cauchy MLE does not exist: a sample atom has at least half the mass, except for balanced two-point samples"),res.stop_detail,outcome_payload(o),{"location","scale"},""));
   if(res.status==cppunivariate::CauchyStatus::AmbiguousMaximum) {
-    // Every candidate is a held-scale location root bracketed as tightly as an
-    // Ok root; the core keeps likelihood bounds only. The core outcome is the
-    // uncertified estimate; its point log likelihood is evaluated here exactly
-    // as fit_cauchy_location does for an Ok root.
+    // Candidates and the selected point likelihood are supplied by the core.
     const auto point=[](const cppunivariate::FitCandidate& c){
       return c.model==cppunivariate::StopModel::None && c.coef.size()==2 && std::isfinite(c.coef[0]) &&
         std::isfinite(c.coef[1]) && c.coef[1]>0;
@@ -45,13 +44,7 @@ inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held 
     auto out=comparison_payload(stop_failure(fail("Held-scale Cauchy global maxima are tied or numerically indistinguishable; no unique certified location returned."),res.stop_detail,PayloadKind::Comparison,{"location","scale"},""),
       o,cppunivariate::better_candidate(res.stop_detail,point),{{"location",location_arg},{"scale",scale_arg}});
     if(o.kind==cppunivariate::OutcomeKind::Estimate && !out.estimates.empty()) {
-      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
-      const double centre=y[y.size()/2],s=held_scale,location_value=out.estimates[0].second;
-      std::vector<double> z;
-      for(double v:y)z.push_back(static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(v)-centre)/s));
-      const double t=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(location_value)-centre)/s);
-      out.logLik=cppunivariate::cauchy_location_detail::likelihood(z,t)-
-        static_cast<double>(y.size())*(std::log(cppunivariate::pi)+std::log(s));
+      out.logLik=res.comparison_logLik;
     }
     return done(out);
   }

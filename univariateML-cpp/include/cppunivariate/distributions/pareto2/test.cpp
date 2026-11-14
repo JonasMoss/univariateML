@@ -68,15 +68,15 @@ TEST_CASE("Pareto II held coefficients use exact Lomax coordinates") {
  for(double shape:{double(NAN),2.})for(double scale:{double(NAN),3.}) {
   const auto r=cppunivariate::pareto2_mle(mltest::as_span(x),1,1e-10,1000,shape,scale);
   const auto p=cppunivariate::lomax_mle(mltest::as_span(y),1e-10,1000,NAN,std::isnan(scale)?scale:1/scale,shape);
-  CHECK(r.status==p.status);
-  if(r.status==cppunivariate::LomaxStatus::Ok){CHECK(r.logLik==doctest::Approx(p.logLik));CHECK(r.shape==doctest::Approx(p.kappa));CHECK(r.scale==doctest::Approx(1/p.lambda));}
+  CHECK(static_cast<int>(r.status)==static_cast<int>(p.status));
+  if(r.status==cppunivariate::Pareto2Status::Ok){CHECK(r.logLik==doctest::Approx(p.logLik));CHECK(r.shape==doctest::Approx(p.kappa));CHECK(r.scale==doctest::Approx(1/p.lambda));}
  }
 }
 
 TEST_CASE("Pareto II keeps the always-certified Lomax success and scale map") {
  const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};const auto d=mltest::as_span(x);
  const auto p=cppunivariate::lomax_mle(d,1e-8,1000);const auto r=cppunivariate::pareto2_mle(d,0,1e-8,1000);
- REQUIRE(p.status==cppunivariate::LomaxStatus::Ok);REQUIRE(r.status==p.status);
+ REQUIRE(p.status==cppunivariate::LomaxStatus::Ok);REQUIRE(static_cast<int>(r.status)==static_cast<int>(p.status));
  CHECK(r.shape==p.kappa);CHECK(r.scale==1/p.lambda);CHECK(r.min==0);CHECK(r.logLik==p.logLik);
 }
 
@@ -88,9 +88,27 @@ TEST_CASE("pareto2 reciprocal rate overflow remains numerical at every tolerance
   const std::vector<double> x{1e308,1.1e308,1.2e308};
   for(double tol:{1e-10,1e-20}) {
     const auto r=cppunivariate::pareto2_mle({x.data(),x.size()},0,tol,200,100,NAN);
-    CHECK(r.status!=cppunivariate::LomaxStatus::Ok);
+    CHECK(r.status!=cppunivariate::Pareto2Status::Ok);
     CHECK(r.certificate_failure==cppunivariate::LomaxCertificateFailure::Arithmetic);
     CHECK(r.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::None);
     for(const auto& c:r.stop_detail.candidates)for(double v:c.coef)CHECK(std::isfinite(v));
   }
+}
+
+TEST_CASE("pareto2: the closed lower endpoint retains its likelihood conclusions") {
+  const std::vector<double> zeros{0,0,0};
+  const auto no=cppunivariate::pareto2_mle(mltest::as_span(zeros),0,1e-10,1000);
+  CHECK(cppunivariate::outcome(no).reason==cppunivariate::OutcomeReason::Unbounded);
+  const auto held=cppunivariate::pareto2_mle(mltest::as_span(zeros),0,1e-10,1000,2,3);
+  REQUIRE(held.status==cppunivariate::Pareto2Status::Ok);
+  CHECK(held.logLik==doctest::Approx(3*std::log(2./3)));
+  const std::vector<double> x{0,1};
+  const auto finite=cppunivariate::pareto2_mle(mltest::as_span(x),0,1e-10,1000,2,NAN);
+  REQUIRE(finite.status==cppunivariate::Pareto2Status::Ok);
+  CHECK(finite.scale==doctest::Approx(.5).epsilon(1e-10));
+  const auto critical=cppunivariate::pareto2_mle(mltest::as_span(x),0,1e-10,1000,1,NAN);
+  CHECK(cppunivariate::outcome(critical).reason==cppunivariate::OutcomeReason::Unattained);
+  const auto shape=cppunivariate::pareto2_mle(mltest::as_span(x),0,1e-10,1000,NAN,1);
+  REQUIRE(shape.status==cppunivariate::Pareto2Status::Ok);
+  CHECK(shape.shape==doctest::Approx(2/std::log(2.)).epsilon(1e-10));
 }

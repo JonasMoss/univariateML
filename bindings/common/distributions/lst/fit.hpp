@@ -53,8 +53,8 @@ inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
     return done(stop_failure(fail("Tie equality scale-collapse boundary; a regular MLE is not certified."),r.stop_detail,outcome_payload(o),{"mu","sigma","df"},(!mu.supplied&&!sigma.supplied&&!df.supplied)?"unavailable:t-scale-collapse":""));
   if (r.status == cppunivariate::LstStatus::IterationFailure)
     return done(stop_failure(fail("Location-scale t solve could not establish a representable score bracket or converge to the score tolerance; increase iterlim."),r.stop_detail,outcome_payload(o),{"mu","sigma","df"}));
-  if (r.status == cppunivariate::LstStatus::NoMLE)
-    return done(fail("Location-scale t MLE on df >= 1 requires at least 3 observations and no value repeated n/2 or more times; scale collapse otherwise prevents a regular MLE."));
+  if (r.status == cppunivariate::LstStatus::NoProposal)
+    return done(fail("Location-scale t search found no finite proposal for this sample; its certificate must decide collapse or a boundary."));
   if (r.status == cppunivariate::LstStatus::NormalBoundary)
     return done(stop_failure(fail("The location-scale t likelihood is maximised as df -> Inf. Use `mlnorm` to fit the normal distribution."),r.stop_detail,outcome_payload(o),{"mu","sigma","df"},"norm"));
   if(r.status==cppunivariate::LstStatus::BfgsFailure) return done(fail("Location-scale t optimizer failed its score check; increase iterlim."));

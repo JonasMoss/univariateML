@@ -754,3 +754,25 @@ TEST_CASE("bhatt: certificate fallback preserves the local accuracy kind") {
   REQUIRE(!r.stop_detail.candidates.empty());
   for(const auto& c:r.stop_detail.candidates)CHECK(std::isfinite(c.loglik_lower));
 }
+
+TEST_CASE("bhatt: comparison estimates require a retained coefficient inclusion") {
+  const auto g=mltest::load_distribution_golden("bhatt");
+  auto r=cppunivariate::bhatt_mle(mltest::as_span(g.data),1e-8,500);
+  REQUIRE(r.status==cppunivariate::BhattStatus::Ok);
+  const std::vector<double> point{r.mu,r.sigma,r.a};
+  r.status=cppunivariate::BhattStatus::Tie;
+  r.stop_detail={};r.stop_detail.candidates.push_back({point,r.logLik,r.logLik});
+  r.accurate_points.clear();
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unresolved);
+  r.accurate_points.push_back(point);r.comparison_logLik=r.logLik;
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(cppunivariate::outcome(r).certified);
+}
+
+TEST_CASE("bhatt: uniform payload likelihood differs from the endpoint-layer supremum") {
+  const std::vector<double> x{-1,-1,1};
+  const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,500,NAN,1,0);
+  REQUIRE(r.status==cppunivariate::BhattStatus::UniformLimit);
+  CHECK(r.logLik==doctest::Approx(-6*std::log(2.)).epsilon(1e-12));
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(-3*std::log(2.)).epsilon(1e-12));
+}

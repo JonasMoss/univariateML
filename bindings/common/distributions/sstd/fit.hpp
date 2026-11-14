@@ -27,17 +27,19 @@ inline FitResult fit_sstd(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::SstdStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
+    if(o.kind==cppunivariate::OutcomeKind::Limit && out.payload_kind==PayloadKind::None)
+      out=stop_failure(std::move(out),res.stop_detail,outcome_payload(o),res.status==cppunivariate::SstdStatus::SnormBoundary?std::vector<std::string>{"mean","sd","xi"}:res.status==cppunivariate::SstdStatus::DfTwoBoundary?std::vector<std::string>{"mode","scale","xi","df"}:std::vector<std::string>{"mu","nu","sigma"},res.stop_detail.limit_model!=cppunivariate::StopModel::None?"":res.status==cppunivariate::SstdStatus::SnormBoundary?"snorm":res.status==cppunivariate::SstdStatus::DfTwoBoundary?"unavailable:two-piece-t2":"");
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied},{"xi",xi_arg.supplied}});
   };
   if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sstd numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
   if(res.accuracy_failure)return done(stop_failure(fail("sstd numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
-  if(res.certified && (res.stop_detail.limit_model==cppunivariate::StopModel::Ht || res.stop_detail.limit_model==cppunivariate::StopModel::ReflectedHt))
+  if(o.kind==cppunivariate::OutcomeKind::Limit && res.certified && (res.stop_detail.limit_model==cppunivariate::StopModel::Ht || res.stop_detail.limit_model==cppunivariate::StopModel::ReflectedHt))
     return done(stop_failure(fail("The skew Student-t likelihood has its supremum on the constrained half-t face; no finite skew MLE. Use `mlht` on signed endpoint distances."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
-  if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::Norm)
+  if(o.kind==cppunivariate::OutcomeKind::Limit && res.stop_detail.limit_model==cppunivariate::StopModel::Norm)
     return done(stop_failure(fail("The symmetric Student-t likelihood is maximised as nu -> Inf; use `mlnorm`."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"},"norm"));
-  if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::Lst)
+  if(o.kind==cppunivariate::OutcomeKind::Limit && res.stop_detail.limit_model==cppunivariate::StopModel::Lst)
     return done(stop_failure(fail("The symmetric Student-t likelihood is maximised as nu -> 2 (infinite variance); use `mllst`."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"},"lst"));
-  if(res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::TCollapsePath)
+  if(o.kind==cppunivariate::OutcomeKind::Nonexistence && res.certified && res.stop_detail.limit_model==cppunivariate::StopModel::TCollapsePath)
     return done(stop_failure(fail("Tie equality scale-collapse boundary; the symmetric Student-t supremum is unattained."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
   if(res.status==cppunivariate::SstdStatus::CertificateFailure) {
     const auto& d=res.stop_detail;
