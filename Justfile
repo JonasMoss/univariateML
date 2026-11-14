@@ -173,6 +173,7 @@ strict native="build/snapshots/native,build/snapshots/routes-native" double="bui
     python3 $v/fit-density.py --quiet "{{native}}" "${double[@]}" || status=1
     python3 $v/fit-consistency.py "{{native}}" "${double[@]}" || status=1
     python3 $v/fit-refine.py --cache-only "{{native}}" "${double[@]}" || status=1
+    python3 $v/cert-replay.py "{{native}}" "${double[@]}" || status=1
     python3 $v/strict-seam.py "${seam[@]}" || status=1
     [ $status -eq 0 ] && echo "strict layer: no failure outside the known list" || echo "strict layer: new failures (see NEW lines above)"
     exit $status

@@ -1,0 +1,33 @@
+== replay, native and double, nbinom and lomax
+cert-replay: 23 CPU s, 50 digits
+  lomax   concave     holds  22
+  lomax   face        holds  58
+  lomax   gain        holds  22
+  lomax   global      holds  22
+  lomax   root        holds  60
+  nbinom  dispersion  holds  70
+  nbinom  root        holds  60
+  lomax   face        supremum none: 54
+not replayed (no certificate comparison):
+  lomax: closed form (lambda held): 38
+  lomax: evaluation only: 38
+  lomax: no certified outcome (invalid): 12
+  nbinom: closed form (size held): 32
+  nbinom: degenerate (all zero): no comparison: 2
+  nbinom: empty: 2
+  nbinom: evaluation only: 32
+  nbinom: no certified outcome (invalid): 2
+220 cases judged
+cert-replay: failures by check: none
+cert-replay: 0 listed as known, 0 new, 0 listed but passing
+exit 0
+== negative controls (native)
+ok   nbinom size x(1+2e-6), all free                                  archive/005094: root  {'dispersion': 'holds', 'root': 'fails'}
+ok   nbinom size x(1-2e-6), prob held                                 archive/005122: root  {'root': 'fails'}
+ok   nbinom Poisson-limit sample claimed finite                       archive/005095: dispersion  {'dispersion': 'fails', 'root': 'fails'}
+ok   nbinom finite sample claimed Poisson limit                       archive/005094: dispersion  {'dispersion': 'fails'}
+ok   lomax lambda x(1+1e-5), all free                                 archive/004814: root  {'gain': 'holds', 'root': 'fails', 'concave': 'holds', 'global': 'open'}
+ok   lomax lambda x(1+1e-9), kappa held                               archive/004852: root  {'root': 'fails'}
+ok   lomax finite-MLE sample claimed exponential limit                archive/004814: face  {'face': 'fails'}
+ok   lomax exponential sample claimed finite at lambda=1/mean, kappa=1e6 archive/004817: gain  {'gain': 'fails', 'root': 'fails', 'concave': 'fails', 'global': 'open'}
+exit 0

@@ -651,6 +651,13 @@ recorded input hash.
   separate, budgeted run: `/tmp/umvl-cpu/run python3 dev/validation/fit-refine.py
   NATIVE DOUBLE --budget 450` (repeat until nothing is left; about 46 CPU
   minutes from empty).
+- `cert-replay.py` (`cert-replay:<comparison>`): certificate replay, step 8
+  ([design](../design/certificate-replay.md)). For families whose certificate
+  comparisons it knows (nbinom and lomax so far), the comparisons that decide a
+  certified outcome are re-derived from the returned coefficients and the data
+  and evaluated in mpmath interval or exact rational arithmetic. A comparison
+  that lands on the other side fails; one whose enclosure contains the
+  threshold is listed as open, not failed.
 - `strict-seam.py` (`seam`, `seam-open`) runs `seam-check.py` in each mode into
   `build/strict/seam/` (resumable; refits every case after a source change)
   and judges its records: a disagreement or a support violation fails, and a
