@@ -182,10 +182,17 @@ inline GpdResult gpd_mle(span x,double tol=1e-12,int maxit=200,double mu=0,doubl
 } // namespace cppunivariate
 
 namespace cppunivariate {
+inline bool family_point(const GpdResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0;
+}
+// Tie candidates are certificate roots with likelihood bounds and the xi = -1
+// floor on the restriction boundary; none is established as an accurate maximizer.
+inline bool accurate_point(const GpdResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const GpdResult& r) {
   if (r.certificate_failure == GpdCertificateFailure::Budget) return FitOutcome::budget();
   if (r.certificate_failure == GpdCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
-  if (r.certificate_failure == GpdCertificateFailure::Tie) return FitOutcome::estimate(false);
+  if (r.certificate_failure == GpdCertificateFailure::Tie) return comparison_outcome_of(r);
   if (r.certificate_failure == GpdCertificateFailure::ThresholdCollapse) return std::isfinite(r.stop_detail.limit_loglik) ? FitOutcome::limit() : FitOutcome::nonexistence(OutcomeReason::Unbounded);
   switch (r.status) {
     case GpdStatus::Ok: return FitOutcome::estimate(true);

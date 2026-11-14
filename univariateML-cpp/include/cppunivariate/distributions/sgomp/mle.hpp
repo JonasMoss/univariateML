@@ -9,11 +9,19 @@ namespace cppunivariate {
 enum class SgompStatus { Ok, InvalidInput, Collapse, IterationFailure };
 struct SgompResult { double b,eta,logLik; int iterations; SgompStatus status; StopDetail stop_detail{}; };
 
+inline bool family_point(const SgompResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 2 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && c.coef[0] > 0 && c.coef[1] >= 0;
+}
+// Tie candidates are certificate region centres (b to 1e-9, eta to 1e-8),
+// before the polish an Ok result receives; they do not meet tol.
+inline bool accurate_point(const SgompResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const SgompResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status == SgompStatus::IterationFailure && r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.status == SgompStatus::IterationFailure && r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  if (r.status == SgompStatus::IterationFailure && r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
     case SgompStatus::Ok: return FitOutcome::estimate(true);
     case SgompStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

@@ -16,6 +16,14 @@ function comparisonFit(run, check) {
   const payload={...fit,candidates:fit.candidates ?? fit.maximizers,message:fit.outcome_message};
   assert.equal(check(payload),true);
 }
+// A comparison the certificate cannot separate that ends as a limit or an
+// unresolved stop (its better candidate is a face or not an accurate maximizer).
+function comparisonStop(run, kind, check) {
+  assert.throws(run, e => {
+    assert.equal(e.kind, kind);
+    return check(e) === true;
+  });
+}
 
 test('public facade',async()=>{
  const facade=await import('./index.mjs');
@@ -316,8 +324,8 @@ test('trgamma held endpoint comparisons stop without asserting nonattainment', a
   const api = await createApi();
   const x = new Float64Array([Math.exp(-1),1-Number.EPSILON/2,1]);
   for (const [family,data] of [['trgamma',x],['invtrgamma',Float64Array.from(x,v=>1/v)]]) {
-    comparisonFit(() => modifierRoute(api,family).fit(data,{scale:1}),error => {
-      assert.equal(error.status,'Ok');
+    comparisonStop(() => modifierRoute(api,family).fit(data,{scale:1}),'limit',error => {
+      assert.equal(error.certified,false);
       assert.equal(error.candidates.length,2);
       assert.ok(error.loglik_upper>=error.loglik_lower);
       assert.ok(error.loglik_upper-error.loglik_lower<1e-7);
@@ -451,8 +459,7 @@ test('lst and std fixed-scale location certificates transport equal maxima', asy
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for (const [family, held] of [['lst', {sigma: 1, df: 3}], ['std', {sd: 1, nu: 3}]]) {
-    comparisonFit(() => modifierRoute(api,family).fit(new Float64Array([-3, 3]), held), error => {
-      assert.equal(error.status,'Ok');
+    comparisonStop(() => modifierRoute(api,family).fit(new Float64Array([-3, 3]), held), 'unresolved', error => {
       assert.equal(error.candidates.length, 2);
       assert.ok(Number.isFinite(error.loglik_lower));
       assert.ok(Number.isFinite(error.loglik_upper));
@@ -558,8 +565,7 @@ test('SGED subunit scale ties and exhausted certificates stop in the common bind
   let lo=4,hi=6;
   for(let j=0;j<60;++j){const r=(lo+hi)/2;if(Math.log(r)>2*(1-1/r))hi=r;else lo=r;}
   const r=(lo+hi)/2,k=2*Math.sqrt(r-1)/r,xi=Math.sqrt(1+k*k/6);
-  comparisonFit(()=>api.sged.fit(new Float64Array([-1,-1,-1]),{mean: 0,nu: .5,xi},{iterlim: 400}),error=>{
-    assert.equal(error.status,'Ok');
+  comparisonStop(()=>api.sged.fit(new Float64Array([-1,-1,-1]),{mean: 0,nu: .5,xi},{iterlim: 400}),'unresolved',error=>{
     assert.ok(error.candidates.length>=2);
     const scales=error.candidates.map(c=>c.sd);
     assert.ok(Math.abs(Math.max(...scales)/Math.min(...scales)/r-1)<2e-6);
@@ -692,8 +698,8 @@ test('SGED fixed-shape free-skew certificates share core routing', async () => {
   const fit = api.sged.fit(x,{nu:.5});
   assert.ok(Math.abs(fit.logLik+5.836273250972211)<2e-7);
   assert.ok(Math.abs(fit.estimates.xi-Math.sqrt(.05211963387596999/.06917655828196827))<1e-10);
-  comparisonFit(()=>api.sged.fit(new Float64Array([-1,1]),{nu:.5}),error=>{
-    assert.equal(error.status,'Ok');assert.equal(error.candidates.length,2);
+  comparisonStop(()=>api.sged.fit(new Float64Array([-1,1]),{nu:.5}),'limit',error=>{
+    assert.equal(error.certified,false);assert.equal(error.candidates.length,2);
     assert.ok(Number.isFinite(error.loglik_upper));return true;
   });
   const y = new Float64Array([-3,-1,-.5,0,.1,.2,.4,1,2,4]);
@@ -1175,8 +1181,8 @@ test('exact factorial moments certify a nonsaturated truncated Poisson face', as
 test('globally winning tied ZIP faces retain both rate candidates', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
-  comparisonFit(() => modifierRoute(api,'zib').fit(new Float64Array([...Array(198).fill(0),1,19]),{pi:.7254971052291191}),error => {
-    assert.equal(error.status,'Ok');
+  comparisonStop(() => modifierRoute(api,'zib').fit(new Float64Array([...Array(198).fill(0),1,19]),{pi:.7254971052291191}),'limit',error => {
+    assert.equal(error.certified,false);
     assert.equal(error.model,'zip');
     assert.ok(Number.isFinite(error.loglik_upper));
     assert.ok(error.candidates.length>=3);
@@ -1386,8 +1392,8 @@ test('SGED symmetric free-shape delegate transports fits and structured stops', 
     for(const name of ['mean','sd','nu'])assert.equal(a.estimates[name],b.estimates[name]);
     assert.equal(a.estimates.xi,1);assert.equal(a.logLik,b.logLik);
   }
-  comparisonFit(()=>api.sged.fit(new Float64Array([-1,1]),{sd:.1,xi:1},{iterlim:1}),e=>{
-    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);
+  comparisonStop(()=>api.sged.fit(new Float64Array([-1,1]),{sd:.1,xi:1},{iterlim:1}),'unresolved',e=>{
+    assert.equal(e.candidates.length,2);
     for(const c of e.candidates){assert.equal(c.xi,1);assert.equal(c.nu,1);}
     return true;
   });
@@ -1429,22 +1435,25 @@ test('SGED weighted free-shape and smooth free-skew profiles certify golden fits
 });
 test('SGED weighted median and smooth reflected half-GED ties retain their witnesses', async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
-  comparisonFit(()=>api.sged.fit(new Float64Array([-100,...Array(3).fill(-.01),...Array(15).fill(.01),100]),{xi:2}),e=>{
-    assert.equal(e.status,'Ok');assert.ok(e.candidates.length>=2);
+  comparisonStop(()=>api.sged.fit(new Float64Array([-100,...Array(3).fill(-.01),...Array(15).fill(.01),100]),{xi:2}),'unresolved',e=>{
+    assert.ok(e.candidates.length>=2);
     for(const c of e.candidates){assert.equal(c.nu,1);assert.equal(c.xi,2);}return true;
   });
   for(const nu of [1.1,1.7,4,20])
-    comparisonFit(()=>api.sged.fit(new Float64Array([-1,1]),{nu}),e=>{
-      assert.equal(e.status,'Ok');assert.ok(Number.isFinite(e.loglik_upper));
+    comparisonStop(()=>api.sged.fit(new Float64Array([-1,1]),{nu}),'limit',e=>{
+      assert.equal(e.certified,false);assert.ok(Number.isFinite(e.loglik_upper));
       assert.deepEqual(new Set(e.candidates.map(c=>c.model)),new Set(['unavailable:half-ged','unavailable:reflected-half-ged']));return true;
     });
 });
 
 test('CMB finite-size ties retain two distinct witnesses and nu-held census certifies',async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
+  // (1,1): padded finite-size comparison, unresolved. All-zero counts: both
+  // listed sizes attain log likelihood 0, a certified non-unique estimate.
   for(const [data,held] of [[[1,1],{prob:.5,nu:1}],[[0,0],{}],[[0,0],{nu:2}],[[0,0],{prob:0,nu:2}]])
-    comparisonFit(()=>api.cmb.fit(new Float64Array(data),held),e=>{
-      assert.equal(e.status,'Ok');assert.match(e.message,/Distinct finite sizes/);
+    (data[0]===1?(run,check)=>comparisonStop(run,'unresolved',check):comparisonFit)(()=>api.cmb.fit(new Float64Array(data),held),e=>{
+      if(data[0]===0){assert.equal(e.status,'Ok');assert.equal(e.certified,true);assert.equal(e.unique,false);assert.equal(e.logLik,0);}
+      assert.match(e.message,/Distinct finite sizes/);
       assert.equal(e.candidates.length,2);
       assert.equal(new Set(e.candidates.map(c=>c.size)).size,2);
       assert.equal(e.loglik_upper,Infinity);return true;
@@ -1544,8 +1553,8 @@ test('betapr all-free certificate returns verified fits and structured global st
   assert.throws(()=>api.betapr.fit(new Float64Array([1,2,3,4])),e=>{
     assert.equal(e.kind,'limit');assert.equal(e.model,'gamma');assert.ok(Number.isFinite(e.loglik_upper));return true;
   });
-  comparisonFit(()=>api.betapr.fit(new Float64Array([.5,1,2])),e=>{
-    assert.equal(e.status,'Ok');assert.ok(e.candidates.length>=2);return true;
+  comparisonStop(()=>api.betapr.fit(new Float64Array([.5,1,2])),'limit',e=>{
+    assert.equal(e.certified,false);assert.ok(e.candidates.length>=2);return true;
   });
   assert.throws(()=>api.betapr.fit(new Float64Array([.03,.1,.4,.7,1,2,4,12]),{},{iterlim:1}),e=>{
     assert.equal(e.kind,'budget');assert.ok(e.candidates.length>0);return true;
@@ -2025,8 +2034,8 @@ test('Student held subsets expose proved symmetry nonuniqueness', async () => {
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
   for(const [family,x,held] of [['std',[-100,100],{sd:1}],['lst',[-100,-99,0,99,100],{df:.5}]]){
-    comparisonFit(()=>modifierRoute(api,family).fit(new Float64Array(x),held),error=>{
-      assert.equal(error.status,'Ok');
+    // Proved non-uniqueness whose witnesses lack coefficient accuracy: unresolved.
+    comparisonStop(()=>modifierRoute(api,family).fit(new Float64Array(x),held),'unresolved',error=>{
       assert.ok(Number.isFinite(error.loglik_lower));
       assert.equal(error.loglik_upper,Infinity);
       assert.equal(error.candidates.length,2);

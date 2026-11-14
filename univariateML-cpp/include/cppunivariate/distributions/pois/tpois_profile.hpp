@@ -77,13 +77,18 @@ inline Result fit(ispan x,double a,double b,double size) {
 }
 
 namespace cppunivariate {
+inline bool family_point(const truncated_detail::Result&, const FitCandidate& c) {
+  return c.model == StopModel::None && !c.coef.empty() && std::isfinite(c.coef[0]) && c.coef[0] > 0;
+}
+// Singleton-support non-identification lists no maximizer.
+inline bool accurate_point(const truncated_detail::Result&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const truncated_detail::Result& r) {
   switch(r.status) {
     case truncated_detail::Status::Ok: return FitOutcome::estimate(true);
     case truncated_detail::Status::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case truncated_detail::Status::LowerPointMass: return FitOutcome::limit(true);
     case truncated_detail::Status::UpperPointMass: return FitOutcome::limit(true);
-    case truncated_detail::Status::Unidentified: return FitOutcome::estimate(true, false);
+    case truncated_detail::Status::Unidentified: return nonunique_outcome_of(r, true);
     case truncated_detail::Status::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }
   return {};

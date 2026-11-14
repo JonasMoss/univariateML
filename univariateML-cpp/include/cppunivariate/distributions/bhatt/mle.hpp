@@ -342,10 +342,18 @@ inline BhattResult accurate_candidate(span x,double tol=1e-8,int maxit=500,doubl
 }}
 namespace cppunivariate {
 
+inline bool family_point(const BhattResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0 && c.coef[2] >= 0;
+}
+// Tie candidates are certificate witnesses (profile points and Newton roots)
+// with interval log likelihoods; none is marked as an accurate enclosed root.
+inline bool accurate_point(const BhattResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const BhattResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
-  if (r.stop_detail.comparison_tie && r.status != BhattStatus::BudgetExhausted && r.status != BhattStatus::Unresolved && r.status != BhattStatus::NumericalFailure && r.status != BhattStatus::IterationFailure) return FitOutcome::estimate(false);
+  if (r.stop_detail.comparison_tie && r.status != BhattStatus::BudgetExhausted && r.status != BhattStatus::Unresolved && r.status != BhattStatus::NumericalFailure && r.status != BhattStatus::IterationFailure) return comparison_outcome_of(r);
   switch (r.status) {
     case BhattStatus::Ok: return FitOutcome::estimate(r.certified);
     case BhattStatus::NormalLimit: return FitOutcome::limit(r.certified);
@@ -356,7 +364,7 @@ inline FitOutcome outcome(const BhattResult& r) {
     case BhattStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case BhattStatus::BudgetExhausted: return FitOutcome::budget();
     case BhattStatus::Unresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
-    case BhattStatus::Tie: return FitOutcome::estimate(false);
+    case BhattStatus::Tie: return comparison_outcome_of(r);
   }
   return {};
 }

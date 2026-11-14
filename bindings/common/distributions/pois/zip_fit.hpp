@@ -37,7 +37,9 @@ inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_a
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"lambda","pi"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,res.stop_detail,stop_kind,{"lambda","pi"}),o,
+      cppunivariate::comparison_choice(res),{{"lambda",lambda_arg},{"pi",pi_arg}});
   };
 
   if(res.status==cppunivariate::ZipStatus::ZeroLimit)return stopped_fail("With pi held below one and all-zero data, lambda tends to zero, undefined by the reference; use `mlpois`.");

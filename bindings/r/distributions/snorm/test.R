@@ -302,7 +302,8 @@ test_that("snorm R6 collapse diagnostics and held exceptions", {
 
 test_that("snorm certificate ties and numerical stops are structured", {
   tied <- tryCatch(mlsnorm(c(0,0,0),sd=1),error=identity)
-  expect_s3_class(tied,"univariateML")
+  expect_s3_class(tied,"univariateML_limit")
+  expect_true(tied$certified)
   expect_equal(nrow(fit_payload(tied)$candidates),2L)
   expect_setequal(fit_payload(tied)$candidates$model,c("hnorm","unavailable:reflected-half-normal"))
   stopped <- tryCatch(mlsnorm(c(-2,-1,-.4,0,.2,.8,1,1.3,2,3),mean=.2,sd=1.4,iterlim=1),error=identity)
@@ -313,7 +314,7 @@ test_that("snorm certificate ties and numerical stops are structured", {
 
 test_that("snorm finite reflected modes retain both witnesses", {
   e <- tryCatch(mlsnorm(c(-1,0,1),mean=0,sd=.755),error=identity)
-  expect_s3_class(e,"univariateML")
+  expect_s3_class(e,"univariateML_unresolved")
   expect_equal(nrow(fit_payload(e)$candidates),2L)
   expect_true(all(fit_payload(e)$candidates$model==""))
   expect_equal(prod(fit_payload(e)$candidates$xi),1,tolerance=1e-7)

@@ -479,4 +479,4 @@ rejecting them from a worst-case half-spacing bound. If the total error
 exceeds the natural relative-error contract, the result is NaN. A zero is accepted only
 when the entire propagated enclosure rounds to zero.
 
-For a proved Laplace median interval or reflected knot tie, `coef()` uses the first listed GED witness; the complete listed set is attached as `maximizers`.
+For a proved Laplace median interval or reflected knot tie, `coef()` uses the first listed GED witness, an exact sample location with its conditional scale, and `logLik` is evaluated there; the listed set is attached as `maximizers`. Unproved comparisons list search roots with likelihood bounds and stop as unresolved, or as an uncertified uniform limit when that face is the better candidate.

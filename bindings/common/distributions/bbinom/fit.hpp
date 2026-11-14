@@ -47,7 +47,9 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=failure(binding_message(format,arguments...));
-    return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"size","alpha","beta"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,res.stop_detail,stop_kind,{"size","alpha","beta"}),o,
+      cppunivariate::comparison_choice(res),{{"size",size_arg},{"alpha",alpha_arg},{"beta",beta_arg}});
   };
 
   const std::string n_txt = std::to_string(static_cast<long long>(std::isfinite(N)?N:0));

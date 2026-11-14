@@ -41,8 +41,8 @@ inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg 
   if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sn numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,outcome_payload(o),{"xi","omega","alpha"}));
   if(fit.stop_detail.comparison_tie && std::isfinite(fit.stop_detail.loglik_upper) &&
      fit.stop_detail.loglik_lower==fit.stop_detail.loglik_upper)
-    return done(classify(fail("Skew-normal shape is not identifiable when every observation equals the held location."),fit.stop_detail,PayloadKind::Comparison,{"xi","omega","alpha"}));
-  if(fit.stop_detail.comparison_tie)return done(classify(fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim."),fit.stop_detail,PayloadKind::Comparison,{"xi","omega","alpha"}));
+    return done(comparison_payload(classify(fail("Skew-normal shape is not identifiable when every observation equals the held location."),fit.stop_detail,PayloadKind::Comparison,{"xi","omega","alpha"}),o,cppunivariate::comparison_choice(fit),{{"xi",xi_arg},{"omega",omega_arg},{"alpha",alpha_arg}}));
+  if(fit.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim."),fit.stop_detail,PayloadKind::Comparison,{"xi","omega","alpha"}),o,cppunivariate::comparison_choice(fit),{{"xi",xi_arg},{"omega",omega_arg},{"alpha",alpha_arg}}));
   if(fit.status==cppunivariate::SnStatus::AccuracyFailure)return done(stop_failure(fail("sn numerical accuracy failure: coefficients cannot be represented at the requested accuracy."),fit.stop_detail,outcome_payload(o),{"xi","omega","alpha"}));
   if(fit.status==cppunivariate::SnStatus::RightHalfNormalBoundary)
     return done(classify(fail("The skew-normal MLE is infinite: use `mlhnorm`."),fit.stop_detail,outcome_payload(o),{"mu","sigma"},"hnorm"));

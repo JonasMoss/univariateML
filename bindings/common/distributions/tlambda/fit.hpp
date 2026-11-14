@@ -46,7 +46,7 @@ inline FitResult fit_tlambda(cppunivariate::span x, Held mu_arg = {}, Held sigma
     if(f.stop_detail.budget_exhausted)
       return done(classify(fail("Tukey lambda certificate budget exhausted; increase iterlim."),f.stop_detail,outcome_payload(o),names));
     if(f.stop_detail.comparison_tie)
-      return done(classify(fail("Tukey lambda support-contact maxima are tied or numerically indistinguishable."),f.stop_detail,PayloadKind::Comparison,names));
+      return done(comparison_payload(classify(fail("Tukey lambda support-contact maxima are tied or numerically indistinguishable."),f.stop_detail,PayloadKind::Comparison,names),o,cppunivariate::comparison_choice(f),{{"mu",mu_arg},{"sigma",sigma_arg},{"lambda",lambda_arg}}));
     if(!lambda.supplied && !mu.supplied && !sigma.supplied && !f.stop_detail.limit_coef.empty())
       return done(classify(fail("Tukey lambda tie multiplicity is half the sample size; the free-shape global/collapse comparison is unresolved."),f.stop_detail,outcome_payload(o),names));
     return done(classify(fail("Tukey lambda certificate did not converge: numerical failure (inverse enclosure, arithmetic or unresolved global/collapse comparison)."),f.stop_detail,outcome_payload(o),names));

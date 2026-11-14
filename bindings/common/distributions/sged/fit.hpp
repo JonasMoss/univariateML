@@ -56,7 +56,7 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
     if(res.stop_detail.budget_exhausted)
       return done(classify(fail("SGED certificate budget exhausted; increase `iterlim`."),res.stop_detail,outcome_payload(o),names));
     if(res.stop_detail.comparison_tie)
-      return done(classify(fail("SGED maxima are tied or numerically indistinguishable; no unique MLE returned."),res.stop_detail,PayloadKind::Comparison,names));
+      return done(comparison_payload(classify(fail("SGED maxima are tied or numerically indistinguishable; no unique MLE returned."),res.stop_detail,PayloadKind::Comparison,names),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg},{"xi",xi_arg}}));
     return done(classify(fail("SGED certificate numerical failure (arithmetic or root enclosure); increase `iterlim`."),res.stop_detail,outcome_payload(o),names));
   }
   if(res.status==cppunivariate::SgedStatus::UnsupportedHold) return done(fail("Unsupported conditional fit."));
@@ -69,7 +69,8 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
                "positive variance."));
   }
   const auto face_fail = [&](const std::string& message, const std::string& model, const std::vector<std::string>& names) {
-    if(res.stop_detail.comparison_tie)return done(classify(fail(message),res.stop_detail,PayloadKind::Comparison,names));
+    // A tie's finite candidates are SGED points; faces keep their model's names.
+    if(res.stop_detail.comparison_tie)return done(comparison_payload(classify(fail(message),res.stop_detail,PayloadKind::Comparison,{"mean","sd","nu","xi"}),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg},{"xi",xi_arg}}));
     if(res.stop_detail.limit_coef.empty())return done(fail(message));
     return done(classify(fail(message),res.stop_detail,outcome_payload(o),names,model));
   };

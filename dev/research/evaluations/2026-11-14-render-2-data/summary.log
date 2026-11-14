@@ -1,0 +1,43 @@
+== native 11820 cases; defects 0
+  derived metadata on classed stop                      1704
+  estimate flags added                                  8330
+  extra field removed                                    249
+  invalid-input status (binom, lgamma)                    10
+  margin sentence added                                  665
+  numerical to tolerance refinement (outcome reason)       1
+  plain error to classed stop                            809
+  tie stop to estimate (point log likelihood)             14
+  tie stop to limit stop                                  30
+  tie stop to unresolved stop                              8
+  -- tie stop to estimate (point log likelihood): cauchy 1 (000795), cmb 1 (000838), fatigue 10 (001457 001458 001459 001460 001461 001462 001469 001471 009357 009817), ged 2 (002399 002400)
+  -- tie stop to limit stop: betapr 6 (000167 000171 000174 000184 two wide), huber 6 (003332 003335 003339 003340 003353 003371), invburr 3 (003569 003572 010480), lst 2 (004897 004900), pareto4 2 (005651 005654), sged 2 (006031 006045), snorm 7 (006579 006583 006587 006589 006593 006607 006608), std 2 (007193 007196)
+  -- tie stop to unresolved stop: burr 1 (000701), huber 5 (003356 003372 003386 003387 003388), invburr 1 (003654), pareto4 1 (010640)
+  -- invalid-input status (binom, lgamma): binom 1 (empty), lgamma 9 (empty inf nan negative neginf subnormal tiny wide zeros)
+== double 11820 cases; defects 0
+  derived metadata on classed stop                      1707
+  estimate flags added                                  8325
+  extra field removed                                    251
+  identical timeout record                                 1
+  invalid-input status (binom, lgamma)                    10
+  margin sentence added                                  665
+  numerical to tolerance refinement (outcome reason)       1
+  plain error to classed stop                            809
+  tie stop to estimate (point log likelihood)             14
+  tie stop to limit stop                                  29
+  tie stop to unresolved stop                              8
+  -- tie stop to estimate (point log likelihood): cauchy 1 (000795), cmb 1 (000838), fatigue 10 (001457 001458 001459 001460 001461 001462 001469 001471 009357 009817), ged 2 (002399 002400)
+  -- tie stop to limit stop: betapr 6 (000167 000171 000174 000184 two wide), huber 6 (003332 003335 003339 003340 003353 003371), invburr 3 (003569 003572 010480), lst 2 (004897 004900), pareto4 2 (005651 005654), sged 2 (006031 006045), snorm 6 (006579 006583 006589 006593 006607 006608), std 2 (007193 007196)
+  -- tie stop to unresolved stop: burr 1 (000701), huber 5 (003356 003372 003386 003387 003388), invburr 1 (003654), pareto4 1 (010640)
+  -- invalid-input status (binom, lgamma): binom 1 (empty), lgamma 9 (empty inf nan negative neginf subnormal tiny wide zeros)
+== routes-native 1934 cases; defects 0
+  derived metadata on classed stop                       193
+  estimate flags added                                  1677
+  plain error to classed stop                             63
+  tie stop to limit stop                                   1
+  -- tie stop to limit stop: norm +truncate=tnorm 1 (007779)
+== routes-double 1934 cases; defects 0
+  derived metadata on classed stop                       193
+  estimate flags added                                  1677
+  plain error to classed stop                             63
+  tie stop to limit stop                                   1
+  -- tie stop to limit stop: norm +truncate=tnorm 1 (007779)

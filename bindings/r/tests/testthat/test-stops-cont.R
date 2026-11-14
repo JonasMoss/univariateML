@@ -53,7 +53,8 @@ test_that("conditional snorm and skew-t ambiguities retain compared models", {
                function() mlst(c(1,2),xi=0,omega=1e-4,nu=1e20))
   for (i in seq_along(fits)) {
     e <- tryCatch(fits[[i]](),error=identity)
-    expect_s3_class(e,"univariateML")
+    # snorm: the half-normal face is the better candidate; skew-t: the finite point.
+    expect_s3_class(e,c("univariateML_limit","univariateML_unresolved")[[i]])
     expect_equal(nrow(fit_payload(e)$candidates),2L)
     expect_true(c("hnorm","ht")[[i]] %in% fit_payload(e)$candidates$model)
     expect_equal(fit_payload(e)$loglik_upper,Inf)

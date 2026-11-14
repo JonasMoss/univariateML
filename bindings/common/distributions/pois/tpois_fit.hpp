@@ -32,7 +32,9 @@ inline FitResult fit_tpois(cppunivariate::ispan x, Held lambda_arg = {}, Held a_
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return (stop_kind==PayloadKind::None)?out:stop_failure(out,r.stop_detail,stop_kind,{"lambda","a","b"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,r.stop_detail,stop_kind,{"lambda","a","b"}),o,
+      cppunivariate::comparison_choice(r),{{"lambda",lambda_arg},{"a",a_arg},{"b",b_arg}});
   };
 
   if(x.size()>0) {

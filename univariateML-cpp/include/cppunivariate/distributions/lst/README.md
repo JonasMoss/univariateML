@@ -338,4 +338,4 @@ calculations return NaN. The
 [extreme-shape checks](../../../../../dev/research/evaluations/2026-11-09-tail-extreme-data/run-targeted.sh)
 cover the half-t, standardized-t and skew-t consumers as well.
 
-For the symmetry-proved multiple location-scale t maxima, the binding takes the first listed `(mu, sigma, df)` witness as the canonical representative and attaches both witnesses as `maximizers`.
+The symmetry proof's candidates are likelihood witnesses, not maximizers within `tol`, so the proved non-uniqueness stops as unresolved with both witnesses attached.

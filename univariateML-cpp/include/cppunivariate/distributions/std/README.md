@@ -329,4 +329,4 @@ shape remains finite.
 
 With held standard deviation, shape refinement differentiates the ordinary scale factor $\sqrt{(\nu-2)/\nu}$ as well as the Student kernel; treating that factor as constant solves a different likelihood.
 
-For balanced separated atoms with held sd, `coef()` takes the first listed Student-t witness and attaches both as `maximizers`; these witnesses do not establish coefficient accuracy at the actual maximizers.
+For balanced separated atoms with held sd, the witnesses do not establish coefficient accuracy at the actual maximizers, so the proved non-uniqueness stops as unresolved with both witnesses attached.

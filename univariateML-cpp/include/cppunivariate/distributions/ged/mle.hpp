@@ -542,18 +542,31 @@ inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,doubl
   return r;
 }
 
+inline bool family_point(const GedResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0 && c.coef[2] > 0;
+}
+// Proved ties (Laplace median intervals, reflected knots) list exact-location
+// maxima (sample points) with their conditional scale; their bounds pad the
+// conditional log likelihood, which the binding evaluates with
+// ged_detail::conditional_loglik as an Ok conditional fit does. Unproved
+// comparisons list search roots and faces with bounds only.
+inline bool accurate_point(const GedResult& r, const FitCandidate& c) {
+  return r.proved_tie && family_point(r, c);
+}
+
 inline FitOutcome outcome(const GedResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status != GedStatus::Ok && r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.status != GedStatus::Ok && r.status != GedStatus::UniformUnresolved && r.stop_detail.comparison_tie) return FitOutcome::estimate(r.certified && r.proved_tie, !r.proved_tie);
+  if (r.status != GedStatus::Ok && r.status != GedStatus::UniformUnresolved && r.stop_detail.comparison_tie) return r.proved_tie ? nonunique_outcome_of(r, r.certified) : comparison_outcome_of(r);
   switch (r.status) {
     case GedStatus::Ok: return FitOutcome::estimate(r.certified);
     case GedStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GedStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GedStatus::UniformBoundary: return FitOutcome::limit(r.certified);
     case GedStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
-    case GedStatus::Nonunique: return FitOutcome::estimate(r.certified && r.proved_tie, !r.proved_tie);
+    case GedStatus::Nonunique: return r.proved_tie ? nonunique_outcome_of(r, r.certified) : comparison_outcome_of(r);
     case GedStatus::UniformUnresolved: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GedStatus::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

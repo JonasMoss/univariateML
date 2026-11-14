@@ -41,7 +41,7 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Budget)
     return done(stop_failure(fail("Generalized Pareto MLE failed to converge: global certificate budget exhausted; no verified maximum. Raising iterlim may resolve this stop."), res.stop_detail, outcome_payload(o), {"mu","sigma","xi"}));
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Tie)
-    return done(stop_failure(fail("Generalized Pareto MLE failed to converge: competing maxima tie within the certificate margin (1e-8 per observation), or shape is unidentified."), res.stop_detail, PayloadKind::Comparison, {"mu","sigma","xi"}));
+    return done(comparison_payload(stop_failure(fail("Generalized Pareto MLE failed to converge: competing maxima tie within the certificate margin (1e-8 per observation), or shape is unidentified."), res.stop_detail, PayloadKind::Comparison, {"mu","sigma","xi"}),o,cppunivariate::comparison_choice(res),{{"mu",mu_arg},{"sigma",sigma_arg},{"xi",xi_arg}}));
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Arithmetic)
     return done(stop_failure(fail("Generalized Pareto MLE failed to converge: certificate comparisons unresolved or coefficients unrepresentable."), res.stop_detail, outcome_payload(o), {"mu","sigma","xi"}));
   if (res.status == cppunivariate::GpdStatus::InvalidData)

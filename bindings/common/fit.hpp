@@ -115,12 +115,13 @@ inline FitResult render_fit(FitResult out) {
   out.extra.erase(std::remove_if(out.extra.begin(),out.extra.end(),
       [](const auto& item){return item.first=="certified";}),out.extra.end());
   if(out.outcome.kind==cppunivariate::OutcomeKind::Estimate) {
-    if(out.estimates.empty() && !out.candidates.empty()) {
-      std::size_t selected=0;
-      if(out.outcome.unique)for(std::size_t i=1;i<out.candidates.size();++i)
-        if(out.candidates[i].loglik_lower>out.candidates[selected].loglik_lower)selected=i;
-      out.estimates=out.candidates[selected].estimates;
-      out.logLik=out.candidates[selected].loglik_lower;
+    // Adapters build every estimate payload (comparison_payload for comparisons).
+    // An estimate without coefficients is an adapter defect: stop, visibly
+    // disagreeing with the outcome, rather than return an empty estimate.
+    if(out.estimates.empty()) {
+      out.error_kind="unresolved";
+      if(out.error.empty())out.error="The fit returned no coefficients.";
+      return out;
     }
     out.error.clear();
   } else if(out.outcome.kind==cppunivariate::OutcomeKind::Limit && !out.outcome.certified) {
@@ -132,7 +133,7 @@ inline FitResult render_fit(FitResult out) {
 // Attach the core outcome and the family's raw status to a finished result.
 inline FitResult with_outcome(FitResult out,const cppunivariate::FitOutcome& o,int status,
     const std::vector<std::pair<std::string,bool>>& requested_holds={}) {
-  if(o.kind==cppunivariate::OutcomeKind::Estimate && out.payload_kind==PayloadKind::Comparison && !requested_holds.empty()) {
+  if(o.kind==cppunivariate::OutcomeKind::Estimate && out.payload_kind==PayloadKind::Comparison && !requested_holds.empty() && !out.estimates.empty()) {
     out.fixed.clear();out.has_fixed=true;
     for(const auto& held:requested_holds)if(held.second)out.fixed.push_back(held.first);
   }
@@ -280,4 +281,58 @@ struct Held {
   double value = NAN;
   std::size_t length = 1;
 };
+// How a comparison limit names its model and, for a package model, its fitter
+// (retired Poisson variants are fitted through the mlpois modifiers).
+inline std::string comparison_limit_advice(const std::string& model) {
+  if(model=="zip")return "`mlpois(x, zero = \"inflated\")`";
+  if(model=="ztpois")return "`mlpois(x, zero = \"truncated\")`";
+  if(model=="zmpois")return "`mlpois(x, zero = \"modified\")`";
+  if(model=="tpois")return "`mlpois(x, truncate = c(a, b))`";
+  return "`ml"+model+"`";
+}
+inline std::string comparison_limit_sentence(const std::string& model) {
+  const std::string prefix="unavailable:";
+  if(model.compare(0,prefix.size(),prefix)==0) {
+    std::string law=model.substr(prefix.size());
+    std::replace(law.begin(),law.end(),'-',' ');
+    return " The best candidate is the "+law+" limit.";
+  }
+  return " The best candidate is the "+model+" limit; use "+comparison_limit_advice(model)+".";
+}
+// Payload of a comparison outcome (dev/design/consolidation.md, "Outcome
+// model"), on the candidates stop_failure attached. `chosen` is the core's
+// choice (cppunivariate::better_candidate with the family's point predicate),
+// so payload and outcome agree; a proved non-unique estimate takes the first
+// listed maximizer. An estimate takes the chosen family point with
+// held coefficients filled from the request, in the request's public order, and
+// its point log likelihood (the core's accuracy predicate requires one). A
+// limit names the chosen face with its coefficients and, when the candidate
+// carries a point value, its log likelihood; a bound is never reported as one.
+// Every candidate and the comparison bounds stay attached.
+inline FitResult comparison_payload(FitResult out,const cppunivariate::FitOutcome& o,std::size_t chosen,
+    const std::vector<std::pair<std::string,Held>>& request) {
+  if(out.payload_kind!=PayloadKind::Comparison || chosen>=out.candidates.size())return out;
+  // Proved non-uniqueness: the canonical representative is the first listed maximizer.
+  if(o.kind==cppunivariate::OutcomeKind::Estimate && !o.unique)chosen=0;
+  const NamedCandidate c=out.candidates[chosen];
+  if(o.kind==cppunivariate::OutcomeKind::Estimate) {
+    out.estimates.clear();out.fixed.clear();out.has_fixed=true;
+    for(const auto& item:request) {
+      double value=NAN;
+      for(const auto& e:c.estimates)if(e.first==item.first)value=e.second;
+      if(item.second.supplied){value=item.second.value;out.fixed.push_back(item.first);}
+      out.estimates.push_back({item.first,value});
+    }
+    out.logLik=c.loglik_lower==c.loglik_upper?c.loglik_lower:NAN;
+  } else if(o.kind==cppunivariate::OutcomeKind::Limit) {
+    out.model=c.model;out.limit_estimates=c.estimates;
+    out.limit_loglik=c.loglik_lower==c.loglik_upper?c.loglik_lower:NAN;
+    // Keep an existing message's own advice for this model rather than repeat it.
+    const bool advised=c.model.compare(0,12,"unavailable:")!=0 &&
+      (out.error.find("Use "+comparison_limit_advice(c.model))!=std::string::npos ||
+       out.error.find("Use `ml"+c.model)!=std::string::npos || out.error.find("Use ml"+c.model)!=std::string::npos);
+    if(!advised)out.error+=comparison_limit_sentence(c.model);
+  }
+  return out;
+}
 }

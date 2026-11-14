@@ -38,7 +38,9 @@ inline FitResult fit_zib(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   if((stop_kind==PayloadKind::None) && !res.stop_detail.candidates.empty())stop_kind=PayloadKind::Numerical;
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(stop_kind==PayloadKind::Unresolved ? "Finite-size versus limit comparison is unresolved; no maximizer is certified. Use `mlpois(x, zero = \"inflated\")` only to fit the comparison face." : binding_message(format,arguments...));
-    return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob","pi"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,res.stop_detail,stop_kind,{"size","prob","pi"}),o,
+      cppunivariate::comparison_choice(res),{{"size",size_arg},{"prob",prob_arg},{"pi",pi_arg}});
   };
 
   if(res.status==cppunivariate::ZibStatus::InvalidInput)return stopped_fail("requires nonempty nonnegative integer count data and valid controls; held parameters must give positive likelihood");

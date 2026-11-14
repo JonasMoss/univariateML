@@ -46,7 +46,9 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     const std::string qualification=stop_kind==PayloadKind::Limit?(fit.certified?"Certified global comparison: ":"Uncertified legacy comparison: "):"";
     auto out=fail(qualification+binding_message(format,arguments...));
 
-    return (stop_kind==PayloadKind::None)?out:stop_failure(out,fit.stop_detail,stop_kind,{"size","alpha","beta"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,fit.stop_detail,stop_kind,{"size","alpha","beta"}),o,
+      cppunivariate::comparison_choice(fit),{{"size",size_arg},{"alpha",alpha_arg},{"beta",beta_arg}});
   };
 
   switch (fit.status) {

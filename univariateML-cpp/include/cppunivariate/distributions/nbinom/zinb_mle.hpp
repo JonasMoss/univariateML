@@ -220,12 +220,18 @@ inline ZinbResult zinb_mle(ispan x,double tol,int maxit,double size,double prob,
 }
 
 namespace cppunivariate {
+inline bool family_point(const ZinbResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[0] > 0;
+}
+// Comparison candidates carry certificate likelihood bounds (ll -+ error).
+inline bool accurate_point(const ZinbResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const ZinbResult& r) {
   if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   if(r.status==ZinbStatus::IterationFailure || r.status==ZinbStatus::ZeroLimit) {
     if(r.certificate_failure==ZinbCertificateFailure::Budget)return FitOutcome::budget();
-    if(r.certificate_failure==ZinbCertificateFailure::ComparisonTie)return FitOutcome::estimate(false);
+    if(r.certificate_failure==ZinbCertificateFailure::ComparisonTie)return comparison_outcome_of(r);
     if(r.certificate_failure==ZinbCertificateFailure::TailUnresolved)return FitOutcome::failure(OutcomeReason::Unresolved);
   }
   switch(r.status) {

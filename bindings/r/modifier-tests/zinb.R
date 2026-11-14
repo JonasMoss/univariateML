@@ -189,8 +189,8 @@ test_that("zinb zero boundary works through generated d/p/q/r", {
 test_that("ZINB certified stops retain competing maxima and explicit budgets", {
   x <- c(rep(0L,99),10L)
   tie <- tryCatch(.modifier_zinb(x,size=10,pi=.76839477568758077746),error=identity)
-  expect_s3_class(tie,"univariateML")
-  expect_identical(fit_payload(tie)$kind,"estimate")
+  expect_s3_class(tie,"univariateML_unresolved")
+  expect_identical(fit_payload(tie)$kind,"unresolved")
   expect_equal(nrow(fit_payload(tie)$candidates),2L)
   expect_true(all(fit_payload(tie)$candidates$size==10))
   expect_true(all(fit_payload(tie)$candidates$pi==.76839477568758077746))

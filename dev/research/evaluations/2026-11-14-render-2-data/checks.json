@@ -1,0 +1,279 @@
+[
+ {
+  "check": "classify-native",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/classify.py",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-13-fit-snapshot-data/native.jsonl.gz",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/native.jsonl.gz",
+   "--output",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/classification-native.json.gz"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "classify-native.log"
+ },
+ {
+  "check": "outcomes-native",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/validation/fit-snapshot.py",
+   "--outcomes",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/native.jsonl.gz"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "outcomes-native.log"
+ },
+ {
+  "check": "classify-double",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/classify.py",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-13-fit-snapshot-data/double.jsonl.gz",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/double.jsonl.gz",
+   "--output",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/classification-double.json.gz"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "classify-double.log"
+ },
+ {
+  "check": "outcomes-double",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/validation/fit-snapshot.py",
+   "--outcomes",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/double.jsonl.gz"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "outcomes-double.log"
+ },
+ {
+  "check": "classify-routes-native",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/classify.py",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-13-fit-snapshot-data/routes-native.jsonl.gz",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/routes-native.jsonl.gz",
+   "--output",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/classification-routes-native.json.gz"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "classify-routes-native.log"
+ },
+ {
+  "check": "outcomes-routes-native",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/validation/fit-snapshot.py",
+   "--modifier-routes",
+   "--outcomes",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/routes-native.jsonl.gz"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "outcomes-routes-native.log"
+ },
+ {
+  "check": "classify-routes-double",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/classify.py",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-13-fit-snapshot-data/routes-double.jsonl.gz",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/routes-double.jsonl.gz",
+   "--output",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/classification-routes-double.json.gz"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "classify-routes-double.log"
+ },
+ {
+  "check": "outcomes-routes-double",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/validation/fit-snapshot.py",
+   "--modifier-routes",
+   "--outcomes",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/routes-double.jsonl.gz"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "outcomes-routes-double.log"
+ },
+ {
+  "check": "fit-judge",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/validation/fit-judge.py",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/native.jsonl.gz,/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/routes-native.jsonl.gz",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/double.jsonl.gz,/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/routes-double.jsonl.gz"
+  ],
+  "exit_code": 1,
+  "machine": "workstation",
+  "log": "fit-judge.log"
+ },
+ {
+  "check": "summarize",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/summarize.py"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "summary.log"
+ },
+ {
+  "check": "assertion-changes",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/assertion-changes.py",
+   "--json",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/changed-assertions.json",
+   "--md",
+   "/home/jonas/Files/programming/univariateML.wt/render/dev/research/evaluations/2026-11-14-render-2-data/changed-assertions.md"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "assertion-changes.log"
+ },
+ {
+  "check": "diff-native",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "dev/validation/fit-snapshot.py",
+   "--diff",
+   "dev/research/evaluations/2026-11-13-fit-snapshot-data/native.jsonl.gz",
+   "dev/research/evaluations/2026-11-14-render-2-data/native.jsonl.gz"
+  ],
+  "exit_code": 1,
+  "machine": "workstation",
+  "log": "diff-native.log.gz",
+  "note": "differs by design; classified in classification-native.json.gz"
+ },
+ {
+  "check": "diff-double",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "dev/validation/fit-snapshot.py",
+   "--diff",
+   "dev/research/evaluations/2026-11-13-fit-snapshot-data/double.jsonl.gz",
+   "dev/research/evaluations/2026-11-14-render-2-data/double.jsonl.gz"
+  ],
+  "exit_code": 1,
+  "machine": "workstation",
+  "log": "diff-double.log.gz",
+  "note": "differs by design; classified in classification-double.json.gz"
+ },
+ {
+  "check": "diff-routes-native",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "dev/validation/fit-snapshot.py",
+   "--modifier-routes",
+   "--diff",
+   "dev/research/evaluations/2026-11-13-fit-snapshot-data/routes-native.jsonl.gz",
+   "dev/research/evaluations/2026-11-14-render-2-data/routes-native.jsonl.gz"
+  ],
+  "exit_code": 1,
+  "machine": "workstation",
+  "log": "diff-routes-native.log.gz",
+  "note": "differs by design; classified in classification-routes-native.json.gz"
+ },
+ {
+  "check": "diff-routes-double",
+  "command": [
+   "/home/jonas/.venvs/global/bin/python3",
+   "dev/validation/fit-snapshot.py",
+   "--modifier-routes",
+   "--diff",
+   "dev/research/evaluations/2026-11-13-fit-snapshot-data/routes-double.jsonl.gz",
+   "dev/research/evaluations/2026-11-14-render-2-data/routes-double.jsonl.gz"
+  ],
+  "exit_code": 1,
+  "machine": "workstation",
+  "log": "diff-routes-double.log.gz",
+  "note": "differs by design; classified in classification-routes-double.json.gz"
+ },
+ {
+  "check": "just cpp-test",
+  "command": [
+   "just",
+   "cpp-test"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "cpp-test.log.gz",
+  "result": "PASS, 110/110"
+ },
+ {
+  "check": "just cpp-test-no-long-double",
+  "command": [
+   "just",
+   "cpp-test-no-long-double"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "cpp-test-no-long-double.log.gz",
+  "result": "PASS, 154/154 (GCC 15)"
+ },
+ {
+  "check": "just test",
+  "command": [
+   "just",
+   "test"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "test.log.gz",
+  "result": "FAIL 0, WARN 0, SKIP 157, PASS 28930"
+ },
+ {
+  "check": "just test-full",
+  "command": [
+   "just",
+   "test-full"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "test-full.log.gz",
+  "result": "FAIL 0, WARN 0, SKIP 1, PASS 58069"
+ },
+ {
+  "check": "just js-build",
+  "command": [
+   "just",
+   "js-build"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "js-build.log.gz",
+  "result": "PASS"
+ },
+ {
+  "check": "just js-test",
+  "command": [
+   "just",
+   "js-test"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "js-test.log.gz",
+  "result": "PASS, 581/581"
+ },
+ {
+  "check": "just site-check",
+  "command": [
+   "just",
+   "site-check"
+  ],
+  "exit_code": 0,
+  "machine": "workstation",
+  "log": "site-check.log.gz",
+  "result": "PASS"
+ }
+]

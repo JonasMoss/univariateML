@@ -38,7 +38,9 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   if(fit.stop_detail.budget_exhausted) stop_kind=outcome_payload(o);
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return (stop_kind==PayloadKind::None)?out:stop_failure(out,fit.stop_detail,stop_kind,{"m","N","r"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,fit.stop_detail,stop_kind,{"m","N","r"}),o,
+      cppunivariate::comparison_choice(fit),{{"m",m_arg},{"N",N_arg},{"r",r_arg}});
   };
 
   switch (fit.status) {

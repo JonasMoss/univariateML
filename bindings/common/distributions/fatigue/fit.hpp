@@ -34,6 +34,7 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
     return invalid_argument(fail("Held `alpha` and `beta` must be positive finite numbers."));
   auto res = cppunivariate::fatigue_mle_shifted(x, threshold, abstol, iterlim,a,b);
   const auto o = cppunivariate::outcome(res);
+  const auto chosen = cppunivariate::comparison_choice(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
@@ -47,7 +48,7 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
   if (res.status == cppunivariate::FatigueStatus::SearchFailure) {
     for(auto& candidate:res.stop_detail.candidates)candidate.coef.push_back(threshold);
     if(res.stop_detail.budget_exhausted)return done(classify(fail("Fatigue optimizer SearchFailure: certificate budget exhausted; increase iterlim."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
-    if(res.stop_detail.comparison_tie)return done(classify(fail("Fatigue optimizer SearchFailure: competing global maxima cannot be distinguished."),res.stop_detail,PayloadKind::Comparison,{"alpha","beta","mu"}));
+    if(res.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Fatigue optimizer SearchFailure: competing global maxima cannot be distinguished."),res.stop_detail,PayloadKind::Comparison,{"alpha","beta","mu"}),o,chosen,{{"alpha",alpha_arg},{"beta",beta_arg},{"mu",mu_arg}}));
     return done(classify(fail("Fatigue optimizer SearchFailure: profile search did not converge or floating-point coefficient resolution failed; increase iterlim for unresolved searches."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
   }
   if (!(res.alpha>0.0) || !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {

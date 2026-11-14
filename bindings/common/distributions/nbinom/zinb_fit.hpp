@@ -38,7 +38,8 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
     if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::ComparisonTie){kind=PayloadKind::Comparison;message="Zero-inflated negative binomial MLE failed: competing maxima overlap at the comparison margin; no unique verified maximum.";}
     if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::Workload)message="Zero-inflated negative binomial MLE failed: certificate workload limit (maximum count 100000, total count 2^52); no verified maximum.";
     if(fit.certificate_failure==cppunivariate::ZinbCertificateFailure::TailUnresolved){kind=PayloadKind::Unresolved;message="Zero-inflated negative binomial MLE failed: infinite-size tail is not excluded at the comparison margin; no verified maximum.";}
-    return stop_failure(fail(message),fit.stop_detail,kind,{"size","prob","pi"});
+    return comparison_payload(stop_failure(fail(message),fit.stop_detail,kind,{"size","prob","pi"}),o,
+      cppunivariate::comparison_choice(fit),{{"size",size_arg},{"prob",prob_arg},{"pi",pi_arg}});
   }
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");

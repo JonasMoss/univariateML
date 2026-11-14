@@ -26,14 +26,24 @@ test_that("ties select existing witnesses and attach their complete set", {
   expect_identical(attr(fit,"unique"),TRUE)
   expect_identical(attr(fit,"fixed"),"scale")
   expect_identical(attr(logLik(fit),"df"),1L)
-  chosen <- which.max(witnesses$loglik_lower)
+  # The better candidate: the first whose lower bound is within 8 ulps of the largest.
+  top <- max(witnesses$loglik_lower)
+  chosen <- which(witnesses$loglik_lower >= top-8*.Machine$double.eps*abs(top))[1]
   expect_identical(unname(coef(fit)),unname(unlist(witnesses[chosen,names(fit)])))
+  # Its log likelihood is a point value at the returned coefficients, not a bound.
+  expect_equal(as.numeric(logLik(fit)),sum(dcauchy(c(-2,2),coef(fit)[["location"]],1,log=TRUE)),tolerance=1e-14)
   expect_output(print(fit),"Global maximum is not certified")
   expect_output(summary(fit),"Global maximum is not certified")
-  fit <- mllst(c(-100,-99,0,99,100),df=.5)
+  # Proved non-uniqueness with exact witnesses (GED median interval): first listed.
+  fit <- mlged(c(-1,1),sd=.1,iterlim=1L)
   expect_identical(attr(fit,"unique"),FALSE)
   expect_equal(nrow(attr(fit,"maximizers")),2L)
   expect_identical(unname(coef(fit)),unname(unlist(attr(fit,"maximizers")[1,names(fit)])))
+  expect_equal(as.numeric(logLik(fit)),sum(dged(c(-1,1),coef(fit)[["mean"]],.1,coef(fit)[["nu"]],log=TRUE)),tolerance=1e-12)
+  # Witnesses without coefficient accuracy (lst symmetry proof) are not an estimate.
+  stop <- tryCatch(mllst(c(-100,-99,0,99,100),df=.5),error=identity)
+  expect_s3_class(stop,"univariateML_unresolved")
+  expect_equal(nrow(stop$candidates),2L)
 })
 
 test_that("stops carry classes, kinds, reasons and limit certification", {

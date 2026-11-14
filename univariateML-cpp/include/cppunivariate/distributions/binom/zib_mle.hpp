@@ -578,6 +578,12 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
 } // namespace cppunivariate
 
 namespace cppunivariate {
+inline bool family_point(const ZibResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]);
+}
+// FaceTie lists ZIP face candidates only (the finite-size escape is proved).
+inline bool accurate_point(const ZibResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const ZibResult& r) {
   if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -592,7 +598,7 @@ inline FitOutcome outcome(const ZibResult& r) {
     case ZibStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZibStatus::ZipLimit: return FitOutcome::limit(true);
     case ZibStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
-    case ZibStatus::FaceTie: return FitOutcome::estimate(false);
+    case ZibStatus::FaceTie: return comparison_outcome_of(r);
   }
   return {};
 }

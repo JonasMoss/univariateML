@@ -351,7 +351,13 @@ test_that("CMB finite-size ties stop with both finite witnesses", {
                     list(x=c(0,0)),list(x=c(0,0),nu=2),
                     list(x=c(0,0),prob=0,nu=2))) {
     e <- tryCatch(do.call(mlcmb,c(args,list(size=NULL))), error=identity)
-    expect_s3_class(e,"univariateML")
+    if (identical(args$x,c(0,0))) {
+      # All-zero counts: both listed sizes attain the pmf supremum (log likelihood 0).
+      expect_s3_class(e,"univariateML")
+      expect_true(attr(e,"certified"))
+      expect_false(attr(e,"unique"))
+      expect_equal(as.numeric(logLik(e)),0)
+    } else expect_s3_class(e,"univariateML_unresolved")
     expect_match(fit_diagnostic(e),"Distinct finite sizes")
     expect_equal(nrow(fit_payload(e)$candidates),2L)
     expect_equal(length(unique(fit_payload(e)$candidates$size)),2L)

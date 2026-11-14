@@ -44,7 +44,9 @@ inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, He
   if((stop_kind==PayloadKind::None) && !r.stop_detail.candidates.empty())stop_kind=PayloadKind::Numerical;
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(stop_kind==PayloadKind::Unresolved ? "Global likelihood comparison is unresolved; no maximizer is certified. Use `mlpois(x, truncate = c(max(0, floor(a) + 1), floor(b)))` only to fit the comparison face." : binding_message(format,arguments...));
-    return (stop_kind==PayloadKind::None)?out:stop_failure(out,r.stop_detail,stop_kind,{"prob","a","b","size"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,r.stop_detail,stop_kind,{"prob","a","b","size"}),o,
+      cppunivariate::comparison_choice(r),{{"prob",prob_arg},{"a",a_arg},{"b",b_arg},{"size",size_arg}});
   };
 
   if(r.status==cppunivariate::TbinomStatus::LowerPointMass) return stopped_fail("MLE escapes to a point mass at the lowest support point.");

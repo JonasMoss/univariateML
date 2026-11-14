@@ -40,6 +40,7 @@ inline FitResult fit_binom(cppunivariate::ispan x, Held size_arg = {}, Held prob
     return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob"});
   };
 
+  if (res.status == cppunivariate::BinomStatus::InvalidInput && x.empty()) return stopped_fail("Binomial fitting needs nonempty count data.");
   if (res.status == cppunivariate::BinomStatus::InvalidInput) return stopped_fail("Held parameters are incompatible with the observations.");
   if (res.status == cppunivariate::BinomStatus::SizeTooSmall) {
     return stopped_fail("`size` is smaller than `max(x)`.");

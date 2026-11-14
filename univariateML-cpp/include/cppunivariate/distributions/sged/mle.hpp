@@ -574,13 +574,22 @@ inline SgedResult sged_mle(span x,double tol,int maxit,double mean= std::numeric
   return r;
 }
 
+inline bool family_point(const SgedResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 4 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && std::isfinite(c.coef[3]) &&
+         c.coef[1] > 0 && c.coef[2] > 0 && c.coef[3] > 0;
+}
+// Comparison candidates are certificate witnesses and faces with likelihood
+// bounds; transported GED ties keep their bounds and no exactness proof.
+inline bool accurate_point(const SgedResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const SgedResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
   if (r.status == SgedStatus::CertificateFailure) {
     if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
-    if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+    if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   }
   switch (r.status) {
     case SgedStatus::Ok: return FitOutcome::estimate(r.certified);
@@ -589,9 +598,9 @@ inline FitOutcome outcome(const SgedResult& r) {
     case SgedStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case SgedStatus::ScaleBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
     case SgedStatus::UnsupportedHold: return FitOutcome::failure(OutcomeReason::Unsupported);
-    case SgedStatus::UniformBoundary: return r.stop_detail.comparison_tie ? FitOutcome::estimate(false) : r.stop_detail.limit_coef.empty() ? FitOutcome::failure(OutcomeReason::Evaluation) : FitOutcome::limit(r.certified);
-    case SgedStatus::RightHalfGedBoundary: return r.stop_detail.comparison_tie ? FitOutcome::estimate(false) : r.stop_detail.limit_coef.empty() ? FitOutcome::failure(OutcomeReason::Evaluation) : FitOutcome::limit(r.certified);
-    case SgedStatus::LeftHalfGedBoundary: return r.stop_detail.comparison_tie ? FitOutcome::estimate(false) : r.stop_detail.limit_coef.empty() ? FitOutcome::failure(OutcomeReason::Evaluation) : FitOutcome::limit(r.certified);
+    case SgedStatus::UniformBoundary: return r.stop_detail.comparison_tie ? comparison_outcome_of(r) : r.stop_detail.limit_coef.empty() ? FitOutcome::failure(OutcomeReason::Evaluation) : FitOutcome::limit(r.certified);
+    case SgedStatus::RightHalfGedBoundary: return r.stop_detail.comparison_tie ? comparison_outcome_of(r) : r.stop_detail.limit_coef.empty() ? FitOutcome::failure(OutcomeReason::Evaluation) : FitOutcome::limit(r.certified);
+    case SgedStatus::LeftHalfGedBoundary: return r.stop_detail.comparison_tie ? comparison_outcome_of(r) : r.stop_detail.limit_coef.empty() ? FitOutcome::failure(OutcomeReason::Evaluation) : FitOutcome::limit(r.certified);
     case SgedStatus::CertificateFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }
   return {};

@@ -209,7 +209,7 @@ re-evaluated in original coordinates within $10^{-9}n$. This guards
 roundtrip cancellation amplified by large held shapes. Held face locations
 are retained exactly; free face endpoints use the original sample extremes.
 If every observation equals held location and scale is held, every finite
-shape is a maximizer: two distinct witnesses are returned in a `tie` stop.
+shape is a maximizer: the fit is a certified non-unique estimate with two listed witnesses.
 This is an explicit counterexample to unconditional uniqueness.
 
 These are exact-arithmetic certificates conditional on computed scores,

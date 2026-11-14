@@ -236,7 +236,8 @@ test_that("held endpoint comparisons do not assert nonattainment", {
   x <- c(exp(-1),1-.Machine$double.eps/2,1)
   for (fit in list(function() mltrgamma(x,scale=1),function() mlinvtrgamma(1/x,scale=1))) {
     e <- tryCatch(fit(),error=identity)
-    expect_s3_class(e,"univariateML")
+    expect_s3_class(e,"univariateML_limit")
+    expect_false(e$certified)
     expect_equal(nrow(fit_payload(e)$candidates),2L)
     expect_true(fit_payload(e)$loglik_upper>=fit_payload(e)$loglik_lower)
     expect_true(fit_payload(e)$loglik_upper-fit_payload(e)$loglik_lower<1e-7)
@@ -284,7 +285,8 @@ test_that("positive near-face improvements stop as unresolved comparisons", {
   x <- exp(.001*(z-1e-5*(z*z-1)))
   for (fit in list(function() mltrgamma(x),function() mlinvtrgamma(1/x))) {
     e <- tryCatch(fit(),error=identity)
-    expect_s3_class(e,"univariateML")
+    expect_s3_class(e,"univariateML_limit")
+    expect_identical(e$model,"lnorm")
     expect_match(fit_diagnostic(e),"mllnorm")
     expect_gte(nrow(fit_payload(e)$candidates),2)
     expect_gte(fit_payload(e)$loglik_upper,fit_payload(e)$loglik_lower)

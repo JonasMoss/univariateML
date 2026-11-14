@@ -165,9 +165,17 @@ inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=
 }
 
 
+inline bool family_point(const InvTrGammaResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[0] > 0 && c.coef[1] > 0 && c.coef[2] > 0;
+}
+// A comparison tie lists the finite search point, padded into likelihood
+// bounds, against the endpoint face; the finite point is not checked.
+inline bool accurate_point(const InvTrGammaResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const InvTrGammaResult& r) {
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   if (r.transformation_failure || r.reconstruction_failure) return FitOutcome::failure(OutcomeReason::Evaluation);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);

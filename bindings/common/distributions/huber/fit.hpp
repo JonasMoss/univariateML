@@ -42,7 +42,7 @@ inline FitResult fit_huber(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if(r.stop_detail.budget_exhausted)return done(classify(fail("Huber certificate exhausted its work budget; raising `iterlim` may resolve it."),r.stop_detail,outcome_payload(o),{"mu","sigma","epsilon"}));
-  if(r.stop_detail.comparison_tie)return done(classify(fail("Huber MLE failed to converge."),r.stop_detail,PayloadKind::Comparison,{"mu","sigma","epsilon"}));
+  if(r.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Huber MLE failed to converge."),r.stop_detail,PayloadKind::Comparison,{"mu","sigma","epsilon"}),o,cppunivariate::comparison_choice(r),{{"mu",mu_arg},{"sigma",sigma_arg},{"epsilon",epsilon_arg}}));
   if (r.status==cppunivariate::HuberStatus::InvalidData)
     return done(fail("Huber requires finite data, positive finite `gradtol` and positive `iterlim`."));
   if (r.status==cppunivariate::HuberStatus::UnboundedLikelihood)

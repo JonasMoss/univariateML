@@ -37,7 +37,7 @@ inline FitResult fit_pig(cppunivariate::ispan x, Held mean_arg = {}, Held shape_
    if(r.stop_detail.budget_exhausted)
      return done(stop_failure(fail("PIG certificate exhausted its count budget; increase iterlim."),r.stop_detail,outcome_payload(o),{"mean","shape"}));
    if(r.stop_detail.comparison_tie)
-     return done(stop_failure(fail("PIG Poisson-boundary score is numerically unresolved; relax the comparison or inspect the data."),r.stop_detail,PayloadKind::Comparison,{"mean","shape"}));
+     return done(comparison_payload(stop_failure(fail("PIG Poisson-boundary score is numerically unresolved; relax the comparison or inspect the data."),r.stop_detail,PayloadKind::Comparison,{"mean","shape"}),o,cppunivariate::comparison_choice(r),{{"mean",mean_arg},{"shape",shape_arg}}));
    return done(stop_failure(fail("PIG scalar search did not converge; increase iterlim or inspect the parameter range."),r.stop_detail,outcome_payload(o),{"mean","shape"}));
  }
  std::vector<std::string> fixed;

@@ -50,7 +50,9 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
     auto message=binding_message(format,arguments...);
     if(res.stop_detail.budget_exhausted)message+=" Raising iterlim may resolve this stop.";
     auto out=fail(message);
-    return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob","nu"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,res.stop_detail,stop_kind,{"size","prob","nu"}),o,
+      cppunivariate::comparison_choice(res),{{"size",size_arg},{"prob",prob_arg},{"nu",nu_arg}});
   };
 
   switch (res.status) {

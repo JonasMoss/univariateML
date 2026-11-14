@@ -12,6 +12,14 @@ function comparisonFit(run, check) {
   const payload={...fit,candidates:fit.candidates ?? fit.maximizers,message:fit.outcome_message};
   assert.equal(check(payload),true);
 }
+// A comparison the certificate cannot separate that ends as a limit or an
+// unresolved stop (its better candidate is a face or not an accurate maximizer).
+function comparisonStop(run, kind, check) {
+  assert.throws(run, e => {
+    assert.equal(e.kind, kind);
+    return check(e) === true;
+  });
+}
 
 test('structured stops survive the JS Error facade', () => {
   comparisonFit(() => api.cauchy.fit([-2,2], {scale:1}), e => {
@@ -46,8 +54,8 @@ test('structured stops survive the JS Error facade', () => {
 test('Burr and reciprocal sign-uncertain-seam structured tie', () => {
   const x=[0.0049057434842350416,0.042501201178458653,0.19481544379842536,0.29869422522389177,0.40386521559557592,0.49096570363940406,0.5326256684997116,0.72206471601197653,0.74104603671600355,0.82688168528714312,0.98659907210500519,1.1056048590023038,1.140076235502067,1.1606952121643113,1.4300263464615877,1.4793399841671804,1.5655241685783525,1.6390163836698108,2.0838622791695847,5.1042846241626947];
   for (const [family,data] of [['burr',x],['invburr',x.map(v=>1/v)]]) {
-    comparisonFit(() => modifierRoute(api,family).fit(data), e => {
-      assert.equal(e.status,'Ok');assert.ok(e.candidates.length>=2);
+    comparisonStop(() => modifierRoute(api,family).fit(data), 'limit', e => {
+      assert.equal(e.certified,false);assert.ok(e.candidates.length>=2);
       for(const c of e.candidates)assert.ok(c.loglik_lower<=c.loglik_upper);
       return true;
     });
@@ -163,8 +171,8 @@ test('discrete stops retain fitted package and non-package faces', () => {
     assert.deepEqual(e.estimates,estimates);assert.ok(Number.isFinite(e.limit_loglik));
     assert.ok(e.candidates.length>0);return true;
   });
-  comparisonFit(()=>api.cmb.fit([0,1]),e=>{
-    assert.equal(e.status,'Ok');assert.equal(e.model,'binom');
+  comparisonStop(()=>api.cmb.fit([0,1]),'limit',e=>{
+    assert.equal(e.certified,false);assert.equal(e.model,'binom');
     assert.deepEqual(e.estimates,{size:1,prob:.5});return true;
   });
 });
@@ -219,17 +227,18 @@ test('held subunit GED shape retains the certified reflected half face', () => {
 });
 
 test('conditional snorm and skew-t ambiguities retain both compared models', () => {
-  for(const [family,held,model] of [['snorm',{mean:0,sd:1e-4},'hnorm'],['st',{xi:0,omega:1e-4,nu:1e20},'ht']])
-    comparisonFit(()=>modifierRoute(api,family).fit([1,2],held),e=>{
-      assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);
+  // snorm: the half-normal face is the better candidate; skew-t: the finite point.
+  for(const [family,held,model,kind] of [['snorm',{mean:0,sd:1e-4},'hnorm','limit'],['st',{xi:0,omega:1e-4,nu:1e20},'ht','unresolved']])
+    comparisonStop(()=>modifierRoute(api,family).fit([1,2],held),kind,e=>{
+      assert.equal(e.candidates.length,2);
       assert.ok(e.candidates.some(c=>c.model===model));assert.equal(e.loglik_upper,Infinity);
       assert.ok(e.candidates.every(c=>Number.isFinite(c.loglik_lower)));return true;
     });
 });
 
 test('ZINB certificate transports competing maxima and terminal budgets', () => {
-  comparisonFit(() => modifierRoute(api,'zinb').fit([...Array(99).fill(0),10], {size:10,pi:.76839477568758077746}), e => {
-    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);
+  comparisonStop(() => modifierRoute(api,'zinb').fit([...Array(99).fill(0),10], {size:10,pi:.76839477568758077746}), 'unresolved', e => {
+    assert.equal(e.candidates.length,2);
     for(const c of e.candidates){assert.equal(c.size,10);assert.equal(c.pi,.76839477568758077746);assert.ok(c.loglik_lower<=c.loglik_upper);}
     assert.equal(e.loglik_upper,Infinity);return true;
   });
@@ -258,8 +267,8 @@ test('PIG global certificate transports Poisson, tie, budget and numerical stops
     assert.equal(e.estimates.lambda,2);
     assert.ok(e.loglik_lower<=e.limit_loglik && e.limit_loglik<=e.loglik_upper);return true;
   });
-  comparisonFit(() => api.pig.fit([0,1,2],{mean:1+Math.sqrt(1/3)}),e=>{
-    assert.equal(e.status,'Ok');assert.equal(e.candidates[0].model,'pois');
+  comparisonStop(() => api.pig.fit([0,1,2],{mean:1+Math.sqrt(1/3)}),'limit',e=>{
+    assert.equal(e.certified,false);assert.equal(e.model,'pois');assert.equal(e.candidates[0].model,'pois');
     assert.equal(e.loglik_upper,Infinity);return true;
   });
   assert.throws(() => api.pig.fit([0,0,2147483647],{},{iterlim:1}),e=>{
@@ -325,7 +334,7 @@ test('ZIP certified rate ties, budgets and numerical stops', () => {
       return true;
     });
   }
-  comparisonFit(()=>modifierRoute(api,'zip').fit(x,{pi:.7254971052291191}),e=> {
+  comparisonStop(()=>modifierRoute(api,'zip').fit(x,{pi:.7254971052291191}),'unresolved',e=> {
     assert.equal(e.candidates.length,2);
     assert.ok(Number.isFinite(e.loglik_lower));assert.ok(e.loglik_upper>=e.loglik_lower);
     for(const c of e.candidates)assert.equal(c.pi,.7254971052291191);
@@ -341,8 +350,8 @@ test('ZIP held tiny rate attains all-zero inflation maximum', () => {
 });
 
 test('tlambda certificates keep contact ties, budget and collapse witnesses', () => {
-  comparisonFit(()=>api.tlambda.fit([-.25,.25],{sigma:1,lambda:1.5}), e=> {
-    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);
+  comparisonStop(()=>api.tlambda.fit([-.25,.25],{sigma:1,lambda:1.5}), 'unresolved', e=> {
+    assert.equal(e.candidates.length,2);
     assert.ok(Math.abs(e.candidates[0].mu+5/12)<1e-12);
     assert.ok(Math.abs(e.candidates[1].mu-5/12)<1e-12);return true;
   });
@@ -366,8 +375,8 @@ test('tlambda free-shape half ties retain a finite improvement and an unresolved
 });
 
 test('snorm held certificate preserves opposite-face ties and root failures', () => {
-  comparisonFit(()=>api.snorm.fit([0,0,0],{sd:1}),e=> {
-    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);
+  comparisonStop(()=>api.snorm.fit([0,0,0],{sd:1}),'limit',e=> {
+    assert.equal(e.certified,true);assert.equal(e.candidates.length,2);
     assert.deepEqual(new Set(e.candidates.map(c=>c.model)),new Set(['hnorm','unavailable:reflected-half-normal']));return true;
   });
   assert.throws(()=>api.snorm.fit([-2,-1,-.4,0,.2,.8,1,1.3,2,3],{mean:.2,sd:1.4},{iterlim:1}),e=> {
@@ -376,8 +385,8 @@ test('snorm held certificate preserves opposite-face ties and root failures', ()
 });
 
 test('snorm reflected finite modes remain a comparison tie', () => {
-  comparisonFit(()=>api.snorm.fit([-1,0,1],{mean:0,sd:.755}),e=> {
-    assert.equal(e.status,'Ok');assert.equal(e.candidates.length,2);
+  comparisonStop(()=>api.snorm.fit([-1,0,1],{mean:0,sd:.755}),'unresolved',e=> {
+    assert.equal(e.candidates.length,2);
     assert.ok(e.candidates.every(c=>c.model===''));
     assert.ok(Math.abs(e.candidates[0].xi*e.candidates[1].xi-1)<1e-7);return true;
   });
@@ -439,8 +448,7 @@ test('bbinom near-binomial shape enclosure survives double-width WASM arithmetic
 });
 
 test('st conditional location and alpha-scale certificates retain stops', () => {
-  comparisonFit(()=>api.st.fit([-2,2],{omega:1,alpha:0,nu:1}), e=>{
-    assert.equal(e.status,'Ok');
+  comparisonStop(()=>api.st.fit([-2,2],{omega:1,alpha:0,nu:1}), 'unresolved', e=>{
     assert.ok(e.candidates.some(c=>Math.abs(c.xi-Math.sqrt(3))<1e-8));
     assert.ok(e.candidates.some(c=>Math.abs(c.xi+Math.sqrt(3))<1e-8));return true;
   });
@@ -456,8 +464,8 @@ test('st conditional location and alpha-scale certificates retain stops', () => 
 });
 
 test('st constant-data location-skew faces retain the sharp global bound',()=>{
-  comparisonFit(()=>api.st.fit([2,2,2],{omega:1,nu:4}),e=>{
-    assert.equal(e.status,'Ok');assert.deepEqual(e.candidates.map(c=>c.model),['ht','unavailable:reflected-half-t']);
+  comparisonStop(()=>api.st.fit([2,2,2],{omega:1,nu:4}),'limit',e=>{
+    assert.equal(e.certified,true);assert.deepEqual(e.candidates.map(c=>c.model),['ht','unavailable:reflected-half-t']);
     assert.ok(Number.isFinite(e.loglik_lower));assert.ok(Number.isFinite(e.loglik_upper));return true;
   });
 });
@@ -474,8 +482,8 @@ test('st unresolved thin-tail score arithmetic remains a numerical stop',()=>{
 });
 
 test('st constant-data free-nu corner keeps both half-normal faces',()=>{
-  comparisonFit(()=>api.st.fit([2,2,2],{omega:1}),e=>{
-    assert.equal(e.status,'Ok');assert.deepEqual(e.candidates.map(c=>c.model),['hnorm','unavailable:reflected-half-normal']);
+  comparisonStop(()=>api.st.fit([2,2,2],{omega:1}),'limit',e=>{
+    assert.equal(e.certified,true);assert.deepEqual(e.candidates.map(c=>c.model),['hnorm','unavailable:reflected-half-normal']);
     assert.ok(Number.isFinite(e.loglik_lower));assert.ok(Number.isFinite(e.loglik_upper));return true;
   });
 });

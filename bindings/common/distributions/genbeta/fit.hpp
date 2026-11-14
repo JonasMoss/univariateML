@@ -70,7 +70,7 @@ const std::string name = "shape3";
 
   if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("genbeta numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"}));
   if(r.stop_detail.budget_exhausted)return done(classify(fail("Generalized beta certificate budget exhausted; increase iterlim."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"}));
-  if(r.stop_detail.comparison_tie)return done(classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,PayloadKind::Comparison,{"shape1","shape2","shape3","scale"}));
+  if(r.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Generalized beta search unresolved; increase iterlim or hold shapes."),r.stop_detail,PayloadKind::Comparison,{"shape1","shape2","shape3","scale"}),o,cppunivariate::comparison_choice(r),{{"shape1",shape1_arg},{"shape2",shape2_arg},{"shape3",shape3_arg},{"scale",scale_arg}}));
   switch(r.status) {
     case cppunivariate::GenbetaStatus::Ok:break;
     case cppunivariate::GenbetaStatus::UnitGammaBoundary:

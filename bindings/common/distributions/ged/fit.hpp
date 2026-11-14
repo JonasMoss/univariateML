@@ -3,6 +3,8 @@
 #include "cppunivariate/distributions/ged/mle.hpp"
 #include <cmath>
 #include <limits>
+#include <algorithm>
+#include <vector>
 namespace umvl_binding {
 inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held nu_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
@@ -53,8 +55,18 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
     return done(classify(fail("GED scale likelihood is unbounded: all observations equal the fitted or held location."),{},PayloadKind::Nonexistence,{}));
   if(res.status!=cppunivariate::GedStatus::Ok && res.stop_detail.budget_exhausted)return done(classify(fail("GED shape certificate did not converge within its work budget; increase iterlim."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
   if(res.status==cppunivariate::GedStatus::UniformUnresolved)return done(classify(fail("GED held-sd uniform comparison is unresolved by the shape certificate."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
-  if(res.status==cppunivariate::GedStatus::Nonunique)return done(classify(fail("GED maxima are not unique or their comparison is unresolved, including a possible Laplace median interval."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","nu"}));
-  if(res.status!=cppunivariate::GedStatus::Ok && res.stop_detail.comparison_tie)return done(classify(fail("Conditional GED search did not converge; increase iterlim."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","nu"}));
+  // A comparison estimate is a proved tie's exact-location witness; its point
+  // log likelihood is evaluated as an Ok conditional fit evaluates it.
+  const auto comparison=[&](FitResult out) {
+    out=comparison_payload(std::move(out),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg}});
+    if(o.kind==cppunivariate::OutcomeKind::Estimate && out.estimates.size()==3) {
+      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
+      out.logLik=cppunivariate::ged_detail::conditional_loglik({y.data(),y.size()},out.estimates[0].second,out.estimates[1].second,out.estimates[2].second);
+    }
+    return out;
+  };
+  if(res.status==cppunivariate::GedStatus::Nonunique)return done(comparison(classify(fail("GED maxima are not unique or their comparison is unresolved, including a possible Laplace median interval."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","nu"})));
+  if(res.status!=cppunivariate::GedStatus::Ok && res.stop_detail.comparison_tie)return done(comparison(classify(fail("Conditional GED search did not converge; increase iterlim."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","nu"})));
   if (res.status == cppunivariate::GedStatus::InvalidStart) {
     if(!sd.supplied && gradtol>0 && std::isfinite(gradtol) && iterlim>0 && !x.empty() && std::isfinite(x[0]) && (!mean.supplied || held_mean==x[0]) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return done(classify(fail("GED MLE requires at least 2 finite observations with positive "
                "variance."),{},PayloadKind::Nonexistence,{}));

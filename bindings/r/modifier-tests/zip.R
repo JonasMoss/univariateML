@@ -142,7 +142,7 @@ test_that("P2 fixed inflation compares separated rate peaks", {
 test_that("ZIP certificate returns structured tie, budget and numerical stops", {
   x <- c(rep(0,99),10)
   tie <- tryCatch(.modifier_zip(x,pi=.7254971052291191),error=identity)
-  expect_s3_class(tie,"univariateML")
+  expect_s3_class(tie,"univariateML_unresolved")
   expect_equal(nrow(fit_payload(tie)$candidates),2)
   expect_equal(fit_payload(tie)$candidates$lambda,c(.5223041246623353,9.982727928366345),tolerance=1e-10)
   expect_true(all(fit_payload(tie)$candidates$loglik_lower <= -35.13856131179308))

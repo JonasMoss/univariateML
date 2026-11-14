@@ -98,7 +98,11 @@ cppuniv_test(tails_tests test_tails.cpp)
 add_test(NAME tails_tests COMMAND tails_tests
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-set_tests_properties(bfgs_tests sample_tests no_throw_tests cmp_tests tails_tests
+cppuniv_test(comparison_tests test_comparison.cpp)
+add_test(NAME comparison_tests COMMAND comparison_tests
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+set_tests_properties(bfgs_tests sample_tests no_throw_tests cmp_tests tails_tests comparison_tests
   PROPERTIES LABELS "cran;dev;full")
 
 # The monorepo audit is generated from binding call routing, but its checked-in

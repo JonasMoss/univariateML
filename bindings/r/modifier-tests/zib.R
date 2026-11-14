@@ -249,8 +249,9 @@ test_that("zib near-zero local face coefficients return an uncertified finite fi
 
 test_that("zib proves escape even when the winning ZIP rate is tied", {
   e <- tryCatch(.modifier_zib(c(rep(0,198),1,19),size=NULL,pi=.7254971052291191),error=identity)
-  expect_s3_class(e,"univariateML")
-  expect_identical(fit_payload(e)$kind,"estimate")
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(fit_payload(e)$kind,"limit")
+  expect_false(e$certified)
   expect_identical(fit_payload(e)$model,"zip")
   expect_true(is.finite(fit_payload(e)$loglik_upper))
   peaks <- fit_payload(e)$candidates[fit_payload(e)$candidates$model=="zip",]

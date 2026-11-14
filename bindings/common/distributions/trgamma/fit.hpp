@@ -49,10 +49,10 @@ inline FitResult fit_trgamma(cppunivariate::span x, Held shape1_arg = {}, Held s
 
   if(res.stop_detail.budget_exhausted)return done(classify(fail("Constrained likelihood search failed to converge. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));
   if(res.stop_detail.comparison_tie) {
-    if(scale.supplied)return done(classify(fail("The held-scale interior maximum is too close to the fixed-endpoint power face to certify its coefficients."),res.stop_detail,PayloadKind::Comparison,{"shape1","shape2","scale"}));
-    return done(classify(fail(res.stop_detail.limit_model==cppunivariate::StopModel::Lnorm ?
+    if(scale.supplied)return done(comparison_payload(classify(fail("The held-scale interior maximum is too close to the fixed-endpoint power face to certify its coefficients."),res.stop_detail,PayloadKind::Comparison,{"shape1","shape2","scale"}),o,cppunivariate::comparison_choice(res),{{"shape1",shape1_arg},{"shape2",shape2_arg},{"scale",scale_arg}}));
+    return done(comparison_payload(classify(fail(res.stop_detail.limit_model==cppunivariate::StopModel::Lnorm ?
       "The interior and lognormal likelihoods cannot be distinguished at the comparison tolerance. Use `mllnorm` for the limiting fit." :
-      "The interior and endpoint likelihoods cannot be distinguished at the comparison tolerance. Use `mlpower` for the limiting fit."),res.stop_detail,PayloadKind::Comparison,{"shape1","shape2","scale"}));
+      "The interior and endpoint likelihoods cannot be distinguished at the comparison tolerance. Use `mlpower` for the limiting fit."),res.stop_detail,PayloadKind::Comparison,{"shape1","shape2","scale"}),o,cppunivariate::comparison_choice(res),{{"shape1",shape1_arg},{"shape2",shape2_arg},{"scale",scale_arg}}));
   }
   if(res.transformation_failure)return done(classify(fail("Distinct observations or the held endpoint became indistinguishable after taking logarithms."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));
   if(res.reconstruction_failure)return done(classify(fail("Cannot certify the likelihood after reconstructing the coefficients in double precision."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));

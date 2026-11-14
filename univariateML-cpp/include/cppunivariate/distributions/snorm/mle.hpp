@@ -186,6 +186,22 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int maxit,
 }  // namespace cppunivariate
 
 namespace cppunivariate {
+inline bool family_point(const SnormResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0 && c.coef[2] > 0;
+}
+// Certificate ties list padded search witnesses and finite roots with
+// likelihood bounds against half-normal faces; no family point is checked.
+inline bool accurate_point(const SnormResult&, const FitCandidate&) { return false; }
+// Constant data with sd held and mean free: both half-normal faces attain the
+// sharp density bound, recorded as a finite global upper bound (every other
+// comparison leaves it infinite). Equal limiting suprema, proved.
+inline bool snorm_equal_faces(const SnormResult& r) {
+  if (!std::isfinite(r.stop_detail.loglik_upper) || r.stop_detail.candidates.size() < 2) return false;
+  for (const auto& c : r.stop_detail.candidates) if (!face_candidate(c)) return false;
+  return true;
+}
+
 inline FitOutcome outcome(const SnormResult& r) {
   if (r.status == SnormStatus::RightHalfNormalBoundary ||
       r.status == SnormStatus::LeftHalfNormalBoundary) {
@@ -204,7 +220,7 @@ inline FitOutcome outcome(const SnormResult& r) {
     }
   }
   if (r.status != SnormStatus::Unbounded && r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.status != SnormStatus::Unbounded && r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  if (r.status != SnormStatus::Unbounded && r.stop_detail.comparison_tie) return snorm_equal_faces(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
   switch (r.status) {
     case SnormStatus::Ok: return FitOutcome::estimate(true);
     case SnormStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

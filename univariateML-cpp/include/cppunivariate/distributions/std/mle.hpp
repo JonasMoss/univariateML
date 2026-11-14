@@ -564,6 +564,13 @@ inline StudentTResult student_t_mle(span x,double tol,int maxit,double mean,doub
 } // namespace cppunivariate
 
 namespace cppunivariate {
+inline bool family_point(const StudentTResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0 && c.coef[2] > 0;
+}
+// Certificate ties list witnesses with likelihood bounds; the held-sd symmetry
+// proof's candidates are likelihood witnesses, not accurate maximizers (README).
+inline bool accurate_point(const StudentTResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const StudentTResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -579,9 +586,9 @@ inline FitOutcome outcome(const StudentTResult& r) {
     case StudentTStatus::ScaleBoundary: return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case StudentTStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case StudentTStatus::CertificateBudget: return FitOutcome::budget();
-    case StudentTStatus::CertificateTie: return FitOutcome::estimate(false);
+    case StudentTStatus::CertificateTie: return comparison_outcome_of(r);
     case StudentTStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case StudentTStatus::NonUniqueHeldSd: return FitOutcome::estimate(r.certified, false);
+    case StudentTStatus::NonUniqueHeldSd: return nonunique_outcome_of(r, r.certified);
   }
   return {};
 }

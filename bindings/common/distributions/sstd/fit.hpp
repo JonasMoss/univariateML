@@ -43,7 +43,7 @@ inline FitResult fit_sstd(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
     const auto& d=res.stop_detail;
     const PayloadKind kind=!d.budget_exhausted && d.comparison_tie ? PayloadKind::Comparison : outcome_payload(o);
     const std::string message=d.budget_exhausted?"Skew Student-t certificate budget exhausted; increase `iterlim`.":d.comparison_tie?"Skew Student-t maxima are tied or numerically indistinguishable.":res.certificate_reason==1?"Nonunit-skew scale-collapse equality needs an unresolved finite/face likelihood comparison.":res.certificate_reason==3?"Skew Student-t constrained half-t endpoint contact needs a removable shrinking-side density calculation.":res.certificate_reason==2?"Skew Student-t exterior scale-score bracket failed; increase `iterlim`.":"Skew Student-t certificate could not resolve the root enclosure or arithmetic; increase `iterlim`.";
-    return done(stop_failure(fail(message),d,kind,{"mean","sd","nu","xi"}));
+    return done(comparison_payload(stop_failure(fail(message),d,kind,{"mean","sd","nu","xi"}),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg},{"xi",xi_arg}}));
   }
   if(res.status==cppunivariate::SstdStatus::UnsupportedHold) return done(fail("Unsupported conditional fit."));
   if (res.status == cppunivariate::SstdStatus::Unbounded)

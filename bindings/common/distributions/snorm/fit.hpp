@@ -41,7 +41,7 @@ inline FitResult fit_snorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if(res.status==cppunivariate::SnormStatus::Unbounded) return done(nomle("Scale collapse: the conditional skew-normal likelihood is unbounded; no MLE."));
   if(res.stop_detail.budget_exhausted)return done(classify(fail("Conditional skew-normal certificate budget exhausted; increase `iterlim`."),res.stop_detail,outcome_payload(o),{"mean","sd","xi"}));
-  if(res.stop_detail.comparison_tie)return done(classify(fail("Conditional skew-normal fit did not converge."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","xi"}));
+  if(res.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Conditional skew-normal fit did not converge."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","xi"}),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"xi",xi_arg}}));
   if(res.status==cppunivariate::SnormStatus::BfgsFailure) return done(classify(fail("Conditional skew-normal fit did not converge (certificate arithmetic or root enclosure; increase `iterlim`)."),res.stop_detail,outcome_payload(o),{"mean","sd","xi"}));
   // An unrepresentable face retains the classifier's existing plain error.
   const auto limit = [&](FitResult out, const std::string& model) {

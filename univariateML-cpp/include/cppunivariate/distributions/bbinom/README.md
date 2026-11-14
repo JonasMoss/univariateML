@@ -412,4 +412,4 @@ Newton solve.
 
 In the mass recurrence the remaining integer count is formed before adding beta. Subtracting the counts after adding a tiny beta can discard its significant digits at the last cell, contaminating both summed tails.
 
-When zero size or a one-trial submodel leaves beta-binomial shapes unidentified, the canonical coefficient vector is the first listed witness; the remaining listed representatives are attached as `maximizers`.
+Zero size, a one-trial submodel with both shapes free, and all-zero counts with free size leave the shapes unidentified without a listed maximizer, so these fits stop as unresolved. A free-size profile tie returns its best listed fixed-size fit uncertified; a fixed-size tie lists the unrefined grid root rather than the refined enclosure an accepted fit reports, and stops as unresolved.

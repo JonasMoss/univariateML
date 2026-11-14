@@ -599,6 +599,12 @@ inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double siz
 } // namespace cppunivariate
 
 namespace cppunivariate {
+inline bool family_point(const TbinomDesignResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 4 && std::isfinite(c.coef[0]) &&
+         c.coef[0] > 0 && c.coef[0] < 1;
+}
+// Singleton-support non-identification lists no maximizer.
+inline bool accurate_point(const TbinomDesignResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const TbinomDesignResult& r) {
   if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -611,7 +617,7 @@ inline FitOutcome outcome(const TbinomDesignResult& r) {
     case TbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TbinomStatus::LowerPointMass: return FitOutcome::limit(true);
     case TbinomStatus::UpperPointMass: return FitOutcome::limit(true);
-    case TbinomStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
+    case TbinomStatus::Unidentified: return nonunique_outcome_of(r, r.certified);
     case TbinomStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case TbinomStatus::TpoisLimit: return FitOutcome::limit(true);
   }

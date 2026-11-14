@@ -1,0 +1,23 @@
+84 of 85 families report an outcome on every case: bbinom beta betapr bhatt binom bnbinom burr cauchy cmb cmp dgamma dlaplace dnorm dunif dweibull exp expweibull fatigue foldnorm fpareto frechet gamma gb2 ged genbeta gengamma geom gev gompertz gpd gumbel hcauchy hnorm ht huber hyper invburr invexp invgamma invgauss invparalogis invpareto invtrgamma invweibull kumar laplace lgamma lgser llogis lnorm logis logitnorm lomax lst naka nbinom nhyper norm nsbeta paralogis pareto pareto2 pareto3 pareto4 pig pois power rayleigh sged sgomp skellam slash sn snorm sstd st std tlambda trgamma triang unif weibull yulesimon zeta
+partly: {'emg': [1, 211]}
+
+outcome kind, reason, emitted kind: cases
+  budget        none              budget     30
+  estimate      none              ok         8339
+  failure       conditioning      conditioning 18
+  failure       evaluation        numerical  503
+  failure       invalid-argument  invalid    44
+  failure       invalid-input     invalid    458
+  failure       no-convergence    numerical  296
+  failure       tolerance         tolerance  1
+  failure       unresolved        unresolved 104
+  failure       unsupported       unsupported 10
+  limit         none              limit      1834
+  nonexistence  unattained        nomle      35
+  nonexistence  unbounded         nomle      147
+
+raw statuses reached: {'bbinom': [0, 1, 2, 3, 4, 5, 7], 'beta': [0, 1, 2, 3], 'betapr': [0, 1, 2, 3, 4], 'bhatt': [0, 2, 3, 4, 5], 'binom': [0, 2, 4], 'bnbinom': [0, 1, 2, 3, 4, 6], 'burr': [0, 1, 2, 3, 4, 5, 6, 7, 9], 'cauchy': [0, 1, 2, 3, 4], 'cmb': [0, 1, 2, 3, 6, 7, 8], 'cmp': [0, 1, 3, 5, 6], 'dgamma': [0, 1, 3, 4, 5], 'dlaplace': [0, 1, 2], 'dnorm': [0, 1, 3, 4], 'dunif': [0, 1], 'dweibull': [0, 1, 3, 4, 5, 6, 8], 'emg': [0, 1, 2, 3, 4, 6, 8], 'exp': [0, 1, 2, 3], 'expweibull': [0, 1, 3, 6, 7], 'fatigue': [0, 1, 2, 3], 'foldnorm': [0, 1, 2, 4], 'fpareto': [-1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 14, 15], 'frechet': [0, 1, 2, 5], 'gamma': [0, 1, 2, 3], 'gb2': [0, 1, 2, 3, 4, 5, 6, 7, 9, 14, 15], 'ged': [0, 1, 2, 3, 5, 6, 7], 'genbeta': [0, 1, 2, 3, 5, 6], 'gengamma': [0, 1, 3, 4, 5, 6], 'geom': [0, 1], 'gev': [0, 1, 3, 5], 'gompertz': [0, 1, 2, 3], 'gpd': [0, 1, 3], 'gumbel': [0, 1, 2, 4], 'hcauchy': [0, 1, 2, 3], 'hnorm': [0, 1, 2], 'ht': [0, 1, 3, 5, 7], 'huber': [0, 1, 2, 3, 4, 5], 'hyper': [0, 1, 7, 8], 'invburr': [0, 1, 2, 3, 4, 5, 6, 7, 9], 'invexp': [0, 1, 3], 'invgamma': [0, 1, 3, 4], 'invgauss': [0, 1, 2, 3], 'invparalogis': [0, 1, 2, 3, 4], 'invpareto': [0, 1, 2], 'invtrgamma': [0, 1, 2, 4, 6], 'invweibull': [0, 1, 2, 3], 'kumar': [0, 1, 2, 3], 'laplace': [0, 1, 2, 3], 'lgamma': [0, 1, 4], 'lgser': [0, 1, 3], 'llogis': [0, 1, 2, 3], 'lnorm': [0, 1, 2], 'logis': [0, 1, 2], 'logitnorm': [0, 1, 2], 'lomax': [0, 1, 2], 'lst': [0, 2, 4, 6, 7, 8, 10, 11], 'naka': [0, 1, 3, 4], 'nbinom': [0, 1, 3], 'nhyper': [0, 3, 4], 'norm': [0, 1, 2, 3], 'nsbeta': [-1, 0, 1, 2, 3], 'paralogis': [0, 1, 2, 3, 4], 'pareto': [0, 1, 2], 'pareto2': [-1, 0, 1, 2], 'pareto3': [-1, 0, 1, 2, 3], 'pareto4': [-1, 0, 1, 2, 3, 5, 6, 7, 9], 'pig': [0, 1, 3, 4], 'pois': [0, 1], 'power': [0, 1, 2], 'rayleigh': [0, 1, 2], 'sged': [0, 1, 2, 6, 7, 8, 9], 'sgomp': [0, 1, 2, 3], 'skellam': [0, 1, 3], 'slash': [0, 1, 3, 4], 'sn': [0, 1, 2, 3, 4], 'snorm': [0, 1, 2, 3, 4, 5], 'sstd': [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12], 'st': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 'std': [0, 2, 3, 4, 6, 7, 8, 10, 11], 'tlambda': [0, 1, 3, 6, 7], 'trgamma': [0, 1, 2, 4, 6], 'triang': [0, 1, 3, 5], 'unif': [0, 1, 2, 3], 'weibull': [0, 1, 2, 4], 'yulesimon': [0, 1, 2], 'zeta': [0, 1, 2]}
+plain errors that become numerical stops in step 5: {}
+adapter overrides of a core success (core defects): {'gamma': 1, 'gompertz': 1, 'gumbel': 1, 'weibull': 1}
+
+0 disagreements between outcome and emitted kind

@@ -37,7 +37,7 @@ inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg 
   if (f.status==cppunivariate::SgompStatus::InvalidInput) return done(fail("Shifted Gompertz requires finite nonnegative data, positive reltol and positive iterlim."));
   if (f.status!=cppunivariate::SgompStatus::Ok) {
     if(f.stop_detail.budget_exhausted)return done(classify(fail("Shifted Gompertz certificate budget exhausted; increase iterlim."),f.stop_detail,outcome_payload(o),{"b","eta"}));
-    if(f.stop_detail.comparison_tie)return done(classify(fail("Shifted Gompertz competing global maxima cannot be distinguished; increase iterlim."),f.stop_detail,PayloadKind::Comparison,{"b","eta"}));
+    if(f.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Shifted Gompertz competing global maxima cannot be distinguished; increase iterlim."),f.stop_detail,PayloadKind::Comparison,{"b","eta"}),o,cppunivariate::comparison_choice(f),{{"b",b_arg},{"eta",eta_arg}}));
     return done(classify(fail("Shifted Gompertz MLE failed to converge; increase iterlim."),f.stop_detail,outcome_payload(o),{"b","eta"}));
   }
   std::vector<std::string> fixed;

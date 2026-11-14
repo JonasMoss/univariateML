@@ -52,7 +52,7 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(r.stop_detail.budget_exhausted)
     return done(stop_failure(fail("Generalized extreme value certificate exhausted its work budget; raise iterlim."),r.stop_detail,outcome_payload(o),{"mu","sigma","xi"}));
   if(r.stop_detail.comparison_tie)
-    return done(stop_failure(fail("Generalized extreme value certificate cannot separate competing shape maxima within its floating-point margin."),r.stop_detail,PayloadKind::Comparison,{"mu","sigma","xi"}));
+    return done(comparison_payload(stop_failure(fail("Generalized extreme value certificate cannot separate competing shape maxima within its floating-point margin."),r.stop_detail,PayloadKind::Comparison,{"mu","sigma","xi"}),o,cppunivariate::comparison_choice(r),{{"mu",mu_arg},{"sigma",sigma_arg},{"xi",xi_arg}}));
   if(r.status==cppunivariate::GevStatus::NumericalFailure ||
      (r.status==cppunivariate::GevStatus::IterationFailure && !std::isnan(r.stop_detail.loglik_upper)))
     return done(stop_failure(fail("Generalized extreme value certificate failed to converge or resolve the maximum numerically; raise iterlim for an exhausted solve."),r.stop_detail,outcome_payload(o),{"mu","sigma","xi"}));

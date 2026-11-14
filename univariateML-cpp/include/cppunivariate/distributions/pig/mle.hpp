@@ -395,12 +395,19 @@ inline PigResult pig_mle(ispan x, double tol=1e-10, int maxit=200,
   return pig_detail::held_shape(data,shape,tol,maxit);
 }
 
+inline bool family_point(const PigResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 2 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && c.coef[0] > 0 && c.coef[1] > 0;
+}
+// The Poisson-boundary comparison tie lists the Poisson face alone.
+inline bool accurate_point(const PigResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const PigResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status == PigStatus::SearchFailure) {
     if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
-    if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+    if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   }
   switch (r.status) {
     case PigStatus::Ok: return FitOutcome::estimate(true);

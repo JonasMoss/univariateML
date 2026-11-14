@@ -48,6 +48,8 @@ inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held 
   };
 
   const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  if(res.status==cppunivariate::LgammaStatus::InvalidInput)
+    return done(fail("Loggamma fitting needs nonempty finite observations greater than 1, positive abstol and positive iterlim."));
   if(res.status==cppunivariate::LgammaStatus::IterationFailure)
     return done(fail("Gamma delegate optimizer IterationFailure; increase iterlim."));
   if(res.status==cppunivariate::LgammaStatus::TransformFailure)

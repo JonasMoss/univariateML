@@ -1,0 +1,6 @@
+13754 cases judged in each of two modes; failures by check: {'invalid-input': 6, 'nesting': 6, 'terminates': 1, 'mode': 11}
+20 listed as known, 4 new, 0 listed but passing
+  NEW   invalid-input|double|gompertz|class|empty: ends in numerical
+  NEW   invalid-input|double|gompertz|class|nan: ends in numerical
+  NEW   invalid-input|native|gompertz|class|empty: ends in numerical
+  NEW   invalid-input|native|gompertz|class|nan: ends in numerical

@@ -256,8 +256,8 @@ test_that("Tukey lambda held-location half ties can have an attained maximum", {
 test_that("tlambda certificate stops retain ties, budgets and collapse witnesses", {
   caught <- function(expr) tryCatch(expr,error=identity)
   tie <- caught(mltlambda(c(-.25,.25),sigma=1,lambda=1.5))
-  expect_s3_class(tie,"univariateML")
-  expect_identical(fit_payload(tie)$kind,"estimate")
+  expect_s3_class(tie,"univariateML_unresolved")
+  expect_identical(fit_payload(tie)$kind,"unresolved")
   expect_equal(nrow(fit_payload(tie)$candidates),2L)
   expect_equal(sort(fit_payload(tie)$candidates$mu),c(-5/12,5/12),tolerance=1e-12)
   budget <- caught(mltlambda(c(-80/9,80/9),sigma=1,lambda=-1,reltol=1e-12,iterlim=64))

@@ -16,7 +16,9 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
     // A finite tnorm witness can include infinite design bounds. The core
     // checks its finite parent coefficients and proper interval before a tie.
     if(!detail.comparison_tie && !finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,detail.comparison_tie?PayloadKind::Comparison:kind,names,model);
+    if(!detail.comparison_tie)return stop_failure(out,detail,kind,names,model);
+    // The tie's finite candidate is a truncated normal point; faces keep their model's names.
+    return stop_failure(out,detail,PayloadKind::Comparison,{"mean","sd","a","b"},model);
   };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -41,6 +43,7 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
                                             held_mean, held_sd);
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
+    out=comparison_payload(std::move(out),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"a",a_arg},{"b",b_arg}});
     if(!out.error.empty() && res.status==cppunivariate::TnormStatus::Ok)
       return overridden(std::move(out),static_cast<int>(res.status));
     // InvalidBounds also represents an adapter-recognized constant-data collapse.

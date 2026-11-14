@@ -4,6 +4,7 @@
 #include <cmath>
 #include <limits>
 #include <vector>
+#include <algorithm>
 namespace umvl_binding {
 inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
   std::vector<std::string> warnings;
@@ -32,7 +33,28 @@ inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held 
     return done(stop_failure(fail("With location held the Cauchy scale MLE does not exist when at least half the observations equal that location."),res.stop_detail,outcome_payload(o),{"location","scale"},""));
   if (res.status == cppunivariate::CauchyStatus::NoMLE)
     return done(stop_failure(fail("Cauchy MLE does not exist: a sample atom has at least half the mass, except for balanced two-point samples"),res.stop_detail,outcome_payload(o),{"location","scale"},""));
-  if(res.status==cppunivariate::CauchyStatus::AmbiguousMaximum)return done(stop_failure(fail("Held-scale Cauchy global maxima are tied or numerically indistinguishable; no unique certified location returned."),res.stop_detail,PayloadKind::Comparison,{"location","scale"},""));
+  if(res.status==cppunivariate::CauchyStatus::AmbiguousMaximum) {
+    // Every candidate is a held-scale location root bracketed as tightly as an
+    // Ok root; the core keeps likelihood bounds only. The core outcome is the
+    // uncertified estimate; its point log likelihood is evaluated here exactly
+    // as fit_cauchy_location does for an Ok root.
+    const auto point=[](const cppunivariate::FitCandidate& c){
+      return c.model==cppunivariate::StopModel::None && c.coef.size()==2 && std::isfinite(c.coef[0]) &&
+        std::isfinite(c.coef[1]) && c.coef[1]>0;
+    };
+    auto out=comparison_payload(stop_failure(fail("Held-scale Cauchy global maxima are tied or numerically indistinguishable; no unique certified location returned."),res.stop_detail,PayloadKind::Comparison,{"location","scale"},""),
+      o,cppunivariate::better_candidate(res.stop_detail,point),{{"location",location_arg},{"scale",scale_arg}});
+    if(o.kind==cppunivariate::OutcomeKind::Estimate && !out.estimates.empty()) {
+      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
+      const double centre=y[y.size()/2],s=held_scale,location_value=out.estimates[0].second;
+      std::vector<double> z;
+      for(double v:y)z.push_back(static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(v)-centre)/s));
+      const double t=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(location_value)-centre)/s);
+      out.logLik=cppunivariate::cauchy_location_detail::likelihood(z,t)-
+        static_cast<double>(y.size())*(std::log(cppunivariate::pi)+std::log(s));
+    }
+    return done(out);
+  }
   if(res.status==cppunivariate::CauchyStatus::InvalidInput)return done(fail("Cauchy fit requires finite data, positive tolerance and iterlim, and valid held coefficients."));
   if(res.status==cppunivariate::CauchyStatus::IterationFailure)return done(fail("Conditional fit did not converge: numerical certificate, scale bracket or iteration failure; increase iterlim only for iteration exhaustion."));
   if (!std::isfinite(res.mu) || !std::isfinite(res.scale) || !(res.scale > 0.0))

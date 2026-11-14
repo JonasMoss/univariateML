@@ -43,7 +43,7 @@ inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held m
  if(r.stop_detail.budget_exhausted)
    return done(certificate_stop(fail("Frechet certificate exhausted its work budget; raise iterlim."),outcome_payload(o)));
  if(r.stop_detail.comparison_tie)
-   return done(certificate_stop(fail("Frechet certificate cannot separate competing finite maxima or the Gumbel face within its floating-point margin."),PayloadKind::Comparison));
+   return done(comparison_payload(certificate_stop(fail("Frechet certificate cannot separate competing finite maxima or the Gumbel face within its floating-point margin."),PayloadKind::Comparison),o,cppunivariate::comparison_choice(r),{{"lambda",lambda_arg},{"mu",mu_arg},{"sigma",sigma_arg}}));
  if(r.status==cppunivariate::FrechetStatus::NumericalFailure ||
     (r.status==cppunivariate::FrechetStatus::IterationFailure && !std::isnan(r.stop_detail.loglik_upper)))
    return done(certificate_stop(fail("Frechet certificate failed to converge or resolve the maximum numerically; raise iterlim for an exhausted solve."),outcome_payload(o)));

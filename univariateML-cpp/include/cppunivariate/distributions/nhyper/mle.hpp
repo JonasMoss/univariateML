@@ -333,6 +333,13 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
 }  // namespace cppunivariate
 
 namespace cppunivariate {
+inline bool family_point(const NhyperResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]);
+}
+// nhyper_mle returns any family candidate of a FaceTie as an uncertified Ok; a
+// FaceTie that survives lists the face alone.
+inline bool accurate_point(const NhyperResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const NhyperResult& r) {
   if (r.stop_detail.budget_exhausted && r.status != NhyperStatus::Ok &&
       r.status != NhyperStatus::Tie && r.status != NhyperStatus::Unidentified) return FitOutcome::budget();
@@ -344,7 +351,7 @@ inline FitOutcome outcome(const NhyperResult& r) {
     case NhyperStatus::Infeasible: return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case NhyperStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case NhyperStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
-    case NhyperStatus::FaceTie: return FitOutcome::estimate(false);
+    case NhyperStatus::FaceTie: return comparison_outcome_of(r);
   }
   return {};
 }

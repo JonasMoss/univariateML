@@ -55,7 +55,9 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   if(res.stop_detail.budget_exhausted) stop_kind=outcome_payload(o);
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"m","N","k"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,res.stop_detail,stop_kind,{"m","N","k"}),o,
+      cppunivariate::comparison_choice(res),{{"m",m_arg},{"N",N_arg},{"k",k_arg}});
   };
 
   const std::string estimated = !k.supplied ? "k" : (!N.supplied ? "N" : "m");
