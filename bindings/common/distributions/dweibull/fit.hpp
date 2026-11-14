@@ -22,22 +22,22 @@ inline FitResult fit_dweibull(cppunivariate::span x, Held shape1_arg = {}, Held 
   const auto res = cppunivariate::dweibull_mle(x, reltol, iterlim, q, b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied}});
   };
 
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(res.status) {
-    case cppunivariate::DweibullStatus::PointMass: stop_kind=outcome_kind(o);break;
-    case cppunivariate::DweibullStatus::TwoPointLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::DweibullStatus::BernoulliLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::DweibullStatus::HeldBernoulliLimit: stop_kind=outcome_kind(o);break;
+    case cppunivariate::DweibullStatus::PointMass: stop_kind=outcome_payload(o);break;
+    case cppunivariate::DweibullStatus::TwoPointLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::DweibullStatus::BernoulliLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::DweibullStatus::HeldBernoulliLimit: stop_kind=outcome_payload(o);break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"shape1","shape2"});
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"shape1","shape2"});
   };
 
   switch (res.status) {

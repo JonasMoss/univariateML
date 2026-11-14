@@ -15,26 +15,26 @@ inline FitResult fit_ztbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   const auto res=cppunivariate::ztbinom_mle(x, reltol, iterlim, fixed_size, held_prob);
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(res.status));
-    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied}});
   };
   return done([&]() -> FitResult {
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("ztbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"size","prob"});
-  if(res.accuracy_failure)return stop_failure(fail("ztbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,outcome_kind(o),{"size","prob"});
-  std::string stop_kind;
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return stop_failure(failure("ztbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"size","prob"});
+  if(res.accuracy_failure)return stop_failure(fail("ztbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,outcome_payload(o),{"size","prob"});
+  PayloadKind stop_kind=PayloadKind::None;
   switch(res.status) {
-    case cppunivariate::ZtbinomStatus::PoissonLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::ZtbinomStatus::IterationFailure: stop_kind=outcome_kind(o);break;
+    case cppunivariate::ZtbinomStatus::PoissonLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::ZtbinomStatus::IterationFailure: stop_kind=outcome_payload(o);break;
     default:break;
   }
-  if(res.stop_detail.budget_exhausted)stop_kind="budget";
-  if(res.stop_detail.comparison_tie)stop_kind="unresolved";
-  if(res.stop_detail.budget_exhausted)stop_kind="budget";
-  if(stop_kind.empty() && !res.stop_detail.candidates.empty())stop_kind="numerical";
+  if(res.stop_detail.budget_exhausted)stop_kind=PayloadKind::Budget;
+  if(res.stop_detail.comparison_tie)stop_kind=PayloadKind::Unresolved;
+  if(res.stop_detail.budget_exhausted)stop_kind=PayloadKind::Budget;
+  if((stop_kind==PayloadKind::None) && !res.stop_detail.candidates.empty())stop_kind=PayloadKind::Numerical;
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
-    auto out=fail(stop_kind=="unresolved" ? "Finite-size versus limit comparison is unresolved; no maximizer is certified. Use `mlpois(x, zero = \"truncated\")` only to fit the comparison face." : binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob"});
+    auto out=fail(stop_kind==PayloadKind::Unresolved ? "Finite-size versus limit comparison is unresolved; no maximizer is certified. Use `mlpois(x, zero = \"truncated\")` only to fit the comparison face." : binding_message(format,arguments...));
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob"});
   };
 
   if(res.status==cppunivariate::ZtbinomStatus::InvalidInput)return stopped_fail("requires nonempty positive integer count data and valid controls; held parameters must give positive likelihood");
@@ -45,7 +45,7 @@ inline FitResult fit_ztbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob}}; out.extra.push_back({"certified", res.certified ? 1.0 : 0.0}); out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob}};  out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
 
   }());
 }

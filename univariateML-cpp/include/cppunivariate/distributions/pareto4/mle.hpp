@@ -82,6 +82,14 @@ inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int m
 }
 
 namespace cppunivariate {
+inline bool family_point(const Pareto4Result&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 4 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && std::isfinite(c.coef[3]) &&
+         c.coef[0] > 0 && c.coef[1] > 0 && c.coef[2] > 0;
+}
+// CertificateTie transports the shifted Burr certificate's witnesses, with
+// likelihood bounds; an accurate converged search is already an uncertified Ok.
+inline bool accurate_point(const Pareto4Result&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const Pareto4Result& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -93,7 +101,7 @@ inline FitOutcome outcome(const Pareto4Result& r) {
     case BurrStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Unresolved);
     case BurrStatus::AllGeOne: return FitOutcome::limit();
     case BurrStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
-    case BurrStatus::CertificateTie: return FitOutcome::estimate(false);
+    case BurrStatus::CertificateTie: return comparison_outcome_of(r);
     case BurrStatus::CertificateBudget: return FitOutcome::budget();
     case BurrStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

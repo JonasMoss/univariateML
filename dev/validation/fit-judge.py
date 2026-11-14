@@ -13,7 +13,7 @@ Checks:
                  likelihood; an infinite coefficient is allowed only where the
                  caller held it at that value
   held           an estimate returns every held coefficient unchanged
-  invalid-input  empty, NaN and infinite samples end in a plain error
+  invalid-input  empty, NaN and infinite samples end in an invalid-input stop
   nesting        on the same data, a fit with fewer held coefficients has a
                  log likelihood at least that of a fit that holds more (same
                  values). The larger fit may be an estimate or a limit stop
@@ -56,7 +56,7 @@ def judge_one(mode, rows, data):
             moved = [n for n, v in r['held'].items()
                      if (n not in res['estimates'] and not route) or (n in res['estimates'] and number(res['estimates'][n]) != v)]
             if moved: fail('held', key, 'held changed: '+', '.join(moved))
-        if r['source'] == 'class' and key[2] in INVALID and kind != 'error':
+        if r['source'] == 'class' and key[2] in INVALID and not (kind == 'error' or kind == 'invalid' and res.get('reason') in ('invalid-input','invalid-argument')):
             fail('invalid-input', key, 'ends in '+kind)
         if r['source'] == 'archive' and int(key[2]) in data:
             groups.setdefault((key[0], data[int(key[2])]), []).append((key, r))
@@ -76,9 +76,12 @@ def judge_one(mode, rows, data):
                 if math.isfinite(value) and value-top > NEST_TOL*max(1, abs(value)) and (worst is None or value-top > worst[0]):
                     worst = (value-top, other[2])
             if worst:
-                flag = res['extra'].get('certified')
+                flag = res.get('certified')
+                if flag is None:
+                    legacy = res['extra'].get('certified')
+                    flag = None if legacy is None else bool(number(legacy))
                 fail('nesting', key, 'case %s holds more and is higher by %.4g; this fit is %s' % (
-                    worst[1], worst[0], 'unflagged' if flag is None else 'certified' if number(flag) else 'uncertified'))
+                    worst[1], worst[0], 'unflagged' if flag is None else 'certified' if flag else 'uncertified'))
     return failures
 
 def judge(native, double, data):

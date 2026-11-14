@@ -9,11 +9,11 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(abstol>0 && std::isfinite(abstol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -34,21 +34,22 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
     return invalid_argument(fail("Held `alpha` and `beta` must be positive finite numbers."));
   auto res = cppunivariate::fatigue_mle_shifted(x, threshold, abstol, iterlim,a,b);
   const auto o = cppunivariate::outcome(res);
+  const auto chosen = cppunivariate::comparison_choice(res);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"alpha",alpha_arg.supplied},{"beta",beta_arg.supplied},{"mu",mu_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if (res.status == cppunivariate::FatigueStatus::InvalidInput)
     return done(fail("Fatigue observations must be finite and strictly above `mu`."));
   if (res.status == cppunivariate::FatigueStatus::SearchFailure) {
     for(auto& candidate:res.stop_detail.candidates)candidate.coef.push_back(threshold);
-    if(res.stop_detail.budget_exhausted)return done(classify(fail("Fatigue optimizer SearchFailure: certificate budget exhausted; increase iterlim."),res.stop_detail,outcome_kind(o),{"alpha","beta","mu"}));
-    if(res.stop_detail.comparison_tie)return done(classify(fail("Fatigue optimizer SearchFailure: competing global maxima cannot be distinguished."),res.stop_detail,"tie",{"alpha","beta","mu"}));
-    return done(classify(fail("Fatigue optimizer SearchFailure: profile search did not converge or floating-point coefficient resolution failed; increase iterlim for unresolved searches."),res.stop_detail,outcome_kind(o),{"alpha","beta","mu"}));
+    if(res.stop_detail.budget_exhausted)return done(classify(fail("Fatigue optimizer SearchFailure: certificate budget exhausted; increase iterlim."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
+    if(res.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Fatigue optimizer SearchFailure: competing global maxima cannot be distinguished."),res.stop_detail,PayloadKind::Comparison,{"alpha","beta","mu"}),o,chosen,{{"alpha",alpha_arg},{"beta",beta_arg},{"mu",mu_arg}}));
+    return done(classify(fail("Fatigue optimizer SearchFailure: profile search did not converge or floating-point coefficient resolution failed; increase iterlim for unresolved searches."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
   }
   if (!(res.alpha>0.0) || !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
     if (res.status==cppunivariate::FatigueStatus::Unbounded)

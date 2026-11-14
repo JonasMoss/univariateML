@@ -25,21 +25,22 @@ inline FitResult fit_binom(cppunivariate::ispan x, Held size_arg = {}, Held prob
   auto res = cppunivariate::binom_mle(x, size_or_nan, abstol, iterlim, p);
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(res.status));
-    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied}});
   };
   return done([&]() -> FitResult {
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(res.status) {
-    case cppunivariate::BinomStatus::Underdispersed: stop_kind=outcome_kind(o);break;
+    case cppunivariate::BinomStatus::Underdispersed: stop_kind=outcome_payload(o);break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob"});
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob"});
   };
 
+  if (res.status == cppunivariate::BinomStatus::InvalidInput && x.empty()) return stopped_fail("Binomial fitting needs nonempty count data.");
   if (res.status == cppunivariate::BinomStatus::InvalidInput) return stopped_fail("Held parameters are incompatible with the observations.");
   if (res.status == cppunivariate::BinomStatus::SizeTooSmall) {
     return stopped_fail("`size` is smaller than `max(x)`.");

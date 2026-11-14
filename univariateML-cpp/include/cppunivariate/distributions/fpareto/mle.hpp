@@ -41,6 +41,15 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   return {r.shape1,r.shape2,r.shape3,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified,r.profile_evaluations};
 }
 
+inline bool family_point(const FparetoResult&, const FitCandidate& c) {
+  if (c.model != StopModel::None || c.coef.size() != 5) return false;
+  for (std::size_t i = 0; i < 5; ++i) if (!std::isfinite(c.coef[i]) || (i < 4 && !(c.coef[i] > 0))) return false;
+  return true;
+}
+// CertificateTie transports the shifted GB2 certificate's witnesses, each with
+// a likelihood enclosure (ll -+ error), not a converged point log likelihood.
+inline bool accurate_point(const FparetoResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const FparetoResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -60,7 +69,7 @@ inline FitOutcome outcome(const FparetoResult& r) {
     case Gb2Status::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
     case Gb2Status::WeibullBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
     case Gb2Status::InvWeibullBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
-    case Gb2Status::CertificateTie: return FitOutcome::estimate(false);
+    case Gb2Status::CertificateTie: return comparison_outcome_of(r);
     case Gb2Status::CertificateBudget: return FitOutcome::budget();
     case Gb2Status::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

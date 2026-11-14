@@ -145,7 +145,7 @@ test_that("CMB: held canonical coordinates give a certified integer profile", {
 test_that("CMB: free size validates holds, endpoints and resource failures", {
   for(nu in c(-2,0,2)) for(p in c(0,1)) {
     if (p == 0) {
-      expect_error(mlcmb(rep(0,20),size=NULL,prob=0,nu=nu),class="univariateML_tie")
+      expect_s3_class(mlcmb(rep(0,20),size=NULL,prob=0,nu=nu),"univariateML")
     } else {
       f <- mlcmb(rep(3,20),size=NULL,prob=1,nu=nu)
       expect_equal(as.numeric(f),c(3,1,nu))
@@ -157,7 +157,7 @@ test_that("CMB: free size validates holds, endpoints and resource failures", {
   for (p in list(NULL,.3)) {
     f <- tryCatch(mlcmb(1:4,size=NULL,prob=p),error=identity)
     if (inherits(f,"error"))
-      expect_match(conditionMessage(f),"not excluded|work budget")
+      expect_match(fit_diagnostic(f),"not excluded|work budget")
     else
       expect_true(is.finite(attr(f,"logLik")))
   }
@@ -218,7 +218,7 @@ test_that("CMB free size with fixed dispersion compares the whole integer tail",
     expect_setequal(attr(f,"fixed"),"nu")
   }
   expect_error(mlcmb(c(0,2),size=NULL,nu=1),"larger finite maximum is not excluded")
-  expect_error(mlcmb(c(rep(0,9),6),size=NULL,nu=0.0030483655389936895),"matched the Conway-Maxwell-Poisson face")
+  expect_match(attr(mlcmb(c(rep(0,9),6),size=NULL,nu=0.0030483655389936895),"outcome_message"),"matched the Conway-Maxwell-Poisson face")
   expect_error(mlcmb(c(0,10000000),size=NULL,nu=1,iterlim=1),"work budget")
   expect_equal(mlcmb(c(3,3),size=NULL,nu=-1)[["size"]],3)
 })
@@ -234,7 +234,7 @@ test_that("CMB free dispersion handles constant free-size samples", {
 })
 
 test_that("CMB free size and dispersion handle adjacent observations", {
-  expect_error(mlcmb(c(0, 0, 1), size = NULL), "matched a limiting face")
+  expect_match(attr(mlcmb(c(0, 0, 1), size = NULL),"outcome_message"),"matched a limiting face")
   expect_error(mlcmb(c(2, 2, 3), size = NULL), "adjacent two-point law")
   expect_error(mlcmb(c(0, 0, 4), size = NULL), "endpoint two-point law")
 })
@@ -252,7 +252,7 @@ test_that("CMB free size symmetric held probability faces", {
 })
 
 test_that("CMB held probability detects an adjacent-face tie", {
-  expect_error(mlcmb(c(1,2),size=NULL,prob=.69830412636804606),"matched a limiting face")
+  expect_match(attr(mlcmb(c(1,2),size=NULL,prob=.69830412636804606),"outcome_message"),"matched a limiting face")
 })
 
 test_that("CMB free size attains the empirical uniform likelihood", {
@@ -351,12 +351,18 @@ test_that("CMB finite-size ties stop with both finite witnesses", {
                     list(x=c(0,0)),list(x=c(0,0),nu=2),
                     list(x=c(0,0),prob=0,nu=2))) {
     e <- tryCatch(do.call(mlcmb,c(args,list(size=NULL))), error=identity)
-    expect_s3_class(e,"univariateML_tie")
-    expect_match(conditionMessage(e),"Distinct finite sizes")
-    expect_equal(nrow(e$candidates),2L)
-    expect_equal(length(unique(e$candidates$size)),2L)
-    expect_true(all(is.finite(e$candidates$loglik_lower)))
-    expect_identical(e$loglik_upper,Inf)
+    if (identical(args$x,c(0,0))) {
+      # All-zero counts: both listed sizes attain the pmf supremum (log likelihood 0).
+      expect_s3_class(e,"univariateML")
+      expect_true(attr(e,"certified"))
+      expect_false(attr(e,"unique"))
+      expect_equal(as.numeric(logLik(e)),0)
+    } else expect_s3_class(e,"univariateML_unresolved")
+    expect_match(fit_diagnostic(e),"Distinct finite sizes")
+    expect_equal(nrow(fit_payload(e)$candidates),2L)
+    expect_equal(length(unique(fit_payload(e)$candidates$size)),2L)
+    expect_true(all(is.finite(fit_payload(e)$candidates$loglik_lower)))
+    expect_identical(fit_payload(e)$loglik_upper,Inf)
   }
 })
 

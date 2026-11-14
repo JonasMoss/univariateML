@@ -17,6 +17,28 @@ enum class CmbStatus { Ok, InvalidInput, PointMass, AdjacentLimit, EndpointLimit
 struct CmbResult { double prob,nu,logLik; int iterations; CmbStatus status;   StopDetail stop_detail{};
 };
 
+// Candidates are (size, prob, nu).
+inline bool family_point(const CmbResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         c.coef[0] >= 0 && c.coef[0] == std::floor(c.coef[0]) && c.coef[1] >= 0 && c.coef[1] <= 1 &&
+         std::isfinite(c.coef[2]);
+}
+// In a FaceTie, point-valued family candidates are Ok fixed-size fits (with
+// the Ok log likelihood) or exact closed-form maxima (size-one or size-two
+// Bernoulli-type samples, zero counts); finite-size comparisons pad their
+// values into bounds and are not point values.
+inline bool accurate_point(const CmbResult& r, const FitCandidate& c) {
+  return family_point(r, c) && point_value(c);
+}
+// All-zero counts: listed family points with log likelihood 0 attain the
+// supremum of any pmf likelihood, so the maxima are proved and not unique.
+inline bool zero_count_maxima(const CmbResult& r) {
+  if (r.stop_detail.candidates.size() < 2) return false;
+  for (const auto& c : r.stop_detail.candidates)
+    if (!family_point(r, c) || c.loglik_lower != 0 || c.loglik_upper != 0) return false;
+  return true;
+}
+
 inline FitOutcome outcome(const CmbResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -30,7 +52,7 @@ inline FitOutcome outcome(const CmbResult& r) {
     case CmbStatus::Unidentified: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case CmbStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case CmbStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
-    case CmbStatus::FaceTie: return FitOutcome::estimate(false);
+    case CmbStatus::FaceTie: return zero_count_maxima(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
     case CmbStatus::NotImplemented: return FitOutcome::failure(OutcomeReason::Unsupported);
   }
   return {};

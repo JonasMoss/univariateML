@@ -27,33 +27,35 @@ inline FitResult fit_betapr(cppunivariate::span x, Held shape1_arg = {}, Held sh
                                       shape10, shape20, scale0, reltol, abstol);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (res.status == cppunivariate::BetaPrimeStatus::Ok)
         return overridden(std::move(out), static_cast<int>(res.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
   };
   if(res.status==cppunivariate::BetaPrimeStatus::ExpBoundary)
-    return done(stop_failure(fail("The certified beta-prime submodel selects the exponential limit. Use `mlexp`."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},"exp"));
+    return done(stop_failure(fail("The certified beta-prime submodel selects the exponential limit. Use `mlexp`."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},"exp"));
   if(res.status==cppunivariate::BetaPrimeStatus::InvExpBoundary)
-    return done(stop_failure(fail("The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},"invexp"));
+    return done(stop_failure(fail("The certified beta-prime submodel selects the inverse exponential limit. Use `mlinvexp`."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},"invexp"));
   if (res.status == cppunivariate::BetaPrimeStatus::GammaBoundary && res.stop_detail.limit_coef.empty())
     return done(fail("The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model."));
   if (res.status == cppunivariate::BetaPrimeStatus::InvGammaBoundary && res.stop_detail.limit_coef.empty())
     return done(fail("The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model."));
   if (res.status == cppunivariate::BetaPrimeStatus::GammaBoundary)
-    return done(stop_failure(fail("The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},"gamma"));
+    return done(stop_failure(fail("The beta-prime likelihood selects the gamma limit. Use `mlgamma` to fit this model."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},"gamma"));
   if (res.status == cppunivariate::BetaPrimeStatus::InvGammaBoundary)
-    return done(stop_failure(fail("The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},"invgamma"));
+    return done(stop_failure(fail("The beta-prime likelihood selects the inverse-gamma limit. Use `mlinvgamma` to fit this model."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},"invgamma"));
   if (res.status == cppunivariate::BetaPrimeStatus::BfgsFailure && res.certificate_failure==cppunivariate::LomaxCertificateFailure::Budget)
-    return done(stop_failure(fail("Beta-prime BfgsFailure: global certificate budget exhausted (128 * min(iterlim, 100000) evaluations); raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},""));
+    return done(stop_failure(fail("Beta-prime BfgsFailure: global certificate budget exhausted (128 * min(iterlim, 100000) evaluations); raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
   if (res.status == cppunivariate::BetaPrimeStatus::BfgsFailure)
-    return done(stop_failure(fail("Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`."),res.stop_detail,res.stop_detail.comparison_tie?"tie":outcome_kind(o),{"shape1","shape2","scale"},""));
+    return done(comparison_payload(stop_failure(fail(o.kind==cppunivariate::OutcomeKind::Limit ?
+        "Beta-prime global certificate cannot separate the finite profile from the gamma and inverse-gamma limits; no verified MLE." :
+        "Beta-prime optimizer BfgsFailure: profile did not converge or its global certificate is unresolved; increase iterlim. An unresolved gamma or inverse-gamma comparison does not select `mlgamma` or `mlinvgamma`."),res.stop_detail,res.stop_detail.comparison_tie?PayloadKind::Comparison:outcome_payload(o),{"shape1","shape2","scale"},""),o,cppunivariate::comparison_choice(res),{{"shape1",shape1_arg},{"shape2",shape2_arg},{"scale",scale_arg}}));
   if(res.status==cppunivariate::BetaPrimeStatus::InvalidStart && !shape1.supplied && !shape2.supplied && !x.empty() &&
       std::all_of(x.begin(),x.end(),[&](double v){return v>0&&std::isfinite(v)&&v==x[0];}))
-    return with_outcome(stop_failure(fail("Beta-prime finite MLEs require positive log-variance; constant positive observations have unbounded likelihood."),res.stop_detail,"nomle",{"shape1","shape2","scale"},""),cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded),static_cast<int>(res.status));
+    return with_outcome(stop_failure(fail("Beta-prime finite MLEs require positive log-variance; constant positive observations have unbounded likelihood."),res.stop_detail,PayloadKind::Nonexistence,{"shape1","shape2","scale"},""),cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded),static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
   if (res.status == cppunivariate::BetaPrimeStatus::InvalidStart ||
       !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.scale))
     return done(fail("Beta-prime MLE requires positive finite observations with positive log-variance."));
@@ -61,7 +63,7 @@ inline FitResult fit_betapr(cppunivariate::span x, Held shape1_arg = {}, Held sh
   if(shape1.supplied)fixed.push_back("shape1");
   if(shape2.supplied)fixed.push_back("shape2");
   if(scale.supplied)fixed.push_back("scale");
-  return done([&]() { FitResult out; out.extra.emplace_back("certified",res.certified?1.:0.); out.warnings = warnings; out.estimates = {{"shape1",res.alpha},{"shape2",res.beta},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"shape1",res.alpha},{"shape2",res.beta},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

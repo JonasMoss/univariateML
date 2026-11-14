@@ -40,11 +40,20 @@ struct GenbetaResult {
  GenbetaTailBounds tail_bounds{};
  bool allfree_certified=false; };
 
+inline bool family_point(const GenbetaResult&, const FitCandidate& c) {
+  if (c.model != StopModel::None || c.coef.size() != 4) return false;
+  for (double v : c.coef) if (!std::isfinite(v) || !(v > 0)) return false;
+  return true;
+}
+// Comparison candidates are the legacy search's best point against a face, or
+// certificate roots with likelihood bounds; none is a checked converged fit.
+inline bool accurate_point(const GenbetaResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const GenbetaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
     case GenbetaStatus::Ok: return FitOutcome::estimate(r.allfree_certified);
     case GenbetaStatus::UnitGammaBoundary: return FitOutcome::limit(r.allfree_certified);

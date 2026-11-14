@@ -139,10 +139,11 @@ test_that("huber certificates stop at an unresolved finite-normal comparison", {
   c <- uniroot(gain,c(.7,.85),tol=1e-14)$root
   a <- c+2*exp(-c*c/2)/(c*c*z(c))
   e <- tryCatch(mlhuber(c(a,a),mu=0,sigma=1,epsilon=NULL),error=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_true(any(e$candidates$model=="norm"))
-  expect_true(any(e$candidates$model=="" & e$candidates$epsilon<1,na.rm=TRUE))
-  expect_gte(e$loglik_upper,e$loglik_lower)
+  expect_s3_class(e,"univariateML_limit")
+  expect_false(e$certified)
+  expect_true(any(fit_payload(e)$candidates$model=="norm"))
+  expect_true(any(fit_payload(e)$candidates$model=="" & fit_payload(e)$candidates$epsilon<1,na.rm=TRUE))
+  expect_gte(fit_payload(e)$loglik_upper,fit_payload(e)$loglik_lower)
 })
 
 test_that("huber numerical stops report a nonrepresentable objective", {

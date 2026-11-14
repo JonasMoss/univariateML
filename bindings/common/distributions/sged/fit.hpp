@@ -9,12 +9,12 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(gradtol>0 && std::isfinite(gradtol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!(kind=="budget" && detail.budget_exhausted) && !finite_stop_payload(detail,kind))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(!(kind==PayloadKind::Budget && detail.budget_exhausted) && !finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
   std::vector<std::string> warnings;
@@ -36,42 +36,43 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   auto res=cppunivariate::sged_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (res.status == cppunivariate::SgedStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (res.status == cppunivariate::SgedStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
     // The adapter's sample/hold checks distinguish collapse from invalid input.
-    if (out.error_kind == "nomle" && o.kind != cppunivariate::OutcomeKind::Nonexistence)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded), static_cast<int>(res.status));
+    if (out.payload_kind == PayloadKind::Nonexistence && o.kind != cppunivariate::OutcomeKind::Nonexistence)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded), static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied},{"xi",xi_arg.supplied}});
     // Preserve the classifier's refusal of a structured stop (invalid context
     // or missing finite payload); the core result does not retain that context.
-    if (!out.error.empty() && out.error_kind.empty() && o.kind != cppunivariate::OutcomeKind::Failure)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    if (!out.error.empty() && (out.payload_kind==PayloadKind::None) && o.kind != cppunivariate::OutcomeKind::Failure)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied},{"xi",xi_arg.supplied}});
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied},{"xi",xi_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sged numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"mean","sd","nu","xi"}));
-  if(res.accuracy_failure)return done(stop_failure(fail("sged numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,outcome_kind(o),{"mean","sd","nu","xi"}));
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sged numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
+  if(res.accuracy_failure)return done(stop_failure(fail("sged numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,outcome_payload(o),{"mean","sd","nu","xi"}));
   if(res.status==cppunivariate::SgedStatus::CertificateFailure) {
     const std::vector<std::string> names{"mean","sd","nu","xi"};
     if(res.stop_detail.budget_exhausted)
-      return done(classify(fail("SGED certificate budget exhausted; increase `iterlim`."),res.stop_detail,outcome_kind(o),names));
+      return done(classify(fail("SGED certificate budget exhausted; increase `iterlim`."),res.stop_detail,outcome_payload(o),names));
     if(res.stop_detail.comparison_tie)
-      return done(classify(fail("SGED maxima are tied or numerically indistinguishable; no unique MLE returned."),res.stop_detail,"tie",names));
-    return done(classify(fail("SGED certificate numerical failure (arithmetic or root enclosure); increase `iterlim`."),res.stop_detail,outcome_kind(o),names));
+      return done(comparison_payload(classify(fail("SGED maxima are tied or numerically indistinguishable; no unique MLE returned."),res.stop_detail,PayloadKind::Comparison,names),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg},{"xi",xi_arg}}));
+    return done(classify(fail("SGED certificate numerical failure (arithmetic or root enclosure); increase `iterlim`."),res.stop_detail,outcome_payload(o),names));
   }
   if(res.status==cppunivariate::SgedStatus::UnsupportedHold) return done(fail("Unsupported conditional fit."));
   if(res.status==cppunivariate::SgedStatus::Unbounded) return done(nomle("Scale collapse: likelihood is unbounded at the held mean; no MLE."));
   if(res.status==cppunivariate::SgedStatus::ScaleBoundary) return done(fail("Scale-collapse or constrained uniform endpoint boundary could not be certified; no finite MLE returned."));
   if (res.status == cppunivariate::SgedStatus::InvalidStart) {
     if(!sd.supplied && gradtol>0 && std::isfinite(gradtol) && iterlim>0 && !x.empty() && std::isfinite(x[0]) && (!mean.supplied || held_mean==x[0]) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return done(classify(fail("Skew GED MLE requires at least 2 finite observations with "
-               "positive variance."),{},"nomle",{}));
+               "positive variance."),{},PayloadKind::Nonexistence,{}));
     return done(fail("Skew GED MLE requires at least 2 finite observations with "
                "positive variance."));
   }
   const auto face_fail = [&](const std::string& message, const std::string& model, const std::vector<std::string>& names) {
-    if(res.stop_detail.comparison_tie)return done(classify(fail(message),res.stop_detail,"tie",names));
+    // A tie's finite candidates are SGED points; faces keep their model's names.
+    if(res.stop_detail.comparison_tie)return done(comparison_payload(classify(fail(message),res.stop_detail,PayloadKind::Comparison,{"mean","sd","nu","xi"}),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg},{"xi",xi_arg}}));
     if(res.stop_detail.limit_coef.empty())return done(fail(message));
-    return done(classify(fail(message),res.stop_detail,outcome_kind(o),names,model));
+    return done(classify(fail(message),res.stop_detail,outcome_payload(o),names,model));
   };
   if (res.status == cppunivariate::SgedStatus::UniformBoundary) {
     return done(face_fail("SGED likelihood is maximised as nu -> Inf, i.e. by the uniform distribution. Use `mlunif` instead.","unif",{"a","b"}));
@@ -105,7 +106,7 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   if(res.restricted & 32u) restricted.emplace_back("nu","upper");
   if(res.restricted & 64u) restricted.emplace_back("xi","lower");
   if(res.restricted & 128u) restricted.emplace_back("xi","upper");
-  return done([&]() { FitResult out; out.extra.push_back({"certified",res.certified?1.:0.}); out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu},{"xi",res.xi}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu},{"xi",res.xi}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

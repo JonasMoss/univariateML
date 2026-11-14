@@ -131,6 +131,7 @@ summary.univariateML <- function(object, ...) {
   )
   print.default(format(object, digits = digits), print.gap = 2L, quote = FALSE)
   ml_print_modifiers(object)
+  ml_print_outcome(object)
   fixed <- univariateML_fixed(object)
   if (length(fixed)) cat("\nFixed:           ", paste(fixed, collapse = ", "), "\n", sep = "")
   restricted <- attr(object, "restricted")
@@ -151,6 +152,7 @@ print.univariateML <- function(x, ...) {
   cat(if (isTRUE(attr(x, "frozen"))) "Fixed coefficients for the" else "Maximum likelihood estimates for the", attr(x, "model"), "model \n")
   print.default(format(x, digits = digits), print.gap = 2L, quote = FALSE)
   ml_print_modifiers(x)
+  ml_print_outcome(x)
   fixed <- univariateML_fixed(x)
   if (length(fixed)) cat("Fixed: ", paste(fixed, collapse = ", "), "\n", sep = "")
   restricted <- attr(x, "restricted")
@@ -199,6 +201,7 @@ confint.univariateML <- function(
     Nreps = 1000,
     ...,
     reps = Nreps) {
+  ml_require_unique(object)
   ml_require_data(object)
   if (is.null(parm)) parm <- names(object)
 

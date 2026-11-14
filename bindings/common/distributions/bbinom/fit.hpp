@@ -26,28 +26,30 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   const auto res = cppunivariate::bbinom_mle(x, N, reltol, iterlim, a, b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (res.status == cppunivariate::BbinomStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (res.status == cppunivariate::BbinomStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"size",size_arg.supplied},{"alpha",alpha_arg.supplied},{"beta",beta_arg.supplied}});
   };
-  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("bbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_kind(o),{"size","alpha","beta"}));
-  if(res.accuracy_failure)return done(stop_failure(failure("bbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,outcome_kind(o),{"size","alpha","beta"}));
-  if(res.status!=cppunivariate::BbinomStatus::Ok && res.stop_detail.budget_exhausted)return done(stop_failure(failure("Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"size","alpha","beta"}));
-  std::string stop_kind;
+  if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("bbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"size","alpha","beta"}));
+  if(res.accuracy_failure)return done(stop_failure(failure("bbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,outcome_payload(o),{"size","alpha","beta"}));
+  if(res.status!=cppunivariate::BbinomStatus::Ok && res.stop_detail.budget_exhausted)return done(stop_failure(failure("Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"size","alpha","beta"}));
+  PayloadKind stop_kind=PayloadKind::None;
   switch(res.status) {
-    case cppunivariate::BbinomStatus::BinomialLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::BbinomStatus::TwoPointLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::BbinomStatus::PointMass: stop_kind=outcome_kind(o);break;
-    case cppunivariate::BbinomStatus::Unidentified: stop_kind="tie";break;
-    case cppunivariate::BbinomStatus::SizeBudget: stop_kind=outcome_kind(o);break;
-    case cppunivariate::BbinomStatus::ProfileTie: stop_kind="tie";break;
-    case cppunivariate::BbinomStatus::FaceUnresolved: stop_kind=outcome_kind(o);break;
-    case cppunivariate::BbinomStatus::IterationFailure: stop_kind=outcome_kind(o);break;
+    case cppunivariate::BbinomStatus::BinomialLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::BbinomStatus::TwoPointLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::BbinomStatus::PointMass: stop_kind=outcome_payload(o);break;
+    case cppunivariate::BbinomStatus::Unidentified: stop_kind=PayloadKind::Comparison;break;
+    case cppunivariate::BbinomStatus::SizeBudget: stop_kind=outcome_payload(o);break;
+    case cppunivariate::BbinomStatus::ProfileTie: stop_kind=PayloadKind::Comparison;break;
+    case cppunivariate::BbinomStatus::FaceUnresolved: stop_kind=outcome_payload(o);break;
+    case cppunivariate::BbinomStatus::IterationFailure: stop_kind=outcome_payload(o);break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=failure(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"size","alpha","beta"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,res.stop_detail,stop_kind,{"size","alpha","beta"}),o,
+      cppunivariate::comparison_choice(res),{{"size",size_arg},{"alpha",alpha_arg},{"beta",beta_arg}});
   };
 
   const std::string n_txt = std::to_string(static_cast<long long>(std::isfinite(N)?N:0));
@@ -94,7 +96,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
   if (size.supplied) fixed.push_back("size");
   if (alpha.supplied) fixed.push_back("alpha");
   if (beta.supplied) fixed.push_back("beta");
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"alpha",res.alpha},{"beta",res.beta}}; out.extra.push_back({"certified", res.certified ? 1.0 : 0.0}); out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"alpha",res.alpha},{"beta",res.beta}};  out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

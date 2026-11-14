@@ -16,9 +16,9 @@ inline FitResult fit_geom(cppunivariate::ispan x, Held prob_arg = {}) {
       cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())}, prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(res.status));
-    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"prob",prob_arg.supplied}});
   };
   return done([&]() -> FitResult {
   if(res.status != cppunivariate::GeomStatus::Ok || !std::isfinite(res.logLik))return fail("Held prob is outside its domain or incompatible with the observations.");

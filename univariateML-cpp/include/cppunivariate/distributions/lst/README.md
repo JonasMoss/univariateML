@@ -337,3 +337,5 @@ its relative correction is below binary64 accuracy; unsupported tail
 calculations return NaN. The
 [extreme-shape checks](../../../../../dev/research/evaluations/2026-11-09-tail-extreme-data/run-targeted.sh)
 cover the half-t, standardized-t and skew-t consumers as well.
+
+The symmetry proof's candidates are likelihood witnesses, not maximizers within `tol`, so the proved non-uniqueness stops as unresolved with both witnesses attached.

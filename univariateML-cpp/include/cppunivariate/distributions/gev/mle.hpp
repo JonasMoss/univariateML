@@ -691,12 +691,20 @@ inline GevResult gev_mle(span x,double tol=1e-10,int maxit=100,double xi=std::nu
   return r;
 }
 
+inline bool family_point(const GevResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0;
+}
+// A tie survives the uncertified search fallback only when that search fails
+// or is refuted; its candidates are enclosure fits with likelihood bounds.
+inline bool accurate_point(const GevResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const GevResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status == GevStatus::SearchContradicted) return FitOutcome::failure(OutcomeReason::NoConvergence);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
     case GevStatus::Ok: return FitOutcome::estimate(r.certified);
     case GevStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);

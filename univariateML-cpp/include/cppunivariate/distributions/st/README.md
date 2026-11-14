@@ -362,7 +362,7 @@ If every nonzero $q_i$ has one sign, the likelihood is strictly monotone;
 the fitter stops at the corresponding half-t face. Each observation at the
 held endpoint contributes its symmetric t density, so the face likelihood
 is the closed half-t value divided by $2^k$. If all residuals vanish, alpha
-is unidentifiable and a tie stop supplies two different finite maximizers.
+is unidentifiable; the two listed finite maximizers carry only padded likelihood bounds, so the fit stops as unresolved with both attached.
 
 With both signs present, all stationary points lie in $[-A_-,A_+]$.
 For $n_-$ negative residuals, set
@@ -471,3 +471,5 @@ When only df is free, derivative convergence in the Student-CDF fractions
 follows the packed df axis. Near the normal face its practical arithmetic
 floor scales with df; the final information-weighted score check still
 controls the public df error.
+
+The certified constant-location tie has equal half-t (or half-normal) and reflected suprema: it is a certified limit naming the first listed face, with both faces attached.

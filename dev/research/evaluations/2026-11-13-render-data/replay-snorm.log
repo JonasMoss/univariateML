@@ -1,0 +1,11 @@
+Input: c(-1,0,1); held sd=1.4
+      mu    sigma 
+1.000000 2.322455 
+logLik: -3.668744 
+fixed: sd 
+certified: FALSE unique: TRUE 
+                              model mu    sigma loglik_lower loglik_upper
+1 unavailable:reflected-half-normal  1 2.322455    -3.668744    -3.668744
+2                             hnorm -1 2.322455    -3.668744    -3.668744
+Original diagnostic: Conditional skew-normal fit did not converge. 
+Held-coordinate assertion: FALSE 

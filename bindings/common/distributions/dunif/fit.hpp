@@ -19,9 +19,9 @@ inline FitResult fit_dunif(cppunivariate::ispan x, Held min_arg = {}, Held max_a
       cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())},a,b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (res.status == cppunivariate::DiscreteUnifStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (res.status == cppunivariate::DiscreteUnifStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"min",min_arg.supplied},{"max",max_arg.supplied}});
   };
   if (res.status!=cppunivariate::DiscreteUnifStatus::Ok) return done(fail("Held endpoints must be integers covering every observation."));
   std::vector<std::string> fixed;

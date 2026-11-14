@@ -1,6 +1,6 @@
 # Modifier routing; keep default wrappers and their diagnostics unchanged.
 ml_modifier_error <- function(name, value) {
-  stop(value, " is not implemented for `", name,
+  ml_fit_stop(value, " is not implemented for `", name,
        "`; see TASK-191 or its successor", call. = FALSE)
 }
 ml_interval_data <- function(x, na.rm = FALSE) {
@@ -124,18 +124,18 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
       estimates<-as.numeric(legacy);names(estimates)<-names(legacy)
       if(id=="geom" && zero=="inflated")estimates<-estimates[names(estimates)!="size"]
       if(id=="lgser")names(estimates)[names(estimates)=="prob"]<-"theta"
+      attr(estimates,"certified") <- attr(legacy,"certified")
+      attr(estimates,"unique") <- attr(legacy,"unique")
       out<-list(estimates=estimates,logLik=as.numeric(logLik(legacy)),fixed=c(meta$names,extra),restricted=attr(legacy,"restricted"))
-      if(alias && id=="binom" && anyNA(truncate_spec))out$certified<-TRUE
     } else out <- ml_modifier_(id,if(censored) x[,1] else x,if(censored) x[,2] else numeric(),
       holds,zero,window,if(window && !is.na(truncate_spec[1])) truncate[1] else NaN,if(window && !is.na(truncate_spec[2])) truncate[2] else NaN,censored,tol,maxit)
     if (inherits(out,"univariateML_stop")) stop(out)
-    if(fully_held && window && !anyNA(truncate_spec))attr(out$estimates,"certified")<-NULL
     obj <- univariateML_construct(out$estimates,name,list(logLik=out$logLik,call=deparse(call),n=if(censored)nrow(x) else length(x)),
       fixed=out$fixed,restricted=out$restricted,data=x)
-    if (!is.null(out$certified) && !(fully_held && window && !anyNA(truncate_spec))) attr(obj,"certified") <- out$certified
+
   }
   # Constructor obtains base coefficient names from metadata; add the atom's name.
-  names(obj) <- c(meta$names,extra)
+  names(obj) <- if (!is.null(attr(obj,"rendered_names"))) attr(obj,"rendered_names") else c(meta$names,extra)
   attr(obj,"zero") <- zero;attr(obj,"truncate") <- truncate
   if(window) {
     attr(obj,"truncate_spec")<-truncate_spec

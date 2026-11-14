@@ -145,7 +145,7 @@ test('sstd xi-only certificate, reflection, budget and half-t comparison',()=>{
  const b=m.fitsstd(Float64Array.from(x,v=>-v*1e-20),{mean:0,sd:1e-20,nu:5},{});
  assert.equal(b.error,undefined,b.error);assert.ok(Math.abs(a.estimates.xi*b.estimates.xi-1)<1e-9);
  const budget=m.fitsstd(x,{mean:0,sd:1,nu:5},{iterlim:1});assert.equal(budget.kind,'budget');
- const tied=m.fitsstd(new Float64Array([-1,1]),{mean:0,sd:1,nu:5},{});assert.equal(tied.kind,'tie');
+ const tied=m.fitsstd(new Float64Array([-1,1]),{mean:0,sd:1,nu:5},{});assert.equal(tied.kind,'limit');assert.equal(tied.certified,false);assert.equal(tied.model,'unavailable:reflected-half-t');
  const face=m.fitsstd(new Float64Array([.5,1,1.5,2,2.5,3,10]),{mean:0,sd:1,nu:5},{});assert.equal(face.kind,'limit');assert.equal(face.model,'ht');assert.equal(face.estimates.nu,5);
  const reflected=m.fitsstd(new Float64Array([-.5,-1,-1.5,-2,-2.5,-3,-10]),{mean:0,sd:1,nu:5},{});
  assert.equal(reflected.kind,'limit');assert.equal(reflected.model,'unavailable:reflected-half-t');assert.equal(reflected.estimates.nu,5);
@@ -161,7 +161,7 @@ test('continuous fallback carries the per-fit certification flag',()=>{
  for(const [family,held] of [['burr',{scale:1}],['pareto4',{min:0,scale:1}]]) {
   const r=m['fit'+family](x,held,{});
   assert.equal(r.error,undefined,r.error);
-  assert.equal(r.certified,0);
+  assert.equal(r.certified,false);
   assert.ok(Number.isFinite(r.logLik));
  }
 });
@@ -171,7 +171,7 @@ test('unit beta-prime fallback keeps the scalar search beyond the generic shape 
   for(const [data,held,name] of [[x,{shape1:1},'shape2'],[x.map(v=>1/v),{shape2:1},'shape1']]) {
     const f=m.fitbetapr(new Float64Array(data),held,{});
     assert.equal(f.error,undefined,f.error);
-    assert.equal(f.status,'Ok');assert.equal(f.certified,0);
+    assert.equal(f.status,'Ok');assert.equal(f.certified,false);
     assert.ok(f.estimates[name]>1e6);assert.ok(Number.isFinite(f.logLik));
   }
 });
@@ -180,11 +180,11 @@ test('count fallback exposes per-fit certification',()=>{
  const r=m.fithyper(new Float64Array([0,0,0,5,5,5]),{k:5},{});
  assert.equal(r.status,'Ok');
  assert.equal(r.error,undefined);
- assert.equal(r.certified,0);
+ assert.equal(r.certified,false);
  assert.ok(Number.isFinite(r.logLik));
  assert.equal(r.estimates.k,5);
  const f=m.fitModifier('binom',new Float64Array([1,2,2,3]),[],{size:5},'truncated',false,NaN,NaN,false,1e-10,200);
- assert.equal(f.status,'Ok');assert.equal(f.certified,1);
+ assert.equal(f.status,'Ok');assert.equal(f.certified,true);
 });
 
 test('delegate follow-up keeps successful uncertified parent fits',()=>{
@@ -197,21 +197,21 @@ test('delegate follow-up keeps successful uncertified parent fits',()=>{
  ];
  for(const [id,x,held] of cases){
   const r=m['fit'+id](new Float64Array(x),held,{gradtol:1e-8,reltol:1e-10,iterlim:1000});
-  assert.equal(r.status,'Ok',id);assert.equal(r.certified,0,id);assert.ok(Number.isFinite(r.logLik),id);
+  assert.equal(r.status,'Ok',id);assert.equal(r.certified,false,id);assert.ok(Number.isFinite(r.logLik),id);
  }
 });
 test('GEV and Frechet all-free fits expose per-fit certificate markers',()=>{
  const g=m.fitgev(new Float64Array([0,1,1,1,2,3,4]),{},{});
- assert.equal(g.error,undefined,g.error);assert.equal(g.certified,1);
+ assert.equal(g.error,undefined,g.error);assert.equal(g.certified,true);
  const x=Float64Array.from({length:50},(_,j)=>Math.pow(-Math.log((j+.5)/50),-.5));
  const f=m.fitfrechet(x,{},{});
- assert.equal(f.error,undefined,f.error);assert.equal(f.certified,1);
+ assert.equal(f.error,undefined,f.error);assert.equal(f.certified,true);
 });
 
 test('Frechet finite two-point cancellation retains an uncertified fit',()=>{
  const p=.45,mu=p*.1/(Math.sqrt(p*(1-p))+p);
  const f=m.fitfrechet(new Float64Array([...Array(9).fill(mu),...Array(11).fill(mu+1)]),{},{});
- assert.equal(f.error,undefined,f.error);assert.equal(f.certified,0);
+ assert.equal(f.error,undefined,f.error);assert.equal(f.certified,false);
  assert.ok(Math.abs(f.estimates.mu)<1e-12);
 });
 
@@ -219,7 +219,7 @@ test('an unordered Frechet Gumbel comparison retains the finite search',()=>{
  const shape=.0041309589552387081;
  const x=Float64Array.from({length:80},(_,j)=>Math.expm1(-shape*Math.log(-Math.log((j+.5)/80)))/shape);
  const f=m.fitfrechet(x,{},{});
- assert.equal(f.error,undefined,f.error);assert.equal(f.certified,0);
+ assert.equal(f.error,undefined,f.error);assert.equal(f.certified,false);
  assert.ok(f.estimates.lambda>1e5);assert.ok(Number.isFinite(f.logLik));
 });
 
@@ -230,7 +230,7 @@ test('GEV coupled support corners survive normalization and outer coverage',()=>
   [.47613503331464652,2.0186627711562051,1.3293650873876488]];
  for(const x of cases) {
   const f=m.fitgev(new Float64Array(x),{mu:0},{});
-  assert.equal(f.error,undefined,f.error);assert.equal(f.certified,1);
+  assert.equal(f.error,undefined,f.error);assert.equal(f.certified,true);
   assert.equal(f.estimates.xi,-1);assert.equal(f.estimates.mu,0);
   assert.equal(f.estimates.sigma,Math.max(...x));
  }

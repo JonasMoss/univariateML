@@ -322,37 +322,41 @@ test_that("sged P0b subsets agree with independent README oracles", {
     fit <- tryCatch(suppressWarnings(do.call(mlsged,
       c(list(x=x,gradtol=1e-6,iterlim=1000),as.list(p[held]))),
       classes='univariateML_restricted'),error=identity)
-    if(inherits(fit,'error')) {
-      if(inherits(fit,'univariateML_tie')) {
-        expect_gte(nrow(fit$candidates),2L)
-        expect_true(is.finite(fit$loglik_upper))
-        expect_gte(fit$loglik_upper,-min(refs)-1e-5*length(x))
-        for(index in seq_len(nrow(fit$candidates))) {
-          row <- fit$candidates[index,]
-          if(row$model=='') {
+    # A comparison: an estimate with candidates, or a limit or unresolved
+    # stop that keeps the compared candidates.
+    comparison <- !is.null(attr(fit,'candidates')) ||
+      (inherits(fit,'univariateML_stop') && fit$kind %in% c('limit','unresolved') && NROW(fit$candidates)>=2L)
+    if(inherits(fit,'error') || comparison) {
+      if(comparison) {
+        expect_gte(nrow(fit_payload(fit)$candidates),2L)
+        expect_true(is.finite(fit_payload(fit)$loglik_upper))
+        expect_gte(fit_payload(fit)$loglik_upper,-min(refs)-1e-5*length(x))
+        for(index in seq_len(nrow(fit_payload(fit)$candidates))) {
+          row <- fit_payload(fit)$candidates[index,]
+          if(fit_payload(row)$model=='') {
             q <- c(mean=row$mean,sd=row$sd,nu=row$nu,xi=row$xi)
             value <- sum(sged_hold_logref(x,q))
-          } else if(row$model %in% c('unavailable:half-ged','unavailable:reflected-half-ged')) {
-            side <- if(row$model=='unavailable:half-ged') 1 else -1
+          } else if(fit_payload(row)$model %in% c('unavailable:half-ged','unavailable:reflected-half-ged')) {
+            side <- if(fit_payload(row)$model=='unavailable:half-ged') 1 else -1
             z <- side*(x-row$mu)/row$scale
             expect_true(all(z>=0))
             value <- length(x)*(log(row$nu)-lgamma(1/row$nu)-log(row$scale))-sum(z^row$nu)
-          } else if(row$model=='unif') {
+          } else if(fit_payload(row)$model=='unif') {
             expect_true(all(x>=row$a & x<=row$b))
             value <- -length(x)*log(row$b-row$a)
           } else stop('Unexpected SGED comparison model in independent oracle test')
-          expect_gte(value,row$loglik_lower-1e-8*length(x))
-          expect_lte(value,row$loglik_upper+1e-8*length(x))
+          expect_gte(value,fit_payload(row)$loglik_lower-1e-8*length(x))
+          expect_lte(value,fit_payload(row)$loglik_upper+1e-8*length(x))
         }
         next
       }
       if(identical(held,c('mean','sd','nu')) && inherits(fit,c('univariateML_numerical','univariateML_budget'))) {
-        expect_gte(nrow(fit$candidates),1L)
-        expect_identical(fit$loglik_upper,Inf)
+        expect_gte(nrow(fit_payload(fit)$candidates),1L)
+        expect_identical(fit_payload(fit)$loglik_upper,Inf)
         next
       }
-      expect_match(conditionMessage(fit),'half|uniform|skew-normal|nu -> 2|unbounded|collapse|score check')
-      message <- conditionMessage(fit)
+      expect_match(fit_diagnostic(fit),'half|uniform|skew-normal|nu -> 2|unbounded|collapse|score check')
+      message <- fit_diagnostic(fit)
       expect_false(grepl('score check',message),
         info=paste('held',paste(held,collapse=','),'n',length(x),'first',x[1],message))
       if(grepl('uniform',message)) {
@@ -503,12 +507,12 @@ test_that("sged certified normal submodels agree with sufficient statistics", {
 test_that("sged held-shape ties and budgets have structured witnesses", {
   for(nu in c(.5,1)) for(sd in list(NULL,1)) {
     e <- tryCatch(mlsged(c(-1,1),sd=sd,nu=nu,xi=1),error=identity)
-    expect_s3_class(e,'univariateML_tie')
-    expect_equal(nrow(e$candidates),2L)
+    expect_s3_class(e,"univariateML_unresolved")
+    expect_equal(nrow(fit_payload(e)$candidates),2L)
   }
   e <- tryCatch(mlsged(0:139,sd=1,nu=.7,xi=1.3,iterlim=1),error=identity)
   expect_s3_class(e,'univariateML_budget')
-  expect_true(nrow(e$candidates)>0)
+  expect_true(nrow(fit_payload(e)$candidates)>0)
   expect_error(mlsged(c(-3,-1,.2,.4,1,2,4),sd=1,nu=2,xi=1,iterlim=1),class='univariateML_numerical')
   expect_error(mlsged(c(-1,0,1),sd=1,nu=.001,xi=1),class='univariateML_numerical')
 })
@@ -544,19 +548,19 @@ test_that("SGED subunit separated scale maxima and budgets are structured stops"
   K <- 2*sqrt(R-1)/R
   xi <- sqrt(1+K^2/6)
   e <- tryCatch(mlsged(rep(-1,3),mean=0,nu=.5,xi=xi,iterlim=400),error=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_gte(nrow(e$candidates),2L)
-  expect_equal(max(e$candidates$sd)/min(e$candidates$sd),R,tolerance=2e-6)
-  expect_true(is.finite(e$loglik_upper))
-  for (j in seq_len(nrow(e$candidates))) {
-    row <- e$candidates[j,]
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_gte(nrow(fit_payload(e)$candidates),2L)
+  expect_equal(max(fit_payload(e)$candidates$sd)/min(fit_payload(e)$candidates$sd),R,tolerance=2e-6)
+  expect_true(is.finite(fit_payload(e)$loglik_upper))
+  for (j in seq_len(nrow(fit_payload(e)$candidates))) {
+    row <- fit_payload(e)$candidates[j,]
     ref <- mlsged(rep(-1,3),mean=0,sd=row$sd,nu=.5,xi=xi)
-    expect_gte(as.numeric(logLik(ref))+1e-8,row$loglik_lower)
-    expect_lte(as.numeric(logLik(ref))-1e-8,row$loglik_upper)
+    expect_gte(as.numeric(logLik(ref))+1e-8,fit_payload(row)$loglik_lower)
+    expect_lte(as.numeric(logLik(ref))-1e-8,fit_payload(row)$loglik_upper)
   }
   e <- tryCatch(mlsged(-1-(0:159)*.1,mean=0,nu=.5,xi=1.3,iterlim=1),error=identity)
   expect_s3_class(e,"univariateML_budget")
-  expect_gte(nrow(e$candidates),1L)
+  expect_gte(nrow(fit_payload(e)$candidates),1L)
   expect_s3_class(tryCatch(mlsged(rep(0,3),mean=0,nu=.5,xi=1.3),error=identity),"univariateML_nomle")
 })
 
@@ -575,8 +579,9 @@ test_that("sged held normal shape delegates in public moment coordinates", {
 test_that("sged free skew subunit enumerates knots and both faces", {
   for(nu in c(.3,.5,.9,1)) {
     e <- tryCatch(mlsged(c(-1,1),nu=nu),error=identity)
-    expect_s3_class(e,'univariateML_tie')
-    expect_equal(nrow(e$candidates),2L)
+    expect_s3_class(e,"univariateML_limit")
+    expect_false(e$certified)
+    expect_equal(nrow(fit_payload(e)$candidates),2L)
   }
   x <- c(-4,-1,rep(0,6),.3,2)
   for(nu in c(.5,.8,1)) {
@@ -610,12 +615,12 @@ test_that("SGED held unit skew transports the four free-shape GED fits", {
 })
 test_that("SGED symmetric free-shape stops carry SGED and uniform coordinates", {
   e <- tryCatch(mlsged(c(-1,1),sd=.1,xi=1,iterlim=1),error=identity)
-  expect_s3_class(e,'univariateML_tie')
-  expect_equal(e$candidates$xi,c(1,1))
-  expect_equal(e$candidates$nu,c(1,1))
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_equal(fit_payload(e)$candidates$xi,c(1,1))
+  expect_equal(fit_payload(e)$candidates$nu,c(1,1))
   e <- tryCatch(mlsged(c(-1,1),xi=1),error=identity)
   expect_s3_class(e,'univariateML_limit')
-  expect_identical(e$model,'unif')
+  expect_identical(fit_payload(e)$model,'unif')
   expect_equal(unname(e$estimates),c(-1,1))
   for (held in list(list(sd=1),list(mean=0,sd=1)))
     expect_error(do.call(mlsged,c(list(x=c(-sqrt(3),sqrt(3)),xi=1),held)),class='univariateML_numerical')
@@ -651,15 +656,16 @@ test_that("SGED asymmetric held skew and smooth free skew use global free-moment
 test_that("SGED profile certificates preserve weighted median and reflected face ties", {
   x <- c(-100,rep(-.01,3),rep(.01,15),100)
   e <- tryCatch(mlsged(x,xi=2),error=identity)
-  expect_s3_class(e,'univariateML_tie')
-  expect_true(all(e$candidates$nu==1))
-  expect_true(all(e$candidates$xi==2))
-  expect_gte(length(unique(e$candidates$mean)),2)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_true(all(fit_payload(e)$candidates$nu==1))
+  expect_true(all(fit_payload(e)$candidates$xi==2))
+  expect_gte(length(unique(fit_payload(e)$candidates$mean)),2)
   for(p in c(1.1,1.7,4,20)) {
     e <- tryCatch(mlsged(c(-1,1),nu=p),error=identity)
-    expect_s3_class(e,'univariateML_tie')
-    expect_setequal(e$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))
-    expect_true(is.finite(e$loglik_upper))
+    expect_s3_class(e,"univariateML_limit")
+    expect_false(e$certified)
+    expect_setequal(fit_payload(e)$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))
+    expect_true(is.finite(fit_payload(e)$loglik_upper))
   }
 })
 
@@ -715,11 +721,11 @@ test_that("SGED fixed-shape held-moment skew fits use the constrained global cov
 
 test_that("SGED held moments retain the two finite Laplace skew maxima", {
   e <- tryCatch(mlsged(c(-1.1,1.1),mean=0,sd=1,nu=1,gradtol=1e-9),error=identity)
-  expect_s3_class(e,'univariateML_tie')
-  expect_gte(nrow(e$candidates),2L)
-  expect_true(is.finite(e$loglik_upper))
-  expect_true(all(e$candidates$mean==0 & e$candidates$sd==1 & e$candidates$nu==1))
-  expect_equal(min(e$candidates$xi)*max(e$candidates$xi),1,tolerance=2e-8)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_gte(nrow(fit_payload(e)$candidates),2L)
+  expect_true(is.finite(fit_payload(e)$loglik_upper))
+  expect_true(all(fit_payload(e)$candidates$mean==0 & fit_payload(e)$candidates$sd==1 & fit_payload(e)$candidates$nu==1))
+  expect_equal(min(fit_payload(e)$candidates$xi)*max(fit_payload(e)$candidates$xi),1,tolerance=2e-8)
 })
 
 test_that("SGED held moments certify strict-support half-GED winners", {
@@ -729,17 +735,18 @@ test_that("SGED held moments certify strict-support half-GED winners", {
     x <- rep(sign*.2,2)
     e <- tryCatch(mlsged(x,mean=0,sd=1,nu=p,gradtol=1e-10),error=identity)
     expect_s3_class(e,'univariateML_limit')
-    expect_identical(e$model,if(sign>0) 'unavailable:reflected-half-ged' else 'unavailable:half-ged')
+    expect_identical(fit_payload(e)$model,if(sign>0) 'unavailable:reflected-half-ged' else 'unavailable:half-ged')
     c <- e$estimates
     expect_equal(unname(c['mu']-sign*k*c['scale']),0,tolerance=1e-12)
     expect_equal(unname(c['scale']*sqrt(v-k*k)),1,tolerance=1e-12)
     reference <- length(x)*(log(p)-lgamma(1/p)-log(c['scale']))-sum((-sign*(x-c['mu'])/c['scale'])^p)
-    expect_equal(e$limit_loglik,unname(reference),tolerance=1e-10)
-    expect_true(is.finite(e$loglik_upper))
+    expect_equal(fit_payload(e)$limit_loglik,unname(reference),tolerance=1e-10)
+    expect_true(is.finite(fit_payload(e)$loglik_upper))
   }
   e <- tryCatch(mlsged(c(0,0),mean=0,sd=1,nu=p,gradtol=1e-10),error=identity)
-  expect_s3_class(e,'univariateML_tie')
-  expect_setequal(e$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))
+  expect_s3_class(e,"univariateML_limit")
+  expect_false(e$certified)
+  expect_setequal(fit_payload(e)$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))
 })
 
 test_that("SGED held moment half-GED endpoint contacts remain explicit stops", {
@@ -996,11 +1003,11 @@ test_that("loose coefficient accuracy preserves separated-maxima diagnostics", {
   xi <- sqrt(1+k*k/6)
   e <- tryCatch(mlsged(c(-1,-1,-1),mean=0,nu=.5,xi=xi,
                       gradtol=10,iterlim=400),error=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_gte(nrow(e$candidates),2L)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_gte(nrow(fit_payload(e)$candidates),2L)
   expected <- 3*log(3*(xi*xi-1)/(xi*xi+1))
-  expect_lte(max(e$candidates$loglik_lower),expected+1e-10*max(1,abs(expected)))
-  expect_gte(e$loglik_upper,expected-1e-10*max(1,abs(expected)))
+  expect_lte(max(fit_payload(e)$candidates$loglik_lower),expected+1e-10*max(1,abs(expected)))
+  expect_gte(fit_payload(e)$loglik_upper,expected-1e-10*max(1,abs(expected)))
 })
 
 test_that("loose tolerance cannot certify a displaced public mean", {

@@ -14,9 +14,9 @@ inline FitResult fit_zmlogarithmic(cppunivariate::ispan x, Held prob_arg = {}, H
   const auto res=cppunivariate::zmlogarithmic_mle(x,1e-10,200,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(res.status));
-    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"prob",prob_arg.supplied},{"p0",p0_arg.supplied}});
   };
   return done([&]() -> FitResult {
   if(res.status==cppunivariate::ZmlogarithmicStatus::InvalidInput)return fail("requires nonempty nonnegative integer count data and valid controls and parameter domains; held values must be compatible with the observations");

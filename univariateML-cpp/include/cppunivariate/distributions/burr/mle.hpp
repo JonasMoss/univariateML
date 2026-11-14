@@ -417,6 +417,14 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
 }
 
 namespace cppunivariate {
+inline bool family_point(const BurrMLE&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[0] > 0 && c.coef[1] > 0 && c.coef[2] > 0;
+}
+// A converged search that passes the local accuracy check is already returned
+// as an uncertified Ok (burr_uncertified). A remaining CertificateTie lists
+// certificate witnesses with likelihood bounds, not accurate maximizers.
+inline bool accurate_point(const BurrMLE&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const BurrMLE& r) {
   if (r.status == BurrStatus::NumericalFailure) {
     if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
@@ -430,7 +438,7 @@ inline FitOutcome outcome(const BurrMLE& r) {
     case BurrStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Unresolved);
     case BurrStatus::AllGeOne: return FitOutcome::limit();
     case BurrStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
-    case BurrStatus::CertificateTie: return FitOutcome::estimate(false);
+    case BurrStatus::CertificateTie: return comparison_outcome_of(r);
     case BurrStatus::CertificateBudget: return FitOutcome::budget();
     case BurrStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

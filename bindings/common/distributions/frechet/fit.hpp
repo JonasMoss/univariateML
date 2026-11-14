@@ -23,14 +23,14 @@ inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held m
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
     // This classification uses observations/holds absent from the core result.
-    if (out.error_kind == "nomle" && o.reason == cppunivariate::OutcomeReason::InvalidInput)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded), static_cast<int>(r.status));
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (out.payload_kind == PayloadKind::Nonexistence && o.reason == cppunivariate::OutcomeReason::InvalidInput)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded), static_cast<int>(r.status),{{"lambda",lambda_arg.supplied},{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+    return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"lambda",lambda_arg.supplied},{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
   };
 
- const auto certificate_stop=[&](FitResult out,const std::string& kind) {
+ const auto certificate_stop=[&](FitResult out,PayloadKind kind) {
    auto result=stop_failure(out,r.stop_detail,kind,{"lambda","mu","sigma"});
    if(r.stop_detail.limit_coef.size()==2) {
      result.model="gumbel";
@@ -39,27 +39,27 @@ inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held m
    return result;
  };
  if(r.status==cppunivariate::FrechetStatus::SearchContradicted)
-   return done(certificate_stop(fail("Frechet search is disproved by a certified better feasible point."),outcome_kind(o)));
+   return done(certificate_stop(fail("Frechet search is disproved by a certified better feasible point."),outcome_payload(o)));
  if(r.stop_detail.budget_exhausted)
-   return done(certificate_stop(fail("Frechet certificate exhausted its work budget; raise iterlim."),outcome_kind(o)));
+   return done(certificate_stop(fail("Frechet certificate exhausted its work budget; raise iterlim."),outcome_payload(o)));
  if(r.stop_detail.comparison_tie)
-   return done(certificate_stop(fail("Frechet certificate cannot separate competing finite maxima or the Gumbel face within its floating-point margin."),"tie"));
+   return done(comparison_payload(certificate_stop(fail("Frechet certificate cannot separate competing finite maxima or the Gumbel face within its floating-point margin."),PayloadKind::Comparison),o,cppunivariate::comparison_choice(r),{{"lambda",lambda_arg},{"mu",mu_arg},{"sigma",sigma_arg}}));
  if(r.status==cppunivariate::FrechetStatus::NumericalFailure ||
     (r.status==cppunivariate::FrechetStatus::IterationFailure && !std::isnan(r.stop_detail.loglik_upper)))
-   return done(certificate_stop(fail("Frechet certificate failed to converge or resolve the maximum numerically; raise iterlim for an exhausted solve."),outcome_kind(o)));
+   return done(certificate_stop(fail("Frechet certificate failed to converge or resolve the maximum numerically; raise iterlim for an exhausted solve."),outcome_payload(o)));
  if(r.status==cppunivariate::FrechetStatus::GumbelLimit) {
    auto out=fail("Frechet selects the Gumbel limit. Use `mlgumbel`.");
-   if(!r.stop_detail.limit_coef.empty())return done(stop_failure(out,r.stop_detail,outcome_kind(o),{"mu","sigma"},"gumbel"));
+   if(!r.stop_detail.limit_coef.empty())return done(stop_failure(out,r.stop_detail,outcome_payload(o),{"mu","sigma"},"gumbel"));
    return done(out);
  }
- if(r.status==cppunivariate::FrechetStatus::NoMLE || (r.status==cppunivariate::FrechetStatus::InvalidData && !std::isnan(r.stop_detail.loglik_upper))) return done(stop_failure(fail("Frechet has no finite maximum: minimum multiplicity permits scale collapse."),r.stop_detail,outcome_kind(o),{"lambda","mu","sigma"}));
+ if(r.status==cppunivariate::FrechetStatus::NoMLE || (r.status==cppunivariate::FrechetStatus::InvalidData && !std::isnan(r.stop_detail.loglik_upper))) return done(stop_failure(fail("Frechet has no finite maximum: minimum multiplicity permits scale collapse."),r.stop_detail,outcome_payload(o),{"lambda","mu","sigma"}));
  if(r.status==cppunivariate::FrechetStatus::InvalidData && !mu.supplied&&!lambda.supplied&&!sigma.supplied &&
      x.size()>=3 && reltol>0&&std::isfinite(reltol)&&iterlim>0 &&
      std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);})) {
    const double minimum=*std::min_element(x.begin(),x.end());
    if(2*static_cast<std::size_t>(std::count(x.begin(),x.end(),minimum))>x.size()) {
      cppunivariate::StopDetail detail;detail.loglik_upper=INFINITY;
-     return done(stop_failure(fail("Frechet has no finite maximum: a tied minimum majority permits scale collapse; free shape and scale require nonconstant data."),detail,"nomle",{"lambda","mu","sigma"}));
+     return done(stop_failure(fail("Frechet has no finite maximum: a tied minimum majority permits scale collapse; free shape and scale require nonconstant data."),detail,PayloadKind::Nonexistence,{"lambda","mu","sigma"}));
    }
  }
  if(r.status==cppunivariate::FrechetStatus::InvalidData) return done(fail("Frechet requires finite observations strictly above held mu and compatible holds. Free shape and scale require nonconstant data; the default free-mu fit requires at least three observations and admissible minimum tie multiplicity. Constant data can have an unbounded shape likelihood and fixed shape can have an unattained collapse face. Tolerance and iteration limit must be positive."));
@@ -71,7 +71,7 @@ inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held m
   if(r.restricted & 8u) restricted.emplace_back("mu","upper");
   if(r.restricted & 16u) restricted.emplace_back("sigma","lower");
   if(r.restricted & 32u) restricted.emplace_back("sigma","upper");
- return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",r.lambda},{"mu",r.mu},{"sigma",r.sigma}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true; if(!lambda.supplied && !mu.supplied)out.extra.emplace_back("certified",r.certified?1.:0.); else if(!r.certified)out.extra.push_back({"certified",0}); return out; }());
+ return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",r.lambda},{"mu",r.mu},{"sigma",r.sigma}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.restricted = restricted; out.has_restricted = true; out.fixed = fixed; out.has_fixed = true;   return out; }());
 
 }
 }

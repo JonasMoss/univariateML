@@ -67,6 +67,8 @@ test_that("eligible unimplemented values have specific refusals", {
 test_that("censoring reaches native fits and never fits recorded values", {
   x <- cbind(c(1,2,3,4),c(1,Inf,3,Inf))
   a <- mlexp(x)
+  expect_identical(attr(a,"certified"),TRUE)
+  expect_identical(attr(a,"unique"),TRUE)
   expect_equal(unname(a[["rate"]]),2/10)
   expect_equal(as.numeric(logLik(a)),2*log(.2)-2)
   expect_error(mlgamma(x),"censoring.*not implemented")

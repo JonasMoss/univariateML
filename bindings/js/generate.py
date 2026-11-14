@@ -124,7 +124,7 @@ if __name__ == '__main__':
                     parameter = next(p for p in metadata['params'] if p['name'] == key)
                     positive = re.match(r'\(\s*0\s*,', parameter['domain']) is not None
                     diagnostic = f'Held `{key}` must be positive and finite.' if positive else f'Held `{key}` must not be NaN.'
-                    held_checks.append('auto ' + local + '=held_arg(h,' + json.dumps(key) + '); if(' + local + '.supplied&&std::isnan(' + local + '.value)) return diagnostic(' + json.dumps(diagnostic) + '); ')
+                    held_checks.append('auto ' + local + '=held_arg(h,' + json.dumps(key) + '); if(' + local + '.supplied&&std::isnan(' + local + '.value)) return fit_diagnostic(' + json.dumps(diagnostic) + ',cppunivariate::OutcomeReason::InvalidArgument); ')
                     call.append(local)
                 elif key in metadata['r'].get('control', {}):
                     call.append('held_arg(c,' + json.dumps(key) + ')')
@@ -146,11 +146,11 @@ if __name__ == '__main__':
         # boundary check. R's public wrappers already validate these data.
         validate = ''
         if integer:
-            validate = 'std::vector<int> ix; ix.reserve(x.size()); for(double z:x) { if(!std::isfinite(z)||z!=std::floor(z)||z < -2147483648.0 || z > 2147483647.0) return diagnostic("Data must contain representable finite integers."); ix.push_back(static_cast<int>(z)); } '
+            validate = 'std::vector<int> ix; ix.reserve(x.size()); for(double z:x) { if(!std::isfinite(z)||z!=std::floor(z)||z < -2147483648.0 || z > 2147483647.0) return fit_diagnostic("Data must contain representable finite integers.",cppunivariate::OutcomeReason::InvalidInput); ix.push_back(static_cast<int>(z)); } '
         if support['lower'] == 0 and support['closed'][0] and str(support['upper']).lower() == 'inf':
-            validate += 'for(double z:x) if(!std::isfinite(z)||z<0) return diagnostic("Data must be nonnegative and finite."); '
+            validate += 'for(double z:x) if(!std::isfinite(z)||z<0) return fit_diagnostic("Data must be nonnegative and finite.",cppunivariate::OutcomeReason::InvalidInput); '
         else:
-            validate += 'for(double z:x) if(!std::isfinite(z)) return diagnostic("Data must be finite."); '
+            validate += 'for(double z:x) if(!std::isfinite(z)) return fit_diagnostic("Data must be finite.",cppunivariate::OutcomeReason::InvalidInput); '
         checks = ''.join(held_checks)
         fits.append(f'emscripten::val fit{family}(emscripten::val data,emscripten::val h,emscripten::val c) {{ auto x=input(data); {validate}{checks}return fit_output(umvl_binding::fit_{family}(' + ','.join(call) + ')); }')
         fit_exports.append(f'  emscripten::function("fit{family}",&fit{family});')

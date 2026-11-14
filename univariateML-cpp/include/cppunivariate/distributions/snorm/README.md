@@ -262,7 +262,7 @@ unclosed infinite global upper bound.
 Uniqueness cannot be asserted for the closure comparison. For constant data
 with standard deviation held and mean free, both the right and reflected
 half-normal faces have the same maximal density $mh/\sigma$ per observation;
-these are distinct equal maximizers and are reported as a tie. Fixed skewness
+these are equal limiting suprema, reported as a certified limit naming the first face with both attached. Fixed skewness
 has a unique finite maximum unless the scale-collapse condition applies.
 Finite non-uniqueness also occurs: for $x=(-1,0,1)$ with $\mu=0$ and
 $\sigma=151/200$, both half-normal endpoints are infeasible,

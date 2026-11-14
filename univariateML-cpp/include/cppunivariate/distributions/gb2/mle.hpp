@@ -641,6 +641,15 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
 } // namespace cppunivariate
 
 namespace cppunivariate {
+inline bool family_point(const Gb2Result&, const FitCandidate& c) {
+  if (c.model != StopModel::None || c.coef.size() != 4) return false;
+  for (double v : c.coef) if (!std::isfinite(v) || !(v > 0)) return false;
+  return true;
+}
+// CertificateTie comes from the delegated Burr, inverse Burr or beta-prime
+// certificates or the shape-power certificate; every family candidate carries
+// a likelihood enclosure (ll -+ error), not a converged point log likelihood.
+inline bool accurate_point(const Gb2Result&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const Gb2Result& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -661,7 +670,7 @@ inline FitOutcome outcome(const Gb2Result& r) {
     case Gb2Status::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
     case Gb2Status::WeibullBoundary: return FitOutcome::limit();
     case Gb2Status::InvWeibullBoundary: return FitOutcome::limit();
-    case Gb2Status::CertificateTie: return FitOutcome::estimate(false);
+    case Gb2Status::CertificateTie: return comparison_outcome_of(r);
     case Gb2Status::CertificateBudget: return FitOutcome::budget();
     case Gb2Status::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

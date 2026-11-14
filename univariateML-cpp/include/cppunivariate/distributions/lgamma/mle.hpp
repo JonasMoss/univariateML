@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace cppunivariate {
-enum class LgammaStatus { Ok, Degenerate, TransformFailure, IterationFailure };
+enum class LgammaStatus { Ok, Degenerate, TransformFailure, IterationFailure, InvalidInput };
 struct LgammaResult {
   double shapelog, ratelog, logLik;
   int iterations;
@@ -35,7 +35,10 @@ inline LgammaResult lgamma_mle(span x, double tol, int maxit,
         return {old.shape,rate,old.logLik-jac,old.iterations,LgammaStatus::Ok,r.certified};
     }
   }
+  // The delegate's InvalidInput covers empty, non-finite and out-of-support
+  // (x <= 1) samples and invalid controls.
   const auto status=r.status==GammaStatus::Ok?LgammaStatus::Ok:
+    r.status==GammaStatus::InvalidInput?LgammaStatus::InvalidInput:
     r.status==GammaStatus::Degenerate?LgammaStatus::Degenerate:
     r.status==GammaStatus::TransformFailure?LgammaStatus::TransformFailure:LgammaStatus::IterationFailure;
   return {r.shape,r.scale,r.logLik,r.iterations,status,r.certified};
@@ -47,6 +50,7 @@ inline FitOutcome outcome(const LgammaResult& r) {
     case LgammaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case LgammaStatus::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case LgammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case LgammaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
   }
   return {};
 }

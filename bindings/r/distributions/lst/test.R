@@ -207,10 +207,10 @@ test_that("iterlim controls the global certificate and keeps budget witnesses", 
 
 test_that("held-scale location certificates retain both equal maxima", {
   e <- tryCatch(mllst(c(-3,3),sigma=1,df=3),error=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_equal(nrow(e$candidates),2L)
-  expect_true(is.finite(e$loglik_lower))
-  expect_true(is.finite(e$loglik_upper))
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_equal(nrow(fit_payload(e)$candidates),2L)
+  expect_true(is.finite(fit_payload(e)$loglik_lower))
+  expect_true(is.finite(fit_payload(e)$loglik_upper))
   expect_equal(unname(mllst(c(-1,1),sigma=1,df=3)["mu"]),0,tolerance=1e-8)
 })
 
@@ -283,10 +283,10 @@ test_that("lst free-shape held solver stops retain a finite witness", {
 
 test_that("lst symmetry proves distinct global maximizers", {
   e <- tryCatch(mllst(c(-100,-99,0,99,100),df=.5),error=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_true(is.finite(e$loglik_lower))
-  expect_identical(e$loglik_upper,Inf)
-  expect_equal(nrow(e$candidates),2L)
+  expect_s3_class(e,"univariateML_unresolved")
+  expect_true(is.finite(fit_payload(e)$loglik_lower))
+  expect_identical(fit_payload(e)$loglik_upper,Inf)
+  expect_equal(nrow(fit_payload(e)$candidates),2L)
 })
 
 test_that("signed normal bounds certify a held-location normal face", {

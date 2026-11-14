@@ -1,0 +1,46 @@
+13754 cases judged in each of two modes; failures by check: {'invalid-input': 16, 'held': 21, 'nesting': 14, 'terminates': 1, 'mode': 11}
+20 listed as known, 43 new, 1 listed but passing
+  NEW   held|double|huber|archive|003353: held changed: mu
+  NEW   held|double|huber|archive|003371: held changed: sigma
+  NEW   held|double|pareto4|archive|005651: held changed: min
+  NEW   held|double|pareto4|archive|005654: held changed: min
+  NEW   held|double|snorm|archive|006579: held changed: sd
+  NEW   held|double|snorm|archive|006583: held changed: sd
+  NEW   held|double|snorm|archive|006589: held changed: sd
+  NEW   held|double|snorm|archive|006593: held changed: sd
+  NEW   held|double|snorm|archive|006607: held changed: mean, sd
+  NEW   held|double|snorm|archive|006608: held changed: mean, sd
+  NEW   held|native|huber|archive|003353: held changed: mu
+  NEW   held|native|huber|archive|003371: held changed: sigma
+  NEW   held|native|pareto4|archive|005651: held changed: min
+  NEW   held|native|pareto4|archive|005654: held changed: min
+  NEW   held|native|snorm|archive|006579: held changed: sd
+  NEW   held|native|snorm|archive|006583: held changed: sd
+  NEW   held|native|snorm|archive|006587: held changed: sd
+  NEW   held|native|snorm|archive|006589: held changed: sd
+  NEW   held|native|snorm|archive|006593: held changed: sd
+  NEW   held|native|snorm|archive|006607: held changed: mean, sd
+  NEW   held|native|snorm|archive|006608: held changed: mean, sd
+  NEW   invalid-input|double|binom|class|empty: ends in numerical
+  NEW   invalid-input|double|gompertz|class|empty: ends in numerical
+  NEW   invalid-input|double|gompertz|class|nan: ends in numerical
+  NEW   invalid-input|double|lgamma|class|empty: ends in numerical
+  NEW   invalid-input|double|lgamma|class|inf: ends in numerical
+  NEW   invalid-input|double|lgamma|class|nan: ends in numerical
+  NEW   invalid-input|double|lgamma|class|neginf: ends in numerical
+  NEW   invalid-input|native|binom|class|empty: ends in numerical
+  NEW   invalid-input|native|gompertz|class|empty: ends in numerical
+  NEW   invalid-input|native|gompertz|class|nan: ends in numerical
+  NEW   invalid-input|native|lgamma|class|empty: ends in numerical
+  NEW   invalid-input|native|lgamma|class|inf: ends in numerical
+  NEW   invalid-input|native|lgamma|class|nan: ends in numerical
+  NEW   invalid-input|native|lgamma|class|neginf: ends in numerical
+  NEW   nesting|double|betapr|archive|000171: case 000247 holds more and is higher by 0.0006317; this fit is uncertified
+  NEW   nesting|double|betapr|archive|000174: case 000250 holds more and is higher by 0.0006269; this fit is uncertified
+  NEW   nesting|double|betapr|archive|000184: case 000260 holds more and is higher by 15.84; this fit is uncertified
+  NEW   nesting|double|burr|archive|000701: case 000739 holds more and is higher by 67.39; this fit is uncertified
+  NEW   nesting|native|betapr|archive|000171: case 000247 holds more and is higher by 0.0006317; this fit is uncertified
+  NEW   nesting|native|betapr|archive|000174: case 000250 holds more and is higher by 0.0006269; this fit is uncertified
+  NEW   nesting|native|betapr|archive|000184: case 000260 holds more and is higher by 15.84; this fit is uncertified
+  NEW   nesting|native|burr|archive|000701: case 000739 holds more and is higher by 67.39; this fit is uncertified
+  FIXED mode|both|sstd|archive|006717 (TASK-214.13)

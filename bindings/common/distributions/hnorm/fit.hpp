@@ -7,10 +7,10 @@
 namespace umvl_binding {
 inline FitResult fit_hnorm(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}) {
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -28,13 +28,13 @@ inline FitResult fit_hnorm(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   // DegenerateData also covers empty input; the result does not retain its size.
   const auto o = (x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);})) ? cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::InvalidInput) : cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (res.status == cppunivariate::HnormStatus::Ok)
         return overridden(std::move(out), static_cast<int>(res.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
   };
   if (sigma.supplied && res.status == cppunivariate::HnormStatus::Ok) {
     std::vector<std::string> fixed_names;
@@ -44,11 +44,11 @@ inline FitResult fit_hnorm(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
     return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",endpoint},{"sigma",sc}}; out.logLik = res.logLik; out.fixed = fixed_names; out.has_fixed = true; return out; }());
   }
   if (fixed && res.status == cppunivariate::HnormStatus::DegenerateData)
-    return done(classify(fail("Half-normal likelihood is unbounded as sigma -> 0 when all observations equal held mu."),{},outcome_kind(o),{},""));
+    return done(classify(fail("Half-normal likelihood is unbounded as sigma -> 0 when all observations equal held mu."),{},outcome_payload(o),{},""));
   if (fixed && res.status != cppunivariate::HnormStatus::Ok)
     return done(fail("Half-normal observations must be finite and at least the held mu."));
   if (res.status == cppunivariate::HnormStatus::DegenerateData)
-    return done(x.empty() ? fail("Translated half-normal MLE requires at least two observations with distinct values; degenerate data have no positive-scale MLE.") : classify(fail("Translated half-normal MLE requires at least two observations with distinct values; degenerate data have no positive-scale MLE."),{},outcome_kind(o),{}));
+    return done(x.empty() ? fail("Translated half-normal MLE requires at least two observations with distinct values; degenerate data have no positive-scale MLE.") : classify(fail("Translated half-normal MLE requires at least two observations with distinct values; degenerate data have no positive-scale MLE."),{},outcome_payload(o),{}));
   if (res.status != cppunivariate::HnormStatus::Ok)
     return done(fail("Translated half-normal MLE requires finite data with a representable range."));
   if (fixed) return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma}}; out.logLik = res.logLik; out.fixed = std::vector<std::string>{"mu"}; out.has_fixed = true; return out; }());

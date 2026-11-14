@@ -18,21 +18,21 @@ inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rat
   const auto r=cppunivariate::dgamma_mle(x,reltol,iterlim,a,b);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (r.status == cppunivariate::DgammaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (r.status == cppunivariate::DgammaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+    return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"shape",shape_arg.supplied},{"rate",rate_arg.supplied}});
   };
-  if(r.stop_detail.budget_exhausted)return done(stop_failure(failure("MLE failed to converge; certificate work budget exhausted. Raising iterlim may resolve this stop."),r.stop_detail,outcome_kind(o),{"shape","rate"}));
-  std::string stop_kind;
+  if(r.stop_detail.budget_exhausted)return done(stop_failure(failure("MLE failed to converge; certificate work budget exhausted. Raising iterlim may resolve this stop."),r.stop_detail,outcome_payload(o),{"shape","rate"}));
+  PayloadKind stop_kind=PayloadKind::None;
   switch(r.status) {
-    case cppunivariate::DgammaStatus::PointMass: stop_kind=outcome_kind(o);break;
-    case cppunivariate::DgammaStatus::TwoPointLimit: stop_kind=outcome_kind(o);break;
-    case cppunivariate::DgammaStatus::IterationFailure: stop_kind=outcome_kind(o);break;
+    case cppunivariate::DgammaStatus::PointMass: stop_kind=outcome_payload(o);break;
+    case cppunivariate::DgammaStatus::TwoPointLimit: stop_kind=outcome_payload(o);break;
+    case cppunivariate::DgammaStatus::IterationFailure: stop_kind=outcome_payload(o);break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,r.stop_detail,stop_kind,{"shape","rate"});
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,r.stop_detail,stop_kind,{"shape","rate"});
   };
 
   switch (r.status) {

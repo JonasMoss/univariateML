@@ -8,7 +8,7 @@
 namespace umvl_binding {
 inline FitResult fit_ht(cppunivariate::span x, Held mu_arg = {}, Held nu_arg = {}, Held sigma_arg = {}) {
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
     if(!finite_stop_payload(detail,kind))return out;
@@ -32,24 +32,24 @@ inline FitResult fit_ht(cppunivariate::span x, Held mu_arg = {}, Held nu_arg = {
   const auto r=cppunivariate::ht_mle(x,held_mu,df,sc);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (r.status == cppunivariate::HtStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (r.status == cppunivariate::HtStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
     // Preserve the classifier's refusal of a structured stop (invalid context
     // or missing finite payload); the core result does not retain that context.
-    if (!out.error.empty() && out.error_kind.empty() && o.kind != cppunivariate::OutcomeKind::Failure)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(r.status));
-    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+    if (!out.error.empty() && (out.payload_kind==PayloadKind::None) && o.kind != cppunivariate::OutcomeKind::Failure)
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"nu",nu_arg.supplied},{"sigma",sigma_arg.supplied}});
+    return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"nu",nu_arg.supplied},{"sigma",sigma_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
-  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("ht numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_kind(o),{"mu","nu","sigma"}));
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("ht numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"mu","nu","sigma"}));
   if(mu_held && r.status==cppunivariate::HtStatus::InvalidData)
     return done(fail("Half-t observations must be finite and at least the held mu."));
-  if(r.status==cppunivariate::HtStatus::AccuracyFailure)return done(stop_failure(fail("ht numerical accuracy failure: coefficients cannot be represented at the requested accuracy."),r.stop_detail,outcome_kind(o),{"mu","nu","sigma"}));
+  if(r.status==cppunivariate::HtStatus::AccuracyFailure)return done(stop_failure(fail("ht numerical accuracy failure: coefficients cannot be represented at the requested accuracy."),r.stop_detail,outcome_payload(o),{"mu","nu","sigma"}));
   if(r.status==cppunivariate::HtStatus::Unbounded)
     return done(nomle("Half-t likelihood is unbounded along sigma -> 0 with nu*(n-k) < k (k ties at the free or held endpoint); hold sigma, hold nu with nu*(n-k) > k, or (with a free endpoint) hold mu."));
   if(r.status==cppunivariate::HtStatus::ScaleBoundary)
-    return done(classify(fail("Half-t likelihood has a finite unattained supremum as sigma -> 0: nu*(n-k) = k."),{},"nomle",{}));
+    return done(classify(fail("Half-t likelihood has a finite unattained supremum as sigma -> 0: nu*(n-k) = k."),{},PayloadKind::Nonexistence,{}));
   const auto whole_mu = [](double v) {
     std::ostringstream out;
     if (v == std::floor(v) && std::abs(v) < 1e15) out << static_cast<long long>(v);
@@ -59,11 +59,11 @@ inline FitResult fit_ht(cppunivariate::span x, Held mu_arg = {}, Held nu_arg = {
   const std::string mu_hint = mu_held ? whole_mu(held_mu) : std::string("NULL");
   if(r.status==cppunivariate::HtStatus::NormalLimit && sigma.supplied)
     return done(classify(fail("Half-t MLE escapes as nu -> infinity to the half-normal with sigma held; "
-               "use `mlhnorm(x, mu = " + mu_hint + ", sigma = " + whole_mu(sc) + ")`."),r.stop_detail,"limit",{"mu","sigma"},"hnorm"));
+               "use `mlhnorm(x, mu = " + mu_hint + ", sigma = " + whole_mu(sc) + ")`."),r.stop_detail,PayloadKind::Limit,{"mu","sigma"},"hnorm"));
   if(r.status==cppunivariate::HtStatus::NormalLimit)
-    return done(classify(fail("Half-t MLE escapes as nu -> infinity; use `mlhnorm(x, mu = " + mu_hint + ")`."),r.stop_detail,outcome_kind(o),{"mu","sigma"},"hnorm"));
+    return done(classify(fail("Half-t MLE escapes as nu -> infinity; use `mlhnorm(x, mu = " + mu_hint + ")`."),r.stop_detail,outcome_payload(o),{"mu","sigma"},"hnorm"));
   if(r.budget_exhausted)
-    return done(classify(fail("Half-t MLE failed: the global shape search could not certify its result within its numerical budget."),r.stop_detail,outcome_kind(o),{"mu","nu","sigma"}));
+    return done(classify(fail("Half-t MLE failed: the global shape search could not certify its result within its numerical budget."),r.stop_detail,outcome_payload(o),{"mu","nu","sigma"}));
   if(r.status==cppunivariate::HtStatus::IterationFailure)
     return done(fail("Half-t MLE failed: the global shape search could not certify its result within its numerical budget."));
   if(r.status!=cppunivariate::HtStatus::Ok)

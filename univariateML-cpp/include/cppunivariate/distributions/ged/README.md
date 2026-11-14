@@ -115,7 +115,7 @@ relations:
 fit:
   method: profile-search
   certified: partial
-  note: 'Free shape uses profile-score enclosures, root contraction and tail comparisons. Held shapes use convex or observation-knot profiling. Unclosed comparisons retain converged finite searches with certified=false; proved Laplace median intervals and exact reflected knot ties still stop.'
+  note: 'Free shape uses profile-score enclosures, root contraction and tail comparisons. Held shapes use convex or observation-knot profiling. Unclosed comparisons retain converged finite searches with certified=false; proved Laplace median intervals and exact reflected knot ties return a non-unique estimate.'
 areas:
 - robust modelling
 classification: specialist
@@ -406,7 +406,7 @@ Certified finite results and selected uniform limits set `GedResult::certified`.
 Unclosed free-shape comparisons and conditional coefficient inclusions try the
 existing finite search, retaining it with `certified=false` only if its physical
 likelihood agrees and no feasible bound refutes it. An exact Laplace median
-interval remains a nonunique stop; overlapping numerical root bounds alone
+interval returns a nonunique estimate; overlapping numerical root bounds alone
 are not an exact-tie proof. The default `iterlim=200` is unchanged. Each shape
 certificate has at most $128\min(\mathrm{iterlim},100000)$ evaluations;
 inner brackets use at most $\min(\mathrm{iterlim},100000)$ iterations.
@@ -478,3 +478,5 @@ to the propagated log error. This admits aligned subnormals rather than
 rejecting them from a worst-case half-spacing bound. If the total error
 exceeds the natural relative-error contract, the result is NaN. A zero is accepted only
 when the entire propagated enclosure rounds to zero.
+
+For a proved Laplace median interval or reflected knot tie, `coef()` uses the first listed GED witness, an exact sample location with its conditional scale, and `logLik` is evaluated there; the listed set is attached as `maximizers`. Unproved comparisons list search roots with likelihood bounds and stop as unresolved, or as an uncertified uniform limit when that face is the better candidate.

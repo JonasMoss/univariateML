@@ -55,7 +55,7 @@ test_that("fatigue coefficient holds match independent multistart density oracle
     c(.2,.2,1,3),.4,rep(2,4),exp(rnorm(20)),rgamma(100,.5))
   for(x in samples) for(args in list(list(alpha=.7),list(alpha=3),list(beta=1.3),list(alpha=.7,beta=1.3))) {
     if(length(unique(x))==1 && identical(args,list(alpha=3))) {
-      expect_error(do.call(mlfatigue,c(list(x=x-5,mu=-5),args)),class="univariateML_tie")
+      expect_s3_class(do.call(mlfatigue,c(list(x=x-5,mu=-5),args)),"univariateML")
       next
     }
     f <- do.call(mlfatigue,c(list(x=x-5,mu=-5),args))
@@ -89,8 +89,8 @@ test_that("fatigue: P3 unfinished optimizer stops", {
 
 test_that("fatigue certificate exposes both reciprocal maxima", {
   e <- tryCatch(mlfatigue(1,mu=0,alpha=3),error=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_equal(nrow(e$candidates),2L)
+  expect_s3_class(e,"univariateML")
+  expect_equal(nrow(fit_payload(e)$candidates),2L)
   expect_error(mlfatigue(1:3,mu=0,alpha=1,iterlim=1),class="univariateML_numerical")
 })
 

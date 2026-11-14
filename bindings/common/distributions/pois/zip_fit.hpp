@@ -22,22 +22,24 @@ inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_a
   auto res = cppunivariate::zip_mle(x,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN(),iterlim);
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(res.status));
-    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"pi",pi_arg.supplied}});
   };
   return done([&]() -> FitResult {
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(res.status) {
-    case cppunivariate::ZipStatus::Budget: stop_kind=outcome_kind(o);break;
-    case cppunivariate::ZipStatus::Tie: stop_kind="tie";break;
-    case cppunivariate::ZipStatus::NumericalFailure: stop_kind=outcome_kind(o);break;
-    case cppunivariate::ZipStatus::ZeroLimit: stop_kind=outcome_kind(o);break;
+    case cppunivariate::ZipStatus::Budget: stop_kind=outcome_payload(o);break;
+    case cppunivariate::ZipStatus::Tie: stop_kind=PayloadKind::Comparison;break;
+    case cppunivariate::ZipStatus::NumericalFailure: stop_kind=outcome_payload(o);break;
+    case cppunivariate::ZipStatus::ZeroLimit: stop_kind=outcome_payload(o);break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,res.stop_detail,stop_kind,{"lambda","pi"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,res.stop_detail,stop_kind,{"lambda","pi"}),o,
+      cppunivariate::comparison_choice(res),{{"lambda",lambda_arg},{"pi",pi_arg}});
   };
 
   if(res.status==cppunivariate::ZipStatus::ZeroLimit)return stopped_fail("With pi held below one and all-zero data, lambda tends to zero, undefined by the reference; use `mlpois`.");

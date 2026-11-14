@@ -647,10 +647,6 @@
    "ref": "TASK-214.13",
    "detail": "native limit, double-only error"
   },
-  "mode|both|sstd|archive|006717": {
-   "ref": "TASK-214.13",
-   "detail": "native error, double-only numerical"
-  },
   "mode|both|st|archive|007040": {
    "ref": "TASK-214.13",
    "detail": "native error, double-only ok"

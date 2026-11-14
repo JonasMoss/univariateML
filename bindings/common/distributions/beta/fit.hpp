@@ -8,11 +8,11 @@ inline FitResult fit_beta(cppunivariate::span x, Held shape1_arg = {}, Held shap
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -33,15 +33,15 @@ inline FitResult fit_beta(cppunivariate::span x, Held shape1_arg = {}, Held shap
   auto res = cppunivariate::beta_mle(x, reltol, iterlim, checked_shape1, checked_shape2);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied}});
   };
 
   if (res.status == cppunivariate::BetaStatus::InvalidInput) return done(failure("Beta requires nonempty finite data strictly between zero and one and valid held parameters."));
   if (res.status == cppunivariate::BetaStatus::Degenerate) {
     return done(classify(failure("The beta maximum likelihood estimator does not exist for constant data: "
-               "the likelihood is unbounded as both shapes grow."),{},outcome_kind(o),{},""));
+               "the likelihood is unbounded as both shapes grow."),{},outcome_payload(o),{},""));
   }
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
     return done(failure("Beta MLE failed: iteration limit or shapes cannot be resolved in double precision; increase iterlim."));

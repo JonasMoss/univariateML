@@ -411,3 +411,5 @@ Newton solve.
 ### Extreme d/p/q arithmetic
 
 In the mass recurrence the remaining integer count is formed before adding beta. Subtracting the counts after adding a tiny beta can discard its significant digits at the last cell, contaminating both summed tails.
+
+Zero size, a one-trial submodel with both shapes free, and all-zero counts with free size leave the shapes unidentified without a listed maximizer, so these fits stop as unresolved. A free-size profile tie returns its best listed fixed-size fit uncertified; a fixed-size tie lists the unrefined grid root rather than the refined enclosure an accepted fit reports, and stops as unresolved.

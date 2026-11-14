@@ -16,9 +16,9 @@ inline FitResult fit_pois(cppunivariate::ispan x, Held lambda_arg = {}) {
       cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())}, lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(res.status));
-    return with_outcome(std::move(out),o,static_cast<int>(res.status));
+    return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"lambda",lambda_arg.supplied}});
   };
   return done([&]() -> FitResult {
   if(res.status != cppunivariate::PoisStatus::Ok || !std::isfinite(res.logLik))return fail("Held lambda is outside its domain or incompatible with the observations.");

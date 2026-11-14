@@ -151,6 +151,12 @@ inline ZipResult zip_mle(ispan x,
 }  // namespace cppunivariate
 
 namespace cppunivariate {
+inline bool family_point(const ZipResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 2 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && c.coef[0] > 0;
+}
+// Tie candidates are rate-peak enclosure midpoints with likelihood bounds.
+inline bool accurate_point(const ZipResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const ZipResult& r) {
   switch(r.status) {
     case ZipStatus::Ok: return FitOutcome::estimate(true);
@@ -158,7 +164,7 @@ inline FitOutcome outcome(const ZipResult& r) {
     case ZipStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case ZipStatus::ZeroLimit: return FitOutcome::limit(true);
     case ZipStatus::Budget: return FitOutcome::budget();
-    case ZipStatus::Tie: return FitOutcome::estimate(false);
+    case ZipStatus::Tie: return comparison_outcome_of(r);
   }
   return {};
 }

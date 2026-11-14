@@ -69,6 +69,8 @@ struct BbinomResult {
   StopDetail stop_detail{};
   bool certified = true;
   bool accuracy_failure = false;
+  // ProfileTie over free sizes: every candidate is an Ok fixed-size fit.
+  bool size_profiles = false;
 };
 
 namespace bbinom_detail {
@@ -447,7 +449,7 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
       if (n == mx && best.logLik <= face + margin) return uncertified_prefix(mx,best,out.stop_detail);
       if (n == mx && !excludes_tail(budget + 1.0, best.logLik)) return uncertified_prefix(mx,best,discrete_budget(out.stop_detail));
       if (excludes_tail(n + 1.0, best.logLik)) {
-        if (runner + margin >= best.logLik) best.status = BbinomStatus::ProfileTie;
+        if (runner + margin >= best.logLik) {best.status = BbinomStatus::ProfileTie;best.size_profiles=true;}
         best.stop_detail=out.stop_detail;
         return best;
       }
@@ -500,7 +502,7 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
       else runner = std::max(runner, candidate.logLik);
     }
     if (runner + 2e-8 * x.size() >= best.logLik) {
-      best.status = BbinomStatus::ProfileTie; best.stop_detail=out.stop_detail;
+      best.status = BbinomStatus::ProfileTie; best.size_profiles=true; best.stop_detail=out.stop_detail;
     }
     return best;
   }
@@ -867,6 +869,18 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
 }
 
 
+inline bool family_point(const BbinomResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         c.coef[0] >= 0 && c.coef[0] == std::floor(c.coef[0]) && std::isfinite(c.coef[1]) &&
+         std::isfinite(c.coef[2]) && c.coef[1] > 0 && c.coef[2] > 0;
+}
+// Free-size profile ties list Ok fixed-size fits, coefficients and likelihood
+// exactly as returned by an Ok fit at that size. Fixed-size ties list the
+// unrefined grid root (an Ok fit returns the refined enclosure instead).
+inline bool accurate_point(const BbinomResult& r, const FitCandidate& c) {
+  return r.size_profiles && family_point(r, c) && point_value(c);
+}
+
 inline FitOutcome outcome(const BbinomResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -879,9 +893,9 @@ inline FitOutcome outcome(const BbinomResult& r) {
     case BbinomStatus::BinomialLimit: return FitOutcome::limit(true);
     case BbinomStatus::TwoPointLimit: return FitOutcome::limit(true);
     case BbinomStatus::PointMass: return FitOutcome::limit(true);
-    case BbinomStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
+    case BbinomStatus::Unidentified: return nonunique_outcome_of(r, r.certified);
     case BbinomStatus::SizeBudget: return FitOutcome::budget();
-    case BbinomStatus::ProfileTie: return FitOutcome::estimate(false);
+    case BbinomStatus::ProfileTie: return comparison_outcome_of(r);
     case BbinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case BbinomStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
   }

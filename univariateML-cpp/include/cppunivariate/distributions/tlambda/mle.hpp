@@ -70,10 +70,17 @@ inline TlambdaResult tlambda_mle(span x,double tol,int maxit,double lambda,doubl
   return r;
 }
 
+inline bool family_point(const TlambdaResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0;
+}
+// Support-contact ties list certificate points with likelihood bounds.
+inline bool accurate_point(const TlambdaResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const TlambdaResult& r) {
   if (r.status == TlambdaStatus::CertificateFailure) {
     if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
-    if (r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+    if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   }
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);

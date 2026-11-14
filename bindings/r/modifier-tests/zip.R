@@ -36,8 +36,8 @@ test_that("ZIP boundary fits are finite and represent their distributions", {
     expect_equal(unname(fit["lambda"]), mean(x))
     expect_equal(attr(fit, "logLik"), sum(dpois(x, mean(x), log = TRUE)))
   }
-  expect_error(modifier_zip_(integer()), "requires nonempty nonnegative count data")
-  expect_error(modifier_zip_(c(-1L, 0L)), "requires nonempty nonnegative count data")
+  expect_match(conditionMessage(modifier_zip_(integer())),"requires nonempty nonnegative count data")
+  expect_match(conditionMessage(modifier_zip_(c(-1L, 0L))),"requires nonempty nonnegative count data")
 })
 
 test_that("ZIP Poisson face has an accurate likelihood at the count ceiling", {
@@ -142,11 +142,11 @@ test_that("P2 fixed inflation compares separated rate peaks", {
 test_that("ZIP certificate returns structured tie, budget and numerical stops", {
   x <- c(rep(0,99),10)
   tie <- tryCatch(.modifier_zip(x,pi=.7254971052291191),error=identity)
-  expect_s3_class(tie,"univariateML_tie")
-  expect_equal(nrow(tie$candidates),2)
-  expect_equal(tie$candidates$lambda,c(.5223041246623353,9.982727928366345),tolerance=1e-10)
-  expect_true(all(tie$candidates$loglik_lower <= -35.13856131179308))
-  expect_true(all(tie$candidates$loglik_upper >= -35.13856131179308))
+  expect_s3_class(tie,"univariateML_unresolved")
+  expect_equal(nrow(fit_payload(tie)$candidates),2)
+  expect_equal(fit_payload(tie)$candidates$lambda,c(.5223041246623353,9.982727928366345),tolerance=1e-10)
+  expect_true(all(fit_payload(tie)$candidates$loglik_lower <= -35.13856131179308))
+  expect_true(all(fit_payload(tie)$candidates$loglik_upper >= -35.13856131179308))
   budget <- tryCatch(.modifier_zip(x,pi=.1,iterlim=1),error=identity)
   expect_s3_class(budget,"univariateML_budget")
   expect_match(conditionMessage(budget),"Raising iterlim")

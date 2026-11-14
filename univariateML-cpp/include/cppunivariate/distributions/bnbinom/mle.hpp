@@ -32,6 +32,14 @@ struct BnbinomResult {
   bool local_accuracy_fallback=false;
 };
 
+inline bool family_point(const BnbinomResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[0] > 0 && c.coef[1] > 0 && c.coef[2] > 0;
+}
+// Comparison candidates carry certificate likelihood bounds (ll -+ error), not
+// the point log likelihood of a converged fit.
+inline bool accurate_point(const BnbinomResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const BnbinomResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -45,7 +53,7 @@ inline FitOutcome outcome(const BnbinomResult& r) {
     case BnbinomStatus::PointMass: return FitOutcome::limit(r.certified);
     case BnbinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case BnbinomStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case BnbinomStatus::ComparisonTie: return FitOutcome::estimate(false);
+    case BnbinomStatus::ComparisonTie: return comparison_outcome_of(r);
   }
   return {};
 }

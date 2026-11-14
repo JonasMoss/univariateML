@@ -20,25 +20,27 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   const auto fit = cppunivariate::nhyper_mle(x, design, population, held);
   const auto o = cppunivariate::outcome(fit);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (fit.status == cppunivariate::NhyperStatus::Ok)
         return overridden(std::move(out), static_cast<int>(fit.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(fit.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(fit.status),{{"m",m_arg.supplied},{"N",N_arg.supplied},{"r",r_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(fit.status));
+    return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"m",m_arg.supplied},{"N",N_arg.supplied},{"r",r_arg.supplied}});
   };
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(fit.status) {
-    case cppunivariate::NhyperStatus::FaceTie: stop_kind="tie";break;
-    case cppunivariate::NhyperStatus::FaceUnresolved: stop_kind=outcome_kind(o);break;
-    case cppunivariate::NhyperStatus::Infeasible: stop_kind=outcome_kind(o);break;
+    case cppunivariate::NhyperStatus::FaceTie: stop_kind=PayloadKind::Comparison;break;
+    case cppunivariate::NhyperStatus::FaceUnresolved: stop_kind=outcome_payload(o);break;
+    case cppunivariate::NhyperStatus::Infeasible: stop_kind=outcome_payload(o);break;
     default:break;
   }
-  if(fit.stop_detail.budget_exhausted) stop_kind=outcome_kind(o);
+  if(fit.stop_detail.budget_exhausted) stop_kind=outcome_payload(o);
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,fit.stop_detail,stop_kind,{"m","N","r"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,fit.stop_detail,stop_kind,{"m","N","r"}),o,
+      cppunivariate::comparison_choice(fit),{{"m",m_arg},{"N",N_arg},{"r",r_arg}});
   };
 
   switch (fit.status) {
@@ -62,7 +64,7 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   if (m.supplied) fixed.push_back("m");
   if (N.supplied) fixed.push_back("N");
   if (r.supplied) fixed.push_back("r");
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"m",fit.m},{"N",fit.N},{"r",fit.r}}; out.extra.push_back({"certified", fit.certified ? 1.0 : 0.0}); out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"m",fit.m},{"N",fit.N},{"r",fit.r}};  out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

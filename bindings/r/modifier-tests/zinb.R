@@ -189,15 +189,15 @@ test_that("zinb zero boundary works through generated d/p/q/r", {
 test_that("ZINB certified stops retain competing maxima and explicit budgets", {
   x <- c(rep(0L,99),10L)
   tie <- tryCatch(.modifier_zinb(x,size=10,pi=.76839477568758077746),error=identity)
-  expect_s3_class(tie,"univariateML_tie")
-  expect_identical(tie$kind,"tie")
-  expect_equal(nrow(tie$candidates),2L)
-  expect_true(all(tie$candidates$size==10))
-  expect_true(all(tie$candidates$pi==.76839477568758077746))
-  for(j in seq_len(nrow(tie$candidates))) {
-    ll <- sum(dzinb(x,size=10,prob=tie$candidates$prob[j],pi=.76839477568758077746,log=TRUE))
-    expect_lte(tie$candidates$loglik_lower[j],ll)
-    expect_gte(tie$candidates$loglik_upper[j],ll)
+  expect_s3_class(tie,"univariateML_unresolved")
+  expect_identical(fit_payload(tie)$kind,"unresolved")
+  expect_equal(nrow(fit_payload(tie)$candidates),2L)
+  expect_true(all(fit_payload(tie)$candidates$size==10))
+  expect_true(all(fit_payload(tie)$candidates$pi==.76839477568758077746))
+  for(j in seq_len(nrow(fit_payload(tie)$candidates))) {
+    ll <- sum(dzinb(x,size=10,prob=fit_payload(tie)$candidates$prob[j],pi=.76839477568758077746,log=TRUE))
+    expect_lte(fit_payload(tie)$candidates$loglik_lower[j],ll)
+    expect_gte(fit_payload(tie)$candidates$loglik_upper[j],ll)
   }
   budget <- tryCatch(.modifier_zinb(c(0L,1L,2L,5L),prob=.4,iterlim=1),error=identity)
   expect_s3_class(budget,"univariateML_budget")

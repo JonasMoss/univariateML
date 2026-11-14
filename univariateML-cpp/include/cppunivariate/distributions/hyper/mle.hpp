@@ -707,6 +707,13 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
 }  // namespace cppunivariate
 
 namespace cppunivariate {
+inline bool family_point(const HyperResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]);
+}
+// hyper_mle returns any family candidate of a FaceTie as an uncertified Ok; a
+// FaceTie that survives lists the face alone.
+inline bool accurate_point(const HyperResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const HyperResult& r) {
   if (r.stop_detail.budget_exhausted && r.status != HyperStatus::Ok &&
       r.status != HyperStatus::Tie && r.status != HyperStatus::Unidentified) return FitOutcome::budget();
@@ -717,7 +724,7 @@ inline FitOutcome outcome(const HyperResult& r) {
     case HyperStatus::AllZero: return FitOutcome::limit();
     case HyperStatus::BothFree: return FitOutcome::failure(OutcomeReason::Unsupported);
     case HyperStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
-    case HyperStatus::FaceTie: return FitOutcome::estimate(false);
+    case HyperStatus::FaceTie: return comparison_outcome_of(r);
     case HyperStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case HyperStatus::Infeasible: return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case HyperStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

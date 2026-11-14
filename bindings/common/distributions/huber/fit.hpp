@@ -7,11 +7,11 @@ inline FitResult fit_huber(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(gradtol>0 && std::isfinite(gradtol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -34,26 +34,26 @@ inline FitResult fit_huber(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   auto r=cppunivariate::huber_mle(x,gradtol,iterlim,e,m,s);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    return with_outcome(std::move(out), o, static_cast<int>(r.status));
+    return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"epsilon",epsilon_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
-  if(r.stop_detail.budget_exhausted)return done(classify(fail("Huber certificate exhausted its work budget; raising `iterlim` may resolve it."),r.stop_detail,outcome_kind(o),{"mu","sigma","epsilon"}));
-  if(r.stop_detail.comparison_tie)return done(classify(fail("Huber MLE failed to converge."),r.stop_detail,"tie",{"mu","sigma","epsilon"}));
+  if(r.stop_detail.budget_exhausted)return done(classify(fail("Huber certificate exhausted its work budget; raising `iterlim` may resolve it."),r.stop_detail,outcome_payload(o),{"mu","sigma","epsilon"}));
+  if(r.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Huber MLE failed to converge."),r.stop_detail,PayloadKind::Comparison,{"mu","sigma","epsilon"}),o,cppunivariate::comparison_choice(r),{{"mu",mu_arg},{"sigma",sigma_arg},{"epsilon",epsilon_arg}}));
   if (r.status==cppunivariate::HuberStatus::InvalidData)
     return done(fail("Huber requires finite data, positive finite `gradtol` and positive `iterlim`."));
   if (r.status==cppunivariate::HuberStatus::UnboundedLikelihood)
     return done(nomle("Huber likelihood is unbounded for constant data at the fitted or held location."));
   if (r.status==cppunivariate::HuberStatus::NormalLimit)
-    return done(classify(fail("Huber shape reaches the normal face; use `mlnorm`."),r.stop_detail,outcome_kind(o),{"mean","sd"},"norm"));
+    return done(classify(fail("Huber shape reaches the normal face; use `mlnorm`."),r.stop_detail,outcome_payload(o),{"mean","sd"},"norm"));
   if (r.status==cppunivariate::HuberStatus::LaplaceLimit)
-    return done(classify(fail("Huber shape reaches the Laplace face; use `mllaplace`."),r.stop_detail,outcome_kind(o),{"mu","sigma"},"laplace"));
+    return done(classify(fail("Huber shape reaches the Laplace face; use `mllaplace`."),r.stop_detail,outcome_payload(o),{"mu","sigma"},"laplace"));
   if(r.status==cppunivariate::HuberStatus::IterationFailure &&
       (!r.stop_detail.candidates.empty() || r.stop_detail.loglik_upper==std::numeric_limits<double>::infinity()))
-    return done(classify(fail("Huber MLE failed to converge."),r.stop_detail,outcome_kind(o),{"mu","sigma","epsilon"}));
+    return done(classify(fail("Huber MLE failed to converge."),r.stop_detail,outcome_payload(o),{"mu","sigma","epsilon"}));
   if (r.status!=cppunivariate::HuberStatus::Ok || !std::isfinite(r.logLik))
     return done(fail("Huber MLE failed to converge."));
   std::vector<std::string> fixed;

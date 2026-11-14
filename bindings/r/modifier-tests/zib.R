@@ -24,8 +24,8 @@ test_that("zib agrees with a multi-start reference-density oracle", {
   expect_equal(attr(logLik(fixed),"df"), 2L)
   expect_gte(attr(fixed,"logLik"), -oracle(c(size=15))-1e-6)
   for(bad in c(-1,Inf,NaN,0,.5)) expect_error(.modifier_zib(x,size=bad),"size")
-  expect_error(modifier_zib_(integer(), size=NULL),"nonempty")
-  expect_error(modifier_zib_(c(-1L,1L), size=NULL),"count")
+  expect_match(conditionMessage(modifier_zib_(integer(), size=NULL)),"nonempty")
+  expect_match(conditionMessage(modifier_zib_(c(-1L,1L), size=NULL)),"count")
 })
 
 test_that("zib declares its infinite-size escape", {
@@ -249,14 +249,15 @@ test_that("zib near-zero local face coefficients return an uncertified finite fi
 
 test_that("zib proves escape even when the winning ZIP rate is tied", {
   e <- tryCatch(.modifier_zib(c(rep(0,198),1,19),size=NULL,pi=.7254971052291191),error=identity)
-  expect_s3_class(e,"univariateML_tie")
-  expect_identical(e$kind,"tie")
-  expect_identical(e$model,"zip")
-  expect_true(is.finite(e$loglik_upper))
-  peaks <- e$candidates[e$candidates$model=="zip",]
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(fit_payload(e)$kind,"limit")
+  expect_false(e$certified)
+  expect_identical(fit_payload(e)$model,"zip")
+  expect_true(is.finite(fit_payload(e)$loglik_upper))
+  peaks <- fit_payload(e)$candidates[fit_payload(e)$candidates$model=="zip",]
   expect_equal(nrow(peaks),2)
   expect_equal(sort(peaks$lambda),c(.5223041246623353,9.982727928366345),tolerance=1e-9)
-  expect_gte(nrow(e$candidates),3)
+  expect_gte(nrow(fit_payload(e)$candidates),3)
 })
 
 test_that("zib certifies noninflated faces including equal mean and variance", {

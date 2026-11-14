@@ -1,0 +1,11 @@
+{
+ "cases": 1934,
+ "categories": {
+  "derived metadata on classed stop": 193,
+  "estimate flags added": 1677,
+  "plain error to classed stop": 63,
+  "tie stop to limit stop": 1
+ },
+ "identical": 0,
+ "defects": []
+}

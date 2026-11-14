@@ -6,11 +6,11 @@ inline FitResult fit_gamma(cppunivariate::span x, Held shape_arg = {}, Held scal
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(!(abstol>0 && std::isfinite(abstol) && iterlim>0))return out;
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -21,7 +21,7 @@ inline FitResult fit_gamma(cppunivariate::span x, Held shape_arg = {}, Held scal
   double scale=scale_arg.supplied ? scale_arg.value : NAN;
   auto r=cppunivariate::gamma_mle(cppunivariate::span{x.data(),x.size()},abstol,iterlim,shape,scale);
   const auto o = cppunivariate::outcome(r);
-  const auto done = [&](FitResult out) { return with_outcome(std::move(out), o, static_cast<int>(r.status)); };
+  const auto done = [&](FitResult out) { return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied}}); };
   if (r.status == cppunivariate::GammaStatus::InvalidInput) {
     // Retain the empty-input diagnostic exposed by the existing JS API.
     if (x.empty()) return done(failure("Gamma MLE failed"));
@@ -29,7 +29,7 @@ inline FitResult fit_gamma(cppunivariate::span x, Held shape_arg = {}, Held scal
   }
   if(r.status==cppunivariate::GammaStatus::TransformFailure) return done(failure("Gamma transformed observations exceed double precision."));
   if(r.status==cppunivariate::GammaStatus::IterationFailure) return done(failure("Gamma delegate optimizer IterationFailure; increase iterlim."));
-  if(r.status==cppunivariate::GammaStatus::Degenerate) return done(classify(failure("The gamma maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as the shape grows."),{},outcome_kind(o),{},""));
+  if(r.status==cppunivariate::GammaStatus::Degenerate) return done(classify(failure("The gamma maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as the shape grows."),{},outcome_payload(o),{},""));
   if(!std::isfinite(r.shape)||!std::isfinite(r.scale)||!std::isfinite(r.logLik)) return overridden(failure("Gamma MLE failed"),static_cast<int>(r.status));
   FitResult out;
   out.estimates.emplace_back("shape",r.shape); if(shape_arg.supplied) out.fixed.push_back("shape");

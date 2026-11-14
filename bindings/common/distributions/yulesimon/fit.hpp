@@ -13,22 +13,22 @@ inline FitResult fit_yulesimon(cppunivariate::ispan x, Held rho_arg = {}, double
   const auto fit=cppunivariate::yulesimon_mle(x,reltol,iterlim,held);
   const auto o = cppunivariate::outcome(fit);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (fit.status == cppunivariate::YulesimonStatus::Ok)
         return overridden(std::move(out), static_cast<int>(fit.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(fit.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(fit.status),{{"rho",rho_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(fit.status));
+    return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"rho",rho_arg.supplied}});
   };
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(fit.status) {
-    case cppunivariate::YulesimonStatus::PointMass: stop_kind=outcome_kind(o);break;
+    case cppunivariate::YulesimonStatus::PointMass: stop_kind=outcome_payload(o);break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,fit.stop_detail,stop_kind,{"rho"});
+    return (stop_kind==PayloadKind::None)?out:stop_failure(out,fit.stop_detail,stop_kind,{"rho"});
   };
 
   if (fit.status==cppunivariate::YulesimonStatus::PointMass)

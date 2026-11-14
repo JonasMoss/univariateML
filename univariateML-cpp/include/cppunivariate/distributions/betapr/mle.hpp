@@ -336,13 +336,21 @@ inline BetaPrimeResult betapr_mle_holds(span x,double a,double b,double s,double
 }
 
 namespace cppunivariate {
+inline bool family_point(const BetaPrimeResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[0] > 0 && c.coef[1] > 0 && c.coef[2] > 0;
+}
+// Comparison candidates are certificate search points and patches carrying
+// likelihood enclosures, not converged fits with a point log likelihood.
+inline bool accurate_point(const BetaPrimeResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const BetaPrimeResult& r) {
   if (r.status == BetaPrimeStatus::BfgsFailure) {
     if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
     if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   }
   if (r.status == BetaPrimeStatus::BfgsFailure && r.certificate_failure == LomaxCertificateFailure::Budget) return FitOutcome::budget();
-  if (r.status == BetaPrimeStatus::BfgsFailure && r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  if (r.status == BetaPrimeStatus::BfgsFailure && r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   if (r.status == BetaPrimeStatus::BfgsFailure && r.certificate_failure == LomaxCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
   if ((r.status == BetaPrimeStatus::GammaBoundary || r.status == BetaPrimeStatus::InvGammaBoundary) && r.stop_detail.limit_coef.empty()) return FitOutcome::failure(OutcomeReason::Evaluation);
   switch (r.status) {

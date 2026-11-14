@@ -1,0 +1,18 @@
+{
+ "cases": 11820,
+ "categories": {
+  "derived metadata on classed stop": 1707,
+  "estimate flags added": 8325,
+  "extra field removed": 251,
+  "identical timeout record": 1,
+  "invalid-input status (binom, lgamma)": 10,
+  "margin sentence added": 665,
+  "numerical to tolerance refinement (outcome reason)": 1,
+  "plain error to classed stop": 809,
+  "tie stop to estimate (point log likelihood)": 14,
+  "tie stop to limit stop": 29,
+  "tie stop to unresolved stop": 8
+ },
+ "identical": 0,
+ "defects": []
+}

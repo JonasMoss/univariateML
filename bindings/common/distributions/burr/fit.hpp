@@ -23,22 +23,22 @@ inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shap
  start(shape10),start(shape20),start(scale0),reltol);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (res.status == cppunivariate::BurrStatus::Ok)
         return overridden(std::move(out), static_cast<int>(res.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
   };
- if (res.status == cppunivariate::BurrStatus::Unbounded) return done(stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},""));
- if (res.status == cppunivariate::BurrStatus::AllGeOne) return done(stop_failure(fail("The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},"pareto"));
- if (res.status == cppunivariate::BurrStatus::WeibullBoundary) return done(stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},"weibull"));
- if (res.status == cppunivariate::BurrStatus::ParetoBoundary) return done(stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},"pareto"));
- if (res.status == cppunivariate::BurrStatus::CertificateTie) return done(stop_failure(fail("Burr global certificate unresolved: finite/face tie or sign-uncertain seam; no verified MLE."),res.stop_detail,"tie",{"shape1","shape2","scale"},""));
- if (res.status == cppunivariate::BurrStatus::CertificateBudget) return done(stop_failure(fail("Burr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},""));
- if (res.status == cppunivariate::BurrStatus::NumericalFailure) return done(stop_failure(fail("Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},""));
- if (res.status == cppunivariate::BurrStatus::IterationFailure) return done(stop_failure(fail("Constrained likelihood search failed to converge."),res.stop_detail,outcome_kind(o),{"shape1","shape2","scale"},""));
+ if (res.status == cppunivariate::BurrStatus::Unbounded) return done(stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
+ if (res.status == cppunivariate::BurrStatus::AllGeOne) return done(stop_failure(fail("The fixed-scale burr MLE does not exist when all observations >= scale. Use `mlpareto` to fit this model with endpoint scale."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},"pareto"));
+ if (res.status == cppunivariate::BurrStatus::WeibullBoundary) return done(stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlweibull` to fit this model."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},"weibull"));
+ if (res.status == cppunivariate::BurrStatus::ParetoBoundary) return done(stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlpareto` to fit this model."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},"pareto"));
+ if (res.status == cppunivariate::BurrStatus::CertificateTie) return done(comparison_payload(stop_failure(fail("Burr global certificate unresolved: finite/face tie or sign-uncertain seam; no verified MLE."),res.stop_detail,PayloadKind::Comparison,{"shape1","shape2","scale"},""),o,cppunivariate::comparison_choice(res),{{"shape1",shape1_arg},{"shape2",shape2_arg},{"scale",scale_arg}}));
+ if (res.status == cppunivariate::BurrStatus::CertificateBudget) return done(stop_failure(fail("Burr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
+ if (res.status == cppunivariate::BurrStatus::NumericalFailure) return done(stop_failure(fail("Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
+ if (res.status == cppunivariate::BurrStatus::IterationFailure) return done(stop_failure(fail("Constrained likelihood search failed to converge."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
  if (res.status == cppunivariate::BurrStatus::InvalidInit ||
  !std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale))
  return done(fail("burr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale"));
@@ -46,7 +46,7 @@ inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shap
  if(shape1.supplied) fixed.push_back("shape1");
  if(shape2.supplied) fixed.push_back("shape2");
  if(scale.supplied) fixed.push_back("scale");
- return done([&]() { FitResult out; out.extra.emplace_back("certified",res.certified?1.:0.); out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+ return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

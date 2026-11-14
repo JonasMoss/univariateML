@@ -31,11 +31,24 @@ struct FatigueResult {
   StopDetail stop_detail{};
 };
 
+// Comparison candidates are (alpha, beta); the adapter appends the held mu.
+inline bool family_point(const FatigueResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 2 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && c.coef[0] > 0 && c.coef[1] > 0;
+}
+// A comparison tie lists every converged score root (bisection to 0.01*tol in
+// beta, alpha resolved alongside), evaluated by the same value() as the Ok
+// result, which is the best of these roots; the constant-sample pair is the
+// closed-form pair of roots.
+inline bool accurate_point(const FatigueResult& r, const FitCandidate& c) {
+  return family_point(r, c) && point_value(c);
+}
+
 inline FitOutcome outcome(const FatigueResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status == FatigueStatus::SearchFailure && r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.status == FatigueStatus::SearchFailure && r.stop_detail.comparison_tie) return FitOutcome::estimate(false);
+  if (r.status == FatigueStatus::SearchFailure && r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
     case FatigueStatus::Ok: return FitOutcome::estimate(true);
     case FatigueStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

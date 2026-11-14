@@ -18,21 +18,23 @@ inline FitResult fit_tpois(cppunivariate::ispan x, Held lambda_arg = {}, Held a_
   auto r=cppunivariate::tpois_mle(x,lower,upper,held);
   const auto o=cppunivariate::outcome(r);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.error_kind!="tie" && o.kind==cppunivariate::OutcomeKind::Estimate)
+    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
       return overridden(std::move(out),static_cast<int>(r.status));
-    return with_outcome(std::move(out),o,static_cast<int>(r.status));
+    return with_outcome(std::move(out),o,static_cast<int>(r.status),{{"lambda",lambda_arg.supplied},{"a",a_arg.supplied},{"b",b_arg.supplied}});
   };
   return done([&]() -> FitResult {
-  std::string stop_kind;
+  PayloadKind stop_kind=PayloadKind::None;
   switch(r.status) {
-    case cppunivariate::truncated_detail::Status::LowerPointMass: stop_kind=outcome_kind(o);break;
-    case cppunivariate::truncated_detail::Status::UpperPointMass: stop_kind=outcome_kind(o);break;
-    case cppunivariate::truncated_detail::Status::Unidentified: stop_kind="tie";break;
+    case cppunivariate::truncated_detail::Status::LowerPointMass: stop_kind=outcome_payload(o);break;
+    case cppunivariate::truncated_detail::Status::UpperPointMass: stop_kind=outcome_payload(o);break;
+    case cppunivariate::truncated_detail::Status::Unidentified: stop_kind=PayloadKind::Comparison;break;
     default:break;
   }
   const auto stopped_fail = [&](const std::string& format, const auto&... arguments) {
     auto out=fail(binding_message(format,arguments...));
-    return stop_kind.empty()?out:stop_failure(out,r.stop_detail,stop_kind,{"lambda","a","b"});
+    if(stop_kind==PayloadKind::None)return out;
+    return comparison_payload(stop_failure(out,r.stop_detail,stop_kind,{"lambda","a","b"}),o,
+      cppunivariate::comparison_choice(r),{{"lambda",lambda_arg},{"a",a_arg},{"b",b_arg}});
   };
 
   if(x.size()>0) {

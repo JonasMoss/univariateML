@@ -184,7 +184,7 @@ required_checks <- function(model) {
     conditions <- vapply(holdable_names(model), function(p) {
       if (p %in% held) nl("!is.null(dots[[\"",p,"\"]])") else nl("is.null(dots[[\"",p,"\"]])")
     }, "")
-    checks <- c(checks, nl("  if (", paste(conditions,collapse=" && "), ") stop(",
+    checks <- c(checks, nl("  if (", paste(conditions,collapse=" && "), ") ml_fit_stop(",
       encodeString(h$reason, quote='"'), ", call. = FALSE)\n"))
   }
   checks
@@ -275,7 +275,7 @@ gen_wrapper <- function(model) {
   doc <- gen_doc(model)
   paste0(
     doc, "\n",
-    fname, " <- function(x, na.rm = FALSE, ...) {\n",
+    fname, " <- function(x, na.rm = FALSE, ...) {\n  tryCatch({\n",
     "  modifier_args <- list(...)\n",
     "  if (", if(model$modifier_eligibility$zero) '\"zero\" %in% names(modifier_args) || ' else '',
     '\"truncate\" %in% names(modifier_args) || (!missing(x) && ((is.matrix(x) && NCOL(x)==2L) || inherits(x, \"Surv\")))) {\n',
@@ -298,7 +298,7 @@ gen_wrapper <- function(model) {
     "  if (inherits(out, \"univariateML_stop\")) stop(out)\n",
     "  params <- list(logLik = unname(out$logLik), call = deparse(match.call()), n = n)\n",
     "  univariateML_construct(out$estimates, name = \"", fname, "\", params = params, fixed = out$fixed, restricted = out$restricted, data = x)\n",
-    "}\n\n"
+    "  }, error = ml_classify_fit_error)\n}\n\n"
   )
 }
 

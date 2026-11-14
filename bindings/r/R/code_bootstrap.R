@@ -72,6 +72,7 @@
 bootstrapml <- function(
     object, reps = 1000, map = identity,
     reducer = stats::quantile, ..., type = c("parametric", "nonparametric")) {
+  ml_require_unique(object)
   type <- match.arg(type)
   if (isTRUE(attr(object,"censored")) && type=="parametric")
     stop("Parametric bootstrap of censored data requires a censoring mechanism")

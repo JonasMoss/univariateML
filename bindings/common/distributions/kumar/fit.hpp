@@ -30,16 +30,16 @@ inline FitResult fit_kumar(cppunivariate::span x, Held a_arg = {}, Held b_arg = 
   auto res = cppunivariate::kumar_mle(x, reltol, iterlim, start, checked_a, checked_b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.error_kind != "tie") {
+    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
       if (res.status == cppunivariate::KumarStatus::Ok)
         return overridden(std::move(out), static_cast<int>(res.status));
       // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status));
+      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"a",a_arg.supplied},{"b",b_arg.supplied}});
     }
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"a",a_arg.supplied},{"b",b_arg.supplied}});
   };
   if(res.certificate_failure==cppunivariate::KumarCertificateFailure::Budget)
-    return done(stop_failure(fail("Kumaraswamy MLE failed: iteration certificate budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop."),res.stop_detail,outcome_kind(o),{"a","b"}));
+    return done(stop_failure(fail("Kumaraswamy MLE failed: iteration certificate budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"a","b"}));
   if (res.status == cppunivariate::KumarStatus::Unbounded)
     return done(fail("Kumaraswamy likelihood is unbounded for constant samples."));
   if (res.status != cppunivariate::KumarStatus::Ok || !std::isfinite(res.a) || !std::isfinite(res.b) || !std::isfinite(res.logLik)) {

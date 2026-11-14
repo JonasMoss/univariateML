@@ -3,10 +3,12 @@ export interface Modifiers { zero?: 'none' | 'truncated' | 'modified' | 'inflate
 export interface ModifierControls extends Modifiers { reltol?: number; iterlim?: number }
 export interface IntervalData {lower: Float64Array; upper: Float64Array}
 export interface Tail extends Modifiers { lower?: boolean; log?: boolean }
-export interface Fit<P> { estimates: P; logLik: number; iterations: number; status: 'Ok'; fixed: (keyof P)[]; warnings: string[]; restricted: Record<string, string>; [field: string]: unknown }
+export interface Fit<P> { estimates: P; logLik: number; iterations: number; status: 'Ok'; certified: boolean; unique: boolean; fixed: (keyof P)[]; warnings: string[]; restricted: Record<string, string>; [field: string]: unknown }
 /** Selected stopped fits; catch as Error and inspect kind before narrowing. */
 export interface FitStop extends Error {
-  kind: 'tie' | 'limit' | 'budget' | 'nomle' | 'numerical' | 'unresolved' | 'tolerance' | 'conditioning';
+  kind: 'invalid' | 'unsupported' | 'limit' | 'budget' | 'nomle' | 'numerical' | 'unresolved' | 'tolerance' | 'conditioning';
+  reason: string;
+  certified?: boolean;
   attainable_tol: number;
   model: string;
   estimates: Record<string, number>;

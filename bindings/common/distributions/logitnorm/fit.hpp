@@ -6,10 +6,10 @@
 namespace umvl_binding {
 inline FitResult fit_logitnorm(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}) {
   const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      const std::string& kind, const std::vector<std::string>& names,
+      PayloadKind kind, const std::vector<std::string>& names,
       const std::string& model="") {
     if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind=="nomle" && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
+    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
     if(!finite_stop_payload(detail,kind))return out;
     return stop_failure(out,detail,kind,names,model);
   };
@@ -32,12 +32,12 @@ inline FitResult fit_logitnorm(cppunivariate::span x, Held mu_arg = {}, Held sig
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, checked_mu, checked_sigma);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.error_kind != "tie")
+    if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    return with_outcome(std::move(out), o, static_cast<int>(res.status));
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_kind(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if (res.status == cppunivariate::LogitnormStatus::Unbounded) {
     return done(nomle("The logitnorm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero."));
@@ -45,7 +45,7 @@ inline FitResult fit_logitnorm(cppunivariate::span x, Held mu_arg = {}, Held sig
   if (res.status == cppunivariate::LogitnormStatus::InvalidInput) return done(fail("Logit-normal requires nonempty finite data strictly between zero and one and valid held parameters."));
   if (res.status != cppunivariate::LogitnormStatus::Ok || !std::isfinite(res.logLik))
     return done(fail("Logit-normal MLE failed: likelihood cannot be resolved in double precision."));
-  return done([&]() { FitResult out; if(!res.certified)out.extra.push_back({"certified",0}); out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; return out; }());
+  return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; return out; }());
 
 }
 }

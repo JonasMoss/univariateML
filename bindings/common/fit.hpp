@@ -5,10 +5,29 @@
 #include <cmath>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 #include "cppunivariate/core/span.hpp"
 #include "cppunivariate/core/stop_detail.hpp"
 #include "cppunivariate/core/outcome.hpp"
 namespace umvl_binding {
+// Payload tags retain adapter validation context; they never decide a rendered stop.
+enum class PayloadKind { None, Comparison, Limit, Nonexistence, Budget, Numerical, Unresolved, Tolerance, Conditioning };
+inline PayloadKind outcome_payload(const cppunivariate::FitOutcome& o) {
+  switch(o.kind) {
+    case cppunivariate::OutcomeKind::Estimate:return PayloadKind::None;
+    case cppunivariate::OutcomeKind::Limit:return PayloadKind::Limit;
+    case cppunivariate::OutcomeKind::Nonexistence:return PayloadKind::Nonexistence;
+    case cppunivariate::OutcomeKind::Budget:return PayloadKind::Budget;
+    case cppunivariate::OutcomeKind::Failure:break;
+  }
+  switch(o.reason) {
+    case cppunivariate::OutcomeReason::InvalidInput:
+    case cppunivariate::OutcomeReason::InvalidArgument:
+    case cppunivariate::OutcomeReason::Unsupported:return PayloadKind::None;
+    case cppunivariate::OutcomeReason::Unresolved:return PayloadKind::Unresolved;
+    default:return PayloadKind::Numerical;
+  }
+}
 struct NamedCandidate {
   std::vector<std::pair<std::string,double>> estimates;
   double loglik_lower=NAN,loglik_upper=NAN;
@@ -28,6 +47,7 @@ struct FitResult {
   bool has_fixed = false;
   bool has_restricted = false;
   std::string error_kind, model;
+  PayloadKind payload_kind=PayloadKind::None;
   double attainable_tol=NAN;
   // Shared outcome of the fit (dev/design/consolidation.md). outcome_set is
   // false for adapters that do not report one yet. outcome_override marks a
@@ -70,8 +90,7 @@ inline std::string binding_message(std::string pattern, const T&... values) {
 inline FitResult failure(const std::string& message, const std::vector<std::string>& warnings = {}) {
   FitResult result; result.error = message; result.warnings = warnings; return result;
 }
-// The condition kind of an outcome. Invalid and unsupported requests have no
-// kind yet: they are plain errors until the uniform-controls step.
+// Binding condition kind, derived exclusively from the shared outcome.
 inline std::string outcome_kind(const cppunivariate::FitOutcome& o) {
   switch(o.kind) {
     case cppunivariate::OutcomeKind::Estimate:return "";
@@ -82,14 +101,42 @@ inline std::string outcome_kind(const cppunivariate::FitOutcome& o) {
   }
   switch(o.reason) {
     case cppunivariate::OutcomeReason::InvalidInput:
-    case cppunivariate::OutcomeReason::InvalidArgument:
-    case cppunivariate::OutcomeReason::Unsupported:return "";
+    case cppunivariate::OutcomeReason::InvalidArgument:return "invalid";
+    case cppunivariate::OutcomeReason::Unsupported:return "unsupported";
+    case cppunivariate::OutcomeReason::Tolerance:return "tolerance";
+    case cppunivariate::OutcomeReason::Conditioning:return "conditioning";
     case cppunivariate::OutcomeReason::Unresolved:return "unresolved";
     default:return "numerical";
   }
 }
+// Render once at the host boundary; adapters retain numerical payloads and diagnostics.
+inline FitResult render_fit(FitResult out) {
+  out.error_kind=outcome_kind(out.outcome);
+  out.extra.erase(std::remove_if(out.extra.begin(),out.extra.end(),
+      [](const auto& item){return item.first=="certified";}),out.extra.end());
+  if(out.outcome.kind==cppunivariate::OutcomeKind::Estimate) {
+    // Adapters build every estimate payload (comparison_payload for comparisons).
+    // An estimate without coefficients is an adapter defect: stop, visibly
+    // disagreeing with the outcome, rather than return an empty estimate.
+    if(out.estimates.empty()) {
+      out.error_kind="unresolved";
+      if(out.error.empty())out.error="The fit returned no coefficients.";
+      return out;
+    }
+    out.error.clear();
+  } else if(out.outcome.kind==cppunivariate::OutcomeKind::Limit && !out.outcome.certified) {
+    const std::string sentence=" No improvement above the likelihood margin was found.";
+    if(out.error.find(sentence)==std::string::npos)out.error+=sentence;
+  }
+  return out;
+}
 // Attach the core outcome and the family's raw status to a finished result.
-inline FitResult with_outcome(FitResult out,const cppunivariate::FitOutcome& o,int status) {
+inline FitResult with_outcome(FitResult out,const cppunivariate::FitOutcome& o,int status,
+    const std::vector<std::pair<std::string,bool>>& requested_holds={}) {
+  if(o.kind==cppunivariate::OutcomeKind::Estimate && out.payload_kind==PayloadKind::Comparison && !requested_holds.empty() && !out.estimates.empty()) {
+    out.fixed.clear();out.has_fixed=true;
+    for(const auto& held:requested_holds)if(held.second)out.fixed.push_back(held.first);
+  }
   out.outcome=o;out.outcome_set=true;out.core_status=status;return out;
 }
 // A held value or control the adapter rejected before calling the core.
@@ -196,12 +243,12 @@ inline std::vector<std::string> stop_names(const std::string& model,const std::v
 }
 // Candidate bounds describe evaluated finite witnesses. An unrepresentable
 // face remains an ordinary numerical error; global upper bounds may be infinite.
-inline bool finite_stop_payload(const cppunivariate::StopDetail& detail,const std::string& kind) {
-  if(kind=="limit") {
+inline bool finite_stop_payload(const cppunivariate::StopDetail& detail,PayloadKind kind) {
+  if(kind==PayloadKind::Limit) {
     if(detail.limit_coef.empty() || !std::isfinite(detail.limit_loglik))return false;
     for(double v:detail.limit_coef)if(!std::isfinite(v))return false;
   }
-  if((kind=="tie" || kind=="budget") && detail.candidates.empty())return false;
+  if((kind==PayloadKind::Comparison || kind==PayloadKind::Budget) && detail.candidates.empty())return false;
   for(const auto& candidate:detail.candidates) {
     if(!cppunivariate::valid_stop_coefficients(candidate.model,candidate.coef) ||
        !std::isfinite(candidate.loglik_lower) || !std::isfinite(candidate.loglik_upper) ||
@@ -211,13 +258,13 @@ inline bool finite_stop_payload(const cppunivariate::StopDetail& detail,const st
   return true;
 }
 inline FitResult stop_failure(FitResult out,const cppunivariate::StopDetail& detail,
-    const std::string& kind,const std::vector<std::string>& names,const std::string& model="") {
-  out.error_kind=kind;
+    PayloadKind kind,const std::vector<std::string>& names,const std::string& model="") {
+  out.payload_kind=kind;
   if(detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance) {
-    out.error_kind="tolerance";
+    out.payload_kind=PayloadKind::Tolerance;
     std::ostringstream value;value<<std::setprecision(17)<<detail.attainable_tol;
     out.error+=" tol must be at least "+value.str()+" here.";
-  } else if(detail.accuracy_stop==cppunivariate::AccuracyStop::Conditioning)out.error_kind="conditioning";
+  } else if(detail.accuracy_stop==cppunivariate::AccuracyStop::Conditioning)out.payload_kind=PayloadKind::Conditioning;
   out.attainable_tol=detail.attainable_tol;
   out.model=model.empty()?stop_model(detail.limit_model):model;
   out.limit_estimates=named_coefficients(detail.limit_coef,stop_names(out.model,names));
@@ -234,4 +281,58 @@ struct Held {
   double value = NAN;
   std::size_t length = 1;
 };
+// How a comparison limit names its model and, for a package model, its fitter
+// (retired Poisson variants are fitted through the mlpois modifiers).
+inline std::string comparison_limit_advice(const std::string& model) {
+  if(model=="zip")return "`mlpois(x, zero = \"inflated\")`";
+  if(model=="ztpois")return "`mlpois(x, zero = \"truncated\")`";
+  if(model=="zmpois")return "`mlpois(x, zero = \"modified\")`";
+  if(model=="tpois")return "`mlpois(x, truncate = c(a, b))`";
+  return "`ml"+model+"`";
+}
+inline std::string comparison_limit_sentence(const std::string& model) {
+  const std::string prefix="unavailable:";
+  if(model.compare(0,prefix.size(),prefix)==0) {
+    std::string law=model.substr(prefix.size());
+    std::replace(law.begin(),law.end(),'-',' ');
+    return " The best candidate is the "+law+" limit.";
+  }
+  return " The best candidate is the "+model+" limit; use "+comparison_limit_advice(model)+".";
+}
+// Payload of a comparison outcome (dev/design/consolidation.md, "Outcome
+// model"), on the candidates stop_failure attached. `chosen` is the core's
+// choice (cppunivariate::better_candidate with the family's point predicate),
+// so payload and outcome agree; a proved non-unique estimate takes the first
+// listed maximizer. An estimate takes the chosen family point with
+// held coefficients filled from the request, in the request's public order, and
+// its point log likelihood (the core's accuracy predicate requires one). A
+// limit names the chosen face with its coefficients and, when the candidate
+// carries a point value, its log likelihood; a bound is never reported as one.
+// Every candidate and the comparison bounds stay attached.
+inline FitResult comparison_payload(FitResult out,const cppunivariate::FitOutcome& o,std::size_t chosen,
+    const std::vector<std::pair<std::string,Held>>& request) {
+  if(out.payload_kind!=PayloadKind::Comparison || chosen>=out.candidates.size())return out;
+  // Proved non-uniqueness: the canonical representative is the first listed maximizer.
+  if(o.kind==cppunivariate::OutcomeKind::Estimate && !o.unique)chosen=0;
+  const NamedCandidate c=out.candidates[chosen];
+  if(o.kind==cppunivariate::OutcomeKind::Estimate) {
+    out.estimates.clear();out.fixed.clear();out.has_fixed=true;
+    for(const auto& item:request) {
+      double value=NAN;
+      for(const auto& e:c.estimates)if(e.first==item.first)value=e.second;
+      if(item.second.supplied){value=item.second.value;out.fixed.push_back(item.first);}
+      out.estimates.push_back({item.first,value});
+    }
+    out.logLik=c.loglik_lower==c.loglik_upper?c.loglik_lower:NAN;
+  } else if(o.kind==cppunivariate::OutcomeKind::Limit) {
+    out.model=c.model;out.limit_estimates=c.estimates;
+    out.limit_loglik=c.loglik_lower==c.loglik_upper?c.loglik_lower:NAN;
+    // Keep an existing message's own advice for this model rather than repeat it.
+    const bool advised=c.model.compare(0,12,"unavailable:")!=0 &&
+      (out.error.find("Use "+comparison_limit_advice(c.model))!=std::string::npos ||
+       out.error.find("Use `ml"+c.model)!=std::string::npos || out.error.find("Use ml"+c.model)!=std::string::npos);
+    if(!advised)out.error+=comparison_limit_sentence(c.model);
+  }
+  return out;
+}
 }

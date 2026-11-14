@@ -209,7 +209,7 @@ re-evaluated in original coordinates within $10^{-9}n$. This guards
 roundtrip cancellation amplified by large held shapes. Held face locations
 are retained exactly; free face endpoints use the original sample extremes.
 If every observation equals held location and scale is held, every finite
-shape is a maximizer: two distinct witnesses are returned in a `tie` stop.
+shape is a maximizer: the fit is a certified non-unique estimate with two listed witnesses.
 This is an explicit counterexample to unconditional uniqueness.
 
 These are exact-arithmetic certificates conditional on computed scores,
@@ -307,3 +307,5 @@ With $\alpha=0$, held $\omega=d$ and observations $(0,0,0,d)$, the
 conditional location maximizer is $d/4$. If $d$ is the smallest positive
 double, no double location meets the scale-relative accuracy contract.
 This is a numerical accuracy failure, rather than nonexistence of the MLE.
+
+When shape is proved unidentified at the held location, `coef()` uses the first listed `(xi, omega, alpha)` representative and attaches both listed representatives as `maximizers`.

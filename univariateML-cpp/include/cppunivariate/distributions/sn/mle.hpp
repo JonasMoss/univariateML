@@ -12,10 +12,24 @@ namespace cppunivariate {
 enum class SnStatus { Ok, InvalidInput, IterationFailure, RightHalfNormalBoundary, LeftHalfNormalBoundary, AccuracyFailure };
 struct SnResult { double xi,omega,alpha,logLik; int iterations; SnStatus status;  StopDetail stop_detail{}; bool budget_exhausted=false; };
 
+inline bool family_point(const SnResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0;
+}
+// Proved non-identification (every observation at the held location, global
+// bounds equal): exact closed-form maxima. A face tie lists the unpolished
+// search point, which is not checked.
+inline bool sn_shape_unidentified(const SnResult& r) {
+  return std::isfinite(r.stop_detail.loglik_upper) && r.stop_detail.loglik_lower == r.stop_detail.loglik_upper;
+}
+inline bool accurate_point(const SnResult& r, const FitCandidate& c) {
+  return sn_shape_unidentified(r) && family_point(r, c) && point_value(c);
+}
+
 inline FitOutcome outcome(const SnResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
-  if (r.stop_detail.comparison_tie) return (std::isfinite(r.stop_detail.loglik_upper) && r.stop_detail.loglik_lower == r.stop_detail.loglik_upper) ? FitOutcome::estimate(true, false) : FitOutcome::estimate(false);
+  if (r.stop_detail.comparison_tie) return sn_shape_unidentified(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
   if (r.status == SnStatus::IterationFailure && r.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
     case SnStatus::Ok: return FitOutcome::estimate(true);

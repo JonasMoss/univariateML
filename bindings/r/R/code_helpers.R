@@ -65,9 +65,12 @@ decorator <- function(name) {
 #' @return Object of class `univariateML`
 
 univariateML_construct <- function(estimates, name, params, fixed = NULL, restricted = NULL, data = NULL) {
+  rendered_names <- attr(estimates, "rendered_names")
   estimates <- unname(estimates)
   class <- "univariateML"
-  args <- c(.Data = list(estimates), params, ml_law_metadata(name), class = class)
+  metadata <- ml_law_metadata(name)
+  if (!is.null(rendered_names)) metadata$names <- rendered_names
+  args <- c(.Data = list(estimates), params, metadata, class = class)
   object <- do.call(structure, args)
   attr(object, "call") <- if (length(attr(object, "call")) == 1) {
     str2lang(attr(object, "call"))
@@ -75,6 +78,7 @@ univariateML_construct <- function(estimates, name, params, fixed = NULL, restri
     NULL
   }
 
+  if (!is.null(rendered_names)) names(object) <- rendered_names
   attr(object, "continuous") <- (ml_law_metadata(name)$support$type == "R")
   attr(object, "support") <- ml_law_metadata(name)$support$bounds
   attr(object, "fixed") <- as.character(fixed)
@@ -130,6 +134,10 @@ univariateML_df <- function(obj) {
 
 
 ml_check_modify <- function(x, na.rm, name) {
+  tryCatch(ml_check_modify_impl(x, na.rm, name), error = function(e) ml_classify_fit_error(e, "invalid-input"))
+}
+
+ml_check_modify_impl <- function(x, na.rm, name) {
   assert_that(is.numeric(x))
   msg <- paste0("x is not a numeric vector (NCOL(x) = ", NCOL(x), ")")
   assert_that(NCOL(x) == 1, msg = msg)
@@ -351,7 +359,7 @@ univariateML_support <- function(obj) {
   if (is.null(s)) return(NULL)
   values <- stats::setNames(as.list(as.numeric(obj)), names(obj))
   expressions <- s$expressions
-  if (is.null(expressions)) return(s)
+  if (is.null(expressions) || !all(ml_law_metadata(name)$names %in% names(obj))) return(s)
   s$bounds <- vapply(expressions, function(e)
     if (is.character(e)) eval(parse(text = e), values) else e, numeric(1))
   s$closed <- s$endpoint_closed
@@ -460,4 +468,33 @@ univariateML_closed_call <- function(fun, obj, type, args) {
     ans[high] <- bounds[if (lower.tail) 2L else 1L]
     ans
   }
+}
+
+# Inference requires an identified maximizer.
+ml_require_unique <- function(object) {
+  if (identical(attr(object, "unique"), FALSE))
+    stop(structure(list(message = "Inference requires a unique maximizer; this fit has multiple maximizers.",
+                        call = NULL, kind = "unsupported", reason = "non-unique"),
+                   class = c("univariateML_unsupported", "univariateML_stop", "error", "condition")))
+}
+
+ml_print_outcome <- function(object) {
+  if (identical(attr(object, "certified"), FALSE)) cat("Global maximum is not certified.\n")
+  if (identical(attr(object, "unique"), FALSE)) cat("Maximum is not unique.\n")
+}
+
+# Preserve established diagnostics when R validation precedes the core call.
+ml_classify_fit_error <- function(e, reason = "invalid-argument") {
+  if (inherits(e, "univariateML_stop")) stop(e)
+  if (inherits(e, "univariateML_evaluation_error")) reason <- "evaluation"
+  kind <- if (reason == "evaluation") "numerical" else if (reason == "unsupported") "unsupported" else "invalid"
+  e$kind <- kind
+  e$reason <- reason
+  class(e) <- c(if (inherits(e,"univariateML_evaluation_error")) "univariateML_evaluation_error",
+                paste0("univariateML_", kind), "univariateML_stop", "error", "condition")
+  stop(e)
+}
+
+ml_fit_stop <- function(..., call. = FALSE) {
+  ml_classify_fit_error(simpleError(paste0(...), call = NULL), "unsupported")
 }

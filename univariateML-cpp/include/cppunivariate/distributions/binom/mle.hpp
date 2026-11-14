@@ -6,7 +6,8 @@
 //
 // Otherwise (size_or_nan is NaN) auto-fit with a bracketed integer profile
 // search. Status
-// enum surfaces SizeTooSmall, Underdispersed, IterationFailure.
+// enum surfaces SizeTooSmall, Underdispersed, IterationFailure, and
+// InvalidInput for empty or negative samples and invalid held values.
 
 #pragma once
 #include "../../core/outcome.hpp"
@@ -56,7 +57,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
   (void)tol;
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0, BinomStatus::IterationFailure};
+  if (n == 0) return {0.0, 0.0, kNaN, 0, BinomStatus::InvalidInput};
 
   for (int v : x) if (v < 0)
     return {kNaN,kNaN,kNaN,0,BinomStatus::InvalidInput};

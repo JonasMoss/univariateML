@@ -1,5 +1,15 @@
 # Migration to 2.0: zero and truncation modifiers
 
+Every fit now renders its shared outcome. Estimates carry `certified` and
+`unique` flags, shown by print and summary and included in model selection.
+Candidates the certificate cannot separate return the better one: an
+uncertified estimate when it is an accurate point of the family, otherwise an
+uncertified limit or an unresolved stop, with all candidates attached. Proved
+non-uniqueness returns an estimate only when its maximizers are accurate;
+inference refuses such estimates. Every fit stop is classed and carries its
+kind and reason; margin-decided limits explicitly say so. See
+`?univariateML_outcomes`.
+
 The following fitters have been removed, with no aliases or redirects. Use the
 base fitter with named modifier arguments (all calls below take data `x`):
 

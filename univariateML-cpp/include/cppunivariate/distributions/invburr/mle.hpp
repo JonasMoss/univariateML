@@ -315,6 +315,14 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
 }
 
 
+inline bool family_point(const InvBurrResult&, const FitCandidate& c) {
+  return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
+         std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[0] > 0 && c.coef[1] > 0 && c.coef[2] > 0;
+}
+// CertificateTie transports the reciprocal Burr certificate's witnesses, with
+// likelihood bounds; an accurate converged search is already an uncertified Ok.
+inline bool accurate_point(const InvBurrResult&, const FitCandidate&) { return false; }
+
 inline FitOutcome outcome(const InvBurrResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -326,7 +334,7 @@ inline FitOutcome outcome(const InvBurrResult& r) {
     case InvBurrStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Unresolved);
     case InvBurrStatus::AllLeOne: return FitOutcome::limit(true);
     case InvBurrStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
-    case InvBurrStatus::CertificateTie: return FitOutcome::estimate(false);
+    case InvBurrStatus::CertificateTie: return comparison_outcome_of(r);
     case InvBurrStatus::CertificateBudget: return FitOutcome::budget();
     case InvBurrStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

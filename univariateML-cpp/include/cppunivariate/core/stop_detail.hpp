@@ -3,6 +3,8 @@
 #include <vector>
 #include <algorithm>
 #include <limits>
+#include <cstddef>
+#include "outcome.hpp"
 namespace cppunivariate {
 // Coefficients use the family's public order; face candidates use their model's.
 enum class StopModel { None, Weibull, Pareto, InvWeibull, Power, Exp, InvExp,
@@ -155,5 +157,92 @@ inline StopDetail limit_detail(std::vector<double> coef, double ll, StopModel mo
   d.limit_coef=coef; d.limit_loglik=ll; d.limit_model=model;
   d.candidates.push_back({coef,ll,ll,model});
   return d;
+}
+// Comparison outcomes (dev/design/consolidation.md, "Outcome model").
+// A family point is a candidate of the family itself (model None, or the
+// family's own model) whose coefficients are a point of the family; a face is
+// a valid candidate of any other model. Each family states two predicates next
+// to its outcome(): `point` (a family point) and `accurate` (a family point
+// whose free coefficients the family's stopping rule puts within tol of a
+// maximizer, and whose loglik_lower == loglik_upper is the family's point log
+// likelihood, computed as for an Ok result).
+inline double candidate_lower(const FitCandidate& c) {
+  return std::isnan(c.loglik_lower)?-INFINITY:c.loglik_lower;
+}
+inline bool point_value(const FitCandidate& c) {
+  return std::isfinite(c.loglik_lower) && c.loglik_lower==c.loglik_upper;
+}
+inline bool face_candidate(const FitCandidate& c,StopModel own=StopModel::None) {
+  return c.model!=StopModel::None && c.model!=own && valid_stop_coefficients(c.model,c.coef);
+}
+// Lower bounds are computed values: they are compared at rounding resolution,
+// and bounds within 8 ulps of each other count as equal.
+inline int compare_lower(double a,double b) {
+  if(a==b)return 0;
+  if(!std::isfinite(a) || !std::isfinite(b))return a>b?1:-1;
+  const double slack=8*std::numeric_limits<double>::epsilon()*std::max(std::abs(a),std::abs(b));
+  if(a>b+slack)return 1;
+  if(b>a+slack)return -1;
+  return 0;
+}
+// The better candidate has the larger lower bound; equal lower bounds prefer a
+// family point that meets the accuracy contract (`preferred`), then the first
+// listed. A family point that cannot be returned earns no preference: bounds
+// that differ only by rounding between builds must not turn a face into an
+// unresolved stop.
+template <class Preferred>
+inline std::size_t better_candidate(const StopDetail& d,Preferred preferred) {
+  std::size_t best=0;
+  for(std::size_t i=1;i<d.candidates.size();++i) {
+    const int order=compare_lower(candidate_lower(d.candidates[i]),candidate_lower(d.candidates[best]));
+    if(order>0 || (order==0 && preferred(d.candidates[i]) && !preferred(d.candidates[best])))best=i;
+  }
+  return best;
+}
+// Candidates the certificate cannot separate: the better one as an
+// uncertified estimate (an accurate family point) or an uncertified limit (a
+// face); anything else is unresolved.
+template <class Point,class Accurate>
+inline FitOutcome comparison_outcome(const StopDetail& d,Point point,Accurate accurate,
+    StopModel own=StopModel::None) {
+  if(d.candidates.empty())return FitOutcome::failure(OutcomeReason::Unresolved);
+  const FitCandidate& c=d.candidates[better_candidate(d,[&](const FitCandidate& x){return point(x) && accurate(x);})];
+  if(point(c))return accurate(c)?FitOutcome::estimate(false):FitOutcome::failure(OutcomeReason::Unresolved);
+  if(face_candidate(c,own))return FitOutcome::limit(false);
+  return FitOutcome::failure(OutcomeReason::Unresolved);
+}
+// Proved non-uniqueness: an estimate only when every listed maximizer is an
+// accurate family point; equal limiting suprema are a limit naming the first
+// face; witnesses that do not meet the accuracy contract are unresolved.
+template <class Point,class Accurate>
+inline FitOutcome nonunique_outcome(const StopDetail& d,bool certified,Point point,Accurate accurate,
+    StopModel own=StopModel::None) {
+  if(d.candidates.size()<2)return FitOutcome::failure(OutcomeReason::Unresolved);
+  bool points=true,faces=true;
+  for(const auto& c:d.candidates) {
+    points=points && point(c) && accurate(c);
+    faces=faces && face_candidate(c,own);
+  }
+  if(points)return FitOutcome::estimate(certified,false);
+  if(faces)return FitOutcome::limit(certified);
+  return FitOutcome::failure(OutcomeReason::Unresolved);
+}
+// The same rules for a family result. A family declares, next to its
+// outcome(), `family_point(const Result&, const FitCandidate&)` and
+// `accurate_point(const Result&, const FitCandidate&)`; bindings build the
+// payload from comparison_choice(), so payload and outcome agree.
+template <class Result>
+inline std::size_t comparison_choice(const Result& r) {
+  return better_candidate(r.stop_detail,[&](const FitCandidate& c){return family_point(r,c) && accurate_point(r,c);});
+}
+template <class Result>
+inline FitOutcome comparison_outcome_of(const Result& r,StopModel own=StopModel::None) {
+  return comparison_outcome(r.stop_detail,[&](const FitCandidate& c){return family_point(r,c);},
+    [&](const FitCandidate& c){return accurate_point(r,c);},own);
+}
+template <class Result>
+inline FitOutcome nonunique_outcome_of(const Result& r,bool certified,StopModel own=StopModel::None) {
+  return nonunique_outcome(r.stop_detail,certified,[&](const FitCandidate& c){return family_point(r,c);},
+    [&](const FitCandidate& c){return accurate_point(r,c);},own);
 }
 } // namespace cppunivariate

@@ -162,3 +162,18 @@ TEST_CASE("fatigue: exact-input extreme arithmetic regression") {
 TEST_CASE("fatigue: physical inverse survives latent underflow") {
  CHECK(cppunivariate::distributions::qfatigue(-.6931471805599453,4.9406564584124654e-324,1e308,-1e308,true,true)==doctest::Approx(1.4359989127576843e-32).epsilon(1e-9).scale(0));
 }
+
+TEST_CASE("fatigue: an unseparated pair of score roots is an uncertified estimate") {
+  // Constant sample with alpha held above 2: the closed-form beta roots x*r and
+  // x/r are evaluated as an Ok fit would be; the first listed is returned.
+  const std::vector<double> one{1};
+  const auto r=cppunivariate::fatigue_mle_shifted(mltest::as_span(one),0,1e-10,200,3.0);
+  REQUIRE(r.status==cppunivariate::FatigueStatus::SearchFailure);
+  REQUIRE(r.stop_detail.comparison_tie);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(o.certified);
+  const auto& c=r.stop_detail.candidates[cppunivariate::comparison_choice(r)];
+  CHECK(c.loglik_lower==c.loglik_upper);
+  CHECK(c.coef[0]==3.0);
+}
