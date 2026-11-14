@@ -690,49 +690,9 @@
    "detail": "ends in F:invalid-argument",
    "finding": "invalid-data-wrong-reason"
   },
-  "phenomenon:empty|double|binom|class|empty": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:empty|double|cauchy|class|empty": {
-   "ref": "TASK-214.3",
-   "detail": "ends in N:unbounded",
-   "finding": "cauchy-empty-nonexistence"
-  },
-  "phenomenon:empty|double|gompertz|class|empty": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:empty|double|lgamma|class|empty": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
   "phenomenon:empty|native|binom +truncate=tbinom|class|empty": {
    "ref": "TASK-214.17",
    "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:empty|native|binom|class|empty": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:empty|native|cauchy|class|empty": {
-   "ref": "TASK-214.3",
-   "detail": "ends in N:unbounded",
-   "finding": "cauchy-empty-nonexistence"
-  },
-  "phenomenon:empty|native|gompertz|class|empty": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:empty|native|lgamma|class|empty": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
    "finding": "invalid-data-wrong-reason"
   },
   "phenomenon:non-finite|double|fpareto|class|nan": {
@@ -743,26 +703,6 @@
   "phenomenon:non-finite|double|fpareto|class|neginf": {
    "ref": "TASK-214.17",
    "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|double|gompertz|class|nan": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|double|lgamma|class|inf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|double|lgamma|class|nan": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|double|lgamma|class|neginf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
    "finding": "invalid-data-wrong-reason"
   },
   "phenomenon:non-finite|double|nsbeta|class|inf": {
@@ -818,26 +758,6 @@
   "phenomenon:non-finite|native|fpareto|class|neginf": {
    "ref": "TASK-214.17",
    "detail": "ends in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|gompertz|class|nan": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|lgamma|class|inf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|lgamma|class|nan": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:non-finite|native|lgamma|class|neginf": {
-   "ref": "TASK-214.17",
-   "detail": "ends in F:no-convergence",
    "finding": "invalid-data-wrong-reason"
   },
   "phenomenon:non-finite|native|nsbeta|class|inf": {
@@ -1020,21 +940,6 @@
    "detail": "data beyond a fixed support bound end in F:invalid-argument",
    "finding": "invalid-data-wrong-reason"
   },
-  "phenomenon:outside-support|double|gompertz|class|negative": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:outside-support|double|lgamma|class|negative": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:outside-support|double|lgamma|class|zeros": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
   "phenomenon:outside-support|double|lgser+zero=modified|class|negative": {
    "ref": "TASK-214.17",
    "detail": "data beyond a fixed support bound end in F:invalid-argument",
@@ -1138,21 +1043,6 @@
   "phenomenon:outside-support|native|geom+zero=truncated|class|negative": {
    "ref": "TASK-214.17",
    "detail": "data beyond a fixed support bound end in F:invalid-argument",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:outside-support|native|gompertz|class|negative": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:outside-support|native|lgamma|class|negative": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:no-convergence",
-   "finding": "invalid-data-wrong-reason"
-  },
-  "phenomenon:outside-support|native|lgamma|class|zeros": {
-   "ref": "TASK-214.17",
-   "detail": "data beyond a fixed support bound end in F:no-convergence",
    "finding": "invalid-data-wrong-reason"
   },
   "phenomenon:outside-support|native|lgser+zero=modified|class|negative": {
@@ -1674,6 +1564,10 @@
    "ref": "TASK-214.5",
    "detail": "shape = 977351131797.74414, refined 977351135434.36426: error 3.64e+03 is 37.2 x the contract bound",
    "finding": "off-maximizer"
+  },
+  "seam-open|double|emg|archive|001311": {
+   "ref": "TASK-214.5",
+   "detail": "no terminal result within 300.0s (load-dependent; same case as terminates|double|emg|archive|001311)"
   },
   "terminates|double|emg|archive|001311": {
    "ref": "TASK-214.5",

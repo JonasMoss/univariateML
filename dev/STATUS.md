@@ -1,6 +1,6 @@
 # Status and open items
 
-Updated 2026-11-13, master `c167a975`. Decisions and their evidence:
+Updated 2026-11-14, master `7e3c9779`. Decisions and their evidence:
 `dev/roadmap/decisions.md`. Deferred design ideas live in `dev/roadmap/`; work in
 flight and planned work are on the board (`~/.local/bin/board`). The current
 priority is the [consolidation plan](design/consolidation.md) (TASK-214), which
@@ -23,16 +23,15 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   fully covered except `dphtype` (out of scope); extraDistr except the
   dropped vector-parameter families and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master c167a975 (workstation, GCC 15.2, 2026-11-13, after the
-  outcome mapping, the family removal and the quantile-tie change):
-  `just cpp-test` 109/109 ctest entries; `just cpp-test-no-long-double`
-  153/153; `just test` `[ FAIL 0 | WARN 0 | SKIP 157 | PASS 28842 ]`;
-  `just test-full` `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 57977 ]`; `just js-test`
-  578/578; `just relations` 158 edges, 0 failed; `just site-check` green.
-  `just quality` passed for all 101 then-fitted families on `6a757613`, before
-  the removal. Fit snapshots of `c167a975`, with the shared outcome of every
-  case: [baseline report](research/evaluations/2026-11-13-fit-snapshot-report.md);
-  `dev/validation/fit-judge.py` passes against its 21 known failures. Not run:
+- Tests on master 7e3c9779 (workstation, GCC 15.2, 2026-11-14, after step
+  5a, the TASK-214.3 fixes and the strict layer): `just cpp-test` 110/110;
+  `just cpp-test-no-long-double` 154/154; `just test`
+  `[ FAIL 0 | WARN 0 | SKIP 157 | PASS 36209 ]`; `just test-full`
+  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 65348 ]`; `just js-test` 583/583;
+  `just relations` 158 edges, 0 failed; `just site-check` green. `just strict`
+  passes against `dev/validation/strict-known.json` (319 known failures, each
+  with a card). Rendered baselines:
+  [report](research/evaluations/2026-11-14-fit-snapshot-report.md). Not run:
   any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
