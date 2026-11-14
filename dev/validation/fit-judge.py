@@ -25,39 +25,17 @@ Usage:
   fit-judge.py NATIVE [DOUBLE]            judge; exit 1 on a failure not listed
   fit-judge.py NATIVE [DOUBLE] --prune    also drop listed failures that pass
   fit-judge.py NATIVE [DOUBLE] --add REF  list the new failures under REF
-                                          (a card id; deliberate, reviewed)
+                                          (a card id; deliberate, reviewed);
+                                          --match REGEX restricts which ones
 NATIVE and DOUBLE are snapshot directories or stored snapshot.jsonl.gz files;
 several can be given separated by commas (families and modifier routes).
 """
-import argparse, gzip, json, math, sys
-from pathlib import Path
+import argparse, math, sys
+from strict_common import add_arguments, archive_data, load, number, ratchet
 
-ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE = ROOT/'dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz'
-KNOWN = ROOT/'dev/validation/strict-known.json'
 INVALID = ('empty', 'nan', 'inf', 'neginf')
 NEST_TOL = 1e-8   # relative to max(1, |logLik|); far above rounding, far below any real gap
-
-def load(paths):
-    rows = {}
-    for path in str(paths).split(','): rows.update(load_one(path))
-    return rows
-
-def load_one(path):
-    rows = {}
-    path = Path(path)
-    if path.is_file():
-        with gzip.open(path, 'rt') as source:
-            for text in source:
-                r = json.loads(text); rows[(r['family'], r['source'], r['case'])] = r
-        return rows
-    for part in sorted(path.glob('*.jsonl')):
-        for text in part.read_text().splitlines()[1:]:
-            r = json.loads(text); rows[(r['family'], r['source'], r['case'])] = r
-    return rows
-
-def number(text):
-    return float(text) if text in ('nan', 'inf', '-inf') else float.fromhex(text)
+CHECKS = ('terminates', 'finite', 'held', 'invalid-input', 'nesting', 'mode')
 
 def judge_one(mode, rows, data):
     failures = {}
@@ -116,35 +94,15 @@ def judge(native, double, data):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('native'); ap.add_argument('double', nargs='?')
-    ap.add_argument('--known', type=Path, default=KNOWN)
-    ap.add_argument('--prune', action='store_true', help='drop listed failures that no longer occur')
-    ap.add_argument('--add', metavar='REF', help='list the new failures under this reference')
+    add_arguments(ap)
     args = ap.parse_args()
-    with gzip.open(ARCHIVE, 'rt') as source:
-        data = {c['index']: tuple(c['data']) for c in json.load(source)}
+    data = archive_data()
     native = load(args.native); double = load(args.double) if args.double else None
     failures = judge(native, double, data)
-    known = json.loads(args.known.read_text())['known'] if args.known.exists() else {}
     # A listed failure counts as fixed only if its case was judged in this run.
-    judged = {('native',)+k for k in native} | {('both',)+k for k in native}
-    if double is not None: judged |= {('double',)+k for k in double}
-    seen = lambda entry: tuple(entry.split('|')[1:5]) in judged and (double is not None or entry.split('|')[1] == 'native')
-    new = sorted(set(failures)-set(known)); fixed = sorted(k for k in known if k not in failures and seen(k))
-    counts = {}
-    for key in failures: counts[key.split('|')[0]] = counts.get(key.split('|')[0], 0)+1
-    print('%d cases judged%s; failures by check: %s' % (len(native), '' if double is None else ' in each of two modes', counts or 'none'))
-    print('%d listed as known, %d new, %d listed but passing' % (len(set(failures) & set(known)), len(new), len(fixed)))
-    for key in new: print('  NEW   %s: %s' % (key, failures[key]))
-    for key in fixed: print('  FIXED %s (%s)' % (key, known[key]['ref']))
-    if args.add:
-        for key in new: known[key] = dict(ref=args.add, detail=failures[key])
-    if args.prune:
-        for key in fixed: del known[key]
-    if args.add or args.prune:
-        args.known.write_text(json.dumps(dict(
-            note='Known failures of the strict layer (fit-judge.py). Entries leave when fixed (--prune); '
-                 'adding one (--add) is a reviewed decision with a card.',
-            known=dict(sorted(known.items()))), indent=1)+'\n')
-    sys.exit(1 if new and not args.add else 0)
+    judged = {('native',)+k for k in native}
+    if double is not None: judged |= {('double',)+k for k in double} | {('both',)+k for k in native}
+    print('%d cases judged%s' % (len(native), '' if double is None else ' in each of two modes'))
+    sys.exit(ratchet(failures, judged, lambda check: check in CHECKS, args, 'fit-judge'))
 
 if __name__ == '__main__': main()

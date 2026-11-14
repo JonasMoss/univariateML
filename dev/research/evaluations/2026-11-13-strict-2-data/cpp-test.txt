@@ -1,0 +1,44 @@
+ 65/109 Test #100: distribution_pgw .................   Passed    0.04 sec
+ 67/109 Test #103: distribution_pois ................   Passed    1.08 sec
+ 68/109 Test #105: distribution_power ...............   Passed    0.03 sec
+ 69/109 Test #106: distribution_rayleigh ............   Passed    0.02 sec
+ 71/109 Test #108: distribution_sgomp ...............   Passed    0.15 sec
+ 72/109 Test #110: distribution_skellam .............   Passed    9.73 sec
+ 73/109 Test #107: distribution_sged ................   Passed   24.08 sec
+ 74/109 Test #114: distribution_sn ..................   Passed    5.18 sec
+ 75/109 Test #115: distribution_snorm ...............   Passed    0.82 sec
+ 76/109 Test #112: distribution_slash ...............   Passed   17.45 sec
+ 77/109 Test #116: distribution_sstd ................   Passed    4.39 sec
+ 78/109 Test #119: distribution_std .................   Passed   20.26 sec
+ 79/109 Test #118: distribution_st ..................   Passed   24.60 sec
+ 80/109 Test #121: distribution_tlambda .............   Passed    1.37 sec
+ 81/109 Test #124: distribution_triang ..............   Passed    0.06 sec
+ 82/109 Test #125: distribution_unif ................   Passed    0.02 sec
+ 83/109 Test #126: distribution_weibull .............   Passed    0.09 sec
+ 84/109 Test #127: distribution_yulesimon ...........   Passed    0.07 sec
+ 85/109 Test #129: distribution_zeta ................   Passed    5.26 sec
+ 86/109 Test #131: distribution_support .............   Passed    0.01 sec
+ 87/109 Test #132: no_throw_tests ...................   Passed    0.00 sec
+ 88/109 Test #133: cmp_tests ........................   Passed    3.18 sec
+ 89/109 Test #134: tails_tests ......................   Passed    0.00 sec
+ 90/109 Test #135: diagnostics_tests ................   Passed    3.41 sec
+ 91/109 Test #101: distribution_pig .................   Passed   75.70 sec
+ 92/109 Test #137: modifier_tnorm ...................   Passed    1.22 sec
+ 93/109 Test #138: modifier_tpois ...................   Passed    0.15 sec
+ 94/109 Test #139: modifier_zib .....................   Passed    0.57 sec
+ 95/109 Test #141: modifier_zinb ....................   Passed    0.64 sec
+ 96/109 Test #142: modifier_zip .....................   Passed    1.18 sec
+ 97/109 Test #143: modifier_zipf ....................   Passed    0.10 sec
+ 98/109 Test #136: modifier_tbinom ..................   Passed    8.69 sec
+ 99/109 Test #145: modifier_zmgeom ..................   Passed    0.03 sec
+100/109 Test #146: modifier_zmlogarithmic ...........   Passed    0.03 sec
+101/109 Test #147: modifier_zmnbinom ................   Passed    0.96 sec
+102/109 Test #148: modifier_zmpois ..................   Passed    0.77 sec
+103/109 Test #149: modifier_ztbinom .................   Passed    0.84 sec
+104/109 Test #151: modifier_ztgeom ..................   Passed    0.03 sec
+105/109 Test #144: modifier_zmbinom .................   Passed    4.88 sec
+106/109 Test #152: modifier_ztnbinom ................   Passed    1.98 sec
+107/109 Test #153: modifier_ztpois ..................   Passed    1.65 sec
+108/109 Test #123: distribution_trgamma .............   Passed   31.47 sec
+100% tests passed, 0 tests failed out of 109
+Total Test time (real) = 265.68 sec

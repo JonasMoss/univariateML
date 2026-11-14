@@ -40,6 +40,12 @@ finiteness, parameter-domain membership and the defect flag. Finite closed
 parameter endpoints are accepted; excluded endpoints are defects.
 
 Regenerate with `python3 dev/validation/diagnostics.py --generate build/diagnostics`.
+A full regeneration no longer parses every current adapter (several now call the
+core inside a lambda or define result-classifying helpers before the call), so
+new families are spliced into the checked-in sweep with
+`--add-to dev/validation/diagnostics-audit.cpp --families <ids>`, which keeps
+the other routes verbatim; st, gengamma and expweibull were added that way on
+2026-11-14 (85 families, no defect).
 The generated `audit.cpp` is a standalone translation unit, requiring only core
 headers and Boost. The checked-in generated sweep runs in the monorepo C++ dev
 tier; generation itself is not a dependency of standalone core consumers.

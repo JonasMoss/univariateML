@@ -1,0 +1,2 @@
+fit-consistency: failures by check: {'phenomenon:constant-scale': 2, 'phenomenon:empty': 10, 'phenomenon:non-finite': 30, 'phenomenon:one-constant': 20, 'phenomenon:outside-support': 48, 'phenomenon:valid-data': 44}
+fit-consistency: 154 listed as known, 0 new, 0 listed but passing

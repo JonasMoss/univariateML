@@ -1,0 +1,93 @@
+open (refinement could not settle the case; not a failure):
+  beta: scaled Newton budget exhausted: 4
+  beta: scaled line search failed: 2
+  betapr: scaled Newton budget exhausted: 2
+  betapr: scaled line search failed: 8
+  bhatt: log-likelihood not finite at the golden estimates: 20
+  bhatt: singular scaled information: 2
+  binom+zero=inflated: ValueError: integer enumeration budget exhausted: tail needs 131071 cells: 2
+  binom+zero=inflated: ValueError: integer profile with held probability requires a separate tail envelope: 12
+  binom+zero=inflated: log-likelihood not finite at the returned estimate: 2
+  binom+zero=modified: KeyError: 'ComplexInfinity': 22
+  binom+zero=modified: ValueError: integer enumeration budget exhausted: tail needs 1000037 cells: 2
+  binom+zero=modified: ValueError: integer profile with held probability requires a separate tail envelope: 10
+  binom+zero=truncated: ValueError: integer enumeration budget exhausted: tail needs 1000037 cells: 2
+  binom+zero=truncated: ValueError: integer profile with held probability requires a separate tail envelope: 8
+  binom: ValueError: integer enumeration budget exhausted: tail needs 1000037 cells: 2
+  binom: ValueError: integer profile with held probability requires a separate tail envelope: 12
+  burr: scaled Newton budget exhausted: 2
+  cmb: case guard of 120 s: 8
+  cmb: case guard of 300 s: 2
+  cmp: AssertionError: : 2
+  cmp: case guard of 120 s: 4
+  dgamma: AssertionError: : 2
+  dgamma: case guard of 120 s: 2
+  gamma: scaled line search failed: 6
+  ged: scaled line search failed: 2
+  ged: singular scaled information: 16
+  geom+zero=modified: log-likelihood not finite at the returned estimate: 12
+  geom+zero=modified: no free regular coefficient left to refine: 8
+  geom: no free regular coefficient left to refine: 4
+  gev: no free regular coefficient left to refine: 12
+  gpd: no free regular coefficient left to refine: 34
+  hcauchy: no free regular coefficient left to refine: 12
+  ht: no free regular coefficient left to refine: 2
+  invgamma: scaled line search failed: 2
+  kumar: scaled Newton budget exhausted: 4
+  lgamma: scaled line search failed: 2
+  lgser+zero=modified: log-likelihood not finite at the returned estimate: 6
+  lgser+zero=modified: no free regular coefficient left to refine: 10
+  naka: scaled line search failed: 2
+  nbinom+zero=modified: log-likelihood not finite at the returned estimate: 6
+  nhyper: ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int: 4
+  norm +truncate=tnorm: log-likelihood not finite at the golden estimates: 4
+  norm +truncate=tnorm: scaled line search failed: 4
+  pois +truncate=tpois: case guard of 120 s: 4
+  pois+zero=inflated: no free regular coefficient left to refine: 4
+  pois+zero=inflated: singular scaled information: 4
+  pois+zero=modified: log-likelihood not finite at the returned estimate: 2
+  pois+zero=modified: no free regular coefficient left to refine: 4
+  pois+zero=modified: singular scaled information: 8
+  sged: scaled line search failed: 6
+  skellam: log-likelihood not finite at the returned estimate: 10
+  skellam: no free regular coefficient left to refine: 4
+  slash: log-likelihood not finite at the golden estimates: 2
+  slash: scaled line search failed: 4
+  tlambda: no free regular coefficient left to refine: 24
+  tlambda: singular scaled information: 6
+  triang: ZeroDivisionError: : 36
+  zeta +truncate=zipf: case guard of 120 s: 2
+  zeta +truncate=zipf: singular scaled information: 2
+coefficients not refined (no independent value; not judged):
+  bbinom size: integer: 32
+  binom +truncate=tbinom size: integer: 34
+  binom+zero=inflated pi: at domain bound (one-sided score checked): 14
+  cmb size: integer: 14
+  foldnorm mu: at domain bound (one-sided score checked): 4
+  frechet lambda: at domain bound (one-sided score checked): 2
+  ged nu: at domain bound (one-sided score checked): 2
+  geom+zero=modified p0: at domain bound: 6
+  gev xi: at domain bound (one-sided score checked): 8
+  hcauchy mu: on the support bound (sample minimum): 20
+  hnorm mu: support bound: 4
+  ht mu: on the support bound (sample minimum): 36
+  ht nu: at domain bound: 4
+  hyper N: integer: 30
+  hyper k: integer: 32
+  lgser+zero=modified p0: at domain bound: 12
+  lst df: at domain bound (one-sided score checked): 2
+  nbinom+zero=inflated pi: at domain bound (one-sided score checked): 26
+  nbinom+zero=modified p0: at domain bound: 22
+  nhyper N: integer: 28
+  nhyper r: integer: 30
+  pareto b: support bound: 2
+  pois+zero=inflated pi: at domain bound (one-sided score checked): 16
+  pois+zero=modified p0: at domain bound: 4
+  sgomp eta: at domain bound (one-sided score checked): 6
+  st nu: at domain bound (one-sided score checked): 8
+  tlambda lambda: at domain bound (one-sided score checked): 4
+  triang c: kink: 6
+no cached reference (run without --cache-only): 26 cases, e.g. [('pois +truncate=tpois', 'archive', '007963'), ('pois +truncate=tpois', 'archive', '007963'), ('cmb', 'archive', '000887'), ('cmb', 'archive', '000887'), ('cmp', 'archive', '000966')]
+3821 cases judged
+fit-refine: failures by check: {'refine': 46}
+fit-refine: 46 listed as known, 0 new, 0 listed but passing

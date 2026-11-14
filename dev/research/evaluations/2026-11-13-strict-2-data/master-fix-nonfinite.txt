@@ -1,0 +1,25 @@
+13754 cases judged in each of two modes
+fit-judge: failures by check: {'mode': 11, 'nesting': 6, 'terminates': 1}
+fit-judge: 18 listed as known, 0 new, 3 listed but passing
+  FIXED invalid-input|double|cauchy|class|empty (TASK-214.3)
+  FIXED invalid-input|native|cauchy|class|empty (TASK-214.3)
+  FIXED mode|both|gamma|class|huge (TASK-214.13)
+fit-density: failures by check: {'density': 44, 'density:limit': 82}
+fit-density: 122 listed as known, 4 new, 0 listed but passing
+  NEW   density|double|norm|class|near-constant: reported 118.60690991298088, summed density 117.85690991298087, relative 0.00632; independent 117.85690991298088: reported off 0.0064, density off 1.2e-16 (fitter)
+  NEW   density|double|norm|class|offset: reported -7.5156509960234619, summed density -7.5229149185416206, relative 0.000967; independent -7.5229149185416206: reported off 0.00097, density off 0 (fitter)
+  NEW   density|native|norm|class|near-constant: reported 118.60690991298088, summed density 117.85690991298087, relative 0.00632; independent 117.85690991298088: reported off 0.0064, density off 1.2e-16 (fitter)
+  NEW   density|native|norm|class|offset: reported -7.5156509960234619, summed density -7.5229149185416206, relative 0.000967; independent -7.5229149185416206: reported off 0.00097, density off 0 (fitter)
+fit-consistency: failures by check: {'phenomenon:constant-scale': 2, 'phenomenon:empty': 6, 'phenomenon:non-finite': 28, 'phenomenon:one-constant': 20, 'phenomenon:outside-support': 46, 'phenomenon:valid-data': 44}
+fit-consistency: 146 listed as known, 0 new, 8 listed but passing
+  FIXED phenomenon:empty|double|cauchy|class|empty (TASK-214.3)
+  FIXED phenomenon:empty|double|gompertz|class|empty (NEW)
+  FIXED phenomenon:empty|native|cauchy|class|empty (TASK-214.3)
+  FIXED phenomenon:empty|native|gompertz|class|empty (NEW)
+  FIXED phenomenon:non-finite|double|gompertz|class|nan (NEW)
+  FIXED phenomenon:non-finite|native|gompertz|class|nan (NEW)
+  FIXED phenomenon:outside-support|double|gompertz|class|negative (NEW)
+  FIXED phenomenon:outside-support|native|gompertz|class|negative (NEW)
+3821 cases judged
+fit-refine: failures by check: {'refine': 46}
+fit-refine: 46 listed as known, 0 new, 0 listed but passing
