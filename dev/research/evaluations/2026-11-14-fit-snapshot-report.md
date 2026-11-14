@@ -21,6 +21,6 @@ disagreement.
 edits made with this record: 22 entries that now pass were removed (binom,
 gompertz, lgamma and cauchy invalid-data cases), and the double-only EMG
 archive case 1311, already listed as reaching the CPU guard, was added for
-the seam check too (load-dependent). The list has 319 entries. Suites on
+the seam check too (load-dependent). The list has 318 entries. Suites on
 the same commit: C++ 110/110, double-only 154/154, R dev 36,209, R full
 65,348, JS 583/583, relations, site check.

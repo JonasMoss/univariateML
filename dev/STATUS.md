@@ -29,7 +29,7 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   `[ FAIL 0 | WARN 0 | SKIP 157 | PASS 36209 ]`; `just test-full`
   `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 65348 ]`; `just js-test` 583/583;
   `just relations` 158 edges, 0 failed; `just site-check` green. `just strict`
-  passes against `dev/validation/strict-known.json` (319 known failures, each
+  passes against `dev/validation/strict-known.json` (318 known failures, each
   with a card). Rendered baselines:
   [report](research/evaluations/2026-11-14-fit-snapshot-report.md). Not run:
   any second compiler or platform.
