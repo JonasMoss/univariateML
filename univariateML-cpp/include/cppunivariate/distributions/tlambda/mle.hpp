@@ -14,7 +14,7 @@ namespace cppunivariate {
 inline constexpr double kTlambdaLambdaLower = -1.0;
 inline constexpr double kTlambdaLambdaUpper = 1.0;
 
-enum class TlambdaStatus { Ok, InvalidData, InvalidShape, IterationFailure, Unbounded, CollapseLimit, InvalidSupport, CertificateFailure };
+enum class TlambdaStatus { Ok, InvalidData, InvalidShape, IterationFailure, Unbounded, CollapseLimit, InvalidSupport, CertificateFailure, TransformFailure };
 struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; bool certified=false; double certificate_lower=NAN,certificate_upper=NAN; StopDetail stop_detail={}; };
 namespace tlambda_detail {
 inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int maxit,double tol=1e-7) {
@@ -56,15 +56,35 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol,int maxit,double lambda,
 #include "certificate.hpp"
 
 inline TlambdaResult tlambda_mle(span x,double tol=1e-7,int maxit=1000,double lambda=std::numeric_limits<double>::quiet_NaN()) {
+  if(!std::isnan(lambda)&&!std::isfinite(lambda))return {NAN,NAN,NAN,NAN,0,TlambdaStatus::InvalidShape};
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,0,TlambdaStatus::InvalidData};
+
+  if(tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() && std::isfinite(x[0]) &&
+      (true) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    return {NAN,NAN,NAN,NAN,0,TlambdaStatus::Unbounded};
+
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=tlambda_cert_detail::fit(x,tol,maxit,lambda);
+  if(r.status==TlambdaStatus::InvalidData && tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() &&
+      std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))r.status=TlambdaStatus::TransformFailure;
+
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaLower) r.restricted|=16u;
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaUpper) r.restricted|=32u;
   return r;
 }
 inline TlambdaResult tlambda_mle(span x,double tol,int maxit,double lambda,double mu,double sigma) {
+  if(!std::isnan(lambda)&&!std::isfinite(lambda))return {NAN,NAN,NAN,NAN,0,TlambdaStatus::InvalidShape};
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,0,TlambdaStatus::InvalidData};
+
+  if(tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() && std::isfinite(x[0]) &&
+      (std::isnan(sigma) && (std::isnan(mu)||mu==x[0])) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    return {NAN,NAN,NAN,NAN,0,TlambdaStatus::Unbounded};
+
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=tlambda_cert_detail::fit(x,tol,maxit,lambda,mu,sigma);
+  if(r.status==TlambdaStatus::InvalidData && tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() &&
+      std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))r.status=TlambdaStatus::TransformFailure;
+
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda) && std::isnan(mu)) && r.lambda==kTlambdaLambdaLower) r.restricted|=16u;
   if(r.status==TlambdaStatus::Ok && (std::isnan(lambda)) && r.lambda==kTlambdaLambdaUpper) r.restricted|=32u;
   return r;
@@ -85,6 +105,7 @@ inline FitOutcome outcome(const TlambdaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
+    case TlambdaStatus::TransformFailure:return FitOutcome::failure(OutcomeReason::Evaluation);
     case TlambdaStatus::Ok: return FitOutcome::estimate(r.certified);
     case TlambdaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TlambdaStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);

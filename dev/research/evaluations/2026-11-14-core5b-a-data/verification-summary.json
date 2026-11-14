@@ -1,0 +1,46 @@
+{
+  "native": {
+    "changed": 608,
+    "categories": {
+      "core-collapse": 25,
+      "core-decision-and-diagnostics": 22,
+      "core-nonexistence": 15,
+      "failed-face-evaluation": 7,
+      "finite-collapse-reason": 1,
+      "invalid-data-reason": 35,
+      "limit-payload": 195,
+      "named-boundary": 160,
+      "nonunique-maximum": 3,
+      "public-estimate-likelihood": 121,
+      "refuted-lognormal-face": 7,
+      "unproved-scale-face": 6,
+      "unrepresentable-limit": 1,
+      "valid-data-arithmetic-failure": 7,
+      "valid-small-sample-fit": 3
+    },
+    "old_ok_reclassified": [],
+    "coefficient_regressions": []
+  },
+  "double": {
+    "changed": 607,
+    "categories": {
+      "core-collapse": 25,
+      "core-decision-and-diagnostics": 22,
+      "core-nonexistence": 15,
+      "failed-face-evaluation": 7,
+      "finite-collapse-reason": 1,
+      "invalid-data-reason": 35,
+      "limit-payload": 194,
+      "named-boundary": 160,
+      "nonunique-maximum": 3,
+      "public-estimate-likelihood": 121,
+      "refuted-lognormal-face": 7,
+      "unproved-scale-face": 6,
+      "unrepresentable-limit": 1,
+      "valid-data-arithmetic-failure": 7,
+      "valid-small-sample-fit": 3
+    },
+    "old_ok_reclassified": [],
+    "coefficient_regressions": []
+  }
+}

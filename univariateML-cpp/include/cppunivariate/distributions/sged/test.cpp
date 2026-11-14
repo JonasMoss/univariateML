@@ -1407,3 +1407,11 @@ TEST_CASE("sged unresolved skew-join side remains a named precision region") {
  for(bool log:{false,true})
   CHECK(std::isnan(cppunivariate::distributions::psged(-1,0,1,1,1e22,true,log)));
 }
+
+TEST_CASE("sged: singleton collapse is a core statistical outcome") {
+  const std::vector<double> x{2};const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::sged_mle(data,1e-8,100);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
+}

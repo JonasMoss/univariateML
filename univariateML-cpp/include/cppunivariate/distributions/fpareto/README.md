@@ -339,3 +339,28 @@ Extreme excess-data units can magnify rounding differences in GB2's nearly
 singular double-Pareto power/scale profiles even for a small sample. These
 searches retain a finite excess-data witness with the held minimum appended;
 the witness likelihood is in the original observation units.
+
+The double-Pareto face is asymmetric Laplace in $z=\log(x-\min)$.
+For a fixed log-kink $c$, write $L=\sum(c-z_i)_+$ and
+$R=\sum(z_i-c)_+$. Its rates maximize the concave rate likelihood at
+$n/[\sqrt L(\sqrt L+\sqrt R)]$ and
+$n/[\sqrt R(\sqrt L+\sqrt R)]$. The free-kink profile is compared at the
+observed log excesses; its one-sided endpoints are the power and Pareto faces.
+The returned double-Pareto payload retains the physical kink, both rates and
+the held minimum. Selection by the finite search remains uncertified.
+
+A selected lognormal face can be refuted by feasible beta-log-odds members.
+For power $a\downarrow0$, kink $b$, $r=\exp[a(m-\log b)]$ and target log
+variance $v$, the beta shapes $(1+r)/(a^2v)$ and
+$(1+1/r)/(a^2v)$ approach log mean $m$ and variance $v$.
+A strictly higher evaluated density sum supplies a feasible lower bound and
+rejects that face; these comparison points are not returned as estimates.
+The comparison uses a practical $4096\epsilon(n+|\ell|+|\ell_{\rm face}|)$
+margin. Failure to separate values leaves the selected face uncertified.
+
+Even with both beta shapes held, constant data have unbounded likelihood
+when power and scale are free: choose scale equal to the common excess and
+let power increase. The density there is power times a fixed positive
+beta-log-odds density divided by the common excess. With both beta shapes
+free, concentration also occurs at fixed positive power and scale by
+increasing the shapes together at their prescribed log-odds ratio.

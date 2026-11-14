@@ -1,4 +1,5 @@
 #pragma once
+#include "../unif/dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -13,7 +14,7 @@
 #include <map>
 namespace cppunivariate {
 enum class BhattStatus {Ok,NormalLimit,UniformLimit,Unbounded,InvalidInput,IterationFailure,NumericalFailure,BudgetExhausted,Unresolved,Tie};
-struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status; StopDetail stop_detail{}; bool certified=false; };
+struct BhattResult {double mu,sigma,a,logLik;int iterations;BhattStatus status; StopDetail stop_detail{}; bool certified=false; std::vector<std::vector<double>> accurate_points{}; double comparison_logLik=NAN; };
 namespace bhatt_detail {
 struct Profile {
   const std::vector<double>& x;double sigma,a,face;double held_mu=special::kNaN; int maxit=500;
@@ -346,9 +347,13 @@ inline bool family_point(const BhattResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
          std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0 && c.coef[2] >= 0;
 }
-// Tie candidates are certificate witnesses (profile points and Newton roots)
-// with interval log likelihoods; none is marked as an accurate enclosed root.
-inline bool accurate_point(const BhattResult&, const FitCandidate&) { return false; }
+// Only roots with a physical-coordinate inclusion at the requested tolerance
+// receive this mark; ordinary profile witnesses retain likelihood bounds only.
+inline bool accurate_point(const BhattResult& r, const FitCandidate& c) {
+  if(!family_point(r,c))return false;
+  for(const auto& point:r.accurate_points)if(point==c.coef)return true;
+  return false;
+}
 
 inline FitOutcome outcome(const BhattResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);

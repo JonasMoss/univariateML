@@ -1,0 +1,14 @@
+[
+  {
+    "key": "density:limit|native|pareto2|class|subnormal",
+    "rate": "1.0120112665365530917624767335945865352477832488207105917845067901371516978399767e+323",
+    "binary64_max": 1.7976931348623157e+308,
+    "reason": "evaluation"
+  },
+  {
+    "key": "density:limit|double|pareto2|class|subnormal",
+    "rate": "1.0120112665365530917624767335945865352477832488207105917845067901371516978399767e+323",
+    "binary64_max": 1.7976931348623157e+308,
+    "reason": "evaluation"
+  }
+]

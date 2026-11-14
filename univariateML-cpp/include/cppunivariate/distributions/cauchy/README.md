@@ -66,7 +66,7 @@ relations:
 fit:
   method: convex-solve
   certified: "yes"
-  note: "cauchy/mle.hpp, fit_cauchy; Details: the free fit is certified by strict geodesic convexity under the strict half-mass condition, conditional on computed comparisons and the final dimensionless total-score norm < 1e-3. Balanced two-point maxima are explicit. Held location is certified by a verified monotone-score bracket and bisection. Held scale uses exhaustive interval bounds, strictly concave root isolation and separated likelihood comparisons; unresolved ties or numerical certificates stop."
+  note: "cauchy/mle.hpp, fit_cauchy; Details: the free fit is certified by strict geodesic convexity under the strict half-mass condition, conditional on computed comparisons and the final dimensionless total-score norm < 1e-3. Balanced two-point maxima are explicit. Held location is certified by a verified monotone-score bracket and bisection. Held scale uses exhaustive interval bounds, strictly concave root isolation and separated likelihood comparisons; overlapping candidate bounds retain accurate roots uncertified, balanced two-point ties are flagged non-unique, and failed numerical certificates stop."
 areas:
 - robust modelling
 classification: classical
@@ -259,11 +259,11 @@ gap is $10^{-7}D+nD^2$, with $D=w+10^{-10}$.
 
 **Ties:** separated global maxima can be real, for example at
 $\mu=\pm\sqrt{a^2-\sigma^2}$ for observations $-a,a$ and
-$\sigma<a$. The fitter returns `AmbiguousMaximum`, with no location estimate,
-when the competing candidate likelihood intervals cannot be strictly ordered.
-The binding stops with "global maxima are tied or numerically indistinguishable".
-This reports ambiguity rather than claiming an exact tie from rounded numbers.
-No arbitrary maximizer is selected. A degenerate maximum, such as the quartic
+$\sigma<a$. The fitter returns `AmbiguousMaximum` when the competing candidate likelihood
+intervals cannot be strictly ordered. Its accurate location roots are retained;
+the better listed root is returned uncertified unless the symmetric two-point
+algebra proves non-uniqueness. The latter fit is flagged non-unique and keeps
+both roots. Overlapping numerical intervals alone do not prove an exact tie. A degenerate maximum, such as the quartic
 maximum for $(-1,1)$ at scale one, can instead exhaust subdivision and gives
 `IterationFailure`. Neither status means the mathematical MLE fails to exist.
 
@@ -289,3 +289,9 @@ adversarially flat or crowded modes may correctly stop. Median-centred search
 and likelihood pruning avoid the old observation-gap scan's quadratic growth.
 The [validation report](../../../../../dev/research/evaluations/2026-11-04-cauchy-sturm-report.md)
 records independent small-sample polynomial checks and timings through $n=10^5$.
+
+For equally weighted observations at $a<b$, the complete free-fit maximum set
+is $\sigma^2=(\mu-a)(b-\mu)$, $a<\mu<b$; `maximizer_support` retains
+$(a,b)$ to specify this continuum. With scale held below
+$(b-a)/2$, the two location maxima are
+$(a+b)/2 \pm\sqrt{(b-a)^2/4-\sigma^2}$.

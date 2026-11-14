@@ -20,7 +20,7 @@ enum class GevStatus { Ok, InvalidData, InvalidShape, IterationFailure, NoMLE, N
 struct GevResult {
   double mu, sigma, xi, logLik;
   int iterations;
-  GevStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = false;
+  GevStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = false; bool finite_collapse=false;
 };
 inline double gev_log_ratio(double z, double xi) {
   const double v=xi*z;
@@ -282,6 +282,27 @@ inline GevResult gev_two_point_certificate(span x,double minimum,double maximum,
                                            std::size_t k,double tol);
 inline GevResult gev_held_certificate(span data,double mu,double sigma,double tol,int maxit,GevResult fallback,
                                       double public_origin=0,double public_unit=1);
+inline int gev_collapse_order(double xi,std::size_t k,std::size_t rest) {
+  const double product=xi*static_cast<double>(k),target=static_cast<double>(rest);
+  if(product<target)return -1;if(product>target)return 1;
+  const double residual=std::fma(xi,static_cast<double>(k),-target);
+  return residual<0?-1:residual>0?1:0;
+}
+inline void gev_record_critical_collapse(GevResult& r,span sorted,double xi,std::size_t k,bool held_location) {
+  if(!(xi>0) || gev_collapse_order(xi,k,sorted.size()-k)!=0)return;
+  const double alpha=1/xi,n=static_cast<double>(sorted.size());
+  double face=held_location?-static_cast<double>(k)-n*std::log(xi):n*(std::log1p(alpha)-1);
+  double magnitude=std::abs(face);
+  for(double v:sorted)if(v>sorted[0]) {
+    const double d=v-sorted[0];
+    const double term=(alpha+1)*(std::isfinite(d)?std::log(d):std::log(v/2-sorted[0]/2)+std::log(2.));
+    face-=term;magnitude+=std::abs(term);
+  }
+  if(std::isfinite(face)){
+    const double margin=512*std::numeric_limits<double>::epsilon()*(n+magnitude);
+    r.finite_collapse=true;r.stop_detail.loglik_lower=face-margin;r.stop_detail.loglik_upper=face+margin;
+  }
+}
 inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,double sigma) {
   maxit = static_cast<int>(solver_budget(maxit));
   GevResult bad{mu,sigma,xi,0,0,GevStatus::InvalidData};
@@ -348,8 +369,8 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
   if(std::isnan(xi) && hm && hs)return gev_shape_certificate(x,mu,sigma,tol,maxit);
   if(!hs && hm && mu==y[0]) {
     std::size_t k=0;for(double v:y) if(v==y[0]) ++k;
-    if(k==y.size() || (std::isnan(xi) ? 2*k>y.size() : (xi>0 && xi*k>=y.size()-k))) {
-      bad.status=GevStatus::NoMLE;return bad;
+    if(k==y.size() || (std::isnan(xi) ? 2*k>y.size() : (xi>0 && gev_collapse_order(xi,k,y.size()-k)>=0))) {
+      bad.status=GevStatus::NoMLE;gev_record_critical_collapse(bad,{y.data(),y.size()},xi,k,true);return bad;
     }
   }
   const double origin=y[0],public_maximum=y.back();
@@ -584,7 +605,7 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
   maxit = static_cast<int>(solver_budget(maxit));
   if(!std::isnan(mu) || !std::isnan(sigma)) return gev_held_mle(x,tol,maxit,xi,mu,sigma);
   GevResult bad{0,0,xi,0,0,GevStatus::InvalidData};
-  if(x.size()<3 || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
+  if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
   if(!std::isnan(xi) && (!std::isfinite(xi) || xi < -1)) {
     bad.status=GevStatus::InvalidShape;return bad;
   }
@@ -596,8 +617,8 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
   // A strict minimum majority diverges. Exact half ties are resolved by
   // the global pair bound below, including its attained two-point exception.
   const bool tie_half = std::isnan(xi) && 2*minimum_count==y.size();
-  if(std::isnan(xi) ? 2*minimum_count>y.size() :
-      (xi>0 && xi*static_cast<double>(minimum_count)>=y.size()-minimum_count)) return bad;
+  if(y.front()==y.back() || (std::isnan(xi) ? 2*minimum_count>y.size() :
+      (xi>0 && gev_collapse_order(xi,minimum_count,y.size()-minimum_count)>=0))) {bad.status=GevStatus::NoMLE;gev_record_critical_collapse(bad,{y.data(),y.size()},xi,minimum_count,false);return bad;}
   // Standardization prevents scale and translation from setting tolerances.
   const double origin=y[0],range=y.back()-origin;
   if(std::isnan(xi)) {
@@ -713,8 +734,8 @@ inline FitOutcome outcome(const GevResult& r) {
     case GevStatus::NoMLE:
       // Half-tie certificates retain the finite supremum as equal bounds;
       // the other collapse stops have no finite bound.
-      return FitOutcome::nonexistence(std::isfinite(r.stop_detail.loglik_upper) &&
-          r.stop_detail.loglik_lower == r.stop_detail.loglik_upper ?
+      return FitOutcome::nonexistence((r.finite_collapse || (std::isfinite(r.stop_detail.loglik_upper) &&
+          r.stop_detail.loglik_lower == r.stop_detail.loglik_upper)) ?
           OutcomeReason::Unattained : OutcomeReason::Unbounded);
     case GevStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case GevStatus::SearchContradicted: return FitOutcome::failure(OutcomeReason::NoConvergence);

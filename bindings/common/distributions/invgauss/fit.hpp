@@ -5,14 +5,7 @@
 #include <cmath>
 namespace umvl_binding {
 inline FitResult fit_invgauss(cppunivariate::span x, Held mean_arg = {}, Held shape_arg = {}) {
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mean = mean_arg;
@@ -36,14 +29,10 @@ inline FitResult fit_invgauss(cppunivariate::span x, Held mean_arg = {}, Held sh
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::InvGaussStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    // Preserve the classifier's refusal of a structured stop (invalid context
-    // or missing finite payload); the core result does not retain that context.
-    if (!out.error.empty() && (out.payload_kind==PayloadKind::None) && o.kind != cppunivariate::OutcomeKind::Failure)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation), static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"shape",shape_arg.supplied}});
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"shape",shape_arg.supplied}});
   };
   if (res.status == cppunivariate::InvGaussStatus::InvalidInput) return done(fail("Inverse Gaussian requires nonempty positive finite data and valid held parameters."));
-  if(res.status==cppunivariate::InvGaussStatus::Unbounded)return done(classify(fail("Inverse Gaussian MLE failed: constant data have no attained maximum; other data may exceed double precision."),{},PayloadKind::Nonexistence,{}));
+  if(res.status==cppunivariate::InvGaussStatus::Unbounded)return done(stop_failure(fail("Inverse Gaussian MLE failed: constant data have no attained maximum; other data may exceed double precision."),{},PayloadKind::Nonexistence,{}));
   if (res.status != cppunivariate::InvGaussStatus::Ok || !(res.lambda > 0.0) || !std::isfinite(res.lambda) || !std::isfinite(res.logLik)) {
     return done(fail("Inverse Gaussian MLE failed: constant data have no attained maximum; other data may exceed double precision."));
   }

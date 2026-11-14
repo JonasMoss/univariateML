@@ -211,3 +211,7 @@ term in the parent's endpoint expansion prevents the fixed-endpoint Pareto
 face from being an unattained maximum. Tolerance-level comparisons stop
 as unresolved comparisons. The represented-coefficient likelihood check
 is repeated after reciprocal transport, in the original coordinates.
+At a held scale $s$ and common observation $x=s$, the density is
+$b/[s\Gamma(a)e]$. A free power $b$ therefore gives divergence even when
+$a$ is held; the reciprocal delegate's concentration flag denotes this
+nonexistence, rather than invalid data.

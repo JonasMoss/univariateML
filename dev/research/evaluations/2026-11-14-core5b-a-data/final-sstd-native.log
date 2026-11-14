@@ -1,0 +1,14 @@
+Test project /home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/build
+    Start 116: distribution_sstd
+1/2 Test #116: distribution_sstd ................   Passed    7.74 sec
+    Start 117: distribution_sstd_slow
+2/2 Test #117: distribution_sstd_slow ...........   Passed    6.86 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Label Time Summary:
+cran    =   7.74 sec*proc (1 test)
+dev     =   7.74 sec*proc (1 test)
+full    =  14.61 sec*proc (2 tests)
+
+Total Test time (real) =  14.61 sec

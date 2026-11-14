@@ -312,8 +312,9 @@ TEST_CASE("invburr: certified entrypoints validate controls and reciprocal domai
     CHECK(cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000,NAN,NAN,start).status==cppunivariate::InvBurrStatus::InvalidInit);
   }
   for(const std::vector<double>& bad:std::vector<std::vector<double>>{{},{1},{0,1},{1,INFINITY},{1,NAN}}) {
-    CHECK(cppunivariate::invburr_mle(mltest::as_span(bad),1e-8,1000).status==cppunivariate::InvBurrStatus::InvalidInit);
-    CHECK(cppunivariate::invburr_mle_holds(mltest::as_span(bad),NAN,NAN,NAN).status==cppunivariate::InvBurrStatus::InvalidInit);
+    const auto expected=bad.size()==1?cppunivariate::InvBurrStatus::Unbounded:cppunivariate::InvBurrStatus::InvalidInit;
+    CHECK(cppunivariate::invburr_mle(mltest::as_span(bad),1e-8,1000).status==expected);
+    CHECK(cppunivariate::invburr_mle_holds(mltest::as_span(bad),NAN,NAN,NAN).status==expected);
   }
 }
 
@@ -563,4 +564,12 @@ TEST_CASE("invburr: optimized finite-input overflow retains the rescued hazard")
     CHECK(cppunivariate::distributions::dinvburr(x,1e-308,1e308,1,true) ==
           doctest::Approx(0.0).epsilon(1e-10).scale(1.0));
   }
+}
+
+TEST_CASE("invburr: singleton collapse is a core statistical outcome") {
+  const std::vector<double> x{2};const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::invburr_mle(data,1e-8,100);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
 }

@@ -39,9 +39,9 @@ TEST_CASE("tlambda: golden and fixed shape") {
   }
   CHECK(cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,INFINITY).status==cppunivariate::TlambdaStatus::InvalidShape);
   const std::vector<double> collapsed={0,1e-300,2e-300,1e300};
-  CHECK(cppunivariate::tlambda_mle(mltest::as_span(collapsed)).status==cppunivariate::TlambdaStatus::InvalidData);
+  CHECK(cppunivariate::tlambda_mle(mltest::as_span(collapsed)).status==cppunivariate::TlambdaStatus::TransformFailure);
   const std::vector<double> tied={0,0,0,1,2};
-  CHECK(cppunivariate::tlambda_mle(mltest::as_span(tied)).status==cppunivariate::TlambdaStatus::InvalidData);
+  CHECK(cppunivariate::tlambda_mle(mltest::as_span(tied)).status==cppunivariate::TlambdaStatus::Unbounded);
 }
 TEST_CASE("tlambda: heavy-tail standardized overflow and seeded sampling") {
   CHECK(std::isfinite(cppunivariate::distributions::dtlambda(1e300,0,1e-300,-1,true)));
@@ -358,4 +358,12 @@ TEST_CASE("tlambda: profile affine frame retains extreme-tail information") {
   CHECK(std::abs(v.huu/2-1)<1e-10);
   CHECK(std::abs(v.huv/(-3e-150)-1)<1e-10);
   CHECK(std::abs(v.hvv/(2.5e-300)-1)<1e-10);
+}
+
+TEST_CASE("tlambda: singleton collapse is a core statistical outcome") {
+  const std::vector<double> x{2};const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::tlambda_mle(data);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
 }

@@ -768,3 +768,11 @@ TEST_CASE("GED representable tiny tails retain the relative error gate") {
  const double aligned=16*std::numeric_limits<double>::denorm_min(),lp=std::log(aligned);
  CHECK(cppunivariate::special::skew_probability::bounds(lp,lp-1e-12,lp+1e-12,true,true,false)==aligned);
 }
+
+TEST_CASE("ged: singleton collapse is a core statistical outcome") {
+  const std::vector<double> x{2};const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::ged_mle(data,1e-8,100,NAN,NAN,NAN);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
+}

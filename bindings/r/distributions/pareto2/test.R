@@ -6,7 +6,7 @@ test_that("pareto2: required endpoint, reference likelihood and reproducibility"
  fit <- do.call(mlpareto2, c(list(x),held))
  expect_equal(attr(fit,"fixed"), names(held))
  expect_equal(attr(fit,"logLik"), sum(dml(x,fit,log=TRUE)), tolerance=1e-10)
- expect_error(do.call(mlpareto2,c(list(c(0,x)),held)), "strictly")
+ expect_error(do.call(mlpareto2,c(list(c(0,x)),held)), "unbounded",class="univariateML_nomle")
  expect_error(do.call(mlpareto2,c(list(rep(.5,5)),held)))
  set.seed(17); a <- rml(20,fit)
  set.seed(17); expect_identical(rml(20,fit),a)

@@ -48,8 +48,11 @@ test_that("mlgev matches constrained reference density oracles", {
   }
 })
 test_that("mlgev reports invalid inputs and returns attained bounds", {
-  for (x in list(c(1,2), c(0,0,1), rep(1,5)))
+  for (x in list(c(0,0,1), rep(1,5)))
     expect_error(suppressWarnings(mlgev(x), classes = "univariateML_restricted"), "at least three|multiplicity")
+  two <- suppressWarnings(mlgev(c(1,2)), classes = "univariateML_restricted")
+  expect_equal(as.numeric(two),c(1.5,.5,-1))
+  expect_equal(as.numeric(logLik(two)),2*log(2)-2,tolerance=1e-12)
   for (k in c(-1.01,Inf,NaN)) expect_error(suppressWarnings(mlgev(1:5, xi = k), classes = "univariateML_restricted"), "in \\[-1, 1\\]")
   expect_error(suppressWarnings(mlgev(c(1,2,NA)), classes = "univariateML_restricted"))
   expect_error(suppressWarnings(mlgev(1:5, iterlim = 1), classes = "univariateML_restricted"), "converge")

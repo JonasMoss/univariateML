@@ -379,3 +379,9 @@ test('modifier sampling inversion excludes the public conditional band', async()
     assert.equal(zeta.sampleQuantile([p],[s],{truncate:[1,N]})[0],k+1);
   }
 });
+
+test('Feller Pareto free power concentrates with both beta shapes held',()=>{
+ const r=m.fitfpareto(new Float64Array(8).fill(4),{min:2,shape1:2,shape3:2},{});
+ assert.equal(r.kind,'nomle');assert.equal(r.reason,'unbounded');
+ assert.deepEqual(r.estimates,{});
+});

@@ -1,0 +1,22 @@
+Test project /home/jonas/Files/programming/univariateML.wt/core5b-a/build/cpp-no-long-double
+    Start  16: distribution_cauchy
+1/6 Test  #16: distribution_cauchy ..............   Passed    0.04 sec
+    Start  37: distribution_fpareto
+2/6 Test  #37: distribution_fpareto .............   Passed    0.87 sec
+    Start  68: distribution_invtrgamma
+3/6 Test  #68: distribution_invtrgamma ..........   Passed   10.49 sec
+    Start 107: distribution_sged
+4/6 Test #107: distribution_sged ................   Passed   34.06 sec
+    Start 116: distribution_sstd
+5/6 Test #116: distribution_sstd ................   Passed   11.98 sec
+    Start 117: distribution_sstd_slow
+6/6 Test #117: distribution_sstd_slow ...........   Passed   10.38 sec
+
+100% tests passed, 0 tests failed out of 6
+
+Label Time Summary:
+cran    =  57.44 sec*proc (5 tests)
+dev     =  57.44 sec*proc (5 tests)
+full    =  67.82 sec*proc (6 tests)
+
+Total Test time (real) =  67.83 sec

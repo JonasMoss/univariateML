@@ -1,0 +1,64 @@
+bbinom         147  (14 s)
+bhatt          172  (53 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/cauchy/dpqr.hpp:10,
+                 from /home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/cauchy/mle.hpp:8,
+                 from /home/jonas/Files/programming/univariateML.wt/core5b-a/bindings/common/distributions/cauchy/fit.hpp:3,
+                 from build/snapshots/double/build/cauchy.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/cauchy/../../special/tails.hpp:640:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  640 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/cauchy/../../special/tails.hpp:638:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  638 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/cauchy/../../special/tails.hpp:639:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  639 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+cauchy         100  (57 s)
+dgamma         78  (120 s)
+dunif          86  (122 s)
+expweibull     27  (127 s)
+fpareto        571  (200 s)
+ged            172  (208 s)
+gev            180  (216 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/gumbel/dpqr.hpp:11,
+                 from /home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/gumbel/mle.hpp:8,
+                 from /home/jonas/Files/programming/univariateML.wt/core5b-a/bindings/common/distributions/gumbel/fit.hpp:3,
+                 from build/snapshots/double/build/gumbel.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/gumbel/../../special/tails.hpp:640:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  640 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/gumbel/../../special/tails.hpp:638:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  638 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/gumbel/../../special/tails.hpp:639:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  639 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+gumbel         112  (219 s)
+ht             227  (226 s)
+invburr        219  (238 s)
+invgauss       127  (241 s)
+invtrgamma     179  (247 s)
+lgamma         107  (250 s)
+logis          100  (254 s)
+lst            172  (266 s)
+nsbeta         127  (269 s)
+pareto2        115  (274 s)
+pig            78  (280 s)
+sged           284  (313 s)
+slash          92  (332 s)
+sstd           284  (361 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/tlambda/dpqr.hpp:3,
+                 from /home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/tlambda/mle.hpp:5,
+                 from /home/jonas/Files/programming/univariateML.wt/core5b-a/bindings/common/distributions/tlambda/fit.hpp:3,
+                 from build/snapshots/double/build/tlambda.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:640:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  640 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:638:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  638 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/include/cppunivariate/distributions/tlambda/../../special/tails.hpp:639:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  639 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+tlambda        204  (390 s)
+unif           121  (394 s)

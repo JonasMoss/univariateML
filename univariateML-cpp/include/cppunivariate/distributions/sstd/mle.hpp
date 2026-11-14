@@ -9,6 +9,10 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "../hnorm/dpqr.hpp"
+#include "../norm/dpqr.hpp"
+#include "../lst/dpqr.hpp"
+#include "../snorm/dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -472,7 +476,7 @@ inline HalfTFit best_half_t(const std::vector<double> &y,int maxit=200) {
 // not a certificate of the global maximum.
 //
 // On a boundary status, mu is the mode or endpoint c, sigma the scale of
-// the face (snorm: its sd; df-2 face: inf), nu the face df and xi
+// the face (snorm: its sd; df-2 face: base scale), nu the face df and xi
 // sqrt(b / a) (inf or 0 on the half faces).
 inline SstdResult sstd_mle_impl(span x, double tol, int maxit, bool standardized) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -641,7 +645,7 @@ inline SstdResult sstd_mle_impl(span x, double tol, int maxit, bool standardized
     const auto t2 = bfgs_minimize(two_fd, start.data(), ctl);
     const double ll = -t2.f - dn * log_sd;
     if (bfgs_candidate_acceptable(t2) && ll > face.logLik + tie) {
-      face = {mean_x + sd_x * t2.theta[0], kInf, 2.0,
+      face = {mean_x + sd_x * t2.theta[0], sd_x*std::exp(.5*(t2.theta[1]+t2.theta[2])), 2.0,
               std::exp(0.5 * (t2.theta[2] - t2.theta[1])), ll, 0,
               SstdStatus::DfTwoBoundary};
     }
@@ -677,6 +681,15 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
     double fixed_sd=std::numeric_limits<double>::quiet_NaN(),
     double fixed_nu=std::numeric_limits<double>::quiet_NaN(),
     double fixed_xi=std::numeric_limits<double>::quiet_NaN()) {
+  if((!std::isnan(fixed_mean)&&!std::isfinite(fixed_mean)) || (!std::isnan(fixed_sd)&&!(fixed_sd>0&&std::isfinite(fixed_sd))) || (!std::isnan(fixed_nu)&&!(fixed_nu>2&&std::isfinite(fixed_nu))) || (!std::isnan(fixed_xi)&&!(fixed_xi>0&&std::isfinite(fixed_xi))))return {NAN,NAN,NAN,NAN,NAN,0,SstdStatus::InvalidStart};
+
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,NAN,0,SstdStatus::InvalidStart};
+
+  auto result = [&]() -> SstdResult {
+  if(tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() && std::isfinite(x[0]) &&
+      (std::isnan(fixed_sd) && (std::isnan(fixed_mean)||fixed_mean==x[0])) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    return {NAN,NAN,NAN,NAN,NAN,0,SstdStatus::Unbounded};
+
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const bool hm=!std::isnan(fixed_mean), hs=!std::isnan(fixed_sd);
@@ -716,15 +729,20 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
       case StudentTStatus::ScaleBoundary:status=SstdStatus::ScaleBoundary;break;
       case StudentTStatus::NormalBoundary:status=SstdStatus::SnormBoundary;break;
       case StudentTStatus::DfTwoBoundary:status=SstdStatus::DfTwoBoundary;break;
+      case StudentTStatus::BfgsFailure:status=SstdStatus::BfgsFailure;break;
+      case StudentTStatus::IterationFailure:status=SstdStatus::BfgsFailure;break;
       default:break;
     }
+    if(r.accuracy_failure && status==SstdStatus::Ok)status=SstdStatus::BfgsFailure;
     out={r.mu,r.sigma,r.nu,1,r.logLik,r.iterations,status};out.stop_detail=r.stop_detail;
+    out.accuracy_failure=r.accuracy_failure;
+    for(auto& c:out.stop_detail.candidates)if(c.model==StopModel::None && c.coef.size()==3 && std::isfinite(c.coef[2]) && c.coef[2]>2)c.coef.push_back(1);
     out.stop_detail.budget_exhausted=r.status==StudentTStatus::CertificateBudget;
     out.stop_detail.comparison_tie=r.status==StudentTStatus::CertificateTie;
     if(r.status==StudentTStatus::NormalBoundary)out.stop_detail.limit_model=StopModel::Norm;
     if(r.status==StudentTStatus::DfTwoBoundary)out.stop_detail.limit_model=StopModel::Lst;
     if(r.status==StudentTStatus::ScaleBoundary)out.stop_detail.limit_model=StopModel::TCollapsePath;
-    out.certified=status!=SstdStatus::CertificateFailure && status!=SstdStatus::InvalidStart;
+    out.certified=r.certified && cppunivariate::outcome(r).certified;
     return out;
   }
   if(hm && hs && hn && !hx) return sstd_skew_cert::fit(x,maxit,fixed_mean,fixed_sd,fixed_nu);
@@ -735,6 +753,7 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
     if((r.status==7 || r.status==8) && std::isinf(r.nu))
       status=r.status==7 ? SstdStatus::RightHalfNormalBoundary : SstdStatus::LeftHalfNormalBoundary;
     SstdResult result{r.mean,r.sd,r.nu,r.xi,-r.f,r.iterations,status};
+    result.stop_detail=r.face_detail;
     if(result.status==SstdStatus::Ok) {
       const double origin=result.mu,unit=result.sigma;
       std::vector<double> y;for(double v:x)y.push_back((v-origin)/unit);
@@ -755,13 +774,60 @@ inline SstdResult sstd_mle(span x, double tol, int maxit,
     return out;
   }
   return sstd_cert_detail::fit(x,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
+
+  }();
+  auto& d=result.stop_detail;
+  const bool right=result.status==SstdStatus::RightHalfNormalBoundary || result.status==SstdStatus::RightHalfTBoundary;
+  const bool left=result.status==SstdStatus::LeftHalfNormalBoundary || result.status==SstdStatus::LeftHalfTBoundary;
+  if(d.limit_coef.empty()) {
+    if(result.status==SstdStatus::SnormBoundary && std::isfinite(result.xi))d=limit_detail({result.mu,result.sigma,result.xi},result.logLik);
+    if(result.status==SstdStatus::DfTwoBoundary && std::isfinite(result.sigma))d=limit_detail({result.mu,result.sigma,result.xi,2},result.logLik);
+    if(right || left) {
+      const bool normal=std::isinf(result.nu);
+      d=limit_detail(normal?std::vector<double>{result.mu,result.sigma}:std::vector<double>{result.mu,result.nu,result.sigma},result.logLik,
+        normal?(right?StopModel::Hnorm:StopModel::ReflectedHnorm):(right?StopModel::Ht:StopModel::ReflectedHt));
+    }
+  }
+  if((right || left || result.status==SstdStatus::SnormBoundary || result.status==SstdStatus::DfTwoBoundary) && !d.limit_coef.empty()) {
+    const auto coef=d.limit_coef;double sum=0,carry=0;
+    for(double v:x) {
+      double term=NAN;
+      if(result.status==SstdStatus::SnormBoundary && d.limit_model==StopModel::Norm && coef.size()==2)term=distributions::dnorm(v,coef[0],coef[1],true);
+      if(result.status==SstdStatus::DfTwoBoundary && d.limit_model==StopModel::Lst && coef.size()==3)term=distributions::dlst(v,coef[0],coef[1],coef[2],true);
+      if(result.status==SstdStatus::SnormBoundary && coef.size()==3)term=distributions::dsnorm(v,coef[0],coef[1],coef[2],true);
+      if(result.status==SstdStatus::DfTwoBoundary && coef.size()==4) {
+        const double side=(v<coef[0]?coef[1]/coef[2]:coef[1]*coef[2]);
+        term=std::log(2.)-std::log(coef[1]/coef[2]+coef[1]*coef[2])+sstd_detail::log_t_mode(2)+sstd_detail::log_t_kernel((v-coef[0])/side,2);
+      }
+      if((right || left) && coef.size()>=2) {
+        const double distance=right?v-coef[0]:coef[0]-v;
+        if(coef.size()==2)term=distributions::dhnorm(distance,0,coef[1],true);
+        else if(distance>=0) {
+          const double z=2*(std::log(distance)-std::log(coef[2]))-std::log(coef[1]);
+          term=std::log(2.)+sstd_detail::log_t_mode(coef[1])-std::log(coef[2])-
+            (distance==0?0:.5*(coef[1]+1)*(std::max(z,0.)+std::log1p(std::exp(-std::abs(z)))));
+        }
+      }
+      term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(std::isfinite(sum)){d=limit_detail(coef,sum,d.limit_model);result.logLik=sum;}
+    else {
+      result.status=SstdStatus::CertificateFailure;result.certified=false;
+      d.budget_exhausted=false;d.comparison_tie=false;d.limit_loglik=sum;
+      d.candidates.erase(std::remove_if(d.candidates.begin(),d.candidates.end(),[&](const FitCandidate& c) {
+        return c.model==d.limit_model && (c.coef==coef ||
+          std::any_of(c.coef.begin(),c.coef.end(),[](double value){return !std::isfinite(value);}));
+      }),d.candidates.end());
+    }
+  }
+  return result;
 }
 
 
 inline bool family_point(const SstdResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 4 && std::isfinite(c.coef[0]) &&
          std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && std::isfinite(c.coef[3]) &&
-         c.coef[1] > 0 && c.coef[2] > 0 && c.coef[3] > 0;
+         c.coef[1] > 0 && c.coef[2] > 2 && c.coef[3] > 0;
 }
 // Certificate ties list enumerated scalar points with likelihood bounds.
 inline bool accurate_point(const SstdResult&, const FitCandidate&) { return false; }
@@ -770,10 +836,6 @@ inline FitOutcome outcome(const SstdResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
-  if (r.certified) {
-    if (r.stop_detail.limit_model == StopModel::Ht || r.stop_detail.limit_model == StopModel::ReflectedHt || r.stop_detail.limit_model == StopModel::Norm || r.stop_detail.limit_model == StopModel::Lst) return FitOutcome::limit(true);
-    if (r.stop_detail.limit_model == StopModel::TCollapsePath) return FitOutcome::nonexistence(OutcomeReason::Unattained);
-  }
   if (r.status == SstdStatus::CertificateFailure) {
     if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
     if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
@@ -784,13 +846,13 @@ inline FitOutcome outcome(const SstdResult& r) {
     case SstdStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SstdStatus::UnsupportedHold: return FitOutcome::failure(OutcomeReason::Unsupported);
     case SstdStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
-    case SstdStatus::ScaleBoundary: return r.certified ? FitOutcome::nonexistence(OutcomeReason::Unattained) : FitOutcome::failure(OutcomeReason::NoConvergence);
-    case SstdStatus::SnormBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case SstdStatus::RightHalfNormalBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case SstdStatus::LeftHalfNormalBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case SstdStatus::RightHalfTBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case SstdStatus::LeftHalfTBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case SstdStatus::DfTwoBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case SstdStatus::ScaleBoundary: return r.certified ? FitOutcome::nonexistence(OutcomeReason::Unattained) : FitOutcome::failure(OutcomeReason::Unresolved);
+    case SstdStatus::SnormBoundary: return r.stop_detail.limit_coef.empty()?FitOutcome::failure(OutcomeReason::Evaluation):FitOutcome::limit(r.certified);
+    case SstdStatus::RightHalfNormalBoundary: return r.stop_detail.limit_coef.empty()?FitOutcome::failure(OutcomeReason::Evaluation):FitOutcome::limit(r.certified);
+    case SstdStatus::LeftHalfNormalBoundary: return r.stop_detail.limit_coef.empty()?FitOutcome::failure(OutcomeReason::Evaluation):FitOutcome::limit(r.certified);
+    case SstdStatus::RightHalfTBoundary: return r.stop_detail.limit_coef.empty()?FitOutcome::failure(OutcomeReason::Evaluation):FitOutcome::limit(r.certified);
+    case SstdStatus::LeftHalfTBoundary: return r.stop_detail.limit_coef.empty()?FitOutcome::failure(OutcomeReason::Evaluation):FitOutcome::limit(r.certified);
+    case SstdStatus::DfTwoBoundary: return r.stop_detail.limit_coef.empty()?FitOutcome::failure(OutcomeReason::Evaluation):FitOutcome::limit(r.certified);
     case SstdStatus::CertificateFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }
   return {};

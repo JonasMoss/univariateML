@@ -279,7 +279,8 @@ test_that("held-scale Cauchy selects the winning separated mode", {
 test_that("structured Cauchy stops can be caught by class", {
   e <- tryCatch(mlcauchy(c(-2,2),scale=1),error=identity)
   expect_s3_class(e,"univariateML")
-  expect_false(attr(e,"certified"))
+  expect_true(attr(e,"certified"))
+  expect_false(attr(e,"unique"))
   expect_match(fit_diagnostic(e),"Held-scale Cauchy global maxima are tied")
   expect_true(is.nan(fit_payload(e)$segment_loglik_upper))
   expect_equal(nrow(fit_payload(e)$candidates),2L)

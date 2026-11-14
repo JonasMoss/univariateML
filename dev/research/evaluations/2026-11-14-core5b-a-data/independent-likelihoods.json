@@ -1,0 +1,654 @@
+[
+  {
+    "key": "density:limit|native|bhatt|archive|000334",
+    "law": "unif",
+    "reported": -20.904298225896255,
+    "reference": -20.90429822589625,
+    "relative": 1.6995134878048182e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|bhatt|archive|000337",
+    "law": "unif",
+    "reported": -8.710124260790106,
+    "reference": -8.710124260790106,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|bhatt|archive|000341",
+    "law": "unif",
+    "reported": 3.7722558545059703,
+    "reference": 3.7722558545059703,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|bhatt|archive|000345",
+    "law": "unif",
+    "reported": 58.55506895144827,
+    "reference": 58.55506895144826,
+    "relative": 1.2134606763920923e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|bhatt|archive|000346",
+    "law": "unif",
+    "reported": -4165.541479604502,
+    "reference": -4165.541479604501,
+    "relative": 2.183376894038949e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|bhatt|archive|000347",
+    "law": "unif",
+    "reported": -229.36593543668116,
+    "reference": -229.3659354366812,
+    "relative": 2.4782851364822747e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|ged|archive|002362",
+    "law": "unif",
+    "reported": 103.29215997651195,
+    "reference": 103.29215997651194,
+    "relative": 1.3757921916274645e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|ged|archive|002363",
+    "law": "unif",
+    "reported": 149.34396821512658,
+    "reference": 149.34396821512658,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|ged|archive|002365",
+    "law": "unif",
+    "reported": 84.05621415467198,
+    "reference": 84.05621415467199,
+    "relative": 1.690637016919723e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|ged|class|offset",
+    "law": "unif",
+    "reported": -6.069605470070879,
+    "reference": -6.069605470070879,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|ht|class|subnormal",
+    "law": "hnorm",
+    "reported": 2228.81340016453,
+    "reference": 2228.81340016453,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|invtrgamma|archive|004067",
+    "law": "pareto",
+    "reported": 136.83410255939168,
+    "reference": 136.83410255939165,
+    "relative": 2.077092544825791e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|invtrgamma|class|near-constant",
+    "law": "pareto",
+    "reported": 112.58448226184579,
+    "reference": 112.58448226184579,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|lst|class|subnormal",
+    "law": "norm",
+    "reported": 2229.5634001645294,
+    "reference": 2229.56340016453,
+    "relative": 2.0396251160783594e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|lst|class|subnormal-signed",
+    "law": "norm",
+    "reported": 2228.0634001645294,
+    "reference": 2228.06340016453,
+    "relative": 2.040998253698183e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|pareto2|class|subnormal",
+    "kind": "numerical",
+    "reason": "evaluation",
+    "checked": false
+  },
+  {
+    "key": "density:limit|native|sged|archive|005966",
+    "law": "unif",
+    "reported": -13.351816139659453,
+    "reference": -13.351816139659453,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|sged|archive|005968",
+    "law": "unif",
+    "reported": 1.8565774085250986,
+    "reference": 1.8565774085250983,
+    "relative": 1.1959889412929348e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|sged|archive|005969",
+    "law": "unif",
+    "reported": 3.094295680875164,
+    "reference": 3.094295680875164,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|sged|archive|005978",
+    "law": "unif",
+    "reported": -4158.004983528942,
+    "reference": -4158.004983528942,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|sged|archive|006121",
+    "law": "unif",
+    "reported": 32.80157344468982,
+    "reference": 32.80157344468982,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|sged|resample|n3-s0",
+    "law": "unif",
+    "reported": -2.9062715305732327,
+    "reference": -2.906271530573233,
+    "relative": 1.5280375738411148e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|sged|resample|n3-s3",
+    "law": "unif",
+    "reported": 0.22948831057490948,
+    "reference": 0.22948831057490943,
+    "relative": 5.551115123125783e-17,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|native|sged|resample|n7-s0",
+    "law": "unif",
+    "reported": -6.700244099880683,
+    "reference": -6.700244099880683,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|native|cauchy|class|offset",
+    "law": "cauchy",
+    "reported": -13.387458911694992,
+    "reference": -13.387458911694992,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|native|cauchy|class|subnormal",
+    "law": "cauchy",
+    "reported": 2228.4997317454754,
+    "reference": 2228.499731745476,
+    "relative": 2.0405986341774543e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|native|cauchy|class|subnormal-signed",
+    "law": "cauchy",
+    "reported": 2227.5834410136013,
+    "reference": 2227.5834410136017,
+    "relative": 2.0414380108677034e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|native|gumbel|class|near-constant",
+    "law": "gumbel",
+    "reported": 104.30035886002871,
+    "reference": 104.30035886002872,
+    "relative": 1.3624933672829447e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|native|gumbel|class|offset",
+    "law": "gumbel",
+    "reported": -15.608931472198648,
+    "reference": -15.608931472198648,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|native|logis|class|near-constant",
+    "law": "logis",
+    "reported": 115.9548621640535,
+    "reference": 115.95486216405348,
+    "relative": 1.2255505676938687e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|native|logis|class|offset",
+    "law": "logis",
+    "reported": -10.351446848544908,
+    "reference": -10.351446848544908,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|native|logis|class|subnormal",
+    "law": "logis",
+    "reported": 2228.680874652951,
+    "reference": 2228.680874652951,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|native|logis|class|subnormal-signed",
+    "law": "logis",
+    "reported": 2228.0535420059014,
+    "reference": 2228.0535420059014,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|bhatt|archive|000334",
+    "law": "unif",
+    "reported": -20.904298225896255,
+    "reference": -20.90429822589625,
+    "relative": 1.6995134878048182e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|bhatt|archive|000337",
+    "law": "unif",
+    "reported": -8.710124260790106,
+    "reference": -8.710124260790106,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|bhatt|archive|000341",
+    "law": "unif",
+    "reported": 3.7722558545059703,
+    "reference": 3.7722558545059703,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|bhatt|archive|000345",
+    "law": "unif",
+    "reported": 58.55506895144827,
+    "reference": 58.55506895144826,
+    "relative": 1.2134606763920923e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|bhatt|archive|000346",
+    "law": "unif",
+    "reported": -4165.541479604502,
+    "reference": -4165.541479604501,
+    "relative": 2.183376894038949e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|bhatt|archive|000347",
+    "law": "unif",
+    "reported": -229.36593543668116,
+    "reference": -229.3659354366812,
+    "relative": 2.4782851364822747e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|ged|archive|002362",
+    "law": "unif",
+    "reported": 103.29215997651195,
+    "reference": 103.29215997651194,
+    "relative": 1.3757921916274645e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|ged|archive|002363",
+    "law": "unif",
+    "reported": 149.34396821512658,
+    "reference": 149.34396821512658,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|ged|archive|002365",
+    "law": "unif",
+    "reported": 84.05621415467198,
+    "reference": 84.05621415467199,
+    "relative": 1.690637016919723e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|ged|class|offset",
+    "law": "unif",
+    "reported": -6.069605470070879,
+    "reference": -6.069605470070879,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|ht|class|subnormal",
+    "law": "hnorm",
+    "reported": 2228.81340016453,
+    "reference": 2228.81340016453,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|invtrgamma|archive|004067",
+    "law": "pareto",
+    "reported": 136.83410255939168,
+    "reference": 136.83410255939165,
+    "relative": 2.077092544825791e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|invtrgamma|class|near-constant",
+    "law": "pareto",
+    "reported": 112.58448226184579,
+    "reference": 112.58448226184579,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|lst|class|subnormal",
+    "law": "norm",
+    "reported": 2229.5634001645294,
+    "reference": 2229.56340016453,
+    "relative": 2.0396251160783594e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|lst|class|subnormal-signed",
+    "law": "norm",
+    "reported": 2228.0634001645294,
+    "reference": 2228.06340016453,
+    "relative": 2.040998253698183e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|pareto2|class|subnormal",
+    "kind": "numerical",
+    "reason": "evaluation",
+    "checked": false
+  },
+  {
+    "key": "density:limit|double|sged|archive|005966",
+    "law": "unif",
+    "reported": -13.351816139659453,
+    "reference": -13.351816139659453,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|sged|archive|005968",
+    "law": "unif",
+    "reported": 1.8565774085250986,
+    "reference": 1.8565774085250983,
+    "relative": 1.1959889412929348e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|sged|archive|005969",
+    "law": "unif",
+    "reported": 3.094295680875164,
+    "reference": 3.094295680875164,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|sged|archive|005978",
+    "law": "unif",
+    "reported": -4158.004983528942,
+    "reference": -4158.004983528942,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|sged|archive|006121",
+    "law": "unif",
+    "reported": 32.80157344468982,
+    "reference": 32.80157344468982,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|sged|resample|n3-s0",
+    "law": "unif",
+    "reported": -2.9062715305732327,
+    "reference": -2.906271530573233,
+    "relative": 1.5280375738411148e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|sged|resample|n3-s3",
+    "law": "unif",
+    "reported": 0.22948831057490948,
+    "reference": 0.22948831057490943,
+    "relative": 5.551115123125783e-17,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density:limit|double|sged|resample|n7-s0",
+    "law": "unif",
+    "reported": -6.700244099880683,
+    "reference": -6.700244099880683,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|double|cauchy|class|offset",
+    "law": "cauchy",
+    "reported": -13.387458911694992,
+    "reference": -13.387458911694992,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|double|cauchy|class|subnormal",
+    "law": "cauchy",
+    "reported": 2228.4997317454754,
+    "reference": 2228.499731745476,
+    "relative": 2.0405986341774543e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|double|cauchy|class|subnormal-signed",
+    "law": "cauchy",
+    "reported": 2227.5834410136013,
+    "reference": 2227.5834410136017,
+    "relative": 2.0414380108677034e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|double|gumbel|class|near-constant",
+    "law": "gumbel",
+    "reported": 104.30035886002871,
+    "reference": 104.30035886002872,
+    "relative": 1.3624933672829447e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|double|gumbel|class|offset",
+    "law": "gumbel",
+    "reported": -15.608931472198648,
+    "reference": -15.608931472198648,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|double|logis|class|near-constant",
+    "law": "logis",
+    "reported": 115.9548621640535,
+    "reference": 115.95486216405348,
+    "relative": 1.2255505676938687e-16,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|double|logis|class|offset",
+    "law": "logis",
+    "reported": -10.351446848544908,
+    "reference": -10.351446848544908,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|double|logis|class|subnormal",
+    "law": "logis",
+    "reported": 2228.680874652951,
+    "reference": 2228.680874652951,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  },
+  {
+    "key": "density|double|logis|class|subnormal-signed",
+    "law": "logis",
+    "reported": 2228.0535420059014,
+    "reference": 2228.0535420059014,
+    "relative": 0.0,
+    "checked": true,
+    "pass_": true,
+    "reference_error": null
+  }
+]

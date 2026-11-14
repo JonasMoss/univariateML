@@ -285,7 +285,9 @@ test_that("bhatt held certificates transport endpoint penalties and units", {
   x <- c(-1,-1,1)
   e <- tryCatch(mlbhatt(x,a=1),error=identity)
   expect_s3_class(e,"univariateML_limit")
-  expect_equal(e$limit_loglik,-3*log(2)+2*log(2/3)+log(1/3),tolerance=1e-12)
+  # The public payload is the uniform model. The distinct endpoint-layer
+  # supremum remains checked in the core certificate tests.
+  expect_equal(e$limit_loglik,sum(stats::dunif(x,e$estimates[["min"]],e$estimates[["max"]],log=TRUE)),tolerance=1e-12)
   x <- c(-3,-2,-1,0,.5,1,2,3)
   f <- mlbhatt(x,a=.5,reltol=1e-10)
   for(s in c(1e-100,1e100)) {

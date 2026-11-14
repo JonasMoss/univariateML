@@ -9,6 +9,11 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "../norm/dpqr.hpp"
+#include "../unif/dpqr.hpp"
+#include "../hnorm/dpqr.hpp"
+#include "../lnorm/dpqr.hpp"
+#include "../pareto/dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "dpqr.hpp"
 #include "../sstd/local_accuracy.hpp"
@@ -543,6 +548,15 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
 
 
 inline SgedResult sged_mle(span x,double tol,int maxit,double mean= std::numeric_limits<double>::quiet_NaN(),double sd= std::numeric_limits<double>::quiet_NaN(),double nu= std::numeric_limits<double>::quiet_NaN(),double xi= std::numeric_limits<double>::quiet_NaN()) {
+  if((!std::isnan(mean)&&!std::isfinite(mean)) || (!std::isnan(sd)&&!(sd>0&&std::isfinite(sd))) || (!std::isnan(nu)&&!(nu>0&&std::isfinite(nu))) || (!std::isnan(xi)&&!(xi>0&&std::isfinite(xi))))return {NAN,NAN,NAN,NAN,NAN,0,SgedStatus::InvalidStart};
+
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,NAN,0,SgedStatus::InvalidStart};
+
+  if(tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() && std::isfinite(x[0]) &&
+      (std::isnan(sd) && (std::isnan(mean)||mean==x[0])) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    return {NAN,NAN,NAN,NAN,NAN,0,SgedStatus::Unbounded};
+
+  auto result = [&]() -> SgedResult {
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=sged_mle_impl(x,tol,maxit,mean,sd,nu,xi);
   // GED delegation owns its accuracy check. Other uncertified held searches
@@ -572,6 +586,33 @@ inline SgedResult sged_mle(span x,double tol,int maxit,double mean= std::numeric
   }
   if(r.status==SgedStatus::Ok && (std::isnan(nu)) && r.nu==kSgedNuLower) r.restricted|=16u;
   return r;
+
+  }();
+  auto& detail=result.stop_detail;
+  auto& coef=detail.limit_coef;
+  if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
+    if(detail.limit_model==StopModel::Unif && !x.empty()) {
+      // Endpoints are public coordinates; round outwards to retain sample support.
+      coef[0]=std::min(coef[0],*std::min_element(x.begin(),x.end()));
+      coef[1]=std::max(coef[1],*std::max_element(x.begin(),x.end()));
+    }
+    double sum=0,carry=0;bool evaluated=true;
+    for(double v:x) {
+      double term=0;
+      switch(detail.limit_model) {
+        case StopModel::Norm:term=distributions::dnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Unif:term=distributions::dunif(v,coef[0],coef[1],true);break;
+        case StopModel::Hnorm:term=distributions::dhnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Lnorm:term=distributions::dlnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Pareto:term=distributions::dpareto(v,coef[0],coef[1],true);break;
+        default:evaluated=false;break;
+      }
+      term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated) {detail.limit_loglik=sum;
+      if(!std::isfinite(sum))result.status=SgedStatus::BfgsFailure;}
+  }
+  return result;
 }
 
 inline bool family_point(const SgedResult&, const FitCandidate& c) {

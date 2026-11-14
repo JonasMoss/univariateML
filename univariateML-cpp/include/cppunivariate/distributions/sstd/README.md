@@ -257,7 +257,14 @@ trials](../../../../../dev/research/evaluations/2026-10-31-fit-speed-report.md).
 
 2026-10-30 (adapter independence).
 
-The unconditional BFGS failure rescue now lives in `sstd_mle`: accept only when the Euclidean norm of the finite-difference total score in (mu, log(sigma), log(nu-2), log(xi)) coordinates is below 1e-3. Conditional failures remain failures. This preserves the former adapter gate; it is a numerical stationarity check, not a global maximum proof.
+The unconditional BFGS failure rescue now lives in `sstd_mle`: accept only when the Euclidean norm of the finite-difference total score in (mu, log(sigma), log(nu-2), log(xi)) coordinates is below 1e-3. This preserves the former adapter gate; it is a numerical stationarity check, not a global maximum proof.
+
+For the sample $(-2,-1,-.4,0,.2,.3,.5,1,2,5)$ with sd fixed at one and
+$\nu=4$, the symmetric member with mean $.56$ has log likelihood about
+$-21.493$. The right half-t with endpoint $-2$ and ordinary scale one gives
+$-26.276$; its reflected counterpart at endpoint $5$ gives $-46.275$.
+An independent [100/160-digit density comparison](../../../../../dev/research/evaluations/2026-11-14-core5b-a-data/check-sstd-refutation.py)
+therefore numerically refutes both half-face proposals under these holds.
 
 ## Held-shape scalar certificates
 
@@ -292,7 +299,7 @@ until this integrated score remainder is no larger than the point-likelihood
 rounding allowance. Near $\nu=2$ a narrow coefficient interval can still
 span a sharply varying likelihood, so coefficient width alone is insufficient. All surviving
 components are compared, including minima; competing maxima within their
-computed bounds produce a tie stop with witnesses. For example, observations
+computed bounds retain the comparison witnesses. For example, observations
 $-2,2$ with $S=1,\nu=3,\xi=1$ have two global mean maxima
 $\pm\sqrt3$, disproving general conditional uniqueness.
 

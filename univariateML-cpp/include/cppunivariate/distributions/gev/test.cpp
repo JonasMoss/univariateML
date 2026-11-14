@@ -47,8 +47,9 @@ TEST_CASE("gev: validation and stable dpqr") {
   std::vector<double>x{0,1,2,3,4};
   CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,1).status==cppunivariate::GevStatus::IterationFailure);
   CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,1.1).status==cppunivariate::GevStatus::Ok);
-  for(auto y:{std::vector<double>{1,2},std::vector<double>{1,1,2},std::vector<double>{0,0,0,1,2},std::vector<double>{1,1,1}})
-    CHECK(cppunivariate::gev_mle(mltest::as_span(y)).status==cppunivariate::GevStatus::InvalidData);
+  CHECK(cppunivariate::gev_mle(mltest::as_span(std::vector<double>{1,2})).status==cppunivariate::GevStatus::Ok);
+  for(auto y:{std::vector<double>{1,1,2},std::vector<double>{0,0,0,1,2},std::vector<double>{1,1,1}})
+    CHECK(cppunivariate::gev_mle(mltest::as_span(y)).status==cppunivariate::GevStatus::NoMLE);
   x={0,0,1,2,3};CHECK(cppunivariate::gev_mle(mltest::as_span(x)).status==cppunivariate::GevStatus::Ok);
   CHECK(cppunivariate::distributions::qgev(.5,0,1,1e-16,true,false)==doctest::Approx(.3665129205816643));
   CHECK(cppunivariate::distributions::qgev(1,0,1,-.5,true,false)==2);
@@ -136,7 +137,7 @@ TEST_CASE("gev: only minimum ties control fixed-shape collapse") {
       CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,xi).status==cppunivariate::GevStatus::Ok);
   }
   const std::vector<double> x{0,0,0,1};
-  CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,.5).status==cppunivariate::GevStatus::InvalidData);
+  CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,.5).status==cppunivariate::GevStatus::NoMLE);
   CHECK(cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,0).status==cppunivariate::GevStatus::Ok);
 }
 
@@ -261,7 +262,7 @@ TEST_CASE("gev: free fit compares half-minimum ties with the free collapse face"
   }
   // A strict majority (k=3 of n=4) still diverges outright, unaffected.
   const std::vector<double> majority{0,0,0,1};
-  CHECK(cppunivariate::gev_mle(mltest::as_span(majority)).status == cppunivariate::GevStatus::InvalidData);
+  CHECK(cppunivariate::gev_mle(mltest::as_span(majority)).status == cppunivariate::GevStatus::NoMLE);
   // Odd n: k=n/2 is never an integer, so the ordinary (strict) test
   // applies throughout; confirm the free fit still succeeds for a
   // nonconstant odd-n sample with fewer than half the points tied.
@@ -1072,4 +1073,29 @@ TEST_CASE("gev rejects a subnormal restoration outside coefficient tolerance") {
   CHECK_FALSE(all.certified);
   CHECK(held.status==cppunivariate::GevStatus::NumericalFailure);
   CHECK_FALSE(held.certified);
+}
+
+TEST_CASE("gev: singleton collapse is a core statistical outcome") {
+  const std::vector<double> x{2};const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::gev_mle(data);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
+}
+
+TEST_CASE("gev: critical fixed-shape collapse has a finite unattained supremum") {
+  CHECK(cppunivariate::gev_collapse_order(.3,10,3)<0);
+  CHECK(cppunivariate::gev_collapse_order(std::nextafter(.3,INFINITY),10,3)>0);
+  CHECK(cppunivariate::gev_collapse_order(.5,4,2)==0);
+  const std::vector<double> x{0,0,0,0,1,3};
+  for(double mu:std::vector<double>{NAN,0}) {
+    const auto r=cppunivariate::gev_mle(mltest::as_span(x),1e-10,100,.5,mu,NAN);
+    REQUIRE(r.status==cppunivariate::GevStatus::NoMLE);
+    CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unattained);
+    CHECK(std::isfinite(r.stop_detail.loglik_lower));
+    CHECK(r.finite_collapse);
+    CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+  }
+  const std::vector<double> majority{0,0,0,0,0,3};
+  CHECK(cppunivariate::outcome(cppunivariate::gev_mle(mltest::as_span(majority),1e-10,100,.5)).reason==cppunivariate::OutcomeReason::Unbounded);
 }

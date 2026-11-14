@@ -1,0 +1,22 @@
+Test project /home/jonas/Files/programming/univariateML.wt/core5b-a/univariateML-cpp/build
+    Start  16: distribution_cauchy
+1/6 Test  #16: distribution_cauchy ..............   Passed    0.03 sec
+    Start  37: distribution_fpareto
+2/6 Test  #37: distribution_fpareto .............   Passed    0.81 sec
+    Start  68: distribution_invtrgamma
+3/6 Test  #68: distribution_invtrgamma ..........   Passed    6.31 sec
+    Start 107: distribution_sged
+4/6 Test #107: distribution_sged ................   Passed   26.78 sec
+    Start 116: distribution_sstd
+5/6 Test #116: distribution_sstd ................   Passed    4.67 sec
+    Start 117: distribution_sstd_slow
+6/6 Test #117: distribution_sstd_slow ...........   Passed    5.67 sec
+
+100% tests passed, 0 tests failed out of 6
+
+Label Time Summary:
+cran    =  38.60 sec*proc (5 tests)
+dev     =  38.60 sec*proc (5 tests)
+full    =  44.26 sec*proc (6 tests)
+
+Total Test time (real) =  44.27 sec

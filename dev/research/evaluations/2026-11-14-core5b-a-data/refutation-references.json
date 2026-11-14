@@ -1,0 +1,268 @@
+[
+  {
+    "mode": "native",
+    "source": "archive",
+    "case": "001713",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 9222361.575683039,
+      "shape2": 2.5528199968714396,
+      "shape3": 11841746.665061427
+    },
+    "reference": 35.71093991008103,
+    "face_reference": 35.71092192579007,
+    "gain": 1.798429096311338e-05,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "native",
+    "source": "archive",
+    "case": "001714",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 921760222221688.0,
+      "shape2": 2.553341011264888,
+      "shape3": 1183563553424388.0
+    },
+    "reference": 81.7624535669853,
+    "face_reference": 81.76245356518318,
+    "gain": 1.8021211189989117e-09,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "native",
+    "source": "archive",
+    "case": "001716",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 9222361.575683039,
+      "shape2": 2.5528199968714396,
+      "shape3": 11841746.665061427
+    },
+    "reference": 35.71093991008103,
+    "face_reference": 35.71092192579007,
+    "gain": 1.798429096311338e-05,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "native",
+    "source": "archive",
+    "case": "001717",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 921760222221688.0,
+      "shape2": 2.553341011264888,
+      "shape3": 1183563553424388.0
+    },
+    "reference": 81.7624535669853,
+    "face_reference": 81.76245356518318,
+    "gain": 1.8021211189989117e-09,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "native",
+    "source": "archive",
+    "case": "001720",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 1111430.559848558,
+      "shape2": 0.0007227071321743763,
+      "shape3": 1427105.0877290342
+    },
+    "reference": -4174.909744575077,
+    "face_reference": -4174.910052389799,
+    "gain": 0.00030781472196395043,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "native",
+    "source": "archive",
+    "case": "010748",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 93164.29196155982,
+      "shape2": 0.0065732376252314,
+      "shape3": 72556.42353395578
+    },
+    "reference": 184.44334924709415,
+    "face_reference": 184.443325321085,
+    "gain": 2.3926009134811466e-05,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "native",
+    "source": "archive",
+    "case": "010749",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 13593197.055151256,
+      "shape2": 0.0005441808691841686,
+      "shape3": 10586392.510995714
+    },
+    "reference": 2291.3086876303446,
+    "face_reference": 2291.308685410637,
+    "gain": 2.219707766926149e-06,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "double",
+    "source": "archive",
+    "case": "001713",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 9222361.575683039,
+      "shape2": 2.5528199968714396,
+      "shape3": 11841746.665061427
+    },
+    "reference": 35.71093991008103,
+    "face_reference": 35.71092192579007,
+    "gain": 1.798429096311338e-05,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "double",
+    "source": "archive",
+    "case": "001714",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 921760222221688.0,
+      "shape2": 2.553341011264888,
+      "shape3": 1183563553424388.0
+    },
+    "reference": 81.7624535669853,
+    "face_reference": 81.76245356518318,
+    "gain": 1.8021211189989117e-09,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "double",
+    "source": "archive",
+    "case": "001716",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 9222361.575683039,
+      "shape2": 2.5528199968714396,
+      "shape3": 11841746.665061427
+    },
+    "reference": 35.71093991008103,
+    "face_reference": 35.71092192579007,
+    "gain": 1.798429096311338e-05,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "double",
+    "source": "archive",
+    "case": "001717",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 921760222221688.0,
+      "shape2": 2.553341011264888,
+      "shape3": 1183563553424388.0
+    },
+    "reference": 81.7624535669853,
+    "face_reference": 81.76245356518318,
+    "gain": 1.8021211189989117e-09,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "double",
+    "source": "archive",
+    "case": "001720",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 1111430.559848558,
+      "shape2": 0.0007227071321743763,
+      "shape3": 1427105.0877290342
+    },
+    "reference": -4174.909744575077,
+    "face_reference": -4174.910052389799,
+    "gain": 0.00030781472196395043,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "double",
+    "source": "archive",
+    "case": "010748",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 93164.29196155982,
+      "shape2": 0.0065732376252314,
+      "shape3": 72556.42353395578
+    },
+    "reference": 184.44334924709415,
+    "face_reference": 184.443325321085,
+    "gain": 2.3926009134811466e-05,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  },
+  {
+    "mode": "double",
+    "source": "archive",
+    "case": "010749",
+    "point": {
+      "min": 0.0,
+      "scale": 1.0087842921157315,
+      "shape1": 13593197.055151256,
+      "shape2": 0.0005441808691841686,
+      "shape3": 10586392.510995714
+    },
+    "reference": 2291.3086876303446,
+    "face_reference": 2291.308685410637,
+    "gain": 2.219707766926149e-06,
+    "held_ok": true,
+    "error": null,
+    "face_error": null,
+    "passed": true
+  }
+]

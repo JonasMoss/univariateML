@@ -1,5 +1,10 @@
 // Location-scale Student t, constrained to df >= 1.
 #pragma once
+#include "../norm/dpqr.hpp"
+#include "../unif/dpqr.hpp"
+#include "../hnorm/dpqr.hpp"
+#include "../lnorm/dpqr.hpp"
+#include "../pareto/dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "accuracy.hpp"
@@ -24,7 +29,7 @@
 namespace cppunivariate {
 inline constexpr double kLstDfLower = 1.0;
 
-enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoMLE, NormalBoundary, InvalidDf, Unbounded, ScaleBoundary, IterationFailure, CertificateBudget, CertificateTie, NumericalFailure, NonUniqueSymmetry };
+enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoProposal, NormalBoundary, InvalidDf, Unbounded, ScaleBoundary, IterationFailure, CertificateBudget, CertificateTie, NumericalFailure, NonUniqueSymmetry };
 struct LstResult {
   double mu, sigma, df, logLik;
   int iterations;
@@ -248,7 +253,7 @@ inline LstResult lst_mle_impl(span x, double tol, int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n < 3) return {nan,nan,nan,nan,0,LstStatus::NoMLE};
+  if (n < 3) return {nan,nan,nan,nan,0,LstStatus::NoProposal};
   std::vector<double> y;
   for (double v : x) {
     if (!std::isfinite(v)) return {nan,nan,nan,nan,0,LstStatus::InvalidStart};
@@ -258,7 +263,7 @@ inline LstResult lst_mle_impl(span x, double tol, int maxit) {
   std::size_t run = 1;
   for (std::size_t i = 1; i < n; ++i) {
     run = y[i] == y[i-1] ? run + 1 : 1;
-    if (2 * run >= n) return {nan,nan,nan,nan,0,LstStatus::NoMLE};
+    if (2 * run >= n) return {nan,nan,nan,nan,0,LstStatus::NoProposal};
   }
   // Robust affine standardisation keeps the optimisation meaningful for
   // narrow clusters and heavy tails whose sample variance is enormous.
@@ -550,10 +555,39 @@ inline LstResult lst_mle_certified(span x,double tol,int maxit,std::int64_t budg
   return r;
 }
 inline LstResult lst_mle(span x,double tol,int maxit) {
+  auto result = [&]() -> LstResult {
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=lst_mle_certified(x,tol,maxit);
   if(r.status==LstStatus::Ok && r.df==kLstDfLower) r.restricted|=16u;
   return r;
+
+  }();
+  if(result.status==LstStatus::NormalBoundary)result.stop_detail.limit_model=StopModel::Norm;
+  auto& detail=result.stop_detail;
+  auto& coef=detail.limit_coef;
+  if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
+    if(detail.limit_model==StopModel::Unif && !x.empty()) {
+      // Endpoints are public coordinates; round outwards to retain sample support.
+      coef[0]=std::min(coef[0],*std::min_element(x.begin(),x.end()));
+      coef[1]=std::max(coef[1],*std::max_element(x.begin(),x.end()));
+    }
+    double sum=0,carry=0;bool evaluated=true;
+    for(double v:x) {
+      double term=0;
+      switch(detail.limit_model) {
+        case StopModel::Norm:term=distributions::dnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Unif:term=distributions::dunif(v,coef[0],coef[1],true);break;
+        case StopModel::Hnorm:term=distributions::dhnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Lnorm:term=distributions::dlnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Pareto:term=distributions::dpareto(v,coef[0],coef[1],true);break;
+        default:evaluated=false;break;
+      }
+      term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated) {detail.limit_loglik=sum;if(result.status==LstStatus::NormalBoundary)result.logLik=sum;
+      if(!std::isfinite(sum))result.status=LstStatus::NumericalFailure;}
+  }
+  return result;
 }
 inline LstResult lst_mle_held(span x,double tol,int maxit,double mu,double sigma,double df) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -646,12 +680,41 @@ inline LstResult lst_mle_held(span x,double tol,int maxit,double mu,double sigma
   return r;
 }
 inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,double df) {
+  auto result = [&]() -> LstResult {
  auto r=lst_mle_held(x,tol,maxit,mu,sigma,df);
  if(r.status==LstStatus::Ok&&!r.certified && !t_local_accuracy::refine(r,x,mu,sigma,df,tol,maxit,false,r.df)){r.status=LstStatus::NumericalFailure;r.accuracy_failure=true;{if(r.sigma>0 && r.df>0)record_accuracy(r,tol,{r.mu,r.sigma,r.df},{std::isnan(mu)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sigma)?r.sigma:0,std::isnan(df)?r.df:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}
  if(r.status==LstStatus::Ok&&!r.certified&&std::isnan(df)&&std::isnan(mu)){
   if(r.df==1)r.restricted|=16u;else r.restricted&=~16u;
  }
  return r;
+
+  }();
+  if(result.status==LstStatus::NormalBoundary)result.stop_detail.limit_model=StopModel::Norm;
+  auto& detail=result.stop_detail;
+  auto& coef=detail.limit_coef;
+  if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
+    if(detail.limit_model==StopModel::Unif && !x.empty()) {
+      // Endpoints are public coordinates; round outwards to retain sample support.
+      coef[0]=std::min(coef[0],*std::min_element(x.begin(),x.end()));
+      coef[1]=std::max(coef[1],*std::max_element(x.begin(),x.end()));
+    }
+    double sum=0,carry=0;bool evaluated=true;
+    for(double v:x) {
+      double term=0;
+      switch(detail.limit_model) {
+        case StopModel::Norm:term=distributions::dnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Unif:term=distributions::dunif(v,coef[0],coef[1],true);break;
+        case StopModel::Hnorm:term=distributions::dhnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Lnorm:term=distributions::dlnorm(v,coef[0],coef[1],true);break;
+        case StopModel::Pareto:term=distributions::dpareto(v,coef[0],coef[1],true);break;
+        default:evaluated=false;break;
+      }
+      term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated) {detail.limit_loglik=sum;if(result.status==LstStatus::NormalBoundary)result.logLik=sum;
+      if(!std::isfinite(sum))result.status=LstStatus::NumericalFailure;}
+  }
+  return result;
 }
 
 inline bool family_point(const LstResult&, const FitCandidate& c) {
@@ -671,7 +734,7 @@ inline FitOutcome outcome(const LstResult& r) {
     case LstStatus::Ok: return FitOutcome::estimate(r.certified);
     case LstStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case LstStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    case LstStatus::NoMLE: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case LstStatus::NoProposal: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case LstStatus::NormalBoundary: return FitOutcome::limit(r.certified);
     case LstStatus::InvalidDf: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case LstStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

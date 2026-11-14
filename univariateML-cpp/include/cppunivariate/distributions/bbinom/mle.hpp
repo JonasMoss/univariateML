@@ -32,6 +32,7 @@
 // 128 * min(maxit, 100000) interval evaluations); no unimodality assumption is made.
 
 #pragma once
+#include "dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "accuracy.hpp"
 #include "../../core/work_budget.hpp"
@@ -59,7 +60,8 @@ enum class BbinomStatus {
   SizeBudget,
   ProfileTie,
   IterationFailure,
-  FaceUnresolved
+  FaceUnresolved,
+  Unsupported
 };
 
 struct BbinomResult {
@@ -71,6 +73,9 @@ struct BbinomResult {
   bool accuracy_failure = false;
   // ProfileTie over free sizes: every candidate is an Ok fixed-size fit.
   bool size_profiles = false;
+  bool accurate_fixed_candidates=false;
+  std::vector<double> maximizer_shape_ray{};
+  std::vector<double> free_positive_shapes{};
 };
 
 namespace bbinom_detail {
@@ -845,8 +850,37 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
     double alpha_fixed=std::numeric_limits<double>::quiet_NaN(),
     double beta_fixed=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
+  if(std::isnan(size) && std::isnan(alpha_fixed) && std::isnan(beta_fixed))return {NAN,NAN,NAN,NAN,0,BbinomStatus::Unsupported};
   const bbinom_detail::CellWork work(enumeration_budget(maxit));
   auto out=bbinom_mle_work(x,size,tol,maxit,alpha_fixed,beta_fixed,work);
+  if(out.status==BbinomStatus::ProfileTie && !out.size_profiles) {
+    auto points=out.stop_detail.candidates;
+    std::size_t count=0;for(const auto& c:points)if(c.model==StopModel::None && c.coef.size()==3)++count;
+    const int per=count?static_cast<int>(solver_budget(maxit)/count):0;
+    bool accurate=count>0 && per>0;
+    for(auto& c:points)if(c.model==StopModel::None && c.coef.size()==3 && accurate) {
+      StopDetail local;
+      accurate=bbinom_detail::fallback_accuracy(x,c.coef[0],c.coef[1],c.coef[2],alpha_fixed,beta_fixed,tol,per,local);
+      if(accurate) {
+        double ll=0,carry=0;
+        for(int v:x){const double term=distributions::dbbinom(v,c.coef[0],c.coef[1],c.coef[2],true)-carry;
+          const double next=ll+term;carry=(next-ll)-term;ll=next;}
+        accurate=std::isfinite(ll);c.loglik_lower=c.loglik_upper=ll;
+      }
+    }
+    if(accurate){out.stop_detail.candidates=std::move(points);out.accurate_fixed_candidates=true;}
+  }
+  if(out.status==BbinomStatus::Unidentified) {
+    out.size=std::isnan(size)?0:size;
+    double mean=0;for(int v:x)mean+=v;mean/=x.size();
+    out.alpha=std::isnan(alpha_fixed)?(out.size==1?mean:1):alpha_fixed;
+    out.beta=std::isnan(beta_fixed)?(out.size==1?1-mean:1):beta_fixed;
+    out.logLik=0;
+    if(out.size==1)for(int v:x)out.logLik+=v?std::log(mean):std::log1p(-mean);
+    if(out.size==1)out.maximizer_shape_ray={mean,1-mean};
+    else out.free_positive_shapes={std::isnan(alpha_fixed)?1.:0.,std::isnan(beta_fixed)?1.:0.};
+    out.stop_detail={};out.stop_detail.candidates.push_back({{out.size,out.alpha,out.beta},out.logLik,out.logLik});
+  }
   if(out.status==BbinomStatus::Ok && !out.certified) {
     if(!bbinom_detail::fallback_accuracy(x,out.size,out.alpha,out.beta,alpha_fixed,beta_fixed,tol,maxit,out.stop_detail)) {
       out.status=BbinomStatus::IterationFailure;out.accuracy_failure=true;{if(out.alpha>0 && out.beta>0)record_accuracy(out,tol,{out.size,out.alpha,out.beta},{0,std::isnan(alpha_fixed)?out.alpha:0,std::isnan(beta_fixed)?out.beta:0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}return out;
@@ -874,11 +908,11 @@ inline bool family_point(const BbinomResult&, const FitCandidate& c) {
          c.coef[0] >= 0 && c.coef[0] == std::floor(c.coef[0]) && std::isfinite(c.coef[1]) &&
          std::isfinite(c.coef[2]) && c.coef[1] > 0 && c.coef[2] > 0;
 }
-// Free-size profile ties list Ok fixed-size fits, coefficients and likelihood
-// exactly as returned by an Ok fit at that size. Fixed-size ties list the
-// unrefined grid root (an Ok fit returns the refined enclosure instead).
+// Free-size profiles retain accepted fixed-size fits. Fixed-size ties are
+// marked only after every finite grid witness passes coefficient refinement
+// and its public point likelihood is evaluated; unrefined witnesses stay unresolved.
 inline bool accurate_point(const BbinomResult& r, const FitCandidate& c) {
-  return r.size_profiles && family_point(r, c) && point_value(c);
+  return (r.size_profiles || r.accurate_fixed_candidates || r.status==BbinomStatus::Unidentified) && family_point(r, c) && point_value(c);
 }
 
 inline FitOutcome outcome(const BbinomResult& r) {
@@ -887,13 +921,14 @@ inline FitOutcome outcome(const BbinomResult& r) {
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
   if (r.status != BbinomStatus::Ok && r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
+    case BbinomStatus::Unsupported:return FitOutcome::failure(OutcomeReason::Unsupported);
     case BbinomStatus::Ok: return FitOutcome::estimate(r.certified);
     case BbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BbinomStatus::SizeTooSmall: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BbinomStatus::BinomialLimit: return FitOutcome::limit(true);
     case BbinomStatus::TwoPointLimit: return FitOutcome::limit(true);
     case BbinomStatus::PointMass: return FitOutcome::limit(true);
-    case BbinomStatus::Unidentified: return nonunique_outcome_of(r, r.certified);
+    case BbinomStatus::Unidentified: return r.stop_detail.candidates.empty()?FitOutcome::failure(OutcomeReason::Unresolved):FitOutcome::estimate(true,false);
     case BbinomStatus::SizeBudget: return FitOutcome::budget();
     case BbinomStatus::ProfileTie: return comparison_outcome_of(r);
     case BbinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

@@ -5,6 +5,7 @@
 // Nonexistent MLEs and numerical failures are reported through CauchyStatus.
 
 #pragma once
+#include "dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -21,7 +22,7 @@
 
 namespace cppunivariate {
 
-enum class CauchyStatus { Ok, NoMLE, InvalidInput, IterationFailure, AmbiguousMaximum };
+enum class CauchyStatus { Ok, NoMLE, InvalidInput, IterationFailure, AmbiguousMaximum, Unattained, NumericalFailure };
 
 struct CauchyResult {
   double mu;
@@ -30,6 +31,9 @@ struct CauchyResult {
   int iterations;
   CauchyStatus status;
   StopDetail stop_detail{};
+  bool unique=true;
+  double comparison_logLik=NAN;
+  std::vector<double> maximizer_support{};
 };
 
 // Negative log-likelihood of Cauchy(mu, scale=s):
@@ -93,6 +97,8 @@ struct CauchyCost {
 };
 
 inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1)return {NAN,NAN,NAN,0,CauchyStatus::InvalidInput};
+  auto result = [&]() -> CauchyResult {
   maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   constexpr double kEps = std::numeric_limits<double>::epsilon();
@@ -116,10 +122,11 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
     return {mu, scale, -static_cast<double>(n) *
             (std::log(2.0 * cppunivariate::pi) + std::log(scale)), 0, CauchyStatus::Ok};
   }
-  std::size_t run = 1;
-  for (std::size_t i = 1; i < n; ++i) {
-    run = data[i] == data[i - 1] ? run + 1 : 1;
-    if (2 * run >= n) return {kNaN, kNaN, kNaN, 0, CauchyStatus::NoMLE};
+  for(std::size_t i=0;i<n;) {
+    std::size_t j=i+1;while(j<n && data[j]==data[i])++j;
+    const std::size_t run=j-i;
+    if(2*run>=n)return {kNaN,kNaN,kNaN,0,2*run==n?CauchyStatus::Unattained:CauchyStatus::NoMLE};
+    i=j;
   }
   const double span_scale = data.back() / 2.0 - data.front() / 2.0;
   const double centre = data.front() / 2.0 + data.back() / 2.0;
@@ -214,6 +221,23 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
   const bool stationary = std::isfinite(score_location) && std::isfinite(score_log_scale) &&
       std::hypot(score_location, score_log_scale) < 1e-3;
   return {mu, scale, logLik, iter, finite && stationary && iter <= maxit ? CauchyStatus::Ok : CauchyStatus::IterationFailure};
+
+  }();
+  if(result.status==CauchyStatus::Ok && !x.empty()) {
+    // A balanced two-point sample has the full semicircle of maximizers.
+    const auto bounds=std::minmax_element(x.begin(),x.end());
+    const double lo=*bounds.first,hi=*bounds.second;
+    if(lo<hi && std::count(x.begin(),x.end(),lo)*2==static_cast<long>(x.size()) &&
+        std::count(x.begin(),x.end(),hi)*2==static_cast<long>(x.size())) {result.unique=false;result.maximizer_support={lo,hi};}
+  }
+  if(result.status==CauchyStatus::Ok) {
+    double sum=0,carry=0;
+    for(double v:x) {const double term=distributions::dcauchy(v,result.mu,result.scale,true)-carry;
+      const double next=sum+term;carry=(next-sum)-term;sum=next;}
+    result.logLik=sum;
+    if(!std::isfinite(sum))result.status=CauchyStatus::NumericalFailure;
+  }
+  return result;
 }
 
 
@@ -380,6 +404,8 @@ inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double 
 
 
 inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,double scale) {
+  if(!(tol>0 && std::isfinite(tol)) || maxit<1)return {NAN,NAN,NAN,0,CauchyStatus::InvalidInput};
+  auto result = [&]() -> CauchyResult {
   maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(location)&&std::isnan(scale))return fit_cauchy(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -399,7 +425,7 @@ inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,doubl
       log_residuals.push_back(std::isfinite(residual) ? std::log(residual) :
           std::log(std::abs(v / 2 - m / 2)) + std::log(2.0));
     }
-    if (2*k >= y.size()) { bad.status=CauchyStatus::NoMLE; return bad; }
+    if (2*k >= y.size()) { bad.status=2*k==y.size()?CauchyStatus::Unattained:CauchyStatus::NoMLE; return bad; }
     const auto failure = [&]() {
       return CauchyResult{m, nan, nan, it, CauchyStatus::IterationFailure};
     };
@@ -447,6 +473,32 @@ inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,doubl
     return fit_cauchy_location(y,s,maxit);
   }
   return {m,s,ll(m,s),it,it<maxit?CauchyStatus::Ok:CauchyStatus::IterationFailure};
+
+  }();
+  if(result.status==CauchyStatus::Ok) {
+    double sum=0,carry=0;
+    for(double v:x) {const double term=distributions::dcauchy(v,result.mu,result.scale,true)-carry;
+      const double next=sum+term;carry=(next-sum)-term;sum=next;}
+    result.logLik=sum;
+    if(!std::isfinite(sum))result.status=CauchyStatus::NumericalFailure;
+  }
+  if(result.status==CauchyStatus::AmbiguousMaximum && !result.stop_detail.candidates.empty()) {
+    const auto point=[](const FitCandidate& c){return c.model==StopModel::None && c.coef.size()==2 && std::isfinite(c.coef[0]) && std::isfinite(c.coef[1]) && c.coef[1]>0;};
+    const auto& c=result.stop_detail.candidates[better_candidate(result.stop_detail,point)];
+    if(point(c)) {
+      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
+      const double centre=y[y.size()/2];std::vector<double> z;
+      for(double v:y)z.push_back(static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(v)-centre)/scale));
+      const double t=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(c.coef[0])-centre)/scale);
+      result.comparison_logLik=cauchy_location_detail::likelihood(z,t)-y.size()*(std::log(pi)+std::log(scale));
+      // The derivative for equal two-point weights has roots at midpoint
+      // +/- sqrt(half-gap^2-scale^2), with equal global maxima below half-gap.
+      if(y.front()<y.back() && scale<(y.back()/2-y.front()/2) &&
+          std::count(y.begin(),y.end(),y.front())*2==static_cast<long>(y.size()) &&
+          std::count(y.begin(),y.end(),y.back())*2==static_cast<long>(y.size()))result.unique=false;
+    }
+  }
+  return result;
 }
 
 
@@ -455,11 +507,13 @@ inline FitOutcome outcome(const CauchyResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case CauchyStatus::Ok: return FitOutcome::estimate(true);
+    case CauchyStatus::NumericalFailure:return FitOutcome::failure(OutcomeReason::Evaluation);
+    case CauchyStatus::Ok: return FitOutcome::estimate(true,r.unique);
+    case CauchyStatus::Unattained: return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case CauchyStatus::NoMLE: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case CauchyStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case CauchyStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
-    case CauchyStatus::AmbiguousMaximum: return FitOutcome::estimate(false);
+    case CauchyStatus::AmbiguousMaximum: return FitOutcome::estimate(!r.unique,r.unique);
   }
   return {};
 }

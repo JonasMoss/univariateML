@@ -21,9 +21,9 @@ test_that("every estimate exposes outcome flags on the vector and object", {
 
 test_that("ties select existing witnesses and attach their complete set", {
   fit <- mlcauchy(c(-2,2),scale=1)
-  witnesses <- attr(fit,"candidates")
-  expect_identical(attr(fit,"certified"),FALSE)
-  expect_identical(attr(fit,"unique"),TRUE)
+  witnesses <- attr(fit,"maximizers")
+  expect_identical(attr(fit,"certified"),TRUE)
+  expect_identical(attr(fit,"unique"),FALSE)
   expect_identical(attr(fit,"fixed"),"scale")
   expect_identical(attr(logLik(fit),"df"),1L)
   # The better candidate: the first whose lower bound is within 8 ulps of the largest.
@@ -32,8 +32,8 @@ test_that("ties select existing witnesses and attach their complete set", {
   expect_identical(unname(coef(fit)),unname(unlist(witnesses[chosen,names(fit)])))
   # Its log likelihood is a point value at the returned coefficients, not a bound.
   expect_equal(as.numeric(logLik(fit)),sum(dcauchy(c(-2,2),coef(fit)[["location"]],1,log=TRUE)),tolerance=1e-14)
-  expect_output(print(fit),"Global maximum is not certified")
-  expect_output(summary(fit),"Global maximum is not certified")
+  expect_output(print(fit),"Maximum is not unique")
+  expect_output(summary(fit),"Maximum is not unique")
   # Proved non-uniqueness with exact witnesses (GED median interval): first listed.
   fit <- mlged(c(-1,1),sd=.1,iterlim=1L)
   expect_identical(attr(fit,"unique"),FALSE)

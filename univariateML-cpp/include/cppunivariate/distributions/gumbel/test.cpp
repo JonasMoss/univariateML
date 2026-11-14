@@ -196,3 +196,12 @@ TEST_CASE("gumbel: unrepresentable log likelihood at held values") {
   CHECK(cppunivariate::fit_gumbel_held(mltest::as_span(y),1e-10,100,0,1).status==cppunivariate::GumbelStatus::NumericalFailure);
   CHECK(cppunivariate::fit_gumbel_held(mltest::as_span(y),1e-10,100,0,1000).status==cppunivariate::GumbelStatus::Ok);
 }
+
+TEST_CASE("gumbel: log likelihood belongs to represented coefficients") {
+  const std::vector<double> x{1e12,1e12+1,1e12+3};
+  const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::fit_gumbel_held(data,1e-10,100,NAN,NAN);
+  REQUIRE(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  double sum=0;for(double v:x)sum+=cppunivariate::distributions::dgumbel(v,r.mu,r.sigma,true);
+  CHECK(r.logLik==doctest::Approx(sum).epsilon(1e-14));
+}

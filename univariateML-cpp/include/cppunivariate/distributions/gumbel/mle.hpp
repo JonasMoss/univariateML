@@ -5,6 +5,7 @@
 // downstream estimators.
 
 #pragma once
+#include "dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/work_budget.hpp"
@@ -138,6 +139,7 @@ inline GumbelResult fit_gumbel_newton(span x, double tol, int maxit,
 
 
 inline GumbelResult fit_gumbel_held(span x,double tol,int maxit,double mu,double sigma) {
+  auto result = [&]() -> GumbelResult {
   maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(mu)&&std::isnan(sigma))return fit_gumbel_newton(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -194,6 +196,16 @@ inline GumbelResult fit_gumbel_held(span x,double tol,int maxit,double mu,double
   // data near 1e150: logLik about -10^(3.66e149)): unrepresentable.
   if(!std::isfinite(ll))return {m,s,nan,it,GumbelStatus::NumericalFailure};
   return {m,s,ll,it};
+
+  }();
+  if(result.status==GumbelStatus::Ok) {
+    double sum=0,carry=0;
+    for(double v:x) {const double term=distributions::dgumbel(v,result.mu,result.sigma,true)-carry;
+      const double next=sum+term;carry=(next-sum)-term;sum=next;}
+    result.logLik=sum;
+    if(!std::isfinite(sum))result.status=GumbelStatus::NumericalFailure;
+  }
+  return result;
 }
 
 

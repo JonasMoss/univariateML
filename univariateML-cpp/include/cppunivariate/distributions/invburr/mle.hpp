@@ -153,6 +153,10 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
     double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
+  if(tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() && std::isfinite(x[0]) && x[0]>0 &&
+      (true) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+    return {NAN,NAN,NAN,NAN,0,InvBurrStatus::Unbounded};
+
   maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> reciprocal;
   double jacobian = 0.0, maximum = 0.0;
