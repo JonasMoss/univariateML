@@ -1,0 +1,7 @@
+native 9694 {'pass': 7330, 'stop': 2361, 'open fit': 3}
+double 9694 {'pass': 7328, 'stop': 2364, 'open fit': 2}
+replay (300 s guard): emg 1311 stop EMG numerical accuracy failure: score enclosure, shape bound or arithmetic could not be resolved.
+replay (300 s guard): emg 1343 stop EMG numerical accuracy failure: score enclosure, shape bound or arithmetic could not be resolved.
+replay (300 s guard): genbeta 2495 stop Generalized beta selects a limiting power law (uncertified global comparison). Use `mlpower`.
+replay (300 s guard): genbeta 2497 stop Generalized beta selects a limiting power law (uncertified global comparison). Use `mlpower`.
+replay (300 s guard): genbeta 2499 stop Generalized beta selects a limiting power law (uncertified global comparison). Use `mlpower`.

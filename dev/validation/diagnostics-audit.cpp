@@ -27,6 +27,9 @@ template<class T> void observe(const T&r,std::initializer_list<Value> values) {
 #include <algorithm>
 #include <limits>
 #include <sstream>
+#include "cppunivariate/distributions/expweibull/mle.hpp"
+#include "cppunivariate/distributions/gengamma/mle.hpp"
+#include "cppunivariate/distributions/st/mle.hpp"
 namespace audit {struct Held {bool supplied=false;double value=NAN;std::size_t length=1;};}
 template<class... T> std::string binding_message(std::string s,const T&...){return s;}
 #include "cppunivariate/distributions/bbinom/mle.hpp"
@@ -1835,6 +1838,38 @@ inline void route_zeta(cppunivariate::ispan x, audit::Held s_arg = {}, double re
 
 
 
+
+inline void route_expweibull(cppunivariate::span x,audit::Held scale_arg={},audit::Held shape_arg={},audit::Held exponent_arg={},double tol=1e-10,int iterlim=100) {
+  const auto fail=[](const std::string& s){(void)0;};
+  for(const auto& h:{scale_arg,shape_arg,exponent_arg})
+    if(h.supplied && (!(h.value>0)||!std::isfinite(h.value)))(void)0;
+  if(!(tol>0)||!std::isfinite(tol)||iterlim<1)(void)0;
+  const auto r=cppunivariate::expweibull_mle(x,tol,iterlim,
+    scale_arg.supplied?scale_arg.value:NAN,shape_arg.supplied?shape_arg.value:NAN,exponent_arg.supplied?exponent_arg.value:NAN); audit::observe(r, {{"scale",r.scale,0,INFINITY,false,false},{"shape",r.shape,0,INFINITY,false,false},{"exponent",r.exponent,0,INFINITY,false,false}});
+}
+
+inline void route_gengamma(cppunivariate::span x,audit::Held mu_arg={},audit::Held sigma_arg={},audit::Held Q_arg={},double tol=1e-10,int iterlim=100) {
+  const auto fail=[](const std::string& message){(void)0;};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const double mu=mu_arg.supplied?mu_arg.value:nan;
+  const double sigma=sigma_arg.supplied?sigma_arg.value:nan;
+  const double q=Q_arg.supplied?Q_arg.value:nan;
+  if(mu_arg.supplied && !std::isfinite(mu))(void)0;
+  if(sigma_arg.supplied && (!(sigma>0)||!std::isfinite(sigma)))(void)0;
+  if(Q_arg.supplied && !std::isfinite(q))(void)0;
+  if(!(tol>0) || !std::isfinite(tol) || iterlim<1)(void)0;
+  const auto fit=cppunivariate::gengamma_mle(x,tol,iterlim,mu,sigma,q); audit::observe(fit, {{"mu",fit.mu,-INFINITY,INFINITY,false,false},{"sigma",fit.sigma,0,INFINITY,false,false},{"Q",fit.Q,-INFINITY,INFINITY,false,false}});
+}
+
+inline void route_st(cppunivariate::span x,audit::Held xi_arg={},audit::Held omega_arg={},audit::Held alpha_arg={},audit::Held nu_arg={},double reltol=1e-10,int iterlim=200) {
+  // Invalid controls remain ordinary errors, even if a legacy fitter reports
+  // a statistical status before checking them.
+ const auto fail=[](const std::string& s){(void)0;};
+ const double nan=cppunivariate::special::kNaN;
+ const double xi=xi_arg.supplied?xi_arg.value:nan,omega=omega_arg.supplied?omega_arg.value:nan,alpha=alpha_arg.supplied?alpha_arg.value:nan,nu=nu_arg.supplied?nu_arg.value:nan;
+ if((xi_arg.supplied&&!std::isfinite(xi))||(omega_arg.supplied&&(!std::isfinite(omega)||omega<=0))||(alpha_arg.supplied&&!std::isfinite(alpha))||(nu_arg.supplied&&(!std::isfinite(nu)||nu<=0)))(void)0;
+ const auto r=cppunivariate::st_mle(x,reltol,iterlim,xi,omega,alpha,nu); audit::observe(r, {{"xi",r.xi,-INFINITY,INFINITY,false,false},{"omega",r.omega,0,INFINITY,false,false},{"alpha",r.alpha,-INFINITY,INFINITY,false,false},{"nu",r.nu,0,INFINITY,false,false}});
+}
 
 int main(){std::cout<<"family,held,input,status,finite,domain,invalid,defect,logLik,estimates\n";
 {
@@ -4047,4 +4082,86 @@ if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return
 
 
 
+{
+audit::family="expweibull";
+for(unsigned mask=0;mask<8;++mask){
+audit::held="";
+if(mask&1)audit::held+="scale+";
+if(mask&2)audit::held+="shape+";
+if(mask&4)audit::held+="exponent+";
+std::vector<std::pair<std::string,std::vector<double>>> cases={
+{"empty", {}},
+{"one", {1.4693375132488116}},
+{"constant", {1.4693375132488116,1.4693375132488116,1.4693375132488116,1.4693375132488116}},
+{"zero", {0,0,0,0}},
+{"negative", {-1,-2,-3}},
+{"unit-boundary", {0,1,0,1}},
+{"lower", {0.0,0.0,0.0,0.0}},
+{"below", {-1.0,-1.0,-1.0,-1.0}},
+{"nan", {NAN,1.4693375132488116}},
+{"posinf", {INFINITY,1.4693375132488116}},
+{"neginf", {-INFINITY,1.4693375132488116}},
+};
+for(const auto& item:cases){const auto& x=item.second;
+audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
+for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
+if(true)audit::invalid=audit::invalid||(v<0.0);
+}
+route_expweibull(cppunivariate::span{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?2.115606220671031:NAN},audit::Held{bool(mask&2),mask&2?1.4757525392389372:NAN},audit::Held{bool(mask&4),mask&4?2.336551788296802:NAN});
+if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
+}}}
+{
+audit::family="gengamma";
+for(unsigned mask=0;mask<8;++mask){
+audit::held="";
+if(mask&1)audit::held+="mu+";
+if(mask&2)audit::held+="sigma+";
+if(mask&4)audit::held+="Q+";
+std::vector<std::pair<std::string,std::vector<double>>> cases={
+{"empty", {}},
+{"one", {1.619573255559556}},
+{"constant", {1.619573255559556,1.619573255559556,1.619573255559556,1.619573255559556}},
+{"zero", {0,0,0,0}},
+{"negative", {-1,-2,-3}},
+{"unit-boundary", {0,1,0,1}},
+{"lower", {0.0,0.0,0.0,0.0}},
+{"below", {-1.0,-1.0,-1.0,-1.0}},
+{"nan", {NAN,1.619573255559556}},
+{"posinf", {INFINITY,1.619573255559556}},
+{"neginf", {-INFINITY,1.619573255559556}},
+};
+for(const auto& item:cases){const auto& x=item.second;
+audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
+for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
+if(true)audit::invalid=audit::invalid||(v<=0.0);
+}
+route_gengamma(cppunivariate::span{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?-0.1295032492125782:NAN},audit::Held{bool(mask&2),mask&2?0.9850280265624127:NAN},audit::Held{bool(mask&4),mask&4?-0.1615048969850925:NAN});
+if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
+}}}
+{
+audit::family="st";
+for(unsigned mask=0;mask<16;++mask){
+audit::held="";
+if(mask&1)audit::held+="xi+";
+if(mask&2)audit::held+="omega+";
+if(mask&4)audit::held+="alpha+";
+if(mask&8)audit::held+="nu+";
+std::vector<std::pair<std::string,std::vector<double>>> cases={
+{"empty", {}},
+{"one", {0.11024753757609822}},
+{"constant", {0.11024753757609822,0.11024753757609822,0.11024753757609822,0.11024753757609822}},
+{"zero", {0,0,0,0}},
+{"negative", {-1,-2,-3}},
+{"unit-boundary", {0,1,0,1}},
+{"nan", {NAN,0.11024753757609822}},
+{"posinf", {INFINITY,0.11024753757609822}},
+{"neginf", {-INFINITY,0.11024753757609822}},
+};
+for(const auto& item:cases){const auto& x=item.second;
+audit::input=item.first;audit::seen=false;audit::invalid=x.empty();
+for(double v:x){audit::invalid=audit::invalid||!std::isfinite(v);
+}
+route_st(cppunivariate::span{x.data(),x.size()},audit::Held{bool(mask&1),mask&1?-0.03653902339831142:NAN},audit::Held{bool(mask&2),mask&2?0.9203517933038026:NAN},audit::Held{bool(mask&4),mask&4?0.10872382389965032:NAN},audit::Held{bool(mask&8),mask&8?4.831511243261548:NAN});
+if(!audit::seen){std::cerr<<audit::family<<": missing core observation\n";return 2;}
+}}}
 return audit::defects?1:0;}

@@ -5,6 +5,8 @@ No fitter is mocked: validation-only routes extracted from binding headers
 observe core results before binding diagnostics and bypass binding guards.
 Integer spans cannot represent fractional/NaN/Inf input; R checks conversion.
 Run: python3 dev/validation/diagnostics.py --generate build/diagnostics
+(--add-to dev/validation/diagnostics-audit.cpp --families a,b splices new
+families into the checked-in sweep, keeping its other routes verbatim)
 Then compile generated audit.cpp with the core and Boost include directories.
 Copy it to dev/validation/diagnostics-audit.cpp to update the dev-tier test.
 """
@@ -13,29 +15,63 @@ import yaml
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 DISTS = ROOT/'univariateML-cpp/include/cppunivariate/distributions'
 
+def block_end(text,start):
+    depth=0;quoted=False;escape=False
+    for i in range(start,len(text)):
+        c=text[i]
+        if escape:escape=False;continue
+        if quoted and c=='\\':escape=True;continue
+        if c=='"':quoted=not quoted;continue
+        if quoted:continue
+        if c=='{':depth+=1
+        elif c=='}':
+            depth-=1
+            if depth==0:return i+1
+    raise ValueError('unclosed generated diagnostic block')
+
+BINDING_ONLY=('FitResult','finite_stop_payload','outcome_kind','with_outcome','stop_failure','overridden','invalid_argument')
+def strip_binding_lambdas(route):
+    """Drop helper lambdas that classify binding results; they run only after the observation point."""
+    pos=0
+    while (m:=re.compile(r'\n[ \t]*const auto \w+ *= *\[[^\]]*\]').search(route,pos)):
+        try:
+            end=route.index(';',block_end(route,route.index('{',m.end())))+1
+        except ValueError:
+            break
+        if any(t in route[m.start():end] for t in BINDING_ONLY):route=route[:m.start()]+route[end:];pos=m.start()
+        else:pos=end
+    return route
+
+def splice(existing,generated,families):
+    """Insert the families' includes, routes and blocks of a fresh generation into an existing sweep."""
+    text=existing
+    for id in families:
+        if 'audit::family="'+id+'";' in text:raise ValueError(id+' already in the sweep')
+        marker=generated.index('inline void route_'+id+'(')
+        route=generated[marker:block_end(generated,generated.index('{',generated.index(') {',marker)))]
+        route=strip_binding_lambdas(route)
+        includes=[l for l in generated.splitlines() if l.startswith('#include') and ('/'+id+'/' in l) and l not in text]
+        last=text.rindex('\n',0,text.index('namespace audit {struct Held'))
+        text=text[:last+1]+''.join(l+'\n' for l in includes)+text[last+1:]
+        text=text.replace('int main(){',route+'\n\nint main(){',1)
+        at=generated.index('audit::family="'+id+'";'); start=generated.rfind('{',0,at)
+        block=generated[start:block_end(generated,start)]
+        text=text.replace('return audit::defects?1:0;}',block+'\nreturn audit::defects?1:0;}',1)
+    return text
+
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--generate',type=pathlib.Path,required=True)
     ap.add_argument('--retire-existing',type=pathlib.Path,
                     help='prune removed public ids from an existing generated sweep, preserving its surviving routes verbatim')
-    args=ap.parse_args()
+    ap.add_argument('--add-to',type=pathlib.Path,
+                    help='splice the --families routes into this existing generated sweep, preserving its other routes verbatim')
+    ap.add_argument('--families',help='comma-separated public ids for --add-to')
+    args=ap.parse_args(); options=args
     out=args.generate.resolve(); out.mkdir(parents=True,exist_ok=True)
     if args.retire_existing:
         source=args.retire_existing.read_text()
         live={p.name for p in DISTS.iterdir() if (p/'mle.hpp').exists()}
         retired=set(re.findall(r'audit::family="([^"]+)"',source))-live
-        def block_end(text,start):
-            depth=0;quoted=False;escape=False
-            for i in range(start,len(text)):
-                c=text[i]
-                if escape:escape=False;continue
-                if quoted and c=='\\':escape=True;continue
-                if c=='"':quoted=not quoted;continue
-                if quoted:continue
-                if c=='{':depth+=1
-                elif c=='}':
-                    depth-=1
-                    if depth==0:return i+1
-            raise ValueError('unclosed generated diagnostic block')
         for id in sorted(retired):
             marker=re.search(r'inline void route_'+re.escape(id)+r'\(',source)
             if marker:
@@ -120,7 +156,10 @@ template<class T> void observe(const T&r,std::initializer_list<Value> values) {
         # cmb uses an assignment after the size-held branch.
         if id=='cmb':
             text=text.replace('switch (res.status)', 'audit::observe(res, {{"size",trials,0,INFINITY,true,false},{"prob",res.prob,0,1,true,true},{"nu",res.nu,-INFINITY,INFINITY,false,false}});\n  switch (res.status)')
-        if not hits and id!='cmb':raise RuntimeError(id)
+        # cmp computes its core result in an immediately invoked lambda.
+        if id=='cmp':
+            text=text.replace(' }();\n  const auto o = cppunivariate::outcome(res);',' }(); audit::observe(res, {{"lambda",std::exp(res.eta),0,INFINITY,true,false},{"nu",res.nu,0,INFINITY,true,false}});\n  const auto o = cppunivariate::outcome(res);',1)
+        if not hits and id not in ('cmb','cmp'):raise RuntimeError(id)
         includes=re.findall(r'^#include [<"](?:cppunivariate/[^"\n]+|[^"\n]+)[>"]$',text,re.M)
         src.extend(i for i in includes if '../../' not in i and 'fit.hpp' not in i)
         start=text.index('inline FitResult fit_')
@@ -133,7 +172,7 @@ template<class T> void observe(const T&r,std::initializer_list<Value> values) {
         route=re.sub(r'^  const auto fail = .*\n','',route,flags=re.M)
         # Remove binding guards from this validation-only route, so bad data
         # reaches the actual core. Parse quoted messages including semicolons.
-        pattern=re.compile(r'return (?:fail|failure)\(')
+        pattern=re.compile(r'return (?:fail|failure|invalid_argument|with_outcome|stop_failure|overridden)\(')
         while (match:=pattern.search(route)):
             pos=match.end();depth=1;quoted=False;escape=False
             while depth:
@@ -193,5 +232,9 @@ template<class T> void observe(const T&r,std::initializer_list<Value> values) {
         blocks.extend(b)
     src.extend(routes)
     src.extend(['int main(){std::cout<<"family,held,input,status,finite,domain,invalid,defect,logLik,estimates\\n";']+blocks+['return audit::defects?1:0;}'])
-    (out/'audit.cpp').write_text('\n'.join(src)+'\n')
+    generated='\n'.join(src)+'\n'
+    if options.add_to:
+        generated=splice(options.add_to.read_text(),generated,options.families.split(','))
+        print('Added diagnostic ids:',options.families)
+    (out/'audit.cpp').write_text(generated)
 if __name__=='__main__':main()

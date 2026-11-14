@@ -588,7 +588,9 @@ estimates.
 
 Failures are compared with `strict-known.json`: one not listed makes the run
 fail; a listed one that passes is reported and removed with `--prune`. Adding
-entries (`--add <card>`) is a reviewed decision. The list was seeded on master
+entries (`--add <card>`, `--match REGEX` to restrict, `--finding SLUG` to group
+the entries of a new card) is a reviewed decision. Every strict script shares
+the list (`strict_common.py`) and prunes only its own checks. Its first part was seeded on master
 `423aea9b` (85 fitted families and the 16 modifier routes, 13,754 cases per
 mode) with 21 entries: the 12 cases whose kind depends on the precision mode
 (TASK-214.13); 3 nesting failures in each mode (nhyper twice, the free-size
@@ -596,3 +598,76 @@ binomial window once; all flagged uncertified, 3.5 to 10 log-likelihood units
 below a fit that holds more) and the double-only EMG case that hits the CPU
 guard (TASK-214.5); and cauchy returning a nonexistence stop for an empty
 sample (TASK-214.3).
+
+### Strict layer: checks with a density or a refinement
+
+Four more checks judge the same snapshots, with the same arguments, list and
+ratchet; `just strict` runs them all. The first three read only the snapshot
+and rebuild every input with `fit-snapshot.py`'s own `cases()`, verifying the
+recorded input hash.
+
+- `fit-density.py` (`density`): every estimate's `logLik`, every limit stop's
+  `limit_loglik` at its `limit_estimates` where the limit model has a C++
+  density (a family or a modifier law), and every tie candidate's stated
+  bounds, against the exact sum (`math.fsum`) of the C++ log density from
+  `dpqr.hpp`, compiled in the snapshot's precision mode. A value passes when
+  `|R - S| <= 1e-10 * max(1, |R|) + n * eps * sum|log f(x_i)|`: the accuracy
+  contract's `logLik` tolerance plus a bound on the rounding of an `n`-term
+  sum. Modifier routes use their law (`dtbinom`, `dtnorm`, `dtpois`, the
+  zero-modified laws, and the zeta window's `zeta_window_eval`, which admits
+  negative exponents), with unheld window bounds rebuilt from the data as the
+  route does. Each failure of a dossier family carries an independent mpmath
+  value at the exact binary64 inputs (`seam_reference.py`) saying whether the
+  reported value or the density is off. Limit models without a C++ density
+  (`unavailable:*`) are listed as not checked.
+- `fit-consistency.py` (`phenomenon:<rule>`): the outcome kind and reason of
+  the degenerate and invalid classes (empty, NaN, infinite, negative, zeros,
+  one, two, constant, ties, near-constant), checked against rules that hold for
+  every family: an empty or non-finite sample ends in `failure(invalid-input)`;
+  `one` and `constant` (the same value once and four times, whose likelihoods
+  are powers of each other) end in the same kind and reason; observations with
+  a finite C++ log likelihood at the golden coefficients never end in
+  `invalid-input` or `invalid-argument`; observations beyond a support bound
+  fixed by the held values end in `invalid-input`; constant data with free
+  location and scale end in `nonexistence(unbounded)`; constant data with a
+  free scale or rate never end in a numerical failure. `--table FILE` writes
+  the outcome table.
+- `fit-refine.py` (`refine`): the accuracy contract. For every golden sample
+  and a seeded sample of archive cases (at most ten all-free and ten
+  one-held per family and route, drawn from the cases that are estimates in
+  the stored baseline of `c167a975`), the returned estimate is refined at 50
+  digits with the dossier's symbolic density by `quality/reference.py`
+  unchanged (each case is handed to it as a golden in a shadow folder),
+  falling back to Newton in coordinates scaled by each coefficient's size, at
+  50, 100 or 200 digits, where `reference()` stops on scale alone. A free
+  coefficient fails when `|theta_hat - theta_star| > 1e-10 * max(|theta_star|, s)`,
+  `s` the fitted scale for a location, 1 for another coefficient that can be
+  zero or change sign, 0 for a strictly positive one. References are cached
+  in `strict-refine.jsonl.gz`, keyed by input and density source; `--cache-only`
+  (as in `just strict`) judges from the cache and lists cases without an
+  entry. Coefficients the refinement does not determine (integer, kink,
+  support bound without a closed form, on a domain bound) and cases it cannot
+  settle are listed, with the reason, not failed. Refilling the cache is a
+  separate, budgeted run: `/tmp/umvl-cpu/run python3 dev/validation/fit-refine.py
+  NATIVE DOUBLE --budget 450` (repeat until nothing is left; about 46 CPU
+  minutes from empty).
+- `strict-seam.py` (`seam`, `seam-open`) runs `seam-check.py` in each mode into
+  `build/strict/seam/` (resumable; refits every case after a source change)
+  and judges its records: a disagreement or a support violation fails, and a
+  fit without a terminal result fails if it still has none when replayed with
+  the snapshot's 300 s guard.
+
+```sh
+/tmp/umvl-cpu/run just strict                         # build/snapshots/{native,double} with routes
+/tmp/umvl-cpu/run just strict NATIVE DOUBLE           # comma-separated snapshots, one mode each
+/tmp/umvl-cpu/run just strict NATIVE none             # native only
+```
+
+`just strict` exits nonzero on any failure not in `strict-known.json`. The
+first run in a worktree refits the seam census (about 15 CPU minutes per
+mode); later runs reuse it while sources are unchanged. The entries of these
+checks were seeded on the stored baselines of `c167a975`; the
+[report](../research/evaluations/2026-11-13-strict-2-report.md) gives the
+tolerances, the distributions behind them, the consistency table and the open
+rule questions.
+

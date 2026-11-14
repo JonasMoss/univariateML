@@ -1,0 +1,259 @@
+
+native: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  bbinom                        137    3.5e-16    5.6e-14    1.2e-13          0
+  beta                          105          0    8.7e-15    2.5e-11          0
+  betapr                        182    3.1e-16    1.9e-14    9.9e-14          0
+  bhatt                         165          0        inf        inf          6
+  binom                          84          0    5.3e-15    1.4e-14          0
+  binom +truncate=tbinom        240          0    7.9e-14      3e-12          0
+  binom+zero=inflated           148          0      2e-16    3.5e-15          0
+  binom+zero=modified           148          0    2.2e-16    2.2e-16          0
+  binom+zero=truncated           83          0          0    1.7e-16          0
+  bnbinom                       125          0    4.5e-15    5.4e-15          0
+  burr                          203          0    1.5e-10      2e-07          4
+  cauchy                         86          0     0.0001    0.00012          3
+  cmb                            90          0    1.7e-16    1.9e-16          0
+  cmp                            58          0    1.7e-16    1.7e-16          0
+  dgamma                         68          0    2.2e-16    4.2e-16          0
+  dlaplace                       66          0    1.7e-16    1.8e-16          0
+  dnorm                          67          0    1.9e-16    2.1e-16          0
+  dunif                          79          0          0          0          0
+  dweibull                       61          0    1.9e-16    2.2e-16          0
+  emg                           114          0    2.1e-16      4e-16          0
+  exp                            62          0    2.4e-16    4.4e-16          0
+  expweibull                      2    4.4e-16    4.4e-16    4.4e-16          0
+  fatigue                        89    1.5e-16    3.1e-14    4.7e-14          0
+  foldnorm                      113    1.1e-16      1e-15      1e-15          0
+  fpareto                       367    5.8e-16    1.5e-14    3.7e-13          0
+  frechet                       182    1.7e-16      2e-15    3.7e-14          0
+  gamma                         114    1.5e-16      0.036      0.041          2
+  gb2                           347    4.6e-16    3.6e-14    6.8e-14          0
+  ged                           145          0    1.1e-06      0.079          4
+  genbeta                       146          0    3.1e-15    7.5e-14          0
+  gengamma                       15    1.8e-16    4.4e-16    4.4e-16          0
+  geom                           48          0    4.2e-15    4.2e-15          0
+  geom+zero=modified             76          0      2e-16    1.8e-15          0
+  geom+zero=truncated            35          0    2.2e-16    2.2e-16          0
+  gev                           157    2.1e-17    3.9e-16    2.3e-13          0
+  gompertz                       89    1.7e-16    1.9e-15    2.3e-15          0
+  gpd                           100          0    6.7e-16    1.3e-15          0
+  gumbel                        102          0    0.00016     0.0019          2
+  hcauchy                       119          0    3.7e-16    4.2e-06          1
+  hnorm                         102          0    5.6e-16    0.00045          1
+  ht                            215          0    4.4e-16    8.4e-06          1
+  huber                         142          0    3.1e-16    3.1e-16          0
+  hyper                         123          0    7.1e-16    1.1e-15          0
+  invburr                       203    1.2e-16      4e-11    8.9e-11          0
+  invexp                         64          0    8.1e-15      2e-14          0
+  invgamma                      113    2.3e-16    1.6e-14    2.2e-14          0
+  invgauss                      118          0          0    1.6e-16          0
+  invparalogis                   99    1.2e-16      2e-14      2e-14          0
+  invpareto                     108    1.3e-16    5.6e-16      8e-16          0
+  invtrgamma                    148    1.4e-16    4.1e-07    0.00075          2
+  invweibull                    101    1.7e-16    6.2e-15    1.1e-14          0
+  kumar                          85    1.5e-16    8.9e-16    1.1e-15          0
+  laplace                        92          0    1.1e-15    0.00045          1
+  lgamma                         96      2e-16    1.1e-14    2.1e-14          0
+  lgser                          46          0    2.5e-09    2.5e-09          1
+  lgser+zero=modified            76          0    4.1e-16    4.3e-16          0
+  llogis                        106          0    7.8e-16    2.2e-15          0
+  lnorm                         119          0    4.1e-16    4.8e-16          0
+  logis                          91    1.2e-16     0.0025     0.0036          4
+  logitnorm                     106    1.7e-16    3.2e-15    5.2e-15          0
+  lomax                          97    1.1e-16    1.7e-15        inf          1
+  lst                           145    1.2e-16    4.9e-05    0.00015          2
+  naka                          109    1.9e-16    1.7e-14    4.3e-14          0
+  nbinom                         84          0    6.8e-15    2.6e-11          0
+  nbinom+zero=inflated          134    2.7e-16    3.4e-14    3.6e-14          0
+  nbinom+zero=modified          137    2.5e-16      3e-14    3.2e-14          0
+  nbinom+zero=truncated          75    3.6e-16    2.4e-14    3.1e-14          0
+  nhyper                        128          0          0    1.3e-16          0
+  norm                           91          0    3.6e-16      5e-16          0
+  norm +truncate=tnorm          226          0    1.6e-16    1.9e-16          0
+  nsbeta                         95    1.3e-16    1.2e-14    4.8e-11          0
+  paralogis                      90          0    9.1e-14    1.2e-13          0
+  pareto                        101          0    2.4e-16    1.7e-15          0
+  pareto2                       109          0    2.6e-16        inf          1
+  pareto3                        94          0    2.2e-16    5.2e-16          0
+  pareto4                       187          0      2e-11    5.6e-10          2
+  pig                            73          0    1.5e-16    4.4e-15          0
+  pois                           48          0    4.4e-15    4.4e-15          0
+  pois +truncate=tpois          132          0    1.8e-16    1.9e-16          0
+  pois+zero=inflated             76          0    3.7e-15    4.4e-15          0
+  pois+zero=modified             76          0    2.8e-11    9.3e-09          1
+  pois+zero=truncated            47          0    9.3e-09    9.3e-09          1
+  power                         103    2.6e-18    8.5e-16    1.1e-15          0
+  rayleigh                       69          0    1.2e-13    0.00056          1
+  sged                          162    1.5e-16        inf        inf          8
+  sgomp                          93          0    2.3e-14    4.6e-13          0
+  skellam                        75          0    2.3e-16    2.1e-15          0
+  slash                          76    1.1e-16      4e-12    9.5e-12          0
+  sn                            143          0    2.7e-16    3.3e-16          0
+  snorm                         114          0    3.4e-16     0.0001          1
+  sstd                          104    1.3e-16    2.8e-12    4.2e-11          0
+  st                            224    1.9e-16     0.0001        inf          3
+  std                           141    1.7e-16    4.9e-05    0.00015          2
+  tlambda                       168          0    4.9e-16    2.3e-15          0
+  trgamma                       171          0    1.3e-10    6.4e-07          4
+  triang                        176          0    2.9e-16    6.1e-16          0
+  unif                          101          0    1.5e-16    1.8e-16          0
+  weibull                       113          0     0.0025      0.035          2
+  yulesimon                      27          0    1.8e-16    1.8e-16          0
+  zeta                           30          0    2.7e-16    2.7e-16          0
+  zeta +truncate=zipf            72          0    1.7e-16    1.9e-16          0
+
+double: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  bbinom                        137    3.5e-16    5.6e-14    1.2e-13          0
+  beta                          105          0    1.4e-14    2.5e-11          0
+  betapr                        182    3.7e-16    1.3e-14    9.8e-14          0
+  bhatt                         163          0        inf        inf          6
+  binom                          84          0    4.1e-15    2.4e-14          0
+  binom +truncate=tbinom        240          0    7.9e-14      3e-12          0
+  binom+zero=inflated           148          0      2e-16    3.5e-15          0
+  binom+zero=modified           148          0    2.2e-16    2.2e-16          0
+  binom+zero=truncated           83          0          0    1.7e-16          0
+  bnbinom                       125          0    4.5e-15    5.4e-15          0
+  burr                          203          0    1.5e-10      2e-07          4
+  cauchy                         86          0     0.0001    0.00012          3
+  cmb                            90          0    1.9e-16    3.7e-16          0
+  cmp                            58          0    4.3e-16    5.3e-16          0
+  dgamma                         66          0    2.1e-16    4.2e-16          0
+  dlaplace                       66          0    1.7e-16    1.8e-16          0
+  dnorm                          67          0    1.9e-16    2.1e-16          0
+  dunif                          79          0          0          0          0
+  dweibull                       61          0    1.9e-16    2.2e-16          0
+  emg                           114          0    3.4e-16    3.5e-16          0
+  exp                            62          0    2.4e-16    4.4e-16          0
+  expweibull                      2          0          0          0          0
+  fatigue                        89    1.5e-16    3.1e-14    4.7e-14          0
+  foldnorm                      113    1.1e-16      1e-15      1e-15          0
+  fpareto                       367    5.8e-16    2.1e-14    3.7e-13          0
+  frechet                       182    1.7e-16      2e-15    3.7e-14          0
+  gamma                         113    2.2e-16      0.036      0.041          2
+  gb2                           347    4.3e-16    3.3e-14    4.8e-14          0
+  ged                           145          0    1.1e-06      0.079          4
+  genbeta                       146          0    3.1e-15    7.5e-14          0
+  gengamma                       15    1.8e-16    5.6e-16    5.6e-16          0
+  geom                           48          0    4.2e-15    4.2e-15          0
+  geom+zero=modified             76          0      2e-16    1.8e-15          0
+  geom+zero=truncated            35          0    2.2e-16    2.2e-16          0
+  gev                           157      1e-17    3.9e-16    2.3e-13          0
+  gompertz                       89    1.5e-16    1.9e-15    2.3e-15          0
+  gpd                           100          0    6.7e-16    1.3e-15          0
+  gumbel                        102          0    0.00016     0.0019          2
+  hcauchy                       119          0    3.7e-16    4.2e-06          1
+  hnorm                         102          0    5.6e-16    0.00045          1
+  ht                            215          0    4.4e-16    8.4e-06          1
+  huber                         142          0    4.1e-16    4.4e-16          0
+  hyper                         123          0      3e-14    3.2e-14          0
+  invburr                       203    1.2e-16      4e-11    8.9e-11          0
+  invexp                         64          0      8e-15      2e-14          0
+  invgamma                      113    2.3e-16    1.6e-14    2.2e-14          0
+  invgauss                      118          0          0    1.6e-16          0
+  invparalogis                   99    1.3e-16      2e-14      2e-14          0
+  invpareto                     108    1.4e-16    5.6e-16      8e-16          0
+  invtrgamma                    148    1.7e-16    4.1e-07    0.00075          2
+  invweibull                    101    1.7e-16    6.2e-15    1.1e-14          0
+  kumar                          85    1.5e-16    8.9e-16    1.1e-15          0
+  laplace                        92          0    1.1e-15    0.00045          1
+  lgamma                         96      2e-16    7.3e-15    1.8e-14          0
+  lgser                          46          0    2.5e-09    2.5e-09          1
+  lgser+zero=modified            76          0    4.1e-16    4.3e-16          0
+  llogis                        106          0    7.8e-16    2.2e-15          0
+  lnorm                         119          0    4.1e-16    4.8e-16          0
+  logis                          91    1.2e-16     0.0025     0.0036          4
+  logitnorm                     106    1.7e-16    3.2e-15    5.2e-15          0
+  lomax                          97    1.1e-16    1.9e-15        inf          1
+  lst                           145    1.2e-16    4.9e-05    0.00015          2
+  naka                          109    1.9e-16    3.8e-15    5.3e-15          0
+  nbinom                         84          0    6.8e-15    2.6e-11          0
+  nbinom+zero=inflated          134    2.3e-16    3.4e-14    3.6e-14          0
+  nbinom+zero=modified          137    1.8e-16      3e-14    3.2e-14          0
+  nbinom+zero=truncated          75    3.3e-16    2.4e-14    3.1e-14          0
+  nhyper                        128          0      2e-16    2.1e-16          0
+  norm                           91          0    4.9e-16      5e-16          0
+  norm +truncate=tnorm          226          0    1.2e-16    1.7e-16          0
+  nsbeta                         95    1.3e-16      9e-15    4.8e-11          0
+  paralogis                      90    1.2e-16    1.2e-15    3.2e-15          0
+  pareto                        101          0    2.4e-16    1.7e-15          0
+  pareto2                       109          0    4.5e-16        inf          1
+  pareto3                        94          0    2.2e-16    5.2e-16          0
+  pareto4                       187          0      2e-11    5.6e-10          2
+  pig                            73          0    1.5e-16    4.4e-15          0
+  pois                           48          0    4.4e-15    4.4e-15          0
+  pois +truncate=tpois          132          0    1.8e-16    1.9e-16          0
+  pois+zero=inflated             76          0    3.7e-15    4.4e-15          0
+  pois+zero=modified             76          0    2.8e-11    9.3e-09          1
+  pois+zero=truncated            47          0    9.3e-09    9.3e-09          1
+  power                         103    1.2e-16    2.6e-15    4.1e-15          0
+  rayleigh                       69          0    1.2e-13    0.00056          1
+  sged                          162    1.5e-16        inf        inf          8
+  sgomp                          93          0    2.3e-14    4.6e-13          0
+  skellam                        75          0    2.3e-16    1.9e-15          0
+  slash                          76    1.1e-16      4e-12    9.5e-12          0
+  sn                            143          0    2.7e-16    3.3e-16          0
+  snorm                         111    1.1e-16      3e-15     0.0001          1
+  sstd                          104    1.6e-16    2.8e-12    4.2e-11          0
+  st                            225    1.9e-16     0.0001        inf          3
+  std                           141      2e-16    4.9e-05    0.00015          2
+  tlambda                       168          0    4.9e-16    2.3e-15          0
+  trgamma                       171    1.1e-16    1.3e-10    6.4e-07          4
+  triang                        176          0    2.9e-16    6.1e-16          0
+  unif                          101          0          0          0          0
+  weibull                       113          0     0.0025      0.035          2
+  yulesimon                      27          0    1.8e-16    1.8e-16          0
+  zeta                           30          0    2.7e-16    2.7e-16          0
+  zeta +truncate=zipf            72          0    1.7e-16    1.9e-16          0
+
+not checked (no C++ density for the model, or coefficients missing):
+  double bbinom: limit model has no C++ density: 3
+  double cmb: limit model has no C++ density: 23
+  double cmp: limit model has no C++ density: 12
+  double dgamma: limit model has no C++ density: 5
+  double dlaplace: limit model has no C++ density: 11
+  double dnorm: limit model has no C++ density: 10
+  double dweibull: limit model has no C++ density: 12
+  double emg: limit model has no C++ density: 34
+  double genbeta: limit model has no C++ density: 3
+  double lgser: limit model has no C++ density: 1
+  double norm +truncate=tnorm: candidate#0 model has no C++ density: 1
+  double norm +truncate=tnorm: candidate#1 tnorm lacks mean,sd: 1
+  double norm +truncate=tnorm: limit model has no C++ density: 20
+  double sged: candidate#0 model has no C++ density: 2
+  double sged: candidate#1 model has no C++ density: 2
+  double sged: limit model has no C++ density: 92
+  double sn: limit model has no C++ density: 20
+  double snorm: candidate#0 model has no C++ density: 4
+  double snorm: limit model has no C++ density: 14
+  double st: limit model has no C++ density: 30
+  double yulesimon: limit model has no C++ density: 8
+  double zeta +truncate=zipf: limit model has no C++ density: 3
+  double zeta: limit model has no C++ density: 5
+  native bbinom: limit model has no C++ density: 3
+  native cmb: limit model has no C++ density: 23
+  native cmp: limit model has no C++ density: 12
+  native dgamma: limit model has no C++ density: 5
+  native dlaplace: limit model has no C++ density: 11
+  native dnorm: limit model has no C++ density: 10
+  native dweibull: limit model has no C++ density: 12
+  native emg: limit model has no C++ density: 34
+  native genbeta: limit model has no C++ density: 3
+  native lgser: limit model has no C++ density: 1
+  native norm +truncate=tnorm: candidate#0 model has no C++ density: 1
+  native norm +truncate=tnorm: candidate#1 tnorm lacks mean,sd: 1
+  native norm +truncate=tnorm: limit model has no C++ density: 20
+  native sged: candidate#0 model has no C++ density: 2
+  native sged: candidate#1 model has no C++ density: 2
+  native sged: limit model has no C++ density: 92
+  native sn: limit model has no C++ density: 20
+  native snorm: candidate#0 model has no C++ density: 5
+  native snorm: limit model has no C++ density: 14
+  native st: limit model has no C++ density: 30
+  native yulesimon: limit model has no C++ density: 8
+  native zeta +truncate=zipf: limit model has no C++ density: 3
+  native zeta: limit model has no C++ density: 5
+
+fit-density: failures by check: {'density': 40, 'density:limit': 82}
+fit-density: 122 listed as known, 0 new, 0 listed but passing
