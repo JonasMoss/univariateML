@@ -201,7 +201,7 @@ The normal (Gaussian) distribution is a symmetric distribution on the real line,
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
-The estimated `sd` uses the variance with divisor $n$, rather than the unbiased divisor $n-1$. It is the residual root mean square about the exact sample mean, which near ties can differ from the returned, rounded mean by a large fraction of the spread: on $(1,1,1+2^{-52})$ the mean rounds to 1, residuals about 1 give $2^{-52}/\sqrt3$, and the MLE is $2^{-52}\sqrt2/3$. With the mean free and sd held, the maximized likelihood likewise uses the exact mean.
+The estimated `sd` uses the variance with divisor $n$, rather than the unbiased divisor $n-1$. It is the residual root mean square about the exact sample mean, which near ties can differ from the returned, rounded mean by a large fraction of the spread: on $(1,1,1+2^{-52})$ the mean rounds to 1, residuals about 1 give $2^{-52}/\sqrt3$, and the MLE is $2^{-52}\sqrt2/3$. The reported log likelihood is the value at the returned coefficients, so on that sample it lies $n\delta^2/(2\,\mathrm{sd}^2) = 3/4$ below the supremum, $\delta = -2^{-52}/3$ being the rounding of the mean (accuracy contract, "Log likelihood").
 
 
 With mean held, scale is the root mean square residual about that value. Scale collapses only when every observation equals the held mean. Holding sd removes collapse, including for constant samples.
