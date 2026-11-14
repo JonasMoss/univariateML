@@ -8,6 +8,33 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-14
 
+- **Controls for 2.0 (step 5c)** (Jonas, TASK-214.23). `iterlim` keeps its
+  per-family defaults ("Keep per-family iterlim"); unifying to 100 would have
+  lowered the budget of 42 families. Closed-form families stay without
+  controls ("Fine with special case, it can go in options anyway"): `tol` and
+  `iterlim` are named entries in `...`, so signatures need not be uniform.
+  `zero` and `truncate` become explicit formals after `...`
+  ("zero and truncate will not go in options. We will not be fully
+  explicit"): `mlpois(x, na.rm = FALSE, ..., zero = "none", truncate = NULL)`,
+  `truncate` alone on families without a zero setting; held coefficients,
+  `tol` and `iterlim` stay in `...`. Breaking changes are allowed. Inventory
+  and job split: [controls inventory](../research/evaluations/2026-11-14-controls-inventory.md).
+- **Strict-layer rules: the five recommendations** (Jonas: "Lets go with
+  recommendations", TASK-214.24): near-constant data never end in
+  no-convergence, evaluation, invalid-input or unsupported (conditioning,
+  tolerance, unresolved allowed; kumar a declared exception); one observation
+  ends like constant data, `unsupported` only below a declared `min_n`; two
+  observations with three or more free coefficients have one recorded answer
+  per family, never a numerical failure; a likelihood that is zero for every
+  coefficient is `invalid-input`; ties follow the declared tail exponent
+  `sigma^(alpha (n - k) - k)`. Memo:
+  [strict rule questions](../research/2026-11-14-strict-rule-questions.md).
+- **Pathological families held for later** (Jonas: "Let's hold this for
+  later", TASK-214.25). Design note with the `sinexp` and `ssqnorm` proposal
+  and the finding that the literal sine family has maximizers on binary64
+  data: [pathological families](../research/2026-11-14-pathological-families.md).
+
+
 - **`logLik` is the log likelihood at the returned coefficients** (Jonas:
   "sounds reasonable ... so we can use your suggestion for this version, at
   least"). When the exact maximizer is not representable, the returned point
