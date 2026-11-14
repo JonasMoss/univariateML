@@ -19,7 +19,7 @@ true when it is done.
 | 5 | 5a done (every fit rendered from its outcome; ties decided by the rule). 5b running (jobs `core5b-a` to `-d`): each family's core decides its own outcome, and its strict entries under TASK-214.15 to .18 are fixed. 5c decided 2026-11-14 (per-family `iterlim`, closed-form families without controls, explicit `zero`/`truncate` formals after `...`); briefed after 5b merges, from the [controls inventory](../research/evaluations/2026-11-14-controls-inventory.md). |
 | 6 | Built: `just strict` runs `fit-judge.py`, the summed-density check, same-phenomenon rules, a 50-digit refinement (cached) and the seam check against `strict-known.json` (340 entries on the `c167a975` baselines, each with a card). New findings: `Ok` fits whose `logLik` is off the density (TASK-214.15), limit payloads off the limit model (TASK-214.16), invalid-data statuses (TASK-214.17). Left: five rule questions ([report](../research/evaluations/2026-11-13-strict-2-report.md)); 204 refinement cases unsettled. |
 | 7 | Held for later (Jonas, 2026-11-14); [design note](../research/2026-11-14-pathological-families.md). |
-| 8 | Not started. |
+| 8 | 8a done 2026-11-14: [inventory and design](certificate-replay.md) of the certificate comparisons (eight mechanisms); `cert-replay.py` replays nbinom and lomax in interval and exact arithmetic inside `just strict` (no disagreement on the `7e3c9779` baselines). Next: the replay jobs listed in the [report](../research/evaluations/2026-11-14-cert-replay-report.md), family by family as step 5b merges; the outward-rounding pilot after 5b. |
 
 The pattern of the pilot, for the remaining families: an overload
 `outcome(const <Family>Result&)` next to the fitter; in the adapter,
