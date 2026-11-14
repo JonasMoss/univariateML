@@ -14,7 +14,7 @@ HERE = Path(__file__).resolve().parent
 ARCHIVE = ROOT/'dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz'
 KNOWN = HERE/'strict-known.json'
 NOTE = ('Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, '
-        'fit-refine.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when '
+        'fit-refine.py, cert-replay.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when '
         'fixed (--prune); adding one (--add) is a reviewed decision with a card.')
 
 _snapshot = None
