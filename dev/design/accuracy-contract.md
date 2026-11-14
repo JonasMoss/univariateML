@@ -78,6 +78,16 @@ by at most an allowance the family dossier states; for a cusp of power `nu`
 it is about `eps^nu` per cusp observation (1e-4 at `nu = 0.3`). Returned
 coefficients never place an observation outside the support.
 
+A steep maximizer that is not representable is a third case (decided
+2026-11-14): the likelihood is smooth, but a coefficient rounds by more than
+the curvature tolerates. For the normal, a mean that rounds by $\delta$ puts
+the returned point $n\delta^2/(2\sigma^2)$ below the supremum, 0.75 on
+`(1, 1, 1 + 2^-52)`; this exceeds the tolerance once the relative spread of
+the data is near $10^{-11}$. Then `logLik` is the log likelihood at the
+returned coefficients, not the supremum, so it equals the summed log density
+(checked by `dev/validation/fit-density.py`). The cusp and endpoint
+allowances above stand until reviewed (TASK-214.15).
+
 ## d/p/q
 
 Every `dpqr.hpp` function is accurate for the exact binary64 arguments it

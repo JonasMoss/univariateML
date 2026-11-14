@@ -6,6 +6,25 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-14
+
+- **`logLik` is the log likelihood at the returned coefficients** (Jonas:
+  "sounds reasonable ... so we can use your suggestion for this version, at
+  least"). When the exact maximizer is not representable, the returned point
+  can lie measurably below the supremum: for the normal on `(1, 1, 1 + 2^-52)`
+  the mean rounds by `delta = -2^-52/3`, and the returned point is
+  `n delta^2 / (2 sd^2) = 0.75` below it (117.86 against 118.61). `logLik`
+  reports the value at the returned point, so `logLik(fit)` equals the summed
+  `dml(x, fit, log = TRUE)` and the strict layer's density check applies.
+  This narrows the contract's "maximized value" rule; its documented cusp and
+  endpoint allowances (SGED, GED) stand until reviewed. Alternative considered: report the supremum (right for model
+  selection, but not reproducible from `coef()`); it can return later as a
+  separate field if model selection needs it. It matters only for data whose
+  relative spread is near `1e-11` or below. Rule:
+  [accuracy contract](../design/accuracy-contract.md#log-likelihood);
+  families that break it today: TASK-214.15 (norm in branch
+  `claude/norm-loglik`, unfinished).
+
 ## 2026-11-13
 
 - **The family status enums stay, as family detail under the shared outcome**
