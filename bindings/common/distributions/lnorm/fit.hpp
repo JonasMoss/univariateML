@@ -5,14 +5,7 @@
 #include <cmath>
 namespace umvl_binding {
 inline FitResult fit_lnorm(cppunivariate::span x, Held meanlog_arg = {}, Held sdlog_arg = {}) {
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held meanlog = meanlog_arg;
@@ -34,21 +27,14 @@ inline FitResult fit_lnorm(cppunivariate::span x, Held meanlog_arg = {}, Held sd
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, meanlog_held, sdlog_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (res.status == cppunivariate::LognormalStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(res.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"meanlog",meanlog_arg.supplied},{"sdlog",sdlog_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"meanlog",meanlog_arg.supplied},{"sdlog",sdlog_arg.supplied}});
   };
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if (res.status == cppunivariate::LognormalStatus::Unbounded) {
     return done(nomle("The lnorm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero."));
   }
   if (res.status == cppunivariate::LognormalStatus::InvalidInput) return done(fail("Lognormal requires nonempty positive finite data and valid held parameters."));
   if (res.status != cppunivariate::LognormalStatus::Ok) return done(fail("Lognormal likelihood exceeds double precision."));
-  if (!std::isfinite(res.meanlog) || !std::isfinite(res.logLik)) return done(fail("Lognormal likelihood exceeds double precision."));
   return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"meanlog",res.meanlog},{"sdlog",res.sdlog}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }

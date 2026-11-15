@@ -1,0 +1,57 @@
+[
+  {
+    "file": "R-log-collapse.log",
+    "bytes": 260541,
+    "gzip": "R-log-collapse.log.gz"
+  },
+  {
+    "file": "cpp-final-targeted-compile-error.log",
+    "bytes": 244860,
+    "gzip": "cpp-final-targeted-compile-error.log.gz"
+  },
+  {
+    "file": "cpp-final-targeted.log",
+    "bytes": 251650,
+    "gzip": "cpp-final-targeted.log.gz"
+  },
+  {
+    "file": "cpp-log-collapse.log",
+    "bytes": 403027,
+    "gzip": "cpp-log-collapse.log.gz"
+  },
+  {
+    "file": "cpp-targeted.log",
+    "bytes": 254259,
+    "gzip": "cpp-targeted.log.gz"
+  },
+  {
+    "file": "cpp-test-no-long-double.log",
+    "bytes": 316853,
+    "gzip": "cpp-test-no-long-double.log.gz"
+  },
+  {
+    "file": "cpp-test.log",
+    "bytes": 249382,
+    "gzip": "cpp-test.log.gz"
+  },
+  {
+    "file": "gb2-final-Cpp.log",
+    "bytes": 503603,
+    "gzip": "gb2-final-Cpp.log.gz"
+  },
+  {
+    "file": "native-pareto4-before-threshold.jsonl",
+    "bytes": 204635,
+    "gzip": "native-pareto4-before-threshold.jsonl.gz"
+  },
+  {
+    "file": "test-full.log",
+    "bytes": 988652,
+    "gzip": "test-full.log.gz"
+  },
+  {
+    "file": "test.log",
+    "bytes": 336630,
+    "gzip": "test.log.gz"
+  }
+]

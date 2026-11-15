@@ -1,0 +1,30 @@
+{
+  "removed_by_ref": {
+    "TASK-214.16": 20,
+    "TASK-214.15": 4,
+    "TASK-214.17": 24
+  },
+  "retained_by_ref": {
+    "TASK-214.13": 4,
+    "TASK-214.5": 30
+  },
+  "removed_by_family": {
+    "burr": 12,
+    "lomax": 2,
+    "pareto4": 14,
+    "snorm": 2,
+    "std": 4,
+    "hnorm": 2,
+    "rayleigh": 2,
+    "nhyper": 2,
+    "gb2": 4,
+    "kumar": 4
+  },
+  "retained_by_family": {
+    "snorm": 4,
+    "nhyper": 4,
+    "burr": 12,
+    "dnorm": 12,
+    "emg": 2
+  }
+}

@@ -42,11 +42,12 @@ log_density: log(shape2)-log(x)-loggamma(shape3)-loggamma(shape1)+loggamma(shape
 limits:
   - {firmness: proved, model: weibull, when: 'With shape3 held at one, the Burr submodel tends to its Weibull face.', status: WeibullBoundary, fixed: [shape3], numerical: true}
   - {firmness: proved, model: invweibull, when: 'With shape1 held at one, the inverse Burr submodel tends to its inverse-Weibull face.', status: InvWeibullBoundary, fixed: [shape1], numerical: true}
-  - name: unbounded likelihood
+  - kind: nonexistence
+    name: unbounded likelihood
     firmness: proved
     when: The log-scale dispersion tends to zero at the common observation while the remaining free coefficients allow concentration.
     detect: All observations are equal, and the held coefficients still permit concentration at that value.
-    status: InvalidData
+    status: Unbounded
     message: unbounded
   - {firmness: proved, model: trgamma, when: 'The beta shape $q$ tends to infinity with $a,p$ and $b/q^{1/a}$ fixed.', status: TrGammaBoundary, numerical: true}
   - {firmness: proved, model: invtrgamma, when: 'The beta shape $p$ tends to infinity with $a,q$ and $bp^{1/a}$ fixed.', status: InvTrGammaBoundary, numerical: true}
@@ -258,8 +259,8 @@ Conditional uniqueness fails: the two separated beta-prime maxima in the
 [conditional nonuniqueness example](../../../../../dev/research/evaluations/2026-11-07-betapr-prof-report.md#nonuniqueness)
 transport through $x_i=y_i^{1/a}$ for any held positive power. The continuity
 bracket proving an exact global tie also transports, with a common Jacobian
-added to every competing likelihood. A rounded crossing is only a numerical
-tie stop, not proof that those rounded observations are an exact tie.
+added to every competing likelihood. A rounded crossing retains a numerical comparison of the transported
+witnesses; it does not prove that those observations have an exact tie.
 
 The remaining free subsets $\{p,q,a\}$, $\{p,q,b\}$, $\{p,a,b\}$,
 $\{q,a,b\}$ and $\{p,q,a,b\}$ are open outside existing unit-shape
@@ -269,6 +270,13 @@ The held-power reduction supplies neither uniform outer-shape bounds when
 power varies nor effective neighborhoods of intersecting gamma, lognormal
 and power-tail corners. Those subsets keep their numerical
 searches; their small scores do not establish global maxima.
+
+Holding scale outside the sample does not pin every limiting endpoint.
+A simultaneous power/shape escape attains the freely fitted Pareto face
+when scale is below the minimum, or the power face when it is above the
+maximum. The [escape argument](../../../../../dev/research/evaluations/2026-11-14-core5b-c-data/mathematics.md)
+justifies comparing these faces before accepting a numerical limit selection; the
+remaining numerical face comparison is uncertified.
 
 ## Held beta shapes: power/scale certificate
 

@@ -1,0 +1,7 @@
+3619 cases judged in each of two modes
+fit-judge: failures by check: {'mode': 4, 'nesting': 8, 'terminates': 1}
+fit-judge: 9 listed as known, 4 new, 0 listed but passing
+  NEW   nesting|double|gb2|archive|002209: case 002247 holds more and is higher by 3.928e-05; this fit is uncertified
+  NEW   nesting|double|gb2|archive|002212: case 002247 holds more and is higher by 3.928e-05; this fit is uncertified
+  NEW   nesting|native|gb2|archive|002209: case 002247 holds more and is higher by 3.928e-05; this fit is uncertified
+  NEW   nesting|native|gb2|archive|002212: case 002247 holds more and is higher by 3.928e-05; this fit is uncertified

@@ -73,13 +73,7 @@ inline EmgResult emg_accuracy_search(span x,double tol=1e-8,int maxit=500,
 
 #include "../../core/likelihood_polish.hpp"
 namespace cppunivariate {
-inline EmgResult emg_mle(span x,double tol=1e-10,int maxit=500,double mu=NAN,double sigma=NAN,double lambda=NAN) {
-  // Retain the established global enclosure budget; the joint local solve
-  // below supplies the requested, finer coefficient accuracy.
-  const bool location_only=std::isnan(mu)&&!std::isnan(sigma)&&!std::isnan(lambda);
-  const double search_tol=!location_only&&tol>=4*std::numeric_limits<double>::epsilon()?std::max(tol,1e-8):tol;
-  auto r=emg_accuracy_search(x,search_tol,maxit,mu,sigma,lambda);
-  if(r.status!=EmgStatus::Ok||location_only)return r;
+inline EmgResult emg_polish_result(EmgResult r,span x,double tol,int maxit,double mu,double sigma,double lambda) {
   const double center=r.mu,unit=r.sigma;
   std::array<double,3> q{{0,0,std::log(r.lambda*unit)}};
   const std::array<bool,3> free{{std::isnan(mu),std::isnan(sigma),std::isnan(lambda)}};
@@ -106,6 +100,31 @@ inline EmgResult emg_mle(span x,double tol=1e-10,int maxit=500,double mu=NAN,dou
   r.logLik=0;for(double v:x)r.logLik+=distributions::demg(v,r.mu,r.sigma,r.lambda,true);
   return r;
 }
+inline EmgResult emg_mle(span x,double tol=1e-10,int maxit=500,double mu=NAN,double sigma=NAN,double lambda=NAN) {
+  // Retain the established global enclosure budget; the joint local solve
+  // below supplies the requested, finer coefficient accuracy.
+  const bool location_only=std::isnan(mu)&&!std::isnan(sigma)&&!std::isnan(lambda);
+  const double search_tol=!location_only&&tol>=4*std::numeric_limits<double>::epsilon()?std::max(tol,1e-8):tol;
+  auto r=emg_accuracy_search(x,search_tol,maxit,mu,sigma,lambda);
+  if(r.status==EmgStatus::Tie) {
+    // A comparison can return an accurate local maximum without claiming a
+    // completed global proof. Apply the same coefficient checks as an Ok fit.
+    for(auto& c:r.stop_detail.candidates) {
+      if(c.model!=StopModel::None || c.coef.size()!=3)continue;
+      EmgResult proposal{c.coef[0],c.coef[1],c.coef[2],NAN,0,EmgStatus::Ok};
+      const auto checked=emg_polish_result(proposal,x,tol,maxit,mu,sigma,lambda);
+      if(checked.status!=EmgStatus::Ok || !std::isfinite(checked.logLik))continue;
+      c.coef={checked.mu,checked.sigma,checked.lambda};
+      c.loglik_lower=c.loglik_upper=checked.logLik;
+      r.accurate_coef.push_back(c.coef);
+    }
+    return r;
+  }
+  if(r.status!=EmgStatus::Ok||location_only)return r;
+  return emg_polish_result(r,x,tol,maxit,mu,sigma,lambda);
+}
+
+
 }
 
 namespace cppunivariate {
@@ -113,10 +132,11 @@ inline bool family_point(const EmgResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
          std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0 && c.coef[2] > 0;
 }
-// Tie candidates are certificate witnesses with interval log likelihoods (the
-// best recorded profile point and every winner root, accurate or not); none is
-// marked as the accurate enclosed root an Ok result requires.
-inline bool accurate_point(const EmgResult&, const FitCandidate&) { return false; }
+// Only candidates that passed the public coefficient polish are estimates.
+inline bool accurate_point(const EmgResult& r, const FitCandidate& c) {
+  return family_point(r,c) && c.loglik_lower==c.loglik_upper &&
+    std::find(r.accurate_coef.begin(),r.accurate_coef.end(),c.coef)!=r.accurate_coef.end();
+}
 inline FitOutcome outcome(const EmgResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);

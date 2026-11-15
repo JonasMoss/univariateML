@@ -206,3 +206,29 @@ test_that("pareto4 retains an unclosed held-power face as uncertified", {
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+
+test_that("pareto4 core decides the data outcome", {
+  expect_error(mlpareto4(c(NaN,2),min=0), class="univariateML_invalid")
+  expect_error(mlpareto4(2,min=0), class="univariateML_nomle")
+})
+
+
+test_that("pareto4 passes a free threshold to the core", {
+  expect_error(mlpareto4(1:5,min=NULL),class="univariateML_nomle")
+  expect_error(mlpareto4(1:5,min=NULL,shape1=1,shape2=2,scale=1),class="univariateML_unsupported")
+})
+
+
+test_that("pareto4 shifted limit payloads describe the original data", {
+  e <- tryCatch(mlpareto4(10+c(2,3,4),min=10,scale=1),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"unavailable:shifted-pareto")
+  expect_equal(unname(e$estimates["min"]),10)
+  parent <- mlpareto(a=unname(e$estimates["a"]),b=unname(e$estimates["b"]))
+  expect_equal(e$limit_loglik,sum(dml(c(2,3,4),parent,log=TRUE)),tolerance=1e-12)
+})
+
+test_that("pareto4 validates data before deciding a free-threshold outcome", {
+  expect_error(mlpareto4(c(NaN,2),min=NULL),class="univariateML_invalid")
+})

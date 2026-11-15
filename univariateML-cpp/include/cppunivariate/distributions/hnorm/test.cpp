@@ -21,7 +21,7 @@ TEST_CASE("hnorm: closed form and golden") {
 }
 TEST_CASE("hnorm: degeneracy and nonfinite inputs") {
   for (const std::vector<double> &x : {std::vector<double>{}, {1}, {2,2}})
-    CHECK(cppunivariate::hnorm_mle(mltest::as_span(x)).status == cppunivariate::HnormStatus::DegenerateData);
+    CHECK(cppunivariate::hnorm_mle(mltest::as_span(x)).status == (x.empty() ? cppunivariate::HnormStatus::InvalidData : cppunivariate::HnormStatus::DegenerateData));
   const std::vector<double> bad = {0, cppunivariate::special::kPosInf};
   CHECK(cppunivariate::hnorm_mle(mltest::as_span(bad)).status == cppunivariate::HnormStatus::InvalidData);
 }
@@ -121,4 +121,27 @@ TEST_CASE("hnorm scaled residuals: normal scale at extreme units") {
     CHECK(r.sigma/unit==doctest::Approx(std::sqrt(2.5)).epsilon(1e-12));
     CHECK(std::isfinite(r.logLik));
   }
+}
+
+TEST_CASE("hnorm core distinguishes empty data from singleton collapse") {
+  const std::vector<double> empty, one={2};
+  CHECK(cppunivariate::outcome(cppunivariate::hnorm_mle(mltest::as_span(empty))).reason==cppunivariate::OutcomeReason::InvalidInput);
+  CHECK(cppunivariate::outcome(cppunivariate::hnorm_mle(mltest::as_span(one))).reason==cppunivariate::OutcomeReason::Unbounded);
+}
+TEST_CASE("hnorm log likelihood uses the returned subnormal scale") {
+  const double u=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x={u,2*u,3*u};
+  const auto fit=cppunivariate::hnorm_mle(mltest::as_span(x),0);
+  REQUIRE(fit.status==cppunivariate::HnormStatus::Ok);
+  double ll=x.size()*(0.5*std::log(2/std::acos(-1.0))-std::log(fit.sigma));
+  for(double v:x){const double z=v/fit.sigma;ll-=z*z/2;}
+  CHECK(fit.logLik==ll);
+}
+
+TEST_CASE("hnorm finite data with unrepresentable scale are numerical failures") {
+  const double u=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x={0,0,0,u};
+  const auto r=cppunivariate::hnorm_mle(mltest::as_span(x));
+  CHECK(r.status==cppunivariate::HnormStatus::NumericalFailure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
 }

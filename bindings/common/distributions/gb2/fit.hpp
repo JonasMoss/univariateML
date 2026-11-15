@@ -15,14 +15,9 @@ inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape
   auto r=cppunivariate::gb2_mle(cppunivariate::span{x.data(),x.size()},gradtol,iterlim,shape1,shape2,shape3,scale);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (r.status == cppunivariate::Gb2Status::Ok)
-        return overridden(std::move(out), static_cast<int>(r.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(r.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"shape3",shape3_arg.supplied},{"scale",scale_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"shape3",shape3_arg.supplied},{"scale",scale_arg.supplied}});
   };
+  if(r.status==cppunivariate::Gb2Status::Unbounded)return done(stop_failure(failure("GB2 likelihood is unbounded for constant positive data; no MLE."),r.stop_detail,outcome_payload(o),{}));
   if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("gb2 numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"}));
   if(r.accuracy_failure)return done(stop_failure(failure("gb2 numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"}));
   switch(r.status) {
@@ -34,17 +29,17 @@ inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape
     case cppunivariate::Gb2Status::NumericalFailure: return done(stop_failure(failure("GB2 certified delegate numerical stop; no verified maximum."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},""));
     case cppunivariate::Gb2Status::TrGammaBoundary: return done(stop_failure(failure("GB2 selects a limiting model. Use `mltrgamma`."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},"trgamma"));
     case cppunivariate::Gb2Status::InvTrGammaBoundary: return done(stop_failure(failure("GB2 selects a limiting model. Use `mlinvtrgamma`."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},"invtrgamma"));
-    case cppunivariate::Gb2Status::LognormalBoundary: return done(failure("GB2 selects a limiting model. Use `mllnorm`."));
+    case cppunivariate::Gb2Status::LognormalBoundary: return done(stop_failure(failure("GB2 selects a limiting model. Use `mllnorm`."),r.stop_detail,outcome_payload(o),{},"lnorm"));
     case cppunivariate::Gb2Status::ParetoBoundary:
-      if(scale_arg.supplied) return done(stop_failure(failure("GB2 selects a Pareto limit. Use `mlpareto(x, b = scale)` with the endpoint held."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},"pareto"));
+      if(scale_arg.supplied && (r.stop_detail.limit_coef.empty() || r.stop_detail.limit_coef[1]==scale)) return done(stop_failure(failure("GB2 selects a Pareto limit. Use `mlpareto(x, b = scale)` with the endpoint held."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},"pareto"));
       return done(stop_failure(failure("GB2 selects a limiting model. Use `mlpareto`."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},"pareto"));
     case cppunivariate::Gb2Status::PowerBoundary:
-      if(scale_arg.supplied) return done(stop_failure(failure("GB2 selects a power limit. Use `mlpower(x, alpha = scale)` with the upper endpoint held."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},"power"));
+      if(scale_arg.supplied && (r.stop_detail.limit_coef.empty() || r.stop_detail.limit_coef[0]==scale)) return done(stop_failure(failure("GB2 selects a power limit. Use `mlpower(x, alpha = scale)` with the upper endpoint held."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},"power"));
       return done(stop_failure(failure("GB2 selects a limiting model. Use `mlpower`."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},"power"));
-    case cppunivariate::Gb2Status::DoubleParetoBoundary: return done(failure("GB2 selects the double Pareto limit; this package has no double Pareto fitter."));
+    case cppunivariate::Gb2Status::DoubleParetoBoundary: return done(stop_failure(failure("GB2 selects the double Pareto limit; this package has no double Pareto fitter."),r.stop_detail,outcome_payload(o),{"scale","left","right"},"unavailable:double-pareto"));
     case cppunivariate::Gb2Status::InvalidData: return done(failure("GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood."));
     case cppunivariate::Gb2Status::InvalidFixed: return done(failure("GB2 fixed parameters must be positive and finite."));
-    case cppunivariate::Gb2Status::ScaleOutOfRange: return done(failure("GB2 scale is outside the representable range."));
+    case cppunivariate::Gb2Status::ScaleOutOfRange: return done(stop_failure(failure("GB2 scale is outside the representable range."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"}));
     default: return done(stop_failure(failure("GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},""));
   }
   FitResult out;

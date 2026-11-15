@@ -1,0 +1,36 @@
+{
+  "outside_family": [
+    {
+      "family": "fpareto",
+      "file": "univariateML-cpp/include/cppunivariate/distributions/fpareto/mle.hpp",
+      "issue": "FparetoResult borrows Gb2Status and forwards the delegated status, but its outcome switch has no case for the new Gb2Status::Unbounded.",
+      "required": "The owning batch must map Gb2Status::Unbounded to nonexistence(Unbounded), and transport the new GB2 face payloads with the held threshold. This job does not edit fpareto.",
+      "evidence": "The delegated result is returned with r.status at line 41; the outcome switch at lines 58-75 has no Unbounded case.",
+      "build_evidence": "Confirmed by the successful workstation Emscripten build: js-build.log reports -Wswitch at fpareto/mle.hpp:58 for Gb2Status::Unbounded."
+    }
+  ],
+  "shared_registry": [
+    {
+      "models": [
+        "unavailable:double-pareto",
+        "unavailable:shifted-pareto",
+        "unavailable:shifted-weibull"
+      ],
+      "required": "Add generic model identifiers/coefficient metadata and strict density-law registrations if these payloads are to be evaluated by the shared density judge. This job supplies the named payload and checks the double-Pareto density independently; the translated Pareto payload has an R density regression."
+    }
+  ],
+  "judge_ratchet": [
+    {
+      "file": "dev/validation/fit-density.py",
+      "issue": "A prior density:limit key is not marked judged when the new terminal outcome has no density item. Official --prune therefore cannot remove the two corrected Lomax entries.",
+      "workaround": "prune-unrepresentable-face.py verifies only those original keys, proves the exact rate exceeds DBL_MAX, verifies the final evaluation-failure outcome and empty invalid-face payload, then deletes the obsolete entries."
+    }
+  ],
+  "shared_capability_catalogue": [
+    {
+      "file": "dev/validation/modifier_capabilities.py",
+      "issue": "With obsolete frontend holds guards removed, the generated GPD/Pareto4 capabilities.csv rows default to implemented even for runtime unsupported held slices. A held-name mask alone cannot express their value-dependent existence decisions.",
+      "required": "Keep core decisions authoritative. Extend shared capability metadata to distinguish a core-delegated request from a guarantee that every held-value slice is implemented; do not restore broad frontend guards."
+    }
+  ]
+}

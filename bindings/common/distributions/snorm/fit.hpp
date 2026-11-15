@@ -5,14 +5,7 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_snorm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held xi_arg = {}, int iterlim = 200) {
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!(kind==PayloadKind::Budget && detail.budget_exhausted) && !finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   if(iterlim<=0)return invalid_argument(fail("Invalid `iterlim`: requires a positive integer."));
@@ -30,23 +23,18 @@ inline FitResult fit_snorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   auto res=cppunivariate::snorm_mle(x,1.220703e-4,iterlim,held_mean,held_sd,held_xi);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (res.status == cppunivariate::SnormStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(res.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"xi",xi_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"xi",xi_arg.supplied}});
   };
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if(res.status==cppunivariate::SnormStatus::Unbounded) return done(nomle("Scale collapse: the conditional skew-normal likelihood is unbounded; no MLE."));
-  if(res.stop_detail.budget_exhausted)return done(classify(fail("Conditional skew-normal certificate budget exhausted; increase `iterlim`."),res.stop_detail,outcome_payload(o),{"mean","sd","xi"}));
-  if(res.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Conditional skew-normal fit did not converge."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","xi"}),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"xi",xi_arg}}));
-  if(res.status==cppunivariate::SnormStatus::BfgsFailure) return done(classify(fail("Conditional skew-normal fit did not converge (certificate arithmetic or root enclosure; increase `iterlim`)."),res.stop_detail,outcome_payload(o),{"mean","sd","xi"}));
-  // An unrepresentable face retains the classifier's existing plain error.
+  if(res.stop_detail.budget_exhausted)return done(stop_failure(fail("Conditional skew-normal certificate budget exhausted; increase `iterlim`."),res.stop_detail,outcome_payload(o),{"mean","sd","xi"}));
+  if(res.stop_detail.comparison_tie)return done(comparison_payload(stop_failure(fail("Conditional skew-normal fit did not converge."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","xi"}),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"xi",xi_arg}}));
+  if(res.status==cppunivariate::SnormStatus::NumericalFailure)
+    return done(stop_failure(fail("Skew-normal half-normal limit coefficients or likelihood are not representable."),res.stop_detail,outcome_payload(o),{"mean","sd","xi"}));
+  if(res.status==cppunivariate::SnormStatus::BfgsFailure) return done(stop_failure(fail("Conditional skew-normal fit did not converge (certificate arithmetic or root enclosure; increase `iterlim`)."),res.stop_detail,outcome_payload(o),{"mean","sd","xi"}));
   const auto limit = [&](FitResult out, const std::string& model) {
     if (o.kind != cppunivariate::OutcomeKind::Limit) return done(std::move(out));
-    return done(classify(std::move(out),res.stop_detail,outcome_payload(o),{"mu","sigma"},model));
+    return done(stop_failure(std::move(out),res.stop_detail,outcome_payload(o),{"mu","sigma"},model));
   };
   if (res.status == cppunivariate::SnormStatus::RightHalfNormalBoundary) {
     if(mean.supplied || sd.supplied)return limit(fail("The conditional skew-normal supremum is a half-normal with endpoint constrained by the held moments; the MLE does not exist."),"hnorm");
@@ -59,10 +47,6 @@ inline FitResult fit_snorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   if (res.status == cppunivariate::SnormStatus::InvalidStart) {
     return done(fail("Skew-normal MLE requires at least 2 finite observations with "
                "positive variance."));
-  }
-  if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||
-      !std::isfinite(res.xi)) {
-    return done(fail("Skew-normal MLE failed to converge (check inputs)"));
   }
   std::vector<std::string> fixed;
   if(mean.supplied) fixed.push_back("mean");

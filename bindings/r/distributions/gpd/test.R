@@ -148,7 +148,7 @@ test_that("GPD exhausted tail bracket is a numerical stop", {
 
 test_that("GPD threshold equality records its unattained finite supremum", {
   limit <- tryCatch(mlgpd(c(0,1,2),mu=0,xi=2),error=identity)
-  expect_s3_class(limit,"univariateML_limit")
+  expect_s3_class(limit,"univariateML_nomle")
   expect_match(conditionMessage(limit),"finite unattained")
   expect_equal(limit$limit_loglik,-1.5*log(8),tolerance=1e-12)
   expect_equal(limit$loglik_upper,limit$limit_loglik)
@@ -178,4 +178,21 @@ test_that("GPD exponential scale rejects an inaccurate subnormal mean", {
   expect_s3_class(err,"univariateML_numerical")
   fit <- mlgpd(c(tiny,3*tiny),mu=0,xi=0)
   expect_identical(unname(fit[["sigma"]]),2*tiny)
+})
+
+
+test_that("gpd free-threshold nonexistence is decided in the core", {
+  expect_error(mlgpd(1:5,mu=NULL),class="univariateML_nomle")
+  expect_error(mlgpd(1:5,mu=NULL,sigma=1),class="univariateML_unsupported")
+})
+
+test_that("gpd validates data before deciding a free-threshold outcome", {
+  expect_error(mlgpd(c(NaN,2),mu=NULL),class="univariateML_invalid")
+})
+
+test_that("GPD finite collapse is nonexistence rather than a named limit model", {
+  err <- tryCatch(mlgpd(c(0,1),mu=0,xi=1),error=identity)
+  expect_s3_class(err,"univariateML_nomle")
+  expect_equal(err$reason,"unattained")
+  expect_equal(err$limit_loglik,0,tolerance=1e-12)
 })

@@ -12,7 +12,7 @@
 namespace cppunivariate {
 inline constexpr double kGpdXiLower = -1.0;
 
-enum class GpdStatus { Ok, InvalidData, InvalidShape, IterationFailure };
+enum class GpdStatus { Ok, InvalidData, InvalidShape, IterationFailure, FreeThreshold, Unbounded };
 enum class GpdCertificateFailure { None, Budget, Arithmetic, Tie, ThresholdCollapse };
 struct GpdResult {
   double mu, sigma, xi, logLik;
@@ -175,6 +175,14 @@ inline GpdResult gpd_mle_impl(span x, double tol=1e-12, int maxit=200,
 
 inline GpdResult gpd_mle(span x,double tol=1e-12,int maxit=200,double mu=0,double xi=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
+  if(!(tol>0) || !std::isfinite(tol) || maxit<1)return {mu,sigma,xi,NAN,0,GpdStatus::InvalidData};
+  if(std::isnan(mu)) {
+    if(!std::isnan(sigma)&&(!(sigma>0)||!std::isfinite(sigma)))return {mu,sigma,xi,NAN,0,GpdStatus::InvalidData};
+    if(!std::isnan(xi)&&(!std::isfinite(xi)||(xi< -1&&std::isnan(sigma))))return {mu,sigma,xi,NAN,0,GpdStatus::InvalidShape};
+    if(x.empty())return {mu,sigma,xi,NAN,0,GpdStatus::InvalidData};
+    for(double v:x)if(!std::isfinite(v))return {mu,sigma,xi,NAN,0,GpdStatus::InvalidData};
+    return {mu,sigma,xi,NAN,0,std::isnan(sigma)&&std::isnan(xi)?GpdStatus::Unbounded:GpdStatus::FreeThreshold};
+  }
   auto r=gpd_mle_impl(x,tol,maxit,mu,xi,sigma);
   if(r.status==GpdStatus::Ok && (std::isnan(xi)) && r.xi==kGpdXiLower) r.restricted|=16u;
   return r;
@@ -193,9 +201,11 @@ inline FitOutcome outcome(const GpdResult& r) {
   if (r.certificate_failure == GpdCertificateFailure::Budget) return FitOutcome::budget();
   if (r.certificate_failure == GpdCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
   if (r.certificate_failure == GpdCertificateFailure::Tie) return comparison_outcome_of(r);
-  if (r.certificate_failure == GpdCertificateFailure::ThresholdCollapse) return std::isfinite(r.stop_detail.limit_loglik) ? FitOutcome::limit() : FitOutcome::nonexistence(OutcomeReason::Unbounded);
+  if (r.certificate_failure == GpdCertificateFailure::ThresholdCollapse) return std::isfinite(r.stop_detail.limit_loglik) ? FitOutcome::nonexistence(OutcomeReason::Unattained) : FitOutcome::nonexistence(OutcomeReason::Unbounded);
   switch (r.status) {
     case GpdStatus::Ok: return FitOutcome::estimate(true);
+    case GpdStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case GpdStatus::FreeThreshold: return FitOutcome::failure(OutcomeReason::Unsupported);
     case GpdStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GpdStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case GpdStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

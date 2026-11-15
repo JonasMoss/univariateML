@@ -1,0 +1,38 @@
+betapr         211  (21 s)
+burr           219  (35 s)
+cmp            78  (43 s)
+dnorm          78  (49 s)
+emg            212  (399 s)
+foldnorm       123  (406 s)
+gb2            kept  (406 s)
+gengamma       27  (416 s)
+gpd            107  (421 s)
+hnorm          109  (423 s)
+hyper          138  (431 s)
+invgamma       123  (437 s)
+invpareto      115  (442 s)
+kumar          106  (448 s)
+lnorm          127  (452 s)
+lomax          103  (457 s)
+nhyper         146  (481 s)
+pareto         109  (484 s)
+pareto4        203  (499 s)
+rayleigh       75  (502 s)
+skellam        78  (512 s)
+snorm          156  (522 s)
+std            172  (543 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/core5b-c/univariateML-cpp/include/cppunivariate/distributions/triang/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/core5b-c/univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp:6,
+                 from /home/jonas/Files/programming/univariateML.wt/core5b-c/bindings/common/distributions/triang/fit.hpp:3,
+                 from build/snapshots/double/build/triang.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/core5b-c/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:640:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  640 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/core5b-c/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:638:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  638 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/core5b-c/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:639:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  639 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+triang         195  (548 s)
+yulesimon      38  (553 s)

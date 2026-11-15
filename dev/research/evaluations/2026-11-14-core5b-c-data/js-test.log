@@ -1,0 +1,3562 @@
+python3 bindings/js/run-tests.py
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+TAP version 13
+# Subtest: cmb generated truth and sampler
+ok 1 - cmb generated truth and sampler
+  ---
+  duration_ms: 319.705907
+  type: 'test'
+  ...
+# Subtest: geom generated truth and sampler
+ok 2 - geom generated truth and sampler
+  ---
+  duration_ms: 68.906345
+  type: 'test'
+  ...
+# Subtest: gev generated truth and sampler
+ok 3 - gev generated truth and sampler
+  ---
+  duration_ms: 92.303021
+  type: 'test'
+  ...
+# Subtest: pgw generated truth and sampler
+ok 4 - pgw generated truth and sampler
+  ---
+  duration_ms: 120.745228
+  type: 'test'
+  ...
+# Subtest: unif generated truth and sampler
+ok 5 - unif generated truth and sampler
+  ---
+  duration_ms: 60.0737
+  type: 'test'
+  ...
+# Subtest: bbinom held-value diagnostic
+ok 6 - bbinom held-value diagnostic
+  ---
+  duration_ms: 9.051713
+  type: 'test'
+  ...
+# Subtest: bhatt shared golden
+ok 7 - bhatt shared golden
+  ---
+  duration_ms: 5225.553587
+  type: 'test'
+  ...
+# Subtest: binom held-value diagnostic
+ok 8 - binom held-value diagnostic
+  ---
+  duration_ms: 2.797953
+  type: 'test'
+  ...
+# Subtest: cauchy held-value diagnostic
+ok 9 - cauchy held-value diagnostic
+  ---
+  duration_ms: 1.042546
+  type: 'test'
+  ...
+# Subtest: dweibull all held subsets
+ok 10 - dweibull all held subsets
+  ---
+  duration_ms: 3.07965
+  type: 'test'
+  ...
+# Subtest: expweibull shared golden
+ok 11 - expweibull shared golden
+  ---
+  duration_ms: 31.666731
+  type: 'test'
+  ...
+# Subtest: gamma held-value diagnostic
+ok 12 - gamma held-value diagnostic
+  ---
+  duration_ms: 10.472301
+  type: 'test'
+  ...
+# Subtest: gb2 held-value diagnostic
+ok 13 - gb2 held-value diagnostic
+  ---
+  duration_ms: 0.636471
+  type: 'test'
+  ...
+# Subtest: gengamma held-value diagnostic
+ok 14 - gengamma held-value diagnostic
+  ---
+  duration_ms: 0.296604
+  type: 'test'
+  ...
+# Subtest: gpd shared golden
+ok 15 - gpd shared golden
+  ---
+  duration_ms: 6.658527
+  type: 'test'
+  ...
+# Subtest: huber all held subsets
+ok 16 - huber all held subsets
+  ---
+  duration_ms: 36.884091
+  type: 'test'
+  ...
+# Subtest: invtrgamma all held subsets
+ok 17 - invtrgamma all held subsets
+  ---
+  duration_ms: 10.494339
+  type: 'test'
+  ...
+# Subtest: invweibull shared golden
+ok 18 - invweibull shared golden
+  ---
+  duration_ms: 3.157045
+  type: 'test'
+  ...
+# Subtest: logitnorm held-value diagnostic
+ok 19 - logitnorm held-value diagnostic
+  ---
+  duration_ms: 0.412838
+  type: 'test'
+  ...
+# Subtest: lomax held-value diagnostic
+ok 20 - lomax held-value diagnostic
+  ---
+  duration_ms: 0.247987
+  type: 'test'
+  ...
+# Subtest: pareto shared golden
+ok 21 - pareto shared golden
+  ---
+  duration_ms: 0.44237
+  type: 'test'
+  ...
+# Subtest: pareto4 shared golden
+ok 22 - pareto4 shared golden
+  ---
+  duration_ms: 176.960991
+  type: 'test'
+  ...
+# Subtest: slash held-value diagnostic
+ok 23 - slash held-value diagnostic
+  ---
+  duration_ms: 0.373516
+  type: 'test'
+  ...
+# Subtest: st shared golden
+ok 24 - st shared golden
+  ---
+  duration_ms: 3690.035454
+  type: 'test'
+  ...
+# Subtest: std shared golden
+ok 25 - std shared golden
+  ---
+  duration_ms: 196.710858
+  type: 'test'
+  ...
+# Subtest: triang held-value diagnostic
+ok 26 - triang held-value diagnostic
+  ---
+  duration_ms: 0.435564
+  type: 'test'
+  ...
+# Subtest: yulesimon held-value diagnostic
+ok 27 - yulesimon held-value diagnostic
+  ---
+  duration_ms: 0.377584
+  type: 'test'
+  ...
+# Subtest: sstd xi-only certificate, reflection, budget and half-t comparison
+ok 28 - sstd xi-only certificate, reflection, budget and half-t comparison
+  ---
+  duration_ms: 14.200879
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: snorm
+ok 29 - covariance native agreement: snorm
+  ---
+  duration_ms: 54.470794
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal sign-uncertain-seam structured tie
+ok 30 - Burr and reciprocal sign-uncertain-seam structured tie
+  ---
+  duration_ms: 22.461695
+  type: 'test'
+  ...
+# Subtest: internal gengamma conditional brackets retain public accuracy detail
+ok 31 - internal gengamma conditional brackets retain public accuracy detail
+  ---
+  duration_ms: 8.747491
+  type: 'test'
+  ...
+# Subtest: std certificate distinguishes ordinary t2 and collapse paths
+ok 32 - std certificate distinguishes ordinary t2 and collapse paths
+  ---
+  duration_ms: 363.897523
+  type: 'test'
+  ...
+# Subtest: lst and std fixed-scale location certificates transport equal maxima
+ok 33 - lst and std fixed-scale location certificates transport equal maxima
+  ---
+  duration_ms: 79.58833
+  type: 'test'
+  ...
+# Subtest: lst and std uncertified held free-shape searches preserve golden fits
+ok 34 - lst and std uncertified held free-shape searches preserve golden fits
+  ---
+  duration_ms: 39698.033357
+  type: 'test'
+  ...
+# Subtest: binomial probability solves stop numerically before returning an unresolved coefficient
+ok 35 - binomial probability solves stop numerically before returning an unresolved coefficient
+  ---
+  duration_ms: 66.314706
+  type: 'test'
+  ...
+# Subtest: genbeta rounded log ties are a numerical stop
+ok 36 - genbeta rounded log ties are a numerical stop
+  ---
+  duration_ms: 66.081465
+  type: 'test'
+  ...
+# Subtest: EMG certified conditional routes and numerical location stops
+ok 37 - EMG certified conditional routes and numerical location stops
+  ---
+  duration_ms: 64.828264
+  type: 'test'
+  ...
+# Subtest: GED free-scale uniform stops include certified global bounds
+ok 38 - GED free-scale uniform stops include certified global bounds
+  ---
+  duration_ms: 68.299886
+  type: 'test'
+  ...
+# Subtest: GED finite free-shape golden subsets pass the global certificate
+ok 39 - GED finite free-shape golden subsets pass the global certificate
+  ---
+  duration_ms: 840.955228
+  type: 'test'
+  ...
+# Subtest: higher-order binomial face signs retain proved stops or uncertified fits
+ok 40 - higher-order binomial face signs retain proved stops or uncertified fits
+  ---
+  duration_ms: 87.360663
+  type: 'test'
+  ...
+# Subtest: ZIB tiny held probabilities preserve the unique all-zero inflation
+ok 41 - ZIB tiny held probabilities preserve the unique all-zero inflation
+  ---
+  duration_ms: 66.686693
+  type: 'test'
+  ...
+# Subtest: binomial relatives retain certified Poisson limit witnesses
+ok 42 - binomial relatives retain certified Poisson limit witnesses
+  ---
+  duration_ms: 99.357031
+  type: 'test'
+  ...
+# Subtest: genbeta held q uses certified finite maxima and terminal neighborhood stops
+ok 43 - genbeta held q uses certified finite maxima and terminal neighborhood stops
+  ---
+  duration_ms: 96.654835
+  type: 'test'
+  ...
+# Subtest: bnbinom signed Poisson faces and budget fallbacks keep their labels
+ok 44 - bnbinom signed Poisson faces and budget fallbacks keep their labels
+  ---
+  duration_ms: 263.341032
+  type: 'test'
+  ...
+# Subtest: transformed profiles retain finite ulp-wide fits with explicit uncertified flags
+ok 45 - transformed profiles retain finite ulp-wide fits with explicit uncertified flags
+  ---
+  duration_ms: 77.433909
+  type: 'test'
+  ...
+# Subtest: genbeta gamma face preserves its structured legacy payload
+ok 46 - genbeta gamma face preserves its structured legacy payload
+  ---
+  duration_ms: 27652.407899
+  type: 'test'
+  ...
+# Subtest: GEV and Frechet held nuisance certificate markers cross the common seam
+ok 47 - GEV and Frechet held nuisance certificate markers cross the common seam
+  ---
+  duration_ms: 676.884849
+  type: 'test'
+  ...
+# Subtest: burr generated truth and sampler
+ok 48 - burr generated truth and sampler
+  ---
+  duration_ms: 223.539504
+  type: 'test'
+  ...
+# Subtest: invparalogis generated truth and sampler
+ok 49 - invparalogis generated truth and sampler
+  ---
+  duration_ms: 75.989919
+  type: 'test'
+  ...
+# Subtest: snorm generated truth and sampler
+ok 50 - snorm generated truth and sampler
+  ---
+  duration_ms: 186.812179
+  type: 'test'
+  ...
+# Subtest: beta shared golden
+ok 51 - beta shared golden
+  ---
+  duration_ms: 6.053054
+  type: 'test'
+  ...
+# Subtest: cmp shared golden
+ok 52 - cmp shared golden
+  ---
+  duration_ms: 5.470598
+  type: 'test'
+  ...
+# Subtest: dunif held-value diagnostic
+ok 53 - dunif held-value diagnostic
+  ---
+  duration_ms: 3.055385
+  type: 'test'
+  ...
+# Subtest: foldnorm all held subsets
+ok 54 - foldnorm all held subsets
+  ---
+  duration_ms: 24.672393
+  type: 'test'
+  ...
+# Subtest: ged shared golden
+ok 55 - ged shared golden
+  ---
+  duration_ms: 416.642772
+  type: 'test'
+  ...
+# Subtest: genbeta shared golden
+ok 56 - genbeta shared golden
+  ---
+  duration_ms: 143.751656
+  type: 'test'
+  ...
+# Subtest: gumbel held-value diagnostic
+ok 57 - gumbel held-value diagnostic
+  ---
+  duration_ms: 4.239409
+  type: 'test'
+  ...
+# Subtest: hcauchy all held subsets
+ok 58 - hcauchy all held subsets
+  ---
+  duration_ms: 2.61177
+  type: 'test'
+  ...
+# Subtest: invexp shared golden
+ok 59 - invexp shared golden
+  ---
+  duration_ms: 0.440504
+  type: 'test'
+  ...
+# Subtest: kumar held-value diagnostic
+ok 60 - kumar held-value diagnostic
+  ---
+  duration_ms: 0.321126
+  type: 'test'
+  ...
+# Subtest: lst all held subsets
+ok 61 - lst all held subsets
+  ---
+  duration_ms: 6021.24119
+  type: 'test'
+  ...
+# Subtest: nsbeta all held subsets
+ok 62 - nsbeta all held subsets
+  ---
+  duration_ms: 2.604558
+  type: 'test'
+  ...
+# Subtest: pareto3 held-value diagnostic
+ok 63 - pareto3 held-value diagnostic
+  ---
+  duration_ms: 0.482463
+  type: 'test'
+  ...
+# Subtest: skellam all held subsets
+ok 64 - skellam all held subsets
+  ---
+  duration_ms: 78.033164
+  type: 'test'
+  ...
+# Subtest: sn all held subsets
+ok 65 - sn all held subsets
+  ---
+  duration_ms: 1223.693236
+  type: 'test'
+  ...
+# Subtest: sstd held-value diagnostic
+ok 66 - sstd held-value diagnostic
+  ---
+  duration_ms: 0.516198
+  type: 'test'
+  ...
+# Subtest: tlambda all held subsets
+ok 67 - tlambda all held subsets
+  ---
+  duration_ms: 119592.272224
+  type: 'test'
+  ...
+# Subtest: conditional tails preserve tiny log complements and refuse unstable normalization
+ok 68 - conditional tails preserve tiny log complements and refuse unstable normalization
+  ---
+  duration_ms: 164.108824
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: gev
+ok 69 - covariance native agreement: gev
+  ---
+  duration_ms: 508.765096
+  type: 'test'
+  ...
+# Subtest: ZINB certified ZIP and Poisson stops name their limiting coefficients
+ok 70 - ZINB certified ZIP and Poisson stops name their limiting coefficients
+  ---
+  duration_ms: 45.445925
+  type: 'test'
+  ...
+# Subtest: genbeta critical held p one half preserves the small-power quadratic score
+ok 71 - genbeta critical held p one half preserves the small-power quadratic score
+  ---
+  duration_ms: 99.363397
+  type: 'test'
+  ...
+# Subtest: fatigue subnormal coefficient reconstruction must retain relative accuracy
+ok 72 - fatigue subnormal coefficient reconstruction must retain relative accuracy
+  ---
+  duration_ms: 96.000042
+  type: 'test'
+  ...
+# Subtest: lst Cauchy equality checks and projects the represented maximizing curve
+ok 73 - lst Cauchy equality checks and projects the represented maximizing curve
+  ---
+  duration_ms: 85.594314
+  type: 'test'
+  ...
+# Subtest: GEV and Frechet half-minimum certificates distinguish attainment
+ok 74 - GEV and Frechet half-minimum certificates distinguish attainment
+  ---
+  duration_ms: 88.785015
+  type: 'test'
+  ...
+# Subtest: bnbinom alpha-free pair certificates transport the actual held value
+ok 75 - bnbinom alpha-free pair certificates transport the actual held value
+  ---
+  duration_ms: 582.516642
+  type: 'test'
+  ...
+# Subtest: betapr all-free certificate returns verified fits and structured global stops
+ok 76 - betapr all-free certificate returns verified fits and structured global stops
+  ---
+  duration_ms: 145.86638
+  type: 'test'
+  ...
+# Subtest: GB2 constant held-shape scale rejects tiny-power log-ratio amplification
+ok 77 - GB2 constant held-shape scale rejects tiny-power log-ratio amplification
+  ---
+  duration_ms: 75.626842
+  type: 'test'
+  ...
+# Subtest: GB2 subunit held-shape endpoint ties retain their likelihood penalty
+ok 78 - GB2 subunit held-shape endpoint ties retain their likelihood penalty
+  ---
+  duration_ms: 72.497886
+  type: 'test'
+  ...
+# Subtest: dweibull generated truth and sampler
+ok 79 - dweibull generated truth and sampler
+  ---
+  duration_ms: 336.363495
+  type: 'test'
+  ...
+# Subtest: huber generated truth and sampler
+ok 80 - huber generated truth and sampler
+  ---
+  duration_ms: 194.698825
+  type: 'test'
+  ...
+# Subtest: invtrgamma generated truth and sampler
+ok 81 - invtrgamma generated truth and sampler
+  ---
+  duration_ms: 11600.052481
+  type: 'test'
+  ...
+# Subtest: diagnostics and vector flags
+not ok 82 - diagnostics and vector flags
+  ---
+  duration_ms: 18.303968
+  type: 'test'
+  location: '/home/jonas/Files/programming/univariateML.wt/core5b-c/bindings/js/test-register.mjs:12:70'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /GB2 requires positive finite nonconstant observations/. Input:
+    
+    'Error: GB2 likelihood is unbounded for constant positive data; no MLE.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'GB2 likelihood is unbounded for constant positive data; no MLE.'
+  stack: |-
+    m.<computed> [as fitgb2] (file:///home/jonas/Files/programming/univariateML.wt/core5b-c/bindings/js/test.mjs:9:126)
+    file:///home/jonas/Files/programming/univariateML.wt/core5b-c/bindings/js/test.mjs:118:22
+    getActual (node:assert:609:5)
+    Function.throws (node:assert:757:24)
+    TestContext.<anonymous> (file:///home/jonas/Files/programming/univariateML.wt/core5b-c/bindings/js/test.mjs:118:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///home/jonas/Files/programming/univariateML.wt/core5b-c/bindings/js/test.mjs:118:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: burr held-value diagnostic
+ok 83 - burr held-value diagnostic
+  ---
+  duration_ms: 6.362208
+  type: 'test'
+  ...
+# Subtest: dgamma shared golden
+ok 84 - dgamma shared golden
+  ---
+  duration_ms: 13553.603873
+  type: 'test'
+  ...
+# Subtest: exp shared golden
+ok 85 - exp shared golden
+  ---
+  duration_ms: 3.536681
+  type: 'test'
+  ...
+# Subtest: invburr all held subsets
+ok 86 - invburr all held subsets
+  ---
+  duration_ms: 344.604279
+  type: 'test'
+  ...
+# Subtest: invparalogis held-value diagnostic
+ok 87 - invparalogis held-value diagnostic
+  ---
+  duration_ms: 3.198947
+  type: 'test'
+  ...
+# Subtest: laplace all held subsets
+ok 88 - laplace all held subsets
+  ---
+  duration_ms: 1.939827
+  type: 'test'
+  ...
+# Subtest: lnorm all held subsets
+ok 89 - lnorm all held subsets
+  ---
+  duration_ms: 20.987803
+  type: 'test'
+  ...
+# Subtest: logis all held subsets
+ok 90 - logis all held subsets
+  ---
+  duration_ms: 4.949012
+  type: 'test'
+  ...
+# Subtest: pois shared golden
+ok 91 - pois shared golden
+  ---
+  duration_ms: 0.845757
+  type: 'test'
+  ...
+# Subtest: rayleigh shared golden
+ok 92 - rayleigh shared golden
+  ---
+  duration_ms: 0.926555
+  type: 'test'
+  ...
+# Subtest: snorm held-value diagnostic
+ok 93 - snorm held-value diagnostic
+  ---
+  duration_ms: 0.785648
+  type: 'test'
+  ...
+# Subtest: trgamma shared golden
+ok 94 - trgamma shared golden
+  ---
+  duration_ms: 11.182951
+  type: 'test'
+  ...
+# Subtest: modifier knobs preserve zero fits, window likelihood and censoring
+ok 95 - modifier knobs preserve zero fits, window likelihood and censoring
+  ---
+  duration_ms: 120.229731
+  type: 'test'
+  ...
+# Subtest: conditional scalar fits retain coefficient accuracy
+ok 96 - conditional scalar fits retain coefficient accuracy
+  ---
+  duration_ms: 2.26928
+  type: 'test'
+  ...
+# Subtest: sn conditional certificates and nonunique shape have shared stops
+ok 97 - sn conditional certificates and nonunique shape have shared stops
+  ---
+  duration_ms: 65.250013
+  type: 'test'
+  ...
+# Subtest: trgamma held endpoint comparisons stop without asserting nonattainment
+ok 98 - trgamma held endpoint comparisons stop without asserting nonattainment
+  ---
+  duration_ms: 67.290627
+  type: 'test'
+  ...
+# Subtest: SGED subunit asymmetric scale certificates agree with independent fixtures
+ok 99 - SGED subunit asymmetric scale certificates agree with independent fixtures
+  ---
+  duration_ms: 89.657192
+  type: 'test'
+  ...
+# Subtest: extreme scalar certificates expose common binding stops
+ok 100 - extreme scalar certificates expose common binding stops
+  ---
+  duration_ms: 48.682726
+  type: 'test'
+  ...
+# Subtest: GED Laplace median intervals retain the original observation endpoints
+ok 101 - GED Laplace median intervals retain the original observation endpoints
+  ---
+  duration_ms: 69.304781
+  type: 'test'
+  ...
+# Subtest: SGED balanced endpoint uniform proof covers asymmetric and free skew
+ok 102 - SGED balanced endpoint uniform proof covers asymmetric and free skew
+  ---
+  duration_ms: 55.712956
+  type: 'test'
+  ...
+# Subtest: Bhatt per-fit certification preserves successful searches
+ok 103 - Bhatt per-fit certification preserves successful searches
+  ---
+  duration_ms: 12930.060019
+  type: 'test'
+  ...
+# Subtest: genbeta signed squared-power certificate selects a global gamma face
+ok 104 - genbeta signed squared-power certificate selects a global gamma face
+  ---
+  duration_ms: 16462.917067
+  type: 'test'
+  ...
+# Subtest: st normal face retains its tiny angular ray
+ok 105 - st normal face retains its tiny angular ray
+  ---
+  duration_ms: 6.839428
+  type: 'test'
+  ...
+# Subtest: bbinom generated truth and sampler
+ok 106 - bbinom generated truth and sampler
+  ---
+  duration_ms: 276.030593
+  type: 'test'
+  ...
+# Subtest: binom generated truth and sampler
+ok 107 - binom generated truth and sampler
+  ---
+  duration_ms: 240.358646
+  type: 'test'
+  ...
+# Subtest: cauchy generated truth and sampler
+ok 108 - cauchy generated truth and sampler
+  ---
+  duration_ms: 130.447441
+  type: 'test'
+  ...
+# Subtest: gamma generated truth and sampler
+ok 109 - gamma generated truth and sampler
+  ---
+  duration_ms: 10051.410524
+  type: 'test'
+  ...
+# Subtest: gb2 generated truth and sampler
+ok 110 - gb2 generated truth and sampler
+  ---
+  duration_ms: 180.339281
+  type: 'test'
+  ...
+# Subtest: gengamma generated truth and sampler
+ok 111 - gengamma generated truth and sampler
+  ---
+  duration_ms: 18215.344195
+  type: 'test'
+  ...
+# Subtest: logitnorm generated truth and sampler
+ok 112 - logitnorm generated truth and sampler
+  ---
+  duration_ms: 138.053118
+  type: 'test'
+  ...
+# Subtest: lomax generated truth and sampler
+ok 113 - lomax generated truth and sampler
+  ---
+  duration_ms: 141.542242
+  type: 'test'
+  ...
+# Subtest: slash generated truth and sampler
+ok 114 - slash generated truth and sampler
+  ---
+  duration_ms: 144.917485
+  type: 'test'
+  ...
+# Subtest: triang generated truth and sampler
+ok 115 - triang generated truth and sampler
+  ---
+  duration_ms: 154.458058
+  type: 'test'
+  ...
+# Subtest: yulesimon generated truth and sampler
+ok 116 - yulesimon generated truth and sampler
+  ---
+  duration_ms: 299.056385
+  type: 'test'
+  ...
+# Subtest: betapr shared golden
+ok 117 - betapr shared golden
+  ---
+  duration_ms: 441.423721
+  type: 'test'
+  ...
+# Subtest: bhatt all held subsets
+ok 118 - bhatt all held subsets
+  ---
+  duration_ms: 31220.231665
+  type: 'test'
+  ...
+# Subtest: cmb held-value diagnostic
+ok 119 - cmb held-value diagnostic
+  ---
+  duration_ms: 4.503831
+  type: 'test'
+  ...
+# Subtest: expweibull all held subsets
+ok 120 - expweibull all held subsets
+  ---
+  duration_ms: 81.01464
+  type: 'test'
+  ...
+# Subtest: geom held-value diagnostic
+ok 121 - geom held-value diagnostic
+  ---
+  duration_ms: 2.566395
+  type: 'test'
+  ...
+# Subtest: gev held-value diagnostic
+ok 122 - gev held-value diagnostic
+  ---
+  duration_ms: 0.740764
+  type: 'test'
+  ...
+# Subtest: gpd all held subsets
+ok 123 - gpd all held subsets
+  ---
+  duration_ms: 37.41661
+  type: 'test'
+  ...
+# Subtest: hnorm shared golden
+ok 124 - hnorm shared golden
+  ---
+  duration_ms: 1.141541
+  type: 'test'
+  ...
+# Subtest: invweibull all held subsets
+ok 125 - invweibull all held subsets
+  ---
+  duration_ms: 15.032952
+  type: 'test'
+  ...
+# Subtest: nhyper shared golden
+ok 126 - nhyper shared golden
+  ---
+  duration_ms: 2.103871
+  type: 'test'
+  ...
+# Subtest: pareto all held subsets
+ok 127 - pareto all held subsets
+  ---
+  duration_ms: 1.126606
+  type: 'test'
+  ...
+# Subtest: pareto4 all held subsets
+ok 128 - pareto4 all held subsets
+  ---
+  duration_ms: 385.659578
+  type: 'test'
+  ...
+# Subtest: sgomp shared golden
+ok 129 - sgomp shared golden
+  ---
+  duration_ms: 242.586777
+  type: 'test'
+  ...
+# Subtest: st all held subsets
+ok 130 - st all held subsets
+  ---
+  duration_ms: 19421.098995
+  type: 'test'
+  ...
+# Subtest: std all held subsets
+ok 131 - std all held subsets
+  ---
+  duration_ms: 17275.262011
+  type: 'test'
+  ...
+# Subtest: unif held-value diagnostic
+ok 132 - unif held-value diagnostic
+  ---
+  duration_ms: 0.998672
+  type: 'test'
+  ...
+# Subtest: GB2 held power transfers non-unit conditional certificates and gamma witnesses
+ok 133 - GB2 held power transfers non-unit conditional certificates and gamma witnesses
+  ---
+  duration_ms: 8.798238
+  type: 'test'
+  ...
+# Subtest: continuous fallback carries the per-fit certification flag
+ok 134 - continuous fallback carries the per-fit certification flag
+  ---
+  duration_ms: 4.759659
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: pig
+ok 135 - covariance native agreement: pig
+  ---
+  duration_ms: 80.903961
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal nearly-constant uncertified fallback
+ok 136 - Burr and reciprocal nearly-constant uncertified fallback
+  ---
+  duration_ms: 1692.10877
+  type: 'test'
+  ...
+# Subtest: Skellam tail-cover budget preserves a feasible witness
+ok 137 - Skellam tail-cover budget preserves a feasible witness
+  ---
+  duration_ms: 2.23049
+  type: 'test'
+  ...
+# Subtest: conditional free coefficients reject unrepresentable subnormals
+ok 138 - conditional free coefficients reject unrepresentable subnormals
+  ---
+  duration_ms: 1.97027
+  type: 'test'
+  ...
+# Subtest: lst and std iterlim scales the certificate and preserves budget witnesses
+ok 139 - lst and std iterlim scales the certificate and preserves budget witnesses
+  ---
+  duration_ms: 825.681675
+  type: 'test'
+  ...
+# Subtest: trgamma certificates preserve held endpoints and reciprocal likelihoods
+ok 140 - trgamma certificates preserve held endpoints and reciprocal likelihoods
+  ---
+  duration_ms: 61.658132
+  type: 'test'
+  ...
+# Subtest: trgamma limit witnesses preserve raw support endpoints
+ok 141 - trgamma limit witnesses preserve raw support endpoints
+  ---
+  duration_ms: 70.246739
+  type: 'test'
+  ...
+# Subtest: Bhattacharjee normal member distinguishes residual underflow and precision
+ok 142 - Bhattacharjee normal member distinguishes residual underflow and precision
+  ---
+  duration_ms: 55.108584
+  type: 'test'
+  ...
+# Subtest: Bhattacharjee physical comparisons and stopped likelihood witnesses
+ok 143 - Bhattacharjee physical comparisons and stopped likelihood witnesses
+  ---
+  duration_ms: 69.444512
+  type: 'test'
+  ...
+# Subtest: SGED symmetric free-shape delegate transports fits and structured stops
+ok 144 - SGED symmetric free-shape delegate transports fits and structured stops
+  ---
+  duration_ms: 1988.58698
+  type: 'test'
+  ...
+# Subtest: heavy-tail inverse samplers replay finite quantiles beyond 2^53
+ok 145 - heavy-tail inverse samplers replay finite quantiles beyond 2^53
+  ---
+  duration_ms: 2050.507769
+  type: 'test'
+  ...
+# Subtest: GEV negative-shape coefficient corners preserve the gap dependency
+ok 146 - GEV negative-shape coefficient corners preserve the gap dependency
+  ---
+  duration_ms: 89.574963
+  type: 'test'
+  ...
+# Subtest: Student held subsets expose proved symmetry nonuniqueness
+ok 147 - Student held subsets expose proved symmetry nonuniqueness
+  ---
+  duration_ms: 92.988247
+  type: 'test'
+  ...
+# Subtest: dnorm generated truth and sampler
+ok 148 - dnorm generated truth and sampler
+  ---
+  duration_ms: 220.587783
+  type: 'test'
+  ...
+# Subtest: ht generated truth and sampler
+ok 149 - ht generated truth and sampler
+  ---
+  duration_ms: 121.381826
+  type: 'test'
+  ...
+# Subtest: hyper generated truth and sampler
+ok 150 - hyper generated truth and sampler
+  ---
+  duration_ms: 148.90474
+  type: 'test'
+  ...
+# Subtest: invgamma generated truth and sampler
+ok 151 - invgamma generated truth and sampler
+  ---
+  duration_ms: 7978.273867
+  type: 'test'
+  ...
+# Subtest: invgauss generated truth and sampler
+ok 152 - invgauss generated truth and sampler
+  ---
+  duration_ms: 91.925447
+  type: 'test'
+  ...
+# Subtest: weibull generated truth and sampler
+ok 153 - weibull generated truth and sampler
+  ---
+  duration_ms: 65.411244
+  type: 'test'
+  ...
+# Subtest: beta all held subsets
+ok 154 - beta all held subsets
+  ---
+  duration_ms: 11.506811
+  type: 'test'
+  ...
+# Subtest: bnbinom shared golden
+ok 155 - bnbinom shared golden
+  ---
+  duration_ms: 1841.079023
+  type: 'test'
+  ...
+# Subtest: bnbinom held-value diagnostic
+ok 156 - bnbinom held-value diagnostic
+  ---
+  duration_ms: 6.180389
+  type: 'test'
+  ...
+# Subtest: cmp all held subsets
+ok 157 - cmp all held subsets
+  ---
+  duration_ms: 8.841102
+  type: 'test'
+  ...
+# Subtest: ged all held subsets
+ok 158 - ged all held subsets
+  ---
+  duration_ms: 1586.829025
+  type: 'test'
+  ...
+# Subtest: genbeta all held subsets
+ok 159 - genbeta all held subsets
+  ---
+  duration_ms: 210.59118
+  type: 'test'
+  ...
+# Subtest: invexp all held subsets
+ok 160 - invexp all held subsets
+  ---
+  duration_ms: 10.215498
+  type: 'test'
+  ...
+# Subtest: lgser shared golden
+ok 161 - lgser shared golden
+  ---
+  duration_ms: 0.672691
+  type: 'test'
+  ...
+# Subtest: lgser held-value diagnostic
+ok 162 - lgser held-value diagnostic
+  ---
+  duration_ms: 0.223606
+  type: 'test'
+  ...
+# Subtest: nbinom shared golden
+ok 163 - nbinom shared golden
+  ---
+  duration_ms: 0.750364
+  type: 'test'
+  ...
+# Subtest: nbinom held-value diagnostic
+ok 164 - nbinom held-value diagnostic
+  ---
+  duration_ms: 0.226042
+  type: 'test'
+  ...
+# Subtest: power shared golden
+ok 165 - power shared golden
+  ---
+  duration_ms: 0.62672
+  type: 'test'
+  ...
+# Subtest: power held-value diagnostic
+ok 166 - power held-value diagnostic
+  ---
+  duration_ms: 0.181986
+  type: 'test'
+  ...
+# Subtest: scaled normal residuals preserve extreme units in every held subset
+ok 167 - scaled normal residuals preserve extreme units in every held subset
+  ---
+  duration_ms: 16.718411
+  type: 'test'
+  ...
+# Subtest: all remaining retirement routes preserve held coefficients and widened domains
+ok 168 - all remaining retirement routes preserve held coefficients and widened domains
+  ---
+  duration_ms: 103.179958
+  type: 'test'
+  ...
+# Subtest: finite zeta statistics retain accuracy for large uniform histograms
+ok 169 - finite zeta statistics retain accuracy for large uniform histograms
+  ---
+  duration_ms: 425.727926
+  type: 'test'
+  ...
+# Subtest: discrete modifier windows use the conditional probability band in all modes
+ok 170 - discrete modifier windows use the conditional probability band in all modes
+  ---
+  duration_ms: 463.11744
+  type: 'test'
+  ...
+# Subtest: modifier sampling inversion excludes the public conditional band
+ok 171 - modifier sampling inversion excludes the public conditional band
+  ---
+  duration_ms: 2.972475
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: pois
+ok 172 - covariance native agreement: pois
+  ---
+  duration_ms: 68.927828
+  type: 'test'
+  ...
+# Subtest: discrete empty preflight budget has no invented candidate
+ok 173 - discrete empty preflight budget has no invented candidate
+  ---
+  duration_ms: 6.612378
+  type: 'test'
+  ...
+# Subtest: conditional snorm and skew-t ambiguities retain both compared models
+ok 174 - conditional snorm and skew-t ambiguities retain both compared models
+  ---
+  duration_ms: 10.790713
+  type: 'test'
+  ...
+# Subtest: snorm constant sample with held mean has a constrained half-normal supremum
+ok 175 - snorm constant sample with held mean has a constrained half-normal supremum
+  ---
+  duration_ms: 1.223546
+  type: 'test'
+  ...
+# Subtest: unresolved folded-normal quartic identification is conditioning
+ok 176 - unresolved folded-normal quartic identification is conditioning
+  ---
+  duration_ms: 12.40928
+  type: 'test'
+  ...
+# Subtest: betapr flat gamma-adjacent profile retains coefficient accuracy in WASM
+ok 177 - betapr flat gamma-adjacent profile retains coefficient accuracy in WASM
+  ---
+  duration_ms: 1039.594923
+  type: 'test'
+  ...
+# Subtest: bnbinom alpha-held global certificate keeps both labels and the diagonal witness
+ok 178 - bnbinom alpha-held global certificate keeps both labels and the diagonal witness
+  ---
+  duration_ms: 511.989747
+  type: 'test'
+  ...
+# Subtest: ZIB unrepresentable finite log likelihoods stop numerically
+ok 179 - ZIB unrepresentable finite log likelihoods stop numerically
+  ---
+  duration_ms: 65.940574
+  type: 'test'
+  ...
+# Subtest: skew-t and skew-GED retain large-shape gamma moments
+ok 180 - skew-t and skew-GED retain large-shape gamma moments
+  ---
+  duration_ms: 42.22208
+  type: 'test'
+  ...
+# Subtest: bnbinom Bernstein supporting polynomials prove additional all-free and pair faces
+ok 181 - bnbinom Bernstein supporting polynomials prove additional all-free and pair faces
+  ---
+  duration_ms: 66.972013
+  type: 'test'
+  ...
+# Subtest: dgamma generated truth and sampler
+ok 182 - dgamma generated truth and sampler
+  ---
+  duration_ms: 3253.410975
+  type: 'test'
+  ...
+# Subtest: exp generated truth and sampler
+ok 183 - exp generated truth and sampler
+  ---
+  duration_ms: 37.942187
+  type: 'test'
+  ...
+# Subtest: pois generated truth and sampler
+ok 184 - pois generated truth and sampler
+  ---
+  duration_ms: 1491.616283
+  type: 'test'
+  ...
+# Subtest: rayleigh generated truth and sampler
+ok 185 - rayleigh generated truth and sampler
+  ---
+  duration_ms: 47.760359
+  type: 'test'
+  ...
+# Subtest: trgamma generated truth and sampler
+ok 186 - trgamma generated truth and sampler
+  ---
+  duration_ms: 5307.95878
+  type: 'test'
+  ...
+# Subtest: dlaplace held-value diagnostic
+ok 187 - dlaplace held-value diagnostic
+  ---
+  duration_ms: 4.20492
+  type: 'test'
+  ...
+# Subtest: dweibull shared golden
+ok 188 - dweibull shared golden
+  ---
+  duration_ms: 5.339945
+  type: 'test'
+  ...
+# Subtest: emg all held subsets
+ok 189 - emg all held subsets
+  ---
+  duration_ms: 595.551035
+  type: 'test'
+  ...
+# Subtest: gompertz held-value diagnostic
+ok 190 - gompertz held-value diagnostic
+  ---
+  duration_ms: 1.011191
+  type: 'test'
+  ...
+# Subtest: huber shared golden
+ok 191 - huber shared golden
+  ---
+  duration_ms: 2.745205
+  type: 'test'
+  ...
+# Subtest: invpareto held-value diagnostic
+ok 192 - invpareto held-value diagnostic
+  ---
+  duration_ms: 0.36376
+  type: 'test'
+  ...
+# Subtest: invtrgamma shared golden
+ok 193 - invtrgamma shared golden
+  ---
+  duration_ms: 17.068077
+  type: 'test'
+  ...
+# Subtest: lgamma all held subsets
+ok 194 - lgamma all held subsets
+  ---
+  duration_ms: 1.815788
+  type: 'test'
+  ...
+# Subtest: llogis held-value diagnostic
+ok 195 - llogis held-value diagnostic
+  ---
+  duration_ms: 0.370401
+  type: 'test'
+  ...
+# Subtest: naka all held subsets
+ok 196 - naka all held subsets
+  ---
+  duration_ms: 0.660115
+  type: 'test'
+  ...
+# Subtest: norm held-value diagnostic
+ok 197 - norm held-value diagnostic
+  ---
+  duration_ms: 0.536084
+  type: 'test'
+  ...
+# Subtest: paralogis held-value diagnostic
+ok 198 - paralogis held-value diagnostic
+  ---
+  duration_ms: 0.265765
+  type: 'test'
+  ...
+# Subtest: pareto2 all held subsets
+ok 199 - pareto2 all held subsets
+  ---
+  duration_ms: 20.955839
+  type: 'test'
+  ...
+# Subtest: pig held-value diagnostic
+ok 200 - pig held-value diagnostic
+  ---
+  duration_ms: 0.443976
+  type: 'test'
+  ...
+# Subtest: zeta held-value diagnostic
+ok 201 - zeta held-value diagnostic
+  ---
+  duration_ms: 0.33273
+  type: 'test'
+  ...
+# Subtest: binomial window iteration limits reach free and held size
+ok 202 - binomial window iteration limits reach free and held size
+  ---
+  duration_ms: 131.473216
+  type: 'test'
+  ...
+# Subtest: explicit 512 work units retain the controlled binomial window solver
+ok 203 - explicit 512 work units retain the controlled binomial window solver
+  ---
+  duration_ms: 132.376644
+  type: 'test'
+  ...
+# Subtest: ZINB certificate transports competing maxima and terminal budgets
+ok 204 - ZINB certificate transports competing maxima and terminal budgets
+  ---
+  duration_ms: 2.287334
+  type: 'test'
+  ...
+# Subtest: snorm reflected finite modes remain a comparison tie
+ok 205 - snorm reflected finite modes remain a comparison tie
+  ---
+  duration_ms: 3.28497
+  type: 'test'
+  ...
+# Subtest: CMB shared CMP work remains available at higher iterlim
+ok 206 - CMB shared CMP work remains available at higher iterlim
+  ---
+  duration_ms: 8.701041
+  type: 'test'
+  ...
+# Subtest: free CMB size preserves the continuous-coordinate accuracy kind
+ok 207 - free CMB size preserves the continuous-coordinate accuracy kind
+  ---
+  duration_ms: 5.69639
+  type: 'test'
+  ...
+# Subtest: fatigue rounded threshold translations stop numerically rather than claiming nonexistence
+ok 208 - fatigue rounded threshold translations stop numerically rather than claiming nonexistence
+  ---
+  duration_ms: 68.53386
+  type: 'test'
+  ...
+# Subtest: exact factorial moments certify a nonsaturated truncated Poisson face
+ok 209 - exact factorial moments certify a nonsaturated truncated Poisson face
+  ---
+  duration_ms: 58.28598
+  type: 'test'
+  ...
+# Subtest: GB2 subunit held shapes certify endpoint faces with held-endpoint advice
+ok 210 - GB2 subunit held shapes certify endpoint faces with held-endpoint advice
+  ---
+  duration_ms: 71.580929
+  type: 'test'
+  ...
+# Subtest: bnbinom legacy fallbacks and proved decisions expose certification labels
+ok 211 - bnbinom legacy fallbacks and proved decisions expose certification labels
+  ---
+  duration_ms: 3154.978624
+  type: 'test'
+  ...
+# Subtest: genbeta all-free finite certificate preserves the golden and never certifies unattainable precision
+ok 212 - genbeta all-free finite certificate preserves the golden and never certifies unattainable precision
+  ---
+  duration_ms: 336.456841
+  type: 'test'
+  ...
+# Subtest: pgw tiny natural upper tails and inverse boundary handling
+ok 213 - pgw tiny natural upper tails and inverse boundary handling
+  ---
+  duration_ms: 6.663589
+  type: 'test'
+  ...
+# Subtest: beta generated truth and sampler
+ok 214 - beta generated truth and sampler
+  ---
+  duration_ms: 137.832335
+  type: 'test'
+  ...
+# Subtest: cmp generated truth and sampler
+ok 215 - cmp generated truth and sampler
+  ---
+  duration_ms: 7212.879798
+  type: 'test'
+  ...
+# Subtest: ged generated truth and sampler
+ok 216 - ged generated truth and sampler
+  ---
+  duration_ms: 268.840719
+  type: 'test'
+  ...
+# Subtest: genbeta generated truth and sampler
+ok 217 - genbeta generated truth and sampler
+  ---
+  duration_ms: 156.463909
+  type: 'test'
+  ...
+# Subtest: invexp generated truth and sampler
+ok 218 - invexp generated truth and sampler
+  ---
+  duration_ms: 60.83871
+  type: 'test'
+  ...
+# Subtest: burr shared golden
+ok 219 - burr shared golden
+  ---
+  duration_ms: 142.29761
+  type: 'test'
+  ...
+# Subtest: cmb all held subsets
+ok 220 - cmb all held subsets
+  ---
+  duration_ms: 637.913972
+  type: 'test'
+  ...
+# Subtest: dgamma held-value diagnostic
+ok 221 - dgamma held-value diagnostic
+  ---
+  duration_ms: 5.106689
+  type: 'test'
+  ...
+# Subtest: exp held-value diagnostic
+ok 222 - exp held-value diagnostic
+  ---
+  duration_ms: 2.274722
+  type: 'test'
+  ...
+# Subtest: geom all held subsets
+ok 223 - geom all held subsets
+  ---
+  duration_ms: 2.934214
+  type: 'test'
+  ...
+# Subtest: gev all held subsets
+ok 224 - gev all held subsets
+  ---
+  duration_ms: 9305.039259
+  type: 'test'
+  ...
+# Subtest: invparalogis shared golden
+ok 225 - invparalogis shared golden
+  ---
+  duration_ms: 41.317127
+  type: 'test'
+  ...
+# Subtest: pois held-value diagnostic
+ok 226 - pois held-value diagnostic
+  ---
+  duration_ms: 1.0085
+  type: 'test'
+  ...
+# Subtest: rayleigh held-value diagnostic
+ok 227 - rayleigh held-value diagnostic
+  ---
+  duration_ms: 0.516083
+  type: 'test'
+  ...
+# Subtest: snorm shared golden
+ok 228 - snorm shared golden
+  ---
+  duration_ms: 3.678457
+  type: 'test'
+  ...
+# Subtest: trgamma held-value diagnostic
+ok 229 - trgamma held-value diagnostic
+  ---
+  duration_ms: 0.500833
+  type: 'test'
+  ...
+# Subtest: unif all held subsets
+ok 230 - unif all held subsets
+  ---
+  duration_ms: 0.525936
+  type: 'test'
+  ...
+# Subtest: st constant-data location-skew faces retain the sharp global bound
+ok 231 - st constant-data location-skew faces retain the sharp global bound
+  ---
+  duration_ms: 4.6235
+  type: 'test'
+  ...
+# Subtest: trgamma held-scale concentration and numerical stops have distinct kinds
+ok 232 - trgamma held-scale concentration and numerical stops have distinct kinds
+  ---
+  duration_ms: 92.203072
+  type: 'test'
+  ...
+# Subtest: GED held-shape arithmetic losses produce numerical stops
+ok 233 - GED held-shape arithmetic losses produce numerical stops
+  ---
+  duration_ms: 82.383547
+  type: 'test'
+  ...
+# Subtest: binomial relatives retain proved finite and Poisson witnesses
+ok 234 - binomial relatives retain proved finite and Poisson witnesses
+  ---
+  duration_ms: 136.821046
+  type: 'test'
+  ...
+# Subtest: GB2 constant mixed-power finite regime has a certified fit
+ok 235 - GB2 constant mixed-power finite regime has a certified fit
+  ---
+  duration_ms: 73.991897
+  type: 'test'
+  ...
+# Subtest: bnbinom unproved all-free face comparisons retain the legacy limit
+ok 236 - bnbinom unproved all-free face comparisons retain the legacy limit
+  ---
+  duration_ms: 206.735052
+  type: 'test'
+  ...
+# Subtest: raw transformed sufficient statistics match independent concentrated references
+ok 237 - raw transformed sufficient statistics match independent concentrated references
+  ---
+  duration_ms: 73.797098
+  type: 'test'
+  ...
+# Subtest: st large skew preserves a small CDF at ordinary degrees of freedom
+ok 238 - st large skew preserves a small CDF at ordinary degrees of freedom
+  ---
+  duration_ms: 4.86736
+  type: 'test'
+  ...
+# Subtest: bnbinom generated truth and sampler
+ok 239 - bnbinom generated truth and sampler
+  ---
+  duration_ms: 1601.401558
+  type: 'test'
+  ...
+# Subtest: lgser generated truth and sampler
+ok 240 - lgser generated truth and sampler
+  ---
+  duration_ms: 81.363166
+  type: 'test'
+  ...
+# Subtest: nbinom generated truth and sampler
+ok 241 - nbinom generated truth and sampler
+  ---
+  duration_ms: 176.580093
+  type: 'test'
+  ...
+# Subtest: power generated truth and sampler
+ok 242 - power generated truth and sampler
+  ---
+  duration_ms: 70.351606
+  type: 'test'
+  ...
+# Subtest: dnorm shared golden
+ok 243 - dnorm shared golden
+  ---
+  duration_ms: 4.969492
+  type: 'test'
+  ...
+# Subtest: dnorm held-value diagnostic
+ok 244 - dnorm held-value diagnostic
+  ---
+  duration_ms: 2.832483
+  type: 'test'
+  ...
+# Subtest: fatigue all held subsets
+ok 245 - fatigue all held subsets
+  ---
+  duration_ms: 6.843868
+  type: 'test'
+  ...
+# Subtest: fpareto all held subsets
+ok 246 - fpareto all held subsets
+  ---
+  duration_ms: 495.053623
+  type: 'test'
+  ...
+# Subtest: frechet all held subsets
+ok 247 - frechet all held subsets
+  ---
+  duration_ms: 320.194561
+  type: 'test'
+  ...
+# Subtest: ht shared golden
+ok 248 - ht shared golden
+  ---
+  duration_ms: 280.603249
+  type: 'test'
+  ...
+# Subtest: ht held-value diagnostic
+ok 249 - ht held-value diagnostic
+  ---
+  duration_ms: 3.950806
+  type: 'test'
+  ...
+# Subtest: hyper shared golden
+ok 250 - hyper shared golden
+  ---
+  duration_ms: 1.761808
+  type: 'test'
+  ...
+# Subtest: hyper held-value diagnostic
+ok 251 - hyper held-value diagnostic
+  ---
+  duration_ms: 0.312717
+  type: 'test'
+  ...
+# Subtest: invgamma shared golden
+ok 252 - invgamma shared golden
+  ---
+  duration_ms: 0.61153
+  type: 'test'
+  ...
+# Subtest: invgamma held-value diagnostic
+ok 253 - invgamma held-value diagnostic
+  ---
+  duration_ms: 0.248989
+  type: 'test'
+  ...
+# Subtest: invgauss shared golden
+ok 254 - invgauss shared golden
+  ---
+  duration_ms: 0.670316
+  type: 'test'
+  ...
+# Subtest: invgauss held-value diagnostic
+ok 255 - invgauss held-value diagnostic
+  ---
+  duration_ms: 0.198176
+  type: 'test'
+  ...
+# Subtest: sged all held subsets
+ok 256 - sged all held subsets
+  ---
+  duration_ms: 4363.324537
+  type: 'test'
+  ...
+# Subtest: weibull shared golden
+ok 257 - weibull shared golden
+  ---
+  duration_ms: 1.547769
+  type: 'test'
+  ...
+# Subtest: weibull held-value diagnostic
+ok 258 - weibull held-value diagnostic
+  ---
+  duration_ms: 0.178916
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: sstd
+ok 259 - covariance native agreement: sstd
+  ---
+  duration_ms: 108.657596
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: huber
+ok 260 - covariance native agreement: huber
+  ---
+  duration_ms: 49.295727
+  type: 'test'
+  ...
+# Subtest: structured stops survive the JS Error facade
+ok 261 - structured stops survive the JS Error facade
+  ---
+  duration_ms: 15.082017
+  type: 'test'
+  ...
+# Subtest: Power face payload follows public endpoint-then-shape order
+ok 262 - Power face payload follows public endpoint-then-shape order
+  ---
+  duration_ms: 1149.910618
+  type: 'test'
+  ...
+# Subtest: tlambda free-shape half ties retain a finite improvement and an unresolved global bound
+ok 263 - tlambda free-shape half ties retain a finite improvement and an unresolved global bound
+  ---
+  duration_ms: 3.488748
+  type: 'test'
+  ...
+# Subtest: st symmetric all-nuisance reduction transports the normal face
+ok 264 - st symmetric all-nuisance reduction transports the normal face
+  ---
+  duration_ms: 14.645779
+  type: 'test'
+  ...
+# Subtest: st unresolved thin-tail score arithmetic remains a numerical stop
+ok 265 - st unresolved thin-tail score arithmetic remains a numerical stop
+  ---
+  duration_ms: 1.295003
+  type: 'test'
+  ...
+# Subtest: accuracy stops distinguish binary64 tolerance from conditioning
+ok 266 - accuracy stops distinguish binary64 tolerance from conditioning
+  ---
+  duration_ms: 27.910298
+  type: 'test'
+  ...
+# Subtest: GEV two-point count certificate avoids a rounded sample mean
+ok 267 - GEV two-point count certificate avoids a rounded sample mean
+  ---
+  duration_ms: 84.799892
+  type: 'test'
+  ...
+# Subtest: GED analytic held-sd shape fits and median ties agree across bindings
+ok 268 - GED analytic held-sd shape fits and median ties agree across bindings
+  ---
+  duration_ms: 55.269776
+  type: 'test'
+  ...
+# Subtest: SGED weighted median and smooth reflected half-GED ties retain their witnesses
+ok 269 - SGED weighted median and smooth reflected half-GED ties retain their witnesses
+  ---
+  duration_ms: 78.944588
+  type: 'test'
+  ...
+# Subtest: betapr generated truth and sampler
+ok 270 - betapr generated truth and sampler
+  ---
+  duration_ms: 331.437186
+  type: 'test'
+  ...
+# Subtest: hnorm generated truth and sampler
+ok 271 - hnorm generated truth and sampler
+  ---
+  duration_ms: 130.220452
+  type: 'test'
+  ...
+# Subtest: nhyper generated truth and sampler
+ok 272 - nhyper generated truth and sampler
+  ---
+  duration_ms: 461.218025
+  type: 'test'
+  ...
+# Subtest: sgomp generated truth and sampler
+ok 273 - sgomp generated truth and sampler
+  ---
+  duration_ms: 157.256406
+  type: 'test'
+  ...
+# Subtest: bbinom shared golden
+ok 274 - bbinom shared golden
+  ---
+  duration_ms: 14.447763
+  type: 'test'
+  ...
+# Subtest: bhatt held-value diagnostic
+ok 275 - bhatt held-value diagnostic
+  ---
+  duration_ms: 3.992038
+  type: 'test'
+  ...
+# Subtest: binom shared golden
+ok 276 - binom shared golden
+  ---
+  duration_ms: 2.807402
+  type: 'test'
+  ...
+# Subtest: cauchy shared golden
+ok 277 - cauchy shared golden
+  ---
+  duration_ms: 1.989888
+  type: 'test'
+  ...
+# Subtest: dunif all held subsets
+ok 278 - dunif all held subsets
+  ---
+  duration_ms: 2.16936
+  type: 'test'
+  ...
+# Subtest: expweibull held-value diagnostic
+ok 279 - expweibull held-value diagnostic
+  ---
+  duration_ms: 0.712027
+  type: 'test'
+  ...
+# Subtest: gamma shared golden
+ok 280 - gamma shared golden
+  ---
+  duration_ms: 6.285679
+  type: 'test'
+  ...
+# Subtest: gb2 shared golden
+ok 281 - gb2 shared golden
+  ---
+  duration_ms: 334.816473
+  type: 'test'
+  ...
+# Subtest: gengamma shared golden
+ok 282 - gengamma shared golden
+  ---
+  duration_ms: 32.286525
+  type: 'test'
+  ...
+# Subtest: gpd held-value diagnostic
+ok 283 - gpd held-value diagnostic
+  ---
+  duration_ms: 0.504174
+  type: 'test'
+  ...
+# Subtest: gumbel all held subsets
+ok 284 - gumbel all held subsets
+  ---
+  duration_ms: 2.102178
+  type: 'test'
+  ...
+# Subtest: invweibull held-value diagnostic
+ok 285 - invweibull held-value diagnostic
+  ---
+  duration_ms: 0.464029
+  type: 'test'
+  ...
+# Subtest: kumar all held subsets
+ok 286 - kumar all held subsets
+  ---
+  duration_ms: 13.330188
+  type: 'test'
+  ...
+# Subtest: logitnorm shared golden
+ok 287 - logitnorm shared golden
+  ---
+  duration_ms: 3.024128
+  type: 'test'
+  ...
+# Subtest: lomax shared golden
+ok 288 - lomax shared golden
+  ---
+  duration_ms: 4.591974
+  type: 'test'
+  ...
+# Subtest: pareto held-value diagnostic
+ok 289 - pareto held-value diagnostic
+  ---
+  duration_ms: 0.512511
+  type: 'test'
+  ...
+# Subtest: pareto3 all held subsets
+ok 290 - pareto3 all held subsets
+  ---
+  duration_ms: 38.180146
+  type: 'test'
+  ...
+# Subtest: pareto4 held-value diagnostic
+ok 291 - pareto4 held-value diagnostic
+  ---
+  duration_ms: 0.43476
+  type: 'test'
+  ...
+# Subtest: slash shared golden
+ok 292 - slash shared golden
+  ---
+  duration_ms: 10229.262975
+  type: 'test'
+  ...
+# Subtest: sstd all held subsets
+ok 293 - sstd all held subsets
+  ---
+  duration_ms: 3653.379628
+  type: 'test'
+  ...
+# Subtest: st held-value diagnostic
+ok 294 - st held-value diagnostic
+  ---
+  duration_ms: 0.407923
+  type: 'test'
+  ...
+# Subtest: std held-value diagnostic
+ok 295 - std held-value diagnostic
+  ---
+  duration_ms: 0.272346
+  type: 'test'
+  ...
+# Subtest: triang shared golden
+ok 296 - triang shared golden
+  ---
+  duration_ms: 11.733351
+  type: 'test'
+  ...
+# Subtest: yulesimon shared golden
+ok 297 - yulesimon shared golden
+  ---
+  duration_ms: 0.784844
+  type: 'test'
+  ...
+# Subtest: transformed normal and normalized scale families preserve extreme units
+ok 298 - transformed normal and normalized scale families preserve extreme units
+  ---
+  duration_ms: 4.393716
+  type: 'test'
+  ...
+# Subtest: an unordered Frechet Gumbel comparison retains the finite search
+ok 299 - an unordered Frechet Gumbel comparison retains the finite search
+  ---
+  duration_ms: 35.940831
+  type: 'test'
+  ...
+# Subtest: covariance diagnostics and input ownership
+ok 300 - covariance diagnostics and input ownership
+  ---
+  duration_ms: 39.521979
+  type: 'test'
+  ...
+# Subtest: Lomax budget witnesses retain public delegate coordinates and bounds
+ok 301 - Lomax budget witnesses retain public delegate coordinates and bounds
+  ---
+  duration_ms: 15.231393
+  type: 'test'
+  ...
+# Subtest: GB2 delegated budget keeps transformed-gamma witness names
+ok 302 - GB2 delegated budget keeps transformed-gamma witness names
+  ---
+  duration_ms: 5.684995
+  type: 'test'
+  ...
+# Subtest: CMP ledger budget retains witnesses; huge modes are numerical
+ok 303 - CMP ledger budget retains witnesses; huge modes are numerical
+  ---
+  duration_ms: 43.430305
+  type: 'test'
+  ...
+# Subtest: outcome flags and reasons reach callers uniformly
+not ok 304 - outcome flags and reasons reach callers uniformly
+  ---
+  duration_ms: 7.206084
+  type: 'test'
+  location: '/home/jonas/Files/programming/univariateML.wt/core5b-c/bindings/js/test-register.mjs:12:70'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    Error: GB2 likelihood is unbounded for constant positive data; no MLE.
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (file:///home/jonas/Files/programming/univariateML.wt/core5b-c/bindings/js/stop-test.mjs:613:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: std certificate resolves the shallow quantile maximum
+ok 305 - std certificate resolves the shallow quantile maximum
+  ---
+  duration_ms: 2058.328757
+  type: 'test'
+  ...
+# Subtest: GED rounded held-sd endpoints cannot select a uniform face
+ok 306 - GED rounded held-sd endpoints cannot select a uniform face
+  ---
+  duration_ms: 63.729835
+  type: 'test'
+  ...
+# Subtest: GED constant data away from a held mean have a uniform limit
+ok 307 - GED constant data away from a held mean have a uniform limit
+  ---
+  duration_ms: 62.176217
+  type: 'test'
+  ...
+# Subtest: GED rounded residual ties cannot select an invalid uniform support
+ok 308 - GED rounded residual ties cannot select an invalid uniform support
+  ---
+  duration_ms: 51.213137
+  type: 'test'
+  ...
+# Subtest: bnbinom NB delegate precision failures remain structured numerical stops
+ok 309 - bnbinom NB delegate precision failures remain structured numerical stops
+  ---
+  duration_ms: 69.784252
+  type: 'test'
+  ...
+# Subtest: signed binomial face certificates have finite global bounds
+ok 310 - signed binomial face certificates have finite global bounds
+  ---
+  duration_ms: 121.206297
+  type: 'test'
+  ...
+# Subtest: binomial relatives certify Poisson limits and retain finite witnesses
+ok 311 - binomial relatives certify Poisson limits and retain finite witnesses
+  ---
+  duration_ms: 101.585819
+  type: 'test'
+  ...
+# Subtest: SGED weighted free-shape and smooth free-skew profiles certify golden fits
+ok 312 - SGED weighted free-shape and smooth free-skew profiles certify golden fits
+  ---
+  duration_ms: 4029.073524
+  type: 'test'
+  ...
+# Subtest: CMB finite-size ties retain two distinct witnesses and nu-held census certifies
+ok 313 - CMB finite-size ties retain two distinct witnesses and nu-held census certifies
+  ---
+  duration_ms: 223.639037
+  type: 'test'
+  ...
+# Subtest: translated lattice normal and Laplace tails survive overflowing differences
+ok 314 - translated lattice normal and Laplace tails survive overflowing differences
+  ---
+  duration_ms: 1.94008
+  type: 'test'
+  ...
+# Subtest: EVT two-point certificates preserve public holds and typed Gumbel face
+ok 315 - EVT two-point certificates preserve public holds and typed Gumbel face
+  ---
+  duration_ms: 67.828889
+  type: 'test'
+  ...
+# Subtest: GEV public support rejects a negative zero residual
+ok 316 - GEV public support rejects a negative zero residual
+  ---
+  duration_ms: 64.847778
+  type: 'test'
+  ...
+# Subtest: foldnorm generated truth and sampler
+ok 317 - foldnorm generated truth and sampler
+  ---
+  duration_ms: 108.952714
+  type: 'test'
+  ...
+# Subtest: hcauchy generated truth and sampler
+ok 318 - hcauchy generated truth and sampler
+  ---
+  duration_ms: 96.891306
+  type: 'test'
+  ...
+# Subtest: lst generated truth and sampler
+ok 319 - lst generated truth and sampler
+  ---
+  duration_ms: 201.129151
+  type: 'test'
+  ...
+# Subtest: nsbeta generated truth and sampler
+ok 320 - nsbeta generated truth and sampler
+  ---
+  duration_ms: 227.382469
+  type: 'test'
+  ...
+# Subtest: skellam generated truth and sampler
+ok 321 - skellam generated truth and sampler
+  ---
+  duration_ms: 16203.033926
+  type: 'test'
+  ...
+# Subtest: sn generated truth and sampler
+ok 322 - sn generated truth and sampler
+  ---
+  duration_ms: 1756.902355
+  type: 'test'
+  ...
+# Subtest: tlambda generated truth and sampler
+ok 323 - tlambda generated truth and sampler
+  ---
+  duration_ms: 284.928049
+  type: 'test'
+  ...
+# Subtest: burr all held subsets
+ok 324 - burr all held subsets
+  ---
+  duration_ms: 341.256352
+  type: 'test'
+  ...
+# Subtest: dlaplace shared golden
+ok 325 - dlaplace shared golden
+  ---
+  duration_ms: 7.230535
+  type: 'test'
+  ...
+# Subtest: dweibull held-value diagnostic
+ok 326 - dweibull held-value diagnostic
+  ---
+  duration_ms: 5.324428
+  type: 'test'
+  ...
+# Subtest: gompertz shared golden
+ok 327 - gompertz shared golden
+  ---
+  duration_ms: 2.112
+  type: 'test'
+  ...
+# Subtest: huber held-value diagnostic
+ok 328 - huber held-value diagnostic
+  ---
+  duration_ms: 2.278223
+  type: 'test'
+  ...
+# Subtest: invparalogis all held subsets
+ok 329 - invparalogis all held subsets
+  ---
+  duration_ms: 85.994004
+  type: 'test'
+  ...
+# Subtest: invpareto shared golden
+ok 330 - invpareto shared golden
+  ---
+  duration_ms: 21.668079
+  type: 'test'
+  ...
+# Subtest: invtrgamma held-value diagnostic
+ok 331 - invtrgamma held-value diagnostic
+  ---
+  duration_ms: 0.991161
+  type: 'test'
+  ...
+# Subtest: llogis shared golden
+ok 332 - llogis shared golden
+  ---
+  duration_ms: 69.066223
+  type: 'test'
+  ...
+# Subtest: norm shared golden
+ok 333 - norm shared golden
+  ---
+  duration_ms: 1.383585
+  type: 'test'
+  ...
+# Subtest: paralogis shared golden
+ok 334 - paralogis shared golden
+  ---
+  duration_ms: 51.816594
+  type: 'test'
+  ...
+# Subtest: pig shared golden
+ok 335 - pig shared golden
+  ---
+  duration_ms: 2.614098
+  type: 'test'
+  ...
+# Subtest: snorm all held subsets
+ok 336 - snorm all held subsets
+  ---
+  duration_ms: 791.723464
+  type: 'test'
+  ...
+# Subtest: zeta shared golden
+ok 337 - zeta shared golden
+  ---
+  duration_ms: 2.700474
+  type: 'test'
+  ...
+# Subtest: delegate follow-up keeps successful uncertified parent fits
+ok 338 - delegate follow-up keeps successful uncertified parent fits
+  ---
+  duration_ms: 30.75659
+  type: 'test'
+  ...
+# Subtest: GEV coupled support corners survive normalization and outer coverage
+ok 339 - GEV coupled support corners survive normalization and outer coverage
+  ---
+  duration_ms: 63.150743
+  type: 'test'
+  ...
+# Subtest: held windows and extreme finite zeta exponents bypass irrelevant searches
+ok 340 - held windows and extreme finite zeta exponents bypass irrelevant searches
+  ---
+  duration_ms: 200.483981
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: betapr
+ok 341 - covariance native agreement: betapr
+  ---
+  duration_ms: 1297.978622
+  type: 'test'
+  ...
+# Subtest: snorm held certificate preserves opposite-face ties and root failures
+ok 342 - snorm held certificate preserves opposite-face ties and root failures
+  ---
+  duration_ms: 5.33169
+  type: 'test'
+  ...
+# Subtest: Fully held CMP evaluation uses its fixed cap and fails numerically
+ok 343 - Fully held CMP evaluation uses its fixed cap and fails numerically
+  ---
+  duration_ms: 307.911521
+  type: 'test'
+  ...
+# Subtest: fatigue certificate stops when rounding hides alpha resolution
+ok 344 - fatigue certificate stops when rounding hides alpha resolution
+  ---
+  duration_ms: 75.261903
+  type: 'test'
+  ...
+# Subtest: lst and std held solver caps return structured numerical stops
+ok 345 - lst and std held solver caps return structured numerical stops
+  ---
+  duration_ms: 84.47272
+  type: 'test'
+  ...
+# Subtest: betapr non-unit conditional certificate transports finite fits and gamma faces
+ok 346 - betapr non-unit conditional certificate transports finite fits and gamma faces
+  ---
+  duration_ms: 105.442761
+  type: 'test'
+  ...
+# Subtest: binomial relatives prove their Poisson-type limits with finite witnesses
+ok 347 - binomial relatives prove their Poisson-type limits with finite witnesses
+  ---
+  duration_ms: 147.865874
+  type: 'test'
+  ...
+# Subtest: SGED normal face conversion rejects rounded subnormal scales
+ok 348 - SGED normal face conversion rejects rounded subnormal scales
+  ---
+  duration_ms: 74.494148
+  type: 'test'
+  ...
+# Subtest: EMG outer certificate preserves budget and unresolved witnesses
+ok 349 - EMG outer certificate preserves budget and unresolved witnesses
+  ---
+  duration_ms: 81.419711
+  type: 'test'
+  ...
+# Subtest: Bhattacharjee held certificates and quantitative numerical stops
+ok 350 - Bhattacharjee held certificates and quantitative numerical stops
+  ---
+  duration_ms: 104.625467
+  type: 'test'
+  ...
+# Subtest: bnbinom all-free finite certificate bounds an independent high-precision maximizer
+ok 351 - bnbinom all-free finite certificate bounds an independent high-precision maximizer
+  ---
+  duration_ms: 4223.788815
+  type: 'test'
+  ...
+# Subtest: Student legacy t2 limit keeps its class and uncertified flag
+ok 352 - Student legacy t2 limit keeps its class and uncertified flag
+  ---
+  duration_ms: 108.190044
+  type: 'test'
+  ...
+# Subtest: public facade
+ok 353 - public facade
+  ---
+  duration_ms: 538.105413
+  type: 'test'
+  ...
+# Subtest: dunif generated truth and sampler
+ok 354 - dunif generated truth and sampler
+  ---
+  duration_ms: 117.283893
+  type: 'test'
+  ...
+# Subtest: gumbel generated truth and sampler
+ok 355 - gumbel generated truth and sampler
+  ---
+  duration_ms: 80.053933
+  type: 'test'
+  ...
+# Subtest: kumar generated truth and sampler
+ok 356 - kumar generated truth and sampler
+  ---
+  duration_ms: 88.566916
+  type: 'test'
+  ...
+# Subtest: pareto3 generated truth and sampler
+ok 357 - pareto3 generated truth and sampler
+  ---
+  duration_ms: 103.690574
+  type: 'test'
+  ...
+# Subtest: sstd generated truth and sampler
+ok 358 - sstd generated truth and sampler
+  ---
+  duration_ms: 5966.658378
+  type: 'test'
+  ...
+# Subtest: gamma every held subset
+ok 359 - gamma every held subset
+  ---
+  duration_ms: 1.655797
+  type: 'test'
+  ...
+# Subtest: gb2 every held subset
+ok 360 - gb2 every held subset
+  ---
+  duration_ms: 149.496773
+  type: 'test'
+  ...
+# Subtest: dnorm all held subsets
+ok 361 - dnorm all held subsets
+  ---
+  duration_ms: 2.54796
+  type: 'test'
+  ...
+# Subtest: emg shared golden
+ok 362 - emg shared golden
+  ---
+  duration_ms: 290.114183
+  type: 'test'
+  ...
+# Subtest: foldnorm held-value diagnostic
+ok 363 - foldnorm held-value diagnostic
+  ---
+  duration_ms: 0.737711
+  type: 'test'
+  ...
+# Subtest: hcauchy held-value diagnostic
+ok 364 - hcauchy held-value diagnostic
+  ---
+  duration_ms: 0.477825
+  type: 'test'
+  ...
+# Subtest: ht all held subsets
+ok 365 - ht all held subsets
+  ---
+  duration_ms: 591.038376
+  type: 'test'
+  ...
+# Subtest: hyper all held subsets
+ok 366 - hyper all held subsets
+  ---
+  duration_ms: 123.057798
+  type: 'test'
+  ...
+# Subtest: invgamma all held subsets
+ok 367 - invgamma all held subsets
+  ---
+  duration_ms: 0.716476
+  type: 'test'
+  ...
+# Subtest: invgauss all held subsets
+ok 368 - invgauss all held subsets
+  ---
+  duration_ms: 0.759914
+  type: 'test'
+  ...
+# Subtest: lgamma shared golden
+ok 369 - lgamma shared golden
+  ---
+  duration_ms: 0.525901
+  type: 'test'
+  ...
+# Subtest: lst held-value diagnostic
+ok 370 - lst held-value diagnostic
+  ---
+  duration_ms: 0.270743
+  type: 'test'
+  ...
+# Subtest: naka shared golden
+ok 371 - naka shared golden
+  ---
+  duration_ms: 0.397871
+  type: 'test'
+  ...
+# Subtest: nsbeta held-value diagnostic
+ok 372 - nsbeta held-value diagnostic
+  ---
+  duration_ms: 0.421071
+  type: 'test'
+  ...
+# Subtest: pareto2 shared golden
+ok 373 - pareto2 shared golden
+  ---
+  duration_ms: 15.731467
+  type: 'test'
+  ...
+# Subtest: skellam held-value diagnostic
+ok 374 - skellam held-value diagnostic
+  ---
+  duration_ms: 0.321188
+  type: 'test'
+  ...
+# Subtest: sn held-value diagnostic
+ok 375 - sn held-value diagnostic
+  ---
+  duration_ms: 0.242425
+  type: 'test'
+  ...
+# Subtest: tlambda held-value diagnostic
+ok 376 - tlambda held-value diagnostic
+  ---
+  duration_ms: 0.224568
+  type: 'test'
+  ...
+# Subtest: weibull all held subsets
+ok 377 - weibull all held subsets
+  ---
+  duration_ms: 1.994673
+  type: 'test'
+  ...
+# Subtest: GEV and Frechet all-free fits expose per-fit certificate markers
+ok 378 - GEV and Frechet all-free fits expose per-fit certificate markers
+  ---
+  duration_ms: 25.796898
+  type: 'test'
+  ...
+# Subtest: held-power faces retain transformed coefficients
+ok 379 - held-power faces retain transformed coefficients
+  ---
+  duration_ms: 5.815731
+  type: 'test'
+  ...
+# Subtest: translated and reciprocal delegates preserve certified stops
+ok 380 - translated and reciprocal delegates preserve certified stops
+  ---
+  duration_ms: 7.147583
+  type: 'test'
+  ...
+# Subtest: bbinom near-binomial shape enclosure survives double-width WASM arithmetic
+ok 381 - bbinom near-binomial shape enclosure survives double-width WASM arithmetic
+  ---
+  duration_ms: 18.692186
+  type: 'test'
+  ...
+# Subtest: st constant-data free-nu corner keeps both half-normal faces
+ok 382 - st constant-data free-nu corner keeps both half-normal faces
+  ---
+  duration_ms: 4.861347
+  type: 'test'
+  ...
+# Subtest: gengamma, CMB and discretized gamma retain public accuracy witnesses
+ok 383 - gengamma, CMB and discretized gamma retain public accuracy witnesses
+  ---
+  duration_ms: 24.706443
+  type: 'test'
+  ...
+# Subtest: sn checks likelihood after restoring large held shapes
+ok 384 - sn checks likelihood after restoring large held shapes
+  ---
+  duration_ms: 138.877882
+  type: 'test'
+  ...
+# Subtest: genbeta power certificate keeps tiny held beta shapes in double precision
+ok 385 - genbeta power certificate keeps tiny held beta shapes in double precision
+  ---
+  duration_ms: 75.148797
+  type: 'test'
+  ...
+# Subtest: GEV shape-only certificate handles flat shapes and typed solve failure
+ok 386 - GEV shape-only certificate handles flat shapes and typed solve failure
+  ---
+  duration_ms: 65.799619
+  type: 'test'
+  ...
+# Subtest: GED a completed low-budget certificate can prove the Laplace face
+ok 387 - GED a completed low-budget certificate can prove the Laplace face
+  ---
+  duration_ms: 83.054267
+  type: 'test'
+  ...
+# Subtest: noninflated ZIP faces include the equal-moment binomial escape
+ok 388 - noninflated ZIP faces include the equal-moment binomial escape
+  ---
+  duration_ms: 121.764518
+  type: 'test'
+  ...
+# Subtest: Bhattacharjee all-held evaluation keeps a finite extreme log likelihood
+ok 389 - Bhattacharjee all-held evaluation keeps a finite extreme log likelihood
+  ---
+  duration_ms: 57.976768
+  type: 'test'
+  ...
+# Subtest: inflated binomial quantiles stop on extreme numerical failure
+ok 390 - inflated binomial quantiles stop on extreme numerical failure
+  ---
+  duration_ms: 72.79094
+  type: 'test'
+  ...
+# Subtest: all-free Frechet minimum-majority collapse is typed nonexistence
+ok 391 - all-free Frechet minimum-majority collapse is typed nonexistence
+  ---
+  duration_ms: 75.993921
+  type: 'test'
+  ...
+# Subtest: GB2 held-scale free-power profiles use global coefficient enclosures
+ok 392 - GB2 held-scale free-power profiles use global coefficient enclosures
+  ---
+  duration_ms: 55.83037
+  type: 'test'
+  ...
+# Subtest: binomial near-critical ZIP inputs return uncertified fits
+ok 393 - binomial near-critical ZIP inputs return uncertified fits
+  ---
+  duration_ms: 114.385126
+  type: 'test'
+  ...
+# Subtest: truncated binomial certifies the finite zero-second-order boundary
+ok 394 - truncated binomial certifies the finite zero-second-order boundary
+  ---
+  duration_ms: 4251.670326
+  type: 'test'
+  ...
+# Subtest: genbeta moving-power certificate transports global likelihood bounds
+ok 395 - genbeta moving-power certificate transports global likelihood bounds
+  ---
+  duration_ms: 687.762788
+  type: 'test'
+  ...
+# Subtest: std and lst shape certificates distinguish uncertified joint fits
+ok 396 - std and lst shape certificates distinguish uncertified joint fits
+  ---
+  duration_ms: 19772.469324
+  type: 'test'
+  ...
+# Subtest: bhatt generated truth and sampler
+ok 397 - bhatt generated truth and sampler
+  ---
+  duration_ms: 210.415279
+  type: 'test'
+  ...
+# Subtest: expweibull generated truth and sampler
+ok 398 - expweibull generated truth and sampler
+  ---
+  duration_ms: 105.777469
+  type: 'test'
+  ...
+# Subtest: gpd generated truth and sampler
+ok 399 - gpd generated truth and sampler
+  ---
+  duration_ms: 85.339459
+  type: 'test'
+  ...
+# Subtest: invweibull generated truth and sampler
+ok 400 - invweibull generated truth and sampler
+  ---
+  duration_ms: 81.175103
+  type: 'test'
+  ...
+# Subtest: pareto generated truth and sampler
+ok 401 - pareto generated truth and sampler
+  ---
+  duration_ms: 66.610106
+  type: 'test'
+  ...
+# Subtest: pareto4 generated truth and sampler
+ok 402 - pareto4 generated truth and sampler
+  ---
+  duration_ms: 111.190924
+  type: 'test'
+  ...
+# Subtest: st generated truth and sampler
+ok 403 - st generated truth and sampler
+  ---
+  duration_ms: 639.711169
+  type: 'test'
+  ...
+# Subtest: std generated truth and sampler
+ok 404 - std generated truth and sampler
+  ---
+  duration_ms: 172.107407
+  type: 'test'
+  ...
+# Subtest: bbinom all held subsets
+ok 405 - bbinom all held subsets
+  ---
+  duration_ms: 739.42691
+  type: 'test'
+  ...
+# Subtest: betapr held-value diagnostic
+ok 406 - betapr held-value diagnostic
+  ---
+  duration_ms: 6.364783
+  type: 'test'
+  ...
+# Subtest: binom all held subsets
+ok 407 - binom all held subsets
+  ---
+  duration_ms: 6.252011
+  type: 'test'
+  ...
+# Subtest: cauchy all held subsets
+ok 408 - cauchy all held subsets
+  ---
+  duration_ms: 6.414059
+  type: 'test'
+  ...
+# Subtest: cmb shared golden
+ok 409 - cmb shared golden
+  ---
+  duration_ms: 9.339428
+  type: 'test'
+  ...
+# Subtest: gamma all held subsets
+ok 410 - gamma all held subsets
+  ---
+  duration_ms: 2.125098
+  type: 'test'
+  ...
+# Subtest: gb2 all held subsets
+ok 411 - gb2 all held subsets
+  ---
+  duration_ms: 1081.340752
+  type: 'test'
+  ...
+# Subtest: gengamma all held subsets
+ok 412 - gengamma all held subsets
+  ---
+  duration_ms: 353.225526
+  type: 'test'
+  ...
+# Subtest: geom shared golden
+ok 413 - geom shared golden
+  ---
+  duration_ms: 0.795801
+  type: 'test'
+  ...
+# Subtest: gev shared golden
+ok 414 - gev shared golden
+  ---
+  duration_ms: 385.81651
+  type: 'test'
+  ...
+# Subtest: hnorm held-value diagnostic
+ok 415 - hnorm held-value diagnostic
+  ---
+  duration_ms: 1.032329
+  type: 'test'
+  ...
+# Subtest: logitnorm all held subsets
+ok 416 - logitnorm all held subsets
+  ---
+  duration_ms: 19.806513
+  type: 'test'
+  ...
+# Subtest: lomax all held subsets
+ok 417 - lomax all held subsets
+  ---
+  duration_ms: 11.093608
+  type: 'test'
+  ...
+# Subtest: nhyper held-value diagnostic
+ok 418 - nhyper held-value diagnostic
+  ---
+  duration_ms: 0.993179
+  type: 'test'
+  ...
+# Subtest: sgomp held-value diagnostic
+ok 419 - sgomp held-value diagnostic
+  ---
+  duration_ms: 0.731318
+  type: 'test'
+  ...
+# Subtest: slash all held subsets
+ok 420 - slash all held subsets
+  ---
+  duration_ms: 18604.503463
+  type: 'test'
+  ...
+# Subtest: triang all held subsets
+ok 421 - triang all held subsets
+  ---
+  duration_ms: 57.018475
+  type: 'test'
+  ...
+# Subtest: unif shared golden
+ok 422 - unif shared golden
+  ---
+  duration_ms: 1.025777
+  type: 'test'
+  ...
+# Subtest: yulesimon all held subsets
+ok 423 - yulesimon all held subsets
+  ---
+  duration_ms: 1.595047
+  type: 'test'
+  ...
+# Subtest: Gaussian face witnesses retain extreme residual scales
+ok 424 - Gaussian face witnesses retain extreme residual scales
+  ---
+  duration_ms: 8.790659
+  type: 'test'
+  ...
+# Subtest: Frechet finite two-point cancellation retains an uncertified fit
+ok 425 - Frechet finite two-point cancellation retains an uncertified fit
+  ---
+  duration_ms: 5.009925
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: norm
+ok 426 - covariance native agreement: norm
+  ---
+  duration_ms: 91.689752
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: beta
+ok 427 - covariance native agreement: beta
+  ---
+  duration_ms: 46.496996
+  type: 'test'
+  ...
+# Subtest: continuous structured nonexistence and fitted faces
+ok 428 - continuous structured nonexistence and fitted faces
+  ---
+  duration_ms: 40.594141
+  type: 'test'
+  ...
+# Subtest: Newton-family unrepresentable coefficients are numerical stops
+ok 429 - Newton-family unrepresentable coefficients are numerical stops
+  ---
+  duration_ms: 4.618117
+  type: 'test'
+  ...
+# Subtest: folded-normal boundary likelihood tie receives local score polish
+ok 430 - folded-normal boundary likelihood tie receives local score polish
+  ---
+  duration_ms: 4.093559
+  type: 'test'
+  ...
+# Subtest: inverse paralogistic reciprocal overflow stays numerical
+ok 431 - inverse paralogistic reciprocal overflow stays numerical
+  ---
+  duration_ms: 1.485008
+  type: 'test'
+  ...
+# Subtest: censored estimates attach their shared outcome
+ok 432 - censored estimates attach their shared outcome
+  ---
+  duration_ms: 0.683998
+  type: 'test'
+  ...
+# Subtest: sn finite normalization overflow is a numerical stop
+ok 433 - sn finite normalization overflow is a numerical stop
+  ---
+  duration_ms: 94.28031
+  type: 'test'
+  ...
+# Subtest: trgamma unrepresentable scales retain numerical stop details
+ok 434 - trgamma unrepresentable scales retain numerical stop details
+  ---
+  duration_ms: 160.419764
+  type: 'test'
+  ...
+# Subtest: genbeta power certificate retains a large-shape weighted exponential tail
+ok 435 - genbeta power certificate retains a large-shape weighted exponential tail
+  ---
+  duration_ms: 71.580367
+  type: 'test'
+  ...
+# Subtest: std held-shape sd overflow retains a proper ordinary-scale witness
+ok 436 - std held-shape sd overflow retains a proper ordinary-scale witness
+  ---
+  duration_ms: 69.665547
+  type: 'test'
+  ...
+# Subtest: SGED fixed-shape free-skew certificates share core routing
+ok 437 - SGED fixed-shape free-skew certificates share core routing
+  ---
+  duration_ms: 91.037316
+  type: 'test'
+  ...
+# Subtest: GEV held-minimum half ties retain the attained member
+ok 438 - GEV held-minimum half ties retain the attained member
+  ---
+  duration_ms: 155.530081
+  type: 'test'
+  ...
+# Subtest: GED inverse normalization rejects a rounded location with a different likelihood
+ok 439 - GED inverse normalization rejects a rounded location with a different likelihood
+  ---
+  duration_ms: 595.870248
+  type: 'test'
+  ...
+# Subtest: large held skew-t shape retains a certified fit and finite skew covariance
+ok 440 - large held skew-t shape retains a certified fit and finite skew covariance
+  ---
+  duration_ms: 76.070011
+  type: 'test'
+  ...
+# Subtest: invburr generated truth and sampler
+ok 441 - invburr generated truth and sampler
+  ---
+  duration_ms: 126.124203
+  type: 'test'
+  ...
+# Subtest: laplace generated truth and sampler
+ok 442 - laplace generated truth and sampler
+  ---
+  duration_ms: 63.293208
+  type: 'test'
+  ...
+# Subtest: lnorm generated truth and sampler
+ok 443 - lnorm generated truth and sampler
+  ---
+  duration_ms: 68.169426
+  type: 'test'
+  ...
+# Subtest: logis generated truth and sampler
+ok 444 - logis generated truth and sampler
+  ---
+  duration_ms: 74.060427
+  type: 'test'
+  ...
+# Subtest: exp every held subset
+ok 445 - exp every held subset
+  ---
+  duration_ms: 6.432997
+  type: 'test'
+  ...
+# Subtest: dlaplace all held subsets
+ok 446 - dlaplace all held subsets
+  ---
+  duration_ms: 9.097777
+  type: 'test'
+  ...
+# Subtest: fatigue shared golden
+ok 447 - fatigue shared golden
+  ---
+  duration_ms: 9.952333
+  type: 'test'
+  ...
+# Subtest: fatigue held-value diagnostic
+ok 448 - fatigue held-value diagnostic
+  ---
+  duration_ms: 5.314662
+  type: 'test'
+  ...
+# Subtest: fpareto shared golden
+ok 449 - fpareto shared golden
+  ---
+  duration_ms: 8.812894
+  type: 'test'
+  ...
+# Subtest: fpareto held-value diagnostic
+ok 450 - fpareto held-value diagnostic
+  ---
+  duration_ms: 3.207396
+  type: 'test'
+  ...
+# Subtest: frechet shared golden
+ok 451 - frechet shared golden
+  ---
+  duration_ms: 255.274453
+  type: 'test'
+  ...
+# Subtest: frechet held-value diagnostic
+ok 452 - frechet held-value diagnostic
+  ---
+  duration_ms: 14.743592
+  type: 'test'
+  ...
+# Subtest: gompertz all held subsets
+ok 453 - gompertz all held subsets
+  ---
+  duration_ms: 8.407285
+  type: 'test'
+  ...
+# Subtest: invpareto all held subsets
+ok 454 - invpareto all held subsets
+  ---
+  duration_ms: 13.883252
+  type: 'test'
+  ...
+# Subtest: llogis all held subsets
+ok 455 - llogis all held subsets
+  ---
+  duration_ms: 80.536867
+  type: 'test'
+  ...
+# Subtest: norm all held subsets
+ok 456 - norm all held subsets
+  ---
+  duration_ms: 1.635613
+  type: 'test'
+  ...
+# Subtest: paralogis all held subsets
+ok 457 - paralogis all held subsets
+  ---
+  duration_ms: 100.601178
+  type: 'test'
+  ...
+# Subtest: pig all held subsets
+ok 458 - pig all held subsets
+  ---
+  duration_ms: 3.259247
+  type: 'test'
+  ...
+# Subtest: sged shared golden
+ok 459 - sged shared golden
+  ---
+  duration_ms: 15050.858148
+  type: 'test'
+  ...
+# Subtest: sged held-value diagnostic
+ok 460 - sged held-value diagnostic
+  ---
+  duration_ms: 0.907399
+  type: 'test'
+  ...
+# Subtest: zeta all held subsets
+ok 461 - zeta all held subsets
+  ---
+  duration_ms: 2.845082
+  type: 'test'
+  ...
+# Subtest: count fallback exposes per-fit certification
+ok 462 - count fallback exposes per-fit certification
+  ---
+  duration_ms: 26.430522
+  type: 'test'
+  ...
+# Subtest: Frechet held scale keeps coefficient accuracy at large shape
+ok 463 - Frechet held scale keeps coefficient accuracy at large shape
+  ---
+  duration_ms: 121.975595
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: exp
+ok 464 - covariance native agreement: exp
+  ---
+  duration_ms: 87.238395
+  type: 'test'
+  ...
+# Subtest: join family held-subset covariance parity at the same parameter point
+ok 465 - join family held-subset covariance parity at the same parameter point
+  ---
+  duration_ms: 1345.595249
+  type: 'test'
+  ...
+# Subtest: join regimes: free symmetric skew, negative shape and free shape zero
+ok 466 - join regimes: free symmetric skew, negative shape and free shape zero
+  ---
+  duration_ms: 678.921737
+  type: 'test'
+  ...
+# Subtest: CMB fixed-size normalizers spend and raise the cell budget
+ok 467 - CMB fixed-size normalizers spend and raise the cell budget
+  ---
+  duration_ms: 12.921944
+  type: 'test'
+  ...
+# Subtest: ZIP certified rate ties, budgets and numerical stops
+ok 468 - ZIP certified rate ties, budgets and numerical stops
+  ---
+  duration_ms: 7.130836
+  type: 'test'
+  ...
+# Subtest: tlambda certificates keep contact ties, budget and collapse witnesses
+ok 469 - tlambda certificates keep contact ties, budget and collapse witnesses
+  ---
+  duration_ms: 111.590481
+  type: 'test'
+  ...
+# Subtest: small positive folded-normal basin retains coefficient accuracy
+ok 470 - small positive folded-normal basin retains coefficient accuracy
+  ---
+  duration_ms: 7.314375
+  type: 'test'
+  ...
+# Subtest: lst and std certificate normal stops name the fitted face
+ok 471 - lst and std certificate normal stops name the fitted face
+  ---
+  duration_ms: 117.301874
+  type: 'test'
+  ...
+# Subtest: J6 tnorm CMB and CMP quantitative acceptance uses common binding routes
+ok 472 - J6 tnorm CMB and CMP quantitative acceptance uses common binding routes
+  ---
+  duration_ms: 310.034827
+  type: 'test'
+  ...
+# Subtest: sn rounded residuals cannot fabricate held-endpoint factors
+ok 473 - sn rounded residuals cannot fabricate held-endpoint factors
+  ---
+  duration_ms: 79.996486
+  type: 'test'
+  ...
+# Subtest: scalar-trio certificates expose fatigue ties and solve held scalar roots
+ok 474 - scalar-trio certificates expose fatigue ties and solve held scalar roots
+  ---
+  duration_ms: 92.382302
+  type: 'test'
+  ...
+# Subtest: betapr rounded conditional peaks retain an uncertified search
+ok 475 - betapr rounded conditional peaks retain an uncertified search
+  ---
+  duration_ms: 91.678346
+  type: 'test'
+  ...
+# Subtest: GED exhausted finite root certificates stop on budget and retain witnesses
+ok 476 - GED exhausted finite root certificates stop on budget and retain witnesses
+  ---
+  duration_ms: 148.380356
+  type: 'test'
+  ...
+# Subtest: bnbinom supporting-polynomial proofs select reachable faces
+ok 477 - bnbinom supporting-polynomial proofs select reachable faces
+  ---
+  duration_ms: 92.646971
+  type: 'test'
+  ...
+# Subtest: globally winning tied ZIP faces retain both rate candidates
+ok 478 - globally winning tied ZIP faces retain both rate candidates
+  ---
+  duration_ms: 156.723899
+  type: 'test'
+  ...
+# Subtest: Frechet bounded two-point solve cap preserves numerical stop details
+ok 479 - Frechet bounded two-point solve cap preserves numerical stop details
+  ---
+  duration_ms: 75.204652
+  type: 'test'
+  ...
+# Subtest: std and lst held free-shape solver caps preserve finite diagnostic witnesses
+ok 480 - std and lst held free-shape solver caps preserve finite diagnostic witnesses
+  ---
+  duration_ms: 11270.951617
+  type: 'test'
+  ...
+# Subtest: Student signed held-location normal faces expose certification
+ok 481 - Student signed held-location normal faces expose certification
+  ---
+  duration_ms: 71.891164
+  type: 'test'
+  ...
+# Subtest: emg generated truth and sampler
+ok 482 - emg generated truth and sampler
+  ---
+  duration_ms: 242.727836
+  type: 'test'
+  ...
+# Subtest: lgamma generated truth and sampler
+ok 483 - lgamma generated truth and sampler
+  ---
+  duration_ms: 4220.227461
+  type: 'test'
+  ...
+# Subtest: naka generated truth and sampler
+ok 484 - naka generated truth and sampler
+  ---
+  duration_ms: 1307.59763
+  type: 'test'
+  ...
+# Subtest: pareto2 generated truth and sampler
+ok 485 - pareto2 generated truth and sampler
+  ---
+  duration_ms: 88.992592
+  type: 'test'
+  ...
+# Subtest: exp golden
+ok 486 - exp golden
+  ---
+  duration_ms: 5.62109
+  type: 'test'
+  ...
+# Subtest: beta held-value diagnostic
+ok 487 - beta held-value diagnostic
+  ---
+  duration_ms: 6.697909
+  type: 'test'
+  ...
+# Subtest: cmp held-value diagnostic
+ok 488 - cmp held-value diagnostic
+  ---
+  duration_ms: 2.653931
+  type: 'test'
+  ...
+# Subtest: dgamma all held subsets
+ok 489 - dgamma all held subsets
+  ---
+  duration_ms: 7176.532938
+  type: 'test'
+  ...
+# Subtest: dunif shared golden
+ok 490 - dunif shared golden
+  ---
+  duration_ms: 1.249799
+  type: 'test'
+  ...
+# Subtest: exp all held subsets
+ok 491 - exp all held subsets
+  ---
+  duration_ms: 1.329752
+  type: 'test'
+  ...
+# Subtest: ged held-value diagnostic
+ok 492 - ged held-value diagnostic
+  ---
+  duration_ms: 0.421486
+  type: 'test'
+  ...
+# Subtest: genbeta held-value diagnostic
+ok 493 - genbeta held-value diagnostic
+  ---
+  duration_ms: 5.565479
+  type: 'test'
+  ...
+# Subtest: gumbel shared golden
+ok 494 - gumbel shared golden
+  ---
+  duration_ms: 1.939658
+  type: 'test'
+  ...
+# Subtest: invexp held-value diagnostic
+ok 495 - invexp held-value diagnostic
+  ---
+  duration_ms: 0.516977
+  type: 'test'
+  ...
+# Subtest: kumar shared golden
+ok 496 - kumar shared golden
+  ---
+  duration_ms: 7.078837
+  type: 'test'
+  ...
+# Subtest: pareto3 shared golden
+ok 497 - pareto3 shared golden
+  ---
+  duration_ms: 34.262604
+  type: 'test'
+  ...
+# Subtest: pois all held subsets
+ok 498 - pois all held subsets
+  ---
+  duration_ms: 0.606426
+  type: 'test'
+  ...
+# Subtest: rayleigh all held subsets
+ok 499 - rayleigh all held subsets
+  ---
+  duration_ms: 0.431452
+  type: 'test'
+  ...
+# Subtest: sstd shared golden
+ok 500 - sstd shared golden
+  ---
+  duration_ms: 52.202008
+  type: 'test'
+  ...
+# Subtest: trgamma all held subsets
+ok 501 - trgamma all held subsets
+  ---
+  duration_ms: 9.601743
+  type: 'test'
+  ...
+# Subtest: unit beta-prime fallback keeps the scalar search beyond the generic shape guard
+ok 502 - unit beta-prime fallback keeps the scalar search beyond the generic shape guard
+  ---
+  duration_ms: 5.377684
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: lnorm
+ok 503 - covariance native agreement: lnorm
+  ---
+  duration_ms: 1757.850586
+  type: 'test'
+  ...
+# Subtest: discrete stops retain fitted package and non-package faces
+ok 504 - discrete stops retain fitted package and non-package faces
+  ---
+  duration_ms: 22.147632
+  type: 'test'
+  ...
+# Subtest: held subunit GED shape retains the certified reflected half face
+ok 505 - held subunit GED shape retains the certified reflected half face
+  ---
+  duration_ms: 72.559683
+  type: 'test'
+  ...
+# Subtest: uncertified limits describe the likelihood margin
+ok 506 - uncertified limits describe the likelihood margin
+  ---
+  duration_ms: 11.957037
+  type: 'test'
+  ...
+# Subtest: shifted Gompertz unfinished bracket preserves a finite witness
+ok 507 - shifted Gompertz unfinished bracket preserves a finite witness
+  ---
+  duration_ms: 86.259864
+  type: 'test'
+  ...
+# Subtest: SGED subunit scale ties and exhausted certificates stop in the common binding
+ok 508 - SGED subunit scale ties and exhausted certificates stop in the common binding
+  ---
+  duration_ms: 82.982996
+  type: 'test'
+  ...
+# Subtest: genbeta preserves a parent budget without a finite witness
+ok 509 - genbeta preserves a parent budget without a finite witness
+  ---
+  duration_ms: 89.460713
+  type: 'test'
+  ...
+# Subtest: GED overlapping finite shape roots retain an uncertified search
+ok 510 - GED overlapping finite shape roots retain an uncertified search
+  ---
+  duration_ms: 196.862016
+  type: 'test'
+  ...
+# Subtest: large geometric quantiles preserve the supplied probability scale
+ok 511 - large geometric quantiles preserve the supplied probability scale
+  ---
+  duration_ms: 1.420438
+  type: 'test'
+  ...
+# Subtest: EVT compatible holds keep certificate failures and constrained witnesses
+ok 512 - EVT compatible holds keep certificate failures and constrained witnesses
+  ---
+  duration_ms: 89.508386
+  type: 'test'
+  ...
+# Subtest: extreme t and GED shapes terminate in WASM and retain inversion
+ok 513 - extreme t and GED shapes terminate in WASM and retain inversion
+  ---
+  duration_ms: 1228.981241
+  type: 'test'
+  ...
+# Subtest: bnbinom all-free results expose a certified global inner profile interval
+ok 514 - bnbinom all-free results expose a certified global inner profile interval
+  ---
+  duration_ms: 3714.924215
+  type: 'test'
+  ...
+# Subtest: triangular public rounding loss is a numerical failure
+ok 515 - triangular public rounding loss is a numerical failure
+  ---
+  duration_ms: 82.494266
+  type: 'test'
+  ...
+# Subtest: dlaplace generated truth and sampler
+ok 516 - dlaplace generated truth and sampler
+  ---
+  duration_ms: 318.418777
+  type: 'test'
+  ...
+# Subtest: gompertz generated truth and sampler
+ok 517 - gompertz generated truth and sampler
+  ---
+  duration_ms: 127.601558
+  type: 'test'
+  ...
+# Subtest: invpareto generated truth and sampler
+ok 518 - invpareto generated truth and sampler
+  ---
+  duration_ms: 144.197843
+  type: 'test'
+  ...
+# Subtest: llogis generated truth and sampler
+ok 519 - llogis generated truth and sampler
+  ---
+  duration_ms: 112.65913
+  type: 'test'
+  ...
+# Subtest: norm generated truth and sampler
+ok 520 - norm generated truth and sampler
+  ---
+  duration_ms: 93.189504
+  type: 'test'
+  ...
+# Subtest: paralogis generated truth and sampler
+ok 521 - paralogis generated truth and sampler
+  ---
+  duration_ms: 114.426919
+  type: 'test'
+  ...
+# Subtest: pig generated truth and sampler
+ok 522 - pig generated truth and sampler
+  ---
+  duration_ms: 61958.472222
+  type: 'test'
+  ...
+# Subtest: zeta generated truth and sampler
+ok 523 - zeta generated truth and sampler
+  ---
+  duration_ms: 6397.365699
+  type: 'test'
+  ...
+# Subtest: betapr all held subsets
+ok 524 - betapr all held subsets
+  ---
+  duration_ms: 259.870986
+  type: 'test'
+  ...
+# Subtest: emg held-value diagnostic
+ok 525 - emg held-value diagnostic
+  ---
+  duration_ms: 2.678132
+  type: 'test'
+  ...
+# Subtest: foldnorm shared golden
+ok 526 - foldnorm shared golden
+  ---
+  duration_ms: 11.927471
+  type: 'test'
+  ...
+# Subtest: hcauchy shared golden
+ok 527 - hcauchy shared golden
+  ---
+  duration_ms: 1.47973
+  type: 'test'
+  ...
+# Subtest: hnorm all held subsets
+ok 528 - hnorm all held subsets
+  ---
+  duration_ms: 1.170192
+  type: 'test'
+  ...
+# Subtest: lgamma held-value diagnostic
+ok 529 - lgamma held-value diagnostic
+  ---
+  duration_ms: 0.334602
+  type: 'test'
+  ...
+# Subtest: lst shared golden
+ok 530 - lst shared golden
+  ---
+  duration_ms: 100.878509
+  type: 'test'
+  ...
+# Subtest: naka held-value diagnostic
+ok 531 - naka held-value diagnostic
+  ---
+  duration_ms: 0.421659
+  type: 'test'
+  ...
+# Subtest: nhyper all held subsets
+ok 532 - nhyper all held subsets
+  ---
+  duration_ms: 246.438639
+  type: 'test'
+  ...
+# Subtest: nsbeta shared golden
+ok 533 - nsbeta shared golden
+  ---
+  duration_ms: 1.310952
+  type: 'test'
+  ...
+# Subtest: pareto2 held-value diagnostic
+ok 534 - pareto2 held-value diagnostic
+  ---
+  duration_ms: 0.370288
+  type: 'test'
+  ...
+# Subtest: sgomp all held subsets
+ok 535 - sgomp all held subsets
+  ---
+  duration_ms: 121.682008
+  type: 'test'
+  ...
+# Subtest: skellam shared golden
+ok 536 - skellam shared golden
+  ---
+  duration_ms: 52.141162
+  type: 'test'
+  ...
+# Subtest: sn shared golden
+ok 537 - sn shared golden
+  ---
+  duration_ms: 284.134253
+  type: 'test'
+  ...
+# Subtest: tlambda shared golden
+ok 538 - tlambda shared golden
+  ---
+  duration_ms: 92.554447
+  type: 'test'
+  ...
+# Subtest: Feller Pareto held-endpoint power face keeps its model identity
+ok 539 - Feller Pareto held-endpoint power face keeps its model identity
+  ---
+  duration_ms: 4.517103
+  type: 'test'
+  ...
+# Subtest: finite zeta rounded score roots justify the requested tolerance
+ok 540 - finite zeta rounded score roots justify the requested tolerance
+  ---
+  duration_ms: 77.881526
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: gamma
+ok 541 - covariance native agreement: gamma
+  ---
+  duration_ms: 81.538674
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: binom
+ok 542 - covariance native agreement: binom
+  ---
+  duration_ms: 31.545176
+  type: 'test'
+  ...
+# Subtest: covariance native agreement: gpd
+ok 543 - covariance native agreement: gpd
+  ---
+  duration_ms: 41.743627
+  type: 'test'
+  ...
+# Subtest: Burr and reciprocal burr-k1000-r0 structured limit
+ok 544 - Burr and reciprocal burr-k1000-r0 structured limit
+  ---
+  duration_ms: 88.784934
+  type: 'test'
+  ...
+# Subtest: unrepresentable delegate reductions stop as numerical failures
+ok 545 - unrepresentable delegate reductions stop as numerical failures
+  ---
+  duration_ms: 6.036722
+  type: 'test'
+  ...
+# Subtest: PIG binary closed form and small positive Poisson improvement survive WASM
+ok 546 - PIG binary closed form and small positive Poisson improvement survive WASM
+  ---
+  duration_ms: 2.834823
+  type: 'test'
+  ...
+# Subtest: trgamma partial logarithmic ties stop numerically
+ok 547 - trgamma partial logarithmic ties stop numerically
+  ---
+  duration_ms: 63.104586
+  type: 'test'
+  ...
+# Subtest: SGED normal face conversion reports scale overflow numerically
+ok 548 - SGED normal face conversion reports scale overflow numerically
+  ---
+  duration_ms: 71.91828
+  type: 'test'
+  ...
+# Subtest: genbeta held p one shares the Kumaraswamy certificate and stop transport
+ok 549 - genbeta held p one shares the Kumaraswamy certificate and stop transport
+  ---
+  duration_ms: 54.237559
+  type: 'test'
+  ...
+# Subtest: genbeta held p uses the complete power-profile certificate
+ok 550 - genbeta held p uses the complete power-profile certificate
+  ---
+  duration_ms: 133.164918
+  type: 'test'
+  ...
+# Subtest: bbinom signed face and small finite gains agree with the shared fitter
+ok 551 - bbinom signed face and small finite gains agree with the shared fitter
+  ---
+  duration_ms: 91.472785
+  type: 'test'
+  ...
+# Subtest: two-point binomial windows attain a finite member despite their face tie
+ok 552 - two-point binomial windows attain a finite member despite their face tie
+  ---
+  duration_ms: 95.731647
+  type: 'test'
+  ...
+# Subtest: general Frechet certificate transports the Gumbel closure in public coordinates
+ok 553 - general Frechet certificate transports the Gumbel closure in public coordinates
+  ---
+  duration_ms: 73.549537
+  type: 'test'
+  ...
+# Subtest: bnbinom delegated NB precision failures retain NB candidate names
+ok 554 - bnbinom delegated NB precision failures retain NB candidate names
+  ---
+  duration_ms: 65.476149
+  type: 'test'
+  ...
+# Subtest: fatigue generated truth and sampler
+ok 555 - fatigue generated truth and sampler
+  ---
+  duration_ms: 252.681644
+  type: 'test'
+  ...
+# Subtest: fpareto generated truth and sampler
+ok 556 - fpareto generated truth and sampler
+  ---
+  duration_ms: 355.655731
+  type: 'test'
+  ...
+# Subtest: frechet generated truth and sampler
+ok 557 - frechet generated truth and sampler
+  ---
+  duration_ms: 109.001312
+  type: 'test'
+  ...
+# Subtest: sged generated truth and sampler
+ok 558 - sged generated truth and sampler
+  ---
+  duration_ms: 19317.333868
+  type: 'test'
+  ...
+# Subtest: gamma golden
+ok 559 - gamma golden
+  ---
+  duration_ms: 5.152795
+  type: 'test'
+  ...
+# Subtest: gb2 golden
+ok 560 - gb2 golden
+  ---
+  duration_ms: 292.207112
+  type: 'test'
+  ...
+# Subtest: bnbinom all held subsets
+ok 561 - bnbinom all held subsets
+  ---
+  duration_ms: 3439.115363
+  type: 'test'
+  ...
+# Subtest: invburr shared golden
+ok 562 - invburr shared golden
+  ---
+  duration_ms: 123.300372
+  type: 'test'
+  ...
+# Subtest: invburr held-value diagnostic
+ok 563 - invburr held-value diagnostic
+  ---
+  duration_ms: 2.49235
+  type: 'test'
+  ...
+# Subtest: laplace shared golden
+ok 564 - laplace shared golden
+  ---
+  duration_ms: 0.815585
+  type: 'test'
+  ...
+# Subtest: laplace held-value diagnostic
+ok 565 - laplace held-value diagnostic
+  ---
+  duration_ms: 0.857173
+  type: 'test'
+  ...
+# Subtest: lgser all held subsets
+ok 566 - lgser all held subsets
+  ---
+  duration_ms: 0.559505
+  type: 'test'
+  ...
+# Subtest: lnorm shared golden
+ok 567 - lnorm shared golden
+  ---
+  duration_ms: 6.120456
+  type: 'test'
+  ...
+# Subtest: lnorm held-value diagnostic
+ok 568 - lnorm held-value diagnostic
+  ---
+  duration_ms: 0.311782
+  type: 'test'
+  ...
+# Subtest: logis shared golden
+ok 569 - logis shared golden
+  ---
+  duration_ms: 1.197773
+  type: 'test'
+  ...
+# Subtest: logis held-value diagnostic
+ok 570 - logis held-value diagnostic
+  ---
+  duration_ms: 0.25881
+  type: 'test'
+  ...
+# Subtest: nbinom all held subsets
+ok 571 - nbinom all held subsets
+  ---
+  duration_ms: 3.256166
+  type: 'test'
+  ...
+# Subtest: power all held subsets
+ok 572 - power all held subsets
+  ---
+  duration_ms: 0.499067
+  type: 'test'
+  ...
+# Subtest: PIG global certificate transports Poisson, tie, budget and numerical stops
+ok 573 - PIG global certificate transports Poisson, tie, budget and numerical stops
+  ---
+  duration_ms: 8.599934
+  type: 'test'
+  ...
+# Subtest: ZIP held tiny rate attains all-zero inflation maximum
+ok 574 - ZIP held tiny rate attains all-zero inflation maximum
+  ---
+  duration_ms: 18.21809
+  type: 'test'
+  ...
+# Subtest: bbinom fixed-size coefficient certificate and uncertified inclusion fallback
+ok 575 - bbinom fixed-size coefficient certificate and uncertified inclusion fallback
+  ---
+  duration_ms: 34.436067
+  type: 'test'
+  ...
+# Subtest: st conditional location and alpha-scale certificates retain stops
+ok 576 - st conditional location and alpha-scale certificates retain stops
+  ---
+  duration_ms: 10.451662
+  type: 'test'
+  ...
+# Subtest: Pareto II reciprocal scale overflow remains numerical at tight tolerance
+ok 577 - Pareto II reciprocal scale overflow remains numerical at tight tolerance
+  ---
+  duration_ms: 2.081003
+  type: 'test'
+  ...
+# Subtest: std collapse comparisons preserve the sign at binary64 rational shapes
+ok 578 - std collapse comparisons preserve the sign at binary64 rational shapes
+  ---
+  duration_ms: 73.705893
+  type: 'test'
+  ...
+# Subtest: bnbinom alpha-held range exhaustion has numerical stop details
+ok 579 - bnbinom alpha-held range exhaustion has numerical stop details
+  ---
+  duration_ms: 64.979802
+  type: 'test'
+  ...
+# Subtest: ZIB subnormal held inflation preserves log masses and its probability root
+ok 580 - ZIB subnormal held inflation preserves log masses and its probability root
+  ---
+  duration_ms: 69.230266
+  type: 'test'
+  ...
+# Subtest: GEV joint cover isolates the seam maximum and keeps precision stops
+ok 581 - GEV joint cover isolates the seam maximum and keeps precision stops
+  ---
+  duration_ms: 64.330788
+  type: 'test'
+  ...
+# Subtest: genbeta shallow coverage retains the uncertified legacy finite fit
+ok 582 - genbeta shallow coverage retains the uncertified legacy finite fit
+  ---
+  duration_ms: 37286.826898
+  type: 'test'
+  ...
+# Subtest: discrete log neighbours use accurate CDF tails
+ok 583 - discrete log neighbours use accurate CDF tails
+  ---
+  duration_ms: 1.015122
+  type: 'test'
+  ...
+1..583
+# tests 583
+# suites 0
+# pass 581
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 214009.633458
+error: Recipe `js-test` failed on line 231 with exit code 1

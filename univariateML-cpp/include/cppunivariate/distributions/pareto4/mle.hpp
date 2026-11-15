@@ -5,15 +5,29 @@
 #include <vector>
 #include <cmath>
 namespace cppunivariate {
-struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; bool certified=true; };
+struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; bool certified=true; bool incompatible_support=false; bool unsupported_threshold=false; };
 } // namespace cppunivariate
 #include "centered.hpp"
 namespace cppunivariate {
 
 inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit);
 
+inline Pareto4Result pareto4_free_threshold(span x,double tol,int maxit,double scale=NAN,double shape1=NAN,double shape2=NAN) {
+  Pareto4Result out{shape1,shape2,scale,NAN,NAN,0,BurrStatus::InvalidInit};
+  if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1)return out;
+  for(double v:x)if(!std::isfinite(v))return out;
+  for(double v:{scale,shape1,shape2})if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))return out;
+  if(std::isnan(shape2)||shape2<1||(std::isnan(shape1)&&std::isnan(scale)))out.status=BurrStatus::Unbounded;
+  else out.unsupported_threshold=true;
+  return out;
+}
 inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, double scale=std::numeric_limits<double>::quiet_NaN(), double shape1=std::numeric_limits<double>::quiet_NaN(), double shape2=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
+  if(std::isnan(min))return pareto4_free_threshold(x,tol,maxit,scale,shape1,shape2);
+  for(double v:x)if(!(v>min)) {
+    Pareto4Result bad{NAN,NAN,NAN,min,NAN,0,BurrStatus::InvalidInit};
+    bad.incompatible_support=true;return bad;
+  }
   if(std::isnan(scale) && std::isnan(shape1) && std::isnan(shape2))
     return pareto4_mle_certified(x,min,tol,maxit);
   std::vector<double> y(x.size());
@@ -53,6 +67,11 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
 // Certified joint excess fit shared by the public all-free regular path.
 inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
+  if(std::isnan(min))return pareto4_free_threshold(x,tol,maxit);
+  for(double v:x)if(!(v>min)) {
+    Pareto4Result bad{NAN,NAN,NAN,min,NAN,0,BurrStatus::InvalidInit};
+    bad.incompatible_support=true;return bad;
+  }
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!std::isfinite(min))
     return {nan,nan,nan,min,nan,0,BurrStatus::InvalidInit};
@@ -71,7 +90,7 @@ inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int m
   for(std::size_t i=1;i<order.size();++i)
     if(x[order[i]]!=x[order[i-1]] && y[order[i]]==y[order[i-1]])
       return {nan,nan,nan,min,nan,0,BurrStatus::NumericalFailure};
-  auto r=burr_mle_certified(span{y.data(),y.size()},tol,maxit);
+  auto r=burr_mle(span{y.data(),y.size()},tol,maxit);
   if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{true,true,true}},tol,maxit,false,min,r.stop_detail)){r.status=BurrStatus::NumericalFailure;record_accuracy(r,tol,{r.shape1,r.shape2,r.scale},{r.shape1,r.shape2,r.scale});}
   if(r.status==BurrStatus::Ok&&!r.certified){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
   auto detail=r.stop_detail;
@@ -91,6 +110,7 @@ inline bool family_point(const Pareto4Result&, const FitCandidate& c) {
 // likelihood bounds; an accurate converged search is already an uncertified Ok.
 inline bool accurate_point(const Pareto4Result&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const Pareto4Result& r) {
+  if(r.unsupported_threshold)return FitOutcome::failure(OutcomeReason::Unsupported);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {

@@ -166,3 +166,8 @@ test_that("certified joint profile agrees across starting values", {
   }
   expect_equal(as.numeric(mlkumar(x,iterlim=1)),as.numeric(ref),tolerance=1e-6)
 })
+
+
+test_that("kumar core decides the data outcome", {
+  expect_error(mlkumar(.5), class="univariateML_nomle")
+})

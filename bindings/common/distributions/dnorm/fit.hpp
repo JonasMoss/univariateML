@@ -18,15 +18,9 @@ inline FitResult fit_dnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   const auto r=cppunivariate::dnorm_mle(x,reltol,iterlim,a,b);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (r.status == cppunivariate::DnormStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(r.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(r.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied}});
   };
-  PayloadKind stop_kind=PayloadKind::None;
+  PayloadKind stop_kind=outcome_payload(o);
   switch(r.status) {
     case cppunivariate::DnormStatus::PointMass: stop_kind=outcome_payload(o);break;
     case cppunivariate::DnormStatus::TwoPointLimit: stop_kind=outcome_payload(o);break;

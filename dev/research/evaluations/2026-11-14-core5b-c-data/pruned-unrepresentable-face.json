@@ -1,0 +1,28 @@
+[
+  {
+    "key": "density:limit|double|lomax|class|subnormal",
+    "reference": "TASK-214.16",
+    "exact_exponential_rate": "101201126653655309176247673359458653524778324882071059178450679013715169783997673445980191850718562247593538932158405955694904368692896738433506699970369254960758712138283180682233453871046608170619883839236372534281003741712346349309051677824579778170405028256179384776166707307615251266093163754323003131653853870546747392",
+    "exceeds_binary64_max": true,
+    "new_outcome": {
+      "certified": false,
+      "kind": "failure",
+      "reason": "evaluation",
+      "unique": true
+    },
+    "reason": "No density item remains: the core correctly rejects the unrepresentable face payload."
+  },
+  {
+    "key": "density:limit|native|lomax|class|subnormal",
+    "reference": "TASK-214.16",
+    "exact_exponential_rate": "101201126653655309176247673359458653524778324882071059178450679013715169783997673445980191850718562247593538932158405955694904368692896738433506699970369254960758712138283180682233453871046608170619883839236372534281003741712346349309051677824579778170405028256179384776166707307615251266093163754323003131653853870546747392",
+    "exceeds_binary64_max": true,
+    "new_outcome": {
+      "certified": false,
+      "kind": "failure",
+      "reason": "evaluation",
+      "unique": true
+    },
+    "reason": "No density item remains: the core correctly rejects the unrepresentable face payload."
+  }
+]

@@ -465,3 +465,20 @@ TEST_CASE("gpd: analytic covariance derivatives and subset projection") {
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"gpd",bad,2).status==cppunivariate::InferenceStatus::BoundaryOrLimit);
   CHECK(cppunivariate::join_family_inference({x.data(),x.size()},"gpd",theta,1u<<3).status==cppunivariate::InferenceStatus::InvalidSubset);
 }
+
+TEST_CASE("gpd core distinguishes free-threshold nonexistence from unsupported holds") {
+  const std::vector<double> x={-2,-1,1};
+  const auto free=cppunivariate::gpd_mle(mltest::as_span(x),1e-10,100,NAN);
+  CHECK(cppunivariate::outcome(free).reason==cppunivariate::OutcomeReason::Unbounded);
+  const auto held=cppunivariate::gpd_mle(mltest::as_span(x),1e-10,100,NAN,NAN,1);
+  CHECK(cppunivariate::outcome(held).reason==cppunivariate::OutcomeReason::Unsupported);
+}
+
+TEST_CASE("gpd finite threshold-collapse supremum is unattained nonexistence") {
+  // With mu=0 and xi=1, L(sigma)=(1+sigma)^(-2), sigma>0.
+  const std::vector<double> x{0,1};
+  const auto r=cppunivariate::gpd_mle(mltest::as_span(x),1e-10,200,0,1);
+  CHECK(r.certificate_failure==cppunivariate::GpdCertificateFailure::ThresholdCollapse);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unattained);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(0.0));
+}

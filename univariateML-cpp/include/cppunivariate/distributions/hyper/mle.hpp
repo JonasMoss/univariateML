@@ -726,7 +726,7 @@ inline FitOutcome outcome(const HyperResult& r) {
     case HyperStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
     case HyperStatus::FaceTie: return comparison_outcome_of(r);
     case HyperStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    case HyperStatus::Infeasible: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case HyperStatus::Infeasible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case HyperStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case HyperStatus::TooLarge: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

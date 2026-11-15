@@ -1,0 +1,20 @@
+Test project /home/jonas/Files/programming/univariateML.wt/core5b-c/univariateML-cpp/build
+    Start 44: distribution_genbeta_slow
+1/1 Test #44: distribution_genbeta_slow ........   Passed  255.30 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Label Time Summary:
+full    = 255.30 sec*proc (1 test)
+
+Total Test time (real) = 255.31 sec
+Test project /home/jonas/Files/programming/univariateML.wt/core5b-c/build/cpp-no-long-double
+    Start 44: distribution_genbeta_slow
+1/1 Test #44: distribution_genbeta_slow ........   Passed  287.25 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Label Time Summary:
+full    = 287.25 sec*proc (1 test)
+
+Total Test time (real) = 287.26 sec

@@ -256,3 +256,15 @@ test_that("GB2 rounded held-power crossing returns an uncertified fit", {
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+
+test_that("gb2 core decides the data outcome", {
+  expect_error(mlgb2(2), class="univariateML_nomle")
+})
+
+test_that("held GB2 power does not turn rounded log equality into nonexistence", {
+  x <- 1e300*c(1,1+.Machine$double.eps)
+  expect_false(x[[1]]==x[[2]])
+  expect_equal(log(x[[1]]),log(x[[2]]),tolerance=0)
+  expect_error(mlgb2(x,shape2=2,scale=1e300),class="univariateML_numerical")
+})

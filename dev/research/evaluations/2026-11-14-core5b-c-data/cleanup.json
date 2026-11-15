@@ -1,0 +1,29 @@
+{
+  "removed_snapshot_probe_builds": [
+    {
+      "directory": "build/snapshots/double/build",
+      "bytes": 5885148
+    },
+    {
+      "directory": "build/snapshots/endpoint-double/build",
+      "bytes": 1629071
+    },
+    {
+      "directory": "build/snapshots/endpoint-native/build",
+      "bytes": 1655551
+    },
+    {
+      "directory": "build/snapshots/log-collapse-double/build",
+      "bytes": 985693
+    },
+    {
+      "directory": "build/snapshots/log-collapse-native/build",
+      "bytes": 1011677
+    },
+    {
+      "directory": "build/snapshots/native/build",
+      "bytes": 5988444
+    }
+  ],
+  "preserved": "snapshot JSONL/provenance, compressed evidence, C++ test builds, R package and site outputs"
+}

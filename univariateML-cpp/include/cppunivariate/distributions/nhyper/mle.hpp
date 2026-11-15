@@ -348,7 +348,7 @@ inline FitOutcome outcome(const NhyperResult& r) {
     case NhyperStatus::Tie: return FitOutcome::estimate(r.certified, false);
     case NhyperStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
     case NhyperStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    case NhyperStatus::Infeasible: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case NhyperStatus::Infeasible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case NhyperStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case NhyperStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
     case NhyperStatus::FaceTie: return comparison_outcome_of(r);

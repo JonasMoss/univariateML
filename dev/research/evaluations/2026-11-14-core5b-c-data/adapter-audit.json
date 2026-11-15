@@ -1,0 +1,252 @@
+[
+  {
+    "family": "betapr",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "burr",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "cmp",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "dnorm",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "emg",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "foldnorm",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "gb2",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "gengamma",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "gpd",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "hnorm",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "hyper",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "invgamma",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "invpareto",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "kumar",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "lnorm",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "lomax",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "nhyper",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "pareto",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "pareto4",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "rayleigh",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "skellam",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "snorm",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "std",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "triang",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  },
+  {
+    "family": "yulesimon",
+    "direct_core_outcome": true,
+    "attaches_outcome_without_reclassification": true,
+    "data_reclassification": false,
+    "classifier_lambda": false,
+    "override": false,
+    "post_core_point_veto": false,
+    "frontend_hold_guard_entries": 0
+  }
+]

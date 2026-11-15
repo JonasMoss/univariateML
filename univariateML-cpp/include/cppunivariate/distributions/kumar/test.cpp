@@ -218,3 +218,9 @@ TEST_CASE("kumar: accuracy capping does not admit an infinite control") {
   const std::vector<double> x{.2,.4,.9};
   CHECK(cppunivariate::kumar_mle({x.data(),x.size()},std::numeric_limits<double>::infinity(),100).status!=cppunivariate::KumarStatus::Ok);
 }
+
+TEST_CASE("kumar unbounded means nonexistence rather than invalid data") {
+  const std::vector<double> x={.5};
+  const auto r=cppunivariate::kumar_mle(mltest::as_span(x),1e-10,100);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
+}

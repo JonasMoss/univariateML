@@ -6,7 +6,6 @@
 namespace umvl_binding {
 inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held nu_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
   std::vector<std::string> warnings;
-  bool face_flag=false;double certified=0;
   const auto fail = [&](const std::string& format, const auto&... arguments) {
     auto out=failure(binding_message(format, arguments...), warnings);
 
@@ -29,18 +28,10 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   auto res=cppunivariate::student_t_mle(x,gradtol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (res.status == cppunivariate::StudentTStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(res.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied}});
   };
   if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("std numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
-  certified=res.certified?1.:0.;
   if(res.accuracy_failure)return done(stop_failure(fail("Student-t numerical accuracy failure: observed-information Newton refinement could not justify the requested coefficient tolerance; increase iterlim or inspect conditioning."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
-  face_flag=res.status==cppunivariate::StudentTStatus::NormalBoundary||res.status==cppunivariate::StudentTStatus::DfTwoBoundary||res.status==cppunivariate::StudentTStatus::ScaleBoundary;
   if(res.status==cppunivariate::StudentTStatus::CertificateBudget)return done(stop_failure(fail("Student-t global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
   if(res.status==cppunivariate::StudentTStatus::NonUniqueHeldSd)return done(comparison_payload(stop_failure(fail("With sd held, this balanced two-point sample has distinct global Student-t maximizers by symmetry and the variance bound. Candidates are finite likelihood witnesses."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","nu"}),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg}}));
   if(res.status==cppunivariate::StudentTStatus::CertificateTie)return done(comparison_payload(stop_failure(fail("Student-t global certificate unresolved tie or sign-uncertain seam; no verified MLE."),res.stop_detail,PayloadKind::Comparison,{"mean","sd","nu"}),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg}}));
@@ -65,14 +56,10 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
                "Use `mllst` to fit a location-scale t distribution with free degrees of freedom."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"},"lst"));
   }
   if (res.status == cppunivariate::StudentTStatus::BfgsFailure)
-    return done(fail("StudentT optimizer BfgsFailure: score check failed; increase iterlim."));
+    return done(stop_failure(fail("StudentT optimizer BfgsFailure: score check failed; increase iterlim."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
   if (res.status == cppunivariate::StudentTStatus::InvalidStart) {
     return done(fail("Student-t MLE requires at least 2 finite observations with "
                "positive variance."));
-  }
-  if (!std::isfinite(res.mu) || !std::isfinite(res.sigma) ||
-      !std::isfinite(res.nu)) {
-    return done(fail("Student-t MLE failed to converge (check inputs)"));
   }
   return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",res.mu},{"sd",res.sigma},{"nu",res.nu}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;  return out; }());
 

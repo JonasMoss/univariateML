@@ -156,8 +156,9 @@ $n\log(\tau)/2$ convex: the remaining log convolution integral is a log
 Laplace transform. Taking its endpoint chord and restoring the logarithmic
 term bounds every intermediate profile without a residual-dependent curvature
 envelope. The executor takes the
-smaller of this bound and its original shape-curvature bound. Separated surviving modes
-stop as a tie. A normal face without a strictly better finite witness stops
+smaller of this bound and its original shape-curvature bound. Separated surviving modes retain their comparison witnesses. A finite winner
+that passes the public coefficient refinement is returned uncertified; an
+unverified finite witness remains unresolved, and a winning face is a limit. A normal face without a strictly better finite witness stops
 unresolved unless a global domination proof succeeds. Budget, numerical and
 unresolved stops retain finite and compatible face witnesses.
 

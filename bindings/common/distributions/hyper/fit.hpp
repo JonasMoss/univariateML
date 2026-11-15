@@ -33,18 +33,9 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   const auto res = cppunivariate::hyper_mle(x, design, N_held, m_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    // The all-free exploratory route deliberately emits a plain error.
-    if ((out.payload_kind==PayloadKind::None) && o.reason == cppunivariate::OutcomeReason::Unresolved)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"m",m_arg.supplied},{"N",N_arg.supplied},{"k",k_arg.supplied}});
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (res.status == cppunivariate::HyperStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(res.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"m",m_arg.supplied},{"N",N_arg.supplied},{"k",k_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"m",m_arg.supplied},{"N",N_arg.supplied},{"k",k_arg.supplied}});
   };
-  PayloadKind stop_kind=PayloadKind::None;
+  PayloadKind stop_kind=outcome_payload(o);
   switch(res.status) {
     case cppunivariate::HyperStatus::FaceTie: stop_kind=PayloadKind::Comparison;break;
     case cppunivariate::HyperStatus::FaceUnresolved: stop_kind=outcome_payload(o);break;
@@ -64,13 +55,13 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   switch (res.status) {
     case cppunivariate::HyperStatus::FaceUnresolved:
       if (!N.supplied && !m.supplied && !k.supplied)
-        return done(res.tie == 0 ? fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.") :
-          fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size %s may dominate; use mlbinom for the limit model.", whole(res.tie)));
+        return done(res.tie == 0 ? stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Poisson face may dominate; use mlpois for the limit model.") :
+          stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial face of size %s may dominate; use mlbinom for the limit model.", whole(res.tie)));
       return done(stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The binomial limit is available: use mlbinom(x, size = held count)."));
     case cppunivariate::HyperStatus::FaceTie:
       if (!N.supplied && !m.supplied && !k.supplied)
-        return done(res.tie == 0 ? fail("A finite likelihood matched the Poisson face within numerical tolerance; a larger finite maximum is not excluded. Use mlpois for the limit model.") :
-          fail("A finite likelihood matched the binomial face of size %s within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.", whole(res.tie)));
+        return done(res.tie == 0 ? stopped_fail("A finite likelihood matched the Poisson face within numerical tolerance; a larger finite maximum is not excluded. Use mlpois for the limit model.") :
+          stopped_fail("A finite likelihood matched the binomial face of size %s within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model.", whole(res.tie)));
       return done(stopped_fail("A finite likelihood matched the binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlbinom for the limit model."));
     case cppunivariate::HyperStatus::NumericalFailure:
       return done(stopped_fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded."));

@@ -1,0 +1,6 @@
+seam-check native: 7 guarded fits replayed with a 300 s guard
+seam-check native: {'pass': 7331, 'stop': 2363}
+seam-check double: 5 guarded fits replayed with a 300 s guard
+seam-check double: {'pass': 7329, 'stop': 2364, 'open fit': 1}
+strict-seam: failures by check: {'seam-open': 1}
+strict-seam: 1 listed as known, 0 new, 0 listed but passing

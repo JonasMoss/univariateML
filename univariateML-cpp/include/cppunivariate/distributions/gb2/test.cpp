@@ -622,3 +622,64 @@ TEST_CASE("GB2 completed grid profiles preserve Pareto limit decisions") {
     CHECK_FALSE(r.stop_detail.budget_exhausted);
   }
 }
+
+TEST_CASE("gb2 free constant-data likelihood is unbounded") {
+  const std::vector<double> x={2};
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(x));
+  CHECK(r.status==cppunivariate::Gb2Status::Unbounded);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+}
+
+TEST_CASE("gb2 double Pareto face payload reproduces the profiled density") {
+  const std::vector<double> logs{-2,-.8,-.2,0,.1,.7,1.5};
+  cppunivariate::trgamma_detail::LogData d;
+  REQUIRE(cppunivariate::trgamma_detail::standardize(mltest::as_span(logs),d));
+  std::vector<double> c;
+  const double optimum=cppunivariate::gb2_detail::double_pareto(d,1,c);
+  REQUIRE(c.size()==3);
+  double ll=0;
+  for(double v:logs)ll+=std::log(c[1]*c[2]/(c[1]+c[2]))-v+(v<0?c[1]:-c[2])*v;
+  CHECK(ll==doctest::Approx(optimum).epsilon(1e-13));
+}
+
+TEST_CASE("gb2 constant-data power collapse precedes unit-shape delegates") {
+  const std::vector<double> x={2};
+  for(bool reflected:{false,true}) {
+    const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-10,100,reflected?1:NAN,NAN,reflected?NAN:1,NAN);
+    CHECK(r.status==cppunivariate::Gb2Status::Unbounded);
+    CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+  }
+}
+
+TEST_CASE("gb2 held exterior scale does not pin a simultaneous-escape Pareto endpoint") {
+  const std::vector<double> x={3.6286401871558374,3.6290031237618741,3.6293660603679108,3.6297289969739475,3.6304548701860213};
+  const double b=1.0079365599415882;
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-10,300,NAN,NAN,NAN,b);
+  REQUIRE(r.status==cppunivariate::Gb2Status::ParetoBoundary);
+  CHECK_FALSE(cppunivariate::outcome(r).certified);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[1]==x.front());
+  const auto nested=cppunivariate::gb2_mle(mltest::as_span(x),1e-10,300,NAN,1.123220989970799,NAN,b);
+  REQUIRE(nested.status==cppunivariate::Gb2Status::Ok);
+  CHECK(r.stop_detail.limit_loglik>nested.logLik);
+}
+
+TEST_CASE("gb2 double Pareto payload preserves an extreme held endpoint exactly") {
+  const double endpoint=1e300;
+  cppunivariate::trgamma_detail::LogData d;
+  d.n=2;d.mean=std::log(endpoint);d.sd=1;d.sum=2*d.mean;
+  d.u={-1,1};d.umin=-1;d.umax=1;
+  std::vector<double> c;
+  CHECK(std::isfinite(cppunivariate::gb2_detail::double_pareto(d,endpoint,c)));
+  REQUIRE(c.size()==3);
+  CHECK(c[0]==endpoint);
+}
+
+TEST_CASE("gb2 held power cannot turn collapsed logarithms into nonexistence") {
+  const std::vector<double> x{1e300,std::nextafter(1e300,INFINITY)};
+  REQUIRE(x[0]!=x[1]);
+  REQUIRE(std::log(x[0])==std::log(x[1]));
+  const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-10,300,NAN,2,NAN,1e300);
+  CHECK(r.status==cppunivariate::Gb2Status::NumericalFailure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+}

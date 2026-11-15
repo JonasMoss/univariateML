@@ -1,0 +1,21 @@
+{
+  "binary64_data": [
+    "0x1.7e43c8800759cp+996",
+    "0x1.7e43c8800759dp+996"
+  ],
+  "held": {
+    "shape2": 2,
+    "scale": "0x1.7e43c8800759cp+996"
+  },
+  "precision_digits": 100,
+  "beta_observations": [
+    "0.5",
+    "0.5000000000000000743508454238891437080815959073745355979891535948995539497964149554333817296350541118"
+  ],
+  "strict_cauchy_gap": "2.764024107623528610863303061447183166705315186746588331129043568119989510873623083135814567818012151e-33",
+  "proof": "The distinct beta observations give a strictly interior sufficient-statistic mean; concentration does not make their joint likelihood unbounded.",
+  "expected_outcome": {
+    "kind": "failure",
+    "reason": "evaluation"
+  }
+}

@@ -44,10 +44,12 @@ limits:
   - {firmness: proved, model: exp, when: 'With shape1 held at one, shape2 and scale diverge at fixed ratio.', status: ExpBoundary, fixed: [shape1], numerical: true}
   - {firmness: proved, model: invexp, when: 'With shape2 held at one, shape1 diverges and scale vanishes at fixed product.', status: InvExpBoundary, fixed: [shape2], numerical: true}
   - firmness: proved
-    name: positive log-variance
+    kind: nonexistence
+    name: unbounded likelihood
     when: Both free shapes $p$ and $q$ tend to infinity with their ratio and scale chosen to concentrate at the common observation.
     detect: All observations are equal and both shapes are free.
-    status: InvalidStart
+    status: Unbounded
+    message: unbounded
   - firmness: proved
     model: gamma
     fixed: [shape1]

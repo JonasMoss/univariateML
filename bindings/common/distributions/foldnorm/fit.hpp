@@ -3,17 +3,7 @@
 #include "cppunivariate/distributions/foldnorm/mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_foldnorm(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, double reltol=1e-10, int iterlim=200) {
-  // Invalid controls remain ordinary errors, even if a legacy fitter reports
-  // a statistical status before checking them.
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mu = mu_arg;
@@ -26,22 +16,16 @@ inline FitResult fit_foldnorm(cppunivariate::span x, Held mu_arg = {}, Held sigm
   const auto r=cppunivariate::foldnorm_mle(x,reltol,iterlim,m,s);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (r.status == cppunivariate::FoldnormStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(r.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
   };
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("foldnorm numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"mu","sigma"}));
   if(r.stop_detail.budget_exhausted)return done(stop_failure(failure("Folded-normal profile search did not converge; certificate work budget exhausted. Raising iterlim may resolve this stop."),r.stop_detail,outcome_payload(o),{"mu","sigma"}));
   if (r.status==cppunivariate::FoldnormStatus::AccuracyFailure)
     return done(stop_failure(fail("Foldnorm could not verify the requested coefficient accuracy in binary64."),r.stop_detail,outcome_payload(o),{"mu","sigma"}));
   if (r.status==cppunivariate::FoldnormStatus::Unbounded) return done(nomle("The folded-normal likelihood is unbounded as sigma tends to zero for these constant data."));
   if (r.status==cppunivariate::FoldnormStatus::InvalidInput) return done(fail("Folded normal requires finite nonnegative data, positive reltol and positive iterlim."));
-  if (r.status!=cppunivariate::FoldnormStatus::Ok) return done(fail("Folded-normal profile search did not converge; increase iterlim."));
+  if (r.status!=cppunivariate::FoldnormStatus::Ok) return done(stop_failure(fail("Folded-normal profile search did not converge; increase iterlim."),r.stop_detail,outcome_payload(o),{"mu","sigma"}));
   std::vector<std::string> fixed;
   if (mu.supplied) fixed.push_back("mu");
   if (sigma.supplied) fixed.push_back("sigma");

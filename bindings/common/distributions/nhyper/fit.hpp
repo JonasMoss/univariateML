@@ -20,15 +20,9 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   const auto fit = cppunivariate::nhyper_mle(x, design, population, held);
   const auto o = cppunivariate::outcome(fit);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (fit.status == cppunivariate::NhyperStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(fit.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(fit.status),{{"m",m_arg.supplied},{"N",N_arg.supplied},{"r",r_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"m",m_arg.supplied},{"N",N_arg.supplied},{"r",r_arg.supplied}});
   };
-  PayloadKind stop_kind=PayloadKind::None;
+  PayloadKind stop_kind=outcome_payload(o);
   switch(fit.status) {
     case cppunivariate::NhyperStatus::FaceTie: stop_kind=PayloadKind::Comparison;break;
     case cppunivariate::NhyperStatus::FaceUnresolved: stop_kind=outcome_payload(o);break;

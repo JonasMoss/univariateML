@@ -13,33 +13,12 @@ inline FitResult fit_cmp(cppunivariate::span x, Held lambda_arg = {}, Held nu_ar
   if (!std::isfinite(ctl.fixed_lambda) || ctl.fixed_lambda<0) return invalid_argument(fail("fixed lambda must be nonnegative and finite."));}
  if (nu.supplied) {ctl.fixed_nu=nu.value;
   if (!std::isfinite(ctl.fixed_nu) || ctl.fixed_nu<0) return invalid_argument(fail("fixed nu must be nonnegative and finite."));}
- const auto res=[&]() {
-   if(lambda.supplied && nu.supplied) {
-     // No parameters are being fitted. Match the fixed special-function cap
-     // used by d/p/q, including the R fully-held diagnostic fallback.
-     std::uint64_t used=0;
-     cppunivariate::CmpWorkLedger ledger{used,1000000};
-     cppunivariate::CmpDomainResult result;
-     static_cast<cppunivariate::CmpResult&>(result)=cppunivariate::cmp_mle(x,ctl,ledger);
-     if(result.status==cppunivariate::CmpStatus::BudgetLimit) {
-       result.status=cppunivariate::CmpStatus::NumericalFailure;
-       result.stop_detail.budget_exhausted=false;
-     }
-     return result;
-   }
-   return cppunivariate::cmp_domain_mle(x,ctl);
- }();
+ const auto res=cppunivariate::cmp_domain_mle(x,ctl);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (res.status == cppunivariate::CmpStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(res.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"nu",nu_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"nu",nu_arg.supplied}});
   };
-  PayloadKind stop_kind=PayloadKind::None;
+  PayloadKind stop_kind=outcome_payload(o);
   switch(res.status) {
     case cppunivariate::CmpStatus::GeometricLimit: stop_kind=outcome_payload(o);break;
     case cppunivariate::CmpStatus::TwoPointLimit: stop_kind=outcome_payload(o);break;

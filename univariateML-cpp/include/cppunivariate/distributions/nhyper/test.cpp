@@ -266,3 +266,9 @@ TEST_CASE("nhyper: slow reference discrete quantile round trips on every truth p
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pnhyper(x,t[0], t[1], t[2],l,g);},
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qnhyper(x,t[0], t[1], t[2],l,g);});
 }
+
+TEST_CASE("nhyper counts below a held stopping count are invalid data") {
+  const std::vector<double> x={0,0};
+  const auto r=cppunivariate::nhyper_mle(mltest::as_span(x),1,10,NAN);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::InvalidInput);
+}

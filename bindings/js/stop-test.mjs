@@ -109,7 +109,7 @@ test('translated and reciprocal delegates preserve certified stops', () => {
   for(const [family,data,held,model,coef,ll] of [
     ['pareto2',[3,3,3],{min:1},'exp',{rate:.5},-3*(1+Math.log(2))],
     ['invpareto',[2,2,2],{},'invexp',{scale:2},-3*(1+Math.log(2))],
-    ['pareto4',[4,4,4],{min:1,shape2:2},'weibull',{shape:2,scale:3},3*(Math.log(2/3)-1)],
+    ['pareto4',[4,4,4],{min:1,shape2:2},'unavailable:shifted-weibull',{shape:2,scale:3,min:1},3*(Math.log(2/3)-1)],
     ['gb2',[3,3,3],{shape3:1,shape2:2},'weibull',{shape:2,scale:3},3*(Math.log(2/3)-1)],
     ['fpareto',[4,4,4],{min:1,shape3:1,shape2:2},'weibull',{shape:2,scale:3},3*(Math.log(2/3)-1)],
     ['betapr',[2,2,2],{shape1:1},'exp',{rate:.5},-3*(1+Math.log(2))]
@@ -605,7 +605,11 @@ test('outcome flags and reasons reach callers uniformly',()=>{
     [()=>api.norm.fit([]),'invalid','invalid-input'],
     [()=>api.norm.fit([0,1],{sd:-1}),'invalid','invalid-argument'],
     [()=>api.pois.fit([0,1],{},{zero:'inflated',truncate:[0,2]}),'unsupported','unsupported'],
-    [()=>api.norm.fit([1,1]),'nomle','unbounded']
+    [()=>api.norm.fit([1,1]),'nomle','unbounded'],
+    [()=>api.gpd.fit([1,2],{mu:null}),'nomle','unbounded'],
+    [()=>api.gpd.fit([1,2],{mu:null,sigma:1}),'unsupported','unsupported'],
+    [()=>api.gpd.fit([0,1],{mu:0,xi:1}),'nomle','unattained'],
+    [()=>api.gb2.fit([1e300,1e300*(1+Number.EPSILON)],{shape2:2,scale:1e300}),'numerical','evaluation']
   ])assert.throws(run,e=>e.kind===kind && e.reason===reason);
   assert.throws(()=>api.nbinom.fit([0,1]),e=>e.kind==='limit' && typeof e.certified==='boolean' && e.reason==='none');
 });

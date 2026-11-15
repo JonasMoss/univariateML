@@ -5,13 +5,7 @@
 #include <cmath>
 namespace umvl_binding {
 inline FitResult fit_rayleigh(cppunivariate::span x, Held sigma_arg = {}) {
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v) && v>=0;}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held sigma = sigma_arg;
@@ -27,19 +21,14 @@ inline FitResult fit_rayleigh(cppunivariate::span x, Held sigma_arg = {}) {
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, sigma_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (res.status == cppunivariate::RayleighStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(res.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"sigma",sigma_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"sigma",sigma_arg.supplied}});
   };
   if (res.status == cppunivariate::RayleighStatus::ZeroLikelihood) {
-    return done(classify(fail("The Rayleigh likelihood is identically zero when any observation is zero; "
+    return done(stop_failure(fail("The Rayleigh likelihood is identically zero when any observation is zero; "
                "no scale has positive likelihood."),{},outcome_payload(o),{},""));
   }
-  if (res.status != cppunivariate::RayleighStatus::Ok || !std::isfinite(res.logLik)) return done(fail("Invalid Rayleigh data."));
+  if(res.status==cppunivariate::RayleighStatus::NumericalFailure)return done(fail("Rayleigh log likelihood is not representable."));
+  if (res.status != cppunivariate::RayleighStatus::Ok) return done(fail("Invalid Rayleigh data."));
   return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"sigma",res.sigma}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
