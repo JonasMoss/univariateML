@@ -1,0 +1,42 @@
+sanity: exact size-2 closed form replays as {'size2': 'holds', 'closed-form': 'holds'}
+ok   binom finite sample claimed Poisson limit                  binom                archive/000446: moment  {'moment': 'fails'}
+ok   binom Poisson-limit sample claimed finite                  binom                archive/009644: moment  {'moment': 'fails'}
+ok   binom constant sample with size + 1                        binom                class/constant: support  {'support': 'fails'}
+ok   gompertz finite sample claimed exponential limit           gompertz             archive/002792: moment  {'moment': 'fails'}
+ok   gompertz exponential-limit sample claimed finite           gompertz             archive/002809: moment  {'moment': 'fails'}
+ok   gompertz a held: limit sample claimed finite               gompertz             archive/002827: moment  {'moment': 'fails'}
+ok   pig Poisson-limit sample claimed finite                    pig                  archive/005765: moment  {'root': 'fails', 'root-polish': 'info', 'moment': 'fails'}
+ok   pig mean held: finite sample claimed Poisson limit         pig                  archive/005778: moment  {'moment': 'fails'}
+ok   foldnorm mu > 0 with H(0) > 0 claimed mu = 0               foldnorm             archive/001512: quartic  {'quartic': 'fails'}
+ok   foldnorm sigma held: positive location claimed zero        foldnorm             archive/001550: location  {'location': 'fails'}
+ok   bbinom size 2: finite sample claimed binomial face         bbinom               archive/000000: size2  {'size2': 'fails'}
+ok   bbinom size 2: alpha x (1 + 1e-8)                          bbinom               archive/000000: closed-form  {'size2': 'holds', 'closed-form': 'fails'}
+ok   cauchy finite sample claimed unbounded                     cauchy               archive/000762: multiplicity  {'multiplicity': 'fails'}
+ok   cauchy 2k > n sample claimed unattained                    cauchy               class/ties: multiplicity  {'multiplicity': 'fails'}
+ok   hcauchy finite sample claimed unattained                   hcauchy              archive/003012: multiplicity  {'multiplicity': 'fails'}
+ok   slash unbounded sample claimed finite                      slash                archive/006358: multiplicity  {'multiplicity': 'fails'}
+ok   sgomp b held: eta flipped between 0 and positive           sgomp                archive/006241: face-score  {'face-score': 'fails'}
+ok   dnorm two-point sample claimed finite                      dnorm                archive/001103: support  {'root': 'fails', 'support': 'fails'}
+ok   dnorm finite sample claimed point mass                     dnorm                archive/001098: support  {'support': 'fails'}
+ok   dlaplace uniqueness flag flipped                           dlaplace             archive/001042: unique  {'support': 'holds', 'unique': 'fails'}
+ok   zip pi flipped between 0 and positive                      pois+zero=inflated   archive/008690: zero-fraction  {'zero-fraction': 'fails'}
+ok   tnorm one-sided: finite sample claimed exponential face    norm +truncate=tnorm archive/007778: window  {'window': 'fails'}
+ok   tnorm two-sided: face sample claimed finite                norm +truncate=tnorm archive/007650: window  {'window': 'fails'}
+ok   tnorm mean held: uniform-face sample claimed finite        norm +truncate=tnorm archive/007667: window  {'window': 'fails'}
+ok   binom all-zero counts claimed unique                       binom                class/zeros: unique  {'unique': 'fails'}
+ok   cauchy balanced two-point claimed unique                   cauchy               archive/000763: unique  {'multiplicity': 'holds', 'unique': 'fails'}
+ok   zip all-zero claimed unique                                pois+zero=inflated   archive/008695: unique  {'unique': 'fails'}
+ok   pig all-zero both free claimed unique (as master returns it) pig                  class/zeros: unique  {'unique': 'fails'}
+ok   cmp all-zero both free claimed unique (as master returns it) cmp                  class/zeros: unique  {'support': 'holds', 'unique': 'fails'}
+ok   bbinom size free, all-zero counts claimed unique           bbinom               archive/000000: unique  {'unique': 'fails'}
+ok   bbinom size 0 held claimed unique                          bbinom               archive/000000: unique  {'unique': 'fails'}
+ok   tnorm constant sample, held mean + a, b estimated, claimed finite norm +truncate=tnorm archive/007778: support  {'support': 'fails'}
+ok   dweibull finite sample claimed point mass                  dweibull             archive/001210: support  {'support': 'fails'}
+ok   dgamma finite sample claimed point mass                    dgamma               archive/000986: support  {'support': 'fails'}
+ok   cmp finite sample claimed point mass                       cmp                  archive/000930: support  {'support': 'fails'}
+ok   cmb finite sample claimed point mass                       cmb                  archive/000829: support  {'support': 'fails'}
+ok   lgser finite sample claimed point mass                     lgser                archive/004492: support  {'support': 'fails'}
+ok   zeta finite sample claimed point mass                      zeta                 archive/008460: support  {'support': 'fails'}
+ok   yulesimon finite sample claimed point mass                 yulesimon            archive/008451: support  {'support': 'fails'}
+ok   zipf point mass claimed at the other end                   zeta +truncate=zipf  class/constant: support  {'support': 'fails'}
+40 controls, 0 did not fail as intended

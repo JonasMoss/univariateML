@@ -1,0 +1,98 @@
+family | comparison | level | verdict | native | double
+bbinom | support | exact | holds | 104 | 104
+binom | moment | exact | holds | 34 | 34
+binom | support | exact | holds | 2 | 2
+binom | unique | exact | holds | 1 | 1
+cauchy | multiplicity | exact | holds | 60 | 60
+cauchy | unique | exact | holds | 2 | 2
+cmb | support | exact | holds | 55 | 55
+cmp | support | exact | holds | 56 | 56
+cmp | unique | exact | fails | 1 | 1
+dgamma | support | exact | holds | 59 | 57
+dlaplace | support | exact | holds | 63 | 63
+dlaplace | unique | exact | holds | 42 | 42
+dnorm | root | numerical | holds | 48 | 48
+dnorm | support | exact | holds | 63 | 63
+dweibull | root | interval | holds | 25 | 25
+dweibull | root | numerical | holds | 17 | 17
+dweibull | support | exact | holds | 59 | 59
+foldnorm | location | exact | holds | 24 | 24
+foldnorm | quartic | exact | holds | 2 | 2
+foldnorm | support | exact | holds | 27 | 27
+gompertz | moment | exact | fails | 0 | 1
+gompertz | moment | exact | holds | 51 | 50
+gompertz | support | exact | holds | 3 | 3
+hcauchy | multiplicity | exact | holds | 72 | 72
+hcauchy | root | interval | holds | 69 | 69
+lgser | root | interval | holds | 32 | 32
+lgser | support | exact | holds | 33 | 33
+norm +truncate=tnorm | support | exact | holds | 3 | 3
+norm +truncate=tnorm | window | exact | holds | 36 | 36
+norm +truncate=tnorm | window | interval | holds | 16 | 16
+pig | moment | exact | holds | 45 | 45
+pig | root | numerical | holds | 22 | 22
+pig | root-polish | numerical | info | 9 | 9
+pig | support | exact | holds | 13 | 13
+pig | unique | exact | fails | 1 | 1
+pois+zero=inflated | support | exact | holds | 3 | 3
+pois+zero=inflated | unique | exact | holds | 9 | 9
+pois+zero=inflated | zero-fraction | interval | holds | 25 | 25
+sgomp | face-score | interval | holds | 21 | 21
+sgomp | support | exact | holds | 53 | 53
+slash | multiplicity | exact | holds | 51 | 51
+yulesimon | root | interval | holds | 15 | 15
+yulesimon | root | numerical | holds | 4 | 4
+yulesimon | support | exact | holds | 27 | 27
+zeta | root | numerical | holds | 22 | 22
+zeta | support | exact | holds | 27 | 27
+zeta +truncate=zipf | support | exact | holds | 47 | 47
+zeta +truncate=zipf | unique | exact | holds | 1 | 1
+
+cases judged: {'native': 1145, 'double': 1143}
+
+not holding:
+  double gompertz class/huge mask 0: moment fails | claim limit (n Q - 2 S^2 >= 0) | hp n Q - 2 S^2 = -1.51079e+617; relative gap 0.304 | double long double intermediates (data / mean 8.302359528222129e+307): mean(z^2) = 1.3911681157892837, 2 mean(z)^2 = 2.0, decides finite; double intermediates (raw data (mean inf not finite)): mean(z^2) = inf, 2 mean(z)^2 = inf, decides limit (DISAGREES with exact) | native builds use the long-double mirror, double-only builds the double one
+  native pig archive/005764 mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [5.11975803959942e-13, 5.11975803959942e-13], right [-7.3029847884932e-14, -7.3029847884932e-14] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -3.75e-13
+  native pig archive/005767 mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [2.89026494482013e-13, 2.89026494482013e-13], right [-1.29156070438334e-13, -1.29156070438334e-13] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -1.91e-13
+  native pig archive/005778 mask 1: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [3.51243246667116e-13, 3.51243246667116e-13], right [-2.37221254303659e-13, -2.37221254303659e-13] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -9.69e-14
+  native pig archive/005781 mask 1: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [1.03775521160759e-13, 1.03775521160759e-13], right [-3.36713778958987e-13, -3.36713778958987e-13] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = 2.65e-13
+  native pig archive/005791 mask 1: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [1.12083323649396e-12, 1.12083323649396e-12], right [-1.36669232298659e-12, -1.36669232298659e-12] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = 4.94e-14
+  native pig class/zeros mask 0: unique fails | claim estimate with unique = true | hp all zero, both free: (mu, 0) attains the maximum for every mu: unique = false | double None | source: pig README existence and Zero member
+  native pig golden/golden mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [3.72992385748347e-11, 3.72992385748347e-11], right [-2.26709494732376e-12, -2.26709494732376e-12] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -4.43e-13
+  native pig resample/n7-s0 mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [3.3536343424255e-14, 3.3536343424255e-14], right [-1.67454318073901e-14, -1.67454318073901e-14] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -1.67e-13
+  native pig resample/n7-s1 mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [8.35372876014108e-14, 8.35372876014108e-14], right [-3.18433448471746e-13, -3.18433448471746e-13] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = 2.92e-13
+  native pig resample/n7-s2 mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [4.83428686650311e-13, 4.83428686650311e-13], right [-5.39518491308659e-14, -5.39518491308659e-14] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -4.0e-13
+  double pig archive/005764 mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [5.11975803959942e-13, 5.11975803959942e-13], right [-7.3029847884932e-14, -7.3029847884932e-14] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -3.75e-13
+  double pig archive/005767 mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [2.89026494482013e-13, 2.89026494482013e-13], right [-1.29156070438334e-13, -1.29156070438334e-13] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -1.91e-13
+  double pig archive/005778 mask 1: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [3.51243246667116e-13, 3.51243246667116e-13], right [-2.37221254303659e-13, -2.37221254303659e-13] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -9.69e-14
+  double pig archive/005781 mask 1: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [1.03775521160759e-13, 1.03775521160759e-13], right [-3.36713778958987e-13, -3.36713778958987e-13] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = 2.65e-13
+  double pig archive/005791 mask 1: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [1.12083323649396e-12, 1.12083323649396e-12], right [-1.36669232298659e-12, -1.36669232298659e-12] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = 4.94e-14
+  double pig class/zeros mask 0: unique fails | claim estimate with unique = true | hp all zero, both free: (mu, 0) attains the maximum for every mu: unique = false | double None | source: pig README existence and Zero member
+  double pig golden/golden mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [3.72992385748347e-11, 3.72992385748347e-11], right [-2.26709494732376e-12, -2.26709494732376e-12] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -4.43e-13
+  double pig resample/n7-s0 mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [3.3536343424255e-14, 3.3536343424255e-14], right [-1.67454318073901e-14, -1.67454318073901e-14] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -1.67e-13
+  double pig resample/n7-s1 mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [8.35372876014108e-14, 8.35372876014108e-14], right [-3.18433448471746e-13, -3.18433448471746e-13] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = 2.92e-13
+  double pig resample/n7-s2 mask 0: root-polish info | claim l(log lambda - w) > 0 > l(log lambda + w) at the returned mean, w = 5.00222e-13 + rounding | hp left [4.83428686650311e-13, 4.83428686650311e-13], right [-5.39518491308659e-14, -5.39518491308659e-14] | double None | width log shape enclosure 2e-7 (padded signs), polished to .01 tol = 1e-12 inside it (pig/mle.hpp:313-315 (resolution = max(tol, 2e-7)), :323 (b-a <= .01 tol)); hp offset (returned - root) = -4.0e-13
+  native cmp class/zeros mask 0: unique fails | claim estimate with unique = true | hp all zero, both free: nu unidentified: unique = false | double None | source: cmp README existence; special/cmp.hpp cmp_mle_work
+  double cmp class/zeros mask 0: unique fails | claim estimate with unique = true | hp all zero, both free: nu unidentified: unique = false | double None | source: cmp README existence; special/cmp.hpp cmp_mle_work
+
+closest to the boundary (moment comparisons, native records):
+  binom archive/009644 mask 0: relative gap 0.0769, holds, poisson (mean - population variance <= 0)
+  binom archive/010104 mask 0: relative gap 0.0769, holds, poisson (mean - population variance <= 0)
+  binom resample/n3-s2 mask 0: relative gap 0.143, holds, poisson (mean - population variance <= 0)
+  binom archive/000458 mask 0: relative gap 0.2, holds, finite (mean - population variance > 0)
+  gompertz resample/n3-s3 mask 0: relative gap 0.0532, holds, finite (n Q - 2 S^2 < 0)
+  gompertz archive/009861 mask 1: relative gap 0.0813, holds, finite (S - a Q/2 > 0)
+  gompertz archive/009860 mask 0: relative gap 0.0832, holds, finite (n Q - 2 S^2 < 0)
+  gompertz archive/009400 mask 0: relative gap 0.0882, holds, finite (n Q - 2 S^2 < 0)
+  pig archive/005778 mask 1: relative gap 0.129, holds, finite (n mu^2 + F - 2 mu S > 0)
+  pig archive/005783 mask 1: relative gap 0.192, holds, poisson (n mu^2 + F - 2 mu S <= 0)
+  pig archive/005784 mask 1: relative gap 0.192, holds, poisson (n mu^2 + F - 2 mu S <= 0)
+  pig archive/005785 mask 1: relative gap 0.192, holds, poisson (n mu^2 + F - 2 mu S <= 0)
+  foldnorm archive/009748 mask 2: relative gap 0.0522, holds, mu = 0 (mean(x^2) - sigma^2 <= 0)
+  foldnorm archive/010208 mask 2: relative gap 0.0523, holds, mu = 0 (mean(x^2) - sigma^2 <= 0)
+  foldnorm archive/010292 mask 2: relative gap 0.0523, holds, mu = 0 (mean(x^2) - sigma^2 <= 0)
+  foldnorm archive/010293 mask 2: relative gap 0.0523, holds, mu = 0 (mean(x^2) - sigma^2 <= 0)
+
+mirror disagreements with exact arithmetic:
+  native gompertz class/huge: moment: long double intermediates (data / mean 8.302359528222129e+307): mean(z^2) = 1.3911681157892837, 2 mean(z)^2 = 2.0, decides finite; double intermediates (raw data (mean inf not finite)): mean(z^2) = inf, 2 mean(z)^2 = inf, decides limit (DISAGREES with exact) native builds use the long-double mirror, double-only builds the double one
+  double gompertz class/huge: moment: long double intermediates (data / mean 8.302359528222129e+307): mean(z^2) = 1.3911681157892837, 2 mean(z)^2 = 2.0, decides finite; double intermediates (raw data (mean inf not finite)): mean(z^2) = inf, 2 mean(z)^2 = inf, decides limit (DISAGREES with exact) native builds use the long-double mirror, double-only builds the double one
