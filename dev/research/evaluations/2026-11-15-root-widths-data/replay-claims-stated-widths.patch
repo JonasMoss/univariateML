@@ -1,0 +1,160 @@
+diff --git a/dev/validation/cert_replay_roots.py b/dev/validation/cert_replay_roots.py
+index 5d895d9b..cb1a2ea3 100644
+--- a/dev/validation/cert_replay_roots.py
++++ b/dev/validation/cert_replay_roots.py
+@@ -46,6 +46,52 @@ HALF = 2.0**-53
+ DPS_STEPS = (50, 100, 200, 400)
+ CLAIMS = {}      # family -> {subset: (width text, source)}; filled below and written to the records
+ 
++# ------------------------------------------------------------ derived widths (dev/research/evaluations/2026-11-15-root-widths-report.md)
++# A returned coefficient is within  bracket half width + conversion rounding + (error of the double-evaluated score) / (score slope)
++# [+ the represented-data term for weibull] of the exact root. The first two terms are exact; the third is an a priori bound.
++
++def ulp_of(v):
++    v = abs(float(v))
++    return 2.0**(math.floor(math.log2(v))-52) if v > 0 else 5e-324
++
++def location_half(z):
++    """half width of the bisection in z = log b (core/transformed_location.hpp:16-19): hi - lo <= 4 eps cannot be reached once
++    ulp(z) > 4 eps; the loop then ends at adjacent doubles (m == lo or m == hi) and returns an end point, 1 ulp(z) from the root."""
++    return max(ulp_of(z), 2*EPS+ulp_of(z)/2)
++
++LOCATION_SCORE_TERM = 9*EPS   # score evaluation (a priori <= 6.9 eps on the 66 baseline cases) + conversion exp, division (1.5 eps)
++GAMMA_SERIES_TERM = 20*EPS    # k >= 100: bracket 2 eps + score and s (a priori <= 17 eps on the 13 baseline cases, n <= 12)
++
++def log_minus_digamma_width(k, s):
++    """relative-shape error of the sign decision for G(k) = log k - psi(k) - s, double evaluation (gamma_detail::log_minus_digamma),
++    divided by the slope k |G'(k)|: E_G + E_s over k |G'|. E_G: series (k >= 100) 1.5 eps G; otherwise log (1 ulp assumed),
++    digamma (2 ulp, ASSUMED for boost::math::digamma) and the subtraction. E_s <= 70 eps s (a priori on the 22 baseline cases)."""
++    k = mp.mpf(k); psi = mp.digamma(k); G = mp.log(k)-psi
++    EG = 1.5*EPS*G if k >= 100 else EPS*abs(mp.log(k))+2*EPS*abs(psi)+EPS/2*abs(G)
++    slope = k*abs(1/k-mp.psi(1, k))
++    return float((EG+70*EPS*mp.mpf(s))/slope)
++
++def weibull_data_term(x, sigma0):
++    """first-order effect on log sigma of the binary64 rounding of y_i = -log(x_i/x_0) (weibull/mle.hpp:57-60): sum_j |d log sigma / d y_j| delta_j,
++    delta_j = 2^-52 (|log x_j| + |log x_0|) (two libm logs of 1 ulp and their difference) when the log-difference branch (|x_j/x_0 - 1| >= .5)
++    is taken, 2^-53 otherwise; sensitivities from the exact Gumbel scale equation F(sigma; d) = sigma - mean d + sum d e^(-d/sigma) / sum e^(-d/sigma)."""
++    with precision(40):
++        X = [mp.mpf(v) for v in x]; n = len(X); L = [mp.log(v) for v in X]
++        y0 = [-l for l in L]
++        def F(sig, y):
++            m = min(y); d = [v-m for v in y]; e = [mp.exp(-v/sig) for v in d]
++            return sig-sum(d)/n+sum(v*q for v, q in zip(d, e))/sum(e)
++        sig = mp.findroot(lambda t: F(t, y0), mp.mpf(sigma0), tol=mp.mpf(10)**-30, maxsteps=100)
++        Fs = mp.diff(lambda t: F(t, y0), sig)
++        total = mp.mpf(0)
++        for j in range(n):
++            def Fj(h, j=j):
++                y = list(y0); y[j] += h; return F(sig, y)
++            dFj = mp.diff(Fj, 0)
++            delta = 2.0**-52*(abs(L[j])+abs(L[0])) if abs(X[j]/X[0]-1) >= .5 else 2.0**-53
++            total += abs(dFj)/(sig*abs(Fs))*delta
++        return float(total)
++
+ 
+ # ------------------------------------------------------------ arithmetic
+ 
+@@ -222,7 +268,7 @@ def replay_gumbel(r, data, budget):
+     return [bracket('root', 'G(t(1-w)) > 0 > G(t(1+w)), t = 1/sigma, G = n/t - sum d (1 - exp(-t d)), w = 0.5e-12 + rounding', make, -1,
+                     'interval', CLAIMS['gumbel']['mu held'][1], CLAIMS['gumbel']['mu held'][0], numeric=numeric, u0=mp.log(mp.mpf(t0)))], None
+ 
+-CLAIMS['weibull'] = {'free': ('relative bracket %.0e in 1/shape (Gumbel on -log x), half width %.0e' % (GUMBEL_ACCURACY, GUMBEL_ACCURACY/2), 'weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115'),
++CLAIMS['weibull'] = {'free': ('relative bracket %.0e in 1/shape (Gumbel on -log x), half width %.0e, plus conversion (4 eps), the double evaluation of the score ((n+16) u) and the binary64 rounding of y_i = -log(x_i/x_0) (weibull_data_term)' % (GUMBEL_ACCURACY, GUMBEL_ACCURACY/2), 'weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115; width derivation: 2026-11-15-root-widths-report.md'),
+                      'scale held': ('log shape bracket %.0e, half width %.1e' % (1e-12, 5e-13), 'weibull/mle.hpp:177-189 (.01 tol)')}
+ 
+ def replay_weibull(r, data, budget):
+@@ -231,7 +277,7 @@ def replay_weibull(r, data, budget):
+     if not free_flag(r, 0): return [], 'closed form or evaluation (shape held)'
+     shape = estimate_of(r, 'shape'); x = [float(v) for v in data]
+     if free_flag(r, 1):
+-        s0 = 1/shape; w = GUMBEL_ACCURACY/2+HALF
++        s0 = 1/shape; w = GUMBEL_ACCURACY/2+HALF+4*EPS+(len(x)+16)*HALF+weibull_data_term(x, s0)
+         top = max(x)
+         def make(A):
+             lt = A.log(A.mpf(top))
+@@ -239,7 +285,7 @@ def replay_weibull(r, data, budget):
+             return gumbel_F(A, d, s*(1-A.mpf(w))), gumbel_F(A, d, s*(1+A.mpf(w)))
+         def numeric(u):
+             lt = mp.log(mp.mpf(top)); d = [lt-mp.log(mp.mpf(v)) for v in x]; return gumbel_F(MPOps, d, mp.exp(u))
+-        return [bracket('root', 'F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding',
++        return [bracket('root', 'F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + derived terms (conversion, score evaluation, rounded y)',
+                         make, +1, 'interval', CLAIMS['weibull']['free'][1], CLAIMS['weibull']['free'][0], numeric=numeric, u0=mp.log(mp.mpf(s0)))], None
+     scale = float(r['held']['scale']); w = 0.5e-12+HALF
+     def score(A, z, k):
+@@ -583,7 +629,8 @@ def replay_nsbeta(r, data, budget):
+ 
+ CLAIMS['gamma'] = {
+     'free, Newton path (s >= 1e-3)': ('Newton step below abstol = 1.220703e-4 (absolute), no bracket', 'gamma/mle.hpp:176-186 (newton_raphson_1d_abs, core/newton.hpp:60)'),
+-    'free, bracket path': ('relative bracket 4 eps, half width 2 eps', 'gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi)'),
++    'free, bracket path': ('relative: bracket half width 2 eps + conversion + (score and s evaluation)/(k |G\'|), total 20 eps for k >= 100 (a priori <= 17 eps, n <= 12); below 100 add log_minus_digamma_width(k, s)',
++                           'gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi); width derivation: 2026-11-15-root-widths-report.md'),
+     'scale held': ('log shape bracket 1e-12, half width 5e-13', 'gamma/mle.hpp:263-270 (hi - lo > 1e-12)'),
+ }
+ 
+@@ -607,12 +654,12 @@ def replay_gamma(r, data, budget):
+             src, width = CLAIMS['gamma']['free, Newton path (s >= 1e-3)']
+             claim = 'G(k - abstol) > 0 > G(k + abstol), G = log k - psi(k) - s, s = log mean - mean log (Newton path, absolute step abstol)'
+         else:
+-            w = 2*EPS+HALF
++            w = GAMMA_SERIES_TERM+HALF if shape >= 100 else 4*EPS+HALF+log_minus_digamma_width(shape, s_hp)
+             def make(A):
+                 s = stats(A); k = A.mpf(shape)
+                 return gamma_G(A, k*(1-A.mpf(w)), s), gamma_G(A, k*(1+A.mpf(w)), s)
+             src, width = CLAIMS['gamma']['free, bracket path']
+-            claim = 'G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path)'
++            claim = 'G(k(1-w)) > 0 > G(k(1+w)), w = derived width: 2 eps bracket half width + conversion + score evaluation over slope (bracket path)'
+         def numeric(u):
+             return gamma_G(MPOps, mp.exp(u), stats(MPOps))
+         out = [bracket('root', claim, make, -1, 'numerical', src, width, numeric=numeric, u0=mp.log(mp.mpf(shape)))]
+@@ -658,7 +705,7 @@ def gamma_family_maps(kind):
+ CLAIMS['gamma_raw'] = {
+     'free parameter': ('restored(ideal, ll, abstol, |ideal| + |ll|) with abstol = 1.220703e-4; the shape bracket (relative 4 eps) is not what certifies',
+                        'gamma/transformed.hpp:143 (certified = !free_parameter || restored), :90 (hi/lo - 1 <= min(tol/8, 4 eps)); core/transformed_data.hpp:99'),
+-    'parameter held': ('shape: log bracket 2e-13 (Reciprocal, Log: digamma equation), relative 4 eps (Square: log k - psi(k) = s)',
++    'parameter held': ('shape: log bracket 2e-13 (Reciprocal, Log: digamma equation); Square (log k - psi(k) = s): relative 4 eps + (score and s evaluation)/(k |G\'|), log_minus_digamma_width(k, s) (grows like k log k up to 100)',
+                        'gamma/transformed.hpp:105-110 (hi - lo <= min(tol/8, 2e-13)), :74-90 (Square)'),
+ }
+ 
+@@ -706,7 +753,10 @@ def replay_gamma_raw(kind_name):
+         if r['mask'] == 2:   # parameter held, shape free
+             par = float(r['held'][names[1]])
+             if kind_name == 'naka':
+-                w = 2*EPS+HALF
++                with precision(60):
++                    Xn = [mp.mpf(v) for v in x]; Yn = [v*v for v in Xn]; om_ = mp.mpf(par)
++                    s_hp = mp.log(om_)-sum(mp.log(v) for v in Yn)/len(Yn)+sum(Yn)/len(Yn)/om_-1
++                w = 4*EPS+HALF+log_minus_digamma_width(shape_hat, s_hp)
+                 def mk(A):
+                     X = [A.mpf(v) for v in x]; n = A.mpf(len(X)); Y = ys(A, X); om = A.mpf(par)
+                     ybar = sum(Y, A.mpf(0))/n; lm = sum((A.log(v) for v in Y), A.mpf(0))/n
+@@ -743,7 +793,8 @@ for _k in ('invgamma', 'naka', 'lgamma'): pass
+ CLAIMS['location'] = {
+     'free scale': ('restored(ideal, ll, tol, |ideal| + |ll|) on the log-data likelihood (no Jacobian), tol = the binding control; the shape/location roots (4 eps absolute in log b and in c) do not certify',
+                    'core/transformed_location.hpp:75-77 (certified = !free_scale || restored), :16-19 (root width min(tol/16, 4 eps))'),
+-    'scale held': ('log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding', 'core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))'),
++    'scale held': ('log shape within max(ulp(z), 2 eps + ulp(z)/2) + 9 eps of the root, z = log b = log(shape unit) the solved coordinate (unit = max |log(x_i/x_0)|): hi - lo <= 4 eps is unreachable when ulp(z) > 4 eps, the loop ends at adjacent doubles and returns an end point; 9 eps = score evaluation over slope (a priori <= 6.9 eps) + exp and division (1.5 eps)',
++                   'core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps) or m == lo or m == hi); width derivation: 2026-11-15-root-widths-report.md'),
+ }
+ 
+ def loc_ll(A, W, kind_name, k, ls):
+@@ -821,6 +872,10 @@ def replay_location(kind_name, family, data_fn, tol, tol_source, polish_width=No
+             w = 4*EPS if polish_width is None else polish_width+4*EPS    # 2 eps (bracket half width) + chained rounding; pareto3: the accuracy polish (tol) replaces the bracket
+             if scale_held:
+                 ls_value = float(r['held'][scale_name])
++                if polish_width is None:
++                    unit = max(abs(mp.log(mp.mpf(v)/mp.mpf(x[0]))) for v in x)
++                    if unit == 0: unit = abs(mp.log(mp.mpf(ls_value)/mp.mpf(x[0]))) or mp.mpf(1)
++                    w = location_half(mp.log(mp.mpf(shape)*unit))+LOCATION_SCORE_TERM
+                 def make_r(A):
+                     Wv = W(A); n = A.mpf(len(Wv)); ls = A.log(A.mpf(ls_value)); k = A.mpf(shape)
+                     def dk(kk):
+@@ -831,7 +886,7 @@ def replay_location(kind_name, family, data_fn, tol, tol_source, polish_width=No
+                     A = MPOps; Wv = W(A); n = A.mpf(len(Wv)); ls = A.log(A.mpf(ls_value)); kk = mp.exp(u)
+                     if kind_name == 'invweibull': return n/kk+sum(((v-ls)*(-1+A.exp(-(kk*(v-ls)))) for v in Wv), A.mpf(0))
+                     return n/kk+sum(((v-ls)*(1-2/(1+A.exp(-(kk*(v-ls))))) for v in Wv), A.mpf(0))
+-                out.append(bracket('root', 'dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power)',
++                out.append(bracket('root', 'dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = max(ulp(z), 2 eps + ulp(z)/2) + 9 eps, z = log(shape unit) (derived width, see CLAIMS)',
+                                    make_r, -1, 'numerical', CLAIMS['location']['scale held'][1], CLAIMS['location']['scale held'][0], numeric=numeric,
+                                    u0=mp.log(mp.mpf(shape))))
+             else:

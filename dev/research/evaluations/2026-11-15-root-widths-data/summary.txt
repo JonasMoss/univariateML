@@ -1,0 +1,51 @@
+rows 288 errors 0
+path                   mode    family        n match  fail   inA |  max|off| max W_act max W_bnd max.Wb/1e-10 | min A/off max off/W
+gamma_bracket          double  gamma        13    13     3    13 |  8.67e-16  1.24e-15  3.77e-15   3.8e-05 |
+gamma_bracket          native  gamma        13    13     3    13 |  8.67e-16  1.24e-15  3.77e-15   3.8e-05 |
+location_scale_held    double  frechet      22    22     4    22 |  3.39e-15  3.94e-15  4.75e-15   4.7e-05 |
+location_scale_held    double  invweibull   21    21     3    21 |  2.51e-15  3.95e-15  4.76e-15   4.8e-05 |
+location_scale_held    double  llogis       22    22     7    22 |  2.21e-15  3.99e-15  5.19e-15   5.2e-05 |
+location_scale_held    native  frechet      22    22     4    22 |  3.39e-15  3.94e-15  4.75e-15   4.7e-05 |
+location_scale_held    native  invweibull   21    21     3    21 |  2.51e-15  3.95e-15  4.76e-15   4.8e-05 |
+location_scale_held    native  llogis       22    22     7    22 |  2.21e-15  3.99e-15  5.19e-15   5.2e-05 |
+naka_square_held       double  naka         23    21     1    21 |  7.92e-16  1.06e-14  2.62e-14   2.6e-04 |
+naka_square_held       native  naka         23    22     1    22 |  7.92e-16  1.06e-14  2.62e-14   2.6e-04 |
+weibull_free           double  weibull      43    43     2    43 |  3.03e-14  6.94e-13  6.95e-13   7.0e-03 |
+weibull_free           native  weibull      43    43     2    43 |  3.03e-14  6.94e-13  6.94e-13   6.9e-03 |
+
+largest offset / W_actual and offset / W_bound per path (native):
+  gamma_bracket          gamma      0.756  0.312   cases with 4eps-type claim failing: 3 of 13
+  location_scale_held    frechet    0.860  0.714   cases with 4eps-type claim failing: 4 of 22
+  location_scale_held    invweibull 0.645  0.529   cases with 4eps-type claim failing: 3 of 21
+  location_scale_held    llogis     0.554  0.432   cases with 4eps-type claim failing: 7 of 22
+  naka_square_held       naka       0.419  0.125   cases with 4eps-type claim failing: 1 of 23
+  weibull_free           weibull    0.774  0.751   cases with 4eps-type claim failing: 2 of 43
+
+unmatched emulations (shape differs from the snapshot):
+  native naka archive 005072 1.0987178103090646e-300 1.098717810309065e-300 off 1.53e-16
+  double naka archive 005057 5.291229053472091 5.291229053472088 off -3.14e-16
+  double naka archive 005072 1.0987178103090646e-300 1.098717810309065e-300 off 1.53e-16
+
+failures of the replay claim (native):
+ frechet    archive  001946  m6 offset -1.57e-15 claim 8.88e-16 | half 1.78e-15 cond_a 3.17e-16 (data_b 1.19e-16 data_act 8.71e-18 arith 1.98e-16) cond_b 8.25e-16 conv 6.84e-17 | W_act 2.16e-15 W_bnd 2.93e-15 in A
+ frechet    archive  001949  m6 offset -1.57e-15 claim 8.88e-16 | half 1.78e-15 cond_a 3.17e-16 (data_b 1.19e-16 data_act 8.71e-18 arith 1.98e-16) cond_b 8.25e-16 conv 6.84e-17 | W_act 2.16e-15 W_bnd 2.93e-15 in A
+ frechet    archive  001955  m6 offset -3.39e-15 claim 8.88e-16 | half 3.55e-15 cond_a 3.28e-16 (data_b 1.57e-16 data_act 1.08e-16 arith 1.71e-16) cond_b 8.63e-16 conv 6.02e-17 | W_act 3.94e-15 W_bnd 4.75e-15 in A
+ frechet    archive  010365  m6 offset  1.23e-15 claim 8.88e-16 | half 1.78e-15 cond_a 2.61e-16 (data_b 1.01e-16 data_act 8.29e-17 arith 1.60e-16) cond_b 8.07e-16 conv 3.25e-17 | W_act 2.07e-15 W_bnd 2.92e-15 in A
+ gamma      archive  001983  m0 offset  5.68e-16 claim 5.55e-16 | half 4.44e-16 cond_a 3.14e-16 (data_b 0.00e+00 data_act 0.00e+00 arith 0.00e+00) cond_b 1.85e-15 conv 9.93e-17 | W_act 8.57e-16 W_bnd 2.63e-15 in A
+ gamma      archive  001986  m0 offset  5.68e-16 claim 5.55e-16 | half 4.44e-16 cond_a 3.14e-16 (data_b 0.00e+00 data_act 0.00e+00 arith 0.00e+00) cond_b 1.85e-15 conv 9.93e-17 | W_act 8.57e-16 W_bnd 2.63e-15 in A
+ gamma      archive  001994  m0 offset -8.67e-16 claim 5.55e-16 | half 4.44e-16 cond_a 6.41e-16 (data_b 0.00e+00 data_act 0.00e+00 arith 0.00e+00) cond_b 2.00e-15 conv 6.10e-17 | W_act 1.15e-15 W_bnd 2.78e-15 in A
+ invweibull archive  004257  m2 offset  2.10e-15 claim 8.88e-16 | half 3.55e-15 cond_a 2.90e-16 (data_b 7.83e-17 data_act 5.46e-17 arith 2.12e-16) cond_b 7.84e-16 conv 2.09e-17 | W_act 3.86e-15 W_bnd 4.67e-15 in A
+ invweibull archive  004259  m2 offset  2.51e-15 claim 8.88e-16 | half 3.55e-15 cond_a 3.23e-16 (data_b 1.64e-16 data_act 1.36e-16 arith 1.59e-16) cond_b 8.69e-16 conv 7.21e-17 | W_act 3.95e-15 W_bnd 4.76e-15 in A
+ invweibull archive  004260  m2 offset  2.22e-15 claim 8.88e-16 | half 3.55e-15 cond_a 2.50e-16 (data_b 9.90e-17 data_act 5.25e-17 arith 1.51e-16) cond_b 8.05e-16 conv 3.77e-17 | W_act 3.84e-15 W_bnd 4.69e-15 in A
+ llogis     archive  004562  m2 offset -1.95e-15 claim 8.88e-16 | half 3.55e-15 cond_a 3.37e-16 (data_b 8.42e-17 data_act 3.02e-17 arith 2.53e-16) cond_b 1.26e-15 conv 5.58e-17 | W_act 3.95e-15 W_bnd 5.15e-15 in A
+ llogis     archive  004563  m2 offset -1.28e-15 claim 8.88e-16 | half 3.55e-15 cond_a 3.66e-16 (data_b 1.23e-16 data_act 5.71e-17 arith 2.43e-16) cond_b 1.30e-15 conv 2.40e-17 | W_act 3.94e-15 W_bnd 5.19e-15 in A
+ llogis     archive  004565  m2 offset -1.95e-15 claim 8.88e-16 | half 3.55e-15 cond_a 3.37e-16 (data_b 8.42e-17 data_act 3.02e-17 arith 2.53e-16) cond_b 1.26e-15 conv 5.58e-17 | W_act 3.95e-15 W_bnd 5.15e-15 in A
+ llogis     archive  004566  m2 offset -1.28e-15 claim 8.88e-16 | half 3.55e-15 cond_a 3.66e-16 (data_b 1.23e-16 data_act 5.71e-17 arith 2.43e-16) cond_b 1.30e-15 conv 2.40e-17 | W_act 3.94e-15 W_bnd 5.19e-15 in A
+ llogis     archive  004574  m2 offset  1.09e-15 claim 8.88e-16 | half 1.78e-15 cond_a 3.42e-16 (data_b 9.25e-17 data_act 8.64e-17 arith 2.50e-16) cond_b 1.27e-15 conv 1.49e-18 | W_act 2.12e-15 W_bnd 3.38e-15 in A
+ llogis     archive  010575  m2 offset -1.42e-15 claim 8.88e-16 | half 3.55e-15 cond_a 3.16e-16 (data_b 7.82e-17 data_act 4.91e-17 arith 2.37e-16) cond_b 1.26e-15 conv 1.78e-17 | W_act 3.89e-15 W_bnd 5.14e-15 in A
+ llogis     archive  010576  m2 offset -2.21e-15 claim 8.88e-16 | half 3.55e-15 cond_a 3.40e-16 (data_b 5.53e-17 data_act 1.76e-17 arith 2.85e-16) cond_b 1.24e-15 conv 9.82e-17 | W_act 3.99e-15 W_bnd 5.12e-15 in A
+ naka       archive  005059  m2 offset  7.92e-16 claim 5.55e-16 | half 4.44e-16 cond_a 1.37e-15 (data_b 0.00e+00 data_act 0.00e+00 arith 0.00e+00) cond_b 5.57e-15 conv 7.79e-17 | W_act 1.89e-15 W_bnd 6.35e-15 in A
+ weibull    class    tiny    m0 offset -2.14e-14 claim 5.11e-15 | half 5.00e-15 cond_a 6.88e-13 (data_b 6.88e-13 data_act 1.68e-14 arith 1.07e-19) cond_b 6.88e-13 conv 1.90e-17 | W_act 6.94e-13 W_bnd 6.94e-13 in A
+ weibull    class    huge    m0 offset -3.03e-14 claim 5.11e-15 | half 5.00e-15 cond_a 5.43e-13 (data_b 5.43e-13 data_act 3.35e-14 arith 8.95e-20) cond_b 5.43e-13 conv 1.92e-18 | W_act 5.48e-13 W_bnd 5.49e-13 in A
+
+cases NOT inside W_actual or W_bound:
