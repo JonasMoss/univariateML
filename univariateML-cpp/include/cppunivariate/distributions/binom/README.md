@@ -374,7 +374,7 @@ When both coefficients are free, the fit profiles the probability at
 $\bar x/n$ and searches the integer trial counts. For positive-mean data,
 a finite maximum exists exactly when the sample mean exceeds the variance
 computed with divisor equal to sample size. Otherwise the supremum is the
-Poisson limit. The free-size profile is unimodal by DeRiggi, D. F. (1983),
+Poisson limit. The comparison is the exact integer test $nS+S^2\le nQ$ with $S=\sum x_i$, $Q=\sum x_i^2$, in 128-bit integers (binary64 misdecides exact ties such as $(68,56,51,51,44,43,49,59,53)$, where mean and variance are both $158/3$); samples of $2^{32}$ or more observations, or a compiler without 128-bit integers, use the binary64 ratio. The free-size profile is unimodal by DeRiggi, D. F. (1983),
 “Unimodality of Likelihood Functions for the Binomial Distribution”,
 Journal of the American Statistical Association, 78(381), 181–183,
 [doi:10.1080/01621459.1983.10477949](https://doi.org/10.1080/01621459.1983.10477949).

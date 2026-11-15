@@ -204,3 +204,46 @@ TEST_CASE("gompertz: exponential-limit decision survives sums that overflow bina
   CHECK(r.a>0);
   CHECK(r.b>0);
 }
+
+// TASK-214.27: n Q - 2 S^2 = -7.4e-11 exactly (relative -3.3e-18): a finite MLE
+// exists, but the binary64 comparison s_xsq/n >= 2 mean^2 chose the limit.
+TEST_CASE("gompertz: a sample within rounding of the exponential boundary is not a certified limit") {
+  const std::vector<double> x{415.8753190533696, 2688.353999767103, 240.47409880682352};
+  const auto r=cppunivariate::gompertz_mle(mltest::as_span(x),1e-10,200);
+  const auto o=cppunivariate::outcome(r);
+  CHECK_FALSE((o.kind==cppunivariate::OutcomeKind::Limit&&o.certified));
+  // The finite maximum sits at b ~ 1e-17 of the data scale; the Newton search may report a failure, never the limit.
+  CHECK(r.status!=cppunivariate::GompertzStatus::Overdispersed);
+}
+
+// Integer samples (a, b, c) with exact T = n Q - 2 S^2 = c^2 - 4(a+b)c + a^2 + b^2 - 4ab
+// within a few units: the relative gap is below binary64 spacing, but far above the pad.
+TEST_CASE("gompertz: the exponential face is decided exactly outside the pad and never certified inside it") {
+  std::mt19937_64 rng(214027);
+  int ties=0,positive=0,negative=0;
+  for(int rep=0;rep<400;++rep) {
+    const long long a=(1LL<<24)+static_cast<long long>(rng()%(3ULL<<24)),b=(1LL<<24)+static_cast<long long>(rng()%(3ULL<<24));
+    const long long root=2*(a+b)+static_cast<long long>(std::llround(std::sqrt(4.0*static_cast<double>(a+b)*static_cast<double>(a+b)-(static_cast<double>(a)*a+static_cast<double>(b)*b-4.0*static_cast<double>(a)*b))));
+    for(long long k=-2;k<=2;++k) {
+      const long long c=root+k;
+      const __int128 T=static_cast<__int128>(c)*c-4*static_cast<__int128>(a+b)*c+static_cast<__int128>(a)*a+static_cast<__int128>(b)*b-4*static_cast<__int128>(a)*b;
+      const std::vector<double> x{static_cast<double>(a),static_cast<double>(b),static_cast<double>(c)};
+      const auto o=cppunivariate::outcome(cppunivariate::gompertz_mle(mltest::as_span(x),1e-10,200));
+      const bool certified_limit=o.kind==cppunivariate::OutcomeKind::Limit&&o.certified;
+      if(T>0) {++positive;CHECK(o.kind==cppunivariate::OutcomeKind::Limit);CHECK(o.certified);}
+      else if(T<0) {++negative;CHECK_FALSE(o.kind==cppunivariate::OutcomeKind::Limit);}
+      else {++ties;CHECK_FALSE(certified_limit);}
+    }
+  }
+  CHECK(positive>0);CHECK(negative>0);
+}
+
+TEST_CASE("gompertz: exact ties are limits that are not certified; clear cases keep their certificate") {
+  const std::vector<double> tie{0,3},clear_limit{0,0,1},clear_finite{1,2,3};
+  const auto t=cppunivariate::outcome(cppunivariate::gompertz_mle(mltest::as_span(tie),1e-10,200));
+  CHECK(t.kind==cppunivariate::OutcomeKind::Limit);CHECK_FALSE(t.certified);
+  const auto l=cppunivariate::outcome(cppunivariate::gompertz_mle(mltest::as_span(clear_limit),1e-10,200));
+  CHECK(l.kind==cppunivariate::OutcomeKind::Limit);CHECK(l.certified);
+  const auto f=cppunivariate::gompertz_mle(mltest::as_span(clear_finite),1e-10,200);
+  CHECK(f.status==cppunivariate::GompertzStatus::Ok);
+}

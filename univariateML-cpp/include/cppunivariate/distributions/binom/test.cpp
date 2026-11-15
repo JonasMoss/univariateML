@@ -643,3 +643,31 @@ TEST_CASE("held binomial windows retain proper atoms and report numerical range 
   CHECK(cppunivariate::outcome(range).kind==cppunivariate::OutcomeKind::Failure);
   CHECK(cppunivariate::outcome(range).reason==cppunivariate::OutcomeReason::Evaluation);
 }
+
+// TASK-214.27: mean = variance = 158/3 exactly (n S + S^2 = n Q), so the
+// Poisson limit is the answer; the binary64 ratio x_bar/var_pop is
+// 1.0000000000000002 and used to send the sample to the finite-size search.
+TEST_CASE("binom: an exact mean-variance tie is the Poisson limit") {
+  const std::vector<int> x{68,56,51,51,44,43,49,59,53};
+  const auto r=cppunivariate::binom_mle(as_ispan(x),std::numeric_limits<double>::quiet_NaN(),1e-10,100);
+  CHECK(r.status==cppunivariate::BinomStatus::Underdispersed);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Limit);
+  CHECK(o.certified);
+}
+
+// delta = n S + S^2 - n Q is an integer; at |delta| = 1 for large counts the binary64
+// ratio is wrong in both directions. Shifting a tie by t adds n^2 t to delta.
+TEST_CASE("binom: the Poisson limit is decided on the exact integer comparison") {
+  const std::vector<int> tie{68,56,51,51,44,43,49,59,53};
+  for(int t:{0,1,1000,100000000}) {
+    std::vector<int> x(tie);
+    for(int &v:x) v+=t;
+    const auto r=cppunivariate::binom_mle(as_ispan(x),std::numeric_limits<double>::quiet_NaN(),1e-10,100);
+    // delta = 81 t > 0 for t > 0: a finite maximum exists (possibly at an enormous size).
+    if(t==0) CHECK(r.status==cppunivariate::BinomStatus::Underdispersed);
+    else CHECK(r.status!=cppunivariate::BinomStatus::Underdispersed);
+  }
+  const std::vector<int> two{0,2}; // mean 1 = population variance 1
+  CHECK(cppunivariate::binom_mle(as_ispan(two),std::numeric_limits<double>::quiet_NaN(),1e-10,100).status==cppunivariate::BinomStatus::Underdispersed);
+}

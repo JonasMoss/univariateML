@@ -11,7 +11,7 @@
 #include <vector>
 namespace cppunivariate {
 enum class SlashStatus { Ok, Unbounded, CollapseLimit, InvalidInput, IterationFailure };
-struct SlashResult {double mu,sigma,logLik;int iterations;SlashStatus status;StopDetail stop_detail{};bool budget_exhausted=false;bool accuracy_failure=false;};
+struct SlashResult {double mu,sigma,logLik;int iterations;SlashStatus status;StopDetail stop_detail{};bool budget_exhausted=false;bool accuracy_failure=false;bool margin_decided=false;};
 namespace slash_detail {
 // A scale-score pass uses only log distances. Keep their subtraction and
 // summation order identical to the uncached expression, including zeros and
@@ -403,7 +403,12 @@ inline SlashResult slash_mle(span x,double tol=1e-10,int maxit=500,double sigma=
     }
   }
   if(best.status!=SlashStatus::Ok || !std::isfinite(best.logLik)){bad.status=SlashStatus::IterationFailure;return bad;}
-  if(boundary>=best.logLik-1e-8*n){bad.status=SlashStatus::CollapseLimit;return bad;}
+  // A half-mass collapse is preferred when no interior value exceeds it by 1e-8 n.
+  // That is a margin, not a proof: the supremum over the interior equals the
+  // collapse value at the corner (m to v, s to 0), so no finite cover can show
+  // sup L < B, and an interior maximum with gain below the margin (the sample
+  // (0,0,-1,1.0001) gains 4e-10) is an MLE. The outcome is therefore unresolved.
+  if(boundary>=best.logLik-1e-8*n){bad.status=SlashStatus::CollapseLimit;bad.margin_decided=true;return bad;}
   {
     const double accuracy_center=std::isnan(sigma)?0:best.mu,accuracy_scale=std::isnan(sigma)?1:best.sigma;
     std::vector<double> accuracy_y;for(double v:y)accuracy_y.push_back((v-accuracy_center)/accuracy_scale);
@@ -437,7 +442,9 @@ inline FitOutcome outcome(const SlashResult& r) {
   switch (r.status) {
     case SlashStatus::Ok: return FitOutcome::estimate(true);
     case SlashStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
-    case SlashStatus::CollapseLimit: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    // Held location: proved unattained (the scale likelihood lies below the collapse for every
+    // positive scale). Free location: decided by the 1e-8 n margin, never certified.
+    case SlashStatus::CollapseLimit: return r.margin_decided ? FitOutcome::failure(OutcomeReason::Unresolved) : FitOutcome::nonexistence(OutcomeReason::Unattained);
     case SlashStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SlashStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
   }

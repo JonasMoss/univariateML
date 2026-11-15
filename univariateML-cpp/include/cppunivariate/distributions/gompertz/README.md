@@ -48,7 +48,7 @@ limits:
 - model: 'exp'
   firmness: proved
   when: 'The growth coefficient $b$ decreases to zero and $a$ tends to $1/\bar x$.'
-  detect: 'Both coefficients are free, the sample is nonconstant, and $\overline{x^2}\ge 2\bar x^2$.'
+  detect: 'Both coefficients are free, the sample is nonconstant, and $\overline{x^2}\ge 2\bar x^2$, decided in double-double arithmetic with a rounding pad; a sample inside the pad, including every exact tie, returns the limit uncertified.'
   status: 'Overdispersed'
 references:
 - Lenart, A. (2012). The Gompertz distribution and Maximum Likelihood Estimation of its parameters - a revision.
@@ -118,6 +118,8 @@ The Gompertz distribution models lifetimes with an exponentially increasing haza
 ## Details
 
 The hazard is $a\exp(bx)$, with both coefficients positive. The exponential law is an excluded limit as $b$ decreases to zero. Profiling the initial hazard leaves a strictly concave scalar likelihood in $b$. Its derivative at zero determines whether a finite maximum exists or the exponential face has the supremum.
+
+The free-fit decision is the sign of $T=nQ-2S^2$ with $S=\sum x_i$, $Q=\sum x_i^2$. The data are scaled by an exact power of two, $S$ and $Q$ are accumulated as unevaluated pairs with TwoSum and FMA products, and $T$ is formed without rounding the cancelling leading terms. With $u=2^{-53}$, $\gamma_k=ku/(1-ku)$ and $nQ$ computed upward as $N$, the pad is $(6\gamma_{2n}^2N+16uW+16n^22^{-1074})(1+10^{-6})$, where $W$ is the sum of the magnitudes of the correction terms. The two Sum2 bounds are the cited ones (Ogita, Rump and Oishi, 2005); the factor 6, the evaluation bound $16uW$ and the underflow term are derived in `mle.hpp` and checked on constructed samples, not proved independently. Relative to $nQ$ the pad is about $5\times10^{-30}$ for $n=3$ and $3\times10^{-25}$ for $n=1000$, against binary64 comparisons that fail within about $10u\approx10^{-15}$. $T>$ pad is a certified limit, $T<-$ pad a finite fit, and anything between is the limit with `numerical: true` semantics (uncertified). The held-$a$ comparison is not covered by this rule.
 
 Holding $a$ also leaves a strictly concave likelihood in $b$ whenever the sample sum is positive. For all-zero data with $a$ held the likelihood is flat in $b$. Holding $b$ gives an explicit estimate of $a$ when the sample sum is positive, and unbounded likelihood otherwise. Holding both evaluates the likelihood. With both free, a constant positive sample has unbounded likelihood as $b$ increases and $a$ decreases to concentrate the density at its common value.
 

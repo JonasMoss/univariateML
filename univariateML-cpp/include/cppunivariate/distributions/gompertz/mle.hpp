@@ -40,14 +40,100 @@ struct GompertzResult {
   double logLik;
   int iterations;
   GompertzStatus status;
- StopDetail stop_detail{}; };
+ StopDetail stop_detail{};
+  // Overdispersed only: the sample lies inside the rounding pad of the
+  // exponential boundary, so the limit is the preferred reading, not a proof.
+  bool margin_decided = false; };
+
+namespace gompertz_detail {
+// Decision on the exponential face: the limit holds iff T = n Q - 2 S^2 >= 0
+// (S = sum x, Q = sum x^2; equality selects the limit). Returns +1 when T >= 0
+// is proved, -1 when T < 0 is proved, 0 when the sample lies inside the pad
+// below (including every exact tie T = 0).
+//
+// The data are scaled by an exact power of two so that z_i = x_i 2^-e lies in
+// [0, 1): T is homogeneous of degree two, so the sign is unchanged, and nothing
+// overflows. S and Q are accumulated unevaluated as (hi, lo) pairs with
+// TwoSum and FMA-based TwoProd (Ogita, Rump, Oishi 2005), and T is formed
+// from the pairs without rounding the cancelling leading terms.
+//
+// Bound (u = 2^-53, gamma_k = k u / (1 - k u), n <= 2^30, correctly rounded
+// binary64 operations with no extended-precision intermediates, std::fma
+// exact, z_i^2 and z_i not underflowing; the last two are covered by U):
+//  1. Sum2: S = sh + sl_exact, and fl(sl) differs from sl_exact by at most
+//     gamma_{n-1} sum|e_i| <= gamma_n^2 S; likewise Q = qh + ql_exact with
+//     |fl(ql) - ql_exact| <= gamma_{2n} (gamma_n + u) Q <= gamma_{2n}^2 Q.
+//  2. With S^ = sh + sl, Q^ = qh + ql (real numbers), T^ = n Q^ - 2 S^2 differs
+//     from T by at most n gamma_{2n}^2 Q + 2 gamma_n^2 S (2 S + gamma_n^2 S)
+//     <= 5 gamma_{2n}^2 nQ, using S^2 <= n Q (Cauchy-Schwarz) and n gamma_n^2 << 1.
+//  3. n qh - 2 sh^2 = d + f + e1 - 2 e2 exactly (two TwoProd, one TwoSum). The
+//     rest, B = n ql - 4 sh sl - 2 sl^2, and t = f + e1 - 2 e2 + B take at
+//     most eight roundings, so |fl(t) - t| <= gamma_8 W with
+//     W = |f| + |e1| + 2|e2| + n|ql| + 4|sh sl| + 2 sl^2, itself computed with
+//     relative error below 8u. The final d + t is one rounding and preserves
+//     the sign.
+//  4. Underflow: each z_i or product below 2^-1022 loses at most 2^-1074, which
+//     moves T by at most 8 n^2 2^-1074; U = 16 n^2 2^-1074.
+// The pad P = 6 gamma_{2n}^2 N + 16 u W + U, with N >= n Q computed upward, so
+// |T - T_computed| <= P; the comparison uses (1 + 10^-6) P to absorb the O(u)
+// relative slack in the evaluation of P and in the sign-preserving final sum.
+// Steps 1 and 3 are the cited bounds; step 2 and the constants are derived here
+// and checked only by the test below, not by an independent proof assistant.
+inline int exponential_face(span x) {
+  const std::size_t count = x.size();
+  if (count == 0 || count > (std::size_t(1) << 30)) return 0;
+  double xmax = 0.0;
+  for (double v : x) {
+    if (!(v >= 0.0) || !std::isfinite(v)) return 0;
+    if (v > xmax) xmax = v;
+  }
+  if (!(xmax > 0.0)) return 0;
+  int exponent = 0;
+  std::frexp(xmax, &exponent);
+  double sh = 0.0, sl = 0.0, qh = 0.0, ql = 0.0;
+  const auto two_sum = [](double a, double b, double& err) {
+    const double s = a + b, bb = s - a;
+    err = (a - (s - bb)) + (b - bb);
+    return s;
+  };
+  for (double v : x) {
+    const double z = std::ldexp(v, -exponent);
+    double err = 0.0;
+    sh = two_sum(sh, z, err);
+    sl += err;
+    const double p = z * z, pe = std::fma(z, z, -p);
+    qh = two_sum(qh, p, err);
+    ql += err;
+    ql += pe;
+  }
+  const double dn = static_cast<double>(count);
+  const double p1 = dn * qh, e1 = std::fma(dn, qh, -p1);
+  const double p2 = sh * sh, e2 = std::fma(sh, sh, -p2);
+  double f = 0.0;
+  const double d = two_sum(p1, -2.0 * p2, f);
+  const double b = (dn * ql - 4.0 * (sh * sl)) - 2.0 * (sl * sl);
+  const double t = ((f + e1) - 2.0 * e2) + b;
+  const double td = d + t;
+  const double u = std::ldexp(1.0, -53);
+  const double w = std::abs(f) + std::abs(e1) + 2.0 * std::abs(e2) + std::abs(dn * ql) +
+      4.0 * std::abs(sh * sl) + 2.0 * (sl * sl);
+  const double g2n = (2.0 * dn * u) / (1.0 - 2.0 * dn * u);
+  const double big_n = dn * (qh + std::abs(ql)) * (1.0 + 8.0 * u);
+  const double underflow = 16.0 * dn * dn * std::ldexp(1.0, -1074);
+  const double pad = (6.0 * g2n * g2n * big_n + 16.0 * u * w + underflow) * (1.0 + 1e-6);
+  if (!std::isfinite(td) || !std::isfinite(pad)) return 0;
+  if (td > pad) return 1;
+  if (td < -pad) return -1;
+  return 0;
+}
+}  // namespace gompertz_detail
 
 inline FitOutcome outcome(const GompertzResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     case GompertzStatus::Ok: return FitOutcome::estimate(true);
-    case GompertzStatus::Overdispersed: return FitOutcome::limit(true);
+    case GompertzStatus::Overdispersed: return FitOutcome::limit(!r.margin_decided);
     case GompertzStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GompertzStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GompertzStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
@@ -61,6 +147,18 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, GompertzStatus::IterationFailure};
+
+  // The face is decided once, on the original data (see gompertz_detail); the
+  // standardized recursion trusts that decision and does not repeat a
+  // rounded comparison.
+  if (!standardized) {
+    const int face = gompertz_detail::exponential_face(x);
+    if (face >= 0) {
+      GompertzResult limit{kNaN, kNaN, kNaN, 0, GompertzStatus::Overdispersed};
+      limit.margin_decided = face == 0;
+      return limit;
+    }
+  }
 
   CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (auto v : x) total += v;
@@ -103,18 +201,14 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
   }
 
   const double dn = static_cast<double>(n);
-  double sum_x = 0.0, sum_xsq = 0.0;
+  double sum_x = 0.0;
   for (auto v : x) {
     sum_x += v;
-    sum_xsq += v * v;
   }
-  const double mean_x = sum_x / dn;
   // Profile likelihood is linear minus log of a moment generating
   // function: strictly concave. Its right derivative at zero is
-  // n*(mean - mean(x^2)/(2*mean)), so equality also selects exponential.
-  if (sum_xsq / dn >= 2.0 * mean_x * mean_x) {
-    return {kNaN, kNaN, kNaN, 0, GompertzStatus::Overdispersed};
-  }
+  // n*(mean - mean(x^2)/(2*mean)), so equality also selects exponential;
+  // that comparison was decided above (gompertz_detail::exponential_face).
 
   auto f_over_df = [&](double b) {
     double sum_bx = 0.0, sum_bx_x = 0.0, sum_bx_x2 = 0.0;

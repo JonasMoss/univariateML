@@ -33,7 +33,7 @@ limits:
   - name: point mass collapse
     firmness: proved
     when: 'Scale satisfies $\sigma\to0$ as location approaches a value occurring exactly half the time.'
-    detect: 'A value occurs exactly half the time, and its collapse log likelihood is at least the best numerically found interior log likelihood minus $10^{-8}n$. With location held at that value, the collapse supremum is always unattained.'
+    detect: 'A value occurs exactly half the time, and its collapse log likelihood is at least the best numerically found interior log likelihood minus $10^{-8}n$. With location held at that value, the collapse supremum is always unattained. With location free the comparison is decided by the margin, not proved, so the fit reports an unresolved failure rather than a nonexistence.'
     status: CollapseLimit
 holds: []
 examples: |
@@ -122,7 +122,7 @@ without optimization.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives these boundary conditions, including the relevant held parameters.
 
-With location and scale free, a value occurring more than half the time makes likelihood unbounded. With every multiplicity strictly below half, the maximum is attained. At exactly half, the finite collapse likelihood must be compared with the interior profile; ties within $10^{-8}n$ select collapse. Holding sigma removes collapse. The scale score has a unique root for every location away from the observations. The location profile can be multimodal; a grid over every observation gap nominates numerical local maxima for refinement. Both held-scale and free-scale searches apply the conditional subdivision certificates below; these bound the objective gap without requiring every mode to be isolated.
+With location and scale free, a value occurring more than half the time makes likelihood unbounded. With every multiplicity strictly below half, the maximum is attained. At exactly half, the finite collapse likelihood must be compared with the interior profile; a collapse within $10^{-8}n$ of the best interior value is not proved: the interior supremum equals the collapse value at the corner $m\to v$, $s\to0$, so no cover can show $L<B_v$ everywhere, and a sample whose interior gain is below the margin has an MLE ($(0,0,-1,1.0001)$ gains $4.1\times10^{-10}$ at $(m,s)=(-4.3\times10^{-6},0.140)$). The fit then fails as unresolved; only the held-location collapse is a proved nonexistence. Holding sigma removes collapse. The scale score has a unique root for every location away from the observations. The location profile can be multimodal; a grid over every observation gap nominates numerical local maxima for refinement. Both held-scale and free-scale searches apply the conditional subdivision certificates below; these bound the objective gap without requiring every mode to be isolated.
 
 For an exact existence criterion in the half-mass case, put $c=1/\sqrt{2\pi}$ and $B_v=c^n2^{-n/2}\prod_{x_i\ne v}|x_i-v|^{-2}$ at each half-mass value $v$. For a location $m$ away from such values, let $s(m)$ be the unique positive zero of $\sum_i[1-2t_i/(e^{t_i}-1)]$, $t_i=(x_i-m)^2/(2s^2)$. An MLE exists if and only if some interior profile value $L(m,s(m))$ is at least $\max_v B_v$; if the maximum multiplicity is below half, the comparison is vacuous. This is an exact variational criterion; the implementation evaluates it numerically, with the stated tie preference. It is not a multiplicity-only rule: $(0,1)$ has an interior maximum, whereas $(0,0,-1,1)$ numerically selects collapse. Location lies in the sample range; the likelihood tends to zero at all other escaping paths. The density decreases strictly with absolute standardized distance. Together these facts prove attainment below half. At a half-mass point, $L(v,s)<B_v$ for every positive scale. If $\sum_{x_i\ne v}1/(x_i-v)\ne0$, choosing $m-v$ proportional to $s^2$ increases the likelihood above $B_v$ for sufficiently small $s$, proving existence (subject to comparison with any other half-mass point). It suffices to check the sum at a half-mass value with the largest $B_v$; a sample of two values with equal counts always passes, since both sums are nonzero and the two $B_v$ agree. A zero sum is not decided by this test ([TASK-117 report](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md)).
 
@@ -235,7 +235,7 @@ likelihood plus its margin. The
 practical margin is $10^{-9}(1+|\ell_*|)$ in original
 coordinates, capped at $10^{-9}n$ when a half-mass boundary is present,
 so that a change of units does not enlarge the collapse decision tolerance.
-The final comparison applies the stated $10^{-8}n$ collapse preference.
+The final comparison applies the $10^{-8}n$ collapse margin and returns an unresolved failure.
 These are exact-arithmetic bounds conditional on the computed comparisons;
 the margin is not a proof of floating-point rounding error. Exhausting `128 * min(iterlim, 100000)` intervals reports a budget stop. A
 nonfinite required value or unrepresentable midpoint reports

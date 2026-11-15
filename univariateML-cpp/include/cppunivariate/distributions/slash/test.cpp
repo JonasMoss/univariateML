@@ -289,3 +289,17 @@ TEST_CASE("slash held location monotone scale reference") {
  CHECK(r.mu==.3);
  CHECK(r.sigma==doctest::Approx(0.7295445726574704).epsilon(1e-10).scale(0));
 }
+
+// TASK-214.27: (0,0,-1,t) has half its mass at 0. For t=1.0001 the interior
+// maximum exceeds the collapse likelihood by 4.1e-10 (exact, mpmath), inside
+// the 1e-8 n margin; an MLE exists at (m,s)=(-4.27e-6,0.140). A margin-decided
+// collapse must not be a certified nonexistence.
+TEST_CASE("slash: a margin-decided half-mass collapse is not a certified nonexistence") {
+  const std::vector<double> x={0,0,-1,1.0001};
+  const auto r=cppunivariate::slash_mle(mltest::as_span(x));
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind!=cppunivariate::OutcomeKind::Nonexistence);
+  CHECK_FALSE((o.kind==cppunivariate::OutcomeKind::Failure&&o.reason==cppunivariate::OutcomeReason::Unattained));
+  CHECK(o.kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(o.reason==cppunivariate::OutcomeReason::Unresolved);
+}
