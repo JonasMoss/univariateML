@@ -54,7 +54,10 @@ class LoaderSchemaTest(unittest.TestCase):
         script = r"""
 source('bindings/r/scripts/load_distributions.R')
 root <- 'univariateML-cpp/include/cppunivariate/distributions'
-stopifnot(length(load_distributions(root))==98)
+# Fitted families = dossier folders minus staged (stage: dpqr) ones, which the loader skips.
+readmes <- Sys.glob(file.path(root,'*','README.md'))
+staged <- vapply(readmes, function(p) any(grepl('^stage: dpqr$', readLines(p, 20))), NA)
+stopifnot(length(load_distributions(root))==sum(!staged))
 original <- .umvl_read_front_matter
 path <- file.path(root,'exp','README.md'); base <- original(path)
 probe <- function(mutator, reject=TRUE) {
@@ -455,7 +458,10 @@ probe <- function(id, mutate, reject=TRUE) {
  assign('.umvl_read_front_matter',original,envir=.GlobalEnv)
  stopifnot(identical(failed,reject))
 }
-stopifnot(length(load_distributions(root))==98)
+# Fitted families = dossier folders minus staged (stage: dpqr) ones, which the loader skips.
+readmes <- Sys.glob(file.path(root,'*','README.md'))
+staged <- vapply(readmes, function(p) any(grepl('^stage: dpqr$', readLines(p, 20))), NA)
+stopifnot(length(load_distributions(root))==sum(!staged))
 probe('emg',function(f) {f$relations$convolution_of[[1]]$operation <- 'product';f})
 probe('emg',function(f) {f$relations$convolution_of[[1]]$components[[2]]$at <- list();f})
 probe('emg',function(f) {f$relations$convolution_of[[1]]$components[[2]]$family <- 'absent';f})

@@ -86,7 +86,7 @@ test_that("generated d/p/q/r agree with independent truth tables", {
         if (has_fit) expect_equal(pml(v[, 2], fit, lower.tail = lower, log.p = TRUE), got,
                      info = paste(info, "CDF dispatch", lower))
         natural <- exp(expected)
-        keep <- natural > 1e-300
+        keep <- natural >= .Machine$double.xmin  # below the smallest normal the contract exempts the natural scale
         got <- do.call(fun[[2]], c(list(v[keep, 2]), theta, list(lower.tail = lower)))
         expect_true(all(is.finite(got) & abs(got - natural[keep]) <= 1e-10 * natural[keep]),
                     info = paste(info, "natural tail", lower))

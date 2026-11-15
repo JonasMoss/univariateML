@@ -294,7 +294,7 @@ inline void check_dpqr_truth(const std::string &id, D density, P probability,
       const double p=evaluate([&] {return probability(row[1],theta,lower,true);});
       check(lower?"log_lower":"log_upper",point,row[1],p,expected,truth_close(p,expected,log_tolerance));
       const double natural=std::exp(expected);
-      if (natural>1e-300) {
+      if (natural>=std::numeric_limits<double>::min()) {  // below the smallest normal the contract exempts the natural scale
         const double got=evaluate([&] {return probability(row[1],theta,lower,false);});
         check(lower?"lower":"upper",point,row[1],got,natural,
               std::isfinite(got) && std::abs(got-natural)<=log_tolerance*natural);
