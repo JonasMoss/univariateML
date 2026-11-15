@@ -26,7 +26,7 @@ r:
   control:
     shape: "Optional held value; NULL estimates it."
     rate: "Optional positive held value; NULL estimates it."
-    reltol: "Relative coefficient accuracy (default 1e-10)."
+    tol: "Relative coefficient accuracy (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "log((lowergamma(shape, rate*(x+1)) - lowergamma(shape, rate*x))/gamma(shape))"
 limits:

@@ -17,7 +17,7 @@ test_that("yulesimon fits agree with a slow independent oracle", {
   expect_error(mlyulesimon(rep(1,4)),"point mass at one")
   expect_error(mlyulesimon(c(0,2)))
   expect_error(mlyulesimon(c(1,2),iterlim=1),"converge")
-  expect_error(mlyulesimon(c(1,2),reltol=0),"positive")
+  expect_error(mlyulesimon(c(1,2),tol=0),"positive")
 })
 test_that("yulesimon density sums, direct tails and inverse inequalities agree", {
   for (shape in c(.1,1.0,10.0)) {

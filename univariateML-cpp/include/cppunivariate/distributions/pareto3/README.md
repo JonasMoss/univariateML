@@ -32,7 +32,7 @@ r:
   sampler: rpareto3
   control:
     min: Known finite lower endpoint.
-    reltol: "Relative accuracy of every free coefficient (default 1e-10)."
+    tol: "Relative accuracy of every free coefficient (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
     shape: Known positive finite coefficient; NULL estimates it.
     scale: Known positive finite coefficient; NULL estimates it.

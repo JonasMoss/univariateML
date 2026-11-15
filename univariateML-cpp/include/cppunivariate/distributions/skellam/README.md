@@ -26,7 +26,7 @@ r:
   control:
     mu1: "Optional fixed nonnegative finite positive-count rate; NULL estimates it."
     mu2: "Optional fixed nonnegative finite negative-count rate; NULL estimates it."
-    reltol: "Relative coefficient accuracy (default 1e-10)."
+    tol: "Relative coefficient accuracy (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "-mu1-mu2 + x*log(mu1/mu2)/2 + log(besseli(Abs(x),2*sqrt(mu1*mu2)))"
 references:

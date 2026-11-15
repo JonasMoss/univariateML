@@ -83,7 +83,7 @@ test_that("mltrgamma fixed shapes reduce to gamma, Weibull and exact profiles", 
     expect_equal(attr(logLik(fit), "df"), 2L)
   }
   w <- mltrgamma(x, shape1 = 1)
-  ref <- mlweibull(x, reltol = 1e-12)
+  ref <- mlweibull(x, tol = 1e-12)
   expect_equal(unname(w[2:3]), unname(ref[1:2]), tolerance = 1e-8)
   expect_equal(attr(w, "logLik"), attr(ref, "logLik"), tolerance = 1e-10)
   for (a in c(.2, 3, 30)) {
@@ -200,7 +200,7 @@ test_that("P2 trgamma validates new held values", {
 test_that("trgamma: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "trgamma", "golden.json"))
   x <- g$data
-  expect_error(mltrgamma(x, iterlim=1, reltol=1e-10),
+  expect_error(mltrgamma(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -229,7 +229,7 @@ test_that("held-scale concentration and numerical controls retain different stop
   e <- caught(mltrgamma(c(.1,.3,1),scale=1,iterlim=1))
   expect_s3_class(e,"univariateML_stop")
   expect_true(e$kind %in% c("numerical","budget"))
-  expect_s3_class(caught(mltrgamma(c(.1,.3,1),scale=1,reltol=0)),"univariateML_invalid")
+  expect_s3_class(caught(mltrgamma(c(.1,.3,1),scale=1,tol=0)),"univariateML_invalid")
 })
 
 test_that("held endpoint comparisons do not assert nonattainment", {
@@ -306,6 +306,6 @@ test_that("unrepresentable scales carry numerical stop details", {
 })
 
 test_that("trgamma delegate follow-up preserves the accepted fit", {
-  f <- mltrgamma(c(.03,.1,.4,.7,1,2,4,12),shape2=1,reltol=1e-8,iterlim=1000)
+  f <- mltrgamma(c(.03,.1,.4,.7,1,2,4,12),shape2=1,tol=1e-8,iterlim=1000)
   expect_true(is.finite(as.numeric(logLik(f))))
 })

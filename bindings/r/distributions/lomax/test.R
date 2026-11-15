@@ -59,12 +59,12 @@ expect_equal(class(est), "univariateML")
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
-## Control arguments use the CRAN names (lambda0, reltol, iterlim).
+## Controls are tol and iterlim; the lambda0 start value was removed for 2.0.
 fit_default <- mllomax(medium_data)
-fit_start <- mllomax(medium_data, lambda0 = 3 * coef(fit_default)[["lambda"]], reltol = 1e-12)
-expect_equal(coef(fit_start), coef(fit_default), tolerance = 1e-6)
-expect_error(mllomax(medium_data, lambda0 = -1), "`lambda0` must be a positive finite number")
-expect_error(mllomax(medium_data, tol = 1e-6))
+fit_tight <- mllomax(medium_data, tol = 1e-12)
+expect_equal(coef(fit_tight), coef(fit_default), tolerance = 1e-6)
+expect_error(mllomax(medium_data, lambda0 = 1), "`mllomax` has no argument `lambda0`")
+expect_error(mllomax(medium_data, reltol = 1e-6), "`mllomax` has no argument `reltol`")
 
 test_that("lomax fitting respects extreme scale changes", {
   set.seed(1)
@@ -97,12 +97,10 @@ test_that("a negative Lomax boundary score need not imply global escape", {
   expect_gt(attr(f,"logLik"),-length(x)*(log(mean(x))+1))
 })
 
-test_that("unresolvable Lomax starting hints fall back to the moment start", {
+test_that("Lomax no longer takes a starting hint", {
   x<-c(1,1,2,3,100)
-  base<-mllomax(x)
   for(start in c(1e-300,1e300)) {
-    f<-mllomax(x,lambda0=start)
-    expect_equal(as.numeric(f),as.numeric(base),tolerance=1e-10)
+    expect_error(mllomax(x,lambda0=start),"`mllomax` has no argument `lambda0`")
   }
 })
 
@@ -112,14 +110,14 @@ test_that("Lomax exact criterion resolves nonlocal maxima", {
   rates <- c(.772199,1394.08,1039.29,.236987,.0359623)
   shapes <- c(.405536,.161888,.196081,.878708,6.07162)
   for (j in seq_along(samples)) {
-    x <- samples[[j]]; f <- mllomax(x,reltol=1e-12)
+    x <- samples[[j]]; f <- mllomax(x,tol=1e-12)
     expect_equal(as.numeric(f),c(rates[j],shapes[j]),tolerance=5e-6)
     expect_equal(attr(f,"logLik")+length(x)*(log(mean(x))+1),gaps[j],tolerance=5e-7)
     for (s in c(1e-200,1e200)) {
-      g <- mllomax(x*s,reltol=1e-12)
+      g <- mllomax(x*s,tol=1e-12)
       expect_equal(as.numeric(g)*c(s,1),as.numeric(f),tolerance=1e-6)
     }
-    g <- mllomax(rep(x,50),reltol=1e-12)
+    g <- mllomax(rep(x,50),tol=1e-12)
     expect_equal(as.numeric(g),as.numeric(f),tolerance=1e-6)
     expect_equal(attr(g,"logLik")/50,attr(f,"logLik"),tolerance=1e-10)
   }
@@ -158,7 +156,7 @@ test_that("Lomax agrees with a slow independent psi and density oracle", {
     oracle <- max(lv)
     for(i in ids) oracle <- max(oracle,optimize(profile,tg[c(i-1,i+1)],maximum=TRUE,tol=1e-11)$objective)
     boundary <- -n*(log(mean(x))+1); gap <- oracle-boundary
-    f <- tryCatch(mllomax(x,reltol=1e-12),error=identity)
+    f <- tryCatch(mllomax(x,tol=1e-12),error=identity)
     if(gap > 1.1e-8*n) {
       expect_lt(minpsi,0)
       expect_false(inherits(f,"error"))
@@ -234,16 +232,16 @@ test_that("P2 held solver respects iterlim", {
 test_that("lomax: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "lomax", "golden.json"))
   x <- g$data
-  expect_error(mllomax(x, iterlim=1, reltol=1e-10),
+  expect_error(mllomax(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
 test_that("lomax: P3 compressed profile rejects exhaustion", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "lomax", "golden.json"))
   x <- rep(g$data, ceiling(4097/length(g$data)))
-  expect_error(mllomax(x,iterlim=1,reltol=1e-10), "failed to converge")
-  fit <- mllomax(x,reltol=1e-10)
-  # Replication keeps the MLE; the explicit reltol=1e-10 gives <1e-13
+  expect_error(mllomax(x,iterlim=1,tol=1e-10), "failed to converge")
+  fit <- mllomax(x,tol=1e-10)
+  # Replication keeps the MLE; the explicit tol=1e-10 gives <1e-13
   # coefficient error in the retained compressed-profile measurements.
   expect_equal(unname(fit["lambda"]),g$estimates$lambda,tolerance=1e-13)
   expect_equal(unname(fit["kappa"]),g$estimates$kappa,tolerance=1e-13)

@@ -9,7 +9,7 @@ test_that("held coefficients are matched exactly, never to start values", {
   expect_true("shape" %in% attr(f, "fixed"))
   expect_error(mlweibull(x, shap = 2), "`mlweibull` has no argument `shap`")
   expect_error(mlnorm(rnorm(10), foo = 1), "has no argument `foo`")
-  expect_s3_class(mlweibull(x, shape0 = 2), "univariateML")
+  expect_error(mlweibull(x, shape0 = 2), "`mlweibull` has no argument `shape0`")
 })
 
 test_that("a coefficient the adapter does not accept is named as an unsupported hold", {

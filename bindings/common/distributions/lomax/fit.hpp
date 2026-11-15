@@ -4,7 +4,7 @@
 #include <limits>
 #include <cmath>
 namespace umvl_binding {
-inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kappa_arg = {}, Held lambda0 = {}, double reltol = 1e-10, int iterlim = 100) {
+inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kappa_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held lambda = lambda_arg;
@@ -22,14 +22,7 @@ inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kap
     fixed.push_back("kappa");
   }
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (lambda0.supplied) {
-    start = lambda0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      return invalid_argument(fail("`lambda0` must be a positive finite number."));
-    }
-  }
-  auto res = cppunivariate::lomax_mle(x, reltol, iterlim, start, lambda_held, kappa_held);
+  auto res = cppunivariate::lomax_mle(x, tol, iterlim, std::numeric_limits<double>::quiet_NaN(), lambda_held, kappa_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"kappa",kappa_arg.supplied}});

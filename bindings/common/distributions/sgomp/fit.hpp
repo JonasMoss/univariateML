@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/sgomp/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg = {}, double reltol=1e-10, int iterlim=200) {
+inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg = {}, double tol=1e-10, int iterlim=200) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -13,7 +13,7 @@ inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg 
   const double ev=eta.supplied ? eta.value : cppunivariate::sgomp_detail::nan();
   if (b.supplied && !(bv>0 && std::isfinite(bv))) return invalid_argument(fail("fixed `b` must be positive and finite."));
   if (eta.supplied && !(ev>=0 && std::isfinite(ev))) return invalid_argument(fail("fixed `eta` must be nonnegative and finite."));
-  const auto f=cppunivariate::sgomp_mle(x,reltol,iterlim,bv,ev);
+  const auto f=cppunivariate::sgomp_mle(x,tol,iterlim,bv,ev);
   const auto o = cppunivariate::outcome(f);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -25,7 +25,7 @@ inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg 
 
   if(f.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sgomp numerical accuracy failure: requested coefficient accuracy cannot be established."),f.stop_detail,outcome_payload(o),{"b","eta"}));
   if (f.status==cppunivariate::SgompStatus::Collapse) return done(nomle("The shifted Gompertz MLE does not exist: constant data have unbounded likelihood."));
-  if (f.status==cppunivariate::SgompStatus::InvalidInput) return done(fail("Shifted Gompertz requires finite nonnegative data, positive reltol and positive iterlim."));
+  if (f.status==cppunivariate::SgompStatus::InvalidInput) return done(fail("Shifted Gompertz requires finite nonnegative data, positive tol and positive iterlim."));
   if (f.status!=cppunivariate::SgompStatus::Ok) {
     if(f.stop_detail.budget_exhausted)return done(stop_failure(fail("Shifted Gompertz certificate budget exhausted; increase iterlim."),f.stop_detail,outcome_payload(o),{"b","eta"}));
     if(f.stop_detail.comparison_tie)return done(comparison_payload(stop_failure(fail("Shifted Gompertz competing global maxima cannot be distinguished; increase iterlim."),f.stop_detail,PayloadKind::Comparison,{"b","eta"}),o,cppunivariate::comparison_choice(f),{{"b",b_arg},{"eta",eta_arg}}));

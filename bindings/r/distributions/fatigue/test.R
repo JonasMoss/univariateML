@@ -82,7 +82,7 @@ test_that("fatigue coefficient holds match independent multistart density oracle
 test_that("fatigue: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "fatigue", "golden.json"))
   x <- g$data
-  expect_error(mlfatigue(x, iterlim=1, abstol=1e-10, mu=0),
+  expect_error(mlfatigue(x, iterlim=1, tol=1e-10, mu=0),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 

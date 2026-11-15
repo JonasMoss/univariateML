@@ -1095,17 +1095,11 @@ inline void route_invweibull(cppunivariate::span x, audit::Held shape_arg = {}, 
   auto res = cppunivariate::invweibull_mle(x, reltol, iterlim, start, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_kumar(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}, audit::Held a0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline void route_kumar(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held a = a_arg;
   const audit::Held b = b_arg;
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (a0.supplied) {
-    start = a0.value;
-    if (!(start > 0.0) || !std::isfinite(start))
-      (void)0;
-  }
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double checked_a = a.supplied ? a.value : nan;
   if (a.supplied && (!std::isfinite(checked_a) || (true && !(checked_a > 0)))) (void)0;
@@ -1117,7 +1111,7 @@ inline void route_kumar(cppunivariate::span x, audit::Held a_arg = {}, audit::He
   std::vector<std::string> fixed;
   if (a.supplied) fixed.push_back("a");
   if (b.supplied) fixed.push_back("b");
-  auto res = cppunivariate::kumar_mle(x, reltol, iterlim, start, checked_a, checked_b); audit::observe(res, {{"a",res.a,0,INFINITY,false,false},{"b",res.b,0,INFINITY,false,false}});
+  auto res = cppunivariate::kumar_mle(x, reltol, iterlim, checked_a, checked_b); audit::observe(res, {{"a",res.a,0,INFINITY,false,false},{"b",res.b,0,INFINITY,false,false}});
 }
 
 inline void route_laplace(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}) {
@@ -1766,7 +1760,7 @@ inline void route_unif(cppunivariate::span x, audit::Held min_arg = {}, audit::H
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, checked_min, checked_max); audit::observe(res, {{"min",res.min,-INFINITY,(res.max),false,false},{"max",res.max,(res.min),INFINITY,false,false}});
 }
 
-inline void route_weibull(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, audit::Held shape0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline void route_weibull(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held scale = scale_arg;
@@ -1783,14 +1777,7 @@ inline void route_weibull(cppunivariate::span x, audit::Held shape_arg = {}, aud
     fixed.push_back("scale");
   }
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (shape0.supplied) {
-    start = shape0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      (void)0;
-    }
-  }
-  auto res = cppunivariate::weibull_mle(x, reltol, iterlim, start, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = cppunivariate::weibull_mle(x, reltol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_yulesimon(cppunivariate::ispan x, audit::Held rho_arg = {}, double reltol=1e-10, int iterlim=200) {

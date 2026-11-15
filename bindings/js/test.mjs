@@ -217,8 +217,8 @@ test('J6 tnorm CMB and CMP quantitative acceptance uses common binding routes', 
     assert.ok(Math.abs(fit.logLik-ll) < 1e-9*(1+Math.abs(ll)));
   }
   assert.throws(() => modifierRoute(api,'tnorm').fit(x, {a:-2,b:8}, {iterlim:1}), error => error.kind==='numerical');
-  assert.throws(() => api.cmb.fit(x, {size:8}, {reltol:.1,iterlim:1}), error => error.kind==='numerical');
-  assert.throws(() => api.cmp.fit(x, {}, {reltol:.1}), error => error.kind==='numerical');
+  assert.throws(() => api.cmb.fit(x, {size:8}, {tol:.1,iterlim:1}), error => error.kind==='numerical');
+  assert.throws(() => api.cmp.fit(x, {}, {tol:.1}), error => error.kind==='numerical');
   const geometric = new Float64Array([0,0,0,20000]);
   assert.throws(() => api.cmp.fit(geometric, {lambda:5000/5001}, {iterlim:1}), error => {
     assert.equal(error.kind, 'budget');
@@ -874,12 +874,12 @@ test('EMG certified conditional routes and numerical location stops', async () =
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
   const x=new Float64Array([-2,-1,0,1,2]);
-  const f=api.emg.fit(x,{sigma:1,lambda:1},{reltol:1e-10});
+  const f=api.emg.fit(x,{sigma:1,lambda:1},{tol:1e-10});
   assert.equal(f.status,'Ok');
   assert.equal(f.estimates.sigma,1);assert.equal(f.estimates.lambda,1);
-  for(const controls of [{iterlim:1},{reltol:1e-30}]) {
+  for(const controls of [{iterlim:1},{tol:1e-30}]) {
     assert.throws(()=>api.emg.fit(x,{sigma:1,lambda:1},controls),e=>{
-      assert.equal(e.kind,controls.reltol ? 'tolerance' : 'numerical');assert.ok(e.candidates.length>0);
+      assert.equal(e.kind,controls.tol ? 'tolerance' : 'numerical');assert.ok(e.candidates.length>0);
       assert.ok(e.loglik_lower<=e.loglik_upper);return true;
     });
   }
@@ -1585,8 +1585,8 @@ test('Frechet bounded two-point solve cap preserves numerical stop details',asyn
 
 test('EVT compatible holds keep certificate failures and constrained witnesses',async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
-  assert.throws(()=>api.gev.fit(new Float64Array([0,2,2,2]),{mu:1.5,sigma:.5},{reltol:1e-15}),e=>e.kind==='numerical');
-  assert.throws(()=>api.frechet.fit(new Float64Array([...Array(7).fill(0),...Array(9).fill(1)]),{sigma:.125},{reltol:1e-15}),e=>e.kind==='numerical');
+  assert.throws(()=>api.gev.fit(new Float64Array([0,2,2,2]),{mu:1.5,sigma:.5},{tol:1e-15}),e=>e.kind==='numerical');
+  assert.throws(()=>api.frechet.fit(new Float64Array([...Array(7).fill(0),...Array(9).fill(1)]),{sigma:.125},{tol:1e-15}),e=>e.kind==='numerical');
   assert.throws(()=>api.frechet.fit(new Float64Array([0,...Array(15).fill(1)]),{sigma:.875},{iterlim:10}),e=>{
     assert.equal(e.kind,'numerical');assert.equal(e.loglik_lower,Math.max(...e.candidates.map(c=>c.loglik_lower)));
     assert.ok(e.candidates.every(c=>c.sigma===.875));return true;
@@ -1598,7 +1598,7 @@ test('GEV joint cover isolates the seam maximum and keeps precision stops',async
   const x=new Float64Array([0,1,1,1,2,3,4]);
   const fit=api.gev.fit(x);
   assert.ok(Math.abs(fit.estimates.xi-.022797535412548)<1e-10);
-  assert.throws(()=>api.gev.fit(x,{},{reltol:1e-16}),e=>{
+  assert.throws(()=>api.gev.fit(x,{},{tol:1e-16}),e=>{
     assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>0);return true;
   });
   const face=api.gev.fit(new Float64Array([0,1,2,3,3]));

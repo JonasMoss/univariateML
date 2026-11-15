@@ -38,7 +38,7 @@ r:
   sampler: rpareto4
   control:
     min: Finite lower endpoint to hold, or NULL to leave it free.
-    reltol: Delegate fitting tolerance.
+    tol: Delegate fitting tolerance.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     shape1: Known positive finite coefficient; NULL estimates it.
     shape2: Known positive finite coefficient; NULL estimates it.

@@ -44,13 +44,11 @@ inline FitOutcome outcome(const WeibullResult& r) {
   return {};
 }
 
-// shape0 is an optional positive starting shape; NaN keeps the automatic start.
-inline WeibullResult weibull_mle(span x, double tol, int maxit,
-                                  double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+inline WeibullResult weibull_mle(span x, double tol, int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0 || !(tol>0 && std::isfinite(tol)) || maxit<1 || (!std::isnan(shape0) && !(shape0>0 && std::isfinite(shape0)))) return {0.0, 0.0, kNaN, 0, WeibullStatus::InvalidInput};
+  if (n == 0 || !(tol>0 && std::isfinite(tol)) || maxit<1) return {0.0, 0.0, kNaN, 0, WeibullStatus::InvalidInput};
 
   for (double v : x) if (!(v > 0 && std::isfinite(v)))
     return {NAN,NAN,NAN,0,WeibullStatus::InvalidInput};
@@ -71,7 +69,7 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
   sum_log_x-=dn*log_anchor;
 
   GumbelResult g = fit_gumbel_newton(span{log_x.data(), n}, tol, maxit,
-      std::isnan(shape0) ? shape0 : -std::log(shape0), true);
+      kNaN, true);
   const double shape = 1.0 / g.sigma;
   const double factor=std::exp(center-g.mu);
   const double scale=(factor>1e-150 && factor<1e150)?anchor*factor:std::exp(-g.mu+s);
@@ -98,13 +96,12 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
 }
 
 // Strictly decreasing fixed-scale shape score, using relative log ratios.
-inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape0,double shape,double scale) {
+inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape,double scale) {
   maxit = static_cast<int>(solver_budget(maxit));
   const bool free_shape=std::isnan(shape),free_scale=std::isnan(scale);
-  if (free_shape && free_scale) return weibull_mle(x,tol,maxit,shape0);
+  if (free_shape && free_scale) return weibull_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.empty() || !(tol>0 && std::isfinite(tol)) || maxit<=0 ||
-     (!std::isnan(shape0) && !(shape0>0 && std::isfinite(shape0))) ||
      (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||
      (!std::isnan(scale) && !(scale>0 && std::isfinite(scale))))
     return {nan,nan,nan,0,WeibullStatus::InvalidInput};

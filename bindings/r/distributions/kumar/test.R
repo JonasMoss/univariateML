@@ -62,11 +62,10 @@ expect_equal(class(est), "univariateML")
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
-fit_default <- mlkumar(medium_data, reltol = 1e-12)
-fit_start <- mlkumar(medium_data, a0 = 1, reltol = 1e-12)
-expect_equal(coef(fit_start), coef(fit_default), tolerance = 1e-8)
-expect_error(mlkumar(medium_data, a0 = 0), "`a0` must be a positive finite number")
-expect_error(mlkumar(medium_data, a0 = Inf), "`a0` must be a positive finite number")
+fit_default <- mlkumar(medium_data, tol = 1e-12)
+## The `a0` start value was removed for 2.0.
+expect_error(mlkumar(medium_data, a0 = 1), "`mlkumar` has no argument `a0`")
+expect_equal(coef(mlkumar(medium_data, tol = 1e-12)), coef(fit_default), tolerance = 1e-8)
 
 test_that("clipped endpoint samples have finite profile maxima", {
   for (seed in c(300019, 300023, 1, 2, 3)) {
@@ -154,15 +153,14 @@ test_that("P2 held shape solves stop on exhausted brackets", {
 test_that("kumar: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "kumar", "golden.json"))
   x <- g$data
-  expect_s3_class(mlkumar(x, iterlim=1, reltol=1e-10),"univariateML")
+  expect_s3_class(mlkumar(x, iterlim=1, tol=1e-10),"univariateML")
 })
 
-test_that("certified joint profile agrees across starting values", {
+test_that("certified joint profile no longer takes a starting value", {
   x <- c(.01,.1,.3,.6,.8,.99)
   ref <- mlkumar(x)
   for (a0 in c(.01,1,100)) {
-    fit <- mlkumar(x,a0=a0)
-    expect_equal(as.numeric(fit),as.numeric(ref),tolerance=1e-6)
+    expect_error(mlkumar(x,a0=a0),"`mlkumar` has no argument `a0`")
   }
   expect_equal(as.numeric(mlkumar(x,iterlim=1)),as.numeric(ref),tolerance=1e-6)
 })

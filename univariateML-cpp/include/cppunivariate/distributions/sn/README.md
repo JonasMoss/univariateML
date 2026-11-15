@@ -38,7 +38,7 @@ r:
     xi: "Optional fixed finite location; NULL estimates it."
     omega: "Optional fixed positive finite scale; NULL estimates it."
     alpha: "Optional fixed finite shape; NULL estimates it."
-    reltol: "Relative coefficient accuracy (default 1e-10); location uses the normal scale as a floor."
+    tol: "Relative coefficient accuracy (default 1e-10); location uses the normal scale as a floor."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: "log(2)-log(omega)-log(2*pi)/2-((x-xi)/omega)**2/2+log((1+erf(alpha*(x-xi)/(omega*sqrt(2))))/2)"
 limits:

@@ -17,7 +17,7 @@ test_that("zeta fits agree with a slow independent oracle", {
   expect_error(mlzeta(rep(1,4)),"point mass at one")
   expect_error(mlzeta(c(0,2)))
   expect_error(mlzeta(c(1,2),iterlim=1),"converge")
-  expect_error(mlzeta(c(1,2),reltol=0),"positive")
+  expect_error(mlzeta(c(1,2),tol=0),"positive")
 })
 test_that("zeta density sums, direct tails and inverse inequalities agree", {
   for (shape in c(1.1,2.0,10.0)) {

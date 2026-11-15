@@ -30,7 +30,7 @@ r:
   control:
     lambda: "Optional fixed nonnegative finite rate; NULL estimates it."
     nu: "Optional fixed nonnegative finite dispersion; NULL estimates it. At zero lambda must be below one."
-    reltol: "Tolerance on moment residuals."
+    tol: "Tolerance on moment residuals."
     iterlim: "Maximum number of moment-solving iterations."
 log_density: "x*log(lambda)-nu*loggamma(x+1)-log(Sum(lambda**k/factorial(k)**nu,(k,0,oo)))"
 limits:

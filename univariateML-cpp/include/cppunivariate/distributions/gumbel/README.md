@@ -31,7 +31,7 @@ r:
   control:
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
-    reltol: "Requested relative coefficient accuracy (default 1e-10); the scale bracket also bounds the profiled location."
+    tol: "Requested relative coefficient accuracy (default 1e-10); the scale bracket also bounds the profiled location."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: -log(sigma) - (x-mu)/sigma - exp(-(x-mu)/sigma)
 references:

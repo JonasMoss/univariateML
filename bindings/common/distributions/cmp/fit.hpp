@@ -2,13 +2,13 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/cmp/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_cmp(cppunivariate::span x, Held lambda_arg = {}, Held nu_arg = {}, double reltol=1e-10, int iterlim=100) {
+inline FitResult fit_cmp(cppunivariate::span x, Held lambda_arg = {}, Held nu_arg = {}, double tol=1e-10, int iterlim=100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held lambda = lambda_arg;
   const Held nu = nu_arg;
 
- cppunivariate::CmpFitControl ctl; ctl.tol=reltol; ctl.maxit=iterlim;
+ cppunivariate::CmpFitControl ctl; ctl.tol=tol; ctl.maxit=iterlim;
  if (lambda.supplied) {ctl.fixed_lambda=lambda.value;
   if (!std::isfinite(ctl.fixed_lambda) || ctl.fixed_lambda<0) return invalid_argument(fail("fixed lambda must be nonnegative and finite."));}
  if (nu.supplied) {ctl.fixed_nu=nu.value;

@@ -82,20 +82,20 @@ test_that("EMG integrates with plotting, bootstrap and model selection", {
 test_that("emg: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "emg", "golden.json"))
   x <- g$data
-  expect_error(mlemg(x, iterlim=1, reltol=1e-10),
+  expect_error(mlemg(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
 test_that("EMG certified location slice retains holds and structured numerical stops", {
   x <- qemg((seq_len(17)-.5)/17, mu=2, sigma=1, lambda=1)
-  fit <- mlemg(x, sigma=1, lambda=1, reltol=1e-10)
+  fit <- mlemg(x, sigma=1, lambda=1, tol=1e-10)
   expect_equal(unname(as.numeric(fit)[2:3]), c(1,1))
   expect_equal(sum(dml(x,fit,log=TRUE)), as.numeric(logLik(fit)), tolerance=1e-12)
   e <- tryCatch(mlemg(x,sigma=1,lambda=1,iterlim=1),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_true(nrow(e$candidates)>=1)
   expect_lte(e$loglik_lower,e$loglik_upper)
-  e <- tryCatch(mlemg(x,sigma=1,lambda=1,reltol=1e-30),error=identity)
+  e <- tryCatch(mlemg(x,sigma=1,lambda=1,tol=1e-30),error=identity)
   expect_s3_class(e,"univariateML_numerical")
 })
 test_that("EMG proved normal domination keeps the conditional normal coefficients", {
@@ -135,7 +135,7 @@ test_that("EMG outer certificate preserves budget and unresolved witnesses", {
 
 test_that("emg audit-support case 1374 checks the public fit", {
   x <- c(2.3413394878482614e+150,2.2897087235884532e+150,1.3183800389288958e+150,6.757171112452496e+149,5.611056796430911e+150,1.1860909484474617e+150,2.1942876383991374e+150,-3.8622205310315114e+149,5.922717764038318e+149,4.933410406124059e+150,3.8273210056823587e+149,-8.891876547554337e+149)
-  fit <- suppressWarnings(tryCatch(mlemg(x,reltol=1e-10,iterlim=100,sigma=1.0518147225573364,lambda=1.209185930245896),error=identity))
+  fit <- suppressWarnings(tryCatch(mlemg(x,tol=1e-10,iterlim=100,sigma=1.0518147225573364,lambda=1.209185930245896),error=identity))
   expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -148,7 +148,7 @@ test_that("emg audit-support case 1374 checks the public fit", {
 
 test_that("emg audit-support case 1375 checks the public fit", {
   x <- c(100000002.34133948,100000002.28970872,100000001.31838004,100000000.67571712,100000005.61105679,100000001.18609095,100000002.19428764,99999999.61377795,100000000.59227178,100000004.9334104,100000000.3827321,99999999.11081235)
-  fit <- suppressWarnings(tryCatch(mlemg(x,reltol=1e-10,iterlim=100,sigma=1.0518147225573364,lambda=1.209185930245896),error=identity))
+  fit <- suppressWarnings(tryCatch(mlemg(x,tol=1e-10,iterlim=100,sigma=1.0518147225573364,lambda=1.209185930245896),error=identity))
   expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)

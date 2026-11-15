@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/pig/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_pig(cppunivariate::ispan x, Held mean_arg = {}, Held shape_arg = {}, double reltol=1e-10, int iterlim=200) {
+inline FitResult fit_pig(cppunivariate::ispan x, Held mean_arg = {}, Held shape_arg = {}, double tol=1e-10, int iterlim=200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mean = mean_arg;
@@ -12,7 +12,7 @@ inline FitResult fit_pig(cppunivariate::ispan x, Held mean_arg = {}, Held shape_
      (shape.supplied && (!std::isfinite(shape.value) || !(shape.value>=0))))
    return invalid_argument(fail("Fixed mean must be positive, shape nonnegative, and both finite."));
  const double nan=std::numeric_limits<double>::quiet_NaN();
- auto r=cppunivariate::pig_mle(x,reltol,iterlim,
+ auto r=cppunivariate::pig_mle(x,tol,iterlim,
    mean.supplied?mean.value:nan,
    shape.supplied?shape.value:nan);
   const auto o = cppunivariate::outcome(r);
@@ -32,7 +32,7 @@ inline FitResult fit_pig(cppunivariate::ispan x, Held mean_arg = {}, Held shape_
  if (r.status==cppunivariate::PigStatus::ZeroLimit)
    return done(stop_failure(fail("All-zero data have an unattained point-mass supremum. Use `mlpois` for the zero point mass."),r.stop_detail,outcome_payload(o),{"mean","shape"}));
  if (r.status==cppunivariate::PigStatus::InvalidInput)
-   return done(fail("PIG requires nonnegative integer data, positive finite fixed parameters, reltol > 0 and iterlim >= 1."));
+   return done(fail("PIG requires nonnegative integer data, positive finite fixed parameters, tol > 0 and iterlim >= 1."));
  if (r.status==cppunivariate::PigStatus::SearchFailure) {
    if(r.stop_detail.budget_exhausted)
      return done(stop_failure(fail("PIG certificate exhausted its count budget; increase iterlim."),r.stop_detail,outcome_payload(o),{"mean","shape"}));

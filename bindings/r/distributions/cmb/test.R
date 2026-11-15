@@ -331,7 +331,7 @@ test_that("CMB fixed-size normalizers spend the cell budget", {
 
 test_that("CMB fixed-size acceptance stops unchecked loose solves", {
   x <- c(0,0,1,1,2,2,3,4)
-  expect_error(mlcmb(x, size=8, reltol=.1, iterlim=1), class="univariateML_numerical")
+  expect_error(mlcmb(x, size=8, tol=.1, iterlim=1), class="univariateML_numerical")
   for (args in list(list(),list(prob=.3),list(nu=1),list(prob=.3,nu=1))) {
     f <- do.call(mlcmb,c(list(x,size=8),args))
     expect_equal(as.numeric(logLik(f)),sum(dml(x,f,log=TRUE)),tolerance=1e-10)
@@ -383,7 +383,7 @@ test_that("CMB unsupported central design retains its attainable endpoint-face b
 
 test_that("CMB transports public tolerance and conditioning witnesses", {
   for (tol in c(1e-20,1e-14)) {
-    e <- tryCatch(mlcmb(c(0,1,1,2,4),size=5,nu=1,reltol=tol),error=identity)
+    e <- tryCatch(mlcmb(c(0,1,1,2,4),size=5,nu=1,tol=tol),error=identity)
     expect_s3_class(e,if(tol<1e-16) "univariateML_tolerance" else "univariateML_conditioning")
     expect_s3_class(e,"univariateML_numerical")
     expect_gt(nrow(e$candidates),0L)
@@ -392,7 +392,7 @@ test_that("CMB transports public tolerance and conditioning witnesses", {
 })
 
 test_that("free CMB size preserves the continuous-coordinate accuracy kind", {
-  e <- tryCatch(mlcmb(c(0,1,1,2,4),size=NULL,nu=1,reltol=1e-20),error=identity)
+  e <- tryCatch(mlcmb(c(0,1,1,2,4),size=NULL,nu=1,tol=1e-20),error=identity)
   expect_s3_class(e,"univariateML_tolerance")
   expect_gt(nrow(e$candidates),0L)
   expect_equal(tail(e$candidates,1)$nu,1)

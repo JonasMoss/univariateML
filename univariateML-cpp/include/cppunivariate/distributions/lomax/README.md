@@ -26,8 +26,7 @@ r:
   control:
     lambda: Optional held lambda; NULL estimates it.
     kappa: Optional held kappa; NULL estimates it.
-    lambda0: Optional starting value for `lambda`; `NULL` uses a method-of-moments start.
-    reltol: "Requested relative coefficient accuracy for the local profile correction (default 1e-10); global bounds retain their separate tolerance."
+    tol: "Requested relative coefficient accuracy for the local profile correction (default 1e-10); global bounds retain their separate tolerance."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(lambda) + log(kappa) - (kappa + 1)*log(1 + lambda*x)
 limits:
@@ -224,8 +223,7 @@ The subdivision budget is $128\min(\mathtt{maxit},100000)$ profile
 evaluations; each root-isolation attempt has at most `maxit` bisections
 and requires at least two successful refinement passes.
 `iterations` records global profile evaluations for the all-free fit.
-A starting hint can nominate an extra subdivision but cannot exclude any
-part of the parameter space. The certificate uses all distinct observations
+The certificate uses all distinct observations
 with their exact multiplicities; no binned approximation decides the fit.
 
 The 2026-11-04 replacement removes the former log-grid and binned candidate

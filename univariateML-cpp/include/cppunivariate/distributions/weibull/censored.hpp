@@ -116,7 +116,7 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
     // Preserve exact-data rounding when its result agrees with the stable
     // closed form well inside the 1e-10 coefficient accuracy contract.
     if(r.status==ExpCensoredStatus::Ok && c.exact==x.lower.size()) {
-      const auto e=weibull_mle(x.lower,1e-10,1000,NAN,shape,NAN);
+      const auto e=weibull_mle(x.lower,1e-10,1000,shape,NAN);
       if(e.status==WeibullStatus::Ok && std::abs(e.scale/r.coefficient-1)<1e-12)
         return {shape,e.scale,e.logLik};
     }

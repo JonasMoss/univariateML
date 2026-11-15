@@ -33,7 +33,7 @@ r:
     mu: Optional held normal-component mean; NULL estimates it.
     sigma: Optional held normal-component standard deviation; NULL estimates it.
     lambda: Optional held exponential rate; NULL estimates it.
-    reltol: Relative accuracy of every free coefficient; location uses the normal scale as a floor.
+    tol: Relative accuracy of every free coefficient; location uses the normal scale as a floor.
     iterlim: "Work limits: min(iterlim, 100000) iterations per solve; 128 times that many global certificate evaluations."
 log_density: log(lambda/2) + lambda*(mu-x) + lambda**2*sigma**2/2 + log(erfc((mu+lambda*sigma**2-x)/(sqrt(2)*sigma)))
 limits:
@@ -130,7 +130,7 @@ Write the centered exponential displacement in Gaussian units as delta, with t =
 With positive normal scale and exponential rate held, the free location has a
 unique finite global maximum, including for constant data. Its decreasing
 score is enclosed with a signed bracket; acceptance requires the returned
-location to be within `reltol * max(abs(mu_star), sigma)` of every point in
+location to be within `tol * max(abs(mu_star), sigma)` of every point in
 that bracket. Score signs use consecutive Mills continued-fraction convergents
 in the positive tail and a practical margin of 128 double epsilons times the
 sum of absolute score and Mills-evaluation operands, with an absolute
@@ -225,4 +225,4 @@ The dominating normal face uses the conditional normal fitter. Its large-shape e
 Near the normal face, normal scale and exponential rate can compensate
 while likelihood values round identically. In the negative normal-CDF tail,
 the common Gaussian quadratic terms must cancel before score evaluation.
-The location accuracy floor is the normal scale; `reltol` defaults to `1e-10`.
+The location accuracy floor is the normal scale; `tol` defaults to `1e-10`.

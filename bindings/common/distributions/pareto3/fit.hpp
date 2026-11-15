@@ -4,7 +4,7 @@
 #include <cmath>
 #include <algorithm>
 namespace umvl_binding {
-inline FitResult fit_pareto3(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, Held min_arg = {}, double reltol = 1e-10, int iterlim = 1000) {
+inline FitResult fit_pareto3(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, Held min_arg = {}, double tol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape = shape_arg;
@@ -18,7 +18,7 @@ inline FitResult fit_pareto3(cppunivariate::span x, Held shape_arg = {}, Held sc
  std::vector<std::string> fixed{"min"};
  if(shape.supplied) fixed.push_back("shape");
  if(scale.supplied) fixed.push_back("scale");
- auto res=cppunivariate::pareto3_mle(x,min,reltol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN);
+ auto res=cppunivariate::pareto3_mle(x,min,tol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/emg/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_emg(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held lambda_arg = {}, double reltol=1e-10, int iterlim=500) {
+inline FitResult fit_emg(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held lambda_arg = {}, double tol=1e-10, int iterlim=500) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -38,7 +38,7 @@ const Held a = lambda;
 
   }
 
-  auto r=cppunivariate::emg_mle(x,reltol,iterlim,checked_value_0,checked_value_1,checked_value_2);
+  auto r=cppunivariate::emg_mle(x,tol,iterlim,checked_value_0,checked_value_1,checked_value_2);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"lambda",lambda_arg.supplied}});
@@ -55,7 +55,7 @@ const Held a = lambda;
   if(r.status==cppunivariate::EmgStatus::NormalLimit)return done(stop_failure(fail("The EMG MLE does not exist: normal face; use mlnorm for an unrestricted normal fit. The compared face retains held mu/sigma."),r.stop_detail,outcome_payload(o),{"mean","sd"},"norm"));
   if(r.status==cppunivariate::EmgStatus::TranslatedExponentialLimit)return done(stop_failure(fail("The EMG MLE does not exist: translated exponential face. No translated exponential fitter is available; for a free endpoint fit distances with mlexp(x - min(x))."),r.stop_detail,outcome_payload(o),{"mu","rate"},"unavailable:translated-exponential"));
   if(r.status==cppunivariate::EmgStatus::Unbounded)return done(nomle("The EMG likelihood is unbounded for these constant observations."));
-  if(r.status==cppunivariate::EmgStatus::InvalidInput)return done(fail("EMG requires finite data, finite mu, positive sigma and lambda, positive reltol and iterlim."));
+  if(r.status==cppunivariate::EmgStatus::InvalidInput)return done(fail("EMG requires finite data, finite mu, positive sigma and lambda, positive tol and iterlim."));
   if(r.status==cppunivariate::EmgStatus::IterationFailure)return done(stop_failure(fail("EMG certificate inner solve did not converge; increase iterlim."),r.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));
   std::vector<std::string> fixed;
   if(mu.supplied)fixed.push_back("mu");

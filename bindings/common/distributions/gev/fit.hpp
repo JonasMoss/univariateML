@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held xi_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held xi_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -23,7 +23,7 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(mu.supplied) fixed.push_back("mu");
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
-  const auto r=cppunivariate::gev_mle(x,reltol,iterlim,shape,location,scale);
+  const auto r=cppunivariate::gev_mle(x,tol,iterlim,shape,location,scale);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
     if (r.status == cppunivariate::GevStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -43,7 +43,7 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(r.status==cppunivariate::GevStatus::NoMLE)
     return done(stop_failure(fail("Generalized extreme value has no finite maximum: minimum multiplicity permits scale collapse."),r.stop_detail,outcome_payload(o),{"mu","sigma","xi"}));
   if(r.status==cppunivariate::GevStatus::InvalidData)
-    return done(fail("Generalized extreme value requires finite observations, compatible support and holds, positive finite `reltol` and positive `iterlim`."));
+    return done(fail("Generalized extreme value requires finite observations, compatible support and holds, positive finite `tol` and positive `iterlim`."));
   if(r.status!=cppunivariate::GevStatus::Ok || !std::isfinite(r.logLik))
     return done(fail("Generalized extreme value MLE failed to converge."));
   std::vector<std::pair<std::string,std::string>> restricted;

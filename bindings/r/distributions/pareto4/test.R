@@ -196,13 +196,13 @@ test_that("pareto4 short certificate work preserves the joint search", {
   root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
   if(!nzchar(root)) root <- testthat::test_path("fixtures")
   g <- jsonlite::fromJSON(file.path(root,"pareto4","golden.json"))
-  f <- mlpareto4(g$data,min=0,reltol=1e-8,iterlim=16)
+  f <- mlpareto4(g$data,min=0,tol=1e-8,iterlim=16)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
 
 test_that("pareto4 retains an unclosed held-power face as uncertified", {
-  f <- mlpareto4(c(1,1,1,1,6.0001),min=0,shape2=1,reltol=1e-14)
+  f <- mlpareto4(c(1,1,1,1,6.0001),min=0,shape2=1,tol=1e-14)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })

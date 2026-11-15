@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, Held mu_arg = {}, double abstol = 1e-10, int iterlim = 100) {
+inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, Held mu_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -21,7 +21,7 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
   if ((alpha.supplied&&(!(a>0)||!std::isfinite(a))) ||
       (beta.supplied&&(!(b>0)||!std::isfinite(b))))
     return invalid_argument(fail("Held `alpha` and `beta` must be positive finite numbers."));
-  auto res = cppunivariate::fatigue_mle_shifted(x, threshold, abstol, iterlim,a,b);
+  auto res = cppunivariate::fatigue_mle_shifted(x, threshold, tol, iterlim,a,b);
   const auto o = cppunivariate::outcome(res);
   const auto chosen = cppunivariate::comparison_choice(res);
   const auto done = [&](FitResult out) {

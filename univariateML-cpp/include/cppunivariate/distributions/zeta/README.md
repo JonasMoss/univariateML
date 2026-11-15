@@ -24,7 +24,7 @@ r:
   sampler: rzeta
   control:
     s: "Optional held coefficient; NULL estimates it."
-    reltol: "Relative tolerance for the bracketed scalar solve."
+    tol: "Relative tolerance for the bracketed scalar solve."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "-s*log(x) - log(zeta(s))"
 limits:

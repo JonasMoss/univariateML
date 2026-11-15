@@ -24,7 +24,7 @@ r:
   density: dpig
   sampler: rpig
   control:
-    reltol: "Requested relative coefficient accuracy (default 1e-10); local shape refinement stays inside the global sign enclosure."
+    tol: "Requested relative coefficient accuracy (default 1e-10); local shape refinement stays inside the global sign enclosure."
     iterlim: "Work limit: 1 * min(iterlim, 100000) solver iterations per solve; count recurrences limited to 100000 * min(iterlim, 100000) enumeration cells."
 log_density: "log(2*shape/pi)/2 - loggamma(x+1) + shape/mean + (x-1/2)*log(shape/(2+shape/mean**2))/2 + log(besselk(x-1/2, sqrt(shape*(2+shape/mean**2))))"
 limits:
@@ -177,7 +177,7 @@ $$
 
 The score tends to minus infinity at $w=1$, where the likelihood also tends to minus infinity. These signs prove the stated existence and uniqueness criteria, and exclude every competing peak and both unsearched tails. With both coefficients free, the fixed-$z$ mean reduction completes the joint certificate. The [expanded proof and symbolic checks](../../../../../dev/research/evaluations/2026-11-06-pig-cert-data/concavity-proof.md) retain the crossing argument and factorization.
 
-The implementation uses $\log\lambda$, starting at $2\log\mu$ clipped to representable positive shapes. It expands a bracket with doubling log-steps, then bisects signed score points until the log-width is at most $\max(\mathtt{reltol},2\times10^{-7})$. A point inside that verified box is polished to one hundredth of the requested log-shape tolerance without leaving the enclosure. The global uncertainty remains the certified box width; the polished point supplies the local coefficient refinement. Raw score signs only choose a point within the verified box; they do not replace its global certificate. Solver exhaustion during polishing stops. A small residual alone never supplies the global certificate.
+The implementation uses $\log\lambda$, starting at $2\log\mu$ clipped to representable positive shapes. It expands a bracket with doubling log-steps, then bisects signed score points until the log-width is at most $\max(\mathtt{tol},2\times10^{-7})$. A point inside that verified box is polished to one hundredth of the requested log-shape tolerance without leaving the enclosure. The global uncertainty remains the certified box width; the polished point supplies the local coefficient refinement. Raw score signs only choose a point within the verified box; they do not replace its global certificate. Solver exhaustion during polishing stops. A small residual alone never supplies the global certificate.
 
 Put $q=(1-w)/(1+w)$ and $\bar E=n^{-1}\sum_i E_{x_i}$. The evaluated score has the sign of
 
@@ -200,7 +200,7 @@ $$
 
 The right side of the first equation strictly decreases with $z$; the left side strictly increases. Indeed $V_k\le E_k$: the successive factorial-weight ratio $(j+1)a_{j+1}/a_j=(m+j+1)(m-j)/2$, $m=k-1$, decreases with $j$, so its covariance with $J$ is nonpositive and $E[J(J-1)]\le E[J]^2$. Thus $d(zD)/dz=D-\sum V_k\ge S>0$. Endpoint signs give exactly one crossing and a unique maximum. Since $S\le D<2S$, its mean lies strictly between $\bar x/2$ and $2\bar x$.
 
-The solve bisects $[\bar x/4,2\bar x]$ in $\log\mu$, widening the lower endpoint to protect tiny-shape fits. It requires a signed root enclosure of width at most `reltol`.
+The solve bisects $[\bar x/4,2\bar x]$ in $\log\mu$, widening the lower endpoint to protect tiny-shape fits. It requires a signed root enclosure of width at most `tol`.
 
 For binary counts with held mean the shape solve has a closed form: $\ell'(w)=n\mu-2S/(1-w^2)$, so $\mu\le2\bar x$ selects Poisson and otherwise $w=\sqrt{1-2\bar x/\mu}$, $\hat\lambda=2\bar x^2/[w(1+w)^2]$. An FMA product residual resolves rounded equality and preserves a small positive numerator at this boundary. This exact-product comparison requires $n\le2^{52}$; larger binary-count samples stop numerically.
 

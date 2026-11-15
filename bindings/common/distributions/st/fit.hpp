@@ -2,13 +2,13 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/st/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},Held alpha_arg={},Held nu_arg={},double reltol=1e-10,int iterlim=200) {
+inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},Held alpha_arg={},Held nu_arg={},double tol=1e-10,int iterlim=200) {
 
  const auto fail=[](const std::string& s){return failure(s);};
  const double nan=cppunivariate::special::kNaN;
  const double xi=xi_arg.supplied?xi_arg.value:nan,omega=omega_arg.supplied?omega_arg.value:nan,alpha=alpha_arg.supplied?alpha_arg.value:nan,nu=nu_arg.supplied?nu_arg.value:nan;
  if((xi_arg.supplied&&!std::isfinite(xi))||(omega_arg.supplied&&(!std::isfinite(omega)||omega<=0))||(alpha_arg.supplied&&!std::isfinite(alpha))||(nu_arg.supplied&&(!std::isfinite(nu)||nu<=0)))return invalid_argument(fail("Held xi and alpha must be finite; omega and nu must be finite and positive."));
- const auto r=cppunivariate::st_mle(x,reltol,iterlim,xi,omega,alpha,nu);
+ const auto r=cppunivariate::st_mle(x,tol,iterlim,xi,omega,alpha,nu);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

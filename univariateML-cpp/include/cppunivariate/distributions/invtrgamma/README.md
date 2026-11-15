@@ -33,7 +33,7 @@ r:
     scale: Known positive finite coefficient; NULL estimates it.
     shape2: Known positive finite coefficient; NULL estimates it.
     shape1: Known positive finite coefficient; NULL estimates it.
-    reltol: Tolerance in `log(shape2)` for the one-dimensional profile search (free `shape2`).
+    tol: Tolerance in `log(shape2)` for the one-dimensional profile search (free `shape2`).
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape2) + shape1*shape2*log(scale/x) - (scale/x)**shape2 - log(x) - loggamma(shape1)
 limits:
