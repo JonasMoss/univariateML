@@ -151,6 +151,22 @@
       "commit": "6db72aaf6f913c0819639eedd836272787b88c02",
       "dirty": true,
       "reason": "margin fixes (TASK-214.27): pareto2 limits uncertified"
+    },
+    {
+      "families": [
+        "betapr",
+        "cauchy",
+        "gamma",
+        "genbeta",
+        "invgamma",
+        "lgamma",
+        "llogis",
+        "logis",
+        "naka"
+      ],
+      "commit": "318b2fd3d125893e703ee7db9708fe4507ddd984",
+      "dirty": true,
+      "reason": "step 5c job 2a (TASK-150.1.2): tol = 1e-10, relative stopping rules"
     }
   ]
 }

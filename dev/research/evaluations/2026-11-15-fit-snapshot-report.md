@@ -124,3 +124,13 @@ of the margin-fixes branch (TASK-214.27, merge `d15aef16`; provenance
 `patches`). Only pareto2's 21 stored exponential limits per mode change:
 `certified` becomes false and the message notes the likelihood margin
 ([report](2026-11-15-margin-fixes-report.md)).
+
+## Patch after step 5c job 2a (2026-11-15)
+
+The records of cauchy, gamma, invgamma, lgamma, llogis, logis and naka, and of
+the `gamma_mle` callers betapr and genbeta, were replaced with snapshots of
+the job 2a branch (TASK-150.1.2, merge `73cff084`; provenance `patches`). The
+differences are those of the [job report](2026-11-15-ctrl-b1-report.md): fits
+move by up to 4.6e-6 relative where the old absolute step stopped early;
+llogis and naka class offset become uncertified; two betapr payloads change.
+The known list has 233 entries.
