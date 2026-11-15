@@ -1,6 +1,56 @@
 {
  "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, cert-replay.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
  "known": {
+  "cert-replay:cover|double|fatigue|archive|001458": {
+   "ref": "TASK-214.40",
+   "detail": "l(b) < l(b_hat) for every b in [0.150673, 5.43095] outside the log window 1e-9 (score points inward outside); hp f(5.43094493075) = [3.11257048898755, 3.11257048898755] > target 3.11257048898755; double None; margin None; 120 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094493075, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5)",
+   "finding": "twin-tie-certified-unique"
+  },
+  "cert-replay:cover|double|fatigue|archive|001459": {
+   "ref": "TASK-214.40",
+   "detail": "l(b) < l(b_hat) for every b in [0.150673, 5.43094] outside the log window 1e-9 (score points inward outside); hp f(5.43094491989) = [3.11257048398805, 3.11257048398805] > target 3.11257048398805; double None; margin None; 97 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094491989, l - l(b_hat) = 1.68e-26 (total log-likelihood units; n = 5)",
+   "finding": "twin-tie-certified-unique"
+  },
+  "cert-replay:cover|double|fatigue|archive|001461": {
+   "ref": "TASK-214.40",
+   "detail": "l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370453225) = [3.36322939284092, 3.36322939284092] > target 3.36322939284092; double None; margin None; 120 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370453225, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5)",
+   "finding": "twin-tie-certified-unique"
+  },
+  "cert-replay:cover|double|fatigue|archive|001462": {
+   "ref": "TASK-214.40",
+   "detail": "l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370452025) = [3.36322938784142, 3.36322938784142] > target 3.36322938784142; double None; margin None; 97 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370452025, l - l(b_hat) = 1.681e-26 (total log-likelihood units; n = 5)",
+   "finding": "twin-tie-certified-unique"
+  },
+  "cert-replay:cover|double|fatigue|archive|009817": {
+   "ref": "TASK-214.40",
+   "detail": "l(b) < l(b_hat) for every b in [0.166564, 6.00371] outside the log window 1e-9 (score points inward outside); hp f(0.166563826822) = [8.07175053081683, 8.07175053081683] > target 8.07175053081683; double None; margin None; 145 evaluations; exclusion window half width 6.004e-9; numerical local maximum of the competitor: b = 0.166563826822, l - l(b_hat) = 4.927e-26 (total log-likelihood units; n = 12)",
+   "finding": "twin-tie-certified-unique"
+  },
+  "cert-replay:cover|native|fatigue|archive|001458": {
+   "ref": "TASK-214.40",
+   "detail": "l(b) < l(b_hat) for every b in [0.150673, 5.43095] outside the log window 1e-9 (score points inward outside); hp f(5.43094493075) = [3.11257048898755, 3.11257048898755] > target 3.11257048898755; double None; margin None; 120 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094493075, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5)",
+   "finding": "twin-tie-certified-unique"
+  },
+  "cert-replay:cover|native|fatigue|archive|001459": {
+   "ref": "TASK-214.40",
+   "detail": "l(b) < l(b_hat) for every b in [0.150673, 5.43094] outside the log window 1e-9 (score points inward outside); hp f(5.43094491989) = [3.11257048398805, 3.11257048398805] > target 3.11257048398805; double None; margin None; 97 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094491989, l - l(b_hat) = 1.68e-26 (total log-likelihood units; n = 5)",
+   "finding": "twin-tie-certified-unique"
+  },
+  "cert-replay:cover|native|fatigue|archive|001461": {
+   "ref": "TASK-214.40",
+   "detail": "l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370453225) = [3.36322939284092, 3.36322939284092] > target 3.36322939284092; double None; margin None; 120 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370453225, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5)",
+   "finding": "twin-tie-certified-unique"
+  },
+  "cert-replay:cover|native|fatigue|archive|001462": {
+   "ref": "TASK-214.40",
+   "detail": "l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370452025) = [3.36322938784142, 3.36322938784142] > target 3.36322938784142; double None; margin None; 97 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370452025, l - l(b_hat) = 1.681e-26 (total log-likelihood units; n = 5)",
+   "finding": "twin-tie-certified-unique"
+  },
+  "cert-replay:cover|native|fatigue|archive|009817": {
+   "ref": "TASK-214.40",
+   "detail": "l(b) < l(b_hat) for every b in [0.166564, 6.00371] outside the log window 1e-9 (score points inward outside); hp f(0.166563826822) = [8.07175053081683, 8.07175053081683] > target 8.07175053081683; double None; margin None; 145 evaluations; exclusion window half width 6.004e-9; numerical local maximum of the competitor: b = 0.166563826822, l - l(b_hat) = 4.927e-26 (total log-likelihood units; n = 12)",
+   "finding": "twin-tie-certified-unique"
+  },
   "cert-replay:root|double|frechet|archive|001946": {
    "ref": "TASK-214.31",
    "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.25202334291885e-15, 1.25202334291885e-15], right [3.48482668306617e-16, 3.48482668306617e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.57e-15",
