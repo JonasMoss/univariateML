@@ -1,0 +1,103 @@
+cert-replay: 187 CPU s, 50 digits
+  bbinom  search      holds  100
+  bbinom  support     holds  210
+  bbinom  tail        holds  100
+  bbinom  tie         holds  100
+  binom   coef        holds  62
+  binom   moment      holds  70
+  binom   search      holds  96
+  binom   support     holds  4
+  binom   tail        holds  96
+  binom   tie         holds  96
+  binom   unique      holds  2
+  cmb     search      holds  72
+  cmb     search      open   2
+  cmb     support     holds  112
+  cmb     tail        holds  28
+  cmb     tail        info   46
+  cmb     tie         holds  74
+  hyper   search      holds  204
+  hyper   tail        holds  90
+  hyper   tie         fails  40
+  hyper   tie         holds  164
+  nhyper  search      holds  222
+  nhyper  tail        holds  104
+  nhyper  tie         fails  6
+  nhyper  tie         holds  216
+  triang  search      holds  186
+  triang  tie         fails  4
+  triang  tie         holds  182
+not replayed (no certificate comparison):
+  bbinom: no certified estimate: 4
+  bbinom: shapes held: size enumeration or evaluation; no certified estimate: 2
+  bbinom: shapes held: size enumeration or evaluation; size held or all held: not an integer search: 34
+  bbinom: size held or all held: not an integer search: 10
+  binom: no certified estimate: 4
+  binom: size or prob held: closed form or integer search (no face inequality); size held: closed form: 60
+  cmb: no certified estimate: 30
+  cmb: no exact support predicate for this hold subset; size held: not an integer search: 52
+  cmb: size held: not an integer search: 10
+  hyper: a zero count: unidentified: 2
+  hyper: all held: evaluation only: 26
+  hyper: no certified estimate: 46
+  nhyper: all held: evaluation only: 30
+  nhyper: no certified estimate: 42
+  triang: mode held: one mode, no enumeration: 168
+  triang: no certified estimate: 38
+open (not judged):
+  OPEN  cert-replay:search|native|cmb|archive|000838: size 1 maximizes the profile over the sizes 1..41; hp profile at 1 = -2.5020121176909393977; best other size none; no finite maximum at sizes [2, 3, 4, 5, 6, 7]; double None; margin None; profile maxima by damped Newton on the concave exponential-family log likelihood (40 digits); sizes with no finite maximum are escapes to a limit, listed
+  OPEN  cert-replay:search|double|cmb|archive|000838: size 1 maximizes the profile over the sizes 1..41; hp profile at 1 = -2.5020121176909393977; best other size none; no finite maximum at sizes [2, 3, 4, 5, 6, 7]; double None; margin None; profile maxima by damped Newton on the concave exponential-family log likelihood (40 digits); sizes with no finite maximum are escapes to a limit, listed
+1146 cases judged
+cert-replay: failures by check: {'cert-replay:tie': 50}
+cert-replay: 0 listed as known, 50 new, 0 listed but passing
+  NEW   cert-replay:tie|double|hyper|archive|003455: no other (N, m, k) attains likelihood one; witness (c+1, c+1, c); hp exact likelihood at (6, 6, 5): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003459: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003460: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003461: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003462: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003463: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003464: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003482: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 38, 6)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003483: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 50, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003484: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 43, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003485: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 44, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003486: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003487: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003488: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003489: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003490: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003491: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003492: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|003494: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 10, 1)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|hyper|archive|010973: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 49, 10)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|nhyper|archive|005151: no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|nhyper|archive|005152: no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|nhyper|archive|005154: no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|double|triang|archive|008159: no other mode attains the maximum profile (numerical, within 1e-20); hp modes within 1e-20 of the returned profile: [0.556117281364277]; double None; margin None; a tie exists (numerical) but the outcome says unique = true
+  NEW   cert-replay:tie|double|triang|class|two: no other mode attains the maximum profile (numerical, within 1e-20); hp modes within 1e-20 of the returned profile: [0.6148650215473026]; double None; margin None; a tie exists (numerical) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003455: no other (N, m, k) attains likelihood one; witness (c+1, c+1, c); hp exact likelihood at (6, 6, 5): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003459: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003460: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003461: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003462: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003463: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003464: no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003482: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 38, 6)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003483: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 50, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003484: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 43, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003485: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 44, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003486: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003487: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003488: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003489: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003490: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003491: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003492: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|003494: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 10, 1)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|hyper|archive|010973: no other grid point attains the maximum; hp exact ties with the returned point: [(50, 49, 10)]; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|nhyper|archive|005151: no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|nhyper|archive|005152: no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|nhyper|archive|005154: no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true
+  NEW   cert-replay:tie|native|triang|archive|008159: no other mode attains the maximum profile (numerical, within 1e-20); hp modes within 1e-20 of the returned profile: [0.556117281364277]; double None; margin None; a tie exists (numerical) but the outcome says unique = true
+  NEW   cert-replay:tie|native|triang|class|two: no other mode attains the maximum profile (numerical, within 1e-20); hp modes within 1e-20 of the returned profile: [0.6148650215473026]; double None; margin None; a tie exists (numerical) but the outcome says unique = true
+/tmp/ri/run.sh --family binom,hyper,nhyper,bbinom,cmb,triang --records   188.16s user 0.28s system 99% cpu 3:08.47 total
