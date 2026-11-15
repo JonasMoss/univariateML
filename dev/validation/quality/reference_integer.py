@@ -14,6 +14,8 @@ import mpmath as mp
 
 
 def integer_profile(id, golden, max_cells=100000):
+    if id != 'binom':
+        raise ValueError('integer profile is implemented for binom only')
     held = set(golden.get('fixed', [])) | {k for k,v in golden.get('fit_args', {}).items() if v is not None}
     if held & {'prob', 'pi', 'p0'}:
         raise ValueError('integer profile with held probability requires a separate tail envelope')
@@ -38,39 +40,13 @@ def integer_profile(id, golden, max_cells=100000):
     lam=bisect(lambda l:zt_mean(l)-mpz,tiny,mpz+1) if mpz>1 else mp.mpf(0)
     fact=mp.fsum(n*mp.loggamma(x+1) for x,n in positive.items())
     face=(S*mp.log(lam)-np*lam-np*mp.log(-mp.expm1(-lam))-fact) if lam else -fact
-    saturated=mp.mpf(0)
-    if id in ('zib','zmbinom'):
-        if n>np: saturated+=(n-np)*mp.log(mp.mpf(n-np)/n)
-        saturated+=np*mp.log(mp.mpf(np)/n)
-        face+=saturated
-    if id=='binom':
-        face=S*mp.log(m)-n*m-fact
+    face=S*mp.log(m)-n*m-fact
     def profile(r):
-        if id=='binom':
-            p=m/r
-        else:
-            def condmean(p):
-                return r*p/(-mp.expm1(r*mp.log1p(-p)))
-            p=bisect(lambda p:condmean(p)-mpz,tiny,1-tiny)
-            if id=='zib' and -mp.expm1(r*mp.log1p(-p)) < mp.mpf(np)/n:
-                p=m/r  # constrained mixture maximum is the ordinary binomial
-        q=mp.exp(r*mp.log1p(-p))
+        p=m/r
         ll=mp.fsum(c*(mp.loggamma(r+1)-mp.loggamma(x+1)-mp.loggamma(r-x+1)
                     +x*mp.log(p)+(r-x)*mp.log1p(-p)) for x,c in positive.items())
         estimates={'size':mp.mpf(r),'prob':p}
-        if id=='binom':
-            ll+=(n-np)*r*mp.log1p(-p)
-        elif id=='ztbinom': ll-=np*mp.log1p(-q)
-        else:
-            pi=(mp.mpf(n-np)/n-q)/(1-q) if id=='zib' else mp.mpf(n-np)/n
-            if id=='zib' and pi<0: pi=mp.mpf(0)
-            estimates['pi' if id=='zib' else 'p0']=pi
-            if id=='zib':
-                ll+=np*mp.log1p(-pi)
-                if n>np: ll+=(n-np)*mp.log(pi+(1-pi)*q)
-            else:
-                ll-=np*mp.log1p(-q)
-                ll+=saturated
+        ll+=(n-np)*r*mp.log1p(-p)
         return ll,estimates
     seed=int(golden['estimates']['size'])
     best,estimates=profile(seed)

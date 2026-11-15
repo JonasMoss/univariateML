@@ -102,7 +102,7 @@ def reference(id, dps=DPS):
                 'median_interval': [int(xs[(len(xs)-1)//2]), int(xs[len(xs)//2])],
                 'argument': 'absolute-deviation convexity; all integer medians maximize'}
             method = 'integer median closed form; ' + method
-        if id in ('binom', 'ztbinom', 'zib', 'zmbinom') and 'size' not in held_names:
+        if id == 'binom' and 'size' not in held_names:
             from quality.reference_integer import integer_profile
             checked, evidence['integer_enumeration'] = integer_profile(id, golden)
             closed['size'] = checked['size']

@@ -50,6 +50,46 @@ def payload_close(a, b, rtol=1e-9, atol=1e-12, path='$'):
     return [] if a == b else [f'{path}: {a!r} vs {b!r}']
 
 
+def canonical_payload(table):
+    """Order-insensitive form of a parsed truth table, for comparison only.
+
+    A table lists its parameter points in generator order, and every row of
+    `normalization`, `values` and `quantiles` (and the sampler selections)
+    refers to a point by index. A pure reorder of the points or of the rows
+    (as happened for hyper and the st extreme points) changes those indices
+    but no number. Here each index is replaced by the point's parameter
+    vector, and the points and rows become sorted multisets keyed by their
+    inputs only: the point vector, then the input columns (`values`: x;
+    `quantiles`: lower, logp, input). Output cells never enter the sort key,
+    so a tiny numeric drift cannot reorder rows (rows with equal keys keep
+    their stored order). Nothing is dropped, so a changed, missing or extra
+    row still shows as a difference.
+    The sampler selections keep their slot order (default, fit) and swap each
+    index for the vector it selects.
+    """
+    table = dict(table)
+    points = table.get('parameters')
+    if not isinstance(points, list): return table
+    def vector(index):
+        return points[index] if isinstance(index, int) and 0 <= index < len(points) else ['<bad point %r>' % (index,)]
+    def key(row):
+        return json.dumps(row, sort_keys=True)
+    table['parameters'] = sorted(points, key=key)
+    for name, width in (('values', 2), ('quantiles', 4)):
+        if isinstance(table.get(name), list):
+            table[name] = sorted(([vector(r[0]), *r[1:]] for r in table[name]), key=lambda r: key(r[:width]))
+    if isinstance(table.get('normalization'), list):
+        table['normalization'] = sorted(({**r, 'point': vector(r.get('point'))} for r in table['normalization']),
+                                        key=lambda r: key(r['point']))
+    for name in ('sampler_points', 'historical_sampler_points'):
+        if isinstance(table.get(name), list):
+            rows = [[vector(i) for i in r] for r in table[name]]
+            table[name] = rows if name == 'sampler_points' else sorted(rows, key=key)
+    if isinstance(table.get('excluded_parameter_points'), list):
+        table['excluded_parameter_points'] = sorted(table['excluded_parameter_points'], key=key)
+    return table
+
+
 def main():
     before = hashlib.sha256()
     after = hashlib.sha256()
