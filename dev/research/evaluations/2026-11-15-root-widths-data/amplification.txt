@@ -1,0 +1,13 @@
+         k         G(k)    E_G bound        k|G'| E_G/(k|G'|)  [in units of eps]
+       0.3   2.2986e+00    2.078e-15    2.674e+00       3.50   (digamma path, psi error assumed)
+         1   5.7722e-01    3.204e-16    6.449e-01       2.24   (digamma path, psi error assumed)
+     1.425   3.9023e-01    1.380e-16    4.267e-01       1.46   (digamma path, psi error assumed)
+         3   1.7583e-01    6.733e-16    1.848e-01      16.41   (digamma path, psi error assumed)
+        10   5.0833e-02    1.517e-15    5.166e-02     132.23   (digamma path, psi error assumed)
+        30   1.6759e-02    2.260e-15    1.685e-02     604.00   (digamma path, psi error assumed)
+        99   5.0590e-03    3.059e-15    5.068e-03    2718.84   (digamma path, psi error assumed)
+       100   5.0083e-03    1.671e-18    5.017e-03       1.50   (series)
+      1000   5.0008e-04    1.666e-19    5.002e-04       1.50   (series)
+     1e+06   5.0000e-07    1.665e-22    5.000e-07       1.50   (series)
+     1e+12   5.0000e-13    1.665e-28    5.000e-13       1.50   (series)
+   3.4e+23   1.4706e-24    4.898e-40    1.471e-24       1.50   (series)
