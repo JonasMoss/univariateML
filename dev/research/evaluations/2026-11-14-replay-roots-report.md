@@ -219,3 +219,9 @@ fail `restore`. gev: the snapshot contains no certified record with held xi in (
 - `dev/research/evaluations/2026-11-14-replay-roots-data/`: `records.jsonl.gz` (all comparisons, both modes),
   `run.log`, `negative-controls.py`, `negative-controls.out`.
 - This report. Nothing committed.
+
+## Rerun on the post-5b snapshots (2026-11-15)
+
+Master 9141de55 on the snapshots of a1166cbf (after step 5b, from the combined validation): 3326 cases judged in both
+modes, the same 20 root failures per mode and the same open entries (logis 6, pareto3 1 per mode). The 40 failures are
+in `dev/validation/strict-known.json` under TASK-214.31 (finding `root-width-rounding`).

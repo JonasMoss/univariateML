@@ -1,6 +1,231 @@
 {
- "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
+ "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, cert-replay.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
  "known": {
+  "cert-replay:moment|double|gompertz|class|huge": {
+   "ref": "TASK-214.32",
+   "detail": "limit (n Q - 2 S^2 >= 0); hp n Q - 2 S^2 = -1.51079e+617; relative gap 0.304; double long double intermediates (data / mean 8.302359528222129e+307): mean(z^2) = 1.3911681157892837, 2 mean(z)^2 = 2.0, decides finite; double intermediates (raw data (mean inf not finite)): mean(z^2) = inf, 2 mean(z)^2 = inf, decides limit (DISAGREES with exact); margin none (unpadded); native builds use the long-double mirror, double-only builds the double one",
+   "finding": "face-replay"
+  },
+  "cert-replay:root|double|frechet|archive|001946": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.25202334291885e-15, 1.25202334291885e-15], right [3.48482668306617e-16, 3.48482668306617e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.57e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|frechet|archive|001949": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.25202334291885e-15, 1.25202334291885e-15], right [3.48482668306617e-16, 3.48482668306617e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.57e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|frechet|archive|001955": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.03754602801752e-12, 1.03754602801752e-12], right [6.06812676363848e-13, 6.06812676363848e-13]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -3.39e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|frechet|archive|010365": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-7.76139628659315e-17, -7.76139628659315e-17], right [-4.84517284627469e-16, -4.84517284627469e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 1.23e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|gamma|archive|001983": {
+   "ref": "TASK-214.31",
+   "detail": "G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [-1.84480242972334e-41, -1.84480239885513e-41], right [-1.66156366724037e-39, -1.66156366633226e-39]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = 5.68e-16",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|gamma|archive|001986": {
+   "ref": "TASK-214.31",
+   "detail": "G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [-1.84480242972334e-41, -1.84480239885513e-41], right [-1.66156366724037e-39, -1.66156366633226e-39]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = 5.68e-16",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|gamma|archive|001994": {
+   "ref": "TASK-214.31",
+   "detail": "G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [1.42180937496992e-27, 1.42180937496992e-27], right [3.11586350353643e-28, 3.11586350353643e-28]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = -8.67e-16",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|invweibull|archive|004257": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-2.5796549644752e-15, -2.5796549644752e-15], right [-6.35617510807761e-15, -6.35617510807761e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.1e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|invweibull|archive|004259": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-9.47550435832817e-15, -9.47550435832817e-15], right [-1.98290487804221e-14, -1.98290487804221e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.51e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|invweibull|archive|004260": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-7.74405317931859e-15, -7.74405317931859e-15], right [-1.80975975820392e-14, -1.80975975820392e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.22e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|llogis|archive|004562": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.50558125964037e-14, 1.50558125964037e-14], right [5.62711136314451e-15, 5.62711136314451e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.95e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|llogis|archive|004563": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.15272323740593e-14, 1.15272323740593e-14], right [2.09853116026102e-15, 2.09853116026102e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.28e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|llogis|archive|004565": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.50558125964037e-14, 1.50558125964037e-14], right [5.62711136314451e-15, 5.62711136314451e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.95e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|llogis|archive|004566": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.15272323740593e-14, 1.15272323740593e-14], right [2.09853116026102e-15, 2.09853116026102e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.28e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|llogis|archive|004574": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-1.0827312099384e-15, -1.0827312099384e-15], right [-1.05114324237205e-14, -1.05114324237205e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 1.09e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|llogis|archive|010575": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [8.86314736722051e-15, 8.86314736722051e-15], right [2.0401684496466e-15, 2.0401684496466e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.42e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|llogis|archive|010576": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.19094942650445e-14, 1.19094942650445e-14], right [5.08651536693148e-15, 5.08651536693148e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -2.21e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|naka|archive|005059": {
+   "ref": "TASK-214.31",
+   "detail": "G(k(1-w)) > 0 > G(k(1+w)), G = log k - psi(k) - s, s = log(Omega) - mean log x^2 + mean x^2/Omega - 1, w = 2 eps + rounding; hp left [-1.01208056766528e-16, -1.01208056766528e-16], right [-5.74868220769075e-16, -5.74868220769075e-16]; double None; margin None; width shape: log bracket 2e-13 (Reciprocal, Log: digamma equation), relative 4 eps (Square: log k - psi(k) = s) (gamma/transformed.hpp:105-110 (hi - lo <= min(tol/8, 2e-13)), :74-90 (Square)); hp offset (returned - root) = 7.92e-16",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|weibull|class|huge": {
+   "ref": "TASK-214.31",
+   "detail": "F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding; hp left [-1.5285010623424e-14, -1.5285010623424e-14], right [-1.08738293914096e-14, -1.08738293914096e-14]; double None; margin None; width relative bracket 1e-14 in 1/shape (Gumbel on -log x), half width 5e-15 (weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115); hp offset (returned - root) = -3.03e-14",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|double|weibull|class|tiny": {
+   "ref": "TASK-214.31",
+   "detail": "F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding; hp left [-1.14360880346595e-14, -1.14360880346595e-14], right [-7.02490680264504e-15, -7.02490680264504e-15]; double None; margin None; width relative bracket 1e-14 in 1/shape (Gumbel on -log x), half width 5e-15 (weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115); hp offset (returned - root) = -2.14e-14",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|frechet|archive|001946": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.25202334291885e-15, 1.25202334291885e-15], right [3.48482668306617e-16, 3.48482668306617e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.57e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|frechet|archive|001949": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.25202334291885e-15, 1.25202334291885e-15], right [3.48482668306617e-16, 3.48482668306617e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.57e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|frechet|archive|001955": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.03754602801752e-12, 1.03754602801752e-12], right [6.06812676363848e-13, 6.06812676363848e-13]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -3.39e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|frechet|archive|010365": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-7.76139628659315e-17, -7.76139628659315e-17], right [-4.84517284627469e-16, -4.84517284627469e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 1.23e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|gamma|archive|001983": {
+   "ref": "TASK-214.31",
+   "detail": "G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [-1.84480242972334e-41, -1.84480239885513e-41], right [-1.66156366724037e-39, -1.66156366633226e-39]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = 5.68e-16",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|gamma|archive|001986": {
+   "ref": "TASK-214.31",
+   "detail": "G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [-1.84480242972334e-41, -1.84480239885513e-41], right [-1.66156366724037e-39, -1.66156366633226e-39]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = 5.68e-16",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|gamma|archive|001994": {
+   "ref": "TASK-214.31",
+   "detail": "G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [1.42180937496992e-27, 1.42180937496992e-27], right [3.11586350353643e-28, 3.11586350353643e-28]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = -8.67e-16",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|invweibull|archive|004257": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-2.5796549644752e-15, -2.5796549644752e-15], right [-6.35617510807761e-15, -6.35617510807761e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.1e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|invweibull|archive|004259": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-9.47550435832817e-15, -9.47550435832817e-15], right [-1.98290487804221e-14, -1.98290487804221e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.51e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|invweibull|archive|004260": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-7.74405317931859e-15, -7.74405317931859e-15], right [-1.80975975820392e-14, -1.80975975820392e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.22e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|llogis|archive|004562": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.50558125964037e-14, 1.50558125964037e-14], right [5.62711136314451e-15, 5.62711136314451e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.95e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|llogis|archive|004563": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.15272323740593e-14, 1.15272323740593e-14], right [2.09853116026102e-15, 2.09853116026102e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.28e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|llogis|archive|004565": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.50558125964037e-14, 1.50558125964037e-14], right [5.62711136314451e-15, 5.62711136314451e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.95e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|llogis|archive|004566": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.15272323740593e-14, 1.15272323740593e-14], right [2.09853116026102e-15, 2.09853116026102e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.28e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|llogis|archive|004574": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-1.0827312099384e-15, -1.0827312099384e-15], right [-1.05114324237205e-14, -1.05114324237205e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 1.09e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|llogis|archive|010575": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [8.86314736722051e-15, 8.86314736722051e-15], right [2.0401684496466e-15, 2.0401684496466e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.42e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|llogis|archive|010576": {
+   "ref": "TASK-214.31",
+   "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.19094942650445e-14, 1.19094942650445e-14], right [5.08651536693148e-15, 5.08651536693148e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -2.21e-15",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|naka|archive|005059": {
+   "ref": "TASK-214.31",
+   "detail": "G(k(1-w)) > 0 > G(k(1+w)), G = log k - psi(k) - s, s = log(Omega) - mean log x^2 + mean x^2/Omega - 1, w = 2 eps + rounding; hp left [-1.01208056766528e-16, -1.01208056766528e-16], right [-5.74868220769075e-16, -5.74868220769075e-16]; double None; margin None; width shape: log bracket 2e-13 (Reciprocal, Log: digamma equation), relative 4 eps (Square: log k - psi(k) = s) (gamma/transformed.hpp:105-110 (hi - lo <= min(tol/8, 2e-13)), :74-90 (Square)); hp offset (returned - root) = 7.92e-16",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|weibull|class|huge": {
+   "ref": "TASK-214.31",
+   "detail": "F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding; hp left [-1.5285010623424e-14, -1.5285010623424e-14], right [-1.08738293914096e-14, -1.08738293914096e-14]; double None; margin None; width relative bracket 1e-14 in 1/shape (Gumbel on -log x), half width 5e-15 (weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115); hp offset (returned - root) = -3.03e-14",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:root|native|weibull|class|tiny": {
+   "ref": "TASK-214.31",
+   "detail": "F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding; hp left [-1.14360880346595e-14, -1.14360880346595e-14], right [-7.02490680264504e-15, -7.02490680264504e-15]; double None; margin None; width relative bracket 1e-14 in 1/shape (Gumbel on -log x), half width 5e-15 (weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115); hp offset (returned - root) = -2.14e-14",
+   "finding": "root-width-rounding"
+  },
+  "cert-replay:unique|double|cmp|class|zeros": {
+   "ref": "TASK-214.32",
+   "detail": "estimate with unique = true; hp all zero, both free: nu unidentified: unique = false; double None; margin None; source: cmp README existence; special/cmp.hpp cmp_mle_work",
+   "finding": "face-replay"
+  },
+  "cert-replay:unique|double|pig|class|zeros": {
+   "ref": "TASK-214.32",
+   "detail": "estimate with unique = true; hp all zero, both free: (mu, 0) attains the maximum for every mu: unique = false; double None; margin None; source: pig README existence and Zero member",
+   "finding": "face-replay"
+  },
+  "cert-replay:unique|native|cmp|class|zeros": {
+   "ref": "TASK-214.32",
+   "detail": "estimate with unique = true; hp all zero, both free: nu unidentified: unique = false; double None; margin None; source: cmp README existence; special/cmp.hpp cmp_mle_work",
+   "finding": "face-replay"
+  },
+  "cert-replay:unique|native|pig|class|zeros": {
+   "ref": "TASK-214.32",
+   "detail": "estimate with unique = true; hp all zero, both free: (mu, 0) attains the maximum for every mu: unique = false; double None; margin None; source: pig README existence and Zero member",
+   "finding": "face-replay"
+  },
   "mode|both|bhatt|archive|000364": {
    "ref": "TASK-214.13",
    "detail": "native ok, double-only numerical"
