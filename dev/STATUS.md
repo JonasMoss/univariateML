@@ -41,13 +41,13 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   runs the suite there when it is back.
 - Known wrong answers on master, each with a card: fits that miss the accuracy
   contract (TASK-214.5); stop kinds that depend on the precision mode
-  (TASK-214.13); a certified exponential limit for gompertz on data near
-  DBL_MAX in double-only builds, and pig and cmp all-zero fits flagged unique
-  (TASK-214.32, fix in progress). Root brackets that miss their claimed width
-  by a few ulp, far inside the contract: TASK-214.31.
+  (TASK-214.13); fits flagged unique where another point ties exactly
+  (hyper, nhyper, triang: TASK-214.36; pig and cmp with the zero coefficient
+  held: TASK-214.37). Root brackets that miss their claimed width by a few
+  ulp, far inside the contract: TASK-214.31.
 - Nothing is published to CRAN, and `origin/master` is the old published
   tree (about 1,300 commits behind). The backup branch `origin/cpp-core`
-  mirrors master; pushed on 2026-11-13 at Jonas's request.
+  mirrors master; pushed on 2026-11-15 at Jonas's request.
 
 ## Decisions for Jonas
 
