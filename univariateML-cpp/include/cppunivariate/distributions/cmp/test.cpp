@@ -265,3 +265,14 @@ TEST_CASE("CMP all-zero counts with both coefficients free leave nu unidentified
   cppunivariate::CmpFitControl held; held.fixed_nu=2;
   CHECK(cppunivariate::outcome(cppunivariate::cmp_mle({x.data(),x.size()},held)).unique);
 }
+
+TEST_CASE("CMP lambda held at 0 with a free nu leaves nu unidentified") {
+  // lambda = 0 gives the same likelihood for every nu (TASK-214.37).
+  const std::vector<double> x{0,0,0,0};
+  cppunivariate::CmpFitControl held; held.fixed_lambda=0;
+  const auto r=cppunivariate::cmp_mle({x.data(),x.size()},held);
+  CHECK(r.status==cppunivariate::CmpStatus::Ok);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  held.fixed_nu=2;
+  CHECK(cppunivariate::outcome(cppunivariate::cmp_mle({x.data(),x.size()},held)).unique);
+}

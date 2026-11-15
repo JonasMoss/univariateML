@@ -105,6 +105,15 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
       }
       break;
     case cppunivariate::HyperStatus::Ok:
+      if (res.non_unique_reason == 1)
+        warnings.push_back(binding_message("The likelihood is symmetric in `m` and `k`: (`m`, `k`) = (%s, %s) and (%s, %s) attain the "
+                      "same maximum; returning the first.", whole(res.m), whole(res.k), whole(res.k), whole(res.m)));
+      else if (res.non_unique_reason == 2)
+        warnings.push_back(binding_message("The observations are constant, so other count vectors give the same (point-mass) "
+                      "likelihood; the maximum is not unique."));
+      else if (res.non_unique_reason == 3)
+        warnings.push_back(binding_message("With sample size one only `m / N` enters the likelihood, so other `m` and `N` with the "
+                      "same ratio attain the maximum; the maximum is not unique."));
       break;
   }
   std::vector<std::string> fixed;

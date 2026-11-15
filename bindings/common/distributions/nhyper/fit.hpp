@@ -52,7 +52,11 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
       warnings.push_back(binding_message("Likelihood tied between adjacent counts; returning the smaller.")); break;
     case cppunivariate::NhyperStatus::Unidentified:
       warnings.push_back(binding_message("With r = 0 every composition is unidentified; returning m = 0.")); break;
-    case cppunivariate::NhyperStatus::Ok: break;
+    case cppunivariate::NhyperStatus::Ok:
+      if (!fit.unique)
+        warnings.push_back(binding_message("The observations are constant, so with `m = N` every population size gives the same "
+                      "(point-mass) likelihood; the maximum is not unique."));
+      break;
   }
   std::vector<std::string> fixed;
   if (m.supplied) fixed.push_back("m");

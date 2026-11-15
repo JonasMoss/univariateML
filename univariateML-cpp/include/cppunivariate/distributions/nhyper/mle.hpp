@@ -16,6 +16,8 @@ struct NhyperResult {
   NhyperStatus status;
   StopDetail stop_detail{};
   bool certified = true;
+  // False when another (m, N, r) attains the same likelihood exactly.
+  bool unique = true;
 };
 
 // Total draws until the r-th white ball. P(T=x) = r/x P(H_x=r).
@@ -63,6 +65,9 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m) {
     if (c.min == 0 || r == 0 || (!std::isnan(r) && r > c.min)) return out;
     if (c.min == c.max && (std::isnan(r) || r == c.min)) {
       out.N = c.min; out.m = c.min; out.r = c.min; out.logLik = 0;
+      // Constant sample c with r = c: m = N makes the first c draws white with
+      // probability one, so (N, N, c) has likelihood one for every N >= c.
+      out.unique = false;
       out.status = NhyperStatus::Ok; return out;
     }
     const double rlo = std::isnan(r) ? 1 : r;
@@ -344,7 +349,7 @@ inline FitOutcome outcome(const NhyperResult& r) {
   if (r.stop_detail.budget_exhausted && r.status != NhyperStatus::Ok &&
       r.status != NhyperStatus::Tie && r.status != NhyperStatus::Unidentified) return FitOutcome::budget();
   switch (r.status) {
-    case NhyperStatus::Ok: return FitOutcome::estimate(r.certified);
+    case NhyperStatus::Ok: return FitOutcome::estimate(r.certified, r.unique);
     case NhyperStatus::Tie: return FitOutcome::estimate(r.certified, false);
     case NhyperStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
     case NhyperStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

@@ -131,7 +131,8 @@ adds the quantitative acceptance check below.
 ## R notes
 
 Use `lambda` and `nu` to hold either coefficient. Unidentified free dispersion
-at rate zero is represented by one. Unattained adjacent and positive
+at rate zero is represented by one and flagged not unique, whether the
+rate is free or held at zero. Unattained adjacent and positive
 point-mass limits stop with a named diagnostic.
 
 Probability evaluation uses the certified CMP normalizer, stable centered

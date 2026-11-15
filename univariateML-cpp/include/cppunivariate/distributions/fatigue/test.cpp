@@ -184,3 +184,30 @@ TEST_CASE("fatigue transformed-data range failures have an arithmetic outcome") 
   CHECK(r.transformation_failure);
   CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
 }
+
+TEST_CASE("fatigue: alpha held above 2 with a near-constant sample lists both reciprocal roots (TASK-214.40)") {
+  // Archive 001458, 001459, 001461, 001462 and 009817: the profile has two
+  // separated maxima, the scale beta and its reciprocal twin, whose
+  // likelihoods agree within the certificate's tie margin 1e-10 n.
+  const double alpha=0x1.6ddf01bbcd369p+1;
+  const std::vector<std::vector<double>> samples{
+    {0x1.cf2797fd493b0p-1,0x1.cf27984afd927p-1,0x1.cf279898b1e9fp-1,0x1.cf2798e666417p-1,0x1.cf279981cef06p-1},
+    {0x1.cf279898adef7p-1,0x1.cf279898afecbp-1,0x1.cf279898b1e9fp-1,0x1.cf279898b3e73p-1,0x1.cf279898b7e1bp-1},
+    {0x1.ffffff543388fp-1,0x1.ffffffaa19c47p-1,0x1.0000000000000p+0,0x1.0000002af31dcp+0,0x1.00000080d9595p+0},
+    {0x1.fffffffffb9a2p-1,0x1.fffffffffdcd1p-1,0x1.0000000000000p+0,0x1.0000000001198p+0,0x1.00000000034c7p+0},
+    {0x1.ffffc5e52104ep-1,0x1.ffffd966946a6p-1,0x1.ffffe4bf1ae42p-1,0x1.ffffed983b132p-1,0x1.fffff54ee8bd7p-1,0x1.fffffc7d349c1p-1,
+     0x1.000001c165b50p+0,0x1.000005588bbdcp+0,0x1.00000933e2cb1p+0,0x1.00000da073479p+0,0x1.0000134cb73f4p+0,0x1.00001d0d72c9ap+0}};
+  for(const auto& x:samples) {
+    const auto r=cppunivariate::fatigue_mle_shifted(mltest::as_span(x),0,1e-10,100,alpha);
+    const auto o=cppunivariate::outcome(r);
+    CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
+    CHECK_FALSE(o.certified);
+    CHECK_FALSE(o.unique);
+    // Both roots are listed and are reciprocal twins up to the sample scale.
+    REQUIRE(r.stop_detail.candidates.size()==2);
+    const double b0=r.stop_detail.candidates[0].coef[1],b1=r.stop_detail.candidates[1].coef[1];
+    CHECK(std::abs(std::log(b0/b1))>1);
+    CHECK(std::abs(r.stop_detail.candidates[0].loglik_lower-r.stop_detail.candidates[1].loglik_lower)<=1e-10*x.size());
+    CHECK(r.stop_detail.candidates[0].loglik_lower>=r.stop_detail.candidates[1].loglik_lower);
+  }
+}

@@ -1074,6 +1074,12 @@ def replay_fatigue(r, data, budget):
     out = standard_cover(p, that, that*mp.mpf('1.1e-12'), lo, hi, budget*8, that*mp.mpf('1e-9'),
                          'l(b) < l(b_hat) for every b in [%s, %s] outside the log window 1e-9 (score points inward outside)' % (mp.nstr(lo, 6), mp.nstr(hi, 6)),
                          "l'(b_hat (1 - w)) > 0 > l'(b_hat (1 + w)), w = 1.1e-12 (bracket 0.01 tol = 1e-12 plus rounding)", '16 eps per interval operation')
+    if (res.get('outcome') or {}).get('certified') is False:
+        # An uncertified outcome is listed, not judged (design: verdicts); e.g. twin reciprocal
+        # roots tied within the certificate's 1e-10 n margin, both returned as candidates.
+        for comp in out:
+            if comp.get('verdict') == 'fails':
+                comp['verdict'] = 'open'; comp['note'] = ((comp.get('note') or '')+'; uncertified outcome (unique = %s): listed, not judged' % (res.get('outcome') or {}).get('unique')).lstrip('; ')
     return out, None
 
 # ------------------------------------------------------------ skellam, both rates free (F, numerical)
@@ -1699,7 +1705,7 @@ def replay_slash_run(r, data, budget):
 # ------------------------------------------------------------ cache and registry
 
 import gzip, hashlib, json, os, pathlib
-VERSIONS = {'foldnorm': 4, 'fatigue': 3, 'skellam': 2, 'pareto2': 3, 'invpareto': 3, 'cauchy': 2, 'burr': 1, 'dgamma': 3, 'ht': 2, 'paralogis': 1, 'invparalogis': 1, 'slash': 1}      # bump a family's entry when its replay changes; the cache key includes it
+VERSIONS = {'foldnorm': 4, 'fatigue': 4, 'skellam': 2, 'pareto2': 3, 'invpareto': 3, 'cauchy': 2, 'burr': 1, 'dgamma': 3, 'ht': 2, 'paralogis': 1, 'invparalogis': 1, 'slash': 1}      # bump a family's entry when its replay changes; the cache key includes it
 VERSION = 'covers-1'
 CACHE_PATH = pathlib.Path(os.environ.get('CERT_REPLAY_COVERS_CACHE',
     str(pathlib.Path(__file__).resolve().parents[2]/'build'/'cert-replay'/'covers-cache.jsonl.gz')))

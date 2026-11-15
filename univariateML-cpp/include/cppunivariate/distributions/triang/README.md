@@ -140,7 +140,7 @@ accurate continuous solve from an unattainable public precision target; see the
 
 ## R notes
 
-Invalid held ordering is rejected as invalid input. The smallest mode is returned for numerical ties. A warning is emitted when another candidate is within `1e-10 * length(x)` in log likelihood.
+Invalid held ordering is rejected as invalid input. The smallest mode is returned for numerical ties. A warning is emitted when another candidate is within `1e-10 * length(x)` in log likelihood. With all coefficients free and a sample symmetric about its midrange $s/2$, $s=\min+\max$, the reflection $(a,b,c)\mapsto(s-b,s-a,s-c)$ maps maximizers to maximizers; a returned $c\ne s/2$ then ties with its reflection, and the outcome is flagged not unique.
 
 ## Decision history
 

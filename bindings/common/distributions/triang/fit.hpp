@@ -58,6 +58,7 @@ const Held z = c;
   if(r.status==cppunivariate::TriangStatus::IterationFailure)
     return done(fail("Triangular endpoint solve did not converge; increase iterlim."));
   if(r.not_unique) warnings.push_back(binding_message("Triangular maximum likelihood estimate is not unique (candidate log likelihoods within tolerance)."));
+  else if(r.reflection_tie) warnings.push_back(binding_message("Triangular maximum likelihood estimate is not unique: the sample is symmetric about its midrange, so the reflected fit has the same likelihood."));
   std::vector<std::string> fixed;
   if(a.supplied) fixed.push_back("a");
   if(b.supplied) fixed.push_back("b");

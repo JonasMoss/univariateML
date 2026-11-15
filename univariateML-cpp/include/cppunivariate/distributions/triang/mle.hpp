@@ -16,6 +16,10 @@ struct TriangResult {
   int iterations;
   TriangStatus status;
   bool not_unique;
+  // Proved tie: the sample is symmetric about its midrange and the returned
+  // (a, b, c) is not its own reflection (s - b, s - a, s - c), s = min + max;
+  // the reflection maps maximizers to maximizers with equal likelihood.
+  bool reflection_tie=false;
 };
 namespace triang_detail {
 struct Profile { double a, b, value, upper; int iterations; bool converged; };
@@ -322,6 +326,25 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
   out.status=!represented?TriangStatus::NumericalFailure:
       (success?TriangStatus::Ok:TriangStatus::IterationFailure);
   out.not_unique=second>=best-tie;
+  if(!fa&&!fb&&!fc&&out.status==TriangStatus::Ok) {
+    // Exact symmetry test with error-free sums: x_i + x_(n-1-i) = min + max.
+    std::vector<double> y(input.begin(),input.end());
+    std::sort(y.begin(),y.end());
+    auto two_sum=[](double u,double v,double& low) {
+      const double sum=u+v,z=sum-u;
+      low=(u-(sum-z))+(v-z);
+      return sum;
+    };
+    double slow=0;const double shigh=two_sum(y.front(),y.back(),slow);
+    bool symmetric=std::isfinite(shigh);
+    for(std::size_t i=0;symmetric&&i<y.size();++i) {
+      double low=0;
+      const double high=two_sum(y[i],y[y.size()-1-i],low);
+      symmetric=high==shigh&&low==slow;
+    }
+    const double range=y.back()-y.front();
+    if(symmetric&&std::abs(2*out.c-shigh)>1e-8*range) out.reflection_tie=true;
+  }
   return out;
 }
 } // namespace cppunivariate
@@ -329,7 +352,7 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
 namespace cppunivariate {
 inline FitOutcome outcome(const TriangResult& r) {
   switch (r.status) {
-    case TriangStatus::Ok: return FitOutcome::estimate(true);
+    case TriangStatus::Ok: return FitOutcome::estimate(true,!r.reflection_tie);
     case TriangStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TriangStatus::Incompatible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TriangStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

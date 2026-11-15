@@ -71,6 +71,11 @@ struct HyperResult {
   HyperStatus status;
   StopDetail stop_detail{};
   bool certified = true;
+  // False when another count vector attains exactly the same likelihood:
+  // 1 = the (m, k) swap, 2 = a constant sample (point-mass likelihood one on a
+  // continuum of vectors), 3 = size one (only m / N enters). Set by hyper_mle.
+  bool unique = true;
+  int non_unique_reason = 0;
 };
 
 namespace hyper_detail {
@@ -309,6 +314,36 @@ inline double hyper_log_pmf(double x, double N, double m, double k) {
          hyper_detail::lbinom_raw(k - x, N - m, p, q) -
          hyper_detail::lbinom_raw(k, N, p, q);
 }
+
+namespace hyper_detail {
+// Exact ties of a returned estimate (not the one-coordinate Tie status).
+// 1. m and k both free: the pmf is symmetric in (m, k), so a returned m != k
+//    ties with (k, m) at the same N.
+// 2. Constant sample c with m and k both free: the likelihood is one when the
+//    draw is deterministic. N held: (N, N, c) also attains one unless c = N
+//    (then m = k = N is the only such point); all free: (N, N, c) for every
+//    N >= c. N free with k or m held at s: m = 0 (c = 0) or m = N (c = s) give
+//    probability one at every N.
+// 3. N free with k (or m) held at 1: the pmf is Bernoulli(m / N), so (2N, 2m)
+//    ties with (N, m).
+inline void mark_exact_ties(span x, double k, double N, double m, HyperResult& r) {
+  if (r.status != HyperStatus::Ok || !std::isfinite(r.m) || !std::isfinite(r.N) || !std::isfinite(r.k)) return;
+  const bool free_m = std::isnan(m), free_k = std::isnan(k), free_N = std::isnan(N);
+  double lo = std::numeric_limits<double>::infinity(), hi = -lo;
+  for (double v : x) { lo = std::min(lo, v); hi = std::max(hi, v); }
+  const bool constant = x.size() > 0 && lo == hi;
+  int reason = 0;
+  if (free_m && free_k) {
+    if (r.m != r.k) reason = 1;
+    else if (constant && (free_N || N > lo)) reason = 2;
+  } else if (free_N && (free_m != free_k)) {
+    const double size = free_k ? m : k;
+    if (constant && (lo == 0 || lo == size)) reason = 2;
+    else if (size == 1) reason = 3;
+  }
+  if (reason != 0) { r.unique = false; r.non_unique_reason = reason; }
+}
+}  // namespace hyper_detail
 
 // NaN requests estimation: N held permits either or both m and k free.
 inline HyperResult hyper_mle(span x, double k, double N, double m);
@@ -702,6 +737,7 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     }
     if(!out.certified)out.status=HyperStatus::Ok;
   }
+  hyper_detail::mark_exact_ties(x, k, N, m, out);
   return out;
 }
 }  // namespace cppunivariate
@@ -718,7 +754,7 @@ inline FitOutcome outcome(const HyperResult& r) {
   if (r.stop_detail.budget_exhausted && r.status != HyperStatus::Ok &&
       r.status != HyperStatus::Tie && r.status != HyperStatus::Unidentified) return FitOutcome::budget();
   switch (r.status) {
-    case HyperStatus::Ok: return FitOutcome::estimate(r.certified);
+    case HyperStatus::Ok: return FitOutcome::estimate(r.certified, r.unique);
     case HyperStatus::Tie: return FitOutcome::estimate(r.certified, false);
     case HyperStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
     case HyperStatus::AllZero: return FitOutcome::limit();

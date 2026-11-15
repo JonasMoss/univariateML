@@ -683,3 +683,41 @@ TEST_CASE("hyper: near-one log tail retains its small complement") {
   // Exact P(X=0)=choose(50,20)/choose(100,20); 400-digit log1p reference.
   CHECK(cppunivariate::distributions::qhyper(-8.7930366634649135e-08,50,100,20,false,true)==0);
 }
+
+// Exact ties of grid winners (TASK-214.36). Samples are archive cases of the
+// replay-integer report.
+TEST_CASE("hyper: grid winners with exact ties are not unique") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  // N held, m and k free (archive 003482): the pmf is symmetric in (m, k).
+  const std::vector<double> held{5,5,3,4,5,3,6,6,4,6,3,5};
+  const auto a=cppunivariate::hyper_mle(mltest::as_span(held),nan,50,nan);
+  CHECK(a.status==cppunivariate::HyperStatus::Ok);
+  CHECK(a.m!=a.k);
+  CHECK(cppunivariate::outcome(a).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(cppunivariate::outcome(a).unique);
+  CHECK(cppunivariate::hyper_log_pmf(5,50,a.m,a.k)==doctest::Approx(cppunivariate::hyper_log_pmf(5,50,a.k,a.m)).epsilon(1e-12));
+  // All free (archive 003459).
+  const std::vector<double> free_{4,4,5,5,5};
+  const auto b=cppunivariate::hyper_mle(mltest::as_span(free_),nan,nan,nan);
+  CHECK(b.status==cppunivariate::HyperStatus::Ok);
+  CHECK(b.m!=b.k);
+  CHECK_FALSE(cppunivariate::outcome(b).unique);
+  // Constant sample (archive 003455): (c, c, c) and (N, N, c) have likelihood one.
+  const std::vector<double> constant{5,5};
+  const auto c=cppunivariate::hyper_mle(mltest::as_span(constant),nan,nan,nan);
+  CHECK(c.status==cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(cppunivariate::outcome(c).unique);
+  CHECK(cppunivariate::hyper_log_pmf(5,6,6,5)==0);
+  // N free with k held: a constant sample at 0 or at k (m = 0, or m = N, gives
+  // probability one at every N), and sample size one (only m / N enters).
+  const std::vector<double> same{5,5,5};
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::hyper_mle(mltest::as_span(same),5,nan,nan)).unique);
+  const std::vector<double> bernoulli{0,1,1,0};
+  const auto d=cppunivariate::hyper_mle(mltest::as_span(bernoulli),1,nan,nan);
+  CHECK(d.status==cppunivariate::HyperStatus::Ok);
+  CHECK_FALSE(cppunivariate::outcome(d).unique);
+  const std::vector<double> below{4,4,4};
+  CHECK(cppunivariate::outcome(cppunivariate::hyper_mle(mltest::as_span(below),5,nan,nan)).unique);
+  // A one-coordinate fit without a tie stays unique.
+  CHECK(cppunivariate::outcome(cppunivariate::hyper_mle(mltest::as_span(held),38,50,nan)).unique);
+}
