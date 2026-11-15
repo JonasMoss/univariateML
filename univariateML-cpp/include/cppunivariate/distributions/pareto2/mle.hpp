@@ -91,7 +91,7 @@ inline Pareto2Result pareto2_mle(span x, double min, double tol, int maxit, doub
     for(double v:y)if(!std::isfinite(v))return {shape,scale,min,NAN,0,Pareto2Status::IterationFailure,{},LomaxCertificateFailure::Arithmetic};
   }
   if(!valid) y.clear();
-  const auto r=lomax_mle(span{y.data(),y.size()},tol,maxit,NAN,
+  const auto r=lomax_mle(span{y.data(),y.size()},tol,maxit,
     std::isnan(scale)?scale:1/scale,shape);
   auto detail=r.stop_detail;
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==2)

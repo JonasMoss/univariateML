@@ -193,6 +193,11 @@ inline TlambdaResult stopped(TlambdaResult out,bool budget=false,bool tie=false)
   return out;
 }
 inline TlambdaResult fixed_nonnegative(span x,double tol,int maxit,double l,double mu,double sigma) {
+  // The box certificates compare likelihood enclosures to decide the global maximum; the coefficients come from the
+  // local profile solve, which is controlled by tol itself. A likelihood gap of n tol is a coefficient error of order
+  // sqrt(tol) at a smooth maximum, so it is not a coefficient bound, and enclosure widths cannot be driven below the
+  // arithmetic noise. The gap tolerance is therefore max(tol, 1e-7), the value of the former default.
+  const double gap_tol=std::max(tol,1e-7);
   const bool hm=std::isfinite(mu),hs=std::isfinite(sigma);
   TlambdaResult out{mu,sigma,l,NAN,0,TlambdaStatus::InvalidData};
   if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0)return out;
@@ -261,7 +266,7 @@ inline TlambdaResult fixed_nonnegative(span x,double tol,int maxit,double l,doub
       const auto actual=point_value(x,out.mu,out.sigma,l,maxit);
       if(!ideal.ok || !actual.ok)return stopped(out);
       out.certificate_lower=actual.lower;out.certificate_upper=std::max(actual.upper,ideal.upper-n*std::log(unit)+margin(n*std::log(unit)));
-      if(out.certificate_upper-out.certificate_lower>n*tol)return stopped(out);
+      if(out.certificate_upper-out.certificate_lower>n*gap_tol)return stopped(out);
     } else {
       const auto actual=point_value(x,out.mu,out.sigma,l,maxit);
       if(!actual.ok)return stopped(out);
@@ -269,7 +274,7 @@ inline TlambdaResult fixed_nonnegative(span x,double tol,int maxit,double l,doub
           (hm?-n*(std::log(2.)+std::max(tlambda_detail::logstandard(raw.front(),mu,1),tlambda_detail::logstandard(raw.back(),mu,1))):
           -n*tlambda_detail::logstandard(raw.back(),raw.front(),1));
       out.certificate_lower=actual.lower;out.certificate_upper=std::max(actual.upper,ideal+margin(n+std::abs(ideal)));
-      if(!std::isfinite(ideal) || out.certificate_upper-out.certificate_lower>n*tol)return stopped(out);
+      if(!std::isfinite(ideal) || out.certificate_upper-out.certificate_lower>n*gap_tol)return stopped(out);
     }
     out.certified=true;out.status=TlambdaStatus::Ok;return out;
   }
@@ -309,7 +314,7 @@ inline TlambdaResult fixed_nonnegative(span x,double tol,int maxit,double l,doub
     if(!std::isfinite(out.logLik))return stopped(out);
     out.certificate_lower=std::max(va.lower,vb.lower);
     out.certificate_upper=std::max(va.upper,vb.upper);
-    if(out.certificate_upper-out.certificate_lower>n*tol)return stopped(out);
+    if(out.certificate_upper-out.certificate_lower>n*gap_tol)return stopped(out);
     out.certified=true;out.status=TlambdaStatus::Ok;return out;
   }
 
@@ -366,11 +371,11 @@ inline TlambdaResult fixed_nonnegative(span x,double tol,int maxit,double l,doub
     }
     if(!std::isfinite(da+db))return stopped(out);
     const double coefficient_step=std::max(std::abs(da/a),std::abs((db-b*da/a)/a));
-    if(gap+v.upper-v.lower<=std::min(tol,1e-9)*n && coefficient_step<=1e-9) {
+    if(gap+v.upper-v.lower<=std::min(gap_tol,1e-9)*n && coefficient_step<=1e-9) {
       const double shift=n*std::log(unit),shift_pad=margin(shift);
       const double lower=actual.lower,upper=std::max(actual.upper,v.upper+gap-shift+shift_pad);
       if(!std::isfinite(out.logLik) || out.logLik<lower-margin(lower) || out.logLik>upper+margin(upper))return stopped(out);
-      if(upper-lower>tol*n)return stopped(out);
+      if(upper-lower>gap_tol*n)return stopped(out);
       out.certificate_lower=lower;out.certificate_upper=upper;out.certified=true;out.status=TlambdaStatus::Ok;return out;
     }
     bool accepted=false;
@@ -391,6 +396,11 @@ inline TlambdaResult fixed_nonnegative(span x,double tol,int maxit,double l,doub
 // Scalar held-scale location searches and support-contact curves for every
 // lambda>1; scalar nuisance searches for a held negative shape.
 inline TlambdaResult scalar_boxes(span x,double tol,int maxit,double l,double mu,double sigma) {
+  // The box certificates compare likelihood enclosures to decide the global maximum; the coefficients come from the
+  // local profile solve, which is controlled by tol itself. A likelihood gap of n tol is a coefficient error of order
+  // sqrt(tol) at a smooth maximum, so it is not a coefficient bound, and enclosure widths cannot be driven below the
+  // arithmetic noise. The gap tolerance is therefore max(tol, 1e-7), the value of the former default.
+  const double gap_tol=std::max(tol,1e-7);
   const bool hm=std::isfinite(mu),hs=std::isfinite(sigma),contact=!hm && !hs;
   TlambdaResult out{mu,sigma,l,NAN,0,TlambdaStatus::InvalidData};
   if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0)return out;
@@ -458,7 +468,7 @@ inline TlambdaResult scalar_boxes(span x,double tol,int maxit,double l,double mu
   propose(hm?0:mid);
   if(!(std::isfinite(best)))return stopped(out,exhausted);
   // All bounds are derived from this strict sublevel target, never a fixed cap.
-  const double ell=best+n*logunit-std::max(1e-8,tol)*n;
+  const double ell=best+n*logunit-std::max(1e-8,gap_tol)*n;
   double left=0,right=0;
   if(l<0) {
     const double a=-l,c=1/a,r=1+c,logC=-r*std::log(a);
@@ -526,7 +536,7 @@ inline TlambdaResult scalar_boxes(span x,double tol,int maxit,double l,double mu
   double discarded=-INFINITY;
   while(!boxes.empty() && !arithmetic && !exhausted) {
     std::pop_heap(boxes.begin(),boxes.end(),order);const auto box=boxes.back();boxes.pop_back();
-    const double gap=std::max(tol,margin(best)/n)*n;
+    const double gap=std::max(gap_tol,margin(best)/n)*n;
     if(!std::isfinite(best+gap)){arithmetic=true;break;}
     if(box.upper<=best+gap){discarded=std::max(discarded,box.upper);continue;}
     const double m=box.lo+(box.hi-box.lo)/2;
@@ -575,6 +585,11 @@ inline TlambdaResult collapse_check(span x,double tol,int maxit,double l) {
 }
 
 inline TlambdaResult shape_only(span x,double tol,int maxit,double mu,double sigma) {
+  // The box certificates compare likelihood enclosures to decide the global maximum; the coefficients come from the
+  // local profile solve, which is controlled by tol itself. A likelihood gap of n tol is a coefficient error of order
+  // sqrt(tol) at a smooth maximum, so it is not a coefficient bound, and enclosure widths cannot be driven below the
+  // arithmetic noise. The gap tolerance is therefore max(tol, 1e-7), the value of the former default.
+  const double gap_tol=std::max(tol,1e-7);
   TlambdaResult out{mu,sigma,NAN,NAN,0,TlambdaStatus::InvalidData};
   if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0 || !(sigma>0))return out;
   std::vector<double> y;
@@ -605,7 +620,7 @@ inline TlambdaResult shape_only(span x,double tol,int maxit,double mu,double sig
   propose(0);propose(1);
   if(!std::isfinite(best))return stopped(out,budget);
   // For l=-a, g<=2^(-a-2); this excludes all shapes below -A.
-  const double target=best-std::max(tol,1e-8)*n;
+  const double target=best-std::max(gap_tol,1e-8)*n;
   const double A=std::max(1.0,-(target/n+std::log(sigma))/std::log(2.0)-2+margin(target/n));
   if(!std::isfinite(A))return stopped(out);
   struct Box {double lo,hi,upper;};
@@ -629,7 +644,7 @@ inline TlambdaResult shape_only(span x,double tol,int maxit,double mu,double sig
   double discarded=-INFINITY;
   while(!boxes.empty() && !budget && !numerical) {
     std::pop_heap(boxes.begin(),boxes.end(),order);const Box box=boxes.back();boxes.pop_back();
-    const double gap=n*std::max(tol,margin(best)/n);
+    const double gap=n*std::max(gap_tol,margin(best)/n);
     if(!std::isfinite(best+gap)){numerical=true;break;}
     if(box.upper<=best+gap){discarded=std::max(discarded,box.upper);continue;}
     const double mid=box.lo+(box.hi-box.lo)/2;

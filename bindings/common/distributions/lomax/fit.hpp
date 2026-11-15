@@ -22,7 +22,7 @@ inline FitResult fit_lomax(cppunivariate::span x, Held lambda_arg = {}, Held kap
     fixed.push_back("kappa");
   }
 
-  auto res = cppunivariate::lomax_mle(x, tol, iterlim, std::numeric_limits<double>::quiet_NaN(), lambda_held, kappa_held);
+  auto res = cppunivariate::lomax_mle(x, tol, iterlim, lambda_held, kappa_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"kappa",kappa_arg.supplied}});

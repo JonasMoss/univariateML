@@ -21,11 +21,12 @@ TEST_CASE("lomax: golden") {
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_lomax).scale(0));
 }
 
-TEST_CASE("lomax: an explicit start converges to the same fit") {
+// The lambda start value was removed for 2.0; the test now checks that two tolerances agree.
+TEST_CASE("lomax: tol 1e-12 and 1e-10 give the same fit") {
   auto g = mltest::load_distribution_golden("lomax");
   const auto x = mltest::as_span(g.data);
   auto a = cppunivariate::lomax_mle(x, 1e-12, 200);
-  auto b = cppunivariate::lomax_mle(x, 1e-12, 200, 3.0 * a.lambda);
+  auto b = cppunivariate::lomax_mle(x, 1e-10, 200);
   CHECK(b.status == cppunivariate::LomaxStatus::Ok);
   CHECK(b.lambda == doctest::Approx(a.lambda).epsilon(1e-8));
   CHECK(b.kappa == doctest::Approx(a.kappa).epsilon(1e-8));
@@ -162,7 +163,7 @@ TEST_CASE("lomax P2 every held subset") {
   std::vector<double> x=g.data;
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> held{g.estimates.at("lambda"),g.estimates.at("kappa")};
-  { const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,200,nan,held[0],nan);
+  { const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,200,held[0],nan);
     CHECK(r.lambda==held[0]);
     CHECK(std::isfinite(r.kappa));
     CHECK(std::isfinite(r.logLik));
@@ -172,7 +173,7 @@ TEST_CASE("lomax P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
-  { const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,200,nan,nan,held[1]);
+  { const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,200,nan,held[1]);
     CHECK(std::isfinite(r.lambda));
     CHECK(r.kappa==held[1]);
     CHECK(std::isfinite(r.logLik));
@@ -182,7 +183,7 @@ TEST_CASE("lomax P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[0]));a[0]+=h;b[0]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
-  { const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,200,nan,held[0],held[1]);
+  { const auto r=cppunivariate::lomax_mle(mltest::as_span(x),1e-10,200,held[0],held[1]);
     CHECK(r.lambda==held[0]);
     CHECK(r.kappa==held[1]);
     CHECK(std::isfinite(r.logLik));
@@ -196,9 +197,9 @@ TEST_CASE("lomax P2 every held subset") {
 TEST_CASE("lomax P2 held boundaries and solver failure") {
   const std::vector<double> x{2,2,2};
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  CHECK(std::isfinite(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100,nan,2,nan).logLik));
-  CHECK(std::isfinite(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100,nan,nan,2).logLik));
-  CHECK(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,1,nan,nan,2).status==cppunivariate::LomaxStatus::IterationFailure);
+  CHECK(std::isfinite(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100,2,nan).logLik));
+  CHECK(std::isfinite(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100,nan,2).logLik));
+  CHECK(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,1,nan,2).status==cppunivariate::LomaxStatus::IterationFailure);
 }
 
 TEST_CASE("lomax: P3 unfinished optimizer is a failure") {
@@ -222,9 +223,9 @@ TEST_CASE("lomax: P3 Newton candidate and compressed profile reject exhaustion")
 TEST_CASE("lomax: verified extreme conditional bracket") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> x{1e300,2e300};
-  CHECK(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100,nan,nan,1e300).status==cppunivariate::LomaxStatus::IterationFailure);
+  CHECK(cppunivariate::lomax_mle(mltest::as_span(x),1e-10,100,nan,1e300).status==cppunivariate::LomaxStatus::IterationFailure);
   const std::vector<double> y{1,2};
-  const auto r=cppunivariate::lomax_mle(mltest::as_span(y),1e-10,100,nan,nan,1e300);
+  const auto r=cppunivariate::lomax_mle(mltest::as_span(y),1e-10,100,nan,1e300);
   REQUIRE(r.status==cppunivariate::LomaxStatus::Ok);
   CHECK(r.lambda==doctest::Approx(2e-300/3).epsilon(1e-9).scale(1e-300));
   CHECK(r.logLik==doctest::Approx(2*(std::log(2.0/3)-1)).epsilon(1e-10));
@@ -343,7 +344,7 @@ TEST_CASE("lomax: held kappa uses signed scaled logistic tails") {
   for(const auto& c:std::vector<Case>{{{1,2,3},1e-14,61111111111110.9798701},
       {{1e-200,1e200},1,1.00000000000000002408},
       {{1e-200,1e200,1e200,1e200},1./3,4.16333634234433733222e183}}) {
-    const auto r=cppunivariate::lomax_mle({c.x.data(),c.x.size()},1e-10,100,NAN,NAN,c.kappa);
+    const auto r=cppunivariate::lomax_mle({c.x.data(),c.x.size()},1e-10,100,NAN,c.kappa);
     REQUIRE(r.status==cppunivariate::LomaxStatus::Ok);
     // Independent 100-digit roots; two-valued cases also have a quadratic oracle.
     CHECK(r.lambda==doctest::Approx(c.reference).epsilon(1e-10));
@@ -352,7 +353,7 @@ TEST_CASE("lomax: held kappa uses signed scaled logistic tails") {
 
 TEST_CASE("lomax: held kappa does not hide an unrepresentable rate") {
   const std::vector<double> x{1e158,2e158};
-  CHECK(cppunivariate::lomax_mle({x.data(),x.size()},1e-10,100,NAN,NAN,1e158).status==cppunivariate::LomaxStatus::AccuracyFailure);
+  CHECK(cppunivariate::lomax_mle({x.data(),x.size()},1e-10,100,NAN,1e158).status==cppunivariate::LomaxStatus::AccuracyFailure);
 }
 
 #include "cppunivariate/distributions/lomax/censored.hpp"
@@ -370,7 +371,7 @@ TEST_CASE("lomax: right censoring independent 50-digit reference") {
     CHECK(r.kappa/c.coefficient==doctest::Approx(1).epsilon(1e-10));
     CHECK(r.logLik==doctest::Approx(c.logLik).epsilon(1e-12));
     if(std::string(c.label)=="0pct" || std::string(c.label)=="single") {
-      const auto exact=cppunivariate::lomax_mle(mltest::as_span(v),1e-10,1000,NAN,c.held,NAN);
+      const auto exact=cppunivariate::lomax_mle(mltest::as_span(v),1e-10,1000,c.held,NAN);
       CHECK(r.kappa/exact.kappa==doctest::Approx(1).epsilon(4*std::numeric_limits<double>::epsilon()));
       CHECK(r.logLik==doctest::Approx(exact.logLik).epsilon(2e-13));
     }

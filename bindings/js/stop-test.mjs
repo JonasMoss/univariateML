@@ -357,7 +357,7 @@ test('tlambda certificates keep contact ties, budget and collapse witnesses', ()
     assert.ok(Math.abs(e.candidates[0].mu+5/12)<1e-12);
     assert.ok(Math.abs(e.candidates[1].mu-5/12)<1e-12);return true;
   });
-  assert.throws(()=>api.tlambda.fit([-80/9,80/9],{sigma:1,lambda:-1},{reltol:1e-12,iterlim:64}), e=> {
+  assert.throws(()=>api.tlambda.fit([-80/9,80/9],{sigma:1,lambda:-1},{tol:1e-12,iterlim:64}), e=> {
     assert.equal(e.kind,'budget');assert.ok(Number.isFinite(e.loglik_lower));return true;
   });
   assert.throws(()=>api.tlambda.fit([2,2,5,9],{lambda:-1}), e=> {

@@ -24,7 +24,7 @@ r:
   density: core_dnbinom
   sampler: stats::rnbinom
   control:
-    reltol: "Relative tolerance on the Newton proposal; the certificate uses its own fixed accuracy."
+    tol: "Requested relative accuracy of `size` (default 1e-10): relative Newton step below `tol`. The certificate bracket has a fixed relative width of 5e-7 (see the known gap in the step 5c job 2b report)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     size: "Optional fixed nonnegative size (including fractional values); NULL estimates size."
     prob: "Optional held prob; NULL estimates it."

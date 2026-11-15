@@ -1238,7 +1238,7 @@ test('Bhattacharjee held certificates and quantitative numerical stops', async (
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
   const x=new Float64Array([-3,-1,0,1,2]);
-  const f=api.bhatt.fit(x,{sigma:1,a:2},{reltol:1e-10});
+  const f=api.bhatt.fit(x,{sigma:1,a:2},{tol:1e-10});
   assert.equal(f.status,'Ok');assert.equal(f.estimates.sigma,1);assert.equal(f.estimates.a,2);
   for(const controls of [{iterlim:1}]) {
     assert.throws(()=>api.bhatt.fit(x,{sigma:1,a:2},controls),e=>{
@@ -1246,7 +1246,7 @@ test('Bhattacharjee held certificates and quantitative numerical stops', async (
       assert.ok(e.loglik_lower<=e.loglik_upper);return true;
     });
   }
-  assert.throws(()=>api.bhatt.fit(x,{sigma:1,a:2},{reltol:1e-30}),e=>{
+  assert.throws(()=>api.bhatt.fit(x,{sigma:1,a:2},{tol:1e-30}),e=>{
     assert.equal(e.kind,'tolerance');assert.match(e.message,/numerical accuracy failure/i);
     assert.ok(e.candidates.length>0);
     const best=e.candidates.reduce((a,b)=>a.loglik_lower>b.loglik_lower?a:b);
@@ -1264,10 +1264,10 @@ test('Bhattacharjee held certificates and quantitative numerical stops', async (
 test('Bhattacharjee normal member distinguishes residual underflow and precision', async () => {
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
-  const f=api.bhatt.fit(new Float64Array([1e-200,2e-200]),{mu:0,a:0},{reltol:1e-10});
+  const f=api.bhatt.fit(new Float64Array([1e-200,2e-200]),{mu:0,a:0},{tol:1e-10});
   assert.equal(f.status,'Ok');assert.ok(Number.isFinite(f.logLik));
   assert.ok(Math.abs(f.estimates.sigma/1e-200-Math.sqrt(2.5))<1e-12);
-  assert.throws(()=>api.bhatt.fit(new Float64Array([1e16,1e16+2]),{a:0},{reltol:1e-10}),e=>{
+  assert.throws(()=>api.bhatt.fit(new Float64Array([1e16,1e16+2]),{a:0},{tol:1e-10}),e=>{
     assert.equal(e.kind,'numerical');assert.ok(e.candidates.length>0);return true;
   });
 });
@@ -1284,11 +1284,11 @@ test('Bhattacharjee physical comparisons and stopped likelihood witnesses', asyn
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
   try {
-    const f=api.bhatt.fit(new Float64Array([1]),{mu:-Number.EPSILON/4,sigma:1},{reltol:1e-10});
+    const f=api.bhatt.fit(new Float64Array([1]),{mu:-Number.EPSILON/4,sigma:1},{tol:1e-10});
     assert.ok(f.estimates.a>0,'an exterior distance cannot certify the normal member');
   } catch(e) {assert.ok(['unresolved','numerical','budget','tie'].includes(e.kind));}
   const x=new Float64Array([1e16,1e16+2]);
-  assert.throws(()=>api.bhatt.fit(x,{sigma:1},{reltol:1e-10}),e=>{
+  assert.throws(()=>api.bhatt.fit(x,{sigma:1},{tol:1e-10}),e=>{
     assert.ok(e.candidates.length>0);
     for(const c of e.candidates)if(c.model==='') {
       const ll=api.bhatt.d(x,[c.mu,c.sigma,c.a],{log:true}).reduce((a,b)=>a+b,0);
@@ -1881,7 +1881,7 @@ test('transformed profiles retain finite ulp-wide fits with explicit uncertified
     api.llogis.fit(y,{}, {tol:1e-10}),api.pareto3.fit(y,{min:0}),
     api.invburr.fit(x,{shape1:.855},{gradtol:1e-10}),
     api.gb2.fit(x,{shape1:1,shape3:.855},{gradtol:1e-10}),
-    api.fpareto.fit(x,{min:0,shape1:1,shape3:.855},{reltol:1e-10})];
+    api.fpareto.fit(x,{min:0,shape1:1,shape3:.855},{tol:1e-10})];
   for(const fit of fits){assert.equal(fit.status,'Ok');assert.equal(fit.certified,false);assert.ok(Number.isFinite(fit.logLik));}
 });
 

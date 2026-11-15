@@ -37,7 +37,7 @@ r:
     mu: Optional held mu; NULL estimates it.
     sigma: Optional positive held sigma; NULL estimates it.
     a: Optional nonnegative held a; NULL estimates it.
-    reltol: Relative search tolerance; certified fits require coefficient enclosures with sigma as the location floor.
+    tol: "Requested relative accuracy (default 1e-10); certified fits require coefficient enclosures with sigma as the location floor."
     iterlim: "Work limit: 1 * min(iterlim, 100000) iterations per solve and 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log((erf((x-mu+a)/(sqrt(2)*sigma))-erf((x-mu-a)/(sqrt(2)*sigma)))/(4*a))
 limits:
@@ -134,7 +134,7 @@ $u=b\mu$; holding $\sigma$ fixes $b$. Thus the held-width problems are
 concave on convex domains, including the location-only slice. An enclosed
 score root with negative definite local Hessian proves a unique global
 maximum. The numerical certificate requires a coefficient enclosure within
-`reltol`, with $\sigma$ as the natural location floor; a small score alone
+`tol`, with $\sigma$ as the natural location floor; a small score alone
 does not suffice. With free $\mu$, positive held $a$ and range greater than $2a$, the maximum is attained and unique.
 Holding $k=a/\sigma$ instead specifies a different concave slice. The
 normal member at held `a=0` keeps its closed-form fit when only the practical
@@ -219,7 +219,7 @@ whole $k\ge K$ tail by the uniform log likelihood plus
 $\max(0,n^2/(2K^2)-\log2)$. A finite
 winner is accepted only after every remaining width interval is excluded
 or covered by an isolated strictly concave winner region, its coefficient
-enclosure meets `reltol`, and its likelihood separates from both faces
+enclosure meets `tol`, and its likelihood separates from both faces
 and every other surviving winner. Indistinguishable certificate winners prevent certified acceptance.
 Unexcluded faces, failed enclosures and exhausted certificate budgets leave a successful existing search result uncertified. Stops remain when the search fails or an evaluated certificate witness proves its result wrong.
 In particular, numerical proximity to

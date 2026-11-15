@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_beta(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, double reltol = 1.490116e-08, int iterlim = 100) {
+inline FitResult fit_beta(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const Held shape1 = shape1_arg;
@@ -20,7 +20,7 @@ inline FitResult fit_beta(cppunivariate::span x, Held shape1_arg = {}, Held shap
   std::vector<std::string> fixed;
   if (shape1.supplied) fixed.push_back("shape1");
   if (shape2.supplied) fixed.push_back("shape2");
-  auto res = cppunivariate::beta_mle(x, reltol, iterlim, checked_shape1, checked_shape2);
+  auto res = cppunivariate::beta_mle(x, tol, iterlim, checked_shape1, checked_shape2);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

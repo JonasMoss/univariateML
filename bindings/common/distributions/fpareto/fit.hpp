@@ -4,7 +4,7 @@
 #include <cmath>
 #include <algorithm>
 namespace umvl_binding {
-inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held shape3_arg = {}, Held scale_arg = {}, Held min_arg = {}, double reltol = 1e-7, int iterlim = 1000) {
+inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held shape3_arg = {}, Held scale_arg = {}, Held min_arg = {}, double tol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape1 = shape1_arg;
@@ -19,7 +19,7 @@ inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held s
  if(shape2.supplied) { if(!(shape2.value>0) || !std::isfinite(shape2.value)) return invalid_argument(fail("Held parameters must be positive and finite.")); fixed.push_back("shape2"); }
  if(shape3.supplied) { if(!(shape3.value>0) || !std::isfinite(shape3.value)) return invalid_argument(fail("Held parameters must be positive and finite.")); fixed.push_back("shape3"); }
  if(scale.supplied) { if(!(scale.value>0) || !std::isfinite(scale.value)) return invalid_argument(fail("Held parameters must be positive and finite.")); fixed.push_back("scale"); }
- auto res=cppunivariate::fpareto_mle(x,min,reltol,iterlim,shape1.supplied ? shape1.value : std::numeric_limits<double>::quiet_NaN(),shape2.supplied ? shape2.value : std::numeric_limits<double>::quiet_NaN(),shape3.supplied ? shape3.value : std::numeric_limits<double>::quiet_NaN(),scale.supplied ? scale.value : std::numeric_limits<double>::quiet_NaN());
+ auto res=cppunivariate::fpareto_mle(x,min,tol,iterlim,shape1.supplied ? shape1.value : std::numeric_limits<double>::quiet_NaN(),shape2.supplied ? shape2.value : std::numeric_limits<double>::quiet_NaN(),shape3.supplied ? shape3.value : std::numeric_limits<double>::quiet_NaN(),scale.supplied ? scale.value : std::numeric_limits<double>::quiet_NaN());
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::FparetoStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

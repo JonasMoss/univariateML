@@ -212,19 +212,18 @@ inline LomaxResult lomax_newton_candidate(
 } // namespace cppunivariate
 #include "certificate.hpp"
 namespace cppunivariate {
-inline LomaxResult lomax_mle(span x, double tol, int maxit,
-    double lambda0 = std::numeric_limits<double>::quiet_NaN()) {
+inline LomaxResult lomax_mle(span x, double tol, int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
-  auto r=lomax_cert_detail::fit(x,tol,maxit,lambda0);
+  auto r=lomax_cert_detail::fit(x,tol,maxit);
   if(r.status!=LomaxStatus::Ok)return r;
   const auto polished=lomax_newton_candidate(x,tol,maxit,r.lambda);
   if(polished.status!=LomaxStatus::Ok)return polished;
   auto out=polished;out.iterations+=r.iterations;return out;
 }
 
-inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda0,double lambda,double kappa) {
+inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda,double kappa) {
   maxit = static_cast<int>(solver_budget(maxit));
-  if(std::isnan(lambda) && std::isnan(kappa))return lomax_mle(x,tol,maxit,lambda0);
+  if(std::isnan(lambda) && std::isnan(kappa))return lomax_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(lambda) && !(lambda>0 && std::isfinite(lambda))) ||
      (!std::isnan(kappa) && !(kappa>0 && std::isfinite(kappa))))return {nan,nan,nan,0,LomaxStatus::InvalidStart};

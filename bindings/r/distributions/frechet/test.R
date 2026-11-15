@@ -14,7 +14,7 @@ extreme_closed_density <- function(id, x, ..., log = FALSE) {
 test_that("frechet: held location, attained shape boundary and escape", {
  x <- qfrechet(p = (1:100 - 0.5)/100, lambda = 0.7, mu = 2, sigma = 3)
  f <- suppressWarnings(mlfrechet(x,mu=2), classes = "univariateML_restricted")
- b <- mlinvweibull(x-2,reltol=1e-10)
+ b <- mlinvweibull(x-2,tol=1e-10)
  expect_equal(unname(f["lambda"]),unname(b["shape"]),tolerance=1e-10)
  expect_equal(unname(f["sigma"]),unname(b["scale"]),tolerance=1e-10)
  expect_equal(attr(f,"logLik"),attr(b,"logLik"),tolerance=1e-10)

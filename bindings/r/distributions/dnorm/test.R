@@ -31,7 +31,7 @@ test_that("mldnorm detects escapes and validates all held subsets", {
   expect_error(mldnorm(c(0,.5,2)),"Non-integral")
   expect_error(mldnorm(c(0,1,2),sd=0),"held")
   expect_error(mldnorm(c(0,1,2),mean=Inf),"held")
-  expect_error(mldnorm(c(0,1,2),reltol=0),"control")
+  expect_error(mldnorm(c(0,1,2),tol=0),"control")
   expect_error(mldnorm(c(0,1,2),iterlim=0),"control")
   expect_error(mldnorm(c(0,1,2),iterlim=1),"converge")
   ff <- mldnorm(c(3,3),mean=2,sd=1)

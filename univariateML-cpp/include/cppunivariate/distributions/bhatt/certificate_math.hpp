@@ -270,6 +270,7 @@ inline CertRoot cert_validate_root(const CertModel& model,const std::array<doubl
     for(int i=0;i<3;++i) {
       if((i==0&&!std::isnan(model.mu))||(i==1&&!std::isnan(model.sigma))||(i==2&&!std::isnan(model.a)))continue;
       const double floor=i==0?coef[1].lo:coef[i].lo;
+      // The root enclosure is validated (interval Newton-Kantorovich), so its half-width is a proven bound on the error of each coefficient; requiring it to be at most tol times the coefficient (floored at the location floor) is the relative accuracy of the contract.
       const double target=tol*std::max(floor,i==0?(coef[0].lo<=0&&coef[0].hi>=0?0.:std::min(std::abs(coef[0].lo),std::abs(coef[0].hi))):floor);
       out.accurate=out.accurate&&coef[i].valid()&&target>0&&
         std::max(std::abs(center[i]-coef[i].lo),std::abs(coef[i].hi-center[i]))<=target;

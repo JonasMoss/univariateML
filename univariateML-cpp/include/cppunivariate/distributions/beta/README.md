@@ -31,7 +31,7 @@ r:
   control:
     shape1: Optional held shape1; `NULL` estimates it.
     shape2: Optional held shape2; `NULL` estimates it.
-    reltol: Requested relative accuracy of the free shapes (floored at `1e-14`).
+    tol: "Requested relative accuracy of the free shapes (default 1e-10, floored at `1e-14`)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: (shape1-1)*log(x) + (shape2-1)*log(1-x) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 references:
@@ -144,7 +144,7 @@ superlevel sets of a concave function are convex, so the profile over $\mu$
 is unimodal. Both levels are bracketed, safeguarded Newton root-finds in
 $\log t$ and $\operatorname{logit}\mu$, with exact profile derivatives;
 starts affect only speed. The outer bracket width is chosen so that both
-shapes reach relative accuracy `reltol`, including the quadratic
+shapes reach relative accuracy `tol`, including the quadratic
 sensitivity of $t$ to $\mu$ for concentrated data. The log-likelihood uses
 the same coordinates and Stirling remainders. Exhausted solves report
 numerical failure. Constant data have unbounded likelihood as both shapes

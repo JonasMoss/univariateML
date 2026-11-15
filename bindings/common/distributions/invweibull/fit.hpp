@@ -6,7 +6,7 @@
 #include <cmath>
 #include <vector>
 namespace umvl_binding {
-inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, Held shape0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -25,14 +25,7 @@ inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held
     fixed.push_back("scale");
   }
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (shape0.supplied) {
-    start = shape0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      return invalid_argument(fail("`shape0` must be a positive finite number."));
-    }
-  }
-  auto res = cppunivariate::invweibull_mle(x, reltol, iterlim, start, shape_held, scale_held);
+  auto res = cppunivariate::invweibull_mle(x, tol, iterlim, shape_held, scale_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -43,7 +36,7 @@ inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held
   const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if (res.status == cppunivariate::InvWeibullStatus::InvalidInput)
-    return done(fail("Inverse Weibull requires nonempty positive finite data, valid held parameters, positive reltol and positive iterlim."));
+    return done(fail("Inverse Weibull requires nonempty positive finite data, valid held parameters, positive tol and positive iterlim."));
   if (res.status == cppunivariate::InvWeibullStatus::Unbounded)
     return done(nomle("The invweibull maximum likelihood estimator does not exist: the likelihood is unbounded when all transformed observations equal the held scale."));
   if (res.status == cppunivariate::InvWeibullStatus::IterationFailure)

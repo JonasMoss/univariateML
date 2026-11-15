@@ -203,7 +203,7 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
      const double error=(v-(y+virtual_mu))+(virtual_mu-mu);
      exact=exact && error==0;excess.push_back(y);
    }
-   const auto r=invweibull_mle(span{excess.data(),excess.size()},tol,maxit,NAN,lambda,sigma);
+   const auto r=invweibull_mle(span{excess.data(),excess.size()},tol,maxit,lambda,sigma);
    FrechetResult out{r.shape,mu,r.scale,r.logLik,r.iterations,
      r.status==InvWeibullStatus::Ok?FrechetStatus::Ok:
      r.status==InvWeibullStatus::IterationFailure?FrechetStatus::IterationFailure:FrechetStatus::InvalidData};

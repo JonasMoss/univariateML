@@ -246,7 +246,7 @@ test_that("P3 bhatt returns the normal maximum as an attained member", {
 
 test_that("bhatt held certificates require quantitative convergence", {
   x <- c(-3,-1,0,1,2)
-  f <- mlbhatt(x,sigma=1,a=2,reltol=1e-10)
+  f <- mlbhatt(x,sigma=1,a=2,tol=1e-10)
   expect_equal(attr(f,"fixed"),c("sigma","a"))
   expect_equal(as.numeric(logLik(f)),sum(bhatt_oracle_density(x,f[["mu"]],1,2)),tolerance=1e-10)
   for(controls in list(list(iterlim=1))) {
@@ -260,7 +260,7 @@ test_that("bhatt held certificates require quantitative convergence", {
 
 test_that("bhatt tiny requested tolerance preserves a successful uncertified search", {
   x <- c(-3,-1,0,1,2)
-  e <- tryCatch(mlbhatt(x,sigma=1,a=2,reltol=1e-30),univariateML_numerical=identity)
+  e <- tryCatch(mlbhatt(x,sigma=1,a=2,tol=1e-30),univariateML_numerical=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_match(conditionMessage(e),"numerical accuracy failure")
   expect_gt(nrow(e$candidates),0L)
@@ -289,9 +289,9 @@ test_that("bhatt held certificates transport endpoint penalties and units", {
   # supremum remains checked in the core certificate tests.
   expect_equal(e$limit_loglik,sum(stats::dunif(x,e$estimates[["min"]],e$estimates[["max"]],log=TRUE)),tolerance=1e-12)
   x <- c(-3,-2,-1,0,.5,1,2,3)
-  f <- mlbhatt(x,a=.5,reltol=1e-10)
+  f <- mlbhatt(x,a=.5,tol=1e-10)
   for(s in c(1e-100,1e100)) {
-    g <- mlbhatt(s*x,a=.5*s,reltol=1e-10)
+    g <- mlbhatt(s*x,a=.5*s,tol=1e-10)
     expect_equal(as.numeric(g)/s,as.numeric(f),tolerance=1e-9)
     expect_equal(as.numeric(logLik(g))+length(x)*log(s),as.numeric(logLik(f)),tolerance=1e-10)
   }
@@ -300,7 +300,7 @@ test_that("bhatt held certificates transport endpoint penalties and units", {
 
 test_that("bhatt conditional normal RMS distinguishes underflow from collapse", {
   x <- c(1e-200,2e-200)
-  f <- mlbhatt(x,mu=0,a=0,reltol=1e-10)
+  f <- mlbhatt(x,mu=0,a=0,tol=1e-10)
   expect_equal(f[["sigma"]]/1e-200,sqrt(2.5),tolerance=1e-12)
   expect_true(is.finite(as.numeric(logLik(f))))
   expect_error(mlbhatt(rep(1e-200,2),mu=1e-200,a=0),"unbounded")
@@ -319,20 +319,20 @@ test_that("bhatt reports per-fit certification without suppressing search result
 })
 
 test_that("bhatt normal member inclusion fallback uses common_result", {
-  f <- mlbhatt(c(-3,-1,0,1,3),a=0,reltol=1e-30)
+  f <- mlbhatt(c(-3,-1,0,1,3),a=0,tol=1e-30)
   expect_identical(attr(f,"certified"),FALSE)
   expect_equal(as.numeric(f),c(0,2,0))
 })
 
 test_that("Bhatt retains a finite fit when the uniform comparison is unclosed", {
   x <- c(-1,1,rep(c(-.49161548692487145,.49161548692487145),10))
-  f <- mlbhatt(x,reltol=1e-14,iterlim=1000)
+  f <- mlbhatt(x,tol=1e-14,iterlim=1000)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
 # The outer certificate must preserve a diagnosed local accuracy stop.
 test_that("Bhattacharjee fallback retains the tolerance classification", {
-  e <- tryCatch(mlbhatt(c(-3,-1,0,1,2),sigma=1,a=2,reltol=1e-30),error=identity)
+  e <- tryCatch(mlbhatt(c(-3,-1,0,1,2),sigma=1,a=2,tol=1e-30),error=identity)
   expect_s3_class(e,"univariateML_tolerance")
   expect_s3_class(e,"univariateML_numerical")
   expect_gt(e$attainable_tol,1e-30)

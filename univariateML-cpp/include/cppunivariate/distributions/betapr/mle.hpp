@@ -197,7 +197,7 @@ inline BetaPrimeResult betapr_mle_holds_certificate(span x, double held_a, doubl
     (fb&&(!(held_b>0)||!std::isfinite(held_b))) ||
     (fs&&(!(held_s>0)||!std::isfinite(held_s)))) return invalid;
   if(held_a==1) {
-    auto r=lomax_mle(x,tol,maxit,NAN,fs?1/held_s:NAN,held_b);
+    auto r=lomax_mle(x,tol,maxit,fs?1/held_s:NAN,held_b);
     if(r.status==LomaxStatus::ExponentialLimit && !fallback_lomax_face_proved(x,maxit)) {
       r.status=LomaxStatus::IterationFailure;
       fallback_retain_unclosed_face(r.stop_detail,StopModel::Exp);
@@ -210,7 +210,7 @@ inline BetaPrimeResult betapr_mle_holds_certificate(span x, double held_a, doubl
       r.status==LomaxStatus::InvalidStart?BetaPrimeStatus::InvalidStart:BetaPrimeStatus::BfgsFailure,d,r.certificate_failure};
   }
   if(held_b==1) {
-    auto r=invpareto_mle(x,tol,maxit,NAN,held_a,held_s);
+    auto r=invpareto_mle(x,tol,maxit,held_a,held_s);
     if(r.status==LomaxStatus::ExponentialLimit){
       std::vector<double> reciprocal;for(double v:x)reciprocal.push_back(1/v);
       if(!fallback_lomax_face_proved(span{reciprocal.data(),reciprocal.size()},maxit)) {

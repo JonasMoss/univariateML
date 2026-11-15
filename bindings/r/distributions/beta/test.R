@@ -81,7 +81,7 @@ test_that("P2 held shape solves stop on exhausted brackets", {
 test_that("beta: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "beta", "golden.json"))
   x <- g$data
-  expect_error(mlbeta(x, iterlim=1, reltol=1e-10),
+  expect_error(mlbeta(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 

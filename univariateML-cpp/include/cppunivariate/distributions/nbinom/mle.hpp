@@ -201,7 +201,12 @@ inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
       newton_ok = false;
       break;
     }
-    if (std::abs(step) < (std::abs(size) * tol + tol)) break;
+    // f_over_df is the exact Newton step of the profile score, which is
+    // positive below the maximizer and negative above it. The step
+    // estimates the error before it, and the error after the applied step
+    // is quadratic in it. size > 0 has no location floor, so the bound is
+    // relative: |step| < tol * size, step applied.
+    if (std::abs(step) < std::abs(size) * tol) break;
   }
   if (newton_ok && iter <= maxit) {
     const double prob = size / (x_bar + size);

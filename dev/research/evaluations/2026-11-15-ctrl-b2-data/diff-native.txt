@@ -1,0 +1,38 @@
+== native 2594 2594 only old 0 only new 0
+beta {'cases': 115, 'changed': 38} max logLik rel 0.0027
+betapr {'cases': 212} max logLik rel 0
+bhatt {'cases': 173, 'changed': 27} max logLik rel 1.4e-16
+bnbinom {'cases': 135} max logLik rel 0
+burr {'cases': 220} max logLik rel 0
+dnorm {'cases': 79, 'changed': 45} max logLik rel 9.4e-16
+expweibull {'cases': 28} max logLik rel 0
+fpareto {'cases': 572, 'changed': 43, 'kindchg': 5} max logLik rel 1.9e-14
+frechet {'cases': 208} max logLik rel 0
+gompertz {'cases': 112, 'changed': 28} max logLik rel 3.6e-15
+invpareto {'cases': 116} max logLik rel 0
+invweibull {'cases': 112, 'changed': 6} max logLik rel 0
+lomax {'cases': 104} max logLik rel 0
+nbinom {'cases': 87, 'changed': 13} max logLik rel 1.5e-15
+pareto2 {'cases': 116} max logLik rel 0
+tlambda {'cases': 205, 'changed': 4} max logLik rel 0
+  max rel change beta shape1 1 case ('near-constant',)
+  max rel change beta shape2 1 case ('near-constant',)
+  max rel change bhatt a 6.05e-09 case ('000363',)
+  max rel change bhatt mu 8.94e-09 case ('000414',)
+  max rel change bhatt sigma 5.98e-09 case ('000400',)
+  max rel change dnorm mean 5e-10 case ('001126',)
+  max rel change dnorm sd 7.47e-10 case ('001116',)
+  max rel change fpareto scale 2.05e-11 case ('001696',)
+  max rel change fpareto shape1 4.32e-11 case ('001772',)
+  max rel change fpareto shape2 3.73e-11 case ('001788',)
+  max rel change fpareto shape3 5.24e-11 case ('001725',)
+  max rel change gompertz a 2.63e-08 case ('002793',)
+  max rel change gompertz b 9.62e-09 case ('002793',)
+  max rel change nbinom prob 7.56e-10 case ('two',)
+  max rel change nbinom size 2.04e-09 case ('two',)
+kind changes: 5
+   (('fpareto', 'archive', '001674'), ('ok', 'estimate', True), ('numerical', 'failure', None), 'GB2 certified delegate numerical stop; no verified maximum.')
+   (('fpareto', 'archive', '001675'), ('ok', 'estimate', True), ('numerical', 'failure', None), 'GB2 certified delegate numerical stop; no verified maximum.')
+   (('fpareto', 'archive', '001752'), ('ok', 'estimate', True), ('conditioning', 'failure', None), 'GB2 certified delegate numerical stop; no verified maximum.')
+   (('fpareto', 'archive', '010736'), ('ok', 'estimate', True), ('numerical', 'failure', None), 'GB2 certified delegate numerical stop; no verified maximum.')
+   (('fpareto', 'archive', '010745'), ('ok', 'estimate', True), ('numerical', 'failure', None), 'GB2 certified delegate numerical stop; no verified maximum.')

@@ -5,7 +5,7 @@
 #include <cmath>
 #include <algorithm>
 namespace umvl_binding {
-inline FitResult fit_gompertz(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_gompertz(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -24,7 +24,7 @@ inline FitResult fit_gompertz(cppunivariate::span x, Held a_arg = {}, Held b_arg
     fixed.push_back("b");
   }
 
-  auto res = cppunivariate::gompertz_mle(x, reltol, iterlim, a_held, b_held);
+  auto res = cppunivariate::gompertz_mle(x, tol, iterlim, a_held, b_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

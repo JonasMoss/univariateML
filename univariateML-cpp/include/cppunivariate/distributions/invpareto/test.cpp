@@ -45,7 +45,7 @@ TEST_CASE("invpareto P2 every held subset") {
   std::vector<double> x=g.data;
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> held{g.estimates.at("shape"),g.estimates.at("scale")};
-  { const auto r=cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,200,nan,held[0],nan);
+  { const auto r=cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,200,held[0],nan);
     CHECK(r.shape==held[0]);
     CHECK(std::isfinite(r.scale));
     CHECK(std::isfinite(r.logLik));
@@ -55,7 +55,7 @@ TEST_CASE("invpareto P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
-  { const auto r=cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,200,nan,nan,held[1]);
+  { const auto r=cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,200,nan,held[1]);
     CHECK(std::isfinite(r.shape));
     CHECK(r.scale==held[1]);
     CHECK(std::isfinite(r.logLik));
@@ -65,7 +65,7 @@ TEST_CASE("invpareto P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[0]));a[0]+=h;b[0]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
-  { const auto r=cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,200,nan,held[0],held[1]);
+  { const auto r=cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,200,held[0],held[1]);
     CHECK(r.shape==held[0]);
     CHECK(r.scale==held[1]);
     CHECK(std::isfinite(r.logLik));
@@ -79,9 +79,9 @@ TEST_CASE("invpareto P2 every held subset") {
 TEST_CASE("invpareto P2 held boundaries and solver failure") {
   const std::vector<double> x{2,2,2};
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  CHECK(std::isfinite(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,100,nan,2,nan).logLik));
-  CHECK(std::isfinite(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,100,nan,nan,2).logLik));
-  CHECK(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,1,nan,2,nan).status==cppunivariate::LomaxStatus::IterationFailure);
+  CHECK(std::isfinite(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,100,2,nan).logLik));
+  CHECK(std::isfinite(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,100,nan,2).logLik));
+  CHECK(cppunivariate::invpareto_mle(mltest::as_span(x),1e-10,1,2,nan).status==cppunivariate::LomaxStatus::IterationFailure);
 }
 
 
@@ -98,7 +98,7 @@ TEST_CASE("invpareto: deep tails and log inversion regressions") {
 TEST_CASE("invpareto: P3 held delegate preserves exhaustion") {
   const std::vector<double> values{.3,.8,1.7,4.2};
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  CHECK(cppunivariate::invpareto_mle(mltest::as_span(values),1e-9,1,nan,2,nan).status==cppunivariate::LomaxStatus::IterationFailure);
+  CHECK(cppunivariate::invpareto_mle(mltest::as_span(values),1e-9,1,2,nan).status==cppunivariate::LomaxStatus::IterationFailure);
 }
 
 TEST_CASE("inverse Pareto stop bounds include reciprocal Jacobian") {

@@ -431,7 +431,7 @@ struct WidthCertificate {
 } // namespace bhatt_detail
 
 namespace bhatt_detail {
-inline BhattResult certificate_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
+inline BhattResult certificate_mle(span x,double tol=1e-10,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
   const int budget=static_cast<int>(solver_budget(maxit));
   BhattResult bad={NAN,NAN,NAN,NAN,0,BhattStatus::InvalidInput};
   if(x.empty()||!(tol>0&&std::isfinite(tol))||budget<1||(!std::isnan(mu)&&!std::isfinite(mu))||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma)))||(!std::isnan(a)&&!(a>=0&&std::isfinite(a))))return bad;
@@ -536,7 +536,7 @@ inline BhattResult certificate_mle(span x,double tol=1e-8,int maxit=500,double s
 }
 } // namespace bhatt_detail
 
-inline BhattResult bhatt_mle_search(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
+inline BhattResult bhatt_mle_search(span x,double tol=1e-10,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
   auto certificate=bhatt_detail::certificate_mle(x,tol,maxit,sigma,a,mu);
   if(certificate.status==BhattStatus::Ok||certificate.status==BhattStatus::UniformLimit||
       certificate.status==BhattStatus::NormalLimit||certificate.status==BhattStatus::Unbounded){
@@ -621,7 +621,7 @@ inline BhattResult bhatt_mle_search(span x,double tol=1e-8,int maxit=500,double 
 } // namespace cppunivariate
 
 namespace cppunivariate {
-inline BhattResult bhatt_mle(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
+inline BhattResult bhatt_mle(span x,double tol=1e-10,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN) {
   auto r=bhatt_mle_search(x,tol,maxit,sigma,a,mu);
   // The normal face is an attained family member when width is free: a=0.
   // Canonicalize the legacy face label only after the normal coefficient gate.

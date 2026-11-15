@@ -74,7 +74,7 @@ def lomax_record(r, mask, held, estimates, shift=0.0):
 CLAIMS['pareto2'] = {
     'free': ('lomax certificate on y = x - min, shape = kappa, scale = 1/lambda: root half width 8e-7 in z, gain 1e-8, global cover',
              'lomax/certificate.hpp:100-101,118-119 (enclosure), :8 (margin); pareto2/mle.hpp:94-95 delegates with y = x - min'),
-    'shape held': ('held-kappa root on log(lambda), half width 0.75e-10', 'lomax/mle.hpp:273-288,299-305 (held-kappa bracket); pareto2/mle.hpp:94-95'),
+    'shape held': ('held-kappa root on log(lambda), half width 0.75e-10', 'lomax/mle.hpp:272-287,298-304 (held-kappa bracket); pareto2/mle.hpp:94-95'),
     'zeros, both free': ('unbounded (exact predicate); the shape-held root with zeros is not among the stored cases', 'pareto2/mle.hpp:23-27,50'),
 }
 
@@ -117,7 +117,7 @@ def replay_pareto2(r, data, budget):
 
 CLAIMS['invpareto'] = {
     'free': ('lomax certificate on y = 1/x, shape = kappa, scale = lambda', 'lomax/certificate.hpp:100-101,118-119; invpareto/mle.hpp:32-33'),
-    'shape held': ('held-kappa root on log(lambda), half width 0.75e-10', 'lomax/mle.hpp:273-288,299-305 (held-kappa bracket); invpareto/mle.hpp:42'),
+    'shape held': ('held-kappa root on log(lambda), half width 0.75e-10', 'lomax/mle.hpp:272-287,298-304 (held-kappa bracket); invpareto/mle.hpp:42'),
 }
 
 def replay_invpareto(r, data, budget):

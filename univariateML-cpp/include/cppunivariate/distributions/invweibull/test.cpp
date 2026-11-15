@@ -31,10 +31,11 @@ TEST_CASE("invweibull") {
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_invweibull).scale(0));
 }
 
-TEST_CASE("invweibull: explicit shape start and automatic default") {
+// The shape start value was removed for 2.0; the test now checks that two tolerances agree.
+TEST_CASE("invweibull: tol 1e-12 and 1e-10 agree") {
   auto g = mltest::load_distribution_golden("invweibull");
   auto a = cppunivariate::invweibull_mle(mltest::as_span(g.data), 1e-12, 200);
-  auto b = cppunivariate::invweibull_mle(mltest::as_span(g.data), 1e-12, 200, 1.2 * a.shape);
+  auto b = cppunivariate::invweibull_mle(mltest::as_span(g.data), 1e-10, 200);
   CHECK(b.shape == doctest::Approx(a.shape).epsilon(1e-9));
   CHECK(b.logLik == doctest::Approx(a.logLik).epsilon(1e-10));
 }
@@ -62,7 +63,7 @@ TEST_CASE("invweibull P2 every held subset") {
   std::vector<double> x=g.data;
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> held{g.estimates.at("shape"),g.estimates.at("scale")};
-  { const auto r=cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,200,nan,held[0],nan);
+  { const auto r=cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,200,held[0],nan);
     CHECK(r.shape==held[0]);
     CHECK(std::isfinite(r.scale));
     CHECK(std::isfinite(r.logLik));
@@ -72,7 +73,7 @@ TEST_CASE("invweibull P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
-  { const auto r=cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,200,nan,nan,held[1]);
+  { const auto r=cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,200,nan,held[1]);
     CHECK(std::isfinite(r.shape));
     CHECK(r.scale==held[1]);
     CHECK(std::isfinite(r.logLik));
@@ -82,7 +83,7 @@ TEST_CASE("invweibull P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[0]));a[0]+=h;b[0]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
-  { const auto r=cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,200,nan,held[0],held[1]);
+  { const auto r=cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,200,held[0],held[1]);
     CHECK(r.shape==held[0]);
     CHECK(r.scale==held[1]);
     CHECK(std::isfinite(r.logLik));
@@ -98,8 +99,8 @@ TEST_CASE("invweibull P2 held boundaries and solver failure") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   // Held scale 2 is held rate 0.5, which equals every reciprocal
   // observation 1/2: the unbounded face.
-  CHECK_FALSE(std::isfinite(cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,100,nan,nan,2.0).logLik));
-  CHECK(std::isfinite(cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,100,nan,2,nan).logLik));
+  CHECK_FALSE(std::isfinite(cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,100,nan,2.0).logLik));
+  CHECK(std::isfinite(cppunivariate::invweibull_mle(mltest::as_span(x),1e-10,100,2,nan).logLik));
 }
 
 TEST_CASE("invweibull: P3 unfinished optimizer is a failure") {
@@ -151,7 +152,7 @@ TEST_CASE("invweibull: raw transform audit case 4219") {
 TEST_CASE("invweibull: raw transform audit case 4283") {
   const std::vector<double> data{1e-200, 2e-200, 3e-200, 5e-200, 9e-200};
   const auto x=mltest::as_span(data);
-  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200, NAN, 1.928819454840455, 0.3434414370956311);
+  const auto fit=cppunivariate::invweibull_mle(x, 1e-10, 200, 1.928819454840455, 0.3434414370956311);
   CHECK(fit.status==cppunivariate::InvWeibullStatus::IterationFailure);
 }
 TEST_CASE("invweibull: raw transform audit case 4217") {
@@ -307,14 +308,14 @@ TEST_CASE("invweibull: raw transform audit case 4224") {
 
 TEST_CASE("invweibull: tiny held power retains the geometric-mean scale limit") {
   const std::vector<double> data{1,4};
-  const auto fit=cppunivariate::invweibull_mle(mltest::as_span(data),1e-10,100,NAN,1e-20,NAN);
+  const auto fit=cppunivariate::invweibull_mle(mltest::as_span(data),1e-10,100,1e-20,NAN);
   REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
   CHECK(fit.scale==doctest::Approx(2).epsilon(1e-14).scale(0));
 }
 
 TEST_CASE("invweibull: finite restored scale despite an overflowing scale multiplier") {
   const std::vector<double> data{1e-300,1e300,1e300,1e300};
-  const auto fit=cppunivariate::invweibull_mle(mltest::as_span(data),1e-10,100,NAN,1e-20,NAN);
+  const auto fit=cppunivariate::invweibull_mle(mltest::as_span(data),1e-10,100,1e-20,NAN);
   REQUIRE(fit.status==cppunivariate::InvWeibullStatus::Ok);
   // The finite-power correction to the geometric mean is below 1e-14.
   CHECK(fit.scale==doctest::Approx(1e150).epsilon(1e-12).scale(0));
