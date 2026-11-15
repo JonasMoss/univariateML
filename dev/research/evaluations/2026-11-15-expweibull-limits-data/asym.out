@@ -1,0 +1,25 @@
+power-face loss, n=2, m=1 ties at max, kappa=3.0948035, P=-1.59259872596
+  b=e^6  loss=0.0682357  predicted=0.0687955  ratio=0.991864  T=-4.897 (log kappa/b=-4.870)
+  b=e^8  loss=0.0134337  predicted=0.0134632  ratio=0.99781  T=-6.876 (log kappa/b=-6.870)
+  b=e^10  loss=0.00238301  predicted=0.00238406  ratio=0.999558  T=-8.871 (log kappa/b=-8.870)
+  b=e^12  loss=0.000398677  predicted=0.000398709  ratio=0.999921  T=-10.870 (log kappa/b=-10.870)
+  b=e^14  loss=6.42521e-5  predicted=6.4253e-5  ratio=0.999987  T=-12.870 (log kappa/b=-12.870)
+  b=e^16  loss=1.00888e-5  predicted=1.00888e-5  ratio=0.999998  T=-14.870 (log kappa/b=-14.870)
+power-face loss, n=6, m=1 ties at max, kappa=1.7807393, P=-8.15844710273
+  b=e^6  loss=0.104019  predicted=0.104296  ratio=0.997341  T=-5.436 (log kappa/b=-5.423)
+  b=e^8  loss=0.0212616  predicted=0.0212834  ratio=0.998975  T=-7.426 (log kappa/b=-7.423)
+  b=e^10  loss=0.00384967  predicted=0.00385054  ratio=0.999775  T=-9.424 (log kappa/b=-9.423)
+  b=e^12  loss=0.000652381  predicted=0.000652409  ratio=0.999958  T=-11.423 (log kappa/b=-11.423)
+  b=e^14  loss=0.000106062  predicted=0.000106063  ratio=0.999993  T=-13.423 (log kappa/b=-13.423)
+  b=e^16  loss=1.67588e-5  predicted=1.67588e-5  ratio=0.999999  T=-15.423 (log kappa/b=-15.423)
+p_c (P = I) = 0.642877808860373
+A(0.5) = 1.1479e-41  A(0.49)= 0.023724  A(0.51)= -0.02428
+p=0.20  P/n=-0.19056209 I/n=-1.5272562  max over grid of L/n = -0.19070205 (lb=12 T=-11.3)  rel to max(P,I) = -0.00014
+p=0.30  P/n=-0.4960272 I/n=-1.4754147  max over grid of L/n = -0.49613537 (lb=12 T=-11.6)  rel to max(P,I) = -0.0001082
+p=0.40  P/n=-0.68370927 I/n=-1.3689935  max over grid of L/n = -0.68379651 (lb=12 T=-11.8)  rel to max(P,I) = -8.724e-5
+p=0.50  P/n=-0.80685282 I/n=-1.2182202  max over grid of L/n = -0.80692417 (lb=12 T=-12.0)  rel to max(P,I) = -7.135e-5
+p=0.60  P/n=-0.88917438 I/n=-1.0192491  max over grid of L/n = -0.88923254 (lb=12 T=-12.2)  rel to max(P,I) = -5.816e-5
+p=0.65  P/n=-0.91921708 I/n=-0.89672818  max over grid of L/n = -0.8968337 (lb=-8 T=4365.2)  rel to max(P,I) = -0.0001055
+p=0.70  P/n=-0.94332506 I/n=-0.75340875  max over grid of L/n = -0.75355518 (lb=-8 T=4758.0)  rel to max(P,I) = -0.0001464
+p=0.80  P/n=-0.97685645 I/n=-0.36906749  max over grid of L/n = -0.36932007 (lb=-8 T=6000.0)  rel to max(P,I) = -0.0002526
+p=0.90  P/n=-0.99463948 I/n=0.30794057  max over grid of L/n = 0.30463272 (lb=-6 T=1205.5)  rel to max(P,I) = -0.003308

@@ -1,0 +1,458 @@
+{
+ "base6": {
+  "n": 6,
+  "P": -8.158447102727228,
+  "I": -9.677122737736688,
+  "A": 2.5124453663334947,
+  "invweibull": {
+   "shape": "2.31298768369",
+   "scale": "2.04270840676"
+  },
+  "power": {
+   "endpoint": "4.474230175167811",
+   "shape": "1.78073928313"
+  },
+  "best_profile_rel": [
+   12,
+   -0.00030229996705017617,
+   -12.274449220267819
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "A reachable power or inverse-Weibull face refutes the expweibull finit"
+  }
+ },
+ "two": {
+  "n": 2,
+  "P": -1.5925987259609844,
+  "I": -2.415333452307439,
+  "A": 0.0,
+  "invweibull": {
+   "shape": "3.71276968545",
+   "scale": "2.15155606903"
+  },
+  "power": {
+   "endpoint": "3.487363739010494",
+   "shape": "3.0948035256"
+  },
+  "best_profile_rel": [
+   12,
+   -0.00014270999540645036,
+   -12.000065212337859
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ },
+ "ties": {
+  "n": 6,
+  "P": -4.154744477131739,
+  "I": -5.292453667335051,
+  "A": 3.3828028016993117,
+  "invweibull": {
+   "shape": "4.83171210076",
+   "scale": "2.38657889661"
+  },
+  "power": {
+   "endpoint": "3.487363739010494",
+   "shape": "3.58992499942"
+  },
+  "best_profile_rel": [
+   0,
+   0.06539010366650529,
+   0.3526399223362734
+  ],
+  "verdict": "finite maximum",
+  "snapshot": {
+   "kind": "ok",
+   "message": ""
+  }
+ },
+ "half-ties": {
+  "n": 6,
+  "P": -5.693645444863282,
+  "I": -8.024723809085224,
+  "A": 3.0672706622536166,
+  "invweibull": {
+   "shape": "2.7135587848",
+   "scale": "1.92480233349"
+  },
+  "power": {
+   "endpoint": "3.487363739010494",
+   "shape": "2.43326808045"
+  },
+  "best_profile_rel": [
+   12,
+   -0.00032897292047606166,
+   -12.181216917220393
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "A reachable power or inverse-Weibull face refutes the expweibull finit"
+  }
+ },
+ "near-constant": {
+  "n": 3,
+  "P": 104.26791394999613,
+  "I": 104.49684725144328,
+  "A": -1.596344044428975,
+  "invweibull": {
+   "shape": "1.94037089186e+16",
+   "scale": "2.69897262808"
+  },
+  "power": {
+   "endpoint": "2.698972628080099",
+   "shape": "9.11631909158e+15"
+  },
+  "best_profile_rel": [
+   -8,
+   -0.00035602975104670644,
+   4484.074160747819
+  ],
+  "verdict": "inverse Weibull face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ },
+ "subnormal": {
+  "n": 3,
+  "P": 2230.5997541064417,
+  "I": 2229.455633527147,
+  "A": 0.7562149646072636,
+  "invweibull": {
+   "shape": "2.35176421089",
+   "scale": "7.1173813099e-324"
+  },
+  "power": {
+   "endpoint": "1.48219693752374e-323",
+   "shape": "1.99457820883"
+  },
+  "best_profile_rel": [
+   12,
+   -0.0001885830372658405,
+   -12.100156859948672
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ },
+ "tiny": {
+  "n": 6,
+  "P": 4145.484726140752,
+  "I": 4143.966050505743,
+  "A": 2.5124453663334942,
+  "invweibull": {
+   "shape": "2.31298768369",
+   "scale": "4.56549691632e-301"
+  },
+  "power": {
+   "endpoint": "1.0e-300",
+   "shape": "1.78073928313"
+  },
+  "best_profile_rel": [
+   12,
+   -0.00030229996705017617,
+   -12.274449220267819
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "A reachable power or inverse-Weibull face refutes the expweibull finit"
+  }
+ },
+ "huge": {
+  "n": 6,
+  "P": -4257.529462607899,
+  "I": -4259.048138242909,
+  "A": 2.512445366333495,
+  "invweibull": {
+   "shape": "2.31298768369",
+   "scale": "7.76134475775e+307"
+  },
+  "power": {
+   "endpoint": "1.7e+308",
+   "shape": "1.78073928313"
+  },
+  "best_profile_rel": [
+   12,
+   -0.00030229996705017617,
+   -12.274449220267819
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "A reachable power or inverse-Weibull face refutes the expweibull finit"
+  }
+ },
+ "offset": {
+  "n": 6,
+  "P": -9.21310941813817,
+  "I": -9.077308833513767,
+  "A": 1.1779817823840377,
+  "invweibull": {
+   "shape": "1.72991296072e+15",
+   "scale": "1.65995038975e+15"
+  },
+  "power": {
+   "endpoint": "1659950389748871.0",
+   "shape": "9.71678276926e+14"
+  },
+  "best_profile_rel": [
+   -1,
+   0.12446027239262222,
+   2.6929652941371582
+  ],
+  "verdict": "finite maximum",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull fit cannot restore accurate representable coefficients "
+  }
+ },
+ "wide": {
+  "n": 3,
+  "P": -14.719035538224029,
+  "I": -15.417888525750328,
+  "A": 0.42041569838099574,
+  "invweibull": {
+   "shape": "0.0757277846799",
+   "scale": "0.0015356173494"
+  },
+  "power": {
+   "endpoint": "269897262.8080099",
+   "shape": "0.0542868102379"
+  },
+  "best_profile_rel": [
+   12,
+   -0.0001717332790762545,
+   -12.202784780376412
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "A reachable power or inverse-Weibull face refutes the expweibull finit"
+  }
+ },
+ "tie3": {
+  "n": 3,
+  "P": -0.9339791851398763,
+  "I": -0.7050458836927185,
+  "A": -1.596344044428975,
+  "invweibull": {
+   "shape": "12.4580608752",
+   "scale": "2.78371482751"
+  },
+  "power": {
+   "endpoint": "3.487363739010494",
+   "shape": "5.85309018377"
+  },
+  "best_profile_rel": [
+   -8,
+   -0.00035587514957230156,
+   4485.272650151
+  ],
+  "verdict": "inverse Weibull face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ },
+ "n3-s0": {
+  "n": 3,
+  "P": -4.303383850756868,
+  "I": -5.144772620603133,
+  "A": 0.5505666313403638,
+  "invweibull": {
+   "shape": "1.8176942933",
+   "scale": "1.56391236527"
+  },
+  "power": {
+   "endpoint": "4.395417298714523",
+   "shape": "1.37688712651"
+  },
+  "best_profile_rel": [
+   12,
+   -0.00017661254644868953,
+   -12.172074829778136
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ },
+ "n3-s1": {
+  "n": 3,
+  "P": -2.348227443803235,
+  "I": -4.399996045962155,
+  "A": 1.0271149494419152,
+  "invweibull": {
+   "shape": "2.83592234602",
+   "scale": "2.20806810937"
+  },
+  "power": {
+   "endpoint": "3.601435695729578",
+   "shape": "3.30775749448"
+  },
+  "best_profile_rel": [
+   12,
+   -0.000238730265275829,
+   -11.841202433220147
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ },
+ "n3-s2": {
+  "n": 3,
+  "P": -0.9150221821333353,
+  "I": -1.0441724751430603,
+  "A": -0.45690371231346144,
+  "invweibull": {
+   "shape": "6.78259371954",
+   "scale": "1.74271932775"
+  },
+  "power": {
+   "endpoint": "2.478857024500651",
+   "shape": "3.82393222589"
+  },
+  "best_profile_rel": [
+   12,
+   -0.000156709879302209,
+   -12.303079962174483
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ },
+ "n3-s3": {
+  "n": 3,
+  "P": -5.667508752553533,
+  "I": -5.519909120780179,
+  "A": -1.2658304628478971,
+  "invweibull": {
+   "shape": "3.0341982335",
+   "scale": "2.91813536581"
+  },
+  "power": {
+   "endpoint": "7.094899133318449",
+   "shape": "1.49131084651"
+  },
+  "best_profile_rel": [
+   -8,
+   -0.0002927289733559831,
+   4324.360446981023
+  ],
+  "verdict": "inverse Weibull face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ },
+ "n7-s0": {
+  "n": 7,
+  "P": -12.5095071755071,
+  "I": -13.423981533274059,
+  "A": 2.2489239342306204,
+  "invweibull": {
+   "shape": "1.97638366892",
+   "scale": "2.21898445397"
+  },
+  "power": {
+   "endpoint": "6.18861835599311",
+   "shape": "1.32234731777"
+  },
+  "best_profile_rel": [
+   12,
+   -0.00031995394866079905,
+   -12.366024116506534
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "A reachable power or inverse-Weibull face refutes the expweibull finit"
+  }
+ },
+ "n7-s1": {
+  "n": 7,
+  "P": -13.202281582070485,
+  "I": -16.6958701900205,
+  "A": 4.270777527175727,
+  "invweibull": {
+   "shape": "1.76662124557",
+   "scale": "3.33442142674"
+  },
+  "power": {
+   "endpoint": "7.614542199174467",
+   "shape": "1.80274303076"
+  },
+  "best_profile_rel": [
+   12,
+   -0.0004057506430609227,
+   -12.103709931624117
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ },
+ "n7-s2": {
+  "n": 7,
+  "P": -9.494051436416006,
+  "I": -12.28451711033829,
+  "A": 2.010286680794814,
+  "invweibull": {
+   "shape": "2.13602918187",
+   "scale": "2.05629342017"
+  },
+  "power": {
+   "endpoint": "4.540653187768324",
+   "shape": "1.85423352725"
+  },
+  "best_profile_rel": [
+   12,
+   -0.0004098352851229959,
+   -12.092634723896492
+  ],
+  "verdict": "power face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ },
+ "n7-s3": {
+  "n": 7,
+  "P": -10.43845238048473,
+  "I": -9.8365345151858,
+  "A": -0.9767969122395239,
+  "invweibull": {
+   "shape": "3.69274690931",
+   "scale": "2.53642099174"
+  },
+  "power": {
+   "endpoint": "5.169149683738961",
+   "shape": "1.83297182584"
+  },
+  "best_profile_rel": [
+   -8,
+   -0.000252812956797082,
+   3866.1757676259836
+  ],
+  "verdict": "inverse Weibull face",
+  "snapshot": {
+   "kind": "numerical",
+   "message": "The expweibull likelihood search failed to find a locally verified max"
+  }
+ }
+}
