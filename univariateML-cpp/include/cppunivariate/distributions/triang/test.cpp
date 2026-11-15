@@ -553,3 +553,30 @@ TEST_CASE("triang: endpoint representation certificates against 400-digit profil
 TEST_CASE("triang: exact-input extreme arithmetic regression") {
   CHECK(cppunivariate::distributions::qtriang(-13.815510557964274,0.0,100000000.0,0.5,true,true) == doctest::Approx(50.25001237531874).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("triang: symmetric samples with free coefficients tie with the reflected fit (TASK-214.36)") {
+  // Archive 008159 and class `two`: for two observations the reflection
+  // maps the maximizer (a, b, c) to (s - b, s - a, s - c), s = min + max.
+  const std::vector<std::vector<double>> samples{
+    {0x1.b39c89419999ap-3,0x1.1cbb678066666p-1},
+    {0x1.51a7f854ccccdp-2,0x1.3acf968e00000p-1}};
+  for(const auto& x:samples) {
+    const auto r=cppunivariate::triang_mle(mltest::as_span(x));
+    CHECK(r.status==cppunivariate::TriangStatus::Ok);
+    CHECK(r.not_unique);
+    CHECK(r.reflection_tie);
+    CHECK_FALSE(cppunivariate::outcome(r).unique);
+    const double s=x[0]+x[1];
+    CHECK(std::abs(r.c-(s-r.c))>1e-3);
+    // Both fits have the same likelihood.
+    double lr=0,lm=0;
+    for(double z:x) {
+      lr+=cppunivariate::distributions::dtriang(z,r.a,r.b,r.c,true);
+      lm+=cppunivariate::distributions::dtriang(z,s-r.b,s-r.a,s-r.c,true);
+    }
+    CHECK(lr==doctest::Approx(lm).epsilon(1e-9));
+  }
+  // An asymmetric sample keeps unique = true.
+  const std::vector<double> y{0,1,3};
+  CHECK(cppunivariate::outcome(cppunivariate::triang_mle(mltest::as_span(y))).unique);
+}

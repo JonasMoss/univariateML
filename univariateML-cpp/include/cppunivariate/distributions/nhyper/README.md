@@ -173,7 +173,9 @@ These are numerical comparisons, not exact ordering certificates. A total
 budget of 10^7 candidate likelihood evaluations includes both passes;
 exceeding it, the exact-integer range, or encountering a nonfinite likelihood
 stops with numerical failure, without returning a partial maximum.
-New joint grids resolve ties silently; existing one-coordinate warnings remain.
+New joint grids resolve numerical ties silently; existing one-coordinate warnings
+remain. A constant sample with all coefficients free ties $(c,c,c)$ with
+$(N,N,c)$ ($m=N$ makes the first $c$ draws white) and is flagged not unique.
 
 ### Growing-population bound (2026-11-01)
 

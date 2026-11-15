@@ -140,7 +140,11 @@ freedom and a fully specified fit has zero. The reference receives
 
 Existing one-coordinate fits warn on ties and return the smaller count.
 When every admissible count is a maximizer, they warn and return the smallest.
-Joint grids resolve ties silently as described below. All counts must be
+Joint grids resolve numerical ties as described below, but the outcome is
+flagged not unique where an exact tie is proved: the likelihood is symmetric
+in $(m,k)$, so a returned $m\ne k$ ties with $(k,m)$; a constant sample
+ties $(c,c,c)$ with $(N,N,c)$; with the sample size one only $m/N$ enters.
+All counts must be
 below $2^{53}$, the exact whole-number range in double precision.
 To hold the failure count instead of the success count, fit `k - x`
 with `m` set to the known failure count. For the growing-population
@@ -161,7 +165,8 @@ These are numerical comparisons, not exact ordering certificates. A total
 budget of 10^7 candidate likelihood evaluations includes both passes;
 exceeding it, the exact-integer range, or encountering a nonfinite likelihood
 stops with numerical failure, without returning a partial maximum.
-New joint grids resolve ties silently; existing one-coordinate warnings remain.
+New joint grids resolve numerical ties silently; the exact ties above are flagged
+not unique with a warning, and the one-coordinate warnings remain.
 
 ### Growing-population bound (2026-11-01)
 

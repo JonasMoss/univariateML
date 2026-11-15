@@ -541,3 +541,15 @@ TEST_CASE("pig: all-zero counts with both coefficients free are not a unique max
   CHECK_FALSE(cppunivariate::outcome(r).unique);
   CHECK(cppunivariate::outcome(cppunivariate::pig_mle(pig_span(x),1e-10,200,2.5)).unique);
 }
+
+TEST_CASE("pig: shape held at 0 with a free mean leaves the mean unidentified") {
+  // (mu, 0) attains the same likelihood for every mu (TASK-214.37).
+  const std::vector<int> x{0,0,0,0};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto r=cppunivariate::pig_mle(pig_span(x),1e-10,200,nan,0.0);
+  CHECK(r.status==cppunivariate::PigStatus::Ok);
+  CHECK(r.shape==0);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  CHECK(cppunivariate::outcome(cppunivariate::pig_mle(pig_span(x),1e-10,200,2.5,0.0)).unique);
+}

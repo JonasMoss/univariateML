@@ -50,7 +50,14 @@ inline FitOutcome outcome(const FatigueResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status == FatigueStatus::SearchFailure && r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.status == FatigueStatus::SearchFailure && r.stop_detail.comparison_tie) return comparison_outcome_of(r);
+  if (r.status == FatigueStatus::SearchFailure && r.stop_detail.comparison_tie) {
+    // Two separated roots (the reciprocal-scale twins, exact for a constant
+    // sample) within the certificate's tie margin: every listed root is an
+    // accurate point, so the outcome is an uncertified estimate that is not
+    // unique and the payload lists both roots. Otherwise the comparison rule.
+    const auto tied = nonunique_outcome_of(r, false);
+    return tied.kind == OutcomeKind::Estimate ? tied : comparison_outcome_of(r);
+  }
   switch (r.status) {
     case FatigueStatus::Unsupported: return FitOutcome::failure(OutcomeReason::Unsupported);
     case FatigueStatus::Ok: return FitOutcome::estimate(true);

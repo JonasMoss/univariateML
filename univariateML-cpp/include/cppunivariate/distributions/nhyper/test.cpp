@@ -272,3 +272,15 @@ TEST_CASE("nhyper counts below a held stopping count are invalid data") {
   const auto r=cppunivariate::nhyper_mle(mltest::as_span(x),1,10,NAN);
   CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::InvalidInput);
 }
+
+TEST_CASE("nhyper: constant sample with all coefficients free is not unique (TASK-214.36)") {
+  // Archive 005151: (c, c, c) and (c + 1, c + 1, c) both have likelihood one.
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{8,8};
+  const auto r=cppunivariate::nhyper_mle(mltest::as_span(x),nan,nan,nan);
+  CHECK(r.status==cppunivariate::NhyperStatus::Ok);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  CHECK(cppunivariate::nhyper_log_pmf(8,0,8,8)==0);
+  CHECK(cppunivariate::nhyper_log_pmf(8,0,9,8)==0);
+}

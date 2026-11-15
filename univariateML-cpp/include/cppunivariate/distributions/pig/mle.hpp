@@ -371,7 +371,13 @@ inline PigResult pig_mle(ispan x, double tol=1e-10, int maxit=200,
       (fs && (!(shape>=0)||!std::isfinite(shape)))) return invalid;
   for (int k:x) if (k<0) return invalid;
   const pig_detail::Counts data(x);
-  if (shape==0) return data.average==0 ? PigResult{fm?mean:1,0,0,0,PigStatus::Ok} : invalid;
+  if (shape==0) {
+    if (data.average!=0) return invalid;
+    PigResult out{fm?mean:1,0,0,0,PigStatus::Ok};
+    // Shape held at 0, mean free: every mu has the same (zero) likelihood.
+    out.unique=fm;
+    return out;
+  }
   if (data.average==0 && !fs) {
     PigResult out{fm?mean:1,0,0,0,PigStatus::Ok};
     // Mean free: (mu, 0) attains the maximum for every mu.
