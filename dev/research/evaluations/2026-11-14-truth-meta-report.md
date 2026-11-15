@@ -58,8 +58,25 @@ Of the 74 tables whose fitted sampler point differed from the frozen golden, 72 
 
 ## Open entries
 
-1. `st`: truth table cannot be regenerated at the current golden fit (quadrature gate, above); its sampler point stays 6e-9 off the golden, and `truth-check` fails on it until the `st/truth.py` gate or the quantile bracketing is fixed.
+1. (resolved, section 7) `st`: generator fixed, table regenerated at the current golden fit.
 2. (resolved) hyper: no discrepancy, see section 5.
 3. `sged` natural tails near 1e-300 return NaN (TASK-220); needs a `dpqr.hpp` fix.
 4. Removed-family branches remain in `quality/reference*.py`, `fit-*.py`, `diagnostics.py` (outside truth tooling).
 5. The `bytes` mode of the regeneration test and the version bump rule need a full regeneration (with st) to become meaningful.
+
+## 7. st generator fix
+
+**Cause.** Not absurd bracketing: the failing call is `standard(z, alpha, nu)` with z = -sinh(1) = -1.1752, alpha = 0.10872382389965, nu = 4.8315112432615 (first bracketing step `lo=-1` of the quantile for the fitted point, via `verify`). There `A = z^2/nu = 0.2859`, the integration interval is a single piece (`full = 1`, so `end = full` and the remainder bound is 0, condition 2 holds), and condition 1 fails: Gauss-Legendre error estimate / value = 1.96e-27 > 1e-40. The integrand behaves like `r^nu` at its end `r = 0`, a non-analytic endpoint for non-integer nu, and the fixed cuts (0, 1) give only algebraic convergence at `maxdegree=8`.
+
+**Fix** (`st/truth.py` only, gate stays 1e-40 on both conditions). The original cut set is tried first; only if the gate fails are cuts added geometrically toward `end` (`end - end*2^-j`, j = 1..k, for k = 4, 8, 16, 32, 64, 128) and the quadrature repeated; the same gate applies to every attempt, and it still raises if none passes. Cases that passed before are computed exactly as before.
+
+**Evidence.**
+- Regenerated with `PYTHONPATH=dev/validation python3 -m quality truth st` (one slot, 295 s).
+- Original generator vs the new table, per point (`make(folder, [theta])`, scripts in /tmp): points with default/scale/location parameters (new indices 0, 2-5) and all extreme-parameter points (8-17) are bitwise identical (values and quantiles rows). The original generator now raises the same gate error at alpha = +-1, nu = 5 (points 6, 7) and at the fitted point, so for those it cannot be compared bitwise.
+- Stored (old) table vs new, matching the 17 shared points by parameter vector (the extreme points are emitted in a different order, as for hyper): 7220 numbers compared, 7156 identical, all others within relative 1e-15 (last bit) except 28 value cells where the old table stored a log-tail of exactly 0.0 and the new one stores -1e-300 / -1e-100 / -1e-1... (the zero-floor convention of the current harness; same in points where old and new generators agree bitwise, so not due to this fix).
+- The fitted point differs: old (-0.036539023191020197, 0.9203517925594821, 0.10872382324228061, 4.831511253373526), new (-0.03653902339831142, 0.9203517933038026, 0.10872382389965032, 4.831511243261548). Its quantile rows move by at most 3.5e-7 relative (the parameter shift, 6e-9, amplified in the tail).
+
+**Changed in `st/truth.json`.** `parameters` (fitted point; extreme-point order), the fitted point rows of `values` and `quantiles`, row order of the extreme points, the 28 zero-floor cells, last-bit quantile cells, and `input_sha256`. `normalization`, `sampler_points`, `historical_sampler_points` unchanged.
+
+**Tests.** `golden_drift.py`: none. `just truth-check`: 35 tests OK. `ctest -R '^distribution_st(_slow)?$'`: passes (reads truth.json at run time). `UMVL_TEST_FAMILIES=st just test`: FAIL 0, PASS 312. `UMVL_TEST_FAMILIES=st just js-test`: 226 pass, `st generated truth and sampler` ok.
+
