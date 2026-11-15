@@ -91,3 +91,19 @@ On `a1166cbf`, workstation, 2026-11-15:
 | JS | 586/586 |
 | relations | passed |
 | site check | passed |
+
+## Patch after the face fixes (2026-11-15)
+
+The gompertz, pig and cmp records of the native and double-only files were
+re-recorded on master `3cc23ca6` (after the face-fixes merge `e691bebe`) and replaced in place (`patched` in each
+`provenance.json`). Against the replaced records only the three fixed cases
+differ: pig and cmp `class/zeros` now carry `unique = false` in both modes,
+and gompertz `class/huge` in double-only mode is the native estimate instead
+of a certified exponential limit (TASK-214.32).
+
+`just strict` on the patched files with master's known list of 243 entries
+(after the face fixes, the integer and cover replays): fit-judge 16,
+fit-density 0, fit-consistency 80, fit-refine 46, cert-replay 100,
+strict-seam 1; no failure outside the list and none listed but passing
+(cert-replay rerun alone after its first run was terminated by another
+process; 1,520 CPU s).
