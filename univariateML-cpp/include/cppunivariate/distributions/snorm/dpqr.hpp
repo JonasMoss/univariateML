@@ -38,6 +38,10 @@ inline DD root(DD a) {
   const DD residual=add(a,negative(multiply({high,0},{high,0})));
   return sum(high,(residual.high+residual.low)/(2*high));
 }
+// log(DBL_MIN)=-1022*log(2). Natural probabilities below the smallest
+// normal double are exempt from the relative contract; the natural gate
+// applies whenever the exact value can still be normal.
+constexpr double log_smallest_normal=-708.39641853226410622;
 struct Coordinate {double value,log_normalizer,error,centering_error,square,log_value,log_error;bool thin,negative,valid;};
 inline Coordinate coordinate_with_moment(double x,double mean,double sd,double xi,DD moment,double log_base,double moment_error=0) {
   const double sign=xi<=1?1:-1;
@@ -101,7 +105,7 @@ inline double probability_with_moment(double x,double mean,double sd,double xi,D
    margin=other<-745?0:margin*std::exp(other-selected);
  }
  const double allowance=log?1e-11*std::max(1.0,std::abs(selected)):1e-11;
- if(std::isfinite(selected) && selected!=0 && (log || (selected>-700 && selected<-.01)) && margin>allowance)return special::kNaN;
+ if(std::isfinite(selected) && selected!=0 && (log || (selected+margin>=log_smallest_normal && selected<-.01)) && margin>allowance)return special::kNaN;
  return special::tail_probability(tails,lower,log);
 }
 inline double density(double x,double mean,double sd,double xi,bool log) {
@@ -138,7 +142,7 @@ inline double probability(double x,double mean,double sd,double xi,bool lower,bo
   const double allowance=log?1e-11*std::max(1.0,std::abs(selected)):1e-11;
   // A rounded zero/one on the natural scale needs no relative small-tail
   // comparison; finite logarithmic tails retain their forward-error gate.
-  if(std::isfinite(selected) && selected!=0 && (log || (selected>-700 && selected<-.01)) && margin>allowance) return special::kNaN;
+  if(std::isfinite(selected) && selected!=0 && (log || (selected+margin>=log_smallest_normal && selected<-.01)) && margin>allowance) return special::kNaN;
   return special::tail_probability(tails,lower,log);
 }
 }

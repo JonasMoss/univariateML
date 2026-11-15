@@ -1,0 +1,30 @@
+{
+ "binary": "../../../../build/sged-tail/eval-current",
+ "summary": {
+  "sged log": {
+   "checks": 1176,
+   "nan": 0,
+   "fail": 0,
+   "worst": 3.515506232126244e-14
+  },
+  "sged natural": {
+   "checks": 1047,
+   "nan": 0,
+   "fail": 0,
+   "worst": 1.056731183344546e-13
+  },
+  "sstd log": {
+   "checks": 840,
+   "nan": 0,
+   "fail": 0,
+   "worst": 3.737502428763916e-15
+  },
+  "sstd natural": {
+   "checks": 836,
+   "nan": 0,
+   "fail": 0,
+   "worst": 1.9745734195871393e-13
+  }
+ },
+ "findings": []
+}

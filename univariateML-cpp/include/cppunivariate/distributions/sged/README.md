@@ -816,6 +816,21 @@ central base mass. The returned quantile must pass either its relative
 error bound or the probability-error bound using $f\le2/\mathrm{sd}$.
 This resolves cancellation to a nearly zero median.
 
+Elsewhere the probability starts from the double radius $v$. Its log tail
+moves by about $\nu(v/\lambda)^\nu\approx\nu|\log p|$ per unit of
+$\log(v/\lambda)$, so this logarithm is formed from a two-word quotient
+with $\lambda$ held in two words; subtracting separately rounded
+$\log v$ and $\log\lambda$ cost up to $10^{-9}$ in natural tails at
+$\nu=10^4$. The evaluator error then stays within its reserved
+$2\cdot10^{-12}$ for $|\log p|\le709$, while the rounding of $v$ stays in
+the gate. Where the gate fails (natural tails beyond about
+$\nu|\log p|=1.8\cdot10^4$, such as $\log p<-600$ at $\nu=30$, and
+log tails at $\nu$ above about $2\cdot10^4$), the probability is evaluated on
+the three-word route above. The
+[tail sweep](../../../../../dev/research/evaluations/2026-11-14-sged-tail-report.md)
+finds no refusal and no contract failure for skewed members with
+$\log\mathrm{DBL\_MIN}\le\log p\le-0.01$.
+
 NaN remains the outcome when the propagated radius/power or tail bound
 exceeds its allowance, the centering sign cannot be resolved, or the moment
 or logarithmic coordinate is unrepresentable. The symmetric member uses

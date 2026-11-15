@@ -1,0 +1,13 @@
+--- a/univariateML-cpp/include/cppunivariate/distributions/ged/dpqr.hpp	2026-11-14 22:30:22.911344577 +0100
++++ b/univariateML-cpp/include/cppunivariate/distributions/ged/dpqr.hpp	2026-11-14 22:58:14.997390999 +0100
+@@ -99,6 +99,10 @@
+   if(nu>=1e6 && std::isfinite(q) && q!=mean)
+     return ged_detail::probability_precise(ged_detail::physical_radius(q,mean,sd,nu),nu,-std::log(2.),q<mean,lower_tail,log_p);
+   la=special::log_abs_difference(q,mean)-std::log(sd)-fs::ged_logscale(nu);
++  // PROTOTYPE (TASK-220 report only): the double log radius la carries a
++  // few ulps; the log tail moves by about nu*(x+1)*dla, x=exp(nu*la).
++  if(std::isfinite(q) && q!=mean && std::isfinite(la) && nu*(std::exp(nu*la)+1)*8*std::numeric_limits<double>::epsilon()>1e-12)
++    return ged_detail::probability_precise(ged_detail::physical_radius(q,mean,sd,nu),nu,-std::log(2.),q<mean,lower_tail,log_p);
+   const double small = -std::log(2.0) + ged_detail::gamma_power_log(la,nu,false);
+   const double result = ((q < mean) == lower_tail) ? small : fs::log1mexp(small);
+   return log_p ? result : std::exp(result);

@@ -68,7 +68,7 @@ function checkTruth(f) {
    check('log_d',row,call('d',x,p),d,close(call('d',x,p),d,1e-10));
    for(const [lower,b] of [[true,l],[false,u]]) {
     const a=call('p',x,p,lower);check(lower?'log_lower':'log_upper',row,a,b,close(a,b,1e-10));
-    const natural=Math.exp(b);if(natural>1e-300){const got=call('p',x,p,lower,false);check(lower?'lower':'upper',row,got,natural,Number.isFinite(got)&&Math.abs(got-natural)<=1e-10*natural);}
+    const natural=Math.exp(b);if(natural>=2.2250738585072014e-308){/* below the smallest normal the contract exempts the natural scale */const got=call('p',x,p,lower,false);check(lower?'lower':'upper',row,got,natural,Number.isFinite(got)&&Math.abs(got-natural)<=1e-10*natural);}
    }
   }
   for(const row of t.quantiles){const [i,lower,log,x,b,lo,hi,lattice,abs]=row,a=call('q',x,t.parameters[i],!!lower,!!log);

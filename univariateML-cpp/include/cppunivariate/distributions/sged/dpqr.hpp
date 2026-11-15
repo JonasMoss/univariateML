@@ -50,6 +50,31 @@ inline double input_error(double x,double mean,double sd,double sigma,double mu,
   const double scale=std::abs(z)>dz ? (z<0?1/xi:xi) : std::min(xi,1/xi);
   return dz/scale+32*std::numeric_limits<double>::epsilon()*std::abs(v);
 }
+// log(v/s) for the unit-variance GED scale s, held in two words. The log
+// tail moves by about nu*(v/s)^nu per unit of this logarithm, so the
+// rounding of log(v) and of log(s) in log(v)-log(s) is amplified by
+// nu*|log p| in the far tail. A two-word quotient leaves an error of a few
+// ulps of the result itself.
+inline double log_scaled_radius(double v,double nu) {
+  if(!(v>0))return v==0?special::kNegInf:special::kNaN;
+  static thread_local double last=0;
+  static thread_local snorm_detail::DD scale{1,0};
+  if(nu!=last) {
+    const auto s=special::three_word::exponential(ged_detail::logscale_precise(nu));
+    scale=snorm_detail::sum(s.high,s.low);
+    last=nu;
+  }
+  const double q=v/scale.high;
+  // With q normal, v-q*s.high is exact; r=q+correction is v/s to O(eps^2).
+  // Outside that range |log(v/s)|>700 and the plain difference has
+  // relative error of a few eps, which neither tail amplifies there.
+  if(!(q>=4*std::numeric_limits<double>::min() && q<=std::numeric_limits<double>::max()/4))
+    return std::log(v)-std::log(scale.high)-scale.low/scale.high;
+  const double correction=(std::fma(-q,scale.high,v)-q*scale.low)/scale.high;
+  // q-1 is exact on [1/2,2] (Sterbenz).
+  if(q>=.5 && q<=2)return std::log1p((q-1)+correction);
+  return std::log(q)+correction/q;
+}
 } // namespace sged_detail
 inline double sged_logradius_density(const snorm_detail::Coordinate &c,double nu,bool log) {
  if(!c.valid || !std::isfinite(c.log_value) || !std::isfinite(c.log_error))return special::kNaN;
@@ -77,7 +102,7 @@ inline double sged_logradius_probability(const snorm_detail::Coordinate &c,doubl
  const double selected=lower?tails.lower:tails.upper;
  double margin=c.log_error*(nu*cost+std::max(0.0,nu-1));
  if(selected>-.6931471805599453)margin=direct<-745?0:margin*std::exp(direct-selected);
- if(std::isfinite(selected) && selected!=0 && (log || selected>-700) && margin>(log?1e-11*std::max(1.0,std::abs(selected)):1e-11))return special::kNaN;
+ if(std::isfinite(selected) && selected!=0 && (log || selected+margin>=snorm_detail::log_smallest_normal) && margin>(log?1e-11*std::max(1.0,std::abs(selected)):1e-11))return special::kNaN;
  return special::tail_probability(tails,lower,log);
 }
 // Recompute the moment and the physical residual before rounding the radius.
@@ -211,9 +236,9 @@ inline double psged(double q, double mean, double sd, double nu, double xi, bool
     const double low=coordinate.value-coordinate.error;
     if(coordinate.valid && low>0 && nu*(std::log(low)-ls)>std::log(std::numeric_limits<double>::max())+2 && 1/nu<std::numeric_limits<double>::max()/4)
       return special::tail_probability(special::tails_from_log(special::kNegInf,coordinate.negative),lower_tail,log_p);
-    return snorm_detail::probability_with_moment(q,mean,sd,xi,{moment.value.high,moment.value.low},lower_tail,log_p,
-      [nu](double v){return pged(v,0,1,nu,false,true);},
-      [nu,ls](double v){return ged_detail::gamma_power_log(std::log(v)-ls,nu,true);},
+    const double fast=snorm_detail::probability_with_moment(q,mean,sd,xi,{moment.value.high,moment.value.low},lower_tail,log_p,
+      [nu](double v){return -.69314718055994530942+ged_detail::gamma_power_log(sged_detail::log_scaled_radius(v,nu),nu,false);},
+      [nu](double v){return ged_detail::gamma_power_log(sged_detail::log_scaled_radius(v,nu),nu,true);},
       [nu,ls](double v,double e){
         const double low=std::max(0.0,v-e),high=v+e;
         if(nu<1) {
@@ -227,6 +252,13 @@ inline double psged(double q, double mean, double sd, double nu, double xi, bool
         const double rounding=16*std::numeric_limits<double>::epsilon()*(1+std::abs(density)+std::abs(tail));
         return std::exp(density-tail+rounding);
       },moment.error);
+    // A refusal means the double radius cannot certify this tail: the GED
+    // log tail moves by about nu*|log p| times a relative radius error, so
+    // the rounded radius alone can exceed the gate at large nu. The
+    // three-word route keeps the radius and its logarithm and encloses the
+    // tail between the radius-error endpoints; it refuses on its own gate.
+    if(std::isnan(fast) && nu>=.05)return sged_precise(q,mean,sd,nu,xi,false,lower_tail,log_p);
+    return fast;
   }
   double mu = 0.0;
   const double sigma = fs::sged_sigma(nu, xi, mu);
