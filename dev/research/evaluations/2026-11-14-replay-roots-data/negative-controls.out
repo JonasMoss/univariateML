@@ -1,0 +1,19 @@
+ok   C gumbel sigma x(1+1e-6), all free                   gumbel/archive/002948: root  {'root': 'fails'}
+ok   C gumbel sigma x(1+1e-6), mu held                    gumbel/archive/002964: root  {'root': 'fails'}
+ok   C weibull shape x(1+1e-6), all free                  weibull/archive/008370: root  {'root': 'fails'}
+ok   C kumar a x(1+1e-6)                                  kumar/archive/004288: root  {'root': 'fails', 'root-b': 'info'}
+ok   C hcauchy sigma x(1+1e-6)                            hcauchy/archive/003032: root  {'root': 'fails'}
+ok   C lgser theta x(1-1e-6)                              lgser/archive/004492: root  {'root': 'fails'}
+ok   C yulesimon rho x(1+1e-6)                            yulesimon/archive/008446: root  {'root': 'fails'}
+ok   C beta shape2 x(1+1e-6), shape1 held                 beta/archive/000109: root  {'root': 'fails'}
+ok   C beta shape1 x(1+1e-3), all free                    beta/archive/000090: root  {'root': 'fails'}
+ok   C gamma shape x(1+1e-3), all free                    gamma/archive/001976: root  {'root': 'fails', 'root-tol': 'fails'}
+ok   C genbeta shape3 x(1+1e-6), a, b, scale held         genbeta/archive/002541: root  {'root': 'fails'}
+ok   C gev mu + 1e-6 sigma, sigma and xi held             gev/archive/002760: root  {'root': 'fails'}
+ok   C pois+zero=truncated lambda x(1+1e-6)               pois+zero=truncated/archive/009292: moment  {'moment': 'fails'}
+ok   B lnorm meanlog x(1+1e-2), all free                  lnorm/archive/004594: restore  {'restore': 'fails'}
+ok   B logitnorm mu + 0.5, all free                       logitnorm/archive/004738: restore  {'restore': 'fails'}
+ok   B invgamma beta x(1+1e-1), all free                  invgamma/archive/003752: restore  {'restore': 'fails', 'root': 'holds'}
+ok   B llogis scale x(1+1e-1), all free                   llogis/archive/004518: restore  {'restore': 'fails', 'root': 'holds'}
+ok   B invweibull scale x(1+1e-1), all free               invweibull/archive/004212: restore  {'restore': 'fails', 'root': 'holds'}
+ok   C gev mu*, sigma and xi held                         gev positive control at mu*: holds

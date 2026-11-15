@@ -498,12 +498,20 @@ def lomax_local_max(p, z):
 # ---------------------------------------------------------------- driver
 
 REPLAYS = {'nbinom': replay_nbinom, 'lomax': replay_lomax}
+import cert_replay_roots   # mechanisms B and C: scalar roots and represented likelihood (cert_replay_roots.py)
+REPLAYS.update(cert_replay_roots.REPLAYS)
 
 def rebuild(family, archive):
-    meta, _ = fs.read(family)
-    names = [p['name'] for p in meta['params']]
-    return {(c['source'], c['case']): (c, hashlib.sha256(fs.line(c, names).encode()).hexdigest()[:16])
-            for c in fs.cases(family, archive)}
+    routes = {route['id']: ident for ident, route in fs.ROUTES.items()}   # modifier routes are recorded under their route id
+    ident = routes.get(family, family)
+    fs.ROUTE_MODE = family in routes
+    try:
+        meta, _ = fs.read(ident)
+        names = [p['name'] for p in meta['params']]
+        return {(c['source'], c['case']): (c, hashlib.sha256(fs.line(c, names).encode()).hexdigest()[:16])
+                for c in fs.cases(ident, archive)}
+    finally:
+        fs.ROUTE_MODE = False
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
