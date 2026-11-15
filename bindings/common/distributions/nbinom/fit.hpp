@@ -5,7 +5,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_nbinom(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_nbinom(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held size = size_arg;
@@ -15,7 +15,7 @@ inline FitResult fit_nbinom(cppunivariate::ispan x, Held size_arg = {}, Held pro
   if ((size.supplied && !std::isfinite(size.value)) ||
       (prob.supplied && !std::isfinite(prob.value)))
     return invalid_argument(fail("Held size and prob must be finite."));
-  const auto r=cppunivariate::nbinom_mle(x,reltol,iterlim,
+  const auto r=cppunivariate::nbinom_mle(x,tol,iterlim,
       size.supplied?size.value:nan,prob.supplied?prob.value:nan);
   const auto o=cppunivariate::outcome(r);
   const auto done=[&](FitResult out) {

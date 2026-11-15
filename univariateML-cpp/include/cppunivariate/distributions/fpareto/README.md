@@ -44,7 +44,7 @@ r:
   sampler: rfpareto
   control:
     min: Known finite lower endpoint.
-    reltol: Delegate fitting tolerance.
+    tol: "Requested relative accuracy of the free coefficients (default 1e-10), passed to the GB2 delegate."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape2)-log((x-min))-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log((x-min)/scale)-(shape3+shape1)*log(1+((x-min)/scale)**shape2)
 limits:

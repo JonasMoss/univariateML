@@ -238,7 +238,13 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
     if (b <= 0.0 || !std::isfinite(b)) {
       return {kNaN, kNaN, kNaN, iter, GompertzStatus::IterationFailure};
     }
-    if (std::abs(step) < (std::abs(b) * tol + tol)) break;
+    // The profile is strictly concave in b (see above), so the Newton step
+    // is the first-order error of the iterate before the step and the error
+    // after the applied step is quadratic in it. The data are standardized
+    // to mean 1, so b is the public b times the mean, and a relative bound
+    // on the step is the contract's relative bound on b (b > 0 has no
+    // location floor). The step has been applied when the test is made.
+    if (std::abs(step) < std::abs(b) * tol) break;
   }
 
   double sum_exp_bx = 0.0;

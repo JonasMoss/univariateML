@@ -1047,7 +1047,7 @@ inline void route_invpareto(cppunivariate::span x, audit::Held shape_arg = {}, a
       (void)0;
     }
   }
-  auto res = cppunivariate::invpareto_mle(x, reltol, iterlim, start, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = cppunivariate::invpareto_mle(x, reltol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_invtrgamma(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double reltol = 1e-10, int iterlim = 100) {
@@ -1092,7 +1092,7 @@ inline void route_invweibull(cppunivariate::span x, audit::Held shape_arg = {}, 
       (void)0;
     }
   }
-  auto res = cppunivariate::invweibull_mle(x, reltol, iterlim, start, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = cppunivariate::invweibull_mle(x, reltol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_kumar(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
@@ -1265,7 +1265,7 @@ inline void route_lomax(cppunivariate::span x, audit::Held lambda_arg = {}, audi
       (void)0;
     }
   }
-  auto res = cppunivariate::lomax_mle(x, reltol, iterlim, start, lambda_held, kappa_held); audit::observe(res, {{"lambda",res.lambda,0,INFINITY,false,false},{"kappa",res.kappa,0,INFINITY,false,false}});
+  auto res = cppunivariate::lomax_mle(x, reltol, iterlim, lambda_held, kappa_held); audit::observe(res, {{"lambda",res.lambda,0,INFINITY,false,false},{"kappa",res.kappa,0,INFINITY,false,false}});
 }
 
 inline void route_lst(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held df_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {

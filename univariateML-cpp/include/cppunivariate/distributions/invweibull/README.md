@@ -31,8 +31,7 @@ r:
   control:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.
-    shape0: Optional positive finite compatibility hint; the bracketed solve does not require a start.
-    reltol: Positive relative accuracy tolerance for the centered Gumbel shape bracket.
+    tol: "Requested relative accuracy of the centered Gumbel shape bracket (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(shape) + shape*log(scale) - (shape + 1)*log(x) - (x/scale)**(-shape)
 references:
@@ -139,10 +138,10 @@ The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-2
 
 ## R notes
 
-The optional `shape0` compatibility hint must be positive and finite. The bracketed profile solve does not depend on a starting shape.
+The bracketed profile solve does not use a starting shape; the `shape0` argument was removed for 2.0.
 
 ## Decision history
 
-The former Newton starting control is retained as a validated compatibility argument.
+The former Newton starting control `shape0` was removed (2026-11-15, step 5c).
 
 2026-10-31 (diagnostic contract): Empty or invalid input carries a non-success status. Degeneracy depends on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.

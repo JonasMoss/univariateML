@@ -15,7 +15,7 @@ inline LomaxCensoredResult lomax_censored_mle(CensoredData x, double lambda=NAN,
   // Preserve exact-data rounding when its result agrees with the stable
   // closed form well inside the 1e-10 coefficient accuracy contract.
   if(r.status==ExpCensoredStatus::Ok && classify_censored(x).exact==x.lower.size()) {
-    const auto exact=lomax_mle(x.lower,1e-10,1000,NAN,lambda,NAN);
+    const auto exact=lomax_mle(x.lower,1e-10,1000,lambda,NAN);
     if(exact.status==LomaxStatus::Ok && std::abs(exact.kappa/r.coefficient-1)<1e-12)
       return {lambda,exact.kappa,exact.logLik};
   }

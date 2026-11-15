@@ -26,7 +26,7 @@ r:
   control:
     mean: "Optional held value; NULL estimates it."
     sd: "Optional positive held value; NULL estimates it."
-    reltol: "Tolerance for the Newton decrement."
+    tol: "Requested relative accuracy (default 1e-10): stop when the Newton decrement is at most `tol^2 n`, then apply the step."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "log((erf((x + 1 - mean)/(sqrt(2)*sd)) - erf((x - mean)/(sqrt(2)*sd)))/2)"
 limits:
@@ -112,7 +112,7 @@ The [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-d
 With both parameters free, constant samples and samples on two adjacent integers have no finite maximum likelihood estimate. The limiting adjacent-cell probabilities equal their observed proportions.
 Both held parameters evaluate the likelihood without fitting. With one parameter held the fitter handles its distinct boundary conditions explicitly.
 
-The grouped normal log likelihood is strictly concave in $(\mu/\sigma,1/\sigma)$; the fitter uses damped Newton iteration in centred versions of these coordinates. With both parameters free, every sample with range at least two has a unique finite maximum. Holding $\sigma$ gives a unique finite location fit even for constant data. Holding $\mu$ gives a finite scale fit unless every observed cell closure contains that mean, in which case the zero-scale limit wins.
+The grouped normal log likelihood is strictly concave in $(\mu/\sigma,1/\sigma)$; the fitter uses damped Newton iteration in centred versions of these coordinates. It stops when the Newton decrement is at most $\texttt{tol}^2 n$ and applies that last Newton step, so the returned point is within order $\texttt{tol}^2$ of the maximizer. With both parameters free, every sample with range at least two has a unique finite maximum. Holding $\sigma$ gives a unique finite location fit even for constant data. Holding $\mu$ gives a finite scale fit unless every observed cell closure contains that mean, in which case the zero-scale limit wins.
 
 Reference: Burridge, J. (1981). A Note on Maximum Likelihood Estimation for Regression Models Using Grouped Data. Journal of the Royal Statistical Society, Series B (Methodological), 43(1), 41–45. https://doi.org/10.1111/j.2517-6161.1981.tb01146.x.
 

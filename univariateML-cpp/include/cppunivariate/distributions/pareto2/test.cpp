@@ -67,7 +67,7 @@ TEST_CASE("Pareto II held coefficients use exact Lomax coordinates") {
  const std::vector<double> x{2,3,4,7,12},y{1,2,3,6,11};
  for(double shape:{double(NAN),2.})for(double scale:{double(NAN),3.}) {
   const auto r=cppunivariate::pareto2_mle(mltest::as_span(x),1,1e-10,1000,shape,scale);
-  const auto p=cppunivariate::lomax_mle(mltest::as_span(y),1e-10,1000,NAN,std::isnan(scale)?scale:1/scale,shape);
+  const auto p=cppunivariate::lomax_mle(mltest::as_span(y),1e-10,1000,std::isnan(scale)?scale:1/scale,shape);
   CHECK(static_cast<int>(r.status)==static_cast<int>(p.status));
   if(r.status==cppunivariate::Pareto2Status::Ok){CHECK(r.logLik==doctest::Approx(p.logLik));CHECK(r.shape==doctest::Approx(p.kappa));CHECK(r.scale==doctest::Approx(1/p.lambda));}
  }

@@ -5,8 +5,8 @@
 Rcpp::List mlbhatt_(const Rcpp::NumericVector& x,
     Rcpp::Nullable<double> sigma=R_NilValue,
     Rcpp::Nullable<double> a=R_NilValue,
-    double reltol=1e-8,int iterlim=500, Rcpp::Nullable<double> mu=R_NilValue) {
-  const auto fit=umvl_binding::fit_bhatt(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, common_held(mu), common_held(sigma), common_held(a), reltol, iterlim);
+    double tol = 1e-10,int iterlim=500, Rcpp::Nullable<double> mu=R_NilValue) {
+  const auto fit=umvl_binding::fit_bhatt(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, common_held(mu), common_held(sigma), common_held(a), tol, iterlim);
   return common_result(fit);
 }
 // [[Rcpp::export]]

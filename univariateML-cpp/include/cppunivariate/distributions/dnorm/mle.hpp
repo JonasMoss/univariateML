@@ -80,7 +80,7 @@ inline double evaluate(const Cells &p,double A,double B,bool hm,bool hs,double h
   return f;
 }
 }
-inline DnormResult dnorm_mle(span x,double tol=1e-9,int maxit=200,
+inline DnormResult dnorm_mle(span x,double tol=1e-10,int maxit=200,
     double mean=std::numeric_limits<double>::quiet_NaN(),double sd=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> DnormResult {
@@ -115,7 +115,16 @@ inline DnormResult dnorm_mle(span x,double tol=1e-9,int maxit=200,
     }
     double slope=0; for (int k=0;k<d;++k) slope+=g[k]*step[k];
     if (!std::isfinite(slope) || slope>0) break;
-    if (-slope <= tol*tol*p.n) { out.status=DnormStatus::Ok; break; }
+    // The profile is convex in (A,B), so the Newton decrement -g'H^{-1}g
+    // estimates (e'He) for the error e of the current iterate, and
+    // H is of order n per unit of relative error in B = 1/sd. A decrement
+    // at most tol^2 n therefore puts the relative error of the iterate at
+    // order tol, but not below it by a safe constant. The step just
+    // computed is applied before stopping: Newton's error after a step is
+    // quadratic in the error before it, so the returned point is within
+    // order tol^2 of the maximizer, relative in sd and in the location
+    // measured against sd (the contract's floor for a location).
+    const bool converged = -slope <= tol*tol*p.n;
     bool accepted=false;
     double t=1;
     for (std::int64_t backtrack=0;backtrack<solver_budget(maxit) && t>1e-12;++backtrack,t*=0.5) {
@@ -128,7 +137,12 @@ inline DnormResult dnorm_mle(span x,double tol=1e-9,int maxit=200,
       if (nf<=f+1e-4*t*slope+1e-14*p.n) {
         A=nA; B=nB; f=nf; g=ng; H=nH; accepted=true; break;
       }
+      // At convergence only the full step is tried; a damped step would
+      // leave the error at order tol. A rejected full step means the
+      // change is below the rounding noise of the objective.
+      if (converged) break;
     }
+    if (converged) { out.status=DnormStatus::Ok; break; }
     if (!accepted) break;
   }
   // Permit rounding-limited Newton convergence only with a small score.

@@ -132,7 +132,7 @@ inline BhattResult search(const Profile& p,std::vector<double> start,double tol,
 }
 }
 namespace bhatt_detail {
-inline BhattResult legacy_candidate(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN,bool finite_only=false) {
+inline BhattResult legacy_candidate(span x,double tol=1e-10,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN,bool finite_only=false) {
   maxit = static_cast<int>(solver_budget(maxit));
   BhattResult bad={special::kNaN,special::kNaN,special::kNaN,special::kNaN,0,BhattStatus::InvalidInput};
   if(x.empty()||!(tol>0&&std::isfinite(tol))||maxit<1||(!std::isnan(sigma)&&!(sigma>0&&std::isfinite(sigma)))||(!std::isnan(a)&&!(a>=0&&std::isfinite(a))))return bad;
@@ -296,7 +296,7 @@ inline BhattResult legacy_candidate(span x,double tol=1e-8,int maxit=500,double 
 } // namespace cppunivariate
 #include "accuracy.hpp"
 namespace cppunivariate { namespace bhatt_detail {
-inline BhattResult accurate_candidate(span x,double tol=1e-8,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN,bool finite_only=false) {
+inline BhattResult accurate_candidate(span x,double tol=1e-10,int maxit=500,double sigma=special::kNaN,double a=special::kNaN,double mu=special::kNaN,bool finite_only=false) {
   auto r=legacy_candidate(x,tol,maxit,sigma,a,mu,finite_only);
   if(r.status!=BhattStatus::Ok)return r;
   const auto before=r;

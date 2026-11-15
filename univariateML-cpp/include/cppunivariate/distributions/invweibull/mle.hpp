@@ -38,15 +38,12 @@ inline FitOutcome outcome(const InvWeibullResult& r) {
   return {};
 }
 
-// A starting shape is retained in the API; the bracketed profile does not
-// need it. A nonpositive supplied start remains invalid input.
-inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape0,double shape,double scale) {
-  if(!std::isnan(shape0) && !(shape0>0 && std::isfinite(shape0)))return {NAN,NAN,NAN,0,InvWeibullStatus::InvalidInput};
+inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape,double scale) {
   const auto r=transformed_detail::location_fit(x,shape,scale,1,true,1,tol,maxit);
   return {r.shape,r.scale,r.ll,0,r.status==0?InvWeibullStatus::Ok:
     r.status==1?InvWeibullStatus::InvalidInput:r.status==2?InvWeibullStatus::Unbounded:InvWeibullStatus::IterationFailure,r.certified};
 }
-inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape0=NAN) {
-  return invweibull_mle(x,tol,maxit,shape0,NAN,NAN);
+inline InvWeibullResult invweibull_mle(span x,double tol,int maxit) {
+  return invweibull_mle(x,tol,maxit,NAN,NAN);
 }
 } // namespace cppunivariate

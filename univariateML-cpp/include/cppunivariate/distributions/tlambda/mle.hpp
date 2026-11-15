@@ -17,7 +17,7 @@ inline constexpr double kTlambdaLambdaUpper = 1.0;
 enum class TlambdaStatus { Ok, InvalidData, InvalidShape, IterationFailure, Unbounded, CollapseLimit, InvalidSupport, CertificateFailure, TransformFailure };
 struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; bool certified=false; double certificate_lower=NAN,certificate_upper=NAN; StopDetail stop_detail={}; };
 namespace tlambda_detail {
-inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int maxit,double tol=1e-7) {
+inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int maxit,double tol=1e-10) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double mu=lo+(hi-lo)/2;
   double sigma=std::max(mu-lo,hi-mu)*lambda;
@@ -30,7 +30,7 @@ inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int 
   // A rounded midpoint can require a materially wider interval. Never call
   // that represented interval the exact uniform optimum merely because it fits.
   const bool ok=valid(mu,sigma,lambda) && std::isfinite(ll) && std::isfinite(ideal) &&
-      slack(lo,mu,sigma,lambda)>=0 && slack(hi,mu,sigma,lambda)>=0 && ideal-ll<=n*tol+pad;
+      slack(lo,mu,sigma,lambda)>=0 && slack(hi,mu,sigma,lambda)>=0 && ideal-ll<=n*std::max(tol,1e-7)+pad;
   TlambdaResult out{mu,sigma,lambda,ll,0,ok?TlambdaStatus::Ok:TlambdaStatus::CertificateFailure};
   if(!ok && valid(mu,sigma,lambda) && std::isfinite(ll) &&
       slack(lo,mu,sigma,lambda)>=0 && slack(hi,mu,sigma,lambda)>=0) {
@@ -45,7 +45,7 @@ inline double likelihood(span x,double mu,double sigma,double lambda) {
 }
 }
 #include "profile.hpp"
-inline TlambdaResult tlambda_mle_impl(span x,double tol=1e-7,int maxit=1000,double lambda=NAN) {
+inline TlambdaResult tlambda_mle_impl(span x,double tol=1e-10,int maxit=1000,double lambda=NAN) {
   return tlambda_fit_detail::profile(x,tol,maxit,lambda);
 }
 inline TlambdaResult tlambda_mle_impl(span x,double tol,int maxit,double lambda,double mu,double sigma) {
@@ -55,7 +55,7 @@ inline TlambdaResult tlambda_mle_impl(span x,double tol,int maxit,double lambda,
 
 #include "certificate.hpp"
 
-inline TlambdaResult tlambda_mle(span x,double tol=1e-7,int maxit=1000,double lambda=std::numeric_limits<double>::quiet_NaN()) {
+inline TlambdaResult tlambda_mle(span x,double tol=1e-10,int maxit=1000,double lambda=std::numeric_limits<double>::quiet_NaN()) {
   if(!std::isnan(lambda)&&!std::isfinite(lambda))return {NAN,NAN,NAN,NAN,0,TlambdaStatus::InvalidShape};
   if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,0,TlambdaStatus::InvalidData};
 

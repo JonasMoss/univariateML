@@ -16,7 +16,7 @@ DISTRIBUTIONS_DIR <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR", "")
 # See dev/research/evaluations/2026-11-09-golden-ref-port-report.md and its captures.
 GOLDEN_TOLERANCE <- c(
   bbinom = 1e-15,
-  beta = 5e-15,
+  beta = 1e-14, # 2026-11-15: summed logLik rounding at the returned point is 5.1e-15 relative (coefficients within 1.5e-15 of the 50-digit reference; ctrl-b2 report)
   betapr = 1e-11,
   binom = 2e-16,
   bnbinom = 1.5e-13, # analytic Newton refinement; acc-allfree measurements

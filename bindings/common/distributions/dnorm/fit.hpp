@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_dnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, double reltol = 1e-9, int iterlim = 200) {
+inline FitResult fit_dnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mean = mean_arg;
@@ -15,7 +15,7 @@ inline FitResult fit_dnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   const double b=sd.supplied ? sd.value:nan;
   if (mean.supplied && (!std::isfinite(a))) return invalid_argument(fail("Invalid held `mean`."));
   if (sd.supplied && (!std::isfinite(b) || b<=0)) return invalid_argument(fail("Invalid held `sd`."));
-  const auto r=cppunivariate::dnorm_mle(x,reltol,iterlim,a,b);
+  const auto r=cppunivariate::dnorm_mle(x,tol,iterlim,a,b);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied}});
@@ -35,7 +35,7 @@ inline FitResult fit_dnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   switch (r.status) {
     case cppunivariate::DnormStatus::Ok: break;
     case cppunivariate::DnormStatus::InvalidData: return done(stopped_fail("Requires nonempty finite integer data (absolute value below 2^52)."));
-    case cppunivariate::DnormStatus::InvalidControl: return done(stopped_fail("Invalid control: reltol must be finite and positive, iterlim at least 1."));
+    case cppunivariate::DnormStatus::InvalidControl: return done(stopped_fail("Invalid control: tol must be finite and positive, iterlim at least 1."));
     case cppunivariate::DnormStatus::PointMass: return done(stopped_fail("The maximum likelihood estimator does not exist: the likelihood approaches a point mass."));
     case cppunivariate::DnormStatus::TwoPointLimit:
       return done(stopped_fail("The maximum likelihood estimator does not exist on two adjacent integers; use `mlbinom(x - k, size = 1)` with k = min(x)."));

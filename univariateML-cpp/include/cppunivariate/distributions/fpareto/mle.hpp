@@ -59,6 +59,8 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
       if(x[order[i]]!=x[order[i-1]]&&y[order[i]]==y[order[i-1]])
         return {NAN,NAN,NAN,scale,min,NAN,0,FparetoStatus::NumericalFailure};
   }
+  // tol is the GB2 delegate's own tol (its default is also 1e-10): its local polish and transport accuracy check bound the
+  // relative error of every free coefficient by tol or the fit is stopped, so no rule of its own is added here.
   auto r=gb2_mle(span{y.data(),y.size()},tol,maxit,shape1,shape2,shape3,scale);
   if(r.status==Gb2Status::Ok&&!r.certified&&!fpareto_transport_accuracy(x,min,r,{{std::isnan(shape1),std::isnan(shape2),std::isnan(shape3),std::isnan(scale)}},tol,maxit)){r.status=Gb2Status::NumericalFailure;record_accuracy(r,tol,{r.shape1,r.shape2,r.shape3,r.scale},{std::isnan(shape1)?r.shape1:0,std::isnan(shape2)?r.shape2:0,std::isnan(shape3)?r.shape3:0,std::isnan(scale)?r.scale:0});}
   auto detail=r.stop_detail;bool face_refuted=false;

@@ -134,6 +134,8 @@ inline NbinomResult nbinom_mle(ispan x,double tol,int maxit,
       lo=l;hi=h;
     }
   }
+  // Known gap (step 5c job 2b): the bracket is only closed to relative width 5e-7, whatever tol is. A Newton
+  // candidate outside it is replaced by the midpoint, which is then within 2.5e-7 of the root, not within tol.
   double r=lo+(hi-lo)/2;
   if(candidate.status==NbinomStatus::Ok && candidate.size>=lo && candidate.size<=hi)r=candidate.size;
   const double p=std::isnan(fixed_prob)?r/(r+mean):fixed_prob;

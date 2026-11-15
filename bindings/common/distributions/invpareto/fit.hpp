@@ -4,7 +4,7 @@
 #include <limits>
 #include <cmath>
 namespace umvl_binding {
-inline FitResult fit_invpareto(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, Held scale0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_invpareto(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape = shape_arg;
@@ -22,14 +22,7 @@ inline FitResult fit_invpareto(cppunivariate::span x, Held shape_arg = {}, Held 
     fixed.push_back("scale");
   }
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (scale0.supplied) {
-    start = scale0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      return invalid_argument(fail("`scale0` must be a positive finite number."));
-    }
-  }
-  auto res = cppunivariate::invpareto_mle(x, reltol, iterlim, start, shape_held, scale_held);
+  auto res = cppunivariate::invpareto_mle(x, tol, iterlim, shape_held, scale_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied}});

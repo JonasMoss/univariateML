@@ -179,13 +179,13 @@ test_that("subunit opposite shape endpoint certificate preserves shifted advice"
 
 test_that("GB2 reduction preserves an uncertified restoration", {
   x <- 1 + (0:4) * .Machine$double.eps
-  fit <- mlfpareto(x, min = 0, shape1 = 1, shape3 = .855, reltol = 1e-10)
+  fit <- mlfpareto(x, min = 0, shape1 = 1, shape3 = .855, tol = 1e-10)
   expect_false(attr(fit, "certified"))
   expect_true(is.finite(as.numeric(logLik(fit))))
 })
 
 test_that("fpareto delegate follow-up preserves the accepted fit", {
-  f <- mlfpareto(exp(c(-1.1,-1)),min=0,shape3=1,scale=1,reltol=1e-8,iterlim=1000)
+  f <- mlfpareto(exp(c(-1.1,-1)),min=0,shape3=1,scale=1,tol=1e-8,iterlim=1000)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })

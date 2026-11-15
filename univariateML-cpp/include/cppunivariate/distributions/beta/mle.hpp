@@ -413,6 +413,11 @@ inline BetaResult beta_mle(span x, double tol, int maxit,
   // shapes. Along the profile, log t moves with eta at first order (tau') and,
   // for concentrated data, at second order with curvature about t mu (1-mu).
   // Re-solve with a narrower bracket until the bracket width meets both.
+  // The root of the profile score in eta lies inside the final bracket by
+  // computed signs, so eta is within its width. That width is at most
+  // tol/(1+|tau'|), and the free shapes are alpha = mu t, beta = (1-mu) t
+  // with log t = tau(eta), so their relative error is bounded by tol. The
+  // bound is relative in both shapes (both are positive).
   tol = std::max(tol, 1e-14);
   double width = tol, eta = eta0, mu = 0, mc = 0;
   bool solved = false;

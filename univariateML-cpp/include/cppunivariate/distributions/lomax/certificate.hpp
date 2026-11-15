@@ -122,7 +122,7 @@ inline Root isolate(const Data& d,Point a,Point b,int maxit) {
   }
   return r;
 }
-inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
+inline LomaxResult fit(span x,double tol,int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   auto stop=[&](LomaxStatus status,int work=0,
@@ -181,11 +181,6 @@ inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
   std::priority_queue<Segment> queue;queue.push({a,b,upper(d,a,b)});
   Root root;int work=2;
   Point best_point=a.h>b.h?a:b;
-  // lambda0 is only a nomination hint, never a restriction of the search.
-  if(std::isfinite(lambda0)&&lambda0>0) {
-    const double z=std::log(lambda0)+d.logmean;
-    if(z>lo&&z<hi){Point p=evaluate(d,z);if(p.h>best_point.h)best_point=p;queue.pop();queue.push({a,p,upper(d,a,p)});queue.push({p,b,upper(d,p,b)});++work;}
-  }
   // The work budget is explicit and independent of convergence tolerances.
   if(!(5.1e-11+4*d.error<margin))return stop(LomaxStatus::IterationFailure,work);
   auto budget_stop=[&](double upper_bound) {
@@ -254,8 +249,7 @@ inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
   if(oldmean>0 && std::isfinite(oldmean)) {
     std::vector<double> y; y.reserve(x.size());
     for(double v:x)y.push_back(v/oldmean);
-    auto candidate=lomax_newton_candidate(span{y.data(),y.size()},tol,maxit,
-        std::isfinite(lambda0)?lambda0*oldmean:lambda0);
+    auto candidate=lomax_newton_candidate(span{y.data(),y.size()},tol,maxit);
     const double z=std::log(candidate.lambda)+d.logmean-std::log(oldmean);
     if(candidate.status==LomaxStatus::Ok && z>=root.rootlo && z<=root.roothi &&
        std::abs(std::log(candidate.kappa/root.kappa))<2e-7) {

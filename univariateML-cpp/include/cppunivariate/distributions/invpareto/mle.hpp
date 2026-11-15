@@ -19,7 +19,7 @@ inline StopDetail invpareto_stop_detail(StopDetail d,double jac) {
 }
 
 struct InvParetoResult { double shape, scale; double logLik; int iterations; LomaxStatus status; StopDetail stop_detail{}; LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None; };
-inline InvParetoResult invpareto_mle(span x, double tol, int maxit, double scale0 = std::numeric_limits<double>::quiet_NaN()) {
+inline InvParetoResult invpareto_mle(span x, double tol, int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   for (double v : x) {
     if (!(v > 0) || !std::isfinite(v) || !std::isfinite(1/v)) {
@@ -30,16 +30,16 @@ inline InvParetoResult invpareto_mle(span x, double tol, int maxit, double scale
   std::vector<double> y(x.size());
   double jacobian = 0;
   for (std::size_t i=0; i<x.size(); ++i) { y[i]=1.0/x[i]; jacobian -= 2*std::log(x[i]); }
-  auto r = lomax_mle(span{y.data(), y.size()}, tol, maxit, scale0);
+  auto r = lomax_mle(span{y.data(), y.size()}, tol, maxit);
   return {r.kappa, r.lambda, r.logLik+jacobian, r.iterations, r.status,invpareto_stop_detail(r.stop_detail,jacobian),r.certificate_failure};
 }
 
-inline InvParetoResult invpareto_mle(span x,double tol,int maxit,double scale0,double shape,double scale) {
+inline InvParetoResult invpareto_mle(span x,double tol,int maxit,double shape,double scale) {
   maxit = static_cast<int>(solver_budget(maxit));
-  if(std::isnan(shape) && std::isnan(scale))return invpareto_mle(x,tol,maxit,scale0);
+  if(std::isnan(shape) && std::isnan(scale))return invpareto_mle(x,tol,maxit);
   std::vector<double> y;double jac=0;
   for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
-  const auto r=lomax_mle(span{y.data(),y.size()},tol,maxit,scale0,scale,shape);
+  const auto r=lomax_mle(span{y.data(),y.size()},tol,maxit,scale,shape);
   return {r.kappa,r.lambda,r.logLik+jac,r.iterations,r.status,invpareto_stop_detail(r.stop_detail,jac),r.certificate_failure};
 }
 

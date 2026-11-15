@@ -156,7 +156,7 @@ def mid(v):
 
 TOL = {
     'kumar': (1e-10, 'bindings/common/distributions/kumar/fit.hpp:7 reltol'),
-    'beta': (1.490116e-08, 'bindings/common/distributions/beta/fit.hpp:7 reltol'),
+    'beta': (1e-10, 'bindings/common/distributions/beta/fit.hpp:7 tol'),
     'nsbeta': (1e-10, 'bindings/common/distributions/nsbeta/fit.hpp:7 reltol'),
     'gamma': (1e-10, 'bindings/common/distributions/gamma/fit.hpp:5 tol'),
     'invgamma': (1e-10, 'bindings/common/distributions/invgamma/fit.hpp:9 tol'),
@@ -164,11 +164,11 @@ TOL = {
     'naka': (1e-10, 'bindings/common/distributions/naka/fit.hpp:9 tol'),
     'gumbel': (1e-10, 'bindings/common/distributions/gumbel/fit.hpp:9 reltol'),
     'weibull': (1e-10, 'bindings/common/distributions/weibull/fit.hpp:9 reltol'),
-    'invweibull': (1.220703e-4, 'bindings/common/distributions/invweibull/fit.hpp:9 reltol'),
+    'invweibull': (1e-10, 'bindings/common/distributions/invweibull/fit.hpp:9 tol'),
     'llogis': (1e-10, 'bindings/common/distributions/llogis/fit.hpp:9 tol'),
     'pareto3': (1e-10, 'bindings/common/distributions/pareto3/fit.hpp:7 reltol'),
     'logis': (1e-10, 'bindings/common/distributions/logis/fit.hpp:8 tol'),
-    'dnorm': (1e-9, 'bindings/common/distributions/dnorm/fit.hpp:7 reltol'),
+    'dnorm': (1e-10, 'bindings/common/distributions/dnorm/fit.hpp:7 tol'),
     'dweibull': (1e-12, 'bindings/common/distributions/dweibull/fit.hpp:9 reltol'),
     'zeta': (1e-10, 'bindings/common/distributions/zeta/fit.hpp:5 reltol'),
     'yulesimon': (1e-10, 'bindings/common/distributions/yulesimon/fit.hpp:5 reltol'),
@@ -499,8 +499,8 @@ def newton_point(grad, theta0, steps=12, hs=None):
 # ------------------------------------------------------------ beta, nsbeta (C): profile root in logit mu, held-shape bisection
 
 CLAIMS['beta'] = {
-    'free': ('bracket 2 min(tol, needed) in eta = logit(mu), needed = max(4 eps max(1,|eta|), min(tol/(1+|tau slope|), sqrt(tol/(1+t mu (1-mu))))); tol = 1.490116e-8',
-             'beta/mle.hpp:226 (hi-lo <= 2 w), :419-439 (needed, solved), :416 tol = max(tol, 1e-14)'),
+    'free': ('bracket 2 min(tol, needed) in eta = logit(mu), needed = max(4 eps max(1,|eta|), min(tol/(1+|tau slope|), sqrt(tol/(1+t mu (1-mu))))); tol = 1e-10',
+             'beta/mle.hpp:226 (hi-lo <= 2 w), :421-443 (needed, solved; justification comment :412-416), :421 tol = max(tol, 1e-14)'),
     'one shape held': ('relative bracket 1e-13 in the free shape', 'beta/mle.hpp:315 (hi-lo <= 1e-13 z); z is an end of the bracket'),
 }
 
@@ -920,8 +920,8 @@ def replay_logis(r, data, budget):
                         CLAIMS['logis']['scale held'][1], CLAIMS['logis']['scale held'][0], numeric=numeric, u0=mp.mpf(mu))], None
     return [], None
 
-CLAIMS['dnorm'] = {'free or one held': ('Newton decrement g^T H^-1 g <= tol^2 n (tol = 1e-9), or total score norm below 1e-6 n, in the coordinates A = (mu - c)/sd, B = 1/sd',
-                                        'dnorm/mle.hpp:118 (-slope <= tol tol n), :136 (sqrt(norm) < 1e-6 n)')}
+CLAIMS['dnorm'] = {'free or one held': ('Newton decrement g^T H^-1 g <= tol^2 n (tol = 1e-10) at the stopping iterate, after which the full Newton step is applied (so the decrement at the returned point is at most tol^2 n), or total score norm below 1e-6 n, in the coordinates A = (mu - c)/sd, B = 1/sd',
+                                        'dnorm/mle.hpp:127 (converged = -slope <= tol tol n), :143-145 (full step applied, then stop), :150 (sqrt(norm) < 1e-6 n)')}
 
 def replay_dnorm(r, data, budget):
     kind, _ = kind_of(r)
@@ -960,7 +960,7 @@ def replay_dnorm(r, data, budget):
     values = enclose(make, 'numerical', 50)
     ok = mp.mpf(values[0].b) <= 1+1e-4 or mp.mpf(values[1].b) < 1
     bad = mp.mpf(values[0].a) > 1+1e-4 and mp.mpf(values[1].a) >= 1
-    return [comparison('root', 'Newton decrement g^T H^-1 g <= tol^2 n (tol 1e-9) at the returned point (allowance 1e-4 of the threshold), or ||g|| < 1e-6 n',
+    return [comparison('root', 'Newton decrement g^T H^-1 g <= tol^2 n (tol 1e-10) at the returned point (allowance 1e-4 of the threshold), or ||g|| < 1e-6 n',
                        'holds' if ok else 'fails' if bad else 'open', 'decrement/(tol^2 n) = %s, ||g||/(1e-6 n) = %s' % (show(values[0], 5), show(values[1], 5)),
                        rigor='numerical', note='hp gradient and Hessian by central differences at 50 digits, coordinates A = (mu - c)/sd, B = 1/sd; %s (%s)' % (
                            CLAIMS['dnorm']['free or one held'][0], CLAIMS['dnorm']['free or one held'][1]))], None

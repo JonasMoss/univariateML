@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/tlambda/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_tlambda(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held lambda_arg = {}, double reltol=1e-7, int iterlim=1000) {
+inline FitResult fit_tlambda(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held lambda_arg = {}, double tol = 1e-10, int iterlim=1000) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -16,7 +16,7 @@ inline FitResult fit_tlambda(cppunivariate::span x, Held mu_arg = {}, Held sigma
   const double s=sigma.supplied?sigma.value:std::numeric_limits<double>::quiet_NaN();
   if(mu.supplied&&!std::isfinite(m))return invalid_argument(fail("Held mu must be finite."));
   if(sigma.supplied&&!(std::isfinite(s)&&s>0))return invalid_argument(fail("Held sigma must be positive and finite."));
-  const auto f=cppunivariate::tlambda_mle(x,reltol,iterlim,l,m,s);
+  const auto f=cppunivariate::tlambda_mle(x,tol,iterlim,l,m,s);
   const auto o = cppunivariate::outcome(f);
   const auto done = [&](FitResult out) {
     if (f.status == cppunivariate::TlambdaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -40,7 +40,7 @@ inline FitResult fit_tlambda(cppunivariate::span x, Held mu_arg = {}, Held sigma
   if(f.status==cppunivariate::TlambdaStatus::CollapseLimit)return done(stop_failure(fail("Tukey lambda selects the unattained scale collapse boundary."),f.stop_detail,outcome_payload(o),{"mu","sigma","lambda"},"unavailable:tlambda-scale-collapse"));
   if(f.status==cppunivariate::TlambdaStatus::InvalidSupport)return done(fail("Held Tukey lambda support cannot contain the sample with positive likelihood."));
   if(f.status==cppunivariate::TlambdaStatus::InvalidShape) return done(fail("Fixed lambda must be finite."));
-  if(f.status==cppunivariate::TlambdaStatus::InvalidData)return done(fail("Tukey lambda fitting requires finite observations, positive reltol and positive iterlim; numerical standardization must preserve distinct values."));
+  if(f.status==cppunivariate::TlambdaStatus::InvalidData)return done(fail("Tukey lambda fitting requires finite observations, positive tol and positive iterlim; numerical standardization must preserve distinct values."));
   if(f.status!=cppunivariate::TlambdaStatus::Ok) return done(stop_failure(fail("Tukey lambda search did not converge; increase iterlim."),f.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));
   std::vector<std::string> fixed;
   if(mu.supplied)fixed.push_back("mu");

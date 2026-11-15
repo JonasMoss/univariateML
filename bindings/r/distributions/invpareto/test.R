@@ -2,7 +2,7 @@ test_that("invpareto matches a multistart density oracle", {
   skip_unless_tier("full")
   set.seed(871)
   x <- rinvpareto(n = 300, shape = 1.3, scale = 2.7)
-  fit <- mlinvpareto(x, reltol=1e-10, iterlim=1000)
+  fit <- mlinvpareto(x, tol=1e-10, iterlim=1000)
   objective <- function(p) -sum(dinvpareto(x = x, shape = exp(p[1]), scale = exp(p[2]), log = TRUE))
   oracles <- lapply(c(.4,1,3), function(s) optim(rep(log(s), 2), objective, method="BFGS", control=list(reltol=1e-12,maxit=2000)))
   oracle <- oracles[[which.min(vapply(oracles, function(o) o$value, 0.0))]]
@@ -24,14 +24,14 @@ test_that("inverse Pareto inherits the Lomax equality comparison", {
 
 test_that("inverse Pareto inherits the global Lomax criterion", {
   for (z in list(c(1,100),c(.001,4,6),c(.001,1,2),c(1,29),c(1,1,1,12,12))) {
-    x <- 1/z; f <- mlinvpareto(x,reltol=1e-12); l <- mllomax(z,tol=1e-12)
+    x <- 1/z; f <- mlinvpareto(x,tol=1e-12); l <- mllomax(z,tol=1e-12)
     expect_equal(as.numeric(f),rev(as.numeric(l)),tolerance=1e-7)
     expect_equal(attr(f,"logLik"),attr(l,"logLik")-2*sum(log(x)),tolerance=1e-10)
     for(s in c(1e-200,1e200)) {
-      g <- mlinvpareto(x*s,reltol=1e-12)
+      g <- mlinvpareto(x*s,tol=1e-12)
       expect_equal(as.numeric(g)/c(1,s),as.numeric(f),tolerance=1e-6)
     }
-    g <- mlinvpareto(rep(x,50),reltol=1e-12)
+    g <- mlinvpareto(rep(x,50),tol=1e-12)
     expect_equal(as.numeric(g),as.numeric(f),tolerance=1e-6)
   }
   for(z in list(c(1,10),c(1,28),rep(1,5))) expect_error(mlinvpareto(1/z),"mlinvexp")
@@ -120,6 +120,6 @@ test_that("inverse Pareto carries inverse exponential stop details", {
 })
 
 test_that("invpareto delegate follow-up preserves the accepted fit", {
-  f <- mlinvpareto(1/c(.03,.1,.4,.7,1,2,4,12),reltol=1e-8,iterlim=1000)
+  f <- mlinvpareto(1/c(.03,.1,.4,.7,1,2,4,12),tol=1e-8,iterlim=1000)
   expect_true(is.finite(as.numeric(logLik(f))))
 })

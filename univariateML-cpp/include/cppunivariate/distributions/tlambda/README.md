@@ -61,7 +61,7 @@ r:
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
     lambda: "Optional finite held shape; NULL estimates it under the applicable fitting bounds."
-    reltol: "Relative coefficient tolerance for profile proposals; likelihood-gap tolerance for certificate routes."
+    tol: "Requested relative coefficient accuracy for profile proposals (default 1e-10); likelihood-gap tolerance for certificate routes."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "-log(sigma)-log(u**(lambda-1)+(1-u)**(lambda-1))"
 references:
@@ -231,7 +231,7 @@ interval, the fitter stops numerically. Inverse roots retain finite analytic
 brackets in $-\log p$ and contract both bracket width and log-density width;
 a small density variation alone is insufficient near the mode to certify a
 score. Numerical enclosure failures stop. Scalar-box acceptance bounds the
-log-likelihood gap by $n\,\texttt{reltol}$, subject to the stated arithmetic
+log-likelihood gap by $n\,\texttt{tol}$, subject to the stated arithmetic
 floor; it does not prove unique coordinates. Certificate evaluations use
 $128\min(\texttt{iterlim},100000)$ and solver/inverse iterations use
 $\min(\texttt{iterlim},100000)$. The box allowance stops with budget witnesses when exhausted; a solver cap stops as numerical non-convergence.
