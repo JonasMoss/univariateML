@@ -141,9 +141,6 @@ template<class T> void observe(const T&r,std::initializer_list<Value> values) {
                 elif entries:fields_by_name[p['name']]=entries[-1].strip()
                 else:raise RuntimeError((id,p['name'],'missing coefficient mapping'))
             if id=='cmp':fields_by_name['lambda']=f'std::exp({var}.eta)'
-            if id=='tpois':
-                fields_by_name['a']='(a.supplied?a.value:(x.empty()?NAN:double(*std::min_element(x.begin(),x.end()))-1))'
-                fields_by_name['b']='(b.supplied?b.value:(x.empty()?NAN:double(*std::max_element(x.begin(),x.end()))))'
             for p in params:
                 name=p['name'];val=fields_by_name[name]
                 dom=p['domain'].strip(); lo,hi=dom[1:-1].split(',')
@@ -166,8 +163,6 @@ template<class T> void observe(const T&r,std::initializer_list<Value> values) {
         end=text.index(' audit::observe(') if id!='cmb' else text.index('audit::observe(res,')
         end=text.index(';',end)+1
         route=text[start:end]
-        if id=='tbinom':
-            route=route.replace('double(*std::min_element(x.begin(),x.end()))','(x.empty()?0.0:double(*std::min_element(x.begin(),x.end())))').replace('double(*std::max_element(x.begin(),x.end()))','(x.empty()?0.0:double(*std::max_element(x.begin(),x.end())))')
         route=route.replace('inline FitResult fit_', 'inline void route_').replace('Held','audit::Held')
         route=re.sub(r'^  const auto fail = .*\n','',route,flags=re.M)
         # Remove binding guards from this validation-only route, so bad data
