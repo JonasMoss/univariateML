@@ -1,0 +1,7 @@
+c = 0.001        delta = 2.1684e-16  Li - Lg = 7.2280145e-17  (Li-Lg)/(delta/3) = 1.0   gamma shape 9.57044e+31  invgamma shape 9.57044e+31
+c = 0.2          delta = 1.38778e-16  Li - Lg = 4.6259293e-17  (Li-Lg)/(delta/3) = 1.0   gamma shape 2.33653e+32  invgamma shape 2.33653e+32
+c = 0.612108     delta = 1.81377e-16  Li - Lg = 6.0459023e-17  (Li-Lg)/(delta/3) = 1.0   gamma shape 1.36788e+32  invgamma shape 1.36788e+32
+c = 1            delta = 2.22045e-16  Li - Lg = 7.4014868e-17  (Li-Lg)/(delta/3) = 1.0   gamma shape 9.12708e+31  invgamma shape 9.12708e+31
+c = 1.5          delta = 1.4803e-16  Li - Lg = 4.9343246e-17  (Li-Lg)/(delta/3) = 1.0   gamma shape 2.05359e+32  invgamma shape 2.05359e+32
+c = 3.7          delta = 1.20024e-16  Li - Lg = 4.0008037e-17  (Li-Lg)/(delta/3) = 1.0   gamma shape 3.12374e+32  invgamma shape 3.12374e+32
+c = 1000         delta = 1.13687e-16  Li - Lg = 3.7895613e-17  (Li-Lg)/(delta/3) = 1.0   gamma shape 3.48171e+32  invgamma shape 3.48171e+32

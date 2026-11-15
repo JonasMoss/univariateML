@@ -1,0 +1,53 @@
+data ['0x1.39662eac3a403p-1', '0x1.39662eac3a403p-1', '0x1.39662eac3a404p-1'] delta = 1.81377067936e-16  held {}
+gamma  limit: shape 1.3678792443e+32 scale 4.47486659915e-33  loglik 108.209702204581697142517828277
+invgam limit: shape 1.3678792443e+32  loglik 108.209702204581697202976850922
+inverse-gamma scale 8.37289437529e+31  representable: True True True True
+Li - Lg = 6.04590226453902e-17  delta/3 = 6.04590226453902e-17  ratio = 1.0
+rho = 0.1            b = 5.50897      N = 1.51987e+33   loglik 108.2097022045816971485637   minus gamma-limit 6.0459023e-18   minus invgamma-limit -5.441312e-17
+rho = 0.001          b = 611.496      N = 1.36925e+35   loglik 108.2097022045816971425783   minus gamma-limit 6.0459023e-20   minus invgamma-limit -6.0398564e-17
+rho = 1.0e-6         b = 612107.0     N = 1.36788e+38   loglik 108.2097022045816971425179   minus gamma-limit 6.0459023e-23   minus invgamma-limit -6.0458962e-17
+rho = 1.0e-10        b = 6.12108e+9   N = 1.36788e+42   loglik 108.2097022045816971425178   minus gamma-limit 6.0459023e-27   minus invgamma-limit -6.0459023e-17
+rho = 1.0e-14        b = 6.12108e+13  N = 1.36788e+46   loglik 108.2097022045816971425178   minus gamma-limit 6.0459023e-31   minus invgamma-limit -6.0459023e-17
+rho = 1.0e-18        b = 6.12108e+17  N = 1.36788e+50   loglik 108.2097022045816971425178   minus gamma-limit 6.0459023e-35   minus invgamma-limit -6.0459023e-17
+rho = 1.0e-22        b = 6.12108e+21  N = 1.36788e+54   loglik 108.2097022045816971425178   minus gamma-limit 6.0459023e-39   minus invgamma-limit -6.0459023e-17
+rho = 0.5            b = 0.612108     N = 5.47152e+32   loglik 108.2097022045816971727473   minus gamma-limit 3.0229511e-17   minus invgamma-limit -3.0229511e-17
+rho = 1-1.0e-22      b = 6.12108e-23  N = 1.36788e+54   loglik 108.2097022045816972029769   minus gamma-limit 6.0459023e-17   minus invgamma-limit -6.0459023e-39
+rho = 1-1.0e-18      b = 6.12108e-19  N = 1.36788e+50   loglik 108.2097022045816972029769   minus gamma-limit 6.0459023e-17   minus invgamma-limit -6.0459023e-35
+rho = 1-1.0e-14      b = 6.12108e-15  N = 1.36788e+46   loglik 108.2097022045816972029769   minus gamma-limit 6.0459023e-17   minus invgamma-limit -6.0459023e-31
+rho = 1-1.0e-10      b = 6.12108e-11  N = 1.36788e+42   loglik 108.2097022045816972029769   minus gamma-limit 6.0459023e-17   minus invgamma-limit -6.0459023e-27
+rho = 1-1.0e-6       b = 6.12108e-7   N = 1.36788e+38   loglik 108.2097022045816972029768   minus gamma-limit 6.0458962e-17   minus invgamma-limit -6.0459023e-23
+rho = 1-0.001        b = 0.00061272   N = 1.36925e+35   loglik 108.2097022045816972029164   minus gamma-limit 6.0398564e-17   minus invgamma-limit -6.0459023e-20
+rho = 1-0.1          b = 0.068012     N = 1.51987e+33   loglik 108.2097022045816971969309   minus gamma-limit 5.441312e-17   minus invgamma-limit -6.0459023e-18
+
+Lambda(rho) = Lg + rho*(Li-Lg)?  relative deviation of (Lambda-Lg)/(Li-Lg) from rho:
+  rho 0.1: (Lambda-Lg)/(Li-Lg) - rho = -3.1741e-18
+  rho 0.001: (Lambda-Lg)/(Li-Lg) - rho = -3.52325e-20
+  rho 1.0e-6: (Lambda-Lg)/(Li-Lg) - rho = -3.52677e-23
+  rho 1.0e-10: (Lambda-Lg)/(Li-Lg) - rho = -3.52678e-27
+  rho 1.0e-14: (Lambda-Lg)/(Li-Lg) - rho = -3.52678e-31
+  rho 1.0e-18: (Lambda-Lg)/(Li-Lg) - rho = -3.52678e-35
+  rho 1.0e-22: (Lambda-Lg)/(Li-Lg) - rho = -3.52678e-39
+  rho 0.5: (Lambda-Lg)/(Li-Lg) - rho = -8.81694e-18
+  rho 1.0: (Lambda-Lg)/(Li-Lg) - rho = -3.52678e-39
+  rho 1.0: (Lambda-Lg)/(Li-Lg) - rho = -3.52678e-35
+  rho 1.0: (Lambda-Lg)/(Li-Lg) - rho = -3.52678e-31
+  rho 1.0: (Lambda-Lg)/(Li-Lg) - rho = -3.52678e-27
+  rho 0.999999: (Lambda-Lg)/(Li-Lg) - rho = -3.52677e-23
+  rho 0.999: (Lambda-Lg)/(Li-Lg) - rho = -3.52325e-20
+  rho 0.9: (Lambda-Lg)/(Li-Lg) - rho = -3.1741e-18
+p, q at each row (p = rho N, q = (1-rho) N):
+  rho 0.1: p = 1.51987e+32 q = 1.36788e+33
+  rho 0.001: p = 1.36925e+32 q = 1.36788e+35
+  rho 1.0e-6: p = 1.36788e+32 q = 1.36788e+38
+  rho 1.0e-10: p = 1.36788e+32 q = 1.36788e+42
+  rho 1.0e-14: p = 1.36788e+32 q = 1.36788e+46
+  rho 1.0e-18: p = 1.36788e+32 q = 1.36788e+50
+  rho 1.0e-22: p = 1.36788e+32 q = 1.36788e+54
+  rho 0.5: p = 2.73576e+32 q = 2.73576e+32
+  rho 1.0: p = 1.36788e+54 q = 1.36788e+32
+  rho 1.0: p = 1.36788e+50 q = 1.36788e+32
+  rho 1.0: p = 1.36788e+46 q = 1.36788e+32
+  rho 1.0: p = 1.36788e+42 q = 1.36788e+32
+  rho 0.999999: p = 1.36788e+38 q = 1.36788e+32
+  rho 0.999: p = 1.36788e+35 q = 1.36925e+32
+  rho 0.9: p = 1.36788e+33 q = 1.51987e+32

@@ -1,0 +1,12 @@
+paralogis : s* = 2.11636301580765  curvature of profile in log alpha = -5.10235795893
+  record   delta = 1.14791e-16  alpha_pred = 1.8436635e+16  alpha_exact = 1.8436635e+16  (ratio 1.0)  loglik_pred = 107.875007192  loglik_exact = 107.875007192
+  c=1      delta = 2.22045e-16  alpha_pred = 9.5312517e+15  alpha_exact = 9.5312517e+15  (ratio 1.0)  loglik_pred = 105.79556565  loglik_exact = 105.79556565
+  c=1.5    delta = 1.4803e-16  alpha_pred = 1.4296878e+16  alpha_exact = 1.4296878e+16  (ratio 1.0)  loglik_pred = 105.79556565  loglik_exact = 105.79556565
+  c=3.7    delta = 1.20024e-16  alpha_pred = 1.7632816e+16  alpha_exact = 1.7632816e+16  (ratio 1.0)  loglik_pred = 103.716124109  loglik_exact = 103.716124109
+  c=0.2    delta = 1.38778e-16  alpha_pred = 1.5250003e+16  alpha_exact = 1.5250003e+16  (ratio 1.0)  loglik_pred = 112.033890275  loglik_exact = 112.033890275
+invparalogis : s* = 3.19268808885795  curvature of profile in log alpha = -3.60281673297
+  record   delta = 1.31538e-16  alpha_pred = 2.4271936e+16  alpha_exact = 2.4271936e+16  (ratio 1.0)  loglik_pred = 108.655730335  loglik_exact = 108.655730335
+  c=1      delta = 2.22045e-16  alpha_pred = 1.4378589e+16  alpha_exact = 1.4378589e+16  (ratio 1.0)  loglik_pred = 106.576288793  loglik_exact = 106.576288793
+  c=1.5    delta = 1.4803e-16  alpha_pred = 2.1567883e+16  alpha_exact = 2.1567883e+16  (ratio 1.0)  loglik_pred = 106.576288793  loglik_exact = 106.576288793
+  c=3.7    delta = 1.20024e-16  alpha_pred = 2.6600389e+16  alpha_exact = 2.6600389e+16  (ratio 1.0)  loglik_pred = 104.496847251  loglik_exact = 104.496847251
+  c=0.2    delta = 1.38778e-16  alpha_pred = 2.3005742e+16  alpha_exact = 2.3005742e+16  (ratio 1.0)  loglik_pred = 112.814613418  loglik_exact = 112.814613418

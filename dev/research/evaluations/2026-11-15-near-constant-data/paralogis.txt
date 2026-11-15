@@ -1,0 +1,63 @@
+paralogis delta = 1.14791177382e-16  1/delta = 8.71147088835e+15
+  log10 alpha   -1.0  profile loglik -14.720659105293  z=2.3025851
+  log10 alpha    0.0  profile loglik -4.0587325094363  z=-3.8263726e-17
+  log10 alpha    1.0  profile loglik 3.8626699193628  z=-2.3025851
+  log10 alpha    2.0  profile loglik 10.900710883378  z=-4.6051702
+  log10 alpha    3.0  profile loglik 17.82191691062  z=-6.9077553
+  log10 alpha    4.0  profile loglik 24.731021694852  z=-9.2103404
+  log10 alpha    6.0  profile loglik 38.546680747817  z=-13.815511
+  log10 alpha    8.0  profile loglik 52.36219279078  z=-18.420681
+  log10 alpha   10.0  profile loglik 66.177703363594  z=-23.025851
+  log10 alpha   12.0  profile loglik 79.993213917315  z=-27.631059
+  log10 alpha   14.0  profile loglik 93.808680500431  z=-32.240032
+  log10 alpha   15.0  profile loglik 100.71203306674  z=-34.578522
+  log10 alpha   15.5  profile loglik 104.12484190822  z=-35.826241
+  log10 alpha   16.0  profile loglik 107.15005886173  z=-37.382057
+  log10 alpha  16.25  profile loglik 107.87173245806  z=-38.590591
+  log10 alpha   16.5  profile loglik 106.95889849067  z=-40.575731
+  log10 alpha   17.0  profile loglik 94.869529643774  z=-49.524473
+  log10 alpha   17.5  profile loglik 48.681389658369  z=-75.496784
+  log10 alpha   18.0  profile loglik -104.84677230189  z=-155.1391
+paralogis {'alpha': '1.84366348013791e+16', 'theta': '0.967167555859281', 'loglik': '107.875007191894', 'd2_profile_log_alpha': '-5.10235795892661', 'z': '-38.6867343363779', 'alpha_times_delta': '2.11636301580765', 'theta_over_x0': '2.0983620250201e-15', 'alpha_rep': True, 'theta_rep': True, 'delta': '1.14791177381749e-16', 'x': ['0x1.ef3095fc55f18p-1', '0x1.ef3095fc55f18p-1', '0x1.ef3095fc55f19p-1']}
+invparalogis delta = 1.31538252562e-16  1/delta = 7.60235125921e+15
+  log10 alpha   -1.0  profile loglik -14.312109881889  z=2.3025851
+  log10 alpha    0.0  profile loglik -3.6501832860323  z=4.3846084e-17
+  log10 alpha    1.0  profile loglik 4.2712191427668  z=-2.3025851
+  log10 alpha    2.0  profile loglik 11.309260106782  z=-4.6051702
+  log10 alpha    3.0  profile loglik 18.230466134024  z=-6.9077553
+  log10 alpha    4.0  profile loglik 25.139570918256  z=-9.2103404
+  log10 alpha    6.0  profile loglik 38.955229971221  z=-13.815511
+  log10 alpha    8.0  profile loglik 52.770742014184  z=-18.420681
+  log10 alpha   10.0  profile loglik 66.586252586998  z=-23.02585
+  log10 alpha   12.0  profile loglik 80.401763139344  z=-27.630977
+  log10 alpha   14.0  profile loglik 94.217216113273  z=-32.231826
+  log10 alpha   15.0  profile loglik 101.11934848727  z=-34.496824
+  log10 alpha   15.5  profile loglik 104.52413585181  z=-35.569672
+  log10 alpha   16.0  profile loglik 107.55605189075  z=-36.561811
+  log10 alpha  16.25  profile loglik 108.49575939128  z=-37.058623
+  log10 alpha   16.5  profile loglik 108.52012280571  z=-37.594965
+  log10 alpha   17.0  profile loglik 103.00310670105  z=-38.738482
+  log10 alpha   17.5  profile loglik 78.014764750363  z=-39.889774
+  log10 alpha   18.0  profile loglik -8.4735624187843  z=-41.041067
+invparalogis {'alpha': '2.4271936312597e+16', 'theta': '0.844030540926403', 'loglik': '108.655730334803', 'd2_profile_log_alpha': '-3.60281673296567', 'z': '-37.3429548451072', 'alpha_times_delta': '3.19268808885795', 'theta_over_x0': '-1.53852393003052e-15', 'alpha_rep': True, 'theta_rep': True, 'delta': '1.31538252562115e-16', 'x': ['0x1.b024c564354c4p-1', '0x1.b024c564354c4p-1', '0x1.b024c564354c5p-1']}
+
+paralogis theta = nearest double -4 ulp: best alpha 2.461968275e+16, loglik 107.634396696, loss 0.24061; loglik at (alpha_hat, theta) -25613.8704223
+paralogis theta = nearest double -3 ulp: best alpha 2.283195988e+16, loglik 107.747333803, loss 0.127673; loglik at (alpha_hat, theta) -2970.60837582
+paralogis theta = nearest double -2 ulp: best alpha 2.128560075e+16, loglik 107.818967993, loss 0.0560392; loglik at (alpha_hat, theta) -248.381993725
+paralogis theta = nearest double -1 ulp: best alpha 1.993482409e+16, loglik 107.858886082, loss 0.0161211; loglik at (alpha_hat, theta) 73.977611481
+paralogis theta = nearest double +0 ulp: best alpha 1.874471943e+16, loglik 107.874300586, loss 0.000706606; loglik at (alpha_hat, theta) 107.22772239
+paralogis theta = nearest double +1 ulp: best alpha 1.768820955e+16, loglik 107.870698214, loss 0.00430898; loglik at (alpha_hat, theta) 105.649108431
+paralogis theta = nearest double +2 ulp: best alpha 1.674397481e+16, loglik 107.852292288, loss 0.0227149; loglik at (alpha_hat, theta) 99.8747136344
+paralogis theta = nearest double +3 ulp: best alpha 1.589500266e+16, loglik 107.822344771, loss 0.0526624; loglik at (alpha_hat, theta) 93.5948574152
+paralogis theta = nearest double +4 ulp: best alpha 1.512755357e+16, loglik 107.783399236, loss 0.091608; loglik at (alpha_hat, theta) 87.2541087757
+paralogis theta_hat - double(theta_hat), in ulps: 0.27982
+invparalogis theta = nearest double -4 ulp: best alpha 1.760856536e+16, loglik 108.485811777, loss 0.169919; loglik at (alpha_hat, theta) 70.4355633698
+invparalogis theta = nearest double -3 ulp: best alpha 1.881158928e+16, loglik 108.546585212, loss 0.109145; loglik at (alpha_hat, theta) 80.0135520839
+invparalogis theta = nearest double -2 ulp: best alpha 2.018893248e+16, loglik 108.597588491, loss 0.0581418; loglik at (alpha_hat, theta) 89.5897763589
+invparalogis theta = nearest double -1 ulp: best alpha 2.178125161e+16, loglik 108.635213605, loss 0.0205167; loglik at (alpha_hat, theta) 99.1230298299
+invparalogis theta = nearest double +0 ulp: best alpha 2.36428607e+16, loglik 108.654495947, loss 0.00123439; loglik at (alpha_hat, theta) 107.609780732
+invparalogis theta = nearest double +1 ulp: best alpha 2.584797219e+16, loglik 108.648469924, loss 0.00726041; loglik at (alpha_hat, theta) 90.610212419
+invparalogis theta = nearest double +2 ulp: best alpha 2.850069706e+16, loglik 108.607122442, loss 0.0486079; loglik at (alpha_hat, theta) -547.0781972
+invparalogis theta = nearest double +3 ulp: best alpha 3.17517373e+16, loglik 108.515615548, loss 0.140115; loglik at (alpha_hat, theta) -16300.9014429
+invparalogis theta = nearest double +4 ulp: best alpha 3.582764801e+16, loglik 108.351104293, loss 0.304626; loglik at (alpha_hat, theta) -400190.12068
+invparalogis theta_hat - double(theta_hat), in ulps: 0.303601
