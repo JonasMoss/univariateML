@@ -1,0 +1,64 @@
+{
+ "pareto2": {
+  "free": [
+   "lomax certificate on y = x - min, shape = kappa, scale = 1/lambda: root half width 8e-7 in z, gain 1e-8, global cover",
+   "lomax/certificate.hpp:100-101,118-119 (enclosure), :8 (margin); pareto2/mle.hpp:94-95 delegates with y = x - min"
+  ],
+  "shape held": [
+   "held-kappa root on log(lambda), half width 0.75e-10",
+   "lomax/mle.hpp:273-288,299-305 (held-kappa bracket); pareto2/mle.hpp:94-95"
+  ],
+  "zeros, both free": [
+   "unbounded (exact predicate); the shape-held root with zeros is not among the stored cases",
+   "pareto2/mle.hpp:23-27,50"
+  ]
+ },
+ "invpareto": {
+  "free": [
+   "lomax certificate on y = 1/x, shape = kappa, scale = lambda",
+   "lomax/certificate.hpp:100-101,118-119; invpareto/mle.hpp:32-33"
+  ],
+  "shape held": [
+   "held-kappa root on log(lambda), half width 0.75e-10",
+   "lomax/mle.hpp:273-288,299-305 (held-kappa bracket); invpareto/mle.hpp:42"
+  ]
+ },
+ "cauchy": {
+  "scale held": [
+   "the winning root bracket has width <= 1e-10 (scale units), signed score ends and strict concavity on the box padded by 1e-7 max(1, |end|); the returned point lies within 1e-10 of the bracket; every other candidate is below the winner by a margin; global cover of L(t) = -sum log(1 + (y_i - t)^2) on [min y, max y], monotone outside",
+   "cauchy/mle.hpp:306-308 (score and likelihood margins), :326 (concavity pad 1e-7), :345 (bracket to 1e-10), :380-386 (other candidates), :399 (returned point within 1e-10 of the bracket); README \"Held-scale location certificate\""
+  ]
+ },
+ "gpd": {
+  "joint (sigma, xi free)": [
+   "estimate: signed root enclosure narrower than 2e-7 in t, or 3e-7 in the coefficients (restoration within 1e-7); every cell outside the root closed with likelihood bound below the best root minus 1e-8; winner above the uniform boundary by 1e-8; negative tail at t = -32 or the A = 1 crossing, positive tail by the sign of the score; xi = -1 (uniform boundary) when every interior cell is below 0",
+   "gpd/certificate.hpp:7 (margin), :83-134 (isolate; window :114-116), :156-167 (negative tail), :185-189 (positive tail), :228 (cell exclusion), :261-263 (uniform floor and tie margins), :271-275 (restoration); README \"Certificate\""
+  ],
+  "sigma held": [
+   "same with the held-scale profile h = -(1/c + b) D, c = sigma/M < 1 (sigma >= M returns the uniform member: exact predicate, not replayed); negative tail from the score sign (1-c)(1-e^t)w > e^t(-t), positive tail c b > 2t and b m > 1",
+   "gpd/certificate.hpp:176-181 (held-scale negative tail), :185-189 (positive tail); README \"Certificate\""
+  ]
+ },
+ "foldnorm": {
+  "joint (mu, sigma free)": [
+   "the grid incumbent is certified by convex-chord bounds: the profile upper bound over every cell is <= best + tol n, tol = 1e-10; the interior root is bracketed with relative width 0.25 tol in mu and sigma (the location with absolute scale max(mu, sigma)); mu = 0 (half-normal) when no interior candidate exceeds it by 1e-11 n",
+   "foldnorm/mle.hpp:152,193 (upper <= best + tol n), :206 (boundary preference 1e-11 n), :236-246 (bracket), :294-295 (returned coefficients)"
+  ]
+ },
+ "fatigue": {
+  "shift held, alpha and beta free": [
+   "every root of the profile score on [H, A] (harmonic and arithmetic mean of x - mu; the score points inward outside) is isolated by rational interval bounds; the winning root is bracketed to relative width 0.01 tol = 1e-12 (alpha endpoint width likewise); another candidate more than 1e-9 away in log beta within 1e-10 n of the winner stops",
+   "fatigue/certificate.hpp:40 (domain [H, A]), :62-72 (bounds), :88-90 (bisection to .01 tol), :111 (tie 1e-10 n, 1e-9); README \"Details\""
+  ],
+  "shift held, alpha held": [
+   "same on [t_min / r, t_max r], r = (alpha/2 + sqrt(alpha^2/4 - 1))^2 for alpha > 2, else r = 1 (exterior roots of the individual scores)",
+   "fatigue/certificate.hpp:41 (domain [t_min/r, t_max r]); README \"Details\""
+  ]
+ },
+ "skellam": {
+  "both rates free": [
+   "the returned likelihood is within 1e-8 n of the global maximum: branch and bound over the profile t = min(mu1, mu2) on the line mu1 - mu2 = xbar with the quadratic envelope l(m) + |l'(m)| h + M h^2/2, M = sum 2/(|k| + 1), a Poisson-mode tail bound for t >= 2, and the positive series bound l(eps) + 2 n eps on [0, eps]; faces win ties within 0.5e-8 n",
+   "skellam/README.md \"Joint-search certificate\" (curvature bound, tails); skellam/mle.hpp margin constants"
+  ]
+ }
+}

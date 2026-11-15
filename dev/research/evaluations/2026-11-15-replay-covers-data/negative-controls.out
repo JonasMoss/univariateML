@@ -1,0 +1,24 @@
+fatigue alpha 4 sample: local maxima [('3.7029734', '0.15852225'), ('3.7057258', '7.2282654')]
+ok   pareto2 all free: scale x (1 + 1e-4)                                           pareto2   archive/005524: root  {'gain': 'holds', 'root': 'fails', 'concave': 'holds', 'global': 'open', 'coefficient': 'fails'}
+ok   pareto2 all free: shape x (1 + 1e-4)                                           pareto2   archive/005524: coefficient  {'gain': 'holds', 'root': 'holds', 'concave': 'holds', 'global': 'holds', 'coefficient': 'fails'}
+ok   pareto2 shape held: scale x (1 + 1e-6)                                         pareto2   archive/005539: root  {'root': 'fails'}
+ok   pareto2 zeros with both coefficients free claimed finite                       pareto2   class/zeros: support  {'support': 'fails'}
+ok   invpareto all free: scale x (1 + 1e-4)                                         invpareto archive/004001: root  {'gain': 'holds', 'root': 'fails', 'concave': 'holds', 'global': 'open', 'coefficient': 'fails'}
+ok   invpareto all free: shape x (1 + 1e-4)                                         invpareto archive/004001: coefficient  {'gain': 'holds', 'root': 'holds', 'concave': 'holds', 'global': 'holds', 'coefficient': 'fails'}
+ok   invpareto shape held: scale x (1 + 1e-6)                                       invpareto archive/004003: root  {'root': 'fails'}
+ok   pareto2 limit claimed on a heavy-tailed sample                                 pareto2   archive/005526: face  {'face': 'fails', 'mapping': 'info'}
+ok   cauchy scale held: location + 1e-8                                             cauchy    archive/000794: bracket  {'bracket': 'fails', 'curvature': 'holds', 'cover': 'open'}
+ok   cauchy scale held: location + 0.5                                              cauchy    archive/000794: bracket  {'bracket': 'fails', 'curvature': 'holds', 'cover': 'open'}
+ok   cauchy scale held: the weaker (upper) local maximum claimed as the maximum     cauchy    archive/000794: cover  {'bracket': 'holds', 'curvature': 'holds', 'cover': 'fails'}
+ok   gpd joint: xi + 1e-5                                                           gpd       archive/002872: bracket  {'bracket': 'fails', 'curvature': 'holds', 'cover': 'open', 'coefficient': 'fails'}
+ok   gpd joint: sigma x (1 + 1e-5)                                                  gpd       archive/002872: coefficient  {'bracket': 'holds', 'curvature': 'holds', 'gain': 'holds', 'cover': 'holds', 'coefficient': 'fails'}
+ok   gpd joint: interior sample claimed the uniform member                          gpd       archive/002872: cover  {'cover': 'fails'}
+ok   gpd joint: uniform-member sample claimed interior (xi = 0.3)                   gpd       archive/002868: bracket  {'bracket': 'fails', 'curvature': 'open', 'cover': 'open', 'coefficient': 'fails'}
+ok   gpd scale held: xi + 1e-5                                                      gpd       archive/002888: bracket  {'bracket': 'fails', 'curvature': 'holds', 'cover': 'open'}
+ok   foldnorm joint: mu x (1 + 1e-6)                                                foldnorm  archive/001512: bracket  {'bracket': 'fails', 'cover': 'holds'}
+ok   foldnorm joint: interior sample claimed mu = 0                                 foldnorm  archive/001512: cover  {'quartic': 'fails', 'cover': 'fails'}
+ok   foldnorm joint: half-normal sample claimed mu = 3 sigma                        foldnorm  archive/001529: cover  {'bracket': 'fails', 'cover': 'fails'}
+ok   fatigue free: beta x (1 + 1e-6)                                                fatigue   archive/001432: bracket  {'bracket': 'fails', 'cover': 'open'}
+ok   fatigue alpha held: the lower of two local maxima claimed                      fatigue   archive/001452: cover  {'bracket': 'holds', 'cover': 'fails'}
+ok   skellam joint: both rates + 0.05                                               skellam   archive/006298: cover  {'cover': 'fails'}
+22 controls, 0 did not fail as intended
