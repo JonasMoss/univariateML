@@ -206,6 +206,256 @@
    "detail": "F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding; hp left [-1.14360880346595e-14, -1.14360880346595e-14], right [-7.02490680264504e-15, -7.02490680264504e-15]; double None; margin None; width relative bracket 1e-14 in 1/shape (Gumbel on -log x), half width 5e-15 (weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115); hp offset (returned - root) = -2.14e-14",
    "finding": "root-width-rounding"
   },
+  "cert-replay:tie|double|hyper|archive|003455": {
+   "ref": "TASK-214.36",
+   "detail": "no other (N, m, k) attains likelihood one; witness (c+1, c+1, c); hp exact likelihood at (6, 6, 5): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003459": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003460": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003461": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003462": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003463": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003464": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003482": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 38, 6)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003483": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 50, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003484": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 43, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003485": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 44, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003486": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003487": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003488": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003489": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003490": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003491": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003492": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|003494": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 10, 1)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|hyper|archive|010973": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 49, 10)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|nhyper|archive|005151": {
+   "ref": "TASK-214.36",
+   "detail": "no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|nhyper|archive|005152": {
+   "ref": "TASK-214.36",
+   "detail": "no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|nhyper|archive|005154": {
+   "ref": "TASK-214.36",
+   "detail": "no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|triang|archive|008159": {
+   "ref": "TASK-214.36",
+   "detail": "no other mode attains the maximum profile (numerical, within 1e-20); hp modes within 1e-20 of the returned profile: [0.556117281364277]; double None; margin None; a tie exists (numerical) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|double|triang|class|two": {
+   "ref": "TASK-214.36",
+   "detail": "no other mode attains the maximum profile (numerical, within 1e-20); hp modes within 1e-20 of the returned profile: [0.6148650215473026]; double None; margin None; a tie exists (numerical) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003455": {
+   "ref": "TASK-214.36",
+   "detail": "no other (N, m, k) attains likelihood one; witness (c+1, c+1, c); hp exact likelihood at (6, 6, 5): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003459": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003460": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003461": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003462": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003463": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003464": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(13, 12, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003482": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 38, 6)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003483": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 50, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003484": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 43, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003485": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 44, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003486": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003487": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003488": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003489": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003490": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003491": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003492": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 46, 5)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|003494": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 10, 1)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|hyper|archive|010973": {
+   "ref": "TASK-214.36",
+   "detail": "no other grid point attains the maximum; hp exact ties with the returned point: [(50, 49, 10)]; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|nhyper|archive|005151": {
+   "ref": "TASK-214.36",
+   "detail": "no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|nhyper|archive|005152": {
+   "ref": "TASK-214.36",
+   "detail": "no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|nhyper|archive|005154": {
+   "ref": "TASK-214.36",
+   "detail": "no other (N, m, r) attains likelihood one; witness (N+1, m+1, r); hp exact likelihood at (9, 9, 8): 1; double None; margin None; a tie exists (exact) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|triang|archive|008159": {
+   "ref": "TASK-214.36",
+   "detail": "no other mode attains the maximum profile (numerical, within 1e-20); hp modes within 1e-20 of the returned profile: [0.556117281364277]; double None; margin None; a tie exists (numerical) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
+  "cert-replay:tie|native|triang|class|two": {
+   "ref": "TASK-214.36",
+   "detail": "no other mode attains the maximum profile (numerical, within 1e-20); hp modes within 1e-20 of the returned profile: [0.6148650215473026]; double None; margin None; a tie exists (numerical) but the outcome says unique = true",
+   "finding": "unique-despite-tie"
+  },
   "cert-replay:unique|double|cmp|class|zeros": {
    "ref": "TASK-214.32",
    "detail": "estimate with unique = true; hp all zero, both free: nu unidentified: unique = false; double None; margin None; source: cmp README existence; special/cmp.hpp cmp_mle_work",
