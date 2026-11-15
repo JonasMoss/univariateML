@@ -180,6 +180,29 @@
       "commit": "027143ae277de66b5531a63369b51e119c64771c",
       "dirty": true,
       "reason": "unique flags (TASK-214.36, .37, .40)"
+    },
+    {
+      "families": [
+        "beta",
+        "betapr",
+        "bhatt",
+        "bnbinom",
+        "burr",
+        "dnorm",
+        "expweibull",
+        "fpareto",
+        "frechet",
+        "gompertz",
+        "invpareto",
+        "invweibull",
+        "lomax",
+        "nbinom",
+        "pareto2",
+        "tlambda"
+      ],
+      "commit": "3da06228b66373db07dd2363d5fda06b82139a47",
+      "dirty": true,
+      "reason": "step 5c job 2b (TASK-150.1.3)"
     }
   ]
 }
