@@ -52,6 +52,7 @@ struct GammaResult {
   int iterations;
   GammaStatus status = GammaStatus::Ok;
   StopDetail stop_detail{};
+  bool evaluation_failure=false;
 };
 
 namespace gamma_detail {
@@ -141,11 +142,11 @@ inline GammaResult finish(span x, double shape, double s, double lx_bar, double 
 
 }  // namespace gamma_detail
 
-inline GammaResult gamma_mle(span x, double tol, int maxit) {
+inline GammaResult gamma_mle_impl(span x, double tol, int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0, GammaStatus::InvalidInput};
+  if (n == 0 || !(tol>=0 && std::isfinite(tol)) || maxit<1) return {0.0, 0.0, kNaN, 0, GammaStatus::InvalidInput};
 
   for (double v : x) if (!(v > 0 && std::isfinite(v)))
     return {kNaN,kNaN,kNaN,0,GammaStatus::InvalidInput};
@@ -169,6 +170,7 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
   bool all_equal = true;
   for (auto v : x) all_equal = all_equal && v == x[0];
   if (all_equal) return {kNaN, kNaN, kNaN, 0, GammaStatus::Degenerate};
+  if (!(tol>0)) return {kNaN,kNaN,kNaN,0,GammaStatus::InvalidInput};
 
   int iterations = 0;
   // The direct s needs a mean with full relative accuracy; a subnormal mean
@@ -230,16 +232,16 @@ inline GammaResult gamma_mle(span x, double tol, int maxit) {
 // shape gives the rate analytically. NaN denotes a free coefficient. `rate`
 // is computed internally (1/scale) for the digamma equation and the
 // log-likelihood; a held scale is returned verbatim, never round-tripped.
-inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double scale) {
+inline GammaResult gamma_mle_impl(span x, double tol, int maxit, double shape, double scale) {
   maxit = static_cast<int>(solver_budget(maxit));
-  if (std::isnan(shape) && std::isnan(scale)) return gamma_mle(x,tol,maxit);
+  if (std::isnan(shape) && std::isnan(scale)) return gamma_mle_impl(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if (x.size()==0 || !(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||
       (!std::isnan(scale) && !(scale>0 && std::isfinite(scale))))
-    return {nan,nan,nan,0,GammaStatus::IterationFailure};
+    return {nan,nan,nan,0,GammaStatus::InvalidInput};
   CPPUNIV_EXTENDED_REAL total=0,logs=0;
   for(double v:x) {
-    if (!(v>0 && std::isfinite(v))) return {nan,nan,nan,0,GammaStatus::IterationFailure};
+    if (!(v>0 && std::isfinite(v))) return {nan,nan,nan,0,GammaStatus::InvalidInput};
     total+=v; logs+=std::log(v);
   }
   const double n=static_cast<double>(x.size());
@@ -273,6 +275,25 @@ inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double
   return {shape,scale,ll,iterations,std::isfinite(ll)?GammaStatus::Ok:GammaStatus::IterationFailure};
 }
 
+// The profile objective assumes an exact mean/shape scale. Rounding that scale
+// can matter for concentrated samples; report the likelihood of the returned law.
+inline GammaResult gamma_mle(span x, double tol, int maxit, double shape, double scale) {
+  auto r=gamma_mle_impl(x,tol,maxit,shape,scale);
+  if(r.status==GammaStatus::Ok) {
+    double ll=0;
+    for(double v:x) ll+=special::gamma_log_density_positive(v,r.shape,r.scale);
+    r.logLik=ll;
+    if(!std::isfinite(ll))r.status=GammaStatus::IterationFailure;
+    if(!(r.shape>0 && std::isfinite(r.shape) && r.scale>0 && std::isfinite(r.scale)))r.status=GammaStatus::TransformFailure;
+  }
+  if(r.status==GammaStatus::IterationFailure && r.shape>0 && std::isfinite(r.shape) &&
+     r.scale>0 && std::isfinite(r.scale) && !std::isfinite(r.logLik))r.evaluation_failure=true;
+  return r;
+}
+inline GammaResult gamma_mle(span x, double tol, int maxit) {
+  return gamma_mle(x,tol,maxit,NAN,NAN);
+}
+
 // TransformFailure: the data or the scale estimate exceed binary64; with a
 // tolerance detail, the scale lies below binary64 resolution.
 inline FitOutcome outcome(const GammaResult& r) {
@@ -281,7 +302,7 @@ inline FitOutcome outcome(const GammaResult& r) {
   switch (r.status) {
     case GammaStatus::Ok: return FitOutcome::estimate();
     case GammaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
-    case GammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case GammaStatus::IterationFailure: return FitOutcome::failure(r.evaluation_failure?OutcomeReason::Evaluation:OutcomeReason::NoConvergence);
     case GammaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GammaStatus::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

@@ -1,0 +1,4 @@
+ZI: status=4 eval=1 LL=-inf N=1e+308 p=0.9 pi=0 upper=inf reason=7
+Gamma overflow: Evaluation; Pareto collapse: Nonexistence/Unbounded; estimated normal window collapse with held parent: Unbounded; held-normal and Weibull limit binding seams checked; held-count likelihood range failures checked; raw compatibility statuses preserved.
+ZI: status=4 eval=1 LL=-inf N=1e+308 p=0.9 pi=0 upper=inf reason=7
+Gamma overflow: Evaluation; Pareto collapse: Nonexistence/Unbounded; estimated normal window collapse with held parent: Unbounded; held-normal and Weibull limit binding seams checked; held-count likelihood range failures checked; raw compatibility statuses preserved.

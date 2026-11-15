@@ -1092,3 +1092,22 @@ TEST_CASE("nbinom: rational jump ties") {
   CHECK(cppunivariate::distributions::qnbinom(2.0323298599578266e-10,4.0,0.75,false,false)==20);
   CHECK(cppunivariate::distributions::qnbinom(-22.316668080742332,4.0,0.75,false,true)==20);
 }
+
+#include "cppunivariate/distributions/nbinom/zmnbinom_mle.hpp"
+#include "cppunivariate/distributions/nbinom/zinb_mle.hpp"
+TEST_CASE("negative binomial point laws carry hold-sensitive identification") {
+  const std::vector<int> z{0,0},o{1,1};const cppunivariate::ispan x{z.data(),z.size()},ones{o.data(),o.size()};
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::nbinom_mle(x,1e-10,200)).unique);
+  CHECK(cppunivariate::outcome(cppunivariate::nbinom_mle(x,1e-10,200,2)).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::nbinom_mle(x,1e-10,200,NAN,1)).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::zmnbinom_mle(x)).unique);
+  const auto held=cppunivariate::zmnbinom_mle(x,1e-10,200,2,.5);
+  REQUIRE(held.status==cppunivariate::ZmnbinomStatus::Ok);
+  CHECK(cppunivariate::outcome(held).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::ztnbinom_mle(ones,1e-10,200,NAN,1)).unique);
+  CHECK(cppunivariate::outcome(cppunivariate::ztnbinom_mle(ones,1e-10,200,2,1)).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::zinb_mle(x)).unique);
+  const auto inflated=cppunivariate::zinb_mle(x,1e-10,200,2,.5);
+  REQUIRE(inflated.status==cppunivariate::ZinbStatus::Ok);
+  CHECK(cppunivariate::outcome(inflated).unique);
+}

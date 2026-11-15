@@ -20,6 +20,8 @@ struct ZinbResult {
   ZinbStatus status;
   StopDetail stop_detail{};
   ZinbCertificateFailure certificate_failure=ZinbCertificateFailure::None;
+
+  bool unique = true;
 };
 struct ZinbCertificateResult {
   ZinbResult fit;
@@ -214,7 +216,19 @@ inline ZinbResult zinb_mle(ispan x,double tol,int maxit,double size,double prob,
   if(!accuracy_detail::nb_polish(x,r.size,r.prob,r.pi,std::isnan(size),std::isnan(prob),std::isnan(pi),false,tol,maxit,r.stop_detail)) {
     r.status=ZinbStatus::IterationFailure;record_accuracy(r,tol,{r.size,r.prob,r.pi},{std::max(1.,std::abs(r.size)),std::max(1.,std::abs(r.prob)),std::max(1.,std::abs(r.pi))});return r;
   }
+  if(!x.empty() && std::all_of(x.begin(),x.end(),[](int v){return v==0;})) {
+    const bool fs=std::isnan(size),fp=std::isnan(prob),fi=std::isnan(pi);
+    const int free_count=int(fs)+int(fp)+int(fi);
+    r.unique=free_count==0 || (free_count==1 &&
+      !(fs && (prob==1 || pi==1)) && !(fp && (size==0 || pi==1)) &&
+      !(fi && (size==0 || prob==1)));
+  }
   if(r.size>0&&r.prob<1){r.logLik=0;for(int v:x)r.logLik+=v==0?zinb_cert_detail::zero_logmass(r.size*std::log(r.prob),r.pi):std::log1p(-r.pi)+zero_detail::nb_logpmf(v,r.size,r.prob);}
+  if(!std::isfinite(r.logLik)) {
+    r.status=ZinbStatus::IterationFailure;
+    r.certificate_failure=ZinbCertificateFailure::Arithmetic;
+    r.stop_detail.budget_exhausted=false;
+  }
   return r;
 }
 }
@@ -235,7 +249,7 @@ inline FitOutcome outcome(const ZinbResult& r) {
     if(r.certificate_failure==ZinbCertificateFailure::TailUnresolved)return FitOutcome::failure(OutcomeReason::Unresolved);
   }
   switch(r.status) {
-    case ZinbStatus::Ok: return FitOutcome::estimate(true);
+    case ZinbStatus::Ok: return FitOutcome::estimate(true,r.unique);
     case ZinbStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZinbStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZinbStatus::IterationFailure: return FitOutcome::failure(r.certificate_failure==ZinbCertificateFailure::Arithmetic ? OutcomeReason::Evaluation : OutcomeReason::NoConvergence);

@@ -40,6 +40,8 @@ struct NbinomResult {
   NbinomStatus status = NbinomStatus::Ok;
   StopDetail stop_detail{};
   NbinomCertificateFailure certificate_failure = NbinomCertificateFailure::None;
+
+  bool unique = true;
 };
 
 inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
@@ -247,7 +249,7 @@ namespace cppunivariate {
 inline FitOutcome outcome(const NbinomResult& r) {
   if(r.certificate_failure==NbinomCertificateFailure::Budget)return FitOutcome::budget();
   switch(r.status) {
-    case NbinomStatus::Ok: return FitOutcome::estimate(true);
+    case NbinomStatus::Ok: return FitOutcome::estimate(true,r.unique);
     case NbinomStatus::Underdispersed: return FitOutcome::limit(true);
     case NbinomStatus::ZeroLimit: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case NbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

@@ -183,3 +183,75 @@ TEST_CASE("exp: censored held likelihood and boundary outcomes") {
   REQUIRE(r.status==cppunivariate::ExpCensoredStatus::Ok);
   CHECK(r.rate/1e-308==doctest::Approx(1));
 }
+
+TEST_CASE("censored outcomes are decided in the core") {
+  CHECK(cppunivariate::outcome(cppunivariate::ExpCensoredResult{NAN,NAN,cppunivariate::ExpCensoredStatus::AllCensored}).reason == cppunivariate::OutcomeReason::Unattained);
+  CHECK(cppunivariate::outcome(cppunivariate::ExpCensoredResult{NAN,NAN,cppunivariate::ExpCensoredStatus::Unbounded}).reason == cppunivariate::OutcomeReason::Unbounded);
+  const std::vector<double> x{1e308,1e308};
+  const auto r=cppunivariate::exp_mle(mltest::as_span(x),1e308);
+  CHECK(r.status==cppunivariate::ExpStatus::IterationFailure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+}
+
+TEST_CASE("right censoring at the origin has nonunique attained fits") {
+  const std::vector<double> lower{0,0},upper{INFINITY,INFINITY};
+  const cppunivariate::CensoredData data{mltest::as_span(lower),mltest::as_span(upper)};
+  const auto r=cppunivariate::exp_censored_mle(data);
+  CHECK(r.status==cppunivariate::ExpCensoredStatus::Ok);
+  CHECK(r.logLik==0);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+}
+
+#include "cppunivariate/distributions/rayleigh/censored.hpp"
+#include "cppunivariate/distributions/pareto/censored.hpp"
+#include "cppunivariate/distributions/lomax/censored.hpp"
+TEST_CASE("transformed censored cores retain origin nonidentification") {
+  const std::vector<double> zero{0,0},one{1,1},upper{INFINITY,INFINITY};
+  const cppunivariate::CensoredData origin{mltest::as_span(zero),mltest::as_span(upper)};
+  const cppunivariate::CensoredData pareto{mltest::as_span(one),mltest::as_span(upper)};
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::rayleigh_censored_mle(origin)).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::pareto_censored_mle(pareto,NAN,1)).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::lomax_censored_mle(origin,1)).unique);
+}
+
+#include "cppunivariate/distributions/weibull/censored.hpp"
+TEST_CASE("right censoring below support is uninformative rather than invalid") {
+  const double inf=std::numeric_limits<double>::infinity();
+  const std::vector<double> x{-1,2,3},at_zero{0,2,3},at_one{1,2,3},upper{inf,2,inf};
+  const auto data=[&](const std::vector<double>& lower) {return cppunivariate::CensoredData{mltest::as_span(lower),mltest::as_span(upper)};};
+  const auto e=cppunivariate::exp_censored_mle(data(x)),e0=cppunivariate::exp_censored_mle(data(at_zero));
+  REQUIRE(e.status==cppunivariate::ExpCensoredStatus::Ok);
+  CHECK(e.rate==e0.rate);CHECK(e.logLik==e0.logLik);CHECK(e.rate==doctest::Approx(.2));
+  const auto w=cppunivariate::weibull_censored_mle(data(x),2),w0=cppunivariate::weibull_censored_mle(data(at_zero),2);
+  REQUIRE(w.status==cppunivariate::WeibullCensoredStatus::Ok);
+  CHECK(w.scale==w0.scale);CHECK(w.logLik==w0.logLik);CHECK(w.scale==doctest::Approx(std::sqrt(13.)));
+  const auto r=cppunivariate::rayleigh_censored_mle(data(x)),r0=cppunivariate::rayleigh_censored_mle(data(at_zero));
+  REQUIRE(r.status==cppunivariate::RayleighCensoredStatus::Ok);
+  CHECK(r.sigma==r0.sigma);CHECK(r.logLik==r0.logLik);CHECK(r.sigma==doctest::Approx(std::sqrt(6.5)));
+  const auto l=cppunivariate::lomax_censored_mle(data(x),1),l0=cppunivariate::lomax_censored_mle(data(at_zero),1);
+  REQUIRE(l.status==cppunivariate::LomaxCensoredStatus::Ok);
+  CHECK(l.kappa==l0.kappa);CHECK(l.logLik==l0.logLik);CHECK(l.kappa==doctest::Approx(1/std::log(12.)));
+  const auto p=cppunivariate::pareto_censored_mle(data(x),NAN,1),p0=cppunivariate::pareto_censored_mle(data(at_one),NAN,1);
+  REQUIRE(p.status==cppunivariate::ParetoCensoredStatus::Ok);
+  CHECK(p.shape==p0.shape);CHECK(p.logLik==p0.logLik);CHECK(p.shape==doctest::Approx(1/std::log(6.)));
+  const std::vector<double> bad_upper{-1,2,inf};
+  CHECK(cppunivariate::exp_censored_mle({mltest::as_span(x),mltest::as_span(bad_upper)}).status==cppunivariate::ExpCensoredStatus::InvalidInput);
+}
+
+TEST_CASE("Pareto censoring below a held endpoint distinguishes flat and unbounded likelihoods") {
+  const double inf=std::numeric_limits<double>::infinity();
+  const std::vector<double> low{0,.5,1},up{inf,inf,inf};
+  const auto flat=cppunivariate::pareto_censored_mle({mltest::as_span(low),mltest::as_span(up)},NAN,1);
+  REQUIRE(flat.status==cppunivariate::ParetoCensoredStatus::Ok);
+  CHECK(flat.logLik==0);CHECK_FALSE(cppunivariate::outcome(flat).unique);
+  const std::vector<double> mixed{.5,2},mixed_upper{inf,2};
+  const auto finite=cppunivariate::pareto_censored_mle({mltest::as_span(mixed),mltest::as_span(mixed_upper)},NAN,1);
+  REQUIRE(finite.status==cppunivariate::ParetoCensoredStatus::Ok);
+  CHECK(finite.shape==doctest::Approx(1/std::log(2.)).epsilon(1e-14));
+  const std::vector<double> collapse{.5,1},collapse_upper{inf,1};
+  const auto unbounded=cppunivariate::pareto_censored_mle({mltest::as_span(collapse),mltest::as_span(collapse_upper)},NAN,1);
+  CHECK(cppunivariate::outcome(unbounded).kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(cppunivariate::outcome(unbounded).reason==cppunivariate::OutcomeReason::Unbounded);
+  const std::vector<double> impossible{.5,2},impossible_upper{.5,inf};
+  CHECK(cppunivariate::pareto_censored_mle({mltest::as_span(impossible),mltest::as_span(impossible_upper)},NAN,1).status==cppunivariate::ParetoCensoredStatus::InvalidInput);
+}

@@ -48,6 +48,11 @@ inline NbinomResult nbinom_mle(ispan x,double tol,int maxit,
     overdispersed=mean>0 && !poisson;
   }
   auto candidate=nbinom_candidate_mle(x,tol,maxit,fixed_size,fixed_prob);
+  if(candidate.status==NbinomStatus::Ok && !x.empty() &&
+     std::all_of(x.begin(),x.end(),[](int v){return v==0;})) {
+    const bool fs=!std::isnan(fixed_size),fp=!std::isnan(fixed_prob);
+    candidate.unique=(fs || fp) && !((!fs && fixed_prob==1) || (!fp && fixed_size==0));
+  }
   if(std::isfinite(candidate.logLik)) {
     const double pad=1024*std::numeric_limits<double>::epsilon()*(1+std::abs(candidate.logLik))*(1+x.size());
     evidence.candidates.push_back({{candidate.size,candidate.prob},candidate.logLik-pad,candidate.logLik+pad});

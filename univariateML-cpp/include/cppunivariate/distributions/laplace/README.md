@@ -111,3 +111,5 @@ Supplying `mu` or `sigma` holds that coefficient. Constant data stop when scale 
 ## Decision history
 
 2026-10-31 (diagnostic status contract): Empty or invalid input carries a non-success status. Degeneracy depends on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+At subnormal scale, rounding the mean absolute deviation changes the standardized residual penalty from its ideal profile value n. The likelihood at the returned scale includes that change; [high-precision evidence](../../../../../dev/research/evaluations/2026-11-14-core5b-d-data/reference.json) covers the first three positive subnormals.

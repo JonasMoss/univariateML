@@ -124,3 +124,5 @@ The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-2
 2026-10-31 (diagnostic contract): Empty or invalid input carries a failure status. Degenerate samples depend on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.
 
 2026-11-01 (range portability): The log support ratio uses `log1p((x-b)/b)` near the endpoint and `log(x)-log(b)` when the ratio would overflow. The R concentration and `1e-300` to `1e300` tests cover both regimes. This rearranges the closed-form likelihood without changing its maximizer.
+
+With endpoint b held, a right-censoring bound at or below b contributes survival probability one. An entirely right-censored sample of such bounds leaves shape a unidentified.

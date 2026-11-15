@@ -213,3 +213,12 @@ TEST_CASE("pareto: right censoring overflowing dimensional ratio") {
   REQUIRE(r.status==cppunivariate::ParetoCensoredStatus::Ok);
   CHECK(r.shape==doctest::Approx(1/(800*std::log(10.))).epsilon(1e-14));
 }
+
+TEST_CASE("below-support censoring does not invalidate a proved Pareto collapse") {
+  const std::vector<double> lower{2,1},upper{2,INFINITY};
+  const auto r=cppunivariate::pareto_censored_mle({mltest::as_span(lower),mltest::as_span(upper)},NAN,2);
+  CHECK(r.status==cppunivariate::ParetoCensoredStatus::InvalidInput);
+  CHECK(r.unbounded_after_support_clamp);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+}

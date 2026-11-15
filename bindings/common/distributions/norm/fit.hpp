@@ -5,14 +5,6 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_norm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}) {
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mean = mean_arg;
@@ -32,7 +24,7 @@ inline FitResult fit_norm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) { return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied}}); };
   if (res.status == cppunivariate::NormStatus::Unbounded) {
-    return done(classify(fail("The norm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero."), {}, outcome_payload(o), {}));
+    return done(stop_failure(fail("The norm maximum likelihood estimator does not exist for constant data: the likelihood is unbounded as scale shrinks to zero."), {}, outcome_payload(o), {}));
   }
   if (res.status == cppunivariate::NormStatus::InvalidInput) return done(fail("Norm requires nonempty finite data and valid held parameters."));
   if (res.status != cppunivariate::NormStatus::Ok) return done(fail("Norm likelihood exceeds double precision."));

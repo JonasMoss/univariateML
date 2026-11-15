@@ -4,6 +4,8 @@
 #include "distributions/binom/tbinom_fit.hpp"
 #include "distributions/pois/tpois_fit.hpp"
 #include "cppunivariate/distributions/pois/tpois_dpqr.hpp"
+#include "cppunivariate/distributions/pois/held_window.hpp"
+#include "cppunivariate/distributions/binom/held_window.hpp"
 #include "cppunivariate/distributions/binom/tbinom_dpqr.hpp"
 #include "cppunivariate/distributions/norm/tnorm_dpqr.hpp"
 #include "distributions/lgser/zmlogarithmic_fit.hpp"
@@ -34,27 +36,27 @@ namespace umvl_binding {
 inline FitResult modifier_not_implemented(const std::string& family,const std::string& value) {
   return invalid_argument(failure(value+" is not implemented for `ml"+family+"`; see TASK-191 or its successor"));
 }
-template<class Density> inline FitResult held_window(FitResult out,cppunivariate::span x,Density density) {
-  if(x.empty())return invalid_argument(failure("requires nonempty data"));
-  double sum=0,correction=0;
-  for(double v:x) {
-    if(!std::isfinite(v))return invalid_argument(failure("requires finite observations"));
-    const double term=density(v);
-    if(!std::isfinite(term))return invalid_argument(failure("invalid truncation window, observations or held coefficients"));
-    const double y=term-correction,z=sum+y;correction=(z-sum)-y;sum=z;
-  }
-  if(!std::isfinite(sum))return with_outcome(failure("conditional log likelihood exceeds numerical range"),cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation),-1);
-  out.logLik=sum;out.has_fixed=true;return with_outcome(std::move(out),cppunivariate::FitOutcome::estimate(true),-1);
+inline FitResult held_window_result(FitResult out,const cppunivariate::HeldWindowResult& r,
+    const std::string& empty_message="requires nonempty data") {
+  const auto o=cppunivariate::outcome(r);
+  if(r.status!=cppunivariate::HeldWindowStatus::Ok)
+    return with_outcome(failure(r.status==cppunivariate::HeldWindowStatus::Unbounded?
+      "Truncated normal likelihood is unbounded as the estimated truncation window collapses onto the constant sample and its bounds coincide.":
+      r.status==cppunivariate::HeldWindowStatus::Empty?empty_message:
+      r.status==cppunivariate::HeldWindowStatus::Nonfinite?"requires finite observations":
+      r.status==cppunivariate::HeldWindowStatus::EvaluationFailure?"conditional log likelihood evaluation failed":
+      r.status==cppunivariate::HeldWindowStatus::InvalidInput?"invalid truncation window, observations or held coefficients":"conditional log likelihood exceeds numerical range"),o,static_cast<int>(r.status));
+  out.logLik=r.logLik;out.has_fixed=true;return with_outcome(std::move(out),o,static_cast<int>(r.status));
 }
 template<class Traits> inline FitResult truncate_counts(cppunivariate::ispan x,double a,double b,
     Traits traits,Held held,const std::string& name,double tol,int maxit) {
-  const auto r=cppunivariate::truncated<Traits>::fit(x,a,b,traits,held.supplied?held.value:NAN,tol,maxit);
+  const auto r=cppunivariate::count_window_mle(x,a,b,traits,held.supplied?held.value:NAN,tol,maxit);
   const auto o=cppunivariate::outcome(r);
   if(r.status!=cppunivariate::TruncationStatus::Ok) {
     const std::string reason=r.status==cppunivariate::TruncationStatus::LowerLimit?"lower point-mass limit: no finite parent MLE":
       r.status==cppunivariate::TruncationStatus::UpperLimit?"upper boundary limit: no finite parent MLE":
       r.status==cppunivariate::TruncationStatus::NumericalFailure?"truncation solve failed to certify coefficient accuracy":"invalid truncation window, observations or held coefficients";
-    return with_outcome(failure(reason),o,static_cast<int>(r.status));
+    return with_outcome(stop_failure(failure(reason),r.stop_detail,outcome_payload(o),{"min","max"},r.model==cppunivariate::CountWindowModel::Uniform?"dunif":""),o,static_cast<int>(r.status));
   }
   FitResult out;out.estimates={{name,r.parameter}};out.logLik=r.logLik;
   out.iterations=r.iterations;out.has_iterations=true;out.has_fixed=true;
@@ -71,11 +73,10 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
   if(!window && zero=="none")return modifier_not_implemented(family,"modifier");
   if(!(tol>0 && std::isfinite(tol)) || maxit<1)return invalid_argument(failure("invalid modifier controls"));
   if(family=="norm" && window) {
-    if(h("mean").supplied && h("sd").supplied && !x.empty()) {
-      if(std::isnan(a))a=*std::min_element(x.begin(),x.end());
-      if(std::isnan(b))b=*std::max_element(x.begin(),x.end());
+    if(h("mean").supplied && h("sd").supplied) {
       FitResult out;out.estimates={{"mean",value("mean")},{"sd",value("sd")}};out.fixed={"mean","sd"};
-      return held_window(out,x,[&](double v){return cppunivariate::distributions::dtnorm(v,value("mean"),value("sd"),a,b,true);});
+      return held_window_result(std::move(out),cppunivariate::held_normal_window_mle(x,value("mean"),value("sd"),a,b),
+        "Truncated normal MLE requires finite data, positive `reltol` and positive `iterlim`.");
     }
     auto out=fit_tnorm(x,h("mean"),h("sd"),{!std::isnan(a),a},{!std::isnan(b),b},tol,maxit);
     out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
@@ -83,13 +84,12 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
   }
   if(family!="zeta" && family!="lgser" && family!="pois" && family!="binom" && family!="nbinom" && family!="geom")
     return modifier_not_implemented(family,window?"`truncate`":"`zero = \""+zero+"\"`");
-  std::vector<int> counts;counts.reserve(x.size());
-  for(double v:x){if(!std::isfinite(v)||v<0||v>2147483647.||v!=std::floor(v))return invalid_argument(failure("requires nonnegative representable integer counts"));counts.push_back(static_cast<int>(v));}
+  auto prepared=cppunivariate::count_observations(x,window,a,b);
+  if(prepared.status!=cppunivariate::CountInputStatus::Ok)
+    return with_outcome(failure("requires nonnegative representable integer counts"),cppunivariate::outcome(prepared),static_cast<int>(prepared.status));
+  const auto& counts=prepared.values;
   const cppunivariate::ispan ix{counts.data(),counts.size()};
-  if(window && !counts.empty()) {
-    if(std::isnan(a))a=*std::min_element(counts.begin(),counts.end());
-    if(std::isnan(b))b=*std::max_element(counts.begin(),counts.end());
-  }
+  a=prepared.lower;b=prepared.upper;
   if(family=="lgser" && !window && zero=="modified") {
     auto out=fit_zmlogarithmic(ix,h("theta"),h("p0"));
     for(auto& p:out.estimates)if(p.first=="prob")p.first="theta";
@@ -117,11 +117,11 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     FitResult out;
     if(family=="pois" && h("lambda").supplied) {
       out.estimates={{"lambda",value("lambda")}};out.fixed={"lambda"};
-      return held_window(out,x,[&](double v){return cppunivariate::distributions::dtpois(v,value("lambda"),std::max(-1.,std::ceil(a)-1),std::floor(b),true);});
+      return held_window_result(std::move(out),cppunivariate::held_pois_window_mle(ix,value("lambda"),a,b));
     }
     if(family=="binom" && h("size").supplied && h("prob").supplied) {
       out.estimates={{"size",value("size")},{"prob",value("prob")}};out.fixed={"size","prob"};
-      return held_window(out,x,[&](double v){return cppunivariate::distributions::dtbinom(v,value("prob"),std::max(-1.,std::ceil(a)-1),std::floor(b),value("size"),true);});
+      return held_window_result(std::move(out),cppunivariate::held_binom_window_mle(ix,value("size"),value("prob"),a,b));
     }
     if(family=="pois") {
       const auto check=cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(ix,a,b,{},value("lambda"),tol,maxit);
@@ -169,16 +169,21 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
   }
   return invalid_argument(failure("`zero` must be one of none, truncated, modified, inflated"));
 }
+template<class Result> inline cppunivariate::StopDetail censored_stop_detail(const Result&) { return {}; }
+inline cppunivariate::StopDetail censored_stop_detail(const cppunivariate::WeibullCensoredResult& r) { return r.stop_detail; }
 template<class Result> inline FitResult censored_result(const std::string& family,const Result& r,
     std::vector<std::pair<std::string,double>> estimates,const std::vector<std::pair<std::string,Held>>& holds) {
   const auto status=r.status;
-  const auto o=status==decltype(status)::Ok ? cppunivariate::FitOutcome::estimate() :
-    cppunivariate::FitOutcome::failure(status==decltype(status)::InvalidInput ? cppunivariate::OutcomeReason::InvalidInput :
-      status==decltype(status)::NotImplemented ? cppunivariate::OutcomeReason::Unsupported : cppunivariate::OutcomeReason::Evaluation);
-  const auto done=[&](FitResult out){return with_outcome(std::move(out),o,static_cast<int>(status));};
+  const auto o=cppunivariate::outcome(r);
+  const auto done=[&](FitResult out){
+    const auto detail=censored_stop_detail(r);
+    if(o.kind==cppunivariate::OutcomeKind::Limit)out=stop_failure(std::move(out),detail,PayloadKind::Limit,{"point"});
+    else if(detail.accuracy_stop!=cppunivariate::AccuracyStop::None)out=stop_failure(std::move(out),detail,out.payload_kind,{});
+    return with_outcome(std::move(out),o,static_cast<int>(status));
+  };
   if(status!=decltype(status)::Ok) {
     if(status==decltype(status)::NotImplemented)return done(modifier_not_implemented(family,"censoring scheme or hold set"));
-    return done(failure(status==decltype(status)::InvalidInput?"invalid censored observations or held coefficients":status==decltype(status)::AllCensored?"AllCensored: no exact observations":status==decltype(status)::Unbounded?"censored likelihood is unbounded":"censored solve failed to certify coefficient accuracy"));
+    return done(failure(o.kind==cppunivariate::OutcomeKind::Nonexistence && o.reason==cppunivariate::OutcomeReason::Unbounded?"censored likelihood is unbounded":status==decltype(status)::InvalidInput?"invalid censored observations or held coefficients":status==decltype(status)::AllCensored?"AllCensored: no exact observations":status==decltype(status)::Unbounded?"censored likelihood is unbounded":"censored solve failed to certify coefficient accuracy"));
   }
   FitResult out;out.estimates=estimates;out.logLik=r.logLik;out.has_fixed=true;
 

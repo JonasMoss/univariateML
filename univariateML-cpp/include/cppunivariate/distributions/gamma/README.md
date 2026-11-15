@@ -156,3 +156,5 @@ Empty or invalid input carries a non-success status. Degenerate samples depend
 on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+For highly concentrated samples, rounding the returned scale can move the gamma center appreciably relative to its width. The exact-scale profile likelihood then differs from the likelihood at the returned binary64 law; density evaluation at that law is the reported quantity. The [120-digit comparison](../../../../../dev/research/evaluations/2026-11-14-core5b-d-data/reference.json) includes adjacent observations and a large offset.

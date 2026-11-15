@@ -11,6 +11,9 @@ enum class ZtbinomStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, Iteratio
 struct ZtbinomResult { double size, prob, logLik; int iterations; ZtbinomStatus status;   StopDetail stop_detail{};
   bool certified = true;
   bool accuracy_failure = false;
+
+  bool unique = true;
+  bool evaluation_failure = false;
 };
 namespace ztbinom_detail {
 template <typename F>
@@ -146,7 +149,7 @@ inline ZtbinomResult ztbinom_mle_proposal(ispan x, double tol=1e-10, int maxit=2
   return stopped;
 }
 } // namespace ztbinom_detail
-inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
+inline ZtbinomResult ztbinom_mle_search(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=NAN,double fixed_prob=NAN) {
   bool candidate_ready=false;
   auto checked = [&]() -> ZtbinomResult {
@@ -280,15 +283,28 @@ inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
       const double next=ll+value;correction=(next-ll)-value;ll=next;
     }
     best.logLik=ll;
-    if(!std::isfinite(ll))best.status=ZtbinomStatus::IterationFailure;
+    if(!std::isfinite(ll)) {best.status=ZtbinomStatus::IterationFailure;best.evaluation_failure=true;}
   }
   return best;
+}
+
+inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
+    double fixed_size=NAN,double fixed_prob=NAN) {
+  auto r=ztbinom_mle_search(x,tol,maxit,fixed_size,fixed_prob);
+  if(std::isfinite(r.logLik))r.evaluation_failure=false;
+  if(r.status==ZtbinomStatus::Ok && !std::isfinite(r.logLik)) {r.status=ZtbinomStatus::IterationFailure;r.evaluation_failure=true;r.stop_detail.loglik_upper=INFINITY;}
+  if(r.evaluation_failure)r.stop_detail.loglik_upper=INFINITY;
+  if(r.status==ZtbinomStatus::Ok)
+    r.unique=!((std::isnan(fixed_prob) && r.size==1) ||
+               (std::isnan(fixed_size) && r.prob==0));
+  return r;
 }
 
 } // namespace cppunivariate
 
 namespace cppunivariate {
 inline FitOutcome outcome(const ZtbinomResult& r) {
+  if(r.evaluation_failure)return FitOutcome::failure(OutcomeReason::Evaluation);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   if(r.accuracy_failure)return FitOutcome::failure(OutcomeReason::NoConvergence);
@@ -297,7 +313,7 @@ inline FitOutcome outcome(const ZtbinomResult& r) {
     if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
   }
   switch(r.status) {
-    case ZtbinomStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ZtbinomStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
     case ZtbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZtbinomStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZtbinomStatus::PoissonLimit: return FitOutcome::limit(true);

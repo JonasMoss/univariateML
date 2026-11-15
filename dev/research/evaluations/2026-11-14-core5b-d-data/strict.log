@@ -1,0 +1,67 @@
+2686 cases judged in each of two modes
+fit-judge: failures by check: {'nesting': 2}
+fit-judge: 2 listed as known, 0 new, 0 listed but passing
+
+not checked (no C++ density for the model, or coefficients missing):
+  double lgser: limit model has no C++ density: 1
+  double norm +truncate=tnorm: limit model has no C++ density: 21
+  double zeta +truncate=zipf: limit model has no C++ density: 3
+  double zeta: limit model has no C++ density: 5
+  native lgser: limit model has no C++ density: 1
+  native norm +truncate=tnorm: limit model has no C++ density: 21
+  native zeta +truncate=zipf: limit model has no C++ density: 3
+  native zeta: limit model has no C++ density: 5
+
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing
+fit-consistency: failures by check: none
+fit-consistency: 0 listed as known, 0 new, 0 listed but passing
+open (refinement could not settle the case; not a failure):
+  binom+zero=inflated: ValueError: integer enumeration budget exhausted: tail needs 131071 cells: 2
+  binom+zero=inflated: ValueError: integer profile with held probability requires a separate tail envelope: 12
+  binom+zero=inflated: log-likelihood not finite at the returned estimate: 2
+  binom+zero=modified: KeyError: 'ComplexInfinity': 22
+  binom+zero=modified: ValueError: integer enumeration budget exhausted: tail needs 1000037 cells: 2
+  binom+zero=modified: ValueError: integer profile with held probability requires a separate tail envelope: 10
+  binom+zero=truncated: ValueError: integer enumeration budget exhausted: tail needs 1000037 cells: 2
+  binom+zero=truncated: ValueError: integer profile with held probability requires a separate tail envelope: 8
+  binom: ValueError: integer enumeration budget exhausted: tail needs 1000037 cells: 2
+  binom: ValueError: integer profile with held probability requires a separate tail envelope: 12
+  gamma: scaled line search failed: 6
+  geom+zero=modified: log-likelihood not finite at the returned estimate: 12
+  geom+zero=modified: no free regular coefficient left to refine: 8
+  geom: no free regular coefficient left to refine: 4
+  lgser+zero=modified: log-likelihood not finite at the returned estimate: 6
+  lgser+zero=modified: no free regular coefficient left to refine: 10
+  nbinom+zero=modified: log-likelihood not finite at the returned estimate: 6
+  norm +truncate=tnorm: log-likelihood not finite at the golden estimates: 4
+  norm +truncate=tnorm: scaled line search failed: 4
+  pois +truncate=tpois: case guard of 120 s: 4
+  pois+zero=inflated: no free regular coefficient left to refine: 4
+  pois+zero=inflated: singular scaled information: 4
+  pois+zero=modified: log-likelihood not finite at the returned estimate: 2
+  pois+zero=modified: no free regular coefficient left to refine: 4
+  pois+zero=modified: singular scaled information: 8
+  zeta +truncate=zipf: case guard of 120 s: 2
+  zeta +truncate=zipf: singular scaled information: 2
+coefficients not refined (no independent value; not judged):
+  binom +truncate=tbinom size: integer: 34
+  binom+zero=inflated pi: at domain bound (one-sided score checked): 14
+  geom+zero=modified p0: at domain bound: 6
+  lgser+zero=modified p0: at domain bound: 12
+  nbinom+zero=inflated pi: at domain bound (one-sided score checked): 26
+  nbinom+zero=modified p0: at domain bound: 22
+  pois+zero=inflated pi: at domain bound (one-sided score checked): 16
+  pois+zero=modified p0: at domain bound: 4
+no cached reference (run without --cache-only): 10 cases, e.g. [('pois +truncate=tpois', 'archive', '007963'), ('pois +truncate=tpois', 'archive', '007963'), ('pois +truncate=tpois', 'archive', '007968'), ('pois +truncate=tpois', 'archive', '007968'), ('pois +truncate=tpois', 'archive', '011101')]
+1060 cases judged
+fit-refine: failures by check: {'refine': 8}
+fit-refine: 8 listed as known, 0 new, 0 listed but passing
+seam-check native: 3 guarded fits replayed with a 300 s guard
+seam-check native: {'pass': 7331, 'stop': 2363}
+seam-check double: 1 guarded fits replayed with a 300 s guard
+seam-check double: {'pass': 7329, 'stop': 2365}
+strict-seam: failures by check: none
+strict-seam: 0 listed as known, 0 new, 1 listed but passing
+  FIXED seam-open|double|emg|archive|001311 (TASK-214.5)
+strict layer: no failure outside the known list

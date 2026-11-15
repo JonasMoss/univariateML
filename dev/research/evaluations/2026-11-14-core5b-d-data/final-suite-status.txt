@@ -1,0 +1,3 @@
+cpp-test 0 workstation
+cpp-test-no-long-double 0 workstation
+test 1 workstation

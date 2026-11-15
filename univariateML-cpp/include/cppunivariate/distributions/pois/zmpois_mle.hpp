@@ -8,7 +8,10 @@ typedef zero_detail::ModifiedResult ZmpoisResult;
 inline ZmpoisResult zmpois_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_lambda=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
  if(std::isnan(fixed_lambda) && std::isnan(fixed_p0)) {
-  return zero_detail::modified_mle(x,0,tol,maxit,std::numeric_limits<double>::quiet_NaN());
+  auto out=zero_detail::modified_mle(x,0,tol,maxit,std::numeric_limits<double>::quiet_NaN());
+  if((out.status==ZmpoisStatus::Ok || out.status==ZmpoisStatus::TwoPoint) && !std::isfinite(out.logLik))
+    out.status=ZmpoisStatus::IterationFailure;
+  return out;
  }
  ZmpoisResult out{1,1,.5,0,0,0,ZmpoisStatus::Ok};
  const bool fb=!std::isnan(fixed_lambda), fz=!std::isnan(fixed_p0);
@@ -25,14 +28,13 @@ inline ZmpoisResult zmpois_mle(ispan x, double tol=1e-10,int maxit=200,double fi
  if((n>k && out.p0==0)||(k>0 && out.p0==1)) {out.status=ZmpoisStatus::InvalidInput;return out;}
 
  if(fb)out.lambda=fixed_lambda;
- if(pos.empty()) {out.logLik=n*std::log(out.p0);out.status=ZmpoisStatus::AllZero;return out;}
+ if(pos.empty()) {out.logLik=n*std::log(out.p0);out.status=fb?ZmpoisStatus::Ok:ZmpoisStatus::AllZero;return out;}
  const ispan positive{pos.data(),pos.size()};
  if(!fb) {const auto r=ztpois_mle(positive);out.lambda=r.lambda;out.logLik=r.logLik;}
- else for(int v:positive)out.logLik+=fixed_lambda==0?(v==1?0:-std::numeric_limits<double>::infinity()):
-    -fixed_lambda+v*std::log(fixed_lambda)-special::lgamma(v+1.0)-std::log(-std::expm1(-fixed_lambda));
+ else for(int v:positive)out.logLik+=distributions::dztpois(v,fixed_lambda,true);
  if(n>k)out.logLik+=(n-k)*std::log(out.p0);
  out.logLik+=k*std::log1p(-out.p0);
- if(!std::isfinite(out.logLik))out.status=ZmpoisStatus::InvalidInput;
+ if(!std::isfinite(out.logLik))out.status=out.lambda>0?ZmpoisStatus::IterationFailure:ZmpoisStatus::InvalidInput;
  return out;
 }
 }

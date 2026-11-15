@@ -1,0 +1,3 @@
+ZI: status=4 eval=0 LL=-inf N=1e+308 p=0.9 pi=0 upper=inf reason=6
+late-metadata-native: dev/research/evaluations/2026-11-14-core5b-d-data/late-metadata.cpp:50: int main(): Assertion `cppunivariate::outcome(zi).reason==cppunivariate::OutcomeReason::Evaluation && zi.stop_detail.loglik_upper==INFINITY' failed.
+build/scratch/late-metadata.sh: line 7:    25 Aborted                    (core dumped) "build/scratch/late-metadata-$mode"

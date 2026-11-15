@@ -219,3 +219,7 @@ Empty or invalid input carries a non-success status. Degenerate samples depend
 on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+For positive conditioning, the normalizer is `1 - exp(-lambda)`. Its likelihood uses the stable parent Poisson mass at the returned lambda; subtracting the large factorial and power terms directly loses the finite likelihood at counts near the integer representation limit. Zero modification adds the Bernoulli hurdle contribution to this conditional likelihood.
+
+In a Poisson hurdle, an empty positive part leaves a free lambda unidentified; holding lambda leaves the Bernoulli zero-mass problem. In the inflated law, an all-zero sample with both lambda and pi free has the continuum of maxima pi = 1, lambda > 0.

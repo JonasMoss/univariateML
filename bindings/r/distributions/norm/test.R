@@ -176,3 +176,17 @@ test_that("Gaussian limit witnesses retain extreme residual scales", {
     expect_equal(unname(e$estimates["sd"])/unit,sqrt(2.5),tolerance=1e-12)
   }
 })
+
+test_that("estimated coincident normal bounds carry the core nonexistence reason", {
+  e <- tryCatch(.modifier_tnorm(c(2,2,2), a=NULL, b=NULL), error=identity)
+  expect_s3_class(e, "univariateML_nomle")
+  expect_match(conditionMessage(e), "likelihood is unbounded", fixed=TRUE)
+})
+
+test_that("estimated truncation-window collapse survives held parent coefficients", {
+  for (bounds in list(c(NA,NA),c(1,NA),c(NA,1))) {
+    e <- tryCatch(mlnorm(rep(1,3),mean=0,sd=.5,truncate=bounds),error=identity)
+    expect_s3_class(e,"univariateML_nomle")
+    expect_match(conditionMessage(e),"window collapses")
+  }
+})

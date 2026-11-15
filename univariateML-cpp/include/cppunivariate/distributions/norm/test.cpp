@@ -659,3 +659,56 @@ TEST_CASE("norm: the sd is profiled at the exact mean, not the rounded one") {
   const auto rz=cppunivariate::norm_mle(mltest::as_span(z));
   CHECK(rz.sd==cppunivariate::norm_detail::moments(mltest::as_span(z)).sd);
 }
+
+#include "cppunivariate/distributions/norm/tnorm_mle.hpp"
+
+TEST_CASE("tnorm estimated coincident bounds collapse in the core") {
+  const std::vector<double> x{2,2,2};
+  const auto r=cppunivariate::tnorm_mle(mltest::as_span(x),NAN,NAN);
+  CHECK(r.status==cppunivariate::TnormStatus::InvalidBounds);
+  CHECK(r.estimated_bounds_collapse);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+  CHECK(cppunivariate::tnorm_mle(mltest::as_span(x),NAN,NAN,-1).status==cppunivariate::TnormStatus::InvalidInput);
+}
+
+TEST_CASE("estimated truncated-normal window collapse is independent of parent holds") {
+  const std::vector<double> x{1,1,1};
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  for(double mu:{nan,0.,1.,2.})for(double sd:{nan,.5,2.}) {
+    for(int design=0;design<3;++design) {
+      const double a=design==1?1:NAN,b=design==2?1:NAN;
+      const auto r=cppunivariate::tnorm_mle(mltest::as_span(x),a,b,1e-10,100,mu,sd);
+      CHECK(r.status==cppunivariate::TnormStatus::InvalidBounds);
+      CHECK(r.estimated_bounds_collapse);
+      CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
+      CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+    }
+  }
+  const auto invalid=cppunivariate::tnorm_mle(mltest::as_span(x),1,1,1e-10,100,0,.5);
+  CHECK_FALSE(invalid.estimated_bounds_collapse);
+  CHECK(cppunivariate::outcome(invalid).reason==cppunivariate::OutcomeReason::InvalidInput);
+}
+
+#include "cppunivariate/distributions/norm/truncation.hpp"
+TEST_CASE("held normal window evaluation classifies estimated endpoints in the core") {
+  const std::vector<double> x{1,1};
+  for(int design=0;design<3;++design) {
+    const auto r=cppunivariate::held_normal_window_mle(mltest::as_span(x),0,.5,design==1?1:NAN,design==2?1:NAN);
+    CHECK(r.status==cppunivariate::HeldWindowStatus::Unbounded);
+    CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
+  }
+  const std::vector<double> y{.5,1,1.5};
+  const auto r=cppunivariate::held_normal_window_mle(mltest::as_span(y),0,.5,NAN,NAN);
+  CHECK(r.status==cppunivariate::HeldWindowStatus::Ok);
+  double ll=0;for(double v:y)ll+=cppunivariate::distributions::dtnorm(v,0,.5,.5,1.5,true);
+  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-14));
+}
+
+TEST_CASE("proper held normal window cannot become invalid merely because evaluation fails") {
+  const std::vector<double> x{0};
+  const auto r=cppunivariate::held_normal_window_mle(mltest::as_span(x),1e308,1,-1,1);
+  const auto o=cppunivariate::outcome(r);
+  const bool valid=(o.kind==cppunivariate::OutcomeKind::Estimate && std::isfinite(r.logLik)) ||
+        (o.kind==cppunivariate::OutcomeKind::Failure && o.reason==cppunivariate::OutcomeReason::Evaluation);
+  CHECK(valid);
+}

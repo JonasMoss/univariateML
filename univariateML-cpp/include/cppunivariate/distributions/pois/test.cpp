@@ -305,3 +305,86 @@ TEST_CASE("pois: log neighbour outside the fuzz band keeps the next atom") {
   // 400-digit finite Poisson sum: cdf-probe.cpp and classify.py in qtie-data.
   CHECK(cppunivariate::distributions::qpois(-.17021094871159989,20,false,true)==16);
 }
+
+#include "cppunivariate/distributions/pois/tpois_mle.hpp"
+TEST_CASE("Poisson singleton window exposes nonidentification") {
+  const std::vector<int> x{2,2};
+  const auto r=cppunivariate::tpois_mle({x.data(),x.size()},1,2);
+  REQUIRE(r.status==cppunivariate::truncated_detail::Status::Ok);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  CHECK(cppunivariate::outcome(cppunivariate::tpois_mle({x.data(),x.size()},1,2,3)).unique);
+}
+
+#include "cppunivariate/distributions/pois/ztpois_mle.hpp"
+TEST_CASE("positive-conditioned Poisson likelihood stays accurate at huge counts") {
+  const std::vector<int> x{2147483647,2147483646,2147483644,2147483639,2147483636};
+  const auto r=cppunivariate::ztpois_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::ZtpoisStatus::Ok);
+  CHECK(r.logLik==doctest::Approx(-58.313599173862379).epsilon(1e-13));
+}
+
+#include "cppunivariate/distributions/pois/zmpois_mle.hpp"
+#include "cppunivariate/distributions/pois/zip_mle.hpp"
+TEST_CASE("Poisson zero modifiers distinguish free and held parent identification") {
+  const std::vector<int> z{0,0};const cppunivariate::ispan x{z.data(),z.size()};
+  const auto free=cppunivariate::zmpois_mle(x);
+  REQUIRE(free.status==cppunivariate::ZmpoisStatus::AllZero);
+  CHECK_FALSE(cppunivariate::outcome(free).unique);
+  const auto held=cppunivariate::zmpois_mle(x,1e-10,200,2);
+  REQUIRE(held.status==cppunivariate::ZmpoisStatus::Ok);
+  CHECK(cppunivariate::outcome(held).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::zip_mle(x)).unique);
+  CHECK(cppunivariate::outcome(cppunivariate::zip_mle(x,2)).unique);
+}
+
+TEST_CASE("Poisson held-law overflow is numerical, not invalid data") {
+  const std::vector<int> z{0,0},positive{1};
+  const auto r=cppunivariate::pois_mle(cppunivariate::ispan{z.data(),z.size()},1e308);
+  CHECK(r.status==cppunivariate::PoisStatus::NumericalFailure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+  CHECK(cppunivariate::pois_mle(cppunivariate::ispan{positive.data(),positive.size()},0).status==cppunivariate::PoisStatus::InvalidInput);
+}
+
+#include "cppunivariate/distributions/lgser/zmlogarithmic_mle.hpp"
+TEST_CASE("Poisson positive-law overflow stays distinct from incompatible point laws") {
+  const std::vector<int> x{1,2},outside{2},zeros{0,0};
+  const cppunivariate::ispan sample{x.data(),x.size()},point{outside.data(),outside.size()};
+  const auto t=cppunivariate::ztpois_mle(sample,1e308);
+  CHECK(t.status==cppunivariate::ZtpoisStatus::NumericalFailure);
+  CHECK(cppunivariate::outcome(t).reason==cppunivariate::OutcomeReason::Evaluation);
+  CHECK(cppunivariate::outcome(cppunivariate::zip_mle(sample,1e308,0)).reason==cppunivariate::OutcomeReason::Evaluation);
+  const auto m=cppunivariate::zmpois_mle(sample,1e-10,100,1e308,0);
+  CHECK(m.status==cppunivariate::ZmpoisStatus::IterationFailure);
+  CHECK(cppunivariate::outcome(m).reason==cppunivariate::OutcomeReason::Evaluation);
+  CHECK(cppunivariate::outcome(cppunivariate::ztpois_mle(point,0)).reason==cppunivariate::OutcomeReason::InvalidInput);
+  CHECK(cppunivariate::outcome(cppunivariate::zmpois_mle(point,1e-10,100,0,0)).reason==cppunivariate::OutcomeReason::InvalidInput);
+  CHECK(cppunivariate::outcome(cppunivariate::zmgeom_mle(point,1e-10,100,1,0)).reason==cppunivariate::OutcomeReason::InvalidInput);
+  CHECK(cppunivariate::outcome(cppunivariate::zmlogarithmic_mle(point,1e-10,100,0,0)).reason==cppunivariate::OutcomeReason::InvalidInput);
+  const auto flat=cppunivariate::zmpois_mle(cppunivariate::ispan{zeros.data(),zeros.size()},1e-10,100,1e308);
+  CHECK(flat.status==cppunivariate::ZmpoisStatus::Ok);
+  CHECK(flat.logLik==0);
+  CHECK(cppunivariate::outcome(flat).unique);
+}
+
+TEST_CASE("inflated Poisson core carries the all-zero diagnostic") {
+  const std::vector<int> z{0,0},x{0,1};
+  const auto all=cppunivariate::zip_mle(cppunivariate::ispan{z.data(),z.size()});
+  CHECK(all.all_zero);
+  CHECK_FALSE(all.unique);
+  CHECK(cppunivariate::zip_mle(cppunivariate::ispan{z.data(),z.size()},2).all_zero);
+  CHECK_FALSE(cppunivariate::zip_mle(cppunivariate::ispan{x.data(),x.size()}).all_zero);
+}
+
+#include "cppunivariate/distributions/pois/held_window.hpp"
+TEST_CASE("held Poisson windows classify support separately from point evaluation") {
+  const std::vector<int> zeros{0,0},positive{1};
+  const auto at_zero=cppunivariate::held_pois_window_mle({zeros.data(),zeros.size()},0,0,INFINITY);
+  CHECK(cppunivariate::outcome(at_zero).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(at_zero.logLik==0);
+  const auto incompatible=cppunivariate::held_pois_window_mle({positive.data(),positive.size()},0,0,INFINITY);
+  CHECK(cppunivariate::outcome(incompatible).reason==cppunivariate::OutcomeReason::InvalidInput);
+  // Two contributions -1e308 cannot be represented by a finite double.
+  const auto range=cppunivariate::held_pois_window_mle({zeros.data(),zeros.size()},1e308,0,INFINITY);
+  CHECK(cppunivariate::outcome(range).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(range).reason==cppunivariate::OutcomeReason::Evaluation);
+}

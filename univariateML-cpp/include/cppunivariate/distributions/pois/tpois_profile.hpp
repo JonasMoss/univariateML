@@ -35,7 +35,7 @@ inline Mass mass(double t, double lo, double hi, double size) {
   return {logz,mode+offset/total,std::isfinite(logz)};
 }
 enum class Status { Ok, InvalidInput, LowerPointMass, UpperPointMass, Unidentified, NumericalFailure };
-struct Result { double parameter, logLik; int iterations; Status status; StopDetail stop_detail{}; };
+struct Result { double parameter, logLik; int iterations; Status status; StopDetail stop_detail{}; bool unique=true; };
 inline Result fit(ispan x,double a,double b,double size) {
   Result r{0,0,0,Status::InvalidInput};
   if(x.size()==0 || std::isnan(a)||std::isnan(b)||a>=b || a==INFINITY || b==-INFINITY) return r;
@@ -84,7 +84,7 @@ inline bool family_point(const truncated_detail::Result&, const FitCandidate& c)
 inline bool accurate_point(const truncated_detail::Result&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const truncated_detail::Result& r) {
   switch(r.status) {
-    case truncated_detail::Status::Ok: return FitOutcome::estimate(true);
+    case truncated_detail::Status::Ok: return FitOutcome::estimate(true,r.unique);
     case truncated_detail::Status::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case truncated_detail::Status::LowerPointMass: return FitOutcome::limit(true);
     case truncated_detail::Status::UpperPointMass: return FitOutcome::limit(true);

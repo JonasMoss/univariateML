@@ -11,6 +11,9 @@ enum class ZibStatus { Ok, InvalidInput, InvalidSize, ZipLimit, IterationFailure
 struct ZibResult {double size, prob, pi, logLik;int iterations;ZibStatus status;  StopDetail stop_detail{};
   bool certified = true;
   bool accuracy_failure = false;
+
+  bool unique = true;
+  bool evaluation_failure = false;
 };
 namespace zib_fit_detail {
 inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
@@ -46,7 +49,9 @@ inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
       }
       const auto status=std::isfinite(ll)?ZibStatus::Ok:
         (p>0 && p<1 && inflation<1?ZibStatus::IterationFailure:ZibStatus::InvalidInput);
-      return ZibResult{r,p,inflation,ll,0,status};
+      ZibResult out{r,p,inflation,ll,0,status};
+      if(status==ZibStatus::IterationFailure) {out.evaluation_failure=true;out.stop_detail.loglik_upper=INFINITY;}
+      return out;
     };
     const auto held_profile=[&](double r) {
       if(fp)return evaluate(r,fixed_prob);
@@ -277,7 +282,7 @@ inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
   return stopped;
 }
 } // namespace zib_fit_detail
-inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
+inline ZibResult zib_mle_search(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=NAN,double fixed_prob=NAN, double fixed_pi=NAN) {
   const auto checked_precision=[&](ZibResult out) {
     // Closed binomial reductions and inflation ratios still round to double.
@@ -575,6 +580,26 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
   return checked_precision(best);
 }
 
+inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
+    double fixed_size=NAN,double fixed_prob=NAN,double fixed_pi=NAN) {
+  auto r=zib_mle_search(x,tol,maxit,fixed_size,fixed_prob,fixed_pi);
+  if(std::isfinite(r.logLik))r.evaluation_failure=false;
+  if(r.status==ZibStatus::Ok && !std::isfinite(r.logLik)) {r.status=ZibStatus::IterationFailure;r.evaluation_failure=true;r.stop_detail.loglik_upper=INFINITY;}
+  if(r.status!=ZibStatus::Ok)return r;
+  if(!x.empty() && std::all_of(x.begin(),x.end(),[](int v){return v==0;})) {
+    const bool fs=std::isnan(fixed_size),fp=std::isnan(fixed_prob),fi=std::isnan(fixed_pi);
+    const int free_count=int(fs)+int(fp)+int(fi);
+    r.unique=free_count==0 || (free_count==1 &&
+      !(fs && (fixed_prob==0 || fixed_pi==1)) &&
+      !(fp && (fixed_size==0 || fixed_pi==1)) &&
+      !(fi && (fixed_size==0 || fixed_prob==0)));
+  }
+  if(r.size==1 && std::isnan(fixed_prob) && std::isnan(fixed_pi) &&
+     std::all_of(x.begin(),x.end(),[](int v){return v<=1;}) &&
+     !std::all_of(x.begin(),x.end(),[](int v){return v==1;}))r.unique=false;
+  return r;
+}
+
 } // namespace cppunivariate
 
 namespace cppunivariate {
@@ -585,6 +610,7 @@ inline bool family_point(const ZibResult&, const FitCandidate& c) {
 // FaceTie lists ZIP face candidates only (the finite-size escape is proved).
 inline bool accurate_point(const ZibResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const ZibResult& r) {
+  if(r.evaluation_failure)return FitOutcome::failure(OutcomeReason::Evaluation);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   if(r.accuracy_failure)return FitOutcome::failure(OutcomeReason::NoConvergence);
@@ -593,7 +619,7 @@ inline FitOutcome outcome(const ZibResult& r) {
     if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
   }
   switch(r.status) {
-    case ZibStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ZibStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
     case ZibStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZibStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZibStatus::ZipLimit: return FitOutcome::limit(true);

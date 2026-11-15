@@ -18,8 +18,6 @@ inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   const auto res=cppunivariate::zmbinom_mle(x, reltol, iterlim, fixed_size, held_prob, held_p0);
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(res.status));
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"p0",p0_arg.supplied}});
   };
   return done([&]() -> FitResult {
@@ -39,13 +37,14 @@ inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
     return (stop_kind==PayloadKind::None)?out:stop_failure(out,res.stop_detail,stop_kind,{"size","prob","p0"});
   };
 
+  if(res.evaluation_failure)return stopped_fail("MLE cannot be resolved at floating-point precision.");
   if(res.status==cppunivariate::ZmbinomStatus::InvalidInput)return stopped_fail("requires nonempty nonnegative integer count data and valid controls; held parameters must give positive likelihood");
   if(res.status==cppunivariate::ZmbinomStatus::InvalidSize)return stopped_fail("`size` must be a positive integer at least max(x).");
   if(res.status==cppunivariate::ZmbinomStatus::PoissonLimit)return stopped_fail("The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = \"modified\")`.");
   if(res.status==cppunivariate::ZmbinomStatus::AllZero)warnings.push_back(binding_message("all observations are zero: base parameters are unidentified; returning p0 = 1."));
   if(res.status==cppunivariate::ZmbinomStatus::TwoPoint)warnings.push_back(binding_message("positives are all one: the attained two-point law is also fitted exactly by mlbinom(x, size = 1)."));
   if(res.status==cppunivariate::ZmbinomStatus::IterationFailure)return stopped_fail("Profile optimizer IterationFailure: iteration limit or floating-point resolution exhausted; increase iterlim. No capped size estimate is returned.");
-  if(!std::isfinite(res.logLik))return stopped_fail("MLE cannot be resolved at floating-point precision.");
+  if(o.kind!=cppunivariate::OutcomeKind::Estimate)return stopped_fail("MLE cannot be resolved at floating-point precision.");
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");

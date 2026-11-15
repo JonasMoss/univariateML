@@ -15,8 +15,6 @@ inline FitResult fit_lgser(cppunivariate::ispan x, Held theta_arg = {}) {
   auto res = cppunivariate::lgser_mle(x,theta.supplied?theta.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(res.status));
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"theta",theta_arg.supplied}});
   };
   return done([&]() -> FitResult {
@@ -35,10 +33,9 @@ inline FitResult fit_lgser(cppunivariate::ispan x, Held theta_arg = {}) {
                "does not exist.");
   }
   if (res.status == cppunivariate::LgserStatus::InvalidInput) return stopped_fail("Logarithmic-series requires nonempty positive integer data and theta strictly between zero and one.");
-  if (res.status != cppunivariate::LgserStatus::Ok || !std::isfinite(res.theta)) {
+  if (res.status != cppunivariate::LgserStatus::Ok) {
     return stopped_fail("Logarithmic-series MLE failed");
   }
-  if(!std::isfinite(res.logLik))return stopped_fail("Held theta is outside its domain or incompatible with the observations.");
   std::vector<std::string> fixed;if(theta.supplied)fixed.push_back("theta");
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"theta",res.theta}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }();
 

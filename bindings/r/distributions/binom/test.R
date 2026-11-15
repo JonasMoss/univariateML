@@ -261,3 +261,19 @@ test_that("large-count free-size binomial logLik agrees with its exact-input sum
   expect_equal(unname(f["size"]),1000023)
   expect_equal(attr(f,"logLik"),-14.363696715670825,tolerance=1e-12)
 })
+
+test_that("binomial point-law identification follows core holds", {
+  z <- c(0L, 0L)
+  expect_false(attr(mlbinom(z, size=NULL), "unique"))
+  expect_true(attr(mlbinom(z, size=2), "unique"))
+  expect_false(attr(suppressWarnings(mlbinom(z, size=NULL, zero="modified")), "unique"))
+  expect_true(attr(mlbinom(z, size=2, prob=.5, zero="modified"), "unique"))
+  expect_false(attr(mlbinom(z, size=NULL, zero="inflated"), "unique"))
+})
+
+test_that("held binomial likelihood range failures remain numerical at the core boundary", {
+  base <- tryCatch(mlbinom(0,size=1e308,prob=.9),error=identity)
+  inflated <- tryCatch(mlbinom(0,size=1e308,prob=.9,pi=0,zero="inflated"),error=identity)
+  expect_s3_class(base,"univariateML_numerical")
+  expect_s3_class(inflated,"univariateML_numerical")
+})

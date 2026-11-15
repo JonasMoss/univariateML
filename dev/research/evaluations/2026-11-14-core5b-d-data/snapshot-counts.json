@@ -1,0 +1,46 @@
+{
+  "native": {
+    "cases": 752,
+    "differences": 102,
+    "categories": {
+      "proved-nonidentification": 2,
+      "returned-law-loglik-roundoff": 96,
+      "strict-loglik-repair": 4
+    }
+  },
+  "double": {
+    "cases": 752,
+    "differences": 99,
+    "categories": {
+      "proved-nonidentification": 2,
+      "returned-law-loglik-roundoff": 93,
+      "strict-loglik-repair": 4
+    }
+  },
+  "routes-native": {
+    "cases": 1934,
+    "differences": 264,
+    "categories": {
+      "core-provenance": 176,
+      "core-classification": 20,
+      "proved-nonidentification": 35,
+      "conditional-poisson-face-loglik": 5,
+      "returned-law-loglik-roundoff": 20,
+      "held-parent-identification": 6,
+      "strict-loglik-repair": 2
+    }
+  },
+  "routes-double": {
+    "cases": 1934,
+    "differences": 264,
+    "categories": {
+      "core-provenance": 176,
+      "core-classification": 20,
+      "proved-nonidentification": 35,
+      "conditional-poisson-face-loglik": 5,
+      "returned-law-loglik-roundoff": 20,
+      "held-parent-identification": 6,
+      "strict-loglik-repair": 2
+    }
+  }
+}

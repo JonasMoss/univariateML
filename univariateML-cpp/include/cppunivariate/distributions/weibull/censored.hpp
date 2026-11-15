@@ -5,12 +5,16 @@
 #pragma once
 #include "../exp/censored_transform.hpp"
 #include "mle.hpp"
+#include "../../core/discrete_stop.hpp"
 #include <vector>
 namespace cppunivariate {
 enum class WeibullCensoredStatus { Ok, InvalidInput, AllCensored, Unbounded, NotImplemented, NumericalFailure };
 struct WeibullCensoredResult {
   double shape, scale, logLik;
   WeibullCensoredStatus status=WeibullCensoredStatus::Ok;
+  bool unique=true;
+  bool certified=true;
+  StopDetail stop_detail;
 };
 namespace weibull_censored_detail {
 inline WeibullCensoredStatus map(ExpCensoredStatus s) {
@@ -25,6 +29,43 @@ inline WeibullCensoredStatus map(ExpCensoredStatus s) {
 inline double log_ratio(double v,double anchor,double log_anchor) {
   const double r=(v-anchor)/anchor;
   return std::abs(r)<.5?std::log1p(r):std::log(v)-log_anchor;
+}
+// The first log moment controls existence when every event is censored.
+// The two-factor case compares exact binary products before taking a log;
+// a rounded sum of two almost opposite logarithms cannot decide its sign.
+struct LogMoment { double value=0,error=0; bool verified=false; };
+inline LogMoment first_moment(CensoredData x,double scale,const std::vector<double>& z) {
+  double sum=0,correction=0,absolute=0;
+  for(double t:z) {const double y=t-correction,next=sum+y;correction=(next-sum)-y;sum=next;absolute+=std::abs(t);}
+  LogMoment out{sum,1024*std::numeric_limits<double>::epsilon()*absolute,false};
+  out.verified=std::abs(sum)>out.error;
+  std::vector<double> factors;
+  for(double t:x.lower)if(t>0 && t!=scale)factors.push_back(t);
+  if(factors.size()!=2)return out;
+  int ea=0,eb=0,es=0;
+  const double a=std::frexp(factors[0],&ea),b=std::frexp(factors[1],&eb),s=std::frexp(scale,&es);
+  const double p=a*b,pe=std::fma(a,b,-p),q=s*s,qe=std::fma(s,s,-q);
+  const int exponent=ea+eb-2*es;
+  if(std::abs(exponent)<=2) {
+    // Error-free expansion of the difference between the exact products.
+    std::vector<double> expansion;
+    for(double term:{std::ldexp(p,exponent),-q,std::ldexp(pe,exponent),-qe}) {
+      std::vector<double> next;
+      for(double e:expansion) {
+        const double h=term+e,v=h-term,low=(term-(h-v))+(e-v);
+        if(low!=0)next.push_back(low);
+        term=h;
+      }
+      if(term!=0)next.push_back(term);
+      expansion=std::move(next);
+    }
+    CPPUNIV_EXTENDED_REAL difference=0;
+    for(double e:expansion)difference+=e;
+    out.value=std::log1p(static_cast<double>(difference/q));
+  } else out.value=std::log(p/q)+exponent*std::log(2.)+std::log1p(pe/p)-std::log1p(qe/q);
+  out.error=1024*std::numeric_limits<double>::epsilon()*std::abs(out.value);
+  out.verified=true;
+  return out;
 }
 // Root of a strictly decreasing score, bisected on log shape and certified
 // by the signs at both ends; NaN when that fails within maxit steps.
@@ -61,9 +102,12 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
   if(c.left || c.interval)return {nan,nan,nan,WeibullCensoredStatus::NotImplemented};
   for(std::size_t i=0;i<x.lower.size();++i) {
     const double v=x.lower[i];
-    if(!(v>=0 && std::isfinite(v)) || (v==0 && v==x.upper[i]))
+    if(!std::isfinite(v) || (v<=0 && v==x.upper[i]))
       return {nan,nan,nan,WeibullCensoredStatus::InvalidInput};
   }
+  if(!c.exact && std::all_of(x.lower.begin(),x.lower.end(),[](double v){return v<=0;}))
+    return {std::isnan(shape)?1:shape,std::isnan(scale)?1:scale,0,WeibullCensoredStatus::Ok,
+      !std::isnan(shape) && !std::isnan(scale)};
   tol=std::min(tol,1e-10);
   const double d=static_cast<double>(c.exact);
 
@@ -76,10 +120,10 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
       if(e.status==WeibullStatus::Ok && std::abs(e.scale/r.coefficient-1)<1e-12)
         return {shape,e.scale,e.logLik};
     }
-    return {shape,r.coefficient,r.logLik,wd::map(r.status)};
+    return {shape,r.coefficient,r.logLik,wd::map(r.status),r.unique};
   }
 
-  // Positive times only: a time censored at zero contributes S(0) = 1.
+  // Nonpositive right-censoring bounds contribute one; only positive times enter.
   std::vector<double> z;std::vector<char> exact;
   if(std::isnan(scale)) {
     // Both free; profile the scale: scale^k = sum_all x^k / d. With
@@ -127,12 +171,38 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
     above=above || z.back()>0;
     if(exact.back())sum_exact+=z.back();
   }
+  bool certified=true;
+  wd::LogMoment moment;
   if(std::isnan(shape)) {
-    if(!c.exact)return {nan,scale,nan,WeibullCensoredStatus::AllCensored};
-    if(!above && !(sum_exact<0))return {nan,scale,nan,WeibullCensoredStatus::Unbounded};
+    if(!c.exact) {
+      bool constant=true,strictly_below=true;
+      for(double t:z) {constant=constant && t==0;strictly_below=strictly_below && t<0;}
+      if(constant)return {1,scale,-double(z.size()),WeibullCensoredStatus::Ok,false};
+      if(!above) {
+        WeibullCensoredResult r{nan,scale,nan,WeibullCensoredStatus::AllCensored};
+        if(strictly_below) {r.logLik=0;r.stop_detail=discrete_point(scale);r.stop_detail.loglik_upper=0;}
+        return r;
+      }
+      moment=wd::first_moment(x,scale,z);
+      if(moment.verified && moment.value>=0)return {nan,scale,nan,WeibullCensoredStatus::AllCensored};
+      if(!(moment.value<0)) {
+        WeibullCensoredResult r{nan,scale,nan,WeibullCensoredStatus::NumericalFailure};
+        r.stop_detail.accuracy_stop=AccuracyStop::Conditioning;return r;
+      }
+      certified=moment.verified;
+    }
+    if(c.exact && !above && !(sum_exact<0))return {nan,scale,nan,WeibullCensoredStatus::Unbounded};
     const auto score=[&](double k) {
       CPPUNIV_EXTENDED_REAL g=static_cast<CPPUNIV_EXTENDED_REAL>(d)/k;
       if(!std::isfinite(g))return g;
+      if(!c.exact) {
+        double largest=0;for(double t:z)largest=std::max(largest,std::abs(t));
+        if(k*largest<=.5) {
+          g=-static_cast<CPPUNIV_EXTENDED_REAL>(moment.value);
+          for(double t:z)g-=static_cast<CPPUNIV_EXTENDED_REAL>(t)*std::expm1(static_cast<CPPUNIV_EXTENDED_REAL>(k)*t);
+          return g;
+        }
+      }
       for(std::size_t i=0;i<z.size();++i)if(z[i]!=0) {
         const CPPUNIV_EXTENDED_REAL kz=static_cast<CPPUNIV_EXTENDED_REAL>(k)*z[i];
         const CPPUNIV_EXTENDED_REAL term=-static_cast<CPPUNIV_EXTENDED_REAL>(z[i])*(exact[i]?std::expm1(kz):std::exp(kz));
@@ -142,7 +212,22 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
       return g;
     };
     shape=wd::decreasing_root(score,tol,maxit);
-    if(std::isnan(shape))return {nan,scale,nan,WeibullCensoredStatus::NumericalFailure};
+    if(std::isnan(shape)) {
+      WeibullCensoredResult r{nan,scale,nan,WeibullCensoredStatus::NumericalFailure};
+      if(!c.exact)r.stop_detail.budget_exhausted=true;
+      return r;
+    }
+    if(!c.exact) {
+      CPPUNIV_EXTENDED_REAL curvature=0,magnitude=0;double largest=0;
+      for(double t:z) {
+        const CPPUNIV_EXTENDED_REAL kz=static_cast<CPPUNIV_EXTENDED_REAL>(shape)*t,e=std::exp(kz);
+        curvature+=static_cast<CPPUNIV_EXTENDED_REAL>(t)*t*e;
+        magnitude+=std::abs(t*e)*(1+std::abs(kz));largest=std::max(largest,std::abs(t));
+      }
+      CPPUNIV_EXTENDED_REAL noise=1024*std::numeric_limits<double>::epsilon()*magnitude;
+      if(shape*largest<=.5)noise=moment.error+1024*std::numeric_limits<double>::epsilon()*(std::abs(moment.value)+2*shape*curvature);
+      certified=certified && noise/(shape*curvature)<=tol/4;
+    }
   }
   // Log likelihood at (shape, scale): exact log k - log x + k z - exp(k z),
   // censored -exp(k z).
@@ -153,6 +238,12 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
     ll+=std::log(shape)-std::log(v)+static_cast<CPPUNIV_EXTENDED_REAL>(shape)*wd::log_ratio(v,scale,log_scale);
   }
   const double out=static_cast<double>(ll);
-  return {shape,scale,out,std::isfinite(out)?WeibullCensoredStatus::Ok:WeibullCensoredStatus::NumericalFailure};
+  return {shape,scale,out,std::isfinite(out)?WeibullCensoredStatus::Ok:WeibullCensoredStatus::NumericalFailure,true,certified};
+}
+inline FitOutcome outcome(const WeibullCensoredResult& r) {
+  if(r.stop_detail.limit_model==StopModel::PointMass)return FitOutcome::limit(true);
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
+  if(r.status==WeibullCensoredStatus::NumericalFailure && r.stop_detail.budget_exhausted)return FitOutcome::failure(OutcomeReason::NoConvergence);
+  return r.status==WeibullCensoredStatus::Ok?FitOutcome::estimate(r.certified,r.unique):censored_outcome(r.status);
 }
 } // namespace cppunivariate

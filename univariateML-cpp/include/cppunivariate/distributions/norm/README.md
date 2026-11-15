@@ -214,3 +214,5 @@ See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.m
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
 
 For residuals $r_i=x_i-\mu$, the scale profile is $b\sqrt{\sum_i(r_i/b)^2/n}$, where $b=\max_i|r_i|$. Likelihood evaluation uses residual-to-scale ratios rather than squared physical scales. A nonzero residual whose fitted scale cannot be represented is a numerical failure, not collapse.
+
+For truncated fits, a constant sample with at least one endpoint estimated and the other endpoint estimated or held at that sample value has unbounded likelihood. This escape persists with either or both parent coefficients held: continuity and positivity of the normal density give conditional density asymptotic to the reciprocal window width. Equal endpoints supplied as a fixed design remain invalid input.

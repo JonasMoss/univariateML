@@ -1,0 +1,14 @@
+In file included from univariateML-cpp/include/cppunivariate/distributions/weibull/dpqr.hpp:9,
+                 from univariateML-cpp/include/cppunivariate/distributions/weibull/mle.hpp:12,
+                 from univariateML-cpp/include/cppunivariate/distributions/weibull/censored.hpp:7,
+                 from build/scratch/censored-double-focus.cpp:1:
+univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:640:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  640 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:638:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  638 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+univariateML-cpp/include/cppunivariate/distributions/weibull/../../special/tails.hpp:639:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  639 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+status=0 shape=0.33333333333328585 expected=0.33333333333333331

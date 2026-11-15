@@ -8,6 +8,9 @@ typedef zero_detail::ModifiedStatus ZmbinomStatus;
 struct ZmbinomResult : zero_detail::ModifiedResult {
   bool certified = true;
   bool accuracy_failure = false;
+
+  bool unique = true;
+  bool evaluation_failure = false;
 };
 inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_size=std::numeric_limits<double>::quiet_NaN(),
  double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
@@ -29,10 +32,10 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
  if(k>0)out.logLik+=k*std::log1p(-out.p0);
  if(!std::isfinite(out.logLik))return out;
  out.status=ZmbinomStatus::Ok;
- if(k==0) {if(std::isnan(fixed_prob)&&std::isnan(fixed_p0))out.status=ZmbinomStatus::AllZero;return out;}
+ if(k==0) {out.unique=fs && !std::isnan(fixed_prob);out.status=out.unique?ZmbinomStatus::Ok:ZmbinomStatus::AllZero;return out;}
  const auto fit=ztbinom_mle({pos.data(),pos.size()},tol,maxit,fixed_size,fixed_prob);
  if(std::isnan(fixed_prob)&&std::isnan(fixed_p0)&&fit.prob==0)out.status=ZmbinomStatus::TwoPoint;
- out.certified=fit.certified;out.accuracy_failure=fit.accuracy_failure;
+ out.certified=fit.certified;out.accuracy_failure=fit.accuracy_failure;out.unique=fit.unique;out.evaluation_failure=fit.evaluation_failure;
  const double zero_shift=out.logLik;
  out.size=fit.size;out.prob=fit.prob;out.logLik+=fit.logLik;
  if(fit.status==ZtbinomStatus::PoissonLimit) {
@@ -71,12 +74,16 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
      binomial_certificate_detail::witness(out.stop_detail,{out.size,out.prob,out.p0},out.logLik,false);
    }
  }
+ if((out.status==ZmbinomStatus::Ok || out.status==ZmbinomStatus::TwoPoint) && !std::isfinite(out.logLik)) {out.status=ZmbinomStatus::IterationFailure;out.evaluation_failure=true;}
+ if(std::isfinite(out.logLik))out.evaluation_failure=false;
+ if(out.evaluation_failure)out.stop_detail.loglik_upper=INFINITY;
  return out;
 }
 }
 
 namespace cppunivariate {
 inline FitOutcome outcome(const ZmbinomResult& r) {
+  if(r.evaluation_failure)return FitOutcome::failure(OutcomeReason::Evaluation);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   if(r.accuracy_failure)return FitOutcome::failure(OutcomeReason::NoConvergence);
@@ -85,12 +92,12 @@ inline FitOutcome outcome(const ZmbinomResult& r) {
     if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
   }
   switch(r.status) {
-    case ZmbinomStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ZmbinomStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
     case ZmbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZmbinomStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZmbinomStatus::PoissonLimit: return FitOutcome::limit(true);
-    case ZmbinomStatus::AllZero: return FitOutcome::estimate(r.certified);
-    case ZmbinomStatus::TwoPoint: return FitOutcome::estimate(r.certified);
+    case ZmbinomStatus::AllZero: return FitOutcome::estimate(r.certified,false);
+    case ZmbinomStatus::TwoPoint: return FitOutcome::estimate(r.certified,r.unique);
     case ZmbinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
   }
   return {};

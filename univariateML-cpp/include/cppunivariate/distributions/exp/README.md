@@ -141,3 +141,5 @@ relying on an extended exponent range. If a held-rate sum overflows,
 the likelihood instead sums the individually rate-weighted observations.
 The R extreme-value test and appended C++ held-rate case use two
 observations of `1e308`.
+
+A nonpositive right-censoring bound contributes survival probability one, whereas a negative exact observation lies outside the exponential support.

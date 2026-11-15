@@ -476,3 +476,5 @@ At fixed mean and large size, subtracting `logGamma(size)` from `logGamma(size+x
 The identity mass(k;r,p) = p*beta_density(p;r,k+1)/(r+k) retains the beta mean displacement without subtracting a large gamma normalizer. The branch requires an exact k+1 and a finite r+k; the zero-count mass is evaluated directly as p^r.
 
 For larger counts whose unit shift rounds away, the mass instead uses a gamma-binomial split with two nonnegative deviances. A scaled product expansion retains p*(r+k)-r without forming an overflowing sum. The log normalizer uses log(r+k) through a ratio and a sum; all Stirling arguments are at least 16.
+
+The positive-conditioned law at prob = 1 is the point mass at one for every size, so estimating size there is not unique. Zero-modified fits inherit this lack of identification when positive observations occur; without any positive observations, every free parent coordinate is unidentified.

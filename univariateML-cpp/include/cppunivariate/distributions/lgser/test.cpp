@@ -123,3 +123,37 @@ TEST_CASE("lgser: slow reference discrete quantile round trips on every truth po
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::plgser(x,t[0],l,g);},
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qlgser(x,t[0],l,g);});
 }
+
+TEST_CASE("lgser normalizer uses the returned theta for huge counts") {
+  const std::vector<int> x{2147483647,2147483646,2147483644,2147483639,2147483636};
+  const auto r=cppunivariate::lgser_mle({x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::LgserStatus::Ok);
+  CHECK(r.logLik==doctest::Approx(-123.673117687587994373).epsilon(1e-14));
+}
+
+#include "cppunivariate/distributions/lgser/zmlogarithmic_mle.hpp"
+TEST_CASE("logarithmic hurdle parent identification depends on the hold") {
+  const std::vector<int> z{0,0};const cppunivariate::ispan x{z.data(),z.size()};
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::zmlogarithmic_mle(x)).unique);
+  const auto held=cppunivariate::zmlogarithmic_mle(x,1e-10,200,.5);
+  REQUIRE(held.status==cppunivariate::ZmlogarithmicStatus::Ok);
+  CHECK(cppunivariate::outcome(held).unique);
+}
+
+TEST_CASE("zero-modified logarithmic replay retains its primary fit uncertified") {
+  const std::vector<int> x{2147483646,2147483647};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  const auto primary=cppunivariate::lgser_mle(sample);
+  REQUIRE(primary.status==cppunivariate::LgserStatus::Ok);
+  const auto r=cppunivariate::zmlogarithmic_mle(sample,1e-10,1);
+  REQUIRE(r.status==cppunivariate::ZmlogarithmicStatus::Ok);
+  CHECK(r.prob==primary.theta);
+  CHECK(r.logLik==primary.logLik);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(cppunivariate::outcome(r).certified);
+  const auto held=cppunivariate::zmlogarithmic_mle(sample,1e-10,1,NAN,.2);
+  REQUIRE(held.status==cppunivariate::ZmlogarithmicStatus::Ok);
+  CHECK(held.prob==primary.theta);
+  CHECK(held.logLik==doctest::Approx(primary.logLik+2*std::log1p(-.2)).epsilon(1e-14));
+  CHECK_FALSE(cppunivariate::outcome(held).certified);
+}

@@ -56,7 +56,8 @@ inline PoisResult pois_mle(ispan x, double fixed=std::numeric_limits<double>::qu
   if(!std::isnan(fixed)) {
     if(!(fixed>=0 && std::isfinite(fixed)))return {kNaN,kNaN,PoisStatus::InvalidInput};
     double ll=0;for(int v:x) {if(v<0)return {kNaN,kNaN,PoisStatus::InvalidInput};ll+=pois_detail::logpmf(v,fixed);}
-    return {fixed,ll,std::isfinite(ll)?PoisStatus::Ok:PoisStatus::InvalidInput};
+    return {fixed,ll,std::isfinite(ll)?PoisStatus::Ok:
+      fixed==0?PoisStatus::InvalidInput:PoisStatus::NumericalFailure};
   }
   double sum = 0.0;
   for (auto v : x) sum += static_cast<double>(v);

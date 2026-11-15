@@ -401,3 +401,42 @@ TEST_CASE("geom: large inverse samples retain the unfuzzed crossing") {
   CHECK(cppunivariate::distributions::pgeom(std::nextafter(draw,-INFINITY),prob,true,false)<.5);
   CHECK(draw>cppunivariate::distributions::qgeom(.5,prob,true,false));
 }
+
+#include "cppunivariate/distributions/geom/truncation.hpp"
+TEST_CASE("count window core separates endpoint limits and finite uniform boundary") {
+  const std::vector<int> endpoint{2,2};
+  const auto point=cppunivariate::count_window_mle(as_ispan(endpoint),2,5,cppunivariate::GeomTruncationTraits{});
+  CHECK(cppunivariate::outcome(point).kind==cppunivariate::OutcomeKind::Limit);
+  CHECK(point.stop_detail.limit_coef[0]==2);
+  CHECK(point.stop_detail.limit_loglik==0);
+  const std::vector<int> upper{3,4,5};
+  const auto boundary=cppunivariate::count_window_mle(as_ispan(upper),2,5,cppunivariate::GeomTruncationTraits{});
+  CHECK(cppunivariate::outcome(boundary).kind==cppunivariate::OutcomeKind::Limit);
+  CHECK(boundary.model==cppunivariate::CountWindowModel::Uniform);
+}
+
+TEST_CASE("geometric upper-window observations select uniform rather than a point mass") {
+  const std::vector<int> x{5,5};
+  const auto r=cppunivariate::count_window_mle(as_ispan(x),2,5,cppunivariate::GeomTruncationTraits{});
+  REQUIRE(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Limit);
+  CHECK(r.model==cppunivariate::CountWindowModel::Uniform);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(-2*std::log(4.)));
+}
+
+TEST_CASE("count preparation owns invalid-data rejection before integer conversion") {
+  const std::vector<double> negative{-1,2},fractional{1.5,2};
+  for(const auto& x:{negative,fractional}) {
+    const auto r=cppunivariate::count_observations(mltest::as_span(x));
+    CHECK(r.status==cppunivariate::CountInputStatus::InvalidInput);
+    CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::InvalidInput);
+  }
+}
+
+#include "cppunivariate/distributions/geom/zmgeom_mle.hpp"
+TEST_CASE("geometric hurdle parent identification depends on the hold") {
+  const std::vector<int> z{0,0};
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::zmgeom_mle(as_ispan(z))).unique);
+  const auto held=cppunivariate::zmgeom_mle(as_ispan(z),1e-10,200,.5);
+  REQUIRE(held.status==cppunivariate::ZmgeomStatus::Ok);
+  CHECK(cppunivariate::outcome(held).unique);
+}

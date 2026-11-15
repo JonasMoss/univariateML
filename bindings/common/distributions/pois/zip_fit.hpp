@@ -1,7 +1,6 @@
 #pragma once
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/pois/zip_mle.hpp"
-#include <algorithm>
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
@@ -15,15 +14,10 @@ inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_a
   if(lambda.supplied && !std::isfinite(lambda.value))return invalid_argument(fail("`lambda` must be finite and in its parameter domain."));
   if(pi.supplied && !std::isfinite(pi.value))return invalid_argument(fail("`pi` must be finite and in its parameter domain."));
 
-  if (x.size() > 0 &&
-      std::all_of(x.begin(), x.end(), [](int v) { return v == 0; })) {
-    warnings.push_back(binding_message("all observations are zero"));
-  }
   auto res = cppunivariate::zip_mle(x,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN(),iterlim);
+  if(res.all_zero)warnings.push_back(binding_message("all observations are zero"));
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(res.status));
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"pi",pi_arg.supplied}});
   };
   return done([&]() -> FitResult {

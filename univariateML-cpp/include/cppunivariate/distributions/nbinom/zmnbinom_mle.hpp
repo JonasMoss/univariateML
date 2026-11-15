@@ -5,7 +5,9 @@
 namespace cppunivariate {
 // Status and result types retain the shared factorised likelihood contract.
 typedef zero_detail::ModifiedStatus ZmnbinomStatus;
-struct ZmnbinomResult { double lambda,size,prob,p0,logLik; int iterations; ZmnbinomStatus status; StopDetail stop_detail{}; bool budget_exhausted=false; ZtnbinomCertificateFailure certificate_failure=ZtnbinomCertificateFailure::None; };
+struct ZmnbinomResult { double lambda,size,prob,p0,logLik; int iterations; ZmnbinomStatus status; StopDetail stop_detail{}; bool budget_exhausted=false; ZtnbinomCertificateFailure certificate_failure=ZtnbinomCertificateFailure::None;
+  bool unique = true;
+};
 inline ZmnbinomResult zmnbinom_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_size=std::numeric_limits<double>::quiet_NaN(),double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
  ZmnbinomResult out{1,1,.5,0,0,0,ZmnbinomStatus::Ok};
@@ -26,10 +28,10 @@ inline ZmnbinomResult zmnbinom_mle(ispan x, double tol=1e-10,int maxit=200,doubl
    out.size=fixed_size;
  }
  if(fb)out.prob=fixed_prob;
- if(pos.empty()) {out.logLik=n*std::log(out.p0);out.status=ZmnbinomStatus::AllZero;return out;}
+ if(pos.empty()) {out.logLik=n*std::log(out.p0);out.unique=!std::isnan(fixed_size) && fb;out.status=out.unique?ZmnbinomStatus::Ok:ZmnbinomStatus::AllZero;return out;}
  const ispan positive{pos.data(),pos.size()};
  const auto r=ztnbinom_mle(positive,tol,maxit,fixed_size,fixed_prob);
- out.size=r.size;out.prob=r.prob;out.logLik=r.logLik;out.iterations=r.iterations;
+ out.size=r.size;out.prob=r.prob;out.logLik=r.logLik;out.iterations=r.iterations;out.unique=r.unique;
  out.stop_detail=r.stop_detail;out.budget_exhausted=r.budget_exhausted;out.certificate_failure=r.certificate_failure;
  double indicator=0;
  if(n>k)indicator+=(n-k)*std::log(out.p0);
@@ -61,12 +63,12 @@ inline FitOutcome outcome(const ZmnbinomResult& r) {
   }
   if(r.status==ZmnbinomStatus::IterationFailure && r.budget_exhausted)return FitOutcome::budget();
   switch(r.status) {
-    case ZmnbinomStatus::Ok: return FitOutcome::estimate(true);
+    case ZmnbinomStatus::Ok: return FitOutcome::estimate(true,r.unique);
     case ZmnbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZmnbinomStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZmnbinomStatus::PoissonLimit: return FitOutcome::limit(true);
-    case ZmnbinomStatus::AllZero: return FitOutcome::estimate(true);
-    case ZmnbinomStatus::TwoPoint: return FitOutcome::estimate(true);
+    case ZmnbinomStatus::AllZero: return FitOutcome::estimate(true,false);
+    case ZmnbinomStatus::TwoPoint: return FitOutcome::estimate(true,r.unique);
     case ZmnbinomStatus::IterationFailure: return FitOutcome::failure(r.certificate_failure==ZtnbinomCertificateFailure::Arithmetic ? OutcomeReason::Evaluation : OutcomeReason::NoConvergence);
   }
   return {};

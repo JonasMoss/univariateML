@@ -13,8 +13,6 @@ inline FitResult fit_zeta(cppunivariate::ispan x, Held s_arg = {}, double reltol
   const auto fit=cppunivariate::zeta_mle(x,reltol,iterlim,held);
   const auto o=cppunivariate::outcome(fit);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(fit.status));
     return with_outcome(std::move(out),o,static_cast<int>(fit.status),{{"s",s_arg.supplied}});
   };
   return done([&]() -> FitResult {

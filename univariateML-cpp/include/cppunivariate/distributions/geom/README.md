@@ -263,3 +263,7 @@ Empty or invalid input carries a non-success status. Degenerate samples depend
 on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
+
+On a finite integer window `[a,b]`, the geometric conditional law approaches the discrete uniform law as prob tends to zero. Its conditional mean increases to `(a+b)/2`, so a sample mean at least this value selects that uniform supremum. Constant observations at the lower window endpoint select a point-mass supremum as prob tends to one, unless the parent endpoint already attains it. A finite numerical bracket endpoint alone proves neither statement.
+
+For the geometric hurdle, all-zero data have likelihood p0^n independently of prob. Thus a free prob is unidentified, whereas with prob held the free p0 has its unique maximum at one.
