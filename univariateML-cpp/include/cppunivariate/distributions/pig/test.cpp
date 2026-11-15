@@ -529,3 +529,15 @@ TEST_CASE("pig: cached CDF preserves uncached values across parameters and scale
       CHECK(cppunivariate::distributions::ppig(7,mean,shape,lower,log)==expected);
     }
 }
+
+TEST_CASE("pig: all-zero counts with both coefficients free are not a unique maximum") {
+  // (mu, 0) attains the maximum for every mu (TASK-214.32).
+  const std::vector<int> x{0,0,0,0};
+  const auto r=cppunivariate::pig_mle(pig_span(x));
+  CHECK(r.status==cppunivariate::PigStatus::Ok);
+  CHECK(r.mean==1);
+  CHECK(r.shape==0);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  CHECK(cppunivariate::outcome(cppunivariate::pig_mle(pig_span(x),1e-10,200,2.5)).unique);
+}

@@ -129,7 +129,7 @@ namespace cppunivariate {
 inline FitOutcome outcome(const CmpResult& r) {
   if (r.stop_detail.budget_exhausted && r.status != CmpStatus::Ok) return FitOutcome::budget();
   switch (r.status) {
-    case CmpStatus::Ok: return FitOutcome::estimate(true);
+    case CmpStatus::Ok: return FitOutcome::estimate(true, r.unique);
     case CmpStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case CmpStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case CmpStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
@@ -144,7 +144,7 @@ inline FitOutcome outcome(const CmpResult& r) {
 inline FitOutcome outcome(const CmpDomainResult& r) {
   if (r.stop_detail.budget_exhausted && r.status != CmpStatus::Ok) return FitOutcome::budget();
   switch (r.status) {
-    case CmpStatus::Ok: return FitOutcome::estimate(true);
+    case CmpStatus::Ok: return FitOutcome::estimate(true, r.unique);
     case CmpStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case CmpStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case CmpStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

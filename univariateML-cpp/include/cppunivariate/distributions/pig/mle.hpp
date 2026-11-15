@@ -20,6 +20,7 @@ struct PigResult {
   int iterations;
   PigStatus status;
   StopDetail stop_detail{};
+  bool unique=true;
 };
 namespace pig_detail {
 struct Sum {
@@ -371,7 +372,12 @@ inline PigResult pig_mle(ispan x, double tol=1e-10, int maxit=200,
   for (int k:x) if (k<0) return invalid;
   const pig_detail::Counts data(x);
   if (shape==0) return data.average==0 ? PigResult{fm?mean:1,0,0,0,PigStatus::Ok} : invalid;
-  if (data.average==0 && !fs) return {fm?mean:1,0,0,0,PigStatus::Ok};
+  if (data.average==0 && !fs) {
+    PigResult out{fm?mean:1,0,0,0,PigStatus::Ok};
+    // Mean free: (mu, 0) attains the maximum for every mu.
+    out.unique=fm;
+    return out;
+  }
   if(fs && static_cast<std::int64_t>(data.frequencies.rbegin()->first)>100000LL*std::min(maxit,100000)) {
     PigResult out{nan,nan,nan,0,PigStatus::SearchFailure};
     out.stop_detail.budget_exhausted=true;out.stop_detail.loglik_upper=INFINITY;return out;
@@ -410,7 +416,7 @@ inline FitOutcome outcome(const PigResult& r) {
     if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   }
   switch (r.status) {
-    case PigStatus::Ok: return FitOutcome::estimate(true);
+    case PigStatus::Ok: return FitOutcome::estimate(true,r.unique);
     case PigStatus::PoissonLimit: return FitOutcome::limit(true);
     case PigStatus::ZeroLimit: return FitOutcome::limit(true);
     case PigStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

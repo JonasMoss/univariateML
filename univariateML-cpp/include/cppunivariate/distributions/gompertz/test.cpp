@@ -191,3 +191,16 @@ TEST_CASE("gompertz: empty, non-finite and negative samples are invalid input") 
   CHECK(cppunivariate::gompertz_mle(mltest::as_span(zeros),mltest::kFitTol,mltest::kFitMaxit,nan,nan).status==
         cppunivariate::GompertzStatus::Unbounded);
 }
+
+TEST_CASE("gompertz: exponential-limit decision survives sums that overflow binary64") {
+  // Six values between 1.33e307 and 1.7e308: sum and sum of squares exceed DBL_MAX
+  // in a double-only build, but n*sum(x^2) < 2*sum(x)^2, so the MLE is finite
+  // (replay finding, TASK-214.32). Native and double-only builds must agree.
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> x{1.33e307,1.5e308,1.7e308,1.6e308,1.4e308,1.45e308};
+  const auto r=cppunivariate::gompertz_mle(mltest::as_span(x),mltest::kFitTol,mltest::kFitMaxit,nan,nan);
+  CHECK(r.status==cppunivariate::GompertzStatus::Ok);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(r.a>0);
+  CHECK(r.b>0);
+}

@@ -254,3 +254,14 @@ TEST_CASE("cmp: Poisson inverse sampling keeps the unfuzzed jump") {
   CHECK(cppunivariate::distributions::qcmp(rng.value,1,1)==0);
   CHECK(cppunivariate::distributions::rcmp(rng,1,1)==1);
 }
+
+TEST_CASE("CMP all-zero counts with both coefficients free leave nu unidentified") {
+  // lambda = 0 attains the maximum for every nu (TASK-214.32).
+  const std::vector<double> x{0,0,0,0};
+  const auto r=cppunivariate::cmp_mle({x.data(),x.size()});
+  CHECK(r.status==cppunivariate::CmpStatus::Ok);
+  CHECK(r.nu==1);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  cppunivariate::CmpFitControl held; held.fixed_nu=2;
+  CHECK(cppunivariate::outcome(cppunivariate::cmp_mle({x.data(),x.size()},held)).unique);
+}
