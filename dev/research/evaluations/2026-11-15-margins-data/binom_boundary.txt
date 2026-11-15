@@ -1,0 +1,38 @@
+samples constructed: 859
+   mean~      n | delta   count | wrong(plain) wrong(fma) | |gap| range
+
+by magnitude of mean (log10):   samples   wrong(plain)   wrong(fma)
+  1e1                3            0            0
+  1e2              150           14           16
+  1e3               12            3            3
+  1e4              172           16           23
+  1e5                2            0            0
+  1e6              172           15           23
+  1e7                2            0            0
+  1e8              172           15           10
+  1e9              174           23           21
+
+by n (all deltas):   samples   wrong(plain)   wrong(fma)   median |gap|
+      9       180            9           16   2.04e-10
+     13       120            0            0   9.15e-09
+     25       180           18           18   1.96e-11
+     36       120           15           18   3.62e-13
+    100       120           24           24   4.89e-14
+    255        60            0            0   2.06e-11
+   1000        28            9            9   0.00e+00
+   2000        26            3            3   1.33e-16
+   4000        25            8            8   0.00e+00
+
+wrong decisions (exact boundary side vs binary64), first 12 by smallest n:
+  n=9 R=30 delta=+0 mean=82.6667 var=82.6667 gap=+0.00e+00 exact=poisson plain=poisson fma=finite
+  n=9 R=30 delta=+0 mean=52.6667 var=52.6667 gap=+0.00e+00 exact=poisson plain=finite fma=finite
+  n=9 R=30 delta=+0 mean=85.3333 var=85.3333 gap=+0.00e+00 exact=poisson plain=poisson fma=finite
+  n=9 R=30 delta=+0 mean=53.3333 var=53.3333 gap=+0.00e+00 exact=poisson plain=poisson fma=finite
+  n=9 R=30 delta=+0 mean=81.3333 var=81.3333 gap=+0.00e+00 exact=poisson plain=finite fma=finite
+  n=9 R=300 delta=+0 mean=2518.67 var=2518.67 gap=+0.00e+00 exact=poisson plain=finite fma=finite
+  n=9 R=300 delta=+0 mean=2564.67 var=2564.67 gap=+0.00e+00 exact=poisson plain=finite fma=finite
+  n=9 R=300 delta=+0 mean=3566.67 var=3566.67 gap=+0.00e+00 exact=poisson plain=finite fma=finite
+  n=9 R=3000 delta=+0 mean=498661 var=498661 gap=+0.00e+00 exact=poisson plain=finite fma=finite
+  n=9 R=3000 delta=+0 mean=757759 var=757759 gap=+0.00e+00 exact=poisson plain=poisson fma=finite
+  n=9 R=3000 delta=+0 mean=739215 var=739215 gap=+0.00e+00 exact=poisson plain=poisson fma=finite
+  n=9 R=3000 delta=+0 mean=843729 var=843729 gap=+0.00e+00 exact=poisson plain=poisson fma=finite

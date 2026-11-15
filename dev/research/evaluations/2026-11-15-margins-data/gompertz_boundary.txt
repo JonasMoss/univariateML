@@ -1,0 +1,33 @@
+samples: 912 (ulp neighbours -6..6, and for n >= 30 also +-16, 64, 256, 1024, of a root of delta(y) = 0)
+
+by n:      samples  wrong(ldplain)  wrong(ldfma)  wrong(dplain)  wrong(dfma)   median |gap|/u
+      3      169          49          36          45          32   0.87
+      5      143          28          28          32          33   1.12
+     10      117          21          17          24          22   2.35
+     30      189          53          47          41          45   2.42
+    100      168          46          46          43          43   1.41
+    300       63          22          22          20          20   1.56
+   1000       63          25          25          25          25   0.37
+
+by |gap|/u:   samples  wrong(ldplain)  wrong(ldfma)  wrong(dplain)  wrong(dfma)
+  [0,1)     379         171         163         160         154
+  [1,2)     161          46          36          48          42
+  [2,4)     171          19          15          16          18
+  [4,8)      58           7           6           5           5
+  [8,16)      29           1           1           1           1
+  [16,32)      18           0           0           0           0
+  [32,64)      28           0           0           0           0
+  [64,128)      18           0           0           0           0
+  [128,256)      24           0           0           0           0
+  [256,1e+99)      26           0           0           0           0
+
+largest |gap|/u among wrong decisions: 9.7 (n=1000)
+direction of errors (exact -> computed):
+   ('finite->limit', 'dfma') 151
+   ('finite->limit', 'dplain') 169
+   ('finite->limit', 'ldfma') 149
+   ('finite->limit', 'ldplain') 164
+   ('limit->finite', 'dfma') 69
+   ('limit->finite', 'dplain') 61
+   ('limit->finite', 'ldfma') 72
+   ('limit->finite', 'ldplain') 80

@@ -1,0 +1,2 @@
+binom: 1718 (sample, variant) pairs; worst |error| / bound = 0.272
+gompertz: 3648 (sample, variant) pairs; worst |error| / bound = 0.1869
