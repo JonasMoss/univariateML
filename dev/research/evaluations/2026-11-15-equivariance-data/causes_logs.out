@@ -1,0 +1,141 @@
+{
+ "burr": {
+  "c": 0.9821428378708404,
+  "ulp_c": 1.1102230246251565e-16,
+  "ulp_of_log_c": 3.469446951953614e-18,
+  "exact_log_spread": 1.1304089199815146e-16,
+  "float_log_spread": 1.1449174941446927e-16,
+  "float_log_equal": false,
+  "float_log_spread_in_ulps_of_log": 33.0,
+  "rel_error_of_float_spread": 0.012834801554304177,
+  "burr_cert": {
+   "data_ok": true,
+   "standardised": [
+    -0.7071067811865476,
+    -0.7071067811865476,
+    1.4142135623730951
+   ],
+   "box_halfwidth": [
+    531.3586048443827,
+    531.3586048443827,
+    531.3586048443829
+   ],
+   "distances": [
+    -3186.0303087229636,
+    3190.2729494100827
+   ],
+   "P_valid": false,
+   "unit": 5.3971928267254766e-17,
+   "log_spacing": [
+    0.0,
+    0.0,
+    1.1449174941446927e-16
+   ]
+  }
+ },
+ "pareto4": {
+  "c": 24.046705259993423,
+  "ulp_c": 3.552713678800501e-15,
+  "ulp_of_log_c": 4.440892098500626e-16,
+  "exact_log_spread": 1.477422224952855e-16,
+  "float_log_spread": 0.0,
+  "float_log_equal": true,
+  "float_log_spread_in_ulps_of_log": 0.0,
+  "rel_error_of_float_spread": 1.0,
+  "burr_cert": {
+   "data_ok": false,
+   "center": 3.1799979917405707,
+   "variance": 0.0,
+   "unit": 0.0
+  }
+ },
+ "invburr": {
+  "c": 1.0502371433865347,
+  "ulp_c": 2.220446049250313e-16,
+  "ulp_of_log_c": 6.938893903907228e-18,
+  "exact_log_spread": 2.1142330217824798e-16,
+  "float_log_spread": 2.1510571102112408e-16,
+  "float_log_equal": false,
+  "float_log_spread_in_ulps_of_log": 31.0,
+  "rel_error_of_float_spread": 0.01741723265570562,
+  "reciprocals_equal": false,
+  "exact_log_spread_of_reciprocals_binary64": -2.3319949158085656e-16,
+  "spread_of_float_reciprocals_vs_exact_1_over_x": [
+   -2.3592239273284576e-16,
+   -2.1142330217824798e-16
+  ],
+  "burr_cert": {
+   "data_ok": true,
+   "standardised": [
+    -1.4347005815691523,
+    0.6861611477069858,
+    0.6861611477069858
+   ],
+   "box_halfwidth": [
+    261.7392887071469,
+    261.7392887071469,
+    261.7392887071469
+   ],
+   "distances": [
+    -1566.1940087844412,
+    1574.6774557015458
+   ],
+   "P_valid": false,
+   "unit": 1.1123893155135927e-16,
+   "log_spacing": [
+    0.0,
+    2.3592239273284576e-16,
+    2.3592239273284576e-16
+   ]
+  }
+ },
+ "trgamma": {
+  "c": 3.957379969089307,
+  "ulp_c": 4.440892098500626e-16,
+  "ulp_of_log_c": 2.220446049250313e-16,
+  "exact_log_spread": 1.1221798597021218e-16,
+  "float_log_spread": 0.0,
+  "float_log_equal": true,
+  "float_log_spread_in_ulps_of_log": 0.0,
+  "rel_error_of_float_spread": 1.0,
+  "lost_log_distinctions": true
+ },
+ "gengamma": {
+  "c": 0.9214827611622252,
+  "ulp_c": 1.1102230246251565e-16,
+  "ulp_of_log_c": 1.3877787807814457e-17,
+  "exact_log_spread": 1.204822348738116e-16,
+  "float_log_spread": 1.249000902703301e-16,
+  "float_log_equal": false,
+  "float_log_spread_in_ulps_of_log": 9.0,
+  "rel_error_of_float_spread": 0.03666810630750339,
+  "lost_log_distinctions": false,
+  "gengamma": {
+   "sd_of_logs": 5.887846720064156e-17,
+   "log_error": 1.4525484710725745e-16,
+   "data_scale": 5.887846720064156e-17,
+   "arith_extra_16err_over_scale": 39.47245341486735
+  }
+ },
+ "fpareto": {
+  "c": 1.4170184014157163,
+  "ulp_c": 2.220446049250313e-16,
+  "ulp_of_log_c": 5.551115123125783e-17,
+  "exact_log_spread": 1.5669846256279433e-16,
+  "float_log_spread": 1.6653345369377348e-16,
+  "float_log_equal": false,
+  "float_log_spread_in_ulps_of_log": 3.0,
+  "rel_error_of_float_spread": 0.0627638010617873
+ },
+ "fpareto_gb2_concave": {
+  "sd_of_logs": 7.850462293418876e-17,
+  "A": 4.7149423099368235,
+  "c": -2.746358594197582,
+  "dv_first": 39.72829620102949,
+  "gradient_error_sum": 168.83874303164615,
+  "radius": 2.062550264828896e-11,
+  "curvature_scale_m_radius_over_2_upper_bound": 8.610617616052362e-12,
+  "note": "certificate needs g < m*radius/2 with g >= gradient_error",
+  "sd_of_exact_log_deltas": 7.386836365310549e-17
+ }
+}

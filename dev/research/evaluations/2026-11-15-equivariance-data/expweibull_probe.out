@@ -1,0 +1,13 @@
+  c = -n/np.sum(h)
+  return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+  return np.sum(lk - 0 + k*ls - (k+1)*np.log(x) - (x/s)**(-k))
+grid best -0.8205857833175827 at log a, log b, c = (np.float64(-2.007128807519782), np.float64(-0.16000000000000014), np.float64(581818.9794452299))  a, b = 0.13437393475721732 0.8521437889662112
+log b = 0: max over log a = -0.841382
+log b = 2: max over log a = -1.445530
+log b = 4: max over log a = -1.433207
+log b = 6: max over log a = -1.090970
+log b = 8: max over log a = -105590896368209.187500
+log b = 10: max over log a = -inf
+log b = 12: max over log a = -inf
+inverse Weibull face: max ll -0.7053653089508622 at scale, shape = (np.float64(2.7870954605658507), np.float64(12.428596663577549))
+finite family, a down to e^-14 x_min: best ll 0.42163751302430796 at (a, b, c) = (np.float64(0.00018774493789920255), np.float64(0.3753218375200164), np.float64(1.3510798882111488e+16))

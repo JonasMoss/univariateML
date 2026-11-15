@@ -1,0 +1,21 @@
+{
+ "center": -0.007812325130757122,
+ "unit": 8.673617379884035e-19,
+ "std_mu_in_units": 0.3015041666666667,
+ "std_sigma_in_units": 0.4483333333333333,
+ "mu_public": -0.007812325130757122,
+ "mu_public_minus_center_in_ulps": 0.0,
+ "sigma_public": 3.8886717919813423e-19,
+ "z_at_public": [
+  0.0,
+  0.0,
+  2.2304832713754648
+ ],
+ "nuisance_upper_terms": {
+  "g": 3.0,
+  "h": 1.345,
+  "move": 3.0,
+  "k": 0.0,
+  "upper": "inf (k <= 0)"
+ }
+}
