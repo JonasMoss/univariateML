@@ -1,0 +1,30 @@
+cert-replay: 1633 CPU s, 50 digits
+  invparalogis bracket     holds  112
+  invparalogis constant    holds  4
+  invparalogis cover       holds  112
+  invparalogis scale-root  holds  112
+  paralogis bracket     holds  106
+  paralogis constant    holds  4
+  paralogis cover       holds  106
+  paralogis scale-root  holds  106
+  slash   accuracy    holds  58
+  slash   bracket     holds  88
+  slash   collapse    holds  6
+  slash   cover       holds  88
+  slash   multiplicity holds  104
+  slash   scale-bracket holds  32
+not replayed (no certificate comparison):
+  invparalogis: evaluation only: 44
+  invparalogis: no certified outcome (invalid): 12
+  invparalogis: no certified outcome (numerical): 16
+  paralogis: evaluation only: 38
+  paralogis: no certified outcome (invalid): 12
+  paralogis: no certified outcome (numerical): 10
+  slash: evaluation only: 32
+  slash: no certified outcome (budget): 2
+  slash: no certified outcome (invalid): 8
+  slash: no certified outcome (numerical): 8
+  slash: sigma held: location search (no face inequality): 2
+442 cases judged
+cert-replay: failures by check: none
+cert-replay: 0 listed as known, 0 new, 0 listed but passing

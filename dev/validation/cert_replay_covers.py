@@ -35,6 +35,9 @@ uses a dossier bound that is not coded here as an interval:
   foldnorm   joint        bracket, cover (profile in a = mu/sigma^2)     interval
   fatigue    shift held, scale free or alpha held   bracket, cover   interval
   skellam    both rates free      cover (profile on the mean line, Bessel by mpmath)   numerical
+  paralogis  shape held (scale root), scale held (shape cover), both free (shape profile over the intercept)   interval;
+             invparalogis is paralogis on 1/x (binary64 reciprocals for a certified fit, exact for an uncertified one)
+  slash      mu held (scale root), sigma held (location cover), both free (location profile over the scale; accuracy by Newton, numerical)
 
 Every comparison reports a verdict (holds, fails, open) as in the prototype. Results
 are cached in a gzipped JSON-lines file (CERT_REPLAY_COVERS_CACHE, default
@@ -1149,10 +1152,554 @@ def replay_skellam(r, data, budget):
                           rigor='numerical', note='%d cells; curvature bound M = %s (dossier)' % (evals, mp.nstr(M, 6))))
     return out, None
 
+# ------------------------------------------------------------ paralogis and invparalogis (E, F)
+
+CLAIMS['paralogis'] = {
+    'shape held, scale free': ('the log-scale score a n - ... strictly decreasing in the intercept b = -a log(theta): L_b = n - (a+1) sum sigmoid(a y_i + b) has one root, within theta (1 -/+ 1e-10) of the returned scale '
+                               '(concave in b: the root is the unique maximizer)',
+                               'paralogis/mle.hpp:380-382 (paralogis_mle_holds delegates to burr_mle_holds), burr/mle.hpp:343-353 (bisection to the double midpoint), :414,419; README "Details" (strictly monotone log-scale score)'),
+    'scale held, shape free': ('global shape maximum of L(a) = 2n log a + a sum y_i - (a+1) sum softplus(a y_i), y_i = log x_i - log(scale): L <= 2n log a at the small end, '
+                               'L <= 2n log a - d a for a >= 1 (d = max |y_i| > 0) at the large end (replayed cutoffs), interval cover in log a between, window around the returned shape; '
+                               'stationary signed at the returned shape (1 -/+ 1e-10)',
+                               'paralogis/mle.hpp:340-356 (held-scale certify), certificate.hpp (compact cover, shape radius 1e-8 a, tail cutoffs); README "Global certificate" (held scale paragraph)'),
+    'both free': ('global maximum of L(a, b) = 2n log a + sum(a y_i + b) - (a+1) sum softplus(a y_i + b): the profile P(a) = max_b L(a, b) (L_b strictly decreasing, root enclosed '
+                  'by interval sign checks, P\' = L_a at the root by the envelope theorem) is below L(returned) outside a window around the returned shape; small end L <= n log a, large end L <= n log(4^(3/5) a) - (3/5) a Delta; '
+                  'both profile signs at the returned shape (1 -/+ 1e-10) and the scale score at the returned scale (1 -/+ 1e-10)',
+                  'paralogis/mle.hpp:318-327 (certify), certificate.hpp (box fixed point, compact cover, shape radius 1e-8 a, tail cutoffs); README "Global certificate"'),
+    'constant sample': ('constant positive samples with both coefficients free have unbounded likelihood (v = y0 + log(a)/a gives density ~ a/e): exact predicate',
+                        'paralogis/mle.hpp:313-318 (the constant sample returns Unbounded); README "Existence and identification" and "Global certificate" first paragraphs'),
+}
+CLAIMS['invparalogis'] = {
+    'transfer': ('paralogis on y = 1/x (binary64 reciprocals as the core divides for a certified fit; exact reciprocals for an uncertified fit, which the core polishes on the original x), same shape, scale theta_p = 1/scale (a held scale as the binary64 reciprocal the core passes)',
+                 'invparalogis/mle.hpp:55-64, :99-102 (reciprocals), :69 (physical = 1/scale), :70-82 (uncertified: polished on the original x), :126-127 (holds)'),
+}
+
+class ParaLik:
+    """Paralogistic log likelihood without the data Jacobian: L(a, b) = 2n log a + sum z_i - (a+1) sum log(1 + e^z_i), z_i = a y_i + b.
+    ys: interval (iv) or mpf logs; the numeric kind picks exp and log. Scores: L_a, L_b by the formulas of the dossier."""
+    def __init__(self, ys, kind):
+        self.kind = kind; self.n = len(ys)
+        self.exp = iv.exp if kind == 'iv' else mp.exp
+        self.log = iv.log if kind == 'iv' else mp.log
+        self.ys = list(ys)
+        self.sum_y = sum(self.ys, self.zero())
+    def zero(self): return iv.mpf(0) if self.kind == 'iv' else mp.mpf(0)
+    def parts(self, a, b):
+        """sums of sigmoid, y sigmoid, softplus, z over the sample"""
+        ssig = self.zero(); sysig = self.zero(); ssp = self.zero(); sz = self.zero()
+        for y in self.ys:
+            z = a*y+b
+            e = self.exp(-z)
+            sg = 1/(1+e)
+            ssig += sg; sysig += y*sg; ssp += self.log(1+self.exp(z)); sz += z
+        return ssig, sysig, ssp, sz
+    def L(self, a, b):
+        ssig, sysig, ssp, sz = self.parts(a, b)
+        return 2*self.n*self.log(a)+sz-(a+1)*ssp
+    def La(self, a, b):
+        ssig, sysig, ssp, sz = self.parts(a, b)
+        return 2*self.n/a+self.sum_y-ssp-(a+1)*sysig
+    def Lb(self, a, b):
+        ssig = self.parts(a, b)[0]
+        return self.n-(a+1)*ssig
+
+def para_hull(p, a):
+    """Bounds of every stationary intercept at shape a (dossier: sum sigmoid = n/(a+1) forces -log a - a max y <= b <= -log a - a min y), as mpf (a: mpf)."""
+    ymax = max(p.ys); ymin = min(p.ys)
+    return -mp.log(a)-a*ymax, -mp.log(a)-a*ymin
+
+def para_root_b(pm, a):
+    """Approximate root of L_b(a, .) in plain mpmath by safeguarded Newton on the hull (a: mpf). pm: ParaLik of mpf logs."""
+    lo, hi = para_hull(pm, a); lo -= 1; hi += 1
+    b = (lo+hi)/2
+    for _ in range(200):
+        g = pm.Lb(a, b)
+        if g > 0: lo = b
+        else: hi = b
+        q = sum((lambda s: s*(1-s))(1/(1+mp.exp(-(a*y+b)))) for y in pm.ys)
+        step = g/((a+1)*q) if q > 0 else mp.inf
+        nb = b+step
+        if not (lo < nb < hi): nb = (lo+hi)/2
+        if abs(nb-b) < mp.mpf(10)**(-mp.mp.dps+6)*(1+abs(b)): b = nb; break
+        b = nb
+    return b
+
+def para_enclose_b(pi, pm, A, width_hint):
+    """Intercepts (blo, bhi) with L_b(a, blo) > 0 > L_b(a, bhi) certain for every a in the interval A; None if not found."""
+    am = (mp.mpf(A.a)+mp.mpf(A.b))/2
+    b0 = para_root_b(pm, am)
+    ymaxabs = max(max(abs(mp.mpf(y.a)), abs(mp.mpf(y.b))) for y in pi.ys)
+    kappa = (mp.mpf(10)**-25+mp.mpf('0.1')*width_hint*(1+ymaxabs))*(1+abs(b0))
+    for _ in range(120):
+        blo, bhi = b0-kappa, b0+kappa
+        gl, gh = pi.Lb(A, iv.mpf(blo)), pi.Lb(A, iv.mpf(bhi))
+        if lo_(gl) > 0 and hi_(gh) < 0: return blo, bhi, hi_(gl), lo_(gh)
+        kappa *= 4
+    return None
+
+def para_value(v):
+    """interval of a data value: a binary64 value, or ('inv', v) for the exact reciprocal 1/v"""
+    return iv.mpf(1)/iv.mpf(v[1]) if isinstance(v, tuple) else iv.mpf(v)
+
+class ParaProfile:
+    """Profile P(a) = max_b L(a, b) with enclosures (see CLAIMS['paralogis'], both free)."""
+    def __init__(self, x, center):
+        """logs centered at `center` (the returned log scale): b' = b + a center, the profile in a is unchanged (a bijection of b at each a, envelope theorem in b')"""
+        c = iv.mpf(center)
+        self.pi = ParaLik([iv.log(para_value(v))-c for v in x], 'iv')
+        self.pm = ParaLik([(lambda w: mp.mpf(w.a)/2+mp.mpf(w.b)/2)(iv.log(para_value(v))-c) for v in x], 'mp')
+        self.n = self.pi.n
+    def value(self, t):
+        a = iv.exp(iv.mpf(t))
+        e = para_enclose_b(self.pi, self.pm, a, mp.mpf(0))
+        if e is None: raise ValueError('intercept not enclosed')
+        blo, bhi, glo, ghi = e
+        bm = iv.mpf(blo)/2+iv.mpf(bhi)/2
+        v = self.pi.L(a, bm)
+        err = max(glo, -ghi)*(bhi-blo)          # concave in b: L(b*) - L(bm) <= max |L_b| |b* - bm|
+        return iv.mpf([lo_(v), hi_(v)+err])
+    def dt(self, ta, tb):
+        """Enclosure of d P / d t, t = log a, on [ta, tb]: a L_a(a, b*(a)) by the envelope theorem."""
+        A = iv.exp(iv.mpf([ta, tb]))
+        e = para_enclose_b(self.pi, self.pm, A, mp.mpf(tb)-mp.mpf(ta))
+        if e is None: return iv.mpf([-mp.inf, mp.inf])
+        blo, bhi, _, _ = e
+        return A*self.pi.La(A, iv.mpf([blo, bhi]))
+    def score_at(self, a):
+        """enclosure of P'(a) at an mpf shape"""
+        A = iv.mpf(a)
+        e = para_enclose_b(self.pi, self.pm, A, mp.mpf(0))
+        if e is None: return None
+        return self.pi.La(A, iv.mpf([e[0], e[1]]))
+
+class ParaHeld:
+    """Held scale: y_i = log x_i - log(scale), b = 0; L(a) = 2n log a + a sum y - (a+1) sum softplus(a y)."""
+    def __init__(self, x, scale):
+        u = iv.log(iv.mpf(scale))
+        self.pi = ParaLik([iv.log(para_value(v))-u for v in x], 'iv')
+        self.n = self.pi.n
+    def value(self, t):
+        a = iv.exp(iv.mpf(t)); return self.pi.L(a, iv.mpf(0))
+    def dt(self, ta, tb):
+        A = iv.exp(iv.mpf([ta, tb])); return A*self.pi.La(A, iv.mpf(0))
+    def score_at(self, a): return self.pi.La(iv.mpf(a), iv.mpf(0))
+
+def para_cutoffs(p, L0, held):
+    """Shape interval [a_lo, a_hi] outside which L <= L0 (dossier tail bounds; free: small L <= n log a, large L <= n log(4^(3/5) a) - (3/5) a Delta for a >= 1;
+    held: small L <= 2n log a, large L <= 2n log a - d a for a >= 1). Returns (lo, hi) or (None, why)."""
+    n = p.n
+    if held:
+        d = max(abs(mp.mpf(y.a)) if abs(mp.mpf(y.a)) > abs(mp.mpf(y.b)) else abs(mp.mpf(y.b)) for y in p.pi.ys)
+        lo = mp.exp(L0/(2*n))
+        if not d > 0: return None, 'all x equal to the held scale (exact likelihood, not replayed)'
+        bound = lambda a: 2*n*mp.log(a)-d*a
+        knee = 2*n/d
+    else:
+        # Delta is the spread of the log data; a lower enclosure suffices (smaller Delta, weaker bound)
+        delta = max(mp.mpf(y.a) for y in p.pi.ys)-min(mp.mpf(y.b) for y in p.pi.ys)
+        if not delta > 0: return None, 'constant sample'
+        lo = mp.exp(L0/n)
+        bound = lambda a: n*(mp.mpf(3)/5*mp.log(4)+mp.log(a))-mp.mpf(3)/5*a*delta
+        knee = 5*n/(3*delta)
+    hi = max(mp.mpf(1), knee)
+    for _ in range(400):
+        if bound(hi) < L0: break
+        hi *= 2
+    else: return None, 'large-shape cutoff not found'
+    # the bound decreases beyond the knee, so L < L0 for all a >= hi
+    return lo, hi
+
+def replay_paralogis(r, data, budget, inverse=False):
+    res = r['result']; kind = (res.get('outcome') or {}).get('kind'); mask = r['mask']
+    x = [float(v) for v in data]
+    out = []
+    if mask == 3: return [], 'evaluation only'
+    if mask == 0 and len(set(x)) == 1 and kind in ('estimate', 'nonexistence'):
+        verdict = 'holds' if kind == 'nonexistence' else 'fails'
+        return [comparison('constant', 'constant sample with both coefficients free: unbounded likelihood', verdict,
+                           'all %d observations equal %s; outcome %s' % (len(x), x[0], kind), rigor='exact', note='exact predicate on the data')], None
+    if kind != 'estimate': return [], None
+    certified = (res.get('outcome') or {}).get('certified')
+    if inverse:
+        # the core fits (and certifies) the paralogistic model on the binary64 reciprocals; an uncertified estimate is polished on the original data, so it is replayed on the exact reciprocals
+        y = [1.0/v for v in x] if certified else [('inv', v) for v in x]
+        shape = number(res['estimates']['shape']); scale_hat = 1/mp.mpf(number(res['estimates']['scale']))
+        if mask == 2: scale_hat = mp.mpf(1.0/r["held"]["scale"]) if certified else 1/mp.mpf(r["held"]["scale"])
+        held_shape = r['held'].get('shape')
+        x = y
+    else:
+        shape = number(res['estimates']['shape']); scale_hat = mp.mpf(number(res['estimates']['scale']))
+        held_shape = r['held'].get('shape')
+    tag = '' if certified else '; the fit is flagged uncertified: no certificate claim, this is an independent check'
+    ahat = mp.mpf(shape); uhat = mp.log(scale_hat)
+    w = mp.mpf('1e-10')
+    if mask == 1:
+        # shape held, scale free
+        pi = ParaLik([iv.log(para_value(v)) for v in x], 'iv')
+        sl, sr = mp.log(scale_hat*(1-w)), mp.log(scale_hat*(1+w))
+        gl = pi.Lb(iv.mpf(ahat), iv.mpf(-ahat*sl)); gr = pi.Lb(iv.mpf(ahat), iv.mpf(-ahat*sr))
+        vl, vr = sign_verdict(gl, -1), sign_verdict(gr, +1)      # smaller scale = larger intercept = L_b < 0 on the left of the root
+        verdict = 'fails' if 'fails' in (vl, vr) else 'holds' if vl == vr == 'holds' else 'open'
+        out.append(comparison('scale-root', 'log-scale score signed on scale (1 -/+ 1e-10): positive left, negative right (L_b strictly decreasing in b = -a log scale; concave in b, so the root is the unique maximizer)', verdict,
+                              'L_b at left %s, at right %s (L_b < 0 left, > 0 right = score positive left, negative right)' % (show(gl), show(gr)),
+                              margin='accuracy contract tol 1e-10', note='interval arithmetic at 50 digits on the logs of the stored data'+tag))
+        return out, None
+    if mask == 2:
+        scale = scale_hat if inverse else mp.mpf(r['held']['scale'])
+        p = ParaHeld(x, scale); b_hat = iv.mpf(0)
+        held = True
+    else:
+        p = ParaProfile(x, uhat); held = False
+    # bracket at the returned shape
+    sl, sr = p.score_at(ahat*(1-w)), p.score_at(ahat*(1+w))
+    if sl is None or sr is None: return [comparison('bracket', 'shape score signed at the returned shape (1 -/+ 1e-10)', 'open', 'intercept root not enclosed')], None
+    vl, vr = sign_verdict(sl, +1), sign_verdict(sr, -1)
+    bracket = 'fails' if 'fails' in (vl, vr) else 'holds' if vl == vr == 'holds' else 'open'
+    out.append(comparison('bracket', "profile shape score signed on a_hat (1 -/+ 1e-10): positive left, negative right" if not held else "shape score signed on a_hat (1 -/+ 1e-10): positive left, negative right",
+                          bracket, 'left %s, right %s' % (show(sl), show(sr)), margin='accuracy contract tol 1e-10', note='interval arithmetic at 50 digits'+tag))
+    # value at the returned coefficients (the target of the cover)
+    if held: target = lo_(p.pi.L(iv.mpf(ahat), iv.mpf(0)))
+    else:
+        pi = p.pi; bhat = mp.mpf(0)       # centered at the returned log scale
+        gl = pi.Lb(iv.mpf(ahat), iv.mpf(-ahat*mp.log1p(-w))); gr = pi.Lb(iv.mpf(ahat), iv.mpf(-ahat*mp.log1p(w)))
+        vl2, vr2 = sign_verdict(gl, -1), sign_verdict(gr, +1)
+        sc = 'fails' if 'fails' in (vl2, vr2) else 'holds' if vl2 == vr2 == 'holds' else 'open'
+        out.append(comparison('scale-root', 'log-scale score at the returned shape signed on scale (1 -/+ 1e-10): positive left, negative right', sc,
+                              'L_b left %s, right %s' % (show(gl), show(gr)), margin='accuracy contract tol 1e-10', note='interval arithmetic at 50 digits'+tag))
+        target = lo_(pi.L(iv.mpf(ahat), iv.mpf(bhat)))
+    L0 = target
+    lo, hi = para_cutoffs(p, L0, held)
+    if lo is None: return out+[comparison('cover', 'global shape maximum', 'open', hi)], None
+    if not hi > lo: return out+[comparison('cover', 'global shape maximum', 'open', 'cutoffs cross')], None
+    if bracket != 'holds':
+        return out+[comparison('cover', 'global shape maximum', 'open', 'not run: bracket not established')], None
+    wexc = mp.mpf('1e-6'); t0 = mp.log(ahat)
+    verdict, info = cover(p.value, p.dt, None, mp.log(lo), mp.log(hi), target, [(t0-wexc, t0+wexc)], budget=budget if held else max(budget//2, 200))
+    out.append(cover_comparison('cover', 'L(a, .) < L(returned) for every a in [%s, %s] outside the window of relative half width 1e-6 (%s; cutoffs of the dossier tails)' % (
+        mp.nstr(lo, 6), mp.nstr(hi, 6), 'scale held' if held else 'profile over the intercept'), verdict, info, target,
+        note='variable log a%s' % tag, extra='; shape range [%s, %s]' % (mp.nstr(lo, 6), mp.nstr(hi, 6))))
+    return out, None
+
+def replay_invparalogis(r, data, budget): return replay_paralogis(r, data, budget, True)
+
+# ------------------------------------------------------------ slash (F)
+
+SLASH_REL = mp.mpf('1e-9'); SLASH_COLLAPSE = mp.mpf('1e-8')
+CLAIMS['slash'] = {
+    'mu held, sigma free': ('the log-scale score sum g(t_i), g(t) = 1 - 2t/(e^t - 1), t_i = (x_i - mu)^2/(2 sigma^2), decreases strictly from n - 2k to -n (2k < n), so its root is the unique maximizer; '
+                            'signed at the returned scale (1 -/+ 1e-10)',
+                            'slash/mle.hpp:59-63 (verified sign bracket, bisection, |score| < 1e-3 gate), :299-300 (accuracy tol 1e-10); README "Details" (held-location paragraph) and "Conditional search certificate" (inner scale)'),
+    'sigma held, mu free': ('global location cover to the margin 1e-9 (1 + |l|): l(m) < l_hat + 1e-9 (1 + |l_hat|) for every m in [min x, max x] (interval cover; |h\'\'| bounded by max(1, min(z^2/4, 2/z^2 + 1/(e^(z^2/2) - 1))); '
+                            'density decreasing in |x - m|, so a maximizer lies in the sample range); location score signed at m_hat -/+ 1e-10 max(|m_hat|, sigma)',
+                            'slash/mle.hpp:103-146 (certify_held, margin :125,135), :73-97 (curvature bound); README "Conditional search certificate" (held scale paragraphs)'),
+    'both free': ('local accuracy (distance to the stationary point below 1e-10) and global cover of the profile P(m) = max_s l(m, s) to the margin 1e-9 (1 + |l_hat|) (capped 1e-9 n with a half-mass value): the scale root is enclosed by sign checks (n-Lipschitz in log s), '
+                  'P\' = l_m at the root (envelope theorem) with |P\'\'| <= A + C^2/B on a cell (A = sum H_i/s_-^2, C = sum (sqrt 2 + sup |z h''|)/s_-, B = sum min(2 t e^(-2t)) at the two ends), '
+                  'cells without a positive uniform scale bound use the residual likelihood bound (half-mass supremum n log c - (n-k) log 2 - 2 sum log d); a half-mass value v with B_v >= l_hat - 1e-8 n would be a collapse (returned estimate: B_v < l_hat - 1e-8 n); '
+                  'profile score signed at m_hat -/+ 1e-10 max(|m_hat|, sigma_hat)',
+                  'slash/mle.hpp:188-272 (certify_free: margins :211-213, :264-266; collapse cutoff boundary + 1e-8 n :213), :314-322 and :406 (boundary), :150-186 (residual bound); README "Conditional search certificate" (free-scale paragraphs)'),
+}
+
+def mono(f, t, increasing):
+    """Enclosure of a monotone function f (of a thin iv argument) over the interval t from its end values."""
+    a, b = iv.mpf(t.a), iv.mpf(t.b)
+    return iv.mpf([f(a).a, f(b).b]) if increasing else iv.mpf([f(b).a, f(a).b])
+
+def _g(x):        # 1 - 2x/(e^x - 1), increasing, -1 at 0
+    return iv.mpf(-1) if x.a == 0 and x.b == 0 else 1-2*x/iv.expm1(x)
+def _kappa(x):    # 1/x - 1/(e^x - 1) = 1/2 - x/12 + x^3/720 - ..., decreasing, 1/2 at 0
+    if x.b < mp.mpf('1e-3'):
+        return iv.mpf(1)/2-x/12+x**3/720+iv.mpf([-x.b**5/30240, 0])
+    return 1/x-1/iv.expm1(x)
+def _q(x):        # (1 - e^(-x))/x, decreasing, 1 at 0
+    return iv.mpf(1) if x.a == 0 and x.b == 0 else -iv.expm1(-x)/x
+def slash_g(t): return mono(_g, t, True)
+def slash_kappa(t): return mono(_kappa, t, False)
+def slash_q(t): return mono(_q, t, False)
+
+class SlashLik:
+    """Slash log likelihood l(m, s) = sum [-log s - log(2 pi)/2 + log(q(t_i)/2)], q(t) = (1 - e^-t)/t, t_i = (x_i - m)^2/(2 s^2); residual vectors are interval lists."""
+    def __init__(self, x):
+        self.x = [float(v) for v in x]; self.n = len(self.x)
+        self.half = iv.log(2*iv.pi)/2
+    def resid(self, m):
+        mi = iv.mpf(m); return [iv.mpf(v)-mi for v in self.x]
+    def cell(self, a, b):
+        """(near, far) lower ends of the distances to the cell [a, b] and upper ends of the largest distances, as thin intervals."""
+        near, far = [], []
+        for v in self.x:
+            fv = mp.mpf(v)
+            if a <= fv <= b: nr = iv.mpf(0)
+            elif fv < a: nr = iv.mpf(a)-iv.mpf(v)
+            else: nr = iv.mpf(v)-iv.mpf(b)
+            fr = iv.mpf(max(abs(iv.mpf(v)-iv.mpf(a)).b, abs(iv.mpf(v)-iv.mpf(b)).b))
+            near.append(iv.mpf(nr.a)); far.append(fr)
+        return near, far
+    @staticmethod
+    def zeros(R): return sum(1 for r in R if r.a == 0 and r.b == 0)
+    def tvals(self, R, s): return [(r*r)/(2*s*s) for r in R]
+    def gsum(self, R, s):
+        total = iv.mpf(0)
+        for t in self.tvals(R, s): total += slash_g(t)
+        return total
+    def lm(self, R, s):
+        """l_m = sum r kappa(t)/s^2 (slope in the location)"""
+        total = iv.mpf(0)
+        for r, t in zip(R, self.tvals(R, s)): total += r*slash_kappa(t)/(s*s)
+        return total
+    def loglik(self, R, s):
+        total = iv.mpf(0)
+        for t in self.tvals(R, s): total += -iv.log(s)-self.half+iv.log(slash_q(t)/2)
+        return total
+    def collapse(self, R):
+        """half-mass supremum of the residual log likelihood at 2k = n: -n/2 log(2 pi) - (n-k) log 2 - 2 sum log d_i (d_i > 0)"""
+        k = self.zeros(R); total = -self.n*self.half-(self.n-k)*iv.log(2)
+        for r in R:
+            if not (r.a == 0 and r.b == 0): total -= 2*iv.log(iv.mpf(abs(r).a))
+        return total
+
+def slash_root_mp(absr, tol=None):
+    """Approximate root (plain mpmath, safeguarded Newton in log s) of sum g(t_i) at residuals absr, to `tol` in log s (default 1e-30); None when 2k >= n."""
+    n = len(absr); k = sum(1 for r in absr if r == 0)
+    if 2*k >= n: return None
+    tol = mp.mpf(10)**-30 if tol is None else tol
+    pos = [r for r in absr if r > 0]
+    lo = mp.log(min(pos))-mp.log(mp.sqrt(2*4*n/(n-2*k)))-1; hi = mp.log(max(pos)*mp.sqrt(2))+1
+    def score(v, deriv=False):
+        s2 = mp.exp(2*v)*2; total = mp.mpf(0); slope = mp.mpf(0)
+        for r in absr:
+            t = r*r/s2
+            if t == 0: total -= 1; continue
+            e = mp.expm1(t)
+            total += 1-2*t/e
+            if deriv: slope -= 2*t*(1 if t < mp.mpf('1e-10') else 2*(t*(e+1)-e)/(e*e))
+        return (total, slope) if deriv else total
+    for _ in range(80):
+        if score(lo) > 0: break
+        lo -= 4
+    for _ in range(80):
+        if score(hi) < 0: break
+        hi += 4
+    v = (lo+hi)/2
+    for _ in range(300):
+        sv, dv = score(v, True)
+        if sv > 0: lo = v
+        else: hi = v
+        if hi-lo < tol: break
+        nv = v-sv/dv if dv < 0 else (lo+hi)/2
+        if not lo < nv < hi: nv = (lo+hi)/2
+        done = abs(nv-v) < tol
+        v = nv
+        if done: break
+    return mp.exp(v)
+
+def slash_bracket_s(p, R, kappa=mp.mpf('1e-22')):
+    """(s_lo, s_hi) mpf with the score certain positive at s_lo and negative at s_hi (so the unique root lies between); None if 2k >= n or not found."""
+    absr = [mp.mpf(r.a)/2+mp.mpf(r.b)/2 if not (r.a == 0 and r.b == 0) else mp.mpf(0) for r in R]
+    absr = [abs(v) for v in absr]
+    s0 = slash_root_mp(absr)
+    if s0 is None: return None
+    for _ in range(60):
+        lo, hi = s0*(1-kappa), s0*(1+kappa)
+        if lo_(p.gsum(R, iv.mpf(lo))) > 0 and hi_(p.gsum(R, iv.mpf(hi))) < 0: return lo, hi
+        kappa *= 4
+    return None
+
+def slash_value(p, m):
+    """Enclosure of the profile P(m) = max_s l(m, s) at an exact location m (free scale)."""
+    R = p.resid(m); k = p.zeros(R); n = p.n
+    if 2*k > n: return iv.mpf([-mp.inf, mp.inf])
+    if 2*k == n: return iv.mpf([-mp.inf, hi_(p.collapse(R))])        # strictly below the half-mass supremum at every s (README)
+    sb = slash_bracket_s(p, R)
+    if sb is None: raise ValueError('scale root not enclosed')
+    lo, hi = sb; sm = (lo+hi)/2
+    v = p.loglik(R, iv.mpf(sm))
+    return iv.mpf([lo_(v), hi_(v)+n*mp.log(hi/lo)/2])       # |score| <= n: P - l(s_mid) <= n |log s* - log s_mid|
+
+def slash_hbound(z_near, z_far):
+    """H = max(1, min(z_far^2/4, 2/z_near^2 + 1/(e^(z_near^2/2) - 1))) as an upper bound of |h''| (thin intervals; z_near may be 0)."""
+    top = z_far*z_far/4
+    if z_near.a > 0:
+        tail = 2/(z_near*z_near)+1/iv.expm1(z_near*z_near/2)
+        top = iv.mpf(min(top.b, tail.b))
+    return iv.mpf(max(mp.mpf(1), top.b))
+
+def slash_zh(z_near, z_far):
+    """Upper bound of sup |z h''(z)| over z in [z_near, z_far] (thin intervals). Mine, sharper than the dossier's z_far H for the cross derivative:
+    h'' = 1/t - 2 t e^t/(e^t - 1)^2 + 1/(e^t - 1) with t = z^2/2, so h'' >= 0 once 2 sinh(t/2) >= sqrt(2) t (t >= 3.4, z >= 2.6), where z h'' <= u(z) = 2/z + z/(e^t - 1)
+    (decreasing for z >= 1); below z = 2.6 the dossier's -1 <= h'' <= z^2/4 gives |z h''| <= 2.6 max(1, 2.6^2/4) < 5."""
+    if z_near.a >= mp.mpf('2.6'):
+        u = 2/z_near+z_near/iv.expm1(z_near*z_near/2)
+        return iv.mpf(u.b)
+    top = z_far*max(mp.mpf(1), z_far.b**2/4)
+    return iv.mpf(min(top.b, mp.mpf(5)))
+
+class SlashProfile:
+    """Joint (free scale): see CLAIMS['slash']['both free']."""
+    def __init__(self, x):
+        self.p = SlashLik(x); self.n = self.p.n; self.cache = {}
+    def value(self, m):
+        if m not in self.cache: self.cache[m] = slash_value(self.p, m)
+        return self.cache[m]
+    def score_at(self, m):
+        R = self.p.resid(m); sb = slash_bracket_s(self.p, R)
+        if sb is None: return None
+        return self.p.lm(R, iv.mpf([sb[0], sb[1]]))
+    def bounds(self, a, b):
+        """(s_minus, s_plus, near, far) or None: uniform scale bounds over the cell [a, b]."""
+        near, far = self.p.cell(a, b)
+        s0 = slash_root_mp([mp.mpf(r.a) for r in near], mp.mpf('1e-4')); s1 = slash_root_mp([mp.mpf(r.b) for r in far], mp.mpf('1e-4'))
+        if s0 is None or s1 is None: return None
+        smin = s0*(1-mp.mpf('1e-3')); smax = s1*(1+mp.mpf('1e-3'))
+        for _ in range(60):
+            if lo_(self.p.gsum(near, iv.mpf(smin))) > 0: break
+            smin /= 2
+        else: return None
+        for _ in range(60):
+            if hi_(self.p.gsum(far, iv.mpf(smax))) < 0: break
+            smax *= 2
+        else: return None
+        return smin, smax, near, far
+    def upper(self, a, b):
+        near, far = self.p.cell(a, b); n = self.n; k = self.p.zeros(near)
+        if 2*k > n: return None
+        if 2*k == n: return self.p.collapse(near)
+        sb = slash_bracket_s(self.p, near)
+        if sb is None: return None
+        lo, hi = sb; v = self.p.loglik(near, iv.mpf((lo+hi)/2))
+        return iv.mpf([lo_(v), hi_(v)+n*mp.log(hi/lo)/2])
+    def deriv(self, a, b):
+        full = iv.mpf([-mp.inf, mp.inf])
+        bd = self.bounds(a, b)
+        if bd is None: return full
+        smin, smax, near, far = bd
+        c = (a+b)/2; pc = self.score_at(c)
+        if pc is None: return full
+        A = C = Bs = iv.mpf(0)
+        for nr, fr in zip(near, far):
+            zl, zh = nr/iv.mpf(smax), fr/iv.mpf(smin)
+            H = slash_hbound(zl, zh)
+            A += H/(smin*smin); C += (iv.sqrt(2)+slash_zh(zl, zh))/smin
+            tl, th = zl*zl/2, zh*zh/2
+            e1, e2 = 2*tl*iv.exp(-2*tl), 2*th*iv.exp(-2*th)
+            Bs += iv.mpf(min(e1.a, e2.a))
+        if not lo_(Bs) > 0: return full
+        K = A+C*C/Bs; r = iv.mpf((b-a)/2)
+        return pc+iv.mpf([-1, 1])*K*r
+
+class SlashHeld:
+    """sigma held: location likelihood and |h''| bound cover."""
+    def __init__(self, x, sigma):
+        self.p = SlashLik(x); self.n = self.p.n; self.s = iv.mpf(sigma)
+    def value(self, m): return self.p.loglik(self.p.resid(m), self.s)
+    def score_at(self, m): return self.p.lm(self.p.resid(m), self.s)
+    def upper(self, a, b): return self.p.loglik(self.p.cell(a, b)[0], self.s)
+    def deriv(self, a, b):
+        near, far = self.p.cell(a, b); c = (a+b)/2
+        A = iv.mpf(0)
+        for nr, fr in zip(near, far): A += slash_hbound(nr/self.s, fr/self.s)/(self.s*self.s)
+        return self.score_at(c)+iv.mpf([-1, 1])*A*iv.mpf((b-a)/2)
+
+def slash_stationary(p, mu, sigma):
+    """Distance from (mu, sigma) to the nearby stationary point of the 2-D log likelihood, as (|dmu|/max(|mu|, sigma), |d log sigma|, negative definite, converged):
+    full Newton iteration at 50 digits in q = mu/c, v = log sigma (c = max(|mu|, sigma)); gradient from the interval scores (midpoints), Hessian by central differences."""
+    mid = lambda z: (mp.mpf(z.a)+mp.mpf(z.b))/2
+    c = max(abs(mu), sigma)
+    def grad(q, v):
+        R = p.resid(q*c); s = iv.mpf(mp.exp(v))
+        return mid(p.lm(R, s))*c, mid(p.gsum(R, s))
+    q0 = mu/c; v0 = mp.log(sigma); q, v = q0, v0
+    hq = mp.mpf(10)**-8*min(mp.mpf(1), sigma/c); hv = mp.mpf(10)**-8
+    converged = False; definite = False
+    for _ in range(60):
+        g = grad(q, v)
+        gq1, gq0 = grad(q+hq, v), grad(q-hq, v); gv1, gv0 = grad(q, v+hv), grad(q, v-hv)
+        H = mp.matrix([[(gq1[0]-gq0[0])/(2*hq), (gv1[0]-gv0[0])/(2*hv)], [(gq1[1]-gq0[1])/(2*hq), (gv1[1]-gv0[1])/(2*hv)]])
+        definite = H[0, 0] < 0 and H[0, 0]*H[1, 1]-H[0, 1]*H[1, 0] > 0
+        if not definite: break
+        step = mp.lu_solve(H, mp.matrix([-g[0], -g[1]]))
+        q += step[0]; v += step[1]
+        if max(abs(step[0]), abs(step[1])) < mp.mpf(10)**-25: converged = True; break
+    return abs(q-q0), abs(v-v0), definite, converged
+
+def replay_slash(r, data, budget):
+    try: return replay_slash_run(r, data, budget)
+    except (ZeroDivisionError, ValueError, OverflowError) as error:
+        return [comparison('cover', 'evaluation raised', 'open', 'slash evaluation: %s: %s' % (type(error).__name__, error), rigor='interval')], None
+
+def replay_slash_run(r, data, budget):
+    res = r['result']; kind = (res.get('outcome') or {}).get('kind'); mask = r['mask']
+    if kind != 'estimate' or mask == 3: return [], None
+    x = [float(v) for v in data]; n = len(x)
+    mu = number(res['estimates']['mu']); sigma = number(res['estimates']['sigma'])
+    if not (sigma > 0 and math.isfinite(sigma) and math.isfinite(mu)): return [], 'returned coefficients outside the model'
+    w = mp.mpf('1e-10'); out = []
+    counts = collections.Counter(x)
+    if mask == 1:
+        p = SlashLik(x); R = p.resid(mu)
+        k = p.zeros(R)
+        if 2*k >= n: return [], 'half or more at mu (nonexistence; faces module)'
+        gl, gr = p.gsum(R, iv.mpf(sigma)*(1-iv.mpf(w))), p.gsum(R, iv.mpf(sigma)*(1+iv.mpf(w)))
+        vl, vr = sign_verdict(gl, +1), sign_verdict(gr, -1)
+        verdict = 'fails' if 'fails' in (vl, vr) else 'holds' if vl == vr == 'holds' else 'open'
+        out.append(comparison('scale-bracket', 'log-scale score signed on sigma_hat (1 -/+ 1e-10): positive left, negative right (strictly decreasing from n - 2k to -n: unique root)', verdict,
+                              'left %s, right %s' % (show(gl), show(gr)), margin='accuracy contract tol 1e-10; gate |score| < 1e-3', note='interval arithmetic at 50 digits'))
+        return out, None
+    scale_w = max(abs(mp.mpf(mu)), mp.mpf(sigma))
+    if mask == 2:
+        h = SlashHeld(x, sigma)
+        sl, sr = h.score_at(mp.mpf(mu)-w*scale_w), h.score_at(mp.mpf(mu)+w*scale_w)
+        vl, vr = sign_verdict(sl, +1), sign_verdict(sr, -1)
+        bracket = 'fails' if 'fails' in (vl, vr) else 'holds' if vl == vr == 'holds' else 'open'
+        out.append(comparison('bracket', 'location score signed on mu_hat -/+ 1e-10 max(|mu_hat|, sigma): positive left, negative right', bracket,
+                              'left %s, right %s' % (show(sl), show(sr)), margin='accuracy contract tol 1e-10', note='interval arithmetic at 50 digits; half width %s' % mp.nstr(w*scale_w, 4)))
+        lhat = lo_(h.value(mp.mpf(mu)))
+        target = lhat+SLASH_REL*(1+abs(lhat))
+        verdict, info = cover(h.value, h.deriv, h.upper, mp.mpf(min(x)), mp.mpf(max(x)), target, [], budget=budget*5)
+        out.append(cover_comparison('cover', 'l(m, sigma) < l_hat + 1e-9 (1 + |l_hat|) for every m in [min x, max x] (density decreasing in |x - m|: the sample range contains a maximizer)', verdict, info, target,
+                                    note='total log likelihood; curvature bound |h\'\'| <= max(1, min(z^2/4, 2/z^2 + 1/(e^(z^2/2)-1))) of the dossier'))
+        return out, None
+    # both free
+    pr = SlashProfile(x); p = pr.p
+    R = p.resid(mu)
+    if 2*p.zeros(R) >= n: return [], 'half or more at mu_hat'
+    sl, sr = pr.score_at(mp.mpf(mu)-w*scale_w), pr.score_at(mp.mpf(mu)+w*scale_w)
+    if sl is None or sr is None: return [comparison('bracket', 'profile location score signed at mu_hat -/+ 1e-10 max(|mu_hat|, sigma_hat)', 'open', 'scale root not enclosed')], None
+    vl, vr = sign_verdict(sl, +1), sign_verdict(sr, -1)
+    bracket = 'fails' if 'fails' in (vl, vr) else 'holds' if vl == vr == 'holds' else 'open'
+    out.append(comparison('bracket', 'profile location score signed on mu_hat -/+ 1e-10 max(|mu_hat|, sigma_hat): positive left, negative right', bracket,
+                          'left %s, right %s' % (show(sl), show(sr)), margin='accuracy contract tol 1e-10', note='interval arithmetic at 50 digits; half width %s' % mp.nstr(w*scale_w, 4)))
+    d_mu, d_v, definite, converged = slash_stationary(p, mp.mpf(mu), mp.mpf(sigma))
+    verdict = 'open' if not (definite and converged) else 'holds' if d_mu <= w and d_v <= w else 'fails'
+    out.append(comparison('accuracy', 'the returned coefficients are within tol = 1e-10 of the nearby stationary point (Hessian negative definite): |dmu|/max(|mu|, sigma) and |d log sigma| below 1e-10', verdict,
+                          '|dmu|/max(|mu|, sigma) = %s, |d log sigma| = %s%s' % (mp.nstr(d_mu, 4), mp.nstr(d_v, 4), '' if definite and converged else '; Newton did not converge to a negative definite point'),
+                          margin='accuracy contract tol 1e-10', rigor='numerical',
+                          note='full Newton iteration at 50 digits from the returned coefficients (gradient from the interval scores, Hessian by central differences); the distance travelled is the coefficient error. A stationarity check, not an enclosure'))
+    lhat = lo_(p.loglik(R, iv.mpf(sigma)))
+    # half-mass values: boundary B_v
+    boundary = None; bv = None
+    for v, c in counts.items():
+        if 2*c == n:
+            Bv = hi_(p.collapse(p.resid(v)))
+            if boundary is None or Bv > boundary: boundary, bv = Bv, v
+    if boundary is not None:
+        ok = boundary < lhat-SLASH_COLLAPSE*n
+        out.append(comparison('collapse', 'the half-mass supremum B_v is below l_hat - 1e-8 n (otherwise the core returns the collapse limit)', 'holds' if ok else 'fails',
+                              'largest B_v %s at v = %s, l_hat - 1e-8 n = %s' % (mp.nstr(boundary, 15), bv, mp.nstr(lhat-SLASH_COLLAPSE*n, 15)), margin='1e-8 n',
+                              note='B_v = -n/2 log(2 pi) - (n/2) log 2 - 2 sum log |x_i - v|; a returned estimate within 1e-8 n of the collapse would contradict the decision rule'))
+    margin = SLASH_REL*(1+abs(lhat))
+    if boundary is not None: margin = min(margin, SLASH_REL*n)
+    target = lhat+margin
+    if bracket != 'holds':
+        return out+[comparison('cover', 'global profile maximum', 'open', 'not run: bracket not established')], None
+    verdict, info = cover(pr.value, pr.deriv, pr.upper, mp.mpf(min(x)), mp.mpf(max(x)), target, [], budget=budget*2)
+    out.append(cover_comparison('cover', 'P(m) < l_hat + margin for every m in [min x, max x], margin = 1e-9 (1 + |l_hat|)%s' % (' (capped 1e-9 n: half-mass value present)' if boundary is not None else ''),
+                                verdict, info, target, note='profile over the scale (root enclosed by interval sign checks); |P\'\'| <= A + C^2/B per cell; residual bound where no uniform scale bound exists'))
+    return out, None
+
 # ------------------------------------------------------------ cache and registry
 
 import gzip, hashlib, json, os, pathlib
-VERSIONS = {'foldnorm': 4, 'fatigue': 3, 'skellam': 2, 'pareto2': 3, 'invpareto': 3, 'cauchy': 2, 'burr': 1, 'dgamma': 3, 'ht': 2}      # bump a family's entry when its replay changes; the cache key includes it
+VERSIONS = {'foldnorm': 4, 'fatigue': 3, 'skellam': 2, 'pareto2': 3, 'invpareto': 3, 'cauchy': 2, 'burr': 1, 'dgamma': 3, 'ht': 2, 'paralogis': 1, 'invparalogis': 1, 'slash': 1}      # bump a family's entry when its replay changes; the cache key includes it
 VERSION = 'covers-1'
 CACHE_PATH = pathlib.Path(os.environ.get('CERT_REPLAY_COVERS_CACHE',
     str(pathlib.Path(__file__).resolve().parents[2]/'build'/'cert-replay'/'covers-cache.jsonl.gz')))
@@ -1195,5 +1742,5 @@ def both(first, second):
 
 REPLAYS = {family: cached(family, fn) for family, fn in
            {'pareto2': replay_pareto2, 'invpareto': replay_invpareto, 'cauchy': replay_cauchy_scale, 'foldnorm': replay_foldnorm,
-            'fatigue': replay_fatigue, 'skellam': replay_skellam, 'burr': replay_burr_power, 'dgamma': replay_dgamma, 'ht': replay_ht}.items()}
+            'fatigue': replay_fatigue, 'skellam': replay_skellam, 'burr': replay_burr_power, 'dgamma': replay_dgamma, 'ht': replay_ht, 'slash': replay_slash, 'paralogis': replay_paralogis, 'invparalogis': replay_invparalogis}.items()}
 REPLAYS['gpd'] = both(both(cached('gpd', replay_gpd), cached('gpd-coefficient', replay_gpd_coefficient)), cached('gpd-xi-held', replay_gpd_xi_held))

@@ -1,0 +1,32 @@
+invparalogis: native 80 cases, double 80 cases
+    double bracket      holds  interval  56
+    double constant     holds  exact     2
+    double cover        holds  interval  56
+    double scale-root   holds  interval  56
+    native bracket      holds  interval  56
+    native constant     holds  exact     2
+    native cover        holds  interval  56
+    native scale-root   holds  interval  56
+paralogis: native 74 cases, double 74 cases
+    double bracket      holds  interval  53
+    double constant     holds  exact     2
+    double cover        holds  interval  53
+    double scale-root   holds  interval  53
+    native bracket      holds  interval  53
+    native constant     holds  exact     2
+    native cover        holds  interval  53
+    native scale-root   holds  interval  53
+slash: native 67 cases, double 67 cases
+    double accuracy     holds  numerical 29
+    double bracket      holds  interval  44
+    double collapse     holds  interval  3
+    double cover        holds  interval  44
+    double multiplicity holds  exact     52
+    double scale-bracket holds  interval  16
+    native accuracy     holds  numerical 29
+    native bracket      holds  interval  44
+    native collapse     holds  interval  3
+    native cover        holds  interval  44
+    native multiplicity holds  exact     52
+    native scale-bracket holds  interval  16
+total cases 442, comparisons 1038

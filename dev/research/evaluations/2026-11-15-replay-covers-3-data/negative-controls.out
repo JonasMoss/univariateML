@@ -1,0 +1,17 @@
+ok   paralogis shape held: scale x (1 + 1e-6)                                                     paralogis    archive/005401: scale-root  {'scale-root': 'fails'}
+ok   paralogis scale held: shape x (1 + 1e-6)                                                     paralogis    archive/005420: bracket  {'bracket': 'fails', 'cover': 'open'}
+ok   paralogis both free: shape x (1 + 1e-6)                                                      paralogis    archive/005382: bracket  {'bracket': 'fails', 'scale-root': 'fails', 'cover': 'open'}
+ok   paralogis both free: scale x (1 + 1e-6)                                                      paralogis    archive/005382: scale-root  {'bracket': 'holds', 'scale-root': 'fails', 'cover': 'holds'}
+ok   paralogis both free: estimate claimed for a constant sample                                  paralogis    archive/005382: constant  {'constant': 'fails'}
+ok   paralogis scale held: the local mode 2.8953798 of x = exp(-0.001) claimed (README example)   paralogis    control/synthetic: cover  {'bracket': 'holds', 'cover': 'fails'}
+ok   invparalogis shape held: scale x (1 + 1e-6)                                                  invparalogis archive/003927: scale-root  {'scale-root': 'fails'}
+ok   invparalogis scale held: shape x (1 + 1e-6)                                                  invparalogis archive/003946: bracket  {'bracket': 'fails', 'cover': 'open'}
+ok   slash mu held: sigma x (1 + 1e-6)                                                            slash        archive/006370: scale-bracket  {'multiplicity': 'holds', 'scale-bracket': 'fails'}
+ok   slash sigma held: mu + 1e-6 max(|mu|, sigma)                                                 slash        archive/006386: bracket  {'bracket': 'fails', 'cover': 'holds'}
+ok   slash both free: mu + 1e-6 max(|mu|, sigma)                                                  slash        archive/006357: bracket  {'multiplicity': 'holds', 'bracket': 'fails', 'accuracy': 'fails', 'cover': 'open'}
+ok   slash both free: sigma x (1 + 1e-6)                                                          slash        archive/006357: accuracy  {'multiplicity': 'holds', 'bracket': 'holds', 'accuracy': 'fails', 'cover': 'holds'}
+ok   slash sigma held: the local mode -99.960037 of (-100, 100, 100.5) claimed                    slash        control/synthetic: cover  {'bracket': 'holds', 'cover': 'fails'}
+ok   slash both free: the lower mode (-0.0018491869, 0.21306907) of 10 zeros, -1 and nine 10s claimed slash        control/synthetic: cover  {'multiplicity': 'holds', 'bracket': 'holds', 'accuracy': 'holds', 'collapse': 'holds', 'cover': 'fails'}
+ok   paralogis both free: cover primitive with the target at 1.5 a_hat                            paralogis    direct: cover  cover primitive on archive/005382, target = P(1.5 a_hat) = -22.2322678547, counterexample at a = 2.0045889
+15 controls, 0 did not fail as intended
+exit 0

@@ -1,0 +1,40 @@
+{
+ "slash": {
+  "mu held, sigma free": {
+   "claim": "the log-scale score sum g(t_i), g(t) = 1 - 2t/(e^t - 1), t_i = (x_i - mu)^2/(2 sigma^2), decreases strictly from n - 2k to -n (2k < n), so its root is the unique maximizer; signed at the returned scale (1 -/+ 1e-10)",
+   "source": "slash/mle.hpp:59-63 (verified sign bracket, bisection, |score| < 1e-3 gate), :299-300 (accuracy tol 1e-10); README \"Details\" (held-location paragraph) and \"Conditional search certificate\" (inner scale)"
+  },
+  "sigma held, mu free": {
+   "claim": "global location cover to the margin 1e-9 (1 + |l|): l(m) < l_hat + 1e-9 (1 + |l_hat|) for every m in [min x, max x] (interval cover; |h''| bounded by max(1, min(z^2/4, 2/z^2 + 1/(e^(z^2/2) - 1))); density decreasing in |x - m|, so a maximizer lies in the sample range); location score signed at m_hat -/+ 1e-10 max(|m_hat|, sigma)",
+   "source": "slash/mle.hpp:103-146 (certify_held, margin :125,135), :73-97 (curvature bound); README \"Conditional search certificate\" (held scale paragraphs)"
+  },
+  "both free": {
+   "claim": "local accuracy (distance to the stationary point below 1e-10) and global cover of the profile P(m) = max_s l(m, s) to the margin 1e-9 (1 + |l_hat|) (capped 1e-9 n with a half-mass value): the scale root is enclosed by sign checks (n-Lipschitz in log s), P' = l_m at the root (envelope theorem) with |P''| <= A + C^2/B on a cell (A = sum H_i/s_-^2, C = sum (sqrt 2 + sup |z h|)/s_-, B = sum min(2 t e^(-2t)) at the two ends), cells without a positive uniform scale bound use the residual likelihood bound (half-mass supremum n log c - (n-k) log 2 - 2 sum log d); a half-mass value v with B_v >= l_hat - 1e-8 n would be a collapse (returned estimate: B_v < l_hat - 1e-8 n); profile score signed at m_hat -/+ 1e-10 max(|m_hat|, sigma_hat)",
+   "source": "slash/mle.hpp:188-272 (certify_free: margins :211-213, :264-266; collapse cutoff boundary + 1e-8 n :213), :314-322 and :406 (boundary), :150-186 (residual bound); README \"Conditional search certificate\" (free-scale paragraphs)"
+  }
+ },
+ "paralogis": {
+  "shape held, scale free": {
+   "claim": "the log-scale score a n - ... strictly decreasing in the intercept b = -a log(theta): L_b = n - (a+1) sum sigmoid(a y_i + b) has one root, within theta (1 -/+ 1e-10) of the returned scale (concave in b: the root is the unique maximizer)",
+   "source": "paralogis/mle.hpp:380-382 (paralogis_mle_holds delegates to burr_mle_holds), burr/mle.hpp:343-353 (bisection to the double midpoint), :414,419; README \"Details\" (strictly monotone log-scale score)"
+  },
+  "scale held, shape free": {
+   "claim": "global shape maximum of L(a) = 2n log a + a sum y_i - (a+1) sum softplus(a y_i), y_i = log x_i - log(scale): L <= 2n log a at the small end, L <= 2n log a - d a for a >= 1 (d = max |y_i| > 0) at the large end (replayed cutoffs), interval cover in log a between, window around the returned shape; stationary signed at the returned shape (1 -/+ 1e-10)",
+   "source": "paralogis/mle.hpp:340-356 (held-scale certify), certificate.hpp (compact cover, shape radius 1e-8 a, tail cutoffs); README \"Global certificate\" (held scale paragraph)"
+  },
+  "both free": {
+   "claim": "global maximum of L(a, b) = 2n log a + sum(a y_i + b) - (a+1) sum softplus(a y_i + b): the profile P(a) = max_b L(a, b) (L_b strictly decreasing, root enclosed by interval sign checks, P' = L_a at the root by the envelope theorem) is below L(returned) outside a window around the returned shape; small end L <= n log a, large end L <= n log(4^(3/5) a) - (3/5) a Delta; both profile signs at the returned shape (1 -/+ 1e-10) and the scale score at the returned scale (1 -/+ 1e-10)",
+   "source": "paralogis/mle.hpp:318-327 (certify), certificate.hpp (box fixed point, compact cover, shape radius 1e-8 a, tail cutoffs); README \"Global certificate\""
+  },
+  "constant sample": {
+   "claim": "constant positive samples with both coefficients free have unbounded likelihood (v = y0 + log(a)/a gives density ~ a/e): exact predicate",
+   "source": "paralogis/mle.hpp:313-318 (the constant sample returns Unbounded); README \"Existence and identification\" and \"Global certificate\" first paragraphs"
+  }
+ },
+ "invparalogis": {
+  "transfer": {
+   "claim": "paralogis on y = 1/x (binary64 reciprocals as the core divides for a certified fit; exact reciprocals for an uncertified fit, which the core polishes on the original x), same shape, scale theta_p = 1/scale (a held scale as the binary64 reciprocal the core passes)",
+   "source": "invparalogis/mle.hpp:55-64, :99-102 (reciprocals), :69 (physical = 1/scale), :70-82 (uncertified: polished on the original x), :126-127 (holds)"
+  }
+ }
+}
