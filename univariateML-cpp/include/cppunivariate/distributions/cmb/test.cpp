@@ -738,3 +738,44 @@ TEST_CASE("cmb: inverse sampling keeps unfuzzed binomial and geometric jumps") {
   CHECK(cppunivariate::distributions::qcmb(rng.value,1,.5,1)==0);
   CHECK(cppunivariate::distributions::rcmb(rng,1,.5,1)==1);
 }
+
+TEST_CASE("cmb exact unidentified coordinates retain a proper nonunique estimate") {
+  const std::vector<int> zeros{0,0}, binary{0,1,1};
+  const auto z=cppunivariate::cmb_mle(cppunivariate::ispan{zeros.data(),zeros.size()},0);
+  CHECK(cppunivariate::outcome(z).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(cppunivariate::outcome(z).unique);
+  const auto b=cppunivariate::cmb_mle(cppunivariate::ispan{binary.data(),binary.size()},1);
+  CHECK_FALSE(cppunivariate::outcome(b).unique);
+  const auto held=cppunivariate::cmb_mle(cppunivariate::ispan{zeros.data(),zeros.size()},0,1e-10,2000,.5,1);
+  CHECK(cppunivariate::outcome(held).unique);
+}
+
+TEST_CASE("cmb free-size Bernoulli saturation returns its attained family point") {
+  for(const std::vector<int>& x : {std::vector<int>{0,1},std::vector<int>{0,0,1}}) {
+    const auto r=cppunivariate::cmb_size_free_nu_mle(cppunivariate::ispan{x.data(),x.size()});
+    const auto o=cppunivariate::outcome(r);
+    REQUIRE(o.kind==cppunivariate::OutcomeKind::Estimate);
+    CHECK(o.certified);CHECK_FALSE(o.unique);
+    const auto& c=r.fit.stop_detail.candidates[cppunivariate::comparison_choice(r.fit)];
+    CHECK(cppunivariate::family_point(r.fit,c));
+    CHECK(c.coef[0]==1);
+    double ones=0;for(int v:x)ones+=v;
+    CHECK(c.coef[1]==ones/x.size());
+  }
+}
+
+TEST_CASE("cmb free-size endpoint representatives retain unidentified dispersion") {
+  const std::vector<int> positive{3,3},zero{0,0};
+  const auto a=cppunivariate::cmb_size_free_nu_mle(cppunivariate::ispan{positive.data(),positive.size()});
+  CHECK(cppunivariate::outcome(a).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(cppunivariate::outcome(a).unique);
+  const auto b=cppunivariate::cmb_size_free_nu_mle(cppunivariate::ispan{zero.data(),zero.size()},.4);
+  CHECK_FALSE(cppunivariate::outcome(b).unique);
+}
+
+TEST_CASE("cmb zero probability leaves free size unidentified with held dispersion") {
+  const std::vector<int> x{0,0};
+  const auto r=cppunivariate::cmb_size_mle(cppunivariate::ispan{x.data(),x.size()},0,2);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  CHECK((r.fit.unidentified&4u)!=0);CHECK((r.fit.unidentified&2u)==0);
+}

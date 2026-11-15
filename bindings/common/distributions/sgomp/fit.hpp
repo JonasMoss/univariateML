@@ -3,16 +3,7 @@
 #include "cppunivariate/distributions/sgomp/mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg = {}, double reltol=1e-10, int iterlim=200) {
-  // Invalid controls remain ordinary errors, even if a legacy fitter reports
-  // a statistical status before checking them.
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v) && v>=0;}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held b = b_arg;
@@ -30,15 +21,15 @@ inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg 
     return with_outcome(std::move(out), o, static_cast<int>(f.status),{{"b",b_arg.supplied},{"eta",eta_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if(f.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sgomp numerical accuracy failure: requested coefficient accuracy cannot be established."),f.stop_detail,outcome_payload(o),{"b","eta"}));
   if (f.status==cppunivariate::SgompStatus::Collapse) return done(nomle("The shifted Gompertz MLE does not exist: constant data have unbounded likelihood."));
   if (f.status==cppunivariate::SgompStatus::InvalidInput) return done(fail("Shifted Gompertz requires finite nonnegative data, positive reltol and positive iterlim."));
   if (f.status!=cppunivariate::SgompStatus::Ok) {
-    if(f.stop_detail.budget_exhausted)return done(classify(fail("Shifted Gompertz certificate budget exhausted; increase iterlim."),f.stop_detail,outcome_payload(o),{"b","eta"}));
-    if(f.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Shifted Gompertz competing global maxima cannot be distinguished; increase iterlim."),f.stop_detail,PayloadKind::Comparison,{"b","eta"}),o,cppunivariate::comparison_choice(f),{{"b",b_arg},{"eta",eta_arg}}));
-    return done(classify(fail("Shifted Gompertz MLE failed to converge; increase iterlim."),f.stop_detail,outcome_payload(o),{"b","eta"}));
+    if(f.stop_detail.budget_exhausted)return done(stop_failure(fail("Shifted Gompertz certificate budget exhausted; increase iterlim."),f.stop_detail,outcome_payload(o),{"b","eta"}));
+    if(f.stop_detail.comparison_tie)return done(comparison_payload(stop_failure(fail("Shifted Gompertz competing global maxima cannot be distinguished; increase iterlim."),f.stop_detail,PayloadKind::Comparison,{"b","eta"}),o,cppunivariate::comparison_choice(f),{{"b",b_arg},{"eta",eta_arg}}));
+    return done(stop_failure(fail("Shifted Gompertz MLE failed to converge; increase iterlim."),f.stop_detail,outcome_payload(o),{"b","eta"}));
   }
   std::vector<std::string> fixed;
   if (b.supplied) fixed.push_back("b");

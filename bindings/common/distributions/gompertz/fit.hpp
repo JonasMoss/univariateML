@@ -6,17 +6,7 @@
 #include <algorithm>
 namespace umvl_binding {
 inline FitResult fit_gompertz(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
-  // Invalid controls remain ordinary errors, even if a legacy fitter reports
-  // a statistical status before checking them.
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v) && v>=0;}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held a = a_arg;
@@ -37,30 +27,22 @@ inline FitResult fit_gompertz(cppunivariate::span x, Held a_arg = {}, Held b_arg
   auto res = cppunivariate::gompertz_mle(x, reltol, iterlim, a_held, b_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    // The classification guard also needs the original data and controls.
-    if (res.status == cppunivariate::GompertzStatus::Overdispersed && (out.payload_kind==PayloadKind::None)) {
-      const bool valid = !x.empty() && std::all_of(x.begin(), x.end(), [](double v) { return std::isfinite(v) && v >= 0; }) &&
-        reltol > 0 && std::isfinite(reltol) && iterlim > 0;
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(valid ? cppunivariate::OutcomeReason::Evaluation : cppunivariate::OutcomeReason::InvalidInput), static_cast<int>(res.status),{{"a",a_arg.supplied},{"b",b_arg.supplied}});
-    }
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"a",a_arg.supplied},{"b",b_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if(res.status==cppunivariate::GompertzStatus::Unbounded)
     return done(nomle("The Gompertz maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."));
 
   if (res.status == cppunivariate::GompertzStatus::Overdispersed) {
-    return done(classify(fail("The Gompertz maximum likelihood estimator escapes to an exponential "
+    return done(stop_failure(fail("The Gompertz maximum likelihood estimator escapes to an exponential "
                "when the score at b=0 is nonpositive. Use `mlexp` instead."),res.stop_detail,outcome_payload(o),{"rate"},"exp"));
   }
   if (res.status != cppunivariate::GompertzStatus::Ok || !std::isfinite(res.a) ||
       !std::isfinite(res.b)) {
-    if (!a.supplied && std::all_of(x.begin(),x.end(),[](double v){return v==0;}))
-      return done(fail("The Gompertz likelihood is unbounded for all-zero data with a free."));
     return done(fail("Gompertz MLE failed to converge or data exceed double precision."));
   }
   return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"a",res.a},{"b",res.b}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());

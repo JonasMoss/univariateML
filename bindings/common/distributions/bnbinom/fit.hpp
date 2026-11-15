@@ -88,8 +88,12 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
       out.extra_vectors.emplace_back("profile_mode_lower",std::vector<double>{fit.profile_mode[0],fit.profile_alpha[0],fit.profile_mode[2]});
       out.extra_vectors.emplace_back("profile_mode_upper",std::vector<double>{fit.profile_mode[1],fit.profile_alpha[1],fit.profile_mode[3]});
     }
-    if(!size.supplied && !beta.supplied) {
+    if(fit.swap_symmetry) {
       out.extra_vectors.emplace_back("swap_maximum",std::vector<double>{fit.beta,fit.alpha,fit.size});
+      if(!o.unique) {
+        out.candidates.push_back({out.estimates,fit.logLik,fit.logLik,""});
+        out.candidates.push_back({{{"size",fit.beta},{"alpha",fit.alpha},{"beta",fit.size}},fit.logLik,fit.logLik,""});
+      }
       for(const auto &candidate:fit.stop_detail.candidates)
         if(candidate.coef.size()==3 && candidate.coef[0]==candidate.coef[2]) {
           out.extra_vectors.emplace_back("diagonal_witness",candidate.coef);break;

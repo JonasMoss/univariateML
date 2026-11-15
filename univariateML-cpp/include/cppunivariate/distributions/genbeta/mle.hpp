@@ -11,7 +11,7 @@
 
 namespace cppunivariate {
 enum class GenbetaStatus { Ok, UnitGammaBoundary, PowerBoundary, InvalidData,
-  InvalidFixed, SearchUnresolved, Unbounded };
+  InvalidFixed, SearchUnresolved, Unbounded, Unsupported };
 enum class GenbetaCertificateFailure { None, Arithmetic, ShapeSolve, ShapeSigns,
   Tail, RootSigns, CoefficientInclusion, Budget, GammaNeighborhood, PowerNeighborhood, LegacyContradicted };
 // Bounds concern the all-free conditional beta problem, at the proposed power.
@@ -38,7 +38,8 @@ struct GenbetaResult {
  GenbetaCertificateFailure certificate_failure=GenbetaCertificateFailure::None;
  GenbetaConditionalBounds conditional_bounds{};
  GenbetaTailBounds tail_bounds{};
- bool allfree_certified=false; };
+ bool allfree_certified=false;
+ bool product_ridge=false; };
 
 inline bool family_point(const GenbetaResult&, const FitCandidate& c) {
   if (c.model != StopModel::None || c.coef.size() != 4) return false;
@@ -55,7 +56,8 @@ inline FitOutcome outcome(const GenbetaResult& r) {
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
-    case GenbetaStatus::Ok: return FitOutcome::estimate(r.allfree_certified);
+    case GenbetaStatus::Unsupported: return FitOutcome::failure(OutcomeReason::Unsupported);
+    case GenbetaStatus::Ok: return FitOutcome::estimate(r.allfree_certified,!r.product_ridge);
     case GenbetaStatus::UnitGammaBoundary: return FitOutcome::limit(r.allfree_certified);
     case GenbetaStatus::PowerBoundary: return FitOutcome::limit(r.allfree_certified);
     case GenbetaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
@@ -181,12 +183,15 @@ inline GenbetaResult genbeta_accuracy_search(span x,double scale,double tol=1e-7
   }
   // beta=1 is an attained ridge: only alpha*tau is identified.
   if(b==1) {
+    const bool ridge=std::isnan(a)&&std::isnan(t);
     const double rate=1/mean;
     if(std::isnan(a)&&std::isnan(t)){a=rate;t=1;}
     else if(std::isnan(a))a=rate/t;
     else if(std::isnan(t))t=rate/a;
     const double value=n*(std::log(a*t)-a*t*mean)+static_cast<double>(jac);
-    return {a,b,t,scale,value,0,std::isfinite(value)&&std::isfinite(a)&&std::isfinite(t)?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
+    GenbetaResult out{a,b,t,scale,value,0,std::isfinite(value)&&std::isfinite(a)&&std::isfinite(t)?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
+    out.product_ridge=ridge;out.allfree_certified=std::isnormal(a)&&std::isnormal(t);
+    return out;
   }
   // Held p=1 is exactly Kumaraswamy, not a numerical free-power profile.
   // Keep the held-q scalar route below: it resolves much smaller q than
@@ -454,6 +459,7 @@ inline GenbetaResult genbeta_accuracy_search(span x,double scale,double tol=1e-7
 #include "accuracy.hpp"
 namespace cppunivariate {
 inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-10,int maxit=300,double a=NAN,double b=NAN,double t=NAN) {
+  if(std::isnan(scale))return {a,b,t,scale,NAN,0,GenbetaStatus::Unsupported};
   const bool scalar_certificate=(!std::isnan(a)&&!std::isnan(b)&&std::isnan(t)) ||
     (a==1&&std::isnan(b)&&std::isnan(t)) || b==1;
   const double search_tol=!scalar_certificate&&tol>0&&std::isfinite(tol)?std::max(tol,1e-7):tol;

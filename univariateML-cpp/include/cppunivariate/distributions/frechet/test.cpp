@@ -607,3 +607,32 @@ TEST_CASE("frechet: canceled quantile meets the backward probability contract") 
   CHECK(std::abs(at-input)<=1e-12*std::max(1.,std::abs(input)));
   CHECK(std::abs(q-expected)<=4*std::numeric_limits<double>::epsilon()*std::max(1.,std::abs(center)));
 }
+
+TEST_CASE("frechet core classifies small samples and minimum majorities") {
+  for(const std::vector<double>& x : {std::vector<double>{2},std::vector<double>{2,2,2},std::vector<double>{1,1,1,2}}) {
+    const auto r=cppunivariate::frechet_mle(mltest::as_span(x));
+    CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
+    CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+  }
+  const std::vector<double> pair{1,2};
+  const auto r=cppunivariate::frechet_mle(mltest::as_span(pair));
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unattained);
+}
+
+TEST_CASE("frechet a rounded held-threshold equality is not a collapse proof") {
+  const std::vector<double> distinct{.1,.2},one{.1},exact{1};
+  const auto a=cppunivariate::frechet_mle(mltest::as_span(distinct),1e-10,100,-1e16);
+  CHECK(cppunivariate::outcome(a).reason==cppunivariate::OutcomeReason::Evaluation);
+  const auto b=cppunivariate::frechet_mle(mltest::as_span(one),1e-10,100,-1e16,NAN,1e16);
+  CHECK(cppunivariate::outcome(b).reason==cppunivariate::OutcomeReason::Evaluation);
+  const auto c=cppunivariate::frechet_mle(mltest::as_span(exact),1e-10,100,0,NAN,1);
+  CHECK(cppunivariate::outcome(c).reason==cppunivariate::OutcomeReason::Unbounded);
+}
+
+TEST_CASE("frechet underflowed normalization cannot prove a new minimum majority") {
+  const std::vector<double> x{0,std::numeric_limits<double>::denorm_min(),1e308};
+  const auto r=cppunivariate::frechet_mle(mltest::as_span(x));
+  CHECK(cppunivariate::outcome(r).kind!=cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(cppunivariate::outcome(r).reason!=cppunivariate::OutcomeReason::InvalidInput);
+}

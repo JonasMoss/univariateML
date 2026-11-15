@@ -1,0 +1,40 @@
+{
+  "mode|both|gompertz|class|huge": {
+    "ref": "TASK-214.13",
+    "detail": "native ok, double-only limit"
+  },
+  "mode|both|st|archive|007040": {
+    "ref": "TASK-214.13",
+    "detail": "native error, double-only ok"
+  },
+  "refine|double|gompertz|archive|002793": {
+    "ref": "TASK-214.5",
+    "detail": "a = 0.15831685073294502, refined 0.15831684656379519: error 4.17e-09 is 263 x the contract bound",
+    "finding": "off-maximizer"
+  },
+  "refine|double|pareto3|archive|005590": {
+    "ref": "TASK-214.5",
+    "detail": "shape = 97732768.758591905, refined 97732768.856845915: error 0.0983 is 10.1 x the contract bound",
+    "finding": "off-maximizer"
+  },
+  "refine|double|pareto3|archive|005591": {
+    "ref": "TASK-214.5",
+    "detail": "shape = 977320258179.26111, refined 977351135434.36426: error 3.09e+07 is 3.16e+05 x the contract bound",
+    "finding": "off-maximizer"
+  },
+  "refine|double|pareto3|archive|005593": {
+    "ref": "TASK-214.5",
+    "detail": "shape = 97732768.758591905, refined 97732768.850168899: error 0.0916 is 9.37 x the contract bound",
+    "finding": "off-maximizer"
+  },
+  "refine|native|gompertz|archive|002793": {
+    "ref": "TASK-214.5",
+    "detail": "a = 0.15831685073294502, refined 0.15831684656379519: error 4.17e-09 is 263 x the contract bound",
+    "finding": "off-maximizer"
+  },
+  "refine|native|pareto3|archive|005591": {
+    "ref": "TASK-214.5",
+    "detail": "shape = 977351131797.74414, refined 977351135434.36426: error 3.64e+03 is 37.2 x the contract bound",
+    "finding": "off-maximizer"
+  }
+}

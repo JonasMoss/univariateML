@@ -22,9 +22,6 @@ inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held m
  mu.supplied ? mu.value : std::numeric_limits<double>::quiet_NaN(),shape,scale);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    // This classification uses observations/holds absent from the core result.
-    if (out.payload_kind == PayloadKind::Nonexistence && o.reason == cppunivariate::OutcomeReason::InvalidInput)
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::nonexistence(cppunivariate::OutcomeReason::Unbounded), static_cast<int>(r.status),{{"lambda",lambda_arg.supplied},{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"lambda",lambda_arg.supplied},{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
@@ -52,16 +49,9 @@ inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held m
    if(!r.stop_detail.limit_coef.empty())return done(stop_failure(out,r.stop_detail,outcome_payload(o),{"mu","sigma"},"gumbel"));
    return done(out);
  }
+ if(r.shape_collapse)return done(stop_failure(fail("Frechet free shape and scale require nonconstant data: the shape likelihood is unbounded."),r.stop_detail,outcome_payload(o),{"lambda","mu","sigma"}));
+ if(r.minimum_majority)return done(stop_failure(fail("Frechet has no finite maximum: a tied minimum majority permits scale collapse; free shape and scale require nonconstant data."),r.stop_detail,outcome_payload(o),{"lambda","mu","sigma"}));
  if(r.status==cppunivariate::FrechetStatus::NoMLE || (r.status==cppunivariate::FrechetStatus::InvalidData && !std::isnan(r.stop_detail.loglik_upper))) return done(stop_failure(fail("Frechet has no finite maximum: minimum multiplicity permits scale collapse."),r.stop_detail,outcome_payload(o),{"lambda","mu","sigma"}));
- if(r.status==cppunivariate::FrechetStatus::InvalidData && !mu.supplied&&!lambda.supplied&&!sigma.supplied &&
-     x.size()>=3 && reltol>0&&std::isfinite(reltol)&&iterlim>0 &&
-     std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);})) {
-   const double minimum=*std::min_element(x.begin(),x.end());
-   if(2*static_cast<std::size_t>(std::count(x.begin(),x.end(),minimum))>x.size()) {
-     cppunivariate::StopDetail detail;detail.loglik_upper=INFINITY;
-     return done(stop_failure(fail("Frechet has no finite maximum: a tied minimum majority permits scale collapse; free shape and scale require nonconstant data."),detail,PayloadKind::Nonexistence,{"lambda","mu","sigma"}));
-   }
- }
  if(r.status==cppunivariate::FrechetStatus::InvalidData) return done(fail("Frechet requires finite observations strictly above held mu and compatible holds. Free shape and scale require nonconstant data; the default free-mu fit requires at least three observations and admissible minimum tie multiplicity. Constant data can have an unbounded shape likelihood and fixed shape can have an unattained collapse face. Tolerance and iteration limit must be positive."));
  if(r.status!=cppunivariate::FrechetStatus::Ok) return done(fail("Frechet profile search failed to converge."));
   std::vector<std::pair<std::string,std::string>> restricted;

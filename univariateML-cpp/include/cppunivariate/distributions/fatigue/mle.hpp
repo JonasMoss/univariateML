@@ -20,7 +20,7 @@
 
 namespace cppunivariate {
 
-enum class FatigueStatus { Ok, InvalidInput, Unbounded, SearchFailure };
+enum class FatigueStatus { Ok, InvalidInput, Unbounded, SearchFailure, Unsupported };
 
 struct FatigueResult {
   double alpha;
@@ -29,6 +29,7 @@ struct FatigueResult {
   int iterations;
   FatigueStatus status = FatigueStatus::Ok;
   StopDetail stop_detail{};
+  bool transformation_failure=false;
 };
 
 // Comparison candidates are (alpha, beta); the adapter appends the held mu.
@@ -45,11 +46,13 @@ inline bool accurate_point(const FatigueResult& r, const FitCandidate& c) {
 }
 
 inline FitOutcome outcome(const FatigueResult& r) {
+  if(r.transformation_failure)return FitOutcome::failure(OutcomeReason::Evaluation);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status == FatigueStatus::SearchFailure && r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.status == FatigueStatus::SearchFailure && r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
+    case FatigueStatus::Unsupported: return FitOutcome::failure(OutcomeReason::Unsupported);
     case FatigueStatus::Ok: return FitOutcome::estimate(true);
     case FatigueStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case FatigueStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
@@ -186,12 +189,26 @@ inline FatigueResult fatigue_mle_shifted(span x, double mu, double tol, int maxi
     double beta=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
+  const auto transform_failure=[&]() {
+    FatigueResult out{nan,nan,nan,0,FatigueStatus::SearchFailure};
+    out.transformation_failure=true;return out;
+  };
+  if(std::isnan(mu)) return {nan,nan,nan,0,FatigueStatus::Unsupported};
   if(!std::isfinite(mu)) return {nan,nan,nan,0,FatigueStatus::InvalidInput};
+  if(x.empty() || !(tol>0 && std::isfinite(tol)) || maxit<1 ||
+     (!std::isnan(alpha) && !(alpha>0 && std::isfinite(alpha))) ||
+     (!std::isnan(beta) && !(beta>0 && std::isfinite(beta))))
+    return {nan,nan,nan,0,FatigueStatus::InvalidInput};
+  bool constant=true;
+  for(double v:x) {
+    if(!std::isfinite(v) || !(v>mu))return {nan,nan,nan,0,FatigueStatus::InvalidInput};
+    constant=constant && v==x[0];
+  }
+  if(constant && std::isnan(alpha) && std::isnan(beta))return {nan,nan,nan,0,FatigueStatus::Unbounded};
   std::vector<double> shifted(x.size());
   for(std::size_t i=0;i<x.size();++i) {
     shifted[i]=x[i]-mu;
-    if(!(shifted[i]>0) || !std::isfinite(shifted[i]))
-      return {nan,nan,nan,0,FatigueStatus::InvalidInput};
+    if(!std::isfinite(shifted[i]))return transform_failure();
   }
   auto result=fatigue_mle(span{shifted.data(),shifted.size()},tol,maxit,alpha,beta);
   if(result.status==FatigueStatus::Unbounded) {
@@ -207,7 +224,7 @@ inline FatigueResult fatigue_mle_shifted(span x, double mu, double tol, int maxi
         rounded=rounded||error!=0;
       }
     }
-    if(distinct||rounded)return {nan,nan,nan,0,FatigueStatus::SearchFailure};
+    if(distinct||rounded)return transform_failure();
   }
   return result;
 }

@@ -6,14 +6,7 @@
 #include <algorithm>
 namespace umvl_binding {
 inline FitResult fit_power(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, double epsilon = 1.490116e-08) {
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held alpha = alpha_arg;
@@ -30,7 +23,6 @@ inline FitResult fit_power(cppunivariate::span x, Held alpha_arg = {}, Held beta
     if (!(std::isfinite(beta_held) && beta_held > 0.0)) return invalid_argument(fail("Held `beta` must be positive and finite."));
     fixed.push_back("beta");
   }
-  if (alpha.supplied && std::any_of(x.begin(),x.end(),[&](double v){return v>alpha_held;})) return invalid_argument(fail("Held alpha must be at least the sample maximum: zero likelihood."));
 
   if (!(epsilon>=0.0) || !std::isfinite(epsilon))
     return invalid_argument(fail("`epsilon` must be nonnegative and finite."));
@@ -43,8 +35,10 @@ inline FitResult fit_power(cppunivariate::span x, Held alpha_arg = {}, Held beta
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"alpha",alpha_arg.supplied},{"beta",beta_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
+  if(res.status==cppunivariate::PowerStatus::OutsideSupport)
+    return done(fail("Held alpha must be at least the sample maximum: zero likelihood."));
   if (res.status == cppunivariate::PowerStatus::Unbounded)
     return done(nomle("Power likelihood is unbounded as beta -> Inf when every observation equals alpha; hold beta to fit constant samples."));
   if (!std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {

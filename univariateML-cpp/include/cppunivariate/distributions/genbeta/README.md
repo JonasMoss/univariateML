@@ -287,8 +287,9 @@ variation in $q$. On the remaining interval, bounds on the profile score and
 curvature exclude monotone cells and minima, and isolate every retained
 maximum in a strictly concave cell. Both coefficients are enclosed to relative
 width at most $\min(\mathrm{gradtol},10^{-9})/2$. Overlapping objective
-intervals stop as a tie; certificate exhaustion stops as a budget; uncertain
-signs or failed inner solves stop numerically. Finite witnesses remain diagnostic.
+intervals retain their finite witnesses as an unresolved comparison;
+certificate exhaustion stops as a budget; uncertain signs or failed inner
+solves stop numerically. Finite witnesses remain diagnostic.
 The [bounds and proof](../../../../../dev/research/evaluations/2026-11-07-genbeta-cert-data/bounds.md)
 do not assume uniqueness. Computed signs use practical allowances of
 $64\epsilon$ for the beta-shape score, $256\epsilon$ for the profile score,
@@ -349,6 +350,12 @@ that shapelog value. The mllgamma fitter currently estimates shapelog, so
 there is no matching constrained log-gamma fit; the error states that restriction.
 A power limit with endpoint held can be fitted by
 mlgenbeta(x, scale = scale, shape2 = 1); mlpower estimates its endpoint.
+
+With shape2 held at one, put $y_i=-\log(x_i/\mathrm{scale})$ and
+$\lambda=\mathrm{shape1}\,\mathrm{shape3}$. The log likelihood in the
+identified product is $n\log\lambda-\lambda\sum_i y_i-\sum_i\log x_i$,
+strictly concave with maximizer $n/\sum_i y_i$. If both factors are free,
+every positive pair with that product is a maximizer, proving non-uniqueness.
 
 When shape2 = 1 and shape1 and shape3 are free, the fitter returns shape3 = 1
 and records it as fixed, so likelihood degrees of freedom count only the

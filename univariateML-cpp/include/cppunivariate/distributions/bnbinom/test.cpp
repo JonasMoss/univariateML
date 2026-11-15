@@ -828,3 +828,14 @@ TEST_CASE("bnbinom: slow reference discrete quantile round trips on every truth 
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pbnbinom(x,t[0], t[1], t[2],l,g);},
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qbnbinom(x,t[0], t[1], t[2],l,g);});
 }
+
+TEST_CASE("bnbinom disjoint certified label boxes prove nonunique maxima") {
+  const auto g=mltest::load_distribution_golden("bnbinom");
+  std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
+  const auto r=cppunivariate::bnbinom_mle(cppunivariate::ispan{x.data(),x.size()});
+  REQUIRE(r.status==cppunivariate::BnbinomStatus::Ok);
+  REQUIRE(r.certified);CHECK(r.swap_symmetry);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  double swapped=0;for(int v:x)swapped+=cppunivariate::distributions::dbnbinom(v,r.beta,r.alpha,r.size,true);
+  CHECK(swapped==doctest::Approx(r.logLik).epsilon(1e-12));
+}

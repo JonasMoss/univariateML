@@ -9,7 +9,9 @@
 #include "../sn/mle.hpp"
 #include "../lst/mle.hpp"
 #include "../ht/mle.hpp"
+#include "../ht/dpqr.hpp"
 #include "../hnorm/mle.hpp"
+#include "../hnorm/dpqr.hpp"
 #include "../../core/bfgs.hpp"
 #include "../../core/span.hpp"
 #include <algorithm>
@@ -26,10 +28,14 @@ inline bool family_point(const StResult&, const FitCandidate& c) {
          c.coef[1] > 0 && c.coef[3] > 0;
 }
 // Certificate ties list faces and finite points with likelihood bounds; the
-// certified constant-location tie lists two equal limiting faces.
-inline bool accurate_point(const StResult&, const FitCandidate&) { return false; }
+// certified constant-location tie lists two equal limiting faces. Reason 7
+// instead marks the exact flat alpha line with every observation at held xi.
+inline bool accurate_point(const StResult& r, const FitCandidate& c) {
+  return r.reason==7 && family_point(r,c) && point_value(c);
+}
 
 inline FitOutcome outcome(const StResult& r) {
+  if (r.reason == 9) return FitOutcome::nonexistence(OutcomeReason::Unattained);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
@@ -122,7 +128,7 @@ inline Candidate optimize(Cost c,const double* start,double tol,int maxit) {
 
 #include "certificate.hpp"
 
-inline StResult st_mle(span data,double tol=1e-10,int maxit=200,double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN,double nu=special::kNaN) {
+inline StResult st_mle_impl(span data,double tol=1e-10,int maxit=200,double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN,double nu=special::kNaN) {
   maxit = static_cast<int>(solver_budget(maxit));
  const double nan=special::kNaN;StResult bad{nan,nan,nan,nan,nan,0,StStatus::InvalidInput};
  if(data.empty()||!(tol>0)||!std::isfinite(tol)||maxit<=0||(!std::isnan(xi)&&!std::isfinite(xi))||(!std::isnan(omega)&&(!std::isfinite(omega)||omega<=0))||(!std::isnan(alpha)&&!std::isfinite(alpha))||(!std::isnan(nu)&&(!std::isfinite(nu)||nu<=0)))return bad;
@@ -148,7 +154,7 @@ inline StResult st_mle(span data,double tol=1e-10,int maxit=200,double xi=specia
   if(k==floor*(n-k)){bad.status=StStatus::ScaleBoundary;return bad;}
  }
  double origin=sorted[n/2],unit=sorted.back()-sorted.front();
- if(!(unit>0)||!std::isfinite(unit)){if(std::isfinite(omega))unit=omega;else return bad;}
+ if(!(unit>0)||!std::isfinite(unit)){if(std::isfinite(omega))unit=omega;else {bad.status=StStatus::NumericalFailure;bad.reason=8;return bad;}}
  std::vector<double> y;for(double x:data)y.push_back((x-origin)/unit);span sy{y.data(),y.size()};
  double fx=std::isnan(xi)?nan:(xi-origin)/unit,fw=std::isnan(omega)?nan:omega/unit;
  st_detail::Candidate best,profile_witness;double profile_best=-INFINITY;
@@ -240,6 +246,19 @@ inline StResult st_mle(span data,double tol=1e-10,int maxit=200,double xi=specia
   if(face>=reference-tie&&face>boundary.logLik){bool normal=winner.status==HtStatus::NormalLimit;boundary={origin+unit*sign*winner.mu,unit*winner.sigma,sign*INFINITY,winner.nu,face,winner.iterations,normal?(sign>0?StStatus::RightHalfNormalBoundary:StStatus::LeftHalfNormalBoundary):(sign>0?StStatus::RightHalfTBoundary:StStatus::LeftHalfTBoundary)};}
  }
  if(std::isfinite(boundary.logLik)){boundary.logLik-=n*std::log(unit);{
+    // Restore the exact observed endpoint before evaluating the represented face.
+    const bool right=boundary.status==StStatus::RightHalfTBoundary || boundary.status==StStatus::RightHalfNormalBoundary;
+    const bool left=boundary.status==StStatus::LeftHalfTBoundary || boundary.status==StStatus::LeftHalfNormalBoundary;
+    if(std::isnan(xi) && right)boundary.xi=sorted.front();
+    if(std::isnan(xi) && left)boundary.xi=sorted.back();
+    boundary.logLik=0;
+    for(double v:data) {
+      if(boundary.status==StStatus::SkewNormalBoundary)boundary.logLik+=distributions::dsn(v,boundary.xi,boundary.omega,boundary.alpha,true);
+      else if(boundary.status==StStatus::RightHalfTBoundary || boundary.status==StStatus::LeftHalfTBoundary)
+        boundary.logLik+=distributions::dht(left?-v:v,left?-boundary.xi:boundary.xi,boundary.nu,boundary.omega,true);
+      else boundary.logLik+=distributions::dhnorm(left?-v:v,left?-boundary.xi:boundary.xi,boundary.omega,true);
+    }
+
     if(boundary.status==StStatus::SkewNormalBoundary)boundary.stop_detail=limit_detail({boundary.xi,boundary.omega,boundary.alpha},boundary.logLik,StopModel::Sn);
     if(boundary.status==StStatus::RightHalfNormalBoundary || boundary.status==StStatus::LeftHalfNormalBoundary)boundary.stop_detail=limit_detail({boundary.xi,boundary.omega},boundary.logLik,boundary.status==StStatus::RightHalfNormalBoundary?StopModel::Hnorm:StopModel::ReflectedHnorm);
     if(boundary.status==StStatus::RightHalfTBoundary || boundary.status==StStatus::LeftHalfTBoundary)boundary.stop_detail=limit_detail({boundary.xi,boundary.nu,boundary.omega},boundary.logLik,boundary.status==StStatus::RightHalfTBoundary?StopModel::Ht:StopModel::ReflectedHt);
@@ -269,6 +288,58 @@ inline StResult st_mle(span data,double tol=1e-10,int maxit=200,double xi=specia
  }
  StResult out{std::isfinite(xi)?xi:origin+unit*best.v[0],std::isfinite(omega)?omega:unit*best.v[1],best.v[2],best.v[3],best.ll-n*std::log(unit),best.iterations,StStatus::Ok,(std::isnan(nu)&&best.v[3]==1)?64u:0u};
  if(!std::isfinite(out.logLik)||(std::isnan(xi)&&!local_accuracy::represented(out.xi,std::max(std::abs(out.xi),out.omega),tol))||(std::isnan(omega)&&!local_accuracy::represented(out.omega,out.omega,tol))){out.status=StStatus::NumericalFailure;out.accuracy_failure=true;{if(out.omega>0 && out.nu>0)record_accuracy(out,tol,{out.xi,out.omega,out.alpha,out.nu},{std::isnan(xi)?std::max(std::abs(out.xi),out.omega):0,std::isnan(omega)?out.omega:0,std::isnan(alpha)?std::max(1.,std::abs(out.alpha)):0,std::isnan(nu)?out.nu:0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}
+ return out;
+}
+
+// At a held endpoint, a tied observation retains skew factor one while all
+// nonzero one-sided residuals increase strictly toward factor two. The
+// resulting density version is not the closed-endpoint half-law.
+inline StResult st_mle(span data,double tol=1e-10,int maxit=200,double xi=special::kNaN,double omega=special::kNaN,double alpha=special::kNaN,double nu=special::kNaN) {
+ auto out=st_mle_impl(data,tol,maxit,xi,omega,alpha,nu);
+ if(data.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0 ||
+    !std::isfinite(xi) || !std::isnan(alpha) ||
+    (!std::isnan(omega) && (!(omega>0) || !std::isfinite(omega))) ||
+    (!std::isnan(nu) && (!(nu>0) || !std::isfinite(nu))))return out;
+ std::size_t k=0,m=0;bool pos=false,neg=false;double logdistance=INFINITY;
+ for(double x:data) {
+  if(!std::isfinite(x))return out;
+  if(x==xi){++k;continue;}
+  ++m;pos=pos||x>xi;neg=neg||x<xi;
+  const double distance=std::abs(x-xi);
+  const double hi=std::max(std::abs(x),std::abs(xi)),lo=std::min(std::abs(x),std::abs(xi));
+  const double ld=std::isfinite(distance)?std::log(distance):std::log(hi)+std::log1p(lo/hi);
+  logdistance=std::min(logdistance,ld);
+ }
+ if(k==0 || m==0 || (pos&&neg))return out;
+ const double floor=std::isnan(nu)?1:nu;
+ if(std::isnan(omega) && std::fma(floor,static_cast<double>(m),-static_cast<double>(k))<0)return out;
+ if(out.status==StStatus::ScaleBoundary && out.reason==6)return out;
+ // Uniform finite bounds: t_nu(z)<=phi(0), and for nu>=1,
+ // t_nu(z)<=2*phi(0)/(1+z*z). For fixed nu use the power-tail
+ // bound and split sigma at d_min/sqrt(nu). See the dossier proof.
+ const double logphi=-.5*std::log(2*cppunivariate::pi),logtwo=std::log(2.);
+ double upper=data.size()*(logtwo+logphi-std::log(omega));
+ if(std::isnan(omega))upper=data.size()*((std::isnan(nu)?2*logtwo:logtwo)+logphi+(std::isnan(nu)?0:.5*std::log(nu))-logdistance);
+ if(!std::isfinite(upper))return out;
+ const double scale=std::isfinite(omega)?omega:out.omega;
+ const double df=std::isfinite(nu)?nu:out.nu;
+ double path=NAN;
+ if(scale>0 && std::isfinite(scale) && df>0 && std::isfinite(df)) {
+  path=m*logtwo;
+  for(double x:data)path+=st_detail::logdensity(x,xi,scale,0,df);
+ } else if(scale>0 && std::isfinite(scale) && df==INFINITY) {
+  path=-static_cast<double>(k)*logtwo;
+  for(double x:data)path+=distributions::dhnorm(pos?x:-x,pos?xi:-xi,scale,true);
+ }
+ const double margin=128*std::numeric_limits<double>::epsilon()*(1+std::abs(upper)+(std::isfinite(path)?std::abs(path):0));
+ out.reason=9;out.certified=true;out.accuracy_failure=false;
+ out.stop_detail={};out.stop_detail.loglik_lower=-INFINITY;out.stop_detail.loglik_upper=upper+margin;
+ if(std::isfinite(path)) {
+  out.logLik=path;out.stop_detail.limit_coef={xi,df,scale};
+  out.stop_detail.limit_loglik=path;out.stop_detail.loglik_lower=path-margin;
+  if(std::isfinite(omega) && std::isfinite(nu))out.stop_detail.loglik_upper=path+margin;
+ }
+ if(out.status==StStatus::Ok)out.status=pos?StStatus::RightHalfTBoundary:StStatus::LeftHalfTBoundary;
  return out;
 }
 }

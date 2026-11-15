@@ -205,7 +205,10 @@ If observations have equal positive counts at every integer from zero to
 their maximum, the empirical uniform law is attained at that maximum as
 size, probability `1/2` and dispersion zero. It is therefore a global fit
 for free probability or probability held at `1/2`. For size one and free
-probability it ties the adjacent CMP limit, so the face-tie policy stops;
+probability it ties the adjacent CMP limit. Its point-valued Bernoulli witness
+is a certified, non-unique estimate: the empirical Bernoulli probabilities
+attain the saturated multinomial likelihood bound, independently of dispersion.
+The equivalent limiting law remains attached;
 with probability held the unidentified dispersion is represented by one.
 
 
@@ -630,3 +633,10 @@ $10^{-24}/[(N+1)\{1+N^2+(N\log 2)^2\}]$ bounds the omitted normalizer and
 raw moments through order two by $10^{-24}$ relative to the modal weight.
 This bound is conditional on computed crossing comparisons; the existing
 practical likelihood and coefficient margins still apply.
+
+At size zero the probability mass function is identically one at zero,
+independently of probability and dispersion. At size one dispersion drops
+out because both binomial coefficients are one. Likewise, at probability
+zero or one dispersion has no effect on the attained endpoint atom. These
+identities prove non-uniqueness whenever an affected coordinate is free;
+the returned proper representative is flagged accordingly.

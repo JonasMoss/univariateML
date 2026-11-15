@@ -30,6 +30,8 @@ struct BnbinomResult {
   bool certified=false;
   bool accuracy_failure=false;
   bool local_accuracy_fallback=false;
+  bool swap_symmetry=false;
+  bool unique=true;
 };
 
 inline bool family_point(const BnbinomResult&, const FitCandidate& c) {
@@ -46,7 +48,7 @@ inline FitOutcome outcome(const BnbinomResult& r) {
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case BnbinomStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BnbinomStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
     case BnbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BnbinomStatus::NegativeBinomialLimit: return FitOutcome::limit(r.certified);
     case BnbinomStatus::PoissonLimit: return FitOutcome::limit(r.certified);
@@ -918,6 +920,25 @@ inline BnbinomResult bnbinom_mle(ispan x, double tol=1e-10, int maxit=600,
     for(const auto& v:counts)loglik+=static_cast<CPPUNIV_EXTENDED_REAL>(v.second)*
       distributions::dbnbinom(v.first,r,stopped.alpha,b,true);
     stopped.logLik=static_cast<double>(loglik);
+    if(free_count==0 && std::isfinite(stopped.logLik))stopped.certified=true;
+  }
+  stopped.swap_symmetry=std::isnan(size_fixed) && std::isnan(beta_fixed);
+  if(stopped.status==BnbinomStatus::Ok && stopped.certified && stopped.swap_symmetry) {
+    // The exact size/beta symmetry gives a second global maximizer only
+    // when the certified boxes separate it from its reflection.
+    const auto separated=[](double lo1,double hi1,double lo2,double hi2) {
+      if(!(lo1>0 && hi1>=lo1 && lo2>0 && hi2>=lo2) ||
+         !std::isfinite(lo1) || !std::isfinite(hi1) || !std::isfinite(lo2) || !std::isfinite(hi2))return false;
+      const double pad=128*std::numeric_limits<double>::epsilon()*std::max(hi1,hi2);
+      return lo2-hi1>pad || lo1-hi2>pad;
+    };
+    const auto& c=stopped.global_coefficient_center;
+    const double radius=stopped.global_coefficient_radius;
+    const bool global=radius>=0 && radius<1 && separated(c[0]*(1-radius),c[0]*(1+radius),c[2]*(1-radius),c[2]*(1+radius));
+    const auto& m=stopped.profile_mode;
+    const bool inside=(m[0]<=stopped.size && stopped.size<=m[1] && m[2]<=stopped.beta && stopped.beta<=m[3]) ||
+      (m[0]<=stopped.beta && stopped.beta<=m[1] && m[2]<=stopped.size && stopped.size<=m[3]);
+    stopped.unique=!(global || (inside && separated(m[0],m[1],m[2],m[3])));
   }
   return stopped;
 }

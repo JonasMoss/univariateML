@@ -10,9 +10,10 @@
 #pragma once
 #include "../../core/outcome.hpp"
 #include "../ht/mle.hpp"
+#include "dpqr.hpp"
 #include <algorithm>
 namespace cppunivariate {
-enum class HcauchyStatus { Ok, InvalidData, Unbounded, ScaleBoundary, SearchFailure };
+enum class HcauchyStatus { Ok, InvalidData, Unbounded, ScaleBoundary, SearchFailure, NumericalFailure };
 struct HcauchyResult { double mu, sigma, logLik; int iterations; HcauchyStatus status; };
 
 inline FitOutcome outcome(const HcauchyResult& r) {
@@ -21,6 +22,7 @@ inline FitOutcome outcome(const HcauchyResult& r) {
     case HcauchyStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case HcauchyStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case HcauchyStatus::ScaleBoundary: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case HcauchyStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case HcauchyStatus::SearchFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
   }
   return {};
@@ -30,6 +32,7 @@ inline HcauchyResult hcauchy_mle(span x, double held_mu = std::numeric_limits<do
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (x.size() == 0) return {nan,nan,nan,0,HcauchyStatus::InvalidData};
   for (double v : x) if (!std::isfinite(v)) return {nan,nan,nan,0,HcauchyStatus::InvalidData};
+  if(!std::isnan(held_sigma) && !(held_sigma>0 && std::isfinite(held_sigma)))return {nan,nan,nan,0,HcauchyStatus::InvalidData};
   const bool mu_free = std::isnan(held_mu);
   double mu_hat;
   if (mu_free) {
@@ -40,13 +43,18 @@ inline HcauchyResult hcauchy_mle(span x, double held_mu = std::numeric_limits<do
     for (double v : x) if (v < mu_hat) return {mu_hat,nan,nan,0,HcauchyStatus::InvalidData};
   }
   std::vector<double> y(x.size());
-  for (std::size_t i = 0; i < x.size(); ++i) y[i] = x[i]-mu_hat;
+  for (std::size_t i = 0; i < x.size(); ++i) {
+    y[i] = x[i]-mu_hat;
+    if(!std::isfinite(y[i]))return {mu_hat,nan,nan,0,HcauchyStatus::NumericalFailure};
+  }
   const auto r = ht_mle_zero(span{y.data(),y.size()}, 1.0, held_sigma);
   HcauchyStatus s = HcauchyStatus::SearchFailure;
   if (r.status==HtStatus::Ok) s = HcauchyStatus::Ok;
   if (r.status==HtStatus::InvalidData) s = HcauchyStatus::InvalidData;
   if (r.status==HtStatus::Unbounded) s = HcauchyStatus::Unbounded;
   if (r.status==HtStatus::ScaleBoundary) s = HcauchyStatus::ScaleBoundary;
-  return {mu_hat,r.sigma,r.logLik,r.iterations,s};
+  double ll=r.logLik;
+  if(s==HcauchyStatus::Ok) {ll=0;for(double v:x)ll+=distributions::dhcauchy(v,mu_hat,r.sigma,true);}
+  return {mu_hat,r.sigma,ll,r.iterations,s};
 }
 } // namespace cppunivariate

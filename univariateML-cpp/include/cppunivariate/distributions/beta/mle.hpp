@@ -262,7 +262,7 @@ inline BetaResult beta_mle(span x, double tol, int maxit,
   maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0)
+  if (n == 0 || !(tol>0 && std::isfinite(tol)) || maxit<1)
     return {0.0, 0.0, kNaN, 0, BetaStatus::InvalidInput};
 
   for (double v : x) if (!(v > 0 && v < 1 && std::isfinite(v)))
@@ -287,7 +287,7 @@ inline BetaResult beta_mle(span x, double tol, int maxit,
     const bool fa = !std::isnan(shape1), fb = !std::isnan(shape2);
     if ((fa && (!(shape1 > 0) || !std::isfinite(shape1))) ||
         (fb && (!(shape2 > 0) || !std::isfinite(shape2))))
-      return {kNaN, kNaN, kNaN, 0, BetaStatus::IterationFailure};
+      return {kNaN, kNaN, kNaN, 0, BetaStatus::InvalidInput};
     double a = shape1, b = shape2;
     int it = 0;
     if (!(fa && fb)) {

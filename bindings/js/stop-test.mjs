@@ -171,9 +171,11 @@ test('discrete stops retain fitted package and non-package faces', () => {
     assert.deepEqual(e.estimates,estimates);assert.ok(Number.isFinite(e.limit_loglik));
     assert.ok(e.candidates.length>0);return true;
   });
-  comparisonStop(()=>api.cmb.fit([0,1]),'limit',e=>{
-    assert.equal(e.certified,false);assert.equal(e.model,'binom');
-    assert.deepEqual(e.estimates,{size:1,prob:.5});return true;
+  comparisonFit(()=>api.cmb.fit([0,1]),e=>{
+    assert.equal(e.certified,true);assert.equal(e.unique,false);
+    assert.deepEqual(e.estimates,{size:1,prob:.5,nu:1});
+    assert.equal(e.logLik,-2*Math.log(2));
+    assert.deepEqual(e.candidates.map(c=>c.nu),[1,-1]);return true;
   });
 });
 
@@ -455,7 +457,7 @@ test('st conditional location and alpha-scale certificates retain stops', () => 
   assert.throws(()=>api.st.fit([-3,-1,-.2,.1,.8,2,4],{omega:1,alpha:2,nu:4},{iterlim:1}), e=>e.kind==='budget' && e.candidates.length>0);
   for(const sign of [-1,1]) {
     assert.throws(()=>api.st.fit([2,2+sign,2+2*sign,2+4*sign],{xi:2,nu:4}), e=>{
-      assert.equal(e.kind,'limit');assert.equal(e.estimates.mu,2);assert.ok(e.estimates.sigma>0);return true;
+      assert.equal(e.kind,'nomle');assert.equal(e.model,'unavailable:st-shape-escape');assert.equal(e.estimates.mu,2);assert.ok(e.estimates.sigma>0);return true;
     });
   }
   for(const held of [{xi:0,alpha:0,nu:1},{xi:0,nu:1}]) {
@@ -626,4 +628,17 @@ test('uncertified limits describe the likelihood margin',()=>{
     assert.match(e.message,/ No improvement above the likelihood margin was found\.$/);
     return true;
   });
+});
+
+test('st flat conditional alpha line returns exact finite maximizers',()=>{
+  comparisonFit(()=>api.st.fit([2,2,2],{xi:2,omega:1,nu:.5}),e=>{
+    assert.equal(e.certified,true);assert.equal(e.unique,false);
+    assert.deepEqual(e.estimates,{xi:2,omega:1,alpha:-1,nu:.5});
+    assert.deepEqual(e.candidates.map(c=>c.alpha),[-1,1]);return true;
+  });
+});
+
+test('st endpoint exponent sign survives a rounded product',()=>{
+  assert.throws(()=>api.st.fit([0,0,1,2,3],{xi:0,nu:2/3}),e=>
+    e.kind==='nomle' && e.reason==='unbounded');
 });

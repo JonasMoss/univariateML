@@ -50,7 +50,7 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
   maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {0.0, 0.0, kNaN, 0, WeibullStatus::InvalidInput};
+  if (n == 0 || !(tol>0 && std::isfinite(tol)) || maxit<1 || (!std::isnan(shape0) && !(shape0>0 && std::isfinite(shape0)))) return {0.0, 0.0, kNaN, 0, WeibullStatus::InvalidInput};
 
   for (double v : x) if (!(v > 0 && std::isfinite(v)))
     return {NAN,NAN,NAN,0,WeibullStatus::InvalidInput};
@@ -83,7 +83,8 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit,
       {if(out.shape>0 && out.scale>0)record_accuracy(out,tol,{shape,scale},{out.shape,out.scale});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}return out;}
   // Transform the fitted Gumbel likelihood, avoiding shape times
   // a difference of rounded log scales near a point mass.
-  const double logLik = g.logLik + sum_log_x;
+  double logLik = g.logLik + sum_log_x;
+  if(g.status==GumbelStatus::Ok) {logLik=0;for(double v:x)logLik+=distributions::dweibull(v,shape,scale,true);}
   WeibullResult out{shape, scale, logLik, g.iterations,
       g.status == GumbelStatus::Ok ? WeibullStatus::Ok :
       g.status == GumbelStatus::Unbounded ? WeibullStatus::Unbounded :
@@ -103,6 +104,7 @@ inline WeibullResult weibull_mle(span x,double tol,int maxit,double shape0,doubl
   if (free_shape && free_scale) return weibull_mle(x,tol,maxit,shape0);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(x.empty() || !(tol>0 && std::isfinite(tol)) || maxit<=0 ||
+     (!std::isnan(shape0) && !(shape0>0 && std::isfinite(shape0))) ||
      (!std::isnan(shape) && !(shape>0 && std::isfinite(shape))) ||
      (!std::isnan(scale) && !(scale>0 && std::isfinite(scale))))
     return {nan,nan,nan,0,WeibullStatus::InvalidInput};

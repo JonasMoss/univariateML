@@ -612,3 +612,22 @@ TEST_CASE("trgamma: unit power retains the physical gamma coordinate") {
          cppunivariate::distributions::pgamma(q,1e8,1,lower,log));
  }
 }
+
+TEST_CASE("trgamma core owns singleton and constant unbounded outcomes") {
+  for(const std::vector<double>& x : {std::vector<double>{2},std::vector<double>{2,2,2}}) {
+    const auto r=cppunivariate::trgamma_mle(mltest::as_span(x));
+    CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
+    CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+    CHECK(cppunivariate::outcome(cppunivariate::trgamma_mle(mltest::as_span(x),-1)).kind==cppunivariate::OutcomeKind::Failure);
+  }
+}
+
+TEST_CASE("trgamma lognormal face likelihood is evaluated at represented coefficients") {
+ const std::vector<double> x{4.497141406509849,4.497141451481264,4.497141496452679,4.497141541424094,4.497141631366924};
+ const auto r=cppunivariate::trgamma_mle(mltest::as_span(x),1e-10,200);
+ REQUIRE(r.stop_detail.limit_model==cppunivariate::StopModel::Lnorm);
+ REQUIRE(r.stop_detail.limit_coef.size()==2);
+ double ll=0;for(double v:x)ll+=cppunivariate::distributions::dlnorm(v,r.stop_detail.limit_coef[0],r.stop_detail.limit_coef[1],true);
+ CHECK(r.stop_detail.limit_loglik==ll);
+ CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+}

@@ -50,6 +50,7 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
     auto message=binding_message(format,arguments...);
     if(res.stop_detail.budget_exhausted)message+=" Raising iterlim may resolve this stop.";
     auto out=fail(message);
+    if(res.unidentified&2u)out.extra.emplace_back("nu_unidentified",1); if(res.unidentified&4u)out.extra.emplace_back("size_unidentified",1);
     if(stop_kind==PayloadKind::None)return out;
     return comparison_payload(stop_failure(out,res.stop_detail,stop_kind,{"size","prob","nu"}),o,
       cppunivariate::comparison_choice(res),{{"size",size_arg},{"prob",prob_arg},{"nu",nu_arg}});
@@ -74,12 +75,8 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
     case cppunivariate::CmbStatus::FaceTie:
       if(res.stop_detail.comparison_tie)
         return done(stopped_fail("Distinct finite sizes have likelihoods indistinguishable within the certificate margin; the maximizing size is not resolved."));
-      if (!nu.supplied && !prob.supplied) {
-        bool adjacent_zero=!x.empty();
-        for(int value:x)adjacent_zero=adjacent_zero && (value==0 || value==1);
-        if(adjacent_zero)
-          return done(stopped_fail("The attained size-one Bernoulli fit matched a limiting face: the adjacent Conway-Maxwell-Poisson limit has the same likelihood."));
-      }
+      if (res.bernoulli_face_tie)
+          return done(stopped_fail("The attained size-one Bernoulli fit matched a limiting face: the adjacent Conway-Maxwell-Poisson limit has the same likelihood. Every finite nu gives the same maximizing Bernoulli law."));
       if (!nu.supplied)
         return done(stopped_fail("A finite likelihood matched a limiting face within numerical tolerance; a larger finite maximum is not excluded."));
       return done(stopped_fail("A finite likelihood matched the Conway-Maxwell-Poisson face within numerical tolerance; a larger finite maximum is not excluded. Use mlcmp with nu held fixed for the limit model."));
@@ -95,9 +92,9 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");
   if (prob.supplied) fixed.push_back("prob");
-  if (nu.supplied || trials==1) fixed.push_back("nu");
-  if (trials==1 && !nu.supplied && res.prob>0 && res.prob<1) warnings.push_back(binding_message("nu is not identified with size = 1; returning nu = 1."));
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",trials},{"prob",res.prob},{"nu",res.nu}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  if (nu.supplied || (trials==1 && (res.unidentified&2u))) fixed.push_back("nu");
+  if (trials==1 && (res.unidentified&2u) && res.prob>0 && res.prob<1) warnings.push_back(binding_message("nu is not identified with size = 1; returning nu = 1."));
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",trials},{"prob",res.prob},{"nu",res.nu}}; if(res.unidentified&1u)out.extra.emplace_back("prob_unidentified",1); if(res.unidentified&2u)out.extra.emplace_back("nu_unidentified",1); if(res.unidentified&4u)out.extra.emplace_back("size_unidentified",1); out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

@@ -200,7 +200,7 @@ TEST_CASE("st: reflected conditional face retains the original endpoint coordina
   const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-6,200,2,1,NAN,4);
   REQUIRE(r.certified);REQUIRE(r.stop_detail.limit_coef.size()==3);
   CHECK(r.stop_detail.limit_coef[0]==2);
-  CHECK(r.stop_detail.limit_model==(sign>0?cppunivariate::StopModel::Ht:cppunivariate::StopModel::ReflectedHt));
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::None); // Held endpoint path is not the closed half-law.
   double closed=0;for(double v:x)closed+=cppunivariate::distributions::dht(sign*(v-2),0,4,1,true);
   CHECK(r.logLik==doctest::Approx(closed-std::log(2.)).epsilon(1e-13));
  }
@@ -491,4 +491,47 @@ TEST_CASE("st normal face retains a ray whose squared scaled coordinate underflo
  const double nu=std::numeric_limits<double>::max();
  CHECK(std::abs(cppunivariate::distributions::pst(-2e-16,0,1,1e8,nu,true,false)/3.183098782049451e-9-1)<1e-10);
  CHECK(std::abs(cppunivariate::distributions::pst(2e-16,0,1,1e8,nu,true,false)/3.1830989416263634e-9-1)<1e-10);
+}
+
+TEST_CASE("st exact held-location skew nonidentification is an estimate") {
+  const std::vector<double> x{2,2,2};
+  const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-10,200,2,1,NAN,.5);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(o.certified);CHECK_FALSE(o.unique);
+  for(const auto& c:r.stop_detail.candidates) {
+    CHECK(cppunivariate::accurate_point(r,c));
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dst(v,c.coef[0],c.coef[1],c.coef[2],c.coef[3],true);
+    CHECK(c.loglik_lower==doctest::Approx(ll).epsilon(1e-14));
+  }
+}
+
+TEST_CASE("st a valid overflowing normalization range is an evaluation failure") {
+  const std::vector<double> x{-1e308,0,1e308};
+  const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-10,200,NAN,NAN,1,4);
+  CHECK(r.status==cppunivariate::StStatus::NumericalFailure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+}
+
+TEST_CASE("st: tied held endpoints prove nonattainment rather than a wrong half-law") {
+ const std::vector<double> x{0,1,2};
+ for(double scale:{1.,double(NAN)})for(double df:{4.,double(NAN)}) {
+  const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-8,200,0,scale,NAN,df);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(r.reason==9);CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(o.reason==cppunivariate::OutcomeReason::Unattained);
+  CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::None);
+  CHECK(std::isfinite(r.stop_detail.loglik_upper));
+  CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+ }
+}
+
+TEST_CASE("st: held endpoint proof retains the exact scale-exponent sign") {
+ const std::vector<double> x{0,0,1,2,3};
+ const double below=2./3.,above=std::nextafter(below,INFINITY);
+ CHECK(below*3==2);CHECK(std::fma(below,3.,-2.)<0);
+ const auto lower=cppunivariate::st_mle(mltest::as_span(x),1e-8,200,0,NAN,NAN,below);
+ CHECK(cppunivariate::outcome(lower).reason==cppunivariate::OutcomeReason::Unbounded);
+ const auto upper=cppunivariate::st_mle(mltest::as_span(x),1e-8,200,0,NAN,NAN,above);
+ CHECK(cppunivariate::outcome(upper).reason==cppunivariate::OutcomeReason::Unattained);
 }

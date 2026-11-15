@@ -16,8 +16,7 @@ inline FitOutcome outcome(const InvExpResult& r) {
   switch (r.status) {
     case InvExpStatus::Ok: return FitOutcome::estimate(true);
     case InvExpStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    // The adapter currently exposes this status as a plain range/fitting error.
-    case InvExpStatus::Unbounded: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case InvExpStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case InvExpStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }
   return {};

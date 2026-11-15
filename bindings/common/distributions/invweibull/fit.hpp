@@ -7,17 +7,7 @@
 #include <vector>
 namespace umvl_binding {
 inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, Held shape0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
-  // Invalid controls remain ordinary errors, even if a legacy fitter reports
-  // a statistical status before checking them.
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape = shape_arg;
@@ -50,7 +40,7 @@ inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if (res.status == cppunivariate::InvWeibullStatus::InvalidInput)
     return done(fail("Inverse Weibull requires nonempty positive finite data, valid held parameters, positive reltol and positive iterlim."));
@@ -59,8 +49,6 @@ inline FitResult fit_invweibull(cppunivariate::span x, Held shape_arg = {}, Held
   if (res.status == cppunivariate::InvWeibullStatus::IterationFailure)
     return done(fail("Inverse Weibull MLE failed to converge or cannot resolve the fitted coefficients and likelihood in double precision."));
   if (!std::isfinite(res.shape) || !std::isfinite(res.scale) || !std::isfinite(res.logLik)) {
-    if (!shape.supplied && !scale.supplied && std::all_of(x.begin(), x.end(), [&](double v) { return v == x[0]; }))
-      return done(fail("The inverse Weibull maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."));
     return done(fail("Inverse Weibull MLE failed"));
   }
   return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());

@@ -270,3 +270,9 @@ TEST_CASE("beta: concentrated fit logLik evaluates the returned binary64 shapes"
       2.53375903435621e23,7.6012771030666e23);
   CHECK(held.logLik==doctest::Approx(135.2788871075539).epsilon(1e-12));
 }
+
+TEST_CASE("beta invalid held shapes are input failures rather than solver failures") {
+  const std::vector<double> x{.2,.4,.6};
+  const auto r=cppunivariate::beta_mle(mltest::as_span(x),1e-10,100,0,NAN);
+  CHECK(r.status==cppunivariate::BetaStatus::InvalidInput);
+}

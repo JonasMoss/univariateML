@@ -27,6 +27,8 @@ inline bool accurate_point(const SnResult& r, const FitCandidate& c) {
 }
 
 inline FitOutcome outcome(const SnResult& r) {
+  // The analytic collapse witness is produced by the core, before any binding.
+  if(r.status==SnStatus::InvalidInput && r.logLik==INFINITY)return FitOutcome::nonexistence(OutcomeReason::Unbounded);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.comparison_tie) return sn_shape_unidentified(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
@@ -231,12 +233,12 @@ inline SnResult sn_accuracy_search(span data,double tol=1e-9,int maxit=100,
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=special::kNaN;
   SnResult bad={nan,nan,nan,nan,0,SnStatus::InvalidInput};
-  if(data.size()<2 || !(tol>0) || !std::isfinite(tol) || maxit<1 || (work_budget<0 && work_budget!= -2) || (!std::isnan(xi) && !std::isfinite(xi)) ||
+  if(data.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1 || (work_budget<0 && work_budget!= -2) || (!std::isnan(xi) && !std::isfinite(xi)) ||
      (!std::isnan(omega) && !(std::isfinite(omega) && omega>0)) || (!std::isnan(alpha) && !std::isfinite(alpha))) return bad;
   double low=data[0],high=data[0];
   for(double v:data) { if(!std::isfinite(v)) return bad; low=std::min(low,v); high=std::max(high,v); }
   const bool constant=low==high;
-  if(constant && !std::isfinite(omega) && (!std::isfinite(xi) || xi==low)) return bad;
+  if(constant && !std::isfinite(omega) && (!std::isfinite(xi) || xi==low)) {bad.logLik=INFINITY;return bad;}
   const double origin=low+(high-low)/2;
   const double scale=constant ? (std::isfinite(omega) ? omega : std::abs(xi-low)) : (high-low)/2;
   if(!(scale>0) || !std::isfinite(scale)) {bad.status=SnStatus::IterationFailure;return bad;}
