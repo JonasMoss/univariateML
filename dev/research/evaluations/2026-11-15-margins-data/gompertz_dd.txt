@@ -1,0 +1,8 @@
+double-double decision with pad: per n -> samples, wrong, undecided, max pad/(2 S^2) (relative band), max |gap| of the samples
+  n=    3  samples  169  wrong 0  undecided    0  band 3.06e-30   max|gap| 3.59e-16
+  n=    5  samples  143  wrong 0  undecided    0  band 1.27e-29   max|gap| 6.66e-16
+  n=   10  samples  117  wrong 0  undecided    0  band 9.90e-29   max|gap| 9.15e-16
+  n=   30  samples  189  wrong 0  undecided    0  band 2.66e-27   max|gap| 7.36e-14
+  n=  100  samples  168  wrong 0  undecided    0  band 9.86e-26   max|gap| 5.84e-14
+  n=  300  samples   63  wrong 0  undecided    0  band 2.66e-24   max|gap| 4.76e-14
+  n= 1000  samples   63  wrong 0  undecided    0  band 9.86e-23   max|gap| 1.31e-14

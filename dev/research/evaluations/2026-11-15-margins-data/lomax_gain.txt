@@ -1,0 +1,8 @@
+lomax (1, r): interior sup crosses 0 at r_c = 28.80920557873453252965076
+  gain 1.0e-9 at r = 28.809205777543127268 (G = 1.0e-9 at q = e^1.24562)
+  gain 5.0e-9 at r = 28.809206572777494985 (G = 5.0e-9 at q = e^1.24562)
+  gain 1.0e-8 at r = 28.809207566820429346 (G = 1.0e-8 at q = e^1.24562)
+
+double r = 28.809205777543127  (x = (1, r), pareto2 with min = 0 held, or lomax): exact gain over the best exponential = 1.0e-9 per observation, total n*G = 2.0e-9
+double r = 28.809206572777494  (x = (1, r), pareto2 with min = 0 held, or lomax): exact gain over the best exponential = 5.0e-9 per observation, total n*G = 1.0e-8
+double r = 28.80920756682043  (x = (1, r), pareto2 with min = 0 held, or lomax): exact gain over the best exponential = 1.0e-8 per observation, total n*G = 2.0e-8
