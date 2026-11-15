@@ -1,6 +1,6 @@
 # Status and open items
 
-Updated 2026-11-14, master `7e3c9779`. Decisions and their evidence:
+Updated 2026-11-15, master `a253d272`. Decisions and their evidence:
 `dev/roadmap/decisions.md`. Deferred design ideas live in `dev/roadmap/`; work in
 flight and planned work are on the board (`~/.local/bin/board`). The current
 priority is the [consolidation plan](design/consolidation.md) (TASK-214), which
@@ -23,24 +23,28 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   fully covered except `dphtype` (out of scope); extraDistr except the
   dropped vector-parameter families and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master 7e3c9779 (workstation, GCC 15.2, 2026-11-14, after step
-  5a, the TASK-214.3 fixes and the strict layer): `just cpp-test` 110/110;
-  `just cpp-test-no-long-double` 154/154; `just test`
-  `[ FAIL 0 | WARN 0 | SKIP 157 | PASS 36209 ]`; `just test-full`
-  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 65348 ]`; `just js-test` 583/583;
-  `just relations` 158 edges, 0 failed; `just site-check` green. `just strict`
-  passes against `dev/validation/strict-known.json` (318 known failures, each
-  with a card). Rendered baselines:
-  [report](research/evaluations/2026-11-14-fit-snapshot-report.md). Not run:
-  any second compiler or platform.
+- Tests on master a1166cbf (workstation, GCC 15.2, 2026-11-15, after step
+  5b): `just cpp-test` 110/110; `just cpp-test-no-long-double` 154/154;
+  `just test` `[ FAIL 0 | WARN 0 | SKIP 157 | PASS 36354 ]`; `just test-full`
+  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 65493 ]`; `just js-test` 586/586;
+  `just relations` and `just site-check` green. Merged after it and tested on
+  their branches: certificate replay of roots and faces, the strict rules,
+  the sged tail fix and the truth metadata (with `just truth-check`). A
+  combined run of master follows the next merge. `just strict` passes on the
+  [2026-11-15 baselines](research/evaluations/2026-11-15-fit-snapshot-report.md)
+  against `dev/validation/strict-known.json` (189 known failures, each with
+  a card). Not run: any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
 - Known wrong answers on master, each with a card: fits that miss the accuracy
-  contract or return `Ok` with a non-finite value (TASK-214.3, TASK-214.5);
-  stop kinds that depend on the precision mode (TASK-214.13).
+  contract (TASK-214.5); stop kinds that depend on the precision mode
+  (TASK-214.13); a certified exponential limit for gompertz on data near
+  DBL_MAX in double-only builds, and pig and cmp all-zero fits flagged unique
+  (TASK-214.32, fix in progress). Root brackets that miss their claimed width
+  by a few ulp, far inside the contract: TASK-214.31.
 - Nothing is published to CRAN, and `origin/master` is the old published
   tree (about 1,300 commits behind). The backup branch `origin/cpp-core`
   mirrors master; pushed on 2026-11-13 at Jonas's request.

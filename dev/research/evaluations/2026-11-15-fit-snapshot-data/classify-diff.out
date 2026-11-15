@@ -1,0 +1,140 @@
+== native 11820 11905 only old 0 only new 85
+-- kind changes (family, kind old->new, outcome old->new): count
+   ('burr', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('fpareto', 'invalid', 'nomle', 'failure', 'nonexistence') 18
+   ('fpareto', 'numerical', 'limit', 'failure', 'limit') 28
+   ('frechet', 'invalid', 'nomle', 'failure', 'nonexistence') 3
+   ('gb2', 'invalid', 'nomle', 'failure', 'nonexistence') 16
+   ('gb2', 'numerical', 'limit', 'failure', 'limit') 28
+   ('gb2', 'unsupported', 'limit', 'failure', 'limit') 10
+   ('gev', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('gev', 'invalid', 'ok', 'failure', 'estimate') 3
+   ('hyper', 'nomle', 'invalid', 'nonexistence', 'failure') 13
+   ('invburr', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('invtrgamma', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('kumar', 'invalid', 'nomle', 'failure', 'nonexistence') 2
+   ('lomax', 'limit', 'numerical', 'limit', 'failure') 1
+   ('nhyper', 'nomle', 'invalid', 'nonexistence', 'failure') 16
+   ('pareto2', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('pareto2', 'limit', 'numerical', 'limit', 'failure') 1
+   ('pareto3', 'numerical', 'nomle', 'failure', 'nonexistence') 2
+   ('pareto4', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('rayleigh', 'nomle', 'invalid', 'nonexistence', 'failure') 1
+   ('sn', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('sstd', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('sstd', 'numerical', 'limit', 'failure', 'limit') 138
+   ('sstd', 'numerical', 'unresolved', 'failure', 'failure') 6
+   ('st', 'invalid', 'numerical', 'failure', 'failure') 1
+   ('tlambda', 'invalid', 'nomle', 'failure', 'nonexistence') 2
+   ('tlambda', 'invalid', 'numerical', 'failure', 'failure') 7
+   ('trgamma', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+-- ok->ok estimate changes: 0
+-- logLik changes > 1e-12 relative (ok->ok): 33
+   0.0412 gamma|class|offset -4.6941760841680065 -> -4.887414600734347 est_changed=False
+   0.0359 gamma|class|near-constant 108.2097022045817 -> 104.32049537463749 est_changed=False
+   0.0347 weibull|class|near-constant 103.71612410853432 -> 100.11608650571628 est_changed=False
+   0.00364 logis|class|near-constant 116.37872746918715 -> 115.9548621640535 est_changed=False
+   0.00254 weibull|class|offset -9.486845670933775 -> -9.510933302028633 est_changed=False
+   0.00246 logis|class|offset -10.326093903725283 -> -10.351446848544908 est_changed=False
+   0.00188 gumbel|class|near-constant 104.49684725144328 -> 104.30035886002871 est_changed=False
+   0.000561 rayleigh|class|subnormal 2227.9530921500127 -> 2229.2030921500127 est_changed=False
+   0.000449 laplace|class|subnormal 2228.240774222464 -> 2229.240774222464 est_changed=False
+   0.000448 hnorm|class|subnormal 2231.1428417062098 -> 2230.1428417062098 est_changed=False
+   0.00037 logis|class|subnormal 2229.5058793133053 -> 2228.680874652951 est_changed=False
+   0.000158 gumbel|class|offset -15.606465211076202 -> -15.608931472198648 est_changed=False
+   0.000117 cauchy|class|subnormal 2228.761355817358 -> 2228.4997317454754 est_changed=False
+   0.000101 cauchy|class|offset -13.386100919334671 -> -13.387458911694992 est_changed=False
+   8.36e-05 logis|class|subnormal-signed 2228.2397312354256 -> 2228.0535420059014 est_changed=False
+   3.56e-05 cauchy|class|subnormal-signed 2227.6627435286896 -> 2227.5834410136013 est_changed=False
+   4.18e-06 hcauchy|class|subnormal 2227.800382456161 -> 2227.79108037838 est_changed=False
+   2.48e-09 lgser|class|huge -123.67311738073835 -> -123.673117687588 est_changed=False
+   3.97e-11 gamma|archive|001986 128.18927620403883 -> 128.18927619894407 est_changed=False
+   3.97e-11 gamma|archive|001983 128.18927620403883 -> 128.18927619894407 est_changed=False
+   3.05e-11 weibull|archive|010696 127.87867275277713 -> 127.87867274887631 est_changed=False
+   2.98e-11 logis|archive|004681 134.7866884587161 -> 134.7866884546957 est_changed=False
+   2.85e-11 gumbel|archive|010432 128.5210649592065 -> 128.5210649555415 est_changed=False
+   2.16e-11 cauchy|archive|000769 132.00733922438582 -> 132.00733922153123 est_changed=False
+   1.16e-11 weibull|archive|008380 122.57141322271056 -> 122.57141322128331 est_changed=False
+   by family: {'class': 20, 'archive': 13}
+== double 11820 11905 only old 0 only new 85
+-- kind changes (family, kind old->new, outcome old->new): count
+   ('burr', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('fpareto', 'invalid', 'nomle', 'failure', 'nonexistence') 18
+   ('fpareto', 'numerical', 'limit', 'failure', 'limit') 28
+   ('frechet', 'invalid', 'nomle', 'failure', 'nonexistence') 3
+   ('gb2', 'invalid', 'nomle', 'failure', 'nonexistence') 16
+   ('gb2', 'numerical', 'limit', 'failure', 'limit') 28
+   ('gb2', 'unsupported', 'limit', 'failure', 'limit') 10
+   ('gev', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('gev', 'invalid', 'ok', 'failure', 'estimate') 3
+   ('hyper', 'nomle', 'invalid', 'nonexistence', 'failure') 13
+   ('invburr', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('invtrgamma', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('kumar', 'invalid', 'nomle', 'failure', 'nonexistence') 2
+   ('lomax', 'limit', 'numerical', 'limit', 'failure') 1
+   ('nhyper', 'nomle', 'invalid', 'nonexistence', 'failure') 16
+   ('pareto2', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('pareto2', 'limit', 'numerical', 'limit', 'failure') 1
+   ('pareto3', 'numerical', 'nomle', 'failure', 'nonexistence') 2
+   ('pareto4', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('rayleigh', 'nomle', 'invalid', 'nonexistence', 'failure') 1
+   ('sn', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('sstd', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+   ('sstd', 'numerical', 'limit', 'failure', 'limit') 138
+   ('sstd', 'numerical', 'unresolved', 'failure', 'failure') 6
+   ('st', 'invalid', 'numerical', 'failure', 'failure') 1
+   ('tlambda', 'invalid', 'nomle', 'failure', 'nonexistence') 2
+   ('tlambda', 'invalid', 'numerical', 'failure', 'failure') 7
+   ('trgamma', 'invalid', 'nomle', 'failure', 'nonexistence') 1
+-- ok->ok estimate changes: 0
+-- logLik changes > 1e-12 relative (ok->ok): 33
+   0.0412 gamma|class|offset -4.6941760841680065 -> -4.887414600734347 est_changed=False
+   0.0359 gamma|class|near-constant 108.2097022045817 -> 104.32049537463749 est_changed=False
+   0.0347 weibull|class|near-constant 103.71612410853432 -> 100.11608650571628 est_changed=False
+   0.00364 logis|class|near-constant 116.37872746918715 -> 115.9548621640535 est_changed=False
+   0.00254 weibull|class|offset -9.486845670933775 -> -9.510933302028633 est_changed=False
+   0.00246 logis|class|offset -10.326093903725283 -> -10.351446848544908 est_changed=False
+   0.00188 gumbel|class|near-constant 104.49684725144328 -> 104.30035886002871 est_changed=False
+   0.000561 rayleigh|class|subnormal 2227.9530921500127 -> 2229.2030921500127 est_changed=False
+   0.000449 laplace|class|subnormal 2228.240774222464 -> 2229.240774222464 est_changed=False
+   0.000448 hnorm|class|subnormal 2231.1428417062098 -> 2230.1428417062098 est_changed=False
+   0.00037 logis|class|subnormal 2229.5058793133053 -> 2228.680874652951 est_changed=False
+   0.000158 gumbel|class|offset -15.606465211076202 -> -15.608931472198648 est_changed=False
+   0.000117 cauchy|class|subnormal 2228.761355817358 -> 2228.4997317454754 est_changed=False
+   0.000101 cauchy|class|offset -13.386100919334671 -> -13.387458911694992 est_changed=False
+   8.36e-05 logis|class|subnormal-signed 2228.2397312354256 -> 2228.0535420059014 est_changed=False
+   3.56e-05 cauchy|class|subnormal-signed 2227.6627435286896 -> 2227.5834410136013 est_changed=False
+   4.18e-06 hcauchy|class|subnormal 2227.800382456161 -> 2227.79108037838 est_changed=False
+   2.48e-09 lgser|class|huge -123.67311738073835 -> -123.673117687588 est_changed=False
+   3.97e-11 gamma|archive|001986 128.18927620403883 -> 128.18927619894407 est_changed=False
+   3.97e-11 gamma|archive|001983 128.18927620403883 -> 128.18927619894407 est_changed=False
+   3.05e-11 weibull|archive|010696 127.87867275277713 -> 127.87867274887631 est_changed=False
+   2.98e-11 logis|archive|004681 134.7866884587161 -> 134.7866884546957 est_changed=False
+   2.85e-11 gumbel|archive|010432 128.5210649592065 -> 128.5210649555415 est_changed=False
+   2.16e-11 cauchy|archive|000769 132.00733922438582 -> 132.00733922153123 est_changed=False
+   1.16e-11 weibull|archive|008380 122.57141322271056 -> 122.57141322128331 est_changed=False
+   by family: {'class': 20, 'archive': 13}
+== routes-native 1934 1950 only old 0 only new 16
+-- kind changes (family, kind old->new, outcome old->new): count
+-- ok->ok estimate changes: 0
+-- logLik changes > 1e-12 relative (ok->ok): 7
+   9.28e-09 pois+zero=truncated|class|huge -58.3135986328125 -> -58.31359917386238 est_changed=False
+   9.28e-09 pois+zero=modified|class|huge -58.3135986328125 -> -58.31359917386238 est_changed=False
+   6.97e-11 pois+zero=truncated|class|large -46.96017328649759 -> -46.9601732897697 est_changed=False
+   2.83e-11 pois+zero=modified|class|large -46.96017362177372 -> -46.96017362310374 est_changed=False
+   2.24e-11 pois+zero=truncated|archive|009303 -39.13352557644248 -> -39.13352557731933 est_changed=False
+   2.24e-11 pois+zero=modified|archive|009133 -39.13352557644248 -> -39.13352557731933 est_changed=False
+   2.14e-11 pois+zero=modified|archive|009161 -40.95994216881914 -> -40.95994216969599 est_changed=False
+   by family: {'class': 4, 'archive': 3}
+== routes-double 1934 1950 only old 0 only new 16
+-- kind changes (family, kind old->new, outcome old->new): count
+-- ok->ok estimate changes: 0
+-- logLik changes > 1e-12 relative (ok->ok): 7
+   9.28e-09 pois+zero=truncated|class|huge -58.3135986328125 -> -58.31359917386238 est_changed=False
+   9.28e-09 pois+zero=modified|class|huge -58.3135986328125 -> -58.31359917386238 est_changed=False
+   6.97e-11 pois+zero=truncated|class|large -46.96017328649759 -> -46.9601732897697 est_changed=False
+   2.83e-11 pois+zero=modified|class|large -46.96017362177372 -> -46.96017362310374 est_changed=False
+   2.24e-11 pois+zero=truncated|archive|009303 -39.13352557644248 -> -39.13352557731933 est_changed=False
+   2.24e-11 pois+zero=modified|archive|009133 -39.13352557644248 -> -39.13352557731933 est_changed=False
+   2.14e-11 pois+zero=modified|archive|009161 -40.95994216881914 -> -40.95994216969599 est_changed=False
+   by family: {'class': 4, 'archive': 3}
