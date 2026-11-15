@@ -32,7 +32,7 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   the sged tail fix and the truth metadata (with `just truth-check`). A
   combined run of master follows the next merge. `just strict` passes on the
   [2026-11-15 baselines](research/evaluations/2026-11-15-fit-snapshot-report.md)
-  against `dev/validation/strict-known.json` (189 known failures, each with
+  against `dev/validation/strict-known.json` (243 known failures, each with
   a card). Not run: any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
