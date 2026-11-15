@@ -36,11 +36,11 @@ TEST_CASE("kumar") {
 #undef C_APPROX
 #undef C_APPROX_FD
 
-TEST_CASE("kumar: explicit start agrees with automatic start") {
+TEST_CASE("kumar: tighter tolerance agrees with the default fit") {
   const auto g = mltest::load_distribution_golden("kumar");
   const auto x = mltest::as_span(g.data);
   const auto a = cppunivariate::kumar_mle(x, 1e-12, 200);
-  const auto b = cppunivariate::kumar_mle(x, 1e-12, 200, 1.0);
+  const auto b = cppunivariate::kumar_mle(x, 1e-10, 200);
   CHECK(b.a == doctest::Approx(a.a).epsilon(1e-9));
   CHECK(b.b == doctest::Approx(a.b).epsilon(1e-9));
   CHECK(b.logLik == doctest::Approx(a.logLik).epsilon(1e-12));
@@ -150,7 +150,7 @@ TEST_CASE("kumar P2 every held subset including constant samples") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   for(const std::vector<double>& x:{std::vector<double>{.2,.2,.6,.8},std::vector<double>(5,.4)}) {
     for(int mask=1;mask<4;++mask) {
-      const auto r=cppunivariate::kumar_mle(mltest::as_span(x),1e-12,100,nan,mask&1?2:nan,mask&2?3:nan);
+      const auto r=cppunivariate::kumar_mle(mltest::as_span(x),1e-12,100,mask&1?2:nan,mask&2?3:nan);
       REQUIRE(r.status==cppunivariate::KumarStatus::Ok);
       if(mask&1) CHECK(r.a==2);
       if(mask&2) CHECK(r.b==3);
@@ -166,13 +166,13 @@ TEST_CASE("kumar P2 every held subset including constant samples") {
     }
   }
   const std::vector<double> x{.2,.8};
-  CHECK(cppunivariate::kumar_mle(mltest::as_span(x),1e-12,1,nan,nan,3).status==cppunivariate::KumarStatus::Ok);
+  CHECK(cppunivariate::kumar_mle(mltest::as_span(x),1e-12,1,nan,3).status==cppunivariate::KumarStatus::Ok);
 }
 
 TEST_CASE("kumar P2 held large a retains tiny survival logs") {
   const std::vector<double> x(5,.4);
   const auto r=cppunivariate::kumar_mle(mltest::as_span(x),1e-12,100,
-    std::numeric_limits<double>::quiet_NaN(),100);
+    100);
   REQUIRE(r.status==cppunivariate::KumarStatus::Ok);
   CHECK(r.b==doctest::Approx(-1/std::log1p(-std::pow(.4,100))).epsilon(1e-12));
   CHECK(r.logLik==doctest::Approx(5*(std::log(100.0)-std::log(.4)-1)).epsilon(1e-12));
@@ -184,12 +184,12 @@ TEST_CASE("kumar: P3 unfinished optimizer is a failure") {
   CHECK(cppunivariate::kumar_mle(x,1e-8,1).status==cppunivariate::KumarStatus::Ok);
 }
 
-TEST_CASE("kumar certificate: unique profile root is independent of starts") {
+TEST_CASE("kumar certificate: unique profile root is independent of the tolerance") {
   const std::vector<double> x{.01,.1,.3,.6,.8,.99};
   const auto reference=cppunivariate::kumar_mle({x.data(),x.size()},1e-10,200);
   REQUIRE(reference.status==cppunivariate::KumarStatus::Ok);
-  for(double start:{.01,1.,100.}) {
-    const auto r=cppunivariate::kumar_mle({x.data(),x.size()},1e-10,200,start);
+  for(double tol:{1e-8,1e-10,1e-12}) {
+    const auto r=cppunivariate::kumar_mle({x.data(),x.size()},tol,200);
     REQUIRE(r.status==cppunivariate::KumarStatus::Ok);
     CHECK(r.a==doctest::Approx(reference.a).epsilon(1e-7));
     CHECK(r.b==doctest::Approx(reference.b).epsilon(1e-7));

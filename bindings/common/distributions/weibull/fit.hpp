@@ -6,7 +6,7 @@
 #include <cmath>
 #include <vector>
 namespace umvl_binding {
-inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, Held shape0 = {}, double reltol = 1e-10, int iterlim = 100) {
+inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -25,14 +25,7 @@ inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held sc
     fixed.push_back("scale");
   }
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (shape0.supplied) {
-    start = shape0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      return invalid_argument(fail("`shape0` must be a positive finite number."));
-    }
-  }
-  auto res = cppunivariate::weibull_mle(x, reltol, iterlim, start, shape_held, scale_held);
+  auto res = cppunivariate::weibull_mle(x, tol, iterlim, shape_held, scale_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -46,7 +39,7 @@ inline FitResult fit_weibull(cppunivariate::span x, Held shape_arg = {}, Held sc
   if (res.status==cppunivariate::WeibullStatus::AccuracyFailure)
     return done(stop_failure(fail("Weibull requested coefficient accuracy cannot be represented after rescaling."),res.stop_detail,outcome_payload(o),{"shape","scale"}));
   if (res.status == cppunivariate::WeibullStatus::InvalidInput)
-    return done(fail("Weibull requires nonempty positive finite data, valid held parameters, positive reltol and positive iterlim."));
+    return done(fail("Weibull requires nonempty positive finite data, valid held parameters, positive tol and positive iterlim."));
   if (res.status == cppunivariate::WeibullStatus::Unbounded)
     return done(nomle("The weibull maximum likelihood estimator does not exist: the likelihood is unbounded for constant data at the fitted or held scale."));
   if (res.status == cppunivariate::WeibullStatus::IterationFailure)

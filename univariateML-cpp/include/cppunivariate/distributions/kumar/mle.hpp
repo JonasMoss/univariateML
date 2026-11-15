@@ -74,7 +74,6 @@ inline KumarResult kumar_profile_candidate_mle(span x, double tol, int maxit) {
 }
 
 inline KumarResult kumar_candidate_mle(span x, double tol, int maxit,
-                             double start = std::numeric_limits<double>::quiet_NaN(),
                              double fixed_a = std::numeric_limits<double>::quiet_NaN(),
                              double fixed_b = std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -136,8 +135,6 @@ inline KumarResult kumar_candidate_mle(span x, double tol, int maxit,
     return {a,b,ll,it};
   }
   if (constant) return {kNaN, kNaN, kNaN, 0, KumarStatus::Unbounded};
-  if (!std::isnan(start) && (!(start > 0.0) || !std::isfinite(start)))
-    return {kNaN, kNaN, kNaN, 0, KumarStatus::InvalidData};
   if (extreme) return kumar_profile_candidate_mle(x, tol, maxit);
   const double mu = cppunivariate::mean_log(x);
   // sigma2 = mean(log(x)^2) - mu^2
@@ -163,21 +160,14 @@ inline KumarResult kumar_candidate_mle(span x, double tol, int maxit,
     return f / df;
   };
   double a0 = std::sqrt((cppunivariate::pi * cppunivariate::pi / 6.0) / sigma2);
-  if (std::isnan(start)) {
-    for (int i = 0; i < maxit; ++i) {
-      if (!(a0 > 0.0) || !std::isfinite(a0) || !std::isfinite(a0 * mu))
-        return kumar_profile_candidate_mle(x, tol, maxit);
-      const double step = f_over_df_lmom(a0);
-      a0 -= step;
-      if (std::abs(step) < (std::abs(a0) * tol + tol)) break;
-    }
-    if (a0 <= 0.0) a0 = std::sqrt((cppunivariate::pi * cppunivariate::pi / 6.0) / sigma2);
-
-  } else {
-    if (!(start > 0.0) || !std::isfinite(start))
-      return {kNaN, kNaN, kNaN, 0, KumarStatus::InvalidData};
-    a0 = start;
+  for (int i = 0; i < maxit; ++i) {
+    if (!(a0 > 0.0) || !std::isfinite(a0) || !std::isfinite(a0 * mu))
+      return kumar_profile_candidate_mle(x, tol, maxit);
+    const double step = f_over_df_lmom(a0);
+    a0 -= step;
+    if (std::abs(step) < (std::abs(a0) * tol + tol)) break;
   }
+  if (a0 <= 0.0) a0 = std::sqrt((cppunivariate::pi * cppunivariate::pi / 6.0) / sigma2);
 
   // Stage 2: full ML Newton on `a`.
   auto f_over_df = [&](double a) {

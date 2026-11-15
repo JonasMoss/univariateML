@@ -31,8 +31,7 @@ r:
   control:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.
-    shape0: Optional positive finite starting shape; `NULL` uses the automatic start.
-    reltol: "Requested relative coefficient accuracy (default 1e-10), propagated through the Gumbel scale and location brackets."
+    tol: "Requested relative coefficient accuracy (default 1e-10), propagated through the Gumbel scale and location brackets."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(shape) - log(scale) + (shape - 1)*log(x/scale) - (x/scale)**shape
 references:
@@ -139,13 +138,9 @@ The joint fit transforms the observations to $-\log x$ and fits a Gumbel distrib
 
 Holding shape gives an explicit scale estimate, $\lambda^k=\overline{x^k}$. Holding scale leaves a strictly decreasing shape score, solved by bracketing. This fit is finite unless all observations equal the held scale. Holding both evaluates the likelihood. A log likelihood beyond binary64 at the returned or held coefficients (data near $2^{500}$ with shape near 3 give $-1.8\times10^{438}$) stops with `NumericalFailure`.
 
-## R notes
-
-The optional `shape0` starting value is used and must be positive and finite.
-
 ## Decision history
 
-The `shape0` argument was documented but ignored in univariateML 1.x; it is functional in the current fitter.
+2026-11-15 (controls for 2.0): the `shape0` starting-value argument, ignored in univariateML 1.x and later functional, is removed; `reltol` is renamed `tol` with the same default.
 
 2026-10-31 (diagnostic contract): Empty or invalid input carries a non-success status. Degeneracy depends on the held coefficients, and failures from the Gumbel fit survive transformation. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.
 

@@ -5,7 +5,7 @@
 #include <limits>
 #include <string>
 namespace umvl_binding {
-inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alpha_arg = {}, Held beta_arg = {}, double reltol = 1e-10, int iterlim = 500) {
+inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alpha_arg = {}, Held beta_arg = {}, double tol = 1e-10, int iterlim = 500) {
   std::vector<std::string> warnings;
   const Held size = size_arg;
   const Held alpha = alpha_arg;
@@ -21,7 +21,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
     return invalid_argument(failure("`alpha` must be a finite positive number."));
   if (beta.supplied && !(std::isfinite(b) && b > 0))
     return invalid_argument(failure("`beta` must be a finite positive number."));
-  const auto res = cppunivariate::bbinom_mle(x, N, reltol, iterlim, a, b);
+  const auto res = cppunivariate::bbinom_mle(x, N, tol, iterlim, a, b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if(!res.maximizer_shape_ray.empty())out.extra_vectors.push_back({"maximizer_shape_ray",res.maximizer_shape_ray});
@@ -81,7 +81,7 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
                  "`alpha` or `beta` fixed."));
     case cppunivariate::BbinomStatus::InvalidInput:
       return done(stopped_fail("Beta-binomial fitting needs nonempty nonnegative counts, positive "
-                 "`reltol` and positive `iterlim`."));
+                 "`tol` and positive `iterlim`."));
     case cppunivariate::BbinomStatus::SizeBudget:
       return done(stopped_fail("Beta-binomial search exhausted its work budget before certifying the maximum. Raising iterlim may resolve this stop."));
     case cppunivariate::BbinomStatus::ProfileTie:

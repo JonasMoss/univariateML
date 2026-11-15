@@ -4,7 +4,7 @@
 #include <cmath>
 #include <algorithm>
 namespace umvl_binding {
-inline FitResult fit_nsbeta(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held min_arg = {}, Held max_arg = {}, double reltol = 1e-10, int iterlim = 1000) {
+inline FitResult fit_nsbeta(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held min_arg = {}, Held max_arg = {}, double tol = 1e-10, int iterlim = 1000) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -20,7 +20,7 @@ inline FitResult fit_nsbeta(cppunivariate::span x, Held shape1_arg = {}, Held sh
  std::vector<std::string> fixed{"min", "max"};
  if(shape1.supplied) fixed.push_back("shape1");
  if(shape2.supplied) fixed.push_back("shape2");
- auto res=cppunivariate::nsbeta_mle(x,min,max,reltol,iterlim,shape1.supplied?shape1.value:NAN,shape2.supplied?shape2.value:NAN);
+ auto res=cppunivariate::nsbeta_mle(x,min,max,tol,iterlim,shape1.supplied?shape1.value:NAN,shape2.supplied?shape2.value:NAN);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::BetaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

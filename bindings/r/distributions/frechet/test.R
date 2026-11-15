@@ -259,7 +259,7 @@ test_that("Frechet two-point solver stops preserve finite supremum bounds", {
 })
 
 test_that("Frechet compatible hold failures retain constrained witnesses", {
-  e <- tryCatch(mlfrechet(c(rep(0,7),rep(1,9)),mu=NULL,sigma=.125,reltol=1e-15),error=identity)
+  e <- tryCatch(mlfrechet(c(rep(0,7),rep(1,9)),mu=NULL,sigma=.125,tol=1e-15),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   e <- tryCatch(mlfrechet(c(0,rep(1,15)),mu=NULL,sigma=.875,iterlim=10),error=identity)
   expect_s3_class(e,"univariateML_numerical")
@@ -285,7 +285,7 @@ test_that("all-free Frechet minimum majorities are statistical nonexistence stop
 
 test_that("held-location inverse-Weibull restoration preserves certification", {
   x <- 1 + (0:4) * .Machine$double.eps
-  fit <- mlfrechet(x, mu = 0, reltol = 1.220703e-4)
+  fit <- mlfrechet(x, mu = 0, tol = 1.220703e-4)
   expect_false(attr(fit, "certified"))
   expect_true(is.finite(as.numeric(logLik(fit))))
 })

@@ -32,7 +32,7 @@ test_that("mldgamma detects escapes and validates all held subsets", {
   expect_error(mldgamma(c(0,.5,2)),"Non-integral")
   expect_error(mldgamma(c(0,1,2),rate=0),"held")
   expect_error(mldgamma(c(0,1,2),shape=Inf),"held")
-  expect_error(mldgamma(c(0,1,2),reltol=0),"control")
+  expect_error(mldgamma(c(0,1,2),tol=0),"control")
   expect_error(mldgamma(c(0,1,2),iterlim=0),"control")
   expect_error(mldgamma(c(0,1,2),iterlim=1),"converge")
   ff <- mldgamma(c(3,3),shape=2,rate=1)
@@ -100,7 +100,7 @@ test_that("gamma held subsets have independent scalar optima", {
 test_that("dgamma: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "dgamma", "golden.json"))
   x <- g$data
-  expect_error(mldgamma(x, iterlim=1, reltol=1e-10),
+  expect_error(mldgamma(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -124,7 +124,7 @@ test_that("large-count dgamma numerical stops keep a feasible witness", {
 
 test_that("dgamma transports the polish floor and large-shape conditioning", {
   for (tol in c(1e-20,5e-16)) {
-    e <- tryCatch(mldgamma(c(0,1,1,2,4),shape=2,reltol=tol),error=identity)
+    e <- tryCatch(mldgamma(c(0,1,1,2,4),shape=2,tol=tol),error=identity)
     expect_s3_class(e,"univariateML_tolerance")
     expect_gte(e$attainable_tol,4*.Machine$double.eps)
     expect_gt(nrow(e$candidates),0L)

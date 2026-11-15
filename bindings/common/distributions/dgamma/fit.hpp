@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rate_arg = {}, double reltol = 1e-10, int iterlim = 400) {
+inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rate_arg = {}, double tol = 1e-10, int iterlim = 400) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape = shape_arg;
@@ -15,7 +15,7 @@ inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rat
   const double b=rate.supplied ? rate.value:nan;
   if (shape.supplied && (!std::isfinite(a) || a<=0)) return invalid_argument(fail("Invalid held `shape`."));
   if (rate.supplied && (!std::isfinite(b) || b<=0)) return invalid_argument(fail("Invalid held `rate`."));
-  const auto r=cppunivariate::dgamma_mle(x,reltol,iterlim,a,b);
+  const auto r=cppunivariate::dgamma_mle(x,tol,iterlim,a,b);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
     if (r.status == cppunivariate::DgammaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -38,7 +38,7 @@ inline FitResult fit_dgamma(cppunivariate::span x, Held shape_arg = {}, Held rat
   switch (r.status) {
     case cppunivariate::DgammaStatus::Ok: break;
     case cppunivariate::DgammaStatus::InvalidData: return done(stopped_fail("Requires nonempty finite nonnegative integer data (absolute value below 2^52)."));
-    case cppunivariate::DgammaStatus::InvalidControl: return done(stopped_fail("Invalid control: reltol must be finite and positive, iterlim at least 1."));
+    case cppunivariate::DgammaStatus::InvalidControl: return done(stopped_fail("Invalid control: tol must be finite and positive, iterlim at least 1."));
     case cppunivariate::DgammaStatus::PointMass: return done(stopped_fail("The maximum likelihood estimator does not exist: the likelihood approaches a point mass."));
     case cppunivariate::DgammaStatus::TwoPointLimit:
       return done(stopped_fail("The maximum likelihood estimator does not exist on two adjacent integers; use `mlbinom(x - k, size = 1)` with k = min(x)."));

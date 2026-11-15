@@ -8,7 +8,6 @@ struct Sum {
 };
 }
 inline KumarResult kumar_certified_search(span x,double tol,int maxit,
-    double start=std::numeric_limits<double>::quiet_NaN(),
     double fixed_a=std::numeric_limits<double>::quiet_NaN(),
     double fixed_b=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -20,7 +19,7 @@ inline KumarResult kumar_certified_search(span x,double tol,int maxit,
     out.certificate_failure=reason;out.stop_detail.budget_exhausted=reason==KumarCertificateFailure::Budget;return out;
   };
   if(!(tol>0)||!std::isfinite(tol)||maxit<1)return fail(0);
-  auto candidate=kumar_candidate_mle(x,tol,maxit,start,fixed_a,fixed_b);
+  auto candidate=kumar_candidate_mle(x,tol,maxit,fixed_a,fixed_b);
   if(std::isfinite(candidate.logLik)) {
     const double pad=1024*std::numeric_limits<double>::epsilon()*(1+std::abs(candidate.logLik))*(1+x.size());
     evidence.candidates.push_back({{candidate.a,candidate.b},candidate.logLik-pad,candidate.logLik+pad});
@@ -102,10 +101,9 @@ inline KumarResult kumar_certified_search(span x,double tol,int maxit,
   return fail(work,KumarCertificateFailure::Budget);
 }
 inline KumarResult kumar_mle(span x,double tol,int maxit,
-    double start=std::numeric_limits<double>::quiet_NaN(),
     double fixed_a=std::numeric_limits<double>::quiet_NaN(),
     double fixed_b=std::numeric_limits<double>::quiet_NaN()) {
-  return kumar_certified_search(x,std::isfinite(tol)?std::min(tol,1e-10):tol,maxit,start,fixed_a,fixed_b);
+  return kumar_certified_search(x,std::isfinite(tol)?std::min(tol,1e-10):tol,maxit,fixed_a,fixed_b);
 }
 
 inline KumarResult kumar_profile_mle(span x,double tol,int maxit) {

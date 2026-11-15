@@ -49,7 +49,7 @@ r:
     mu: Threshold to hold fixed; NULL estimates it.
     lambda: Positive shape to hold fixed, or NULL to estimate.
     sigma: Positive scale to hold fixed, or NULL to estimate.
-    reltol: Requested relative coefficient accuracy; conditional point-profile solves also use dimensionless scores.
+    tol: Requested relative coefficient accuracy; conditional point-profile solves also use dimensionless scores.
     iterlim: "Work limit per solve: min(iterlim, 100000) solver iterations; certificates allow 128 * min(iterlim, 100000) slab, box or profile evaluations."
 log_density: log(lambda)-log(sigma)-(lambda+1)*log((x-mu)/sigma)-((x-mu)/sigma)**(-lambda)
 limits:
@@ -262,7 +262,7 @@ whole. It expands a bracket in log gap and bisects; there is no fixed
 location window. Bracket and root loops each use
 `min(iterlim,100000)` iterations. The exact-arithmetic certificate is
 conditional on computed score signs, with practical log-gap width
-`reltol*(1+abs(log_gap))`. Equality of the collapse exponent is tested
+`tol*(1+abs(log_gap))`. Equality of the collapse exponent is tested
 with a fused multiply-add to avoid a rounded false equality. Diagnostic
 likelihood bounds use $256\epsilon_{\rm mach}n(1+\lambda)^2$;
 these are floating-point margins, not outward-rounded intervals.

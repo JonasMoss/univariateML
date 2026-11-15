@@ -4,18 +4,12 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_kumar(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, Held a0 = {}, double reltol = 1e-10, int iterlim = 100) {
+inline FitResult fit_kumar(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held a = a_arg;
   const Held b = b_arg;
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (a0.supplied) {
-    start = a0.value;
-    if (!(start > 0.0) || !std::isfinite(start))
-      return invalid_argument(fail("`a0` must be a positive finite number."));
-  }
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double checked_a = a.supplied ? a.value : nan;
   if (a.supplied && (!std::isfinite(checked_a) || (true && !(checked_a > 0)))) return invalid_argument(fail("Held parameters must be finite and shapes/scales positive."));
@@ -27,7 +21,7 @@ inline FitResult fit_kumar(cppunivariate::span x, Held a_arg = {}, Held b_arg = 
   std::vector<std::string> fixed;
   if (a.supplied) fixed.push_back("a");
   if (b.supplied) fixed.push_back("b");
-  auto res = cppunivariate::kumar_mle(x, reltol, iterlim, start, checked_a, checked_b);
+  auto res = cppunivariate::kumar_mle(x, tol, iterlim, checked_a, checked_b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"a",a_arg.supplied},{"b",b_arg.supplied}});

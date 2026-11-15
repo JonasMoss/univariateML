@@ -6,7 +6,7 @@
 #include <limits>
 #include <vector>
 namespace umvl_binding {
-inline FitResult fit_gumbel(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+inline FitResult fit_gumbel(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -22,7 +22,7 @@ inline FitResult fit_gumbel(cppunivariate::span x, Held mu_arg = {}, Held sigma_
   if(mu.supplied)fixed.push_back("mu");
   if(sigma.supplied)fixed.push_back("sigma");
 
-  cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_held(x,reltol,iterlim,held_mu,held_sigma);
+  cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_held(x,tol,iterlim,held_mu,held_sigma);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::GumbelStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

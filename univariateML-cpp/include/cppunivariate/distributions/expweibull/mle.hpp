@@ -213,7 +213,7 @@ inline ExpweibullResult expweibull_mle(span x,double tol=1e-10,int maxit=100,
     // Retain exact constant-scale roots above; otherwise use the accuracy
     // refinement and its structured tolerance diagnostic below.
     if(goal>=4*std::numeric_limits<double>::epsilon() || (!free[0] && !free[1])) {
-    const auto w=weibull_mle(x,goal,maxit,NAN,shape,scale);
+    const auto w=weibull_mle(x,goal,maxit,shape,scale);
     if(w.status==WeibullStatus::Ok) {
       out.scale=w.scale;out.shape=w.shape;out.exponent=1;out.logLik=w.logLik;
       out.iterations=w.iterations;

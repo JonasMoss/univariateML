@@ -48,7 +48,7 @@ r:
     size: "Required number of trials; NULL estimates it where supported. Fixed sizes are limited to 1e7 for allocation safety."
     prob: "Optional fixed canonical probability between zero and one inclusive; NULL estimates it."
     nu: "Optional fixed finite real dispersion; NULL estimates it. Both prob and nu may be held fixed."
-    reltol: "Requested relative coefficient accuracy (default 1e-10), checked using inverse observed information."
+    tol: "Requested relative coefficient accuracy (default 1e-10), checked using inverse observed information."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations (default iterlim 2000); per enumeration: 100000 * min(iterlim, 100000) enumeration cells."
 log_density: "nu*(loggamma(size+1)-loggamma(x+1)-loggamma(size-x+1)) + x*log(prob) + (size-x)*log(1-prob) - log(Sum((factorial(size)/(factorial(k)*factorial(size-k)))**nu * prob**k * (1-prob)**(size-k), (k, 0, size)))"
 limits:
@@ -438,7 +438,7 @@ within `1e-8*(1+abs(logLik))` of its reported likelihood. The free-size
 fixed-design solves start at dispersion one and binomial mean-matching odds
 (or the held odds), take Newton steps using the sufficient-statistic
 covariance, cap the largest coordinate displacement at four and backtrack
-on likelihood, and require the free moment residuals to meet `reltol`. A
+on likelihood, and require the free moment residuals to meet `tol`. A
 singular covariance, unsuccessful line search, failed residual check or
 iteration limit stops the search. The cumulative
 work allowance is `100000 * min(iterlim, 100000)` charged support cells. Every fixed-size

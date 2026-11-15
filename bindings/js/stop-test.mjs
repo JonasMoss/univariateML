@@ -434,7 +434,7 @@ test('bbinom fixed-size coefficient certificate and uncertified inclusion fallba
     assert.ok(Math.abs(f.estimates.beta-3)<3e-10);
   }
   for(const held of [{size:10},{size:10,alpha:2},{size:10,beta:3}]) {
-    assert.throws(() => api.bbinom.fit([0,1,1,2,2,3,4,5,7,10],held,{reltol:1e-18}), e => {
+    assert.throws(() => api.bbinom.fit([0,1,1,2,2,3,4,5,7,10],held,{tol:1e-18}), e => {
       assert.equal(e.kind,'tolerance');
       assert.ok(e.candidates.some(c => Number.isFinite(c.alpha) && Number.isFinite(c.beta) && Number.isFinite(c.loglik_lower)));
       return /numerical accuracy failure/.test(e.message);
@@ -563,8 +563,8 @@ test('inverse paralogistic reciprocal overflow stays numerical', () => {
 test('gengamma, CMB and discretized gamma retain public accuracy witnesses', () => {
   for(const [family,x,held,control] of [
     ['gengamma',[.2,.7,1,2,4],{sigma:1,Q:0},{tol:1e-20}],
-    ['cmb',[0,1,1,2,4],{size:5,nu:1},{reltol:1e-20}],
-    ['dgamma',[0,1,1,2,4],{shape:2},{reltol:5e-16}]
+    ['cmb',[0,1,1,2,4],{size:5,nu:1},{tol:1e-20}],
+    ['dgamma',[0,1,1,2,4],{shape:2},{tol:5e-16}]
   ]) assert.throws(()=>modifierRoute(api,family).fit(x,held,control),e=>{
     assert.equal(e.kind,'tolerance');assert.ok(e.attainable_tol>1e-16);
     assert.ok(e.candidates.length>0);
@@ -574,7 +574,7 @@ test('gengamma, CMB and discretized gamma retain public accuracy witnesses', () 
   });
   for(const [family,x,held,control] of [
     ['gengamma',[.2,.7,1,2,4],{sigma:1,Q:0},{tol:1e-14}],
-    ['cmb',[0,1,1,2,4],{size:5,nu:1},{reltol:1e-14}],
+    ['cmb',[0,1,1,2,4],{size:5,nu:1},{tol:1e-14}],
     ['dgamma',[1000000,1000001,1000003,1000008,1000011],{},{}]
   ]) assert.throws(()=>modifierRoute(api,family).fit(x,held,control),e=>{
     assert.equal(e.kind,'conditioning');assert.ok(e.candidates.length>0);
@@ -583,7 +583,7 @@ test('gengamma, CMB and discretized gamma retain public accuracy witnesses', () 
 });
 
 test('free CMB size preserves the continuous-coordinate accuracy kind', () => {
-  assert.throws(()=>api.cmb.fit([0,1,1,2,4],{size:null,nu:1},{reltol:1e-20}),e=>{
+  assert.throws(()=>api.cmb.fit([0,1,1,2,4],{size:null,nu:1},{tol:1e-20}),e=>{
     assert.equal(e.kind,'tolerance');assert.ok(e.candidates.length>0);
     assert.equal(e.candidates.at(-1).nu,1);return true;
   });

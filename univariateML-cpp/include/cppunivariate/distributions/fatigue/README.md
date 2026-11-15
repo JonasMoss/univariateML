@@ -34,7 +34,7 @@ r:
   control:
     alpha: Held positive finite shape; NULL estimates it.
     beta: Held positive finite scale; NULL estimates it.
-    abstol: "Requested relative accuracy in alpha and beta (default 1e-10); the historical control name is retained."
+    tol: "Requested relative accuracy in alpha and beta (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(x-mu+beta) - 3*log(x-mu)/2 - log(beta)/2 - log(2*alpha) - log(2*pi)/2 - ((x-mu)/beta + beta/(x-mu)-2)/(2*alpha**2)
 limits:

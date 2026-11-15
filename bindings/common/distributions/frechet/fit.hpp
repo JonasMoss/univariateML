@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/frechet/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held mu_arg = {}, Held sigma_arg = {}, double reltol=1e-10, int iterlim=100) {
+inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held mu_arg = {}, Held sigma_arg = {}, double tol=1e-10, int iterlim=100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held lambda = lambda_arg;
@@ -18,7 +18,7 @@ inline FitResult fit_frechet(cppunivariate::span x, Held lambda_arg = {}, Held m
  if(lambda.supplied) fixed.push_back("lambda");
  if(mu.supplied) fixed.push_back("mu");
  if(sigma.supplied) fixed.push_back("sigma");
- const auto r=cppunivariate::frechet_mle(x,reltol,iterlim,
+ const auto r=cppunivariate::frechet_mle(x,tol,iterlim,
  mu.supplied ? mu.value : std::numeric_limits<double>::quiet_NaN(),shape,scale);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {

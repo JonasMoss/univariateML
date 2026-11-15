@@ -204,7 +204,7 @@ TEST_CASE("expweibull: public likelihood restoration at adjacent observations") 
 }
 TEST_CASE("expweibull: tiny held Weibull shape retains the closed scale equation") {
   const std::vector<double> x{.5,1,2,4};
-  const auto w=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,NAN,1e-8,NAN);
+  const auto w=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,1e-8,NAN);
   const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,NAN,1e-8,1);
   REQUIRE(w.status==cppunivariate::WeibullStatus::Ok);
   REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);

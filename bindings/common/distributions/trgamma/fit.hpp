@@ -5,7 +5,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_trgamma(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+inline FitResult fit_trgamma(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -22,7 +22,7 @@ inline FitResult fit_trgamma(cppunivariate::span x, Held shape1_arg = {}, Held s
       (shape2.supplied && (!(b > 0.0) || !std::isfinite(b))))
     return invalid_argument(fail("`shape1` and `shape2` must be positive finite numbers when supplied."));
   const cppunivariate::span xs = x;
-  auto res = scale.supplied ? cppunivariate::trgamma_mle_fixed_scale(xs,scale.value,a,b,reltol,iterlim) : cppunivariate::trgamma_mle(xs, reltol, iterlim, a, b);
+  auto res = scale.supplied ? cppunivariate::trgamma_mle_fixed_scale(xs,scale.value,a,b,tol,iterlim) : cppunivariate::trgamma_mle(xs, tol, iterlim, a, b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -40,9 +40,9 @@ inline FitResult fit_trgamma(cppunivariate::span x, Held shape1_arg = {}, Held s
   if(res.transformation_failure)return done(stop_failure(fail("Distinct observations or the held endpoint became indistinguishable after taking logarithms."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));
   if(res.reconstruction_failure)return done(stop_failure(fail("Cannot certify the likelihood after reconstructing the coefficients in double precision."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));
   if (o.kind == cppunivariate::OutcomeKind::Nonexistence)
-    return done(stop_failure(fail("trgamma requires at least two distinct positive finite observations, positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood."),{},outcome_payload(o),{}));
+    return done(stop_failure(fail("trgamma requires at least two distinct positive finite observations, positive `tol` and positive `iterlim`; constant samples can have unbounded likelihood."),{},outcome_payload(o),{}));
   if (res.status == cppunivariate::TrGammaStatus::InvalidData)
-    return done(fail("trgamma requires at least two distinct positive finite observations, positive `reltol` and positive `iterlim`; constant samples can have unbounded likelihood."));
+    return done(fail("trgamma requires at least two distinct positive finite observations, positive `tol` and positive `iterlim`; constant samples can have unbounded likelihood."));
   if (res.status == cppunivariate::TrGammaStatus::LognormalBoundary)
     return done(stop_failure(fail("The trgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model."),res.stop_detail,outcome_payload(o),{"meanlog","sdlog"},"lnorm"));
   if (res.status == cppunivariate::TrGammaStatus::PowerBoundary && scale.supplied)

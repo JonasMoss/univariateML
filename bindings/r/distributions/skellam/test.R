@@ -61,7 +61,7 @@ test_that("Skellam likelihood agrees with independent reference optimizations", 
   expect_error(mlskellam(x,mu1=-1),"nonnegative")
   expect_error(mlskellam(x,mu2=Inf),"nonnegative")
   expect_error(mlskellam(x,iterlim=1),"converge")
-  expect_error(mlskellam(x,reltol=0),"positive")
+  expect_error(mlskellam(x,tol=0),"positive")
   fit <- mlskellam(x,mu1=4,mu2=3)
   expect_equal(attr(logLik(fit),"df"),0L)
 
@@ -135,7 +135,7 @@ test_that("Skellam nonconstant underdispersed samples attain Poisson faces", {
 test_that("skellam: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "skellam", "golden.json"))
   x <- g$data
-  expect_error(mlskellam(x, iterlim=1, reltol=1e-10),
+  expect_error(mlskellam(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 

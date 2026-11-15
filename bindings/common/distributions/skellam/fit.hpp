@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/skellam/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_skellam(cppunivariate::span x, Held mu1_arg = {}, Held mu2_arg = {}, double reltol=1e-10, int iterlim=150) {
+inline FitResult fit_skellam(cppunivariate::span x, Held mu1_arg = {}, Held mu2_arg = {}, double tol=1e-10, int iterlim=150) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mu1 = mu1_arg;
@@ -12,13 +12,13 @@ inline FitResult fit_skellam(cppunivariate::span x, Held mu1_arg = {}, Held mu2_
   const double b=mu2.supplied?mu2.value:NAN;
   if((mu1.supplied && !(std::isfinite(a) && a>=0)) ||
      (mu2.supplied && !(std::isfinite(b) && b>=0))) return invalid_argument(fail("Fixed rates must be finite and nonnegative."));
-  const auto fit=cppunivariate::skellam_mle(x,reltol,iterlim,a,b);
+  const auto fit=cppunivariate::skellam_mle(x,tol,iterlim,a,b);
   const auto o = cppunivariate::outcome(fit);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"mu1",mu1_arg.supplied},{"mu2",mu2_arg.supplied}});
   };
   if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("skellam numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,outcome_payload(o),{"mu1","mu2"}));
-  if(fit.status==cppunivariate::SkellamStatus::InvalidInput) return done(fail("Skellam requires finite integer observations, positive reltol and positive iterlim."));
+  if(fit.status==cppunivariate::SkellamStatus::InvalidInput) return done(fail("Skellam requires finite integer observations, positive tol and positive iterlim."));
   if(fit.status==cppunivariate::SkellamStatus::Impossible) return done(fail("The fixed rates give zero likelihood for these observations."));
   if(fit.stop_detail.budget_exhausted)return done(stop_failure(fail("Skellam search did not converge; increase iterlim. Raising iterlim may resolve this stop."),fit.stop_detail,outcome_payload(o),{"mu1","mu2"}));
   if(fit.status!=cppunivariate::SkellamStatus::Ok) return done(stop_failure(fail("Skellam search did not converge; increase iterlim."),fit.stop_detail,outcome_payload(o),{"mu1","mu2"}));

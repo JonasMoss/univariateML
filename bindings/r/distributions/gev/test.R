@@ -272,7 +272,7 @@ test_that("GEV two-point compatible holds inherit the global certificate", {
 })
 
 test_that("GEV compatible holds preserve certificate precision stops", {
-  e <- tryCatch(mlgev(c(0,2,2,2),mu=1.5,sigma=.5,reltol=1e-15),error=identity)
+  e <- tryCatch(mlgev(c(0,2,2,2),mu=1.5,sigma=.5,tol=1e-15),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_true(is.finite(e$loglik_upper))
 })
@@ -285,7 +285,7 @@ test_that("GEV joint certificate covers the seam and preserves numerical witness
     fixed <- suppressWarnings(mlgev(x,xi=k))
     expect_gte(as.numeric(logLik(f)),as.numeric(logLik(fixed))-1e-8)
   }
-  e <- tryCatch(mlgev(x,reltol=1e-16),error=identity)
+  e <- tryCatch(mlgev(x,tol=1e-16),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_true(length(fit_payload(e)$candidates)>0)
   expect_false(inherits(e,"univariateML_tie"))
@@ -301,7 +301,7 @@ test_that("GEV negative-shape coefficient corners preserve the gap dependency", 
 
 test_that("gev audit-support case 2682 checks the public fit", {
   x <- c(-0.6514892575075315,0.7190118994986324,1.1956145927670203)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,mu=0.006623074223695902),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,mu=0.006623074223695902),error=identity))
   expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -314,7 +314,7 @@ test_that("gev audit-support case 2682 checks the public fit", {
 
 test_that("gev audit-support case 2695 checks the public fit", {
   x <- c(0.7950005938035326,0.7950013888057164,0.7950021838079002,0.795002978810084,0.7950037738122678)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,mu=0.006623074223695902),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,mu=0.006623074223695902),error=identity))
   expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -327,7 +327,7 @@ test_that("gev audit-support case 2695 checks the public fit", {
 
 test_that("gev audit-support case 2707 checks the public fit", {
   x <- c(-6.514892575075315e-151,7.190118994986324e-151,1.1956145927670203e-150,2.1354437992679257e-152,1.33255002155901e-150,9.99055037892868e-151,4.443082381781675e-151,1.784490546684275e-150,7.950021838079003e-151,1.1415363726467913e-150,-6.653630472986568e-151,-8.686654093177045e-151)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,sigma=0.9955800131732704),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,sigma=0.9955800131732704),error=identity))
   expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -340,7 +340,7 @@ test_that("gev audit-support case 2707 checks the public fit", {
 
 test_that("gev audit-support case 10949 checks the public fit", {
   x <- c(-3.2212091334838218,-3.221208133483822,-3.221207133483822,-3.221205133483822,-3.221201133483822)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,sigma=0.9955800131732704),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,sigma=0.9955800131732704),error=identity))
   expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -353,7 +353,7 @@ test_that("gev audit-support case 10949 checks the public fit", {
 
 test_that("gev audit-support case 10957 checks the public fit", {
   x <- c(-3.221210133483815,-3.2212101334838077,-3.2212101334838006,-3.2212101334837864,-3.221210133483758)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,xi=0.30843601546572924),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,xi=0.30843601546572924),error=identity))
   expect_true(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -366,7 +366,7 @@ test_that("gev audit-support case 10957 checks the public fit", {
 
 test_that("gev audit-support case 10965 checks the public fit", {
   x <- c(-3.221210133482822,-3.2212101334818217,-3.221210133480822,-3.221210133478822,-3.221210133474822)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,mu=0.006623074223695902,sigma=0.9955800131732704,xi=0.30843601546572924),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,mu=0.006623074223695902,sigma=0.9955800131732704,xi=0.30843601546572924),error=identity))
   expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -379,7 +379,7 @@ test_that("gev audit-support case 10965 checks the public fit", {
 
 test_that("gev audit-support case 10966 checks the public fit", {
   x <- c(-3.221210133483815,-3.2212101334838077,-3.2212101334838006,-3.2212101334837864,-3.221210133483758)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,mu=0.006623074223695902,sigma=0.9955800131732704,xi=0.30843601546572924),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,mu=0.006623074223695902,sigma=0.9955800131732704,xi=0.30843601546572924),error=identity))
   expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -392,7 +392,7 @@ test_that("gev audit-support case 10966 checks the public fit", {
 
 test_that("gev audit-support case 2708 checks the public fit", {
   x <- c(-6.514892575075315e+149,7.190118994986324e+149,1.1956145927670203e+150,2.1354437992679258e+148,1.33255002155901e+150,9.99055037892868e+149,4.443082381781675e+149,1.784490546684275e+150,7.950021838079002e+149,1.1415363726467912e+150,-6.653630472986568e+149,-8.686654093177046e+149)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,sigma=0.9955800131732704),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,sigma=0.9955800131732704),error=identity))
   expect_true(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -405,7 +405,7 @@ test_that("gev audit-support case 2708 checks the public fit", {
 
 test_that("gev audit-support case 2772 checks the public fit", {
   x <- c(-6.514892575075315e+149,7.190118994986324e+149,1.1956145927670203e+150,2.1354437992679258e+148,1.33255002155901e+150,9.99055037892868e+149,4.443082381781675e+149,1.784490546684275e+150,7.950021838079002e+149,1.1415363726467912e+150,-6.653630472986568e+149,-8.686654093177046e+149)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,sigma=0.9955800131732704,xi=0.30843601546572924),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,sigma=0.9955800131732704,xi=0.30843601546572924),error=identity))
   expect_true(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)
@@ -418,7 +418,7 @@ test_that("gev audit-support case 2772 checks the public fit", {
 
 test_that("gev audit-support case 2788 checks the public fit", {
   x <- c(-6.514892575075315e+149,7.190118994986324e+149,1.1956145927670203e+150,2.1354437992679258e+148,1.33255002155901e+150,9.99055037892868e+149,4.443082381781675e+149,1.784490546684275e+150,7.950021838079002e+149,1.1415363726467912e+150,-6.653630472986568e+149,-8.686654093177046e+149)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,mu=0.006623074223695902,sigma=0.9955800131732704,xi=0.30843601546572924),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,mu=0.006623074223695902,sigma=0.9955800131732704,xi=0.30843601546572924),error=identity))
   expect_true(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"compatible support",ignore.case=TRUE)
@@ -431,7 +431,7 @@ test_that("gev audit-support case 2788 checks the public fit", {
 
 test_that("gev audit-support case 10964 checks the public fit", {
   x <- c(-3.2212091334838218,-3.221208133483822,-3.221207133483822,-3.221205133483822,-3.221201133483822)
-  fit <- suppressWarnings(tryCatch(mlgev(x,reltol=1e-10,iterlim=100,mu=0.006623074223695902,sigma=0.9955800131732704,xi=0.30843601546572924),error=identity))
+  fit <- suppressWarnings(tryCatch(mlgev(x,tol=1e-10,iterlim=100,mu=0.006623074223695902,sigma=0.9955800131732704,xi=0.30843601546572924),error=identity))
   expect_false(inherits(fit,"error"))
   if(inherits(fit,"error")) {
     expect_match(conditionMessage(fit),"numerical|converge|accuracy|certificate",ignore.case=TRUE)

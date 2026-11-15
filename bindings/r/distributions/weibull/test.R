@@ -47,13 +47,11 @@ expect_equal(class(attr(est, "support"))[[1]], "numeric")
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
-## Explicit shape starts are now used and validated.
+## The `shape0` start value was removed for 2.0; it is an unknown argument.
 x_start <- ml_simulate("mlweibull", 100)
-a_start <- mlweibull(x_start, reltol = 1e-12)
-b_start <- mlweibull(x_start, shape0 = 1.2 * coef(a_start)[["shape"]], reltol = 1e-12)
-expect_equal(coef(b_start), coef(a_start), tolerance = 1e-8)
-for (bad_start in c(0, -1, Inf, NA_real_)) {
-  expect_error(mlweibull(x_start, shape0 = bad_start), "positive finite")
+a_start <- mlweibull(x_start, tol = 1e-12)
+for (bad_start in c(1.2 * coef(a_start)[["shape"]], 0, -1, Inf, NA_real_)) {
+  expect_error(mlweibull(x_start, shape0 = bad_start), "`mlweibull` has no argument `shape0`")
 }
 
 test_that("constant data have no attained weibull MLE", {
@@ -147,7 +145,7 @@ test_that("P2 analytic held shape needs no iterative search", {
 test_that("weibull: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "weibull", "golden.json"))
   x <- g$data
-  expect_error(mlweibull(x, iterlim=1, reltol=1e-10),
+  expect_error(mlweibull(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 

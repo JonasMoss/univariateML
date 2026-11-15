@@ -3,7 +3,7 @@
 #include "cppunivariate/distributions/cmb/mle.hpp"
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held nu_arg = {}, double reltol=1e-10, int iterlim=2000) {
+inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held nu_arg = {}, double tol=1e-10, int iterlim=2000) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held size = size_arg;
@@ -20,12 +20,12 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
     return invalid_argument(fail("fixed `prob` must be between zero and one inclusive."));
   if (nu.supplied && !std::isfinite(v)) return invalid_argument(fail("fixed `nu` must be finite."));
   cppunivariate::CmbResult res;
-  if(size.supplied)res=cppunivariate::cmb_mle(x,static_cast<int>(trials),reltol,iterlim,p,v);
+  if(size.supplied)res=cppunivariate::cmb_mle(x,static_cast<int>(trials),tol,iterlim,p,v);
 
   else {
-    const auto profile=!nu.supplied ? cppunivariate::cmb_size_free_nu_mle(x,p,reltol,iterlim) :
-      (prob.supplied ? cppunivariate::cmb_size_mle(x,p,v,reltol,iterlim) :
-      cppunivariate::cmb_size_fixed_nu_mle(x,v,reltol,iterlim));
+    const auto profile=!nu.supplied ? cppunivariate::cmb_size_free_nu_mle(x,p,tol,iterlim) :
+      (prob.supplied ? cppunivariate::cmb_size_mle(x,p,v,tol,iterlim) :
+      cppunivariate::cmb_size_fixed_nu_mle(x,v,tol,iterlim));
     trials=profile.size;res=profile.fit;
   }
 
@@ -67,7 +67,7 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
     case cppunivariate::CmbStatus::Unidentified:
       return done(stopped_fail("With size = 0 both parameters are unidentified."));
     case cppunivariate::CmbStatus::InvalidInput:
-      return done(stopped_fail("CMB requires counts between zero and size, positive reltol and positive iterlim."));
+      return done(stopped_fail("CMB requires counts between zero and size, positive tol and positive iterlim."));
     case cppunivariate::CmbStatus::FaceUnresolved:
       if (!nu.supplied)
         return done(stopped_fail("No finite maximum was certified above the limiting faces; a larger finite maximum is not excluded."));

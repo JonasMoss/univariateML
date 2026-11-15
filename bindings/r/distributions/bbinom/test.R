@@ -98,7 +98,7 @@ test_that("bbinom: both held shapes permit exact size profiling", {
 test_that("bbinom: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "bbinom", "golden.json"))
   x <- g$data
-  expect_error(mlbbinom(x, iterlim=1, reltol=1e-10, size=10),
+  expect_error(mlbbinom(x, iterlim=1, tol=1e-10, size=10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -204,7 +204,7 @@ test_that("fixed-size saturated tables enclose the public coefficients", {
 test_that("unattainable coefficient accuracy stops with a finite witness", {
   x <- c(0,1,1,2,2,3,4,5,7,10)
   for (held in list(list(),list(alpha=2),list(beta=3))) {
-    e <- tryCatch(do.call(mlbbinom,c(list(x=x,size=10,reltol=1e-18),held)),error=identity)
+    e <- tryCatch(do.call(mlbbinom,c(list(x=x,size=10,tol=1e-18),held)),error=identity)
     expect_s3_class(e,"univariateML_numerical")
     expect_s3_class(e,"univariateML_tolerance")
     expect_gt(e$attainable_tol,1e-18)

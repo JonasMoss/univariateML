@@ -49,7 +49,7 @@ r:
     size: "Required number of trials; NULL estimates size when either shape is held."
     alpha: "Optional fixed positive alpha; NULL estimates it."
     beta: "Optional fixed value of `beta`; `NULL` (the default) estimates it."
-    reltol: "Relative accuracy required in every free shape coefficient; a curvature and score enclosure must pass before acceptance."
+    tol: "Relative accuracy required in every free shape coefficient; a curvature and score enclosure must pass before acceptance."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations (default iterlim 500); per certificate: 128 * min(iterlim, 100000) certificate evaluations; per enumeration: 100000 * min(iterlim, 100000) enumeration cells."
 log_density: "loggamma(size + 1) - loggamma(x + 1) - loggamma(size - x + 1) + loggamma(x + alpha) + loggamma(size - x + beta) - loggamma(size + alpha + beta) - loggamma(alpha) - loggamma(beta) + loggamma(alpha + beta)"
 limits:

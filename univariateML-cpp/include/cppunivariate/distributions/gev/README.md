@@ -68,7 +68,7 @@ r:
     mu: Location to hold fixed, or NULL to estimate.
     sigma: Positive scale to hold fixed, or NULL to estimate.
     xi: Shape to hold fixed, or NULL to estimate within `[-1, 1]`. Held shapes above one are accepted when the collapse criterion permits.
-    reltol: Requested relative coefficient accuracy; conditional point-profile solves also use dimensionless scores.
+    tol: Requested relative coefficient accuracy; conditional point-profile solves also use dimensionless scores.
     iterlim: "Work limit per solve: min(iterlim, 100000) solver iterations; certificates allow 128 * min(iterlim, 100000) slab, box or profile evaluations."
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
 limits:
@@ -190,7 +190,7 @@ $x_i+\sigma[1-(1+\xi)^{-\xi}]/\xi$. Their extremes, intersected
 with $\mu>\max x+\sigma/\xi$, bracket the unique global location
 maximum. The score tends to positive infinity at the support boundary
 and is negative beyond the last individual crossing. Bisection stops at
-width `reltol*sigma` and a total dimensionless location-score residual
+width `tol*sigma` and a total dimensionless location-score residual
 below $10^{-3}$, using `min(iterlim,100000)` iterations; exhaustion
 is non-convergence with a structured `numerical` stop. The score evaluates its near-zero difference
 with `expm1`, also for shapes close to zero. The exact-arithmetic
@@ -229,7 +229,7 @@ The critical edge $a=-1,z=1$ can remain unresolved and then stops numerically.
 
 The remaining boxes are discarded by a likelihood bound or a strictly signed
 score. Negative curvature plus opposite endpoint scores isolates exactly one
-maximum. Bisection bounds its coefficient to relative `reltol`; all isolated candidates
+maximum. Bisection bounds its coefficient to relative `tol`; all isolated candidates
 and attained endpoints are compared. Unresolved comparisons stop numerically.
 For $x_i=\mu$ throughout, the likelihood is identically
 $-n(1+\log\sigma)$: every shape is a maximizer and the fitter returns zero.
@@ -303,9 +303,9 @@ mean from $M$.
 For a half tie, opposite-sign endpoints use $(m+M)/2$ to preserve a small
 location; subnormal halving residuals are checked with `fma`. Endpoint
 feasibility is enforced using a TwoDiff rounding residual, with any scale
-adjustment limited to `reltol/4` relative to the initial scale. Outside the
+adjustment limited to `tol/4` relative to the initial scale. Outside the
 half tie, a $64\epsilon_{\rm mach}(|M|+\sigma)$ location-error allowance
-must be below `reltol*abs(mu)/4`; subnormal scale or unresolved public
+must be below `tol*abs(mu)/4`; subnormal scale or unresolved public
 representation stops numerically. A near-zero location with normal
 scale and a resolved feasible face likelihood is instead returned uncertified.
 The analytic precision control is at most

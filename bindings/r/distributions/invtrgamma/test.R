@@ -144,7 +144,7 @@ test_that("P2 invtrgamma validates new held values", {
 test_that("invtrgamma: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "invtrgamma", "golden.json"))
   x <- g$data
-  expect_error(mlinvtrgamma(x, iterlim=1, reltol=1e-10),
+  expect_error(mlinvtrgamma(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 

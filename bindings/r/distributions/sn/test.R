@@ -135,7 +135,7 @@ test_that('sn package density routes through fitted object operations', {
 test_that("sn: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "sn", "golden.json"))
   x <- g$data
-  expect_error(mlsn(x, iterlim=1, reltol=1e-10),
+  expect_error(mlsn(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -171,8 +171,8 @@ test_that('sn quantitative acceptance and nonunique shape stops are public', {
   expect_equal(fit_payload(e)$loglik_lower, fit_payload(e)$loglik_upper)
   e <- tryCatch(mlsn(c(-2,-.3,.1,.8,4), alpha=2, iterlim=1), error=identity)
   expect_s3_class(e, 'univariateML_numerical')
-  f <- mlsn(c(-2,-.3,.1,.8,4), alpha=2, reltol=10)
-  g <- mlsn(c(-2,-.3,.1,.8,4), alpha=2, reltol=1e-12)
+  f <- mlsn(c(-2,-.3,.1,.8,4), alpha=2, tol=10)
+  g <- mlsn(c(-2,-.3,.1,.8,4), alpha=2, tol=1e-12)
   expect_equal(as.numeric(f), as.numeric(g), tolerance=1e-6)
 })
 

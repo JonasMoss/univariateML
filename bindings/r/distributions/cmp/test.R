@@ -105,7 +105,7 @@ test_that("P3 CMP boundaries respect all holds and geometric normalizability", {
 
 test_that("CMP acceptance is binding neutral and stops unchecked loose solves", {
   x <- c(0,0,1,1,2,2,3,4)
-  expect_error(mlcmp(x,reltol=.1),class="univariateML_numerical")
+  expect_error(mlcmp(x,tol=.1),class="univariateML_numerical")
   for (args in list(list(),list(lambda=2),list(nu=1),list(lambda=2,nu=1))) {
     f <- do.call(mlcmp,c(list(x),args))
     expect_equal(as.numeric(logLik(f)),sum(dml(x,f,log=TRUE)),tolerance=1e-10)

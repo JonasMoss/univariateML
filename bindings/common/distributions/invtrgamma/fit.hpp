@@ -5,7 +5,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_invtrgamma(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+inline FitResult fit_invtrgamma(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -22,7 +22,7 @@ inline FitResult fit_invtrgamma(cppunivariate::span x, Held shape1_arg = {}, Hel
       (shape2.supplied && (!(b > 0.0) || !std::isfinite(b))))
     return invalid_argument(fail("`shape1` and `shape2` must be positive finite numbers when supplied."));
   const cppunivariate::span xs = x;
-  auto res = scale.supplied ? cppunivariate::invtrgamma_mle_fixed_scale(xs,scale.value,a,b,reltol,iterlim) : cppunivariate::invtrgamma_mle(xs, reltol, iterlim, a, b);
+  auto res = scale.supplied ? cppunivariate::invtrgamma_mle_fixed_scale(xs,scale.value,a,b,tol,iterlim) : cppunivariate::invtrgamma_mle(xs, tol, iterlim, a, b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::InvTrGammaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -39,7 +39,7 @@ inline FitResult fit_invtrgamma(cppunivariate::span x, Held shape1_arg = {}, Hel
   if(res.transformation_failure)return done(stop_failure(fail("Distinct observations or the held endpoint became indistinguishable after taking logarithms."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));
   if(res.reconstruction_failure)return done(stop_failure(fail("Cannot certify the likelihood after reconstructing the coefficients in double precision."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"}));
   if(res.status==cppunivariate::InvTrGammaStatus::Unbounded)return done(stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),{},PayloadKind::Nonexistence,{}));
-  if(res.status==cppunivariate::InvTrGammaStatus::InvalidData)return done(fail("invtrgamma requires positive finite observations, positive `reltol` and positive `iterlim`."));
+  if(res.status==cppunivariate::InvTrGammaStatus::InvalidData)return done(fail("invtrgamma requires positive finite observations, positive `tol` and positive `iterlim`."));
   if (res.status == cppunivariate::InvTrGammaStatus::LognormalBoundary)
     return done(stop_failure(fail("The invtrgamma likelihood is maximised at a limit. Use `mllnorm` to fit this model."),res.stop_detail,outcome_payload(o),{"meanlog","sdlog"},"lnorm"));
   if (res.status == cppunivariate::InvTrGammaStatus::ParetoBoundary && scale.supplied)

@@ -40,7 +40,7 @@ r:
   control:
     min: Known finite lower endpoint.
     max: Known finite upper endpoint larger than min.
-    reltol: Delegate fitting tolerance.
+    tol: Delegate fitting tolerance.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
     shape1: Known positive finite coefficient; NULL estimates it.
     shape2: Known positive finite coefficient; NULL estimates it.

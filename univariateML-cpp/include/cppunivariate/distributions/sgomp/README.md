@@ -30,7 +30,7 @@ r:
   control:
     b: Optional fixed positive rate; `NULL` estimates it.
     eta: Optional fixed nonnegative shape; `NULL` estimates it.
-    reltol: "Relative accuracy of every free coefficient (default 1e-10)."
+    tol: "Relative accuracy of every free coefficient (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(b) - b*x - eta*exp(-b*x) + log(1 + eta*(1-exp(-b*x)))
 holds: []
@@ -133,7 +133,7 @@ The rate root with eta held uses its strictly negative second derivative,
 $-n/b^2-\eta\sum x_i^2e^{-bx_i}-\eta(1+\eta)\sum
 x_i^2e^{-bx_i}/(1+\eta-\eta e^{-bx_i})^2$, and a signed expanding bracket.
 It is refined to relative width $2\cdot10^{-13}$. In the joint certificate,
-conditional shape solves use $\min(\mathrm{reltol},10^{-13})$. The log-shape
+conditional shape solves use $\min(\mathrm{tol},10^{-13})$. The log-shape
 brackets are inflated by twice this tolerance plus $10^{-12}$. Each retained
 region has relative rate width at most $10^{-9}$, shape width at most
 $10^{-8}\max(1,\eta)$, and its likelihood upper bound exceeds its center

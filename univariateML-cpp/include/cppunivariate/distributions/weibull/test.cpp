@@ -16,10 +16,10 @@ TEST_CASE("weibull") {
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_weibull).scale(0));
 }
 
-TEST_CASE("weibull: explicit shape start and automatic default") {
+TEST_CASE("weibull: tighter tolerance agrees with the default fit") {
   auto g = mltest::load_distribution_golden("weibull");
   auto a = cppunivariate::weibull_mle(mltest::as_span(g.data), 1e-12, 200);
-  auto b = cppunivariate::weibull_mle(mltest::as_span(g.data), 1e-12, 200, 1.2 * a.shape);
+  auto b = cppunivariate::weibull_mle(mltest::as_span(g.data), 1e-10, 200);
   CHECK(b.shape == doctest::Approx(a.shape).epsilon(1e-9));
   CHECK(b.logLik == doctest::Approx(a.logLik).epsilon(1e-10));
 }
@@ -55,7 +55,7 @@ TEST_CASE("weibull P2 every held subset") {
   std::vector<double> x=g.data;
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> held{g.estimates.at("shape"),g.estimates.at("scale")};
-  { const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,200,nan,held[0],nan);
+  { const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,200,held[0],nan);
     CHECK(r.shape==held[0]);
     CHECK(std::isfinite(r.scale));
     CHECK(std::isfinite(r.logLik));
@@ -65,7 +65,7 @@ TEST_CASE("weibull P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
-  { const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,200,nan,nan,held[1]);
+  { const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,200,nan,held[1]);
     CHECK(std::isfinite(r.shape));
     CHECK(r.scale==held[1]);
     CHECK(std::isfinite(r.logLik));
@@ -75,7 +75,7 @@ TEST_CASE("weibull P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[0]));a[0]+=h;b[0]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
-  { const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,200,nan,held[0],held[1]);
+  { const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,200,held[0],held[1]);
     CHECK(r.shape==held[0]);
     CHECK(r.scale==held[1]);
     CHECK(std::isfinite(r.logLik));
@@ -89,15 +89,15 @@ TEST_CASE("weibull P2 every held subset") {
 TEST_CASE("weibull P2 held boundaries and solver failure") {
   const std::vector<double> x{2,2,2};
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  CHECK_FALSE(std::isfinite(cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,nan,nan,2).logLik));
-  CHECK(std::isfinite(cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,nan,2,nan).logLik));
-  CHECK_FALSE(std::isfinite(cppunivariate::weibull_mle(mltest::as_span(x),1e-10,1,nan,nan,3).logLik));
+  CHECK_FALSE(std::isfinite(cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,nan,2).logLik));
+  CHECK(std::isfinite(cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,2,nan).logLik));
+  CHECK_FALSE(std::isfinite(cppunivariate::weibull_mle(mltest::as_span(x),1e-10,1,nan,3).logLik));
 }
 
 TEST_CASE("weibull held tiny shape preserves the geometric-mean limit") {
   const std::vector<double> x{1,4,16};
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,nan,1e-200,nan);
+  const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,1e-200,nan);
   CHECK(r.shape==1e-200);
   CHECK(r.scale==doctest::Approx(4));
 }
@@ -141,7 +141,7 @@ TEST_CASE("weibull: unrepresentable subnormal coefficient is not Ok") {
 
 TEST_CASE("weibull: held scale retains concentrated-sample shape accuracy") {
   const std::vector<double> x{2.4349403590372,2.434940359039635,2.43494035904207,2.434940359044505,2.434940359049375};
-  const auto r=cppunivariate::weibull_mle({x.data(),x.size()},1e-10,100,NAN,NAN,x[0]);
+  const auto r=cppunivariate::weibull_mle({x.data(),x.size()},1e-10,100,NAN,x[0]);
   REQUIRE(r.status==cppunivariate::WeibullStatus::Ok);
   // Independent 100-digit conditional-score root on the binary64 sample.
   CHECK(r.shape==doctest::Approx(263511819158.377827834).epsilon(1e-10));
@@ -150,7 +150,7 @@ TEST_CASE("weibull: held scale retains concentrated-sample shape accuracy") {
 TEST_CASE("weibull: held shape does not hide an unrepresentable scale") {
   const double u=std::numeric_limits<double>::denorm_min();
   const std::vector<double> x{u,2*u};
-  CHECK(cppunivariate::weibull_mle({x.data(),x.size()},1e-10,100,NAN,1,NAN).status==cppunivariate::WeibullStatus::AccuracyFailure);
+  CHECK(cppunivariate::weibull_mle({x.data(),x.size()},1e-10,100,1,NAN).status==cppunivariate::WeibullStatus::AccuracyFailure);
 }
 
 #include "cppunivariate/distributions/weibull/censored.hpp"
@@ -168,7 +168,7 @@ TEST_CASE("weibull: right censoring independent 50-digit reference") {
     CHECK(r.scale/c.coefficient==doctest::Approx(1).epsilon(1e-10));
     CHECK(r.logLik==doctest::Approx(c.logLik).epsilon(1e-12));
     if(std::string(c.label)=="0pct" || std::string(c.label)=="single") {
-      const auto exact=cppunivariate::weibull_mle(mltest::as_span(v),1e-10,1000,NAN,c.held,NAN);
+      const auto exact=cppunivariate::weibull_mle(mltest::as_span(v),1e-10,1000,c.held,NAN);
       CHECK(r.scale/exact.scale==doctest::Approx(1).epsilon(4*std::numeric_limits<double>::epsilon()));
       CHECK(r.logLik==doctest::Approx(exact.logLik).epsilon(2e-13));
     }
@@ -259,7 +259,7 @@ TEST_CASE("weibull: right censoring, free shape agrees with the exact-data fitte
   CHECK(r.scale/e.scale==doctest::Approx(1).epsilon(1e-10));
   CHECK(r.logLik==doctest::Approx(e.logLik).epsilon(1e-12));
   const auto s=cppunivariate::weibull_censored_mle(data,NAN,e.scale);
-  const auto es=cppunivariate::weibull_mle(x,1e-10,1000,NAN,NAN,e.scale);
+  const auto es=cppunivariate::weibull_mle(x,1e-10,1000,NAN,e.scale);
   REQUIRE(s.status==cppunivariate::WeibullCensoredStatus::Ok);
   CHECK(s.shape/es.shape==doctest::Approx(1).epsilon(1e-10));
 }
@@ -317,11 +317,11 @@ TEST_CASE("weibull: subnormal held shape; unrepresentable log likelihood at held
   const std::vector<double> x{0.5,1,2,4};
   for(double shape:{std::numeric_limits<double>::denorm_min(),1e-310,1e-300,1e-20}) {
     CAPTURE(shape);
-    const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,nan,shape,nan);
+    const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,shape,nan);
     REQUIRE(r.status==cppunivariate::WeibullStatus::Ok);
     CHECK(r.scale==doctest::Approx(std::sqrt(2.0)).epsilon(1e-15));
   }
-  const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,nan,std::numeric_limits<double>::denorm_min(),nan);
+  const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,std::numeric_limits<double>::denorm_min(),nan);
   CHECK(r.scale==std::sqrt(2.0));
   CHECK(r.logLik==doctest::Approx(-2983.146582046644939875264).epsilon(1e-14));
   // Archive case 8443: both held, data near 2^500. The log likelihood is
@@ -331,13 +331,13 @@ TEST_CASE("weibull: subnormal held shape; unrepresentable log likelihood at held
       "0x1.15ada6d2f5b03p+499","0x1.716897c08000fp+499","0x1.43932c103ad40p+499","0x1.c41da698e91b3p+499",
       "0x1.2b09ec555a47ep+500","0x1.755a8917d40afp+500","0x1.bf79f040d7eacp+498","0x1.7e81ff53c34b1p+498",
       "0x1.8c351a591e363p+500"})y.push_back(std::strtod(h,nullptr));
-  const auto held=cppunivariate::weibull_mle(mltest::as_span(y),1e-10,100,nan,2.9155677520153174,3.961112786792183);
+  const auto held=cppunivariate::weibull_mle(mltest::as_span(y),1e-10,100,2.9155677520153174,3.961112786792183);
   CHECK(held.status==cppunivariate::WeibullStatus::NumericalFailure);
   CHECK(std::isnan(held.logLik));
   CHECK(cppunivariate::outcome(held).kind==cppunivariate::OutcomeKind::Failure);
   CHECK(cppunivariate::outcome(held).reason==cppunivariate::OutcomeReason::Evaluation);
   // Held shape only: the profiled scale keeps the likelihood finite.
-  CHECK(cppunivariate::weibull_mle(mltest::as_span(y),1e-10,100,nan,2.9155677520153174,nan).status==
+  CHECK(cppunivariate::weibull_mle(mltest::as_span(y),1e-10,100,2.9155677520153174,nan).status==
         cppunivariate::WeibullStatus::Ok);
 }
 
@@ -349,9 +349,9 @@ TEST_CASE("weibull likelihood evaluates represented coefficients near collapse")
   CHECK(r.logLik==ll);
 }
 
-TEST_CASE("weibull validates a supplied start on held-parameter routes") {
+TEST_CASE("weibull validates a held shape on held-parameter routes") {
   const std::vector<double> x{1,2,3};
-  const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,-1,1,1);
+  const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,-1,1);
   CHECK(r.status==cppunivariate::WeibullStatus::InvalidInput);
 }
 
