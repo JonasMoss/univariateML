@@ -501,6 +501,22 @@ REPLAYS = {'nbinom': replay_nbinom, 'lomax': replay_lomax}
 import cert_replay_roots   # mechanisms B and C: scalar roots and represented likelihood (cert_replay_roots.py)
 REPLAYS.update(cert_replay_roots.REPLAYS)
 
+import cert_replay_faces   # mechanism D: exact face inequalities (cert_replay_faces.py)
+
+def combined(*replays):
+    """A family replayed by several modules: concatenate their comparisons."""
+    def replay(r, data, budget):
+        comps, whys = [], []
+        for one in replays:
+            c, why = one(r, data, budget)
+            comps += c or []
+            if why: whys.append(why)
+        return comps, '; '.join(whys) or None
+    return replay
+
+for family, replay in cert_replay_faces.REPLAYS.items():
+    REPLAYS[family] = combined(REPLAYS[family], replay) if family in REPLAYS else replay
+
 def rebuild(family, archive):
     routes = {route['id']: ident for ident, route in fs.ROUTES.items()}   # modifier routes are recorded under their route id
     ident = routes.get(family, family)

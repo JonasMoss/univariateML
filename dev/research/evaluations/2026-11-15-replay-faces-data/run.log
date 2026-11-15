@@ -1,0 +1,123 @@
+cert-replay: 6 CPU s, 50 digits
+  bbinom  support     holds  208
+  binom   moment      holds  68
+  binom   support     holds  4
+  binom   unique      holds  2
+  cauchy  multiplicity holds  120
+  cauchy  unique      holds  4
+  cmb     support     holds  110
+  cmp     support     holds  112
+  cmp     unique      fails  2
+  dgamma  support     holds  116
+  dlaplace support     holds  126
+  dlaplace unique      holds  84
+  dnorm   root        holds  96
+  dnorm   support     holds  126
+  dweibull root        holds  84
+  dweibull support     holds  118
+  foldnorm location    holds  48
+  foldnorm quartic     holds  4
+  foldnorm support     holds  54
+  gompertz moment      fails  1
+  gompertz moment      holds  101
+  gompertz support     holds  6
+  hcauchy multiplicity holds  144
+  hcauchy root        holds  138
+  lgser   root        holds  64
+  lgser   support     holds  66
+  norm +truncate=tnorm support     holds  6
+  norm +truncate=tnorm window      holds  104
+  pig     moment      holds  90
+  pig     root        holds  44
+  pig     root-polish info   18
+  pig     support     holds  26
+  pig     unique      fails  2
+  pois+zero=inflated support     holds  6
+  pois+zero=inflated unique      holds  18
+  pois+zero=inflated zero-fraction holds  50
+  sgomp   face-score  holds  42
+  sgomp   support     holds  106
+  slash   multiplicity holds  102
+  yulesimon root        holds  38
+  yulesimon support     holds  54
+  zeta    root        holds  44
+  zeta    support     holds  54
+  zeta +truncate=zipf support     holds  94
+  zeta +truncate=zipf unique      holds  2
+not replayed (no certificate comparison):
+  bbinom: no certified outcome (budget): 4
+  bbinom: no certified outcome (invalid): 10
+  bbinom: shapes held: size enumeration or evaluation: 72
+  binom: no certified outcome (invalid): 4
+  binom: size or prob held: closed form or integer search (no face inequality): 94
+  cauchy: evaluation only: 36
+  cauchy: no certified outcome (invalid): 8
+  cauchy: scale held: location search (no face inequality): 36
+  cmb: no certified outcome (budget): 10
+  cmb: no certified outcome (invalid): 10
+  cmb: no certified outcome (numerical): 16
+  cmb: no certified outcome (unresolved): 4
+  cmb: no exact support predicate for this hold subset: 118
+  cmp: no certified outcome (budget): 2
+  cmp: no certified outcome (invalid): 4
+  cmp: no certified outcome (numerical): 10
+  cmp: no exact support predicate for this hold subset: 28
+  dgamma: no certified outcome (conditioning): 6
+  dgamma: no certified outcome (invalid): 4
+  dgamma: no certified outcome (numerical): 2
+  dgamma: no exact support predicate for this hold subset: 28
+  dlaplace: no certified outcome (invalid): 2
+  dlaplace: no exact support predicate for this hold subset: 28
+  dnorm: evaluation only; no exact support predicate for this hold subset: 28
+  dnorm: no certified outcome (invalid): 2
+  dweibull: evaluation only; no exact support predicate for this hold subset: 28
+  dweibull: no certified outcome (invalid): 4
+  dweibull: no certified outcome (numerical): 6
+  foldnorm: evaluation only: 48
+  foldnorm: mu > 0: H(0) does not decide (information only): 78
+  foldnorm: no certified outcome (conditioning): 2
+  foldnorm: no certified outcome (invalid): 10
+  foldnorm: no certified outcome (tolerance): 2
+  gompertz: b held: analytic: 42
+  gompertz: evaluation only: 42
+  gompertz: no certified outcome (invalid): 10
+  gompertz: no certified outcome (numerical): 20
+  hcauchy: no root comparison: 10
+  hcauchy: no root comparison; evaluation only: 50
+  hcauchy: no root comparison; sigma held: endpoint is the minimum: 50
+  lgser: no root comparison: 6
+  lgser: no root comparison; no exact support predicate for this hold subset: 28
+  norm +truncate=tnorm: mean and sd held: evaluation: 128
+  norm +truncate=tnorm: mean held, one-sided window: no face: 88
+  norm +truncate=tnorm: no certified outcome (invalid): 8
+  norm +truncate=tnorm: no certified outcome (numerical): 60
+  norm +truncate=tnorm: no truncation: normal closed form: 74
+  norm +truncate=tnorm: sd held: location solve (no face): 100
+  pig: evaluation only; evaluation only: 28
+  pig: no certified outcome (invalid): 4
+  pig: no certified outcome (numerical): 6
+  pois+zero=inflated: lambda held: closed form or evaluation: 56
+  pois+zero=inflated: no certified outcome (invalid): 4
+  pois+zero=inflated: pi held: held-rate certificate (not mechanism D): 22
+  sgomp: evaluation only: 44
+  sgomp: no certified outcome (invalid): 10
+  sgomp: no certified outcome (numerical): 28
+  slash: evaluation only: 32
+  slash: no certified outcome (budget): 2
+  slash: no certified outcome (invalid): 8
+  slash: no certified outcome (numerical): 8
+  slash: sigma held: location search (no face inequality): 32
+  yulesimon: no root comparison: 6
+  yulesimon: no root comparison; no exact support predicate for this hold subset: 16
+  zeta +truncate=zipf: N free (plain zeta fit) or s held: no window root; no exact support predicate for this hold subset: 56
+  zeta +truncate=zipf: no certified outcome (invalid): 6
+  zeta: no root comparison: 6
+  zeta: no root comparison; no exact support predicate for this hold subset: 16
+2288 cases judged
+cert-replay: failures by check: {'cert-replay:moment': 1, 'cert-replay:unique': 4}
+cert-replay: 0 listed as known, 5 new, 0 listed but passing
+  NEW   cert-replay:moment|double|gompertz|class|huge: limit (n Q - 2 S^2 >= 0); hp n Q - 2 S^2 = -1.51079e+617; relative gap 0.304; double long double intermediates (data / mean 8.302359528222129e+307): mean(z^2) = 1.3911681157892837, 2 mean(z)^2 = 2.0, decides finite; double intermediates (raw data (mean inf not finite)): mean(z^2) = inf, 2 mean(z)^2 = inf, decides limit (DISAGREES with exact); margin none (unpadded); native builds use the long-double mirror, double-only builds the double one
+  NEW   cert-replay:unique|double|cmp|class|zeros: estimate with unique = true; hp all zero, both free: nu unidentified: unique = false; double None; margin None; source: cmp README existence; special/cmp.hpp cmp_mle_work
+  NEW   cert-replay:unique|double|pig|class|zeros: estimate with unique = true; hp all zero, both free: (mu, 0) attains the maximum for every mu: unique = false; double None; margin None; source: pig README existence and Zero member
+  NEW   cert-replay:unique|native|cmp|class|zeros: estimate with unique = true; hp all zero, both free: nu unidentified: unique = false; double None; margin None; source: cmp README existence; special/cmp.hpp cmp_mle_work
+  NEW   cert-replay:unique|native|pig|class|zeros: estimate with unique = true; hp all zero, both free: (mu, 0) attains the maximum for every mu: unique = false; double None; margin None; source: pig README existence and Zero member
