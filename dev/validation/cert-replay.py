@@ -517,6 +517,10 @@ def combined(*replays):
 for family, replay in cert_replay_faces.REPLAYS.items():
     REPLAYS[family] = combined(REPLAYS[family], replay) if family in REPLAYS else replay
 
+import cert_replay_integer   # mechanism G: exhaustive integer searches (cert_replay_integer.py)
+for family, replay in cert_replay_integer.REPLAYS.items():
+    REPLAYS[family] = combined(REPLAYS[family], replay) if family in REPLAYS else replay
+
 def rebuild(family, archive):
     routes = {route['id']: ident for ident, route in fs.ROUTES.items()}   # modifier routes are recorded under their route id
     ident = routes.get(family, family)
