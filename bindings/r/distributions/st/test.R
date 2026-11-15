@@ -17,9 +17,13 @@ test_that("st conditional skew certificates preserve endpoint factors and stops"
   f <- mlst(c(-3,-1,-.2,.1,.8,2,4),xi=0,omega=1,nu=4)
   expect_equal(unname(coef(f)["alpha"]),.16456272666935215,tolerance=1e-8)
   expect_equal(as.numeric(logLik(f)),-16.43971347475502,tolerance=1e-11)
-  expect_error(mlst(c(2,2,2),xi=2,omega=1,nu=.5),class="univariateML_unresolved")
-  face <- tryCatch(mlst(c(0,1,2),xi=0,omega=1,nu=4),univariateML_limit=identity)
-  expect_s3_class(face,"univariateML_limit")
+  flat <- mlst(c(2,2,2),xi=2,omega=1,nu=.5)
+  expect_s3_class(flat,"univariateML")
+  expect_true(attr(flat,"certified"))
+  expect_false(attr(flat,"unique"))
+  expect_equal(as.numeric(logLik(flat)),3*dt(0,.5,log=TRUE))
+  face <- tryCatch(mlst(c(0,1,2),xi=0,omega=1,nu=4),univariateML_nomle=identity)
+  expect_s3_class(face,"univariateML_nomle")
   expect_equal(fit_payload(face)$limit_loglik,sum(log(2)+dt(c(0,1,2),4,log=TRUE))-log(2),tolerance=1e-12)
   expect_error(mlst(c(-1e-12,-1,.1,1,4),xi=0,omega=1,nu=4,iterlim=1),class="univariateML_budget")
 })
@@ -37,8 +41,8 @@ test_that("st location certificates expose ties and budget witnesses", {
 test_that("st one-sign alpha-scale certificate profiles the reachable half-t face", {
   for (sign in c(-1,1)) {
     x <- 2+sign*c(0,1,2,4)
-    face <- tryCatch(mlst(x,xi=2,nu=4),univariateML_limit=identity)
-    expect_s3_class(face,"univariateML_limit")
+    face <- tryCatch(mlst(x,xi=2,nu=4),univariateML_nomle=identity)
+    expect_s3_class(face,"univariateML_nomle")
     expect_equal(unname(face$estimates["mu"]),2)
     scale <- unname(face$estimates["sigma"])
     expect_equal(face$limit_loglik,sum(log(2)+dt((x-2)/scale,4,log=TRUE)-log(scale))-log(2),tolerance=1e-11)
@@ -96,4 +100,10 @@ test_that("st normal face retains its tiny angular ray", {
     c(-2e-16, 2e-16), 0, 1, 1e8, .Machine$double.xmax, TRUE, FALSE)
   reference <- c(3.183098782049451e-9, 3.1830989416263634e-9)
   expect_lt(max(abs(p / reference - 1)), 1e-10)
+})
+
+test_that("st endpoint exponent sign survives a rounded product", {
+  e <- tryCatch(mlst(c(0,0,1,2,3),xi=0,nu=2/3),univariateML_nomle=identity)
+  expect_s3_class(e,"univariateML_nomle")
+  expect_identical(e$reason,"unbounded")
 })

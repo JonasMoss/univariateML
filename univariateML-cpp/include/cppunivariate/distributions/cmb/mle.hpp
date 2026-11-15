@@ -15,6 +15,9 @@ enum class CmbStatus { Ok, InvalidInput, PointMass, AdjacentLimit, EndpointLimit
                        Unidentified, IterationFailure, FaceUnresolved, FaceTie,
                        NotImplemented };
 struct CmbResult { double prob,nu,logLik; int iterations; CmbStatus status;   StopDetail stop_detail{};
+ bool bernoulli_face_tie=false;
+ bool unique=true;
+ unsigned unidentified=0;
 };
 
 // Candidates are (size, prob, nu).
@@ -44,15 +47,18 @@ inline FitOutcome outcome(const CmbResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case CmbStatus::Ok: return FitOutcome::estimate(true);
+    case CmbStatus::Ok: return FitOutcome::estimate(true,r.unique);
     case CmbStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case CmbStatus::PointMass: return FitOutcome::limit(true);
     case CmbStatus::AdjacentLimit: return FitOutcome::limit(true);
     case CmbStatus::EndpointLimit: return FitOutcome::limit(true);
-    case CmbStatus::Unidentified: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case CmbStatus::Unidentified: return FitOutcome::failure(OutcomeReason::Unresolved);
     case CmbStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case CmbStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
-    case CmbStatus::FaceTie: return zero_count_maxima(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
+    case CmbStatus::FaceTie:
+      // The saturated Bernoulli law is attained at size one for every nu.
+      if(r.bernoulli_face_tie)return nonunique_outcome_of(r,true);
+      return zero_count_maxima(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
     case CmbStatus::NotImplemented: return FitOutcome::failure(OutcomeReason::Unsupported);
   }
   return {};
@@ -472,6 +478,11 @@ inline CmbResult cmb_finish_work(ispan x,int N,CmbResult proposed,double tol,int
       if(out.status==CmbStatus::Ok || out.stop_detail.budget_exhausted)break;
     }
   }
+  if(out.status==CmbStatus::Ok) {
+    if(N==0 && std::isnan(prob))out.unidentified|=1u;
+    if(std::isnan(nu) && (N<=1 || out.prob==0 || out.prob==1))out.unidentified|=2u;
+    out.unique=out.unidentified==0;
+  }
   return out;
 }
 
@@ -551,6 +562,8 @@ inline CmbSizeResult accept_exact_size(ispan x,CmbSizeResult best,double prob,do
 inline CmbSizeResult zero_size_tie(double prob,double nu) {
   const double p=std::isnan(prob)?0:prob,v=std::isnan(nu)?1:nu;
   CmbSizeResult out{NAN,{p,v,0,0,CmbStatus::FaceTie}};
+  out.fit.unique=false;
+  out.fit.unidentified=(std::isnan(prob)?1u:0u)|(std::isnan(nu)?2u:0u)|4u;
   out.fit.stop_detail=comparison_detail({{0,p,v},0,0},{{1,0,v},0,0});
   return out;
 }
@@ -833,7 +846,7 @@ inline CmbSizeResult cmb_size_adjacent_fixed_prob(ispan x,int low,double prob,
   const auto fail=[&](CmbStatus s) {
     CmbSizeResult out{nan,{nan,nan,nan,0,s}};
     out.fit.stop_detail=evidence;
-    if(s==CmbStatus::FaceTie || s==CmbStatus::FaceUnresolved) out.fit.stop_detail.loglik_upper=INFINITY;
+    if(!out.fit.bernoulli_face_tie && (s==CmbStatus::FaceTie || s==CmbStatus::FaceUnresolved)) out.fit.stop_detail.loglik_upper=INFINITY;
     return out;
   };
   const int mx=low+1;
@@ -936,7 +949,7 @@ inline CmbSizeResult cmb_size_nonconstant_free_nu(ispan x,int mn,int mx,
   const auto fail=[&](CmbStatus s) {
     CmbSizeResult out{nan,{nan,nan,nan,0,s}};
     out.fit.stop_detail=evidence;
-    if(s==CmbStatus::FaceTie || s==CmbStatus::FaceUnresolved) out.fit.stop_detail.loglik_upper=INFINITY;
+    if(!out.fit.bernoulli_face_tie && (s==CmbStatus::FaceTie || s==CmbStatus::FaceUnresolved)) out.fit.stop_detail.loglik_upper=INFINITY;
     return out;
   };
   const bool fixed=!std::isnan(prob);
@@ -1130,7 +1143,7 @@ inline bool cmb_truncated_fixed_nu_upper(ispan x,int K,int anchor,double nu,int 
 
 // Constant samples have an exact solution (or point-mass supremum). Other
 // free-dispersion samples need the global size and face comparison.
-inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
+inline CmbSizeResult cmb_size_free_nu_mle_impl(ispan x,
     double prob=std::numeric_limits<double>::quiet_NaN(),
     double tol=1e-10,int maxit=2000) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -1139,7 +1152,17 @@ inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
   const auto fail=[&](CmbStatus s) {
     CmbSizeResult out{nan,{nan,nan,nan,0,s}};
     out.fit.stop_detail=evidence;
-    if(s==CmbStatus::FaceTie || s==CmbStatus::FaceUnresolved) out.fit.stop_detail.loglik_upper=INFINITY;
+    out.fit.bernoulli_face_tie=s==CmbStatus::FaceTie && std::isnan(prob) && !x.empty() &&
+      std::all_of(x.begin(),x.end(),[](int v){return v==0 || v==1;});
+    if(out.fit.bernoulli_face_tie) {
+      out.fit.unique=false;out.fit.unidentified=2u;
+      const double p=evidence.limit_coef[1],ll=evidence.limit_loglik;
+      // Proved non-uniqueness renders the first listed family point. The
+      // equivalent binomial law stays in limit_model/limit_coef.
+      out.fit.stop_detail.candidates={{{1,p,1},ll,ll,StopModel::None},{{1,p,-1},ll,ll,StopModel::None}};
+      out.fit.stop_detail.loglik_lower=ll;out.fit.stop_detail.loglik_upper=ll;
+    }
+    if(!out.fit.bernoulli_face_tie && (s==CmbStatus::FaceTie || s==CmbStatus::FaceUnresolved)) out.fit.stop_detail.loglik_upper=INFINITY;
     return out;
   };
   const bool fixed=!std::isnan(prob);
@@ -1162,7 +1185,10 @@ inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
       bool uniform=true;
       for(std::size_t c:counts)uniform=uniform && c==counts[0];
       if(uniform) {
-        if(mx==1 && !fixed){evidence=discrete_two_point(x,0,1);return fail(CmbStatus::FaceTie);}
+        if(mx==1 && !fixed){
+          evidence=discrete_two_point(x,0,1);
+          return fail(CmbStatus::FaceTie);
+        }
         return cmb_detail::accept_exact_size(x,{double(mx),{.5,mx==1?1.:0.,-double(x.size())*std::log(double(mx)+1),0,CmbStatus::Ok}},prob,NAN,tol,maxit);
       }
     }
@@ -1203,7 +1229,6 @@ inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
     if(!fixed && mx-mn==1) {
       evidence=discrete_two_point(x,mn,mx);
       if(mn>0)return fail(CmbStatus::AdjacentLimit);
-      evidence.candidates.push_back({{1,evidence.limit_coef[1],1},evidence.limit_loglik,evidence.limit_loglik});
       return fail(CmbStatus::FaceTie);
     }
     if(!fixed && mn==0) {
@@ -1227,6 +1252,19 @@ inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
   const double eta=mx*(std::log(prob)-std::log1p(-prob));
   evidence=discrete_two_point(x,0,mx,cmb_detail::probability(eta),eta);
   return fail(CmbStatus::FaceUnresolved);
+}
+
+// Identification of attained endpoint and Bernoulli laws is independent of
+// how the free-size search reached its representative.
+inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
+    double prob=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=2000) {
+  auto r=cmb_size_free_nu_mle_impl(x,prob,tol,maxit);
+  if(r.fit.status==CmbStatus::Ok) {
+    if(r.size==0 && std::isnan(prob))r.fit.unidentified|=1u;
+    if(r.size<=1 || r.fit.prob==0 || r.fit.prob==1)r.fit.unidentified|=2u;
+    r.fit.unique=r.fit.unidentified==0;
+  }
+  return r;
 }
 
 // Free probability and fixed dispersion. All finite-size profiles are checked;

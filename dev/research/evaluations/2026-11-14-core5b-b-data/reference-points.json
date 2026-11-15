@@ -1,0 +1,302 @@
+[
+  {
+    "mode": "native",
+    "family": "st",
+    "source": "class",
+    "case": "subnormal",
+    "law": "hnorm",
+    "coefficients": {
+      "mu": 5e-324,
+      "sigma": 5e-324
+    },
+    "reported": 2230.1428417062098,
+    "reference": 2230.1428417062098,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "native",
+    "family": "st",
+    "source": "resample",
+    "case": "n3-s1",
+    "law": "hnorm",
+    "coefficients": {
+      "mu": -1.9961022820176046,
+      "sigma": 2.3214091953850806
+    },
+    "reported": -4.703897297180934,
+    "reference": -4.703897297180933,
+    "error": null,
+    "relative_error": 1.888175620314701e-16
+  },
+  {
+    "mode": "native",
+    "family": "st",
+    "source": "resample",
+    "case": "n7-s1",
+    "law": "hnorm",
+    "coefficients": {
+      "mu": -1.4675308061946082,
+      "sigma": 2.209952400405997
+    },
+    "reported": -10.631336307652253,
+    "reference": -10.631336307652253,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "native",
+    "family": "trgamma",
+    "source": "archive",
+    "case": "008012",
+    "law": "lnorm",
+    "coefficients": {
+      "meanlog": 1.5034419739261415,
+      "sdlog": 1.720465050179854e-08
+    },
+    "reported": 74.77852803231016,
+    "reference": 74.77852803231016,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "native",
+    "family": "trgamma",
+    "source": "archive",
+    "case": "008013",
+    "law": "lnorm",
+    "coefficients": {
+      "meanlog": 1.5034419719263419,
+      "sdlog": 1.7204941089435166e-12
+    },
+    "reported": 120.83022330699154,
+    "reference": 120.83022330699154,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "native",
+    "family": "trgamma",
+    "source": "archive",
+    "case": "008015",
+    "law": "lnorm",
+    "coefficients": {
+      "meanlog": 1.5034419739261415,
+      "sdlog": 1.720465050179854e-08
+    },
+    "reported": 74.77852803231016,
+    "reference": 74.77852803231016,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "native",
+    "family": "trgamma",
+    "source": "archive",
+    "case": "008016",
+    "law": "lnorm",
+    "coefficients": {
+      "meanlog": 1.5034419719263419,
+      "sdlog": 1.7204941089435166e-12
+    },
+    "reported": 120.83022330699154,
+    "reference": 120.83022330699154,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "native",
+    "family": "hcauchy",
+    "source": "class",
+    "case": "subnormal",
+    "law": "hcauchy",
+    "coefficients": {
+      "mu": 0.0,
+      "sigma": 1e-323
+    },
+    "reported": 2227.79108037838,
+    "reference": 2227.79108037838,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "native",
+    "family": "weibull",
+    "source": "class",
+    "case": "near-constant",
+    "law": "weibull",
+    "coefficients": {
+      "scale": 3.5621069363288447,
+      "shape": 1.6975668877304068e+16
+    },
+    "reported": 100.11608650571628,
+    "reference": 100.11608650571628,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "native",
+    "family": "weibull",
+    "source": "class",
+    "case": "offset",
+    "law": "weibull",
+    "coefficients": {
+      "scale": 1953447908227340.5,
+      "shape": 1922327692449067.8
+    },
+    "reported": -9.510933302028633,
+    "reference": -9.510933302028617,
+    "error": null,
+    "relative_error": 1.6809298358965772e-15
+  },
+  {
+    "mode": "double",
+    "family": "st",
+    "source": "class",
+    "case": "subnormal",
+    "law": "hnorm",
+    "coefficients": {
+      "mu": 5e-324,
+      "sigma": 5e-324
+    },
+    "reported": 2230.1428417062098,
+    "reference": 2230.1428417062098,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "double",
+    "family": "st",
+    "source": "resample",
+    "case": "n3-s1",
+    "law": "hnorm",
+    "coefficients": {
+      "mu": -1.9961022820176046,
+      "sigma": 2.3214091953850806
+    },
+    "reported": -4.703897297180934,
+    "reference": -4.703897297180933,
+    "error": null,
+    "relative_error": 1.888175620314701e-16
+  },
+  {
+    "mode": "double",
+    "family": "st",
+    "source": "resample",
+    "case": "n7-s1",
+    "law": "hnorm",
+    "coefficients": {
+      "mu": -1.4675308061946082,
+      "sigma": 2.209952400405997
+    },
+    "reported": -10.631336307652253,
+    "reference": -10.631336307652253,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "double",
+    "family": "trgamma",
+    "source": "archive",
+    "case": "008012",
+    "law": "lnorm",
+    "coefficients": {
+      "meanlog": 1.5034419739261415,
+      "sdlog": 1.720465050179854e-08
+    },
+    "reported": 74.77852803231016,
+    "reference": 74.77852803231016,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "double",
+    "family": "trgamma",
+    "source": "archive",
+    "case": "008013",
+    "law": "lnorm",
+    "coefficients": {
+      "meanlog": 1.5034419719263419,
+      "sdlog": 1.7204941089435166e-12
+    },
+    "reported": 120.83022330699154,
+    "reference": 120.83022330699154,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "double",
+    "family": "trgamma",
+    "source": "archive",
+    "case": "008015",
+    "law": "lnorm",
+    "coefficients": {
+      "meanlog": 1.5034419739261415,
+      "sdlog": 1.720465050179854e-08
+    },
+    "reported": 74.77852803231016,
+    "reference": 74.77852803231016,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "double",
+    "family": "trgamma",
+    "source": "archive",
+    "case": "008016",
+    "law": "lnorm",
+    "coefficients": {
+      "meanlog": 1.5034419719263419,
+      "sdlog": 1.7204941089435166e-12
+    },
+    "reported": 120.83022330699154,
+    "reference": 120.83022330699154,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "double",
+    "family": "hcauchy",
+    "source": "class",
+    "case": "subnormal",
+    "law": "hcauchy",
+    "coefficients": {
+      "mu": 0.0,
+      "sigma": 1e-323
+    },
+    "reported": 2227.79108037838,
+    "reference": 2227.79108037838,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "double",
+    "family": "weibull",
+    "source": "class",
+    "case": "near-constant",
+    "law": "weibull",
+    "coefficients": {
+      "scale": 3.5621069363288447,
+      "shape": 1.6975668877304068e+16
+    },
+    "reported": 100.11608650571628,
+    "reference": 100.11608650571628,
+    "error": null,
+    "relative_error": 0.0
+  },
+  {
+    "mode": "double",
+    "family": "weibull",
+    "source": "class",
+    "case": "offset",
+    "law": "weibull",
+    "coefficients": {
+      "scale": 1953447908227340.5,
+      "shape": 1922327692449067.8
+    },
+    "reported": -9.510933302028633,
+    "reference": -9.510933302028617,
+    "error": null,
+    "relative_error": 1.6809298358965772e-15
+  }
+]

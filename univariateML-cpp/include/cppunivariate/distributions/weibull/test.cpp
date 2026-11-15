@@ -340,3 +340,17 @@ TEST_CASE("weibull: subnormal held shape; unrepresentable log likelihood at held
   CHECK(cppunivariate::weibull_mle(mltest::as_span(y),1e-10,100,nan,2.9155677520153174,nan).status==
         cppunivariate::WeibullStatus::Ok);
 }
+
+TEST_CASE("weibull likelihood evaluates represented coefficients near collapse") {
+  const std::vector<double> x{1,1+1e-12,1+2e-12,1+4e-12};
+  const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100);
+  REQUIRE(r.status==cppunivariate::WeibullStatus::Ok);
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dweibull(v,r.shape,r.scale,true);
+  CHECK(r.logLik==ll);
+}
+
+TEST_CASE("weibull validates a supplied start on held-parameter routes") {
+  const std::vector<double> x{1,2,3};
+  const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,-1,1,1);
+  CHECK(r.status==cppunivariate::WeibullStatus::InvalidInput);
+}

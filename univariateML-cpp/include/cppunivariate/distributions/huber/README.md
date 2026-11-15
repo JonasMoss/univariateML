@@ -188,8 +188,9 @@ A finite winner must exceed both face upper bounds by
 the arithmetic allowance, in addition to passing the global value bound.
 A face is selected only when the compact
 profile upper bound is below it by the arithmetic allowance; an overlapping
-finite profile bound produces a tie stop, with the unresolved segment endpoints
-retained. If a face calculation underflows or overflows, its malformed
+finite profile bound retains the normal or Laplace face and the unresolved
+segment endpoints. The better computed face is an uncertified limit;
+an unchecked finite winner remains unresolved. If a face calculation underflows or overflows, its malformed
 witness is discarded and the numerical stop retains the remaining proper
 points with an unknown global upper bound. Laplace witnesses avoid forming
 unscaled absolute sums or the product $2b$, preserving large finite scales.
@@ -197,7 +198,7 @@ A nonrepresentable fixed-shape
 objective can leave no finite witness; its lower bound remains unavailable.
 Work exhaustion retains finite, normal and
 eligible Laplace witnesses with a global upper bound and advises raising
-`iterlim`. An unresolved comparison retains the same evidence as a tie stop.
+`iterlim`. The compared finite and limiting points remain attached.
 
 Exact-prefix nominations remain a large-sample proposal optimization; the
 full-reduction polish reproduces the default fitter's coefficients. That

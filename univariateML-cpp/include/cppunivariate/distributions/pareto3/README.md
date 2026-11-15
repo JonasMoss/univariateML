@@ -157,3 +157,9 @@ With `min = 0`, the joint fit agrees with `mlllogis(x)`. Failed conditional sear
 The logarithm of the distance from the held minimum converts scale into a
 logistic location. Coefficient accuracy must therefore account for the coupled
 shape/location errors and the exponential map back to the public scale.
+
+At a held scale, the constant-sample shape spike requires the exact equality
+$x-\mathrm{min}=\mathrm{scale}$, where the density is
+$\mathrm{shape}/(4\,\mathrm{scale})$. A rounded threshold difference equal
+to the held scale does not suffice. Joint free shape and scale have the
+constant-sample spike independently of the chosen scale representative.

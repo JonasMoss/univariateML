@@ -33,6 +33,8 @@ inline FitResult fit_invparalogis(cppunivariate::span x, Held shape_arg = {}, He
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied}});
   };
 
+  if(res.unrepresentable_search)
+    return done(stop_failure(fail("Inverse paralogistic MLE failed: fitted parameters or likelihood exceed double precision"),res.stop_detail,outcome_payload(o),{"shape","scale"}));
   if(res.status==cppunivariate::ParalogisStatus::NumericalFailure && std::isinf(res.scale))
     return done(stop_failure(fail("Inverse paralogistic numerical failure: the fitted scale cannot be represented in binary64."),res.stop_detail,outcome_payload(o),{"shape","scale"}));
   if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("invparalogis numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"shape","scale"}));
@@ -44,8 +46,6 @@ inline FitResult fit_invparalogis(cppunivariate::span x, Held shape_arg = {}, He
     return done(stop_failure(fail("Inverse paralogistic certificate numerical failure: unresolved bounds or fitted parameters exceed double precision; no verified MLE."),res.stop_detail,outcome_payload(o),{"shape","scale"}));
   if(res.status==cppunivariate::ParalogisStatus::InvalidStart)
     return done(fail("Inverse paralogistic MLE requires positive, finite observations."));
-  if(!std::isfinite(res.shape)||!std::isfinite(res.scale)||!std::isfinite(res.logLik))
-    return done(stop_failure(fail("Inverse paralogistic MLE failed: fitted parameters or likelihood exceed double precision"),res.stop_detail,PayloadKind::Numerical,{"shape","scale"}));
   if(res.status==cppunivariate::ParalogisStatus::BfgsFailure)
     return done(stop_failure(fail("Inverse paralogistic optimizer BfgsFailure: proposal failed to converge; no verified MLE; increase iterlim or change shape0."),res.stop_detail,outcome_payload(o),{"shape","scale"}));
   std::vector<std::string> fixed;

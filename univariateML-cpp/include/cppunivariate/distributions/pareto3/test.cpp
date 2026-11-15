@@ -117,3 +117,20 @@ TEST_CASE("pareto3: the inverse displacement survives an underflowed power coord
   CHECK(cppunivariate::distributions::qpareto3(-0.6931471805599453,1e308,1e308,-1e308,false,true)==
         doctest::Approx(-4.638093627692599e-17).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("pareto3 core distinguishes collapse from invalid observations") {
+  const std::vector<double> constant{2,2,2}, invalid{-1,2};
+  const auto r=cppunivariate::pareto3_mle(mltest::as_span(constant),0,1e-10,1000);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+  CHECK(cppunivariate::outcome(cppunivariate::pareto3_mle(mltest::as_span(invalid),0,1e-10,1000)).reason==cppunivariate::OutcomeReason::InvalidInput);
+}
+
+TEST_CASE("pareto3 rounded threshold subtraction is not statistical nonexistence") {
+  const std::vector<double> distinct{.1,.2},one{.1};
+  for(const auto& x : {distinct,one}) {
+    const auto r=cppunivariate::pareto3_mle(mltest::as_span(x),-1e16,1e-10,1000,NAN,x.size()==1?1e16:NAN);
+    CHECK(r.status==cppunivariate::Pareto3Status::TransformFailure);
+    CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+  }
+}

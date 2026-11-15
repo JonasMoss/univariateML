@@ -30,6 +30,8 @@
 #include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
 #include "../burr/mle.hpp"
+#include "../power/dpqr.hpp"
+#include "../lnorm/dpqr.hpp"
 #include <array>
 
 #include "../../core/span.hpp"
@@ -72,6 +74,8 @@ inline bool family_point(const TrGammaResult&, const FitCandidate& c) {
 inline bool accurate_point(const TrGammaResult&, const FitCandidate&) { return false; }
 
 inline FitOutcome outcome(const TrGammaResult& r) {
+  // Infinite logLik distinguishes proved collapse from rejected observations.
+  if(r.status==TrGammaStatus::InvalidData && r.logLik==INFINITY)return FitOutcome::nonexistence(OutcomeReason::Unbounded);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
@@ -90,6 +94,12 @@ inline FitOutcome outcome(const TrGammaResult& r) {
 }
 
 namespace trgamma_detail {
+inline void complete_budget_payload(TrGammaResult& r) {
+  auto& d=r.stop_detail;
+  if(d.budget_exhausted && d.candidates.empty() && valid_stop_coefficients(d.limit_model,d.limit_coef) && std::isfinite(d.limit_loglik))
+    d.candidates.push_back({d.limit_coef,d.limit_loglik,d.limit_loglik,d.limit_model});
+}
+
 
 constexpr double kHalfLog2Pi = 0.91893853320467274178;
 constexpr double kEulerGamma = 0.57721566490153286061;
@@ -823,7 +833,10 @@ inline TrGammaResult trgamma_fit_log(span y, double tol, int maxit,
     TrGammaResult result{shape1,shape2,std::exp(log_scale),log_scale,ll,0,TrGammaStatus::Ok};
     return trgamma_detail::check_represented(y,result,TrGammaStatus::Ok,TrGammaStatus::IterationFailure);
   }
-  if (!standardized) return bad;
+  if (!standardized) {
+    if(!y.empty() && std::all_of(y.begin(),y.end(),[&](double v){return std::isfinite(v) && v==y[0];})) {bad.logLik=INFINITY;}
+    return bad;
+  }
   if (!std::isnan(shape2)) {
     const double t = shape2 * d.sd;
     const trgamma_detail::Cgf c = trgamma_detail::cgf(d, t);
@@ -891,6 +904,28 @@ inline TrGammaResult trgamma_mle(span x, double tol = 1e-10, int maxit = 100,
     for(auto& c:r.stop_detail.candidates)if(c.model==StopModel::Power && c.coef.size()==2)c.coef[0]=endpoint;
     if(r.status==TrGammaStatus::PowerBoundary){r.scale=endpoint;r.log_scale=std::log(endpoint);}
   }
+  // A face's public likelihood is evaluated at its represented coefficients
+  // on the original observations, not the standardized log-data objective.
+  const auto face_value=[&](StopModel model,const std::vector<double>& c) {
+    if(c.size()!=2 || (model!=StopModel::Power && model!=StopModel::Lnorm))return double(NAN);
+    double ll=0;
+    for(double v:x)ll+=model==StopModel::Power?distributions::dpower(v,c[0],c[1],true):distributions::dlnorm(v,c[0],c[1],true);
+    return ll;
+  };
+  const double face_ll=face_value(r.stop_detail.limit_model,r.stop_detail.limit_coef);
+  if(std::isfinite(face_ll)) {
+    const double displacement=std::abs(face_ll-r.stop_detail.limit_loglik);
+    r.stop_detail.limit_loglik=face_ll;
+    if(std::isfinite(r.stop_detail.loglik_upper))r.stop_detail.loglik_upper+=displacement;
+    r.stop_detail.loglik_lower=face_ll;
+    if(r.status==TrGammaStatus::PowerBoundary || r.status==TrGammaStatus::LognormalBoundary)r.logLik=face_ll;
+    for(auto& c:r.stop_detail.candidates) {
+      const double value=face_value(c.model,c.coef);
+      if(std::isfinite(value) && c.loglik_lower==c.loglik_upper)c.loglik_lower=c.loglik_upper=value;
+      if(std::isfinite(c.loglik_lower))r.stop_detail.loglik_lower=std::max(r.stop_detail.loglik_lower,c.loglik_lower);
+    }
+  }
+  trgamma_detail::complete_budget_payload(r);
   r.status = trgamma_range_status(r.status, r.log_scale);
   return r;
 }
@@ -1148,7 +1183,9 @@ inline TrGammaResult trgamma_mle_fixed_scale(span x,double scale,double a=std::n
     }
     if(c.model==StopModel::Power && c.coef.size()==2)c.coef[0]=scale;
   }
-  return trgamma_detail::check_represented({y.data(),y.size()},out,TrGammaStatus::Ok,TrGammaStatus::IterationFailure);
+  out=trgamma_detail::check_represented({y.data(),y.size()},out,TrGammaStatus::Ok,TrGammaStatus::IterationFailure);
+  trgamma_detail::complete_budget_payload(out);
+  return out;
 }
 
 }

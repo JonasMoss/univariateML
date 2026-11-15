@@ -146,7 +146,7 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
 inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double invalid = std::numeric_limits<double>::quiet_NaN();
-  if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return v>=0 && std::isfinite(v);}))
+  if(x.empty() || !(tol>0 && std::isfinite(tol)) || maxit<1 || !std::all_of(x.begin(),x.end(),[](double v){return v>=0 && std::isfinite(v);}))
     return {invalid,invalid,invalid,0,GompertzStatus::InvalidInput};
   if(std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
     const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -165,7 +165,7 @@ inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b
   maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(a) && std::isnan(b))return gompertz_mle(x,tol,maxit);
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return v>=0 && std::isfinite(v);}))
+  if(x.empty() || !(tol>0 && std::isfinite(tol)) || maxit<1 || !std::all_of(x.begin(),x.end(),[](double v){return v>=0 && std::isfinite(v);}))
     return {nan,nan,nan,0,GompertzStatus::InvalidInput};
   if(!(tol>0 && std::isfinite(tol)) || maxit<=0 || (!std::isnan(a) && !(a>0 && std::isfinite(a))) ||
      (!std::isnan(b) && !(b>0 && std::isfinite(b))))return {nan,nan,nan,0,GompertzStatus::IterationFailure};

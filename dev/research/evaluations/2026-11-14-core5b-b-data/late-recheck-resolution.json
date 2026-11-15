@@ -1,0 +1,12 @@
+{
+  "initial_dev": "FAIL 3, WARN 0, SKIP 157, PASS 36228",
+  "resolved_by": "r-dev-targeted: both affected files pass; test-full: complete final-source suite passes",
+  "files": [
+    "binom/test.R (CMB cross-family assertion)",
+    "invparalogis/test.R (unchanged range assertion)"
+  ],
+  "core_rechecks": [
+    "cpp-invparalogis-targeted",
+    "cpp-double-invparalogis-targeted"
+  ]
+}

@@ -11,7 +11,7 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
                          double xi=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   GevResult bad{0,0,xi,0,0,GevStatus::InvalidData};
-  if(x.size()<3 || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
+  if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
   if(!std::isnan(xi) && (!std::isfinite(xi) || xi<-.5 || xi>1)) {
     bad.status=GevStatus::InvalidShape;return bad;
   }
@@ -24,7 +24,7 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
   // by the Fréchet pair bound; strict majorities diverge.
   const bool tie_half = std::isnan(xi) && 2*minimum_count==y.size();
   if(std::isnan(xi) ? 2*minimum_count>y.size() :
-      (xi>0 && xi*static_cast<double>(minimum_count)>=y.size()-minimum_count)) return bad;
+      (xi>0 && xi*static_cast<double>(minimum_count)>=y.size()-minimum_count)) {if(std::isnan(xi))bad.stop_detail.loglik_upper=INFINITY;return bad;}
   if(tie_half) {
     double face=y.size()*(std::log(2.)-1);
     for(double v:y)if(v>y[0]) {
@@ -37,10 +37,17 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
   }
   // Standardization prevents scale and translation from setting tolerances.
   const double origin=y[0],range=y.back()-origin;
-  if(!(range>0) || !std::isfinite(range)) return bad;
-  for(double &v:y) v=(v-origin)/range;
+  if(!(range>0) || !std::isfinite(range)) {bad.status=GevStatus::NumericalFailure;return bad;}
+  bool lost_minimum=false;
+  for(double &v:y) {
+    const double raw=v;v=(v-origin)/range;
+    lost_minimum=lost_minimum || (raw>origin && v==0);
+  }
   const span data{y.data(),y.size()};
   auto restore=[&](GevResult r) {
+    if(lost_minimum && (r.status==GevStatus::NoMLE || r.status==GevStatus::InvalidData)) {
+      r.status=GevStatus::NumericalFailure;r.stop_detail={};
+    }
     r.mu=origin+range*r.mu;r.sigma*=range;
     const double jac=y.size()*std::log(range);
     r.logLik-=jac;
@@ -61,7 +68,7 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
 }
 
 enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure, SearchContradicted };
-struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified=true; };
+struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified=true; bool minimum_majority=false; bool shape_collapse=false; };
 
 inline bool family_point(const FrechetResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
@@ -163,7 +170,7 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
    if(!std::isfinite(v) || (hm && !(v>mu))) return bad;
    m=std::min(m,v);M=std::max(M,v);
  }
- if(!hm && !hl && m==M) return bad; // shape spike with held scale
+ if(!hm && !hl && m==M) {bad.shape_collapse=true;bad.stop_detail.loglik_upper=INFINITY;return bad;} // shape spike with held scale
  if(!hm && !hl && hs && m<M && x.size()>=3) {
    std::size_t k=0;bool two_point=true;
    for(double v:x) {if(v==m)++k;else if(v!=M)two_point=false;}
@@ -187,12 +194,25 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
  }
 
  if(hm) {
-   std::vector<double> excess;for(double v:x)excess.push_back(v-mu);
+   if(m==M && !hl && !hs) {bad.shape_collapse=true;bad.stop_detail.loglik_upper=INFINITY;return bad;}
+   std::vector<double> excess;bool exact=true;
+   for(double v:x) {
+     const double y=v-mu;
+     if(!std::isfinite(y)){bad.status=FrechetStatus::NumericalFailure;return bad;}
+     const double virtual_mu=v-y;
+     const double error=(v-(y+virtual_mu))+(virtual_mu-mu);
+     exact=exact && error==0;excess.push_back(y);
+   }
    const auto r=invweibull_mle(span{excess.data(),excess.size()},tol,maxit,NAN,lambda,sigma);
    FrechetResult out{r.shape,mu,r.scale,r.logLik,r.iterations,
      r.status==InvWeibullStatus::Ok?FrechetStatus::Ok:
      r.status==InvWeibullStatus::IterationFailure?FrechetStatus::IterationFailure:FrechetStatus::InvalidData};
-   out.certified=r.certified;return out;
+   out.certified=r.certified;
+   if(r.status==InvWeibullStatus::Unbounded) {
+     if(m==M && (!hs || exact)) {out.shape_collapse=true;out.stop_detail.loglik_upper=INFINITY;}
+     else out.status=FrechetStatus::NumericalFailure;
+   }
+   return out;
  }
  if(hl && !hs) {
    std::size_t k=0;for(double v:x) if(v==m) ++k;
@@ -219,7 +239,11 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
    if(hl)bad.status=FrechetStatus::NumericalFailure;
    return bad;
  }
- std::vector<double> y;for(double v:x)y.push_back((v-m)/unit);
+ std::vector<double> y;for(double v:x) {
+   const double z=(v-m)/unit;
+   if(!std::isfinite(z)){bad.status=FrechetStatus::NumericalFailure;return bad;}
+   y.push_back(z);
+ }
  const span data{y.data(),y.size()};
  if(hl) {
    auto fit=frechet_fixed_shape_certificate(data,lambda,hs,tol,maxit);
@@ -311,25 +335,10 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
  double lambda=std::numeric_limits<double>::quiet_NaN(),
  double sigma=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
- if(!std::isnan(lambda) || !std::isnan(sigma)) return frechet_held_mle(x,tol,maxit,mu,lambda,sigma);
+ if(!std::isnan(mu) || !std::isnan(lambda) || !std::isnan(sigma)) return frechet_held_mle(x,tol,maxit,mu,lambda,sigma);
  const double nan=std::numeric_limits<double>::quiet_NaN();
  FrechetResult bad{nan,mu,nan,nan,0,FrechetStatus::InvalidData};
- if(x.size()<2 || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
- if(!std::isnan(mu)) {
-   if(!std::isfinite(mu)) return bad;
-   std::vector<double> y(x.size());
-   for(std::size_t i=0;i<x.size();++i) {
-     y[i]=x[i]-mu;
-     if(!(y[i]>0) || !std::isfinite(y[i])) return bad;
-   }
-   const auto r=invweibull_mle(span{y.data(),y.size()},tol,maxit);
-   if(r.status==InvWeibullStatus::IterationFailure) {
-     bad.status=FrechetStatus::IterationFailure;return bad;
-   }
-   if(!(r.shape>0) || !(r.scale>0) || !std::isfinite(r.shape) || !std::isfinite(r.scale) || !std::isfinite(r.logLik)) return bad;
-   FrechetResult out{r.shape,mu,r.scale,r.logLik,r.iterations,r.status==InvWeibullStatus::Ok ? FrechetStatus::Ok : FrechetStatus::IterationFailure};
-   out.certified=r.certified;return out;
- }
+ if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1) return bad;
  // The two-point reduction applies only with every public coefficient free.
  if(x.size()>=3) {
    double minimum=INFINITY,maximum=-INFINITY;
@@ -341,7 +350,7 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
      return frechet_two_point_certificate(x,minimum,maximum,k,tol,maxit);
  }
  const auto r=frechet_gev_mle(x,tol,maxit);
- if(r.status==GevStatus::InvalidData) return bad;
+ if(r.status==GevStatus::InvalidData) {bad.stop_detail=r.stop_detail;bad.minimum_majority=r.stop_detail.loglik_upper==INFINITY;return bad;}
  if(r.status==GevStatus::NoMLE) {bad.status=FrechetStatus::NoMLE;bad.stop_detail=r.stop_detail;return bad;}
  auto detail=r.stop_detail;
  std::vector<FitCandidate> mapped;

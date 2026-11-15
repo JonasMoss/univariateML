@@ -144,3 +144,10 @@ TEST_CASE("invparalogis rejects an overflowing reciprocal scale in the core") {
     for(const auto& c:r.stop_detail.candidates)for(double v:c.coef)CHECK(std::isfinite(v));
   }
 }
+
+TEST_CASE("invparalogis core reports an unrepresentable search payload as evaluation failure") {
+ const std::vector<double> x{1e-300,1,1e300};
+ const auto r=cppunivariate::invparalogis_mle(mltest::as_span(x),1.220703e-4,100);
+ CHECK(r.status==cppunivariate::ParalogisStatus::NumericalFailure);
+ CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+}

@@ -559,7 +559,9 @@ nonempty witness superlevel ensure that a global maximum exists there.
 The final observed-information Newton correction supplies the requested
 local coefficient accuracy. The exported global coefficient box retains the
 cover center and radius; it is not recentered on the polished estimate. The
-swapped box supplies the other label. If this cover cannot close, the successful
+swapped box supplies the other label. Disjoint certified intervals for size
+and beta separate these two global maximizers and prove non-uniqueness; the
+fit then carries `unique = FALSE`. If this cover cannot close, the successful
 legacy result is retained as uncertified. A proved strict advantage overrides a
 legacy face choice; an actually failed legacy solve still stops. The diagonal
 witness remains available independently of selection.

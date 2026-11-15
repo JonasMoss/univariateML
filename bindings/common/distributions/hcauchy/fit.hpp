@@ -3,13 +3,7 @@
 #include "cppunivariate/distributions/hcauchy/mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_hcauchy(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}) {
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mu = mu_arg;
@@ -28,12 +22,14 @@ inline FitResult fit_hcauchy(cppunivariate::span x, Held mu_arg = {}, Held sigma
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}});
   };
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if(r.status==cppunivariate::HcauchyStatus::Unbounded)
     return done(nomle("Half-Cauchy likelihood is unbounded as sigma -> 0 when more than half the observations equal the free or held endpoint (including all equal to it)."));
   if(r.status==cppunivariate::HcauchyStatus::ScaleBoundary)
-    return done(classify(fail("Half-Cauchy likelihood has a finite unattained supremum as sigma -> 0 when exactly half the observations equal the free or held endpoint."),{},outcome_payload(o),{},""));
+    return done(stop_failure(fail("Half-Cauchy likelihood has a finite unattained supremum as sigma -> 0 when exactly half the observations equal the free or held endpoint."),{},outcome_payload(o),{},""));
+  if(r.status==cppunivariate::HcauchyStatus::NumericalFailure)
+    return done(fail("Half-Cauchy threshold subtraction exceeds double precision."));
   if(mu_held && r.status==cppunivariate::HcauchyStatus::InvalidData)
     return done(fail("Half-Cauchy observations must be finite and at least the held mu."));
   if(r.status!=cppunivariate::HcauchyStatus::Ok)

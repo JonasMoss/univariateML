@@ -177,3 +177,10 @@ TEST_CASE("fatigue: an unseparated pair of score roots is an uncertified estimat
   CHECK(c.loglik_lower==c.loglik_upper);
   CHECK(c.coef[0]==3.0);
 }
+
+TEST_CASE("fatigue transformed-data range failures have an arithmetic outcome") {
+  const std::vector<double> x{1,2};
+  const auto r=cppunivariate::fatigue_mle_shifted(mltest::as_span(x),-1e300,1e-10,200);
+  CHECK(r.transformation_failure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+}

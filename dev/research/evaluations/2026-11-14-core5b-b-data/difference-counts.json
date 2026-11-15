@@ -1,0 +1,46 @@
+{
+  "native": {
+    "total": 3368,
+    "changed": 243,
+    "categories": {
+      "outcome-meaning": 29,
+      "core-owned-rendering": 3,
+      "represented-point-likelihood": 198,
+      "restored-limit-endpoint": 13
+    },
+    "families": {
+      "bnbinom": 15,
+      "cmb": 2,
+      "frechet": 3,
+      "gompertz": 1,
+      "hcauchy": 60,
+      "pareto3": 8,
+      "sn": 1,
+      "st": 104,
+      "trgamma": 24,
+      "weibull": 25
+    }
+  },
+  "double": {
+    "total": 3368,
+    "changed": 247,
+    "categories": {
+      "outcome-meaning": 29,
+      "core-owned-rendering": 3,
+      "represented-point-likelihood": 202,
+      "restored-limit-endpoint": 13
+    },
+    "families": {
+      "bnbinom": 15,
+      "cmb": 2,
+      "frechet": 3,
+      "gompertz": 1,
+      "hcauchy": 60,
+      "pareto3": 8,
+      "sn": 1,
+      "st": 105,
+      "trgamma": 25,
+      "weibull": 27
+    }
+  }
+}

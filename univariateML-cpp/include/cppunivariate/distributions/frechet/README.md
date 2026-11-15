@@ -410,3 +410,9 @@ retains the infinite-shape tail exclusion and the attained shape-one face.
 Unresolved all-free certificates use the numerical profile search only after
 its own convergence and total shape-score check; its per-fit flag is false.
 A completed all-free certificate has the flag true.
+
+With location and scale held, a constant sample permits the free-shape spike
+only when $x-\mu=\sigma$ as an exact real equality: the density there is
+$\lambda/(e\sigma)$. Rounding the subtraction to the held scale is not a
+proof of that equality. Distinct original observations remain distinct under
+translation even if their binary64 excesses coincide.

@@ -8,7 +8,7 @@
 #include <limits>
 #include <vector>
 namespace cppunivariate {
-struct InvParalogisResult { double shape, scale; double logLik; int iterations; ParalogisStatus status; StopDetail stop_detail = {}; bool certified=true; };
+struct InvParalogisResult { double shape, scale; double logLik; int iterations; ParalogisStatus status; StopDetail stop_detail = {}; bool certified=true; bool unrepresentable_search=false; };
 
 inline FitOutcome outcome(const InvParalogisResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
@@ -36,7 +36,9 @@ inline InvParalogisResult invparalogis_checked(InvParalogisResult r) {
       (c.coef.size()!=2 || !(c.coef[0]>0 && c.coef[1]>0) ||
        !std::isfinite(c.coef[0]) || !std::isfinite(c.coef[1]));}),r.stop_detail.candidates.end());
   if(!(r.shape>0 && r.scale>0) || !std::isfinite(r.shape) || !std::isfinite(r.scale) || !std::isfinite(r.logLik)) {
-    if(r.status==ParalogisStatus::Ok){r.status=ParalogisStatus::NumericalFailure;r.certified=false;}
+    if(r.status==ParalogisStatus::BfgsFailure) {
+      r.status=ParalogisStatus::NumericalFailure;r.certified=false;r.unrepresentable_search=true;
+    } else if(r.status==ParalogisStatus::Ok){r.status=ParalogisStatus::NumericalFailure;r.certified=false;}
     r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;r.stop_detail.conditioning_bound=NAN;
   }
   return r;

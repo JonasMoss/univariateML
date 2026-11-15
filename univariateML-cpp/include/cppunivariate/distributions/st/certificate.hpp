@@ -27,7 +27,10 @@ inline StResult skew_fit(span data,double xi,double omega,double nu,int maxit) {
  if(!std::isfinite(base))return out;
  const auto candidate=[&](double a,double ll,double error){return FitCandidate{{xi,omega,a,nu},ll-error,ll+error};};
  if(positive+negative==0) {
-  out.stop_detail=comparison_detail(candidate(-1,base,skew_scalar_detail::margin(std::abs(base))),candidate(1,base,skew_scalar_detail::margin(std::abs(base))));return out;
+  // At x=xi the skew CDF factor is exactly 1/2 for every alpha.
+  // Thus both representatives (and all real alpha) are exact maximizers.
+  out.reason=7;out.certified=true;
+  out.stop_detail=comparison_detail(candidate(-1,base,0),candidate(1,base,0));return out;
  }
  if(positive==0 || negative==0) {
   const double ll=base+(positive+negative)*std::log(2.);

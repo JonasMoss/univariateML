@@ -117,3 +117,18 @@ TEST_CASE("hcauchy: README threshold shifts all four operations") {
 TEST_CASE("hcauchy: exact-input extreme arithmetic regression") {
   CHECK(cppunivariate::distributions::qhcauchy(-0.6931471805599453,-1.0,1.0,true,true) == doctest::Approx(3.642750216855176e-17).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("hcauchy likelihood evaluates represented subnormal scale") {
+  const std::vector<double> x{1e-323,2e-323,4e-323};
+  const auto r=cppunivariate::hcauchy_mle(mltest::as_span(x),0);
+  REQUIRE(r.status==cppunivariate::HcauchyStatus::Ok);
+  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dhcauchy(v,r.mu,r.sigma,true);
+  CHECK(r.logLik==ll);
+}
+
+TEST_CASE("hcauchy overflowing threshold differences are not invalid observations") {
+  const std::vector<double> x{-1e308,1e308};
+  const auto r=cppunivariate::hcauchy_mle(mltest::as_span(x),-1.5e308);
+  CHECK(r.status==cppunivariate::HcauchyStatus::NumericalFailure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+}

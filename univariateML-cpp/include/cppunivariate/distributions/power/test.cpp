@@ -107,3 +107,10 @@ TEST_CASE("power: deep tails and log inversion regressions") {
   CHECK(cppunivariate::distributions::ppower(std::exp(-1.0),1,1e-320,false,true) == doctest::Approx(std::log(1e-320)).scale(0.0));
 
 }
+
+TEST_CASE("power core identifies observations outside a held endpoint") {
+  const std::vector<double> x{1,2};
+  const auto r=cppunivariate::power_mle(mltest::as_span(x),0,1,NAN);
+  CHECK(r.status==cppunivariate::PowerStatus::OutsideSupport);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::InvalidInput);
+}

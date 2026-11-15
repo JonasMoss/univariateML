@@ -25,6 +25,7 @@ inline FitResult fit_invexp(cppunivariate::span x, Held scale_arg = {}) {
   };
 
   if (r.status == cppunivariate::InvExpStatus::InvalidInput) return done(fail("Inverse exponential requires nonempty positive finite data and a valid held scale."));
+  if (r.status == cppunivariate::InvExpStatus::Unbounded) return done(stop_failure(fail("Inverse exponential likelihood is unbounded."),{},outcome_payload(o),{}));
   if (r.status != cppunivariate::InvExpStatus::Ok) return done(fail("Inverse exponential MLE exceeds double precision."));
   if (!(r.scale>0.0) || !std::isfinite(r.scale) || !std::isfinite(r.logLik))
     return done(fail("Inverse exponential MLE exceeds double precision."));

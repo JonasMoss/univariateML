@@ -1,0 +1,326 @@
+{
+  "records": 9694,
+  "by_family": {
+    "bbinom": {
+      "pass": 114,
+      "stop": 12
+    },
+    "beta": {
+      "pass": 89
+    },
+    "betapr": {
+      "stop": 48,
+      "pass": 137
+    },
+    "bhatt": {
+      "stop": 56,
+      "pass": 89
+    },
+    "binom": {
+      "pass": 63,
+      "stop": 2
+    },
+    "bnbinom": {
+      "stop": 35,
+      "pass": 78
+    },
+    "burr": {
+      "stop": 52,
+      "pass": 141
+    },
+    "cauchy": {
+      "pass": 69,
+      "stop": 4
+    },
+    "cmb": {
+      "stop": 32,
+      "pass": 81
+    },
+    "cmp": {
+      "pass": 46,
+      "stop": 11
+    },
+    "dgamma": {
+      "pass": 44,
+      "stop": 13
+    },
+    "dlaplace": {
+      "pass": 49,
+      "stop": 8
+    },
+    "dnorm": {
+      "pass": 49,
+      "stop": 8
+    },
+    "dunif": {
+      "pass": 59,
+      "stop": 6
+    },
+    "dweibull": {
+      "pass": 46,
+      "stop": 11
+    },
+    "emg": {
+      "stop": 73,
+      "pass": 112
+    },
+    "exp": {
+      "pass": 43
+    },
+    "expweibull": {
+      "pass": 1
+    },
+    "fatigue": {
+      "pass": 74,
+      "stop": 15
+    },
+    "foldnorm": {
+      "pass": 97
+    },
+    "fpareto": {
+      "stop": 266,
+      "pass": 276,
+      "open fit": 3
+    },
+    "frechet": {
+      "pass": 154,
+      "stop": 27
+    },
+    "gamma": {
+      "pass": 97
+    },
+    "gb2": {
+      "stop": 273,
+      "pass": 272
+    },
+    "ged": {
+      "stop": 48,
+      "pass": 97
+    },
+    "genbeta": {
+      "pass": 120,
+      "stop": 70,
+      "open fit": 3
+    },
+    "gengamma": {
+      "pass": 1
+    },
+    "geom": {
+      "pass": 29
+    },
+    "gev": {
+      "pass": 142,
+      "stop": 11
+    },
+    "gompertz": {
+      "pass": 71,
+      "stop": 14
+    },
+    "gpd": {
+      "pass": 80,
+      "stop": 1
+    },
+    "gumbel": {
+      "pass": 84,
+      "stop": 1
+    },
+    "hcauchy": {
+      "pass": 99,
+      "stop": 2
+    },
+    "hnorm": {
+      "pass": 83
+    },
+    "ht": {
+      "pass": 128,
+      "stop": 73
+    },
+    "huber": {
+      "stop": 76,
+      "pass": 69
+    },
+    "hyper": {
+      "pass": 107,
+      "stop": 10
+    },
+    "invburr": {
+      "pass": 145,
+      "stop": 48
+    },
+    "invexp": {
+      "pass": 45
+    },
+    "invgamma": {
+      "pass": 97
+    },
+    "invgauss": {
+      "pass": 101
+    },
+    "invparalogis": {
+      "pass": 84,
+      "stop": 5
+    },
+    "invpareto": {
+      "stop": 21,
+      "pass": 68
+    },
+    "invtrgamma": {
+      "stop": 40,
+      "pass": 113
+    },
+    "invweibull": {
+      "pass": 84,
+      "stop": 1
+    },
+    "kumar": {
+      "pass": 71,
+      "stop": 10
+    },
+    "laplace": {
+      "pass": 73
+    },
+    "lgamma": {
+      "pass": 81
+    },
+    "lgser": {
+      "pass": 29
+    },
+    "llogis": {
+      "pass": 89
+    },
+    "lnorm": {
+      "pass": 101
+    },
+    "logis": {
+      "pass": 72,
+      "stop": 1
+    },
+    "logitnorm": {
+      "pass": 89
+    },
+    "lomax": {
+      "pass": 65,
+      "stop": 12
+    },
+    "lst": {
+      "pass": 81,
+      "stop": 64
+    },
+    "naka": {
+      "pass": 94,
+      "stop": 3
+    },
+    "nbinom": {
+      "pass": 53,
+      "stop": 12
+    },
+    "nhyper": {
+      "pass": 113,
+      "stop": 12
+    },
+    "norm": {
+      "pass": 73
+    },
+    "nsbeta": {
+      "pass": 81,
+      "stop": 20
+    },
+    "paralogis": {
+      "pass": 75,
+      "stop": 2
+    },
+    "pareto": {
+      "pass": 83
+    },
+    "pareto2": {
+      "pass": 72,
+      "stop": 17
+    },
+    "pareto3": {
+      "pass": 77
+    },
+    "pareto4": {
+      "stop": 49,
+      "pass": 128
+    },
+    "pig": {
+      "pass": 37,
+      "stop": 20
+    },
+    "pois": {
+      "pass": 29
+    },
+    "power": {
+      "pass": 85
+    },
+    "rayleigh": {
+      "pass": 49
+    },
+    "sged": {
+      "stop": 157,
+      "pass": 100
+    },
+    "sgomp": {
+      "pass": 78,
+      "stop": 11
+    },
+    "skellam": {
+      "pass": 57
+    },
+    "slash": {
+      "pass": 62,
+      "stop": 3
+    },
+    "sn": {
+      "stop": 74,
+      "pass": 87
+    },
+    "snorm": {
+      "stop": 63,
+      "pass": 66
+    },
+    "sstd": {
+      "stop": 157,
+      "pass": 100
+    },
+    "st": {
+      "pass": 109,
+      "stop": 148
+    },
+    "std": {
+      "stop": 56,
+      "pass": 89
+    },
+    "tlambda": {
+      "pass": 154,
+      "stop": 23
+    },
+    "trgamma": {
+      "stop": 44,
+      "pass": 133
+    },
+    "triang": {
+      "pass": 161,
+      "stop": 8
+    },
+    "unif": {
+      "pass": 83,
+      "stop": 12
+    },
+    "weibull": {
+      "pass": 96,
+      "stop": 1
+    },
+    "yulesimon": {
+      "pass": 13,
+      "stop": 4
+    },
+    "zeta": {
+      "pass": 14,
+      "stop": 3
+    }
+  },
+  "attributions": {},
+  "head": "da2174a11af7d31c47434a54a65d4108c6b00388",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

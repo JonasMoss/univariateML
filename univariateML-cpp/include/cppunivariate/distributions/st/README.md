@@ -362,7 +362,9 @@ If every nonzero $q_i$ has one sign, the likelihood is strictly monotone;
 the fitter stops at the corresponding half-t face. Each observation at the
 held endpoint contributes its symmetric t density, so the face likelihood
 is the closed half-t value divided by $2^k$. If all residuals vanish, alpha
-is unidentifiable; the two listed finite maximizers carry only padded likelihood bounds, so the fit stops as unresolved with both attached.
+is unidentifiable: $2T_{\nu+1}(0)=1$ for every finite alpha. The entire real
+alpha line consists of maximizers. Representatives $-1$ and $1$ carry point
+likelihoods, giving a certified, non-unique estimate.
 
 With both signs present, all stationary points lie in $[-A_-,A_+]$.
 For $n_-$ negative residuals, set
@@ -380,12 +382,15 @@ range, and compares all remaining stationary enclosures using midpoint
 likelihoods plus integrated score bounds. The coordinate width, grouping,
 128-epsilon term-sum allowance and certificate work budget are those of the
 sstd scalar search helper. No Student-CDF root-count assumption is made;
-multiple or poorly separated stationary components can stop on tie or budget.
+multiple or poorly separated stationary components retain their compared roots
+as an unresolved comparison, or stop when the work budget expires.
 The weighted pdf/CDF ratios are formed in log space, with the working log
 magnitudes included in the 128-epsilon allowance before exponentiation;
 large thin-tail logs must not silently lose their difference. Nonfinite
 ratio bounds stop numerically. At huge objective magnitudes, a lost
-face gain retains the numerical tie stop and its finite/face witnesses.
+face gain retains the finite/half-t comparison. If the half-t point has the
+larger computed value, it is an uncertified limit; otherwise the unchecked
+finite point remains an unresolved stop.
 
 The certificate is conditional on the computed ranges and comparisons in
 exact arithmetic, with the stated practical binary64 allowance; it does not
@@ -473,3 +478,23 @@ floor scales with df; the final information-weighted score check still
 controls the public df error.
 
 The certified constant-location tie has equal half-t (or half-normal) and reflected suprema: it is a certified limit naming the first listed face, with both faces attached.
+
+For free alpha and a held xi with both tied and strictly one-sided observations,
+nonattainment is proved by strict monotonicity in alpha. At each tie the skew
+factor remains one, whereas the nonzero factors approach two. This likelihood
+version therefore differs from the closed-endpoint half-t or half-normal law.
+The diagnostic `unavailable:st-shape-escape` records a path, not a named limit
+model; its likelihood is a lower bound on the supremum when nuisance parameters
+remain free.
+
+Finiteness follows from uniform bounds. Write k for the ties, m for the other
+observations and d for their smallest distance from xi. The Student normalizer
+is at most phi(0), by Jensen's inequality applied to a gamma variable. With
+held scale sigma, the likelihood is at most (2 phi(0)/sigma)^n. With held nu
+and free scale, split sigma at d/sqrt(nu) and apply the Student power tail;
+if nu m >= k this bounds the likelihood by (2 phi(0) sqrt(nu)/d)^n.
+With free nu >= 1, Bernoulli's inequality gives t_nu(z) <=
+2 phi(0)/(1+z^2); splitting scale at d bounds the likelihood by
+(4 phi(0)/d)^n when m >= k. These exact-arithmetic bounds use a practical
+128-epsilon margin in their computed logarithms. Strict monotonicity excludes
+every finite alpha, even when the nuisance supremum has not been located.

@@ -609,3 +609,15 @@ TEST_CASE("genbeta: concentrated held-power logLik preserves the beta coordinate
   CHECK(cppunivariate::genbeta_detail::public_loglik(mltest::as_span(x),2017533.8265625883,579011618.7379755,4.084996007320842,1)
     ==doctest::Approx(43.17544463960882).epsilon(1e-12));
 }
+
+TEST_CASE("genbeta exact power-product ridge is a proved nonunique maximum") {
+  const std::vector<double> x{.5,.25,.125};
+  const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-10,300,NAN,1,NAN);
+  REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
+  CHECK(r.product_ridge);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.certified);CHECK_FALSE(o.unique);
+  CHECK(r.shape1*r.shape3==doctest::Approx(.72134752044448170368).epsilon(1e-14));
+  double reflected=0;for(double v:x)reflected+=cppunivariate::distributions::dgenbeta(v,r.shape1/2,1,2*r.shape3,1,true);
+  CHECK(reflected==doctest::Approx(r.logLik).epsilon(1e-13));
+}

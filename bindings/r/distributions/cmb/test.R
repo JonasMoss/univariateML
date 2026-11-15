@@ -397,3 +397,17 @@ test_that("free CMB size preserves the continuous-coordinate accuracy kind", {
   expect_gt(nrow(e$candidates),0L)
   expect_equal(tail(e$candidates,1)$nu,1)
 })
+
+test_that("free-size CMB returns the proved nonunique saturated Bernoulli maximum", {
+  for(x in list(c(0,1),c(0,0,1))) {
+    f <- mlcmb(x,size=NULL)
+    expect_s3_class(f,"univariateML")
+    expect_true(attr(f,"certified"))
+    expect_false(attr(f,"unique"))
+    expect_true(all(is.finite(as.numeric(f))))
+    expect_equal(unname(f[["size"]]),1)
+    expect_equal(unname(f[["nu"]]),1)
+    expect_equal(unname(f[["prob"]]),mean(x))
+    expect_equal(as.numeric(logLik(f)),sum(dbinom(x,1,mean(x),log=TRUE)),tolerance=1e-13)
+  }
+})

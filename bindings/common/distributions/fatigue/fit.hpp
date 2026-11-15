@@ -6,26 +6,15 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, Held mu_arg = {}, double abstol = 1e-10, int iterlim = 100) {
-  // Invalid controls remain ordinary errors, even if a legacy fitter reports
-  // a statistical status before checking them.
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(!(abstol>0 && std::isfinite(abstol) && iterlim>0))return out;
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held alpha = alpha_arg;
   const Held beta = beta_arg;
   const Held mu = mu_arg;
 
-  if (!mu.supplied) return invalid_argument(fail("The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu."));
-  const double threshold = mu.value;
-  if (!std::isfinite(threshold)) return invalid_argument(fail("`mu` must be finite."));
+  const double threshold = mu.supplied?mu.value:NAN;
+  if (mu.supplied && !std::isfinite(threshold)) return invalid_argument(fail("`mu` must be finite."));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const double a=alpha.supplied?alpha.value:nan;
   const double b=beta.supplied?beta.value:nan;
@@ -40,16 +29,20 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
       return overridden(std::move(out), static_cast<int>(res.status));
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"alpha",alpha_arg.supplied},{"beta",beta_arg.supplied},{"mu",mu_arg.supplied}});
   };
+  if(res.status==cppunivariate::FatigueStatus::Unsupported)return done(failure("The threshold mu cannot be estimated. With mu free, the likelihood is unbounded for every sample with a unique minimum, so no maximum likelihood estimate exists. Supply mu."));
 
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if (res.status == cppunivariate::FatigueStatus::InvalidInput)
     return done(fail("Fatigue observations must be finite and strictly above `mu`."));
+  if(res.transformation_failure)
+    return done(fail("Fatigue optimizer SearchFailure: profile search did not converge or floating-point coefficient resolution failed; increase iterlim for unresolved searches."));
   if (res.status == cppunivariate::FatigueStatus::SearchFailure) {
     for(auto& candidate:res.stop_detail.candidates)candidate.coef.push_back(threshold);
-    if(res.stop_detail.budget_exhausted)return done(classify(fail("Fatigue optimizer SearchFailure: certificate budget exhausted; increase iterlim."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
-    if(res.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("Fatigue optimizer SearchFailure: competing global maxima cannot be distinguished."),res.stop_detail,PayloadKind::Comparison,{"alpha","beta","mu"}),o,chosen,{{"alpha",alpha_arg},{"beta",beta_arg},{"mu",mu_arg}}));
-    return done(classify(fail("Fatigue optimizer SearchFailure: profile search did not converge or floating-point coefficient resolution failed; increase iterlim for unresolved searches."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
+    if(res.stop_detail.budget_exhausted)return done(stop_failure(fail("Fatigue optimizer SearchFailure: certificate budget exhausted; increase iterlim."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
+    if(res.stop_detail.comparison_tie)return done(comparison_payload(stop_failure(fail("Fatigue optimizer SearchFailure: competing global maxima cannot be distinguished."),res.stop_detail,PayloadKind::Comparison,{"alpha","beta","mu"}),o,chosen,{{"alpha",alpha_arg},{"beta",beta_arg},{"mu",mu_arg}}));
+    return done(stop_failure(fail("Fatigue optimizer SearchFailure: profile search did not converge or floating-point coefficient resolution failed; increase iterlim for unresolved searches."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
   }
   if (!(res.alpha>0.0) || !std::isfinite(res.alpha) || !std::isfinite(res.beta) || !std::isfinite(res.logLik)) {
     if (res.status==cppunivariate::FatigueStatus::Unbounded)

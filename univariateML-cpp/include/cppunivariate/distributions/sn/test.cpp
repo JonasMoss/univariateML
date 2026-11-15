@@ -385,3 +385,12 @@ TEST_CASE("sn: logarithmic quarter input retains exact displacement") {
  CHECK(cppunivariate::distributions::qsn(-1.3862943611198906,0,1,1,true,true)==doctest::Approx(2.9064941568900345e-17).epsilon(1e-10).scale(0));
  CHECK(cppunivariate::distributions::qsn(-1.3862943611198906,0,1,-1,false,true)==doctest::Approx(-2.9064941568900345e-17).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("sn core owns singleton and constant collapse outcomes") {
+  for(const std::vector<double>& x : {std::vector<double>{2},std::vector<double>{2,2,2}}) {
+    const auto r=cppunivariate::sn_mle(mltest::as_span(x));
+    CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
+    CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+    CHECK(cppunivariate::outcome(cppunivariate::sn_mle(mltest::as_span(x),-1)).kind==cppunivariate::OutcomeKind::Failure);
+  }
+}

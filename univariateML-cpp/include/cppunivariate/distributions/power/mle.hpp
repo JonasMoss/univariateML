@@ -17,7 +17,7 @@
 
 namespace cppunivariate {
 
-enum class PowerStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+enum class PowerStatus { Ok, InvalidInput, Unbounded, IterationFailure, OutsideSupport };
 
 struct PowerResult {
   double alpha;
@@ -30,6 +30,7 @@ struct PowerResult {
 inline FitOutcome outcome(const PowerResult& r) {
   switch (r.status) {
     case PowerStatus::Ok: return FitOutcome::estimate(true);
+    case PowerStatus::OutsideSupport: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case PowerStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case PowerStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case PowerStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
@@ -48,8 +49,9 @@ inline PowerResult power_mle(span x, double epsilon, double alpha, double beta) 
     xmax = std::max(xmax, v);
   }
   if (std::isnan(alpha)) alpha = xmax;
-  if (!(alpha >= xmax) || !std::isfinite(alpha) ||
+  if (!(alpha > 0) || !std::isfinite(alpha) ||
       (!std::isnan(beta) && (!(beta > 0) || !std::isfinite(beta)))) return invalid;
+  if(alpha<xmax)return {alpha,beta,nan,0,PowerStatus::OutsideSupport};
   CPPUNIV_EXTENDED_REAL gap = 0, logs = 0;
   for (double v : x) {
     gap += std::log1p((static_cast<CPPUNIV_EXTENDED_REAL>(alpha) - v) / v);

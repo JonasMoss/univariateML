@@ -365,3 +365,10 @@ test_that("concentrated held-power generalized-beta logLik agrees with dml", {
   f <- mlgenbeta(x,scale=1,shape3=4.084996007320842)
   expect_equal(attr(f,"logLik"),sum(dml(x,f,log=TRUE)),tolerance=1e-11)
 })
+
+test_that("held unit shape2 retains the proved product-ridge identification", {
+  f <- mlgenbeta(c(.5,.25,.125),scale=1,shape2=1)
+  expect_true(attr(f,"certified"))
+  expect_false(attr(f,"unique"))
+  expect_equal(unname(f[["shape1"]]*f[["shape3"]]),1/(2*log(2)),tolerance=1e-13)
+})

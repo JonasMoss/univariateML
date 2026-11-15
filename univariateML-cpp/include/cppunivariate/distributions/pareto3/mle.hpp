@@ -4,20 +4,22 @@
 #include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include "../llogis/mle.hpp"
+#include <algorithm>
 #include <vector>
 #include <cmath>
 namespace cppunivariate {
-enum class Pareto3Status { Ok, InvalidData, Unbounded, IterationFailure, AccuracyFailure };
+enum class Pareto3Status { Ok, InvalidData, Unbounded, IterationFailure, AccuracyFailure, Unsupported, TransformFailure };
 struct Pareto3Result { double shape,scale,min,logLik; int iterations; Pareto3Status status; bool certified=true;  StopDetail stop_detail{}; };
 
 inline FitOutcome outcome(const Pareto3Result& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
+    case Pareto3Status::Unsupported: return FitOutcome::failure(OutcomeReason::Unsupported);
     case Pareto3Status::Ok: return FitOutcome::estimate(r.certified);
+    case Pareto3Status::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case Pareto3Status::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    // The adapter currently exposes this status as a plain range/fitting error.
-    case Pareto3Status::Unbounded: return FitOutcome::failure(OutcomeReason::Evaluation);
+    case Pareto3Status::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case Pareto3Status::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case Pareto3Status::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }
@@ -28,12 +30,28 @@ inline Pareto3Result pareto3_accuracy_search(span x, double min, double tol, int
   maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   for (std::size_t i=0;i<x.size();++i) y[i]=(x[i]-min);
-  bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);
+  bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min) &&
+    (std::isnan(shape)||(shape>0 && std::isfinite(shape))) &&
+    (std::isnan(scale)||(scale>0 && std::isfinite(scale)));
   for(double v:x) valid=valid && std::isfinite(v) && v>min;
+  bool constant=!x.empty(),exact=true;
+  if(valid)for(std::size_t i=0;i<x.size();++i) {
+    constant=constant && x[i]==x[0];
+    if(!std::isfinite(y[i])) {
+      if(constant && std::isnan(shape) && std::isnan(scale) &&
+         std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+        return {NAN,NAN,min,NAN,0,Pareto3Status::Unbounded};
+      return {NAN,NAN,min,NAN,0,Pareto3Status::TransformFailure};
+    }
+    const double virtual_min=x[i]-y[i];
+    const double error=(x[i]-(y[i]+virtual_min))+(virtual_min-min);
+    exact=exact && error==0;
+  }
   if(!valid) y.clear();
   auto r=loglogistic_mle(span{y.data(),y.size()},tol,maxit,shape,scale);
   const auto status=!valid || x.size()==0 || r.status==LogLogisticStatus::InvalidInput ? Pareto3Status::InvalidData :
-    r.status==LogLogisticStatus::Unbounded ? Pareto3Status::Unbounded :
+    r.status==LogLogisticStatus::Unbounded ?
+      (constant && (std::isnan(scale)||exact) ? Pareto3Status::Unbounded : Pareto3Status::TransformFailure) :
     r.status==LogLogisticStatus::Ok && std::isfinite(r.logLik) && r.shape>0 && r.scale>0 ? Pareto3Status::Ok : Pareto3Status::IterationFailure;
   return {r.shape,r.scale,min,r.logLik,r.iterations,status,r.certified};
 }
@@ -43,6 +61,7 @@ inline Pareto3Result pareto3_accuracy_search(span x, double min, double tol, int
 #include "../../core/likelihood_polish.hpp"
 namespace cppunivariate {
 inline Pareto3Result pareto3_mle(span x,double min,double tol,int maxit,double shape=NAN,double scale=NAN) {
+  if(std::isnan(min))return {NAN,NAN,min,NAN,0,Pareto3Status::Unsupported};
   auto r=pareto3_accuracy_search(x,min,tol,maxit,shape,scale);
   if(r.status!=Pareto3Status::Ok)return r;
   if(!r.certified)tol=std::min(tol,1e-10);
