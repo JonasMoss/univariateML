@@ -167,6 +167,19 @@
       "commit": "318b2fd3d125893e703ee7db9708fe4507ddd984",
       "dirty": true,
       "reason": "step 5c job 2a (TASK-150.1.2): tol = 1e-10, relative stopping rules"
+    },
+    {
+      "families": [
+        "cmp",
+        "fatigue",
+        "hyper",
+        "nhyper",
+        "pig",
+        "triang"
+      ],
+      "commit": "027143ae277de66b5531a63369b51e119c64771c",
+      "dirty": true,
+      "reason": "unique flags (TASK-214.36, .37, .40)"
     }
   ]
 }

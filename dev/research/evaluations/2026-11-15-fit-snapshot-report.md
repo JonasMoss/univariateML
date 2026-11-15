@@ -134,3 +134,11 @@ differences are those of the [job report](2026-11-15-ctrl-b1-report.md): fits
 move by up to 4.6e-6 relative where the old absolute step stopped early;
 llogis and naka class offset become uncertified; two betapr payloads change.
 The known list has 233 entries.
+
+## Patch after the unique-flag fixes (2026-11-15)
+
+The records of hyper, nhyper, triang, pig, cmp and fatigue were replaced with
+snapshots of the unique-flags branch (merge `b4ce191f`; provenance
+`patches`): 43 cases per mode change `unique` (and hyper warnings), no
+coefficient changes ([report](2026-11-15-unique-flags-report.md)). The known
+list has 173 entries.
