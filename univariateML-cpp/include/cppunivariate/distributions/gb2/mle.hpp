@@ -11,13 +11,15 @@
 #include "../invburr/mle.hpp"
 #include "../betapr/mle.hpp"
 #include "../lnorm/mle.hpp"
+#include "../pareto/dpqr.hpp"
+#include "../power/dpqr.hpp"
 #include <array>
 
 namespace cppunivariate {
 enum class Gb2Status { Ok, TrGammaBoundary, InvTrGammaBoundary,
   LognormalBoundary, ParetoBoundary, PowerBoundary, DoubleParetoBoundary,
   InvalidData, InvalidFixed, SearchUnresolved, ScaleOutOfRange,
-  WeibullBoundary, InvWeibullBoundary, CertificateTie, CertificateBudget, NumericalFailure };
+  WeibullBoundary, InvWeibullBoundary, CertificateTie, CertificateBudget, NumericalFailure, Unbounded };
 struct Gb2Result {
   double shape1, shape2, shape3, scale, logLik;
   int iterations;
@@ -159,7 +161,7 @@ inline Point profile(const trgamma_detail::LogData &d,double p,double q,
   return profile(d,p,q,a,b,maxit,work);
 }
 // Exact kink profile, including both one-sided endpoint suprema.
-inline double double_pareto(const trgamma_detail::LogData &d,double b) {
+inline double double_pareto(const trgamma_detail::LogData &d,double b,std::vector<double>& coefficients) {
   std::vector<double> y=d.u;
   std::sort(y.begin(),y.end());
   const double n=static_cast<double>(d.n);
@@ -169,7 +171,13 @@ inline double double_pareto(const trgamma_detail::LogData &d,double b) {
     const double L=std::max(0.0,static_cast<double>(k*m-left));
     const double R=std::max(0.0,static_cast<double>(total-left-(d.n-k)*m));
     const double s=std::sqrt(L)+std::sqrt(R);
-    if(s>0) best=std::max(best,n*std::log(n)-2*n*std::log(s)-n-n*std::log(d.sd)-d.sum);
+    if(s>0) {
+      const double ll=n*std::log(n)-2*n*std::log(s)-n-n*std::log(d.sd)-d.sum;
+      if(ll>best) {
+        best=ll;
+        coefficients={std::isnan(b)?std::exp(d.mean+d.sd*m):b,n/(std::sqrt(L)*s*d.sd),n/(std::sqrt(R)*s*d.sd)};
+      }
+    }
   };
   CPPUNIV_EXTENDED_REAL prefix=0;
   if(std::isnan(b)) {
@@ -180,6 +188,10 @@ inline double double_pareto(const trgamma_detail::LogData &d,double b) {
     at(m,prefix,k);
   }
   return best;
+}
+inline double double_pareto(const trgamma_detail::LogData& d,double b) {
+  std::vector<double> coefficients;
+  return double_pareto(d,b,coefficients);
 }
 // A small dimension BFGS with analytic envelope scores; no pointer API.
 inline Point refine(const trgamma_detail::LogData &d,std::array<double,2> v,
@@ -273,6 +285,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       log_constant=log_constant&&logs[i]==logs[0];
     }
     if(log_constant&&!original_constant){bad.status=Gb2Status::NumericalFailure;return bad;}
+    if(original_constant&&(std::isnan(b)||b==x[0])){bad.status=Gb2Status::Unbounded;return bad;}
   }
   // Exact held unit beta-shape submodels. Never use these as certificates
   // when that beta shape is free: the constrained and joint maxima differ.
@@ -283,7 +296,8 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       out={r.shape1,r.shape2,1,r.scale,r.logLik,r.iterations,Gb2Status::SearchUnresolved,r.stop_detail};
       out.certified=r.certified;
       if(r.status==BurrStatus::Ok)out.status=Gb2Status::Ok;
-      if(r.status==BurrStatus::InvalidInit || r.status==BurrStatus::Unbounded)out.status=Gb2Status::InvalidData;
+      if(r.status==BurrStatus::InvalidInit)out.status=Gb2Status::InvalidData;
+      if(r.status==BurrStatus::Unbounded)out.status=Gb2Status::Unbounded;
       if(r.status==BurrStatus::CertificateTie)out.status=Gb2Status::CertificateTie;
       if(r.status==BurrStatus::CertificateBudget)out.status=Gb2Status::CertificateBudget;
       if(r.status==BurrStatus::NumericalFailure)out.status=Gb2Status::NumericalFailure;
@@ -295,7 +309,8 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       out={1,r.shape2,r.shape1,r.scale,r.logLik,r.iterations,Gb2Status::SearchUnresolved,r.stop_detail};
       out.certified=r.certified;
       if(r.status==InvBurrStatus::Ok)out.status=Gb2Status::Ok;
-      if(r.status==InvBurrStatus::InvalidInit || r.status==InvBurrStatus::Unbounded)out.status=Gb2Status::InvalidData;
+      if(r.status==InvBurrStatus::InvalidInit)out.status=Gb2Status::InvalidData;
+      if(r.status==InvBurrStatus::Unbounded)out.status=Gb2Status::Unbounded;
       if(r.status==InvBurrStatus::CertificateTie)out.status=Gb2Status::CertificateTie;
       if(r.status==InvBurrStatus::CertificateBudget)out.status=Gb2Status::CertificateBudget;
       if(r.status==InvBurrStatus::NumericalFailure)out.status=Gb2Status::NumericalFailure;
@@ -314,8 +329,9 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   // one beta shape, the power, or location is free.
   bool constant=!logs.empty();for(double v:logs)constant=constant&&v==logs[0];
   if(constant){
+    if(std::isnan(q)&&std::isnan(a)&&std::isnan(p)&&std::isnan(b)) {bad.status=Gb2Status::Unbounded;return bad;}
     if(!std::isnan(p)&&!std::isnan(q)&&(std::isnan(a)!=std::isnan(b))) {
-      if(std::isnan(a)&&x[0]==b)return bad;
+      if(std::isnan(a)&&x[0]==b){bad.status=Gb2Status::Unbounded;return bad;}
       trgamma_detail::LogData cd;
       cd.n=logs.size();cd.mean=logs[0];cd.sd=1;cd.sum=logs.size()*logs[0];
       cd.u.assign(logs.size(),0);
@@ -328,7 +344,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       if(std::isnan(q))q=std::exp(solve_root([&](double z){double v=std::exp(z);return special::digamma(p+v)-special::digamma(v)-gb2_detail::softplus(u);}));
       if(!std::isfinite(q)){bad.status=Gb2Status::SearchUnresolved;return bad;}
     } else if(!std::isnan(p)&&!std::isnan(q)&&!std::isnan(b)&&std::isnan(a)){
-      if(x[0]==b)return bad;
+      if(x[0]==b){bad.status=Gb2Status::Unbounded;return bad;}
       const double w=logs[0]-std::log(b);
       a=std::exp(solve_root([&](double z){double u=std::exp(z)*w;return 1+u*(p-(p+q)*burr_hold_detail::sigmoid(u));}));
       if(!std::isfinite(a)){bad.status=Gb2Status::SearchUnresolved;return bad;}
@@ -339,7 +355,9 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       double ll=logs.size()*(std::log(a)-logs[0]-gb2_detail::logbeta(p,q)-p*gb2_detail::softplus(-u)-q*gb2_detail::softplus(u));
       return {q,a,p,b,ll,0,std::isfinite(ll)?Gb2Status::Ok:Gb2Status::SearchUnresolved};
     }
-    return bad;
+    // Only genuinely constant observations justify this concentration escape.
+    for(double v:x)if(v!=x[0]){bad.status=Gb2Status::NumericalFailure;return bad;}
+    bad.status=Gb2Status::Unbounded;return bad;
   }
   trgamma_detail::LogData d;
   if(!trgamma_detail::standardize(span{logs.data(),logs.size()},d)) {
@@ -358,6 +376,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   if(!std::isnan(p)&&!std::isnan(q)&&(std::isnan(a)||std::isnan(b)))
     return gb2_concave_detail::fit(d,q,a,p,b,tol,maxit);
   double face=-std::numeric_limits<double>::infinity();
+  std::vector<double> double_pareto_coef;
   Gb2Status fs=Gb2Status::SearchUnresolved;
   bool face_failure=false;
   auto consider=[&](double ll,Gb2Status s) {
@@ -400,7 +419,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   }
   if(std::isnan(a)&&std::isnan(p)&&std::isnan(q)) {
     consider(lognormal_mle(x).logLik,Gb2Status::LognormalBoundary);
-    consider(gb2_detail::double_pareto(d,b),Gb2Status::DoubleParetoBoundary);
+    consider(gb2_detail::double_pareto(d,b,double_pareto_coef),Gb2Status::DoubleParetoBoundary);
   }
   // Endpoint faces also apply with a positive held opposite beta shape.
   if(std::isnan(a)&&std::isnan(b)) {
@@ -503,6 +522,38 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   }
   const auto retain_witness=[&](Gb2Result out) {
     out.profile_evaluations=work.used;
+    if(out.status==Gb2Status::LognormalBoundary) {
+      const auto r=lognormal_mle(x);
+      out.stop_detail.limit_model=StopModel::Lnorm;
+      out.stop_detail.limit_coef={r.meanlog,r.sdlog};out.stop_detail.limit_loglik=r.logLik;
+    }
+    if(out.status==Gb2Status::DoubleParetoBoundary && double_pareto_coef.size()==3) {
+      out.stop_detail.limit_coef=double_pareto_coef;
+      const double endpoint=double_pareto_coef[0],left=double_pareto_coef[1],right=double_pareto_coef[2];
+      if(std::isinf(left) || std::isinf(right)) {
+        const bool pareto=std::isinf(left);
+        out.certified=false;
+        out.status=pareto?Gb2Status::ParetoBoundary:Gb2Status::PowerBoundary;
+        out.stop_detail.limit_model=pareto?StopModel::Pareto:StopModel::Power;
+        out.stop_detail.limit_coef=pareto?std::vector<double>{right,endpoint}:std::vector<double>{endpoint,left};
+        double ll=0;for(double v:x)ll+=pareto?distributions::dpareto(v,right,endpoint,true):distributions::dpower(v,endpoint,left,true);
+        out.stop_detail.limit_loglik=ll;
+      } else {
+      double ll=0;
+      for(double v:x) {
+        const double z=gb2_accuracy::log_ratio(v,endpoint);
+        ll+=std::log(left)+std::log(right)-std::log(left+right)-std::log(v)+(z<0?left:-right)*z;
+      }
+      out.stop_detail.limit_loglik=ll;
+      }
+      bool represented=std::isfinite(out.stop_detail.limit_loglik);
+      for(double v:out.stop_detail.limit_coef)represented=represented&&v>0&&std::isfinite(v);
+      if(!represented) {
+        out.status=Gb2Status::NumericalFailure;out.logLik=NAN;
+        out.stop_detail.limit_model=StopModel::None;
+        out.stop_detail.limit_coef.clear();out.stop_detail.limit_loglik=NAN;
+      } else out.logLik=out.stop_detail.limit_loglik;
+    }
     if(!all_free)return out;
     const double scale=std::exp(d.mean+d.sd*best.c/best.A);
     if(best.ok&&scale>0&&std::isfinite(scale)&&std::isfinite(best.ll)) {
@@ -541,8 +592,35 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       out.stop_detail.budget_exhausted=true;
       return retain_witness(out);
     }
+    // With the scale held outside the sample, a simultaneous power/shape
+    // escape can move the one-sided endpoint away from that held scale.
+    // Compare these faces before accepting an exploratory limit choice.
+    StopDetail endpoint_face;
+    if(!std::isnan(b) && std::isnan(a) && std::isnan(p) && std::isnan(q)) {
+      const auto pr=pareto_mle(x);
+      CPPUNIV_EXTENDED_REAL pareto_ll=0;
+      if(pr.status==ParetoStatus::Ok && b<pr.min)
+        for(double v:x)pareto_ll+=distributions::dpareto(v,pr.shape,pr.min,true);
+      if(pr.status==ParetoStatus::Ok && b<pr.min && std::isfinite(static_cast<double>(pareto_ll)) && pareto_ll>face) {
+        face=static_cast<double>(pareto_ll);fs=Gb2Status::ParetoBoundary;
+        endpoint_face.limit_model=StopModel::Pareto;
+        endpoint_face.limit_coef={pr.shape,pr.min};endpoint_face.limit_loglik=face;
+      }
+      const auto po=power_mle(x,0);
+      CPPUNIV_EXTENDED_REAL power_ll=0;
+      if(po.status==PowerStatus::Ok && b>po.alpha)
+        for(double v:x)power_ll+=distributions::dpower(v,po.alpha,po.beta,true);
+      if(po.status==PowerStatus::Ok && b>po.alpha && std::isfinite(static_cast<double>(power_ll)) && power_ll>face) {
+        face=static_cast<double>(power_ll);fs=Gb2Status::PowerBoundary;
+        endpoint_face.limit_model=StopModel::Power;
+        endpoint_face.limit_coef={po.alpha,po.beta};endpoint_face.limit_loglik=face;
+      }
+    }
     auto out=retain_witness({nan,nan,nan,nan,face,evals,
       face_numerical_tie(face,best.ll,1e-8*d.n)?Gb2Status::SearchUnresolved:fs});
+    if(!endpoint_face.limit_coef.empty()) {
+      out.stop_detail=endpoint_face;out.certified=false;
+    }
     return out;
   }
   bool local_done=false;
@@ -656,14 +734,19 @@ inline FitOutcome outcome(const Gb2Result& r) {
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
   // Delegated/endpoint certificates carry a limit witness. The exploratory
   // face-versus-search comparison carries no limit coefficients and uses a margin.
+  if(r.status==Gb2Status::LognormalBoundary || r.status==Gb2Status::DoubleParetoBoundary) {
+    if(r.stop_detail.limit_coef.empty() || !std::isfinite(r.stop_detail.limit_loglik))return FitOutcome::failure(OutcomeReason::Evaluation);
+    for(double v:r.stop_detail.limit_coef)if(!(v>0) && r.status==Gb2Status::DoubleParetoBoundary)return FitOutcome::failure(OutcomeReason::Evaluation);
+  }
   switch (r.status) {
     case Gb2Status::Ok: return FitOutcome::estimate(r.certified);
     case Gb2Status::TrGammaBoundary: return FitOutcome::limit(!r.stop_detail.limit_coef.empty());
     case Gb2Status::InvTrGammaBoundary: return FitOutcome::limit(!r.stop_detail.limit_coef.empty());
-    case Gb2Status::LognormalBoundary: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case Gb2Status::ParetoBoundary: return FitOutcome::limit(!r.stop_detail.limit_coef.empty());
-    case Gb2Status::PowerBoundary: return FitOutcome::limit(!r.stop_detail.limit_coef.empty());
-    case Gb2Status::DoubleParetoBoundary: return FitOutcome::failure(OutcomeReason::Unsupported);
+    case Gb2Status::LognormalBoundary: return FitOutcome::limit(false);
+    case Gb2Status::ParetoBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
+    case Gb2Status::PowerBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
+    case Gb2Status::DoubleParetoBoundary: return FitOutcome::limit(false);
+    case Gb2Status::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case Gb2Status::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case Gb2Status::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case Gb2Status::SearchUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);

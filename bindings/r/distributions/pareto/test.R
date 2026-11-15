@@ -118,3 +118,8 @@ expect_error(mlpareto(c(1,2),b=2),"zero likelihood")
 expect_error(mlpareto(rep(2,3),b=2),"constant data")
 expect_equal(mlpareto(rep(2,3),a=2)[["b"]],2)
 })
+
+
+test_that("pareto core decides the data outcome", {
+  expect_error(mlpareto(c(1,2),b=3), class="univariateML_invalid")
+})

@@ -37,7 +37,7 @@ params:
   domain: (-inf, inf)
   simulate: 0
   kind: design
-  advice: 'Supply a finite held mu. With sigma and xi free, threshold ties give unbounded likelihood, so choose mu strictly below the data. Estimating mu is not supported, including when other coefficients are held.'
+  advice: 'Supply a finite held mu. With sigma and xi free, threshold ties give unbounded likelihood, so choose mu strictly below the data. With mu free the unrestricted likelihood is unbounded; free-threshold fits with other coefficients held are not supported.'
 - name: sigma
   symbol: '\sigma'
   role: scale
@@ -60,7 +60,7 @@ r:
   density: dgpd
   sampler: rgpd
   control:
-    mu: Threshold, held fixed; every observation must be at or above it.
+    mu: Finite threshold to hold, or NULL to leave it free; every observation must be at or above a held threshold.
     sigma: Positive scale to hold fixed, or NULL to estimate.
     xi: Shape to hold fixed, or NULL to estimate (lower bound -1).
     reltol: Requested relative tolerance for scale bisection and profile representative refinement; global certification uses a fixed coefficient enclosure and arithmetic margin.
@@ -68,7 +68,15 @@ r:
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma, Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma), True))
 limits:
   - firmness: proved
+    kind: nonexistence
+    name: free-threshold unbounded likelihood
+    status: Unbounded
+    when: 'Threshold, scale and shape are all free.'
+    detect: 'Every nonempty finite sample; a threshold minimum contributes an exponentially growing density along sigma = exp(-t), xi = t.'
+    message: 'unrestricted likelihood is unbounded'
+  - firmness: proved
     name: threshold scale collapse
+    kind: nonexistence
     fixed: [mu]
     status: InvalidData
     message: "scale collapse at the threshold"
@@ -79,20 +87,6 @@ references:
   35(2), 185–191. doi:10.1080/00401706.1993.10485040.
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package
   reference manual, version 1.10.0.5. https://cran.r-project.org/web/packages/extraDistr/extraDistr.pdf.'
-holds:
-- held: []
-  status: no-mle
-  reason: 'Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus.'
-- held:
-  - xi
-  status: not-implemented
-  reason: 'Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus.'
-- held: [sigma]
-  status: not-implemented
-  reason: 'Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus.'
-- held: [sigma, xi]
-  status: not-implemented
-  reason: 'Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus.'
 fit_args:
   mu: 0.0
 examples: |
@@ -250,9 +244,9 @@ Near $b=0$, forty terms of the convergent integral series at $|bv|<1/4$ avoid ca
 
 With shape held, the strictly decreasing scaled scale score is bracketed in units of $M$. The exponential and uniform subsets use exact formulas. Other held shapes require signed brackets; ambiguous signs are widened to a checked relative coefficient enclosure or stop. Invalid and unrepresentable results stop. The physical restoration check also applies to the exponential mean: a positive but coarsely rounded subnormal mean stops, while exactly representable subnormal means remain valid. The user tolerance controls refinement of the representative; it cannot weaken the certificate's coefficient check. After a signed enclosure is established, at most 48 further bisections nominate the held-shape scale representative. Joint and held-scale representatives receive at most 12 Newton steps inside their signed enclosures. These bounded proposal refinements never substitute for a certificate.
 
-Budget, arithmetic, tie and threshold-collapse outcomes carry `core/stop_detail.hpp` records, with candidate coefficients and global likelihood bounds when available. The fixed-positive-shape threshold-collapse equality records its finite unattained limiting log likelihood separately from unbounded cases. No failed solve returns its last iterate. The global budget is $128\min(\texttt{iterlim},100000)$ subdivision evaluations; root refinements are separately bounded by `iterlim`. Closed-form held subsets need no iterative budget. A fully held model remains likelihood evaluation, including shapes below the fitting restriction.
+Budget, arithmetic, tie and threshold-collapse outcomes carry `core/stop_detail.hpp` records, with candidate coefficients and global likelihood bounds when available. The fixed-positive-shape threshold-collapse equality records its finite unattained supremum separately from unbounded cases and returns nonexistence with reason `unattained`; no named limit model realizes that joint density. No failed solve returns its last iterate. The global budget is $128\min(\texttt{iterlim},100000)$ subdivision evaluations; root refinements are separately bounded by `iterlim`. Closed-form held subsets need no iterative budget. A fully held model remains likelihood evaluation, including shapes below the fitting restriction.
 
-A free threshold is excluded by interface policy for every held subset. This is stronger than a mathematical assertion of non-existence. For example, with exponential shape and scale held, the likelihood increases to a finite maximum at the sample minimum. With uniform shape and scale held, compatible thresholds form an attained plateau. The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) records the limiting paths; its older universal free-threshold claim does not cover these closed-support submodels.
+Free-threshold slices with other parameters held remain unsupported. This is stronger than a mathematical assertion of non-existence for those slices. For example, with exponential shape and scale held, the likelihood increases to a finite maximum at the sample minimum. With uniform shape and scale held, compatible thresholds form an attained plateau. The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) records the limiting paths; its older universal free-threshold claim does not cover these closed-support submodels.
 
 With scale held, estimating the threshold still permits a finite maximum within $\xi\ge-1$. Let $R=\max_i x_i-\min_i x_i$. If $\sigma\ge R$, a uniform member covers the sample and attains the joint density bound $\sigma^{-n}$. If $0<\sigma<R$, support feasibility requires $\xi\ge-\sigma/R>-1$. The density then increases as the threshold rises to the sample minimum. At that threshold the shape likelihood is continuous and positive on $(-\sigma/R,\infty)$ and tends to zero at both ends, so a finite maximum exists. This argument does not prove uniqueness, and the interface still requires a held threshold.
 
@@ -263,3 +257,9 @@ Supply `mu` explicitly. With shape and scale free, choose it strictly below the 
 ## Algorithm history
 
 On 2026-11-05 (TASK-116.2), the 32-cell score scan with local-extremum refinement was replaced by the interval certificate. The earlier tail bounds were useful, but same-sign samples and local minimization of the score did not establish that every root pair was found. Held-scale optimization on the fixed transformed interval [-32,32] had the same coverage gap. The previous implementation remains reproducible from base revision `fe4573e9b02a950a1440039a8395c30ff2f25926`; the retained [validation reproducer](../../../../../dev/research/evaluations/2026-11-05-gpd-cert-data/check_certificate.py) builds it alongside the replacement for timing and regression comparisons.
+
+With a free threshold, the unrestricted likelihood is unbounded for every
+nonempty finite sample. A minimum of multiplicity k contributes exp(k*t)
+along mu = min(x), sigma = exp(-t), xi = t, while the remaining observations
+contribute a factor of order t^(-(n-k)). Other held free-threshold slices
+remain unsupported; their existence is not decided by this path.

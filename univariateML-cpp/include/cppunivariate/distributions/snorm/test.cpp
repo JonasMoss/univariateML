@@ -415,3 +415,15 @@ TEST_CASE("snorm exact-coefficient logLik seam replay 6631") {
  CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.0,std::abs(ll)));
  CHECK(std::abs(r.logLik-(7.540112841515992))<=1e-10*7.540112841515992);
 }
+
+TEST_CASE("snorm overflowing normalization retains a classified outcome") {
+  const std::vector<double> x={-1.7e308,-1.7e308,-1.7e308,-1.7e308,-1.7e308,1.7e308};
+  const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-10,200);
+  const auto o=cppunivariate::outcome(r);
+  CHECK((o.kind==cppunivariate::OutcomeKind::Limit ||
+    (o.kind==cppunivariate::OutcomeKind::Failure&&o.reason==cppunivariate::OutcomeReason::Evaluation)));
+  if(o.kind==cppunivariate::OutcomeKind::Limit) {
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(std::isfinite(r.stop_detail.limit_loglik));
+  }
+}

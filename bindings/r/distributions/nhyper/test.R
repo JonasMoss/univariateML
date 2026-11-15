@@ -213,3 +213,8 @@ test_that("negative-hypergeometric large-count grid likelihoods use stable masse
   expect_equal(attr(a,"logLik"),sum(dml(x,a,log=TRUE)),tolerance=1e-12)
   expect_equal(attr(b,"logLik"),sum(dml(x,b,log=TRUE)),tolerance=1e-12)
 })
+
+
+test_that("nhyper core decides the data outcome", {
+  expect_error(mlnhyper(c(0,0),r=1,N=10), class="univariateML_invalid")
+})

@@ -23,12 +23,6 @@ inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shap
  start(shape10),start(shape20),start(scale0),reltol);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (res.status == cppunivariate::BurrStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(res.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
   };
  if (res.status == cppunivariate::BurrStatus::Unbounded) return done(stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
@@ -39,8 +33,7 @@ inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shap
  if (res.status == cppunivariate::BurrStatus::CertificateBudget) return done(stop_failure(fail("Burr global certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
  if (res.status == cppunivariate::BurrStatus::NumericalFailure) return done(stop_failure(fail("Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
  if (res.status == cppunivariate::BurrStatus::IterationFailure) return done(stop_failure(fail("Constrained likelihood search failed to converge."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
- if (res.status == cppunivariate::BurrStatus::InvalidInit ||
- !std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale))
+ if (res.status == cppunivariate::BurrStatus::InvalidInit)
  return done(fail("burr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale"));
  std::vector<std::string> fixed;
  if(shape1.supplied) fixed.push_back("shape1");

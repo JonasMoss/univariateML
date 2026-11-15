@@ -315,11 +315,11 @@ inline BetaPrimeResult fit(span x,double tol,int maxit,double startp,double star
     double starts,double reltol,double abstol) {
   maxit=static_cast<int>(solver_budget(maxit));
   BetaPrimeResult out{NAN,NAN,NAN,NAN,0,BetaPrimeStatus::BfgsFailure};
-  if(x.size()<2||!(tol>0)||!std::isfinite(tol)||startp<0||startq<0||starts<0||
+  if(x.empty()||!(tol>0)||!std::isfinite(tol)||startp<0||startq<0||starts<0||
      !std::isfinite(startp+startq+starts)) {out.status=BetaPrimeStatus::InvalidStart;return out;}
   bool constant=true;betapr_joint_detail::Sum lm,mag;
   for(double v:x){if(!(v>0)||!std::isfinite(v)){out.status=BetaPrimeStatus::InvalidStart;return out;}constant=constant&&v==x[0];lm.add(std::log(v)/x.size());mag.add(std::abs(std::log(v))/x.size());}
-  if(constant){out.status=BetaPrimeStatus::InvalidStart;out.stop_detail.loglik_lower=INFINITY;out.stop_detail.loglik_upper=INFINITY;return out;}
+  if(constant){out.status=BetaPrimeStatus::Unbounded;out.stop_detail.loglik_lower=INFINITY;out.stop_detail.loglik_upper=INFINITY;return out;}
   Engine e(x,tol,maxit);e.lm=lm.value;e.mag=mag.value;e.unit=std::exp(e.lm);out.scale=e.unit;
   if(!(e.unit>0)||!std::isfinite(e.unit)){out.certificate_failure=LomaxCertificateFailure::Arithmetic;return out;}
   for(double v:x){e.logs.push_back(std::log(v)-e.lm);e.scaled.push_back(v/e.unit);}

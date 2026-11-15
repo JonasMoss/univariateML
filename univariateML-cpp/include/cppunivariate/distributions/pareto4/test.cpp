@@ -133,7 +133,7 @@ TEST_CASE("pareto4: certified candidate rejects invalid thresholds and excesses"
   for(double min:std::vector<double>{INFINITY,NAN,4.}) {
     auto bad=x;
     if(min==-std::numeric_limits<double>::max())bad.back()=std::numeric_limits<double>::max();
-    CHECK(cppunivariate::pareto4_mle_certified(mltest::as_span(bad),min,1e-8,1000).status==cppunivariate::BurrStatus::InvalidInit);
+    CHECK(cppunivariate::pareto4_mle_certified(mltest::as_span(bad),min,1e-8,1000).status==(std::isnan(min)?cppunivariate::BurrStatus::Unbounded:cppunivariate::BurrStatus::InvalidInit));
   }
   for(double tol:std::vector<double>{0.,-1.,INFINITY,NAN})
     CHECK(cppunivariate::pareto4_mle_certified(mltest::as_span(x),0,tol,1000).status==cppunivariate::BurrStatus::InvalidInit);
@@ -320,4 +320,14 @@ TEST_CASE("pareto4: archived density seam 5669") {
     const double actual=cppunivariate::distributions::dpareto4(data[i],0.3157266252310832,1813936513691.6497,57.95719829088866,0.0,true);
     CHECK(std::abs(actual-expected[i])<=1e-10*std::max(1.0,std::abs(expected[i])));
   }
+}
+
+TEST_CASE("pareto4 core distinguishes free-threshold nonexistence from unsupported holds") {
+  const std::vector<double> x={-2,-1,1};
+  const auto free=cppunivariate::pareto4_mle(mltest::as_span(x),NAN,1e-10,100);
+  CHECK(cppunivariate::outcome(free).reason==cppunivariate::OutcomeReason::Unbounded);
+  const auto power=cppunivariate::pareto4_mle(mltest::as_span(x),NAN,1e-10,100,NAN,NAN,2);
+  CHECK(cppunivariate::outcome(power).reason==cppunivariate::OutcomeReason::Unbounded);
+  const auto held=cppunivariate::pareto4_mle(mltest::as_span(x),NAN,1e-10,100,1,1,2);
+  CHECK(cppunivariate::outcome(held).reason==cppunivariate::OutcomeReason::Unsupported);
 }

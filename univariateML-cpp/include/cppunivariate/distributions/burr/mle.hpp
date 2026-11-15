@@ -1,6 +1,8 @@
 // Three-parameter Burr XII MLE, with shape1 profiled exactly.
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../weibull/dpqr.hpp"
+#include "../pareto/dpqr.hpp"
 #include "../../core/work_budget.hpp"
 #include "accuracy.hpp"
 #include "../../core/stop_detail.hpp"
@@ -239,6 +241,11 @@ inline BurrMLE burr_uncertified(BurrMLE certificate, BurrMLE searched, span x, d
   searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;
   return searched;
 }
+inline bool burr_valid_controls(double tol,int maxit,double shape10,double shape20,double scale0,double reltol) {
+  if(!(tol>0)||!std::isfinite(tol)||maxit<1||!(reltol>0)||!std::isfinite(reltol))return false;
+  for(double v:{shape10,shape20,scale0})if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))return false;
+  return true;
+}
 inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
@@ -246,11 +253,8 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     std::int64_t work_budget = -1) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  if(!(tol>0)||!std::isfinite(tol)||maxit<1||!(reltol>0)||!std::isfinite(reltol))
+  if(!burr_valid_controls(tol,maxit,shape10,shape20,scale0,reltol))
     return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
-  for(double v:{shape10,shape20,scale0})
-    if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))
-      return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
   if(maxit==1)return {nan,nan,nan,nan,0,BurrStatus::IterationFailure};
   if(work_budget<0)work_budget=certificate_budget(maxit);
   const auto r=burr_cert_detail::fit(x,work_budget,maxit);
@@ -270,7 +274,13 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
   out.stop_detail.budget_exhausted=r.outcome==burr_cert_detail::Outcome::Budget;
   if(status==BurrStatus::WeibullBoundary || status==BurrStatus::ParetoBoundary) {
     const auto& face=r.stop_detail.candidates[status==BurrStatus::ParetoBoundary?0:1];
-    out.stop_detail.limit_coef=face.coef;out.stop_detail.limit_loglik=r.logLik;
+    out.stop_detail.limit_coef=face.coef;out.stop_detail.limit_model=face.model;
+    double point_ll=0;
+    for(double v:x)point_ll+=status==BurrStatus::WeibullBoundary?
+      distributions::dweibull(v,face.coef[0],face.coef[1],true):
+      distributions::dpareto(v,face.coef[0],face.coef[1],true);
+    out.logLik=point_ll;out.stop_detail.limit_loglik=point_ll;
+    if(!std::isfinite(point_ll))out.status=BurrStatus::NumericalFailure;
   }
   if(status==BurrStatus::CertificateTie || status==BurrStatus::CertificateBudget || status==BurrStatus::NumericalFailure)
     return burr_uncertified(out,burr_mle_legacy(x,tol,maxit,shape10,shape20,scale0,reltol,true),x,tol,maxit,{{true,true,true}});
@@ -281,6 +291,9 @@ inline BurrMLE burr_mle(span x, double tol, int maxit,
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
     double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
   maxit = static_cast<int>(solver_budget(maxit));
+  if(x.size()==1 && x[0]>0 && std::isfinite(x[0]) &&
+      burr_valid_controls(tol,maxit,shape10,shape20,scale0,reltol))
+    return {NAN,NAN,NAN,INFINITY,0,BurrStatus::Unbounded};
   return burr_mle_certified(x,tol,maxit,shape10,shape20,scale0,reltol);
 }
 
@@ -378,7 +391,8 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
      bad.status=BurrStatus::WeibullBoundary;
      const double rate=r.stop_detail.limit_coef.empty()?NAN:r.stop_detail.limit_coef[0];
      bad.stop_detail.limit_coef={b,std::exp(mx-std::log(rate)/b)};
-     bad.stop_detail.limit_loglik=r.stop_detail.limit_loglik+n*std::log(b)+(b-1)*n*mean-b*n*mx;
+     bad.stop_detail.limit_loglik=0;
+     for(double v:x)bad.stop_detail.limit_loglik+=distributions::dweibull(v,b,bad.stop_detail.limit_coef[1],true);
      return bad;
    }
    if(r.status==LomaxStatus::ExponentialLimit) {

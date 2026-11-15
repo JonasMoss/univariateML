@@ -3,6 +3,7 @@
 
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../hnorm/dpqr.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
@@ -22,7 +23,7 @@
 namespace cppunivariate {
 
 enum class SnormStatus { Ok = 0, BfgsFailure, InvalidStart, Unbounded,
-                         RightHalfNormalBoundary, LeftHalfNormalBoundary };
+                         RightHalfNormalBoundary, LeftHalfNormalBoundary, NumericalFailure };
 
 struct SnormResult {
   double mu;
@@ -171,7 +172,13 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int maxit,
                      -CPPUNIV_EXTENDED_LITERAL(1.5,1.5L)*std::log(best)+CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(static_cast<CPPUNIV_EXTENDED_REAL>(n))-CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)));
   if(mode==0 || mode==1) {
     SnormResult face={nan,nan,nan,ll,0,mode==0?SnormStatus::RightHalfNormalBoundary:SnormStatus::LeftHalfNormalBoundary};
-    face.stop_detail=limit_detail({static_cast<double>(origin+scale*mode),static_cast<double>(scale*std::sqrt(best*best*best/n))},ll,mode==0?StopModel::Hnorm:StopModel::ReflectedHnorm);
+    face.stop_detail=limit_detail({mode==0?*std::min_element(x.begin(),x.end()):*std::max_element(x.begin(),x.end()),static_cast<double>(scale*std::sqrt(best*best*best/n))},ll,mode==0?StopModel::Hnorm:StopModel::ReflectedHnorm);
+    if(face.stop_detail.limit_coef.size()!=2){face.status=SnormStatus::NumericalFailure;return face;}
+    double public_ll=0;
+    for(double v:x)public_ll+=distributions::dhnorm(mode==0?v:-v,mode==0?face.stop_detail.limit_coef[0]:-face.stop_detail.limit_coef[0],face.stop_detail.limit_coef[1],true);
+    if(!std::isfinite(public_ll)){face.status=SnormStatus::NumericalFailure;face.stop_detail={};return face;}
+    face.logLik=public_ll;
+    face.stop_detail=limit_detail(face.stop_detail.limit_coef,public_ll,mode==0?StopModel::Hnorm:StopModel::ReflectedHnorm);
     return face;
   }
   // For the two-piece normal: E[X]=c+m1*(b-a),
@@ -223,6 +230,7 @@ inline FitOutcome outcome(const SnormResult& r) {
   if (r.status != SnormStatus::Unbounded && r.stop_detail.comparison_tie) return snorm_equal_faces(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
   switch (r.status) {
     case SnormStatus::Ok: return FitOutcome::estimate(true);
+    case SnormStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case SnormStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case SnormStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SnormStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

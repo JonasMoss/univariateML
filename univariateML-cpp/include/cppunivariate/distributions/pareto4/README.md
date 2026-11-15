@@ -31,19 +31,26 @@ params:
   role: lower endpoint
   domain: (-inf, inf)
   simulate: 0
-  advice: 'With all coefficients free, shape2 below 1 makes the density singular as min approaches the sample minimum. The fully free likelihood is unbounded. Hold min, for example min = 0, to fit the shifted burr family. Estimating min with other coefficients held is not supported.'
+  advice: 'With all coefficients free, shape2 below 1 makes the density singular as min approaches the sample minimum. The fully free likelihood is unbounded. Hold min, for example min = 0, to fit the shifted burr family. With min free, a free shape2 or a held shape2 below 1 gives unbounded likelihood, as do free shape1 and scale; the remaining held slices are not supported.'
   kind: threshold
 r:
   density: dpareto4
   sampler: rpareto4
   control:
-    min: Known finite lower endpoint.
+    min: Finite lower endpoint to hold, or NULL to leave it free.
     reltol: Delegate fitting tolerance.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     shape1: Known positive finite coefficient; NULL estimates it.
     shape2: Known positive finite coefficient; NULL estimates it.
 log_density: log(shape1) + log(shape2) - log((x-min)) - shape2*log(scale/(x-min)) - (shape1+1)*log(1+((x-min)/scale)**shape2)
 limits:
+- firmness: proved
+  kind: nonexistence
+  name: free-threshold unbounded likelihood
+  status: Unbounded
+  when: 'min is free and (shape2 is free or below 1, or both shape1 and scale are free).'
+  detect: 'Every nonempty finite sample; endpoint spikes or a simultaneous shape1/scale collapse give an unbounded likelihood.'
+  message: 'likelihood is unbounded'
 - name: unbounded likelihood
   firmness: proved
   when: A free power $\gamma$ tends to infinity while the other free coefficients concentrate the excess distribution at its common observed value.
@@ -68,43 +75,6 @@ limits:
   status: AllGeOne
   fixed: [scale]
   name: shifted Pareto with its endpoint held at min + scale
-holds:
-- held: []
-  status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape1
-  status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape2
-  status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape1
-  - shape2
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - scale
-  status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape1
-  - scale
-  status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape2
-  - scale
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape1
-  - shape2
-  - scale
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
 fit_args:
   min: 0
 examples: |
@@ -268,3 +238,9 @@ subtraction residual $e_i=(x_i-\mu)-y_i$ contributes
 $\log(1+e_i/y_i)$ to its log excess. This term can affect the weak shape
 direction of an uncertified fit even when every support classification is
 unchanged. The local correction therefore retains the subtraction residual.
+
+For a free threshold, a power below one produces an endpoint spike. Even
+with a larger held power, letting shape1 = 1/t, scale = exp(-t), and
+min = min(x)-scale makes the likelihood unbounded when both shape1 and scale
+are free. The [free-threshold arguments](../../../../../dev/research/evaluations/2026-11-14-core5b-c-data/mathematics.md)
+do not decide the remaining held slices, which remain unsupported.

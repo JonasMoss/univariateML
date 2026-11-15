@@ -1,0 +1,84 @@
+{
+  "baseline": "da2174a11af7d31c47434a54a65d4108c6b00388",
+  "machine": "workstation",
+  "all_final_checks_passed": true,
+  "simbox_attempted": false,
+  "commits_created": false,
+  "snapshots": {
+    "native": {
+      "cases": 3619,
+      "unchanged": 3404,
+      "changed": 215,
+      "categories": {
+        "core-status-only": 1,
+        "stop-payload-and-diagnostic": 1,
+        "public-coefficient-likelihood": 110,
+        "outcome-correction": 93,
+        "likelihood-and-stop-payload": 10
+      },
+      "families": {
+        "betapr": 2,
+        "burr": 27,
+        "gb2": 54,
+        "hnorm": 2,
+        "hyper": 13,
+        "kumar": 13,
+        "lomax": 1,
+        "nhyper": 16,
+        "pareto4": 40,
+        "rayleigh": 2,
+        "snorm": 15,
+        "std": 30
+      },
+      "ok_coefficients_changed": 0
+    },
+    "double": {
+      "cases": 3619,
+      "unchanged": 3392,
+      "changed": 227,
+      "categories": {
+        "core-status-only": 1,
+        "stop-payload-and-diagnostic": 1,
+        "public-coefficient-likelihood": 120,
+        "outcome-correction": 93,
+        "likelihood-and-stop-payload": 12
+      },
+      "families": {
+        "betapr": 2,
+        "burr": 27,
+        "gb2": 54,
+        "hnorm": 2,
+        "hyper": 13,
+        "kumar": 13,
+        "lomax": 1,
+        "nhyper": 16,
+        "pareto4": 40,
+        "rayleigh": 2,
+        "snorm": 27,
+        "std": 30
+      },
+      "ok_coefficients_changed": 0
+    }
+  },
+  "strict_removed": {
+    "TASK-214.16": 20,
+    "TASK-214.15": 4,
+    "TASK-214.17": 24
+  },
+  "strict_retained": {
+    "TASK-214.13": 4,
+    "TASK-214.5": 30
+  },
+  "point_likelihood_checks": {
+    "count": 100,
+    "digits": 90,
+    "max_relative_error": 9.08e-14
+  },
+  "log_collapse_reference_digits": 100,
+  "final_R_passes": [
+    587,
+    1645
+  ],
+  "final_js_passes": 583,
+  "timing_note": "Historical elapsed_seconds includes CPU-slot queue waits, compilation and execution; suite counts and final targeted reruns are recorded separately."
+}

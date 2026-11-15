@@ -11,8 +11,7 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   const Held sigma = sigma_arg;
   const Held xi = xi_arg;
 
-  if (!mu.supplied) return invalid_argument(fail("Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus."));
-  const double threshold = mu.value;
+  const double threshold = mu.supplied ? mu.value : NAN;
   const double shape = xi.supplied ? xi.value :
       std::numeric_limits<double>::quiet_NaN();
   if (xi.supplied && (!std::isfinite(shape) || (shape < -1 && !sigma.supplied)))
@@ -25,14 +24,11 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   auto res = cppunivariate::gpd_mle(x, reltol, iterlim, threshold, shape, scale);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (res.status == cppunivariate::GpdStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(res.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
   };
+  if (res.status==cppunivariate::GpdStatus::Unbounded)
+    return done(stop_failure(fail("Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus."),res.stop_detail,outcome_payload(o),{}));
+  if (res.status==cppunivariate::GpdStatus::FreeThreshold) return done(fail("Estimating `mu` is not supported. The unrestricted likelihood is unbounded. Hold mu to fit this family; some held-coefficient submodels have endpoint maxima or uniform plateaus."));
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::ThresholdCollapse) {
     if(std::isfinite(res.stop_detail.limit_loglik))
       return done(stop_failure(fail("Generalized Pareto has no finite maximum: scale collapse at the threshold gives a finite unattained fixed-shape supremum."), res.stop_detail, outcome_payload(o), {"mu","sigma","xi"}));
@@ -46,8 +42,8 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
     return done(stop_failure(fail("Generalized Pareto MLE failed to converge: certificate comparisons unresolved or coefficients unrepresentable."), res.stop_detail, outcome_payload(o), {"mu","sigma","xi"}));
   if (res.status == cppunivariate::GpdStatus::InvalidData)
     return done(fail("Generalized Pareto requires finite data at or above `mu`, compatible support and holds, no scale collapse at the threshold, a finite threshold, positive `reltol` and positive `iterlim`."));
-  if (res.status != cppunivariate::GpdStatus::Ok || !std::isfinite(res.logLik))
-    return done(fail("Generalized Pareto MLE failed to converge."));
+  if (res.status != cppunivariate::GpdStatus::Ok)
+    return done(stop_failure(fail("Generalized Pareto MLE failed to converge."),res.stop_detail,outcome_payload(o),{"mu","sigma","xi"}));
   std::vector<std::pair<std::string,std::string>> restricted;
   if(res.restricted & 1u) restricted.emplace_back("mu","lower");
   if(res.restricted & 2u) restricted.emplace_back("mu","upper");

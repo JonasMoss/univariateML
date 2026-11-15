@@ -7,7 +7,7 @@
 
 namespace cppunivariate {
 enum class EmgStatus { Ok, NormalLimit, TranslatedExponentialLimit, Unbounded, InvalidInput, IterationFailure, NumericalFailure, BudgetExhausted, Unresolved, Tie, AccuracyFailure };
-struct EmgResult { double mu,sigma,lambda,logLik; int iterations; EmgStatus status; StopDetail stop_detail{}; };
+struct EmgResult { double mu,sigma,lambda,logLik; int iterations; EmgStatus status; StopDetail stop_detail{}; std::vector<std::vector<double>> accurate_coef{}; };
 namespace emg_detail {
 struct CertFace {
   bool valid=false;

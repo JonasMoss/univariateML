@@ -276,7 +276,7 @@ TEST_CASE("burr: certificate arithmetic and failure gates") {
   check_burr_refutation_witness(a,proposal);
   CHECK(proposal.scale/(1-1e-8)<x.front());
   for(const std::vector<double>& bad:std::vector<std::vector<double>>{{},{1},{0,1},{1,INFINITY},{1,NAN}})
-    CHECK(cppunivariate::burr_mle(mltest::as_span(bad),1e-8,1000).status==cppunivariate::BurrStatus::InvalidInit);
+    CHECK(cppunivariate::burr_mle(mltest::as_span(bad),1e-8,1000).status==(bad==std::vector<double>{1}?cppunivariate::BurrStatus::Unbounded:cppunivariate::BurrStatus::InvalidInit));
   for(double tol:std::array<double,4>{{0.,-1.,INFINITY,NAN}})
     CHECK(cppunivariate::burr_mle(mltest::as_span(x),tol,1000).status==cppunivariate::BurrStatus::InvalidInit);
   const std::vector<double> constant={2,2,2};
@@ -616,4 +616,11 @@ TEST_CASE("burr: concentrated held-shape logLik uses public coefficients") {
   CHECK(r.logLik==doctest::Approx(sum).epsilon(1e-11));
   CHECK(cppunivariate::burr_local_loglik(mltest::as_span(x),1.334637717604056,875134658462.2328,2.042845496593945)
     ==doctest::Approx(124.54633405249429).epsilon(1e-12));
+}
+
+TEST_CASE("burr singleton joint likelihood is unbounded") {
+  const std::vector<double> x={2};
+  const auto r=cppunivariate::burr_mle(mltest::as_span(x),1e-10,1000);
+  CHECK(r.status==cppunivariate::BurrStatus::Unbounded);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
 }

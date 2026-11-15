@@ -140,6 +140,14 @@ inline LomaxResult fit(span x,double tol,int maxit,double lambda0) {
     const double logmean=std::log(largest)+std::log(scaled_mean);
     out.stop_detail.limit_coef={std::exp(-logmean)};
     out.stop_detail.limit_loglik=x.size()*(-logmean-1);
+    const double rate=out.stop_detail.limit_coef[0];
+    if(!(rate>0) || !std::isfinite(rate)) {
+      out.status=LomaxStatus::IterationFailure;
+      out.certificate_failure=LomaxCertificateFailure::Arithmetic;
+      // Keep the finite analytic face bound when its rate cannot be exported.
+      out.stop_detail.loglik_lower=out.stop_detail.limit_loglik;
+      out.stop_detail.limit_coef.clear();out.stop_detail.limit_loglik=NAN;
+    }
     return out;
   };
   if(constant)return exponential(0);

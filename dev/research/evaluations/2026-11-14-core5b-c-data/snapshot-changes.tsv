@@ -1,0 +1,443 @@
+mode	family	source	case	category	fields	reason
+native	betapr	class	constant	core-status-only	core_status	Core Unbounded status replaces adapter constant-data reclassification.
+native	betapr	class	one	stop-payload-and-diagnostic	core_status,loglik_lower,loglik_upper	Core Unbounded status replaces adapter constant-data reclassification.
+native	burr	archive	000611	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000613	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000615	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000616	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000617	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000618	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000619	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000620	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000621	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000622	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000625	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000626	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	000628	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	009420	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	009422	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	009880	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	009882	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	010244	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	archive	010245	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	class	half-ties	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	class	one	outcome-correction	core_status,kind,message,outcome,reason	Core proves singleton nonexistence rather than rejecting valid input.
+native	burr	class	subnormal	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	class	tiny	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	resample	n3-s1	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	resample	n3-s3	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	resample	n7-s1	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	burr	resample	n7-s2	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+native	gb2	archive	002058	outcome-correction	candidates,certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002059	outcome-correction	candidates,certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002061	outcome-correction	candidates,certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002062	outcome-correction	candidates,certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002204	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002205	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002206	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002207	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002208	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002209	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+native	gb2	archive	002210	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+native	gb2	archive	002211	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+native	gb2	archive	002212	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+native	gb2	archive	002213	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+native	gb2	archive	002214	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+native	gb2	archive	002217	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+native	gb2	archive	002218	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+native	gb2	archive	002219	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002220	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	002222	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+native	gb2	archive	009444	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	009460	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	009468	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	009476	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	009516	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	009904	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	009920	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	009928	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	009936	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	009944	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009945	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009946	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009948	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009949	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009952	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009954	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009960	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009961	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009962	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009964	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009965	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009968	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009970	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	archive	009984	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+native	gb2	archive	010406	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	010407	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	archive	010408	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+native	gb2	class	constant	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	class	half-ties	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+native	gb2	class	near-constant	outcome-correction	candidates,certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+native	gb2	class	one	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+native	gb2	class	ties	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+native	gb2	resample	n7-s0	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+native	gb2	resample	n7-s2	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+native	hnorm	class	empty	likelihood-and-stop-payload	core_status,message	Core distinguishes empty input from scale collapse.
+native	hnorm	class	subnormal	public-coefficient-likelihood	logLik	Evaluate the likelihood at the unchanged rounded subnormal scale, without the exact-optimum n/2 substitution.
+native	hyper	archive	003479	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	archive	003481	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	archive	003493	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	archive	003495	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	archive	003507	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	archive	003509	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	archive	003521	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	archive	003523	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	archive	003547	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	archive	003549	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	class	huge	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	class	large	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	hyper	class	wide	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+native	kumar	archive	004293	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	kumar	archive	004294	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	kumar	archive	004295	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	kumar	archive	004296	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	kumar	archive	004297	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	kumar	archive	004298	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	kumar	archive	004304	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	kumar	archive	004305	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	kumar	archive	004306	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	kumar	class	constant	outcome-correction	kind,outcome,reason	Unbounded likelihood means nonexistence.
+native	kumar	class	near-constant	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	kumar	class	one	outcome-correction	kind,outcome,reason	Unbounded likelihood means nonexistence.
+native	kumar	class	tiny	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+native	lomax	class	subnormal	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,message,model,outcome,reason	Unrepresentable exponential rate is evaluation failure with no invalid limit payload.
+native	nhyper	archive	005162	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005176	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005189	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005190	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005191	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005203	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005204	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005205	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005243	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005244	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005256	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	archive	005257	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	class	huge	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	class	large	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	class	wide	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	nhyper	class	zeros	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+native	pareto4	archive	005646	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005649	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005650	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005652	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005653	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005657	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005658	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005679	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005680	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005682	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005683	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	005705	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+native	pareto4	archive	005709	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+native	pareto4	archive	005710	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+native	pareto4	archive	005711	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+native	pareto4	archive	005712	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+native	pareto4	archive	005713	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+native	pareto4	archive	005714	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+native	pareto4	archive	005716	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+native	pareto4	archive	005718	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+native	pareto4	archive	010634	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	010635	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	010636	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	010846	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	010847	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	010854	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	archive	010856	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	class	nan	outcome-correction	core_status,outcome,reason	Burr singleton/face correction; core support checks and free-threshold nonexistence/unsupported decisions.
+native	pareto4	class	negative	outcome-correction	core_status,outcome,reason	Burr singleton/face correction; core support checks and free-threshold nonexistence/unsupported decisions.
+native	pareto4	class	neginf	outcome-correction	core_status,outcome,reason	Burr singleton/face correction; core support checks and free-threshold nonexistence/unsupported decisions.
+native	pareto4	class	one	outcome-correction	core_status,kind,message,outcome,reason	The core proves singleton/free-threshold nonexistence instead of an input or unsupported-fit refusal.
+native	pareto4	class	subnormal	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	class	tiny	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	class	wide	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	class	zeros	outcome-correction	core_status,outcome,reason	Burr singleton/face correction; core support checks and free-threshold nonexistence/unsupported decisions.
+native	pareto4	resample	n3-s0	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	resample	n3-s3	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	resample	n7-s0	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	resample	n7-s1	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	pareto4	resample	n7-s3	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+native	rayleigh	class	subnormal	public-coefficient-likelihood	logLik	Evaluate the likelihood at the unchanged rounded subnormal scale, without the exact-optimum n substitution.
+native	rayleigh	class	zeros	outcome-correction	kind,outcome,reason	An identically zero likelihood is an invalid-input failure, not an unattained positive supremum.
+native	snorm	archive	006546	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	archive	006548	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	archive	006549	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	archive	006551	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	archive	006553	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	archive	006554	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	archive	006561	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	class	negative	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	class	subnormal	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	class	subnormal-signed	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	class	ties	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	class	two	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	resample	n3-s1	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	resample	n3-s2	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	snorm	resample	n7-s3	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+native	std	archive	007186	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	archive	007187	public-coefficient-likelihood	limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	archive	007188	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	archive	007189	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	archive	007191	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	archive	007192	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	archive	007194	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	archive	007195	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	archive	007197	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	archive	007198	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	archive	007199	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	archive	007201	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	archive	009360	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	archive	009820	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	class	base6	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	class	half-ties	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	class	negative	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	class	subnormal	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	class	subnormal-signed	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	class	tiny	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	class	two	public-coefficient-likelihood	limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	class	wide	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	resample	n3-s0	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	resample	n3-s1	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	resample	n3-s2	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	resample	n3-s3	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	resample	n7-s0	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+native	std	resample	n7-s1	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	resample	n7-s2	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+native	std	resample	n7-s3	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	betapr	class	constant	core-status-only	core_status	Core Unbounded status replaces adapter constant-data reclassification.
+double	betapr	class	one	stop-payload-and-diagnostic	core_status,loglik_lower,loglik_upper	Core Unbounded status replaces adapter constant-data reclassification.
+double	burr	archive	000611	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000613	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000615	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000616	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000617	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000618	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000619	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000620	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000621	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000622	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000625	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000626	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	000628	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	009420	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	009422	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	009880	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	009882	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	010244	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	archive	010245	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	class	half-ties	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	class	one	outcome-correction	core_status,kind,message,outcome,reason	Core proves singleton nonexistence rather than rejecting valid input.
+double	burr	class	subnormal	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	class	tiny	public-coefficient-likelihood	limit_loglik	Recompute the weibull face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	resample	n3-s1	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	resample	n3-s3	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	resample	n7-s1	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	burr	resample	n7-s2	public-coefficient-likelihood	limit_loglik	Recompute the pareto face likelihood after exporting its physical coefficients; preserve global certificate bounds.
+double	gb2	archive	002058	outcome-correction	candidates,certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002059	outcome-correction	candidates,certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002061	outcome-correction	candidates,certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002062	outcome-correction	candidates,certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002204	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002205	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002206	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002207	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002208	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002209	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+double	gb2	archive	002210	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+double	gb2	archive	002211	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+double	gb2	archive	002212	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+double	gb2	archive	002213	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+double	gb2	archive	002214	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+double	gb2	archive	002217	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+double	gb2	archive	002218	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+double	gb2	archive	002219	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002220	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	002222	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+double	gb2	archive	009444	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	009460	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	009468	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	009476	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	009516	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	009904	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	009920	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	009928	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	009936	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	009944	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009945	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009946	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009948	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009949	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009952	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009954	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009960	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009961	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009962	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009964	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009965	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009968	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009970	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	archive	009984	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,message,model,outcome,reason	The simultaneous power/shape escape allows a free endpoint despite held scale; return the dominating Pareto/power point and payload, uncertified.
+double	gb2	archive	010406	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	010407	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	archive	010408	outcome-correction	certified,kind,limit_estimates,limit_loglik,message,model,outcome,reason	LognormalBoundary now carries its model, public coefficients and point likelihood, as an uncertified limit.
+double	gb2	class	constant	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	class	half-ties	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+double	gb2	class	near-constant	outcome-correction	candidates,certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+double	gb2	class	one	outcome-correction	core_status,kind,message,outcome,reason	Core proves constant-data nonexistence and returns Unbounded instead of InvalidData.
+double	gb2	class	ties	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+double	gb2	resample	n7-s0	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+double	gb2	resample	n7-s2	outcome-correction	candidates,certified,kind,limit_estimates,limit_loglik,loglik_lower,loglik_upper,message,model,outcome,reason	DoubleParetoBoundary now carries its profiled model (or one-sided endpoint face), public coefficients and point likelihood, as an uncertified limit.
+double	hnorm	class	empty	likelihood-and-stop-payload	core_status,message	Core distinguishes empty input from scale collapse.
+double	hnorm	class	subnormal	public-coefficient-likelihood	logLik	Evaluate the likelihood at the unchanged rounded subnormal scale, without the exact-optimum n/2 substitution.
+double	hyper	archive	003479	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	archive	003481	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	archive	003493	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	archive	003495	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	archive	003507	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	archive	003509	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	archive	003521	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	archive	003523	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	archive	003547	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	archive	003549	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	class	huge	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	class	large	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	hyper	class	wide	outcome-correction	kind,outcome,reason	Support incompatibility is invalid input, rather than unattained supremum; no binding override.
+double	kumar	archive	004293	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	kumar	archive	004294	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	kumar	archive	004295	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	kumar	archive	004296	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	kumar	archive	004297	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	kumar	archive	004298	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	kumar	archive	004304	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	kumar	archive	004305	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	kumar	archive	004306	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	kumar	class	constant	outcome-correction	kind,outcome,reason	Unbounded likelihood means nonexistence.
+double	kumar	class	near-constant	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	kumar	class	one	outcome-correction	kind,outcome,reason	Unbounded likelihood means nonexistence.
+double	kumar	class	tiny	public-coefficient-likelihood	candidates,loglik_lower,loglik_upper	Unbounded likelihood means nonexistence.
+double	lomax	class	subnormal	outcome-correction	certified,core_status,kind,limit_estimates,limit_loglik,loglik_lower,message,model,outcome,reason	Unrepresentable exponential rate is evaluation failure with no invalid limit payload.
+double	nhyper	archive	005162	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005176	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005189	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005190	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005191	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005203	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005204	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005205	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005243	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005244	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005256	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	archive	005257	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	class	huge	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	class	large	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	class	wide	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	nhyper	class	zeros	outcome-correction	kind,outcome,reason	Infeasible support is invalid input, rather than unattained supremum.
+double	pareto4	archive	005646	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005649	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005650	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005652	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005653	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005657	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005658	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005679	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005680	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005682	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005683	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	005705	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+double	pareto4	archive	005709	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+double	pareto4	archive	005710	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+double	pareto4	archive	005711	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+double	pareto4	archive	005712	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+double	pareto4	archive	005713	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+double	pareto4	archive	005714	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+double	pareto4	archive	005716	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+double	pareto4	archive	005718	likelihood-and-stop-payload	message	correct the parent-fitter advice for a held endpoint or translated data
+double	pareto4	archive	010634	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	010635	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	010636	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	010846	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	010847	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	010854	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	archive	010856	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	class	nan	outcome-correction	core_status,outcome,reason	Burr singleton/face correction; core support checks and free-threshold nonexistence/unsupported decisions.
+double	pareto4	class	negative	outcome-correction	core_status,outcome,reason	Burr singleton/face correction; core support checks and free-threshold nonexistence/unsupported decisions.
+double	pareto4	class	neginf	outcome-correction	core_status,outcome,reason	Burr singleton/face correction; core support checks and free-threshold nonexistence/unsupported decisions.
+double	pareto4	class	one	outcome-correction	core_status,kind,message,outcome,reason	The core proves singleton/free-threshold nonexistence instead of an input or unsupported-fit refusal.
+double	pareto4	class	subnormal	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	class	tiny	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	class	wide	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	class	zeros	outcome-correction	core_status,outcome,reason	Burr singleton/face correction; core support checks and free-threshold nonexistence/unsupported decisions.
+double	pareto4	resample	n3-s0	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	resample	n3-s3	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	resample	n7-s0	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	resample	n7-s1	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	pareto4	resample	n7-s3	public-coefficient-likelihood	limit_loglik	evaluate the Burr face at its exported physical coefficients
+double	rayleigh	class	subnormal	public-coefficient-likelihood	logLik	Evaluate the likelihood at the unchanged rounded subnormal scale, without the exact-optimum n substitution.
+double	rayleigh	class	zeros	outcome-correction	kind,outcome,reason	An identically zero likelihood is an invalid-input failure, not an unattained positive supremum.
+double	snorm	archive	006546	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	archive	006547	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	archive	006551	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	archive	006552	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	archive	006553	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	archive	006555	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	archive	006556	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	archive	006558	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	archive	006559	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	archive	006560	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	archive	006561	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	class	base6	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	class	half-ties	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	class	huge	likelihood-and-stop-payload	core_status,message	Core records an unrepresentable half-normal face as evaluation failure; no binding payload veto remains.
+double	snorm	class	negative	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	class	offset	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	class	subnormal	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	class	subnormal-signed	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	class	ties	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	class	wide	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	resample	n3-s0	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	resample	n3-s1	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	resample	n3-s2	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	resample	n3-s3	likelihood-and-stop-payload	candidates,limit_estimates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	resample	n7-s1	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	resample	n7-s2	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	snorm	resample	n7-s3	public-coefficient-likelihood	candidates,limit_loglik	Use the original sample extreme for the free half-normal endpoint and evaluate the boundary likelihood in public coordinates.
+double	std	archive	007186	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	archive	007187	public-coefficient-likelihood	limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	archive	007188	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	archive	007189	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	archive	007191	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	archive	007192	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	archive	007194	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	archive	007195	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	archive	007197	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	archive	007198	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	archive	007199	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	archive	007201	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	archive	009360	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	archive	009820	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	class	base6	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	class	half-ties	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	class	negative	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	class	subnormal	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	class	subnormal-signed	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	class	tiny	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	class	two	public-coefficient-likelihood	limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	class	wide	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	resample	n3-s0	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	resample	n3-s1	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	resample	n3-s2	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	resample	n3-s3	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	resample	n7-s0	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.
+double	std	resample	n7-s1	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	resample	n7-s2	public-coefficient-likelihood	candidates	Evaluate normal face at public rounded coefficients.
+double	std	resample	n7-s3	public-coefficient-likelihood	candidates,limit_loglik	Evaluate normal face at public rounded coefficients.

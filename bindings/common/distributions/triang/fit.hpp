@@ -5,17 +5,7 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_triang(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, Held c_arg = {}, double reltol = 1e-12, int iterlim = 100) {
-  // Invalid controls remain ordinary errors, even if a legacy fitter reports
-  // a statistical status before checking them.
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held a = a_arg;
@@ -54,15 +44,9 @@ const Held z = c;
   auto r=cppunivariate::triang_mle(x,reltol,iterlim,checked_value_0,checked_value_1,checked_value_2);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (r.status == cppunivariate::TriangStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(r.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(r.status),{{"a",a_arg.supplied},{"b",b_arg.supplied},{"c",c_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"a",a_arg.supplied},{"b",b_arg.supplied},{"c",c_arg.supplied}});
   };
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if(r.status==cppunivariate::TriangStatus::Unbounded)
     return done(nomle("Triangular likelihood is unbounded for constant data with these fixed parameters."));
   if(r.status==cppunivariate::TriangStatus::Incompatible)
@@ -70,7 +54,7 @@ const Held z = c;
   if(r.status==cppunivariate::TriangStatus::InvalidInput)
     return done(fail("Invalid triangular inputs: require finite data, a < b, a <= c <= b, positive reltol and iterlim."));
   if(r.status==cppunivariate::TriangStatus::NumericalFailure)
-    return done(classify(fail("Triangular public coefficients lose likelihood beyond the numerical certificate margin."),{},outcome_payload(o),{"a","b","c"}));
+    return done(stop_failure(fail("Triangular public coefficients lose likelihood beyond the numerical certificate margin."),{},outcome_payload(o),{"a","b","c"}));
   if(r.status==cppunivariate::TriangStatus::IterationFailure)
     return done(fail("Triangular endpoint solve did not converge; increase iterlim."));
   if(r.not_unique) warnings.push_back(binding_message("Triangular maximum likelihood estimate is not unique (candidate log likelihoods within tolerance)."));

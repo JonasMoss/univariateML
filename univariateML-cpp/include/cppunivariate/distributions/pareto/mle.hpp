@@ -22,7 +22,7 @@ inline CPPUNIV_EXTENDED_REAL pareto_log_ratio(double v, double b) {
       : std::log(v) - std::log(b);
 }
 
-enum class ParetoStatus { Ok, InvalidInput, Unbounded, IterationFailure };
+enum class ParetoStatus { Ok, InvalidInput, Unbounded, IterationFailure, Incompatible };
 
 struct ParetoResult {
   double shape;
@@ -62,7 +62,7 @@ inline ParetoResult pareto_mle(span x,double a,double b) {
      (!std::isnan(b) && !(b>0 && std::isfinite(b))))return {nan,nan,nan,ParetoStatus::InvalidInput};
   double low=x[0];for(double v:x){if(!(v>0 && std::isfinite(v)))return {nan,nan,nan,ParetoStatus::InvalidInput};low=std::min(low,v);}
   if(std::isnan(b))b=low;
-  if(b>low)return {nan,b,nan,ParetoStatus::InvalidInput};
+  if(b>low)return {nan,b,nan,ParetoStatus::Incompatible};
   CPPUNIV_EXTENDED_REAL gap=0,logs=0;for(double v:x){gap+=pareto_log_ratio(v,b);logs+=std::log(v);}
   const double n=static_cast<double>(x.size());
   if(std::isnan(a) && gap==0)return {nan,b,nan,ParetoStatus::Unbounded};
@@ -77,6 +77,7 @@ namespace cppunivariate {
 inline FitOutcome outcome(const ParetoResult& r) {
   switch (r.status) {
     case ParetoStatus::Ok: return FitOutcome::estimate(true);
+    case ParetoStatus::Incompatible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ParetoStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ParetoStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case ParetoStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

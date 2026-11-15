@@ -9,6 +9,17 @@ namespace cppunivariate {
 // Compatibility family entry point; the shared public solver owns closure.
 struct CmpDomainResult : CmpResult {};
 inline CmpDomainResult cmp_domain_mle(span x, const CmpFitControl& ctl = {}) {
+  if(std::isfinite(ctl.fixed_lambda) && std::isfinite(ctl.fixed_nu)) {
+    std::uint64_t used=0;
+    CmpWorkLedger ledger{used,1000000}; // Match the fully-held density evaluator.
+    CmpDomainResult result;
+    static_cast<CmpResult&>(result)=cmp_mle(x,ctl,ledger);
+    if(result.status==CmpStatus::BudgetLimit) {
+      result.status=CmpStatus::NumericalFailure;
+      result.stop_detail.budget_exhausted=false;
+    }
+    return result;
+  }
   CmpFitControl control=ctl;
   control.maxit=static_cast<int>(solver_budget(ctl.maxit));
   std::uint64_t used=0;

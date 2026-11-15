@@ -23,6 +23,7 @@
 #include "../../core/span.hpp"
 #include "../../core/tie_collapse.hpp"
 #include "../norm/mle.hpp"
+#include "../norm/dpqr.hpp"
 #include "../../special/skewed_densities.hpp"
 #include "../../special/special.hpp"
 
@@ -375,7 +376,15 @@ inline StudentTResult student_t_mle_certified(span x, double tol, int maxit,std:
     else sd=box.mid();
   }
   if(status==StudentTStatus::DfTwoBoundary)sd=INFINITY;
-  StudentTResult r{c.mu,sd,c.nu,c.logLik,c.profiles,status};r.stop_detail=c.stop_detail;return r;
+  StudentTResult r{c.mu,sd,c.nu,c.logLik,c.profiles,status};r.stop_detail=c.stop_detail;
+  if(status==StudentTStatus::NormalBoundary && r.stop_detail.limit_coef.size()==2) {
+    double ll=0;for(double v:x)ll+=distributions::dnorm(v,r.stop_detail.limit_coef[0],r.stop_detail.limit_coef[1],true);
+    r.logLik=ll;r.stop_detail.limit_loglik=ll;
+    for(auto& candidate:r.stop_detail.candidates)
+      if(candidate.model==StopModel::Norm && candidate.coef==r.stop_detail.limit_coef)
+        candidate.loglik_lower=candidate.loglik_upper=ll;
+  }
+  return r;
 }
 
 

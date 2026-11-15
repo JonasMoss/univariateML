@@ -102,3 +102,22 @@ TEST_CASE("rayleigh: right censoring classifications and refusals") {
   upper[0]=0;
   CHECK(cppunivariate::rayleigh_censored_mle(data).status==cppunivariate::RayleighCensoredStatus::InvalidInput);
 }
+
+TEST_CASE("rayleigh validates the whole sample before zero likelihood") {
+  const std::vector<double> x={0,std::numeric_limits<double>::infinity()};
+  CHECK(cppunivariate::outcome(cppunivariate::rayleigh_mle(mltest::as_span(x))).reason==cppunivariate::OutcomeReason::InvalidInput);
+}
+TEST_CASE("rayleigh subnormal log likelihood uses the returned scale") {
+  const double u=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x={u,2*u,3*u};
+  const auto r=cppunivariate::rayleigh_mle(mltest::as_span(x));
+  double ll=0;for(double v:x){const double z=v/r.sigma;ll+=std::log(v)-2*std::log(r.sigma)-z*z/2;}
+  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-14));
+}
+
+TEST_CASE("rayleigh held-scale overflow is a core numerical outcome") {
+  const std::vector<double> x={1e308};
+  const auto r=cppunivariate::rayleigh_mle(mltest::as_span(x),std::numeric_limits<double>::denorm_min());
+  CHECK(r.status==cppunivariate::RayleighStatus::NumericalFailure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+}

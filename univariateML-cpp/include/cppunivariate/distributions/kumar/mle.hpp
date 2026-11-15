@@ -240,7 +240,7 @@ inline FitOutcome outcome(const KumarResult& r) {
   switch (r.status) {
     case KumarStatus::Ok: return FitOutcome::estimate(true);
     case KumarStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    case KumarStatus::Unbounded: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case KumarStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case KumarStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
   }
   return {};

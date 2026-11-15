@@ -23,7 +23,7 @@
 #include <limits>
 namespace cppunivariate {
 enum class BetaPrimeStatus { Ok, BfgsFailure, InvalidStart,
-                             GammaBoundary, InvGammaBoundary, ExpBoundary, InvExpBoundary };
+                             GammaBoundary, InvGammaBoundary, ExpBoundary, InvExpBoundary, Unbounded };
 struct BetaPrimeResult {
   double alpha, beta, scale, logLik;
   int iterations;
@@ -124,7 +124,7 @@ inline BetaPrimeResult betapr_mle_fixed_scale(
     span x, double scale, double tol = 1e-6, int maxit = 1000) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
-  if (!(scale > 0) || !std::isfinite(scale) || x.size() < 2)
+  if (!(scale > 0) || !std::isfinite(scale) || x.empty())
     return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
   if (!(tol>0) || !std::isfinite(tol) || maxit<=0)
     return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
@@ -144,7 +144,7 @@ inline BetaPrimeResult betapr_mle_fixed_scale(
         std::log1p(std::min(scale,v)/std::max(scale,v)));
   }
   if (!different)
-    return {nan,nan,scale,nan,0,BetaPrimeStatus::InvalidStart};
+    return {nan,nan,scale,nan,0,BetaPrimeStatus::Unbounded};
   const bool centered=relative_spread<=1e-3;
   bool arithmetic_failure=false;
   auto r=centered?betapr_detail::centered_shapes(x,scale,tol,maxit,arithmetic_failure):
@@ -356,6 +356,7 @@ inline FitOutcome outcome(const BetaPrimeResult& r) {
   switch (r.status) {
     case BetaPrimeStatus::Ok: return FitOutcome::estimate(r.certified);
     case BetaPrimeStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::Unresolved);
+    case BetaPrimeStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case BetaPrimeStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BetaPrimeStatus::GammaBoundary: return FitOutcome::limit(true);
     case BetaPrimeStatus::InvGammaBoundary: return FitOutcome::limit(true);

@@ -38,7 +38,8 @@ TEST_CASE("betapr n20 independent slow oracle fixtures") {
 TEST_CASE("betapr invalid data and scale density") {
   for (const auto &x : std::vector<std::vector<double>>{{}, {1}, {1,1}, {0,1}, {-1,2}, {1,INFINITY}})
     CHECK(cppunivariate::betapr_mle(mltest::as_span(x)).status ==
-          cppunivariate::BetaPrimeStatus::InvalidStart);
+          ((x==std::vector<double>{1} || x==std::vector<double>{1,1}) ?
+           cppunivariate::BetaPrimeStatus::Unbounded : cppunivariate::BetaPrimeStatus::InvalidStart));
   const double a=1.2, b=2.3, scale=4;
   CHECK(cppunivariate::distributions::dbetapr(2, a, b, scale, true) ==
         doctest::Approx(cppunivariate::distributions::dbetapr(2/scale, a, b, 1.0, true)-std::log(scale)));
@@ -828,4 +829,11 @@ TEST_CASE("Beta prime deeper Gamma face uses coefficient-specific error bounds")
     CHECK(r.beta==doctest::Approx(71617380.19217217).scale(0.).epsilon(1e-10));
     CHECK(r.scale==doctest::Approx(281333986.58875811).scale(0.).epsilon(1e-10));
   }
+}
+
+TEST_CASE("betapr core reports constant-data nonexistence in both scale routes") {
+  const std::vector<double> x={2};
+  const auto s=mltest::as_span(x);
+  CHECK(cppunivariate::betapr_mle(s).status==cppunivariate::BetaPrimeStatus::Unbounded);
+  CHECK(cppunivariate::betapr_mle_fixed_scale(s,1).status==cppunivariate::BetaPrimeStatus::Unbounded);
 }

@@ -13,15 +13,9 @@ inline FitResult fit_yulesimon(cppunivariate::ispan x, Held rho_arg = {}, double
   const auto fit=cppunivariate::yulesimon_mle(x,reltol,iterlim,held);
   const auto o = cppunivariate::outcome(fit);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (fit.status == cppunivariate::YulesimonStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(fit.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(fit.status),{{"rho",rho_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"rho",rho_arg.supplied}});
   };
-  PayloadKind stop_kind=PayloadKind::None;
+  PayloadKind stop_kind=outcome_payload(o);
   switch(fit.status) {
     case cppunivariate::YulesimonStatus::PointMass: stop_kind=outcome_payload(o);break;
     default:break;

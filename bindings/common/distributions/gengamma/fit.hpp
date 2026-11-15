@@ -18,12 +18,6 @@ inline FitResult fit_gengamma(cppunivariate::span x,Held mu_arg={},Held sigma_ar
   const auto fit=cppunivariate::gengamma_mle(x,tol,iterlim,mu,sigma,q);
   const auto o = cppunivariate::outcome(fit);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (fit.status == cppunivariate::GengammaStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(fit.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(fit.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"Q",Q_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"Q",Q_arg.supplied}});
   };
   if(fit.status==cppunivariate::GengammaStatus::InvalidData)return done(fail("gengamma requires nonempty positive finite data."));
@@ -44,7 +38,6 @@ inline FitResult fit_gengamma(cppunivariate::span x,Held mu_arg={},Held sigma_ar
     return done(stop_failure(fail(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None?
       "The gengamma fit could not meet the requested coefficient accuracy in floating-point arithmetic.":
       "The gengamma likelihood search failed its numerical accuracy or candidate comparison."),fit.stop_detail,outcome_payload(o),{"mu","sigma","Q"}));
-  if(!(std::isfinite(fit.mu)&&std::isfinite(fit.sigma)&&fit.sigma>0&&std::isfinite(fit.Q)&&std::isfinite(fit.logLik)))return done(fail("The gengamma fit is not representable."));
   FitResult out;
   out.estimates={{"mu",fit.mu},{"sigma",fit.sigma},{"Q",fit.Q}};
   out.logLik=fit.logLik;out.iterations=fit.iterations;out.has_iterations=true;

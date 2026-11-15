@@ -342,3 +342,9 @@ test_that("unit beta-prime never drops an unrepresentable face lower bound", {
     expect_gte(ll+margin,face)
   }
 })
+
+
+test_that("betapr core decides the data outcome", {
+  expect_error(mlbetapr(2), class="univariateML_nomle")
+  expect_error(mlbetapr(2,scale=1), class="univariateML_nomle")
+})

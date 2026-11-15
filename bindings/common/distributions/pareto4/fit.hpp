@@ -4,20 +4,35 @@
 #include <cmath>
 #include <algorithm>
 namespace umvl_binding {
+inline FitResult pareto4_shift_payload(FitResult out,double min) {
+  if(min==0 || !std::isfinite(min))return out;
+  const auto shift=[&](std::string& model,std::vector<std::pair<std::string,double>>& coefficients) {
+    if(model=="weibull" || model=="pareto") {
+      model="unavailable:shifted-"+model;
+      coefficients.push_back({"min",min});
+    }
+  };
+  shift(out.model,out.limit_estimates);
+  for(auto& candidate:out.candidates)shift(candidate.model,candidate.estimates);
+  for(const std::string model:{"weibull","pareto"}) {
+    const std::string old="`ml"+model+"`",replacement="`ml"+model+"(x - min)`";
+    const auto at=out.error.find(old);
+    if(at!=std::string::npos)out.error.replace(at,old.size(),replacement);
+  }
+  return out;
+}
 inline FitResult fit_pareto4(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, Held min_arg = {}, double reltol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape1 = shape1_arg;
   const Held shape2 = shape2_arg;
   const Held scale = scale_arg;
-  if (!min_arg.supplied) return invalid_argument(failure("Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."));
-  const double min = min_arg.value;
+  const double min = min_arg.supplied ? min_arg.value : NAN;
 
  if(shape1.supplied && (!(shape1.value>0)||!std::isfinite(shape1.value))) return invalid_argument(fail("`shape1` must be positive and finite."));
  if(shape2.supplied && (!(shape2.value>0)||!std::isfinite(shape2.value))) return invalid_argument(fail("`shape2` must be positive and finite."));
 
- if (!std::isfinite(min)) return invalid_argument(fail("Held bounds must be finite and ordered."));
- for(double v:x) if (!(v>min)) return invalid_argument(fail("Observations must lie strictly inside the held support."));
+ if (min_arg.supplied && !std::isfinite(min)) return invalid_argument(fail("Held bounds must be finite and ordered."));
  std::vector<std::string> fixed{"min"};
  if(scale.supplied) { if(!(scale.value>0) || !std::isfinite(scale.value)) return invalid_argument(fail("Held parameters must be positive and finite.")); fixed.push_back("scale"); }
  if(shape1.supplied) fixed.push_back("shape1");
@@ -25,25 +40,22 @@ inline FitResult fit_pareto4(cppunivariate::span x, Held shape1_arg = {}, Held s
  auto res=cppunivariate::pareto4_mle(x,min,reltol,iterlim,scale.supplied ? scale.value : std::numeric_limits<double>::quiet_NaN(),shape1.supplied?shape1.value:NAN,shape2.supplied?shape2.value:NAN);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (res.status == cppunivariate::BurrStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(res.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied},{"min",min_arg.supplied}});
-    }
-    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied},{"min",min_arg.supplied}});
+    return with_outcome(pareto4_shift_payload(std::move(out),res.min), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied},{"min",min_arg.supplied}});
   };
+  if (o.reason==cppunivariate::OutcomeReason::Unsupported) return done(failure("Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."));
+  if(res.incompatible_support)return done(fail("Observations must lie strictly inside the held support."));
   if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("pareto4 numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale","min"}));
+ if (res.status == cppunivariate::BurrStatus::Unbounded && std::isnan(res.min))
+   return done(stop_failure(fail("The Pareto IV likelihood is unbounded with these free-threshold holds; no MLE."),res.stop_detail,outcome_payload(o),{}));
  if (res.status == cppunivariate::BurrStatus::Unbounded) return done(stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale","min"},""));
- if (res.status == cppunivariate::BurrStatus::AllGeOne) return done(stop_failure(fail("The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; the package has no held-endpoint Pareto fitter."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale","min"},"pareto"));
+ if (res.status == cppunivariate::BurrStatus::AllGeOne) return done(stop_failure(fail("The fixed-scale Pareto IV MLE does not exist when all observations >= min + scale. The limit is a shifted Pareto with its endpoint held at min + scale; use `mlpareto(x - min, b = scale)` to fit that held endpoint."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale","min"},"pareto"));
  if (res.status == cppunivariate::BurrStatus::WeibullBoundary) return done(stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlweibull(x - min)` to fit this model."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale","min"},"weibull"));
  if (res.status == cppunivariate::BurrStatus::ParetoBoundary) return done(stop_failure(fail("The burr likelihood is maximised at a limit. Use `mlpareto(x - min)` to fit this model."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale","min"},"pareto"));
  if (res.status == cppunivariate::BurrStatus::CertificateTie) return done(comparison_payload(stop_failure(fail("Pareto IV certificate unresolved at a tie or sign-uncertain seam; no verified MLE."),res.stop_detail,PayloadKind::Comparison,{"shape1","shape2","scale","min"},""),o,cppunivariate::comparison_choice(res),{{"shape1",shape1_arg},{"shape2",shape2_arg},{"scale",scale_arg},{"min",min_arg}}));
  if (res.status == cppunivariate::BurrStatus::CertificateBudget) return done(stop_failure(fail("Pareto IV certificate budget exhausted; no verified MLE. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale","min"},""));
  if (res.status == cppunivariate::BurrStatus::NumericalFailure) return done(stop_failure(fail("Pareto IV certificate numerical failure; no verified MLE."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale","min"},""));
  if (res.status == cppunivariate::BurrStatus::IterationFailure) return done(stop_failure(fail("Pareto IV delegate search failed to converge."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale","min"},""));
- if (res.status == cppunivariate::BurrStatus::InvalidInit ||
- !std::isfinite(res.shape1) || !std::isfinite(res.shape2) || !std::isfinite(res.scale))
+ if (res.status == cppunivariate::BurrStatus::InvalidInit)
  return done(fail("burr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale"));
  return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"scale",res.scale},{"min",min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 

@@ -1,0 +1,54 @@
+3619 cases judged in each of two modes
+fit-judge: failures by check: {'mode': 4, 'nesting': 4, 'terminates': 1}
+fit-judge: 9 listed as known, 0 new, 0 listed but passing
+
+not checked (no C++ density for the model, or coefficients missing):
+  double cmp: limit model has no C++ density: 12
+  double dnorm: limit model has no C++ density: 10
+  double emg: limit model has no C++ density: 34
+  double gb2: limit model has no C++ density: 5
+  double snorm: limit model has no C++ density: 17
+  double yulesimon: limit model has no C++ density: 8
+  native cmp: limit model has no C++ density: 12
+  native dnorm: limit model has no C++ density: 10
+  native emg: limit model has no C++ density: 34
+  native gb2: limit model has no C++ density: 5
+  native snorm: limit model has no C++ density: 18
+  native yulesimon: limit model has no C++ density: 8
+
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing
+fit-consistency: failures by check: none
+fit-consistency: 0 listed as known, 0 new, 0 listed but passing
+open (refinement could not settle the case; not a failure):
+  betapr: scaled Newton budget exhausted: 2
+  betapr: scaled line search failed: 8
+  burr: scaled Newton budget exhausted: 2
+  cmp: AssertionError: : 2
+  cmp: case guard of 120 s: 4
+  invgamma: scaled line search failed: 2
+  kumar: scaled Newton budget exhausted: 4
+  nhyper: ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int: 4
+  skellam: log-likelihood not finite at the returned estimate: 10
+  skellam: no free regular coefficient left to refine: 4
+  triang: ZeroDivisionError: : 36
+coefficients not refined (no independent value; not judged):
+  foldnorm mu: at domain bound (one-sided score checked): 4
+  hnorm mu: support bound: 4
+  hyper N: integer: 30
+  hyper k: integer: 32
+  nhyper N: integer: 28
+  nhyper r: integer: 30
+  pareto b: support bound: 2
+  triang c: kink: 6
+no cached reference (run without --cache-only): 54 cases, e.g. [('gpd', 'golden', 'golden'), ('gpd', 'golden', 'golden'), ('pareto4', 'golden', 'golden'), ('pareto4', 'golden', 'golden'), ('gpd', 'archive', '002868')]
+890 cases judged
+fit-refine: failures by check: {'refine': 24}
+fit-refine: 24 listed as known, 0 new, 0 listed but passing
+seam-check native: 3 guarded fits replayed with a 300 s guard
+seam-check native: {'pass': 7331, 'stop': 2363}
+seam-check double: 4 guarded fits replayed with a 300 s guard
+seam-check double: {'pass': 7329, 'stop': 2364, 'open fit': 1}
+strict-seam: failures by check: {'seam-open': 1}
+strict-seam: 1 listed as known, 0 new, 0 listed but passing
+strict layer: no failure outside the known list

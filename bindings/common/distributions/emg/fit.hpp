@@ -3,17 +3,7 @@
 #include "cppunivariate/distributions/emg/mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_emg(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held lambda_arg = {}, double reltol=1e-10, int iterlim=500) {
-  // Invalid controls remain ordinary errors, even if a legacy fitter reports
-  // a statistical status before checking them.
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(!(reltol>0 && std::isfinite(reltol) && iterlim>0))return out;
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
+
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mu = mu_arg;
@@ -51,25 +41,19 @@ const Held a = lambda;
   auto r=cppunivariate::emg_mle(x,reltol,iterlim,checked_value_0,checked_value_1,checked_value_2);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
-    if (!out.error.empty() && o.kind == cppunivariate::OutcomeKind::Estimate && out.payload_kind != PayloadKind::Comparison) {
-      if (r.status == cppunivariate::EmgStatus::Ok)
-        return overridden(std::move(out), static_cast<int>(r.status));
-      // A legacy classifier can suppress a tie kind using caller-only information.
-      return with_outcome(std::move(out), cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::NoConvergence), static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"lambda",lambda_arg.supplied}});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"lambda",lambda_arg.supplied}});
   };
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return classify(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("emg numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));
   if(r.status==cppunivariate::EmgStatus::AccuracyFailure)return done(stop_failure(fail("emg numerical accuracy failure: coefficients cannot be represented at the requested accuracy."),r.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));
   if(r.status==cppunivariate::EmgStatus::BudgetExhausted)return done(stop_failure(fail("EMG certificate budget exhausted; raising iterlim may resolve the remaining shape intervals."),r.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));
   if(r.status==cppunivariate::EmgStatus::Unresolved)return done(stop_failure(fail("EMG normal face unresolved: no verified finite winner beats it; use mlnorm only for the compared normal model, retaining its holds."),r.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));
   if(r.status==cppunivariate::EmgStatus::Tie)return done(comparison_payload(stop_failure(fail("EMG separated surviving maximizers or face comparison could not be separated."),r.stop_detail,PayloadKind::Comparison,{"mu","sigma","lambda"}),o,cppunivariate::comparison_choice(r),{{"mu",mu_arg},{"sigma",sigma_arg},{"lambda",lambda_arg}}));
-  if(r.status==cppunivariate::EmgStatus::NumericalFailure)return done(classify(fail("EMG numerical accuracy failure: score enclosure, shape bound or arithmetic could not be resolved."),r.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));
-  if(r.status==cppunivariate::EmgStatus::IterationFailure && !mu.supplied && sigma.supplied && lambda.supplied)return done(classify(fail("EMG location solve did not converge; increase iterlim."),r.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));
-  if(r.stop_detail.comparison_tie)return done(comparison_payload(classify(fail("EMG search did not converge; increase iterlim."),r.stop_detail,PayloadKind::Comparison,{"mu","sigma","lambda"}),o,cppunivariate::comparison_choice(r),{{"mu",mu_arg},{"sigma",sigma_arg},{"lambda",lambda_arg}}));
-  if(r.status==cppunivariate::EmgStatus::NormalLimit)return done(classify(fail("The EMG MLE does not exist: normal face; use mlnorm for an unrestricted normal fit. The compared face retains held mu/sigma."),r.stop_detail,outcome_payload(o),{"mean","sd"},"norm"));
-  if(r.status==cppunivariate::EmgStatus::TranslatedExponentialLimit)return done(classify(fail("The EMG MLE does not exist: translated exponential face. No translated exponential fitter is available; for a free endpoint fit distances with mlexp(x - min(x))."),r.stop_detail,outcome_payload(o),{"mu","rate"},"unavailable:translated-exponential"));
+  if(r.status==cppunivariate::EmgStatus::NumericalFailure)return done(stop_failure(fail("EMG numerical accuracy failure: score enclosure, shape bound or arithmetic could not be resolved."),r.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));
+  if(r.status==cppunivariate::EmgStatus::IterationFailure && !mu.supplied && sigma.supplied && lambda.supplied)return done(stop_failure(fail("EMG location solve did not converge; increase iterlim."),r.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));
+  if(r.stop_detail.comparison_tie)return done(comparison_payload(stop_failure(fail("EMG search did not converge; increase iterlim."),r.stop_detail,PayloadKind::Comparison,{"mu","sigma","lambda"}),o,cppunivariate::comparison_choice(r),{{"mu",mu_arg},{"sigma",sigma_arg},{"lambda",lambda_arg}}));
+  if(r.status==cppunivariate::EmgStatus::NormalLimit)return done(stop_failure(fail("The EMG MLE does not exist: normal face; use mlnorm for an unrestricted normal fit. The compared face retains held mu/sigma."),r.stop_detail,outcome_payload(o),{"mean","sd"},"norm"));
+  if(r.status==cppunivariate::EmgStatus::TranslatedExponentialLimit)return done(stop_failure(fail("The EMG MLE does not exist: translated exponential face. No translated exponential fitter is available; for a free endpoint fit distances with mlexp(x - min(x))."),r.stop_detail,outcome_payload(o),{"mu","rate"},"unavailable:translated-exponential"));
   if(r.status==cppunivariate::EmgStatus::Unbounded)return done(nomle("The EMG likelihood is unbounded for these constant observations."));
   if(r.status==cppunivariate::EmgStatus::InvalidInput)return done(fail("EMG requires finite data, finite mu, positive sigma and lambda, positive reltol and iterlim."));
   if(r.status==cppunivariate::EmgStatus::IterationFailure)return done(stop_failure(fail("EMG certificate inner solve did not converge; increase iterlim."),r.stop_detail,outcome_payload(o),{"mu","sigma","lambda"}));

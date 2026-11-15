@@ -131,3 +131,9 @@ test_that("held half-normal scale and every combined hold match density oracles"
   expect_error(mlhnorm(1:3,mu=2,sigma=1),"at least")
   expect_equal(as.numeric(logLik(mlhnorm(1e300,mu=NULL,sigma=1e-300))), log(2/pi)/2-log(1e-300))
 })
+
+
+test_that("hnorm core decides the data outcome", {
+  expect_error(mlhnorm(numeric(),mu=NULL), class="univariateML_invalid")
+  expect_error(mlhnorm(2,mu=NULL), class="univariateML_nomle")
+})

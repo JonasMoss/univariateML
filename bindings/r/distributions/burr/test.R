@@ -362,3 +362,8 @@ test_that("concentrated held-shape Burr logLik agrees with its exact-input sum",
   f <- mlburr(x,shape1=1.334637717604056)
   expect_equal(attr(f,"logLik"),sum(dml(x,f,log=TRUE)),tolerance=1e-11)
 })
+
+
+test_that("burr core decides the data outcome", {
+  expect_error(mlburr(2), class="univariateML_nomle")
+})

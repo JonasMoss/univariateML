@@ -15,7 +15,7 @@
 
 namespace cppunivariate {
 
-enum class RayleighStatus { Ok, InvalidData, ZeroLikelihood };
+enum class RayleighStatus { Ok, InvalidData, ZeroLikelihood, NumericalFailure };
 
 struct RayleighResult {
   double sigma;
@@ -28,6 +28,8 @@ inline RayleighResult rayleigh_mle(span x) {
   const std::size_t n = x.size();
   if (n == 0) return {kNaN, kNaN, RayleighStatus::InvalidData};
 
+  for (double v : x) if (!(v >= 0) || !std::isfinite(v))
+    return {kNaN,kNaN,RayleighStatus::InvalidData};
   double big = 0.0;
   for (auto v : x) {
     if (v == 0.0) return {kNaN, kNaN, RayleighStatus::ZeroLikelihood};
@@ -45,7 +47,11 @@ inline RayleighResult rayleigh_mle(span x) {
   double sum_log = 0.0;
   for (auto v : x) sum_log += std::log(v);
   // sum(x^2) / (2 sigma^2) = n at the MLE.
-  const double logLik = sum_log - 2.0 * dn * std::log(sigma) - dn;
+  double logLik = sum_log - 2.0 * dn * std::log(sigma) - dn;
+  if(sigma<std::numeric_limits<double>::min()) {
+    logLik=sum_log-2.0*dn*std::log(sigma);
+    for (double v : x) { const double z=v/sigma; logLik-=z*z/2; }
+  }
   return {sigma, logLik};
 }
 
@@ -53,8 +59,9 @@ inline RayleighResult rayleigh_mle(span x,double sigma) {
   if(std::isnan(sigma))return rayleigh_mle(x);
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!(sigma>0 && std::isfinite(sigma)) || x.size()==0)return {nan,nan,RayleighStatus::InvalidData};
+  for(double v:x)if(!(v>=0) || !std::isfinite(v))return {nan,nan,RayleighStatus::InvalidData};
   CPPUNIV_EXTENDED_REAL ll=0;for(double v:x){if(v==0)return {nan,nan,RayleighStatus::ZeroLikelihood};if(!(v>0 && std::isfinite(v)))return {nan,nan,RayleighStatus::InvalidData};const CPPUNIV_EXTENDED_REAL z=static_cast<CPPUNIV_EXTENDED_REAL>(v)/sigma;ll+=std::log(v)-2*std::log(sigma)-z*z/2;}
-  return {sigma,static_cast<double>(ll),RayleighStatus::Ok};
+  return {sigma,static_cast<double>(ll),std::isfinite(static_cast<double>(ll))?RayleighStatus::Ok:RayleighStatus::NumericalFailure};
 }
 
 }  // namespace cppunivariate
@@ -63,8 +70,9 @@ namespace cppunivariate {
 inline FitOutcome outcome(const RayleighResult& r) {
   switch (r.status) {
     case RayleighStatus::Ok: return FitOutcome::estimate(true);
+    case RayleighStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case RayleighStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    case RayleighStatus::ZeroLikelihood: return FitOutcome::nonexistence(OutcomeReason::Unattained);
+    case RayleighStatus::ZeroLikelihood: return FitOutcome::failure(OutcomeReason::InvalidInput);
   }
   return {};
 }
