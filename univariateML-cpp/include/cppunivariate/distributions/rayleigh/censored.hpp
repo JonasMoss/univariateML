@@ -6,6 +6,7 @@ enum class RayleighCensoredStatus { Ok, InvalidInput, AllCensored, Unbounded, No
 struct RayleighCensoredResult {
   double sigma, logLik;
   RayleighCensoredStatus status=RayleighCensoredStatus::Ok;
+  bool unique=true;
 };
 inline RayleighCensoredResult rayleigh_censored_mle(CensoredData x, double sigma=NAN) {
   if(!std::isnan(sigma))return {NAN,NAN,RayleighCensoredStatus::NotImplemented};
@@ -16,6 +17,7 @@ inline RayleighCensoredResult rayleigh_censored_mle(CensoredData x, double sigma
     r.status==ExpCensoredStatus::Unbounded?RayleighCensoredStatus::Unbounded:
     r.status==ExpCensoredStatus::NotImplemented?RayleighCensoredStatus::NotImplemented:
     RayleighCensoredStatus::NumericalFailure;
-  return {r.coefficient,r.logLik,status};
+  return {r.coefficient,r.logLik,status,r.unique};
 }
+inline FitOutcome outcome(const RayleighCensoredResult& r) { return r.status==RayleighCensoredStatus::Ok?FitOutcome::estimate(true,r.unique):censored_outcome(r.status); }
 } // namespace cppunivariate

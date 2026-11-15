@@ -590,3 +590,56 @@ TEST_CASE("binom: inverse sampler retains the unfuzzed backend jump") {
   CHECK(cppunivariate::distributions::qbinom(p,1,.5,true,false)==0);
   CHECK(cppunivariate::distributions::rbinom(rng,1,.5)==1);
 }
+
+#include "cppunivariate/distributions/binom/tbinom_mle.hpp"
+TEST_CASE("binomial singleton window exposes nonidentification") {
+  const std::vector<int> x{2,2};
+  const auto r=cppunivariate::tbinom_design_mle({x.data(),x.size()},1,2,4,NAN,1e-10,200);
+  REQUIRE(r.status==cppunivariate::TbinomStatus::Ok);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::tbinom_mle({x.data(),x.size()},1,2,4)).unique);
+}
+
+#include "cppunivariate/distributions/binom/zmbinom_mle.hpp"
+#include "cppunivariate/distributions/binom/zib_mle.hpp"
+TEST_CASE("binomial point laws carry hold-sensitive identification") {
+  const std::vector<int> z{0,0},o{1,1};const cppunivariate::ispan x{z.data(),z.size()},ones{o.data(),o.size()};
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::binom_mle(x,NAN,1e-10,200)).unique);
+  CHECK(cppunivariate::outcome(cppunivariate::binom_mle(x,2,1e-10,200)).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::binom_mle(x,0,1e-10,200)).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::zmbinom_mle(x)).unique);
+  const auto held=cppunivariate::zmbinom_mle(x,1e-10,200,2,.5);
+  REQUIRE(held.status==cppunivariate::ZmbinomStatus::Ok);
+  CHECK(cppunivariate::outcome(held).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::ztbinom_mle(ones,1e-10,200,1)).unique);
+  CHECK(cppunivariate::outcome(cppunivariate::ztbinom_mle(ones,1e-10,200,1,.5)).unique);
+  CHECK_FALSE(cppunivariate::outcome(cppunivariate::zib_mle(x)).unique);
+  const auto inflated=cppunivariate::zib_mle(x,1e-10,200,2,.5);
+  REQUIRE(inflated.status==cppunivariate::ZibStatus::Ok);
+  CHECK(cppunivariate::outcome(inflated).unique);
+}
+
+#include "cppunivariate/distributions/binom/zib_mle.hpp"
+TEST_CASE("held binomial point likelihood outside binary64 is a core evaluation failure") {
+  const std::vector<int> zeros{0};const cppunivariate::ispan x{zeros.data(),zeros.size()};
+  // log P(0) = N log(1-p) < -2e308, below -DBL_MAX. The observation
+  // is within support and the held model is proper; this is not invalid data.
+  const auto base=cppunivariate::binom_mle(x,1e308,1e-10,200,.9);
+  CHECK(cppunivariate::outcome(base).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(base).reason==cppunivariate::OutcomeReason::Evaluation);
+  const auto inflated=cppunivariate::zib_mle(x,1e-10,200,1e308,.9,0);
+  CHECK(cppunivariate::outcome(inflated).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(inflated).reason==cppunivariate::OutcomeReason::Evaluation);
+  CHECK(inflated.stop_detail.loglik_upper==INFINITY);
+}
+
+#include "cppunivariate/distributions/binom/held_window.hpp"
+TEST_CASE("held binomial windows retain proper atoms and report numerical range failures") {
+  const std::vector<int> zeros{0};const cppunivariate::ispan x{zeros.data(),zeros.size()};
+  const auto point=cppunivariate::held_binom_window_mle(x,0,.5,0,0);
+  CHECK(cppunivariate::outcome(point).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(point.logLik==0);
+  const auto range=cppunivariate::held_binom_window_mle(x,1e308,.9,0,INFINITY);
+  CHECK(cppunivariate::outcome(range).kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(cppunivariate::outcome(range).reason==cppunivariate::OutcomeReason::Evaluation);
+}

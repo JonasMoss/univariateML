@@ -14,15 +14,13 @@ inline FitResult fit_zmpois(cppunivariate::ispan x, Held lambda_arg = {}, Held p
   const auto res=cppunivariate::zmpois_mle(x,1e-10,200,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(res.status));
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"p0",p0_arg.supplied}});
   };
   return done([&]() -> FitResult {
   if(res.status==cppunivariate::ZmpoisStatus::InvalidInput)return fail("requires nonempty nonnegative integer count data and valid controls and parameter domains; held values must be compatible with the observations");
   if(res.status==cppunivariate::ZmpoisStatus::AllZero)warnings.push_back(binding_message("all observations are zero: base parameters are unidentified; supplied values are preserved."));
   if(res.status==cppunivariate::ZmpoisStatus::TwoPoint)warnings.push_back(binding_message("positives are all one: the attained two-point law is also fitted exactly by mlbinom(x, size = 1)."));
-  if(!std::isfinite(res.logLik))return fail("MLE cannot be resolved at floating-point precision.");
+  if(o.kind!=cppunivariate::OutcomeKind::Estimate)return fail("MLE cannot be resolved at floating-point precision.");
   std::vector<std::string> fixed;
   if(lambda.supplied)fixed.push_back("lambda");
   if(p0.supplied)fixed.push_back("p0");

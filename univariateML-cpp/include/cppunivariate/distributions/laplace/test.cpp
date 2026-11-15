@@ -146,3 +146,12 @@ TEST_CASE("laplace: TASK-102.5 underflowed uncertainty fails") {
   CHECK(cppunivariate::laplace_location_wald_interval(mltest::as_span(x)).status==cppunivariate::InferenceStatus::NumericalFailure);
   CHECK(cppunivariate::median_sandwich(mltest::as_span(x)).status==cppunivariate::InferenceStatus::NumericalFailure);
 }
+
+TEST_CASE("laplace likelihood uses the rounded returned subnormal scale") {
+  const double d=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> x{d,2*d,3*d};
+  const auto r=cppunivariate::laplace_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::LaplaceStatus::Ok);
+  // Residual penalty is 2, whereas its profiled exact-scale value is n=3.
+  CHECK(r.logLik==doctest::Approx(2229.2407742224641).epsilon(1e-14));
+}

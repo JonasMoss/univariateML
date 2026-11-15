@@ -7,7 +7,9 @@
 namespace cppunivariate {
 enum class ZtnbinomStatus { Ok, InvalidInput, InvalidSize, PoissonLimit, IterationFailure };
 enum class ZtnbinomCertificateFailure { None, Arithmetic, Budget, Workload, AdditionalExtrema };
-struct ZtnbinomResult { double size, prob, logLik; int iterations; ZtnbinomStatus status; StopDetail stop_detail{}; bool budget_exhausted=false; ZtnbinomCertificateFailure certificate_failure=ZtnbinomCertificateFailure::None; };
+struct ZtnbinomResult { double size, prob, logLik; int iterations; ZtnbinomStatus status; StopDetail stop_detail{}; bool budget_exhausted=false; ZtnbinomCertificateFailure certificate_failure=ZtnbinomCertificateFailure::None;
+  bool unique = true;
+};
 inline ZtnbinomResult ztnbinom_candidate_mle(ispan x, double tol=1e-10, int maxit=200,
     double fixed_size=std::numeric_limits<double>::quiet_NaN(),
     double fixed_prob=std::numeric_limits<double>::quiet_NaN()) {
@@ -92,7 +94,15 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,double
   if(!accuracy_detail::nb_polish(x,r.size,r.prob,pi,std::isnan(size),std::isnan(prob),false,true,tol,maxit,r.stop_detail)) {
     r.status=ZtnbinomStatus::IterationFailure;record_accuracy(r,tol,{r.size,r.prob},{std::max(1.,std::abs(r.size)),std::max(1.,std::abs(r.prob))});return r;
   }
+  r.unique=!(std::isnan(size) && r.prob==1 &&
+    !x.empty() && std::all_of(x.begin(),x.end(),[](int v){return v==1;}));
   if(r.size>0&&r.prob<1){r.logLik=0;for(int v:x)r.logLik+=zero_detail::nb_logpmf(v,r.size,r.prob)-std::log(-std::expm1(r.size*std::log(r.prob)));}
+  if(!std::isfinite(r.logLik)) {
+    r.status=ZtnbinomStatus::IterationFailure;
+    r.certificate_failure=ZtnbinomCertificateFailure::Arithmetic;
+    r.stop_detail.budget_exhausted=false;
+    r.budget_exhausted=false;
+  }
   return r;
 }
 }
@@ -103,7 +113,7 @@ inline FitOutcome outcome(const ZtnbinomResult& r) {
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   if(r.status==ZtnbinomStatus::IterationFailure && r.budget_exhausted)return FitOutcome::budget();
   switch(r.status) {
-    case ZtnbinomStatus::Ok: return FitOutcome::estimate(true);
+    case ZtnbinomStatus::Ok: return FitOutcome::estimate(true,r.unique);
     case ZtnbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZtnbinomStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZtnbinomStatus::PoissonLimit: return FitOutcome::limit(true);

@@ -33,7 +33,7 @@ inline truncated_detail::Result tbinom_mle(ispan x, double a, double b, double s
     return {held,ll,0,truncated_detail::Status::Ok};
   }
   auto result=truncated_detail::fit(x,a,b,size);
-  if(result.status==truncated_detail::Status::Unidentified)return {.5,0,0,truncated_detail::Status::Ok};
+  if(result.status==truncated_detail::Status::Unidentified)return {.5,0,0,truncated_detail::Status::Ok,{},false};
   return result;
 }
 // Extends truncated_detail::Status with the one new free-size-and-prob
@@ -156,6 +156,7 @@ struct TbinomDesignResult {
   TbinomStatus status;
   StopDetail stop_detail{};
   bool certified = true;
+  bool unique = true;
 };
 namespace tbinom_detail {
 inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,double size,
@@ -588,12 +589,21 @@ inline TbinomDesignResult design_mle_impl(ispan x,double a,double b,double size,
 }
 } // namespace tbinom_detail
 
+// A singleton conditioning support has likelihood one for every compatible
+// interior parent coefficient. Preserve the representative and expose nonuniqueness.
+inline TbinomDesignResult tbinom_identification(TbinomDesignResult r,double size,double prob) {
+  if(r.status==TbinomStatus::Ok) {
+    const double lo=std::max(0.,std::floor(r.a)+1),hi=std::min(r.size,std::floor(r.b));
+    if((std::isnan(prob) && lo==hi) || (std::isnan(size) && lo==std::floor(r.b)))r.unique=false;
+  }
+  return r;
+}
 // Keep the original default entry point distinct from explicit work controls.
 inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double size,double prob=NAN) {
-  return tbinom_detail::design_mle_impl(x,a,b,size,prob,1e-10,512,true);
+  return tbinom_identification(tbinom_detail::design_mle_impl(x,a,b,size,prob,1e-10,512,true),size,prob);
 }
 inline TbinomDesignResult tbinom_design_mle(ispan x,double a,double b,double size,double prob,double tol,int maxit=512) {
-  return tbinom_detail::design_mle_impl(x,a,b,size,prob,tol,maxit,false);
+  return tbinom_identification(tbinom_detail::design_mle_impl(x,a,b,size,prob,tol,maxit,false),size,prob);
 }
 
 } // namespace cppunivariate
@@ -613,7 +623,7 @@ inline FitOutcome outcome(const TbinomDesignResult& r) {
     if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
   }
   switch(r.status) {
-    case TbinomStatus::Ok: return FitOutcome::estimate(r.certified);
+    case TbinomStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
     case TbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TbinomStatus::LowerPointMass: return FitOutcome::limit(true);
     case TbinomStatus::UpperPointMass: return FitOutcome::limit(true);

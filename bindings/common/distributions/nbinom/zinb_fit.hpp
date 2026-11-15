@@ -18,8 +18,6 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
       size.supplied ? size.value : NAN,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(fit);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(fit.status));
     return with_outcome(std::move(out),o,static_cast<int>(fit.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"pi",pi_arg.supplied}});
   };
   return done([&]() -> FitResult {

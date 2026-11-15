@@ -157,8 +157,12 @@ on which coefficients are free; delegate failures survive transformations.
 See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md)
 and the appended TASK-132 cases in `test.cpp` for the validation scope.
 
-The zero-modified exception includes `theta = 0`, the attained law on zero and one, and uses `p0` for the total zero probability. Positive-data fitting retains the logarithmic mean equation; all-zero data leave theta unidentified.
+The zero-modified exception includes `theta = 0`, the attained law on zero and one, and uses `p0` for the total zero probability. Positive-data fitting retains the logarithmic mean equation; all-zero data leave theta unidentified when it is free.
 
 ## d/p/q/r
 
 A compensated finite prefix resolves small cuts even when theta is the largest binary64 value below one. For larger cuts, integrating the partial-fraction expansion of coth gives a Stieltjes expansion of the survival in terms of $e^xE_1(x)$, $x=-k\log\theta$. The first omitted Bernoulli term bounds the error for every positive x; the scaled exponential integral uses its own signed next-term bound when x is large. The implementation keeps terms through $B_6$ and requires the $B_8$ bound below $10^{-12}$ of the sum; otherwise the geometric-series evaluator is retained and returns NaN if its bound cannot close. Quantiles invert these bounded tails. Zero-modified evaluators have a separate routing layer and are not changed by this route.
+
+When the fitted theta is near one, rounding it can materially change `-log(1-theta)` relative to the solved auxiliary coordinate. The likelihood refers to the rounded theta, including its normalizer; [high-precision evidence](../../../../../dev/research/evaluations/2026-11-14-core5b-d-data/reference.json) covers counts near the integer representation limit.
+
+The logarithmic mean map has relative condition number asymptotic to `1/(1-theta)`. Near one, a rounded theta can fail a mean-residual replay even when the primary parameter fit is accurate.

@@ -1,0 +1,71 @@
+
+native: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  binom                          84          0    5.3e-15    1.4e-14          0
+  binom +truncate=tbinom        240          0    7.9e-14      3e-12          0
+  binom+zero=inflated           148          0      2e-16    3.5e-15          0
+  binom+zero=modified           148          0    2.2e-16    2.2e-16          0
+  binom+zero=truncated           83          0          0          0          0
+  exp                            62          0    2.4e-16    4.4e-16          0
+  gamma                         114          0    2.2e-16      4e-16          0
+  geom                           48          0    4.2e-15    4.2e-15          0
+  geom+zero=modified             76          0      2e-16    1.8e-15          0
+  geom+zero=truncated            35          0    2.2e-16    2.2e-16          0
+  laplace                        92          0      1e-15    1.1e-15          0
+  lgser                          46          0    4.3e-16    4.3e-16          0
+  lgser+zero=modified            76          0    2.1e-16    2.5e-16          0
+  nbinom                         84          0    6.8e-15    2.6e-11          0
+  nbinom+zero=inflated          134    2.7e-16    3.4e-14    3.6e-14          0
+  nbinom+zero=modified          137    2.4e-16      3e-14    3.2e-14          0
+  nbinom+zero=truncated          75      3e-16    2.4e-14    3.1e-14          0
+  norm                           91          0    3.6e-16      5e-16          0
+  norm +truncate=tnorm          226          0    1.6e-16    1.9e-16          0
+  pois                           48          0    4.4e-15    4.4e-15          0
+  pois +truncate=tpois          132          0    1.8e-16    1.9e-16          0
+  pois+zero=inflated             76          0    3.7e-15    4.4e-15          0
+  pois+zero=modified             76          0    2.1e-16    3.3e-15          0
+  pois+zero=truncated            47          0    3.6e-16    3.6e-16          0
+  zeta                           30          0    2.7e-16    2.7e-16          0
+  zeta +truncate=zipf            72          0    1.7e-16    1.9e-16          0
+
+double: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  binom                          84          0    4.1e-15    2.4e-14          0
+  binom +truncate=tbinom        240          0    7.9e-14      3e-12          0
+  binom+zero=inflated           148          0      2e-16    3.5e-15          0
+  binom+zero=modified           148          0    2.2e-16    2.2e-16          0
+  binom+zero=truncated           83          0          0          0          0
+  exp                            62          0    2.4e-16    4.4e-16          0
+  gamma                         114          0    2.6e-16      4e-16          0
+  geom                           48          0    4.2e-15    4.2e-15          0
+  geom+zero=modified             76          0      2e-16    1.8e-15          0
+  geom+zero=truncated            35          0    2.2e-16    2.2e-16          0
+  laplace                        92          0      1e-15    1.1e-15          0
+  lgser                          46          0    4.3e-16    4.3e-16          0
+  lgser+zero=modified            76          0    2.1e-16    2.5e-16          0
+  nbinom                         84          0    6.8e-15    2.6e-11          0
+  nbinom+zero=inflated          134    2.3e-16    3.4e-14    3.6e-14          0
+  nbinom+zero=modified          137    1.8e-16      3e-14    3.2e-14          0
+  nbinom+zero=truncated          75      3e-16    2.4e-14    3.1e-14          0
+  norm                           91          0    4.9e-16      5e-16          0
+  norm +truncate=tnorm          226          0    1.2e-16    1.7e-16          0
+  pois                           48          0    4.4e-15    4.4e-15          0
+  pois +truncate=tpois          132          0    1.8e-16    1.9e-16          0
+  pois+zero=inflated             76          0    3.7e-15    4.4e-15          0
+  pois+zero=modified             76          0    2.1e-16    3.3e-15          0
+  pois+zero=truncated            47          0    3.6e-16    3.6e-16          0
+  zeta                           30          0    2.7e-16    2.7e-16          0
+  zeta +truncate=zipf            72          0    1.7e-16    1.9e-16          0
+
+not checked (no C++ density for the model, or coefficients missing):
+  double lgser: limit model has no C++ density: 1
+  double norm +truncate=tnorm: limit model has no C++ density: 21
+  double zeta +truncate=zipf: limit model has no C++ density: 3
+  double zeta: limit model has no C++ density: 5
+  native lgser: limit model has no C++ density: 1
+  native norm +truncate=tnorm: limit model has no C++ density: 21
+  native zeta +truncate=zipf: limit model has no C++ density: 3
+  native zeta: limit model has no C++ density: 5
+
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing

@@ -18,8 +18,6 @@ inline FitResult fit_tpois(cppunivariate::ispan x, Held lambda_arg = {}, Held a_
   auto r=cppunivariate::tpois_mle(x,lower,upper,held);
   const auto o=cppunivariate::outcome(r);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(r.status));
     return with_outcome(std::move(out),o,static_cast<int>(r.status),{{"lambda",lambda_arg.supplied},{"a",a_arg.supplied},{"b",b_arg.supplied}});
   };
   return done([&]() -> FitResult {

@@ -307,3 +307,26 @@ TEST_CASE("gamma: subnormal data, scale below binary64 resolution, overflowing s
   CHECK(rh.scale==doctest::Approx(3.163213400119677438739919e+307).epsilon(1e-12));
   CHECK(rh.logLik==doctest::Approx(-4258.952905145047195598505).epsilon(1e-12));
 }
+
+TEST_CASE("gamma reports likelihood at the returned concentrated law") {
+  const std::vector<double> x{0.7961282182715332,0.7961282182715332,0.7961282182715333};
+  const auto r=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,100);
+  REQUIRE(r.status==cppunivariate::GammaStatus::Ok);
+  // Independent 120-digit evaluation, reference.py in core5b-d evidence.
+  CHECK(r.logLik==doctest::Approx(104.3204953746374726363).epsilon(1e-14));
+  CHECK(cppunivariate::gamma_mle(mltest::as_span(x),-1,100).status==cppunivariate::GammaStatus::InvalidInput);
+}
+
+TEST_CASE("gamma constant-data nonexistence needs no positive solver tolerance") {
+  const std::vector<double> x{1,1,1};
+  CHECK(cppunivariate::gamma_mle(mltest::as_span(x),0,100).status==cppunivariate::GammaStatus::Degenerate);
+  CHECK(cppunivariate::gamma_mle(mltest::as_span(x),-1,100).status==cppunivariate::GammaStatus::InvalidInput);
+}
+
+TEST_CASE("gamma core separates likelihood overflow from solver failure") {
+  const std::vector<double> x{1e308,1e308};
+  const auto r=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,100,1e308,NAN);
+  CHECK(r.status==cppunivariate::GammaStatus::IterationFailure);
+  CHECK(r.evaluation_failure);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+}

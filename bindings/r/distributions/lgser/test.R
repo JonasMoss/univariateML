@@ -90,3 +90,9 @@ test_that("P2 held theta validates domain and compatibility", {
   expect_identical(unname(as.numeric(fit)),0.5)
   expect_identical(attr(fit,"fixed"),"theta")
 })
+
+test_that("logarithmic hurdle identification follows the held theta", {
+  z <- c(0L, 0L)
+  expect_false(attr(suppressWarnings(mllgser(z, zero="modified")), "unique"))
+  expect_true(attr(mllgser(z, theta=.5, zero="modified"), "unique"))
+})

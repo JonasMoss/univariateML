@@ -7,6 +7,7 @@ enum class LomaxCensoredStatus { Ok, InvalidInput, AllCensored, Unbounded, NotIm
 struct LomaxCensoredResult {
   double lambda, kappa, logLik;
   LomaxCensoredStatus status=LomaxCensoredStatus::Ok;
+  bool unique=true;
 };
 inline LomaxCensoredResult lomax_censored_mle(CensoredData x, double lambda=NAN, double kappa=NAN) {
   if(std::isnan(lambda) || !std::isnan(kappa))return {NAN,NAN,NAN,LomaxCensoredStatus::NotImplemented};
@@ -24,6 +25,7 @@ inline LomaxCensoredResult lomax_censored_mle(CensoredData x, double lambda=NAN,
     r.status==ExpCensoredStatus::Unbounded?LomaxCensoredStatus::Unbounded:
     r.status==ExpCensoredStatus::NotImplemented?LomaxCensoredStatus::NotImplemented:
     LomaxCensoredStatus::NumericalFailure;
-  return {lambda,r.coefficient,r.logLik,status};
+  return {lambda,r.coefficient,r.logLik,status,r.unique};
 }
+inline FitOutcome outcome(const LomaxCensoredResult& r) { return r.status==LomaxCensoredStatus::Ok?FitOutcome::estimate(true,r.unique):censored_outcome(r.status); }
 } // namespace cppunivariate

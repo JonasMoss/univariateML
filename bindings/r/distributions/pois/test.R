@@ -81,3 +81,29 @@ test_that("P2 held lambda validates domain and compatibility", {
   expect_identical(unname(as.numeric(fit)),0.0)
   expect_identical(attr(fit,"fixed"),"lambda")
 })
+
+test_that("zero Poisson modifiers expose identification from core holds", {
+  z <- c(0L, 0L)
+  expect_false(attr(suppressWarnings(mlpois(z, zero="modified")), "unique"))
+  expect_true(attr(mlpois(z, lambda=2, zero="modified"), "unique"))
+  expect_warning(inflated <- mlpois(z, zero="inflated"), "all observations are zero", fixed=TRUE)
+  expect_false(attr(inflated, "unique"))
+})
+
+test_that("valid held Poisson laws report likelihood overflow as numerical", {
+  e <- tryCatch(mlpois(c(0L,0L), lambda=1e308), error=identity)
+  expect_s3_class(e, "univariateML_numerical")
+  expect_match(conditionMessage(e), "Poisson likelihood exceeds double precision.", fixed=TRUE)
+})
+
+test_that("positive Poisson routes distinguish overflow and incompatible point laws", {
+  for (zero in c("truncated", "modified", "inflated")) {
+    e <- tryCatch(mlpois(c(1L,2L), lambda=1e308, zero=zero), error=identity)
+    expect_s3_class(e, "univariateML_numerical")
+    e <- tryCatch(mlpois(2L, lambda=0, zero=zero), error=identity)
+    expect_s3_class(e, "univariateML_invalid")
+  }
+  f <- mlpois(c(0L,0L), lambda=1e308, zero="modified")
+  expect_equal(as.numeric(logLik(f)), 0)
+  expect_true(attr(f, "unique"))
+})

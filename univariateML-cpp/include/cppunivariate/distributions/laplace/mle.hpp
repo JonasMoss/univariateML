@@ -38,8 +38,8 @@ inline LaplaceResult laplace_mle(span x) {
   for (auto v : x) abs_sum += std::abs(v - mu);
   const double sigma = abs_sum / static_cast<double>(n);
   const double logLik =
-      -static_cast<double>(n) * (1.0 + (std::log(2.0) + std::log(sigma)));
-  return {mu, sigma, logLik, sigma==0 ? LaplaceStatus::Unbounded : std::isfinite(mu) && std::isfinite(sigma) && std::isfinite(logLik) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure,
+      -static_cast<double>(n) * (std::log(2.0) + std::log(sigma)) - abs_sum / sigma;
+  return {mu, sigma, logLik, abs_sum==0 ? LaplaceStatus::Unbounded : std::isfinite(mu) && std::isfinite(sigma) && std::isfinite(logLik) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure,
           sorted[(n - 1) / 2] == sorted[n / 2]};
 }
 
@@ -57,7 +57,7 @@ inline LaplaceResult laplace_mle(span x,double mu,double sigma) {
   CPPUNIV_EXTENDED_REAL a=0;for(double v:x)a+=std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(v)-m);
   const double s=std::isnan(sigma)?static_cast<double>(a/x.size()):sigma;
   const double ll=-static_cast<double>(x.size())*(std::log(2.0)+std::log(s))-static_cast<double>(a/s);
-  return {m,s,ll,s==0 ? LaplaceStatus::Unbounded : std::isfinite(m) && std::isfinite(s) && std::isfinite(ll) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure,
+  return {m,s,ll,std::isnan(sigma) && a==0 ? LaplaceStatus::Unbounded : std::isfinite(m) && std::isfinite(s) && std::isfinite(ll) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure,
           !std::isnan(mu) || y[(y.size()-1)/2]==y[y.size()/2]};
 }
 

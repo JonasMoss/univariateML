@@ -15,8 +15,6 @@ inline FitResult fit_ztnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
   const auto res=cppunivariate::ztnbinom_mle(x, reltol, iterlim, fixed_size,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(res.status));
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied}});
   };
   return done([&]() -> FitResult {
@@ -31,7 +29,7 @@ inline FitResult fit_ztnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
     if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::AdditionalExtrema)message="Profile certificate found additional extrema requiring a global likelihood comparison; no verified maximum.";
     return stop_failure(fail(message),res.stop_detail,outcome_payload(o),{"size","prob"});
   }
-  if(!std::isfinite(res.logLik))return fail("MLE cannot be resolved at floating-point precision.");
+  if(o.kind!=cppunivariate::OutcomeKind::Estimate)return fail("MLE cannot be resolved at floating-point precision.");
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");

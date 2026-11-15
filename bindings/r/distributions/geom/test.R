@@ -74,3 +74,9 @@ test_that("P2 held prob validates domain and compatibility", {
   expect_identical(unname(as.numeric(fit)),1.0)
   expect_identical(attr(fit,"fixed"),"prob")
 })
+
+test_that("geometric hurdle identification follows the held parent", {
+  z <- c(0L, 0L)
+  expect_false(attr(suppressWarnings(mlgeom(z, zero="modified")), "unique"))
+  expect_true(attr(mlgeom(z, prob=.5, zero="modified"), "unique"))
+})

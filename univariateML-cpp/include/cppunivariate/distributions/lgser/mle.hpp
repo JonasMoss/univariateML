@@ -52,7 +52,7 @@ inline LgserResult lgser_mle(ispan x, double fixed=std::numeric_limits<double>::
   if(!std::isnan(fixed)) {
     if(!(fixed>0 && fixed<1 && std::isfinite(fixed)))return {kNaN,kNaN,false,LgserStatus::InvalidInput};
     double ll=0;for(int v:x) {if(v<1)return {kNaN,kNaN,false,LgserStatus::InvalidInput};ll+=v*std::log(fixed)-std::log(v)-std::log(-std::log1p(-fixed));}
-    return {fixed,ll,false};
+    return {fixed,ll,false,std::isfinite(ll)?LgserStatus::Ok:LgserStatus::NumericalFailure};
   }
   double sumx = 0.0;
   for (auto v : x) sumx += static_cast<double>(v);
@@ -75,7 +75,7 @@ inline LgserResult lgser_mle(ispan x, double fixed=std::numeric_limits<double>::
 
   double sum_log_x = 0.0;
   for (auto v : x) sum_log_x += std::log(static_cast<double>(v));
-  const double logLik = -dn * std::log(u) + sumx * std::log(theta) - sum_log_x;
+  const double logLik = -dn * std::log(-std::log1p(-theta)) + sumx * std::log(theta) - sum_log_x;
   return {theta,logLik,false,std::isfinite(logLik) && theta>0 && theta<1 ? LgserStatus::Ok : LgserStatus::NumericalFailure};
 
   }();

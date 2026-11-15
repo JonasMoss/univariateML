@@ -43,6 +43,9 @@ struct BinomResult {
   int iterations;
   BinomStatus status;
   StopDetail stop_detail{};
+
+  bool unique = true;
+  bool evaluation_failure = false;
 };
 
 inline double binom_lchoose(double n, double k) {
@@ -317,7 +320,12 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
     const double roundoff=128*std::numeric_limits<double>::epsilon()*std::max(1.,std::abs(ll));
     if(!std::isnan(held_prob) || !std::isfinite(stopped.logLik) ||
         std::abs(ll-stopped.logLik)>roundoff)stopped.logLik=ll;
-    if(!std::isfinite(ll))stopped.status=BinomStatus::IterationFailure;
+    if(!std::isfinite(ll) || !std::isfinite(stopped.size)) {stopped.status=BinomStatus::IterationFailure;stopped.evaluation_failure=true;}
+  }
+  if(stopped.status==BinomStatus::Ok && !x.empty() &&
+     std::all_of(x.begin(),x.end(),[](int v){return v==0;})) {
+    const bool fs=!std::isnan(size_or_nan),fp=!std::isnan(held_prob);
+    stopped.unique=(fs || fp) && !((!fs && held_prob==0) || (!fp && size_or_nan==0));
   }
   return stopped;
 }
@@ -327,10 +335,10 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
 namespace cppunivariate {
 inline FitOutcome outcome(const BinomResult& r) {
   switch(r.status) {
-    case BinomStatus::Ok: return FitOutcome::estimate(true);
+    case BinomStatus::Ok: return FitOutcome::estimate(true,r.unique);
     case BinomStatus::SizeTooSmall: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BinomStatus::Underdispersed: return FitOutcome::limit(true);
-    case BinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case BinomStatus::IterationFailure: return FitOutcome::failure(r.evaluation_failure?OutcomeReason::Evaluation:OutcomeReason::NoConvergence);
     case BinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
   }
   return {};

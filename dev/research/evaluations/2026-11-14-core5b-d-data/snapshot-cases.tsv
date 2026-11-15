@@ -1,0 +1,730 @@
+mode	family	source	case	category	changed fields	reason
+native	binom	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+native	gamma	archive	001976	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001977	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001978	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001979	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001980	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001982	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001983	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001985	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001986	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001987	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001988	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001989	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001990	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001991	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001994	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001995	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001996	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001997	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	001998	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002000	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002001	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002002	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002003	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002004	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002005	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002008	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002010	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002013	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002014	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002015	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002016	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002018	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002019	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002020	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002021	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002022	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002023	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002024	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002025	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002026	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002028	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002029	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002030	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002032	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002033	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002034	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002035	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002037	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002038	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002039	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002041	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002042	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002045	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002046	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002048	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	002051	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	009322	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	009323	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	009324	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	009325	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	009782	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	009783	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	009784	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	009785	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	010372	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	010373	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	010374	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	010375	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	010377	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	010378	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	010379	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	archive	010380	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	golden	golden	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	class	base6	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	class	two	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	class	ties	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	class	half-ties	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	class	near-constant	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+native	gamma	class	tiny	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	class	huge	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	class	offset	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+native	gamma	resample	n3-s0	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	resample	n3-s1	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	resample	n3-s2	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	resample	n3-s3	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	resample	n7-s1	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	resample	n7-s2	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	gamma	resample	n7-s3	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	laplace	archive	004366	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	laplace	archive	004368	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	laplace	class	ties	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	laplace	class	subnormal	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+native	laplace	resample	n3-s0	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	lgser	archive	004503	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	lgser	archive	004504	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	lgser	class	base6	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	lgser	class	two	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	lgser	class	large	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	lgser	class	huge	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+native	lgser	class	wide	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+native	nbinom	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+double	binom	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+double	gamma	archive	001976	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001977	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001978	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001979	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001980	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001982	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001983	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001985	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001986	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001987	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001988	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001989	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001990	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001991	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001994	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001995	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001996	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001997	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	001998	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002000	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002001	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002002	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002003	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002004	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002005	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002006	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002008	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002010	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002011	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002013	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002014	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002015	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002018	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002019	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002020	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002021	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002022	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002023	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002024	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002025	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002026	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002028	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002029	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002030	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002032	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002034	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002035	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002036	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002037	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002038	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002040	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002041	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002043	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002045	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002046	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002048	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	002051	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	009322	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	009324	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	009325	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	009782	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	009783	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	009784	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	010372	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	010373	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	010374	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	010376	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	010377	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	archive	010379	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	golden	golden	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	class	base6	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	class	two	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	class	ties	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	class	half-ties	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	class	near-constant	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+double	gamma	class	tiny	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	class	huge	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	class	offset	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+double	gamma	resample	n3-s0	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	resample	n3-s1	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	resample	n3-s2	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	resample	n3-s3	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	resample	n7-s1	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	resample	n7-s2	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	gamma	resample	n7-s3	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	laplace	archive	004366	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	laplace	archive	004368	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	laplace	class	ties	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	laplace	class	subnormal	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+double	laplace	resample	n3-s0	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	lgser	archive	004503	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	lgser	archive	004504	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	lgser	class	base6	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	lgser	class	two	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	lgser	class	large	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	lgser	class	huge	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+double	lgser	class	wide	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+double	nbinom	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	binom +truncate=tbinom	archive	007436	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007437	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007438	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007439	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007440	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007441	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007442	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007443	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007444	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007445	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007446	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007447	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	binom +truncate=tbinom	archive	007448	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007449	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	binom +truncate=tbinom	archive	007463	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007464	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007465	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007466	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007467	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007468	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007469	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007470	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007471	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007472	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007473	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007474	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	binom +truncate=tbinom	archive	007475	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	binom +truncate=tbinom	archive	007488	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007489	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007490	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007491	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007492	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007493	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007494	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007495	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007496	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007497	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007498	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007499	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007511	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007512	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007513	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007514	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007515	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007516	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007517	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007518	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007519	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007520	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	007521	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	011039	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	011040	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	011043	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	011044	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	011047	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	011048	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	011051	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	archive	011052	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	binom +truncate=tbinom	class	empty	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	binom +truncate=tbinom	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	norm +truncate=tnorm	archive	007698	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007699	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007700	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007701	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007702	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007703	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007704	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007705	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007706	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007707	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007708	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007709	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007710	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007711	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007712	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007713	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007762	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007763	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007764	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007765	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007766	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007767	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007768	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007769	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007770	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007771	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007772	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007773	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007774	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007775	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007776	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007777	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007826	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007827	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007828	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007829	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007830	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007831	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007832	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007833	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007834	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007835	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007836	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007837	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007838	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007839	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007840	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007841	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007890	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007891	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007892	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007893	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007894	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007895	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007896	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007897	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007898	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007899	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007900	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007901	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007902	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007903	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007904	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	norm +truncate=tnorm	archive	007905	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007920	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007921	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007922	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007923	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007924	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007925	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007926	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007927	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007928	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007929	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007930	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007931	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007932	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007933	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007947	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007948	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007949	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007950	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007951	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007952	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007953	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007954	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007955	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007956	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007957	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007958	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007959	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007972	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007973	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007974	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007975	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007976	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007977	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007978	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007979	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007980	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007981	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007982	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007983	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007995	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007996	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007997	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007998	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	007999	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	008000	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	008001	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	008002	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	008003	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	008004	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	008005	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	011103	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	011104	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	011107	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	011108	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	011111	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	011112	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	011115	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	archive	011116	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-native	pois +truncate=tpois	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	binom+zero=inflated	archive	008475	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	binom+zero=inflated	archive	008486	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	binom+zero=inflated	archive	008489	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	binom+zero=inflated	archive	008501	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	binom+zero=inflated	archive	008527	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	binom+zero=inflated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	binom+zero=inflated	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	nbinom+zero=inflated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	nbinom+zero=inflated	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	nbinom+zero=inflated	resample	n3-s0	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=inflated	archive	008695	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=inflated	archive	008696	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=inflated	archive	008697	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=inflated	class	one	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=inflated	class	constant	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=inflated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	pois+zero=inflated	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=inflated	resample	n3-s0	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=inflated	resample	n7-s2	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=inflated	resample	n7-s3	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	zeta +truncate=zipf	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	binom+zero=modified	archive	008806	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	binom+zero=modified	archive	008858	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	binom+zero=modified	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	binom+zero=modified	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	binom+zero=modified	class	wide	conditional-poisson-face-loglik	candidates,limit_loglik,loglik_lower,loglik_upper	A conditional Poisson face inherits the repaired positive-Poisson point likelihood, including candidate bounds.
+routes-native	geom+zero=modified	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	geom+zero=modified	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	geom+zero=modified	resample	n3-s2	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	lgser+zero=modified	archive	008956	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	lgser+zero=modified	archive	008957	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	lgser+zero=modified	archive	008967	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	lgser+zero=modified	archive	008984	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	lgser+zero=modified	archive	008985	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	lgser+zero=modified	archive	008995	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	lgser+zero=modified	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	lgser+zero=modified	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	lgser+zero=modified	resample	n7-s2	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	nbinom+zero=modified	archive	009022	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	nbinom+zero=modified	archive	009023	conditional-poisson-face-loglik	limit_loglik	A conditional Poisson face inherits the repaired positive-Poisson point likelihood, including candidate bounds.
+routes-native	nbinom+zero=modified	archive	009078	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	nbinom+zero=modified	archive	009079	conditional-poisson-face-loglik	limit_loglik	A conditional Poisson face inherits the repaired positive-Poisson point likelihood, including candidate bounds.
+routes-native	nbinom+zero=modified	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	nbinom+zero=modified	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	nbinom+zero=modified	resample	n3-s1	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	nbinom+zero=modified	resample	n3-s2	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=modified	archive	009127	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=modified	archive	009128	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=modified	archive	009129	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=modified	archive	009133	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=modified	archive	009135	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=modified	archive	009141	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-native	pois+zero=modified	archive	009142	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-native	pois+zero=modified	archive	009143	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-native	pois+zero=modified	archive	009149	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=modified	archive	009155	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=modified	archive	009156	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=modified	archive	009157	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=modified	archive	009161	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=modified	archive	009163	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=modified	archive	009169	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-native	pois+zero=modified	archive	009170	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-native	pois+zero=modified	archive	009171	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-native	pois+zero=modified	archive	009177	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=modified	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	pois+zero=modified	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-native	pois+zero=modified	class	large	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=modified	class	huge	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+routes-native	pois+zero=modified	class	wide	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	binom+zero=truncated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	binom+zero=truncated	class	wide	conditional-poisson-face-loglik	candidates,limit_loglik,loglik_lower,loglik_upper	A conditional Poisson face inherits the repaired positive-Poisson point likelihood, including candidate bounds.
+routes-native	geom+zero=truncated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	nbinom+zero=truncated	archive	009252	conditional-poisson-face-loglik	limit_loglik	A conditional Poisson face inherits the repaired positive-Poisson point likelihood, including candidate bounds.
+routes-native	nbinom+zero=truncated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	pois+zero=truncated	archive	009303	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=truncated	archive	009304	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=truncated	archive	009317	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=truncated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-native	pois+zero=truncated	class	large	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-native	pois+zero=truncated	class	huge	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+routes-native	pois+zero=truncated	class	wide	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	binom +truncate=tbinom	archive	007436	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007437	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007438	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007439	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007440	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007441	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007442	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007443	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007444	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007445	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007446	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007447	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	binom +truncate=tbinom	archive	007448	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007449	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	binom +truncate=tbinom	archive	007463	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007464	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007465	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007466	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007467	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007468	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007469	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007470	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007471	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007472	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007473	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007474	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	binom +truncate=tbinom	archive	007475	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	binom +truncate=tbinom	archive	007488	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007489	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007490	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007491	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007492	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007493	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007494	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007495	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007496	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007497	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007498	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007499	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007511	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007512	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007513	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007514	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007515	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007516	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007517	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007518	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007519	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007520	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	007521	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	011039	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	011040	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	011043	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	011044	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	011047	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	011048	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	011051	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	archive	011052	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	binom +truncate=tbinom	class	empty	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	binom +truncate=tbinom	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	norm +truncate=tnorm	archive	007698	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007699	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007700	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007701	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007702	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007703	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007704	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007705	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007706	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007707	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007708	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007709	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007710	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007711	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007712	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007713	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007762	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007763	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007764	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007765	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007766	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007767	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007768	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007769	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007770	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007771	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007772	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007773	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007774	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007775	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007776	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007777	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007826	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007827	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007828	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007829	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007830	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007831	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007832	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007833	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007834	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007835	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007836	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007837	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007838	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007839	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007840	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007841	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007890	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007891	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007892	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007893	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007894	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007895	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007896	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007897	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007898	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007899	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007900	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007901	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007902	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007903	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007904	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	norm +truncate=tnorm	archive	007905	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007920	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007921	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007922	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007923	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007924	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007925	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007926	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007927	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007928	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007929	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007930	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007931	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007932	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007933	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007947	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007948	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007949	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007950	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007951	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007952	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007953	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007954	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007955	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007956	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007957	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007958	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007959	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007972	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007973	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007974	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007975	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007976	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007977	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007978	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007979	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007980	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007981	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007982	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007983	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007995	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007996	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007997	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007998	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	007999	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	008000	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	008001	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	008002	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	008003	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	008004	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	008005	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	011103	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	011104	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	011107	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	011108	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	011111	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	011112	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	011115	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	archive	011116	core-provenance	core_status	Fully held window evaluation now returns a core-owned raw status; its numerical answer and outcome are unchanged.
+routes-double	pois +truncate=tpois	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	binom+zero=inflated	archive	008475	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	binom+zero=inflated	archive	008486	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	binom+zero=inflated	archive	008489	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	binom+zero=inflated	archive	008501	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	binom+zero=inflated	archive	008527	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	binom+zero=inflated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	binom+zero=inflated	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	nbinom+zero=inflated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	nbinom+zero=inflated	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	nbinom+zero=inflated	resample	n3-s0	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=inflated	archive	008695	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=inflated	archive	008696	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=inflated	archive	008697	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=inflated	class	one	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=inflated	class	constant	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=inflated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	pois+zero=inflated	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=inflated	resample	n3-s0	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=inflated	resample	n7-s2	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=inflated	resample	n7-s3	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	zeta +truncate=zipf	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	binom+zero=modified	archive	008806	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	binom+zero=modified	archive	008858	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	binom+zero=modified	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	binom+zero=modified	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	binom+zero=modified	class	wide	conditional-poisson-face-loglik	candidates,limit_loglik,loglik_lower,loglik_upper	A conditional Poisson face inherits the repaired positive-Poisson point likelihood, including candidate bounds.
+routes-double	geom+zero=modified	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	geom+zero=modified	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	geom+zero=modified	resample	n3-s2	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	lgser+zero=modified	archive	008956	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	lgser+zero=modified	archive	008957	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	lgser+zero=modified	archive	008967	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	lgser+zero=modified	archive	008984	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	lgser+zero=modified	archive	008985	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	lgser+zero=modified	archive	008995	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	lgser+zero=modified	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	lgser+zero=modified	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	lgser+zero=modified	resample	n7-s2	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	nbinom+zero=modified	archive	009022	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	nbinom+zero=modified	archive	009023	conditional-poisson-face-loglik	limit_loglik	A conditional Poisson face inherits the repaired positive-Poisson point likelihood, including candidate bounds.
+routes-double	nbinom+zero=modified	archive	009078	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	nbinom+zero=modified	archive	009079	conditional-poisson-face-loglik	limit_loglik	A conditional Poisson face inherits the repaired positive-Poisson point likelihood, including candidate bounds.
+routes-double	nbinom+zero=modified	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	nbinom+zero=modified	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	nbinom+zero=modified	resample	n3-s1	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	nbinom+zero=modified	resample	n3-s2	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=modified	archive	009127	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=modified	archive	009128	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=modified	archive	009129	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=modified	archive	009133	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=modified	archive	009135	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=modified	archive	009141	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-double	pois+zero=modified	archive	009142	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-double	pois+zero=modified	archive	009143	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-double	pois+zero=modified	archive	009149	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=modified	archive	009155	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=modified	archive	009156	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=modified	archive	009157	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=modified	archive	009161	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=modified	archive	009163	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=modified	archive	009169	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-double	pois+zero=modified	archive	009170	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-double	pois+zero=modified	archive	009171	held-parent-identification	core_status,warnings	A held parent gives core Ok rather than AllZero, removing the AllZero warning; coefficients and likelihood are unchanged.
+routes-double	pois+zero=modified	archive	009177	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=modified	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	pois+zero=modified	class	zeros	proved-nonidentification	outcome,unique	Algebraic non-identification is now carried by the core unique flag, conditional on which parent coordinates are held.
+routes-double	pois+zero=modified	class	large	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=modified	class	huge	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+routes-double	pois+zero=modified	class	wide	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	binom+zero=truncated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	binom+zero=truncated	class	wide	conditional-poisson-face-loglik	candidates,limit_loglik,loglik_lower,loglik_upper	A conditional Poisson face inherits the repaired positive-Poisson point likelihood, including candidate bounds.
+routes-double	geom+zero=truncated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	nbinom+zero=truncated	archive	009252	conditional-poisson-face-loglik	limit_loglik	A conditional Poisson face inherits the repaired positive-Poisson point likelihood, including candidate bounds.
+routes-double	nbinom+zero=truncated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	pois+zero=truncated	archive	009303	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=truncated	archive	009304	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=truncated	archive	009317	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=truncated	class	negative	core-classification	core_status,outcome,reason	Raw count validation or empty tbinom rejection now comes from the core as InvalidInput, rather than a pre-core InvalidArgument.
+routes-double	pois+zero=truncated	class	large	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.
+routes-double	pois+zero=truncated	class	huge	strict-loglik-repair	logLik	Independent 120-digit density evaluation confirms the repaired likelihood at unchanged returned coefficients.
+routes-double	pois+zero=truncated	class	wide	returned-law-loglik-roundoff	logLik	Likelihood is evaluated at returned binary64 coefficients; inherited positive-Poisson face values follow the same repair.

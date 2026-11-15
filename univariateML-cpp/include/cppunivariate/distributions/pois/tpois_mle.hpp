@@ -15,7 +15,7 @@ inline truncated_detail::Result tpois_mle(ispan x, double a, double b, double he
     const double rate=std::isnan(held)?1:held;
     if(!std::isfinite(rate)||rate<0||(rate==0&&lower!=0))
       return {0,0,0,truncated_detail::Status::InvalidInput};
-    return {rate,0,0,truncated_detail::Status::Ok};
+    return {rate,0,0,truncated_detail::Status::Ok,{},!std::isnan(held)};
   }
   if(!std::isnan(held)) {
     auto r=truncated_detail::fit(x,a,b,-1);

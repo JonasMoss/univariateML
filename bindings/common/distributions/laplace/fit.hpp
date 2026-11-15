@@ -5,14 +5,6 @@
 #include <limits>
 namespace umvl_binding {
 inline FitResult fit_laplace(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}) {
-  const auto classify = [&](FitResult out, const cppunivariate::StopDetail& detail,
-      PayloadKind kind, const std::vector<std::string>& names,
-      const std::string& model="") {
-    if(x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return out;
-    if(kind==PayloadKind::Nonexistence && !std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))return out;
-    if(!finite_stop_payload(detail,kind))return out;
-    return stop_failure(out,detail,kind,names,model);
-  };
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mu = mu_arg;
@@ -31,7 +23,7 @@ inline FitResult fit_laplace(cppunivariate::span x, Held mu_arg = {}, Held sigma
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) { return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}}); };
   if (res.status == cppunivariate::LaplaceStatus::Unbounded)
-    return done(classify(fail("The Laplace maximum likelihood estimator does not exist for constant data; other data may exceed double precision."), {}, outcome_payload(o), {}));
+    return done(stop_failure(fail("The Laplace maximum likelihood estimator does not exist for constant data; other data may exceed double precision."), {}, outcome_payload(o), {}));
   if (res.status == cppunivariate::LaplaceStatus::InvalidInput) return done(fail("Laplace requires nonempty finite data and valid held parameters."));
   if (res.status != cppunivariate::LaplaceStatus::Ok) return done(fail("Laplace likelihood exceeds double precision."));
   return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mu",res.mu},{"sigma",res.sigma}}; out.fixed = fixed; out.has_fixed = true; out.logLik = res.logLik; return done(out); }();

@@ -354,3 +354,37 @@ TEST_CASE("weibull validates a supplied start on held-parameter routes") {
   const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,-1,1,1);
   CHECK(r.status==cppunivariate::WeibullStatus::InvalidInput);
 }
+
+TEST_CASE("all-censored Weibull with held scale can have an interior shape MLE") {
+  const std::vector<double> lower{.25,2},upper{INFINITY,INFINITY};
+  const cppunivariate::CensoredData data{mltest::as_span(lower),mltest::as_span(upper)};
+  const auto r=cppunivariate::weibull_censored_mle(data,NAN,1);
+  REQUIRE(r.status==cppunivariate::WeibullCensoredStatus::Ok);
+  // -(.25)^k log(.25)-2^k log(2)=0 gives 2^(3k)=2, k=1/3.
+  CHECK(r.shape==doctest::Approx(1./3).epsilon(1e-10));
+  CHECK(r.logLik==doctest::Approx(-std::pow(.25,r.shape)-std::pow(2.,r.shape)).epsilon(1e-14));
+}
+
+TEST_CASE("all-censored held-scale Weibull boundaries and near-cancelling score") {
+  const std::vector<double> upper{INFINITY,INFINITY};
+  const auto fit=[&](const std::vector<double>& lower,double scale=1) {
+    return cppunivariate::weibull_censored_mle({mltest::as_span(lower),mltest::as_span(upper)},NAN,scale);
+  };
+  const auto point=fit({.25,.5});
+  CHECK(cppunivariate::outcome(point).kind==cppunivariate::OutcomeKind::Limit);
+  CHECK(point.stop_detail.limit_model==cppunivariate::StopModel::PointMass);
+  CHECK(point.stop_detail.limit_coef==std::vector<double>{1});
+  CHECK(point.stop_detail.limit_loglik==0);
+  CHECK(cppunivariate::outcome(fit({.25,1})).kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(cppunivariate::outcome(fit({.5,2})).kind==cppunivariate::OutcomeKind::Nonexistence);
+  // Exact binary product 1.5 * fl(2/3) = 1 - 2^-54: a tiny interior root,
+  // not the shape-zero boundary suggested by rounded log cancellation.
+  const auto thin=fit({1.5,2./3});
+  REQUIRE(thin.status==cppunivariate::WeibullCensoredStatus::Ok);
+  CHECK(thin.shape>0);
+  CHECK(cppunivariate::outcome(thin).certified);
+  const double s=std::ldexp(1.,500);
+  const auto scaled=fit({1.5*s,(2./3)*s},s);
+  CHECK(scaled.shape==thin.shape);
+  CHECK(scaled.logLik==thin.logLik);
+}

@@ -18,8 +18,6 @@ inline FitResult fit_zib(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   const auto res=cppunivariate::zib_mle(x, reltol, iterlim, fixed_size, held_prob, held_pi);
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(res.status));
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"pi",pi_arg.supplied}});
   };
   return done([&]() -> FitResult {
@@ -43,12 +41,13 @@ inline FitResult fit_zib(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
       cppunivariate::comparison_choice(res),{{"size",size_arg},{"prob",prob_arg},{"pi",pi_arg}});
   };
 
+  if(res.evaluation_failure)return stopped_fail("MLE cannot be resolved at floating-point precision.");
   if(res.status==cppunivariate::ZibStatus::InvalidInput)return stopped_fail("requires nonempty nonnegative integer count data and valid controls; held parameters must give positive likelihood");
   if(res.status==cppunivariate::ZibStatus::InvalidSize)return stopped_fail("`size` must be a nonnegative integer at least max(x).");
   if(res.status==cppunivariate::ZibStatus::ZipLimit)return stopped_fail("The maximum likelihood estimator escapes to infinite size. Use `mlpois(x, zero = \"inflated\")`.");
   if(res.status==cppunivariate::ZibStatus::FaceTie)return stopped_fail("No finite-size maximizer exists; the winning ZIP face has rate maxima that cannot be ordered at the comparison margin. Use `mlpois(x, zero = \"inflated\")` and inspect the retained face candidates.");
   if(res.status==cppunivariate::ZibStatus::IterationFailure)return stopped_fail("Profile optimizer IterationFailure: iteration limit, floating-point range or precision exhausted; increase iterlim only for work-limit failures. No capped size estimate is returned.");
-  if(!std::isfinite(res.logLik))return stopped_fail("MLE cannot be resolved at floating-point precision.");
+  if(o.kind!=cppunivariate::OutcomeKind::Estimate)return stopped_fail("MLE cannot be resolved at floating-point precision.");
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");

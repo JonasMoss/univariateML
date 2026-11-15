@@ -54,9 +54,11 @@ inline ExpResult exp_mle(span x,double rate) {
   if (!std::isfinite(total)) {
     double weighted = 0.0;
     for (double v : x) weighted += rate * v;
-    return {rate, static_cast<double>(x.size()) * std::log(rate) - weighted};
+    const double ll=static_cast<double>(x.size()) * std::log(rate) - weighted;
+    return {rate,ll,std::isfinite(ll)?ExpStatus::Ok:ExpStatus::IterationFailure};
   }
-  return {rate,static_cast<double>(x.size()*std::log(rate)-rate*total)};
+  const double ll=static_cast<double>(x.size()*std::log(rate)-rate*total);
+  return {rate,ll,std::isfinite(ll)?ExpStatus::Ok:ExpStatus::IterationFailure};
 }
 
 inline FitOutcome outcome(const ExpResult& r) {

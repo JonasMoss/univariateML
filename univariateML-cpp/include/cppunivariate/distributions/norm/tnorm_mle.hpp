@@ -52,7 +52,9 @@ struct TnormResult {
   double limit_rate, limit_logLik;
   int iterations;
   TnormStatus status;
- StopDetail stop_detail{}; };
+ StopDetail stop_detail{};
+ // Distinguish coincident estimated bounds with proved collapse from bad design bounds.
+ bool estimated_bounds_collapse=false; };
 
 namespace tnorm_detail {
 
@@ -370,6 +372,17 @@ inline TnormResult tnorm_mle_impl(span x,
   const double log_root_2pi = 0.91893853320467274178;
   TnormResult res{nan, nan, a, b, nan, nan, nan, 0, TnormStatus::InvalidInput};
   if (x.size() == 0 || !(tol > 0) || !std::isfinite(tol) || maxit < 1) return res;
+  // A shrinking estimated window gives f(c)/integral(f) ~ 1/width,
+  // even with both parent coefficients held. Supplied equal bounds instead
+  // describe an invalid design and are not this likelihood escape.
+  if((std::isnan(a) || std::isnan(b)) && (std::isnan(a) || a==x[0]) &&
+     (std::isnan(b) || b==x[0]) && (std::isnan(fixed_mean) || std::isfinite(fixed_mean)) &&
+     (std::isnan(fixed_sd) || (fixed_sd>0 && std::isfinite(fixed_sd))) &&
+     std::all_of(x.begin(),x.end(),[&](double v){return std::isfinite(v) && v==x[0];})) {
+    res.status=TnormStatus::InvalidBounds;
+    res.estimated_bounds_collapse=true;
+    return res;
+  }
   if (std::isnan(a)) {
     a = x[0];
     for (double v : x) a = std::min(a, v);
@@ -646,6 +659,7 @@ inline bool family_point(const TnormResult&, const FitCandidate& c) {
 // likelihood bounds (margin 1e-9 per observation); the interior point is not checked.
 inline bool accurate_point(const TnormResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const TnormResult& r) {
+  if(r.estimated_bounds_collapse)return FitOutcome::nonexistence(OutcomeReason::Unbounded);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   if(r.status!=TnormStatus::Ok && r.stop_detail.comparison_tie)return comparison_outcome_of(r);

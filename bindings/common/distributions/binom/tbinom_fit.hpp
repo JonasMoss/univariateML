@@ -15,18 +15,15 @@ inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, He
   const double held=!prob.supplied?std::numeric_limits<double>::quiet_NaN():prob.value;
   if(prob.supplied&&std::isnan(held))return invalid_argument(fail("Fixed parameter must not be missing."));
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  if(x.size()==0)return invalid_argument(fail("requires nonempty data"));
-  const double lower=a.supplied?a.value:double(*std::min_element(x.begin(),x.end()))-1;
-  const double upper=b.supplied?b.value:double(*std::max_element(x.begin(),x.end()));
+  const double lower=a.supplied?a.value:x.empty()?nan:double(*std::min_element(x.begin(),x.end()))-1;
+  const double upper=b.supplied?b.value:x.empty()?nan:double(*std::max_element(x.begin(),x.end()));
   const double trials=size.supplied?size.value:nan;
-  if((a.supplied&&std::isnan(lower))||(b.supplied&&std::isnan(upper)))return invalid_argument(fail("Held bounds must not be missing."));
-  if(size.supplied && !std::isfinite(trials))return invalid_argument(fail("`size` must be a finite nonnegative integer."));
+  if(!x.empty() && ((a.supplied&&std::isnan(lower))||(b.supplied&&std::isnan(upper))))return invalid_argument(fail("Held bounds must not be missing."));
+  if(!x.empty() && size.supplied && !std::isfinite(trials))return invalid_argument(fail("`size` must be a finite nonnegative integer."));
   auto r=legacy_default?cppunivariate::tbinom_design_mle(x,lower,upper,trials,held):
     cppunivariate::tbinom_design_mle(x,lower,upper,trials,held,tol,maxit);
   const auto o=cppunivariate::outcome(r);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(r.status));
     return with_outcome(std::move(out),o,static_cast<int>(r.status),{{"prob",prob_arg.supplied},{"a",a_arg.supplied},{"b",b_arg.supplied},{"size",size_arg.supplied}});
   };
   return done([&]() -> FitResult {
@@ -52,6 +49,7 @@ inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, He
   if(r.status==cppunivariate::TbinomStatus::LowerPointMass) return stopped_fail("MLE escapes to a point mass at the lowest support point.");
   if(r.status==cppunivariate::TbinomStatus::UpperPointMass) return stopped_fail("MLE escapes to a point mass at the highest support point.");
   if(r.status==cppunivariate::TbinomStatus::Unidentified) return stopped_fail("Parameter is unidentified on singleton truncation support.");
+  if(r.status==cppunivariate::TbinomStatus::InvalidInput && x.empty())return stopped_fail("requires nonempty data");
   if(r.status==cppunivariate::TbinomStatus::InvalidInput) return stopped_fail("Invalid design parameters or observations outside truncation bounds a < x <= b.");
   if(r.status==cppunivariate::TbinomStatus::TpoisLimit) {
     std::ostringstream os;

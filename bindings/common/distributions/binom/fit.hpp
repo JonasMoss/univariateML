@@ -25,8 +25,6 @@ inline FitResult fit_binom(cppunivariate::ispan x, Held size_arg = {}, Held prob
   auto res = cppunivariate::binom_mle(x, size_or_nan, abstol, iterlim, p);
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
-    if(!out.error.empty() && out.payload_kind!=PayloadKind::Comparison && o.kind==cppunivariate::OutcomeKind::Estimate)
-      return overridden(std::move(out),static_cast<int>(res.status));
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied}});
   };
   return done([&]() -> FitResult {
@@ -50,7 +48,7 @@ inline FitResult fit_binom(cppunivariate::ispan x, Held size_arg = {}, Held prob
         "The maximum likelihood estimator does not exist. Use `mlpois` to fit "
         "a Poisson or supply a `size` argument.");
   }
-  if (res.status != cppunivariate::BinomStatus::Ok || !std::isfinite(res.size)) {
+  if (res.status != cppunivariate::BinomStatus::Ok) {
     return stopped_fail("Binomial MLE failed (check dispersion/inputs)");
   }
   std::vector<std::string> fixed;

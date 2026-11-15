@@ -8,7 +8,9 @@ typedef zero_detail::ModifiedResult ZmgeomResult;
 inline ZmgeomResult zmgeom_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
  if(std::isnan(fixed_prob) && std::isnan(fixed_p0)) {
-  return zero_detail::modified_mle(x,1,tol,maxit,std::numeric_limits<double>::quiet_NaN());
+  auto out=zero_detail::modified_mle(x,1,tol,maxit,std::numeric_limits<double>::quiet_NaN());
+  if((out.status==ZmgeomStatus::Ok || out.status==ZmgeomStatus::TwoPoint) && !std::isfinite(out.logLik))out.status=ZmgeomStatus::IterationFailure;
+  return out;
  }
  ZmgeomResult out{1,1,.5,0,0,0,ZmgeomStatus::Ok};
  const bool fb=!std::isnan(fixed_prob), fz=!std::isnan(fixed_p0);
@@ -25,14 +27,14 @@ inline ZmgeomResult zmgeom_mle(ispan x, double tol=1e-10,int maxit=200,double fi
  if((n>k && out.p0==0)||(k>0 && out.p0==1)) {out.status=ZmgeomStatus::InvalidInput;return out;}
 
  if(fb)out.prob=fixed_prob;
- if(pos.empty()) {out.logLik=n*std::log(out.p0);out.status=ZmgeomStatus::AllZero;return out;}
+ if(pos.empty()) {out.logLik=n*std::log(out.p0);out.status=fb?ZmgeomStatus::Ok:ZmgeomStatus::AllZero;return out;}
  const ispan positive{pos.data(),pos.size()};
  if(!fb) {const auto r=ztgeom_mle(positive);out.prob=r.prob;out.logLik=r.logLik;}
  else for(int v:positive)out.logLik+=fixed_prob==1?(v==1?0:-std::numeric_limits<double>::infinity()):
     std::log(fixed_prob)+(v-1)*std::log1p(-fixed_prob);
  if(n>k)out.logLik+=(n-k)*std::log(out.p0);
  out.logLik+=k*std::log1p(-out.p0);
- if(!std::isfinite(out.logLik))out.status=ZmgeomStatus::InvalidInput;
+ if(!std::isfinite(out.logLik))out.status=out.prob<1?ZmgeomStatus::IterationFailure:ZmgeomStatus::InvalidInput;
  return out;
 }
 }

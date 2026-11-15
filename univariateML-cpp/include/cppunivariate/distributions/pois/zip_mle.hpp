@@ -26,6 +26,9 @@ struct ZipResult {
   double logLik;
   ZipStatus status;
   StopDetail stop_detail{};
+
+  bool unique = true;
+  bool all_zero = false;
 };
 
 
@@ -144,6 +147,9 @@ inline ZipResult zip_mle(ispan x,
   return {lambda, pi, logLik, ZipStatus::Ok};
 
   }();
+  stopped.all_zero=!x.empty() && std::all_of(x.begin(),x.end(),[](int v){return v==0;});
+  if(stopped.status==ZipStatus::Ok && std::isnan(fixed_lambda) && stopped.pi==1 &&
+     stopped.all_zero)stopped.unique=false;
   if(stopped.status==ZipStatus::ZeroLimit) stopped.stop_detail=discrete_face(StopModel::Pois,{0},0);
   return stopped;
 }
@@ -159,7 +165,7 @@ inline bool family_point(const ZipResult&, const FitCandidate& c) {
 inline bool accurate_point(const ZipResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const ZipResult& r) {
   switch(r.status) {
-    case ZipStatus::Ok: return FitOutcome::estimate(true);
+    case ZipStatus::Ok: return FitOutcome::estimate(true,r.unique);
     case ZipStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZipStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case ZipStatus::ZeroLimit: return FitOutcome::limit(true);

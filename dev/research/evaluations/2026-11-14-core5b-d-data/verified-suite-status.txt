@@ -1,0 +1,7 @@
+cpp-test 0 workstation
+cpp-test-no-long-double 0 workstation
+test 0 workstation
+test-full 0 workstation
+js-build 0 workstation
+js-test 0 workstation
+site-check 0 workstation

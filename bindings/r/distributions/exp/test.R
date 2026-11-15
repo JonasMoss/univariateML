@@ -92,3 +92,43 @@ test_that("P2 held existence boundaries", {
 expect_error(mlexp(rep(0,3)),"does not exist|finite|failed|unbounded")
 expect_true(is.finite(logLik(mlexp(rep(0,3),rate=2))))
 })
+
+test_that("right-censoring bounds below support carry no exposure", {
+  x <- cbind(c(-1,2,3), c(Inf,2,Inf))
+  zero <- x; zero[1,1] <- 0
+  one <- x; one[1,1] <- 1
+  fits <- list(function(z) mlexp(z), function(z) mlweibull(z, shape=2),
+               function(z) mlrayleigh(z), function(z) mllomax(z, lambda=1),
+               function(z) mlpareto(z, b=1))
+  flat <- cbind(c(-1,0), c(Inf,Inf))
+  for (i in seq_along(fits)) {
+    f <- fits[[i]](x); reference <- fits[[i]](if(i==5L) one else zero)
+    expect_equal(as.numeric(f), as.numeric(reference), tolerance=1e-13)
+    expect_equal(as.numeric(logLik(f)), as.numeric(logLik(reference)), tolerance=1e-13)
+    uninformative <- fits[[i]](flat)
+    expect_equal(as.numeric(logLik(uninformative)), 0)
+    expect_false(attr(uninformative,"unique"))
+  }
+  p <- mlpareto(cbind(c(.5,2),c(Inf,2)), b=1)
+  expect_equal(unname(p[["a"]]), 1/log(2), tolerance=1e-13)
+  e <- tryCatch(mlpareto(cbind(c(.5,1),c(Inf,1)), b=1), error=identity)
+  expect_s3_class(e,"univariateML_nomle")
+  e <- tryCatch(mlpareto(cbind(c(.5,2),c(.5,Inf)), b=1), error=identity)
+  expect_s3_class(e,"univariateML_invalid")
+})
+
+test_that("held-scale censored Weibull owns its point limit and small interior root", {
+  right <- function(x) cbind(x,rep(Inf,length(x)))
+  e <- tryCatch(mlweibull(right(c(.25,.5)),scale=1),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"unavailable:point-mass")
+  expect_equal(e$estimates,c(point=1))
+  expect_equal(e$limit_loglik,0)
+  e <- tryCatch(mlweibull(right(c(.5,2)),scale=1),error=identity)
+  expect_s3_class(e,"univariateML_nomle")
+  f <- mlweibull(right(c(.25,2)),scale=1)
+  expect_equal(unname(f[["shape"]]),1/3,tolerance=1e-10)
+  f <- mlweibull(right(c(1.5,2/3)),scale=1)
+  expect_gt(unname(f[["shape"]]),0)
+  expect_true(attr(f,"certified"))
+})

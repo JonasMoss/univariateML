@@ -1,0 +1,5 @@
+lgser 0x1.ffffffffd6886p-1 0x0p+0 -0x1.8bc1049cd0abfp+5 0
+lgser 0x1.ffffffffd6886p-1 0x1.999999999999ap-3 -0x1.8f530395c3ff3p+5 0
+pareto 0x1.71547652b82fep+0 0x1p+0 -0x1.539e4d885c21p+0 1
+weibull 0x1.55555555551fep-2 0x1p+0 -0x1.e3cf476542bdp+0 1
+thin-weibull 0x1.854a2ed670a41p-53 0x1p+0 -0x1p+1 1

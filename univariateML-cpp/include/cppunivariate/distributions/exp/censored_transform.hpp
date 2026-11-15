@@ -3,7 +3,7 @@
 namespace cppunivariate {
 namespace censored_detail {
 enum class Transform { Weibull, Rayleigh, Pareto, Lomax };
-struct Result { double coefficient, logLik; ExpCensoredStatus status; };
+struct Result { double coefficient, logLik; ExpCensoredStatus status; bool unique=true; };
 inline Result fit(CensoredData x, Transform kind, double held) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const auto c=classify_censored(x,kind==Transform::Pareto?held:0);
@@ -14,19 +14,25 @@ inline Result fit(CensoredData x, Transform kind, double held) {
   std::size_t positive=0;
   for(std::size_t i=0;i<x.lower.size();++i) {
     const double v=x.lower[i];
-    if(!(v>=0 && std::isfinite(v)) || (kind==Transform::Pareto && v<held) ||
-       (v==0 && x.lower[i]==x.upper[i] && kind!=Transform::Lomax))
+    const bool exact=v==x.upper[i];
+    if(!std::isfinite(v) || (exact && (v<0 || (kind==Transform::Pareto && v<held))) ||
+       (v==0 && exact && kind!=Transform::Lomax))
       return {nan,nan,ExpCensoredStatus::InvalidInput};
     big=std::max(big,v);
     if(v>0)++positive;
   }
-  if(!c.exact)return {nan,nan,ExpCensoredStatus::AllCensored};
+  if(!c.exact) {
+    bool origin=true;
+    for(double v:x.lower)origin=origin && v<=(kind==Transform::Pareto?held:0);
+    return origin?Result{1,0,ExpCensoredStatus::Ok,false}:Result{nan,nan,ExpCensoredStatus::AllCensored};
+  }
   const double d=static_cast<double>(c.exact);
   CPPUNIV_EXTENDED_REAL total=0,jac=0,shifted=0;
   const double power=kind==Transform::Rayleigh?2:held;
   for(std::size_t i=0;i<x.lower.size();++i) {
     const double v=x.lower[i];
     const bool exact=v==x.upper[i];
+    if(!exact && v<=(kind==Transform::Pareto?held:0))continue;
     if(kind==Transform::Weibull || kind==Transform::Rayleigh) {
       // Normalize before powering; never form a dimensional square/power.
       const CPPUNIV_EXTENDED_REAL ratio=big>0?static_cast<CPPUNIV_EXTENDED_REAL>(v)/big:0;
@@ -65,6 +71,7 @@ inline Result fit(CensoredData x, Transform kind, double held) {
     CPPUNIV_EXTENDED_REAL value=0;
     for(std::size_t i=0;i<x.lower.size();++i) {
       const double v=x.lower[i];
+      if(v<=0)continue; // Nonpositive right-censoring bounds contribute S=1.
       const CPPUNIV_EXTENDED_REAL z=static_cast<CPPUNIV_EXTENDED_REAL>(v)/coefficient;
       if(kind==Transform::Rayleigh) {
         value-=z*z/2;

@@ -201,3 +201,13 @@ test_that("large-count held-probability negative binomial logLik crosses the bin
   ll <- sum(dml(x,fit,log=TRUE))
   expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
 })
+
+test_that("negative-binomial point-law identification follows core holds", {
+  z <- c(0L, 0L)
+  expect_false(attr(mlnbinom(z), "unique"))
+  expect_true(attr(mlnbinom(z, size=2), "unique"))
+  expect_false(attr(mlnbinom(z, prob=1), "unique"))
+  expect_false(attr(suppressWarnings(mlnbinom(z, zero="modified")), "unique"))
+  expect_true(attr(mlnbinom(z, size=2, prob=.5, zero="modified"), "unique"))
+  expect_false(attr(mlnbinom(z, zero="inflated"), "unique"))
+})

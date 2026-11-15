@@ -1,0 +1,7 @@
+cpp-test 8
+cpp-test-no-long-double 0
+test 1
+test-full 1
+js-build 0
+js-test 1
+site-check 0
