@@ -175,19 +175,29 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
 
     // An indefinite observed Hessian can point away from the maximum.
     // Fall back to a scale-preconditioned score and backtrack in log scale.
+    bool newton_direction = true;
     if (!(H_mm > 0.0 && det > 0.0) || !std::isfinite(dmu + dth)) {
+      newton_direction = false;
       dmu = U_mu * std::exp(2.0 * theta) / static_cast<double>(n);
       dth = U_th / static_cast<double>(n);
     }
     const CauchyCost cost{x};
     const double current[] = {mu, std::exp(theta)};
     const double old = cost(current);
+    // Convergence is judged on the undamped Newton step (see below), measured
+    // before the line search shortens it.
+    const double full = std::max(std::fabs(dmu) * inv_s / std::max(1.0, std::fabs(mu) * inv_s), std::fabs(dth));
+    // A candidate is accepted when the cost does not rise by more than the
+    // rounding noise of the sum (n terms of size about 1 each carry 1 eps):
+    // near the optimum the true change of a full step is below that noise,
+    // and a strict test would reject a good step and falsely damp it.
+    const double allowance = 64 * std::numeric_limits<double>::epsilon() * std::max(std::fabs(old), static_cast<double>(n));
     double step = 1.0;
     bool accepted = false;
     for (int ls = 0; ls < maxit; ++ls) {
       const double candidate[] = {mu + step * dmu, std::exp(theta + step * dth)};
       if (std::isfinite(candidate[0]) && std::isfinite(candidate[1]) &&
-          candidate[1] > 0.0 && std::isfinite(cost(candidate)) && cost(candidate) <= old) {
+          candidate[1] > 0.0 && std::isfinite(cost(candidate)) && cost(candidate) <= old + allowance) {
         accepted = true;
         break;
       }
@@ -198,7 +208,16 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
     dth *= step;
     mu += dmu;
     theta += dth;
-    if (std::max(std::fabs(dmu), std::fabs(dth)) < tol) break;
+    // Stop after applying an accepted undamped step whose size is at most
+    // tol in the contract's units: the location step relative to
+    // max(|mu|, scale) and the log-scale step (a relative scale step). The
+    // observed information is positive definite when the Newton direction is
+    // used (H_mm > 0, det > 0), so H^-1 g is the Newton estimate of the error
+    // of the iterate before the step, accurate to second order by quadratic
+    // convergence; after the step the error is of order full^2. A damped
+    // step says nothing about the distance to the optimum, so it never stops
+    // the iteration.
+    if (accepted && step == 1.0 && newton_direction && full <= tol) break;
   }
 
   const double scale = std::exp(theta);

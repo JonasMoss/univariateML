@@ -73,7 +73,7 @@ test_that("mltrgamma fixed shapes reduce to gamma, Weibull and exact profiles", 
   n <- length(x)
   for (tau in c(.4, 1, 2.5)) {
     fit <- mltrgamma(x, shape2 = tau)
-    g <- mlgamma(x^tau, abstol = 1e-12)
+    g <- mlgamma(x^tau, tol = 1e-12)
     expect_equal(unname(fit["shape2"]), tau)
     expect_equal(unname(fit["shape1"]), unname(g["shape"]), tolerance = 1e-8)
     expect_equal(unname(fit["scale"]), unname(g["scale"]^(1 / tau)), tolerance = 1e-8)

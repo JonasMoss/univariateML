@@ -52,7 +52,7 @@ test_that("mlinvtrgamma fixed shapes reduce to inverse gamma and inverse Weibull
   set.seed(11)
   x <- rinvtrgamma(n = 150, shape1 = 2, shape2 = 1.5, scale = 0.5)
   g <- mlinvtrgamma(x, shape2 = 1)
-  ref <- mlinvgamma(x, abstol = 1e-12)
+  ref <- mlinvgamma(x, tol = 1e-12)
   expect_equal(unname(g[c(1, 3)]), unname(ref[1:2]), tolerance = 1e-8)
   expect_equal(attr(g, "logLik"), attr(ref, "logLik"), tolerance = 1e-10)
   expect_identical(attr(g, "fixed"), "shape2")

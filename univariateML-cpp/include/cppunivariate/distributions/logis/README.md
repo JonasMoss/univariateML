@@ -31,7 +31,7 @@ r:
   control:
     scale: Optional held scale; NULL estimates it.
     location: Optional held location; NULL estimates it.
-    abstol: Absolute step tolerance in (location, log(scale)).
+    tol: "Requested relative coefficient accuracy (default 1e-10); a location is measured against max(abs(location), scale)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: -(x-location)/scale - log(scale) - 2*log(1 + exp(-(x-location)/scale))
 references:

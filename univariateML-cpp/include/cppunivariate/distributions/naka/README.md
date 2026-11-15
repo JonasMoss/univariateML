@@ -31,7 +31,7 @@ r:
   control:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.
-    abstol: Positive relative accuracy tolerance for the gamma shape bracket.
+    tol: "Requested relative accuracy of the shape (default 1e-10); the scale follows in closed form."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(2) + shape*log(shape) - loggamma(shape) - shape*log(scale) + (2*shape - 1)*log(x) - shape*x**2/scale
 references:

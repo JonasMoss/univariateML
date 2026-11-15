@@ -15,7 +15,7 @@ TEST_CASE("lgamma (wrapper-only: gamma on log(x))") {
   std::vector<double> y;
   y.reserve(g.data.size());
   for (double v : g.data) y.push_back(std::log(v));
-  auto r = cppunivariate::gamma_mle(mltest::as_span(y), mltest::kFitTol, mltest::kFitMaxit);
+  auto r = cppunivariate::gamma_mle(mltest::as_span(y), 1e-10, mltest::kFitMaxit);
   const double rate = 1.0 / r.scale;
   CHECK(r.shape == doctest::Approx(g.estimates.at("shapelog")).epsilon(mltest::kGolden_lgamma).scale(0));
   CHECK(rate == doctest::Approx(g.estimates.at("ratelog")).epsilon(mltest::kGolden_lgamma).scale(0));
@@ -112,8 +112,8 @@ TEST_CASE("lgamma core matches previous adapter for every held subset") {
   for(int mask=0;mask<4;++mask) {
     const double shape=(mask&1) ? g.estimates.at("shapelog") : nan;
     const double rate=(mask&2) ? g.estimates.at("ratelog") : nan;
-    const auto old=cppunivariate::gamma_mle(mltest::as_span(y),mltest::kFitTol,100,shape,(mask&2)?1/rate:nan);
-    const auto r=cppunivariate::lgamma_mle(mltest::as_span(g.data),mltest::kFitTol,100,shape,rate);
+    const auto old=cppunivariate::gamma_mle(mltest::as_span(y),1e-10,100,shape,(mask&2)?1/rate:nan);
+    const auto r=cppunivariate::lgamma_mle(mltest::as_span(g.data),1e-10,100,shape,rate);
     CHECK(r.status==cppunivariate::LgammaStatus::Ok);
     CHECK(r.shapelog==old.shape);
     CHECK(r.ratelog==((mask&2)?rate:1/old.scale));

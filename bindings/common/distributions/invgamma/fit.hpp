@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <vector>
 namespace umvl_binding {
-inline FitResult fit_invgamma(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_invgamma(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -25,7 +25,7 @@ inline FitResult fit_invgamma(cppunivariate::span x, Held alpha_arg = {}, Held b
     fixed.push_back("beta");
   }
 
-  auto res = cppunivariate::invgamma_mle(x, abstol, iterlim, alpha_held, beta_held);
+  auto res = cppunivariate::invgamma_mle(x, tol, iterlim, alpha_held, beta_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"alpha",alpha_arg.supplied},{"beta",beta_arg.supplied}});

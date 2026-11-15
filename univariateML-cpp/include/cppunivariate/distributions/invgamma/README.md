@@ -31,7 +31,7 @@ r:
   control:
     alpha: Optional held alpha; NULL estimates it.
     beta: Optional held beta; NULL estimates it.
-    abstol: Positive relative accuracy tolerance for the shape bracket.
+    tol: "Requested relative accuracy of the shape (default 1e-10); the scale follows in closed form."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: alpha*log(beta) - loggamma(alpha) - (alpha + 1)*log(x) - beta/x
 references:
@@ -132,7 +132,7 @@ Fitting uses the gamma sufficient statistics of $1/X$, retaining the Jacobian in
 
 ## R notes
 
-`alpha = NULL` and `beta = NULL` estimate the corresponding coefficients. Supplied coefficients are held fixed. Empty or invalid data and unbounded likelihoods stop with an error. Unrepresentable coefficients or likelihoods and failed shape solves also stop. `abstol` and `iterlim` control the gamma shape solve.
+`alpha = NULL` and `beta = NULL` estimate the corresponding coefficients. Supplied coefficients are held fixed. Empty or invalid data and unbounded likelihoods stop with an error. Unrepresentable coefficients or likelihoods and failed shape solves also stop. `tol` and `iterlim` control the gamma shape solve.
 
 ## Decision history
 

@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <vector>
 namespace umvl_binding {
-inline FitResult fit_naka(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_naka(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -25,7 +25,7 @@ inline FitResult fit_naka(cppunivariate::span x, Held shape_arg = {}, Held scale
     fixed.push_back("scale");
   }
 
-  auto res = cppunivariate::naka_mle(x, abstol, iterlim, shape_held, scale_held);
+  auto res = cppunivariate::naka_mle(x, tol, iterlim, shape_held, scale_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

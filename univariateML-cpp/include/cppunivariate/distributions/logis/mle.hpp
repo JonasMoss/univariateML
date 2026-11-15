@@ -3,11 +3,11 @@
 // Initialization via Welford one-pass mean/variance; theta seeded so
 // scale ≈ sqrt(var) * sqrt(3) / pi (matches Logistic distribution variance).
 //
-// Convergence is absolute on max(|dmu|, |dtheta|) -- a 2D Newton, so
-// outside the scope of cppunivariate::newton_raphson_1d. The fit moves to
-// standardized coordinates (x - mean)/sd when the data's magnitude would
-// make that absolute target unattainable in binary64; the target then
-// applies relative to sd.
+// Convergence is on the undamped Newton step, max(|dmu| / max(|mu|, scale),
+// |dtheta|) <= tol -- a 2D Newton, so outside the scope of
+// cppunivariate::newton_raphson_1d. The fit moves to standardized coordinates
+// (x - mean)/sd when the data's magnitude would make rounding noise in the
+// score comparable to the step target.
 
 #pragma once
 #include "dpqr.hpp"
@@ -154,19 +154,29 @@ inline LogisticResult newton(span x, double tol, int maxit) {
     double dmu = (J22 * U1 - J12 * U2) / det;
     double dtheta = (-J12 * U1 + J11 * U2) / det;
 
+    bool newton_direction = true;
     if (!(J11 > 0.0 && det > 0.0) || !std::isfinite(dmu + dtheta)) {
+      newton_direction = false;
       dmu = U1 * std::exp(2.0 * theta) / static_cast<double>(n);
       dtheta = U2 / static_cast<double>(n);
     }
     const LogisticCost cost{x};
     const double current[] = {mu, std::exp(theta)};
     const double old = cost(current);
+    // Convergence is judged on the undamped Newton step (see below), measured
+    // before the line search shortens it.
+    const double full = std::max(std::fabs(dmu) * inv_s / std::max(1.0, std::fabs(mu) * inv_s), std::fabs(dtheta));
+    // A candidate is accepted when the cost does not rise by more than the
+    // rounding noise of the sum (n terms of size about 1 each carry 1 eps):
+    // near the optimum the true change of a full step is below that noise,
+    // and a strict test would reject a good step and falsely damp it.
+    const double allowance = 64 * std::numeric_limits<double>::epsilon() * std::max(std::fabs(old), static_cast<double>(n));
     double step = 1.0;
     bool accepted = false;
     for (int ls = 0; ls < maxit; ++ls) {
       const double candidate[] = {mu + step * dmu, std::exp(theta + step * dtheta)};
       if (std::isfinite(candidate[0]) && std::isfinite(candidate[1]) &&
-          candidate[1] > 0.0 && std::isfinite(cost(candidate)) && cost(candidate) <= old) {
+          candidate[1] > 0.0 && std::isfinite(cost(candidate)) && cost(candidate) <= old + allowance) {
         accepted = true;
         break;
       }
@@ -178,7 +188,16 @@ inline LogisticResult newton(span x, double tol, int maxit) {
     mu += dmu;
     theta += dtheta;
 
-    if (std::max(std::fabs(dmu), std::fabs(dtheta)) < tol) break;
+    // Stop after applying an accepted undamped step whose size is at most
+    // tol in the contract's units: the location step relative to
+    // max(|mu|, scale) and the log-scale step (a relative scale step). The
+    // observed information is positive definite when the Newton direction is
+    // used (det > 0, J11 > 0), so H^-1 g is the Newton estimate of the error
+    // of the iterate before the step, accurate to second order by quadratic
+    // convergence; after the step the error is of order full^2. A damped
+    // step says nothing about the distance to the optimum, so it never stops
+    // the iteration.
+    if (accepted && step == 1.0 && newton_direction && full <= tol) break;
   }
 
   const double scale = std::exp(theta);
@@ -208,12 +227,11 @@ inline LogisticResult logistic_mle(span x, double tol, int maxit) {
     return {nan, nan, nan, 0, LogisticStatus::Unbounded};
   const auto moments = norm_detail::moments(x);
   // Standardize when moments or Newton products would overflow/underflow,
-  // when a large offset hides the spread, or when the absolute step target
-  // tol is within 2^12 binary64 spacings of the location scale
-  // max(|mean|, sd): there the rounding noise of the Newton location step,
-  // a few spacings of that scale, can keep the step above tol indefinitely
-  // (TASK-214.3: (1e-8, 1, 1e8) at tol 1e-10). In standardized coordinates
-  // the same target bounds the step relative to sd.
+  // when a large offset hides the spread, or when tol is within 2^12 binary64
+  // spacings of the location scale max(|mean|, sd): there the rounding noise
+  // of the Newton location step, a few spacings of that scale, can keep the
+  // step above the target (TASK-214.3: (1e-8, 1, 1e8) at tol 1e-10). In
+  // standardized coordinates the target is relative to sd.
   if (moments.sd > 0.0 && std::isfinite(moments.sd) &&
       (moments.sd < 1e-100 || moments.sd > 1e100 || std::abs(moments.mean) > 1e6 * moments.sd ||
        tol < 0x1p-40 * std::max(std::abs(moments.mean), moments.sd))) {

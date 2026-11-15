@@ -996,16 +996,6 @@
    "detail": "shape2 = 2.5542122579354292, refined 2.5542122466768746: error 1.13e-08 is 44.1 x the contract bound",
    "finding": "off-maximizer"
   },
-  "refine|double|cauchy|archive|000764": {
-   "ref": "TASK-214.5",
-   "detail": "scale = 0.35981097341362184, refined 0.35981097382047972: error 4.07e-10 is 11.3 x the contract bound",
-   "finding": "off-maximizer"
-  },
-  "refine|double|cauchy|archive|010216": {
-   "ref": "TASK-214.5",
-   "detail": "scale = 6.0984921042976458e-07, refined 6.098492106136368e-07: error 1.84e-16 is 3.02 x the contract bound",
-   "finding": "off-maximizer"
-  },
   "refine|double|dnorm|archive|001100": {
    "ref": "TASK-214.5",
    "detail": "sd = 0.75895579562068027, refined 0.75895579511218325: error 5.08e-10 is 6.7 x the contract bound",
@@ -1036,24 +1026,9 @@
    "detail": "sd = 0.71663722445013001, refined 0.71663722394894502: error 5.01e-10 is 6.99 x the contract bound",
    "finding": "off-maximizer"
   },
-  "refine|double|gamma|archive|001977": {
-   "ref": "TASK-214.5",
-   "detail": "shape = 1.8447068376294506, refined 1.8447068397535589: error 2.12e-09 is 11.5 x the contract bound",
-   "finding": "off-maximizer"
-  },
-  "refine|double|gamma|archive|001991": {
-   "ref": "TASK-214.5",
-   "detail": "shape = 1.9052954798332815, refined 1.9052954850138386: error 5.18e-09 is 27.2 x the contract bound",
-   "finding": "off-maximizer"
-  },
   "refine|double|gompertz|archive|002793": {
    "ref": "TASK-214.5",
    "detail": "a = 0.15831685073294502, refined 0.15831684656379519: error 4.17e-09 is 263 x the contract bound",
-   "finding": "off-maximizer"
-  },
-  "refine|double|logis|archive|004689": {
-   "ref": "TASK-214.5",
-   "detail": "scale = 2.3033118422126118e-07, refined 2.3033118445715637e-07: error 2.36e-16 is 10.2 x the contract bound",
    "finding": "off-maximizer"
   },
   "refine|double|nbinom|archive|009668": {
@@ -1116,16 +1091,6 @@
    "detail": "shape2 = 2.5542122579354292, refined 2.5542122466768746: error 1.13e-08 is 44.1 x the contract bound",
    "finding": "off-maximizer"
   },
-  "refine|native|cauchy|archive|000764": {
-   "ref": "TASK-214.5",
-   "detail": "scale = 0.35981097341362184, refined 0.35981097382047972: error 4.07e-10 is 11.3 x the contract bound",
-   "finding": "off-maximizer"
-  },
-  "refine|native|cauchy|archive|010216": {
-   "ref": "TASK-214.5",
-   "detail": "scale = 6.0984921042976458e-07, refined 6.098492106136368e-07: error 1.84e-16 is 3.02 x the contract bound",
-   "finding": "off-maximizer"
-  },
   "refine|native|dnorm|archive|001100": {
    "ref": "TASK-214.5",
    "detail": "sd = 0.75895579562068027, refined 0.75895579511218325: error 5.08e-10 is 6.7 x the contract bound",
@@ -1156,24 +1121,9 @@
    "detail": "sd = 0.71663722445013001, refined 0.71663722394894502: error 5.01e-10 is 6.99 x the contract bound",
    "finding": "off-maximizer"
   },
-  "refine|native|gamma|archive|001977": {
-   "ref": "TASK-214.5",
-   "detail": "shape = 1.8447068376294506, refined 1.8447068397535589: error 2.12e-09 is 11.5 x the contract bound",
-   "finding": "off-maximizer"
-  },
-  "refine|native|gamma|archive|001991": {
-   "ref": "TASK-214.5",
-   "detail": "shape = 1.9052954798332811, refined 1.9052954850138386: error 5.18e-09 is 27.2 x the contract bound",
-   "finding": "off-maximizer"
-  },
   "refine|native|gompertz|archive|002793": {
    "ref": "TASK-214.5",
    "detail": "a = 0.15831685073294502, refined 0.15831684656379519: error 4.17e-09 is 263 x the contract bound",
-   "finding": "off-maximizer"
-  },
-  "refine|native|logis|archive|004689": {
-   "ref": "TASK-214.5",
-   "detail": "scale = 2.3033118422126118e-07, refined 2.3033118445715637e-07: error 2.36e-16 is 10.2 x the contract bound",
    "finding": "off-maximizer"
   },
   "refine|native|nbinom|archive|009668": {

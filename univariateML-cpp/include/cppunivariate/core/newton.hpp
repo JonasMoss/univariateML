@@ -8,8 +8,7 @@
 // use this rule.
 //
 // `newton_raphson_1d_abs` is the absolute-step variant some pre-existing
-// estimators rely on (e.g. gamma_mle's `|step| < tol` rule). Goldens
-// reproduce bit-for-bit only if the convergence test is preserved.
+// estimators rely on. gamma_mle now uses the relative variant.
 //
 // The relative variant rejects a NaN next iterate; the absolute variant
 // rejects a NaN step. Callers validate starts and the returned score/domain.
