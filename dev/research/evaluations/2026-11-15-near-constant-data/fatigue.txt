@@ -1,0 +1,16 @@
+data ['0x1.0a95766f46a5ep+1', '0x1.0a95766f46a5ep+1', '0x1.0a95766f46a5fp+1'] held {'mu': 0.0}
+delta = 2.13229050935e-16  eps = log(x3/x0) = 2.13229050935e-16
+coarse scan, best v = 0.0  (profile is unimodal on the grid: True )
+fine scan on v = k eps/20, k in [-100,100]: best k = 7.0
+v_hat/eps = 0.33333333333333333333 (prediction 1/3)
+alpha_hat = 1.0051713857469e-16  alpha_hat/eps = 0.471404520791032 (prediction sqrt(2)/3 = 0.471404520791032 )
+beta_hat  = 2.0826862376537029024   (beta_hat - x0)/(x3 - x0) = 0.333333333333
+loglik_hat = 104.05081912122202533
+Hessian in (log alpha, log beta): [['-6.0', '2.6930017e-49'], ['2.6930017e-49', '-2.9692107e+32']]  eigenvalues ['-2.9692107e+32', '-6.0']
+profile curvature d2/dv2 = -2.96921072566e+32  (prediction -3*(1+ ... ) approx -9/ (2*eps^2/9... see report)
+alpha_hat representable: True  beta_hat representable: True   beta_hat strictly between the doubles 0x1.0a95766f46a5ep+1 and 0x1.0a95766f46a5fp+1
+beta = round(beta_hat) = x0 : conditional best alpha = 1.23107849956e-16  loglik = 103.44262145906  loss vs sup = 0.60819766  (log(3/2)*3/2 = 0.60819766 )
+beta = x3 : conditional best alpha = 1.74100791043e-16  loglik = 102.40290068822  loss vs sup = 1.6479184  (log(3/2)*3/2 = 0.60819766 )
+fit candidate: alpha = 1.23107849956e-16 beta = x0+0 ulp  loglik exact = 103.44262145906  reported loglik_lower/upper 103.44262145905978
+candidate alpha / alpha_hat = 1.22474487139
+loglik at (alpha_hat, beta = x0): 103.300819121222  loss 0.75
