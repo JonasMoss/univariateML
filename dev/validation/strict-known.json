@@ -1,5 +1,5 @@
 {
- "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
+ "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, cert-replay.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
  "known": {
   "mode|both|bhatt|archive|000364": {
    "ref": "TASK-214.13",
@@ -64,6 +64,406 @@
   "nesting|native|nhyper|archive|005175": {
    "ref": "TASK-214.5",
    "detail": "case 005230 holds more and is higher by 9.614; this fit is uncertified"
+  },
+  "phenomenon:near-constant-tie3|double|burr|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:evaluation, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|emg|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:evaluation, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|fpareto|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:evaluation, its preimage tie3 in E",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|gengamma|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:no-convergence, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|huber|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:no-convergence, its preimage tie3 in E",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|invburr|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:evaluation, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|lst|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:evaluation, its preimage tie3 in N:unbounded",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|pareto4|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:evaluation, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|sn|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:no-convergence, its preimage tie3 in Lm",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|std|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:evaluation, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|trgamma|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:evaluation, its preimage tie3 in Lm",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|double|triang|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:evaluation, its preimage tie3 in E",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|burr|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:evaluation, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|emg|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:evaluation, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|fpareto|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:evaluation, its preimage tie3 in E",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|gengamma|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:no-convergence, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|huber|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:no-convergence, its preimage tie3 in E",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|invburr|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:evaluation, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|lst|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:evaluation, its preimage tie3 in N:unbounded",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|pareto4|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:evaluation, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|sn|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:no-convergence, its preimage tie3 in Lm",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|std|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:evaluation, its preimage tie3 in L",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|trgamma|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "power-scale-equivariant: near-constant ends in F:evaluation, its preimage tie3 in Lm",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant-tie3|native|triang|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "affine-equivariant: near-constant ends in F:evaluation, its preimage tie3 in E",
+   "finding": "near-constant-differs-from-preimage"
+  },
+  "phenomenon:near-constant|double|betapr|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-numerical-failure-unsettled"
+  },
+  "phenomenon:near-constant|double|burr|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|emg|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|expweibull|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|fatigue|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-numerical-failure-unsettled"
+  },
+  "phenomenon:near-constant|double|fpareto|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|genbeta|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-numerical-failure-unsettled"
+  },
+  "phenomenon:near-constant|double|gengamma|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|gompertz|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
+   "finding": "near-constant-unrepresentable-maximizer"
+  },
+  "phenomenon:near-constant|double|huber|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|invburr|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|invparalogis|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-numerical-failure-unsettled"
+  },
+  "phenomenon:near-constant|double|kumar|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
+   "finding": "near-constant-unrepresentable-maximizer"
+  },
+  "phenomenon:near-constant|double|lst|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|paralogis|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-numerical-failure-unsettled"
+  },
+  "phenomenon:near-constant|double|pareto4|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|sgomp|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
+   "finding": "near-constant-unrepresentable-maximizer"
+  },
+  "phenomenon:near-constant|double|sn|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|std|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|trgamma|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|double|triang|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|betapr|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-numerical-failure-unsettled"
+  },
+  "phenomenon:near-constant|native|burr|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|emg|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|expweibull|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|fatigue|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-numerical-failure-unsettled"
+  },
+  "phenomenon:near-constant|native|fpareto|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|genbeta|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-numerical-failure-unsettled"
+  },
+  "phenomenon:near-constant|native|gengamma|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|gompertz|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
+   "finding": "near-constant-unrepresentable-maximizer"
+  },
+  "phenomenon:near-constant|native|huber|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|invburr|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|invparalogis|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-numerical-failure-unsettled"
+  },
+  "phenomenon:near-constant|native|kumar|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
+   "finding": "near-constant-unrepresentable-maximizer"
+  },
+  "phenomenon:near-constant|native|lst|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|paralogis|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-numerical-failure-unsettled"
+  },
+  "phenomenon:near-constant|native|pareto4|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|sgomp|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
+   "finding": "near-constant-unrepresentable-maximizer"
+  },
+  "phenomenon:near-constant|native|sn|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:no-convergence",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|std|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|trgamma|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:near-constant|native|triang|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "near-constant data end in F:evaluation",
+   "finding": "near-constant-equivariant-numerical-failure"
+  },
+  "phenomenon:tie-collapse|double|lst|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "collapse at any, n = 3, k = 2: e* = -1 (attained) requires N:unbounded; ends in F:evaluation",
+   "finding": "collapse-not-reported"
+  },
+  "phenomenon:tie-collapse|double|tlambda|class|ties": {
+   "ref": "TASK-214.17",
+   "detail": "collapse at any, n = 6, k = 4: e* = -2 (attained) requires N:unbounded; ends in F:evaluation",
+   "finding": "tlambda-collapse-and-two-point-evaluation-failure"
+  },
+  "phenomenon:tie-collapse|native|lst|class|near-constant": {
+   "ref": "TASK-214.24",
+   "detail": "collapse at any, n = 3, k = 2: e* = -1 (attained) requires N:unbounded; ends in F:evaluation",
+   "finding": "collapse-not-reported"
+  },
+  "phenomenon:tie-collapse|native|tlambda|class|ties": {
+   "ref": "TASK-214.17",
+   "detail": "collapse at any, n = 6, k = 4: e* = -2 (attained) requires N:unbounded; ends in F:evaluation",
+   "finding": "tlambda-collapse-and-two-point-evaluation-failure"
+  },
+  "phenomenon:two-point|double|expweibull|class|two": {
+   "ref": "TASK-214.24",
+   "detail": "two observations are below the declared min_n 3: ends in F:no-convergence, not F:unsupported",
+   "finding": "two-point-undecided-below-min-n"
+  },
+  "phenomenon:two-point|double|gengamma|class|two": {
+   "ref": "TASK-214.24",
+   "detail": "two observations are below the declared min_n 3: ends in F:no-convergence, not F:unsupported",
+   "finding": "two-point-undecided-below-min-n"
+  },
+  "phenomenon:two-point|double|sstd|class|two": {
+   "ref": "TASK-214.24",
+   "detail": "two observations are below the declared min_n 3: ends in Lm, not F:unsupported",
+   "finding": "two-point-undecided-below-min-n"
+  },
+  "phenomenon:two-point|double|st|class|two": {
+   "ref": "TASK-214.24",
+   "detail": "two observations are below the declared min_n 3: ends in F:no-convergence, not F:unsupported",
+   "finding": "two-point-undecided-below-min-n"
+  },
+  "phenomenon:two-point|double|tlambda|class|two": {
+   "ref": "TASK-214.17",
+   "detail": "two observations: declared E, ends in F:evaluation",
+   "finding": "tlambda-collapse-and-two-point-evaluation-failure"
+  },
+  "phenomenon:two-point|native|expweibull|class|two": {
+   "ref": "TASK-214.24",
+   "detail": "two observations are below the declared min_n 3: ends in F:no-convergence, not F:unsupported",
+   "finding": "two-point-undecided-below-min-n"
+  },
+  "phenomenon:two-point|native|gengamma|class|two": {
+   "ref": "TASK-214.24",
+   "detail": "two observations are below the declared min_n 3: ends in F:no-convergence, not F:unsupported",
+   "finding": "two-point-undecided-below-min-n"
+  },
+  "phenomenon:two-point|native|sstd|class|two": {
+   "ref": "TASK-214.24",
+   "detail": "two observations are below the declared min_n 3: ends in Lm, not F:unsupported",
+   "finding": "two-point-undecided-below-min-n"
+  },
+  "phenomenon:two-point|native|st|class|two": {
+   "ref": "TASK-214.24",
+   "detail": "two observations are below the declared min_n 3: ends in F:no-convergence, not F:unsupported",
+   "finding": "two-point-undecided-below-min-n"
+  },
+  "phenomenon:two-point|native|tlambda|class|two": {
+   "ref": "TASK-214.17",
+   "detail": "two observations: declared E, ends in F:evaluation",
+   "finding": "tlambda-collapse-and-two-point-evaluation-failure"
   },
   "refine|double|bhatt|archive|000363": {
    "ref": "TASK-214.5",

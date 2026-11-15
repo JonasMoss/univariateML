@@ -89,6 +89,14 @@ existence:
     With location, scale and shape free, a finite MLE need not exist: the supremum can lie at a normal or Laplace limit, and constant data permit unbounded scale collapse. No general uniqueness theorem is asserted. With shape held, a finite maximum is attained for nonconstant data, including ties. For constant data it is attained when scale is held or location is held away from the observation. With shape free, held location and scale are respected in the eligible limit comparisons; all supported subsets use global likelihood bounds or stop with an unresolved comparison or work budget.
   reason: >-
     For fixed shape, write inverse scale $\eta=1/\sigma$ and scaled location $\nu=\mu/\sigma$. The log-likelihood is $n\log\eta-\sum_i\rho_\epsilon(\eta x_i-\nu)$ plus a constant, with convex Huber loss $\rho_\epsilon$. It is concave, but linear tails can give an interval of maximizing locations. Coercivity gives attainment except for the stated zero-residual collapse. Concavity in shape of the loss gives endpoint bounds for the profiled search; both limit likelihoods are retained.
+  equivariance:
+    group: affine
+    map: {mu: "A + B*mu", sigma: "B*sigma"}
+    evidence: >-
+      The density has the form $\sigma^{-1} g((x-\mu)/\sigma)$ with $g$ free
+      of location and scale. dev/validation/equivariance.py shows the density
+      identity symbolically (SymPy) and at 24 seeded points on the dossier
+      density (40 digits) and dpqr.hpp (binary64).
 ---
 
 The Huber density models symmetric measurements with a Gaussian core and exponential tails. Location $\mu$ sets the centre, scale $\sigma$ sets the residual unit, and shape $\epsilon$ sets the transition from quadratic to linear log-density loss.

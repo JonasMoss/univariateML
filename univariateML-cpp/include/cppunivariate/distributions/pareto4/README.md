@@ -142,6 +142,17 @@ existence:
     With $\gamma$ held, the transformation $(x_i-\mu)^\gamma$ gives Lomax.
     The single-coordinate scores decrease strictly in suitable coordinates.
     The separate Burr certificate certifies accepted joint regular fits.
+  equivariance:
+    group: power-scale
+    map: {shape2: "shape2/B", scale: "A*scale**B"}
+    held: {min: 0}
+    evidence: >-
+      The density depends on $x$ (with min held at 0) only through
+      $(x/\mathrm{scale})^{\mathrm{shape2}}$ and the factor $1/x$.
+      dev/validation/equivariance.py checks the density identity at 24 seeded
+      points on the dossier density (40 digits, largest relative difference
+      below $10^{-39}$) and dpqr.hpp (binary64); SymPy did not simplify it
+      within its guard.
 ---
 
 Pareto type IV models sizes above a threshold $\mu$ with Burr-distributed excesses. The scale $\sigma$ sets the size unit. The shapes $\alpha$ and $\gamma$ give upper-tail exponent $\alpha\gamma$ and lower-end power $\gamma$.

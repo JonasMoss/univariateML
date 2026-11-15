@@ -1,0 +1,337 @@
+[
+ {
+  "family": "burr",
+  "group": "power-scale",
+  "map": {
+   "shape2": "shape2/B",
+   "scale": "A*scale**B"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 1.7e-41 at 24 points (40 digits)",
+  "symbolic": "not shown within the guard",
+  "cpp": "24 of 24 points agree (max 1.8e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "cauchy",
+  "group": "affine",
+  "map": {
+   "location": "A + B*location",
+   "scale": "B*scale"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 2.2e-41 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 1.2e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "emg",
+  "group": "affine",
+  "map": {
+   "mu": "A + B*mu",
+   "sigma": "B*sigma",
+   "lambda": "lambda/B"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 2.3e-41 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 1.3e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "expweibull",
+  "group": "power-scale",
+  "map": {
+   "scale": "A*scale**B",
+   "shape": "shape/B"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 1.6e-40 at 24 points (40 digits)",
+  "symbolic": "not shown within the guard",
+  "cpp": "24 of 24 points agree (max 3.6e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "fpareto",
+  "group": "power-scale",
+  "map": {
+   "shape2": "shape2/B",
+   "scale": "A*scale**B"
+  },
+  "held": {
+   "min": 0.0
+  },
+  "points": 24,
+  "dossier": "max relative difference 2.9e-41 at 24 points (40 digits)",
+  "symbolic": "not shown within the guard",
+  "cpp": "24 of 24 points agree (max 1.5e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "frechet",
+  "group": "affine",
+  "map": {
+   "mu": "A + B*mu",
+   "sigma": "B*sigma"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 2.1e-41 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 5.5e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "gb2",
+  "group": "power-scale",
+  "map": {
+   "shape2": "shape2/B",
+   "scale": "A*scale**B"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 2.9e-41 at 24 points (40 digits)",
+  "symbolic": "not shown within the guard",
+  "cpp": "24 of 24 points agree (max 2.9e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "gengamma",
+  "group": "power-scale",
+  "map": {
+   "mu": "log(A) + B*mu",
+   "sigma": "B*sigma"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 1.6e-40 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 2.9e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "gev",
+  "group": "affine",
+  "map": {
+   "mu": "A + B*mu",
+   "sigma": "B*sigma"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 6.5e-41 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 3.5e-15)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "huber",
+  "group": "affine",
+  "map": {
+   "mu": "A + B*mu",
+   "sigma": "B*sigma"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 2.1e-41 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 1.5e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "invburr",
+  "group": "power-scale",
+  "map": {
+   "shape2": "shape2/B",
+   "scale": "A*scale**B"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 4.3e-41 at 24 points (40 digits)",
+  "symbolic": "not shown within the guard",
+  "cpp": "24 of 24 points agree (max 1.8e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "invtrgamma",
+  "group": "power-scale",
+  "map": {
+   "shape2": "shape2/B",
+   "scale": "A*scale**B"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 3.3e-41 at 24 points (40 digits)",
+  "symbolic": "not shown within the guard",
+  "cpp": "24 of 24 points agree (max 3.6e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "lst",
+  "group": "affine",
+  "map": {
+   "mu": "A + B*mu",
+   "sigma": "B*sigma"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 1.7e-41 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 2.5e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "pareto4",
+  "group": "power-scale",
+  "map": {
+   "shape2": "shape2/B",
+   "scale": "A*scale**B"
+  },
+  "held": {
+   "min": 0.0
+  },
+  "points": 24,
+  "dossier": "max relative difference 4e-41 at 24 points (40 digits)",
+  "symbolic": "not shown within the guard",
+  "cpp": "24 of 24 points agree (max 1.8e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "slash",
+  "group": "affine",
+  "map": {
+   "mu": "A + B*mu",
+   "sigma": "B*sigma"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 1.9e-41 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 1.4e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "sn",
+  "group": "affine",
+  "map": {
+   "xi": "A + B*xi",
+   "omega": "B*omega"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 2.2e-41 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 1.6e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "sstd",
+  "group": "affine",
+  "map": {
+   "mean": "A + B*mean",
+   "sd": "B*sd"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 2.3e-41 at 24 points (40 digits)",
+  "symbolic": "not shown within the guard",
+  "cpp": "24 of 24 points agree (max 1.4e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "st",
+  "group": "affine",
+  "map": {
+   "xi": "A + B*xi",
+   "omega": "B*omega"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 1.8e-41 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 2e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "std",
+  "group": "affine",
+  "map": {
+   "mean": "A + B*mean",
+   "sd": "B*sd"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 1.7e-41 at 24 points (40 digits)",
+  "symbolic": "shown",
+  "cpp": "24 of 24 points agree (max 1.9e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "tlambda",
+  "group": "affine",
+  "map": {
+   "mu": "A + B*mu",
+   "sigma": "B*sigma"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "implicit density (u = F(x)): not evaluated",
+  "cpp": "24 of 24 points agree (max 1.6e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "trgamma",
+  "group": "power-scale",
+  "map": {
+   "shape2": "shape2/B",
+   "scale": "A*scale**B"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 2.3e-41 at 24 points (40 digits)",
+  "symbolic": "not shown within the guard",
+  "cpp": "24 of 24 points agree (max 2e-16)",
+  "ok": true,
+  "problems": []
+ },
+ {
+  "family": "triang",
+  "group": "affine",
+  "map": {
+   "a": "A + B*a",
+   "b": "A + B*b",
+   "c": "A + B*c"
+  },
+  "held": {},
+  "points": 24,
+  "dossier": "max relative difference 1.9e-41 at 24 points (40 digits)",
+  "symbolic": "not shown within the guard",
+  "cpp": "24 of 24 points agree (max 6.8e-16)",
+  "ok": true,
+  "problems": []
+ }
+]

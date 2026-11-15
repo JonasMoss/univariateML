@@ -155,6 +155,16 @@ existence:
     endpoints yield the stated existence and power conditions.
     The single-coordinate scores are strictly decreasing in suitable coordinates.
     The all-free search additionally certifies each accepted outcome through the reciprocal Burr certificate; a universal joint sample criterion remains unknown.
+  equivariance:
+    group: power-scale
+    map: {shape2: "shape2/B", scale: "A*scale**B"}
+    evidence: >-
+      The density depends on $x$ only through
+      $(x/\mathrm{scale})^{\mathrm{shape2}}$ and the factor $1/x$.
+      dev/validation/equivariance.py checks the density identity at 24 seeded
+      points on the dossier density (40 digits, largest relative difference
+      below $10^{-39}$) and dpqr.hpp (binary64); SymPy did not simplify it
+      within its guard.
 ---
 
 The inverse Burr distribution is the distribution of the reciprocal of a Burr type XII variable. It models positive size and loss data.

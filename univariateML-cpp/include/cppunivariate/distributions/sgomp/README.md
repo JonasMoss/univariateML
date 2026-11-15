@@ -85,6 +85,17 @@ existence:
     Bounded rate then bounds the maximizing shape. These bounds prove
     attainment but do not prove uniqueness. Profile subdivision certifies
     completeness conditional on the computed interval bounds.
+  strict_exceptions:
+  - class: near-constant
+    outcome: failure(evaluation)
+    argument: >-
+      Numerical: this dossier proves existence, not uniqueness. The 80-digit
+      rate profile (the shape is unique for each held rate, by this dossier)
+      over 55 decades of the rate, refined at its peak, puts the maximum at $b
+      = 1.438 \times 10^{16}$ with $\eta \approx 10^{1.08 \times 10^{16}}$,
+      beyond binary64; no other grid region comes within 12 log-likelihood
+      units
+      (dev/research/evaluations/2026-11-14-strict-rules-data/near_constant_maximizers.py).
 ---
 
 The shifted Gompertz distribution models nonnegative waiting times, including diffusion and adoption times. The coefficient $b$ sets the time scale through a rate, and $\eta$ changes the shape; there is no location coefficient.

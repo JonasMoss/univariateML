@@ -88,6 +88,22 @@ existence:
     confined to the sample range. For held location the scale score is
     strictly monotone through its root when $2k<n$. Symmetric separated
     observations give multiple location maxima when scale is held.
+  equivariance:
+    group: affine
+    map: {mu: "A + B*mu", sigma: "B*sigma"}
+    evidence: >-
+      The density has the form $\sigma^{-1} g((x-\mu)/\sigma)$ with $g$ free
+      of location and scale. dev/validation/equivariance.py shows the density
+      identity symbolically (SymPy) and at 24 seeded points on the dossier
+      density (40 digits) and dpqr.hpp (binary64).
+  collapse:
+    at: any
+    exponent: "n - 2*k"
+    infimum: "n - 2*k"
+    attained: true
+    evidence: >-
+      Proved in this dossier (existence reason): collapse at a value of
+      multiplicity $k$ has order $\sigma^{n-2k}$.
 ---
 
 The slash distribution is a normal variate divided by an independent uniform variate, with location $\mu$ and positive scale $\sigma$. The random denominator

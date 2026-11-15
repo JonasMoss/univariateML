@@ -11,7 +11,9 @@ Inputs, all deterministic:
   class     magnitude and tie classes derived from the golden sample, default
             fit only: subnormal, tiny, huge, near-constant, wide spread,
             large offset, ties, half ties, one, two and constant samples, and
-            invalid ones (empty, negative, zeros, NaN, infinite)
+            invalid ones (empty, negative, zeros, NaN, infinite); tie3
+            ([q50, q50, q75], the well-scaled preimage of near-constant under
+            an affine or power-scale map) comes last
   resample  seeded draws with replacement from the golden sample (n = 3, 7)
 
 Every case goes through the binding-neutral adapter umvl_binding::fit_<id> with
@@ -19,7 +21,7 @@ its default controls, so a record is what R and JS would see: estimates, log
 likelihood, flags, or the stop with its kind, model, bounds and message.
 Doubles are stored as C hexadecimal floats; any NaN is "nan".
 
-  fit-snapshot.py --output build/snapshots/base [--family a,b] [--jobs N]
+  fit-snapshot.py --output build/snapshots/base [--family a,b] [--classes c,d] [--jobs N]
   fit-snapshot.py --diff build/snapshots/base build/snapshots/new [--ignore message]
 
 Run builds and fits through /tmp/umvl-cpu/run (or run4 with --jobs 4). A case
@@ -67,7 +69,17 @@ def domain(meta, data):
     return 'positive' if min(data) > 0 and str(s['lower']) != '-inf' else 'real'
 
 def classes(meta, golden):
-    """Deterministic hard samples from fixed order statistics of the golden."""
+    """Deterministic hard samples from fixed order statistics of the golden.
+
+    Classes added later are appended after the original ones, so that no
+    earlier case changes (keys, data, order)."""
+    out = original_classes(meta, golden)
+    data = sorted(golden['data']); n = len(data)
+    q50, q75 = (data[int(f*(n-1))] for f in (.5, .75))
+    out['tie3'] = [q50, q50, q75]
+    return out
+
+def original_classes(meta, golden):
     data = sorted(golden['data']); n = len(data)
     q10, q25, q50, q60, q75, q90 = (data[int(f*(n-1))] for f in (.1, .25, .5, .6, .75, .9))
     base = [q10, q25, q50, q60, q75, q90]
@@ -261,12 +273,14 @@ class Probe:
 
 def run_family(ident, args, archive, work, boost, tag):
     part = args.output/(ident+'.jsonl')
-    if part.exists() and part.read_text().startswith(tag): return ident, 'kept'
+    if part.exists() and part.read_text().split('\n', 1)[0] == tag: return ident, 'kept'
     meta, _ = read(ident)
     names = [p['name'] for p in meta['params']]
     probe = Probe(build(ident, work, args.no_long_double, boost))
     rows = []
+    only = set(args.classes.split(',')) if args.classes else None
     for case in cases(ident, archive):
+        if only is not None and (case['source'] != 'class' or case['case'] not in only): continue
         text = line(case, names)
         result = probe.ask(text, args.cpu_limit)
         if isinstance(result, str):
@@ -301,6 +315,7 @@ def snapshot(args):
     work = args.output/'build'; work.mkdir(exist_ok=True)
     provenance = fingerprint(args)
     tag = '# '+provenance['source_sha256'][:16]+(' double' if args.no_long_double else ' native')
+    if args.classes: tag += ' classes='+','.join(sorted(args.classes.split(',')))
     archive = {}
     for c in json.loads(gzip.decompress(ARCHIVE.read_bytes())):
         archive.setdefault(c['family'], []).append(c)
@@ -310,11 +325,12 @@ def snapshot(args):
         result = run_family(ident, args, archive, work, boost, tag)
         with lock: print('%-14s %s  (%.0f s)' % (*result, time.time()-started), flush=True)
     with ThreadPoolExecutor(args.jobs) as pool: list(pool.map(one, selected))
-    if not args.family:   # a full run also writes the merged, sorted snapshot
+    if not args.family and not args.classes:   # a full run also writes the merged, sorted snapshot
         with gzip.open(args.output/'snapshot.jsonl.gz', 'wt') as dest:
             for ident in selected:
                 dest.write((args.output/(ident+'.jsonl')).read_text().split('\n', 1)[1])
-    (args.output/'provenance.json').write_text(json.dumps(dict(provenance, families=selected), indent=2)+'\n')
+    (args.output/'provenance.json').write_text(json.dumps(dict(provenance, families=selected,
+        **({'classes': sorted(args.classes.split(','))} if args.classes else {})), indent=2)+'\n')
 
 def load(folder):
     rows = {}
@@ -409,6 +425,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--output', type=Path, help='snapshot directory')
     ap.add_argument('--family', help='comma-separated family ids (default: all); also restricts --diff')
+    ap.add_argument('--classes', help='comma-separated class labels: record only these class cases (e.g. tie3)')
     ap.add_argument('--jobs', type=int, default=1, help='families fitted in parallel (one core each)')
     ap.add_argument('--cpu-limit', type=float, default=300, help='CPU seconds per case before "timeout"')
     ap.add_argument('--no-long-double', action='store_true', help='double-only intermediates')

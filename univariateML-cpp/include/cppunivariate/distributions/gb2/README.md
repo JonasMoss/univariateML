@@ -125,6 +125,16 @@ existence:
     beta fitting. These arguments do not establish uniqueness of the outer
     beta-shape profile. The limiting paths below are proved, but their
     numerical likelihood comparisons do not exhaust all possible maxima.
+  equivariance:
+    group: power-scale
+    map: {shape2: "shape2/B", scale: "A*scale**B"}
+    evidence: >-
+      The density depends on $x$ only through
+      $(x/\mathrm{scale})^{\mathrm{shape2}}$ and the factor $1/x$.
+      dev/validation/equivariance.py checks the density identity at 24 seeded
+      points on the dossier density (40 digits, largest relative difference
+      below $10^{-39}$) and dpqr.hpp (binary64); SymPy did not simplify it
+      within its guard.
 ---
 
 The transformed beta distribution models positive observations with two power tails.

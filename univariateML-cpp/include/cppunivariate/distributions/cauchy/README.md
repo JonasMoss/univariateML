@@ -123,6 +123,37 @@ existence:
     At least three distinct observations therefore make the sum strictly
     convex along every such connecting path, excluding two joint maxima.
     The strict sub-half-mass condition requires at least three distinct values.
+  equivariance:
+    group: affine
+    map: {location: "A + B*location", scale: "B*scale"}
+    evidence: >-
+      The density has the form $\sigma^{-1} g((x-\mu)/\sigma)$ with $g$ free
+      of location and scale. dev/validation/equivariance.py shows the density
+      identity symbolically (SymPy) and at 24 seeded points on the dossier
+      density (40 digits) and dpqr.hpp (binary64).
+  collapse:
+    at: any
+    exponent: "n - 2*k"
+    infimum: "n - 2*k"
+    attained: true
+    evidence: >-
+      Proved in this dossier (existence reason): collapse at an atom of
+      multiplicity $k$ has likelihood proportional to $\sigma^{n-2k}$.
+  two_point:
+    outcome: estimate
+    unique: false
+    evidence: >-
+      Proved in this dossier (existence statement and reason): two distinct
+      values occurring equally often attain a maximum, with a continuum of
+      maximizing pairs.
+  strict_exceptions:
+  - class: half-ties
+    outcome: nonexistence(unattained)
+    argument: >-
+      This dossier (existence reason): at an atom of multiplicity exactly
+      $n/2$ with the other observations not all equal, the likelihood is at
+      most $\pi^{-n}\prod_{x_i \ne a}(x_i - a)^{-2}$, a bound approached only
+      at collapse; the supremum is finite and not attained.
 ---
 
 The Cauchy distribution models symmetric errors with heavy tails. Its location $\mu$ is the centre of symmetry, and its positive scale $\sigma$ sets the width. Its tails have neither a finite mean nor a finite variance.

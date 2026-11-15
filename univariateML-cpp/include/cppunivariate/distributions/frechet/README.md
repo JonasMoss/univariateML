@@ -150,6 +150,31 @@ existence:
     The all-free profile cover compares every surviving finite maximum with
     the Gumbel face. Held-scale joint fits instead use a constrained
     location-root rectangle and an infinite-shape likelihood envelope.
+  equivariance:
+    group: affine
+    map: {mu: "A + B*mu", sigma: "B*sigma"}
+    evidence: >-
+      The density has the form $\sigma^{-1} g((x-\mu)/\sigma)$ with $g$ free
+      of location and scale. dev/validation/equivariance.py shows the density
+      identity symbolically (SymPy) and at 24 seeded points on the dossier
+      density (40 digits) and dpqr.hpp (binary64).
+  collapse:
+    at: minimum
+    exponent: "lambda*(n - k) - k"
+    infimum: "n - 2*k"
+    attained: true
+    evidence: >-
+      This dossier (existence reason and Details): $\mu = m - \varepsilon$,
+      $\sigma = c\varepsilon$ gives likelihood of order
+      $\varepsilon^{\lambda(n-k)-k}$ at the minimum $m$ of multiplicity $k$;
+      the fit domain $\lambda \ge 1$ puts its infimum at the attained member
+      $\lambda = 1$.
+  two_point:
+    outcome: nonexistence(unattained)
+    evidence: >-
+      Proved in this dossier (Details, half-tie pair bound): two distinct
+      observations are an exact half-minimum tie, whose finite supremum $n\log
+      2 - n - 2\sum_{x_i > m}\log(x_i - m)$ no finite fit attains.
 ---
 
 The Fréchet distribution models extreme maxima with heavy right tails. The threshold $\mu$ sets the lower endpoint, $\sigma$ sets the scale above it, and $\lambda$ controls the tail decay.

@@ -526,7 +526,9 @@ and magnitude and tie classes built from fixed order statistics of the golden
 sample (subnormal, tiny, huge, near-constant, wide spread, large offset, ties,
 half ties, one, two and constant observations, and invalid samples: empty,
 negative, zeros, NaN and infinite; integer and unit-interval families get
-their own variants). The classes use the default fit only; hold
+their own variants). `tie3` (`[q50, q50, q75]`, the well-scaled preimage of
+near-constant under an affine or power-scale map) was appended on 2026-11-14
+after every older class, so no older case changed. The classes use the default fit only; hold
 subsets are covered by the archive. A class can violate a family's support or
 a held design value, and the resulting stop is recorded like any other.
 
@@ -543,7 +545,8 @@ python3 dev/validation/fit-snapshot.py --diff build/snapshots/base build/snapsho
 ```
 
 `--diff` and `--outcomes` take a snapshot directory or a stored
-`snapshot.jsonl.gz`. `--family a,b` restricts the run, `--no-long-double` builds the double-only
+`snapshot.jsonl.gz`. `--family a,b` restricts the run, `--classes c,d` records only
+those class cases (for example a newly added class), `--no-long-double` builds the double-only
 variant, and `--ignore message` leaves reworded messages out of a comparison.
 A case that uses more than `--cpu-limit` CPU seconds (default 300) is recorded
 as `timeout`; this is an audit guard measured in CPU time, not a fitter
@@ -622,16 +625,33 @@ recorded input hash.
   (`unavailable:*`) are listed as not checked.
 - `fit-consistency.py` (`phenomenon:<rule>`): the outcome kind and reason of
   the degenerate and invalid classes (empty, NaN, infinite, negative, zeros,
-  one, two, constant, ties, near-constant), checked against rules that hold for
-  every family: an empty or non-finite sample ends in `failure(invalid-input)`;
-  `one` and `constant` (the same value once and four times, whose likelihoods
-  are powers of each other) end in the same kind and reason; observations with
-  a finite C++ log likelihood at the golden coefficients never end in
-  `invalid-input` or `invalid-argument`; observations beyond a support bound
-  fixed by the held values end in `invalid-input`; constant data with free
-  location and scale end in `nonexistence(unbounded)`; constant data with a
-  free scale or rate never end in a numerical failure. `--table FILE` writes
-  the outcome table.
+  one, two, constant, ties, half-ties, tie3, near-constant), checked against
+  rules that hold for every family: an empty or non-finite sample ends in
+  `failure(invalid-input)`; `one` and `constant` (the same value once and four
+  times, whose likelihoods are powers of each other) end in the same kind and
+  reason; observations with a finite C++ log likelihood at the golden
+  coefficients never end in `invalid-input` or `invalid-argument`, nor in
+  `unsupported` unless the sample is below a declared `existence.min_n`;
+  observations beyond a support bound fixed by the held values, or on such a
+  closed bound with zero density for every coefficient vector (a declared
+  `endpoint_log_density` of `-Inf`, or else the SymPy limit of the dossier's
+  `log_density`), end in `invalid-input`; constant data with free location and scale end in
+  `nonexistence(unbounded)`; constant data with a free scale or rate never end
+  in a numerical failure. The rules adopted on 2026-11-14
+  ([rule questions](../research/2026-11-14-strict-rule-questions.md)) read the
+  dossiers' strict-layer keys under `existence` (validated by
+  `existence_keys.py`): near-constant data never end in `no-convergence`,
+  `evaluation` or a refusal, and in an equivariant family end like their
+  well-scaled preimage `tie3` (or in `conditioning`); two observations end in
+  the declared `two_point` outcome, in `unsupported` below a declared `min_n`,
+  and never in a numerical failure when three or more coefficients are free;
+  ties follow the declared collapse exponent (negative: unbounded, positive:
+  not unbounded), and free location and scale without a declared exponent
+  never give `nonexistence(unbounded)` on nonconstant data; a declared
+  `strict_exceptions` entry fixes the outcome of its class. The declared
+  equivariance maps are checked against the C++ density on every run;
+  `equivariance.py` also checks them symbolically and at 35 digits on the
+  dossier density. `--table FILE` writes the outcome table.
 - `fit-refine.py` (`refine`): the accuracy contract. For every golden sample
   and a seeded sample of archive cases (at most ten all-free and ten
   one-held per family and route, drawn from the cases that are estimates in

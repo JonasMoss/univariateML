@@ -60,6 +60,23 @@ existence:
   uniqueness: unknown
   statement: 'For nonconstant samples, holding exponent gives a unique finite fit and holding shape gives a finite maximum; with scale held and both shapes free a finite maximum exists precisely when an observation exceeds scale. Constant-data concentration depends on the free coordinates. Free-fit boundary candidates are power and inverse Weibull; their global comparison remains open.'
   reason: 'Strict concavity in affine log-data coordinates with exponent held; joint boundary exhaustion and the held-endpoint envelope in the linked analyses.'
+  equivariance:
+    group: power-scale
+    map: {scale: "A*scale**B", shape: "shape/B"}
+    evidence: >-
+      The density depends on $x$ only through
+      $(x/\mathrm{scale})^{\mathrm{shape}}$ and the factor $1/x$.
+      dev/validation/equivariance.py checks the density identity at 24 seeded
+      points on the dossier density (40 digits, largest relative difference
+      below $10^{-39}$) and dpqr.hpp (binary64); SymPy did not simplify it
+      within its guard.
+  min_n:
+    value: 3
+    reason: >-
+      Two observations have one outcome for every sample (equivariance), and
+      it has not been decided; until it is recorded under two_point, samples
+      of two are outside the implemented range (strict-rule questions of
+      2026-11-14, Q3).
 examples: |
   set.seed(1)
   x <- rml(200, mlexpweibull())
