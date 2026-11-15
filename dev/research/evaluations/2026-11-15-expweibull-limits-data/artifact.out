@@ -1,0 +1,7 @@
+binary64: t = [36.34539749 36.34539749 40.01495021]  sum h = -2.220446049250313e-16  c_hat = -n/sum h = 1.3510798882111488e+16
+binary64 ll at the probe point: 0.42163751302430796
+dps 50 : profile ll at (a,b) = -0.790561952351  c_hat = 9.0198057e+15   (float c was 1.351e16)
+        ll at the stored float c = -1.07207309781
+dps 200 : profile ll at (a,b) = -0.790561952351  c_hat = 9.0198057e+15   (float c was 1.351e16)
+        ll at the stored float c = -1.07207309781
+P = -0.93397918514  I = -0.705045883693

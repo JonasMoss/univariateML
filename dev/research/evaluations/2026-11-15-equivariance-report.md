@@ -470,3 +470,9 @@ from the repository root, `python3 -I <script>`:
 | `causes_loc.py` | `causes_loc.json`, `.out` | emg $z$ and allowance; sn lattice losses |
 | `causes_huber.py` | `causes_huber.json`, `.out` | huber nuisance bound at public coefficients |
 | `expweibull_probe.py` | `expweibull_probe.out` | likelihood scan of the `tie3` problem |
+
+**Correction (2026-11-15).** The expweibull "likelihood keeps rising to 0.42" above is binary64
+cancellation in the probe (the sum of $\log(1-e^{-t})$ is one ulp at its best point); at 50 and
+200 digits the profile there is $-0.7906$, and the tie3 supremum is the inverse-Weibull face
+($-0.705046$), not attained. See the
+[expweibull limits report](2026-11-15-expweibull-limits-report.md).

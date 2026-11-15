@@ -1,0 +1,19 @@
+base6         n=6 power face            P=-8.1584 I=-9.6771 A=2.512 | IW(shape=2.31299 scale=2.0427084) PW(end=4.4742302 shape=1.78074) | best rel=-3.02e-04 @lb=12 | snap=numerical
+two           n=2 power face            P=-1.5926 I=-2.4153 A=0.000 | IW(shape=3.71277 scale=2.1515561) PW(end=3.4873637 shape=3.0948) | best rel=-1.43e-04 @lb=12 | snap=numerical
+ties          n=6 finite maximum        P=-4.1547 I=-5.2925 A=3.383 | IW(shape=4.83171 scale=2.3865789) PW(end=3.4873637 shape=3.58992) | best rel=6.54e-02 @lb=0 | snap=ok
+half-ties     n=6 power face            P=-5.6936 I=-8.0247 A=3.067 | IW(shape=2.71356 scale=1.9248023) PW(end=3.4873637 shape=2.43327) | best rel=-3.29e-04 @lb=12 | snap=numerical
+near-constant n=3 inverse Weibull face  P=104.27 I=104.5 A=-1.596 | IW(shape=1.94037e+16 scale=2.6989726) PW(end=2.6989726 shape=9.11632e+15) | best rel=-3.56e-04 @lb=-8 | snap=numerical
+subnormal     n=3 power face            P=2230.6 I=2229.5 A=0.756 | IW(shape=2.35176 scale=7.1173813e-324) PW(end=1.4821969e-323 shape=1.99458) | best rel=-1.89e-04 @lb=12 | snap=numerical
+tiny          n=6 power face            P=4145.5 I=4144 A=2.512 | IW(shape=2.31299 scale=4.5654969e-301) PW(end=1.0e-300 shape=1.78074) | best rel=-3.02e-04 @lb=12 | snap=numerical
+huge          n=6 power face            P=-4257.5 I=-4259 A=2.512 | IW(shape=2.31299 scale=7.7613448e+307) PW(end=1.7e+308 shape=1.78074) | best rel=-3.02e-04 @lb=12 | snap=numerical
+offset        n=6 finite maximum        P=-9.2131 I=-9.0773 A=1.178 | IW(shape=1.72991e+15 scale=1.6599504e+15) PW(end=1.6599504e+15 shape=9.71678e+14) | best rel=1.24e-01 @lb=-1 | snap=numerical
+wide          n=3 power face            P=-14.719 I=-15.418 A=0.420 | IW(shape=0.0757278 scale=0.0015356173) PW(end=2.6989726e+8 shape=0.0542868) | best rel=-1.72e-04 @lb=12 | snap=numerical
+tie3          n=3 inverse Weibull face  P=-0.93398 I=-0.70505 A=-1.596 | IW(shape=12.4581 scale=2.7837148) PW(end=3.4873637 shape=5.85309) | best rel=-3.56e-04 @lb=-8 | snap=numerical
+n3-s0         n=3 power face            P=-4.3034 I=-5.1448 A=0.551 | IW(shape=1.81769 scale=1.5639124) PW(end=4.3954173 shape=1.37689) | best rel=-1.77e-04 @lb=12 | snap=numerical
+n3-s1         n=3 power face            P=-2.3482 I=-4.4 A=1.027 | IW(shape=2.83592 scale=2.2080681) PW(end=3.6014357 shape=3.30776) | best rel=-2.39e-04 @lb=12 | snap=numerical
+n3-s2         n=3 power face            P=-0.91502 I=-1.0442 A=-0.457 | IW(shape=6.78259 scale=1.7427193) PW(end=2.478857 shape=3.82393) | best rel=-1.57e-04 @lb=12 | snap=numerical
+n3-s3         n=3 inverse Weibull face  P=-5.6675 I=-5.5199 A=-1.266 | IW(shape=3.0342 scale=2.9181354) PW(end=7.0948991 shape=1.49131) | best rel=-2.93e-04 @lb=-8 | snap=numerical
+n7-s0         n=7 power face            P=-12.51 I=-13.424 A=2.249 | IW(shape=1.97638 scale=2.2189845) PW(end=6.1886184 shape=1.32235) | best rel=-3.20e-04 @lb=12 | snap=numerical
+n7-s1         n=7 power face            P=-13.202 I=-16.696 A=4.271 | IW(shape=1.76662 scale=3.3344214) PW(end=7.6145422 shape=1.80274) | best rel=-4.06e-04 @lb=12 | snap=numerical
+n7-s2         n=7 power face            P=-9.4941 I=-12.285 A=2.010 | IW(shape=2.13603 scale=2.0562934) PW(end=4.5406532 shape=1.85423) | best rel=-4.10e-04 @lb=12 | snap=numerical
+n7-s3         n=7 inverse Weibull face  P=-10.438 I=-9.8365 A=-0.977 | IW(shape=3.69275 scale=2.536421) PW(end=5.1691497 shape=1.83297) | best rel=-2.53e-04 @lb=-8 | snap=numerical
