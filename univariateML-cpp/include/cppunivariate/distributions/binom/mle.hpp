@@ -53,6 +53,34 @@ inline double binom_lchoose(double n, double k) {
          cppunivariate::special::lgamma(n - k + 1.0);
 }
 
+namespace binom_detail {
+// The Poisson limit holds iff mean <= population variance, that is
+// delta = n S + S^2 - n Q <= 0 with S = sum x, Q = sum x^2 (integers; equality
+// selects the limit). The binary64 ratio x_bar / var_pop misdecides exact ties
+// (158/3 = 158/3 gives 1.0000000000000002) and near-ties for large samples, so
+// the decision is made in unsigned 128-bit integers. With 0 <= x_i < 2^31 and
+// n < 2^32: S < 2^63, nS < 2^95, S^2 < 2^126, nQ < 2^126, nS + S^2 < 2^127,
+// so nothing overflows. Where the integer test cannot apply (a compiler
+// without __int128, or n >= 2^32 observations) the binary64 ratio is kept;
+// that path is not exact.
+inline bool poisson_face(ispan x, double x_bar, double var_pop) {
+#if defined(__SIZEOF_INT128__)
+  if (static_cast<unsigned long long>(x.size()) < (1ULL << 32)) {
+    using u128 = unsigned __int128;
+    u128 sum = 0, squares = 0;
+    for (int v : x) {
+      const u128 value = static_cast<unsigned>(v);
+      sum += value;
+      squares += value * value;
+    }
+    const u128 n = static_cast<u128>(x.size());
+    return n * sum + sum * sum <= n * squares;
+  }
+#endif
+  return x_bar / var_pop <= 1.0;
+}
+}  // namespace binom_detail
+
 inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
                              int maxit, double held_prob = std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -222,7 +250,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
 
   if (uniq.size() == 1) return {static_cast<double>(max_x),1.0,0.0,0,BinomStatus::Ok};
 
-  if (x_bar / var_pop <= 1.0) {
+  if (binom_detail::poisson_face(x, x_bar, var_pop)) {
     return {kNaN, kNaN, kNaN, 0, BinomStatus::Underdispersed};
   }
 

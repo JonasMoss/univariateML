@@ -112,3 +112,16 @@ TEST_CASE("pareto2: the closed lower endpoint retains its likelihood conclusions
   REQUIRE(shape.status==cppunivariate::Pareto2Status::Ok);
   CHECK(shape.shape==doctest::Approx(2/std::log(2.)).epsilon(1e-10));
 }
+
+// TASK-214.27: lomax decides its exponential stop by a margin of 1e-8 per
+// observation, so the stop is never a proof. For (1, r) the sup of the profile
+// h exceeds zero (the MLE exists, gain 5e-9 per observation) at this r, below
+// the margin; pareto2 used to certify the limit.
+TEST_CASE("pareto2: a margin-decided exponential stop is not certified") {
+  const std::vector<double> x{1,28.809206572777494};
+  const auto r=cppunivariate::pareto2_mle(mltest::as_span(x),0,1e-10,1000);
+  REQUIRE(r.status==cppunivariate::Pareto2Status::ExponentialLimit);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Limit);
+  CHECK_FALSE(o.certified);
+}

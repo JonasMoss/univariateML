@@ -125,7 +125,7 @@ inline FitOutcome outcome(const Pareto2Result& r) {
     case Pareto2Status::UnsupportedThreshold:return FitOutcome::failure(OutcomeReason::Unsupported);
     case Pareto2Status::LimitRepresentationFailure:return FitOutcome::failure(OutcomeReason::Evaluation);
     case Pareto2Status::Ok: return FitOutcome::estimate(true);
-    case Pareto2Status::ExponentialLimit: return FitOutcome::limit(true);
+    case Pareto2Status::ExponentialLimit: return FitOutcome::limit(false); // lomax decides its stop by a 1e-8 n margin (lomax/certificate.hpp), as lomax and invpareto report
     case Pareto2Status::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case Pareto2Status::IterationFailure: return r.certificate_failure == LomaxCertificateFailure::Budget ? FitOutcome::budget() : FitOutcome::failure(r.certificate_failure==LomaxCertificateFailure::Arithmetic?OutcomeReason::Evaluation:OutcomeReason::NoConvergence);
     case Pareto2Status::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
