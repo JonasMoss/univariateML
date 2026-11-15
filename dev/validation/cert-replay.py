@@ -503,6 +503,10 @@ REPLAYS.update(cert_replay_roots.REPLAYS)
 
 import cert_replay_faces   # mechanism D: exact face inequalities (cert_replay_faces.py)
 
+import cert_replay_covers  # mechanisms E and F: Lomax transfers and one-dimensional covers (cert_replay_covers.py)
+cert_replay_covers.LOMAX = replay_lomax
+cert_replay_covers.LOMAX_PROFILE = LomaxProfile
+
 def combined(*replays):
     """A family replayed by several modules: concatenate their comparisons."""
     def replay(r, data, budget):
@@ -514,7 +518,7 @@ def combined(*replays):
         return comps, '; '.join(whys) or None
     return replay
 
-for family, replay in cert_replay_faces.REPLAYS.items():
+for family, replay in list(cert_replay_faces.REPLAYS.items())+list(cert_replay_covers.REPLAYS.items()):
     REPLAYS[family] = combined(REPLAYS[family], replay) if family in REPLAYS else replay
 
 def rebuild(family, archive):

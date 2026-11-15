@@ -1,0 +1,82 @@
+cauchy: native 77 cases, double 77 cases
+    double bracket      holds  interval  16
+    double cover        holds  interval  16
+    double curvature    holds  interval  16
+    double multiplicity holds  exact     61
+    double tie          holds  interval  1
+    double unique       holds  exact     2
+    native bracket      holds  interval  16
+    native cover        holds  interval  16
+    native curvature    holds  interval  16
+    native multiplicity holds  exact     61
+    native tie          holds  interval  1
+    native unique       holds  exact     2
+fatigue: native 56 cases, double 56 cases
+    double bracket      holds  interval  56
+    double cover        fails  interval  5
+    double cover        holds  interval  51
+    native bracket      holds  interval  56
+    native cover        fails  interval  5
+    native cover        holds  interval  51
+foldnorm: native 93 cases, double 93 cases
+    double bracket      holds  interval  40
+    double cover        holds  interval  42
+    double location     holds  exact     24
+    double quartic      holds  exact     2
+    double support      holds  exact     27
+    native bracket      holds  interval  40
+    native cover        holds  interval  42
+    native location     holds  exact     24
+    native quartic      holds  exact     2
+    native support      holds  exact     27
+gpd: native 51 cases, double 51 cases
+    double bracket      holds  interval  20
+    double coefficient  holds  interval  11
+    double cover        holds  interval  51
+    double curvature    holds  interval  20
+    double gain         holds  interval  11
+    native bracket      holds  interval  20
+    native coefficient  holds  interval  11
+    native cover        holds  interval  51
+    native curvature    holds  interval  20
+    native gain         holds  interval  11
+invpareto: native 65 cases, double 65 cases
+    double coefficient  holds  interval  8
+    double concave      holds  interval  8
+    double face         holds  exact     2
+    double face         holds  interval  33
+    double gain         holds  interval  8
+    double global       holds  interval  8
+    double root         holds  interval  30
+    native coefficient  holds  interval  8
+    native concave      holds  interval  8
+    native face         holds  exact     2
+    native face         holds  interval  33
+    native gain         holds  interval  8
+    native global       holds  interval  8
+    native root         holds  interval  30
+pareto2: native 66 cases, double 66 cases
+    double coefficient  holds  interval  22
+    double concave      holds  interval  22
+    double face         holds  exact     2
+    double face         holds  interval  19
+    double gain         holds  interval  22
+    double global       holds  interval  22
+    double mapping      info   interval  21
+    double root         holds  interval  44
+    double support      holds  exact     1
+    native coefficient  holds  interval  22
+    native concave      holds  interval  22
+    native face         holds  exact     2
+    native face         holds  interval  19
+    native gain         holds  interval  22
+    native global       holds  interval  22
+    native mapping      info   interval  21
+    native root         holds  interval  44
+    native support      holds  exact     1
+skellam: native 28 cases, double 28 cases
+    double cover        holds  numerical 26
+    double cover        open   numerical 2
+    native cover        holds  numerical 26
+    native cover        open   numerical 2
+total cases 872, comparisons 1544
