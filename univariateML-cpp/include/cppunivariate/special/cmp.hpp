@@ -399,6 +399,7 @@ struct CmpResult {
     std::uint64_t work = 0;
     CmpStatus status = CmpStatus::InvalidInput;
     StopDetail stop_detail{};
+    bool unique = true;
 };
 
 namespace cmp_detail {
@@ -462,6 +463,8 @@ inline CmpResult cmp_mle_work(span x, const CmpFitControl& ctl, CmpWorkLedger& l
     if (xmax==0 && (!fl || ctl.fixed_lambda==0)) {
         out.eta=special::kNegInf; out.nu=fn?ctl.fixed_nu:1;
         out.logLik=0; out.mean=0; out.mean_h=0; out.status=CmpStatus::Ok;
+        // Both coefficients free: lambda = 0 attains the maximum for every nu.
+        out.unique=!(!fl && !fn);
         return out;
     }
     const CPPUNIV_EXTENDED_REAL m=sx/x.size(), t=sh/x.size();

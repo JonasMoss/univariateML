@@ -64,7 +64,20 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
 
   CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
   for (auto v : x) total += v;
-  const double unit = static_cast<double>(total / static_cast<CPPUNIV_EXTENDED_REAL>(n));
+  double unit = static_cast<double>(total / static_cast<CPPUNIV_EXTENDED_REAL>(n));
+  if (!standardized && !std::isfinite(unit)) {
+    // The sum overflows binary64 (double-only build, data near DBL_MAX) while the
+    // mean does not: form the mean from the maximum-scaled terms so that the
+    // standardization, and with it the exponential-limit decision, matches the
+    // extended-precision build.
+    double xmax = 0.0;
+    for (auto v : x) if (v > xmax) xmax = v;
+    if (xmax > 0.0 && std::isfinite(xmax)) {
+      double scaled = 0.0;
+      for (auto v : x) scaled += v / xmax;
+      unit = xmax * (scaled / static_cast<double>(n));
+    }
+  }
   if (unit > 0.0 && std::isfinite(unit) && !standardized) {
     std::vector<double> z(n);
     for (std::size_t i = 0; i < n; ++i) z[i] = x[i] / unit;

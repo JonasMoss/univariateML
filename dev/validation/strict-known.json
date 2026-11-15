@@ -1,11 +1,6 @@
 {
  "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, cert-replay.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
  "known": {
-  "cert-replay:moment|double|gompertz|class|huge": {
-   "ref": "TASK-214.32",
-   "detail": "limit (n Q - 2 S^2 >= 0); hp n Q - 2 S^2 = -1.51079e+617; relative gap 0.304; double long double intermediates (data / mean 8.302359528222129e+307): mean(z^2) = 1.3911681157892837, 2 mean(z)^2 = 2.0, decides finite; double intermediates (raw data (mean inf not finite)): mean(z^2) = inf, 2 mean(z)^2 = inf, decides limit (DISAGREES with exact); margin none (unpadded); native builds use the long-double mirror, double-only builds the double one",
-   "finding": "face-replay"
-  },
   "cert-replay:root|double|frechet|archive|001946": {
    "ref": "TASK-214.31",
    "detail": "dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.25202334291885e-15, 1.25202334291885e-15], right [3.48482668306617e-16, 3.48482668306617e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.57e-15",
@@ -206,26 +201,6 @@
    "detail": "F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding; hp left [-1.14360880346595e-14, -1.14360880346595e-14], right [-7.02490680264504e-15, -7.02490680264504e-15]; double None; margin None; width relative bracket 1e-14 in 1/shape (Gumbel on -log x), half width 5e-15 (weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115); hp offset (returned - root) = -2.14e-14",
    "finding": "root-width-rounding"
   },
-  "cert-replay:unique|double|cmp|class|zeros": {
-   "ref": "TASK-214.32",
-   "detail": "estimate with unique = true; hp all zero, both free: nu unidentified: unique = false; double None; margin None; source: cmp README existence; special/cmp.hpp cmp_mle_work",
-   "finding": "face-replay"
-  },
-  "cert-replay:unique|double|pig|class|zeros": {
-   "ref": "TASK-214.32",
-   "detail": "estimate with unique = true; hp all zero, both free: (mu, 0) attains the maximum for every mu: unique = false; double None; margin None; source: pig README existence and Zero member",
-   "finding": "face-replay"
-  },
-  "cert-replay:unique|native|cmp|class|zeros": {
-   "ref": "TASK-214.32",
-   "detail": "estimate with unique = true; hp all zero, both free: nu unidentified: unique = false; double None; margin None; source: cmp README existence; special/cmp.hpp cmp_mle_work",
-   "finding": "face-replay"
-  },
-  "cert-replay:unique|native|pig|class|zeros": {
-   "ref": "TASK-214.32",
-   "detail": "estimate with unique = true; hp all zero, both free: (mu, 0) attains the maximum for every mu: unique = false; double None; margin None; source: pig README existence and Zero member",
-   "finding": "face-replay"
-  },
   "mode|both|bhatt|archive|000364": {
    "ref": "TASK-214.13",
    "detail": "native ok, double-only numerical"
@@ -241,10 +216,6 @@
   "mode|both|dgamma|class|wide": {
    "ref": "TASK-214.13",
    "detail": "native ok, double-only conditioning"
-  },
-  "mode|both|gompertz|class|huge": {
-   "ref": "TASK-214.13",
-   "detail": "native ok, double-only limit"
   },
   "mode|both|snorm|archive|006576": {
    "ref": "TASK-214.13",
