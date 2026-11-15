@@ -1,0 +1,106 @@
+[
+ {
+  "case": 688,
+  "returned": [
+   0.7828332910573887,
+   1.6484777043524728
+  ],
+  "legacy_proposal": [
+   0.7828332910573887,
+   1.6484777043524728
+  ],
+  "legacy_iters": 3,
+  "last_step": 9.588762393641603e-05,
+  "returned_equals_proposal": true,
+  "proposal_rel_err_shape2": 3.224054715656882e-09,
+  "proposal_rel_err_shape1": -2.136256491255084e-09,
+  "override_condition_holds": true,
+  "returned_rel_err": [
+   -2.136256491255084e-09,
+   3.224054715656882e-09
+  ],
+  "legacy_tol1e-10": {
+   "shape2_rel_err": -5.624908556525857e-17,
+   "shape1_rel_err": 1.7355800245985564e-17,
+   "iters": 5
+  }
+ },
+ {
+  "case": 689,
+  "returned": [
+   1.187280607097268,
+   1.5017487826289375
+  ],
+  "legacy_proposal": [
+   1.1872806070972681,
+   1.5017487826289375
+  ],
+  "legacy_iters": 3,
+  "last_step": 2.3611416045615875e-05,
+  "returned_equals_proposal": true,
+  "proposal_rel_err_shape2": 2.600183696500432e-10,
+  "proposal_rel_err_shape1": -1.1031827074779496e-10,
+  "override_condition_holds": true,
+  "returned_rel_err": [
+   -1.1031845776727761e-10,
+   2.600183696500432e-10
+  ],
+  "legacy_tol1e-10": {
+   "shape2_rel_err": -1.7660321685867814e-16,
+   "shape1_rel_err": 3.360026717934826e-17,
+   "iters": 5
+  }
+ },
+ {
+  "case": 9424,
+  "returned": [
+   2.2439954108682265,
+   2.545959063369511
+  ],
+  "legacy_proposal": [
+   2.2439954108682265,
+   2.545959063369511
+  ],
+  "legacy_iters": 2,
+  "last_step": 6.937071772571414e-05,
+  "returned_equals_proposal": true,
+  "proposal_rel_err_shape2": 2.9569800435772936e-09,
+  "proposal_rel_err_shape1": 3.219952169982419e-10,
+  "override_condition_holds": true,
+  "returned_rel_err": [
+   3.219952169982419e-10,
+   2.9569800435772936e-09
+  ],
+  "legacy_tol1e-10": {
+   "shape2_rel_err": -2.795540638815827e-16,
+   "shape1_rel_err": -1.757062525058654e-18,
+   "iters": 4
+  }
+ },
+ {
+  "case": 9884,
+  "returned": [
+   2.2609033939037553,
+   2.554212257935429
+  ],
+  "legacy_proposal": [
+   2.2609033939037553,
+   2.554212257935429
+  ],
+  "legacy_iters": 2,
+  "last_step": 8.459686876283449e-05,
+  "returned_equals_proposal": true,
+  "proposal_rel_err_shape2": 4.407838278222783e-09,
+  "proposal_rel_err_shape1": 5.115426260276253e-10,
+  "override_condition_holds": true,
+  "returned_rel_err": [
+   5.115426260276253e-10,
+   4.407838278222783e-09
+  ],
+  "legacy_tol1e-10": {
+   "shape2_rel_err": -8.41447427723032e-18,
+   "shape1_rel_err": -7.780925208227943e-17,
+   "iters": 4
+  }
+ }
+]
