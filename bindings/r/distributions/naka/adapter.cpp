@@ -1,9 +1,9 @@
 #include "common/distributions/naka/fit.hpp"
 #include "common_fit.h"
 // [[Rcpp::export]]
-Rcpp::List mlnaka_(const Rcpp::NumericVector &x, double abstol = 1.220703e-4,
+Rcpp::List mlnaka_(const Rcpp::NumericVector &x, double tol = 1e-10,
                    int iterlim = 100,
     Rcpp::Nullable<double> shape = R_NilValue,
     Rcpp::Nullable<double> scale = R_NilValue) {
-  return common_result(umvl_binding::fit_naka(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, common_held(shape), common_held(scale), abstol, iterlim));
+  return common_result(umvl_binding::fit_naka(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, common_held(shape), common_held(scale), tol, iterlim));
 }

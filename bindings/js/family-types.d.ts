@@ -8,7 +8,7 @@ export interface GeneratedAPI {
   binom: Family<{size: number; prob: number}, [size: number, prob: number], {abstol?: number; iterlim?: number}>;
   bnbinom: Family<{size: number; alpha: number; beta: number}, [size: number, alpha: number, beta: number], {gradtol?: number; iterlim?: number}>;
   burr: Family<{shape1: number; shape2: number; scale: number}, [shape1: number, shape2: number, scale: number], {abstol?: number; gradtol?: number; iterlim?: number; shape10?: number | null; shape20?: number | null; scale0?: number | null; reltol?: number}>;
-  cauchy: Family<{location: number; scale: number}, [location: number, scale: number], {abstol?: number; iterlim?: number}>;
+  cauchy: Family<{location: number; scale: number}, [location: number, scale: number], {tol?: number; iterlim?: number}>;
   cmb: Family<{size: number; prob: number; nu: number}, [size: number, prob: number, nu: number], {tol?: number; iterlim?: number}>;
   cmp: Family<{lambda: number; nu: number}, [lambda: number, nu: number], {tol?: number; iterlim?: number}>;
   dgamma: Family<{shape: number; rate: number}, [shape: number, rate: number], {tol?: number; iterlim?: number}>;
@@ -23,7 +23,7 @@ export interface GeneratedAPI {
   foldnorm: Family<{mu: number; sigma: number}, [mu: number, sigma: number], {tol?: number; iterlim?: number}>;
   fpareto: Family<{shape1: number; shape2: number; shape3: number; scale: number; min: number}, [shape1: number, shape2: number, shape3: number, scale: number, min: number], {reltol?: number; iterlim?: number}>;
   frechet: Family<{lambda: number; mu: number; sigma: number}, [lambda: number, mu: number, sigma: number], {tol?: number; iterlim?: number}>;
-  gamma: Family<{shape: number; scale: number}, [shape: number, scale: number], {abstol?: number; iterlim?: number}>;
+  gamma: Family<{shape: number; scale: number}, [shape: number, scale: number], {tol?: number; iterlim?: number}>;
   gb2: Family<{shape1: number; shape2: number; shape3: number; scale: number}, [shape1: number, shape2: number, shape3: number, scale: number], {gradtol?: number; iterlim?: number}>;
   ged: Family<{mean: number; sd: number; nu: number}, [mean: number, sd: number, nu: number], {gradtol?: number; iterlim?: number}>;
   genbeta: Family<{shape1: number; shape2: number; shape3: number; scale: number}, [shape1: number, shape2: number, shape3: number, scale: number], {gradtol?: number; iterlim?: number}>;
@@ -40,7 +40,7 @@ export interface GeneratedAPI {
   hyper: Family<{m: number; N: number; k: number}, [m: number, N: number, k: number], Record<string, never>>;
   invburr: Family<{shape1: number; shape2: number; scale: number}, [shape1: number, shape2: number, scale: number], {abstol?: number; gradtol?: number; iterlim?: number; shape10?: number | null; shape20?: number | null; scale0?: number | null; reltol?: number}>;
   invexp: Family<{scale: number}, [scale: number], Record<string, never>>;
-  invgamma: Family<{alpha: number; beta: number}, [alpha: number, beta: number], {abstol?: number; iterlim?: number}>;
+  invgamma: Family<{alpha: number; beta: number}, [alpha: number, beta: number], {tol?: number; iterlim?: number}>;
   invgauss: Family<{mean: number; shape: number}, [mean: number, shape: number], Record<string, never>>;
   invparalogis: Family<{shape: number; scale: number}, [shape: number, scale: number], {shape0?: number | null; gradtol?: number; iterlim?: number}>;
   invpareto: Family<{shape: number; scale: number}, [shape: number, scale: number], {scale0?: number | null; reltol?: number; iterlim?: number}>;
@@ -48,15 +48,15 @@ export interface GeneratedAPI {
   invweibull: Family<{shape: number; scale: number}, [shape: number, scale: number], {shape0?: number | null; reltol?: number; iterlim?: number}>;
   kumar: Family<{a: number; b: number}, [a: number, b: number], {tol?: number; iterlim?: number}>;
   laplace: Family<{mu: number; sigma: number}, [mu: number, sigma: number], Record<string, never>>;
-  lgamma: Family<{shapelog: number; ratelog: number}, [shapelog: number, ratelog: number], {abstol?: number; iterlim?: number}>;
+  lgamma: Family<{shapelog: number; ratelog: number}, [shapelog: number, ratelog: number], {tol?: number; iterlim?: number}>;
   lgser: Family<{theta: number}, [theta: number], Record<string, never>>;
-  llogis: Family<{shape: number; scale: number}, [shape: number, scale: number], {abstol?: number; iterlim?: number}>;
+  llogis: Family<{shape: number; scale: number}, [shape: number, scale: number], {tol?: number; iterlim?: number}>;
   lnorm: Family<{meanlog: number; sdlog: number}, [meanlog: number, sdlog: number], Record<string, never>>;
-  logis: Family<{location: number; scale: number}, [location: number, scale: number], {abstol?: number; iterlim?: number}>;
+  logis: Family<{location: number; scale: number}, [location: number, scale: number], {tol?: number; iterlim?: number}>;
   logitnorm: Family<{mu: number; sigma: number}, [mu: number, sigma: number], Record<string, never>>;
   lomax: Family<{lambda: number; kappa: number}, [lambda: number, kappa: number], {tol?: number; iterlim?: number}>;
   lst: Family<{mu: number; sigma: number; df: number}, [mu: number, sigma: number, df: number], {gradtol?: number; iterlim?: number}>;
-  naka: Family<{shape: number; scale: number}, [shape: number, scale: number], {abstol?: number; iterlim?: number}>;
+  naka: Family<{shape: number; scale: number}, [shape: number, scale: number], {tol?: number; iterlim?: number}>;
   nbinom: Family<{size: number; prob: number}, [size: number, prob: number], {reltol?: number; iterlim?: number}>;
   nhyper: Family<{m: number; N: number; r: number}, [m: number, N: number, r: number], Record<string, never>>;
   norm: Family<{mean: number; sd: number}, [mean: number, sd: number], Record<string, never>>;

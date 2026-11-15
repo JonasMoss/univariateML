@@ -2,13 +2,13 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/gamma/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_gamma(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_gamma(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   if (shape_arg.supplied && (!(shape_arg.value > 0) || !std::isfinite(shape_arg.value))) return invalid_argument(failure("Held `shape` must be positive and finite."));
   double shape=shape_arg.supplied ? shape_arg.value : NAN;
   if (scale_arg.supplied && (!(scale_arg.value > 0) || !std::isfinite(scale_arg.value))) return invalid_argument(failure("Held `scale` must be positive and finite."));
   double scale=scale_arg.supplied ? scale_arg.value : NAN;
-  auto r=cppunivariate::gamma_mle(cppunivariate::span{x.data(),x.size()},abstol,iterlim,shape,scale);
+  auto r=cppunivariate::gamma_mle(cppunivariate::span{x.data(),x.size()},tol,iterlim,shape,scale);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) { return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied}}); };
   if (r.status == cppunivariate::GammaStatus::InvalidInput) {

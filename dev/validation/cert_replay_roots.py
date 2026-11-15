@@ -158,16 +158,16 @@ TOL = {
     'kumar': (1e-10, 'bindings/common/distributions/kumar/fit.hpp:7 reltol'),
     'beta': (1.490116e-08, 'bindings/common/distributions/beta/fit.hpp:7 reltol'),
     'nsbeta': (1e-10, 'bindings/common/distributions/nsbeta/fit.hpp:7 reltol'),
-    'gamma': (1.220703e-4, 'bindings/common/distributions/gamma/fit.hpp:5 abstol'),
-    'invgamma': (1.220703e-4, 'bindings/common/distributions/invgamma/fit.hpp:9 abstol'),
-    'lgamma': (1.220703e-4, 'bindings/common/distributions/lgamma/fit.hpp:9 abstol'),
-    'naka': (1.220703e-4, 'bindings/common/distributions/naka/fit.hpp:9 abstol'),
+    'gamma': (1e-10, 'bindings/common/distributions/gamma/fit.hpp:5 tol'),
+    'invgamma': (1e-10, 'bindings/common/distributions/invgamma/fit.hpp:9 tol'),
+    'lgamma': (1e-10, 'bindings/common/distributions/lgamma/fit.hpp:9 tol'),
+    'naka': (1e-10, 'bindings/common/distributions/naka/fit.hpp:9 tol'),
     'gumbel': (1e-10, 'bindings/common/distributions/gumbel/fit.hpp:9 reltol'),
     'weibull': (1e-10, 'bindings/common/distributions/weibull/fit.hpp:9 reltol'),
     'invweibull': (1.220703e-4, 'bindings/common/distributions/invweibull/fit.hpp:9 reltol'),
-    'llogis': (1.220703e-4, 'bindings/common/distributions/llogis/fit.hpp:9 abstol'),
+    'llogis': (1e-10, 'bindings/common/distributions/llogis/fit.hpp:9 tol'),
     'pareto3': (1e-10, 'bindings/common/distributions/pareto3/fit.hpp:7 reltol'),
-    'logis': (1.220703e-4, 'bindings/common/distributions/logis/fit.hpp:8 abstol'),
+    'logis': (1e-10, 'bindings/common/distributions/logis/fit.hpp:8 tol'),
     'dnorm': (1e-9, 'bindings/common/distributions/dnorm/fit.hpp:7 reltol'),
     'dweibull': (1e-12, 'bindings/common/distributions/dweibull/fit.hpp:9 reltol'),
     'zeta': (1e-10, 'bindings/common/distributions/zeta/fit.hpp:5 reltol'),
@@ -582,7 +582,7 @@ def replay_nsbeta(r, data, budget):
 # ------------------------------------------------------------ gamma, invgamma, lgamma, naka
 
 CLAIMS['gamma'] = {
-    'free, Newton path (s >= 1e-3)': ('Newton step below abstol = 1.220703e-4 (absolute), no bracket', 'gamma/mle.hpp:176-186 (newton_raphson_1d_abs, core/newton.hpp:60)'),
+    'free, Newton path (s >= 1e-3)': ('relative Newton step at most tol = 1e-10, applied, no bracket', 'gamma/mle.hpp:176-196 (newton_raphson_1d, core/newton.hpp)'),
     'free, bracket path': ('relative bracket 4 eps, half width 2 eps', 'gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi)'),
     'scale held': ('log shape bracket 1e-12, half width 5e-13', 'gamma/mle.hpp:263-270 (hi - lo > 1e-12)'),
 }
@@ -592,7 +592,7 @@ def gamma_G(A, k, s): return A.log(k)-A.digamma(k)-s
 def replay_gamma(r, data, budget):
     kind, _ = kind_of(r)
     if kind != 'estimate': return [], None
-    x = [float(v) for v in data]; shape = estimate_of(r, 'shape'); abstol = TOL['gamma'][0]
+    x = [float(v) for v in data]; shape = estimate_of(r, 'shape'); abstol = TOL['gamma'][0]  # relative, see CLAIMS
     if r['mask'] == 0:
         def stats(A):
             X = [A.mpf(v) for v in x]; n = len(X)
@@ -602,10 +602,10 @@ def replay_gamma(r, data, budget):
         newton = s_hp >= mp.mpf('1e-3') and min(x) > 0 and (sum(x)/len(x)) >= 2.2250738585072014e-308
         if newton:
             def make(A):
-                s = stats(A); k = A.mpf(shape); w = A.mpf(abstol)
+                s = stats(A); k = A.mpf(shape); w = A.mpf(abstol)*k
                 return gamma_G(A, k-w, s), gamma_G(A, k+w, s)
             src, width = CLAIMS['gamma']['free, Newton path (s >= 1e-3)']
-            claim = 'G(k - abstol) > 0 > G(k + abstol), G = log k - psi(k) - s, s = log mean - mean log (Newton path, absolute step abstol)'
+            claim = 'G(k (1 - tol)) > 0 > G(k (1 + tol)), G = log k - psi(k) - s, s = log mean - mean log (Newton path, relative step tol)'
         else:
             w = 2*EPS+HALF
             def make(A):
@@ -656,7 +656,7 @@ def gamma_family_maps(kind):
     return ys, jac, ll
 
 CLAIMS['gamma_raw'] = {
-    'free parameter': ('restored(ideal, ll, abstol, |ideal| + |ll|) with abstol = 1.220703e-4; the shape bracket (relative 4 eps) is not what certifies',
+    'free parameter': ('restored(ideal, ll, tol, |ideal| + |ll|) with tol = 1e-10; the shape bracket (relative 4 eps) is not what certifies',
                        'gamma/transformed.hpp:143 (certified = !free_parameter || restored), :90 (hi/lo - 1 <= min(tol/8, 4 eps)); core/transformed_data.hpp:99'),
     'parameter held': ('shape: log bracket 2e-13 (Reciprocal, Log: digamma equation), relative 4 eps (Square: log k - psi(k) = s)',
                        'gamma/transformed.hpp:105-110 (hi - lo <= min(tol/8, 2e-13)), :74-90 (Square)'),
@@ -862,7 +862,7 @@ def data_minus(r, data):   # pareto3: x - min, exact in the replay (min held)
 # ------------------------------------------------------------ logis, dnorm, dweibull (Newton / Brent stops)
 
 CLAIMS['logis'] = {
-    'free': ('Newton: absolute step below abstol = 1.220703e-4 in mu and log scale (after standardization, relative to sd); no bracket', 'logis/mle.hpp:180 (max(|dmu|,|dtheta|) < tol)'),
+    'free': ('Newton: undamped step at most tol = 1e-10 in mu / max(|mu|, s) and log scale, applied (after standardization, relative to sd); no bracket', 'logis/mle.hpp:205-216 (full <= tol, accepted undamped Newton step)'),
     'location held': ('log scale bracket 1e-12, half width 5e-13', 'logis/mle.hpp:259 (hi - lo < 1e-12)'),
     'scale held': ('mu bracket 1e-12 s, half width 5e-13 s (adjacent doubles: a few spacings)', 'logis/mle.hpp:240 (hi - lo <= 1e-12 s)'),
 }
@@ -885,13 +885,13 @@ def replay_logis(r, data, budget):
             return g
         def make(A):
             g = grad(A); t = newton_point(g, (mu, mp.log(mp.mpf(s))), hs=(mp.mpf(s)*mp.mpf(10)**(-mp.mp.dps//3), mp.mpf(10)**(-mp.mp.dps//3)))
-            return abs(mp.mpf(mu)-t[0])/max(1, t[1] and mp.exp(t[1])), abs(mp.log(mp.mpf(s))-t[1]), abs(mp.mpf(mu)-t[0])/mp.exp(t[1]), abs(mp.expm1(mp.log(mp.mpf(s))-t[1]))
+            return abs(mp.mpf(mu)-t[0])/max(abs(mp.mpf(mu)), mp.exp(t[1])), abs(mp.log(mp.mpf(s))-t[1]), abs(mp.mpf(mu)-t[0])/mp.exp(t[1]), abs(mp.expm1(mp.log(mp.mpf(s))-t[1]))
         values = enclose(make, 'numerical', 50)
-        tol_mu = abstol + math.ulp(mu)/2/max(1.0, s); tol_t = abstol + EPS   # rounding of the public location (half ulp) and scale
+        tol_mu = abstol + math.ulp(mu)/2/max(abs(mu), s); tol_t = abstol + EPS   # rounding of the public location (half ulp) and scale
         ok = mp.mpf(values[0].b) <= tol_mu and mp.mpf(values[1].b) <= tol_t
         bad = mp.mpf(values[0].a) > tol_mu or mp.mpf(values[1].a) > tol_t
-        return [comparison('root', '|mu - mu*| <= abstol max(1, s*) + half ulp(mu) and |log s - log s*| <= abstol + eps (Newton stop, abstol)', 'holds' if ok else 'fails' if bad else 'open',
-                           'mu offset/max(1,s*) %s, log s offset %s' % (mp.nstr(mid(values[0]), 3), mp.nstr(mid(values[1]), 3)), rigor='numerical',
+        return [comparison('root', '|mu - mu*| <= tol max(|mu*|, s*) + half ulp(mu) and |log s - log s*| <= tol + eps (Newton stop, tol)', 'holds' if ok else 'fails' if bad else 'open',
+                           'mu offset/max(|mu*|,s*) %s, log s offset %s' % (mp.nstr(mid(values[0]), 3), mp.nstr(mid(values[1]), 3)), rigor='numerical',
                            note='hp Newton from the returned point; mu offset in scale units %s, scale relative offset %s; %s (%s)' % (
                                mp.nstr(mid(values[2]), 3), mp.nstr(mid(values[3]), 3), CLAIMS['logis']['free'][0], CLAIMS['logis']['free'][1]))], None
     if mask == 1:   # location held, scale root in t = log s

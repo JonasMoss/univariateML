@@ -6,6 +6,15 @@ namespace cppunivariate {
 namespace transformed_detail {
 enum class GammaMap { Reciprocal, Square, Log };
 struct RawGammaResult { double shape,scale,logLik; int iterations; GammaStatus status; bool certified=true; };
+// Shape stopping rules (all relative, none depends on a Newton step size):
+// the shape is bracketed [lo, hi] on a strictly monotone score
+// log k - psi(k) - s, with the bracket ends confirmed by computed signs,
+// and the loop stops when hi/lo - 1 <= min(tol/8, 4 eps) (the log-scale
+// bracket when the rate is held: hi - lo <= min(tol/8, 2e-13) in log k, which
+// is the same relative width). The root lies in the bracket, so the midpoint
+// is within a relative tol/16 of it. The second coefficient is a closed form
+// of the shape and the sample means. tol also gates the certified flag
+// (restored) and the coefficient round-trip check at the end.
 // Fit the gamma likelihood from raw-data deviations. The public second
 // coordinate is inverse-gamma beta, Nakagami E(X^2), or log-gamma rate.
 inline RawGammaResult gamma_raw(span x,double tol,int maxit,double shape,double parameter,GammaMap map) {

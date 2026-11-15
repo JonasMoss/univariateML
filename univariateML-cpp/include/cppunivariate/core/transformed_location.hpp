@@ -6,7 +6,12 @@ namespace cppunivariate {
 namespace transformed_detail {
 // Positive-to-negative root bracket. Each expansion and bisection uses
 // the supplied evaluation cap (solver or certificate units at the call).
-// Exhaustion never returns an unchecked last iterate.
+// Exhaustion never returns an unchecked last iterate. The loop stops when the
+// bracket, which holds the root by the signs of the monotone score, is at
+// most min(tol/16, 4 eps) wide in the standardized log coordinate; the
+// midpoint is then within tol/32 of the root in that coordinate (the data
+// are scaled to unit log spread there), and the min with 4 eps makes tol a
+// cap only when it is below that rounding floor.
 template<class Score> inline double root(Score score,double tol,int maxit) {
   double lo=-1,hi=1;
   for(int j=0;j<maxit && score(lo)<0;++j)lo*=2;

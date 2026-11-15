@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <vector>
 namespace umvl_binding {
-inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held ratelog_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held ratelog_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -25,7 +25,7 @@ inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held 
     fixed.push_back("ratelog");
   }
 
-  const auto res=cppunivariate::lgamma_mle(x,abstol,iterlim,shapelog_held,ratelog_held);
+  const auto res=cppunivariate::lgamma_mle(x,tol,iterlim,shapelog_held,ratelog_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::LgammaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -35,7 +35,7 @@ inline FitResult fit_lgamma(cppunivariate::span x, Held shapelog_arg = {}, Held 
 
   const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
   if(res.status==cppunivariate::LgammaStatus::InvalidInput)
-    return done(fail("Loggamma fitting needs nonempty finite observations greater than 1, positive abstol and positive iterlim."));
+    return done(fail("Loggamma fitting needs nonempty finite observations greater than 1, positive tol and positive iterlim."));
   if(res.status==cppunivariate::LgammaStatus::IterationFailure)
     return done(fail("Gamma delegate optimizer IterationFailure; increase iterlim."));
   if(res.status==cppunivariate::LgammaStatus::TransformFailure)

@@ -26,7 +26,7 @@ test_that("continuous mathematical stops retain classes and original-unit faces"
   expect_identical(e$model, "hnorm")
   expect_equal(e$estimates, c(mu=0,sigma=sqrt(9.21/5)), tolerance=1e-8)
   expect_s3_class(caught(mlexp(c(-1,2))), "univariateML_invalid")
-  expect_s3_class(caught(mlgamma(c(1,1,1), abstol=0)), "univariateML_nomle")
+  expect_s3_class(caught(mlgamma(c(1,1,1), tol=0)), "univariateML_nomle")
   expect_s3_class(caught(mlgev(c(0,0,0,1,2))), "univariateML_nomle")
 })
 

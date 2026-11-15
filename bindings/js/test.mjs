@@ -1878,7 +1878,7 @@ test('transformed profiles retain finite ulp-wide fits with explicit uncertified
   const x=Float64Array.from([0,1,2,3,4],v=>1+v*Number.EPSILON);
   const y=Float64Array.from([0,1,2,4,7],v=>1+v*Number.EPSILON);
   const fits=[api.invweibull.fit(x),api.frechet.fit(x,{mu:0}),
-    api.llogis.fit(y,{}, {abstol:1e-10}),api.pareto3.fit(y,{min:0}),
+    api.llogis.fit(y,{}, {tol:1e-10}),api.pareto3.fit(y,{min:0}),
     api.invburr.fit(x,{shape1:.855},{gradtol:1e-10}),
     api.gb2.fit(x,{shape1:1,shape3:.855},{gradtol:1e-10}),
     api.fpareto.fit(x,{min:0,shape1:1,shape3:.855},{reltol:1e-10})];

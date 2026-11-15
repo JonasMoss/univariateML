@@ -31,7 +31,7 @@ r:
   control:
     scale: Optional held scale; NULL estimates it.
     location: Optional held location; NULL estimates it.
-    abstol: Joint-fit absolute step tolerance in (location, log(scale)); conditional certificates use fixed tolerances.
+    tol: "Requested relative coefficient accuracy (default 1e-10); a location is measured against max(abs(location), scale)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: -log(pi) - log(scale) - log(1 + ((x-location)/scale)**2)
 references:

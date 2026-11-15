@@ -1,0 +1,23 @@
+== double 798 798 only old 0 only new 0
+cauchy {'cases': 101, 'changed': 33} max logLik rel 5.5e-14
+gamma {'cases': 124, 'changed': 28} max logLik rel 2.7e-12
+invgamma {'cases': 124} max logLik rel 0
+lgamma {'cases': 108, 'changed': 29} max logLik rel 2.5e-14
+llogis {'cases': 116, 'changed': 7, 'kindchg': 1} max logLik rel 0
+logis {'cases': 101, 'changed': 40} max logLik rel 1e-15
+naka {'cases': 124, 'changed': 1, 'kindchg': 1} max logLik rel 0
+  max rel change cauchy location 1.8e-08 case huge
+  max rel change cauchy scale 9.03e-08 case huge
+  max rel change gamma scale 4.64e-06 case wide
+  max rel change gamma shape 4.64e-06 case wide
+  max rel change lgamma ratelog 2.72e-13 case tie3
+  max rel change lgamma shapelog 2.71e-13 case tie3
+  max rel change llogis scale 0 case offset
+  max rel change llogis shape 0 case offset
+  max rel change logis location 6.67e-09 case n7-s2
+  max rel change logis scale 3.31e-09 case 004678
+  max rel change naka scale 0 case offset
+  max rel change naka shape 0 case offset
+kind changes: 2
+   (('llogis', 'class', 'offset'), ('ok', 'estimate', True), ('ok', 'estimate', False), '')
+   (('naka', 'class', 'offset'), ('ok', 'estimate', True), ('ok', 'estimate', False), '')

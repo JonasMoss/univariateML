@@ -204,7 +204,7 @@ test('continuous structured nonexistence and fitted faces', () => {
     assert.ok(Math.abs(e.limit_loglik-ll)<1e-8);return true;
   });
   assert.throws(() => api.exp.fit([-1,2]), e => e.kind==='invalid' && e.reason==='invalid-input');
-  assert.throws(() => api.gamma.fit([1,1,1],{}, {abstol:0}), e => e.kind==='nomle');
+  assert.throws(() => api.gamma.fit([1,1,1],{}, {tol:0}), e => e.kind==='nomle');
   assert.throws(() => api.gev.fit([0,0,0,1,2]), e => e.kind==='nomle');
 });
 

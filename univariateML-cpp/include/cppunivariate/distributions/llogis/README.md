@@ -31,7 +31,7 @@ r:
   control:
     shape: Optional held shape; NULL estimates it.
     scale: Optional held scale; NULL estimates it.
-    abstol: Positive accuracy tolerance for the centered logistic score brackets.
+    tol: "Requested relative accuracy of the shape and scale (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(shape) - log(scale) + (shape - 1)*log(x/scale) - 2*log(1 + (x/scale)**shape)
 references:

@@ -1,12 +1,11 @@
 // Gamma MLE: Newton-Raphson on shape via the digamma equation
 //   log(shape) - psi(shape) = log(mean(x)) - mean(log x)
 // then rate = shape / mean(x). Initialization uses Minka's closed-form
-// approximation (with a small empirical scaling that matches the R impl
-// 1:1 — preserved verbatim so goldens reproduce).
+// approximation (with a small empirical scaling; the golden samples are
+// regression-only and the start carries no standing).
 //
-// Convergence is absolute on the Newton step (not relative): the R-side
-// implementations of dependent estimators (lgamma, naka, invgamma) were
-// written against this rule, so newton_raphson_1d_abs is the right helper.
+// Convergence is on the relative Newton step, |step| <= tol * shape, so
+// newton_raphson_1d is the helper (see the comment at the call).
 //
 // Robust path. For nearly tied data s = log(mean) - mean(log x) is a
 // difference of nearly equal numbers and shape is huge, where
@@ -184,7 +183,14 @@ inline GammaResult gamma_mle_impl(span x, double tol, int maxit) {
                             (3.0 - s + std::sqrt((s - 3.0) * (s - 3.0) + 24.0 * s)) *
                             0.9989 +
                         0.0102;
-    auto nr = cppunivariate::newton_raphson_1d_abs(init, f_over_df, tol, maxit);
+    // Stop when the Newton step is at most tol * shape and apply it
+    // (`newton_raphson_1d`, relative step). The score log k - psi(k) - s is
+    // strictly decreasing and convex in k, so the Newton step is an estimate
+    // of the error k - k* that is exact to first order: after the step the
+    // error is O(step^2), far below tol * k. The shape is positive, so a
+    // relative rule is the contract's tol * |k*|; the scale is the closed form
+    // shape / mean and inherits it.
+    auto nr = cppunivariate::newton_raphson_1d(init, f_over_df, tol, maxit);
     if (nr.converged && nr.x > 0.0 && std::isfinite(nr.x)) {
       const double rate = nr.x / mean_hat;
       const double logLik = dn * (nr.x * std::log(rate) - std::lgamma(nr.x) +

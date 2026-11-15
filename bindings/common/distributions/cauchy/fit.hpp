@@ -6,7 +6,7 @@
 #include <vector>
 #include <algorithm>
 namespace umvl_binding {
-inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held location = location_arg;
@@ -21,7 +21,7 @@ inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held 
   if(location.supplied)fixed.push_back("location");
   if(scale.supplied)fixed.push_back("scale");
 
-  cppunivariate::CauchyResult res = cppunivariate::fit_cauchy(x,abstol,iterlim,held_location,held_scale);
+  cppunivariate::CauchyResult res = cppunivariate::fit_cauchy(x,tol,iterlim,held_location,held_scale);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if(!res.maximizer_support.empty())out.extra_vectors.push_back({"maximizer_support",res.maximizer_support});

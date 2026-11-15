@@ -31,7 +31,7 @@ r:
   control:
     shapelog: Optional held shapelog; NULL estimates it.
     ratelog: Optional held ratelog; NULL estimates it.
-    abstol: Positive relative accuracy tolerance for the shape bracket.
+    tol: "Requested relative accuracy of the shape (default 1e-10); the scale follows in closed form."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: shapelog*log(ratelog) - loggamma(shapelog) + (shapelog - 1)*log(log(x)) - (ratelog + 1)*log(x)
 limits:

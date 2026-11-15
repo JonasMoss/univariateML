@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <vector>
 namespace umvl_binding {
-inline FitResult fit_llogis(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_llogis(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -26,7 +26,7 @@ inline FitResult fit_llogis(cppunivariate::span x, Held shape_arg = {}, Held sca
   }
 
   cppunivariate::LogLogisticResult res =
-      cppunivariate::loglogistic_mle(x, abstol, iterlim, shape_held, scale_held);
+      cppunivariate::loglogistic_mle(x, tol, iterlim, shape_held, scale_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -37,7 +37,7 @@ inline FitResult fit_llogis(cppunivariate::span x, Held shape_arg = {}, Held sca
   const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if (res.status == cppunivariate::LogLogisticStatus::InvalidInput)
-    return done(fail("Log-logistic requires nonempty positive finite data, valid held parameters, positive abstol and positive iterlim."));
+    return done(fail("Log-logistic requires nonempty positive finite data, valid held parameters, positive tol and positive iterlim."));
   if (res.status == cppunivariate::LogLogisticStatus::Unbounded)
     return done(nomle("The log-logistic maximum likelihood estimator does not exist: the likelihood is unbounded for these constant transformed observations."));
   if (res.status == cppunivariate::LogLogisticStatus::IterationFailure)
