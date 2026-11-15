@@ -506,6 +506,7 @@ import cert_replay_faces   # mechanism D: exact face inequalities (cert_replay_f
 import cert_replay_covers  # mechanisms E and F: Lomax transfers and one-dimensional covers (cert_replay_covers.py)
 cert_replay_covers.LOMAX = replay_lomax
 cert_replay_covers.LOMAX_PROFILE = LomaxProfile
+cert_replay_covers.LOMAX_FACE_CLASS = lomax_face_class
 
 def combined(*replays):
     """A family replayed by several modules: concatenate their comparisons."""
