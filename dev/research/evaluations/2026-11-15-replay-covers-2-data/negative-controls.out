@@ -1,0 +1,14 @@
+ok   gpd xi held: sigma x (1 + 1e-6)                                                gpd       archive/002908: root  {'root': 'fails'}
+ok   gpd xi held: sigma x 1.5                                                       gpd       archive/002908: root  {'root': 'fails'}
+ok   burr power held: scale x (1 + 1e-4)                                            burr      archive/000648: root  {'gain': 'holds', 'root': 'fails', 'concave': 'holds', 'global': 'open', 'coefficient': 'fails'}
+ok   burr power held: shape1 x (1 + 1e-4)                                           burr      archive/000648: coefficient  {'gain': 'holds', 'root': 'holds', 'concave': 'holds', 'global': 'holds', 'coefficient': 'fails'}
+ok   burr power held: Weibull limit claimed on a heavy-tailed sample                burr      archive/000653: limit  {'face': 'fails', 'limit': 'fails'}
+ok   dgamma shape held: rate x (1 + 1e-6)                                           dgamma    archive/001000: bracket  {'support': 'holds', 'bracket': 'fails'}
+ok   dgamma rate held: shape x (1 + 1e-6)                                           dgamma    archive/001014: bracket  {'support': 'holds', 'bracket': 'fails', 'cover': 'holds'}
+ok   dgamma rate held: shape x 1.3 claimed the maximum                              dgamma    archive/001014: cover  {'support': 'holds', 'bracket': 'fails', 'cover': 'fails'}
+ok   ht endpoint and sigma held: nu x (1 + 1e-6)                                    ht        archive/003266: bracket  {'bracket': 'fails', 'cover': 'holds'}
+ok   ht endpoint held, scale free: nu x (1 + 1e-6)                                  ht        archive/003186: bracket  {'bracket': 'fails', 'cover': 'holds'}
+ok   ht endpoint held, scale free: nu x 1.5 claimed the maximum                     ht        archive/003186: cover  {'bracket': 'fails', 'cover': 'fails'}
+ok   ht endpoint and sigma held: a half-normal sample claimed with nu = 2           ht        archive/003266: cover  {'bracket': 'fails', 'cover': 'fails'}
+12 controls, 0 did not fail as intended
+exit 0

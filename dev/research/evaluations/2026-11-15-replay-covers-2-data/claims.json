@@ -1,0 +1,38 @@
+{
+ "gpd": {
+  "joint (sigma, xi free)": {
+   "claim": "estimate: signed root enclosure narrower than 2e-7 in t, or 3e-7 in the coefficients (restoration within 1e-7); every cell outside the root closed with likelihood bound below the best root minus 1e-8; winner above the uniform boundary by 1e-8; negative tail at t = -32 or the A = 1 crossing, positive tail by the sign of the score; xi = -1 (uniform boundary) when every interior cell is below 0",
+   "source": "gpd/certificate.hpp:7 (margin), :83-134 (isolate; window :114-116), :156-167 (negative tail), :185-189 (positive tail), :228 (cell exclusion), :261-263 (uniform floor and tie margins), :271-275 (restoration); README \"Certificate\""
+  },
+  "sigma held": {
+   "claim": "same with the held-scale profile h = -(1/c + b) D, c = sigma/M < 1 (sigma >= M returns the uniform member: exact predicate, not replayed); negative tail from the score sign (1-c)(1-e^t)w > e^t(-t), positive tail c b > 2t and b m > 1",
+   "source": "gpd/certificate.hpp:176-181 (held-scale negative tail), :185-189 (positive tail); README \"Certificate\""
+  },
+  "xi held": {
+   "claim": "the scaled scale score s(sigma) = (1 + xi) mean(r / (sigma + xi r)) - 1 on r = (x - mu)/M, sigma in units of M, strictly decreasing, is signed on a bracket around the returned scale; the final bracket is bisected to min(tol, 1e-8) relative width (replayed at 1.1e-8, the weakest user tolerance), the representative restored within 1e-8 (the signed enclosure itself certifies 1e-7)",
+   "source": "gpd/mle.hpp:92 (bracket width min(tol, 1e-8)), :98-110 (signed box, 1e-7 mid), :124 (restoration 1e-8); README \"Certificate\" last paragraph"
+  }
+ },
+ "burr": {
+  "shape2 (power c) held; shape1 and scale free": {
+   "claim": "Lomax certificate on y = (x / max x)^c, shape = k, rate lambda = (max x / s)^c: root enclosure 8e-7 in z, gain 1e-8, global cover (as lomax); the Weibull limit is returned only when the strict exponential-face cover proves h(z) < 0 at every finite z (error-padded)",
+   "source": "burr/mle.hpp:375-410 (fixed power is a Lomax likelihood on exp(c (log x - max log x)); Lomax fit, scale s = exp(mx - log(lambda)/c); Weibull limit at :391); burr/lomax_face.hpp:14-52 (strict face cover); lomax/certificate.hpp:100-101,118-119"
+  }
+ },
+ "dgamma": {
+  "rate held, shape free": {
+   "claim": "global shape maximum: branch and bound over log a on [log a_low, log a_high] with the dossier cutoffs (small shape: a <= exp(L0/w_k)/(2e log(1+1/k)) has L <= L0; large shape: a >= max(2 r (k_max+1), -L0/(n (log 2 - 1/2))) has L <= L0) and the score enclosure from the monotone conditional mean of log Y, down to the 5e-9 n margin of the search plus the 5e-9 n recomputation margin (replayed as 1e-8 per observation); the returned shape within 1e-10 relative of a root of the score",
+   "source": "dgamma/mle.hpp:233-281 (certify, margin 5e-9 at :275), :401 (returned likelihood within 5e-9 per observation of the candidate), accuracy tol 1e-10 at :419; README \"Search certificate\""
+  },
+  "shape held, rate free": {
+   "claim": "strictly log-concave rate likelihood: the unique root of the log-rate score a - r mean(E[Y | cell]) lies within the returned rate -/+ 1e-10 relative (accuracy contract)",
+   "source": "dgamma/mle.hpp:76-111 (inner solve), :419 (tol 1e-10, polish); README \"Existence and identification\" (strict concavity in log rate)"
+  }
+ },
+ "ht": {
+  "shape free (endpoint held or free = minimum; scale held or free)": {
+   "claim": "the returned finite candidate is within 1e-8 n of the supremum of the log likelihood: branch and bound over t = log(nu) with the scale roots enclosed over each cell (monotone contributions of the positive residuals), the profile score enclosed by [r(w-) - b h(w+)]/2 and [r(w+) - a h(w-)]/2 plus the digamma-free or digamma bounds for the normalizer, the small-shape bound n/2 log(2a/pi) - sum log d - k log(sigma held) (endpoint held) or the restriction nu >= 1 (endpoint free), and the large-shape bound l_HN + (1 + 1/a)/(4 nu) sum (d/s0)^4 with s0 = sigma held or d_min sqrt((a p - k)/(a n)) at a = 64",
+   "source": "ht/cert.hpp:72 (eps = 1e-8 n; comparisons at incumbent + eps/4: :144, :214, :218), :17-66 (scale box), :129-148 (small shape and tie neighbourhood), :152-162 (large shape), :172-218 (cells, score enclosure); README \"Explicit tail and inner-solve bounds\", \"A computable interval score enclosure\""
+  }
+ }
+}

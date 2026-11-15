@@ -1,0 +1,86 @@
+cert-replay: 1 CPU s, 50 digits
+  cauchy  bracket     holds  32
+  cauchy  cover       holds  32
+  cauchy  curvature   holds  32
+  cauchy  multiplicity holds  122
+  cauchy  tie         holds  2
+  cauchy  unique      holds  4
+  fatigue bracket     holds  112
+  fatigue cover       fails  10
+  fatigue cover       holds  102
+  foldnorm bracket     holds  80
+  foldnorm cover       holds  84
+  foldnorm location    holds  48
+  foldnorm quartic     holds  4
+  foldnorm support     holds  54
+  gpd     bracket     holds  40
+  gpd     coefficient holds  22
+  gpd     cover       holds  102
+  gpd     curvature   holds  40
+  gpd     gain        holds  22
+  gpd     root        holds  40
+  invpareto coefficient holds  16
+  invpareto concave     holds  16
+  invpareto face        holds  70
+  invpareto gain        holds  16
+  invpareto global      holds  16
+  invpareto root        holds  60
+  pareto2 coefficient holds  44
+  pareto2 concave     holds  44
+  pareto2 face        holds  42
+  pareto2 gain        holds  44
+  pareto2 global      holds  44
+  pareto2 mapping     info   42
+  pareto2 root        holds  88
+  pareto2 support     holds  2
+  skellam cover       holds  52
+  skellam cover       open   4
+  invpareto face        supremum none: 66
+  pareto2 face        supremum none: 38
+not replayed (no certificate comparison):
+  cauchy: evaluation only: 36
+  cauchy: no certified outcome (invalid): 8
+  cauchy: scale held: location search (no face inequality): 4
+  fatigue: no certified outcome (invalid): 12
+  fatigue: no certified outcome (nomle): 4
+  fatigue: no certified outcome (numerical): 16
+  fatigue: no certified outcome (ok): 88
+  foldnorm: evaluation only: 48
+  foldnorm: no certified outcome (conditioning): 2
+  foldnorm: no certified outcome (invalid): 10
+  foldnorm: no certified outcome (tolerance): 2
+  gpd: no certified outcome (invalid): 10
+  gpd: no certified outcome (nomle): 2
+  gpd: no certified outcome (numerical): 2
+  gpd: no certified outcome (ok): 40
+  gpd: sigma held at or above the maximum excess: uniform member (exact predicate): 20
+  invpareto: closed form (scale held): 44
+  invpareto: evaluation only: 44
+  invpareto: no certified outcome (invalid): 14
+  pareto2: closed form (scale held): 44
+  pareto2: min free or all held: no certificate comparison: 44
+  pareto2: no certified outcome (invalid): 10
+  pareto2: no certified outcome (numerical): 2
+  skellam: constant sample (closed form): 12
+  skellam: no certified outcome (budget): 4
+  skellam: no certified outcome (invalid): 2
+  skellam: no certified outcome (ok): 84
+open (not judged):
+  OPEN  cert-replay:cover|native|skellam|archive|006309: global profile maximum; hp orders above 5000 or rates above 1e5: mpmath Bessel series not run; double None; margin None
+  OPEN  cert-replay:cover|native|skellam|class|large: global profile maximum; hp orders above 5000 or rates above 1e5: mpmath Bessel series not run; double None; margin None
+  OPEN  cert-replay:cover|double|skellam|archive|006309: global profile maximum; hp orders above 5000 or rates above 1e5: mpmath Bessel series not run; double None; margin None
+  OPEN  cert-replay:cover|double|skellam|class|large: global profile maximum; hp orders above 5000 or rates above 1e5: mpmath Bessel series not run; double None; margin None
+912 cases judged
+cert-replay: failures by check: {'cert-replay:cover': 10}
+cert-replay: 0 listed as known, 10 new, 0 listed but passing
+  NEW   cert-replay:cover|double|fatigue|archive|001458: l(b) < l(b_hat) for every b in [0.150673, 5.43095] outside the log window 1e-9 (score points inward outside); hp f(5.43094493075) = [3.11257048898755, 3.11257048898755] > target 3.11257048898755; double None; margin None; 120 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094493075, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5)
+  NEW   cert-replay:cover|double|fatigue|archive|001459: l(b) < l(b_hat) for every b in [0.150673, 5.43094] outside the log window 1e-9 (score points inward outside); hp f(5.43094491989) = [3.11257048398805, 3.11257048398805] > target 3.11257048398805; double None; margin None; 97 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094491989, l - l(b_hat) = 1.68e-26 (total log-likelihood units; n = 5)
+  NEW   cert-replay:cover|double|fatigue|archive|001461: l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370453225) = [3.36322939284092, 3.36322939284092] > target 3.36322939284092; double None; margin None; 120 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370453225, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5)
+  NEW   cert-replay:cover|double|fatigue|archive|001462: l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370452025) = [3.36322938784142, 3.36322938784142] > target 3.36322938784142; double None; margin None; 97 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370452025, l - l(b_hat) = 1.681e-26 (total log-likelihood units; n = 5)
+  NEW   cert-replay:cover|double|fatigue|archive|009817: l(b) < l(b_hat) for every b in [0.166564, 6.00371] outside the log window 1e-9 (score points inward outside); hp f(0.166563826822) = [8.07175053081683, 8.07175053081683] > target 8.07175053081683; double None; margin None; 145 evaluations; exclusion window half width 6.004e-9; numerical local maximum of the competitor: b = 0.166563826822, l - l(b_hat) = 4.927e-26 (total log-likelihood units; n = 12)
+  NEW   cert-replay:cover|native|fatigue|archive|001458: l(b) < l(b_hat) for every b in [0.150673, 5.43095] outside the log window 1e-9 (score points inward outside); hp f(5.43094493075) = [3.11257048898755, 3.11257048898755] > target 3.11257048898755; double None; margin None; 120 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094493075, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5)
+  NEW   cert-replay:cover|native|fatigue|archive|001459: l(b) < l(b_hat) for every b in [0.150673, 5.43094] outside the log window 1e-9 (score points inward outside); hp f(5.43094491989) = [3.11257048398805, 3.11257048398805] > target 3.11257048398805; double None; margin None; 97 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094491989, l - l(b_hat) = 1.68e-26 (total log-likelihood units; n = 5)
+  NEW   cert-replay:cover|native|fatigue|archive|001461: l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370453225) = [3.36322939284092, 3.36322939284092] > target 3.36322939284092; double None; margin None; 120 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370453225, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5)
+  NEW   cert-replay:cover|native|fatigue|archive|001462: l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370452025) = [3.36322938784142, 3.36322938784142] > target 3.36322938784142; double None; margin None; 97 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370452025, l - l(b_hat) = 1.681e-26 (total log-likelihood units; n = 5)
+  NEW   cert-replay:cover|native|fatigue|archive|009817: l(b) < l(b_hat) for every b in [0.166564, 6.00371] outside the log window 1e-9 (score points inward outside); hp f(0.166563826822) = [8.07175053081683, 8.07175053081683] > target 8.07175053081683; double None; margin None; 145 evaluations; exclusion window half width 6.004e-9; numerical local maximum of the competitor: b = 0.166563826822, l - l(b_hat) = 4.927e-26 (total log-likelihood units; n = 12)
+done2

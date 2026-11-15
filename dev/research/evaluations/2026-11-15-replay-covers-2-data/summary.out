@@ -1,0 +1,44 @@
+burr: native 24 cases, double 24 cases
+    double coefficient  holds  interval  10
+    double concave      holds  interval  10
+    double face         holds  interval  14
+    double gain         holds  interval  10
+    double global       holds  interval  10
+    double limit        holds  interval  14
+    double root         holds  interval  10
+    native coefficient  holds  interval  10
+    native concave      holds  interval  10
+    native face         holds  interval  14
+    native gain         holds  interval  10
+    native global       holds  interval  10
+    native limit        holds  interval  14
+    native root         holds  interval  10
+dgamma: native 60 cases, double 58 cases
+    double bracket      holds  numerical 27
+    double cover        holds  numerical 13
+    double support      holds  exact     58
+    native bracket      holds  numerical 27
+    native cover        holds  numerical 13
+    native cover        open   numerical 1
+    native support      holds  exact     60
+gpd: native 71 cases, double 71 cases
+    double bracket      holds  interval  20
+    double coefficient  holds  interval  11
+    double cover        holds  interval  51
+    double curvature    holds  interval  20
+    double gain         holds  interval  11
+    double root         holds  interval  20
+    native bracket      holds  interval  20
+    native coefficient  holds  interval  11
+    native cover        holds  interval  51
+    native curvature    holds  interval  20
+    native gain         holds  interval  11
+    native root         holds  interval  20
+ht: native 32 cases, double 32 cases
+    double bracket      holds  numerical 29
+    double cover        holds  numerical 31
+    double cover        open   interval  1
+    native bracket      holds  numerical 29
+    native cover        holds  numerical 31
+    native cover        open   interval  1
+total cases 372, comparisons 743

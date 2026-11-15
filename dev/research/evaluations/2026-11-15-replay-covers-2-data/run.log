@@ -1,0 +1,51 @@
+cert-replay: 4100 CPU s, 50 digits
+  burr    coefficient holds  20
+  burr    concave     holds  20
+  burr    face        holds  28
+  burr    gain        holds  20
+  burr    global      holds  20
+  burr    limit       holds  28
+  burr    root        holds  20
+  dgamma  bracket     holds  54
+  dgamma  cover       holds  26
+  dgamma  cover       open   1
+  dgamma  support     holds  118
+  gpd     bracket     holds  40
+  gpd     coefficient holds  22
+  gpd     cover       holds  102
+  gpd     curvature   holds  40
+  gpd     gain        holds  22
+  gpd     root        holds  40
+  ht      bracket     holds  58
+  ht      cover       holds  62
+  ht      cover       open   2
+  burr    face        supremum none: 28
+not replayed (no certificate comparison):
+  burr: no certified outcome (invalid): 12
+  burr: no certified outcome (limit): 94
+  burr: no certified outcome (nomle): 4
+  burr: no certified outcome (numerical): 12
+  burr: no certified outcome (ok): 266
+  burr: no certified outcome (unresolved): 4
+  dgamma: no certified outcome (conditioning): 6
+  dgamma: no certified outcome (invalid): 4
+  dgamma: no certified outcome (numerical): 2
+  dgamma: no exact support predicate for this hold subset: 28
+  gpd: no certified outcome (invalid): 10
+  gpd: no certified outcome (nomle): 2
+  gpd: no certified outcome (numerical): 2
+  gpd: no certified outcome (ok): 40
+  gpd: sigma held at or above the maximum excess: uniform member (exact predicate): 20
+  ht: no certified outcome (invalid): 10
+  ht: no certified outcome (limit): 168
+  ht: no certified outcome (nomle): 2
+  ht: no certified outcome (numerical): 12
+  ht: no certified outcome (ok): 200
+open (not judged):
+  OPEN  cert-replay:cover|native|dgamma|archive|001025: evaluation raised; hp mpmath incomplete gamma: ValueError: cell probability below the absolute precision of the difference of lower tails; double None; margin None; the 50-digit evaluation failed at these coefficients
+  OPEN  cert-replay:cover|native|ht|class|wide: global shape maximum; hp large-shape cutoff exp(142.22) beyond the evaluated range; double None; margin None
+  OPEN  cert-replay:cover|double|ht|class|wide: global shape maximum; hp large-shape cutoff exp(142.22) beyond the evaluated range; double None; margin None
+372 cases judged
+cert-replay: failures by check: none
+cert-replay: 0 listed as known, 0 new, 0 listed but passing
+done1

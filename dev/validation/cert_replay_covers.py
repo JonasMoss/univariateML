@@ -38,7 +38,7 @@ uses a dossier bound that is not coded here as an interval:
 
 Every comparison reports a verdict (holds, fails, open) as in the prototype. Results
 are cached in a gzipped JSON-lines file (CERT_REPLAY_COVERS_CACHE, default
-/tmp/cert-replay-covers-cache.jsonl.gz); a family's entry in VERSIONS goes up when its replay changes.
+build/cert-replay/covers-cache.jsonl.gz under the repository root, git-ignored); a family's entry in VERSIONS goes up when its replay changes.
 """
 import collections, heapq, math
 from fractions import Fraction
@@ -51,6 +51,7 @@ TOL = 1e-10
 CLAIMS = {}      # family -> {subset: (claim text, source)}; written to the records
 LOMAX = None     # cert-replay.py's replay_lomax, bound at registration
 LOMAX_PROFILE = None   # cert-replay.py's LomaxProfile, bound at registration
+LOMAX_FACE_CLASS = None   # cert-replay.py's lomax_face_class, bound at registration
 
 
 def hexed(v): return float(v).hex()
@@ -163,6 +164,50 @@ def replay_pareto2_zeros(r, data, y, budget):
     return [comparison('support', 'unbounded: min attained by %d of %d observations, shape free %s, scale free %s; outcome %s' % (zeros, n, free_shape, free_scale, kind),
                        'holds' if truth == claimed else 'fails', 'predicate (zeros == n and one free) or both free = %s' % truth, rigor='exact',
                        note='dossier predicate, pareto2/mle.hpp:27')], None
+
+# ------------------------------------------------------------ burr, shape2 held (Lomax transfer, E)
+
+CLAIMS['burr'] = {
+    'shape2 (power c) held; shape1 and scale free': (
+        'Lomax certificate on y = (x / max x)^c, shape = k, rate lambda = (max x / s)^c: root enclosure 8e-7 in z, gain 1e-8, global cover (as lomax); '
+        'the Weibull limit is returned only when the strict exponential-face cover proves h(z) < 0 at every finite z (error-padded)',
+        'burr/mle.hpp:375-410 (fixed power is a Lomax likelihood on exp(c (log x - max log x)); Lomax fit, scale s = exp(mx - log(lambda)/c); Weibull limit at :391); '
+        'burr/lomax_face.hpp:14-52 (strict face cover); lomax/certificate.hpp:100-101,118-119'),
+}
+
+def replay_burr_power(r, data, budget):
+    mask = r['mask']; res = r['result']; kind = (res.get('outcome') or {}).get('kind')
+    if mask != 2 or kind not in ('estimate', 'limit'): return [], None
+    c = r['held']['shape2']
+    x = [mp.mpf(float(v)) for v in data]
+    if not all(v > 0 for v in x): return [], 'nonpositive data'
+    xmax = max(x)
+    y = [float(mp.exp(mp.mpf(c)*(mp.log(v)-mp.log(xmax)))) for v in x]      # rounded to binary64, as the core forms y
+    if not all(v > 0 and math.isfinite(v) for v in y): return [], 'transformed data not representable'
+    n = len(x)
+    jac = float(n*mp.log(c)+(c-1)*sum(mp.log(v) for v in x)-c*n*mp.log(xmax))
+    if kind == 'limit':
+        est = {}
+    else:
+        k = number(res['estimates']['shape1']); sc = number(res['estimates']['scale'])
+        lam = float((xmax/mp.mpf(sc))**mp.mpf(c))
+        est = dict(kappa=k, lambda_=lam)
+    est2 = {('lambda' if kk == 'lambda_' else kk): v for kk, v in est.items()}
+    comps, why = LOMAX(lomax_record(r, 0, {}, est2, -jac), y, budget)
+    if kind == 'estimate': comps.append(lomax_shape(est2['kappa'], est2['lambda'], y))
+    for cc in comps:
+        cc['note'] = ('burr as lomax on (x/max x)^c, y rounded to binary64 (relative 1.1e-16 input perturbation); ' + (cc['note'] or '')).strip()
+    if kind == 'limit':
+        certified = res['outcome'].get('certified')
+        if len(set(y)) == 1:
+            comps.append(comparison('limit', 'Weibull limit: constant transformed sample (exact)', 'holds', 'h(z) < 0 for all z (exact)', rigor='exact'))
+        else:
+            p = LOMAX_PROFILE(y); lo, hi, _ = p.domain()
+            label, text = LOMAX_FACE_CLASS(p, lo, hi, budget)
+            verdict = 'holds' if label == 'none' else 'fails' if label == 'finite' else 'open'
+            comps.append(comparison('limit', 'Weibull limit (certified = %s): the exponential supremum is unattained, h(z) < 0 at every finite z' % certified, verdict,
+                                    text, rigor='interval', note='strict face (burr/lomax_face.hpp), not the 1e-8 margin'))
+    return comps, why
 
 # ------------------------------------------------------------ generic one-dimensional cover
 
@@ -542,6 +587,332 @@ def replay_gpd_coefficient(r, data, budget):
     return [comparison('coefficient', 'sigma_hat / M within 1e-8 (relative) of D(t) for the root window', verdict,
                        'sigma_hat/M = %s in [%s, %s]' % (show(s), show(low), show(high)), margin='1e-8', note='certificate.hpp:274')], None
 
+# ------------------------------------------------------------ gpd, shape held (C)
+
+CLAIMS['gpd']['xi held'] = (
+    'the scaled scale score s(sigma) = (1 + xi) mean(r / (sigma + xi r)) - 1 on r = (x - mu)/M, sigma in units of M, strictly decreasing, is signed on a '
+    'bracket around the returned scale; the final bracket is bisected to min(tol, 1e-8) relative width (replayed at 1.1e-8, the weakest user tolerance), the '
+    'representative restored within 1e-8 (the signed enclosure itself certifies 1e-7)',
+    'gpd/mle.hpp:92 (bracket width min(tol, 1e-8)), :98-110 (signed box, 1e-7 mid), :124 (restoration 1e-8); README "Certificate" last paragraph')
+
+def replay_gpd_xi_held(r, data, budget):
+    res = r['result']; kind = (res.get('outcome') or {}).get('kind'); mask = r['mask']
+    if kind != 'estimate' or mask != 5: return [], None
+    mu = r['held']['mu']; xi = r['held']['xi']
+    y = [float(v)-mu for v in data]; M = max(y)
+    if not M > 0: return [], 'no positive excess'
+    sigma = number(res['estimates']['sigma'])
+    if xi == -1.0 or xi == 0.0: return [], 'closed form (uniform or exponential member)'
+    n = len(y)
+    counts = collections.Counter(v for v in y if v > 0)
+    pts = [(iv.mpf(v)/iv.mpf(M), c) for v, c in sorted(counts.items())]
+    xv = iv.mpf(xi)
+    def score(sg):
+        total = iv.mpf(0)
+        for rr, c in pts:
+            den = sg+xv*rr
+            if lo_(den) <= 0: return None
+            total += c*rr/den
+        return (1+xv)*total/n-1
+    s = iv.mpf(sigma)/iv.mpf(M)
+    w = mp.mpf('1.1e-8')
+    sh = mp.mpf(s.a)/2+mp.mpf(s.b)/2
+    sl, sr = score(iv.mpf(sh*(1-w))), score(iv.mpf(sh*(1+w)))
+    if sl is None or sr is None:
+        return [comparison('root', 'scaled score signed on the bracket', 'open', 'denominator sigma + xi r not positive on the bracket')], None
+    vl, vr = sign_verdict(sl, +1), sign_verdict(sr, -1)
+    verdict = 'fails' if 'fails' in (vl, vr) else 'holds' if vl == vr == 'holds' else 'open'
+    return [comparison('root', 's(sigma_hat (1 - w)) > 0 > s(sigma_hat (1 + w)), w = 1.1e-8, s strictly decreasing', verdict,
+                       'left %s, right %s' % (show(sl), show(sr)), margin='32 eta (score allowance)',
+                       note='held xi = %.6g; s is strictly decreasing for xi > -1 with a positive excess (dossier), so the root is the unique maximizer in scale' % xi)], None
+
+# ------------------------------------------------------------ dgamma, rate held (F) and shape held (C), numerical
+
+DGAMMA_MARGIN = mp.mpf('1e-8')
+CLAIMS['dgamma'] = {
+    'rate held, shape free': (
+        'global shape maximum: branch and bound over log a on [log a_low, log a_high] with the dossier cutoffs (small shape: a <= exp(L0/w_k)/(2e log(1+1/k)) has L <= L0; '
+        'large shape: a >= max(2 r (k_max+1), -L0/(n (log 2 - 1/2))) has L <= L0) and the score enclosure from the monotone conditional mean of log Y, down to the 5e-9 n margin of the '
+        'search plus the 5e-9 n recomputation margin (replayed as 1e-8 per observation); the returned shape within 1e-10 relative of a root of the score',
+        'dgamma/mle.hpp:233-281 (certify, margin 5e-9 at :275), :401 (returned likelihood within 5e-9 per observation of the candidate), accuracy tol 1e-10 at :419; README "Search certificate"'),
+    'shape held, rate free': (
+        'strictly log-concave rate likelihood: the unique root of the log-rate score a - r mean(E[Y | cell]) lies within the returned rate -/+ 1e-10 relative (accuracy contract)',
+        'dgamma/mle.hpp:76-111 (inner solve), :419 (tol 1e-10, polish); README "Existence and identification" (strict concavity in log rate)'),
+}
+
+class DgammaCells:
+    def __init__(self, data):
+        counts = collections.Counter(int(v) for v in data)
+        self.n = len(data)
+        self.cells = sorted(counts.items())
+    @staticmethod
+    def lower(a, x):
+        """Regularized lower incomplete gamma by the Kummer series, for the large-shape inputs on which mpmath's gammainc does not converge."""
+        if x == 0: return mp.mpf(0)
+        return mp.exp(a*mp.log(x)-x-mp.loggamma(a+1))*mp.hyp1f1(1, a+1, x, maxterms=10**7)
+    def prob(self, a, r, k):
+        if a > 1e5:     # mpmath's gammainc does not converge here (and fails slowly): difference of the lower tails
+            v = self.lower(a, r*(k+1))-self.lower(a, r*k)
+            if not v > mp.mpf(10)**(-mp.mp.dps+10): raise ValueError('cell probability below the absolute precision of the difference of lower tails')
+            return v
+        return mp.gammainc(a, r*k, r*(k+1), regularized=True)
+    def value(self, a, r):
+        return sum((mp.mpf(w)*mp.log(self.prob(a, r, k)) for k, w in self.cells), mp.mpf(0))/self.n
+    def dshape(self, a, r):
+        """d/da of the mean log likelihood, central difference at working precision (error ~1e-24, widened by the caller)."""
+        h = a*mp.mpf('1e-12')
+        total = mp.mpf(0)
+        for k, w in self.cells:
+            total += w*(mp.log(self.prob(a+h, r, k))-mp.log(self.prob(a-h, r, k)))/(2*h)
+        return total/self.n
+    def rate_score(self, a, r):
+        """d/d log r of the mean log likelihood: a - r mean E[Y | cell] = a (1 - mean ratio)."""
+        total = mp.mpf(0)
+        for k, w in self.cells:
+            ratio = self.prob(a+1, r, k)/self.prob(a, r, k)
+            total += w*ratio
+        return a*(1-total/self.n)
+
+def dgamma_cutoffs(cells, L0, r):
+    """Shape interval [a_low, a_high] outside which L <= L0 (total log likelihood level), from the dossier bounds. r is None for a free rate."""
+    n = cells.n
+    low = mp.mpf(0)
+    for k, w in cells.cells:
+        if k > 0: low = max(low, min(mp.mpf(1), mp.exp(L0/w)/(2*mp.e*mp.log1p(mp.mpf(1)/k))))
+    if r is not None:
+        high = max(2*r*(cells.cells[-1][0]+1), -L0/(n*(mp.log(2)-mp.mpf(1)/2)))
+    else:
+        high = mp.inf
+    return low, high
+
+def replay_dgamma(r, data, budget):
+    try: return replay_dgamma_run(r, data, budget)
+    except (mp.libmp.libhyper.NoConvergence, ZeroDivisionError, ValueError, OverflowError) as error:
+        return [comparison('cover' if r['mask'] == 2 else 'bracket', 'evaluation raised', 'open', 'mpmath incomplete gamma: %s: %s' % (type(error).__name__, error), rigor='numerical',
+                           note='the 50-digit evaluation failed at these coefficients')], None
+
+def replay_dgamma_run(r, data, budget):
+    res = r['result']; kind = (res.get('outcome') or {}).get('kind'); mask = r['mask']
+    if kind != 'estimate' or mask not in (1, 2): return [], None
+    cells = DgammaCells(data)
+    if all(k == 0 for k, w in cells.cells): return [], 'all zero: point mass'
+    ahat = mp.mpf(number(res['estimates']['shape'])); rhat = mp.mpf(number(res['estimates']['rate']))
+    out = []
+    w = mp.mpf('1e-10')
+    if mask == 1:
+        gl, gr = cells.rate_score(ahat, rhat*(1-w)), cells.rate_score(ahat, rhat*(1+w))
+        verdict = 'holds' if gl > 0 > gr else 'fails' if gl < 0 and gr < 0 or gl > 0 and gr > 0 else 'open'
+        if gl < 0 < gr: verdict = 'fails'
+        out.append(comparison('bracket', "log-rate score signed on r_hat (1 -/+ 1e-10): positive left, negative right", verdict,
+                              'left %s, right %s' % (mp.nstr(gl, 8), mp.nstr(gr, 8)), margin='1e-11 min(1, a) per observation (solver)', rigor='numerical',
+                              note='mpmath incomplete gamma at 50 digits; the log-rate likelihood is strictly concave (dossier), so the root is the unique maximizer'))
+        return out, None
+    # rate held: shape free
+    ll_hat = cells.value(ahat, rhat); target = ll_hat+DGAMMA_MARGIN
+    # bracket on the score at a_hat (1 -/+ 1e-10)
+    dl, dr = cells.dshape(ahat*(1-w), rhat), cells.dshape(ahat*(1+w), rhat)
+    allowance = mp.mpf('1e-15')
+    vb = 'holds' if dl-allowance > 0 > dr+allowance else 'fails' if dl+allowance < 0 or dr-allowance > 0 else 'open'
+    out.append(comparison('bracket', "shape score signed on a_hat (1 -/+ 1e-10): positive left, negative right", vb,
+                          'left %s, right %s' % (mp.nstr(dl, 8), mp.nstr(dr, 8)), margin='1e-15 numerical-difference allowance', rigor='numerical',
+                          note='central difference of the log cell probabilities at 50 digits'))
+    L0 = cells.n*target
+    low, high = dgamma_cutoffs(cells, L0, rhat)
+    if low <= 0:    # no positive cell; excluded above
+        return out, None
+    if not high > low: return out+[comparison('cover', 'global shape maximum', 'open', 'cutoffs cross: low %s high %s' % (mp.nstr(low, 6), mp.nstr(high, 6)))], None
+    cache = {}
+    def lshape(a):
+        if a not in cache: cache[a] = cells.dshape(a, rhat)
+        return cache[a]
+    def value(t): return iv.mpf(cells.value(mp.exp(t), rhat))
+    def deriv(ta, tb):
+        A, B = mp.exp(ta), mp.exp(tb)
+        dA, dB = lshape(A), lshape(B)
+        pA, pB = mp.digamma(A), mp.digamma(B)
+        lo_s = dA+pA-pB-allowance; hi_s = dB+pB-pA+allowance          # L_a/n in [L_a(A) + psi(A) - psi(B), L_a(B) + psi(B) - psi(A)]
+        lo_t = lo_s*(B if lo_s < 0 else A); hi_t = hi_s*(B if hi_s > 0 else A)    # f_t = a L_a, a in [A, B]
+        return iv.mpf([lo_t, hi_t])
+    verdict, info = cover(value, deriv, None, mp.log(low), mp.log(high), target, [], budget=max(budget//4, 400))
+    out.append(cover_comparison('cover', 'f(a) < f(a_hat) + 1e-8 per observation for every a in [%s, %s] (cutoffs: small and large shape bounds of the dossier)' % (
+        mp.nstr(low, 6), mp.nstr(high, 6)), verdict, info, target, rigor='numerical', extra='; cutoffs in a: [%s, %s]' % (mp.nstr(low, 6), mp.nstr(high, 6)),
+        note='target is the mean log likelihood at the returned shape plus 1e-8; variable log a; derivative from the monotone conditional mean of log Y (numerical difference)'))
+    return out, None
+
+# ------------------------------------------------------------ ht, shape free (F, numerical)
+
+HT_MARGIN = mp.mpf('1e-8')
+CLAIMS['ht'] = {
+    'shape free (endpoint held or free = minimum; scale held or free)': (
+        'the returned finite candidate is within 1e-8 n of the supremum of the log likelihood: branch and bound over t = log(nu) with the scale roots enclosed over each cell '
+        '(monotone contributions of the positive residuals), the profile score enclosed by [r(w-) - b h(w+)]/2 and [r(w+) - a h(w-)]/2 plus the digamma-free or digamma bounds for the '
+        'normalizer, the small-shape bound n/2 log(2a/pi) - sum log d - k log(sigma held) (endpoint held) or the restriction nu >= 1 (endpoint free), and the large-shape bound '
+        'l_HN + (1 + 1/a)/(4 nu) sum (d/s0)^4 with s0 = sigma held or d_min sqrt((a p - k)/(a n)) at a = 64',
+        'ht/cert.hpp:72 (eps = 1e-8 n; comparisons at incumbent + eps/4: :144, :214, :218), :17-66 (scale box), :129-148 (small shape and tie neighbourhood), :152-162 (large shape), :172-218 (cells, score enclosure); README "Explicit tail and inner-solve bounds", "A computable interval score enclosure"'),
+}
+
+class HtProfile:
+    """Half-t with endpoint-shifted positive residuals d, k endpoint ties, n observations; log likelihood in (nu, u = log sigma)."""
+    def __init__(self, d, held_sigma=None):
+        self.n = len(d); self.pos = sorted(v for v in d if v > 0); self.p = len(self.pos); self.k = self.n-self.p
+        self.logs = [mp.log(mp.mpf(v)) for v in self.pos]
+        self.held_u = None if held_sigma is None else mp.log(mp.mpf(held_sigma))
+        self.sumlog = sum(self.logs, mp.mpf(0))
+    @staticmethod
+    def logmode(nu): return mp.loggamma((nu+1)/2)-mp.loggamma(nu/2)-mp.log(mp.pi*nu)/2
+    def score_u(self, nu, u):
+        return sum(((nu+1)/(1+nu*mp.exp(2*(u-l))) for l in self.logs), mp.mpf(0))-self.n
+    def root_u(self, nu):
+        """Root of the (strictly decreasing) log-scale score at shape nu by bisection at working precision."""
+        al = self.p-self.k/nu
+        if not al > 0: return None
+        lo = min(self.logs)+mp.log(al/self.n)/2-1; hi = max(self.logs)+2
+        # the extreme-distance bracket of the dossier, widened; the signs are verified and the ends expanded if needed
+        for _ in range(60):
+            if self.score_u(nu, lo) > 0: break
+            lo -= 1
+        for _ in range(60):
+            if self.score_u(nu, hi) < 0: break
+            hi += 1
+        for _ in range(250):
+            mid = (lo+hi)/2
+            if self.score_u(nu, mid) > 0: lo = mid
+            else: hi = mid
+            if hi-lo < mp.mpf(10)**(-mp.mp.dps+8): break
+        return (lo+hi)/2
+    def u_at(self, nu):
+        return self.held_u if self.held_u is not None else self.root_u(nu)
+    def loglik(self, nu, u):
+        total = self.n*(mp.log(2)+self.logmode(nu)-u)
+        for l in self.logs: total -= (nu+1)*mp.log1p(mp.exp(2*(l-u))/nu)/2
+        return total
+    def profile(self, nu):
+        u = self.u_at(nu)
+        return None if u is None else self.loglik(nu, u)
+    def score_t(self, nu, u):
+        """d/dt of the log likelihood at (nu, u): n nu A'(nu) - (nu/2) sum log(1 + w) + ((nu+1)/2) sum w/(1+w)."""
+        nuA = nu*(mp.digamma((nu+1)/2)-mp.digamma(nu/2)-1/nu)/2
+        total = self.n*nuA
+        for l in self.logs:
+            w = mp.exp(2*(l-u))/nu
+            total += -nu*mp.log1p(w)/2+(nu+1)*w/(1+w)/2
+        return total
+    def scale_box(self, a, b):
+        """Bounds on log sigma* for every nu in [a, b] (dossier: the score contributions are monotone in nu, sign by distance)."""
+        if self.held_u is not None: return self.held_u, self.held_u
+        al, bl = self.p-self.k/a, self.p-self.k/b
+        if not (al > 0 and bl > 0): return None
+        def total(u, upper):
+            v = -mp.mpf(self.n)
+            for l in self.logs:
+                x = (a+1)/(1+a*mp.exp(2*(u-l))); y = (b+1)/(1+b*mp.exp(2*(u-l)))
+                v += max(x, y) if upper else min(x, y)
+            return v
+        def solve(upper):
+            lo = min(self.logs)+mp.log(al/self.n)/2-1; hi = max(self.logs)+mp.log(bl/self.n)/2+1
+            for _ in range(60):
+                if total(lo, upper) > 0: break
+                lo -= 1
+            for _ in range(60):
+                if total(hi, upper) < 0: break
+                hi += 1
+            for _ in range(250):
+                mid = (lo+hi)/2
+                if total(mid, upper) > 0: lo = mid
+                else: hi = mid
+                if hi-lo < mp.mpf(10)**(-mp.mpf(mp.mp.dps)+8): break
+            return lo, hi
+        l_lo, l_hi = solve(False); u_lo, u_hi = solve(True)
+        return l_lo, u_hi       # lower root of the lower score, upper root of the upper score (outer ends of the root brackets)
+    def score_enclosure(self, a, b):
+        """Enclosure (lo, hi) of the profile score d l / dt on t in [log a, log b]; None if the scale roots are not enclosed."""
+        box = self.scale_box(a, b)
+        if box is None: return None
+        ul, uh = box
+        if a >= 32:
+            low = 1/(4*b)-1/(8*a**3); high = 1/(4*a)-1/(8*b**3)+1/(4*a**5)
+        else:
+            low = a/2*max(mp.mpf(0), mp.digamma((a+1)/2)-mp.digamma(b/2))-mp.mpf(1)/2
+            high = b/2*(mp.digamma((b+1)/2)-mp.digamma(a/2))-mp.mpf(1)/2
+        low *= self.n; high *= self.n
+        for l in self.logs:
+            wl = mp.exp(2*(l-uh))/b; wh = mp.exp(2*(l-ul))/a       # w = d^2/(nu sigma^2) in [wl, wh]
+            rl, rh = wl/(1+wl), wh/(1+wh)
+            hl, hh = mp.log1p(wl)-rl, mp.log1p(wh)-rh
+            low += (rl-b*hh)/2; high += (rh-a*hl)/2
+        return low, high
+
+def replay_ht(r, data, budget):
+    try: return replay_ht_run(r, data, budget)
+    except (ZeroDivisionError, ValueError, OverflowError, mp.libmp.libhyper.NoConvergence) as error:
+        return [comparison('cover', 'evaluation raised', 'open', 'ht evaluation: %s: %s' % (type(error).__name__, error), rigor='numerical',
+                           note='the 50-digit evaluation failed at these coefficients')], None
+
+def replay_ht_run(r, data, budget):
+    res = r['result']; kind = (res.get('outcome') or {}).get('kind'); mask = r['mask']
+    if kind != 'estimate' or mask not in (0, 1, 4, 5): return [], None
+    free_mu = not mask & 1; held_sigma = r['held'].get('sigma') if mask & 4 else None
+    x = [float(v) for v in data]
+    mu = min(x) if free_mu else r['held']['mu']
+    d = [v-mu for v in x]
+    if any(v < 0 for v in d): return [], 'observations below the held endpoint'
+    p = HtProfile(d, held_sigma)
+    if p.p == 0: return [], 'all observations at the endpoint'
+    n = p.n
+    tie = free_mu and held_sigma is None and 2*p.k == n
+    if tie: return [], 'exact tie 2k = n with free endpoint and scale (scale-zero face): not replayed'
+    if p.held_u is None and p.k > 0 and not free_mu: return [], 'endpoint ties with free shape and scale: unbounded (stop)'
+    nu_hat = mp.mpf(number(res['estimates']['nu'])); sigma_hat = mp.mpf(number(res['estimates']['sigma']))
+    l_hat = p.loglik(nu_hat, mp.log(sigma_hat)); target = l_hat/n+HT_MARGIN; L0 = n*target
+    out = []
+    at_bound = free_mu and nu_hat <= 1
+    if not at_bound:
+        w = mp.mpf('1e-10')
+        sl = p.score_t(nu_hat*(1-w), p.u_at(nu_hat*(1-w))); sr = p.score_t(nu_hat*(1+w), p.u_at(nu_hat*(1+w)))
+        out.append(comparison('bracket', "profile score in log nu signed on nu_hat (1 -/+ 1e-10): positive left, negative right",
+                              'holds' if sl > 0 > sr else 'fails' if sl < 0 and sr < 0 or sl > 0 and sr > 0 else 'open',
+                              'left %s, right %s' % (mp.nstr(sl, 8), mp.nstr(sr, 8)), margin='accuracy contract tol 1e-10', rigor='numerical',
+                              note='scale root by bisection at 50 digits; shape score from digamma at 50 digits'))
+    # shape interval: [t_lo, t_hi]
+    if free_mu: t_lo = mp.mpf(0)
+    else:
+        sigma_term = p.k*p.held_u if p.held_u is not None else mp.mpf(0)
+        t_lo = mp.log(mp.pi/2)+2*(L0+p.sumlog+sigma_term)/n          # n/2 log(2a/pi) - sum log d - k log(sigma) <= L0 for log a below
+        if t_lo > 0: t_lo = mp.mpf(0)
+        if t_lo < -700: return out+[comparison('cover', 'global shape maximum', 'open', 'small-shape cutoff below exp(-700)')], None
+    aa = mp.mpf(64)
+    if p.held_u is not None: s0 = mp.exp(p.held_u)
+    else:
+        if not aa*p.p > p.k: return out+[comparison('cover', 'global shape maximum', 'open', 'a p <= k')], None
+        s0 = mp.mpf(p.pos[0])*mp.sqrt((aa*p.p-p.k)/(aa*n))
+    # half-normal supremum of the log likelihood (scale root, or the held scale)
+    m2 = sum((mp.mpf(v)**2 for v in p.pos), mp.mpf(0))
+    sig2 = (m2/n) if p.held_u is None else mp.exp(2*p.held_u)
+    l_hn = n*(mp.log(2)-mp.log(2*mp.pi)/2-mp.log(sig2)/2)-m2/(2*sig2)
+    gap = L0-l_hn
+    if not gap > 0:
+        return out+[comparison('cover', 'global shape maximum', 'fails' if l_hn > l_hat+0 else 'open',
+                               'half-normal face %s not below the target %s' % (mp.nstr(l_hn, 15), mp.nstr(L0, 15)), rigor='numerical')], None
+    corr_sum = sum(((mp.mpf(v)/s0)**4 for v in p.pos), mp.mpf(0))
+    D = (1+1/aa)*corr_sum/(4*gap)                # nu >= max(D, a) has sup l <= l_hn + correction < target
+    t_hi = mp.log(max(D, aa))*(1+mp.mpf('1e-12'))
+    if t_hi > 90: return out+[comparison('cover', 'global shape maximum', 'open', 'large-shape cutoff exp(%s) beyond the evaluated range' % mp.nstr(t_hi, 5))], None
+    if not t_hi > t_lo: t_hi = t_lo+1
+    def value(t):
+        v = p.profile(mp.exp(t))
+        if v is None: raise ValueError('scale root not enclosed')
+        return iv.mpf(v/n)
+    def deriv(ta, tb):
+        e = p.score_enclosure(mp.exp(ta), mp.exp(tb))
+        if e is None: return iv.mpf([-mp.inf, mp.inf])
+        return iv.mpf([e[0]/n, e[1]/n])
+    verdict, info = cover(value, deriv, None, t_lo, t_hi, target, [], budget=budget*5)
+    out.append(cover_comparison('cover', 'l(nu, sigma) < l_hat + 1e-8 n for every nu in [%s, %s] (profile in sigma; cutoffs of the dossier outside)' % (
+        mp.nstr(mp.exp(t_lo), 6), mp.nstr(mp.exp(t_hi), 6)), verdict, info, target, rigor='numerical',
+        extra='; nu range [%s, %s], half-normal face %s' % (mp.nstr(mp.exp(t_lo), 6), mp.nstr(mp.exp(t_hi), 6), mp.nstr(l_hn/n, 12)),
+        note='variable log nu; profile score enclosed per cell by the dossier bounds; values by mpmath loggamma at 50 digits'))
+    return out, None
+
 # ------------------------------------------------------------ foldnorm, joint (F)
 
 CLAIMS['foldnorm'] = {
@@ -781,9 +1152,10 @@ def replay_skellam(r, data, budget):
 # ------------------------------------------------------------ cache and registry
 
 import gzip, hashlib, json, os, pathlib
-VERSIONS = {'foldnorm': 4, 'fatigue': 3, 'skellam': 2, 'pareto2': 3, 'invpareto': 3, 'cauchy': 2}      # bump a family's entry when its replay changes; the cache key includes it
+VERSIONS = {'foldnorm': 4, 'fatigue': 3, 'skellam': 2, 'pareto2': 3, 'invpareto': 3, 'cauchy': 2, 'burr': 1, 'dgamma': 3, 'ht': 2}      # bump a family's entry when its replay changes; the cache key includes it
 VERSION = 'covers-1'
-CACHE_PATH = pathlib.Path(os.environ.get('CERT_REPLAY_COVERS_CACHE', '/tmp/cert-replay-covers-cache.jsonl.gz'))
+CACHE_PATH = pathlib.Path(os.environ.get('CERT_REPLAY_COVERS_CACHE',
+    str(pathlib.Path(__file__).resolve().parents[2]/'build'/'cert-replay'/'covers-cache.jsonl.gz')))
 _cache = None
 
 def _load_cache():
@@ -801,7 +1173,7 @@ def _load_cache():
 def cached(family, replay):
     """Memoize a replay on (version, family, mask, held values, returned coefficients, outcome, data, budget); a
     result is the comparison list and the reason, both plain JSON. The cache is a gzipped JSON-lines file
-    (CERT_REPLAY_COVERS_CACHE, default /tmp); deleting it only costs time. Not shared between dps or budgets."""
+    (CERT_REPLAY_COVERS_CACHE, default build/cert-replay/); deleting it only costs time. Not shared between dps or budgets."""
     def run(r, data, budget):
         cache = _load_cache()
         key = hashlib.sha256(json.dumps([VERSION, VERSIONS.get(family, 1), family, r['mask'], r['held'], r['result'].get('estimates'), r['result'].get('outcome'),
@@ -810,6 +1182,7 @@ def cached(family, replay):
         comps, why = replay(r, data, budget)
         comps = json.loads(json.dumps(comps, default=str))
         cache[key] = dict(comps=comps, why=why)
+        CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
         with gzip.open(CACHE_PATH, 'at') as f: f.write(json.dumps([key, cache[key]])+'\n')
         return comps, why
     return run
@@ -822,5 +1195,5 @@ def both(first, second):
 
 REPLAYS = {family: cached(family, fn) for family, fn in
            {'pareto2': replay_pareto2, 'invpareto': replay_invpareto, 'cauchy': replay_cauchy_scale, 'foldnorm': replay_foldnorm,
-            'fatigue': replay_fatigue, 'skellam': replay_skellam}.items()}
-REPLAYS['gpd'] = both(cached('gpd', replay_gpd), cached('gpd-coefficient', replay_gpd_coefficient))
+            'fatigue': replay_fatigue, 'skellam': replay_skellam, 'burr': replay_burr_power, 'dgamma': replay_dgamma, 'ht': replay_ht}.items()}
+REPLAYS['gpd'] = both(both(cached('gpd', replay_gpd), cached('gpd-coefficient', replay_gpd_coefficient)), cached('gpd-xi-held', replay_gpd_xi_held))
