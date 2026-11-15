@@ -1,0 +1,235 @@
+cert-replay: 1139 CPU s, 50 digits
+  beta    root        holds  166
+  dnorm   root        holds  96
+  dweibull root        holds  84
+  frechet restore     holds  88
+  frechet root        fails  8
+  frechet root        holds  122
+  frechet root        info   44
+  gamma   root        fails  6
+  gamma   root        holds  126
+  gamma   root-tol    info   58
+  genbeta root        info   158
+  gumbel  root        holds  122
+  hcauchy root        holds  138
+  invgamma restore     holds  78
+  invgamma restore     info   4
+  invgamma root        holds  48
+  invgamma root        info   82
+  invweibull restore     holds  116
+  invweibull restore     info   4
+  invweibull root        fails  6
+  invweibull root        holds  36
+  invweibull root        info   78
+  kumar   root        holds  92
+  kumar   root-b      info   52
+  lgamma  restore     holds  68
+  lgamma  restore     info   4
+  lgamma  root        holds  40
+  lgamma  root        info   72
+  lgser   root        holds  64
+  lgser+zero=modified moment      holds  46
+  llogis  restore     holds  122
+  llogis  restore     info   2
+  llogis  root        fails  14
+  llogis  root        holds  30
+  llogis  root        info   80
+  lnorm   restore     holds  134
+  lnorm   restore     info   4
+  logis   root        holds  136
+  logis   root        open   12
+  logitnorm restore     holds  122
+  logitnorm restore     info   2
+  lomax   concave     holds  22
+  lomax   face        holds  58
+  lomax   gain        holds  22
+  lomax   global      holds  22
+  lomax   root        holds  60
+  naka    restore     holds  76
+  naka    restore     info   2
+  naka    root        fails  2
+  naka    root        holds  44
+  naka    root        info   78
+  nbinom  dispersion  holds  70
+  nbinom  root        holds  60
+  nsbeta  root        holds  150
+  pareto3 restore     holds  106
+  pareto3 restore     info   4
+  pareto3 restore     open   2
+  pareto3 root        holds  38
+  pareto3 root        info   74
+  pig     root        holds  44
+  pig     root-polish info   18
+  pois+zero=modified moment      holds  62
+  pois+zero=truncated moment      holds  66
+  weibull root        fails  4
+  weibull root        holds  128
+  yulesimon root        holds  38
+  zeta    root        holds  44
+  lomax   face        supremum none: 54
+not replayed (no certificate comparison):
+  beta: evaluation only: 44
+  beta: no certified outcome (invalid): 12
+  beta: no certified outcome (nomle): 4
+  beta: no certified outcome (numerical): 2
+  dnorm: evaluation only: 28
+  dnorm: no certified outcome (invalid): 2
+  dnorm: no certified outcome (limit): 30
+  dweibull: evaluation only: 28
+  dweibull: no certified outcome (invalid): 4
+  dweibull: no certified outcome (limit): 28
+  dweibull: no certified outcome (numerical): 6
+  dweibull: open: count range above 20000 (hp cost): 6
+  frechet: evaluation only: 44
+  frechet: no certified outcome (invalid): 20
+  frechet: no certified outcome (limit): 36
+  frechet: no certified outcome (nomle): 6
+  frechet: no certified outcome (numerical): 24
+  frechet: not a scalar root of this job (held scale with free shape: cover; all free: cover): 66
+  gamma: closed form or evaluation: 96
+  gamma: no certified outcome (invalid): 12
+  gamma: no certified outcome (nomle): 4
+  gamma: no certified outcome (tolerance): 2
+  genbeta: no certified outcome (invalid): 18
+  genbeta: no certified outcome (limit): 44
+  genbeta: no certified outcome (nomle): 10
+  genbeta: no certified outcome (numerical): 112
+  genbeta: not a scalar root (cover or evaluation): 96
+  gev: no certified outcome (invalid): 20
+  gev: no certified outcome (nomle): 8
+  gev: no certified outcome (numerical): 18
+  gev: not a held-scale scalar root (subset handled elsewhere): 278
+  gev: open: held-scale root with xi 0.308436 outside (-1, 0): golden-section search (gev/mle.hpp:292-300), no bracket claim: 36
+  gumbel: closed form or evaluation (sigma held): 82
+  gumbel: no certified outcome (invalid): 8
+  gumbel: no certified outcome (nomle): 6
+  gumbel: no certified outcome (numerical): 6
+  hcauchy: no root comparison: 116
+  invgamma: closed form or evaluation: 96
+  invgamma: no certified outcome (invalid): 12
+  invgamma: no certified outcome (nomle): 4
+  invgamma: no certified outcome (numerical): 4
+  invweibull: evaluation only: 40
+  invweibull: no certified outcome (invalid): 12
+  invweibull: no certified outcome (nomle): 4
+  invweibull: no certified outcome (numerical): 4
+  kumar: closed form or evaluation (a held): 78
+  kumar: no certified outcome (invalid): 16
+  kumar: no certified outcome (numerical): 26
+  lgamma: closed form or evaluation: 80
+  lgamma: no certified outcome (invalid): 18
+  lgamma: no certified outcome (nomle): 4
+  lgser+zero=modified: all zero: 2
+  lgser+zero=modified: mean one: closed form: 48
+  lgser+zero=modified: no certified outcome (invalid): 4
+  lgser+zero=modified: prob held: 56
+  lgser: no root comparison: 36
+  llogis: evaluation only: 44
+  llogis: no certified outcome (invalid): 12
+  llogis: no certified outcome (nomle): 4
+  llogis: no certified outcome (numerical): 2
+  lnorm: mean held: no restoration check: 100
+  lnorm: no certified outcome (invalid): 12
+  lnorm: no certified outcome (nomle): 4
+  logis: evaluation only: 36
+  logis: no certified outcome (invalid): 8
+  logis: no certified outcome (nomle): 6
+  logis: no certified outcome (numerical): 2
+  logitnorm: mean held: no restoration check: 88
+  logitnorm: no certified outcome (invalid): 12
+  logitnorm: no certified outcome (nomle): 4
+  lomax: closed form (lambda held): 38
+  lomax: evaluation only: 38
+  lomax: no certified outcome (invalid): 12
+  naka: closed form or evaluation: 94
+  naka: no certified outcome (invalid): 12
+  naka: no certified outcome (nomle): 4
+  naka: no certified outcome (numerical): 12
+  nbinom: closed form (size held): 32
+  nbinom: degenerate (all zero): no comparison: 2
+  nbinom: empty: 2
+  nbinom: evaluation only: 32
+  nbinom: no certified outcome (invalid): 2
+  nsbeta: evaluation only: 40
+  nsbeta: no certified outcome (invalid): 58
+  nsbeta: no certified outcome (nomle): 4
+  nsbeta: no certified outcome (numerical): 2
+  pareto3: evaluation only: 38
+  pareto3: no certified outcome (invalid): 12
+  pareto3: no certified outcome (numerical): 6
+  pig: binary counts: closed form (exact predicate): 10
+  pig: evaluation only: 28
+  pig: no certified outcome (invalid): 4
+  pig: no certified outcome (limit): 64
+  pig: no certified outcome (numerical): 6
+  pois+zero=modified: all zero: 14
+  pois+zero=modified: mean one: closed form: 20
+  pois+zero=modified: no root comparison: 60
+  pois+zero=truncated: no root comparison: 34
+  weibull: closed form or evaluation (shape held): 94
+  weibull: no certified outcome (invalid): 12
+  weibull: no certified outcome (nomle): 4
+  weibull: no certified outcome (numerical): 4
+  yulesimon: no root comparison: 38
+  zeta +truncate=zipf: N free (plain zeta fit) or s held: no window root: 144
+  zeta +truncate=zipf: no certified outcome (invalid): 6
+  zeta +truncate=zipf: no certified outcome (limit): 6
+  zeta: no root comparison: 32
+open (not judged):
+  OPEN  cert-replay:root|native|logis|archive|004685: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|native|logis|archive|004686: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|native|logis|class|huge: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|native|logis|class|subnormal: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|native|logis|class|subnormal-signed: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|native|logis|class|tiny: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|archive|004685: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|archive|004686: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|class|huge: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|class|subnormal: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|class|subnormal-signed: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|class|tiny: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:restore|native|pareto3|archive|005612: evaluation raised; hp evaluation error: OverflowError: too many digits in integer; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:restore|double|pareto3|archive|005612: evaluation raised; hp evaluation error: OverflowError: too many digits in integer; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+3328 cases judged
+cert-replay: failures by check: {'cert-replay:root': 40}
+cert-replay: 0 listed as known, 40 new, 0 listed but passing
+  NEW   cert-replay:root|double|frechet|archive|001946: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.25202334291885e-15, 1.25202334291885e-15], right [3.48482668306617e-16, 3.48482668306617e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.57e-15
+  NEW   cert-replay:root|double|frechet|archive|001949: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.25202334291885e-15, 1.25202334291885e-15], right [3.48482668306617e-16, 3.48482668306617e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.57e-15
+  NEW   cert-replay:root|double|frechet|archive|001955: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.03754602801752e-12, 1.03754602801752e-12], right [6.06812676363848e-13, 6.06812676363848e-13]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -3.39e-15
+  NEW   cert-replay:root|double|frechet|archive|010365: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-7.76139628659315e-17, -7.76139628659315e-17], right [-4.84517284627469e-16, -4.84517284627469e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 1.23e-15
+  NEW   cert-replay:root|double|gamma|archive|001983: G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [-1.84480242972334e-41, -1.84480239885513e-41], right [-1.66156366724037e-39, -1.66156366633226e-39]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = 5.68e-16
+  NEW   cert-replay:root|double|gamma|archive|001986: G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [-1.84480242972334e-41, -1.84480239885513e-41], right [-1.66156366724037e-39, -1.66156366633226e-39]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = 5.68e-16
+  NEW   cert-replay:root|double|gamma|archive|001994: G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [1.42180937496992e-27, 1.42180937496992e-27], right [3.11586350353643e-28, 3.11586350353643e-28]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = -8.67e-16
+  NEW   cert-replay:root|double|invweibull|archive|004257: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-2.5796549644752e-15, -2.5796549644752e-15], right [-6.35617510807761e-15, -6.35617510807761e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.1e-15
+  NEW   cert-replay:root|double|invweibull|archive|004259: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-9.47550435832817e-15, -9.47550435832817e-15], right [-1.98290487804221e-14, -1.98290487804221e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.51e-15
+  NEW   cert-replay:root|double|invweibull|archive|004260: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-7.74405317931859e-15, -7.74405317931859e-15], right [-1.80975975820392e-14, -1.80975975820392e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.22e-15
+  NEW   cert-replay:root|double|llogis|archive|004562: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.50558125964037e-14, 1.50558125964037e-14], right [5.62711136314451e-15, 5.62711136314451e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.95e-15
+  NEW   cert-replay:root|double|llogis|archive|004563: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.15272323740593e-14, 1.15272323740593e-14], right [2.09853116026102e-15, 2.09853116026102e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.28e-15
+  NEW   cert-replay:root|double|llogis|archive|004565: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.50558125964037e-14, 1.50558125964037e-14], right [5.62711136314451e-15, 5.62711136314451e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.95e-15
+  NEW   cert-replay:root|double|llogis|archive|004566: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.15272323740593e-14, 1.15272323740593e-14], right [2.09853116026102e-15, 2.09853116026102e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.28e-15
+  NEW   cert-replay:root|double|llogis|archive|004574: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-1.0827312099384e-15, -1.0827312099384e-15], right [-1.05114324237205e-14, -1.05114324237205e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 1.09e-15
+  NEW   cert-replay:root|double|llogis|archive|010575: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [8.86314736722051e-15, 8.86314736722051e-15], right [2.0401684496466e-15, 2.0401684496466e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.42e-15
+  NEW   cert-replay:root|double|llogis|archive|010576: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.19094942650445e-14, 1.19094942650445e-14], right [5.08651536693148e-15, 5.08651536693148e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -2.21e-15
+  NEW   cert-replay:root|double|naka|archive|005059: G(k(1-w)) > 0 > G(k(1+w)), G = log k - psi(k) - s, s = log(Omega) - mean log x^2 + mean x^2/Omega - 1, w = 2 eps + rounding; hp left [-1.01208056766528e-16, -1.01208056766528e-16], right [-5.74868220769075e-16, -5.74868220769075e-16]; double None; margin None; width shape: log bracket 2e-13 (Reciprocal, Log: digamma equation), relative 4 eps (Square: log k - psi(k) = s) (gamma/transformed.hpp:105-110 (hi - lo <= min(tol/8, 2e-13)), :74-90 (Square)); hp offset (returned - root) = 7.92e-16
+  NEW   cert-replay:root|double|weibull|class|huge: F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding; hp left [-1.5285010623424e-14, -1.5285010623424e-14], right [-1.08738293914096e-14, -1.08738293914096e-14]; double None; margin None; width relative bracket 1e-14 in 1/shape (Gumbel on -log x), half width 5e-15 (weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115); hp offset (returned - root) = -3.03e-14
+  NEW   cert-replay:root|double|weibull|class|tiny: F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding; hp left [-1.14360880346595e-14, -1.14360880346595e-14], right [-7.02490680264504e-15, -7.02490680264504e-15]; double None; margin None; width relative bracket 1e-14 in 1/shape (Gumbel on -log x), half width 5e-15 (weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115); hp offset (returned - root) = -2.14e-14
+  NEW   cert-replay:root|native|frechet|archive|001946: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.25202334291885e-15, 1.25202334291885e-15], right [3.48482668306617e-16, 3.48482668306617e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.57e-15
+  NEW   cert-replay:root|native|frechet|archive|001949: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.25202334291885e-15, 1.25202334291885e-15], right [3.48482668306617e-16, 3.48482668306617e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.57e-15
+  NEW   cert-replay:root|native|frechet|archive|001955: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.03754602801752e-12, 1.03754602801752e-12], right [6.06812676363848e-13, 6.06812676363848e-13]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -3.39e-15
+  NEW   cert-replay:root|native|frechet|archive|010365: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-7.76139628659315e-17, -7.76139628659315e-17], right [-4.84517284627469e-16, -4.84517284627469e-16]; double None; margin None; invweibull on x - mu (mu held); width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 1.23e-15
+  NEW   cert-replay:root|native|gamma|archive|001983: G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [-1.84480242972334e-41, -1.84480239885513e-41], right [-1.66156366724037e-39, -1.66156366633226e-39]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = 5.68e-16
+  NEW   cert-replay:root|native|gamma|archive|001986: G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [-1.84480242972334e-41, -1.84480239885513e-41], right [-1.66156366724037e-39, -1.66156366633226e-39]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = 5.68e-16
+  NEW   cert-replay:root|native|gamma|archive|001994: G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path); hp left [1.42180937496992e-27, 1.42180937496992e-27], right [3.11586350353643e-28, 3.11586350353643e-28]; double None; margin None; width gamma/mle.hpp:204-211 (hi/lo - 1 <= 4 eps), shape = sqrt(lo) sqrt(hi) (relative bracket 4 eps, half width 2 eps); hp offset (returned - root) = -8.67e-16
+  NEW   cert-replay:root|native|invweibull|archive|004257: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-2.5796549644752e-15, -2.5796549644752e-15], right [-6.35617510807761e-15, -6.35617510807761e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.1e-15
+  NEW   cert-replay:root|native|invweibull|archive|004259: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-9.47550435832817e-15, -9.47550435832817e-15], right [-1.98290487804221e-14, -1.98290487804221e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.51e-15
+  NEW   cert-replay:root|native|invweibull|archive|004260: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-7.74405317931859e-15, -7.74405317931859e-15], right [-1.80975975820392e-14, -1.80975975820392e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 2.22e-15
+  NEW   cert-replay:root|native|llogis|archive|004562: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.50558125964037e-14, 1.50558125964037e-14], right [5.62711136314451e-15, 5.62711136314451e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.95e-15
+  NEW   cert-replay:root|native|llogis|archive|004563: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.15272323740593e-14, 1.15272323740593e-14], right [2.09853116026102e-15, 2.09853116026102e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.28e-15
+  NEW   cert-replay:root|native|llogis|archive|004565: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.50558125964037e-14, 1.50558125964037e-14], right [5.62711136314451e-15, 5.62711136314451e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.95e-15
+  NEW   cert-replay:root|native|llogis|archive|004566: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.15272323740593e-14, 1.15272323740593e-14], right [2.09853116026102e-15, 2.09853116026102e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.28e-15
+  NEW   cert-replay:root|native|llogis|archive|004574: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [-1.0827312099384e-15, -1.0827312099384e-15], right [-1.05114324237205e-14, -1.05114324237205e-14]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = 1.09e-15
+  NEW   cert-replay:root|native|llogis|archive|010575: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [8.86314736722051e-15, 8.86314736722051e-15], right [2.0401684496466e-15, 2.0401684496466e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -1.42e-15
+  NEW   cert-replay:root|native|llogis|archive|010576: dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power); hp left [1.19094942650445e-14, 1.19094942650445e-14], right [5.08651536693148e-15, 5.08651536693148e-15]; double None; margin None; width log shape bracket 4 eps (absolute), half width 2 eps, plus conversion rounding (core/transformed_location.hpp:16-19,51 (root in z = log b, hi - lo <= min(tol/16, 4 eps))); hp offset (returned - root) = -2.21e-15
+  NEW   cert-replay:root|native|naka|archive|005059: G(k(1-w)) > 0 > G(k(1+w)), G = log k - psi(k) - s, s = log(Omega) - mean log x^2 + mean x^2/Omega - 1, w = 2 eps + rounding; hp left [-1.01208056766528e-16, -1.01208056766528e-16], right [-5.74868220769075e-16, -5.74868220769075e-16]; double None; margin None; width shape: log bracket 2e-13 (Reciprocal, Log: digamma equation), relative 4 eps (Square: log k - psi(k) = s) (gamma/transformed.hpp:105-110 (hi - lo <= min(tol/8, 2e-13)), :74-90 (Square)); hp offset (returned - root) = 7.92e-16
+  NEW   cert-replay:root|native|weibull|class|huge: F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding; hp left [-1.5285010623424e-14, -1.5285010623424e-14], right [-1.08738293914096e-14, -1.08738293914096e-14]; double None; margin None; width relative bracket 1e-14 in 1/shape (Gumbel on -log x), half width 5e-15 (weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115); hp offset (returned - root) = -3.03e-14
+  NEW   cert-replay:root|native|weibull|class|tiny: F(s(1-w)) < 0 < F(s(1+w)), s = 1/shape, F the Gumbel scale equation of y = -log x, w = 0.5e-14 + rounding; hp left [-1.14360880346595e-14, -1.14360880346595e-14], right [-7.02490680264504e-15, -7.02490680264504e-15]; double None; margin None; width relative bracket 1e-14 in 1/shape (Gumbel on -log x), half width 5e-15 (weibull/mle.hpp:73 -> gumbel/mle.hpp:108,115); hp offset (returned - root) = -2.14e-14
