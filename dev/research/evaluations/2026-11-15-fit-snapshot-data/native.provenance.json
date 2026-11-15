@@ -105,5 +105,41 @@
     ],
     "commit": "3cc23ca66062b6be231574a20d473b9939e42ee6",
     "reason": "face fixes (TASK-214.32): records re-recorded after the merge"
-  }
+  },
+  "patches": [
+    {
+      "families": [
+        "bbinom",
+        "cmb",
+        "cmp",
+        "dgamma",
+        "emg",
+        "expweibull",
+        "fatigue",
+        "foldnorm",
+        "frechet",
+        "gengamma",
+        "gev",
+        "gumbel",
+        "invtrgamma",
+        "kumar",
+        "lomax",
+        "nsbeta",
+        "pareto3",
+        "pareto4",
+        "pig",
+        "sgomp",
+        "skellam",
+        "sn",
+        "st",
+        "trgamma",
+        "weibull",
+        "yulesimon",
+        "zeta"
+      ],
+      "commit": "6db72aaf6f913c0819639eedd836272787b88c02",
+      "dirty": true,
+      "reason": "step 5c job 1 (TASK-150.1.1): control renamed in messages only"
+    }
+  ]
 }

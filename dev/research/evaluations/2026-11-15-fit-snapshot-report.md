@@ -107,3 +107,12 @@ fit-density 0, fit-consistency 80, fit-refine 46, cert-replay 100,
 strict-seam 1; no failure outside the list and none listed but passing
 (cert-replay rerun alone after its first run was terminated by another
 process; 1,520 CPU s).
+
+## Patch after step 5c job 1 (2026-11-15)
+
+The records of the 27 renamed families (TASK-150.1.1, merge `14876c7c`) were
+replaced with snapshots of that branch (provenance `patches`; recorded on its
+worktree before the commit). Against the replaced records only 64 messages per
+mode differ, where a message names the control (`reltol` becomes `tol`); no
+number, outcome or flag changes
+([report](2026-11-15-ctrl-a-report.md)).
