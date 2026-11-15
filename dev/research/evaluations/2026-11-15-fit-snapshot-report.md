@@ -116,3 +116,11 @@ worktree before the commit). Against the replaced records only 64 messages per
 mode differ, where a message names the control (`reltol` becomes `tol`); no
 number, outcome or flag changes
 ([report](2026-11-15-ctrl-a-report.md)).
+
+## Patch after the margin fixes (2026-11-15)
+
+The binom, gompertz, pareto2 and slash records were replaced with snapshots
+of the margin-fixes branch (TASK-214.27, merge `d15aef16`; provenance
+`patches`). Only pareto2's 21 stored exponential limits per mode change:
+`certified` becomes false and the message notes the likelihood margin
+([report](2026-11-15-margin-fixes-report.md)).

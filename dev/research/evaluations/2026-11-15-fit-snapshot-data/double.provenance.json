@@ -140,6 +140,17 @@
       "commit": "6db72aaf6f913c0819639eedd836272787b88c02",
       "dirty": true,
       "reason": "step 5c job 1 (TASK-150.1.1): control renamed in messages only"
+    },
+    {
+      "families": [
+        "binom",
+        "gompertz",
+        "pareto2",
+        "slash"
+      ],
+      "commit": "6db72aaf6f913c0819639eedd836272787b88c02",
+      "dirty": true,
+      "reason": "margin fixes (TASK-214.27): pareto2 limits uncertified"
     }
   ]
 }
