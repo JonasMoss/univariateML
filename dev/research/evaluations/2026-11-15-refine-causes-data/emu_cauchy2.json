@@ -1,0 +1,26 @@
+{
+ "000764": {
+  "slack=0": {
+   "iters": 6,
+   "loc_err_over_scale": 1.1999280572197974e-09,
+   "scale_rel_err": 9.889271214191377e-10
+  },
+  "slack=1.42109e-14": {
+   "iters": 6,
+   "loc_err_over_scale": 6.056441998665825e-17,
+   "scale_rel_err": 5.040433734019503e-17
+  }
+ },
+ "010216": {
+  "slack=0": {
+   "iters": 5,
+   "loc_err_over_scale": 7.489035027862794e-11,
+   "scale_rel_err": 2.5977655100580464e-16
+  },
+  "slack=1.42109e-14": {
+   "iters": 5,
+   "loc_err_over_scale": 7.489035027862794e-11,
+   "scale_rel_err": 2.5977655100580464e-16
+  }
+ }
+}
