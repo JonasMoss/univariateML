@@ -107,6 +107,14 @@ existence:
     strictly concave location and inverse-scale objective with a unique
     finite maximum for nonconstant samples. This does not prove uniqueness
     when shape is free or when the physical rate alone is held.
+  equivariance:
+    group: affine
+    map: {mu: "A + B*mu", sigma: "B*sigma", lambda: "lambda/B"}
+    evidence: >-
+      The density depends on $x$ through $(x-\mu)/\sigma$ and $\lambda\sigma$,
+      with the factor $1/\sigma$. dev/validation/equivariance.py shows the
+      density identity symbolically (SymPy) and at 24 seeded points on the
+      dossier density (40 digits) and dpqr.hpp (binary64).
 ---
 
 The exponentially modified Gaussian is the sum of independent normal and exponential variables, used for asymmetric response times and chromatographic peaks.

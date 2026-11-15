@@ -116,6 +116,23 @@ existence:
     With all coefficients free, a finite MLE is not guaranteed: scale collapse, a normal limit or a location-scale $t_2$ limit can prevent attainment. Global uniqueness is unknown. Holding $\nu>2$ removes both shape limits; a tie of multiplicity $k$ gives unbounded likelihood if $k>\nu(n-k)$, while exact equality gives an unattained scale-zero supremum. With $\mu$ and shape held, a unique positive scale maximum exists exactly when $\nu(n-k)>k$, where $k$ counts observations at that location. Holding $\sigma$ removes scale collapse only when shape is also held; free shape can still collapse as $\nu\downarrow2$. Shape-only held fits isolate every maximum and compare the actual-hold faces; unresolved two-dimensional free-shape held profiles retain converged numerical fits marked uncertified. Holding all coefficients leaves likelihood evaluation.
   reason: >-
     For ordinary t scale $a$, collapse contributes $a^{\nu(n-k)-k}$. With location and shape held, the log-scale score $\sum_i(\nu+1)d_i^2/(\nu a^2+d_i^2)-n$ decreases strictly from $\nu(n-k)-k$ to $-n$ when any residual is nonzero. The density limits in Details establish the shape faces, not global profile optimality.
+  equivariance:
+    group: affine
+    map: {mean: "A + B*mean", sd: "B*sd"}
+    evidence: >-
+      The density has the form $\sigma^{-1} g((x-\mu)/\sigma)$ with $g$ free
+      of location and scale. dev/validation/equivariance.py shows the density
+      identity symbolically (SymPy) and at 24 seeded points on the dossier
+      density (40 digits) and dpqr.hpp (binary64).
+  collapse:
+    at: any
+    exponent: "nu*(n - k) - k"
+    infimum: "2*n - 3*k"
+    attained: false
+    evidence: >-
+      This dossier (existence reason): collapse contributes $a^{\nu(n-k)-k}$
+      for the ordinary t scale $a$; on the domain $\nu > 2$ the infimum
+      $2n-3k$ is approached only as $\nu \downarrow 2$.
 ---
 
 The Student-t distribution is a symmetric, heavy-tailed alternative to the normal distribution.

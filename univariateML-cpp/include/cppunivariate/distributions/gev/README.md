@@ -119,6 +119,30 @@ existence:
     $\sigma^{(n-k)/\xi - k}$, which is unbounded when $\xi k > n - k$; for
     $\xi \le 1$ this needs $k > n/2$, and $k = n/2$ at $\xi = 1$ is the
     boundary case.
+  equivariance:
+    group: affine
+    map: {mu: "A + B*mu", sigma: "B*sigma"}
+    evidence: >-
+      The density has the form $\sigma^{-1} g((x-\mu)/\sigma)$ with $g$ free
+      of location and scale. dev/validation/equivariance.py shows the density
+      identity symbolically (SymPy) and at 24 seeded points on the dossier
+      density (40 digits) and dpqr.hpp (binary64).
+  collapse:
+    at: minimum
+    exponent: "(n - k)/xi - k"
+    infimum: "n - 2*k"
+    attained: true
+    evidence: >-
+      This dossier (existence reason): for $\xi > 0$, shrinking the scale onto
+      a minimum tied $k$ times gives order $\sigma^{(n-k)/\xi - k}$; the fit
+      domain $\xi \le 1$ puts its infimum at the attained member $\xi = 1$.
+  two_point:
+    outcome: estimate
+    unique: true
+    evidence: >-
+      Proved in this dossier (Details, all-free two-point samples with minimum
+      fraction $p \le 1/2$, and the derivation linked there): the unique
+      global maximum is $\xi = -1$, $\sigma = pd$, $\mu = M - pd$.
 ---
 
 The generalized extreme value distribution models maxima. A positive shape $\xi$ gives a heavy right tail, a negative one a finite upper end point, and $\xi = 0$ is the Gumbel distribution.

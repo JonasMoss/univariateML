@@ -128,6 +128,16 @@ existence:
     $z_i=\log(a/x_i)$ for its reciprocal. Its score crosses zero unless
     all $z_i=0$. Reciprocation adds a parameter-independent Jacobian and
     preserves maximizers.
+  equivariance:
+    group: power-scale
+    map: {shape2: "shape2/B", scale: "A*scale**B"}
+    evidence: >-
+      The density depends on $x$ only through
+      $(x/\mathrm{scale})^{\mathrm{shape2}}$ and the factor $1/x$.
+      dev/validation/equivariance.py checks the density identity at 24 seeded
+      points on the dossier density (40 digits, largest relative difference
+      below $10^{-39}$) and dpqr.hpp (binary64); SymPy did not simplify it
+      within its guard.
 ---
 
 The transformed gamma (Stacy's generalized gamma) distribution is the

@@ -115,6 +115,14 @@ existence:
     The remaining infinite-shape paths are bounded by the half-normal
     suprema described below. These arguments do not establish joint
     strict concavity or uniqueness when location and shape are both free.
+  equivariance:
+    group: affine
+    map: {xi: "A + B*xi", omega: "B*omega"}
+    evidence: >-
+      The density has the form $\sigma^{-1} g((x-\mu)/\sigma)$ with $g$ free
+      of location and scale. dev/validation/equivariance.py shows the density
+      identity symbolically (SymPy) and at 24 seeded points on the dossier
+      density (40 digits) and dpqr.hpp (binary64).
 ---
 
 The Azzalini skew-normal extends the normal distribution by a smooth shape parameter. The location $\xi$ and scale $\omega$ differ from its mean and standard deviation. Positive $\alpha$ gives right skewness, negative $\alpha$ gives left skewness, and $\alpha=0$ gives the normal distribution. This is distinct from the Fernandez–Steel skew-normal family.

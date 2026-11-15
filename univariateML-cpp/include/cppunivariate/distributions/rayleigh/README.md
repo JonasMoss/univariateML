@@ -11,7 +11,7 @@ inference_numeric:
     reason: "zero scale and infinite scale are outside the interior model"
     classification: "dev/roadmap/2026-10-30-inference-and-dqm.md#standard-models"
 name: Rayleigh
-support: {type: real, lower: 0.0, upper: inf, closed: [true, false]}
+support: {type: real, lower: 0.0, upper: inf, closed: [true, false], endpoint_log_density: {lower: "-Inf"}}
 params:
 - name: sigma
   symbol: '\sigma'

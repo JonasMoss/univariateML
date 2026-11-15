@@ -165,6 +165,31 @@ existence:
   uniqueness: unknown
   statement: >-
     With all coefficients free, scale collapse or a skew-normal, half-t, half-normal or two-piece $t_2$ limit can prevent a finite maximum. Global uniqueness is unknown, and the implementation does not certify the full search. The uniform closure theorem exhausts joint escapes in the strict tie regime $3k_{max}<2n$, but its quantitative face profilers are not implemented. Holding coefficients restricts the reachable faces by their moment constraints. Holding $\nu$ removes shape escapes, holding $\xi$ removes skew escapes, and holding $\sigma$ excludes a finite-scale $t_2$ face but does not exclude collapse when $\nu$ is free. With $\mu$ and both shapes held, a positive scale maximum exists when $\nu(n-k)>k$, where $k$ counts observations at that location; the reverse strict inequality gives unbounded likelihood, and equality is an unattained finite supremum at $\xi=1$ and remains numerically unresolved otherwise. With $\sigma$ and both shapes held, a location maximum exists even with ties. Holding all coefficients leaves likelihood evaluation.
+  equivariance:
+    group: affine
+    map: {mean: "A + B*mean", sd: "B*sd"}
+    evidence: >-
+      The density has the form $\sigma^{-1} g((x-\mu)/\sigma)$ with $g$ free
+      of location and scale. dev/validation/equivariance.py checks the density
+      identity at 24 seeded points on the dossier density (40 digits, largest
+      relative difference below $10^{-39}$) and dpqr.hpp (binary64); SymPy did
+      not simplify it within its guard.
+  collapse:
+    at: any
+    exponent: "nu*(n - k) - k"
+    infimum: "2*n - 3*k"
+    attained: false
+    evidence: >-
+      This dossier (existence statement): $\nu(n-k)$ against $k$ decides
+      collapse at the effective ordinary t scale; on the domain $\nu > 2$ the
+      infimum $2n-3k$ is approached only as $\nu \downarrow 2$.
+  min_n:
+    value: 3
+    reason: >-
+      Two observations have one outcome for every sample (equivariance), and
+      it has not been decided; until it is recorded under two_point, samples
+      of two are outside the implemented range (strict-rule questions of
+      2026-11-14, Q3).
 ---
 
 The skew Student-t distribution combines heavy tails with asymmetry using the Fernandez-Steel construction. Its location and scale parameters are the mean and standard deviation.

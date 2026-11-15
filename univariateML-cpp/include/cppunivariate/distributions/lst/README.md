@@ -104,6 +104,23 @@ existence:
     With all coefficients free, fitting is restricted to $\nu\ge1$; a finite MLE is not guaranteed because scale collapse or the normal limit can intervene. Global uniqueness is unknown. Holding positive $\nu$ removes the normal escape; collapse has exponent $\nu(n-k)-k$ at a location with $k$ ties. With $\mu$ and $\nu$ held, a unique positive scale maximum exists exactly when $\nu(n-k)>k$; equality gives a finite unattained scale-zero supremum. Holding $\mu$ exempts estimated $\nu$ from the lower fitting bound, and any observation at that location then makes the free-scale, free-$\nu$ likelihood unbounded. Holding $\sigma$ removes scale collapse. Remaining location and shape searches have no general uniqueness proof. Holding all coefficients leaves likelihood evaluation.
   reason: >-
     The scale score at fixed location and shape is $\sum_i(\nu+1)d_i^2/(\nu\sigma^2+d_i^2)-n$. It decreases strictly from $\nu(n-k)-k$ to $-n$ when any residual is nonzero. Its equality case is strictly negative at every positive scale. Free location or shape lacks this monotonicity argument.
+  equivariance:
+    group: affine
+    map: {mu: "A + B*mu", sigma: "B*sigma"}
+    evidence: >-
+      The density has the form $\sigma^{-1} g((x-\mu)/\sigma)$ with $g$ free
+      of location and scale. dev/validation/equivariance.py shows the density
+      identity symbolically (SymPy) and at 24 seeded points on the dossier
+      density (40 digits) and dpqr.hpp (binary64).
+  collapse:
+    at: any
+    exponent: "df*(n - k) - k"
+    infimum: "n - 2*k"
+    attained: true
+    evidence: >-
+      This dossier (existence statement and reason) gives the collapse
+      exponent $\nu(n-k)-k$; the fit domain $\nu \ge 1$ of df puts its infimum
+      at the attained member $\nu = 1$.
 ---
 
 The location-scale Student t includes heavy-tailed distributions with infinite variance.

@@ -15,9 +15,9 @@ enum class OutcomeReason {
   None,
   Unbounded,        // Nonexistence: the likelihood is unbounded (collapse, spike)
   Unattained,       // Nonexistence: finite supremum, not attained, no limit model to name
-  InvalidInput,     // Failure: empty, non-finite or out-of-support data, or invalid held values
+  InvalidInput,     // Failure: empty, non-finite or out-of-support data, data with zero density under every admissible coefficient vector, or invalid held values
   InvalidArgument,  // Failure: a held value or control rejected before the fit
-  Unsupported,      // Failure: a hold subset the family does not implement
+  Unsupported,      // Failure: a hold subset, or a sample below the documented minimum size, the family does not implement
   NoConvergence,    // Failure: a solver cap was reached or a search failed
   Evaluation,       // Failure: NaN, overflow or an unrepresentable result
   Tolerance,        // Failure: tol below the binary64 spacing at the maximizer

@@ -85,6 +85,30 @@ existence:
     Choosing sufficiently small positive $\nu$ proves unrestricted divergence.
     Equality gives a finite path limit, not a proof of non-existence.
     The bounds and limiting-face qualifications are given below.
+  equivariance:
+    group: affine
+    map: {xi: "A + B*xi", omega: "B*omega"}
+    evidence: >-
+      The density has the form $\sigma^{-1} g((x-\mu)/\sigma)$ with $g$ free
+      of location and scale. dev/validation/equivariance.py shows the density
+      identity symbolically (SymPy) and at 24 seeded points on the dossier
+      density (40 digits) and dpqr.hpp (binary64).
+  collapse:
+    at: any
+    exponent: "nu*(n - k) - k"
+    infimum: "n - 2*k"
+    attained: true
+    evidence: >-
+      This dossier (existence reason): at fixed finite $\alpha$ and $\nu$ the
+      likelihood is proportional to $\omega^{\nu(n-k)-k}$; the fit domain $\nu
+      \ge 1$ puts its infimum at the attained member $\nu = 1$.
+  min_n:
+    value: 3
+    reason: >-
+      Two observations have one outcome for every sample (equivariance), and
+      it has not been decided; until it is recorded under two_point, samples
+      of two are outside the implemented range (strict-rule questions of
+      2026-11-14, Q3).
 ---
 
 The Azzalini skew-t distribution combines asymmetric shape with Student tails.

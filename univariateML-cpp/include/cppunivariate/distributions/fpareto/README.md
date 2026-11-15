@@ -243,6 +243,17 @@ existence:
     has a positive definite Hessian, and nonconstant interior observations
     place the mean sufficient statistic inside its convex support.
     These conditional results do not settle the outer joint search.
+  equivariance:
+    group: power-scale
+    map: {shape2: "shape2/B", scale: "A*scale**B"}
+    held: {min: 0}
+    evidence: >-
+      The density depends on $x$ (with min held at 0) only through
+      $(x/\mathrm{scale})^{\mathrm{shape2}}$ and the factor $1/x$.
+      dev/validation/equivariance.py checks the density identity at 24 seeded
+      points on the dossier density (40 digits, largest relative difference
+      below $10^{-39}$) and dpqr.hpp (binary64); SymPy did not simplify it
+      within its guard.
 ---
 
 The Feller–Pareto distribution models sizes above a threshold $\mu$ with independently adjustable lower and upper tails. The scale $\sigma$ sets the size unit, the power $\gamma$ controls the transformation of excesses, and the beta shapes $\tau$ and $\alpha$ give lower and upper tail powers $\gamma\tau$ and $\gamma\alpha$.

@@ -1,0 +1,43 @@
+kumar {
+ "data": [
+  "0x1.b6b50131521bcp-2",
+  "0x1.b6b50131521bcp-2",
+  "0x1.b6b50131521bdp-2"
+ ],
+ "a": "1.63337004148e+16",
+ "b": "4.99119700184e+6012849078030474",
+ "loglik": "109.954448734",
+ "curvature": "-5.10235795893",
+ "unrepresentable": [
+  "b"
+ ]
+}
+gompertz {
+ "data": [
+  "0x1.0d1ac7675c27dp-1",
+  "0x1.0d1ac7675c27dp-1",
+  "0x1.0d1ac7675c27ep-1"
+ ],
+ "a": "2.13858591001e-4351263802012323",
+ "b": "1.90625033787e+16",
+ "condition_mean_x2_lt_2mean2": true,
+ "curvature": "-5.10235795893",
+ "unrepresentable": [
+  "a"
+ ]
+}
+sgomp {
+ "data": [
+  "0x1.bbab7611b8ed4p+0",
+  "0x1.bbab7611b8ed4p+0",
+  "0x1.bbab7611b8ed5p+0"
+ ],
+ "b": "1.43785888873e+16",
+ "eta": "1.01501117033e+10822321997351975",
+ "loglik": "106.576288793",
+ "grid_best_log10_b": "16.25",
+ "second_best_away_from_peak": "93.7084099674",
+ "unrepresentable": [
+  "eta"
+ ]
+}

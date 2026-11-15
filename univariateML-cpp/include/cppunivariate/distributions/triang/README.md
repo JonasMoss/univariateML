@@ -87,6 +87,15 @@ existence:
     With all three coefficients free, every nonconstant finite sample has an attained MLE, which need not be unique. For compatible held coefficients, a maximum is attained unless the sample is constant and every held coefficient equals that observation. In the latter case, free endpoints permit unbounded width collapse. With all coefficients held, only positive-likelihood compatibility is evaluated.
   reason: >-
     The density is bounded above by $2/(b-a)$. Nonconstant data, or a held value different from a constant observation, bound the width away from zero. Likelihood tends to zero as width diverges. On the remaining bounded parameter set, the endpoint-mode convention makes likelihood upper semicontinuous, so a positive candidate yields attainment. Shrinking a compatible interval around a constant observation proves the collapse case. This argument does not establish uniqueness.
+  equivariance:
+    group: affine
+    map: {a: "A + B*a", b: "A + B*b", c: "A + B*c"}
+    evidence: >-
+      The density is $2/(b-a)$ times a function of $(x-a)/(b-a)$ and
+      $(c-a)/(b-a)$. dev/validation/equivariance.py checks the density
+      identity at 24 seeded points on the dossier density (40 digits, largest
+      relative difference below $10^{-39}$) and dpqr.hpp (binary64); SymPy did
+      not simplify it within its guard.
 ---
 
 The triangular distribution describes bounded measurements between endpoints $a$ and $b$, with mode $c$. Holding an endpoint specifies a known bound; holding the mode specifies the peak, which may lie outside the observed range.

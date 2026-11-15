@@ -79,6 +79,21 @@ existence:
     fixed, the mode-density bound tends to zero as $|Q|$ grows. The power and
     Pareto paths and held-coordinate arguments are established in the
     [likelihood analysis](../../../../../dev/research/evaluations/2026-11-10-gg-theory-report.md).
+  equivariance:
+    group: power-scale
+    map: {mu: "log(A) + B*mu", sigma: "B*sigma"}
+    evidence: >-
+      $\log X$ is a location-scale variable with location $\mu$ and scale
+      $\sigma$. dev/validation/equivariance.py shows the density identity
+      symbolically (SymPy) and at 24 seeded points on the dossier density (40
+      digits) and dpqr.hpp (binary64).
+  min_n:
+    value: 3
+    reason: >-
+      Two observations have one outcome for every sample (equivariance), and
+      it has not been decided; until it is recorded under two_point, samples
+      of two are outside the implemented range (strict-rule questions of
+      2026-11-14, Q3).
 relations: {}
 fit:
   method: profile-search

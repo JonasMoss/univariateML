@@ -207,6 +207,9 @@ that log limit, allowing coefficient names and `x` (the endpoint), `pi`, and
 zero, a finite limit, and infinity reliably. Smooth undeclared limits use
 linear extrapolation of two reference log densities just inside the endpoint.
 CDFs and quantiles use the same resolved endpoints in both tails and log modes.
+A constant `-Inf` declares zero density for every coefficient vector; the
+strict layer then treats observations on that endpoint, when no free
+coefficient moves it, as outside the support (`failure(invalid-input)`).
 
 For discrete laws, declare the actual included lattice bounds. Truncated
 Poisson retains the strict conditioning rule `a < x <= b`: its effective
@@ -278,6 +281,56 @@ strict concavity in natural parameters; cite where a proof is long), and
 `uniqueness`: `proved`, `numerical` (only a search is available) or `unknown`.
 Math in `$...$`, as in the prose. Limits and holds remain the machine-readable
 record; `existence` does not replace them.
+
+### Strict-layer keys under `existence`
+
+Five optional keys, added after `reason`, record what the strict layer's
+same-phenomenon rules (`dev/validation/fit-consistency.py`) need to know about
+a family under its golden holds
+([rule questions](../../../../dev/research/2026-11-14-strict-rule-questions.md),
+adopted 2026-11-14). They are machine-readable; neither the site nor R help
+shows them. `dev/validation/existence_keys.py` validates them (without
+arguments it checks every dossier). Every value names its evidence: a proof
+(say where), a high-precision computation or a numerical check (name the
+script). A claim that has not been checked gets no value.
+
+- `equivariance: {group, map, held, evidence}`. `group: affine` means that
+  the law of $A + BX$ ($B > 0$) is again in the family; `power-scale` means
+  the same for $AX^B$ ($A, B > 0$, positive support). `map` gives each moved
+  coefficient of the image law as an expression in `A`, `B` and coefficient
+  names (SymPy syntax, `**` for powers); unlisted coefficients are unchanged.
+  Mapped coefficients must be free and carry no fit-domain restriction, so
+  the map is a bijection of the fitting domain; `held` lists coefficients
+  that must be held at the given values (`{min: 0}` for a power-scale map of
+  a family with a threshold). `dev/validation/equivariance.py` checks the
+  density identity symbolically where SymPy can, on the dossier's
+  `log_density` at 35 digits and on `dpqr.hpp` in binary64 at 24 seeded
+  points; `fit-consistency.py` repeats the binary64 check on every run.
+- `collapse: {at, exponent, infimum, attained, evidence}`. Scale collapse at
+  a value of multiplicity $k$ in a sample of size $n$ (`at: any`, or
+  `at: minimum` for the sample minimum) gives a likelihood of order
+  $\sigma^e$, with `exponent` $e$ an expression in `n`, `k` and coefficient
+  names. `infimum` is $e^* = \inf e$ over the fitting domain, an expression in
+  `n` and `k`; `attained` says whether a fitting-domain member attains it
+  (`false`: only a limit does). On nonconstant data, $e^* < 0$ requires
+  `nonexistence(unbounded)`, $e^* > 0$ forbids it, and $e^* = 0$ is critical:
+  only refusals are forbidden.
+- `two_point: {outcome, unique, evidence}` (requires `equivariance`): every
+  sample of two distinct observations is an image of every other, so their
+  outcome is a family constant. `unique` (estimates only) records whether the
+  maximizer is unique.
+- `min_n: {value, reason}`: samples with $2 \le n <$ `value` are not
+  implemented and end in `failure(unsupported)`. A single observation is
+  never below `min_n`; it ends like constant data. Declare it only where the
+  outcome for the smaller sizes is open.
+- `strict_exceptions: [{class, outcome, argument}]`: the outcome a dossier
+  proves for a `fit-snapshot.py` class where the rules' default verdict does
+  not decide it (a critical tie) or would wrongly forbid it (a maximizer with
+  a public coefficient outside binary64). The fit must end in exactly this
+  outcome.
+
+Outcomes are written `estimate`, `limit`, `budget`, `nonexistence(<reason>)`
+or `failure(<reason>)`, with the reasons of `core/outcome.hpp`.
 
 ### Site prose
 

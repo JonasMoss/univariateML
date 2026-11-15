@@ -115,6 +115,39 @@ existence:
     With all coefficients free over all finite shapes, the likelihood is unbounded. On the fitted branch $-1\le\lambda\le1$, a maximum is attained for at least three observations with every tie multiplicity strictly below half the sample size; uniqueness is unknown. Holding location removes the lower shape bound, and a tie at that location allows collapse when scale and shape are free. Holding scale prevents scale collapse. Held positive shape requires support compatibility. Fixed nonnegative sub-uniform shapes have unique nuisance fits when a finite maximum exists. Uniform plateaus, convex support-contact ties and negative-shape multiple modes preclude a general uniqueness claim. The linked theory inventory gives the remaining conditional existence regimes.
   reason: >-
     On the fitted branch the standardized density and its product with squared distance are uniformly bounded. Near a collapsing location of multiplicity $k$, likelihood is bounded by a constant times $\sigma^{n-2k}$. Under the strict tie condition it vanishes at collapse, and it also vanishes at diverging scale or location. Upper semicontinuity, including the uniform endpoint member, then gives attainment. The unrestricted spike path and conditional collapse exponent are given below; numerical searches do not establish uniqueness.
+  equivariance:
+    group: affine
+    map: {mu: "A + B*mu", sigma: "B*sigma"}
+    evidence: >-
+      The quantile function is $\mu + \sigma Q_\lambda(u)$.
+      dev/validation/equivariance.py checks the identity on dpqr.hpp in
+      binary64 at 24 seeded points (the dossier density is implicit in $u$, so
+      no 40-digit check).
+  collapse:
+    at: any
+    exponent: "(n - k)/(-lambda) - k"
+    infimum: "n - 2*k"
+    attained: true
+    evidence: >-
+      This dossier (existence reason): on the fitted branch $-1 \le \lambda
+      \le 1$ the likelihood near a collapsing location of multiplicity $k$ is
+      at most a constant times $\sigma^{n-2k}$. At $\lambda = -1$, $Q(u) =
+      1/(1-u) - 1/u$ and the density $1/(u^{-2} + (1-u)^{-2})$ has tails of
+      order $x^{-2}$, so collapse attains the exponent $n-2k$. The exponent
+      applies to $\lambda < 0$; members with $\lambda \ge 0$ have exponential
+      or bounded tails and do not collapse on nonconstant data.
+  two_point:
+    outcome: estimate
+    unique: true
+    evidence: >-
+      Numerical, not a proof
+      (2026-11-14-strict-rules-data/tlambda_two_point.py): with $d = x_2 -
+      x_1$, $d^2 L$ depends only on the shape and the two quantile levels. Its
+      supremum over placements is below one at 408 shapes in $[-1, 1)$
+      (largest $1 - 1.9 \times 10^{-7}$ at $\lambda = 1 - 10^{-8}$,
+      approaching one like $(1-\lambda)\log(1/(1-\lambda))$), while $\lambda =
+      1$ attains one exactly and only at the uniform on $[x_1, x_2]$: $\mu =
+      (x_1+x_2)/2$, $\sigma = d/2$.
 ---
 
 The Tukey lambda family describes symmetric measurements through location $\mu$, scale $\sigma$, and shape $\lambda$. Shape controls tail weight and whether support is bounded. Its quantile function spans heavy-tailed, logistic, approximately normal and uniform shapes.
