@@ -36,11 +36,19 @@ def build(p, logd):
             def f(u):
                 r=theta-width*u
                 return mp.exp(-nu/2*mp.log1p(A/mp.sin(r)**2)-base) if r>0 else mp.mpf(0)
-            cuts=sorted(set([mp.mpf(0),end]+[mp.mpf(v) for v in (1,4,16,64) if v<end]))
-            value,error=mp.quad(f,cuts,method='gauss-legendre',maxdegree=8,error=True)
-            # log f is concave: its derivative decreases throughout (0,theta).
+            base_cuts=[mp.mpf(0),end]+[mp.mpf(v) for v in (1,4,16,64) if v<end]
+            gate=mp.mpf('1e-40')
+            # Bound for log f concave: its derivative decreases throughout (0,theta).
             bound=f(end)/(width*slope(theta-width*end)) if end<full else mp.mpf(0)
-            if error>value*mp.mpf('1e-40') or bound>value*mp.mpf('1e-40'):
+            # The default cuts first (all earlier tables come from them). The
+            # integrand behaves like r**nu at the end r=0 (u=full), a
+            # non-analytic endpoint for non-integer nu, so when Gauss-Legendre
+            # misses the gate, grade the cuts geometrically toward `end`.
+            for k in (0,4,8,16,32,64,128):
+                cuts=sorted(set(base_cuts+[end-end*mp.mpf(2)**-j for j in range(1,k+1)]))
+                value,error=mp.quad(f,cuts,method='gauss-legendre',maxdegree=8,error=True)
+                if error<=value*gate and bound<=value*gate:break
+            else:
                 raise ArithmeticError('skew-t angular quadrature/remainder bound')
             value*=width
             thin=base+mp.log(value/mp.pi)

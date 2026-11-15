@@ -35,6 +35,10 @@ DISTS = ROOT/'univariateML-cpp/include/cppunivariate/distributions'
 REPORT = ROOT/'build/truth-audit'
 U = ('1e-300', '1e-100', '1e-30', '1e-12', '1e-6', '.01', '.25', '.5')
 DIGITS = 80
+# Bump by hand whenever an edit to a shared generator file (this file,
+# density.py, truth_reference.py) changes any stored number. It is part of
+# every table's input_sha256; test_truth_regeneration catches a missed bump.
+GENERATOR_VERSION = 1
 
 
 def number(v):
@@ -71,22 +75,25 @@ def read(folder):
 
 
 def input_sha256(folder):
-    """Versioned dependency fingerprint; dossier prose is deliberately excluded.
+    """Fingerprint of one table's own inputs; dossier prose is deliberately excluded.
 
-    Include point selection inputs, the local route/spec, and shared numerical
-    code. External Python dependencies belong to the recorded run environment.
+    Covers point-selection inputs (log density, support, parameter specs, R
+    arguments, golden estimates), the family's truth.py route and spec, and
+    GENERATOR_VERSION. Shared generator sources are NOT hashed: a shared edit
+    that changes numbers must bump GENERATOR_VERSION, and one that forgets is
+    caught by regenerating sample tables byte-for-byte (test_truth_regeneration).
+    External Python dependencies belong to the recorded run environment.
     Keep absent parameter keys absent: points() tests membership for `fixed`.
     """
     meta, g = read(folder)
     keys = ('name', 'domain', 'role', 'integer', 'bound', 'fixed', 'required',
             'kind', 'simulate', 'default')
-    inputs = dict(version=1, log_density=meta['log_density'], support=meta['support'],
+    inputs = dict(version=2, generator_version=GENERATOR_VERSION,
+                  log_density=meta['log_density'], support=meta['support'],
                   params=[{k: p[k] for k in keys if k in p} for p in meta['params']],
                   r_args=meta.get('r', {}).get('args', {}),
                   golden={k: g[k] for k in ('estimates', 'fixed', 'fit_args', 'sampler_args') if k in g})
-    sources = {'route': folder/'truth.py', 'generator': Path(__file__),
-               'density': Path(__file__).with_name('density.py'),
-               'reference': Path(__file__).with_name('truth_reference.py')}
+    sources = {'route': folder/'truth.py'}
     route = module_at(folder/'truth.py')
     if getattr(route, 'use_spec', False):
         sources['spec'] = folder/'spec.py'
@@ -542,10 +549,6 @@ def apply_exclusions(result, route):
             probe = row[1:2] if key == 'values' else row[1:4]
             reasons = [reason for theta, at, reason in exclusions
                        if result['parameters'][row[0]] == theta and probe == at]
-            if hasattr(route, 'truth_workload_exclusion'):
-                theta = dict(zip(result['parameter_names'], result['parameters'][row[0]]))
-                reason = route.truth_workload_exclusion(theta, key, row)
-                if reason: reasons.append(reason)
             if reasons:
                 excluded.append(dict(row=row, reason='; '.join(reasons)))
             else:

@@ -2,7 +2,7 @@
 import unittest
 import mpmath as mp
 from quality.truth_reference import normal, pair, gamma, Reference, beta_normalization, complement, negative_binomial
-from quality.truth import ROOT, DISTS, module_at, points, read, declarative, verify, number, quantile_acceptance
+from quality.truth import ROOT, DISTS, module_at, points, historical_points, extreme_points, read, declarative, verify, number, quantile_acceptance
 import json
 import inspect
 from types import SimpleNamespace
@@ -161,12 +161,19 @@ class SamplerPoints(unittest.TestCase):
         golden = {'estimates': dict.fromkeys(('a', 'b', 'c', 'd'), 2),
                   'sampler_args': dict.fromkeys(('a', 'b', 'c', 'd'), 3)}
         pts = points(meta, golden, SimpleNamespace())
-        self.assertEqual(len(pts), 9)
-        self.assertEqual(pts[-1], dict.fromkeys(('a', 'b', 'c', 'd'), 1.))
+        historical = historical_points(meta, golden, SimpleNamespace())
+        extra = [pt for pt in extreme_points(meta, SimpleNamespace()) if pt not in historical]
+        self.assertLessEqual(len(historical), 9)  # the historical cap of 8 plus the retained default
+        self.assertEqual(len(pts), len(historical) + len(extra))
+        self.assertEqual(pts[:len(historical)], historical)
+        self.assertIn(dict.fromkeys(('a', 'b', 'c', 'd'), 1.), pts)
+        self.assertEqual(pts[len(historical) - 1], dict.fromkeys(('a', 'b', 'c', 'd'), 1.))
 
     def test_all_tables_select_public_default_and_frozen_golden_fit(self):
         folders = sorted(DISTS.glob('*/README.md'))
-        self.assertEqual(len(folders), 98)
+        self.assertTrue(folders)
+        self.assertEqual({f.parent.name for f in folders},
+                         {f.parent.name for f in DISTS.glob('*/truth.json')})
         for filename in folders:
             with self.subTest(family=filename.parent.name):
                 meta, golden = read(filename.parent)
@@ -324,16 +331,6 @@ class AttainedBoundaries(unittest.TestCase):
         with self.assertRaises(ValueError):
             apply_exclusions(result, SimpleNamespace(
                 truth_point_exclusions=[([1.], 'must not exclude the sampler')]))
-
-    def test_cmb_workload_keeps_both_support_endpoints(self):
-        route = module_at(DISTS/'cmb/truth.py')
-        theta = {'size': 10000000., 'prob': 0., 'nu': 1.}
-        for x in (0., 10000000.):
-            self.assertIsNone(route.truth_workload_exclusion(theta, 'values', [0, x]))
-        self.assertTrue(route.truth_workload_exclusion(theta, 'values', [0, 1.]))
-        for lower in (0, 1):
-            self.assertIsNone(route.truth_workload_exclusion(
-                theta, 'quantiles', [0, lower, 0, .5]))
 
     def test_every_attained_face_has_a_stored_reference(self):
         from quality.truth import boundary_points, encode

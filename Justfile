@@ -71,8 +71,13 @@ test: regen
 	  Rscript ../bindings/r/scripts/test_local.R
 
 # Exhaustive pre-merge/release suite, including slow independent oracles.
-test-full:
+test-full: truth-check
 	UMVL_TEST_TIER=full just test
+
+# Truth-generator tests, including the spot regeneration that guards the
+# fingerprint policy (dev/validation/README.md#truth-table-fingerprint-policy).
+truth-check:
+	PYTHONPATH={{repo_root}}/dev/validation UMVL_TRUTH_REGEN=1 python3 -m unittest quality.test_truth_metadata quality.test_truth
 
 check: regen
 	cd univariateML-r && R CMD build --no-build-vignettes . && \

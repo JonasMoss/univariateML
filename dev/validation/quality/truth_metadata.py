@@ -15,6 +15,41 @@ def numerical_bytes(text):
     return re.sub(r'  "(?:density|input)_sha256": "[0-9a-f]+"', '', text).encode()
 
 
+def _number(v):
+    if isinstance(v, bool): return None
+    if isinstance(v, (int, float)): return float(v)
+    if isinstance(v, str):
+        try: return float(v)
+        except ValueError: return None
+    return None
+
+
+def payload_close(a, b, rtol=1e-9, atol=1e-12, path='$'):
+    """Differences between two parsed tables, ignoring metadata; [] if equal.
+
+    Structure and non-numeric strings must match exactly; numbers (including
+    numeric strings such as normalization masses) must agree within
+    rtol*max(|a|,|b|)+atol. Not byte-level: see the fingerprint policy.
+    """
+    if isinstance(a, dict) and isinstance(b, dict):
+        out = []
+        for k in sorted(set(a) | set(b)):
+            if k in ('input_sha256', 'density_sha256', 'seconds'): continue
+            if k not in a or k not in b: out.append(f'{path}.{k}: key missing'); continue
+            out += payload_close(a[k], b[k], rtol, atol, f'{path}.{k}')
+        return out
+    if isinstance(a, list) and isinstance(b, list):
+        if len(a) != len(b): return [f'{path}: length {len(a)} vs {len(b)}']
+        out = []
+        for i, (x, y) in enumerate(zip(a, b)): out += payload_close(x, y, rtol, atol, f'{path}[{i}]')
+        return out
+    x, y = _number(a), _number(b)
+    if x is not None and y is not None:
+        if x == y or abs(x-y) <= rtol*max(abs(x), abs(y))+atol: return []
+        return [f'{path}: {a} vs {b}']
+    return [] if a == b else [f'{path}: {a!r} vs {b!r}']
+
+
 def main():
     before = hashlib.sha256()
     after = hashlib.sha256()

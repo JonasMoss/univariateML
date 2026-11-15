@@ -267,9 +267,10 @@ family in generated d/p/q/r tests; count coverage separately.
   independent mathematical references,
   never C++ or R evaluations. One-coordinate faces do not exhaust their
   intersections or all possible endpoint density regimes.
-  Tables contain a semantic input hash (generator, reference, route, density
-  and numerical metadata), with timings confined to the audit output. They
-  are byte-reproducible within the recorded Python environment. The boundary
+  Tables contain a semantic input hash (`input_sha256`; see the
+  [fingerprint policy](#truth-table-fingerprint-policy)), with timings
+  confined to the audit output. They are byte-reproducible within the
+  recorded Python environment. The boundary
   [report](../research/evaluations/2026-10-31-truth-boundaries-report.md)
   records per-family additions, exclusions and unresolved dpqr findings.
   Exact local `truth_exclusions` declarations retain known failing references
@@ -280,13 +281,10 @@ family in generated d/p/q/r tests; count coverage separately.
   an unsupported member. The public default and fitted sampler points cannot
   be excluded. The positive-truncated Poisson/binomial zero-rate limits use
   this complete-law archive; ordinary zero-rate conditional representatives
-  remain active. The CMB size-cap
-  workload filter retains both support endpoints and both natural-scale median
-  quantiles as active checks; its remaining independently computed probes stay
-  in those excluded arrays because every C++ call enumerates 10,000,001 terms.
+  remain active.
   The [original methodology](../research/evaluations/2026-10-29-dpqr-truth/README.md)
   explains quadrature, omitted-tail and precision thresholds. That report's
-  family failures and gaps are historical: later routes cover all 98 families
+  family failures and gaps are historical: later routes cover every family
   in the [baseline](../research/evaluations/2026-10-30-migration-baseline.md).
   Truth regeneration exits nonzero on gaps. Both this route and the quality
   harness derive from dossier log densities or local overrides: a shared
@@ -315,6 +313,51 @@ products; it does not prove reproducible tarball metadata. `python3 dev/tools/ch
 checks local Markdown link targets, not remote links or mathematical claims.
 See the [C++ export](../research/evaluations/2026-10-30-cpp-standalone-report.md)
 and [R assembly](../research/evaluations/2026-10-30-r-standalone-report.md) records.
+
+## Truth-table fingerprint policy
+
+`truth.json` carries `input_sha256`, a stale-table detector. It hashes the
+table's own inputs: the dossier's log density, support, parameter specs and R
+arguments, the golden estimates and sampler arguments, the family's `truth.py`
+(and `spec.py` when used), and `GENERATOR_VERSION` in
+[truth.py](quality/truth.py). It does not hash the shared generator sources
+(`truth.py`, `density.py`, `truth_reference.py`), so editing shared code no
+longer marks all tables stale.
+
+Rules:
+
+- Bump `GENERATOR_VERSION` by hand when a shared-code change alters any stored
+  number, then regenerate the affected tables and refresh every fingerprint
+  (`python3 -m quality.truth_metadata`, metadata only).
+- A shared edit that changes numbers but forgets the bump is caught by
+  regeneration: `RegenerationTests` in
+  [test_truth_metadata.py](quality/test_truth_metadata.py) regenerates the
+  small tables `exp` and `unif` and requires the serialized result to equal the
+  stored file byte-for-byte. It runs in the full tier (`just truth-check`,
+  a prerequisite of `just test-full`) because it takes minutes of mpmath time;
+  the ordinary Python run skips it.
+- Fingerprint currency (stored hash equals recomputed hash, every family
+  folder has a table) is asserted for all tables without hard-coded counts.
+
+Limit: two spot tables do not exercise every code path of the shared
+generator, so a number-changing edit confined to, say, a discrete-support
+branch can pass the spot test. The version bump is the primary control; the
+spot test is a net. Widen `SPOT_TABLES` when a shared change targets a path
+those tables do not use, or regenerate the affected family and compare.
+
+Alternatives considered:
+
+1. Hash everything including shared sources (the previous policy). Always
+   sound, but any comment edit marks every table stale and forces either a
+   full regeneration (hours of mpmath) or a metadata-only refresh that carries
+   no information, so the hash stops being trusted.
+2. Hash only table inputs, with no version constant. Never stale from
+   unrelated edits, but a number-changing shared edit goes unnoticed.
+3. Table inputs plus a hand-bumped version, with a spot regeneration test
+   (chosen). Cheap, a stale flag means something, and a forgotten bump has a
+   backstop. Cost: relies on discipline and on the spot tables' coverage.
+4. Regenerate and compare all tables in the full tier. Strongest, but costs
+   hours on a shared machine; reserve it for releases or for the changes in 1.
 
 ## Interpreting fitting evidence
 
