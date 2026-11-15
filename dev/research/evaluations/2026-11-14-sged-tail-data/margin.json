@@ -1,0 +1,62 @@
+[
+ {
+  "x": -1.8189346365433414,
+  "lower": true,
+  "radius": 2.1867475184583984,
+  "exact_radius": "2.186747518458398282490044",
+  "radius_rounding": 1.490722284462907e-16,
+  "half_ulp_bound": 2.4277774440344384e-16,
+  "centering_term": 8.56351135161253e-27,
+  "radius_error": 9.711109776223389e-16,
+  "hazard_bound": 9325.526123632626,
+  "exact_hazard_low": 9325.506671090325,
+  "exact_hazard_high": 9325.506671090565,
+  "margin": 1.106322621812114e-11,
+  "margin_radius_part": 9.05612079076354e-12,
+  "exact_log_tail": "-690.7755278982183906947024",
+  "rounding_effect": -1.3901740608502012e-12,
+  "evaluator_error_baseline": 1.710998193100629e-12,
+  "evaluator_error_current": -1.0799121044522752e-13,
+  "baseline": {
+   "log": -690.7755278982181,
+   "natural": NaN,
+   "log_error": 2.7539778905770706e-13
+  },
+  "current": {
+   "log": -690.7755278982199,
+   "natural": 9.9999999999559e-301,
+   "log_error": -1.5435916144881494e-12,
+   "natural_relative_error": 2.7541029907229105e-13
+  }
+ },
+ {
+  "x": 2.548015429452742,
+  "lower": false,
+  "radius": 2.186982766165731,
+  "exact_radius": "2.186982766165730618970657",
+  "radius_rounding": 2.2144240508636032e-16,
+  "half_ulp_bound": 2.428038621455609e-16,
+  "centering_term": 1.2502940227138462e-27,
+  "radius_error": 9.71215448583494e-16,
+  "hazard_bound": 9354.62076405967,
+  "exact_hazard_low": 9354.60137600817,
+  "exact_hazard_high": 9354.601376008412,
+  "margin": 1.109245762905228e-11,
+  "margin_radius_part": 9.08535220169468e-12,
+  "exact_log_tail": "-690.7755278982147932952471",
+  "rounding_effect": -2.0715054273274485e-12,
+  "evaluator_error_baseline": -6.349796311763442e-14,
+  "evaluator_error_current": -6.349796311763442e-14,
+  "baseline": {
+   "log": -690.775527898217,
+   "natural": NaN,
+   "log_error": -2.1851332890014543e-12
+  },
+  "current": {
+   "log": -690.775527898217,
+   "natural": 9.999999999985458e-301,
+   "log_error": -2.1851332890014543e-12,
+   "natural_relative_error": -3.6611533174817764e-13
+  }
+ }
+]
