@@ -211,3 +211,11 @@ archive 2491, 2493, 2494 in uncertified `lgamma` limits, all from failures;
 no `Ok` or certified limit changed
 ([report](2026-11-16-near-constant-limits-report.md)). The known list has 88
 entries.
+
+## Validation of master 810653f8 (2026-11-16)
+
+After all patches above, fresh snapshots of master 810653f8 in all four modes
+equal the patched baselines (native and double 11905 cases each, routes
+1950 each, 0 differences). `just strict` passes; the emg archive 1311
+double-mode seam entry (TASK-214.5) passed and was removed by hand, leaving 87
+entries. Every suite passed (dev/STATUS.md).

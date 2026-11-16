@@ -23,24 +23,21 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   fully covered except `dphtype` (out of scope); extraDistr except the
   dropped vector-parameter families and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master 67fd075c (workstation, GCC 15.2, 2026-11-16, after the
-  2026-11-15 merges: certificate replay, strict rules, face, margin and
-  unique-flag fixes, step 5c jobs 1, 2a, 2b): fresh fit snapshots of all four
-  modes equal the stored [2026-11-15 baselines](research/evaluations/2026-11-15-fit-snapshot-report.md);
+- Tests on master 810653f8 (workstation, GCC 15.2, 2026-11-16, after the
+  2026-11-15 and 2026-11-16 merges: certificate replay, strict rules, face,
+  margin and unique-flag fixes, step 5c jobs 1, 2a, 2b, equivariance
+  batches A to F (TASK-214.42), near-constant maximizers and limits
+  (TASK-214.39)): fresh fit snapshots of all four modes equal the stored
+  [2026-11-15 baselines](research/evaluations/2026-11-15-fit-snapshot-report.md)
+  as patched after each merge (11905 cases in each of native and double,
+  1950 in each route mode);
   `just strict` passes against `dev/validation/strict-known.json`;
   `just cpp-test` 110/110; `just cpp-test-no-long-double` 154/154;
-  `just test` `[ FAIL 0 | WARN 29 | SKIP 157 | PASS 36335 ]` (the warnings
+  `just test` `[ FAIL 0 | WARN 29 | SKIP 157 | PASS 36337 ]` (the warnings
   are hyper/nhyper non-unique messages, TASK-214.45); `just test-full`
-  (with `just truth-check`) `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65735 ]`;
+  (with `just truth-check`) `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65737 ]`;
   `just js-test` 586/586; `just relations` and `just site-check` green.
-  Merged after it, each tested on its branch: the Burr relative-log
-  certificate (74368c2e; on master 1f7ee4dc its seven affected families
-  equal the baselines in both modes), the lst/std/emg near-constant
-  fixes (ec809a34), the sn/huber/triang acceptance fixes (f331a31f) and
-  the trgamma/fpareto/gengamma relative-log fixes (f88a31f4) and the
-  paralogis/invparalogis/fatigue near-constant maximizers (328d5332) and
-  the betapr/genbeta near-constant limits (99ed4f55).
-  The known list has 88 entries, each with a card.
+  The known list has 87 entries, each with a card.
   Not run: any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
@@ -48,7 +45,7 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
 - Known wrong answers on master, each with a card: fits that miss the
-  accuracy contract (TASK-214.5, 19 entries); stop kinds that depend on the precision mode
+  accuracy contract (TASK-214.5, 18 entries); stop kinds that depend on the precision mode
   (TASK-214.13). Root brackets that miss their claimed width by a few
   ulp, far inside the contract: TASK-214.31.
 - Nothing is published to CRAN, and `origin/master` is the old published

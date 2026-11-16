@@ -420,10 +420,6 @@
    "ref": "TASK-214.5",
    "detail": "shape = 977351131797.74414, refined 977351135434.36426: error 3.64e+03 is 37.2 x the contract bound",
    "finding": "off-maximizer"
-  },
-  "seam-open|double|emg|archive|001311": {
-   "ref": "TASK-214.5",
-   "detail": "no terminal result within 300.0s (load-dependent; same case as terminates|double|emg|archive|001311)"
   }
  }
 }
