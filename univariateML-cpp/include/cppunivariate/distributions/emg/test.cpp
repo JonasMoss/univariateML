@@ -529,3 +529,16 @@ TEST_CASE("emg: local location bracket retains the one-iteration witness") {
 TEST_CASE("emg: bounded near-normal median") {
  CHECK(cppunivariate::distributions::qemg(.5,0,1e8,1,true,false)==doctest::Approx(1.).epsilon(1e-10));
 }
+
+TEST_CASE("emg near-constant and tied samples reach the translated exponential limit") {
+  // TASK-214.42 batch E: the certificate works on centred, scaled coordinates.
+  const std::vector<double> near{0.9120912193716119,0.9120912193716119,0.912091219371612};
+  const std::vector<double> tie{0.9120912193716119,0.9120912193716119,1.7625360083399464};
+  for(const auto* x:{&near,&tie}) {
+    const auto r=cppunivariate::emg_mle(mltest::as_span(*x));
+    CHECK(r.status==cppunivariate::EmgStatus::TranslatedExponentialLimit);
+  }
+  const auto r=cppunivariate::emg_mle(mltest::as_span(near));
+  CHECK(r.stop_detail.limit_coef.at(0)==0.9120912193716119);
+  CHECK(r.stop_detail.limit_coef.at(1)/2.7021597764222976e16==doctest::Approx(1).epsilon(1e-10));
+}

@@ -1,0 +1,168 @@
+== double: 1129 old rows of these families, 1129 new
+
+### emg: 213 cases, 174 identical, 39 changed
+  fields ['candidates', 'certified', 'core_status', 'kind', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'message', 'model', 'outcome', 'reason', 'segment_loglik_upper']: 9
+  fields ['estimates']: 7
+  fields ['candidates', 'loglik_lower']: 7
+  fields ['estimates', 'logLik']: 6
+  fields ['candidates', 'limit_loglik']: 6
+  fields ['attainable_tol', 'candidates', 'certified', 'core_status', 'estimates', 'extra', 'extra_vectors', 'fixed', 'iterations', 'kind', 'limit_estimates', 'limit_loglik', 'logLik', 'loglik_lower', 'loglik_upper', 'message', 'model', 'outcome', 'outcome_override', 'reason', 'restricted', 'segment_loglik_upper', 'unique', 'warnings']: 1
+  fields ['candidates', 'certified', 'core_status', 'estimates', 'fixed', 'iterations', 'kind', 'logLik', 'loglik_lower', 'loglik_upper', 'message', 'outcome', 'reason', 'segment_loglik_upper', 'unique']: 1
+  fields ['candidates']: 1
+  fields ['candidates', 'core_status', 'kind', 'loglik_lower', 'message', 'outcome', 'reason']: 1
+  outcome/core_status/certified changes: 12 cases
+    9 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 6 | cert None  ->  limit | {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 2 | cert True
+    1 x  timeout | None | core None | cert None  ->  ok | {'certified': True, 'kind': 'estimate', 'reason': 'none', 'unique': True} | core 0 | cert True
+    1 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 6 | cert None  ->  ok | {'certified': True, 'kind': 'estimate', 'reason': 'none', 'unique': True} | core 0 | cert True
+    1 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 6 | cert None  ->  unresolved | {'certified': False, 'kind': 'failure', 'reason': 'unresolved', 'unique': True} | core 8 | cert None
+  kind changes: 12
+    archive|001272|: numerical/failure/evaluation/ -> limit/limit/none/unavailable:translated-exponential
+    archive|001273|: numerical/failure/evaluation/ -> limit/limit/none/unavailable:translated-exponential
+    archive|001275|: numerical/failure/evaluation/ -> limit/limit/none/unavailable:translated-exponential
+    archive|001276|: numerical/failure/evaluation/ -> limit/limit/none/unavailable:translated-exponential
+    archive|001279|: numerical/failure/evaluation/ -> limit/limit/none/unavailable:translated-exponential
+    archive|001281|: numerical/failure/evaluation/ -> limit/limit/none/unavailable:translated-exponential
+    archive|001311|: timeout/None/None/None -> ok/estimate/none/
+    archive|001343|: numerical/failure/evaluation/ -> ok/estimate/none/
+    archive|010263|: numerical/failure/evaluation/ -> limit/limit/none/unavailable:translated-exponential
+    archive|010264|: numerical/failure/evaluation/ -> limit/limit/none/unavailable:translated-exponential
+    class|near-constant|: numerical/failure/evaluation/ -> limit/limit/none/unavailable:translated-exponential
+    class|offset|: numerical/failure/evaluation/ -> unresolved/failure/unresolved/
+  ok->ok estimate moves: 13; max 7.01e-15; above 1e-10: 0; above 1e-13: 0
+    7.01e-15 archive|010272 {'lambda': ('0x1.13b37240efc4bp+1', '0x1.13b37240efc6dp+1')}
+    3.51e-15 archive|010273 {'lambda': ('0x1.13b3724e5557fp+1', '0x1.13b3724e5559p+1')}
+    5.93e-16 archive|001292 {'lambda': ('0x1.1f86379790eb3p+0', '0x1.1f86379790ebp+0'), 'sigma': ('0x1.12e163fa7f4a3p-1', '0x1.12e163fa7f4a1p-1')}
+    5.93e-16 archive|001289 {'lambda': ('0x1.1f86379790eb3p+0', '0x1.1f86379790ebp+0'), 'sigma': ('0x1.12e163fa7f4a3p-1', '0x1.12e163fa7f4a1p-1')}
+    4.64e-16 archive|001329 {'lambda': ('0x1.6fd3698c392b7p+0', '0x1.6fd3698c392bap+0')}
+    1.98e-16 archive|001297 {'lambda': ('0x1.1f8637978dea5p+0', '0x1.1f8637978dea4p+0')}
+    1.55e-16 archive|001324 {'lambda': ('0x1.6fd3698c3a7c7p+0', '0x1.6fd3698c3a7c6p+0')}
+    1.55e-16 archive|001321 {'lambda': ('0x1.6fd3698c3a7c7p+0', '0x1.6fd3698c3a7c6p+0')}
+    1.43e-16 archive|010266 {'lambda': ('0x1.8e96388eb794cp+0', '0x1.8e96388eb794bp+0'), 'sigma': ('0x1.8c9339a6f90eap-2', '0x1.8c9339a6f90ebp-2')}
+    1.11e-16 archive|001361 {'sigma': ('0x1.1b1e7a2e5ac89p-1', '0x1.1b1e7a2e5ac88p-1')}
+    1.11e-16 archive|001355 {'sigma': ('0x1.1b1e7a3dc27cep-1', '0x1.1b1e7a3dc27cfp-1')}
+    1.11e-16 archive|001352 {'sigma': ('0x1.1b1e7a3dc27cep-1', '0x1.1b1e7a3dc27cfp-1')}
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 14
+  stopped cases: max relative move of limit_estimates 0, of loglik fields inf
+    limit_estimates 0, loglik inf  archive|010276 limit/limit/none/unavailable:translated-exponential
+    limit_estimates 0, loglik inf  archive|010275 limit/limit/none/unavailable:translated-exponential
+    limit_estimates 0, loglik inf  archive|010270 unresolved/failure/unresolved/
+    limit_estimates 0, loglik inf  archive|010269 unresolved/failure/unresolved/
+    limit_estimates 0, loglik inf  archive|001345 limit/limit/none/unavailable:translated-exponential
+    limit_estimates 0, loglik inf  archive|001340 limit/limit/none/unavailable:translated-exponential
+    limit_estimates 0, loglik inf  archive|001339 limit/limit/none/unavailable:translated-exponential
+    limit_estimates 0, loglik inf  archive|001337 limit/limit/none/unavailable:translated-exponential
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### lst: 173 cases, 130 identical, 43 changed
+  fields ['estimates']: 8
+  fields ['estimates', 'logLik']: 7
+  fields ['candidates', 'loglik_lower', 'loglik_upper', 'segment_loglik_upper']: 7
+  fields ['candidates', 'limit_estimates', 'loglik_lower', 'loglik_upper', 'segment_loglik_upper']: 5
+  fields ['logLik']: 3
+  fields ['limit_estimates', 'loglik_lower', 'loglik_upper']: 2
+  fields ['candidates', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'segment_loglik_upper']: 2
+  fields ['candidates', 'certified', 'core_status', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'message', 'outcome', 'segment_loglik_upper']: 2
+  fields ['candidates', 'loglik_lower']: 2
+  fields ['candidates', 'loglik_lower', 'segment_loglik_upper']: 1
+  fields ['core_status', 'kind', 'loglik_lower', 'loglik_upper', 'message', 'outcome', 'reason']: 1
+  fields ['candidates', 'certified', 'core_status', 'kind', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'message', 'model', 'outcome', 'reason', 'segment_loglik_upper']: 1
+  fields ['candidates', 'loglik_upper', 'segment_loglik_upper']: 1
+  fields ['candidates', 'limit_estimates']: 1
+  outcome/core_status/certified changes: 4 cases
+    2 x  limit | {'certified': False, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 10 | cert False  ->  limit | {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 4 | cert True
+    1 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 11 | cert None  ->  nomle | {'certified': True, 'kind': 'nonexistence', 'reason': 'unbounded', 'unique': True} | core 6 | cert None
+    1 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 11 | cert None  ->  limit | {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 4 | cert True
+  kind changes: 2
+    class|near-constant|: numerical/failure/evaluation/ -> nomle/nonexistence/unbounded/
+    class|offset|: numerical/failure/evaluation/ -> limit/limit/none/norm
+  ok->ok estimate moves: 15; max 1.81e-15; above 1e-10: 0; above 1e-13: 0
+    1.81e-15 archive|004893 {'df': ('0x1.d6ca8524dd814p+0', '0x1.d6ca8524dd823p+0'), 'mu': ('0x1.bf0beed6c3c5ep-3', '0x1.bf0beed6c3c64p-3'), 'sigma': ('0x1.09cce68dda11bp-1', '0x1.09cce68dda12p-1')}
+    1.32e-15 resample|n7-s3 {'df': ('0x1.57a76b5fab17ep+1', '0x1.57a76b5fab176p+1'), 'mu': ('-0x1.7e3e9d110f56ep-3', '-0x1.7e3e9d110f56cp-3'), 'sigma': ('0x1.f78e6cb5d9e3p-1', '0x1.f78e6cb5d9e2cp-1')}
+    9.3e-16 resample|n7-s0 {'df': ('0x1.e9096274cd95p+0', '0x1.e9096274cd948p+0'), 'sigma': ('0x1.3f29c44c743dcp-1', '0x1.3f29c44c743dap-1')}
+    7.11e-16 archive|004890 {'df': ('0x1.df6682c92d024p+0', '0x1.df6682c92d02ap+0'), 'mu': ('0x1.a363f1577c3d2p-2', '0x1.a363f1577c3d4p-2'), 'sigma': ('0x1.29f19f1ee714ap-1', '0x1.29f19f1ee714bp-1')}
+    5.87e-16 golden|golden {'df': ('0x1.831a629613872p+1', '0x1.831a629613876p+1'), 'mu': ('0x1.315c1588e3d7cp-4', '0x1.315c1588e3d78p-4'), 'sigma': ('0x1.06efade3b913dp+0', '0x1.06efade3b913ep+0')}
+    4.74e-16 archive|004902 {'df': ('0x1.df6682c92d02ep+0', '0x1.df6682c92d02ap+0')}
+    2.67e-16 archive|004966 {'sigma': ('0x1.aa0fe7f356d97p+497', '0x1.aa0fe7f356d99p+497')}
+    2.37e-16 archive|004901 {'df': ('0x1.df6682c92d02ap+0', '0x1.df6682c92d02cp+0'), 'sigma': ('0x1.e7a4ada08c48bp-500', '0x1.e7a4ada08c48cp-500')}
+    1.67e-16 archive|004957 {'mu': ('0x1.228536e5c9b0cp-2', '0x1.228536e5c9b09p-2'), 'sigma': ('0x1.49a851c80d18bp-1', '0x1.49a851c80d18ap-1')}
+    1.11e-16 archive|004956 {'sigma': ('0x1.b3e11dc2c203ep-2', '0x1.b3e11dc2c203cp-2')}
+    1.11e-16 archive|004955 {'sigma': ('0x1.588b303b2a0e8p-2', '0x1.588b303b2a0eap-2')}
+    1.11e-16 archive|004954 {'sigma': ('0x1.5caabcfbd9952p-1', '0x1.5caabcfbd9953p-1')}
+  ok->ok logLik moves above 1e-12: 1
+    4.45e-12 resample|n7-s2 -0x1.faf3db603a173p+2 -> -0x1.faf3db6043c6cp+2
+  same kind, not ok (stopped, candidates etc. changed): 23
+  stopped cases: max relative move of limit_estimates 9.39e-16, of loglik fields inf
+    limit_estimates 9.39e-16, loglik inf  archive|004900 limit/limit/none/norm
+    limit_estimates 3.8e-16, loglik inf  archive|004897 limit/limit/none/norm
+    limit_estimates 2.22e-16, loglik 1.73e-14  archive|009828 limit/limit/none/norm
+    limit_estimates 1.11e-16, loglik 2.94e-14  resample|n3-s1 limit/limit/none/norm
+    limit_estimates 1.11e-16, loglik 2.54e-14  class|two limit/limit/none/norm
+    limit_estimates 5.55e-17, loglik 1.19e-13  archive|004891 limit/limit/none/norm
+    limit_estimates 5.55e-17, loglik 1.52e-14  resample|n7-s1 limit/limit/none/norm
+    limit_estimates 3.54e-17, loglik 1.72e-14  archive|009368 limit/limit/none/norm
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### sstd: 285 cases, 285 identical, 0 changed
+  outcome/core_status/certified changes: 0 cases
+  kind changes: 0
+  ok->ok estimate moves: 0; max 0; above 1e-10: 0; above 1e-13: 0
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 0
+  stopped cases: max relative move of limit_estimates 0, of loglik fields 0
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### st: 285 cases, 285 identical, 0 changed
+  outcome/core_status/certified changes: 0 cases
+  kind changes: 0
+  ok->ok estimate moves: 0; max 0; above 1e-10: 0; above 1e-13: 0
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 0
+  stopped cases: max relative move of limit_estimates 0, of loglik fields 0
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### std: 173 cases, 127 identical, 46 changed
+  fields ['loglik_lower', 'loglik_upper', 'segment_loglik_upper']: 12
+  fields ['candidates', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'segment_loglik_upper']: 7
+  fields ['estimates']: 6
+  fields ['candidates', 'limit_estimates', 'loglik_lower', 'loglik_upper', 'segment_loglik_upper']: 5
+  fields ['estimates', 'logLik']: 4
+  fields ['candidates', 'certified', 'core_status', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'message', 'outcome', 'segment_loglik_upper']: 2
+  fields ['candidates', 'certified', 'core_status', 'kind', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'message', 'model', 'outcome', 'reason', 'segment_loglik_upper']: 2
+  fields ['loglik_lower', 'loglik_upper']: 1
+  fields ['candidates', 'limit_loglik', 'loglik_lower', 'loglik_upper']: 1
+  fields ['candidates', 'limit_estimates', 'segment_loglik_upper']: 1
+  fields ['segment_loglik_upper']: 1
+  fields ['candidates', 'loglik_lower']: 1
+  fields ['loglik_upper', 'segment_loglik_upper']: 1
+  fields ['candidates', 'loglik_lower', 'loglik_upper']: 1
+  fields ['limit_estimates', 'loglik_lower', 'loglik_upper']: 1
+  outcome/core_status/certified changes: 4 cases
+    2 x  limit | {'certified': False, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 10 | cert False  ->  limit | {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 3 | cert True
+    2 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 11 | cert None  ->  limit | {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 3 | cert True
+  kind changes: 2
+    class|near-constant|: numerical/failure/evaluation/ -> limit/limit/none/norm
+    class|offset|: numerical/failure/evaluation/ -> limit/limit/none/norm
+  ok->ok estimate moves: 10; max 1.12e-15; above 1e-10: 0; above 1e-13: 0
+    1.12e-15 golden|golden {'mean': ('-0x1.9a46ac4596206p-8', '-0x1.9a46ac4596226p-8'), 'nu': ('0x1.fd242b6788354p+1', '0x1.fd242b678834ap+1'), 'sd': ('0x1.add3b229f7c74p-1', '0x1.add3b229f7c78p-1')}
+    1.67e-16 archive|007254 {'sd': ('0x1.dc781bdba9957p-2', '0x1.dc781bdba995ap-2')}
+    1.67e-16 archive|007251 {'mean': ('0x1.b8cddc02ca056p-2', '0x1.b8cddc02ca059p-2')}
+    5.55e-17 archive|007255 {'mean': ('0x1.7fed7ccb4e953p-2', '0x1.7fed7ccb4e952p-2')}
+    5.55e-17 archive|007253 {'sd': ('0x1.f99cf50274803p-2', '0x1.f99cf50274804p-2')}
+    5.55e-17 archive|007250 {'mean': ('0x1.64c236a2886e2p-2', '0x1.64c236a2886e3p-2')}
+    3.79e-17 archive|009364 {'mean': ('0x1.ab353f408p-56', '-0x1.1065a5ffp-56')}
+    2.71e-20 archive|007258 {'sd': ('0x1.c14f894bbe8c1p-13', '0x1.c14f894bbe8cp-13')}
+    2.86e-21 archive|007265 {'sd': ('0x1.7345a2786a258p-21', '0x1.7345a2786a23dp-21')}
+    5.65e-22 archive|009824 {'mean': ('-0x1.edf4e8d6p-57', '-0x1.edfa3e4fp-57')}
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 34
+  stopped cases: max relative move of limit_estimates 3.28e-11, of loglik fields inf
+    limit_estimates 3.28e-11, loglik 1.26e-05  archive|007199 limit/limit/none/norm
+    limit_estimates 9.39e-16, loglik inf  archive|007196 limit/limit/none/norm
+    limit_estimates 3.52e-16, loglik inf  archive|007193 limit/limit/none/norm
+    limit_estimates 2.05e-16, loglik 1.73e-14  resample|n7-s0 limit/limit/none/norm
+    limit_estimates 1.11e-16, loglik 5.05e-14  class|two limit/limit/none/norm
+    limit_estimates 1.11e-16, loglik 1.76e-14  archive|009820 limit/limit/none/norm
+    limit_estimates 5.55e-17, loglik 6.98e-14  archive|007188 limit/limit/none/norm
+    limit_estimates 5.55e-17, loglik 6e-14  class|half-ties limit/limit/none/norm
+  stopped cases with limit_estimates moved above 1e-10: 0

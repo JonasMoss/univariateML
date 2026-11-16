@@ -527,3 +527,17 @@ TEST_CASE("std joint inclusion fallback stationary reference 31102") {
  CHECK(std::abs(r.sigma-(0.8460559157412069))<=1e-10*0.8460559157412069);
  CHECK(r.nu==5.0);
 }
+
+TEST_CASE("std near-constant sample reaches the normal limit as its tie3 preimage does") {
+  // TASK-214.42 batch D: the standardized sample is the tie3 sample.
+  const std::vector<double> near{0.01282033413645349,0.01282033413645349,0.012820334136453492};
+  const std::vector<double> tie{0.01282033413645349,0.01282033413645349,0.4195622184972184};
+  for(const auto* x:{&near,&tie}) {
+    const auto r=cppunivariate::student_t_mle(mltest::as_span(*x),1e-10,1000);
+    CHECK(r.status==cppunivariate::StudentTStatus::NormalBoundary);
+    CHECK(r.stop_detail.loglik_upper>=r.stop_detail.loglik_lower);
+  }
+  const auto r=cppunivariate::student_t_mle(mltest::as_span(near),1e-10,1000);
+  CHECK(r.stop_detail.limit_coef.at(1)>0);
+  CHECK(r.stop_detail.limit_coef.at(1)<1e-17);
+}

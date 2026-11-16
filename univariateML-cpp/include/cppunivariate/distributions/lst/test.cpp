@@ -890,3 +890,14 @@ TEST_CASE("lst corner and near restriction accuracy 33000") {
  CHECK(std::abs(r.df-(1.0001))<=1e-10*1.0001);
  CHECK(r.restricted==0u);
 }
+
+TEST_CASE("lst near-constant and tied samples end in scale collapse") {
+  // Equivariant preimages (TASK-214.42 batch D): the near-constant sample has
+  // a tie of mass 2 among 3 points, as the tie3 sample does.
+  for(const auto& x:{std::vector<double>{0.07491187021483056,0.07491187021483056,0.07491187021483058},
+                     std::vector<double>{0.07491187021483056,0.07491187021483056,0.8287057205213066}}) {
+    const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-10,1000);
+    CHECK(r.status==cppunivariate::LstStatus::Unbounded);
+    CHECK(r.stop_detail.loglik_lower==INFINITY);
+  }
+}
