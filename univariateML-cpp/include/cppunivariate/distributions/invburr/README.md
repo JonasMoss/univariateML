@@ -255,6 +255,13 @@ The power-limit endpoint is taken from the original sample maximum, avoiding
 a one-ulp support error from a reciprocal round trip. Its likelihood still
 transports the certificate value with the data-only Jacobian.
 
+When the observations lie within relative distance $10^{-6}$ of the first one,
+rounding the reciprocals (about $10^{-16}$ per log) would change the
+coefficients by more than the default tolerance, so the all-free certificate
+works on $-\log x$ relative to an anchor and never forms $1/x$. Artificial
+ties cannot arise there; the face likelihoods are evaluated at the returned
+coefficients on the original sample.
+
 
 The held-scale two-shape reduction now inherits the
 [Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
