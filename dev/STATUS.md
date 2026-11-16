@@ -23,17 +23,19 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   fully covered except `dphtype` (out of scope); extraDistr except the
   dropped vector-parameter families and four documented restrictions (fatigue
   `mu = 0`, GEV and GPD shape bounds, `lst` df >= 1).
-- Tests on master a1166cbf (workstation, GCC 15.2, 2026-11-15, after step
-  5b): `just cpp-test` 110/110; `just cpp-test-no-long-double` 154/154;
-  `just test` `[ FAIL 0 | WARN 0 | SKIP 157 | PASS 36354 ]`; `just test-full`
-  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 65493 ]`; `just js-test` 586/586;
-  `just relations` and `just site-check` green. Merged after it and tested on
-  their branches: certificate replay of roots and faces, the strict rules,
-  the sged tail fix and the truth metadata (with `just truth-check`). A
-  combined run of master follows the next merge. `just strict` passes on the
-  [2026-11-15 baselines](research/evaluations/2026-11-15-fit-snapshot-report.md)
-  against `dev/validation/strict-known.json` (137 known failures, each with
-  a card). Not run: any second compiler or platform.
+- Tests on master 67fd075c (workstation, GCC 15.2, 2026-11-16, after the
+  2026-11-15 merges: certificate replay, strict rules, face, margin and
+  unique-flag fixes, step 5c jobs 1, 2a, 2b): fresh fit snapshots of all four
+  modes equal the stored [2026-11-15 baselines](research/evaluations/2026-11-15-fit-snapshot-report.md);
+  `just strict` passes against `dev/validation/strict-known.json`;
+  `just cpp-test` 110/110; `just cpp-test-no-long-double` 154/154;
+  `just test` `[ FAIL 0 | WARN 29 | SKIP 157 | PASS 36335 ]` (the warnings
+  are hyper/nhyper non-unique messages, TASK-214.45); `just test-full`
+  (with `just truth-check`) `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65735 ]`;
+  `just js-test` 586/586; `just relations` and `just site-check` green.
+  Merged after it and tested on its branch: the Burr relative-log
+  certificate (74368c2e). The known list has 137 entries, each with a card.
+  Not run: any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
