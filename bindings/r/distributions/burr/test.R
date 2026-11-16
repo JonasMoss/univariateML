@@ -224,13 +224,13 @@ test_that("burr detects constant off-scale collapse only with both shapes free",
 })
 
 test_that("Burr global certificate stops preserve their diagnostics", {
-  e <- tryCatch(mlburr(exp(seq(-1e-6,1e-6,length.out=20))),univariateML_numerical=identity)
-  expect_s3_class(e,"univariateML_numerical")
+  e <- tryCatch(mlburr(exp(seq(-1e-6,1e-6,length.out=20))),univariateML_limit=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"weibull")
   expect_true(is.data.frame(e$candidates))
   nom <- e$candidates[is.finite(e$candidates$shape1),,drop=FALSE]
   expect_gt(nrow(nom),0L)
   nom <- nom[which.max(nom$shape1),,drop=FALSE]
-  expect_gt(nom$shape1,1e100)
   expect_true(all(is.finite(unlist(nom[c("shape1","shape2","scale")]))))
   expect_true(all(unlist(nom[c("shape1","shape2","scale")])>0))
   expect_true(is.finite(nom$loglik_lower)&&is.finite(nom$loglik_upper))
@@ -268,14 +268,14 @@ test_that("burr sign-uncertain-seam exposes structured tie diagnostics", {
   expect_true(is.finite(fit_payload(e)$loglik_lower))
 })
 
-test_that("burr nearly-constant retains an uncertified finite search", {
-  e <- tryCatch(mlburr(c(0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005)),univariateML_numerical=identity)
-  expect_s3_class(e,"univariateML_numerical")
+test_that("burr nearly-constant reaches its Weibull limit", {
+  e <- tryCatch(mlburr(c(0.99999900000050002,0.99999910526355817,0.99999921052662744,0.9999993157897078,0.99999942105279915,0.99999952631590161,0.99999963157901528,0.99999973684213994,0.99999984210527559,0.99999994736842246,1.0000000526315804,1.0000001578947493,1.0000002631579294,1.0000003684211205,1.0000004736843227,1.0000005789475359,1.0000006842107605,1.000000789473996,1.0000008947372423,1.0000010000005)),univariateML_limit=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"weibull")
   expect_true(is.data.frame(e$candidates))
   nom <- e$candidates[is.finite(e$candidates$shape1),,drop=FALSE]
   expect_gt(nrow(nom),0L)
   nom <- nom[which.max(nom$shape1),,drop=FALSE]
-  expect_gt(nom$shape1,1e100)
   expect_true(all(is.finite(unlist(nom[c("shape1","shape2","scale")]))))
   expect_true(all(unlist(nom[c("shape1","shape2","scale")])>0))
   expect_true(is.finite(nom$loglik_lower)&&is.finite(nom$loglik_upper))

@@ -1,0 +1,156 @@
+== double: 1320 old rows of these families, 1320 new
+
+### burr: 220 cases, 134 identical, 86 changed
+  fields ['estimates']: 29
+  fields ['candidates', 'loglik_lower']: 16
+  fields ['estimates', 'logLik']: 16
+  fields ['candidates', 'limit_estimates', 'loglik_lower']: 7
+  fields ['candidates', 'loglik_lower', 'segment_loglik_upper']: 5
+  fields ['candidates', 'limit_estimates', 'loglik_lower', 'segment_loglik_upper']: 5
+  fields ['candidates', 'limit_estimates', 'limit_loglik', 'loglik_lower']: 4
+  fields ['candidates', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'segment_loglik_upper']: 2
+  fields ['candidates', 'certified', 'core_status', 'kind', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'message', 'model', 'outcome', 'reason']: 2
+  outcome/core_status/certified changes: 2 cases
+    2 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 9 | cert None  ->  limit | {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 2 | cert True
+  kind changes: 2
+    class|near-constant|: numerical/failure/evaluation/ -> limit/limit/none/pareto
+    class|offset|: numerical/failure/evaluation/ -> limit/limit/none/pareto
+  ok->ok estimate moves: 45; max 4.92e-06; above 1e-10: 4; above 1e-13: 7
+    4.92e-06 archive|000639 {'shape2': ('0x1.97842e4f3c773p+39', '0x1.9783aac9f8027p+39')}
+    4.92e-06 archive|000636 {'shape2': ('0x1.97842e4f3c773p+39', '0x1.9783aac9f8027p+39')}
+    7.17e-10 archive|000638 {'shape2': ('0x1.4dd47aa69949p+26', '0x1.4dd47aa29541ap+26')}
+    7.17e-10 archive|000635 {'shape2': ('0x1.4dd47aa69949p+26', '0x1.4dd47aa29541ap+26')}
+    9.02e-13 archive|000647 {'shape2': ('0x1.03926f1520983p+20', '0x1.03926f151f96ap+20')}
+    1.7e-13 archive|000637 {'shape2': ('0x1.117d0d3dfadcdp+13', '0x1.117d0d3dfb101p+13')}
+    1.7e-13 archive|000634 {'shape2': ('0x1.117d0d3dfadcdp+13', '0x1.117d0d3dfb101p+13')}
+    3.1e-14 archive|000683 {'scale': ('0x1.1e5cd439238adp+499', '0x1.1e5cd43923811p+499')}
+    1.95e-14 golden|golden {'scale': ('0x1.326e0288bfa71p+0', '0x1.326e0288bfa19p+0'), 'shape1': ('0x1.55aacd26b18fp+0', '0x1.55aacd26b187bp+0'), 'shape2': ('0x1.dc4455ac28293p+0', '0x1.dc4455ac282c9p+0')}
+    1.74e-14 archive|000645 {'scale': ('0x1.1f94e5da05032p+499', '0x1.1f94e5da0508ap+499'), 'shape2': ('0x1.b556691ac38f1p+0', '0x1.b556691ac38f6p+0')}
+    1.1e-15 archive|000643 {'scale': ('0x1.75679457fe1dcp-663', '0x1.75679457fe1dbp-663'), 'shape2': ('0x1.0315a2eaf1b76p+1', '0x1.0315a2eaf1b71p+1')}
+    1.1e-15 archive|000642 {'scale': ('0x1.5f8384a12b54cp-55', '0x1.5f8384a12b55dp-55'), 'shape2': ('0x1.0315a2eaf1b96p+1', '0x1.0315a2eaf1b91p+1')}
+  ok->ok logLik moves above 1e-12: 2
+    2.43e-12 archive|000639 0x1.f22f7231a09ddp+6 -> 0x1.f22f7231a5d31p+6
+    2.43e-12 archive|000636 0x1.f22f7231a09ddp+6 -> 0x1.f22f7231a5d31p+6
+  same kind, not ok (stopped, candidates etc. changed): 39
+  stopped cases: max relative move of limit_estimates 4.92e-06, of loglik fields 0.00137
+    limit_estimates 4.92e-06, loglik 0.00137  archive|000620 limit/limit/none/pareto
+    limit_estimates 4.92e-06, loglik 0.00137  archive|000617 limit/limit/none/pareto
+    limit_estimates 2.44e-09, loglik 2.2e-07  archive|000619 limit/limit/none/pareto
+    limit_estimates 2.44e-09, loglik 2.2e-07  archive|000616 limit/limit/none/pareto
+    limit_estimates 1.46e-11, loglik 3.38e-09  archive|000628 limit/limit/none/pareto
+    limit_estimates 7.76e-14, loglik 5.22e-11  archive|000618 limit/limit/none/pareto
+    limit_estimates 7.76e-14, loglik 5.22e-11  archive|000615 limit/limit/none/pareto
+    limit_estimates 4.83e-14, loglik 2.24e-14  class|huge limit/limit/none/weibull
+  stopped cases with limit_estimates moved above 1e-10: 4
+
+### gb2: 572 cases, 572 identical, 0 changed
+  outcome/core_status/certified changes: 0 cases
+  kind changes: 0
+  ok->ok estimate moves: 0; max 0; above 1e-10: 0; above 1e-13: 0
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 0
+  stopped cases: max relative move of limit_estimates 0, of loglik fields 0
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### invburr: 220 cases, 171 identical, 49 changed
+  fields ['estimates', 'logLik']: 9
+  fields ['candidates', 'loglik_lower']: 8
+  fields ['candidates', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'segment_loglik_upper']: 7
+  fields ['candidates', 'limit_estimates', 'loglik_lower']: 6
+  fields ['candidates', 'limit_estimates', 'limit_loglik', 'loglik_lower']: 4
+  fields ['estimates']: 4
+  fields ['candidates', 'certified', 'core_status', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'message', 'outcome', 'segment_loglik_upper']: 3
+  fields ['candidates', 'limit_estimates', 'loglik_lower', 'segment_loglik_upper']: 3
+  fields ['candidates', 'loglik_lower', 'segment_loglik_upper']: 3
+  fields ['candidates', 'certified', 'core_status', 'kind', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'message', 'model', 'outcome', 'reason', 'segment_loglik_upper']: 2
+  outcome/core_status/certified changes: 5 cases
+    3 x  limit | {'certified': False, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 7 | cert False  ->  limit | {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 1 | cert True
+    2 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 9 | cert None  ->  limit | {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 1 | cert True
+  kind changes: 2
+    class|near-constant|: numerical/failure/evaluation/ -> limit/limit/none/invweibull
+    class|offset|: numerical/failure/evaluation/ -> limit/limit/none/invweibull
+  ok->ok estimate moves: 13; max 5.37e-14; above 1e-10: 0; above 1e-13: 0
+    5.37e-14 archive|003578 {'scale': ('0x1.60697b0fcdd63p+498', '0x1.60697b0fcdd03p+498'), 'shape1': ('0x1.c5fef76abdb08p-1', '0x1.c5fef76abdcecp-1'), 'shape2': ('0x1.27a193e1f2551p+1', '0x1.27a193e1f24fp+1')}
+    4.11e-14 archive|003577 {'scale': ('0x1.d804024593eaap-499', '0x1.d804024593e52p-499'), 'shape1': ('0x1.c5fef76abd428p-1', '0x1.c5fef76abd2b6p-1'), 'shape2': ('0x1.27a193e1f26dep+1', '0x1.27a193e1f272ap+1')}
+    1.11e-15 class|ties {'scale': ('0x1.1d8d0ca06270dp+0', '0x1.1d8d0ca06270bp+0'), 'shape1': ('0x1.76a10ca87bee9p-1', '0x1.76a10ca87bef3p-1'), 'shape2': ('0x1.d0efd2bdc5c45p+2', '0x1.d0efd2bdc5c3ep+2')}
+    5.61e-16 resample|n7-s1 {'scale': ('0x1.2fffd8a80538dp+0', '0x1.2fffd8a80538ap+0'), 'shape1': ('0x1.de3180db388fap-1', '0x1.de3180db388ffp-1'), 'shape2': ('0x1.24f99fe052c95p+1', '0x1.24f99fe052c94p+1')}
+    5.55e-16 archive|003566 {'scale': ('0x1.fc225ea63dbc5p+0', '0x1.fc225ea63dbc3p+0'), 'shape1': ('0x1.1c85372986f79p-1', '0x1.1c85372986f7ep-1'), 'shape2': ('0x1.12e2b5c8af90ep+2', '0x1.12e2b5c8af90dp+2')}
+    3.85e-16 archive|003562 {'scale': ('0x1.2065437520818p+0', '0x1.2065437520817p+0'), 'shape1': ('0x1.c5fef76abd82cp-1', '0x1.c5fef76abd82fp-1'), 'shape2': ('0x1.27a193e1f261p+1', '0x1.27a193e1f260ep+1')}
+    3.2e-16 archive|003684 {'shape1': ('0x1.630af62c04f6cp+0', '0x1.630af62c04f6ep+0')}
+    3.2e-16 archive|003681 {'shape1': ('0x1.630af62c04f6cp+0', '0x1.630af62c04f6ep+0')}
+    2.22e-16 golden|golden {'scale': ('0x1.25f8b65c2c19fp+0', '0x1.25f8b65c2c1ap+0'), 'shape1': ('0x1.b5e4273e29a02p-1', '0x1.b5e4273e29ap-1'), 'shape2': ('0x1.25b41eb95c61dp+1', '0x1.25b41eb95c61ep+1')}
+    1.93e-16 archive|003677 {'shape1': ('0x1.26867b9676dep+2', '0x1.26867b9676de1p+2')}
+    1.84e-16 archive|003678 {'shape1': ('0x1.3560a0f658dacp+0', '0x1.3560a0f658dadp+0')}
+    1.33e-16 archive|003680 {'shape1': ('0x1.abc2c0bec79abp+0', '0x1.abc2c0bec79acp+0')}
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 34
+  stopped cases: max relative move of limit_estimates 7.7e-06, of loglik fields inf
+    limit_estimates 7.7e-06, loglik inf  archive|003572 limit/limit/none/invweibull
+    limit_estimates 7.7e-06, loglik inf  archive|003569 limit/limit/none/invweibull
+    limit_estimates 1.11e-06, loglik inf  archive|010480 limit/limit/none/invweibull
+    limit_estimates 1.89e-09, loglik 2.44e-07  archive|010479 limit/limit/none/invweibull
+    limit_estimates 8.22e-10, loglik 2.6e-07  archive|003571 limit/limit/none/invweibull
+    limit_estimates 8.22e-10, loglik 2.6e-07  archive|003568 limit/limit/none/invweibull
+    limit_estimates 8.58e-13, loglik 2.5e-09  archive|003580 limit/limit/none/power
+    limit_estimates 2.75e-14, loglik 5.93e-11  archive|003570 limit/limit/none/invweibull
+  stopped cases with limit_estimates moved above 1e-10: 6
+
+### paralogis: 104 cases, 95 identical, 9 changed
+  fields ['estimates']: 9
+  outcome/core_status/certified changes: 0 cases
+  kind changes: 0
+  ok->ok estimate moves: 9; max 1.8e-14; above 1e-10: 0; above 1e-13: 0
+    1.8e-14 archive|005417 {'scale': ('0x1.417a4f684247p+498', '0x1.417a4f68424d6p+498')}
+    1.82e-16 archive|005403 {'scale': ('0x1.390e73002dbd1p+0', '0x1.390e73002dbd2p+0')}
+    1.56e-16 archive|005418 {'scale': ('0x1.6b637659cbac2p+1', '0x1.6b637659cbac1p+1')}
+    1.11e-16 archive|005408 {'scale': ('0x1.e6d7f4875be76p-1', '0x1.e6d7f4875be75p-1')}
+    2.12e-21 archive|005412 {'scale': ('0x1.9b796fc96fa49p-19', '0x1.9b796fc96fa44p-19')}
+    5.65e-27 archive|005413 {'scale': ('0x1.af764ed87f28p-39', '0x1.af764ed87f28ep-39')}
+    1.48e-31 archive|005414 {'scale': ('0x1.1ac355d53c4fbp-55', '0x1.1ac355d53c513p-55')}
+    5.16e-165 archive|005416 {'scale': ('0x1.ae952f4532ae1p-499', '0x1.ae952f4532b07p-499')}
+    1.48e-213 archive|005415 {'scale': ('0x1.2c5f53f3b195ap-663', '0x1.2c5f53f3b1a59p-663')}
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 0
+  stopped cases: max relative move of limit_estimates 0, of loglik fields 0
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### pareto4: 204 cases, 133 identical, 71 changed
+  fields ['estimates']: 27
+  fields ['candidates', 'loglik_lower']: 18
+  fields ['candidates', 'limit_estimates', 'loglik_lower']: 9
+  fields ['estimates', 'logLik']: 6
+  fields ['candidates', 'limit_estimates', 'limit_loglik', 'loglik_lower']: 4
+  fields ['candidates', 'limit_estimates', 'loglik_lower', 'segment_loglik_upper']: 3
+  fields ['candidates', 'certified', 'core_status', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'message', 'outcome']: 2
+  fields ['candidates', 'certified', 'core_status', 'kind', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'message', 'model', 'outcome', 'reason']: 2
+  outcome/core_status/certified changes: 4 cases
+    2 x  limit | {'certified': False, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 7 | cert False  ->  limit | {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 2 | cert True
+    2 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 9 | cert None  ->  limit | {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 2 | cert True
+  kind changes: 2
+    class|near-constant|: numerical/failure/evaluation/ -> limit/limit/none/pareto
+    class|offset|: numerical/failure/evaluation/ -> limit/limit/none/pareto
+  ok->ok estimate moves: 33; max 3.11e-14; above 1e-10: 0; above 1e-13: 0
+    3.11e-14 archive|005671 {'scale': ('0x1.9d55a78a07212p+498', '0x1.9d55a78a0713p+498')}
+    2.32e-14 archive|005701 {'scale': ('0x1.176d6ce5e66f3p+499', '0x1.176d6ce5e6681p+499')}
+    1.2e-14 class|half-ties {'scale': ('0x1.f0b22e6688748p+3', '0x1.f0b22e66886dfp+3'), 'shape1': ('0x1.0e4b415c3109cp+0', '0x1.0e4b415c31084p+0'), 'shape2': ('0x1.550af8347e1bap-1', '0x1.550af8347e1c5p-1')}
+    3.87e-15 golden|golden {'scale': ('0x1.16b8337cb9e22p+0', '0x1.16b8337cb9e0fp+0'), 'shape1': ('0x1.434dd7276034ap-2', '0x1.434dd72760343p-2'), 'shape2': ('0x1.53225836d618p-1', '0x1.53225836d6187p-1')}
+    1.43e-15 archive|005702 {'scale': ('0x1.164938993b239p+3', '0x1.164938993b24p+3')}
+    9.51e-16 archive|005693 {'scale': ('0x1.a266e5ae3ad08p+1', '0x1.a266e5ae3ad01p+1')}
+    8.47e-16 archive|005690 {'scale': ('0x1.0c7552a97059p+5', '0x1.0c7552a97058cp+5')}
+    7.46e-16 archive|005689 {'scale': ('0x1.c9566be0d94fbp+0', '0x1.c9566be0d94f5p+0')}
+    5.63e-16 archive|010872 {'shape1': ('0x1.2f002e28960c9p+36', '0x1.2f002e28960ccp+36')}
+    3.85e-16 archive|005660 {'scale': ('0x1.bae8742a390f9p+5', '0x1.bae8742a390f6p+5')}
+    3.6e-16 archive|005672 {'scale': ('0x1.3c027a865d3b3p+2', '0x1.3c027a865d3b1p+2'), 'shape2': ('0x1.83a0e131aafeep-2', '0x1.83a0e131aafedp-2')}
+    1.75e-16 archive|005697 {'scale': ('0x1.455bde8ac4aedp+3', '0x1.455bde8ac4aecp+3')}
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 36
+  stopped cases: max relative move of limit_estimates 6.95e-05, of loglik fields inf
+    limit_estimates 6.95e-05, loglik inf  archive|005654 limit/limit/none/pareto
+    limit_estimates 6.95e-05, loglik inf  archive|005651 limit/limit/none/pareto
+    limit_estimates 7.06e-09, loglik 6.22e-07  archive|005653 limit/limit/none/pareto
+    limit_estimates 7.06e-09, loglik 6.22e-07  archive|005650 limit/limit/none/pareto
+    limit_estimates 1.62e-10, loglik 1.07e-08  archive|005658 limit/limit/none/pareto
+    limit_estimates 1.2e-12, loglik 2.33e-10  archive|005652 limit/limit/none/pareto
+    limit_estimates 1.2e-12, loglik 2.33e-10  archive|005649 limit/limit/none/pareto
+    limit_estimates 2.24e-15, loglik 3.41e-14  resample|n7-s2 limit/limit/none/weibull
+  stopped cases with limit_estimates moved above 1e-10: 5

@@ -250,14 +250,18 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     double shape10 = std::numeric_limits<double>::quiet_NaN(),
     double shape20 = std::numeric_limits<double>::quiet_NaN(),
     double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12,
-    std::int64_t work_budget = -1) {
+    std::int64_t work_budget = -1, bool reflect = false) {
+  // reflect: x holds the original sample of a reciprocal (inverse Burr) fit.
+  // The certificate then works on log(1/x) = -log(x) without forming 1/x;
+  // scale and limit scale are for the reciprocal sample, and the caller
+  // evaluates face likelihoods on x.
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   if(!burr_valid_controls(tol,maxit,shape10,shape20,scale0,reltol))
     return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
   if(maxit==1)return {nan,nan,nan,nan,0,BurrStatus::IterationFailure};
   if(work_budget<0)work_budget=certificate_budget(maxit);
-  const auto r=burr_cert_detail::fit(x,work_budget,maxit);
+  const auto r=burr_cert_detail::fit(x,work_budget,maxit,reflect);
   BurrStatus status=BurrStatus::NumericalFailure;
   switch(r.outcome){
     case burr_cert_detail::Outcome::Finite:status=BurrStatus::Ok;break;
@@ -276,14 +280,24 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     const auto& face=r.stop_detail.candidates[status==BurrStatus::ParetoBoundary?0:1];
     out.stop_detail.limit_coef=face.coef;out.stop_detail.limit_model=face.model;
     double point_ll=0;
-    for(double v:x)point_ll+=status==BurrStatus::WeibullBoundary?
+    if(reflect)point_ll=r.logLik;
+    else for(double v:x)point_ll+=status==BurrStatus::WeibullBoundary?
       distributions::dweibull(v,face.coef[0],face.coef[1],true):
       distributions::dpareto(v,face.coef[0],face.coef[1],true);
     out.logLik=point_ll;out.stop_detail.limit_loglik=point_ll;
     if(!std::isfinite(point_ll))out.status=BurrStatus::NumericalFailure;
   }
   if(status==BurrStatus::CertificateTie || status==BurrStatus::CertificateBudget || status==BurrStatus::NumericalFailure)
-    return burr_uncertified(out,burr_mle_legacy(x,tol,maxit,shape10,shape20,scale0,reltol,true),x,tol,maxit,{{true,true,true}});
+  {
+    if(!reflect)return burr_uncertified(out,burr_mle_legacy(x,tol,maxit,shape10,shape20,scale0,reltol,true),x,tol,maxit,{{true,true,true}});
+    // The search needs the reciprocal sample; rounding can merge its
+    // distinct values, which would then be artificial ties.
+    std::vector<double> y;for(double v:x)y.push_back(1/v);
+    std::vector<double> sy(y),sx(x.begin(),x.end());
+    std::sort(sy.begin(),sy.end());std::sort(sx.begin(),sx.end());
+    if(std::unique(sy.begin(),sy.end())-sy.begin()<std::unique(sx.begin(),sx.end())-sx.begin())return out;
+    return burr_uncertified(out,burr_mle_legacy(span{y.data(),y.size()},tol,maxit,shape10,shape20,scale0,reltol,true),span{y.data(),y.size()},tol,maxit,{{true,true,true}});
+  }
   return out;
 }
 inline BurrMLE burr_mle(span x, double tol, int maxit,
@@ -366,6 +380,15 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
  for(double v:x){if(!(v>0)||!std::isfinite(v))return bad;l.push_back(std::log(v));mean+=l.back()/x.size();mn=std::min(mn,l.back());mx=std::max(mx,l.back());}
  if(std::isnan(a)&&std::isnan(b))return std::isnan(s)?burr_mle(x,tol,maxit):burr_mle_fixed_scale(x,s,tol,maxit);
  const bool fa=std::isnan(a),fb=std::isnan(b),fs=std::isnan(s);
+ // Relative logs: log(x/x0) as log1p of the exact difference, so that
+ // near-constant samples keep their spread; absolute logs round at 1e-16.
+ std::vector<double> sorted(x.begin(),x.end());
+ std::nth_element(sorted.begin(),sorted.begin()+sorted.size()/2,sorted.end());
+ const double x0=sorted[sorted.size()/2];
+ std::vector<double> r;double rmean=0;
+ for(double v:x){double e=0;r.push_back(burr_cert_detail::rel_log(v,x0,e));rmean+=r.back()/x.size();}
+ const auto rel=[&](double v){double e=0;return burr_cert_detail::rel_log(v,x0,e);};
+ double ls=fs?0:rel(s);
  if(fb&&((fs&&mn==mx)||(!fs&&mn==mx&&x[0]==s))){
    const bool constant=std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];});
    bad.status=constant?BurrStatus::Unbounded:BurrStatus::NumericalFailure;return bad;
@@ -411,16 +434,16 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,
    if(!(a>0 && std::isfinite(a) && s>0 && std::isfinite(s) && std::isfinite(r.logLik+jac))){bad.status=BurrStatus::NumericalFailure;return bad;}
    return {a,b,s,burr_local_loglik(x,a,b,s),r.iterations,BurrStatus::Ok};
  } else {
-   auto location=[&](double power){return solve_root([&](double c){double z=n;for(double v:l)z-=(a+1)*burr_hold_detail::sigmoid(power*(v-mean)-c);return -z;});};
+   auto location=[&](double power){return solve_root([&](double c){double z=n;for(double v:r)z-=(a+1)*burr_hold_detail::sigmoid(power*(v-rmean)-c);return -z;});};
    if(fb){
-     const double root=solve_root([&](double z){double power=std::exp(z),c=fs?location(power):power*(std::log(s)-mean),g=n;for(double v:l){double w=v-mean,u=power*w-c;g+=power*w*(1-(a+1)*burr_hold_detail::sigmoid(u));}if(!fs){g=n;for(double v:l){double u=power*(v-std::log(s));g+=u*(1-(a+1)*burr_hold_detail::sigmoid(u));}}return g;});
+     const double root=solve_root([&](double z){double power=std::exp(z),c=fs?location(power):power*(ls-rmean),g=n;for(double v:r){double w=v-rmean,u=power*w-c;g+=power*w*(1-(a+1)*burr_hold_detail::sigmoid(u));}if(!fs){g=n;for(double v:r){double u=power*(v-ls);g+=u*(1-(a+1)*burr_hold_detail::sigmoid(u));}}return g;});
      b=std::exp(root);
    }
-   if(fs)s=std::exp(mean+location(b)/b);
-   if(fa){double total=0;for(double v:l)total+=burr_softplus(b*(v-std::log(s)));a=n/total;}
+   if(fs){s=x0*std::exp(rmean+location(b)/b);ls=rel(s);}
+   if(fa){double total=0;for(double v:r)total+=burr_softplus(b*(v-ls));a=n/total;}
  }
  double ll=n*(std::log(a)+std::log(b));
- for(double v:l){double u=b*(v-std::log(s));ll+=-v-burr_softplus(-u)-a*burr_softplus(u);}
+ for(std::size_t i=0;i<r.size();++i){double u=b*(r[i]-ls);ll+=-l[i]-burr_softplus(-u)-a*burr_softplus(u);}
  BurrMLE out{a,b,s,ll,0,std::isfinite(ll)&&a>0&&b>0&&s>0&&std::isfinite(s)?BurrStatus::Ok:BurrStatus::IterationFailure};
  // The transformed score solve is unchanged. Report the likelihood at the
  // public coefficients without subtracting rounded logarithms near x=s.

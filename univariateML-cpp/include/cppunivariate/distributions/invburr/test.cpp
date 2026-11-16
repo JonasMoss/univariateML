@@ -573,3 +573,23 @@ TEST_CASE("invburr: singleton collapse is a core statistical outcome") {
   CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
   CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
 }
+
+// TASK-214.42: the certificate works on -log(x) relative to an anchor, not on
+// the reciprocal vector, which would distort a 1e-16 log spread by 11.6%.
+// Reference values are 60-digit solutions; the log likelihood is the one at the
+// returned (rounded) coefficients.
+TEST_CASE("invburr near-constant and tied samples reach the inverse Weibull face") {
+ const auto rel=[](double a,double b){return std::abs(a-b)/std::max(1.0,std::abs(b));};
+ const std::vector<double> near={1.0502371433865347,1.0502371433865347,1.050237143386535};
+ auto r=cppunivariate::invburr_mle(mltest::as_span(near),1e-10,1000);
+ REQUIRE(r.status==cppunivariate::InvBurrStatus::InvWeibullBoundary);
+ CHECK(rel(r.shape2,1.5100928118917752e+16)<1e-10);
+ CHECK(r.scale==1.0502371433865347);
+ CHECK(rel(r.logLik,106.37980040170855)<1e-10);
+ const std::vector<double> tie={1.0502371433865347,1.0502371433865347,1.6916873047158487};
+ r=cppunivariate::invburr_mle(mltest::as_span(tie),1e-10,1000);
+ REQUIRE(r.status==cppunivariate::InvBurrStatus::InvWeibullBoundary);
+ CHECK(rel(r.shape2,6.69733191766908)<1e-10);
+ CHECK(rel(r.scale,1.1124033140563543)<1e-10);
+ CHECK(rel(r.logLik,0.044108219131140165)<1e-10);
+}

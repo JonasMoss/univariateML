@@ -115,13 +115,13 @@ test_that("P2 pareto4 validates new held values", {
 
  test_that("pareto4 preserves certificate refusal diagnostics", {
   x <- exp(seq(-1e-6,1e-6,length.out=20))
-  e <- tryCatch(mlpareto4(x,min=0),univariateML_numerical=identity)
-  expect_s3_class(e,"univariateML_numerical")
+  e <- tryCatch(mlpareto4(x,min=0),univariateML_limit=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_identical(e$model,"weibull")
   expect_true(is.data.frame(e$candidates))
   nom <- e$candidates[is.finite(e$candidates$shape1),,drop=FALSE]
   expect_gt(nrow(nom),0L)
   nom <- nom[which.max(nom$shape1),,drop=FALSE]
-  expect_gt(nom$shape1,1e100)
   expect_true(all(is.finite(unlist(nom[c("shape1","shape2","scale")]))))
   expect_true(all(unlist(nom[c("shape1","shape2","scale")])>0))
   expect_true(is.finite(nom$loglik_lower)&&is.finite(nom$loglik_upper))

@@ -158,7 +158,6 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
     return {NAN,NAN,NAN,NAN,0,InvBurrStatus::Unbounded};
 
   maxit = static_cast<int>(solver_budget(maxit));
-  std::vector<double> reciprocal;
   double jacobian = 0.0, maximum = 0.0;
   for (double v : x) {
     if (!(v > 0.0) || !std::isfinite(v)) {
@@ -169,20 +168,34 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
       const double nan = std::numeric_limits<double>::quiet_NaN();
       return {nan,nan,nan,nan,0,InvBurrStatus::NumericalFailure};
     }
-    reciprocal.push_back(1.0/v); jacobian -= 2.0*std::log(v);
+    jacobian -= 2.0*std::log(v);
     maximum=std::max(maximum,v);
   }
-  // Division can merge distinct binary64 observations. Such artificial
-  // ties must not supply a constant-sample or tied-endpoint certificate.
-  std::vector<std::size_t> order;
-  for(std::size_t i=0;i<x.size();++i)order.push_back(i);
-  std::sort(order.begin(),order.end(),[&](std::size_t i,std::size_t j){return x[i]<x[j];});
-  for(std::size_t i=1;i<order.size();++i)
-    if(x[order[i]]!=x[order[i-1]] && reciprocal[order[i]]==reciprocal[order[i-1]]) {
-      const double nan = std::numeric_limits<double>::quiet_NaN();
-      return {nan,nan,nan,nan,0,InvBurrStatus::NumericalFailure};
-    }
-  auto r = burr_mle_certified(span{reciprocal.data(),reciprocal.size()},tol,maxit,
+  // Rounding the reciprocals moves each log by about 1e-16, which changes the
+  // coefficients by more than the default tolerance when the log spread is
+  // below 1e-6 (it distorts a spread of 1e-16 by 11.6%, and can merge distinct
+  // values into artificial ties). Then the certificate works on -log(x)
+  // relative to an anchor, without the reciprocal vector.
+  double spread = 0.0;
+  for (double v : x) spread = std::max(spread, std::abs(v - x[0]) / x[0]);
+  const bool reflect = spread <= 1e-6;
+  std::vector<double> reciprocal;
+  if (!reflect) {
+    for (double v : x) reciprocal.push_back(1.0/v);
+    // Division can merge distinct binary64 observations. Such artificial
+    // ties must not supply a constant-sample or tied-endpoint certificate.
+    std::vector<std::size_t> order;
+    for(std::size_t i=0;i<x.size();++i)order.push_back(i);
+    std::sort(order.begin(),order.end(),[&](std::size_t i,std::size_t j){return x[i]<x[j];});
+    for(std::size_t i=1;i<order.size();++i)
+      if(x[order[i]]!=x[order[i-1]] && reciprocal[order[i]]==reciprocal[order[i-1]]) {
+        const double nan = std::numeric_limits<double>::quiet_NaN();
+        return {nan,nan,nan,nan,0,InvBurrStatus::NumericalFailure};
+      }
+  }
+  auto r = reflect ? burr_mle_certified(x,tol,maxit,
+    shape10,shape20,std::isnan(scale0) ? scale0 : 1.0/scale0,reltol,-1,true)
+    : burr_mle_certified(span{reciprocal.data(),reciprocal.size()},tol,maxit,
     shape10,shape20,std::isnan(scale0) ? scale0 : 1.0/scale0,reltol);
   InvBurrStatus status = InvBurrStatus::Ok;
   if (r.status == BurrStatus::WeibullBoundary) status = InvBurrStatus::InvWeibullBoundary;
@@ -198,7 +211,19 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
   // Keep the power endpoint exactly at the original sample maximum;
   // a reciprocal round trip can otherwise move it by one ulp.
   const double scale = status==InvBurrStatus::PowerBoundary ? maximum : 1.0/r.scale;
-  const double logLik = r.logLik+jacobian;
+  double logLik = r.logLik+jacobian;
+  // Face likelihoods at the returned coefficients, on the original sample.
+  if (reflect && (status==InvBurrStatus::InvWeibullBoundary || status==InvBurrStatus::PowerBoundary)) {
+    transformed_detail::Sum ll;
+    const double c=status==InvBurrStatus::PowerBoundary?r.stop_detail.limit_coef[0]:r.shape2;
+    for(double v:x){
+      if(status==InvBurrStatus::InvWeibullBoundary){
+        const double w=-c*transformed_detail::log_ratio(v,scale);
+        ll.push(std::log(c)-std::log(v)+w-std::exp(w));
+      } else ll.push(std::log(c)-std::log(v)+c*transformed_detail::log_ratio(v,maximum));
+    }
+    logLik=ll.get();
+  }
   if ((status == InvBurrStatus::Ok || status == InvBurrStatus::InvWeibullBoundary ||
        status == InvBurrStatus::PowerBoundary) &&
       (!(scale>0) || !std::isfinite(scale) || !std::isfinite(logLik))) {
@@ -212,6 +237,7 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
   if(out.status==InvBurrStatus::Ok&&!out.certified){out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,true);if(!std::isfinite(out.logLik))out.status=InvBurrStatus::NumericalFailure;}
   const double accuracy_noise=out.stop_detail.conditioning_bound;
   out.stop_detail=invburr_stop_detail(r.stop_detail,jacobian,maximum);
+  if(reflect&&(status==InvBurrStatus::InvWeibullBoundary||status==InvBurrStatus::PowerBoundary))out.stop_detail.limit_loglik=logLik;
   if(accuracy_failed)record_accuracy(out,tol,{out.shape1,out.shape2,out.scale},{out.shape1,out.shape2,out.scale},accuracy_noise);
   if(status==InvBurrStatus::PowerBoundary)out.stop_detail.limit_coef={maximum,r.stop_detail.limit_coef[0]};
   if(status==InvBurrStatus::InvWeibullBoundary)out.stop_detail.limit_coef={r.stop_detail.limit_coef[0],1/r.stop_detail.limit_coef[1]};

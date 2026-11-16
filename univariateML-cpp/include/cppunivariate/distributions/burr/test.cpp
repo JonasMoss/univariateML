@@ -246,8 +246,15 @@ TEST_CASE("burr: certified retained workloads and guarded stops") {
     CAPTURE(fixture.name);
     const auto fit=cppunivariate::burr_mle(mltest::as_span(fixture.x),1e-8,1000);
     if(fixture.name=="nearly-constant") {
-      const auto proposal=cppunivariate::burr_mle_legacy(mltest::as_span(fixture.x),1e-8,1000,NAN,NAN,NAN,1e-12,true);
-      check_burr_refutation_witness(fit,proposal);
+      // TASK-214.42: formerly a guarded stop, because absolute logs of this
+      // sample (log spread 2e-6) rounded at 1e-16. With logs relative to an
+      // anchor the fit equals that of its power-transformed preimage x^p
+      // (shape2 scales by 1/p), here a Weibull face like the preimage.
+      CHECK(fit.status==cppunivariate::BurrStatus::WeibullBoundary);
+      std::vector<double> preimage;for(double v:fixture.x)preimage.push_back(std::pow(v,1e5));
+      const auto pre=cppunivariate::burr_mle(mltest::as_span(preimage),1e-8,1000);
+      CHECK(pre.status==fit.status);
+      CHECK(std::abs(fit.shape2/1e5/pre.shape2-1)<1e-7);
     } else CHECK(fit.status==fixture.status);
     if(fit.status==cppunivariate::BurrStatus::Ok){
       CHECK(fit.shape1>0);CHECK(fit.shape2>0);CHECK(fit.scale>0);
@@ -623,4 +630,38 @@ TEST_CASE("burr singleton joint likelihood is unbounded") {
   const auto r=cppunivariate::burr_mle(mltest::as_span(x),1e-10,1000);
   CHECK(r.status==cppunivariate::BurrStatus::Unbounded);
   CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
+}
+
+// TASK-214.42: the certificate works on logs relative to an anchor, so a
+// near-constant sample keeps its spread (about 1e-16 here) like its preimage.
+TEST_CASE("burr near-constant and tied samples reach the Pareto face") {
+ const auto rel=[](double a,double b){return std::abs(a-b)/std::max(1.0,std::abs(b));};
+ const std::vector<double> near={0.9821428378708404,0.9821428378708404,0.9821428378708406};
+ auto r=cppunivariate::burr_mle(mltest::as_span(near),1e-10,1000);
+ REQUIRE(r.status==cppunivariate::BurrStatus::ParetoBoundary);
+ CHECK(rel(r.stop_detail.limit_coef.at(0),2.653906871195831e+16)<1e-10);
+ CHECK(r.stop_detail.limit_coef.at(1)==0.9821428378708404);
+ CHECK(rel(r.logLik,110.50623857503564)<1e-10);
+ const std::vector<double> tie={0.9821428378708404,0.9821428378708404,1.6752073954697566};
+ r=cppunivariate::burr_mle(mltest::as_span(tie),1e-10,1000);
+ REQUIRE(r.status==cppunivariate::BurrStatus::ParetoBoundary);
+ CHECK(rel(r.stop_detail.limit_coef.at(0),5.618445722134226)<1e-10);
+ CHECK(rel(r.logLik,1.698265265719544)<1e-10);
+}
+
+// Archive cases 638 and 639: five points with log spread 5e-8 and 5e-12 near
+// log x = 0.714. Absolute logs rounded at 1.6e-16 moved shape2 by 7.2e-10 and
+// 4.9e-6; reference values are 60-digit solutions of the two score equations.
+TEST_CASE("burr shape1 held keeps the log spread of near-constant data") {
+ const double a=1.334637717604056;
+ const std::vector<double> d638={2.0428454557358133,2.0428454761642683,2.042845496592723,2.042845517021178,2.042845557878088};
+ const std::vector<double> d639={2.0428454965886376,2.0428454965906804,2.042845496592723,2.042845496594766,2.0428454965988516};
+ auto r=cppunivariate::burr_mle_holds(mltest::as_span(d638),a,NAN,NAN,1e-9,1000);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+ CHECK(std::abs(r.shape2/87511530.54035975-1)<1e-12);
+ CHECK(std::abs(r.scale/2.042845508808133-1)<1e-12);
+ r=cppunivariate::burr_mle_holds(mltest::as_span(d639),a,NAN,NAN,1e-9,1000);
+ REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
+ CHECK(std::abs(r.shape2/875130348796.0063-1)<1e-12);
+ CHECK(std::abs(r.scale/2.042845496593945-1)<1e-12);
 }

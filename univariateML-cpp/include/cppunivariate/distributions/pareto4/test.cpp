@@ -331,3 +331,19 @@ TEST_CASE("pareto4 core distinguishes free-threshold nonexistence from unsupport
   const auto held=cppunivariate::pareto4_mle(mltest::as_span(x),NAN,1e-10,100,1,1,2);
   CHECK(cppunivariate::outcome(held).reason==cppunivariate::OutcomeReason::Unsupported);
 }
+
+// TASK-214.42: two logs of this sample are equal in binary64; the relative
+// logs keep the spread, so the fit reaches the Pareto face like its preimage.
+TEST_CASE("pareto4 near-constant and tied samples reach the Pareto face") {
+ const auto rel=[](double a,double b){return std::abs(a-b)/std::max(1.0,std::abs(b));};
+ const std::vector<double> near={24.046705259993423,24.046705259993423,24.046705259993427};
+ auto r=cppunivariate::pareto4_mle(mltest::as_span(near),0.0,1e-10,1000);
+ REQUIRE(r.status==cppunivariate::BurrStatus::ParetoBoundary);
+ CHECK(rel(r.stop_detail.limit_coef.at(0),2.0305637409073976e+16)<1e-10);
+ CHECK(rel(r.logLik,100.10903086663646)<1e-10);
+ const std::vector<double> tie={24.046705259993423,24.046705259993423,1024.1481422065574};
+ r=cppunivariate::pareto4_mle(mltest::as_span(tie),0.0,1e-10,1000);
+ REQUIRE(r.status==cppunivariate::BurrStatus::ParetoBoundary);
+ CHECK(rel(r.stop_detail.limit_coef.at(0),0.7996548746030153)<1e-10);
+ CHECK(rel(r.logLik,-16.962337602169782)<1e-10);
+}
