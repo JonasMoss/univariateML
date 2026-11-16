@@ -200,3 +200,14 @@ invparalogis records 3927, 3934, 3937, 3938–3944 had been stale since the
 Burr relative-log merge (1–2 ulp of the scale; master gives the new values)
 ([report](2026-11-16-near-constant-fix-report.md)). The known list has 92
 entries.
+
+## Patch after the near-constant limits (2026-11-16)
+
+The records of betapr and genbeta were replaced with snapshots of the
+TASK-214.39 part 2 branch (merge `99ed4f55`; provenance `patches`): betapr
+near-constant, offset and archive 172, 173, 175, 176 end in uncertified
+`invgamma` limits, genbeta near-constant in an uncertified `power` limit and
+archive 2491, 2493, 2494 in uncertified `lgamma` limits, all from failures;
+no `Ok` or certified limit changed
+([report](2026-11-16-near-constant-limits-report.md)). The known list has 88
+entries.

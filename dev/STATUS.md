@@ -38,8 +38,9 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   equal the baselines in both modes), the lst/std/emg near-constant
   fixes (ec809a34), the sn/huber/triang acceptance fixes (f331a31f) and
   the trgamma/fpareto/gengamma relative-log fixes (f88a31f4) and the
-  paralogis/invparalogis/fatigue near-constant maximizers (328d5332).
-  The known list has 92 entries, each with a card.
+  paralogis/invparalogis/fatigue near-constant maximizers (328d5332) and
+  the betapr/genbeta near-constant limits (99ed4f55).
+  The known list has 88 entries, each with a card.
   Not run: any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.

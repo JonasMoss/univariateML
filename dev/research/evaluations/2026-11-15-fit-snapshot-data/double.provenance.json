@@ -260,6 +260,15 @@
       "commit": "2c6015a6e3706784a2367531ce7d129aea0a4548",
       "dirty": true,
       "reason": "offset-coordinate solve for near-constant samples (TASK-214.39 part 1); merged as 328d5332"
+    },
+    {
+      "families": [
+        "betapr",
+        "genbeta"
+      ],
+      "commit": "821f6eda84434900446358de3a448d798829bc29",
+      "dirty": true,
+      "reason": "margin-decided near-constant limits (TASK-214.39 part 2)"
     }
   ]
 }

@@ -183,3 +183,15 @@ Consequence (fact): a fitter that maximizes evaluated doubles, or gates on the s
 - Other holds: fatigue with $\alpha$ or $\beta$ held; genbeta with shape holds; betapr with $p$ or $q$ held (dossier proves gamma or exp, inverse-gamma or inverse-exp faces for those); paralogis and invparalogis with scale held (dossier: finite maximum for every positive sample). Hypothesis: with $\alpha$ held the fatigue likelihood is bounded away from the degenerate collapse. None was computed.
 - The certificates of paralogis (compact-domain) at $\alpha\approx10^{16}$: not run.
 - Samples other than $[c,c,c^+]$ (`tie3`, `half-ties`): only their records were read; the tie3 outcomes are unchanged.
+
+## Correction (2026-11-16): genbeta selects the power face
+
+The genbeta section compared finite $a$ (up to $10^3$) with the log-gamma face
+but never evaluated the power face ($a\to\infty$, endpoint $\max x$). On
+$[c, c, c^+]$ the power face is higher by $0.2171$ (100 digits, TASK-214.39
+part 2; to leading order $n[\log(\tfrac{3}{2}\cdot\tfrac{\sqrt2}{3}\sqrt{2\pi}) - \tfrac12]$
+with $n = 3$), so the supremum is the power face, not `lgamma`; $[c, c^+, c^+]$
+gives power by 2.30. Which face wins depends on the sample: the fit decides
+by the ratio $s/g$ against 0.6577 and $[c,c,c,c,c^+]$ selects `lgamma`
+([report](2026-11-16-near-constant-limits-report.md)). The proposed genbeta
+dossier text above was not applied; the dossier records the $s/g$ rule.
