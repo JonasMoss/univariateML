@@ -32,7 +32,7 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   the sged tail fix and the truth metadata (with `just truth-check`). A
   combined run of master follows the next merge. `just strict` passes on the
   [2026-11-15 baselines](research/evaluations/2026-11-15-fit-snapshot-report.md)
-  against `dev/validation/strict-known.json` (153 known failures, each with
+  against `dev/validation/strict-known.json` (137 known failures, each with
   a card). Not run: any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
@@ -40,7 +40,7 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
 - Known wrong answers on master, each with a card: fits that miss the
-  accuracy contract (TASK-214.5, 24 entries); stop kinds that depend on the precision mode
+  accuracy contract (TASK-214.5, 20 entries); stop kinds that depend on the precision mode
   (TASK-214.13). Root brackets that miss their claimed width by a few
   ulp, far inside the contract: TASK-214.31.
 - Nothing is published to CRAN, and `origin/master` is the old published
