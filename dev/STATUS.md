@@ -33,8 +33,9 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   are hyper/nhyper non-unique messages, TASK-214.45); `just test-full`
   (with `just truth-check`) `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65735 ]`;
   `just js-test` 586/586; `just relations` and `just site-check` green.
-  Merged after it and tested on its branch: the Burr relative-log
-  certificate (74368c2e). The known list has 137 entries, each with a card.
+  Merged after it: the Burr relative-log certificate (74368c2e), tested on
+  its branch; on master 1f7ee4dc its seven affected families (burr, pareto4,
+  invburr, gb2, paralogis, betapr, fpareto) equal the baselines in both modes. The known list has 137 entries, each with a card.
   Not run: any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
