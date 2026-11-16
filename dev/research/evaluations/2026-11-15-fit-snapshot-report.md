@@ -149,3 +149,12 @@ The records of the nine B-reltol families and of the lomax-start callers
 were replaced with snapshots of the job 2b branch (TASK-150.1.3, merge
 `67fd075c`; provenance `patches`); the differences are those of the
 [job report](2026-11-15-ctrl-b2-report.md). The known list has 153 entries.
+
+## Patch after the Burr relative-log certificate (2026-11-16)
+
+The records of burr, pareto4, invburr, gb2 and paralogis were replaced with
+snapshots of the batch A branch (TASK-214.42, merge `74368c2e`; provenance
+`patches`): near-constant and offset classes of burr, pareto4 and invburr end
+in proved limits instead of numerical failures, held-shape1 burr fits move
+toward their references ([report](2026-11-15-equiv-a-report.md)). The known
+list has 137 entries.

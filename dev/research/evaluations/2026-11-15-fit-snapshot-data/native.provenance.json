@@ -203,6 +203,18 @@
       "commit": "3da06228b66373db07dd2363d5fda06b82139a47",
       "dirty": true,
       "reason": "step 5c job 2b (TASK-150.1.3)"
+    },
+    {
+      "families": [
+        "burr",
+        "gb2",
+        "invburr",
+        "paralogis",
+        "pareto4"
+      ],
+      "commit": "ef464c2ebc65343f370a3a388cbab46e246eadf9",
+      "dirty": true,
+      "reason": "Burr certificate on relative logs (TASK-214.42 batch A)"
     }
   ]
 }
