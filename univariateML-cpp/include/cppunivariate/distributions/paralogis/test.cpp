@@ -217,3 +217,17 @@ TEST_CASE("paralogis exhausted cover retains an independently converged search")
  REQUIRE(f.status==cppunivariate::ParalogisStatus::Ok);CHECK_FALSE(f.certified);
  CHECK(f.shape==r.shape);CHECK(f.scale==r.scale);CHECK(f.logLik==r.logLik);
 }
+
+TEST_CASE("paralogis near-constant sample returns the rounded maximizer, uncertified") {
+  // TASK-214.39: [c, c, c+] has a finite maximizer, alpha = 1.84e16, theta = c (1 + 2.1e-15). The
+  // references are 120-digit maximizers (dev/research/evaluations/2026-11-16-near-constant-fix-data).
+  const std::vector<double> x{0x1.ef3095fc55f18p-1,0x1.ef3095fc55f18p-1,0x1.ef3095fc55f19p-1};
+  const auto r=cppunivariate::paralogis_mle(mltest::as_span(x),1e-10,100);
+  REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);
+  CHECK_FALSE(r.certified);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(std::abs(r.shape/18436634801379144.7328521897588-1)<=1e-10);
+  CHECK(std::abs(r.scale/0.967167555859281411458871399401-1)<=1e-10);
+  CHECK(r.scale==0x1.ef3095fc55f2ap-1);  // the maximizer rounded once, not one ulp off
+  CHECK(r.logLik==doctest::Approx(107.227722389938).epsilon(1e-10));  // value at the returned point; supremum 107.875
+}

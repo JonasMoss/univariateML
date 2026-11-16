@@ -25,7 +25,11 @@ test_that("the three-parameter likelihood with free mu is unbounded (why mu is f
 
 test_that("fatigue handles ties and extreme scales without invalid estimates", {
   expect_error(mlfatigue(rep(1,5), mu = 0),"does not exist")
-  expect_error(mlfatigue(1+(0:4)*.Machine$double.eps, mu = 0),class="univariateML_numerical")
+  # TASK-214.39: this near-constant sample was a numerical stop; it now returns its rounded maximizer
+  # (alpha = sqrt(2) eps, beta = 1 + 2 eps).
+  near <- mlfatigue(1+(0:4)*.Machine$double.eps, mu = 0)
+  expect_equal(unname(near["alpha"]),sqrt(2)*.Machine$double.eps,tolerance=1e-10)
+  expect_equal(unname(near["beta"]),1+2*.Machine$double.eps,tolerance=1e-10)
   x <- c(.4,.8,1,2,4); base <- mlfatigue(x, mu = 0)
   for(s in c(1e-300,1e300)) {
     g <- mlfatigue(x*s, mu = 0)

@@ -1373,6 +1373,13 @@ def replay_paralogis(r, data, budget, inverse=False):
         out.append(comparison('scale-root', 'log-scale score at the returned shape signed on scale (1 -/+ 1e-10): positive left, negative right', sc,
                               'L_b left %s, right %s' % (show(gl), show(gr)), margin='accuracy contract tol 1e-10', note='interval arithmetic at 50 digits'+tag))
         target = lo_(pi.L(iv.mpf(ahat), iv.mpf(bhat)))
+        # The profile at the returned shape is attained inside the window (at the
+        # continuous log scale), so its lower enclosure is also a valid target. It
+        # differs from L at the returned point by the rounding loss of the scale, which
+        # is of order 1 on near-constant samples (decisions: logLik at the returned
+        # coefficients); elsewhere the two agree to the enclosure width.
+        try: target = max(target, lo_(p.value(mp.log(ahat))))
+        except ValueError: pass
     L0 = target
     lo, hi = para_cutoffs(p, L0, held)
     if lo is None: return out+[comparison('cover', 'global shape maximum', 'open', hi)], None
@@ -1381,7 +1388,8 @@ def replay_paralogis(r, data, budget, inverse=False):
         return out+[comparison('cover', 'global shape maximum', 'open', 'not run: bracket not established')], None
     wexc = mp.mpf('1e-6'); t0 = mp.log(ahat)
     verdict, info = cover(p.value, p.dt, None, mp.log(lo), mp.log(hi), target, [(t0-wexc, t0+wexc)], budget=budget if held else max(budget//2, 200))
-    out.append(cover_comparison('cover', 'L(a, .) < L(returned) for every a in [%s, %s] outside the window of relative half width 1e-6 (%s; cutoffs of the dossier tails)' % (
+    out.append(cover_comparison('cover', 'L(a, .) < %s for every a in [%s, %s] outside the window of relative half width 1e-6 (%s; cutoffs of the dossier tails)' % (
+        'L(returned)' if held else 'max(L(returned), P(a_hat))',
         mp.nstr(lo, 6), mp.nstr(hi, 6), 'scale held' if held else 'profile over the intercept'), verdict, info, target,
         note='variable log a%s' % tag, extra='; shape range [%s, %s]' % (mp.nstr(lo, 6), mp.nstr(hi, 6))))
     return out, None
@@ -1705,7 +1713,7 @@ def replay_slash_run(r, data, budget):
 # ------------------------------------------------------------ cache and registry
 
 import gzip, hashlib, json, os, pathlib
-VERSIONS = {'foldnorm': 4, 'fatigue': 4, 'skellam': 2, 'pareto2': 3, 'invpareto': 3, 'cauchy': 2, 'burr': 1, 'dgamma': 3, 'ht': 2, 'paralogis': 1, 'invparalogis': 1, 'slash': 1}      # bump a family's entry when its replay changes; the cache key includes it
+VERSIONS = {'foldnorm': 4, 'fatigue': 4, 'skellam': 2, 'pareto2': 3, 'invpareto': 3, 'cauchy': 2, 'burr': 1, 'dgamma': 3, 'ht': 2, 'paralogis': 2, 'invparalogis': 2, 'slash': 1}      # bump a family's entry when its replay changes; the cache key includes it
 VERSION = 'covers-1'
 CACHE_PATH = pathlib.Path(os.environ.get('CERT_REPLAY_COVERS_CACHE',
     str(pathlib.Path(__file__).resolve().parents[2]/'build'/'cert-replay'/'covers-cache.jsonl.gz')))

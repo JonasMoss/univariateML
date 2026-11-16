@@ -109,8 +109,12 @@ TEST_CASE("invparalogis: rounded reciprocal ties do not imply nonexistence") {
   REQUIRE(x[0]!=x[1]);
   REQUIRE(1/x[0]==1/x[1]);
   const auto r=cppunivariate::invparalogis_mle(mltest::as_span(x),1e-8,100);
-  CHECK(r.status==cppunivariate::ParalogisStatus::NumericalFailure);
-  CHECK(r.stop_detail.candidates.empty());
+  // TASK-214.39: this near-constant pair now reaches its finite maximizer without the reciprocal
+  // vector (it was a numerical stop). 100-digit maximizer: shape 2.0530914653470480e16, theta 1.8999999999999965.
+  REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);
+  CHECK_FALSE(r.certified);
+  CHECK(std::abs(r.shape/20530914653470479.538-1)<=1e-10);
+  CHECK(std::abs(r.scale/1.8999999999999964913-1)<=1e-10);
   CHECK_FALSE(std::isinf(r.stop_detail.loglik_lower));
 }
 
@@ -150,4 +154,17 @@ TEST_CASE("invparalogis core reports an unrepresentable search payload as evalua
  const auto r=cppunivariate::invparalogis_mle(mltest::as_span(x),1.220703e-4,100);
  CHECK(r.status==cppunivariate::ParalogisStatus::NumericalFailure);
  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+}
+
+TEST_CASE("invparalogis near-constant sample returns the rounded maximizer, uncertified") {
+  // TASK-214.39: alpha = 2.43e16, theta = c (1 - 1.5e-15); references are 120-digit maximizers.
+  const std::vector<double> x{0x1.b024c564354c4p-1,0x1.b024c564354c4p-1,0x1.b024c564354c5p-1};
+  const auto r=cppunivariate::invparalogis_mle(mltest::as_span(x),1e-10,100);
+  REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);
+  CHECK_FALSE(r.certified);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(std::abs(r.shape/24271936312597031.3625911863535-1)<=1e-10);
+  CHECK(std::abs(r.scale/0.84403054092640331691484592084-1)<=1e-10);
+  CHECK(r.scale==0x1.b024c564354b8p-1);
+  CHECK(r.logLik==doctest::Approx(107.609780731667).epsilon(1e-10));  // supremum 108.656
 }

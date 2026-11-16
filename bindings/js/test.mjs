@@ -396,15 +396,14 @@ test('scalar-trio certificates expose fatigue ties and solve held scalar roots',
   assert.equal(api.sgomp.fit(new Float64Array([0,.1,.3,2,9]), {eta: 2}).status, 'Ok');
 });
 
-test('fatigue certificate stops when rounding hides alpha resolution', async () => {
+test('fatigue solves a sample whose rounding hides alpha resolution in an offset coordinate', async () => {
+  // TASK-214.39: this near-constant sample was a numerical stop. alpha = sqrt(2) eps, beta = 1 + 2 eps.
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   const x = Float64Array.from({length: 5}, (_, i) => 1+i*Number.EPSILON);
-  assert.throws(() => api.fatigue.fit(x, {mu: 0}), error => {
-    assert.equal(error.kind, 'numerical');
-    assert.equal(error.candidates.length, 1);
-    return true;
-  });
+  const fit = api.fatigue.fit(x, {mu: 0});
+  assert.ok(Math.abs(fit.estimates.alpha/(Math.SQRT2*Number.EPSILON)-1) < 1e-10);
+  assert.equal(fit.estimates.beta, 1+2*Number.EPSILON);
 });
 
 test('genbeta power certificate keeps tiny held beta shapes in double precision', async () => {

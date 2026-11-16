@@ -81,6 +81,14 @@ existence:
     including constant data. Uniqueness of this conditional shape maximum is
     not established here. Holding shape gives a unique finite scale maximum
     for every positive sample. Holding both leaves likelihood evaluation.
+    Samples whose relative spread $\delta$ is of the order of the binary64
+    resolution (for example $[c,c,c^+]$) have a finite maximizer with
+    $\hat\alpha\approx s^*/\delta$, $s^*=2.1164$, about $10^{16}$ and still a binary64
+    number, but $\hat\theta$ lies within about 20 ulp of the data, so the log likelihood at
+    the rounded coefficients is lower than the supremum by order 1 (0.65 for the
+    near-constant sample of the validation layer). The fit solves such samples in an offset
+    coordinate and returns the maximizer rounded once, uncertified, with `logLik` at the
+    returned coefficients.
   reason: >-
     With shape $\alpha$ held, the score for log scale is strictly monotone
     and changes sign. With scale held, the log-likelihood tends to

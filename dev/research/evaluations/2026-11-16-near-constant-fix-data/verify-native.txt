@@ -1,0 +1,30 @@
+family        case                   old       n                      rel shape    rel scale    loss       old->new move
+fatigue       archive|001438         numerical n=5   1.47e-16     2.38e-17     4.794e-18  
+fatigue       archive|001439         numerical n=5   1.63e-16     4.91e-17     2.035e-9   
+fatigue       archive|001441         numerical n=5   1.24e-17     1.04e-16     9.063e-17  
+fatigue       archive|001442         numerical n=5   2.19e-17     2.22e-17     4.164e-10  
+fatigue       archive|001449         numerical n=12  2.28e-16     2.5e-17      3.53e-19   
+fatigue       class|near-constant    numerical n=3   2.59e-17     7.11e-17     0.75       
+fatigue       class|offset           numerical n=6   4.96e-17     1.02e-16     0.03586    
+invparalogis  archive|003914         numerical n=5   8.38e-17     1.44e-17     2.579e-18  
+invparalogis  archive|003915         numerical n=5   1.97e-16     9.22e-17     1.064e-8   
+invparalogis  archive|003917         numerical n=5   8.38e-17     1.44e-17     2.579e-18  
+invparalogis  archive|003918         numerical n=5   1.97e-16     9.22e-17     1.064e-8   
+('invparalogis', 'archive', '003927') held {'shape': 1.0292870573482298} not on the offset route
+('invparalogis', 'archive', '003938') held {'shape': 1.0292870573482298} not on the offset route
+('invparalogis', 'archive', '003939') held {'shape': 1.0292870573482298} not on the offset route
+('invparalogis', 'archive', '003940') held {'shape': 1.0292870573482298} not on the offset route
+('invparalogis', 'archive', '003941') held {'shape': 1.0292870573482298} not on the offset route
+('invparalogis', 'archive', '003942') held {'shape': 1.0292870573482298} not on the offset route
+('invparalogis', 'archive', '003943') held {'shape': 1.0292870573482298} not on the offset route
+('invparalogis', 'archive', '003944') held {'shape': 1.0292870573482298} not on the offset route
+invparalogis  archive|010533         ok        n=5   1.9e-16      4.15e-17     2.154e-17  ok->ok, old rel shape 2.04e-17
+invparalogis  archive|010534         numerical n=5   3.99e-17     4.06e-17     2.059e-9   
+invparalogis  class|near-constant    numerical n=3   2.63e-17     3.99e-17     1.046      
+invparalogis  class|offset           numerical n=6   8.0e-17      1.88e-17     0.002641   
+paralogis     archive|005388         ok        n=5   3.11e-17     5.07e-17     2.209e-17  ok->ok, old rel shape 2.03e-13
+paralogis     archive|005389         numerical n=5   2.34e-16     4.45e-17     1.699e-9   
+paralogis     archive|005391         ok        n=5   1.71e-16     8.1e-17      5.638e-17  ok->ok, old rel shape 8.07e-16
+paralogis     archive|005392         numerical n=5   1.9e-16      8.51e-17     6.227e-9   
+paralogis     class|near-constant    numerical n=3   3.97e-17     3.21e-17     0.6473     
+paralogis     class|offset           numerical n=6   1.92e-16     4.21e-17     0.002299   

@@ -1,0 +1,68 @@
+== double: 336 old rows of these families, 336 new
+
+### fatigue: 116 cases, 109 identical, 7 changed
+  fields ['candidates', 'certified', 'core_status', 'estimates', 'fixed', 'iterations', 'kind', 'logLik', 'message', 'outcome', 'reason', 'unique']: 7
+  outcome/core_status/certified changes: 7 cases
+    7 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'no-convergence', 'unique': True} | core 3 | cert None  ->  ok | {'certified': False, 'kind': 'estimate', 'reason': 'none', 'unique': True} | core 0 | cert False
+  kind changes: 7
+    archive|001438|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    archive|001439|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    archive|001441|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    archive|001442|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    archive|001449|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    class|near-constant|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    class|offset|: numerical/failure/no-convergence/ -> ok/estimate/none/
+  ok->ok estimate moves: 0; max 0; above 1e-10: 0; above 1e-13: 0
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 0
+  stopped cases: max relative move of limit_estimates 0, of loglik fields 0
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### invparalogis: 116 cases, 98 identical, 18 changed
+  fields ['estimates']: 8
+  fields ['candidates', 'certified', 'core_status', 'estimates', 'iterations', 'kind', 'logLik', 'loglik_lower', 'loglik_upper', 'message', 'outcome', 'reason', 'unique']: 7
+  fields ['logLik']: 2
+  fields ['estimates', 'iterations', 'logLik']: 1
+  outcome/core_status/certified changes: 7 cases
+    7 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'no-convergence', 'unique': True} | core 1 | cert None  ->  ok | {'certified': False, 'kind': 'estimate', 'reason': 'none', 'unique': True} | core 0 | cert False
+  kind changes: 7
+    archive|003914|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    archive|003915|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    archive|003917|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    archive|003918|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    archive|010534|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    class|near-constant|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    class|offset|: numerical/failure/no-convergence/ -> ok/estimate/none/
+  ok->ok estimate moves: 9; max 6.11e-15; above 1e-10: 0; above 1e-13: 0
+    6.11e-15 archive|010533 {'shape': ('0x1.0df3d37ab85a9p+26', '0x1.0df3d37ab858cp+26')}
+    3.05e-15 archive|003943 {'scale': ('0x1.3cda8ee718c72p+498', '0x1.3cda8ee718c61p+498')}
+    2.19e-16 archive|003927 {'scale': ('0x1.034be88368ab7p+0', '0x1.034be88368ab8p+0')}
+    2.07e-16 archive|003944 {'scale': ('0x1.132e9a33d784cp+0', '0x1.132e9a33d784dp+0')}
+    8.47e-22 archive|003938 {'scale': ('0x1.8eef302cf3049p-19', '0x1.8eef302cf304bp-19')}
+    8.08e-28 archive|003939 {'scale': ('0x1.a2501e54a6f09p-39', '0x1.a2501e54a6f0bp-39')}
+    6.16e-33 archive|003940 {'scale': ('0x1.122544f295388p-55', '0x1.122544f295389p-55')}
+    3.8e-165 archive|003942 {'scale': ('0x1.a863af22564dep-499', '0x1.a863af22564c2p-499')}
+    1.39e-214 archive|003941 {'scale': ('0x1.2337e0862450dp-663', '0x1.2337e08624525p-663')}
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 0
+  stopped cases: max relative move of limit_estimates 0, of loglik fields 0
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### paralogis: 104 cases, 98 identical, 6 changed
+  fields ['candidates', 'certified', 'core_status', 'estimates', 'iterations', 'kind', 'logLik', 'loglik_lower', 'loglik_upper', 'message', 'outcome', 'reason', 'unique']: 4
+  fields ['estimates', 'iterations']: 1
+  fields ['estimates', 'iterations', 'logLik']: 1
+  outcome/core_status/certified changes: 4 cases
+    4 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'no-convergence', 'unique': True} | core 1 | cert None  ->  ok | {'certified': False, 'kind': 'estimate', 'reason': 'none', 'unique': True} | core 0 | cert False
+  kind changes: 4
+    archive|005389|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    archive|005392|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    class|near-constant|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    class|offset|: numerical/failure/no-convergence/ -> ok/estimate/none/
+  ok->ok estimate moves: 2; max 3.15e-14; above 1e-10: 0; above 1e-13: 0
+    3.15e-14 archive|005388 {'shape': ('0x1.bf63245b2fafp+25', '0x1.bf63245b2f9f8p+25')}
+    6.73e-15 archive|005391 {'scale': ('0x1.0000054ce1961p+0', '0x1.0000054ce1962p+0'), 'shape': ('0x1.bf6324429fd45p+25', '0x1.bf6324429fd1p+25')}
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 0
+  stopped cases: max relative move of limit_estimates 0, of loglik fields 0
+  stopped cases with limit_estimates moved above 1e-10: 0

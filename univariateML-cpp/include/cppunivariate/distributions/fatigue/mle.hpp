@@ -30,6 +30,7 @@ struct FatigueResult {
   FatigueStatus status = FatigueStatus::Ok;
   StopDetail stop_detail{};
   bool transformation_failure=false;
+  bool certified=true;
 };
 
 // Comparison candidates are (alpha, beta); the adapter appends the held mu.
@@ -60,7 +61,7 @@ inline FitOutcome outcome(const FatigueResult& r) {
   }
   switch (r.status) {
     case FatigueStatus::Unsupported: return FitOutcome::failure(OutcomeReason::Unsupported);
-    case FatigueStatus::Ok: return FitOutcome::estimate(true);
+    case FatigueStatus::Ok: return FitOutcome::estimate(r.certified);
     case FatigueStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case FatigueStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case FatigueStatus::SearchFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

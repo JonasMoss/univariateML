@@ -26,6 +26,7 @@
 #include "../burr/mle.hpp"
 #include "certificate.hpp"
 #include "accuracy.hpp"
+#include "offset.hpp"
 
 #include "../../core/bfgs.hpp"
 #include "../../core/finite_diff.hpp"
@@ -316,6 +317,18 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
     const double nan=std::numeric_limits<double>::quiet_NaN();
     StopDetail detail;detail.loglik_lower=detail.loglik_upper=INFINITY;
     return {nan,nan,INFINITY,0,ParalogisStatus::Unbounded,detail};
+  }
+  // Near-constant samples: the maximizer is solved in an offset coordinate (offset.hpp).
+  // Uncertified: the bound on the maximizer is a grid scan and a score root, not a proof.
+  {
+    const auto solved=paralogis_offset_detail::fit(x,false);
+    if(solved.ok) {
+      ParalogisResult out{solved.shape,solved.scale,solved.logLik,solved.iterations,ParalogisStatus::Ok};
+      out.certified=false;
+      out.stop_detail.candidates.push_back({{solved.shape,solved.scale},solved.logLik,solved.logLik,StopModel::None});
+      out.stop_detail.loglik_lower=solved.logLik;out.stop_detail.loglik_upper=INFINITY;
+      return out;
+    }
   }
   auto r = paralogis_mle_impl(x, tol, maxit, shape0, false);
   r.stop_detail=paralogis_cert_detail::witness(x,r.shape,r.scale);
