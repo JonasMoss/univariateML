@@ -36,8 +36,9 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   Merged after it, each tested on its branch: the Burr relative-log
   certificate (74368c2e; on master 1f7ee4dc its seven affected families
   equal the baselines in both modes), the lst/std/emg near-constant
-  fixes (ec809a34) and the sn/huber/triang acceptance fixes (f331a31f).
-  The known list has 110 entries, each with a card.
+  fixes (ec809a34), the sn/huber/triang acceptance fixes (f331a31f) and
+  the trgamma/fpareto/gengamma relative-log fixes (f88a31f4).
+  The known list has 98 entries, each with a card.
   Not run: any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.

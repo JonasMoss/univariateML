@@ -175,3 +175,15 @@ cases per mode change from numerical failures to limits (sn, uncertified) or
 estimates (huber, triang, certified, logLik at the returned point); no `Ok`
 moves; st is unchanged ([report](2026-11-16-equiv-f-report.md)). The known
 list has 110 entries.
+
+## Patch after the relative-log fixes for trgamma, fpareto and gengamma (2026-11-16)
+
+The records of trgamma, invtrgamma, fpareto, gb2 and gengamma were replaced
+with snapshots of the batches B and C branch (TASK-214.42, merge `f88a31f4`;
+provenance `patches`): near-constant and offset classes of trgamma end in
+power limits (uncertified), of gengamma in Pareto limits (certified), of
+fpareto in certified estimates; fpareto archive 1669–1673, 10314, 10315 and
+gb2 archive 2153–2157, 10398, 10399 change from numerical failures to `Ok`.
+gb2 archive 2306 and 2309 move shape2 by 2.1e-12 relative, inside `tol`;
+every other `Ok` move is at most 3.3e-14; invtrgamma is unchanged
+([report](2026-11-16-equiv-bc-report.md)). The known list has 98 entries.
