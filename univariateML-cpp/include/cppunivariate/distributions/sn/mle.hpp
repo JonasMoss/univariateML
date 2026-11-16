@@ -435,7 +435,7 @@ inline SnResult sn_accuracy_search(span data,double tol=1e-9,int maxit=100,
   }
   // Check the actual returned coordinates, rather than only their
   // standardized representation (large held shapes amplify roundoff).
-  double original_best_ll=nan;
+  double original_best_ll=nan;bool public_gap=false;
   if(std::isfinite(best.ll)) {
     const double c=std::isfinite(xi)?xi:center+unit*best.h/best.eta;
     const double w=std::isfinite(omega)?omega:unit/best.eta;
@@ -450,7 +450,12 @@ inline SnResult sn_accuracy_search(span data,double tol=1e-9,int maxit=100,
         bad.stop_detail.candidates.push_back({{c,w,besta},actual,actual,StopModel::None});
         bad.stop_detail.loglik_lower=actual;bad.stop_detail.loglik_upper=INFINITY;
       }
-      return bad;
+      // A finite actual value means the candidate is only a witness whose
+      // rounded public coordinates lose likelihood (steep maximizer); the face
+      // comparison below then runs against that public value. Without a face
+      // win the stop stands.
+      if(!(std::isfinite(actual) && !std::isfinite(alpha) && !(constant && xi==low))) return bad;
+      public_gap=true;
     }
   }
   if(!std::isfinite(alpha) && !(constant && xi==low)) {
@@ -485,14 +490,18 @@ inline SnResult sn_accuracy_search(span data,double tol=1e-9,int maxit=100,
       if(ll>face.logLik+n*std::log(unit)) face={original_c,original_w,sign*std::numeric_limits<double>::infinity(),actual,evaluations,
         sign>0 ? SnStatus::RightHalfNormalBoundary : SnStatus::LeftHalfNormalBoundary};
     }
-    if(face.status!=SnStatus::IterationFailure && face_numerical_tie(face.logLik+n*std::log(unit),best.ll,1e-8*n)) {
+    // Reference value of the finite candidate in standardized units: its
+    // public likelihood when rounding the coordinates loses some.
+    const double finite_reference=public_gap?original_best_ll+n*std::log(unit):best.ll;
+    if(face.status!=SnStatus::IterationFailure && face_numerical_tie(face.logLik+n*std::log(unit),finite_reference,1e-8*n)) {
       const double ll=original_best_ll;bad.status=SnStatus::IterationFailure;
       bad.stop_detail=comparison_detail({{face.xi,face.omega},face.logLik,face.logLik,face.status==SnStatus::RightHalfNormalBoundary?StopModel::Hnorm:StopModel::ReflectedHnorm},{{center+unit*best.h/best.eta,unit/best.eta,besta},ll,ll,StopModel::None});return bad;
     }
-    if(face.status!=SnStatus::IterationFailure && face.logLik+n*std::log(unit)>=best.ll-1e-8*n) {
+    if(face.status!=SnStatus::IterationFailure && face.logLik+n*std::log(unit)>=finite_reference-1e-8*n) {
       face.stop_detail=limit_detail({face.xi,face.omega},face.logLik,face.status==SnStatus::RightHalfNormalBoundary?StopModel::Hnorm:StopModel::ReflectedHnorm);return face;
     }
   }
+  if(public_gap) return bad;
   const double result_xi=std::isfinite(xi)?xi:center+unit*best.h/best.eta;
   const double result_omega=std::isfinite(omega)?omega:unit/best.eta;
   if(!std::isfinite(result_xi) || !(result_omega>0) || !std::isfinite(result_omega) ||

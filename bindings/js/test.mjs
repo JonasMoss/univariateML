@@ -1843,14 +1843,15 @@ test('bnbinom signed Poisson faces and budget fallbacks keep their labels',async
     assert.match(e.message,/Uncertified legacy comparison/);return true;
   });
 });
-test('triangular public rounding loss is a numerical failure', async () => {
+test('triangular public rounding loss returns the best public point', async () => {
+  // TASK-214.42 batch F: a steep maximizer is an estimate at the rounded point.
   const api=await (await import('./index.mjs')).default();
   const x=new Float64Array([0.03627073533558047,0.03627073533558048,0.036270735335580485,0.0362707353355805,0.03627073533558053]);
-  assert.throws(() => api.triang.fit(x,{a:0.036270735335580465},{reltol:1e-10,iterlim:100}),error => {
-    assert.equal(error.kind,'numerical');
-    assert.match(error.message,/numerical certificate margin/);
-    return true;
-  });
+  const f=api.triang.fit(x,{a:0.036270735335580465},{reltol:1e-10,iterlim:100});
+  assert.equal(f.status,'Ok');
+  assert.equal(f.estimates.a,0.036270735335580465);
+  assert.equal(f.estimates.b,0.03627073533558054);
+  assert.equal(f.estimates.c,0.03627073533558047);
 });
 
 test('GEV public support rejects a negative zero residual', async () => {

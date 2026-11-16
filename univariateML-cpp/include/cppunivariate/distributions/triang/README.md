@@ -132,10 +132,13 @@ widely spaced representable endpoints. For an observation endpoint mode,
 reciprocal-width concavity and signed scores at the adjacent public endpoints
 bracket the scalar optimum; `log1p` likelihood differences identify the best
 representable endpoint. Such a point is accepted beyond the evaluation margin
-only when the global continuous upper bound also puts its likelihood loss
-within `reltol * max(1, abs(logLik))`, with the same practical floating-point
-margin. Otherwise the fit reports numerical failure. This distinguishes an
-accurate continuous solve from an unattainable public precision target; see the
+when the global continuous upper bound puts the continuous optimum it was
+rounded from within `tol * max(1, abs(logLik))` of the certified value (the
+steep-maximizer rule, decided 2026-11-14): the public likelihood can then be
+below the supremum by more than `tol`, and `logLik` is the value at the
+returned endpoint. The fit reports numerical failure only when the public
+point is not the best representable endpoint or the continuous solve is not
+certified. See the
 [400-digit endpoint checks](../../../../../dev/research/evaluations/2026-11-10-triang-endpoint-data/reference.json).
 
 ## R notes

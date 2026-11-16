@@ -394,3 +394,23 @@ TEST_CASE("sn core owns singleton and constant collapse outcomes") {
     CHECK(cppunivariate::outcome(cppunivariate::sn_mle(mltest::as_span(x),-1)).kind==cppunivariate::OutcomeKind::Failure);
   }
 }
+
+TEST_CASE("sn near-constant sample reaches the half-normal face as its tie3 preimage does") {
+  // TASK-214.42 batch F: at the lattice-rounded xi every finite candidate loses
+  // 0.36 to 1.33 nats, the half-normal face loses nothing; the rounded finite
+  // candidate is a witness, not a stop.
+  const std::vector<double> near{0.6687448263941458,0.6687448263941458,0.6687448263941459};
+  const std::vector<double> tie{0.6687448263941458,0.6687448263941458,1.1328595029171942};
+  for(const auto* x:{&near,&tie}) {
+    const auto r=cppunivariate::sn_mle(mltest::as_span(*x));
+    CHECK(r.status==cppunivariate::SnStatus::RightHalfNormalBoundary);
+    CHECK(r.xi==doctest::Approx(0.6687448263941458).epsilon(1e-15));
+    CHECK(std::isfinite(r.omega));
+    CHECK(r.omega>0);
+    double ll=0;
+    for(double v:*x) ll+=std::log(2.0)+cppunivariate::special::dnorm(v,r.xi,r.omega,true);
+    CHECK(ll==doctest::Approx(r.logLik).epsilon(1e-12));
+  }
+  const auto r=cppunivariate::sn_mle(mltest::as_span(near));
+  CHECK(r.omega<1e-15);
+}

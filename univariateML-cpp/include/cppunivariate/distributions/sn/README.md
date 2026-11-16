@@ -214,7 +214,11 @@ numerical stop, preventing rounded residuals from fabricating endpoint
 $\log 2$ penalties.
 Finite witnesses and selected faces must also agree with likelihoods
 re-evaluated in original coordinates within $10^{-9}n$. This guards
-roundtrip cancellation amplified by large held shapes. Held face locations
+roundtrip cancellation amplified by large held shapes. A finite witness that
+fails the check only through the rounding of its public coordinates is not a
+stop by itself: the face comparison then runs against its public likelihood
+(a sample within a few ulp of its centre ends at the half-normal face), and the
+stop stands only if no face wins. Held face locations
 are retained exactly; free face endpoints use the original sample extremes.
 If every observation equals held location and scale is held, every finite
 shape is a maximizer: the fit is a certified non-unique estimate with two listed witnesses.
