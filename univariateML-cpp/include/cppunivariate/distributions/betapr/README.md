@@ -67,13 +67,13 @@ limits:
   - model: gamma
     firmness: proved
     when: The shape $q$ tends to infinity while $p$ tends to a positive finite shape and $b/q$ tends to a positive gamma scale.
-    detect: The signed joint gamma tail and compact interior cover exclude finite competitors; likelihood bounds separate this face from the inverse-gamma face. Unresolved comparisons retain a successful finite search as uncertified.
+    detect: The signed joint gamma tail and compact interior cover exclude finite competitors; likelihood bounds separate this face from the inverse-gamma face. Unresolved comparisons retain a successful finite search as uncertified. For a sample of relative spread at most $10^{-6}$ whose search ends unresolved (for example $[c,c,c^+]$, shapes about $10^{12}$ to $10^{32}$), the face with the higher leading-order likelihood is returned as an uncertified limit (the gamma face for a left-skewed sample (two high, one low)). The skewness decides, since $L_{\mathrm{inv}}-L_{\mathrm{gamma}}=n s_3/(3 s_2)(1+O(\rho))$ with $s_2,s_3$ the second and third central moments of the relative offsets (numerical on the segment between the faces, below double resolution, $\delta/3\approx 6\cdot10^{-17}$ for $n=3$). Symmetric samples are left unresolved.
     status: GammaBoundary
     numerical: true
   - model: invgamma
     firmness: proved
     when: The shape $p$ tends to infinity while $q$ tends to a positive finite shape and $bp$ tends to a positive inverse-gamma scale.
-    detect: Reciprocal signed tails and the compact interior cover exclude finite competitors; likelihood bounds separate this face from the gamma face. Unresolved comparisons retain a successful finite search as uncertified.
+    detect: Reciprocal signed tails and the compact interior cover exclude finite competitors; likelihood bounds separate this face from the gamma face. Unresolved comparisons retain a successful finite search as uncertified. For near-constant samples the sign of the skewness selects this face when the sample is right-skewed (two low, one high); see the gamma face above.
     status: InvGammaBoundary
     numerical: true
 references:

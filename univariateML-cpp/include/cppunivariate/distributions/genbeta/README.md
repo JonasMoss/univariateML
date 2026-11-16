@@ -53,8 +53,8 @@ limits:
     detect: All observations are equal, $q$ is free, and at least one of $p$ and $a$ is free.
     status: InvalidData
     message: unbounded
-  - {firmness: proved, model: lgamma, name: log-gamma on scale / x, when: 'The shape $p$ tends to infinity and the power $a$ tends to zero with $pa\to\lambda>0$ and $q,b$ fixed. Then $-\log(X/b)$ tends to a gamma law with shape $q$ and rate $\lambda$.', status: UnitGammaBoundary}
-  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa\to\lambda>0$, while $q$ stays bounded away from zero and $\log(q)/a\to c\ge0$. The limiting power law has upper endpoint $be^{-c}$.', status: PowerBoundary}
+  - {firmness: proved, model: lgamma, name: log-gamma on scale / x, when: 'The shape $p$ tends to infinity and the power $a$ tends to zero with $pa\to\lambda>0$ and $q,b$ fixed. Then $-\log(X/b)$ tends to a gamma law with shape $q$ and rate $\lambda$.', detect: 'On a near-constant sample (relative spread of $-\log(x/b)$ at most $10^{-6}$) whose search ends unresolved, this face and the power face are compared by their log likelihoods evaluated from offsets; this face is returned when it is higher, which happens when $s/g<0.6577$ ($s$ the standard deviation of $-\log x$, $g$ its mean distance to the minimum), uncertified.', status: UnitGammaBoundary}
+  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa\to\lambda>0$, while $q$ stays bounded away from zero and $\log(q)/a\to c\ge0$. The limiting power law has upper endpoint $be^{-c}$.', detect: 'On a near-constant sample, such as $[c,c,c^+]$ with $s/g=0.707$, the power face is returned when $s/g>0.6577$, uncertified. The profile in $a$ is flat at the log-gamma level for $a\lesssim10^{12}$ (relative spread $10^{-16}$), dips, and rises to the power face as $a\to\infty$ (numerical, 60 digits); the finite points are not excluded by a bound.', status: PowerBoundary}
 holds:
 - held: []
   status: no-mle

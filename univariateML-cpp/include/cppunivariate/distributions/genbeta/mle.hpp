@@ -457,6 +457,7 @@ inline GenbetaResult genbeta_accuracy_search(span x,double scale,double tol=1e-7
 } // namespace cppunivariate
 
 #include "accuracy.hpp"
+#include "near_constant.hpp"
 namespace cppunivariate {
 inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-10,int maxit=300,double a=NAN,double b=NAN,double t=NAN) {
   if(std::isnan(scale))return {a,b,t,scale,NAN,0,GenbetaStatus::Unsupported};
@@ -464,6 +465,12 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-10,int maxit=
     (a==1&&std::isnan(b)&&std::isnan(t)) || b==1;
   const double search_tol=!scalar_certificate&&tol>0&&std::isfinite(tol)?std::max(tol,1e-7):tol;
   auto r=genbeta_accuracy_search(x,scale,search_tol,maxit,a,b,t);
+  // All three shapes free on a near-constant sample: no finite maximizer, the search ends unresolved.
+  // Name the face it approaches (near_constant.hpp).
+  if(r.status==GenbetaStatus::SearchUnresolved&&std::isnan(a)&&std::isnan(b)&&std::isnan(t)&&
+     r.certificate_failure!=GenbetaCertificateFailure::Budget&&!r.stop_detail.budget_exhausted&&
+     r.stop_detail.accuracy_stop==AccuracyStop::None)
+    genbeta_detail::near_constant_limit(x,scale,r);
   if(r.status!=GenbetaStatus::Ok||r.shape2==1)return r;
   const auto accuracy_failure=[&]() {
     r.status=GenbetaStatus::SearchUnresolved;r.allfree_certified=false;

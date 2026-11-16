@@ -261,22 +261,12 @@
    "ref": "TASK-214.5",
    "detail": "case 005230 holds more and is higher by 9.614; this fit is uncertified"
   },
-  "phenomenon:near-constant|double|betapr|class|near-constant": {
-   "ref": "TASK-214.33",
-   "detail": "near-constant data end in F:evaluation",
-   "finding": "near-constant-numerical-failure-unsettled"
-  },
   "phenomenon:near-constant|double|expweibull|class|near-constant": {
    "ref": "TASK-214.33",
    "detail": "near-constant data end in F:no-convergence",
    "finding": "near-constant-equivariant-numerical-failure"
   },
   "phenomenon:near-constant|double|fatigue|class|near-constant": {
-   "ref": "TASK-214.33",
-   "detail": "near-constant data end in F:no-convergence",
-   "finding": "near-constant-numerical-failure-unsettled"
-  },
-  "phenomenon:near-constant|double|genbeta|class|near-constant": {
    "ref": "TASK-214.33",
    "detail": "near-constant data end in F:no-convergence",
    "finding": "near-constant-numerical-failure-unsettled"
@@ -306,22 +296,12 @@
    "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
    "finding": "near-constant-unrepresentable-maximizer"
   },
-  "phenomenon:near-constant|native|betapr|class|near-constant": {
-   "ref": "TASK-214.33",
-   "detail": "near-constant data end in F:evaluation",
-   "finding": "near-constant-numerical-failure-unsettled"
-  },
   "phenomenon:near-constant|native|expweibull|class|near-constant": {
    "ref": "TASK-214.33",
    "detail": "near-constant data end in F:no-convergence",
    "finding": "near-constant-equivariant-numerical-failure"
   },
   "phenomenon:near-constant|native|fatigue|class|near-constant": {
-   "ref": "TASK-214.33",
-   "detail": "near-constant data end in F:no-convergence",
-   "finding": "near-constant-numerical-failure-unsettled"
-  },
-  "phenomenon:near-constant|native|genbeta|class|near-constant": {
    "ref": "TASK-214.33",
    "detail": "near-constant data end in F:no-convergence",
    "finding": "near-constant-numerical-failure-unsettled"
