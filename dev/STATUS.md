@@ -33,8 +33,8 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   are hyper/nhyper non-unique messages, TASK-214.45); `just test-full`
   (with `just truth-check`) `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65735 ]`;
   `just js-test` 586/586; `just relations` and `just site-check` green.
-  Merged after it: the Burr relative-log certificate (74368c2e), tested on
-  its branch; on master 1f7ee4dc its seven affected families (burr, pareto4,
+  Merged after it, each tested on its branch: the Burr relative-log
+  certificate (74368c2e) and the lst/std/emg near-constant fixes (ec809a34); on master 1f7ee4dc its seven affected families (burr, pareto4,
   invburr, gb2, paralogis, betapr, fpareto) equal the baselines in both modes. The known list has 137 entries, each with a card.
   Not run: any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
@@ -43,7 +43,7 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
 - Known wrong answers on master, each with a card: fits that miss the
-  accuracy contract (TASK-214.5, 20 entries); stop kinds that depend on the precision mode
+  accuracy contract (TASK-214.5, 19 entries); stop kinds that depend on the precision mode
   (TASK-214.13). Root brackets that miss their claimed width by a few
   ulp, far inside the contract: TASK-214.31.
 - Nothing is published to CRAN, and `origin/master` is the old published
