@@ -250,6 +250,16 @@
       "commit": "6849644d8a089ebe41d76559fe483095fbc07513",
       "dirty": true,
       "reason": "relative logs for near-constant samples (TASK-214.42 batches B, C); merged as f88a31f4"
+    },
+    {
+      "families": [
+        "fatigue",
+        "invparalogis",
+        "paralogis"
+      ],
+      "commit": "2c6015a6e3706784a2367531ce7d129aea0a4548",
+      "dirty": true,
+      "reason": "offset-coordinate solve for near-constant samples (TASK-214.39 part 1); merged as 328d5332"
     }
   ]
 }

@@ -187,3 +187,16 @@ gb2 archive 2153–2157, 10398, 10399 change from numerical failures to `Ok`.
 gb2 archive 2306 and 2309 move shape2 by 2.1e-12 relative, inside `tol`;
 every other `Ok` move is at most 3.3e-14; invtrgamma is unchanged
 ([report](2026-11-16-equiv-bc-report.md)). The known list has 98 entries.
+
+## Patch after the near-constant rounded maximizers (2026-11-16)
+
+The records of paralogis, invparalogis and fatigue were replaced with
+snapshots of the TASK-214.39 part 1 branch (merge `328d5332`; provenance
+`patches`): 18 cases per mode (near-constant and offset classes and archive
+cases) change from numerical stops to uncertified estimates at the rounded
+maximizer; paralogis 5388, 5391 and invparalogis 10533 (uncertified before
+and after) move within 2e-16 of their 100-digit maximizers. The held-shape
+invparalogis records 3927, 3934, 3937, 3938–3944 had been stale since the
+Burr relative-log merge (1–2 ulp of the scale; master gives the new values)
+([report](2026-11-16-near-constant-fix-report.md)). The known list has 92
+entries.
