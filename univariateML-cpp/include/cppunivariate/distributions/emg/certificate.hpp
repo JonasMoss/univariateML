@@ -297,8 +297,73 @@ struct OuterCertificate {
     return out;
   }
 };
-inline EmgResult outer_certificate(span x,double tol,int maxit,double mu,double sigma,double lambda) {
+inline EmgResult outer_certificate_raw(span x,double tol,int maxit,double mu,double sigma,double lambda) {
   OuterCertificate certificate(x,tol,maxit,mu,sigma,lambda);return certificate.run();
+}
+// The certificate evaluates z = b*v - u on raw data, with an allowance of
+// 64 eps (|b v| + |u|). When the spread of the sample is tiny against its
+// magnitude, u is orders of magnitude larger than the z spread and the
+// computed z collapse (TASK-214.42 batch E). The location-scale family is
+// equivariant, so such a sample is fitted as y = (x - origin)/scale and the
+// result is mapped back. The transform is used only when it is exact in
+// binary64: origin is the sample minimum, scale a power of two, every
+// x - origin is representable (checked with an error-free TwoSum residual) and
+// so are the held coordinates. The data then have the same likelihood up to
+// the constant n log(scale), which is mapped to every bound.
+inline bool emg_exact_difference(double u,double v) {
+  const double d=u-v,z=d-u,err=(u-(d-z))+(-v-z);
+  // err is the TwoSum residual of u + (-v).
+  return std::isfinite(d)&&err==0;
+}
+inline EmgResult outer_certificate(span x,double tol,int maxit,double mu,double sigma,double lambda) {
+  const double origin=*std::min_element(x.begin(),x.end()),top=*std::max_element(x.begin(),x.end());
+  const double spread=top-origin,magnitude=std::max(std::abs(origin),std::abs(top));
+  if(!(spread>0)||!std::isfinite(spread)||!(magnitude>65536*spread))return outer_certificate_raw(x,tol,maxit,mu,sigma,lambda);
+  int exponent=0;std::frexp(spread,&exponent);  // spread = f 2^exponent, f in [1/2,1)
+  const double scale=std::ldexp(1.0,exponent);
+  std::vector<double> y(x.size());
+  for(std::size_t i=0;i<x.size();++i) {
+    if(!emg_exact_difference(x[i],origin))return outer_certificate_raw(x,tol,maxit,mu,sigma,lambda);
+    y[i]=(x[i]-origin)/scale;
+    if(!(y[i]*scale==x[i]-origin))return outer_certificate_raw(x,tol,maxit,mu,sigma,lambda);
+  }
+  double mu2=mu,sigma2=sigma,lambda2=lambda;
+  if(!std::isnan(mu)) {
+    if(!emg_exact_difference(mu,origin))return outer_certificate_raw(x,tol,maxit,mu,sigma,lambda);
+    mu2=(mu-origin)/scale;
+    if(!(std::isfinite(mu2)&&mu2*scale==mu-origin))return outer_certificate_raw(x,tol,maxit,mu,sigma,lambda);
+  }
+  if(!std::isnan(sigma)) {
+    sigma2=sigma/scale;
+    if(!(sigma2>=std::numeric_limits<double>::min()&&std::isfinite(sigma2)&&sigma2*scale==sigma))return outer_certificate_raw(x,tol,maxit,mu,sigma,lambda);
+  }
+  if(!std::isnan(lambda)) {
+    lambda2=lambda*scale;
+    if(!(lambda2>=std::numeric_limits<double>::min()&&std::isfinite(lambda2)&&lambda2/scale==lambda))return outer_certificate_raw(x,tol,maxit,mu,sigma,lambda);
+  }
+  auto r=outer_certificate_raw({y.data(),y.size()},tol,maxit,mu2,sigma2,lambda2);
+  const double shift=-static_cast<double>(x.size())*std::log(scale);  // ll(x) = ll(y) - n log(scale)
+  const double eps=std::numeric_limits<double>::epsilon();
+  const auto ll=[&](double v){return v+shift;};
+  const auto pad=[&](double v){return 16*eps*(std::abs(v)+std::abs(shift));};
+  const auto lower=[&](double v){return std::isfinite(v)?ll(v)-pad(v):v;};
+  const auto upper=[&](double v){return std::isfinite(v)?ll(v)+pad(v):v;};
+  const auto location=[&](double m){return std::fma(scale,m,origin);};
+  const auto convert=[&](StopModel model,std::vector<double>& c) {
+    if(model==StopModel::None&&c.size()==3){c[0]=location(c[0]);c[1]*=scale;c[2]/=scale;}
+    else if(model==StopModel::Norm&&c.size()==2){c[0]=location(c[0]);c[1]*=scale;}
+    else if(model==StopModel::TranslatedExp&&c.size()==2){c[0]=location(c[0]);c[1]/=scale;}
+  };
+  if(std::isfinite(r.mu))r.mu=location(r.mu);
+  if(std::isfinite(r.sigma))r.sigma*=scale;
+  if(std::isfinite(r.lambda))r.lambda/=scale;
+  if(std::isfinite(r.logLik))r.logLik=ll(r.logLik);
+  auto& d=r.stop_detail;
+  for(auto& c:d.candidates){convert(c.model,c.coef);c.loglik_lower=lower(c.loglik_lower);c.loglik_upper=upper(c.loglik_upper);}
+  convert(d.limit_model,d.limit_coef);
+  d.limit_loglik=ll(d.limit_loglik);
+  d.loglik_lower=lower(d.loglik_lower);d.loglik_upper=upper(d.loglik_upper);d.segment_loglik_upper=upper(d.segment_loglik_upper);
+  return r;
 }
 }
 }

@@ -206,6 +206,14 @@ $1/\overline{(x-\min_i x_i)}$ when both are free.
 With a held endpoint exactly at the minimum the limiting density there is
 half the exponential density. Repeated minima count separately.
 
+When the sample spread is below $2^{-16}$ of its largest magnitude, the global
+search runs on $y=(x-x_{\min})/2^e$, with $2^e$ the power of two at or above the spread,
+and maps every coefficient and bound back (log likelihoods shift by $-n\log 2^e$). The
+transform is used only when every $x_i-x_{\min}$ and a held $\mu-x_{\min}$ is exact in binary64
+(an error-free residual check) and the scaled holds stay normal; otherwise the raw data are used.
+Without it the computed $z$ of a near-constant sample collapse to equal values under the
+$64\epsilon(|bv|+|u|)$ allowance and the search ends numerically.
+
 For held $\sigma$ and $\lambda$, the location score is strictly decreasing.
 Its sign bracket is contracted in coordinates centred at the sample minimum,
 with absolute target $\mathrm{tol}\,\sigma$; translation cannot enlarge that

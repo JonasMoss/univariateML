@@ -134,7 +134,10 @@ inline bool data(span x,Data& d){
   d.center=base+range*m;double ss=0;for(double v:d.original){double z=(v-d.center)/range;ss+=z*z/x.size();}
   d.unit=range*std::sqrt(ss);if(!(d.unit>0)||!std::isfinite(d.unit))return false;
   Sum sum;for(double v:d.original){const double value=(v-d.center)/d.unit;
-    const double error=eps*(1+std::abs(v/d.unit)+std::abs(d.center/d.unit)+std::abs(value));
+    // value = fl(fl(v-center)/unit) is within 2 ulp-halves of the real (v-center)/unit
+    // whatever the operands (each rounding is relative to its own result), so the
+    // allowance is relative to |value| and does not count v/unit or center/unit.
+    const double error=eps*(1+std::abs(value));
     I y(value-error,value+error);if(!y.valid())return false;d.x.push_back(y);d.y.push_back((v-d.center)/d.unit);sum.add(y);}
   const double n=x.size();d.mean=sum.get()/n;Sum variance;
   for(I v:d.x)variance.add(sq(v-d.mean));d.var=variance.get()/n;
@@ -408,6 +411,17 @@ inline TCertificateResult t_certificate(span x,double floor,std::int64_t budget=
   if(!(floor==1||floor==2)||budget< -1||maxit<1||!(coefficient_tol>0)||!std::isfinite(coefficient_tol)){out.status=TCertificateStatus::InvalidData;return out;}
   if(budget<0)budget=certificate_budget(maxit);
   if(budget==0){out.status=TCertificateStatus::Budget;out.stop_detail.budget_exhausted=true;return out;}
+  // Collapse test first: it needs only exact equalities, not the interval standardization.
+  {
+    bool finite_x=x.size()>=2;for(double v:x)finite_x=finite_x&&std::isfinite(v);
+    if(finite_x){
+      std::vector<double> sorted(x.begin(),x.end());std::sort(sorted.begin(),sorted.end());
+      std::size_t run=0,mass=0;
+      for(std::size_t j=0;j<sorted.size();++j){run=j&&sorted[j]==sorted[j-1]?run+1:1;mass=std::max(mass,run);}
+      if(mass>floor*(static_cast<double>(x.size())-static_cast<double>(mass))){
+        out.status=TCertificateStatus::Unbounded;out.stop_detail.loglik_lower=INFINITY;out.stop_detail.loglik_upper=INFINITY;return out;}
+    }
+  }
   t_cert_detail::Data data;if(!t_cert_detail::data(x,data)){
     bool constant=!x.empty();for(double v:x)constant=constant&&std::isfinite(v)&&v==x[0];
     bool finite=x.size()>=2;for(double v:x)finite=finite&&std::isfinite(v);
