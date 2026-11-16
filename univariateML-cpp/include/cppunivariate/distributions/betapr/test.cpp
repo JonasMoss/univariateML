@@ -837,3 +837,55 @@ TEST_CASE("betapr core reports constant-data nonexistence in both scale routes")
   CHECK(cppunivariate::betapr_mle(s).status==cppunivariate::BetaPrimeStatus::Unbounded);
   CHECK(cppunivariate::betapr_mle_fixed_scale(s,1).status==cppunivariate::BetaPrimeStatus::Unbounded);
 }
+
+// TASK-214.39: near-constant samples have no finite maximizer. The supremum is the inverse-gamma
+// face for two low and one high observation and the gamma face for the reverse. The faces differ by
+// delta / 3 (about 6e-17), far below the resolution of a double log likelihood, so the limit is
+// decided by the leading-order comparison and is not certified. logLik is evaluated at the returned
+// coefficients (rounding the scale of a shape-1e32 face costs about 1). References: 100-digit gamma and
+// inverse-gamma fits of the same doubles (the stored `near-constant` class sample of betapr).
+TEST_CASE("betapr near-constant samples end at the face the skewness selects, uncertified") {
+  const double c=0x1.39662eac3a403p-1,cp=0x1.39662eac3a404p-1;
+  {
+    const std::vector<double> x{c,c,cp};
+    const auto r=cppunivariate::betapr_mle(mltest::as_span(x));
+    CHECK(r.status==cppunivariate::BetaPrimeStatus::InvGammaBoundary);
+    const auto o=cppunivariate::outcome(r);
+    CHECK(o.kind==cppunivariate::OutcomeKind::Limit);
+    CHECK_FALSE(o.certified);
+    CHECK(r.margin_decided);
+    CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::InvGamma);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(1.3678792443002629e+32).epsilon(1e-10).scale(0));
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(8.3728943752881022e+31).epsilon(1e-10).scale(0));
+    // At the rounded coefficients (the face supremum is 108.2097022045816972).
+    CHECK(r.logLik==doctest::Approx(107.09769920469951).epsilon(1e-10).scale(0));
+  }
+  {
+    const std::vector<double> x{c,cp,cp};
+    const auto r=cppunivariate::betapr_mle(mltest::as_span(x));
+    CHECK(r.status==cppunivariate::BetaPrimeStatus::GammaBoundary);
+    const auto o=cppunivariate::outcome(r);
+    CHECK(o.kind==cppunivariate::OutcomeKind::Limit);
+    CHECK_FALSE(o.certified);
+    CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Gamma);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(1.3678792443002629e+32).epsilon(1e-10).scale(0));
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(4.4748665991497308e-33).epsilon(1e-10).scale(0));
+    CHECK(r.logLik==doctest::Approx(107.19535237507915).epsilon(1e-10).scale(0));
+  }
+  {
+    // Symmetric offsets have no skewness: the leading-order comparison does not decide.
+    const std::vector<double> x{c,c,cp,cp};
+    const auto r=cppunivariate::betapr_mle(mltest::as_span(x));
+    CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Failure);
+  }
+  {
+    // The tie3 sample (a third observation far from the others) keeps its certified inverse-gamma limit.
+    const std::vector<double> x{c,c,1.1198008745005052};
+    const auto r=cppunivariate::betapr_mle(mltest::as_span(x));
+    CHECK(r.status==cppunivariate::BetaPrimeStatus::InvGammaBoundary);
+    CHECK(cppunivariate::outcome(r).certified);
+    CHECK_FALSE(r.margin_decided);
+  }
+}

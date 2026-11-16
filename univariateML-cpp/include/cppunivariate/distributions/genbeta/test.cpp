@@ -277,10 +277,16 @@ TEST_CASE("genbeta certificate: rounded logarithms do not prove constant-data no
   const std::vector<double> x{v,std::nextafter(v,1.)};
   REQUIRE(x[0]!=x[1]);
   REQUIRE(std::log(x[0])==std::log(x[1]));
-  for(double p:{.4,std::numeric_limits<double>::quiet_NaN()}) {
-    const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,300,p);
+  {
+    const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,300,.4);
     CHECK(r.status==cppunivariate::GenbetaStatus::SearchUnresolved);
     CHECK(r.certificate_failure==cppunivariate::GenbetaCertificateFailure::Arithmetic);
+  }
+  // TASK-214.39: all shapes free, the near-constant sample ends at a named face (was a numerical stop).
+  {
+    const auto r=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,300);
+    CHECK(r.status==cppunivariate::GenbetaStatus::PowerBoundary);
+    CHECK_FALSE(cppunivariate::outcome(r).certified);
   }
 }
 
@@ -620,4 +626,50 @@ TEST_CASE("genbeta exact power-product ridge is a proved nonunique maximum") {
   CHECK(r.shape1*r.shape3==doctest::Approx(.72134752044448170368).epsilon(1e-14));
   double reflected=0;for(double v:x)reflected+=cppunivariate::distributions::dgenbeta(v,r.shape1/2,1,2*r.shape3,1,true);
   CHECK(reflected==doctest::Approx(r.logLik).epsilon(1e-13));
+}
+
+// TASK-214.39: scale held at 1, all shapes free, near-constant sample. No finite maximizer. The
+// supremum is the power face (a -> infinity) or the log-gamma face (a -> 0, p -> infinity,
+// p a -> lambda), by the ratio s / g of the standard deviation of -log x to its mean distance g
+// from the minimum: power when s / g > 0.6577. The first two samples both have s / g > 0.6577
+// (0.707 and 1.414), so the power face wins, by 0.217 and 2.30 in log likelihood. Finite
+// (p, q, a) were scanned at 60 digits (dev/research/evaluations/2026-11-16-near-constant-limits-report.md);
+// no bound excludes them, so the limits are not certified. References: 100-digit evaluation.
+TEST_CASE("genbeta near-constant samples end at the power or log-gamma face, uncertified") {
+  const double c=0x1.ac3e6812c3238p-1,cp=0x1.ac3e6812c3239p-1;
+  const auto fit=[&](const std::vector<double>& x){return cppunivariate::genbeta_mle(mltest::as_span(x),1.0);};
+  {
+    const auto r=fit({c,c,cp});
+    CHECK(r.status==cppunivariate::GenbetaStatus::PowerBoundary);
+    const auto o=cppunivariate::outcome(r);
+    CHECK(o.kind==cppunivariate::OutcomeKind::Limit);
+    CHECK_FALSE(o.certified);
+    CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Power);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(0.83641362408668052).epsilon(1e-10).scale(0));
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(11300616257293141.0).epsilon(1e-10).scale(0));
+    CHECK(r.stop_detail.limit_loglik==doctest::Approx(108.42679703335579741).epsilon(1e-12).scale(0));
+  }
+  {
+    const auto r=fit({c,cp,cp});
+    CHECK(r.status==cppunivariate::GenbetaStatus::PowerBoundary);
+    CHECK_FALSE(cppunivariate::outcome(r).certified);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(22601232514586281.0).epsilon(1e-10).scale(0));
+    CHECK(r.stop_detail.limit_loglik==doctest::Approx(110.50623857503563321).epsilon(1e-12).scale(0));
+  }
+  {
+    // Four equal values and one larger: s / g = 0.5, the log-gamma face wins by 1.37.
+    const auto r=fit({c,c,c,c,cp});
+    CHECK(r.status==cppunivariate::GenbetaStatus::UnitGammaBoundary);
+    const auto o=cppunivariate::outcome(r);
+    CHECK(o.kind==cppunivariate::OutcomeKind::Limit);
+    CHECK_FALSE(o.certified);
+    CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::UnitGamma);
+    REQUIRE(r.stop_detail.limit_coef.size()==3);
+    CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(1.1319321248523135e+31).epsilon(1e-10).scale(0));
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(1.5781160254903757e-32).epsilon(1e-10).scale(0));
+    CHECK(r.stop_detail.limit_coef[2]==1.0);
+    CHECK(r.stop_detail.limit_loglik==doctest::Approx(181.17076384173291807).epsilon(1e-12).scale(0));
+  }
 }

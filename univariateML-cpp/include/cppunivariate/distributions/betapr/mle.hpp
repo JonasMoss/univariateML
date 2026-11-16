@@ -33,6 +33,9 @@ struct BetaPrimeResult {
   BetaPrimeJointBounds joint_exterior{};
   bool certified=true;
   bool search_failed=false;
+  // A gamma or inverse-gamma limit chosen by the leading-order comparison of the faces on a near-constant
+  // sample (near_constant.hpp); the finite members are not excluded by a bound.
+  bool margin_decided=false;
 };
 // Negative log-likelihood in the two shapes at a supplied scale.
 // Default scale 1 also preserves the legacy validation-harness seam.
@@ -322,6 +325,7 @@ namespace cppunivariate { namespace betapr_detail {
 inline BetaPrimeResult accurate_fallback(BetaPrimeResult certificate,span x,double a,double b,double s,
     double tol,int maxit,double starta,double startb,double starts);
 }}
+#include "near_constant.hpp"
 #include "joint_certificate.hpp"
 
 #include "fallback.hpp"
@@ -358,8 +362,8 @@ inline FitOutcome outcome(const BetaPrimeResult& r) {
     case BetaPrimeStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::Unresolved);
     case BetaPrimeStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case BetaPrimeStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    case BetaPrimeStatus::GammaBoundary: return FitOutcome::limit(true);
-    case BetaPrimeStatus::InvGammaBoundary: return FitOutcome::limit(true);
+    case BetaPrimeStatus::GammaBoundary: return FitOutcome::limit(!r.margin_decided);
+    case BetaPrimeStatus::InvGammaBoundary: return FitOutcome::limit(!r.margin_decided);
     case BetaPrimeStatus::ExpBoundary: return FitOutcome::limit(false);
     case BetaPrimeStatus::InvExpBoundary: return FitOutcome::limit(false);
   }

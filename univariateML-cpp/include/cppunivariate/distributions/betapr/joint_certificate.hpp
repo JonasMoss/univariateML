@@ -499,6 +499,11 @@ inline BetaPrimeResult fit(span x,double tol,int maxit,double startp,double star
 } // namespace betapr_joint_cert
 inline BetaPrimeResult betapr_mle(span x,double tol,int maxit,double shape1,
     double shape2,double scale,double reltol,double abstol) {
-  return betapr_detail::accurate_fallback(betapr_joint_cert::fit(x,tol,maxit,shape1,shape2,scale,reltol,abstol),x,NAN,NAN,NAN,tol,maxit,shape1,shape2,scale);
+  auto r=betapr_detail::accurate_fallback(betapr_joint_cert::fit(x,tol,maxit,shape1,shape2,scale,reltol,abstol),x,NAN,NAN,NAN,tol,maxit,shape1,shape2,scale);
+  // A near-constant sample has no finite maximizer; the search ends unresolved. Name the face (near_constant.hpp).
+  if(r.status==BetaPrimeStatus::BfgsFailure && r.certificate_failure!=LomaxCertificateFailure::Budget &&
+     r.stop_detail.accuracy_stop==AccuracyStop::None && !r.stop_detail.budget_exhausted)
+    betapr_detail::near_constant_limit(x,r);
+  return r;
 }
 } // namespace cppunivariate
