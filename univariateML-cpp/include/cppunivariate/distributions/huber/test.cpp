@@ -533,3 +533,17 @@ TEST_CASE("huber: represented face coordinates are checked before certification"
 TEST_CASE("huber: Gaussian core logarithms survive erfc underflow") {
  CHECK(cppunivariate::distributions::qhuber(-10000,0,1000,134500000,true,true)==doctest::Approx(-141379.83987312717).epsilon(1e-9));
 }
+
+TEST_CASE("huber near-constant sample is an estimate at the rounded optimum, as its tie3 preimage is") {
+  // TASK-214.42 batch F: the nuisance bound is taken at the unrounded
+  // optimum; the public point loses 0.45 nats to rounding and logLik is its value.
+  const std::vector<double> near{-0.007812325130757122,-0.007812325130757122,-0.0078123251307571214};
+  const std::vector<double> tie{-0.007812325130757122,-0.007812325130757122,0.764738416395615};
+  CHECK(cppunivariate::huber_mle(mltest::as_span(tie)).status==cppunivariate::HuberStatus::Ok);
+  const auto r=cppunivariate::huber_mle(mltest::as_span(near));
+  REQUIRE(r.status==cppunivariate::HuberStatus::Ok);
+  CHECK(r.mu==near[0]);
+  CHECK(r.sigma==doctest::Approx(3.889e-19).epsilon(1e-3));
+  CHECK(r.logLik==doctest::Approx(122.14).epsilon(1e-4));
+  CHECK(r.logLik==cppunivariate::huber_point_loglik(mltest::as_span(near),r.mu,r.sigma,r.epsilon));
+}

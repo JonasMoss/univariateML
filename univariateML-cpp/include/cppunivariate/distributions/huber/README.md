@@ -132,7 +132,11 @@ confined to the sample hull. Let $M$ be the maximum of
 $H(\mu'-\mu)/\sigma$ over that hull, or zero when location is held.
 The supporting plane to the loss gives the global likelihood gap bound
 $M+G-M-n-n\log((G-M)/n)$ when scale is free and $G-M>0$;
-with held scale the bound is $M$. Nonfinite or insufficiently tight bounds
+with held scale the bound is $M$. The bound is evaluated at the returned
+coefficients; when their rounding loses more than the allowance (a steep
+maximizer, such as a sample within a few ulp of its median), it is evaluated at
+the standardized optimum instead, which the public coefficients must match to
+8 ulp, and `logLik` is the value at the returned point. Nonfinite or insufficiently tight bounds
 stop. Flat location intervals retain the midpoint convention; for example,
 with observations $(-10,10)$, held scale 1 and shape 1, every location in
 $[-9,9]$ maximizes the likelihood. Uniqueness is therefore false in general.

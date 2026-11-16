@@ -17,7 +17,11 @@ struct HuberResult {
   double mu, sigma, epsilon, logLik;
   int iterations;
   HuberStatus status;
- StopDetail stop_detail{}; };
+ StopDetail stop_detail{};
+  // Standardized optimum before the public coefficients were rounded:
+  // y=(x-std_center)/std_unit, location std_m and scale std_s in those units.
+  double std_center=std::numeric_limits<double>::quiet_NaN(),std_unit=std::numeric_limits<double>::quiet_NaN(),
+      std_m=std::numeric_limits<double>::quiet_NaN(),std_s=std::numeric_limits<double>::quiet_NaN(); };
 
 inline bool family_point(const HuberResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
@@ -185,6 +189,7 @@ inline HuberResult huber_fixed_solve(const std::vector<double>& y,
   }
   r.mu=fm ? mu : center+unit*m;
   r.sigma=fs ? sigma : unit*s;
+  r.std_center=center;r.std_unit=unit;r.std_m=m;r.std_s=s;
   r.logLik=-n*(std::log(r.sigma)+std::log(huber_z(epsilon)));
   for (double v:y) r.logLik-=huber_rho((v-m)/s,epsilon);
   return r;
@@ -583,20 +588,20 @@ inline double huber_point_loglik(span x,double mu,double sigma,double epsilon) {
 // A supporting plane to the convex loss bounds the ENTIRE nuisance problem.
 // Location is confined to the sample hull when free. The remaining supremum
 // is max_{t>0} n log(t)-K*t; a nonpositive K cannot certify a finite bound.
-inline double huber_nuisance_upper(span x, const HuberResult& r,
-    bool fixed_mu, bool fixed_sigma) {
-  if(r.status!=HuberStatus::Ok || !std::isfinite(r.logLik)) return INFINITY;
+inline double huber_nuisance_upper_at(span x, double mu, double sigma, double epsilon,
+    double logLik, bool fixed_mu, bool fixed_sigma) {
+  if(!std::isfinite(logLik)) return INFINITY;
   CPPUNIV_EXTENDED_REAL g=0,h=0,absolute=0,psi_absolute=0;
   double lo=x[0],hi=x[0];
   for(double v:x) {
-    const double z=(v-r.mu)/r.sigma,psi=huber_psi(z,r.epsilon);
+    const double z=(v-mu)/sigma,psi=huber_psi(z,epsilon);
     g+=static_cast<CPPUNIV_EXTENDED_REAL>(z)*psi;h+=psi;psi_absolute+=std::abs(psi);
     absolute+=std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(z)*psi);
     lo=std::min(lo,v);hi=std::max(hi,v);
   }
   const CPPUNIV_EXTENDED_REAL n=x.size();
   const CPPUNIV_EXTENDED_REAL move=fixed_mu ? 0 :
-      h*((h>0 ? hi : lo)-r.mu)/r.sigma;
+      h*((h>0 ? hi : lo)-mu)/sigma;
   CPPUNIV_EXTENDED_REAL gap=move;
   if(!fixed_sigma) {
     const CPPUNIV_EXTENDED_REAL k=g-move;
@@ -604,12 +609,47 @@ inline double huber_nuisance_upper(span x, const HuberResult& r,
     const CPPUNIV_EXTENDED_REAL delta=(k-n)/n;
     gap=move+n*(delta-std::log1p(delta));
   }
-  if(!fixed_mu)absolute+=psi_absolute*std::max(std::abs((lo-r.mu)/r.sigma),
-      std::abs((hi-r.mu)/r.sigma));
+  if(!fixed_mu)absolute+=psi_absolute*std::max(std::abs((lo-mu)/sigma),
+      std::abs((hi-mu)/sigma));
   const double pad=256*std::numeric_limits<double>::epsilon()*
-      (1+std::abs(r.logLik)+static_cast<double>(absolute+std::abs(move)))*
+      (1+std::abs(logLik)+static_cast<double>(absolute+std::abs(move)))*
       (1+x.size()*std::numeric_limits<double>::epsilon());
-  return r.logLik+std::max(0.,static_cast<double>(gap))+pad;
+  return logLik+std::max(0.,static_cast<double>(gap))+pad;
+}
+
+inline double huber_nuisance_upper(span x, const HuberResult& r,
+    bool fixed_mu, bool fixed_sigma) {
+  if(r.status!=HuberStatus::Ok) return INFINITY;
+  return huber_nuisance_upper_at(x,r.mu,r.sigma,r.epsilon,r.logLik,fixed_mu,fixed_sigma);
+}
+
+// The same bound at the standardized optimum, before the coefficients were
+// rounded: the supporting plane is taken where the solver stopped, so it does
+// not depend on the representable neighbours. Returns the bound minus the
+// standardized log likelihood (the certified gap of the unrounded optimum;
+// the likelihood of the public point is reported separately, as the loss from
+// rounding is the decided steep-maximizer case). INFINITY when unavailable.
+inline double huber_standardized_gap(span x, const HuberResult& r,
+    bool fixed_mu, bool fixed_sigma, double& allowance) {
+  if(r.status!=HuberStatus::Ok || !(r.std_unit>0) || !(r.std_s>0) ||
+     !std::isfinite(r.std_unit) || !std::isfinite(r.std_s) ||
+     !std::isfinite(r.std_m) || !std::isfinite(r.std_center))return INFINITY;
+  // The public coefficients must be the standardized optimum mapped back and
+  // rounded: a few units in the last place of the public coordinates.
+  const double eps=std::numeric_limits<double>::epsilon();
+  if(!fixed_mu && !(std::abs((r.mu-r.std_center)/r.std_unit-r.std_m)<=
+      8*eps*((std::abs(r.mu)+std::abs(r.std_center))/r.std_unit+std::abs(r.std_m))))return INFINITY;
+  if(!fixed_sigma && !(std::abs(r.sigma/r.std_unit-r.std_s)<=8*eps*r.std_s))return INFINITY;
+  std::vector<double> y;y.reserve(x.size());
+  for(double v:x)y.push_back((v-r.std_center)/r.std_unit);
+  CPPUNIV_EXTENDED_REAL value=-static_cast<CPPUNIV_EXTENDED_REAL>(y.size())*
+      (std::log(r.std_s)+std::log(huber_z(r.epsilon)));
+  for(double v:y)value-=huber_rho((v-r.std_m)/r.std_s,r.epsilon);
+  const double ll=static_cast<double>(value);
+  allowance=1e-8*x.size()+1024*std::numeric_limits<double>::epsilon()*(1+std::abs(ll));
+  const double upper=huber_nuisance_upper_at({y.data(),y.size()},r.std_m,r.std_s,r.epsilon,
+      ll,fixed_mu,fixed_sigma);
+  return upper-ll;
 }
 
 // Below c0, the median cluster remains the only quadratic cluster. Its
@@ -669,8 +709,16 @@ inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
       const double upper=huber_nuisance_upper(x,best,fm,fs);
       const double allowance=1e-8*x.size()+1024*std::numeric_limits<double>::epsilon()*
           (1+std::abs(best.logLik));
-      if(!(std::isfinite(upper) && upper-best.logLik<=allowance))
-        best.status=HuberStatus::IterationFailure;
+      if(!(std::isfinite(upper) && upper-best.logLik<=allowance)) {
+        // The public point may sit below the supremum only by the rounding of
+        // its coordinates (steep maximizer). Then the unrounded standardized
+        // optimum must carry the certificate, and logLik stays the value at
+        // the returned coefficients.
+        double standardized_allowance=0;
+        const double gap=huber_standardized_gap(x,best,fm,fs,standardized_allowance);
+        if(!(std::isfinite(gap) && gap<=standardized_allowance))
+          best.status=HuberStatus::IterationFailure;
+      }
     }
     if(best.status==HuberStatus::IterationFailure) {
       best.stop_detail.loglik_upper=INFINITY;

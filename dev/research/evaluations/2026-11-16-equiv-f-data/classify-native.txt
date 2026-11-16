@@ -1,0 +1,72 @@
+== native: 843 old rows of these families, 843 new
+
+### huber: 173 cases, 169 identical, 4 changed
+  fields ['candidates', 'certified', 'core_status', 'estimates', 'fixed', 'iterations', 'kind', 'logLik', 'loglik_lower', 'loglik_upper', 'message', 'outcome', 'reason', 'unique']: 4
+  outcome/core_status/certified changes: 4 cases
+    4 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'no-convergence', 'unique': True} | core 3 | cert None  ->  ok | {'certified': True, 'kind': 'estimate', 'reason': 'none', 'unique': True} | core 0 | cert True
+  kind changes: 4
+    archive|003397|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    archive|003400|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    class|near-constant|: numerical/failure/no-convergence/ -> ok/estimate/none/
+    class|offset|: numerical/failure/no-convergence/ -> ok/estimate/none/
+  ok->ok estimate moves: 0; max 0; above 1e-10: 0; above 1e-13: 0
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 0
+  stopped cases: max relative move of limit_estimates 0, of loglik fields 0
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### sn: 189 cases, 179 identical, 10 changed
+  fields ['candidates', 'certified', 'core_status', 'kind', 'limit_estimates', 'limit_loglik', 'loglik_lower', 'loglik_upper', 'message', 'model', 'outcome', 'reason']: 7
+  fields ['candidates', 'loglik_lower']: 3
+  outcome/core_status/certified changes: 7 cases
+    7 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'no-convergence', 'unique': True} | core 2 | cert None  ->  limit | {'certified': False, 'kind': 'limit', 'reason': 'none', 'unique': True} | core 3 | cert False
+  kind changes: 7
+    archive|006425|: numerical/failure/no-convergence/ -> limit/limit/none/hnorm
+    archive|006427|: numerical/failure/no-convergence/ -> limit/limit/none/hnorm
+    archive|006428|: numerical/failure/no-convergence/ -> limit/limit/none/hnorm
+    archive|006431|: numerical/failure/no-convergence/ -> limit/limit/none/hnorm
+    archive|006463|: numerical/failure/no-convergence/ -> limit/limit/none/hnorm
+    class|near-constant|: numerical/failure/no-convergence/ -> limit/limit/none/hnorm
+    class|offset|: numerical/failure/no-convergence/ -> limit/limit/none/hnorm
+  ok->ok estimate moves: 0; max 0; above 1e-10: 0; above 1e-13: 0
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 3
+  stopped cases: max relative move of limit_estimates 0, of loglik fields inf
+    limit_estimates 0, loglik inf  class|subnormal-signed numerical/failure/no-convergence/
+    limit_estimates 0, loglik inf  class|subnormal numerical/failure/no-convergence/
+    limit_estimates 0, loglik inf  archive|006464 numerical/failure/no-convergence/
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### st: 285 cases, 285 identical, 0 changed
+  outcome/core_status/certified changes: 0 cases
+  kind changes: 0
+  ok->ok estimate moves: 0; max 0; above 1e-10: 0; above 1e-13: 0
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 0
+  stopped cases: max relative move of limit_estimates 0, of loglik fields 0
+  stopped cases with limit_estimates moved above 1e-10: 0
+
+### triang: 196 cases, 185 identical, 11 changed
+  fields ['certified', 'core_status', 'estimates', 'iterations', 'kind', 'logLik', 'message', 'outcome', 'reason', 'unique']: 7
+  fields ['certified', 'core_status', 'estimates', 'fixed', 'iterations', 'kind', 'logLik', 'message', 'outcome', 'reason', 'unique']: 3
+  fields ['certified', 'core_status', 'estimates', 'iterations', 'kind', 'logLik', 'message', 'outcome', 'reason', 'unique', 'warnings']: 1
+  outcome/core_status/certified changes: 11 cases
+    10 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 5 | cert None  ->  ok | {'certified': True, 'kind': 'estimate', 'reason': 'none', 'unique': True} | core 0 | cert True
+    1 x  numerical | {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} | core 5 | cert None  ->  ok | {'certified': True, 'kind': 'estimate', 'reason': 'none', 'unique': False} | core 0 | cert True
+  kind changes: 11
+    archive|008165|: numerical/failure/evaluation/ -> ok/estimate/none/
+    archive|008172|: numerical/failure/evaluation/ -> ok/estimate/none/
+    archive|008173|: numerical/failure/evaluation/ -> ok/estimate/none/
+    archive|008194|: numerical/failure/evaluation/ -> ok/estimate/none/
+    archive|011117|: numerical/failure/evaluation/ -> ok/estimate/none/
+    archive|011118|: numerical/failure/evaluation/ -> ok/estimate/none/
+    archive|011119|: numerical/failure/evaluation/ -> ok/estimate/none/
+    archive|011122|: numerical/failure/evaluation/ -> ok/estimate/none/
+    class|near-constant|: numerical/failure/evaluation/ -> ok/estimate/none/
+    class|offset|: numerical/failure/evaluation/ -> ok/estimate/none/
+    class|subnormal|: numerical/failure/evaluation/ -> ok/estimate/none/
+  ok->ok estimate moves: 0; max 0; above 1e-10: 0; above 1e-13: 0
+  ok->ok logLik moves above 1e-12: 0
+  same kind, not ok (stopped, candidates etc. changed): 0
+  stopped cases: max relative move of limit_estimates 0, of loglik fields 0
+  stopped cases with limit_estimates moved above 1e-10: 0

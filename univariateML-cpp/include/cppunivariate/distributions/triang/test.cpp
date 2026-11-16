@@ -195,7 +195,7 @@ TEST_CASE("triang: audit-support case 8173 public coordinates") {
   const std::vector<double> x{0.03627073533558047,0.036270735335580485,0.03627073533558049,0.03627073533558051,0.036270735335580555};
   const auto data=mltest::as_span(x);
   const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,NAN,NAN);
-  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
   if(fit.status==cppunivariate::TriangStatus::Ok) {
     double raw=0;
     for(double z:x) {
@@ -211,7 +211,7 @@ TEST_CASE("triang: audit-support case 8194 public coordinates") {
   const std::vector<double> x{0.03627073533558047,0.036270735335580485,0.03627073533558049,0.03627073533558051,0.036270735335580555};
   const auto data=mltest::as_span(x);
   const auto fit=cppunivariate::triang_mle(data,1e-10,100,0.036270735335580465,NAN,NAN);
-  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
   if(fit.status==cppunivariate::TriangStatus::Ok) {
     double raw=0;
     for(double z:x) {
@@ -275,7 +275,7 @@ TEST_CASE("triang: audit-support case 11117 public coordinates") {
   const std::vector<double> x{0.03627073533558047,0.03627073533558048,0.036270735335580485,0.0362707353355805,0.03627073533558053};
   const auto data=mltest::as_span(x);
   const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,NAN,NAN);
-  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
   if(fit.status==cppunivariate::TriangStatus::Ok) {
     double raw=0;
     for(double z:x) {
@@ -291,7 +291,7 @@ TEST_CASE("triang: audit-support case 11118 public coordinates") {
   const std::vector<double> x{1.0045256123727766,1.0045256123727764,1.0045256123727762,1.0045256123727757,1.0045256123727748};
   const auto data=mltest::as_span(x);
   const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,NAN,NAN);
-  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
   if(fit.status==cppunivariate::TriangStatus::Ok) {
     double raw=0;
     for(double z:x) {
@@ -307,7 +307,7 @@ TEST_CASE("triang: audit-support case 11119 public coordinates") {
   const std::vector<double> x{0.03627073533558047,0.03627073533558048,0.036270735335580485,0.0362707353355805,0.03627073533558053};
   const auto data=mltest::as_span(x);
   const auto fit=cppunivariate::triang_mle(data,1e-10,100,0.036270735335580465,NAN,NAN);
-  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
   if(fit.status==cppunivariate::TriangStatus::Ok) {
     double raw=0;
     for(double z:x) {
@@ -323,7 +323,7 @@ TEST_CASE("triang: audit-support case 11122 public coordinates") {
   const std::vector<double> x{1.0045256123727766,1.0045256123727764,1.0045256123727762,1.0045256123727757,1.0045256123727748};
   const auto data=mltest::as_span(x);
   const auto fit=cppunivariate::triang_mle(data,1e-10,100,NAN,1.0045256123727768,NAN);
-  REQUIRE(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+  REQUIRE(fit.status==cppunivariate::TriangStatus::Ok);
   if(fit.status==cppunivariate::TriangStatus::Ok) {
     double raw=0;
     for(double z:x) {
@@ -456,7 +456,7 @@ TEST_CASE("triang: endpoint representation certificates against 400-digit profil
     CHECK(fit.logLik==doctest::Approx(132.84792080737714).epsilon(1e-14));
     CHECK(cppunivariate::triang_detail::rounded_endpoint(mltest::as_span(x),fit.a,fit.b,fit.c,false,false));
     const auto strict=cppunivariate::triang_mle(mltest::as_span(x),1e-14,100,NAN,NAN,NAN);
-    CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(strict.status==cppunivariate::TriangStatus::Ok);
   }
   SUBCASE("case 8168") {
     const std::vector<double> x{0.999999999998,0.999999999999,1.0,1.000000000001,1.000000000003};
@@ -466,7 +466,7 @@ TEST_CASE("triang: endpoint representation certificates against 400-digit profil
     CHECK(fit.logLik==doctest::Approx(129.6426460734028).epsilon(1e-14));
     CHECK(cppunivariate::triang_detail::rounded_endpoint(mltest::as_span(x),fit.a,fit.b,fit.c,false,false));
     const auto strict=cppunivariate::triang_mle(mltest::as_span(x),1e-14,100,NAN,NAN,NAN);
-    CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(strict.status==cppunivariate::TriangStatus::Ok);
   }
   SUBCASE("case 8172") {
     const std::vector<double> x{1.0045256123717767,1.0045256123707769,1.0045256123697768,1.0045256123677768,1.004525612363777};
@@ -476,27 +476,27 @@ TEST_CASE("triang: endpoint representation certificates against 400-digit profil
     CHECK(fit.logLik==doctest::Approx(127.65928931238614).epsilon(1e-14));
     CHECK(cppunivariate::triang_detail::rounded_endpoint(mltest::as_span(x),fit.a,fit.b,fit.c,false,false));
     const auto strict=cppunivariate::triang_mle(mltest::as_span(x),1e-14,100,NAN,NAN,NAN);
-    CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(strict.status==cppunivariate::TriangStatus::Ok);
   }
   SUBCASE("case 8173") {
     const std::vector<double> x{0.03627073533558047,0.036270735335580485,0.03627073533558049,0.03627073533558051,0.036270735335580555};
     const auto fit=cppunivariate::triang_mle(mltest::as_span(x),1e-10,100,NAN,NAN,NAN);
-    CHECK(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(fit.status==cppunivariate::TriangStatus::Ok);
     CHECK(fit.a==0.03627073533558047); CHECK(fit.b==0.036270735335580576); CHECK(fit.c==0.03627073533558047);
     CHECK(fit.logLik==doctest::Approx(184.9859234257181).epsilon(1e-14));
     CHECK(cppunivariate::triang_detail::rounded_endpoint(mltest::as_span(x),fit.a,fit.b,fit.c,false,false));
     const auto strict=cppunivariate::triang_mle(mltest::as_span(x),1e-14,100,NAN,NAN,NAN);
-    CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(strict.status==cppunivariate::TriangStatus::Ok);
   }
   SUBCASE("case 8194") {
     const std::vector<double> x{0.03627073533558047,0.036270735335580485,0.03627073533558049,0.03627073533558051,0.036270735335580555};
     const auto fit=cppunivariate::triang_mle(mltest::as_span(x),1e-10,100,0.036270735335580465,NAN,NAN);
-    CHECK(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(fit.status==cppunivariate::TriangStatus::Ok);
     CHECK(fit.a==0.036270735335580465); CHECK(fit.b==0.036270735335580576); CHECK(fit.c==0.03627073533558047);
     CHECK(fit.logLik==doctest::Approx(184.66323082003026).epsilon(1e-14));
     CHECK(cppunivariate::triang_detail::rounded_endpoint(mltest::as_span(x),fit.a,fit.b,fit.c,true,false));
     const auto strict=cppunivariate::triang_mle(mltest::as_span(x),1e-14,100,0.036270735335580465,NAN,NAN);
-    CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(strict.status==cppunivariate::TriangStatus::Ok);
   }
   SUBCASE("case 8213") {
     const std::vector<double> x{1.0045256123717767,1.0045256123707769,1.0045256123697768,1.0045256123677768,1.004525612363777};
@@ -506,47 +506,47 @@ TEST_CASE("triang: endpoint representation certificates against 400-digit profil
     CHECK(fit.logLik==doctest::Approx(127.1883141769809).epsilon(1e-14));
     CHECK(cppunivariate::triang_detail::rounded_endpoint(mltest::as_span(x),fit.a,fit.b,fit.c,false,true));
     const auto strict=cppunivariate::triang_mle(mltest::as_span(x),1e-14,100,NAN,1.0045256123727768,NAN);
-    CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(strict.status==cppunivariate::TriangStatus::Ok);
   }
   SUBCASE("case 11117") {
     const std::vector<double> x{0.03627073533558047,0.03627073533558048,0.036270735335580485,0.0362707353355805,0.03627073533558053};
     const auto fit=cppunivariate::triang_mle(mltest::as_span(x),1e-10,100,NAN,NAN,NAN);
-    CHECK(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(fit.status==cppunivariate::TriangStatus::Ok);
     CHECK(fit.a==0.03627073533558047); CHECK(fit.b==0.03627073533558054); CHECK(fit.c==0.03627073533558047);
     CHECK(fit.logLik==doctest::Approx(187.0509892942418).epsilon(1e-14));
     CHECK(cppunivariate::triang_detail::rounded_endpoint(mltest::as_span(x),fit.a,fit.b,fit.c,false,false));
     const auto strict=cppunivariate::triang_mle(mltest::as_span(x),1e-14,100,NAN,NAN,NAN);
-    CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(strict.status==cppunivariate::TriangStatus::Ok);
   }
   SUBCASE("case 11118") {
     const std::vector<double> x{1.0045256123727766,1.0045256123727764,1.0045256123727762,1.0045256123727757,1.0045256123727748};
     const auto fit=cppunivariate::triang_mle(mltest::as_span(x),1e-10,100,NAN,NAN,NAN);
-    CHECK(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(fit.status==cppunivariate::TriangStatus::Ok);
     CHECK(fit.a==1.0045256123727744); CHECK(fit.b==1.0045256123727766); CHECK(fit.c==1.0045256123727766);
     CHECK(fit.logLik==doctest::Approx(169.72230978024317).epsilon(1e-14));
     CHECK(cppunivariate::triang_detail::rounded_endpoint(mltest::as_span(x),fit.a,fit.b,fit.c,false,false));
     const auto strict=cppunivariate::triang_mle(mltest::as_span(x),1e-14,100,NAN,NAN,NAN);
-    CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(strict.status==cppunivariate::TriangStatus::Ok);
   }
   SUBCASE("case 11119") {
     const std::vector<double> x{0.03627073533558047,0.03627073533558048,0.036270735335580485,0.0362707353355805,0.03627073533558053};
     const auto fit=cppunivariate::triang_mle(mltest::as_span(x),1e-10,100,0.036270735335580465,NAN,NAN);
-    CHECK(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(fit.status==cppunivariate::TriangStatus::Ok);
     CHECK(fit.a==0.036270735335580465); CHECK(fit.b==0.03627073533558054); CHECK(fit.c==0.03627073533558047);
     CHECK(fit.logLik==doctest::Approx(186.57443839522017).epsilon(1e-14));
     CHECK(cppunivariate::triang_detail::rounded_endpoint(mltest::as_span(x),fit.a,fit.b,fit.c,true,false));
     const auto strict=cppunivariate::triang_mle(mltest::as_span(x),1e-14,100,0.036270735335580465,NAN,NAN);
-    CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(strict.status==cppunivariate::TriangStatus::Ok);
   }
   SUBCASE("case 11122") {
     const std::vector<double> x{1.0045256123727766,1.0045256123727764,1.0045256123727762,1.0045256123727757,1.0045256123727748};
     const auto fit=cppunivariate::triang_mle(mltest::as_span(x),1e-10,100,NAN,1.0045256123727768,NAN);
-    CHECK(fit.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(fit.status==cppunivariate::TriangStatus::Ok);
     CHECK(fit.a==1.0045256123727744); CHECK(fit.b==1.0045256123727768); CHECK(fit.c==1.0045256123727766);
     CHECK(fit.logLik==doctest::Approx(169.24575888122152).epsilon(1e-14));
     CHECK(cppunivariate::triang_detail::rounded_endpoint(mltest::as_span(x),fit.a,fit.b,fit.c,false,true));
     const auto strict=cppunivariate::triang_mle(mltest::as_span(x),1e-14,100,NAN,1.0045256123727768,NAN);
-    CHECK(strict.status==cppunivariate::TriangStatus::NumericalFailure);
+    CHECK(strict.status==cppunivariate::TriangStatus::Ok);
   }
 }
 
@@ -579,4 +579,18 @@ TEST_CASE("triang: symmetric samples with free coefficients tie with the reflect
   // An asymmetric sample keeps unique = true.
   const std::vector<double> y{0,1,3};
   CHECK(cppunivariate::outcome(cppunivariate::triang_mle(mltest::as_span(y))).unique);
+}
+
+TEST_CASE("triang near-constant sample is an estimate at the best public endpoint, as its tie3 preimage is") {
+  // TASK-214.42 batch F: b rounds to c + 2 ulp (0.52 nats below the supremum at
+  // c + 4/3 ulp); the public point is the best representable neighbour.
+  const std::vector<double> near{0.4665625208523124,0.4665625208523124,0.4665625208523125};
+  const std::vector<double> tie{0.4665625208523124,0.4665625208523124,0.6148650215473026};
+  CHECK(cppunivariate::triang_mle(mltest::as_span(tie)).status==cppunivariate::TriangStatus::Ok);
+  const auto r=cppunivariate::triang_mle(mltest::as_span(near));
+  REQUIRE(r.status==cppunivariate::TriangStatus::Ok);
+  CHECK(r.a==near[0]);
+  CHECK(r.c==near[0]);
+  CHECK(r.b==std::nextafter(std::nextafter(near[0],INFINITY),INFINITY));
+  CHECK(r.logLik==doctest::Approx(111.60).epsilon(1e-4));
 }

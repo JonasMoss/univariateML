@@ -315,13 +315,15 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
   const double margin=256*std::numeric_limits<double>::epsilon()*
       (input.size()+magnitude+std::abs(predicted));
   const bool same_point=std::isfinite(actual) && std::abs(actual-predicted)<=margin;
-  // Rounding can lose more than evaluation roundoff while still satisfying
-  // the requested relative likelihood accuracy. Accept only after checking
-  // the best public endpoint and the global continuous optimization bound.
-  const double global_upper=certificate_upper-input.size()*std::log(scale);
+  // Rounding can lose more than evaluation roundoff (a steep maximizer: the
+  // continuous endpoint lies between two public numbers). Accept the public
+  // point when it is the best public endpoint and the global bound certifies
+  // the continuous optimum it was rounded from; logLik stays the value at the
+  // returned coefficients, below the supremum by the rounding loss.
+  const double continuous_gap=certificate_upper-best;
   const bool rounded=!same_point && success && std::isfinite(actual) &&
       triang_detail::rounded_endpoint(input,out.a,out.b,out.c,fa,fb) &&
-      global_upper-actual<=tol*std::max(1.0,std::abs(actual))+margin;
+      continuous_gap<=tol*std::max(1.0,std::abs(predicted))+margin;
   const bool represented=same_point || rounded;
   out.status=!represented?TriangStatus::NumericalFailure:
       (success?TriangStatus::Ok:TriangStatus::IterationFailure);
