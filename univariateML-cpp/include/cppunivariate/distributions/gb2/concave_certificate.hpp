@@ -7,7 +7,7 @@ inline Gb2Result fit(const trgamma_detail::LogData& d,double q,double a,
                      double p,double b,double tol,int maxit) {
   const bool ha=!std::isnan(a),hb=!std::isnan(b);
   Gb2Result out{q,a,p,b,NAN,0,Gb2Status::NumericalFailure};
-  const double offset=hb?(d.mean-std::log(b))/d.sd:0;
+  const double offset=hb?d.centre_of(b)/d.sd:0;
   double A=ha?a*d.sd:std::sqrt(special::trigamma(p)+special::trigamma(q));
   double c=hb?0:special::digamma(q)-special::digamma(p);
   const double eps=std::numeric_limits<double>::epsilon();
@@ -16,7 +16,9 @@ inline Gb2Result fit(const trgamma_detail::LogData& d,double q,double a,
     ++out.iterations;
     const auto e=gb2_detail::evaluate(d,A,c,p,q,hb,offset);
     const double logb=hb?std::log(b):d.mean+d.sd*c/A;
-    out.shape2=ha?a:A/d.sd;out.scale=hb?b:std::exp(logb);
+    // Relative logs: the absolute level of the logs does not enter their error.
+    const double rel_logb=hb?(d.relative?transformed_detail::log_ratio(b,d.anchor):0):d.rmean+d.sd*c/A;
+    out.shape2=ha?a:A/d.sd;out.scale=hb?b:d.scale_at(d.sd*c/A);
     out.logLik=e.ll-d.n*std::log(d.sd)-d.sum;
     if(!(A>0)||!std::isfinite(e.ll)||!std::isfinite(out.logLik)||
        !(out.scale>0)||!std::isfinite(out.scale)||
@@ -31,7 +33,8 @@ inline Gb2Result fit(const trgamma_detail::LogData& d,double q,double a,
       const double t=A*v-c;
       // Input logarithms, centering, division and the coefficient round trip.
       // These allowances grow with power; a large A must not hide log loss.
-      const double dv=8*eps*(1+std::abs(d.mean)+d.sd*std::abs(z)+std::abs(logb))/d.sd;
+      const double dv=d.relative?8*eps*(1+std::abs(z)+(std::abs(d.rmean)+std::abs(rel_logb))/d.sd)
+        :8*eps*(1+std::abs(d.mean)+d.sd*std::abs(z)+std::abs(logb))/d.sd;
       const double dt=A*dv+16*eps*(1+std::abs(A*v)+std::abs(c));
       const double du=std::min(1.,dt/4);
       gradient_error+=(ha?0:(p+q)*(dv+(std::abs(v)+dv)*du))+(hb?0:(p+q)*du);

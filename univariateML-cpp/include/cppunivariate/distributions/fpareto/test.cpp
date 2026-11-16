@@ -328,3 +328,18 @@ TEST_CASE("fpareto: excess overflow does not invalidate finite supported data") 
   CHECK(r.status==cppunivariate::FparetoStatus::NumericalFailure);
   CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
 }
+
+TEST_CASE("fpareto near-constant sample ends like its tie3 preimage") {
+  // TASK-214.42 batch B: held shape1 .3, shape3 .4, min 0.
+  const std::vector<double> tie3{1.4170184014157163,1.4170184014157163,3.8452787894735634};
+  const std::vector<double> near{1.4170184014157163,1.4170184014157163,1.4170184014157166};
+  const auto p=cppunivariate::fpareto_mle(mltest::as_span(tie3),0,1e-10,1000,.3,NAN,.4,NAN);
+  CHECK(p.status==cppunivariate::FparetoStatus::Ok);
+  const auto r=cppunivariate::fpareto_mle(mltest::as_span(near),0,1e-10,1000,.3,NAN,.4,NAN);
+  CHECK(r.status==cppunivariate::FparetoStatus::Ok);
+  CHECK(r.shape2>1e16);
+  // 60-digit value at the returned coefficients (the rounded scale lies 0.058
+  // below the supremum 106.2314).
+  CHECK(std::abs(r.logLik-106.17345192245737)<1e-10);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+}

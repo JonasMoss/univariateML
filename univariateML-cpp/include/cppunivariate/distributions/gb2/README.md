@@ -314,6 +314,8 @@ $a=A/s$, $\log b=m+sc/A$ by $\min(\mathrm{tol},10^{-9})/2$.
 The likelihood upper bound follows from the supporting tangent at the center
 and the enclosed maximum.
 
+For a relative spread below $10^{-6}$ (and not zero) the certificate runs on relative logs $\log(x_i/x_1)$: the input-error allowance of the logs no longer contains their absolute level, and the reported log likelihood is re-evaluated at the returned (rounded) coefficients, since the scale can lie measurably below the maximizer there.
+
 This is an exact-arithmetic certificate conditional on the computed
 comparisons. Practical margins are $8\epsilon$ times an absolute score
 scale, a $128\epsilon(1+n)$ curvature discount, and $128\epsilon$

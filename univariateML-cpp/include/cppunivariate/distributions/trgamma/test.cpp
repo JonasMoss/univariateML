@@ -466,7 +466,8 @@ TEST_CASE("trgamma: distinct observations collapsed by logarithms stop numerical
   const std::vector<double> x={1e300,std::nextafter(1e300,INFINITY)};
   REQUIRE(x[0]!=x[1]);
   REQUIRE(std::log(x[0])==std::log(x[1]));
-  CHECK(cppunivariate::trgamma_mle(mltest::as_span(x)).status==cppunivariate::TrGammaStatus::IterationFailure);
+  // TASK-214.42 batch B: the free fit standardizes relative logs and reaches the power face.
+  CHECK(cppunivariate::trgamma_mle(mltest::as_span(x)).status==cppunivariate::TrGammaStatus::PowerBoundary);
   CHECK(cppunivariate::trgamma_mle_fixed_scale(mltest::as_span(x),1e300).status==cppunivariate::TrGammaStatus::IterationFailure);
   CHECK(cppunivariate::invtrgamma_mle(mltest::as_span(x)).status==cppunivariate::InvTrGammaStatus::IterationFailure);
   CHECK(cppunivariate::invtrgamma_mle_fixed_scale(mltest::as_span(x),1e300).status==cppunivariate::InvTrGammaStatus::IterationFailure);
@@ -630,4 +631,19 @@ TEST_CASE("trgamma lognormal face likelihood is evaluated at represented coeffic
  double ll=0;for(double v:x)ll+=cppunivariate::distributions::dlnorm(v,r.stop_detail.limit_coef[0],r.stop_detail.limit_coef[1],true);
  CHECK(r.stop_detail.limit_loglik==ll);
  CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);
+}
+
+TEST_CASE("trgamma near-constant and tied samples end at the power face") {
+  // TASK-214.42 batch B: the two distinct logs of the near-constant sample are
+  // the same binary64 number; the fit must follow its tie3 preimage.
+  for(const auto& x:{std::vector<double>{3.957379969089307,3.957379969089307,3.9573799690893074},
+                     std::vector<double>{3.957379969089307,3.957379969089307,4.975689634366436}}) {
+    const auto r=cppunivariate::trgamma_mle(mltest::as_span(x),1e-10,200);
+    CHECK(r.status==cppunivariate::TrGammaStatus::PowerBoundary);
+    CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Power);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==*std::max_element(x.begin(),x.end()));
+    CHECK(r.stop_detail.limit_coef[1]>0);
+    CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Limit);
+  }
 }

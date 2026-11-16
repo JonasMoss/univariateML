@@ -257,13 +257,16 @@ test_that("coefficient reconstruction loss is a numerical stop with a real witne
   expect_lte(ll,c$loglik_upper+1e-8)
 })
 
-test_that("partial logarithmic ties stop as numerical failures", {
+test_that("partial logarithmic ties: trgamma reaches a limit, invtrgamma stops numerically", {
   x <- 7-(0:15)*4*.Machine$double.eps
-  for (fit in list(function() mltrgamma(x),function() mlinvtrgamma(x))) {
-    e <- tryCatch(fit(),error=identity)
-    expect_s3_class(e,"univariateML_numerical")
-    expect_match(conditionMessage(e),"taking logarithms")
-  }
+  # TASK-214.42 batch B: mltrgamma standardizes relative logs (spread below 1e-6)
+  # and reaches the lognormal limit; mlinvtrgamma still stops on the rounded logs.
+  e <- tryCatch(mltrgamma(x),error=identity)
+  expect_s3_class(e,"univariateML_limit")
+  expect_match(conditionMessage(e),"mllnorm")
+  e <- tryCatch(mlinvtrgamma(x),error=identity)
+  expect_s3_class(e,"univariateML_numerical")
+  expect_match(conditionMessage(e),"taking logarithms")
   i <- which(diff(log(x))==0)[1]
   e <- tryCatch(mltrgamma(x[i+1],scale=x[i]),error=identity)
   expect_s3_class(e,"univariateML_numerical")

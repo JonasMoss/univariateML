@@ -106,3 +106,5 @@ examples: |
 ---
 
 The Prentice generalized gamma family includes the lognormal at $Q=0$.
+
+With free $\mu$ and a relative spread $(\max x-\min x)/\min x$ below $10^{-6}$ (and not zero), the fit works on the relative logs $\log(x_i/x_1)$ and shifts $\mu$ and the log likelihood back by $\log x_1$ and $-n\log x_1$. Binary64 logs are too coarse for the spread there: their rounding error $8\epsilon\lvert\log x\rvert$ can exceed it.
