@@ -227,6 +227,17 @@
       "commit": "704c846e4beeceffa390ec6c3891a789d2160d6f",
       "dirty": true,
       "reason": "t certificate allowance and emg standardization (TASK-214.42 batches D, E)"
+    },
+    {
+      "families": [
+        "huber",
+        "sn",
+        "st",
+        "triang"
+      ],
+      "commit": "6849644d8a089ebe41d76559fe483095fbc07513",
+      "dirty": true,
+      "reason": "public-coordinate acceptance (TASK-214.42 batch F)"
     }
   ]
 }

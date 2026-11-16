@@ -166,3 +166,12 @@ batches D and E branch (TASK-214.42, merge `ec809a34`; provenance `patches`):
 near-constant and offset classes of lst, std and emg end in certified limits,
 emg archive 1311 and 1343 end `Ok`; sstd and st are unchanged
 ([report](2026-11-16-equiv-de-report.md)). The known list has 122 entries.
+
+## Patch after the public-coordinate acceptance fixes (2026-11-16)
+
+The records of sn, huber, triang and st were replaced with snapshots of the
+batch F branch (TASK-214.42, merge `f331a31f`; provenance `patches`): 22
+cases per mode change from numerical failures to limits (sn, uncertified) or
+estimates (huber, triang, certified, logLik at the returned point); no `Ok`
+moves; st is unchanged ([report](2026-11-16-equiv-f-report.md)). The known
+list has 110 entries.
