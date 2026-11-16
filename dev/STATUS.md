@@ -35,8 +35,9 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   `just js-test` 586/586; `just relations` and `just site-check` green.
   Merged after it, each tested on its branch: the Burr relative-log
   certificate (74368c2e; on master 1f7ee4dc its seven affected families
-  equal the baselines in both modes) and the lst/std/emg near-constant
-  fixes (ec809a34). The known list has 122 entries, each with a card.
+  equal the baselines in both modes), the lst/std/emg near-constant
+  fixes (ec809a34) and the sn/huber/triang acceptance fixes (f331a31f).
+  The known list has 110 entries, each with a card.
   Not run: any second compiler or platform.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
