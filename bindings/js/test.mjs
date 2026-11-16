@@ -334,11 +334,17 @@ test('trgamma held endpoint comparisons stop without asserting nonattainment', a
   }
 });
 
-test('trgamma partial logarithmic ties stop numerically', async () => {
+test('trgamma partial logarithmic ties: trgamma reaches a limit, invtrgamma stops numerically', async () => {
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
   const x=Float64Array.from({length:16},(_,i)=>7-i*4*Number.EPSILON);
-  for(const family of ['trgamma','invtrgamma'])assert.throws(()=>modifierRoute(api,family).fit(x),error=>{
+  // TASK-214.42 batch B: trgamma reaches the lognormal limit from relative logs.
+  assert.throws(()=>modifierRoute(api,'trgamma').fit(x),error=>{
+    assert.equal(error.kind,'limit');
+    assert.equal(error.model,'lnorm');
+    return true;
+  });
+  assert.throws(()=>modifierRoute(api,'invtrgamma').fit(x),error=>{
     assert.equal(error.kind,'numerical');
     assert.match(error.message,/taking logarithms/);
     return true;

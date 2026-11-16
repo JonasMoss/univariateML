@@ -278,7 +278,11 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   if(!(tol>0)||!std::isfinite(tol)||maxit<1||x.empty())return bad;
   std::vector<double> logs(x.size());
   for(std::size_t i=0;i<x.size();++i){if(!(x[i]>0)||!std::isfinite(x[i]))return bad;logs[i]=std::log(x[i]);}
-  if(!logs.empty()&&std::isnan(a)) {
+  // Held beta shapes with free power or scale: near-constant samples are
+  // standardized from relative logs (the binary64 logs may coincide).
+  const bool relative_concave=!std::isnan(p)&&!std::isnan(q)&&(std::isnan(a)||std::isnan(b))&&
+    trgamma_detail::relative_log_regime(x);
+  if(!logs.empty()&&std::isnan(a)&&!relative_concave) {
     bool original_constant=true,log_constant=true;
     for(std::size_t i=1;i<x.size();++i) {
       original_constant=original_constant&&x[i]==x[0];
@@ -328,6 +332,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   // Constant samples still have a finite constrained maximum when only
   // one beta shape, the power, or location is free.
   bool constant=!logs.empty();for(double v:logs)constant=constant&&v==logs[0];
+  if(relative_concave)constant=false;
   if(constant){
     if(std::isnan(q)&&std::isnan(a)&&std::isnan(p)&&std::isnan(b)) {bad.status=Gb2Status::Unbounded;return bad;}
     if(!std::isnan(p)&&!std::isnan(q)&&(std::isnan(a)!=std::isnan(b))) {
@@ -360,7 +365,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     bad.status=Gb2Status::Unbounded;return bad;
   }
   trgamma_detail::LogData d;
-  if(!trgamma_detail::standardize(span{logs.data(),logs.size()},d)) {
+  if(!(relative_concave?trgamma_detail::standardize_relative(x,d):trgamma_detail::standardize(span{logs.data(),logs.size()},d))) {
     if(!logs.empty()&&!std::isnan(q)&&!std::isnan(a)&&!std::isnan(p)) {
       if(std::isnan(b)) b=std::exp(logs[0]-(std::log(p)-std::log(q))/a);
       if(!(b>0)||!std::isfinite(b)){bad.status=Gb2Status::ScaleOutOfRange;return bad;}
@@ -373,8 +378,27 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     }
     return bad;
   }
-  if(!std::isnan(p)&&!std::isnan(q)&&(std::isnan(a)||std::isnan(b)))
-    return gb2_concave_detail::fit(d,q,a,p,b,tol,maxit);
+  if(!std::isnan(p)&&!std::isnan(q)&&(std::isnan(a)||std::isnan(b))) {
+    auto out=gb2_concave_detail::fit(d,q,a,p,b,tol,maxit);
+    if(d.relative&&out.status==Gb2Status::Ok) {
+      // logLik is the log likelihood at the returned coefficients. On a
+      // near-constant sample the rounded scale can lie measurably below the
+      // maximizer, so the value is re-evaluated there from relative logs.
+      CPPUNIV_EXTENDED_REAL total=0;
+      for(double v:x) {
+        const double t=out.shape2*gb2_accuracy::log_ratio(v,out.scale);
+        total+=std::log(out.shape2)-std::log(v)-gb2_detail::logbeta(out.shape3,out.shape1)-
+          out.shape3*gb2_detail::softplus(-t)-out.shape1*gb2_detail::softplus(t);
+      }
+      const double at=static_cast<double>(total);
+      if(std::isfinite(at)) {
+        const double error=out.logLik-out.stop_detail.loglik_lower;
+        out.logLik=at;out.stop_detail.loglik_lower=at-error;
+        out.stop_detail.loglik_upper=std::max(out.stop_detail.loglik_upper,at);
+      }
+    }
+    return out;
+  }
   double face=-std::numeric_limits<double>::infinity();
   std::vector<double> double_pareto_coef;
   Gb2Status fs=Gb2Status::SearchUnresolved;

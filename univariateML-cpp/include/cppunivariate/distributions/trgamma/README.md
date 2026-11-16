@@ -183,6 +183,8 @@ this does not assert exact finite-sample equality. Fits very close to the lognor
 
 With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the fixed-endpoint power limit is compared with the interior profile. The convex conjugate of log-gamma bounds the profile between evaluated powers, and analytic bounds close both tails.
 
+When the sample's relative spread $(\max x-\min x)/\min x$ is below $10^{-6}$ (and not zero), the fit standardizes the relative logs $\log(x_i/x_1)$ instead of binary64 logs. Rounding each log moves it by about $10^{-16}$, which distorts the spread of the logs by the default tolerance at that relative spread; observations whose binary64 logs coincide stay distinct.
+
 ## R notes
 
 A detected limiting model stops with advice to fit that model. When the fitted

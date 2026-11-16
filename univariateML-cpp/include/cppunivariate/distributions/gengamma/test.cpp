@@ -501,7 +501,17 @@ TEST_CASE("gengamma: log-input accuracy is checked against fitted scale") {
   const auto good=cppunivariate::gengamma_mle({stable.data(),stable.size()},1e-10,100,nan,nan,0.);
   const auto bad=cppunivariate::gengamma_mle({ill_conditioned.data(),ill_conditioned.size()},1e-10,100,nan,nan,0.);
   CHECK(good.status==cppunivariate::GengammaStatus::Ok);
-  CHECK(bad.status==cppunivariate::GengammaStatus::IterationFailure);
+  // TASK-214.42 batch C: these logs (spread 1e-10 around 100) are fitted from
+  // relative logs, so the fit is an estimate. Reference (60 digits) from the exact
+  // doubles: sd of the logs 1.4142390049674224e-10, logLik -393.69839592006669.
+  CHECK(bad.status==cppunivariate::GengammaStatus::Ok);
+  CHECK(std::abs(bad.sigma/1.4142390049674224e-10-1)<1e-12);
+  CHECK(std::abs(bad.logLik-(-393.69839592006669))<1e-10);
+  // Spread 1e-5: not near-constant, absolute logs of size 100 are too coarse.
+  std::vector<double> coarse;
+  for(double z:{-2.,-1.,0.,1.,2.})coarse.push_back(std::exp(100.+1e-5*z));
+  const auto stopped=cppunivariate::gengamma_mle({coarse.data(),coarse.size()},1e-10,100,nan,nan,0.);
+  CHECK(stopped.status==cppunivariate::GengammaStatus::IterationFailure);
 }
 
 TEST_CASE("gengamma: shape-score Stirling switch is continuous") {
@@ -646,4 +656,16 @@ TEST_CASE("gengamma: conversion rounding preserves a diagnosed local tolerance f
   CHECK(detail.attainable_tol>tol);
   REQUIRE(!detail.candidates.empty());
   CHECK(std::isfinite(detail.candidates.back().loglik_lower));
+}
+
+TEST_CASE("gengamma near-constant and tied samples end at the Pareto face") {
+  // TASK-214.42 batch C: log_error 8 eps |log x| exceeds the log spread of the
+  // near-constant sample; the fit must follow its tie3 preimage.
+  for(const auto& x:{std::vector<double>{0.9214827611622252,0.9214827611622252,0.9214827611622253},
+                     std::vector<double>{0.9214827611622252,0.9214827611622252,1.8689088699527723}}) {
+    const auto r=cppunivariate::gengamma_mle(mltest::as_span(x),1e-10,100);
+    CHECK(r.status==cppunivariate::GengammaStatus::ParetoBoundary);
+    CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Pareto);
+    CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Limit);
+  }
 }

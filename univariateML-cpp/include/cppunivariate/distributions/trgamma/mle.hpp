@@ -29,6 +29,7 @@
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/precision.hpp"
+#include "../../core/transformed_data.hpp"
 #include "../burr/mle.hpp"
 #include "../power/dpqr.hpp"
 #include "../lnorm/dpqr.hpp"
@@ -211,6 +212,21 @@ struct LogData {
   double mean = 0.0, sd = 0.0, sum = 0.0;
   double umax = 0.0, umin = 0.0, kappa3 = 0.0;
   std::size_t n = 0;
+  // Relative logs (see standardize_relative): u is built from
+  // log(x_i / anchor), not from binary64 logs. `mean` and `sum` stay the
+  // absolute mean and sum of the logs; `rmean` is the mean of the relative logs.
+  bool relative = false;
+  double anchor = 1.0, rmean = 0.0;
+  // exp(mean + s): the scale at log-offset s from the mean, rounded once.
+  double scale_at(double s) const {
+    if (!relative) return std::exp(mean + s);
+    const double q = rmean + s;
+    return std::abs(q) < 0.5 ? anchor + anchor * std::expm1(q) : anchor * std::exp(q);
+  }
+  // log(b) - mean as a double, without the absolute log when relative.
+  double centre_of(double b) const {
+    return relative ? rmean - transformed_detail::log_ratio(b, anchor) : mean - std::log(b);
+  }
 };
 
 inline bool standardize(span y, LogData &d) {
@@ -253,6 +269,37 @@ inline bool standardize(span y, LogData &d) {
   // this matters in the power-face tail without an n-dependent truncation error.
   std::sort(d.u.begin(), d.u.end(), [](double a, double b) { return a > b; });
   return d.umax > 0.0;
+}
+
+// Relative-log standardization: delta_i = log(x_i / x_0) keeps the distinctions
+// between observations whose binary64 logs coincide. It is used when the sample
+// spread is small (relative_log_regime); `delta`, when given, receives the
+// relative logs. Returns false as standardize does.
+inline bool relative_log_regime(span x) {
+  if (x.size() < 2) return false;
+  double lo = std::numeric_limits<double>::infinity(), hi = 0;
+  for (double v : x) {
+    if (!(v > 0.0) || !std::isfinite(v)) return false;
+    lo = std::min(lo, v);
+    hi = std::max(hi, v);
+  }
+  // Rounding each log moves it by about 1e-16, which distorts the spread by
+  // 1e-16 / (hi/lo - 1); that reaches the default tolerance 1e-10 at a
+  // relative spread of 1e-6.
+  return hi > lo && (hi - lo) / lo < 1e-6;
+}
+
+inline bool standardize_relative(span x, LogData &d, std::vector<double> *delta = nullptr) {
+  const auto l = transformed_detail::logs(x);
+  if (!l.valid) return false;
+  if (!standardize({l.delta.data(), l.delta.size()}, d)) return false;
+  d.relative = true;
+  d.anchor = x[0];
+  d.rmean = d.mean;
+  d.mean = transformed_detail::value(l.mean);
+  d.sum = l.sum;
+  if (delta) *delta = l.delta;
+  return true;
 }
 
 // Maximised log likelihoods of the two faces (suprema of the family).
@@ -412,9 +459,10 @@ inline double brent_zero(F f, double lo, double hi, double flo, double fhi,
 
 inline TrGammaResult make_result(const LogData &d, double shape1, double t, double K,
                                  double delta, int iterations, TrGammaStatus status) {
-  const double log_scale = d.mean + d.sd * (K - std::log(shape1)) / t;
+  const double offset = d.sd * (K - std::log(shape1)) / t;
+  const double log_scale = d.mean + offset;
   const double logLik = static_cast<double>(d.n) * delta + lognormal_loglik(d);
-  return {shape1, t / d.sd, std::exp(log_scale), log_scale, logLik, iterations, status};
+  return {shape1, t / d.sd, d.scale_at(offset), log_scale, logLik, iterations, status};
 }
 
 // Fixed shape1 = a: Delta_a(t) = log(t) + log(a)/2 - stirling(a) - a K(t) + 1/2
@@ -473,7 +521,7 @@ inline TrGammaResult face_lognormal(const LogData &d, int iterations) {
 inline TrGammaResult face_power(const LogData &d, int iterations) {
   const double inf = std::numeric_limits<double>::infinity();
   const double log_scale = d.mean + d.sd * d.umax;
-  TrGammaResult r={0.0,inf,std::exp(log_scale),log_scale,static_cast<double>(d.n)*power_delta(d)+lognormal_loglik(d),iterations,TrGammaStatus::PowerBoundary};
+  TrGammaResult r={0.0,inf,d.scale_at(d.sd*d.umax),log_scale,static_cast<double>(d.n)*power_delta(d)+lognormal_loglik(d),iterations,TrGammaStatus::PowerBoundary};
   r.stop_detail=limit_detail({r.scale,1/(d.sd*d.umax)},r.logLik,StopModel::Power);return r;
 }
 
@@ -784,20 +832,25 @@ struct TrGammaFaces {
   double lognormal_logLik, power_logLik, meanlog, sdlog, power_shape, log_endpoint;
 };
 
+inline TrGammaFaces trgamma_faces_data(const trgamma_detail::LogData &d) {
+  const double ln = trgamma_detail::lognormal_loglik(d);
+  return {true, ln, ln + d.n * trgamma_detail::power_delta(d), d.mean, d.sd,
+          1.0 / (d.sd * d.umax), d.mean + d.sd * d.umax};
+}
+
 inline TrGammaFaces trgamma_faces_log(span y) {
   trgamma_detail::LogData d;
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (!trgamma_detail::standardize(y, d)) return {false, nan, nan, nan, nan, nan, nan};
-  const double ln = trgamma_detail::lognormal_loglik(d);
-  return {true, ln, ln + y.size() * trgamma_detail::power_delta(d), d.mean, d.sd,
-          1.0 / (d.sd * d.umax), d.mean + d.sd * d.umax};
+  return trgamma_faces_data(d);
 }
 
 // Fit on log data y = log(x). NaN shape1/shape2 are estimated, positive
 // finite values are held fixed. logLik is for x = exp(y).
 inline TrGammaResult trgamma_fit_log(span y, double tol, int maxit,
                                      double shape1 = std::numeric_limits<double>::quiet_NaN(),
-                                     double shape2 = std::numeric_limits<double>::quiet_NaN()) {
+                                     double shape2 = std::numeric_limits<double>::quiet_NaN(),
+                                     const trgamma_detail::LogData *prepared = nullptr) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   TrGammaResult bad{shape1, shape2, nan, nan, nan, 0, TrGammaStatus::InvalidData};
@@ -809,7 +862,8 @@ inline TrGammaResult trgamma_fit_log(span y, double tol, int maxit,
   }
   if (!(tol > 0.0) || !std::isfinite(tol) || maxit < 1) return bad;
   trgamma_detail::LogData d;
-  const bool standardized = trgamma_detail::standardize(y, d);
+  const bool standardized = prepared ? true : trgamma_detail::standardize(y, d);
+  if (prepared) d = *prepared;
   // Both shapes held: only scale is fitted, even for a singleton or
   // constant sample. Centre before exponentiating to avoid x^shape2.
   if (!standardized && !std::isnan(shape1) && !std::isnan(shape2)) {
@@ -873,16 +927,23 @@ inline TrGammaResult trgamma_mle(span x, double tol = 1e-10, int maxit = 100,
     }
     y[i] = std::log(x[i]);
   }
+  // Samples whose logs differ in the last binary64 digits are standardized
+  // from relative logs, so that observations with equal logs stay distinct.
+  trgamma_detail::LogData relative;
+  std::vector<double> delta;
+  const bool use_relative=trgamma_detail::relative_log_regime(x) &&
+    trgamma_detail::standardize_relative(x,relative,&delta);
   if(trgamma_detail::valid_fit_request(tol,maxit,shape1,shape2) &&
-     trgamma_detail::lost_log_distinctions(x,{y.data(),y.size()})) {
+     trgamma_detail::lost_log_distinctions(x,use_relative?span{delta.data(),delta.size()}:span{y.data(),y.size()})) {
     const double nan=std::numeric_limits<double>::quiet_NaN();
     TrGammaResult out{shape1,shape2,nan,nan,nan,0,TrGammaStatus::IterationFailure};
     out.transformation_failure=true;out.stop_detail.loglik_upper=INFINITY;return out;
   }
-  TrGammaResult r = trgamma_fit_log(span{y.data(), y.size()}, tol, maxit, shape1, shape2);
+  TrGammaResult r = trgamma_fit_log(span{y.data(), y.size()}, tol, maxit, shape1, shape2,
+                                    use_relative ? &relative : nullptr);
   if(!x.empty() && (r.status==TrGammaStatus::PowerBoundary ||
       (r.stop_detail.limit_model==StopModel::None && std::isfinite(r.stop_detail.limit_loglik)))) {
-    const auto faces=trgamma_faces_log({y.data(),y.size()});
+    const auto faces=use_relative ? trgamma_faces_data(relative) : trgamma_faces_log({y.data(),y.size()});
     const double endpoint=*std::max_element(x.begin(),x.end());
     if(faces.valid && faces.power_logLik>faces.lognormal_logLik) {
       if(r.status==TrGammaStatus::PowerBoundary) {

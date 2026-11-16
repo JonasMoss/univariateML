@@ -382,7 +382,14 @@ TEST_CASE("GB2 held beta shapes do not classify log collapse as constant data") 
  const std::vector<double>x{1e300,std::nextafter(1e300,INFINITY)};
  REQUIRE(x[0]!=x[1]);
  REQUIRE(std::log(x[0])==std::log(x[1]));
- CHECK(cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,2,NAN,3,NAN).status==cppunivariate::Gb2Status::NumericalFailure);
+ // TASK-214.42 batch B: the relative logs separate the two observations, so the
+ // concave fit is certified. Reference (80-digit solution of both score
+ // equations): shape2 12786359414679473.79; the scale 1e300 is the rounded
+ // maximizer, so logLik at it lies below the supremum -1310.178.
+ const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,2,NAN,3,NAN);
+ CHECK(r.status==cppunivariate::Gb2Status::Ok);
+ CHECK(std::abs(r.shape2/12786359414679473.79-1)<1e-12);
+ CHECK(std::abs(r.logLik-(-1310.3714282287533))<1e-9);
 }
 
 TEST_CASE("GB2 constant held-shape scale cannot hide an unrepresentable log ratio") {

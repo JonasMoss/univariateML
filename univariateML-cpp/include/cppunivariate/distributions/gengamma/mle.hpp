@@ -34,8 +34,11 @@ inline double mean_loglik(span y,double mu,double sigma,double q) {
       distributions::gengamma_detail::half_log_two_pi-distributions::gengamma_detail::remainder(q);
 }
 }
-inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
-  double mu=NAN,double sigma=NAN,double q=NAN) {
+// `relative`, when given, replaces the binary64 logs by relative logs
+// log(x_i/x_0): the same fit with location mu - log(x_0), which keeps
+// the distinctions of a near-constant sample. gengamma_mle shifts the result back.
+inline GengammaResult gengamma_mle_core(span x,double tol,int maxit,
+  double mu,double sigma,double q,const std::vector<double>* relative) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   GengammaResult out{mu,sigma,q,nan,0,GengammaStatus::InvalidData};
   if (!(tol>0) || !std::isfinite(tol) || maxit<1) return out;
@@ -49,7 +52,7 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
   double log_error=0;
   for(double v:x) {
     if (!(v>0)||!std::isfinite(v)) return out;
-    const double z=std::log(v);y.push_back(z);total+=z;
+    const double z=relative?(*relative)[y.size()]:std::log(v);y.push_back(z);total+=z;
     if(z!=0)log_error=std::max(log_error,8*std::numeric_limits<double>::epsilon()*std::abs(z));
   }
   const span logs{y.data(),y.size()};
@@ -243,6 +246,31 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
 }
 
 namespace cppunivariate {
+inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
+  double mu=NAN,double sigma=NAN,double q=NAN) {
+  // Free mu and a small relative spread: fit the relative logs (the held-mu
+  // paths compare logs with mu and keep the binary64 logs).
+  if(!(std::isnan(mu) && trgamma_detail::relative_log_regime(x)))
+    return gengamma_mle_core(x,tol,maxit,mu,sigma,q,nullptr);
+  const auto l=transformed_detail::logs(x);
+  if(!l.valid)return gengamma_mle_core(x,tol,maxit,mu,sigma,q,nullptr);
+  auto out=gengamma_mle_core(x,tol,maxit,mu,sigma,q,&l.delta);
+  // y = delta + log(x_0): mu shifts by the anchor, logLik by -n log(x_0).
+  const double shift=-static_cast<double>(x.size())*transformed_detail::value(l.anchor);
+  const auto restore=[&](double m){return transformed_detail::value(transformed_detail::add(l.anchor,{m,0}));};
+  if(out.status==GengammaStatus::Ok)out.mu=restore(out.mu);
+  if(std::isfinite(out.logLik))out.logLik+=shift;
+  auto& d=out.stop_detail;
+  if(std::isfinite(d.limit_loglik))d.limit_loglik+=shift;
+  if(std::isfinite(d.loglik_lower))d.loglik_lower+=shift;
+  if(std::isfinite(d.loglik_upper))d.loglik_upper+=shift;
+  if(std::isfinite(d.segment_loglik_upper))d.segment_loglik_upper+=shift;
+  for(auto& c:d.candidates) {
+    if(c.model==StopModel::None && c.coef.size()==3)c.coef[0]=restore(c.coef[0]);
+    c.loglik_lower+=shift;c.loglik_upper+=shift;
+  }
+  return out;
+}
 inline FitOutcome outcome(const GengammaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
