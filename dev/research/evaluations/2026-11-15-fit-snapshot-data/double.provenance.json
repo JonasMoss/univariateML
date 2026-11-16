@@ -215,6 +215,18 @@
       "commit": "ef464c2ebc65343f370a3a388cbab46e246eadf9",
       "dirty": true,
       "reason": "Burr certificate on relative logs (TASK-214.42 batch A)"
+    },
+    {
+      "families": [
+        "emg",
+        "lst",
+        "sstd",
+        "st",
+        "std"
+      ],
+      "commit": "704c846e4beeceffa390ec6c3891a789d2160d6f",
+      "dirty": true,
+      "reason": "t certificate allowance and emg standardization (TASK-214.42 batches D, E)"
     }
   ]
 }

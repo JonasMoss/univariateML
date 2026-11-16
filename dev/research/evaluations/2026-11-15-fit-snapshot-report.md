@@ -158,3 +158,11 @@ snapshots of the batch A branch (TASK-214.42, merge `74368c2e`; provenance
 in proved limits instead of numerical failures, held-shape1 burr fits move
 toward their references ([report](2026-11-15-equiv-a-report.md)). The known
 list has 137 entries.
+
+## Patch after the t-certificate and emg fixes (2026-11-16)
+
+The records of lst, std, emg, sstd and st were replaced with snapshots of the
+batches D and E branch (TASK-214.42, merge `ec809a34`; provenance `patches`):
+near-constant and offset classes of lst, std and emg end in certified limits,
+emg archive 1311 and 1343 end `Ok`; sstd and st are unchanged
+([report](2026-11-16-equiv-de-report.md)). The known list has 122 entries.
