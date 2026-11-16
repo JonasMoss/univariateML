@@ -11,6 +11,47 @@ inline Interval operator+(Interval a,Interval b){return pad(a.lo+b.lo,a.hi+b.hi)
 inline Interval operator-(Interval a,Interval b){return pad(a.lo-b.hi,a.hi-b.lo);}
 inline Interval operator*(Interval a,Interval b){return pad(std::min({a.lo*b.lo,a.lo*b.hi,a.hi*b.lo,a.hi*b.hi}),std::max({a.lo*b.lo,a.lo*b.hi,a.hi*b.lo,a.hi*b.hi}));}
 inline Interval operator/(Interval a,Interval b){if(b.lo<=0&&b.hi>=0)return {-INFINITY,INFINITY};return a*Interval(1/b.hi,1/b.lo);}
+// Samples so concentrated that the harmonic and arithmetic means round together (relative spread
+// below about 1e-7), both coefficients free. With c = min(x), l_i = log1p((x_i - c) / c) (exact
+// subtraction), beta = c exp(u) and e_i = l_i - u, the log likelihood is
+//   -sum log x_i + sum log cosh(e_i / 2) - n log(alpha) - n log(2 pi) / 2 - sum 2 sinh(e_i / 2)^2 / alpha^2,
+// alpha^2 = sum 4 sinh(e_i / 2)^2 / n at the maximum, and the profile score in u is
+//   -sum tanh(e_i / 2) / 2 + n sum sinh(e_i) / sum 4 sinh(e_i / 2)^2,
+// positive at u = min l and negative at u = max l. Its root is bisected, beta is rounded once
+// (fma(c, expm1(u), c)) and alpha stays the maximizer's, not the best alpha at the rounded beta;
+// logLik is evaluated at the returned coefficients. The bound is numerical: uncertified.
+inline bool offset_fit(span x,FatigueResult& out) {
+  const std::size_t n=x.size();
+  if(n<2)return false;
+  double mn=INFINITY,mx=-INFINITY;
+  for(double v:x){if(!(v>0)||!std::isfinite(v))return false;mn=std::min(mn,v);mx=std::max(mx,v);}
+  if(!(mx>mn)||!(mx<=2*mn))return false;
+  std::vector<double> l;double sum_log_x=0;
+  for(double v:x){l.push_back(std::log1p((v-mn)/mn));sum_log_x+=std::log(v);}
+  const auto logcosh=[](double h){return std::abs(h)<1e-3?h*h*(.5-h*h*(1./12-h*h/45)):std::log(std::cosh(h));};
+  const auto s_total=[&](double u){double s=0;for(double v:l){const double h=std::sinh((v-u)/2);s+=4*h*h;}return s;};
+  const auto score=[&](double u){
+    double t=0,sh=0;
+    for(double v:l){const double e=v-u;t+=std::tanh(e/2);sh+=std::sinh(e);}
+    return -t/2+static_cast<double>(n)*sh/s_total(u);
+  };
+  double lo=0,hi=*std::max_element(l.begin(),l.end());
+  if(!(score(lo)>0)||!(score(hi)<0))return false;
+  for(int i=0;i<2000;++i){const double m=lo+(hi-lo)/2;if(!(m>lo&&m<hi))break;if(score(m)>0)lo=m;else hi=m;}
+  const double u=lo+(hi-lo)/2;
+  const double alpha=std::sqrt(s_total(u)/static_cast<double>(n));
+  const double beta=std::fma(mn,std::expm1(u),mn);
+  if(!(alpha>0)||!(beta>0)||!std::isfinite(alpha)||!std::isfinite(beta))return false;
+  const double ur=std::log1p((beta-mn)/mn);
+  double ll=-sum_log_x-static_cast<double>(n)*(std::log(alpha)+.5*std::log(2*std::acos(-1.0)));
+  for(double v:l){const double e=v-ur,h=std::sinh(e/2);ll+=logcosh(e/2)-2*h*h/(alpha*alpha);}
+  if(!std::isfinite(ll))return false;
+  out=FatigueResult{alpha,beta,ll,0,FatigueStatus::Ok};
+  out.certified=false;
+  out.stop_detail.candidates={{{alpha,beta},ll,ll,StopModel::None}};
+  out.stop_detail.loglik_lower=ll;out.stop_detail.loglik_upper=INFINITY;
+  return true;
+}
 inline FatigueResult fit(span x,double tol,int maxit,double alpha,double beta) {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   FatigueResult failure{nan,nan,nan,0,FatigueStatus::SearchFailure};
@@ -43,6 +84,7 @@ inline FatigueResult fit(span x,double tol,int maxit,double alpha,double beta) {
   // A/H can round together before the induced alpha accuracy is resolved.
   // Do not turn a tiny beta bracket into an unchecked alpha estimate.
   if(!fa&&std::abs(hi-lo)<=128*std::numeric_limits<double>::epsilon()*hi) {
+    {FatigueResult solved=failure;if(offset_fit(x,solved))return solved;}
     const auto witness=value(A);
     if(witness.status==FatigueStatus::Ok)failure.stop_detail.candidates={{{witness.alpha,witness.beta},witness.logLik,witness.logLik,StopModel::None}};
     return failure;

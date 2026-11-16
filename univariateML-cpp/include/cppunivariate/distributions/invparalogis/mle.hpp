@@ -56,6 +56,18 @@ inline InvParalogisResult invparalogis_mle(span x, double tol, int maxit, double
     StopDetail d;d.loglik_lower=d.loglik_upper=INFINITY;
     return {NAN,NAN,INFINITY,0,ParalogisStatus::Unbounded,d};
   }
+  // Near-constant samples: solved on the original sample in an offset coordinate, with no
+  // reciprocal vector (offset.hpp). Uncertified, as for paralogis.
+  {
+    const auto solved=paralogis_offset_detail::fit(x,true);
+    if(solved.ok) {
+      InvParalogisResult out{solved.shape,solved.scale,solved.logLik,solved.iterations,ParalogisStatus::Ok};
+      out.certified=false;
+      out.stop_detail.candidates.push_back({{solved.shape,solved.scale},solved.logLik,solved.logLik,StopModel::None});
+      out.stop_detail.loglik_lower=solved.logLik;out.stop_detail.loglik_upper=INFINITY;
+      return out;
+    }
+  }
   for(double v:x)if(!std::isfinite(1/v)||!(1/v>0))
     return {NAN,NAN,NAN,0,ParalogisStatus::NumericalFailure};
   std::vector<double> y(x.size());

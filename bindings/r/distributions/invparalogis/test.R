@@ -132,13 +132,16 @@ test_that("invparalogis: certification stops carry structured witnesses", {
   expect_identical(e$loglik_lower,Inf)
 })
 
-test_that("reciprocal rounding ties are numerical rather than nonexistence", {
+test_that("reciprocal rounding ties are neither nonexistence nor a numerical stop", {
   x <- c(1.9,1.9+.Machine$double.eps)
   expect_false(x[1]==x[2])
   expect_true(1/x[1]==1/x[2])
-  e <- tryCatch(mlinvparalogis(x),error=identity)
-  expect_s3_class(e,"univariateML_numerical")
-  expect_false(inherits(e,"univariateML_nomle"))
+  # TASK-214.39: this near-constant pair was a numerical stop; it now returns its rounded maximizer
+  # (100-digit reference: shape 2.0530914653470480e16, scale 1.8999999999999965).
+  fit <- tryCatch(mlinvparalogis(x),error=identity)
+  expect_false(inherits(fit,"error"))
+  expect_equal(unname(fit["shape"]),20530914653470479.538,tolerance=1e-10)
+  expect_equal(unname(fit["scale"]),1.8999999999999964913,tolerance=1e-10)
 })
 
 test_that("invparalogis held-scale competing mode preserves the Jacobian", {

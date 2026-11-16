@@ -122,13 +122,17 @@ TEST_CASE("fatigue certificate: nonconstant reciprocal data retain the two-mode 
   CHECK(r.stop_detail.candidates[0].coef[1]*r.stop_detail.candidates[1].coef[1]==doctest::Approx(1).epsilon(1e-10));
 }
 
-TEST_CASE("fatigue certificate: nearly coincident mean bounds stop numerically") {
+TEST_CASE("fatigue certificate: nearly coincident mean bounds are solved in an offset coordinate") {
+  // TASK-214.39: was a numerical stop. For x_i = 1 + k eps, k = 0..4: alpha = sqrt(2) eps, beta = 1 + 2 eps.
   const double e=std::numeric_limits<double>::epsilon();
   const std::vector<double> x{1,1+e,1+2*e,1+3*e,1+4*e};
   const auto r=cppunivariate::fatigue_mle(mltest::as_span(x),1e-10,300);
-  CHECK(r.status==cppunivariate::FatigueStatus::SearchFailure);
+  REQUIRE(r.status==cppunivariate::FatigueStatus::Ok);
+  CHECK_FALSE(r.certified);
   CHECK_FALSE(r.stop_detail.comparison_tie);
   CHECK_FALSE(r.stop_detail.budget_exhausted);
+  CHECK(std::abs(r.alpha/(std::sqrt(2.0)*e)-1)<=1e-10);
+  CHECK(r.beta==1+2*e);
   REQUIRE(r.stop_detail.candidates.size()==1);
   CHECK(r.stop_detail.candidates[0].coef[0]>0);
 }
@@ -210,4 +214,18 @@ TEST_CASE("fatigue: alpha held above 2 with a near-constant sample lists both re
     CHECK(std::abs(r.stop_detail.candidates[0].loglik_lower-r.stop_detail.candidates[1].loglik_lower)<=1e-10*x.size());
     CHECK(r.stop_detail.candidates[0].loglik_lower>=r.stop_detail.candidates[1].loglik_lower);
   }
+}
+
+TEST_CASE("fatigue near-constant sample with mu held returns the rounded maximizer, uncertified") {
+  // TASK-214.39: alpha = (sqrt 2 / 3) eps = 1.005e-16 and beta = c + (c+ - c) / 3, which rounds to c.
+  // alpha is the maximizer's, not the best alpha at the rounded beta (22% larger).
+  const std::vector<double> x{0x1.0a95766f46a5ep+1,0x1.0a95766f46a5ep+1,0x1.0a95766f46a5fp+1};
+  const auto r=cppunivariate::fatigue_mle_shifted(mltest::as_span(x),0.0,1e-10,100);
+  REQUIRE(r.status==cppunivariate::FatigueStatus::Ok);
+  CHECK_FALSE(r.certified);
+  CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(std::abs(r.alpha/1.00517138574689837891345158203e-16-1)<=1e-10);
+  CHECK(std::abs(r.beta/2.08268623765370290238744625337-1)<=1e-10);
+  CHECK(r.beta==x[0]);
+  CHECK(r.logLik==doctest::Approx(103.300819121222).epsilon(1e-10));  // value at the returned point; supremum 104.0508
 }
