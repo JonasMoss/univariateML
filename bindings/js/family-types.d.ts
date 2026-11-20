@@ -58,7 +58,7 @@ export interface GeneratedAPI {
   lst: Family<{mu: number; sigma: number; df: number}, [mu: number, sigma: number, df: number], {tol?: number; iterlim?: number}>;
   naka: Family<{shape: number; scale: number}, [shape: number, scale: number], {tol?: number; iterlim?: number}>;
   nbinom: Family<{size: number; prob: number}, [size: number, prob: number], {tol?: number; iterlim?: number}>;
-  nhyper: Family<{m: number; N: number; r: number}, [m: number, N: number, r: number], Record<string, never>>;
+  nhyper: Family<{m: number; N: number; r: number}, [m: number, N: number, r: number], {iterlim?: number}>;
   norm: Family<{mean: number; sd: number}, [mean: number, sd: number], Record<string, never>>;
   nsbeta: Family<{shape1: number; shape2: number; min: number; max: number}, [shape1: number, shape2: number, min: number, max: number], {tol?: number; iterlim?: number}>;
   paralogis: Family<{shape: number; scale: number}, [shape: number, scale: number], {tol?: number; iterlim?: number}>;

@@ -8,6 +8,15 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-20
 
+- **Exact integer searches take `iterlim` only** (Claude, for Jonas to
+  confirm): the 2.0 controls are `tol` and `iterlim` for iterative fits and
+  none for closed forms (2026-11-14). nhyper's search (TASK-214.5, merged as
+  fc747872) is exact in its integer coefficients, so there is no accuracy to
+  request, but its population bisection and line enumeration need a work limit
+  that the work-budget rule lets the user raise. It therefore takes `iterlim`
+  alone; the JS generator and site data accept that set. Alternatives
+  rejected: a `tol` that does nothing (a fake control), or no control (a fixed
+  cap, against `dev/design/work-budgets.md`).
 - **Test protocol for agent jobs** (Jonas): a job ends with targeted checks
   (`just test-changed --no-long-double`, its own families' snapshots and the
   checks its brief names); full suites only when its diff touches shared code

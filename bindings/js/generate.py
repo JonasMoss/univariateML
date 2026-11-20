@@ -111,8 +111,10 @@ if __name__ == '__main__':
         signature = re.search(r'inline FitResult fit_' + family + r'\((.*?)\) \{', header, re.S)[1]
         documented_controls = [name for name in metadata['r'].get('control', {})
                                if name not in coefficient_names]
-        if set(documented_controls) not in (set(), {'tol', 'iterlim'}):
-            raise ValueError(f'{family}: expected tol and iterlim or no fit controls')
+        # Iterative fits take tol and iterlim; closed forms take none; an exact integer
+        # search (nhyper) has no accuracy to request and takes only its work limit.
+        if set(documented_controls) not in (set(), {'tol', 'iterlim'}, {'iterlim'}):
+            raise ValueError(f'{family}: expected tol and iterlim, iterlim alone, or no fit controls')
         fit_control_registry[family] = documented_controls
         adapter = (ROOT / f'bindings/r/distributions/{family}/adapter.cpp').read_text()
         held_names, held_checks, control_names = [], [], []

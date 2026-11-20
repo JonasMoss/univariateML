@@ -79,7 +79,7 @@ def r_usage(folder, model):
     coefficients = {p['name'] for p in model['params']}
     controls = {name: description for name, description in (model['r'].get('control') or {}).items()
                 if name not in coefficients}
-    if set(controls) not in (set(), {'tol', 'iterlim'}):
+    if set(controls) not in (set(), {'tol', 'iterlim'}, {'iterlim'}):   # iterlim alone: exact integer search (nhyper)
         raise ValueError(f'{folder.name}: unexpected R fit controls {list(controls)}')
     adapter = (ROOT / f'bindings/r/distributions/{folder.name}/adapter.cpp').read_text()
     signature = re.search(r'\bml' + folder.name + r'_\s*\((.*?)\)\s*\{', adapter, re.S)[1]
