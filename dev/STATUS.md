@@ -39,13 +39,27 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   `just js-test` 586/586; `just relations` and `just site-check` green.
   The known list has 87 entries, each with a card.
   Not run: any second compiler or platform.
+- Batch check of master 1252894e (2026-11-20, workstation, after step 5c
+  jobs 2c, 2d and 3: [ctrl-c](research/evaluations/2026-11-20-ctrl-c-report.md),
+  [ctrl-d](research/evaluations/2026-11-20-ctrl-d-report.md),
+  [ctrl-r](research/evaluations/2026-11-20-ctrl-r-report.md)): fresh snapshots
+  of all four modes equal the patched baselines (0 differing cases);
+  `just strict` passes after two updates in 23f4b523: the dweibull replay
+  now checks the `tol = 1e-10` claims of job 2d (84 root records hold),
+  the 8 burr refine entries are fixed and pruned, and fpareto archive
+  001625 and 001628 (native numerical, double-only unresolved) are listed
+  under TASK-214.13. The known list has 81 entries. The suites of that run
+  were stopped to free CPU for the running jobs; ctrl-js (job 4, merged as
+  bab2a84e) ran them on 1252894e plus its change: `just cpp-test` 110/110,
+  `just cpp-test-no-long-double` 154/154, `just js-test` 587/587,
+  `just site-check` green. R `just test-full` was not rerun on this batch.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
 - Known wrong answers on master, each with a card: fits that miss the
-  accuracy contract (TASK-214.5, 18 entries); stop kinds that depend on the precision mode
+  accuracy contract (TASK-214.5, 10 entries); stop kinds that depend on the precision mode
   (TASK-214.13). Root brackets that miss their claimed width by a few
   ulp, far inside the contract: TASK-214.31.
 - Nothing is published to CRAN, and `origin/master` is the old published
