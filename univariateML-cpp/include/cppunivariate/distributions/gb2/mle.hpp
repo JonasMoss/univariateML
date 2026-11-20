@@ -447,7 +447,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   }
   // Endpoint faces also apply with a positive held opposite beta shape.
   if(std::isnan(a)&&std::isnan(b)) {
-    if(std::isnan(p))consider(power_mle(x,0).logLik,Gb2Status::PowerBoundary);
+    if(std::isnan(p))consider(power_mle(x).logLik,Gb2Status::PowerBoundary);
     if(std::isnan(q))consider(pareto_mle(x).logLik,Gb2Status::ParetoBoundary);
   }
   if(std::isnan(a)&&!std::isnan(b)) {
@@ -630,7 +630,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
         endpoint_face.limit_model=StopModel::Pareto;
         endpoint_face.limit_coef={pr.shape,pr.min};endpoint_face.limit_loglik=face;
       }
-      const auto po=power_mle(x,0);
+      const auto po=power_mle(x);
       CPPUNIV_EXTENDED_REAL power_ll=0;
       if(po.status==PowerStatus::Ok && b>po.alpha)
         for(double v:x)power_ll+=distributions::dpower(v,po.alpha,po.beta,true);

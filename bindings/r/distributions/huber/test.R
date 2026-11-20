@@ -49,9 +49,9 @@ for (bad in c(0,-1,Inf,NaN)) {
 expect_error(mlhuber(x, mu=Inf, epsilon = 1.345), "mu")
 expect_equal(as.numeric(mlhuber(x, epsilon=10)[1:2]), as.numeric(mlnorm(x)), tolerance=1e-7)
 expect_error(mlhuber(c(1, Inf), epsilon = 1.345), "support")
-expect_error(mlhuber(x, gradtol=0, epsilon = 1.345), "gradtol")
+expect_error(mlhuber(x, tol=0, epsilon = 1.345), "tol")
 expect_error(mlhuber(x, iterlim=0, epsilon = 1.345), "iterlim")
-expect_error(mlhuber(x, iterlim=1, gradtol=1e-15, epsilon = 1.345), "converge")
+expect_error(mlhuber(x, iterlim=1, tol=1e-15, epsilon = 1.345), "converge")
 # Tied, nonconstant samples remain bounded and fit every free subset.
 for (args in list(list(), list(mu=0), list(sigma=1), list(mu=0, sigma=1))) {
   fit <- do.call(mlhuber, c(list(x=c(0,0,0,1,1), epsilon=1.345), args))
@@ -87,7 +87,7 @@ expect_equal(unname(mlhuber(z,epsilon=NULL)["epsilon"]),.8,tolerance=.08)
 test_that("huber: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "huber", "golden.json"))
   x <- g$data
-  expect_error(mlhuber(x, iterlim=1, gradtol=1e-10, epsilon=1.345),
+  expect_error(mlhuber(x, iterlim=1, tol=1e-10, epsilon=1.345),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 

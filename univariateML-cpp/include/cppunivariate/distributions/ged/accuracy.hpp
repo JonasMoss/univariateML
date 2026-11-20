@@ -11,9 +11,23 @@ inline bool ged_local_accuracy(GedResult& r,span x,double mean,double sd,double 
     for(double v:x)if(std::abs(static_cast<ExtendedReal>(v)-r.mu)<std::abs(static_cast<ExtendedReal>(chosen)-r.mu))chosen=v;
     r.mu=chosen;
   }
+  if (std::isnan(mean) && std::isfinite(sd) && nu>1) {
+    if (nu==2) return true;  // The location is the arithmetic mean.
+    std::vector<double> sorted(x.begin(),x.end());
+    std::sort(sorted.begin(),sorted.end());
+    const double location=ged_detail::convex_location({sorted.data(),sorted.size()},nu,maxit,tol,sd);
+    if (!std::isfinite(location)) return false;
+    r.mu=location;
+    return true;
+  }
   const double center=r.mu,unit=r.sigma;
   std::array<double,3> q{{0,0,std::log(r.nu)}};
-  const std::array<bool,3> free{{std::isnan(mean)&&!knot,std::isnan(sd),std::isnan(nu)&&!knot}};
+  // With a held scale and identical observations, their common value
+  // maximizes location for every shape, even when the Hessian vanishes.
+  const bool fixed_location=std::isfinite(sd) &&
+      std::all_of(x.begin(),x.end(),[&](double value){return value==r.mu;});
+  const std::array<bool,3> free{{std::isnan(mean)&&!knot&&!fixed_location,
+      std::isnan(sd),std::isnan(nu)&&!knot}};
   const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
     const auto p=std::isnan(nu)?accuracy_detail::exp(z[2]):accuracy_detail::Jet(nu),inv=accuracy_detail::reciprocal(p);
     const auto llambda=(-accuracy_detail::Jet(2)*inv*accuracy_detail::Jet(std::log(ExtendedReal(2)))+

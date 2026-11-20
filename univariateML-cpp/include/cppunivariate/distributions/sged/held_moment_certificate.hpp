@@ -104,7 +104,7 @@ struct Profile {
 };
 inline SgedResult fit(span x,double tol,int maxit,double mean,double sd,double p) {
   const Profile profile(x,mean,sd,p);
-  // Binding gradtol is still a legacy score control; retain golden accuracy.
+  // Compare enclosures in public coefficient units.
   const double target=std::min(tol,2e-7);
   SgedResult out{mean,sd,p,NAN,NAN,0,SgedStatus::CertificateFailure};
   out.stop_detail.loglik_upper=INFINITY;

@@ -484,7 +484,7 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
   if(hn && !hx && hm && hs && fixed_nu!=2)
     return sged_held_moment::fit(x,tol,maxit,fixed_mean,fixed_sd,fixed_nu);
   if(hn && !hx && fixed_nu==2)
-    return sged_skew_certificate::normal(x,maxit,fixed_mean,fixed_sd);
+    return sged_skew_certificate::normal(x,tol,maxit,fixed_mean,fixed_sd);
   if(hn && !hx && !hm && !hs && fixed_nu<=1)
     return sged_skew_certificate::subunit(x,maxit,fixed_nu);
   if(hn && !hx && !hm && !hs && fixed_nu>1)
@@ -547,7 +547,7 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
 }
 
 
-inline SgedResult sged_mle(span x,double tol,int maxit,double mean= std::numeric_limits<double>::quiet_NaN(),double sd= std::numeric_limits<double>::quiet_NaN(),double nu= std::numeric_limits<double>::quiet_NaN(),double xi= std::numeric_limits<double>::quiet_NaN()) {
+inline SgedResult sged_mle(span x,double tol=1e-10,int maxit=200,double mean= std::numeric_limits<double>::quiet_NaN(),double sd= std::numeric_limits<double>::quiet_NaN(),double nu= std::numeric_limits<double>::quiet_NaN(),double xi= std::numeric_limits<double>::quiet_NaN()) {
   if((!std::isnan(mean)&&!std::isfinite(mean)) || (!std::isnan(sd)&&!(sd>0&&std::isfinite(sd))) || (!std::isnan(nu)&&!(nu>0&&std::isfinite(nu))) || (!std::isnan(xi)&&!(xi>0&&std::isfinite(xi))))return {NAN,NAN,NAN,NAN,NAN,0,SgedStatus::InvalidStart};
 
   if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,NAN,0,SgedStatus::InvalidStart};

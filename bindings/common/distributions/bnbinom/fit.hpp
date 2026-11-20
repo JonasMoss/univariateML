@@ -3,7 +3,7 @@
 #include "cppunivariate/distributions/bnbinom/mle.hpp"
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held alpha_arg = {}, Held beta_arg = {}, double gradtol=1e-10, int iterlim=600) {
+inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held alpha_arg = {}, Held beta_arg = {}, double tol=1e-10, int iterlim=600) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held size = size_arg;
@@ -18,7 +18,7 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
         return invalid_argument(fail("Fixed parameters must be positive finite numbers."));
     }
   }
-  const auto fit=cppunivariate::bnbinom_mle(x,gradtol,iterlim,
+  const auto fit=cppunivariate::bnbinom_mle(x,tol,iterlim,
     size.supplied?size.value:nan,
     alpha.supplied?alpha.value:nan,
     beta.supplied?beta.value:nan);
@@ -64,7 +64,7 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     case cppunivariate::BnbinomStatus::ComparisonTie:
       return done(stopped_fail("Beta negative binomial certificate cannot separate competing identified maxima within the floating-point margin."));
     case cppunivariate::BnbinomStatus::InvalidInput:
-      return done(stopped_fail("Beta negative binomial fitting requires nonempty nonnegative counts, positive finite fixed parameters and gradtol, and positive iterlim."));
+      return done(stopped_fail("Beta negative binomial fitting requires nonempty nonnegative counts, positive finite fixed parameters and tol, and positive iterlim."));
     case cppunivariate::BnbinomStatus::IterationFailure:
       if(fit.stop_detail.budget_exhausted)
         return done(stopped_fail("Beta negative binomial certificate budget exhausted; try increasing iterlim. Raising iterlim may resolve this stop."));

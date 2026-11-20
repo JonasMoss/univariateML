@@ -270,8 +270,8 @@ inline bool inner_root(const Problem &P, double &a, int maxit, int &evals) {
 
 // Brent's root finder for a strictly decreasing g on [a, b] with
 // g(a) > 0 >= g(b); bisection whenever a value is not finite.
-template <typename G>
-inline bool brent_root(G &&g, double a, double b, double fa, double fb,
+template <typename G, typename Narrow>
+inline bool brent_root(G &&g, const Narrow& narrow, double a, double b, double fa, double fb,
                        double tol, int maxit, double &root, int &iter) {
   maxit = static_cast<int>(solver_budget(maxit));
   double c = a, fc = fa, d = b - a, e = d;
@@ -282,7 +282,16 @@ inline bool brent_root(G &&g, double a, double b, double fa, double fb,
       a = b; b = c; c = a; fa = fb; fb = fc; fc = fa;
     }
     const double tol1 = 2 * eps * std::abs(b) + tol / 2, xm = (c - b) / 2;
-    if (std::abs(xm) <= tol1 || fb == 0) { root = b; return true; }
+    if (fb == 0) { root = b; return true; }
+    if (std::abs(xm) <= tol1) {
+      if (narrow(b,c)) { root = b; return true; }
+      // Once the log-shape bracket is narrow, bisect it further until
+      // its propagated scale interval also satisfies the tolerance.
+      a=b; fa=fb; b+=xm;
+      if (b==a || b==c) return false;
+      fb=g(b); d=e=xm;
+      continue;
+    }
     const bool finite = std::isfinite(fa) && std::isfinite(fb) && std::isfinite(fc);
     if (finite && std::abs(e) >= tol1 && std::abs(fa) > std::abs(fb)) {
       double p, q, r, s = fb / fa;
@@ -308,8 +317,8 @@ inline bool brent_root(G &&g, double a, double b, double fa, double fb,
 
 // Bracket the sign change of a strictly decreasing g in u from u = 0
 // outwards (steps 1, 2, 4, ...), then solve it by Brent's method.
-template <typename G>
-inline bool decreasing_root(G &&g, double tol, int maxit, double &root,
+template <typename G, typename Narrow>
+inline bool decreasing_root(G &&g, const Narrow& narrow, double tol, int maxit, double &root,
                             int &iter) {
   maxit = static_cast<int>(solver_budget(maxit));
   double u = 0, gu = g(u);
@@ -326,8 +335,8 @@ inline bool decreasing_root(G &&g, double tol, int maxit, double &root,
     prev = u; gprev = gu; step *= 2;
   }
   if (gu == 0) { root = u; iter = 0; return true; }
-  if (sign > 0) return brent_root(g, prev, u, gprev, gu, tol, maxit, root, iter);
-  return brent_root(g, u, prev, gu, gprev, tol, maxit, root, iter);
+  if (sign > 0) return brent_root(g, narrow, prev, u, gprev, gu, tol, maxit, root, iter);
+  return brent_root(g, narrow, u, prev, gu, gprev, tol, maxit, root, iter);
 }
 
 // Fit beta with alpha = log(-log q) held: strictly concave in beta, and
@@ -345,7 +354,7 @@ inline DweibullResult held_q_fit(Problem &P, double q, double tol, int maxit) {
   };
   double u = 0;
   int iter = 0;
-  if (!decreasing_root(g, tol, maxit, u, iter)) {
+  if (!decreasing_root(g, [](double,double) { return true; }, tol, maxit, u, iter)) {
     return {q, nan, nan, evals, DweibullStatus::IterationFailure};
   }
   const double beta = std::exp(u);
@@ -379,10 +388,13 @@ inline DweibullResult finish(Problem &P, double a, double beta, int iterations,
 // shape1 / shape2 NaN: estimate; finite: hold fixed at that value.
 // tol: absolute tolerance on log(shape2) in the shape2 root search.
 inline DweibullResult dweibull_mle(
-    span x, double tol = 1e-12, int maxit = 200,
+    span x, double tol = 1e-10, int maxit = 200,
     double shape1 = std::numeric_limits<double>::quiet_NaN(),
     double shape2 = std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
+  const double requested_tol=tol;
+  constexpr double method_floor=4*std::numeric_limits<double>::epsilon();
+  if (tol>0 && tol<method_floor) tol=method_floor;
   auto stopped = [&]() -> DweibullResult {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   DweibullResult bad{nan, nan, nan, 0, DweibullStatus::InvalidData};
@@ -457,7 +469,20 @@ inline DweibullResult dweibull_mle(
   };
   double u = 0;
   int iter = 0;
-  if (!dweibull_detail::decreasing_root(g, tol, maxit, u, iter) || !inner_ok) {
+  // At fixed raw alpha, every positive-count contribution to its
+  // score decreases as beta grows. The zero-count term is constant.
+  // Thus the profiled q is increasing in beta; its two endpoint
+  // values bound its relative error in the signed log-beta bracket.
+  const auto narrow=[&](double lo,double hi) {
+    const auto log_q=[&](double endpoint) {
+      const auto point=std::find(seen_u.begin(),seen_u.end(),endpoint);
+      if (point==seen_u.end()) return double(NAN);
+      const auto j=static_cast<std::size_t>(point-seen_u.begin());
+      return -std::exp(seen_a[j]-std::exp(endpoint)*P.logc);
+    };
+    return std::abs(log_q(lo)-log_q(hi))<=tol/2;
+  };
+  if (!dweibull_detail::decreasing_root(g, narrow, tol, maxit, u, iter) || !inner_ok) {
     return {nan, nan, nan, static_cast<int>(seen_u.size()),
             DweibullStatus::IterationFailure};
   }
@@ -467,6 +492,16 @@ inline DweibullResult dweibull_mle(
                                  true, tol, maxit);
 
   }();
+  // A rounded zero of the profile score does not resolve sub-epsilon
+  // coefficient requests. Keep the supported solve as a finite witness.
+  if (stopped.status==DweibullStatus::Ok && requested_tol<method_floor &&
+      (std::isnan(shape1) || std::isnan(shape2))) {
+    stopped.status=DweibullStatus::IterationFailure;
+    stopped.stop_detail.accuracy_stop=AccuracyStop::Tolerance;
+    stopped.stop_detail.attainable_tol=method_floor;
+    record_accuracy(stopped,requested_tol,{stopped.shape1,stopped.shape2},
+        {std::isnan(shape1)?stopped.shape1:0,std::isnan(shape2)?stopped.shape2:0});
+  }
   if(stopped.status==DweibullStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
   if(stopped.status==DweibullStatus::TwoPointLimit) {
     const double lo=*std::min_element(x.begin(),x.end());

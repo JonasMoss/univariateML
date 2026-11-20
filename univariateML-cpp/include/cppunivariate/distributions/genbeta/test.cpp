@@ -41,7 +41,7 @@ TEST_CASE("genbeta: exact gamma and effective-endpoint power face comparisons") 
   CHECK(cppunivariate::genbeta_mle(mltest::as_span(gamma),1).status==cppunivariate::GenbetaStatus::UnitGammaBoundary);
   const auto r=cppunivariate::genbeta_mle(mltest::as_span(power),1);
   CHECK(r.status==cppunivariate::GenbetaStatus::PowerBoundary);
-  const auto p=cppunivariate::power_mle(mltest::as_span(power),0);
+  const auto p=cppunivariate::power_mle(mltest::as_span(power));
   CHECK(r.logLik==doctest::Approx(p.logLik).epsilon(1e-10));
 }
 

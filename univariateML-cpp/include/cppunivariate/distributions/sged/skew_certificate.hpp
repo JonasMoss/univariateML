@@ -1,10 +1,10 @@
 #pragma once
 // Included inside cppunivariate, after SgedCost.
 namespace sged_skew_certificate {
-inline SgedResult normal(span x,int maxit,double mean,double sd) {
+inline SgedResult normal(span x,double tol,int maxit,double mean,double sd) {
   // The public normal entry point selects its joint polynomial certificate
   // when both moments are free, and its conditional certificate otherwise.
-  const auto r=snorm_mle(x,1e-10,maxit,mean,sd,NAN);
+  const auto r=snorm_mle(x,std::min(tol,1e-10),maxit,mean,sd,NAN);
   SgedResult out{r.mu,r.sigma,2,r.xi,r.logLik,r.iterations,SgedStatus::CertificateFailure};
   out.stop_detail=r.stop_detail;
   bool representable=true;

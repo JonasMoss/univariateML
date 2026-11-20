@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_triang(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, Held c_arg = {}, double reltol = 1e-12, int iterlim = 100) {
+inline FitResult fit_triang(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, Held c_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -41,7 +41,7 @@ const Held z = c;
 
   }
 
-  auto r=cppunivariate::triang_mle(x,reltol,iterlim,checked_value_0,checked_value_1,checked_value_2);
+  auto r=cppunivariate::triang_mle(x,tol,iterlim,checked_value_0,checked_value_1,checked_value_2);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"a",a_arg.supplied},{"b",b_arg.supplied},{"c",c_arg.supplied}});
@@ -52,7 +52,10 @@ const Held z = c;
   if(r.status==cppunivariate::TriangStatus::Incompatible)
     return done(fail("Data incompatible with held triangular parameters (outside a held endpoint or zero likelihood)."));
   if(r.status==cppunivariate::TriangStatus::InvalidInput)
-    return done(fail("Invalid triangular inputs: require finite data, a < b, a <= c <= b, positive reltol and iterlim."));
+    return done(fail("Invalid triangular inputs: require finite data, a < b, a <= c <= b, positive tol and iterlim."));
+  if (r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)
+    return done(stop_failure(fail("Triangular coefficient accuracy cannot be established at the requested `tol`."),
+        r.stop_detail,outcome_payload(o),{"a","b","c"}));
   if(r.status==cppunivariate::TriangStatus::NumericalFailure)
     return done(stop_failure(fail("Triangular public coefficients lose likelihood beyond the numerical certificate margin."),{},outcome_payload(o),{"a","b","c"}));
   if(r.status==cppunivariate::TriangStatus::IterationFailure)

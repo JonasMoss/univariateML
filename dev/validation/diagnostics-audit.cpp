@@ -1521,7 +1521,7 @@ inline void route_power(cppunivariate::span x, audit::Held alpha_arg = {}, audit
   if (!(epsilon>=0.0) || !std::isfinite(epsilon))
     (void)0;
   auto res = cppunivariate::power_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, epsilon, alpha_held, beta_held); audit::observe(res, {{"alpha",res.alpha,0,INFINITY,false,false},{"beta",res.beta,0,INFINITY,false,false}});
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, alpha_held, beta_held); audit::observe(res, {{"alpha",res.alpha,0,INFINITY,false,false},{"beta",res.beta,0,INFINITY,false,false}});
 }
 
 inline void route_rayleigh(cppunivariate::span x, audit::Held sigma_arg = {}) {
@@ -1623,7 +1623,7 @@ inline void route_snorm(cppunivariate::span x, audit::Held mean_arg = {}, audit:
   if(sd.supplied && (!(std::isfinite(held_sd) && held_sd>0))) (void)0;
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) (void)0;
-  auto res=cppunivariate::snorm_mle(x,1.220703e-4,200,held_mean,held_sd,held_xi); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"xi",res.xi,0,INFINITY,false,false}});
+  auto res=cppunivariate::snorm_mle(x,1e-10,200,held_mean,held_sd,held_xi); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"xi",res.xi,0,INFINITY,false,false}});
 }
 
 inline void route_sstd(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held nu_arg = {}, audit::Held xi_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {

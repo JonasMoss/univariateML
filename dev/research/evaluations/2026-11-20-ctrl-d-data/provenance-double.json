@@ -1,0 +1,43 @@
+{
+  "source_sha256": "289f3b3a36c5e51fe16f4f7da3f78a109456ddbaf51f56a19060ba0c4afbe976",
+  "commit": "d5ca6052d3ba9f498df8815466844d8449857a1c",
+  "dirty": true,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    "-std=gnu++17",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "no_long_double": true,
+  "cpu_limit": 300,
+  "families": [
+    "bbinom",
+    "betapr",
+    "binom",
+    "bnbinom",
+    "cmb",
+    "dweibull",
+    "fpareto",
+    "gb2",
+    "ged",
+    "genbeta",
+    "gengamma",
+    "gpd",
+    "ht",
+    "huber",
+    "invburr",
+    "invtrgamma",
+    "lst",
+    "pois",
+    "power",
+    "sged",
+    "slash",
+    "snorm",
+    "sstd",
+    "st",
+    "std",
+    "trgamma",
+    "triang",
+    "yulesimon"
+  ]
+}

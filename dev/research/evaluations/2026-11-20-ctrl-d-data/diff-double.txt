@@ -1,0 +1,51 @@
+differs ('bnbinom', 'empty', '{}') ['message']
+differs ('bnbinom', 'negative', '{}') ['message']
+differs ('dweibull', '001212', '{}') ['estimates', 'iterations']
+differs ('dweibull', '001213', '{}') ['estimates', 'iterations']
+differs ('dweibull', '001225', '{"shape1": 0.8066268416300256}') ['estimates', 'iterations']
+differs ('dweibull', '001226', '{"shape1": 0.8066268416300256}') ['logLik', 'estimates', 'iterations']
+differs ('dweibull', '001228', '{"shape1": 0.8066268416300256}') ['logLik', 'estimates', 'iterations']
+differs ('dweibull', '001235', '{"shape1": 0.8066268416300256}') ['estimates', 'iterations']
+differs ('dweibull', 'ties', '{}') ['logLik', 'estimates', 'iterations']
+differs ('dweibull', 'n3-s0', '{}') ['logLik', 'estimates']
+differs ('dweibull', 'n3-s2', '{}') ['logLik', 'estimates', 'iterations']
+differs ('ged', '002372', '{"mean": -0.017698887677594307}') ['logLik', 'estimates']
+differs ('ged', '002384', '{"mean": -0.017698887677594307}') ['estimates']
+differs ('ged', '002389', '{"sd": 1.0178559902092952}') ['logLik', 'estimates']
+differs ('ged', '002404', '{"mean": -0.017698887677594307, "sd": 1.0178559902092952}') ['estimates']
+differs ('ged', '002405', '{"mean": -0.017698887677594307, "sd": 1.0178559902092952}') ['logLik', 'estimates']
+differs ('ged', '002406', '{"mean": -0.017698887677594307, "sd": 1.0178559902092952}') ['estimates']
+differs ('ged', '002407', '{"mean": -0.017698887677594307, "sd": 1.0178559902092952}') ['estimates']
+differs ('ged', '002408', '{"mean": -0.017698887677594307, "sd": 1.0178559902092952}') ['estimates']
+differs ('ged', '002420', '{"nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002421', '{"nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002422', '{"nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002423', '{"nu": 3.016645308327854}') ['logLik', 'estimates']
+differs ('ged', '002424', '{"nu": 3.016645308327854}') ['logLik', 'estimates']
+differs ('ged', '002425', '{"nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002428', '{"nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002431', '{"nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002432', '{"nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002434', '{"nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002436', '{"mean": -0.017698887677594307, "nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002438', '{"mean": -0.017698887677594307, "nu": 3.016645308327854}') ['logLik', 'estimates']
+differs ('ged', '002440', '{"mean": -0.017698887677594307, "nu": 3.016645308327854}') ['logLik', 'estimates']
+differs ('ged', '002441', '{"mean": -0.017698887677594307, "nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002442', '{"mean": -0.017698887677594307, "nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002443', '{"mean": -0.017698887677594307, "nu": 3.016645308327854}') ['logLik', 'estimates']
+differs ('ged', '002445', '{"mean": -0.017698887677594307, "nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002446', '{"mean": -0.017698887677594307, "nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002448', '{"mean": -0.017698887677594307, "nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002449', '{"mean": -0.017698887677594307, "nu": 3.016645308327854}') ['estimates']
+differs ('ged', '002467', '{"nu": 3.016645308327854, "sd": 1.0178559902092952}') ['estimates']
+only in baseline ('beta', '000090', '{}')
+only in baseline ('beta', '000091', '{}')
+only in baseline ('beta', '000092', '{}')
+only in baseline ('beta', '000093', '{}')
+only in baseline ('beta', '000094', '{}')
+only in baseline ('beta', '000095', '{}')
+only in baseline ('beta', '000096', '{}')
+only in baseline ('beta', '000097', '{}')
+only in baseline ('beta', '000098', '{}')
+only in baseline ('beta', '000099', '{}')
+double cases 5323 differing 254 only-new 0 only-old 6582

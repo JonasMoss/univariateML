@@ -1,0 +1,28 @@
+native
+Family kind reason attainable_tol candidates
+tol 1e-10
+dweibull estimate none nan 0
+gpd estimate none nan 0
+huber estimate none nan 0
+snorm estimate none nan 0
+triang estimate none nan 0
+tol 1e-24
+dweibull failure tolerance 8.88178e-16 1
+gpd failure tolerance 8.88178e-16 1
+huber failure tolerance 8.88178e-16 1
+snorm failure tolerance 8.88178e-16 1
+triang failure tolerance 8.88178e-16 1
+double
+Family kind reason attainable_tol candidates
+tol 1e-10
+dweibull estimate none nan 0
+gpd estimate none nan 0
+huber estimate none nan 0
+snorm estimate none nan 0
+triang estimate none nan 0
+tol 1e-24
+dweibull failure tolerance 8.88178e-16 1
+gpd failure tolerance 8.88178e-16 1
+huber failure tolerance 8.88178e-16 1
+snorm failure tolerance 8.88178e-16 1
+triang failure tolerance 8.88178e-16 1

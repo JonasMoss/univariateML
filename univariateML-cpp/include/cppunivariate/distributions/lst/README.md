@@ -42,7 +42,7 @@ r:
     df: Optional held df; NULL estimates it.
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
-    gradtol: All-free coefficient enclosure width target, clamped between 1e-7 and 1e-6 in normalized location and relative scale/shape units. Held joint fits use EM nominations and root inclusion when it closes, with analytic Newton accuracy checks for uncertified searches; scalar held fits require coefficient brackets. Shape-only brackets target relative width min(gradtol, 1e-10) and require relative width at most min(gradtol, 1e-7).
+    tol: Relative coefficient accuracy. Joint interior representatives use an analytic observed-information Newton correction. Scalar held fits use signed coefficient brackets.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: loggamma((df+1)/2) - loggamma(df/2) - log(df*pi)/2 - log(sigma) - (df+1)*log(1+((x-mu)/sigma)**2/df)/2
 limits:
@@ -215,8 +215,9 @@ nonfinite/domain errors and insufficient coefficient widths stop with
 `CertificateTie`, `CertificateBudget` or `NumericalFailure`. No certificate
 failure can use the local optimizer-score exception. Location width is
 measured in empirical normal-scale units; scale and shape widths are relative.
-The all-free width target is gradtol clamped to [1e-7,1e-6]; std checks the
-entire transformed standard-deviation interval as well. Shape-only and fixed-shape held subsets use the certificates below; unresolved two-dimensional free-shape profiles retain successful numerical results marked uncertified.
+The all-free enclosure isolates a basin at relative width $10^{-6}$.
+An analytic observed-information Newton correction then checks the requested
+accuracy of the public coefficients. Shape-only and fixed-shape held subsets use the certificates below; unresolved two-dimensional free-shape profiles retain successful numerical results marked uncertified.
 
 Normal stops carry `(mean,sd)`; positive ordinary-scale t2 stops carry
 `(mu,sigma,df=2)`. A bounded collapse stop carries the diagnostic path

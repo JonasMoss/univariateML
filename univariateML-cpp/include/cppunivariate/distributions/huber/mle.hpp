@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/likelihood_polish.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "../../core/face_compare.hpp"
@@ -695,7 +696,7 @@ inline bool huber_free_score_gate(span x,const HuberResult& r,bool fm,bool fs,do
       std::isfinite(shape) && std::abs(shape)<=1e-3;
 }
 
-inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
+inline HuberResult huber_global_search(span x,double tol=1e-10,int maxit=200,
     double epsilon=1.345,
     double mu=std::numeric_limits<double>::quiet_NaN(),
     double sigma=std::numeric_limits<double>::quiet_NaN(),bool exact_scan=false) {
@@ -926,5 +927,74 @@ inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
     best.stop_detail=evidence;return best;
   }
   return stop(false,std::max({incumbent,normal_upper,laplace_upper,tail}));
+}
+inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
+    double epsilon=1.345,
+    double mu=std::numeric_limits<double>::quiet_NaN(),
+    double sigma=std::numeric_limits<double>::quiet_NaN(),bool exact_scan=false) {
+  auto result=huber_global_search(x,tol,maxit,epsilon,mu,sigma,exact_scan);
+  if (result.status!=HuberStatus::Ok) return result;
+  const bool free_shape=std::isnan(epsilon);
+  const double unit=result.sigma, origin=result.mu;
+  const bool standardized=!free_shape && result.std_unit>0;
+  const double center=standardized ? result.std_center : origin;
+  const ExtendedReal offset=standardized ?
+      static_cast<ExtendedReal>(result.std_unit)*result.std_m/unit : 0;
+  std::vector<ExtendedReal> sample;
+  sample.reserve(x.size());
+  for (double value:x) sample.push_back((static_cast<ExtendedReal>(value)-center)/unit-offset);
+  std::sort(sample.begin(),sample.end());
+  const std::size_t mid=sample.size()/2;
+  const bool flat=sample.size()%2==0 && (sample[mid]-sample[mid-1])/2>=result.epsilon;
+  const bool free_location=std::isnan(mu) && !flat;
+  const bool free_scale=std::isnan(sigma);
+  const auto objective=[&](const std::array<accuracy_detail::Jet,3>& q) {
+    const auto c=accuracy_detail::exp(q[2]);
+    const auto inv=accuracy_detail::exp(-q[1]);
+    const ExtendedReal shape=c.v;
+    const ExtendedReal tail=2*std::exp(-shape*shape/2)/shape;
+    const ExtendedReal z=std::sqrt(2*std::acos(ExtendedReal(-1)))*
+        std::erf(shape/std::sqrt(ExtendedReal(2)))+tail;
+    const ExtendedReal ratio=tail/z;
+    const auto log_z=accuracy_detail::compose(c,std::log(z),-ratio/shape,
+        ratio+(2*ratio-ratio*ratio)/(shape*shape));
+    accuracy_detail::JetSum ll;
+    for (ExtendedReal value:sample) {
+      auto residual=(accuracy_detail::Jet(value)-q[0])*inv;
+      if (residual.v<0) residual=-residual;
+      ll.add(residual.v<=shape ? -residual*residual/2 : -c*(residual-c/2));
+    }
+    return ll.value-accuracy_detail::Jet(x.size())*(q[1]+log_z);
+  };
+  std::array<double,3> q{{0,0,std::log(result.epsilon)}};
+  // In log-scale and scale-normalized location coordinates, the
+  // observed-information correction directly measures coefficient error.
+  const auto failed_accuracy=[&]() {
+    result.status=HuberStatus::IterationFailure;
+    record_accuracy(result,tol,{result.mu,result.sigma,result.epsilon},
+        {free_location ? std::max(std::abs(result.mu),result.sigma) : 0,
+         free_scale ? result.sigma : 0,free_shape ? result.epsilon : 0});
+    return result;
+  };
+  if (!accuracy_detail::polish(q,{{free_location,free_scale,free_shape}},
+                               tol,maxit,objective,result.stop_detail))
+    return failed_accuracy();
+  const double fitted_scale=free_scale ? unit*std::exp(q[1]) : result.sigma;
+  const double fitted_shape=free_shape ? std::exp(q[2]) : result.epsilon;
+  if (flat && std::isnan(mu) &&
+      (sample[mid]-sample[mid-1])/2<fitted_shape*(fitted_scale/unit))
+    return failed_accuracy();
+  const auto fitted_location=free_location ?
+      static_cast<double>(static_cast<ExtendedReal>(center)+unit*(offset+q[0])) : result.mu;
+  if ((free_location &&
+       !accuracy_detail::location_projection(fitted_location,center,unit,
+           static_cast<double>(offset+q[0]),fitted_scale,tol)) ||
+      (free_scale && !accuracy_detail::scale_projection(fitted_scale,unit,q[1],tol)))
+    return failed_accuracy();
+  result.mu=fitted_location;
+  result.sigma=fitted_scale;
+  result.epsilon=fitted_shape;
+  result.logLik=huber_point_loglik(x,result.mu,result.sigma,result.epsilon);
+  return result;
 }
 } // namespace cppunivariate

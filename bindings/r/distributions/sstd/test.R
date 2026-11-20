@@ -373,7 +373,7 @@ test_that("sstd P0b subsets agree with independent README oracles", {
       min(a$value,b$value)
     },0.0)
     fit <- tryCatch(suppressWarnings(do.call(mlsstd,
-      c(list(x=x,gradtol=1e-6,iterlim=1000),as.list(p[held]))),
+      c(list(x=x,tol=1e-6,iterlim=1000),as.list(p[held]))),
       classes='univariateML_restricted'),error=identity)
     if(inherits(fit,'error')) {
       expect_match(conditionMessage(fit),'half|uniform|skew-normal|nu -> 2|unbounded|collapse|score check')

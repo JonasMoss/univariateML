@@ -127,7 +127,7 @@ inline GpdResult gpd_scale(span y, double mu, double xi, double tol, int maxit) 
 } // namespace cppunivariate
 #include "certificate.hpp"
 namespace cppunivariate {
-inline GpdResult gpd_mle_impl(span x, double tol=1e-12, int maxit=200,
+inline GpdResult gpd_mle_impl(span x, double tol=1e-10, int maxit=200,
                          double mu=0, double xi=std::numeric_limits<double>::quiet_NaN(),
                          double sigma=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -173,7 +173,7 @@ inline GpdResult gpd_mle_impl(span x, double tol=1e-12, int maxit=200,
   return gpd_cert_detail::fit(ys,mu,tol,maxit);
 }
 
-inline GpdResult gpd_mle(span x,double tol=1e-12,int maxit=200,double mu=0,double xi=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
+inline GpdResult gpd_mle(span x,double tol=1e-10,int maxit=200,double mu=0,double xi=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   if(!(tol>0) || !std::isfinite(tol) || maxit<1)return {mu,sigma,xi,NAN,0,GpdStatus::InvalidData};
   if(std::isnan(mu)) {
@@ -183,7 +183,18 @@ inline GpdResult gpd_mle(span x,double tol=1e-12,int maxit=200,double mu=0,doubl
     for(double v:x)if(!std::isfinite(v))return {mu,sigma,xi,NAN,0,GpdStatus::InvalidData};
     return {mu,sigma,xi,NAN,0,std::isnan(sigma)&&std::isnan(xi)?GpdStatus::Unbounded:GpdStatus::FreeThreshold};
   }
-  auto r=gpd_mle_impl(x,tol,maxit,mu,xi,sigma);
+  constexpr double method_floor=4*std::numeric_limits<double>::epsilon();
+  auto r=gpd_mle_impl(x,std::max(tol,method_floor),maxit,mu,xi,sigma);
+  // The binary64 profile score may round to zero even when its root is
+  // between representable coefficients. Retain the finite supported solve.
+  if (r.status==GpdStatus::Ok && tol<method_floor &&
+      r.iterations>0 && r.xi!=kGpdXiLower) {
+    r.status=GpdStatus::IterationFailure;
+    r.stop_detail.accuracy_stop=AccuracyStop::Tolerance;
+    r.stop_detail.attainable_tol=method_floor;
+    record_accuracy(r,tol,{r.mu,r.sigma,r.xi},
+        {0,std::isnan(sigma)?r.sigma:0,std::isnan(xi)?std::max(1.,std::abs(r.xi)):0});
+  }
   if(r.status==GpdStatus::Ok && (std::isnan(xi)) && r.xi==kGpdXiLower) r.restricted|=16u;
   return r;
 }
@@ -198,6 +209,8 @@ inline bool family_point(const GpdResult&, const FitCandidate& c) {
 // floor on the restriction boundary; none is established as an accurate maximizer.
 inline bool accurate_point(const GpdResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const GpdResult& r) {
+  if (r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)
+    return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.certificate_failure == GpdCertificateFailure::Budget) return FitOutcome::budget();
   if (r.certificate_failure == GpdCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
   if (r.certificate_failure == GpdCertificateFailure::Tie) return comparison_outcome_of(r);

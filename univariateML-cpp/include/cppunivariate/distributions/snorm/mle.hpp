@@ -78,18 +78,23 @@ inline CPPUNIV_EXTENDED_REAL evaluate(const std::vector<CPPUNIV_EXTENDED_REAL>& 
   for (std::size_t i = p.size(); i-- > 0;) y = y * t + p[i];
   return y;
 }
-inline std::vector<CPPUNIV_EXTENDED_REAL> roots(std::vector<CPPUNIV_EXTENDED_REAL> p,int maxit,bool& resolved) {
+struct Root {
+  CPPUNIV_EXTENDED_REAL lo, hi;
+  CPPUNIV_EXTENDED_REAL mid() const { return (lo+hi)/2; }
+};
+inline std::vector<Root> roots(std::vector<CPPUNIV_EXTENDED_REAL> p,double tol,int maxit,bool& resolved) {
   maxit = static_cast<int>(solver_budget(maxit));
   while (p.size() > 1 && p.back() == 0) p.pop_back();
   if (p.size() <= 1) return {};
   std::vector<CPPUNIV_EXTENDED_REAL> d(p.size() - 1);
   for (std::size_t i = 1; i < p.size(); ++i) d[i-1] = i * p[i];
-  auto cuts = roots(d,maxit,resolved);
-  cuts.push_back(0); cuts.push_back(1);
-  std::sort(cuts.begin(), cuts.end());
-  std::vector<CPPUNIV_EXTENDED_REAL> out = cuts;
+  auto cuts = roots(d,tol,maxit,resolved);
+  cuts.push_back({0,0}); cuts.push_back({1,1});
+  const auto order=[](const Root& a,const Root& b) {return a.mid()<b.mid();};
+  std::sort(cuts.begin(),cuts.end(),order);
+  auto out=cuts;
   for (std::size_t i = 1; i < cuts.size(); ++i) {
-    CPPUNIV_EXTENDED_REAL l = cuts[i-1], r = cuts[i], fl = evaluate(p, l);
+    CPPUNIV_EXTENDED_REAL l = cuts[i-1].mid(), r = cuts[i].mid(), fl = evaluate(p, l);
     const CPPUNIV_EXTENDED_REAL fr = evaluate(p, r);
     if ((fl < 0 && fr > 0) || (fl > 0 && fr < 0)) {
       for (int j = 0; j < solver_budget(maxit); ++j) {
@@ -98,12 +103,11 @@ inline std::vector<CPPUNIV_EXTENDED_REAL> roots(std::vector<CPPUNIV_EXTENDED_REA
         if ((fl < 0) == (fm < 0)) { l = m; fl = fm; }
         else r = m;
       }
-      if(r-l>1e-12*(1+std::abs(l)+std::abs(r)))resolved=false;
-      out.push_back((l+r)/2);
+      if(r-l>std::min(1e-12,tol))resolved=false;
+      out.push_back({l,r});
     }
   }
-  std::sort(out.begin(), out.end());
-  out.erase(std::unique(out.begin(), out.end()), out.end());
+  std::sort(out.begin(),out.end(),order);
   return out;
 }
 inline std::vector<CPPUNIV_EXTENDED_REAL> multiply(const std::vector<CPPUNIV_EXTENDED_REAL>& a,
@@ -115,13 +119,13 @@ inline std::vector<CPPUNIV_EXTENDED_REAL> multiply(const std::vector<CPPUNIV_EXT
 }
 } // namespace snorm_detail
 
-inline SnormResult snorm_mle(span x, double /*tol*/, int maxit,
-    double fixed_mean=std::numeric_limits<double>::quiet_NaN(),
-    double fixed_sd=std::numeric_limits<double>::quiet_NaN(),
-    double fixed_xi=std::numeric_limits<double>::quiet_NaN()) {
+inline SnormResult snorm_mle_impl(span x, double tol, int maxit,
+    double fixed_mean,double fixed_sd,double fixed_xi) {
   maxit = static_cast<int>(solver_budget(maxit));
+  if (!(tol>0) || !std::isfinite(tol) || maxit<1)
+    return {NAN,NAN,NAN,NAN,0,SnormStatus::InvalidStart};
   if(!std::isnan(fixed_mean) || !std::isnan(fixed_sd) || !std::isnan(fixed_xi))
-    return snorm_certificate::fit(x,maxit,fixed_mean,fixed_sd,fixed_xi);
+    return snorm_certificate::fit(x,tol,maxit,fixed_mean,fixed_sd,fixed_xi);
   constexpr double nan = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {nan,nan,nan,nan,0,SnormStatus::InvalidStart};
@@ -142,16 +146,19 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int maxit,
   for (std::size_t i=n; i-- > 0;) { z[i]=z[i+1]+(1-y[i]); zz[i]=zz[i+1]+(1-y[i])*(1-y[i]); }
   CPPUNIV_EXTENDED_REAL best = std::numeric_limits<CPPUNIV_EXTENDED_REAL>::infinity();
   CPPUNIV_EXTENDED_REAL mode=0, ca=0, cb=0;
-  auto consider = [&](CPPUNIV_EXTENDED_REAL c, std::size_t k) {
+  snorm_detail::Root root{0,0};
+  std::size_t split=0;
+  auto consider = [&](snorm_detail::Root interval, std::size_t k) {
+    const auto c=interval.mid();
     const CPPUNIV_EXTENDED_REAL A=std::max(CPPUNIV_EXTENDED_LITERAL(0.0,0.0L), ss[k]-2*c*s[k]+k*c*c);
     const CPPUNIV_EXTENDED_REAL B=std::max(CPPUNIV_EXTENDED_LITERAL(0.0,0.0L), zz[k]-2*(1-c)*z[k]+(n-k)*(1-c)*(1-c));
     // Minimising the cube root of Q is equivalent and avoids cubing.
     const CPPUNIV_EXTENDED_REAL a=std::cbrt(A), b=std::cbrt(B), q=a+b;
     if (q < best || (q == best && c>0 && c<1)) {
-      best=q; mode=c; ca=a; cb=b;
+      best=q; mode=c; ca=a; cb=b; root=interval; split=k;
     }
   };
-  consider(0,0); consider(1,n);
+  consider({0,0},0); consider({1,1},n);
   for (std::size_t k=1; k<n; ++k) {
     const CPPUNIV_EXTENDED_REAL l=y[k-1], h=y[k]-l;
     if (h == 0) continue;
@@ -164,9 +171,9 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int maxit,
     const auto q=snorm_detail::multiply(snorm_detail::multiply(snorm_detail::multiply(v,v),v),snorm_detail::multiply(A,A));
     for (std::size_t j=0; j<p.size(); ++j) p[j]-=q[j];
     bool resolved=true;
-    const auto roots=snorm_detail::roots(p,maxit,resolved);
+    const auto roots=snorm_detail::roots(p,tol,maxit,resolved);
     if(!resolved)return {nan,nan,nan,nan,maxit,SnormStatus::BfgsFailure};
-    for (CPPUNIV_EXTENDED_REAL t : roots) consider(l+h*t,k);
+    for (const auto& t : roots) consider({l+h*t.lo,l+h*t.hi},k);
   }
   const double ll=static_cast<double>(n*(CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/cppunivariate::pi)-std::log(scale)
                      -CPPUNIV_EXTENDED_LITERAL(1.5,1.5L)*std::log(best)+CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(static_cast<CPPUNIV_EXTENDED_REAL>(n))-CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)));
@@ -187,7 +194,56 @@ inline SnormResult snorm_mle(span x, double /*tol*/, int maxit,
   const CPPUNIV_EXTENDED_REAL m1=std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/cppunivariate::pi);
   const double mu=static_cast<double>(origin+scale*(mode+m1*(b-a)));
   const double sigma=static_cast<double>(scale*std::sqrt(a*a-a*b+b*b-m1*m1*(b-a)*(b-a)));
-  return {mu,sigma,static_cast<double>(std::sqrt(b/a)),ll,0,SnormStatus::Ok};
+  const double skew=static_cast<double>(std::sqrt(b/a));
+  // Within one data gap the left and right residual sums are monotone
+  // in opposite directions. Propagate their root-bracket bounds to the
+  // two scales, then to the three public coefficients.
+  const auto left=[&](CPPUNIV_EXTENDED_REAL c) {
+    return std::cbrt(std::max(ExtendedReal(0),ss[split]-2*c*s[split]+split*c*c));
+  };
+  const auto right=[&](CPPUNIV_EXTENDED_REAL c) {
+    const auto d=1-c;
+    return std::cbrt(std::max(ExtendedReal(0),zz[split]-2*d*z[split]+(n-split)*d*d));
+  };
+  const auto al=left(root.lo), ah=left(root.hi);
+  const auto bl=right(root.hi), bh=right(root.lo);
+  const auto fl=std::sqrt((al+bl)/n), fh=std::sqrt((ah+bh)/n);
+  const auto aa=al*fl, ab=ah*fh, ba=bl*fl, bb=bh*fh;
+  const auto loc_width=scale*(root.hi-root.lo+m1*((ab-aa)+(bb-ba)));
+  const auto scale_width=scale*((ab-aa)+(bb-ba));
+  const auto skew_width=std::sqrt(bh/al)-std::sqrt(bl/ah);
+  SnormResult result{mu,sigma,skew,ll,0,SnormStatus::Ok};
+  // Standard deviation is a norm from a positive definite quadratic form.
+  // Each coordinate direction has norm sqrt(1-m1*m1) < 1.
+  if (!(std::isfinite(mu) && sigma>0 && std::isfinite(sigma) &&
+        skew>0 && std::isfinite(skew) &&
+        loc_width<=tol*std::max(std::abs(mu),sigma)/2 &&
+        scale_width<=tol*sigma/2 && skew_width<=tol*skew/2)) {
+    result.status=SnormStatus::BfgsFailure;
+    record_accuracy(result,tol,{mu,sigma,skew},{std::max(std::abs(mu),sigma),sigma,skew});
+  }
+  return result;
+}
+
+inline SnormResult snorm_mle(span x,double tol=1e-10,int maxit=200,
+    double fixed_mean=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_sd=std::numeric_limits<double>::quiet_NaN(),
+    double fixed_xi=std::numeric_limits<double>::quiet_NaN()) {
+  constexpr double method_floor=4*std::numeric_limits<double>::epsilon();
+  const bool too_tight=tol>0 && tol<method_floor;
+  auto r=snorm_mle_impl(x,too_tight?method_floor:tol,maxit,fixed_mean,fixed_sd,fixed_xi);
+  const bool hm=std::isfinite(fixed_mean),hs=std::isfinite(fixed_sd),hx=std::isfinite(fixed_xi);
+  // The algebraic roots are mapped to binary64 public coefficients.
+  // Keep the finite representative when their requested precision is finer
+  // than the arithmetic used in the bracket and mapping.
+  if (r.status==SnormStatus::Ok && too_tight && !(hm && hs && hx)) {
+    r.status=SnormStatus::BfgsFailure;
+    r.stop_detail.accuracy_stop=AccuracyStop::Tolerance;
+    r.stop_detail.attainable_tol=method_floor;
+    record_accuracy(r,tol,{r.mu,r.sigma,r.xi},
+        {hm?0:std::max(std::abs(r.mu),r.sigma),hs?0:r.sigma,hx?0:r.xi});
+  }
+  return r;
 }
 
 }  // namespace cppunivariate
@@ -210,6 +266,10 @@ inline bool snorm_equal_faces(const SnormResult& r) {
 }
 
 inline FitOutcome outcome(const SnormResult& r) {
+  if (r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)
+    return FitOutcome::failure(OutcomeReason::Tolerance);
+  if (r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)
+    return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status == SnormStatus::RightHalfNormalBoundary ||
       r.status == SnormStatus::LeftHalfNormalBoundary) {
     const auto& d = r.stop_detail;

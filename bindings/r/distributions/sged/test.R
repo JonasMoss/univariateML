@@ -70,7 +70,7 @@ test_that("sged interior multistart oracle", {
   set.seed(812)
   for (shape in c(1.5, 3)) {
     x <- rged(n = 500, mean = 0, sd = 1, nu = shape)
-    f <- suppressWarnings(mlsged(x, gradtol=1e-6, iterlim=1000), classes = "univariateML_restricted")
+    f <- suppressWarnings(mlsged(x, tol=1e-6, iterlim=1000), classes = "univariateML_restricted")
     expect_gt(unname(f["nu"]), 1)
     objective <- function(p) {
       nu <- 1+exp(p[3])
@@ -320,7 +320,7 @@ test_that("sged P0b subsets agree with independent README oracles", {
       min(a$value,b$value)
     },0.0)
     fit <- tryCatch(suppressWarnings(do.call(mlsged,
-      c(list(x=x,gradtol=1e-6,iterlim=1000),as.list(p[held]))),
+      c(list(x=x,tol=1e-6,iterlim=1000),as.list(p[held]))),
       classes='univariateML_restricted'),error=identity)
     # A comparison: an estimate with candidates, or a limit or unresolved
     # stop that keeps the compared candidates.
@@ -707,7 +707,7 @@ test_that("sged fully held tiny-shape evaluation preserves its centering moment"
 test_that("SGED fixed-shape held-moment skew fits use the constrained global cover", {
   x <- c(-3,-1,-.2,0,.3,.4,2)
   for(p in c(1,1.7)) {
-    f <- mlsged(x,mean=.1,sd=1.4,nu=p,gradtol=1e-10)
+    f <- mlsged(x,mean=.1,sd=1.4,nu=p,tol=1e-10)
     ref <- optimize(function(t)-sum(sged_hold_logref(x,c(mean=.1,sd=1.4,nu=p,xi=exp(t)))),c(-2,2),tol=1e-11)
     expect_identical(as.numeric(f[c('mean','sd','nu')]),c(.1,1.4,p))
     expect_setequal(attr(f,'fixed'),c('mean','sd','nu'))
@@ -720,7 +720,7 @@ test_that("SGED fixed-shape held-moment skew fits use the constrained global cov
 })
 
 test_that("SGED held moments retain the two finite Laplace skew maxima", {
-  e <- tryCatch(mlsged(c(-1.1,1.1),mean=0,sd=1,nu=1,gradtol=1e-9),error=identity)
+  e <- tryCatch(mlsged(c(-1.1,1.1),mean=0,sd=1,nu=1,tol=1e-9),error=identity)
   expect_s3_class(e,"univariateML_unresolved")
   expect_gte(nrow(fit_payload(e)$candidates),2L)
   expect_true(is.finite(fit_payload(e)$loglik_upper))
@@ -733,7 +733,7 @@ test_that("SGED held moments certify strict-support half-GED winners", {
   k <- exp(lgamma(2/p)-lgamma(1/p)); v <- exp(lgamma(3/p)-lgamma(1/p))
   for(sign in c(-1,1)) {
     x <- rep(sign*.2,2)
-    e <- tryCatch(mlsged(x,mean=0,sd=1,nu=p,gradtol=1e-10),error=identity)
+    e <- tryCatch(mlsged(x,mean=0,sd=1,nu=p,tol=1e-10),error=identity)
     expect_s3_class(e,'univariateML_limit')
     expect_identical(fit_payload(e)$model,if(sign>0) 'unavailable:reflected-half-ged' else 'unavailable:half-ged')
     c <- e$estimates
@@ -743,14 +743,14 @@ test_that("SGED held moments certify strict-support half-GED winners", {
     expect_equal(fit_payload(e)$limit_loglik,unname(reference),tolerance=1e-10)
     expect_true(is.finite(fit_payload(e)$loglik_upper))
   }
-  e <- tryCatch(mlsged(c(0,0),mean=0,sd=1,nu=p,gradtol=1e-10),error=identity)
+  e <- tryCatch(mlsged(c(0,0),mean=0,sd=1,nu=p,tol=1e-10),error=identity)
   expect_s3_class(e,"univariateML_limit")
   expect_false(e$certified)
   expect_setequal(fit_payload(e)$candidates$model,c('unavailable:half-ged','unavailable:reflected-half-ged'))
 })
 
 test_that("SGED held moment half-GED endpoint contacts remain explicit stops", {
-  expect_error(mlsged(c(-1,.2),mean=0,sd=1,nu=1,gradtol=1e-10),class='univariateML_numerical')
+  expect_error(mlsged(c(-1,.2),mean=0,sd=1,nu=1,tol=1e-10),class='univariateML_numerical')
 })
 
 test_that("sged large shapes retain the high-precision centering moment", {
@@ -760,8 +760,8 @@ test_that("sged large shapes retain the high-precision centering moment", {
 
 test_that("sged delegate follow-up preserves the accepted fit", {
   x <- c(.7321666961121761,2.2766042947262384,-.5491691631533211)
-  f <- mlsged(x,sd=1.0178559902092952,xi=1,gradtol=1e-8,iterlim=1000)
-  p <- mlged(x,sd=1.0178559902092952,gradtol=1e-8,iterlim=1000)
+  f <- mlsged(x,sd=1.0178559902092952,xi=1,tol=1e-8,iterlim=1000)
+  p <- mlged(x,sd=1.0178559902092952,tol=1e-8,iterlim=1000)
   expect_identical(attr(f,"certified"),FALSE)
   expect_identical(as.numeric(f)[1:3],as.numeric(p))
   expect_identical(as.numeric(logLik(f)),as.numeric(logLik(p)))
@@ -769,7 +769,7 @@ test_that("sged delegate follow-up preserves the accepted fit", {
 })
 
 test_that("held shape one uses the data corner and an accurate side-scale root", {
-  f <- mlsged(c(-100,-2,-.01,0,.01,2,50),sd=1,nu=1,gradtol=1e-10)
+  f <- mlsged(c(-100,-2,-.01,0,.01,2,50),sd=1,nu=1,tol=1e-10)
   expect_identical(attr(f,"certified"),FALSE)
   expect_equal(unname(f[["mean"]]),-.15886663266736545,tolerance=1e-10)
   expect_equal(unname(f[["xi"]]),.892671524325583,tolerance=1e-10)
@@ -778,7 +778,7 @@ test_that("held shape one uses the data corner and an accurate side-scale root",
 })
 
 test_that("held subunit shape has an accurate corner tangent fit", {
-  f <- mlsged(c(-100,-2,-.01,0,.01,2,50),sd=1,nu=.5,gradtol=1e-10)
+  f <- mlsged(c(-100,-2,-.01,0,.01,2,50),sd=1,nu=.5,tol=1e-10)
   expect_identical(attr(f,"certified"),FALSE)
   expect_equal(unname(f[["mean"]]),-0.054880714236549846,tolerance=1e-10)
   expect_equal(unname(f[["xi"]]),0.9509870560295084,tolerance=1e-10)
@@ -789,7 +789,7 @@ test_that("held subunit shape has an accurate corner tangent fit", {
 test_that("certified SGED replay 6170 respects requested accuracy", {
   x <- c(6.449948853914544e+149,5.314175321796899e+149,1.0643637622867162e+149,3.5784486371116986e+149,4.912947510231833e+149,-1.4843850018264121e+150,-9.29136424879163e+149,-1.0582726819365746e+149,-8.768581195832416e+149,-1.8968909122061467e+149,1.5580291981210541e+150,-1.2217397805116431e+150)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["mean"]])-(-1.8564033054720792e+149)),tol*8.724712386510601e+149)
     expect_lte(abs(unname(f[["sd"]])-(8.724712386510601e+149)),tol*8.724712386510601e+149)
@@ -799,7 +799,7 @@ test_that("certified SGED replay 6170 respects requested accuracy", {
 test_that("certified SGED replay 6158 respects requested accuracy", {
   x <- c(0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833,-1.4843850018264122,-0.929136424879163,-0.10582726819365745,-0.8768581195832416,-0.18968909122061467,1.5580291981210541,-1.2217397805116432)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["mean"]])-(-0.18564033054720794)),tol*0.8724712386510602)
     expect_lte(abs(unname(f[["sd"]])-(0.8724712386510602)),tol*0.8724712386510602)
@@ -809,7 +809,7 @@ test_that("certified SGED replay 6158 respects requested accuracy", {
 test_that("certified SGED replay 6190 respects requested accuracy", {
   x <- c(0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833,-1.4843850018264122,-0.929136424879163,-0.10582726819365745,-0.8768581195832416,-0.18968909122061467,1.5580291981210541,-1.2217397805116432)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,sd=0.9390299202739361,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,sd=0.9390299202739361,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["mean"]])-(-0.10791820017431634)),tol*0.9390299202739361)
   }
@@ -818,7 +818,7 @@ test_that("certified SGED replay 6190 respects requested accuracy", {
 test_that("certified SGED replay 6176 respects requested accuracy", {
   x <- c(0.6449948853914544,0.5314175321796899,0.10643637622867162)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(0.4448090663293896)),tol*0.4448090663293896)
   }
@@ -827,7 +827,7 @@ test_that("certified SGED replay 6176 respects requested accuracy", {
 test_that("certified SGED replay 6184 respects requested accuracy", {
   x <- c(0.999999999998,0.999999999999,1.0,1.000000000001,1.000000000003)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(0.8676541171006674)),tol*0.8676541171006674)
   }
@@ -836,7 +836,7 @@ test_that("certified SGED replay 6184 respects requested accuracy", {
 test_that("certified SGED replay 6181 respects requested accuracy", {
   x <- c(0.10643637622845875,0.10643637622856518,0.10643637622867162,0.10643637622877807,0.10643637622899094)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(0.11675192764884629)),tol*0.11675192764884629)
   }
@@ -845,7 +845,7 @@ test_that("certified SGED replay 6181 respects requested accuracy", {
 test_that("certified SGED replay 6183 respects requested accuracy", {
   x <- c(0.99999998,0.99999999,1.0,1.00000001,1.00000003)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(0.8676541187811906)),tol*0.8676541187811906)
   }
@@ -854,7 +854,7 @@ test_that("certified SGED replay 6183 respects requested accuracy", {
 test_that("certified SGED replay 6189 respects requested accuracy", {
   x <- c(0.10643616335591917,0.1064362697922954,0.10643637622867162,0.10643648266504785,0.10643658910142409)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(0.11675192764893079)),tol*0.11675192764893079)
   }
@@ -863,7 +863,7 @@ test_that("certified SGED replay 6189 respects requested accuracy", {
 test_that("certified SGED replay 6204 respects requested accuracy", {
   x <- c(0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,1000001.5580291981)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,sd=0.9390299202739361,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,sd=0.9390299202739361,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["mean"]])-(36929.00109201191)),tol*36929.00109201191)
   }
@@ -872,7 +872,7 @@ test_that("certified SGED replay 6204 respects requested accuracy", {
 test_that("certified SGED replay 6179 respects requested accuracy", {
   x <- c(0.10641508895342588,0.10642573259104876,0.10643637622867162,0.10644701986629448,0.10646830714154022)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(0.11675371803079385)),tol*0.11675371803079385)
   }
@@ -881,7 +881,7 @@ test_that("certified SGED replay 6179 respects requested accuracy", {
 test_that("certified SGED replay 6174 respects requested accuracy", {
   x <- c(0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833,-1.4843850018264122,-0.929136424879163,-0.10582726819365745,-0.8768581195832416,-0.18968909122061467,1.5580291981210541,-1.2217397805116432)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(0.9541889839143239)),tol*0.9541889839143239)
   }
@@ -890,7 +890,7 @@ test_that("certified SGED replay 6174 respects requested accuracy", {
 test_that("certified SGED replay 6175 respects requested accuracy", {
   x <- c(0.6449948853914544,0.5314175321796899)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(0.5248453057248756)),tol*0.5248453057248756)
   }
@@ -899,7 +899,7 @@ test_that("certified SGED replay 6175 respects requested accuracy", {
 test_that("certified SGED replay 6078 respects requested accuracy", {
   x <- c(0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833,-1.4843850018264122,-0.929136424879163,-0.10582726819365745,-0.8768581195832416,-0.18968909122061467,1.5580291981210541,-1.2217397805116432)
   for (tol in c(1e-10)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,sd=0.9390299202739361,nu=3.4208324500711944)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,sd=0.9390299202739361,nu=3.4208324500711944)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["xi"]])-(2.3352191509463136)),tol*2.3352191509463136)
   }
@@ -908,7 +908,7 @@ test_that("certified SGED replay 6078 respects requested accuracy", {
 test_that("certified SGED replay 6177 respects requested accuracy", {
   x <- c(0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,0.4912947510231833)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(0.42460608181086934)),tol*0.42460608181086934)
   }
@@ -917,7 +917,7 @@ test_that("certified SGED replay 6177 respects requested accuracy", {
 test_that("certified SGED replay 6187 respects requested accuracy", {
   x <- c(100000000.64499488,100000000.53141753,100000000.10643637,100000000.35784486,100000000.49129476,99999998.515615,99999999.07086357,99999999.89417273,99999999.12314188,99999999.81031092,100000001.5580292,99999998.77826022)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(84034552.10353352)),tol*84034552.10353352)
   }
@@ -926,7 +926,7 @@ test_that("certified SGED replay 6187 respects requested accuracy", {
 test_that("certified SGED replay 6182 respects requested accuracy", {
   x <- c(0.9998,0.9999,1.0,1.0001,1.0003)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(0.8676709420096901)),tol*0.8676709420096901)
   }
@@ -935,7 +935,7 @@ test_that("certified SGED replay 6182 respects requested accuracy", {
 test_that("certified SGED replay 6186 respects requested accuracy", {
   x <- c(6.449948853914544e+149,5.314175321796899e+149,1.0643637622867162e+149,3.5784486371116986e+149,4.912947510231833e+149,-1.4843850018264121e+150,-9.29136424879163e+149,-1.0582726819365746e+149,-8.768581195832416e+149,-1.8968909122061467e+149,1.5580291981210541e+150,-1.2217397805116431e+150)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(9.728626229296805e+149)),tol*9.728626229296805e+149)
   }
@@ -944,7 +944,7 @@ test_that("certified SGED replay 6186 respects requested accuracy", {
 test_that("certified SGED replay 6188 respects requested accuracy", {
   x <- c(0.6449948853914544,0.5314175321796899,0.10643637622867162,0.35784486371116986,1000001.5580291981)
   for (tol in c(1e-10,1e-11)) {
-    f <- mlsged(x,gradtol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
+    f <- mlsged(x,tol=tol,mean=-0.032496865700421936,nu=3.4208324500711944,xi=2.5890673965717057)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-(432041.2882245153)),tol*432041.2882245153)
   }
@@ -962,7 +962,7 @@ test_that("smooth subunit scale is refined independently of objective rounding",
   x <- c(-3,-1,-.2,0,.3,.4,2)
   reference <- 1.4916863638394512395771637229847117165
   for (tol in c(1e-8,1e-10)) {
-    f <- mlsged(x,mean=.1,nu=.9,xi=1.3,gradtol=tol)
+    f <- mlsged(x,mean=.1,nu=.9,xi=1.3,tol=tol)
     expect_true(attr(f,"certified"))
     expect_lte(abs(unname(f[["sd"]])-reference),tol*reference)
     expect_lte(abs(as.numeric(logLik(f))+12.781716887610744),1e-10*12.781716887610744)
@@ -972,7 +972,7 @@ test_that("smooth subunit scale is refined independently of objective rounding",
 test_that("default-tolerance subunit likelihood obeys the cusp allowance", {
   x <- c(-3,-1,-.2,0,.3,.4,2)
   for (nu in c(.3,.5,.9)) for (xi in c(.3,1.3,3)) {
-    f <- mlsged(x,mean=.1,nu=nu,xi=xi,gradtol=1e-10)
+    f <- mlsged(x,mean=.1,nu=nu,xi=xi,tol=1e-10)
     expect_true(attr(f,"certified"))
     ll <- sum(dsged(x,f[["mean"]],f[["sd"]],nu,xi,log=TRUE))
     maximum <- as.numeric(logLik(f))
@@ -982,11 +982,11 @@ test_that("default-tolerance subunit likelihood obeys the cusp allowance", {
 })
 
 test_that("closed-form scale rejects an unattainable subspacing tolerance", {
-  expect_error(mlsged(c(-3,-1,2),mean=0,nu=2,xi=1,gradtol=1e-20),"accuracy")
+  expect_error(mlsged(c(-3,-1,2),mean=0,nu=2,xi=1,tol=1e-20),"accuracy")
 })
 
 test_that("subunit logLik reports the independent ideal maximum", {
-  f <- mlsged(c(-3,-1,-.2,0,.3,.4,2),mean=.1,nu=.5,xi=.3,gradtol=1e-10)
+  f <- mlsged(c(-3,-1,-.2,0,.3,.4,2),mean=.1,nu=.5,xi=.3,tol=1e-10)
   expect_true(attr(f,"certified"))
   expect_lte(abs(as.numeric(logLik(f))+14.05912276616022571831211972695625),
              1e-10*14.059122766160226)
@@ -1002,7 +1002,7 @@ test_that("loose coefficient accuracy preserves separated-maxima diagnostics", {
   k <- 2*sqrt(t-1)/t
   xi <- sqrt(1+k*k/6)
   e <- tryCatch(mlsged(c(-1,-1,-1),mean=0,nu=.5,xi=xi,
-                      gradtol=10,iterlim=400),error=identity)
+                      tol=10,iterlim=400),error=identity)
   expect_s3_class(e,"univariateML_unresolved")
   expect_gte(nrow(fit_payload(e)$candidates),2L)
   expected <- 3*log(3*(xi*xi-1)/(xi*xi+1))
@@ -1012,7 +1012,7 @@ test_that("loose coefficient accuracy preserves separated-maxima diagnostics", {
 
 test_that("loose tolerance cannot certify a displaced public mean", {
   reference <- 1.00487215154858971444308151029017
-  f <- tryCatch(mlsged(c(0,1e100),sd=1,nu=1.01,xi=100,gradtol=10),
+  f <- tryCatch(mlsged(c(0,1e100),sd=1,nu=1.01,xi=100,tol=10),
                 error=identity)
   if (inherits(f,"error")) {
     expect_match(conditionMessage(f),"certificate|accuracy|score")

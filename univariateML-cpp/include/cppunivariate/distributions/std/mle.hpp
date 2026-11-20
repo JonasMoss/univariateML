@@ -269,7 +269,9 @@ inline StudentTResult student_t_mle_impl(span x, double tol, int maxit, bool sta
                           cppunivariate::to_log_shift(6.0, 2.0)};
 
   BfgsControl ctl;
-  ctl.grad_tol = tol;
+  // BFGS nominates a basin; the final observed-information correction
+  // checks accuracy in public coefficient units.
+  ctl.grad_tol = 1.220703e-4;
   ctl.maxit = maxit;
   BfgsResult r{}; r.f=INFINITY;
   auto initial = bfgs_minimize(fd, phi0, ctl);
@@ -354,7 +356,9 @@ inline StudentTResult student_t_mle_certified(span x, double tol, int maxit,std:
   maxit = static_cast<int>(solver_budget(maxit));
   if(!(tol>0)||!std::isfinite(tol))return {NAN,NAN,NAN,NAN,0,StudentTStatus::InvalidStart};
   if(budget<0)budget=certificate_budget(maxit);
-  const auto c=t_certificate(x,2,budget,maxit,std::min(1e-6,std::max(1e-7,tol)));
+  // Keep the global enclosure at basin resolution. The representative's
+  // coefficient accuracy is established by the information correction below.
+  const auto c=t_certificate(x,2,budget,maxit,1e-6);
   StudentTStatus status=StudentTStatus::NumericalFailure;
   switch(c.status){
     case TCertificateStatus::Finite:status=StudentTStatus::Ok;break;
@@ -372,7 +376,7 @@ inline StudentTResult student_t_mle_certified(span x, double tol, int maxit,std:
     t_cert_detail::I v(c.coefficient_lower[2],c.coefficient_upper[2]),scale(c.coefficient_lower[1],c.coefficient_upper[1]);
     const double unit=c.scale;
     t_cert_detail::I box=t_cert_detail::scale_units(t_cert_detail::I(scale.lo/unit,scale.hi/unit)*t_cert_detail::root(v/(v-2)),unit);
-    if(!box.valid()||box.lo<=0||v.lo<=2||box.hi-box.lo>std::min(1e-6,std::max(1e-7,tol))*box.mid())status=StudentTStatus::NumericalFailure;
+    if(!box.valid()||box.lo<=0||v.lo<=2||box.hi-box.lo>1e-6*box.mid())status=StudentTStatus::NumericalFailure;
     else sd=box.mid();
   }
   if(status==StudentTStatus::DfTwoBoundary)sd=INFINITY;
@@ -384,11 +388,19 @@ inline StudentTResult student_t_mle_certified(span x, double tol, int maxit,std:
       if(candidate.model==StopModel::Norm && candidate.coef==r.stop_detail.limit_coef)
         candidate.loglik_lower=candidate.loglik_upper=ll;
   }
+  // The global enclosure identifies the maximizer's basin. Refine its
+  // representative with a positive-definite observed-information correction.
+  if (r.status==StudentTStatus::Ok &&
+      !t_local_accuracy::refine(r,x,NAN,NAN,NAN,tol,maxit,true,r.nu)) {
+    r.status=StudentTStatus::NumericalFailure;
+    r.accuracy_failure=true;
+    record_accuracy(r,tol,{r.mu,r.sigma,r.nu},{std::max(std::abs(r.mu),r.sigma),r.sigma,r.nu});
+  }
   return r;
 }
 
 
-inline StudentTResult student_t_mle(span x,double tol,int maxit){
+inline StudentTResult student_t_mle(span x,double tol=1e-10,int maxit=200){
   maxit = static_cast<int>(solver_budget(maxit));return student_t_mle_certified(x,tol,maxit);}
 
 inline StudentTResult student_t_mle_held(span x,double tol,int maxit,double mean,double sd,double nu) {
