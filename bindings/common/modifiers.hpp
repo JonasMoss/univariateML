@@ -91,7 +91,7 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
   const cppunivariate::ispan ix{counts.data(),counts.size()};
   a=prepared.lower;b=prepared.upper;
   if(family=="lgser" && !window && zero=="modified") {
-    auto out=fit_zmlogarithmic(ix,h("theta"),h("p0"));
+    auto out=fit_zmlogarithmic(ix,h("theta"),h("p0"),tol,maxit);
     for(auto& p:out.estimates)if(p.first=="prob")p.first="theta";
     for(auto& p:out.fixed)if(p=="prob")p="theta";
     return out;
@@ -124,12 +124,11 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
       return held_window_result(std::move(out),cppunivariate::held_binom_window_mle(ix,value("size"),value("prob"),a,b));
     }
     if(family=="pois") {
-      const auto check=cppunivariate::truncated<cppunivariate::PoisTruncationTraits>::fit(ix,a,b,{},value("lambda"),tol,maxit);
-      if(check.status==cppunivariate::TruncationStatus::NumericalFailure)
-        return with_outcome(failure("truncation solve failed to certify coefficient accuracy"),cppunivariate::outcome(check),static_cast<int>(check.status));
-      if(check.status==cppunivariate::TruncationStatus::InvalidInput)
-        return with_outcome(failure("invalid truncation window, observations or held coefficients"),cppunivariate::outcome(check),static_cast<int>(check.status));
-      auto out=fit_tpois(ix,h("lambda"),{true,std::max(-1.0,std::ceil(a)-1)},{true,std::floor(b)});
+      auto out=fit_tpois(ix,h("lambda"),{true,std::max(-1.0,std::ceil(a)-1)},{true,std::floor(b)},tol,maxit);
+      if(out.core_status==static_cast<int>(cppunivariate::truncated_detail::Status::NumericalFailure))
+        out.error="truncation solve failed to certify coefficient accuracy";
+      if(out.core_status==static_cast<int>(cppunivariate::truncated_detail::Status::InvalidInput))
+        out.error="invalid truncation window, observations or held coefficients";
       out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
       out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());return out;
     }
@@ -146,19 +145,19 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     out.estimates.insert(out.estimates.begin(),{"size",value("size")});out.fixed.insert(out.fixed.begin(),"size");return out;
   }
   if(zero=="truncated") {
-    if(family=="pois")return fit_ztpois(ix,h("lambda"));
+    if(family=="pois")return fit_ztpois(ix,h("lambda"),tol,maxit);
     if(family=="geom")return fit_ztgeom(ix,h("prob"));
     if(family=="binom")return fit_ztbinom(ix,h("size"),h("prob"),tol,maxit);
     return fit_ztnbinom(ix,h("size"),h("prob"),tol,maxit);
   }
   if(zero=="modified") {
-    if(family=="pois")return fit_zmpois(ix,h("lambda"),h("p0"));
+    if(family=="pois")return fit_zmpois(ix,h("lambda"),h("p0"),tol,maxit);
     if(family=="geom")return fit_zmgeom(ix,h("prob"),h("p0"));
     if(family=="binom")return fit_zmbinom(ix,h("size"),h("prob"),h("p0"),tol,maxit);
     return fit_zmnbinom(ix,h("size"),h("prob"),h("p0"),tol,maxit);
   }
   if(zero=="inflated") {
-    if(family=="pois")return fit_zip(ix,h("lambda"),h("pi"),maxit);
+    if(family=="pois")return fit_zip(ix,h("lambda"),h("pi"),maxit,tol);
     if(family=="binom")return fit_zib(ix,h("size"),h("prob"),h("pi"),tol,maxit);
     auto out=fit_zinb(ix,family=="geom"?Held{true,1}:h("size"),h("prob"),h("pi"),tol,maxit);
     if(family=="geom") {

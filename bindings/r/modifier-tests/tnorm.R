@@ -146,3 +146,11 @@ test_that("fitted truncated-normal bounds retain narrow-interval logLik", {
   expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
   expect_equal(as.numeric(logLik(fit)),135.6903671556374,tolerance=1e-10)
 })
+
+test_that("normal window fits the public mean and scale at non-default tolerance", {
+  tol <- 1e-6
+  ref <- 0.83954969854959323485
+  fit <- mlnorm(c(-1, -.5, .5, 1), truncate = c(-2, 2), tol = tol)
+  expect_lte(abs(fit[["mean"]]), tol * ref)
+  expect_lte(abs(fit[["sd"]] - ref), tol * ref)
+})

@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/lgser/zmlogarithmic_mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_zmlogarithmic(cppunivariate::ispan x, Held prob_arg = {}, Held p0_arg = {}) {
+inline FitResult fit_zmlogarithmic(cppunivariate::ispan x, Held prob_arg = {}, Held p0_arg = {},double tol=1e-10,int maxit=200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held prob = prob_arg;
@@ -11,7 +11,7 @@ inline FitResult fit_zmlogarithmic(cppunivariate::ispan x, Held prob_arg = {}, H
   if(prob.supplied && !std::isfinite(prob.value))return invalid_argument(fail("`prob` must be finite and in its parameter domain."));
   if(p0.supplied && !std::isfinite(p0.value))return invalid_argument(fail("`p0` must be finite and in its parameter domain."));
 
-  const auto res=cppunivariate::zmlogarithmic_mle(x,1e-10,200,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
+  const auto res=cppunivariate::zmlogarithmic_mle(x,tol,maxit,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"prob",prob_arg.supplied},{"p0",p0_arg.supplied}});
@@ -20,7 +20,7 @@ inline FitResult fit_zmlogarithmic(cppunivariate::ispan x, Held prob_arg = {}, H
   if(res.status==cppunivariate::ZmlogarithmicStatus::InvalidInput)return fail("requires nonempty nonnegative integer count data and valid controls and parameter domains; held values must be compatible with the observations");
   if(res.status==cppunivariate::ZmlogarithmicStatus::AllZero)warnings.push_back(binding_message("all observations are zero: base parameters are unidentified; supplied values are preserved."));
   if(res.status==cppunivariate::ZmlogarithmicStatus::TwoPoint)warnings.push_back(binding_message("positives are all one: the attained two-point law is also fitted exactly by mlbinom(x, size = 1)."));
-  if(o.kind!=cppunivariate::OutcomeKind::Estimate)return fail("MLE cannot be resolved at floating-point precision.");
+  if(o.kind!=cppunivariate::OutcomeKind::Estimate)return stop_failure(fail("MLE cannot be resolved at floating-point precision."),res.stop_detail,outcome_payload(o),{"prob","p0"});
   std::vector<std::string> fixed;
   if(prob.supplied)fixed.push_back("prob");
   if(p0.supplied)fixed.push_back("p0");

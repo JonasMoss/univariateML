@@ -69,21 +69,31 @@ inline LogMoment first_moment(CensoredData x,double scale,const std::vector<doub
 }
 // Root of a strictly decreasing score, bisected on log shape and certified
 // by the signs at both ends; NaN when that fails within maxit steps.
-template<class Score>
-inline double decreasing_root(Score score,double tol,int maxit) {
+template<class Score,class Include>
+inline double decreasing_root(Score score,double tol,int maxit,Include include) {
   double lo=std::log(std::numeric_limits<double>::denorm_min()),hi=std::log(std::numeric_limits<double>::max());
   if(!(score(std::exp(lo))>0 && score(std::exp(hi))<0))return NAN;
-  for(int it=0;it<maxit && hi-lo>.01*tol;++it) {
-    const double mid=lo+(hi-lo)/2;const auto g=score(std::exp(mid));
-    if(g==0) {
-      const double left=std::max(lo,mid-.2*tol),right=std::min(hi,mid+.2*tol);
-      if(score(std::exp(left))>0 && score(std::exp(right))<0) {lo=left;hi=right;}
-      break;
+  const auto closed=[&]{return hi-lo<=.01*tol && include(lo,hi);};
+  for(int it=0;it<maxit && !closed();++it) {
+    const double mid=lo+(hi-lo)/2;
+    if(mid==lo || mid==hi)break;
+    const auto g=score(std::exp(mid));
+    if(g>0)lo=mid;
+    else if(g<0)hi=mid;
+    else {
+      const double left=lo+(mid-lo)/2,right=mid+(hi-mid)/2;
+      const bool below=score(std::exp(left))>0,above=score(std::exp(right))<0;
+      if(!below && !above)break;
+      if(below)lo=left;
+      if(above)hi=right;
     }
-    if(g>0)lo=mid;else hi=mid;
   }
-  if(hi-lo>.01*tol)return NAN;
+  if(!closed())return NAN;
   return std::exp(lo+(hi-lo)/2);
+}
+template<class Score>
+inline double decreasing_root(Score score,double tol,int maxit) {
+  return decreasing_root(score,tol,maxit,[](double,double){return true;});
 }
 } // namespace weibull_censored_detail
 
@@ -117,7 +127,7 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
     // closed form well inside the 1e-10 coefficient accuracy contract.
     if(r.status==ExpCensoredStatus::Ok && c.exact==x.lower.size()) {
       const auto e=weibull_mle(x.lower,1e-10,1000,shape,NAN);
-      if(e.status==WeibullStatus::Ok && std::abs(e.scale/r.coefficient-1)<1e-12)
+      if(e.status==WeibullStatus::Ok && std::abs(e.scale/r.coefficient-1)<tol/4)
         return {shape,e.scale,e.logLik};
     }
     return {shape,r.coefficient,r.logLik,wd::map(r.status),r.unique};
@@ -152,7 +162,14 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
       }
       return static_cast<CPPUNIV_EXTENDED_REAL>(d)/k+sum_exact-d*wt/w;
     };
-    shape=wd::decreasing_root(score,tol,maxit);
+    // In log-shape coordinates the derivative of log scale is
+    // (log(d) - entropy of normalized weights) / shape. Entropy is in
+    // [0, log(number of times)], giving a bound on this whole bracket.
+    const double entropy_bound=std::max(std::log(d),std::log(z.size()/d));
+    const auto include_scale=[&](double lo,double hi) {
+      return (hi-lo)*entropy_bound<=std::exp(lo)*tol/4;
+    };
+    shape=wd::decreasing_root(score,tol,maxit,include_scale);
     if(std::isnan(shape))return {nan,nan,nan,WeibullCensoredStatus::NumericalFailure};
     return weibull_censored_mle(x,shape,NAN,tol,maxit);
   }
@@ -173,6 +190,7 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
   }
   bool certified=true;
   wd::LogMoment moment;
+  double conditioning=0;
   if(std::isnan(shape)) {
     if(!c.exact) {
       bool constant=true,strictly_below=true;
@@ -226,7 +244,7 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
       }
       CPPUNIV_EXTENDED_REAL noise=1024*std::numeric_limits<double>::epsilon()*magnitude;
       if(shape*largest<=.5)noise=moment.error+1024*std::numeric_limits<double>::epsilon()*(std::abs(moment.value)+2*shape*curvature);
-      certified=certified && noise/(shape*curvature)<=tol/4;
+      conditioning=static_cast<double>(noise/(shape*curvature));
     }
   }
   // Log likelihood at (shape, scale): exact log k - log x + k z - exp(k z),
@@ -238,7 +256,15 @@ inline WeibullCensoredResult weibull_censored_mle(CensoredData x, double shape=N
     ll+=std::log(shape)-std::log(v)+static_cast<CPPUNIV_EXTENDED_REAL>(shape)*wd::log_ratio(v,scale,log_scale);
   }
   const double out=static_cast<double>(ll);
-  return {shape,scale,out,std::isfinite(out)?WeibullCensoredStatus::Ok:WeibullCensoredStatus::NumericalFailure,true,certified};
+  WeibullCensoredResult result{shape,scale,out,std::isfinite(out)?
+    WeibullCensoredStatus::Ok:WeibullCensoredStatus::NumericalFailure,true,certified};
+  // Combine the local score resolution with the remaining shape bracket.
+  const double accuracy_bound=conditioning+.01*tol;
+  if(std::isfinite(out) && accuracy_bound>tol) {
+    result.status=WeibullCensoredStatus::NumericalFailure;
+    record_accuracy(result.stop_detail,tol,{shape,scale},out,{shape,0},accuracy_bound);
+  }
+  return result;
 }
 inline FitOutcome outcome(const WeibullCensoredResult& r) {
   if(r.stop_detail.limit_model==StopModel::PointMass)return FitOutcome::limit(true);

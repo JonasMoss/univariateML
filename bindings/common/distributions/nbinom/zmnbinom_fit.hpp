@@ -30,7 +30,11 @@ inline FitResult fit_zmnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
     if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::Budget)message="Profile search exhausted: certificate iteration budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop.";
     if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::Workload)message="Profile certificate workload limit: maximum count 100000 and total count 2^52; no verified maximum.";
     if(res.certificate_failure==cppunivariate::ZtnbinomCertificateFailure::AdditionalExtrema)message="Profile certificate found additional extrema requiring a global likelihood comparison; no verified maximum.";
-    return stop_failure(fail(message),res.stop_detail,outcome_payload(o),{"size","prob"});
+    if(o.reason==cppunivariate::OutcomeReason::Tolerance)message="Requested tolerance cannot be attained by the returned coefficients.";
+    const auto names=res.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance &&
+      !res.stop_detail.candidates.empty() && res.stop_detail.candidates.front().coef.size()==3?
+      std::vector<std::string>{"size","prob","p0"}:std::vector<std::string>{"size","prob"};
+    return stop_failure(fail(message),res.stop_detail,outcome_payload(o),names);
   }
   if(o.kind!=cppunivariate::OutcomeKind::Estimate)return fail("MLE cannot be resolved at floating-point precision.");
   std::vector<std::string> fixed;

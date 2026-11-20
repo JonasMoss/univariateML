@@ -76,7 +76,7 @@ inline ZtnbinomResult ztnbinom_candidate_mle(ispan x, double tol=1e-10, int maxi
   }
   const auto face=profile(0);
   if(face.logLik>=best.logLik-1e-8*n) best=face;
-  const auto pois=ztpois_mle(x);
+  const auto pois=ztpois_mle(x,NAN,1e-13,maxit);
   if(pois.logLik>=best.logLik-1e-8*n) best.status=ZtnbinomStatus::PoissonLimit;
   if(best.status==ZtnbinomStatus::Ok && best.size>=std::exp(24.0))best.status=ZtnbinomStatus::IterationFailure;
   return best;
@@ -92,10 +92,14 @@ inline ZtnbinomResult ztnbinom_mle(ispan x,double tol=1e-10,int maxit=200,double
   if(r.status!=ZtnbinomStatus::Ok)return r;
   double pi=0;
   if(!accuracy_detail::nb_polish(x,r.size,r.prob,pi,std::isnan(size),std::isnan(prob),false,true,tol,maxit,r.stop_detail)) {
-    r.status=ZtnbinomStatus::IterationFailure;record_accuracy(r,tol,{r.size,r.prob},{std::max(1.,std::abs(r.size)),std::max(1.,std::abs(r.prob))});return r;
+    r.status=ZtnbinomStatus::IterationFailure;record_accuracy(r,tol,{r.size,r.prob},{std::isnan(size)?std::max(1.,r.size):0,std::isnan(prob)?r.prob:0});return r;
   }
   r.unique=!(std::isnan(size) && r.prob==1 &&
     !x.empty() && std::all_of(x.begin(),x.end(),[](int v){return v==1;}));
+  if(r.size==0 && r.prob<1 && std::isnan(prob)) {
+    r.logLik=0;
+    for(int v:x)r.logLik+=v*std::log1p(-r.prob)-std::log(v)-std::log(-std::log(r.prob));
+  }
   if(r.size>0&&r.prob<1){r.logLik=0;for(int v:x)r.logLik+=zero_detail::nb_logpmf(v,r.size,r.prob)-std::log(-std::expm1(r.size*std::log(r.prob)));}
   if(!std::isfinite(r.logLik)) {
     r.status=ZtnbinomStatus::IterationFailure;

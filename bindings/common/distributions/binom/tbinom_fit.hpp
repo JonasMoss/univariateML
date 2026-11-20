@@ -53,9 +53,12 @@ inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, He
   if(r.status==cppunivariate::TbinomStatus::InvalidInput) return stopped_fail("Invalid design parameters or observations outside truncation bounds a < x <= b.");
   if(r.status==cppunivariate::TbinomStatus::TpoisLimit) {
     std::ostringstream os;
-    os << "The maximum likelihood estimator does not exist: with both `prob` and `size` "
-          "free, the global likelihood supremum lies at the truncated Poisson distribution as "
-          "`size` grows. Use `mlpois(x, truncate = c(" << std::max(0.0,std::floor(lower)+1) << ", ";
+    if(r.certified)
+      os << "The maximum likelihood estimator does not exist: with both `prob` and `size` "
+            "free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows.";
+    else
+      os << "The size profile favors the truncated Poisson limit within the likelihood comparison margin.";
+    os << std::setprecision(17) << " Use `mlpois(x, truncate = c(" << std::max(0.0,std::floor(lower)+1) << ", ";
     if(std::isinf(upper))os << "Inf";else os << std::floor(upper);
     os << "))` instead.";
     return stopped_fail(os.str());

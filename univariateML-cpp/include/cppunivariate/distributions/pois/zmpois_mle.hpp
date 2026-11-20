@@ -30,11 +30,20 @@ inline ZmpoisResult zmpois_mle(ispan x, double tol=1e-10,int maxit=200,double fi
  if(fb)out.lambda=fixed_lambda;
  if(pos.empty()) {out.logLik=n*std::log(out.p0);out.status=fb?ZmpoisStatus::Ok:ZmpoisStatus::AllZero;return out;}
  const ispan positive{pos.data(),pos.size()};
- if(!fb) {const auto r=ztpois_mle(positive);out.lambda=r.lambda;out.logLik=r.logLik;}
+ if(!fb) {
+   const auto r=ztpois_mle(positive,NAN,tol,maxit);
+   out.lambda=r.lambda;out.logLik=r.logLik;out.iterations=r.iterations;out.stop_detail=r.stop_detail;
+   if(r.status!=ZtpoisStatus::Ok)out.status=ZmpoisStatus::IterationFailure;
+ }
  else for(int v:positive)out.logLik+=distributions::dztpois(v,fixed_lambda,true);
  if(n>k)out.logLik+=(n-k)*std::log(out.p0);
  out.logLik+=k*std::log1p(-out.p0);
  if(!std::isfinite(out.logLik))out.status=out.lambda>0?ZmpoisStatus::IterationFailure:ZmpoisStatus::InvalidInput;
+ if(!fz && out.status==ZmpoisStatus::Ok &&
+    !zero_detail::zero_fraction_accurate(n-k,n,out.p0,tol,out.stop_detail)) {
+   out.status=ZmpoisStatus::IterationFailure;
+   out.stop_detail.candidates.push_back({{out.lambda,out.p0},out.logLik,out.logLik});
+ }
  return out;
 }
 }

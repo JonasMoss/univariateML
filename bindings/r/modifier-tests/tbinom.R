@@ -270,3 +270,10 @@ test_that("tbinom limit advice evaluates with an infinite conditioning bound", {
   expect_s3_class(replacement,"univariateML")
   expect_equal(as.numeric(logLik(replacement)),sum(dpois(x,mean(x),log=TRUE)))
 })
+
+test_that("the held-size binomial window meets the requested tolerance", {
+  for (tol in c(1e-6, 1e-13)) {
+    fit <- mlbinom(c(1, 2, 3, 3), size = 7, truncate = c(1, 4), tol = tol)
+    expect_lte(abs(fit[["prob"]] - 0.31216987986618986013), tol)
+  }
+})

@@ -105,3 +105,11 @@ test_that("estimated large-count truncated-Poisson bounds retain logLik", {
   ll <- sum(dml(x,fit,log=TRUE))
   expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
 })
+
+test_that("the Poisson window returns the controlled conditional root", {
+  for (tol in c(1e-6, 1e-13)) {
+    fit <- mlpois(c(1, 2, 3, 3), truncate = c(1, 4), tol = tol)
+    ref <- 2.2931829668778783135
+    expect_lte(abs(fit[["lambda"]] - ref), tol * ref)
+  }
+})

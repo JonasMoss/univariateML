@@ -170,3 +170,16 @@ test_that("ZIP held tiny rate attains the all-zero inflation maximum", {
   expect_equal(unname(fit["pi"]),1)
   expect_equal(attr(fit,"logLik"),0)
 })
+
+test_that("inflated Poisson checks free and held-inflation rates at non-default tolerance", {
+  x <- c(0, 0, 0, 0, 1, 2, 4, 5)
+  for (tol in c(1e-6, 1e-13)) {
+    fit <- mlpois(x, zero = "inflated", tol = tol)
+    ref <- 2.8214393721220788934
+    expect_lte(abs(fit[["lambda"]] - ref), tol * ref)
+    expect_lte(abs(fit[["pi"]] - 0.46835646556111872900), tol)
+    held <- mlpois(x, zero = "inflated", pi = 1/3, tol = tol)
+    ref <- 2.6761957454858652540
+    expect_lte(abs(held[["lambda"]] - ref), tol * ref)
+  }
+})

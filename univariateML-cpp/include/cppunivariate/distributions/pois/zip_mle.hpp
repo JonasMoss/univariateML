@@ -9,6 +9,7 @@
 #include "../../core/span.hpp"
 #include "../pois/mle.hpp"
 #include "zip_certificate.hpp"
+#include "ztpois_mle.hpp"
 #include "../../special/special.hpp"
 
 #include <algorithm>
@@ -34,11 +35,11 @@ struct ZipResult {
 
 inline ZipResult zip_mle(ispan x,
     double fixed_lambda=std::numeric_limits<double>::quiet_NaN(),
-    double fixed_pi=std::numeric_limits<double>::quiet_NaN(), int maxit=200) {
+    double fixed_pi=std::numeric_limits<double>::quiet_NaN(), int maxit=200,double tol=1e-10) {
   auto stopped = [&]() -> ZipResult {
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
-  if (n == 0) return {kNaN, kNaN, kNaN, ZipStatus::InvalidInput};
+  if (n == 0 || !(tol>0 && std::isfinite(tol)) || maxit<1) return {kNaN, kNaN, kNaN, ZipStatus::InvalidInput};
 
   double sum_zero = 0.0, sum_x = 0.0;
   for (auto v : x) {
@@ -77,7 +78,7 @@ inline ZipResult zip_mle(ispan x,
       const auto pad=[&](double scale) {
         return 4096*std::numeric_limits<double>::epsilon()*(1+dn+scale);
       };
-      const auto cert=zip_certificate_detail::held_rate(dn,dn-sum_zero,sum_x,p,maxit,objective,pad);
+      const auto cert=zip_certificate_detail::held_rate(dn,dn-sum_zero,sum_x,p,maxit,objective,pad,tol);
       if(cert.status!=zip_certificate_detail::Status::Ok) {
         ZipResult out{kNaN,p,kNaN,ZipStatus::NumericalFailure};
         if(cert.status==zip_certificate_detail::Status::Budget)out.status=ZipStatus::Budget;
@@ -89,6 +90,12 @@ inline ZipResult zip_mle(ispan x,
           out.stop_detail.candidates.push_back({{peak.lo+(peak.hi-peak.lo)/2,p},peak.lower,peak.upper});
           if(std::isnan(out.stop_detail.loglik_lower) || peak.lower>out.stop_detail.loglik_lower)
             out.stop_detail.loglik_lower=peak.lower;
+        }
+        if(cert.status==zip_certificate_detail::Status::Resolution && !cert.peaks.empty()) {
+          const auto& peak=cert.peaks[cert.best];
+          out.lambda=peak.lo+(peak.hi-peak.lo)/2;out.logLik=peak.ll;
+          record_accuracy(out.stop_detail,tol,{out.lambda,p},out.logLik,{out.lambda,0},
+            (peak.hi-peak.lo)/peak.lo+2*std::numeric_limits<double>::epsilon());
         }
         if(out.stop_detail.candidates.empty()) {
           const double ll=objective(x_bar),e=pad(std::abs(ll)+sum_x);
@@ -116,7 +123,7 @@ inline ZipResult zip_mle(ispan x,
     // Non-identifiable: choose a finite representative of the point mass.
     return {1.0, 1.0, 0.0, ZipStatus::Ok};
   } else if (r0 > std::exp(-x_bar)) {
-    const double gamma = x_bar / (1.0 - r0);
+    const double gamma = sum_x / (dn - sum_zero);
     const double z = -gamma * std::exp(-gamma);
     const double w = lambertw0(z);
     lambda = w + gamma;
@@ -147,6 +154,43 @@ inline ZipResult zip_mle(ispan x,
   return {lambda, pi, logLik, ZipStatus::Ok};
 
   }();
+  if(stopped.status==ZipStatus::Ok && !x.empty()) {
+    const bool fl=!std::isnan(fixed_lambda),fp=!std::isnan(fixed_pi);
+    double n=0,total=0;
+    std::vector<int> positive;
+    for(int v:x) {++n;total+=v;if(v>0)positive.push_back(v);}
+    if(!positive.empty()) {
+      double rate_error=0,pi_error=0;
+      const double eps=std::numeric_limits<CPPUNIV_EXTENDED_REAL>::epsilon();
+      if(!fl && !fp && stopped.pi>0) {
+        // Replay the Lambert-W rate with a sign bracket for the positive mean.
+        // Inflation is increasing with rate, so the rate enclosure bounds it.
+        const auto root=zero_detail::poisson_positive_root({positive.data(),positive.size()},
+          tol/2,maxit,0);
+        rate_error=(std::abs(root.coefficient-stopped.lambda)+root.error)/(root.coefficient-root.error);
+        if(!root.closed)rate_error=INFINITY;
+      } else if(!fl && (stopped.pi==0 || positive.size()==x.size())) {
+        rate_error=std::abs(std::fma(-stopped.lambda,n,total))/total;
+      }
+      if(!fp && stopped.pi<1 && std::isfinite(rate_error)) {
+        const CPPUNIV_EXTENDED_REAL rate=stopped.lambda;
+        const CPPUNIV_EXTENDED_REAL observed=static_cast<CPPUNIV_EXTENDED_REAL>(positive.size())/n;
+        const auto inflation=[&](CPPUNIV_EXTENDED_REAL lambda,CPPUNIV_EXTENDED_REAL fraction) {
+          const auto q=-std::expm1(-lambda);
+          if(!(q>fraction))return static_cast<CPPUNIV_EXTENDED_REAL>(0);
+          return (q-fraction)/q;
+        };
+        const auto lo=inflation(rate/(1+rate_error),observed*(1+8*eps));
+        const auto hi=inflation(rate/(1-rate_error),observed*(1-8*eps));
+        pi_error=std::max(stopped.pi-lo,hi-stopped.pi)+8*eps;
+      }
+      if(std::max(rate_error,pi_error)>tol) {
+        stopped.status=ZipStatus::NumericalFailure;
+        record_accuracy(stopped.stop_detail,tol,{stopped.lambda,stopped.pi},stopped.logLik,
+          {fl?0:stopped.lambda,fp?0:1.},std::max(rate_error,pi_error));
+      }
+    }
+  }
   stopped.all_zero=!x.empty() && std::all_of(x.begin(),x.end(),[](int v){return v==0;});
   if(stopped.status==ZipStatus::Ok && std::isnan(fixed_lambda) && stopped.pi==1 &&
      stopped.all_zero)stopped.unique=false;
@@ -164,6 +208,8 @@ inline bool family_point(const ZipResult&, const FitCandidate& c) {
 // Tie candidates are rate-peak enclosure midpoints with likelihood bounds.
 inline bool accurate_point(const ZipResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const ZipResult& r) {
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   switch(r.status) {
     case ZipStatus::Ok: return FitOutcome::estimate(true,r.unique);
     case ZipStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

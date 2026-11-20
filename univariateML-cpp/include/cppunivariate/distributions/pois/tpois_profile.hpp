@@ -2,7 +2,10 @@
 #include "../../core/outcome.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
+#include "../../core/work_budget.hpp"
 #include "../../special/special.hpp"
+#include "truncation.hpp"
+#include "../binom/truncation.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -21,7 +24,8 @@ inline Mass mass(double t, double lo, double hi, double size) {
   for(int direction : {-1,1}) {
     double k=mode, w=1;
     int j=0;
-    for(;j<2000000;++j) {
+    const int cap=2000000; // Fully held likelihood evaluator.
+    for(;j<cap;++j) {
       if((direction<0 && k<=lo)||(direction>0 && k>=hi)) break;
       const double ratio=direction>0 ? (size<0 ? std::exp(t)/(k+1) : std::exp(t)*(size-k)/(k+1))
         : (size<0 ? k*std::exp(-t) : k*std::exp(-t)/(size-k+1));
@@ -29,49 +33,34 @@ inline Mass mass(double t, double lo, double hi, double size) {
       total+=w; offset+=(k-mode)*w;
       if(ratio<1 && w*ratio/(1-ratio)<1e-17*total) break;
     }
-    if(j==2000000) return {0,0,false};
+    if(j==cap) return {0,0,false};
   }
   const double logz=kernel(mode,t,size)+std::log(total);
   return {logz,mode+offset/total,std::isfinite(logz)};
 }
 enum class Status { Ok, InvalidInput, LowerPointMass, UpperPointMass, Unidentified, NumericalFailure };
 struct Result { double parameter, logLik; int iterations; Status status; StopDetail stop_detail{}; bool unique=true; };
-inline Result fit(ispan x,double a,double b,double size) {
+inline Result fit(ispan x,double a,double b,double size,double tol=1e-10,int maxit=200) {
   Result r{0,0,0,Status::InvalidInput};
   if(x.size()==0 || std::isnan(a)||std::isnan(b)||a>=b || a==INFINITY || b==-INFINITY) return r;
   if(size>=0 && (!std::isfinite(size)||size!=std::floor(size))) return r;
   const double lo=std::max(0.0,std::floor(a)+1), hi=std::min(b==INFINITY ? b : std::floor(b),size<0 ? INFINITY : size);
   if(lo>hi || !std::isfinite(lo)) return r;
-  double mean=0; for(int v:x) {if(v<lo||v>hi)return r; mean+=double(v);}
-  mean/=x.size();
-  if(lo==hi) {r.status=Status::Unidentified; return r;}
-  if(mean==lo) {if(lo==0){r.parameter=0;r.status=Status::Ok;}else r.status=Status::LowerPointMass;
-    if(r.status==Status::LowerPointMass) r.stop_detail=discrete_point(lo);
-    return r;
+  for(int v:x)if(v<lo || v>hi)return r;
+  if(lo==hi)return {0,0,0,Status::Unidentified};
+  const auto fit=size<0?truncated<PoisTruncationTraits>::fit(x,lo,hi,{},NAN,tol,maxit):
+    truncated<BinomTruncationTraits>::fit(x,lo,hi,{size},NAN,tol,maxit);
+  r.parameter=fit.parameter;r.logLik=fit.logLik;r.iterations=fit.iterations;
+  switch(fit.status) {
+    case TruncationStatus::Ok: r.status=Status::Ok;break;
+    case TruncationStatus::LowerLimit:
+      r.status=Status::LowerPointMass;r.stop_detail=discrete_point(lo);break;
+    case TruncationStatus::UpperLimit:
+      r.status=Status::UpperPointMass;r.stop_detail=discrete_point(hi);break;
+    case TruncationStatus::NumericalFailure: r.status=Status::NumericalFailure;break;
+    default: r.status=Status::InvalidInput;break;
   }
-  if(mean==hi) {if(size>=0 && hi==size){r.parameter=1;r.status=Status::Ok;}else r.status=Status::UpperPointMass;
-    if(r.status==Status::UpperPointMass) r.stop_detail=discrete_point(hi);
-    return r;
-  }
-  const double centre=size<0 ? std::log(mean) : std::log(mean/(size-mean));
-  double width=1, left=centre-width,right=centre+width;
-  for(int j=0;j<12;++j) {
-    auto l=mass(left,lo,hi,size), h=mass(right,lo,hi,size);
-    if(!l.ok||!h.ok) {r.status=Status::NumericalFailure;return r;}
-    if(l.mean<mean && h.mean>mean) break;
-    width*=2;
-    if(l.mean>=mean)left=centre-width;
-    if(h.mean<=mean)right=centre+width;
-  }
-  for(int j=0;j<120;++j) {
-    const double t=(left+right)/2; auto z=mass(t,lo,hi,size);
-    if(!z.ok){r.status=Status::NumericalFailure;return r;}
-    if(z.mean<mean)left=t;else right=t;
-  }
-  const double t=(left+right)/2; auto z=mass(t,lo,hi,size);
-  for(int v:x) r.logLik+=kernel(v,t,size)-z.logz;
-  r.parameter=size<0?std::exp(t):1/(1+std::exp(-t));
-  r.iterations=120;r.status=Status::Ok;return r;
+  return r;
 }
 }
 }

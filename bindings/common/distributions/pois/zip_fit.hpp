@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_arg = {}, int iterlim = 200) {
+inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_arg = {}, int iterlim = 200,double tol=1e-10) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   if(iterlim<=0)return invalid_argument(fail("iterlim must be positive."));
@@ -14,7 +14,7 @@ inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_a
   if(lambda.supplied && !std::isfinite(lambda.value))return invalid_argument(fail("`lambda` must be finite and in its parameter domain."));
   if(pi.supplied && !std::isfinite(pi.value))return invalid_argument(fail("`pi` must be finite and in its parameter domain."));
 
-  auto res = cppunivariate::zip_mle(x,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN(),iterlim);
+  auto res = cppunivariate::zip_mle(x,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN(),iterlim,tol);
   if(res.all_zero)warnings.push_back(binding_message("all observations are zero"));
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {

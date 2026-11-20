@@ -671,3 +671,16 @@ TEST_CASE("binom: the Poisson limit is decided on the exact integer comparison")
   const std::vector<int> two{0,2}; // mean 1 = population variance 1
   CHECK(cppunivariate::binom_mle(as_ispan(two),std::numeric_limits<double>::quiet_NaN(),1e-10,100).status==cppunivariate::BinomStatus::Underdispersed);
 }
+
+TEST_CASE("large-count tbinom free window keeps its better Poisson face") {
+  const std::vector<int> x{1000000,1000001,1000003,1000008,1000011};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  const auto free=cppunivariate::tbinom_design_mle(sample,NAN,NAN,NAN,NAN,1e-10,512);
+  REQUIRE(free.status==cppunivariate::TbinomStatus::TpoisLimit);
+  CHECK(cppunivariate::outcome(free).certified);
+  CHECK(free.stop_detail.limit_model==cppunivariate::StopModel::Tpois);
+  CHECK(std::abs(free.stop_detail.limit_loglik+12.2534307)<1e-6);
+  const auto held=cppunivariate::tbinom_design_mle(sample,0,NAN,NAN,NAN,1e-10,512);
+  REQUIRE(held.status==cppunivariate::TbinomStatus::Ok);
+  CHECK(held.logLik<=free.stop_detail.limit_loglik);
+}

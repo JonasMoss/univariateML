@@ -32,6 +32,10 @@ inline truncated_detail::Result tbinom_mle(ispan x, double a, double b, double s
     double ll=0;for(int v:x)ll+=truncated_detail::kernel(v,t,size)-z.logz;
     return {held,ll,0,truncated_detail::Status::Ok};
   }
+  // The private fixed-size entry point retains its absolute-kernel
+  // evaluation domain. The controlled route evaluates relative masses.
+  if(!std::isfinite(special::lgamma(size+1)))
+    return {0,0,0,truncated_detail::Status::NumericalFailure};
   auto result=truncated_detail::fit(x,a,b,size);
   if(result.status==truncated_detail::Status::Unidentified)return {.5,0,0,truncated_detail::Status::Ok,{},false};
   return result;
@@ -67,11 +71,11 @@ inline double anchored_kernel(double k,double eta,double size,double anchor,int 
   double value=(hi-lo)*eta;
   for(double j=lo;j<hi;++j) {
     value-=std::log(j+1);
-    if(size>0)value+=std::log1p(-j/size);
+    if(size>0)value+=j<size/2?std::log1p(-j/size):std::log((size-j)/size);
   }
   return k>=anchor?value:-value;
 }
-struct ProfileMass {double logz,mean;bool ok;double anchor=0;};
+struct ProfileMass {double logz,mean;bool ok;double anchor=0,offset=0;};
 inline ProfileMass mass(double eta,double lo,double hi,double size,std::int64_t& remaining) {
   const double lambda=std::exp(eta);
   double mode=size<0 ? lambda : lambda/(1+lambda/size)*(1+1/size);
@@ -86,14 +90,14 @@ inline ProfileMass mass(double eta,double lo,double hi,double size,std::int64_t&
       if((direction<0 && k<=lo)||(direction>0 && k>=hi))break;
       if(remaining==0)return {0,0,false};
       --remaining;
-      const double correction=size<0 ? 1 : (direction>0 ? 1-k/size : 1-(k-1)/size);
+      const double correction=size<0 ? 1 : (direction>0 ? (size-k)/size : (size-k+1)/size);
       const double ratio=direction>0 ? lambda*correction/(k+1) : k/lambda/correction;
       w*=ratio;k+=direction;total+=w;offset+=(k-mode)*w;
       if(ratio<1 && w*ratio/(1-ratio)<1e-17*total)break;
     }
   }
   const double logz=std::log(total);
-  return {logz,mode+offset/total,std::isfinite(logz),mode};
+  return {logz,mode+offset/total,std::isfinite(logz),mode,offset/total};
 }
 inline ProfileMass mass(double eta,double lo,double hi,double size,int maxit=512) {
   std::int64_t remaining=enumeration_budget(maxit);
@@ -101,7 +105,13 @@ inline ProfileMass mass(double eta,double lo,double hi,double size,int maxit=512
 }
 inline truncated_detail::Result profile(ispan x,double lo,double upper,double size,double tol=1e-10,int maxit=512) {
   const double hi=size<0 ? upper : std::min(upper,size);
-  double mean=0;for(int v:x)mean+=v;mean/=x.size();
+  double observed=0;for(int v:x)observed+=v-lo;observed/=x.size();
+  const double mean=lo+observed;
+  const auto residual=[&](const ProfileMass& z){return z.offset-(observed-(z.anchor-lo));};
+  const auto margin=[&](const ProfileMass& z,double eta) {
+    return 8*std::numeric_limits<double>::epsilon()*
+      (1+std::abs(eta))*(1+std::abs(z.offset)+std::abs(observed-(z.anchor-lo)));
+  };
   if(mean==hi && size==hi)return {1,0,0,truncated_detail::Status::Ok};
   if(mean==lo && lo==0)return {0,0,0,truncated_detail::Status::Ok};
   if(!(mean>lo && mean<hi))return {0,0,0,truncated_detail::Status::NumericalFailure};
@@ -111,25 +121,42 @@ inline truncated_detail::Result profile(ispan x,double lo,double upper,double si
   for(std::int64_t j=0;j<solver_budget(maxit);++j) {
     const auto l=mass(left,lo,hi,size,maxit),h=mass(right,lo,hi,size,maxit);
     if(!l.ok||!h.ok)return {0,0,0,truncated_detail::Status::NumericalFailure};
-    if(l.mean<mean && h.mean>mean){bracketed=true;break;}
+    const bool below=residual(l)<-margin(l,left),above=residual(h)>margin(h,right);
+    if(below && above){bracketed=true;break;}
     width*=2;
-    if(l.mean>=mean)left=centre-width;
-    if(h.mean<=mean)right=centre+width;
+    if(!below)left=centre-width;
+    if(!above)right=centre+width;
   }
   if(!bracketed)return {0,0,0,truncated_detail::Status::NumericalFailure};
+  const auto coefficient=[&](double eta){return size<0?std::exp(eta):1/(1+size*std::exp(-eta));};
+  const auto closed=[&] {
+    const double p=coefficient(left),q=coefficient(right);
+    const double rounding=4*std::numeric_limits<double>::epsilon()*q;
+    return q-p+rounding<=tol*(size<0?p:1);
+  };
   int iterations=0;
+  // Keep only endpoints with a score sign beyond the recurrence margin.
   for(;iterations<solver_budget(maxit);++iterations) {
     const double eta=left+(right-left)/2;
     if(eta==left || eta==right)break;
     const auto z=mass(eta,lo,hi,size,maxit);
     if(!z.ok)return {0,0,iterations,truncated_detail::Status::NumericalFailure};
-    if(z.mean<mean)left=eta;else right=eta;
+    if(residual(z)<-margin(z,eta))left=eta;
+    else if(residual(z)>margin(z,eta))right=eta;
+    else {
+      const double l=left+(eta-left)/2,h=eta+(right-eta)/2;
+      const auto lm=mass(l,lo,hi,size,maxit),hm=mass(h,lo,hi,size,maxit);
+      const bool move_left=lm.ok && residual(lm)<-margin(lm,l);
+      const bool move_right=hm.ok && residual(hm)>margin(hm,h);
+      if(!move_left && !move_right)break;
+      if(move_left)left=l;
+      if(move_right)right=h;
+    }
   }
   const double eta=left+(right-left)/2;
-  if(right-left>std::log1p(tol/4))return {0,0,iterations,truncated_detail::Status::NumericalFailure};
+  if(!closed())return {0,0,iterations,truncated_detail::Status::NumericalFailure};
   const auto z=mass(eta,lo,hi,size,maxit);
-  // Total free-coordinate score, not the mean residual alone (R6).
-  if(!z.ok || std::abs((z.mean-mean)*x.size())>=1e-7)
+  if(!z.ok)
     return {0,0,iterations,truncated_detail::Status::NumericalFailure};
   double ll=0;for(int v:x)ll+=anchored_kernel(v,eta,size,z.anchor,maxit)-z.logz;
   const double prob=size<0 ? std::exp(eta) : 1/(1+size*std::exp(-eta));
@@ -138,6 +165,46 @@ inline truncated_detail::Result profile(ispan x,double lo,double upper,double si
   // Preserve the legacy default's public iteration count; nondefault controls
   // report the iterations actually used to close the coefficient bracket.
   return {prob,ll,tol==1e-10 && maxit==512?100:iterations,truncated_detail::Status::Ok};
+}
+// On a fixed window, mean-matched binomial laws increase in convex order
+// with size: the ratio of larger-size to smaller-size weights is log-convex.
+// This also holds when the larger size is the Poisson limit. If the sample
+// dominates that Poisson law, it dominates each finite conditional binomial.
+// The derivative of the profiled log likelihood in size is the empirical
+// minus fitted expectation of sum_{j<k} 1/(size-j), strictly convex in k.
+inline bool increasing_to_poisson(ispan x,int lo,int hi,double rate,double tol,
+                                  binomial_certificate_detail::Work& work) {
+  const auto width=static_cast<std::int64_t>(hi)-lo;
+  if(width<2 || width>certificate_budget(work.maxit)-work.evaluations ||
+     !work.charge(2*(width+1)+x.size()))return false;
+  work.evaluations+=width;
+  // A rate below the matched Poisson rate gives upper bounds on all put
+  // expectations, since each payoff (k-X)_+ decreases in X.
+  const double lower=rate*(1-std::min(.01,2*tol));
+  if(!(lower>0 && lower<rate))return false;
+  const int mode=static_cast<int>(std::max(double(lo),std::min(double(hi),std::floor(lower))))-lo;
+  std::vector<CPPUNIV_EXTENDED_REAL> weights(width+1);
+  std::vector<std::size_t> count(width+1);
+  for(int v:x)++count[v-lo];
+  weights[mode]=1;
+  for(int j=mode;j>0;--j)weights[j-1]=weights[j]*(static_cast<CPPUNIV_EXTENDED_REAL>(lo)+j)/lower;
+  for(std::int64_t j=mode;j<width;++j)
+    weights[j+1]=weights[j]*lower/(static_cast<CPPUNIV_EXTENDED_REAL>(lo)+j+1);
+  CPPUNIV_EXTENDED_REAL total=0,moment=0,observed=0;
+  for(std::int64_t j=0;j<=width;++j) {
+    total+=weights[j];
+    moment+=j*weights[j];
+    observed+=static_cast<CPPUNIV_EXTENDED_REAL>(j)*count[j];
+  }
+  const auto rounding=32*std::numeric_limits<CPPUNIV_EXTENDED_REAL>::epsilon()*(1+width);
+  if(!(observed/x.size()-moment/total>rounding*width))return false;
+  CPPUNIV_EXTENDED_REAL q=0,qput=0,empirical=0,put=0;
+  for(std::int64_t j=1;j<width;++j) {
+    q+=weights[j-1];qput+=q;
+    empirical+=count[j-1];put+=empirical;
+    if(!(put/x.size()-qput/total>rounding*j))return false;
+  }
+  return true;
 }
 inline TbinomStatus convert(truncated_detail::Status s) {
   switch (s) {
@@ -160,7 +227,7 @@ struct TbinomDesignResult {
 };
 namespace tbinom_detail {
 inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,double size,
-    double prob=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=512) {
+    double prob=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=512,bool legacy_default=false) {
   auto stopped = [&]() -> TbinomDesignResult {
 #ifdef CPPUNIV_SIZE_SEARCH_DIAGNOSTICS
   tbinom_detail::size_search_diagnostic={false,0,0};
@@ -275,7 +342,7 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
       // Discrete ternary refinement; numerical local unimodality inside
       // each observed peak bracket, checked independently in the R tests.
       double l=older,h=k;
-      while(h-l>8) {
+      for(std::int64_t step=0;h-l>8 && step<solver_budget(maxit);++step) {
         const double m1=std::floor(l+(h-l)/3),m2=std::ceil(h-(h-l)/3);
         const auto f1=evaluate(m1),f2=evaluate(m2);
         if(f1.status!=TbinomStatus::Ok){best.certified=false;return best;}
@@ -284,15 +351,22 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
         if(f2.logLik>best.logLik)best=f2;
         if(f1.logLik<f2.logLik)l=m1;else h=m2;
       }
-      for(double m=l;m<=h;++m) {
+      if(h-l>8){best.certified=false;return best;}
+      for(double m=l;m<=h && m-l<enumeration_budget(maxit);++m) {
         const auto f=evaluate(m);
         if(f.status!=TbinomStatus::Ok){best.certified=false;return best;}
         if(f.logLik>best.logLik)best=f;
       }
     }
     near_face=std::abs(candidate.logLik-tp.logLik)<allowance ? near_face+1 : 0;
-    if(j>128 && near_face>=4) {
+    const double rounding=128*std::numeric_limits<double>::epsilon()*
+      (1+std::abs(candidate.logLik)+std::abs(previous_value)+std::abs(old_value));
+    const bool rising_at_cap=!legacy_default && j==solver_budget(maxit) &&
+      candidate.logLik>previous_value+rounding && previous_value>old_value+rounding &&
+      tp.logLik>candidate.logLik+allowance;
+    if((j>128 && near_face>=4) || rising_at_cap) {
       if(best.logLik<=tp.logLik+allowance) {best.status=TbinomStatus::TpoisLimit;
+        best.certified=!rising_at_cap;
         best.stop_detail=discrete_face(StopModel::Tpois,{tp.parameter,a,b},tp.logLik);}
       return best;
     }
@@ -466,14 +540,15 @@ inline TbinomDesignResult design_mle_impl(ispan x,double a,double b,double size,
     if(status==TbinomStatus::LowerPointMass || status==TbinomStatus::UpperPointMass)out.stop_detail=discrete_point(x[0]);
     return out;
   }
-  bool candidate_ready=false;
+  bool candidate_ready=false,margin_face=false;
   auto checked = [&]() -> TbinomDesignResult {
-  auto best=tbinom_detail::tbinom_design_proposal(x,a,b,size,prob,tol,maxit);
+  auto best=tbinom_detail::tbinom_design_proposal(x,a,b,size,prob,tol,maxit,legacy_default);
   if(!std::isnan(size)||!std::isnan(prob)||x.size()==0)return best;
   int xmin=x[0],mx=x[0];for(int v:x){xmin=std::min(xmin,v);mx=std::max(mx,v);}
   const double lo=std::max(0.,std::floor(best.a)+1),U=std::floor(best.b);
   if(xmin==mx || U-lo==1 || (mx-lo==1 && best.status==TbinomStatus::Ok && best.size==mx) || (lo==0 && U==INFINITY))return best;
   candidate_ready=(best.status==TbinomStatus::Ok || best.status==TbinomStatus::TpoisLimit) && std::isfinite(best.logLik);
+  margin_face=best.status==TbinomStatus::TpoisLimit && !best.certified;
   binomial_certificate_detail::Work work{0,0,maxit};
   if(lo==0 && std::isfinite(U) && U<=std::numeric_limits<int>::max() &&
      tbinom_detail::compact_boundary_certificate(x,static_cast<int>(U),best,work))return best;
@@ -485,6 +560,12 @@ inline TbinomDesignResult design_mle_impl(ispan x,double a,double b,double size,
       if(std::isfinite(rate)) {
         best.stop_detail=discrete_face(StopModel::Tpois,{rate,best.a,best.b},ll);
         binomial_certificate_detail::certified_face(best.stop_detail,{best.prob,best.a,best.b,best.size},best.logLik);return best;
+      }
+      if(!legacy_default && !exhausted && tbinom_detail::increasing_to_poisson(x,static_cast<int>(lo),mx,
+           best.stop_detail.limit_coef[0],tol,work)) {
+        binomial_certificate_detail::certified_face(best.stop_detail,
+          {best.prob,best.a,best.b,best.size},best.logLik);
+        return best;
       }
       if(exhausted) {
         best.status=TbinomStatus::NumericalFailure;
@@ -518,7 +599,9 @@ inline TbinomDesignResult design_mle_impl(ispan x,double a,double b,double size,
       const auto covered=binomial_certificate_detail::cover_face(x,mx,end,face,work,[&](double N) {
         const auto f=tbinom_detail::profile(x,lo,U,N,tol,maxit);
         if(f.status!=truncated_detail::Status::Ok)return double(NAN);
-        if(!finite_seen || f.logLik>best.logLik) {best.prob=f.parameter;best.size=N;best.logLik=f.logLik;}
+        if((legacy_default && !finite_seen) || f.logLik>best.logLik) {
+          best.prob=f.parameter;best.size=N;best.logLik=f.logLik;
+        }
         finite_seen=true;
         return f.logLik;
       });
@@ -563,6 +646,18 @@ inline TbinomDesignResult design_mle_impl(ispan x,double a,double b,double size,
   return best;
   };
   auto best=checked();
+  if(best.status==TbinomStatus::TpoisLimit && best.a<=-1 && best.b==INFINITY)return best;
+  // Preserve a resolved face when the coverage pass cannot close globally.
+  if(margin_face && best.stop_detail.limit_model==StopModel::Tpois &&
+     best.status!=TbinomStatus::Ok &&
+     best.stop_detail.limit_loglik>=best.logLik-1e-9*x.size() &&
+     !best.stop_detail.limit_coef.empty()) {
+    best.status=TbinomStatus::TpoisLimit;
+    best.certified=std::isfinite(best.stop_detail.loglik_upper) && !best.stop_detail.budget_exhausted && !best.stop_detail.comparison_tie;
+    best.stop_detail.budget_exhausted=false;
+    best.stop_detail.comparison_tie=false;
+    return best;
+  }
   if(candidate_ready && best.status!=TbinomStatus::Ok &&
      (best.stop_detail.comparison_tie || !std::isfinite(best.stop_detail.loglik_upper)) &&
      std::isfinite(best.logLik) && best.size>=0 && best.prob>=0 && best.prob<=1) {
@@ -629,7 +724,7 @@ inline FitOutcome outcome(const TbinomDesignResult& r) {
     case TbinomStatus::UpperPointMass: return FitOutcome::limit(true);
     case TbinomStatus::Unidentified: return nonunique_outcome_of(r, r.certified);
     case TbinomStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case TbinomStatus::TpoisLimit: return FitOutcome::limit(true);
+    case TbinomStatus::TpoisLimit: return FitOutcome::limit(r.certified);
   }
   return {};
 }

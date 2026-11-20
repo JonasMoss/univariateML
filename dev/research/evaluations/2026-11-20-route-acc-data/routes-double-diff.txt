@@ -1,0 +1,51 @@
+only baseline 0 only current 0
+binom +truncate=tbinom {'compared': 263, 'changed': 132, 'outcome changes': 1}
+  prob: 1.78794e-12 ('archive', '007487'), 0.01666666666663685 -> 0.016666666666666649
+binom+zero=inflated {'compared': 151}
+binom+zero=modified {'compared': 151, 'changed': 4}
+binom+zero=truncated {'compared': 87, 'changed': 3}
+geom+zero=modified {'compared': 79}
+geom+zero=truncated {'compared': 39}
+lgser+zero=modified {'compared': 79, 'changed': 2}
+  theta: 1.11022e-16 ('archive', '008965'), 0.99999993985538116 -> 0.99999993985538105
+nbinom+zero=inflated {'compared': 151}
+nbinom+zero=modified {'compared': 151, 'changed': 1}
+nbinom+zero=truncated {'compared': 87, 'changed': 2}
+norm +truncate=tnorm {'compared': 285, 'changed': 34, 'outcome changes': 23}
+  mean: 2.01859e-09 ('archive', '007819'), -45848869.787044056 -> -45848869.694494121
+  sd: 4.12324e-10 ('archive', '007736'), 4.932868750501101e-05 -> 4.9328687484671587e-05
+pois +truncate=tpois {'compared': 139, 'changed': 75}
+  lambda: 7.13026e-12 ('archive', '007917'), 926275.88608270139 -> 926275.88608930598
+pois+zero=inflated {'compared': 79, 'changed': 5}
+  lambda: 2.7706e-14 ('archive', '008726'), 0.81745881288991318 -> 0.81745881288993583
+  pi: 2.3766e-16 ('golden', 'golden'), 0.46714751092213069 -> 0.46714751092213058
+pois+zero=modified {'compared': 79, 'changed': 32}
+  lambda: 8.76996e-16 ('resample', 'n7-s0'), 2.0255023889460606 -> 2.0255023889460588
+pois+zero=truncated {'compared': 51, 'changed': 34}
+  lambda: 8.76996e-16 ('archive', '009294'), 2.0255023889460606 -> 2.0255023889460588
+zeta +truncate=zipf {'compared': 79}
+Outcome changes
+(('binom +truncate=tbinom', 'archive', '007325'), ('ok', 'estimate', 'none', False, True), ('limit', 'limit', 'none', True, True), 'The maximum likelihood estimator does not exist: with both `prob` and `size` free, the global likelihood supremum lies at the truncated Poisson distribution as `size` grows. Use `mlpois(x, truncate = c(1000000, 1000011))` instead.')
+(('norm +truncate=tnorm', 'archive', '007675'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007676'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007688'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007689'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007691'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007692'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007720'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007721'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007723'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007724'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007727'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007737'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007753'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007756'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007784'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007785'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007787'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007788'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007791'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007803'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007804'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007817'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')
+(('norm +truncate=tnorm', 'archive', '007820'), ('numerical', 'failure', 'no-convergence', False, True), ('ok', 'estimate', 'none', True, True), '')

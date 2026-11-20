@@ -2,7 +2,7 @@
 #include "tpois_profile.hpp"
 #include "tpois_dpqr.hpp"
 namespace cppunivariate {
-inline truncated_detail::Result tpois_mle(ispan x, double a, double b, double held=std::numeric_limits<double>::quiet_NaN()) {
+inline truncated_detail::Result tpois_mle(ispan x, double a, double b, double held=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=200) {
   auto result=[&]() -> truncated_detail::Result {
   if (x.size()==0) return {0,0,0,truncated_detail::Status::InvalidInput};
   int xmin=x[0],xmax=x[0];
@@ -18,8 +18,8 @@ inline truncated_detail::Result tpois_mle(ispan x, double a, double b, double he
     return {rate,0,0,truncated_detail::Status::Ok,{},!std::isnan(held)};
   }
   if(!std::isnan(held)) {
-    auto r=truncated_detail::fit(x,a,b,-1);
-    if(r.status==truncated_detail::Status::InvalidInput)return r;
+    if(!(a<b) || std::max(0.,std::floor(a)+1)>xmin || std::floor(b)<xmax)
+      return {0,0,0,truncated_detail::Status::InvalidInput};
     if(held<0 || !std::isfinite(held))return {0,0,0,truncated_detail::Status::InvalidInput};
     const double lo=std::max(0.,std::floor(a)+1),hi=std::floor(b);
     if(held==0) {
@@ -34,7 +34,7 @@ inline truncated_detail::Result tpois_mle(ispan x, double a, double b, double he
     double ll=0;for(int v:x)ll+=truncated_detail::kernel(v,t,-1)-z.logz;
     return {held,ll,0,truncated_detail::Status::Ok};
   }
-  return truncated_detail::fit(x,a,b,-1);
+  return truncated_detail::fit(x,a,b,-1,tol,maxit);
   }();
   if(result.status==truncated_detail::Status::Ok) {
     double ll=0,correction=0;
