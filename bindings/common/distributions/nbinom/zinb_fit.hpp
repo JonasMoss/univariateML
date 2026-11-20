@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/nbinom/zinb_mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held pi_arg = {}, double reltol = 1e-10, int iterlim = 200) {
+inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held pi_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held size = size_arg;
@@ -14,7 +14,7 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
 
   if (size.supplied && (!std::isfinite(size.value) || size.value < 0))
     return invalid_argument(fail("size must be a finite nonnegative number"));
-  const auto fit = cppunivariate::zinb_mle(x, reltol, iterlim,
+  const auto fit = cppunivariate::zinb_mle(x, tol, iterlim,
       size.supplied ? size.value : NAN,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(fit);
   const auto done=[&](FitResult out) {
@@ -25,7 +25,7 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
   if (fit.status == cppunivariate::ZinbStatus::InvalidSize)
     return fail("size must be a finite nonnegative number");
   if (fit.status == cppunivariate::ZinbStatus::InvalidInput)
-    return fail("ZINB requires nonempty nonnegative count data, positive reltol and iterlim, prob in (0,1], pi in [0,1], and compatible holds");
+    return fail("ZINB requires nonempty nonnegative count data, positive tol and iterlim, prob in (0,1], pi in [0,1], and compatible holds");
   if (fit.status == cppunivariate::ZinbStatus::ZipLimit)
     return stop_failure(fail("The maximum likelihood estimator does not exist, but converges to a zero-inflated Poisson. Use `mlpois(x, zero = \"inflated\")` instead."),fit.stop_detail,outcome_payload(o),{"size","prob","pi"});
   if (fit.status == cppunivariate::ZinbStatus::PoissonLimit)

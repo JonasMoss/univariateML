@@ -1,4 +1,8 @@
 # Shared constructor for README-defined fully specified distributions.
+ml_fit_controls <- c("tol", "iterlim")
+# The remaining base adapters still validate their own pre-2.0 controls.
+ml_legacy_fit_controls <- c("reltol", "abstol", "gradtol")
+
 ml_require_data <- function(object) {
   if (isTRUE(attr(object, "frozen")))
     stop("This model was built from fixed coefficients; it has no data", call. = FALSE)
@@ -21,7 +25,7 @@ ml_fixed_model <- function(name, supplied, call, frozen = FALSE, x = numeric()) 
   diagnose <- function() tryCatch(
     do.call(get(paste0(if(startsWith(name,".modifier_"))sub("^\\.","",name) else name, "_"), mode = "function"), c(list(x = x), supplied)),
     error = identity)
-  controls <- intersect(names(supplied), c("reltol", "abstol", "gradtol", "iterlim"))
+  controls <- intersect(names(supplied), c(ml_fit_controls, ml_legacy_fit_controls))
   invalid <- vapply(supplied[controls], function(v)
     !is.numeric(v) || length(v) != 1L || !is.finite(v) || v <= 0, logical(1))
   if (any(invalid)) {

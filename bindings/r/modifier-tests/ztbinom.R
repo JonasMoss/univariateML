@@ -78,12 +78,12 @@ test_that("ztbinom: held endpoints are attained exactly when feasible", {
   f<-.modifier_ztbinom(rep(if(p==0)1 else 8,3),size=8,prob=p)
   expect_identical(unname(f["prob"]),p);expect_equal(attr(f,"logLik"),0)
  }
- expect_error(.modifier_ztbinom(1:3,size=8,prob=.4,reltol=0))
+ expect_error(.modifier_ztbinom(1:3,size=8,prob=.4,tol=0))
 })
 
 test_that("ztbinom: P3 unfinished optimizer stops", {
   x <- c(1,2,3,3,5)
-  expect_error(.modifier_ztbinom(x, iterlim=1, reltol=1e-10, size=NULL),
+  expect_error(.modifier_ztbinom(x, iterlim=1, tol=1e-10, size=NULL),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -186,7 +186,7 @@ test_that("the size-one atom certifies a tiny held positive probability", {
 })
 
 test_that("ztbinom does not certify a sub-machine probability target", {
-  e <- tryCatch(.modifier_ztbinom(c(1,2),size=NULL,reltol=1e-18),error=identity)
+  e <- tryCatch(.modifier_ztbinom(c(1,2),size=NULL,tol=1e-18),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_match(conditionMessage(e),"numerical accuracy failure")
   expect_true(any(is.finite(e$candidates$loglik_lower)))

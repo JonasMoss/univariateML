@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/nbinom/zmnbinom_mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_zmnbinom(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held p0_arg = {}, double reltol = 1e-10, int iterlim = 200) {
+inline FitResult fit_zmnbinom(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held p0_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held size = size_arg;
@@ -14,7 +14,7 @@ inline FitResult fit_zmnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
 
   const double fixed_size=size.supplied?size.value:std::numeric_limits<double>::quiet_NaN();
   if(size.supplied && !std::isfinite(fixed_size))return invalid_argument(fail("`size` must be finite and in its parameter domain."));
-  const auto res=cppunivariate::zmnbinom_mle(x, reltol, iterlim, fixed_size,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
+  const auto res=cppunivariate::zmnbinom_mle(x, tol, iterlim, fixed_size,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"p0",p0_arg.supplied}});

@@ -1,5 +1,10 @@
 # Migration to 2.0: zero and truncation modifiers
 
+The `zero` and `truncate` options are explicit, exact-name arguments on
+eligible fitters. Modifier routes use `tol` (default `1e-10`) and
+`iterlim` where supported. `model_select()` forwards numerical controls
+only to fitters that accept them.
+
 Every fit now renders its shared outcome. Estimates carry `certified` and
 `unique` flags, shown by print and summary and included in model selection.
 Candidates the certificate cannot separate return the better one: an

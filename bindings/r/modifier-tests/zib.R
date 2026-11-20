@@ -110,7 +110,7 @@ test_that("zib: free-size held-mixture fits and Poisson escapes", {
 test_that("zib: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(testthat::test_path("fixtures", ".modifier_zib", "golden.json"))
   x <- g$data
-  expect_error(.modifier_zib(x, iterlim=1, reltol=1e-10, size=NULL),
+  expect_error(.modifier_zib(x, iterlim=1, tol=1e-10, size=NULL),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -354,11 +354,11 @@ test_that("an exact turning discriminant leaves a flat probability root uncertif
 })
 
 test_that("a closed binomial mean respects the requested coefficient precision", {
-  e <- tryCatch(.modifier_zib(c(1,1,2),size=2,pi=0,reltol=1e-18),error=identity)
+  e <- tryCatch(.modifier_zib(c(1,1,2),size=2,pi=0,tol=1e-18),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_match(conditionMessage(e),"numerical accuracy failure")
   expect_true(any(is.finite(e$candidates$loglik_lower)))
-  g <- tryCatch(.modifier_zib(c(0,1,1),size=1,prob=1,reltol=1e-18),error=identity)
+  g <- tryCatch(.modifier_zib(c(0,1,1),size=1,prob=1,tol=1e-18),error=identity)
   expect_s3_class(g,"univariateML_numerical")
   expect_equal(tail(g$candidates$pi,1),1/3,tolerance=0)
 })
@@ -372,7 +372,7 @@ test_that("uncertified zib coefficients meet the local accuracy contract", {
 })
 
 test_that("ZIB reports the attainable tolerance at a rational maximizer", {
-  e <- tryCatch(.modifier_zib(c(0,1,1),size=1,pi=0,reltol=1e-20),error=identity)
+  e <- tryCatch(.modifier_zib(c(0,1,1),size=1,pi=0,tol=1e-20),error=identity)
   expect_s3_class(e,"univariateML_tolerance")
   expect_s3_class(e,"univariateML_numerical")
   expect_identical(e$kind,"tolerance")

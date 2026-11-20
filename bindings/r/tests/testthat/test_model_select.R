@@ -50,3 +50,27 @@ expect_equal(
   c(est$d_logLik[[1]], est$d_AIC[[1]], est$d_BIC[[1]]),
   c(0, 0, 0)
 )
+
+test_that("model selection forwards controls only to fitters that accept them", {
+  x <- c(0.4, 0.9, 1.5, 2.5, 3)
+  fits <- model_select(x, c("exp", "gamma", "norm"), return = "all",
+                       tol = 1e-8, iterlim = 100L)
+  expect_setequal(fits$ml, c("exp", "gamma", "norm"))
+  for (id in c("exp", "norm")) {
+    fit <- fits$univariateML[[match(id, fits$ml)]]
+    expect_equal(coef(fit), coef(get(paste0("ml", id))(x)))
+  }
+  gamma <- fits$univariateML[[match("gamma", fits$ml)]]
+  expect_equal(coef(gamma), coef(mlgamma(x, tol = 1e-8, iterlim = 100L)))
+  rejected <- model_select(x, c("exp", "gamma", "norm"), return = "all", tol = 0)
+  expect_setequal(rejected$ml, c("exp", "norm"))
+})
+
+test_that("model selection keeps holds and modifier-specific controls", {
+  x <- c(0, 1, 2, 2, 4, 6)
+  fit <- model_select(x, "binom", size = 10, truncate = c(0, 8), tol = 1e-8)
+  expect_identical(attr(fit, "fixed"), "size")
+  expect_equal(coef(fit), coef(mlbinom(x, size = 10, truncate = c(0, 8), tol = 1e-8)))
+  expect_error(model_select(x, "binom", size = 10, truncate = c(0, 8), tol = 0),
+               "invalid modifier controls")
+})

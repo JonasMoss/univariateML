@@ -183,9 +183,9 @@ test_that("estimated window bounds retain refit instructions and degrees of free
 })
 test_that("numerical windows expose work controls on closed-form parents", {
   x<-c(1,1,2,3,5)
-  expect_true(is.finite(mlpois(x,truncate=c(1,5),iterlim=200,reltol=1e-10)[["lambda"]]))
+  expect_true(is.finite(mlpois(x,truncate=c(1,5),iterlim=200,tol=1e-10)[["lambda"]]))
   expect_error(mlpois(x,truncate=c(1,5),iterlim=1),"failed to certify")
-  expect_error(mlpois(x,truncate=c(1,5),reltol=0),"invalid modifier controls")
+  expect_error(mlpois(x,truncate=c(1,5),tol=0),"invalid modifier controls")
 })
 test_that("finite-window probability-zero faces stop for the mathematical reason", {
   expect_error(mlgeom(c(2,3,4),truncate=c(1,4)),"upper boundary limit")
@@ -275,8 +275,8 @@ test_that("retirement replay preserves fully held density routes and controls", 
     expect_equal(as.numeric(logLik(new)),as.numeric(logLik(old)),tolerance=1e-10)
     expect_identical(attr(new,"certified"),attr(old,"certified"))
   }
-  old<-tryCatch(.modifier_ztbinom(1:3,size=NULL,reltol=1e-18),error=identity)
-  new<-tryCatch(mlbinom(1:3,size=NULL,zero="truncated",reltol=1e-18),error=identity)
+  old<-tryCatch(.modifier_ztbinom(1:3,size=NULL,tol=1e-18),error=identity)
+  new<-tryCatch(mlbinom(1:3,size=NULL,zero="truncated",tol=1e-18),error=identity)
   expect_equal(new$kind,old$kind)
   f<-mlzeta(x,truncate=c(1,NA))
   expect_lt(f[["s"]],0)
@@ -374,10 +374,10 @@ test_that("explicit 512 work units retain the controlled binomial window solver"
   }
 })
 test_that("finite zeta score roots justify very small requested tolerances", {
-  fit<-tryCatch(mlzeta(1:4,truncate=c(1,4),reltol=1e-20),error=identity)
+  fit<-tryCatch(mlzeta(1:4,truncate=c(1,4),tol=1e-20),error=identity)
   if(inherits(fit,"error"))expect_match(conditionMessage(fit),"accuracy")
   else expect_lte(abs(unname(fit[["s"]])),1e-20)
-  held<-mlzeta(1:4,s=0,truncate=c(1,4),reltol=1e-20)
+  held<-mlzeta(1:4,s=0,truncate=c(1,4),tol=1e-20)
   expect_identical(unname(held[["s"]]),0)
 })
 

@@ -231,9 +231,7 @@ gen_doc <- function(model) {
     nl("  * `", arg, "`: Value at which to hold `", arg, "` fixed; ",
        "`NULL` estimates it with data; without data uses the fixed-model default above.")
   }, character(1))
-  control_items <- c(fixed_items, control_items,
-    if(model$modifier_eligibility$zero) '  * `zero`: One of "none", "truncated", "modified", "inflated".',
-    '  * `truncate`: Closed retained window c(lower, upper); NA estimates a bound.')
+  control_items <- c(fixed_items, control_items)
   seealso <- unique(c(
     if (startsWith(model$density, "stats::")) nl(rd_link(model$density), " for the density.") else "[dml()] for density evaluation.",
     unlist(lapply(model$limits, function(l) if (!is.null(l$model)) nl("[ml", l$model, "()] for the limit model."))),
@@ -253,6 +251,10 @@ gen_doc <- function(model) {
     "",
     "@param x a (non-empty) numeric vector of data values. Omit to build a fixed model without data.",
     "@param na.rm logical. Should missing values be removed?",
+    if (model$modifier_eligibility$zero)
+      '@param zero One of "none", "truncated", "modified", or "inflated".',
+    if (model$modifier_eligibility$truncate)
+      "@param truncate Closed retained window `c(lower, upper)`. Use `NA` to estimate a bound.",
     if (length(control_items)) c("@param ... Optional control arguments:", control_items)
     else "@param ... Not used.",
     nl("@return `", fname, "` returns an object of [class][base::class] `univariateML`. ",
@@ -273,16 +275,20 @@ gen_doc <- function(model) {
 gen_wrapper <- function(model) {
   fname <- paste0("ml", model$id)
   doc <- gen_doc(model)
+  zero <- model$modifier_eligibility$zero
+  truncate <- model$modifier_eligibility$truncate
   paste0(
     doc, "\n",
-    fname, " <- function(x, na.rm = FALSE, ...) {\n  tryCatch({\n",
-    "  modifier_args <- list(...)\n",
-    "  if (", if(model$modifier_eligibility$zero) '\"zero\" %in% names(modifier_args) || ' else '',
-    '\"truncate\" %in% names(modifier_args) || (!missing(x) && ((is.matrix(x) && NCOL(x)==2L) || inherits(x, \"Surv\")))) {\n',
-    "    zero <- ", if(model$modifier_eligibility$zero) 'if (\"zero\" %in% names(modifier_args)) modifier_args$zero else \"none\"' else '\"none\"', "\n",
-    "    truncate <- modifier_args$truncate; modifier_args$truncate <- NULL\n",
-    if(model$modifier_eligibility$zero) "    modifier_args$zero <- NULL\n" else "",
-    "    return(ml_modified_call(\"", fname, "\", if(missing(x)) NULL else x, missing(x), na.rm, modifier_args, zero, truncate, match.call()))\n  }\n",
+    fname, " <- function(x, na.rm = FALSE, ...",
+    if (zero) ', zero = "none"',
+    if (truncate) ", truncate = NULL",
+    ") {\n  tryCatch({\n",
+    "  if (", if (zero) '!identical(zero, "none") || ',
+    if (truncate) "!is.null(truncate) || ",
+    '(!missing(x) && ((is.matrix(x) && NCOL(x) == 2L) || inherits(x, "Surv")))) {\n',
+    "    return(ml_modified_call(\"", fname, "\", if (missing(x)) NULL else x, missing(x), na.rm, list(...), ",
+    if (zero) 'zero' else '"none"', ", ", if (truncate) "truncate" else "NULL",
+    ", match.call()))\n  }\n",
     "  ml_check_args(", fname, "_, list(...), \"", fname, "\")\n",
     "  if (missing(x)) {\n",
     "    ml_check_frozen_call(sys.call())\n",
