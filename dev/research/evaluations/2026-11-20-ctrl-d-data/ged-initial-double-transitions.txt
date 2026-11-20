@@ -1,0 +1,5 @@
+Outcome transitions
+ged archive 002463 {"nu": 3.016645308327854, "sd": 1.0178559902092952} ok/estimate/none -> numerical/failure/evaluation 'GED normalization loses coefficient or likelihood accuracy; no finite fit is certified.'
+ged archive 002466 {"nu": 3.016645308327854, "sd": 1.0178559902092952} ok/estimate/none -> numerical/failure/evaluation 'GED normalization loses coefficient or likelihood accuracy; no finite fit is certified.'
+
+Unpaired cases

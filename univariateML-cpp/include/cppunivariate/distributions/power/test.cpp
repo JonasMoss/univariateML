@@ -25,7 +25,7 @@ TEST_CASE("rpower samples lie in (0, alpha); mean = alpha*beta/(beta+1)") {
 
 TEST_CASE("power") {
   auto g = mltest::load_distribution_golden("power");
-  auto r = cppunivariate::power_mle(mltest::as_span(g.data), 1.490116e-08);
+  auto r = cppunivariate::power_mle(mltest::as_span(g.data));
   CHECK(r.alpha == doctest::Approx(g.estimates.at("alpha")).epsilon(mltest::kGolden_power).scale(0));
   CHECK(r.beta == doctest::Approx(g.estimates.at("beta")).epsilon(mltest::kGolden_power).scale(0));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_power).scale(0));
@@ -45,7 +45,7 @@ TEST_CASE("power P2 every held subset") {
   std::vector<double> x=g.data;
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const std::vector<double> held{g.estimates.at("alpha"),g.estimates.at("beta")};
-  { const auto r=cppunivariate::power_mle(mltest::as_span(x),1.490116e-08,held[0],nan);
+  { const auto r=cppunivariate::power_mle(mltest::as_span(x),held[0],nan);
     CHECK(r.alpha==held[0]);
     CHECK(std::isfinite(r.beta));
     CHECK(std::isfinite(r.logLik));
@@ -55,7 +55,7 @@ TEST_CASE("power P2 every held subset") {
     CHECK(ll(p)==doctest::Approx(r.logLik).epsilon(1e-8));
     {auto a=p,b=p;const double h=1e-5*std::max(1.0,std::abs(p[1]));a[1]+=h;b[1]-=h;CHECK(std::abs((ll(a)-ll(b))/(2*h))<1e-3);}
   }
-  { const auto r=cppunivariate::power_mle(mltest::as_span(x),1.490116e-08,held[0],held[1]);
+  { const auto r=cppunivariate::power_mle(mltest::as_span(x),held[0],held[1]);
     CHECK(r.alpha==held[0]);
     CHECK(r.beta==held[1]);
     CHECK(std::isfinite(r.logLik));
@@ -69,24 +69,24 @@ TEST_CASE("power P2 every held subset") {
 TEST_CASE("power P2 held boundaries and solver failure") {
   const std::vector<double> x{2,2,2};
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  CHECK_FALSE(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,2,nan).logLik));
-  CHECK(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,3,nan).logLik));
-  CHECK(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),1e-8,nan,2).logLik));
+  CHECK_FALSE(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),2,nan).logLik));
+  CHECK(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),3,nan).logLik));
+  CHECK(std::isfinite(cppunivariate::power_mle(mltest::as_span(x),nan,2).logLik));
 }
 
 TEST_CASE("power closed endpoint and constant-sample profiles") {
   const std::vector<double> x{1, 2, 2};
   const double nan = std::numeric_limits<double>::quiet_NaN();
-  const auto r = cppunivariate::power_mle(mltest::as_span(x), 0);
+  const auto r = cppunivariate::power_mle(mltest::as_span(x));
   CHECK(r.alpha == 2);
   CHECK(r.beta == doctest::Approx(3 / std::log(2.0)));
-  CHECK(cppunivariate::power_mle(mltest::as_span(x), 1).alpha == 2);
-  const auto held = cppunivariate::power_mle(mltest::as_span(x), 0, nan, 2);
+  CHECK(cppunivariate::power_mle(mltest::as_span(x), nan, nan).alpha == 2);
+  const auto held = cppunivariate::power_mle(mltest::as_span(x), nan, 2);
   CHECK(held.alpha == 2);
   CHECK(held.beta == 2);
   const std::vector<double> constant{2, 2};
   CHECK(cppunivariate::power_mle(mltest::as_span(constant)).status == cppunivariate::PowerStatus::Unbounded);
-  CHECK(cppunivariate::power_mle(mltest::as_span(constant), 0, nan, 2).logLik == 0);
+  CHECK(cppunivariate::power_mle(mltest::as_span(constant), nan, 2).logLik == 0);
 }
 
 
@@ -110,7 +110,7 @@ TEST_CASE("power: deep tails and log inversion regressions") {
 
 TEST_CASE("power core identifies observations outside a held endpoint") {
   const std::vector<double> x{1,2};
-  const auto r=cppunivariate::power_mle(mltest::as_span(x),0,1,NAN);
+  const auto r=cppunivariate::power_mle(mltest::as_span(x),1,NAN);
   CHECK(r.status==cppunivariate::PowerStatus::OutsideSupport);
   CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::InvalidInput);
 }

@@ -27,7 +27,6 @@ r:
   control:
     alpha: Optional held alpha; NULL estimates it.
     beta: Optional held beta; NULL estimates it.
-    epsilon: Deprecated compatibility argument, validated but ignored; alpha is exactly max(x).
 log_density: log(beta) - beta*log(alpha) + (beta-1)*log(x)
 references:
 - 'Arslan, G. "A new characterization of the power distribution." Journal of Computational and Applied Mathematics
@@ -109,4 +108,4 @@ The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-2
 
 ## R notes
 
-The compatibility argument `epsilon` is validated and then ignored. It does not move the endpoint away from `max(x)`.
+The endpoint estimate is exactly `max(x)`.

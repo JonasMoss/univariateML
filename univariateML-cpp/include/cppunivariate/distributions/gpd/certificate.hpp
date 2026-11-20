@@ -115,19 +115,37 @@ inline bool isolate(const Data& d,Point a,Point b,double tol,int maxit,Root& out
         std::abs(shape_b-shape_a)<3e-7*std::max({1.,std::abs(shape_a),std::abs(shape_b)});
     if(j>0 && (b.t-a.t<2e-7 || coefficient_box)) {
       Point p=evaluate(d,(a.t+b.t)/2);
-      // Refine the representative, while retaining the signed enclosure.
+      // Refine inside the signed enclosure. D'(b)=-P, so this
+      // one-dimensional information correction also estimates error
+      // in the profiled scale and the reported shape.
+      double previous=INFINITY;
+      bool accurate=false;
       for(int k=0;k<maxit;++k) {
         const double e=std::exp(p.t),g=p.score/e;
         const double cur=e*e*(d.held?2*p.P-(1/d.c+p.b)*p.R:
             p.P*p.P/(p.D*p.D)-p.R/p.D+2*p.P-p.b*p.R)+e*g;
-        const double next=p.t-p.score/cur;
+        if (!(cur<0)) break;
+        const double step=-p.score/cur;
+        const double shape=d.held ? d.c*p.b : p.b*p.D;
+        const double shape_slope=e*(d.held ? d.c : p.D-p.b*p.P);
+        const double shape_error=std::abs(shape_slope*step)/std::max(1.,std::abs(shape));
+        const double scale_error=d.held ? 0 : std::abs(e*p.P*step/p.D);
+        const double error=std::max(shape_error,scale_error);
+        const double next=p.t+step;
         if(!(next>a.t && next<b.t))break;
-        const double step=std::abs(next-p.t);
         p=evaluate(d,next);
-        if(step<tol*(1+std::abs(next)))break;
+        if(error<=tol/4 && (previous<=tol/4 ||
+            (std::isfinite(previous) && error<=previous/4 &&
+             error<=std::max(16*previous*previous,16*std::numeric_limits<double>::epsilon())))) {
+          accurate=true;
+          break;
+        }
+        previous=error;
       }
-      const auto narrow=bounds(d,a,b);
-      out={p,lo,hi,narrow.upper};return true;
+      if (accurate) {
+        const auto narrow=bounds(d,a,b);
+        out={p,lo,hi,narrow.upper};return true;
+      }
     }
   }
   return false;

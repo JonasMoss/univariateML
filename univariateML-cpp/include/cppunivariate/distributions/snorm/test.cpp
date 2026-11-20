@@ -34,7 +34,7 @@ TEST_CASE("rsnorm samples have unit variance and skew with xi") {
 
 TEST_CASE("snorm (skew-normal)") {
   auto g = mltest::load_distribution_golden("snorm");
-  auto r = cppunivariate::snorm_mle(mltest::as_span(g.data), mltest::kFitTol, 200);
+  auto r = cppunivariate::snorm_mle(mltest::as_span(g.data), 1e-10, 200);
   CHECK(r.mu == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kGolden_snorm).scale(0));
   CHECK(r.sigma == doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kGolden_snorm).scale(0));
   CHECK(r.xi == doctest::Approx(g.estimates.at("xi")).epsilon(mltest::kGolden_snorm).scale(0));

@@ -60,7 +60,7 @@ r:
     sd: "Optional held sd; NULL estimates it where the hold subset is supported."
     nu: "Optional held nu; NULL estimates it where the hold subset is supported."
     xi: "Optional held xi; NULL estimates it where the hold subset is supported."
-    gradtol: "Requested relative coefficient accuracy (default 1e-10), including fixed-shape/skew public-coefficient enclosures."
+    tol: "Requested relative coefficient accuracy (default 1e-10), including fixed-shape/skew public-coefficient enclosures."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "log(sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)) - log(sd) + log(2/(xi + 1/xi)) + log(nu/(sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu))*2**(1 + 1/nu)*gamma(1/nu))) - Abs(Piecewise(((sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi))/xi, (sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi)) > 0), ((sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi))*xi, True)))**nu/(2*(sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu)))**nu)"
 limits:
@@ -446,7 +446,7 @@ log-gamma moment helper used by d/p/q/r supplies the certificate's shift
 and scale; the historical all-free objective is unchanged.
 
 The fixed-shape/skew certificate propagates the requested C++ `tol`
-(R `gradtol` on this baseline) to its mode, scale and public-coordinate
+(R `tol` on this baseline) to its mode, scale and public-coordinate
 enclosures. Its global comparisons remain conditional on the stated arithmetic
 margins; the tolerance controls coefficient accuracy rather than those margins.
 Bisection uses at most $\min(\mathtt{iterlim},100000)$ solver steps;

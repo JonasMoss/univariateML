@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held xi_arg = {}, double reltol = 1e-12, int iterlim = 200) {
+inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held xi_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held mu = mu_arg;
@@ -21,7 +21,7 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   std::vector<std::string> fixed{"mu"};
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
-  auto res = cppunivariate::gpd_mle(x, reltol, iterlim, threshold, shape, scale);
+  auto res = cppunivariate::gpd_mle(x, tol, iterlim, threshold, shape, scale);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
@@ -41,7 +41,7 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if (res.certificate_failure == cppunivariate::GpdCertificateFailure::Arithmetic)
     return done(stop_failure(fail("Generalized Pareto MLE failed to converge: certificate comparisons unresolved or coefficients unrepresentable."), res.stop_detail, outcome_payload(o), {"mu","sigma","xi"}));
   if (res.status == cppunivariate::GpdStatus::InvalidData)
-    return done(fail("Generalized Pareto requires finite data at or above `mu`, compatible support and holds, no scale collapse at the threshold, a finite threshold, positive `reltol` and positive `iterlim`."));
+    return done(fail("Generalized Pareto requires finite data at or above `mu`, compatible support and holds, no scale collapse at the threshold, a finite threshold, positive `tol` and positive `iterlim`."));
   if (res.status != cppunivariate::GpdStatus::Ok)
     return done(stop_failure(fail("Generalized Pareto MLE failed to converge."),res.stop_detail,outcome_payload(o),{"mu","sigma","xi"}));
   std::vector<std::pair<std::string,std::string>> restricted;

@@ -15,7 +15,7 @@ trgamma_oracle <- function(x) {
     if (o$value < best$value) best <- o
   }
   ll <- -best$value
-  faces <- c(lnorm = attr(mllnorm(x), "logLik"), power = attr(mlpower(x, epsilon = 0), "logLik"))
+  faces <- c(lnorm = attr(mllnorm(x), "logLik"), power = attr(mlpower(x), "logLik"))
   face <- if (max(faces) >= ll - 1e-8 * length(x)) names(which.max(faces)) else "interior"
   list(ll = max(ll, faces), face = face, estimates = exp(best$par))
 }

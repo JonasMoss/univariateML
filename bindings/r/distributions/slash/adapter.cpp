@@ -4,8 +4,8 @@
 // [[Rcpp::export]]
 Rcpp::List mlslash_(const Rcpp::NumericVector& x,
     Rcpp::Nullable<double> sigma=R_NilValue,
-    double reltol=1e-10,int iterlim=500, Rcpp::Nullable<double> mu=R_NilValue) {
-  return common_result(umvl_binding::fit_slash(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, common_held(mu), common_held(sigma), reltol, iterlim));
+    double tol=1e-10,int iterlim=500, Rcpp::Nullable<double> mu=R_NilValue) {
+  return common_result(umvl_binding::fit_slash(cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, common_held(mu), common_held(sigma), tol, iterlim));
 }
 // [[Rcpp::export]]
 Rcpp::NumericVector dslash_reference_(Rcpp::NumericVector x,Rcpp::NumericVector mu,Rcpp::NumericVector sigma,bool log=false) {

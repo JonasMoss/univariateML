@@ -56,7 +56,7 @@ test_that("inverse Burr limits name inverse Weibull and power", {
     expect_equal(attr(mlinvweibull(xw),"logLik"),
                  attr(mlweibull(1/xw),"logLik")-2*sum(log(xw)),tolerance=1e-8)
     # mlpower uses upper endpoint (max), reciprocal Pareto minimum.
-    expect_equal(attr(mlpower(xp,epsilon=0),"logLik"),
+    expect_equal(attr(mlpower(xp),"logLik"),
                  attr(mlpareto(1/xp),"logLik")-2*sum(log(xp)),tolerance=1e-8)
   }
 })

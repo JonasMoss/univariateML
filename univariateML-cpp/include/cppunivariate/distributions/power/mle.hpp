@@ -38,11 +38,10 @@ inline FitOutcome outcome(const PowerResult& r) {
   return {};
 }
 
-// epsilon is retained for source compatibility and no longer moves endpoints.
-inline PowerResult power_mle(span x, double epsilon, double alpha, double beta) {
+inline PowerResult power_mle(span x, double alpha, double beta) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const auto invalid = PowerResult{nan, nan, nan, 0, PowerStatus::InvalidInput};
-  if (x.size() == 0 || !(epsilon >= 0) || !std::isfinite(epsilon)) return invalid;
+  if (x.size() == 0) return invalid;
   double xmax = 0;
   for (double v : x) {
     if (!(v > 0) || !std::isfinite(v)) return invalid;
@@ -67,9 +66,9 @@ inline PowerResult power_mle(span x, double epsilon, double alpha, double beta) 
       ? PowerStatus::Ok : PowerStatus::IterationFailure};
 }
 
-inline PowerResult power_mle(span x, double epsilon = 0) {
+inline PowerResult power_mle(span x) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
-  return power_mle(x, epsilon, nan, nan);
+  return power_mle(x, nan, nan);
 }
 
 }  // namespace cppunivariate

@@ -63,7 +63,7 @@ r:
     mu: Finite threshold to hold, or NULL to leave it free; every observation must be at or above a held threshold.
     sigma: Positive scale to hold fixed, or NULL to estimate.
     xi: Shape to hold fixed, or NULL to estimate (lower bound -1).
-    reltol: Requested relative tolerance for scale bisection and profile representative refinement; global certification uses a fixed coefficient enclosure and arithmetic margin.
+    tol: Relative coefficient accuracy for scale bisection and the profiled Newton correction. The correction includes the sensitivity of both free coefficients to the scalar profile coordinate.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma, Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma), True))
 limits:

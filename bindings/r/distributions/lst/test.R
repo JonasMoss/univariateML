@@ -3,7 +3,7 @@ test_that("location-scale t agrees with independent density likelihood optimizat
   for (df in c(1.5, 3, 10)) for (n in c(200, 1000)) {
     set.seed(100 + n + df * 10)
     x <- rlst(n = n, mu = 2, sigma = 1.3, df = df)
-    fit <- suppressWarnings(mllst(x, gradtol = 1e-7, iterlim = 500), classes = "univariateML_restricted")
+    fit <- suppressWarnings(mllst(x, tol = 1e-7, iterlim = 500), classes = "univariateML_restricted")
     objective <- function(p) {
       sigma <- exp(p[2]); nu <- 1 + exp(p[3])
       if (!all(is.finite(c(p[1],sigma,nu))) || sigma <= 0) return(1e100)
@@ -58,7 +58,7 @@ test_that("fixed df agrees with oracle and Cauchy, with correct metadata", {
   skip_unless_tier("full")
   x <- c(-5,-2,-1,0,0,1,2,9)
   for (df in c(1, 2.5, 10)) {
-    fit <- suppressWarnings(mllst(x, df = df, gradtol = 1e-8, iterlim = 5000), classes = "univariateML_restricted")
+    fit <- suppressWarnings(mllst(x, df = df, tol = 1e-8, iterlim = 5000), classes = "univariateML_restricted")
     objective <- function(p) -sum(dlst(x = x, mu = p[1], sigma = exp(p[2]), df = df, log = TRUE))
     oracle <- optim(c(0,0), objective, method = "BFGS",
                     control = list(reltol = 1e-13, maxit = 3000))
@@ -340,7 +340,7 @@ test_that("Student density overflow preserves the scaled squared radius", {
 
 test_that("subunit Student joint search returns an accurate uncertified fit", {
   x <- c(-3,-1,-.4,.2,.8,1.1,2,5)
-  f <- mllst(x,df=.4,gradtol=1e-10)
+  f <- mllst(x,df=.4,tol=1e-10)
   expect_identical(attr(f,"certified"),FALSE)
   expect_equal(unname(f[["mu"]]),.58152104884899293051,tolerance=1e-10)
   expect_equal(unname(f[["sigma"]]),.74878786032077519987,tolerance=1e-10)

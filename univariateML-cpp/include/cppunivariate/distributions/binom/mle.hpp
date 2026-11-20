@@ -81,11 +81,10 @@ inline bool poisson_face(ispan x, double x_bar, double var_pop) {
 }
 }  // namespace binom_detail
 
-inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
-                             int maxit, double held_prob = std::numeric_limits<double>::quiet_NaN()) {
+inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
+                             int maxit=100, double held_prob = std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> BinomResult {
-  (void)tol;
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
   if (n == 0) return {0.0, 0.0, kNaN, 0, BinomStatus::InvalidInput};
@@ -120,7 +119,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
 
   if (!std::isnan(held_prob)) {
     const auto bad = [&]() { return BinomResult{kNaN,kNaN,kNaN,0,BinomStatus::InvalidInput}; };
-    if (!(held_prob>=0 && held_prob<=1) || !std::isfinite(held_prob) || maxit<1 || !(tol>0)) return bad();
+    if (!(held_prob>=0 && held_prob<=1) || !std::isfinite(held_prob) || maxit<1 || !(tol>0) || !std::isfinite(tol)) return bad();
     for (int v:x) if (v<0) return bad();
     double size=size_or_nan;
     int iterations=0;
@@ -136,9 +135,14 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol,
           return d;
         };
         double lo=max_x,hi=std::max(1.,lo);
+        // When k+1 >= max(x)/p each term of the adjacent likelihood
+        // ratio is nonpositive. Pad this ceiling by tol and verify its
+        // computed sign before using it as an integer bracket endpoint.
+        const double limit=4503599627370496.;
+        const double tail=std::min(limit,std::ceil((max_x/held_prob)*(1+tol)));
         while (delta(hi)>0) {
           if (++iterations>=maxit || hi>=4503599627370496.) return BinomResult{kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
-          hi*=2;
+          hi=hi<tail ? std::min(2*hi,tail) : 2*hi;
         }
         while (lo<hi) {
           if (++iterations>=maxit) return BinomResult{kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};

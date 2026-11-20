@@ -14,7 +14,7 @@ namespace dist = cppunivariate::distributions;
 #define D_APPROX_FD(x) doctest::Approx(x).epsilon(mltest::kFdTol)
 TEST_CASE("sstd (skew Student-t)") {
   auto g = mltest::load_distribution_golden("sstd");
-  auto r = cppunivariate::sstd_mle(mltest::as_span(g.data), mltest::kFitTol, 200);
+  auto r = cppunivariate::sstd_mle(mltest::as_span(g.data), 1e-10, 200);
   CHECK(r.mu == doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kGolden_sstd).scale(0));
   CHECK(r.sigma == doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kGolden_sstd).scale(0));
   CHECK(r.nu == doctest::Approx(g.estimates.at("nu")).epsilon(mltest::kGolden_sstd).scale(0));

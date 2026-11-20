@@ -31,7 +31,7 @@ r:
   sampler: stats::rbinom
   control:
     size: "Optional fixed number of trials; NULL estimates size."
-    abstol: "Unused by the free-size search (an exact integer bracket, not a continuous one); kept for the held-probability integer search's tail bound."
+    tol: Relative padding for the held-probability size search tail bound. The signed integer bracket is searched to adjacent integers.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
     prob: "Optional fixed probability in `[0, 1]`; NULL estimates it."
 log_density: "loggamma(size + 1) - loggamma(x + 1) - loggamma(size - x + 1) + x*log(prob) + (size - x)*log(1 - prob)"

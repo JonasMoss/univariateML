@@ -82,7 +82,7 @@ test_that("Student-t interior fit and large-nu log likelihood agree with indepen
 test_that("large-nu interior fit matches dt and a slow oracle", {
   skip_unless_tier("full")
   x <- qt(((1:4000) - .5)/4000, df = 300)
-  fit <- mlstd(x, gradtol = 1e-7, iterlim = 500)
+  fit <- mlstd(x, tol = 1e-7, iterlim = 500)
   expect_s3_class(fit,"univariateML")
   expect_gt(unname(fit[3]), 343)
   objective <- function(p) {
@@ -103,7 +103,7 @@ test_that("fixed nu agrees with density oracle and records two free parameters",
   skip_unless_tier("full")
   x <- c(-5,-2,-1,0,0,1,2,9)
   for (nu in c(2.1,4,30)) {
-    fit <- mlstd(x, nu = nu, gradtol = 1e-8, iterlim = 5000)
+    fit <- mlstd(x, nu = nu, tol = 1e-8, iterlim = 5000)
     objective <- function(p) -sum(dstd(x = x, mean = p[1], sd = exp(p[2]), nu = nu, log = TRUE))
     oracle <- optim(c(0,1), objective, method = "BFGS",
                     control = list(reltol = 1e-13, maxit = 3000))
@@ -335,7 +335,7 @@ test_that("std held profiles preserve tiny and large units", {
 test_that("std: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "std", "golden.json"))
   x <- g$data
-  expect_error(mlstd(x, iterlim=1, gradtol=1e-10),
+  expect_error(mlstd(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 

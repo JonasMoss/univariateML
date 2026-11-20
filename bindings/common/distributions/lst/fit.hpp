@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held df_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held df_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   bool face_flag=false;double certified=0;
   const auto fail = [&](const std::string& format, const auto&... arguments) {
@@ -26,7 +26,7 @@ inline FitResult fit_lst(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   if(mu.supplied)fixed.push_back("mu");
   if(sigma.supplied)fixed.push_back("sigma");
   if(df.supplied)fixed.push_back("df");
-  auto r=cppunivariate::lst_mle(x,gradtol,iterlim,held_mu,held_sigma,df.supplied?df.value:nan);
+  auto r=cppunivariate::lst_mle(x,tol,iterlim,held_mu,held_sigma,df.supplied?df.value:nan);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
     if (r.status == cppunivariate::LstStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

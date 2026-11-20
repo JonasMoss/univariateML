@@ -61,8 +61,8 @@ expect_equal(class(est), "univariateML")
 ## Check support.
 expect_equal(class(attr(est, "support"))[[1]], "numeric")
 
-test_that("power compatibility epsilon is validated and leaves the exact endpoint", {
-  for(e in c(-1,Inf,NaN)) expect_error(mlpower(c(1,2),epsilon=e),"nonnegative and finite")
+test_that("power rejects the removed epsilon control and fits the exact endpoint", {
+  for(e in c(-1,Inf,NaN)) expect_error(mlpower(c(1,2),epsilon=e),"epsilon")
   f<-mlpower(c(1e100,2e100))
   expect_identical(f[["alpha"]],2e100)
 })

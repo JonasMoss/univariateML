@@ -196,7 +196,7 @@ test('delegate follow-up keeps successful uncertified parent fits',()=>{
   ['pareto3',[1,1+Number.EPSILON],{min:0}]
  ];
  for(const [id,x,held] of cases){
-  const r=m['fit'+id](new Float64Array(x),held,{gradtol:1e-8,reltol:1e-10,iterlim:1000});
+  const r=m['fit'+id](new Float64Array(x),held,{...(id==='sged'?{tol:1e-8}:{gradtol:1e-8,reltol:1e-10}),iterlim:1000});
   assert.equal(r.status,'Ok',id);assert.equal(r.certified,false,id);assert.ok(Number.isFinite(r.logLik),id);
  }
 });

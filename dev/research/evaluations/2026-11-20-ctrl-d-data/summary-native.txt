@@ -1,0 +1,41 @@
+Family        Compared Changed   Max relative coefficient move (case, coefficient)
+bbinom             148       0   0 
+betapr             212       0   0 
+binom               87       0   0 
+bnbinom            135       2   0 
+cmb                135       0   0 
+dweibull            79       9   1.54231e-11 archive 001212, shape2
+fpareto            572       0   0 
+gb2                572       0   0 
+ged                173      34   6.3451e-11 archive 002407, nu
+genbeta            220       0   0 
+gengamma            28       0   0 
+gpd                108      26   3.37394e-11 archive 002912, sigma
+ht                 228       0   0 
+huber              173      64   7.70394e-11 archive 003393, sigma
+invburr            220       0   0 
+invtrgamma         180       0   0 
+lst                173      28   2.92443e-13 resample n7-s3, df
+pois                51       0   0 
+power              112       0   0 
+sged               285       0   0 
+slash               93       9   0 
+snorm              157       0   0 
+sstd               285       0   0 
+st                 285       0   0 
+std                173      18   2.61028e-13 golden golden, nu
+trgamma            204       0   0 
+triang             196      72   1.37814e-10 class base6, a
+yulesimon           39       0   0 
+Triang endpoints in support-width units: 1.38243e-11 archive 008236, b
+
+Outcome transitions
+
+Unpaired cases
+
+Named strict entries
+snorm archive 006576 limit/limit/none -> limit/limit/none 'The conditional skew-normal supremum is a half-normal with endpoint constrained by the held moments; the MLE does not exist.'
+snorm archive 006587 limit/limit/none -> limit/limit/none 'Conditional skew-normal fit did not converge. The best candidate is the reflected half normal limit. No improvement above the likelihood margin was found.'
+snorm archive 006590 limit/limit/none -> limit/limit/none 'The conditional skew-normal supremum is a half-normal with endpoint constrained by the held moments; the MLE does not exist.'
+snorm class huge limit/limit/none -> limit/limit/none 'The likelihood is maximised by a translated half-normal (mode at the sample minimum); the skew-normal MLE does not exist. Use `mlhnorm` to fit a translated half-normal.'
+sstd class two limit/limit/none -> limit/limit/none 'The skew Student-t likelihood is maximised as nu -> Inf and xi -> Inf, i.e. by a translated half-normal with endpoint at the sample minimum. Use `mlhnorm` to fit this model. No improvement above the likelihood margin was found.'

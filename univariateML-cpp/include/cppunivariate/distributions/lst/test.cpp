@@ -9,7 +9,7 @@
 
 TEST_CASE("lst: golden and analytic score") {
   auto g = mltest::load_distribution_golden("lst");
-  auto r = cppunivariate::lst_mle(mltest::as_span(g.data),mltest::kFitTol,mltest::kFitMaxit);
+  auto r = cppunivariate::lst_mle(mltest::as_span(g.data),1e-10,200);
   CHECK(r.status == cppunivariate::LstStatus::Ok);
   // Preserve the frozen BFGS-era golden tolerance. The certificate also
   // checks the complete coefficient box against independent roots below.

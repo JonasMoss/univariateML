@@ -3,6 +3,7 @@
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/span.hpp"
+#include "../../core/stop_detail.hpp"
 #include "dpqr.hpp"
 #include <algorithm>
 #include <cmath>
@@ -20,6 +21,7 @@ struct TriangResult {
   // (a, b, c) is not its own reflection (s - b, s - a, s - c), s = min + max;
   // the reflection maps maximizers to maximizers with equal likelihood.
   bool reflection_tie=false;
+  StopDetail stop_detail{};
 };
 namespace triang_detail {
 struct Profile { double a, b, value, upper; int iterations; bool converged; };
@@ -83,18 +85,36 @@ inline Profile profile(const std::vector<double>& x, double l, double u,
   };
   std::vector<double> v, trial;
   int it=0; bool done=false;
+  double previous=INFINITY;
   evaluate(p,q,v);
   for (;it<maxit;++it) {
     if (!std::isfinite(v[0])) break;
     double dp=0,dq=0;
     if (pa && pb) {
       const double det=v[3]*v[5]-v[4]*v[4];
+      if (!(v[3]<0 && v[5]<0 && det>0)) break;
       dp=(-v[5]*v[1]+v[4]*v[2])/det;
       dq=(v[4]*v[1]-v[3]*v[2])/det;
-    } else if (pa) dp=-v[1]/v[3];
-    else if (pb) dq=-v[2]/v[5];
+    } else if (pa) {
+      if (!(v[3]<0)) break;
+      dp=-v[1]/v[3];
+    } else if (pb) {
+      if (!(v[5]<0)) break;
+      dq=-v[2]/v[5];
+    }
     else {done=true; break;}
-    if (std::max(std::abs(dp),std::abs(dq)) < tol) {done=true; break;}
+    // Transform the information correction through the reciprocal
+    // distances to measure error in each endpoint's natural scale.
+    const double delta_a=pa ? std::abs(L*dp/(p*p)) : 0;
+    const double delta_b=pb ? std::abs(R*dq/(q*q)) : 0;
+    const double width=u-l+L/p+R/q;
+    const double error=std::max(delta_a,delta_b)/width;
+    if (error<=tol/4 && (previous<=tol/4 ||
+        (error<=previous/4 && std::isfinite(previous) &&
+         error<=std::max(16*std::numeric_limits<double>::epsilon(),16*previous*previous)))) {
+      done=true;
+      break;
+    }
     double step=1;
     if (dp<0) step=std::min(step,-0.99*p/dp);
     if (dp>0) step=std::min(step,0.99*(1-p)/dp);
@@ -111,6 +131,7 @@ inline Profile profile(const std::vector<double>& x, double l, double u,
     if(!accepted) break;
     p+=step*dp; q+=step*dq;
     v.swap(trial);
+    previous=step==1 ? error : INFINITY;
   }
   double upper=v[0];
   if(pa) upper+=v[1]*(v[1]>0 ? 1-p : -p);
@@ -169,7 +190,7 @@ inline bool rounded_endpoint(span x, double a, double b, double c,
 } // namespace triang_detail
 
 // NaN means free. prune=false is the exhaustive reference path.
-inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
+inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
     double a=std::numeric_limits<double>::quiet_NaN(),
     double b=std::numeric_limits<double>::quiet_NaN(),
     double c=std::numeric_limits<double>::quiet_NaN(), bool prune=true) {
@@ -177,6 +198,9 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
   const double nan=std::numeric_limits<double>::quiet_NaN();
   TriangResult out{nan,nan,nan,-INFINITY,0,TriangStatus::InvalidInput,false};
   if(input.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1) return out;
+  const double requested_tol=tol;
+  constexpr double method_floor=4*std::numeric_limits<double>::epsilon();
+  tol=std::max(tol,method_floor);
   for(double z:input) if(!std::isfinite(z)) return out;
   for(double z:{a,b,c}) if(!std::isnan(z) && !std::isfinite(z)) return out;
   const double original_a=a, original_b=b, original_c=c;
@@ -327,6 +351,15 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
   const bool represented=same_point || rounded;
   out.status=!represented?TriangStatus::NumericalFailure:
       (success?TriangStatus::Ok:TriangStatus::IterationFailure);
+  if (out.status==TriangStatus::Ok && requested_tol<method_floor &&
+      ((!fa && ba!=bc) || (!fb && bb!=bc))) {
+    out.status=TriangStatus::IterationFailure;
+    out.stop_detail.accuracy_stop=AccuracyStop::Tolerance;
+    out.stop_detail.attainable_tol=method_floor;
+    const double width=out.b-out.a;
+    record_accuracy(out,requested_tol,{out.a,out.b,out.c},
+        {fa?0:std::max(width,std::abs(out.a)),fb?0:std::max(width,std::abs(out.b)),0});
+  }
   out.not_unique=second>=best-tie;
   if(!fa&&!fb&&!fc&&out.status==TriangStatus::Ok) {
     // Exact symmetry test with error-free sums: x_i + x_(n-1-i) = min + max.
@@ -353,6 +386,8 @@ inline TriangResult triang_mle(span input, double tol=1e-12, int maxit=100,
 
 namespace cppunivariate {
 inline FitOutcome outcome(const TriangResult& r) {
+  if (r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)
+    return FitOutcome::failure(OutcomeReason::Tolerance);
   switch (r.status) {
     case TriangStatus::Ok: return FitOutcome::estimate(true,!r.reflection_tie);
     case TriangStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

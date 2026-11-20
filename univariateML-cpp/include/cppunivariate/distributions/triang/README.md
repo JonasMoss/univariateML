@@ -40,7 +40,7 @@ r:
     a: Optional held a; `NULL` estimates it.
     b: Optional held b; `NULL` estimates it.
     c: Optional held c; `NULL` estimates it.
-    reltol: Dimensionless endpoint Newton tolerance and relative public log-likelihood tolerance.
+    tol: Relative endpoint accuracy in units of support width, checked by the information correction in reciprocal endpoint distances.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(2) - log(b-a) + Piecewise((log((x-a)/(c-a)), x < c), (log((b-x)/(b-c)), x > c), (0, True))
 holds: []

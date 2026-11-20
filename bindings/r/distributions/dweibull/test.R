@@ -128,6 +128,6 @@ test_that("bootstrapml refits with the held shape2", {
 test_that("dweibull: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "dweibull", "golden.json"))
   x <- g$data
-  expect_error(mldweibull(x, iterlim=1, reltol=1e-10),
+  expect_error(mldweibull(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })

@@ -34,7 +34,7 @@ r:
     sigma: Optional held sigma; NULL estimates it.
     mu: Optional held mu; NULL estimates it.
     epsilon: Positive finite tuning constant (required, e.g. 1.345), or NULL to estimate it.
-    gradtol: Tolerance on the mean standardized location and scale scores.
+    tol: Relative coefficient accuracy for free coefficients, checked by the final observed-information Newton correction.
     iterlim: "Work limit: min(iterlim, 100000) iterations per solve and 128 times that many certificate evaluations."
 log_density: -log(sigma)-log(sqrt(2*pi)*erf(epsilon/sqrt(2))+2*exp(-epsilon**2/2)/epsilon)-Piecewise(((x-mu)**2/(2*sigma**2), Abs((x-mu)/sigma)<=epsilon), (epsilon*Abs((x-mu)/sigma)-epsilon**2/2, True))
 limits:
@@ -151,13 +151,12 @@ $(\log Z)''=q+(2q-q^2)/c^2\le1+2/l^2$.
 Thus $\max(U_l,U_u)+n(1+2/l^2)(u-l)^2/8$ bounds the whole interval.
 The largest bound is bisected geometrically until the global gap is at most
 $10^{-8}n$, or the certificate allowance is exhausted. This is a value
-certificate, not a uniqueness or parameter separation theorem. A finite free-shape
-answer additionally passes the nuisance solver gates $|H|/n\le\max(\mathrm{gradtol},10^{-7})$
-when location is free and $|G/n-1|\le\mathrm{gradtol}$ when scale is free,
-and the total log-shape score gate
-$|2n e^{-c^2/2}/(cZ(c))-c\sum_{|z_i|>c}(|z_i|-c)|\le10^{-3}$.
-Subdivision continues when these gates fail; no unchecked failed proposal is
-returned merely because its value enclosure is small.
+certificate for the supremum value. A finite solution is refined jointly in
+scale-standardized location, log standard deviation and log shape. The observed
+information must be positive definite on the free coordinates, with the
+relative correction meeting `tol` after contraction. For a flat location
+interval the midpoint is retained and the interval is checked at the refined
+scale and shape.
 
 Above $\max_i|x_i-\mu_N|/\sigma_N$, the exact constrained normal solution is
 inside the quadratic core and solves the concave nuisance problem; only the

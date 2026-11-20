@@ -676,7 +676,7 @@ inline SstdResult sstd_mle_impl(span x, double tol, int maxit, bool standardized
 
 
 // Classified holds: fixed shape/skew and either location or scale (or both).
-inline SstdResult sstd_mle(span x, double tol, int maxit,
+inline SstdResult sstd_mle(span x, double tol=1e-10, int maxit=200,
     double fixed_mean=std::numeric_limits<double>::quiet_NaN(),
     double fixed_sd=std::numeric_limits<double>::quiet_NaN(),
     double fixed_nu=std::numeric_limits<double>::quiet_NaN(),

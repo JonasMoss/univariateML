@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <vector>
 namespace umvl_binding {
-inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held nu_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held nu_arg = {}, double tol = 1e-10, int iterlim = 200) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -25,7 +25,7 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   const double held_nu=nu.supplied?nu.value:nan;
   if(nu.supplied && (!std::isfinite(held_nu)||!(held_nu>0)))return invalid_argument(fail("Invalid held `nu`."));
   if(nu.supplied)fixed.push_back("nu");
-  auto res = cppunivariate::ged_mle(x, gradtol, iterlim, held_mean, held_sd, held_nu);
+  auto res = cppunivariate::ged_mle(x, tol, iterlim, held_mean, held_sd, held_nu);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::GedStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

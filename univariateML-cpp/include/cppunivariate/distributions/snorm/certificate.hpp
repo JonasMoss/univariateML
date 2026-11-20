@@ -122,7 +122,7 @@ inline bool isolate(const Poly& p,int maxit,std::int64_t& work,std::vector<doubl
   std::vector<Interval> uncertain;bool covered=false;
   return isolate(p,maxit,work,points,budget,uncertain,covered);
 }
-inline SnormResult fit(span x,int maxit,double mean,double sd,double xi) {
+inline SnormResult fit(span x,double tol,int maxit,double mean,double sd,double xi) {
   const bool hm=!std::isnan(mean),hs=!std::isnan(sd),hx=!std::isnan(xi);
   SnormResult out{mean,sd,xi,NAN,0,SnormStatus::InvalidStart};
   if(maxit<=0){out.status=SnormStatus::BfgsFailure;out.stop_detail.budget_exhausted=true;return out;}
@@ -141,10 +141,10 @@ inline SnormResult fit(span x,int maxit,double mean,double sd,double xi) {
   const double eps=std::numeric_limits<double>::epsilon();
   SnormResult best=out;best.logLik=-INFINITY;
   std::vector<FitCandidate> candidates,finite;
-  bool arithmetic_failure=false;
+  bool arithmetic_failure=false, best_accurate=true;
   FitCandidate endpoint_witness,best_candidate;
   std::vector<double> uncertain_face_upper;
-  auto consider=[&](CPPUNIV_EXTENDED_REAL c,CPPUNIV_EXTENDED_REAL sigma,CPPUNIV_EXTENDED_REAL a,CPPUNIV_EXTENDED_REAL b,double lower=NAN,double upper=NAN,bool diagnostic=false) {
+  auto consider=[&](CPPUNIV_EXTENDED_REAL c,CPPUNIV_EXTENDED_REAL sigma,CPPUNIV_EXTENDED_REAL a,CPPUNIV_EXTENDED_REAL b,double lower=NAN,double upper=NAN,bool diagnostic=false,bool accurate=true) {
     if(!(a>0 && b>0 && sigma>0) || !std::isfinite(c+sigma+a+b)){arithmetic_failure=true;return;}
     const double mu=hm?mean:static_cast<double>(origin+unit*(c+m*(b-a)));
     const double sig=hs?sd:static_cast<double>(unit*sigma),skew=hx?xi:static_cast<double>(std::sqrt(b/a));
@@ -177,7 +177,11 @@ inline SnormResult fit(span x,int maxit,double mean,double sd,double xi) {
     lower=std::isnan(lower)?std::min(ll,actual):std::min(lower,std::min(ll,actual));
     upper=std::isnan(upper)?std::max(ll,actual):std::max(upper,std::max(ll,actual));
     if(upper>=best.logLik-pad)finite.push_back({{mu,sig,skew},lower-pad,upper+pad});
-    if(ll>best.logLik){best={mu,sig,skew,ll,0,SnormStatus::Ok};best_candidate={{mu,sig,skew},lower-pad,upper+pad};}
+    if(ll>best.logLik){
+      best={mu,sig,skew,ll,0,SnormStatus::Ok};
+      best_candidate={{mu,sig,skew},lower-pad,upper+pad};
+      best_accurate=accurate;
+    }
   };
   auto stopped=[&](bool budget) {
     auto r=best;r.status=SnormStatus::BfgsFailure;r.stop_detail.budget_exhausted=budget;
@@ -448,7 +452,13 @@ inline SnormResult fit(span x,int maxit,double mean,double sd,double xi) {
         if((k>0 && c<y[k-1]-1e-9) || (k<y.size() && c>y[k]+1e-9))return stopped(false);
         const auto mi=hm?Interval{mean,mean}:sum({origin,origin},scaled(sum(ci,scaled(product(si,wi),m)),unit));
         const auto sdi=hs?Interval{sd,sd}:scaled(si,unit),xi=radical(quotient(bi,ai));
-        for(const auto& interval:{mi,sdi,xi})if(!std::isfinite(interval.lo+interval.hi) || interval.hi-interval.lo>1e-7*(1+std::min(std::abs(interval.lo),std::abs(interval.hi))))return stopped(false);
+        // Bound public coordinates using the root interval; location uses
+        // the physical standard deviation as its floor.
+        const auto narrow=[&](const Interval& i, CPPUNIV_EXTENDED_REAL floor) {
+          const auto magnitude=i.lo*i.hi<=0 ? 0 : std::min(std::abs(i.lo),std::abs(i.hi));
+          return std::isfinite(i.lo+i.hi) && i.hi-i.lo<=tol*std::max(floor,magnitude);
+        };
+        const bool accurate=narrow(mi,sdi.lo) && narrow(sdi,0) && narrow(xi,0);
         const auto asi=product(si,ai),bsi=product(si,bi),total=sum(asi,bsi);
         if(!(asi.lo>0 && bsi.lo>0 && total.lo>0))return stopped(false);
         Interval loss{0,0};
@@ -461,7 +471,7 @@ inline SnormResult fit(span x,int maxit,double mean,double sd,double xi) {
         const Interval likelihood={n*(std::log(m)-std::log(total.hi)-std::log(unit))-loss.hi,
                                    n*(std::log(m)-std::log(total.lo)-std::log(unit))-loss.lo};
         if(!std::isfinite(likelihood.lo+likelihood.hi) || likelihood.hi-likelihood.lo>1e-8*(n+std::abs(likelihood.lo)))return stopped(false);
-        consider(c,sigma,sigma*a,sigma*b,static_cast<double>(likelihood.lo),static_cast<double>(likelihood.hi));
+        consider(c,sigma,sigma*a,sigma*b,static_cast<double>(likelihood.lo),static_cast<double>(likelihood.hi),false,accurate);
       }
     }
   }
@@ -526,6 +536,12 @@ inline SnormResult fit(span x,int maxit,double mean,double sd,double xi) {
     }
   }
   if(tied.size()>1){auto r=stopped(false);r.stop_detail.comparison_tie=true;r.stop_detail.candidates=tied;return r;}
+  if(best.status==SnormStatus::Ok && !best_accurate) {
+    auto failure=stopped(false);
+    record_accuracy(failure,tol,{best.mu,best.sigma,best.xi},
+      {hm?0:std::max(std::abs(best.mu),best.sigma),hs?0:best.sigma,hx?0:best.xi});
+    return failure;
+  }
   best.iterations=static_cast<int>(std::min(work,static_cast<std::int64_t>(2147483647)));return best;
 }
 } // namespace snorm_certificate

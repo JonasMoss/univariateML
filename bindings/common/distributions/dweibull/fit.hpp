@@ -6,7 +6,7 @@
 #include <limits>
 #include <string>
 namespace umvl_binding {
-inline FitResult fit_dweibull(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, double reltol = 1e-12, int iterlim = 200) {
+inline FitResult fit_dweibull(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape1 = shape1_arg;
@@ -19,13 +19,17 @@ inline FitResult fit_dweibull(cppunivariate::span x, Held shape1_arg = {}, Held 
     return invalid_argument(fail("`shape1` must lie strictly between 0 and 1."));
   if (shape2.supplied && !(b > 0 && std::isfinite(b)))
     return invalid_argument(fail("`shape2` must be finite and positive."));
-  const auto res = cppunivariate::dweibull_mle(x, reltol, iterlim, q, b);
+  const auto res = cppunivariate::dweibull_mle(x, tol, iterlim, q, b);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied}});
   };
+
+  if (res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)
+    return done(stop_failure(fail("Discrete Weibull coefficient accuracy cannot be established at the requested `tol`."),
+        res.stop_detail,outcome_payload(o),{"shape1","shape2"}));
 
   PayloadKind stop_kind=PayloadKind::None;
   switch(res.status) {
@@ -47,7 +51,7 @@ inline FitResult fit_dweibull(cppunivariate::span x, Held shape1_arg = {}, Held 
     case cppunivariate::DweibullStatus::InvalidData:
       return done(stopped_fail("Discrete Weibull requires nonempty, finite, nonnegative integer data."));
     case cppunivariate::DweibullStatus::InvalidControl:
-      return done(stopped_fail("`reltol` must be positive and `iterlim` at least 1."));
+      return done(stopped_fail("`tol` must be positive and `iterlim` at least 1."));
     case cppunivariate::DweibullStatus::PointMass:
       if (shape2.supplied)
         return done(stopped_fail("All observations are 0: with `shape2` held, the likelihood increases "

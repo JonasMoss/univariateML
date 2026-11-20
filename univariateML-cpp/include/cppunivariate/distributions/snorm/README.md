@@ -30,6 +30,7 @@ r:
   density: dsnorm
   sampler: rsnorm
   control:
+    tol: Relative coefficient accuracy requested for the finite fit.
     mean: "Optional held mean; NULL estimates it where the hold subset is supported."
     sd: "Optional held sd; NULL estimates it where the hold subset is supported."
     xi: "Optional held xi; NULL estimates it where the hold subset is supported."

@@ -5,7 +5,7 @@
 #include <cmath>
 #include <algorithm>
 namespace umvl_binding {
-inline FitResult fit_power(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}, double epsilon = 1.490116e-08) {
+inline FitResult fit_power(cppunivariate::span x, Held alpha_arg = {}, Held beta_arg = {}) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -24,10 +24,8 @@ inline FitResult fit_power(cppunivariate::span x, Held alpha_arg = {}, Held beta
     fixed.push_back("beta");
   }
 
-  if (!(epsilon>=0.0) || !std::isfinite(epsilon))
-    return invalid_argument(fail("`epsilon` must be nonnegative and finite."));
   auto res = cppunivariate::power_mle(
-      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, epsilon, alpha_held, beta_held);
+      cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, alpha_held, beta_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)

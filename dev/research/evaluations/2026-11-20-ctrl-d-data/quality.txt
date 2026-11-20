@@ -1,0 +1,17 @@
+PYTHONPATH=/home/jonas/Files/programming/univariateML.wt/ctrl-d/dev/validation python3 -m quality check ged lst std sged sstd huber bnbinom slash dweibull gpd triang snorm power binom
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+ged pass 
+lst pass 
+std pass 
+sged pass 
+sstd pass 
+huber pass 
+bnbinom pass 
+slash pass 
+dweibull pass 
+gpd pass 
+triang pass 
+snorm pass 
+power pass 
+binom pass 

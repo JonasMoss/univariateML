@@ -35,7 +35,7 @@ r:
   density: dbnbinom
   sampler: rbnbinom
   control:
-    gradtol: "Requested relative coefficient accuracy for all-free fits (default 1e-10); checked by the final observed-information Newton correction."
+    tol: "Requested relative coefficient accuracy for all-free fits (default 1e-10); checked by the final observed-information Newton correction."
     iterlim: "Work limit: 1 * min(iterlim, 100000) solver iterations per solve (scalar refinement, or BFGS per deterministic start); 128 * min(iterlim, 100000) certificate evaluations per scalar, pair, all-free stationary cover, alpha-interval cover, negative-binomial face, or supporting-polynomial certificate (including each Bernstein coefficient update). Pair root proposals and isolation have the same solver-iteration limit."
 log_density: "loggamma(size+x)-loggamma(size)-loggamma(x+1)+loggamma(alpha+size)+loggamma(beta+x)-loggamma(alpha+size+beta+x)-loggamma(alpha)-loggamma(beta)+loggamma(alpha+beta)"
 limits:
@@ -201,7 +201,7 @@ samples instead have only the excluded point-mass supremum described above.
 
 The implementation expands a bracket in log shape, then bisects while
 preserving positive and negative score endpoints. It accepts only a bracket
-of width at most $\min(\mathtt{gradtol},10^{-8})$ and returns its midpoint.
+of width at most $\min(\mathtt{tol},10^{-8})$ and returns its midpoint.
 A sign is used only beyond $128\epsilon$ times the average sum of absolute
 digamma terms. An unresolved midpoint triggers quarter-point comparisons;
 unresolved progress or an unrepresentable shape stops numerically.
@@ -309,7 +309,7 @@ the scalar-score uncertainty. The contraction theorem proves existence and
 uniqueness of a stationary point. Negative definiteness throughout $B$
 proves that it is its strict maximum. A second contraction box has relative
 radius $\min(\mathrm{tol}_{\rm cover},10^{-8})/4$, with
-$\mathrm{tol}_{\rm cover}=\max(\mathtt{gradtol},10^{-8})$; both boxes share the center, so
+$\mathrm{tol}_{\rm cover}=\max(\mathtt{tol},10^{-8})$; both boxes share the center, so
 uniqueness identifies the same root and proves the coarse coefficient enclosure.
 Only boxes contained in these certified root neighborhoods can bypass the
 likelihood/score exclusions. Once the entire rectangle is covered, all global

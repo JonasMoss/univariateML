@@ -119,7 +119,7 @@ TEST_CASE("trgamma: faces from limit-model data") {
   auto p = cppunivariate::trgamma_mle(mltest::as_span(power));
   CHECK(p.status == cppunivariate::TrGammaStatus::PowerBoundary);
   CHECK(p.scale == doctest::Approx(power.back()).epsilon(1e-14));
-  CHECK(p.logLik == doctest::Approx(cppunivariate::power_mle(mltest::as_span(power), 0.0).logLik)
+  CHECK(p.logLik == doctest::Approx(cppunivariate::power_mle(mltest::as_span(power)).logLik)
                         .epsilon(1e-12));
   const std::vector<double> three = {1, 2, 3};
   CHECK(cppunivariate::trgamma_mle(mltest::as_span(three)).status ==
@@ -234,7 +234,7 @@ TEST_CASE("trgamma: seeded samples agree with a dense-grid profile reference") {
         sd = std::sqrt(sd);
         const double ref = dense_reference(x, std::log(1e-3 / sd), std::log(1e5 / sd));
         const double ln = cppunivariate::lognormal_mle(mltest::as_span(x)).logLik;
-        const double pw = cppunivariate::power_mle(mltest::as_span(x), 0.0).logLik;
+        const double pw = cppunivariate::power_mle(mltest::as_span(x)).logLik;
         const double face = std::max(ln, pw);
         CHECK(fit.logLik >= ref - 1e-8);
         if (ref > face + 1e-8 * n + 1e-6) {

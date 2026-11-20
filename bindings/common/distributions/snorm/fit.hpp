@@ -4,10 +4,11 @@
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_snorm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held xi_arg = {}, int iterlim = 200) {
+inline FitResult fit_snorm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held xi_arg = {}, double tol = 1e-10, int iterlim = 200) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  if (!(tol > 0) || !std::isfinite(tol)) return invalid_argument(fail("Invalid `tol`: requires a finite positive number."));
   if(iterlim<=0)return invalid_argument(fail("Invalid `iterlim`: requires a positive integer."));
   const Held mean = mean_arg;
   const Held sd = sd_arg;
@@ -20,7 +21,7 @@ inline FitResult fit_snorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   if(sd.supplied && (!(std::isfinite(held_sd) && held_sd>0))) return invalid_argument(fail("Invalid held `sd`: requires a finite value in its parameter domain."));
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) return invalid_argument(fail("Invalid held `xi`: requires a finite value in its parameter domain."));
-  auto res=cppunivariate::snorm_mle(x,1.220703e-4,iterlim,held_mean,held_sd,held_xi);
+  auto res=cppunivariate::snorm_mle(x,tol,iterlim,held_mean,held_sd,held_xi);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"xi",xi_arg.supplied}});

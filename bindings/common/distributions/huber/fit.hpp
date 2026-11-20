@@ -3,7 +3,7 @@
 #include "cppunivariate/distributions/huber/mle.hpp"
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_huber(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held epsilon_arg = {}, double gradtol = 1e-10, int iterlim = 200) {
+inline FitResult fit_huber(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg = {}, Held epsilon_arg = {}, double tol = 1e-10, int iterlim = 200) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -21,7 +21,7 @@ inline FitResult fit_huber(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   const double e=epsilon.supplied ? epsilon.value : nan;
   if (epsilon.supplied && (!(e>0) || !std::isfinite(e)))
     return invalid_argument(fail("`epsilon` must be positive and finite."));
-  auto r=cppunivariate::huber_mle(x,gradtol,iterlim,e,m,s);
+  auto r=cppunivariate::huber_mle(x,tol,iterlim,e,m,s);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -34,7 +34,7 @@ inline FitResult fit_huber(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   if(r.stop_detail.budget_exhausted)return done(stop_failure(fail("Huber certificate exhausted its work budget; raising `iterlim` may resolve it."),r.stop_detail,outcome_payload(o),{"mu","sigma","epsilon"}));
   if(r.stop_detail.comparison_tie)return done(comparison_payload(stop_failure(fail("Huber MLE failed to converge."),r.stop_detail,PayloadKind::Comparison,{"mu","sigma","epsilon"}),o,cppunivariate::comparison_choice(r),{{"mu",mu_arg},{"sigma",sigma_arg},{"epsilon",epsilon_arg}}));
   if (r.status==cppunivariate::HuberStatus::InvalidData)
-    return done(fail("Huber requires finite data, positive finite `gradtol` and positive `iterlim`."));
+    return done(fail("Huber requires finite data, positive finite `tol` and positive `iterlim`."));
   if (r.status==cppunivariate::HuberStatus::UnboundedLikelihood)
     return done(nomle("Huber likelihood is unbounded for constant data at the fitted or held location."));
   if (r.status==cppunivariate::HuberStatus::NormalLimit)

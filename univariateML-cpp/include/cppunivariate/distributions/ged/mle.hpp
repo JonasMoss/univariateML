@@ -192,7 +192,9 @@ inline GedResult ged_mle_impl(span x, double tol, int maxit, bool finite_only=fa
   GedFitCost cost{span{z.data(), z.size()},objective_divisor};
   finite_diff_cost<GedFitCost> fd{cost};
   BfgsControl ctl;
-  ctl.grad_tol = tol;
+  // BFGS nominates a basin; the final observed-information correction
+  // checks accuracy in public coefficient units.
+  ctl.grad_tol = 1.220703e-4;
   ctl.maxit = maxit;
   for (double nu0 : {1.5, 2.0, 4.0, 8.0}) {
     const double phi0[3] = {0.0, 0.0, std::log(nu0 - 1.0)};
@@ -259,6 +261,35 @@ inline double conditional_loglik(span x,double mean,double sd,double nu) {
   return ll.value;
 }
 
+// With shape above one, the signed residual-power score is strictly
+// decreasing in location. Normalize residuals by the sample radius: the
+// held scale is a common positive factor and does not enter its sign.
+inline double convex_location(span sorted,double nu,int maxit,double tol,double scale) {
+  double lo=sorted[0],hi=sorted[sorted.size()-1];
+  const double range=hi-lo;
+  const auto target=[&](double location) {
+    return tol*(scale>0 ? std::max(std::abs(location),scale) : range);
+  };
+  for (int it=0;it<solver_budget(maxit);++it) {
+    const double mid=lo/2+hi/2;
+    if (mid==lo || mid==hi ||
+        hi-lo<=std::min(target(mid),8*std::numeric_limits<double>::epsilon()*range))
+      break;
+    const double unit=std::max({std::abs(sorted[0]-mid),
+        std::abs(sorted[sorted.size()-1]-mid),std::numeric_limits<double>::denorm_min()});
+    CPPUNIV_EXTENDED_REAL score=0;
+    for (double v:sorted) {
+      const double residual=(v-mid)/unit;
+      const double power=std::pow(std::abs(residual),nu-1);
+      score+=residual>0 ? power : -power;
+    }
+    if (score>0) lo=mid;
+    else hi=mid;
+  }
+  const double mid=lo/2+hi/2;
+  return hi-lo<=target(mid) ? mid : NAN;
+}
+
 inline GedResult conditional(span x,double nu,double mean,double sd,int maxit=200) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
@@ -279,11 +310,9 @@ inline GedResult conditional(span x,double nu,double mean,double sd,int maxit=20
     else if(nu==1)m=y[y.size()/2];
     else if(nu==2)m=norm_detail::moments(x).mean;
     else {
-      double lo=y.front(),hi=y.back();
-
-      for(int it=0;it<maxit;++it){const double mid=lo/2+hi/2;if(mid==lo || mid==hi || hi-lo<=8*std::numeric_limits<double>::epsilon()*(y.back()-y.front()))break;const double unit=std::max(std::max(std::abs(y.front()-mid),std::abs(y.back()-mid)),std::numeric_limits<double>::denorm_min());CPPUNIV_EXTENDED_REAL score=0;for(double v:y){const double d=(v-mid)/unit;score+=(d>0?1:-1)*std::pow(std::abs(d),nu-1);}if(score>0)lo=mid;else hi=mid;}
-      if(hi-lo>1e-10*(y.back()-y.front()))return {nan,nan,nu,nan,maxit,GedStatus::BfgsFailure};
-      m=lo/2+hi/2;
+      m=convex_location({y.data(),y.size()},nu,maxit,1e-10,0);
+      if (!std::isfinite(m))
+        return {nan,nan,nu,nan,maxit,GedStatus::BfgsFailure};
     }
   }
   double s=sd;
@@ -491,7 +520,17 @@ namespace cppunivariate {
 // Keep local convergence separate from the global/accuracy certificate.
 inline GedResult ged_uncertified(GedResult certificate,span x,double tol,int maxit,
     double mean,double sd,double nu) {
-  if(certificate.status==GedStatus::Ok || certificate.status==GedStatus::UniformBoundary ||
+  if (certificate.status==GedStatus::Ok) {
+    // A global shape comparison does not set local coefficient accuracy.
+    if (!ged_local_accuracy(certificate,x,mean,sd,nu,tol,maxit)) {
+      certificate.status=GedStatus::TransformFailure;
+      certificate.certified=false;
+    } else {
+      certificate.logLik=ged_detail::conditional_loglik(x,certificate.mu,certificate.sigma,certificate.nu);
+    }
+    return certificate;
+  }
+  if(certificate.status==GedStatus::UniformBoundary ||
       certificate.status==GedStatus::InvalidStart || certificate.status==GedStatus::InvalidShape ||
       (certificate.status==GedStatus::TransformFailure && certificate.search_failed) ||
       certificate.proved_tie)return certificate;
@@ -522,7 +561,7 @@ inline GedResult ged_uncertified(GedResult certificate,span x,double tol,int max
   searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;return searched;
 }
 
-inline GedResult ged_mle(span x,double tol,int maxit) {
+inline GedResult ged_mle(span x,double tol=1e-10,int maxit=200) {
   if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,0,GedStatus::InvalidStart};
 
   if(!x.empty() && tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(x[0]) &&

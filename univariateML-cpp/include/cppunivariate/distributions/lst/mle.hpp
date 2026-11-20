@@ -207,20 +207,25 @@ inline LstResult lst_mle_fixed_df(span x, double df, double tol, int maxit) {
     const double p[2] = {mu,std::log(scale)};
     double g[2];
     cost.gradient(p,g);
-    // Location score is measured in units of the current scale, making
-    // the stopping rule affine invariant; log-scale score is dimensionless.
+    // EM supplies a nomination. Root inclusion establishes global
+    // coverage, and the information correction checks public accuracy.
     const double score = std::hypot(scale*g[0],g[1]);
-    if (std::isfinite(score) && score <= tol) {
-      double fitted_mu=center+unit*mu,fitted_scale=unit*scale;
-      if(df>=1 && !t_location_detail::joint_inclusion(x,df,maxit,fitted_mu,fitted_scale)) {
-        LstResult candidate{center+unit*mu,unit*scale,df,NAN,it,LstStatus::Ok};candidate.certified=false;
-        if(!t_local_accuracy::refine(candidate,x,NAN,NAN,df,tol,maxit,false,candidate.df)){candidate.status=LstStatus::NumericalFailure;candidate.accuracy_failure=true;{if(candidate.sigma>0 && candidate.df>0)record_accuracy(candidate,tol,{candidate.mu,candidate.sigma,candidate.df},{std::max(std::abs(candidate.mu),candidate.sigma),candidate.sigma,0});else{candidate.stop_detail.accuracy_stop=AccuracyStop::None;candidate.stop_detail.attainable_tol=NAN;}}}
+    if (std::isfinite(score) && score <= std::max(tol,1e-6)) {
+      LstResult candidate{center+unit*mu,unit*scale,df,-cost(p)-n*std::log(unit),
+                          it,LstStatus::Ok};
+      candidate.certified=df>=1 &&
+          t_location_detail::joint_inclusion(x,df,maxit,candidate.mu,candidate.sigma);
+      if (!t_local_accuracy::refine(candidate,x,NAN,NAN,df,tol,maxit,false,candidate.df)) {
+        candidate.status=LstStatus::NumericalFailure;
+        candidate.accuracy_failure=true;
+        record_accuracy(candidate,tol,{candidate.mu,candidate.sigma,candidate.df},
+                        {std::max(std::abs(candidate.mu),candidate.sigma),candidate.sigma,0});
+      }
+      if (!candidate.certified || candidate.accuracy_failure) {
         t_shape_detail::retain_point(x,candidate.mu,candidate.sigma,df,false,candidate.stop_detail);
         candidate.stop_detail.loglik_upper=INFINITY;
-        return candidate;
       }
-      const double refined[2]={(fitted_mu-center)/unit,std::log(fitted_scale/unit)};
-      return {fitted_mu,fitted_scale,df,-cost(refined)-n*std::log(unit),it,LstStatus::Ok};
+      return candidate;
     }
     if (it == maxit) break;
     double sw = 0.0, sx = 0.0;
@@ -277,7 +282,9 @@ inline LstResult lst_mle_impl(span x, double tol, int maxit) {
   for (double v : y) variance += (v-mean)*(v-mean)/n;
   const double normal = -0.5*n*(std::log(2.0*cppunivariate::pi*variance)+1.0);
   BfgsControl ctl;
-  ctl.grad_tol = tol;
+  // BFGS nominates a basin; the final observed-information correction
+  // checks accuracy in public coefficient units.
+  ctl.grad_tol = 1.220703e-4;
   ctl.maxit = maxit;
   BfgsResult best;
   best.f = INFINITY;
@@ -538,7 +545,9 @@ inline LstResult lst_mle_certified(span x,double tol,int maxit,std::int64_t budg
   maxit = static_cast<int>(solver_budget(maxit));
   if(!(tol>0)||!std::isfinite(tol))return {NAN,NAN,NAN,NAN,0,LstStatus::InvalidStart};
   if(budget<0)budget=certificate_budget(maxit);
-  const auto c=t_certificate(x,1,budget,maxit,std::min(1e-6,std::max(1e-7,tol)));
+  // Keep the global enclosure at basin resolution. The representative's
+  // coefficient accuracy is established by the information correction below.
+  const auto c=t_certificate(x,1,budget,maxit,1e-6);
   LstStatus status=LstStatus::NumericalFailure;
   switch(c.status){
     case TCertificateStatus::Finite:case TCertificateStatus::Cauchy:status=LstStatus::Ok;break;
@@ -552,9 +561,17 @@ inline LstResult lst_mle_certified(span x,double tol,int maxit,std::int64_t budg
   }
   LstResult r{c.mu,c.scale,c.nu,c.logLik,c.profiles,status};r.stop_detail=c.stop_detail;
   if(status==LstStatus::Ok&&r.df==1)r.restricted=16u;
+  // The global enclosure identifies the maximizer's basin. Refine its
+  // representative with a positive-definite observed-information correction.
+  if (r.status==LstStatus::Ok &&
+      !t_local_accuracy::refine(r,x,NAN,NAN,NAN,tol,maxit,false,r.df)) {
+    r.status=LstStatus::NumericalFailure;
+    r.accuracy_failure=true;
+    record_accuracy(r,tol,{r.mu,r.sigma,r.df},{std::max(std::abs(r.mu),r.sigma),r.sigma,r.df});
+  }
   return r;
 }
-inline LstResult lst_mle(span x,double tol,int maxit) {
+inline LstResult lst_mle(span x,double tol=1e-10,int maxit=200) {
   auto result = [&]() -> LstResult {
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=lst_mle_certified(x,tol,maxit);

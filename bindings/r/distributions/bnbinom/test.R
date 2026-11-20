@@ -88,7 +88,7 @@ test_that("model selection tolerates a failed beta negative binomial fit", {
 
 test_that("bnbinom: P3 unfinished optimizer stops", {
   x <- c(0,1,2,3,6,12,24)
-  expect_error(mlbnbinom(x, iterlim=1, gradtol=1e-10, alpha=2,beta=3),
+  expect_error(mlbnbinom(x, iterlim=1, tol=1e-10, alpha=2,beta=3),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -118,7 +118,7 @@ test_that("one-free-shape certificates recover exact roots and structured stops"
 })
 
 test_that("scalar cancellation is a structured numerical stop", {
-  e <- tryCatch(mlbnbinom(rep(1L,8),size=1,beta=1,gradtol=1e-20),error=identity)
+  e <- tryCatch(mlbnbinom(rep(1L,8),size=1,beta=1,tol=1e-20),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_equal(e$kind,"numerical")
   expect_equal(nrow(e$candidates),1L)

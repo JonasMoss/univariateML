@@ -16,7 +16,7 @@ int main(int argc,char** argv) {
   umvl_binding::FitResult r;
   if(family=="sged")r=umvl_binding::fit_sged({x.data(),x.size()},h[0],h[1],h[2],h[3],1e-10);
   if(family=="sstd")r=umvl_binding::fit_sstd({x.data(),x.size()},h[0],h[1],h[2],h[3],1e-10);
-  if(family=="snorm")r=umvl_binding::fit_snorm({x.data(),x.size()},h[0],h[1],h[2],200);
+  if(family=="snorm")r=umvl_binding::fit_snorm({x.data(),x.size()},h[0],h[1],h[2],1e-10,200);
   auto number=[](double v){if(std::isfinite(v))std::cout<<v;else std::cout<<"null";};
   std::cout<<"{\"index\":"<<index<<",\"error\":"<<std::quoted(r.error)<<",\"parameters\":[";
   std::vector<double> p;for(auto v:r.estimates){if(!p.empty())std::cout<<",";p.push_back(v.second);number(v.second);}
