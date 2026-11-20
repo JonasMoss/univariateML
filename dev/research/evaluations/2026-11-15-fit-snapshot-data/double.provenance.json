@@ -292,6 +292,27 @@
    "commit": "1e073a2d",
    "dirty": true,
    "reason": "burr cluster takes tol = 1e-10 with coefficient-accuracy rules (step 5c job 2c, TASK-150.1.4)"
+  },
+  {
+   "families": [
+    "binom",
+    "bnbinom",
+    "dweibull",
+    "ged",
+    "gpd",
+    "huber",
+    "lst",
+    "power",
+    "sged",
+    "slash",
+    "snorm",
+    "sstd",
+    "std",
+    "triang"
+   ],
+   "commit": "44fb13c8",
+   "dirty": true,
+   "reason": "location-scale cluster and the rest take tol = 1e-10 (step 5c job 2d, TASK-150.1.5); only the job's own families (its other snapshot families predate the ctrl-c merge)"
   }
  ]
 }
