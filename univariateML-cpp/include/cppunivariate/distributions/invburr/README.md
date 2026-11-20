@@ -32,13 +32,8 @@ r:
   control:
     shape2: Known positive finite coefficient; NULL estimates it.
     shape1: Known positive finite coefficient; NULL estimates it.
-    abstol: Absolute Newton step tolerance in `log(shape2)` when scale is fixed.
-    gradtol: Positive delegate tolerance; the all-free certificate uses deterministic enclosure widths.
+    tol: Requested relative accuracy of every free coefficient.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
-    shape10: Optional positive starting shape1; `NULL` uses automatic starts.
-    shape20: Optional positive starting shape2; `NULL` uses automatic starts.
-    scale0: Optional positive starting scale; `NULL` uses automatic starts.
-    reltol: Positive legacy relative tolerance, validated for compatibility by the all-free certificate.
 log_density: log(shape1) + log(shape2) - log(x) + shape2*log(scale/x) - (shape1+1)*log(1+(scale/x)**shape2)
 limits:
   - name: unbounded likelihood
@@ -204,11 +199,9 @@ equals $s$. Holding $c$ and $s$ leaves an explicit estimate of $k$.
 
 Supply `scale = s` to estimate only the shapes. The fixed-scale path reciprocates observations and scale, then delegates
 to the certified Burr scalar profile, including its reciprocal Jacobian.
-The Newton proposal becomes certified only after the independent
-root-bracket and coefficient checks; an unclosed check can retain it uncertified. Starting
-controls `shape10`, `shape20`, `scale0` and positive tolerances remain
-accepted and validated for compatibility. The all-free certificate uses its
-own deterministic proposals and enclosure widths. Detected limits stop with
+For held scale, the same Burr profile is evaluated with the log ratios
+negated at the original held scale. Signed endpoint scores and the mapped
+coefficient widths certify the bisected result at `tol`. Detected limits stop with
 `mlinvweibull` or `mlpower`; unresolved Burr comparisons retain the converged finite search and transport
 its `certified=false` flag through the reciprocal map.
 
@@ -267,7 +260,9 @@ The held-scale two-shape reduction now inherits the
 [Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
 including strict endpoint score comparisons, coefficient accuracy checks,
 practical floating-point margins and the delegate's uncertified fallback.
-Reciprocation maps the held-scale Pareto face to a power face and adds the reciprocal Jacobian to likelihood bounds. Direct fixed-scale and held-subset entrypoints share this path.
+The certificate uses the original observations and negated log ratios.
+It maps the Pareto face to a power face at the exact held scale, including
+the endpoint penalty for observations tied with that scale.
 
 Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.
 
@@ -275,9 +270,7 @@ With first shape held, the fitter instead works directly on negative centered
 log ratios of the original observations. Strict concavity in power and power
 times log scale gives a unique root without rounding reciprocals. Scale
 restoration uses expm1, and its represented likelihood is checked against the
-latent optimum. With scale held and both shapes free, successful reciprocal
-certificates are refined against the original log-ratio score, removing the
-historical proposal's looser coefficient tolerance.
+latent optimum.
 
 The held-first-shape route retains finite estimates with an explicit uncertified
 flag when the binary64 scale grid prevents transfer of its latent likelihood

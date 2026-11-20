@@ -1,0 +1,31 @@
+{
+  "source_sha256": "dd878c2b3465a3cfb5384606490a91dc626c04d2152a67d82871008e7aa985a9",
+  "commit": "d5ca6052d3ba9f498df8815466844d8449857a1c",
+  "dirty": true,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    "-std=gnu++17",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "no_long_double": true,
+  "cpu_limit": 300,
+  "families": [
+    "betapr",
+    "bhatt",
+    "burr",
+    "fpareto",
+    "gb2",
+    "genbeta",
+    "gengamma",
+    "invburr",
+    "invparalogis",
+    "invpareto",
+    "invtrgamma",
+    "paralogis",
+    "pareto2",
+    "pareto3",
+    "pareto4",
+    "trgamma"
+  ]
+}

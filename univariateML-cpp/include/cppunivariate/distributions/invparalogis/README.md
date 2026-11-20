@@ -25,8 +25,7 @@ r:
   sampler: rinvparalogis
   control:
     shape: Known positive finite coefficient; NULL estimates it.
-    shape0: Optional positive finite starting value; NULL uses the automatic start.
-    gradtol: Tolerance for the reciprocal paralogistic numerical proposal; a successful proposal is uncertified when the global certificate does not close.
+    tol: Requested relative accuracy of every free coefficient.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 limits:
   - name: unbounded likelihood

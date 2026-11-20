@@ -1,0 +1,24 @@
+betapr: 212 compared, 49 changed, maximum coefficient move (4.543170061594504e-10, 'class', 'ties', 'scale')
+bhatt: 173 compared, 0 changed, maximum coefficient move (0.0, 'golden', 'golden', 'sigma')
+burr: 220 compared, 26 changed, maximum coefficient move (4.407858783328835e-09, 'archive', '009884', 'shape2')
+fpareto/archive/001625 {'min': 0.0, 'shape2': 1.9802932530684678} unresolved/{'certified': False, 'kind': 'failure', 'reason': 'unresolved', 'unique': True} -> numerical/{'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True}
+fpareto/archive/001628 {'min': 0.0, 'shape2': 1.9802932530684678} unresolved/{'certified': False, 'kind': 'failure', 'reason': 'unresolved', 'unique': True} -> numerical/{'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True}
+fpareto: 572 compared, 15 changed, maximum coefficient move (2.3091032136353825e-11, 'archive', '010027', 'shape3')
+gb2: 572 compared, 14 changed, maximum coefficient move (2.2181020612271847e-11, 'archive', '002113', 'scale')
+genbeta: 220 compared, 0 changed, maximum coefficient move (0.0, 'resample', 'n7-s0', 'shape3')
+gengamma: 28 compared, 0 changed, maximum coefficient move (0.0, 'golden', 'golden', 'sigma')
+invburr: 220 compared, 34 changed, maximum coefficient move (1.746636001446626e-13, 'archive', '003577', 'shape1')
+invparalogis: 116 compared, 42 changed, maximum coefficient move (3.405803302211299e-14, 'archive', '003922', 'scale')
+invpareto: 116 compared, 0 changed, maximum coefficient move (0.0, 'resample', 'n3-s2', 'shape')
+invtrgamma: 180 compared, 0 changed, maximum coefficient move (0.0, 'resample', 'n7-s3', 'shape2')
+paralogis: 104 compared, 42 changed, maximum coefficient move (3.9720784094505796e-13, 'class', 'huge', 'scale')
+pareto2: 116 compared, 0 changed, maximum coefficient move (0.0, 'resample', 'n7-s3', 'shape')
+pareto3: 104 compared, 0 changed, maximum coefficient move (0.0, 'resample', 'n7-s3', 'shape')
+pareto4: 204 compared, 14 changed, maximum coefficient move (2.1497771069301532e-14, 'archive', '005717', 'shape2')
+trgamma: 204 compared, 0 changed, maximum coefficient move (0.0, 'golden', 'golden', 'shape2')
+betapr class/ties baseline relative errors 2.0206643e-10, 2.388511e-10, 4.5431704e-10
+betapr class/ties updated relative errors 3.440141e-17, 5.3063212e-17, 3.5583687e-17
+000688: relative errors 3.0099806e-16, 4.6033937e-16, certified=True
+000689: relative errors 5.0831263e-15, 1.2596621e-14, certified=True
+009424: relative errors 1.1891638e-15, 1.0396439e-14, certified=True
+009884: relative errors 2.4348629e-15, 2.0524535e-14, certified=True

@@ -43,7 +43,7 @@ r:
   sampler: rgenbeta
   control:
     scale: Known positive finite upper endpoint, strictly above every observation.
-    gradtol: Relative accuracy of every free coefficient. Held shape1 = 1 inherits Kumaraswamy bounds.
+    tol: Requested relative accuracy of every free coefficient.
     iterlim: "Work limit: min(iterlim, 100000) iterations per solve and 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape3)-log(x)-loggamma(shape1)-loggamma(shape2)+loggamma(shape1+shape2)+shape1*shape3*log(x/scale)+(shape2-1)*log(1-(x/scale)**shape3)
 limits:
@@ -234,7 +234,7 @@ face retaining $q$, and the power face retaining $b$, exclude both tails
 when a finite lower witness dominates them. Complete interval score and
 curvature bounds then isolate and compare all surviving compact maxima,
 without a unimodality assumption. Relative enclosures of both free
-coefficients must be narrower than $\min(\mathrm{gradtol},10^{-9})/2$.
+coefficients must be narrower than $\min(\mathrm{tol},10^{-9})/2$.
 Unresolved face neighborhoods, coefficient signs and arithmetic stop
 numerically; exhausted coverage stops with a budget. No limit face is
 selected by this route. The
@@ -251,7 +251,7 @@ $-nq/a^2$ when $q<1$. The score changes from positive to negative at the
 two ends, so signed bracketing and bisection give the unique global maximum,
 including constant samples. The power bracket is refined to relative width
 $2\cdot10^{-13}$. Acceptance also requires opposite signs outside a practical
-rounding allowance at the proposal times $1\pm\min(\mathrm{gradtol},10^{-10})/4$.
+rounding allowance at the proposal times $1\pm\min(\mathrm{tol},10^{-10})/4$.
 Strict concavity then encloses the unique maximizer within that relative
 coefficient radius, conditional on the computed comparisons. Nonconvergence,
 unresolved signs or an unrepresentable bracket stops numerically and retains
@@ -286,7 +286,7 @@ global maximum. Uniform bounds exclude both power tails, including arbitrary
 variation in $q$. On the remaining interval, bounds on the profile score and
 curvature exclude monotone cells and minima, and isolate every retained
 maximum in a strictly concave cell. Both coefficients are enclosed to relative
-width at most $\min(\mathrm{gradtol},10^{-9})/2$. Overlapping objective
+width at most $\min(\mathrm{tol},10^{-9})/2$. Overlapping objective
 intervals retain their finite witnesses as an unresolved comparison;
 certificate exhaustion stops as a budget; uncertain signs or failed inner
 solves stop numerically. Finite witnesses remain diagnostic.
@@ -384,7 +384,7 @@ $\log(1-(x/\mathrm{scale})^{\mathrm{shape3}})$. For held shape2 = 2 and
 shape3 = 1, setting $c=-\operatorname{mean}\log(x/\mathrm{scale})$ gives
 $1/p+1/(p+1)=c$, hence $p=(2-c+\sqrt{c^2+4})/(2c)$ for shape1. This
 strictly decreasing score has a unique finite root for every $c>0$.
-`gradtol` defaults to `1e-10`.
+`tol` defaults to `1e-10`.
 
 Large beta shapes amplify rounding in the powered log ratio even when the
 conditional solve has converged. The final likelihood retains that nonlinear

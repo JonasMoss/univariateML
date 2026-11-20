@@ -74,14 +74,14 @@ TEST_CASE("burr n20 actuar multistart oracle fixtures") {
  }
 }
 
-TEST_CASE("burr fixed scale historical regression and equivariance") {
+TEST_CASE("burr fixed-scale profile reference and equivariance") {
  const auto golden = mltest::load_golden(std::string(CPPUNIV_DISTRIBUTIONS_DIR) + "/burr/fixed-scale-golden.json");
  const auto &x = golden.data;
  auto r = cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1.0);
  REQUIRE(r.status == cppunivariate::BurrStatus::Ok);
- CHECK(std::abs(r.shape1 - 1.077036666067376) < 1e-10);
- CHECK(std::abs(r.shape2 - 1.9857562895421235) < 1e-10);
- CHECK(std::abs(r.logLik - -614.507368787803) < 1e-10);
+ CHECK(std::abs(r.shape1 - golden.estimates.at("shape1")) < 1e-10);
+ CHECK(std::abs(r.shape2 - golden.estimates.at("shape2")) < 1e-10);
+ CHECK(std::abs(r.logLik - golden.logLik) < 1e-10);
  auto y=x; for (double &v : y) v*=3.0;
  auto s = cppunivariate::burr_mle_fixed_scale(mltest::as_span(y),3.0);
  CHECK(s.scale == 3.0);
@@ -278,8 +278,8 @@ TEST_CASE("burr: certificate arithmetic and failure gates") {
   cert::Matrix singular,inverse;
   CHECK_FALSE(cert::inverse(singular,inverse,3));
   const std::vector<double> x={.2,.5,1,2,4};
-  auto a=cppunivariate::burr_mle_certified(mltest::as_span(x),1e-8,1000,NAN,NAN,NAN,1e-12,0);
-  const auto proposal=cppunivariate::burr_mle_legacy(mltest::as_span(x),1e-8,1000,NAN,NAN,NAN,1e-12,true);
+  auto a=cppunivariate::burr_mle_certified(mltest::as_span(x),1e-8,1000,0);
+  const auto proposal=cppunivariate::burr_mle_legacy(mltest::as_span(x),1e-8,1000,true);
   check_burr_refutation_witness(a,proposal);
   CHECK(proposal.scale/(1-1e-8)<x.front());
   for(const std::vector<double>& bad:std::vector<std::vector<double>>{{},{1},{0,1},{1,INFINITY},{1,NAN}})
@@ -330,7 +330,7 @@ TEST_CASE("burr: structured limits and budget witnesses preserve units") {
   CHECK(face.stop_detail.limit_coef[0]==doctest::Approx(x.size()/(std::log(2.)+std::log(4.)+std::log(8.))));
   CHECK(face.stop_detail.limit_coef[1]==1);
   CHECK(face.stop_detail.limit_loglik==face.logLik);
-  const auto budget=cppunivariate::burr_mle_certified(mltest::as_span(x),1e-8,1000,NAN,NAN,NAN,1e-12,2);
+  const auto budget=cppunivariate::burr_mle_certified(mltest::as_span(x),1e-8,1000,2);
   REQUIRE(budget.status==cppunivariate::BurrStatus::CertificateBudget);
   REQUIRE(budget.stop_detail.candidates.size()==3);
   const auto& c=budget.stop_detail.candidates.back();
@@ -419,7 +419,7 @@ TEST_CASE("Burr held-scale sign uncertainty retains its converged search") {
 TEST_CASE("Burr uncertified fallback rejects a refuted or failed search") {
  const std::vector<double> x{.2,.5,1,2,4};
  const auto data=mltest::as_span(x);
- auto candidate=cppunivariate::burr_mle_legacy(data,1e-8,1000,NAN,NAN,NAN,1e-12,true);
+ auto candidate=cppunivariate::burr_mle_legacy(data,1e-8,1000,true);
  REQUIRE(candidate.status==cppunivariate::BurrStatus::Ok);
  cppunivariate::BurrMLE certificate{NAN,NAN,NAN,NAN,0,cppunivariate::BurrStatus::CertificateBudget};
  auto fallback=cppunivariate::burr_uncertified(certificate,candidate,data);
@@ -493,12 +493,12 @@ TEST_CASE("Burr uncertified held-scale root meets an explicit accuracy target") 
 TEST_CASE("Burr large-shape coefficient box has a separated local refutation") {
   for(const auto& fixture:burr_certificate_fixtures)if(fixture.name=="nearly-constant") {
     const auto x=mltest::as_span(fixture.x);
-    const auto proposed=cppunivariate::burr_mle_legacy(x,1e-8,1000,NAN,NAN,NAN,1e-12,true);
+    const auto proposed=cppunivariate::burr_mle_legacy(x,1e-8,1000,true);
     REQUIRE(proposed.status==cppunivariate::BurrStatus::Ok);
     CHECK(cppunivariate::burr_shape_box_refuted(x,proposed.shape1,proposed.shape2,1e-8));
   }
   const std::vector<double> x{.2,.5,1,2,4};
-  const auto proposed=cppunivariate::burr_mle_legacy(mltest::as_span(x),1e-8,1000,NAN,NAN,NAN,1e-12,true);
+  const auto proposed=cppunivariate::burr_mle_legacy(mltest::as_span(x),1e-8,1000,true);
   REQUIRE(proposed.status==cppunivariate::BurrStatus::Ok);
   // The fixed-scale all-above theorem excludes every stationary point in
   // this entire requested scale box, independently of the other coefficients.
@@ -664,4 +664,14 @@ TEST_CASE("burr shape1 held keeps the log spread of near-constant data") {
  REQUIRE(r.status==cppunivariate::BurrStatus::Ok);
  CHECK(std::abs(r.shape2/875130348796.0063-1)<1e-12);
  CHECK(std::abs(r.scale/2.042845496593945-1)<1e-12);
+}
+
+TEST_CASE("burr: held scale returns the signed profile root at default tolerance") {
+  const std::vector<double> x{2.6761923090690662,0.4050115565961869,3.995655727553017};
+  const auto fit=cppunivariate::burr_mle_fixed_scale(mltest::as_span(x),1.1969913095113565);
+  REQUIRE(fit.status==cppunivariate::BurrStatus::Ok);
+  REQUIRE(fit.certified);
+  // Independent high-precision solution of the profiled score (archive 000688).
+  CHECK(std::abs(fit.shape1/0.7828332927297214502562086-1)<1e-10);
+  CHECK(std::abs(fit.shape2/1.648477699037690462091168-1)<1e-10);
 }

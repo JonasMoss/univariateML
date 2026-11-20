@@ -46,7 +46,7 @@ struct FallbackCost {
   }
 };
 inline BetaPrimeResult fallback(BetaPrimeResult certificate,span x,double a,double b,double s,
-    double tol,int maxit,double starta=0,double startb=0,double starts=0) {
+    double tol,int maxit) {
   maxit=static_cast<int>(solver_budget(maxit));
   if(certificate.status!=BetaPrimeStatus::BfgsFailure || maxit<1 || certificate.search_failed)return certificate;
   // With one shape held and scale free, a constant sample has a proved
@@ -85,7 +85,6 @@ inline BetaPrimeResult fallback(BetaPrimeResult certificate,span x,double a,doub
     if((!std::isnan(a) && p!=.2) || (!std::isnan(b) && q!=.2))continue;
     propose(p,q,std::exp(lm-special::digamma(std::isnan(a)?p:a)+special::digamma(std::isnan(b)?q:b)));
   }
-  if(starta>0||startb>0||starts>0)propose(starta>0?starta:2,startb>0?startb:2,starts>0?starts:std::exp(lm));
   if(!std::isfinite(best.f) || best.theta.size()!=static_cast<std::size_t>(cost.dim()))return certificate;
   auto c=cost.coefficients(best.theta.data());
   if(!cost.unit_shape() && ((std::isnan(a) && c[0]>=.999e6) || (std::isnan(b) && c[1]>=.999e6)))return certificate;
@@ -102,9 +101,19 @@ inline BetaPrimeResult fallback(BetaPrimeResult certificate,span x,double a,doub
 }
 // Public return boundary: a score-gated nomination is not an accurate fit.
 inline BetaPrimeResult accurate_fallback(BetaPrimeResult certificate,span x,double a,double b,double s,
-    double tol,int maxit,double starta=0,double startb=0,double starts=0) {
-  auto out=fallback(certificate,x,a,b,s,tol,maxit,starta,startb,starts);
-  if(out.status!=BetaPrimeStatus::Ok||out.certified)return out;
+    double tol,int maxit,bool refine_certified) {
+  auto out=fallback(certificate,x,a,b,s,tol,maxit);
+  if(out.status!=BetaPrimeStatus::Ok||(out.certified&&!refine_certified))return out;
+  if(out.certified&&out.joint_exterior.coefficient_lower.size()==3 &&
+      out.joint_exterior.coefficient_upper.size()==3) {
+    bool narrow=true;
+    for(int i=0;i<3;++i) {
+      const double lo=out.joint_exterior.coefficient_lower[i];
+      const double hi=out.joint_exterior.coefficient_upper[i];
+      narrow=narrow&&(hi-lo<=tol*lo);
+    }
+    if(narrow)return out;
+  }
   tol=std::min(tol,1e-10);
   FallbackCost cost{x,a,b,s};std::vector<double> c{out.alpha,out.beta,out.scale};
   const double unit=c[2];
@@ -132,7 +141,7 @@ inline BetaPrimeResult accurate_fallback(BetaPrimeResult certificate,span x,doub
     return f.value;
   };
   const auto accuracy_stop=[&]() {
-    certificate.status=BetaPrimeStatus::BfgsFailure;certificate.certificate_failure=LomaxCertificateFailure::Arithmetic;
+    certificate.status=BetaPrimeStatus::BfgsFailure;certificate.certified=false;certificate.certificate_failure=LomaxCertificateFailure::Arithmetic;
     certificate.stop_detail.conditioning_bound=out.stop_detail.conditioning_bound;
     record_accuracy(certificate.stop_detail,tol,{out.alpha,out.beta,out.scale},out.logLik,{free[0]?out.alpha:0,free[1]?out.beta:0,free[2]?out.scale:0});
     return certificate;
@@ -163,6 +172,12 @@ inline BetaPrimeResult accurate_fallback(BetaPrimeResult certificate,span x,doub
   const double ll=-cost.evaluate(c,false);
 
   if(!std::isfinite(ll)){certificate.status=BetaPrimeStatus::BfgsFailure;certificate.certificate_failure=LomaxCertificateFailure::Arithmetic;return certificate;}
+  if(out.certified&&out.joint_exterior.coefficient_lower.size()==3 &&
+      out.joint_exterior.coefficient_upper.size()==3) {
+    for(int i=0;i<3;++i)
+      if(c[i]<out.joint_exterior.coefficient_lower[i]||c[i]>out.joint_exterior.coefficient_upper[i])
+        return accuracy_stop();
+  }
   out.alpha=c[0];out.beta=c[1];out.scale=c[2];out.logLik=ll;return out;
 }
 

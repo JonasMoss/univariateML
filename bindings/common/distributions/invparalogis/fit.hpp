@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <limits>
 namespace umvl_binding {
-inline FitResult fit_invparalogis(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, Held shape0 = {}, double gradtol = 1.220703e-4, int iterlim = 100) {
+inline FitResult fit_invparalogis(cppunivariate::span x, Held shape_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape = shape_arg;
@@ -13,19 +13,12 @@ inline FitResult fit_invparalogis(cppunivariate::span x, Held shape_arg = {}, He
 
  if(shape.supplied && (!(shape.value>0)||!std::isfinite(shape.value))) return invalid_argument(fail("`shape` must be positive and finite."));
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (shape0.supplied) {
-    start = shape0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      return invalid_argument(fail("`shape0` must be a positive finite number."));
-    }
-  }
   const double held = scale.supplied ? scale.value : 1.0;
   if (!(held > 0) || !std::isfinite(held))
     return invalid_argument(fail("`scale` must be a positive finite number."));
-  auto res = shape.supplied ? cppunivariate::invparalogis_mle_holds(x,shape.value,scale.supplied?held:NAN,gradtol,iterlim) : scale.supplied
-      ? cppunivariate::invparalogis_mle_fixed_scale(x, held, gradtol, iterlim, start)
-      : cppunivariate::invparalogis_mle(x, gradtol, iterlim, start);
+  auto res = shape.supplied ? cppunivariate::invparalogis_mle_holds(x,shape.value,scale.supplied?held:NAN,tol,iterlim) : scale.supplied
+      ? cppunivariate::invparalogis_mle_fixed_scale(x, held, tol, iterlim)
+      : cppunivariate::invparalogis_mle(x, tol, iterlim);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
@@ -47,7 +40,7 @@ inline FitResult fit_invparalogis(cppunivariate::span x, Held shape_arg = {}, He
   if(res.status==cppunivariate::ParalogisStatus::InvalidStart)
     return done(fail("Inverse paralogistic MLE requires positive, finite observations."));
   if(res.status==cppunivariate::ParalogisStatus::BfgsFailure)
-    return done(stop_failure(fail("Inverse paralogistic optimizer BfgsFailure: proposal failed to converge; no verified MLE; increase iterlim or change shape0."),res.stop_detail,outcome_payload(o),{"shape","scale"}));
+    return done(stop_failure(fail("Inverse paralogistic optimizer BfgsFailure: proposal failed to converge; no verified MLE; increase iterlim."),res.stop_detail,outcome_payload(o),{"shape","scale"}));
   std::vector<std::string> fixed;
   if(shape.supplied) fixed.push_back("shape");
   if(scale.supplied) fixed.push_back("scale");

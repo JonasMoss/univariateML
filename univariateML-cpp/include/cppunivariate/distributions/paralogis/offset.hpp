@@ -16,6 +16,7 @@
 #pragma once
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
+#include "../../core/work_budget.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -65,7 +66,7 @@ inline Point evaluate(const Problem& P, double alpha_in, Real z) {
 }
 
 // The root in z of sum p_i = n / (alpha + 1), by Newton on log(sum p_i) with a bisection bracket.
-inline bool solve_z(const Problem& P, double alpha_in, Real& z) {
+inline bool solve_z(const Problem& P, double alpha_in, Real& z, int maxit) {
   const Real alpha = alpha_in, n = static_cast<Real>(P.rho.size());
   Real smin = INFINITY, smax = -INFINITY;
   for (double rho : P.rho) { smin = std::min(smin, alpha * rho); smax = std::max(smax, alpha * rho); }
@@ -75,7 +76,7 @@ inline bool solve_z(const Problem& P, double alpha_in, Real& z) {
   if (!(v > lo && v < hi)) v = (lo + hi) / 2;
   const Real target = std::log(n / (alpha + 1));
   const Real eps = std::numeric_limits<Real>::epsilon();
-  for (int it = 0; it < 400; ++it) {
+  for (int it = 0; it < maxit; ++it) {
     Real sum_p = 0, sum_q = 0;
     for (double rho : P.rho) {
       const Real p = sigmoid(alpha * rho - v);
@@ -99,10 +100,11 @@ struct Fit {
   int iterations = 0;
 };
 
-inline Fit fit(span x, bool inverse) {
+inline Fit fit(span x, bool inverse, double tol, int maxit) {
+  maxit = static_cast<int>(solver_budget(maxit));
   Fit out;
   const std::size_t n = x.size();
-  if (n < 2) return out;
+  if (n < 2 || !(tol > 0) || !std::isfinite(tol) || maxit < 1) return out;
   double mn = INFINITY, mx = -INFINITY;
   for (double v : x) {
     if (!(v > 0) || !std::isfinite(v)) return out;
@@ -126,7 +128,7 @@ inline Fit fit(span x, bool inverse) {
   struct Grid { double alpha; Real z; double ll, ga; };
   const auto at = [&](double alpha, Grid& g) {
     g.alpha = alpha;
-    if (!solve_z(P, alpha, g.z)) return false;
+    if (!solve_z(P, alpha, g.z, maxit)) return false;
     const Point q = evaluate(P, alpha, g.z);
     g.ll = q.ll; g.ga = q.ga;
     return std::isfinite(g.ll) && std::isfinite(g.ga);
@@ -146,12 +148,14 @@ inline Fit fit(span x, bool inverse) {
   double a = left.alpha, b = right.alpha;
   int iterations = 0;
   Grid root;
-  for (; iterations < 400; ++iterations) {
+  for (; iterations < maxit; ++iterations) {
     const double mid = a + 0.5 * (b - a);
     if (!(mid > a && mid < b)) break;
     if (!at(mid, root)) return out;
     if (root.ga > 0) a = mid; else b = mid;
   }
+  // Confirm the signed profile bracket resolves the requested shape.
+  if(b-a>tol*a)return out;
   const double alpha = a + 0.5 * (b - a);
   if (!at(alpha, root)) return out;
   const Point q = evaluate(P, alpha, root.z);
@@ -162,6 +166,8 @@ inline Fit fit(span x, bool inverse) {
   const Real mu_exact = static_cast<Real>(P.rbar) + root.z / alpha;
   const double scale = std::fma(P.c, static_cast<double>(std::expm1(P.sigma * mu_exact)), P.c);
   if (!(scale > 0) || !std::isfinite(scale) || !std::isfinite(alpha)) return out;
+  const double spacing = std::nextafter(scale, INFINITY) - scale;
+  if (spacing > tol * scale) return out;
   // Log likelihood at the returned coefficients; log(scale / c) from an exact subtraction.
   const double ratio = scale / P.c;
   const double lambda = ratio > 0.5 && ratio < 2 ? std::log1p((scale - P.c) / P.c) : std::log(scale) - std::log(P.c);

@@ -127,9 +127,6 @@ struct BurrProfileCost {
 };
 // Compatibility path for dependent families; no global certificate.
 inline BurrMLE burr_mle_legacy(span x, double tol, int maxit,
-    double shape10 = std::numeric_limits<double>::quiet_NaN(),
-    double shape20 = std::numeric_limits<double>::quiet_NaN(),
-    double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12,
     bool finite_only = false) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
@@ -143,13 +140,10 @@ inline BurrMLE burr_mle_legacy(span x, double tol, int maxit,
   double variance = 0.0;
   for (double &l : logs) { l -= center; variance += l*l/static_cast<double>(x.size()); }
   if (!(variance > 0.0)) return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
-  for (double start : {shape10, shape20, scale0})
-    if (!std::isnan(start) && (!(start > 0.0) || !std::isfinite(start)))
-      return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
   BurrProfileCost cost{span{logs.data(),logs.size()}};
   finite_diff_cost<BurrProfileCost> fd{cost};
   BfgsControl ctl;
-  ctl.grad_tol = tol; ctl.reltol = reltol; ctl.maxit = maxit;
+  ctl.grad_tol = tol; ctl.reltol = 1e-12; ctl.maxit = maxit;
   BfgsResult attempted{}; attempted.f=INFINITY;
   BfgsResult best;
   best.f = std::numeric_limits<double>::infinity();
@@ -181,14 +175,6 @@ inline BurrMLE burr_mle_legacy(span x, double tol, int maxit,
       auto r = bfgs_minimize(fd,start,ctl);
       consider_bfgs_candidate(best,r,static_cast<double>(x.size()),attempted);
     }
-  }
-  if (!std::isnan(shape10) || !std::isnan(shape20) || !std::isnan(scale0)) {
-    const double k = std::isnan(shape10) ? 1.0 : shape10;
-    const double c = std::isnan(shape20) ? 1.0/unit : shape20;
-    const double start[2] = {std::log(c), std::isnan(scale0) ?
-      (special::digamma(k)+0.5772156649015328606)/c : std::log(scale0)-center};
-    auto r = bfgs_minimize(fd,start,ctl);
-    consider_bfgs_candidate(best,r,static_cast<double>(x.size()),attempted);
   }
   const double n = static_cast<double>(x.size());
   const double ll = -n*(attempted.f+center);
@@ -241,15 +227,10 @@ inline BurrMLE burr_uncertified(BurrMLE certificate, BurrMLE searched, span x, d
   searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;
   return searched;
 }
-inline bool burr_valid_controls(double tol,int maxit,double shape10,double shape20,double scale0,double reltol) {
-  if(!(tol>0)||!std::isfinite(tol)||maxit<1||!(reltol>0)||!std::isfinite(reltol))return false;
-  for(double v:{shape10,shape20,scale0})if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))return false;
-  return true;
+inline bool burr_valid_controls(double tol,int maxit) {
+  return tol>0 && std::isfinite(tol) && maxit>0;
 }
 inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
-    double shape10 = std::numeric_limits<double>::quiet_NaN(),
-    double shape20 = std::numeric_limits<double>::quiet_NaN(),
-    double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12,
     std::int64_t work_budget = -1, bool reflect = false) {
   // reflect: x holds the original sample of a reciprocal (inverse Burr) fit.
   // The certificate then works on log(1/x) = -log(x) without forming 1/x;
@@ -257,11 +238,11 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
   // evaluates face likelihoods on x.
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  if(!burr_valid_controls(tol,maxit,shape10,shape20,scale0,reltol))
+  if(!burr_valid_controls(tol,maxit))
     return {nan,nan,nan,nan,0,BurrStatus::InvalidInit};
   if(maxit==1)return {nan,nan,nan,nan,0,BurrStatus::IterationFailure};
   if(work_budget<0)work_budget=certificate_budget(maxit);
-  const auto r=burr_cert_detail::fit(x,work_budget,maxit,reflect);
+  const auto r=burr_cert_detail::fit(x,work_budget,maxit,reflect,tol);
   BurrStatus status=BurrStatus::NumericalFailure;
   switch(r.outcome){
     case burr_cert_detail::Outcome::Finite:status=BurrStatus::Ok;break;
@@ -276,6 +257,19 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
   BurrMLE out{r.k,r.c,r.scale,r.logLik,r.profiles,status};
   if(status!=BurrStatus::Ok)out.stop_detail=r.stop_detail;
   out.stop_detail.budget_exhausted=r.outcome==burr_cert_detail::Outcome::Budget;
+  if(status==BurrStatus::Ok&&!r.accurate) {
+    double k=out.shape1,c=out.shape2,s=reflect?1/out.scale:out.scale;
+    // The global enclosure identifies the maximum. Apply the final
+    // observed-information correction on the original observations.
+    if(!burr_local_accuracy(x,k,c,s,{{true,true,true}},tol,maxit,reflect,0,out.stop_detail)) {
+      out.status=BurrStatus::NumericalFailure;
+      record_accuracy(out.stop_detail,tol,{out.shape1,out.shape2,s},out.logLik,{out.shape1,out.shape2,s});
+    } else {
+      out.shape1=k;out.shape2=c;out.scale=reflect?1/s:s;
+      if(!reflect)out.logLik=burr_local_loglik(x,k,c,s);
+    }
+    return out;
+  }
   if(status==BurrStatus::WeibullBoundary || status==BurrStatus::ParetoBoundary) {
     const auto& face=r.stop_detail.candidates[status==BurrStatus::ParetoBoundary?0:1];
     out.stop_detail.limit_coef=face.coef;out.stop_detail.limit_model=face.model;
@@ -289,52 +283,30 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
   }
   if(status==BurrStatus::CertificateTie || status==BurrStatus::CertificateBudget || status==BurrStatus::NumericalFailure)
   {
-    if(!reflect)return burr_uncertified(out,burr_mle_legacy(x,tol,maxit,shape10,shape20,scale0,reltol,true),x,tol,maxit,{{true,true,true}});
+    if(!reflect)return burr_uncertified(out,burr_mle_legacy(x,tol,maxit,true),x,tol,maxit,{{true,true,true}});
     // The search needs the reciprocal sample; rounding can merge its
     // distinct values, which would then be artificial ties.
     std::vector<double> y;for(double v:x)y.push_back(1/v);
     std::vector<double> sy(y),sx(x.begin(),x.end());
     std::sort(sy.begin(),sy.end());std::sort(sx.begin(),sx.end());
     if(std::unique(sy.begin(),sy.end())-sy.begin()<std::unique(sx.begin(),sx.end())-sx.begin())return out;
-    return burr_uncertified(out,burr_mle_legacy(span{y.data(),y.size()},tol,maxit,shape10,shape20,scale0,reltol,true),span{y.data(),y.size()},tol,maxit,{{true,true,true}});
+    return burr_uncertified(out,burr_mle_legacy(span{y.data(),y.size()},tol,maxit,true),span{y.data(),y.size()},tol,maxit,{{true,true,true}});
   }
   return out;
 }
-inline BurrMLE burr_mle(span x, double tol, int maxit,
-    double shape10 = std::numeric_limits<double>::quiet_NaN(),
-    double shape20 = std::numeric_limits<double>::quiet_NaN(),
-    double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
+inline BurrMLE burr_mle(span x, double tol=1e-10, int maxit=1000) {
   maxit = static_cast<int>(solver_budget(maxit));
   if(x.size()==1 && x[0]>0 && std::isfinite(x[0]) &&
-      burr_valid_controls(tol,maxit,shape10,shape20,scale0,reltol))
+      burr_valid_controls(tol,maxit))
     return {NAN,NAN,NAN,INFINITY,0,BurrStatus::Unbounded};
-  return burr_mle_certified(x,tol,maxit,shape10,shape20,scale0,reltol);
+  return burr_mle_certified(x,tol,maxit);
 }
 
 // Held-scale likelihood has a strictly concave scalar profile.
 inline BurrMLE burr_mle_fixed_scale(span x, double scale,
-    double tol = 1.220703e-4, int maxit = 1000) {
+    double tol = 1e-10, int maxit = 1000) {
   maxit = static_cast<int>(solver_budget(maxit));
-  double proposal=NAN;
-  BurrMLE searched{NAN,NAN,scale,NAN,0,BurrStatus::IterationFailure};
-  // The existing solve nominates a root for the independent certificate;
-  // a converged result can also survive an unclosed certificate uncertified.
-  if(scale>0&&std::isfinite(scale)&&tol>0&&std::isfinite(tol)&&maxit>0) {
-    std::vector<double> normalized;
-    for(double v:x) {
-      const double y=v/scale;
-      if(!(y>0)||!std::isfinite(y)){normalized.clear();break;}
-      normalized.push_back(y);
-    }
-    if(!normalized.empty()) {
-      const auto legacy=burr_fixed_detail::burr_mle(span{normalized.data(),normalized.size()},tol,maxit);
-      if(legacy.status==burr_fixed_detail::BurrStatus::Ok) {
-        proposal=legacy.shape2;
-        searched={legacy.shape1,legacy.shape2,scale,legacy.logLik-x.size()*std::log(scale),legacy.iterations,BurrStatus::Ok};
-      }
-    }
-  }
-  const auto r=burr_cert_detail::scale_fit(x,scale,tol,maxit,proposal);
+  const auto r=burr_cert_detail::scale_fit(x,scale,tol,maxit);
   BurrStatus status=BurrStatus::NumericalFailure;
   if(r.outcome==burr_cert_detail::Outcome::Finite)status=BurrStatus::Ok;
   if(r.outcome==burr_cert_detail::Outcome::Pareto)status=BurrStatus::AllGeOne;
@@ -344,9 +316,26 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
   if(r.outcome==burr_cert_detail::Outcome::Tie)status=BurrStatus::CertificateTie;
   auto detail=r.stop_detail;detail.budget_exhausted=status==BurrStatus::CertificateBudget;
   BurrMLE out{r.k,r.c,scale,r.logLik,r.profiles,status,detail};
-  if(status==BurrStatus::CertificateTie || status==BurrStatus::CertificateBudget || status==BurrStatus::NumericalFailure)
-    return burr_uncertified(out,searched,x,tol,maxit,{{true,true,false}});
-  return out;
+  if(status!=BurrStatus::CertificateTie && status!=BurrStatus::CertificateBudget &&
+      status!=BurrStatus::NumericalFailure)return out;
+  BurrMLE searched{NAN,NAN,scale,NAN,0,BurrStatus::IterationFailure};
+  // A loose search is enough to nominate a fallback. The observed-information
+  // correction in burr_uncertified checks the original data at tol.
+  if(scale>0&&std::isfinite(scale)&&tol>0&&std::isfinite(tol)&&maxit>0) {
+    std::vector<double> normalized;
+    for(double v:x) {
+      const double y=v/scale;
+      if(!(y>0)||!std::isfinite(y)){normalized.clear();break;}
+      normalized.push_back(y);
+    }
+    if(!normalized.empty()) {
+      const auto legacy=burr_fixed_detail::burr_mle(span{normalized.data(),normalized.size()},1.220703e-4,maxit);
+      if(legacy.status==burr_fixed_detail::BurrStatus::Ok) {
+        searched={legacy.shape1,legacy.shape2,scale,legacy.logLik-x.size()*std::log(scale),legacy.iterations,BurrStatus::Ok};
+      }
+    }
+  }
+  return burr_uncertified(out,searched,x,tol,maxit,{{true,true,false}});
 }
 } // namespace cppunivariate
 
@@ -370,7 +359,7 @@ inline double sigmoid(double z){return z>=0?1/(1+std::exp(-z)):std::exp(z)/(1+st
 // Every shape hold is fitted on logs. With shape1 fixed, profile location
 // exactly, then solve the strictly concave location-scale likelihood in
 // inverse scale and standardized location.
-inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-9,int maxit=1000) {
+inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-10,int maxit=1000) {
   maxit = static_cast<int>(solver_budget(maxit));
  const double nan=std::numeric_limits<double>::quiet_NaN();
  BurrMLE bad{a,b,s,nan,0,BurrStatus::InvalidInit};

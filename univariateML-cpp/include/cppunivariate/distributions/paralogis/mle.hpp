@@ -156,11 +156,10 @@ struct ParalogisCost {
 // Historical one-dimensional shape score, with z=log(x/scale).
 // Safeguarded Newton keeps the shape positive and brackets its score root.
 inline ParalogisResult paralogis_shape_proposal(
-    span x, double scale, double tol = 1e-10, int maxit = 100,
-    double shape0 = 1.0) {
+    span x, double scale, double tol = 1e-10, int maxit = 100) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
-  if (x.size() == 0 || !(scale > 0) || !std::isfinite(scale))
+  if (!(tol>0) || !std::isfinite(tol) || maxit<1 || x.size() == 0 || !(scale > 0) || !std::isfinite(scale))
     return {nan,scale,nan,0,ParalogisStatus::InvalidStart};
   for (double v : x)
     if (!(v > 0) || !std::isfinite(v))
@@ -187,11 +186,16 @@ inline ParalogisResult paralogis_shape_proposal(
     evaluate(hi,score,hessian);
   }
   if(!(score<=0))return {NAN,scale,NAN,0,ParalogisStatus::BfgsFailure};
-  double a = shape0 > lo && shape0 < hi ? shape0 : hi/2;
+  double a = 1.0 > lo && 1.0 < hi ? 1.0 : hi/2;
   for (int iter=1; iter<=maxit; ++iter) {
-    const double ll = evaluate(a,score,hessian);
-    if (std::abs(score*a) < std::min(tol,1e-10)*x.size())
-      return {a,scale,ll,iter,ParalogisStatus::Ok};
+    evaluate(a,score,hessian);
+    const double step = -score/hessian;
+    // This is a proposal gate. A root enclosure or local information check
+    // on public fit paths still must establish coefficient accuracy.
+    if (hessian < 0 && std::abs(step) <= std::max(tol,1e-10)*a) {
+      const double refined = a+step;
+      return {refined,scale,evaluate(refined,score,hessian),iter,ParalogisStatus::Ok};
+    }
     if (score > 0) lo=a; else hi=a;
     const double next = a-score/hessian;
     a = next > lo && next < hi ? next : (lo+hi)/2;
@@ -200,11 +204,9 @@ inline ParalogisResult paralogis_shape_proposal(
   return {a,scale,ll,maxit,ParalogisStatus::BfgsFailure};
 }
 
-// shape0: optional start for the shape; NaN (the default) or a non-positive
-// value means the automatic start below.
 inline ParalogisResult paralogis_mle_impl(
     span x, double tol, int maxit,
-    double shape0, bool standardized) {
+    bool standardized) {
   maxit = static_cast<int>(solver_budget(maxit));
   constexpr double kNaN = std::numeric_limits<double>::quiet_NaN();
   const std::size_t n = x.size();
@@ -237,7 +239,7 @@ inline ParalogisResult paralogis_mle_impl(
       if(!(z[i]>0)||!std::isfinite(z[i]))
         return {kNaN,kNaN,kNaN,0,ParalogisStatus::NumericalFailure};
     }
-    auto r = paralogis_mle_impl(span{z.data(), n}, tol, maxit, shape0, true);
+    auto r = paralogis_mle_impl(span{z.data(), n}, tol, maxit, true);
     r.scale *= theta0;
     r.logLik -= static_cast<double>(n) * std::log(theta0);
     return r;
@@ -255,7 +257,6 @@ inline ParalogisResult paralogis_mle_impl(
   const double sd_lz = std::sqrt(var_lz);
   double alpha0 = (sd_lz > 0.0) ? 2.0 / sd_lz : 1.5;
   if (alpha0 < 1.5 && sd_lz < 10.0) alpha0 = 1.5;
-  if (std::isfinite(shape0) && shape0 > 0.0) alpha0 = shape0;
 
   const double objective_divisor = n>=100000 ? static_cast<double>(n) : 1.0;
   ParalogisCost cost{x,objective_divisor};
@@ -306,11 +307,25 @@ inline ParalogisResult accurate_uncertified(ParalogisResult searched,
   searched.stop_detail=paralogis_cert_detail::witness(x,searched.shape,searched.scale);
   return searched;
 }
+inline ParalogisResult checked_certificate(ParalogisResult searched,
+    const paralogis_cert_detail::Result& certificate,span x,double tol,int maxit,bool fixed_scale) {
+  if(!certificate.ok)return accurate_uncertified(searched,certificate,x,tol,maxit,fixed_scale);
+  searched.shape=certificate.shape;searched.scale=certificate.scale;searched.logLik=certificate.logLik;
+  // The enclosure establishes globality. If its width is insufficient,
+  // the positive definite observed information checks the final correction.
+  if(!certificate.accurate&&!paralogis_local_accuracy(x,searched.shape,searched.scale,
+        searched.logLik,tol,maxit,fixed_scale,false,searched.stop_detail)) {
+    searched.status=ParalogisStatus::NumericalFailure;
+    record_accuracy(searched,tol,{searched.shape,searched.scale},{searched.shape,fixed_scale?0:searched.scale});
+  }
+  return searched;
+}
 }
 
-inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
-    double shape0 = std::numeric_limits<double>::quiet_NaN()) {
+inline ParalogisResult paralogis_mle(span x, double tol=1e-10, int maxit=100) {
   maxit = static_cast<int>(solver_budget(maxit));
+  if(!(tol>0)||!std::isfinite(tol)||maxit<1)
+    return {NAN,NAN,NAN,0,ParalogisStatus::InvalidStart};
   for(double v:x) if(!(v>0)||!std::isfinite(v))
     return {NAN,NAN,NAN,0,ParalogisStatus::InvalidStart};
   if(!x.empty() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
@@ -321,7 +336,7 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
   // Near-constant samples: the maximizer is solved in an offset coordinate (offset.hpp).
   // Uncertified: the bound on the maximizer is a grid scan and a score root, not a proof.
   {
-    const auto solved=paralogis_offset_detail::fit(x,false);
+    const auto solved=paralogis_offset_detail::fit(x,false,tol,maxit);
     if(solved.ok) {
       ParalogisResult out{solved.shape,solved.scale,solved.logLik,solved.iterations,ParalogisStatus::Ok};
       out.certified=false;
@@ -330,13 +345,11 @@ inline ParalogisResult paralogis_mle(span x, double tol, int maxit,
       return out;
     }
   }
-  auto r = paralogis_mle_impl(x, tol, maxit, shape0, false);
+  auto r = paralogis_mle_impl(x, tol, maxit, false);
   r.stop_detail=paralogis_cert_detail::witness(x,r.shape,r.scale);
   if (r.status != ParalogisStatus::Ok) return r;
-  const auto certified = paralogis_cert_detail::certify(x,r.shape,r.scale,false,certificate_budget(maxit),maxit);
-  if (!certified.ok) return paralogis_detail::accurate_uncertified(r,certified,x,tol,maxit,false);
-  r.shape=certified.shape; r.scale=certified.scale; r.logLik=certified.logLik;
-  return r;
+  const auto certified = paralogis_cert_detail::certify(x,r.shape,r.scale,false,certificate_budget(maxit),maxit,tol);
+  return paralogis_detail::checked_certificate(r,certified,x,tol,maxit,false);
 }
 
 // Rescue proposals only: a dyadic scan can miss roots. Global acceptance
@@ -387,28 +400,25 @@ inline double paralogis_competing_shape(span x,double scale,double initial,int m
 }
 
 inline ParalogisResult paralogis_mle_fixed_scale(
-    span x, double scale, double tol=1e-10, int maxit=100,
-    double shape0=1.0) {
+    span x, double scale, double tol=1e-10, int maxit=100) {
   maxit = static_cast<int>(solver_budget(maxit));
-  auto r=paralogis_shape_proposal(x,scale,tol,maxit,shape0);
+  auto r=paralogis_shape_proposal(x,scale,tol,maxit);
   r.stop_detail=paralogis_cert_detail::witness(x,r.shape,r.scale);
   if(r.status!=ParalogisStatus::Ok) return r;
-  auto certified=paralogis_cert_detail::certify(x,r.shape,scale,true,certificate_budget(maxit),maxit);
+  auto certified=paralogis_cert_detail::certify(x,r.shape,scale,true,certificate_budget(maxit),maxit,tol);
   if(!certified.ok) {
     const double alternative=paralogis_competing_shape(x,scale,r.shape,maxit);
     if(alternative!=r.shape)
-      certified=paralogis_cert_detail::certify(x,alternative,scale,true,certificate_budget(maxit),maxit);
+      certified=paralogis_cert_detail::certify(x,alternative,scale,true,certificate_budget(maxit),maxit,tol);
   }
-  if(!certified.ok) return paralogis_detail::accurate_uncertified(r,certified,x,tol,maxit,true);
-  r.shape=certified.shape;r.logLik=certified.logLik;
-  return r;
+  return paralogis_detail::checked_certificate(r,certified,x,tol,maxit,true);
 }
 
 }  // namespace cppunivariate
 
 namespace cppunivariate {
 
-inline ParalogisResult paralogis_mle_holds(span x,double shape,double scale=std::numeric_limits<double>::quiet_NaN(), double tol=1e-9, int maxit=1000){
+inline ParalogisResult paralogis_mle_holds(span x,double shape,double scale=std::numeric_limits<double>::quiet_NaN(), double tol=1e-10, int maxit=1000){
   maxit = static_cast<int>(solver_budget(maxit));
  if(std::isnan(shape)) return std::isnan(scale)?paralogis_mle(x,tol,maxit):paralogis_mle_fixed_scale(x,scale,tol,maxit);
  auto r=burr_mle_holds(x,shape,shape,scale,tol,maxit);

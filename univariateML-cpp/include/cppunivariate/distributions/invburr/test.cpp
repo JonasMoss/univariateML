@@ -306,10 +306,9 @@ TEST_CASE("invburr: certified entrypoints validate controls and reciprocal domai
     CHECK(cppunivariate::invburr_mle(mltest::as_span(x),tol,1000).status==cppunivariate::InvBurrStatus::InvalidInit);
     CHECK(cppunivariate::invburr_mle_holds(mltest::as_span(x),NAN,NAN,NAN,tol,1000).status==cppunivariate::InvBurrStatus::InvalidInit);
   }
-  for(double start:std::vector<double>{0.,-1.,INFINITY}) {
-    CHECK(cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000,start).status==cppunivariate::InvBurrStatus::InvalidInit);
-    CHECK(cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000,NAN,start).status==cppunivariate::InvBurrStatus::InvalidInit);
-    CHECK(cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000,NAN,NAN,start).status==cppunivariate::InvBurrStatus::InvalidInit);
+  for(double scale:std::vector<double>{0.,-1.,INFINITY}) {
+    CHECK(cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),scale).status==
+          cppunivariate::InvBurrStatus::InvalidInit);
   }
   for(const std::vector<double>& bad:std::vector<std::vector<double>>{{},{1},{0,1},{1,INFINITY},{1,NAN}}) {
     const auto expected=bad.size()==1?cppunivariate::InvBurrStatus::Unbounded:cppunivariate::InvBurrStatus::InvalidInit;

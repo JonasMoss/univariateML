@@ -674,7 +674,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     }
   }
   const double proposal_score=std::hypot(std::isnan(p)?best.g[0]:0,std::isnan(q)?best.g[1]:0);
-  if(!local_done && best.ok && proposal_score<1e-3/d.n && face<best.ll-1e-8*d.n) {
+  if(!local_done && best.ok && (proposal_score<tol || (proposal_score<1e-3/d.n && face<best.ll-1e-8*d.n))) {
     // The shared numerical route (including its held subsets) gets a joint
     // correction. Earlier held-subset certificate routes are unchanged.
     const std::array<bool,4> free{{std::isnan(q),std::isnan(a),std::isnan(p),std::isnan(b)}};
@@ -722,8 +722,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   const double logb=d.mean+d.sd*best.c/best.A;
   const bool edge=(std::isnan(p)&&std::abs(std::log(best.p))>searched_box-0.3)||
                   (std::isnan(q)&&std::abs(std::log(best.q))>searched_box-0.3);
-  const double score=std::hypot(std::isnan(p)?best.g[0]:0,std::isnan(q)?best.g[1]:0);
-  Gb2Status status=best.ok&&!edge&&(local_done||score<tol)&&!face_failure?Gb2Status::Ok:Gb2Status::SearchUnresolved;
+  Gb2Status status=best.ok&&!edge&&local_done&&!face_failure?Gb2Status::Ok:Gb2Status::SearchUnresolved;
   if(status==Gb2Status::Ok&&(!std::isfinite(std::exp(logb))||std::exp(logb)==0))status=Gb2Status::ScaleOutOfRange;
   Gb2Result out{std::isnan(q)?best.q:q,std::isnan(a)?best.A/d.sd:a,
     std::isnan(p)?best.p:p,std::isnan(b)?std::exp(logb):b,best.ll,evals,status};

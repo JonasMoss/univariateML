@@ -65,8 +65,7 @@ test_that("scale, controls and validation work", {
   expect_error(mlbetapr(c(x, 0)))
   expect_error(mlbetapr(rep(1, 20)))
   expect_error(mlbetapr(x, scale0=-1))
-  expect_equal(coef(mlbetapr(x, shape10=1, shape20=2, scale0=3,
-                            gradtol=1e-6, reltol=1e-13, abstol=1e-10, iterlim=1000)),
+  expect_equal(coef(mlbetapr(x, tol=1e-12, iterlim=1000)),
                coef(fit), tolerance=1e-4)
   moved <- mlbetapr(x * 7)
   expect_equal(as.numeric(moved[1:2]), as.numeric(fit[1:2]), tolerance=1e-4)
@@ -156,7 +155,7 @@ test_that("beta-prime new hold subsets agree with independent reference oracles"
 test_that("betapr: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "betapr", "golden.json"))
   x <- g$data
-  expect_error(mlbetapr(x, iterlim=1, gradtol=1e-10, scale=1),
+  expect_error(mlbetapr(x, iterlim=1, tol=1e-10, scale=1),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -288,7 +287,7 @@ test_that("betapr held-shape score rejects an underflowed statistic", {
 test_that("beta-prime coefficient inclusion fallback has a logical flag", {
   x <- c(.03,.1,.4,.7,1,2,4,12)
   for(it in c(16L,1000L)) {
-    f <- mlbetapr(x,gradtol=1e-14,iterlim=it)
+    f <- mlbetapr(x,tol=1e-14,iterlim=it)
     expect_identical(attr(f,"certified"),FALSE)
     expect_equal(as.numeric(logLik(f)),sum(dbetapr(x,f[1],f[2],f[3],log=TRUE)),tolerance=1e-9)
   }

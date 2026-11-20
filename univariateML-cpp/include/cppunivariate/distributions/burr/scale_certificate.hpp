@@ -33,7 +33,7 @@ inline bool scale_bounds(const std::vector<Interval>& y,Interval t,
   value=n*(log(Interval(n))+log(t)-log(g)-1)-sr.get();
   return g.valid()&&g.lo>0&&score.valid()&&value.valid();
 }
-inline Result scale_fit(span x,double scale,double tol,int maxit,double proposal=NAN) {
+inline Result scale_fit(span x,double scale,double tol,int maxit,bool reflect=false) {
   maxit = static_cast<int>(solver_budget(maxit));
   Result out;out.scale=scale;
   if(x.size()==0||!(scale>0)||!std::isfinite(scale)||!(tol>0)||!std::isfinite(tol)||maxit<1) {
@@ -44,16 +44,20 @@ inline Result scale_fit(span x,double scale,double tol,int maxit,double proposal
   std::vector<double> z;std::vector<Interval> box;Sum logx;
   for(double v:x) {
     if(!(v>0)||!std::isfinite(v)){out.outcome=Outcome::Invalid;return out;}
-    constant=constant&&v==x[0];all_ge=all_ge&&v>=scale;if(v==scale)++zeros;
+    constant=constant&&v==x[0];all_ge=all_ge&&(reflect?v<=scale:v>=scale);if(v==scale)++zeros;
     // Close ratios use log1p; subtraction has small relative error there.
     // Otherwise logs avoid overflow/underflow of x/scale.
-    const double l=(v>=scale/2&&v/2<=scale)?std::log1p((v-scale)/scale):std::log(v)-std::log(scale);
+    const bool close=v>=scale/2&&v/2<=scale;
+    const double l=close?std::log1p((v-scale)/scale):std::log(v)-std::log(scale);
     if(!std::isfinite(l))return out;
-    z.push_back(l);
-    box.push_back((v>=scale/2&&v/2<=scale)?padded(l,l):padded(std::log(v),std::log(v))-padded(std::log(scale),std::log(scale)));
+    const double log_error=8*std::numeric_limits<double>::epsilon()*std::abs(l);
+    const Interval log_box=close?Interval(l-log_error,l+log_error):
+        padded(std::log(v),std::log(v))-padded(std::log(scale),std::log(scale));
+    z.push_back(reflect?-l:l);
+    box.push_back(reflect?-log_box:log_box);
     unit=std::max(unit,std::abs(l));jac-=std::log(v);logx.add(padded(std::log(v),std::log(v)));
   }
-  if(constant&&x[0]<=scale){out.outcome=Outcome::Unbounded;out.logLik=INFINITY;return out;}
+  if(constant&&(reflect?x[0]>=scale:x[0]<=scale)){out.outcome=Outcome::Unbounded;out.logLik=INFINITY;return out;}
   const double n=x.size();
   if(all_ge) {
     Sum total;double s=0;for(std::size_t i=0;i<z.size();++i){total.add(box[i]);s+=z[i];}
@@ -99,20 +103,17 @@ inline Result scale_fit(span x,double scale,double tol,int maxit,double proposal
     ++out.profiles;p=scale_point(z,t);
     if(!std::isfinite(p.score)||!std::isfinite(p.value))return out;
     if(p.score>0)lo=t;else hi=t;
-    if(hi-lo<=1e-13*t)break;
-    t=(lo+hi)/2;
+    if(hi-lo<=std::max(8*std::numeric_limits<double>::epsilon(),
+                          std::min(tol/32,1e-13))*t)break;
+    t=lo+(hi-lo)/2;
   }
-  t=(lo+hi)/2;
-  // Preserve historical coefficients only as a checked accuracy witness.
-  // The legacy solve has no authority over existence or globality.
-  if(proposal>0&&std::isfinite(proposal)&&std::abs(proposal*unit-t)<1e-8*t)
-    t=proposal*unit;
+  t=lo+(hi-lo)/2;
   p=scale_point(z,t);
   // Strict concavity turns two signed endpoint comparisons into a global
   // certificate. The coefficient image must also be sufficiently narrow.
   Interval gl,sl,vl,gh,sh,vh,gc,sc,vc;
   bool signed_bracket=false;
-  double radius=1e-10*t;
+  double radius=std::min(tol/8,1e-10)*t;
   for(int i=0;i<maxit;++i,radius*=2) {
     lo=t-radius;hi=t+radius;
     if(!(lo>0)){out.outcome=Outcome::Tie;return out;}
@@ -123,8 +124,9 @@ inline Result scale_fit(span x,double scale,double tol,int maxit,double proposal
   if(!scale_bounds(box,Interval(lo,hi),gc,sc,vc))return out;
   const Interval k=n/gc,c=Interval(lo,hi)/unit;
   if(!k.valid()||!c.valid()||k.lo<=0||c.lo<=0)return out;
-  if((k.hi-k.lo)>1e-6*k.lo||(c.hi-c.lo)>1e-6*c.lo){out.outcome=Outcome::Tie;return out;}
+  if((k.hi-k.lo)>tol*k.lo||(c.hi-c.lo)>tol*c.lo){out.outcome=Outcome::Tie;return out;}
   // A concave tangent at either endpoint bounds the peak from above.
+  // The reflected profile has the same Jacobian -sum(log(x)).
   const Interval upper_left=vl+sl*(hi-lo),upper_right=vh-sh*(hi-lo);
   Interval gp,spc,vp;
   if(!scale_bounds(box,Interval(t),gp,spc,vp)||!upper_left.valid()||!upper_right.valid())return out;

@@ -49,17 +49,17 @@ test_that("Burr limits name the fitted model regardless of data units", {
     expect_error(mlburr(scale*sqrt(-log(1-u))),"Use `mlweibull`")
     expect_error(mlburr(scale/sqrt(1-u)),"Use `mlpareto`")
   }
-  expect_error(mlburr(c(1,2,3),scale0=-1),"positive")
+  expect_error(mlburr(c(1,2,3),scale0=-1),"`mlburr` has no argument `scale0`")
 })
 
 test_that("burr accepts shape/scale starts and rejects invalid starts", {
   set.seed(1)
   x <- rburr(n = 200, shape1 = 1, shape2 = 2, scale = 3)
   a <- mlburr(x)
-  b <- mlburr(x,shape10=.5,shape20=3,scale0=2,gradtol=1e-8,reltol=1e-12,iterlim=1000)
+  b <- mlburr(x,tol=1e-12,iterlim=1000)
   expect_equal(attr(a,"logLik"),attr(b,"logLik"),tolerance=1e-8)
-  expect_error(mlburr(x,shape10=-1),"positive")
-  expect_error(mlburr(x,shape20=0),"positive")
+  expect_error(mlburr(x,shape10=-1),"`mlburr` has no argument `shape10`")
+  expect_error(mlburr(x,shape20=0),"`mlburr` has no argument `shape20`")
 })
 
 test_that("Burr limits and small-shape corners match the derived bounds", {
@@ -90,8 +90,8 @@ test_that("burr fixed scale reproduces 6c89a8c and a reference oracle", {
   golden <- jsonlite::fromJSON(file.path(root,"burr","fixed-scale-golden.json"))
   x <- golden$data
   fit <- mlburr(x,scale=1)
-  expect_equal(unname(fit[1:2]),c(1.077036666067376,1.9857562895421235),tolerance=1e-10)
-  expect_equal(attr(fit,"logLik"),-614.507368787803,tolerance=1e-10)
+  expect_equal(unname(fit[1:2]),unname(unlist(golden$estimates)),tolerance=1e-10)
+  expect_equal(attr(fit,"logLik"),golden$logLik,tolerance=1e-10)
   for (s in c(.3,3)) {
     y <- s*x
     z <- mlburr(y,scale=s)
@@ -112,7 +112,7 @@ test_that("burr fixed scale reproduces 6c89a8c and a reference oracle", {
 
 test_that("burr fixed scale uses a profile fallback when moments have no root", {
   x <- c(.5,2,3,4,5)
-  z <- mlburr(x,scale=1,abstol=1e-10)
+  z <- mlburr(x,scale=1,tol=1e-10)
   nll <- function(t) -sum(dburr(x = x, shape1 = exp(t[1]), shape2 = exp(t[2]), scale = 1, log = TRUE))
   oracle <- optim(log(c(.7,1.5)),nll,method="BFGS",control=list(reltol=1e-13,maxit=2000))
   expect_equal(as.numeric(z[1:2]),exp(oracle$par),tolerance=1e-5)
@@ -198,7 +198,7 @@ test_that("P2 burr validates new held values", {
 test_that("burr: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "burr", "golden.json"))
   x <- g$data
-  expect_error(mlburr(x, iterlim=1, gradtol=1e-10),
+  expect_error(mlburr(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -331,7 +331,7 @@ test_that("burr short certificate work preserves the joint search", {
   root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
   if(!nzchar(root)) root <- testthat::test_path("fixtures")
   g <- jsonlite::fromJSON(file.path(root,"burr","golden.json"))
-  f <- mlburr(g$data,gradtol=1e-8,iterlim=16)
+  f <- mlburr(g$data,tol=1e-8,iterlim=16)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
@@ -344,7 +344,7 @@ test_that("Burr held-shape log coalescence is a search failure", {
 })
 
 test_that("Burr held power retains a finite fit near the exponential face", {
-  f <- mlburr(c(1,1,1,1,6.0001),shape2=1,gradtol=1e-14)
+  f <- mlburr(c(1,1,1,1,6.0001),shape2=1,tol=1e-14)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })

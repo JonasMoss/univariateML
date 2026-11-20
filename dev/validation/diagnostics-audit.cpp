@@ -348,8 +348,7 @@ inline void route_betapr(cppunivariate::span x, audit::Held shape1_arg = {}, aud
       ? cppunivariate::betapr_mle_holds(x,a,b,scale.supplied?held:nan,gradtol,iterlim)
       : scale.supplied
       ? cppunivariate::betapr_mle_fixed_scale(x, held, gradtol, iterlim)
-      : cppunivariate::betapr_mle(x, gradtol, iterlim,
-                                      shape10, shape20, scale0, reltol, abstol); audit::observe(res, {{"shape1",res.alpha,0,INFINITY,false,false},{"shape2",res.beta,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+      : cppunivariate::betapr_mle(x, gradtol, iterlim); audit::observe(res, {{"shape1",res.alpha,0,INFINITY,false,false},{"shape2",res.beta,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_bhatt(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held a_arg = {}, double reltol=1e-8, int iterlim=500) {
@@ -421,8 +420,7 @@ inline void route_burr(cppunivariate::span x, audit::Held shape1_arg = {}, audit
  auto res = (shape1.supplied || shape2.supplied) ?
  cppunivariate::burr_mle_holds(x,start(shape1),start(shape2),start(scale),gradtol,iterlim) : scale.supplied ?
  cppunivariate::burr_mle_fixed_scale(x,start(scale),abstol,iterlim) :
- cppunivariate::burr_mle(x,gradtol,iterlim,
- start(shape10),start(shape20),start(scale0),reltol); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+ cppunivariate::burr_mle(x,gradtol,iterlim); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_cauchy(cppunivariate::span x, audit::Held location_arg = {}, audit::Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
@@ -942,8 +940,7 @@ inline void route_invburr(cppunivariate::span x, audit::Held shape1_arg = {}, au
  auto res = (shape1.supplied || shape2.supplied) ?
  cppunivariate::invburr_mle_holds(x,start(shape1),start(shape2),start(scale),gradtol,iterlim) : scale.supplied ?
  cppunivariate::invburr_mle_fixed_scale(x,start(scale),abstol,iterlim) :
- cppunivariate::invburr_mle(x,gradtol,iterlim,
- start(shape10),start(shape20),start(scale0),reltol); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+ cppunivariate::invburr_mle(x,gradtol,iterlim); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_invexp(cppunivariate::span x, audit::Held scale_arg = {}) {
@@ -1019,8 +1016,8 @@ inline void route_invparalogis(cppunivariate::span x, audit::Held shape_arg = {}
   if (!(held > 0) || !std::isfinite(held))
     (void)0;
   auto res = shape.supplied ? cppunivariate::invparalogis_mle_holds(x,shape.value,scale.supplied?held:NAN,gradtol,iterlim) : scale.supplied
-      ? cppunivariate::invparalogis_mle_fixed_scale(x, held, gradtol, iterlim, start)
-      : cppunivariate::invparalogis_mle(x, gradtol, iterlim, start); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+      ? cppunivariate::invparalogis_mle_fixed_scale(x, held, gradtol, iterlim)
+      : cppunivariate::invparalogis_mle(x, gradtol, iterlim); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_invpareto(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, audit::Held scale0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
@@ -1394,8 +1391,8 @@ inline void route_paralogis(cppunivariate::span x, audit::Held shape_arg = {}, a
   if (!(held > 0) || !std::isfinite(held))
     (void)0;
   auto res = shape.supplied ? cppunivariate::paralogis_mle_holds(x,shape.value,scale.supplied?held:NAN,gradtol,iterlim) : scale.supplied
-      ? cppunivariate::paralogis_mle_fixed_scale(x, held, gradtol, iterlim, start)
-      : cppunivariate::paralogis_mle(x, gradtol, iterlim, start); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+      ? cppunivariate::paralogis_mle_fixed_scale(x, held, gradtol, iterlim)
+      : cppunivariate::paralogis_mle(x, gradtol, iterlim); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_pareto(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}) {

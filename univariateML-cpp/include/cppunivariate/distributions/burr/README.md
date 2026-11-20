@@ -32,13 +32,8 @@ r:
   control:
     shape2: Known positive finite coefficient; NULL estimates it.
     shape1: Known positive finite coefficient; NULL estimates it.
-    abstol: Absolute Newton step tolerance in `log(shape2)` when scale is fixed.
-    gradtol: Positive legacy gradient tolerance; all-free certification uses fixed conservative enclosures.
+    tol: Requested relative accuracy of every free coefficient.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
-    shape10: Optional positive historical starting shape1; checked for compatibility.
-    shape20: Optional positive historical starting shape2; checked for compatibility.
-    scale0: Optional positive historical starting scale; checked for compatibility.
-    reltol: Positive legacy relative objective tolerance; retained for compatibility with held and dependent fits.
 log_density: log(shape1) + log(shape2) - log(x) - shape2*log(scale/x) - (shape1+1)*log(1+(x/scale)**shape2)
 limits:
   - name: unbounded likelihood
@@ -199,11 +194,10 @@ profile-power score supply proposals. Safeguarded Newton steps remain inside
 those brackets. A 41-point logarithmic reconnaissance proposes stationary
 maxima, refined by analytic three-score Newton steps. Reconnaissance need
 not find every root: a missed competing root prevents global exclusion.
-User starts are validated positive finite values; the certificate's mandatory
-reconnaissance does not depend on the historical BFGS starting controls.
 
 A preconditioned fixed-point map encloses a unique three-score root in a
-small box. A larger product box contains the unique conditional nuisance
+box narrow enough to bound relative errors in both shapes and the reconstructed
+scale by `tol`. A larger product box contains the unique conditional nuisance
 maximum throughout a $k$ interval. A congruence enclosure of the negative
 Hessian proves negative profile curvature there; fixed-$k$ concavity alone
 would not suffice. Root boxes translate original log observations by the proposed log scale,
@@ -317,9 +311,7 @@ solving. The native scale projection retains the latent, unrounded shape.
 ## R notes
 
 Supply `scale = s` to estimate only the shapes. The fixed-scale path profiles `shape1` exactly and certifies the unique
-`shape2` maximum using strict scalar concavity and signed endpoint bounds. Starting
-controls `shape10`, `shape20`, `scale0`, and historical BFGS tolerances
-are retained for compatibility and validated on the all-free path. Detected
+`shape2` maximum using strict scalar concavity and signed endpoint bounds. Detected
 limits stop with a recommendation to fit `mlweibull` or `mlpareto`.
 Refuted candidates and failed searches have distinct error messages
 and return no coefficient vector. The returned iteration count on the
@@ -383,19 +375,12 @@ requires changing scale, so cannot compete in this subset.
 $t=cU$. Doubling and bisection only propose a root. Acceptance requires
 strictly positive and negative enclosed scores at two positive endpoints,
 and their coefficient images for both $k$ and $c$ must have relative width
-at most $10^{-6}$. The root proposal is refined to relative bracket width
-$10^{-13}$ independently of the user tolerance. To preserve historical
-held-scale coefficients without changing goldens, a successful historical
-Newton proposal within $10^{-8}$ of that root may instead supply the returned
-center. It must pass the same independent signed bracket and coefficient
-width checks; its optimizer status never establishes globality. Strict concavity proves
-that this bracket contains the unique global maximum. Concave tangents
-supply an upper likelihood bound and the center a lower bound. `iterlim`
-bounds certificate evaluations. Unresolved endpoint signs, coefficient width
-or an exhausted certificate allowance leave a converged proposal uncertified.
-No capped iterate is returned. The historical moment/Newton path is retained solely as a compatibility
-proposal; alone it could stop at an unchecked iterate and supplied no global
-certificate. Invalid or distant proposals are discarded.
+at most `tol`. Strict concavity identifies the enclosed root as the unique
+global maximizer. The returned shapes come from the bisected midpoint and
+the profiled shape evaluated there. Endpoint tangents give an upper bound
+on the peak, and the midpoint gives a lower bound. If the certificate
+cannot close within `iterlim`, a converged search can still supply an
+uncertified estimate after an observed-information Newton check.
 
 The certificate is in exact arithmetic conditional on the computed
 comparisons. Practical bounds reuse the all-free certificate allowance:

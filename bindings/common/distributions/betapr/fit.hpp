@@ -3,7 +3,7 @@
 #include "cppunivariate/distributions/betapr/mle.hpp"
 #include <cmath>
 namespace umvl_binding {
-inline FitResult fit_betapr(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double gradtol = 1e-6, int iterlim = 2000, double shape10 = 0, double shape20 = 0, double scale0 = 0, double reltol = 1e-13, double abstol = 1e-10) {
+inline FitResult fit_betapr(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 2000) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& message) { return failure(message, warnings); };
   const Held shape1 = shape1_arg;
@@ -20,11 +20,10 @@ inline FitResult fit_betapr(cppunivariate::span x, Held shape1_arg = {}, Held sh
      (shape2.supplied&&(!(b>0)||!std::isfinite(b))))
     return invalid_argument(fail("Held `shape1` and `shape2` must be positive finite numbers."));
   auto res = (shape1.supplied||shape2.supplied)
-      ? cppunivariate::betapr_mle_holds(x,a,b,scale.supplied?held:nan,gradtol,iterlim)
+      ? cppunivariate::betapr_mle_holds(x,a,b,scale.supplied?held:nan,tol,iterlim)
       : scale.supplied
-      ? cppunivariate::betapr_mle_fixed_scale(x, held, gradtol, iterlim)
-      : cppunivariate::betapr_mle(x, gradtol, iterlim,
-                                      shape10, shape20, scale0, reltol, abstol);
+      ? cppunivariate::betapr_mle_fixed_scale(x, held, tol, iterlim)
+      : cppunivariate::betapr_mle(x, tol, iterlim);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
