@@ -1,0 +1,20 @@
+only baseline 0 only current 0
+beta {'compared': 115}
+binom {'compared': 87}
+burr {'compared': 220}
+exp {'compared': 70}
+fatigue {'compared': 116}
+ged {'compared': 173}
+geom {'compared': 51}
+gompertz {'compared': 112}
+invburr {'compared': 220}
+kumar {'compared': 107}
+lgser {'compared': 51}
+nbinom {'compared': 87}
+norm {'compared': 101}
+pois {'compared': 51}
+snorm {'compared': 157}
+std {'compared': 173}
+weibull {'compared': 124}
+zeta {'compared': 39}
+Outcome changes

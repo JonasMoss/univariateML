@@ -94,3 +94,11 @@ test_that("P2 held lambda validates domain and compatibility", {
   expect_identical(unname(as.numeric(fit)),0.0)
   expect_identical(attr(fit,"fixed"),"lambda")
 })
+
+test_that("positive Poisson rate meets the requested accuracy", {
+  for (tol in c(1e-6, 1e-13)) {
+    fit <- mlpois(c(1, 2, 4, 5), zero = "truncated", tol = tol)
+    ref <- 2.8214393721220788934
+    expect_lte(abs(fit[["lambda"]] - ref), tol * ref)
+  }
+})

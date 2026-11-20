@@ -434,3 +434,14 @@ stable binomial log mass at the returned size and probability in both
 precision modes.
 
 After positive conditioning, size one gives a point mass at one for every prob, and prob zero gives that same law at every positive size. In the inflated size-one law only the product (1-pi)*prob is observed; when both coordinates are free and the empirical success probability is below one, their maximum is not unique.
+
+On a finite window whose upper endpoint is the sample maximum, every feasible
+size gives the same conditioning support. After matching the conditional
+mean, each finite binomial law is smaller in convex order than the Poisson
+limit. The ratio of their conditional weights has increasing adjacent ratios,
+and equal means force the required two-crossing pattern. If the empirical
+distribution itself dominates the fitted Poisson law in convex order, the
+size-profile derivative is strictly positive. Its score is the difference in
+expectations of the strictly convex function
+$k\mapsto\sum_{j<k}(n-j)^{-1}$. This provides a Poisson-face certificate without
+covering an integer prefix up to a size cutoff.

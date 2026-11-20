@@ -712,3 +712,14 @@ TEST_CASE("proper held normal window cannot become invalid merely because evalua
         (o.kind==cppunivariate::OutcomeKind::Failure && o.reason==cppunivariate::OutcomeReason::Evaluation);
   CHECK(valid);
 }
+
+TEST_CASE("truncated normal scale uses a centered tail score when mean is held") {
+  const std::vector<double> x{-0.32742384562335053,-0.32742384234911215,
+    -0.32742383907487377,-0.3274238358006354,-0.32742382925215857};
+  constexpr double held_mean=-0.062005588372027076, tol=1e-13;
+  constexpr double scale=0.00004932868748467157074592564882332596;
+  const auto r=cppunivariate::tnorm_mle(mltest::as_span(x),-INFINITY,x.back(),tol,200,held_mean);
+  REQUIRE(r.status==cppunivariate::TnormStatus::Ok);
+  CHECK(r.mean==held_mean);
+  CHECK(std::abs(r.sd-scale)<=tol*scale);
+}

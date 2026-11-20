@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/pois/tpois_mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_tpois(cppunivariate::ispan x, Held lambda_arg = {}, Held a_arg = {}, Held b_arg = {}) {
+inline FitResult fit_tpois(cppunivariate::ispan x, Held lambda_arg = {}, Held a_arg = {}, Held b_arg = {}, double tol=1e-10,int maxit=200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held lambda = lambda_arg;
@@ -15,7 +15,7 @@ inline FitResult fit_tpois(cppunivariate::ispan x, Held lambda_arg = {}, Held a_
   double lower=!a.supplied?nan:a.value, upper=!b.supplied?nan:b.value;
   if((a.supplied&&std::isnan(lower))||(b.supplied&&std::isnan(upper)))
     return invalid_argument(fail("Held bounds must not be missing."));
-  auto r=cppunivariate::tpois_mle(x,lower,upper,held);
+  const auto r=cppunivariate::tpois_mle(x,lower,upper,held,tol,maxit);
   const auto o=cppunivariate::outcome(r);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(r.status),{{"lambda",lambda_arg.supplied},{"a",a_arg.supplied},{"b",b_arg.supplied}});

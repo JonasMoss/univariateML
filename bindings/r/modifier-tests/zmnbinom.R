@@ -174,3 +174,11 @@ test_that("delegated certificate retains modified Poisson stop details", {
   e <- tryCatch(.modifier_zmnbinom(c(0,0,1,2,5),iterlim=1),error=identity)
   expect_s3_class(e,"univariateML_numerical")
 })
+
+test_that("the modified NB zero fraction exposes its binary64 resolution", {
+  x <- c(0, 1, 2)
+  fit <- mlnbinom(x, size = 2, prob = .5, zero = "modified", tol = 1e-13)
+  expect_equal(fit[["p0"]], 1/3)
+  expect_error(mlnbinom(x, size = 2, prob = .5, zero = "modified", tol = 1e-20),
+               class = "univariateML_tolerance")
+})

@@ -401,3 +401,24 @@ TEST_CASE("weibull: free shape is invariant to extreme power-of-two scaling") {
     CHECK(r.shape==fit.shape);
   }
 }
+
+TEST_CASE("joint censored Weibull meets the requested public scale accuracy") {
+  const std::vector<double> lower{1,2,3},upper{1,2,INFINITY};
+  const cppunivariate::CensoredData data{mltest::as_span(lower),mltest::as_span(upper)};
+  for(double tol:{1e-6,1e-13}) {
+    const auto r=cppunivariate::weibull_censored_mle(data,NAN,NAN,tol);
+    REQUIRE(r.status==cppunivariate::WeibullCensoredStatus::Ok);
+    constexpr double shape=1.8442459887609710330,scale=2.6628556768090647824;
+    CHECK(std::abs(r.shape-shape)<=tol*shape);
+    CHECK(std::abs(r.scale-scale)<=tol*scale);
+  }
+}
+
+TEST_CASE("scale-held censored Weibull reports local score resolution") {
+  const std::vector<double> lower{.25,2},upper{INFINITY,INFINITY};
+  const cppunivariate::CensoredData data{mltest::as_span(lower),mltest::as_span(upper)};
+  const auto r=cppunivariate::weibull_censored_mle(data,NAN,1,1e-13);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Conditioning);
+  CHECK(std::abs(r.shape-1./3)<1e-13);
+  CHECK(r.stop_detail.conditioning_bound>1e-13);
+}

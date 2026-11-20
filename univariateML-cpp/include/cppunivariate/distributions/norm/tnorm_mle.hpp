@@ -54,7 +54,8 @@ struct TnormResult {
   TnormStatus status;
  StopDetail stop_detail{};
  // Distinguish coincident estimated bounds with proved collapse from bad design bounds.
- bool estimated_bounds_collapse=false; };
+ bool estimated_bounds_collapse=false;
+ bool certified=true; };
 
 namespace tnorm_detail {
 
@@ -580,41 +581,112 @@ inline TnormResult tnorm_mle(span x,double a=-INFINITY,double b=INFINITY,double 
      (std::isfinite(r.a) || std::isfinite(r.b))) {
     const bool fm=!std::isnan(mean),fs=!std::isnan(sd);
     const double n=double(x.size());
-    const double origin=fm?mean:norm_detail::moments(x).mean;
+    // With mean held outside the window, a squared-distance score about
+    // that mean subtracts nearly equal moments. Center at the near endpoint
+    // and use the varying part of the squared distance instead.
+    const double origin=fm?std::clamp(mean,r.a,r.b):norm_detail::moments(x).mean;
     const double rms=norm_detail::residuals(x,origin).rms(x.size());
     const double scale=rms>0?rms:r.sd;
-    double u1=0,u2=0;for(double k:x){const double u=(k-origin)/scale;u1+=u/n;u2+=u*u/n;}
+    double u1=0,u2=0,correction1=0,correction2=0;
+    for(double k:x) {
+      const double u=(k-origin)/scale;
+      const double y1=u/n-correction1,next1=u1+y1;
+      const double y2=u*u/n-correction2,next2=u2+y2;
+      correction1=(next1-u1)-y1;u1=next1;
+      correction2=(next2-u2)-y2;u2=next2;
+    }
     const double lo=(r.a-origin)/scale,hi=(r.b-origin)/scale;
     const double theta2=-.5*(scale/r.sd)*(scale/r.sd);
     const double theta1=(r.mean-origin)/scale*(-2*theta2);
     const auto q=tnorm_detail::mass(theta1,theta2,lo,hi);
     const double cov=q.m3+2*q.mean*q.var;
     const double var2=q.m4-q.var*q.var+4*q.mean*q.m3+4*q.mean*q.mean*q.var;
-    double a=0,b=0,c=0;
-    if(fs)a=1/q.var;else if(fm)a=1/var2;
-    else {const double det=q.var*var2-cov*cov;a=var2/det;b=-cov/det;c=q.var/det;}
+    // Center and scale the dual enclosure so its arithmetic margin is
+    // relative to each natural coordinate near the exponential face.
+    const double scale2=-theta2;
+    const double scale1=fm?scale2:std::max(scale2,std::abs(theta1));
+    const int dim=(!fm && !fs)?2:1;
+    double ia=0,ib=0,ic=0;
+    if(fm) {
+      ia=1/(theta1*theta1*q.var-2*theta1*scale2*cov+scale2*scale2*var2);
+    } else if(fs) {
+      ia=1/q.var/scale1/scale1;
+    } else {
+      const double det=q.var*var2-cov*cov;
+      ia=var2/det/scale1/scale1;
+      ib=-cov/det/scale1/scale2;
+      ic=q.var/det/scale2/scale2;
+    }
+    const auto natural1=[&](double v){return fm?theta1*(1-v):std::fma(v,scale1,theta1);};
+    const auto natural2=[&](double v,double w){return fs?theta2:std::fma(fm?v:w,scale2,theta2);};
     const auto evaluate=[&](double v,double w) {
-      const double t1=fm?0:v,t2=fm?v:(fs?theta2:w);
+      const double t1=natural1(v),t2=natural2(v,w);
       const auto z=tnorm_detail::mass(t1,t2,lo,hi);
       const double ll=t1*u1+t2*u2-z.log_mass-std::log(scale);
-      return concave_accept_detail::Evaluation{ll,fm?u2-z.var-z.mean*z.mean:u1-z.mean,
-        (!fm && !fs)?u2-z.var-z.mean*z.mean:0,z.ok};
+      const double g1=u1-z.mean,g2=u2-z.var-z.mean*z.mean;
+      return concave_accept_detail::Evaluation{ll,fm?-theta1*g1+scale2*g2:scale1*g1,
+        dim==2?scale2*g2:0,z.ok};
     };
     const auto accurate=[&](const concave_accept_detail::Bound& z) {
+      double min_mean=INFINITY,max_mean=-INFINITY,min_sd=INFINITY,max_sd=0;
       for(double v:{z.lo1,z.hi1})for(double w:{z.lo2,z.hi2}) {
-        const double t1=fm?0:v,t2=fm?v:(fs?theta2:w);
+        const double t1=natural1(v),t2=natural2(v,w);
         if(!(t2<0))return false;
         const double mu=origin-scale*t1/(2*t2),sigma=scale/std::sqrt(-2*t2);
-        if((!fm && std::abs(mu-r.mean)>1e-8*(scale+std::abs(r.mean))) ||
-           (!fs && std::abs(sigma-r.sd)>1e-8*r.sd))return false;
+        min_mean=std::min(min_mean,mu);max_mean=std::max(max_mean,mu);
+        min_sd=std::min(min_sd,sigma);max_sd=std::max(max_sd,sigma);
       }
-      return true;
+      // The coordinate extrema occur at the box corners. Use the smallest
+      // possible contract scale over the box, including a mean crossing zero.
+      const double mean_floor=std::max({min_sd,min_mean,-max_mean});
+      return (fm || std::max(r.mean-min_mean,max_mean-r.mean)<=tol*mean_floor) &&
+             (fs || std::max(r.sd-min_sd,max_sd-r.sd)<=tol*min_sd);
     };
-    const auto bound=concave_accept_detail::certify(fm?theta2:theta1,theta2,r.logLik/n,
-      a,b,c,(!fm && !fs)?2:1,false,maxit,evaluate,accurate);
+    const auto initial=evaluate(0,0);
+    if(initial.ok)r.logLik=n*initial.value;
+    auto bound=concave_accept_detail::certify(0,0,r.logLik/n,ia,ib,ic,dim,false,maxit,evaluate,accurate);
+    if(!bound.ok && ia>0 && (dim==1 || ia*ic>ib*ib)) {
+      // Near a face a small natural-coordinate residual can still move
+      // the public coefficients. Apply the information-scaled correction
+      // against the compensated sample moments before replaying the box.
+      double v=0,w=0,last_v=INFINITY,last_w=INFINITY;
+      const double eps=4*std::numeric_limits<double>::epsilon();
+      const double noise1=eps*(fm?std::abs(theta1)*(1+std::abs(u1))+scale2*(1+std::abs(u2)):
+        scale1*(1+std::abs(u1)));
+      const double noise2=dim==2?eps*scale2*(1+std::abs(u2)):0;
+      const double noise_v=std::abs(ia)*noise1+std::abs(ib)*noise2;
+      const double noise_w=std::abs(ib)*noise1+std::abs(ic)*noise2;
+      auto current=evaluate(v,w);
+      for(int it=0;it<maxit && current.ok;++it) {
+        const double dv=ia*current.g1+ib*current.g2,dw=ib*current.g1+ic*current.g2;
+        if(!std::isfinite(dv) || !std::isfinite(dw))break;
+        const auto next=evaluate(v+dv,w+dw);
+        if(!next.ok || std::hypot(next.g1,next.g2)>std::hypot(current.g1,current.g2)+std::hypot(noise1,noise2))break;
+        v+=dv;w+=dw;current=next;
+        last_v=std::abs(dv);last_w=std::abs(dw);
+        if(last_v<=noise_v && last_w<=noise_w)break;
+      }
+      if(current.ok && natural2(v,w)<0) {
+        if(!fm)r.mean=origin-scale*natural1(v)/(2*natural2(v,w));
+        if(!fs)r.sd=scale/std::sqrt(-2*natural2(v,w));
+        r.logLik=n*current.value;
+        bound=concave_accept_detail::certify(v,w,current.value,ia,ib,ic,dim,false,maxit,evaluate,accurate);
+        if(!bound.ok && std::isfinite(last_v) && std::isfinite(last_w)) {
+          const double dv=std::abs(ia*current.g1+ib*current.g2);
+          const double dw=std::abs(ib*current.g1+ic*current.g2);
+          // Local Newton error after an applied step and contraction to
+          // the score's arithmetic resolution. Map the error to public units.
+          const double rv=2*dv+noise_v,rw=2*dw+noise_w;
+          concave_accept_detail::Bound local;
+          local.lo1=v-rv;local.hi1=v+rv;local.lo2=w-rw;local.hi2=w+rw;
+          if(dv<=std::max(last_v/4,noise_v) && dw<=std::max(last_w/4,noise_w) && accurate(local))
+            r.certified=false;
+        }
+      }
+    }
     r.stop_detail.loglik_lower=r.logLik-1e-9*(n+std::abs(r.logLik));
     r.stop_detail.loglik_upper=n*bound.upper;
-    if(!bound.ok) {
+    if(!bound.ok && r.certified) {
       r.status=TnormStatus::IterationFailure;
       r.stop_detail.candidates.push_back({{r.mean,r.sd,r.a,r.b},r.stop_detail.loglik_lower,
         r.logLik+1e-9*(n+std::abs(r.logLik))});
@@ -664,7 +736,7 @@ inline FitOutcome outcome(const TnormResult& r) {
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   if(r.status!=TnormStatus::Ok && r.stop_detail.comparison_tie)return comparison_outcome_of(r);
   switch(r.status) {
-    case TnormStatus::Ok: return FitOutcome::estimate(true);
+    case TnormStatus::Ok: return FitOutcome::estimate(r.certified);
     case TnormStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TnormStatus::InvalidBounds: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TnormStatus::OutsideBounds: return FitOutcome::failure(OutcomeReason::InvalidInput);

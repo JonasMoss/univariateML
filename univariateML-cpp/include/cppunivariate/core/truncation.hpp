@@ -17,11 +17,11 @@ struct TruncationResult {
 // Traits supply support, natural domain, log kernel, adjacent mass ratio and
 // natural/coefficient maps. No distribution-specific switch in the solver.
 template<class Traits> struct truncated {
-  struct Mass { double logz, mode; CPPUNIV_EXTENDED_REAL offset; bool ok; };
+  struct Mass { double logz, mode; CPPUNIV_EXTENDED_REAL offset; bool ok; CPPUNIV_EXTENDED_REAL error=0; };
   static Mass mass(const Traits& t,double eta,double lo,double hi,int maxit) {
     const double mode=std::floor(std::max(lo,std::min(hi,t.mode(eta))));
     if(!std::isfinite(mode))return {NAN,NAN,0,false};
-    CPPUNIV_EXTENDED_REAL total=1,offset=0;
+    CPPUNIV_EXTENDED_REAL total=1,offset=0,mass_error=0,moment_error=0;
     const auto cap=enumeration_budget(maxit);
     for(int direction : {-1,1}) {
       double k=mode; CPPUNIV_EXTENDED_REAL w=1;
@@ -30,6 +30,11 @@ template<class Traits> struct truncated {
         if((direction<0 && k<=lo)||(direction>0 && k>=hi)){done=true;break;}
         const double ratio=direction>0?t.ratio(k,eta):1/t.ratio(k-1,eta);
         w*=ratio;k+=direction;total+=w;offset+=(k-mode)*w;
+        // Weight the cumulative ratio error by its contribution to mass
+        // and first moment. Also allow for rounding the two sums.
+        const auto distance=std::abs(k-mode);
+        mass_error+=(j+1)*w;
+        moment_error+=(j+1)*distance*w;
         // Log-concavity bounds the remaining geometric tail. Include its
         // first moment, since a mass-only cutoff does not bound the score.
         const double bound=t.tail_bound(ratio,eta,direction);
@@ -41,7 +46,10 @@ template<class Traits> struct truncated {
     // Relative normalizer: retaining the large absolute log kernel would
     // lose the conditional likelihood through cancellation (notably huge NB size).
     const double z=std::log(total);
-    return {z,mode,offset/total,std::isfinite(z)};
+    const auto mean=offset/total;
+    const auto error=8*std::numeric_limits<double>::epsilon()*
+      (moment_error+std::abs(mean)*mass_error)/total;
+    return {z,mode,mean,std::isfinite(z),error};
   }
   static TruncationResult fit(ispan x,double a,double b,Traits t={},double held=NAN,double tol=1e-10,int maxit=200) {
     TruncationResult r;
@@ -63,8 +71,15 @@ template<class Traits> struct truncated {
     for(int v:x)centred+=static_cast<double>(v)-xmin;
     const auto observed_offset=centred/x.size();
     const double target=xmin+static_cast<double>(observed_offset);
-    const auto below=[&](const Mass& m){return m.offset < (xmin-m.mode)+observed_offset;};
-    const auto above=[&](const Mass& m){return m.offset > (xmin-m.mode)+observed_offset;};
+    const auto residual=[&](const Mass& m) {
+      return m.offset-((xmin-m.mode)+observed_offset);
+    };
+    const auto margin=[&](const Mass& m) {
+      return m.error+8*std::numeric_limits<double>::epsilon()*
+        (std::abs(m.offset)+std::abs(xmin-m.mode)+observed_offset);
+    };
+    const auto below=[&](const Mass& m){return residual(m)<-margin(m);};
+    const auto above=[&](const Mass& m){return residual(m)>margin(m);};
     if(lo==hi){if(std::isnan(held))held=t.reference();}
     double eta=std::isnan(held)?0:t.natural(held);
     if(!std::isnan(held)) {
@@ -95,7 +110,7 @@ template<class Traits> struct truncated {
           if(observed_offset>=known-xmin)return {NAN,NAN,0,TruncationStatus::UpperLimit};
         } else {
           const auto boundary=mass(t,0,lo,hi,maxit);
-          if(boundary.ok && !above(boundary))return {NAN,NAN,0,TruncationStatus::UpperLimit};
+          if(boundary.ok && below(boundary))return {NAN,NAN,0,TruncationStatus::UpperLimit};
           // An unfinished optional face calculation does not preclude an
           // interior root: a successful sign bracket is its own certificate.
         }
@@ -109,21 +124,44 @@ template<class Traits> struct truncated {
         const auto l=mass(t,left,lo,hi,maxit),h=mass(t,right,lo,hi,maxit);
         if(!l.ok||!h.ok)return {NAN,NAN,0,TruncationStatus::NumericalFailure};
         if(below(l) && above(h)){bracket=true;break;}
-        if(!below(l) && left==t.eta_lower())return {NAN,NAN,0,TruncationStatus::LowerLimit};
-        if(!above(h) && right==t.eta_upper())return {NAN,NAN,0,TruncationStatus::UpperLimit};
+        if(above(l) && left==t.eta_lower())return {NAN,NAN,0,TruncationStatus::LowerLimit};
+        if(below(h) && right==t.eta_upper())return {NAN,NAN,0,TruncationStatus::UpperLimit};
         width*=2;
         if(!below(l))left=std::max(t.eta_lower(),centre-width);
         if(!above(h))right=centre+width>=t.eta_upper() && t.eta_upper()<0 ? centre/2 : std::min(t.eta_upper(),centre+width);
       }
       if(!bracket)return {NAN,NAN,0,TruncationStatus::NumericalFailure};
-      bool closed=false;
-      for(int i=0;i<maxit;++i) {
-        eta=left+(right-left)/2;auto z=mass(t,eta,lo,hi,maxit);r.iterations=i+1;
+      const auto closed=[&] {
+        // For all supplied maps the relative change in the public
+        // coefficient is bounded by this natural-coordinate width.
+        const double scale=t.eta_upper()<0?std::min(1.,std::abs(right)):1.;
+        return right-left<=.25*tol*scale;
+      };
+      for(;r.iterations<maxit && !closed();++r.iterations) {
+        eta=left+(right-left)/2;auto z=mass(t,eta,lo,hi,maxit);
         if(!z.ok)return {NAN,NAN,r.iterations,TruncationStatus::NumericalFailure};
-        if(below(z))left=eta;else right=eta;
-        if(right-left<.05*tol*(t.eta_upper()<0?std::min(1.,std::abs(eta)):1.)){closed=true;break;}
+        // Preserve both signs when the midpoint is within the arithmetic margin.
+        if(below(z))left=eta;
+        else if(above(z))right=eta;
+        else {
+          const double l=left+(eta-left)/2,h=eta+(right-eta)/2;
+          const auto lm=mass(t,l,lo,hi,maxit),hm=mass(t,h,lo,hi,maxit);
+          const bool move_left=lm.ok && below(lm),move_right=hm.ok && above(hm);
+          if(!move_left && !move_right)break;
+          if(move_left)left=l;
+          if(move_right)right=h;
+        }
       }
-      if(!closed)return {NAN,NAN,r.iterations,TruncationStatus::NumericalFailure};
+      if(!closed())return {NAN,NAN,r.iterations,TruncationStatus::NumericalFailure};
+      // Refine the representative inside the confirmed enclosure with the
+      // remaining iterations. Ambiguous scores cannot affect its guarantee.
+      for(;r.iterations<maxit;++r.iterations) {
+        const double mid=left+(right-left)/2;
+        if(mid==left || mid==right)break;
+        const auto z=mass(t,mid,lo,hi,maxit);
+        if(!z.ok)break;
+        if(residual(z)<0)left=mid;else right=mid;
+      }
       eta=left+(right-left)/2;
     }
     r.parameter=std::isnan(held)?t.coefficient(eta):held;

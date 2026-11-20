@@ -111,3 +111,10 @@ test_that("P2 held positive point mass checks support", {
   f<-suppressWarnings(.modifier_zmlogarithmic(c(0,1,1),prob=0,p0=.3))
   expect_equal(attr(f,"logLik"),log(.3)+2*log(.7))
 })
+
+test_that("modified logarithmic theta meets the requested accuracy", {
+  for (tol in c(1e-6, 1e-13)) {
+    fit <- mllgser(c(0, 1, 2, 4, 5), zero = "modified", tol = tol)
+    expect_lte(abs(fit[["theta"]] - 0.85100070348749140494), tol)
+  }
+})

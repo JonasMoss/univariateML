@@ -1,6 +1,7 @@
 #pragma once
 #include "../../core/likelihood_polish.hpp"
 #include "../../core/span.hpp"
+#include "../pois/ztpois_mle.hpp"
 namespace cppunivariate {
 namespace accuracy_detail {
 // The positive-count log likelihood in (log size, logit probability).
@@ -8,6 +9,14 @@ namespace accuracy_detail {
 // subtracting two nearly equal polygamma values near the Poisson face.
 inline bool nb_polish(ispan x,double& size,double& prob,double& pi,
                       bool fs,bool fp,bool fi,bool truncated,double tol,int maxit,StopDetail& detail) {
+  // The attained logarithmic member has its own one-dimensional score.
+  // Size zero and the all-one point mass are exact boundary coordinates.
+  if(truncated && size==0 && fp && prob<1) {
+    const auto root=zero_detail::logarithmic_positive_root(x,tol,maxit,true);
+    if(!root.closed)return false;
+    prob=root.coefficient;
+    return prob>0;
+  }
   if(!(size>0&&prob>0&&prob<1))return true;
   std::array<double,3> q{{std::log(size),std::log(prob)-std::log1p(-prob),
     pi>0&&pi<1?std::log(pi)-std::log1p(-pi):0}};

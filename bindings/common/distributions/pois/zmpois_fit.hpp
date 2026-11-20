@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/pois/zmpois_mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_zmpois(cppunivariate::ispan x, Held lambda_arg = {}, Held p0_arg = {}) {
+inline FitResult fit_zmpois(cppunivariate::ispan x, Held lambda_arg = {}, Held p0_arg = {},double tol=1e-10,int maxit=200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held lambda = lambda_arg;
@@ -11,7 +11,7 @@ inline FitResult fit_zmpois(cppunivariate::ispan x, Held lambda_arg = {}, Held p
   if(lambda.supplied && !std::isfinite(lambda.value))return invalid_argument(fail("`lambda` must be finite and in its parameter domain."));
   if(p0.supplied && !std::isfinite(p0.value))return invalid_argument(fail("`p0` must be finite and in its parameter domain."));
 
-  const auto res=cppunivariate::zmpois_mle(x,1e-10,200,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
+  const auto res=cppunivariate::zmpois_mle(x,tol,maxit,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"p0",p0_arg.supplied}});
@@ -20,7 +20,7 @@ inline FitResult fit_zmpois(cppunivariate::ispan x, Held lambda_arg = {}, Held p
   if(res.status==cppunivariate::ZmpoisStatus::InvalidInput)return fail("requires nonempty nonnegative integer count data and valid controls and parameter domains; held values must be compatible with the observations");
   if(res.status==cppunivariate::ZmpoisStatus::AllZero)warnings.push_back(binding_message("all observations are zero: base parameters are unidentified; supplied values are preserved."));
   if(res.status==cppunivariate::ZmpoisStatus::TwoPoint)warnings.push_back(binding_message("positives are all one: the attained two-point law is also fitted exactly by mlbinom(x, size = 1)."));
-  if(o.kind!=cppunivariate::OutcomeKind::Estimate)return fail("MLE cannot be resolved at floating-point precision.");
+  if(o.kind!=cppunivariate::OutcomeKind::Estimate)return stop_failure(fail("MLE cannot be resolved at floating-point precision."),res.stop_detail,outcome_payload(o),{"lambda","p0"});
   std::vector<std::string> fixed;
   if(lambda.supplied)fixed.push_back("lambda");
   if(p0.supplied)fixed.push_back("p0");

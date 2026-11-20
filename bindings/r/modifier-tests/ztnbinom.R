@@ -156,3 +156,11 @@ test_that("global certificate exposes Poisson and budget stop details", {
   expect_s3_class(e,"univariateML_numerical")
   expect_match(conditionMessage(e),"Profile certificate")
 })
+
+test_that("the size-zero truncated NB fits the logarithmic probability to tol", {
+  ref <- 0.14899929651250859506
+  for (tol in c(1e-6, 1e-13)) {
+    fit <- mlnbinom(c(1, 2, 4, 5), size = 0, zero = "truncated", tol = tol)
+    expect_lte(abs(fit[["prob"]] - ref), tol * ref)
+  }
+})

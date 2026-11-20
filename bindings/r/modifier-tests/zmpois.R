@@ -111,3 +111,12 @@ test_that("P2 held positive point mass checks support", {
   f<-suppressWarnings(.modifier_zmpois(c(0,1,1),lambda=0,p0=.3))
   expect_equal(attr(f,"logLik"),log(.3)+2*log(.7))
 })
+
+test_that("modified Poisson fits both public coefficients at the requested accuracy", {
+  for (tol in c(1e-6, 1e-13)) {
+    fit <- mlpois(c(0, 1, 2, 4, 5), zero = "modified", tol = tol)
+    ref <- 2.8214393721220788934
+    expect_lte(abs(fit[["lambda"]] - ref), tol * ref)
+    expect_lte(abs(fit[["p0"]] - 1/5), tol)
+  }
+})

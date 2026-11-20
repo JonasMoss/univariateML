@@ -9,6 +9,8 @@ namespace cppunivariate {
 // ZmpoisResult, ZmgeomResult and ZmlogarithmicResult are aliases of this type.
 // Keep their single overload in this shared family forwarding header.
 inline FitOutcome outcome(const zero_detail::ModifiedResult& r) {
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
+  if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   switch(r.status) {
     case zero_detail::ModifiedStatus::Ok: return FitOutcome::estimate(!r.stop_detail.budget_exhausted);
     case zero_detail::ModifiedStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

@@ -50,6 +50,12 @@ inline ZmnbinomResult zmnbinom_mle(ispan x, double tol=1e-10,int maxit=200,doubl
  if(n>k)out.logLik+=(n-k)*std::log(out.p0);
  out.logLik+=k*std::log1p(-out.p0);
  if(!std::isfinite(out.logLik))out.status=ZmnbinomStatus::InvalidInput;
+ if(out.status==ZmnbinomStatus::Ok && !fz &&
+    !zero_detail::zero_fraction_accurate(n-k,n,out.p0,tol,out.stop_detail)) {
+   out.status=ZmnbinomStatus::IterationFailure;
+   out.stop_detail.candidates.push_back({{out.size,out.prob,out.p0},out.logLik-allowance,out.logLik+allowance});
+   return out;
+ }
  if(out.status==ZmnbinomStatus::Ok && !fb && zero_detail::mean(positive)==1)out.status=ZmnbinomStatus::TwoPoint;
  return out;
 }

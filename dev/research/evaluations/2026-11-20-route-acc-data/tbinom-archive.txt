@@ -1,0 +1,24 @@
+baseline native
+a=999999 status=6 certified=1 size=11224310574 p=8.2524620502388415e-05 logLik=-12.253430678463486 face=-12.253430677034803 upper=nan
+a=999999 status=0 certified=0 size=1000011 p=0.99999334712481236 logLik=-17.426030371921897 face=-12.253430677034803 upper=inf
+cutoff=4376786403737554 coverage status=3 profiles=8 enumeration cells=48000376 arithmetic failure=0
+a=0 status=0 certified=1 size=1000035 p=0.99997108097222687 logLik=-13.958493336452245 face=nan upper=nan
+a=0 status=0 certified=0 size=1000035 p=0.99997108097222687 logLik=-13.958493336452277 face=nan upper=inf
+baseline double
+a=999999 status=6 certified=1 size=11224310574 p=8.2524620502388415e-05 logLik=-12.253430678463486 face=-12.253430677034803 upper=nan
+a=999999 status=0 certified=0 size=1000011 p=0.99999334712481236 logLik=-17.426030371921897 face=-12.253430677034803 upper=inf
+cutoff=4376786403737554 coverage status=3 profiles=8 enumeration cells=48000376 arithmetic failure=0
+a=0 status=0 certified=1 size=1000035 p=0.99997108097222687 logLik=-13.958493336452245 face=nan upper=nan
+a=0 status=0 certified=0 size=1000035 p=0.99997108097222687 logLik=-13.958493336452277 face=nan upper=inf
+current native
+a=999999 status=6 certified=1 size=11224310574 p=8.2524620502977082e-05 logLik=-12.253430678463456 face=-12.253430677034792 upper=nan
+a=999999 status=6 certified=1 size=11224310574 p=8.2524620502977082e-05 logLik=-12.253430678463456 face=-12.253430677034792 upper=-12.253430676022738
+cutoff=3674664373338094 coverage status=3 profiles=8 enumeration cells=48000376 arithmetic failure=0
+a=0 status=0 certified=1 size=1000035 p=0.99997108097222687 logLik=-13.958493336451152 face=nan upper=nan
+a=0 status=0 certified=0 size=1000035 p=0.99997108097222687 logLik=-13.958493336451182 face=nan upper=inf
+current double
+a=999999 status=6 certified=1 size=11224310574 p=8.2524620502977082e-05 logLik=-12.253430678463456 face=-12.253430677034792 upper=nan
+a=999999 status=6 certified=1 size=11224310574 p=8.2524620502977082e-05 logLik=-12.253430678463456 face=-12.253430677034792 upper=-12.253430676022738
+cutoff=3674664373338094 coverage status=3 profiles=8 enumeration cells=48000376 arithmetic failure=0
+a=0 status=0 certified=1 size=1000035 p=0.99997108097222687 logLik=-13.958493336451152 face=nan upper=nan
+a=0 status=0 certified=0 size=1000035 p=0.99997108097222687 logLik=-13.958493336451182 face=nan upper=inf
