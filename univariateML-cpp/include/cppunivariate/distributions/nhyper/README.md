@@ -35,6 +35,7 @@ r:
   density: dnhyper
   sampler: rnhyper
   control:
+    iterlim: "Work limit for population bisection (default 100). The stopping-count profile allows 128 times this many lines, with the limit capped at 100000 before multiplication."
     r: "Stopping count of white balls; explicit `NULL` estimates it with either `m` or `N` supplied."
     "N": "Population size; explicit `NULL` estimates it with `m` held."
     m: "White-ball count; `NULL` estimates it with `N` known, otherwise holds it fixed."
@@ -67,8 +68,8 @@ fit:
   method: integer-search
   certified: partial
   note: 'nhyper/README.md, Details; nhyper/mle.hpp (public fitter and held overloads); nhyper/test.cpp: Supported
-    certified integer grids are exhaustive with a proved population tail bound; one-coordinate likelihood ratios decrease.
-    Growing-urn face comparisons and unfinished joint grids return their finite prefix winner uncertified; floating-point tie tolerances remain.'
+    certified integer searches use adjacent ratios, a single-crossing population profile with composition held, or a proved growing-urn tail bound.
+    Unclosed population and composition comparisons retain the best finite candidate with its per-fit flag.'
 areas:
 - sampling and quality control
 existence:
@@ -126,8 +127,8 @@ point mass at zero, regardless of composition.
 
 A known population permits joint estimation of composition and stopping
 count on a finite feasible grid. With composition held and population free,
-a decreasing population likelihood tail gives a finite search even when
-stopping count is estimated. Holding population and composition instead
+an adjacent-population likelihood ratio with a single sign crossing gives a bisection for
+each feasible stopping count. Holding population and composition instead
 leaves a one-coordinate stopping-count likelihood with decreasing
 consecutive ratio.
 
@@ -152,32 +153,42 @@ One-coordinate fits warn on adjacent ties and return the smaller count.
 At `r = 0`, free composition is represented by zero with a warning.
 Joint-grid conventions and budgets are given below. Counts must be below
 $2^{53}$. For the growing-population limit with positive `r`, use
-`mlnbinom(x - r, size = r)`. Unresolved face comparisons stop without an
-estimate.
+`mlnbinom(x - r, size = r)`. Unresolved face comparisons retain the best finite estimate with `certified = FALSE`.
 
-## Decision history
+### Population search with composition held
 
-### Integer grids and population certificates (2026-11-01)
+For fixed positive $r$ and $K$, the feasible population starts at
+$K+\max_i x_i-r$. Write $A=N+1$. The adjacent likelihood factor for one $x$
+is
+$$
+\frac{(A-K)(A-x)}{A(A-K-x+r)}
+= 1+\frac{Kx-rA}{A(A-K-x+r)}.
+$$
+For $K=r$ the likelihood is maximized at the feasible lower endpoint.
+For $K>r$, the log of this factor vanishes at $rA/K$ and its derivative
+in $x$ is $(K-r)/[(A-x)(A-K-x+r)]$. As $A$ increases, the ratio of
+the new derivative to the old one decreases in $x$. Normalizing this
+ratio at the old zero shrinks the positive integrals relative to the
+negative ones. The zero moves right as well. Thus a nonpositive sum of
+log factors stays nonpositive. Every factor is nonpositive on the log
+scale by $A=K\max_i x_i/r$.
 
-Finite-grid fits use long-double sums of log-gamma differences. Negative hypergeometric with only `N` held searches positive
-`r <= min(x)` and `r <= m <= N-max(x)+r`. With `m` held and `N` free,
-each positive `r <= min(m,min(x))` searches from `m+max(x)-r` through
-`max(m+max(x)-r, floor(m*max(x)/r))`; a held `r` selects one line.
-The population tail bound follows from the adjacent population ratio,
-whose factors are below one beyond `m*max(x)/r`.
-Zero-only negative-hypergeometric samples select `r=0`, `N=m` when free,
-and `m=0` when free; mixed zero and positive observations are infeasible.
-Two passes find the maximum then the lexicographically smallest coefficient
-vector within 64 double-precision ulps relative to the likelihood magnitude.
-These are numerical comparisons, not exact ordering certificates. A total
-budget of 10^7 candidate likelihood evaluations includes both passes;
-exceeding it, the exact-integer range, or encountering a nonfinite likelihood
-stops with numerical failure, without returning a partial maximum.
-New joint grids resolve numerical ties silently; existing one-coordinate warnings
-remain. A constant sample with all coefficients free ties $(c,c,c)$ with
-$(N,N,c)$ ($m=N$ makes the first $c$ draws white) and is flagged not unique.
+Bisection locates the first nonpositive adjacent ratio for each feasible
+$r$. A population line is certified conditional on the computed signs
+of the neighboring ratios, separated by $64\epsilon(1+\sum_i|\log R_i|)$
+with $\epsilon$ the double machine epsilon. The product difference in the
+numerator is compensated before taking logs. A line with an unresolved
+sign has the log-likelihood upper bound $\sum_i\log(r/x_i)$ from
+$P(T=x)=(r/x)P(H_x=r)$. The final comparison uses a margin of
+$10^{-9}(1+|\ell|)$. An unresolved order returns the best evaluated
+line with its certification flag withdrawn.
 
-### Growing-population bound (2026-11-01)
+With only $N$ held, the finite grid retains the lexicographically first
+point within 64 double-precision ulps of the best log likelihood.
+A constant sample with all coefficients free ties $(c,c,c)$ with
+$(N,N,c)$ and is flagged nonunique.
+
+### Growing-population bound
 
 For positive `r`, write `c_t(j) = sum_{i=0}^{j-1} log(1-i/t)`.
 The waiting-time mass divided by the negative-binomial mass of `x-r`
@@ -198,9 +209,22 @@ The fitter profiles composition at each integer population and each feasible
 stopping count, initially over 256 populations. A candidate exceeding the
 largest face by more than `1e-9*(1+abs(face))` gives a tail cutoff; every
 population below it is searched, subject to the 10^7 evaluation budget.
-The upper bound must fall below the candidate by that margin. These margins
-and profile signs are numerical comparisons, not directed-rounding proofs.
-If exploration finds no strict improvement, or a face matches within the margin, the best finite profile is returned with `certified = FALSE`. An unfinished finite grid likewise returns its prefix winner uncertified; neither result establishes the global maximum or an escape.
+The upper bound must fall below the candidate by that margin. If exploration
+finds no strict improvement, or a face matches within the margin, the best
+finite profile is returned with `certified = FALSE`.
+
+For large counts the joint exploration starts at $N=\max_i x_i$, where
+feasibility forces $K=r$. The likelihood on that boundary has decreasing
+adjacent ratios in $r$. The search also profiles $N$ at compositions from fixed-population slices
+near the support edge and in the growing-urn regime. For a single stopping count, a boundary
+winner can exclude $K>r$ using the neighboring hypergeometric masses.
+Write $u=K-r$, $v=x-r$ and $w=N-K-x+r$. When all three are positive,
+the product of the two adjacent mass ratios is
+$r u v w/[(r+1)(u+1)(v+1)(w+1)]\ge 1/16$.
+When $w=0$ and $v\ge r+1$, the upper adjacent ratio is at least one.
+Thus each observation with $x-r\ge r+1$ bounds $P(H_x=r)$ by $4/5$
+when $K>r$. The joint exploration returns an uncertified candidate when
+it cannot exclude the remaining compositions and stopping counts.
 
 For an interior face probability `p=r/mean(x)`, the first-order coefficient
 in `t=1/N` is one half of the sum over observations of
@@ -212,7 +236,7 @@ each face separately.
 
 The growing-urn face is a negative binomial translated by r, since observations count total draws. Its payload explicitly records the shift and the absence of a corresponding package family.
 
-With composition held, a constant draw count $c\le m$ attains likelihood one at $N=m$, $r=c$. This exact member also settles the case at the largest represented population. Outside such attained cases, omitting stopping counts whose feasible populations exceed the representation range leaves the finite prefix uncertified. A large growing-urn preflight retains the population-prefix winner at the smallest admissible stopping count; it makes no claim to have optimized all stopping counts.
+With composition held, a constant draw count $c\le m$ attains likelihood one at $N=m$, $r=c$. This exact member also settles the case at the largest represented population. Outside such attained cases, omitting stopping counts whose feasible populations exceed the representation range leaves the finite prefix uncertified. The large-count growing-urn search retains its best finite witness when the remaining compositions and stopping counts cannot be excluded.
 
 The finite-grid combination sums can cancel at large counts in double-only
 arithmetic. Once the grid selects a winner, its reported likelihood uses the

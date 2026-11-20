@@ -2,6 +2,7 @@
 #include "../../core/outcome.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
+#include "../../core/work_budget.hpp"
 
 #include "../hyper/mle.hpp"
 #include <cmath>
@@ -31,14 +32,119 @@ inline double nhyper_log_pmf(double x, double n, double m, double r) {
 }
 
 namespace nhyper_detail {
-// Correct a rounded quotient using compensated integer product differences.
-// Within the representable count range this prevents an off-by-one tail bound.
-inline CPPUNIV_EXTENDED_REAL population_bound(double m, double b, double r) {
-  CPPUNIV_EXTENDED_REAL q = std::floor(static_cast<CPPUNIV_EXTENDED_REAL>(m) * b / r);
-  if (q > hyper_detail::kMaxCount) return q;
-  while (hyper_detail::product_difference(m, b, q, r) < 0) --q;
-  while (hyper_detail::product_difference(m, b, q + 1, r) >= 0) ++q;
-  return q;
+inline double log_likelihood(const hyper_detail::Counts& c, double N, double m, double r) {
+  hyper_detail::Sum ll;
+  for (std::size_t j = 0; j < c.value.size(); ++j)
+    ll.add(c.count[j] * nhyper_log_pmf(c.value[j], N - m, m, r));
+  return static_cast<double>(ll.value());
+}
+
+// The composition log likelihood is concave on [r, N-max(x)+r].
+inline hyper_detail::Peak composition_peak(const hyper_detail::Counts& c, double N, double r) {
+  return hyper_detail::unimodal_peak(r, N - c.max + r, false, [&](double t) {
+    hyper_detail::Sum d;
+    for (std::size_t j = 0; j < c.value.size(); ++j) {
+      const ExtendedReal failures = static_cast<ExtendedReal>(N) - t + 1;
+      const ExtendedReal y = c.value[j] - r;
+      const ExtendedReal z = hyper_detail::product_difference(r, failures, t, y) /
+          ((t - r) * failures);
+      d.add(c.count[j] * std::log1p(z));
+    }
+    return d;
+  });
+}
+
+// P(T=x) = (r/x) P(H_x=r). With m>r and x-r>=r+1, at least
+// one adjacent hypergeometric mass is at least 1/4 of P(H_x=r).
+inline double log_upper(const hyper_detail::Counts& c, double r, bool more_white = false) {
+  hyper_detail::Sum ll;
+  for (std::size_t j = 0; j < c.value.size(); ++j) {
+    const double x = c.value[j];
+    const double bound = more_white && x-r > r ? 0.8 : 1.0;
+    ll.add(c.count[j] * std::log(bound * (r / x)));
+  }
+  return static_cast<double>(ll.value());
+}
+
+inline hyper_detail::Sum population_increment(const hyper_detail::Counts& c,
+                                              double N, double m, double r) {
+  const ExtendedReal A = N + 1;
+  hyper_detail::Sum increment;
+  for (std::size_t j = 0; j < c.value.size(); ++j) {
+    const ExtendedReal x = c.value[j];
+    const ExtendedReal failures = (A - m) - (x - r);
+    const ExtendedReal numerator = hyper_detail::product_difference(m, x, r, A);
+    const ExtendedReal z = numerator / (A * failures);
+    const ExtendedReal term = z > -0.5 ? std::log1p(z) :
+        std::log((A - m) / A) + std::log((A - x) / failures);
+    increment.add(c.count[j] * term);
+  }
+  return increment;
+}
+
+// For m > r the per-observation log ratio, as a function of x,
+// vanishes at r*A/m and has derivative (m-r)/[(A-x)(A-m-x+r)].
+// As A grows, the ratio of the new derivative to the old one decreases
+// with x. Rescaling at the old zero therefore shrinks positive integrals
+// relative to negative ones. The zero also moves right, so a nonpositive
+// aggregate ratio stays nonpositive. For m == r, every factor is <= 1.
+inline NhyperResult population_peak(const hyper_detail::Counts& c, double m,
+                                    double r, int maxit) {
+  NhyperResult out{m, NAN, r, NAN, NAN, 0, NhyperStatus::Infeasible};
+  const double excess = c.max - r;
+  if (excess > hyper_detail::kMaxCount - m) return out;
+
+  double lo = m + excess;
+  const ExtendedReal bound = static_cast<ExtendedReal>(m) * c.max / r;
+  constexpr double epsilon = 64 * std::numeric_limits<double>::epsilon();
+  // Pad the quotient upward for the product and division roundoff.
+  double hi = std::max(lo, static_cast<double>(std::min(
+      ExtendedReal(hyper_detail::kMaxCount), std::ceil(bound * (1 + epsilon)))));
+  out.status = NhyperStatus::NumericalFailure;
+  if (m == r) hi = lo;
+  if (maxit <= 0) return out;
+
+  auto increment = [&](double N) {
+    ++out.iterations;
+    return population_increment(c, N, m, r);
+  };
+  while (lo < hi && out.iterations < maxit) {
+    const double mid = lo + std::floor((hi - lo) / 2);
+    const auto d = increment(mid);
+    if (d.value() > 0) lo = mid + 1;
+    else hi = mid;
+  }
+  if (lo != hi) return out;
+
+  const double edge = m + excess;
+  if (lo > edge && out.iterations < maxit) {
+    const auto d = increment(lo - 1);
+    if (std::fabs(d.value()) <= epsilon * d.scale) --lo;
+  }
+  // Endpoint signs suffice; cancellation in any earlier comparison need
+  // not withdraw certification if both signs here can be separated.
+  if (lo > edge) {
+    out.certified = false;
+    if (out.iterations < maxit) {
+      const auto d = increment(lo - 1);
+      out.certified = d.value() > epsilon * (1 + d.scale);
+    }
+  }
+  if (m != r) {
+    if (out.iterations < maxit) {
+      const auto d = increment(lo);
+      const auto margin = epsilon * (1 + d.scale);
+      if (lo == hyper_detail::kMaxCount && d.value() > margin) return out;
+      out.certified = out.certified && d.value() < -margin;
+    } else {
+      if (lo == hyper_detail::kMaxCount) return out;
+      out.certified = false;
+    }
+  }
+  out.N = lo;
+  out.logLik = log_likelihood(c, lo, m, r);
+  if (std::isfinite(out.logLik)) out.status = NhyperStatus::Ok;
+  return out;
 }
 }  // namespace nhyper_detail
 
@@ -48,10 +154,11 @@ inline CPPUNIV_EXTENDED_REAL population_bound(double m, double b, double r) {
 // L(m)/L(m-1) = prod m/(m-r) * (N-m+1-x+r)/(N-m+1).
 // Each factor is nonincreasing in m, strictly so for r>0. Thus the
 // likelihood is log concave on [r, N-max(x)+r], including its endpoints.
-inline NhyperResult nhyper_mle(span x, double r, double N, double m);
-inline NhyperResult nhyper_mle_search(span x, double r, double N, double m) {
+inline NhyperResult nhyper_mle(span x, double r, double N, double m, int maxit = 100);
+inline NhyperResult nhyper_mle_search(span x, double r, double N, double m, int maxit) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   NhyperResult out{m, N, r, nan, nan, 0, NhyperStatus::InvalidInput};
+  if (maxit < 1) return out;
   if (std::isnan(N) && std::isnan(m)) {
     if (x.size() == 0 || (!std::isnan(r) && !hyper_detail::is_count(r))) return out;
     for (double v : x) if (!hyper_detail::is_count(v)) return out;
@@ -76,12 +183,65 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m) {
     if (c.max > 100000 || rhi > 100000 ||
         (rhi-rlo+1) * static_cast<double>(c.value.size()) > 1000000 ||
         c.max * static_cast<double>(c.value.size()) > 1000000){
-      double value=-INFINITY;
-      for(double nn=c.max;nn<c.max+256 && nn<=hyper_detail::kMaxCount;++nn) {
-        const auto seed=nhyper_mle(x,rlo,nn,nan);out.iterations+=seed.iterations;
-        if(std::isfinite(seed.logLik) && seed.logLik>value) {
-          value=seed.logLik;out.stop_detail.candidates={{{seed.m,seed.N,seed.r},value,value}};
+      // At N = max(x) feasibility forces m = r. Start with the mode
+      // on that boundary before spending work on other compositions.
+      const auto diagonal = hyper_detail::unimodal_peak(rlo, rhi, false, [&](double t) {
+        hyper_detail::Sum d;
+        for (std::size_t j = 0; j < c.value.size(); ++j) {
+          const ExtendedReal xj = c.value[j], n = c.max;
+          const ExtendedReal z = hyper_detail::product_difference(1, xj - t + 1, t - 1, n - xj) /
+              ((t - 1) * (n - t + 1));
+          const ExtendedReal term = z > -0.5 ? std::log1p(z) :
+              std::log(t / (t - 1)) + std::log((xj - t + 1) / (n - t + 1));
+          d.add(c.count[j] * term);
         }
+        return d;
+      });
+      out.iterations = diagonal.evaluations;
+      double value = -INFINITY;
+      auto retain = [&](const NhyperResult& f) {
+        out.iterations += f.iterations;
+        if (std::isfinite(f.logLik) && f.logLik > value) {
+          value = f.logLik;
+          out.stop_detail.candidates = {{{f.m,f.N,f.r},value,value}};
+        }
+      };
+      const auto boundary = nhyper_detail::population_peak(c, diagonal.at, diagonal.at, maxit);
+      retain(boundary);
+      if (rlo == rhi && std::isfinite(boundary.logLik)) {
+        const double bound = nhyper_detail::log_upper(c, rlo, true);
+        if (boundary.logLik > bound + 1e-9 * (1 + std::fabs(bound))) return boundary;
+      }
+
+      // Profile populations at compositions selected by exact adjacent
+      // ratios in two slices. The near slice adds one sample range to the
+      // support edge; the far slice probes the growing-urn regime,
+      // leaving room on either side for the population bisection.
+      const double near = c.max + std::min(c.max - c.min, hyper_detail::kMaxCount - c.max);
+      const double far = std::max(c.max, std::floor(hyper_detail::kMaxCount / 2));
+      const auto limit = std::min(certificate_budget(maxit),
+          enumeration_budget(maxit) / static_cast<std::int64_t>(c.value.size()));
+      const auto profile = [&](double rr) {
+        retain(nhyper_detail::population_peak(c, rr, rr, maxit));
+        for (const double nn : {near, far}) {
+          if (nn == c.max) continue;
+          // Composition bisection plus the adjacent tie checks.
+          const int composition_work = std::ilogb(nn - c.max) + 3;
+          if (limit - out.iterations <= composition_work) continue;
+          const auto seed = nhyper_detail::composition_peak(c, nn, rr);
+          out.iterations += seed.evaluations;
+          const int remaining = static_cast<int>(std::min<std::int64_t>(maxit, limit - out.iterations));
+          retain(nhyper_detail::population_peak(c, seed.at, rr, remaining));
+        }
+      };
+      profile(diagonal.at);
+      for (std::int64_t i = 0; i <= rhi-rlo && out.iterations < limit; ++i) {
+        const double rr = i % 2 == 0 ? rhi - i/2 : rlo + i/2;
+        // Count a rejected line as a certificate evaluation too.
+        ++out.iterations;
+        if (rr != diagonal.at &&
+            nhyper_detail::log_upper(c, rr) > value - 1e-9 * (1 + std::fabs(value)))
+          profile(rr);
       }
       out.stop_detail=discrete_budget(out.stop_detail);
       return out;
@@ -103,11 +263,12 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m) {
     const double margin = 1e-9 * (1 + std::fabs(face));
     double best = -std::numeric_limits<double>::infinity();
     NhyperResult winner = out;
-    int work = 0;
+    std::int64_t work = 0;
+    const auto grid_budget = enumeration_budget(maxit);
     bool face_tie = false;
     auto evaluate = [&](double nn) {
       for (double rr = rlo; rr <= rhi; ++rr) {
-        const NhyperResult f = nhyper_mle(x, rr, nn, nan);
+        const NhyperResult f = nhyper_mle(x, rr, nn, nan, maxit);
         work += std::max(1, f.iterations);
         if ((f.status != NhyperStatus::Ok && f.status != NhyperStatus::Tie &&
              f.status != NhyperStatus::Unidentified) || !std::isfinite(f.logLik)) return false;
@@ -116,7 +277,7 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m) {
             [](const FitCandidate& c){return c.model==StopModel::None;}),out.stop_detail.candidates.end());
           out.stop_detail.candidates.push_back({{f.m,f.N,f.r},f.logLik,f.logLik}); }
         if (std::fabs(f.logLik-face) <= margin) face_tie = true;
-        if(work>=hyper_detail::kGridBudget){out.stop_detail=discrete_budget(out.stop_detail);return false;}
+        if(work>=grid_budget){out.stop_detail=discrete_budget(out.stop_detail);return false;}
       }
       return true;
     };
@@ -128,7 +289,7 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m) {
       out.stop_detail=discrete_face(StopModel::ShiftedNbinom,{face_r,face_p,face_r},face);
       out.stop_detail.candidates.push_back({{winner.m,winner.N,winner.r},best,best});out.stop_detail.loglik_upper=INFINITY;
       out.status = face_tie ? NhyperStatus::FaceTie : NhyperStatus::FaceUnresolved;
-      out.iterations = work; return out;
+      out.iterations = static_cast<int>(std::min<std::int64_t>(work, std::numeric_limits<int>::max())); return out;
     }
     auto correction = [&](double nn) {
       double s = 0;
@@ -147,94 +308,122 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m) {
       const double mid = lower + std::floor((end-lower)/2);
       if (face + correction(mid) < best-margin) end = mid; else lower = mid;
     }
-    if ((end-lo)*(rhi-rlo+1) > hyper_detail::kGridBudget/4){out.stop_detail=discrete_budget(out.stop_detail);return out;}
+    if ((end-lo)*(rhi-rlo+1) > grid_budget/4){out.stop_detail=discrete_budget(out.stop_detail);return out;}
     for (double nn = lo; nn < end; ++nn) if (!evaluate(nn)) return out;
-    out = winner; out.iterations = work; out.status = NhyperStatus::Ok;
+    out = winner; out.iterations = static_cast<int>(std::min<std::int64_t>(work, std::numeric_limits<int>::max())); out.status = NhyperStatus::Ok;
     return out;
   }
-  // New finite grids: N held alone, or m held with N free.
   if ((std::isnan(r) && std::isnan(m) && !std::isnan(N)) ||
       (std::isnan(N) && !std::isnan(m))) {
-    if (x.size() == 0 || (!std::isnan(N) && !hyper_detail::is_count(N)) ||
-        (!std::isnan(m) && !hyper_detail::is_count(m)) ||
+    const bool fixed_N = !std::isnan(N);
+    if (x.empty() || (fixed_N ? !hyper_detail::is_count(N) : !hyper_detail::is_count(m)) ||
         (!std::isnan(r) && !hyper_detail::is_count(r))) return out;
     for (double v : x) if (!hyper_detail::is_count(v)) return out;
     const auto c = hyper_detail::tabulate(x);
     out.status = NhyperStatus::Infeasible;
-    if ((!std::isnan(N) && c.max > N) ||
-        (!std::isnan(m) && !std::isnan(r) && r > m)) return out;
+    if ((fixed_N && c.max > N) || (!fixed_N && r > m)) return out;
     if (c.max == 0) {
       if (!std::isnan(r) && r != 0) return out;
       out.r = 0;
-      if (std::isnan(N)) out.N = m;
-      if (std::isnan(m)) out.m = 0;
+      if (fixed_N) out.m = 0;
+      else out.N = m;
       out.logLik = 0; out.status = NhyperStatus::Ok;
       return out;
     }
     if (c.min == 0 || r == 0) return out;
-    const bool fixed_N = !std::isnan(N);
-    if(!fixed_N && c.min==c.max && m>=c.min && (std::isnan(r) || r==c.min)) {
+    if (!fixed_N && c.min == c.max && m >= c.min && (std::isnan(r) || r == c.min)) {
       out.N=m;out.r=c.min;out.logLik=0;out.status=NhyperStatus::Ok;return out;
     }
-    const double rlo = std::isnan(r) ? (fixed_N ? 1 : std::max(1.,m-(hyper_detail::kMaxCount-c.max))) : r;
+    const double rlo = std::isnan(r) ? (fixed_N ? 1 :
+        std::max(1., m - (hyper_detail::kMaxCount - c.max))) : r;
     const double rhi = std::isnan(r) ? std::min(c.min, fixed_N ? N : m) : r;
     if (rlo > rhi || rhi > c.min) return out;
-    // Preflight exact line lengths, stopping as soon as the budget is exceeded.
-    CPPUNIV_EXTENDED_REAL size = 0;
-    bool partial=std::isnan(r) && !fixed_N && rlo>1;
     out.status = NhyperStatus::NumericalFailure;
-    for (double rr = rlo; rr <= rhi; ++rr) {
-      const CPPUNIV_EXTENDED_REAL lo = fixed_N ? rr : static_cast<CPPUNIV_EXTENDED_REAL>(m) + (c.max - rr);
-      const CPPUNIV_EXTENDED_REAL hi = fixed_N ? static_cast<CPPUNIV_EXTENDED_REAL>(N) - c.max + rr :
-          std::max(lo, nhyper_detail::population_bound(m, c.max, rr));
-      if(lo>hyper_detail::kMaxCount)return out;
-      if(hi>hyper_detail::kMaxCount){partial=true;break;}
-      size += hi - lo + 1;
-      if (2 * size > hyper_detail::kGridBudget){partial=true;break;}
+    if (!fixed_N) {
+      const auto cap = certificate_budget(maxit);
+      const bool partial = rhi-rlo >= cap;
+      double unchecked = rlo > 1 && std::isnan(r)
+          ? nhyper_detail::log_upper(c, rlo - 1) : -INFINITY;
+      double best = -INFINITY;
+      double alternative = -INFINITY;
+      for (std::int64_t i = 0; i < cap && rlo + i <= rhi; ++i) {
+        // If the allowance cannot cover every line, visit both ends
+        // of the feasible stopping-count range.
+        const double rr = !partial ? rlo + i : (i % 2 == 0 ? rhi - i/2 : rlo + i/2);
+        const auto line = nhyper_detail::population_peak(c, m, rr, maxit);
+        out.iterations += std::min(line.iterations, std::numeric_limits<int>::max() - out.iterations);
+        if (line.status != NhyperStatus::Ok || !line.certified)
+          unchecked = std::max(unchecked, nhyper_detail::log_upper(c, rr));
+        if (line.status != NhyperStatus::Ok) continue;
+        const bool tied = std::isfinite(best) && hyper_detail::grid_tied(line.logLik, best);
+        const bool earlier = line.N < out.N || (line.N == out.N && line.r < out.r);
+        if (!std::isfinite(best) || (tied ? earlier : line.logLik > best)) {
+          if (std::isfinite(out.logLik)) alternative = std::max(alternative, out.logLik);
+          out.N = line.N;
+          out.r = line.r;
+          out.logLik = line.logLik;
+        } else {
+          alternative = std::max(alternative, line.logLik);
+        }
+        best = std::max(best, line.logLik);
+      }
+      if (partial) {
+        unchecked = std::max(unchecked, nhyper_detail::log_upper(c, rhi - (cap+1)/2));
+        out.stop_detail = discrete_budget(out.stop_detail);
+      }
+      if (std::isfinite(out.logLik)) {
+        const double margin = 1e-9 * (1 + std::fabs(out.logLik));
+        out.certified = out.logLik > std::max(unchecked, alternative) + margin;
+        out.status = NhyperStatus::Ok;
+      }
+      return out;
     }
-    CPPUNIV_EXTENDED_REAL best = -std::numeric_limits<CPPUNIV_EXTENDED_REAL>::infinity();
+
+    // Retain the fixed-population grid and its lexicographic tie convention.
+    const double width = N - c.max + 1;
+    const auto grid_budget = enumeration_budget(maxit);
+    std::int64_t cells = 0;
+    const bool partial = 2 * width * (rhi-rlo+1) > grid_budget;
+    ExtendedReal best = -INFINITY;
     bool selected = false;
     for (int pass = 0; pass < 2; ++pass) {
       for (double rr = rlo; rr <= rhi; ++rr) {
-        const double lo = fixed_N ? rr : static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(m) + (c.max - rr));
-        const double hi = fixed_N ? N - c.max + rr : std::min(hyper_detail::kMaxCount,static_cast<double>(std::max(
-            static_cast<CPPUNIV_EXTENDED_REAL>(lo), nhyper_detail::population_bound(m, c.max, rr))));
-        for (double t = lo; t <= hi; ++t) {
-          const double mm = fixed_N ? t : m, nn = fixed_N ? N : t;
+        for (double mm = rr; mm <= N - c.max + rr; ++mm) {
           hyper_detail::Sum ll;
           for (std::size_t j = 0; j < c.value.size(); ++j) {
-            const CPPUNIV_EXTENDED_REAL v = c.value[j];
+            const ExtendedReal v = c.value[j];
             ll.add(c.count[j] * (hyper_detail::grid_choose(v - 1, rr - 1) +
-                hyper_detail::grid_choose(static_cast<CPPUNIV_EXTENDED_REAL>(nn) - v, mm - rr) -
-                hyper_detail::grid_choose(nn, mm)));
+                hyper_detail::grid_choose(N - v, mm - rr) - hyper_detail::grid_choose(N, mm)));
           }
-          ++out.iterations;
+          ++cells;
+          if (out.iterations < std::numeric_limits<int>::max()) ++out.iterations;
           if (!std::isfinite(ll.value())) {
-            if(partial && std::isfinite(out.logLik)){out.status=NhyperStatus::Ok;out.certified=false;}
+            if (partial && std::isfinite(out.logLik)) {
+              out.status = NhyperStatus::Ok;
+              out.certified = false;
+            }
             return out;
           }
-          if(partial) {
-            if(ll.value()>best) {
-              best=ll.value();out.m=mm;out.N=nn;out.r=rr;out.logLik=static_cast<double>(best);
+          if (partial) {
+            if (ll.value() > best) {
+              best = ll.value(); out.m = mm; out.r = rr; out.logLik = static_cast<double>(best);
             }
-            if(out.iterations>=hyper_detail::kGridBudget/2) {
-              out.status=NhyperStatus::Ok;out.certified=false;out.stop_detail=discrete_budget(out.stop_detail);return out;
+            if (cells >= grid_budget / 2) {
+              out.status = NhyperStatus::Ok;
+              out.certified = false;
+              out.stop_detail = discrete_budget(out.stop_detail);
+              return out;
             }
           }
           if (pass == 0) best = std::max(best, ll.value());
           else if (hyper_detail::grid_tied(ll.value(), best) &&
-              (!selected || mm < out.m || (mm == out.m &&
-               (nn < out.N || (nn == out.N && rr < out.r))))) {
-            out.m = mm; out.N = nn; out.r = rr;
-            out.logLik = static_cast<double>(ll.value()); selected = true;
+              (!selected || mm < out.m || (mm == out.m && rr < out.r))) {
+            out.m = mm; out.r = rr; out.logLik = static_cast<double>(ll.value()); selected = true;
           }
         }
       }
     }
     if (selected) out.status = NhyperStatus::Ok;
-    if(partial && std::isfinite(out.logLik)) {
-      out.status=NhyperStatus::Ok;out.certified=false;out.stop_detail=discrete_budget(out.stop_detail);
-    }
     return out;
   }
   if (std::isnan(r) && hyper_detail::is_count(N) &&
@@ -287,18 +476,7 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m) {
     const double hi = N - c.max + r;
     if (!free && m > hi) return out;
     if (free) {
-      const auto peak = hyper_detail::unimodal_peak(r, hi, false, [&](double t) {
-        hyper_detail::Sum d;
-        for (std::size_t j = 0; j < c.value.size(); ++j) {
-          const CPPUNIV_EXTENDED_REAL failures = static_cast<CPPUNIV_EXTENDED_REAL>(N) - t + 1;
-          const CPPUNIV_EXTENDED_REAL y = c.value[j] - r;
-          // Combine before taking logs to retain adjacent-integer signs.
-          const CPPUNIV_EXTENDED_REAL z = hyper_detail::product_difference(
-              r, failures, t, y) / ((t - r) * failures);
-          d.add(c.count[j] * std::log1p(z));
-        }
-        return d;
-      });
+      const auto peak = nhyper_detail::composition_peak(c, N, r);
       out.m = peak.at; out.tie = peak.tie; out.iterations = peak.evaluations;
       out.status = std::isnan(peak.tie) ? NhyperStatus::Ok : NhyperStatus::Tie;
     } else out.status = NhyperStatus::Ok;
@@ -309,8 +487,8 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m) {
   out.logLik = static_cast<double>(ll);
   return out;
 }
-inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
-  auto out=nhyper_mle_search(x, r, N, m);
+inline NhyperResult nhyper_mle(span x, double r, double N, double m, int maxit) {
+  auto out=nhyper_mle_search(x, r, N, m, static_cast<int>(solver_budget(maxit)));
   if(out.status==NhyperStatus::FaceUnresolved || out.status==NhyperStatus::FaceTie ||
      out.status==NhyperStatus::NumericalFailure) {
     for(const auto& candidate:out.stop_detail.candidates) {
@@ -325,10 +503,8 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m) {
     if(!out.certified)out.status=NhyperStatus::Ok;
   }
   if(out.status==NhyperStatus::Ok &&
-      ((std::isnan(r)&&std::isnan(m)&&!std::isnan(N)) ||
-       (std::isnan(N)&&!std::isnan(m)))) {
-    // Only the final value of a grid winner changes. Recursive face-search
-    // fits have N and r held, so their candidate comparisons stay untouched.
+      std::isnan(r)&&std::isnan(m)&&!std::isnan(N)) {
+    // Use stable masses at the public coefficients, including fixed-N grid fits.
     hyper_detail::Sum ll;
     for(double v:x)ll.add(nhyper_log_pmf(v,out.N-out.m,out.m,out.r));
     out.logLik=static_cast<double>(ll.value());

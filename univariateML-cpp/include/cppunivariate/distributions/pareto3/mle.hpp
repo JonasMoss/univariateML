@@ -67,24 +67,47 @@ inline Pareto3Result pareto3_mle(span x,double min,double tol,int maxit,double s
   if(!r.certified)tol=std::min(tol,1e-10);
   const auto parent=r;
   const double unit=r.scale;
-  std::array<double,3> q{{std::log(r.shape),0,0}};
   const std::array<bool,3> free{{std::isnan(shape),std::isnan(scale),false}};
+  double ref=x[0];
+  if(free[1]) {
+    std::vector<double> ordered(x.begin(),x.end());
+    const auto median=ordered.begin()+ordered.size()/2;
+    std::nth_element(ordered.begin(),median,ordered.end());
+    ref=*median;
+  }
+  const ExtendedReal excess=static_cast<ExtendedReal>(ref)-min;
+  const ExtendedReal offset=free[1]?burr_excess_log_ratio(ref,min,unit):0;
+  // A held scale already gives a fixed origin. With scale free, work in
+  // log excess relative to a sample point and translate the fitted location.
+  std::array<double,3> q{{std::log(r.shape),static_cast<double>(-offset),0}};
+  std::vector<ExtendedReal> logs;
+  logs.reserve(x.size());
+  for(double v:x) {
+    const ExtendedReal delta=static_cast<ExtendedReal>(v)-ref;
+    const ExtendedReal relative=delta/excess;
+    logs.push_back(free[1] && std::fabs(relative)<0.5
+      ? std::log1p(relative)
+      : burr_excess_log_ratio(v,min,unit)-offset);
+  }
   const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
     const auto a=accuracy_detail::exp(z[0]);accuracy_detail::JetSum f;
-    for(double v:x){const auto t=a*(accuracy_detail::Jet(parent.certified?std::log((static_cast<ExtendedReal>(v)-min)/unit):burr_excess_log_ratio(v,min,unit))-z[1]);
-      f.add(z[0]+t-accuracy_detail::Jet(2)*accuracy_detail::softplus(t));}
+    for(ExtendedReal l:logs){
+      const auto t=a*(accuracy_detail::Jet(l)-z[1]);
+      f.add(z[0]+t-accuracy_detail::Jet(2)*accuracy_detail::softplus(t));
+    }
     return f.value;
   };
   const bool refined=parent.certified?accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail):continuous_fallback_polish(q,free,tol,maxit,objective,r.stop_detail);
   if(!refined){r.status=Pareto3Status::IterationFailure;{if(r.shape>0 && r.scale>0)record_accuracy(r,tol,{r.shape,r.scale,r.min},{std::isnan(shape)?r.shape:0,std::isnan(scale)?r.scale:0,0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}return r;}
   if(free[0])r.shape=std::exp(q[0]);
+  if(free[1])q[1]=static_cast<double>(q[1]+offset);
   if(free[1])r.scale=unit*std::exp(q[1]);
   if(free[1]&&!accuracy_detail::scale_projection(r.scale,unit,q[1],tol)){{r.status=Pareto3Status::AccuracyFailure;{if(r.shape>0 && r.scale>0)record_accuracy(r,tol,{r.shape,r.scale,r.min},{std::isnan(shape)?r.shape:0,std::isnan(scale)?r.scale:0,0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}return r;}
   if(!parent.certified) {
     if(!(r.shape>0 && r.scale>0) || !std::isfinite(r.shape+r.scale)){{r.status=Pareto3Status::AccuracyFailure;{if(r.shape>0 && r.scale>0)record_accuracy(r,tol,{r.shape,r.scale,r.min},{std::isnan(shape)?r.shape:0,std::isnan(scale)?r.scale:0,0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}return r;}
     transformed_detail::Sum ll;
     for(double v:x) {
-      const double y=v-min,t=r.shape*transformed_detail::log_ratio(y,r.scale);
+      const double y=v-min,t=r.shape*burr_excess_log_ratio(v,min,r.scale);
       ll.push(std::log(r.shape)-std::log(y)-transformed_detail::softplus(t)-transformed_detail::softplus(-t));
     }
     r.logLik=ll.get();

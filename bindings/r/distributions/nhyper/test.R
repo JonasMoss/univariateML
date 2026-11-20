@@ -218,3 +218,11 @@ test_that("negative-hypergeometric large-count grid likelihoods use stable masse
 test_that("nhyper core decides the data outcome", {
   expect_error(mlnhyper(c(0,0),r=1,N=10), class="univariateML_invalid")
 })
+
+test_that("nhyper iterlim controls the held-composition population bisection", {
+  x <- c(1000000, 1000001, 1000003, 1000008, 1000011)
+  expect_error(mlnhyper(x, m = 20, N = NULL, r = 3, iterlim = 1),
+               "integer likelihood search did not converge")
+  f <- mlnhyper(x, m = 20, N = NULL, r = 3, iterlim = 100)
+  expect_equal(unname(f["N"]), 6666697)
+})

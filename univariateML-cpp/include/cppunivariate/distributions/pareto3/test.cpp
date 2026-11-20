@@ -134,3 +134,13 @@ TEST_CASE("pareto3 rounded threshold subtraction is not statistical nonexistence
     CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
   }
 }
+
+TEST_CASE("pareto3: centered refinement retains the spread of archive 005591") {
+  const std::vector<double> x{0.6875776168638714, 0.687577616864559,
+      0.6875776168652465, 0.6875776168659341, 0.6875776168673092};
+  const auto f = cppunivariate::pareto3_mle(mltest::as_span(x), 0, 1e-10, 1000);
+  REQUIRE(f.status == cppunivariate::Pareto3Status::Ok);
+  // 80-digit stationary solve treating each observation as exact binary64.
+  CHECK(std::fabs(f.shape / 977351135434.3642976093662 - 1) < 1e-10);
+  CHECK(std::fabs(f.scale / 0.6875776168653109690504518 - 1) < 1e-10);
+}

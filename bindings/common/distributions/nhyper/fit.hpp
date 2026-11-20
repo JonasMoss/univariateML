@@ -4,7 +4,7 @@
 #include <limits>
 #include <cmath>
 namespace umvl_binding {
-inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = {}, Held r_arg = {}) {
+inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = {}, Held r_arg = {}, int iterlim = 100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held m = m_arg;
@@ -17,7 +17,8 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   if (m.supplied && std::isnan(held)) return invalid_argument(fail("`m` must be a whole number or NULL, not NA."));
   const double population = !N.supplied ? std::numeric_limits<double>::quiet_NaN() : N.value;
   if (N.supplied && std::isnan(population)) return invalid_argument(fail("`N` must be a whole number or NULL, not NA."));
-  const auto fit = cppunivariate::nhyper_mle(x, design, population, held);
+  if (iterlim < 1) return invalid_argument(fail("`iterlim` must be at least 1."));
+  const auto fit = cppunivariate::nhyper_mle(x, design, population, held, iterlim);
   const auto o = cppunivariate::outcome(fit);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"m",m_arg.supplied},{"N",N_arg.supplied},{"r",r_arg.supplied}});
@@ -43,7 +44,7 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
     case cppunivariate::NhyperStatus::FaceTie:
       return done(stopped_fail("A finite likelihood matched the negative-binomial face within numerical tolerance; a larger finite maximum is not excluded. Use mlnbinom(x - r, size = r) for the limit model."));
     case cppunivariate::NhyperStatus::NumericalFailure:
-      return done(stopped_fail("Finite-grid numerical failure: 1e7 candidate evaluation budget or representability/nonfinite likelihood limit exceeded."));
+      return done(stopped_fail("The integer likelihood search did not converge within its work or representability limits."));
     case cppunivariate::NhyperStatus::InvalidInput:
       return done(stopped_fail("Counts must be whole numbers from 0 to 2^53 - 1, with r <= m <= N."));
     case cppunivariate::NhyperStatus::Infeasible:

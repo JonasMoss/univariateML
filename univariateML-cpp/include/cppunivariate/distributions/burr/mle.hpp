@@ -423,9 +423,33 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-10
    if(!(a>0 && std::isfinite(a) && s>0 && std::isfinite(s) && std::isfinite(r.logLik+jac))){bad.status=BurrStatus::NumericalFailure;return bad;}
    return {a,b,s,burr_local_loglik(x,a,b,s),r.iterations,BurrStatus::Ok};
  } else {
-   auto location=[&](double power){return solve_root([&](double c){double z=n;for(double v:r)z-=(a+1)*burr_hold_detail::sigmoid(power*(v-rmean)-c);return -z;});};
+   std::vector<double> centered;
+   if(fs) {
+     centered.reserve(r.size());
+     for(double v:r)centered.push_back(v-rmean);
+   }
+   auto location=[&](double power){
+     return solve_root([&](double c){
+       double z=n;
+       for(double w:centered)z-=(a+1)*burr_hold_detail::sigmoid(power*w-c);
+       return -z;
+     });
+   };
    if(fb){
-     const double root=solve_root([&](double z){double power=std::exp(z),c=fs?location(power):power*(ls-rmean),g=n;for(double v:r){double w=v-rmean,u=power*w-c;g+=power*w*(1-(a+1)*burr_hold_detail::sigmoid(u));}if(!fs){g=n;for(double v:r){double u=power*(v-ls);g+=u*(1-(a+1)*burr_hold_detail::sigmoid(u));}}return g;});
+     const double root=solve_root([&](double z){
+       const double power=std::exp(z);
+       double g=n;
+       if(fs){
+         const double c=location(power);
+         for(double w:centered)g+=power*w*(1-(a+1)*burr_hold_detail::sigmoid(power*w-c));
+       } else {
+         for(double v:r){
+           const double u=power*(v-ls);
+           g+=u*(1-(a+1)*burr_hold_detail::sigmoid(u));
+         }
+       }
+       return g;
+     });
      b=std::exp(root);
    }
    if(fs){s=x0*std::exp(rmean+location(b)/b);ls=rel(s);}
