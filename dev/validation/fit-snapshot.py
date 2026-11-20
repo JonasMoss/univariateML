@@ -156,6 +156,11 @@ static std::string str(const std::string&s){std::string o="\"";for(unsigned char
   if(c=='"'||c=='\\'){o+='\\';o+=char(c);}else if(c<0x20){char b[8];std::snprintf(b,sizeof b,"\\u%04x",c);o+=b;}else o+=char(c);}return o+"\"";}
 static std::string named(const std::vector<std::pair<std::string,double>>&v){std::string o="{";
   for(std::size_t i=0;i<v.size();++i)o+=(i?",":"")+str(v[i].first)+":"+num(v[i].second);return o+"}";}
+// Older source trees can still be used to regenerate a baseline.
+template<class Fit> static auto root_radius(const Fit& r,int) -> decltype(r.root_radius) {
+  return r.root_radius;
+}
+template<class Fit> static double root_radius(const Fit&,long) {return NAN;}
 int main(){
   std::string token;unsigned mask;std::size_t n;
   while(std::cin>>mask>>n){
@@ -173,6 +178,8 @@ int main(){
       for(std::size_t j=0;j<r.extra_vectors[i].second.size();++j)o+=(j?",":"")+num(r.extra_vectors[i].second[j]);o+="]";}
     o+="},\"warnings\":[";for(std::size_t i=0;i<r.warnings.size();++i)o+=(i?",":"")+str(r.warnings[i]);
     o+="],\"message\":"+str(r.error)+",\"model\":"+str(r.model)+",\"attainable_tol\":"+num(r.attainable_tol);
+    const double radius=root_radius(r,0);
+    if(std::isfinite(radius))o+=",\"root_radius\":"+num(radius);
     o+=",\"limit_estimates\":"+named(r.limit_estimates)+",\"limit_loglik\":"+num(r.limit_loglik);
     o+=",\"loglik_lower\":"+num(r.loglik_lower)+",\"loglik_upper\":"+num(r.loglik_upper);
     o+=",\"segment_loglik_upper\":"+num(r.segment_loglik_upper)+",\"candidates\":[";

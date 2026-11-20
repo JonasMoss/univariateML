@@ -318,6 +318,7 @@ comparisons. Holding public Fréchet scale constrains the GEV orbit and
 changes the inner equation; this all-free cover is not reused for that
 hold. Its existing compatible-member shortcuts remain separate.
 
+With location and scale held, the inverse-Weibull solve brackets log shape on the excesses. Its radius adds a practical allowance for score, excess and coefficient rounding.
 
 ## R notes
 

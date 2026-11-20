@@ -68,7 +68,7 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
 }
 
 enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure, SearchContradicted };
-struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified=true; bool minimum_majority=false; bool shape_collapse=false; };
+struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified=true; bool minimum_majority=false; bool shape_collapse=false; double root_radius=NAN; };
 
 inline bool family_point(const FrechetResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
@@ -208,6 +208,7 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
      r.status==InvWeibullStatus::Ok?FrechetStatus::Ok:
      r.status==InvWeibullStatus::IterationFailure?FrechetStatus::IterationFailure:FrechetStatus::InvalidData};
    out.certified=r.certified;
+   out.root_radius=r.root_radius;
    if(r.status==InvWeibullStatus::Unbounded) {
      if(m==M && (!hs || exact)) {out.shape_collapse=true;out.stop_detail.loglik_upper=INFINITY;}
      else out.status=FrechetStatus::NumericalFailure;

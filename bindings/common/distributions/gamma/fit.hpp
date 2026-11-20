@@ -22,6 +22,6 @@ inline FitResult fit_gamma(cppunivariate::span x, Held shape_arg = {}, Held scal
   FitResult out;
   out.estimates.emplace_back("shape",r.shape); if(shape_arg.supplied) out.fixed.push_back("shape");
   out.estimates.emplace_back("scale",r.scale); if(scale_arg.supplied) out.fixed.push_back("scale");
-  out.logLik=r.logLik; out.iterations=r.iterations; return done(out);
+  out.logLik=r.logLik; out.root_radius=r.root_radius; out.iterations=r.iterations; return done(out);
 }
 }

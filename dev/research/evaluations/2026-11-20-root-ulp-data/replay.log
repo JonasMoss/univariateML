@@ -1,0 +1,132 @@
+cert-replay: 77 CPU s, 50 digits
+  frechet restore     holds  88
+  frechet root        holds  130
+  frechet root        info   44
+  gamma   root        holds  134
+  gamma   root-tol    info   60
+  genbeta root        info   158
+  invgamma restore     holds  80
+  invgamma restore     info   4
+  invgamma root        holds  48
+  invgamma root        info   84
+  invweibull restore     holds  118
+  invweibull restore     info   4
+  invweibull root        holds  42
+  invweibull root        info   80
+  lgamma  restore     holds  70
+  lgamma  restore     info   4
+  lgamma  root        holds  40
+  lgamma  root        info   74
+  llogis  restore     holds  122
+  llogis  restore     info   4
+  llogis  root        holds  44
+  llogis  root        info   82
+  lnorm   restore     holds  136
+  lnorm   restore     info   4
+  logitnorm restore     holds  124
+  logitnorm restore     info   2
+  naka    restore     holds  76
+  naka    restore     info   4
+  naka    root        holds  46
+  naka    root        info   80
+  pareto3 restore     holds  108
+  pareto3 restore     info   4
+  pareto3 restore     open   2
+  pareto3 root        holds  38
+  pareto3 root        info   76
+  weibull root        holds  134
+not replayed (no certificate comparison):
+  frechet: evaluation only: 44
+  frechet: no certified outcome (invalid): 14
+  frechet: no certified outcome (limit): 36
+  frechet: no certified outcome (nomle): 14
+  frechet: no certified outcome (numerical): 24
+  frechet: not a scalar root of this job (held scale with free shape: cover; all free: cover): 66
+  gamma: closed form or evaluation: 96
+  gamma: no certified outcome (invalid): 12
+  gamma: no certified outcome (nomle): 4
+  gamma: no certified outcome (tolerance): 2
+  genbeta: no certified outcome (invalid): 18
+  genbeta: no certified outcome (limit): 54
+  genbeta: no certified outcome (nomle): 10
+  genbeta: no certified outcome (numerical): 104
+  genbeta: not a scalar root (cover or evaluation): 96
+  invgamma: closed form or evaluation: 96
+  invgamma: no certified outcome (invalid): 12
+  invgamma: no certified outcome (nomle): 4
+  invgamma: no certified outcome (numerical): 4
+  invweibull: evaluation only: 40
+  invweibull: no certified outcome (invalid): 12
+  invweibull: no certified outcome (nomle): 4
+  invweibull: no certified outcome (numerical): 4
+  lgamma: closed form or evaluation: 80
+  lgamma: no certified outcome (invalid): 18
+  lgamma: no certified outcome (nomle): 4
+  llogis: evaluation only: 44
+  llogis: no certified outcome (invalid): 12
+  llogis: no certified outcome (nomle): 4
+  llogis: no certified outcome (numerical): 2
+  lnorm: mean held: no restoration check: 100
+  lnorm: no certified outcome (invalid): 12
+  lnorm: no certified outcome (nomle): 4
+  logitnorm: mean held: no restoration check: 88
+  logitnorm: no certified outcome (invalid): 12
+  logitnorm: no certified outcome (nomle): 4
+  naka: closed form or evaluation: 94
+  naka: no certified outcome (invalid): 12
+  naka: no certified outcome (nomle): 4
+  naka: no certified outcome (numerical): 12
+  pareto3: evaluation only: 38
+  pareto3: no certified outcome (invalid): 12
+  pareto3: no certified outcome (nomle): 4
+  pareto3: no certified outcome (numerical): 2
+  weibull: closed form or evaluation (shape held): 94
+  weibull: no certified outcome (invalid): 12
+  weibull: no certified outcome (nomle): 4
+  weibull: no certified outcome (numerical): 4
+open (not judged):
+  OPEN  cert-replay:restore|native|pareto3|archive|005612: evaluation raised; hp evaluation error: OverflowError: too many digits in integer; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:restore|double|pareto3|archive|005612: evaluation raised; hp evaluation error: OverflowError: too many digits in integer; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+1768 cases judged
+cert-replay: failures by check: none
+cert-replay: 0 listed as known, 0 new, 40 listed but passing
+  FIXED cert-replay:root|double|frechet|archive|001946 (TASK-214.31)
+  FIXED cert-replay:root|double|frechet|archive|001949 (TASK-214.31)
+  FIXED cert-replay:root|double|frechet|archive|001955 (TASK-214.31)
+  FIXED cert-replay:root|double|frechet|archive|010365 (TASK-214.31)
+  FIXED cert-replay:root|double|gamma|archive|001983 (TASK-214.31)
+  FIXED cert-replay:root|double|gamma|archive|001986 (TASK-214.31)
+  FIXED cert-replay:root|double|gamma|archive|001994 (TASK-214.31)
+  FIXED cert-replay:root|double|invweibull|archive|004257 (TASK-214.31)
+  FIXED cert-replay:root|double|invweibull|archive|004259 (TASK-214.31)
+  FIXED cert-replay:root|double|invweibull|archive|004260 (TASK-214.31)
+  FIXED cert-replay:root|double|llogis|archive|004562 (TASK-214.31)
+  FIXED cert-replay:root|double|llogis|archive|004563 (TASK-214.31)
+  FIXED cert-replay:root|double|llogis|archive|004565 (TASK-214.31)
+  FIXED cert-replay:root|double|llogis|archive|004566 (TASK-214.31)
+  FIXED cert-replay:root|double|llogis|archive|004574 (TASK-214.31)
+  FIXED cert-replay:root|double|llogis|archive|010575 (TASK-214.31)
+  FIXED cert-replay:root|double|llogis|archive|010576 (TASK-214.31)
+  FIXED cert-replay:root|double|naka|archive|005059 (TASK-214.31)
+  FIXED cert-replay:root|double|weibull|class|huge (TASK-214.31)
+  FIXED cert-replay:root|double|weibull|class|tiny (TASK-214.31)
+  FIXED cert-replay:root|native|frechet|archive|001946 (TASK-214.31)
+  FIXED cert-replay:root|native|frechet|archive|001949 (TASK-214.31)
+  FIXED cert-replay:root|native|frechet|archive|001955 (TASK-214.31)
+  FIXED cert-replay:root|native|frechet|archive|010365 (TASK-214.31)
+  FIXED cert-replay:root|native|gamma|archive|001983 (TASK-214.31)
+  FIXED cert-replay:root|native|gamma|archive|001986 (TASK-214.31)
+  FIXED cert-replay:root|native|gamma|archive|001994 (TASK-214.31)
+  FIXED cert-replay:root|native|invweibull|archive|004257 (TASK-214.31)
+  FIXED cert-replay:root|native|invweibull|archive|004259 (TASK-214.31)
+  FIXED cert-replay:root|native|invweibull|archive|004260 (TASK-214.31)
+  FIXED cert-replay:root|native|llogis|archive|004562 (TASK-214.31)
+  FIXED cert-replay:root|native|llogis|archive|004563 (TASK-214.31)
+  FIXED cert-replay:root|native|llogis|archive|004565 (TASK-214.31)
+  FIXED cert-replay:root|native|llogis|archive|004566 (TASK-214.31)
+  FIXED cert-replay:root|native|llogis|archive|004574 (TASK-214.31)
+  FIXED cert-replay:root|native|llogis|archive|010575 (TASK-214.31)
+  FIXED cert-replay:root|native|llogis|archive|010576 (TASK-214.31)
+  FIXED cert-replay:root|native|naka|archive|005059 (TASK-214.31)
+  FIXED cert-replay:root|native|weibull|class|huge (TASK-214.31)
+  FIXED cert-replay:root|native|weibull|class|tiny (TASK-214.31)

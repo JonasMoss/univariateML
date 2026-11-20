@@ -1,0 +1,8 @@
+native
+[doctest] test cases:   206 |   206 passed | 0 failed | 0 skipped
+[doctest] assertions: 86063 | 86063 passed | 0 failed |
+[doctest] Status: SUCCESS!
+double
+[doctest] test cases:   206 |   206 passed | 0 failed | 0 skipped
+[doctest] assertions: 86063 | 86063 passed | 0 failed |
+[doctest] Status: SUCCESS!

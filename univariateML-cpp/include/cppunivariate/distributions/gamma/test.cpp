@@ -331,3 +331,14 @@ TEST_CASE("gamma core separates likelihood overflow from solver failure") {
   CHECK(r.evaluation_failure);
   CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
 }
+
+TEST_CASE("gamma: concentrated shape is inside its reported radius") {
+  const std::vector<double> x{1.0321428726176638,1.032142872618696,1.0321428726197281,
+                              1.0321428726207602,1.0321428726228246};
+  const auto fit=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,100);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  // Exact binary64 inputs and an 80-digit digamma root (archive case 001983).
+  const double expected=337840805546920726634137.02306355;
+  CHECK(std::abs(fit.shape-expected)/fit.shape<fit.root_radius);
+  CHECK(fit.root_radius<1e-10);
+}

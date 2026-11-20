@@ -42,7 +42,12 @@ inline Pair log_complement(double x) {
 }
 inline double log_ratio(double x,double anchor) {
   const double d=(x-anchor)/anchor;
-  return std::abs(d)<.5 ? std::log1p(d) : std::log(x)-std::log(anchor);
+  if(std::abs(d)<.5) return std::log1p(d);
+  const double ratio=x/anchor;
+  // A normal ratio retains relative accuracy even at extreme common scales.
+  if(ratio>=std::numeric_limits<double>::min() && std::isfinite(ratio))
+    return std::log(ratio);
+  return std::log(x)-std::log(anchor);
 }
 struct Sum {
   double hi=0,lo=0;

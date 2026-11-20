@@ -146,6 +146,8 @@ likelihood is unbounded only when every observation equals that scale.
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
+At held scale the logistic score is bracketed in log shape. The certificate radius includes the farther endpoint and a practical $8\varepsilon$ rounding allowance.
+
 ## Decision history
 
 The diagnostic contract recorded on 2026-10-31 rejects empty or invalid input,

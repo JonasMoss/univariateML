@@ -388,3 +388,16 @@ TEST_CASE("all-censored held-scale Weibull boundaries and near-cancelling score"
   CHECK(scaled.shape==thin.shape);
   CHECK(scaled.logLik==thin.logLik);
 }
+
+TEST_CASE("weibull: free shape is invariant to extreme power-of-two scaling") {
+  const std::vector<double> x{1, .375, .5, 1.625, 2.125, 3.25};
+  const auto fit=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100);
+  REQUIRE(fit.status==cppunivariate::WeibullStatus::Ok);
+  for(int exponent:{-996,996}) {
+    std::vector<double> scaled;
+    for(double v:x)scaled.push_back(std::ldexp(v,exponent));
+    const auto r=cppunivariate::weibull_mle(mltest::as_span(scaled),1e-10,100);
+    REQUIRE(r.status==cppunivariate::WeibullStatus::Ok);
+    CHECK(r.shape==fit.shape);
+  }
+}
