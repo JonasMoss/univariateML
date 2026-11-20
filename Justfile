@@ -14,7 +14,7 @@ export TZ := "UTC"
 export CCACHE_DIR := env_var_or_default("UMVL_CCACHE_DIR", env_var("HOME") + "/.cache/ccache/univariateML")
 export CCACHE_BASEDIR := repo_root
 export CCACHE_NOHASHDIR := "1"
-export CCACHE_MAXSIZE := "8G"
+export CCACHE_MAXSIZE := "16G"
 
 default: test
 

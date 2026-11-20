@@ -8,6 +8,21 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-20
 
+- **Test protocol for agent jobs** (Jonas): a job ends with targeted checks
+  (`just test-changed --no-long-double`, its own families' snapshots and the
+  checks its brief names); full suites only when its diff touches shared code
+  (`core/`, `special/`, shared binding files, code generators, test
+  infrastructure). The coordinator runs the full validation (four snapshot
+  modes, strict layer, every suite) once per batch of merges. `just test-full`
+  replaces `just test` wherever both ran (the full tier contains the dev tier).
+  Why: on 2026-11-20 three jobs finished their code in about an hour each and
+  then queued for one to two hours on the single four-slot group, repeating
+  the suites the merge validation runs anyway (about 70 min of four-core time
+  per job; costs of each step in the 2026-11-16 validation: snapshots 14 min,
+  strict 41, cpp-test 14, no-long-double 13, test 10, test-full 14, JS and
+  site 9). The project ccache was full (7.4 of 8 GB, 45 % hits) and is now
+  16 GB (`Justfile`).
+
 - **Codex model for agent jobs, revised** (Jonas): gpt-6.2-sol at low effort
   is the default for every Codex job. Jonas expects it to match roughly what
   gpt-6.1 gave at high effort, especially on mathematics. Supersedes the
