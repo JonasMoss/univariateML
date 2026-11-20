@@ -62,9 +62,9 @@ docs, validation harness and site page
   Armadillo.
 - Accuracy contract ([design](dev/design/accuracy-contract.md)): an `Ok`
   fit is within relative `tol` (default `1e-10`) of a maximizer in every free
-  coefficient, and its stopping rule must justify that. Target controls are
-  `tol` and `iterlim` only (C++ `tol`, `maxit`); the CRAN-era `reltol`,
-  `abstol`, `gradtol` and `<param>0` are being removed for 2.0.
+  coefficient, and its stopping rule must justify that. Iterative fitters
+  take `tol` and `iterlim` only (C++ `tol`, `maxit`), with per-family work
+  budgets. Closed-form base fitters take no controls.
 - The core must build, test, fit, evaluate and sample without R. R RNG state
   stays in the bindings.
 - Failure handling, score gates and work caps:

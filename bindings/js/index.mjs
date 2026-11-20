@@ -1,4 +1,4 @@
-import {families, fitFamilies, coefficients} from './families.mjs';
+import {families, fitFamilies, coefficients, fitControls} from './families.mjs';
 export {families, fitFamilies} from './families.mjs';
 import {modifierAPI} from './modifiers.mjs';
 import {modifiers} from './modifier-metadata.mjs';
@@ -50,13 +50,19 @@ export default async function create(options = {}) {
       try {
       if(x && 'lower' in x && x.lower.length===x.upper?.length &&
           Array.from(x.lower).every((v,i)=>v===x.upper[i])) x=x.lower;
-      if(control.zero && control.zero!=="none" || control.truncate || x && "lower" in x) {
+      const modified = (control.zero && control.zero !== 'none') || control.truncate ||
+        (x && !ArrayBuffer.isView(x) && !Array.isArray(x) && 'lower' in x);
+      const allowedControls = modified ? ['tol', 'iterlim'] : fitControls[id];
+      for (const key of Object.keys(control)) {
+        if (!['zero', 'truncate', ...allowedControls].includes(key))
+          throw new Error(`Unknown fit option: ${key}`);
+      }
+      if (modified) {
         const allowed=[...coefficients[id],...(control.zero==='modified'?['p0']:control.zero==='inflated'?['pi']:[])];
         if(Object.keys(held).some(k=>!allowed.includes(k))) throw new Error('Unknown held coefficient for modifier');
         if(Object.values(held).some(v=>v!==null && (typeof v!=='number' || !Number.isFinite(v)))) throw new Error('held coefficients must be finite scalars');
       }
-      const result = control.zero && control.zero!=="none" || control.truncate ||
-        (x && !ArrayBuffer.isView(x) && !Array.isArray(x) && "lower" in x) ?
+      const result = modified ?
         modifier.fit(x,held,control) : module[`fit${id}`](x, held, control);
       if (result.error !== undefined) {
         const error = new Error(result.error);

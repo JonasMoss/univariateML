@@ -41,20 +41,22 @@ def snippet(folder, m):
     args = header[start:end-1].split(',')
     values=['x']
     params={p['name']: (m.get('fit_args',{}).get(p['name']) if m.get('fit_args',{}).get(p['name']) is not None else p['simulate']) for p in m['params']}
+    controls = {entry['name']: entry['default'] for entry in m['r_usage']['controls']}
     for arg in args[1:]:
         if '=' in arg: break
         name=arg.strip().split()[-1].replace('/*','').replace('*/','')
-        if name in ('tol','reltol','abstol','gradtol','epsilon'): value='1e-8'
-        elif name in ('maxit','iterlim'): value='1000'
-        else:
-            key=name.removesuffix('_or_nan').removeprefix('held_')
-            if key not in params:
-                design=[p['name'] for p in m['params'] if p.get('kind') in ('design','threshold')]
-                if len(design)==1: key=design[0]
-                else: raise ValueError(f'{folder.name}: required argument {name}')
-            value=str(params[key])
-            if value=='inf': value='std::numeric_limits<double>::infinity()'
-            if value=='-inf': value='-std::numeric_limits<double>::infinity()'
+        control = 'iterlim' if name == 'maxit' else name
+        if control in controls:
+            values.append(controls[control])
+            continue
+        key=name.removesuffix('_or_nan').removeprefix('held_')
+        if key not in params:
+            design=[p['name'] for p in m['params'] if p.get('kind') in ('design','threshold')]
+            if len(design)==1: key=design[0]
+            else: raise ValueError(f'{folder.name}: required argument {name}')
+        value=str(params[key])
+        if value=='inf': value='std::numeric_limits<double>::infinity()'
+        if value=='-inf': value='-std::numeric_limits<double>::infinity()'
         values.append(value)
     typ='int' if s[3]=='ispan' else 'double'
     sample=json.loads((folder/'golden.json').read_text())['data'][:5]
@@ -72,6 +74,28 @@ int main() {{
   (void)fit;
 }}
 '''
+
+def r_usage(folder, model):
+    coefficients = {p['name'] for p in model['params']}
+    controls = {name: description for name, description in (model['r'].get('control') or {}).items()
+                if name not in coefficients}
+    if set(controls) not in (set(), {'tol', 'iterlim'}):
+        raise ValueError(f'{folder.name}: unexpected R fit controls {list(controls)}')
+    adapter = (ROOT / f'bindings/r/distributions/{folder.name}/adapter.cpp').read_text()
+    signature = re.search(r'\bml' + folder.name + r'_\s*\((.*?)\)\s*\{', adapter, re.S)[1]
+    entries = []
+    for name, description in controls.items():
+        default = re.search(r'\b' + name + r'\s*=\s*([^,]+)', signature)
+        if default is None:
+            raise ValueError(f'{folder.name}: missing default for {name}')
+        entries.append(dict(name=name, default=default[1].strip(), description=description))
+    formals = ['x', 'na.rm = FALSE', '...']
+    if 'zero-modifiable' in model['modifier_tags']:
+        formals.append('zero = "none"')
+    if 'truncatable' in model['modifier_tags']:
+        formals.append('truncate = NULL')
+    return dict(signature=f'ml{folder.name}({", ".join(formals)})', controls=entries)
+
 
 def derived_tags(m):
     support=m['support']
@@ -143,10 +167,11 @@ for folder in sorted(FAMILIES.iterdir()):
         m['key_references']=[m['references'][i-1] for i in m['key_references']]
     latex=sp.latex(density,symbol_names=symbol_names)
     readable=not density.has(sp.Piecewise,sp.Sum,sp.Integral) and sp.count_ops(density)<=55 and len(latex)<=700
+    m.update(derived_tags(m))
+    m['r_usage'] = r_usage(folder, m)
     m.update(summary=m.get('summary') or re.split(r'\n\s*\n|\n## ',body.strip())[0].replace('\n',' '),
              log_latex=sp.latex(expr,symbol_names=symbol_names), density_latex=latex if readable else None,
              cpp=snippet(folder,m))
-    m.update(derived_tags(m))
     m['inference']=[r for r in inference['rows'] if r['family']==folder.name]
     out.append(clean(m))
 # Pending probability-only families have no catalogue route yet. Keep their

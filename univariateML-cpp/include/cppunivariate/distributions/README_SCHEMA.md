@@ -32,7 +32,7 @@ requires its proved non-reachability scope.
 | `params` | yes | list of `{name, role, domain, simulate}`; names are the R coefficient names (see `bindings/r/CANONICAL_NAMES.md`), in output order; `domain` is an interval string such as `"(0, inf)"` |
 | `r.density`, `r.sampler` | yes | d/r functions: `pkg::fn` for an external package, or a bare name such as `dgb2` or `core_dnorm` for package-defined functions; `p`/`q` replace the density prefix (`d` or `core_d`); sampling uses `r.sampler` |
 | `r.args` | when the reference functions do not take the coefficient names | map from reference-function argument to an R expression in the coefficients, e.g. `{mean: mu, sd: sigma}` for a stats reference; a coefficient may feed several arguments; e.g. `"n": "N - m"`. Expressions must parse as one expression and use only coefficient variables. `rml` applies it; generated d/p/q take coefficient names directly |
-| `r.control` | yes (may be `{}`) | one entry per non-coefficient argument of the Rcpp adapter `ml<id>_` other than `x` (coefficient descriptions are optional), mapping name to a one-line description; codegen fails if the names differ from the adapter's |
+| `r.control` | yes (may be `{}`) | `tol` and `iterlim` for an iterative fitter, each mapped to a one-line description. A closed-form base fitter declares neither control. Optional descriptions for coefficient holds may also appear here. Use `{}` when there are no entries. Declare the numeric defaults in the Rcpp adapter and shared fit signature. Codegen checks argument names and the JS generator checks that the defaults agree. |
 | `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
 | `inference_numeric` | yes | list of numeric-inference regime claims; see below |
 | `log_density` | yes | log density or log pmf in the natural parameters, sympy syntax, variable `x`; a `spec.py` in the folder may replace it when a string is not enough |
@@ -50,9 +50,11 @@ requires its proved non-reachability scope.
 | `key_references` | no | one to three distinct one-based indices into `references`; selects original, standard, or estimator sources without duplicating or changing reference strings |
 | `examples` | yes | R example code; generation fails when absent. Use real data appropriate to the family or `rml(n, mlX())`. |
 
-Argument names follow `dev/roadmap/2026-10-28-cran-argument-names.md`:
-`reltol` (relative step), `abstol` (absolute step), `gradtol` (gradient
-norm), `iterlim`, and `<param>0` for optional start values.
+For a new iterative family, describe the relative coefficient accuracy
+requested by `tol` and the work unit governed by `iterlim`. Use the accuracy
+contract's default of `1e-10` and choose the work budget for the family's
+search. The fitter derives any starting values from the data and held
+coefficients.
 
 ## Per-fit certification (`fit`)
 
@@ -542,7 +544,7 @@ distributions by hand except the `cppunivariate.hpp` aggregator.
 | `test.cpp` | doctest cases, globbed into `distribution_tests`; `#include "test_support.hpp"` for `load_distribution_golden(id)` and tolerances |
 | `golden.json` | golden data and estimates, written by `just goldens` |
 | `truth.py`, `truth.json` | high-precision d/p/q route and its table, written by `just dpqr-truth <id>`; checked by the truth `TEST_CASE` in `test.cpp` |
-| `bindings/r/distributions/<id>/adapter.cpp` | the Rcpp adapter `ml<id>_`, copied to `src/dist_<id>.cpp`; argument names follow `dev/roadmap/2026-10-28-cran-argument-names.md` and must match `r.control` (codegen checks) |
+| `bindings/r/distributions/<id>/adapter.cpp` | the Rcpp adapter `ml<id>_`, copied to `src/dist_<id>.cpp`; declare held coefficients and the controls in `r.control` (codegen checks) |
 | `bindings/r/distributions/<id>/test.R` | testthat file, copied to `tests/testthat/test-dist-<id>.R` |
 
 Steps:

@@ -286,7 +286,7 @@ template<class... T> std::string binding_message(std::string s,const T&...){retu
 #include <algorithm>
 #include <cmath>
 #include <limits>
-inline void route_bbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held alpha_arg = {}, audit::Held beta_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+inline void route_bbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held alpha_arg = {}, audit::Held beta_arg = {}, double tol = 1e-10, int iterlim = 500) {
   std::vector<std::string> warnings;
   const audit::Held size = size_arg;
   const audit::Held alpha = alpha_arg;
@@ -308,10 +308,10 @@ inline void route_bbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audi
     (void)0;
   if (beta.supplied && !(std::isfinite(b) && b > 0))
     (void)0;
-  const auto res = cppunivariate::bbinom_mle(x, N, reltol, iterlim, a, b); audit::observe(res, {{"size",res.size,0,INFINITY,true,false},{"alpha",res.alpha,0,INFINITY,false,false},{"beta",res.beta,0,INFINITY,false,false}});
+  const auto res = cppunivariate::bbinom_mle(x, N, tol, iterlim, a, b); audit::observe(res, {{"size",res.size,0,INFINITY,true,false},{"alpha",res.alpha,0,INFINITY,false,false},{"beta",res.beta,0,INFINITY,false,false}});
 }
 
-inline void route_beta(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, double reltol = 1.490116e-08, int iterlim = 100) {
+inline void route_beta(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -326,10 +326,10 @@ inline void route_beta(cppunivariate::span x, audit::Held shape1_arg = {}, audit
   std::vector<std::string> fixed;
   if (shape1.supplied) fixed.push_back("shape1");
   if (shape2.supplied) fixed.push_back("shape2");
-  auto res = cppunivariate::beta_mle(x, reltol, iterlim, checked_shape1, checked_shape2); audit::observe(res, {{"shape1",res.alpha,0,INFINITY,false,false},{"shape2",res.beta,0,INFINITY,false,false}});
+  auto res = cppunivariate::beta_mle(x, tol, iterlim, checked_shape1, checked_shape2); audit::observe(res, {{"shape1",res.alpha,0,INFINITY,false,false},{"shape2",res.beta,0,INFINITY,false,false}});
 }
 
-inline void route_betapr(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double gradtol = 1e-6, int iterlim = 1000, double shape10 = 0, double shape20 = 0, double scale0 = 0, double reltol = 1e-13, double abstol = 1e-10) {
+inline void route_betapr(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 2000) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -345,13 +345,13 @@ inline void route_betapr(cppunivariate::span x, audit::Held shape1_arg = {}, aud
      (shape2.supplied&&(!(b>0)||!std::isfinite(b))))
     (void)0;
   auto res = (shape1.supplied||shape2.supplied)
-      ? cppunivariate::betapr_mle_holds(x,a,b,scale.supplied?held:nan,gradtol,iterlim)
+      ? cppunivariate::betapr_mle_holds(x,a,b,scale.supplied?held:nan,tol,iterlim)
       : scale.supplied
-      ? cppunivariate::betapr_mle_fixed_scale(x, held, gradtol, iterlim)
-      : cppunivariate::betapr_mle(x, gradtol, iterlim); audit::observe(res, {{"shape1",res.alpha,0,INFINITY,false,false},{"shape2",res.beta,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+      ? cppunivariate::betapr_mle_fixed_scale(x, held, tol, iterlim)
+      : cppunivariate::betapr_mle(x, tol, iterlim); audit::observe(res, {{"shape1",res.alpha,0,INFINITY,false,false},{"shape2",res.beta,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_bhatt(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held a_arg = {}, double reltol=1e-8, int iterlim=500) {
+inline void route_bhatt(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held a_arg = {}, double tol = 1e-10, int iterlim=500) {
   std::vector<std::string> warnings;
   const audit::Held mu = mu_arg;
   const audit::Held sigma = sigma_arg;
@@ -362,10 +362,10 @@ inline void route_bhatt(cppunivariate::span x, audit::Held mu_arg = {}, audit::H
   if((sigma.supplied && !(std::isfinite(f_sigma) && f_sigma>0)) || (a.supplied && !(std::isfinite(f_a) && f_a>=0)))(void)0;
   const double f_mu=mu.supplied?mu.value:cppunivariate::special::kNaN;
   if(mu.supplied&&!std::isfinite(f_mu))(void)0;
-  const auto f=cppunivariate::bhatt_mle(x,reltol,iterlim,f_sigma,f_a,f_mu); audit::observe(f, {{"mu",f.mu,-INFINITY,INFINITY,false,false},{"sigma",f.sigma,0,INFINITY,false,false},{"a",f.a,0,INFINITY,true,false}});
+  const auto f=cppunivariate::bhatt_mle(x,tol,iterlim,f_sigma,f_a,f_mu); audit::observe(f, {{"mu",f.mu,-INFINITY,INFINITY,false,false},{"sigma",f.sigma,0,INFINITY,false,false},{"a",f.a,0,INFINITY,true,false}});
 }
 
-inline void route_binom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline void route_binom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held size = size_arg;
   const audit::Held prob = prob_arg;
@@ -381,10 +381,10 @@ inline void route_binom(cppunivariate::ispan x, audit::Held size_arg = {}, audit
   }
   const double p=prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN();
   if(prob.supplied && (!std::isfinite(p)||p<0||p>1))(void)0;
-  auto res = cppunivariate::binom_mle(x, size_or_nan, abstol, iterlim, p); audit::observe(res, {{"size",res.size,0,INFINITY,true,false},{"prob",res.prob,0,1,true,true}});
+  auto res = cppunivariate::binom_mle(x, size_or_nan, tol, iterlim, p); audit::observe(res, {{"size",res.size,0,INFINITY,true,false},{"prob",res.prob,0,1,true,true}});
 }
 
-inline void route_bnbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held alpha_arg = {}, audit::Held beta_arg = {}, double gradtol=1e-8, int iterlim=600) {
+inline void route_bnbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held alpha_arg = {}, audit::Held beta_arg = {}, double tol=1e-10, int iterlim=600) {
   std::vector<std::string> warnings;
   const audit::Held size = size_arg;
   const audit::Held alpha = alpha_arg;
@@ -398,13 +398,13 @@ inline void route_bnbinom(cppunivariate::ispan x, audit::Held size_arg = {}, aud
         (void)0;
     }
   }
-  const auto fit=cppunivariate::bnbinom_mle(x,gradtol,iterlim,
+  const auto fit=cppunivariate::bnbinom_mle(x,tol,iterlim,
     size.supplied?size.value:nan,
     alpha.supplied?alpha.value:nan,
     beta.supplied?beta.value:nan); audit::observe(fit, {{"size",fit.size,0,INFINITY,false,false},{"alpha",fit.alpha,0,INFINITY,false,false},{"beta",fit.beta,0,INFINITY,false,false}});
 }
 
-inline void route_burr(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double gradtol = 1e-8, int iterlim = 1000, audit::Held shape10 = {}, audit::Held shape20 = {}, audit::Held scale0 = {}, double reltol = 1e-12, double abstol = 1.220703e-4) {
+inline void route_burr(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -418,12 +418,12 @@ inline void route_burr(cppunivariate::span x, audit::Held shape1_arg = {}, audit
    return v.supplied ? v.value : NAN;
  };
  auto res = (shape1.supplied || shape2.supplied) ?
- cppunivariate::burr_mle_holds(x,start(shape1),start(shape2),start(scale),gradtol,iterlim) : scale.supplied ?
- cppunivariate::burr_mle_fixed_scale(x,start(scale),abstol,iterlim) :
- cppunivariate::burr_mle(x,gradtol,iterlim); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+ cppunivariate::burr_mle_holds(x,start(shape1),start(shape2),start(scale),tol,iterlim) : scale.supplied ?
+ cppunivariate::burr_mle_fixed_scale(x,start(scale),tol,iterlim) :
+ cppunivariate::burr_mle(x,tol,iterlim); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_cauchy(cppunivariate::span x, audit::Held location_arg = {}, audit::Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline void route_cauchy(cppunivariate::span x, audit::Held location_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held location = location_arg;
   const audit::Held scale = scale_arg;
@@ -437,10 +437,10 @@ inline void route_cauchy(cppunivariate::span x, audit::Held location_arg = {}, a
   if(location.supplied)fixed.push_back("location");
   if(scale.supplied)fixed.push_back("scale");
 
-  cppunivariate::CauchyResult res = cppunivariate::fit_cauchy(x,abstol,iterlim,held_location,held_scale); audit::observe(res, {{"location",res.mu,-INFINITY,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  cppunivariate::CauchyResult res = cppunivariate::fit_cauchy(x,tol,iterlim,held_location,held_scale); audit::observe(res, {{"location",res.mu,-INFINITY,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_cmb(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, audit::Held nu_arg = {}, double reltol=1e-10, int iterlim=100) {
+inline void route_cmb(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, audit::Held nu_arg = {}, double tol=1e-10, int iterlim=2000) {
   std::vector<std::string> warnings;
   const audit::Held size = size_arg;
   const audit::Held prob = prob_arg;
@@ -458,20 +458,20 @@ inline void route_cmb(cppunivariate::ispan x, audit::Held size_arg = {}, audit::
     (void)0;
   if (nu.supplied && !std::isfinite(v)) (void)0;
   cppunivariate::CmbResult res;
-  if(size.supplied)res=cppunivariate::cmb_mle(x,static_cast<int>(trials),reltol,iterlim,p,v);
+  if(size.supplied)res=cppunivariate::cmb_mle(x,static_cast<int>(trials),tol,iterlim,p,v);
   else {
-    const auto profile=cppunivariate::cmb_size_mle(x,p,v,reltol,iterlim);
+    const auto profile=cppunivariate::cmb_size_mle(x,p,v,tol,iterlim);
     trials=profile.size;res=profile.fit;
   }
   audit::observe(res, {{"size",trials,0,INFINITY,true,false},{"prob",res.prob,0,1,true,true},{"nu",res.nu,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_cmp(cppunivariate::span x, audit::Held lambda_arg = {}, audit::Held nu_arg = {}, double reltol=1e-10, int iterlim=100) {
+inline void route_cmp(cppunivariate::span x, audit::Held lambda_arg = {}, audit::Held nu_arg = {}, double tol=1e-10, int iterlim=100) {
   std::vector<std::string> warnings;
   const audit::Held lambda = lambda_arg;
   const audit::Held nu = nu_arg;
 
- cppunivariate::CmpFitControl ctl; ctl.tol=reltol; ctl.maxit=iterlim;
+ cppunivariate::CmpFitControl ctl; ctl.tol=tol; ctl.maxit=iterlim;
  if (lambda.supplied) {ctl.fixed_lambda=lambda.value;
   if (!std::isfinite(ctl.fixed_lambda) || ctl.fixed_lambda<0) (void)0;}
  if (nu.supplied) {ctl.fixed_nu=nu.value;
@@ -479,7 +479,7 @@ inline void route_cmp(cppunivariate::span x, audit::Held lambda_arg = {}, audit:
  const auto res=cppunivariate::cmp_domain_mle(x,ctl); audit::observe(res, {{"lambda",std::exp(res.eta),0,INFINITY,true,false},{"nu",res.nu,0,INFINITY,true,false}});
 }
 
-inline void route_dgamma(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held rate_arg = {}, double reltol = 1e-8, int iterlim = 400) {
+inline void route_dgamma(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held rate_arg = {}, double tol = 1e-10, int iterlim = 400) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held rate = rate_arg;
@@ -489,7 +489,7 @@ inline void route_dgamma(cppunivariate::span x, audit::Held shape_arg = {}, audi
   const double b=rate.supplied ? rate.value:nan;
   if (shape.supplied && (!std::isfinite(a) || a<=0)) (void)0;
   if (rate.supplied && (!std::isfinite(b) || b<=0)) (void)0;
-  const auto r=cppunivariate::dgamma_mle(x,reltol,iterlim,a,b); audit::observe(r, {{"shape",r.shape,0,INFINITY,false,false},{"rate",r.rate,0,INFINITY,false,false}});
+  const auto r=cppunivariate::dgamma_mle(x,tol,iterlim,a,b); audit::observe(r, {{"shape",r.shape,0,INFINITY,false,false},{"rate",r.rate,0,INFINITY,false,false}});
 }
 
 inline void route_dlaplace(cppunivariate::ispan x, audit::Held location_arg = {}, audit::Held scale_arg = {}) {
@@ -503,7 +503,7 @@ inline void route_dlaplace(cppunivariate::ispan x, audit::Held location_arg = {}
   auto r=cppunivariate::dlaplace_mle(x,mu,p); audit::observe(r, {{"location",r.location,-INFINITY,INFINITY,false,false},{"scale",r.scale,0,1,false,false}});
 }
 
-inline void route_dnorm(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, double reltol = 1e-9, int iterlim = 200) {
+inline void route_dnorm(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const audit::Held mean = mean_arg;
   const audit::Held sd = sd_arg;
@@ -513,7 +513,7 @@ inline void route_dnorm(cppunivariate::span x, audit::Held mean_arg = {}, audit:
   const double b=sd.supplied ? sd.value:nan;
   if (mean.supplied && (!std::isfinite(a))) (void)0;
   if (sd.supplied && (!std::isfinite(b) || b<=0)) (void)0;
-  const auto r=cppunivariate::dnorm_mle(x,reltol,iterlim,a,b); audit::observe(r, {{"mean",r.mean,-INFINITY,INFINITY,false,false},{"sd",r.sd,0,INFINITY,false,false}});
+  const auto r=cppunivariate::dnorm_mle(x,tol,iterlim,a,b); audit::observe(r, {{"mean",r.mean,-INFINITY,INFINITY,false,false},{"sd",r.sd,0,INFINITY,false,false}});
 }
 
 inline void route_dunif(cppunivariate::ispan x, audit::Held min_arg = {}, audit::Held max_arg = {}) {
@@ -529,7 +529,7 @@ inline void route_dunif(cppunivariate::ispan x, audit::Held min_arg = {}, audit:
       cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())},a,b); audit::observe(res, {{"min",res.min,-INFINITY,(res.max),false,true},{"max",res.max,(res.min),INFINITY,true,false}});
 }
 
-inline void route_dweibull(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, double reltol = 1e-12, int iterlim = 200) {
+inline void route_dweibull(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -541,10 +541,10 @@ inline void route_dweibull(cppunivariate::span x, audit::Held shape1_arg = {}, a
     (void)0;
   if (shape2.supplied && !(b > 0 && std::isfinite(b)))
     (void)0;
-  const auto res = cppunivariate::dweibull_mle(x, reltol, iterlim, q, b); audit::observe(res, {{"shape1",res.shape1,0,1,false,false},{"shape2",res.shape2,0,INFINITY,false,false}});
+  const auto res = cppunivariate::dweibull_mle(x, tol, iterlim, q, b); audit::observe(res, {{"shape1",res.shape1,0,1,false,false},{"shape2",res.shape2,0,INFINITY,false,false}});
 }
 
-inline void route_emg(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held lambda_arg = {}, double reltol=1e-8, int iterlim=500) {
+inline void route_emg(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held lambda_arg = {}, double tol=1e-10, int iterlim=500) {
   std::vector<std::string> warnings;
   const audit::Held mu = mu_arg;
   const audit::Held sigma = sigma_arg;
@@ -578,7 +578,7 @@ const audit::Held a = lambda;
 
   }
 
-  auto r=cppunivariate::emg_mle(x,reltol,iterlim,checked_value_0,checked_value_1,checked_value_2); audit::observe(r, {{"mu",r.mu,-INFINITY,INFINITY,false,false},{"sigma",r.sigma,0,INFINITY,false,false},{"lambda",r.lambda,0,INFINITY,false,false}});
+  auto r=cppunivariate::emg_mle(x,tol,iterlim,checked_value_0,checked_value_1,checked_value_2); audit::observe(r, {{"mu",r.mu,-INFINITY,INFINITY,false,false},{"sigma",r.sigma,0,INFINITY,false,false},{"lambda",r.lambda,0,INFINITY,false,false}});
 }
 
 inline void route_exp(cppunivariate::span x, audit::Held rate_arg = {}) {
@@ -587,7 +587,7 @@ inline void route_exp(cppunivariate::span x, audit::Held rate_arg = {}) {
   auto r=cppunivariate::exp_mle(cppunivariate::span{x.data(),x.size()},rate); audit::observe(r, {{"rate",r.rate,0,INFINITY,false,false}});
 }
 
-inline void route_fatigue(cppunivariate::span x, audit::Held alpha_arg = {}, audit::Held beta_arg = {}, audit::Held mu_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline void route_fatigue(cppunivariate::span x, audit::Held alpha_arg = {}, audit::Held beta_arg = {}, audit::Held mu_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held alpha = alpha_arg;
   const audit::Held beta = beta_arg;
@@ -602,10 +602,10 @@ inline void route_fatigue(cppunivariate::span x, audit::Held alpha_arg = {}, aud
   if ((alpha.supplied&&(!(a>0)||!std::isfinite(a))) ||
       (beta.supplied&&(!(b>0)||!std::isfinite(b))))
     (void)0;
-  auto res = cppunivariate::fatigue_mle_shifted(x, threshold, abstol, iterlim,a,b); audit::observe(res, {{"alpha",res.alpha,0,INFINITY,false,false},{"beta",res.beta,0,INFINITY,false,false},{"mu",threshold,-INFINITY,INFINITY,false,false}});
+  auto res = cppunivariate::fatigue_mle_shifted(x, threshold, tol, iterlim,a,b); audit::observe(res, {{"alpha",res.alpha,0,INFINITY,false,false},{"beta",res.beta,0,INFINITY,false,false},{"mu",threshold,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_foldnorm(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, double reltol=1e-10, int iterlim=200) {
+inline void route_foldnorm(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, double tol=1e-10, int iterlim=200) {
   std::vector<std::string> warnings;
   const audit::Held mu = mu_arg;
   const audit::Held sigma = sigma_arg;
@@ -614,10 +614,10 @@ inline void route_foldnorm(cppunivariate::span x, audit::Held mu_arg = {}, audit
   const double s=sigma.supplied ? sigma.value : NAN;
   if (mu.supplied && !(std::isfinite(m) && m>=0)) (void)0;
   if (sigma.supplied && !(std::isfinite(s) && s>0)) (void)0;
-  const auto r=cppunivariate::foldnorm_mle(x,reltol,iterlim,m,s); audit::observe(r, {{"mu",r.mu,0,INFINITY,true,false},{"sigma",r.sigma,0,INFINITY,false,false}});
+  const auto r=cppunivariate::foldnorm_mle(x,tol,iterlim,m,s); audit::observe(r, {{"mu",r.mu,0,INFINITY,true,false},{"sigma",r.sigma,0,INFINITY,false,false}});
 }
 
-inline void route_fpareto(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held shape3_arg = {}, audit::Held scale_arg = {}, audit::Held min_arg = {}, double reltol = 1e-7, int iterlim = 1000) {
+inline void route_fpareto(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held shape3_arg = {}, audit::Held scale_arg = {}, audit::Held min_arg = {}, double tol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -633,10 +633,10 @@ inline void route_fpareto(cppunivariate::span x, audit::Held shape1_arg = {}, au
  if(shape2.supplied) { if(!(shape2.value>0) || !std::isfinite(shape2.value)) (void)0; fixed.push_back("shape2"); }
  if(shape3.supplied) { if(!(shape3.value>0) || !std::isfinite(shape3.value)) (void)0; fixed.push_back("shape3"); }
  if(scale.supplied) { if(!(scale.value>0) || !std::isfinite(scale.value)) (void)0; fixed.push_back("scale"); }
- auto res=cppunivariate::fpareto_mle(x,min,reltol,iterlim,shape1.supplied ? shape1.value : std::numeric_limits<double>::quiet_NaN(),shape2.supplied ? shape2.value : std::numeric_limits<double>::quiet_NaN(),shape3.supplied ? shape3.value : std::numeric_limits<double>::quiet_NaN(),scale.supplied ? scale.value : std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"shape3",res.shape3,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false},{"min",min,-INFINITY,INFINITY,false,false}});
+ auto res=cppunivariate::fpareto_mle(x,min,tol,iterlim,shape1.supplied ? shape1.value : std::numeric_limits<double>::quiet_NaN(),shape2.supplied ? shape2.value : std::numeric_limits<double>::quiet_NaN(),shape3.supplied ? shape3.value : std::numeric_limits<double>::quiet_NaN(),scale.supplied ? scale.value : std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"shape3",res.shape3,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false},{"min",min,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_frechet(cppunivariate::span x, audit::Held lambda_arg = {}, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, double reltol=1e-10, int iterlim=100) {
+inline void route_frechet(cppunivariate::span x, audit::Held lambda_arg = {}, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, double tol=1e-10, int iterlim=100) {
   std::vector<std::string> warnings;
   const audit::Held lambda = lambda_arg;
   const audit::Held mu = mu_arg;
@@ -651,20 +651,20 @@ inline void route_frechet(cppunivariate::span x, audit::Held lambda_arg = {}, au
  if(lambda.supplied) fixed.push_back("lambda");
  if(mu.supplied) fixed.push_back("mu");
  if(sigma.supplied) fixed.push_back("sigma");
- const auto r=cppunivariate::frechet_mle(x,reltol,iterlim,
+ const auto r=cppunivariate::frechet_mle(x,tol,iterlim,
  mu.supplied ? mu.value : std::numeric_limits<double>::quiet_NaN(),shape,scale); audit::observe(r, {{"lambda",r.lambda,0,INFINITY,false,false},{"mu",r.mu,-INFINITY,INFINITY,false,false},{"sigma",r.sigma,0,INFINITY,false,false}});
 }
 
-inline void route_gamma(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline void route_gamma(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
   if (shape_arg.supplied && (!(shape_arg.value > 0) || !std::isfinite(shape_arg.value))) (void)0;
   double shape=shape_arg.supplied ? shape_arg.value : NAN;
   if (scale_arg.supplied && (!(scale_arg.value > 0) || !std::isfinite(scale_arg.value))) (void)0;
   double scale=scale_arg.supplied ? scale_arg.value : NAN;
-  auto r=cppunivariate::gamma_mle(cppunivariate::span{x.data(),x.size()},abstol,iterlim,shape,scale); audit::observe(r, {{"shape",r.shape,0,INFINITY,false,false},{"scale",r.scale,0,INFINITY,false,false}});
+  auto r=cppunivariate::gamma_mle(cppunivariate::span{x.data(),x.size()},tol,iterlim,shape,scale); audit::observe(r, {{"shape",r.shape,0,INFINITY,false,false},{"scale",r.scale,0,INFINITY,false,false}});
 }
 
-inline void route_gb2(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held shape3_arg = {}, audit::Held scale_arg = {}, double gradtol = 1e-7, int iterlim = 300) {
+inline void route_gb2(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held shape3_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 300) {
 
   if (shape1_arg.supplied && (!(shape1_arg.value > 0) || !std::isfinite(shape1_arg.value))) (void)0;
   double shape1=shape1_arg.supplied ? shape1_arg.value : NAN;
@@ -674,10 +674,10 @@ inline void route_gb2(cppunivariate::span x, audit::Held shape1_arg = {}, audit:
   double shape3=shape3_arg.supplied ? shape3_arg.value : NAN;
   if (scale_arg.supplied && (!(scale_arg.value > 0) || !std::isfinite(scale_arg.value))) (void)0;
   double scale=scale_arg.supplied ? scale_arg.value : NAN;
-  auto r=cppunivariate::gb2_mle(cppunivariate::span{x.data(),x.size()},gradtol,iterlim,shape1,shape2,shape3,scale); audit::observe(r, {{"shape1",r.shape1,0,INFINITY,false,false},{"shape2",r.shape2,0,INFINITY,false,false},{"shape3",r.shape3,0,INFINITY,false,false},{"scale",r.scale,0,INFINITY,false,false}});
+  auto r=cppunivariate::gb2_mle(cppunivariate::span{x.data(),x.size()},tol,iterlim,shape1,shape2,shape3,scale); audit::observe(r, {{"shape1",r.shape1,0,INFINITY,false,false},{"shape2",r.shape2,0,INFINITY,false,false},{"shape3",r.shape3,0,INFINITY,false,false},{"scale",r.scale,0,INFINITY,false,false}});
 }
 
-inline void route_ged(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held nu_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+inline void route_ged(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held nu_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const audit::Held mean = mean_arg;
   const audit::Held sd = sd_arg;
@@ -694,10 +694,10 @@ inline void route_ged(cppunivariate::span x, audit::Held mean_arg = {}, audit::H
   const double held_nu=nu.supplied?nu.value:nan;
   if(nu.supplied && (!std::isfinite(held_nu)||!(held_nu>0)))(void)0;
   if(nu.supplied)fixed.push_back("nu");
-  auto res = cppunivariate::ged_mle(x, gradtol, iterlim, held_mean, held_sd, held_nu); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"nu",res.nu,0,INFINITY,false,false}});
+  auto res = cppunivariate::ged_mle(x, tol, iterlim, held_mean, held_sd, held_nu); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"nu",res.nu,0,INFINITY,false,false}});
 }
 
-inline void route_genbeta(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held shape3_arg = {}, audit::Held scale_arg = {}, double gradtol = 1e-7, int iterlim = 300) {
+inline void route_genbeta(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held shape3_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 300) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -705,7 +705,7 @@ inline void route_genbeta(cppunivariate::span x, audit::Held shape1_arg = {}, au
   if (!scale_arg.supplied) (void)0;
   const double scale = scale_arg.value;
 
-  if(!(gradtol>0)||!std::isfinite(gradtol)||iterlim<1)
+  if(!(tol>0)||!std::isfinite(tol)||iterlim<1)
     (void)0;
   std::vector<std::string> fixed;
     double checked_value_0 = std::numeric_limits<double>::quiet_NaN();
@@ -742,7 +742,7 @@ const std::string name = "shape3";
   const double a=checked_value_0,b=checked_value_1,t=checked_value_2;
   if(b==1&&std::isnan(a)&&std::isnan(t))fixed.push_back("shape3");
   fixed.push_back("scale");
-  const auto r=cppunivariate::genbeta_mle(x,scale,gradtol,iterlim,a,b,t); audit::observe(r, {{"shape1",r.shape1,0,INFINITY,false,false},{"shape2",r.shape2,0,INFINITY,false,false},{"shape3",r.shape3,0,INFINITY,false,false},{"scale",r.scale,0,INFINITY,false,false}});
+  const auto r=cppunivariate::genbeta_mle(x,scale,tol,iterlim,a,b,t); audit::observe(r, {{"shape1",r.shape1,0,INFINITY,false,false},{"shape2",r.shape2,0,INFINITY,false,false},{"shape3",r.shape3,0,INFINITY,false,false},{"scale",r.scale,0,INFINITY,false,false}});
 }
 
 inline void route_geom(cppunivariate::ispan x, audit::Held prob_arg = {}) {
@@ -755,7 +755,7 @@ inline void route_geom(cppunivariate::ispan x, audit::Held prob_arg = {}) {
       cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())}, prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"prob",res.prob,0,1,false,true}});
 }
 
-inline void route_gev(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held xi_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+inline void route_gev(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held xi_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held mu = mu_arg;
   const audit::Held sigma = sigma_arg;
@@ -772,10 +772,10 @@ inline void route_gev(cppunivariate::span x, audit::Held mu_arg = {}, audit::Hel
   if(mu.supplied) fixed.push_back("mu");
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
-  const auto r=cppunivariate::gev_mle(x,reltol,iterlim,shape,location,scale); audit::observe(r, {{"mu",r.mu,-INFINITY,INFINITY,false,false},{"sigma",r.sigma,0,INFINITY,false,false},{"xi",r.xi,-INFINITY,INFINITY,false,false}});
+  const auto r=cppunivariate::gev_mle(x,tol,iterlim,shape,location,scale); audit::observe(r, {{"mu",r.mu,-INFINITY,INFINITY,false,false},{"sigma",r.sigma,0,INFINITY,false,false},{"xi",r.xi,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_gompertz(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline void route_gompertz(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held a = a_arg;
   const audit::Held b = b_arg;
@@ -792,10 +792,10 @@ inline void route_gompertz(cppunivariate::span x, audit::Held a_arg = {}, audit:
     fixed.push_back("b");
   }
 
-  auto res = cppunivariate::gompertz_mle(x, reltol, iterlim, a_held, b_held); audit::observe(res, {{"a",res.a,0,INFINITY,false,false},{"b",res.b,0,INFINITY,false,false}});
+  auto res = cppunivariate::gompertz_mle(x, tol, iterlim, a_held, b_held); audit::observe(res, {{"a",res.a,0,INFINITY,false,false},{"b",res.b,0,INFINITY,false,false}});
 }
 
-inline void route_gpd(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held xi_arg = {}, double reltol = 1e-12, int iterlim = 200) {
+inline void route_gpd(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held xi_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const audit::Held mu = mu_arg;
   const audit::Held sigma = sigma_arg;
@@ -812,10 +812,10 @@ inline void route_gpd(cppunivariate::span x, audit::Held mu_arg = {}, audit::Hel
   std::vector<std::string> fixed{"mu"};
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
-  auto res = cppunivariate::gpd_mle(x, reltol, iterlim, threshold, shape, scale); audit::observe(res, {{"mu",res.mu,-INFINITY,INFINITY,false,false},{"sigma",res.sigma,0,INFINITY,false,false},{"xi",res.xi,-INFINITY,INFINITY,false,false}});
+  auto res = cppunivariate::gpd_mle(x, tol, iterlim, threshold, shape, scale); audit::observe(res, {{"mu",res.mu,-INFINITY,INFINITY,false,false},{"sigma",res.sigma,0,INFINITY,false,false},{"xi",res.xi,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_gumbel(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline void route_gumbel(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held mu = mu_arg;
   const audit::Held sigma = sigma_arg;
@@ -829,7 +829,7 @@ inline void route_gumbel(cppunivariate::span x, audit::Held mu_arg = {}, audit::
   if(mu.supplied)fixed.push_back("mu");
   if(sigma.supplied)fixed.push_back("sigma");
 
-  cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_held(x,reltol,iterlim,held_mu,held_sigma); audit::observe(res, {{"mu",res.mu,-INFINITY,INFINITY,false,false},{"sigma",res.sigma,0,INFINITY,false,false}});
+  cppunivariate::GumbelResult res = cppunivariate::fit_gumbel_held(x,tol,iterlim,held_mu,held_sigma); audit::observe(res, {{"mu",res.mu,-INFINITY,INFINITY,false,false},{"sigma",res.sigma,0,INFINITY,false,false}});
 }
 
 inline void route_hcauchy(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}) {
@@ -876,7 +876,7 @@ inline void route_ht(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held
   const auto r=cppunivariate::ht_mle(x,held_mu,df,sc); audit::observe(r, {{"mu",r.mu,-INFINITY,INFINITY,false,false},{"nu",r.nu,0,INFINITY,false,false},{"sigma",r.sigma,0,INFINITY,false,false}});
 }
 
-inline void route_huber(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held epsilon_arg = {}, double gradtol = 1e-10, int iterlim = 200) {
+inline void route_huber(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held epsilon_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const audit::Held mu = mu_arg;
   const audit::Held sigma = sigma_arg;
@@ -892,7 +892,7 @@ inline void route_huber(cppunivariate::span x, audit::Held mu_arg = {}, audit::H
   const double e=epsilon.supplied ? epsilon.value : nan;
   if (epsilon.supplied && (!(e>0) || !std::isfinite(e)))
     (void)0;
-  auto r=cppunivariate::huber_mle(x,gradtol,iterlim,e,m,s); audit::observe(r, {{"mu",r.mu,-INFINITY,INFINITY,false,false},{"sigma",r.sigma,0,INFINITY,false,false},{"epsilon",r.epsilon,0,INFINITY,false,false}});
+  auto r=cppunivariate::huber_mle(x,tol,iterlim,e,m,s); audit::observe(r, {{"mu",r.mu,-INFINITY,INFINITY,false,false},{"sigma",r.sigma,0,INFINITY,false,false},{"epsilon",r.epsilon,0,INFINITY,false,false}});
 }
 
 inline void route_hyper(cppunivariate::span x, audit::Held m_arg = {}, audit::Held N_arg = {}, audit::Held k_arg = {}) {
@@ -924,7 +924,7 @@ inline void route_hyper(cppunivariate::span x, audit::Held m_arg = {}, audit::He
   const auto res = cppunivariate::hyper_mle(x, design, N_held, m_held); audit::observe(res, {{"m",res.m,0,(res.N),true,true},{"N",res.N,0,INFINITY,true,false},{"k",res.k,0,(res.N),true,true}});
 }
 
-inline void route_invburr(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double gradtol = 1e-8, int iterlim = 1000, audit::Held shape10 = {}, audit::Held shape20 = {}, audit::Held scale0 = {}, double reltol = 1e-12, double abstol = 1.220703e-4) {
+inline void route_invburr(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -938,9 +938,9 @@ inline void route_invburr(cppunivariate::span x, audit::Held shape1_arg = {}, au
    return v.supplied ? v.value : NAN;
  };
  auto res = (shape1.supplied || shape2.supplied) ?
- cppunivariate::invburr_mle_holds(x,start(shape1),start(shape2),start(scale),gradtol,iterlim) : scale.supplied ?
- cppunivariate::invburr_mle_fixed_scale(x,start(scale),abstol,iterlim) :
- cppunivariate::invburr_mle(x,gradtol,iterlim); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+ cppunivariate::invburr_mle_holds(x,start(shape1),start(shape2),start(scale),tol,iterlim) : scale.supplied ?
+ cppunivariate::invburr_mle_fixed_scale(x,start(scale),tol,iterlim) :
+ cppunivariate::invburr_mle(x,tol,iterlim); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_invexp(cppunivariate::span x, audit::Held scale_arg = {}) {
@@ -957,7 +957,7 @@ inline void route_invexp(cppunivariate::span x, audit::Held scale_arg = {}) {
   auto r=cppunivariate::invexp_mle(x, scale_held); audit::observe(r, {{"scale",r.scale,0,INFINITY,false,false}});
 }
 
-inline void route_invgamma(cppunivariate::span x, audit::Held alpha_arg = {}, audit::Held beta_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline void route_invgamma(cppunivariate::span x, audit::Held alpha_arg = {}, audit::Held beta_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held alpha = alpha_arg;
   const audit::Held beta = beta_arg;
@@ -974,7 +974,7 @@ inline void route_invgamma(cppunivariate::span x, audit::Held alpha_arg = {}, au
     fixed.push_back("beta");
   }
 
-  auto res = cppunivariate::invgamma_mle(x, abstol, iterlim, alpha_held, beta_held); audit::observe(res, {{"alpha",res.shape,0,INFINITY,false,false},{"beta",res.scale,0,INFINITY,false,false}});
+  auto res = cppunivariate::invgamma_mle(x, tol, iterlim, alpha_held, beta_held); audit::observe(res, {{"alpha",res.shape,0,INFINITY,false,false},{"beta",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_invgauss(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held shape_arg = {}) {
@@ -998,29 +998,22 @@ inline void route_invgauss(cppunivariate::span x, audit::Held mean_arg = {}, aud
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, mean_held, shape_held); audit::observe(res, {{"mean",res.mu,0,INFINITY,false,false},{"shape",res.lambda,0,INFINITY,false,false}});
 }
 
-inline void route_invparalogis(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, audit::Held shape0 = {}, double gradtol = 1.220703e-4, int iterlim = 100) {
+inline void route_invparalogis(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held scale = scale_arg;
 
  if(shape.supplied && (!(shape.value>0)||!std::isfinite(shape.value))) (void)0;
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (shape0.supplied) {
-    start = shape0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      (void)0;
-    }
-  }
   const double held = scale.supplied ? scale.value : 1.0;
   if (!(held > 0) || !std::isfinite(held))
     (void)0;
-  auto res = shape.supplied ? cppunivariate::invparalogis_mle_holds(x,shape.value,scale.supplied?held:NAN,gradtol,iterlim) : scale.supplied
-      ? cppunivariate::invparalogis_mle_fixed_scale(x, held, gradtol, iterlim)
-      : cppunivariate::invparalogis_mle(x, gradtol, iterlim); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = shape.supplied ? cppunivariate::invparalogis_mle_holds(x,shape.value,scale.supplied?held:NAN,tol,iterlim) : scale.supplied
+      ? cppunivariate::invparalogis_mle_fixed_scale(x, held, tol, iterlim)
+      : cppunivariate::invparalogis_mle(x, tol, iterlim); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_invpareto(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, audit::Held scale0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline void route_invpareto(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held scale = scale_arg;
@@ -1037,17 +1030,10 @@ inline void route_invpareto(cppunivariate::span x, audit::Held shape_arg = {}, a
     fixed.push_back("scale");
   }
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (scale0.supplied) {
-    start = scale0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      (void)0;
-    }
-  }
-  auto res = cppunivariate::invpareto_mle(x, reltol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = cppunivariate::invpareto_mle(x, tol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_invtrgamma(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+inline void route_invtrgamma(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -1062,10 +1048,10 @@ inline void route_invtrgamma(cppunivariate::span x, audit::Held shape1_arg = {},
       (shape2.supplied && (!(b > 0.0) || !std::isfinite(b))))
     (void)0;
   const cppunivariate::span xs = x;
-  auto res = scale.supplied ? cppunivariate::invtrgamma_mle_fixed_scale(xs,scale.value,a,b,reltol,iterlim) : cppunivariate::invtrgamma_mle(xs, reltol, iterlim, a, b); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = scale.supplied ? cppunivariate::invtrgamma_mle_fixed_scale(xs,scale.value,a,b,tol,iterlim) : cppunivariate::invtrgamma_mle(xs, tol, iterlim, a, b); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_invweibull(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, audit::Held shape0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline void route_invweibull(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held scale = scale_arg;
@@ -1082,17 +1068,10 @@ inline void route_invweibull(cppunivariate::span x, audit::Held shape_arg = {}, 
     fixed.push_back("scale");
   }
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (shape0.supplied) {
-    start = shape0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      (void)0;
-    }
-  }
-  auto res = cppunivariate::invweibull_mle(x, reltol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = cppunivariate::invweibull_mle(x, tol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_kumar(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline void route_kumar(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held a = a_arg;
   const audit::Held b = b_arg;
@@ -1108,7 +1087,7 @@ inline void route_kumar(cppunivariate::span x, audit::Held a_arg = {}, audit::He
   std::vector<std::string> fixed;
   if (a.supplied) fixed.push_back("a");
   if (b.supplied) fixed.push_back("b");
-  auto res = cppunivariate::kumar_mle(x, reltol, iterlim, checked_a, checked_b); audit::observe(res, {{"a",res.a,0,INFINITY,false,false},{"b",res.b,0,INFINITY,false,false}});
+  auto res = cppunivariate::kumar_mle(x, tol, iterlim, checked_a, checked_b); audit::observe(res, {{"a",res.a,0,INFINITY,false,false},{"b",res.b,0,INFINITY,false,false}});
 }
 
 inline void route_laplace(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}) {
@@ -1128,7 +1107,7 @@ inline void route_laplace(cppunivariate::span x, audit::Held mu_arg = {}, audit:
   auto res = cppunivariate::laplace_mle(x,held_mu,held_sigma); audit::observe(res, {{"mu",res.mu,-INFINITY,INFINITY,false,false},{"sigma",res.sigma,0,INFINITY,false,false}});
 }
 
-inline void route_lgamma(cppunivariate::span x, audit::Held shapelog_arg = {}, audit::Held ratelog_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline void route_lgamma(cppunivariate::span x, audit::Held shapelog_arg = {}, audit::Held ratelog_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shapelog = shapelog_arg;
   const audit::Held ratelog = ratelog_arg;
@@ -1145,7 +1124,7 @@ inline void route_lgamma(cppunivariate::span x, audit::Held shapelog_arg = {}, a
     fixed.push_back("ratelog");
   }
 
-  const auto res=cppunivariate::lgamma_mle(x,abstol,iterlim,shapelog_held,ratelog_held); audit::observe(res, {{"shapelog",res.shapelog,0,INFINITY,false,false},{"ratelog",res.ratelog,0,INFINITY,false,false}});
+  const auto res=cppunivariate::lgamma_mle(x,tol,iterlim,shapelog_held,ratelog_held); audit::observe(res, {{"shapelog",res.shapelog,0,INFINITY,false,false},{"ratelog",res.ratelog,0,INFINITY,false,false}});
 }
 
 inline void route_lgser(cppunivariate::ispan x, audit::Held theta_arg = {}) {
@@ -1157,7 +1136,7 @@ inline void route_lgser(cppunivariate::ispan x, audit::Held theta_arg = {}) {
   auto res = cppunivariate::lgser_mle(x,theta.supplied?theta.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"theta",res.theta,0,1,false,false}});
 }
 
-inline void route_llogis(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline void route_llogis(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held scale = scale_arg;
@@ -1175,7 +1154,7 @@ inline void route_llogis(cppunivariate::span x, audit::Held shape_arg = {}, audi
   }
 
   cppunivariate::LogLogisticResult res =
-      cppunivariate::loglogistic_mle(x, abstol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+      cppunivariate::loglogistic_mle(x, tol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_lnorm(cppunivariate::span x, audit::Held meanlog_arg = {}, audit::Held sdlog_arg = {}) {
@@ -1199,7 +1178,7 @@ inline void route_lnorm(cppunivariate::span x, audit::Held meanlog_arg = {}, aud
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, meanlog_held, sdlog_held); audit::observe(res, {{"meanlog",res.meanlog,-INFINITY,INFINITY,false,false},{"sdlog",res.sdlog,0,INFINITY,false,false}});
 }
 
-inline void route_logis(cppunivariate::span x, audit::Held location_arg = {}, audit::Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline void route_logis(cppunivariate::span x, audit::Held location_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held location = location_arg;
   const audit::Held scale = scale_arg;
@@ -1216,7 +1195,7 @@ inline void route_logis(cppunivariate::span x, audit::Held location_arg = {}, au
   if(location.supplied && !scale.supplied && std::all_of(x.begin(),x.end(),[&](double v){return v==held_location;}))
     (void)0;
   cppunivariate::LogisticResult res =
-      cppunivariate::logistic_mle(x,abstol,iterlim,held_location,held_scale); audit::observe(res, {{"location",res.mu,-INFINITY,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+      cppunivariate::logistic_mle(x,tol,iterlim,held_location,held_scale); audit::observe(res, {{"location",res.mu,-INFINITY,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_logitnorm(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}) {
@@ -1238,7 +1217,7 @@ inline void route_logitnorm(cppunivariate::span x, audit::Held mu_arg = {}, audi
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, checked_mu, checked_sigma); audit::observe(res, {{"mu",res.mu,-INFINITY,INFINITY,false,false},{"sigma",res.sigma,0,INFINITY,false,false}});
 }
 
-inline void route_lomax(cppunivariate::span x, audit::Held lambda_arg = {}, audit::Held kappa_arg = {}, audit::Held lambda0 = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline void route_lomax(cppunivariate::span x, audit::Held lambda_arg = {}, audit::Held kappa_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held lambda = lambda_arg;
   const audit::Held kappa = kappa_arg;
@@ -1255,17 +1234,10 @@ inline void route_lomax(cppunivariate::span x, audit::Held lambda_arg = {}, audi
     fixed.push_back("kappa");
   }
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (lambda0.supplied) {
-    start = lambda0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      (void)0;
-    }
-  }
-  auto res = cppunivariate::lomax_mle(x, reltol, iterlim, lambda_held, kappa_held); audit::observe(res, {{"lambda",res.lambda,0,INFINITY,false,false},{"kappa",res.kappa,0,INFINITY,false,false}});
+  auto res = cppunivariate::lomax_mle(x, tol, iterlim, lambda_held, kappa_held); audit::observe(res, {{"lambda",res.lambda,0,INFINITY,false,false},{"kappa",res.kappa,0,INFINITY,false,false}});
 }
 
-inline void route_lst(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held df_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+inline void route_lst(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held df_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const audit::Held mu = mu_arg;
   const audit::Held sigma = sigma_arg;
@@ -1281,10 +1253,10 @@ inline void route_lst(cppunivariate::span x, audit::Held mu_arg = {}, audit::Hel
   if(mu.supplied)fixed.push_back("mu");
   if(sigma.supplied)fixed.push_back("sigma");
   if(df.supplied)fixed.push_back("df");
-  auto r=cppunivariate::lst_mle(x,gradtol,iterlim,held_mu,held_sigma,df.supplied?df.value:nan); audit::observe(r, {{"mu",r.mu,-INFINITY,INFINITY,false,false},{"sigma",r.sigma,0,INFINITY,false,false},{"df",r.df,0,INFINITY,false,false}});
+  auto r=cppunivariate::lst_mle(x,tol,iterlim,held_mu,held_sigma,df.supplied?df.value:nan); audit::observe(r, {{"mu",r.mu,-INFINITY,INFINITY,false,false},{"sigma",r.sigma,0,INFINITY,false,false},{"df",r.df,0,INFINITY,false,false}});
 }
 
-inline void route_naka(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double abstol = 1.220703e-4, int iterlim = 100) {
+inline void route_naka(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held scale = scale_arg;
@@ -1301,10 +1273,10 @@ inline void route_naka(cppunivariate::span x, audit::Held shape_arg = {}, audit:
     fixed.push_back("scale");
   }
 
-  auto res = cppunivariate::naka_mle(x, abstol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = cppunivariate::naka_mle(x, tol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_nbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline void route_nbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audit::Held prob_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held size = size_arg;
   const audit::Held prob = prob_arg;
@@ -1313,7 +1285,7 @@ inline void route_nbinom(cppunivariate::ispan x, audit::Held size_arg = {}, audi
   if ((size.supplied && !std::isfinite(size.value)) ||
       (prob.supplied && !std::isfinite(prob.value)))
     (void)0;
-  const auto r=cppunivariate::nbinom_mle(x,reltol,iterlim,
+  const auto r=cppunivariate::nbinom_mle(x,tol,iterlim,
       size.supplied?size.value:nan,prob.supplied?prob.value:nan); audit::observe(r, {{"size",r.size,0,INFINITY,true,false},{"prob",r.prob,0,1,false,true}});
 }
 
@@ -1353,7 +1325,7 @@ inline void route_norm(cppunivariate::span x, audit::Held mean_arg = {}, audit::
       cppunivariate::norm_mle(x,held_mean,held_sd); audit::observe(res, {{"mean",res.mean,-INFINITY,INFINITY,false,false},{"sd",res.sd,0,INFINITY,false,false}});
 }
 
-inline void route_nsbeta(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held min_arg = {}, audit::Held max_arg = {}, double reltol = 1e-10, int iterlim = 1000) {
+inline void route_nsbeta(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held min_arg = {}, audit::Held max_arg = {}, double tol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -1370,29 +1342,22 @@ inline void route_nsbeta(cppunivariate::span x, audit::Held shape1_arg = {}, aud
  std::vector<std::string> fixed{"min", "max"};
  if(shape1.supplied) fixed.push_back("shape1");
  if(shape2.supplied) fixed.push_back("shape2");
- auto res=cppunivariate::nsbeta_mle(x,min,max,reltol,iterlim,shape1.supplied?shape1.value:NAN,shape2.supplied?shape2.value:NAN); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"min",min,-INFINITY,(max),false,false},{"max",max,(min),INFINITY,false,false}});
+ auto res=cppunivariate::nsbeta_mle(x,min,max,tol,iterlim,shape1.supplied?shape1.value:NAN,shape2.supplied?shape2.value:NAN); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"min",min,-INFINITY,(max),false,false},{"max",max,(min),INFINITY,false,false}});
 }
 
-inline void route_paralogis(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, audit::Held shape0 = {}, double gradtol = 1.220703e-4, int iterlim = 100) {
+inline void route_paralogis(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held scale = scale_arg;
 
  if(shape.supplied && (!(shape.value>0)||!std::isfinite(shape.value))) (void)0;
 
-  double start = std::numeric_limits<double>::quiet_NaN();
-  if (shape0.supplied) {
-    start = shape0.value;
-    if (!(start > 0.0) || !std::isfinite(start)) {
-      (void)0;
-    }
-  }
   const double held = scale.supplied ? scale.value : 1.0;
   if (!(held > 0) || !std::isfinite(held))
     (void)0;
-  auto res = shape.supplied ? cppunivariate::paralogis_mle_holds(x,shape.value,scale.supplied?held:NAN,gradtol,iterlim) : scale.supplied
-      ? cppunivariate::paralogis_mle_fixed_scale(x, held, gradtol, iterlim)
-      : cppunivariate::paralogis_mle(x, gradtol, iterlim); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = shape.supplied ? cppunivariate::paralogis_mle_holds(x,shape.value,scale.supplied?held:NAN,tol,iterlim) : scale.supplied
+      ? cppunivariate::paralogis_mle_fixed_scale(x, held, tol, iterlim)
+      : cppunivariate::paralogis_mle(x, tol, iterlim); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
 inline void route_pareto(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}) {
@@ -1417,7 +1382,7 @@ inline void route_pareto(cppunivariate::span x, audit::Held a_arg = {}, audit::H
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, a_held, b_held); audit::observe(res, {{"a",res.shape,0,INFINITY,false,false},{"b",res.min,0,INFINITY,false,false}});
 }
 
-inline void route_pareto2(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, audit::Held min_arg = {}, double reltol = 1e-10, int iterlim = 1000) {
+inline void route_pareto2(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, audit::Held min_arg = {}, double tol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held scale = scale_arg;
@@ -1432,10 +1397,10 @@ inline void route_pareto2(cppunivariate::span x, audit::Held shape_arg = {}, aud
  std::vector<std::string> fixed{"min"};
  if(shape.supplied) fixed.push_back("shape");
  if(scale.supplied) fixed.push_back("scale");
- auto res=cppunivariate::pareto2_mle(x,min,reltol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false},{"min",min,-INFINITY,INFINITY,false,false}});
+ auto res=cppunivariate::pareto2_mle(x,min,tol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false},{"min",min,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_pareto3(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, audit::Held min_arg = {}, double reltol = 1e-10, int iterlim = 1000) {
+inline void route_pareto3(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, audit::Held min_arg = {}, double tol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held scale = scale_arg;
@@ -1450,10 +1415,10 @@ inline void route_pareto3(cppunivariate::span x, audit::Held shape_arg = {}, aud
  std::vector<std::string> fixed{"min"};
  if(shape.supplied) fixed.push_back("shape");
  if(scale.supplied) fixed.push_back("scale");
- auto res=cppunivariate::pareto3_mle(x,min,reltol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false},{"min",min,-INFINITY,INFINITY,false,false}});
+ auto res=cppunivariate::pareto3_mle(x,min,tol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false},{"min",min,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_pareto4(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, audit::Held min_arg = {}, double reltol = 1e-10, int iterlim = 1000) {
+inline void route_pareto4(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, audit::Held min_arg = {}, double tol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -1470,10 +1435,10 @@ inline void route_pareto4(cppunivariate::span x, audit::Held shape1_arg = {}, au
  if(scale.supplied) { if(!(scale.value>0) || !std::isfinite(scale.value)) (void)0; fixed.push_back("scale"); }
  if(shape1.supplied) fixed.push_back("shape1");
  if(shape2.supplied) fixed.push_back("shape2");
- auto res=cppunivariate::pareto4_mle(x,min,reltol,iterlim,scale.supplied ? scale.value : std::numeric_limits<double>::quiet_NaN(),shape1.supplied?shape1.value:NAN,shape2.supplied?shape2.value:NAN); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false},{"min",min,-INFINITY,INFINITY,false,false}});
+ auto res=cppunivariate::pareto4_mle(x,min,tol,iterlim,scale.supplied ? scale.value : std::numeric_limits<double>::quiet_NaN(),shape1.supplied?shape1.value:NAN,shape2.supplied?shape2.value:NAN); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false},{"min",min,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_pig(cppunivariate::ispan x, audit::Held mean_arg = {}, audit::Held shape_arg = {}, double reltol=1e-9, int iterlim=200) {
+inline void route_pig(cppunivariate::ispan x, audit::Held mean_arg = {}, audit::Held shape_arg = {}, double tol=1e-10, int iterlim=200) {
   std::vector<std::string> warnings;
   const audit::Held mean = mean_arg;
   const audit::Held shape = shape_arg;
@@ -1482,7 +1447,7 @@ inline void route_pig(cppunivariate::ispan x, audit::Held mean_arg = {}, audit::
      (shape.supplied && (!std::isfinite(shape.value) || !(shape.value>=0))))
    (void)0;
  const double nan=std::numeric_limits<double>::quiet_NaN();
- auto r=cppunivariate::pig_mle(x,reltol,iterlim,
+ auto r=cppunivariate::pig_mle(x,tol,iterlim,
    mean.supplied?mean.value:nan,
    shape.supplied?shape.value:nan); audit::observe(r, {{"mean",r.mean,0,INFINITY,false,false},{"shape",r.shape,0,INFINITY,true,false}});
 }
@@ -1497,7 +1462,7 @@ inline void route_pois(cppunivariate::ispan x, audit::Held lambda_arg = {}) {
       cppunivariate::ispan{x.begin(), static_cast<std::size_t>(x.size())}, lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN()); audit::observe(res, {{"lambda",res.lambda,0,INFINITY,true,false}});
 }
 
-inline void route_power(cppunivariate::span x, audit::Held alpha_arg = {}, audit::Held beta_arg = {}, double epsilon = 1.490116e-08) {
+inline void route_power(cppunivariate::span x, audit::Held alpha_arg = {}, audit::Held beta_arg = {}) {
   std::vector<std::string> warnings;
   const audit::Held alpha = alpha_arg;
   const audit::Held beta = beta_arg;
@@ -1515,8 +1480,6 @@ inline void route_power(cppunivariate::span x, audit::Held alpha_arg = {}, audit
   }
   if (alpha.supplied && std::any_of(x.begin(),x.end(),[&](double v){return v>alpha_held;})) (void)0;
 
-  if (!(epsilon>=0.0) || !std::isfinite(epsilon))
-    (void)0;
   auto res = cppunivariate::power_mle(
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, alpha_held, beta_held); audit::observe(res, {{"alpha",res.alpha,0,INFINITY,false,false},{"beta",res.beta,0,INFINITY,false,false}});
 }
@@ -1536,7 +1499,7 @@ inline void route_rayleigh(cppunivariate::span x, audit::Held sigma_arg = {}) {
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, sigma_held); audit::observe(res, {{"sigma",res.sigma,0,INFINITY,false,false}});
 }
 
-inline void route_sged(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held nu_arg = {}, audit::Held xi_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+inline void route_sged(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held nu_arg = {}, audit::Held xi_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const audit::Held mean = mean_arg;
   const audit::Held sd = sd_arg;
@@ -1552,10 +1515,10 @@ inline void route_sged(cppunivariate::span x, audit::Held mean_arg = {}, audit::
   if(nu.supplied && (!(std::isfinite(held_nu) && held_nu>0))) (void)0;
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) (void)0;
-  auto res=cppunivariate::sged_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"nu",res.nu,0,INFINITY,false,false},{"xi",res.xi,0,INFINITY,false,false}});
+  auto res=cppunivariate::sged_mle(x,tol,iterlim,held_mean,held_sd,held_nu,held_xi); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"nu",res.nu,0,INFINITY,false,false},{"xi",res.xi,0,INFINITY,false,false}});
 }
 
-inline void route_sgomp(cppunivariate::span x, audit::Held b_arg = {}, audit::Held eta_arg = {}, double reltol=1e-10, int iterlim=200) {
+inline void route_sgomp(cppunivariate::span x, audit::Held b_arg = {}, audit::Held eta_arg = {}, double tol=1e-10, int iterlim=200) {
   std::vector<std::string> warnings;
   const audit::Held b = b_arg;
   const audit::Held eta = eta_arg;
@@ -1564,10 +1527,10 @@ inline void route_sgomp(cppunivariate::span x, audit::Held b_arg = {}, audit::He
   const double ev=eta.supplied ? eta.value : cppunivariate::sgomp_detail::nan();
   if (b.supplied && !(bv>0 && std::isfinite(bv))) (void)0;
   if (eta.supplied && !(ev>=0 && std::isfinite(ev))) (void)0;
-  const auto f=cppunivariate::sgomp_mle(x,reltol,iterlim,bv,ev); audit::observe(f, {{"b",f.b,0,INFINITY,false,false},{"eta",f.eta,0,INFINITY,true,false}});
+  const auto f=cppunivariate::sgomp_mle(x,tol,iterlim,bv,ev); audit::observe(f, {{"b",f.b,0,INFINITY,false,false},{"eta",f.eta,0,INFINITY,true,false}});
 }
 
-inline void route_skellam(cppunivariate::span x, audit::Held mu1_arg = {}, audit::Held mu2_arg = {}, double reltol=1e-9, int iterlim=150) {
+inline void route_skellam(cppunivariate::span x, audit::Held mu1_arg = {}, audit::Held mu2_arg = {}, double tol=1e-10, int iterlim=150) {
   std::vector<std::string> warnings;
   const audit::Held mu1 = mu1_arg;
   const audit::Held mu2 = mu2_arg;
@@ -1576,10 +1539,10 @@ inline void route_skellam(cppunivariate::span x, audit::Held mu1_arg = {}, audit
   const double b=mu2.supplied?mu2.value:NAN;
   if((mu1.supplied && !(std::isfinite(a) && a>=0)) ||
      (mu2.supplied && !(std::isfinite(b) && b>=0))) (void)0;
-  const auto fit=cppunivariate::skellam_mle(x,reltol,iterlim,a,b); audit::observe(fit, {{"mu1",fit.mu1,0,INFINITY,true,false},{"mu2",fit.mu2,0,INFINITY,true,false}});
+  const auto fit=cppunivariate::skellam_mle(x,tol,iterlim,a,b); audit::observe(fit, {{"mu1",fit.mu1,0,INFINITY,true,false},{"mu2",fit.mu2,0,INFINITY,true,false}});
 }
 
-inline void route_slash(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, double reltol=1e-8, int iterlim=500) {
+inline void route_slash(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, double tol=1e-10, int iterlim=500) {
   std::vector<std::string> warnings;
   const audit::Held mu = mu_arg;
   const audit::Held sigma = sigma_arg;
@@ -1588,10 +1551,10 @@ inline void route_slash(cppunivariate::span x, audit::Held mu_arg = {}, audit::H
   if((sigma.supplied && !(std::isfinite(f_sigma) && f_sigma>0)))(void)0;
   const double f_mu=mu.supplied?mu.value:cppunivariate::special::kNaN;
   if(mu.supplied&&!std::isfinite(f_mu))(void)0;
-  const auto f=cppunivariate::slash_mle(x,reltol,iterlim,f_sigma,f_mu); audit::observe(f, {{"mu",f.mu,-INFINITY,INFINITY,false,false},{"sigma",f.sigma,0,INFINITY,false,false}});
+  const auto f=cppunivariate::slash_mle(x,tol,iterlim,f_sigma,f_mu); audit::observe(f, {{"mu",f.mu,-INFINITY,INFINITY,false,false},{"sigma",f.sigma,0,INFINITY,false,false}});
 }
 
-inline void route_sn(cppunivariate::span x, audit::Held xi_arg = {}, audit::Held omega_arg = {}, audit::Held alpha_arg = {}, double reltol=1e-9, int iterlim=100) {
+inline void route_sn(cppunivariate::span x, audit::Held xi_arg = {}, audit::Held omega_arg = {}, audit::Held alpha_arg = {}, double tol=1e-10, int iterlim=100) {
   std::vector<std::string> warnings;
   const audit::Held xi = xi_arg;
   const audit::Held omega = omega_arg;
@@ -1604,10 +1567,10 @@ inline void route_sn(cppunivariate::span x, audit::Held xi_arg = {}, audit::Held
   if ((xi.supplied && !std::isfinite(c)) ||
       (omega.supplied && !(std::isfinite(w) && w>0)) ||
       (alpha.supplied && !std::isfinite(a))) (void)0;
-  const auto fit=cppunivariate::sn_mle(x,reltol,iterlim,c,w,a); audit::observe(fit, {{"xi",fit.xi,-INFINITY,INFINITY,false,false},{"omega",fit.omega,0,INFINITY,false,false},{"alpha",fit.alpha,-INFINITY,INFINITY,false,false}});
+  const auto fit=cppunivariate::sn_mle(x,tol,iterlim,c,w,a); audit::observe(fit, {{"xi",fit.xi,-INFINITY,INFINITY,false,false},{"omega",fit.omega,0,INFINITY,false,false},{"alpha",fit.alpha,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_snorm(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held xi_arg = {}) {
+inline void route_snorm(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held xi_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const audit::Held mean = mean_arg;
   const audit::Held sd = sd_arg;
@@ -1620,10 +1583,10 @@ inline void route_snorm(cppunivariate::span x, audit::Held mean_arg = {}, audit:
   if(sd.supplied && (!(std::isfinite(held_sd) && held_sd>0))) (void)0;
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) (void)0;
-  auto res=cppunivariate::snorm_mle(x,1e-10,200,held_mean,held_sd,held_xi); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"xi",res.xi,0,INFINITY,false,false}});
+  auto res=cppunivariate::snorm_mle(x,tol,iterlim,held_mean,held_sd,held_xi); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"xi",res.xi,0,INFINITY,false,false}});
 }
 
-inline void route_sstd(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held nu_arg = {}, audit::Held xi_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+inline void route_sstd(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held nu_arg = {}, audit::Held xi_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const audit::Held mean = mean_arg;
   const audit::Held sd = sd_arg;
@@ -1639,10 +1602,10 @@ inline void route_sstd(cppunivariate::span x, audit::Held mean_arg = {}, audit::
   if(nu.supplied && (!(std::isfinite(held_nu) && held_nu>2))) (void)0;
   const double held_xi=xi.supplied ? xi.value : nan;
   if(xi.supplied && (!(std::isfinite(held_xi) && held_xi>0))) (void)0;
-  auto res=cppunivariate::sstd_mle(x,gradtol,iterlim,held_mean,held_sd,held_nu,held_xi); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"nu",res.nu,2,INFINITY,false,false},{"xi",res.xi,0,INFINITY,false,false}});
+  auto res=cppunivariate::sstd_mle(x,tol,iterlim,held_mean,held_sd,held_nu,held_xi); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"nu",res.nu,2,INFINITY,false,false},{"xi",res.xi,0,INFINITY,false,false}});
 }
 
-inline void route_std(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held nu_arg = {}, double gradtol = 1.220703e-4, int iterlim = 200) {
+inline void route_std(cppunivariate::span x, audit::Held mean_arg = {}, audit::Held sd_arg = {}, audit::Held nu_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const audit::Held mean = mean_arg;
   const audit::Held sd = sd_arg;
@@ -1658,12 +1621,12 @@ inline void route_std(cppunivariate::span x, audit::Held mean_arg = {}, audit::H
   if(mean.supplied)fixed.push_back("mean");
   if(sd.supplied)fixed.push_back("sd");
   if(nu.supplied)fixed.push_back("nu");
-  auto res=cppunivariate::student_t_mle(x,gradtol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"nu",res.nu,2,INFINITY,false,false}});
+  auto res=cppunivariate::student_t_mle(x,tol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan); audit::observe(res, {{"mean",res.mu,-INFINITY,INFINITY,false,false},{"sd",res.sigma,0,INFINITY,false,false},{"nu",res.nu,2,INFINITY,false,false}});
 }
 
 
 
-inline void route_tlambda(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held lambda_arg = {}, double reltol=1e-7, int iterlim=1000) {
+inline void route_tlambda(cppunivariate::span x, audit::Held mu_arg = {}, audit::Held sigma_arg = {}, audit::Held lambda_arg = {}, double tol = 1e-10, int iterlim=1000) {
   std::vector<std::string> warnings;
   const audit::Held mu = mu_arg;
   const audit::Held sigma = sigma_arg;
@@ -1675,14 +1638,14 @@ inline void route_tlambda(cppunivariate::span x, audit::Held mu_arg = {}, audit:
   const double s=sigma.supplied?sigma.value:std::numeric_limits<double>::quiet_NaN();
   if(mu.supplied&&!std::isfinite(m))(void)0;
   if(sigma.supplied&&!(std::isfinite(s)&&s>0))(void)0;
-  const auto f=cppunivariate::tlambda_mle(x,reltol,iterlim,l,m,s); audit::observe(f, {{"mu",f.mu,-INFINITY,INFINITY,false,false},{"sigma",f.sigma,0,INFINITY,false,false},{"lambda",f.lambda,-INFINITY,INFINITY,false,false}});
+  const auto f=cppunivariate::tlambda_mle(x,tol,iterlim,l,m,s); audit::observe(f, {{"mu",f.mu,-INFINITY,INFINITY,false,false},{"sigma",f.sigma,0,INFINITY,false,false},{"lambda",f.lambda,-INFINITY,INFINITY,false,false}});
 }
 
 
 
 
 
-inline void route_trgamma(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double reltol = 1e-10, int iterlim = 100) {
+inline void route_trgamma(cppunivariate::span x, audit::Held shape1_arg = {}, audit::Held shape2_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape1 = shape1_arg;
   const audit::Held shape2 = shape2_arg;
@@ -1697,10 +1660,10 @@ inline void route_trgamma(cppunivariate::span x, audit::Held shape1_arg = {}, au
       (shape2.supplied && (!(b > 0.0) || !std::isfinite(b))))
     (void)0;
   const cppunivariate::span xs = x;
-  auto res = scale.supplied ? cppunivariate::trgamma_mle_fixed_scale(xs,scale.value,a,b,reltol,iterlim) : cppunivariate::trgamma_mle(xs, reltol, iterlim, a, b); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = scale.supplied ? cppunivariate::trgamma_mle_fixed_scale(xs,scale.value,a,b,tol,iterlim) : cppunivariate::trgamma_mle(xs, tol, iterlim, a, b); audit::observe(res, {{"shape1",res.shape1,0,INFINITY,false,false},{"shape2",res.shape2,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_triang(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}, audit::Held c_arg = {}, double reltol = 1e-12, int iterlim = 100) {
+inline void route_triang(cppunivariate::span x, audit::Held a_arg = {}, audit::Held b_arg = {}, audit::Held c_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held a = a_arg;
   const audit::Held b = b_arg;
@@ -1735,7 +1698,7 @@ const audit::Held z = c;
 
   }
 
-  auto r=cppunivariate::triang_mle(x,reltol,iterlim,checked_value_0,checked_value_1,checked_value_2); audit::observe(r, {{"a",r.a,-INFINITY,(r.b),false,false},{"b",r.b,(r.a),INFINITY,false,false},{"c",r.c,(r.a),(r.b),true,true}});
+  auto r=cppunivariate::triang_mle(x,tol,iterlim,checked_value_0,checked_value_1,checked_value_2); audit::observe(r, {{"a",r.a,-INFINITY,(r.b),false,false},{"b",r.b,(r.a),INFINITY,false,false},{"c",r.c,(r.a),(r.b),true,true}});
 }
 
 inline void route_unif(cppunivariate::span x, audit::Held min_arg = {}, audit::Held max_arg = {}) {
@@ -1757,7 +1720,7 @@ inline void route_unif(cppunivariate::span x, audit::Held min_arg = {}, audit::H
       cppunivariate::span{x.begin(), static_cast<std::size_t>(x.size())}, checked_min, checked_max); audit::observe(res, {{"min",res.min,-INFINITY,(res.max),false,false},{"max",res.max,(res.min),INFINITY,false,false}});
 }
 
-inline void route_weibull(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double reltol = 1.220703e-4, int iterlim = 100) {
+inline void route_weibull(cppunivariate::span x, audit::Held shape_arg = {}, audit::Held scale_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const audit::Held shape = shape_arg;
   const audit::Held scale = scale_arg;
@@ -1774,27 +1737,27 @@ inline void route_weibull(cppunivariate::span x, audit::Held shape_arg = {}, aud
     fixed.push_back("scale");
   }
 
-  auto res = cppunivariate::weibull_mle(x, reltol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
+  auto res = cppunivariate::weibull_mle(x, tol, iterlim, shape_held, scale_held); audit::observe(res, {{"shape",res.shape,0,INFINITY,false,false},{"scale",res.scale,0,INFINITY,false,false}});
 }
 
-inline void route_yulesimon(cppunivariate::ispan x, audit::Held rho_arg = {}, double reltol=1e-10, int iterlim=200) {
+inline void route_yulesimon(cppunivariate::ispan x, audit::Held rho_arg = {}, double tol=1e-10, int iterlim=200) {
   std::vector<std::string> warnings;
   const audit::Held rho = rho_arg;
 
   const double held=!rho.supplied?std::numeric_limits<double>::quiet_NaN():rho.value;
   if (rho.supplied && (!std::isfinite(held) || !(held>0)))
     (void)0;
-  const auto fit=cppunivariate::yulesimon_mle(x,reltol,iterlim,held); audit::observe(fit, {{"rho",fit.rho,0,INFINITY,false,false}});
+  const auto fit=cppunivariate::yulesimon_mle(x,tol,iterlim,held); audit::observe(fit, {{"rho",fit.rho,0,INFINITY,false,false}});
 }
 
-inline void route_zeta(cppunivariate::ispan x, audit::Held s_arg = {}, double reltol=1e-10, int iterlim=200) {
+inline void route_zeta(cppunivariate::ispan x, audit::Held s_arg = {}, double tol=1e-10, int iterlim=200) {
   std::vector<std::string> warnings;
   const audit::Held s = s_arg;
 
   const double held=!s.supplied?std::numeric_limits<double>::quiet_NaN():s.value;
   if (s.supplied && (!std::isfinite(held) || !(held>1)))
     (void)0;
-  const auto fit=cppunivariate::zeta_mle(x,reltol,iterlim,held); audit::observe(fit, {{"s",fit.s,1,INFINITY,false,false}});
+  const auto fit=cppunivariate::zeta_mle(x,tol,iterlim,held); audit::observe(fit, {{"s",fit.s,1,INFINITY,false,false}});
 }
 
 
@@ -1823,7 +1786,7 @@ inline void route_zeta(cppunivariate::ispan x, audit::Held s_arg = {}, double re
 
 
 
-inline void route_expweibull(cppunivariate::span x,audit::Held scale_arg={},audit::Held shape_arg={},audit::Held exponent_arg={},double tol=1e-10,int iterlim=100) {
+inline void route_expweibull(cppunivariate::span x, audit::Held scale_arg={}, audit::Held shape_arg={}, audit::Held exponent_arg={},double tol=1e-10,int iterlim=100) {
   const auto fail=[](const std::string& s){(void)0;};
   for(const auto& h:{scale_arg,shape_arg,exponent_arg})
     if(h.supplied && (!(h.value>0)||!std::isfinite(h.value)))(void)0;
@@ -1832,7 +1795,7 @@ inline void route_expweibull(cppunivariate::span x,audit::Held scale_arg={},audi
     scale_arg.supplied?scale_arg.value:NAN,shape_arg.supplied?shape_arg.value:NAN,exponent_arg.supplied?exponent_arg.value:NAN); audit::observe(r, {{"scale",r.scale,0,INFINITY,false,false},{"shape",r.shape,0,INFINITY,false,false},{"exponent",r.exponent,0,INFINITY,false,false}});
 }
 
-inline void route_gengamma(cppunivariate::span x,audit::Held mu_arg={},audit::Held sigma_arg={},audit::Held Q_arg={},double tol=1e-10,int iterlim=100) {
+inline void route_gengamma(cppunivariate::span x, audit::Held mu_arg={}, audit::Held sigma_arg={}, audit::Held Q_arg={},double tol=1e-10,int iterlim=100) {
   const auto fail=[](const std::string& message){(void)0;};
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const double mu=mu_arg.supplied?mu_arg.value:nan;
@@ -1845,14 +1808,14 @@ inline void route_gengamma(cppunivariate::span x,audit::Held mu_arg={},audit::He
   const auto fit=cppunivariate::gengamma_mle(x,tol,iterlim,mu,sigma,q); audit::observe(fit, {{"mu",fit.mu,-INFINITY,INFINITY,false,false},{"sigma",fit.sigma,0,INFINITY,false,false},{"Q",fit.Q,-INFINITY,INFINITY,false,false}});
 }
 
-inline void route_st(cppunivariate::span x,audit::Held xi_arg={},audit::Held omega_arg={},audit::Held alpha_arg={},audit::Held nu_arg={},double reltol=1e-10,int iterlim=200) {
+inline void route_st(cppunivariate::span x, audit::Held xi_arg={}, audit::Held omega_arg={}, audit::Held alpha_arg={}, audit::Held nu_arg={},double tol=1e-10,int iterlim=200) {
   // Invalid controls remain ordinary errors, even if a legacy fitter reports
   // a statistical status before checking them.
  const auto fail=[](const std::string& s){(void)0;};
  const double nan=cppunivariate::special::kNaN;
  const double xi=xi_arg.supplied?xi_arg.value:nan,omega=omega_arg.supplied?omega_arg.value:nan,alpha=alpha_arg.supplied?alpha_arg.value:nan,nu=nu_arg.supplied?nu_arg.value:nan;
  if((xi_arg.supplied&&!std::isfinite(xi))||(omega_arg.supplied&&(!std::isfinite(omega)||omega<=0))||(alpha_arg.supplied&&!std::isfinite(alpha))||(nu_arg.supplied&&(!std::isfinite(nu)||nu<=0)))(void)0;
- const auto r=cppunivariate::st_mle(x,reltol,iterlim,xi,omega,alpha,nu); audit::observe(r, {{"xi",r.xi,-INFINITY,INFINITY,false,false},{"omega",r.omega,0,INFINITY,false,false},{"alpha",r.alpha,-INFINITY,INFINITY,false,false},{"nu",r.nu,0,INFINITY,false,false}});
+ const auto r=cppunivariate::st_mle(x,tol,iterlim,xi,omega,alpha,nu); audit::observe(r, {{"xi",r.xi,-INFINITY,INFINITY,false,false},{"omega",r.omega,0,INFINITY,false,false},{"alpha",r.alpha,-INFINITY,INFINITY,false,false},{"nu",r.nu,0,INFINITY,false,false}});
 }
 
 int main(){std::cout<<"family,held,input,status,finite,domain,invalid,defect,logLik,estimates\n";

@@ -532,7 +532,7 @@ test('conditional free coefficients reject unrepresentable subnormals', () => {
 });
 
 test('accuracy stops distinguish binary64 tolerance from conditioning', () => {
-  assert.throws(()=>modifierRoute(api,'zib').fit([0,1,1],{size:1,pi:0},{reltol:1e-20}),e=>{
+  assert.throws(()=>modifierRoute(api,'zib').fit([0,1,1],{size:1,pi:0},{tol:1e-20}),e=>{
     assert.equal(e.kind,'tolerance');assert.equal(e.reason,'tolerance');
     assert.ok(Math.abs(e.attainable_tol/(1/27021597764222976)-1)<1e-14);
     assert.match(e.message,/tol must be at least .* here/);
@@ -645,4 +645,12 @@ test('st flat conditional alpha line returns exact finite maximizers',()=>{
 test('st endpoint exponent sign survives a rounded product',()=>{
   assert.throws(()=>api.st.fit([0,0,1,2,3],{xi:0,nu:2/3}),e=>
     e.kind==='nomle' && e.reason==='unbounded');
+});
+
+test('fit rejects unknown and unavailable options', () => {
+  const invalid = error => error.kind === 'invalid' && /Unknown fit option/.test(error.message);
+  assert.throws(() => api.exp.fit([1, 2, 3], {}, {tol: 1e-10}), invalid);
+  assert.throws(() => api.exp.fit([1, 2, 3], {}, {iterlim: 100}), invalid);
+  assert.throws(() => api.gamma.fit([1, 2, 3], {}, {typo: 1}), invalid);
+  assert.throws(() => api.pois.fit([1, 2, 3], {}, {truncate: [1, 5], typo: 1}), invalid);
 });
