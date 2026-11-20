@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/binom/zmbinom_mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held p0_arg = {}, double reltol = 1e-10, int iterlim = 200) {
+inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held p0_arg = {}, double tol = 1e-10, int iterlim = 200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held size = size_arg;
@@ -15,7 +15,7 @@ inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   if(prob.supplied && (!std::isfinite(held_prob)||held_prob<0||held_prob>1))return invalid_argument(fail("`prob` must be finite and in [0, 1]."));
   const double held_p0=p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN();
   if(p0.supplied && (!std::isfinite(held_p0)||held_p0<0||held_p0>1))return invalid_argument(fail("`p0` must be finite and in [0, 1]."));
-  const auto res=cppunivariate::zmbinom_mle(x, reltol, iterlim, fixed_size, held_prob, held_p0);
+  const auto res=cppunivariate::zmbinom_mle(x, tol, iterlim, fixed_size, held_prob, held_p0);
   const auto o=cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"p0",p0_arg.supplied}});

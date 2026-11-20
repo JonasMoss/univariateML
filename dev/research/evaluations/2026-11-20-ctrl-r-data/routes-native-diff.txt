@@ -1,0 +1,6 @@
+differs ('norm +truncate=tnorm', 'empty', '{"a": -Infinity, "b": Infinity}') ['message']
+differs ('norm +truncate=tnorm', 'nan', '{"a": -Infinity, "b": Infinity}') ['message']
+differs ('norm +truncate=tnorm', 'inf', '{"a": -Infinity, "b": Infinity}') ['message']
+differs ('norm +truncate=tnorm', 'neginf', '{"a": -Infinity, "b": Infinity}') ['message']
+differs ('nbinom+zero=inflated', 'empty', '{}') ['message']
+routes-native cases 1950 differing 5 only-new 0 only-old 0

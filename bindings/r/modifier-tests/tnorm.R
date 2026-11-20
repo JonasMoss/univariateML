@@ -62,7 +62,7 @@ test_that(".modifier_tnorm validates known bounds and classifies escapes", {
   for (s in c(0, -1, Inf, NA)) expect_error(.modifier_tnorm(x, sd = s, a = -Inf, b = Inf), "positive")
   expect_error(.modifier_tnorm(x, mean = Inf, a = -Inf, b = Inf), "finite")
   expect_error(.modifier_tnorm(rep(.3, 3), a = -Inf, b = Inf), "unbounded")
-  expect_error(.modifier_tnorm(x, reltol = 0, a = -Inf, b = Inf), "positive")
+  expect_error(.modifier_tnorm(x, tol = 0, a = -Inf, b = Inf), "positive")
   ends <- c(.01, .02, .98, .99)
   expect_error(.modifier_tnorm(ends, a = 0, b = 1), "truncated exponential")
   expect_error(.modifier_tnorm(ends, a = 0, b = 1, mean = .5), "uniform")

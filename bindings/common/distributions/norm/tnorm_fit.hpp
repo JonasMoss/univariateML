@@ -5,7 +5,7 @@
 #include <limits>
 #include <string>
 namespace umvl_binding {
-inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held a_arg = {}, Held b_arg = {}, double reltol = 1e-12, int iterlim = 100) {
+inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_arg = {}, Held a_arg = {}, Held b_arg = {}, double tol = 1e-10, int iterlim = 100) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, PayloadKind::Nonexistence, {}); };
@@ -25,7 +25,7 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
     return invalid_argument(fail("`mean` must be finite."));
   if (sd.supplied && !(std::isfinite(held_sd) && held_sd > 0))
     return invalid_argument(fail("`sd` must be finite and positive."));
-  const auto res = cppunivariate::tnorm_mle(x, lower, upper, reltol, iterlim,
+  const auto res = cppunivariate::tnorm_mle(x, lower, upper, tol, iterlim,
                                             held_mean, held_sd);
   const auto o=cppunivariate::outcome(res);
   const auto boundary=[&](FitResult out,const cppunivariate::StopDetail& detail,PayloadKind kind,
@@ -67,7 +67,7 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
         res.stop_detail,outcome_payload(o),{"mean","sd","a","b"});
     case cppunivariate::TnormStatus::InvalidInput:
     default:
-      return fail("Truncated normal MLE requires finite data, positive `reltol` and positive `iterlim`.");
+      return fail("Truncated normal MLE requires finite data, positive `tol` and positive `iterlim`.");
   }
   std::vector<std::string> fixed;
   if (mean.supplied) fixed.push_back("mean");

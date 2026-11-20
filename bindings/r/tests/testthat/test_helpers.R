@@ -37,5 +37,5 @@ expect_equal(
 
 expect_equal(
   names(formals(univariateML_to_function(obj, "ml"))),
-  c("x", "na.rm", "...")
+  c("x", "na.rm", "...", "truncate")
 )

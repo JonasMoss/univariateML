@@ -30,6 +30,7 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
   if(length(dots) && (is.null(names(dots)) || any(!nzchar(names(dots)))))
     stop("Modifier holds and controls must be named")
   if(anyDuplicated(names(dots)))stop("Duplicate coefficient or control arguments")
+  ml_check_args(get(paste0(name,"_")), dots[names(dots) %in% c("zero", "truncate")], name)
   if (!is.character(zero) || length(zero)!=1L || is.na(zero) ||
       !zero %in% c("none","truncated","modified","inflated"))
     stop('`zero` must be one of none, truncated, modified, inflated')
@@ -62,10 +63,12 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
       (!is.na(truncate[2]) && (!is.finite(truncate[2]) || floor(truncate[2])<1 || floor(truncate[2])>.Machine$integer.max))))
     stop("finite zeta window requires [1,N], integer N in [1,INT_MAX]")
   extra <- if (zero=="modified") "p0" else if (zero=="inflated") "pi" else character()
-  modifier_controls<-if(window || censored)c("reltol","iterlim") else
-    intersect(c("reltol","iterlim"),names(formals(get(paste0("modifier_",ml_zero_variant(id,zero),"_")))))
+  modifier_controls <- ml_modifier_controls(id, zero, window, censored)
   ml_check_args(get(paste0(name,"_")), dots[setdiff(names(dots),c(extra,modifier_controls))], name)
-  for(control in intersect(names(dots),c("reltol","abstol","iterlim"))) {
+  unused_controls <- setdiff(intersect(names(dots), c(ml_fit_controls, ml_legacy_fit_controls)), modifier_controls)
+  if (length(unused_controls))
+    stop("Modifier fit does not accept control `", unused_controls[1L], "`", call. = FALSE)
+  for(control in intersect(names(dots), modifier_controls)) {
     v<-dots[[control]]
     if(!is.numeric(v) || length(v)!=1L || !is.finite(v) || v<=0 ||
        control=="iterlim" && (v!=floor(v) || v>.Machine$integer.max))
@@ -112,7 +115,7 @@ ml_modified_call <- function(name, x, frozen, na.rm, dots, zero, truncate, call)
     attr(obj,"frozen") <- TRUE
   } else {
     holds <- dots[intersect(names(dots),c(meta$names,extra))]
-    tol <- if (!is.null(dots$reltol))dots$reltol else if(!is.null(dots$abstol))dots$abstol else 1e-10
+    tol <- if (is.null(dots$tol)) 1e-10 else dots$tol
     maxit <- if (is.null(dots$iterlim)) if(window && !alias && id=="binom" && is.null(holds$size))512L else if((window && !alias) || censored)400L else 200L else dots$iterlim
     fully_held<-all(vapply(c(meta$names,extra),function(p)!is.null(holds[[p]]),logical(1)))
     if(fully_held && (zero!="none" || alias)) {

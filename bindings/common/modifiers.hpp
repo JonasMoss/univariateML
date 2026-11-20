@@ -76,7 +76,7 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     if(h("mean").supplied && h("sd").supplied) {
       FitResult out;out.estimates={{"mean",value("mean")},{"sd",value("sd")}};out.fixed={"mean","sd"};
       return held_window_result(std::move(out),cppunivariate::held_normal_window_mle(x,value("mean"),value("sd"),a,b),
-        "Truncated normal MLE requires finite data, positive `reltol` and positive `iterlim`.");
+        "Truncated normal MLE requires finite data, positive `tol` and positive `iterlim`.");
     }
     auto out=fit_tnorm(x,h("mean"),h("sd"),{!std::isnan(a),a},{!std::isnan(b),b},tol,maxit);
     out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());

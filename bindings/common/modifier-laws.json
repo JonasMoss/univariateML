@@ -115,7 +115,7 @@
         "b": "Required upper bound; NULL estimates max(x); Inf leaves the upper side unbounded.",
         "mean": "Optional held parent-normal mean; NULL estimates it.",
         "sd": "Optional held parent-normal standard deviation; NULL estimates it.",
-        "reltol": "Relative tolerance on the Newton step in the natural parameters `mean/sd^2` and `-1/(2*sd^2)` of standardized data.",
+        "tol": "Relative tolerance on the Newton step in the natural parameters `mean/sd^2` and `-1/(2*sd^2)` of standardized data.",
         "iterlim": "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
       }
     },
@@ -212,7 +212,7 @@
       "control": {
         "N": "Optional integer upper endpoint; NULL estimates it as max(x).",
         "s": "Optional finite nonnegative shape; NULL estimates it.",
-        "reltol": "Relative tolerance on the Newton step, with an absolute floor of the same size.",
+        "tol": "Relative tolerance on the Newton step, with an absolute floor of the same size.",
         "iterlim": "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
       }
     },
@@ -264,7 +264,7 @@
       "sampler": "rzib",
       "control": {
         "size": "Optional fixed size; NULL estimates size.",
-        "reltol": "Tolerance for scalar profile search.",
+        "tol": "Tolerance for scalar profile search.",
         "iterlim": "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per global certificate: 128 * min(iterlim, 100000) evaluations; per integer scan: 100000 * min(iterlim, 100000) enumeration cells.",
         "prob": "Optional fixed probability in `[0, 1]`; NULL estimates it.",
         "pi": "Optional fixed pi in `[0, 1]`; NULL estimates it."
@@ -316,7 +316,7 @@
       "density": "dzinb",
       "sampler": "rzinb",
       "control": {
-        "reltol": "Relative accuracy of every free coefficient (default 1e-10).",
+        "tol": "Relative accuracy of every free coefficient (default 1e-10).",
         "iterlim": "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations.",
         "size": "Optional fixed finite nonnegative size, including fractional values; NULL estimates size.",
         "prob": "Optional held prob; NULL estimates it.",
@@ -414,7 +414,7 @@
       "sampler": "rzmbinom",
       "control": {
         "size": "Optional fixed size; NULL estimates size.",
-        "reltol": "Tolerance for scalar profile search.",
+        "tol": "Tolerance for scalar profile search.",
         "iterlim": "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per global certificate: 128 * min(iterlim, 100000) evaluations; per integer scan: 100000 * min(iterlim, 100000) enumeration cells.",
         "prob": "Optional fixed probability in `[0, 1]`; NULL estimates it.",
         "p0": "Optional fixed p0 in `[0, 1]`; NULL estimates it."
@@ -551,7 +551,7 @@
       "sampler": "rzmnbinom",
       "control": {
         "size": "Optional fixed size; NULL estimates size.",
-        "reltol": "Relative accuracy of every free coefficient (default 1e-10).",
+        "tol": "Relative accuracy of every free coefficient (default 1e-10).",
         "iterlim": "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations.",
         "prob": "Optional held prob; NULL estimates it.",
         "p0": "Optional held p0; NULL estimates it."
@@ -639,7 +639,7 @@
       "sampler": "rztbinom",
       "control": {
         "size": "Optional fixed size; NULL estimates size.",
-        "reltol": "Tolerance for scalar profile search.",
+        "tol": "Tolerance for scalar profile search.",
         "iterlim": "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per global certificate: 128 * min(iterlim, 100000) evaluations; per integer scan: 100000 * min(iterlim, 100000) enumeration cells.",
         "prob": "Optional fixed probability in `[0, 1]`; NULL estimates it."
       }
@@ -716,7 +716,7 @@
       "sampler": "rztnbinom",
       "control": {
         "size": "Optional fixed size; NULL estimates size.",
-        "reltol": "Relative accuracy of every free coefficient (default 1e-10).",
+        "tol": "Relative accuracy of every free coefficient (default 1e-10).",
         "iterlim": "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations; per recurrence: 100000 * min(iterlim, 100000) enumeration cells.",
         "prob": "Optional held prob; NULL estimates it."
       }

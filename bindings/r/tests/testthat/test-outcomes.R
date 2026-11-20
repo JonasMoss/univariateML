@@ -74,7 +74,7 @@ test_that("stops carry classes, kinds, reasons and limit certification", {
 
 test_that("accuracy and unresolved conditions retain their ordered classes and reasons", {
   for (entry in list(
-      list(function() mlbinom(c(0,1,1),size=1,pi=0,zero="inflated",reltol=1e-20),"tolerance"),
+      list(function() mlbinom(c(0,1,1),size=1,pi=0,zero="inflated",tol=1e-20),"tolerance"),
       list(function() mlfoldnorm(c(1,1,1,sqrt(9+4*sqrt(6)))),"conditioning"))) {
     e <- tryCatch(entry[[1]](),error=identity)
     expect_identical(class(e),c(paste0("univariateML_",entry[[2]]),"univariateML_numerical","univariateML_stop","error","condition"))

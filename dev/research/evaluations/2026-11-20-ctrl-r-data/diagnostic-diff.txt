@@ -1,0 +1,6 @@
+native 1950 matched inputs; 5 rename-only diagnostic changes
+4 × 'Truncated normal MLE requires finite data, positive `reltol` and positive `iterlim`.' -> 'Truncated normal MLE requires finite data, positive `tol` and positive `iterlim`.'
+1 × 'ZINB requires nonempty nonnegative count data, positive reltol and iterlim, prob in (0,1], pi in [0,1], and compatible holds' -> 'ZINB requires nonempty nonnegative count data, positive tol and iterlim, prob in (0,1], pi in [0,1], and compatible holds'
+double 1950 matched inputs; 5 rename-only diagnostic changes
+4 × 'Truncated normal MLE requires finite data, positive `reltol` and positive `iterlim`.' -> 'Truncated normal MLE requires finite data, positive `tol` and positive `iterlim`.'
+1 × 'ZINB requires nonempty nonnegative count data, positive reltol and iterlim, prob in (0,1], pi in [0,1], and compatible holds' -> 'ZINB requires nonempty nonnegative count data, positive tol and iterlim, prob in (0,1], pi in [0,1], and compatible holds'

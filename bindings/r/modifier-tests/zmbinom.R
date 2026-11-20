@@ -107,7 +107,7 @@ test_that("zmbinom: free-size held-mixture fits and Poisson escapes", {
 
 test_that("zmbinom: P3 unfinished optimizer stops", {
   x <- c(1,2,3,3,5)
-  expect_error(.modifier_zmbinom(x, iterlim=1, reltol=1e-10, size=NULL),
+  expect_error(.modifier_zmbinom(x, iterlim=1, tol=1e-10, size=NULL),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -183,7 +183,7 @@ test_that("zmbinom propagates positive-count certification", {
 })
 
 test_that("zmbinom carries the zero-ratio precision flag", {
-  e <- tryCatch(.modifier_zmbinom(c(0,1,1),size=NULL,prob=1e-9,iterlim=1,reltol=1e-18),error=identity)
+  e <- tryCatch(.modifier_zmbinom(c(0,1,1),size=NULL,prob=1e-9,iterlim=1,tol=1e-18),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_match(conditionMessage(e),"numerical accuracy failure")
   expect_equal(tail(e$candidates$p0,1),1/3,tolerance=0)

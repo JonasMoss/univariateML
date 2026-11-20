@@ -175,3 +175,12 @@ list(.modifier_tbinom = list(model = "Internal modifier law tbinom",
 ml_law_metadata <- function(name) {
   if(startsWith(name,".modifier_")) modifier_law_metadata[[name]] else univariateML_metadata[[name]]
 }
+
+ml_modifier_controls <- function(id, zero, window, censored) {
+  if (window || censored) return(ml_fit_controls)
+  variant <- ml_zero_variant(id, zero)
+  if (is.null(variant)) return(character())
+  adapter <- get0(paste0("modifier_", variant, "_"), mode = "function")
+  if (is.null(adapter)) return(character())
+  intersect(ml_fit_controls, names(formals(adapter)))
+}

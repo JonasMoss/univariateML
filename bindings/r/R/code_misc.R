@@ -41,18 +41,18 @@ ml_simulate <- function(dens, n) rml(n, get(dens, mode = "function")())
 #' One-dimensional Newton--Raphson
 #' @param f_over_df The term f(x_0) / f'(x_0) in Newton--Raphson.
 #' @param param0 Starting parameter, typically from method of moments estimates.
-#' @param ... Optional `iterlim` and `reltol` parameters.
+#' @param ... Optional `iterlim` and `tol` parameters.
 #' @return Newton--Raphson estimate.
 #' @keywords internal
 newton_raphson_1d <- function(f_over_df, param0, ...) {
   dots <- list(...)
-  reltol <- if (!is.null(dots$reltol)) dots$reltol else .Machine$double.eps^0.25
+  tol <- if (!is.null(dots$tol)) dots$tol else .Machine$double.eps^0.25
   iterlim <- if (!is.null(dots$iterlim)) dots$iterlim else 100
 
   for (i in seq(iterlim)) {
     param <- param0 - f_over_df(param0)
     if (is.nan(param)) stop("NaN in Newton--Raphson iteration.")
-    if (abs((param0 - param) / param0) < reltol) break
+    if (abs((param0 - param) / param0) < tol) break
     param0 <- param
   }
 
@@ -61,8 +61,8 @@ newton_raphson_1d <- function(f_over_df, param0, ...) {
   if (i == iterlim) {
     warning(paste0(
       "The iteration limit (iterlim = ", iterlim, ") was reached",
-      " before the relative tolerance requirement (reltol = ",
-      reltol, ")."
+      " before the relative tolerance requirement (tol = ",
+      tol, ")."
     ))
   }
   param

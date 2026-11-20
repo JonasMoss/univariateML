@@ -13,7 +13,8 @@
 #' @param return character length 1. "univariateML" (default) if the function
 #'   should return the single best model; "all" if a data.frame
 #'   of all results should be returned, sorted by decreasing model performance.
-#' @param ... Additional arguments passed to each fitter, such as a required size.
+#' @param ... Additional fitting arguments, such as a required size. Numerical
+#'   controls are passed only to fitters that accept them.
 #' @return A `skipped` attribute lists families skipped for missing required
 #'   coefficients, with their reasons. The return value depends on the `return` argument.
 #'    For `return = "best"` (default), `model_select` returns
@@ -72,7 +73,8 @@ model_select <- function(
     x <- ml_interval_data(x,na.rm)
     if(all(x[,1]==x[,2]))x<-x[,1]
   }
-  supplied <- names(list(...))
+  dots <- list(...)
+  supplied <- names(dots)
   reasons <- lapply(models, function(id) {
     meta <- univariateML_metadata[[paste0("ml", id)]]
     if ((is.matrix(x) || inherits(x,"Surv")) &&
@@ -92,8 +94,23 @@ model_select <- function(
   models <- models[vapply(reasons, is.null, logical(1))]
   if (!length(models)) stop("Couldn't fit any model. Missing required coefficients:\n",
                             paste(names(skipped), skipped, collapse="\n"))
-  mlf <- sapply(paste0("ml", models), function(x) eval(parse(text = x)))
-  fits <- lapply(mlf, function(f) try(do.call(f, c(list(x, na.rm = na.rm), list(...))), silent = TRUE))
+  fit_names <- paste0("ml", models)
+  arg_names <- if (is.null(supplied)) rep.int("", length(dots)) else supplied
+  controls <- arg_names %in% c(ml_fit_controls, ml_legacy_fit_controls)
+  zero <- if ("zero" %in% supplied) dots[["zero"]] else "none"
+  window <- !is.null(dots[["truncate"]])
+  censored <- is.matrix(x) || inherits(x, "Surv")
+  fits <- lapply(stats::setNames(fit_names, fit_names), function(name) {
+    f <- get(name, mode = "function")
+    allowed <- if (window || censored || !identical(zero, "none")) {
+      if (is.character(zero) && length(zero) == 1L && !is.na(zero))
+        ml_modifier_controls(sub("^ml", "", name), zero, window, censored)
+    } else {
+      names(formals(get(paste0(name, "_"), mode = "function")))
+    }
+    args <- dots[!controls | arg_names %in% allowed]
+    try(do.call(f, c(list(x, na.rm = na.rm), args)), silent = TRUE)
+  })
 
   error_inds <- sapply(fits, function(fit) inherits(fit, "try-error"))
   if (all(error_inds)) {
