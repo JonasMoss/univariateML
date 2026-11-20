@@ -313,6 +313,15 @@
    "commit": "44fb13c8",
    "dirty": true,
    "reason": "location-scale cluster and the rest take tol = 1e-10 (step 5c job 2d, TASK-150.1.5); only the job's own families (its other snapshot families predate the ctrl-c merge)"
+  },
+  {
+   "families": [
+    "nhyper",
+    "pareto3"
+   ],
+   "commit": "93770104",
+   "dirty": true,
+   "reason": "refine-fix: pareto3 log-excess centring, nhyper exact line search (TASK-214.5)"
   }
  ]
 }
