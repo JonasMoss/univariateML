@@ -1,0 +1,16 @@
+{"family": "betapr", "compared": 212, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "bhatt", "compared": 173, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "burr", "compared": 220, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "fpareto", "compared": 572, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "gb2", "compared": 572, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "genbeta", "compared": 220, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "gengamma", "compared": 28, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "invburr", "compared": 220, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "invparalogis", "compared": 116, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "invtrgamma", "compared": 180, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "nhyper", "compared": 147, "changed": 29, "max_relative": [4503524867960573.0, ["archive", "005161"], "m"], "kind_changes": [], "certification_changes": [["archive", "005175", false, true], ["archive", "005217", false, true], ["archive", "005230", false, true]]}
+{"family": "paralogis", "compared": 104, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "pareto2", "compared": 116, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "pareto3", "compared": 104, "changed": 8, "max_relative": [3.720895532470218e-09, ["archive", "005591"], "shape"], "kind_changes": [], "certification_changes": []}
+{"family": "pareto4", "compared": 204, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}
+{"family": "trgamma", "compared": 204, "changed": 0, "max_relative": [0.0, null, null], "kind_changes": [], "certification_changes": []}

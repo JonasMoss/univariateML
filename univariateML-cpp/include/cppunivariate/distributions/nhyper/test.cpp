@@ -284,3 +284,28 @@ TEST_CASE("nhyper: constant sample with all coefficients free is not unique (TAS
   CHECK(cppunivariate::nhyper_log_pmf(8,0,8,8)==0);
   CHECK(cppunivariate::nhyper_log_pmf(8,0,9,8)==0);
 }
+
+TEST_CASE("nhyper: large waiting counts follow the population likelihood ratios") {
+  const std::vector<double> x{1000000, 1000001, 1000003, 1000008, 1000011};
+  const auto data = mltest::as_span(x);
+  const auto held_mr = cppunivariate::nhyper_mle(data, 3, NAN, 20);
+  const auto held_m = cppunivariate::nhyper_mle(data, NAN, NAN, 20);
+  const auto held_r = cppunivariate::nhyper_mle(data, 3, NAN, NAN);
+  const auto free = cppunivariate::nhyper_mle(data, NAN, NAN, NAN);
+  for (const auto& f : {held_mr, held_m, held_r, free})
+    REQUIRE(f.status == cppunivariate::NhyperStatus::Ok);
+
+  CHECK(held_mr.N == 6666697);
+  CHECK(held_m.N == 1000011);
+  CHECK(held_m.r == 20);
+  CHECK(held_m.certified);
+  CHECK(held_r.N == 1000011);
+  CHECK(held_r.m == 3);
+  CHECK(held_r.certified);
+  CHECK(held_m.logLik > held_mr.logLik);
+  CHECK(held_r.logLik > held_mr.logLik);
+  CHECK(free.logLik > std::max(held_m.logLik, held_r.logLik));
+
+  const auto exhausted = cppunivariate::nhyper_mle(data, 3, NAN, 20, 1);
+  CHECK(exhausted.status == cppunivariate::NhyperStatus::NumericalFailure);
+}

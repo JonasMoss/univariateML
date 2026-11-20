@@ -190,7 +190,8 @@ likelihood Jacobian used for optimization, not Fisher information.
 
 For fixed $k$, the likelihood is strictly concave in $(c,b)$, where
 $b=-c\log s$. A bracketed intercept solve and a bracketed, decreasing
-profile-power score supply proposals. Safeguarded Newton steps remain inside
+profile-power score supply proposals. Holding $k$ uses log ratios relative to
+a sample median so the power score retains the spread of nearly equal observations. Safeguarded Newton steps remain inside
 those brackets. A 41-point logarithmic reconnaissance proposes stationary
 maxima, refined by analytic three-score Newton steps. Reconnaissance need
 not find every root: a missed competing root prevents global exclusion.
