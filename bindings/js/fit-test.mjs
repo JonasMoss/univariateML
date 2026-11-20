@@ -1,3 +1,4 @@
+import {fitControls} from './families.mjs';
 import {modifierRoute} from './modifier-test-routes.mjs';
 import {selectedFamily} from './test-register.mjs';
 import test from './test-register.mjs';
@@ -196,7 +197,9 @@ test('delegate follow-up keeps successful uncertified parent fits',()=>{
   ['pareto3',[1,1+Number.EPSILON],{min:0}]
  ];
  for(const [id,x,held] of cases){
-  const r=m['fit'+id](new Float64Array(x),held,{...(id==='sged'?{tol:1e-8}:{gradtol:1e-8,reltol:1e-10}),iterlim:1000});
+  const requested={tol:id==='sged'?1e-8:1e-10,iterlim:1000};
+  const control=Object.fromEntries(fitControls[id].map(name=>[name,requested[name]]));
+  const r=m['fit'+id](new Float64Array(x),held,control);
   assert.equal(r.status,'Ok',id);assert.equal(r.certified,false,id);assert.ok(Number.isFinite(r.logLik),id);
  }
 });
@@ -332,10 +335,10 @@ test('explicit 512 work units retain the controlled binomial window solver',asyn
 test('finite zeta rounded score roots justify the requested tolerance',async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
   const x=new Float64Array([1,2,3,4]);let fit;
-  try {fit=api.zeta.fit(x,{}, {truncate:[1,4],reltol:1e-20});}
+  try {fit=api.zeta.fit(x,{}, {truncate:[1,4],tol:1e-20});}
   catch(error) {assert.match(error.message,/accuracy/);}
   if(fit)assert.ok(Math.abs(fit.estimates.s)<=1e-20);
-  assert.equal(api.zeta.fit(x,{s:0},{truncate:[1,4],reltol:1e-20}).estimates.s,0);
+  assert.equal(api.zeta.fit(x,{s:0},{truncate:[1,4],tol:1e-20}).estimates.s,0);
 });
 
 test('discrete modifier windows use the conditional probability band in all modes', async()=>{

@@ -124,16 +124,17 @@ likelihoods and evaluations follow one contract (`stats::dweibull`,
 
 ## Controls
 
-Every R fitter `ml<id>(x, <held coefficients>, tol = 1e-10, iterlim = 100)` and
-every JS and C++ entry point take only these controls:
+Iterative fitters take two controls.
 
-- `tol`: the requested relative accuracy above (C++ `tol`);
-- `iterlim`: the work budget of [work budgets](work-budgets.md) (C++ `maxit`).
+- `tol` is the requested relative coefficient accuracy, with a default of
+  `1e-10` (C++ `tol`).
+- `iterlim` is the per-family work budget described in
+  [work budgets](work-budgets.md) (C++ `maxit`).
 
-`reltol`, `abstol`, `gradtol` and the CRAN-era defaults (`1.220703e-4`,
-`1.490116e-08`) are removed. Start-value arguments (`<param>0`) are removed
-unless a family's search genuinely needs a user start, since starts must
-affect only speed. Families that need one say why in the dossier.
+Closed-form base fits take no controls. R accepts controls and held
+coefficients by name in `...`. Eligible wrappers declare `zero` and
+`truncate` as explicit formals after `...`. Modifier routes declare their
+own controls and defaults.
 
 ## Verification
 

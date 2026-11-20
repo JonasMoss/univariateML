@@ -10,7 +10,7 @@ import create from './bindings/js/index.mjs';
 const api = await create();
 const density = api.norm.d(new Float64Array([0, 1]), [0, 1]);
 const sample = api.pois.r(100, [3], 123);
-const fit = api.gamma.fit(new Float64Array([0.5, 1, 2]), {shape: 2});
+const fit = api.gamma.fit(new Float64Array([0.5, 1, 2]), {shape: 2}, {tol: 1e-10});
 ```
 
 Coefficient order comes from dossier front matter. `d` accepts `{log}`;
@@ -54,7 +54,10 @@ Parallel runs distribute sixteen groups; a serial run uses one group.
 hand-written cross-family cases. It audits every truth entry and sampler point for every selected family,
 and every golden, held subsets and diagnostics. It records every failed
 truth entry in `build/scratch/truth-results.json` without relaxing native
-tolerances. The generated TypeScript facade exposes precise fit coefficients and controls
+tolerances. Iterative fits accept `tol` (relative coefficient accuracy) and
+`iterlim` (the family's work budget). Closed-form base fits accept neither.
+Modifier fits take route controls through the same options object as `zero` or
+`truncate`. The generated TypeScript facade exposes fit coefficients and controls
 for all shared families.
 
 Keep the generated `.wasm` alongside its `.mjs`, or pass Emscripten's

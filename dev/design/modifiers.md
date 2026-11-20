@@ -30,11 +30,12 @@ dml(0:5, fixed); pml(0:5, fixed); qml(c(.1, .5, .9), fixed); rml(10, fixed)
 `"modified"` adds the holdable coefficient `p0`, the total zero probability;
 `"inflated"` adds holdable `pi`, the mixture probability of an extra zero.
 The inflated total zero probability is `pi + (1-pi)*f(0)`. These coefficients
-follow the ordinary NULL/free and numeric/held rules. Existing controls retain
-their names. Like coefficient holds, these knobs are named entries in `...`;
-public wrapper formals remain `x, na.rm, ...`. Under modifiers, holds and controls must be supplied by name. General truncation
-and censoring also accept `reltol` and `iterlim` when the exact-data parent is
-closed form; zero routes retain their existing control availability.
+follow the ordinary NULL/free and numeric/held rules. R declares `zero = "none"`
+and `truncate = NULL` as explicit formals after `...` where eligible. Holds and
+the route controls `tol` and `iterlim` are named entries in `...`.
+General truncation and censoring accept both controls, including for
+closed-form base families. A zero-only route accepts the controls declared by
+its adapter.
 
 The retained window is **closed**, `[a,b]` intersected with the base support.
 For integers it contains `ceiling(a):floor(b)`. Infinite endpoints are unbounded;

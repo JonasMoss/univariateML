@@ -173,9 +173,16 @@ constexpr double kGolden_ztnbinom = 1e-14;
 constexpr double kGolden_ztpois = 5e-16;
 constexpr double kGolden_bhatt = 2e-6; // Deferred to bhatt-allfree.
 
-// Defaults of the R adapters (reltol / gradtol / abstol, iterlim). Also the
-// shared default `gradtol` for every finite-difference BFGS fitter below.
-constexpr double kFitTol = 1.220703e-4;
+// Requested relative coefficient accuracy for tests of iterative fitters.
+constexpr double kFitTol = 1e-10;
+
+// For a nonzero correctly rounded normal binary64 reference, rounding
+// contributes at most half the spacing relative to the stored value.
+// The product term converts the contract's exact-MLE denominator to the
+// stored reference denominator.
+constexpr double kFitReferenceRounding = std::numeric_limits<double>::epsilon() / 2;
+constexpr double kFitReferenceTol =
+    kFitTol + (1 + kFitTol) * kFitReferenceRounding;
 constexpr int kFitMaxit = 100;
 
 // Legacy allowance for non-golden finite-difference comparisons.

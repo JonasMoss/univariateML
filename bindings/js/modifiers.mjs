@@ -129,13 +129,12 @@ export function modifierAPI(module, id, eligibility, capabilities) {
   };
   return {evaluate,sampleQuantile,fit(x,held,control) {
     const {zero='none',truncate=null}=control;validate(zero,truncate);
-    if(control.reltol!==undefined && (!Number.isFinite(control.reltol) || control.reltol<=0) || control.iterlim!==undefined && (!Number.isInteger(control.iterlim) || control.iterlim<1 || control.iterlim>2147483647)) throw new Error('invalid modifier controls');
-    if(control.abstol!==undefined && (!Number.isFinite(control.abstol) || control.abstol<=0)) throw new Error('invalid modifier controls');
+    if(control.tol!==undefined && (!Number.isFinite(control.tol) || control.tol<=0) || control.iterlim!==undefined && (!Number.isInteger(control.iterlim) || control.iterlim<1 || control.iterlim>2147483647)) throw new Error('invalid modifier controls');
     const censor=x && !ArrayBuffer.isView(x) && !Array.isArray(x) && 'lower' in x;
     if(censor && zero!=='none')refusal('censor + zero');
     if(censor && truncate)refusal('censor + truncate');
     const positiveWindow=truncate?.[0]===1 && truncate?.[1]===Infinity && ['pois','binom','nbinom','geom'].includes(id);
-    const result=module.fitModifier(id,censor?x.lower:x,censor?x.upper:[],held,zero,!!truncate,truncate?.[0]??NaN,truncate?.[1]??NaN,!!censor,control.reltol??control.abstol??1e-10,control.iterlim??(truncate&&!positiveWindow&&id==='binom'&&held.size==null?512:truncate&&!positiveWindow||censor?400:200));
+    const result=module.fitModifier(id,censor?x.lower:x,censor?x.upper:[],held,zero,!!truncate,truncate?.[0]??NaN,truncate?.[1]??NaN,!!censor,control.tol??1e-10,control.iterlim??(truncate&&!positiveWindow&&id==='binom'&&held.size==null?512:truncate&&!positiveWindow||censor?400:200));
     if (result.error === undefined) {
       result.zero=zero;result.truncate=truncate;result.truncate_spec=truncate;result.truncate_estimated=truncate?.map(Number.isNaN)??[];result.censored=!!censor;
       if (truncate?.some(Number.isNaN)) {result.truncate=[...truncate];const data=Array.from(x);if(Number.isNaN(result.truncate[0]))result.truncate[0]=Math.min(...data);if(Number.isNaN(result.truncate[1]))result.truncate[1]=Math.max(...data);}
