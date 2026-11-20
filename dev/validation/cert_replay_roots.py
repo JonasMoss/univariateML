@@ -169,7 +169,7 @@ TOL = {
     'pareto3': (1e-10, 'bindings/common/distributions/pareto3/fit.hpp:7 reltol'),
     'logis': (1e-10, 'bindings/common/distributions/logis/fit.hpp:8 tol'),
     'dnorm': (1e-10, 'bindings/common/distributions/dnorm/fit.hpp:7 tol'),
-    'dweibull': (1e-12, 'bindings/common/distributions/dweibull/fit.hpp:9 reltol'),
+    'dweibull': (1e-10, 'bindings/common/distributions/dweibull/fit.hpp:9 tol'),
     'zeta': (1e-10, 'bindings/common/distributions/zeta/fit.hpp:5 reltol'),
     'yulesimon': (1e-10, 'bindings/common/distributions/yulesimon/fit.hpp:5 reltol'),
     'pig': (1e-10, 'bindings/common/distributions/pig/fit.hpp:5 reltol'),
@@ -966,7 +966,8 @@ def replay_dnorm(r, data, budget):
                            CLAIMS['dnorm']['free or one held'][0], CLAIMS['dnorm']['free or one held'][1]))], None
 
 CLAIMS['dweibull'] = {
-    'beta (shape2) root': ('log shape: Brent stops at |c - b|/2 <= 2 eps |u| + tol/2, so |u - u*| <= 4 eps |u| + tol, tol = 1e-12', 'dweibull/mle.hpp:284-285 (brent_root tol1 = 2 eps |b| + tol/2)'),
+    'beta (shape2) root': ('log shape: Brent stops at |c - b|/2 <= 2 eps |u| + tol/2, so |u - u*| <= 4 eps |u| + tol, tol = 1e-10', 'dweibull/mle.hpp:284-285 (brent_root tol1 = 2 eps |b| + tol/2)'),
+    'q profile (both free)': ('the profiled log q is increasing in beta; the stop needs |log q(lo) - log q(hi)| <= tol/2 over the log-beta bracket, so |log q - log q*| <= tol/2 + the inner alpha stop', 'dweibull/mle.hpp:471-483 (narrow)'),
     'alpha root (shape2 held)': ('Newton/bisection step <= 1e-13 (1 + |a|), a = alpha + beta log c, c the latent median plus half', 'dweibull/mle.hpp:258 (std::abs(step_now) <= 1e-13 (1 + |x|))'),
 }
 
@@ -1003,7 +1004,7 @@ def replay_dweibull(r, data, budget):
             t = -A.log(A.mpf(q)); b = A.mpf(beta)
             return d_beta(A, b*A.exp(-A.mpf(w)), t), d_beta(A, b*A.exp(A.mpf(w)), t)
         def numeric(u): return d_beta(MPOps, mp.exp(u), -mp.log(mp.mpf(q)))
-        return [bracket('root', 'l_beta(beta e^-w) > 0 > l_beta(beta e^w) at the held q, w = 4 eps |log beta| + 1e-12 + rounding', make, -1, 'interval',
+        return [bracket('root', 'l_beta(beta e^-w) > 0 > l_beta(beta e^w) at the held q, w = 4 eps |log beta| + tol + rounding', make, -1, 'interval',
                         CLAIMS['dweibull']['beta (shape2) root'][1], CLAIMS['dweibull']['beta (shape2) root'][0], numeric=numeric, u0=mp.mpf(u_hat))], None
     def d_alpha(A, b, al):   # d/d alpha, alpha = log t
         t = A.exp(al); tot = A.mpf(0)
@@ -1038,7 +1039,7 @@ def replay_dweibull(r, data, budget):
             t = -A.log(A.mpf(q)); b = A.mpf(beta)
             return d_beta(A, b*A.exp(-A.mpf(w)), t), d_beta(A, b*A.exp(A.mpf(w)), t)
         def numeric(u): return d_beta(MPOps, mp.exp(u), -mp.log(mp.mpf(q)))
-        return [bracket('root', 'refit path (t < 1e-6): l_beta(beta e^-w) > 0 > l_beta(beta e^w) at the returned q, w = 4 eps |log beta| + 1e-12 + rounding', make, -1, 'interval',
+        return [bracket('root', 'refit path (t < 1e-6): l_beta(beta e^-w) > 0 > l_beta(beta e^w) at the returned q, w = 4 eps |log beta| + tol + rounding', make, -1, 'interval',
                         'dweibull/mle.hpp:368-371 (refit with q held), :284', CLAIMS['dweibull']['beta (shape2) root'][0], numeric=numeric, u0=mp.mpf(u_hat))], None
     def make(A):
         a0 = mp.log(mp.mpf(t_hat)); u0_ = mp.mpf(u_hat)
@@ -1048,13 +1049,15 @@ def replay_dweibull(r, data, budget):
         sol = newton_point(grad, (-mp.log(mp.mpf(q)) and mp.log(-mp.log(mp.mpf(q))), u0_))
         return abs(sol[0]-mp.log(-mp.log(mp.mpf(q)))), abs(sol[1]-u0_)
     values = enclose(make, 'numerical', 50)
-    wa = 1e-12*(1+abs(math.log(t_hat)))+2*HALF/t_hat+EPS; wb = 4*EPS*abs(u_hat)+tol+EPS
+    # alpha = log t, log q = -t: the narrow stop bounds |log q - log q*| by tol/2, i.e. |alpha - alpha*| by tol/(2t),
+    # plus the earlier allowance for the inner alpha stop (1e-12 (1 + |alpha|)) and the rounding of q (half-ulp(q)/t)
+    wa = tol/(2*t_hat)+1e-12*(1+abs(math.log(t_hat)))+2*HALF/t_hat+EPS; wb = 4*EPS*abs(u_hat)+tol+EPS
     ok = mp.mpf(values[0].b) <= wa and mp.mpf(values[1].b) <= wb
     bad = mp.mpf(values[0].a) > wa or mp.mpf(values[1].a) > wb
-    return [comparison('root', '|alpha - alpha*| <= 1e-12 (1+|alpha|) + half-ulp(q)/t and |log beta - log beta*| <= 4 eps |log beta| + 1e-12', 'holds' if ok else 'fails' if bad else 'open',
+    return [comparison('root', '|alpha - alpha*| <= tol/(2t) + 1e-12 (1+|alpha|) + half-ulp(q)/t and |log beta - log beta*| <= 4 eps |log beta| + tol', 'holds' if ok else 'fails' if bad else 'open',
                        'alpha offset %s (allowed %s), log beta offset %s (allowed %s)' % (show(values[0], 4), mp.nstr(wa, 3), show(values[1], 4), mp.nstr(wb, 3)),
-                       rigor='numerical', note='hp Newton in (alpha, log beta) from the returned point; beta Brent stop %s; alpha inner stop %s' % (
-                           CLAIMS['dweibull']['beta (shape2) root'][1], CLAIMS['dweibull']['alpha root (shape2 held)'][1]))], None
+                       rigor='numerical', note='hp Newton in (alpha, log beta) from the returned point; beta Brent stop %s; q profile stop %s; alpha inner stop %s' % (
+                           CLAIMS['dweibull']['beta (shape2) root'][1], CLAIMS['dweibull']['q profile (both free)'][1], CLAIMS['dweibull']['alpha root (shape2 held)'][1]))], None
 
 
 # ------------------------------------------------------------ zeta, pig
