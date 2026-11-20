@@ -6,6 +6,15 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-20
+
+- **Codex model for agent jobs, revised** (Jonas): gpt-6.2-sol at low effort
+  is the default for every Codex job. Jonas expects it to match roughly what
+  gpt-6.1 gave at high effort, especially on mathematics. Supersedes the
+  2026-10-30 entry below (gpt-6.1-sol or gpt-6.1-terra at low effort, with
+  gpt-6.1-terra at high effort for the hard jobs). If a job shows that
+  low effort is not enough, raise the effort for that job.
+
 ## 2026-11-14
 
 - **Controls for 2.0 (step 5c)** (Jonas, TASK-214.23). `iterlim` keeps its
@@ -413,7 +422,7 @@ Active work lives on the board (`~/boards/univariateML`), not here.
   Merged and stale remote branches (actions, cran-release, devel,
   more-dist, probability-plots) were deleted; local copies are under
   `refs/archive/*`.
-- **Codex model for agent jobs** (Jonas, 2026-10-30): gpt-6.1-sol at low
+- **Codex model for agent jobs** (Jonas, 2026-10-30; superseded 2026-11-20): gpt-6.1-sol at low
   effort, or gpt-6.1-terra at low effort, for everything not expected to be
   genuinely hard; gpt-6.1-terra at high effort only for work that is
   genuinely hard and needs substantial judgement (existence proofs, limit
