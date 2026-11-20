@@ -1,274 +1,297 @@
 {
-  "source_sha256": "3e67c0ac6af85ede5182c12181581b76920a7939640bfcc8cb17ab230c656fbd",
-  "commit": "a1166cbf2cec937fe0748d2b33eaf9a96cb80b35",
-  "dirty": false,
-  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
-  "flags": [
-    "-std=gnu++17",
-    "-O2",
-    "-DNDEBUG"
-  ],
-  "no_long_double": false,
-  "cpu_limit": 300,
+ "source_sha256": "3e67c0ac6af85ede5182c12181581b76920a7939640bfcc8cb17ab230c656fbd",
+ "commit": "a1166cbf2cec937fe0748d2b33eaf9a96cb80b35",
+ "dirty": false,
+ "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+ "flags": [
+  "-std=gnu++17",
+  "-O2",
+  "-DNDEBUG"
+ ],
+ "no_long_double": false,
+ "cpu_limit": 300,
+ "families": [
+  "bbinom",
+  "beta",
+  "betapr",
+  "bhatt",
+  "binom",
+  "bnbinom",
+  "burr",
+  "cauchy",
+  "cmb",
+  "cmp",
+  "dgamma",
+  "dlaplace",
+  "dnorm",
+  "dunif",
+  "dweibull",
+  "emg",
+  "exp",
+  "expweibull",
+  "fatigue",
+  "foldnorm",
+  "fpareto",
+  "frechet",
+  "gamma",
+  "gb2",
+  "ged",
+  "genbeta",
+  "gengamma",
+  "geom",
+  "gev",
+  "gompertz",
+  "gpd",
+  "gumbel",
+  "hcauchy",
+  "hnorm",
+  "ht",
+  "huber",
+  "hyper",
+  "invburr",
+  "invexp",
+  "invgamma",
+  "invgauss",
+  "invparalogis",
+  "invpareto",
+  "invtrgamma",
+  "invweibull",
+  "kumar",
+  "laplace",
+  "lgamma",
+  "lgser",
+  "llogis",
+  "lnorm",
+  "logis",
+  "logitnorm",
+  "lomax",
+  "lst",
+  "naka",
+  "nbinom",
+  "nhyper",
+  "norm",
+  "nsbeta",
+  "paralogis",
+  "pareto",
+  "pareto2",
+  "pareto3",
+  "pareto4",
+  "pig",
+  "pois",
+  "power",
+  "rayleigh",
+  "sged",
+  "sgomp",
+  "skellam",
+  "slash",
+  "sn",
+  "snorm",
+  "sstd",
+  "st",
+  "std",
+  "tlambda",
+  "trgamma",
+  "triang",
+  "unif",
+  "weibull",
+  "yulesimon",
+  "zeta"
+ ],
+ "patched": {
   "families": [
+   "cmp",
+   "gompertz",
+   "pig"
+  ],
+  "commit": "3cc23ca66062b6be231574a20d473b9939e42ee6",
+  "reason": "face fixes (TASK-214.32): records re-recorded after the merge"
+ },
+ "patches": [
+  {
+   "families": [
     "bbinom",
-    "beta",
-    "betapr",
-    "bhatt",
-    "binom",
-    "bnbinom",
-    "burr",
-    "cauchy",
     "cmb",
     "cmp",
     "dgamma",
-    "dlaplace",
-    "dnorm",
-    "dunif",
-    "dweibull",
     "emg",
-    "exp",
     "expweibull",
     "fatigue",
     "foldnorm",
-    "fpareto",
     "frechet",
-    "gamma",
-    "gb2",
-    "ged",
-    "genbeta",
     "gengamma",
-    "geom",
     "gev",
-    "gompertz",
-    "gpd",
     "gumbel",
-    "hcauchy",
-    "hnorm",
-    "ht",
-    "huber",
-    "hyper",
-    "invburr",
-    "invexp",
-    "invgamma",
-    "invgauss",
-    "invparalogis",
-    "invpareto",
     "invtrgamma",
-    "invweibull",
     "kumar",
-    "laplace",
-    "lgamma",
-    "lgser",
-    "llogis",
-    "lnorm",
-    "logis",
-    "logitnorm",
     "lomax",
-    "lst",
-    "naka",
-    "nbinom",
-    "nhyper",
-    "norm",
     "nsbeta",
-    "paralogis",
-    "pareto",
-    "pareto2",
     "pareto3",
     "pareto4",
     "pig",
-    "pois",
-    "power",
-    "rayleigh",
-    "sged",
     "sgomp",
     "skellam",
-    "slash",
     "sn",
-    "snorm",
-    "sstd",
     "st",
-    "std",
-    "tlambda",
     "trgamma",
-    "triang",
-    "unif",
     "weibull",
     "yulesimon",
     "zeta"
-  ],
-  "patched": {
-    "families": [
-      "cmp",
-      "gompertz",
-      "pig"
-    ],
-    "commit": "3cc23ca66062b6be231574a20d473b9939e42ee6",
-    "reason": "face fixes (TASK-214.32): records re-recorded after the merge"
+   ],
+   "commit": "6db72aaf6f913c0819639eedd836272787b88c02",
+   "dirty": true,
+   "reason": "step 5c job 1 (TASK-150.1.1): control renamed in messages only"
   },
-  "patches": [
-    {
-      "families": [
-        "bbinom",
-        "cmb",
-        "cmp",
-        "dgamma",
-        "emg",
-        "expweibull",
-        "fatigue",
-        "foldnorm",
-        "frechet",
-        "gengamma",
-        "gev",
-        "gumbel",
-        "invtrgamma",
-        "kumar",
-        "lomax",
-        "nsbeta",
-        "pareto3",
-        "pareto4",
-        "pig",
-        "sgomp",
-        "skellam",
-        "sn",
-        "st",
-        "trgamma",
-        "weibull",
-        "yulesimon",
-        "zeta"
-      ],
-      "commit": "6db72aaf6f913c0819639eedd836272787b88c02",
-      "dirty": true,
-      "reason": "step 5c job 1 (TASK-150.1.1): control renamed in messages only"
-    },
-    {
-      "families": [
-        "binom",
-        "gompertz",
-        "pareto2",
-        "slash"
-      ],
-      "commit": "6db72aaf6f913c0819639eedd836272787b88c02",
-      "dirty": true,
-      "reason": "margin fixes (TASK-214.27): pareto2 limits uncertified"
-    },
-    {
-      "families": [
-        "betapr",
-        "cauchy",
-        "gamma",
-        "genbeta",
-        "invgamma",
-        "lgamma",
-        "llogis",
-        "logis",
-        "naka"
-      ],
-      "commit": "318b2fd3d125893e703ee7db9708fe4507ddd984",
-      "dirty": true,
-      "reason": "step 5c job 2a (TASK-150.1.2): tol = 1e-10, relative stopping rules"
-    },
-    {
-      "families": [
-        "cmp",
-        "fatigue",
-        "hyper",
-        "nhyper",
-        "pig",
-        "triang"
-      ],
-      "commit": "027143ae277de66b5531a63369b51e119c64771c",
-      "dirty": true,
-      "reason": "unique flags (TASK-214.36, .37, .40)"
-    },
-    {
-      "families": [
-        "beta",
-        "betapr",
-        "bhatt",
-        "bnbinom",
-        "burr",
-        "dnorm",
-        "expweibull",
-        "fpareto",
-        "frechet",
-        "gompertz",
-        "invpareto",
-        "invweibull",
-        "lomax",
-        "nbinom",
-        "pareto2",
-        "tlambda"
-      ],
-      "commit": "3da06228b66373db07dd2363d5fda06b82139a47",
-      "dirty": true,
-      "reason": "step 5c job 2b (TASK-150.1.3)"
-    },
-    {
-      "families": [
-        "burr",
-        "gb2",
-        "invburr",
-        "paralogis",
-        "pareto4"
-      ],
-      "commit": "ef464c2ebc65343f370a3a388cbab46e246eadf9",
-      "dirty": true,
-      "reason": "Burr certificate on relative logs (TASK-214.42 batch A)"
-    },
-    {
-      "families": [
-        "emg",
-        "lst",
-        "sstd",
-        "st",
-        "std"
-      ],
-      "commit": "704c846e4beeceffa390ec6c3891a789d2160d6f",
-      "dirty": true,
-      "reason": "t certificate allowance and emg standardization (TASK-214.42 batches D, E)"
-    },
-    {
-      "families": [
-        "huber",
-        "sn",
-        "st",
-        "triang"
-      ],
-      "commit": "6849644d8a089ebe41d76559fe483095fbc07513",
-      "dirty": true,
-      "reason": "public-coordinate acceptance (TASK-214.42 batch F)"
-    },
-    {
-      "families": [
-        "fpareto",
-        "gb2",
-        "gengamma",
-        "invtrgamma",
-        "trgamma"
-      ],
-      "commit": "6849644d8a089ebe41d76559fe483095fbc07513",
-      "dirty": true,
-      "reason": "relative logs for near-constant samples (TASK-214.42 batches B, C); merged as f88a31f4"
-    },
-    {
-      "families": [
-        "fatigue",
-        "invparalogis",
-        "paralogis"
-      ],
-      "commit": "2c6015a6e3706784a2367531ce7d129aea0a4548",
-      "dirty": true,
-      "reason": "offset-coordinate solve for near-constant samples (TASK-214.39 part 1); merged as 328d5332"
-    },
-    {
-      "families": [
-        "betapr",
-        "genbeta"
-      ],
-      "commit": "821f6eda84434900446358de3a448d798829bc29",
-      "dirty": true,
-      "reason": "margin-decided near-constant limits (TASK-214.39 part 2)"
-    }
-  ]
+  {
+   "families": [
+    "binom",
+    "gompertz",
+    "pareto2",
+    "slash"
+   ],
+   "commit": "6db72aaf6f913c0819639eedd836272787b88c02",
+   "dirty": true,
+   "reason": "margin fixes (TASK-214.27): pareto2 limits uncertified"
+  },
+  {
+   "families": [
+    "betapr",
+    "cauchy",
+    "gamma",
+    "genbeta",
+    "invgamma",
+    "lgamma",
+    "llogis",
+    "logis",
+    "naka"
+   ],
+   "commit": "318b2fd3d125893e703ee7db9708fe4507ddd984",
+   "dirty": true,
+   "reason": "step 5c job 2a (TASK-150.1.2): tol = 1e-10, relative stopping rules"
+  },
+  {
+   "families": [
+    "cmp",
+    "fatigue",
+    "hyper",
+    "nhyper",
+    "pig",
+    "triang"
+   ],
+   "commit": "027143ae277de66b5531a63369b51e119c64771c",
+   "dirty": true,
+   "reason": "unique flags (TASK-214.36, .37, .40)"
+  },
+  {
+   "families": [
+    "beta",
+    "betapr",
+    "bhatt",
+    "bnbinom",
+    "burr",
+    "dnorm",
+    "expweibull",
+    "fpareto",
+    "frechet",
+    "gompertz",
+    "invpareto",
+    "invweibull",
+    "lomax",
+    "nbinom",
+    "pareto2",
+    "tlambda"
+   ],
+   "commit": "3da06228b66373db07dd2363d5fda06b82139a47",
+   "dirty": true,
+   "reason": "step 5c job 2b (TASK-150.1.3)"
+  },
+  {
+   "families": [
+    "burr",
+    "gb2",
+    "invburr",
+    "paralogis",
+    "pareto4"
+   ],
+   "commit": "ef464c2ebc65343f370a3a388cbab46e246eadf9",
+   "dirty": true,
+   "reason": "Burr certificate on relative logs (TASK-214.42 batch A)"
+  },
+  {
+   "families": [
+    "emg",
+    "lst",
+    "sstd",
+    "st",
+    "std"
+   ],
+   "commit": "704c846e4beeceffa390ec6c3891a789d2160d6f",
+   "dirty": true,
+   "reason": "t certificate allowance and emg standardization (TASK-214.42 batches D, E)"
+  },
+  {
+   "families": [
+    "huber",
+    "sn",
+    "st",
+    "triang"
+   ],
+   "commit": "6849644d8a089ebe41d76559fe483095fbc07513",
+   "dirty": true,
+   "reason": "public-coordinate acceptance (TASK-214.42 batch F)"
+  },
+  {
+   "families": [
+    "fpareto",
+    "gb2",
+    "gengamma",
+    "invtrgamma",
+    "trgamma"
+   ],
+   "commit": "6849644d8a089ebe41d76559fe483095fbc07513",
+   "dirty": true,
+   "reason": "relative logs for near-constant samples (TASK-214.42 batches B, C); merged as f88a31f4"
+  },
+  {
+   "families": [
+    "fatigue",
+    "invparalogis",
+    "paralogis"
+   ],
+   "commit": "2c6015a6e3706784a2367531ce7d129aea0a4548",
+   "dirty": true,
+   "reason": "offset-coordinate solve for near-constant samples (TASK-214.39 part 1); merged as 328d5332"
+  },
+  {
+   "families": [
+    "betapr",
+    "genbeta"
+   ],
+   "commit": "821f6eda84434900446358de3a448d798829bc29",
+   "dirty": true,
+   "reason": "margin-decided near-constant limits (TASK-214.39 part 2)"
+  },
+  {
+   "families": [
+    "betapr",
+    "bhatt",
+    "burr",
+    "fpareto",
+    "gb2",
+    "genbeta",
+    "gengamma",
+    "invburr",
+    "invparalogis",
+    "invpareto",
+    "invtrgamma",
+    "paralogis",
+    "pareto2",
+    "pareto3",
+    "pareto4",
+    "trgamma"
+   ],
+   "commit": "1e073a2d",
+   "dirty": true,
+   "reason": "burr cluster takes tol = 1e-10 with coefficient-accuracy rules (step 5c job 2c, TASK-150.1.4)"
+  }
+ ]
 }
