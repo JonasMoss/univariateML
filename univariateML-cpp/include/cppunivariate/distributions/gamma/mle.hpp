@@ -36,6 +36,7 @@
 #include "../../core/stop_detail.hpp"
 #include "../../special/special.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <limits>
@@ -52,6 +53,7 @@ struct GammaResult {
   GammaStatus status = GammaStatus::Ok;
   StopDetail stop_detail{};
   bool evaluation_failure=false;
+  double root_radius=NAN;
 };
 
 namespace gamma_detail {
@@ -87,18 +89,50 @@ inline double stirlerr(double k) {
   return r * (1.0 / 12.0 - r2 * (1.0 / 360.0 - r2 * (1.0 / 1260.0 - r2 / 1680.0)));
 }
 
+// Practical relative radius around the returned shape. The score noise
+// in G(k)-s is divided by |dG/dlog(k)|. The local slope is used at the
+// upper endpoint, where its magnitude is smallest.
+inline double shape_radius(double lo,double hi,double shape,double s_error) {
+  constexpr double eps=std::numeric_limits<double>::epsilon();
+  const double r=1/hi,r2=r*r;
+  const double slope=hi>=100 ? r*(.5+r*(1./6-r2*(1./30-r2*(1./42-r2/30)))) :
+      hi*special::trigamma(hi)-1;
+  double score_error=3*eps*log_minus_digamma(lo);
+  if(lo<100) {
+    // One ulp for log, two for digamma and one rounding of the subtraction.
+    const double direct_error=eps*(std::max(std::abs(std::log(lo)),std::abs(std::log(hi)))+
+        2*std::max(std::abs(special::digamma(lo)),std::abs(special::digamma(hi)))+
+        .5*log_minus_digamma(lo));
+    score_error=std::max(score_error,direct_error);
+  }
+  const double bracket=std::max(std::abs(shape-lo),std::abs(hi-shape))/shape;
+  return bracket+2*eps+(s_error+score_error)/slope;
+}
+
 // s = log(mean) - mean(log x) from deviations relative to c = mean.
-inline double robust_s(span x, double mean_hat) {
+inline double robust_s(span x, double mean_hat, double& error) {
   const double dn = static_cast<double>(x.size());
-  double sum_d = 0.0, sum_phi = 0.0;
+  double sum_d = 0.0, sum_phi = 0.0, sum_abs_d = 0.0;
   for (auto v : x) {
     const double ratio = v / mean_hat;
     const double t = (v - mean_hat) / mean_hat;
     sum_d += t;
+    sum_abs_d += std::abs(t);
     sum_phi += phi(t, ratio);
   }
   const double m_d = sum_d / dn;
-  return sum_phi / dn - phi(m_d, 1.0 + m_d);
+  const double mean_phi=sum_phi/dn, correction=phi(m_d,1+m_d);
+  const double gap=mean_phi-correction;
+  // The positive phi reduction costs about n*u. Reserve a per-term
+  // allowance for relative deviations, phi and the mean correction.
+  constexpr double eps=std::numeric_limits<double>::epsilon();
+  error=eps*((12+dn/2)*(mean_phi+correction)+
+      (3+dn/2)*sum_abs_d/dn*std::abs(m_d/(1+m_d))+std::abs(gap));
+  return gap;
+}
+inline double robust_s(span x, double mean_hat) {
+  double unused;
+  return robust_s(x,mean_hat,unused);
 }
 
 // Scale and log likelihood when shape/mean_hat is not a normal binary64
@@ -164,7 +198,8 @@ inline GammaResult gamma_mle_impl(span x, double tol, int maxit) {
     mean_hat = std::ldexp(static_cast<double>(total / dn), k);
   }
   const double lx_bar = cppunivariate::mean_log(x);
-  double s = std::log(mean_hat) - lx_bar;
+  const double log_mean=std::log(mean_hat);
+  double s = log_mean - lx_bar;
 
   bool all_equal = true;
   for (auto v : x) all_equal = all_equal && v == x[0];
@@ -172,6 +207,8 @@ inline GammaResult gamma_mle_impl(span x, double tol, int maxit) {
   if (!(tol>0)) return {kNaN,kNaN,kNaN,0,GammaStatus::InvalidInput};
 
   int iterations = 0;
+  constexpr double eps=std::numeric_limits<double>::epsilon();
+  double s_error=eps*((2+dn/2)*(1+std::abs(log_mean)+std::abs(lx_bar))+std::abs(s));
   // The direct s needs a mean with full relative accuracy; a subnormal mean
   // is rounded to a multiple of denorm_min.
   if (s >= 1e-3 && std::isfinite(s) && mean_hat >= std::numeric_limits<double>::min()) {
@@ -202,7 +239,7 @@ inline GammaResult gamma_mle_impl(span x, double tol, int maxit) {
     }
     iterations = nr.iterations;
   } else {
-    s = gamma_detail::robust_s(x, mean_hat);
+    s = gamma_detail::robust_s(x, mean_hat, s_error);
   }
   if (!(s > 0.0) || !std::isfinite(s)) {
     return {kNaN, kNaN, kNaN, iterations, GammaStatus::IterationFailure};
@@ -228,10 +265,12 @@ inline GammaResult gamma_mle_impl(span x, double tol, int maxit) {
   if (!std::isfinite(shape) || !std::isfinite(logLik)) {
     return {kNaN, kNaN, kNaN, iterations, GammaStatus::IterationFailure};
   }
-  if (!(mean_hat >= std::numeric_limits<double>::min() && rate >= std::numeric_limits<double>::min() &&
-        rate <= 1.0 / std::numeric_limits<double>::min()))
-    return gamma_detail::finish(x, shape, s, lx_bar, mean_hat, tol, iterations);
-  return {shape, 1.0 / rate, logLik, iterations};
+  const bool normal_rate=mean_hat>=std::numeric_limits<double>::min() &&
+      rate>=std::numeric_limits<double>::min() && rate<=1.0/std::numeric_limits<double>::min();
+  auto result=normal_rate ? GammaResult{shape,1.0/rate,logLik,iterations} :
+      gamma_detail::finish(x,shape,s,lx_bar,mean_hat,tol,iterations);
+  result.root_radius=gamma_detail::shape_radius(lo,hi,shape,s_error);
+  return result;
 }
 
 // A fixed rate (1/scale) gives a strictly decreasing digamma score; a fixed

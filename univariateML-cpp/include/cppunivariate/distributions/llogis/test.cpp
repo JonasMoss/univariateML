@@ -261,3 +261,16 @@ TEST_CASE("llogis: exact-input large-shape displacement") {
   CHECK(cppunivariate::distributions::dllogis(1000.0000000005,1e12,1000.,true) == doctest::Approx(19.275113163635652).epsilon(1e-10));
   CHECK(cppunivariate::distributions::pllogis(1000.0000000005,1e12,1000.,false,true) == doctest::Approx(-0.9740736928049015).epsilon(1e-10));
 }
+
+TEST_CASE("llogis: held-scale shape radius includes log-shape resolution") {
+  const std::vector<double> x{1+0x1p-40,1+0x1p-40};
+  const auto fit=cppunivariate::loglogistic_mle(mltest::as_span(x),1e-10,100,NAN,1);
+  REQUIRE(fit.status==cppunivariate::LogLogisticStatus::Ok);
+  const double t=std::log(fit.shape);
+  CHECK(fit.root_radius>=std::nextafter(t,INFINITY)-t);
+  const double u=fit.shape*std::log1p(0x1p-40);
+  const double below=u*std::exp(-fit.root_radius);
+  const double above=u*std::exp(fit.root_radius);
+  CHECK(below*std::tanh(below/2)<1);
+  CHECK(above*std::tanh(above/2)>1);
+}

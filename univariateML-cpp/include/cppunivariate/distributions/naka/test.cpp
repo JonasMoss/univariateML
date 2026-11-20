@@ -265,3 +265,14 @@ TEST_CASE("naka: compensated concentrating density") {
   CHECK(cppunivariate::distributions::dnaka(31.622776601683793,100000000.0,1000.0,true)==
         doctest::Approx(5.530671379007053).epsilon(1e-10).scale(0));
 }
+
+TEST_CASE("naka: held second moment accounts for digamma cancellation") {
+  const std::vector<double> x{1.056472200524671};
+  const auto fit=cppunivariate::naka_mle(mltest::as_span(x),1e-10,100,NAN,1);
+  REQUIRE(fit.status==cppunivariate::GammaStatus::Ok);
+  // 80-digit root of log(k)-digamma(k) = x[0]^2-1-2*log(x[0]).
+  const double expected=79.9999999999999956510317025562;
+  CHECK(std::abs(fit.shape-expected)/fit.shape<fit.root_radius);
+  CHECK(fit.root_radius>4*std::numeric_limits<double>::epsilon());
+  CHECK(fit.root_radius<1e-10);
+}

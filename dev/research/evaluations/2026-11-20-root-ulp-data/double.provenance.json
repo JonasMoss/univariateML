@@ -1,0 +1,32 @@
+{
+  "source_sha256": "c1afe455e3a0de9bccf464034ffa899f78649fc82f73f870b0d23c42ac43b795",
+  "commit": "1252894e88e09010c19599ce88f6f366d97a2495",
+  "dirty": true,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    "-std=gnu++17",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "no_long_double": true,
+  "cpu_limit": 300,
+  "families": [
+    "burr",
+    "expweibull",
+    "frechet",
+    "gamma",
+    "genbeta",
+    "invburr",
+    "invgamma",
+    "invtrgamma",
+    "invweibull",
+    "lgamma",
+    "llogis",
+    "lnorm",
+    "logitnorm",
+    "naka",
+    "pareto3",
+    "trgamma",
+    "weibull"
+  ]
+}

@@ -6,13 +6,10 @@ namespace cppunivariate {
 namespace transformed_detail {
 // Positive-to-negative root bracket. Each expansion and bisection uses
 // the supplied evaluation cap (solver or certificate units at the call).
-// Exhaustion never returns an unchecked last iterate. The loop stops when the
-// bracket, which holds the root by the signs of the monotone score, is at
-// most min(tol/16, 4 eps) wide in the standardized log coordinate; the
-// midpoint is then within tol/32 of the root in that coordinate (the data
-// are scaled to unit log spread there), and the min with 4 eps makes tol a
-// cap only when it is below that rounding floor.
-template<class Score> inline double root(Score score,double tol,int maxit) {
+// Stop at min(tol/16, 4 eps) in the solved coordinate or adjacent doubles.
+// The optional radius measures the returned point against the computed bracket.
+template<class Score> inline double root(Score score,double tol,int maxit,
+    double& radius,bool track) {
   double lo=-1,hi=1;
   for(int j=0;j<maxit && score(lo)<0;++j)lo*=2;
   for(int j=0;j<maxit && score(hi)>0;++j)hi*=2;
@@ -20,15 +17,27 @@ template<class Score> inline double root(Score score,double tol,int maxit) {
   for(int j=0;j<maxit;++j){
     const double m=lo+(hi-lo)/2,g=score(m);
     if(std::isnan(g))return NAN;
-    if(g==0 || m==lo || m==hi)return m;
+    if(g==0 && !track)return m;
+    if(m==lo || m==hi){
+      radius=hi-lo;
+      return m;
+    }
     if(g>0)lo=m;else hi=m;
-    if(hi-lo<=std::min(tol/16,4*std::numeric_limits<double>::epsilon()))return lo+(hi-lo)/2;
+    if(hi-lo<=std::min(tol/16,4*std::numeric_limits<double>::epsilon())){
+      const double center=lo+(hi-lo)/2;
+      radius=std::max(center-lo,hi-center);
+      return center;
+    }
   }
   return NAN;
 }
+template<class Score> inline double root(Score score,double tol,int maxit) {
+  double unused=NAN;
+  return root(score,tol,maxit,unused,false);
+}
 inline double sigmoid(double z){return z>=0?1/(1+std::exp(-z)):std::exp(z)/(1+std::exp(z));}
 inline double softplus(double z){return std::max(z,0.)+std::log1p(std::exp(-std::abs(z)));}
-struct LocationFit { double shape,scale,ll; int status; bool certified=true; };
+struct LocationFit { double shape,scale,ll; int status; bool certified=true; double root_radius=NAN; };
 // Burr with fixed first shape, log-logistic (a=1), or inverse Weibull
 // (Gumbel). Their log-data likelihood is strictly concave in (b,b*mu).
 // Standardized raw log differences retain dispersion without large logs.
@@ -63,7 +72,32 @@ inline LocationFit location_fit(span x,double power,double scale,double a,
     return root([&](double c){Sum s;for(double v:y)s.push((a+1)*sigmoid(b*v-c));return s.get()-n;},tol,maxit);
   };
   double b=free_power?NAN:power*unit;
-  if(free_power) {
+  double root_radius=NAN;
+  if(free_power && !free_scale && sign==1) {
+    // Solve in log(public shape). In the held-scale score, using the raw
+    // log ratio to that scale avoids subtracting two fitted coordinates.
+    std::vector<double> w;
+    w.reserve(x.size());
+    for(double v:x) w.push_back(log_ratio(v,scale));
+    const double t=root([&](double z){
+      const double k=std::exp(z);
+      if(!std::isfinite(k))return -std::numeric_limits<double>::infinity();
+      Sum s;
+      s.push(n);
+      for(double d:w) {
+        if(d==0)continue;
+        const double u=k*d;
+        if(!std::isfinite(u))return -std::numeric_limits<double>::infinity();
+        s.push(u*(gumbel?std::expm1(-u):1-(a+1)*sigmoid(u)));
+      }
+      return s.get();
+    },tol,maxit,root_radius,true);
+    power=std::exp(t);
+    b=power*unit;
+    // Practical score, data and exp rounding allowance. The computed
+    // radius already includes the full spacing when the endpoints abut.
+    root_radius+=8*std::numeric_limits<double>::epsilon();
+  } else if(free_power) {
     const double t=root([&](double z){const double k=std::exp(z),c=location(k);Sum s;s.push(n);
       for(double v:y){const double u=k*v-c;
         s.push(k*(free_scale?v:v-held_shift/unit)*(gumbel?std::expm1(-u):1-(a+1)*sigmoid(u)));
@@ -89,7 +123,7 @@ inline LocationFit location_fit(span x,double power,double scale,double a,
       tol+128*std::numeric_limits<double>::epsilon()*(1+std::abs(shift)))return bad;
   const bool certified=!free_scale || restored(ideal.get(),ll.get(),tol,std::abs(ideal.get())+std::abs(ll.get()));
   const double result=ll.get()+l.jacobian;
-  return {power,scale,result,std::isfinite(result)?0:3,certified};
+  return {power,scale,result,std::isfinite(result)?0:3,certified,root_radius};
 }
 } // namespace transformed_detail
 } // namespace cppunivariate

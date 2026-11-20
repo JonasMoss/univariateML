@@ -5,14 +5,15 @@
 namespace cppunivariate {
 namespace transformed_detail {
 enum class GammaMap { Reciprocal, Square, Log };
-struct RawGammaResult { double shape,scale,logLik; int iterations; GammaStatus status; bool certified=true; };
+struct RawGammaResult { double shape,scale,logLik; int iterations; GammaStatus status; bool certified=true; double root_radius=NAN; };
 // Shape stopping rules (all relative, none depends on a Newton step size):
 // the shape is bracketed [lo, hi] on a strictly monotone score
 // log k - psi(k) - s, with the bracket ends confirmed by computed signs,
 // and the loop stops when hi/lo - 1 <= min(tol/8, 4 eps) (the log-scale
 // bracket when the rate is held: hi - lo <= min(tol/8, 2e-13) in log k, which
-// is the same relative width). The root lies in the bracket, so the midpoint
-// is within a relative tol/16 of it. The second coefficient is a closed form
+// is the same relative width). The held-Square path reports a radius
+// including the score-rounding allowance in addition to this computed
+// bracket. The second coefficient is a closed form
 // of the shape and the sample means. tol also gates the certified flag
 // (restored) and the coefficient round-trip check at the end.
 // Fit the gamma likelihood from raw-data deviations. The public second
@@ -73,6 +74,7 @@ inline RawGammaResult gamma_raw(span x,double tol,int maxit,double shape,double 
   else if(map==GammaMap::Square)modelmean={parameter,0};
   else if(!free_shape)modelmean=map==GammaMap::Reciprocal?div({shape,0},{parameter,0}):div({shape,0},{parameter,0});
   int iterations=0;
+  double root_radius=NAN;
   if(free_shape) {
     if(free_parameter || map==GammaMap::Square) {
       if(!free_parameter) {
@@ -106,6 +108,12 @@ inline RawGammaResult gamma_raw(span x,double tol,int maxit,double shape,double 
       }
       if(iterations==maxit)return {NAN,NAN,NAN,iterations,GammaStatus::IterationFailure};
       shape=std::sqrt(lo)*std::sqrt(hi);
+      if(!free_parameter) {
+        // Practical phi evaluation allowance from the Square path analysis,
+        // with the serial positive sum's n*u contribution.
+        const double s_error=(70+n/2)*std::numeric_limits<double>::epsilon()*s;
+        root_radius=gamma_detail::shape_radius(lo,hi,shape,s_error);
+      }
     } else {
       // Fixed gamma rate: psi(shape) = log(rate) + mean(log Y).
       const double target=std::log(parameter)+meanlog;
@@ -154,7 +162,7 @@ inline RawGammaResult gamma_raw(span x,double tol,int maxit,double shape,double 
       std::expm1(logratio0+std::log(mean_ratio));
   if(free_parameter && std::abs(mean_error)>tol+128*std::numeric_limits<double>::epsilon()*(1+std::abs(mean_error)))return bad;
   if(!std::isfinite(ll))return bad;
-  return {shape,parameter,ll,iterations+1,GammaStatus::Ok,certified};
+  return {shape,parameter,ll,iterations+1,GammaStatus::Ok,certified,root_radius};
 }
 } // namespace transformed_detail
 } // namespace cppunivariate

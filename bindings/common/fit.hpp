@@ -58,6 +58,7 @@ struct FitResult {
   std::vector<NamedCandidate> candidates;
   std::vector<std::pair<std::string,double>> limit_estimates;
   double limit_loglik=NAN,loglik_lower=NAN,loglik_upper=NAN,segment_loglik_upper=NAN;
+  double root_radius=NAN;  // Optional scalar-root certificate evidence for replay.
 };
 // The adapters use only %s, %g and fixed decimal %f diagnostics. Construct
 // strings without host I/O, exceptions, varargs or an R formatting dependency.

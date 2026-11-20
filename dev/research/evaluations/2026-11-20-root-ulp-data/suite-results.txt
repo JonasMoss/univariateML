@@ -1,0 +1,52 @@
+Workstation, GCC 15.2.0. Simbox returned exit 75 (SSH connection timed out).
+
+just cpp-test
+100% tests passed, 0 tests failed out of 110
+Total Test time (real) = 350.88 sec
+
+just cpp-test-no-long-double
+100% tests passed, 0 tests failed out of 154
+Total Test time (real) = 293.52 sec
+
+just test-full
+Ran 36 tests in 22.082s
+OK
+[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65756 ]
+
+just js-build
+Exit 0. WASM and JavaScript output generated.
+
+just js-test
+# tests 586
+# pass 586
+# fail 0
+# skipped 0
+
+just site-check
+PASS: graph: 85 unique nodes, 264 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: 85 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 85 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+
+python3 dev/tools/check_links.py
+35 historical retirement citations checked at 1e0f5185
+743 Markdown files; 5535 local destinations; 45 inherited broken; 0 new broken
+
+just quality (snapshot family scope)
+frechet pass 
+invweibull pass 
+llogis pass 
+weibull pass 
+gamma pass 
+naka pass 
+invburr pass 
+invgamma pass 
+lgamma pass 
+lnorm pass 
+logitnorm pass 
+trgamma pass 
+invtrgamma pass 
+burr pass 
+pareto3 pass 
+expweibull pass 
+genbeta pass 

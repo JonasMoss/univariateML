@@ -121,6 +121,8 @@ The gamma reduction forms relative squared differences as $r_i(2+r_i)$, where $r
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
+With the second moment held, the shape radius adds rounding of the squared-data score and the digamma difference over the log-shape slope. Cancellation in the digamma difference can dominate the computed bracket width.
+
 ## Decision history
 
 2026-10-31 (diagnostic contract): Empty or invalid input carries a non-success status. Degeneracy depends on which coefficients are free, and delegate failures survive transformations. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.

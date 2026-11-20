@@ -6,6 +6,7 @@
 #include "../../core/stop_detail.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
+#include "../../core/transformed_data.hpp"
 
 #include "../../core/span.hpp"
 #include "../gumbel/mle.hpp"
@@ -59,8 +60,7 @@ inline WeibullResult weibull_mle(span x, double tol, int maxit) {
   std::vector<double> log_x(n);
   double sum_log_x=0;
   for(std::size_t i=0;i<n;++i) {
-    const double relative=(x[i]-anchor)/anchor;
-    log_x[i]=-(std::abs(relative)<.5?std::log1p(relative):std::log(x[i])-log_anchor);
+    log_x[i]=-transformed_detail::log_ratio(x[i],anchor);
     sum_log_x+=log_x[i];
   }
   const double dn=static_cast<double>(n),center=-sum_log_x/dn;

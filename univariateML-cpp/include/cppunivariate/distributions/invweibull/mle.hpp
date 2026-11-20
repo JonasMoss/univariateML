@@ -26,6 +26,7 @@ struct InvWeibullResult {
   int iterations;
   InvWeibullStatus status = InvWeibullStatus::Ok;
   bool certified=true;
+  double root_radius=NAN;
 };
 
 inline FitOutcome outcome(const InvWeibullResult& r) {
@@ -41,7 +42,7 @@ inline FitOutcome outcome(const InvWeibullResult& r) {
 inline InvWeibullResult invweibull_mle(span x,double tol,int maxit,double shape,double scale) {
   const auto r=transformed_detail::location_fit(x,shape,scale,1,true,1,tol,maxit);
   return {r.shape,r.scale,r.ll,0,r.status==0?InvWeibullStatus::Ok:
-    r.status==1?InvWeibullStatus::InvalidInput:r.status==2?InvWeibullStatus::Unbounded:InvWeibullStatus::IterationFailure,r.certified};
+    r.status==1?InvWeibullStatus::InvalidInput:r.status==2?InvWeibullStatus::Unbounded:InvWeibullStatus::IterationFailure,r.certified,r.root_radius};
 }
 inline InvWeibullResult invweibull_mle(span x,double tol,int maxit) {
   return invweibull_mle(x,tol,maxit,NAN,NAN);

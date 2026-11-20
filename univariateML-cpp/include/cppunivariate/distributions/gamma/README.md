@@ -124,7 +124,7 @@ Holding either shape or scale gives a unique finite fit for any positive sample,
 With both coefficients free, profiling scale gives the shape score
 $\log(k)-\psi(k)=\log(\bar x)-\overline{\log x}$. Its unique positive
 root is sought by Newton iteration; near ties or after Newton failure the
-implementation uses a bracketed log-shape bisection. The bracket follows
+implementation uses a geometrically bisected shape bracket. The bracket follows
 digamma bounds, and an exhausted bracket search reports failure. With
 shape held, scale is analytic; with scale held, the monotone digamma
 equation is bisected. This establishes uniqueness of the mathematical
@@ -138,6 +138,8 @@ attainable relative accuracy; a scale above the binary64 range stops with
 `TransformFailure` alone. A subnormal sample mean is itself a rounded
 multiple of the smallest subnormal, so the shape score then comes from
 relative deviations.
+
+The concentrated-shape bracket reports a relative radius that adds Jensen-gap and digamma-score rounding over the log-shape slope, with a margin for reconstructing the shape.
 
 ## Decision history
 

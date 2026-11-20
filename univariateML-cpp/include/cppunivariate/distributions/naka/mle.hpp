@@ -24,6 +24,7 @@ struct NakaResult {
   int iterations;
   GammaStatus status = GammaStatus::Ok;
   bool certified=true;
+  double root_radius=NAN;
 };
 
 inline FitOutcome outcome(const NakaResult& r) {
@@ -39,7 +40,7 @@ inline FitOutcome outcome(const NakaResult& r) {
 
 inline NakaResult naka_mle(span x,double tol,int maxit,double shape,double scale) {
   const auto g=transformed_detail::gamma_raw(x,tol,maxit,shape,scale,transformed_detail::GammaMap::Square);
-  return {g.shape,g.scale,g.logLik,g.iterations,g.status,g.certified};
+  return {g.shape,g.scale,g.logLik,g.iterations,g.status,g.certified,g.root_radius};
 }
 inline NakaResult naka_mle(span x,double tol,int maxit) {return naka_mle(x,tol,maxit,NAN,NAN);}
 } // namespace cppunivariate

@@ -136,6 +136,8 @@ Holding shape leaves an explicit scale estimate, tending to the geometric mean a
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 
+At held scale the radius is the distance to the farther log-shape bracket endpoint plus $8\varepsilon$ for score, data and coefficient rounding.
+
 ## R notes
 
 The bracketed profile solve does not use a starting shape; the `shape0` argument was removed for 2.0.

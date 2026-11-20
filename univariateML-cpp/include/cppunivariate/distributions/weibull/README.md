@@ -138,9 +138,9 @@ The joint fit transforms the observations to $-\log x$ and fits a Gumbel distrib
 
 Holding shape gives an explicit scale estimate, $\lambda^k=\overline{x^k}$. Holding scale leaves a strictly decreasing shape score, solved by bracketing. This fit is finite unless all observations equal the held scale. Holding both evaluates the likelihood. A log likelihood beyond binary64 at the returned or held coefficients (data near $2^{500}$ with shape near 3 give $-1.8\times10^{438}$) stops with `NumericalFailure`.
 
-## Decision history
+The free fit applies the Gumbel scale bracket to centered log ratios. Normal data ratios are formed before taking logs so extreme common scales preserve the transformed dispersion. The fit uses `tol` for coefficient accuracy and has no starting-shape control.
 
-2026-11-15 (controls for 2.0): the `shape0` starting-value argument, ignored in univariateML 1.x and later functional, is removed; `reltol` is renamed `tol` with the same default.
+## Decision history
 
 2026-10-31 (diagnostic contract): Empty or invalid input carries a non-success status. Degeneracy depends on the held coefficients, and failures from the Gumbel fit survive transformation. See the [shared diagnostic contract](../../../../../dev/validation/diagnostics.md) and the TASK-132 cases in `test.cpp` for the validation scope.
 

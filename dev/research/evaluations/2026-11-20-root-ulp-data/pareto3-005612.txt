@@ -1,0 +1,5 @@
+Pareto III archive case 005612, held shape and minimum, both modes.
+80-digit centered logistic score: sum tanh(k*(log x - log scale)/2) = 0.
+Exact-input conditional scale: 0.82535556583878584123525240282999214857461207252986
+Supremum minus likelihood at the returned scale: 2.0118232365412284446e-32
+Independent numerical check. The standard replay restoration remains open.

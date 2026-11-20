@@ -599,7 +599,7 @@ def replay_gamma(r, data, budget):
             return A.log(sum(X, A.mpf(0))/n)-sum((A.log(v) for v in X), A.mpf(0))/n
         with precision(60):
             s_hp = stats(MPOps)
-        newton = s_hp >= mp.mpf('1e-3') and min(x) > 0 and (sum(x)/len(x)) >= 2.2250738585072014e-308
+        newton = 'root_radius' not in r['result'] and s_hp >= mp.mpf('1e-3') and min(x) > 0 and (sum(x)/len(x)) >= 2.2250738585072014e-308
         if newton:
             def make(A):
                 s = stats(A); k = A.mpf(shape); w = A.mpf(abstol)*k
@@ -607,12 +607,14 @@ def replay_gamma(r, data, budget):
             src, width = CLAIMS['gamma']['free, Newton path (s >= 1e-3)']
             claim = 'G(k (1 - tol)) > 0 > G(k (1 + tol)), G = log k - psi(k) - s, s = log mean - mean log (Newton path, relative step tol)'
         else:
-            w = 2*EPS+HALF
+            w = float.fromhex(r['result']['root_radius']) if 'root_radius' in r['result'] else 2*EPS+HALF
             def make(A):
                 s = stats(A); k = A.mpf(shape)
                 return gamma_G(A, k*(1-A.mpf(w)), s), gamma_G(A, k*(1+A.mpf(w)), s)
-            src, width = CLAIMS['gamma']['free, bracket path']
-            claim = 'G(k(1-w)) > 0 > G(k(1+w)), w = 2 eps + rounding (bracket path)'
+            width, src = CLAIMS['gamma']['free, bracket path']
+            if 'root_radius' in r['result']:
+                width, src = 'reported bracket plus score and conversion rounding', 'gamma/mle.hpp (shape_radius)'
+            claim = 'G(k(1-w)) > 0 > G(k(1+w)), w = %g (bracket path)' % w
         def numeric(u):
             return gamma_G(MPOps, mp.exp(u), stats(MPOps))
         out = [bracket('root', claim, make, -1, 'numerical', src, width, numeric=numeric, u0=mp.log(mp.mpf(shape)))]
@@ -706,7 +708,7 @@ def replay_gamma_raw(kind_name):
         if r['mask'] == 2:   # parameter held, shape free
             par = float(r['held'][names[1]])
             if kind_name == 'naka':
-                w = 2*EPS+HALF
+                w = float.fromhex(r['result']['root_radius']) if 'root_radius' in r['result'] else 2*EPS+HALF
                 def mk(A):
                     X = [A.mpf(v) for v in x]; n = A.mpf(len(X)); Y = ys(A, X); om = A.mpf(par)
                     ybar = sum(Y, A.mpf(0))/n; lm = sum((A.log(v) for v in Y), A.mpf(0))/n
@@ -717,8 +719,11 @@ def replay_gamma_raw(kind_name):
                     A = MPOps; X = [A.mpf(v) for v in x]; n = A.mpf(len(X)); Y = ys(A, X); om = A.mpf(par)
                     s = A.log(om)-sum((A.log(v) for v in Y), A.mpf(0))/n+sum(Y, A.mpf(0))/n/om-1
                     return gamma_G(A, mp.exp(u), s)
-                claim = 'G(k(1-w)) > 0 > G(k(1+w)), G = log k - psi(k) - s, s = log(Omega) - mean log x^2 + mean x^2/Omega - 1, w = 2 eps + rounding'
-                return [bracket('root', claim, mk, -1, 'numerical', CLAIMS['gamma_raw']['parameter held'][1], CLAIMS['gamma_raw']['parameter held'][0],
+                claim = 'G(k(1-w)) > 0 > G(k(1+w)), G = log k - psi(k) - s, s = log(Omega) - mean log x^2 + mean x^2/Omega - 1, w = %g' % w
+                width, src = CLAIMS['gamma_raw']['parameter held']
+                if 'root_radius' in r['result']:
+                    width, src = 'reported bracket plus score and conversion rounding', 'gamma/transformed.hpp (held Square)'
+                return [bracket('root', claim, mk, -1, 'numerical', src, width,
                                 numeric=numeric, u0=mp.log(mp.mpf(shape_hat)))], None
             w = 1e-13+2*HALF if kind_name == 'invgamma' else 1e-12+1e-13+2*HALF
             def mk(A):
@@ -820,6 +825,10 @@ def replay_location(kind_name, family, data_fn, tol, tol_source, polish_width=No
         if not shape_held:
             w = 4*EPS if polish_width is None else polish_width+4*EPS    # 2 eps (bracket half width) + chained rounding; pareto3: the accuracy polish (tol) replaces the bracket
             if scale_held:
+                width, src = CLAIMS['location']['scale held']
+                if 'root_radius' in r['result']:
+                    w = float.fromhex(r['result']['root_radius'])
+                    width, src = 'reported log-shape bracket plus rounding', 'core/transformed_location.hpp (held scale)'
                 ls_value = float(r['held'][scale_name])
                 def make_r(A):
                     Wv = W(A); n = A.mpf(len(Wv)); ls = A.log(A.mpf(ls_value)); k = A.mpf(shape)
@@ -831,8 +840,8 @@ def replay_location(kind_name, family, data_fn, tol, tol_source, polish_width=No
                     A = MPOps; Wv = W(A); n = A.mpf(len(Wv)); ls = A.log(A.mpf(ls_value)); kk = mp.exp(u)
                     if kind_name == 'invweibull': return n/kk+sum(((v-ls)*(-1+A.exp(-(kk*(v-ls)))) for v in Wv), A.mpf(0))
                     return n/kk+sum(((v-ls)*(1-2/(1+A.exp(-(kk*(v-ls))))) for v in Wv), A.mpf(0))
-                out.append(bracket('root', 'dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = 4 eps (2 eps bracket half width + rounding of exp and of the public power)',
-                                   make_r, -1, 'numerical', CLAIMS['location']['scale held'][1], CLAIMS['location']['scale held'][0], numeric=numeric,
+                out.append(bracket('root', 'dl/dk(k e^-w) > 0 > dl/dk(k e^w) at the held scale, w = %g' % w,
+                                   make_r, -1, 'numerical', src, width, numeric=numeric,
                                    u0=mp.log(mp.mpf(shape))))
             else:
                 def make_r(A):

@@ -26,6 +26,7 @@ struct LogLogisticResult {
   int iterations;
   LogLogisticStatus status = LogLogisticStatus::Ok;
   bool certified=true;
+  double root_radius=NAN;
 };
 
 inline FitOutcome outcome(const LogLogisticResult& r) {
@@ -41,7 +42,7 @@ inline FitOutcome outcome(const LogLogisticResult& r) {
 inline LogLogisticResult loglogistic_mle(span x,double tol,int maxit,double shape,double scale) {
   const auto r=transformed_detail::location_fit(x,shape,scale,1,false,1,tol,maxit);
   return {r.shape,r.scale,r.ll,0,r.status==0?LogLogisticStatus::Ok:
-    r.status==1?LogLogisticStatus::InvalidInput:r.status==2?LogLogisticStatus::Unbounded:LogLogisticStatus::IterationFailure,r.certified};
+    r.status==1?LogLogisticStatus::InvalidInput:r.status==2?LogLogisticStatus::Unbounded:LogLogisticStatus::IterationFailure,r.certified,r.root_radius};
 }
 inline LogLogisticResult loglogistic_mle(span x,double tol,int maxit) {return loglogistic_mle(x,tol,maxit,NAN,NAN);}
 } // namespace cppunivariate
