@@ -53,18 +53,35 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   bab2a84e) ran them on 1252894e plus its change: `just cpp-test` 110/110,
   `just cpp-test-no-long-double` 154/154, `just js-test` 587/587,
   `just site-check` green. R `just test-full` was not rerun on this batch.
+- Batch check of master dda89f62 (2026-11-20, workstation, GCC 15.2, after
+  step 5c job 4 ([ctrl-js](research/evaluations/2026-11-20-ctrl-js-report.md)),
+  [refine-fix](research/evaluations/2026-11-20-refine-fix-report.md),
+  [root-ulp](research/evaluations/2026-11-20-root-ulp-report.md) and
+  [route-acc](research/evaluations/2026-11-20-route-acc-report.md)): fresh
+  snapshots of all four modes differ from the stored baselines only as the job
+  reports describe (rounding-level moves up to 1.9e-13 in 14 families and the
+  limit payloads of betapr, fpareto, gb2; 23 tnorm route failures now
+  certified estimates; tbinom 7325 a certified tpois limit), and the baselines
+  were patched from them (b3f1e1ad). `just cpp-test` 110/110;
+  `just cpp-test-no-long-double` 154/154; `just test-full`
+  `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65782 ]`; `just js-test` 587/587;
+  `just relations` and `just site-check` green. `just strict`: 50 known
+  entries fixed (40 root widths, 6 nhyper/tbinom nesting, 4 pareto3 refine)
+  and pruned; 4 new nesting entries list TASK-214.46 (a tnorm limit payload
+  that predates the batch and became visible once the held-sd fits
+  converged). The known list has 35 entries, each with a card.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
-- Known wrong answers on master, each with a card: fits that miss the
-  accuracy contract (TASK-214.5, 10 entries); stop kinds that depend on the precision mode
-  (TASK-214.13). Root brackets that miss their claimed width by a few
-  ulp, far inside the contract: TASK-214.31.
+- Known wrong answers on master, each with a card: stop kinds that depend
+  on the precision mode (TASK-214.13); a tnorm truncated-exponential limit
+  payload off by 2.3e-4 in its rate on a near-constant window (TASK-214.46);
+  the strict-rule findings of TASK-214.33 and TASK-214.17.
 - Nothing is published to CRAN, and `origin/master` is the old published
   tree (about 1,300 commits behind). The backup branch `origin/cpp-core`
-  mirrors master; pushed on 2026-11-15 at Jonas's request.
+  mirrors master; pushed by Claude after each validated batch (allowed by Jonas, 2026-11-20).
 
 ## Decisions for Jonas
 
