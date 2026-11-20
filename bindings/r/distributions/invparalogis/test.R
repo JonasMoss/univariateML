@@ -2,7 +2,7 @@ test_that("invparalogis matches a multistart density oracle", {
   skip_unless_tier("full")
   set.seed(871)
   x <- rinvparalogis(n = 300, shape = 1.3, scale = 2.7)
-  fit <- mlinvparalogis(x, gradtol=1e-10, iterlim=1000)
+  fit <- mlinvparalogis(x, tol=1e-10, iterlim=1000)
   objective <- function(p) -sum(dinvparalogis(x = x, shape = exp(p[1]), scale = exp(p[2]), log = TRUE))
   oracles <- lapply(c(.4,1,3), function(s) optim(rep(log(s), 2), objective, method="L-BFGS-B", lower=c(-5,-5), upper=c(5,5), control=list(factr=1e4,maxit=2000)))
   oracle <- oracles[[which.min(vapply(oracles, function(o) o$value, 0.0))]]
@@ -109,7 +109,7 @@ test_that("P2 invparalogis validates new held values", {
 test_that("invparalogis: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "invparalogis", "golden.json"))
   x <- g$data
-  expect_error(mlinvparalogis(x, iterlim=1, gradtol=1e-10),
+  expect_error(mlinvparalogis(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -120,7 +120,7 @@ test_that("invparalogis: P3 held profile exhaustion stops", {
 
 test_that("invparalogis: certification stops carry structured witnesses", {
   x <- c(.03,.1,.4,.7,1,2,4,12)
-  e <- tryCatch(mlinvparalogis(x,iterlim=1,gradtol=1e-10),error=identity)
+  e <- tryCatch(mlinvparalogis(x,iterlim=1,tol=1e-10),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_identical(e$kind,"numerical")
   expect_true(nrow(e$candidates)>=1)
@@ -153,14 +153,14 @@ test_that("invparalogis held-scale competing mode preserves the Jacobian", {
 })
 
 test_that("invparalogis delegate follow-up preserves the accepted fit", {
-  f <- mlinvparalogis(1/c(.9998,.9999,1,1.0001,1.0003),gradtol=1e-8,iterlim=1000)
+  f <- mlinvparalogis(1/c(.9998,.9999,1,1.0001,1.0003),tol=1e-8,iterlim=1000)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
 
 test_that("inverse paralogistic reciprocal overflow stays numerical", {
   for(tol in c(1e-10,1e-20)) {
-    e <- tryCatch(mlinvparalogis(c(1e308,1.1e308,1.2e308),shape=.5,gradtol=tol,iterlim=200),error=identity)
+    e <- tryCatch(mlinvparalogis(c(1e308,1.1e308,1.2e308),shape=.5,tol=tol,iterlim=200),error=identity)
     expect_s3_class(e,"univariateML_numerical")
     expect_identical(e$kind,"numerical")
     if("scale" %in% names(e$candidates))expect_true(all(is.finite(e$candidates$scale)))

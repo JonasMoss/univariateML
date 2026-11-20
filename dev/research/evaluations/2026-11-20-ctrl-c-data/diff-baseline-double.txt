@@ -1,0 +1,51 @@
+differs ('betapr', '000166', '{}') ['limit_estimates', 'candidates']
+differs ('betapr', '000167', '{}') ['limit_estimates', 'candidates']
+differs ('betapr', '000168', '{}') ['candidates']
+differs ('betapr', '000169', '{}') ['limit_estimates', 'candidates']
+differs ('betapr', '000170', '{}') ['candidates']
+differs ('betapr', '000177', '{}') ['logLik', 'iterations', 'estimates']
+differs ('betapr', '000178', '{}') ['iterations', 'estimates']
+differs ('betapr', '000179', '{}') ['logLik', 'iterations', 'estimates']
+differs ('betapr', '000180', '{}') ['iterations', 'estimates']
+differs ('betapr', '000181', '{}') ['limit_estimates', 'candidates']
+differs ('betapr', '000182', '{}') ['limit_estimates', 'candidates']
+differs ('betapr', '000183', '{}') ['candidates']
+differs ('betapr', '000185', '{"shape1": 2.014271442794272}') ['logLik', 'estimates']
+differs ('betapr', '000196', '{"shape1": 2.014271442794272}') ['logLik', 'estimates']
+differs ('betapr', '000197', '{"shape1": 2.014271442794272}') ['logLik', 'estimates']
+differs ('betapr', '000198', '{"shape1": 2.014271442794272}') ['logLik', 'estimates']
+differs ('betapr', '000199', '{"shape1": 2.014271442794272}') ['logLik', 'estimates']
+differs ('betapr', '000200', '{"shape1": 2.014271442794272}') ['estimates']
+differs ('betapr', '000201', '{"shape1": 2.014271442794272}') ['estimates']
+differs ('betapr', '000202', '{"shape1": 2.014271442794272}') ['logLik', 'estimates']
+differs ('betapr', '000204', '{"shape2": 3.2600098684669976}') ['logLik', 'estimates']
+differs ('betapr', '000215', '{"shape2": 3.2600098684669976}') ['logLik', 'estimates']
+differs ('betapr', '000216', '{"shape2": 3.2600098684669976}') ['estimates']
+differs ('betapr', '000217', '{"shape2": 3.2600098684669976}') ['logLik', 'estimates']
+differs ('betapr', '000218', '{"shape2": 3.2600098684669976}') ['estimates']
+differs ('betapr', '000219', '{"shape2": 3.2600098684669976}') ['logLik', 'estimates']
+differs ('betapr', '000220', '{"shape2": 3.2600098684669976}') ['logLik', 'estimates']
+differs ('betapr', '000221', '{"shape2": 3.2600098684669976}') ['estimates']
+differs ('betapr', '009404', '{}') ['limit_estimates', 'candidates']
+differs ('betapr', '009406', '{"shape2": 3.2600098684669976}') ['logLik', 'estimates']
+differs ('betapr', '009413', '{"shape1": 2.014271442794272}') ['logLik', 'estimates']
+differs ('betapr', '009414', '{"shape2": 3.2600098684669976}') ['logLik', 'estimates']
+differs ('betapr', '009866', '{"shape2": 3.2600098684669976}') ['logLik', 'estimates']
+differs ('betapr', '009873', '{"shape1": 2.014271442794272}') ['logLik', 'estimates']
+differs ('betapr', '009874', '{"shape2": 3.2600098684669976}') ['logLik', 'estimates']
+differs ('betapr', 'golden', '{}') ['logLik', 'estimates']
+differs ('betapr', 'base6', '{}') ['limit_estimates', 'candidates']
+differs ('betapr', 'two', '{}') ['limit_estimates', 'candidates']
+differs ('betapr', 'ties', '{}') ['logLik', 'iterations', 'estimates']
+differs ('betapr', 'half-ties', '{}') ['candidates']
+only in baseline ('bbinom', '000000', '{"size": 10.0}')
+only in baseline ('bbinom', '000001', '{"size": 10.0}')
+only in baseline ('bbinom', '000002', '{"size": 10.0}')
+only in baseline ('bbinom', '000003', '{"size": 10.0}')
+only in baseline ('bbinom', '000004', '{"size": 10.0}')
+only in baseline ('bbinom', '000005', '{"size": 10.0}')
+only in baseline ('bbinom', '000006', '{"size": 10.0}')
+only in baseline ('bbinom', '000007', '{"size": 10.0}')
+only in baseline ('bbinom', '000008', '{"size": 10.0}')
+only in baseline ('bbinom', '000009', '{"size": 10.0}')
+double cases 3361 differing 234 only-new 0 only-old 8544

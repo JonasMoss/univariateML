@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/genbeta/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_genbeta(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held shape3_arg = {}, Held scale_arg = {}, double gradtol = 1e-10, int iterlim = 300) {
+inline FitResult fit_genbeta(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held shape3_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 300) {
 
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
@@ -11,8 +11,8 @@ inline FitResult fit_genbeta(cppunivariate::span x, Held shape1_arg = {}, Held s
   const Held shape3 = shape3_arg;
   const double scale = scale_arg.supplied?scale_arg.value:NAN;
 
-  if(!(gradtol>0)||!std::isfinite(gradtol)||iterlim<1)
-    return invalid_argument(fail("`gradtol` must be positive and finite and `iterlim` must be positive."));
+  if(!(tol>0)||!std::isfinite(tol)||iterlim<1)
+    return invalid_argument(fail("`tol` must be positive and finite and `iterlim` must be positive."));
   std::vector<std::string> fixed;
     double checked_value_0 = std::numeric_limits<double>::quiet_NaN();
   if (shape1.supplied) {
@@ -47,7 +47,7 @@ const std::string name = "shape3";
 
   const double a=checked_value_0,b=checked_value_1,t=checked_value_2;
   fixed.push_back("scale");
-  const auto r=cppunivariate::genbeta_mle(x,scale,gradtol,iterlim,a,b,t);
+  const auto r=cppunivariate::genbeta_mle(x,scale,tol,iterlim,a,b,t);
   if(r.product_ridge)fixed.insert(fixed.end()-1,"shape3");
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {

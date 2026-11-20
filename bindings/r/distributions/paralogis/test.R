@@ -24,10 +24,10 @@ for (x in list(small_data, medium_data)) {
 ## Both parameters are estimated (univariateML 1.x held the scale at 1).
 expect_equal(names(coef(mlparalogis(small_data))), c("shape", "scale"))
 
-## Control arguments: shape0, gradtol, iterlim.
-fit_start <- mlparalogis(medium_data, shape0 = 2, gradtol = 1e-8)
-expect_equal(attr(fit_start, "logLik"), attr(mlparalogis(medium_data, gradtol = 1e-8), "logLik"), tolerance = 1e-9)
-expect_error(mlparalogis(medium_data, shape0 = 0), "`shape0` must be a positive finite number")
+## Control arguments: tol, iterlim.
+fit_start <- mlparalogis(medium_data, tol = 1e-12)
+expect_equal(attr(fit_start, "logLik"), attr(mlparalogis(medium_data, tol = 1e-8), "logLik"), tolerance = 1e-9)
+expect_error(mlparalogis(medium_data, shape0 = 0), "`mlparalogis` has no argument `shape0`")
 
 ## Input checks.
 expect_error(mlparalogis(c(small_data, NA)))
@@ -144,7 +144,7 @@ test_that("P2 paralogis validates new held values", {
 test_that("paralogis: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "paralogis", "golden.json"))
   x <- g$data
-  expect_error(mlparalogis(x, iterlim=1, gradtol=1e-10),
+  expect_error(mlparalogis(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -155,7 +155,7 @@ test_that("paralogis: P3 held profile exhaustion stops", {
 
 test_that("paralogis: certification stops carry structured witnesses", {
   x <- c(.03,.1,.4,.7,1,2,4,12)
-  e <- tryCatch(mlparalogis(x,iterlim=1,gradtol=1e-10),error=identity)
+  e <- tryCatch(mlparalogis(x,iterlim=1,tol=1e-10),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_identical(e$kind,"numerical")
   expect_true(nrow(e$candidates)>=1)
@@ -175,14 +175,14 @@ test_that("paralogis held-scale competing mode is globally certified", {
 
 test_that("paralogis returns the root-inclusion fallback flag", {
   x <- c(.9998,.9999,1,1.0001,1.0003)
-  f <- mlparalogis(x,gradtol=1e-8,iterlim=1000)
+  f <- mlparalogis(x,tol=1e-8,iterlim=1000)
   expect_identical(attr(f,"certified"),FALSE)
   expect_equal(as.numeric(logLik(f)),sum(dparalogis(x,f[1],f[2],log=TRUE)),tolerance=1e-8)
 })
 
 test_that("held-scale paralogis retains its scalar search when inclusion fails", {
   for(x in c(.99999999999999,.999999999999999)) {
-    f <- mlparalogis(x,scale=1,gradtol=1e-8,iterlim=1000)
+    f <- mlparalogis(x,scale=1,tol=1e-8,iterlim=1000)
     expect_identical(attr(f,"certified"),FALSE)
     expect_identical(unname(f["scale"]),1)
     expect_true(is.finite(as.numeric(logLik(f))))

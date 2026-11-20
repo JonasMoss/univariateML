@@ -149,12 +149,9 @@ inline StopDetail invburr_stop_detail(StopDetail detail,double jacobian,double e
   detail.limit_loglik+=jacobian;
   return detail;
 }
-inline InvBurrResult invburr_mle(span x, double tol, int maxit,
-    double shape10 = std::numeric_limits<double>::quiet_NaN(),
-    double shape20 = std::numeric_limits<double>::quiet_NaN(),
-    double scale0 = std::numeric_limits<double>::quiet_NaN(), double reltol = 1e-12) {
+inline InvBurrResult invburr_mle(span x, double tol=1e-10, int maxit=1000) {
   if(tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() && std::isfinite(x[0]) && x[0]>0 &&
-      (true) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
+      std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
     return {NAN,NAN,NAN,NAN,0,InvBurrStatus::Unbounded};
 
   maxit = static_cast<int>(solver_budget(maxit));
@@ -193,10 +190,8 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
         return {nan,nan,nan,nan,0,InvBurrStatus::NumericalFailure};
       }
   }
-  auto r = reflect ? burr_mle_certified(x,tol,maxit,
-    shape10,shape20,std::isnan(scale0) ? scale0 : 1.0/scale0,reltol,-1,true)
-    : burr_mle_certified(span{reciprocal.data(),reciprocal.size()},tol,maxit,
-    shape10,shape20,std::isnan(scale0) ? scale0 : 1.0/scale0,reltol);
+  auto r = reflect ? burr_mle_certified(x,tol,maxit,-1,true)
+    : burr_mle_certified(span{reciprocal.data(),reciprocal.size()},tol,maxit);
   InvBurrStatus status = InvBurrStatus::Ok;
   if (r.status == BurrStatus::WeibullBoundary) status = InvBurrStatus::InvWeibullBoundary;
   if (r.status == BurrStatus::Unbounded) status = InvBurrStatus::Unbounded;
@@ -247,7 +242,7 @@ inline InvBurrResult invburr_mle(span x, double tol, int maxit,
 inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol,int maxit);
 // Share the certified reciprocal path with the held-parameter dispatcher.
 inline InvBurrResult invburr_mle_fixed_scale(span x, double scale,
-    double tol = 1.220703e-4, int maxit = 1000) {
+    double tol = 1e-10, int maxit = 1000) {
   maxit = static_cast<int>(solver_budget(maxit));
   if(!(scale>0)||!std::isfinite(scale))
     return {NAN,NAN,scale,NAN,0,InvBurrStatus::InvalidInit};
@@ -257,7 +252,7 @@ inline InvBurrResult invburr_mle_fixed_scale(span x, double scale,
 
 namespace cppunivariate {
 
-inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol=1e-9,int maxit=1000){
+inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double tol=1e-10,int maxit=1000){
   maxit = static_cast<int>(solver_budget(maxit));
  if(std::isfinite(a) && a>0) {
    const auto r=transformed_detail::location_fit(x,b,s,a,false,-1,tol,maxit);
@@ -272,6 +267,22 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
  }
  if(std::isnan(a)&&std::isnan(b)&&std::isnan(s))
    return invburr_mle(x,tol,maxit);
+ const bool scale_only=std::isnan(a)&&std::isnan(b)&&!std::isnan(s);
+ if(scale_only) {
+   // Work at the original held scale to avoid rounding reciprocals before
+   // checking the signed profile bracket and the coefficient enclosure.
+   const auto root=burr_cert_detail::scale_fit(x,s,tol,maxit,true);
+   if(root.outcome==burr_cert_detail::Outcome::Finite)
+     return {root.k,root.c,s,root.logLik,root.profiles,InvBurrStatus::Ok,root.stop_detail};
+   if(root.outcome==burr_cert_detail::Outcome::Unbounded)
+     return {NAN,NAN,s,INFINITY,0,InvBurrStatus::Unbounded,root.stop_detail};
+   if(root.outcome==burr_cert_detail::Outcome::Pareto) {
+     auto detail=root.stop_detail;
+     detail.limit_coef={s,detail.limit_coef[0]};detail.limit_model=StopModel::Power;
+     detail.candidates[0].coef=detail.limit_coef;detail.candidates[0].model=StopModel::Power;
+     return {NAN,NAN,s,detail.limit_loglik,root.profiles,InvBurrStatus::AllLeOne,detail};
+   }
+ }
  std::vector<double> y;double jac=0;
  for(double v:x){
    if(!(v>0)||!std::isfinite(v))return {NAN,NAN,s,NAN,0,InvBurrStatus::InvalidInit};
@@ -304,35 +315,9 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
  InvBurrResult out{r.shape1,r.shape2,std::isnan(s)?1/r.scale:s,r.logLik+jac,r.iterations,st};
  out.certified=r.certified;
  out.stop_detail=invburr_stop_detail(r.stop_detail,jac,std::isnan(s)?NAN:s);
- // The reciprocal certificate establishes the unique held-scale maximum;
- // refine its scalar score using raw log ratios, without preserving the
- // historical proposal's looser coefficient tolerance. Each scale-point
- // evaluation is metered as a certificate evaluation, as in its parent.
- if(st==InvBurrStatus::Ok && std::isnan(a) && std::isnan(b) && !std::isnan(s)) {
-   std::vector<double> logs;double unit=0;
-   for(double v:x){const double l=-transformed_detail::log_ratio(v,s);logs.push_back(l);unit=std::max(unit,std::abs(l));}
-   if(unit>0) {
-     for(double& l:logs)l/=unit;
-     const double z=transformed_detail::root([&](double t){const double power=std::exp(t);
-       return power*burr_cert_detail::scale_point(logs,power).score;
-     },tol,static_cast<int>(certificate_budget(maxit)));
-     const double power=std::exp(z);const auto point=burr_cert_detail::scale_point(logs,power);
-     const double k=x.size()/point.g,c=power/unit;
-     if(std::isfinite(k) && std::isfinite(c)) {
-       out.shape1=k;out.shape2=c;
-     } else out.certified=false;
-   }
-   // A failed precision refinement does not invalidate a successful search.
-   // Retain its coefficients explicitly uncertified and evaluate their raw
-   // likelihood, rather than inheriting a rounded reciprocal likelihood.
-   transformed_detail::Sum ll;
-   for(double v:x){const double u=-out.shape2*transformed_detail::log_ratio(v,s);
-     ll.push(std::log(out.shape1)+std::log(out.shape2)-std::log(v)-transformed_detail::softplus(-u)-out.shape1*transformed_detail::softplus(u));}
-   out.logLik=ll.get();
-   if(!std::isfinite(out.logLik))return {NAN,NAN,s,NAN,r.iterations,InvBurrStatus::NumericalFailure};
-   out.stop_detail.loglik_lower=std::min(out.stop_detail.loglik_lower,out.logLik);
-   out.stop_detail.loglik_upper=std::max(out.stop_detail.loglik_upper,out.logLik);
- }
+ // A solve on rounded reciprocals is only a proposal when the signed
+ // bracket on the original data did not meet the requested accuracy.
+ if(scale_only)out.certified=false;
  if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{std::isnan(a),std::isnan(b),std::isnan(s)}},tol,maxit,true,0,out.stop_detail)){out.status=InvBurrStatus::NumericalFailure;record_accuracy(out,tol,{out.shape1,out.shape2,out.scale},{std::isnan(a)?out.shape1:0,std::isnan(b)?out.shape2:0,std::isnan(s)?out.scale:0});}
  if(out.status==InvBurrStatus::Ok&&!out.certified){out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,true);if(!std::isfinite(out.logLik))out.status=InvBurrStatus::NumericalFailure;}
  if(!std::isnan(s))for(auto& candidate:out.stop_detail.candidates)

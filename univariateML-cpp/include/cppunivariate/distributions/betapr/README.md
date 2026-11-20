@@ -32,12 +32,7 @@ r:
   control:
     shape1: Held positive finite coefficient; NULL estimates it.
     shape2: Held positive finite coefficient; NULL estimates it.
-    gradtol: "All-free requested relative coefficient accuracy, capped at 1e-6, and proposal score tolerance. Fixed-scale and non-unit held-shape certificates retain their documented accuracy bounds."
-    reltol: Relative objective tolerance for proposals.
-    abstol: Proposal step tolerance in log coordinates after geometric-mean normalization.
-    shape10: Optional positive starting value for shape1 (zero selects automatic starts).
-    shape20: Optional positive starting value for shape2 (zero selects automatic starts).
-    scale0: Optional positive starting value for scale (zero selects automatic starts).
+    tol: Requested relative accuracy of every free coefficient.
     iterlim: "Default 2000. Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: (shape1-1)*log(x/scale) - log(scale) - (shape1+shape2)*log(1+x/scale) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 limits:
@@ -526,8 +521,9 @@ and every eigenvalue of $C_0H$ is positive. The same contraction gives
 componentwise coefficient bounds: with $R=|I-C_0H(C)|$ and
 $d=|C_0g(m)|$, an explicitly checked vector $e>d+Re$ encloses the root.
 Monotone scale roots at the shape-box corners enclose its scale.
-A certified finite success requires relative error at most
-$\min(\texttt{tol},10^{-6})$ in $p,q,b$, including scale reconstruction.
+When these boxes are wider than `tol`, an observed-information Newton
+correction checks the coefficients at the enclosed maximum. The correction
+uses the original observations and must stay inside the winning box.
 The full cell can then be assigned to this unique maximum; neighboring
 cells remain covered independently.
 

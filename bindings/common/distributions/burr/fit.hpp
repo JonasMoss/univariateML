@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/burr/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double gradtol = 1e-8, int iterlim = 1000, Held shape10 = {}, Held shape20 = {}, Held scale0 = {}, double reltol = 1e-12, double abstol = 1.220703e-4) {
+inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 1000) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held shape1 = shape1_arg;
@@ -17,10 +17,9 @@ inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shap
    return v.supplied ? v.value : NAN;
  };
  auto res = (shape1.supplied || shape2.supplied) ?
- cppunivariate::burr_mle_holds(x,start(shape1),start(shape2),start(scale),gradtol,iterlim) : scale.supplied ?
- cppunivariate::burr_mle_fixed_scale(x,start(scale),abstol,iterlim) :
- cppunivariate::burr_mle(x,gradtol,iterlim,
- start(shape10),start(shape20),start(scale0),reltol);
+ cppunivariate::burr_mle_holds(x,start(shape1),start(shape2),start(scale),tol,iterlim) : scale.supplied ?
+ cppunivariate::burr_mle_fixed_scale(x,start(scale),tol,iterlim) :
+ cppunivariate::burr_mle(x,tol,iterlim);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"scale",scale_arg.supplied}});
@@ -34,7 +33,7 @@ inline FitResult fit_burr(cppunivariate::span x, Held shape1_arg = {}, Held shap
  if (res.status == cppunivariate::BurrStatus::NumericalFailure) return done(stop_failure(fail("Burr global certificate numerical failure (domain, bracket, nonfinite arithmetic or linear solve); no verified MLE."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
  if (res.status == cppunivariate::BurrStatus::IterationFailure) return done(stop_failure(fail("Constrained likelihood search failed to converge."),res.stop_detail,outcome_payload(o),{"shape1","shape2","scale"},""));
  if (res.status == cppunivariate::BurrStatus::InvalidInit)
- return done(fail("burr MLE requires positive finite nonconstant data and positive starts and a positive finite fixed scale"));
+ return done(fail("burr MLE requires positive finite nonconstant data and a positive finite fixed scale"));
  std::vector<std::string> fixed;
  if(shape1.supplied) fixed.push_back("shape1");
  if(shape2.supplied) fixed.push_back("shape2");

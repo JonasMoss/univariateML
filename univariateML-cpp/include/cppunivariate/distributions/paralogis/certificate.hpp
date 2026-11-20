@@ -101,8 +101,8 @@ inline bool derivatives(const Data& data,
   return a.lo>0&&ll.valid()&&g[0].valid()&&g[1].valid()
     &&h.a[0][0].valid()&&h.a[0][1].valid()&&h.a[1][1].valid();
 }
-struct Result {bool ok=false,budget=false;int boxes=0;double shape=NAN,scale=NAN,logLik=NAN;};
-inline Result certify(span x,double a,double scale,bool fixed,std::int64_t budget=-1,int maxit=100) {
+struct Result {bool ok=false,budget=false,accurate=false;int boxes=0;double shape=NAN,scale=NAN,logLik=NAN;};
+inline Result certify(span x,double a,double scale,bool fixed,std::int64_t budget=-1,int maxit=100,double tol=1e-10) {
   maxit = static_cast<int>(solver_budget(maxit));
   if(budget<0)budget=certificate_budget(maxit);
   Result out;
@@ -143,15 +143,17 @@ inline Result certify(span x,double a,double scale,bool fixed,std::int64_t budge
   for(int i=0;i<dim;++i)for(int j=0;j<dim;++j)hn.a[i][j]=(hc.a[i][j].lo+hc.a[i][j].hi)/2;
   if(!burr_cert_detail::inverse(hn,R,dim))return out;
   for(auto& row:R.a)for(double& v:row)v=-v;
-  // Root radii imply relative shape error <=1e-8 and relative scale
-  // error <=~2e-8. Ambiguous arithmetic stops, never enlarges this target.
-  const std::array<double,3> radii{{1e-8*a,1e-8*a,0}};
-  const auto ab=burr_cert_detail::padded(a-radii[0],a+radii[0]);
-  const auto bb=fixed?burr_cert_detail::Interval(0):burr_cert_detail::padded(b-radii[1],b+radii[1]);
-  if(!derivatives(data,ab,bb,g,hb,ll)||
-      !burr_cert_detail::contraction(R,gc,hb,radii,dim,0))return out;
-  const auto sb=burr_cert_detail::exp(center-bb/ab);
-  if(!fixed&&(!sb.valid()||sb.lo<=0||(sb.hi-sb.lo)/sb.lo>1e-6))return out;
+  const auto encloses=[&](double radius,double width) {
+    const std::array<double,3> radii{{radius,radius,0}};
+    const auto ab=burr_cert_detail::padded(a-radius,a+radius);
+    const auto bb=fixed?burr_cert_detail::Interval(0):burr_cert_detail::padded(b-radius,b+radius);
+    if(!(radius>0)||!derivatives(data,ab,bb,g,hb,ll)||
+        !burr_cert_detail::contraction(R,gc,hb,radii,dim,0))return false;
+    const auto sb=burr_cert_detail::exp(center-bb/ab);
+    return fixed||(sb.valid()&&sb.lo>0&&(sb.hi-sb.lo)/sb.lo<=width);
+  };
+  out.accurate=encloses(std::min(tol/8,1e-8)*a,tol);
+  if(!out.accurate&&!encloses(1e-8*a,1e-6))return out;
   out.shape=a;out.scale=fixed?scale:std::exp(center-b/a);
   // Direct stable evaluation at the certified center (not a bound).
   out.logLik=2*x.size()*std::log(a)+jac;

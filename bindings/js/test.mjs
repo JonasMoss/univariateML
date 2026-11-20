@@ -118,7 +118,7 @@ test('diagnostics and vector flags',()=>{
  assert.throws(()=>m.fitgb2(new Float64Array([1,1]),{},{}),/GB2 likelihood is unbounded for constant positive data/);
  assert.throws(()=>m.fitgb2(new Float64Array([0,1]),{},{}),/GB2 requires positive finite nonconstant observations/);
  assert.throws(()=>m.fitgamma(new Float64Array([]),{},{}),/^Error: Gamma MLE failed$/);
- assert.throws(()=>m.fitgb2(new Float64Array(read('gb2','golden').data),{},{gradtol:1e-8,iterlim:1}),/GB2 certified delegate budget stop; no verified maximum/);
+ assert.throws(()=>m.fitgb2(new Float64Array(read('gb2','golden').data),{},{tol:1e-8,iterlim:1}),/GB2 certified delegate budget stop; no verified maximum/);
  for(const f of ['exp','gamma','gb2']) {const g=read(f,'golden'),name=Object.keys(g.estimates)[0];assert.throws(()=>m['fit'+f](new Float64Array(g.data),{[name]:NaN},{}),/must be.*positive.*finite/);}
  for(const f of ['exp','gamma','gb2']){const p=Object.values(read(f,'golden').estimates),x=new Float64Array([.2,1,2]);for(const op of ['d','p','q'])for(const lower of [true,false])for(const log of [true,false]){const a=m[op+f](x,p,lower,log);assert.equal(a.length,3);for(let i=0;i<3;i++)assert.equal(a[i],m[op+f](x.slice(i,i+1),p,lower,log)[0]);}}
 });
@@ -780,7 +780,7 @@ test('genbeta held p one shares the Kumaraswamy certificate and stop transport',
   const k = api.kumar.fit(new Float64Array(u),{},{iterlim:1});
   const g = api.genbeta.fit(new Float64Array(u),{scale:1,shape1:1},{iterlim:1});
   assert.ok(Math.abs(g.estimates.shape3/k.estimates.a-1)<1e-6);
-  assert.throws(()=>api.genbeta.fit(new Float64Array(u),{scale:1,shape1:2,shape2:.7},{gradtol:1e-20}),e=>{
+  assert.throws(()=>api.genbeta.fit(new Float64Array(u),{scale:1,shape1:2,shape2:.7},{tol:1e-20}),e=>{
     assert.equal(e.kind,'numerical');assert.equal(e.candidates.length,1);
     assert.equal(e.loglik_upper,Infinity);return true;
   });
@@ -1885,8 +1885,8 @@ test('transformed profiles retain finite ulp-wide fits with explicit uncertified
   const y=Float64Array.from([0,1,2,4,7],v=>1+v*Number.EPSILON);
   const fits=[api.invweibull.fit(x),api.frechet.fit(x,{mu:0}),
     api.llogis.fit(y,{}, {tol:1e-10}),api.pareto3.fit(y,{min:0}),
-    api.invburr.fit(x,{shape1:.855},{gradtol:1e-10}),
-    api.gb2.fit(x,{shape1:1,shape3:.855},{gradtol:1e-10}),
+    api.invburr.fit(x,{shape1:.855},{tol:1e-10}),
+    api.gb2.fit(x,{shape1:1,shape3:.855},{tol:1e-10}),
     api.fpareto.fit(x,{min:0,shape1:1,shape3:.855},{tol:1e-10})];
   for(const fit of fits){assert.equal(fit.status,'Ok');assert.equal(fit.certified,false);assert.ok(Number.isFinite(fit.logLik));}
 });
@@ -1916,7 +1916,7 @@ test('genbeta all-free finite certificate preserves the golden and never certifi
     assert.ok(Math.abs(f.estimates[key]/g.estimates[key]-1)<1e-5);
   assert.ok(Math.abs(f.logLik-g.logLik)<1e-8);
   try {
-    const tight=api.genbeta.fit(x,{scale:1},{gradtol:1e-20});
+    const tight=api.genbeta.fit(x,{scale:1},{tol:1e-20});
     assert.equal(tight.certified,false);
     for(const key of ['shape1','shape2','shape3'])
       assert.ok(Math.abs(tight.estimates[key]/g.estimates[key]-1)<1e-5);

@@ -65,10 +65,10 @@ test_that("invburr accepts shape/scale starts and rejects invalid starts", {
   set.seed(1)
   x <- rinvburr(n = 200, shape1 = 1, shape2 = 2, scale = 3)
   a <- mlinvburr(x)
-  b <- mlinvburr(x,shape10=.5,shape20=3,scale0=2,gradtol=1e-8,reltol=1e-12,iterlim=1000)
+  b <- mlinvburr(x,tol=1e-12,iterlim=1000)
   expect_equal(attr(a,"logLik"),attr(b,"logLik"),tolerance=1e-8)
-  expect_error(mlinvburr(x,shape10=-1),"positive")
-  expect_error(mlinvburr(x,shape20=0),"positive")
+  expect_error(mlinvburr(x,shape10=-1),"`mlinvburr` has no argument `shape10`")
+  expect_error(mlinvburr(x,shape20=0),"`mlinvburr` has no argument `shape20`")
 })
 
 test_that("invburr fixed scale reproduces 6c89a8c and a reference oracle", {
@@ -100,7 +100,7 @@ test_that("invburr fixed scale reproduces 6c89a8c and a reference oracle", {
 
 test_that("invburr fixed scale uses a profile fallback when moments have no root", {
   x <- 1/c(.5,2,3,4,5)
-  z <- mlinvburr(x,scale=1,abstol=1e-10)
+  z <- mlinvburr(x,scale=1,tol=1e-10)
   nll <- function(t) -sum(dinvburr(x = x, shape1 = exp(t[1]), shape2 = exp(t[2]), scale = 1, log = TRUE))
   oracle <- optim(log(c(.7,1.5)),nll,method="BFGS",control=list(reltol=1e-13,maxit=2000))
   expect_equal(as.numeric(z[1:2]),exp(oracle$par),tolerance=1e-5)
@@ -184,7 +184,7 @@ test_that("P2 invburr validates new held values", {
 test_that("invburr: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "invburr", "golden.json"))
   x <- g$data
-  expect_error(mlinvburr(x, iterlim=1, gradtol=1e-10),
+  expect_error(mlinvburr(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -303,8 +303,8 @@ test_that("held-power inverse Burr limit carries the reciprocal face", {
 
 test_that("held-scale inverse Burr transports scalar certificates and budgets", {
   x <- c(.1,.2,.4,.8)
-  a <- mlinvburr(1/x,scale=1,abstol=1e-10)
-  b <- mlburr(x,scale=1,abstol=1e-10)
+  a <- mlinvburr(1/x,scale=1,tol=1e-10)
+  b <- mlburr(x,scale=1,tol=1e-10)
   expect_equal(as.numeric(a),as.numeric(b),tolerance=1e-10)
   e <- mlinvburr(1/x,scale=1,iterlim=1)
   expect_s3_class(e,"univariateML")
@@ -314,7 +314,7 @@ test_that("held-scale inverse Burr transports scalar certificates and budgets", 
 # Independent 180/360-digit raw-model references: TASK-101.7.5 evidence.
 test_that("raw transform audit case 10483", {
   x <- c(0.999999999998, 0.999999999999, 1.0, 1.000000000001, 1.000000000003)
-  fit <- mlinvburr(x, shape1 = 0.855256299891619, abstol = 1e-10, iterlim = 200)
+  fit <- mlinvburr(x, shape1 = 0.855256299891619, tol = 1e-10, iterlim = 200)
   expect_lte(abs(unname(fit["shape1"]) / (0.855256299891619) - 1), 1e-10)
   expect_lte(abs(unname(fit["shape2"]) / (1019651840251.4617) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.0000000000003357) - 1), 1e-10)
@@ -322,7 +322,7 @@ test_that("raw transform audit case 10483", {
 })
 test_that("raw transform audit case 3588", {
   x <- c(1.121092244780946, 1.121092244782067, 1.1210922447831881, 1.1210922447843092, 1.1210922447865515)
-  fit <- mlinvburr(x, shape1 = 0.855256299891619, abstol = 1e-10, iterlim = 200)
+  fit <- mlinvburr(x, shape1 = 0.855256299891619, tol = 1e-10, iterlim = 200)
   expect_lte(abs(unname(fit["shape1"]) / (0.855256299891619) - 1), 1e-10)
   expect_lte(abs(unname(fit["shape2"]) / (1019650101014.3536) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.1210922447835645) - 1), 1e-10)
@@ -330,7 +330,7 @@ test_that("raw transform audit case 3588", {
 })
 test_that("raw transform audit case 3591", {
   x <- c(1.121092244780946, 1.121092244782067, 1.1210922447831881, 1.1210922447843092, 1.1210922447865515)
-  fit <- mlinvburr(x, shape1 = 0.855256299891619, abstol = 1e-10, iterlim = 200)
+  fit <- mlinvburr(x, shape1 = 0.855256299891619, tol = 1e-10, iterlim = 200)
   expect_lte(abs(unname(fit["shape1"]) / (0.855256299891619) - 1), 1e-10)
   expect_lte(abs(unname(fit["shape2"]) / (1019650101014.3536) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.1210922447835645) - 1), 1e-10)
@@ -338,7 +338,7 @@ test_that("raw transform audit case 3591", {
 })
 test_that("raw transform audit case 9432", {
   x <- c(4.846798306840522, 2.735667524057006, 2.067740730246208, 1.7014389169215507, 1.4569306990828055, 1.2751660686582076, 1.1299545222466922, 1.0072505256326596, 0.8981113115208634, 0.7953098508697711, 0.6898664186040794, 0.5564930042509462)
-  fit <- mlinvburr(x, scale = 1.1483262751193506, abstol = 1e-10, iterlim = 200)
+  fit <- mlinvburr(x, scale = 1.1483262751193506, tol = 1e-10, iterlim = 200)
   expect_lte(abs(unname(fit["shape1"]) / (1.2800549077110803) - 1), 1e-10)
   expect_lte(abs(unname(fit["shape2"]) / (2.804335379571106) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.1483262751193506) - 1), 1e-10)
@@ -346,7 +346,7 @@ test_that("raw transform audit case 9432", {
 })
 test_that("raw transform audit case 9892", {
   x <- c(4.847313995660762, 2.7365809305442856, 2.0689488347295812, 1.7029066370018815, 1.4586441119184907, 1.2771228967709176, 1.1321617468502887, 1.0097251843067736, 0.9008846541282619, 0.7984385932211183, 0.6934679855358582, 0.5609433843485362)
-  fit <- mlinvburr(x, scale = 1.1483262751193506, abstol = 1e-10, iterlim = 200)
+  fit <- mlinvburr(x, scale = 1.1483262751193506, tol = 1e-10, iterlim = 200)
   expect_lte(abs(unname(fit["shape1"]) / (1.2865485116424884) - 1), 1e-10)
   expect_lte(abs(unname(fit["shape2"]) / (2.812057492603485) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.1483262751193506) - 1), 1e-10)
@@ -354,7 +354,7 @@ test_that("raw transform audit case 9892", {
 })
 test_that("raw transform audit case 10482", {
   x <- c(0.99999998, 0.99999999, 1.0, 1.00000001, 1.00000003)
-  fit <- mlinvburr(x, shape1 = 0.855256299891619, abstol = 1e-10, iterlim = 200)
+  fit <- mlinvburr(x, shape1 = 0.855256299891619, tol = 1e-10, iterlim = 200)
   expect_lte(abs(unname(fit["shape1"]) / (0.855256299891619) - 1), 1e-10)
   expect_lte(abs(unname(fit["shape2"]) / (101966007.86014903) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.0000000033564398) - 1), 1e-10)
@@ -362,7 +362,7 @@ test_that("raw transform audit case 10482", {
 })
 test_that("raw transform audit case 3587", {
   x <- c(1.1210922223613433, 1.1210922335722657, 1.1210922447831881, 1.1210922559941106, 1.1210922784159554)
-  fit <- mlinvburr(x, shape1 = 0.855256299891619, abstol = 1e-10, iterlim = 200)
+  fit <- mlinvburr(x, shape1 = 0.855256299891619, tol = 1e-10, iterlim = 200)
   expect_lte(abs(unname(fit["shape1"]) / (0.855256299891619) - 1), 1e-10)
   expect_lte(abs(unname(fit["shape2"]) / (101966008.22632757) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.1210922485460666) - 1), 1e-10)
@@ -370,7 +370,7 @@ test_that("raw transform audit case 3587", {
 })
 test_that("raw transform audit case 3590", {
   x <- c(1.1210922223613433, 1.1210922335722657, 1.1210922447831881, 1.1210922559941106, 1.1210922784159554)
-  fit <- mlinvburr(x, shape1 = 0.855256299891619, abstol = 1e-10, iterlim = 200)
+  fit <- mlinvburr(x, shape1 = 0.855256299891619, tol = 1e-10, iterlim = 200)
   expect_lte(abs(unname(fit["shape1"]) / (0.855256299891619) - 1), 1e-10)
   expect_lte(abs(unname(fit["shape2"]) / (101966008.22632757) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.1210922485460666) - 1), 1e-10)
@@ -378,7 +378,7 @@ test_that("raw transform audit case 3590", {
 })
 test_that("raw transform audit case 3641", {
   x <- c(1.6311139990647936, 3.722402769857163, 0.49959572843217215, 0.6088765095016044, 2.419754129573806)
-  fit <- mlinvburr(x, scale = 1.1483262751193506, abstol = 1e-10, iterlim = 200)
+  fit <- mlinvburr(x, scale = 1.1483262751193506, tol = 1e-10, iterlim = 200)
   expect_lte(abs(unname(fit["shape1"]) / (1.2575779921548758) - 1), 1e-10)
   expect_lte(abs(unname(fit["shape2"]) / (1.9084982695889698) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.1483262751193506) - 1), 1e-10)
@@ -386,7 +386,7 @@ test_that("raw transform audit case 3641", {
 })
 test_that("raw transform audit case 3640", {
   x <- c(1.6311139990647936, 3.722402769857163, 0.49959572843217215)
-  fit <- mlinvburr(x, scale = 1.1483262751193506, abstol = 1e-10, iterlim = 200)
+  fit <- mlinvburr(x, scale = 1.1483262751193506, tol = 1e-10, iterlim = 200)
   expect_lte(abs(unname(fit["shape1"]) / (1.3462035118632834) - 1), 1e-10)
   expect_lte(abs(unname(fit["shape2"]) / (1.7734008129755383) - 1), 1e-10)
   expect_lte(abs(unname(fit["scale"]) / (1.1483262751193506) - 1), 1e-10)
@@ -405,13 +405,13 @@ test_that("invburr short certificate work preserves the joint search", {
   root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
   if(!nzchar(root)) root <- testthat::test_path("fixtures")
   g <- jsonlite::fromJSON(file.path(root,"invburr","golden.json"))
-  f <- mlinvburr(g$data,gradtol=1e-8,iterlim=16)
+  f <- mlinvburr(g$data,tol=1e-8,iterlim=16)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
 
 test_that("invburr retains an unclosed held-power face as uncertified", {
-  f <- mlinvburr(c(1,1,1,1,1/6.0001),shape2=1,gradtol=1e-14)
+  f <- mlinvburr(c(1,1,1,1,1/6.0001),shape2=1,tol=1e-14)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })

@@ -547,14 +547,14 @@ test('accuracy stops distinguish binary64 tolerance from conditioning', () => {
 });
 
 test('Pareto II reciprocal scale overflow remains numerical at tight tolerance', () => {
-  for(const reltol of [1e-10,1e-20])assert.throws(()=>api.pareto2.fit([1e308,1.1e308,1.2e308],{min:0,shape:100},{reltol,iterlim:200}),e=>{
+  for(const tol of [1e-10,1e-20])assert.throws(()=>api.pareto2.fit([1e308,1.1e308,1.2e308],{min:0,shape:100},{tol,iterlim:200}),e=>{
     assert.equal(e.kind,'numerical');assert.match(e.message,/scale cannot be represented/);
     assert.ok(e.candidates.every(c=>c.scale===undefined||Number.isFinite(c.scale)));return true;
   });
 });
 
 test('inverse paralogistic reciprocal overflow stays numerical', () => {
-  for(const gradtol of [1e-10,1e-20])assert.throws(()=>api.invparalogis.fit([1e308,1.1e308,1.2e308],{shape:.5},{gradtol,iterlim:200}),e=>{
+  for(const tol of [1e-10,1e-20])assert.throws(()=>api.invparalogis.fit([1e308,1.1e308,1.2e308],{shape:.5},{tol,iterlim:200}),e=>{
     assert.equal(e.kind,'numerical');
     assert.ok(e.candidates.every(c=>c.scale===undefined||Number.isFinite(c.scale)));return true;
   });

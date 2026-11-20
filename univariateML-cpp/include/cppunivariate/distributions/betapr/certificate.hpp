@@ -31,10 +31,10 @@ struct Segment {
 };
 inline BetaPrimeResult fit(span x,double a,double tol,int maxit) {
   maxit=static_cast<int>(solver_budget(maxit));
-  (void)tol;
+  const double width_target=1e-10;
   BetaPrimeResult out{a,NAN,NAN,NAN,0,BetaPrimeStatus::BfgsFailure};
   out.certificate_failure=LomaxCertificateFailure::Arithmetic;
-  if(x.empty()||!(a>0)||!std::isfinite(a))return out;
+  if(x.empty()||!(a>0)||!std::isfinite(a)||!(tol>0)||!std::isfinite(tol))return out;
   double mean=0,lm=0,xmin=INFINITY,xmax=0,second=0;
   bool constant=true;Sum logsum;
   for(double v:x) {
@@ -180,7 +180,7 @@ inline BetaPrimeResult fit(span x,double a,double tol,int maxit) {
       const Segment seg=queue.top();queue.pop();
       if(std::isfinite(seg.upper))out.stop_detail.segment_loglik_upper=n*(seg.upper-std::log(mean));
       if(seg.upper<std::max(face-face_error,best.ll-best.error))continue;
-      if(seg.r.b-seg.l.b<1e-10*seg.l.b && seg.r.s-seg.l.s<1e-10*seg.l.s) {
+      if(seg.r.b-seg.l.b<width_target*seg.l.b && seg.r.s-seg.l.s<width_target*seg.l.s) {
         global_upper=std::max(global_upper,seg.upper);
         const double witness=n*(seg.l.ll-std::log(mean));
         if(seg.l.s*mean>0 && std::isfinite(seg.l.s*mean))
@@ -206,6 +206,7 @@ inline BetaPrimeResult fit(span x,double a,double tol,int maxit) {
       out.certificate_failure=LomaxCertificateFailure::None;
       out.iterations=static_cast<int>(evaluations);return out;
     }
+    // All remaining stationary points must lie inside one coefficient enclosure. The caller checks local accuracy at tol.
     if(!retained.valid||!(possible_hi>=possible_lo)||possible_hi-possible_lo>1e-6*possible_lo||scale_hi-scale_lo>1e-6*scale_lo) {
       out.stop_detail.comparison_tie=true;goto stopped;
     }

@@ -144,7 +144,7 @@ test_that("P2 gb2 constant samples with coercive holds fit", {
 test_that("gb2: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "gb2", "golden.json"))
   x <- g$data
-  expect_error(mlgb2(x, iterlim=1, gradtol=1e-10),
+  expect_error(mlgb2(x, iterlim=1, tol=1e-10),
                "certified delegate budget stop")
 })
 
@@ -154,8 +154,8 @@ test_that("gb2: P3 held profile exhaustion stops", {
 
 test_that("GB2 held unit shape and scale inherit Burr scalar certificate", {
   x <- c(.1,.2,.4,.8)
-  a <- mlgb2(x,shape3=1,scale=1,gradtol=1e-10)
-  b <- mlburr(x,scale=1,abstol=1e-10)
+  a <- mlgb2(x,shape3=1,scale=1,tol=1e-10)
+  b <- mlburr(x,scale=1,tol=1e-10)
   expect_equal(as.numeric(a[c(1,2,4)]),as.numeric(b),tolerance=1e-10)
   e <- mlgb2(x,shape3=1,scale=1,iterlim=1)
   expect_s3_class(e,"univariateML")
@@ -237,13 +237,13 @@ test_that("held-scale free-power profiles are globally enclosed", {
 
 test_that("unit-shape inverse-Burr reduction preserves an uncertified restoration", {
   x <- 1 + (0:4) * .Machine$double.eps
-  fit <- mlgb2(x, shape1 = 1, shape3 = .855, gradtol = 1e-10)
+  fit <- mlgb2(x, shape1 = 1, shape3 = .855, tol = 1e-10)
   expect_false(attr(fit, "certified"))
   expect_true(is.finite(as.numeric(logLik(fit))))
 })
 
 test_that("gb2 delegate follow-up preserves the accepted fit", {
-  f <- mlgb2(exp(c(-1.1,-1)),shape3=1,scale=1,gradtol=1e-8,iterlim=1000)
+  f <- mlgb2(exp(c(-1.1,-1)),shape3=1,scale=1,tol=1e-8,iterlim=1000)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
@@ -252,7 +252,7 @@ test_that("GB2 rounded held-power crossing returns an uncertified fit", {
   x <- sqrt(c(1.9901008294052028e-5,2.209857117039297e-5,.0002450722434289249,
     12.288342947780086,942.976056905759,16.239512580216314,2.898690421966857,
     1.2684036923492177,400970.63293690106*exp(5.646438395028704)))
-  f <- mlgb2(x,shape2=2,shape3=.22690393135372058,gradtol=1e-7,iterlim=1000)
+  f <- mlgb2(x,shape2=2,shape3=.22690393135372058,tol=1e-7,iterlim=1000)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
 })

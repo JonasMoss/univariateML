@@ -2,7 +2,7 @@
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/gb2/mle.hpp"
 namespace umvl_binding {
-inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held shape3_arg = {}, Held scale_arg = {}, double gradtol = 1e-10, int iterlim = 300) {
+inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape2_arg = {}, Held shape3_arg = {}, Held scale_arg = {}, double tol = 1e-10, int iterlim = 300) {
 
   if (shape1_arg.supplied && (!(shape1_arg.value > 0) || !std::isfinite(shape1_arg.value))) return invalid_argument(failure("`shape1` must be a positive finite number."));
   double shape1=shape1_arg.supplied ? shape1_arg.value : NAN;
@@ -12,7 +12,7 @@ inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape
   double shape3=shape3_arg.supplied ? shape3_arg.value : NAN;
   if (scale_arg.supplied && (!(scale_arg.value > 0) || !std::isfinite(scale_arg.value))) return invalid_argument(failure("`scale` must be a positive finite number."));
   double scale=scale_arg.supplied ? scale_arg.value : NAN;
-  auto r=cppunivariate::gb2_mle(cppunivariate::span{x.data(),x.size()},gradtol,iterlim,shape1,shape2,shape3,scale);
+  auto r=cppunivariate::gb2_mle(cppunivariate::span{x.data(),x.size()},tol,iterlim,shape1,shape2,shape3,scale);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"shape3",shape3_arg.supplied},{"scale",scale_arg.supplied}});

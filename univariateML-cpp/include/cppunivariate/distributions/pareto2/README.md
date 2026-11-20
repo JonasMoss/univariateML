@@ -32,7 +32,7 @@ r:
   sampler: rpareto2
   control:
     min: Known finite lower endpoint.
-    reltol: Delegate fitting tolerance.
+    tol: Requested relative accuracy of every free coefficient.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
     shape: Known positive finite coefficient; NULL estimates it.
     scale: Known positive finite coefficient; NULL estimates it.

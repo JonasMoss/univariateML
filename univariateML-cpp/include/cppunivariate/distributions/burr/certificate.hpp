@@ -265,8 +265,8 @@ inline bool contraction(const Matrix& R,const std::array<Interval,3>& g,const Bo
     if(!ratio.valid()||ratio.hi>=.9)return false;
   }return true;
 }
-struct Root {Proposal t;std::array<double,3> radii{};double delta=0;};
-inline bool isolate(const Data& d,Proposal t,Root& out){
+struct Root {Proposal t;std::array<double,3> radii{};double delta=0;bool accurate=false;};
+inline bool isolate(const Data& d,Proposal t,Root& out,double tol=1e-10){
   // Newton only proposes a center. Neither its residual nor convergence is
   // accepted as a certificate; the interval fixed-point test decides.
   for(int it=0;it<d.maxit;++it){std::array<double,3> g;Matrix h,R;numeric(d.y,t,g,h);if(!inverse(h,R,3))return false;
@@ -280,11 +280,28 @@ inline bool isolate(const Data& d,Proposal t,Root& out){
     if(small)break;
   }
   std::array<double,3> gn;Matrix hn,R;numeric(d.y,t,gn,hn);if(!inverse(hn,R,3))return false;for(auto& row:R.a)for(double& v:row)v=-v;
-  const std::array<double,3> r{{1e-8*t.k,1e-8*t.c,1e-8*std::max(1.,std::abs(t.b))}};
-  std::array<Interval,3> center{{t.k,t.c,t.b}},box{{padded(t.k-r[0],t.k+r[0]),padded(t.c-r[1],t.c+r[1]),padded(t.b-r[2],t.b+r[2])}},g;BoxMatrix hc,hb;
+  const std::array<Interval,3> center{{t.k,t.c,t.b}};
+  std::array<Interval,3> g;
+  BoxMatrix hc,hb;
   if(!score_hessian(d,center,g,hc))return false;
   const auto gcenter=g;
-  if(!score_hessian(d,box,g,hb)||!contraction(R,gcenter,hb,r,3,0))return false;
+  const auto encloses=[&](const std::array<double,3>& radius) {
+    const std::array<Interval,3> box{{padded(t.k-radius[0],t.k+radius[0]),
+        padded(t.c-radius[1],t.c+radius[1]),padded(t.b-radius[2],t.b+radius[2])}};
+    return radius[0]>0&&radius[1]>0&&radius[2]>0&&
+        score_hessian(d,box,g,hb)&&contraction(R,gcenter,hb,radius,3,0);
+  };
+  // A wider inclusion can still prove globality when a Newton correction
+  // is needed to check the requested precision.
+  const double target=std::min(tol/8,1e-8);
+  const double intercept_scale=std::max(1.,std::abs(t.b));
+  std::array<double,3> r{{target*t.k,target*t.c,target*std::min(t.c,intercept_scale)}};
+  const Interval log_scale=Interval(t.b)/t.c-padded(t.b-r[2],t.b+r[2])/padded(t.c-r[1],t.c+r[1]);
+  const bool accurate=log_scale.valid()&&log_scale.mag()<=std::log1p(tol/2)&&encloses(r);
+  if(!accurate) {
+    r={{1e-8*t.k,1e-8*t.c,1e-8*intercept_scale}};
+    if(!encloses(r))return false;
+  }
   // Cholesky of the negative center Hessian; its inverse transpose is an
   // arbitrary congruence proposal, validated by the subsequent enclosure.
   Matrix L;
@@ -313,7 +330,7 @@ inline bool isolate(const Data& d,Proposal t,Root& out){
     if(positive){
       const Interval scale_box=exp(-padded(t.b-r[2],t.b+r[2])/padded(t.c-r[1],t.c+r[1]));
       if(!scale_box.valid()||scale_box.lo<=0||(scale_box.hi-scale_box.lo)/scale_box.lo>2e-6)return false;
-      out={t,r,delta};return true;
+      out={t,r,delta,accurate};return true;
     }
   }return false;
 }
@@ -325,11 +342,12 @@ struct Result {
   Outcome outcome=Outcome::Numerical;
   double k=NAN,c=NAN,scale=NAN,logLik=NAN;
   int profiles=0;
+  bool accurate=false;
   // Diagnostic counts and enclosure summaries do not serve as decisions.
   int roots=0,pruned=0;
   double cutoff=NAN,lower=NAN,remaining=NAN;
 };
-inline Result fit(span x,std::int64_t budget=-1,int maxit=120,bool reflect=false) {
+inline Result fit(span x,std::int64_t budget=-1,int maxit=120,bool reflect=false,double tol=1e-10) {
   maxit = static_cast<int>(solver_budget(maxit));
   Result result;
   if(budget<0)budget=certificate_budget(maxit);
@@ -391,7 +409,7 @@ inline Result fit(span x,std::int64_t budget=-1,int maxit=120,bool reflect=false
       // Root neighborhoods use log(x / proposed_scale), formed relative to
       // the proposed scale so that near-constant data keep their spread.
       // This exact affine coordinate change avoids large correlated c,b boxes.
-      Data original;
+      Data original;original.maxit=maxit;
       Proposal raw=t;raw.c=t.c/d.unit;
       const double proposed=d.scale(d.center-t.b/raw.c);
       const double proposed_x=reflect?1/proposed:proposed;
@@ -399,7 +417,7 @@ inline Result fit(span x,std::int64_t budget=-1,int maxit=120,bool reflect=false
       double lerr=0;const double shift=d.rel(proposed_x,d.x0,lerr);
       for(double v:x){double err=0;const double y=d.rel(v,proposed_x,err);original.y.push_back(y);original.box.push_back(Interval(y-err,y+err));}
       raw.b=t.b+raw.c*(shift-d.center);
-      if(isolate(original,raw,root)){
+      if(isolate(original,raw,root,tol)){
         root.t.b+=root.t.c*(d.center-shift);root.t.c*=d.unit;
         ++result.roots;const Interval value=primal(d.box,root.t);
         const double c=root.t.c/d.unit,scale=d.scale(d.center-root.t.b/c);
@@ -449,7 +467,7 @@ inline Result fit(span x,std::int64_t budget=-1,int maxit=120,bool reflect=false
   if(winner==Outcome::Pareto&&!(P.lo>w.W.hi)){result.outcome=Outcome::Tie;return result;}
   if(winner==Outcome::Weibull&&!(w.W.lo>P.hi)){result.outcome=Outcome::Tie;return result;}
   result.outcome=winner;
-  if(winner==Outcome::Finite){result.k=winning.t.k;result.c=winning.t.c/d.unit;result.scale=d.scale(d.center-winning.t.b/result.c);result.logLik=primal(d.box,winning.t).lo+d.jacobian;
+  if(winner==Outcome::Finite){result.accurate=winning.accurate;result.k=winning.t.k;result.c=winning.t.c/d.unit;result.scale=d.scale(d.center-winning.t.b/result.c);result.logLik=primal(d.box,winning.t).lo+d.jacobian;
     // Return the center's directly evaluated likelihood, after certification.
     double value=n*(std::log(winning.t.k)+std::log(winning.t.c));for(double y:d.y){const double z=winning.t.c*y+winning.t.b;value+=winning.t.k<1?-winning.t.k*z-(winning.t.k+1)*softplus(-z):z-(winning.t.k+1)*softplus(z);}result.logLik=value+d.jacobian;
   }else if(winner==Outcome::Weibull){result.k=INFINITY;result.c=w.proposal/d.unit;double e=0,sy=0;for(double y:d.y){e+=std::exp(w.proposal*y);sy+=y;}const double eta=std::log(n/e);result.scale=d.scale(d.center-eta/result.c);result.logLik=n*std::log(w.proposal)+w.proposal*sy-n*std::log(e/n)-n+d.jacobian;

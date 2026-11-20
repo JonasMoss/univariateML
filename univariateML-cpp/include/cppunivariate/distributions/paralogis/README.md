@@ -25,8 +25,7 @@ r:
   sampler: rparalogis
   control:
     shape: Known positive finite coefficient; NULL estimates it.
-    shape0: Optional starting value for the numerical proposal; NULL uses an automatic start.
-    gradtol: Tolerance for the numerical proposal; the global certificate is attempted independently of this tolerance.
+    tol: Requested relative accuracy of every free coefficient.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 limits:
   - name: unbounded likelihood
@@ -166,23 +165,22 @@ L_{bb}=-(a+1)\sum q_i.$$
 The joint proposal starts scale at the sample median. Its automatic shape
 start is twice the reciprocal sample standard deviation of log data, with
 a floor of 1.5 when that standard deviation is below 10; zero standard
-deviation uses 1.5. A positive finite `shape0` overrides it. The historical
-BFGS convergence rules are retained; a failed BFGS proposal is eligible only
+deviation uses 1.5. A failed BFGS proposal is eligible only
 when its finite total free log-coordinate score norm is below 1e-3, with
 objective normalization undone. The held-scale proposal uses safeguarded
-Newton inside a positive shape-score bracket and requires mean log-shape
-score below the smaller of `gradtol` and 1e-10. These are proposal conditions;
-the root enclosure below independently controls returned coefficient accuracy.
+Newton inside a positive shape-score bracket and requires a relative
+shape correction below the larger of `tol` and `1e-10`. The root
+enclosure or local observed-information check controls the returned accuracy.
 
 The algorithm does not assume joint or conditional unimodality. BFGS (joint)
-or safeguarded Newton (held scale) supplies a proposal. Up to eight analytic
-Newton corrections improve its center. A fixed-point enclosure with an
+or safeguarded Newton (held scale) supplies a proposal. Analytic Newton corrections improve its center. A fixed-point enclosure with an
 approximate negative inverse Hessian $R$ verifies that
 $x\mapsto x+R\nabla L(x)$ maps a small closed box strictly into itself
 and has weighted infinity norm derivative below $0.9$. It therefore contains
-one stationary root. Shape radius is $10^{-8}a$; the intercept radius is
-$10^{-8}a$ when scale is free. The mapped scale enclosure must have relative
-width below $10^{-6}$. A larger verified contraction box, tried at radii
+one stationary root. The narrow box bounds relative error at `tol` in the
+shape and the reconstructed scale. If only a wider enclosure closes, the
+observed-information Newton correction checks accuracy at the identified
+maximum. A larger verified contraction box, tried at radii
 $0.03a$ down to $0.0001a$, removes the winning root's neighborhood.
 
 A feasible center likelihood gives a lower bound $B$. For free scale,
@@ -224,8 +222,7 @@ with this practical margin; it is not outward-rounded interval arithmetic.
 No long-double precision is required. An unclosed root enclosure or compact
 cover leaves the converged proposal with `certified=false`; a strictly better
 finite certificate point refutes it. Proposal exhaustion retains `BfgsFailure`.
-The compact cover uses at most `128 * min(iterlim, 100000)` boxes. `shape0`
-affects only the proposal.
+The compact cover uses at most `128 * min(iterlim, 100000)` boxes.
 
 The held-scale likelihood can have competing modes. If the historical
 proposal fails certification, a dyadic shape scan proposes additional

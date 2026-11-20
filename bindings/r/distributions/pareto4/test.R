@@ -29,7 +29,7 @@ test_that("pareto4: required endpoint, reference likelihood and reproducibility"
 
 test_that("pareto4: fixed scale and shifted escape messages", {
  x <- qpareto4(p = (1:100 - 0.5)/100, shape1 = 0.5, shape2 = 2, scale = 3, min = 2)
- a <- mlpareto4(x,min=2,scale=3); b <- mlburr(x-2,scale=3,abstol=1e-10,iterlim=1000)
+ a <- mlpareto4(x,min=2,scale=3); b <- mlburr(x-2,scale=3,tol=1e-10,iterlim=1000)
  expect_equal(as.numeric(a[1:3]),as.numeric(b),tolerance=1e-10)
  expect_equal(attr(a,"fixed"),c("min","scale"))
  expect_error(mlpareto4(x,scale=3),"not supported")
@@ -155,7 +155,7 @@ test_that("Pareto IV keeps numerical stops distinct from non-existence", {
 test_that("held-scale Pareto IV transports scalar certificates and budgets", {
   x <- c(.1,.2,.4,.8)
   a <- mlpareto4(x+2,min=2,scale=1)
-  b <- mlburr(x,scale=1,abstol=1e-10)
+  b <- mlburr(x,scale=1,tol=1e-10)
   expect_equal(as.numeric(a[1:3]),as.numeric(b),tolerance=1e-10)
   e <- mlpareto4(x+2,min=2,scale=1,iterlim=1)
   expect_s3_class(e,"univariateML")

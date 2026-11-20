@@ -25,11 +25,11 @@ TEST_CASE("paralogis: golden and score residual") {
   CHECK(std::sqrt(grad[0] * grad[0] + grad[1] * grad[1]) < 1e-3);
 }
 
-TEST_CASE("paralogis: an explicit shape start reaches the same fit") {
+TEST_CASE("paralogis: tighter coefficient tolerance reaches the same fit") {
   auto g = mltest::load_distribution_golden("paralogis");
   const auto x = mltest::as_span(g.data);
   auto a = cppunivariate::paralogis_mle(x, 1e-8, 500);
-  auto b = cppunivariate::paralogis_mle(x, 1e-8, 500, 2.0 * a.shape);
+  auto b = cppunivariate::paralogis_mle(x, 1e-12, 500);
   CHECK(b.status == cppunivariate::ParalogisStatus::Ok);
   CHECK(b.logLik == doctest::Approx(a.logLik).epsilon(1e-9));
   CHECK(b.shape == doctest::Approx(a.shape).epsilon(1e-4));
@@ -209,7 +209,7 @@ TEST_CASE("paralogis held-scale inclusion retains the scalar search") {
 
 TEST_CASE("paralogis exhausted cover retains an independently converged search") {
  const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};const auto data=mltest::as_span(x);
- const auto r=cppunivariate::paralogis_mle_impl(data,1e-8,1000,NAN,false);
+ const auto r=cppunivariate::paralogis_mle_impl(data,1e-8,1000,false);
  REQUIRE(r.status==cppunivariate::ParalogisStatus::Ok);
  const auto c=cppunivariate::paralogis_cert_detail::certify(data,r.shape,r.scale,false,1);
  REQUIRE(c.budget);CHECK_FALSE(c.ok);

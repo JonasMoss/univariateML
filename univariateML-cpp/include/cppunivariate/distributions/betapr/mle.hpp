@@ -124,7 +124,7 @@ struct BetaPrimeLogCost {
 // gives the ordinary beta likelihood. Nonconstant interior observations
 // have a unique finite beta MLE; no gamma or inverse-gamma face remains.
 inline BetaPrimeResult betapr_mle_fixed_scale(
-    span x, double scale, double tol = 1e-6, int maxit = 1000) {
+    span x, double scale, double tol = 1e-10, int maxit = 1000) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   if (!(scale > 0) || !std::isfinite(scale) || x.empty())
@@ -161,15 +161,13 @@ inline BetaPrimeResult betapr_mle_fixed_scale(
   return result;
 }
 
-inline BetaPrimeResult betapr_mle(span x, double tol = 1e-6, int maxit = 2000,
-    double shape1 = 0.0, double shape2 = 0.0, double scale = 0.0,
-    double reltol = 1e-13, double abstol = 1e-10);
+inline BetaPrimeResult betapr_mle(span x, double tol = 1e-10, int maxit = 2000);
 } // namespace cppunivariate
 #include "certificate.hpp"
 namespace cppunivariate {
 // Hold-aware profiles. The conditional interface is also used by GB2.
 namespace betapr_joint_cert { inline double log_beta(double p,double q); }
-inline BetaPrimeResult betapr_mle_holds(span x,double a,double b,double s,double tol=1e-6,int maxit=1000);
+inline BetaPrimeResult betapr_mle_holds(span x,double a,double b,double s,double tol=1e-10,int maxit=1000);
 namespace betapr_detail {
 inline double shape_root(double other, double target,int maxit=1000) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -190,7 +188,7 @@ inline double shape_root(double other, double target,int maxit=1000) {
 }
 }
 inline BetaPrimeResult betapr_mle_holds_certificate(span x, double held_a, double held_b,
-    double held_s, double tol=1e-6,int maxit=1000) {
+    double held_s, double tol=1e-10,int maxit=1000) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const bool fa=!std::isnan(held_a),fb=!std::isnan(held_b),fs=!std::isnan(held_s);
@@ -323,7 +321,7 @@ inline BetaPrimeResult betapr_mle_holds_certificate(span x, double held_a, doubl
 
 namespace cppunivariate { namespace betapr_detail {
 inline BetaPrimeResult accurate_fallback(BetaPrimeResult certificate,span x,double a,double b,double s,
-    double tol,int maxit,double starta,double startb,double starts);
+    double tol,int maxit,bool refine_certified=false);
 }}
 #include "near_constant.hpp"
 #include "joint_certificate.hpp"
@@ -335,7 +333,9 @@ inline BetaPrimeResult betapr_mle_holds(span x,double a,double b,double s,double
   // The all-free delegate already applied its fallback; fixed-scale beta
   // failures are failures of that search, without an outer certificate.
   if(std::isnan(a) && std::isnan(b))return r;
-  return betapr_detail::accurate_fallback(r,x,a,b,s,tol,maxit);
+  const bool conditional=!std::isfinite(s)&&((a!=1&&std::isfinite(a)&&std::isnan(b))||
+      (b!=1&&std::isfinite(b)&&std::isnan(a)));
+  return betapr_detail::accurate_fallback(r,x,a,b,s,tol,maxit,conditional);
 }
 }
 

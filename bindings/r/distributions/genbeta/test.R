@@ -9,7 +9,7 @@ test_that("genbeta requires the endpoint and validates support and controls", {
   expect_error(mlgenbeta(rep(.5,4),scale=1),"constant")
   expect_error(mlgenbeta(x,scale=1,shape1=-1),"positive finite")
   expect_error(mlgenbeta(x,scale=1,iterlim=1),"unresolved")
-  expect_error(mlgenbeta(x,scale=1,gradtol=0))
+  expect_error(mlgenbeta(x,scale=1,tol=0))
 })
 
 test_that("genbeta profiles agree with independent reference-density searches", {
@@ -177,7 +177,7 @@ test_that("P2 genbeta constant samples with coercive holds fit", {
 test_that("genbeta: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "genbeta", "golden.json"))
   x <- g$data
-  expect_error(mlgenbeta(x, iterlim=1, gradtol=1e-10, scale=1),
+  expect_error(mlgenbeta(x, iterlim=1, tol=1e-10, scale=1),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
 
@@ -242,7 +242,7 @@ test_that("genbeta held p one inherits the certified Kumaraswamy fit", {
 })
 
 test_that("genbeta scalar certificate refuses an unrepresentable coefficient radius", {
-  e <- tryCatch(mlgenbeta(c(.02,.2,.6,.9),scale=1,shape1=2,shape2=.7,gradtol=1e-20),error=identity)
+  e <- tryCatch(mlgenbeta(c(.02,.2,.6,.9),scale=1,shape1=2,shape2=.7,tol=1e-20),error=identity)
   expect_s3_class(e,"univariateML_numerical")
   expect_equal(nrow(e$candidates),1L)
   expect_true(is.finite(e$candidates$loglik_lower))
@@ -300,7 +300,7 @@ test_that("genbeta all-free finite certificate retains the golden and never cert
   f <- mlgenbeta(g$data,scale=1)
   expect_equal(as.numeric(f),unname(unlist(g$estimates)),tolerance=1e-5)
   expect_equal(as.numeric(attr(f,"logLik")),g$logLik,tolerance=1e-8)
-  e <- tryCatch(mlgenbeta(g$data,scale=1,gradtol=1e-20),error=identity)
+  e <- tryCatch(mlgenbeta(g$data,scale=1,tol=1e-20),error=identity)
   if(inherits(e,"error")) {
     expect_s3_class(e,"univariateML_stop")
     expect_identical(e$kind,"tolerance")

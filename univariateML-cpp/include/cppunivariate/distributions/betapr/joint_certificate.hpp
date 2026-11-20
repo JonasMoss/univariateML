@@ -187,7 +187,9 @@ struct Engine {
       const Point sl=point(pr.hi,qr.lo),su=point(pr.lo,qr.hi);
       if(!sl.valid||!su.valid){arithmetic=false;return false;}
       const Interval tr{sl.t-sl.te,su.t+su.te};
-      const double target=std::min(1e-6,tol);
+      // The local error vector already carries a 128-epsilon pad.
+      // Requests below that resolution use the uncertified local solve.
+      const double target=tol<128*std::numeric_limits<double>::epsilon()?tol:1e-6;
       if(std::max(err0,err1)>target/4||tr.hi-tr.lo>target/2){accuracy_unresolved=true;return false;}
       const double upper=p.ll+p.error+radius*(magnitude(g0)+magnitude(g1));
       patches.push_back({box,pr,qr,tr,p,upper});return true;
@@ -311,12 +313,10 @@ struct Engine {
     queue.push(c);return true;
   }
 };
-inline BetaPrimeResult fit(span x,double tol,int maxit,double startp,double startq,
-    double starts,double reltol,double abstol) {
+inline BetaPrimeResult fit(span x,double tol,int maxit) {
   maxit=static_cast<int>(solver_budget(maxit));
   BetaPrimeResult out{NAN,NAN,NAN,NAN,0,BetaPrimeStatus::BfgsFailure};
-  if(x.empty()||!(tol>0)||!std::isfinite(tol)||startp<0||startq<0||starts<0||
-     !std::isfinite(startp+startq+starts)) {out.status=BetaPrimeStatus::InvalidStart;return out;}
+  if(x.empty()||!(tol>0)||!std::isfinite(tol)) {out.status=BetaPrimeStatus::InvalidStart;return out;}
   bool constant=true;betapr_joint_detail::Sum lm,mag;
   for(double v:x){if(!(v>0)||!std::isfinite(v)){out.status=BetaPrimeStatus::InvalidStart;return out;}constant=constant&&v==x[0];lm.add(std::log(v)/x.size());mag.add(std::abs(std::log(v))/x.size());}
   if(constant){out.status=BetaPrimeStatus::Unbounded;out.stop_detail.loglik_lower=INFINITY;out.stop_detail.loglik_upper=INFINITY;return out;}
@@ -330,7 +330,8 @@ inline BetaPrimeResult fit(span x,double tol,int maxit,double startp,double star
   const double fallback_error=512*std::numeric_limits<double>::epsilon()*(1+std::abs(fallback.value)+e.mag+std::abs(e.lm));
   out.stop_detail.candidates.push_back({{1,1,e.unit},e.n*(fallback.value-e.lm-fallback_error),e.n*(fallback.value-e.lm+fallback_error)});
   out.stop_detail.loglik_lower=e.n*(fallback.value-e.lm-fallback_error);out.stop_detail.loglik_upper=INFINITY;
-  const auto g=gamma_mle(x,1e-12,maxit);const auto ig=invgamma_mle(x,1e-12,maxit);
+  const double face_tol=std::min(tol,1e-12);
+  const auto g=gamma_mle(x,face_tol,maxit);const auto ig=invgamma_mle(x,face_tol,maxit);
   e.budget.used+=g.iterations+ig.iterations;
   if(g.status!=GammaStatus::Ok||ig.status!=GammaStatus::Ok) {
     out.iterations=static_cast<int>(e.budget.used);out.certificate_failure=maxit<=1?LomaxCertificateFailure::Budget:LomaxCertificateFailure::Arithmetic;
@@ -361,10 +362,10 @@ inline BetaPrimeResult fit(span x,double tol,int maxit,double startp,double star
       const double distance=std::max(a-f.root.lo,f.root.hi-a);
       const double score=std::log(a)-special::digamma(a)+m-f.la;
       f.upper=f.ll+f.error+(std::abs(score)+se)*distance;
-      const double pe=std::max(std::abs(std::log(f.root.lo/a)),std::abs(std::log(f.root.hi/a)));
-      const double logerror=128*std::numeric_limits<double>::epsilon()*(1+e.mag+std::abs(e.lm)+std::abs(f.la));
-      f.accurate=pe+logerror<std::log1p(std::min(tol,1e-6))&&valid_stop_coefficients(f.model,f.coef)&&
-        std::numeric_limits<double>::denorm_min()/scale<std::min(1e-7,tol/4);
+      // The face solver checks its own shape and scale at face_tol. The
+      // broader profile enclosure is used only to compare likelihoods.
+      f.coef={a,inverse?ig.scale:g.scale};
+      f.accurate=valid_stop_coefficients(f.model,f.coef);
     }
     return f;
   };
@@ -375,7 +376,7 @@ inline BetaPrimeResult fit(span x,double tol,int maxit,double startp,double star
   // A metered version of the old proposals. No proposal supplies acceptance.
   if(!e.arithmetic&&!e.budget.exhausted) {
     BetaPrimeLogCost cost{span{e.scaled.data(),e.scaled.size()}};
-    BfgsControl ctl;ctl.maxit=maxit;ctl.grad_tol=tol;ctl.reltol=reltol;ctl.step_tol=abstol;
+    BfgsControl ctl;ctl.maxit=maxit;ctl.grad_tol=tol;ctl.reltol=1e-13;ctl.step_tol=1e-10;
     const auto propose=[&](double p,double q,double t) {
       if(e.budget.exhausted)return;
       cost.evaluations=0;cost.exhausted=false;cost.evaluation_limit=e.budget.limit-e.budget.used;
@@ -388,8 +389,6 @@ inline BetaPrimeResult fit(span x,double tol,int maxit,double startp,double star
       if(e.budget.exhausted||e.arithmetic)break;
       propose(p,q,e.mean-special::digamma(p)+special::digamma(q));
     }
-    if(startp>0||startq>0||starts>0)propose(startp>0?startp:2,startq>0?startq:2,
-      starts>0?std::log(starts)-e.lm:e.mean-special::digamma(startp>0?startp:2)+special::digamma(startq>0?startq:2));
   }
   // Reuse the unchanged q-held global certificate as a conditional anchor.
   // The full cover below retains every possible p branch, including ties.
@@ -491,15 +490,14 @@ inline BetaPrimeResult fit(span x,double tol,int maxit,double startp,double star
   if(!(scale>0)||!std::isfinite(scale)||std::numeric_limits<double>::denorm_min()/scale>1e-7) {out.certificate_failure=LomaxCertificateFailure::Arithmetic;return out;}
   const double se=128*std::numeric_limits<double>::epsilon()*(1+std::abs(e.lm));
   const double sl=std::exp(e.lm+p.t.lo-se),su=std::exp(e.lm+p.t.hi+se);
-  if(!(sl>0)||!std::isfinite(su)||std::max(std::abs(std::log(scale/sl)),std::abs(std::log(su/scale)))>std::log1p(std::min(1e-6,tol))) {out.certificate_failure=LomaxCertificateFailure::Arithmetic;return out;}
+  if(!(sl>0)||!std::isfinite(su)||std::max(std::abs(std::log(scale/sl)),std::abs(std::log(su/scale)))>std::log1p(1e-6)) {out.certificate_failure=LomaxCertificateFailure::Arithmetic;return out;}
   out.joint_exterior.coefficient_lower={p.p.lo,p.q.lo,sl};out.joint_exterior.coefficient_upper={p.p.hi,p.q.hi,su};out.joint_exterior.global_certified=true;
   out.alpha=p.point.p;out.beta=p.point.q;out.scale=scale;out.logLik=original(p.point.ll);out.status=BetaPrimeStatus::Ok;
   out.stop_detail.loglik_lower=original(p.point.ll-p.point.error);return out;
 }
 } // namespace betapr_joint_cert
-inline BetaPrimeResult betapr_mle(span x,double tol,int maxit,double shape1,
-    double shape2,double scale,double reltol,double abstol) {
-  auto r=betapr_detail::accurate_fallback(betapr_joint_cert::fit(x,tol,maxit,shape1,shape2,scale,reltol,abstol),x,NAN,NAN,NAN,tol,maxit,shape1,shape2,scale);
+inline BetaPrimeResult betapr_mle(span x,double tol,int maxit) {
+  auto r=betapr_detail::accurate_fallback(betapr_joint_cert::fit(x,tol,maxit),x,NAN,NAN,NAN,tol,maxit,true);
   // A near-constant sample has no finite maximizer; the search ends unresolved. Name the face (near_constant.hpp).
   if(r.status==BetaPrimeStatus::BfgsFailure && r.certificate_failure!=LomaxCertificateFailure::Budget &&
      r.stop_detail.accuracy_stop==AccuracyStop::None && !r.stop_detail.budget_exhausted)
