@@ -1,31 +1,56 @@
 {
-  "source_sha256": "3e67c0ac6af85ede5182c12181581b76920a7939640bfcc8cb17ab230c656fbd",
-  "commit": "a1166cbf2cec937fe0748d2b33eaf9a96cb80b35",
-  "dirty": false,
-  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
-  "flags": [
-    "-std=gnu++17",
-    "-O2",
-    "-DNDEBUG"
-  ],
-  "no_long_double": true,
-  "cpu_limit": 300,
-  "families": [
-    "tbinom",
-    "tnorm",
-    "tpois",
-    "zib",
-    "zinb",
-    "zip",
-    "zipf",
-    "zmbinom",
-    "zmgeom",
-    "zmlogarithmic",
-    "zmnbinom",
-    "zmpois",
-    "ztbinom",
-    "ztgeom",
-    "ztnbinom",
-    "ztpois"
-  ]
+ "source_sha256": "3e67c0ac6af85ede5182c12181581b76920a7939640bfcc8cb17ab230c656fbd",
+ "commit": "a1166cbf2cec937fe0748d2b33eaf9a96cb80b35",
+ "dirty": false,
+ "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+ "flags": [
+  "-std=gnu++17",
+  "-O2",
+  "-DNDEBUG"
+ ],
+ "no_long_double": true,
+ "cpu_limit": 300,
+ "families": [
+  "tbinom",
+  "tnorm",
+  "tpois",
+  "zib",
+  "zinb",
+  "zip",
+  "zipf",
+  "zmbinom",
+  "zmgeom",
+  "zmlogarithmic",
+  "zmnbinom",
+  "zmpois",
+  "ztbinom",
+  "ztgeom",
+  "ztnbinom",
+  "ztpois"
+ ],
+ "patches": [
+  {
+   "families": [
+    "binom +truncate=tbinom",
+    "binom+zero=inflated",
+    "binom+zero=modified",
+    "binom+zero=truncated",
+    "geom+zero=modified",
+    "geom+zero=truncated",
+    "lgser+zero=modified",
+    "nbinom+zero=inflated",
+    "nbinom+zero=modified",
+    "nbinom+zero=truncated",
+    "norm +truncate=tnorm",
+    "pois +truncate=tpois",
+    "pois+zero=inflated",
+    "pois+zero=modified",
+    "pois+zero=truncated",
+    "zeta +truncate=zipf"
+   ],
+   "commit": "85649f71",
+   "dirty": true,
+   "reason": "modifier routes take tol: five diagnostic messages say tol instead of reltol (step 5c job 3, TASK-150.1.6); merged as 2fe20488"
+  }
+ ]
 }
