@@ -723,3 +723,68 @@ TEST_CASE("truncated normal scale uses a centered tail score when mean is held")
   CHECK(r.mean==held_mean);
   CHECK(std::abs(r.sd-scale)<=tol*scale);
 }
+
+TEST_CASE("truncated-normal archive 7657 fits its limit on the exact binary64 window") {
+  const std::vector<double> x{-0x1.4f4831e30a680p-2, -0x1.4f4831e308f75p-2,
+      -0x1.4f4831e30786bp-2, -0x1.4f4831e306161p-2, -0x1.4f4831e30334cp-2};
+  constexpr double rate = -443614287124.62525872, ll = 135.79882321069262142;
+  const auto r = cppunivariate::tnorm_mle(mltest::as_span(x), NAN, NAN);
+  REQUIRE(r.status == cppunivariate::TnormStatus::TruncatedExponentialBoundary);
+  REQUIRE(r.stop_detail.limit_coef.size() == 3);
+  CHECK(r.stop_detail.limit_coef[0] == x.front());
+  CHECK(r.stop_detail.limit_coef[1] == x.back());
+  CHECK(std::abs(r.stop_detail.limit_coef[2] / rate - 1) <= 1e-13);
+  CHECK(std::abs(r.stop_detail.limit_loglik - ll) <= 1e-13 * std::abs(ll));
+}
+
+TEST_CASE("near-constant truncated-normal windows fit all exponential faces at two tolerances") {
+  constexpr double a = 1, b = a + 0x1p-40;
+  const std::vector<double> x{a, a, a, b}, reflected{-a, -a, -a, -b}, balanced{a, b};
+  constexpr double finite_rate = 3951108194959.67903097, finite_ll = 112.53810417120233414;
+  constexpr double half_rate = 4398046511104, half_ll = 112.44872633407081198;
+  for (double tol : {1e-6, 1e-13}) {
+    CAPTURE(tol);
+    const auto check = [tol](const cppunivariate::TnormResult& r, cppunivariate::TnormStatus status,
+                             double rate, double ll) {
+      REQUIRE(r.status == status);
+      CHECK(std::abs(r.limit_rate - rate) <= tol * std::max(1.0, std::abs(rate)));
+      CHECK(std::abs(r.stop_detail.limit_loglik - ll) <= 1e-13 * std::abs(ll));
+    };
+    check(cppunivariate::tnorm_mle(mltest::as_span(x), a, b, tol),
+          cppunivariate::TnormStatus::TruncatedExponentialBoundary, -finite_rate, finite_ll);
+    check(cppunivariate::tnorm_mle(mltest::as_span(reflected), -b, -a, tol),
+          cppunivariate::TnormStatus::TruncatedExponentialBoundary, finite_rate, finite_ll);
+    check(cppunivariate::tnorm_mle(mltest::as_span(x), a, INFINITY, tol),
+          cppunivariate::TnormStatus::ExponentialBoundary, -half_rate, half_ll);
+    check(cppunivariate::tnorm_mle(mltest::as_span(reflected), -INFINITY, -a, tol),
+          cppunivariate::TnormStatus::ReflectedExponentialBoundary, half_rate, half_ll);
+    check(cppunivariate::tnorm_mle(mltest::as_span(balanced), a, b, tol),
+          cppunivariate::TnormStatus::TruncatedExponentialBoundary, 0, 55.45177444479562475);
+  }
+}
+
+TEST_CASE("an exactly balanced tiny truncation has zero face rate") {
+  constexpr double b = 0x1p-190;
+  const std::vector<double> x{0, b / 4, 3 * (b / 4), b};
+  const auto r = cppunivariate::tnorm_mle(mltest::as_span(x), 0, b, 1e-13);
+  REQUIRE(r.status == cppunivariate::TnormStatus::TruncatedExponentialBoundary);
+  CHECK(r.limit_rate == 0);
+  CHECK(r.stop_detail.limit_loglik == doctest::Approx(-4 * std::log(b)).epsilon(1e-14));
+}
+
+TEST_CASE("a balanced truncation can span more than the largest finite double") {
+  constexpr double b = 1.7e308;
+  const std::vector<double> x{-b, -b, b, b};
+  const auto r = cppunivariate::tnorm_mle(mltest::as_span(x), -b, b);
+  REQUIRE(r.status == cppunivariate::TnormStatus::TruncatedExponentialBoundary);
+  CHECK(r.limit_rate == 0);
+  CHECK(r.stop_detail.limit_loglik ==
+        doctest::Approx(-4 * (std::log(b) + std::log(2.0))).epsilon(1e-14));
+}
+
+TEST_CASE("a wide truncation preserves a positive exponential-face variance") {
+  const std::vector<double> x{4, 5, 6};
+  const auto r = cppunivariate::tnorm_mle(mltest::as_span(x), 0, 1e200);
+  REQUIRE(r.status == cppunivariate::TnormStatus::Ok);
+  CHECK(r.logLik > r.limit_logLik);
+}

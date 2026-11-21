@@ -326,31 +326,124 @@ inline bool newton_joint(double lo, double hi, double tol, int maxit,
   return false;
 }
 
-// Tilt t with mean zero of exp(t*u) on finite (lo, hi), lo < 0 < hi.
-inline bool tilt_with_zero_mean(double lo, double hi, double &t, Mass &m,int maxit=200) {
-  maxit = static_cast<int>(solver_budget(maxit));
-  double tl = -std::numeric_limits<double>::infinity();
-  double th = std::numeric_limits<double>::infinity();
-  t = 0;
-  for (int it = 0; it < maxit; ++it) {
-    m = mass(t, 0, lo, hi);
-    if (!m.ok) return false;
-    if (m.mean == 0) return true;
-    if (m.mean > 0) th = t; else tl = t;
-    double next = t - m.mean / m.var;
-    if (!(next > tl && next < th)) {
-      if (std::isfinite(tl) && std::isfinite(th)) next = tl + (th - tl) / 2;
-      else if (std::isfinite(tl)) next = tl + std::max(1.0, std::abs(tl));
-      else next = th - std::max(1.0, std::abs(th));
-    }
-    if (std::abs(next - t) <= 1e-15 * (1 + std::abs(t))) {
-      t = next;
-      m = mass(t, 0, lo, hi);
-      return m.ok;
-    }
-    t = next;
+// Mean displacement from 1/2 under exp(t*u) on [0, 1]. Pairing
+// the quadrature nodes makes the displacement proportional to t near zero.
+inline double unit_tilt_shift(double t) {
+  double mass = 0, moment = 0;
+  for (int i = 0; i < kNodes / 2; ++i) {
+    const double d = 0.5 - kHalfGap[i], z = t * d;
+    mass += kWeight[i] * std::cosh(z);
+    moment += kWeight[i] * d * std::sinh(z);
   }
-  return false;
+  return moment / mass;
+}
+
+inline double endpoint_mean(double t) {
+  const double tail = std::exp(-t);
+  return 1 / t - tail / (-std::expm1(-t));
+}
+
+struct ExponentialFace {
+  double rate, loglik, variance_ratio;
+  bool accurate;
+};
+
+// Detect an exact zero score when rounding margins obscure it. The
+// two-word residual sum is accepted only if every low-word addition is exact.
+inline bool exact_uniform_score(span x, double a, double b) {
+  const double width = b - a, n = double(x.size());
+  const double total = width * n;
+  if (!std::isfinite(total) || norm_detail::residual_error(b, a, width) != 0 ||
+      std::fma(width, n, -total) != 0) return false;
+  double hi = -total, lo = 0;
+  for (double v : x) {
+    const double d = v - a, doubled = 2 * d;
+    const double next = hi + doubled;
+    if (!std::isfinite(next)) return false;
+    for (double error : {2 * norm_detail::residual_error(v, a, d),
+                         norm_detail::residual_error(hi, -doubled, next)}) {
+      const double low = lo + error;
+      if (!std::isfinite(low) || norm_detail::residual_error(lo, -error, low) != 0) return false;
+      lo = low;
+    }
+    hi = next;
+  }
+  return hi == -lo;
+}
+
+inline ExponentialFace finite_exponential_face(span x, double a, double b,
+                                               double xbar, double delta,
+                                               double sd, double tol, int maxit) {
+  const double factor = std::isfinite(b - a) ? 1 : 0.5;
+  const double lower = a * factor, upper = b * factor;
+  xbar *= factor;
+  delta *= factor;
+  const double w = upper - lower;
+  const double mid = lower + w / 2;
+  const double da = lower - mid, db = upper - mid;
+  const double mid_low = norm_detail::residual_error(lower, mid, da) +
+                         norm_detail::residual_error(upper, mid, db);
+  const double mid_residual = (da + db) + mid_low;
+  const double mid_error = mid_residual / 2;
+  const double shift = ((xbar - mid) + (delta - mid_error)) / w;
+  const double direction = shift > 0 ? 1 : -1;
+  const double d = (shift > 0 ? (upper - xbar) - delta : (xbar - lower) + delta) / w;
+  const double eps = 8 * std::numeric_limits<double>::epsilon();
+  const double shift_error = eps * (std::abs(shift) +
+      (std::abs(delta) + std::abs(mid_error)) / w + eps);
+  if (!(d > 0 && d <= 0.5 + eps)) return {NAN, NAN, NAN, false};
+
+  // The signed score decreases at a rate equal to the variance.
+  // Use the distance from the mode once the tilt is large enough to
+  // evaluate that moment without substantial cancellation.
+  const auto score = [&](double t) {
+    if (std::abs(t) <= 4) return std::abs(shift) - unit_tilt_shift(t);
+    return t > 0 ? endpoint_mean(t) - d : 1 - d - endpoint_mean(-t);
+  };
+  const auto margin = [&](double t) {
+    if (std::abs(t) <= 4) return shift_error + eps * std::abs(unit_tilt_shift(t));
+    return eps * (t > 0 ? d + 1 / t : 1);
+  };
+  double lo = 0, hi = std::nextafter(1 / d, INFINITY);
+  if (std::abs(shift) <= 0.08) hi = 1;
+  // The score at 1/d is negative since the truncated mean is less than 1/t.
+  // Near zero use the linear term as a start, then bisect the monotone score.
+  double t = std::min(hi, 12 * std::abs(shift));
+  bool accurate = false;
+  for (int it = 0; it < maxit; ++it) {
+    const double g = score(t);
+    const double noise = margin(t);
+    if (std::abs(g) <= noise || hi - lo <= eps * t) break;
+    if (g > 0) lo = t; else hi = t;
+    t = lo + (hi - lo) / 2;
+  }
+  double rate = t == 0 ? 0 : direction * (t / w) * factor;
+  if (std::isfinite(rate)) {
+    // Check around the returned coefficient, including rounding on
+    // conversion from the unit interval. The slack uses the smaller
+    // possible contract scale anywhere in the verified interval.
+    const double mapped = (std::abs(rate) / factor) * w;
+    const double slack = std::min(tol, 0.5) / 2;
+    const double radius = std::max(slack * mapped, (slack * w) / factor);
+    const double left = mapped - radius, right = mapped + radius;
+    accurate = score(left) > margin(left) && score(right) < -margin(right);
+    t = mapped;
+  }
+  if (!accurate && std::abs(shift) <= shift_error && exact_uniform_score(x, a, b)) {
+    rate = t = 0;
+    accurate = true;
+  }
+  const double normalization = -std::expm1(-t);
+  // In a very wide window the unit-interval variance can underflow
+  // before dividing by the sample variance. Compare standard deviations.
+  const double tail = t > 4 ? t * std::exp(-t / 2) / normalization : 0;
+  const double face_sd = t <= 4 ? std::sqrt(mass(t, 0, 0, 1).var) :
+      std::sqrt(1 - tail * tail) / t;
+  const double ll = t <= 1 ? std::log(factor) - std::log(w) - t * d -
+      (t == 0 ? 0 : std::log(normalization / t)) :
+      std::log(std::abs(rate)) - t * d - std::log(normalization);
+  const double ratio = face_sd / ((sd * factor) / w);
+  return {rate, double(x.size()) * ll, ratio * ratio, accurate};
 }
 
 }  // namespace tnorm_detail
@@ -359,7 +452,8 @@ inline bool tilt_with_zero_mean(double lo, double hi, double &t, Mass &m,int max
 // Observations may equal either finite endpoint. NaN bounds estimate the
 // corresponding sample extreme. Pass a finite fixed_mean or
 // fixed_sd to hold that parameter; NaN estimates it. tol is the relative
-// Newton step tolerance in natural parameters.
+// Newton step tolerance in natural parameters and the relative accuracy
+// requested for an exponential face rate (with unit floor near zero).
 inline TnormResult tnorm_mle_impl(span x,
                              double a = -std::numeric_limits<double>::infinity(),
                              double b = std::numeric_limits<double>::infinity(),
@@ -514,35 +608,35 @@ inline TnormResult tnorm_mle_impl(span x,
     return res;
   }
   const double lo = (a - xbar) / s, hi = (b - xbar) / s;
-  // Face at t2 = 0 matched to the mean (zero in u); interior iff its
-  // second moment exceeds the sample's (one).
+  // Match the exponential face to the sample mean before comparing variances.
+  // Keep the mean correction in residual coordinates so that a narrow
+  // window does not subtract two separately rounded absolute locations.
+  const double correction = norm_detail::mean_rounding(x, xbar);
+  // The compensated residual sum can overflow on widely separated data.
+  // The normal mean already uses scaled summands in that case.
+  const double delta = std::isfinite(correction) ? correction : 0;
+  const double face_sd = std::isfinite(correction) ? norm_detail::exact_center_rms(x, xbar, s) : s;
   TnormStatus face;
-  double face_second;
-  if (!upper) {
-    // a + exponential with mean -lo: rate 1/(xbar - a).
-    face = TnormStatus::ExponentialBoundary;
-    face_second = lo * lo;
-    res.limit_rate = -1 / (xbar - a);
-    res.limit_logLik = n * (std::log(-res.limit_rate) - 1);
-  } else if (!lower) {
-    face = TnormStatus::ReflectedExponentialBoundary;
-    face_second = hi * hi;
-    res.limit_rate = 1 / (b - xbar);
-    res.limit_logLik = n * (std::log(res.limit_rate) - 1);
-  } else {
+  tnorm_detail::ExponentialFace limit;
+  if (lower && upper) {
     face = TnormStatus::TruncatedExponentialBoundary;
-    double t;
-    tnorm_detail::Mass m;
-    if (!tnorm_detail::tilt_with_zero_mean(lo, hi, t, m,maxit)) {
-      res.status = TnormStatus::IterationFailure;
-      return res;
-    }
-    face_second = m.var + m.mean * m.mean;
-    res.limit_rate = t / s;
-    res.limit_logLik = -n * m.log_mass - n * std::log(s);
+    limit = tnorm_detail::finite_exponential_face(x, a, b, xbar, delta, face_sd, tol, maxit);
+  } else {
+    face = lower ? TnormStatus::ExponentialBoundary : TnormStatus::ReflectedExponentialBoundary;
+    const double endpoint = lower ? a : b;
+    const double factor = std::isfinite(xbar - endpoint) ? 1 : 0.5;
+    const double d = std::abs((xbar * factor - endpoint * factor) + delta * factor);
+    const double rate = factor / d;
+    const double ratio = d / (face_sd * factor);
+    limit = {lower ? -rate : rate, n * (std::log(rate) - 1), ratio * ratio,
+             rate > 0 && std::abs(std::fma(rate, d, -factor)) <= tol * factor / 2 &&
+             tol >= 8 * std::numeric_limits<double>::epsilon()};
   }
-  if (face_second <= 1) {
-    res.status = face;
+  res.limit_rate = limit.rate;
+  res.limit_logLik = limit.loglik;
+  const bool face_ok = limit.accurate && std::isfinite(limit.rate) && std::isfinite(limit.loglik);
+  if (limit.variance_ratio <= 1) {
+    res.status = face_ok ? face : TnormStatus::IterationFailure;
     return res;
   }
   double t1 = 0, t2 = -0.5;
@@ -558,7 +652,7 @@ inline TnormResult tnorm_mle_impl(span x,
   res.status = m.ok ? TnormStatus::Ok : TnormStatus::IterationFailure;
   // Faces win ties within 1e-8 n.
   if (res.status == TnormStatus::Ok && res.logLik - res.limit_logLik <= 1e-8 * n)
-    res.status = face;
+    res.status = face_ok ? face : TnormStatus::IterationFailure;
   return res;
 }
 
