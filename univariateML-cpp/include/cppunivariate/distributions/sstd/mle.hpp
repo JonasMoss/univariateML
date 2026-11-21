@@ -48,7 +48,7 @@ enum class SstdStatus {
   SnormBoundary,                                    // nu -> inf: use mlsnorm
   RightHalfNormalBoundary, LeftHalfNormalBoundary,  // and xi -> inf / 0
   RightHalfTBoundary, LeftHalfTBoundary,            // xi -> inf / 0
-  DfTwoBoundary, CertificateFailure                 // nu -> 2 / unresolved certificate
+  DfTwoBoundary, CertificateFailure
 };
 
 struct SstdResult {
@@ -684,6 +684,26 @@ inline SstdResult sstd_mle(span x, double tol=1e-10, int maxit=200,
   if((!std::isnan(fixed_mean)&&!std::isfinite(fixed_mean)) || (!std::isnan(fixed_sd)&&!(fixed_sd>0&&std::isfinite(fixed_sd))) || (!std::isnan(fixed_nu)&&!(fixed_nu>2&&std::isfinite(fixed_nu))) || (!std::isnan(fixed_xi)&&!(fixed_xi>0&&std::isfinite(fixed_xi))))return {NAN,NAN,NAN,NAN,NAN,0,SstdStatus::InvalidStart};
 
   if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,NAN,0,SstdStatus::InvalidStart};
+
+  if (x.size() == 2 && x[0] != x[1] && std::isnan(fixed_mean) &&
+      std::isnan(fixed_sd) && std::isnan(fixed_nu) && std::isnan(fixed_xi)) {
+    const double lo = std::min(x[0], x[1]), hi = std::max(x[0], x[1]);
+    const double gap = hi - lo, root_two = std::sqrt(2.0);
+    const double scale = std::isfinite(gap) ? gap / root_two : hi / root_two - lo / root_two;
+    // At fixed df, the product of the two densities is bounded by the
+    // endpoint half-t product. Its optimized value increases to the
+    // half-normal value as df increases. Reflection gives the second limit.
+    const double ll = distributions::dhnorm(lo,lo,scale,true) +
+                      distributions::dhnorm(hi,lo,scale,true);
+    const double subnormal_spacing = std::numeric_limits<double>::denorm_min() / scale;
+    if (!std::isfinite(ll) || subnormal_spacing > std::min(tol,1e-10))
+      return {NAN,NAN,NAN,NAN,NAN,0,SstdStatus::CertificateFailure};
+    SstdResult result{lo,scale,INFINITY,INFINITY,ll,0,SstdStatus::RightHalfNormalBoundary};
+    result.certified = true;
+    result.stop_detail = limit_detail({lo,scale},ll,StopModel::Hnorm);
+    result.stop_detail.candidates.push_back({{hi,scale},ll,ll,StopModel::ReflectedHnorm});
+    return result;
+  }
 
   auto result = [&]() -> SstdResult {
   if(tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() && std::isfinite(x[0]) &&

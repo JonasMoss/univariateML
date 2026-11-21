@@ -1,0 +1,39 @@
+Workstation, GCC 15.2.0. Final targeted recipe through run4 with TESTTHAT_PARALLEL=FALSE, MAKEFLAGS=-j4 and EMCC_CORES=4.
+Base master; merge base 8b3b2dbaff5ac63404e1eadcc04ebfd58aeeb0ae; tier dev
+Selected 15 families: bbinom, bnbinom, fpareto, gb2, genbeta, gengamma, gompertz, kumar, lst, sged, sgomp, slash, sstd, st, std
++ ctest --test-dir univariateML-cpp/build --output-on-failure --no-tests=error -L dev -R ^distribution_(bbinom|bnbinom|fpareto|gb2|genbeta|gengamma|gompertz|kumar|lst|sged|sgomp|slash|sstd|st|std)(_slow)?$
+100% tests passed, 0 tests failed out of 15
++ ctest --test-dir build/cpp-no-long-double --output-on-failure --no-tests=error -L dev -R ^distribution_(bbinom|bnbinom|fpareto|gb2|genbeta|gengamma|gompertz|kumar|lst|sged|sgomp|slash|sstd|st|std)(_slow)?$
+100% tests passed, 0 tests failed out of 15
++ just test
+[ FAIL 0 | WARN 0 | SKIP 33 | PASS 4997 ]
++ just js-build
++ just js-test
+# tests 289
+# pass 289
+# fail 0
+# cancelled 0
+# skipped 0
+Results: [{"command": ["cmake", "-S", "univariateML-cpp", "-B", "univariateML-cpp/build", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"], "exit": 0, "seconds": 0.06}, {"command": ["cmake", "--build", "univariateML-cpp/build", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 102.03}, {"command": ["ctest", "--test-dir", "univariateML-cpp/build", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(bbinom|bnbinom|fpareto|gb2|genbeta|gengamma|gompertz|kumar|lst|sged|sgomp|slash|sstd|st|std)(_slow)?$"], "exit": 0, "seconds": 206.45}, {"command": ["cmake", "-S", "univariateML-cpp", "-B", "build/cpp-no-long-double", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache", "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"], "exit": 0, "seconds": 0.48}, {"command": ["cmake", "--build", "build/cpp-no-long-double", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 529.72}, {"command": ["ctest", "--test-dir", "build/cpp-no-long-double", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(bbinom|bnbinom|fpareto|gb2|genbeta|gengamma|gompertz|kumar|lst|sged|sgomp|slash|sstd|st|std)(_slow)?$"], "exit": 0, "seconds": 101.61}, {"command": ["just", "test"], "exit": 0, "seconds": 473.93}, {"command": ["just", "js-build"], "exit": 0, "seconds": 79.48}, {"command": ["just", "js-test"], "exit": 0, "seconds": 117.89}]
+
+Quality on the workstation
+gompertz pass 
+kumar pass 
+sgomp pass 
+gengamma pass 
+sstd pass 
+
+Site check on the workstation
+PASS inference browser: {"rows":286,"families":85,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 272 limits, 85 families, 9 fit domains.
+PASS: inference: 286 unique scopes, 85 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 85 unique nodes, 266 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 85 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 85 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, norm, pois, unif, pareto

@@ -26,6 +26,8 @@ inline FitResult fit_kumar(cppunivariate::span x, Held a_arg = {}, Held b_arg = 
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"a",a_arg.supplied},{"b",b_arg.supplied}});
   };
+  if (res.status == cppunivariate::KumarStatus::ShapeOverflow)
+    return done(fail("Kumaraswamy second shape at the maximum exceeds double precision range."));
   if(res.certificate_failure==cppunivariate::KumarCertificateFailure::Budget)
     return done(stop_failure(fail("Kumaraswamy MLE failed: iteration certificate budget exhausted (128 * min(iterlim, 100000)); no verified maximum. Raising iterlim may resolve this stop."),res.stop_detail,outcome_payload(o),{"a","b"}));
   if (res.status == cppunivariate::KumarStatus::Unbounded)

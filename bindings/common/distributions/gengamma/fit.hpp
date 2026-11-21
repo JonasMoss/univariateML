@@ -20,6 +20,9 @@ inline FitResult fit_gengamma(cppunivariate::span x,Held mu_arg={},Held sigma_ar
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"Q",Q_arg.supplied}});
   };
+  if (fit.status == cppunivariate::GengammaStatus::TiedPowerPareto)
+    return done(stop_failure(fail("The gengamma likelihood has no finite maximum. "
+      "Its power and Pareto limits tie. Use `mlpower` or `mlpareto`."),fit.stop_detail,outcome_payload(o),{}));
   if(fit.status==cppunivariate::GengammaStatus::InvalidData)return done(fail("gengamma requires nonempty positive finite data."));
   if(fit.status==cppunivariate::GengammaStatus::InvalidFixed)return done(fail("Invalid held gengamma coefficients."));
   if(fit.status==cppunivariate::GengammaStatus::Unbounded)

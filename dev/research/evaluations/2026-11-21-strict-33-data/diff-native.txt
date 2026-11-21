@@ -1,0 +1,31 @@
+differs ('gengamma', 'two', '{}') ['kind', 'outcome', 'candidates', 'core_status', 'message', 'reason']
+differs ('gompertz', '002798', '{}') ['outcome', 'core_status', 'message', 'reason']
+differs ('gompertz', '002799', '{}') ['outcome', 'core_status', 'message', 'reason']
+differs ('gompertz', '002801', '{}') ['outcome', 'core_status', 'message', 'reason']
+differs ('gompertz', '002802', '{}') ['outcome', 'core_status', 'message', 'reason']
+differs ('gompertz', '002810', '{}') ['outcome', 'core_status', 'message', 'reason']
+differs ('gompertz', 'near-constant', '{}') ['outcome', 'core_status', 'message', 'reason']
+differs ('gompertz', 'offset', '{}') ['outcome', 'core_status', 'message', 'reason']
+differs ('kumar', 'near-constant', '{}') ['outcome', 'candidates', 'core_status', 'message', 'reason', 'loglik_lower']
+differs ('sgomp', '006228', '{}') ['outcome', 'candidates', 'core_status', 'message', 'reason', 'loglik_lower']
+differs ('sgomp', '006229', '{}') ['outcome', 'candidates', 'core_status', 'message', 'reason', 'loglik_lower']
+differs ('sgomp', '006231', '{}') ['outcome', 'candidates', 'core_status', 'message', 'reason', 'loglik_lower']
+differs ('sgomp', '006232', '{}') ['outcome', 'candidates', 'core_status', 'message', 'reason', 'loglik_lower']
+differs ('sgomp', '006240', '{}') ['outcome', 'candidates', 'core_status', 'message', 'reason', 'loglik_lower']
+differs ('sgomp', '010659', '{}') ['outcome', 'candidates', 'core_status', 'message', 'reason', 'loglik_lower']
+differs ('sgomp', '010660', '{}') ['outcome', 'candidates', 'core_status', 'message', 'reason', 'loglik_lower']
+differs ('sgomp', 'near-constant', '{}') ['outcome', 'candidates', 'core_status', 'message', 'reason', 'loglik_lower']
+differs ('sgomp', 'offset', '{}') ['outcome', 'candidates', 'core_status', 'message', 'reason', 'loglik_lower']
+differs ('sstd', '006675', '{}') ['outcome', 'candidates', 'message', 'certified']
+differs ('sstd', 'two', '{}') ['outcome', 'candidates', 'message', 'limit_loglik', 'certified', 'limit_estimates']
+only in baseline ('bbinom', '000000', '{"size": 10.0}')
+only in baseline ('bbinom', '000001', '{"size": 10.0}')
+only in baseline ('bbinom', '000002', '{"size": 10.0}')
+only in baseline ('bbinom', '000003', '{"size": 10.0}')
+only in baseline ('bbinom', '000004', '{"size": 10.0}')
+only in baseline ('bbinom', '000005', '{"size": 10.0}')
+only in baseline ('bbinom', '000006', '{"size": 10.0}')
+only in baseline ('bbinom', '000007', '{"size": 10.0}')
+only in baseline ('bbinom', '000008', '{"size": 10.0}')
+only in baseline ('bbinom', '000009', '{"size": 10.0}')
+strict-33-native cases 868 differing 20 only-new 0 only-old 11037

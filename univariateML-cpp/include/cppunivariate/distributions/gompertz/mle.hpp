@@ -26,7 +26,7 @@ namespace cppunivariate {
 // binary64 (a coefficient overflows, or with a tolerance detail lies below
 // binary64 resolution). InvalidInput: an empty sample, or an observation
 // that is not finite or lies below the support.
-enum class GompertzStatus { Ok = 0, Overdispersed, IterationFailure, Unbounded, NumericalFailure, InvalidInput };
+enum class GompertzStatus { Ok = 0, Overdispersed, IterationFailure, Unbounded, NumericalFailure, InvalidInput, InitialHazardUnderflow };
 
 // Negative log-likelihood of Gompertz(a, b) [actuar: shape=a, rate=b]:
 //   log f = log(a) + b*x - (a/b) * (exp(b*x) - 1)
@@ -136,6 +136,7 @@ inline FitOutcome outcome(const GompertzResult& r) {
     case GompertzStatus::Overdispersed: return FitOutcome::limit(!r.margin_decided);
     case GompertzStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GompertzStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case GompertzStatus::InitialHazardUnderflow:
     case GompertzStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case GompertzStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
   }
@@ -265,6 +266,15 @@ inline GompertzResult gompertz_mle(span x, double tol, int maxit) {
     const double nan=std::numeric_limits<double>::quiet_NaN();
     return {nan,nan,nan,0,GompertzStatus::Unbounded};
   }
+  const auto extrema = std::minmax_element(x.begin(), x.end());
+  const double minimum = *extrema.first, maximum = *extrema.second;
+  // At b0 = z/minimum, b0 times the mean profile score per datum is
+  // at least 1 - b0*(maximum-minimum) - b0*maximum/expm1(z).
+  // A positive score puts the unique maximum above b0. There a(b) is
+  // smaller than a(b0) <= b0/expm1(z), below binary64 even at denorm_min.
+  constexpr double z = 2048;
+  if (minimum > 0 && (maximum - minimum) / minimum < 0.5 / z)
+    return {invalid,invalid,invalid,0,GompertzStatus::InitialHazardUnderflow};
   auto r=gompertz_mle_impl(x,tol,maxit,false);
   if(r.status==GompertzStatus::Overdispersed) {
     double mean=0;for(double v:x)mean+=v/x.size();

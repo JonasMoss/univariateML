@@ -23,7 +23,7 @@ namespace cppunivariate {
 
 enum class KumarCertificateFailure { None, Arithmetic, Budget };
 
-enum class KumarStatus { Ok, InvalidData, Unbounded, IterationFailure };
+enum class KumarStatus { Ok, InvalidData, Unbounded, IterationFailure, ShapeOverflow };
 
 struct KumarResult {
   double a;
@@ -231,6 +231,7 @@ inline FitOutcome outcome(const KumarResult& r) {
     case KumarStatus::Ok: return FitOutcome::estimate(true);
     case KumarStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case KumarStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case KumarStatus::ShapeOverflow: return FitOutcome::failure(OutcomeReason::Evaluation);
     case KumarStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
   }
   return {};

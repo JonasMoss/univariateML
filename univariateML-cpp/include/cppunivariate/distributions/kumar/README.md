@@ -102,10 +102,9 @@ existence:
   - class: near-constant
     outcome: failure(evaluation)
     argument: >-
-      This dossier proves a unique finite MLE with $\hat b = -n/S(\hat a)$. On
-      this class the 80-digit profile maximum is $\hat a = 1.633 \times
-      10^{16}$ with $\hat b \approx 10^{6.0 \times 10^{15}}$, beyond binary64
-      (dev/research/evaluations/2026-11-14-strict-rules-data/near_constant_maximizers.py).
+      The strictly concave shape profile has positive score at
+      $a_0=1024/(-\log\max x)$ on this sample. The profiled second shape
+      increases with the first and already exceeds binary64 at $a_0$.
 ---
 
 The Kumaraswamy distribution models continuous proportions strictly between zero and one. Its two shapes control behaviour near the lower and upper ends of the interval. It offers an elementary quantile function as an alternative to the beta distribution.

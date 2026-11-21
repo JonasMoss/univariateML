@@ -669,3 +669,24 @@ TEST_CASE("gengamma near-constant and tied samples end at the Pareto face") {
     CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Limit);
   }
 }
+
+TEST_CASE("gengamma: the unattained pair supremum has tied power and Pareto faces") {
+  for (const std::vector<double>& x : {std::vector<double>{2.,1.},
+       std::vector<double>{1.,std::nextafter(1.,2.)}}) {
+    const auto fit = cppunivariate::gengamma_mle(mltest::as_span(x), 1e-10, 1);
+    const auto result = cppunivariate::outcome(fit);
+    CHECK(result.kind == cppunivariate::OutcomeKind::Nonexistence);
+    CHECK(result.reason == cppunivariate::OutcomeReason::Unattained);
+    CHECK(result.certified);
+    CHECK(fit.iterations == 0);
+    const auto& d = fit.stop_detail;
+    REQUIRE(d.candidates.size() == 2);
+    CHECK(d.candidates[0].model == cppunivariate::StopModel::Power);
+    CHECK(d.candidates[1].model == cppunivariate::StopModel::Pareto);
+    const double lo = std::min(x[0],x[1]), hi = std::max(x[0],x[1]);
+    const double exponent = 2/std::log1p((hi-lo)/lo);
+    CHECK(d.candidates[0].coef == std::vector<double>{hi,exponent});
+    CHECK(d.candidates[1].coef == std::vector<double>{exponent,lo});
+    CHECK(fit.logLik == doctest::Approx(2*(std::log(exponent)-1)-std::log(lo)-std::log(hi)));
+  }
+}

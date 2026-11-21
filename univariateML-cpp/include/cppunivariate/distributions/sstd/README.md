@@ -183,13 +183,14 @@ existence:
       This dossier (existence statement): $\nu(n-k)$ against $k$ decides
       collapse at the effective ordinary t scale; on the domain $\nu > 2$ the
       infimum $2n-3k$ is approached only as $\nu \downarrow 2$.
-  min_n:
-    value: 3
-    reason: >-
-      Two observations have one outcome for every sample (equivariance), and
-      it has not been decided; until it is recorded under two_point, samples
-      of two are outside the implemented range (strict-rule questions of
-      2026-11-14, Q3).
+  two_point:
+    outcome: limit
+    evidence: >-
+      With two distinct observations, the fixed-degree likelihood is bounded
+      by the endpoint half-t product, which increases strictly with degrees
+      of freedom. The two reflected endpoint half-normal limits give the
+      same supremum, with half-normal scale equal to the gap divided by
+      $\sqrt{2}$.
 ---
 
 The skew Student-t distribution combines heavy tails with asymmetry using the Fernandez-Steel construction. Its location and scale parameters are the mean and standard deviation.
