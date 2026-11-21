@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
 """Refit frozen audit datasets and goldens, checking the public log-density seam.
 
-Run through /tmp/umvl-cpu/run. --family accepts comma-separated family IDs.
-Results are resumable, but use a NEW output after changing production sources.
+Reserve one CPU slot per job. --family accepts comma-separated family IDs.
+Completed probes are cached independently of the JSONL output.
 The timeout is an audit guard, never a fitter status or a claim of nonexistence.
 """
-import argparse, collections, gzip, hashlib, json, math, os, re, signal
-import subprocess, sys, time
+import argparse, collections, gzip, hashlib, json, math, os, re, shutil, signal
+import subprocess, sys, tempfile
 from functools import lru_cache
 from fractions import Fraction
 from pathlib import Path
+from strict_common import ROOT, HERE, ARCHIVE, cached_map, file_fingerprint, fingerprint, pin_threads, positive_jobs
+
+pin_threads()
 import mpmath as mp
+import sympy as sp
+import yaml
 from quality.truth import DISTS, read
 read = lru_cache(maxsize=None)(read)
 from seam_reference import reference
-ROOT = Path(__file__).resolve().parents[2]
 WORK = ROOT/'build/scratch/seam-check'
+CACHE = ROOT/'build/strict/seam.sqlite3'
 
 def error(a,b):
     if a == b: return 0.
@@ -55,7 +60,21 @@ def support_violations(meta, parameters, data):
     return [i for i,x in enumerate(data) if exact(x)<lo or exact(x)>hi or
         (meta['support']['type']=='integer' and x!=math.floor(x))]
 
-def build(families, double=False, source_id=""):
+def probe_paths(families, double, source_id):
+    tag = hashlib.sha256(','.join(families).encode()).hexdigest()[:12]+'-'+source_id[:12]
+    return WORK/('probe-'+tag+'.cpp'), WORK/('probe-'+tag+('-double' if double else ''))
+
+
+def boost_include():
+    return subprocess.check_output(['Rscript','-e','cat(system.file("include",package="BH"))'],text=True).strip()
+
+
+def compiler_flags(double, boost):
+    return ['-std=c++17', '-O2', *(['-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS'] if double else []),
+            '-I'+str(ROOT), '-I'+str(ROOT/'univariateML-cpp/include'), '-I'+boost]
+
+
+def build(families, double=False, source_id="", boost=None):
     WORK.mkdir(parents=True,exist_ok=True)
     ads=adapters(); blocks=[]
     src='#include <iostream>\n#include <iomanip>\n#include <algorithm>\n#include <cstdlib>\n'
@@ -78,16 +97,23 @@ def build(families, double=False, source_id=""):
     while(std::cin>>id>>mask>>k>>n){std::vector<double>holds(k),input(n);
     for(double&v:holds){std::cin>>s;v=std::strtod(s.c_str(),nullptr);}for(double&v:input){std::cin>>s;v=std::strtod(s.c_str(),nullptr);}
     '''+''.join(blocks)+'}}\n'
-    tag=hashlib.sha256(','.join(families).encode()).hexdigest()[:12]+'-'+source_id[:12]
-    source=WORK/('probe-'+tag+'.cpp');source.write_text(src)
-    boost=subprocess.check_output(['Rscript','-e','cat(system.file("include",package="BH"))'],text=True).strip()
-    exe=WORK/('probe-'+tag+('-double' if double else ''))
-    subprocess.run(['ccache','c++','-std=c++17','-O2',*(['-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS'] if double else []),'-I'+str(ROOT),'-I'+str(ROOT/'univariateML-cpp/include'),'-I'+boost,str(source),'-o',str(exe)],check=True)
+    source, exe = probe_paths(families, double, source_id)
+    if boost is None:
+        boost = boost_include()
+    with tempfile.TemporaryDirectory(dir=WORK) as staging:
+        staged_source = Path(staging)/source.name
+        staged_exe = Path(staging)/exe.name
+        staged_source.write_text(src)
+        staged_source.replace(source)
+        subprocess.run(['ccache', 'c++', *compiler_flags(double, boost),
+                        str(source), '-o', str(staged_exe)], check=True)
+        staged_exe.replace(exe)
     return exe
 
-def cases(families):
-    path=ROOT/'dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz'
-    for c in json.loads(gzip.decompress(path.read_bytes())):
+def cases(families, archive_bytes=None):
+    if archive_bytes is None:
+        archive_bytes = ARCHIVE.read_bytes()
+    for c in json.loads(gzip.decompress(archive_bytes)):
         if c['family'] in families: yield dict(c,source='archive')
     for ident in families:
         meta,g=read(DISTS/ident)
@@ -98,72 +124,127 @@ def cases(families):
 
 def timeout(*_): raise TimeoutError('independent reference wall-clock guard')
 
+def probe_task(task):
+    c, exe, guard = task
+    signal.signal(signal.SIGALRM, timeout)
+    ident=c['family'];meta,g=read(DISTS/ident);names=[p['name'] for p in meta['params']]
+    holds=[float(c['held'].get(n,0)) for n in names];mask=sum(1<<i for i,n in enumerate(names) if n in c['held'])
+    line=' '.join(map(str,[ident,mask,len(names),len(c['data']),*holds,*c['data']]))+'\n'
+    r=dict(c)
+    try:
+        result=subprocess.run([str(exe)],input=line,text=True,capture_output=True,check=True,timeout=guard)
+        cells=result.stdout.strip().split('\t')
+        if cells[0]!='ok':r.update(outcome='stop',reason='\t'.join(cells[1:]))
+        else:
+            vals=list(map(float,cells[1:]));reported=vals[0];pars=vals[1:1+len(names)];densities=vals[1+len(names):]
+            assert len(densities)==len(c['data'])
+            density=math.fsum(densities)
+            outside=support_violations(meta,pars,c['data'])
+            r.update(outcome='pass',parameters=pars,reported=reported,dpqr=density,error=error(reported,density),outside_support=outside)
+            if r['error']>1e-10 or outside:
+                r['outcome']='mismatch';signal.alarm(120)
+                try:
+                    exp=max([abs(math.log10(abs(v))) for v in pars if v and math.isfinite(v)]+[0])
+                    mp.mp.dps=min(1600,max(100,int(4*exp)+100))
+                    ref=reference(DISTS/ident,meta,dict(zip(names,pars)),c['data'])
+                    mp.mp.dps+=50
+                    ref2=reference(DISTS/ident,meta,dict(zip(names,pars)),c['data'])
+                    assert error(ref,ref2)<1e-20,(ref,ref2)
+                    r.update(reference=ref,fitter_error=error(reported,ref),dpqr_error=error(density,ref))
+                    r['attribution']='support' if ref==-math.inf else 'both' if r['fitter_error']>1e-10 and r['dpqr_error']>1e-10 else 'fitter' if r['fitter_error']>1e-10 else 'dpqr' if r['dpqr_error']>1e-10 else 'summation margin'
+                except Exception as e:r.update(attribution='open reference',reason=f'{type(e).__name__}: {e}')
+                finally:signal.alarm(0)
+    except subprocess.TimeoutExpired:r.update(outcome='open fit',reason=f'no terminal result within {guard}s')
+    except Exception as e:r.update(outcome='open fit',reason=f'{type(e).__name__}: {e}')
+    return r
+
+
+def probe_cacheable(row):
+    return row['outcome'] != 'open fit' and row.get('attribution') != 'open reference'
+
+
+def source_fingerprint():
+    sources = sorted((ROOT/'univariateML-cpp/include').rglob('*.hpp'))
+    sources += sorted((ROOT/'bindings/common').rglob('*.hpp'))
+    for pattern in ('README.md', '*.py', 'test.cpp'):
+        sources += sorted(DISTS.glob('*/'+pattern))
+    sources += sorted((HERE/'quality').rglob('*.py'))
+    sources += [HERE/name for name in ('seam-check.py', 'seam_reference.py', 'strict_common.py')]
+    return file_fingerprint(sources)
+
+
 def main():
-    ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--family',help='comma-separated family IDs (default all 99)')
-    ap.add_argument('--output',type=Path,required=True,help='resumable JSONL; .summary.json is also written')
-    ap.add_argument('--timeout',type=float,default=30)
-    ap.add_argument('--no-long-double',action='store_true')
-    ap.add_argument('--case',type=int,action='append',help='restrict to archived case index; repeatable')
-    args=ap.parse_args(); families=sorted(args.family.split(',') if args.family else adapters())
-    args.output.parent.mkdir(parents=True,exist_ok=True)
-    sources=sorted((ROOT/'univariateML-cpp/include').rglob('*.hpp'))+sorted((ROOT/'bindings/common').rglob('*.hpp'))
-    sources += sorted(DISTS.glob('*/README.md'))+sorted(DISTS.glob('*/truth.py'))+sorted(DISTS.glob('*/golden.json'))
-    sources += sorted((ROOT/'dev/validation/quality').rglob('*.py'))
-    sources += [Path(__file__),Path(__file__).with_name('seam_reference.py')]
-    fingerprint=hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode()+p.read_bytes() for p in sources)).hexdigest()
-    provenance=args.output.with_suffix('.provenance.json')
-    if provenance.exists():
-        saved=json.loads(provenance.read_text())
-        if saved['source_sha256']!=fingerprint or saved['families']!=families or saved['no_long_double']!=args.no_long_double or saved['case']!=args.case or saved['timeout']!=args.timeout:
-            raise SystemExit('source/selection changed: use a new --output, do not reuse stale fits')
-    elif args.output.exists():
-        raise SystemExit('existing output lacks source provenance: use a new --output')
-    else:
-        provenance.write_text(json.dumps(dict(source_sha256=fingerprint,families=families,
-            no_long_double=args.no_long_double,timeout=args.timeout,case=args.case),indent=2)+'\n')
-    print('building',len(families),'families',flush=True)
-    exe=build(families,args.no_long_double,fingerprint)
-    print('replaying frozen inputs',flush=True)
-    previous=[json.loads(l) for l in args.output.read_text().splitlines()] if args.output.exists() else []
-    done={(r['family'],r['source'],r['index']) for r in previous}; records=previous
-    signal.signal(signal.SIGALRM,timeout)
-    with args.output.open('a') as dest:
-        for c in cases(families):
-            if args.case is not None and (c['source']!='archive' or c['index'] not in args.case): continue
-            key=c['family'],c['source'],c['index']
-            if key in done: continue
-            ident=c['family'];meta,g=read(DISTS/ident);names=[p['name'] for p in meta['params']]
-            holds=[float(c['held'].get(n,0)) for n in names];mask=sum(1<<i for i,n in enumerate(names) if n in c['held'])
-            line=' '.join(map(str,[ident,mask,len(names),len(c['data']),*holds,*c['data']]))+'\n'
-            r=dict(c)
-            try:
-                result=subprocess.run([str(exe)],input=line,text=True,capture_output=True,check=True,timeout=args.timeout)
-                cells=result.stdout.strip().split('\t')
-                if cells[0]!='ok':r.update(outcome='stop',reason='\t'.join(cells[1:]))
-                else:
-                    vals=list(map(float,cells[1:]));reported=vals[0];pars=vals[1:1+len(names)];densities=vals[1+len(names):]
-                    assert len(densities)==len(c['data'])
-                    density=math.fsum(densities)
-                    outside=support_violations(meta,pars,c['data'])
-                    r.update(outcome='pass',parameters=pars,reported=reported,dpqr=density,error=error(reported,density),outside_support=outside)
-                    if r['error']>1e-10 or outside:
-                        r['outcome']='mismatch';signal.alarm(120)
-                        try:
-                            exp=max([abs(math.log10(abs(v))) for v in pars if v and math.isfinite(v)]+[0])
-                            mp.mp.dps=min(1600,max(100,int(4*exp)+100))
-                            ref=reference(DISTS/ident,meta,dict(zip(names,pars)),c['data'])
-                            mp.mp.dps+=50
-                            ref2=reference(DISTS/ident,meta,dict(zip(names,pars)),c['data'])
-                            assert error(ref,ref2)<1e-20,(ref,ref2)
-                            r.update(reference=ref,fitter_error=error(reported,ref),dpqr_error=error(density,ref))
-                            r['attribution']='support' if ref==-math.inf else 'both' if r['fitter_error']>1e-10 and r['dpqr_error']>1e-10 else 'fitter' if r['fitter_error']>1e-10 else 'dpqr' if r['dpqr_error']>1e-10 else 'summation margin'
-                        except Exception as e:r.update(attribution='open reference',reason=f'{type(e).__name__}: {e}')
-                        finally:signal.alarm(0)
-            except subprocess.TimeoutExpired:r.update(outcome='open fit',reason=f'no terminal result within {args.timeout}s')
-            except Exception as e:r.update(outcome='open fit',reason=f'{type(e).__name__}: {e}')
-            dest.write(json.dumps(r)+'\n');dest.flush();records.append(r)
-            if len(records)%100==0:print(len(records),ident,collections.Counter(r['outcome'] for r in records),flush=True)
-    summary=dict(records=len(records),by_family={i:dict(collections.Counter(r['outcome'] for r in records if r['family']==i)) for i in families},attributions=dict(collections.Counter(r.get('attribution') for r in records if r['outcome']=='mismatch')),head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),compiler=subprocess.check_output(['c++','--version'],text=True).splitlines()[0])
-    args.output.with_suffix('.summary.json').write_text(json.dumps(summary,indent=2)+'\n');print(summary,flush=True)
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--family', help='comma-separated family IDs (default: all)')
+    ap.add_argument('--output', type=Path, required=True, help='JSONL; .summary.json is also written')
+    ap.add_argument('--timeout', type=float, default=30)
+    ap.add_argument('--no-long-double', action='store_true')
+    ap.add_argument('--case', type=int, action='append', help='restrict to archived case index; repeatable')
+    ap.add_argument('--jobs', type=positive_jobs, default=1, help='parallel probe workers (default: 1)')
+    ap.add_argument('--no-cache', action='store_true', help='refit the selected probes without reading or writing the cache')
+    ap.add_argument('--cache', type=Path, default=CACHE, help='result cache path (default: build/strict/seam.sqlite3)')
+    args = ap.parse_args()
+    families = sorted(args.family.split(',') if args.family else adapters())
+    archive_bytes = ARCHIVE.read_bytes()
+    selected = [c for c in cases(families, archive_bytes)
+                if args.case is None or (c['source'] == 'archive' and c['index'] in args.case)]
+
+    boost = boost_include()
+    compiler = subprocess.check_output(['c++', '-v'], stderr=subprocess.STDOUT, text=True)
+    compiler_path = Path(shutil.which('c++')).resolve()
+    include_environment = {name: os.environ.get(name) for name in (
+        'CPATH', 'CPLUS_INCLUDE_PATH', 'COMPILER_PATH', 'GCC_EXEC_PREFIX', 'LIBRARY_PATH')}
+    # BH may supply Boost, with the compiler's system headers as the fallback.
+    boost_version = Path(boost or '/usr/include')/'boost/version.hpp'
+    boost_id = hashlib.sha256(boost_version.read_bytes()).hexdigest() if boost_version.is_file() else None
+    source_id = source_fingerprint()
+    probe_id = fingerprint(source_id, families, compiler, str(compiler_path),
+                           hashlib.sha256(compiler_path.read_bytes()).hexdigest(),
+                           compiler_flags(args.no_long_double, boost), include_environment, boost_id)
+    cache_id = fingerprint(probe_id, hashlib.sha256(archive_bytes).hexdigest(),
+                           args.timeout, sys.version, mp.__version__, sp.__version__, yaml.__version__)
+    _, exe = probe_paths(families, args.no_long_double, probe_id)
+
+    def prepare():
+        if not exe.is_file():
+            print('building', len(families), 'families', flush=True)
+            build(families, args.no_long_double, probe_id, boost=boost)
+        print('replaying frozen inputs', flush=True)
+
+    items = [(fingerprint(cache_id, c), (c, exe, args.timeout)) for c in selected]
+    results = cached_map(probe_task, items, args.jobs, None if args.no_cache else args.cache,
+                         cacheable=probe_cacheable, prepare=prepare)
+    outcomes = collections.defaultdict(collections.Counter)
+    counts = collections.Counter()
+    attributions = collections.Counter()
+    record_count = 0
+    cache_hits = 0
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=args.output.parent) as staging:
+        staged_output = Path(staging)/args.output.name
+        with staged_output.open('w') as dest:
+            for record_count, (hit, row) in enumerate(results, 1):
+                cache_hits += hit
+                ident = row['family']
+                outcome = row['outcome']
+                outcomes[ident][outcome] += 1
+                counts[outcome] += 1
+                if outcome == 'mismatch':
+                    attributions[row.get('attribution')] += 1
+                dest.write(json.dumps(row)+'\n')
+                if record_count % 100 == 0:
+                    print(record_count, ident, counts, flush=True)
+        staged_output.replace(args.output)
+    provenance = dict(source_sha256=source_id, probe_sha256=probe_id, cache_sha256=cache_id, families=families,
+                      no_long_double=args.no_long_double, timeout=args.timeout, case=args.case)
+    args.output.with_suffix('.provenance.json').write_text(json.dumps(provenance, indent=2)+'\n')
+    summary = dict(records=record_count, by_family={i: dict(outcomes[i]) for i in families},
+                   attributions=dict(attributions),
+                   head=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+                   compiler=subprocess.check_output(['c++', '--version'], text=True).splitlines()[0])
+    args.output.with_suffix('.summary.json').write_text(json.dumps(summary, indent=2)+'\n')
+    print(summary, flush=True)
+    print('seam-check: %d/%d probes cached' % (cache_hits, record_count), flush=True)
+
+
 if __name__=='__main__': main()

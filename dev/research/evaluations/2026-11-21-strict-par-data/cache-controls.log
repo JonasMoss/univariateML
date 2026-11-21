@@ -1,0 +1,18 @@
+replay-empty 0/3 cached
+replay-warm 3/3 cached
+replay-disabled 0/3 cached
+replay-precision 0/3 cached
+replay-budget 0/3 cached
+replay-original-options 3/3 cached
+replay-source-changed 0/3 cached
+replay-source-restored 3/3 cached
+replay-archive-changed 0/3 cached
+replay-invalid-digest rejected
+seam-empty 0/65 cached
+seam-warm 65/65 cached
+seam-disabled 0/65 cached
+seam-double-flags 0/65 cached
+seam-double-warm 65/65 cached
+seam-guard-changed 0/65 cached
+seam-original-guard 65/65 cached
+seam-guard-changed reused the executable fingerprint

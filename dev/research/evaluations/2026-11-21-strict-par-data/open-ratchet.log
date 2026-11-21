@@ -1,0 +1,3 @@
+cert-replay: failures by check: none
+cert-replay: 0 listed as known, 0 new, 1 listed but passing
+  FIXED cert-replay:root|native|lomax|class|base6 (synthetic-control)

@@ -1,0 +1,12 @@
+{
+  "compile": {
+    "calls": 1,
+    "cpu_s": 112.538847,
+    "wall_s": 112.59090319200186
+  },
+  "fit and density subprocess": {
+    "calls": 9694,
+    "cpu_s": 192.20022,
+    "wall_s": 194.3491576454835
+  }
+}

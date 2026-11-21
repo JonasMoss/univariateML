@@ -6,7 +6,10 @@ entry is keyed 'check|mode|family|source|case' and names a card. Each script
 owns some checks: it reports new failures of those checks, and only those
 checks' listed entries can be pruned by it.
 """
-import gzip, importlib.util, json, math, re, sys
+import argparse, gzip, hashlib, importlib.util, json, math, os, re, sqlite3, sys
+from concurrent.futures import ProcessPoolExecutor
+from contextlib import closing, contextmanager
+from multiprocessing import get_context
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -16,6 +19,79 @@ KNOWN = HERE/'strict-known.json'
 NOTE = ('Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, '
         'fit-refine.py, cert-replay.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when '
         'fixed (--prune); adding one (--add) is a reviewed decision with a card.')
+
+
+def positive_jobs(value):
+    jobs = int(value)
+    if jobs < 1:
+        raise argparse.ArgumentTypeError('jobs must be at least 1')
+    return jobs
+
+
+def pin_threads():
+    """Call before importing numerical libraries or starting workers."""
+    for key in ('OPENBLAS_NUM_THREADS', 'OMP_NUM_THREADS', 'MKL_NUM_THREADS',
+                'BLIS_NUM_THREADS', 'VECLIB_MAXIMUM_THREADS', 'NUMEXPR_NUM_THREADS'):
+        os.environ[key] = '1'
+
+
+def ordered_map(function, tasks, jobs):
+    if jobs == 1:
+        yield from map(function, tasks)
+    elif tasks:
+        with ProcessPoolExecutor(max_workers=jobs, mp_context=get_context('spawn')) as pool:
+            yield from pool.map(function, tasks)
+
+
+def fingerprint(*parts):
+    return hashlib.sha256(json.dumps(parts, separators=(',', ':')).encode()).hexdigest()
+
+
+def file_fingerprint(paths):
+    return fingerprint([(str(path.relative_to(ROOT)), hashlib.sha256(path.read_bytes()).hexdigest())
+                        for path in sorted(set(paths))])
+
+
+@contextmanager
+def result_cache(path):
+    """Share complete results across runs. Only the driver opens the database."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with closing(sqlite3.connect(path, timeout=60)) as db:
+        db.execute('CREATE TABLE IF NOT EXISTS results (key TEXT PRIMARY KEY, value TEXT NOT NULL)')
+        yield db
+
+
+def cached_map(function, items, jobs, cache_path, *, cacheable=lambda result: True,
+               prepare=lambda: None):
+    """Yield (cache hit, result) in input order. Workers only evaluate misses."""
+    if cache_path is None:
+        if items:
+            prepare()
+        for result in ordered_map(function, [task for _, task in items], jobs):
+            yield False, result
+        return
+    with result_cache(cache_path) as db:
+        hits = [db.execute('SELECT value FROM results WHERE key = ?', (key,)).fetchone()
+                for key, _ in items]
+        misses = [task for (_, task), hit in zip(items, hits) if hit is None]
+        if misses:
+            prepare()
+        pending = []
+        with closing(ordered_map(function, misses, jobs)) as results:
+            for (key, _), hit in zip(items, hits):
+                if hit is not None:
+                    yield True, json.loads(hit[0])
+                    continue
+                result = next(results)
+                if cacheable(result):
+                    pending.append((key, json.dumps(result)))
+                    if len(pending) == 128:
+                        with db:
+                            db.executemany('INSERT OR REPLACE INTO results VALUES (?, ?)', pending)
+                        pending.clear()
+                yield False, result
+        with db:
+            db.executemany('INSERT OR REPLACE INTO results VALUES (?, ?)', pending)
 
 _snapshot = None
 def snapshot_module():

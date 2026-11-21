@@ -1,0 +1,40 @@
+[old]
+cert-replay: 8715 CPU s, 50 digits
+seam-check native: 3 guarded fits replayed with a 300 s guard
+seam-check double: 2 guarded fits replayed with a 300 s guard
+[serial]
+cert-replay: 9484.0 wall s, 50 digits, 0/13054 records cached
+seam-check native: 0/9694 probes cached
+seam-check native: 0/3 probes cached
+seam-check native: 3 guarded fits replayed with a 300 s guard
+seam-check double: 0/9694 probes cached
+seam-check double: 0/3 probes cached
+seam-check double: 3 guarded fits replayed with a 300 s guard
+[cold]
+cert-replay: 3715.2 wall s, 50 digits, 0/13054 records cached
+seam-check native: 0/9694 probes cached
+seam-check native: 0/3 probes cached
+seam-check native: 3 guarded fits replayed with a 300 s guard
+seam-check double: 0/9694 probes cached
+seam-check double: 0/3 probes cached
+seam-check double: 3 guarded fits replayed with a 300 s guard
+[warm]
+cert-replay: 0.6 wall s, 50 digits, 13054/13054 records cached
+seam-check native: 9691/9694 probes cached
+seam-check native: 3/3 probes cached
+seam-check native: 3 guarded fits replayed with a 300 s guard
+seam-check double: 9691/9694 probes cached
+seam-check double: 3/3 probes cached
+seam-check double: 3 guarded fits replayed with a 300 s guard
+[warm-serial]
+cert-replay: 0.6 wall s, 50 digits, 13054/13054 records cached
+seam-check native: 9691/9694 probes cached
+seam-check native: 2/2 probes cached
+seam-check native: 2 guarded fits replayed with a 300 s guard
+seam-check double: 9691/9694 probes cached
+[touched]
+cert-replay: 5.5 wall s, 50 digits, 12846/13054 records cached
+seam-check native: 9692/9694 probes cached
+seam-check native: 2/2 probes cached
+seam-check native: 2 guarded fits replayed with a 300 s guard
+seam-check double: 9694/9694 probes cached
