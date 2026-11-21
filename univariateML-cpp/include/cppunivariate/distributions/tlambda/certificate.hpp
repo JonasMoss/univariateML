@@ -661,6 +661,23 @@ inline TlambdaResult shape_only(span x,double tol,int maxit,double mu,double sig
   out.certified=true;out.status=TlambdaStatus::Ok;
   out.certificate_lower=best;out.certificate_upper=std::max({bestupper,discarded,best});return out;
 }
+// For D=Q', Cauchy-Schwarz gives DD'' >= 3(D')^2/2 on the fitted
+// branch, so D^(-1/2) lies above its chord. Integrating the inverse
+// square of that chord gives (Q(v)-Q(u))/sqrt(D(u)D(v)) <= v-u.
+// Only the uniform member can attain one, with both endpoints in contact.
+inline TlambdaResult pair_fit(double lo,double hi,double tol,int maxit) {
+  auto out=tlambda_detail::uniform_fit(lo,hi,2,1,maxit,tol);
+  if(out.status!=TlambdaStatus::Ok)return out;
+  const double gap=hi-lo;
+  const double halfwidth=std::isfinite(gap)?gap/2:hi/2-lo/2;
+  if(std::abs(out.sigma-halfwidth)/halfwidth>tol)return stopped(out);
+  const double ideal=-2*tlambda_detail::logstandard(hi,lo,1);
+  out.certified=true;
+  out.certificate_lower=out.logLik-margin(out.logLik);
+  out.certificate_upper=ideal+margin(ideal);
+  return out;
+}
+
 inline TlambdaResult fit(span x,double tol,int maxit,double l,double mu=NAN,double sigma=NAN) {
   const bool hl=std::isfinite(l),hm=std::isfinite(mu),hs=std::isfinite(sigma);
   if((!std::isnan(mu) && !hm) || (!std::isnan(sigma) && (!hs || sigma<=0)))
@@ -676,6 +693,8 @@ inline TlambdaResult fit(span x,double tol,int maxit,double l,double mu=NAN,doub
     if(collapse.status!=TlambdaStatus::InvalidData)return collapse;
   }
   if(!hl && std::isnan(l) && hm && hs)return shape_only(x,tol,maxit,mu,sigma);
+  if(!hl && !hm && !hs && x.size()==2 && x[0]!=x[1])
+    return pair_fit(std::min(x[0],x[1]),std::max(x[0],x[1]),tol,maxit);
   const auto legacy=tlambda_mle_impl(x,tol,maxit,l,mu,sigma);
   if(legacy.status==TlambdaStatus::InvalidData && std::isnan(l) && !hm && !hs && x.size()>=2 && tol>0 && std::isfinite(tol) && maxit>0) {
     std::vector<double> y(x.begin(),x.end());

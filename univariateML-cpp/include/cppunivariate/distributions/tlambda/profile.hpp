@@ -136,7 +136,19 @@ inline TlambdaResult profile(span x,double tol,int maxit,double l=NAN,double mu=
   if(!hs && hm && !hl && std::count(y.begin(),y.end(),mu)){bad.status=TlambdaStatus::Unbounded;return bad;}
   if(!hm && !hs) {
     std::size_t run=1;
-    for(std::size_t j=1;j<y.size();++j){run=y[j]==y[j-1]?run+1:1;if(hl&&l<0?run*std::abs(l)>=y.size()-run:2*run>=y.size()) {if(!hl && 2*run>y.size())bad.status=TlambdaStatus::Unbounded;return bad;}}
+    bool half_tie=false;
+    for(std::size_t j=1;j<y.size();++j) {
+      run=y[j]==y[j-1]?run+1:1;
+      const std::size_t rest=y.size()-run;
+      if(hl) {
+        if(l<0?run*std::abs(l)>=rest:run>=rest)return bad;
+      } else {
+        // Keep scanning at equality: this run or a later one may exceed half.
+        if(run>rest){bad.status=TlambdaStatus::Unbounded;return bad;}
+        half_tie=half_tie || run==rest;
+      }
+    }
+    if(half_tie)return bad;
   }
   const double centre=y.front()/2+y.back()/2;
   const double origin=hm?mu:y[y.size()/2];

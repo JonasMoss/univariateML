@@ -1,0 +1,13 @@
+archive 007523 0 {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} -> {'certified': True, 'kind': 'estimate', 'reason': 'none', 'unique': True}
+  data: [0.04686573153462061, -0.8301962549719305]
+  changed fields: candidates, certified, core_status, estimates, iterations, kind, limit_estimates, limit_loglik, logLik, loglik_lower, loglik_upper, message, outcome, reason, restricted, unique
+archive 007526 0 {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} -> {'certified': True, 'kind': 'nonexistence', 'reason': 'unbounded', 'unique': True}
+  data: [0.04686573153462061, 0.04686573153462061, 0.04686573153462061, 0.04686573153462061, -0.8301962549719305, -0.9073943855660944]
+  changed fields: core_status, kind, message, outcome, reason
+class ties 0 {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} -> {'certified': True, 'kind': 'nonexistence', 'reason': 'unbounded', 'unique': True}
+  data: [0.018622432622054846, 0.018622432622054846, 0.018622432622054846, 0.018622432622054846, -0.9513516796640419, 1.0461562483946878]
+  changed fields: core_status, kind, message, outcome, reason
+class two 0 {'certified': False, 'kind': 'failure', 'reason': 'evaluation', 'unique': True} -> {'certified': True, 'kind': 'estimate', 'reason': 'none', 'unique': True}
+  data: [-0.9513516796640419, 1.0461562483946878]
+  changed fields: candidates, certified, core_status, estimates, iterations, kind, limit_estimates, limit_loglik, logLik, loglik_lower, loglik_upper, message, outcome, reason, restricted, unique
+205 compared, 4 changed, 168 estimate pairs, maximum relative coefficient move 0

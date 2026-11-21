@@ -19,7 +19,8 @@ struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaSta
 namespace tlambda_detail {
 inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int maxit,double tol=1e-10) {
   maxit = static_cast<int>(solver_budget(maxit));
-  const double mu=lo+(hi-lo)/2;
+  const double gap=hi-lo;
+  const double mu=std::isfinite(gap)?lo+gap/2:lo/2+hi/2;
   double sigma=std::max(mu-lo,hi-mu)*lambda;
   for(int j=0;j<maxit && valid(mu,sigma,lambda) &&
       (slack(lo,mu,sigma,lambda)<0 || slack(hi,mu,sigma,lambda)<0);++j)
