@@ -22,3 +22,11 @@ shared; single-slot runs that see a waiting `run4` use only slots 4 and 5. Check
 single runs and a `run4` waiting, a fourth single run waited for slot 4 or 5 instead of taking 0-2, the `run4` held
 no slot while waiting and started as soon as slot 3 was free; with no `run4` waiting, single runs still fall back to
 the low slots. Previous wrapper kept as `umvl-cpu-wrapper.py.bak-20261121`.
+
+**Memory, 2026-11-21 13:10.** The slots bound cores, not memory. A job's hand-written R test script ran testthat
+with four parallel workers on an uncompiled package copy with `MAKEFLAGS=-j4`; each worker compiled the unity
+build, 16 compilers took about 10 GB, and the kernel OOM killer hit the desktop session; the user manager then
+stopped all four job units. Since then every job and batch-check unit runs in `~/.config/systemd/user/umvl-work.slice`
+(`MemoryHigh=14G`, `MemoryMax=16G`, `CPUWeight=20`), so a runaway build is killed inside the slice, and the job brief
+requires the recipes for builds and tests, a compiled package before any parallel testthat run, and `MAKEFLAGS` no
+larger than the slots held.
