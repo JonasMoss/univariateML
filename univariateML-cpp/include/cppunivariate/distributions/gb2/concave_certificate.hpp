@@ -23,9 +23,11 @@ inline Gb2Result fit(const trgamma_detail::LogData& d,double q,double a,
     if(!(A>0)||!std::isfinite(e.ll)||!std::isfinite(out.logLik)||
        !(out.scale>0)||!std::isfinite(out.scale)||
        !(out.shape2>0)||!std::isfinite(out.shape2))return out;
-    // Euclidean ball radius implies relative power error and log-scale error
-    // below target/2, including the nonlinear c/A transformation.
-    const double radius=target/(4*(1+1/A+d.sd/A+d.sd*std::abs(c)/(A*A)));
+    // The ball is in the free coordinates. If A is held, log b is linear
+    // in c with slope sd/A = 1/a and the radius need not keep A positive.
+    const double scale_sensitivity=d.sd/A;
+    const double radius=ha?target/(4*scale_sensitivity):
+      target/(4*(1+1/A+scale_sensitivity+d.sd*std::abs(c)/(A*A)));
     double gram00=0,gram01=0,gram11=0,score_scale=1,ll_scale=1;
     double gradient_error=0,curvature_error=0,input_error=0;
     for(double z:d.u) {
@@ -39,7 +41,7 @@ inline Gb2Result fit(const trgamma_detail::LogData& d,double q,double a,
       const double du=std::min(1.,dt/4);
       gradient_error+=(ha?0:(p+q)*(dv+(std::abs(v)+dv)*du))+(hb?0:(p+q)*du);
       input_error+=(p+q)*dt+dv*d.sd;
-      const double bound=std::abs(t)+dt+radius*(std::abs(v)+dv+(hb?0:1));
+      const double bound=std::abs(t)+dt+radius*((ha?0:std::abs(v)+dv)+(hb?0:1));
       const double ew=std::exp(-bound),w=ew/((1+ew)*(1+ew));
       gram00+=w*v*v;gram01-=w*v;gram11+=w;
       if(!ha)curvature_error+=(p+q)*w*(2*std::hypot(v,hb?0.:1.)*dv+dv*dv);
@@ -47,21 +49,21 @@ inline Gb2Result fit(const trgamma_detail::LogData& d,double q,double a,
       score_scale+=1+(p+q)*(1+std::abs(v));
     }
     const double k=p+q;
-    const double h00=d.n/((A+radius)*(A+radius))+k*gram00;
+    const double h00=ha?0:d.n/((A+radius)*(A+radius))+k*gram00;
     const double h01=k*gram01,h11=k*gram11;
     // det/trace is a lower bound on the smaller eigenvalue; subtract a
     // practical margin for accumulated products and cancellation.
     double m=ha?h11:hb?h00:(h00*h11-h01*h01-128*eps*(h00*h11+h01*h01))/(h00+h11);
     m=m*(1-128*eps*(1+d.n))-curvature_error;
     const double ga=ha?0:e.ga,gc=hb?0:e.gc;
-    const double margin=8*eps*(score_scale+d.n/A);
+    const double margin=8*eps*(score_scale+(ha?0:d.n/A));
     const double g=std::hypot(ga,gc)+margin+gradient_error;
     const double error=input_error+128*eps*(ll_scale+std::abs(e.ll)+std::abs(d.sum)+d.n*(1+std::abs(std::log(d.sd))+std::abs(std::log(A))+std::abs(gb2_detail::logbeta(p,q))));
     if(!std::isfinite(error))return out;
     out.stop_detail.candidates={{{q,out.shape2,p,out.scale},out.logLik-error,out.logLik+error,StopModel::None}};
     const bool representable=hb || std::nextafter(out.scale,INFINITY)-out.scale<target*out.scale/4;
-    if(representable && radius>0 && radius<A/2 && m>0 && std::isfinite(m) && g<m*radius/2 &&
-       128*eps*(1+std::abs(logb)+std::abs(d.mean)+d.sd*(1+std::abs(c))/A)<target/4) {
+    if(representable && radius>0 && (ha || radius<A/2) && m>0 && std::isfinite(m) && g<m*radius/2 &&
+       (hb || 4*eps*(1+(d.relative?std::abs(rel_logb):std::abs(logb)+std::abs(d.mean))+d.sd*std::abs(c)/A)<target/4)) {
       out.status=Gb2Status::Ok;
       out.stop_detail.loglik_lower=out.logLik-error;
       out.stop_detail.loglik_upper=out.logLik+error+g*radius;

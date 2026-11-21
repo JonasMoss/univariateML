@@ -274,7 +274,10 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-28-gb2.md)
 
 ## R notes
 
-With `min = 0`, fits agree with `mlgb2(x)` for the same holds. Faces are compared within $10^{-8}n$ log-likelihood units; this numerical tolerance can reject a tied or slightly better finite fit. Errors name the shifted limiting fit where available. No double-Pareto fitter is provided. All-held fits evaluate the supplied density.
+With `min = 0`, estimates agree with `mlgb2(x)` for the same holds.
+A stalled held-power fit on concentrated excesses can retain the
+conditional two-shape solution at a trial scale as a finite likelihood
+witness while the joint search remains unresolved. Faces are compared within $10^{-8}n$ log-likelihood units; this numerical tolerance can reject a tied or slightly better finite fit. Errors name the shifted limiting fit where available. No double-Pareto fitter is provided. All-held fits evaluate the supplied density.
 
 ## Decision history
 

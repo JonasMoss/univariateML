@@ -264,6 +264,7 @@ inline Point refine(const trgamma_detail::LogData &d,std::array<double,2> v,
 
 } // namespace cppunivariate
 #include "concave_certificate.hpp"
+#include "concentrated_beta.hpp"
 #include "shape_power_certificate.hpp"
 namespace cppunivariate {
 inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
@@ -278,10 +279,13 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   if(!(tol>0)||!std::isfinite(tol)||maxit<1||x.empty())return bad;
   std::vector<double> logs(x.size());
   for(std::size_t i=0;i<x.size();++i){if(!(x[i]>0)||!std::isfinite(x[i]))return bad;logs[i]=std::log(x[i]);}
-  // Held beta shapes with free power or scale: near-constant samples are
-  // standardized from relative logs (the binary64 logs may coincide).
+  // Relative logs preserve small differences on concentrated data and
+  // avoid carrying a large common log origin into the score enclosure.
   const bool relative_concave=!std::isnan(p)&&!std::isnan(q)&&(std::isnan(a)||std::isnan(b))&&
-    trgamma_detail::relative_log_regime(x);
+    (trgamma_detail::relative_log_regime(x) ||
+     (std::abs(logs[0])>32 &&
+      std::all_of(logs.begin(),logs.end(),[&](double v){return std::abs(v-logs[0])<32;}) &&
+      std::any_of(x.begin(),x.end(),[&](double v){return v!=x[0];})));
   if(!logs.empty()&&std::isnan(a)&&!relative_concave) {
     bool original_constant=true,log_constant=true;
     for(std::size_t i=1;i<x.size();++i) {
@@ -328,6 +332,10 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     return gb2_power_detail::fit(x,q,a,p,tol,maxit);
   if(std::isnan(a)&&!std::isnan(b)&&(std::isnan(p)!=std::isnan(q)))
     return gb2_shape_power_detail::fit(x,span{logs.data(),logs.size()},q,p,b,tol,maxit);
+  if(std::isnan(p) && std::isnan(q) && !std::isnan(a) && !std::isnan(b)) {
+    const auto concentrated=gb2_concave_detail::concentrated_beta(x,a,b,tol,maxit);
+    if(concentrated.status==Gb2Status::Ok)return concentrated;
+  }
   const auto solve_root=[&](auto score){return burr_hold_detail::root(score,maxit);};
   // Constant samples still have a finite constrained maximum when only
   // one beta shape, the power, or location is free.

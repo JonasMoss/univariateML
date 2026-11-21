@@ -1111,3 +1111,16 @@ TEST_CASE("negative binomial point laws carry hold-sensitive identification") {
   REQUIRE(inflated.status==cppunivariate::ZinbStatus::Ok);
   CHECK(cppunivariate::outcome(inflated).unique);
 }
+
+TEST_CASE("nbinom: a signed bracket resolves size 3330 at two tolerances") {
+  std::vector<int> x;
+  for(int i=0;i<999;++i)for(int j=0;j<5;++j)x.push_back(j);
+  x.push_back(0);x.push_back(4);
+  for(double tol:{1e-6,1e-13}) {
+    CAPTURE(tol);
+    const auto r=cppunivariate::nbinom_mle(as_ispan(x),tol,200);
+    REQUIRE(r.status==cppunivariate::NbinomStatus::Ok);
+    CHECK(r.size==doctest::Approx(3330.4334203884435).epsilon(tol).scale(0));
+    CHECK(r.prob==doctest::Approx(0.9993998379719266).epsilon(tol).scale(0));
+  }
+}

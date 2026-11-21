@@ -7,11 +7,12 @@ struct Sum {
   double value=0,correction=0;
   void add(double x) {const double y=x-correction,t=value+y;correction=(t-value)-y;value=t;}
 };
-inline double log1pmx(double u) {
-  // Used only for 0 <= u < .01: alternating series remainder after
-  // degree 20 is below u^21/21, well inside the rounding allowance.
-  double out=0,power=u*u;
-  for(int k=2;k<=20;++k){out+=(k%2?1.:-1.)*power/k;power*=u;}
+inline double log1p_remainder(double u) {
+  // Remove the first two powers before evaluation. For |u| <= 1/8,
+  // the error of the degree-22 truncation is below 2|u|^23/23.
+  if(std::abs(u)>.125)return std::log1p(u)-u+u*u/2;
+  double out=0,power=u*u*u;
+  for(int k=3;k<=22;++k){out+=(k%2?1.:-1.)*power/k;power*=u;}
   return out;
 }
 }
@@ -29,6 +30,7 @@ inline NbinomResult nbinom_mle(ispan x,double tol,int maxit,
     out.certificate_failure=reason;out.stop_detail.budget_exhausted=reason==NbinomCertificateFailure::Budget;return out;
   };
   bool poisson=false,overdispersed=false;
+  double exact_dispersion=NAN;
   // Guard the dispersion comparison independently of the legacy proposer.
   if(x.size()>0 && std::isnan(fixed_size) && std::isnan(fixed_prob)) {
     nbinom_cert_detail::Sum total_sum;
@@ -44,6 +46,7 @@ inline NbinomResult nbinom_mle(ispan x,double tol,int maxit,
     // This includes ordinary equidispersed data.
     const bool exact=n*squares<=4503599627370496. && total*total+n*total<=4503599627370496.;
     if(!exact && std::abs(centered-mean)<=pad)return fail(0);
+    if (exact) exact_dispersion=((total*total+n*total)-n*squares)/(n*n);
     poisson=mean>0 && (exact?n*squares<=total*total+n*total:centered<mean-pad);
     overdispersed=mean>0 && !poisson;
   }
@@ -83,28 +86,54 @@ inline NbinomResult nbinom_mle(ispan x,double tol,int maxit,
   // For large counts use Euler--Maclaurin with a bounded omitted term.
   auto score=[&](double r,double& error) {
     nbinom_cert_detail::Sum sum,scale,rem;
-    const bool residual=std::isnan(fixed_prob) && r>100.*counts.rbegin()->first;
+    const double largest=counts.rbegin()->first;
+    const bool dispersion_removed=std::isfinite(exact_dispersion) && r>largest;
+    const bool mean_removed=dispersion_removed || (std::isnan(fixed_prob) && r>100*largest);
+    // With only large counts, center the log integrals at the mean
+    // before adding the Euler--Maclaurin endpoint corrections.
+    const bool centered_integral=!mean_removed && std::isnan(fixed_prob) &&
+      r>=16 && counts.begin()->first>4096;
+    const auto logarithm=[&](double u) {
+      if(!mean_removed)return std::log1p(u);
+      const double remainder=nbinom_cert_detail::log1p_remainder(u);
+      return dispersion_removed?remainder:remainder-u*u/2;
+    };
     for(const auto& kv:counts) {
-      const int v=kv.first;double h=0,e=0;
-      if(v<=4096) {nbinom_cert_detail::Sum acc;for(int j=0;j<v;++j)acc.add(residual?-double(j)/(r+j):r/(r+j));h=acc.value;}
+      const int v=kv.first;double h=0,e=0,endpoint_scale=0;
+      if(v<=4096) {
+        nbinom_cert_detail::Sum acc;
+        for(int j=0;j<v;++j) {
+          const double ratio=double(j)/(r+j);
+          acc.add(dispersion_removed?(double(j)/r)*ratio:mean_removed?-ratio:r/(r+j));
+        }
+        h=acc.value;
+      }
       else if(r>=16) {
         const double u=1/r,w=1/(r+v),u2=u*u,w2=w*w;
-        h=r*((residual?nbinom_cert_detail::log1pmx(v/r):std::log1p(v/r))+(u-w)/2+(u2-w2)/12-
+        const double offset=(v-mean)/(r+mean);
+        const double integral=centered_integral?
+          (offset<-.5?std::log((r+v)/(r+mean))-offset:
+                       nbinom_cert_detail::log1p_remainder(offset)-offset*offset/2):
+          logarithm(v/r);
+        const double endpoint=dispersion_removed?-(v/r)*(v/r)*w/2:(v/r)*w/2;
+        h=r*(integral+endpoint+(u2-w2)/12-
           (u2*u2-w2*w2)/120+(u2*u2*u2-w2*w2*w2)/252-
           (std::pow(u,8)-std::pow(w,8))/240+
           (std::pow(u,10)-std::pow(w,10))/132);
-        e=r*691./32760*std::pow(u,12);
+        endpoint_scale=2*r*std::abs(endpoint);
+        e=(691./32760)*std::pow(u,11);
       } else {
         h=r*(special::digamma(r+v)-special::digamma(r));
         e=128*std::numeric_limits<double>::epsilon()*r*(1+std::abs(special::digamma(r+v))+std::abs(special::digamma(r)));
       }
       const double weight=double(kv.second)/x.size();
-      sum.add(weight*h);scale.add(weight*std::abs(h));rem.add(weight*e);
+      sum.add(weight*h);scale.add(weight*(std::abs(h)+endpoint_scale));rem.add(weight*e);
     }
-    const double term=residual?-r*nbinom_cert_detail::log1pmx(mean/r):
-      r*(std::isnan(fixed_prob)?-std::log1p(mean/r):std::log(fixed_prob));
-    error=rem.value+128*std::numeric_limits<double>::epsilon()*((residual?std::numeric_limits<double>::min():1.)+scale.value+std::abs(term))*(1+counts.size()*std::numeric_limits<double>::epsilon());
-    return sum.value+term;
+    const double term=centered_integral?0:r*(std::isnan(fixed_prob)?-logarithm(mean/r):std::log(fixed_prob));
+    const double leading=dispersion_removed?(exact_dispersion/r)/2:0;
+    error=rem.value+16*std::numeric_limits<double>::epsilon()*
+      (scale.value+std::abs(term)+std::abs(leading));
+    return (sum.value+term)+leading;
   };
   double center=candidate.status==NbinomStatus::Ok?candidate.size:1;
   if(!(center>0)||!std::isfinite(center))center=1;
@@ -120,28 +149,60 @@ inline NbinomResult nbinom_mle(ispan x,double tol,int maxit,
     if(!std::isfinite(hi*2))return fail(work);
     hi*=2;
   }
-  while((hi-lo)/lo>5e-7) {
+  // The midpoint has error at most half the signed bracket width.
+  // Probe inside a tolerance-sized interval if the midpoint's sign is lost.
+  // Retain a Newton proposal when computed signs enclose it to tolerance.
+  if(candidate.status==NbinomStatus::Ok && work+2<=budget) {
+    const double l=center*(1-.9*tol),h=center*(1+.9*tol);
+    if(l>lo && l<center && l<hi) {
+      const double sl=score(l,err);++work;
+      if(sl>err)lo=l;
+    }
+    if(h<hi && h>center && h>lo) {
+      const double sh=score(h,err);++work;
+      if(sh< -err)hi=h;
+    }
+  }
+  while((hi-lo)/lo>1.9*tol) {
     if(work>=budget)return fail(work,NbinomCertificateFailure::Budget);
-    const double mid=lo+(hi-lo)/2,s=score(mid,err);++work;
+    const double mid=lo+(hi-lo)/2;
+    if(!(mid>lo && mid<hi))return fail(work);
+    const double s=score(mid,err);++work;
     if(s>err)lo=mid;
     else if(s< -err)hi=mid;
     else {
-      // A small residual alone is never accepted. Both sides must sign.
-      const double l=mid*(1-2e-7),h=mid*(1+2e-7);
+      const double l=mid*(1-.9*tol),h=mid*(1+.9*tol);
       if(work+2>budget)return fail(work,NbinomCertificateFailure::Budget);
       double el,eh;const double sl=score(l,el),sh=score(h,eh);work+=2;
-      if(!(sl>el && sh< -eh))return fail(work);
-      lo=l;hi=h;
+      const bool move_lo=l>lo && l<mid && sl>el;
+      const bool move_hi=h<hi && h>mid && sh< -eh;
+      if(!move_lo && !move_hi)return fail(work);
+      if(move_lo)lo=l;
+      if(move_hi)hi=h;
     }
   }
-  // Known gap (step 5c job 2b): the bracket is only closed to relative width 5e-7, whatever tol is. A Newton
-  // candidate outside it is replaced by the midpoint, which is then within 2.5e-7 of the root, not within tol.
   double r=lo+(hi-lo)/2;
-  if(candidate.status==NbinomStatus::Ok && candidate.size>=lo && candidate.size<=hi)r=candidate.size;
+  if(candidate.status==NbinomStatus::Ok && center>=lo && center<=hi &&
+     std::max(center-lo,hi-center)<=.95*tol*lo)r=center;
   const double p=std::isnan(fixed_prob)?r/(r+mean):fixed_prob;
   if(!(p>0 && p<1))return fail(work);
   const double ll=nbinom_candidate_mle(x,tol,maxit,r,p).logLik;
   if(!std::isfinite(ll))return fail(work);
+  if(std::isnan(fixed_prob) && p>.99) {
+    // A signed size enclosure does not constrain the likelihood loss from
+    // rounding the profiled probability. Close to one, this can leave the
+    // represented point below the feasible Poisson limit.
+    nbinom_cert_detail::Sum poisson_ll;
+    for(const auto& kv:counts)
+      poisson_ll.add(kv.second*pois_detail::logpmf(kv.first,mean));
+    const double pad=128*std::numeric_limits<double>::epsilon()*
+        (1+std::abs(ll)+std::abs(poisson_ll.value));
+    if(ll+pad<poisson_ll.value) {
+      evidence.candidates={{{r,p},ll-pad,ll+pad}};
+      evidence.loglik_lower=poisson_ll.value-pad;
+      return fail(work);
+    }
+  }
   return {r,p,ll,work,false};
 }
 } // namespace cppunivariate

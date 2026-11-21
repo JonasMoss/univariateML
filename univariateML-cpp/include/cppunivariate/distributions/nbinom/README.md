@@ -431,9 +431,11 @@ The uniqueness theorem quoted above means that any positive and negative
 profile-score endpoints enclose the global maximizer. The held-probability
 score is strictly decreasing and has the same property. `certificate.hpp`
 uses the old solver only as a proposer; it doubles/halves until the signs
-are resolved and bisects to relative width $5\times10^{-7}$. A small
-residual alone cannot terminate the search: two nearby signed endpoints
-are required. Historical coefficients are retained only inside the enclosure.
+are resolved and bisects to a width below $1.9\,\mathrm{tol}$ times the
+lower endpoint. If the midpoint sign is unresolved, it probes on either
+side at the requested resolution. The Newton proposal can be retained
+when its distances to both signed endpoints meet the tolerance. Otherwise,
+the midpoint meets the size tolerance by the bracket width.
 The profiled probability $r/(r+\bar x)$ increases with $r$ and has relative
 sensitivity at most one, so the size enclosure also controls probability.
 
@@ -442,13 +444,23 @@ $\psi(r+x)-\psi(r)=\sum_{j=0}^{x-1}(r+j)^{-1}$.
 The implementation uses $r$ times the mean score to avoid small magnitudes.
 Counts through 4096 use recurrence; larger counts use digamma at $r<16$,
 and the Euler--Maclaurin expansion through the $r^{-10}$ term at $r\ge16$.
-Near the Poisson face the leading mean terms are canceled algebraically: the recurrence sums $-j/(r+j)$ and the logarithmic term uses a degree-20 series for $\log(1+u)-u$ at $u<0.01$. Thus the arithmetic pad scales with the remaining terms rather than the canceled mean. The omitted term is bounded by $691r^{-11}/32760$ for this positive-real
-asymptotic expansion. The positive-real remainder and its sign are given in
+Near the Poisson face, when the dispersion numerator can be formed
+exactly, the recurrence removes both the mean and the first-order
+dispersion terms before summation. With $u=\bar x/r$, the logarithmic
+term then uses the remainder $\log(1+u)-u+u^2/2$, evaluated by an
+alternating series through degree 22 for $u\le1/8$. The remaining signed
+first-order term is $(\bar x-S^2)/(2r)$. The omitted Euler--Maclaurin
+term is bounded by $691r^{-11}/32760$ for this positive-real
+asymptotic expansion. For samples with only large counts, the
+Euler--Maclaurin integrals can also be centered at $\bar x$.
+The linear terms in $z_i=(x_i-\bar x)/(r+\bar x)$ sum to zero,
+leaving the remainders $\log(1+z_i)-z_i$ and the endpoint corrections.
+The positive-real remainder and its sign are given in
 [NIST DLMF 5.11(ii)](https://dlmf.nist.gov/5.11.ii). The two digamma
 remainders have the same sign, so the error of their difference is bounded
 by the larger first-neglected-term bound. The practical sign pad adds
-$128\epsilon(1+\text{absolute terms})(1+m\epsilon)$ (with the constant one omitted on the residual route) for $m$ distinct
-counts; the small-$r$ digamma route adds an explicit pad depending on both
+$16\epsilon$ times the magnitude of the terms after cancellation;
+the small-$r$ digamma route adds a separate pad depending on both
 digamma magnitudes. This certificate is exact in arithmetic conditional on
 the comparisons, with this practical floating-point margin; it does not
 prove a universal libm error bound or use outward-rounded intervals.
@@ -457,8 +469,11 @@ The dispersion decision is guarded by a centered-moment comparison.
 Ordinary integer-moment products within $2^{53}$ permit exact equality;
 otherwise a comparison within a $256\epsilon$ scale allowance stops.
 Unresolved root signs, nonfinite arithmetic, a probability rounding to one,
-or exhaustion of $16\min(\mathrm{maxit},100000)$ certificate evaluations
-return `PrecisionFailure`. A numerical search cap never diagnoses a
+or exhaustion of $128\min(\mathrm{maxit},100000)$ certificate evaluations
+return `PrecisionFailure`. Near the Poisson limit, the fitted probability
+can round enough to put the represented point below the Poisson likelihood.
+A comparison with a floating-point margin reports a precision failure and
+retains the finite witness in that case. A numerical search cap never diagnoses a
 Poisson limit. The genuine `Underdispersed` stop includes the Poisson mean
 and log likelihood in `StopDetail`; the binding exposes these on the error.
 

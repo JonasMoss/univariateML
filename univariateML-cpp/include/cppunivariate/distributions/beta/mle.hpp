@@ -33,6 +33,7 @@
 #include "../../core/work_budget.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/precision.hpp"
+#include "../../core/transformed_data.hpp"
 
 #include "../../core/span.hpp"
 #include "../../special/special.hpp"
@@ -269,11 +270,12 @@ inline BetaResult beta_mle(span x, double tol, int maxit,
     return {kNaN,kNaN,kNaN,0,BetaStatus::InvalidInput};
 
   const double dn = static_cast<double>(n);
-  double sum_log_x = 0.0, sum_log_1mx = 0.0;
+  transformed_detail::Sum log_x, log_1mx;
   for (double v : x) {
-    sum_log_x += std::log(v);
-    sum_log_1mx += std::log1p(-v);
+    log_x.push(std::log(v));
+    log_1mx.push(std::log1p(-v));
   }
+  const double sum_log_x = log_x.get(), sum_log_1mx = log_1mx.get();
   const auto loglik = [&](double a, double b) {
     double total=0,correction=0;
     for(double v:x) {
