@@ -19,6 +19,16 @@ inline FitResult fit_expweibull(cppunivariate::span x,Held scale_arg={},Held sha
   if(r.status==cppunivariate::ExpweibullStatus::InvalidFixed)return done(fail("Invalid held expweibull coefficients."));
   if(r.status==cppunivariate::ExpweibullStatus::Unbounded)
     return done(stop_failure(fail("The expweibull likelihood is unbounded on a concentration path."),{},outcome_payload(o),{}));
+  if(o.kind==cppunivariate::OutcomeKind::Limit && !r.certified) {
+    const bool inverse=r.status==cppunivariate::ExpweibullStatus::InvweibullBoundary;
+    std::string message=inverse?
+      "The expweibull search selects the inverse-Weibull limit. Use `mlinvweibull`.":
+      "The expweibull search selects the power limit. Use `mlpower`.";
+    if(r.stop_detail.candidates.size()>1)message+=inverse?
+      " The faces are within the comparison margin. Also consider `mlpower`.":
+      " The faces are within the comparison margin. Also consider `mlinvweibull`.";
+    return done(stop_failure(fail(message),r.stop_detail,outcome_payload(o),{"scale","shape","exponent"}));
+  }
   if(r.status==cppunivariate::ExpweibullStatus::PowerBoundary || r.status==cppunivariate::ExpweibullStatus::PowerBoundaryTied) {
     const bool tied=r.status==cppunivariate::ExpweibullStatus::PowerBoundaryTied;
     auto out=fail(tied?"The expweibull supremum is a power envelope with endpoint ties; its likelihood differs from mlpower.":"The expweibull supremum is a power limit. Use `mlpower` with endpoint held at scale.");
@@ -28,6 +38,8 @@ inline FitResult fit_expweibull(cppunivariate::span x,Held scale_arg={},Held sha
     if(tied)for(auto& candidate:result.candidates)candidate.model=model;
     return done(result);
   }
+  if(r.status==cppunivariate::ExpweibullStatus::ExponentOverflow)
+    return done(fail("The held-shape expweibull maximum requires an exponent larger than binary64 can represent."));
   if(r.status!=cppunivariate::ExpweibullStatus::Ok) {
     const std::string message=r.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance?
       "The expweibull fit cannot attain the requested coefficient tolerance.":

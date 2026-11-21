@@ -259,3 +259,47 @@ TEST_CASE("expweibull: exact scale roots and sub-spacing requests") {
   CHECK(fraction.status==cppunivariate::ExpweibullStatus::AccuracyFailure);
   CHECK(fraction.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
 }
+TEST_CASE("expweibull: free limit payloads use the named face coordinates") {
+  SUBCASE("power includes endpoint observations") {
+    const std::vector<double> x{1,1,2,2,2};
+    const auto r=cppunivariate::expweibull_mle(mltest::as_span(x));
+    REQUIRE(r.status==cppunivariate::ExpweibullStatus::PowerBoundary);
+    CHECK_FALSE(cppunivariate::outcome(r).certified);
+    CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Power);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==2);
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(5/(2*std::log(2.))));
+    CHECK(r.logLik==doctest::Approx(5*(std::log(5/(2*std::log(2.)))-1)-3*std::log(2.)));
+  }
+  SUBCASE("inverse-Weibull ordering survives scale rounding") {
+    for(const std::vector<double>& x:{std::vector<double>{2,2,3},
+        std::vector<double>{2,2,std::nextafter(2.,3.)}}) {
+      const auto r=cppunivariate::expweibull_mle(mltest::as_span(x));
+      REQUIRE(r.status==cppunivariate::ExpweibullStatus::InvweibullBoundary);
+      CHECK_FALSE(cppunivariate::outcome(r).certified);
+      CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::InvWeibull);
+      REQUIRE(r.stop_detail.limit_coef.size()==2);
+      double ll=0;
+      for(double v:x)ll+=cppunivariate::distributions::dinvweibull(
+        v,r.stop_detail.limit_coef[0],r.stop_detail.limit_coef[1],true);
+      CHECK(r.stop_detail.limit_loglik==doctest::Approx(ll).epsilon(1e-12));
+    }
+  }
+}
+TEST_CASE("expweibull: held shape can require an unrepresentable exponent") {
+  const std::vector<double> x{1,1.0000010000005,1.000002000002,1.0000030000044999,1.0000050000125};
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,NAN,1.5);
+  CHECK(r.status==cppunivariate::ExpweibullStatus::ExponentOverflow);
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+}
+TEST_CASE("expweibull: a steep finite maximum returns the rounded scale and its likelihood") {
+  const std::vector<double> x{1659950389748868.,1659950389748868.5,1659950389748869.5,
+    1659950389748869.75,1659950389748870.25,1659950389748871.25};
+  const auto r=cppunivariate::expweibull_mle(mltest::as_span(x));
+  REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
+  CHECK_FALSE(r.certified);
+  CHECK(r.scale==1659950389748864.);
+  double ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::dexpweibull(v,r.scale,r.shape,r.exponent,true);
+  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-12));
+}

@@ -1,0 +1,6 @@
+fit-consistency: failures by check: none
+fit-consistency: 0 listed as known, 0 new, 4 listed but passing
+  FIXED phenomenon:near-constant|double|expweibull|class|near-constant (TASK-214.33)
+  FIXED phenomenon:near-constant|native|expweibull|class|near-constant (TASK-214.33)
+  FIXED phenomenon:two-point|double|expweibull|class|two (TASK-214.33)
+  FIXED phenomenon:two-point|native|expweibull|class|two (TASK-214.33)

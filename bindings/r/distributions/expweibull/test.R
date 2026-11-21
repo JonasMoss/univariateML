@@ -73,3 +73,19 @@ test_that("held Weibull shape remains accurate below the normal range", {
   expect_true(attr(fit,"certified"))
   expect_equal(attr(fit,"logLik"),sum(dml(x,fit,log=TRUE)),tolerance=1e-10)
 })
+test_that("free fits expose flagged limits with the delegate's likelihood", {
+  for (case in list(list(x=c(1,1,2,2,2), model="power", fitter=mlpower),
+                    list(x=c(2,2,3), model="invweibull", fitter=mlinvweibull))) {
+    err <- tryCatch(mlexpweibull(case$x), error=identity)
+    expect_s3_class(err, "univariateML_limit")
+    expect_false(err$certified)
+    expect_identical(err$model, case$model)
+    expect_match(conditionMessage(err), paste0("Use `ml",case$model,"`"), fixed=TRUE)
+    face <- do.call(case$fitter, as.list(err$estimates))
+    expect_equal(err$limit_loglik, sum(dml(case$x,face,log=TRUE)), tolerance=1e-12)
+  }
+})
+test_that("held-shape exponent overflow has a specific diagnostic", {
+  x <- exp(c(0,1e-6,2e-6,3e-6,5e-6))
+  expect_error(mlexpweibull(x,shape=1.5), "exponent larger than binary64")
+})

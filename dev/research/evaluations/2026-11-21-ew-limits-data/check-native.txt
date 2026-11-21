@@ -1,0 +1,57 @@
+base6          limit power      P=-8.158447103 I=-9.677122738
+two            limit power      P=-1.592598726 I=-2.415333452
+ties           ok               P=-4.154744477 I=-5.292453667
+half-ties      limit power      P=-5.693645445 I=-8.024723809
+near-constant  limit invweibull P=104.2679139 I=104.4968473
+subnormal      limit power      P=2230.599754 I=2229.455634
+tiny           limit power      P=4145.484726 I=4143.966051
+huge           limit power      P=-4257.529463 I=-4259.048138
+offset         ok               P=-9.213109418 I=-9.077308834
+wide           limit power      P=-14.71903554 I=-15.41788853
+tie3           limit invweibull P=-0.9339791851 I=-0.7050458837
+n3-s0          limit power      P=-4.303383851 I=-5.144772621
+n3-s1          limit power      P=-2.348227444 I=-4.399996046
+n3-s2          limit power      P=-0.9150221821 I=-1.044172475
+n3-s3          limit invweibull P=-5.667508753 I=-5.519909121
+n7-s0          limit power      P=-12.50950718 I=-13.42398153
+n7-s1          limit power      P=-13.20228158 I=-16.69587019
+n7-s2          limit power      P=-9.494051436 I=-12.28451711
+n7-s3          limit invweibull P=-10.43845238 I=-9.836534515
+{'power face': 13, 'finite maximum': 2, 'inverse Weibull face': 4}
+offset: reference coefficients {'scale': '1659950389748864.040161', 'shape': '430387179822134.6628476', 'exponent': '41.98743487911982741826'}
+offset: max relative coefficient error 1.425329724e-15
+offset: optimum logLik -8.9446793680650189518
+offset: represented logLik -8.9489149493286131522
+archive flagged free fits and independent face values
+two_point P -0.6654232794007 I -4.091844372019
+below_endpoint P -2.90440547945 I -5.175575074295
+endpoint_ties P -2.525465661829 I -6.564352429667
+wide P -18.54025100551 I -18.81033226807
+random_b0.300000_c0.050000 P 2470.415528952 I 2426.739863113
+random_b1.500000_c0.050000 P 396.1623464786 I 375.1784319316
+random_b8.000000_c0.200000 P -28.50502187218 I -79.33661121159
+ties_0.001000_1 P 20.23330990955 I 18.83592630483
+ties_0.001000_3 P 36.27544463474 I 31.21317180405
+ties_0.001000_8 P 79.48106107509 I 63.49766244986
+ties_0.000001_1 P 40.95527704656 I 39.55789344181
+ties_0.000001_3 P 70.81292232976 I 65.75064949904
+ties_0.000001_8 P 148.5573151651 I 132.5739165398
+ties_0.000000_1 P 61.67854159147 I 60.28115811129
+ties_0.000000_3 P 105.3516974371 I 100.2894247586
+ties_0.000000_8 P 217.6348666785 I 201.6514683104
+rescaled_-100.000000 P 1148.410461485 I 1145.5808296
+rescaled_-6.000000 P 66.19546777742 I 63.3658358923
+rescaled_0.000000 P -2.882085012405 I -5.711716897519
+rescaled_6.000000 P -71.95963780223 I -74.78926968734
+rescaled_100.000000 P -1154.174631509 I -1157.004263395
+held shape 1.5: feasible witness gap, profiled stationary log exponent and likelihood gap
+near_constant witness gap 0.69174022229426 log_c 471775.68499814 stationary comparison gap 5.9137590895926
+ties_0.001000_1 witness gap 0.28587498758589 log_c 1655.3979573864 stationary comparison gap 0.30343792547869
+ties_0.001000_3 witness gap 0.26447638299145 log_c 1512.751502198 stationary comparison gap 0.26781100647866
+ties_0.001000_8 witness gap 0.36236677668857 log_c 1591.2488924632 stationary comparison gap 0.37524544029385
+ties_0.000001_1 witness gap 0.69174412101816 log_c 1655623.5048498 stationary comparison gap 7.2110176945236
+ties_0.000001_3 witness gap 0.69174443834288 log_c 1512639.0600968 stationary comparison gap 7.1751834945564
+ties_0.000001_8 witness gap 0.69174476634943 log_c 1590778.3030032 stationary comparison gap 7.2824455512851
+ties_0.000000_1 witness gap 0.69174367240722 log_c 1655623807.7045 stationary comparison gap 14.11877284165
+ties_0.000000_3 witness gap 0.69174367266728 log_c 1512639000.942 stationary comparison gap 14.082938423323
+ties_0.000000_8 witness gap 0.69174367286241 log_c 1590777880.1558 stationary comparison gap 14.190200302939
