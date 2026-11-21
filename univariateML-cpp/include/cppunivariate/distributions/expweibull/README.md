@@ -45,6 +45,20 @@ limits:
     detect: 'Both shapes free, all observations at or below held scale, with observations both below and equal to it'
     status: PowerBoundaryTied
     message: endpoint
+  - model: invweibull
+    firmness: proved
+    numerical: true
+    when: 'Exponent tends to infinity, shape times log exponent tends to a positive constant $k$, and scale times $(\log c)^{1/b}$ tends to $s$'
+    detect: 'All coefficients free, finite search falls below the faces within the comparison rule, and the inverse-Weibull face is at least as high as power'
+    status: InvweibullBoundary
+    message: invweibull
+  - model: power
+    firmness: proved
+    numerical: true
+    when: 'Shape tends to infinity, shape times exponent tends to $n/\sum_i\log(x_{\max}/x_i)$, and scale approaches the maximum from above with $b\log(a/x_{\max})$ diverging'
+    detect: 'All coefficients free, finite search falls below the faces within the comparison rule, and the power face is higher'
+    status: PowerBoundary
+    message: power
 summary: A Weibull CDF raised to a positive power permits a second shape coordinate.
 classification: specialist
 classification_reason: Flexible lifetime model with both inverse-Weibull and power closure faces.
@@ -58,7 +72,7 @@ fit:
   note: 'Held-exponent fits and single-free fits have uniqueness certificates; other locally checked fits are uncertified. Held-scale power envelopes and constant-data concentration have proved stops.'
 existence:
   uniqueness: unknown
-  statement: 'For nonconstant samples, holding exponent gives a unique finite fit and holding shape gives a finite maximum; with scale held and both shapes free a finite maximum exists precisely when an observation exceeds scale. Constant-data concentration depends on the free coordinates. Free-fit boundary candidates are power and inverse Weibull; their global comparison remains open.'
+  statement: 'For nonconstant samples, holding exponent gives a unique finite fit and holding shape gives a finite maximum; with scale held and both shapes free a finite maximum exists precisely when an observation exceeds scale. Constant-data concentration depends on the free coordinates. A finite free maximum exists exactly when a finite parameter reaches the larger of the power and inverse-Weibull face values.'
   reason: 'Strict concavity in affine log-data coordinates with exponent held; joint boundary exhaustion and the held-endpoint envelope in the linked analyses.'
   equivariance:
     group: power-scale
@@ -70,13 +84,9 @@ existence:
       points on the dossier density (40 digits, largest relative difference
       below $10^{-39}$) and dpqr.hpp (binary64); SymPy did not simplify it
       within its guard.
-  min_n:
-    value: 3
-    reason: >-
-      Two observations have one outcome for every sample (equivariance), and
-      it has not been decided; until it is recorded under two_point, samples
-      of two are outside the implemented range (strict-rule questions of
-      2026-11-14, Q3).
+  two_point:
+    outcome: limit
+    evidence: 'Equivariance reduces samples of size two to a single standardized pair. The high-precision profile search places its supremum on the power face.'
 examples: |
   set.seed(1)
   x <- rml(200, mlexpweibull())
@@ -110,14 +120,23 @@ The continuous likelihood-retaining faces are power and inverse Weibull.
 With scale held and both shapes free, data entirely below the endpoint have a
 strictly winning power envelope. Endpoint ties subtract $\log(e-1)$ each
 from that envelope; the tied stop therefore has no automatic `mlpower`
-likelihood delegate. Constant data can instead have unbounded concentration,
+likelihood delegate. With shape held, nearly constant data can require an
+exponent above the largest representable double. Constant data can have unbounded concentration,
 with the free coordinates determining whether that path is available.
 
-Global comparison for the free model and uniqueness for the two-free
-held-scale and held-shape fits remain open. Successful local fits in those
-regimes have `certified = FALSE`. A reachable face strictly above a local
-candidate refutes it and causes a numerical stop; reaching a search boundary
-does not establish a winning face.
+With all coefficients free, the power endpoint approaches the largest
+observation from above, so its limiting density includes every observation
+at that endpoint without the held-scale penalty. Near the inverse-Weibull
+face, write $T=\log c$, $k=bT$, and $u_i=\log(x_i/s)$ for Weibull shape $b$,
+CDF exponent $c$, and inverse-Weibull scale $s$. The leading likelihood
+correction to the face is $A/T$, where
+$A=k\sum_i u_i+\tfrac12 k^2\sum_i u_i^2(e^{-ku_i}-1)$.
+A positive correction at the face optimum motivates an interior search seed.
+
+Face selection compares the normalized likelihood with locally checked
+finite candidates. Without a global interior bound, free-fit limit choices
+are flagged. The [limit analysis](../../../../../dev/research/evaluations/2026-11-15-expweibull-limits-report.md)
+derives the correction and gives high-precision comparisons for the boundary samples.
 
 The [first analysis](../../../../../dev/research/evaluations/2026-11-10-ew-theory-report.md)
 and [boundary exhaustion](../../../../../dev/research/evaluations/2026-11-11-ew-theory2-report.md)

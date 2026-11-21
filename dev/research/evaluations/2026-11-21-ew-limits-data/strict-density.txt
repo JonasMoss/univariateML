@@ -1,0 +1,11 @@
+
+native: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  expweibull                     20          0    4.4e-16    4.4e-16          0
+
+double: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  expweibull                     20          0    3.1e-16    3.1e-16          0
+
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing
