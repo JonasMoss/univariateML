@@ -6,7 +6,7 @@
 #include "../../core/span.hpp"
 #include <vector>
 namespace cppunivariate {
-enum class SgompStatus { Ok, InvalidInput, Collapse, IterationFailure };
+enum class SgompStatus { Ok, InvalidInput, Collapse, IterationFailure, ShapeOverflow };
 struct SgompResult { double b,eta,logLik; int iterations; SgompStatus status; StopDetail stop_detail{}; };
 
 inline bool family_point(const SgompResult&, const FitCandidate& c) {
@@ -26,6 +26,7 @@ inline FitOutcome outcome(const SgompResult& r) {
     case SgompStatus::Ok: return FitOutcome::estimate(true);
     case SgompStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SgompStatus::Collapse: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
+    case SgompStatus::ShapeOverflow: return FitOutcome::failure(OutcomeReason::Evaluation);
     case SgompStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
   }
   return {};
@@ -135,6 +136,17 @@ inline SgompResult sgomp_accuracy_search(span x,double tol=1e-10,int maxit=200,
   for (double v:x) { if (!(v>=0) || !std::isfinite(v)) return out; scale=std::max(scale,v);mn=std::min(mn,v);mx=std::max(mx,v); }
   const bool free_b=std::isnan(b),free_eta=std::isnan(eta);
   if (free_b && (mx==0 || (free_eta && mn==mx))) {out.status=SgompStatus::Collapse;return out;}
+  if (free_b && free_eta && mn > 0) {
+    // For eta <= DBL_MAX every density is <= b, and also <=
+    // b*exp(log(1+DBL_MAX)-b*mn). Their minimum is bounded by cutoff/mn.
+    // At b=1/(mx-mn), eta=exp(b*mn), every density is >= b*exp(-2).
+    // Use an extra log unit of slack in comparing the two bounds.
+    const double cutoff = std::log(std::numeric_limits<double>::max()) + 2;
+    if ((mx - mn) / mn < std::exp(-3.0) / cutoff) {
+      out.status = SgompStatus::ShapeOverflow;
+      return out;
+    }
+  }
   if (scale==0) scale=1;
   std::vector<double> y; double sum=0;
   for (double v:x) { y.push_back(v/scale);sum+=v/scale; }

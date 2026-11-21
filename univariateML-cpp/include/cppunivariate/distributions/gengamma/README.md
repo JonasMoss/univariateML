@@ -87,13 +87,13 @@ existence:
       $\sigma$. dev/validation/equivariance.py shows the density identity
       symbolically (SymPy) and at 24 seeded points on the dossier density (40
       digits) and dpqr.hpp (binary64).
-  min_n:
-    value: 3
-    reason: >-
-      Two observations have one outcome for every sample (equivariance), and
-      it has not been decided; until it is recorded under two_point, samples
-      of two are outside the implemented range (strict-rule questions of
-      2026-11-14, Q3).
+  two_point:
+    outcome: nonexistence(unattained)
+    evidence: >-
+      For a distinct pair the optimized log-gamma likelihood decreases
+      strictly in gamma shape $1/Q^2$. The power and Pareto endpoints tie,
+      with exponent $2/\log(x_{\max}/x_{\min})$. Both models are reported
+      without selecting a single replacement.
 relations: {}
 fit:
   method: profile-search

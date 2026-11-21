@@ -224,3 +224,13 @@ TEST_CASE("kumar unbounded means nonexistence rather than invalid data") {
   const auto r=cppunivariate::kumar_mle(mltest::as_span(x),1e-10,100);
   CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
 }
+
+TEST_CASE("kumar: adjacent observations require an unrepresentable coefficient") {
+  constexpr double c = 0x1.b6b50131521bcp-2;
+  const std::vector<double> x{c, c, std::nextafter(c, 1e10)};
+  const auto fit = cppunivariate::kumar_mle(mltest::as_span(x), 1e-10, 1);
+  const auto result = cppunivariate::outcome(fit);
+  CHECK(result.kind == cppunivariate::OutcomeKind::Failure);
+  CHECK(result.reason == cppunivariate::OutcomeReason::Evaluation);
+  CHECK(fit.iterations == 0);
+}

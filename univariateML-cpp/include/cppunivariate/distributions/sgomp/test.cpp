@@ -136,3 +136,13 @@ TEST_CASE("sgomp: large replication preserves the held exponential mean") {
   REQUIRE(r.status==cppunivariate::SgompStatus::Ok);
   CHECK(std::abs(r.b/reference-1)<=1e-10L);CHECK(r.eta==0);
 }
+
+TEST_CASE("sgomp: adjacent observations require an unrepresentable coefficient") {
+  constexpr double c = 0x1.bbab7611b8ed4p+0;
+  const std::vector<double> x{c, c, std::nextafter(c, 1e10)};
+  const auto fit = cppunivariate::sgomp_mle(mltest::as_span(x), 1e-10, 1);
+  const auto result = cppunivariate::outcome(fit);
+  CHECK(result.kind == cppunivariate::OutcomeKind::Failure);
+  CHECK(result.reason == cppunivariate::OutcomeReason::Evaluation);
+  CHECK(fit.iterations == 0);
+}

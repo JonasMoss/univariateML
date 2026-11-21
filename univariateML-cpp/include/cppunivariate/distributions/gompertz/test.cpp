@@ -247,3 +247,13 @@ TEST_CASE("gompertz: exact ties are limits that are not certified; clear cases k
   const auto f=cppunivariate::gompertz_mle(mltest::as_span(clear_finite),1e-10,200);
   CHECK(f.status==cppunivariate::GompertzStatus::Ok);
 }
+
+TEST_CASE("gompertz: adjacent observations require an unrepresentable coefficient") {
+  constexpr double c = 0x1.0d1ac7675c27dp-1;
+  const std::vector<double> x{c, c, std::nextafter(c, 1e10)};
+  const auto fit = cppunivariate::gompertz_mle(mltest::as_span(x), 1e-10, 1);
+  const auto result = cppunivariate::outcome(fit);
+  CHECK(result.kind == cppunivariate::OutcomeKind::Failure);
+  CHECK(result.reason == cppunivariate::OutcomeReason::Evaluation);
+  CHECK(fit.iterations == 0);
+}

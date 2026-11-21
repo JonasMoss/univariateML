@@ -779,3 +779,23 @@ TEST_CASE("sstd: an unproved scale face is an unresolved comparison") {
   CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Nonexistence);
   CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unattained);
 }
+
+TEST_CASE("sstd: a distinct pair has two certified endpoint half-normal limits") {
+  for (const std::vector<double>& x : {std::vector<double>{3.,1.}, std::vector<double>{-3.,7.}}) {
+    const auto fit = cppunivariate::sstd_mle(mltest::as_span(x), 1e-10, 1);
+    const auto result = cppunivariate::outcome(fit);
+    CHECK(result.kind == cppunivariate::OutcomeKind::Limit);
+    CHECK(result.reason == cppunivariate::OutcomeReason::None);
+    CHECK(result.certified);
+    CHECK(fit.iterations == 0);
+    const auto& d = fit.stop_detail;
+    REQUIRE(d.candidates.size() == 2);
+    CHECK(d.candidates[0].model == cppunivariate::StopModel::Hnorm);
+    CHECK(d.candidates[1].model == cppunivariate::StopModel::ReflectedHnorm);
+    const double lo = std::min(x[0],x[1]), hi = std::max(x[0],x[1]);
+    const double scale = (hi-lo)/std::sqrt(2.);
+    CHECK(d.candidates[0].coef == std::vector<double>{lo,scale});
+    CHECK(d.candidates[1].coef == std::vector<double>{hi,scale});
+    CHECK(d.limit_loglik == doctest::Approx(std::log(4/std::acos(-1.))-1-2*std::log(hi-lo)));
+  }
+}

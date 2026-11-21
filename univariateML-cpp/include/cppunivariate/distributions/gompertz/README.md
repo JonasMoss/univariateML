@@ -106,11 +106,9 @@ existence:
   - class: near-constant
     outcome: failure(evaluation)
     argument: >-
-      This dossier proves a unique finite MLE here ($\overline{x^2} < 2\bar
-      x^2$) with $\hat a = n/I(\hat b)$. On this class the 80-digit profile
-      maximum is $\hat b = 1.906 \times 10^{16}$ with $\hat a \approx
-      10^{-4.35 \times 10^{15}}$, below the smallest positive binary64 value
-      (dev/research/evaluations/2026-11-14-strict-rules-data/near_constant_maximizers.py).
+      The strictly concave rate profile has positive score at
+      $b_0=2048/\min x$ on this sample. The profiled initial hazard decreases
+      with rate and is already below binary64 at $b_0$.
 ---
 
 The Gompertz distribution models lifetimes with an exponentially increasing hazard. The coefficient $a$ is the initial hazard, and $b$ controls how quickly it increases with time.

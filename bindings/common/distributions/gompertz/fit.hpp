@@ -34,6 +34,8 @@ inline FitResult fit_gompertz(cppunivariate::span x, Held a_arg = {}, Held b_arg
 
   const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
+  if (res.status == cppunivariate::GompertzStatus::InitialHazardUnderflow)
+    return done(fail("Gompertz initial hazard at the maximum is below the smallest positive double."));
   if(res.status==cppunivariate::GompertzStatus::Unbounded)
     return done(nomle("The Gompertz maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."));
 

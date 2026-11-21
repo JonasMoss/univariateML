@@ -61,6 +61,10 @@ inline FitResult fit_sstd(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
                "the skew-normal distribution. Use `mlsnorm` to fit this model."));
   }
   if (res.status == cppunivariate::SstdStatus::RightHalfNormalBoundary) {
+    if (res.certified && res.stop_detail.candidates.size() == 2)
+      return done(fail("The skew Student-t likelihood has two tied half-normal limits, "
+        "at the sample minimum and its reflected counterpart at the maximum. "
+        "Use `mlhnorm` with `mu = 0` on distances from either endpoint."));
     return done(fail("The skew Student-t likelihood is maximised as nu -> Inf and xi -> Inf, "
                "i.e. by a translated half-normal with endpoint at the sample minimum. "
                "Use `mlhnorm` to fit this model."));

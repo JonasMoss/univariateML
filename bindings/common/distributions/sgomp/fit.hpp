@@ -24,6 +24,8 @@ inline FitResult fit_sgomp(cppunivariate::span x, Held b_arg = {}, Held eta_arg 
   const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
 
   if(f.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sgomp numerical accuracy failure: requested coefficient accuracy cannot be established."),f.stop_detail,outcome_payload(o),{"b","eta"}));
+  if (f.status == cppunivariate::SgompStatus::ShapeOverflow)
+    return done(fail("Shifted Gompertz shape at the maximum exceeds double precision range."));
   if (f.status==cppunivariate::SgompStatus::Collapse) return done(nomle("The shifted Gompertz MLE does not exist: constant data have unbounded likelihood."));
   if (f.status==cppunivariate::SgompStatus::InvalidInput) return done(fail("Shifted Gompertz requires finite nonnegative data, positive tol and positive iterlim."));
   if (f.status!=cppunivariate::SgompStatus::Ok) {

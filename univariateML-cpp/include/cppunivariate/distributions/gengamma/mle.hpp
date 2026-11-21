@@ -12,7 +12,7 @@
 #include <vector>
 
 namespace cppunivariate {
-enum class GengammaStatus { Ok, InvalidData, InvalidFixed, Unbounded, IterationFailure, PowerBoundary, ParetoBoundary };
+enum class GengammaStatus { Ok, InvalidData, InvalidFixed, Unbounded, IterationFailure, PowerBoundary, ParetoBoundary, TiedPowerPareto };
 struct GengammaResult {
   double mu,sigma,Q,logLik;
   int iterations;
@@ -47,6 +47,24 @@ inline GengammaResult gengamma_mle_core(span x,double tol,int maxit,
     out.status=GengammaStatus::InvalidFixed;return out;
   }
   if (x.empty()) return out;
+  if (fm && fs && fq && x.size() == 2 && x[0] != x[1] &&
+      std::all_of(x.begin(), x.end(), [](double v) { return v > 0 && std::isfinite(v); })) {
+    const double lo = std::min(x[0],x[1]), hi = std::max(x[0],x[1]);
+    const double gap = special::log_positive_ratio(hi,lo);
+    const double exponent = 2/gap;
+    const double ll = 2*(std::log(exponent)-1) - std::log(lo) - std::log(hi);
+    // The two signed log-gamma profiles are reflections on a pair.
+    // The optimized product decreases strictly in gamma shape 1/Q^2.
+    out.status = GengammaStatus::TiedPowerPareto;
+    out.certified = true;
+    out.logLik = ll;
+    out.stop_detail.candidates = {
+      {{hi,exponent},ll,ll,StopModel::Power},
+      {{exponent,lo},ll,ll,StopModel::Pareto}
+    };
+    out.stop_detail.loglik_lower = out.stop_detail.loglik_upper = ll;
+    return out;
+  }
   std::vector<double> y; y.reserve(x.size());
   CPPUNIV_EXTENDED_REAL total=0;
   double log_error=0;
@@ -250,6 +268,8 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
   double mu=NAN,double sigma=NAN,double q=NAN) {
   // Free mu and a small relative spread: fit the relative logs (the held-mu
   // paths compare logs with mu and keep the binary64 logs).
+  if(x.size()==2 && x[0]!=x[1] && std::isnan(mu) && std::isnan(sigma) && std::isnan(q))
+    return gengamma_mle_core(x,tol,maxit,mu,sigma,q,nullptr);
   if(!(std::isnan(mu) && trgamma_detail::relative_log_regime(x)))
     return gengamma_mle_core(x,tol,maxit,mu,sigma,q,nullptr);
   const auto l=transformed_detail::logs(x);
@@ -276,6 +296,7 @@ inline FitOutcome outcome(const GengammaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     case GengammaStatus::Ok: return FitOutcome::estimate(r.certified);
+    case GengammaStatus::TiedPowerPareto: return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case GengammaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GengammaStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GengammaStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

@@ -1,0 +1,12 @@
+fit-consistency: failures by check: none
+fit-consistency: 0 listed as known, 0 new, 10 listed but passing
+  FIXED phenomenon:near-constant|double|gompertz|class|near-constant (TASK-214.33)
+  FIXED phenomenon:near-constant|double|kumar|class|near-constant (TASK-214.33)
+  FIXED phenomenon:near-constant|double|sgomp|class|near-constant (TASK-214.33)
+  FIXED phenomenon:near-constant|native|gompertz|class|near-constant (TASK-214.33)
+  FIXED phenomenon:near-constant|native|kumar|class|near-constant (TASK-214.33)
+  FIXED phenomenon:near-constant|native|sgomp|class|near-constant (TASK-214.33)
+  FIXED phenomenon:two-point|double|gengamma|class|two (TASK-214.33)
+  FIXED phenomenon:two-point|double|sstd|class|two (TASK-214.33)
+  FIXED phenomenon:two-point|native|gengamma|class|two (TASK-214.33)
+  FIXED phenomenon:two-point|native|sstd|class|two (TASK-214.33)

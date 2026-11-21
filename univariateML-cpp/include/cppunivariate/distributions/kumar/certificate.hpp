@@ -19,6 +19,21 @@ inline KumarResult kumar_certified_search(span x,double tol,int maxit,
     out.certificate_failure=reason;out.stop_detail.budget_exhausted=reason==KumarCertificateFailure::Budget;return out;
   };
   if(!(tol>0)||!std::isfinite(tol)||maxit<1)return fail(0);
+  if (!x.empty() && std::isnan(fixed_a) && std::isnan(fixed_b) &&
+      std::all_of(x.begin(), x.end(), [](double v) { return v > 0 && v < 1; })) {
+    const auto extrema = std::minmax_element(x.begin(), x.end());
+    const double minimum = *extrema.first, maximum = *extrema.second;
+    // At a0*(-log(maximum)) = z = 1024, a0 times the mean profile score
+    // is at least 1 - a0*log(maximum/minimum) - z/expm1(z).
+    // Strict concavity puts the root above a0, where b >= expm1(z).
+    // Restrict this early certificate to the rounding regime of the
+    // uncentered logs. Wider samples still get the search's diagnostics,
+    // including the candidate and budget information used by Genbeta.
+    constexpr double relative_log_margin = 32 * std::numeric_limits<double>::epsilon();
+    if (minimum < maximum &&
+        std::log1p((maximum - minimum) / minimum) < -relative_log_margin * std::log(maximum))
+      return {nan,nan,nan,0,KumarStatus::ShapeOverflow};
+  }
   auto candidate=kumar_candidate_mle(x,tol,maxit,fixed_a,fixed_b);
   if(std::isfinite(candidate.logLik)) {
     const double pad=1024*std::numeric_limits<double>::epsilon()*(1+std::abs(candidate.logLik))*(1+x.size());
