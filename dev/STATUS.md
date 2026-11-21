@@ -70,15 +70,33 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   and pruned; 4 new nesting entries list TASK-214.46 (a tnorm limit payload
   that predates the batch and became visible once the held-sd fits
   converged). The known list has 35 entries, each with a card.
+- Batch check of master 66a1d9a7 (2026-11-21, workstation, GCC 15.2, after
+  [ew-limits](research/evaluations/2026-11-21-ew-limits-report.md),
+  [test-refs](research/evaluations/2026-11-21-test-refs-report.md),
+  [tnorm-limit](research/evaluations/2026-11-21-tnorm-limit-report.md) and
+  [strict-par](research/evaluations/2026-11-21-strict-par-report.md)): fresh
+  snapshots differ from the stored baselines only as the reports describe
+  (native and double: 20 expweibull records, 18 of them numerical stops that
+  are now flagged uncertified limits, estimate moves up to 2.7e-15; each route
+  mode: 19 tnorm truncated-exponential limit payloads re-solved, largest
+  nonzero rate move 2.3e-4 at 7657, and 7779 now a certified limit), and the
+  baselines were patched from them (3dcce713). `just strict` (four workers,
+  cold cache, 77 min) passes; 8 known entries are fixed and pruned (the 4
+  TASK-214.46 tnorm nesting entries and 4 expweibull near-constant and
+  two-point entries of TASK-214.33), none new. `just cpp-test` 110/110;
+  `just cpp-test-no-long-double` 154/154; `just test-full`
+  `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65793 ]`; `just js-test` 587/587;
+  `just relations` and `just site-check` green; `capabilities.csv` regenerated
+  (expweibull limit count 3 to 5). The known list has 27 entries, each with a
+  card.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
 - Known wrong answers on master, each with a card: stop kinds that depend
-  on the precision mode (TASK-214.13); a tnorm truncated-exponential limit
-  payload off by 2.3e-4 in its rate on a near-constant window (TASK-214.46);
-  the strict-rule findings of TASK-214.33 and TASK-214.17.
+  on the precision mode (TASK-214.13); the strict-rule findings of
+  TASK-214.33 and TASK-214.17.
 - Nothing is published to CRAN, and `origin/master` is the old published
   tree (about 1,300 commits behind). The backup branch `origin/cpp-core`
   mirrors master; pushed by Claude after each validated batch (allowed by Jonas, 2026-11-20).
