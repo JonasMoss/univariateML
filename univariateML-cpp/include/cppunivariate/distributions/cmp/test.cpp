@@ -50,7 +50,7 @@ TEST_CASE("CMP P3 family entry includes zero and geometric members") {
  CHECK(cppunivariate::cmp_domain_mle({positive.data(),positive.size()},ctl).status==cppunivariate::CmpStatus::InvalidInput);
  r=cppunivariate::cmp_domain_mle({g.data(),g.size()});
  CHECK(r.status==cppunivariate::CmpStatus::Ok); CHECK(r.nu==0);
- CHECK(std::exp(r.eta)==doctest::Approx(2.5/3.5));
+ CHECK(std::exp(r.eta)==doctest::Approx(2.5/3.5).epsilon(mltest::kFitReferenceTol).scale(0));
  CHECK(r.logLik==doctest::Approx(10*std::log(2.5/3.5)+4*std::log(1/3.5)));
 }
 

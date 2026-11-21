@@ -235,8 +235,9 @@ TEST_CASE("expweibull: relaxed coefficient tolerance is honored") {
   const auto r=cppunivariate::expweibull_mle(mltest::as_span(x),1e-6);
   REQUIRE(r.status==cppunivariate::ExpweibullStatus::Ok);
   CHECK_FALSE(r.certified);
-  CHECK(r.scale==doctest::Approx(std::exp(-.0001425075388296187915)).epsilon(1e-6));
-  CHECK(r.shape==doctest::Approx(std::exp(10.066943359084830593)).epsilon(1e-6));
+  CHECK(r.scale==doctest::Approx(std::exp(-.0001425075388296187915)).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.shape==doctest::Approx(23551.466260172223).epsilon(mltest::kFitReferenceTol).scale(0));
+  // TODO(TASK-150.7): relative error 4e-14 native, 2.1e-10 double-only.
   CHECK(r.exponent==doctest::Approx(std::exp(29.646289260797796367)).epsilon(1e-6));
 }
 TEST_CASE("expweibull: subnormal held Weibull shape has a scale enclosure") {

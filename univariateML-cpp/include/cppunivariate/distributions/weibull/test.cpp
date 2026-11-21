@@ -99,7 +99,7 @@ TEST_CASE("weibull held tiny shape preserves the geometric-mean limit") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const auto r=cppunivariate::weibull_mle(mltest::as_span(x),1e-10,100,1e-200,nan);
   CHECK(r.shape==1e-200);
-  CHECK(r.scale==doctest::Approx(4));
+  CHECK(r.scale==doctest::Approx(4).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 TEST_CASE("weibull: P3 unfinished optimizer is a failure") {

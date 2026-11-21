@@ -396,8 +396,8 @@ TEST_CASE("bbinom: finite gain below the former face preference is retained") {
   const auto r=cppunivariate::bbinom_mle({x.data(),x.size()},2);
   REQUIRE(r.status==cppunivariate::BbinomStatus::Ok);
   // Symmetry and the saturated N=2 frequencies give rho=1/50001.
-  CHECK(r.alpha==doctest::Approx(25000).epsilon(1e-7));
-  CHECK(r.beta==doctest::Approx(25000).epsilon(1e-7));
+  CHECK(r.alpha==doctest::Approx(25000).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.beta==doctest::Approx(25000).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 TEST_CASE("bbinom: signed face neighbourhood has no positive-score shortcut") {
@@ -417,8 +417,8 @@ TEST_CASE("bbinom: general profile preserves a small positive finite gain") {
   const auto r=cppunivariate::bbinom_mle({x.data(),x.size()},3);
   REQUIRE(r.status==cppunivariate::BbinomStatus::Ok);
   // This symmetric four-cell table is exactly on the beta-binomial surface.
-  CHECK(r.alpha==doctest::Approx(18749.5).epsilon(1e-6));
-  CHECK(r.beta==doctest::Approx(18749.5).epsilon(1e-6));
+  CHECK(r.alpha==doctest::Approx(18749.5).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.beta==doctest::Approx(18749.5).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 TEST_CASE("bbinom: curvature closes a near-zero negative face score") {

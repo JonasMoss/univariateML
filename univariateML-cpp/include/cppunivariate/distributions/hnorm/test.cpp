@@ -14,7 +14,7 @@ TEST_CASE("hnorm: closed form and golden") {
   const std::vector<double> x = {-2, -2, 1, 2};
   const auto fit = cppunivariate::hnorm_mle(mltest::as_span(x));
   CHECK(fit.mu == -2);
-  CHECK(fit.sigma == doctest::Approx(2.5));
+  CHECK(fit.sigma == doctest::Approx(2.5).epsilon(mltest::kFitReferenceTol).scale(0));
   double ll = 0;
   for (double v : x) ll += cppunivariate::distributions::dhnorm(v, fit.mu, fit.sigma, true);
   CHECK(fit.logLik == doctest::Approx(ll));
@@ -43,8 +43,8 @@ TEST_CASE("hnorm: d/p/q/r") {
 }
 TEST_CASE("hnorm: held endpoint") {
   const std::vector<double> x={0,1,2}, one={3}, bad={-1,2}, zero={0};
-  CHECK(cppunivariate::hnorm_mle(mltest::as_span(x),0).sigma==doctest::Approx(std::sqrt(5.0/3)));
-  CHECK(cppunivariate::hnorm_mle(mltest::as_span(one),0).sigma==doctest::Approx(3));
+  CHECK(cppunivariate::hnorm_mle(mltest::as_span(x),0).sigma==doctest::Approx(std::sqrt(5.0/3)).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(cppunivariate::hnorm_mle(mltest::as_span(one),0).sigma==doctest::Approx(3).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(cppunivariate::hnorm_mle(mltest::as_span(bad),0).status==cppunivariate::HnormStatus::InvalidData);
   CHECK(cppunivariate::hnorm_mle(mltest::as_span(zero),0).status==cppunivariate::HnormStatus::DegenerateData);
 }

@@ -20,7 +20,7 @@ TEST_CASE("triang: corners, ties, incompatible and constant samples") {
   CHECK(r.status==cppunivariate::TriangStatus::Ok);
   CHECK(r.not_unique);
   CHECK(r.c==0); CHECK(r.a==0);
-  CHECK(r.b==doctest::Approx(1.5));
+  CHECK(r.b==doctest::Approx(1.5).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(std::exp(r.logLik)==doctest::Approx(16.0/27));
   CHECK(cppunivariate::triang_mle(mltest::as_span(x),1e-12,100,0,1).status==cppunivariate::TriangStatus::Incompatible);
   x={2,2,2};
@@ -102,7 +102,7 @@ TEST_CASE("triang: constant data with held exterior mode") {
   for(double b:{nan,2.}) {
     const auto r=cppunivariate::triang_mle(mltest::as_span(x),1e-12,100,nan,b,-1);
     REQUIRE(r.status==cppunivariate::TriangStatus::Ok);
-    CHECK(r.a==-1); CHECK(r.b==doctest::Approx(std::isnan(b)?1.8:2));
+    CHECK(r.a==-1); CHECK(r.b==doctest::Approx(std::isnan(b)?1.8:2).epsilon(mltest::kFitReferenceTol).scale(0));
     CHECK(r.c==-1);
   }
 }
@@ -133,12 +133,12 @@ TEST_CASE("triang P2 exact constant exterior mode profile") {
     const auto r=cppunivariate::triang_mle(mltest::as_span(x),1e-12,100,nan,b,-1);
     REQUIRE(r.status==cppunivariate::TriangStatus::Ok);
     CHECK(r.a==-1);
-    CHECK(r.b==doctest::Approx(std::isnan(b)?1.8:b));
+    CHECK(r.b==doctest::Approx(std::isnan(b)?1.8:b).epsilon(mltest::kFitReferenceTol).scale(0));
   }
   const auto r=cppunivariate::triang_mle(mltest::as_span(x),1e-12,100,nan,nan,2);
   REQUIRE(r.status==cppunivariate::TriangStatus::Ok);
   CHECK(r.b==2);
-  CHECK(r.a==doctest::Approx(-1.2));
+  CHECK(r.a==doctest::Approx(-1.2).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 TEST_CASE("triang TASK-134 rationalized endpoint inverses on both tails") {

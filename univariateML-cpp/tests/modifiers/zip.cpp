@@ -30,14 +30,14 @@ TEST_CASE("zip ordinary zero inflation") {
   const std::vector<std::vector<int>> samples{
       {0, 1, 2, 1, 1, 2, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3},
       {0, 0, 4}};
-  const std::vector<double> lambdas{1.423265, 3.920695};
-  const std::vector<double> pis{0.4730435, 0.6599249};
+  const std::vector<double> lambdas{1.423262352113118, 3.9206903948728864};
+  const std::vector<double> pis{0.47304163643022323, 0.6599238401795402};
   const std::vector<double> logliks{-23.0097617, -3.52318909};
   for (std::size_t i = 0; i < samples.size(); ++i) {
     const auto r = cppunivariate::zip_mle(as_ispan(samples[i]));
     REQUIRE(r.status == cppunivariate::ZipStatus::Ok);
-    CHECK(r.lambda == doctest::Approx(lambdas[i]).epsilon(1e-4));
-    CHECK(r.pi == doctest::Approx(pis[i]).epsilon(1e-4));
+    CHECK(r.lambda == doctest::Approx(lambdas[i]).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(r.pi == doctest::Approx(pis[i]).epsilon(mltest::kFitReferenceTol).scale(0));
     CHECK(r.logLik >= logliks[i] - 1e-6);
   }
 }

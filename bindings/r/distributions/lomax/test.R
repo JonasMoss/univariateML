@@ -107,11 +107,13 @@ test_that("Lomax no longer takes a starting hint", {
 test_that("Lomax exact criterion resolves nonlocal maxima", {
   samples <- list(c(1,100),c(.001,4,6),c(.001,1,2),c(1,29),c(1,1,1,12,12))
   gaps <- c(.590084,1.338305,.652423,.001924,1.90927e-4)
-  rates <- c(.772199,1394.08,1039.29,.236987,.0359623)
-  shapes <- c(.405536,.161888,.196081,.878708,6.07162)
+  rates <- c(0.7721986394822588, 1394.0822389719701, 1039.2879097707425, 0.23698695319903593, 0.03596229860503347)
+  shapes <- c(0.40553600650270355, 0.1618879518227893, 0.1960813444978726, 0.8787077236096766, 6.0716127841124825)
   for (j in seq_along(samples)) {
     x <- samples[[j]]; f <- mllomax(x,tol=1e-12)
-    expect_equal(as.numeric(f),c(rates[j],shapes[j]),tolerance=5e-6)
+    expect_length(f, 2L)
+    expect_equal(f[["lambda"]], rates[j], tolerance = 1e-10)
+    expect_equal(f[["kappa"]], shapes[j], tolerance = 1e-10)
     expect_equal(attr(f,"logLik")+length(x)*(log(mean(x))+1),gaps[j],tolerance=5e-7)
     for (s in c(1e-200,1e200)) {
       g <- mllomax(x*s,tol=1e-12)

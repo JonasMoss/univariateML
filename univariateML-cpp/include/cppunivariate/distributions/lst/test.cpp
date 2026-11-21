@@ -129,7 +129,7 @@ TEST_CASE("lst: held profiles preserve extreme units") {
     CHECK(fit.sigma/unit==doctest::Approx(base.sigma).epsilon(1e-8));
     CHECK(fit.logLik+x.size()*std::log(unit)==doctest::Approx(base.logLik).epsilon(1e-8));
   }
-  CHECK(base.sigma==doctest::Approx(std::sqrt(2.748)).epsilon(1e-8));
+  CHECK(base.sigma==doctest::Approx(std::sqrt(2.748)).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 
@@ -339,7 +339,7 @@ TEST_CASE("lst: held-scale certificate isolates competing maxima and retains tie
   CHECK(tie.stop_detail.comparison_tie);
   REQUIRE(tie.stop_detail.candidates.size()==2);
   // For two symmetric observations, maxima are +/-sqrt(a^2-df*sigma^2).
-  for(const auto& c:tie.stop_detail.candidates)CHECK(std::abs(c.coef[0])==doctest::Approx(std::sqrt(6.)).epsilon(1e-8));
+  for(const auto& c:tie.stop_detail.candidates)CHECK(std::abs(c.coef[0])==doctest::Approx(std::sqrt(6.)).epsilon(mltest::kFitReferenceTol).scale(0));
   const std::vector<double> one{-1,1};
   const auto unique=cppunivariate::lst_mle(mltest::as_span(one),1e-7,200,NAN,1,3);
   REQUIRE(unique.status==cppunivariate::LstStatus::Ok);
@@ -347,7 +347,7 @@ TEST_CASE("lst: held-scale certificate isolates competing maxima and retains tie
   const std::vector<double> asymmetric{-3,-2,0,1,5};
   const auto fit=cppunivariate::lst_mle(mltest::as_span(asymmetric),1e-7,200,NAN,1,3);
   REQUIRE(fit.status==cppunivariate::LstStatus::Ok);
-  CHECK(fit.mu==doctest::Approx(-.3210104101280357).epsilon(1e-6));
+  CHECK(fit.mu==doctest::Approx(-.3210104101280357).epsilon(mltest::kFitReferenceTol).scale(0));
   const auto budget=cppunivariate::t_location_detail::solve(mltest::as_span(two),1,3,0);
   CHECK(budget.failure==1);
   CHECK(budget.detail.budget_exhausted);
@@ -494,7 +494,7 @@ TEST_CASE("lst: representable Cauchy location is projected onto the maximizing c
   const auto r=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),1,1e-7,200);
   REQUIRE(r.status==cppunivariate::LstStatus::Ok);
   CHECK(r.mu>a);CHECK(r.mu<d);
-  CHECK(r.sigma/(b-a)==doctest::Approx(std::sqrt(2.)).epsilon(1e-6));
+  CHECK(r.sigma/(b-a)==doctest::Approx(std::sqrt(2.)).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik==doctest::Approx(-4*(std::log(cppunivariate::pi)+std::log(d-a))).epsilon(1e-12));
 }
 
@@ -518,6 +518,7 @@ TEST_CASE("lst: held-scale location precision uses empirical spread") {
   const std::vector<double> x{-2,-1,0,1,3};
   const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-7,500,NAN,1e100,3);
   REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+  // TODO(TASK-150.7): relative error 3.5e-10 native, 3.5e-10 double-only.
   CHECK(r.mu==doctest::Approx(.2).epsilon(1e-7));
   const double tiny=std::numeric_limits<double>::denorm_min();
   const std::vector<double> subnormal{tiny,2*tiny};
@@ -538,7 +539,7 @@ TEST_CASE("lst: shape-only certificate agrees with the independent 80-digit root
   const auto g=mltest::load_distribution_golden("lst");
   const auto r=cppunivariate::lst_mle(mltest::as_span(g.data),1e-8,200,g.estimates.at("mu"),g.estimates.at("sigma"),NAN);
   REQUIRE(r.status==cppunivariate::LstStatus::Ok);
-  CHECK(r.df==doctest::Approx(3.02424271362830351424).epsilon(1e-7));
+  CHECK(r.df==doctest::Approx(3.024242709426846).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik==doctest::Approx(-898.624781104657356037).epsilon(1e-12));
   const std::vector<double> x{-1,1};
   const auto normal=cppunivariate::lst_mle(mltest::as_span(x),1e-8,200,0,1,NAN);

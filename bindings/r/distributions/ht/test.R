@@ -96,7 +96,7 @@ test_that("half-t free threshold, nu held, reduces to the held-mu model", {
   x <- c(2,2,3,5,12)
   f <- mlht(x, mu = NULL, nu = 3)
   g <- mlht(x-2, mu = 0, nu = 3)
-  expect_equal(f[["mu"]], 2)
+  expect_equal(f[["mu"]], 2, tolerance = 1e-10)
   expect_equal(f[["sigma"]], g[["sigma"]])
   expect_equal(attr(f,"logLik"), attr(g,"logLik"))
 })
@@ -104,7 +104,7 @@ test_that("half-t free threshold, nu held, reduces to the held-mu model", {
 test_that("half-t free threshold restricts free nu even with held sigma", {
   x <- c(4,4,4,4,9) # k = 4 of 5 at the minimum.
   f <- mlht(x, mu = NULL, sigma = 2)
-  expect_equal(f[["mu"]], 4)
+  expect_equal(f[["mu"]], 4, tolerance = 1e-10)
   expect_equal(f[["sigma"]], 2)
   expect_gte(f[["nu"]], 1)
   expect_equal(attr(f, "logLik"), sum(dht(x = x-min(x), mu = 0, nu = f[["nu"]], sigma = 2, log=TRUE)))
@@ -112,7 +112,7 @@ test_that("half-t free threshold restricts free nu even with held sigma", {
 
 test_that("half-t free threshold, nu and sigma both free: tie multiplicity vs n", {
   f <- suppressWarnings(mlht(c(5,5,7,9,20), mu = NULL), classes="univariateML_restricted")
-  expect_equal(f[["mu"]], 5)
+  expect_equal(f[["mu"]], 5, tolerance = 1e-10)
   expect_gte(f[["nu"]], 1)
   o <- optim(c(log(f[["nu"]]),log(f[["sigma"]])),
              function(p) -sum(dht(x = c(5,5,7,9,20)-5, mu = 0, nu = exp(p[1]), sigma = exp(p[2]), log=TRUE)),
@@ -184,6 +184,6 @@ test_that("half-t compares the half-normal face even at an exact half-minimum ti
 test_that("half-t certified search retains the higher of two profile modes", {
   x <- c(.12773, 12.5979, 3.91782, 2.58658, .138212)
   f <- mlht(x, mu = 0)
-  expect_equal(unname(f[["nu"]]), .41508, tolerance = 1e-3)
+  expect_equal(unname(f[["nu"]]), 0.4150800049142386, tolerance = 1e-10)
   expect_equal(as.numeric(logLik(f)), sum(dht(x = x, mu = 0, nu = f[["nu"]], sigma = f[["sigma"]], log = TRUE)), tolerance = 1e-9)
 })

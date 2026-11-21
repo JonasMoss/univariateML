@@ -83,7 +83,7 @@ TEST_CASE("Pareto III constant sample is finite with shape held") {
  const std::vector<double> x{3,3,3};
  const auto r=cppunivariate::pareto3_mle(mltest::as_span(x),1,1e-10,1000,2,NAN);
  REQUIRE(r.status==cppunivariate::Pareto3Status::Ok);
- CHECK(r.scale==doctest::Approx(2));
+ CHECK(r.scale==doctest::Approx(2).epsilon(mltest::kFitReferenceTol).scale(0));
  CHECK(r.logLik==doctest::Approx(3*std::log(.25)));
 }
 

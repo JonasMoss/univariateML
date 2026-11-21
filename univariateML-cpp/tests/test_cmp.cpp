@@ -3,6 +3,7 @@
 #include "cppunivariate/special/cmp.hpp"
 #include <chrono>
 #include <iostream>
+#include <limits>
 #include <vector>
 
 TEST_CASE("CMP analytic Poisson and geometric submodels") {
@@ -150,10 +151,15 @@ TEST_CASE("CMP Poisson recovery and high count fitting") {
         poisson.insert(poisson.end(),static_cast<std::size_t>(std::round(100000*prob)),k);
         prob*=3.0/(k+1);
     }
+    // Match mltest::kFitReferenceTol in this standalone doctest target.
+    constexpr double reference_tol =
+        1e-10 + (1 + 1e-10) * std::numeric_limits<double>::epsilon() / 2;
     const auto p=cppunivariate::cmp_mle({poisson.data(),poisson.size()});
     REQUIRE(p.status == cppunivariate::CmpStatus::Ok);
     CHECK(p.nu == doctest::Approx(1).epsilon(.002));
+    CHECK(p.nu == doctest::Approx(1.0000898833697407).epsilon(reference_tol).scale(0));
     CHECK(std::exp(p.eta) == doctest::Approx(3).epsilon(.002));
+    CHECK(std::exp(p.eta) == doctest::Approx(3.0002854407158877).epsilon(reference_tol).scale(0));
     const std::vector<double> x{2147300000.,2147350000.,2147400000.,2147450000.};
     cppunivariate::CmpFitControl ctl; ctl.fixed_nu=1;
     const auto f=cppunivariate::cmp_mle({x.data(),x.size()},ctl);

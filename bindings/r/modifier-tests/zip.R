@@ -11,13 +11,13 @@ test_that("ordinary zero-inflated samples attain the oracle likelihood", {
     c(0, 1, 2, 1, 1, 2, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3),
     c(0, 0, 4)
   )
-  lambda <- c(1.423265, 3.920695)
-  pi <- c(0.4730435, 0.6599249)
+  lambda <- c(1.423262352113118, 3.9206903948728864)
+  pi <- c(0.47304163643022323, 0.6599238401795402)
   oracle_ll <- c(-23.0097617, -3.52318909)
   for (i in seq_along(samples)) {
     fit <- .modifier_zip(samples[[i]])
-    expect_lt(abs(unname(fit["lambda"]) / lambda[i] - 1), 1e-4)
-    expect_lt(abs(unname(fit["pi"]) / pi[i] - 1), 1e-4)
+    expect_lt(abs(unname(fit["lambda"]) / lambda[i] - 1), 1e-10)
+    expect_lt(abs(unname(fit["pi"]) / pi[i] - 1), 1e-10)
     expect_gte(attr(fit, "logLik"), oracle_ll[i] - 1e-6)
     expect_true(all(is.finite(fit)))
     expect_equal(attr(fit, "logLik"),

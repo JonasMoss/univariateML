@@ -919,8 +919,8 @@ TEST_CASE("gev: active support face has a one-sided held-nuisance isolator") {
     REQUIRE(fit.status==cppunivariate::GevStatus::Ok);
     CHECK(fit.certified);
     CHECK(fit.xi== -1);
-    CHECK(fit.mu==doctest::Approx(2));
-    CHECK(fit.sigma==doctest::Approx(1));
+    CHECK(fit.mu==doctest::Approx(2).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(fit.sigma==doctest::Approx(1).epsilon(mltest::kFitReferenceTol).scale(0));
   }
 }
 

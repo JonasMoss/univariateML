@@ -249,6 +249,7 @@ TEST_CASE("bnbinom: noninteger scalar roots against independent 80-digit oracle"
     const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,p[0],p[1],p[2]);
     REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
     const std::vector<double> estimate{f.size,f.alpha,f.beta};
+    // TODO(TASK-150.7): relative error 3.8e-09 native, 3.8e-09 double-only.
     CHECK(estimate[j]==doctest::Approx(roots[j]).epsilon(1e-8));
     CHECK(f.logLik==doctest::Approx(ll[j]).epsilon(1e-12));
     // The certificate root must beat fixed multiplicative perturbations.
@@ -274,6 +275,7 @@ TEST_CASE("bnbinom: scalar scaled exact roots and floating-point failure") {
   for(double beta:{1e-8,.01,10.,100.}) {
     const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,1,NAN,beta);
     REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
+    // TODO(TASK-150.7): relative error 3.2e-09 native, 3.2e-09 double-only.
     CHECK(f.alpha==doctest::Approx(std::sqrt(beta*(beta+1))).epsilon(1e-8));
   }
   // At this scale the digamma cancellation margin cannot isolate the shape
@@ -288,8 +290,8 @@ TEST_CASE("bnbinom: alpha-held global off-diagonal certificate retains both labe
   std::vector<int> x;for(double v:golden.data)x.push_back(static_cast<int>(v));
   const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,NAN,2,NAN);
   REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
-  CHECK(f.size==doctest::Approx(1.15097395202066).epsilon(1e-8));
-  CHECK(f.beta==doctest::Approx(4.50374529147196).epsilon(1e-8));
+  CHECK(f.size==doctest::Approx(1.1509739520206237).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(f.beta==doctest::Approx(4.503745291472128).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(f.logLik==doctest::Approx(-1275.720827702446).epsilon(1e-12));
   CHECK(f.size<f.beta);
   bool direct=false,mirror=false,diagonal=false;
@@ -311,7 +313,7 @@ TEST_CASE("bnbinom: alpha-held diagonal is certified without imposing symmetry")
   const std::vector<int>x{0,0,1,2,3,6,12,24};
   const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,NAN,.5,NAN);
   REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
-  CHECK(f.size==doctest::Approx(1.1088158545389952).epsilon(1e-8));
+  CHECK(f.size==doctest::Approx(1.1088158545386362).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(f.beta==doctest::Approx(f.size).epsilon(1e-10));
   CHECK(f.logLik==doctest::Approx(-23.848045048100712).epsilon(1e-12));
   // The population information is singular on this seam; the observed
@@ -691,9 +693,9 @@ TEST_CASE("bnbinom: insufficient certificate work preserves a successful finite 
   REQUIRE(legacy.status==cppunivariate::BnbinomStatus::Ok);
   CHECK_FALSE(legacy.certified);CHECK_FALSE(legacy.stop_detail.budget_exhausted);
   CHECK(std::isnan(legacy.global_interval[0]));
-  CHECK(legacy.size==doctest::Approx(1.0672234787479615).epsilon(2e-6));
-  CHECK(legacy.alpha==doctest::Approx(2.1419791546447171).epsilon(2e-6));
-  CHECK(legacy.beta==doctest::Approx(5.3647338351087397).epsilon(2e-6));
+  CHECK(legacy.size==doctest::Approx(1.067223439275812).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(legacy.alpha==doctest::Approx(2.1419792202550636).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(legacy.beta==doctest::Approx(5.364734296253785).epsilon(mltest::kFitReferenceTol).scale(0));
   const auto verified=cppunivariate::bnbinom_mle({x.data(),x.size()});
   REQUIRE(verified.status==cppunivariate::BnbinomStatus::Ok);
   CHECK(verified.certified);CHECK(std::isfinite(verified.global_interval[0]));

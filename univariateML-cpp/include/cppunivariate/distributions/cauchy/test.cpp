@@ -243,7 +243,7 @@ TEST_CASE("cauchy: structured tie candidates retain locations and likelihood bou
   REQUIRE(r.stop_detail.candidates.size()==2);
   for(const auto& candidate:r.stop_detail.candidates) {
     REQUIRE(candidate.coef.size()==2);
-    CHECK(std::abs(candidate.coef[0])==doctest::Approx(std::sqrt(3.)).epsilon(1e-7));
+    CHECK(std::abs(candidate.coef[0])==doctest::Approx(std::sqrt(3.)).epsilon(mltest::kFitReferenceTol).scale(0));
     CHECK(candidate.coef[1]==1);
     double ll=0;for(double v:x)ll-=std::log(cppunivariate::pi)+std::log1p(std::pow(v-candidate.coef[0],2));
     CHECK(candidate.loglik_lower<=ll);

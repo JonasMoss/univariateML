@@ -220,9 +220,9 @@ TEST_CASE("invburr: default multistart retains the seed-3 stationary fit") {
   };
   const auto r=cppunivariate::invburr_mle(mltest::as_span(x),1e-8,1000);
   REQUIRE(r.status==cppunivariate::InvBurrStatus::Ok);
-  CHECK(r.shape1==doctest::Approx(1.1998579109829286).epsilon(1e-6));
-  CHECK(r.shape2==doctest::Approx(2.1538589870062492).epsilon(1e-6));
-  CHECK(r.scale==doctest::Approx(1/3.2485471451035055).epsilon(1e-6));
+  CHECK(r.shape1==doctest::Approx(1.1998576948631954).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.shape2==doctest::Approx(2.1538588889405816).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.scale==doctest::Approx(0.3078299526668148).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik==doctest::Approx(-20.609810876161703).epsilon(1e-10));
   std::vector<double> logs;
   double center=0;

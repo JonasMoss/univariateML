@@ -96,7 +96,10 @@ test_that("P3 CMP boundaries respect all holds and geometric normalizability", {
   }
   expect_error(mlcmp(c(0,1),lambda=1,nu=0))
   x<-c(0,0,0,10); f<-mlcmp(x)
-  expect_equal(as.numeric(f),c(2.5/3.5,0))
+  expected <- c(2.5/3.5,0)
+  actual <- as.numeric(f)
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_equal(attr(f,"logLik"),sum(dgeom(x,1/3.5,log=TRUE)))
   f<-mlcmp(x,lambda=.5)
   expect_equal(as.numeric(f),c(.5,0))

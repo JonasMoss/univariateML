@@ -82,7 +82,9 @@ expect_error(mlhuber(c(-1,1),epsilon=NULL),"use `mlnorm`")
 expect_error(mlhuber(c(-10,-.1,0,.1,10),epsilon=NULL),"use `mllaplace`")
 # A held scale excludes the rescaled Laplace face.
 expect_error(mlhuber(c(-1,1),sigma=1,epsilon=NULL),"use `mlnorm`")
-expect_equal(unname(mlhuber(z,epsilon=NULL)["epsilon"]),.8,tolerance=.08)
+cutoff <- unname(mlhuber(z,epsilon=NULL)["epsilon"])
+expect_equal(cutoff,.8,tolerance=.08)
+expect_equal(cutoff, 0.8159453415711106, tolerance = 1e-10)
 
 test_that("huber: P3 unfinished optimizer stops", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"), "huber", "golden.json"))

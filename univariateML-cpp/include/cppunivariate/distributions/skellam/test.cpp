@@ -24,7 +24,7 @@ TEST_CASE("skellam: attained faces, fixed subsets, validation") {
   CHECK(r.status==cppunivariate::SkellamStatus::Ok);CHECK(r.mu1==1);CHECK(r.mu2==0);
   x={-4,-2,-1,0,1,2,5,8};
   r=cppunivariate::skellam_mle(mltest::as_span(x));
-  CHECK(r.status==cppunivariate::SkellamStatus::Ok);CHECK(r.mu1-r.mu2==doctest::Approx(1.125));
+  CHECK(r.status==cppunivariate::SkellamStatus::Ok);CHECK(r.mu1-r.mu2==doctest::Approx(1.125).epsilon(mltest::kFitReferenceTol).scale(0));
   for(double h:{-1e-4,1e-4}) {
     double ll=0;for(double v:x) ll+=cppunivariate::distributions::dskellam(v,r.mu1+h,r.mu2,true);
     CHECK(ll<=r.logLik+1e-9);

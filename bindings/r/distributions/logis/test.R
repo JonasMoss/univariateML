@@ -100,10 +100,10 @@ test_that("logis handles a seeded sample with a large outlier", {
   objective <- function(p) -sum(stats::dlogis(x, p[1], exp(p[2]), log = TRUE))
   oracle <- optim(c(median(x), log(stats::mad(x))), objective,
     method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
-  expected <- c(oracle$par[1], exp(oracle$par[2]))
   fit <- mllogis(x)
   expect_true(all(is.finite(fit)))
-  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expected <- c(0.24676819243505332, 5.253573599408583)
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-10 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
 
@@ -168,7 +168,10 @@ test_that("logis new holds agree with independent multistart likelihoods", {
 
 
 test_that("logis conditional collapse, feasibility and invalid holds", {
-  expect_equal(as.numeric(mllogis(rep(2,3),scale=1)),c(2,1))
+  expected <- c(2,1)
+  actual <- as.numeric(mllogis(rep(2,3),scale=1))
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_true(is.finite(logLik(mllogis(rep(2,3),location=0))))
   expect_error(mllogis(rep(2,3),location=2),"unbounded")
   expect_error(mllogis(1:4,location=Inf),"finite")

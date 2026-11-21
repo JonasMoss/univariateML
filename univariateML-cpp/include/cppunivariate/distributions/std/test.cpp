@@ -203,7 +203,7 @@ TEST_CASE("std: held profiles preserve extreme units") {
     CHECK(fit.sigma/unit==doctest::Approx(base.sigma).epsilon(1e-8));
     CHECK(fit.logLik+x.size()*std::log(unit)==doctest::Approx(base.logLik).epsilon(1e-8));
   }
-  CHECK(base.sigma==doctest::Approx(std::sqrt(2.748)).epsilon(1e-8));
+  CHECK(base.sigma==doctest::Approx(std::sqrt(2.748)).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 
@@ -277,12 +277,12 @@ TEST_CASE("std: certificate large-sample shallow quantile maximum") {
     const auto r=cppunivariate::t_certificate(mltest::as_span(x),floor,4096,500);
     REQUIRE(r.status==cppunivariate::TCertificateStatus::Finite);
     CHECK(r.profiles<4096);
-    CHECK(r.nu==doctest::Approx(539.46057298).epsilon(1e-7));
-    CHECK(r.scale==doctest::Approx(1.00131588021).epsilon(1e-7));
+    CHECK(r.nu==doctest::Approx(539.460572974731).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(r.scale==doctest::Approx(1.0013158802128972).epsilon(mltest::kFitReferenceTol).scale(0));
   }
   const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-7,500);
   REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
-  CHECK(r.nu==doctest::Approx(539.46057298).epsilon(1e-7));
+  CHECK(r.nu==doctest::Approx(539.460572974731).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 TEST_CASE("std: held sd and shape transport the complete location certificate") {
@@ -292,8 +292,8 @@ TEST_CASE("std: held sd and shape transport the complete location certificate") 
   CHECK(tie.stop_detail.comparison_tie);
   REQUIRE(tie.stop_detail.candidates.size()==2);
   for(const auto& c:tie.stop_detail.candidates){
-    CHECK(std::abs(c.coef[0])==doctest::Approx(std::sqrt(8.)).epsilon(1e-8));
-    CHECK(c.coef[1]==doctest::Approx(1));
+    CHECK(std::abs(c.coef[0])==doctest::Approx(std::sqrt(8.)).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(c.coef[1]==doctest::Approx(1).epsilon(mltest::kFitReferenceTol).scale(0));
     CHECK(c.coef[2]==3);
   }
   const std::vector<double> scale_sample{-1,1};
@@ -323,6 +323,7 @@ TEST_CASE("std: held-scale and represented-scale precision guards") {
   const std::vector<double> x{-2,-1,0,1,3};
   const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-7,500,NAN,1e100,3);
   REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+  // TODO(TASK-150.7): relative error 3.5e-10 native, 3.5e-10 double-only.
   CHECK(r.mu==doctest::Approx(.2).epsilon(1e-7));
   const double tiny=std::numeric_limits<double>::denorm_min();
   const std::vector<double> subnormal{-2*tiny,2*tiny};
@@ -350,7 +351,7 @@ TEST_CASE("std: shape-only certificate keeps actual sd and resolves the collapse
   const auto g=mltest::load_distribution_golden("std");
   const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1e-8,200,g.estimates.at("mean"),g.estimates.at("sd"),NAN);
   REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
-  CHECK(r.nu==doctest::Approx(3.97766630702385528449).epsilon(1e-7));
+  CHECK(r.nu==doctest::Approx(3.97766630702385528449).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik==doctest::Approx(-579.480782421376264826).epsilon(1e-12));
   const std::vector<double> x{0,0,1};
   const auto collapse=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,0,1,NAN);

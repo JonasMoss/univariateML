@@ -178,7 +178,9 @@ TEST_CASE("huber: free shape faces, scaling and interior recovery") {
   auto r=cppunivariate::huber_mle(mltest::as_span(x),1e-10,200,NAN);
   REQUIRE(r.status==cppunivariate::HuberStatus::Ok);
   CHECK(r.epsilon==doctest::Approx(.8).epsilon(.02));
+  CHECK(r.epsilon==doctest::Approx(0.8012237746838412).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.sigma==doctest::Approx(3).epsilon(.02));
+  CHECK(r.sigma==doctest::Approx(3.0028965585830516).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 TEST_CASE("huber: two-point profile lies below normal and compares Laplace") {
@@ -543,7 +545,7 @@ TEST_CASE("huber near-constant sample is an estimate at the rounded optimum, as 
   const auto r=cppunivariate::huber_mle(mltest::as_span(near));
   REQUIRE(r.status==cppunivariate::HuberStatus::Ok);
   CHECK(r.mu==near[0]);
-  CHECK(r.sigma==doctest::Approx(3.889e-19).epsilon(1e-3));
+  CHECK(r.sigma==doctest::Approx(3.8886717919813423e-19).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik==doctest::Approx(122.14).epsilon(1e-4));
   CHECK(r.logLik==cppunivariate::huber_point_loglik(mltest::as_span(near),r.mu,r.sigma,r.epsilon));
 }

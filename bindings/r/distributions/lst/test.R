@@ -146,7 +146,7 @@ test_that("lst conditional collapse, feasibility and invalid holds", {
   expect_error(suppressWarnings(mllst(c(0,1),mu=0,df=1), classes = "univariateML_restricted"),"boundary")
   expect_error(suppressWarnings(mllst(c(0,0,1),mu=0), classes = "univariateML_restricted"),"unbounded")
   expect_true(is.finite(logLik(suppressWarnings(mllst(rep(2,4),mu=0,df=3), classes = "univariateML_restricted"))))
-  expect_equal(unname(suppressWarnings(mllst(rep(2,4),sigma=1,df=3), classes = "univariateML_restricted")["mu"]),2,tolerance=1e-7)
+  expect_equal(unname(suppressWarnings(mllst(rep(2,4),sigma=1,df=3), classes = "univariateML_restricted")["mu"]), 2, tolerance = 1e-10)
   expect_error(mllst(qnorm((1:100-.5)/100),mu=0),"mlnorm")
   expect_error(suppressWarnings(mllst(1:5,mu=Inf), classes = "univariateML_restricted"),"mu")
   expect_error(suppressWarnings(mllst(1:5,sigma=0), classes = "univariateML_restricted"),"sigma")

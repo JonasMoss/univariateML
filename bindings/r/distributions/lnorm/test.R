@@ -36,10 +36,10 @@ test_that("lnorm handles a seeded sample with a large outlier", {
   objective <- function(p) -sum(stats::dlnorm(x, p[1], exp(p[2]), log = TRUE))
   oracle <- optim(c(mean(log(x)), log(sd(log(x)))), objective,
     method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
-  expected <- c(oracle$par[1], exp(oracle$par[2]))
   fit <- mllnorm(x)
   expect_true(all(is.finite(fit)))
-  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expected <- c(0.16588752430803472, 1.0620589278165107)
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-10 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
 
@@ -110,7 +110,7 @@ expect_true(is.finite(logLik(mllnorm(rep(1,3),sdlog=2))))
 test_that("P2 distant held lognormal mean retains a finite scale", {
   f <- mllnorm(c(1,2),meanlog=1e300)
   expect_identical(f[["meanlog"]],1e300)
-  expect_equal(f[["sdlog"]],1e300)
+  expect_equal(f[["sdlog"]], 1e300, tolerance = 1e-10)
   expect_true(is.finite(logLik(f)))
 })
 

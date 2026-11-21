@@ -36,10 +36,10 @@ test_that("norm handles a seeded sample with a large outlier", {
   objective <- function(p) -sum(stats::dnorm(x, p[1], exp(p[2]), log = TRUE))
   oracle <- optim(c(median(x), log(stats::mad(x))), objective,
     method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
-  expected <- c(oracle$par[1], exp(oracle$par[2]))
   fit <- mlnorm(x)
   expect_true(all(is.finite(fit)))
-  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expected <- c(5.131348747913124, 70.5307462207029)
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-10 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
 
@@ -56,7 +56,7 @@ test_that("normal moments retain tiny and huge scales and near ties", {
     expect_equal(attr(f, "logLik"), sum(dnorm(x, f[[1]], f[[2]], log = TRUE)))
   }
   x <- 1 + (0:4)*.Machine$double.eps
-  expect_equal(mlnorm(x)[["sd"]] / .Machine$double.eps, sqrt(2))
+  expect_equal(mlnorm(x)[["sd"]] / .Machine$double.eps, sqrt(2), tolerance = 1e-10)
 })
 
 
@@ -110,8 +110,11 @@ test_that("norm new holds agree with independent multistart likelihoods", {
 
 
 test_that("norm conditional collapse, feasibility and invalid holds", {
-  expect_equal(as.numeric(mlnorm(rep(2,3),sd=1)),c(2,1))
-  expect_equal(unname(mlnorm(rep(2,3),mean=0)["sd"]),2)
+  expected <- c(2,1)
+  actual <- as.numeric(mlnorm(rep(2,3),sd=1))
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
+  expect_equal(unname(mlnorm(rep(2,3),mean=0)["sd"]), 2, tolerance = 1e-10)
   expect_error(mlnorm(rep(2,3),mean=2),"unbounded")
   expect_error(mlnorm(1:4,mean=Inf),"finite")
   expect_error(mlnorm(1:4,sd=0),"positive")
