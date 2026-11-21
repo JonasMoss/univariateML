@@ -74,7 +74,7 @@ limits:
   - name: scale collapse
     firmness: proved
     when: The free scale $\sigma$ tends to zero at a location occupied by observations.
-    detect: With held location $\mu$, held negative shape $\lambda$, and free scale, the tie count $k$ satisfies $(n-k)/|\lambda|-k=0$. Other collapse configurations may be unbounded or rejected by the default tie guard.
+    detect: With held location $\mu$, held negative shape $\lambda$, and free scale, the tie count $k$ satisfies $(n-k)/|\lambda|-k=0$. A strict majority tie with all coefficients free gives unbounded likelihood at $\lambda=-1$.
     status: CollapseLimit
     message: "collapse"
   - name: infeasible held support
@@ -99,8 +99,9 @@ fit:
   certified: 'partial'
   note: 'tlambda/certificate.hpp and Details: held nonnegative shapes (concavity below 1, exact uniforms at 1 and 2,
     support-contact reductions above 1), scalar negative-shape fits and shape-only fits
-    have conditional arithmetic certificates or structured stops. Free-shape fits with free
-    nuisance coordinates and negative-shape joint location-scale fits use uncertified profile searches. All-held evaluation is not counted as fitting certification.'
+    have conditional arithmetic certificates or structured stops. A distinct pair with all
+    coefficients free has a closed-form certificate. Other free-shape fits with free nuisance
+    coordinates and negative-shape joint location-scale fits use uncertified profile searches. All-held evaluation is not counted as fitting certification.'
 areas:
 - robust modelling
 classification: specialist
@@ -140,14 +141,13 @@ existence:
     outcome: estimate
     unique: true
     evidence: >-
-      Numerical, not a proof
-      (2026-11-14-strict-rules-data/tlambda_two_point.py): with $d = x_2 -
-      x_1$, $d^2 L$ depends only on the shape and the two quantile levels. Its
-      supremum over placements is below one at 408 shapes in $[-1, 1)$
-      (largest $1 - 1.9 \times 10^{-7}$ at $\lambda = 1 - 10^{-8}$,
-      approaching one like $(1-\lambda)\log(1/(1-\lambda))$), while $\lambda =
-      1$ attains one exactly and only at the uniform on $[x_1, x_2]$: $\mu =
-      (x_1+x_2)/2$, $\sigma = d/2$.
+      With $D=Q'_\lambda$ and $b=1-\lambda\in[0,2]$, Cauchy–Schwarz gives
+      $DD''\ge 3(D')^2/2$, so $D^{-1/2}$ is concave. Integrating the inverse
+      square of its chord between $u_1$ and $u_2$ gives
+      $(Q_\lambda(u_2)-Q_\lambda(u_1))^2/(D(u_1)D(u_2))\le (u_2-u_1)^2$.
+      Below $\lambda=1$, endpoints have zero density or infinite quantiles,
+      so the likelihood is strictly below $1/(x_2-x_1)^2$. The uniform
+      member at $\lambda=1$ attains equality only on $[x_1,x_2]$.
 ---
 
 The Tukey lambda family describes symmetric measurements through location $\mu$, scale $\sigma$, and shape $\lambda$. Shape controls tail weight and whether support is bounded. Its quantile function spans heavy-tailed, logistic, approximately normal and uniform shapes.
@@ -212,8 +212,8 @@ feasible likelihood. With held location, collapse exponent zero is an
 unattained supremum. With free location and held $\lambda=-1$, pairing a
 half-tie with the other observations proves strict domination by the
 collapse face; other held negative-shape equality comparisons stop
-numerically with a face witness. Free-shape half ties retain the collapse face
-and a uniform incumbent but stop numerically because the global comparison
+numerically with a face witness. For samples of more than two observations, free-shape half ties retain
+the collapse face and a uniform incumbent but stop numerically because the global comparison
 is not implemented. A tolerance tie is never used to declare
 nonattainment in these certificate routes.
 

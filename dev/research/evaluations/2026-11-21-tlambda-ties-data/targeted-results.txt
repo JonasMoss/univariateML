@@ -1,0 +1,10 @@
+1/1 Test #121: distribution_tlambda .............   Passed    0.83 sec
+100% tests passed, 0 tests failed out of 1
+1/1 Test #121: distribution_tlambda .............   Passed    0.80 sec
+100% tests passed, 0 tests failed out of 1
+[ FAIL 0 | WARN 0 | SKIP 8 | PASS 394 ]
+# tests 230
+# pass 230
+# fail 0
+# skipped 0
+Results: [{"command": ["cmake", "-S", "univariateML-cpp", "-B", "univariateML-cpp/build", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"], "exit": 0, "seconds": 0.46}, {"command": ["cmake", "--build", "univariateML-cpp/build", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 439.06}, {"command": ["ctest", "--test-dir", "univariateML-cpp/build", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(tlambda)(_slow)?$"], "exit": 0, "seconds": 0.84}, {"command": ["cmake", "-S", "univariateML-cpp", "-B", "build/cpp-no-long-double", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache", "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"], "exit": 0, "seconds": 0.42}, {"command": ["cmake", "--build", "build/cpp-no-long-double", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 432.9}, {"command": ["ctest", "--test-dir", "build/cpp-no-long-double", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(tlambda)(_slow)?$"], "exit": 0, "seconds": 0.81}, {"command": ["just", "test"], "exit": 0, "seconds": 100.14}, {"command": ["just", "js-build"], "exit": 0, "seconds": 80.02}, {"command": ["just", "js-test"], "exit": 0, "seconds": 90.61}]

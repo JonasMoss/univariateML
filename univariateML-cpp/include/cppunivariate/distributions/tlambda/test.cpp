@@ -367,3 +367,33 @@ TEST_CASE("tlambda: singleton collapse is a core statistical outcome") {
   CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
   CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
 }
+
+TEST_CASE("tlambda: a strict majority tie proves unbounded scale collapse") {
+  const std::vector<double> x{
+    0x1.311c24c55b298p-6, 0x1.311c24c55b298p-6,
+    0x1.311c24c55b298p-6, 0x1.311c24c55b298p-6,
+    -0x1.e717913e4daf5p-1, 0x1.0bd0e5595c7a0p+0};
+  const auto fit=cppunivariate::tlambda_mle(mltest::as_span(x),1e-10,1);
+  const auto result=cppunivariate::outcome(fit);
+  CHECK(result.kind==cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(result.reason==cppunivariate::OutcomeReason::Unbounded);
+  CHECK(result.certified);
+  CHECK(fit.iterations==0);
+}
+
+TEST_CASE("tlambda: a distinct pair has a unique certified uniform fit") {
+  const std::vector<double> x{0x1.0bd0e5595c7a0p+0, -0x1.e717913e4daf5p-1};
+  const auto fit=cppunivariate::tlambda_mle(mltest::as_span(x),1e-10,1);
+  const auto result=cppunivariate::outcome(fit);
+  REQUIRE(result.kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(result.reason==cppunivariate::OutcomeReason::None);
+  CHECK(result.certified);
+  CHECK(result.unique);
+  CHECK((fit.restricted & 32u)!=0);
+  CHECK(fit.iterations==0);
+  CHECK(fit.mu==doctest::Approx(0.047402284365322955).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(fit.sigma==doctest::Approx(0.99875396402936484).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(fit.lambda==doctest::Approx(1).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(fit.logLik==doctest::Approx(-1.3838007352820387).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(fit.logLik==cppunivariate::tlambda_detail::likelihood(mltest::as_span(x),fit.mu,fit.sigma,fit.lambda));
+}
