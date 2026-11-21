@@ -548,9 +548,10 @@ records; a positive seam discrepancy alone does not establish a fitter defect.
 `--case INDEX` restricts the archived replay (repeatable), `--timeout SECONDS`
 sets the audit guard, and `--no-long-double` builds the double-width variant.
 JSONL records retain data, holds, returned coefficients, density sums and
-independent attributions; adjacent summary and provenance JSON record counts
-and source identity. Reusing an output after changing sources is rejected; compiled probes also carry
-the source identity, so simultaneous replays cannot overwrite one another.
+independent attributions. Adjacent summary and provenance JSON record counts
+and source identity. Each invocation regenerates the requested output from
+computed and matching cached probes. `--jobs N` uses one reserved CPU slot
+per worker, and `--no-cache` runs every probe again.
 The frozen input archive is
 `dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz`.
 This is a finite regression census, not a proof over all data or hold values.
@@ -716,27 +717,47 @@ recorded input hash.
   minutes from empty).
 - `cert-replay.py` (`cert-replay:<comparison>`): certificate replay, step 8
   ([design](../design/certificate-replay.md)). For families whose certificate
-  comparisons it knows (nbinom and lomax so far), the comparisons that decide a
-  certified outcome are re-derived from the returned coefficients and the data
-  and evaluated in mpmath interval or exact rational arithmetic. A comparison
-  that lands on the other side fails; one whose enclosure contains the
-  threshold is listed as open, not failed.
+  comparisons it knows, the script re-derives those comparisons from the
+  returned coefficients and the data. It uses exact rational arithmetic,
+  mpmath intervals, or high-precision numerical evaluation, as marked in
+  the replay records. A comparison on the other side fails. An enclosure
+  that contains the threshold gives an open comparison.
+  `build/strict/cert-replay.sqlite3` stores results keyed by the complete
+  snapshot record, precision mode, replay and input-reconstruction sources,
+  archive contents, and replay precision and budget. The script checks the
+  rebuilt input digest on every run, including cache hits. When only one
+  family's snapshot records change, the other families can reuse their results.
+  In `--records` output, `seconds` measures each record's original computation.
 - `strict-seam.py` (`seam`, `seam-open`) runs `seam-check.py` in each mode into
-  `build/strict/seam/` (resumable; refits every case after a source change)
-  and judges its records: a disagreement or a support violation fails, and a
-  fit without a terminal result fails if it still has none when replayed with
-  the snapshot's 300 s guard.
+  `build/strict/seam/` and judges its records. A disagreement or a support
+  violation fails. An archived fit without a terminal result is retried with
+  the snapshot's 300 s guard and fails if it remains unresolved.
+  `build/strict/seam.sqlite3` stores completed probes keyed by their inputs,
+  archive contents, probe and reference sources, compiler and flags, and guard.
+  The compiled probe uses the full source set, so a change to those sources
+  invalidates the seam cache. Matching compiled probes can be reused across
+  guard settings. Open fits and unresolved reference evaluations run again on
+  the next invocation.
 
 ```sh
-/tmp/umvl-cpu/run just strict                         # build/snapshots/{native,double} with routes
-/tmp/umvl-cpu/run just strict NATIVE DOUBLE           # comma-separated snapshots, one mode each
-/tmp/umvl-cpu/run just strict NATIVE none             # native only
+/tmp/umvl-cpu/run4 just strict                        # four workers, both modes including routes
+/tmp/umvl-cpu/run4 just strict NATIVE DOUBLE           # comma-separated snapshot paths per mode
+/tmp/umvl-cpu/run just strict NATIVE none 1           # one worker, native only
 ```
 
-`just strict` exits nonzero on any failure not in `strict-known.json`. The
-first run in a worktree refits the seam census (about 15 CPU minutes per
-mode); later runs reuse it while sources are unchanged. The entries of these
-checks were seeded on the stored baselines of `c167a975`; the
+`just strict` exits nonzero on any failure outside `strict-known.json`. Its
+third argument sets the worker count (default 4). Reserve one CPU slot per
+worker. Worker count only affects scheduling and the timing lines. To force
+both checks to recompute without reading or writing their caches, run them
+directly:
+
+```sh
+/tmp/umvl-cpu/run4 python3 dev/validation/cert-replay.py NATIVE DOUBLE --jobs 4 --no-cache
+/tmp/umvl-cpu/run4 python3 dev/validation/strict-seam.py native double --jobs 4 --no-cache
+```
+
+The two SQLite files in `build/strict/` can be removed to reclaim their space.
+The entries of these checks were seeded on the stored baselines of `c167a975`; the
 [report](../research/evaluations/2026-11-13-strict-2-report.md) gives the
 tolerances, the distributions behind them, the consistency table and the open
 rule questions.

@@ -1,0 +1,14 @@
+family,cover_kernel,calls,cpu_s_inclusive
+burr,lomax_bnb,52,1.953182
+cauchy,cover,18,0.404497
+dgamma,cover,16,2.153456
+fatigue,cover,71,5.042490
+foldnorm,cover,39,6.695417
+gpd,cover,51,346.546186
+ht,cover,49,2891.347005
+invparalogis,cover,74,604.803143
+invpareto,lomax_bnb,76,7.226707
+lomax,lomax_bnb,130,8.360140
+paralogis,cover,75,569.235173
+pareto2,lomax_bnb,75,4.194090
+slash,cover,60,1570.274754

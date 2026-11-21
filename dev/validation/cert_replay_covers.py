@@ -39,9 +39,7 @@ uses a dossier bound that is not coded here as an interval:
              invparalogis is paralogis on 1/x (binary64 reciprocals for a certified fit, exact for an uncertified one)
   slash      mu held (scale root), sigma held (location cover), both free (location profile over the scale; accuracy by Newton, numerical)
 
-Every comparison reports a verdict (holds, fails, open) as in the prototype. Results
-are cached in a gzipped JSON-lines file (CERT_REPLAY_COVERS_CACHE, default
-build/cert-replay/covers-cache.jsonl.gz under the repository root, git-ignored); a family's entry in VERSIONS goes up when its replay changes.
+Every comparison reports a verdict (holds, fails, open) as in the prototype.
 """
 import collections, heapq, math
 from fractions import Fraction
@@ -1710,43 +1708,7 @@ def replay_slash_run(r, data, budget):
                                 verdict, info, target, note='profile over the scale (root enclosed by interval sign checks); |P\'\'| <= A + C^2/B per cell; residual bound where no uniform scale bound exists'))
     return out, None
 
-# ------------------------------------------------------------ cache and registry
-
-import gzip, hashlib, json, os, pathlib
-VERSIONS = {'foldnorm': 4, 'fatigue': 4, 'skellam': 2, 'pareto2': 3, 'invpareto': 3, 'cauchy': 2, 'burr': 1, 'dgamma': 3, 'ht': 2, 'paralogis': 2, 'invparalogis': 2, 'slash': 1}      # bump a family's entry when its replay changes; the cache key includes it
-VERSION = 'covers-1'
-CACHE_PATH = pathlib.Path(os.environ.get('CERT_REPLAY_COVERS_CACHE',
-    str(pathlib.Path(__file__).resolve().parents[2]/'build'/'cert-replay'/'covers-cache.jsonl.gz')))
-_cache = None
-
-def _load_cache():
-    global _cache
-    if _cache is None:
-        _cache = {}
-        if CACHE_PATH.exists():
-            try:
-                with gzip.open(CACHE_PATH, 'rt') as f:
-                    for line in f:
-                        k, v = json.loads(line); _cache[k] = v
-            except (OSError, EOFError, ValueError): pass
-    return _cache
-
-def cached(family, replay):
-    """Memoize a replay on (version, family, mask, held values, returned coefficients, outcome, data, budget); a
-    result is the comparison list and the reason, both plain JSON. The cache is a gzipped JSON-lines file
-    (CERT_REPLAY_COVERS_CACHE, default build/cert-replay/); deleting it only costs time. Not shared between dps or budgets."""
-    def run(r, data, budget):
-        cache = _load_cache()
-        key = hashlib.sha256(json.dumps([VERSION, VERSIONS.get(family, 1), family, r['mask'], r['held'], r['result'].get('estimates'), r['result'].get('outcome'),
-                                         r['result'].get('logLik'), [float(v).hex() for v in data], budget, mp.mp.dps], sort_keys=True).encode()).hexdigest()
-        if key in cache: return cache[key]['comps'], cache[key]['why']
-        comps, why = replay(r, data, budget)
-        comps = json.loads(json.dumps(comps, default=str))
-        cache[key] = dict(comps=comps, why=why)
-        CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with gzip.open(CACHE_PATH, 'at') as f: f.write(json.dumps([key, cache[key]])+'\n')
-        return comps, why
-    return run
+# ------------------------------------------------------------ registry
 
 def both(first, second):
     def run(r, data, budget):
@@ -1754,7 +1716,10 @@ def both(first, second):
         return (a or [])+(b or []), why_a or why_b
     return run
 
-REPLAYS = {family: cached(family, fn) for family, fn in
-           {'pareto2': replay_pareto2, 'invpareto': replay_invpareto, 'cauchy': replay_cauchy_scale, 'foldnorm': replay_foldnorm,
-            'fatigue': replay_fatigue, 'skellam': replay_skellam, 'burr': replay_burr_power, 'dgamma': replay_dgamma, 'ht': replay_ht, 'slash': replay_slash, 'paralogis': replay_paralogis, 'invparalogis': replay_invparalogis}.items()}
-REPLAYS['gpd'] = both(both(cached('gpd', replay_gpd), cached('gpd-coefficient', replay_gpd_coefficient)), cached('gpd-xi-held', replay_gpd_xi_held))
+REPLAYS = {
+    'pareto2': replay_pareto2, 'invpareto': replay_invpareto, 'cauchy': replay_cauchy_scale,
+    'foldnorm': replay_foldnorm, 'fatigue': replay_fatigue, 'skellam': replay_skellam,
+    'burr': replay_burr_power, 'dgamma': replay_dgamma, 'ht': replay_ht, 'slash': replay_slash,
+    'paralogis': replay_paralogis, 'invparalogis': replay_invparalogis,
+    'gpd': both(both(replay_gpd, replay_gpd_coefficient), replay_gpd_xi_held),
+}

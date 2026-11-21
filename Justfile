@@ -161,12 +161,12 @@ golden-reference *args:
 	PYTHONPATH={{repo_root}}/dev/validation python3 -m quality reference {{args}}
 
 # Strict layer: judge fit snapshots (fit-judge, summed density, same phenomenon,
-# refinement from its cache) and run the seam check, against
+# refinement from its cache, certificate replay) and run the seam check, against
 # dev/validation/strict-known.json; fails on any failure not listed there.
 # Arguments are comma-separated snapshot directories or stored .jsonl.gz files,
 # one precision mode each; double=none judges the native snapshots alone.
-# Reserve one slot: /tmp/umvl-cpu/run just strict [native] [double].
-strict native="build/snapshots/native,build/snapshots/routes-native" double="build/snapshots/double,build/snapshots/routes-double":
+# Reserve one slot per worker. The default is /tmp/umvl-cpu/run4 just strict.
+strict native="build/snapshots/native,build/snapshots/routes-native" double="build/snapshots/double,build/snapshots/routes-double" jobs="4":
     #!/usr/bin/env bash
     set -uo pipefail
     cd {{repo_root}}
@@ -178,8 +178,8 @@ strict native="build/snapshots/native,build/snapshots/routes-native" double="bui
     python3 $v/fit-density.py --quiet "{{native}}" "${double[@]}" || status=1
     python3 $v/fit-consistency.py "{{native}}" "${double[@]}" || status=1
     python3 $v/fit-refine.py --cache-only "{{native}}" "${double[@]}" || status=1
-    python3 $v/cert-replay.py "{{native}}" "${double[@]}" || status=1
-    python3 $v/strict-seam.py "${seam[@]}" || status=1
+    python3 $v/cert-replay.py "{{native}}" "${double[@]}" --jobs "{{jobs}}" || status=1
+    python3 $v/strict-seam.py "${seam[@]}" --jobs "{{jobs}}" || status=1
     [ $status -eq 0 ] && echo "strict layer: no failure outside the known list" || echo "strict layer: new failures (see NEW lines above)"
     exit $status
 

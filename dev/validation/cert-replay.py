@@ -55,15 +55,20 @@ all-held evaluations make no comparison and are counted, not judged.
 
 Usage:
   cert-replay.py NATIVE [DOUBLE] [--family lomax,nbinom] [--records FILE]
+                 [--jobs N] [--no-cache]
                  [--dps 50] [--budget 4000] [--prune | --add REF [--match RE]]
 NATIVE and DOUBLE are as for fit-judge.py. Failures are keyed
 'cert-replay:<comparison>|mode|family|source|case' and compared with
-strict-known.json. Reserve one slot: /tmp/umvl-cpu/run python3 ...
+strict-known.json. Reserve one CPU slot per job.
 """
 import argparse, collections, gzip, hashlib, heapq, json, math, re, sys, time
 from fractions import Fraction
+from pathlib import Path
+from strict_common import (HERE, ROOT, add_arguments, cached_map, file_fingerprint, fingerprint,
+                           load, mode_of, number, pin_threads, positive_jobs, ratchet, snapshot_module)
+
+pin_threads()
 import mpmath as mp
-from strict_common import add_arguments, load, mode_of, number, ratchet, snapshot_module
 
 CHECK = 'cert-replay'
 EPS = 2.0**-52
@@ -538,57 +543,98 @@ def rebuild(family, archive):
     finally:
         fs.ROUTE_MODE = False
 
+
+def replay_task(task):
+    record, data, dps, budget = task
+    iv.dps = dps
+    mp.mp.dps = dps
+    start = time.process_time()
+    comps, why = REPLAYS[record['family']](record, data, budget)
+    seconds = time.process_time() - start
+    # Keep the same representation as --records, including any mpmath values,
+    # across process boundaries and when the result comes from disk.
+    return json.loads(json.dumps((comps, why, seconds), default=str))
+
+
+def replay_items(families, snapshots, archive, args, cache_id):
+    selected = set(families)
+    by_family = collections.defaultdict(list)
+    for mode, rows in snapshots.items():
+        for (family, source, case), record in sorted(rows.items()):
+            if family in selected and (not args.case or re.search(args.case, source+'/'+case)):
+                by_family[family].append((mode, source, case, record))
+    for family in families:
+        inputs = rebuild(family, archive)
+        for mode, source, case, record in by_family[family]:
+            entry = inputs.get((source, case))
+            if entry is None:
+                raise SystemExit('%s %s %s: not among fit-snapshot.py cases' % (family, source, case))
+            c, digest = entry
+            if record['input_sha256'] != digest:
+                raise SystemExit('%s %s %s: snapshot input differs' % (family, source, case))
+            key = None if cache_id is None else fingerprint(cache_id, mode, record)
+            yield mode, key, (record, c['data'], args.dps, args.budget)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('native'); ap.add_argument('double', nargs='?')
     ap.add_argument('--family', default=','.join(sorted(REPLAYS)), help='comma-separated families (default: all replayed)')
     ap.add_argument('--records', help='write one JSON line per replayed case')
+    ap.add_argument('--jobs', type=positive_jobs, default=1, help='parallel record workers (default: 1)')
+    ap.add_argument('--no-cache', action='store_true', help='compute all comparisons without reading or writing the cache')
+    ap.add_argument('--cache', type=Path, default=ROOT/'build/strict/cert-replay.sqlite3',
+                    help='result cache path (default: build/strict/cert-replay.sqlite3)')
     ap.add_argument('--dps', type=int, default=50, help='interval working precision in digits')
     ap.add_argument('--budget', type=int, default=4000, help='profile evaluations per branch and bound')
     ap.add_argument('--case', metavar='REGEX', help='replay only cases whose source/case matches')
     add_arguments(ap)
     args = ap.parse_args()
-    iv.dps = args.dps; mp.mp.dps = args.dps
     families = [f for f in args.family.split(',') if f]
     for f in families:
         if f not in REPLAYS: raise SystemExit('no replay for %s (have: %s)' % (f, ', '.join(sorted(REPLAYS))))
     archive = {}
-    for c in json.loads(gzip.decompress(fs.ARCHIVE.read_bytes())): archive.setdefault(c['family'], []).append(c)
+    archive_bytes = fs.ARCHIVE.read_bytes()
+    for c in json.loads(gzip.decompress(archive_bytes)): archive.setdefault(c['family'], []).append(c)
     snapshots = {mode_of(p): load(p) for p in filter(None, (args.native, args.double))}
     failures = {}; judged = set(); opened = []; tally = collections.Counter(); skipped = collections.Counter()
     information = collections.Counter()
     records = open(args.records, 'w') if args.records else None
-    started = time.process_time()
-    for family in families:
-        inputs = rebuild(family, archive)
-        for mode, rows in snapshots.items():
-            for (fam, source, case), r in sorted(rows.items()):
-                if fam != family: continue
-                if args.case and not re.search(args.case, source+'/'+case): continue
-                entry = inputs.get((source, case))
-                if entry is None: raise SystemExit('%s %s %s: not among fit-snapshot.py cases' % (family, source, case))
-                c, digest = entry
-                if r['input_sha256'] != digest: raise SystemExit('%s %s %s: snapshot input differs' % (family, source, case))
-                t0 = time.process_time()
-                comps, why = REPLAYS[family](r, c['data'], args.budget)
-                if not comps:
-                    skipped['%s: %s' % (family, why or 'no certified outcome (%s)' % r['result']['kind'])] += 1
-                    continue
-                judged.add((mode, family, source, case))
-                for comp in comps:
-                    tally[(family, comp['name'], comp['verdict'])] += 1
-                    if comp.get('info'): information[(family, comp['name'], comp['info'])] += 1
-                    key = '|'.join(('%s:%s' % (CHECK, comp['name']), mode, family, source, case))
-                    text = '%s; hp %s; double %s; margin %s%s' % (comp['claim'], comp['hp'], comp['double'], comp['margin'],
-                                                                '; '+comp['note'] if comp['note'] else '')
-                    if comp['verdict'] == 'fails': failures[key] = text
-                    elif comp['verdict'] == 'open': opened.append((key, text))
-                if records:
-                    records.write(json.dumps(dict(mode=mode, family=family, source=source, case=case, mask=r['mask'],
-                                                  kind=r['result']['kind'], seconds=round(time.process_time()-t0, 3),
-                                                  comparisons=comps), default=str)+'\n')
+    started = time.perf_counter()
+    cache_id = None
+    if not args.no_cache:
+        sources = [Path(__file__).resolve(), *(HERE/name for name in ('strict_common.py', 'fit-snapshot.py')),
+                   *HERE.glob('cert_replay_*.py')]
+        cache_id = fingerprint(file_fingerprint(sources), hashlib.sha256(archive_bytes).hexdigest(),
+                               args.dps, args.budget, mp.__version__, cert_replay_faces.np.__version__,
+                               sys.version)
+    items = list(replay_items(families, snapshots, archive, args, cache_id))
+    results = cached_map(replay_task, [(key, task) for _, key, task in items], args.jobs,
+                         None if args.no_cache else args.cache)
+    cached_count = 0
+    for (mode, _, task), (hit, (comps, why, seconds)) in zip(items, results, strict=True):
+        cached_count += hit
+        r = task[0]
+        family, source, case = r['family'], r['source'], r['case']
+        if not comps:
+            skipped['%s: %s' % (family, why or 'no certified outcome (%s)' % r['result']['kind'])] += 1
+            continue
+        judged.add((mode, family, source, case))
+        for comp in comps:
+            tally[(family, comp['name'], comp['verdict'])] += 1
+            if comp.get('info'): information[(family, comp['name'], comp['info'])] += 1
+            key = '|'.join(('%s:%s' % (CHECK, comp['name']), mode, family, source, case))
+            text = '%s; hp %s; double %s; margin %s%s' % (comp['claim'], comp['hp'], comp['double'], comp['margin'],
+                                                        '; '+comp['note'] if comp['note'] else '')
+            if comp['verdict'] == 'fails': failures[key] = text
+            elif comp['verdict'] == 'open': opened.append((key, text))
+        if records:
+            records.write(json.dumps(dict(mode=mode, family=family, source=source, case=case, mask=r['mask'],
+                                          kind=r['result']['kind'], seconds=round(seconds, 3),
+                                          comparisons=comps))+'\n')
     if records: records.close()
-    print('cert-replay: %.0f CPU s, %d digits' % (time.process_time()-started, args.dps))
+    print('cert-replay: %.1f wall s, %d digits, %d/%d records cached' %
+          (time.perf_counter()-started, args.dps, cached_count, len(items)))
     for (family, name, verdict), count in sorted(tally.items()):
         print('  %-7s %-11s %-6s %d' % (family, name, verdict, count))
     for (family, name, label), count in sorted(information.items()):
