@@ -52,13 +52,9 @@ struct BfgsResult {
 };
 
 struct BfgsControl {
-  // reltol is a "function is genuinely flat" backstop, not a primary
-  // stopping rule: with the standard kFitTol = 1.22e-4 this would fire on
-  // the asymptotically slow approach to an MLE long before the gradient
-  // is actually small (e.g. ||grad|| ~ 0.1 on a 500-obs likelihood).
-  // grad_tol is the meaningful convergence test; estimators that need to
-  // satisfy a score-residual check should map their user-facing `tol`
-  // onto grad_tol, not reltol.
+  // reltol detects a flat objective. A relative change in the objective
+  // can be small while the gradient is still large. Use grad_tol for
+  // convergence criteria expressed in terms of the score.
   double reltol = 1e-12;
   double grad_tol = 1e-6;
   double step_tol = 1e-8;

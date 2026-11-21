@@ -10,7 +10,7 @@
 
 TEST_CASE("gamma") {
   auto g = mltest::load_distribution_golden("gamma");
-  // The shared kFitTol (1.22e-4) is the CRAN-era default; gamma now stops on a relative step, and its default and the contract tol are 1e-10.
+  // Request the default coefficient accuracy of 1e-10. Gamma stops on a relative step.
   auto r = cppunivariate::gamma_mle(mltest::as_span(g.data), 1e-10, mltest::kFitMaxit);
   CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kGolden_gamma).scale(0));
   CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_gamma).scale(0));

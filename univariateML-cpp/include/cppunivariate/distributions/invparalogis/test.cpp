@@ -4,9 +4,7 @@
 TEST_CASE("invparalogis: golden, reciprocal agreement and score") {
   auto g=mltest::load_distribution_golden("invparalogis");
   auto r=cppunivariate::invparalogis_mle(mltest::as_span(g.data), mltest::kFitTol, mltest::kFitMaxit);
-  // invparalogis_mle is paralogis_mle on 1/x (same finite-difference BFGS,
-  // same default gradtol kFitTol); reuse kFdTol like the paralogis golden
-  // check for the same reason (test_support.hpp's kFdTol comment).
+  // Check the golden coefficients in inverse-paralogistic coordinates.
   CHECK(r.shape == doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kGolden_invparalogis).scale(0)); CHECK(r.scale == doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kGolden_invparalogis).scale(0));
   CHECK(r.logLik == doctest::Approx(g.logLik).epsilon(mltest::kGolden_invparalogis).scale(0));
   std::vector<double> y; double jac=0;
