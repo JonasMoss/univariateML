@@ -67,10 +67,10 @@ test_that("gumbel handles a seeded sample with a large outlier", {
   objective <- function(p) -sum(dgumbel(x = x, mu = p[1], sigma = exp(p[2]), log = TRUE))
   oracle <- optim(c(median(x), log(stats::mad(x))), objective,
     method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
-  expected <- c(oracle$par[1], exp(oracle$par[2]))
   fit <- mlgumbel(x)
   expect_true(all(is.finite(fit)))
-  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expected <- c(0.5763765079152982, 5.25528718403262)
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-10 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
 
@@ -147,7 +147,10 @@ test_that("gumbel new holds agree with independent multistart likelihoods", {
 
 
 test_that("gumbel conditional collapse, feasibility and invalid holds", {
-  expect_equal(as.numeric(mlgumbel(rep(2,3),sigma=1)),c(2,1))
+  expected <- c(2,1)
+  actual <- as.numeric(mlgumbel(rep(2,3),sigma=1))
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_true(is.finite(logLik(mlgumbel(rep(2,3),mu=0))))
   expect_error(mlgumbel(rep(2,3),mu=2),"unbounded")
   expect_error(mlgumbel(1:4,mu=Inf),"finite")

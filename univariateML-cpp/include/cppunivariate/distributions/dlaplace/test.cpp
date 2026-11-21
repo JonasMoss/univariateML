@@ -6,7 +6,7 @@ TEST_CASE("dlaplace: closed form and fixed subsets") {
   auto f=cppunivariate::dlaplace_mle({x.data(),x.size()});
   CHECK(f.status==cppunivariate::DlaplaceStatus::Ok);
   CHECK(f.location==0);CHECK(f.not_unique);
-  CHECK(f.scale==doctest::Approx(1.75/(std::hypot(1.,1.75)+1)));
+  CHECK(f.scale==doctest::Approx(1.75/(std::hypot(1.,1.75)+1)).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(cppunivariate::dlaplace_mle({x.data(),x.size()},.5).status==cppunivariate::DlaplaceStatus::InvalidInput);
   std::vector<int>z={2,2};
   CHECK(cppunivariate::dlaplace_mle({z.data(),z.size()}).status==cppunivariate::DlaplaceStatus::PointMass);

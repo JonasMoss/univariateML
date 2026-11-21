@@ -253,16 +253,16 @@ TEST_CASE("betapr signed tail selects nonconstant gamma faces") {
   CHECK(inv.stop_detail.limit_coef[1]==doctest::Approx(.7/2.5));
 }
 
-TEST_CASE("betapr conditional coefficients match independent scipy profiles") {
+TEST_CASE("betapr conditional coefficients match independent likelihood profiles") {
   const std::vector<double> x{.03,.1,.4,.7,1,2,4,12};
-  const double shapes[]{.7,2,5},b[]{1.6969258659791764,.6398504179662102,.48632248971440617},
-    scales[]{3.092136533992608,.12184378490069656,.021291062908283555},
+  const double shapes[]{.7,2,5},b[]{1.6969258489725776,0.6398504186728861,0.48632248957995083},
+    scales[]{3.092136488380654,0.12184378512012611,0.02129106290070557},
     ll[]{-13.69991969846438,-14.337177096752114,-14.632869134819313};
   for(int j=0;j<3;++j) {
     const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),shapes[j],NAN,NAN);
     REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
-    CHECK(r.beta==doctest::Approx(b[j]).epsilon(1e-6));
-    CHECK(r.scale==doctest::Approx(scales[j]).epsilon(1e-6));
+    CHECK(r.beta==doctest::Approx(b[j]).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(r.scale==doctest::Approx(scales[j]).epsilon(mltest::kFitReferenceTol).scale(0));
     CHECK(r.logLik==doctest::Approx(ll[j]).epsilon(1e-10));
   }
 }
@@ -287,8 +287,8 @@ TEST_CASE("betapr conditional certificate compares separated local maxima") {
     2.898690421966857,1.2684036923492177,400970.63293690106};
   const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),.22690393135372058,NAN,NAN);
   REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
-  CHECK(r.beta==doctest::Approx(.22150182242584585).epsilon(1e-6));
-  CHECK(r.scale==doctest::Approx(2.5493370924264878).epsilon(1e-6));
+  CHECK(r.beta==doctest::Approx(0.2215018227316948).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.scale==doctest::Approx(2.5493371032271748).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik==doctest::Approx(-28.556114324015226).epsilon(1e-10));
 }
 
@@ -352,8 +352,8 @@ TEST_CASE("betapr flat gamma-adjacent conditional maximum retains golden coeffic
     0.18205988265034304,0.2673444641589703,0.9012350282744386,0.3236899952843548,0.7274713901255461};
   const auto r=cppunivariate::betapr_mle_holds(mltest::as_span(x),.7,NAN,NAN);
   REQUIRE(r.status==cppunivariate::BetaPrimeStatus::Ok);
-  CHECK(r.beta==doctest::Approx(95.516952).epsilon(1e-6));
-  CHECK(r.scale==doctest::Approx(78.232314).epsilon(1e-6));
+  CHECK(r.beta==doctest::Approx(95.51695233754258).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.scale==doctest::Approx(78.23231367734707).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik==doctest::Approx(-58.0668187021122).epsilon(1e-10));
   CHECK(r.iterations<=cppunivariate::certificate_budget(1000));
   const auto budget=cppunivariate::betapr_mle_holds(mltest::as_span(x),.66110553857791232,NAN,NAN,1e-6,64);

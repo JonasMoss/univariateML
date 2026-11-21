@@ -72,8 +72,8 @@ test_that("CMB detects precisely the reachable faces", {
   expect_error(mlcmb(c(0,0),size=5,prob=.4,nu=1),NA)
   expect_equal(as.numeric(mlcmb(0,size=0)),c(0,.5,1))
   expect_warning(f <- mlcmb(c(0,1,1),size=1),"not identified")
-  expect_equal(f[["nu"]],1)
-  expect_equal(f[["prob"]],2/3)
+  expect_equal(f[["nu"]], 1, tolerance = 1e-10)
+  expect_equal(f[["prob"]], 2/3, tolerance = 1e-10)
   expect_setequal(attr(f,"fixed"),c("size","nu"))
   expect_equal(attr(logLik(f),"df"),1L)
   expect_error(mlcmb(c(1,7),size=5),"between zero and size")
@@ -114,9 +114,15 @@ test_that("P3 CMB finite endpoints preserve held dispersion", {
 
 test_that("P3 Bernoulli endpoint fits are silent", {
  expect_silent(f<-mlcmb(c(0,0),size=1))
- expect_equal(as.numeric(f),c(1,0,1))
+ expected <- c(1,0,1)
+ actual <- as.numeric(f)
+ expect_length(actual, length(expected))
+ expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
  expect_silent(f<-mlcmb(c(1,1),size=1))
- expect_equal(as.numeric(f),c(1,1,1))
+ expected <- c(1,1,1)
+ actual <- as.numeric(f)
+ expect_length(actual, length(expected))
+ expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
 })
 
 test_that("CMB: held canonical coordinates give a certified integer profile", {
@@ -225,10 +231,16 @@ test_that("CMB free size with fixed dispersion compares the whole integer tail",
 
 test_that("CMB free dispersion handles constant free-size samples", {
   f <- mlcmb(rep(3, 4), size = NULL)
-  expect_equal(unname(as.numeric(f)), c(3, 1, 1))
+  expected <- c(3, 1, 1)
+  actual <- unname(as.numeric(f))
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_equal(attr(f, "logLik"), 0)
   f <- mlcmb(rep(0, 4), size = NULL, prob = .4)
-  expect_equal(unname(as.numeric(f)), c(0, .4, 1))
+  expected <- c(0, .4, 1)
+  actual <- unname(as.numeric(f))
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_error(mlcmb(rep(3, 4), size = NULL, prob = .4), "point mass")
   expect_error(mlcmb(rep(3, 4), size = NULL, prob = 0), "between zero and size")
 })
@@ -241,14 +253,17 @@ test_that("CMB free size and dispersion handle adjacent observations", {
 
 test_that("CMB free size symmetric held probability faces", {
   f <- suppressWarnings(mlcmb(c(0,1), size=NULL, prob=.5))
-  expect_equal(unname(as.numeric(f)), c(1,.5,1))
+  expected <- c(1,.5,1)
+  actual <- unname(as.numeric(f))
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_equal(attr(f,"logLik"), -2*log(2))
   expect_error(mlcmb(c(2,3), size=NULL, prob=.5), "adjacent two-point law")
   expect_error(mlcmb(c(0,4), size=NULL, prob=.5), "endpoint two-point law")
-  expect_equal(suppressWarnings(mlcmb(c(0,0,1),size=NULL,prob=.5))[["size"]],1)
+  expect_equal(suppressWarnings(mlcmb(c(0,0,1),size=NULL,prob=.5))[["size"]], 1, tolerance = 0)
   f <- mlcmb(c(0,rep(1,9)),size=NULL,prob=.5)
-  expect_equal(f[["size"]],2)
-  expect_equal(f[["nu"]],log(18)/log(2))
+  expect_equal(f[["size"]], 2, tolerance = 0)
+  expect_equal(f[["nu"]], log(18)/log(2), tolerance = 1e-10)
 })
 
 test_that("CMB held probability detects an adjacent-face tie", {
@@ -259,7 +274,10 @@ test_that("CMB free size attains the empirical uniform likelihood", {
   x <- rep(0:4, each=2)
   for (p in list(NULL,.5)) {
     f <- mlcmb(x, size=NULL, prob=p)
-    expect_equal(unname(as.numeric(f)), c(4,.5,0))
+    expected <- c(4,.5,0)
+    actual <- unname(as.numeric(f))
+    expect_length(actual, length(expected))
+    expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
     expect_equal(attr(f,"logLik"), -length(x)*log(5))
     if (!is.null(p)) expect_setequal(attr(f,"fixed"), "prob")
   }
@@ -369,7 +387,7 @@ test_that("CMB finite-size ties stop with both finite witnesses", {
 test_that("CMB census nu-held free size returns a certified finite fit", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"cmb","golden.json"))
   f <- mlcmb(g$data,size=NULL,nu=g$estimates$nu)
-  expect_equal(f[["size"]],10)
+  expect_equal(f[["size"]], 10, tolerance = 0)
   expect_equal(f[["prob"]],g$estimates$prob,tolerance=1e-8)
   expect_equal(as.numeric(logLik(f)),g$logLik,tolerance=1e-10)
 })
@@ -405,9 +423,9 @@ test_that("free-size CMB returns the proved nonunique saturated Bernoulli maximu
     expect_true(attr(f,"certified"))
     expect_false(attr(f,"unique"))
     expect_true(all(is.finite(as.numeric(f))))
-    expect_equal(unname(f[["size"]]),1)
-    expect_equal(unname(f[["nu"]]),1)
-    expect_equal(unname(f[["prob"]]),mean(x))
+    expect_equal(unname(f[["size"]]), 1, tolerance = 0)
+    expect_equal(unname(f[["nu"]]), 1, tolerance = 1e-10)
+    expect_equal(unname(f[["prob"]]), mean(x), tolerance = 1e-10)
     expect_equal(as.numeric(logLik(f)),sum(dbinom(x,1,mean(x),log=TRUE)),tolerance=1e-13)
   }
 })

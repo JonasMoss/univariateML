@@ -277,7 +277,10 @@ test_that("legacy all-free decisions retain results with certification labels", 
   f <- mlbnbinom(x,iterlim=200)
   expect_false(attr(f,"certified"))
   expect_true(attr(mlbnbinom(x),"certified"))
-  expect_equal(as.numeric(f),c(1.0672234787479615,2.1419791546447171,5.3647338351087397),tolerance=2e-6)
+  expected <- c(1.067223439275812, 2.1419792202550636, 5.364734296253785)
+  actual <- as.numeric(f)
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
 })
 
 test_that("signed face cover certifies new faces and preserves budget fallback", {

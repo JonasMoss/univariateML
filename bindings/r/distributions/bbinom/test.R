@@ -32,7 +32,10 @@ test_that("faces and nonidentification are explicit", {
   expect_false(attr(zero,"unique"))
   expect_equal(attr(bern,"maximizer_shape_ray"),c(.5,.5))
   expect_equal(attr(zero,"free_positive_shapes"),c(1,1))
-  expect_equal(unname(bern[c("alpha","beta")]),c(.5,.5))
+  expected <- c(.5,.5)
+  actual <- unname(bern[c("alpha","beta")])
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_equal(unname(zero[c("alpha","beta")]),c(1,1))
   expect_equal(as.numeric(logLik(bern)),-4*log(2))
   expect_equal(as.numeric(logLik(zero)),0)
@@ -119,7 +122,7 @@ test_that("bbinom: retained free-size guards identify the unresolved profile", {
 test_that("held beta free-size fit has a certified tail", {
  x <- c(0, 1, 2, 4)
  f <- mlbbinom(x, size=NULL, beta=.5)
- expect_equal(unname(f["size"]), 4)
+ expect_equal(unname(f["size"]), 4, tolerance = 0)
  expect_equal(attr(f,"fixed"), "beta")
  grid <- vapply(4:30, function(n) attr(mlbbinom(x,size=n,beta=.5),"logLik"), 0.)
  expect_equal(attr(f,"logLik"), max(grid), tolerance=1e-8)
@@ -146,7 +149,7 @@ test_that("seeded held-beta profiles agree with dense size enumeration", {
 test_that("held alpha free-size certificates and stopping outcomes", {
   x <- c(0, 0, 1, 1)
   fit <- mlbbinom(x, size=NULL, alpha=1)
-  expect_equal(unname(fit["size"]), 1)
+  expect_equal(unname(fit["size"]), 1, tolerance = 0)
   expect_equal(attr(fit, "fixed"), "alpha")
   grid <- vapply(1:30, function(n) attr(mlbbinom(x,size=n,alpha=1),"logLik"), 0.)
   expect_equal(attr(fit,"logLik"), max(grid), tolerance=1e-7)
@@ -164,7 +167,10 @@ test_that("signed zero-score face and small finite gains are distinguished", {
   expect_error(mlbbinom(c(0,1,1,2),size=2), "Use `mlbinom")
   x <- c(rep(0L,25001),rep(1L,50000),rep(2L,25001))
   f <- mlbbinom(x,size=2)
-  expect_equal(unname(f[c("alpha","beta")]),c(25000,25000),tolerance=1e-7)
+  expected <- c(25000,25000)
+  actual <- unname(f[c("alpha","beta")])
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
 })
 
 test_that("binomial certificate exposes its face witness", {
@@ -178,7 +184,10 @@ test_that("binomial certificate exposes its face witness", {
 test_that("general-size profiles retain finite gains below the old preference", {
   x <- rep(0:3,c(12501,37499,37499,12501))
   f <- mlbbinom(x,size=3)
-  expect_equal(unname(f[c("alpha","beta")]),c(18749.5,18749.5),tolerance=1e-6)
+  expected <- c(18749.5,18749.5)
+  actual <- unname(f[c("alpha","beta")])
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
 })
 
 test_that("curvature closes near-zero negative face comparisons", {

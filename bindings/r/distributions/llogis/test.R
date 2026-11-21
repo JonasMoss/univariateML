@@ -49,10 +49,10 @@ test_that("llogis handles a seeded sample with a large outlier", {
   objective <- function(p) -sum(dllogis(x, exp(p[1]), scale=exp(p[2]), log = TRUE))
   oracle <- optim(log(c(2, 1)), objective,
     method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
-  expected <- exp(oracle$par)
   fit <- mlllogis(x)
   expect_true(all(is.finite(fit)))
-  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expected <- c(2.0734828096959386, 1.0960327912206853)
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-10 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
 

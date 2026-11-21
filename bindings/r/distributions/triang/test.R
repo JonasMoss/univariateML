@@ -49,7 +49,7 @@ for (mode in seq(0, 1, length.out = 31)) {
 }
 # A held endpoint observed in the data forces its corner mode.
 corner <- mltriang(c(0, .01, .1, .5), a = 0)
-expect_equal(coef(corner)[["c"]], 0)
+expect_equal(coef(corner)[["c"]], 0, tolerance = 0)
 for (mode in c(-1, 2)) {
   fixed_mode <- mltriang(x, c = mode)
   expect_equal(coef(fixed_mode)[[if (mode < 0) "a" else "b"]], mode)
@@ -57,9 +57,9 @@ for (mode in c(-1, 2)) {
 expect_equal(as.numeric(logLik(mltriang(rep(.4, 3), a = 0, b = 1))),
   3 * log(2))
 corner_upper <- mltriang(1 - c(0, .01, .1, .5), b = 1)
-expect_equal(coef(corner_upper)[["c"]], 1)
+expect_equal(coef(corner_upper)[["c"]], 1, tolerance = 1e-10)
 expect_warning(known_tie <- mltriang(c(.2, .8), a = 0, b = 1), "not unique")
-expect_equal(coef(known_tie)[["c"]], .2)
+expect_equal(coef(known_tie)[["c"]], .2, tolerance = 1e-10)
 
 test_that("constant triangular samples with exterior held mode", {
   for (v in c(.1,.4,1)) for (b in c(NA,3)) {
@@ -76,8 +76,8 @@ test_that("P2 reflected constant exterior-mode maxima", {
   for (held in list(list(c=2),list(a=-1,c=2),list(a=-1,b=3,c=2))) {
     fit <- do.call(mltriang,c(list(x=rep(.4,5)),held))
     expect_equal(as.numeric(logLik(fit)),ll(fit,rep(.4,5)),tolerance=1e-12)
-    if (is.null(held$b)) expect_equal(unname(fit["b"]),2)
-    if (is.null(held$a)) expect_equal(unname(fit["a"]),-1.2)
+    if (is.null(held$b)) expect_equal(unname(fit["b"]), 2, tolerance = 1e-10)
+    if (is.null(held$a)) expect_equal(unname(fit["a"]), -1.2, tolerance = 1e-10)
   }
 })
 

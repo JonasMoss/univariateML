@@ -26,10 +26,10 @@ TEST_CASE("foldnorm boundary, zeros and fixed subsets") {
   const auto r=cppunivariate::foldnorm_mle({x.data(),x.size()});
   CHECK(r.status==cppunivariate::FoldnormStatus::Ok);
   CHECK(r.mu==0);
-  CHECK(r.sigma==doctest::Approx(std::sqrt(.2)));
+  CHECK(r.sigma==doctest::Approx(std::sqrt(.2)).epsilon(mltest::kFitReferenceTol).scale(0));
   const std::vector<double> c{2,2};
   CHECK(cppunivariate::foldnorm_mle({c.data(),c.size()}).status==cppunivariate::FoldnormStatus::Unbounded);
-  CHECK(cppunivariate::foldnorm_mle({c.data(),c.size()},1e-10,200,0).sigma==doctest::Approx(2));
+  CHECK(cppunivariate::foldnorm_mle({c.data(),c.size()},1e-10,200,0).sigma==doctest::Approx(2).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(cppunivariate::foldnorm_mle({c.data(),c.size()},1e-10,200,0,1).status==cppunivariate::FoldnormStatus::Ok);
   const std::vector<double> constant(10,1);
   CHECK(cppunivariate::foldnorm_mle({constant.data(),constant.size()}).status==cppunivariate::FoldnormStatus::Unbounded);

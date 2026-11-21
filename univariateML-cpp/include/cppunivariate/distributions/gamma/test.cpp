@@ -74,7 +74,7 @@ TEST_CASE("gamma P2 held boundaries and solver failure") {
   const std::vector<double> x{2,2,2};
   const double nan=std::numeric_limits<double>::quiet_NaN();
   CHECK(cppunivariate::gamma_mle(mltest::as_span(x),1e-10,1,nan,0.5).status==cppunivariate::GammaStatus::IterationFailure);
-  CHECK(cppunivariate::gamma_mle(mltest::as_span(x),1e-10,100,2,nan).scale==doctest::Approx(1));
+  CHECK(cppunivariate::gamma_mle(mltest::as_span(x),1e-10,100,2,nan).scale==doctest::Approx(1).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 TEST_CASE("gamma held shape profiles scale without intermediate overflow") {
@@ -82,7 +82,7 @@ TEST_CASE("gamma held shape profiles scale without intermediate overflow") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const auto r=cppunivariate::gamma_mle(mltest::as_span(x),1e-10,100,1e308,nan);
   CHECK(r.shape==1e308);
-  CHECK(r.scale==doctest::Approx(1));
+  CHECK(r.scale==doctest::Approx(1).epsilon(mltest::kFitReferenceTol).scale(0));
   // The likelihood itself is outside the direct lgamma formula's range;
   // a numerical failure is returned rather than a spurious finite fit.
   CHECK(r.status==cppunivariate::GammaStatus::IterationFailure);

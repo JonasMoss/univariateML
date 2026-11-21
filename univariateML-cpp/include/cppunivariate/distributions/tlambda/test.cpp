@@ -199,8 +199,8 @@ TEST_CASE("tlambda: convex contact maxima include exact ties") {
   const auto r=cppunivariate::tlambda_mle(mltest::as_span(symmetric),1e-7,1000,1.5,NAN,1);
   REQUIRE(r.status==cppunivariate::TlambdaStatus::CertificateFailure);
   CHECK(r.stop_detail.comparison_tie);REQUIRE(r.stop_detail.candidates.size()==2);
-  CHECK(r.stop_detail.candidates[0].coef[0]==doctest::Approx(-5./12));
-  CHECK(r.stop_detail.candidates[1].coef[0]==doctest::Approx(5./12));
+  CHECK(r.stop_detail.candidates[0].coef[0]==doctest::Approx(-5./12).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.stop_detail.candidates[1].coef[0]==doctest::Approx(5./12).epsilon(mltest::kFitReferenceTol).scale(0));
   const std::vector<double> x{-1,-.8,.3,2};
   const auto s=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,1000,1.5,0,NAN);
   REQUIRE(s.status==cppunivariate::TlambdaStatus::Ok);CHECK(s.certified);CHECK(s.sigma==3);

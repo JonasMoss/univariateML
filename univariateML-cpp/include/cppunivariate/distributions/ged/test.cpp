@@ -411,9 +411,9 @@ TEST_CASE("ged: all four free-shape golden subsets require the global score cert
       mask&1?g.estimates.at("mean"):NAN,mask&2?g.estimates.at("sd"):NAN,NAN);
     REQUIRE(r.status==cppunivariate::GedStatus::Ok);
     CHECK(r.certified);
-    CHECK(r.mu==doctest::Approx(g.estimates.at("mean")).epsilon(1e-5));
-    CHECK(r.sigma==doctest::Approx(g.estimates.at("sd")).epsilon(1e-5));
-    CHECK(r.nu==doctest::Approx(g.estimates.at("nu")).epsilon(1e-5));
+    CHECK(r.mu==doctest::Approx(g.estimates.at("mean")).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(r.sigma==doctest::Approx(g.estimates.at("sd")).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(r.nu==doctest::Approx(g.estimates.at("nu")).epsilon(mltest::kFitReferenceTol).scale(0));
     CHECK(r.stop_detail.loglik_lower<=r.logLik);
     CHECK(r.stop_detail.loglik_upper>=r.logLik);
     CHECK(r.iterations<=cppunivariate::certificate_budget(200));
@@ -471,7 +471,8 @@ TEST_CASE("ged: numerically overlapping finite maxima keep an uncertified search
     REQUIRE(r.stop_detail.candidates.size()>=2);
     auto a=r.stop_detail.candidates[0],b=r.stop_detail.candidates[1];
     if(a.coef[2]>b.coef[2])std::swap(a,b);
-    CHECK(a.coef[2]==doctest::Approx(1.108145553391854).epsilon(1e-5));
+    CHECK(a.coef[2]==doctest::Approx(1.108145553391854).epsilon(mltest::kFitReferenceTol).scale(0));
+    // TODO(TASK-150.7): relative error 3.5e-10 native, 3.5e-10 double-only.
     CHECK(b.coef[2]==doctest::Approx(25.39783214175462).epsilon(1e-5));
     CHECK(std::abs((a.loglik_lower+a.loglik_upper)-(b.loglik_lower+b.loglik_upper))<1e-5);
   }

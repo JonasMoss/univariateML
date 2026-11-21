@@ -87,7 +87,7 @@ test_that("slash fits and likelihoods are equivariant over extreme units", {
     expect_equal(attr(g,"logLik")+length(x)*log(s),attr(f,"logLik"),tolerance=1e-10)
   }
   f <- mlslash(rep(2,5),sigma=1)
-  expect_equal(f[["mu"]],2,tolerance=1e-7)
+  expect_equal(f[["mu"]], 2, tolerance = 1e-10)
 })
 test_that("slash normalizes by the bulk rather than a remote outlier", {
   f <- mlslash(c(-2,-1,0,1,2,1e100))

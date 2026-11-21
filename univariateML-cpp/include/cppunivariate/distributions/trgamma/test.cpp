@@ -281,7 +281,7 @@ TEST_CASE("trgamma: public face helper and both shapes fixed on constant data") 
   const std::vector<double> x = {2, 2};
   const auto fixed = cppunivariate::trgamma_mle(mltest::as_span(x), 1e-10, 100, 3, 2);
   REQUIRE(fixed.status == cppunivariate::TrGammaStatus::Ok);
-  CHECK(fixed.scale == doctest::Approx(2 / std::sqrt(3.0)));
+  CHECK(fixed.scale == doctest::Approx(2 / std::sqrt(3.0)).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(fixed.logLik == doctest::Approx(trgamma_loglik(x, 3, 2, fixed.scale)).epsilon(1e-12));
 }
 

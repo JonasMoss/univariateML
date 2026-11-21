@@ -234,7 +234,7 @@ test_that("Frechet half-minimum pair certificate stops for equal and unequal upp
 test_that("Frechet all-free two-point face comparison is certified and typed", {
   x <- c(rep(0,9),rep(1,11))
   f <- suppressWarnings(mlfrechet(x,mu=NULL),classes="univariateML_restricted")
-  expect_equal(unname(f["lambda"]),1)
+  expect_equal(unname(f["lambda"]), 1, tolerance = 1e-10)
   expect_equal(unname(f["sigma"]),.1,tolerance=1e-10)
   e <- tryCatch(mlfrechet(c(0,rep(1,19)),mu=NULL),error=identity)
   expect_s3_class(e,"univariateML_limit")
@@ -248,7 +248,7 @@ test_that("Frechet all-free two-point face comparison is certified and typed", {
 test_that("Frechet compatible public scale keeps the certified member", {
   f <- suppressWarnings(mlfrechet(c(rep(0,7),rep(1,9)),mu=NULL,sigma=.125),classes="univariateML_restricted")
   expect_equal(unname(f["sigma"]),.125)
-  expect_equal(unname(f["lambda"]),1)
+  expect_equal(unname(f["lambda"]), 1, tolerance = 1e-10)
 })
 
 test_that("Frechet two-point solver stops preserve finite supremum bounds", {

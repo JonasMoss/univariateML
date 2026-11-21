@@ -95,11 +95,13 @@ test_that("large samples and many distinct counts", {
   x <- rdweibull(n = 1e+05, shape1 = 0.8, shape2 = 1.5)
   fit <- mldweibull(x)
   expect_equal(unname(fit[["shape2"]]), 1.5, tolerance = .02)
+  expect_equal(unname(fit[["shape2"]]), 1.498451288480568, tolerance = 1e-10)
   # Heavy tail: thousands of distinct counts.
   heavy <- pmax(rdweibull(n = 5000, shape1 = 0.9, shape2 = 0.3), 0)
   expect_gt(length(unique(heavy)), 1000)
   fit <- mldweibull(heavy)
   expect_equal(unname(fit[["shape2"]]), .3, tolerance = .1)
+  expect_equal(unname(fit[["shape2"]]), 0.29962729679958416, tolerance = 1e-10)
   expect_equal(attr(fit, "logLik"), sum(dml(heavy, fit, log = TRUE)), tolerance = 1e-9)
 })
 

@@ -42,7 +42,7 @@ TEST_CASE("gpd: shape regimes, scores, fixed shape and threshold") {
 TEST_CASE("gpd: exponential stability and invalid inputs") {
   std::vector<double> y{.2,.7,1,2,4};
   auto zero=cppunivariate::gpd_mle(mltest::as_span(y),1e-12,200,0,0);
-  CHECK(zero.sigma==doctest::Approx(1.58));
+  CHECK(zero.sigma==doctest::Approx(1.58).epsilon(mltest::kFitReferenceTol).scale(0));
   for(double xi:{-1e-16,1e-16,-1e-9,1e-9}) {
     auto r=cppunivariate::gpd_mle(mltest::as_span(y),1e-12,200,0,xi);
     CHECK(r.sigma==doctest::Approx(zero.sigma).epsilon(1e-8));

@@ -181,7 +181,7 @@ TEST_CASE("exp: censored held likelihood and boundary outcomes") {
   l={1e308,1e308};u=l;
   const auto r=cppunivariate::exp_censored_mle(x);
   REQUIRE(r.status==cppunivariate::ExpCensoredStatus::Ok);
-  CHECK(r.rate/1e-308==doctest::Approx(1));
+  CHECK(r.rate/1e-308==doctest::Approx(1).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 TEST_CASE("censored outcomes are decided in the core") {

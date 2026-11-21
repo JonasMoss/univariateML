@@ -19,8 +19,8 @@ TEST_CASE("lnorm") {
 TEST_CASE("lnorm: seeded sample with outlier") {
   auto g = mltest::load_golden(std::string(CPPUNIV_DISTRIBUTIONS_DIR) + "/lnorm/fixture-outlier.json");
   auto r = cppunivariate::lognormal_mle(mltest::as_span(g.data));
-  CHECK(r.meanlog == doctest::Approx(g.estimates.at("first")).epsilon(1e-4));
-  CHECK(r.sdlog == doctest::Approx(g.estimates.at("second")).epsilon(1e-4));
+  CHECK(r.meanlog == doctest::Approx(g.estimates.at("first")).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.sdlog == doctest::Approx(g.estimates.at("second")).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik >= g.logLik - 1e-6);
 }
 
@@ -89,7 +89,7 @@ TEST_CASE("lnorm held distant mean uses a scaled-width result") {
   const double nan=std::numeric_limits<double>::quiet_NaN();
   const auto r=cppunivariate::lognormal_mle(mltest::as_span(x),1e300,nan);
   CHECK(r.meanlog==1e300);
-  CHECK(r.sdlog==doctest::Approx(1e300));
+  CHECK(r.sdlog==doctest::Approx(1e300).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(std::isfinite(r.logLik));
 }
 

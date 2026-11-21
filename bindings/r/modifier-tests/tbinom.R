@@ -182,7 +182,7 @@ test_that("TASK-134 zero-probability conditioning is excluded explicitly", {
 
 test_that("tbinom J7a certifies infinite conditioning windows", {
   f <- .modifier_tbinom(c(1,2,2,3,3,3,4,4,5,5),a=0,b=Inf,size=NULL)
-  expect_equal(unname(f["size"]),6)
+  expect_equal(unname(f["size"]), 6, tolerance = 0)
   e <- tryCatch(.modifier_tbinom(1:3,a=NULL,b=NULL,size=NULL),error=identity)
   expect_s3_class(e,"univariateML_limit")
   expect_true(is.finite(e$loglik_upper))
@@ -219,7 +219,7 @@ test_that("tbinom mixed higher factorial moments have a signed tail", {
 test_that("tbinom certifies a finite winner at the zero-second-order face", {
   x <- rep.int(0:4,c(242187,60672,121344,1488980,406274))
   f <- .modifier_tbinom(x,a=-1,b=4,size=NULL)
-  expect_equal(unname(f["size"]),7)
+  expect_equal(unname(f["size"]), 7, tolerance = 0)
   expect_equal(unname(f["prob"]),.4471565933571736339834998905,tolerance=1e-10)
   expect_lt(abs(as.numeric(attr(f,"logLik"))+3379063.91960425442105),1e-7)
 })

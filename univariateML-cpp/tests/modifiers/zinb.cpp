@@ -163,11 +163,11 @@ TEST_CASE("zinb: zero boundary is the attained point mass") {
 TEST_CASE("zinb: exhaustive held-size competing maxima and tie certificate") {
   std::vector<int> x(100,0);x.back()=10;
   const double nan=std::numeric_limits<double>::quiet_NaN();
-  for(const auto& entry:std::vector<std::vector<double>>{{.7,.957450207},{.8,.506823257326}}) {
+  for(const auto& entry:std::vector<std::vector<double>>{{.7,0.9574502070263265},{.8,0.5068232573268997}}) {
     const auto fit=cppunivariate::zinb_fixed_size_mle({x.data(),x.size()},10,nan,entry[0]);
     REQUIRE(fit.fit.status==cppunivariate::ZinbStatus::Ok);
     REQUIRE(fit.stop_detail.candidates.size()==2);
-    CHECK(fit.fit.prob==(entry[0]==.7?doctest::Approx(.957450207).epsilon(1e-8):doctest::Approx(.506823257326).epsilon(1e-8)));
+    CHECK(fit.fit.prob==doctest::Approx(entry[1]).epsilon(mltest::kFitReferenceTol).scale(0));
     CHECK(fit.stop_detail.loglik_lower<=fit.fit.logLik);
     CHECK(fit.stop_detail.loglik_upper>=fit.fit.logLik);
     for(const auto& candidate:fit.stop_detail.candidates) {
@@ -198,8 +198,9 @@ TEST_CASE("zinb: fixed-size certificate holds and golden likelihood") {
     if(mask&1)CHECK(fit.fit.prob==p);
     if(mask&2)CHECK(fit.fit.pi==pi);
     CHECK(fit.fit.logLik>=g.logLik-1e-8);
+    // TODO(TASK-150.7): relative error 1.1e-10 native, 1.1e-10 double-only.
     CHECK(fit.fit.prob==doctest::Approx(g.estimates.at("prob")).epsilon(2e-7));
-    CHECK(fit.fit.pi==doctest::Approx(g.estimates.at("pi")).epsilon(2e-7));
+    CHECK(fit.fit.pi==doctest::Approx(g.estimates.at("pi")).epsilon(mltest::kFitReferenceTol).scale(0));
   }
   const std::vector<int> z{0,0,0},positive{0,1,2};
   CHECK(cppunivariate::zinb_fixed_size_mle({z.data(),z.size()},0,.4,.3).fit.logLik==0);
@@ -218,7 +219,7 @@ TEST_CASE("zinb: held-probability size branch certificate") {
     if(!std::isnan(pi))CHECK(fit.fit.pi==pi);
     const auto ref=cppunivariate::zinb_mle({x.data(),x.size()},1e-10,200,nan,p,pi);
     CHECK(fit.fit.logLik>=ref.logLik-1e-7);
-    if(pi!=0)CHECK(fit.fit.size==doctest::Approx(g.estimates.at("size")).epsilon(2e-7));
+    if(pi!=0)CHECK(fit.fit.size==doctest::Approx(g.estimates.at("size")).epsilon(mltest::kFitReferenceTol).scale(0));
     CHECK(fit.stop_detail.loglik_lower<=fit.fit.logLik);
     CHECK(fit.stop_detail.loglik_upper>=fit.fit.logLik);
   }

@@ -57,7 +57,7 @@ expect_equal(class(attr(est, "support"))[[1]], "numeric")
 expect_error(suppressWarnings(mlged(seq(-1, 1, length.out = 40)), classes = "univariateML_restricted"), "Use `mlunif`")
 x <- c(seq(-.02, .02, length.out = 19), -10, 10)
 f <- suppressWarnings(mlged(x), classes = "univariateML_restricted")
-expect_equal(unname(f["nu"]), 1)
+expect_equal(unname(f["nu"]), 1, tolerance = 1e-10)
 expect_equal(attr(f, "logLik"), sum(dged(x = x, mean = f[1], sd = f[2], nu = 1, log = TRUE)))
 a <- mean(abs(x-median(x)))
 expect_equal(attr(f, "logLik"), -length(x)*(log(2*a)+1))
@@ -283,7 +283,10 @@ test_that("ged constant held-sd free-shape submodels attain Laplace", {
   for (args in list(list(sd=1), list(mean=2,sd=1))) {
     f <- suppressWarnings(do.call(mlged,c(list(x=rep(2,3),iterlim=1L),args)),
                           classes="univariateML_restricted")
-    expect_equal(unname(as.numeric(f)), c(2,1,1))
+    expected <- c(2,1,1)
+    actual <- unname(as.numeric(f))
+    expect_length(actual, length(expected))
+    expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
     expect_equal(as.numeric(logLik(f)), -1.5*log(2))
     expect_equal(attr(f,"restricted")[["nu"]], "lower")
   }
@@ -292,7 +295,7 @@ test_that("ged constant held-sd free-shape submodels attain Laplace", {
 test_that("ged a completed low-budget certificate can prove the Laplace face", {
   x <- c(-3,-1,0,1,4)
   f <- suppressWarnings(mlged(x,mean=0,sd=1,iterlim=1L),classes="univariateML_restricted")
-  expect_equal(unname(f["nu"]),1)
+  expect_equal(unname(f["nu"]), 1, tolerance = 1e-10)
   expect_equal(as.numeric(logLik(f)),sum(dged(x=x,mean=0,sd=1,nu=1,log=TRUE)))
 })
 
@@ -300,8 +303,8 @@ test_that("ged a completed low-budget certificate can prove the Laplace face", {
 test_that("ged small held sd returns the proved Laplace maximum or a median tie", {
   f <- suppressWarnings(mlged(c(-3,-1,0,1,4),sd=.1,iterlim=1L),
                         classes="univariateML_restricted")
-  expect_equal(unname(f["mean"]),0)
-  expect_equal(unname(f["nu"]),1)
+  expect_equal(unname(f["mean"]), 0, tolerance = 0)
+  expect_equal(unname(f["nu"]), 1, tolerance = 1e-10)
   e <- tryCatch(mlged(c(-1,1),sd=.1,iterlim=1L),error=identity)
   expect_s3_class(e,"univariateML")
   expect_match(fit_diagnostic(e),"median interval")
@@ -356,7 +359,7 @@ test_that("ged score certificate accepts every free-shape golden subset", {
   for(args in list(list(),list(mean=g$estimates$mean),list(sd=g$estimates$sd),
                    list(mean=g$estimates$mean,sd=g$estimates$sd))) {
     f <- suppressWarnings(do.call(mlged,c(list(x=g$data),args)),classes="univariateML_restricted")
-    expect_equal(unname(f["nu"]),g$estimates$nu,tolerance=1e-5)
+    expect_equal(unname(f["nu"]), g$estimates$nu, tolerance = 1e-10)
     expect_equal(as.numeric(logLik(f)),g$logLik,tolerance=1e-8)
   }
 })

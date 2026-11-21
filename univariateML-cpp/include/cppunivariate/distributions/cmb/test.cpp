@@ -267,7 +267,7 @@ TEST_CASE("cmb adjacent observations with held symmetric probability") {
   REQUIRE(a.fit.status==cppunivariate::CmbStatus::Ok);
   REQUIRE(b.fit.status==cppunivariate::CmbStatus::Ok);
   CHECK(a.size==1);CHECK(b.size==2);
-  CHECK(b.fit.nu==doctest::Approx(std::log(18.)/std::log(2.)));
+  CHECK(b.fit.nu==doctest::Approx(std::log(18.)/std::log(2.)).epsilon(mltest::kFitReferenceTol).scale(0));
   for(int N=2;N<=80;++N)for(int j=-20;j<=20;++j) {
     const auto f=cppunivariate::cmb_mle({large.data(),large.size()},N,1e-10,100,.5,j*.5);
     REQUIRE(f.status==cppunivariate::CmbStatus::Ok);

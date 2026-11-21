@@ -232,7 +232,10 @@ test_that("GEV half-minimum pair certificate records the supremum and attained e
   e <- tryCatch(mlgev(x),error=identity)
   expect_s3_class(e,"univariateML_nomle")
   f <- suppressWarnings(mlgev(c(0,0,2,2)))
-  expect_equal(unname(f[c("mu","sigma","xi")]),c(1,1,-1))
+  expected <- c(1,1,-1)
+  actual <- unname(f[c("mu","sigma","xi")])
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_equal(as.numeric(logLik(f)),-4)
 })
 
@@ -251,7 +254,10 @@ test_that("GEV held-minimum half ties distinguish the attained reverse exponenti
   expect_equal(e$loglik_upper,-2-2*log(2))
   for(s in list(NULL,2)) {
     f <- suppressWarnings(mlgev(c(0,0,2,2),mu=0,sigma=s))
-    expect_equal(unname(f[c("mu","sigma","xi")]),c(0,2,-1))
+    expected <- c(0,2,-1)
+    actual <- unname(f[c("mu","sigma","xi")])
+    expect_length(actual, length(expected))
+    expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
     expect_equal(as.numeric(logLik(f)),-2-4*log(2))
   }
 })
@@ -260,14 +266,20 @@ test_that("GEV two-point minority fits use the certified count formula", {
   f <- suppressWarnings(mlgev(c(0,rep(1,100))))
   expect_equal(unname(f[c("mu","sigma","xi")]),c(100/101,1/101,-1),tolerance=1e-10)
   e <- suppressWarnings(mlgev(c(-9,rep(1,9))))
-  expect_equal(as.numeric(e),c(0,1,-1))
+  expected <- c(0,1,-1)
+  actual <- as.numeric(e)
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_identical(attr(e,"certified"),FALSE)
 })
 
 test_that("GEV two-point compatible holds inherit the global certificate", {
   for(h in list(list(mu=1.5),list(sigma=.5),list(mu=1.5,sigma=.5))) {
     f <- suppressWarnings(do.call(mlgev,c(list(x=c(0,2,2,2)),h)),classes="univariateML_restricted")
-    expect_equal(as.numeric(f),c(1.5,.5,-1))
+    expected <- c(1.5,.5,-1)
+    actual <- as.numeric(f)
+    expect_length(actual, length(expected))
+    expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   }
 })
 

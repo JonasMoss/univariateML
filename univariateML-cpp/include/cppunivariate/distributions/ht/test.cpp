@@ -180,7 +180,7 @@ TEST_CASE("ht: outer certificate handles multiple modes and a spent budget") {
   CHECK(exhausted.status==cppunivariate::HtStatus::IterationFailure);
   const auto fit=cppunivariate::ht_mle(mltest::as_span(x),0,nan,nan);
   REQUIRE(fit.status==cppunivariate::HtStatus::Ok);
-  CHECK(fit.nu==doctest::Approx(.41508).epsilon(1e-3));
+  CHECK(fit.nu==doctest::Approx(0.4150800049142386).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(fit.logLik>=initial.logLik-1e-8*x.size());
 }
 

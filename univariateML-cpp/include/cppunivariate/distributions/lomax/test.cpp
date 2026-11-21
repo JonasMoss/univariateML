@@ -52,16 +52,20 @@ TEST_CASE("lomax: rlomax is positive; qlomax and plomax round-trip") {
 TEST_CASE("lomax: bounded global profile, scaling and replication") {
   const std::vector<std::vector<double>> cases = {{1,100},{.001,4,6},{.001,1,2},{1,29},{1,1,1,12,12}};
   const std::vector<double> gaps = {.590084,1.338305,.652423,.001924,1.90927e-4};
-  const std::vector<double> lambdas = {.772199,1394.08,1039.29,.236987,.0359623};
-  const std::vector<double> kappas = {.405536,.161888,.196081,.878708,6.07162};
+  const std::vector<double> lambdas = {
+      0.7721986394822588, 1394.0822389719701, 1039.2879097707425,
+      0.23698695319903593, 0.03596229860503347};
+  const std::vector<double> kappas = {
+      0.40553600650270355, 0.1618879518227893, 0.1960813444978726,
+      0.8787077236096766, 6.0716127841124825};
   for (std::size_t j=0;j<cases.size();++j) {
     const auto &x=cases[j];
     const auto f=cppunivariate::lomax_mle(mltest::as_span(x),1e-12,200);
     REQUIRE(f.status==cppunivariate::LomaxStatus::Ok);
     double m=0; for (double v:x) m+=v/x.size();
     CHECK(f.logLik+x.size()*(std::log(m)+1) == doctest::Approx(gaps[j]).epsilon(5e-5));
-    CHECK(f.lambda == doctest::Approx(lambdas[j]).epsilon(5e-6));
-    CHECK(f.kappa == doctest::Approx(kappas[j]).epsilon(5e-6));
+    CHECK(f.lambda == doctest::Approx(lambdas[j]).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(f.kappa == doctest::Approx(kappas[j]).epsilon(mltest::kFitReferenceTol).scale(0));
     for (double scale : {1e-200,1e200}) {
       auto z=x; for (double &v:z) v*=scale;
       auto g=cppunivariate::lomax_mle(mltest::as_span(z),1e-12,200);

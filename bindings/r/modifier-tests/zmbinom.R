@@ -178,7 +178,7 @@ test_that("zmbinom proved size-face comparisons stop as limits", {
 test_that("zmbinom propagates positive-count certification", {
   f <- .modifier_zmbinom(0:3,size=NULL,prob=1e-9,iterlim=1)
   expect_identical(attr(f,"certified"),FALSE)
-  expect_equal(unname(f["p0"]),.25)
+  expect_equal(unname(f["p0"]), .25, tolerance = 1e-10)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
 

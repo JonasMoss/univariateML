@@ -111,7 +111,7 @@ TEST_CASE("invtrgamma: both shapes fixed on constant data and stable density") {
   const std::vector<double> x = {0.5, 0.5};
   const auto r = cppunivariate::invtrgamma_mle(mltest::as_span(x), 1e-10, 100, 3, 2);
   REQUIRE(r.status == cppunivariate::InvTrGammaStatus::Ok);
-  CHECK(r.scale == doctest::Approx(std::sqrt(3.0)/2));
+  CHECK(r.scale == doctest::Approx(std::sqrt(3.0)/2).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik == doctest::Approx(invtrgamma_loglik(x, 3, 2, r.scale)).epsilon(1e-12));
   const double a = 1e10;
   CHECK(cppunivariate::distributions::dinvtrgamma(1, a, 1, a, true) ==

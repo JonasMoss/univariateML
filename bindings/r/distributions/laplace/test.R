@@ -36,13 +36,12 @@ test_that("laplace handles a seeded sample with a large outlier", {
   objective <- function(p) -sum(dlaplace(x = x, mu = p[1], sigma = exp(p[2]), log = TRUE))
   oracle <- optim(c(median(x), log(stats::mad(x))), objective,
     method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
-  expected <- c(oracle$par[1], exp(oracle$par[2]))
   # For even n the location MLE is an interval; choose its upper endpoint.
   location <- sort(x)[length(x) / 2 + 1]
   expected <- c(location, mean(abs(x - location)))
   fit <- mllaplace(x)
   expect_true(all(is.finite(fit)))
-  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-10 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
 
@@ -101,8 +100,11 @@ test_that("laplace new holds agree with independent multistart likelihoods", {
 
 
 test_that("laplace conditional collapse, feasibility and invalid holds", {
-  expect_equal(as.numeric(mllaplace(rep(2,3),sigma=1)),c(2,1))
-  expect_equal(unname(mllaplace(rep(2,3),mu=0)["sigma"]),2)
+  expected <- c(2,1)
+  actual <- as.numeric(mllaplace(rep(2,3),sigma=1))
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
+  expect_equal(unname(mllaplace(rep(2,3),mu=0)["sigma"]), 2, tolerance = 1e-10)
   expect_error(mllaplace(rep(2,3),mu=2),"does not exist")
   expect_error(mllaplace(1:4,mu=Inf),"finite")
   expect_error(mllaplace(1:4,sigma=0),"positive")

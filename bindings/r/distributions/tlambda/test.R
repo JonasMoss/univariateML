@@ -242,7 +242,7 @@ test_that("tlambda conditional collapse, feasibility and invalid holds", {
   expect_error(suppressWarnings(mltlambda(c(-2,2),sigma=1,lambda=.5), classes = "univariateML_restricted"),"support cannot contain")
   expect_error(suppressWarnings(mltlambda(c(-2,2),mu=0,sigma=1,lambda=1), classes = "univariateML_restricted"),"support cannot contain")
   expect_equal(as.numeric(suppressWarnings(mltlambda(c(-1,1),mu=0,sigma=1,lambda=1), classes = "univariateML_restricted")),c(0,1,1))
-  expect_equal(as.numeric(suppressWarnings(mltlambda(rep(2,4),sigma=1,lambda=0), classes = "univariateML_restricted"))[1],2,tolerance=1e-6)
+  expect_equal(as.numeric(suppressWarnings(mltlambda(rep(2,4),sigma=1,lambda=0), classes = "univariateML_restricted"))[1], 2, tolerance = 1e-10)
   expect_error(suppressWarnings(mltlambda(1:5,mu=Inf), classes = "univariateML_restricted"),"finite")
   expect_error(suppressWarnings(mltlambda(1:5,sigma=0), classes = "univariateML_restricted"),"positive")
 })

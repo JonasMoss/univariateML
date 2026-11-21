@@ -131,7 +131,7 @@ test_that("P2 held solver respects iterlim", {
 test_that("P2 tiny held Weibull shape has the geometric-mean scale limit", {
   f <- mlweibull(c(1,4,16),shape=1e-200)
   expect_identical(f[["shape"]],1e-200)
-  expect_equal(f[["scale"]],4)
+  expect_equal(f[["scale"]], 4, tolerance = 1e-10)
 })
 
 test_that("P2 failed held solver is distinguished from constant-data collapse", {

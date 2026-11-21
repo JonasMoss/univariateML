@@ -81,10 +81,10 @@ test_that("cauchy handles a seeded sample with a large outlier", {
   objective <- function(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
   oracle <- optim(c(median(x), log(stats::mad(x))), objective,
     method = "Nelder-Mead", control = list(reltol = 1e-14, maxit = 10000))
-  expected <- c(oracle$par[1], exp(oracle$par[2]))
   fit <- mlcauchy(x)
   expect_true(all(is.finite(fit)))
-  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expected <- c(-0.10763995599296099, 1.0958464877966498)
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-10 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
 })
 
@@ -94,9 +94,9 @@ test_that("Cauchy fits three observations and diagnoses nonexistent MLEs", {
   objective <- function(p) -sum(stats::dcauchy(x, p[1], exp(p[2]), log = TRUE))
   oracle <- optim(c(median(x), log(mad(x))), objective,
     control = list(reltol = 1e-14, maxit = 10000))
-  expected <- c(oracle$par[1], exp(oracle$par[2]))
   fit <- mlcauchy(x)
-  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-4 * abs(expected)))
+  expected <- c(-2.369470247128388, 0.2727419762545509)
+  expect_true(all(abs(as.numeric(fit) - expected) <= 1e-10 * abs(expected)))
   expect_gte(attr(fit, "logLik"), -oracle$value - 1e-6)
   for (x in list(1, c(1, 1), c(1, 1, 2), c(1, 1, 2, 3))) {
     expect_error(mlcauchy(x), "MLE does not exist")
@@ -106,7 +106,10 @@ test_that("Cauchy fits three observations and diagnoses nonexistent MLEs", {
 test_that("balanced two-point Cauchy data have attained nonunique maxima", {
   for (x in list(c(1, 2), c(1, 1, 2, 2))) {
     f <- mlcauchy(x)
-    expect_equal(as.numeric(f), c(1.5, .5))
+    expected <- c(1.5, .5)
+    actual <- as.numeric(f)
+    expect_length(actual, length(expected))
+    expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
     objective <- function(p) -sum(dcauchy(x, p[1], exp(p[2]), log = TRUE))
     o <- optim(c(1.4, log(.6)), objective, control = list(reltol=1e-12))
     expect_equal(attr(f, "logLik"), -o$value, tolerance=1e-8)
@@ -173,7 +176,10 @@ test_that("cauchy new holds agree with independent multistart likelihoods", {
 
 
 test_that("cauchy conditional collapse, feasibility and invalid holds", {
-  expect_equal(as.numeric(mlcauchy(rep(2,3),scale=1)),c(2,1))
+  expected <- c(2,1)
+  actual <- as.numeric(mlcauchy(rep(2,3),scale=1))
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_true(is.finite(logLik(mlcauchy(rep(2,3),location=0))))
   expect_error(mlcauchy(c(0,1),location=0),"does not exist")
   expect_error(mlcauchy(c(0,0,1),location=0),"does not exist")
@@ -284,7 +290,10 @@ test_that("structured Cauchy stops can be caught by class", {
   expect_match(fit_diagnostic(e),"Held-scale Cauchy global maxima are tied")
   expect_true(is.nan(fit_payload(e)$segment_loglik_upper))
   expect_equal(nrow(fit_payload(e)$candidates),2L)
-  expect_equal(sort(fit_payload(e)$candidates$location),c(-sqrt(3),sqrt(3)),tolerance=1e-7)
+  expected <- c(-sqrt(3),sqrt(3))
+  actual <- sort(fit_payload(e)$candidates$location)
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_equal(fit_payload(e)$candidates$scale,c(1,1))
   expect_true(all(fit_payload(e)$candidates$loglik_lower <= fit_payload(e)$candidates$loglik_upper))
   n <- tryCatch(mlcauchy(c(1,1,2)),univariateML_nomle=identity)

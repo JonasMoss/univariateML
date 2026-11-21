@@ -693,7 +693,7 @@ TEST_CASE("sged asymmetric held skew certifies the free moment shape profile") {
   const auto g=mltest::load_distribution_golden("sged");const auto x=mltest::as_span(g.data);
   const auto r=cppunivariate::sged_mle(x,1e-10,200,NAN,NAN,NAN,1.4);
   REQUIRE(r.status==cppunivariate::SgedStatus::Ok);CHECK(r.certified);CHECK(r.xi==1.4);
-  CHECK(r.nu==doctest::Approx(3.12977540545).epsilon(2e-8));
+  CHECK(r.nu==doctest::Approx(3.1297754054334574).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik==doctest::Approx(-649.7033316424115).epsilon(2e-11));
   CHECK(r.stop_detail.loglik_lower<=r.logLik);CHECK(r.stop_detail.loglik_upper>=r.logLik);
   CHECK(r.iterations<=cppunivariate::certificate_budget(200));

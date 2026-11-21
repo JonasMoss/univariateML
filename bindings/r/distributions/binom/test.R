@@ -21,7 +21,10 @@ expect_error(
 test_that("binomial probability boundaries have log likelihood zero", {
   for (fit in list(mlbinom(c(5L, 5L, 5L), size = NULL),
                    mlbinom(c(5L, 5L, 5L), size = 5))) {
-    expect_equal(as.numeric(fit), c(5, 1))
+    expected <- c(5, 1)
+    actual <- as.numeric(fit)
+    expect_length(actual, length(expected))
+    expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
     expect_equal(attr(fit, "logLik"), 0)
     expect_equal(attr(fit, "logLik"), sum(dbinom(rep(5, 3), 5, 1, log = TRUE)))
   }
@@ -31,7 +34,10 @@ test_that("binomial probability boundaries have log likelihood zero", {
     expect_equal(attr(fit, "logLik"), 0)
   }
   fit <- mlbinom(c(0L, 0L, 0L), size = NULL)
-  expect_equal(as.numeric(fit), c(0, 0))
+  expected <- c(0, 0)
+  actual <- as.numeric(fit)
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_equal(attr(fit, "logLik"), 0)
 })
 
@@ -76,7 +82,7 @@ test_that("free binomial size agrees with exhaustive integer profiles", {
     expect_equal(unname(f["size"]),sizes[which.max(ll)])
     expect_equal(as.numeric(logLik(f)),max(ll),tolerance=1e-10)
   }
-  expect_equal(unname(mlbinom(c(2,6,6), size = NULL)["size"]),13)
+  expect_equal(unname(mlbinom(c(2,6,6), size = NULL)["size"]), 13, tolerance = 0)
 })
 
  test_that("binom: new holds match reference-density integer and multistart oracles", {
@@ -261,7 +267,7 @@ test_that("large-count held-probability binomial logLik crosses the binding inta
 
 test_that("large-count free-size binomial logLik agrees with its exact-input sum", {
   f <- mlbinom(c(1000000,1000001,1000003,1000008,1000011),size=NULL)
-  expect_equal(unname(f["size"]),1000023)
+  expect_equal(unname(f["size"]), 1000023, tolerance = 0)
   expect_equal(attr(f,"logLik"),-14.363696715670825,tolerance=1e-12)
 })
 

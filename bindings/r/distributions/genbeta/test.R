@@ -298,7 +298,10 @@ test_that("genbeta held q certificates fit finite maxima and preserve stop witne
 test_that("genbeta all-free finite certificate retains the golden and never certifies unattainable precision", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"genbeta","golden.json"))
   f <- mlgenbeta(g$data,scale=1)
-  expect_equal(as.numeric(f),unname(unlist(g$estimates)),tolerance=1e-5)
+  expected <- unname(unlist(g$estimates))
+  actual <- as.numeric(f)
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_equal(as.numeric(attr(f,"logLik")),g$logLik,tolerance=1e-8)
   e <- tryCatch(mlgenbeta(g$data,scale=1,tol=1e-20),error=identity)
   if(inherits(e,"error")) {

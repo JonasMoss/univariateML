@@ -37,7 +37,7 @@ TEST_CASE("pig: faces and fixed subsets") {
   const auto r=cppunivariate::pig_mle(pig_span(x));
   CHECK(r.status==cppunivariate::PigStatus::Ok);
   CHECK(r.mean==2);
-  CHECK(r.shape==doctest::Approx(.036799).epsilon(1e-4));
+  CHECK(r.shape==doctest::Approx(0.036798885007980536).epsilon(mltest::kFitReferenceTol).scale(0));
   const auto fm=cppunivariate::pig_mle(pig_span(x),1e-9,200,3,nan);
   const auto fs=cppunivariate::pig_mle(pig_span(x),1e-9,200,nan,3);
   const auto both=cppunivariate::pig_mle(pig_span(x),1e-9,200,3,3);
@@ -61,6 +61,7 @@ TEST_CASE("pig: free fits can reach reference underflow region") {
   const auto fixed=cppunivariate::pig_mle(pig_span(y),1e-9,200,
     std::numeric_limits<double>::quiet_NaN(),1e20);
   REQUIRE(fixed.status==cppunivariate::PigStatus::Ok);
+  // TODO(TASK-150.7): relative error 1.6e-10 native, 1.6e-10 double-only.
   CHECK(fixed.mean==doctest::Approx(1.5).epsilon(1e-6));
 }
 
@@ -444,7 +445,7 @@ TEST_CASE("pig: certified point polish preserves the R golden tolerance") {
   std::vector<int> x;for(double v:g.data)x.push_back(static_cast<int>(v));
   const auto r=cppunivariate::pig_mle(pig_span(x));
   REQUIRE(r.status==cppunivariate::PigStatus::Ok);
-  CHECK(std::abs(r.shape-g.estimates.at("shape"))<=1e-7*std::abs(g.estimates.at("shape")));
+  CHECK(r.shape==doctest::Approx(g.estimates.at("shape")).epsilon(mltest::kFitReferenceTol).scale(0));
   const auto stopped=cppunivariate::pig_mle(pig_span(x),1e-30,30);
   CHECK(stopped.status==cppunivariate::PigStatus::SearchFailure);
   CHECK_FALSE(stopped.stop_detail.budget_exhausted);

@@ -68,10 +68,17 @@ TEST_CASE("tnorm: golden for the default normal member") {
 }
 
 TEST_CASE("tnorm: interior fits, one- and two-sided, are regular maxima") {
-  struct Case { double mean, sd, a, b; };
-  for (const Case c : {Case{0.3, 0.25, 0, 1}, Case{0, 1, -1, 2}, Case{2, 1, 0, kInf},
-                       Case{0, 1, 1, kInf}, Case{0, 1, -kInf, -0.5}, Case{5, 3, -kInf, 4},
-                       Case{-3, 2, -4, 10}}) {
+  struct Case { double mean, sd, a, b, reference_mean, reference_sd; };
+  const Case cases[] = {
+      {0.3, 0.25, 0, 1, 0.30005475654592983, 0.24990707486621472},
+      {0, 1, -1, 2, 4.9201486651696174e-05, 0.9999137252059462},
+      {2, 1, 0, kInf, 2.0001409681324773, 0.9984543032073503},
+      {0, 1, 1, kInf, 0.044309398226104725, 0.9873450754647232},
+      {0, 1, -kInf, -0.5, -0.024199702212838764, 0.9911980863583388},
+      {5, 3, -kInf, 4, 4.941593353830312, 2.9767248206760697},
+      {-3, 2, -4, 10, -2.9885314308952964, 1.9918901327460004},
+  };
+  for (const Case& c : cases) {
     CAPTURE(c.mean); CAPTURE(c.sd); CAPTURE(c.a); CAPTURE(c.b);
     const auto x = tnorm_quantiles(300, c.mean, c.sd, c.a, c.b);
     const auto r = cppunivariate::tnorm_mle(mltest::as_span(x), c.a, c.b);
@@ -81,6 +88,9 @@ TEST_CASE("tnorm: interior fits, one- and two-sided, are regular maxima") {
     // Quantile samples recover the generating law closely.
     CHECK(r.mean == doctest::Approx(c.mean).epsilon(0.1).scale(c.sd));
     CHECK(r.sd == doctest::Approx(c.sd).epsilon(0.1));
+    // These roots use the exact binary64 quantiles passed to the fitter.
+    CHECK(r.mean == doctest::Approx(c.reference_mean).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(r.sd == doctest::Approx(c.reference_sd).epsilon(mltest::kFitReferenceTol).scale(0));
     check_regular_max(x, r);
     // The interior maximum beats the face.
     CHECK(r.logLik > r.limit_logLik);

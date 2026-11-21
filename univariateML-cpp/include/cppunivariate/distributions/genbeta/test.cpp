@@ -87,7 +87,7 @@ TEST_CASE("P2 genbeta constant conditional beta fits") {
  CHECK(b.shape3==1);
  auto ridge=cppunivariate::genbeta_mle(mltest::as_span(x),1,1e-7,300,nan,1,nan);
  REQUIRE(ridge.status==cppunivariate::GenbetaStatus::Ok);
- CHECK(ridge.shape1*ridge.shape3==doctest::Approx(-1/std::log(.4)));
+ CHECK(ridge.shape1*ridge.shape3==doctest::Approx(-1/std::log(.4)).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 
@@ -437,9 +437,9 @@ TEST_CASE("genbeta all-free certificate: accepted finite fits carry a completed 
   REQUIRE(r.status==cppunivariate::GenbetaStatus::Ok);
   CHECK(r.allfree_certified);
   CHECK(r.iterations<cppunivariate::certificate_budget(300));
-  CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(1e-5));
-  CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(1e-5));
-  CHECK(r.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(1e-5));
+  CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.shape3==doctest::Approx(g.estimates.at("shape3")).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 TEST_CASE("genbeta all-free certificate: replication preserves the coefficient certificate") {
@@ -575,7 +575,7 @@ TEST_CASE("genbeta: coefficient accuracy on audit case 2613") {
   const std::vector<double> x{1e-17, 2e-17, 3e-17, 5.0000000000000005e-17, 9.000000000000001e-17};
   const auto r = cppunivariate::genbeta_mle(mltest::as_span(x), 1, 1e-10, 300, NAN, 0.24298710443400298, 4.084996007320842);
   REQUIRE(r.status == cppunivariate::GenbetaStatus::Ok);
-  CHECK(r.shape1 == doctest::Approx(0.00628923008455203).epsilon(1e-10));
+  CHECK(r.shape1 == doctest::Approx(0.00628923008455203).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.shape2 == doctest::Approx(0.24298710443400298).epsilon(1e-10));
 }
 

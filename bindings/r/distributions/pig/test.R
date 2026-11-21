@@ -5,8 +5,14 @@ test_that("Poisson and zero faces are explicit", {
   poisson_sample <- qpois((seq_len(100)-.5)/100,2)
   expect_lte(mean((poisson_sample-mean(poisson_sample))^2),mean(poisson_sample))
   expect_error(mlpig(poisson_sample), "Use `mlpois`")
-  expect_equal(as.numeric(mlpig(rep(0,3))),c(1,0))
-  expect_equal(as.numeric(mlpig(rep(0,3),mean=2)),c(2,0))
+  expected <- c(1,0)
+  actual <- as.numeric(mlpig(rep(0,3)))
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
+  expected <- c(2,0)
+  actual <- as.numeric(mlpig(rep(0,3),mean=2))
+  expect_length(actual, length(expected))
+  expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_error(mlpig(rep(0,3), shape=2), "point-mass")
   fit <- mlpig(rep(0,3), mean=2,shape=3)
   expect_equal(attr(fit,"logLik"),3*dpig(x = 0, mean = 2, shape = 3, log = TRUE))
@@ -122,7 +128,10 @@ test_that("P3 PIG shape zero is attained under compatible holds", {
    expect_equal(dml(c(0,1),f),c(1,0))
    expect_error(mlpig(c(0,1),mean=m,shape=0))
  }
- expect_equal(as.numeric(mlpig(rep(0,4),shape=0)),c(1,0))
+ expected <- c(1,0)
+ actual <- as.numeric(mlpig(rep(0,4),shape=0))
+ expect_length(actual, length(expected))
+ expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
 })
 
 test_that("pig zero boundary works through generated d/p/q/r", {

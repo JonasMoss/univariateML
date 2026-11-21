@@ -644,7 +644,7 @@ test_that("SGED asymmetric held skew and smooth free skew use global free-moment
   root <- Sys.getenv('UMVL_DISTRIBUTIONS_DIR');if(!nzchar(root))root <- testthat::test_path('fixtures')
   g <- jsonlite::fromJSON(file.path(root,'sged','golden.json'))
   weighted <- mlsged(g$data,xi=1.4)
-  expect_equal(unname(weighted['nu']),3.12977540545,tolerance=2e-8)
+  expect_equal(unname(weighted['nu']), 3.1297754054334574, tolerance = 1e-10)
   expect_equal(as.numeric(logLik(weighted)),-649.7033316424115,tolerance=2e-9)
   for (held in list(list(xi=1.4),list(nu=1.7),list(nu=4))) {
     f <- do.call(mlsged,c(list(x=g$data),held))
