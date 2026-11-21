@@ -1,0 +1,7 @@
+285 cases judged in each of two modes
+fit-judge: failures by check: none
+fit-judge: 0 listed as known, 0 new, 4 listed but passing
+  FIXED nesting|double|norm +truncate=tnorm|archive|007657 (TASK-214.46)
+  FIXED nesting|double|norm +truncate=tnorm|archive|007660 (TASK-214.46)
+  FIXED nesting|native|norm +truncate=tnorm|archive|007657 (TASK-214.46)
+  FIXED nesting|native|norm +truncate=tnorm|archive|007660 (TASK-214.46)

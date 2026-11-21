@@ -1,0 +1,229 @@
+
+routes-native
+norm +truncate=tnorm archive limit 19/29 changed
+  fields: candidates (19), certified (1), limit_estimates (18), limit_loglik (13), loglik_lower (1), loglik_upper (1), message (5), outcome (1)
+  limit_estimates.rate: 1 relative (007651, 1.4956582812445482e-13 -> 0)
+  limit_estimates.rate (nonzero rates): 0.000230096388 relative (007657, -443512236560.93695 -> -443614287124.62604)
+  limit_loglik: 3.62635193e-07 relative (007657, 135.79877396527803 -> 135.7988232106926)
+norm +truncate=tnorm archive numerical 0/7 changed
+norm +truncate=tnorm archive ok 0/220 changed
+norm +truncate=tnorm class invalid 0/4 changed
+norm +truncate=tnorm class nomle 0/3 changed
+norm +truncate=tnorm class ok 0/13 changed
+norm +truncate=tnorm golden ok 0/1 changed
+norm +truncate=tnorm resample ok 0/8 changed
+Outcome or status changes: 1
+(('norm +truncate=tnorm', 'archive', '007779'), ('limit', 6, {'certified': False, 'kind': 'limit', 'reason': 'none', 'unique': True}), ('limit', 6, {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True}))
+
+native
+beta archive ok 0/88 changed
+beta class invalid 0/6 changed
+beta class nomle 0/2 changed
+beta class numerical 0/1 changed
+beta class ok 0/9 changed
+beta golden ok 0/1 changed
+beta resample ok 0/8 changed
+burr archive limit 0/46 changed
+burr archive numerical 0/4 changed
+burr archive ok 0/140 changed
+burr archive unresolved 0/2 changed
+burr class invalid 0/6 changed
+burr class limit 0/10 changed
+burr class nomle 0/2 changed
+burr class ok 0/1 changed
+burr golden ok 0/1 changed
+burr resample limit 0/7 changed
+burr resample ok 0/1 changed
+fatigue archive ok 0/88 changed
+fatigue class invalid 0/6 changed
+fatigue class nomle 0/2 changed
+fatigue class numerical 0/1 changed
+fatigue class ok 0/10 changed
+fatigue golden ok 0/1 changed
+fatigue resample ok 0/8 changed
+ged archive limit 0/30 changed
+ged archive nomle 0/2 changed
+ged archive numerical 0/14 changed
+ged archive ok 0/98 changed
+ged class invalid 0/4 changed
+ged class limit 0/9 changed
+ged class nomle 0/3 changed
+ged class numerical 0/2 changed
+ged class ok 0/2 changed
+ged golden ok 0/1 changed
+ged resample limit 0/8 changed
+gompertz archive limit 0/3 changed
+gompertz archive numerical 0/11 changed
+gompertz archive ok 0/70 changed
+gompertz class invalid 0/5 changed
+gompertz class limit 0/1 changed
+gompertz class nomle 0/3 changed
+gompertz class numerical 0/3 changed
+gompertz class ok 0/7 changed
+gompertz golden ok 0/1 changed
+gompertz resample ok 0/8 changed
+invburr archive limit 0/46 changed
+invburr archive ok 0/144 changed
+invburr archive unresolved 0/2 changed
+invburr class invalid 0/6 changed
+invburr class limit 0/9 changed
+invburr class nomle 0/2 changed
+invburr class numerical 0/1 changed
+invburr class ok 0/1 changed
+invburr golden ok 0/1 changed
+invburr resample limit 0/7 changed
+invburr resample ok 0/1 changed
+kumar archive numerical 0/10 changed
+kumar archive ok 0/70 changed
+kumar class invalid 0/6 changed
+kumar class nomle 0/2 changed
+kumar class numerical 0/3 changed
+kumar class ok 0/7 changed
+kumar golden ok 0/1 changed
+kumar resample ok 0/8 changed
+norm archive ok 0/72 changed
+norm class invalid 0/4 changed
+norm class nomle 0/3 changed
+norm class numerical 0/2 changed
+norm class ok 0/11 changed
+norm golden ok 0/1 changed
+norm resample ok 0/8 changed
+pois archive ok 0/28 changed
+pois class invalid 0/2 changed
+pois class ok 0/12 changed
+pois golden ok 0/1 changed
+pois resample ok 0/8 changed
+snorm archive limit 0/49 changed
+snorm archive numerical 0/14 changed
+snorm archive ok 0/65 changed
+snorm class invalid 0/4 changed
+snorm class limit 0/13 changed
+snorm class nomle 0/3 changed
+snorm golden ok 0/1 changed
+snorm resample limit 0/8 changed
+std archive limit 0/38 changed
+std archive nomle 0/2 changed
+std archive numerical 0/16 changed
+std archive ok 0/88 changed
+std class invalid 0/4 changed
+std class limit 0/11 changed
+std class nomle 0/4 changed
+std class numerical 0/1 changed
+std golden ok 0/1 changed
+std resample limit 0/8 changed
+Outcome or status changes: 0
+
+routes-double
+norm +truncate=tnorm archive limit 19/29 changed
+  fields: candidates (19), certified (1), limit_estimates (18), limit_loglik (13), loglik_lower (1), loglik_upper (1), message (5), outcome (1)
+  limit_estimates.rate: 1 relative (007651, 1.4956582812445482e-13 -> 0)
+  limit_estimates.rate (nonzero rates): 0.000230096388 relative (007657, -443512236560.93695 -> -443614287124.62604)
+  limit_loglik: 3.62635193e-07 relative (007657, 135.79877396527803 -> 135.7988232106926)
+norm +truncate=tnorm archive numerical 0/7 changed
+norm +truncate=tnorm archive ok 0/220 changed
+norm +truncate=tnorm class invalid 0/4 changed
+norm +truncate=tnorm class nomle 0/3 changed
+norm +truncate=tnorm class ok 0/13 changed
+norm +truncate=tnorm golden ok 0/1 changed
+norm +truncate=tnorm resample ok 0/8 changed
+Outcome or status changes: 1
+(('norm +truncate=tnorm', 'archive', '007779'), ('limit', 6, {'certified': False, 'kind': 'limit', 'reason': 'none', 'unique': True}), ('limit', 6, {'certified': True, 'kind': 'limit', 'reason': 'none', 'unique': True}))
+
+double
+beta archive ok 0/88 changed
+beta class invalid 0/6 changed
+beta class nomle 0/2 changed
+beta class numerical 0/1 changed
+beta class ok 0/9 changed
+beta golden ok 0/1 changed
+beta resample ok 0/8 changed
+burr archive limit 0/46 changed
+burr archive numerical 0/4 changed
+burr archive ok 0/140 changed
+burr archive unresolved 0/2 changed
+burr class invalid 0/6 changed
+burr class limit 0/10 changed
+burr class nomle 0/2 changed
+burr class ok 0/1 changed
+burr golden ok 0/1 changed
+burr resample limit 0/7 changed
+burr resample ok 0/1 changed
+fatigue archive ok 0/88 changed
+fatigue class invalid 0/6 changed
+fatigue class nomle 0/2 changed
+fatigue class numerical 0/1 changed
+fatigue class ok 0/10 changed
+fatigue golden ok 0/1 changed
+fatigue resample ok 0/8 changed
+ged archive limit 0/30 changed
+ged archive nomle 0/2 changed
+ged archive numerical 0/14 changed
+ged archive ok 0/98 changed
+ged class invalid 0/4 changed
+ged class limit 0/9 changed
+ged class nomle 0/3 changed
+ged class numerical 0/2 changed
+ged class ok 0/2 changed
+ged golden ok 0/1 changed
+ged resample limit 0/8 changed
+gompertz archive limit 0/3 changed
+gompertz archive numerical 0/11 changed
+gompertz archive ok 0/70 changed
+gompertz class invalid 0/5 changed
+gompertz class limit 0/1 changed
+gompertz class nomle 0/3 changed
+gompertz class numerical 0/3 changed
+gompertz class ok 0/7 changed
+gompertz golden ok 0/1 changed
+gompertz resample ok 0/8 changed
+invburr archive limit 0/46 changed
+invburr archive ok 0/144 changed
+invburr archive unresolved 0/2 changed
+invburr class invalid 0/6 changed
+invburr class limit 0/9 changed
+invburr class nomle 0/2 changed
+invburr class numerical 0/1 changed
+invburr class ok 0/1 changed
+invburr golden ok 0/1 changed
+invburr resample limit 0/7 changed
+invburr resample ok 0/1 changed
+kumar archive numerical 0/10 changed
+kumar archive ok 0/70 changed
+kumar class invalid 0/6 changed
+kumar class nomle 0/2 changed
+kumar class numerical 0/3 changed
+kumar class ok 0/7 changed
+kumar golden ok 0/1 changed
+kumar resample ok 0/8 changed
+norm archive ok 0/72 changed
+norm class invalid 0/4 changed
+norm class nomle 0/3 changed
+norm class numerical 0/2 changed
+norm class ok 0/11 changed
+norm golden ok 0/1 changed
+norm resample ok 0/8 changed
+pois archive ok 0/28 changed
+pois class invalid 0/2 changed
+pois class ok 0/12 changed
+pois golden ok 0/1 changed
+pois resample ok 0/8 changed
+snorm archive limit 0/46 changed
+snorm archive numerical 0/17 changed
+snorm archive ok 0/65 changed
+snorm class invalid 0/4 changed
+snorm class limit 0/12 changed
+snorm class nomle 0/3 changed
+snorm class numerical 0/1 changed
+snorm golden ok 0/1 changed
+snorm resample limit 0/8 changed
+std archive limit 0/38 changed
+std archive nomle 0/2 changed
+std archive numerical 0/16 changed
+std archive ok 0/88 changed
+std class invalid 0/4 changed
+std class limit 0/11 changed
+std class nomle 0/4 changed
+std class numerical 0/1 changed
+std golden ok 0/1 changed
+std resample limit 0/8 changed
+Outcome or status changes: 0

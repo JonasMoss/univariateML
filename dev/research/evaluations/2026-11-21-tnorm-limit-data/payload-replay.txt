@@ -1,0 +1,14 @@
+build/scratch/routes-native/tnorm.jsonl
+  case 7657: -443614287124.62604, 135.7988232106926
+  case 7660: -145263484292.27478, 130.21638966013222
+  case 7779: 32.075457514697838, 4.9361823486065113
+unavailable:reflected-exponential 3 max scaled rate error 5.4365e-17 (case 7715) max scaled loglik error 1.7211e-16 (case 7716)
+unavailable:translated-exponential 2 max scaled rate error 5.4365e-17 (case 7779) max scaled loglik error 5.3517e-17 (case 7792)
+unavailable:truncated-exponential 16 max scaled rate error 2.9432e-15 (case 7660) max scaled loglik error 2.9581e-16 (case 7654)
+build/scratch/routes-double/tnorm.jsonl
+  case 7657: -443614287124.62604, 135.7988232106926
+  case 7660: -145263484292.27478, 130.21638966013222
+  case 7779: 32.075457514697838, 4.9361823486065113
+unavailable:reflected-exponential 3 max scaled rate error 5.4365e-17 (case 7715) max scaled loglik error 1.7211e-16 (case 7716)
+unavailable:translated-exponential 2 max scaled rate error 5.4365e-17 (case 7779) max scaled loglik error 5.3517e-17 (case 7792)
+unavailable:truncated-exponential 16 max scaled rate error 2.9432e-15 (case 7660) max scaled loglik error 2.9581e-16 (case 7654)
