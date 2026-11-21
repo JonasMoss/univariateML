@@ -414,6 +414,14 @@
    "commit": "dda89f62",
    "dirty": true,
    "reason": "second 2026-11-20 batch: root-ulp root radii and rounding (17 families + betapr/fpareto/gb2 limit payloads), refine-fix, route-acc route acceptance at tol (tnorm 23 failures -> estimates, tbinom 7325 -> tpois limit); all moves inspected"
+  },
+  {
+   "families": [
+    "expweibull"
+   ],
+   "commit": "66a1d9a7",
+   "dirty": true,
+   "reason": "ew-limits (TASK-217): expweibull free limits flagged uncertified"
   }
  ]
 }

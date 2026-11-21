@@ -74,6 +74,29 @@
    "commit": "dda89f62",
    "dirty": true,
    "reason": "second 2026-11-20 batch: root-ulp root radii and rounding (17 families + betapr/fpareto/gb2 limit payloads), refine-fix, route-acc route acceptance at tol (tnorm 23 failures -> estimates, tbinom 7325 -> tpois limit); all moves inspected"
+  },
+  {
+   "families": [
+    "binom +truncate=tbinom",
+    "binom+zero=inflated",
+    "binom+zero=modified",
+    "binom+zero=truncated",
+    "geom+zero=modified",
+    "geom+zero=truncated",
+    "lgser+zero=modified",
+    "nbinom+zero=inflated",
+    "nbinom+zero=modified",
+    "nbinom+zero=truncated",
+    "norm +truncate=tnorm",
+    "pois +truncate=tpois",
+    "pois+zero=inflated",
+    "pois+zero=modified",
+    "pois+zero=truncated",
+    "zeta +truncate=zipf"
+   ],
+   "commit": "66a1d9a7",
+   "dirty": true,
+   "reason": "tnorm-limit (TASK-214.46): truncated-exponential limit payloads solved to the arithmetic margin; 7779 certified"
   }
  ]
 }
