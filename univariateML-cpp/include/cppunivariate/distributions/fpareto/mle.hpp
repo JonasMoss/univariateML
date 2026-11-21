@@ -63,6 +63,29 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   // relative error of every free coefficient by tol or the fit is stopped, so no rule of its own is added here.
   auto r=gb2_mle(span{y.data(),y.size()},tol,maxit,shape1,shape2,shape3,scale);
   if(r.status==Gb2Status::Ok&&!r.certified&&!fpareto_transport_accuracy(x,min,r,{{std::isnan(shape1),std::isnan(shape2),std::isnan(shape3),std::isnan(scale)}},tol,maxit)){r.status=Gb2Status::NumericalFailure;record_accuracy(r,tol,{r.shape1,r.shape2,r.shape3,r.scale},{std::isnan(shape1)?r.shape1:0,std::isnan(shape2)?r.shape2:0,std::isnan(shape3)?r.shape3:0,std::isnan(scale)?r.scale:0});}
+  // A narrow held-power profile can leave both the finite and the limit
+  // model comparison unresolved. Retain the constrained fit as a witness
+  // when it improves the stalled joint search. Its scale is just a trial.
+  if((r.status==Gb2Status::SearchUnresolved ||
+      (r.status==Gb2Status::NumericalFailure && r.accuracy_failure)) &&
+     !r.stop_detail.budget_exhausted && r.stop_detail.accuracy_stop==AccuracyStop::None &&
+     valid && !y.empty() && std::isfinite(shape2) && std::isnan(shape1) &&
+     std::isnan(shape3) && std::isnan(scale) && min==0) {
+    const auto range=std::minmax_element(y.begin(),y.end());
+    const double smallest=*range.first;
+    const double spread=shape2*std::log1p((*range.second-smallest)/smallest);
+    if(spread>0 && spread<1e-9) {
+      const auto witness=gb2_concave_detail::concentrated_beta({y.data(),y.size()},shape2,y[0],tol,maxit);
+      const double pad=128*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(witness.logLik));
+      if(witness.status==Gb2Status::Ok && (!std::isfinite(r.logLik) || witness.logLik-pad>r.logLik)) {
+        r=witness;
+        r.status=Gb2Status::SearchUnresolved;
+        r.certified=false;
+        r.stop_detail.candidates.push_back({{r.shape1,r.shape2,r.shape3,r.scale},
+          r.logLik-pad,r.logLik+pad});
+      }
+    }
+  }
   auto detail=r.stop_detail;bool face_refuted=false;
   const auto attach_limit=[&](const StopDetail& face) {
     detail.limit_model=face.limit_model;detail.limit_coef=face.limit_coef;

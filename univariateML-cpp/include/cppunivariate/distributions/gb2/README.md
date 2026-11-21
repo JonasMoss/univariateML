@@ -311,15 +311,21 @@ It therefore has an interior stationary point there; strict concavity proves
 globality without any exterior search or assumption about other profiles.
 The radius bounds relative power error and log-scale error under
 $a=A/s$, $\log b=m+sc/A$ by $\min(\mathrm{tol},10^{-9})/2$.
+With $A$ held, only $c$ varies and its log-scale sensitivity is exactly
+$s/A=1/a$. The radius and score margin use that one free coordinate.
 The likelihood upper bound follows from the supporting tangent at the center
 and the enclosed maximum.
 
-For a relative spread below $10^{-6}$ (and not zero) the certificate runs on relative logs $\log(x_i/x_1)$: the input-error allowance of the logs no longer contains their absolute level, and the reported log likelihood is re-evaluated at the returned (rounded) coefficients, since the scale can lie measurably below the maximizer there.
+For a relative spread below $10^{-6}$ or a common extreme data
+scale, the certificate uses relative logs $\log(x_i/x_1)$. Their
+input-error allowance excludes the absolute log level. The fitter
+re-evaluates the likelihood at the rounded coefficients, since rounding
+the scale can measurably lower the likelihood for concentrated samples.
 
 This is an exact-arithmetic certificate conditional on the computed
 comparisons. Practical margins are $8\epsilon$ times an absolute score
-scale, a $128\epsilon(1+n)$ curvature discount, and $128\epsilon$
-likelihood and coefficient-transport allowances. These are not directed
+scale, a $128\epsilon(1+n)$ curvature discount, a $128\epsilon$
+likelihood allowance, and a separate coefficient-transport allowance. These are not directed
 rounding bounds. Free-scale floating-point spacing must also be below one quarter of the target relative accuracy. Ill-conditioned arithmetic or stagnation stops numerically;
 exhausting the solver allowance stops numerically with its finite witness.
 Newton and line search each use at most $\min(\mathrm{iterlim},100000)$
@@ -484,3 +490,18 @@ refinement without changing the limiting likelihood. A partially explored
 refinement supplies no additional certificate of a finite maximum. The
 all-free search therefore shares an evaluation allowance across its nested
 power/scale solves, retaining finite witnesses when it cannot finish.
+
+
+## Concentrated data with held power and scale
+
+The two free shapes maximize the beta likelihood for logits
+$t_i=a\log(x_i/b)$. For concentrated logits, the ordinary probability
+transform loses relative accuracy in their dispersion. The fitter stores
+the logit differences from the first observation. At the mean logit,
+the dispersion term is a sum of Bernoulli KL divergences evaluated as
+second-order remainders. Moving the shape ratio away from that logit
+adds a single Bernoulli KL term. Brackets in the centered shape log odds
+and log concentration enclose the two shape scores. The centered
+representation also evaluates the likelihood at the rounded public
+shapes when their odds differ from the ideal odds. The reduction requires
+the likelihood at the rounded shapes to meet the likelihood accuracy target.

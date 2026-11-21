@@ -1,0 +1,5 @@
+2580 cases judged in each of two modes
+fit-judge: failures by check: none
+fit-judge: 0 listed as known, 0 new, 2 listed but passing
+  FIXED mode|both|fpareto|archive|001625 (TASK-214.13)
+  FIXED mode|both|fpareto|archive|001628 (TASK-214.13)

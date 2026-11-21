@@ -343,3 +343,139 @@ TEST_CASE("fpareto near-constant sample ends like its tie3 preimage") {
   CHECK(std::abs(r.logLik-106.17345192245737)<1e-10);
   CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
 }
+
+TEST_CASE("fpareto: concentrated and extreme-scale archive fits") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  SUBCASE("archive 001674") {
+    const std::vector<double> x{
+      9.341081677852826e-151, 4.595475734747349e-150, 5.998711847579505e-151, 1.056419269543656e-149,
+      7.000746031939794e-151, 1.112552433763363e-150, 1.3300121914598085e-148, 3.057685931487713e-151,
+      9.471857714817827e-151, 3.8097695246334955e-150, 1.8225442484990885e-150, 1.1865419401405472e-151};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, 0.3, nan, 0.4, nan);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.shape2==doctest::Approx(2.6168475208970428)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(fit.scale==doctest::Approx(9.852711602959527e-151)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 001675") {
+    const std::vector<double> x{
+      9.341081677852825e+149, 4.5954757347473486e+150, 5.998711847579505e+149, 1.056419269543656e+151,
+      7.000746031939793e+149, 1.1125524337633629e+150, 1.3300121914598085e+152, 3.057685931487713e+149,
+      9.471857714817827e+149, 3.809769524633495e+150, 1.8225442484990886e+150, 1.1865419401405473e+149};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, 0.3, nan, 0.4, nan);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.shape2==doctest::Approx(2.6168475208970428)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(fit.scale==doctest::Approx(9.852711602959527e+149)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 001699") {
+    const std::vector<double> x{
+      1.1125524115123142, 1.1125524226378387, 1.112552433763363, 1.1125524448888873,
+      1.112552467139936};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, 0.3, 1.9802932530684678, 0.4, nan);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.scale==doctest::Approx(0.9621204842952874)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 001700") {
+    const std::vector<double> x{
+      1.1125524337611379, 1.1125524337622505, 1.112552433763363, 1.1125524337644754,
+      1.1125524337667005};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, 0.3, 1.9802932530684678, 0.4, nan);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.scale==doctest::Approx(0.962120482371239)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 001702") {
+    const std::vector<double> x{
+      1.1125524115123142, 1.1125524226378387, 1.112552433763363, 1.1125524448888873,
+      1.112552467139936};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, 0.3, 1.9802932530684678, 0.4, nan);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.scale==doctest::Approx(0.9621204842952874)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 001703") {
+    const std::vector<double> x{
+      1.1125524337611379, 1.1125524337622505, 1.112552433763363, 1.1125524337644754,
+      1.1125524337667005};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, 0.3, 1.9802932530684678, 0.4, nan);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.scale==doctest::Approx(0.962120482371239)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 001752") {
+    const std::vector<double> x{
+      1.1125502086584955, 1.1125513212109293, 1.112552433763363, 1.1125535463157967,
+      1.1125546588682307};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, nan, 1.9802932530684678, nan, 1.0087842921157315);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.shape1==doctest::Approx(232528118266.31772)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(fit.shape3==doctest::Approx(282281136431.43695)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 010320") {
+    const std::vector<double> x{
+      0.99999998, 0.99999999, 1.0, 1.00000001,
+      1.00000003};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, 0.3, 1.9802932530684678, 0.4, nan);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.scale==doctest::Approx(0.8647866429457004)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 010321") {
+    const std::vector<double> x{
+      0.999999999998, 0.999999999999, 1.0, 1.000000000001,
+      1.000000000003};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, 0.3, 1.9802932530684678, 0.4, nan);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.scale==doctest::Approx(0.8647866412163003)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 010736") {
+    const std::vector<double> x{
+      1e-17, 2e-17, 3e-17, 5.0000000000000005e-17,
+      9.000000000000001e-17};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, 0.3, nan, 0.4, nan);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.shape2==doctest::Approx(4.987616314586163)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(fit.scale==doctest::Approx(2.5955597132031512e-17)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 010745") {
+    const std::vector<double> x{
+      1e-200, 2e-200, 3e-200, 5e-200,
+      9e-200};
+    const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),
+        0, 1e-10, 1000, 0.3, 1.9802932530684678, 0.4, nan);
+    REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+    CHECK(fit.scale==doctest::Approx(2.481818815734131e-200)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+}
+
+TEST_CASE("fpareto: archive 001625 and 001628 retain a constrained witness") {
+  const std::vector<double> x{1.1125524337611379,1.1125524337622505,
+    1.112552433763363,1.1125524337644754,1.1125524337667005};
+  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-10,1000,
+    NAN,1.9802932530684678);
+  REQUIRE(r.status==cppunivariate::FparetoStatus::SearchUnresolved);
+  REQUIRE(r.stop_detail.candidates.size()==1);
+  const auto& witness=r.stop_detail.candidates.front();
+  CHECK(witness.coef.size()==5);
+  CHECK(witness.loglik_lower>127.81);
+}

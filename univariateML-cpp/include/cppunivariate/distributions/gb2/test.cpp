@@ -690,3 +690,67 @@ TEST_CASE("gb2 held power cannot turn collapsed logarithms into nonexistence") {
   CHECK(r.status==cppunivariate::Gb2Status::NumericalFailure);
   CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
 }
+
+TEST_CASE("gb2: concentrated and extreme-scale archive fits") {
+  const double nan=std::numeric_limits<double>::quiet_NaN();
+  SUBCASE("archive 002191") {
+    const std::vector<double> x{
+      3.6293659877805897, 3.6293660240742502, 3.6293660603679108, 3.6293660966615713,
+      3.6293661692488928};
+    const auto fit=cppunivariate::gb2_mle(mltest::as_span(x),
+        1e-10, 1000, 0.5710330324328029, 1.123220989970799, 0.7116483765738807, nan);
+    REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+    CHECK(fit.scale==doctest::Approx(2.983421655004215)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 002192") {
+    const std::vector<double> x{
+      3.629366060360652, 3.629366060364281, 3.6293660603679108, 3.6293660603715403,
+      3.629366060378799};
+    const auto fit=cppunivariate::gb2_mle(mltest::as_span(x),
+        1e-10, 1000, 0.5710330324328029, 1.123220989970799, 0.7116483765738807, nan);
+    REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+    CHECK(fit.scale==doctest::Approx(2.9834216490379695)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 002194") {
+    const std::vector<double> x{
+      3.6293659877805897, 3.6293660240742502, 3.6293660603679108, 3.6293660966615713,
+      3.6293661692488928};
+    const auto fit=cppunivariate::gb2_mle(mltest::as_span(x),
+        1e-10, 1000, 0.5710330324328029, 1.123220989970799, 0.7116483765738807, nan);
+    REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+    CHECK(fit.scale==doctest::Approx(2.983421655004215)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 002195") {
+    const std::vector<double> x{
+      3.629366060360652, 3.629366060364281, 3.6293660603679108, 3.6293660603715403,
+      3.629366060378799};
+    const auto fit=cppunivariate::gb2_mle(mltest::as_span(x),
+        1e-10, 1000, 0.5710330324328029, 1.123220989970799, 0.7116483765738807, nan);
+    REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+    CHECK(fit.scale==doctest::Approx(2.9834216490379695)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 010404") {
+    const std::vector<double> x{
+      0.99999998, 0.99999999, 1.0, 1.00000001,
+      1.00000003};
+    const auto fit=cppunivariate::gb2_mle(mltest::as_span(x),
+        1e-10, 1000, 0.5710330324328029, 1.123220989970799, 0.7116483765738807, nan);
+    REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+    CHECK(fit.scale==doctest::Approx(0.8220228010568281)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+  SUBCASE("archive 010405") {
+    const std::vector<double> x{
+      0.999999999998, 0.999999999999, 1.0, 1.000000000001,
+      1.000000000003};
+    const auto fit=cppunivariate::gb2_mle(mltest::as_span(x),
+        1e-10, 1000, 0.5710330324328029, 1.123220989970799, 0.7116483765738807, nan);
+    REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+    CHECK(fit.scale==doctest::Approx(0.8220227994129472)
+        .epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+}
