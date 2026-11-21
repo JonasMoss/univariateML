@@ -1,0 +1,36 @@
+bhatt 173 compared, 2 changed, 0 kind moves
+  fields: {'iterations': 2}
+  biggest coefficient move: (0.0, ('archive', '000364', 2), 'sigma')
+dgamma 79 compared, 3 changed, 0 kind moves
+  fields: {'estimates': 3, 'logLik': 2}
+  biggest coefficient move: (1.772786408091851e-12, ('class', 'wide', 0), 'rate')
+ged 173 compared, 0 changed, 0 kind moves
+  fields: {}
+  biggest coefficient move: (0, '', '')
+lst 173 compared, 0 changed, 0 kind moves
+  fields: {}
+  biggest coefficient move: (0, '', '')
+sged 285 compared, 0 changed, 0 kind moves
+  fields: {}
+  biggest coefficient move: (0, '', '')
+snorm 157 compared, 7 changed, 3 kind moves
+  fields: {'candidates': 7, 'certified': 7, 'core_status': 7, 'kind': 3, 'limit_estimates': 5, 'limit_loglik': 3, 'loglik_lower': 7, 'loglik_upper': 7, 'message': 7, 'model': 5, 'outcome': 7, 'reason': 3, 'segment_loglik_upper': 3}
+  biggest coefficient move: (0, '', '')
+  kind: ('archive', '006584', 2) numerical limit
+  kind: ('archive', '006585', 2) numerical limit
+  kind: ('archive', '006588', 2) numerical limit
+sstd 285 compared, 0 changed, 0 kind moves
+  fields: {}
+  biggest coefficient move: (0, '', '')
+st 285 compared, 7 changed, 6 kind moves
+  fields: {'certified': 4, 'core_status': 6, 'estimates': 4, 'fixed': 4, 'iterations': 4, 'kind': 6, 'logLik': 4, 'message': 7, 'outcome': 6, 'reason': 6, 'restricted': 4, 'unique': 4}
+  biggest coefficient move: (0, '', '')
+  kind: ('archive', '006931', 0) numerical unsupported
+  kind: ('archive', '006992', 3) numerical ok
+  kind: ('archive', '007040', 6) numerical ok
+  kind: ('archive', '007054', 7) numerical ok
+  kind: ('archive', '007056', 7) numerical ok
+  kind: ('class', 'two', 0) numerical unsupported
+std 173 compared, 0 changed, 0 kind moves
+  fields: {}
+  biggest coefficient move: (0, '', '')

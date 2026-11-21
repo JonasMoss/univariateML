@@ -22,7 +22,7 @@ inline accuracy_detail::Jet local_kernel(accuracy_detail::Jet z,const accuracy_d
   if(z.v-k.v>10) {
     const auto lo=z-k,hi=z+k,L=mills_denominator(lo),H=mills_denominator(hi);
     const auto gap=-accuracy_detail::Jet(2)*z*k+accuracy_detail::log(L/H);
-    return -(z*z-accuracy_detail::Jet(2)*z*k+k*k)/accuracy_detail::Jet(2)-accuracy_detail::Jet(.91893853320467274178)-accuracy_detail::log(L)+accuracy_detail::log1p(-accuracy_detail::exp(gap))-accuracy_detail::log(accuracy_detail::Jet(2)*k);
+    return -lo*lo/accuracy_detail::Jet(2)-accuracy_detail::Jet(.91893853320467274178)-accuracy_detail::log(L)+accuracy_detail::log1p(-accuracy_detail::exp(gap))-accuracy_detail::log(accuracy_detail::Jet(2)*k);
   }
   const auto upper=accuracy_detail::logcdf(k-z),lower=accuracy_detail::logcdf(-k-z);
   return upper+accuracy_detail::log1p(-accuracy_detail::exp(lower-upper))-accuracy_detail::log(accuracy_detail::Jet(2)*k);

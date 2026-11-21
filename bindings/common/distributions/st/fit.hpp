@@ -24,6 +24,7 @@ inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},H
   return done(comparison_payload(stop_failure(fail(message),r.stop_detail,r.stop_detail.comparison_tie?PayloadKind::Comparison:outcome_payload(o),{"xi","omega","alpha","nu"}),o,cppunivariate::comparison_choice(r),{{"xi",xi_arg},{"omega",omega_arg},{"alpha",alpha_arg},{"nu",nu_arg}}));
  }
  switch(r.status){
+ case cppunivariate::StStatus::UnsupportedSample:return done(fail("Fully free skew-t fitting requires at least three observations for nonconstant data."));
  case cppunivariate::StStatus::InvalidInput:return done(fail("Skew-t fitting requires finite data and valid parameters."));
  case cppunivariate::StStatus::Unbounded:return done(stop_failure(fail("Skew-t likelihood is unbounded through scale collapse at a tied observation."),r.stop_detail,outcome_payload(o),{},""));
  case cppunivariate::StStatus::ScaleBoundary:

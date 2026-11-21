@@ -19,7 +19,7 @@
 #include <limits>
 #include <vector>
 namespace cppunivariate {
-enum class StStatus {Ok, InvalidInput, Unbounded, ScaleBoundary, NumericalFailure, SkewNormalBoundary, RightHalfTBoundary, LeftHalfTBoundary, RightHalfNormalBoundary, LeftHalfNormalBoundary};
+enum class StStatus {Ok, InvalidInput, Unbounded, ScaleBoundary, NumericalFailure, SkewNormalBoundary, RightHalfTBoundary, LeftHalfTBoundary, RightHalfNormalBoundary, LeftHalfNormalBoundary, UnsupportedSample};
 struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;bool certified=false;bool accuracy_failure=false;};
 
 inline bool family_point(const StResult&, const FitCandidate& c) {
@@ -43,6 +43,7 @@ inline FitOutcome outcome(const StResult& r) {
   if (r.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
     case StStatus::Ok: return FitOutcome::estimate(r.certified);
+    case StStatus::UnsupportedSample: return FitOutcome::failure(OutcomeReason::Unsupported);
     case StStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case StStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case StStatus::ScaleBoundary: return r.reason == 6 ? FitOutcome::nonexistence(OutcomeReason::Unattained) : FitOutcome::failure(OutcomeReason::NoConvergence);
@@ -137,6 +138,10 @@ inline StResult st_mle_impl(span data,double tol=1e-10,int maxit=200,double xi=s
   StResult out{xi,omega,alpha,nu,0,0,StStatus::Ok};for(double v:data)out.logLik+=st_detail::logdensity(v,xi,omega,alpha,nu);
   out.certified=std::isfinite(out.logLik);if(!out.certified)out.status=StStatus::NumericalFailure;return out;
  }
+ if(sorted.size()==2 && sorted.front()!=sorted.back() &&
+    std::isnan(xi) && std::isnan(omega) && std::isnan(alpha) && std::isnan(nu)) {
+  bad.status=StStatus::UnsupportedSample;return bad;
+ }
  if(alpha==0&&std::isnan(xi)&&std::isnan(omega)&&std::isnan(nu))return st_cert_detail::symmetric_joint_fit(data,tol,maxit);
  if(std::isfinite(xi)&&std::isfinite(omega)&&std::isnan(alpha)&&std::isfinite(nu))return st_cert_detail::skew_fit(data,xi,omega,nu,maxit);
  if(std::isnan(xi)&&std::isfinite(omega)&&std::isnan(alpha)&&sorted.front()==sorted.back())return st_cert_detail::constant_location_skew(data,omega,nu);
@@ -186,7 +191,13 @@ inline StResult st_mle_impl(span data,double tol=1e-10,int maxit=200,double xi=s
  const double reference_ll=reference-n*std::log(unit);
  const FitCandidate reference_candidate{{origin+unit*witness.v[0],unit*witness.v[1],witness.v[2],witness.v[3]},reference_ll,reference_ll,StopModel::None};
  StResult boundary{nan,nan,nan,nan,-INFINITY,0,StStatus::NumericalFailure};
- if(std::isnan(nu)) {
+ // The skew-normal density is bounded by twice the normal density.
+ // At held scale the two extreme residuals alone contribute at least
+ // range^2/(4*scale^2) to the negative log likelihood.
+ const double normal_upper=std::isfinite(fw)?
+   n*(std::log(2.)-.91893853320467274178-std::log(fw))-(.5/fw)*(.5/fw):INFINITY;
+ const double face_pad=128*std::numeric_limits<double>::epsilon()*(1+std::abs(reference));
+ if(std::isnan(nu) && !(normal_upper<reference-tie-face_pad)) {
   auto sn=sn_mle(sy,proposal_tol,maxit,fx,fw,alpha);
   if(sn.status!=SnStatus::Ok&&sn.status!=SnStatus::RightHalfNormalBoundary&&sn.status!=SnStatus::LeftHalfNormalBoundary){
    bad.status=StStatus::NumericalFailure;bad.reason=2;

@@ -1,0 +1,12 @@
+1783 cases judged in each of two modes
+fit-judge: failures by check: none
+fit-judge: 0 listed as known, 0 new, 9 listed but passing
+  FIXED mode|both|bhatt|archive|000364 (TASK-214.13)
+  FIXED mode|both|bhatt|archive|000428 (TASK-214.13)
+  FIXED mode|both|dgamma|archive|001025 (TASK-214.13)
+  FIXED mode|both|dgamma|class|wide (TASK-214.13)
+  FIXED mode|both|snorm|archive|006576 (TASK-214.13)
+  FIXED mode|both|snorm|archive|006587 (TASK-214.13)
+  FIXED mode|both|snorm|archive|006590 (TASK-214.13)
+  FIXED mode|both|snorm|class|huge (TASK-214.13)
+  FIXED mode|both|st|archive|007040 (TASK-214.13)

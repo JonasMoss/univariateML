@@ -332,6 +332,32 @@ inline SnormResult fit(span x,double tol,int maxit,double mean,double sd,double 
     }
     candidates.push_back({{endpoint,halfscale},value_ll,value_ll,model});
   }
+  if(hs && !hm && raw.front()!=raw.back() && candidates.size()==2) {
+    // For the right-facing half of the ellipse let r=a/b <= 1.
+    // Relative to the right half-normal, normalization costs at least
+    // n*log(1+d)*r/2. Profiling a displacement from xmin can save at
+    // most r^2*sum(y-xmin)^2/(2*b_face^2) in the quadratic penalty.
+    ExtendedReal left=0,right=0;
+    for(auto v:y){left+=v-y.front();right+=y.back()-v;}
+    const auto bound=n*std::log1p(d);
+    if(std::max(left,right)<std::sqrt(bound/h2)*(1-128*eps)) {
+      // Compare the squared residual sums through their factored
+      // difference, independently of the common log normalizer.
+      Sum difference;
+      for(auto v:y)difference.add((v-y.front())-(y.back()-v));
+      if(std::abs(difference.value)<=128*eps*(left+right)) {
+        auto r=stopped(false);
+        r.stop_detail=comparison_detail(candidates[0],candidates[1]);
+        return r;
+      }
+      const auto& face=candidates[difference.value>0?0:1];
+      auto r=out;
+      r.status=face.model==StopModel::Hnorm?SnormStatus::RightHalfNormalBoundary:SnormStatus::LeftHalfNormalBoundary;
+      r.logLik=face.loglik_lower;
+      r.stop_detail=limit_detail(face.coef,r.logLik,face.model);
+      return r;
+    }
+  }
   // At a constant sample, free location places the mode on that value.
   // a+b >= sd/h gives the sharp density bound m*h/sd on both faces.
   if(hs && !hm && raw.front()==raw.back() && candidates.size()==2) {
@@ -361,10 +387,19 @@ inline SnormResult fit(span x,double tol,int maxit,double mean,double sd,double 
     if(k>0 && k<y.size() && y[k]==y[k-1])continue;
     if(cells++>=certificate_budget(maxit))return stopped(true);
     const Poly H=add(times(B2,k),times(A2,n-k)),J=add(times(B2,sl),times(A2,sr)),K=add(times(B2,ssl),times(A2,ssr));
+    const bool lc=k>0 && y.front()==y[k-1],rc=k<y.size() && y[k]==y.back();
     Poly equation;Poly CN,EN,FN;
     if(hs && !hm) {
-      const Poly N=mul(mul(D,D),add(mul(K,H),mul(J,J),-1)),den=mul(V,H);
-      equation=add(times(mul(lognum,mul(den,den)),2*n),mul(DS,add(mul(derivative(N),den),mul(N,derivative(den)),-1)));
+      // Scale the quadratic loss before building the score polynomial.
+      // Bernstein products and endpoint deflation amplify intermediate
+      // coefficients even when the normalized score is representable.
+      const auto divisor=std::max(ssl,ssr)>1e100?std::max(ssl,ssr):ExtendedReal(1);
+      const auto root=std::sqrt(divisor);
+      const Poly js=add(times(B2,sl/root),times(A2,sr/root));
+      const Poly ks=add(times(B2,ssl/divisor),times(A2,ssr/divisor));
+      const Poly N=mul(mul(D,D),add(mul(ks,H),mul(js,js),-1)),den=mul(V,H);
+      equation=add(times(mul(lognum,mul(den,den)),2*n/divisor),
+        mul(DS,add(mul(derivative(N),den),mul(N,derivative(den)),-1)));
     } else {
       CN=mul(mul(D,D),K);EN=times(mul(mul(W,D),J),m);FN=times(mul(mul(W,W),H),m*m);
       auto numerator_derivative=[&](const Poly& p){return add(mul(derivative(p),AB),times(mul(p,derivative(AB)),2),-1);};
@@ -380,7 +415,6 @@ inline SnormResult fit(span x,double tol,int maxit,double mean,double sd,double 
     // Clearing side-scale denominators creates endpoint factors. Their
     // orders follow by substituting A=0 or B=0 in the two score equations;
     // a constant side has k*sum(y^2)=sum(y)^2, and a zero side also has sum(y)=0.
-    const bool lc=k>0 && y.front()==y[k-1],rc=k<y.size() && y[k]==y.back();
     int left=0,right=0;
     if(hs && !hm){left=k==0?8:(lc?4:1);right=k==y.size()?8:(rc?4:1);}
     else if(hs){left=k==0?3:0;right=k==y.size()?3:0;}
@@ -415,8 +449,19 @@ inline SnormResult fit(span x,double tol,int maxit,double mean,double sd,double 
       }
       double upper=INFINITY;
       if(qlower>0 && std::isfinite(qlower) && srng.lo>0) {
-        const auto ll=n*(std::log(m)-std::log(srng.lo)+(std::log(n)-std::log(qlower))/2-CPPUNIV_EXTENDED_LITERAL(.5,.5L))-n*std::log(unit);
-        if(std::isfinite(ll))upper=upper_double(ll+allowance*(n+std::abs(ll)));
+        auto scale=std::sqrt(qlower/n);
+        if(hm && !hs) {
+          // The mode -m*scale*W must lie within the current data split.
+          // A shrinking side can force scale far below its relaxed optimum.
+          const auto w=range(W,lo,hi);
+          if(k>0 && w.lo>0)scale=std::min(scale,(-y[k-1]+allowance*std::abs(y[k-1]))/(m*w.lo));
+          if(k<y.size() && w.hi<0)scale=std::min(scale,(y[k]+allowance*std::abs(y[k]))/(-m*w.hi));
+        }
+        if(scale<=0)upper=-INFINITY;
+        else {
+          const auto ll=n*(std::log(m)-std::log(srng.lo)-std::log(scale)-std::log(unit))-qlower/scale/scale/2;
+          if(std::isfinite(ll))upper=upper_double(ll+allowance*(n+std::abs(ll)));
+        }
       }
       unresolved_upper.push_back(upper);
     }

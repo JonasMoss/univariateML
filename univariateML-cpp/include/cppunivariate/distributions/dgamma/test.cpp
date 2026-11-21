@@ -279,3 +279,21 @@ TEST_CASE("dgamma: slow reference discrete quantile round trips on every truth p
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pdgamma(x,t[0], t[1],l,g);},
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qdgamma(x,t[0], t[1],l,g);});
 }
+
+TEST_CASE("dgamma: smooth narrow cells retain their likelihood derivatives") {
+  const auto approx=[](double reference) {
+    return doctest::Approx(reference).epsilon(mltest::kFitReferenceTol).scale(0);
+  };
+  const std::vector<double> counts{1000000, 1000001, 1000003, 1000008, 1000011};
+  constexpr double rate=0.9720518551425348;
+  const auto held=cppunivariate::dgamma_mle(mltest::as_span(counts),1e-10,400,NAN,rate);
+  REQUIRE(cppunivariate::outcome(held).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(held.shape==approx(972057.312598201494));
+  CHECK(held.rate==rate);
+
+  const std::vector<double> wide{0, 1, 1000, 1000000};
+  const auto free=cppunivariate::dgamma_mle(mltest::as_span(wide));
+  REQUIRE(cppunivariate::outcome(free).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(free.shape==approx(0.0813443740298880101));
+  CHECK(free.rate==approx(3.25051624549745014e-7));
+}

@@ -425,10 +425,7 @@ inline DgammaResult dgamma_mle(span x,double tol=1e-10,int maxit=400,double shap
   const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
     const auto a=accuracy_detail::exp(z[0]),ratev=accuracy_detail::exp(z[1]);accuracy_detail::JetSum f;
     for(std::size_t i=0;i<cells.x.size();++i) {
-      const auto l=accuracy_detail::Jet(cells.x[i])*ratev,h=accuracy_detail::Jet(cells.x[i]+1)*ratev;
-      const bool lower=(l.v+h.v)/2<a.v;
-      const auto p=lower?dgamma_detail::gamma_tail(a,h,true,maxit)-dgamma_detail::gamma_tail(a,l,true,maxit):dgamma_detail::gamma_tail(a,l,false,maxit)-dgamma_detail::gamma_tail(a,h,false,maxit);
-      f.add(accuracy_detail::Jet(cells.w[i])*accuracy_detail::log(p));
+      f.add(accuracy_detail::Jet(cells.w[i])*dgamma_detail::cell_logprob(a,ratev,cells.x[i],maxit));
     }
     return f.value;
   };

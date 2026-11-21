@@ -1,0 +1,2 @@
+native sn status=2 witnesses=1 inner accepted=1 physical logLik=-473335521497.3479 normalized logLik=-473335521497.34778 gap=-0.0001220703125
+double sn status=0 witnesses=0 inner accepted=1 physical logLik=-473335521497.34778 normalized logLik=-473335521497.34778 gap=0

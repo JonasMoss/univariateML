@@ -1,0 +1,5 @@
+native all nine canonical golden records identical
+double all nine canonical golden records identical
+snorm 006584 right-minus-left 5.35370035505223262934943e-18 mode-shift bound 1.39910036816835279707883e-16 normalizer bound 1.86994413621318413792063
+snorm 006585 right-minus-left 5.3539246111096866006593e-26 mode-shift bound 1.39907181974031237674795e-24 normalizer bound 1.86994413621318413792063
+snorm 006588 right-minus-left 2.72972068748856471470697e-24 mode-shift bound 7.13358709349712730258317e-23 normalizer bound 1.86994413621318413792063

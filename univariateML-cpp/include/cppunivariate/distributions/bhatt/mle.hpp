@@ -33,6 +33,21 @@ struct Profile {
       CPPUNIV_EXTENDED_REAL score=0,deriv=0;
       for(double z:x) {
         const CPPUNIV_EXTENDED_REAL u=(static_cast<CPPUNIV_EXTENDED_REAL>(z)-m-b)/s,v=(static_cast<CPPUNIV_EXTENDED_REAL>(z)-m+b)/s;
+        const auto near=std::max(u,-v);
+        if(near>10 && 2*std::abs(static_cast<ExtendedReal>(z)-m)/s*(b/s)>40) {
+          // The remote endpoint contributes less than exp(-40). Evaluate
+          // the normal hazard and its derivative without subtracting logs
+          // of Gaussian densities of order near^2.
+          ExtendedReal fraction=0,slope=0;
+          for(int j=24;j>0;--j) {
+            const auto inverse=1/(near+fraction);
+            slope=-j*inverse*inverse*(1+slope);
+            fraction=j*inverse;
+          }
+          score+=(u>0?1:-1)*(near+fraction)/s;
+          deriv-=(1+slope)/s2;
+          continue;
+        }
         const CPPUNIV_EXTENDED_REAL lu=logphi_extended(u),lv=logphi_extended(v);
         const CPPUNIV_EXTENDED_REAL ld=distributions::dbhatt(z,m,s,b,true)+log2b;
         const CPPUNIV_EXTENDED_REAL A=std::exp(lu-ld),B=std::exp(lv-ld);
