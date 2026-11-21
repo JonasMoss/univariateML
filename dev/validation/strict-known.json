@@ -1,80 +1,6 @@
 {
  "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, cert-replay.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
  "known": {
-  "mode|both|bhatt|archive|000364": {
-   "ref": "TASK-214.13",
-   "detail": "native ok, double-only numerical"
-  },
-  "mode|both|bhatt|archive|000428": {
-   "ref": "TASK-214.13",
-   "detail": "native ok, double-only numerical"
-  },
-  "mode|both|dgamma|archive|001025": {
-   "ref": "TASK-214.13",
-   "detail": "native ok, double-only conditioning"
-  },
-  "mode|both|dgamma|class|wide": {
-   "ref": "TASK-214.13",
-   "detail": "native ok, double-only conditioning"
-  },
-  "mode|both|fpareto|archive|001625": {
-   "ref": "TASK-214.13",
-   "detail": "native numerical, double-only unresolved"
-  },
-  "mode|both|fpareto|archive|001628": {
-   "ref": "TASK-214.13",
-   "detail": "native numerical, double-only unresolved"
-  },
-  "mode|both|snorm|archive|006576": {
-   "ref": "TASK-214.13",
-   "detail": "native limit, double-only numerical"
-  },
-  "mode|both|snorm|archive|006587": {
-   "ref": "TASK-214.13",
-   "detail": "native tie, double-only numerical"
-  },
-  "mode|both|snorm|archive|006590": {
-   "ref": "TASK-214.13",
-   "detail": "native limit, double-only numerical"
-  },
-  "mode|both|snorm|class|huge": {
-   "ref": "TASK-214.13",
-   "detail": "native limit, double-only error"
-  },
-  "mode|both|st|archive|007040": {
-   "ref": "TASK-214.13",
-   "detail": "native error, double-only ok"
-  },
-  "phenomenon:near-constant|double|gompertz|class|near-constant": {
-   "ref": "TASK-214.33",
-   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
-   "finding": "near-constant-unrepresentable-maximizer"
-  },
-  "phenomenon:near-constant|double|kumar|class|near-constant": {
-   "ref": "TASK-214.33",
-   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
-   "finding": "near-constant-unrepresentable-maximizer"
-  },
-  "phenomenon:near-constant|double|sgomp|class|near-constant": {
-   "ref": "TASK-214.33",
-   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
-   "finding": "near-constant-unrepresentable-maximizer"
-  },
-  "phenomenon:near-constant|native|gompertz|class|near-constant": {
-   "ref": "TASK-214.33",
-   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
-   "finding": "near-constant-unrepresentable-maximizer"
-  },
-  "phenomenon:near-constant|native|kumar|class|near-constant": {
-   "ref": "TASK-214.33",
-   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
-   "finding": "near-constant-unrepresentable-maximizer"
-  },
-  "phenomenon:near-constant|native|sgomp|class|near-constant": {
-   "ref": "TASK-214.33",
-   "detail": "the dossier proves F:evaluation here (strict_exceptions); ends in F:no-convergence",
-   "finding": "near-constant-unrepresentable-maximizer"
-  },
   "phenomenon:tie-collapse|double|tlambda|class|ties": {
    "ref": "TASK-214.17",
    "detail": "collapse at any, n = 6, k = 4: e* = -2 (attained) requires N:unbounded; ends in F:evaluation",
@@ -85,40 +11,10 @@
    "detail": "collapse at any, n = 6, k = 4: e* = -2 (attained) requires N:unbounded; ends in F:evaluation",
    "finding": "tlambda-collapse-and-two-point-evaluation-failure"
   },
-  "phenomenon:two-point|double|gengamma|class|two": {
-   "ref": "TASK-214.33",
-   "detail": "two observations are below the declared min_n 3: ends in F:no-convergence, not F:unsupported",
-   "finding": "two-point-undecided-below-min-n"
-  },
-  "phenomenon:two-point|double|sstd|class|two": {
-   "ref": "TASK-214.33",
-   "detail": "two observations are below the declared min_n 3: ends in Lm, not F:unsupported",
-   "finding": "two-point-undecided-below-min-n"
-  },
-  "phenomenon:two-point|double|st|class|two": {
-   "ref": "TASK-214.33",
-   "detail": "two observations are below the declared min_n 3: ends in F:no-convergence, not F:unsupported",
-   "finding": "two-point-undecided-below-min-n"
-  },
   "phenomenon:two-point|double|tlambda|class|two": {
    "ref": "TASK-214.17",
    "detail": "two observations: declared E, ends in F:evaluation",
    "finding": "tlambda-collapse-and-two-point-evaluation-failure"
-  },
-  "phenomenon:two-point|native|gengamma|class|two": {
-   "ref": "TASK-214.33",
-   "detail": "two observations are below the declared min_n 3: ends in F:no-convergence, not F:unsupported",
-   "finding": "two-point-undecided-below-min-n"
-  },
-  "phenomenon:two-point|native|sstd|class|two": {
-   "ref": "TASK-214.33",
-   "detail": "two observations are below the declared min_n 3: ends in Lm, not F:unsupported",
-   "finding": "two-point-undecided-below-min-n"
-  },
-  "phenomenon:two-point|native|st|class|two": {
-   "ref": "TASK-214.33",
-   "detail": "two observations are below the declared min_n 3: ends in F:no-convergence, not F:unsupported",
-   "finding": "two-point-undecided-below-min-n"
   },
   "phenomenon:two-point|native|tlambda|class|two": {
    "ref": "TASK-214.17",

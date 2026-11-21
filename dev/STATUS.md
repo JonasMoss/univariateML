@@ -89,14 +89,34 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   `just relations` and `just site-check` green; `capabilities.csv` regenerated
   (expweibull limit count 3 to 5). The known list has 27 entries, each with a
   card.
+- Batch check of master 10caef8e (2026-11-21, workstation, GCC 15.2, after
+  [mode-kind](research/evaluations/2026-11-21-mode-kind-report.md),
+  [strict-33](research/evaluations/2026-11-21-strict-33-report.md),
+  [loose-tests](research/evaluations/2026-11-21-loose-tests-report.md) and
+  [gb2-acc](research/evaluations/2026-11-21-gb2-acc-report.md); the first run
+  in the memory-capped `umvl-work.slice`): fresh snapshots differ from the
+  stored baselines only as the reports describe (168 native and 177
+  double-only records in 15 families, per-family counts equal to the reports;
+  about 60 fpareto/GB2 archive stops now estimates within 2.7e-12 of 100-digit
+  references; outcome changes in bhatt, dgamma, snorm, st, gompertz, kumar,
+  sgomp, gengamma, sstd; routes only a zinb iteration count), and the
+  baselines were patched from them (9ac216ad). `just strict` (warm cache,
+  10 min) passes; 23 known entries are fixed and pruned (all 11 of
+  TASK-214.13, all 12 of TASK-214.33), none new. fit-refine's cached run
+  lists 26 cases without a stored reference; a full refine run judged them
+  too (3848 cases, no failure); why they are not stored is noted on
+  TASK-214.48. `just cpp-test` 110/110; `just cpp-test-no-long-double`
+  154/154; `just test-full` `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65854 ]`;
+  `just js-test` 587/587; `just relations` and `just site-check` green. The
+  known list has 4 entries (tlambda, TASK-214.17).
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
-- Known wrong answers on master, each with a card: stop kinds that depend
-  on the precision mode (TASK-214.13); the strict-rule findings of
-  TASK-214.33 and TASK-214.17.
+- Known wrong answers on master, each with a card: tlambda's tie-collapse
+  and two-point strict findings (TASK-214.17); zinb's inflation-only hold
+  misses a requested `tol = 1e-12` by 1.1e-10 (TASK-150.8).
 - Nothing is published to CRAN, and `origin/master` is the old published
   tree (about 1,300 commits behind). The backup branch `origin/cpp-core`
   mirrors master; pushed by Claude after each validated batch (allowed by Jonas, 2026-11-20).
