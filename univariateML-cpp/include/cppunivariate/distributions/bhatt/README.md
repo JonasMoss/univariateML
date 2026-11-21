@@ -186,6 +186,12 @@ strict for $k>0$, giving uniqueness at $a=0$ under the stated condition.
 This comparison holds at fixed normal scale; it does not certify an
 unrestricted normal winner when $\sigma$ can decrease as $a$ increases.
 
+For a Gaussian interval far into one tail, the conditional location
+solver evaluates the nearer endpoint's Mills hazard directly when the
+remote endpoint contributes less than $e^{-40}$. The continued fraction
+also supplies its derivative, avoiding cancellation between terms of
+order the squared standardized distance.
+
 The normal-interval and score comparisons use practical binary64 margins,
 conditional on computed comparisons. Their scope is the enclosed score root
 and the likelihood bounds above. Coefficient enclosures are checked in original

@@ -135,10 +135,15 @@ inline SnormResult snorm_mle_impl(span x, double tol, int maxit,
     y.push_back(v);
   }
   std::sort(y.begin(), y.end());
-  const CPPUNIV_EXTENDED_REAL origin = y.front(), scale = y.back()-origin;
+  const CPPUNIV_EXTENDED_REAL origin = y.front();
+  // Represent the range as two half-ranges when the full range overflows.
+  const bool halve = !std::isfinite(static_cast<double>(y.back()) - static_cast<double>(origin));
+  if (halve) for (auto& v : y) v /= 2;
+  const CPPUNIV_EXTENDED_REAL base = halve ? origin/2 : origin;
+  const CPPUNIV_EXTENDED_REAL scale = y.back()-base;
   if (scale == 0) return {nan,nan,nan,nan,0,SnormStatus::Unbounded};
   // Affine normalisation keeps the degree-seven coefficients bounded.
-  for (auto& v : y) v = (v-origin)/scale;
+  for (auto& v : y) v = (v-base)/scale;
   // Left moments about 0 and right moments about 1 avoid cancellation
   // at the half-normal endpoints; never subtract prefix sums from totals.
   std::vector<CPPUNIV_EXTENDED_REAL> s(n+1,0), ss(n+1,0), z(n+1,0), zz(n+1,0);
@@ -175,11 +180,11 @@ inline SnormResult snorm_mle_impl(span x, double tol, int maxit,
     if(!resolved)return {nan,nan,nan,nan,maxit,SnormStatus::BfgsFailure};
     for (const auto& t : roots) consider({l+h*t.lo,l+h*t.hi},k);
   }
-  const double ll=static_cast<double>(n*(CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/cppunivariate::pi)-std::log(scale)
+  const double ll=static_cast<double>(n*(CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/cppunivariate::pi)-std::log(scale)-(halve?std::log(2.):0)
                      -CPPUNIV_EXTENDED_LITERAL(1.5,1.5L)*std::log(best)+CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)*std::log(static_cast<CPPUNIV_EXTENDED_REAL>(n))-CPPUNIV_EXTENDED_LITERAL(0.5,0.5L)));
   if(mode==0 || mode==1) {
     SnormResult face={nan,nan,nan,ll,0,mode==0?SnormStatus::RightHalfNormalBoundary:SnormStatus::LeftHalfNormalBoundary};
-    face.stop_detail=limit_detail({mode==0?*std::min_element(x.begin(),x.end()):*std::max_element(x.begin(),x.end()),static_cast<double>(scale*std::sqrt(best*best*best/n))},ll,mode==0?StopModel::Hnorm:StopModel::ReflectedHnorm);
+    face.stop_detail=limit_detail({mode==0?*std::min_element(x.begin(),x.end()):*std::max_element(x.begin(),x.end()),static_cast<double>((scale*std::sqrt(best*best*best/n))*(halve?2:1))},ll,mode==0?StopModel::Hnorm:StopModel::ReflectedHnorm);
     if(face.stop_detail.limit_coef.size()!=2){face.status=SnormStatus::NumericalFailure;return face;}
     double public_ll=0;
     for(double v:x)public_ll+=distributions::dhnorm(mode==0?v:-v,mode==0?face.stop_detail.limit_coef[0]:-face.stop_detail.limit_coef[0],face.stop_detail.limit_coef[1],true);
@@ -192,8 +197,8 @@ inline SnormResult snorm_mle_impl(span x, double tol, int maxit,
   // Var[X]=a*a-a*b+b*b-m1*m1*(b-a)^2, xi=sqrt(b/a).
   const CPPUNIV_EXTENDED_REAL factor=std::sqrt(best/n), a=ca*factor, b=cb*factor;
   const CPPUNIV_EXTENDED_REAL m1=std::sqrt(CPPUNIV_EXTENDED_LITERAL(2.0,2.0L)/cppunivariate::pi);
-  const double mu=static_cast<double>(origin+scale*(mode+m1*(b-a)));
-  const double sigma=static_cast<double>(scale*std::sqrt(a*a-a*b+b*b-m1*m1*(b-a)*(b-a)));
+  const double mu=static_cast<double>((base+scale*(mode+m1*(b-a)))*(halve?2:1));
+  const double sigma=static_cast<double>((scale*std::sqrt(a*a-a*b+b*b-m1*m1*(b-a)*(b-a)))*(halve?2:1));
   const double skew=static_cast<double>(std::sqrt(b/a));
   // Within one data gap the left and right residual sums are monotone
   // in opposite directions. Propagate their root-bracket bounds to the
@@ -209,8 +214,8 @@ inline SnormResult snorm_mle_impl(span x, double tol, int maxit,
   const auto bl=right(root.hi), bh=right(root.lo);
   const auto fl=std::sqrt((al+bl)/n), fh=std::sqrt((ah+bh)/n);
   const auto aa=al*fl, ab=ah*fh, ba=bl*fl, bb=bh*fh;
-  const auto loc_width=scale*(root.hi-root.lo+m1*((ab-aa)+(bb-ba)));
-  const auto scale_width=scale*((ab-aa)+(bb-ba));
+  const auto loc_width=(halve?2:1)*(scale*(root.hi-root.lo+m1*((ab-aa)+(bb-ba))));
+  const auto scale_width=(halve?2:1)*(scale*((ab-aa)+(bb-ba)));
   const auto skew_width=std::sqrt(bh/al)-std::sqrt(bl/ah);
   SnormResult result{mu,sigma,skew,ll,0,SnormStatus::Ok};
   // Standard deviation is a norm from a positive definite quadratic form.

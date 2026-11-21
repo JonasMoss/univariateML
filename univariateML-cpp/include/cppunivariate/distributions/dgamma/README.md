@@ -173,6 +173,12 @@ to $\exp(a(t+u)-e^{t+u})$, strictly log-concave in the location coordinate.
 Integrating over each fixed interval in $t$ preserves log concavity. The resulting log likelihood is analytic in $u$. For a sample containing a positive count it tends to minus infinity at both ends. A concave analytic function with two distinct maximizers would be constant on an interval and hence everywhere, contradicting these tails. Thus the maximum is unique, and the inner log-rate score has a unique zero. The fitter brackets and solves this score with safeguarded Newton
 iteration before the outer shape search.
 
+The coefficient refinement integrates smooth cells at large counts in relative
+coordinates around their midpoint. This keeps the two differentiated
+tails of a narrow cell from cancelling. Near a large shape, the midpoint
+log density uses the centered gamma deviance and the Stirling correction.
+The tail formulas cover small counts and rapidly varying cells.
+
 ## Search certificate
 
 This is **discretized** gamma, not the continuous double-gamma family.

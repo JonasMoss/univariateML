@@ -105,10 +105,16 @@ existence:
   min_n:
     value: 3
     reason: >-
-      Two observations have one outcome for every sample (equivariance), and
-      it has not been decided; until it is recorded under two_point, samples
-      of two are outside the implemented range (strict-rule questions of
-      2026-11-14, Q3).
+      The fully free fit for two distinct observations remains outside
+      the implemented range. The scale-collapse exponent at the df
+      restriction is zero, so the collapse test leaves attainment unresolved.
+  strict_exceptions:
+  - class: two
+    outcome: failure(unsupported)
+    argument: >-
+      The distinct pair falls below the fully free fitter's minimum sample
+      size. Its zero collapse exponent describes the limit along that path
+      and leaves the global attainment question open.
 ---
 
 The Azzalini skew-t distribution combines asymmetric shape with Student tails.
@@ -285,6 +291,12 @@ check; failed searches stop. It compares the skew-normal, half-t, reflected
 half-t and half-normal faces. Half-t face profiling with a held endpoint
 retains the same df restriction. Face comparisons use numerical tolerance;
 these are multistart searches, not global certificates. Location-only, symmetric scale-only and one-sign alpha/scale subsets use the conditional certificates below; other subsets retain the free-coordinate search. No penalized likelihood is used.
+
+At held scale, the skew-normal face is bounded by the product of twice
+the symmetric Gaussian density at each observation. The two extreme
+observations contribute at least $(x_{\max}-x_{\min})^2/(4\omega^2)$
+to the negative Gaussian log likelihood after its common normalization.
+A finite witness above this bound excludes the face without fitting it.
 
 | TASK-116 property | Evidence |
 |---|---|

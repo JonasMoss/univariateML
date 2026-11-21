@@ -132,6 +132,9 @@ The coefficients $\mu$ and $\sigma$ are the distribution's mean and standard dev
 
 With all coefficients free, the fitter profiles the two side scales analytically and searches the mode between the sample extremes. Between consecutive observations the stationary candidates satisfy a polynomial equation of degree at most seven. Comparing these candidates and the endpoints gives a global comparison in exact arithmetic, conditional on the computed root comparisons. It does not imply that a finite maximizer is unique. The right and left half-normal limits have their endpoints at the sample minimum and maximum respectively.
 
+The mode profile can use a half-range when the full data range exceeds
+binary64. The physical half-normal scale can still be representable.
+
 Any subset of the three coefficients can be held. For fixed skewness, write
 $a=A\sigma$, $b=B\sigma$, and $c=\mu-m(b-a)$ for the two side scales and
 mode, with $m=\sqrt{2/\pi}$. On each observation cell the location score is
@@ -282,6 +285,23 @@ the Gaussian residual is at least $z+m$, and
 $z\exp(-(z+m)^2/2)<m$ because $m^2>1/2$. Thus this constant-data case has
 no finite maximum; it is not the scale collapse that occurs when the mean
 is free or held at $x$.
+
+For a large spread with standard deviation held, a common positive
+factor divides the quadratic loss and normalizer contributions to the
+score before Bernstein multiplication. For a held mean and free scale,
+the split bounds the scale whenever the mode moves toward a shrinking
+side. This restricts the likelihood bound for an uncertain endpoint box.
+
+With standard deviation held and free mean, write $r=a/b\le1$ on the
+right-oriented half of the variance ellipse, $b_0$ for the face scale,
+$d=3-8/\pi$, and $S_1=\sum_i(y_i-y_{\min})$ in units of the held
+standard deviation. The normalizer loses at least
+$n r\log(1+d)/2$ relative to the face. The best shift of the mode
+can save at most $r^2 S_1^2/(2b_0^2)$ in squared-residual loss,
+by completing the square using the residual of the minimum alone
+on the narrow side. The reflected bound uses distances from the
+maximum. When both bounds favor their faces, their common normalizer
+cancels and the factored difference of the residual sums decides the comparison.
 
 ## R notes
 

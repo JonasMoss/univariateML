@@ -1,0 +1,4 @@
+bhatt pass 
+dgamma pass 
+snorm pass 
+st pass 

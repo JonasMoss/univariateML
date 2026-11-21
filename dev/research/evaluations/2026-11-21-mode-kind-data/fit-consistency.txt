@@ -1,0 +1,4 @@
+fit-consistency: failures by check: {'phenomenon:two-point': 2}
+fit-consistency: 2 listed as known, 0 new, 2 listed but passing
+  FIXED phenomenon:two-point|double|st|class|two (TASK-214.33)
+  FIXED phenomenon:two-point|native|st|class|two (TASK-214.33)

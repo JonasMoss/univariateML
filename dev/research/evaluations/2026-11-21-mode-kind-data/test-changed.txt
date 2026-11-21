@@ -1,0 +1,19 @@
+c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Rscript (R) version 4.6.1 (2026-06-24)
+v22.22.1
+Selected 9 families: bhatt, dgamma, ged, lst, sged, snorm, sstd, st, std
++ ctest --test-dir univariateML-cpp/build --output-on-failure --no-tests=error -L dev -R ^distribution_(bhatt|dgamma|ged|lst|sged|snorm|sstd|st|std)(_slow)?$
+100% tests passed, 0 tests failed out of 9
+Total Test time (real) =  66.46 sec
++ ctest --test-dir build/cpp-no-long-double --output-on-failure --no-tests=error -L dev -R ^distribution_(bhatt|dgamma|ged|lst|sged|snorm|sstd|st|std)(_slow)?$
+100% tests passed, 0 tests failed out of 9
+Total Test time (real) =  61.88 sec
++ just test
+[ FAIL 0 | WARN 0 | SKIP 29 | PASS 3440 ]
++ just js-build
++ just js-test
+# tests 264
+# pass 264
+# fail 0
+# skipped 0
+Results: [{"command": ["cmake", "-S", "univariateML-cpp", "-B", "univariateML-cpp/build", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"], "exit": 0, "seconds": 0.57}, {"command": ["cmake", "--build", "univariateML-cpp/build", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 453.49}, {"command": ["ctest", "--test-dir", "univariateML-cpp/build", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(bhatt|dgamma|ged|lst|sged|snorm|sstd|st|std)(_slow)?$"], "exit": 0, "seconds": 66.5}, {"command": ["cmake", "-S", "univariateML-cpp", "-B", "build/cpp-no-long-double", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache", "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"], "exit": 0, "seconds": 0.44}, {"command": ["cmake", "--build", "build/cpp-no-long-double", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 451.06}, {"command": ["ctest", "--test-dir", "build/cpp-no-long-double", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(bhatt|dgamma|ged|lst|sged|snorm|sstd|st|std)(_slow)?$"], "exit": 0, "seconds": 61.89}, {"command": ["just", "test"], "exit": 0, "seconds": 243.88}, {"command": ["just", "js-build"], "exit": 0, "seconds": 111.82}, {"command": ["just", "js-test"], "exit": 0, "seconds": 117.4}]

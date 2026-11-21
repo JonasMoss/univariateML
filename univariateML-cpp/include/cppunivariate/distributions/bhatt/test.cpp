@@ -776,3 +776,23 @@ TEST_CASE("bhatt: uniform payload likelihood differs from the endpoint-layer sup
   CHECK(r.logLik==doctest::Approx(-6*std::log(2.)).epsilon(1e-12));
   CHECK(r.stop_detail.limit_loglik==doctest::Approx(-3*std::log(2.)).epsilon(1e-12));
 }
+
+TEST_CASE("bhatt: held-scale and held-width fits with a distant outlier") {
+  const std::vector<double> x{0.23133425229573634, -2.4765992065164646,
+    2.0420503006898465, 2.850645625936443, 1000002.850645626};
+  constexpr double sigma=1.057897350270679, width=1.7336058787117143;
+  const auto approx=[](double reference) {
+    return doctest::Approx(reference).epsilon(mltest::kFitReferenceTol).scale(0);
+  };
+  const auto profile=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,500,sigma);
+  REQUIRE(cppunivariate::outcome(profile).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(profile.mu==approx(500000.187023187013));
+  CHECK(profile.a==approx(500007.677401286530));
+  CHECK(profile.sigma==sigma);
+
+  const auto location=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,500,sigma,width);
+  REQUIRE(cppunivariate::outcome(location).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(location.mu==approx(200002.139774650095));
+  CHECK(location.a==width);
+  CHECK(location.sigma==sigma);
+}

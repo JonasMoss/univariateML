@@ -427,3 +427,40 @@ TEST_CASE("snorm overflowing normalization retains a classified outcome") {
     CHECK(std::isfinite(r.stop_detail.limit_loglik));
   }
 }
+
+TEST_CASE("snorm: held moments select right half-normal limits in both precisions") {
+  const auto check=[](const cppunivariate::SnormResult& r,double location,double scale) {
+    REQUIRE(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Limit);
+    CHECK(r.status==cppunivariate::SnormStatus::RightHalfNormalBoundary);
+    REQUIRE(r.stop_detail.limit_coef.size()==2);
+    CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(location).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(scale).epsilon(mltest::kFitReferenceTol).scale(0));
+  };
+  const std::vector<double> outlier{4.408730582282939, -0.6712233474398537,
+    -0.14004615090785175, -0.44856279241356023, 1000004.4087305823};
+  check(cppunivariate::snorm_mle(mltest::as_span(outlier),1e-10,200,-0.020798452221064478),
+        -426123.507000533200,534066.589499234597);
+
+  constexpr double sd=0.9992068963337329;
+  const std::vector<double> close{0.99999998, 0.99999999, 1.0, 1.00000001, 1.00000003};
+  check(cppunivariate::snorm_mle(mltest::as_span(close),1e-10,200,NAN,sd),
+        close.front(),1.65758106288387696);
+
+  const std::vector<double> large{4.4087305822829385e150, -6.712233474398536e149,
+    -1.4004615090785175e149, -4.4856279241356025e149, -4.856913427309694e149,
+    1.1660316191367217e149, 2.0436226031657506e148, -1.1057748031821504e150,
+    -1.5018281477296034e149, -7.455793360463969e149, 3.60255439023495e149, 3.597089499548321e149};
+  check(cppunivariate::snorm_mle(mltest::as_span(large),1e-10,200,NAN,sd),
+        -1.1057748031821504e150,1.65758106288387696);
+}
+
+TEST_CASE("snorm: a full range above DBL_MAX can have a representable half-normal limit") {
+  const std::vector<double> x{-1.3714475655123392e308, -9.578601269011385e307,
+    -3.19128953450435e307, -5.283439943471954e305, 6.933786988953291e307, 1.7e308};
+  const auto r=cppunivariate::snorm_mle(mltest::as_span(x));
+  REQUIRE(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Limit);
+  CHECK(r.status==cppunivariate::SnormStatus::RightHalfNormalBoundary);
+  REQUIRE(r.stop_detail.limit_coef.size()==2);
+  CHECK(r.stop_detail.limit_coef[0]==x.front());
+  CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(1.67541691818979874e308).epsilon(mltest::kFitReferenceTol).scale(0));
+}

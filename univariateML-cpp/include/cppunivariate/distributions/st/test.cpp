@@ -535,3 +535,25 @@ TEST_CASE("st: held endpoint proof retains the exact scale-exponent sign") {
  const auto upper=cppunivariate::st_mle(mltest::as_span(x),1e-8,200,0,NAN,NAN,above);
  CHECK(cppunivariate::outcome(upper).reason==cppunivariate::OutcomeReason::Unattained);
 }
+
+TEST_CASE("st: a held-scale outlier fit excludes the skew-normal face") {
+  const std::vector<double> x{0.11024753757609822, -0.049422603469292115,
+    1.3131208557689356, -0.22599451092730288, 1000001.3131208557};
+  constexpr double omega=0.9203517925594821, alpha=0.10872382324228061;
+  const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-10,200,NAN,omega,alpha);
+  REQUIRE(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(r.xi==doctest::Approx(0.047240121085898731).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.omega==omega);
+  CHECK(r.alpha==alpha);
+  CHECK(r.nu==1);
+  CHECK(r.restricted==64u);
+}
+
+TEST_CASE("st: two distinct observations are below the free fitter's minimum") {
+  const std::vector<double> x{-0.5922494187054368, 0.7853274472989716};
+  const auto r=cppunivariate::st_mle(mltest::as_span(x));
+  CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unsupported);
+
+  const auto held=cppunivariate::st_mle(mltest::as_span(x),1e-10,200,0,1,0,1);
+  CHECK(cppunivariate::outcome(held).kind==cppunivariate::OutcomeKind::Estimate);
+}
