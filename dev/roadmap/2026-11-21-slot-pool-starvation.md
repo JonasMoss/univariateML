@@ -15,3 +15,10 @@ Options:
   high slots.
 
 Source: `~/.local/share/umvl-cpu/` (`run`, `run4`, `ensure.sh`).
+
+**Done 2026-11-21 (Claude)**, combining the first two options: `run4` try-locks slots 0-3 all at once or none
+(releasing partial reservations and retrying with backoff up to 2 s), and while it waits it holds `wait4.lock`
+shared; single-slot runs that see a waiting `run4` use only slots 4 and 5. Checked by hand: with slots 3-5 held by
+single runs and a `run4` waiting, a fourth single run waited for slot 4 or 5 instead of taking 0-2, the `run4` held
+no slot while waiting and started as soon as slot 3 was free; with no `run4` waiting, single runs still fall back to
+the low slots. Previous wrapper kept as `umvl-cpu-wrapper.py.bak-20261121`.
