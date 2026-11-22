@@ -1,0 +1,13 @@
+bhatt/golden,-0.0038000689215916378,1.0578973332904986,1.7336059238677448,-896.31045982723856
+bhatt/constant/1,2,1,0
+bhatt/constant/2,2
+bhatt/normal/1,0
+bhatt/normal/2,1,4,0
+bhatt/normal/3,0,4,0
+bhatt/normal/4,0,2,0
+gb2/mixed/0,0.57834363213736839,1.7944752190393374
+gb2/mixed/1,3.30854273293069,0.43155118384081537
+sgomp/exponential,0.45454545454545447,0
+sgomp/constant,2,0
+genbeta,univariateML_tolerance,tolerance,genbeta numerical accuracy failure: requested coefficient accuracy cannot be established. tol must be at least 2.1742455025865251e-16 here.,2.174246e-16
+sged,univariateML_numerical,numerical,SGED certificate numerical failure (arithmetic or root enclosure); increase `iterlim`.,NaN

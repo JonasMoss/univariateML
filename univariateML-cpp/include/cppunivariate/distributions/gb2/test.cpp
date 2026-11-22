@@ -188,10 +188,10 @@ TEST_CASE("GB2 unit beta shapes preserve finite certified joint coefficients") {
  const auto g=mltest::load_distribution_golden("burr");
  const auto r=cppunivariate::gb2_mle(mltest::as_span(g.data),1e-8,1000,NAN,NAN,1,NAN);
  REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
- CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kBurrGoldenTol));
- CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kBurrGoldenTol));
+ CHECK(r.shape1==doctest::Approx(g.estimates.at("shape1")).epsilon(mltest::kFitReferenceTol).scale(0));
+ CHECK(r.shape2==doctest::Approx(g.estimates.at("shape2")).epsilon(mltest::kFitReferenceTol).scale(0));
  CHECK(r.shape3==1);
- CHECK(r.scale==doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kBurrGoldenTol));
+ CHECK(r.scale==doctest::Approx(g.estimates.at("scale")).epsilon(mltest::kFitReferenceTol).scale(0));
  double ll=0,jac=0;std::vector<double> reciprocal;
  for(double v:g.data){ll+=cppunivariate::distributions::dgb2(v,r.shape1,r.shape2,r.shape3,r.scale,true);reciprocal.push_back(1/v);jac+=2*std::log(v);}
  CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-8));
@@ -444,8 +444,8 @@ TEST_CASE("GB2 held-scale mixed profiles certify both beta-shape orientations") 
  for(bool inverse:{false,true}) {
   const auto r=cppunivariate::gb2_mle(mltest::as_span(x),1e-7,300,inverse?NAN:2,NAN,inverse?3:NAN,1);
   REQUIRE(r.status==cppunivariate::Gb2Status::Ok);
-  CHECK(r.shape2==doctest::Approx(inverse?.43155118384080654:.57834363213651174).epsilon(1e-7));
-  CHECK((inverse?r.shape1:r.shape3)==doctest::Approx(inverse?3.3085427329308605:1.7944752190424211).epsilon(1e-7));
+  CHECK(r.shape2==doctest::Approx(inverse?.4315511838408103:.5783436321372848).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK((inverse?r.shape1:r.shape3)==doctest::Approx(inverse?3.308542732930816:1.794475219041364).epsilon(mltest::kFitReferenceTol).scale(0));
   double ll=0;for(double v:x)ll+=cppunivariate::distributions::dgb2(v,r.shape1,r.shape2,r.shape3,r.scale,true);
   CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-10));
   CHECK(r.stop_detail.loglik_lower<=r.stop_detail.loglik_upper);

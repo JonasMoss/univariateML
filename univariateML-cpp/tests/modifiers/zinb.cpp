@@ -198,7 +198,8 @@ TEST_CASE("zinb: fixed-size certificate holds and golden likelihood") {
     if(mask&1)CHECK(fit.fit.prob==p);
     if(mask&2)CHECK(fit.fit.pi==pi);
     CHECK(fit.fit.logLik>=g.logLik-1e-8);
-    // TODO(TASK-150.7): relative error 1.1e-10 native, 1.1e-10 double-only.
+    // The independent conditional roots round to the same probability.
+    CHECK(fit.fit.prob==doctest::Approx(.34428033824686793).epsilon(1e-12).scale(0));
     CHECK(fit.fit.prob==doctest::Approx(g.estimates.at("prob")).epsilon(2e-7));
     CHECK(fit.fit.pi==doctest::Approx(g.estimates.at("pi")).epsilon(mltest::kFitReferenceTol).scale(0));
   }
@@ -333,4 +334,18 @@ TEST_CASE("zinb: geometric inflation modifier round trips") {
       [=](double x,const std::vector<double>& p,bool l,bool g) {
         return cppunivariate::distributions::qzinb(x,1,p[0],pi,l,g);
       });
+}
+
+TEST_CASE("zinb: held-inflation tolerance failure retains a probability witness") {
+  const auto g=mltest::load_distribution_golden("zinb");
+  std::vector<int> x;
+  for(double value:g.data)x.push_back(static_cast<int>(value));
+  const auto fit=cppunivariate::zinb_fixed_size_mle(
+    {x.data(),x.size()},g.estimates.at("size"),NAN,g.estimates.at("pi"),1e-20);
+  CHECK(fit.fit.status==cppunivariate::ZinbStatus::IterationFailure);
+  CHECK(fit.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+  CHECK(fit.stop_detail.attainable_tol>1e-20);
+  REQUIRE(fit.stop_detail.candidates.size()==1);
+  CHECK(fit.stop_detail.candidates.front().coef[1]==
+    doctest::Approx(.34428033824686793).epsilon(1e-12).scale(0));
 }

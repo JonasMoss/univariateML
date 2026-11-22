@@ -18,7 +18,7 @@ TEST_CASE("sgomp fitting faces fixed coordinates and collapse") {
   const auto f=cppunivariate::sgomp_mle({x.data(),x.size()});
   REQUIRE(f.status==cppunivariate::SgompStatus::Ok);
   CHECK(f.eta==0);
-  CHECK(f.b==doctest::Approx(5./11));
+  CHECK(f.b==doctest::Approx(5./11).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(cppunivariate::sgomp_mle({c.data(),c.size()}).status==cppunivariate::SgompStatus::Collapse);
   CHECK(cppunivariate::sgomp_mle({z.data(),z.size()},1e-10,200,1).eta==0);
   CHECK(cppunivariate::sgomp_mle({c.data(),c.size()},1e-10,200,1).status==cppunivariate::SgompStatus::Ok);

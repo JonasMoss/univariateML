@@ -305,7 +305,7 @@ TEST_CASE("gengamma: held-Q zero reduces to normal likelihood") {
   const cppunivariate::span data{y.data(), y.size()};
   const auto joint=cppunivariate::gengamma_fit_detail::location_scale(data,0.,1e-10,100);
   REQUIRE(joint.status == cppunivariate::gengamma_fit_detail::ConditionalStatus::Ok);
-  CHECK(joint.mu == doctest::Approx(0.5));
+  CHECK(joint.mu == 0.5);
   CHECK(joint.sigma == doctest::Approx(std::sqrt(1.25)).epsilon(1e-14));
   const auto scale=cppunivariate::gengamma_fit_detail::scale(data,0.,0.,1e-10,100);
   REQUIRE(scale.status == cppunivariate::gengamma_fit_detail::ConditionalStatus::Ok);

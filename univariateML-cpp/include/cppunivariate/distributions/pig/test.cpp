@@ -61,8 +61,7 @@ TEST_CASE("pig: free fits can reach reference underflow region") {
   const auto fixed=cppunivariate::pig_mle(pig_span(y),1e-9,200,
     std::numeric_limits<double>::quiet_NaN(),1e20);
   REQUIRE(fixed.status==cppunivariate::PigStatus::Ok);
-  // TODO(TASK-150.7): relative error 1.6e-10 native, 1.6e-10 double-only.
-  CHECK(fixed.mean==doctest::Approx(1.5).epsilon(1e-6));
+  CHECK(fixed.mean==doctest::Approx(1.5).epsilon(1e-9).scale(0));
 }
 
 #include "cppunivariate/distributions/pig/dpqr.hpp"

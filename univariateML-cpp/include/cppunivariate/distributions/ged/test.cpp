@@ -472,8 +472,7 @@ TEST_CASE("ged: numerically overlapping finite maxima keep an uncertified search
     auto a=r.stop_detail.candidates[0],b=r.stop_detail.candidates[1];
     if(a.coef[2]>b.coef[2])std::swap(a,b);
     CHECK(a.coef[2]==doctest::Approx(1.108145553391854).epsilon(mltest::kFitReferenceTol).scale(0));
-    // TODO(TASK-150.7): relative error 3.5e-10 native, 3.5e-10 double-only.
-    CHECK(b.coef[2]==doctest::Approx(25.39783214175462).epsilon(1e-5));
+    CHECK(b.coef[2]==doctest::Approx(25.39783214175462).epsilon(1e-6).scale(0));
     CHECK(std::abs((a.loglik_lower+a.loglik_upper)-(b.loglik_lower+b.loglik_upper))<1e-5);
   }
 }

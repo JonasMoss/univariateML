@@ -304,6 +304,7 @@ test_that("genbeta all-free finite certificate retains the golden and never cert
   expect_true(all(abs(actual - expected) <= 1e-10 * abs(expected)))
   expect_equal(as.numeric(attr(f,"logLik")),g$logLik,tolerance=1e-8)
   e <- tryCatch(mlgenbeta(g$data,scale=1,tol=1e-20),error=identity)
+  expect_s3_class(e,"univariateML_tolerance")
   if(inherits(e,"error")) {
     expect_s3_class(e,"univariateML_stop")
     expect_identical(e$kind,"tolerance")

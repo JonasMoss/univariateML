@@ -323,7 +323,7 @@ TEST_CASE("std: held-scale and represented-scale precision guards") {
   const std::vector<double> x{-2,-1,0,1,3};
   const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-7,500,NAN,1e100,3);
   REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
-  // TODO(TASK-150.7): relative error 3.5e-10 native, 3.5e-10 double-only.
+  CHECK(std::abs(r.mu-.2)<=1e-7*std::max(.2,r.sigma));
   CHECK(r.mu==doctest::Approx(.2).epsilon(1e-7));
   const double tiny=std::numeric_limits<double>::denorm_min();
   const std::vector<double> subnormal{-2*tiny,2*tiny};

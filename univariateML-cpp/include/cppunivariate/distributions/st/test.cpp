@@ -175,7 +175,7 @@ TEST_CASE("st: conditional skew searches both signs without concavity") {
  const std::vector<double> x{-3,-1,-.2,.1,.8,2,4};
  const auto r=cppunivariate::st_mle(mltest::as_span(x),1e-6,200,0,1,NAN,4);
  REQUIRE(r.status==cppunivariate::StStatus::Ok);CHECK(r.certified);
- CHECK(r.alpha==doctest::Approx(.16456272666935215).epsilon(1e-8));
+ CHECK(r.alpha==doctest::Approx(.16456272669138336).epsilon(mltest::kFitReferenceTol).scale(0));
  CHECK(r.logLik==doctest::Approx(-16.43971347475502).epsilon(1e-12));
  std::vector<double> reflected;for(double v:x)reflected.push_back(-v);
  const auto f=cppunivariate::st_mle(mltest::as_span(reflected),1e-6,200,0,1,NAN,4);

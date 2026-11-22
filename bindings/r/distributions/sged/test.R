@@ -1015,6 +1015,9 @@ test_that("loose tolerance cannot certify a displaced public mean", {
   f <- tryCatch(mlsged(c(0,1e100),sd=1,nu=1.01,xi=100,tol=10),
                 error=identity)
   if (inherits(f,"error")) {
+    # TODO(TASK-150.8): this finite held-sd optimum should return a candidate.
+    expect_s3_class(f,"univariateML_numerical")
+    expect_identical(f$kind,"numerical")
     expect_match(conditionMessage(f),"certificate|accuracy|score")
   } else {
     expect_lte(abs(unname(f[["mean"]])-reference),10*reference)

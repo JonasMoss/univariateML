@@ -55,7 +55,7 @@ TEST_CASE("kumar clipped extremes: stable profile oracle and honest exhaustion")
   const auto r = cppunivariate::kumar_mle(mltest::as_span(x), 1e-12, 100);
   CHECK(std::isfinite(r.logLik));
   // Independent high precision profile solution (mpmath).
-  CHECK(r.a == doctest::Approx(0.007765975729959528).epsilon(1e-8));
+  CHECK(r.a == doctest::Approx(0.007765975729959528).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.logLik == doctest::Approx(4415.965322716401).epsilon(1e-12));
   CHECK(std::isfinite(cppunivariate::kumar_mle(mltest::as_span(x), 1e-12, 1).a));
 }

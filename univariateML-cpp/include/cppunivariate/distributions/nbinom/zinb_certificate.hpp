@@ -2,6 +2,7 @@
 #include "../../core/work_budget.hpp"
 #include "zinb_mle.hpp"
 #include "../../core/stop_detail.hpp"
+#include <array>
 #include <vector>
 
 namespace cppunivariate {
@@ -144,28 +145,53 @@ inline ZinbCertificateResult zinb_fixed_size_mle(ispan x,double size,
     for(std::size_t j=1;j+1<cuts.size();++j)
       if(!std::isfinite(h(cuts[j])) || std::abs(h(cuts[j]))<=margin)
         return fail(ZinbCertificateFailure::Arithmetic);
+    // The turning-point margin protects the branch count. Within a branch,
+    // evaluate the root equation without subtracting rounded u and v.
+    auto local_score=[&](double p) {
+      const double q=1-p,t=r*q,sp=S*p;
+      const double forward=std::fma(n,t,-sp),backward=std::fma(-k,t,sp);
+      const double logmass=r*(p>.5?std::log1p(-q):std::log(p));
+      const double weight=(1-fixed_pi)*std::exp(logmass);
+      const double value=std::fma(weight,forward,-fixed_pi*backward);
+      const double noise=16*eps*(weight*(n*t+sp+(1+std::abs(logmass))*std::abs(forward))+
+        fixed_pi*(k*t+sp));
+      const double slope=weight*(r/p*forward-(n*r+S))-fixed_pi*(k*r+S);
+      return std::array<double,3>{value,noise,slope};
+    };
+    auto sign=[&](double p) {
+      const auto score=local_score(p);
+      if(!(score[1]>0) || !std::isfinite(score[1]))return 0;
+      return (score[0]>score[1])-(score[0]<-score[1]);
+    };
     for(std::size_t j=1;j<cuts.size();++j) {
-      double lo=cuts[j-1],hi=cuts[j],left=h(lo),right=h(hi);
-      if((left>0)==(right>0))continue;
-      // Only + to - roots are local maxima. All branches are counted.
-      if(left<0)continue;
-      bool enclosed=false;
-      for(int iter=0;iter<maxit;++iter) {
+      double lo=cuts[j-1],hi=cuts[j];
+      if(!(h(lo)>0 && h(hi)<0))continue;
+      const double target=std::min(tol,1e-10);
+      for(int iter=0;iter<maxit && hi-lo>target*lo;++iter) {
         ++out.fit.iterations;
-        const double mid=lo+(hi-lo)/2,value=h(mid);
-        if(!(mid>lo && mid<hi))return fail(ZinbCertificateFailure::Arithmetic);
-        if(value>margin)lo=mid;
-        else if(value< -margin)hi=mid;
+        const double mid=lo+(hi-lo)/2;
+        const int direction=sign(mid);
+        if(mid>lo && mid<hi && direction>0)lo=mid;
+        else if(mid>lo && mid<hi && direction<0)hi=mid;
         else {
-          const double delta=std::max(hi-lo,1.)*margin;
-          const double a=mid-delta,b=mid+delta;
-          if(a>lo && b<hi && h(a)>margin && h(b)< -margin){lo=a;hi=b;enclosed=true;break;}
-          if(hi-lo<=1e-8*std::min(lo,1-hi)){enclosed=true;break;}
+          // An ambiguous midpoint can still have accurately signed neighbors.
+          const double delta=.49*target*lo;
+          const double a=std::max(lo,mid-delta),b=std::min(hi,mid+delta);
+          const double old_lo=lo,old_hi=hi;
+          if(a>lo && a<mid && sign(a)>0)lo=a;
+          if(b<hi && b>mid && sign(b)<0)hi=b;
+          if(lo!=old_lo || hi!=old_hi)continue;
+          const auto score=local_score(mid);
+          out.fit.prob=mid;
+          out.fit.pi=fixed_pi;
+          out.fit.logLik=likelihood(mid,fixed_pi);
+          const double conditioning=score[2]<0?score[1]/(-score[2]*mid):NAN;
+          record_accuracy(out.stop_detail,tol,{r,mid,fixed_pi},out.fit.logLik,{0.,mid,0.},
+            conditioning);
           return fail(ZinbCertificateFailure::Arithmetic);
         }
-        if(hi-lo<=std::min(tol,1e-10)*std::min(lo,1-hi)){enclosed=true;break;}
       }
-      if(!enclosed || hi-lo>1e-8*std::min(lo,1-hi))return fail(ZinbCertificateFailure::Budget);
+      if(hi-lo>target*lo)return fail(ZinbCertificateFailure::Budget);
       roots.push_back({lo,hi});
     }
   }
