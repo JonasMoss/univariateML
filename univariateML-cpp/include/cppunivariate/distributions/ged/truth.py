@@ -6,6 +6,11 @@ import mpmath as mp
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
 extreme_parameter_sets = [dict(nu=nu) for nu in (1e3, 1e4, 1e6)]
+extreme_parameter_sets += [
+    dict(mean=mean, sd=sd, nu=nu)
+    for nu in (1e3, 999999., 1e6)
+    for mean, sd in ((-1e100, 1e100), (1e-100, 1e-100))
+]
 
 def build(t):
     m,s,a=t['mean'],t['sd'],t['nu']

@@ -1,0 +1,716 @@
+{
+  "natural": {
+    "count": 2288,
+    "over_three_ulps": 0,
+    "maxima": {
+      "neighbor_gap": {
+        "value": 1.9656815236077093e-07,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100
+      },
+      "nearest_rounding": {
+        "value": 8.954944493904234e-08,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100
+      },
+      "reconstruction": {
+        "value": 0.0,
+        "input": [
+          1e-300,
+          0.0,
+          1.0,
+          1.0,
+          false,
+          false
+        ],
+        "returned": 487.9619309828098,
+        "rounded": 487.9619309828098
+      },
+      "oracle_roundtrip": {
+        "value": 8.954944493904234e-08,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100
+      },
+      "pged_roundtrip": {
+        "value": 8.954910333854959e-08,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100,
+        "signed_split": {
+          "nearest_rounding": 8.954944493904234e-08,
+          "reconstruction": 0.0,
+          "cdf_evaluation": -3.416004927581707e-13
+        },
+        "ulp_distance": 0,
+        "neighbor_gap": 1.9656815236077093e-07
+      },
+      "pged_at_x": {
+        "value": 6.820903006967906e-13,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          3162.2776601683795,
+          true,
+          false
+        ],
+        "returned": -7.359394183581656e-101,
+        "rounded": -7.359394183581656e-101
+      },
+      "ulp_distance": {
+        "value": 0,
+        "input": [
+          1e-300,
+          0.0,
+          1.0,
+          1.0,
+          false,
+          false
+        ],
+        "returned": 487.9619309828098,
+        "rounded": 487.9619309828098
+      },
+      "coordinate_relative": {
+        "value": 1.0646308466241953e-16,
+        "input": [
+          1e-12,
+          0.0,
+          1.0,
+          1.7782794100389228,
+          true,
+          false
+        ],
+        "returned": -8.084696667598552,
+        "rounded": -8.084696667598552
+      }
+    },
+    "fast_count": 2288,
+    "fast_neighbour_count": 0
+  },
+  "shape<1000": {
+    "count": 2208,
+    "over_three_ulps": 0,
+    "maxima": {
+      "neighbor_gap": {
+        "value": 1.1037212146135702e-10,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          562.341325190349,
+          false,
+          false
+        ],
+        "returned": 2.7540249186157515e-100,
+        "rounded": 2.7540249186157515e-100
+      },
+      "nearest_rounding": {
+        "value": 2.2008992490010276e-11,
+        "input": [
+          1e-300,
+          -1e+100,
+          1e+100,
+          562.341325190349,
+          true,
+          false
+        ],
+        "returned": -2.7540249186157514e+100,
+        "rounded": -2.7540249186157514e+100
+      },
+      "reconstruction": {
+        "value": 0.0,
+        "input": [
+          1e-300,
+          0.0,
+          1.0,
+          1.0,
+          false,
+          false
+        ],
+        "returned": 487.9619309828098,
+        "rounded": 487.9619309828098
+      },
+      "oracle_roundtrip": {
+        "value": 2.2008992490010276e-11,
+        "input": [
+          1e-300,
+          -1e+100,
+          1e+100,
+          562.341325190349,
+          true,
+          false
+        ],
+        "returned": -2.7540249186157514e+100,
+        "rounded": -2.7540249186157514e+100
+      },
+      "pged_roundtrip": {
+        "value": 2.207886886223015e-11,
+        "input": [
+          1e-300,
+          -1e+100,
+          1e+100,
+          562.341325190349,
+          true,
+          false
+        ],
+        "returned": -2.7540249186157514e+100,
+        "rounded": -2.7540249186157514e+100,
+        "signed_split": {
+          "nearest_rounding": 2.2008992490010276e-11,
+          "reconstruction": 0.0,
+          "cdf_evaluation": 6.987637221987612e-14
+        },
+        "ulp_distance": 0,
+        "neighbor_gap": 8.448439746811366e-11
+      },
+      "pged_at_x": {
+        "value": 6.002755874112345e-13,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          10.0,
+          true,
+          false
+        ],
+        "returned": -2.424494348068148e-100,
+        "rounded": -2.424494348068148e-100
+      },
+      "ulp_distance": {
+        "value": 0,
+        "input": [
+          1e-300,
+          0.0,
+          1.0,
+          1.0,
+          false,
+          false
+        ],
+        "returned": 487.9619309828098,
+        "rounded": 487.9619309828098
+      },
+      "coordinate_relative": {
+        "value": 1.0646308466241953e-16,
+        "input": [
+          1e-12,
+          0.0,
+          1.0,
+          1.7782794100389228,
+          true,
+          false
+        ],
+        "returned": -8.084696667598552,
+        "rounded": -8.084696667598552
+      }
+    },
+    "fast_count": 2208,
+    "fast_neighbour_count": 0
+  },
+  "fast/natural": {
+    "count": 2288,
+    "over_three_ulps": 0,
+    "maxima": {
+      "neighbor_gap": {
+        "value": 1.9656815236077093e-07,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100
+      },
+      "nearest_rounding": {
+        "value": 8.954944493904234e-08,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100
+      },
+      "reconstruction": {
+        "value": 0.0,
+        "input": [
+          1e-300,
+          0.0,
+          1.0,
+          1.0,
+          false,
+          false
+        ],
+        "returned": 487.9619309828098,
+        "rounded": 487.9619309828098
+      },
+      "oracle_roundtrip": {
+        "value": 8.954944493904234e-08,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100
+      },
+      "pged_roundtrip": {
+        "value": 8.954910333854959e-08,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100,
+        "signed_split": {
+          "nearest_rounding": 8.954944493904234e-08,
+          "reconstruction": 0.0,
+          "cdf_evaluation": -3.416004927581707e-13
+        },
+        "ulp_distance": 0,
+        "neighbor_gap": 1.9656815236077093e-07
+      },
+      "pged_at_x": {
+        "value": 6.820903006967906e-13,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          3162.2776601683795,
+          true,
+          false
+        ],
+        "returned": -7.359394183581656e-101,
+        "rounded": -7.359394183581656e-101
+      },
+      "ulp_distance": {
+        "value": 0,
+        "input": [
+          1e-300,
+          0.0,
+          1.0,
+          1.0,
+          false,
+          false
+        ],
+        "returned": 487.9619309828098,
+        "rounded": 487.9619309828098
+      },
+      "coordinate_relative": {
+        "value": 1.0646308466241953e-16,
+        "input": [
+          1e-12,
+          0.0,
+          1.0,
+          1.7782794100389228,
+          true,
+          false
+        ],
+        "returned": -8.084696667598552,
+        "rounded": -8.084696667598552
+      }
+    },
+    "fast_count": 2288,
+    "fast_neighbour_count": 0
+  },
+  "log": {
+    "count": 2496,
+    "over_three_ulps": 0,
+    "maxima": {
+      "neighbor_gap": {
+        "value": 2.9238768894924297e-10,
+        "input": [
+          -10000.0,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          true
+        ],
+        "returned": 2.7320677560777047e-100,
+        "rounded": 2.7320677560777047e-100
+      },
+      "nearest_rounding": {
+        "value": 1.258021552190306e-10,
+        "input": [
+          -690.0,
+          1e-100,
+          1e-100,
+          999999.0,
+          false,
+          true
+        ],
+        "returned": 2.7320630756931186e-100,
+        "rounded": 2.7320630756931186e-100
+      },
+      "reconstruction": {
+        "value": 0.0,
+        "input": [
+          -10000.0,
+          0.0,
+          1.0,
+          1.0,
+          false,
+          true
+        ],
+        "returned": 7070.577682793741,
+        "rounded": 7070.577682793741
+      },
+      "oracle_roundtrip": {
+        "value": 1.258021552190306e-10,
+        "input": [
+          -690.0,
+          1e-100,
+          1e-100,
+          999999.0,
+          false,
+          true
+        ],
+        "returned": 2.7320630756931186e-100,
+        "rounded": 2.7320630756931186e-100
+      },
+      "pged_roundtrip": {
+        "value": 1.258025593520817e-10,
+        "input": [
+          -690.0,
+          1e-100,
+          1e-100,
+          999999.0,
+          false,
+          true
+        ],
+        "returned": 2.7320630756931186e-100,
+        "rounded": 2.7320630756931186e-100,
+        "signed_split": {
+          "nearest_rounding": 1.258021552190306e-10,
+          "reconstruction": 0.0,
+          "cdf_evaluation": 4.041330510969435e-16
+        },
+        "ulp_distance": 0,
+        "neighbor_gap": 2.845522095104354e-10
+      },
+      "pged_at_x": {
+        "value": 2.3765760710101972e-14,
+        "input": [
+          -5.0,
+          -1e+100,
+          1e+100,
+          1.7782794100389228,
+          true,
+          true
+        ],
+        "returned": -3.5552108735732e+100,
+        "rounded": -3.5552108735732e+100
+      },
+      "ulp_distance": {
+        "value": 0,
+        "input": [
+          -10000.0,
+          0.0,
+          1.0,
+          1.0,
+          false,
+          true
+        ],
+        "returned": 7070.577682793741,
+        "rounded": 7070.577682793741
+      },
+      "coordinate_relative": {
+        "value": 1.0239503822528211e-16,
+        "input": [
+          -690.0,
+          1e-100,
+          1e-100,
+          10.0,
+          true,
+          true
+        ],
+        "returned": -2.4241052246269846e-100,
+        "rounded": -2.4241052246269846e-100
+      }
+    },
+    "fast_count": 2496,
+    "fast_neighbour_count": 0
+  },
+  "fast/log": {
+    "count": 2496,
+    "over_three_ulps": 0,
+    "maxima": {
+      "neighbor_gap": {
+        "value": 2.9238768894924297e-10,
+        "input": [
+          -10000.0,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          true
+        ],
+        "returned": 2.7320677560777047e-100,
+        "rounded": 2.7320677560777047e-100
+      },
+      "nearest_rounding": {
+        "value": 1.258021552190306e-10,
+        "input": [
+          -690.0,
+          1e-100,
+          1e-100,
+          999999.0,
+          false,
+          true
+        ],
+        "returned": 2.7320630756931186e-100,
+        "rounded": 2.7320630756931186e-100
+      },
+      "reconstruction": {
+        "value": 0.0,
+        "input": [
+          -10000.0,
+          0.0,
+          1.0,
+          1.0,
+          false,
+          true
+        ],
+        "returned": 7070.577682793741,
+        "rounded": 7070.577682793741
+      },
+      "oracle_roundtrip": {
+        "value": 1.258021552190306e-10,
+        "input": [
+          -690.0,
+          1e-100,
+          1e-100,
+          999999.0,
+          false,
+          true
+        ],
+        "returned": 2.7320630756931186e-100,
+        "rounded": 2.7320630756931186e-100
+      },
+      "pged_roundtrip": {
+        "value": 1.258025593520817e-10,
+        "input": [
+          -690.0,
+          1e-100,
+          1e-100,
+          999999.0,
+          false,
+          true
+        ],
+        "returned": 2.7320630756931186e-100,
+        "rounded": 2.7320630756931186e-100,
+        "signed_split": {
+          "nearest_rounding": 1.258021552190306e-10,
+          "reconstruction": 0.0,
+          "cdf_evaluation": 4.041330510969435e-16
+        },
+        "ulp_distance": 0,
+        "neighbor_gap": 2.845522095104354e-10
+      },
+      "pged_at_x": {
+        "value": 2.3765760710101972e-14,
+        "input": [
+          -5.0,
+          -1e+100,
+          1e+100,
+          1.7782794100389228,
+          true,
+          true
+        ],
+        "returned": -3.5552108735732e+100,
+        "rounded": -3.5552108735732e+100
+      },
+      "ulp_distance": {
+        "value": 0,
+        "input": [
+          -10000.0,
+          0.0,
+          1.0,
+          1.0,
+          false,
+          true
+        ],
+        "returned": 7070.577682793741,
+        "rounded": 7070.577682793741
+      },
+      "coordinate_relative": {
+        "value": 1.0239503822528211e-16,
+        "input": [
+          -690.0,
+          1e-100,
+          1e-100,
+          10.0,
+          true,
+          true
+        ],
+        "returned": -2.4241052246269846e-100,
+        "rounded": -2.4241052246269846e-100
+      }
+    },
+    "fast_count": 2496,
+    "fast_neighbour_count": 0
+  },
+  "shape>=1000": {
+    "count": 2576,
+    "over_three_ulps": 0,
+    "maxima": {
+      "neighbor_gap": {
+        "value": 1.9656815236077093e-07,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100
+      },
+      "nearest_rounding": {
+        "value": 8.954944493904234e-08,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100
+      },
+      "reconstruction": {
+        "value": 0.0,
+        "input": [
+          1e-300,
+          0.0,
+          1.0,
+          1000.0,
+          false,
+          false
+        ],
+        "returned": 1.7443766109173822,
+        "rounded": 1.7443766109173822
+      },
+      "oracle_roundtrip": {
+        "value": 8.954944493904234e-08,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100
+      },
+      "pged_roundtrip": {
+        "value": 8.954910333854959e-08,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          1000000.0,
+          false,
+          false
+        ],
+        "returned": 2.7320630776846127e-100,
+        "rounded": 2.7320630776846127e-100,
+        "signed_split": {
+          "nearest_rounding": 8.954944493904234e-08,
+          "reconstruction": 0.0,
+          "cdf_evaluation": -3.416004927581707e-13
+        },
+        "ulp_distance": 0,
+        "neighbor_gap": 1.9656815236077093e-07
+      },
+      "pged_at_x": {
+        "value": 6.820903006967906e-13,
+        "input": [
+          1e-300,
+          1e-100,
+          1e-100,
+          3162.2776601683795,
+          true,
+          false
+        ],
+        "returned": -7.359394183581656e-101,
+        "rounded": -7.359394183581656e-101
+      },
+      "ulp_distance": {
+        "value": 0,
+        "input": [
+          1e-300,
+          0.0,
+          1.0,
+          1000.0,
+          false,
+          false
+        ],
+        "returned": 1.7443766109173822,
+        "rounded": 1.7443766109173822
+      },
+      "coordinate_relative": {
+        "value": 1.0270788155031556e-16,
+        "input": [
+          0.75,
+          -1e+100,
+          1e+100,
+          999999.0,
+          false,
+          false
+        ],
+        "returned": -1.866025403782302e+100,
+        "rounded": -1.866025403782302e+100
+      }
+    },
+    "fast_count": 2576,
+    "fast_neighbour_count": 0
+  }
+}

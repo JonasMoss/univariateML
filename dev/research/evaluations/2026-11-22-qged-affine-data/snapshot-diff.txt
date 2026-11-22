@@ -1,0 +1,58 @@
+native branch-point fits
+ged            kept  (0 s)
+sged           kept  (0 s)
+native current fits
+ged            173  (13 s)
+sged           285  (62 s)
+native branch point versus current
+
+0 of 458 cases differ
+native stored versus current
+sged archive 006190: estimates.mean -0.10791820016993925 -> -0.10791820015750253; iterations 38 -> 42; logLik -14.567566952438126 -> -14.567566952438128
+sged archive 006191: estimates.mean 1.6351744103005705 -> 1.6351744103003798; iterations 38 -> 0; logLik -1.9732973583894171 -> -1.9732973583894178
+sged archive 006192: estimates.mean 1.2433802913864949 -> 1.2433802913709551; iterations 38 -> 40; logLik -2.965330555612872 -> -2.9653305556128728
+sged archive 006193: estimates.mean 1.2481444489445896 -> 1.2481444489427083; iterations 38 -> 41; logLik -4.9397605049775892 -> -4.939760504977591
+sged archive 006194: estimates.mean 1.2635479218843533 -> 1.2635479218757621; iterations 38 -> 41; logLik -5.9350237337499445 -> -5.9350237337499472
+sged archive 006195: estimates.mean 1.2029461025429782 -> 1.202946102555718; iterations 38 -> 28; logLik -4.9331956263532417 -> -4.9331956263532435
+sged archive 006196: certified null -> true; core_status 9 -> 0; estimates.mean null -> 1.2029635908695469; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006197: certified null -> true; core_status 9 -> 0; estimates.mean null -> 1.2029635926343332; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006198: estimates.mean 2.0963628920255495 -> 2.0963628919565052; iterations 38 -> 30; logLik -4.9331956263534353 -> -4.9331956263534371
+sged archive 006199: certified null -> true; core_status 9 -> 0; estimates.mean null -> 2.0965271998991377; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006200: certified null -> true; core_status 9 -> 0; estimates.mean null -> 2.0965272164038744; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006201: certified null -> true; core_status 9 -> 0; estimates.mean null -> 1.0965272164058744; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006203: certified null -> true; core_status 9 -> 0; estimates.mean null -> 99999999.892081797; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006204: estimates.mean 36929.001092387742 -> 36929.001090885045; iterations 40 -> 46; logLik -1.1681158218521018e+19 -> -1.1681158218521162e+19
+sged archive 006205: estimates.mean 1.2029634124896043 -> 1.2029634125185595; iterations 38 -> 21; logLik -4.9331956263532417 -> -4.9331956263532435
+
+15 of 458 cases differ
+by family: {'sged': 15}
+by field: {'estimates': 33, 'outcome': 18, 'iterations': 15, 'logLik': 15, 'certified': 6, 'core_status': 6, 'fixed': 6, 'kind': 6, 'message': 6, 'reason': 6, 'unique': 6}
+double branch-point fits
+ged            kept  (0 s)
+sged           kept  (0 s)
+double current fits
+ged            173  (11 s)
+sged           285  (64 s)
+double branch point versus current
+
+0 of 458 cases differ
+double stored versus current
+sged archive 006190: estimates.mean -0.10791820016993925 -> -0.10791820015750253; iterations 38 -> 42; logLik -14.567566952438126 -> -14.567566952438128
+sged archive 006191: estimates.mean 1.6351744103005705 -> 1.6351744103003798; iterations 38 -> 0; logLik -1.9732973583894171 -> -1.9732973583894178
+sged archive 006192: estimates.mean 1.2433802913864949 -> 1.2433802913709551; iterations 38 -> 40; logLik -2.965330555612872 -> -2.9653305556128728
+sged archive 006193: estimates.mean 1.2481444489445896 -> 1.2481444489427083; iterations 38 -> 41; logLik -4.9397605049775892 -> -4.939760504977591
+sged archive 006194: estimates.mean 1.2635479218843533 -> 1.2635479218757621; iterations 38 -> 41; logLik -5.9350237337499445 -> -5.9350237337499472
+sged archive 006195: estimates.mean 1.2029461025429782 -> 1.202946102555718; iterations 38 -> 28; logLik -4.9331956263532417 -> -4.9331956263532435
+sged archive 006196: certified null -> true; core_status 9 -> 0; estimates.mean null -> 1.2029635908695469; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006197: certified null -> true; core_status 9 -> 0; estimates.mean null -> 1.2029635926343332; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006198: estimates.mean 2.0963628920255495 -> 2.0963628919565052; iterations 38 -> 30; logLik -4.9331956263534353 -> -4.9331956263534371
+sged archive 006199: certified null -> true; core_status 9 -> 0; estimates.mean null -> 2.0965271998991377; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006200: certified null -> true; core_status 9 -> 0; estimates.mean null -> 2.0965272164038744; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006201: certified null -> true; core_status 9 -> 0; estimates.mean null -> 1.0965272164058744; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006203: certified null -> true; core_status 9 -> 0; estimates.mean null -> 99999999.892081797; estimates.nu null -> 3.4208324500711944; estimates.sd null -> 0.93902992027393606; estimates.xi null -> 2.5890673965717057 (+10 more)
+sged archive 006204: estimates.mean 36929.001092387742 -> 36929.001090885045; iterations 40 -> 46; logLik -1.1681158218521018e+19 -> -1.1681158218521162e+19
+sged archive 006205: estimates.mean 1.2029634124896043 -> 1.2029634125185595; iterations 38 -> 21; logLik -4.9331956263532417 -> -4.9331956263532435
+
+15 of 458 cases differ
+by family: {'sged': 15}
+by field: {'estimates': 33, 'outcome': 18, 'iterations': 15, 'logLik': 15, 'certified': 6, 'core_status': 6, 'fixed': 6, 'kind': 6, 'message': 6, 'reason': 6, 'unique': 6}

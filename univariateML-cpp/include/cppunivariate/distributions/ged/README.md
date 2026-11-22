@@ -475,4 +475,12 @@ with `exp` when the natural-scale enclosure fails. This preserves positive
 subnormals and rounds to zero below half the least positive subnormal.
 A failure of the applicable enclosure returns NaN.
 
+The GED quantile tolerance is $10^{-9}$ relative in the returned coordinate.
+The truth harness also accepts the two binary64 neighbours of the exact
+coordinate and uses an absolute floor at exact zero. For shape at least
+one, the affine reconstruction retains scale and radius residuals and
+checks their effect in physical coordinates. The power-of-two-scaled sum
+handles cases outside this bound. At the steep large-shape edge,
+adjacent binary64 coordinates can imply appreciably different probabilities.
+
 For a proved Laplace median interval or reflected knot tie, `coef()` uses the first listed GED witness, an exact sample location with its conditional scale, and `logLik` is evaluated there; the listed set is attached as `maximizers`. Unproved comparisons list search roots with likelihood bounds and stop as unresolved, or as an uncertified uniform limit when that face is the better candidate.
