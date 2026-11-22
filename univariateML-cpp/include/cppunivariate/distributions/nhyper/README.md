@@ -149,8 +149,8 @@ and zero degrees of freedom. Explicit `NULL` requests estimation of a
 design count; population and composition can also be estimated jointly.
 The reference's black-ball count is `n = N - m`.
 
-One-coordinate fits warn on adjacent ties and return the smaller count.
-At `r = 0`, free composition is represented by zero with a warning.
+One-coordinate fits return the smaller count on adjacent ties.
+At `r = 0`, free composition ranges from zero to $N$, with zero as the representative.
 Joint-grid conventions and budgets are given below. Counts must be below
 $2^{53}$. For the growing-population limit with positive `r`, use
 `mlnbinom(x - r, size = r)`. Unresolved face comparisons retain the best finite estimate with `certified = FALSE`.

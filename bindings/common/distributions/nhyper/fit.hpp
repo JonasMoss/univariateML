@@ -5,8 +5,7 @@
 #include <cmath>
 namespace umvl_binding {
 inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = {}, Held r_arg = {}, int iterlim = 100) {
-  std::vector<std::string> warnings;
-  const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...)); };
   const Held m = m_arg;
   const Held N = N_arg;
   const Held r = r_arg;
@@ -50,20 +49,39 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
     case cppunivariate::NhyperStatus::Infeasible:
       return done(stopped_fail("No admissible composition gives every observation positive probability; total draws must lie from r through N - m + r (zero when r = 0)."));
     case cppunivariate::NhyperStatus::Tie:
-      warnings.push_back(binding_message("Likelihood tied between adjacent counts; returning the smaller.")); break;
     case cppunivariate::NhyperStatus::Unidentified:
-      warnings.push_back(binding_message("With r = 0 every composition is unidentified; returning m = 0.")); break;
     case cppunivariate::NhyperStatus::Ok:
-      if (!fit.unique)
-        warnings.push_back(binding_message("The observations are constant, so with `m = N` every population size gives the same "
-                      "(point-mass) likelihood; the maximum is not unique."));
       break;
   }
   std::vector<std::string> fixed;
   if (m.supplied) fixed.push_back("m");
   if (N.supplied) fixed.push_back("N");
   if (r.supplied) fixed.push_back("r");
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"m",fit.m},{"N",fit.N},{"r",fit.r}};  out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
-
+  FitResult out;
+  out.estimates = {{"m",fit.m},{"N",fit.N},{"r",fit.r}};
+  out.logLik = fit.logLik;
+  out.iterations = fit.iterations;
+  out.has_iterations = true;
+  out.fixed = fixed;
+  out.has_fixed = true;
+  if (!o.unique) {
+    const auto add = [&](double m_value, double N_value, double r_value) {
+      out.candidates.push_back({{{"m",m_value},{"N",N_value},{"r",r_value}},
+                                out.logLik,out.logLik,"nhyper"});
+    };
+    add(fit.m, fit.N, fit.r);
+    if (fit.status == cppunivariate::NhyperStatus::Tie) {
+      add(r.supplied ? fit.tie : fit.m, fit.N, r.supplied ? fit.r : fit.tie);
+      out.error = "Likelihood tied between adjacent counts; returning the smaller.";
+    } else if (fit.status == cppunivariate::NhyperStatus::Unidentified) {
+      add(fit.tie, fit.N, fit.r);
+      out.error = "With r = 0 every composition from 0 to N is unidentified; returning m = 0.";
+    } else {
+      if (cppunivariate::hyper_detail::is_count(fit.N+1))
+        add(fit.N+1, fit.N+1, fit.r);
+      out.error = "The observations are constant, so with m = N every admissible population size N >= r gives the same (point-mass) likelihood; the maximum is not unique.";
+    }
+  }
+  return done(std::move(out));
 }
 }

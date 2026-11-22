@@ -6,12 +6,15 @@
 #include "../../core/stop_detail.hpp"
 #include "dpqr.hpp"
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <limits>
+#include <utility>
 #include <vector>
 
 namespace cppunivariate {
 enum class TriangStatus { Ok, InvalidInput, Incompatible, Unbounded, IterationFailure, NumericalFailure };
+struct TriangModeCandidate { double a, b, c, logLik; };
 struct TriangResult {
   double a, b, c, logLik;
   int iterations;
@@ -22,9 +25,60 @@ struct TriangResult {
   // the reflection maps maximizers to maximizers with equal likelihood.
   bool reflection_tie=false;
   StopDetail stop_detail{};
+  // Other modes whose likelihood comparison remains unresolved.
+  std::vector<TriangModeCandidate> unresolved_modes{};
 };
 namespace triang_detail {
 struct Profile { double a, b, value, upper; int iterations; bool converged; };
+// Lexicographic order of the rounded sum and its exact residual is the
+// order of the exact sums, provided neither rounded sum overflows.
+inline std::pair<double,double> sum_parts(double x, double y) {
+  const double hi=x+y, z=hi-x;
+  return {hi,(x-(hi-z))+(y-z)};
+}
+
+// Compare fixed-endpoint likelihoods by enclosing their ratio. The common
+// density height cancels. A zero return includes exact equality, overlap
+// of the enclosures, and ratios outside the usable floating-point range.
+inline int compare_modes(const std::vector<double>& x, double a, double b,
+                         double first, double second, bool balanced_pair) {
+  if(balanced_pair) {
+    // At the two observed modes the likelihoods have the order of
+    // (b-y)/(b-x) and (x-a)/(y-a). Cross multiplication reduces the
+    // first minus the second to (y-x)*(a+b-x-y).
+    const auto endpoints=sum_parts(a,b);
+    const auto sample=sum_parts(first,second);
+    if(std::isfinite(endpoints.first)&&std::isfinite(endpoints.second)&&
+       std::isfinite(sample.first)&&std::isfinite(sample.second)) {
+      if(endpoints==sample) return 0;
+      return (endpoints>sample)==(first<second) ? 1 : -1;
+    }
+  }
+  struct Bounds { double lo, hi; };
+  const auto down=[](double v) { return std::nextafter(v,0.0); };
+  const auto up=[](double v) { return std::nextafter(v,INFINITY); };
+  const auto gap=[&](double hi,double lo) {
+    const double v=hi-lo;
+    return Bounds{down(v),up(v)};
+  };
+  const auto factor=[&](double z,double mode) {
+    if(z==mode) return Bounds{1,1};
+    const Bounds numerator=z<mode ? gap(z,a) : gap(b,z);
+    const Bounds denominator=z<mode ? gap(mode,a) : gap(b,mode);
+    return Bounds{down(numerator.lo/denominator.hi),up(numerator.hi/denominator.lo)};
+  };
+  Bounds ratio{1,1};
+  for(double z:x) {
+    const auto p=factor(z,first), q=factor(z,second);
+    if(!(q.lo>0 && std::isfinite(p.hi) && std::isfinite(q.hi))) return 0;
+    ratio={down(ratio.lo*down(p.lo/q.hi)),up(ratio.hi*up(p.hi/q.lo))};
+    if(!(ratio.lo>0 && std::isfinite(ratio.hi))) return 0;
+  }
+  if(ratio.lo>1) return 1;
+  if(ratio.hi<1) return -1;
+  return 0;
+}
+
 // For modes in [l,u], replace all middle factors by one, and use l on
 // the left, u on the right. This dominates every candidate pointwise.
 // In p=L/(l-a), q=R/(b-u), the log envelope is strictly concave:
@@ -208,6 +262,7 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
   if((fa&&fb&&a>=b)||(fa&&fc&&a>c)||(fb&&fc&&c>b)) return out;
   std::vector<double> x(input.begin(),input.end());
   std::sort(x.begin(),x.end());
+  const auto observations=x;
   const double origin=x.front();
   if((fa&&a>origin)||(fb&&b<x.back())) {out.status=TriangStatus::Incompatible;return out;}
   double scale=x.back()-origin;
@@ -232,7 +287,45 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
     out.status=TriangStatus::Unbounded;return out;
   }
   const double tie=1e-10*x.size();
-  double best=-INFINITY, second=-INFINITY, ba=0,bb=0,bc=0;
+  double best=-INFINITY;
+  std::size_t chosen=0;
+  std::vector<triang_detail::Profile> profiles(modes.size(), {0,0,-INFINITY,-INFINITY,0,false});
+  std::vector<double> public_modes;
+  if(fc) public_modes.push_back(original_c);
+  else {
+    std::size_t i=0;
+    for(double mode:modes) {
+      while(x[i]<mode) ++i;
+      double representative=observations[i];
+      if(i+1<x.size() && x[i+1]==mode && observations[i+1]!=representative)
+        for(double z : input) if((z-origin)/scale==mode) { representative=z; break; }
+      public_modes.push_back(representative);
+    }
+  }
+  const bool balanced_pair=fa&&fb&&modes.size()==2&&x.size()%2==0&&
+      observations[x.size()/2-1]==observations.front()&&
+      observations[x.size()/2]==observations.back();
+  auto comparison_budget=certificate_budget(maxit);
+  const auto compare=[&](std::size_t i,std::size_t j) {
+    const auto& p=profiles[i];
+    const auto& q=profiles[j];
+    if(std::abs(p.value-q.value)>tie) return p.value>q.value ? 1 : -1;
+    if(fa&&fb) {
+      // One exact sign comparison for a balanced pair, or one factor
+      // enclosure per observation for a general fixed-endpoint pair.
+      if(!balanced_pair && x.size()>static_cast<std::size_t>(comparison_budget)) return 0;
+      if(!balanced_pair) comparison_budget-=static_cast<std::int64_t>(x.size());
+      return triang_detail::compare_modes(observations,original_a,original_b,
+                                          public_modes[i],public_modes[j],balanced_pair);
+    }
+    // Compare the feasible profile values with their tangent upper bounds.
+    // The practical margin covers rounding in the normalized evaluations.
+    const double margin=256*std::numeric_limits<double>::epsilon()*
+        (x.size()+std::abs(p.value)+std::abs(q.value));
+    if(p.value>q.upper+margin) return 1;
+    if(q.value>p.upper+margin) return -1;
+    return 0;
+  };
   bool success=true;
   double certificate_upper=-INFINITY;
   std::vector<double> known_ll;
@@ -268,10 +361,17 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
         ((fa&&fb)?0:1e-11*x.size()*(1+std::abs(p.value)/x.size())));
     if(!std::isfinite(p.value)) return;
     success=success&&p.converged;
-    // Ties at floating-point precision choose the smallest mode.
-    if(p.value>best+1e-13*x.size() || (std::abs(p.value-best)<=1e-13*x.size()&&modes[k]<bc)) {
-      second=std::max(second,best);best=p.value;ba=p.a;bb=p.b;bc=modes[k];
-    } else second=std::max(second,p.value);
+    auto& saved=profiles[k];
+    saved=p;
+    saved.upper=std::max(p.value,p.upper-
+        ((fa&&fb)?0:1e-11*x.size()*(1+std::abs(p.value)/x.size())));
+    const int order=std::isfinite(best) ? compare(k,chosen) : 1;
+    // Keep the existing representative convention when the sign is open.
+    if(order>0 || (order==0 && (p.value>best+1e-13*x.size() ||
+        (std::abs(p.value-best)<=1e-13*x.size()&&modes[k]<modes[chosen])))) {
+      chosen=k;
+      best=p.value;
+    }
   };
   if(!modes.empty()) {
     candidate(0);
@@ -307,21 +407,21 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
     }
   }
   if(!std::isfinite(best)) {out.status=TriangStatus::Incompatible;return out;}
-  out.a=fa?original_a:origin+scale*ba;
-  out.b=fb?original_b:origin+scale*bb;
-  // Preserve exact endpoint-mode equality across the affine round trip.
-  if(fc && !fa && ba==bc) out.a=original_c;
-  if(fc && !fb && bb==bc) out.b=original_c;
-  out.c=fc?original_c:origin+scale*bc;
-  // A free mode is an original observation, not its affine round trip.
-  if(!fc) for(double z:input) if((z-origin)/scale==bc) {out.c=z;break;}
-  if(!fa && ba==bc)out.a=out.c;
-  if(!fb && bb==bc)out.b=out.c;
-  // Rounding a free support endpoint inward must never discard data.
-  const double minimum=*std::min_element(input.begin(),input.end());
-  const double maximum=*std::max_element(input.begin(),input.end());
-  if(!fa && (out.a>minimum || (out.a==minimum && out.c!=minimum)))out.a=std::nextafter(minimum,-INFINITY);
-  if(!fb && (out.b<maximum || (out.b==maximum && out.c!=maximum)))out.b=std::nextafter(maximum,INFINITY);
+  const double minimum=observations.front(), maximum=observations.back();
+  const auto coefficients=[&](std::size_t i) {
+    const auto& p=profiles[i];
+    const double mode=public_modes[i];
+    double lower=fa?original_a:(p.a==modes[i]?mode:origin+scale*p.a);
+    double upper=fb?original_b:(p.b==modes[i]?mode:origin+scale*p.b);
+    // Rounding a free support endpoint inward must never discard data.
+    if(!fa && (lower>minimum || (lower==minimum && mode!=minimum)))
+      lower=std::nextafter(minimum,-INFINITY);
+    if(!fb && (upper<maximum || (upper==maximum && mode!=maximum)))
+      upper=std::nextafter(maximum,INFINITY);
+    return std::array<double,3>{lower,upper,mode};
+  };
+  const auto selected=coefficients(chosen);
+  out.a=selected[0]; out.b=selected[1]; out.c=selected[2];
   if(!(std::isfinite(out.a)&&std::isfinite(out.b)&&std::isfinite(out.c)&&
        out.a<out.b&&out.a<=out.c&&out.c<=out.b)) {
     out.status=TriangStatus::NumericalFailure;return out;
@@ -352,7 +452,7 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
   out.status=!represented?TriangStatus::NumericalFailure:
       (success?TriangStatus::Ok:TriangStatus::IterationFailure);
   if (out.status==TriangStatus::Ok && requested_tol<method_floor &&
-      ((!fa && ba!=bc) || (!fb && bb!=bc))) {
+      ((!fa && profiles[chosen].a!=modes[chosen]) || (!fb && profiles[chosen].b!=modes[chosen]))) {
     out.status=TriangStatus::IterationFailure;
     out.stop_detail.accuracy_stop=AccuracyStop::Tolerance;
     out.stop_detail.attainable_tol=method_floor;
@@ -360,25 +460,25 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
     record_accuracy(out,requested_tol,{out.a,out.b,out.c},
         {fa?0:std::max(width,std::abs(out.a)),fb?0:std::max(width,std::abs(out.b)),0});
   }
-  out.not_unique=second>=best-tie;
-  if(!fa&&!fb&&!fc&&out.status==TriangStatus::Ok) {
-    // Exact symmetry test with error-free sums: x_i + x_(n-1-i) = min + max.
-    std::vector<double> y(input.begin(),input.end());
-    std::sort(y.begin(),y.end());
-    auto two_sum=[](double u,double v,double& low) {
-      const double sum=u+v,z=sum-u;
-      low=(u-(sum-z))+(v-z);
-      return sum;
-    };
-    double slow=0;const double shigh=two_sum(y.front(),y.back(),slow);
-    bool symmetric=std::isfinite(shigh);
-    for(std::size_t i=0;symmetric&&i<y.size();++i) {
-      double low=0;
-      const double high=two_sum(y[i],y[y.size()-1-i],low);
-      symmetric=high==shigh&&low==slow;
+  if(out.status==TriangStatus::Ok) {
+    const auto center=triang_detail::sum_parts(minimum,maximum);
+    if(fa==fb&&!fc) {
+      bool symmetric=std::isfinite(center.first) && std::isfinite(center.second) &&
+          (!fa || triang_detail::sum_parts(original_a,original_b)==center);
+      for(std::size_t i=0;symmetric&&i<observations.size()/2+observations.size()%2;++i)
+        symmetric=triang_detail::sum_parts(observations[i],observations[observations.size()-1-i])==center;
+      out.reflection_tie=symmetric && triang_detail::sum_parts(out.c,out.c)!=center;
     }
-    const double range=y.back()-y.front();
-    if(symmetric&&std::abs(2*out.c-shigh)>1e-8*range) out.reflection_tie=true;
+    for(std::size_t i=0;i<profiles.size();++i) {
+      if(i==chosen || !std::isfinite(profiles[i].value)) continue;
+      if(out.reflection_tie && triang_detail::sum_parts(out.c,public_modes[i])==center) continue;
+      if(compare(chosen,i)>0) continue;
+      const auto rival=coefficients(i);
+      double logLik=0;
+      for(double z:input) logLik+=distributions::dtriang(z,rival[0],rival[1],rival[2],true);
+      out.unresolved_modes.push_back({rival[0],rival[1],rival[2],logLik});
+    }
+    out.not_unique=out.reflection_tie || !out.unresolved_modes.empty();
   }
   return out;
 }
@@ -389,7 +489,7 @@ inline FitOutcome outcome(const TriangResult& r) {
   if (r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)
     return FitOutcome::failure(OutcomeReason::Tolerance);
   switch (r.status) {
-    case TriangStatus::Ok: return FitOutcome::estimate(true,!r.reflection_tie);
+    case TriangStatus::Ok: return FitOutcome::estimate(r.unresolved_modes.empty(),!r.not_unique);
     case TriangStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TriangStatus::Incompatible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TriangStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

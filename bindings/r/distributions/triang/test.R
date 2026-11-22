@@ -25,7 +25,14 @@ for (mask in 0:7) {
     }
   }
 }
-expect_warning(tie <- mltriang(c(0, 1)), "not unique")
+expect_no_warning(tie <- mltriang(c(0, 1)))
+expect_false(attr(tie, "unique"))
+witnesses <- attr(tie, "maximizers")
+expect_equal(witnesses$a, c(0, -.5), tolerance = 1e-11)
+expect_equal(witnesses$b, c(1.5, 1), tolerance = 1e-11)
+expect_equal(witnesses$c, c(0, 1))
+expect_match(attr(tie, "outcome_message"), "reflected fit")
+expect_output(print(tie), "Maximum is not unique")
 expect_equal(unname(coef(tie)), c(0, 1.5, 0), tolerance = 1e-11)
 expect_error(mltriang(rep(1, 4)), "unbounded")
 expect_error(mltriang(x, a = .1), "incompatible")
@@ -58,8 +65,24 @@ expect_equal(as.numeric(logLik(mltriang(rep(.4, 3), a = 0, b = 1))),
   3 * log(2))
 corner_upper <- mltriang(1 - c(0, .01, .1, .5), b = 1)
 expect_equal(coef(corner_upper)[["c"]], 1, tolerance = 1e-10)
-expect_warning(known_tie <- mltriang(c(.2, .8), a = 0, b = 1), "not unique")
-expect_equal(coef(known_tie)[["c"]], .2, tolerance = 1e-10)
+expect_no_warning(near_tie <- mltriang(c(.2, .8), a = 0, b = 1))
+expect_true(attr(near_tie, "unique"))
+expect_equal(ll(c(0, 1, .2), c(.2, .8)), ll(c(0, 1, .8), c(.2, .8)), tolerance = 1e-10)
+expect_no_warning(exact_tie <- mltriang(c(.25, .75), a = 0, b = 1))
+expect_false(attr(exact_tie, "unique"))
+expect_equal(attr(exact_tie, "maximizers")$c, c(.25, .75))
+expect_identical(coef(near_tie)[["c"]], .8)
+expect_true(attr(near_tie, "certified"))
+expect_null(attr(near_tie, "maximizers"))
+
+test_that("unresolved held-endpoint comparisons expose both modes silently", {
+  y <- (1 + sqrt(5)) / 4
+  expect_no_warning(fit <- mltriang(c(.5, .5, y), a = 0, b = 1))
+  expect_false(attr(fit, "unique"))
+  expect_false(attr(fit, "certified"))
+  expect_equal(attr(fit, "maximizers")$c, c(.5, y))
+  expect_match(attr(fit, "outcome_message"), "could not be resolved")
+})
 
 test_that("constant triangular samples with exterior held mode", {
   for (v in c(.1,.4,1)) for (b in c(NA,3)) {

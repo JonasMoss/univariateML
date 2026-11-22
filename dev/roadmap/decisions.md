@@ -6,6 +6,10 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-22
+
+- **Non-unique maxima are reported by the outcome flag only (Claude, for Jonas to confirm)**. Fits with established non-uniqueness return `unique = FALSE` without a warning. The fit carries its maximizers and the shared print method reports non-uniqueness. When a maximizing family is too large to enumerate, the fit carries representative points and describes the set in `outcome_message`.
+
 ## 2026-11-20
 
 - **Exact integer searches take `iterlim` only** (Claude, for Jonas to

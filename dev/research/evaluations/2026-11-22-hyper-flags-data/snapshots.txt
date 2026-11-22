@@ -1,0 +1,122 @@
+hyper          139  (39 s)
+nhyper         147  (45 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/hyper-flags/univariateML-cpp/include/cppunivariate/distributions/triang/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/hyper-flags/univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp:7,
+                 from /home/jonas/Files/programming/univariateML.wt/hyper-flags/bindings/common/distributions/triang/fit.hpp:3,
+                 from build/snapshots/hyper-flags/native/build/triang.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/hyper-flags/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:640:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  640 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/hyper-flags/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:638:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  638 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/hyper-flags/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:639:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  639 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+triang         196  (50 s)
+hyper          139  (8 s)
+nhyper         147  (14 s)
+In file included from /home/jonas/Files/programming/univariateML.wt/hyper-flags/univariateML-cpp/include/cppunivariate/distributions/triang/dpqr.hpp:2,
+                 from /home/jonas/Files/programming/univariateML.wt/hyper-flags/univariateML-cpp/include/cppunivariate/distributions/triang/mle.hpp:7,
+                 from /home/jonas/Files/programming/univariateML.wt/hyper-flags/bindings/common/distributions/triang/fit.hpp:3,
+                 from build/snapshots/hyper-flags/double/build/triang.cpp:1:
+/home/jonas/Files/programming/univariateML.wt/hyper-flags/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:640:15: warning: inline function ‘double cppunivariate::special::lgamma1p(double)’ used but never defined
+  640 | inline double lgamma1p(double x);
+      |               ^~~~~~~~
+/home/jonas/Files/programming/univariateML.wt/hyper-flags/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:638:15: warning: inline function ‘double cppunivariate::special::gamma_p(double, double)’ used but never defined
+  638 | inline double gamma_p(double a, double x);
+      |               ^~~~~~~
+/home/jonas/Files/programming/univariateML.wt/hyper-flags/univariateML-cpp/include/cppunivariate/distributions/triang/../../special/tails.hpp:639:15: warning: inline function ‘double cppunivariate::special::gamma_q(double, double)’ used but never defined
+  639 | inline double gamma_q(double a, double x);
+      |               ^~~~~~~
+triang         196  (19 s)
+native, raw binding output
+differs ('hyper', '003454', '{}') ['warnings', 'candidates']
+differs ('hyper', '003455', '{}') ['warnings', 'candidates']
+differs ('hyper', '003456', '{}') ['warnings', 'candidates']
+differs ('hyper', '003457', '{}') ['warnings', 'candidates']
+differs ('hyper', '003458', '{}') ['warnings', 'candidates']
+differs ('hyper', '003459', '{}') ['warnings', 'candidates']
+differs ('hyper', '003460', '{}') ['warnings', 'candidates']
+differs ('hyper', '003461', '{}') ['warnings', 'candidates']
+differs ('hyper', '003462', '{}') ['warnings', 'candidates']
+differs ('hyper', '003463', '{}') ['warnings', 'candidates']
+differs ('hyper', '003464', '{}') ['warnings', 'candidates']
+differs ('hyper', '003465', '{}') ['warnings', 'candidates']
+differs ('hyper', '003466', '{}') ['warnings', 'candidates']
+differs ('hyper', '003467', '{}') ['warnings', 'candidates']
+differs ('hyper', '003482', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003483', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003484', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003485', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003486', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003487', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003488', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003489', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003490', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003491', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003492', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003494', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('hyper', '003525', '{"k": 10.0, "m": 20.0}') ['warnings', 'candidates']
+differs ('hyper', '010971', '{}') ['warnings', 'candidates']
+differs ('hyper', '010973', '{"N": 50.0}') ['warnings', 'candidates']
+differs ('nhyper', '005151', '{}') ['warnings', 'candidates']
+differs ('nhyper', '005152', '{}') ['warnings', 'candidates']
+differs ('nhyper', '005154', '{}') ['warnings', 'candidates']
+differs ('triang', '008159', '{}') ['warnings', 'candidates']
+differs ('triang', '008178', '{}') ['warnings']
+differs ('triang', '008215', '{"b": 1.0045256123727768}') ['warnings']
+differs ('triang', '008224', '{"a": 0.036270735335580465, "b": 1.0045256123727768}') ['warnings']
+differs ('triang', '008227', '{"a": 0.036270735335580465, "b": 1.0045256123727768}') ['warnings']
+differs ('triang', 'two', '{}') ['warnings', 'candidates']
+differs ('triang', 'subnormal', '{}') ['warnings', 'candidates']
+native cases 482 differing 39 only-new 0 only-old 0
+Verified non-unique payload counts: {'hyper': 29, 'nhyper': 3, 'triang': 3}
+Cases with only one representable listed point: []
+native, ignoring estimate warning and maximizer payloads
+native-core cases 482 differing 0 only-new 0 only-old 0
+double, raw binding output
+differs ('hyper', '003454', '{}') ['candidates', 'warnings']
+differs ('hyper', '003455', '{}') ['candidates', 'warnings']
+differs ('hyper', '003456', '{}') ['candidates', 'warnings']
+differs ('hyper', '003457', '{}') ['candidates', 'warnings']
+differs ('hyper', '003458', '{}') ['candidates', 'warnings']
+differs ('hyper', '003459', '{}') ['candidates', 'warnings']
+differs ('hyper', '003460', '{}') ['candidates', 'warnings']
+differs ('hyper', '003461', '{}') ['candidates', 'warnings']
+differs ('hyper', '003462', '{}') ['candidates', 'warnings']
+differs ('hyper', '003463', '{}') ['candidates', 'warnings']
+differs ('hyper', '003464', '{}') ['candidates', 'warnings']
+differs ('hyper', '003465', '{}') ['candidates', 'warnings']
+differs ('hyper', '003466', '{}') ['candidates', 'warnings']
+differs ('hyper', '003467', '{}') ['candidates', 'warnings']
+differs ('hyper', '003482', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003483', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003484', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003485', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003486', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003487', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003488', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003489', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003490', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003491', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003492', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003494', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003525', '{"k": 10.0, "m": 20.0}') ['candidates', 'warnings']
+differs ('hyper', '010971', '{}') ['candidates', 'warnings']
+differs ('hyper', '010973', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('nhyper', '005151', '{}') ['candidates', 'warnings']
+differs ('nhyper', '005152', '{}') ['candidates', 'warnings']
+differs ('nhyper', '005154', '{}') ['candidates', 'warnings']
+differs ('triang', '008159', '{}') ['candidates', 'warnings']
+differs ('triang', '008178', '{}') ['warnings']
+differs ('triang', '008215', '{"b": 1.0045256123727768}') ['warnings']
+differs ('triang', '008224', '{"a": 0.036270735335580465, "b": 1.0045256123727768}') ['warnings']
+differs ('triang', '008227', '{"a": 0.036270735335580465, "b": 1.0045256123727768}') ['warnings']
+differs ('triang', 'two', '{}') ['candidates', 'warnings']
+differs ('triang', 'subnormal', '{}') ['candidates', 'warnings']
+double cases 482 differing 39 only-new 0 only-old 0
+Verified non-unique payload counts: {'hyper': 29, 'nhyper': 3, 'triang': 3}
+Cases with only one representable listed point: []
+double, ignoring estimate warning and maximizer payloads
+double-core cases 482 differing 0 only-new 0 only-old 0

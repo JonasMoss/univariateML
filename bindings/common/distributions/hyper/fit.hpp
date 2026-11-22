@@ -4,12 +4,12 @@
 #include <cmath>
 #include <iomanip>
 #include <limits>
+#include <numeric>
 #include <sstream>
 #include <string>
 namespace umvl_binding {
 inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = {}, Held k_arg = {}) {
-  std::vector<std::string> warnings;
-  const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...)); };
   const Held m = m_arg;
   const Held N = N_arg;
   const Held k = k_arg;
@@ -87,40 +87,83 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
                  "beyond that, so the "
                  "estimate of `N` cannot be computed exactly."));
     case cppunivariate::HyperStatus::Tie:
-      warnings.push_back(binding_message("The likelihood is tied (to rounding) between `%s` = %s and %s; "
-                    "returning the smaller.", estimated,
-                    whole(!k.supplied ? res.k : (!N.supplied ? res.N : res.m)), whole(res.tie)));
-      break;
     case cppunivariate::HyperStatus::Unidentified:
-      if (std::isinf(res.tie)) {
-        warnings.push_back(binding_message("Every `N` from %s upwards attains the maximum likelihood "
-                      "(`k = 0` or `m = 0`); returning `N` = %s.",
-                      whole(res.N), whole(res.N)));
-      } else if (!k.supplied) {
-        warnings.push_back(binding_message("Every `k` from %s to %s attains the maximum likelihood; returning the smaller.", whole(res.k), whole(res.tie)));
-      } else {
-        warnings.push_back(binding_message("With `k = 0` every `m` from %s to %s attains the maximum "
-                      "likelihood; returning `m` = %s.", whole(res.m),
-                      whole(res.tie), whole(res.m)));
-      }
-      break;
     case cppunivariate::HyperStatus::Ok:
-      if (res.non_unique_reason == 1)
-        warnings.push_back(binding_message("The likelihood is symmetric in `m` and `k`: (`m`, `k`) = (%s, %s) and (%s, %s) attain the "
-                      "same maximum; returning the first.", whole(res.m), whole(res.k), whole(res.k), whole(res.m)));
-      else if (res.non_unique_reason == 2)
-        warnings.push_back(binding_message("The observations are constant, so other count vectors give the same (point-mass) "
-                      "likelihood; the maximum is not unique."));
-      else if (res.non_unique_reason == 3)
-        warnings.push_back(binding_message("With sample size one only `m / N` enters the likelihood, so other `m` and `N` with the "
-                      "same ratio attain the maximum; the maximum is not unique."));
       break;
   }
   std::vector<std::string> fixed;
   if (m.supplied) fixed.push_back("m");
   if (N.supplied) fixed.push_back("N");
   if (k.supplied) fixed.push_back("k");
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"m",res.m},{"N",res.N},{"k",res.k}};  out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
-
+  FitResult out;
+  out.estimates = {{"m",res.m},{"N",res.N},{"k",res.k}};
+  out.logLik = res.logLik;
+  out.iterations = res.iterations;
+  out.has_iterations = true;
+  out.fixed = fixed;
+  out.has_fixed = true;
+  if (!o.unique) {
+    const auto add = [&](double m_value, double N_value, double k_value) {
+      out.candidates.push_back({{{"m",m_value},{"N",N_value},{"k",k_value}},
+                                out.logLik,out.logLik,"hyper"});
+    };
+    add(res.m, res.N, res.k);
+    if (res.status == cppunivariate::HyperStatus::Tie ||
+        res.status == cppunivariate::HyperStatus::Unidentified) {
+      const bool adjacent = res.status == cppunivariate::HyperStatus::Tie;
+      const double chosen = !k.supplied ? res.k : (!N.supplied ? res.N : res.m);
+      const double other = std::isinf(res.tie) ? chosen+1 : res.tie;
+      if (other != chosen && cppunivariate::hyper_detail::is_count(other))
+        add(estimated == "m" ? other : res.m, estimated == "N" ? other : res.N,
+            estimated == "k" ? other : res.k);
+      if (adjacent)
+        out.error = binding_message("The likelihood is tied (to rounding) between `%s` = %s and %s; returning the smaller.",
+                                    estimated, whole(chosen), whole(other));
+      else if (std::isinf(res.tie))
+        out.error = binding_message("Every admissible `N` from %s upwards attains the maximum likelihood.", whole(chosen));
+      else
+        out.error = binding_message("Every `%s` from %s to %s attains the maximum likelihood.",
+                                    estimated, whole(chosen), whole(other));
+    } else if (res.non_unique_reason == 1) {
+      add(res.k, res.N, res.m);
+      out.error = binding_message("The likelihood is symmetric in `m` and `k`: (`m`, `k`) = (%s, %s) and (%s, %s) attain the same maximum; returning the first.",
+                                  whole(res.m), whole(res.k), whole(res.k), whole(res.m));
+      if (res.logLik == 0) {
+        out.error += " For constant observations c, (m, N, k) = (N, N, c) and (c, N, N) attain it at each admissible N >= c, subject to held values.";
+        if (x[0] == 0) out.error += " Any admissible triple with m = 0 or k = 0 attains it.";
+      }
+    } else if (res.non_unique_reason == 2) {
+      const double value = x[0];
+      if (!m.supplied && !k.supplied) {
+        const double population = N.supplied ? res.N : res.N+1;
+        if (cppunivariate::hyper_detail::is_count(population)) {
+          add(population, population, value);
+          add(value, population, population);
+        }
+      } else if (cppunivariate::hyper_detail::is_count(res.N+1)) {
+        add(m.supplied ? res.m : (value == 0 ? 0 : res.N+1), res.N+1,
+            k.supplied ? res.k : (value == 0 ? 0 : res.N+1));
+      }
+      out.error = "The observations are constant, so other count vectors give the same (point-mass) likelihood; the maximum is not unique.";
+      if (!m.supplied && !k.supplied)
+        out.error += " For observations c, the maximizing triples (m, N, k) are (N, N, c) and (c, N, N) at every admissible N, together with every admissible triple with m = 0 or k = 0 when c = 0.";
+      else if ((m.supplied ? res.m : res.k) == 0)
+        out.error += " Every admissible free count and population size attains the maximum.";
+      else
+        out.error += " The free design count is zero when the observation is zero and equals N otherwise, for every admissible N.";
+    } else if (res.non_unique_reason == 3) {
+      const double successes = k.supplied ? res.m : res.k;
+      // Reduce the ratio first, so a second representation can fit even when
+      // doubling the returned population would exceed the count domain.
+      const auto divisor = std::gcd(static_cast<long long>(successes), static_cast<long long>(res.N));
+      const double multiplier = res.N == res.N/divisor ? 2 : 1;
+      const double population = multiplier*(res.N/divisor);
+      const double count = multiplier*(successes/divisor);
+      if (cppunivariate::hyper_detail::is_count(population))
+        add(k.supplied ? count : res.m, population, k.supplied ? res.k : count);
+      out.error = "With sample size one only the success ratio enters the likelihood. Every admissible count pair with that ratio attains the maximum.";
+    }
+  }
+  return done(std::move(out));
 }
 }
