@@ -168,7 +168,10 @@ TEST_CASE("Pareto IV transports parent finite and face witnesses") {
  const auto r=cppunivariate::pareto4_mle(mltest::as_span(x),1,1e-10,1000,NAN,NAN,2);
  const auto p=cppunivariate::burr_mle_holds(mltest::as_span(y),NAN,2,NAN,1e-10,1000);
  CHECK(r.status==p.status);
- CHECK(r.stop_detail.limit_coef==p.stop_detail.limit_coef);
+ auto expected=p.stop_detail.limit_coef;
+ expected.push_back(1);
+ CHECK(r.stop_detail.limit_coef==expected);
+ CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::ShiftedWeibull);
  CHECK(r.stop_detail.limit_loglik==doctest::Approx(p.stop_detail.limit_loglik));
 }
 
@@ -346,4 +349,24 @@ TEST_CASE("pareto4 near-constant and tied samples reach the Pareto face") {
  REQUIRE(r.status==cppunivariate::BurrStatus::ParetoBoundary);
  CHECK(rel(r.stop_detail.limit_coef.at(0),0.7996548746030153)<1e-10);
  CHECK(rel(r.logLik,-16.962337602169782)<1e-10);
+}
+
+TEST_CASE("pareto4: held-endpoint face carries both translation and tie factor") {
+  const std::vector<double> x{3,3,4,5};
+  const auto fit=cppunivariate::pareto4_mle(mltest::as_span(x),2,1e-10,1000,1);
+  REQUIRE(fit.status==cppunivariate::BurrStatus::AllGeOne);
+  REQUIRE(fit.stop_detail.limit_model==cppunivariate::StopModel::ShiftedPareto);
+  const auto& p=fit.stop_detail.limit_coef;
+  REQUIRE(p.size()==4);
+  CHECK(p[2]==2);
+  CHECK(p[3]==doctest::Approx(-std::log(2.)));
+  double ll=0;
+  for(double v:x) {
+    const double y=v-p[2];
+    ll+=cppunivariate::distributions::dpareto(y,p[0],p[1],true)+(y==p[1]?p[3]:0.);
+  }
+  CHECK(ll==doctest::Approx(fit.stop_detail.limit_loglik).epsilon(1e-12));
+  REQUIRE(fit.stop_detail.candidates.size()==1);
+  CHECK(fit.stop_detail.candidates[0].model==fit.stop_detail.limit_model);
+  CHECK(fit.stop_detail.candidates[0].coef==p);
 }

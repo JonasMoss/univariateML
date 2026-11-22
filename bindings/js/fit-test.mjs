@@ -81,13 +81,14 @@ test('GB2 held power transfers non-unit conditional certificates and gamma witne
  assert.equal(r.kind,'limit');assert.equal(r.model,'trgamma');
  assert.equal(r.estimates.shape1,2);assert.equal(r.estimates.shape2,2);
  const shifted=m.fitfpareto(new Float64Array(8).fill(4),{min:2,shape2:2,shape3:2},{});
- assert.equal(shifted.kind,'limit');assert.equal(shifted.model,'trgamma');
- assert.equal(shifted.estimates.min,undefined);
+ assert.equal(shifted.kind,'limit');assert.equal(shifted.model,'unavailable:shifted-trgamma');
+ assert.equal(shifted.estimates.min,2);
 });
 
 test('Feller Pareto held-endpoint power face keeps its model identity',()=>{
  const r=m.fitfpareto(new Float64Array([3,3,2.5,2.25]),{min:2,shape1:1,scale:1},{});
- assert.equal(r.kind,'limit');assert.equal(r.model,'power');
+ assert.equal(r.kind,'limit');assert.equal(r.model,'unavailable:shifted-power');
+ assert.equal(r.estimates.min,2);
  assert.equal(r.estimates.alpha,1);assert.ok(r.estimates.beta>0);
 });
 

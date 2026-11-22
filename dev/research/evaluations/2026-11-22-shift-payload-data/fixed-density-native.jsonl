@@ -1,0 +1,4 @@
+{"family": "fpareto", "held": {"min": 2, "shape2": 2, "shape3": 2}, "model": "unavailable:shifted-trgamma", "reported": -4.909645111040875, "evaluated": -4.909645111040876, "matches": true}
+{"family": "pareto2", "held": {"min": 2}, "model": "unavailable:shifted-exp", "reported": -27.047480922384253, "evaluated": -27.047480922384253, "matches": true}
+{"family": "pareto4", "held": {"min": 2, "scale": 1}, "model": "unavailable:shifted-pareto", "reported": -3.9656687089990204, "evaluated": -3.9656687089990204, "matches": true}
+{"family": "fpareto", "held": {"min": 2, "shape1": 1, "scale": 1}, "model": "unavailable:shifted-power", "reported": -0.6900728473062736, "evaluated": -0.6900728473062738, "matches": true}

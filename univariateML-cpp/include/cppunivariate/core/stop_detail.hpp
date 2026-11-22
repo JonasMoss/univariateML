@@ -38,7 +38,8 @@ enum class StopModel { None, Weibull, Pareto, InvWeibull, Power, Exp, InvExp,
   HalfGed,
   ReflectedHalfGed,
   Trgamma, InvTrgamma, ShiftedTrgamma, ShiftedInvTrgamma
-  , Gamma, InvGamma
+  , Gamma, InvGamma, ShiftedExp, ShiftedWeibull, ShiftedInvWeibull,
+  ShiftedPareto, ShiftedPower, ShiftedLnorm
 };
 struct FitCandidate {
   std::vector<double> coef;
@@ -60,6 +61,8 @@ struct StopDetail {
   AccuracyStop accuracy_stop = AccuracyStop::None;
   double attainable_tol = NAN;
   double conditioning_bound = NAN;
+  // Pointwise factor of the selected Pareto/power path at its endpoint.
+  double endpoint_log_factor = 0;
 };
 // Public-coordinate spacing, normalized by the accuracy contract's scale.
 // Held coordinates have scale zero and do not constrain a request.
@@ -134,6 +137,13 @@ inline bool valid_stop_coefficients(StopModel model,const std::vector<double>& v
     case StopModel::TruncatedExp:return v.size()==3 && v[0]<v[1];
     case StopModel::Trgamma:
     case StopModel::InvTrgamma:return v.size()==3 && v[0]>0 && v[1]>0 && v[2]>0;
+    case StopModel::ShiftedExp:return v.size()==2 && v[0]>0;
+    case StopModel::ShiftedWeibull:
+    case StopModel::ShiftedInvWeibull:return v.size()==3 && v[0]>0 && v[1]>0;
+    case StopModel::ShiftedPareto:
+    case StopModel::ShiftedPower:return
+      (v.size()==3 || (v.size()==4 && v[3]<0)) && v[0]>0 && v[1]>0;
+    case StopModel::ShiftedLnorm:return v.size()==3 && v[1]>0;
     case StopModel::ShiftedTrgamma:
     case StopModel::ShiftedInvTrgamma:return v.size()==4 && v[0]>0 && v[1]>0 && v[2]>0;
     case StopModel::UnitGamma:return v.size()==3 && v[0]>0 && v[1]>0 && v[2]>0;
@@ -141,6 +151,39 @@ inline bool valid_stop_coefficients(StopModel model,const std::vector<double>& v
     default:return true;
   }
   return false;
+}
+// Transport a density evaluated on excesses y = x - offset. Translation
+// leaves its likelihood and bounds unchanged. Family points already use
+// their own public coordinates.
+inline void translate_stop_faces(StopDetail& detail, double offset) {
+  if(offset==0 || !std::isfinite(offset))return;
+  const auto translate=[&](StopModel& model, std::vector<double>& coef) {
+    if(!valid_stop_coefficients(model,coef))return;
+    switch(model) {
+      case StopModel::Exp:model=StopModel::ShiftedExp;break;
+      case StopModel::Weibull:model=StopModel::ShiftedWeibull;break;
+      case StopModel::InvWeibull:model=StopModel::ShiftedInvWeibull;break;
+      case StopModel::Pareto:model=StopModel::ShiftedPareto;break;
+      case StopModel::Power:model=StopModel::ShiftedPower;break;
+      case StopModel::Lnorm:model=StopModel::ShiftedLnorm;break;
+      case StopModel::Trgamma:model=StopModel::ShiftedTrgamma;break;
+      case StopModel::InvTrgamma:model=StopModel::ShiftedInvTrgamma;break;
+      default:return;
+    }
+    coef.push_back(offset);
+  };
+  translate(detail.limit_model,detail.limit_coef);
+  for(auto& candidate:detail.candidates)translate(candidate.model,candidate.coef);
+  const StopModel model=detail.limit_model;
+  if((model!=StopModel::ShiftedPareto && model!=StopModel::ShiftedPower) ||
+      detail.limit_coef.size()!=3 || !(detail.endpoint_log_factor<0) ||
+      !std::isfinite(detail.endpoint_log_factor))return;
+  // The boundary path can have a lower density exactly at the held
+  // endpoint. Its pointwise log factor belongs to that path's payload.
+  for(auto& candidate:detail.candidates)
+    if(candidate.model==model && candidate.coef==detail.limit_coef)
+      candidate.coef.push_back(detail.endpoint_log_factor);
+  detail.limit_coef.push_back(detail.endpoint_log_factor);
 }
 inline StopDetail comparison_detail(FitCandidate first, FitCandidate second) {
   StopDetail d;

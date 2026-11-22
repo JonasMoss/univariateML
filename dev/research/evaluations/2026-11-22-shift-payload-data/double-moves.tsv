@@ -1,0 +1,13 @@
+stored -> master
+1	genbeta	new	class
+1	gev	new	class
+1	gompertz	new	class
+3	gpd	new	class
+3	nhyper	changed	candidates, warnings
+23	nhyper	new	class
+6	sged	changed	certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique, numerical -> ok
+9	sged	changed	estimates, iterations, logLik
+1	sged	new	class
+1	sn	new	class
+1	st	new	class
+master -> worktree

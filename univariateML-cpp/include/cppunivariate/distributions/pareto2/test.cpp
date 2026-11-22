@@ -125,3 +125,34 @@ TEST_CASE("pareto2: a margin-decided exponential stop is not certified") {
   CHECK(o.kind==cppunivariate::OutcomeKind::Limit);
   CHECK_FALSE(o.certified);
 }
+
+#include "cppunivariate/distributions/exp/dpqr.hpp"
+TEST_CASE("pareto2: exponential limit payload evaluates original observations") {
+  const std::vector<double> x{3,4,5,6,7,8,9,10,11,12};
+  const auto fit=cppunivariate::pareto2_mle(mltest::as_span(x),2,1e-10,1000);
+  REQUIRE(fit.status==cppunivariate::Pareto2Status::ExponentialLimit);
+  REQUIRE(fit.stop_detail.limit_model==cppunivariate::StopModel::ShiftedExp);
+  const auto& p=fit.stop_detail.limit_coef;
+  REQUIRE(p.size()==2);
+  CHECK(p[1]==2);
+  double ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::dexp(v-p[1],p[0],true);
+  CHECK(ll==doctest::Approx(fit.stop_detail.limit_loglik).epsilon(1e-12));
+}
+
+TEST_CASE("pareto2: budget face candidates carry a negative held threshold") {
+  const std::vector<double> x{-2,-2,37,56};
+  const auto fit=cppunivariate::pareto2_mle(mltest::as_span(x),-3,1e-8,1);
+  REQUIRE(fit.stop_detail.budget_exhausted);
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto face=std::find_if(candidates.begin(),candidates.end(),[](const cppunivariate::FitCandidate& c) {
+    return c.model==cppunivariate::StopModel::ShiftedExp;
+  });
+  REQUIRE(face!=candidates.end());
+  REQUIRE(face->coef.size()==2);
+  CHECK(face->coef[1]==-3);
+  double ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::dexp(v-face->coef[1],face->coef[0],true);
+  CHECK(ll==doctest::Approx(face->loglik_lower).epsilon(1e-12));
+  CHECK(ll==doctest::Approx(face->loglik_upper).epsilon(1e-12));
+}

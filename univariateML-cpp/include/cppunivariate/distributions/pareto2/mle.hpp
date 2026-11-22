@@ -94,6 +94,9 @@ inline Pareto2Result pareto2_mle(span x, double min, double tol, int maxit, doub
   const auto r=lomax_mle(span{y.data(),y.size()},tol,maxit,
     std::isnan(scale)?scale:1/scale,shape);
   auto detail=r.stop_detail;
+  if(r.status==LomaxStatus::ExponentialLimit && !detail.limit_coef.empty())
+    detail.limit_model=StopModel::Exp;
+  translate_stop_faces(detail,min);
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==2)
     c.coef={c.coef[1],std::isnan(scale)?1/c.coef[0]:scale,min};
   const double fitted_scale=std::isnan(scale)?1/r.lambda:scale;

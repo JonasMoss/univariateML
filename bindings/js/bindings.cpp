@@ -32,6 +32,7 @@ emscripten::val fit_output(const umvl_binding::FitResult& input_result) {
     out.set("warnings",warnings);
     if(!result.error_kind.empty()) {
       out.set("attainable_tol",result.attainable_tol);out.set("kind",result.error_kind);out.set("model",result.model);
+      // Preserve model-specific coordinates such as the offset of a shifted face.
       auto estimates=emscripten::val::object(),candidates=emscripten::val::array();
       for(const auto& item:result.limit_estimates)estimates.set(item.first,item.second);
       for(const auto& candidate:result.candidates) {

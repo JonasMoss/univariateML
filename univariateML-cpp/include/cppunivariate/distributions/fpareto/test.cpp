@@ -1,6 +1,7 @@
 #include "test_support.hpp"
 #include "cppunivariate/distributions/fpareto/dpqr.hpp"
 #include "cppunivariate/distributions/fpareto/mle.hpp"
+#include "cppunivariate/distributions/trgamma/dpqr.hpp"
 TEST_CASE("fpareto: exact delegated likelihood") {
  const std::vector<double> y{.01,.03,.1,.3,1,4,20,100,10000};
  std::vector<double> x(y);
@@ -93,18 +94,24 @@ TEST_CASE("Feller Pareto transports held-power certificates and excess face coor
  CHECK(static_cast<int>(a.status)==static_cast<int>(b.status));CHECK(a.logLik==b.logLik);
  REQUIRE(a.stop_detail.candidates.size()==b.stop_detail.candidates.size());
  for(std::size_t i=0;i<a.stop_detail.candidates.size();++i) {
-  auto expected=b.stop_detail.candidates[i].coef;
-  if(b.stop_detail.candidates[i].model==cppunivariate::StopModel::None)expected.push_back(2);
+  const auto& candidate=b.stop_detail.candidates[i];
+  REQUIRE((candidate.model==cppunivariate::StopModel::None ||
+           candidate.model==cppunivariate::StopModel::Trgamma));
+  auto expected=candidate.coef;
+  expected.push_back(2);
+  const auto model=candidate.model==cppunivariate::StopModel::Trgamma?
+    cppunivariate::StopModel::ShiftedTrgamma:cppunivariate::StopModel::None;
   CHECK(a.stop_detail.candidates[i].coef==expected);
-  CHECK(a.stop_detail.candidates[i].model==b.stop_detail.candidates[i].model);
+  CHECK(a.stop_detail.candidates[i].model==model);
  }
  const std::vector<double>constant(5,4);
  const auto face=cppunivariate::fpareto_mle(mltest::as_span(constant),2,1e-7,300,NAN,2,2,NAN);
  CHECK(face.status==cppunivariate::FparetoStatus::TrGammaBoundary);
- CHECK(face.stop_detail.limit_model==cppunivariate::StopModel::Trgamma);
+ CHECK(face.stop_detail.limit_model==cppunivariate::StopModel::ShiftedTrgamma);
  REQUIRE_FALSE(face.stop_detail.candidates.empty());
- CHECK(face.stop_detail.candidates[0].model==cppunivariate::StopModel::Trgamma);
- CHECK(face.stop_detail.candidates[0].coef.size()==3);
+ CHECK(face.stop_detail.candidates[0].model==cppunivariate::StopModel::ShiftedTrgamma);
+ REQUIRE(face.stop_detail.candidates[0].coef.size()==4);
+ CHECK(face.stop_detail.candidates[0].coef[3]==2);
 }
 
 TEST_CASE("Feller Pareto held-power subtraction cannot invent a gamma face") {
@@ -113,14 +120,14 @@ TEST_CASE("Feller Pareto held-power subtraction cannot invent a gamma face") {
  CHECK(r.status==cppunivariate::FparetoStatus::NumericalFailure);
 }
 
-TEST_CASE("Feller Pareto generic budget faces also stay on the excess scale") {
+TEST_CASE("Feller Pareto generic budget faces identify their excess scale") {
  const auto g=mltest::load_distribution_golden("trgamma");
  auto x=g.data;for(double& v:x)v+=2;
  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-8,1);
  REQUIRE(r.status==cppunivariate::FparetoStatus::CertificateBudget);
  bool found=false;
- for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::Trgamma) {
-  found=true;CHECK(c.coef.size()==3);
+ for(const auto& c:r.stop_detail.candidates)if(c.model==cppunivariate::StopModel::ShiftedTrgamma) {
+  found=true;REQUIRE(c.coef.size()==4);CHECK(c.coef[3]==2);
  }
  CHECK(found);
 }
@@ -144,11 +151,11 @@ TEST_CASE("Feller Pareto subunit held beta shape selects the excess endpoint fac
  const std::vector<double>x{2.1,2.2,2.4,2.8};
  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-7,1,.4,NAN,NAN,1);
  REQUIRE(r.status==cppunivariate::FparetoStatus::PowerBoundary);
- REQUIRE(r.stop_detail.limit_coef.size()==2);
+ REQUIRE(r.stop_detail.limit_coef.size()==3);
  CHECK(r.stop_detail.limit_coef[0]==1);
- CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::Power);
+ CHECK(r.stop_detail.limit_model==cppunivariate::StopModel::ShiftedPower);
  REQUIRE(r.stop_detail.candidates.size()==1);
- CHECK(r.stop_detail.candidates[0].coef.size()==2);
+ CHECK(r.stop_detail.candidates[0].coef.size()==3);
 }
 
 TEST_CASE("Feller Pareto transports global held-scale mixed-power certificates") {
@@ -478,4 +485,18 @@ TEST_CASE("fpareto: archive 001625 and 001628 retain a constrained witness") {
   const auto& witness=r.stop_detail.candidates.front();
   CHECK(witness.coef.size()==5);
   CHECK(witness.loglik_lower>127.81);
+}
+
+TEST_CASE("fpareto: transformed gamma limit payload evaluates original observations") {
+  const std::vector<double> x(8,4.);
+  const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-10,1000,NAN,2,2);
+  const auto& detail=fit.stop_detail;
+  REQUIRE(detail.limit_model==cppunivariate::StopModel::ShiftedTrgamma);
+  const auto& p=detail.limit_coef;
+  REQUIRE(p.size()==4);
+  CHECK(p[3]==2);
+  double ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::dtrgamma(v-p[3],p[0],p[1],p[2],true);
+  CHECK(ll==doctest::Approx(detail.limit_loglik).epsilon(1e-12));
+  CHECK(ll==doctest::Approx(fit.logLik).epsilon(1e-12));
 }

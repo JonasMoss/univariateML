@@ -93,7 +93,7 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   };
   if(r.status==Gb2Status::LognormalBoundary) {
     const auto face=lognormal_mle({y.data(),y.size()});
-    if(face.status==LognormalStatus::Ok)attach_limit(limit_detail(min==0?std::vector<double>{face.meanlog,face.sdlog}:std::vector<double>{face.meanlog,face.sdlog,min},face.logLik,min==0?StopModel::Lnorm:StopModel::None));
+    if(face.status==LognormalStatus::Ok)attach_limit(limit_detail({face.meanlog,face.sdlog},face.logLik,StopModel::Lnorm));
     if(face.status==LognormalStatus::Ok) {
       // Feasible beta-log-odds approaches to this normal face. Their first
       // two cumulants tend to the face moments. A strictly higher evaluated
@@ -150,6 +150,16 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
     if(coefficients.empty())r.status=Gb2Status::NumericalFailure;
     else {attach_limit(limit_detail(coefficients,best));r.logLik=best;}
   }
+  if(detail.limit_model==StopModel::None && !detail.limit_coef.empty()) {
+    switch(r.status) {
+      case Gb2Status::WeibullBoundary:detail.limit_model=StopModel::Weibull;break;
+      case Gb2Status::InvWeibullBoundary:detail.limit_model=StopModel::InvWeibull;break;
+      case Gb2Status::ParetoBoundary:detail.limit_model=StopModel::Pareto;break;
+      case Gb2Status::PowerBoundary:detail.limit_model=StopModel::Power;break;
+      default:break;
+    }
+  }
+  translate_stop_faces(detail,min);
   for(auto& c:detail.candidates)if(c.model==StopModel::None && c.coef.size()==4)c.coef.push_back(min);
   return {r.shape1,r.shape2,r.shape3,r.scale,min,r.logLik,r.iterations,face_refuted?FparetoStatus::FaceRefuted:static_cast<FparetoStatus>(r.status),detail,r.certified,r.profile_evaluations};
 }

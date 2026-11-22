@@ -7,7 +7,9 @@ C++ library (a family of ours or a modifier law), and every candidate of a
 tie stop, this recomputes sum_i d<id>(x_i; theta, log = TRUE) with the
 family's dpqr.hpp at the returned coefficients, on the same input (rebuilt
 with fit-snapshot.py's own cases()), compiled in the snapshot's precision
-mode with the shipped flags. Terms are summed exactly (math.fsum).
+mode with the shipped flags. A shifted face uses the base density at x
+minus the offset in that payload. Pointwise endpoint log factors apply at
+the endpoint in those same coordinates. Terms are summed with math.fsum.
 
 Comparison, with S the summed density, R the reported value and
 A = sum_i |log f(x_i)|:
@@ -193,6 +195,29 @@ def coefficients(law, table, values, held, data, own):
     missing = [n for n in names if n not in values]
     return ([values[n] for n in names] if not missing else None), missing
 
+SHIFTED_LAWS = {
+    'unavailable:shifted-' + label: (law, 'min')
+    for label, law in [('exp', 'exp'), ('weibull', 'weibull'), ('invweibull', 'invweibull'),
+                       ('pareto', 'pareto'), ('power', 'power'), ('lognormal', 'lnorm'),
+                       ('trgamma', 'trgamma'), ('invtrgamma', 'invtrgamma')]
+}
+SHIFTED_LAWS.update({
+    'unavailable:translated-exponential': ('exp', 'mu'),
+    'unavailable:translated-negative-binomial': ('nbinom', 'shift'),
+})
+
+
+def payload_data(model, values, data):
+    """Base law and observations in its coordinates, with a pointwise endpoint adjustment."""
+    if model not in SHIFTED_LAWS:
+        return model, data, None, 0.
+    law, coord = SHIFTED_LAWS[model]
+    offset = values.get(coord, math.nan)
+    endpoint = values.get({'pareto': 'b', 'power': 'alpha'}.get(law))
+    factor = values.get('endpoint_log_factor', 0.)
+    return law, [v-offset for v in data], endpoint, factor
+
+
 def items(r, family_law, table):
     """What to evaluate for one record: (label, law, values, reported, bounds, own)."""
     res = r['result']; out = []
@@ -201,12 +226,12 @@ def items(r, family_law, table):
         out.append(('estimate', family_law, num(res['estimates']), number(res['logLik']), None, True))
     elif res['kind'] == 'limit' and res['limit_loglik'] != 'nan' and res['limit_estimates']:
         model = res['model']
-        out.append(('limit', model if model in table else None, num(res['limit_estimates']),
+        out.append(('limit', model, num(res['limit_estimates']),
                     number(res['limit_loglik']), None, False))
     if res['kind'] == 'tie' and (res.get('outcome') or {}).get('kind', 'estimate') == 'estimate':
         for i, c in enumerate(res['candidates']):
             model = c['model'] or family_law
-            out.append(('candidate#%d' % i, model if model in table else None, num(c['estimates']), None,
+            out.append(('candidate#%d' % i, model, num(c['estimates']), None,
                         (number(c['loglik_lower']), number(c['loglik_upper'])), model == family_law))
     return out
 
@@ -229,19 +254,21 @@ def evaluate(rows, mode, table, archive, records, attributions=True):
                     raise SystemExit('%s %s %s: snapshot input differs from fit-snapshot.py\'s cases()' % key)
                 data = [float(int(v)) if integer and math.isfinite(v) else float(v) for v in case['data']]
                 for label, law, values, reported, bounds, own in todo:
-                    if law is None:
+                    law, observations, endpoint, factor = payload_data(law, values, data)
+                    if law not in table:
                         unchecked['%s: %s model has no C++ density' % (family, label)] += 1; continue
                     params, missing = coefficients(law, table, values, r['held'], data, own)
                     if params is None:
                         unchecked['%s: %s %s lacks %s' % (family, label, law, ','.join(missing))] += 1; continue
                     line = '%d %d %d %s\n' % (index[law], len(params), len(data),
-                                              ' '.join(float(v).hex() for v in params+data))
+                                              ' '.join(float(v).hex() for v in params+observations))
                     answer = probe.ask(line, CPU_LIMIT)
                     if not isinstance(answer, dict):
                         failures['|'.join((CHECK+('' if label == 'estimate' else ':'+label), mode)+key)] = \
                             'density probe %s for %s' % (answer, law)
                         continue
-                    terms = [number(t) for t in answer['terms']]
+                    terms = [number(t) + (factor if v == endpoint else 0.)
+                             for t, v in zip(answer['terms'], observations)]
                     total = math.fsum(terms) if all(math.isfinite(t) for t in terms) else sum(terms)
                     magnitude = math.fsum(abs(t) for t in terms) if all(math.isfinite(t) for t in terms) else math.inf
                     rec = dict(mode=mode, family=family, source=key[1], case=key[2], item=label, law=law,
@@ -256,9 +283,10 @@ def evaluate(rows, mode, table, archive, records, attributions=True):
                                    'reported %.17g, summed density %.17g, relative %.3g' % (reported, total, rel))
                             if total == -math.inf: why = 'support: '+why
                             if attributions:
-                                ref, reason = attribute(law, dict(zip(table[law][2], params)), data)
+                                ref, reason = attribute(law, dict(zip(table[law][2], params)), observations)
                                 if ref is None: why += '; independent: '+reason
                                 else:
+                                    ref += sum(v == endpoint for v in observations)*factor
                                     a, b = relative(reported, ref), relative(total, ref)
                                     side = ('both' if a > TOL and b > TOL else 'fitter' if a > TOL else
                                             'density' if b > TOL else 'neither')

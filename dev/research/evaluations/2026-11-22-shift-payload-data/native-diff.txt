@@ -1,0 +1,29 @@
+differs ('nhyper', '005151', '{}') ['candidates', 'warnings']
+differs ('nhyper', '005152', '{}') ['candidates', 'warnings']
+differs ('nhyper', '005154', '{}') ['candidates', 'warnings']
+differs ('sged', '006190', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006191', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006192', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006193', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006194', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006195', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006196', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'certified', 'unique', 'outcome', 'core_status', 'fixed']
+differs ('sged', '006197', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'certified', 'unique', 'outcome', 'core_status', 'fixed']
+differs ('sged', '006198', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006199', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'certified', 'unique', 'outcome', 'core_status', 'fixed']
+differs ('sged', '006200', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'certified', 'unique', 'outcome', 'core_status', 'fixed']
+differs ('sged', '006201', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'certified', 'unique', 'outcome', 'core_status', 'fixed']
+differs ('sged', '006203', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'certified', 'unique', 'outcome', 'core_status', 'fixed']
+differs ('sged', '006204', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006205', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+only in snapshot ('genbeta', 'constant-flat-power-product', '{"scale": 1.0, "shape2": 1.0}')
+only in snapshot ('gev', 'zeros-flat-location-scale', '{"mu": 0.0, "sigma": 1.0}')
+only in snapshot ('gompertz', 'zeros-flat-a', '{"a": 1.0}')
+only in snapshot ('gpd', 'zeros-flat-threshold-scale', '{"mu": 0.0, "sigma": 1.0}')
+only in snapshot ('gpd', 'zeros-flat-uniform-translation', '{"sigma": 1.0, "xi": -1.0}')
+only in snapshot ('gpd', 'zeros-flat-scale', '{"sigma": 1.0}')
+only in snapshot ('nhyper', 'zeros-flat-free', '{}')
+only in snapshot ('nhyper', 'zeros-flat-free-r', '{"r": 0.0}')
+only in snapshot ('nhyper', 'zeros-flat-m', '{"m": 2.0}')
+only in snapshot ('nhyper', 'zeros-flat-m-r', '{"m": 2.0, "r": 0.0}')
+native cases 6832 differing 18 only-new 32 only-old 0

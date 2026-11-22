@@ -35,7 +35,7 @@ inline FitResult fit_pareto2(cppunivariate::span x, Held shape_arg = {}, Held sc
   if (res.status == cppunivariate::Pareto2Status::ExponentialLimit) {
     return done(stop_failure(fail("The Lomax maximum likelihood estimator does not exist for data "
                "whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an "
-               "exponential distribution."),res.stop_detail,outcome_payload(o),{"shape","scale","min"},"exp"));
+               "exponential distribution."),res.stop_detail,outcome_payload(o),{"shape","scale","min"}));
   }
   if(res.status==cppunivariate::Pareto2Status::IterationFailure) return done(stop_failure(fail("Pareto II search failed; no accepted maximum. Raising iterlim may resolve a budget stop."),res.stop_detail,outcome_payload(o),{"shape","scale","min"},""));
   if (res.status != cppunivariate::Pareto2Status::Ok || !std::isfinite(res.scale) || !(res.scale>0) ||
