@@ -208,7 +208,7 @@ Face comparisons retain the family tolerance but stop with the existing numerica
 The held-scale two-shape reduction now inherits the
 [Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
 including strict endpoint score comparisons, coefficient accuracy checks,
-practical floating-point margins and explicit tie/budget/numerical stops.
+practical floating-point margins and explicit unresolved comparisons, budget exhaustion and numerical failures.
 The unit-beta-shape reductions and the held-power certificate below do not cover every mixed subset, so the family-wide certification tag stays partial.
 
 Profile and envelope backtracking stop if both proposed coordinates round to
@@ -432,7 +432,7 @@ decreases in $a$ at fixed $p$ and is affine in $p$, so signed corner bounds
 exclude root-free segments. Likelihood bounds discard dominated stationary
 regions. Every remaining global maximum lies in the retained coefficient
 envelope; success requires relative spans below $\min(\mathrm{tol},10^{-9})/8$
-in both free coefficients. Separated unresolved maxima stop as a tie;
+in both free coefficients. Separated maxima with overlapping bounds are reported as unresolved comparisons;
 precision/range failures and exhausted work stop without an estimate.
 
 This is an exact-arithmetic certificate conditional on the computed

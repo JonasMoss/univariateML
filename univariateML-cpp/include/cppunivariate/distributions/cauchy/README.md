@@ -294,7 +294,13 @@ $\sigma<a$. The fitter returns `AmbiguousMaximum` when the competing candidate l
 intervals cannot be strictly ordered. Its accurate location roots are retained;
 the better listed root is returned uncertified unless the symmetric two-point
 algebra proves non-uniqueness. The latter fit is flagged non-unique and keeps
-both roots. Overlapping numerical intervals alone do not prove an exact tie. A degenerate maximum, such as the quartic
+both roots. For equal counts at two distinct locations with half-gap $d$,
+the product of the density denominators at a displacement $u$ from the
+midpoint is $(u^2-(d^2-\sigma^2))^2+4d^2\sigma^2$. For $d>\sigma$
+its two minima are precisely the reflected maximizers. Each returned
+coordinate must pass the projected bracket test at the requested tolerance
+and carries a point likelihood evaluated in the held-scale chart.
+Overlapping numerical intervals alone do not prove an exact tie. A degenerate maximum, such as the quartic
 maximum for $(-1,1)$ at scale one, can instead exhaust subdivision and gives
 `IterationFailure`. Neither status means the mathematical MLE fails to exist.
 

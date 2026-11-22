@@ -288,3 +288,26 @@ TEST_CASE("cauchy: exact half atom distinguishes finite nonattainment") {
   CHECK_FALSE(cppunivariate::outcome(attained).unique);
   CHECK(attained.maximizer_support==std::vector<double>{0,2});
 }
+
+TEST_CASE("cauchy: held scale keeps each reflected maximizer's point likelihood") {
+  const std::vector<double> x{1,1,5,5};
+  const auto r=cppunivariate::fit_cauchy(mltest::as_span(x),1e-10,100,NAN,1);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(o.certified);
+  CHECK_FALSE(o.unique);
+  REQUIRE(r.stop_detail.candidates.size()==2);
+  REQUIRE(r.candidate_evaluations.size()==2);
+  std::vector<double> mu;
+  for(std::size_t i=0;i<2;++i) {
+    const double location=r.stop_detail.candidates[i].coef[0];
+    mu.push_back(location);
+    CHECK(r.candidate_evaluations[i].accurate);
+    double ll=0;
+    for(double v:x)ll+=cppunivariate::distributions::dcauchy(v,location,1,true);
+    CHECK(r.candidate_evaluations[i].loglik==doctest::Approx(ll).epsilon(1e-12));
+  }
+  std::sort(mu.begin(),mu.end());
+  CHECK(mu[0]==doctest::Approx(3-std::sqrt(3.)).epsilon(1e-10));
+  CHECK(mu[1]==doctest::Approx(3+std::sqrt(3.)).epsilon(1e-10));
+}

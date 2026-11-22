@@ -65,7 +65,7 @@ fit:
   method: profile-search
   certified: 'yes'
   note: 'fatigue/README.md, Details; fatigue/certificate.hpp; fatigue/test.cpp: Analytic held-beta fit and
-    complete rational-score inclusion on finite beta brackets; distinct numerically tied maxima stop.
+    complete rational-score inclusion on finite beta brackets; overlapping likelihood bounds retain the enclosed candidates.
     Estimating threshold remains structurally excluded.'
 areas:
 - reliability and survival
@@ -118,7 +118,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-half
 
 The threshold $\mu$ is supplied, and $\alpha$ and $\beta$ are fitted to the shifted observations $x - \mu$, which must all be positive. Either $\alpha$ or $\beta$ can also be held. The coefficient $\beta$ is a scale.
 
-With $\beta$ held, $\hat\alpha$ is the root mean square of $\sqrt{t/\beta} - \sqrt{\beta/t}$ over the shifted observations $t = x - \mu$. It is zero only when every $t$ equals $\beta$, and the likelihood is then unbounded. Holding $\alpha$ removes this collapse for constant samples. With $\alpha$ held, the likelihood in $\beta$ can have several local maxima, and the fit isolates and compares every possible maximum on a finite interval. For a constant shifted sample and $\alpha>2$, two reciprocal scales are equal global maxima, and fitting stops with both witnesses. A near-constant sample can have two separated roots within the certificate's tie margin $10^{-10}n$ in likelihood; the outcome is then an uncertified estimate flagged not unique, with both roots listed.
+With $\beta$ held, $\hat\alpha$ is the root mean square of $\sqrt{t/\beta} - \sqrt{\beta/t}$ over the shifted observations $t = x - \mu$. It is zero only when every $t$ equals $\beta$, and the likelihood is then unbounded. Holding $\alpha$ removes this collapse for constant samples. With $\alpha$ held, the likelihood in $\beta$ can have several local maxima, and the fit isolates and compares every possible maximum on a finite interval. For a constant shifted sample and $\alpha>2$, two reciprocal scales are equal global maxima, and the fit reports both maximizers with `unique = FALSE`. A near-constant sample can have two separated roots within the certificate's tie margin $10^{-10}n$ in likelihood; the outcome is then an uncertified estimate flagged not unique, with both roots listed.
 
 Write $A=\overline t$, $H=1/\overline{1/t}$ and
 $\xi(b)=n/\sum_i(t_i+b)^{-1}$. After profiling alpha, the scale score has the sign of

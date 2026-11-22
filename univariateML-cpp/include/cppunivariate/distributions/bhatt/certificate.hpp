@@ -4,6 +4,7 @@
 #include "accuracy.hpp"
 #include <map>
 #include <queue>
+#include <utility>
 
 namespace cppunivariate {
 namespace bhatt_detail {
@@ -547,6 +548,24 @@ inline BhattResult bhatt_mle_search(span x,double tol=1e-10,int maxit=500,double
   // The final local refinement supplies coefficient accuracy; certified=false
   // withdraws only the global claim.
   auto searched=bhatt_detail::accurate_candidate(x,tol,maxit,sigma,a,mu);
+  if((certificate.status==BhattStatus::Tie || certificate.status==BhattStatus::Unresolved) &&
+      searched.stop_detail.accuracy_stop==AccuracyStop::None && !certificate.accurate_points.empty()) {
+    auto comparison=certificate;
+    for(auto& point:comparison.stop_detail.candidates) {
+      if(!family_point(comparison,point) || std::find(comparison.accurate_points.begin(),
+          comparison.accurate_points.end(),point.coef)==comparison.accurate_points.end())continue;
+      bhatt_detail::CertSum sum;
+      for(double v:x)sum.add(distributions::dbhatt(v,point.coef[0],point.coef[1],point.coef[2],true));
+      const double ll=static_cast<double>(sum.value);
+      if(std::isfinite(ll))point.loglik_lower=point.loglik_upper=ll;
+    }
+    comparison.status=BhattStatus::Tie;
+    comparison.stop_detail.comparison_tie=true;
+    if(outcome(comparison).kind==OutcomeKind::Estimate) {
+      comparison.comparison_logLik=comparison.stop_detail.candidates[comparison_choice(comparison)].loglik_lower;
+      certificate=std::move(comparison);
+    }
+  }
   if(a==0 && searched.status==BhattStatus::Ok) {
     // A normal coefficient inclusion can fail solely because tol is below
     // its practical margin. Preserve the closed-form search in that case,
@@ -571,6 +590,7 @@ inline BhattResult bhatt_mle_search(span x,double tol=1e-10,int maxit=500,double
       if(bhatt_detail::cert_valid(candidate))output.candidates.push_back(candidate);
   };
   const auto reject_search=[&]() {
+    if(outcome(certificate).kind==OutcomeKind::Estimate)return certificate;
     certificate.status=BhattStatus::NumericalFailure;
     certificate.stop_detail.budget_exhausted=false;
     certificate.stop_detail.comparison_tie=false;
@@ -613,7 +633,13 @@ inline BhattResult bhatt_mle_search(span x,double tol=1e-10,int maxit=500,double
     return finite;
   }
   if(searched.status==BhattStatus::NumericalFailure)return reject_search();
-  if(searched.status==BhattStatus::IterationFailure){auto detail=certificate.stop_detail;preserve_accuracy(detail);searched.stop_detail=detail;return searched;}
+  if(searched.status==BhattStatus::IterationFailure) {
+    if(outcome(certificate).kind==OutcomeKind::Estimate)return certificate;
+    auto detail=certificate.stop_detail;
+    preserve_accuracy(detail);
+    searched.stop_detail=std::move(detail);
+    return searched;
+  }
   // The search itself failed, or proposed an invalid/unbounded result not
   // proved by the certificate. Preserve the certificate's physical witnesses.
   return certificate;
@@ -634,15 +660,6 @@ inline BhattResult bhatt_mle(span x,double tol=1e-10,int maxit=500,double sigma=
     d.limit_coef[0]=std::min(d.limit_coef[0],*std::min_element(x.begin(),x.end()));
     d.limit_coef[1]=std::max(d.limit_coef[1],*std::max_element(x.begin(),x.end()));
     d.limit_loglik=0;for(double v:x)d.limit_loglik+=distributions::dunif(v,d.limit_coef[0],d.limit_coef[1],true);
-  }
-  if(outcome(r).kind==OutcomeKind::Estimate && r.status!=BhattStatus::Ok && !r.stop_detail.candidates.empty()) {
-    const auto& point=r.stop_detail.candidates[comparison_choice(r)];
-    if(accurate_point(r,point)) {
-      double sum=0,carry=0;
-      for(double v:x){const double term=distributions::dbhatt(v,point.coef[0],point.coef[1],point.coef[2],true)-carry;
-        const double next=sum+term;carry=(next-sum)-term;sum=next;}
-      if(std::isfinite(sum))r.comparison_logLik=sum;else r.status=BhattStatus::NumericalFailure;
-    }
   }
   return r;
 }

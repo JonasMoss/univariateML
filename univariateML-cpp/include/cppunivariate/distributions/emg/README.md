@@ -73,7 +73,7 @@ relations:
 fit:
   method: profile-search
   certified: 'yes'
-  note: 'emg/README.md, Details: location-only has a signed root enclosure; the other six subsets use global shape bounds (including a held-rate inverse-variance chord) and validated coefficient enclosures; unexcluded normal faces and exhausted or inseparable searches stop with witnesses.'
+  note: 'emg/README.md, Details: location-only has a signed root enclosure; the other six subsets use global shape bounds (including a held-rate inverse-variance chord) and validated coefficient enclosures; inseparable searches retain their witnesses and can return an accurate surviving mode uncertified.'
 areas:
 - measurement and errors
 classification: specialist
@@ -100,7 +100,7 @@ existence:
     $\sigma$ removes the translated-exponential escape. With both held,
     free location has a unique finite maximum. Other held subsets use
     conditional global bounds and their compatible limits; an unexcluded
-    normal face stops unresolved.
+    normal face reports an unresolved comparison when no accurate finite winner can be returned.
   reason: >-
     The normal and exponential limits follow from the independent-sum
     representation. Fixed dimensionless shape $\lambda\sigma$ gives a
@@ -165,9 +165,7 @@ Laplace transform. Taking its endpoint chord and restoring the logarithmic
 term bounds every intermediate profile without a residual-dependent curvature
 envelope. The executor takes the
 smaller of this bound and its original shape-curvature bound. Separated surviving modes retain their comparison witnesses. A finite winner
-that passes the public coefficient refinement is returned uncertified; an
-unverified finite witness remains unresolved, and a winning face is a limit. A normal face without a strictly better finite witness stops
-unresolved unless a global domination proof succeeds. Budget, numerical and
+that passes the public coefficient refinement or the public-coordinate enclosure test is returned uncertified. A translated-exponential winner is a limit. An unexcluded normal face leaves the comparison unresolved unless an enclosed finite mode supplies the selected point or the certificate proves that the normal face wins. Budget, numerical and
 unresolved stops retain finite and compatible face witnesses.
 
 The interval operations use a practical

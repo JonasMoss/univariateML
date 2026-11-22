@@ -643,3 +643,24 @@ TEST_CASE("bbinom: unidentified shapes have an exact representative") {
   CHECK(r.alpha/(r.alpha+r.beta)==.5);
   CHECK(r.logLik==doctest::Approx(-4*std::log(2.)));
 }
+
+TEST_CASE("bbinom: a fixed-size comparison keeps the enclosed finite shapes") {
+  const std::vector<int> counts{414,860,592,137};
+  std::vector<int> x;
+  for(std::size_t i=0;i<counts.size();++i)
+    x.insert(x.end(),counts[i],static_cast<int>(i));
+  const auto r=cppunivariate::bbinom_mle({x.data(),x.size()},3);
+  REQUIRE(r.status==cppunivariate::BbinomStatus::ProfileTie);
+  REQUIRE(r.stop_detail.candidates.size()==2);
+  const auto o=cppunivariate::outcome(r);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(o.certified);
+  CHECK(o.unique);
+  const auto& finite=r.stop_detail.candidates[cppunivariate::comparison_choice(r)];
+  REQUIRE(cppunivariate::accurate_point(r,finite));
+  REQUIRE(finite.coef.size()==3);
+  double ll=0;
+  for(int v:x)
+    ll+=cppunivariate::distributions::dbbinom(v,3,finite.coef[1],finite.coef[2],true);
+  CHECK(finite.loglik_lower==doctest::Approx(ll).epsilon(1e-12));
+}

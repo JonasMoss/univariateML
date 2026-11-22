@@ -100,6 +100,34 @@ inline EmgResult emg_polish_result(EmgResult r,span x,double tol,int maxit,doubl
   r.logLik=0;for(double v:x)r.logLik+=distributions::demg(v,r.mu,r.sigma,r.lambda,true);
   return r;
 }
+inline void emg_record_enclosed_points(EmgResult& r,span x,double tol,double mu,double sigma,double lambda) {
+  const std::array<bool,3> free{{std::isnan(mu),std::isnan(sigma),std::isnan(lambda)}};
+  // Some certified root boxes already meet the caller's accuracy even
+  // when local polishing cannot improve the represented coefficients.
+  for(const auto& root:r.candidate_enclosures) {
+    auto& c=r.stop_detail.candidates[root.candidate];
+    if(point_value(c))continue;
+    const auto& box=root.coef;
+    const double abs_location=box[0].lo<=0 && box[0].hi>=0?0:
+      std::min(std::abs(box[0].lo),std::abs(box[0].hi));
+    const std::array<double,3> units{{std::max(abs_location,box[1].lo),box[1].lo,box[2].lo}};
+    bool accurate=true;
+    for(int i=0;i<3;++i)if(free[i]) {
+      const double error=std::max(std::abs(c.coef[i]-box[i].lo),std::abs(c.coef[i]-box[i].hi));
+      accurate=accurate&&box[i].valid()&&units[i]>0&&error<=tol*units[i];
+    }
+    if(!accurate)continue;
+    double ll=0;
+    for(double v:x)ll+=distributions::demg(v,c.coef[0],c.coef[1],c.coef[2],true);
+    if(!std::isfinite(ll))continue;
+    c.loglik_lower=c.loglik_upper=ll;
+    r.accurate_coef.push_back(c.coef);
+  }
+}
+
+inline bool family_point(const EmgResult& r,const FitCandidate& c);
+inline bool accurate_point(const EmgResult& r,const FitCandidate& c);
+
 inline EmgResult emg_mle(span x,double tol=1e-10,int maxit=500,double mu=NAN,double sigma=NAN,double lambda=NAN) {
   // Retain the established global enclosure budget; the joint local solve
   // below supplies the requested, finer coefficient accuracy.
@@ -118,7 +146,17 @@ inline EmgResult emg_mle(span x,double tol=1e-10,int maxit=500,double mu=NAN,dou
       c.loglik_lower=c.loglik_upper=checked.logLik;
       r.accurate_coef.push_back(c.coef);
     }
+    emg_record_enclosed_points(r,x,tol,mu,sigma,lambda);
     return r;
+  }
+  if(r.status==EmgStatus::Unresolved && !r.candidate_enclosures.empty()) {
+    auto comparison=r;
+    emg_record_enclosed_points(comparison,x,tol,mu,sigma,lambda);
+    if(!comparison.accurate_coef.empty() && comparison_outcome_of(comparison).kind==OutcomeKind::Estimate) {
+      comparison.status=EmgStatus::Tie;
+      comparison.stop_detail.comparison_tie=true;
+      return comparison;
+    }
   }
   if(r.status!=EmgStatus::Ok||location_only)return r;
   return emg_polish_result(r,x,tol,maxit,mu,sigma,lambda);

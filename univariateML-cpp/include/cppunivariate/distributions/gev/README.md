@@ -438,7 +438,7 @@ A successful search remains available when coefficient inclusion, face
 comparison or coverage cannot close within the work allowance. It is then
 uncertified; incomplete coverage creates no stop. A strictly better feasible
 point, verified again in public coordinates, instead disproves the search and
-stops with both point witnesses. The C++ result's
+reports a convergence failure with both point witnesses. The C++ result's
 `certified` field records completion for all-free and held-nuisance covers;
 older conditional routes do not generally populate that field. The catalogue flag remains partial.
 

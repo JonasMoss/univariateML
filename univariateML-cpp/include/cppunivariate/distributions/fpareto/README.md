@@ -291,7 +291,7 @@ see [GB2](../gb2/README.md) and the
 The held-scale two-shape reduction now inherits the
 [Burr scalar concavity certificate](../burr/README.md#held-scale-certificate-task-1164),
 including strict endpoint score comparisons, coefficient accuracy checks,
-practical floating-point margins and explicit tie/budget/numerical stops.
+practical floating-point margins and explicit unresolved comparisons, budget exhaustion and numerical failures.
 These unit-shape reductions do not cover every subset; the held-power route below adds the two non-unit conditional shape/scale subsets.
 
 Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.

@@ -1,0 +1,14 @@
+Selected 24 families: bbinom, bhatt, bnbinom, cauchy, emg, expweibull, fatigue, fpareto, frechet, gb2, ged, genbeta, gev, gpd, huber, lst, pig, sged, sgomp, slash, sstd, st, std, yulesimon
+100% tests passed, 0 tests failed out of 41
+100% tests passed, 0 tests failed out of 41
+[ FAIL 0 | WARN 0 | SKIP 49 | PASS 7773 ]
++ just js-build
++ just js-test
+# tests 329
+# pass 329
+# fail 0
+Results: [{"command": ["cmake", "-S", "univariateML-cpp", "-B", "univariateML-cpp/build", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"], "exit": 0, "seconds": 0.42}, {"command": ["cmake", "--build", "univariateML-cpp/build", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 418.29}, {"command": ["ctest", "--test-dir", "univariateML-cpp/build", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(bbinom|bhatt|bnbinom|cauchy|emg|expweibull|fatigue|fpareto|frechet|gb2|ged|genbeta|gev|gpd|huber|lst|pig|sged|sgomp|slash|sstd|st|std|yulesimon)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 146.09}, {"command": ["cmake", "-S", "univariateML-cpp", "-B", "build/cpp-no-long-double", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache", "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"], "exit": 0, "seconds": 0.44}, {"command": ["cmake", "--build", "build/cpp-no-long-double", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 411.03}, {"command": ["ctest", "--test-dir", "build/cpp-no-long-double", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(bbinom|bhatt|bnbinom|cauchy|emg|expweibull|fatigue|fpareto|frechet|gb2|ged|genbeta|gev|gpd|huber|lst|pig|sged|sgomp|slash|sstd|st|std|yulesimon)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 100.88}, {"command": ["just", "test"], "exit": 0, "seconds": 333.55}, {"command": ["just", "js-build"], "exit": 0, "seconds": 73.64}, {"command": ["just", "js-test"], "exit": 0, "seconds": 124.46}]
+PASS: four articles; dossier catalogues: 272 limits, 85 families, 9 fit domains.
+PASS: 85 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+Environment: Python 3.14.5, SymPy 1.14.0; g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+PASS: 85 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).

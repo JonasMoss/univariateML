@@ -7,7 +7,11 @@
 
 namespace cppunivariate {
 enum class EmgStatus { Ok, NormalLimit, TranslatedExponentialLimit, Unbounded, InvalidInput, IterationFailure, NumericalFailure, BudgetExhausted, Unresolved, Tie, AccuracyFailure };
-struct EmgResult { double mu,sigma,lambda,logLik; int iterations; EmgStatus status; StopDetail stop_detail{}; std::vector<std::vector<double>> accurate_coef{}; };
+struct EmgCandidateEnclosure {
+  std::size_t candidate;
+  std::array<emg_detail::CertInterval,3> coef;
+};
+struct EmgResult { double mu,sigma,lambda,logLik; int iterations; EmgStatus status; StopDetail stop_detail{}; std::vector<std::vector<double>> accurate_coef{}; std::vector<EmgCandidateEnclosure> candidate_enclosures{}; };
 namespace emg_detail {
 struct CertFace {
   bool valid=false;
@@ -170,7 +174,10 @@ struct OuterCertificate {
     for(const auto& winner:winners) {
       double m,s,l;model.coordinates(winner.root.center,m,s,l);
       const auto candidate=cert_finite_witness(x,std::isnan(mu)?m:mu,std::isnan(sigma)?s:sigma,std::isnan(lambda)?l:lambda);
-      if(cert_witness_valid(candidate))detail.candidates.push_back(candidate);
+      if(cert_witness_valid(candidate)) {
+        out.candidate_enclosures.push_back({detail.candidates.size(),model.coefficients(winner.root.enclosure)});
+        detail.candidates.push_back(candidate);
+      }
     }
     detail.loglik_lower=std::isfinite(incumbent)?incumbent:NAN;
     detail.loglik_upper=(!small_closed||!large_closed)?INFINITY:std::max({incumbent,small_upper,large_upper,last_upper});
@@ -360,6 +367,11 @@ inline EmgResult outer_certificate(span x,double tol,int maxit,double mu,double 
   if(std::isfinite(r.logLik))r.logLik=ll(r.logLik);
   auto& d=r.stop_detail;
   for(auto& c:d.candidates){convert(c.model,c.coef);c.loglik_lower=lower(c.loglik_lower);c.loglik_upper=upper(c.loglik_upper);}
+  for(auto& root:r.candidate_enclosures) {
+    root.coef[0]=cert_pad(location(root.coef[0].lo),location(root.coef[0].hi));
+    root.coef[1]=cert_pad(root.coef[1].lo*scale,root.coef[1].hi*scale);
+    root.coef[2]=cert_pad(root.coef[2].lo/scale,root.coef[2].hi/scale);
+  }
   convert(d.limit_model,d.limit_coef);
   d.limit_loglik=ll(d.limit_loglik);
   d.loglik_lower=lower(d.loglik_lower);d.loglik_upper=upper(d.loglik_upper);d.segment_loglik_upper=upper(d.segment_loglik_upper);

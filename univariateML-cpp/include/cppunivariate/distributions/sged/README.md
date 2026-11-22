@@ -254,7 +254,7 @@ zero-side and uniform limits also require separate treatment.
 | Fixed finite $\xi>0$, $\nu\ge1$ | Concavity in inverse-scale coordinates, proved as above. |
 | Held shapes, free location; scale-only with positive held shapes | Global certificates described below. |
 | Held skew, free shape and both moments; held positive shape, free skew and both moments | Global weighted-shape and mode-profile certificates below. |
-| Held positive shape, both moments held, free skew | Compact skew cover; enclosed finite winner, strict-support half-GED face, tie, or explicit numerical/budget stop. |
+| Held positive shape, both moments held, free skew | Compact skew cover; enclosed finite winner, strict-support half-GED face, unresolved comparison, numerical failure or budget exhaustion. |
 | Remaining held-moment and joint free-shape/skew fits | Numerical scans and refinements; no global certificate. |
 | Default free shapes and limiting faces | Multistart and face comparisons; numerical, with no global shape certificate. |
 
@@ -359,8 +359,7 @@ Evaluating every distinct observation therefore enumerates all possible
 global minima. The latter result does **not** assert uniqueness. For example,
 $x=(-1,1)$ with $\xi=1$ has two maximizing modes for every held
 $0<\nu<1$. At $\nu=1$ the entire interval $[-1,1]$ maximizes likelihood.
-These examples apply with scale held or profiled; ties stop with candidate
-coefficients rather than returning one arbitrary fit.
+These examples apply with scale held or profiled. The unresolved comparison retains the candidate coefficients.
 
 Constant data with free location and scale have $Q=0$ and unbounded
 likelihood as scale vanishes. With positive scale held they have a unique
@@ -422,8 +421,7 @@ cells must together enclose all possible winners within a public scale
 relative scale width and log-scale width $\min(10^{-7},\mathtt{tol}/2)$.
 A smooth candidate is selected from the surviving derivative enclosure;
 a rounded objective incumbent excluded by the derivative bounds is only a
-likelihood witness and does not enlarge that enclosure. Separated surviving regions stop as a
-comparison tie, retaining finite witnesses. A finite global likelihood upper
+likelihood witness and does not enlarge that enclosure. Separated surviving regions give an unresolved comparison with finite witnesses. A finite global likelihood upper
 bound is reported after every cell and both tails have been closed; before
 that, budget and numerical stops retain an infinite upper bound.
 
@@ -524,7 +522,7 @@ to the joint polynomial certificate when both moments are free, and the
 conditional certificate otherwise. Its
 half-normal scales are multiplied by $\sqrt{2}$ to express the same density
 as a half-GED with kernel $\exp[-(x/b)^2]$. Candidate coordinates, face
-models, ties, budgets and arithmetic stops are translated together. If the
+models and the witness payloads for comparisons, budget exhaustion and arithmetic failures are translated together. If the
 converted half-GED scale overflows or loses more than $10^{-10}$ in its
 logarithmic conversion, delegation stops numerically rather than retaining
 an unrepresentable or inaccurate face coefficient.
@@ -565,7 +563,7 @@ Enumeration costs $O(nk)$ for $k$ distinct knots and is limited to
 $128\min(\mathtt{iterlim},100000)$ evaluations. A partition with more
 knots than the remaining budget stops after one linear-cost face witness,
 before incurring predictable quadratic work. Overlapping winning
-likelihood bounds stop as a tie; for the two-point sample $(-1,1)$ the
+likelihood bounds are reported as a comparison with candidates; for the two-point sample $(-1,1)$ the
 reflected half-GED faces tie, disproving general closure uniqueness.
 Finite uniqueness also fails: at $\nu=1/2$, the symmetric sample consisting
 of $-100$, five copies each of $-1$ and $1$, and $100$ has two winning
@@ -596,7 +594,7 @@ one, never to an estimated skew near one.
 
 Finite witnesses append the held skew to GED's mean, sd and shape. Uniform
 witnesses retain their two endpoint coordinates, and every likelihood bound,
-tie, work count, budget and numerical stop is preserved. A finite result is
+comparison payload, work count, budget state and numerical failure status are preserved. A finite result is
 accepted with the GED parent's certification flag. Unclosed held-sd endpoint
 comparisons retain an accepted finite GED search as uncertified; failed or refuted parent searches remain stops. Free-shape uniqueness is false: at
 $x=(-1,1)$, held $\sigma=0.1$ and $\xi=1$, the entire Laplace
@@ -708,7 +706,7 @@ log-skew intervals of width $2\times10^{-7}$, with shape root width
 $2\times10^{-7}(1+p)$ when free. Representatives are refined further.
 The stored public coefficients must reproduce the profile likelihood within
 the arithmetic allowance; failed recovery stops numerically.
-Separated overlapping candidates stop as ties. A weighted finite tie occurs
+Separated overlapping candidates are retained in the comparison payload. A weighted finite tie occurs
 at held $\xi=2$ for $(-100,-.01,-.01,-.01,15\text{ copies of }.01,100)$:
 the winning shape-one weighted-median interval is retained, not one selected
 location.

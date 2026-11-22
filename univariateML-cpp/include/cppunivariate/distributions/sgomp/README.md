@@ -121,7 +121,7 @@ lower likelihood witness is known; changing the proposal cannot invalidate
 previously retained regions. A successful certificate encloses every possible
 global maximizer within relative rate error $10^{-7}$ and shape error
 $10^{-7}\max(1,\eta)$ of the returned coefficients. Joint uniqueness is not
-presumed. Separated surviving regions stop as a comparison tie, and exhaustion
+presumed. Separated surviving regions are reported as an unresolved comparison, and exhaustion
 of $128\min(\mathrm{iterlim},100000)$ certificate evaluations (including the
 proposal mesh) stops on budget. Overflow or an invalid curvature bound stops
 numerically. Endpoint shape solutions are reused when subdividing.

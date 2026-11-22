@@ -32,7 +32,9 @@ struct CauchyResult {
   CauchyStatus status;
   StopDetail stop_detail{};
   bool unique=true;
-  double comparison_logLik=NAN;
+  struct CandidateEvaluation {double loglik;bool accurate;};
+  std::vector<CandidateEvaluation> candidate_evaluations{};
+  std::size_t selected_candidate=0;
   std::vector<double> maximizer_support{};
 };
 
@@ -305,7 +307,7 @@ inline double likelihood(const std::vector<double>& y, double t) {
 }
 } // namespace cauchy_location_detail
 
-inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double scale, int maxit) {
+inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double scale, int maxit, double tol=1e-10) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan = std::numeric_limits<double>::quiet_NaN();
   int evaluations = 0;
@@ -400,13 +402,43 @@ inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double 
     if (!(best.ll > upper+ll_margin)) {
       CauchyResult out{nan,scale,nan,evaluations,CauchyStatus::AmbiguousMaximum};
       const double offset=n*(std::log(cppunivariate::pi)+std::log(scale));
+      const auto location = [&](double t) {
+        return static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(centre)+
+          static_cast<CPPUNIV_EXTENDED_REAL>(scale)*t);
+      };
+      const auto project = [&](double t) {
+        return static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(t)-centre)/scale);
+      };
+      const double midpoint=y.front()/2+y.back()/2;
+      bool left=false,right=false;
       for (const auto& r : roots) {
         const double width=r.b-r.a;
         const double bound=r.ll+1e-7*width+n*width*width+ll_margin;
-        if (bound >= best.ll) out.stop_detail.candidates.push_back({
-          {static_cast<double>(static_cast<CPPUNIV_EXTENDED_REAL>(centre)+
-             static_cast<CPPUNIV_EXTENDED_REAL>(scale)*r.t),scale},
-          r.ll-offset-ll_margin,bound-offset});
+        if (bound < best.ll) continue;
+        const double mu=location(r.t),t=project(mu);
+        const double error=std::max(std::abs(t-r.a),std::abs(t-r.b))+
+          16*eps*std::max({1.,std::abs(t),std::abs(y.front()),std::abs(y.back())});
+        const double target=std::max(tol,(tol*std::abs(mu))/scale-tol*error);
+        const double ll=cauchy_location_detail::likelihood(y,t)-offset;
+        const bool accurate=std::isfinite(mu)&&std::isfinite(ll)&&std::isfinite(error)&&
+          error<=target&&std::abs(cauchy_location_detail::score(y,t))<1e-7;
+        out.stop_detail.candidates.push_back({{mu,scale},r.ll-offset-ll_margin,bound-offset});
+        out.candidate_evaluations.push_back({ll,accurate});
+        left=left||r.b<midpoint;
+        right=right||r.a>midpoint;
+      }
+      const bool balanced=data.front()<data.back()&&data.size()%2==0&&
+        data[data.size()/2-1]==data.front()&&data[data.size()/2]==data.back();
+      // For equal weights, the product of the two density denominators
+      // is (u^2 - (d^2 - scale^2))^2 + 4*d^2*scale^2, where u is the
+      // displacement from the midpoint and d is the half-gap. Two isolated
+      // maxima on opposite sides must be the two equal minima of this product.
+      out.unique=!(balanced&&out.candidate_evaluations.size()==2&&left&&right);
+      for(std::size_t i=1;i<out.candidate_evaluations.size();++i) {
+        const int order=compare_lower(out.stop_detail.candidates[i].loglik_lower,
+          out.stop_detail.candidates[out.selected_candidate].loglik_lower);
+        if(order>0||(order==0&&out.candidate_evaluations[i].accurate&&
+            !out.candidate_evaluations[out.selected_candidate].accurate))out.selected_candidate=i;
       }
       return out;
     }
@@ -489,7 +521,7 @@ inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,doubl
     if (!std::isfinite(logLik)) return failure();
     return {m, s, logLik, it, CauchyStatus::Ok};
   } else if(std::isnan(m)) {
-    return fit_cauchy_location(y,s,maxit);
+    return fit_cauchy_location(y,s,maxit,tol);
   }
   return {m,s,ll(m,s),it,it<maxit?CauchyStatus::Ok:CauchyStatus::IterationFailure};
 
@@ -500,22 +532,6 @@ inline CauchyResult fit_cauchy(span x,double tol,int maxit,double location,doubl
       const double next=sum+term;carry=(next-sum)-term;sum=next;}
     result.logLik=sum;
     if(!std::isfinite(sum))result.status=CauchyStatus::NumericalFailure;
-  }
-  if(result.status==CauchyStatus::AmbiguousMaximum && !result.stop_detail.candidates.empty()) {
-    const auto point=[](const FitCandidate& c){return c.model==StopModel::None && c.coef.size()==2 && std::isfinite(c.coef[0]) && std::isfinite(c.coef[1]) && c.coef[1]>0;};
-    const auto& c=result.stop_detail.candidates[better_candidate(result.stop_detail,point)];
-    if(point(c)) {
-      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
-      const double centre=y[y.size()/2];std::vector<double> z;
-      for(double v:y)z.push_back(static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(v)-centre)/scale));
-      const double t=static_cast<double>((static_cast<CPPUNIV_EXTENDED_REAL>(c.coef[0])-centre)/scale);
-      result.comparison_logLik=cauchy_location_detail::likelihood(z,t)-y.size()*(std::log(pi)+std::log(scale));
-      // The derivative for equal two-point weights has roots at midpoint
-      // +/- sqrt(half-gap^2-scale^2), with equal global maxima below half-gap.
-      if(y.front()<y.back() && scale<(y.back()/2-y.front()/2) &&
-          std::count(y.begin(),y.end(),y.front())*2==static_cast<long>(y.size()) &&
-          std::count(y.begin(),y.end(),y.back())*2==static_cast<long>(y.size()))result.unique=false;
-    }
   }
   return result;
 }
@@ -532,7 +548,13 @@ inline FitOutcome outcome(const CauchyResult& r) {
     case CauchyStatus::NoMLE: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case CauchyStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case CauchyStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
-    case CauchyStatus::AmbiguousMaximum: return FitOutcome::estimate(!r.unique,r.unique);
+    case CauchyStatus::AmbiguousMaximum:
+      if(r.candidate_evaluations.empty() ||
+          !r.candidate_evaluations[r.selected_candidate].accurate ||
+          (!r.unique && !std::all_of(r.candidate_evaluations.begin(),r.candidate_evaluations.end(),
+            [](const auto& point){return point.accurate;})))
+        return FitOutcome::failure(OutcomeReason::Unresolved);
+      return FitOutcome::estimate(!r.unique,r.unique);
   }
   return {};
 }
