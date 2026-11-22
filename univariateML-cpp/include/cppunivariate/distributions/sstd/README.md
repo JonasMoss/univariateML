@@ -156,7 +156,7 @@ fit:
   method: multistart
   certified: 'partial'
   note: 'certificate.hpp and README.md, Held-shape scalar certificates. Fixed nu and xi: mean-only and sd-only searches use exhaustive score enclosures with budget,
-    tie and numerical stops. Symmetric scale equality has an exact unattained supremum. Held xi=1 with mean, sd and nu free delegates to the certified std parent. Other subsets,
+    comparison payloads and numerical failures. Symmetric scale equality has an exact unattained supremum. Held xi=1 with mean, sd and nu free delegates to the certified std parent. Other subsets,
     including free shape at asymmetric held skew, free skew with free moments, and all-free fits, remain uncertified. Fixed nu with both moments held uses skew_certificate.hpp to enclose the complete skew range and compare its constrained half-t faces.'
 areas:
 - finance

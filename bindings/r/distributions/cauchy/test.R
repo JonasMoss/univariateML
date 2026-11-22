@@ -302,3 +302,15 @@ test_that("structured Cauchy stops can be caught by class", {
   h <- tryCatch(mlcauchy(c(1,1,2),location=1),univariateML_nomle=identity)
   expect_match(fit_diagnostic(h),"With location held")
 })
+
+test_that("held-scale non-uniqueness reports both reflected maximizers", {
+  x <- c(1, 1, 5, 5)
+  expect_no_warning(f <- mlcauchy(x, scale = 1))
+  expect_false(attr(f, "unique"))
+  expect_true(attr(f, "certified"))
+  expect_equal(sort(attr(f, "maximizers")$location), 3 + c(-1, 1) * sqrt(3),
+               tolerance = 1e-10)
+  expect_equal(as.numeric(logLik(f)), sum(dcauchy(x, f[1], f[2], log = TRUE)),
+               tolerance = 1e-12)
+  expect_match(attr(f, "outcome_message"), "global maxima are tied")
+})

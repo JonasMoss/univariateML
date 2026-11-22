@@ -36,15 +36,13 @@ inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held 
   if (res.status == cppunivariate::CauchyStatus::NoMLE || res.status==cppunivariate::CauchyStatus::Unattained)
     return done(stop_failure(fail("Cauchy MLE does not exist: a sample atom has at least half the mass, except for balanced two-point samples"),res.stop_detail,outcome_payload(o),{"location","scale"},""));
   if(res.status==cppunivariate::CauchyStatus::AmbiguousMaximum) {
-    // Candidates and the selected point likelihood are supplied by the core.
-    const auto point=[](const cppunivariate::FitCandidate& c){
-      return c.model==cppunivariate::StopModel::None && c.coef.size()==2 && std::isfinite(c.coef[0]) &&
-        std::isfinite(c.coef[1]) && c.coef[1]>0;
-    };
-    auto out=comparison_payload(stop_failure(fail("Held-scale Cauchy global maxima are tied or numerically indistinguishable; no unique certified location returned."),res.stop_detail,PayloadKind::Comparison,{"location","scale"},""),
-      o,cppunivariate::better_candidate(res.stop_detail,point),{{"location",location_arg},{"scale",scale_arg}});
-    if(o.kind==cppunivariate::OutcomeKind::Estimate && !out.estimates.empty()) {
-      out.logLik=res.comparison_logLik;
+    std::string message="Held-scale Cauchy global maxima are tied or numerically indistinguishable.";
+    if(o.kind==cppunivariate::OutcomeKind::Estimate && !o.unique)
+      message+=" The two reflected locations are global maximizers.";
+    auto out=comparison_payload(stop_failure(fail(message),res.stop_detail,PayloadKind::Comparison,{"location","scale"},""),
+      o,res.selected_candidate,{{"location",location_arg},{"scale",scale_arg}});
+    if(o.kind==cppunivariate::OutcomeKind::Estimate) {
+      out.logLik=res.candidate_evaluations[o.unique?res.selected_candidate:0].loglik;
     }
     return done(out);
   }

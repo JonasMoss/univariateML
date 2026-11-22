@@ -451,7 +451,7 @@ interval score bounds. Subdivision retains connected stationary-component hulls 
 width 4e-11 (1+abs(xi)); wider components stop. Point likelihoods plus integrated
 score remainders supply the comparison bounds. No log-CDF concavity or uniqueness is assumed.
 For x=(-2,2), omega=1, alpha=0 and nu=1, the two global location maxima
-are exactly ±sqrt(3); the fitter stops with both witnesses.
+are exactly ±sqrt(3). The location search reports both witnesses in an unresolved comparison.
 
 With xi and nu held and alpha exactly zero, the log-scale score is
 -n+(nu+1) sum d_i²/(nu omega²+d_i²), d_i=x_i-xi.

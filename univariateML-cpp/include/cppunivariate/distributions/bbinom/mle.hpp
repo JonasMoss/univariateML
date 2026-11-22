@@ -73,7 +73,7 @@ struct BbinomResult {
   bool accuracy_failure = false;
   // ProfileTie over free sizes: every candidate is an Ok fixed-size fit.
   bool size_profiles = false;
-  bool accurate_fixed_candidates=false;
+  std::vector<std::vector<double>> accurate_fixed_points{};
   std::vector<double> maximizer_shape_ray{};
   std::vector<double> free_positive_shapes{};
 };
@@ -377,11 +377,15 @@ inline std::vector<double> log_grid(double lo, double hi, double step) {
 
 }  // namespace bbinom_detail
 
+inline bool family_point(const BbinomResult& r,const FitCandidate& c);
+inline bool accurate_point(const BbinomResult& r,const FitCandidate& c);
+
 // size: known number of trials (required). alpha_fixed / beta_fixed: NaN to
 // estimate; both may be held. With size NaN, at least one shape must be held.
 // tol: relative public-shape enclosure width; maxit: work limit per solve.
 inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
-                               double alpha_fixed,double beta_fixed, const bbinom_detail::CellWork& work) {
+                               double alpha_fixed,double beta_fixed, const bbinom_detail::CellWork& work,
+                               bool render_profile_tie=false) {
   maxit = static_cast<int>(solver_budget(maxit));
   auto stopped = [&]() -> BbinomResult {
   const double nan = std::numeric_limits<double>::quiet_NaN();
@@ -624,6 +628,19 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
     return r;
   };
 
+  const auto record_enclosed = [&](std::size_t i, double a, double b) {
+    const std::vector<double> coef{size,mirror?b:a,mirror?a:b};
+    if(!work.consume(static_cast<std::int64_t>(N)*x.size()))return;
+    double ll=0,carry=0;
+    for(int v:x) {
+      const double term=distributions::dbbinom(v,size,coef[1],coef[2],true)-carry;
+      const double next=ll+term;carry=(next-ll)-term;ll=next;
+    }
+    if(!std::isfinite(ll))return;
+    out.stop_detail.candidates[i]={coef,ll,ll};
+    out.accurate_fixed_points.push_back(coef);
+  };
+
   if (fix_a || fix_b) {
     // Free shape c (beta after mirroring) with a held at the fixed value.
     const double a = fix_a ? alpha_fixed : beta_fixed;
@@ -666,6 +683,12 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
       if((candidate.s<enclosure.lo || candidate.s>enclosure.hi) && candidate.value+margin>=best) {
         auto witness=finish(a,candidate.s,candidate.value,iterations,BbinomStatus::ProfileTie);
         out.stop_detail.candidates.push_back({{size,witness.alpha,witness.beta},witness.logLik,witness.logLik});
+        if(render_profile_tie) {
+          record_enclosed(0,a,enclosure.shape);
+          bbinom_detail::Enclosure competitor;
+          if(bbinom_detail::shape_enclosure(d,a,candidate.s,tol,competitor))
+            record_enclosed(1,a,competitor.shape);
+        }
         out.stop_detail.comparison_tie=true;out.status=BbinomStatus::ProfileTie;return out;
       }
     }
@@ -764,7 +787,13 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
     out.stop_detail.candidates.push_back({{size,(mirror?1-bp:bp)/bs,(mirror?bp:1-bp)/bs},
                                         best+d.log_choose,best+d.log_choose});
   }
+  const auto record_profile = [&](std::size_t i,const bbinom_detail::Enclosure& box) {
+    record_enclosed(i,box.p/box.s,(1-box.p)/box.s);
+  };
   if(!finite_wins && !(neighbourhood>0)) {
+    bbinom_detail::Enclosure near_face;
+    if(render_profile_tie&&std::isfinite(best)&&bbinom_detail::profile_enclosure(d,std::exp(best_u),tol,near_face))
+      record_profile(1,near_face);
     out.stop_detail.comparison_tie=std::isfinite(best);
     out.status=std::isfinite(best)?BbinomStatus::ProfileTie:BbinomStatus::FaceUnresolved;return out;
   }
@@ -784,6 +813,12 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
       if(!std::isfinite(cp)){out.status=BbinomStatus::IterationFailure;return out;}
       auto witness=finish(cp/candidate.s,(1-cp)/candidate.s,candidate.value,iterations,BbinomStatus::ProfileTie);
       out.stop_detail.candidates.push_back({{size,witness.alpha,witness.beta},witness.logLik,witness.logLik});
+      if(render_profile_tie) {
+        record_profile(1,enclosure);
+        bbinom_detail::Enclosure competitor;
+        if(bbinom_detail::profile_enclosure(d,candidate.s,tol,competitor))
+          record_profile(2,competitor);
+      }
       out.stop_detail.comparison_tie=true;out.status=BbinomStatus::ProfileTie;return out;
     }
   }
@@ -820,6 +855,8 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
     const double N=std::isnan(size)?0:size;
     stopped.stop_detail=N==0?discrete_point(0):discrete_two_point(x,0,1);
   }
+  if(stopped.status==BbinomStatus::ProfileTie && !stopped.accurate_fixed_points.empty() &&
+      comparison_outcome_of(stopped).kind==OutcomeKind::Estimate)return stopped;
   if(stopped.status==BbinomStatus::SizeBudget || stopped.status==BbinomStatus::ProfileTie || stopped.status==BbinomStatus::FaceUnresolved || stopped.status==BbinomStatus::IterationFailure) {
     stopped.stop_detail.loglik_upper=INFINITY;
     for(const auto& c:stopped.stop_detail.candidates)
@@ -852,24 +889,7 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
   maxit = static_cast<int>(solver_budget(maxit));
   if(std::isnan(size) && std::isnan(alpha_fixed) && std::isnan(beta_fixed))return {NAN,NAN,NAN,NAN,0,BbinomStatus::Unsupported};
   const bbinom_detail::CellWork work(enumeration_budget(maxit));
-  auto out=bbinom_mle_work(x,size,tol,maxit,alpha_fixed,beta_fixed,work);
-  if(out.status==BbinomStatus::ProfileTie && !out.size_profiles) {
-    auto points=out.stop_detail.candidates;
-    std::size_t count=0;for(const auto& c:points)if(c.model==StopModel::None && c.coef.size()==3)++count;
-    const int per=count?static_cast<int>(solver_budget(maxit)/count):0;
-    bool accurate=count>0 && per>0;
-    for(auto& c:points)if(c.model==StopModel::None && c.coef.size()==3 && accurate) {
-      StopDetail local;
-      accurate=bbinom_detail::fallback_accuracy(x,c.coef[0],c.coef[1],c.coef[2],alpha_fixed,beta_fixed,tol,per,local);
-      if(accurate) {
-        double ll=0,carry=0;
-        for(int v:x){const double term=distributions::dbbinom(v,c.coef[0],c.coef[1],c.coef[2],true)-carry;
-          const double next=ll+term;carry=(next-ll)-term;ll=next;}
-        accurate=std::isfinite(ll);c.loglik_lower=c.loglik_upper=ll;
-      }
-    }
-    if(accurate){out.stop_detail.candidates=std::move(points);out.accurate_fixed_candidates=true;}
-  }
+  auto out=bbinom_mle_work(x,size,tol,maxit,alpha_fixed,beta_fixed,work,!std::isnan(size));
   if(out.status==BbinomStatus::Unidentified) {
     out.size=std::isnan(size)?0:size;
     double mean=0;for(int v:x)mean+=v;mean/=x.size();
@@ -909,10 +929,13 @@ inline bool family_point(const BbinomResult&, const FitCandidate& c) {
          std::isfinite(c.coef[2]) && c.coef[1] > 0 && c.coef[2] > 0;
 }
 // Free-size profiles retain accepted fixed-size fits. Fixed-size ties are
-// marked only after every finite grid witness passes coefficient refinement
-// and its public point likelihood is evaluated; unrefined witnesses stay unresolved.
+// marked individually when an enclosure places the public shapes within tol
+// and the public point likelihood can be evaluated.
 inline bool accurate_point(const BbinomResult& r, const FitCandidate& c) {
-  return (r.size_profiles || r.accurate_fixed_candidates || r.status==BbinomStatus::Unidentified) && family_point(r, c) && point_value(c);
+  return family_point(r,c) && point_value(c) &&
+    (r.size_profiles || r.status==BbinomStatus::Unidentified ||
+      std::find(r.accurate_fixed_points.begin(),r.accurate_fixed_points.end(),c.coef)!=
+        r.accurate_fixed_points.end());
 }
 
 inline FitOutcome outcome(const BbinomResult& r) {

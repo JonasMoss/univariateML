@@ -119,8 +119,7 @@ mean log observation, avoiding division of a subnormal reduction by shape.
 The continuous likelihood-retaining faces are power and inverse Weibull.
 With scale held and both shapes free, data entirely below the endpoint have a
 strictly winning power envelope. Endpoint ties subtract $\log(e-1)$ each
-from that envelope; the tied stop therefore has no automatic `mlpower`
-likelihood delegate. With shape held, nearly constant data can require an
+from that envelope. The power-envelope limit then carries the endpoint penalty. With shape held, nearly constant data can require an
 exponent above the largest representable double. Constant data can have unbounded concentration,
 with the free coordinates determining whether that path is available.
 

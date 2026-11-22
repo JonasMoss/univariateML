@@ -322,7 +322,7 @@ and $d$ contains its half-widths.
 A unique winning root in $r\le b$ returns the canonical representative and
 retains its swapped counterpart. Swapping is an exact identity, so it does
 not cause an unresolved numerical tie. Competing distinct identified roots
-whose likelihood intervals overlap stop with `ComparisonTie`. A diagonal
+whose likelihood intervals overlap carry both candidates in the comparison payload. A diagonal
 root must pass the same two-dimensional isolation and cover tests as any
 other root; a diagonal scalar solve supplies only a diagnostic seam witness.
 The information singularity there does not prevent the observed Hessian from
@@ -414,8 +414,8 @@ $$
 Decreasing trigamma supplies their interval bounds. Root isolation, relative
 coefficient enclosures and likelihood comparisons use the contraction argument
 and floating-point margins in the alpha-held section, now in $(a,b)$.
-Every root surviving the completed cover is compared; unresolved identified
-ties stop. A witness that does not beat the face cannot supply this
+The comparison retains every root surviving the completed cover.
+Overlapping likelihood bounds leave the comparison unresolved. A witness that does not beat the face cannot supply this
 compactness certificate and is never returned as an estimate.
 
 For a winning-face certificate, let $p^*=r/(r+\bar x)$ and $q^*=1-p^*$.

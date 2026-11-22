@@ -19,7 +19,6 @@ inline FitResult fit_bhatt(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   const auto f=cppunivariate::bhatt_mle(x,tol,iterlim,f_sigma,f_a,f_mu);
   const auto o = cppunivariate::outcome(f);
   const auto done = [&](FitResult out) {
-    if(o.kind==cppunivariate::OutcomeKind::Estimate && out.payload_kind==PayloadKind::Comparison)out.logLik=f.comparison_logLik;
     if (f.status == cppunivariate::BhattStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(f.status));
     return with_outcome(std::move(out), o, static_cast<int>(f.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"a",a_arg.supplied}});

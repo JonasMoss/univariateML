@@ -31,7 +31,7 @@ limits:
   - model: pois
     firmness: proved
     when: 'The concentration $\lambda$ tends to infinity with $\mu>0$ fixed.'
-    detect: 'For a sample containing a positive count, $v+(\bar x-\mu)^2\le\bar x$, with $v=n^{-1}\sum_i(x_i-\bar x)^2$ and $\mu$ the held mean or $\bar x$ when free. Equality selects the Poisson supremum; an unresolved floating-point sign stops as a tie.'
+    detect: 'For a sample containing a positive count, $v+(\bar x-\mu)^2\le\bar x$, with $v=n^{-1}\sum_i(x_i-\bar x)^2$ and $\mu$ the held mean or $\bar x$ when free. Equality selects the Poisson supremum; an unresolved floating-point sign returns an uncertified Poisson limit.'
     status: PoissonLimit
   - model: pois
     firmness: proved
@@ -206,11 +206,11 @@ For binary counts with held mean the shape solve has a closed form: $\ell'(w)=n\
 
 ## Numerical contract and work
 
-These are exact-arithmetic certificates conditional on computed comparisons, with practical floating-point margins; no outward-rounded intervals are claimed. A shape score comparison uses $256\epsilon(1+\sqrt{\max x})$ times the sum of the absolute evaluated contributions plus the smallest positive normal double. The held-shape mean score uses $256\epsilon(1+|\log(\bar x/4)|+|\log(2\bar x)|+\max x)$. An uncertain midpoint requires two separately signed nearby points, or causes a numerical stop. The Poisson-boundary sign uses exact nonnegative integer products when they fit the stated binary64 range, or a $256\epsilon$ scaled allowance; uncertain boundary signs stop as ties with the Poisson witness. No likelihood-gain tolerance selects a face, so small proved finite improvements are retained.
+These are exact-arithmetic certificates conditional on computed comparisons, with practical floating-point margins; no outward-rounded intervals are claimed. A shape score comparison uses $256\epsilon(1+\sqrt{\max x})$ times the sum of the absolute evaluated contributions plus the smallest positive normal double. The held-shape mean score uses $256\epsilon(1+|\log(\bar x/4)|+|\log(2\bar x)|+\max x)$. An uncertain midpoint requires two separately signed nearby points, or causes a numerical stop. The Poisson-boundary sign uses exact nonnegative integer products when they fit the stated binary64 range, or a $256\epsilon$ scaled allowance; uncertain boundary signs return an uncertified Poisson limit with its witness. No likelihood-gain tolerance selects a face, so small proved finite improvements are retained.
 
 Each iterative solve uses at most `min(iterlim, 100000)` solver iterations, including shape bracketing and bisection. A needed count recurrence exceeding `100000 * min(iterlim, 100000)` cells stops on budget before scanning the range. Analytic Poisson faces need no count recurrence. The largest representable integer count stops numerically if an interior mass recurrence is required, protecting its existing integer endpoint; a Poisson face can still be evaluated there. Each moment evaluation costs $O(\max x)$ time and constant additional storage. The final likelihood retains the settled log-mass recurrence and its $O(\max x)$ storage; Poisson faces use the existing stable Poisson log-pmf helper.
 
-Core results retain candidates and global bounds on limit, tie and budget stops. Numerical or iteration stops retain any evaluated finite witness. Bounds on stopped finite candidates describe evaluated likelihoods, not a claim that those candidates maximize the model. An unclosed global bound remains infinite. Both R and JavaScript transport the pig-specific payload, with held-mean Poisson advice distinguishing the constrained face from an unrestricted `mlpois` fit.
+Core results retain candidates and global bounds on limit, comparison and budget outcomes. Numerical or iteration stops retain any evaluated finite witness. Bounds on stopped finite candidates describe evaluated likelihoods, not a claim that those candidates maximize the model. An unclosed global bound remains infinite. Both R and JavaScript transport the pig-specific payload, with held-mean Poisson advice distinguishing the constrained face from an unrestricted `mlpois` fit.
 
 Near the Poisson face, the local shape score subtracts its limiting value analytically. The Bessel recurrence carries the difference between z E[J] and its factorial-moment limit, rather than subtracting these nearly equal quantities afterwards. This preserves the small finite improvement and the shape root when dispersion is weak. Rounded zero scores require signed neighbours before local refinement can finish.
 

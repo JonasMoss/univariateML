@@ -174,7 +174,7 @@ $B=n-k+D^2/k$. For held location, the same formula uses its zero-residual
 count and $D=0$. The implementation checks that no other residual enters the
 core. Since $\log(cZ(c)/2)\ge c^2/2-c^4/6$ for $c<1$, the entire tail
 is below Laplace when $B<n$ and $c^2<3(n-B)/n$. Without this proof, an
-unresolved Laplace comparison stops with both witnesses.
+Laplace comparison retains both witnesses and can report an uncertified limit.
 
 Certificates are exact-arithmetic statements conditional on the computed
 comparisons. The practical supporting-plane padding is

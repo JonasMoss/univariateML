@@ -1,0 +1,8 @@
+native, against stored baselines
+after-native cases 920 differing 0 only-new 0 only-old 0
+native, against cc7bfa80 (920 cases)
+Inherited differences on frozen cases: 0
+double, against stored baselines
+after-double cases 920 differing 0 only-new 0 only-old 0
+double, against cc7bfa80 (920 cases)
+Inherited differences on frozen cases: 0

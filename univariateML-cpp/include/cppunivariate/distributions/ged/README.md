@@ -396,7 +396,7 @@ mean or sample midrange), and log-sd width at most $2\times10^{-7}$.
 The representative is further refined, but its accuracy claim comes from
 the entire box. Every other root or boundary candidate must be separated
 by likelihood bounds; otherwise a successful existing search remains uncertified.
-Proved median intervals and exact subunit-shape knot ties stop explicitly.
+Proved median intervals and exact subunit-shape knot ties return non-unique estimates with maximizing witnesses.
 For a reflection proof below shape one, a central observation knot must be
 excluded separately: symmetry pairs noncentral minimizers but permits a unique
 central minimizer.

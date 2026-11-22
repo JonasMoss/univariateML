@@ -365,7 +365,7 @@ inline bool family_point(const BhattResult&, const FitCandidate& c) {
 // Only roots with a physical-coordinate inclusion at the requested tolerance
 // receive this mark; ordinary profile witnesses retain likelihood bounds only.
 inline bool accurate_point(const BhattResult& r, const FitCandidate& c) {
-  if(!family_point(r,c))return false;
+  if(!family_point(r,c) || !point_value(c))return false;
   for(const auto& point:r.accurate_points)if(point==c.coef)return true;
   return false;
 }

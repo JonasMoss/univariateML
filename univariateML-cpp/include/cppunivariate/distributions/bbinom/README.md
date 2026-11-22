@@ -277,7 +277,7 @@ $m(N+1-M)\ge hM(b-1)H$, the profile at $N+1$ cannot exceed that at $N$.
 The left side divided by $H$ increases with $N$, so this comparison
 holds for all subsequent sizes. The search enumerates up to the first such
 $N$, subject to the enumeration-cell budget, and stops on exhaustion. It compares profile values
-with a $2\cdot10^{-8}h$ ambiguity margin and stops on a numerical tie.
+with a $2\cdot10^{-8}h$ ambiguity margin and retains competing profiles for an uncertified comparison.
 The cutoff inequality uses an additional floating-point margin; neither
 margin is an interval-arithmetic guarantee. Each visited fixed-size profile
 also passes the coefficient certificate.
@@ -332,8 +332,8 @@ $$
 Both upper bounds decrease with $N$. A finite fit strictly above both
 bounds at the next size excludes every subsequent size, using the retained
 cross-size ambiguity margin. The code
-selects $c$ by bisection, enumerates finite sizes subject to the enumeration-cell budget, and stops on a
-numerical tie or failure. Before enumeration, it requires the first profile
+selects $c$ by bisection and enumerates finite sizes subject to the enumeration-cell budget.
+Competing profiles within the margin are retained with the uncertified estimate. Before enumeration, it requires the first profile
 to exclude the tail beyond the budget; otherwise it reports a budget stop,
 even though a larger finite profile could improve the bound. If the first finite profile does not clearly beat
 $F$, it returns the prefix winner uncertified; this does not prove that the face wins.
@@ -412,4 +412,4 @@ Newton solve.
 
 In the mass recurrence the remaining integer count is formed before adding beta. Subtracting the counts after adding a tiny beta can discard its significant digits at the last cell, contaminating both summed tails.
 
-Zero size and all-zero counts with free size have likelihood one for every positive free shape. A representative uses size zero and each free shape equal to one. With one trial and both shapes free, the identified coordinate is $p=\bar x$ and every $(\alpha,\beta)=c(p,1-p)$, $c>0$, maximizes the Bernoulli likelihood; the representative uses $c=1$. These analytic non-unique fits retain the held shapes and report `unique = FALSE`. The complete one-trial ray is specified by `maximizer_shape_ray = c(p, 1-p)`; at size zero, the alpha/beta flags in `free_positive_shapes` specify which shapes range independently over $(0,\infty)$. A free-size profile tie returns its best listed fixed-size fit uncertified; a fixed-size tie refines every finite grid witness to the coefficient tolerance before selecting an uncertified estimate. The refinement allowance is divided among the retained finite witnesses. If any witness remains unchecked, its finite comparison remains unresolved.
+Zero size and all-zero counts with free size have likelihood one for every positive free shape. A representative uses size zero and each free shape equal to one. With one trial and both shapes free, the identified coordinate is $p=\bar x$ and every $(\alpha,\beta)=c(p,1-p)$, $c>0$, maximizes the Bernoulli likelihood; the representative uses $c=1$. These analytic non-unique fits retain the held shapes and report `unique = FALSE`. The complete one-trial ray is specified by `maximizer_shape_ray = c(p, 1-p)`; at size zero, the alpha/beta flags in `free_positive_shapes` specify which shapes range independently over $(0,\infty)$. A free-size profile tie returns its best listed fixed-size fit uncertified; a fixed-size comparison uses the refined shape or mean/dispersion enclosure of each checked root. The likelihood is evaluated at the enclosed public shapes. An enclosed winner can be returned uncertified. Where the leading root lacks an enclosure, the ordinary finite-search fallback must pass its own accuracy check.

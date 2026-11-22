@@ -324,7 +324,7 @@ With location and scale held, the inverse-Weibull solve brackets log shape on th
 
 All hold combinations are supported. Supply `mu` explicitly: a value holds the threshold, and `mu = NULL` estimates it. With `mu` free and `lambda` free, the fit restricts `lambda >= 1`. With `mu` held, `mlinvweibull` on `x - mu` gives the corresponding two-parameter fit.
 
-A strictly winning Gumbel face produces a limit stop with proper Gumbel coefficients and advice to use `mlgumbel`. Unordered finite-versus-face comparisons within the arithmetic margin retain a successful finite search uncertified; proved exact ties retain their separate stops. Estimated coefficients on an applicable `fit_domain` bound carry a `restricted` attribute and emit a warning of class `univariateML_restricted`. Held coefficients are not flagged. Restriction exemptions apply to free coefficients. Failed optimizers and unresolved scalar searches stop. A small score alone does not establish global optimality.
+A strictly winning Gumbel face produces a limit stop with proper Gumbel coefficients and advice to use `mlgumbel`. Unordered finite-versus-face comparisons within the arithmetic margin retain a successful finite search uncertified; proved exact ties carry both witnesses in an unresolved outcome. Estimated coefficients on an applicable `fit_domain` bound carry a `restricted` attribute and emit a warning of class `univariateML_restricted`. Held coefficients are not flagged. Restriction exemptions apply to free coefficients. Failed optimizers and unresolved scalar searches stop. A small score alone does not establish global optimality.
 
 
 ### All-free two-point comparison
@@ -402,7 +402,7 @@ The [proof and arithmetic margins](../../../../../dev/research/evaluations/2026-
 state the tail bound and root-existence conditions. A completed cover sets the
 C++ result's `certified` field for this route. If coverage, coefficient inclusion or a comparison remains unresolved,
 the locally refined search is returned uncertified. A strictly better
-feasible point, rechecked in public coordinates, instead stops with both point
+feasible point, rechecked in public coordinates, instead reports a numerical failure with both point
 witnesses because it disproves the search. Existing search failures retain their
 status. The catalogue flag remains partial.
 

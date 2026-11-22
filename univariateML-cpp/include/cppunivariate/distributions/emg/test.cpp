@@ -542,3 +542,31 @@ TEST_CASE("emg near-constant and tied samples reach the translated exponential l
   CHECK(r.stop_detail.limit_coef.at(0)==0.9120912193716119);
   CHECK(r.stop_detail.limit_coef.at(1)/2.7021597764222976e16==doctest::Approx(1).epsilon(1e-10));
 }
+
+TEST_CASE("emg: comparison point values require public-coordinate accuracy") {
+  const std::vector<double> x{-2,-1,0,1,3};
+  const auto data=mltest::as_span(x);
+  const auto root=cppunivariate::emg_mle(data,1e-10,500,NAN,1,2);
+  REQUIRE(root.status==cppunivariate::EmgStatus::Ok);
+
+  // Exercise rendering with two copies of the location witness, one with
+  // a tight coefficient inclusion and one with a wider box.
+  cppunivariate::EmgResult comparison{NAN,NAN,NAN,NAN,0,cppunivariate::EmgStatus::Tie};
+  const auto witness=cppunivariate::emg_detail::cert_finite_witness(data,root.mu,1,2);
+  comparison.stop_detail.candidates={witness,witness};
+  comparison.candidate_enclosures={
+    {0,{{{root.mu-1e-12,root.mu+1e-12},{1,1},{2,2}}}},
+    {1,{{{root.mu-1e-4,root.mu+1e-4},{1,1},{2,2}}}}
+  };
+  cppunivariate::emg_record_enclosed_points(comparison,data,1e-10,NAN,1,2);
+  REQUIRE(comparison.accurate_coef.size()==1);
+  CHECK(cppunivariate::point_value(comparison.stop_detail.candidates[0]));
+  CHECK_FALSE(cppunivariate::point_value(comparison.stop_detail.candidates[1]));
+  double ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::demg(v,root.mu,1,2,true);
+  CHECK(comparison.stop_detail.candidates[0].loglik_lower==ll);
+  const auto o=cppunivariate::outcome(comparison);
+  CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK_FALSE(o.certified);
+  CHECK(o.unique);
+}
