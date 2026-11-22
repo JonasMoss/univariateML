@@ -277,7 +277,9 @@ test('conditional tails preserve tiny log complements and refuse unstable normal
   const actual=api.geom.p(x,[.3],{truncate:[0,Infinity],log:true})[0];
   assert.ok(actual<0);
   assert.ok(Math.abs(actual/expected-1)<1e-10);
-  assert.throws(()=>api.geom.d(new Float64Array([1e9]),[.3],{truncate:[1e9,1e9+10]}),/normalization.*floating-point accuracy/);
+  const first=api.geom.d([1e9],[.3],{truncate:[1e9,1e9+10]})[0];
+  assert.ok(Math.abs(first/(.3/(1-.7**11))-1)<1e-12);
+  assert.throws(()=>api.geom.d([1e9],[.3],{truncate:[1e9,1e9+256]}),/normalization.*floating-point accuracy/);
 });
 
 test('all remaining retirement routes preserve held coefficients and widened domains', async () => {

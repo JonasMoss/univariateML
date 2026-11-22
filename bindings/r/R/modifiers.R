@@ -210,10 +210,8 @@ ml_modifier_function <- function(obj,type) {
      (base[["prob"]]==1 || "size" %in% names(base) && base[["size"]]==0))upper_endpoint<-0
   complement<-function(v)ifelse(v<log(.5),log1p(-exp(v)),log(-expm1(v)))
   diff <- function(big,small) { z <- big+complement(pmin(0,small-big));z[is.infinite(small)&small<0] <- big[is.infinite(small)&small<0];z }
-  can_enumerate <- identical(univariateML_name(base), "mlnbinom") &&
-    b < 2^53 && b > a && b-a <= 256 &&
-    base[["size"]] > 0 && base[["prob"]] < 1
-  mass <- function(lo,hi,guard=TRUE) {
+  can_enumerate <- integer && is.finite(a) && b < 2^53 && b > a && b-a <= 256
+  mass <- function(lo,hi) {
     # Either endpoint may be the scalar window bound; the branch choices below
     # are elementwise, so both must have the common length (TASK-216).
     n <- max(length(lo),length(hi));lo <- rep_len(lo,n);hi <- rep_len(hi,n)
@@ -222,21 +220,20 @@ ml_modifier_function <- function(obj,type) {
     use_lower<-fhi<log(.5)
     big<-ifelse(use_lower,fhi,slo);small<-ifelse(use_lower,flo,shi)
     if(any(hi>lo & is.finite(big) & is.finite(small) & small-big > -1e-4)) {
-      if (!guard) return(NA_real_)
       stop("Conditional interval probability cannot be resolved at the required floating-point accuracy")
     }
     ifelse(use_lower,diff(fhi,flo),diff(slo,shi))
   }
-  z <- mass(a,b,guard=!can_enumerate)
   log_density <- function(x) d(x,log=TRUE)
-  if (!is.finite(z) || 64*.Machine$double.eps*max(1,abs(z))>1e-10) {
-    # Enumerate short NB windows when the parent log scale cannot resolve
-    # their conditional probabilities. Keep the common PMF anchor separate
-    # from the adjacent log ratios so it cannot round away their differences.
-    if (can_enumerate) {
-      counts <- seq.int(a+1,b)
+  if (can_enumerate) {
+    # Keep the common PMF anchor separate from the relative log masses.
+    counts <- seq.int(a+1,b)
+    id <- univariateML_name(base)
+    size <- if (id=="mlnbinom") base[["size"]] else 1
+    if (id %in% c("mlnbinom","mlgeom") && size>0 && base[["prob"]]<1) {
+      # These laws share the NB adjacent ratio. An absolute log PMF
+      # subtraction would lose digits in the cases that reach this branch.
       k <- counts[-length(counts)]
-      size <- base[["size"]]
       ratio <- log1p((size-1)/(k+1))
       ratio[k==0] <- log(size)
       ratio <- ratio + log1p(-base[["prob"]])
@@ -245,39 +242,45 @@ ml_modifier_function <- function(obj,type) {
       after <- seq_along(ratio)[seq_along(ratio)>=peak]
       relative <- c(rev(cumsum(-rev(ratio[before]))),0,cumsum(ratio[after]))
       anchor <- d(counts[peak],log=TRUE)
-      if (!is.finite(anchor)) stop("Truncation event has zero or unresolved probability in log space")
-      log_sum <- function(v) {
-        if (!length(v)) return(-Inf)
-        peak <- which.max(v)
-        m <- v[peak]
-        m + log1p(sum(exp(v[-peak]-m)))
-      }
-      z <- log_sum(relative)
-      if (!is.finite(anchor+z)) stop("Truncation event has zero or unresolved probability in log space")
-      mass <- function(lo,hi) {
-        n <- max(length(lo),length(hi))
-        lo <- rep_len(lo,n)
-        hi <- rep_len(hi,n)
-        vapply(seq_len(n), function(i) {
-          if (is.na(lo[i]) || is.na(hi[i])) return(lo[i]+hi[i])
-          log_sum(relative[counts>lo[i] & counts<=hi[i]])
-        }, numeric(1))
-      }
-      log_density <- function(x) {
-        if (!typeof(x) %in% c("logical","integer","double") || is.factor(x))
-          return(d(x,log=TRUE))
-        if (any(is.finite(x) & x!=floor(x)))
-          warning("non-integer x",call.=FALSE)
-        v <- relative[match(x,counts)]
-        v[!is.na(x) & is.na(v)] <- -Inf
-        v[is.nan(x)] <- NaN
-        attributes(v) <- attributes(x)
-        v
-      }
     } else {
-      if(!is.finite(z)) stop("Truncation event has zero or unresolved probability")
-      stop("Conditional normalization cannot be resolved at the required floating-point accuracy")
+      logs <- d(counts,log=TRUE)
+      anchor <- max(logs)
+      relative <- logs-anchor
     }
+    if (!is.finite(anchor)) stop("Truncation event has zero or unresolved probability in log space")
+    log_sum <- function(v) {
+      if (!length(v)) return(-Inf)
+      peak <- which.max(v)
+      m <- v[peak]
+      m + log1p(sum(exp(v[-peak]-m)))
+    }
+    z <- log_sum(relative)
+    if (!is.finite(anchor+z)) stop("Truncation event has zero or unresolved probability in log space")
+    mass <- function(lo,hi) {
+      n <- max(length(lo),length(hi))
+      lo <- rep_len(lo,n)
+      hi <- rep_len(hi,n)
+      vapply(seq_len(n), function(i) {
+        if (is.na(lo[i]) || is.na(hi[i])) return(lo[i]+hi[i])
+        log_sum(relative[counts>lo[i] & counts<=hi[i]])
+      }, numeric(1))
+    }
+    log_density <- function(x) {
+      if (!typeof(x) %in% c("logical","integer","double") || is.factor(x))
+        return(d(x,log=TRUE))
+      if (any(is.finite(x) & x!=floor(x)))
+        warning("non-integer x",call.=FALSE)
+      v <- relative[match(x,counts)]
+      v[!is.na(x) & is.na(v)] <- -Inf
+      v[is.nan(x)] <- NaN
+      attributes(v) <- attributes(x)
+      v
+    }
+  } else {
+    z <- mass(a,b)
+    if (!is.finite(z)) stop("Truncation event has zero or unresolved probability")
+    if (64*.Machine$double.eps*max(1,abs(z))>1e-10)
+      stop("Conditional normalization cannot be resolved at the required floating-point accuracy")
   }
   dfun <- function(x,log=FALSE) {
     v <- log_density(x)-z;v[x<window[1] | x>window[2]] <- -Inf
