@@ -97,7 +97,13 @@ inline GevResult gev_shape_certificate(span x,double mu,double sigma,double tol,
     candidates.push_back({lo,hi,ll,bounds.v.hi});return true;
   };
   bool all_zero=true;for(double v:x)all_zero=all_zero && v==mu;
-  if(all_zero) {out.status=GevStatus::Ok;out.stop_detail={};return out;} // every shape maximizes
+  if(all_zero && std::isfinite(out.logLik)) {
+    out.status=GevStatus::Ok;
+    out.certified=true;
+    out.maximizer_set="Every shape -1 <= xi <= 1 maximizes the likelihood at the held location and scale.";
+    out.stop_detail.candidates.push_back({{mu,sigma,1},out.logLik,out.logLik});
+    return out;
+  }
   bool at_reverse_endpoint=true;
   for(double v:z)at_reverse_endpoint=at_reverse_endpoint && v==1;
   if(at_reverse_endpoint) {

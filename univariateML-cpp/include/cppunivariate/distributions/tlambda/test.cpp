@@ -397,3 +397,32 @@ TEST_CASE("tlambda: a distinct pair has a unique certified uniform fit") {
   CHECK(fit.logLik==doctest::Approx(-1.3838007352820387).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(fit.logLik==cppunivariate::tlambda_detail::likelihood(mltest::as_span(x),fit.mu,fit.sigma,fit.lambda));
 }
+
+TEST_CASE("tlambda: constant sample with held scale has uniform or support-contact maxima") {
+  const std::vector<double> x(4,0.0);
+  const auto data=mltest::as_span(x);
+  for(double shape:{std::numeric_limits<double>::quiet_NaN(),1.,2.,1.5}) {
+    const double sigma=shape==1.5 ? 3 : 2;
+    const double fitted_shape=std::isnan(shape) ? 1 : shape;
+    const auto fit=cppunivariate::tlambda_mle(data,1e-10,100,shape,NAN,sigma);
+    const auto outcome=cppunivariate::outcome(fit);
+    CHECK(outcome.kind==cppunivariate::OutcomeKind::Estimate);
+    CHECK(outcome.certified);
+    CHECK_FALSE(outcome.unique);
+    CHECK(fit.maximizer_set.find(shape==1.5 ? "two support contacts" : "All locations")!=std::string_view::npos);
+    const auto& witnesses=fit.stop_detail.candidates;
+    REQUIRE(witnesses.size()==2);
+    CHECK(witnesses[0].coef!=witnesses[1].coef);
+    for(const auto& row:witnesses) {
+      const auto& p=row.coef;
+      CHECK(p[1]==sigma);
+      CHECK(p[2]==fitted_shape);
+      CHECK(std::abs(p[0])<=sigma/fitted_shape);
+      if(shape==1.5)CHECK(std::abs(p[0])==2);
+      CHECK(4*cppunivariate::distributions::dtlambda(0,p[0],p[1],p[2],true)==doctest::Approx(fit.logLik));
+    }
+    const auto fixed=cppunivariate::tlambda_mle(data,1e-10,100,fitted_shape,fit.mu,sigma);
+    CHECK(cppunivariate::outcome(fixed).kind==cppunivariate::OutcomeKind::Estimate);
+    CHECK(cppunivariate::outcome(fixed).unique);
+  }
+}

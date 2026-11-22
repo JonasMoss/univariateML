@@ -28,6 +28,13 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::SgedStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
+    if (!o.unique && !res.maximizer_set.empty()) {
+      out.error=res.maximizer_set;
+      const std::vector<std::string> names{"mean", "sd", "nu", "xi"};
+      for(const auto& witness:res.stop_detail.candidates)
+        out.candidates.push_back({named_coefficients(witness.coef,names),
+                                  witness.loglik_lower,witness.loglik_upper,"sged"});
+    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied},{"xi",xi_arg.supplied}});
   };
 

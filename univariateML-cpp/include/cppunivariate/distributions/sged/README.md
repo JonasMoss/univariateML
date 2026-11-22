@@ -792,6 +792,21 @@ The unique root in $t$ gives two reciprocal skews; $z=0$ is a strict local
 minimum and both skew tails have likelihood tending to negative infinity.
 The tests use $d=1.1$ and retain both finite witnesses.
 
+For a sample equal to the held mean at held $p=9/4$ and held standard
+deviation, set $A=1-k^2/v$, $C=k^p$ and $u=1-\min(\xi,1/\xi)^2$.
+The log density relative to unit skew is
+$\tfrac12\log(1-u+Au^2)-\log(1-u/2)-Cu^p$.
+For $u>0$ its derivative has the sign of $K-H(u)$ with
+$K=(4A-1)/(2pC)$ and $H(u)=u^{p-2}P(u)$ for
+$P(u)=(2-u)(1-u+Au^2)$. The sign of $H'$ is the sign of
+$Q=(p-2)P+uP'$. Here $Q(0)>0$, $Q(1)<0$ and $Q''>0$ on $[0,1]$,
+so $H$ increases and then decreases. Since $H(0)<K<H(1)$ it crosses
+$K$ once. The [interval sign check](../../../../../dev/research/evaluations/2026-11-22-zero-unique-data/sged_profile.py)
+brackets the crossing between $0.0008$ and $0.001$. A signed bisection
+with a $128\epsilon$ score allowance narrows this bracket to the requested
+relative accuracy in skew. Reflection gives its reciprocal with the same
+likelihood.
+
 The unit-skew free-shape route transports the GED parent’s coefficients and certification flag directly; its accuracy depends on that parent’s refinement.
 
 At shape one, a density corner fixes the mode at an observation. In side-scale

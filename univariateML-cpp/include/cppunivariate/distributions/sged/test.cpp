@@ -1448,3 +1448,32 @@ TEST_CASE("sged held sd retains convex-power joins in public coordinates") {
   CHECK(tight.status==cppunivariate::SgedStatus::CertificateFailure);
   CHECK(tight.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
 }
+
+TEST_CASE("sged: structural non-uniqueness and the fully held singleton") {
+  const std::vector<double> x(4, 2.0);
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::sged_mle(data,1e-10,200,2,3,2.25,NAN);
+  const auto singleton=cppunivariate::sged_mle(data,1e-10,200,2,3,2.25,1);
+  const auto outcome=cppunivariate::outcome(fit);
+  CHECK(outcome.kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(outcome.certified);
+  CHECK_FALSE(outcome.unique);
+  CHECK(fit.maximizer_set.find("two reciprocal skews")!=std::string_view::npos);
+  const auto& w=fit.stop_detail.candidates;
+  REQUIRE(w.size()==2);
+  CHECK(w[0].coef!=w[1].coef);
+  for(const auto& row:w) {
+    const auto& p=row.coef;
+    CHECK(p[0]==2);
+    CHECK(p[1]==3);
+    CHECK(p[2]==2.25);
+    CHECK(4*dist::dsged(2,p[0],p[1],p[2],p[3],true)==doctest::Approx(fit.logLik));
+  }
+  const double first=w[0].coef[3],second=w[1].coef[3];
+  CHECK(first>1.0004);
+  CHECK(first<1.00051);
+  CHECK(second<1);
+  CHECK(first*second==doctest::Approx(1).epsilon(1e-14));
+  CHECK(cppunivariate::outcome(singleton).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(cppunivariate::outcome(singleton).unique);
+}

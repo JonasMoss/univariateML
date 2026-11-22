@@ -299,3 +299,27 @@ test_that("tlambda free-shape half ties do not inherit held-shape nonattainment"
   expect_true(e$loglik_lower>e$limit_loglik)
   expect_identical(e$loglik_upper,Inf)
 })
+
+test_that("Tukey lambda reports uniform translations and the two contacts", {
+  x <- rep(0,4)
+  for (shape in list(NULL,1,2,1.5)) {
+    contacts <- identical(shape,1.5)
+    sigma <- if (contacts) 3 else 2
+    lambda <- if (is.null(shape)) 1 else shape
+    f <- suppressWarnings(mltlambda(x,sigma=sigma,lambda=shape),classes="univariateML_restricted")
+    fixed <- mltlambda(x,mu=unname(f[["mu"]]),sigma=sigma,lambda=lambda)
+    member <- function(w) w$sigma == sigma & w$lambda == lambda &
+      (if (contacts) abs(w$mu) == 2 else abs(w$mu) <= sigma/lambda)
+    message <- if (contacts) "two support contacts" else "All locations"
+    expect_true(attr(f,"certified"))
+    expect_false(attr(f,"unique"))
+    w <- attr(f,"maximizers")
+    expect_equal(nrow(w),2L)
+    expect_equal(nrow(unique(w[names(f)])),2L)
+    expect_true(all(member(w)))
+    expect_match(attr(f,"outcome_message"),message,fixed=TRUE)
+    expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-12)
+    expect_true(attr(fixed,"unique"))
+    expect_null(attr(fixed,"maximizers"))
+  }
+})

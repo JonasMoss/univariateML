@@ -18,12 +18,20 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
     return invalid_argument(fail("`xi` must be finite and at least -1."));
   const double scale=sigma.supplied ? sigma.value : std::numeric_limits<double>::quiet_NaN();
   if(sigma.supplied && (!(scale>0) || !std::isfinite(scale))) return invalid_argument(fail("`sigma` must be positive and finite."));
-  std::vector<std::string> fixed{"mu"};
+  std::vector<std::string> fixed;
+  if(mu.supplied) fixed.push_back("mu");
   if(sigma.supplied) fixed.push_back("sigma");
   if(xi.supplied) fixed.push_back("xi");
   auto res = cppunivariate::gpd_mle(x, tol, iterlim, threshold, shape, scale);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
+    if (!o.unique && !res.maximizer_set.empty()) {
+      out.error=res.maximizer_set;
+      const std::vector<std::string> names{"mu", "sigma", "xi"};
+      for(const auto& witness:res.stop_detail.candidates)
+        out.candidates.push_back({named_coefficients(witness.coef,names),
+                                  witness.loglik_lower,witness.loglik_upper,"gpd"});
+    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
   };
   if (res.status==cppunivariate::GpdStatus::Unbounded)
