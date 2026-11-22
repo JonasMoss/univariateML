@@ -1415,3 +1415,36 @@ TEST_CASE("sged: singleton collapse is a core statistical outcome") {
   CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
   CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
 }
+
+
+TEST_CASE("sged held sd retains convex-power joins in public coordinates") {
+  struct Case {
+    std::vector<double> x;
+    double sd,nu,xi,mean,logLik;
+  };
+  // Independent 560-digit score brackets, using exact binary64 inputs.
+  const std::vector<Case> cases{
+    {{0,1e100},1,1.01,100,1.0048721515485897144,-9.8099162239003766075e100},
+    {{0,1},1,1.5,3,1.0344734791695194633,-1.5665818198832879353},
+    {{0,1e300},1,1.01,100,1.0048721515485897144,-9.8099162239004170948e302},
+    {{-1e100,0},1,1.01,.01,-1.0048721515485897144,-9.8099162239003766075e100},
+    {{-2,1},2,2.5,.7,-.79581223669173772675,-3.6853816716259584022},
+    {{-3,-3,2},2,2.5,1.5,-1.0741816810361954501,-6.2823991606730444004},
+    {{0,1e100,2e100},1,1.01,100,1.0048721515485897144,-2.9566215398396243999e101},
+    {{-3,-1,2},2,2.5,1.5,-.68775146061959966489,-6.1682330579935578944},
+    {{-2,0,2},2,2,1,0,-5.8362571412938541536}
+  };
+  for(const auto& c:cases) {
+    CAPTURE(c.x.front()); CAPTURE(c.x.back()); CAPTURE(c.nu); CAPTURE(c.xi);
+    const auto r=cppunivariate::sged_mle(mltest::as_span(c.x),1e-10,200,NAN,c.sd,c.nu,c.xi);
+    REQUIRE(r.status==cppunivariate::SgedStatus::Ok);
+    CHECK(r.certified);
+    if(c.mean==0)CHECK(r.mu==0);
+    else CHECK(r.mu==doctest::Approx(c.mean).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(r.logLik==doctest::Approx(c.logLik).epsilon(1e-10).scale(0));
+  }
+  const auto& c=cases.front();
+  const auto tight=cppunivariate::sged_mle(mltest::as_span(c.x),1e-20,200,NAN,c.sd,c.nu,c.xi);
+  CHECK(tight.status==cppunivariate::SgedStatus::CertificateFailure);
+  CHECK(tight.stop_detail.accuracy_stop==cppunivariate::AccuracyStop::Tolerance);
+}

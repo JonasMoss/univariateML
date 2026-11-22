@@ -1,0 +1,70 @@
+
+native
+differs ('sged', '006190', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006191', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006192', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006193', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006194', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006195', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006196', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['message', 'kind', 'iterations', 'certified', 'core_status', 'fixed']
+differs ('sged', '006197', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['message', 'kind', 'iterations', 'certified', 'core_status', 'fixed']
+differs ('sged', '006198', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006199', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['message', 'kind', 'iterations', 'certified', 'core_status', 'fixed']
+differs ('sged', '006200', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['message', 'kind', 'iterations', 'certified', 'core_status', 'fixed']
+differs ('sged', '006201', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['message', 'kind', 'iterations', 'certified', 'core_status', 'fixed']
+differs ('sged', '006203', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['message', 'kind', 'iterations', 'certified', 'core_status', 'fixed']
+differs ('sged', '006204', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+differs ('sged', '006205', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['iterations', 'logLik', 'estimates']
+native cases 458 differing 15 only-new 0 only-old 0
+ged: 0/173 changed, max relative estimate move 0
+sged 006190 ok -> ok estimates, iterations, logLik
+sged 006191 ok -> ok estimates, iterations, logLik
+sged 006192 ok -> ok estimates, iterations, logLik
+sged 006193 ok -> ok estimates, iterations, logLik
+sged 006194 ok -> ok estimates, iterations, logLik
+sged 006195 ok -> ok estimates, iterations, logLik
+sged 006196 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006197 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006198 ok -> ok estimates, iterations, logLik
+sged 006199 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006200 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006201 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006203 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006204 ok -> ok estimates, iterations, logLik
+sged 006205 ok -> ok estimates, iterations, logLik
+sged: 15/285 changed, max relative estimate move 1.15242084303e-10 006190 mean
+
+double
+differs ('sged', '006190', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['logLik', 'iterations', 'estimates']
+differs ('sged', '006191', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['logLik', 'iterations', 'estimates']
+differs ('sged', '006192', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['logLik', 'iterations', 'estimates']
+differs ('sged', '006193', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['logLik', 'iterations', 'estimates']
+differs ('sged', '006194', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['logLik', 'iterations', 'estimates']
+differs ('sged', '006195', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['logLik', 'iterations', 'estimates']
+differs ('sged', '006196', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['kind', 'logLik', 'reason', 'iterations', 'certified', 'core_status']
+differs ('sged', '006197', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['kind', 'logLik', 'reason', 'iterations', 'certified', 'core_status']
+differs ('sged', '006198', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['logLik', 'iterations', 'estimates']
+differs ('sged', '006199', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['kind', 'logLik', 'reason', 'iterations', 'certified', 'core_status']
+differs ('sged', '006200', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['kind', 'logLik', 'reason', 'iterations', 'certified', 'core_status']
+differs ('sged', '006201', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['kind', 'logLik', 'reason', 'iterations', 'certified', 'core_status']
+differs ('sged', '006203', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['kind', 'logLik', 'reason', 'iterations', 'certified', 'core_status']
+differs ('sged', '006204', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['logLik', 'iterations', 'estimates']
+differs ('sged', '006205', '{"nu": 3.4208324500711944, "sd": 0.9390299202739361, "xi": 2.5890673965717057}') ['logLik', 'iterations', 'estimates']
+double cases 458 differing 15 only-new 0 only-old 0
+ged: 0/173 changed, max relative estimate move 0
+sged 006190 ok -> ok estimates, iterations, logLik
+sged 006191 ok -> ok estimates, iterations, logLik
+sged 006192 ok -> ok estimates, iterations, logLik
+sged 006193 ok -> ok estimates, iterations, logLik
+sged 006194 ok -> ok estimates, iterations, logLik
+sged 006195 ok -> ok estimates, iterations, logLik
+sged 006196 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006197 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006198 ok -> ok estimates, iterations, logLik
+sged 006199 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006200 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006201 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006203 numerical -> ok certified, core_status, estimates, fixed, iterations, kind, logLik, message, outcome, reason, unique
+sged 006204 ok -> ok estimates, iterations, logLik
+sged 006205 ok -> ok estimates, iterations, logLik
+sged: 15/285 changed, max relative estimate move 1.15242084303e-10 006190 mean

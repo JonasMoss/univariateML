@@ -6,11 +6,13 @@ struct Sum {
   double value=0,correction=0;
   void add(double v) {const double y=v-correction,t=value+y;correction=(t-value)-y;value=t;}
 };
+#include "location_certificate.hpp"
 inline SgedResult scale_fit(span x,double tol,int maxit,double mean,double nu,double xi);
 inline SgedResult fit(span x, double tol, int maxit, double mean,
     double sd, double nu, double xi) {
   SgedResult out{mean,sd,nu,xi,NAN,0,SgedStatus::CertificateFailure};
   const bool hm=std::isfinite(mean), hs=std::isfinite(sd);
+  if(!hm && hs && nu>1) return location_fit(x,tol,maxit,sd,nu,xi);
   if(hm && !hs && xi!=1) return scale_fit(x,tol,maxit,mean,nu,xi);
   const double n=static_cast<double>(x.size());
   const double eps=std::numeric_limits<double>::epsilon();
