@@ -268,6 +268,8 @@ univariateML_to_function <- function(obj, type = c("d", "p", "q", "r", "ml")) {
   if (type %in% c("d", "p", "q", "r") &&
       (!is.null(attr(obj,"modifier_variant")) || !is.null(attr(obj,"truncate"))))
     return(ml_modifier_function(obj,type))
+  if (type == "r" && identical(univariateML_name(obj), "mlnbinom") && obj[["size"]] == 0)
+    return(function(n) numeric(univariateML_rng_length(n)))
   string <- univariateML_to_string(obj, type = type)
   fun <- eval(parse(text = string))
   if (type %in% c("d", "p", "q", "r")) {

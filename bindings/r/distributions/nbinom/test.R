@@ -211,3 +211,61 @@ test_that("negative-binomial point-law identification follows core holds", {
   expect_true(attr(mlnbinom(z, size=2, prob=.5, zero="modified"), "unique"))
   expect_false(attr(mlnbinom(z, zero="inflated"), "unique"))
 })
+
+test_that("short negative-binomial windows resolve underflowing event masses", {
+  # Independent 100-digit log-gamma sums, TASK-219.
+  windows <- list(2:12, 0:5)
+  log_pmf <- list(
+    c(-157.98126920882223, -141.35234791409792, -125.01110868182539,
+      -108.89301299086708, -92.95723884670271, -77.17561537236561,
+      -61.52752328065302, -45.99721421459682, -30.572265654198457,
+      -15.242627263604412, -2.399999976000006e-7),
+    c(-83.85017627418006, -66.12264271078763, -49.08825631795516,
+      -32.45933502323085, -16.118095790958318, -9.999999900000002e-8))
+  log_cdf <- list(
+    c(-157.98126920882223, -141.35234785409793, -125.0111086018254,
+      -108.89301289086707, -92.95723872670271, -77.1756152323656,
+      -61.52752312065302, -45.99721403459683, -30.572265454198458,
+      -15.242627043604413, 0),
+    c(-83.85017627418006, -66.12264269078763, -49.08825627795516,
+      -32.459334963230845, -16.11809571095832, 0))
+  lower_quantiles <- list(c(4, 11, 11, 12, 12, 12), c(0, 4, 5, 5, 5, 5))
+  upper_quantiles <- list(c(12, 12, 12, 12, 12, 11), c(5, 5, 5, 5, 5, 4))
+  targets <- c(1e-60, 1e-12, 1e-7, .5, .9, .9999999999)
+  for (i in seq_along(windows)) {
+    k <- windows[[i]]
+    obj <- mlnbinom(size = 1e8, prob = .5, truncate = range(k))
+    expect_lt(max(abs(dml(k, obj, log = TRUE) / log_pmf[[i]] - 1)), 1e-12)
+    expect_lt(max(abs(pml(k, obj, log.p = TRUE) - log_cdf[[i]])), 1e-12)
+    cuts <- head(k, -1L)
+    log_sf <- log1p(-exp(head(log_cdf[[i]], -1L)))
+    expect_lt(max(abs(pml(cuts, obj, lower.tail = FALSE, log.p = TRUE) / log_sf - 1)), 1e-12)
+    expect_warning(outside <- dml(c(min(k)-1, min(k)+.5, max(k)+1), obj), "non-integer x")
+    expect_equal(outside, c(0, 0, 0))
+    expect_equal(qml(targets, obj), lower_quantiles[[i]])
+    expect_equal(qml(log(targets), obj, log.p = TRUE), lower_quantiles[[i]])
+    expect_equal(qml(targets, obj, lower.tail = FALSE), upper_quantiles[[i]])
+    expect_equal(qml(log(targets), obj, lower.tail = FALSE, log.p = TRUE), upper_quantiles[[i]])
+    expect_equal(qml(c(0, 1), obj), range(k))
+  }
+})
+
+test_that("size-zero negative binomial draws the point mass without consuming RNG", {
+  frozen <- mlnbinom(size = 0, prob = .5, zero = "none")
+  fitted <- mlnbinom(rep(0, 4), size = 0, prob = .5)
+  set.seed(219)
+  seed <- .Random.seed
+  for (obj in list(frozen, fitted)) {
+    expect_equal(dml(c(-1, 0, 1), obj), c(0, 1, 0))
+    expect_equal(pml(c(-1, 0, 1), obj), c(0, 1, 1))
+    expect_equal(qml(c(0, .5, 1), obj), c(0, 0, 0))
+    expect_identical(rml(512, obj), rep(0, 512))
+    expect_identical(rml(0, obj), numeric())
+    expect_identical(rml(c(2, 3), obj), c(0, 0))
+  }
+  expect_identical(.Random.seed, seed)
+  ordinary <- mlnbinom(size = 2, prob = .5)
+  draws <- rml(16, ordinary)
+  set.seed(219)
+  expect_identical(draws, stats::rnbinom(16, size = 2, prob = .5))
+})

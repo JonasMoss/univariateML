@@ -132,7 +132,9 @@ $u=-\log(1-\theta)>0$, its equation is $\operatorname{expm1}(u)/u=\bar x$.
 The left side is strictly increasing from one to infinity. A bracketed
 scalar solve therefore gives the unique maximum whenever $\bar x>1$.
 When every observation is one, the likelihood increases toward the point
-mass at one as $\theta\to0$. That boundary is excluded from this family.
+mass at one as $\theta\to0$. Fitting, including held fits, excludes this
+boundary. A frozen model may specify $\theta=0$ to evaluate or sample the
+point-mass limit.
 Holding $\theta$ evaluates the specified law, including on all-one samples.
 
 ## R notes

@@ -96,3 +96,16 @@ test_that("logarithmic hurdle identification follows the held theta", {
   expect_false(attr(suppressWarnings(mllgser(z, zero="modified")), "unique"))
   expect_true(attr(mllgser(z, theta=.5, zero="modified"), "unique"))
 })
+
+test_that("the frozen logarithmic series evaluates its theta-zero limit", {
+  obj <- mllgser(theta = 0, zero = "none")
+  expect_warning(ld <- dml(c(0, 1, 1.5, 2), obj, log = TRUE), "non-integer x")
+  expect_equal(ld, c(-Inf, 0, -Inf, -Inf))
+  expect_equal(pml(c(0, 1, 2), obj), c(0, 1, 1))
+  expect_equal(pml(c(0, 1), obj, lower.tail = FALSE, log.p = TRUE), c(0, -Inf))
+  expect_equal(qml(c(0, .5, 1), obj), rep(1, 3))
+  expect_equal(qml(c(-Inf, log(.5), 0), obj, lower.tail = FALSE, log.p = TRUE), rep(1, 3))
+  expect_identical(rml(32, obj), rep(1, 32))
+  expect_error(mllgser(rep(1, 3), theta = 0))
+  expect_error(mllgser(rep(1, 3)))
+})

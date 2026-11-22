@@ -1,0 +1,12 @@
+window [2:12], 24/24 quantiles match
+                  log_pmf dominant_log_pmf_relative                   log_cdf 
+             1.421085e-14              6.661338e-16              3.552714e-15 
+    log_survival_relative 
+             6.661338e-15 
+window [0:5], 24/24 quantiles match
+                  log_pmf dominant_log_pmf_relative                   log_cdf 
+             7.105427e-15              1.221245e-15              1.421085e-14 
+    log_survival_relative 
+             1.121325e-14 
+lgser point mass at 1, 512/512 draws match
+nbinom point mass at 0, 512/512 draws match

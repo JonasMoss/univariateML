@@ -1,5 +1,5 @@
 // Logarithmic-series distribution (extraDistr).
-// Parameter: 0 < theta < 1; support x in {1, 2, 3, ...}.
+// Fitted parameter: 0 < theta < 1. Evaluation includes the theta = 0 limit.
 //   p(k) = (-1/log(1-theta)) * theta^k / k
 //   F(k) = sum_{j=1}^{k} p(j)
 // Sampler: inverse-CDF via Kemp-style iterative search; matches extraDistr's
@@ -17,13 +17,13 @@ namespace distributions {
 
 
 inline double dlgser(double x,double theta,bool log) {
-  if (!(theta>0 && theta<1) || std::isnan(x)) return special::kNaN;
   return zero_detail::density(4,x,theta,0,0,log);
 }
 
 inline double plgser(double q,double theta,bool lower_tail,bool log_p) {
-  if (!(theta>0 && theta<1)) return special::kNaN;
+  if (!(theta>=0 && theta<1)) return special::kNaN;
   if(std::isnan(q)) return special::kNaN;
+  if(theta==0) return zero_detail::cdf(4,q,theta,0,0,lower_tail,log_p);
   if(q>=1 && q<199) {
     const int n=static_cast<int>(std::floor(q));
     double sum=0, correction=0, power=theta;
@@ -69,8 +69,9 @@ inline double plgser(double q,double theta,bool lower_tail,bool log_p) {
 }
 
 inline double qlgser(double p,double theta,bool lower_tail,bool log_p) {
-  if (!(theta>0 && theta<1)) return special::kNaN;
-  return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),1,special::kPosInf,
+  if (!(theta>=0 && theta<1)) return special::kNaN;
+  return special::discrete_quantile(special::discrete_log_tails(p,lower_tail,log_p),1,
+    theta==0 ? 1 : special::kPosInf,
     [&](double x) {
       const double lo=plgser(x,theta,true,true),up=plgser(x,theta,false,true);
       return lo<up?special::tails_from_log(lo,true):special::tails_from_log(up,false);
@@ -80,7 +81,8 @@ inline double qlgser(double p,double theta,bool lower_tail,bool log_p) {
 template <typename Rng>
 inline double rlgser(Rng &rng, double theta) {
   // Single runif call per sample; preserve the recurrence on ordinary inputs.
-  if (!(theta>0 && theta<1)) return special::kNaN;
+  if (!(theta>=0 && theta<1)) return special::kNaN;
+  if (theta==0) return 1;
   double u = rng.runif(0.0, 1.0);
   double pk = -theta / std::log(1.0 - theta);
   double k = 1.0;
