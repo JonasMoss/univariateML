@@ -57,7 +57,8 @@ class Selection(unittest.TestCase):
                      'bindings/r/scripts/test_local.R', 'bindings/js/test.mjs',
                      'univariateML-cpp/tests/test_support.hpp', 'Justfile']:
             selected, _, shared = changed.select([path])
-            self.assertEqual(len(selected), 99)
+            # 85 fitted families (dossiers with mle.hpp): 99 at 5cb18df9, +gengamma +expweibull, -16 retired in d68aac40.
+            self.assertEqual(len(selected), 85)
             self.assertEqual(shared, [path])
         for path in ['dev/research/example.md', 'bindings/r/man/example.Rd',
                      'univariateML-cpp/README.md', 'bindings/r/man/figures/logo.svg']:
