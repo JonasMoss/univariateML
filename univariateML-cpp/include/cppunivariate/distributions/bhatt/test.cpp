@@ -117,6 +117,9 @@ TEST_CASE("bhatt: central density preserves the golden fit") {
   CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kBhattGoldenTol));
   CHECK(r.a == doctest::Approx(g.estimates.at("a")).epsilon(mltest::kBhattGoldenTol));
 #endif
+  CHECK(r.mu == doctest::Approx(g.estimates.at("mu")).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.sigma == doctest::Approx(g.estimates.at("sigma")).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(r.a == doctest::Approx(g.estimates.at("a")).epsilon(mltest::kFitReferenceTol).scale(0));
 }
 
 
@@ -270,7 +273,7 @@ TEST_CASE("bhatt certificate: frozen all-free proposal fails quantitative accept
   const auto root=cppunivariate::bhatt_detail::cert_newton(model,p,1e-10,500);
   REQUIRE(root.ok);REQUIRE(root.accurate);
   double m,s,a;model.coordinates(root.center,m,s,a);
-  CHECK(m==doctest::Approx(-0.00380006892159174971312956250794).epsilon(1e-8));
+  CHECK(m==doctest::Approx(-0.00380006892159174971312956250794).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(s==doctest::Approx(1.05789733329049518933051976791).epsilon(1e-10));
   CHECK(a==doctest::Approx(1.73360592386775098991319797969).epsilon(1e-10));
 }
@@ -633,56 +636,56 @@ TEST_CASE("Bhatt near-normal width uses compensated conditional information") {
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.039846463745918638311694566828581423201).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.004094496367781407081195980177108847639866).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.004094496367781407081195980177108847639866).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-2.2953786576652018,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.2953786576652018};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.039849625569304982307778102281454997682).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.0004094497804150649992981126273979976138223).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0004094497804150649992981126273979976138223).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-2.295378680389451,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.295378680389451};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.039849657187511806144415934116544990922).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.00004094497015544593154100988883080603345425).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.00004094497015544593154100988883080603345425).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-2.295378680616693,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.295378680616693};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.039849657503693500909370966981651598209).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.000004094654376718823017416018409465649513465).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.000004094654376718823017416018409465649513465).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-2.2953786806189656,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.2953786806189656};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.039849657506855293140763323020074800738).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.0000004111937972951050174315828930614206026682).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0000004111937972951050174315828930614206026682).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-2.295376385240308,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.49776012604247843,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.259106988886899};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
-    CHECK(r.mu==doctest::Approx(0.003186530182329540909924448955887776008541).scale(1.).epsilon(1e-10));
+    CHECK(r.mu==doctest::Approx(0.003186530182329540909924448955887776008541).scale(0).epsilon(mltest::kFitReferenceTol));
     CHECK(r.sigma==doctest::Approx(1.033217817279459998849562158347530522123).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.000274693865010531770914650844051654754296).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.000274693865010531770914650844051654754296).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-2.295376385240308,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.49776012604247843,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.2591070114757104};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,NAN);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
-    CHECK(r.mu==doctest::Approx(0.003186531311770107732783650345216395565785).scale(1.).epsilon(1e-10));
+    CHECK(r.mu==doctest::Approx(0.003186531311770107732783650345216395565785).scale(0).epsilon(mltest::kFitReferenceTol));
     CHECK(r.sigma==doctest::Approx(1.033217831916054578958285419455410491333).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.000002746910892357414539911522707874376779877).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.000002746910892357414539911522707874376779877).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-2.2953786576652018,-1.439531470938456,-1.150349380376008,-0.9345892910734801,-0.7554150263604693,-0.5977601260424784,-0.4537621901698794,-0.31863936396437514,-0.1891184262727925,-0.06270677794321379,0.06270677794321379,0.1891184262727925,0.31863936396437514,0.4537621901698794,0.5977601260424784,0.7554150263604693,0.9345892910734801,1.150349380376008,1.439531470938456,2.2953786576652018};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,NAN,NAN,0.);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.039849625569304982307778102281454997682).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.0004094497804150649992981126273979976138223).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0004094497804150649992981126273979976138223).scale(0).epsilon(mltest::kFitReferenceTol));
   }
 }
 
@@ -692,42 +695,42 @@ TEST_CASE("Bhatt held-sigma near-normal width uses compensated information") {
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.002449489515330941548239093413799091440848).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.002449489515330941548239093413799091440848).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-1.7320508248893853,0.0,0.0,0.0,0.0,1.7320508248893853};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,NAN);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.0002449489737879066845646996371195534998127).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0002449489737879066845646996371195534998127).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-1.7320508077420824,0.0,0.0,0.0,0.0,1.7320508077420824};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,NAN);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.00002449490073900113777041007844485492656603).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.00002449490073900113777041007844485492656603).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-1.7320508075706094,0.0,0.0,0.0,0.0,1.7320508075706094};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,NAN);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.000002449503039613454026040039770080773560921).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.000002449503039613454026040039770080773560921).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-1.7320508075688945,0.0,0.0,0.0,0.0,1.7320508075688945};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,NAN);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.0000002442310592462781698723541020695304031185).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0000002442310592462781698723541020695304031185).scale(0).epsilon(mltest::kFitReferenceTol));
   }
   { const std::vector<double> x{-1.7320508075688945,0.0,0.0,0.0,0.0,1.7320508075688945};
     const auto r=cppunivariate::bhatt_mle(mltest::as_span(x),1e-10,1000,1.,NAN,0.);
     REQUIRE(r.status==cppunivariate::BhattStatus::Ok);CHECK_FALSE(r.certified);
     CHECK(r.mu==doctest::Approx(0.0).scale(1.).epsilon(1e-10));
     CHECK(r.sigma==doctest::Approx(1.0).scale(0.).epsilon(1e-10));
-    CHECK(r.a==doctest::Approx(0.0000002442310592462781698723541020695304031185).scale(1.).epsilon(1e-10));
+    CHECK(r.a==doctest::Approx(0.0000002442310592462781698723541020695304031185).scale(0).epsilon(mltest::kFitReferenceTol));
   }
 }
 

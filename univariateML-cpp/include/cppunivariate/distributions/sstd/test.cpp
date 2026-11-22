@@ -362,8 +362,8 @@ TEST_CASE("sstd: held-shape certificates enumerate competing location modes") {
  REQUIRE(r.status==cppunivariate::SstdStatus::CertificateFailure);
  REQUIRE(r.stop_detail.comparison_tie);
  REQUIRE(r.stop_detail.candidates.size()>=2);
- CHECK(r.stop_detail.candidates.front().coef[0]==doctest::Approx(-std::sqrt(3.)).epsilon(1e-8));
- CHECK(r.stop_detail.candidates.back().coef[0]==doctest::Approx(std::sqrt(3.)).epsilon(1e-8));
+ CHECK(r.stop_detail.candidates.front().coef[0]==doctest::Approx(-std::sqrt(3.)).epsilon(mltest::kFitReferenceTol).scale(0));
+ CHECK(r.stop_detail.candidates.back().coef[0]==doctest::Approx(std::sqrt(3.)).epsilon(mltest::kFitReferenceTol).scale(0));
  const std::vector<double> y{-1,.2,.4,1,2};
  const auto f=cppunivariate::sstd_mle(mltest::as_span(y),1e-6,200,nan,1,5,2);
  REQUIRE(f.status==cppunivariate::SstdStatus::Ok);CHECK(f.certified);
@@ -374,7 +374,7 @@ TEST_CASE("sstd: nonunit-skew scale certificate retains both maximum branches") 
  const std::vector<double> x{-35.321072334324725,11.459074428000962,-.015351125824354262,-.2513099360462538,-297.3459307209368,.5881721220894813};
  const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,NAN,3,10);
  REQUIRE(r.status==cppunivariate::SstdStatus::Ok);CHECK(r.certified);
- CHECK(std::log(r.sigma)==doctest::Approx(5.894765235143508).epsilon(1e-8));
+ CHECK(std::log(r.sigma)==doctest::Approx(5.894765235143508).epsilon(mltest::kFitReferenceTol).scale(0));
  CHECK(r.logLik==doctest::Approx(-38.8073025560888).epsilon(1e-12));
  // Removing the old fixed log(sd) window must preserve very small units.
  std::vector<double> tiny;for(double v:x)tiny.push_back(v*1e-30);

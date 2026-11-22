@@ -37,8 +37,8 @@ test_that("sgomp recycling missing values and RNG follow R", {
 test_that("sgomp faces and fixed subsets have consistent likelihood", {
   x <- c(0, 0, 0, 1, 10)
   f <- mlsgomp(x)
-  expect_equal(unname(f['eta']), 0)
-  expect_equal(unname(f['b']), 1 / mean(x))
+  expect_identical(unname(f['eta']), 0)
+  expect_lte(abs(unname(f['b']) - 5/11), 1e-10 * (5/11))
   expect_equal(attr(f, 'logLik'), sum(dsgomp(x = x, b = f[1], eta = f[2], log = TRUE)))
   expect_error(mlsgomp(rep(2, 3)), 'unbounded')
   expect_error(mlsgomp(c(0, 0), eta = 2), 'unbounded')
@@ -87,7 +87,7 @@ test_that("sgomp held-coordinate fits agree with scalar oracles", {
     expect_equal(attr(f, 'logLik'), oracle$objective, tolerance = 1e-8)
   }
   f <- mlsgomp(c(0, 0), b = 2)
-  expect_equal(as.numeric(f), c(2, 0))
+  expect_identical(as.numeric(f), c(2, 0))
   expect_equal(attr(f, 'logLik'), 2 * log(2))
 })
 

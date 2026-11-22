@@ -242,15 +242,14 @@ TEST_CASE("bnbinom: scalar all-zero limits for each free coordinate") {
 TEST_CASE("bnbinom: noninteger scalar roots against independent 80-digit oracle") {
   // oracle.py/oracle.json in dev/research/evaluations/2026-11-06-bnbinom-cert-data.
   const std::vector<int> x{0,0,1,2,3,6,12,24};
-  const std::vector<double> roots{1.2350155733754016305,.7885962837901386579,22.077541746455293487};
+  const std::vector<double> roots{1.2350155733754018,.7885962837901386,22.077541746455296};
   const std::vector<double> ll{-22.705386239276122233,-23.775023031191501427,-23.021170044851784493};
   for(int j=0;j<3;++j) {
     std::vector<double> p{.37,1.8,4.6};p[j]=NAN;
     const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,p[0],p[1],p[2]);
     REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
     const std::vector<double> estimate{f.size,f.alpha,f.beta};
-    // TODO(TASK-150.7): relative error 3.8e-09 native, 3.8e-09 double-only.
-    CHECK(estimate[j]==doctest::Approx(roots[j]).epsilon(1e-8));
+    CHECK(estimate[j]==doctest::Approx(roots[j]).epsilon(1e-8).scale(0));
     CHECK(f.logLik==doctest::Approx(ll[j]).epsilon(1e-12));
     // The certificate root must beat fixed multiplicative perturbations.
     auto lo=estimate,hi=estimate;lo[j]*=.9;hi[j]*=1.1;
@@ -275,8 +274,7 @@ TEST_CASE("bnbinom: scalar scaled exact roots and floating-point failure") {
   for(double beta:{1e-8,.01,10.,100.}) {
     const auto f=cppunivariate::bnbinom_mle({x.data(),x.size()},1e-8,600,1,NAN,beta);
     REQUIRE(f.status==cppunivariate::BnbinomStatus::Ok);
-    // TODO(TASK-150.7): relative error 3.2e-09 native, 3.2e-09 double-only.
-    CHECK(f.alpha==doctest::Approx(std::sqrt(beta*(beta+1))).epsilon(1e-8));
+    CHECK(f.alpha==doctest::Approx(std::sqrt(beta*(beta+1))).epsilon(1e-8).scale(0));
   }
   // At this scale the digamma cancellation margin cannot isolate the shape
   // to 1e-8 relative accuracy. The exact root still exists.

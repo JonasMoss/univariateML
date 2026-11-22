@@ -230,9 +230,11 @@ test_that("constant mixed-power finite regimes return certified finite fits", {
 test_that("held-scale free-power profiles are globally enclosed", {
   x <- c(.03,.1,.3,.7,1,2,5,20)
   f <- mlgb2(x,shape1=2,scale=1)
-  expect_equal(unname(f[c('shape2','shape3')]),c(.57834363213651174,1.7944752190424211),tolerance=1e-7)
+  expected <- c(.5783436321372848,1.794475219041364)
+  expect_true(all(abs(unname(f[c('shape2','shape3')]) - expected) <= 1e-10 * abs(expected)))
   f <- mlgb2(x,shape3=3,scale=1)
-  expect_equal(unname(f[c('shape1','shape2')]),c(3.3085427329308605,.43155118384080654),tolerance=1e-7)
+  expected <- c(3.308542732930816,.4315511838408103)
+  expect_true(all(abs(unname(f[c('shape1','shape2')]) - expected) <= 1e-10 * abs(expected)))
 })
 
 test_that("unit-shape inverse-Burr reduction preserves an uncertified restoration", {

@@ -104,10 +104,10 @@ test_that("bhatt CDF matches an independent normal mixture integral", {
   }
 })
 test_that("bhatt constant samples respect each held subset", {
-  expect_equal(as.numeric(mlbhatt(rep(2,5),sigma=1)),c(2,1,0))
+  expect_identical(as.numeric(mlbhatt(rep(2,5),sigma=1)),c(2,1,0))
   expect_error(mlbhatt(rep(2,5),a=1),"mlunif")
   f <- mlbhatt(rep(2,5),sigma=1,a=1)
-  expect_equal(f[["mu"]],2)
+  expect_identical(unname(f[["mu"]]),2)
 })
 test_that("bhatt held-scale fits respect extreme changes of units", {
   x <- c(-3,-1,0,1,3); f <- mlbhatt(x,sigma=1,a=2)
@@ -236,10 +236,10 @@ test_that("bhatt independent density oracle retains tiny uniform widths", {
 test_that("P3 bhatt returns the normal maximum as an attained member", {
  x<-c(-10,rep(0,20),10)
  expect_silent(f<-mlbhatt(x))
- expect_equal(f[["a"]],0)
+ expect_identical(unname(f[["a"]]),0)
  expect_equal(attr(f,"logLik"),attr(mlnorm(x),"logLik"))
  f<-mlbhatt(x,mu=1,sigma=4,a=0)
- expect_equal(as.numeric(f),c(1,4,0))
+ expect_identical(as.numeric(f),c(1,4,0))
  expect_equal(attr(f,"logLik"),sum(dnorm(x,1,4,log=TRUE)))
 })
 
@@ -276,7 +276,7 @@ test_that("bhatt RMS domination certifies the conditional normal member", {
   x <- c(-10,rep(0,20),10)
   f <- mlbhatt(x,mu=0,sigma=4)
   expect_identical(attr(f,"certified"),TRUE)
-  expect_equal(as.numeric(f),c(0,4,0))
+  expect_identical(as.numeric(f),c(0,4,0))
   expect_equal(attr(f,"fixed"),c("mu","sigma"))
   expect_equal(attr(f,"logLik"),sum(dnorm(x,0,4,log=TRUE)))
 })
@@ -321,7 +321,7 @@ test_that("bhatt reports per-fit certification without suppressing search result
 test_that("bhatt normal member inclusion fallback uses common_result", {
   f <- mlbhatt(c(-3,-1,0,1,3),a=0,tol=1e-30)
   expect_identical(attr(f,"certified"),FALSE)
-  expect_equal(as.numeric(f),c(0,2,0))
+  expect_identical(as.numeric(f),c(0,2,0))
 })
 
 test_that("Bhatt retains a finite fit when the uniform comparison is unclosed", {

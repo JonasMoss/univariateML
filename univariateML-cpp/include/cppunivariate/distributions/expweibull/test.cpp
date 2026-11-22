@@ -237,8 +237,7 @@ TEST_CASE("expweibull: relaxed coefficient tolerance is honored") {
   CHECK_FALSE(r.certified);
   CHECK(r.scale==doctest::Approx(std::exp(-.0001425075388296187915)).epsilon(mltest::kFitReferenceTol).scale(0));
   CHECK(r.shape==doctest::Approx(23551.466260172223).epsilon(mltest::kFitReferenceTol).scale(0));
-  // TODO(TASK-150.7): relative error 4e-14 native, 2.1e-10 double-only.
-  CHECK(r.exponent==doctest::Approx(std::exp(29.646289260797796367)).epsilon(1e-6));
+  CHECK(r.exponent==doctest::Approx(7502738932447.38).epsilon(1e-6).scale(0));
 }
 TEST_CASE("expweibull: subnormal held Weibull shape has a scale enclosure") {
   const std::vector<double> x{.5,1,2,4};

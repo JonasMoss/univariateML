@@ -115,7 +115,7 @@ GOLDEN_TOLERANCE <- c(
   ztgeom = 1e-17,
   ztnbinom = 1e-14, # analytic Newton refinement
   ztpois = 5e-16
-  , bhatt = 2e-6 # Deferred to bhatt-allfree
+  , bhatt = 2e-6 # Legacy joint check includes logLik; coefficients checked separately.
 )
 
 # Declared default controls; zero means no exposed scalar control, not zero error.
@@ -262,6 +262,8 @@ if (nzchar(DISTRIBUTIONS_DIR) && dir.exists(DISTRIBUTIONS_DIR)) {
                                tolerance = tol), report, sep = ",", row.names = FALSE,
                     col.names = !file.exists(report), append = file.exists(report))
       }
+      if (identical(g$id, "bhatt"))
+        expect_true(all(abs(got - want) <= 1e-10 * abs(want)))
       expect_equal(got, want, tolerance = tol)
     })
   }

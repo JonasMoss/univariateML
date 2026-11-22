@@ -1,0 +1,8 @@
+snap-native cases 138 differing 0 only-new 0 only-old 0
+snap-double cases 138 differing 0 only-new 0 only-old 0
+differs ('nbinom+zero=inflated', '008660', '{"pi": 0.2573876163521669, "size": 1.5215075359537307}') ['iterations']
+snap-routes-native cases 151 differing 1 only-new 0 only-old 0
+differs ('nbinom+zero=inflated', '008660', '{"pi": 0.2573876163521669, "size": 1.5215075359537307}') ['iterations']
+snap-routes-double cases 151 differing 1 only-new 0 only-old 0
+native iterations 35 -> 32 held {'pi': 0.2573876163521669, 'size': 1.5215075359537307} coefficients {'pi': '0x1.07909e8a8305cp-2', 'prob': '0x1.b40a9b339ba1cp-1', 'size': '0x1.8581849389effp+0'}
+double iterations 35 -> 32 held {'pi': 0.2573876163521669, 'size': 1.5215075359537307} coefficients {'pi': '0x1.07909e8a8305cp-2', 'prob': '0x1.b40a9b339ba1cp-1', 'size': '0x1.8581849389effp+0'}
