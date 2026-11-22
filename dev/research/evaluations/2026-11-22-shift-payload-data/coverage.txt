@@ -1,0 +1,14 @@
+native
+fpareto	zero	other	468
+fpareto	zero	selected limit with coefficients	104
+pareto2	zero	other	95
+pareto2	zero	selected limit with coefficients	21
+pareto4	zero	other	142
+pareto4	zero	selected limit with coefficients	62
+double
+fpareto	zero	other	468
+fpareto	zero	selected limit with coefficients	104
+pareto2	zero	other	95
+pareto2	zero	selected limit with coefficients	21
+pareto4	zero	other	142
+pareto4	zero	selected limit with coefficients	62

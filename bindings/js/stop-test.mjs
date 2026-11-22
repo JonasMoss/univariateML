@@ -107,11 +107,11 @@ test('held-power faces retain transformed coefficients', () => {
 
 test('translated and reciprocal delegates preserve certified stops', () => {
   for(const [family,data,held,model,coef,ll] of [
-    ['pareto2',[3,3,3],{min:1},'exp',{rate:.5},-3*(1+Math.log(2))],
+    ['pareto2',[3,3,3],{min:1},'unavailable:shifted-exp',{rate:.5,min:1},-3*(1+Math.log(2))],
     ['invpareto',[2,2,2],{},'invexp',{scale:2},-3*(1+Math.log(2))],
     ['pareto4',[4,4,4],{min:1,shape2:2},'unavailable:shifted-weibull',{shape:2,scale:3,min:1},3*(Math.log(2/3)-1)],
     ['gb2',[3,3,3],{shape3:1,shape2:2},'weibull',{shape:2,scale:3},3*(Math.log(2/3)-1)],
-    ['fpareto',[4,4,4],{min:1,shape3:1,shape2:2},'weibull',{shape:2,scale:3},3*(Math.log(2/3)-1)],
+    ['fpareto',[4,4,4],{min:1,shape3:1,shape2:2},'unavailable:shifted-weibull',{shape:2,scale:3,min:1},3*(Math.log(2/3)-1)],
     ['betapr',[2,2,2],{shape1:1},'exp',{rate:.5},-3*(1+Math.log(2))]
   ]) {
     assert.throws(()=>modifierRoute(api,family).fit(data,held),e=>{

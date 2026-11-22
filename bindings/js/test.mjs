@@ -1728,7 +1728,7 @@ test('GB2 subunit held shapes certify endpoint faces with held-endpoint advice',
     assert.equal(e.estimates.b,1);assert.match(e.message,/b = scale/);return true;
   });
   assert.throws(()=>api.fpareto.fit(Float64Array.from(x,v=>v+2),{min:2,shape1:.4,scale:1},{iterlim:1}),e=>{
-    assert.equal(e.kind,'limit');assert.equal(e.model,'power');
+    assert.equal(e.kind,'limit');assert.equal(e.model,'unavailable:shifted-power');
     assert.equal(e.estimates.alpha,1);return true;
   });
   assert.throws(()=>api.gb2.fit(x,{shape1:2,shape3:3},{iterlim:1}),e=>{
@@ -1768,7 +1768,7 @@ test('GB2 held-scale free-power profiles use global coefficient enclosures',asyn
   assert.equal(f.status,'Ok');assert.ok(Math.abs(f.estimates.shape2/.57834363213651174-1)<1e-7);
   const e=new Float64Array([.25,.5,1,1]);
   assert.throws(()=>api.fpareto.fit(Float64Array.from(e,v=>v+2),{min:2,shape1:1.1,scale:1},{iterlim:1}),error=>{
-    assert.equal(error.kind,'limit');assert.equal(error.model,'power');return true;
+    assert.equal(error.kind,'limit');assert.equal(error.model,'unavailable:shifted-power');return true;
   });
 });
 test('bnbinom Bernstein supporting polynomials prove additional all-free and pair faces',async()=>{
@@ -2141,3 +2141,32 @@ test('discrete log neighbours use accurate CDF tails',()=>{
   for(const lower of [false,true]) for(const log of [false,true])
     assert.equal(m.qhyper(new Float64Array([log?Math.log(.5):.5]),[5,10,5],lower,log)[0],2);
 });
+
+for (const {family, law, x, held, names} of [
+  {family: 'fpareto', law: 'trgamma', x: Array(8).fill(4),
+   held: {min: 2, shape2: 2, shape3: 2}, names: ['shape1', 'shape2', 'scale']},
+  {family: 'pareto2', law: 'exp', x: Array.from({length: 10}, (_, i) => i + 3),
+   held: {min: 2}, names: ['rate']},
+  {family: 'pareto4', law: 'pareto', x: [3, 3, 4, 5],
+   held: {min: 2, scale: 1}, names: ['a', 'b']},
+].filter(({family}) => selectedFamily(family))) {
+  test(`${family} limit likelihood is reproducible from the shifted payload`, async () => {
+    const api = await (await import('./index.mjs')).default();
+    assert.throws(() => api[family].fit(x, held), error => {
+      assert.equal(error.kind, 'limit');
+      assert.equal(error.model, `unavailable:shifted-${law}`);
+      const p = error.estimates;
+      assert.equal(p.min, 2);
+      const excess = Float64Array.from(x, v => v - p.min);
+      const terms = m[`d${law}`](excess, names.map(name => p[name]), true, true);
+      let ll = terms.reduce((sum, term) => sum + term, 0);
+      if (family === 'pareto4') {
+        assert.equal(error.candidates[0].min, p.min);
+        assert.equal(error.candidates[0].endpoint_log_factor, p.endpoint_log_factor);
+        ll += excess.filter(v => v === p.b).length * p.endpoint_log_factor;
+      }
+      assert.ok(Math.abs(ll - error.limit_loglik) < 1e-12);
+      return true;
+    });
+  });
+}

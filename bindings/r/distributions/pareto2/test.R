@@ -105,8 +105,8 @@ test_that("P2 pareto2 validates new held values", {
 test_that("Pareto II carries the shifted exponential stop", {
   e <- tryCatch(mlpareto2(rep(3, 3), min = 1), error = identity)
   expect_s3_class(e, "univariateML_limit")
-  expect_identical(e$model, "exp")
-  expect_equal(e$estimates, c(rate = .5))
+  expect_identical(e$model, "unavailable:shifted-exp")
+  expect_equal(e$estimates, c(rate = .5, min = 1))
   expect_equal(e$limit_loglik, -3 * (1 + log(2)))
 })
 
@@ -123,4 +123,13 @@ test_that("Pareto II reciprocal scale overflow is numerical even with a tight to
     expect_match(conditionMessage(e),"scale cannot be represented")
     if("scale" %in% names(e$candidates))expect_true(all(is.finite(e$candidates$scale)))
   }
+})
+
+test_that("Pareto II evaluates its exponential face using the payload offset", {
+  x <- 3:12
+  e <- tryCatch(mlpareto2(x, min = 2), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  expect_identical(e$model, "unavailable:shifted-exp")
+  expect_equal(sum(dexp(x - e$estimates[["min"]], e$estimates[["rate"]], log = TRUE)),
+               e$limit_loglik, tolerance = 1e-12)
 })

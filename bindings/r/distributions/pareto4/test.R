@@ -232,3 +232,17 @@ test_that("pareto4 shifted limit payloads describe the original data", {
 test_that("pareto4 validates data before deciding a free-threshold outcome", {
   expect_error(mlpareto4(c(NaN,2),min=NULL),class="univariateML_invalid")
 })
+
+test_that("Pareto IV payload carries the pointwise factor at a tied endpoint", {
+  x <- c(3, 3, 4, 5)
+  e <- tryCatch(mlpareto4(x, min = 2, scale = 1), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  expect_identical(e$model, "unavailable:shifted-pareto")
+  p <- e$estimates
+  excess <- x - p[["min"]]
+  parent <- mlpareto(a = p[["a"]], b = p[["b"]])
+  ll <- sum(dml(excess, parent, log = TRUE)) + sum(excess == p[["b"]]) * p[["endpoint_log_factor"]]
+  expect_equal(ll, e$limit_loglik, tolerance = 1e-12)
+  expect_equal(e$candidates$min, p[["min"]])
+  expect_equal(e$candidates$endpoint_log_factor, p[["endpoint_log_factor"]])
+})

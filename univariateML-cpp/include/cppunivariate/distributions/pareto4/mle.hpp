@@ -61,6 +61,11 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
   if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{std::isnan(shape1),std::isnan(shape2),std::isnan(scale)}},tol,maxit,false,min,r.stop_detail)){r.status=BurrStatus::NumericalFailure;record_accuracy(r,tol,{r.shape1,r.shape2,r.scale},{std::isnan(shape1)?r.shape1:0,std::isnan(shape2)?r.shape2:0,std::isnan(scale)?r.scale:0});}
   if(r.status==BurrStatus::Ok&&!r.certified){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
   auto detail=r.stop_detail;
+  if(detail.limit_model==StopModel::None && !detail.limit_coef.empty()) {
+    if(r.status==BurrStatus::AllGeOne)detail.limit_model=StopModel::Pareto;
+    if(r.status==BurrStatus::WeibullBoundary)detail.limit_model=StopModel::Weibull;
+  }
+  translate_stop_faces(detail,min);
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);
   return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
 }
@@ -94,6 +99,11 @@ inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int m
   if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{true,true,true}},tol,maxit,false,min,r.stop_detail)){r.status=BurrStatus::NumericalFailure;record_accuracy(r,tol,{r.shape1,r.shape2,r.scale},{r.shape1,r.shape2,r.scale});}
   if(r.status==BurrStatus::Ok&&!r.certified){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
   auto detail=r.stop_detail;
+  if(detail.limit_model==StopModel::None && !detail.limit_coef.empty()) {
+    if(r.status==BurrStatus::AllGeOne)detail.limit_model=StopModel::Pareto;
+    if(r.status==BurrStatus::WeibullBoundary)detail.limit_model=StopModel::Weibull;
+  }
+  translate_stop_faces(detail,min);
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);
   return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
 }

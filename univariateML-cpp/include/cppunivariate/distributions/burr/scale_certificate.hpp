@@ -65,6 +65,7 @@ inline Result scale_fit(span x,double scale,double tol,int maxit,bool reflect=fa
     if(!alpha.valid()||alpha.lo<=0||!value.valid())return out;
     out.outcome=Outcome::Pareto;
     out.stop_detail.limit_coef={n/s,scale};
+    if(zeros)out.stop_detail.endpoint_log_factor=-std::log(2.);
     out.stop_detail.limit_loglik=n*std::log(n/s)-n+jac-zeros*std::log(2.);
     out.stop_detail.loglik_lower=value.lo;out.stop_detail.loglik_upper=value.hi;
     out.stop_detail.candidates.push_back({{n/s,scale},value.lo,value.hi,StopModel::Pareto});

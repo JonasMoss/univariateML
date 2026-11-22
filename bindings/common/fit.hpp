@@ -191,6 +191,12 @@ inline std::string stop_model(cppunivariate::StopModel model) {
     case cppunivariate::StopModel::ReflectedHt:return "unavailable:reflected-half-t";
     case cppunivariate::StopModel::Trgamma:return "trgamma";
     case cppunivariate::StopModel::InvTrgamma:return "invtrgamma";
+    case cppunivariate::StopModel::ShiftedExp:return "unavailable:shifted-exp";
+    case cppunivariate::StopModel::ShiftedWeibull:return "unavailable:shifted-weibull";
+    case cppunivariate::StopModel::ShiftedInvWeibull:return "unavailable:shifted-invweibull";
+    case cppunivariate::StopModel::ShiftedPareto:return "unavailable:shifted-pareto";
+    case cppunivariate::StopModel::ShiftedPower:return "unavailable:shifted-power";
+    case cppunivariate::StopModel::ShiftedLnorm:return "unavailable:shifted-lognormal";
     case cppunivariate::StopModel::ShiftedTrgamma:return "unavailable:shifted-trgamma";
     case cppunivariate::StopModel::ShiftedInvTrgamma:return "unavailable:shifted-invtrgamma";
     case cppunivariate::StopModel::UnitGamma:return "unavailable:unit-gamma";
@@ -215,6 +221,12 @@ inline std::vector<std::string> stop_names(const std::string& model,const std::v
   if(model=="ztpois")return {"lambda"};
   if(model=="zmpois")return {"lambda","p0"};
   if(model=="zip")return {"lambda","pi"};
+  if(model=="unavailable:shifted-exp")return {"rate","min"};
+  if(model=="unavailable:shifted-weibull")return {"shape","scale","min"};
+  if(model=="unavailable:shifted-invweibull")return {"shape","scale","min"};
+  if(model=="unavailable:shifted-pareto")return {"a","b","min","endpoint_log_factor"};
+  if(model=="unavailable:shifted-power")return {"alpha","beta","min","endpoint_log_factor"};
+  if(model=="unavailable:shifted-lognormal")return {"meanlog","sdlog","min"};
   if(model=="trgamma"||model=="invtrgamma")return {"shape1","shape2","scale"};
   if(model=="unavailable:shifted-trgamma"||model=="unavailable:shifted-invtrgamma")return {"shape1","shape2","scale","min"};
   if(model=="cmp")return {"lambda","nu"};
@@ -292,6 +304,12 @@ inline std::string comparison_limit_advice(const std::string& model) {
   return "`ml"+model+"`";
 }
 inline std::string comparison_limit_sentence(const std::string& model) {
+  const std::string shifted="unavailable:shifted-";
+  if(model.compare(0,shifted.size(),shifted)==0) {
+    const std::string law=model.substr(shifted.size());
+    return " The best candidate is the "+law+" limit; use `ml"+
+      (law=="lognormal"?"lnorm":law)+"(x - min)`.";
+  }
   const std::string prefix="unavailable:";
   if(model.compare(0,prefix.size(),prefix)==0) {
     std::string law=model.substr(prefix.size());

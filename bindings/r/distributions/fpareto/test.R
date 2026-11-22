@@ -148,17 +148,23 @@ test_that("Feller Pareto transports held-power finite fits and excess gamma face
   expect_equal(as.numeric(a[1:4]),as.numeric(b),tolerance=1e-10)
   e <- tryCatch(mlfpareto(rep(4,8),min=2,shape2=2,shape3=2),error=identity)
   expect_s3_class(e,'univariateML_limit')
-  expect_equal(e$model,'trgamma')
+  expect_equal(e$model,'unavailable:shifted-trgamma')
   expect_equal(unname(e$estimates[c('shape1','shape2')]),c(2,2))
-  expect_false('min' %in% names(e$estimates))
+  expect_equal(unname(e$estimates['min']),2)
 })
 
 test_that("Feller Pareto held-endpoint power stops retain their model identity", {
   e <- tryCatch(mlfpareto(c(3,3,2.5,2.25),min=2,shape1=1,scale=1),error=identity)
   expect_s3_class(e,'univariateML_limit')
-  expect_identical(e$model,'power')
-  expect_identical(names(e$estimates),c('alpha','beta'))
+  expect_identical(e$model,'unavailable:shifted-power')
+  expect_identical(names(e$estimates),c('alpha','beta','min','endpoint_log_factor'))
   expect_equal(unname(e$estimates['alpha']),1)
+  p <- e$estimates
+  excess <- c(3, 3, 2.5, 2.25) - p[["min"]]
+  parent <- mlpower(alpha = p[["alpha"]], beta = p[["beta"]])
+  ll <- sum(dml(excess, parent, log = TRUE)) +
+    sum(excess == p[["alpha"]]) * p[["endpoint_log_factor"]]
+  expect_equal(ll, e$limit_loglik, tolerance = 1e-12)
 })
 
 test_that("held beta shapes transport coefficient certificate solver stop witnesses", {
@@ -172,7 +178,7 @@ test_that("held beta shapes transport coefficient certificate solver stop witnes
 test_that("subunit opposite shape endpoint certificate preserves shifted advice", {
   e <- tryCatch(mlfpareto(2+c(.1,.2,.4,.8),min=2,shape1=.4,scale=1,iterlim=1),error=identity)
   expect_s3_class(e,'univariateML_limit')
-  expect_equal(e$model,'power')
+  expect_equal(e$model,'unavailable:shifted-power')
   expect_equal(unname(e$estimates['alpha']),1)
   expect_match(conditionMessage(e),'both endpoints held')
 })
@@ -188,4 +194,14 @@ test_that("fpareto delegate follow-up preserves the accepted fit", {
   f <- mlfpareto(exp(c(-1.1,-1)),min=0,shape3=1,scale=1,tol=1e-8,iterlim=1000)
   expect_identical(attr(f,"certified"),FALSE)
   expect_true(is.finite(as.numeric(logLik(f))))
+})
+
+test_that("Feller Pareto evaluates its transformed gamma face using the payload offset", {
+  x <- rep(4, 8)
+  e <- tryCatch(mlfpareto(x, min = 2, shape2 = 2, shape3 = 2), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  expect_identical(e$model, "unavailable:shifted-trgamma")
+  p <- e$estimates
+  parent <- mltrgamma(shape1 = p[["shape1"]], shape2 = p[["shape2"]], scale = p[["scale"]])
+  expect_equal(sum(dml(x - p[["min"]], parent, log = TRUE)), e$limit_loglik, tolerance = 1e-12)
 })

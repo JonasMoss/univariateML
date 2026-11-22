@@ -17,6 +17,7 @@ inline Rcpp::List common_result(const umvl_binding::FitResult& input, bool itera
   const auto fit=umvl_binding::render_fit(input);
   for (const auto& message : fit.warnings) Rcpp::warning("%s", message);
   Rcpp::List candidates;
+  // Preserve model-specific coordinates such as the offset of a shifted face.
   std::vector<std::string> columns;
   for(const auto& candidate:fit.candidates)for(const auto& item:candidate.estimates)
     if(std::find(columns.begin(),columns.end(),item.first)==columns.end())columns.push_back(item.first);
