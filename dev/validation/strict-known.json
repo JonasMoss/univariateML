@@ -1,34 +1,6 @@
 {
  "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, cert-replay.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
  "known": {
-  "phenomenon:flat-maximum|double|bbinom|class|constant-flat-adjacent-sizes": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|bbinom|class|zeros-flat-alpha": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses"
-  },
-  "phenomenon:flat-maximum|double|bbinom|class|zeros-flat-beta": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses"
-  },
-  "phenomenon:flat-maximum|double|bbinom|class|zeros-flat-free": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unsupported"
-  },
-  "phenomenon:flat-maximum|double|bbinom|class|zeros-flat-size-alpha": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses"
-  },
-  "phenomenon:flat-maximum|double|bbinom|class|zeros-flat-size-beta": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses"
-  },
-  "phenomenon:flat-maximum|double|bbinom|class|zeros-flat-size-zero": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses"
-  },
   "phenomenon:flat-maximum|double|binom +truncate=tbinom|class|constant-flat-singleton-window": {
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
@@ -109,66 +81,6 @@
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
   },
-  "phenomenon:flat-maximum|double|binom|class|constant-flat-adjacent-sizes": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|binom|class|zeros-flat-free": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|binom|class|zeros-flat-prob-zero": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|binom|class|zeros-flat-size-zero": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|constant-flat-adjacent-sizes": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unresolved"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|constant-flat-bernoulli": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|constant-flat-free": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|constant-flat-prob-one": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|constant-flat-size": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|zeros-flat-bernoulli": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|zeros-flat-prob": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|zeros-flat-size": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|zeros-flat-size-zero": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|zeros-flat-size-zero-nu": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|cmb|class|zeros-flat-size-zero-prob": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
   "phenomenon:flat-maximum|double|cmp|class|zeros-flat-free": {
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
@@ -196,34 +108,6 @@
   "phenomenon:flat-maximum|double|geom+zero=modified|class|zeros-flat-p0-one": {
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|gev|class|zeros-flat-location-scale": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|gompertz|class|zeros-flat-a": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|gpd|class|zeros-flat-scale": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unsupported"
-  },
-  "phenomenon:flat-maximum|double|gpd|class|zeros-flat-threshold-scale": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unresolved"
-  },
-  "phenomenon:flat-maximum|double|gpd|class|zeros-flat-uniform-translation": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unsupported"
-  },
-  "phenomenon:flat-maximum|double|hyper|class|zeros-flat-k-max": {
-   "ref": "TASK-230",
-   "detail": "expected unique = True"
-  },
-  "phenomenon:flat-maximum|double|hyper|class|zeros-flat-m-max": {
-   "ref": "TASK-230",
-   "detail": "expected unique = True"
   },
   "phenomenon:flat-maximum|double|lgser+zero=modified|class|zeros-flat-free": {
    "ref": "TASK-229",
@@ -305,10 +189,6 @@
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
   },
-  "phenomenon:flat-maximum|double|nhyper|class|constant-flat-adjacent-populations": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
   "phenomenon:flat-maximum|double|pig|class|zeros-flat-free": {
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
@@ -345,57 +225,9 @@
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
   },
-  "phenomenon:flat-maximum|double|sged|class|zeros-flat-reciprocal-skews": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unresolved"
-  },
-  "phenomenon:flat-maximum|double|tlambda|class|zeros-flat-scale": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|tlambda|class|zeros-flat-support-contacts": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unresolved"
-  },
-  "phenomenon:flat-maximum|double|tlambda|class|zeros-flat-uniform-1": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|double|tlambda|class|zeros-flat-uniform-2": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
   "phenomenon:flat-maximum|double|zeta +truncate=zipf|class|constant-flat-singleton-window": {
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|bbinom|class|constant-flat-adjacent-sizes": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|bbinom|class|zeros-flat-alpha": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses"
-  },
-  "phenomenon:flat-maximum|native|bbinom|class|zeros-flat-beta": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses"
-  },
-  "phenomenon:flat-maximum|native|bbinom|class|zeros-flat-free": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unsupported"
-  },
-  "phenomenon:flat-maximum|native|bbinom|class|zeros-flat-size-alpha": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses"
-  },
-  "phenomenon:flat-maximum|native|bbinom|class|zeros-flat-size-beta": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses"
-  },
-  "phenomenon:flat-maximum|native|bbinom|class|zeros-flat-size-zero": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses"
   },
   "phenomenon:flat-maximum|native|binom +truncate=tbinom|class|constant-flat-singleton-window": {
    "ref": "TASK-229",
@@ -477,66 +309,6 @@
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
   },
-  "phenomenon:flat-maximum|native|binom|class|constant-flat-adjacent-sizes": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|binom|class|zeros-flat-free": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|binom|class|zeros-flat-prob-zero": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|binom|class|zeros-flat-size-zero": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|constant-flat-adjacent-sizes": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unresolved"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|constant-flat-bernoulli": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|constant-flat-free": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|constant-flat-prob-one": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|constant-flat-size": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|zeros-flat-bernoulli": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|zeros-flat-prob": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|zeros-flat-size": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|zeros-flat-size-zero": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|zeros-flat-size-zero-nu": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|cmb|class|zeros-flat-size-zero-prob": {
-   "ref": "TASK-229",
-   "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
   "phenomenon:flat-maximum|native|cmp|class|zeros-flat-free": {
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
@@ -564,34 +336,6 @@
   "phenomenon:flat-maximum|native|geom+zero=modified|class|zeros-flat-p0-one": {
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|gev|class|zeros-flat-location-scale": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|gompertz|class|zeros-flat-a": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|gpd|class|zeros-flat-scale": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unsupported"
-  },
-  "phenomenon:flat-maximum|native|gpd|class|zeros-flat-threshold-scale": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unresolved"
-  },
-  "phenomenon:flat-maximum|native|gpd|class|zeros-flat-uniform-translation": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unsupported"
-  },
-  "phenomenon:flat-maximum|native|hyper|class|zeros-flat-k-max": {
-   "ref": "TASK-230",
-   "detail": "expected unique = True"
-  },
-  "phenomenon:flat-maximum|native|hyper|class|zeros-flat-m-max": {
-   "ref": "TASK-230",
-   "detail": "expected unique = True"
   },
   "phenomenon:flat-maximum|native|lgser+zero=modified|class|zeros-flat-free": {
    "ref": "TASK-229",
@@ -673,10 +417,6 @@
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
   },
-  "phenomenon:flat-maximum|native|nhyper|class|constant-flat-adjacent-populations": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
   "phenomenon:flat-maximum|native|pig|class|zeros-flat-free": {
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
@@ -712,26 +452,6 @@
   "phenomenon:flat-maximum|native|pois+zero=modified|class|zeros-flat-p0-one": {
    "ref": "TASK-229",
    "detail": "expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|sged|class|zeros-flat-reciprocal-skews": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unresolved"
-  },
-  "phenomenon:flat-maximum|native|tlambda|class|zeros-flat-scale": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|tlambda|class|zeros-flat-support-contacts": {
-   "ref": "TASK-231",
-   "detail": "expected an estimate, got F:unresolved"
-  },
-  "phenomenon:flat-maximum|native|tlambda|class|zeros-flat-uniform-1": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
-  },
-  "phenomenon:flat-maximum|native|tlambda|class|zeros-flat-uniform-2": {
-   "ref": "TASK-230",
-   "detail": "expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic"
   },
   "phenomenon:flat-maximum|native|zeta +truncate=zipf|class|constant-flat-singleton-window": {
    "ref": "TASK-229",
