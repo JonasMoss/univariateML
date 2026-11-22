@@ -58,7 +58,7 @@ export function modifierAPI(module, id, eligibility, capabilities) {
   const complement=v=>v<-Math.LN2?Math.log1p(-Math.exp(v)):Math.log(-Math.expm1(v));
   const logdiff = (a,b) => b===-Infinity?a:a+complement(Math.min(0,b-a));
   const logadd = (a,b) => {const m=Math.max(a,b);return m===-Infinity?m:m+Math.log1p(Math.exp(Math.min(a,b)-m));};
-  const evaluate = (kind,x,p,flags={}) => {
+  const evaluate = (kind,x,p,flags={},fuzz=true) => {
     const {zero='none',truncate=null,lower=true,log=false}=flags;
     validate(zero,truncate);
     if (zero!=='none') return module[`modifier_${kind}${variant(zero)}`](x,parameters(zero,p),lower,log);
@@ -77,28 +77,92 @@ export function modifierAPI(module, id, eligibility, capabilities) {
     if(eligibility.integer && Math.max(0,Math.ceil(truncate[0]))>=2**53) throw new Error('Conditional integer window cannot be resolved at the required floating-point accuracy');
     const integer=eligibility.integer, a=integer?Math.max(0,Math.ceil(truncate[0]))-1:truncate[0],b=integer?Math.floor(truncate[1]):truncate[1];
     const tail=(x,lower=true)=>module[`p${id}`]([x],p,lower,true)[0];
-    const mass=(a,b)=> {const f=tail(b),lo=f<Math.log(.5),big=lo?f:tail(a,false),small=lo?tail(a):tail(b,false);if(b>a && Number.isFinite(big) && Number.isFinite(small) && small-big>-1e-4) throw new Error('Conditional interval probability cannot be resolved at the required floating-point accuracy');return logdiff(big,small);};
-    const z=mass(a,b);
-    if(!Number.isFinite(z)) throw new Error('Truncation event has zero or unresolved probability');
-    if(64*Number.EPSILON*Math.max(1,Math.abs(z))>1e-10) throw new Error('Conditional normalization cannot be resolved at the required floating-point accuracy');
+    const canEnumerate=integer && Number.isFinite(a) && b<2**53 && b>a && b-a<=256;
+    let mass=(lo,hi)=>{
+      const f=tail(hi),fromLower=f<Math.log(.5);
+      const big=fromLower?f:tail(lo,false),small=fromLower?tail(lo):tail(hi,false);
+      if(hi>lo && Number.isFinite(big) && Number.isFinite(small) && small-big>-1e-4) {
+        throw new Error('Conditional interval probability cannot be resolved at the required floating-point accuracy');
+      }
+      return logdiff(big,small);
+    };
+    let z;
+    let logDensity=v=>module[`d${id}`]([v],p,true,true)[0];
+    if(canEnumerate) {
+      // Keep the common PMF anchor separate from the relative log masses.
+      const counts=Array.from({length:b-a},(_,i)=>a+1+i);
+      const [size,prob]=id==='geom'?[1,p[0]]:p;
+      let anchor,relative;
+      if(['geom','nbinom'].includes(id) && size>0 && prob<1) {
+        const ratios=counts.slice(0,-1).map(k=>
+          (k===0?Math.log(size):Math.log1p((size-1)/(k+1)))+Math.log1p(-prob));
+        let position=0,peak=0,largest=0;
+        for(let i=0;i<ratios.length;++i) {
+          position+=ratios[i];
+          if(position>largest){peak=i+1;largest=position;}
+        }
+        anchor=logDensity(counts[peak]);
+        relative=Array(counts.length);
+        relative[peak]=0;
+        // Limit rounding drift on long walks from the mode.
+        for(const direction of [-1,1]) {
+          let sum=0,error=0;
+          for(let i=peak+direction;i>=0 && i<counts.length;i+=direction) {
+            const step=(direction>0?ratios[i-1]:-ratios[i])-error;
+            const next=sum+step;
+            error=(next-sum)-step;
+            relative[i]=sum=next;
+          }
+        }
+      } else {
+        const logs=module[`d${id}`](counts,p,true,true);
+        anchor=Math.max(...logs);
+        relative=Array.from(logs,v=>v-anchor);
+      }
+      mass=(lo,hi)=>{
+        const terms=relative.slice(lo-a,hi-a);
+        const m=Math.max(...terms);
+        if(m===-Infinity)return m;
+        const peak=terms.indexOf(m);
+        let rest=0,error=0;
+        for(let i=0;i<terms.length;++i) {
+          if(i===peak)continue;
+          const step=Math.exp(terms[i]-m)-error;
+          const next=rest+step;
+          error=(next-rest)-step;
+          rest=next;
+        }
+        return m+Math.log1p(rest);
+      };
+      z=mass(a,b);
+      if(!Number.isFinite(anchor+z))throw new Error('Truncation event has zero or unresolved probability in log space');
+      logDensity=v=>Number.isNaN(v)?NaN:(relative[v-(a+1)]??-Infinity);
+    } else {
+      z=mass(a,b);
+      if(!Number.isFinite(z))throw new Error('Truncation event has zero or unresolved probability');
+      if(64*Number.EPSILON*Math.max(1,Math.abs(z))>1e-10)
+        throw new Error('Conditional normalization cannot be resolved at the required floating-point accuracy');
+    }
+    const probability=v=>{
+      if(Number.isNaN(v))return NaN;
+      const k=Math.max(a,Math.min(b,integer?Math.floor(v):v));
+      let result;
+      if(k<=a)result=lower?-Infinity:0;
+      else if(k>=b)result=lower?0:-Infinity;
+      else {
+        const lc=mass(a,k)-z,ls=mass(k,b)-z,fromLower=lc<=ls;
+        result=lower?(fromLower?lc:complement(ls)):(fromLower?complement(lc):ls);
+      }
+      return log?result:Math.exp(result);
+    };
+    if(kind==='p')return Float64Array.from(x,probability);
     if(kind==='q' && integer) {
-      const probability=k=>evaluate('p',[k],p,{...flags,lower,log})[0];
-      const density=()=>module[`d${id}`]([a+1],p,true,true)[0]-z;
+      const density=()=>logDensity(a+1)-z;
       const end=Number.isFinite(b)?b:module[`q${id}`]([1],p,true,false)[0];
-      return discreteInverse(x,a+1,b,end,lower,log,true,probability,density);
+      return discreteInverse(x,a+1,b,end,lower,log,fuzz,probability,density);
     }
     return Float64Array.from(x,v=>{
-      if(kind==='d') {const d=v<truncate[0]||v>truncate[1]?-Infinity:module[`d${id}`]([v],p,true,true)[0]-z;return log?d:Math.exp(d);}
-      if(kind==='p') {
-        const k=Math.max(a,Math.min(b,integer?Math.floor(v):v));let result;
-        if(k<=a)result=lower?-Infinity:0;
-        else if(k>=b)result=lower?0:-Infinity;
-        else {
-          const lc=mass(a,k)-z,ls=mass(k,b)-z,fromLower=lc<=ls;
-          result=lower?(fromLower?lc:complement(ls)):(fromLower?complement(lc):ls);
-        }
-        return log?result:Math.exp(result);
-      }
+      if(kind==='d') {const d=v<truncate[0]||v>truncate[1]?-Infinity:logDensity(v)-z;return log?d:Math.exp(d);}
       let lp=log?v:Math.log(v),ls=log?complement(v):Math.log1p(-v);
       if(!lower)[lp,ls]=[ls,lp];
       if(lp===-Infinity)return integer?a+1:a;if(ls===-Infinity)return Number.isFinite(b)?b:module[`q${id}`]([1],p,true,false)[0];
@@ -120,6 +184,8 @@ export function modifierAPI(module, id, eligibility, capabilities) {
       // Keep the native sampling inverse, including its historical Zipf CDF.
       return module.zetaWindow('r',u,Math.floor(truncate[1]),p[0],true,false);
     }
+    if(u.length && truncate && ['geom','nbinom'].includes(id) && !(truncate[0]===1 && truncate[1]===Infinity))
+      return evaluate('q',u,p,{...flags,lower:true,log:false},false);
     const physical=id==='lgser'||id==='zeta'?1:0;
     const minimum=truncate?Math.max(physical,Math.ceil(truncate[0])):zero==='truncated'?1:zero==='none'?physical:0;
     const maximum=Math.min(id==='binom'?p[0]:Infinity,truncate?Math.floor(truncate[1]):Infinity);

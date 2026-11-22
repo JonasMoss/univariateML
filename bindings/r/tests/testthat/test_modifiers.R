@@ -215,12 +215,43 @@ test_that("generic conditional tails preserve tiny log complements and refuse un
   observed<-pml(250,f,log.p=TRUE)
   expect_lt(observed,0)
   expect_equal(observed/expected,1,tolerance=1e-12)
-  expect_error(mlgeom(prob=.3,truncate=c(1e9,1e9+10)),"normalization.*floating-point accuracy")
+  geom<-mlgeom(prob=.3,truncate=c(1e9,1e9+10))
+  expect_equal(dml(1e9,geom),.3/(1-.7^11),tolerance=1e-12)
   # Short NB windows now resolve by direct summation. A wider window still
   # exercises the generic path's resolution guard.
   nb<-mlnbinom(size=2,prob=.3,truncate=c(1e9,1e9+10))
   expect_equal(sum(dml(1e9+0:10,nb)),1,tolerance=1e-12)
   expect_error(mlnbinom(size=2,prob=.3,truncate=c(1e9,1e9+256)),"normalization.*floating-point accuracy")
+})
+test_that("short integer windows agree with independent high-precision sums", {
+  cases <- read.delim("fixtures/short-window.tsv")
+  for (rows in split(cases,cases$case)) {
+    family <- rows$family[1]
+    parameters <- switch(family,nbinom=c("size","prob"),binom=c("size","prob"),
+                         geom="prob",pois="lambda",zeta="s")
+    values <- as.numeric(strsplit(rows$parameters[1],":",fixed=TRUE)[[1]])
+    args <- c(as.list(setNames(values,parameters)),list(truncate=c(rows$lo[1],rows$hi[1])))
+    construct <- get(paste0("ml",family))
+    if (rows$op[1]=="refuse") {
+      expect_lt(rows$expected[1],log(.Machine$double.xmin))
+      expect_error(do.call(construct,args),"normalization.*floating-point accuracy")
+      next
+    }
+    model <- do.call(construct,args)
+    for (group in split(rows,list(rows$op,rows$lower,rows$log),drop=TRUE)) {
+      logarithm <- as.logical(group$log[1])
+      lower <- as.logical(group$lower[1])
+      actual <- switch(group$op[1],
+        d=dml(group$input,model,log=logarithm),
+        p=pml(group$input,model,lower.tail=lower,log.p=logarithm),
+        q=qml(group$input,model,lower.tail=lower,log.p=logarithm))
+      expected <- group$expected
+      exact <- expected==0 | !is.finite(expected) | group$op=="q"
+      label <- paste(rows$case[1],group$op[1],lower,logarithm)
+      expect_equal(unname(actual[exact]),expected[exact],tolerance=0,info=label)
+      expect_true(all(abs(actual[!exact]/expected[!exact]-1)<2e-12),info=label)
+    }
+  }
 })
 test_that("generic quantiles resolve endpoint atoms and refuse ill-conditioned transforms", {
   f<-mlgeom(prob=1e-9,truncate=c(1e9,Inf))

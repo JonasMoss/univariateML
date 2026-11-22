@@ -25,6 +25,32 @@ function comparisonStop(run, kind, check) {
   });
 }
 
+test('short integer windows agree with independent high-precision sums',async()=>{
+  const api=await (await import('./index.mjs')).default();
+  const fixture=new URL('../r/tests/testthat/fixtures/short-window.tsv',import.meta.url);
+  for(const line of readFileSync(fixture,'utf8').trimEnd().split('\n').slice(1)) {
+    const [name,family,params,lo,hi,op,lower,log,input,expected]=line.split('\t');
+    const law=api[family],parameters=params.split(':').map(Number);
+    const flags={truncate:[Number(lo),Number(hi)],lower:lower==='1',log:log==='1'};
+    if(op==='refuse') {
+      assert.ok(Number(expected)<Math.log(Number.MIN_VALUE));
+      assert.throws(()=>law.d([Number(input)],parameters,flags),/normalization.*floating-point accuracy/);
+      continue;
+    }
+    const [value]=law[op]([Number(input)],parameters,flags);
+    const ref=expected==='-Inf'?-Infinity:Number(expected);
+    const label=`${name} ${op} lower=${lower} log=${log} input=${input}`;
+    if(op==='q'||ref===0||!Number.isFinite(ref))assert.ok(value===ref,label);
+    else assert.ok(Math.abs(value/ref-1)<2e-12,`${label}: ${value} vs ${ref}`);
+    if(name==='geom-at-cap' && op==='p' && !flags.lower && !flags.log && ref>0)
+      assert.equal(law.q([ref],parameters,flags)[0],Number(input),label);
+  }
+  const truncate=[1e9,1e9+10], parameters=[.3], seed=228;
+  const cdf=Array.from({length:11},(_,i)=>-Math.expm1((i+1)*Math.log1p(-.3))/-Math.expm1(11*Math.log1p(-.3)));
+  const expected=Array.from(m.runif(64,[0,1],seed),p=>truncate[0]+cdf.findIndex(value=>value>=p));
+  assert.deepEqual(Array.from(api.geom.r(64,parameters,seed,{truncate})),expected);
+});
+
 test('public facade',async()=>{
  const facade=await import('./index.mjs');
  const api=await facade.default();
