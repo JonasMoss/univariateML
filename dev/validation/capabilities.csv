@@ -1,5 +1,5 @@
 family,base_family,family_modifier,retirement,held,modifier,eligible,status,certified,escape_count,golden_coverage
-bbinom,bbinom,none,,,none,true,not-implemented,unknown,3,bbinom/golden.json
+bbinom,bbinom,none,,,none,true,implemented,partial,3,bbinom/golden.json
 bbinom,bbinom,none,,size,none,true,implemented,partial,3,bbinom/golden.json
 bbinom,bbinom,none,,alpha,none,true,implemented,partial,3,bbinom/golden.json
 bbinom,bbinom,none,,beta,none,true,implemented,partial,3,bbinom/golden.json
