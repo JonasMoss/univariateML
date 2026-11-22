@@ -29,7 +29,8 @@ inline Radius radius_precise(special::three_word::Number v,double nu,double inpu
  const double e=special::three_word::margin(std::abs(ls.high)+std::abs(lv.high))+std::abs(w.low)+4*std::numeric_limits<double>::epsilon()*std::abs(w.high);
  return {w.high,e+(nu>=1e30?2/nu:0)+(v.high>input_error?input_error/(v.high-input_error):input_error==0?0:special::kPosInf),ls.high};
 }
-inline double density_precise(Radius r,double nu,double normalizer,bool log) {
+inline double density_precise(Radius r,double nu,double normalizer,bool log,
+                              double natural_budget=1e-11) {
  const double gamma=special::lgamma1p(1/nu);
  const double cost=std::exp(nu*r.value),ld=normalizer-std::log(2.)-r.scale-gamma-cost;
  if(!std::isfinite(cost)) {
@@ -40,7 +41,7 @@ inline double density_precise(Radius r,double nu,double normalizer,bool log) {
    :std::max(std::exp(nu*(r.value+r.error))-cost,cost-std::exp(nu*(r.value-r.error)));
  const double margin=change+16*std::numeric_limits<double>::epsilon()*(1+cost+std::abs(ld)+std::abs(normalizer)+std::abs(r.scale)+std::abs(gamma));
  if(!log && ld+margin<zero_rounding_threshold())return 0;
- if(!(margin>=0) || margin>(log?1e-11*std::max(1.,std::abs(ld)):1e-11))return special::kNaN;
+ if(!(margin>=0) || margin>(log?1e-11*std::max(1.,std::abs(ld)):natural_budget))return special::kNaN;
  return log?ld:std::exp(ld);
 }
 // Compare the selected tail itself at both uncertainty endpoints. A
@@ -52,7 +53,8 @@ inline bool probability_interval(double point,double left,double right,bool log)
 inline double gamma_log_margin(double value) {
  return std::isfinite(value)?2e-12+16*std::numeric_limits<double>::epsilon()*std::abs(value):0;
 }
-inline double probability_precise(Radius r,double nu,double logweight,bool negative,bool lower,bool log) {
+inline double probability_precise(Radius r,double nu,double logweight,bool negative,bool lower,bool log,
+                                  bool allow_subnormal_rounding=false) {
  const double base=gamma_power_log(r.value,nu,false),direct=logweight+base;
  const auto tails=special::tails_from_log(direct,negative);
  const double selected=lower?tails.lower:tails.upper;
@@ -60,7 +62,13 @@ inline double probability_precise(Radius r,double nu,double logweight,bool negat
  const double weight_error=16*std::numeric_limits<double>::epsilon()*(1+std::abs(logweight));
  const auto low=special::tails_from_log(logweight+right-gamma_log_margin(right)-weight_error,negative);
  const auto high=special::tails_from_log(std::min(0.,logweight+left+gamma_log_margin(left)+weight_error),negative);
- if(!probability_interval(selected,lower?low.lower:low.upper,lower?high.lower:high.upper,log))return special::kNaN;
+ const double a=lower?low.lower:low.upper,b=lower?high.lower:high.upper;
+ if(!probability_interval(selected,a,b,log)) {
+  // Natural-scale relative accuracy can be impossible on the subnormal
+  // grid. Round the checked log tail there using the usual exp conversion.
+  if(log || !allow_subnormal_rounding || !(std::exp(selected)<std::numeric_limits<double>::min()) ||
+     !probability_interval(selected,a,b,true))return special::kNaN;
+ }
  return special::tail_probability(tails,lower,log);
 }
 inline Radius physical_radius(double x,double mean,double sd,double nu) {
@@ -79,26 +87,63 @@ inline Radius physical_radius(double x,double mean,double sd,double nu) {
  const double error=special::three_word::margin(std::abs(lv.high)+std::abs(logsd.high)+std::abs(ls.high))+std::abs(w.low)+4*std::numeric_limits<double>::epsilon()*std::abs(w.high)+(nu>=1e30?2/nu:0);
  return {w.high,error,ls.high};
 }
+
+// Practical absolute error in the double log radius, including the
+// rounding of nu*w expressed back in radius units. The unit allowance
+// covers the relative error in the distance and the gamma recurrence
+// in logscale (for nu >= 1).
+inline double fast_radius_error(double log_distance,double log_sd,double ls,double w) {
+ return 8*std::numeric_limits<double>::epsilon()*
+     (1+std::abs(log_distance)+std::abs(log_sd)+std::abs(ls)+std::abs(w));
+}
+// Allocate one tenth of the natural-tail tolerance to the fast radius.
+constexpr double fast_tail_budget=1e-11;
 }
 namespace distributions {
 inline double dged(double x, double mean, double sd, double nu, bool log) {
   if (!(fs::valid(mean, sd, nu, 1.0)) || std::isnan(x)) return cppunivariate::special::kNaN;
-  const double z = (x - mean)/sd;
-  const double ls=fs::ged_logscale(nu);
   if(nu>=1e6 && std::isfinite(x) && x!=mean)
-    return ged_detail::density_precise(ged_detail::physical_radius(x,mean,sd,nu),nu,-std::log(sd),log);
-  const double ld = (std::isinf(z) || (x != mean && std::fabs(z) < std::numeric_limits<double>::min())) && std::isfinite(x)
-      ? -std::log(2.0)-ls-std::lgamma(1+1/nu)-std::log(sd)
-          -std::exp(nu*(special::log_abs_difference(x,mean)-std::log(sd)-ls))
-      : fs::ged_logdensity(z, nu) - std::log(sd);
+    return ged_detail::density_precise(ged_detail::physical_radius(x,mean,sd,nu),nu,-std::log(sd),log,1e-10);
+  const double z=(x-mean)/sd, log_sd=std::log(sd);
+  const bool scaled_log=(std::isinf(z) ||
+      (x!=mean && std::abs(z)<std::numeric_limits<double>::min())) && std::isfinite(x);
+  const double ls=fs::ged_logscale(nu);
+  const double log_distance=scaled_log?special::log_abs_difference(x,mean):std::log(std::abs(z));
+  const double w=(scaled_log?log_distance-log_sd:log_distance)-ls;
+  const double cost=std::exp(nu*w);
+  const double constant=-std::log(2.0)-ls;
+  const double gamma_constant=nu>=1 ? constant-special::lgamma1p(1/nu)
+      : std::log(nu)-std::log(2.0)-ls-std::lgamma(1/nu);
+  const double ld=scaled_log ? constant-std::lgamma(1+1/nu)-log_sd-cost
+      : gamma_constant-cost-log_sd;
+  if(nu>=1 && std::isfinite(ld) && x!=mean) {
+    // The ordinary density also rounds the standardized difference
+    // before taking its log. The unit allowance covers both roundings.
+    const double h=nu*ged_detail::fast_radius_error(log_distance,scaled_log?log_sd:0,ls,w);
+    const double budget=log ? 1e-11*std::max(1.,std::abs(ld)) : 1e-11;
+    // Here h < log(2), so the largest cost over the interval is < 2*cost.
+    if((log || ld>=ged_detail::zero_rounding_threshold()-1) &&
+       h*cost>budget*.5)
+      return ged_detail::density_precise(ged_detail::physical_radius(x,mean,sd,nu),nu,-log_sd,log,1e-10);
+  }
   return log ? ld : std::exp(ld);
 }
 inline double pged(double q, double mean, double sd, double nu, bool lower_tail, bool log_p) {
   if (!(fs::valid(mean, sd, nu, 1.0)) || std::isnan(q)) return cppunivariate::special::kNaN;
-  double la;
   if(nu>=1e6 && std::isfinite(q) && q!=mean)
-    return ged_detail::probability_precise(ged_detail::physical_radius(q,mean,sd,nu),nu,-std::log(2.),q<mean,lower_tail,log_p);
-  la=special::log_abs_difference(q,mean)-std::log(sd)-fs::ged_logscale(nu);
+    return ged_detail::probability_precise(ged_detail::physical_radius(q,mean,sd,nu),nu,-std::log(2.),q<mean,lower_tail,log_p,true);
+  const double log_distance=special::log_abs_difference(q,mean);
+  const double log_sd=std::log(sd), ls=fs::ged_logscale(nu);
+  const double la=log_distance-log_sd-ls;
+  if(nu>=1 && std::isfinite(q) && q!=mean) {
+    const double h=nu*ged_detail::fast_radius_error(log_distance,log_sd,ls,la);
+    // For a=1/nu <= 1, Gamma(a,x) >= x^a exp(-x)/(x+1-a),
+    // from log(1+t/x) <= t/x in its shifted integral. The
+    // log upper-tail slope in log(x) is therefore <= x+1.
+    // Evaluate that bound at the upper end of the radius interval.
+    if(h*(1+std::exp(nu*la+h))>ged_detail::fast_tail_budget)
+      return ged_detail::probability_precise(ged_detail::physical_radius(q,mean,sd,nu),nu,-std::log(2.),q<mean,lower_tail,log_p,true);
+  }
   const double small = -std::log(2.0) + ged_detail::gamma_power_log(la,nu,false);
   const double result = ((q < mean) == lower_tail) ? small : fs::log1mexp(small);
   return log_p ? result : std::exp(result);

@@ -776,3 +776,72 @@ TEST_CASE("ged: singleton collapse is a core statistical outcome") {
   CHECK(o.kind==cppunivariate::OutcomeKind::Nonexistence);
   CHECK(o.reason==cppunivariate::OutcomeReason::Unbounded);
 }
+
+TEST_CASE("GED large-shape deep tails retain natural-scale relative accuracy") {
+  struct Row { double nu, x, p, log_p, density; };
+  // mpmath at 80 digits, using the exact binary64 abscissas below.
+  const Row rows[] = {
+    {1e3, 1.7443851920965723, 3.537199885019632e-302, -694.1173626629884, 1.3809016618708893e-296},
+    {1e4, 1.73328082343259, 3.5146696497487933e-303, -696.4263376393517, 1.3808982954142516e-296},
+    {1e5, 1.7321737749934774, 3.5124242822328996e-304, -698.729561792422, 1.3808982637700011e-296},
+    {999999., 1.7320631039820802, 3.5122031769713926e-305, -701.0322098368716, 1.3808982019737821e-296},
+    {1e6, 1.7320631039697836, 3.512199881576682e-305, -701.0322107751421, 1.380898287101579e-296}
+  };
+  for(const auto &row : rows) {
+    CAPTURE(row.nu);
+    for(bool lower : {false,true}) {
+      const double x=lower ? -row.x : row.x;
+      const double p=cppunivariate::distributions::pged(x,0,1,row.nu,lower,false);
+      const double lp=cppunivariate::distributions::pged(x,0,1,row.nu,lower,true);
+      const double other=cppunivariate::distributions::pged(x,0,1,row.nu,!lower,true);
+      CHECK(std::abs(p/row.p-1)<1e-10);
+      CHECK(std::abs(lp-row.log_p)<1e-10);
+      CHECK(std::abs(other/std::log1p(-row.p)-1)<1e-10);
+      const double d=cppunivariate::distributions::dged(x,0,1,row.nu,false);
+      CHECK(std::abs(d/row.density-1)<1e-10);
+      for(bool log : {false,true}) {
+        const double q=cppunivariate::distributions::qged(log?row.log_p:row.p,0,1,row.nu,lower,log);
+        // At large shape a one-ulp change in q can amplify into a
+        // much larger relative error in the input probability.
+        CHECK(std::abs(q-x)<=2*std::numeric_limits<double>::epsilon()*std::abs(x));
+      }
+    }
+  }
+}
+
+TEST_CASE("GED deep natural tails resolve large affine scales") {
+  const double p=cppunivariate::distributions::pged(
+      -2.7320631039820803e100,-1e100,1e100,999999.,true,false);
+  CHECK(std::abs(p/3.5122031106953565e-305-1)<1e-10);
+
+  // The log-density enclosure must include the large log normalizer in its
+  // arithmetic margin while still returning a representable natural value.
+  const double d=cppunivariate::distributions::dged(
+      2.732063296619613e-100,1e-100,1e-100,1e6,false);
+  CHECK(std::abs(d/2.492316331341213e-231-1)<1e-10);
+}
+
+TEST_CASE("GED natural subnormal tails round from the checked log tail") {
+  struct Row { double nu, x; };
+  const Row rows[] = {
+    {1e3, 1.744508963645007},
+    {1e6, 1.7320631787467113},
+    {1e6, 1.7320632029717662}
+  };
+  const double spacing=std::numeric_limits<double>::denorm_min();
+  for(const auto &row : rows) {
+    CAPTURE(row.nu);
+    CAPTURE(row.x);
+    for(bool lower : {false,true}) {
+      const double x=lower ? -row.x : row.x;
+      const double lp=cppunivariate::distributions::pged(x,0,1,row.nu,lower,true);
+      const double p=cppunivariate::distributions::pged(x,0,1,row.nu,lower,false);
+      REQUIRE(std::isfinite(lp));
+      CHECK(std::fpclassify(p)==FP_SUBNORMAL);
+      CHECK(p>0);
+      CHECK(std::abs(p-std::exp(lp))<=spacing);
+    }
+  }
+  // The log tail is about -746.5, below half the smallest subnormal.
+  CHECK(cppunivariate::distributions::pged(1.733293121404553,0,1,1e4,false,false)==0.);
+}

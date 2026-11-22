@@ -1,0 +1,6 @@
+ged            173  (13 s)
+sged           285  (56 s)
+native cases 458 differing 0 only-new 0 only-old 0
+ged            173  (13 s)
+sged           285  (61 s)
+double cases 458 differing 0 only-new 0 only-old 0
