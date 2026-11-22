@@ -289,7 +289,35 @@ when $\xi\ne1$.
 
 For $\nu>1$, $Q$ is strictly convex, has derivative negative below the
 sample minimum and positive above the maximum, and has one global minimum.
-The certificate bisects that derivative on the whole sample range, evaluating
+With standard deviation held and two distinct observations $a<b$ of
+multiplicities $n_a,n_b$, the score equation gives
+$$
+ \frac{b-c}{c-a} = \exp(k),\qquad
+ k=\frac{\log(n_a/n_b)+2\nu\log\xi}{\nu-1}.
+$$
+The displacement from the nearer observation is
+$(b-a)/(1+\exp(|k|))$. The implementation computes the logistic fraction
+with a nonpositive exponent and uses the gap in log units if the fraction
+underflows. With more distinct observations, signs at the sorted knots locate
+the root interval. A midpoint sign selects the nearer observation as the
+anchor. The solver brackets the monotone score in signed displacements from
+that anchor, using compensated sums of log-rescaled terms. Geometric steps
+span displacements of very different magnitudes. An uncertain sign requires
+two enclosing signs or refinement within an existing signed bracket.
+
+For held standard deviation the public-mean error is bounded by the
+displacement enclosure plus a practical floating-point allowance for the anchor,
+displacement and moment shift. The closed form also enlarges its enclosure
+for the rounding of the log odds and gap. The error bound must be at most
+$\min(\mathtt{tol}/2,1/2)\max(|\widehat\mu|,\sigma)$, which implies the
+requested relative accuracy on the scale at the exact mean. A termwise
+minimum of the penalties over the bracket bounds the maximum log likelihood
+from above. The penalty at the representative and the density sum at the
+stored mean must agree with that bound within the likelihood tolerance and
+the arithmetic allowances.
+
+With standard deviation profiled, the certificate bisects the derivative on
+the whole sample range, evaluating
 compensated signed sums after logarithmic rescaling. An uncertain derivative sign must be
 replaced by two signed endpoints enclosing the root; it is never treated as a
 zero score. Public-coordinate inclusion and reconstruction allowances use

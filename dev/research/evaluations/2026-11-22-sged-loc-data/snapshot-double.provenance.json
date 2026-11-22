@@ -1,0 +1,17 @@
+{
+  "source_sha256": "482e2691050e80a52eb12fdbecc7461f8e1e808dd9479ca8344860a102f7e53f",
+  "commit": "b6a0087141ceb753324e1d46441d8f320271042e",
+  "dirty": true,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    "-std=gnu++17",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "no_long_double": true,
+  "cpu_limit": 300,
+  "families": [
+    "ged",
+    "sged"
+  ]
+}

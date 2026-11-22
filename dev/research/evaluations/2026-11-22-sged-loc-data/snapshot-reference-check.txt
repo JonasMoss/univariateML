@@ -1,0 +1,34 @@
+native 006190 ok mean error 1.7906e-11 logLik error 1.418e-16
+native 006191 ok mean error 9.7951e-17 logLik error 5.1938e-17
+native 006192 ok mean error 1.1869e-11 logLik error 1.2053e-16
+native 006193 ok mean error 1.6538e-12 logLik error 8.9774e-17
+native 006194 ok mean error 6.9061e-12 logLik error 3.6542e-17
+native 006195 ok mean error 1.059e-11 logLik error 5.3068e-17
+native 006196 ok mean error 1.3292e-11 logLik error 3.4649e-17
+native 006197 ok mean error 3.1682e-14 logLik error 3.4649e-17
+native 006198 ok mean error 3.2935e-11 logLik error 1.4417e-18
+native 006199 ok mean error 3.5439e-11 logLik error 3.4649e-17
+native 006200 ok mean error 1.7026e-13 logLik error 3.4649e-17
+native 006201 ok mean error 1.7849e-16 logLik error 9.4663e-17
+native 006202 numerical ideal logLik -3.636600133905258e+513
+native 006203 ok mean error 5.5602e-17 logLik error 1.2735e-16
+native 006204 ok mean error 3.0514e-11 logLik error 6.4018e-15
+native 006205 ok mean error 2.407e-11 logLik error 3.4649e-17
+native max contract-relative mean error 3.5438995e-11 max relative likelihood error 6.4017557e-15
+double 006190 ok mean error 1.7906e-11 logLik error 1.418e-16
+double 006191 ok mean error 9.7951e-17 logLik error 5.1938e-17
+double 006192 ok mean error 1.1869e-11 logLik error 1.2053e-16
+double 006193 ok mean error 1.6538e-12 logLik error 8.9774e-17
+double 006194 ok mean error 6.9061e-12 logLik error 3.6542e-17
+double 006195 ok mean error 1.059e-11 logLik error 5.3068e-17
+double 006196 ok mean error 1.3292e-11 logLik error 3.4649e-17
+double 006197 ok mean error 3.1682e-14 logLik error 3.4649e-17
+double 006198 ok mean error 3.2935e-11 logLik error 1.4417e-18
+double 006199 ok mean error 3.5439e-11 logLik error 3.4649e-17
+double 006200 ok mean error 1.7026e-13 logLik error 3.4649e-17
+double 006201 ok mean error 1.7849e-16 logLik error 9.4663e-17
+double 006202 numerical ideal logLik -3.636600133905258e+513
+double 006203 ok mean error 5.5602e-17 logLik error 1.2735e-16
+double 006204 ok mean error 3.0514e-11 logLik error 6.4018e-15
+double 006205 ok mean error 2.407e-11 logLik error 3.4649e-17
+double max contract-relative mean error 3.5438995e-11 max relative likelihood error 6.4017557e-15

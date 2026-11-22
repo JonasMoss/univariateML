@@ -1010,16 +1010,9 @@ test_that("loose coefficient accuracy preserves separated-maxima diagnostics", {
   expect_gte(fit_payload(e)$loglik_upper,expected-1e-10*max(1,abs(expected)))
 })
 
-test_that("loose tolerance cannot certify a displaced public mean", {
+test_that("loose tolerance retains the held-sd two-point public mean", {
   reference <- 1.00487215154858971444308151029017
-  f <- tryCatch(mlsged(c(0,1e100),sd=1,nu=1.01,xi=100,tol=10),
-                error=identity)
-  if (inherits(f,"error")) {
-    # TODO(TASK-150.8): this finite held-sd optimum should return a candidate.
-    expect_s3_class(f,"univariateML_numerical")
-    expect_identical(f$kind,"numerical")
-    expect_match(conditionMessage(f),"certificate|accuracy|score")
-  } else {
-    expect_lte(abs(unname(f[["mean"]])-reference),10*reference)
-  }
+  f <- mlsged(c(0,1e100),sd=1,nu=1.01,xi=100,tol=10)
+  expect_true(attr(f,"certified"))
+  expect_lte(abs(unname(f[["mean"]])-reference),1e-10*reference)
 })
