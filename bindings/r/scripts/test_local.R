@@ -2,6 +2,9 @@
 # The environment flag reaches testthat subprocesses as well as this process.
 options(pkg.build_extra_flags = FALSE)
 Sys.setenv(PKG_BUILD_EXTRA_FLAGS = "false")
+# Source-mode workers share the freshly assembled package. Build its DLL in
+# the parent before testthat starts any workers.
+pkgbuild::compile_dll(".", compile_attributes = FALSE)
 families <- Sys.getenv("UMVL_TEST_FAMILIES")
 filter <- NULL
 if (nzchar(families)) {

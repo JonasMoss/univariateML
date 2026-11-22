@@ -134,7 +134,7 @@ def main():
                                      '-j', env.get('CMAKE_BUILD_PARALLEL_LEVEL', '1')],
                              ['ctest', '--test-dir', build, '--output-on-failure', '--no-tests=error',
                               '-L', env['UMVL_TEST_TIER'], '-R',
-                              '^distribution_(' + '|'.join(map(re.escape, families)) + ')(_slow)?$']])
+                              '^distribution_(' + '|'.join(map(re.escape, families)) + ')(_slow)?(_part[0-9]+)?$']])
         commands += [['just', 'test'], ['just', 'js-build'], ['just', 'js-test']]
     results = []
     for command in commands:

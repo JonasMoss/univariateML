@@ -51,12 +51,17 @@ Reserve all four slots with `/tmp/umvl-cpu/run4` for `just test`,
 `just regen` and `just test` disable pkgbuild's debug compiler flags;
 regeneration recreates the generated source tree, preventing reuse of an old
 `-O0` DLL. The workstation R compiler flags supply `-O2`; ccache remains active.
+The test recipe uses the reserved build parallelism during regeneration.
+The local runner checks that the package DLL has been built before starting
+testthat workers, which inherit a single make job each.
 
 `UMVL_TEST_TIER=cran|dev|full` selects coverage. The common testthat helper
 uses `cran` when `NOT_CRAN` is absent or false and `dev` otherwise;
 `just test` explicitly defaults to `dev`, and `just test-full` selects `full`.
 Invalid tier names are errors. R CMD check uses serial tests unless the caller
 sets `TESTTHAT_PARALLEL=true`; local recipes use four testthat workers.
+The package's `Config/testthat/start-first` field brings the costly test files
+forward in the existing queue.
 Edition 3 enables scheduling; the setup file retains edition 2 comparisons and
 condition handling so the existing expectation contracts remain comparable.
 
@@ -77,8 +82,9 @@ transformation sweeps start in dev.
 `UMVL_TEST_TIER=full just cpp-test` selects exhaustive C++ checks.
 C++ source shards use complementary case filters for oracle, multistart and
 replication/large-sample, exhaustive held-subset and slow-reference names;
-full runs both. No fitter or fixture changes
-are implied by tier membership. Audits (`quality`, no-long-double, standalone,
+full runs both. CTest runs selected expensive cases as separate shards within
+their existing tiers. These shards share the same distribution executable and
+precompiled headers. Audits (`quality`, no-long-double, standalone,
 relations and truth regeneration) remain explicit commands.
 
 ## C++ tests
@@ -592,6 +598,8 @@ python3 dev/validation/fit-snapshot.py --diff build/snapshots/base build/snapsho
 `snapshot.jsonl.gz`. `--family a,b` restricts the run, `--classes c,d` records only
 those class cases (for example a newly added class), `--no-long-double` builds the double-only
 variant, and `--ignore message` leaves reworded messages out of a comparison.
+Parallel runs start families in descending measured CPU cost for each
+precision and route mode. Merged records and provenance retain family order.
 A case that uses more than `--cpu-limit` CPU seconds (default 300) is recorded
 as `timeout`; this is an audit guard measured in CPU time, not a fitter
 status, and such records need not repeat exactly. Finished families are kept
@@ -709,7 +717,8 @@ recorded input hash.
   zero or change sign, 0 for a strictly positive one. References are cached
   in `strict-refine.jsonl.gz`, keyed by input and density source; `--cache-only`
   (as in `just strict`) judges from the cache and lists cases without an
-  entry. Coefficients the refinement does not determine (integer, kink,
+  entry. It derives work-budget exclusions from the current ledger and
+  reports them as open. Coefficients the refinement does not determine (integer, kink,
   support bound without a closed form, on a domain bound) and cases it cannot
   settle are listed, with the reason, not failed. Refilling the cache is a
   separate, budgeted run: `/tmp/umvl-cpu/run python3 dev/validation/fit-refine.py
@@ -732,12 +741,13 @@ recorded input hash.
   `build/strict/seam/` and judges its records. A disagreement or a support
   violation fails. An archived fit without a terminal result is retried with
   the snapshot's 300 s guard and fails if it remains unresolved.
-  `build/strict/seam.sqlite3` stores completed probes keyed by their inputs,
-  archive contents, probe and reference sources, compiler and flags, and guard.
-  The compiled probe uses the full source set, so a change to those sources
-  invalidates the seam cache. Matching compiled probes can be reused across
-  guard settings. Open fits and unresolved reference evaluations run again on
-  the next invocation.
+  `build/strict/seam.sqlite3` stores completed probes keyed by the individual
+  input, the family's reference sources, the shared reference tools and the
+  guard. The C++ probe key covers the compiler, flags and preprocessed source
+  of its group, including system and transitive headers. A local header
+  change invalidates groups that use it. Matching binaries can be reused
+  across guard settings. Open fits and unresolved reference evaluations run
+  again on the next invocation.
 
 ```sh
 /tmp/umvl-cpu/run4 just strict                        # four workers, both modes including routes

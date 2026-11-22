@@ -35,3 +35,5 @@ LinkingTo:
     BH
 Config/testthat/edition: 3
 Config/testthat/parallel: true
+Config/testthat/start-first: dist-sged, dist-sstd, dist-genbeta, conformance,
+    generated-dpqr, modifiers, dist-slash, dist-cmb, input_checks, dist-lst

@@ -40,6 +40,7 @@ DISTS = ROOT/'univariateML-cpp/include/cppunivariate/distributions'
 COMMON = ROOT/'bindings/common'
 ARCHIVE = ROOT/'dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz'
 ROUTES = json.loads((ROOT/'dev/research/evaluations/2026-11-13-retire-16-data/route-inputs.json').read_text())
+SCHEDULE = ROOT/'dev/research/evaluations/2026-11-21-speed-e-data/snapshot-priority.json'
 ROUTE_MODE = False
 
 FLAGS = ['-std=gnu++17', '-O2', '-DNDEBUG']   # as shipped (R, WASM, cpp-test)
@@ -331,7 +332,13 @@ def snapshot(args):
     def one(ident):
         result = run_family(ident, args, archive, work, boost, tag)
         with lock: print('%-14s %s  (%.0f s)' % (*result, time.time()-started), flush=True)
-    with ThreadPoolExecutor(args.jobs) as pool: list(pool.map(one, selected))
+    scheduled = selected
+    if args.jobs > 1 and SCHEDULE.is_file():
+        mode = ('routes-' if ROUTE_MODE else '')+('double' if args.no_long_double else 'native')
+        priority = json.loads(SCHEDULE.read_text()).get(mode, [])
+        rank = {ident: i for i, ident in enumerate(priority)}
+        scheduled = sorted(selected, key=lambda ident: rank.get(ident, len(rank)))
+    with ThreadPoolExecutor(args.jobs) as pool: list(pool.map(one, scheduled))
     if not args.family and not args.classes:   # a full run also writes the merged, sorted snapshot
         with gzip.open(args.output/'snapshot.jsonl.gz', 'wt') as dest:
             for ident in selected:

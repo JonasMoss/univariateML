@@ -1,0 +1,100 @@
+python3 dev/tools/test-changed.py --no-long-double --dry-run
+/home/jonas/.bashrc: line 26: /home/jonas/.cargo/env: No such file or directory
+/home/jonas/.bash_profile: line 9: /home/jonas/.cargo/env: No such file or directory
+Base master; merge base 460a0ff203ef4d88fb3128af6b5dff1df32a9bae; tier dev
+Selected 85 families: bbinom, beta, betapr, bhatt, binom, bnbinom, burr, cauchy, cmb, cmp, dgamma, dlaplace, dnorm, dunif, dweibull, emg, exp, expweibull, fatigue, foldnorm, fpareto, frechet, gamma, gb2, ged, genbeta, gengamma, geom, gev, gompertz, gpd, gumbel, hcauchy, hnorm, ht, huber, hyper, invburr, invexp, invgamma, invgauss, invparalogis, invpareto, invtrgamma, invweibull, kumar, laplace, lgamma, lgser, llogis, lnorm, logis, logitnorm, lomax, lst, naka, nbinom, nhyper, norm, nsbeta, paralogis, pareto, pareto2, pareto3, pareto4, pig, pois, power, rayleigh, sged, sgomp, skellam, slash, sn, snorm, sstd, st, std, tlambda, trgamma, triang, unif, weibull, yulesimon, zeta
+  bbinom: shared implementation/build effects
+  beta: shared implementation/build effects
+  betapr: shared implementation/build effects
+  bhatt: shared implementation/build effects
+  binom: shared implementation/build effects
+  bnbinom: shared implementation/build effects
+  burr: shared implementation/build effects
+  cauchy: shared implementation/build effects
+  cmb: univariateML-cpp/include/cppunivariate/distributions/cmb/test.cpp; shared implementation/build effects
+  cmp: univariateML-cpp/include/cppunivariate/distributions/cmp/mle.hpp includes univariateML-cpp/include/cppunivariate/distributions/cmb/acceptance.hpp; bindings/common/distributions/cmp/fit.hpp includes univariateML-cpp/include/cppunivariate/distributions/cmp/mle.hpp; shared implementation/build effects
+  dgamma: shared implementation/build effects
+  dlaplace: shared implementation/build effects
+  dnorm: shared implementation/build effects
+  dunif: shared implementation/build effects
+  dweibull: shared implementation/build effects
+  emg: shared implementation/build effects
+  exp: shared implementation/build effects
+  expweibull: shared implementation/build effects
+  fatigue: shared implementation/build effects
+  foldnorm: shared implementation/build effects
+  fpareto: shared implementation/build effects
+  frechet: shared implementation/build effects
+  gamma: shared implementation/build effects
+  gb2: shared implementation/build effects
+  ged: shared implementation/build effects
+  genbeta: shared implementation/build effects
+  gengamma: shared implementation/build effects
+  geom: shared implementation/build effects
+  gev: shared implementation/build effects
+  gompertz: shared implementation/build effects
+  gpd: shared implementation/build effects
+  gumbel: shared implementation/build effects
+  hcauchy: shared implementation/build effects
+  hnorm: shared implementation/build effects
+  ht: shared implementation/build effects
+  huber: shared implementation/build effects
+  hyper: shared implementation/build effects
+  invburr: shared implementation/build effects
+  invexp: shared implementation/build effects
+  invgamma: shared implementation/build effects
+  invgauss: shared implementation/build effects
+  invparalogis: shared implementation/build effects
+  invpareto: shared implementation/build effects
+  invtrgamma: shared implementation/build effects
+  invweibull: shared implementation/build effects
+  kumar: shared implementation/build effects
+  laplace: shared implementation/build effects
+  lgamma: shared implementation/build effects
+  lgser: shared implementation/build effects
+  llogis: shared implementation/build effects
+  lnorm: shared implementation/build effects
+  logis: shared implementation/build effects
+  logitnorm: shared implementation/build effects
+  lomax: shared implementation/build effects
+  lst: shared implementation/build effects
+  naka: shared implementation/build effects
+  nbinom: shared implementation/build effects
+  nhyper: shared implementation/build effects
+  norm: univariateML-cpp/include/cppunivariate/distributions/norm/tnorm_mle.hpp includes univariateML-cpp/include/cppunivariate/distributions/cmb/acceptance.hpp; bindings/common/distributions/norm/tnorm_fit.hpp includes univariateML-cpp/include/cppunivariate/distributions/norm/tnorm_mle.hpp; univariateML-cpp/include/cppunivariate/distributions/norm/tnorm_dpqr.hpp includes univariateML-cpp/include/cppunivariate/distributions/norm/tnorm_mle.hpp; univariateML-cpp/include/cppunivariate/distributions/norm/truncation.hpp includes univariateML-cpp/include/cppunivariate/distributions/norm/tnorm_mle.hpp; shared implementation/build effects
+  nsbeta: shared implementation/build effects
+  paralogis: shared implementation/build effects
+  pareto: shared implementation/build effects
+  pareto2: shared implementation/build effects
+  pareto3: shared implementation/build effects
+  pareto4: shared implementation/build effects
+  pig: shared implementation/build effects
+  pois: shared implementation/build effects
+  power: shared implementation/build effects
+  rayleigh: shared implementation/build effects
+  sged: shared implementation/build effects
+  sgomp: shared implementation/build effects
+  skellam: shared implementation/build effects
+  slash: shared implementation/build effects
+  sn: shared implementation/build effects
+  snorm: shared implementation/build effects
+  sstd: shared implementation/build effects
+  st: shared implementation/build effects
+  std: shared implementation/build effects
+  tlambda: shared implementation/build effects
+  trgamma: shared implementation/build effects
+  triang: shared implementation/build effects
+  unif: shared implementation/build effects
+  weibull: shared implementation/build effects
+  yulesimon: shared implementation/build effects
+  zeta: shared implementation/build effects
+Shared effects: running ordinary recipes without family filters.
+  shared: Justfile
+  shared: bindings/r/DESCRIPTION
+  shared: bindings/r/scripts/test_local.R
+  shared: bindings/r/tests/testthat/helper-parameter-rules.R
+  shared: dev/tools/test-changed.py
+  shared: dev/validation/fit-refine.py
+  shared: dev/validation/fit-snapshot.py
+  shared: dev/validation/seam-check.py
+  shared: univariateML-cpp/tests/CMakeLists.txt

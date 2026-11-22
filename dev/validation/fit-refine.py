@@ -47,6 +47,7 @@ Usage:
 Failures are keyed 'refine|mode|family|source|case'.
 """
 import argparse, collections, gzip, hashlib, json, math, os, random, re, shutil, signal, sys, time
+from functools import lru_cache
 from pathlib import Path
 import yaml
 from strict_common import ROOT, HERE, add_arguments, load, load_one, mode_of, number, ratchet, snapshot_module
@@ -67,6 +68,7 @@ fs = snapshot_module()
 def route_ids():
     return {route['id']: ident for ident, route in fs.ROUTES.items()}
 
+@lru_cache(maxsize=None)
 def law_meta(ident):
     """Dossier metadata as reference() reads it; a modifier law's from the route table."""
     if ident in fs.ROUTES:
@@ -77,6 +79,7 @@ def law_meta(ident):
         return meta
     return yaml.safe_load((fs.DISTS/ident/'README.md').read_text().split('---', 2)[1])
 
+@lru_cache(maxsize=None)
 def density_source(ident):
     folder = fs.DISTS/ident
     meta = law_meta(ident)
@@ -357,7 +360,7 @@ def main():
             if ref is not None and args.retry_open and re.search(args.retry_open, ref.get('error', '')) and key not in retried:
                 retried.add(key); ref = None
             if ref is None:
-                if args.cache_only or (args.budget and sum(timings.values()) > args.budget):
+                if args.budget and sum(timings.values()) > args.budget:
                     missing.append((family, source, case)); continue
                 guarded = sum(1 for e in cache.values() if e['family'] == family and e.get('error', '').startswith('case guard'))
                 spent = sum(e['seconds'] for e in cache.values() if e['family'] == family and e['source'] == 'archive')
@@ -366,12 +369,15 @@ def main():
                           'not attempted: family archive allowance of %d CPU s spent' % FAMILY_ALLOWANCE
                           if source == 'archive' and spent >= FAMILY_ALLOWANCE else
                           'not attempted: total refinement budget of %d CPU s spent' % TOTAL_BUDGET if total >= TOTAL_BUDGET else None)
-                if reason:   # listed, not cached: a later run with more budget can attempt it
-                    judged.add((mode, family, source, case))
+                if reason:   # Derive this exclusion from the current ledger on every run.
+                    if not args.cache_only:
+                        judged.add((mode, family, source, case))
                     opened['%s: %s' % (family, reason)] += 1
                     if records: records.write(json.dumps(dict(mode=mode, family=family, source=source, case=case, status='open',
                                                               reason=reason))+'\n')
                     continue
+                if args.cache_only:
+                    missing.append((family, source, case)); continue
                 out, seconds = refine(ident, meta, data, values, hold, args.case_limit)
                 ref = dict(key=key, version=VERSION, family=family, source=source, case=case,
                            start={k: float(v).hex() for k, v in values.items()},

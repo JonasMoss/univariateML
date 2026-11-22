@@ -1,0 +1,14 @@
+...F.
+======================================================================
+FAIL: test_shared_and_docs (__main__.Selection.test_shared_and_docs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/jonas/Files/programming/univariateML.wt/speed-e/build/scratch/master/dev/tools/test-test-changed.py", line 60, in test_shared_and_docs
+    self.assertEqual(len(selected), 99)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 85 != 99
+
+----------------------------------------------------------------------
+Ran 5 tests in 6.340s
+
+FAILED (failures=1)

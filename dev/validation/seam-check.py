@@ -7,6 +7,7 @@ The timeout is an audit guard, never a fitter status or a claim of nonexistence.
 """
 import argparse, collections, gzip, hashlib, json, math, os, re, shutil, signal
 import subprocess, sys, tempfile
+from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 from fractions import Fraction
 from pathlib import Path
@@ -74,9 +75,8 @@ def compiler_flags(double, boost):
             '-I'+str(ROOT), '-I'+str(ROOT/'univariateML-cpp/include'), '-I'+boost]
 
 
-def build(families, double=False, source_id="", boost=None):
-    WORK.mkdir(parents=True,exist_ok=True)
-    ads=adapters(); blocks=[]
+def probe_source(families, ads):
+    blocks=[]
     src='#include <iostream>\n#include <iomanip>\n#include <algorithm>\n#include <cstdlib>\n'
     for ident in families:
         src+=f'#include "bindings/common/distributions/{ident}/fit.hpp"\n#include "cppunivariate/distributions/{ident}/dpqr.hpp"\n'
@@ -97,18 +97,32 @@ def build(families, double=False, source_id="", boost=None):
     while(std::cin>>id>>mask>>k>>n){std::vector<double>holds(k),input(n);
     for(double&v:holds){std::cin>>s;v=std::strtod(s.c_str(),nullptr);}for(double&v:input){std::cin>>s;v=std::strtod(s.c_str(),nullptr);}
     '''+''.join(blocks)+'}}\n'
-    source, exe = probe_paths(families, double, source_id)
-    if boost is None:
-        boost = boost_include()
+    return src
+
+
+def write_source(source, text):
     with tempfile.TemporaryDirectory(dir=WORK) as staging:
-        staged_source = Path(staging)/source.name
+        temporary = Path(staging)/source.name
+        temporary.write_text(text)
+        temporary.replace(source)
+
+
+def compile_probe(source, exe, flags):
+    with tempfile.TemporaryDirectory(dir=WORK) as staging:
         staged_exe = Path(staging)/exe.name
-        staged_source.write_text(src)
-        staged_source.replace(source)
-        subprocess.run(['ccache', 'c++', *compiler_flags(double, boost),
+        subprocess.run(['ccache', 'c++', *flags,
                         str(source), '-o', str(staged_exe)], check=True)
         staged_exe.replace(exe)
+
+
+def build(families, double=False, source_id="", boost=None):
+    """Build the requested family set for the archived evaluation drivers."""
+    WORK.mkdir(parents=True, exist_ok=True)
+    source, exe = probe_paths(families, double, source_id)
+    write_source(source, probe_source(families, adapters()))
+    compile_probe(source, exe, compiler_flags(double, boost_include() if boost is None else boost))
     return exe
+
 
 def cases(families, archive_bytes=None):
     if archive_bytes is None:
@@ -163,14 +177,19 @@ def probe_cacheable(row):
     return row['outcome'] != 'open fit' and row.get('attribution') != 'open reference'
 
 
-def source_fingerprint():
-    sources = sorted((ROOT/'univariateML-cpp/include').rglob('*.hpp'))
-    sources += sorted((ROOT/'bindings/common').rglob('*.hpp'))
-    for pattern in ('README.md', '*.py', 'test.cpp'):
-        sources += sorted(DISTS.glob('*/'+pattern))
-    sources += sorted((HERE/'quality').rglob('*.py'))
+def reference_fingerprint():
+    sources = sorted((HERE/'quality').rglob('*.py'))
     sources += [HERE/name for name in ('seam-check.py', 'seam_reference.py', 'strict_common.py')]
     return file_fingerprint(sources)
+
+
+def probe_groups(families):
+    # A fixed partition lets a subset or a guard retry reuse the same binaries.
+    groups = collections.defaultdict(list)
+    for family in sorted(families):
+        bucket = hashlib.sha256(family.encode()).digest()[0] % 8
+        groups[bucket].append(family)
+    return groups.values()
 
 
 def main():
@@ -184,7 +203,10 @@ def main():
     ap.add_argument('--no-cache', action='store_true', help='refit the selected probes without reading or writing the cache')
     ap.add_argument('--cache', type=Path, default=CACHE, help='result cache path (default: build/strict/seam.sqlite3)')
     args = ap.parse_args()
-    families = sorted(args.family.split(',') if args.family else adapters())
+    ads = adapters()
+    families = sorted(args.family.split(',') if args.family else ads)
+    if unknown := set(families) - ads.keys():
+        ap.error('unknown families: ' + ', '.join(sorted(unknown)))
     archive_bytes = ARCHIVE.read_bytes()
     selected = [c for c in cases(families, archive_bytes)
                 if args.case is None or (c['source'] == 'archive' and c['index'] in args.case)]
@@ -194,24 +216,48 @@ def main():
     compiler_path = Path(shutil.which('c++')).resolve()
     include_environment = {name: os.environ.get(name) for name in (
         'CPATH', 'CPLUS_INCLUDE_PATH', 'COMPILER_PATH', 'GCC_EXEC_PREFIX', 'LIBRARY_PATH')}
-    # BH may supply Boost, with the compiler's system headers as the fallback.
-    boost_version = Path(boost or '/usr/include')/'boost/version.hpp'
-    boost_id = hashlib.sha256(boost_version.read_bytes()).hexdigest() if boost_version.is_file() else None
-    source_id = source_fingerprint()
-    probe_id = fingerprint(source_id, families, compiler, str(compiler_path),
-                           hashlib.sha256(compiler_path.read_bytes()).hexdigest(),
-                           compiler_flags(args.no_long_double, boost), include_environment, boost_id)
-    cache_id = fingerprint(probe_id, hashlib.sha256(archive_bytes).hexdigest(),
-                           args.timeout, sys.version, mp.__version__, sp.__version__, yaml.__version__)
-    _, exe = probe_paths(families, args.no_long_double, probe_id)
+    flags = compiler_flags(args.no_long_double, boost)
+    toolchain = fingerprint(compiler, str(compiler_path),
+                            hashlib.sha256(compiler_path.read_bytes()).hexdigest(),
+                            flags, include_environment)
+    source_id = reference_fingerprint()
+    cache_id = fingerprint(source_id, args.timeout, sys.version, mp.__version__,
+                           sp.__version__, yaml.__version__)
+    active = {c['family'] for c in selected}
+    groups = [group for group in probe_groups(ads) if active.intersection(group)]
+    WORK.mkdir(parents=True, exist_ok=True)
+
+    def describe(group):
+        text = probe_source(group, ads)
+        source, _ = probe_paths(group, False, fingerprint(text))
+        if not source.is_file():
+            write_source(source, text)
+        # Hash the actual translation unit, including transitive, conditional
+        # and system includes. A header outside this unit cannot invalidate it.
+        expanded = subprocess.check_output(['c++', *flags, '-E', str(source)])
+        probe_id = fingerprint(toolchain, hashlib.sha256(expanded).hexdigest())
+        _, exe = probe_paths(group, args.no_long_double, probe_id)
+        return group, probe_id, (source, exe, flags)
+
+    with ThreadPoolExecutor(args.jobs) as pool:
+        probes = list(pool.map(describe, groups))
+    binaries = {}
+    keys = {}
+    for group, probe_id, build_args in probes:
+        for ident in sorted(active.intersection(group)):
+            folder = DISTS/ident
+            sources = [folder/'README.md', folder/'golden.json', *folder.glob('*.py')]
+            keys[ident] = fingerprint(cache_id, probe_id, file_fingerprint(sources))
+            binaries[ident] = build_args[1]
 
     def prepare():
-        if not exe.is_file():
-            print('building', len(families), 'families', flush=True)
-            build(families, args.no_long_double, probe_id, boost=boost)
+        missing = [build_args for _, _, build_args in probes if not build_args[1].is_file()]
+        with ThreadPoolExecutor(args.jobs) as pool:
+            list(pool.map(lambda build_args: compile_probe(*build_args), missing))
         print('replaying frozen inputs', flush=True)
 
-    items = [(fingerprint(cache_id, c), (c, exe, args.timeout)) for c in selected]
+    items = [(fingerprint(keys[c['family']], c), (c, binaries[c['family']], args.timeout))
+             for c in selected]
     results = cached_map(probe_task, items, args.jobs, None if args.no_cache else args.cache,
                          cacheable=probe_cacheable, prepare=prepare)
     outcomes = collections.defaultdict(collections.Counter)
@@ -235,7 +281,8 @@ def main():
                 if record_count % 100 == 0:
                     print(record_count, ident, counts, flush=True)
         staged_output.replace(args.output)
-    provenance = dict(source_sha256=source_id, probe_sha256=probe_id, cache_sha256=cache_id, families=families,
+    provenance = dict(source_sha256=source_id, probe_sha256=fingerprint([probe[1] for probe in probes]),
+                      cache_sha256=fingerprint(keys), families=families,
                       no_long_double=args.no_long_double, timeout=args.timeout, case=args.case)
     args.output.with_suffix('.provenance.json').write_text(json.dumps(provenance, indent=2)+'\n')
     summary = dict(records=record_count, by_family={i: dict(outcomes[i]) for i in families},

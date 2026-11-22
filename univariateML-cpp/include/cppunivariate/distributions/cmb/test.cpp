@@ -220,6 +220,8 @@ TEST_CASE("cmb truncated entropy dual bounds a two-coordinate grid") {
 TEST_CASE("cmb uniform empirical support attains the saturated likelihood") {
   const std::vector<int> x{0,0,1,1,2,2,3,3,4,4};
   const double nan=std::numeric_limits<double>::quiet_NaN();
+  // Both fitted routes compare against the same fixed-parameter grid.
+  std::vector<cppunivariate::CmbResult> grid;
   for(double p:{nan,.5}) {
     const auto fit=cppunivariate::cmb_size_free_nu_mle({x.data(),x.size()},p);
     REQUIRE(fit.fit.status==cppunivariate::CmbStatus::Ok);
@@ -227,8 +229,11 @@ TEST_CASE("cmb uniform empirical support attains the saturated likelihood") {
     CHECK(fit.fit.prob==.5);
     CHECK(fit.fit.nu==0);
     CHECK(fit.fit.logLik==doctest::Approx(-10*std::log(5.)));
+    std::size_t index = 0;
     for(int N=4;N<=30;++N)for(int i=1;i<10;++i)for(int j=-4;j<=4;++j) {
-      const auto f=cppunivariate::cmb_mle({x.data(),x.size()},N,1e-10,100,i/10.,j*.5);
+      if (index == grid.size())
+        grid.push_back(cppunivariate::cmb_mle({x.data(),x.size()},N,1e-10,100,i/10.,j*.5));
+      const auto& f = grid[index++];
       REQUIRE(f.status==cppunivariate::CmbStatus::Ok);
       CHECK(f.logLik<=fit.fit.logLik+1e-9);
     }
