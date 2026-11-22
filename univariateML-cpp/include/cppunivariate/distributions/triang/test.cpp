@@ -594,3 +594,33 @@ TEST_CASE("triang near-constant sample is an estimate at the best public endpoin
   CHECK(r.b==std::nextafter(std::nextafter(near[0],INFINITY),INFINITY));
   CHECK(r.logLik==doctest::Approx(111.60).epsilon(1e-4));
 }
+
+TEST_CASE("triang: a reflected mode tie respects held endpoints exactly") {
+  const std::vector<double> symmetric{0.25,0.75};
+  const auto tied=cppunivariate::triang_mle(mltest::as_span(symmetric),1e-10,100,0,1);
+  REQUIRE(tied.status==cppunivariate::TriangStatus::Ok);
+  CHECK(tied.reflection_tie);
+  CHECK_FALSE(cppunivariate::outcome(tied).unique);
+}
+
+TEST_CASE("triang: the exact held-endpoint comparison resolves a rounded likelihood tie") {
+  const std::vector<double> nearby{0.2,0.8};
+  const auto close=cppunivariate::triang_mle(mltest::as_span(nearby),1e-10,100,0,1);
+  REQUIRE(close.status==cppunivariate::TriangStatus::Ok);
+  CHECK(close.c==0.8);
+  CHECK_FALSE(close.not_unique);
+  CHECK(cppunivariate::outcome(close).unique);
+  CHECK(cppunivariate::outcome(close).certified);
+}
+
+TEST_CASE("triang: overlapping held-endpoint likelihood bounds keep both modes") {
+  const double y=(1+std::sqrt(5.0))/4;
+  const std::vector<double> x{0.5,0.5,y};
+  const auto r=cppunivariate::triang_mle(mltest::as_span(x),1e-10,100,0,1);
+  REQUIRE(r.status==cppunivariate::TriangStatus::Ok);
+  CHECK(r.c==0.5);
+  REQUIRE(r.unresolved_modes.size()==1);
+  CHECK(r.unresolved_modes[0].c==y);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  CHECK_FALSE(cppunivariate::outcome(r).certified);
+}

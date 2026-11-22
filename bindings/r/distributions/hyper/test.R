@@ -29,14 +29,24 @@ test_that("hyper requires its design and preserves fixed constraints", {
   }
 })
 
-test_that("hyper warns deterministically for ties and unidentified designs", {
-  expect_warning(a <- mlhyper(5, k = 10, N = 19), "tied")
+test_that("hyper reports ties and unidentified designs in the outcome", {
+  expect_no_warning(a <- mlhyper(5, k = 10, N = 19))
+  expect_false(attr(a, "unique"))
+  expect_equal(attr(a, "maximizers")$m, c(9, 10))
   expect_equal(unname(a["m"]), 9)
-  expect_warning(b <- mlhyper(5, k = 10, N = NULL, m = 10), "tied")
+  expect_no_warning(b <- mlhyper(5, k = 10, N = NULL, m = 10))
+  expect_false(attr(b, "unique"))
+  expect_equal(attr(b, "maximizers")$N, c(19, 20))
   expect_equal(unname(b["N"]), 19)
-  expect_warning(z <- mlhyper(c(0, 0), k = 0, N = 7), "every `m`")
+  expect_no_warning(z <- mlhyper(c(0, 0), k = 0, N = 7))
+  expect_false(attr(z, "unique"))
+  expect_equal(attr(z, "maximizers")$m, c(0, 7))
+  expect_match(attr(z, "outcome_message"), "Every `m` from 0 to 7")
   expect_equal(unname(z["m"]), 0)
-  expect_warning(mlhyper(0, k = 3, N = NULL, m = 0), "Every `N`")
+  expect_no_warning(z <- mlhyper(0, k = 3, N = NULL, m = 0))
+  expect_false(attr(z, "unique"))
+  expect_equal(attr(z, "maximizers")$N, c(3, 4))
+  expect_match(attr(z, "outcome_message"), "Every admissible `N` from 3")
   fit <- mlhyper(c(0, 1, 1), k = 1, N = 10)
   grid <- 0:10
   ll <- vapply(grid, function(m) sum(dhyper(c(0, 1, 1), m, 10-m, 1, log=TRUE)), 0)
@@ -90,15 +100,27 @@ test_that("free draws match the reference finite grid", {
     expect_true(unname(fit["k"]) %in% grid[abs(ll - max(ll)) < 1e-10])
     expect_setequal(attr(fit, "fixed"), c("m", "N"))
   }
-  expect_warning(a <- mlhyper(5, m = 10, N = 19, k = NULL), "tied")
+  expect_no_warning(a <- mlhyper(5, m = 10, N = 19, k = NULL))
+  expect_false(attr(a, "unique"))
+  expect_equal(attr(a, "maximizers")$k, c(9, 10))
   expect_equal(unname(a["k"]), 9)
-  expect_warning(z <- mlhyper(0, m = 0, N = 7, k = NULL), "Every `k`")
+  expect_no_warning(z <- mlhyper(0, m = 0, N = 7, k = NULL))
+  expect_false(attr(z, "unique"))
+  expect_equal(attr(z, "maximizers")$k, c(0, 7))
   expect_equal(unname(z["k"]), 0)
   expect_error(mlhyper(4, m = 3, N = 10, k = NULL), "positive probability")
 })
 
 test_that("fully free hyper fits and reports boundary outcomes", {
-  f <- mlhyper(c(2,2,2,3,3,3), N=NULL, k=NULL, m=NULL)
+  expect_no_warning(f <- mlhyper(c(2,2,2,3,3,3), N=NULL, k=NULL, m=NULL))
+  expect_false(attr(f, "unique"))
+  witnesses <- attr(f, "maximizers")
+  expect_equal(nrow(witnesses), 2L)
+  expect_equal(witnesses$m, rev(witnesses$k))
+  expect_equal(witnesses$N, rep(f[["N"]], 2))
+  expect_match(attr(f, "outcome_message"), "symmetric")
+  expect_output(print(f), "Maximum is not unique")
+  expect_output(summary(f), "Maximum is not unique")
   expect_equal(as.numeric(logLik(f)), 6*log(.5), tolerance=1e-9)
   expect_length(attr(f, "fixed"), 0)
   expect_identical(attr(mlhyper(c(0,1),N=NULL,k=NULL,m=NULL), "certified"), FALSE)
@@ -133,10 +155,20 @@ test_that("fully free seeded fits agree with independent population grids", {
     ll <- apply(grid,1,function(z) sum(stats::dhyper(x,z[1],N-z[1],z[2],log=TRUE)))
     best <- max(ll)
     z <- grid[which(is.finite(ll) & abs(ll-best)<=64*.Machine$double.eps*abs(best))[1],]
-    f <- mlhyper(x,N=N,k=NULL)
+    expect_no_warning(f <- mlhyper(x, N=N, k=NULL))
     expect_equal(as.numeric(f),c(z$m,N,z$k))
     expect_equal(as.numeric(logLik(f)),best,tolerance=1e-10)
     expect_identical(attr(f,"fixed"),"N")
+    if (z$m != z$k || (length(unique(x)) == 1L && x[1] < N)) {
+      expect_false(attr(f, "unique"))
+      witnesses <- attr(f, "maximizers")
+      expect_gte(nrow(witnesses), 2L)
+      expect_equal(witnesses$N, rep(N, nrow(witnesses)))
+      for (j in seq_len(nrow(witnesses))) {
+        expect_equal(sum(stats::dhyper(x, witnesses$m[j], N - witnesses$m[j],
+                                      witnesses$k[j], log = TRUE)), best, tolerance = 1e-10)
+      }
+    }
   }
   expect_error(mlhyper(c(0,15),N=14,k=NULL),"positive probability")
   expect_identical(attr(mlhyper(c(0,1),N=10000,k=NULL), "certified"), FALSE)
@@ -151,7 +183,12 @@ test_that("joint population fits agree with a finite reference grid", {
   }, 0.0)
   expect_equal(as.numeric(logLik(f)), max(ll), tolerance=1e-9)
   expect_equal(as.numeric(logLik(g)), max(ll), tolerance=1e-9)
-  expect_equal(as.numeric(logLik(mlhyper(c(0,1),k=1,N=NULL,m=NULL))),2*log(.5))
+  expect_no_warning(one_draw <- mlhyper(c(0,1), k=1, N=NULL, m=NULL))
+  expect_equal(as.numeric(logLik(one_draw)), 2*log(.5))
+  expect_false(attr(one_draw, "unique"))
+  expect_equal(attr(one_draw, "maximizers")$m, c(1, 2))
+  expect_equal(attr(one_draw, "maximizers")$N, c(2, 4))
+  expect_match(attr(one_draw, "outcome_message"), "success ratio")
   expect_identical(attr(mlhyper(c(0,1),k=100001,N=NULL,m=NULL), "certified"), FALSE)
 })
 
@@ -167,4 +204,14 @@ test_that("seeded joint hyper fits match population grids", {
     expect_equal(as.numeric(logLik(g)),best,tolerance=1e-8)
   }
   expect_identical(attr(mlhyper(c(0,0,0,5,5,5),k=5,N=NULL,m=NULL), "certified"), FALSE)
+})
+
+test_that("constant hyper samples describe the point-mass maximizing set", {
+  expect_no_warning(fit <- mlhyper(c(2, 2), k = NULL, N = NULL, m = NULL))
+  expect_false(attr(fit, "unique"))
+  witnesses <- attr(fit, "maximizers")
+  expect_equal(witnesses$m, c(2, 3, 2))
+  expect_equal(witnesses$N, c(2, 3, 3))
+  expect_equal(witnesses$k, c(2, 2, 3))
+  expect_match(attr(fit, "outcome_message"), "point-mass")
 })

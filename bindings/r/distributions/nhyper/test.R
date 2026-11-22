@@ -18,7 +18,10 @@ test_that("nhyper design, fixed subsets and errors are explicit", {
   expect_equal(attr(logLik(b),"df"),0)
   expect_equal(attr(b,"fixed"),c("m","N","r"))
   expect_equal(attr(b,"logLik"),sum(dnhyper(c(3,4,5),8,20,2,log=TRUE)))
-  expect_warning(z <- mlnhyper(c(0,0),r=0,N=20),"unidentified")
+  expect_no_warning(z <- mlnhyper(c(0,0),r=0,N=20))
+  expect_false(attr(z, "unique"))
+  expect_equal(attr(z, "maximizers")$m, c(0, 20))
+  expect_match(attr(z, "outcome_message"), "unidentified")
   expect_equal(as.numeric(z),c(0,20,0))
   expect_equal(attr(z,"logLik"),0)
   expect_equal(attr(mlnhyper(0,r=0,N=0),"logLik"),0)
@@ -42,7 +45,9 @@ test_that("nhyper integer MLE agrees with independent reference enumeration", {
     ties <- ties + (sum(abs(ll-max(ll))<1e-10)>1)
   }
   # Single observation: ratio is one at m = r*(N+1)/x.
-  expect_warning(a <- mlnhyper(6,r=2,N=20),"tied")
+  expect_no_warning(a <- mlnhyper(6,r=2,N=20))
+  expect_false(attr(a, "unique"))
+  expect_equal(attr(a, "maximizers")$m, c(6, 7))
   expect_equal(unname(a["m"]), 6, tolerance = 0)
 })
 
@@ -112,7 +117,9 @@ test_that("free stopping count matches the reference finite grid", {
     expect_true(unname(fit["r"]) %in% grid[abs(ll - max(ll)) < 1e-10])
     expect_setequal(attr(fit, "fixed"), c("m", "N"))
   }
-  expect_warning(a <- mlnhyper(3, m = 7, N = 20, r = NULL), "tied")
+  expect_no_warning(a <- mlnhyper(3, m = 7, N = 20, r = NULL))
+  expect_false(attr(a, "unique"))
+  expect_equal(attr(a, "maximizers")$r, c(1, 2))
   expect_equal(unname(a["r"]), 1, tolerance = 0)
   expect_equal(unname(mlnhyper(0, m = 7, N = 20, r = NULL)["r"]), 0, tolerance = 0)
   expect_error(mlnhyper(c(0, 1), m = 7, N = 20, r = NULL), "positive probability")
@@ -225,4 +232,14 @@ test_that("nhyper iterlim controls the held-composition population bisection", {
                "integer likelihood search did not converge")
   f <- mlnhyper(x, m = 20, N = NULL, r = 3, iterlim = 100)
   expect_equal(unname(f["N"]), 6666697, tolerance = 0)
+})
+
+test_that("constant nhyper samples describe the point-mass maximizing set", {
+  expect_no_warning(fit <- mlnhyper(c(2, 2), r = NULL, N = NULL, m = NULL))
+  expect_false(attr(fit, "unique"))
+  witnesses <- attr(fit, "maximizers")
+  expect_equal(witnesses$m, c(2, 3))
+  expect_equal(witnesses$N, c(2, 3))
+  expect_equal(witnesses$r, c(2, 2))
+  expect_match(attr(fit, "outcome_message"), "point-mass")
 })

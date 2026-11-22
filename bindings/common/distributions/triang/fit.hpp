@@ -6,8 +6,7 @@
 namespace umvl_binding {
 inline FitResult fit_triang(cppunivariate::span x, Held a_arg = {}, Held b_arg = {}, Held c_arg = {}, double tol = 1e-10, int iterlim = 100) {
 
-  std::vector<std::string> warnings;
-  const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
+  const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...)); };
   const Held a = a_arg;
   const Held b = b_arg;
   const Held c = c_arg;
@@ -46,7 +45,7 @@ const Held z = c;
   const auto done = [&](FitResult out) {
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"a",a_arg.supplied},{"b",b_arg.supplied},{"c",c_arg.supplied}});
   };
-  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };
+  const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...)), {}, outcome_payload(o), {}); };
   if(r.status==cppunivariate::TriangStatus::Unbounded)
     return done(nomle("Triangular likelihood is unbounded for constant data with these fixed parameters."));
   if(r.status==cppunivariate::TriangStatus::Incompatible)
@@ -60,13 +59,37 @@ const Held z = c;
     return done(stop_failure(fail("Triangular public coefficients lose likelihood beyond the numerical certificate margin."),{},outcome_payload(o),{"a","b","c"}));
   if(r.status==cppunivariate::TriangStatus::IterationFailure)
     return done(fail("Triangular endpoint solve did not converge; increase iterlim."));
-  if(r.not_unique) warnings.push_back(binding_message("Triangular maximum likelihood estimate is not unique (candidate log likelihoods within tolerance)."));
-  else if(r.reflection_tie) warnings.push_back(binding_message("Triangular maximum likelihood estimate is not unique: the sample is symmetric about its midrange, so the reflected fit has the same likelihood."));
   std::vector<std::string> fixed;
   if(a.supplied) fixed.push_back("a");
   if(b.supplied) fixed.push_back("b");
   if(c.supplied) fixed.push_back("c");
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"a",r.a},{"b",r.b},{"c",r.c}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
-
+  FitResult out;
+  out.estimates = {{"a",r.a},{"b",r.b},{"c",r.c}};
+  out.logLik = r.logLik;
+  out.iterations = r.iterations;
+  out.has_iterations = true;
+  out.fixed = fixed;
+  out.has_fixed = true;
+  if (!o.unique) out.candidates.push_back({out.estimates,r.logLik,r.logLik,"triang"});
+  if (r.reflection_tie) {
+    const double minimum = *std::min_element(x.begin(), x.end());
+    const double maximum = *std::max_element(x.begin(), x.end());
+    const auto reflect = [&](double value) {
+      return std::abs(value-minimum) <= std::abs(value-maximum)
+          ? maximum-(value-minimum) : minimum-(value-maximum);
+    };
+    out.candidates.push_back({{{"a",a.supplied ? r.a : reflect(r.b)},
+                               {"b",b.supplied ? r.b : reflect(r.a)},
+                               {"c",reflect(r.c)}},r.logLik,r.logLik,"triang"});
+    out.error = "Triangular maximum likelihood estimate is not unique: the sample is symmetric about its midrange, so the reflected fit has the same likelihood.";
+  }
+  for (const auto& rival : r.unresolved_modes)
+    out.candidates.push_back({{{"a",rival.a},{"b",rival.b},{"c",rival.c}},
+                               rival.logLik,rival.logLik,"triang"});
+  if (!r.unresolved_modes.empty()) {
+    if (!out.error.empty()) out.error += " ";
+    out.error += "The likelihood comparison between candidate triangular modes could not be resolved.";
+  }
+  return done(std::move(out));
 }
 }
