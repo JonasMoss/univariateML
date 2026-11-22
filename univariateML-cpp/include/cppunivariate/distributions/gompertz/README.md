@@ -26,7 +26,7 @@ r:
   control:
     a: Optional held a; NULL estimates it.
     b: Optional held b; NULL estimates it.
-    tol: "Requested relative accuracy of `b` (default 1e-10): stop when the applied Newton step is below `tol * b`; `a` follows in closed form."
+    tol: "Requested relative accuracy of `b` (default 1e-10): near the exponential face, require score signs within `tol * b`; otherwise the free fit uses its relative Newton-step criterion."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(a) + b*x - (a/b)*(exp(b*x)-1)
 limits:
@@ -44,6 +44,7 @@ limits:
   when: 'The free growth coefficient $b$ decreases to zero with $a$ held fixed.'
   detect: 'The sample satisfies $0<\sum_i x_i\le a\sum_i x_i^2/2$.'
   status: Overdispersed
+  numerical: true
   message: mlexp
 - model: 'exp'
   firmness: proved
@@ -117,11 +118,13 @@ The Gompertz distribution models lifetimes with an exponentially increasing haza
 
 The hazard is $a\exp(bx)$, with both coefficients positive. The exponential law is an excluded limit as $b$ decreases to zero. Profiling the initial hazard leaves a strictly concave scalar likelihood in $b$. Its derivative at zero determines whether a finite maximum exists or the exponential face has the supremum.
 
-The free-fit decision is the sign of $T=nQ-2S^2$ with $S=\sum x_i$, $Q=\sum x_i^2$. The data are scaled by an exact power of two, $S$ and $Q$ are accumulated as unevaluated pairs with TwoSum and FMA products, and $T$ is formed without rounding the cancelling leading terms. With $u=2^{-53}$, $\gamma_k=ku/(1-ku)$ and $nQ$ computed upward as $N$, the pad is $(6\gamma_{2n}^2N+16uW+16n^22^{-1074})(1+10^{-6})$, where $W$ is the sum of the magnitudes of the correction terms. The two Sum2 bounds are the cited ones (Ogita, Rump and Oishi, 2005); the factor 6, the evaluation bound $16uW$ and the underflow term are derived in `mle.hpp` and checked on constructed samples, not proved independently. Relative to $nQ$ the pad is about $5\times10^{-30}$ for $n=3$ and $3\times10^{-25}$ for $n=1000$, against binary64 comparisons that fail within about $10u\approx10^{-15}$. $T>$ pad is a certified limit, $T<-$ pad a finite fit, and anything between is the limit with `numerical: true` semantics (uncertified). The held-$a$ comparison is not covered by this rule.
+The free-fit decision is the sign of $T=nQ-2S^2$ with $S=\sum x_i$, $Q=\sum x_i^2$. The data are scaled by an exact power of two, $S$ and $Q$ are accumulated as unevaluated pairs with TwoSum and FMA products, and $T$ is formed without rounding the cancelling leading terms. With $u=2^{-53}$, $\gamma_k=ku/(1-ku)$ and $nQ$ computed upward as $N$, the pad is $(6\gamma_{2n}^2N+16uW+16n^22^{-1074})(1+10^{-6})$, where $W$ is the sum of the magnitudes of the correction terms. The two Sum2 bounds are the cited ones (Ogita, Rump and Oishi, 2005); the factor 6, the evaluation bound $16uW$ and the underflow term are derived in `mle.hpp` and checked on constructed samples, not proved independently. Relative to $nQ$ the pad is about $5\times10^{-30}$ for $n=3$ and $3\times10^{-25}$ for $n=1000$, against binary64 comparisons that fail within about $10u\approx10^{-15}$. $T>$ pad is a certified limit, $T<-$ pad a finite fit, and anything between is the limit with `numerical: true` semantics (uncertified). With $a$ held, the corresponding score is $S-\alpha Q/2$ in the scaled data, where $\alpha$ is the initial hazard in those units. It uses the same moment pairs and a product residual for $\alpha Q/2$. The pad accounts for both moment errors and the roundoff in the low-word calculation. A negative score outside the pad certifies the exponential face. The pad itself selects an uncertified limit.
 
 Holding $a$ also leaves a strictly concave likelihood in $b$ whenever the sample sum is positive. For all-zero data with $a$ held the likelihood is flat in $b$. Holding $b$ gives an explicit estimate of $a$ when the sample sum is positive, and unbounded likelihood otherwise. Holding both evaluates the likelihood. With both free, a constant positive sample has unbounded likelihood as $b$ increases and $a$ decreases to concentrate the density at its common value.
 
-The free fit runs on data divided by their mean, and $a$ and $b$ scale with its reciprocal. On subnormal data they can exceed binary64 ($(1,2,3)$ times the smallest subnormal gives $a=1.5\times10^{322}$, $b=2.5\times10^{323}$); a coefficient that overflows stops with `NumericalFailure`, and one below binary64 resolution with `NumericalFailure` and a tolerance detail.
+Near the exponential face, write $z_i=x_i/2^e$, $\beta=b2^e$, and $H(\beta)=\sum_i z_i\int_0^1\exp(\beta z_i t)\,dt$. The free profile score has the sign of $SH/n-H'$, while the held-hazard score is $S-\alpha H'$. The boundary comparison supplies the constant term and a Taylor polynomial supplies the remaining terms. The fitter requires opposite padded signs within half the requested relative tolerance of the represented rate. Strict concavity makes this a global bracket. The free hazard follows as $n/(2^e H)$, and $0<H'/H\le1$ bounds the propagation of the rate error into it.
+
+Away from the face, the free fit runs on data divided by their mean, and $a$ and $b$ scale with its reciprocal. On subnormal data they can exceed binary64 ($(1,2,3)$ times the smallest subnormal gives $a=1.5\times10^{322}$, $b=2.5\times10^{323}$); a coefficient that overflows stops with `NumericalFailure`, and one below binary64 resolution with `NumericalFailure` and a tolerance detail.
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 

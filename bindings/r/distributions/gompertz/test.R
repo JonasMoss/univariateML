@@ -86,7 +86,8 @@ test_that("P2 held existence boundaries", {
 expect_error(mlgompertz(c(1,2,4),a=1),"mlexp")
 expect_error(mlgompertz(rep(2,3),a=1),"mlexp")
 expect_error(mlgompertz(rep(0,3),b=1),"unbounded")
-expect_equal(as.numeric(mlgompertz(rep(0,3),a=2)),c(2,1))
+reference_tol <- 1e-10 + (1 + 1e-10) * .Machine$double.eps / 2
+expect_equal(as.numeric(mlgompertz(rep(0,3),a=2)),c(2,1),tolerance=reference_tol)
 expect_true(is.finite(logLik(mlgompertz(rep(2,3),b=1))))
 })
 

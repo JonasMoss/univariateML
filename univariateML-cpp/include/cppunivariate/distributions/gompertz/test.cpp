@@ -257,3 +257,40 @@ TEST_CASE("gompertz: adjacent observations require an unrepresentable coefficien
   CHECK(result.reason == cppunivariate::OutcomeReason::Evaluation);
   CHECK(fit.iterations == 0);
 }
+
+TEST_CASE("gompertz: the small positive rate survives the exponential-face cancellation") {
+  const std::vector<double> x{415.8753190533696, 2688.353999767103, 240.47409880682352};
+  for (int exponent : {-200, 0, 200}) {
+    std::vector<double> scaled;
+    for (double v : x) scaled.push_back(std::ldexp(v, exponent));
+    const auto fit = cppunivariate::gompertz_mle(mltest::as_span(scaled), mltest::kFitTol, mltest::kFitMaxit);
+    const auto out = cppunivariate::outcome(fit);
+    REQUIRE(out.kind == cppunivariate::OutcomeKind::Estimate);
+    CHECK(out.reason == cppunivariate::OutcomeReason::None);
+    CHECK(out.certified);
+    CHECK(std::ldexp(fit.a, exponent) == doctest::Approx(0x1.d641515dbc2a7p-11).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(std::ldexp(fit.b, exponent) == doctest::Approx(0x1.8f9c82479d034p-68).epsilon(mltest::kFitReferenceTol).scale(0));
+    CHECK(fit.logLik == doctest::Approx(-0x1.80cb029f0cc37p+4 - 3 * exponent * std::log(2.)).epsilon(mltest::kFitReferenceTol).scale(0));
+  }
+}
+
+TEST_CASE("gompertz: held hazard resolves a rate and two exponential-face comparisons") {
+  const std::vector<double> x{1, 2};
+  const auto fit = cppunivariate::gompertz_mle(mltest::as_span(x), mltest::kFitTol, mltest::kFitMaxit, 1.2, NAN);
+  const auto out = cppunivariate::outcome(fit);
+  REQUIRE(out.kind == cppunivariate::OutcomeKind::Estimate);
+  CHECK(out.reason == cppunivariate::OutcomeReason::None);
+  CHECK(out.certified);
+  CHECK(fit.a == 1.2);
+  CHECK(fit.b == doctest::Approx(0x1.1c71c71c71c72p-55).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(fit.logLik == doctest::Approx(-0x1.9e202ca9039fep+1).epsilon(mltest::kFitReferenceTol).scale(0));
+  const auto above = cppunivariate::outcome(cppunivariate::gompertz_mle(
+      mltest::as_span(x), mltest::kFitTol, mltest::kFitMaxit, std::nextafter(1.2, 2.), NAN));
+  CHECK(above.kind == cppunivariate::OutcomeKind::Limit);
+  CHECK(above.certified);
+  const std::vector<double> tie{0, 2};
+  const auto equal = cppunivariate::outcome(cppunivariate::gompertz_mle(
+      mltest::as_span(tie), mltest::kFitTol, mltest::kFitMaxit, 1., NAN));
+  CHECK(equal.kind == cppunivariate::OutcomeKind::Limit);
+  CHECK_FALSE(equal.certified);
+}

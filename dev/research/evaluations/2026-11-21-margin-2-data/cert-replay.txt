@@ -1,0 +1,91 @@
+cert-replay: 3452.6 wall s, 50 digits, 0/2730 records cached
+  bbinom  search      holds  100
+  bbinom  support     holds  210
+  bbinom  tail        holds  100
+  bbinom  tie         holds  100
+  binom   coef        holds  62
+  binom   moment      holds  70
+  binom   search      holds  96
+  binom   support     holds  4
+  binom   tail        holds  96
+  binom   tie         holds  96
+  binom   unique      holds  2
+  cmb     search      holds  72
+  cmb     search      open   2
+  cmb     support     holds  112
+  cmb     tail        holds  28
+  cmb     tail        info   46
+  cmb     tie         holds  74
+  gompertz moment      holds  104
+  gompertz support     holds  6
+  lgser   root        holds  66
+  lgser   support     holds  68
+  lgser+zero=modified moment      holds  46
+  nbinom  dispersion  holds  72
+  nbinom  root        holds  60
+  norm +truncate=tnorm support     holds  6
+  norm +truncate=tnorm window      holds  128
+  pois+zero=inflated support     holds  6
+  pois+zero=inflated unique      holds  18
+  pois+zero=inflated zero-fraction holds  52
+  pois+zero=modified moment      holds  64
+  pois+zero=truncated moment      holds  68
+  slash   accuracy    holds  58
+  slash   bracket     holds  88
+  slash   collapse    holds  6
+  slash   cover       holds  88
+  slash   multiplicity holds  104
+  slash   scale-bracket holds  32
+  zeta +truncate=zipf support     holds  96
+  zeta +truncate=zipf unique      holds  2
+not replayed (no certificate comparison):
+  bbinom: no certified estimate: 4
+  bbinom: shapes held: size enumeration or evaluation; no certified estimate: 2
+  bbinom: shapes held: size enumeration or evaluation; size held or all held: not an integer search: 34
+  bbinom: size held or all held: not an integer search: 10
+  binom: no certified estimate: 4
+  binom: size or prob held: closed form or integer search (no face inequality); size held: closed form: 60
+  cmb: no certified estimate: 30
+  cmb: no exact support predicate for this hold subset; size held: not an integer search: 52
+  cmb: size held: not an integer search: 10
+  gompertz: b held: analytic: 42
+  gompertz: evaluation only: 42
+  gompertz: no certified outcome (invalid): 10
+  gompertz: no certified outcome (numerical): 20
+  lgser+zero=modified: all zero: 2
+  lgser+zero=modified: mean one: closed form: 50
+  lgser+zero=modified: no certified outcome (invalid): 4
+  lgser+zero=modified: prob held: 56
+  lgser: no root comparison: 6
+  lgser: no root comparison; no exact support predicate for this hold subset: 28
+  nbinom: closed form (size held): 32
+  nbinom: degenerate (all zero): no comparison: 2
+  nbinom: empty: 2
+  nbinom: evaluation only: 32
+  nbinom: no certified outcome (invalid): 2
+  norm +truncate=tnorm: mean and sd held: evaluation: 128
+  norm +truncate=tnorm: mean held, one-sided window: no face: 94
+  norm +truncate=tnorm: no certified outcome (invalid): 8
+  norm +truncate=tnorm: no certified outcome (numerical): 14
+  norm +truncate=tnorm: no truncation: normal closed form: 76
+  norm +truncate=tnorm: sd held: location solve (no face): 116
+  pois+zero=inflated: lambda held: closed form or evaluation: 56
+  pois+zero=inflated: no certified outcome (invalid): 4
+  pois+zero=inflated: pi held: held-rate certificate (not mechanism D): 22
+  pois+zero=modified: all zero: 14
+  pois+zero=modified: mean one: closed form: 20
+  pois+zero=modified: no root comparison: 60
+  pois+zero=truncated: no root comparison: 34
+  slash: evaluation only: 32
+  slash: no certified outcome (budget): 2
+  slash: no certified outcome (invalid): 8
+  slash: no certified outcome (numerical): 8
+  slash: sigma held: location search (no face inequality): 2
+  zeta +truncate=zipf: N free (plain zeta fit) or s held: no window root; no exact support predicate for this hold subset: 56
+  zeta +truncate=zipf: no certified outcome (invalid): 6
+open (not judged):
+  OPEN  cert-replay:search|native|cmb|archive|000838: size 1 maximizes the profile over the sizes 1..41; hp profile at 1 = -2.5020121176909393977; best other size none; no finite maximum at sizes [2, 3, 4, 5, 6, 7]; double None; margin None; profile maxima by damped Newton on the concave exponential-family log likelihood (40 digits); sizes with no finite maximum are escapes to a limit, listed
+  OPEN  cert-replay:search|double|cmb|archive|000838: size 1 maximizes the profile over the sizes 1..41; hp profile at 1 = -2.5020121176909393977; best other size none; no finite maximum at sizes [2, 3, 4, 5, 6, 7]; double None; margin None; profile maxima by damped Newton on the concave exponential-family log likelihood (40 digits); sizes with no finite maximum are escapes to a limit, listed
+1434 cases judged
+cert-replay: failures by check: none
+cert-replay: 0 listed as known, 0 new, 0 listed but passing

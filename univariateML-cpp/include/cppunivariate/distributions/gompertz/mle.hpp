@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <limits>
+#include <optional>
 #include <vector>
 
 namespace cppunivariate {
@@ -46,17 +47,49 @@ struct GompertzResult {
   bool margin_decided = false; };
 
 namespace gompertz_detail {
-// Decision on the exponential face: the limit holds iff T = n Q - 2 S^2 >= 0
-// (S = sum x, Q = sum x^2; equality selects the limit). Returns +1 when T >= 0
-// is proved, -1 when T < 0 is proved, 0 when the sample lies inside the pad
-// below (including every exact tie T = 0).
-//
-// The data are scaled by an exact power of two so that z_i = x_i 2^-e lies in
-// [0, 1): T is homogeneous of degree two, so the sign is unchanged, and nothing
-// overflows. S and Q are accumulated unevaluated as (hi, lo) pairs with
-// TwoSum and FMA-based TwoProd (Ogita, Rump, Oishi 2005), and T is formed
-// from the pairs without rounding the cancelling leading terms.
-//
+constexpr double unit_roundoff = 0x1p-53;
+
+struct Moments {
+  double sh = 0, sl = 0, qh = 0, ql = 0;
+  int exponent = 0;
+};
+
+inline double two_sum(double a, double b, double& err) {
+  const double s = a + b, bb = s - a;
+  err = (a - (s - bb)) + (b - bb);
+  return s;
+}
+
+// Power-of-two scaling preserves the face comparison and avoids overflow.
+inline Moments scaled_moments(span x, double xmax) {
+  Moments m;
+  std::frexp(xmax, &m.exponent);
+  for (double v : x) {
+    const double z = std::ldexp(v, -m.exponent);
+    double err = 0;
+    m.sh = two_sum(m.sh, z, err);
+    m.sl += err;
+    const double p = z * z, pe = std::fma(z, z, -p);
+    m.qh = two_sum(m.qh, p, err);
+    m.ql += err;
+    m.ql += pe;
+  }
+  return m;
+}
+
+struct Comparison {
+  double value;
+  double pad;
+
+  int sign() const {
+    return value > pad ? 1 : value < -pad ? -1 : 0;
+  }
+};
+
+inline double gamma(double k) {
+  return k * unit_roundoff / (1 - k * unit_roundoff);
+}
+
 // Bound (u = 2^-53, gamma_k = k u / (1 - k u), n <= 2^30, correctly rounded
 // binary64 operations with no extended-precision intermediates, std::fma
 // exact, z_i^2 and z_i not underflowing; the last two are covered by U):
@@ -79,34 +112,8 @@ namespace gompertz_detail {
 // relative slack in the evaluation of P and in the sign-preserving final sum.
 // Steps 1 and 3 are the cited bounds; step 2 and the constants are derived here
 // and checked only by the test below, not by an independent proof assistant.
-inline int exponential_face(span x) {
-  const std::size_t count = x.size();
-  if (count == 0 || count > (std::size_t(1) << 30)) return 0;
-  double xmax = 0.0;
-  for (double v : x) {
-    if (!(v >= 0.0) || !std::isfinite(v)) return 0;
-    if (v > xmax) xmax = v;
-  }
-  if (!(xmax > 0.0)) return 0;
-  int exponent = 0;
-  std::frexp(xmax, &exponent);
-  double sh = 0.0, sl = 0.0, qh = 0.0, ql = 0.0;
-  const auto two_sum = [](double a, double b, double& err) {
-    const double s = a + b, bb = s - a;
-    err = (a - (s - bb)) + (b - bb);
-    return s;
-  };
-  for (double v : x) {
-    const double z = std::ldexp(v, -exponent);
-    double err = 0.0;
-    sh = two_sum(sh, z, err);
-    sl += err;
-    const double p = z * z, pe = std::fma(z, z, -p);
-    qh = two_sum(qh, p, err);
-    ql += err;
-    ql += pe;
-  }
-  const double dn = static_cast<double>(count);
+inline Comparison free_face(const Moments& m, double dn) {
+  const double sh = m.sh, sl = m.sl, qh = m.qh, ql = m.ql;
   const double p1 = dn * qh, e1 = std::fma(dn, qh, -p1);
   const double p2 = sh * sh, e2 = std::fma(sh, sh, -p2);
   double f = 0.0;
@@ -114,17 +121,124 @@ inline int exponential_face(span x) {
   const double b = (dn * ql - 4.0 * (sh * sl)) - 2.0 * (sl * sl);
   const double t = ((f + e1) - 2.0 * e2) + b;
   const double td = d + t;
-  const double u = std::ldexp(1.0, -53);
+  const double u = unit_roundoff;
   const double w = std::abs(f) + std::abs(e1) + 2.0 * std::abs(e2) + std::abs(dn * ql) +
       4.0 * std::abs(sh * sl) + 2.0 * (sl * sl);
-  const double g2n = (2.0 * dn * u) / (1.0 - 2.0 * dn * u);
+  const double g2n = gamma(2.0 * dn);
   const double big_n = dn * (qh + std::abs(ql)) * (1.0 + 8.0 * u);
   const double underflow = 16.0 * dn * dn * std::ldexp(1.0, -1074);
   const double pad = (6.0 * g2n * g2n * big_n + 16.0 * u * w + underflow) * (1.0 + 1e-6);
-  if (!std::isfinite(td) || !std::isfinite(pad)) return 0;
-  if (td > pad) return 1;
-  if (td < -pad) return -1;
-  return 0;
+  return {td, pad};
+}
+
+// The held-a score at zero, in scaled coordinates, is S - alpha Q/2.
+// TwoSum and TwoProd leave only the low-word expression to evaluate in
+// binary64. The pad covers moment errors, low-word rounding and subnormals.
+inline Comparison held_face(const Moments& m, double n, double alpha) {
+  // z_max >= 1/2 gives Q >= 1/4 and S < n.
+  if (alpha >= 8 * n) return {-1, 0};
+  const double half = alpha / 2;
+  const double p = half * m.qh, pe = std::fma(half, m.qh, -p);
+  double de = 0;
+  const double d = two_sum(m.sh, -p, de);
+  const double low_q = half * m.ql;
+  const double t = ((de - pe) + m.sl) - low_q;
+  const double gs = gamma(n), gq = gamma(2 * n);
+  const double w = std::abs(de) + std::abs(pe) + std::abs(m.sl) + std::abs(low_q);
+  const double pad = 2 * (gs * gs * m.sh + gq * gq * p)
+      + 16 * unit_roundoff * w
+      + 16 * n * (1 + alpha) * std::numeric_limits<double>::denorm_min();
+  return {d + t, pad * (1 + 1e-6)};
+}
+
+// H(beta) = sum z_i * integral_0^1 exp(beta*z_i*t) dt.
+// The free score has sign S*H/n - H', and the held-a score is S-alpha*H'.
+// Keep the score at zero separate so that rounding H and H' cannot erase it.
+inline std::optional<GompertzResult> small_rate(span x, const Moments& m,
+    Comparison at_zero, double alpha, double held_a, double tol, int maxit) {
+  constexpr double cutoff = 0.01;
+  constexpr int order = 8;
+  const double n = static_cast<double>(x.size());
+  const double mean = (m.sh + m.sl) / n;
+  const bool free_a = std::isnan(held_a);
+  const double weight = free_a ? 1 : alpha;
+  const double weighted_mean = free_a ? mean : 0;
+  // At the cutoff the first-order estimate is enough to skip accumulating
+  // the full Taylor polynomial on samples well away from the face:
+  // H' - Q/2 <= beta*exp(beta)*Q/3 (z <= 1).
+  if (at_zero.value > cutoff * 1.011 * weight * (m.qh + m.ql) / 3)
+    return std::nullopt;
+
+  // h[j] is the coefficient of beta^j in H, j>=1. Kahan summation
+  // keeps the relative error independent of the number of observations here.
+  double h[order + 2]{}, correction[order + 2]{};
+  h[0] = m.sh + m.sl;
+  h[1] = (m.qh + m.ql) / 2;
+  for (double v : x) {
+    const double z = std::ldexp(v, -m.exponent);
+    double term = z * z / 2;
+    for (int j = 2; j <= order + 1; ++j) {
+      term *= z / (j + 1);
+      const double y = term - correction[j];
+      const double sum = h[j] + y;
+      correction[j] = (sum - h[j]) - y;
+      h[j] = sum;
+    }
+  }
+  double c[order + 1]{};
+  for (int j = 1; j <= order; ++j)
+    c[j] = weighted_mean * h[j] - weight * (j + 1) * h[j + 1];
+
+  const double correction_scale = weighted_mean * h[1] + 2 * weight * h[2];
+  const double constant_pad = at_zero.pad + 4 * unit_roundoff * std::abs(at_zero.value);
+  const auto score = [&](double beta) {
+    double t = 0;
+    for (int j = order; j > 0; --j) t = beta * (c[j] + t);
+    // At beta <= .02, the Taylor remainder is below beta times
+    // the correction scale times 1e-19. Higher moment coefficients
+    // are bounded by the first ones because z <= 1. The practical
+    // rounding pad covers the moment sums and the polynomial evaluation.
+    const double pad = constant_pad + 128 * unit_roundoff * beta * correction_scale;
+    return Comparison{at_zero.value + t, pad};
+  };
+  if (score(cutoff).sign() >= 0) return std::nullopt;
+
+  double lo = 0, hi = cutoff;
+  // Use the linearized zero to shorten the bracket when the root is
+  // many orders of magnitude below the cutoff. Check the sign before
+  // using this as an endpoint.
+  if (c[1] < 0) {
+    const double near = 2 * at_zero.value / -c[1];
+    if (near > 0 && near < hi && score(near).sign() < 0) hi = near;
+  }
+  constexpr double nan = std::numeric_limits<double>::quiet_NaN();
+  int i = 1;
+  for (; i <= maxit; ++i) {
+    const double beta = lo + (hi - lo) / 2;
+    const double b = std::ldexp(beta, -m.exponent);
+    if (b > 0 && std::isfinite(b)) {
+      const double represented = std::ldexp(b, m.exponent);
+      const double radius = 0.5 * std::min(tol, 1.0);
+      const double lower = represented * (1 - radius);
+      const double upper = represented * (1 + radius);
+      if (lower < represented && upper > represented && upper <= 2 * cutoff &&
+          score(lower).sign() > 0 && score(upper).sign() < 0) {
+        double integral = h[order + 1];
+        for (int j = order; j >= 0; --j) integral = h[j] + represented * integral;
+        const double a = free_a ? std::ldexp(n / integral, -m.exponent) : held_a;
+        const double ll = n * std::log(a) + represented * h[0] -
+            (free_a ? n : alpha * integral);
+        if (a > 0 && std::isfinite(a) && std::isfinite(ll) &&
+            (!free_a || std::numeric_limits<double>::denorm_min() / a <= tol))
+          return GompertzResult{a, b, ll, i, GompertzStatus::Ok};
+        return GompertzResult{nan, nan, nan, i, GompertzStatus::NumericalFailure};
+      }
+    }
+    if (beta == lo || beta == hi) break;
+    if (score(beta).value > 0) lo = beta;
+    else hi = beta;
+  }
+  return GompertzResult{nan, nan, nan, std::min(i, maxit), GompertzStatus::IterationFailure};
 }
 }  // namespace gompertz_detail
 
@@ -153,12 +267,24 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
   // standardized recursion trusts that decision and does not repeat a
   // rounded comparison.
   if (!standardized) {
-    const int face = gompertz_detail::exponential_face(x);
+    if (n > (std::size_t(1) << 30)) {
+      GompertzResult limit{kNaN, kNaN, kNaN, 0, GompertzStatus::Overdispersed};
+      limit.margin_decided = true;
+      return limit;
+    }
+    const double xmax = *std::max_element(x.begin(), x.end());
+    const auto moments = gompertz_detail::scaled_moments(x, xmax);
+    const auto comparison = gompertz_detail::free_face(moments, n);
+    const int face = comparison.sign();
     if (face >= 0) {
       GompertzResult limit{kNaN, kNaN, kNaN, 0, GompertzStatus::Overdispersed};
       limit.margin_decided = face == 0;
       return limit;
     }
+    if (const auto small = gompertz_detail::small_rate(
+            x, moments, {-comparison.value / (2 * n), comparison.pad / (2 * n)},
+            kNaN, kNaN, tol, maxit))
+      return *small;
   }
 
   CPPUNIV_EXTENDED_REAL total = CPPUNIV_EXTENDED_LITERAL(0.0,0.0L);
@@ -209,7 +335,7 @@ inline GompertzResult gompertz_mle_impl(span x, double tol, int maxit, bool stan
   // Profile likelihood is linear minus log of a moment generating
   // function: strictly concave. Its right derivative at zero is
   // n*(mean - mean(x^2)/(2*mean)), so equality also selects exponential;
-  // that comparison was decided above (gompertz_detail::exponential_face).
+  // that comparison was decided above (gompertz_detail::free_face).
 
   auto f_over_df = [&](double b) {
     double sum_bx = 0.0, sum_bx_x = 0.0, sum_bx_x2 = 0.0;
@@ -297,9 +423,32 @@ inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b
   const double n=static_cast<double>(x.size());int iterations=0;
   if(std::isnan(b)) {
     if(big==0) return {a,1.0,n*std::log(a),0,GompertzStatus::Ok}; // flat likelihood
-    // Normalize by max(x), including the boundary comparison, to avoid
-    // underflow in x*x on binary64-only platforms.
-    double sumy=0,sumy2=0;for(double v:x){const double y=v/big;sumy+=y;sumy2+=y*y;}
+    double sumy = 0;
+    for (double v : x) sumy += v / big;
+    const auto exponential_limit = [&](bool margin_decided) {
+      GompertzResult r{a, nan, nan, 0, GompertzStatus::Overdispersed};
+      r.margin_decided = margin_decided;
+      r.stop_detail = limit_detail({a}, n * std::log(a) - a * big * sumy, StopModel::Exp);
+      return r;
+    };
+    if (x.size() <= (std::size_t(1) << 30)) {
+      const auto moments = gompertz_detail::scaled_moments(x, big);
+      const double alpha = std::ldexp(a, moments.exponent);
+      const auto comparison = gompertz_detail::held_face(moments, n, alpha);
+      const int sign = comparison.sign();
+      if (sign <= 0) return exponential_limit(sign == 0);
+      if (const auto small = gompertz_detail::small_rate(x, moments, comparison, alpha, a, tol, maxit))
+        return *small;
+    } else {
+      // Beyond the moment pad's stated count range, preserve the original
+      // comparison as a numerical preference.
+      double sumy2 = 0;
+      for (double v : x) {
+        const double y = v / big;
+        sumy2 += y * y;
+      }
+      if (!(sumy > (a * big) * (sumy2 / 2))) return exponential_limit(true);
+    }
     const double logsx=std::log(big)+std::log(sumy);
     auto ratio=[&](double t) -> double {double total=0;for(double v:x)if(v>0){const double z=std::exp(t+std::log(v));if(!std::isfinite(z))return INFINITY;double lh;
       if(z<1e-3)lh=std::log(.5+z/3+z*z/8+z*z*z/30+z*z*z*z/144);
@@ -307,10 +456,6 @@ inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b
       else lh=std::log((z*std::exp(z)-std::expm1(z))/(z*z));
       total+=std::exp(std::log(a)+2*std::log(v)+lh-logsx);
     }return total;};
-    if(!(sumy>(a*big)*(sumy2/2))) {
-      GompertzResult r={a,nan,nan,0,GompertzStatus::Overdispersed};
-      r.stop_detail=limit_detail({a},n*std::log(a)-a*big*sumy,StopModel::Exp);return r;
-    }
     const double lower=std::log(std::numeric_limits<double>::denorm_min()),upper=std::log(std::numeric_limits<double>::max());
     double lo=std::max(lower,std::min(upper,-std::log(big)-2)),hi=std::min(upper,lo+4),step=32;
     for(std::int64_t bracket_pass=0; bracket_pass<solver_budget(maxit) && (ratio(lo)>=1 && lo>lower); ++bracket_pass){lo=std::max(lower,lo-step);step*=2;}
