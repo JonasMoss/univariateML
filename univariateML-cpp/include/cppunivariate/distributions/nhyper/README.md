@@ -83,7 +83,8 @@ existence:
     the stopping count is held or estimated. Ties can occur. With only
     positive $r$ held, a candidate strictly above the shifted
     negative-binomial supremum ensures finite attainment. With $r=0$,
-    only zero observations are possible and composition is unidentified.
+    only zero observations are possible and every admissible composition
+    and population consistent with the holds maximizes the likelihood.
     Holding all counts specifies the law without optimization.
   reason: >-
     A known population leaves a finite integer grid. With $K$ held and
@@ -150,7 +151,10 @@ design count; population and composition can also be estimated jointly.
 The reference's black-ball count is `n = N - m`.
 
 One-coordinate fits return the smaller count on adjacent ties.
-At `r = 0`, free composition ranges from zero to $N$, with zero as the representative.
+For all-zero observations, every maximizer has `r = 0`. The maximizing
+pairs $(K,N)$ are precisely the integer pairs $0 \le K \le N \le 2^{53}-1$
+consistent with the held counts. In particular, a held zero population
+forces $K=0$, and a held composition of $2^{53}-1$ forces $N=2^{53}-1$.
 Joint-grid conventions and budgets are given below. Counts must be below
 $2^{53}$. For the growing-population limit with positive `r`, use
 `mlnbinom(x - r, size = r)`. Unresolved face comparisons retain the best finite estimate with `certified = FALSE`.

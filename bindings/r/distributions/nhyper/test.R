@@ -243,3 +243,43 @@ test_that("constant nhyper samples describe the point-mass maximizing set", {
   expect_equal(witnesses$r, c(2, 2))
   expect_match(attr(fit, "outcome_message"), "point-mass")
 })
+
+test_that("nhyper reports the all-zero maximum set for every hold pattern", {
+  cap <- 2^53 - 1
+  joint <- "every integer pair 0 <= m <= N <= 2^53 - 1"
+  population <- "every integer population size m <= N <= 2^53 - 1"
+  composition <- "every composition from 0 to N"
+  cases <- list(
+    list(NULL, NULL, NULL, c(0, 0, 0), c(0, 1, 0), joint),
+    list(NULL, NULL, 0, c(0, 0, 0), c(0, 1, 0), joint),
+    list(2, NULL, NULL, c(2, 2, 0), c(2, 3, 0), population),
+    list(2, NULL, 0, c(2, 2, 0), c(2, 3, 0), population),
+    list(NULL, 5, NULL, c(0, 5, 0), c(5, 5, 0), composition),
+    list(NULL, 5, 0, c(0, 5, 0), c(5, 5, 0), composition),
+    list(2, 5, NULL, c(2, 5, 0), NULL, NULL),
+    list(2, 5, 0, c(2, 5, 0), NULL, NULL),
+    list(NULL, 0, NULL, c(0, 0, 0), NULL, NULL),
+    list(NULL, 0, 0, c(0, 0, 0), NULL, NULL),
+    list(cap, NULL, NULL, c(cap, cap, 0), NULL, NULL),
+    list(cap, NULL, 0, c(cap, cap, 0), NULL, NULL)
+  )
+  for (case in cases) {
+    expect_no_warning(fit <- mlnhyper(c(0, 0), m = case[[1]], N = case[[2]], r = case[[3]]))
+    expect_s3_class(fit, "univariateML")
+    expect_true(attr(fit, "certified"))
+    expect_identical(attr(fit, "unique"), is.null(case[[5]]))
+    expect_equal(as.numeric(fit), case[[4]], tolerance = 0)
+    expect_equal(attr(fit, "logLik"), 0)
+    rows <- attr(fit, "maximizers")
+    message <- attr(fit, "outcome_message")
+    if (is.null(case[[5]])) {
+      expect_null(rows)
+      expect_null(message)
+    } else {
+      expect_match(message, case[[6]], fixed = TRUE)
+      expect_equal(unname(as.matrix(rows[c("m", "N", "r")])),
+                   rbind(case[[4]], case[[5]]), tolerance = 0)
+      expect_equal(dnhyper(c(0, 0), m = rows$m, N = rows$N, r = rows$r), c(1, 1))
+    }
+  }
+})

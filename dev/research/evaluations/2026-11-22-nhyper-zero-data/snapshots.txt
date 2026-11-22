@@ -1,0 +1,50 @@
+
+native stored-baseline comparison
+differs ('nhyper', '005151', '{}') ['warnings', 'candidates']
+differs ('nhyper', '005152', '{}') ['warnings', 'candidates']
+differs ('nhyper', '005154', '{}') ['warnings', 'candidates']
+native cases 147 differing 3 only-new 0 only-old 0
+005151 {} (8.0, 8.0, 8.0) ['candidates', 'warnings'] [(8.0, 8.0, 8.0), (9.0, 9.0, 8.0)]
+005152 {} (8.0, 8.0, 8.0) ['candidates', 'warnings'] [(8.0, 8.0, 8.0), (9.0, 9.0, 8.0)]
+005154 {} (8.0, 8.0, 8.0) ['candidates', 'warnings'] [(8.0, 8.0, 8.0), (9.0, 9.0, 8.0)]
+phenomenon class constant [7, 7, 7, 7] {'N': 50.0, 'r': 3.0} {'certified': True, 'kind': 'estimate', 'reason': 'none', 'unique': True}
+phenomenon class zeros [0, 0, 0, 0] {'N': 50.0, 'r': 3.0} {'certified': False, 'kind': 'failure', 'reason': 'invalid-input', 'unique': True}
+
+native all-zero hold replay (mask, supplied m/N/r, uniqueness before/after, witnesses)
+0 (0, 0, 0) True False [(0.0, 0.0, 0.0), (0.0, 1.0, 0.0)]
+4 (0, 0, 0) True False [(0.0, 0.0, 0.0), (0.0, 1.0, 0.0)]
+1 (2, 0, 0) True False [(2.0, 2.0, 0.0), (2.0, 3.0, 0.0)]
+5 (2, 0, 0) True False [(2.0, 2.0, 0.0), (2.0, 3.0, 0.0)]
+2 (0, 5, 0) True False [(0.0, 5.0, 0.0), (5.0, 5.0, 0.0)]
+6 (0, 5, 0) False False [(0.0, 5.0, 0.0), (5.0, 5.0, 0.0)]
+3 (2, 5, 0) True True []
+7 (2, 5, 0) True True []
+2 (0, 0, 0) True True []
+6 (0, 0, 0) True True []
+1 (9007199254740991, 0, 0) True True []
+5 (9007199254740991, 0, 0) True True []
+
+double stored-baseline comparison
+differs ('nhyper', '005151', '{}') ['candidates', 'warnings']
+differs ('nhyper', '005152', '{}') ['candidates', 'warnings']
+differs ('nhyper', '005154', '{}') ['candidates', 'warnings']
+double cases 147 differing 3 only-new 0 only-old 0
+005151 {} (8.0, 8.0, 8.0) ['candidates', 'warnings'] [(8.0, 8.0, 8.0), (9.0, 9.0, 8.0)]
+005152 {} (8.0, 8.0, 8.0) ['candidates', 'warnings'] [(8.0, 8.0, 8.0), (9.0, 9.0, 8.0)]
+005154 {} (8.0, 8.0, 8.0) ['candidates', 'warnings'] [(8.0, 8.0, 8.0), (9.0, 9.0, 8.0)]
+phenomenon class constant [7, 7, 7, 7] {'N': 50.0, 'r': 3.0} {'certified': True, 'kind': 'estimate', 'reason': 'none', 'unique': True}
+phenomenon class zeros [0, 0, 0, 0] {'N': 50.0, 'r': 3.0} {'certified': False, 'kind': 'failure', 'reason': 'invalid-input', 'unique': True}
+
+double all-zero hold replay (mask, supplied m/N/r, uniqueness before/after, witnesses)
+0 (0, 0, 0) True False [(0.0, 0.0, 0.0), (0.0, 1.0, 0.0)]
+4 (0, 0, 0) True False [(0.0, 0.0, 0.0), (0.0, 1.0, 0.0)]
+1 (2, 0, 0) True False [(2.0, 2.0, 0.0), (2.0, 3.0, 0.0)]
+5 (2, 0, 0) True False [(2.0, 2.0, 0.0), (2.0, 3.0, 0.0)]
+2 (0, 5, 0) True False [(0.0, 5.0, 0.0), (5.0, 5.0, 0.0)]
+6 (0, 5, 0) False False [(0.0, 5.0, 0.0), (5.0, 5.0, 0.0)]
+3 (2, 5, 0) True True []
+7 (2, 5, 0) True True []
+2 (0, 0, 0) True True []
+6 (0, 0, 0) True True []
+1 (9007199254740991, 0, 0) True True []
+5 (9007199254740991, 0, 0) True True []

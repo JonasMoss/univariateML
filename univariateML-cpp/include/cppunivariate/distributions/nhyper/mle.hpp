@@ -167,6 +167,7 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m, int 
     if (c.max == 0) {
       if (!std::isnan(r) && r != 0) return out;
       out.N = 0; out.m = 0; out.r = 0; out.logLik = 0;
+      out.unique = false;
       out.status = NhyperStatus::Ok; return out;
     }
     if (c.min == 0 || r == 0 || (!std::isnan(r) && r > c.min)) return out;
@@ -327,6 +328,7 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m, int 
       out.r = 0;
       if (fixed_N) out.m = 0;
       else out.N = m;
+      out.unique = fixed_N ? N == 0 : m == hyper_detail::kMaxCount;
       out.logLik = 0; out.status = NhyperStatus::Ok;
       return out;
     }
@@ -470,7 +472,8 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m, int 
   if (r == 0) {
     if (c.max != 0) return out;
     if (free) { out.m = 0; out.tie = N; }
-    out.status = free && N > 0 ? NhyperStatus::Unidentified : NhyperStatus::Ok;
+    out.unique = !free || N == 0;
+    out.status = out.unique ? NhyperStatus::Ok : NhyperStatus::Unidentified;
   } else {
     if (c.min < r || c.max > N) return out;
     const double hi = N - c.max + r;

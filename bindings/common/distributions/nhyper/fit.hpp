@@ -73,9 +73,17 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
     if (fit.status == cppunivariate::NhyperStatus::Tie) {
       add(r.supplied ? fit.tie : fit.m, fit.N, r.supplied ? fit.r : fit.tie);
       out.error = "Likelihood tied between adjacent counts; returning the smaller.";
-    } else if (fit.status == cppunivariate::NhyperStatus::Unidentified) {
-      add(fit.tie, fit.N, fit.r);
-      out.error = "With r = 0 every composition from 0 to N is unidentified; returning m = 0.";
+    } else if (fit.r == 0) {
+      if (N.supplied) {
+        add(fit.N, fit.N, 0);
+        out.error = "With r = 0 every composition from 0 to N is unidentified; returning m = 0.";
+      } else if (m.supplied) {
+        add(fit.m, fit.N + 1, 0);
+        out.error = "With r = 0 every integer population size m <= N <= 2^53 - 1 maximizes the likelihood.";
+      } else {
+        add(0, 1, 0);
+        out.error = "With r = 0 every integer pair 0 <= m <= N <= 2^53 - 1 maximizes the likelihood.";
+      }
     } else {
       if (cppunivariate::hyper_detail::is_count(fit.N+1))
         add(fit.N+1, fit.N+1, fit.r);
