@@ -1,6 +1,7 @@
 // Package-defined, mean/standard-deviation parameterisation.
 #pragma once
 #include "../snorm/fs.hpp"
+#include <array>
 #include <limits>
 #include "../../special/skew_coordinate.hpp"
 #include "tails.hpp"
@@ -98,6 +99,297 @@ inline double fast_radius_error(double log_distance,double log_sd,double ls,doub
 }
 // Allocate one tenth of the natural-tail tolerance to the fast radius.
 constexpr double fast_tail_budget=1e-11;
+
+// The upper gamma continued fraction has denominator b_0-r_1,
+// with b_n=x+1-a+2n and r_n=n(n-a)/(b_n-r_{n+1}).
+// The recurrence maps [0,n+1] into [0,n] for x>0 and a<=1.
+inline special::three_word::Number quantile_upper_denominator(
+    special::three_word::Number x,special::three_word::Number a) {
+ namespace tw = special::three_word;
+ const auto b=tw::add(tw::add(x,{1}),tw::negative(a));
+ for(int depth=8;depth<=256;depth*=2) {
+  tw::Number lo{0},hi{double(depth+1)};
+  for(int n=depth;n>=1;--n) {
+   const auto bn=tw::add(b,{2.*n});
+   const auto numerator=tw::multiply({double(n)},tw::add({double(n)},tw::negative(a)));
+   lo=tw::divide(numerator,tw::add(bn,tw::negative(lo)));
+   hi=tw::divide(numerator,tw::add(bn,tw::negative(hi)));
+  }
+  if(tw::add(hi,tw::negative(lo)).high<=1e-34*x.high)
+   return tw::add(b,tw::negative(tw::multiply({.5},tw::add(lo,hi))));
+ }
+ return {special::kNaN};
+}
+
+// Recover the low word of w from the bracketed double inverse. Use the
+// lower series at small gamma arguments, and the upper continued fraction
+// where subtraction from unit mass would lose the tail.
+inline special::three_word::Number quantile_radius(double w,double nu,double p,bool log_p) {
+ namespace tw = special::three_word;
+ const bool central=w<=std::log(8.)/nu;
+ static thread_local double last=0;
+ static thread_local tw::Number a{0}, log_gamma{0}, log_a{0};
+ if(nu!=last) {
+  a=tw::divide({1},{nu});
+  log_gamma=tw::log_gamma(tw::add({1},a));
+  log_a=tw::logarithm(a);
+  last=nu;
+ }
+ const auto probability=log_p?tw::exponential({p}):tw::Number{p};
+ const auto centred=tw::add(tw::multiply({2},probability),{-1});
+ const auto mass=centred.high<0?tw::negative(centred):centred;
+ tw::Number target{0};
+ if(!central) {
+  const bool small=log_p?p<=-std::log(2.):p<=.5;
+  const auto complement=tw::add({1},tw::negative(probability));
+  const auto log_tail=log_p && small ? tw::Number{p} : tw::logarithm(small?probability:complement);
+  target=tw::add(log_tail,tw::log_two());
+  // Beyond this point replacing x by -log Q in log(x) changes w by
+  // O(log(x)/(nu*x)), below the expansion's precision.
+  if(target.high<-1e100)
+   return tw::divide(tw::logarithm(tw::negative(target)),{nu});
+ }
+ auto radius=tw::Number{w};
+ for(int attempt=0;attempt<3;++attempt) {
+  const auto x=tw::exponential(tw::multiply(radius,{nu}));
+  tw::Number step;
+  if(central) {
+   if(!(x.high<=8.01))return {w};
+   tw::Number term{1},sum{0};
+   for(int n=1;n<=96;++n) {
+    term=tw::divide(tw::multiply(term,tw::negative(x)),{double(n)});
+    sum=tw::add(sum,tw::divide(term,tw::add(a,{double(n)})));
+    if(std::abs(term.high)<1e-39)break;
+   }
+   const auto factor=tw::exponential(tw::add(radius,tw::negative(log_gamma)));
+   const auto value=tw::multiply(factor,tw::add({1},tw::multiply(a,sum)));
+   const auto slope=tw::multiply(factor,tw::exponential(tw::negative(x)));
+   step=tw::divide(tw::add(mass,tw::negative(value)),slope);
+  } else {
+   if(!(x.high>=7.99 && std::isfinite(x.high)))return {w};
+   const auto denominator=quantile_upper_denominator(x,a);
+   const auto normalizer=tw::add(log_a,tw::negative(log_gamma));
+   const auto log_tail=tw::add(tw::add(radius,tw::negative(x)),
+       tw::add(normalizer,tw::negative(tw::logarithm(denominator))));
+   // The derivative of log Q with respect to w is -nu*(b_0-r_1).
+   step=tw::divide(tw::divide(tw::add(log_tail,tw::negative(target)),denominator),{nu});
+  }
+  const double change=std::abs(step.high);
+  if(!(change<=1e-10) || (x.high>.01 && change*nu>1e-4))return {w};
+  // Check the refined radius before accepting it. In this local range
+  // the log slope varies smoothly (by O(nu*step) in the gamma power).
+  if(attempt==2) {
+   if(change<=1e-30*std::max(1.,std::abs(w)))return radius;
+   break;
+  }
+  radius=tw::add(radius,step);
+ }
+ return {w};
+}
+
+// Two binary64 words for the fast quantile residual. Round the high
+// word only after forming the affine sum.
+namespace quantile_double {
+struct Number { double high, low=0; };
+
+inline Number normalize(double high,double low) {
+ const double sum=high+low;
+ return {sum,special::addition_residual(high,low,sum)};
+}
+inline Number add(Number a,Number b) {
+ const double sum=a.high+b.high;
+ const double residual=special::addition_residual(a.high,b.high,sum);
+ return normalize(sum,(a.low+b.low)+residual);
+}
+inline Number negative(Number a) {return {-a.high,-a.low};}
+inline Number multiply(Number a,Number b) {
+ const double product=a.high*b.high;
+ const double cross=std::fma(a.high,b.low,a.low*b.high);
+ return normalize(product,std::fma(a.high,b.high,-product)+cross);
+}
+inline Number divide(Number a,Number b) {
+ const double q=a.high/b.high;
+ const auto residual=add(a,negative(multiply({q},b)));
+ return normalize(q,residual.high/b.high);
+}
+inline Number exponential(Number x) {
+ static const auto coefficients=[] {
+  std::array<Number,13> c{};
+  c[0]={1};
+  for(int n=1;n<=12;++n)c[n]=divide(c[n-1],{double(n)});
+  return c;
+ }();
+ constexpr Number log_two{.6931471805599453,2.3190468138462996e-17};
+ const int e=static_cast<int>(std::floor(x.high/log_two.high+.5));
+ const auto r=multiply(add(x,multiply(log_two,{-double(e)})),{.0625});
+ auto sum=coefficients.back();
+ for(int n=11;n>=0;--n)sum=add(coefficients[n],multiply(r,sum));
+ for(int n=0;n<4;++n)sum=multiply(sum,sum);
+ return {std::scalbn(sum.high,e),std::scalbn(sum.low,e)};
+}
+
+inline Number logarithm(Number x) {
+ int e=0;
+ const double high=std::frexp(x.high,&e);
+ const Number mantissa{high,std::scalbn(x.low,-e)};
+ const double seed=std::log(high);
+ const auto value=exponential({seed});
+ const auto correction=divide(add(mantissa,negative(value)),value);
+ constexpr Number log_two{.6931471805599453,2.3190468138462996e-17};
+ return add(add({seed},correction),multiply(log_two,{double(e)}));
+}
+
+struct Shape {
+ double nu=0;
+ Number a{}, log_gamma{}, log_scale{}, log_a{};
+ std::array<Number,64> coefficients{};
+};
+inline special::three_word::Number log_gamma_1p(special::three_word::Number a) {
+ namespace tw = special::three_word;
+ // Gamma recurrence in product form. Here 0<a<=3, so the
+ // product through a+63 is normal and far below overflow.
+ tw::Number product{1};
+ for(int n=1;n<=63;++n)product=tw::multiply(product,tw::add(a,{double(n)}));
+ const auto z=tw::add(a,{64});
+ const auto main=tw::add(tw::multiply(tw::add(z,{-.5}),tw::logarithm(z)),tw::negative(z));
+ return tw::add(tw::add(main,tw::negative(tw::logarithm(product))),
+                tw::add(tw::log_sqrt_two_pi(),tw::stirling(z)));
+}
+inline const Shape& shape(double nu) {
+ namespace tw = special::three_word;
+ static thread_local Shape cached;
+ if(cached.nu!=nu) {
+  const auto a=tw::divide({1},{nu});
+  const auto g=log_gamma_1p(a);
+  const auto g3=log_gamma_1p(tw::multiply({3},a));
+  const auto ls=tw::multiply({.5},tw::add(tw::logarithm({3}),tw::add(g,tw::negative(g3))));
+  cached.nu=nu;
+  cached.log_gamma={g.high,g.low};
+  cached.log_scale={ls.high,ls.low};
+  const Number reciprocal_shape{a.high,a.low};
+  cached.a=reciprocal_shape;
+  cached.log_a=logarithm(reciprocal_shape);
+  Number factorial{-1};
+  for(int n=1;n<=64;++n) {
+   cached.coefficients[n-1]=divide(multiply(reciprocal_shape,factorial),
+                                  add(reciprocal_shape,{double(n)}));
+   factorial=divide(factorial,{-double(n+1)});
+  }
+ }
+ return cached;
+}
+
+struct Correction { double step, error, curvature; };
+constexpr double unit=0x1p-53;
+
+inline Correction central_correction(double w,Number t,const Shape& constants,double p,bool log_p) {
+ if(log_p && p<-80)return {0,special::kPosInf,1};
+ const int degree=t.high<=.0625?16:t.high<=1?28:64;
+ auto series=constants.coefficients[degree-1];
+ for(int n=degree-2;n>=0;--n)
+  series=add(constants.coefficients[n],multiply(t,series));
+ series=add({1},multiply(t,series));
+ const auto factor=exponential(add({w},negative(constants.log_gamma)));
+ const auto probability=log_p?exponential({p}):Number{p};
+ auto mass=add(multiply({2},probability),{-1});
+ if(mass.high<0)mass=negative(mass);
+ const double inverse_exp=std::exp(t.high);
+ const double slope=factor.high/inverse_exp;
+ const double step=add(mass,negative(multiply(factor,series))).high/slope;
+ const double error=0x1p-83*inverse_exp*inverse_exp +
+     (log_p?0x1p-88*probability.high/slope:0.) +
+     32*unit*(1+t.high)*std::abs(step);
+ return {step,error,1+2*constants.nu*t.high};
+}
+
+// Enclose the upper-gamma fraction using its positive backwards
+// recurrence. Only r_1 is needed. The power itself keeps its low word.
+inline Correction upper_correction(double w,Number t,const Shape& constants,double p,bool log_p) {
+ const double a=constants.a.high;
+ double lo=0,hi=0;
+ if(constants.nu!=1) {
+  constexpr int depth=32;
+  const double al=a*(1-2*unit),ah=std::min(1.,a*(1+2*unit));
+  const double tl=t.high*(1-2*unit),th=t.high*(1+2*unit);
+  hi=depth+1;
+  for(int n=depth;n>=1;--n) {
+   const double b=1+2.*n;
+   lo=(n*(n-ah)/(th+b-al-lo))*(1-16*unit);
+   hi=(n*(n-al)/(tl+b-ah-hi))*(1+16*unit);
+  }
+ }
+ const auto denominator=add(add(t,add({1},negative(constants.a))),{-(lo+hi)*.5});
+ constexpr Number log_two{.6931471805599453,2.3190468138462996e-17};
+ const bool direct=log_p && p<=-log_two.high;
+ const double small=direct?1.:log_p?-std::expm1(p):std::min(p,1-p);
+ const auto target=add(direct?Number{p}:logarithm({small}),log_two);
+ const auto log_tail=constants.nu==1 ? negative(t)
+     : add(add({w},negative(t)),
+           add(add(constants.log_a,negative(constants.log_gamma)),negative(logarithm(denominator))));
+ const double slope=constants.nu*denominator.high;
+ const double step=add(log_tail,negative(target)).high/slope;
+ const double fraction_error=2*(hi-lo)/denominator.high;
+ const double error=(fraction_error + (log_p && !direct?4*unit:0.) +
+      0x1p-83*(1+t.high+std::abs(target.high)+std::abs(constants.log_a.high)))/slope
+      +32*unit*std::abs(step);
+ return {step,error,1+constants.nu};
+}
+
+// Check the Newton remainder and the physical affine error at the
+// double seed. Extreme powers and unrepresentable affine intermediates
+// retain the scaled reconstruction.
+inline double affine(double w,double mean,double sd,double nu,bool negative_side,
+                     double p,bool log_p) {
+ if(!(w>=-40 && w<=16 && nu<=1e12 && sd>=0x1p-450 && sd<=0x1p450 &&
+      std::abs(mean)<=0x1p450))return special::kNaN;
+ const auto power=multiply({w},{nu});
+ if(power.high>32)return special::kNaN;
+ const auto t=power.high<-80?Number{0}:exponential(power);
+ const auto& constants=shape(nu);
+ const auto correction=t.high<=8.01 ? central_correction(w,t,constants,p,log_p)
+                                    : upper_correction(w,t,constants,p,log_p);
+ const double step=correction.step,evaluation=correction.error,curvature=correction.curvature;
+ const double delta=std::abs(step)+evaluation;
+ if(!(delta*curvature<=1e-4 && nu*delta<=1e-3))return special::kNaN;
+ const double radius_error=2*evaluation+4*curvature*delta*delta;
+ const auto z=multiply(exponential(add({w},constants.log_scale)),add({1},{step}));
+ const auto distance=multiply({negative_side?-sd:sd},z);
+ const double result=add({mean},distance).high;
+ const double error=(2*radius_error+4*delta*delta+0x1p-89)*std::abs(distance.high)
+     +0x1p-89*std::abs(mean);
+ // Allocate eight unit roundoffs in relative physical coordinates.
+ if(!(std::abs(result)>=0x1p-500 && error<=0x1p-50*std::abs(result)))return special::kNaN;
+ return result;
+}
+} // namespace quantile_double
+
+inline double quantile_affine(double w,double mean,double sd,double nu,bool negative,
+                              double p,bool log_p) {
+ namespace tw = special::three_word;
+ if(nu<1 || !std::isfinite(w)) {
+  const double distance=std::exp(std::log(sd)+distributions::fs::ged_logscale(nu)+w);
+  return mean+std::copysign(distance,negative?-1.:1.);
+ }
+ const double fast=quantile_double::affine(w,mean,sd,nu,negative,p,log_p);
+ if(std::isfinite(fast))return fast;
+ const auto logz=tw::add(logscale_precise(nu),quantile_radius(w,nu,p,log_p));
+ // Even with the most extreme binary64 sd, these offsets are below
+ // half the least subnormal or beyond twice the largest finite coordinate.
+ if(logz.high<-1500)return mean;
+ if(logz.high>1500)return negative?special::kNegInf:special::kPosInf;
+ const int ez=static_cast<int>(std::floor(logz.high/std::log(2.)+.5));
+ const auto z=tw::exponential(tw::add(logz,tw::multiply(tw::log_two(),{-double(ez)})));
+ int es=0,em=0;
+ const double scale=std::frexp(negative?-sd:sd,&es);
+ std::frexp(mean,&em);
+ es+=ez;
+ const int exponent=mean==0?es:std::max(es,em);
+ // The power-of-two factors stay outside the product and sum. Keep the
+ // FMA product residual and the low words of z through cancellation.
+ const auto distance=tw::multiply({std::scalbn(scale,es-exponent)},z);
+ const auto coordinate=tw::add({std::scalbn(mean,-exponent)},distance);
+ return std::scalbn(coordinate.high,exponent);
+}
 }
 namespace distributions {
 inline double dged(double x, double mean, double sd, double nu, bool log) {
@@ -156,15 +448,15 @@ inline double qged(double p, double mean, double sd, double nu, bool lower_tail,
   if ((!log_p && std::abs(p-0.5)<1e-8) || (log_p && std::abs(h)<1e-8)) {
     if(!log_p && p==0.5) return mean;
     const double mass=log_p ? std::expm1(h) : 2*(p-0.5);
-    const double la=ged_detail::gamma_power_logq(std::log(std::abs(mass)),nu,true);
-    const double magnitude=std::exp(std::log(sd)+fs::ged_logscale(nu)+la);
-    return mean+((mass>0)==lower_tail?magnitude:-magnitude);
+    const double la=nu==1 ? std::log(-std::log1p(-std::abs(mass)))
+                         : ged_detail::gamma_power_logq(std::log(std::abs(mass)),nu,true);
+    return ged_detail::quantile_affine(la,mean,sd,nu,(mass>0)!=lower_tail,p,log_p);
   }
   const bool small = lp <= -std::log(2.0);
   const double tail = (small ? lp : fs::log1mexp(lp)) + std::log(2.0);
-  const double la = ged_detail::gamma_power_logq(tail,nu,false);
-  const double magnitude = std::exp(std::log(sd)+fs::ged_logscale(nu)+la);
-  return mean + ((small == lower_tail) ? -magnitude : magnitude);
+  // At a=1 the upper gamma probability is exp(-t).
+  const double la = nu==1 ? std::log(-tail) : ged_detail::gamma_power_logq(tail,nu,false);
+  return ged_detail::quantile_affine(la,mean,sd,nu,small==lower_tail,p,log_p);
 }
 template <typename Rng>
 inline double rged(Rng &rng, double mean, double sd, double nu) {

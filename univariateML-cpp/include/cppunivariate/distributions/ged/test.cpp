@@ -845,3 +845,41 @@ TEST_CASE("GED natural subnormal tails round from the checked log tail") {
   // The log tail is about -746.5, below half the smallest subnormal.
   CHECK(cppunivariate::distributions::pged(1.733293121404553,0,1,1e4,false,false)==0.);
 }
+
+TEST_CASE("GED quantiles retain the affine residual at small and large scales") {
+  struct Row { double p, mean, sd, nu, expected; bool lower, log; };
+  // Nearest binary64 coordinates from the independent gamma-tail inversion.
+  const Row rows[] = {
+    {1e-300, 1e-100, 1e-100, 999999., 2.7320630776968857e-100, false, false},
+    {1e-300, 1e-100, 1e-100, 1e6, 2.7320630776846127e-100, false, false},
+    {.25, 1e-100, 1e-100, 1e3, 1.3397672889003965e-101, true, false},
+    {.25, -1e100, 1e100, 100., -1.3418417929288145e99, false, false},
+    {-800., -1e100, 1e100, 1e6, 7.320633390158082e99, false, true},
+    {-10000., -1e100, 1e100, 1., 7.069577682793741e103, false, true},
+  };
+  for(const auto &row:rows) {
+    CAPTURE(row.p);
+    CAPTURE(row.nu);
+    for(double sign:{-1.,1.}) {
+      const double expected=sign*row.expected;
+      const double x=cppunivariate::distributions::qged(
+          row.p,sign*row.mean,row.sd,row.nu,sign>0?row.lower:!row.lower,row.log);
+      CHECK(x>=std::nextafter(expected,-INFINITY));
+      CHECK(x<=std::nextafter(expected,INFINITY));
+    }
+  }
+}
+
+TEST_CASE("GED quantile scaling handles cancellation and the binary64 range") {
+  const double largest=std::numeric_limits<double>::max();
+  const double smallest=std::numeric_limits<double>::denorm_min();
+  // At nu=1 the exact distance is -sd*log(2*min(p,1-p))/sqrt(2).
+  const double tiny=cppunivariate::distributions::qged(.25,.4901290717342736,1.,1.,true,false);
+  CHECK(tiny>=std::nextafter(1.7768325904652435e-17,-INFINITY));
+  CHECK(tiny<=std::nextafter(1.7768325904652435e-17,INFINITY));
+  const double finite=cppunivariate::distributions::qged(.03125,largest,largest,1.,true,false);
+  CHECK(finite>=std::nextafter(-1.7267135349502567e308,-INFINITY));
+  CHECK(finite<=std::nextafter(-1.7267135349502567e308,INFINITY));
+  CHECK(cppunivariate::distributions::qged(.03125,10*smallest,8*smallest,1.,true,false)==-6*smallest);
+  CHECK(cppunivariate::distributions::qged(1e-300,1e100,1e-100,1e6,true,false)==1e100);
+}
