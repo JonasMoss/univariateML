@@ -18,6 +18,9 @@ Active work lives on the board (`~/boards/univariateML`), not here.
   user); refusing as unidentified (discards a valid estimate, against principle 1); listing every point (impossible
   for intervals and rays). Design first: `dev/design/maximizer-sets.md` (TASK-234), then one implementation job
   (TASK-229). Situations: [zero-unique inventory](../research/evaluations/2026-11-22-zero-unique-report.md).
+  Design accepted with Jonas's choices (closed list of four relation forms incl. the Cauchy semicircle; public
+  `unique` is three-valued, `NA` for undetermined; binary64 boundaries labelled approximate; two implementation jobs):
+  [maximizer-set design](../design/maximizer-sets.md#decisions-2026-11-22).
 - **Non-unique maxima are reported by the outcome flag only (Claude, for Jonas to confirm; refined above)**. Fits with established non-uniqueness return `unique = FALSE` without a warning. The fit carries its maximizers and the shared print method reports non-uniqueness. When a maximizing family is too large to enumerate, the fit carries representative points and describes the set in `outcome_message`.
 
 ## 2026-11-20

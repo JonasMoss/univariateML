@@ -165,7 +165,27 @@ Estimate 4–6 engineering days plus suite time, spanning the shared value and t
 | Free text or representative rows alone | Easy to display. A half-open interval and its closed counterpart, or one arm of a union and the entire union, can share the same displayed rows. |
 | Reuse StopDetail or add a new outcome kind | Comparison and limit candidates mix laws and carry a different likelihood contract. Cardinality is a property of a successful estimate, so existing outcome dispatch can continue to handle it. |
 
-## Open
+## Decisions (2026-11-22)
+
+- **Relations (Jonas):** v1 supports the closed list of four forms: product (with complement bits), part over sum,
+  count ratio and the anchored semicircle. A new form needs explicit review.
+- **Undetermined uniqueness (Jonas):** R and JS expose `unique = NA` (JS `null`) when the comparison cannot settle
+  cardinality: no maximizer set, comparison candidates kept, inference refused. `TRUE` is proved unique, `FALSE` proved
+  non-unique with a set. The core may keep a `uniqueness_known` bit internally; the public flag is three-valued.
+- **Exactness (Jonas):** binary64 values at launch. Rounded analytic endpoints and levels are labelled
+  "approximately" in the message and flagged in the wire value; the dossier records the derivation. Exact recipes only
+  if a consumer needs them.
+- **Jobs (Jonas):** two implementation jobs. A: core type, normalisation, renderer, R/JS wire and printing, snapshot
+  schema, strict set equality, pilots binom (exact Points), nhyper (ordered integer Box), gpd (open ends, union),
+  cauchy (enclosed Points and the semicircle). B, after review of A: every remaining family and route and the 114
+  TASK-229 strict entries.
+- **Witness policy (Claude default):** only the first `maximizers` row (the returned estimate) is part of the public
+  contract; further rows are illustrative and may change.
+- **Coverage boundary (Claude default):** where a certificate cannot establish that the listed pieces are the whole set
+  (hyper swap symmetry, near-rounded adjacent comparisons, bnbinom's reflection, std/lst), the fit keeps its current
+  behaviour (uncertified estimate or stop) and claims no set until a proof exists.
+
+## Open (as proposed; see Decisions above)
 
 - Approve the anchored semicircle as the third named relation. It covers the free balanced Cauchy fit already reporting non-uniqueness.
 - Approve the proposed distinction for unresolved comparisons. Should the compatibility `unique` boolean mean “no proved non-uniqueness” when `uniqueness_known=FALSE`, or should R/JS expose an explicit unknown value in the next API version? Preserve current inference refusal for triangular ambiguity in either case.
