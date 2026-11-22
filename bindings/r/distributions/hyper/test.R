@@ -215,3 +215,16 @@ test_that("constant hyper samples describe the point-mass maximizing set", {
   expect_equal(witnesses$k, c(2, 2, 3))
   expect_match(attr(fit, "outcome_message"), "point-mass")
 })
+
+test_that("holding the largest urn count makes the zero maximizer unique", {
+  B <- 2^53 - 1
+  for (held in list(list(m = B, k = NULL), list(k = B), list(m = B, k = 0), list(m = 0, k = B))) {
+    f <- do.call(mlhyper, c(list(x = rep(0, 4), N = NULL), held))
+    expect_true(attr(f, "certified"))
+    expect_true(attr(f, "unique"))
+    expect_equal(unname(f[["N"]]), B)
+    expect_equal(attr(f, "logLik"), 0)
+    expect_null(attr(f, "maximizers"))
+    expect_null(attr(f, "outcome_message"))
+  }
+})

@@ -236,3 +236,30 @@ test_that("large-count beta-binomial logLik retains the exact-input reference", 
   fit <- mlbbinom(x,size=NULL,alpha=1.9337387365835597,beta=2.9406650178896676)
   expect_equal(as.numeric(logLik(fit)),-164.81779817797852,tolerance=1e-10)
 })
+
+test_that("beta-binomial size-zero maxima honor holds and return two shape witnesses", {
+  for (size in list(NULL, 0)) for (alpha in list(NULL, 1)) for (beta in list(NULL, 1)) {
+    f <- mlbbinom(rep(0, 4), size = size, alpha = alpha, beta = beta)
+    expect_true(attr(f, "certified"))
+    expect_identical(attr(f, "unique"), !is.null(alpha) && !is.null(beta))
+    if (attr(f, "unique")) next
+    rows <- attr(f, "maximizers")
+    cols <- c("size", "alpha", "beta")
+    expect_equal(nrow(unique(rows[cols])), 2L)
+    expect_equal(as.numeric(rows[1, cols]), as.numeric(f))
+    expect_equal(rows$size, c(0, 0))
+    expect_true(all(rows$alpha > 0 & rows$beta > 0))
+    if (!is.null(alpha)) expect_true(all(rows$alpha == alpha))
+    if (!is.null(beta)) expect_true(all(rows$beta == beta))
+    expect_match(attr(f, "outcome_message"), "every positive value of each free shape")
+  }
+  f <- mlbbinom(rep(1, 4), size = NULL, alpha = 1, beta = 2)
+  expect_true(attr(f, "certified"))
+  expect_false(attr(f, "unique"))
+  rows <- attr(f, "maximizers")
+  expect_equal(rows$size, c(1, 2))
+  expect_equal(rows$alpha, c(1, 1))
+  expect_equal(rows$beta, c(2, 2))
+  expect_equal(attr(f, "logLik"), -4 * log(3))
+  expect_match(attr(f, "outcome_message"), "adjacent sizes")
+})

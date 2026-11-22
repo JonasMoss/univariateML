@@ -1,0 +1,43 @@
+Workstation, GCC 15.2.0
+just test-changed --no-long-double
+Selected 11 families: bbinom, binom, cmb, cmp, geom, hyper, lgser, nbinom, nhyper, norm, pois
+100% tests passed, 0 tests failed out of 15
+100% tests passed, 0 tests failed out of 15
+[ FAIL 4 | WARN 0 | SKIP 16 | PASS 4741 ]
+Results: [{"command": ["cmake", "-S", "univariateML-cpp", "-B", "univariateML-cpp/build", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"], "exit": 0, "seconds": 0.09}, {"command": ["cmake", "--build", "univariateML-cpp/build", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 87.88}, {"command": ["ctest", "--test-dir", "univariateML-cpp/build", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(bbinom|binom|cmb|cmp|geom|hyper|lgser|nbinom|nhyper|norm|pois)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 38.11}, {"command": ["cmake", "-S", "univariateML-cpp", "-B", "build/cpp-no-long-double", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache", "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"], "exit": 0, "seconds": 0.66}, {"command": ["cmake", "--build", "build/cpp-no-long-double", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 420.3}, {"command": ["ctest", "--test-dir", "build/cpp-no-long-double", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(bbinom|binom|cmb|cmp|geom|hyper|lgser|nbinom|nhyper|norm|pois)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 26.43}, {"command": ["just", "test"], "exit": 1, "seconds": 155.16}]
+
+R conformance and CMB diagnostics from that run
+Failure ('test_conformance.R:97:9'): every holdable subset fits golden data or gives a declared reason
+Expected `any(...)` to be TRUE.
+Differences:
+`actual`:   FALSE
+`expected`: TRUE 
+
+mlbbinom  Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known.
+────────────────────────────────────────────────────────────────────────────────
+
+--
+Failure ('test-dist-cmb.R:372:5'): CMB finite-size ties stop with both finite witnesses
+Expected `e` to inherit from "univariateML_unresolved".
+Actual class: "univariateML".
+
+Failure ('test-dist-cmb.R:379:5'): CMB finite-size ties stop with both finite witnesses
+Expected `fit_diagnostic(e)` to match regexp "Distinct finite sizes".
+Actual text:
+✖ │ Exactly the two listed adjacent sizes maximize the likelihood.
+
+R follow-up, UMVL_TEST_FAMILIES=cmb just test
+✔ |      3 838 | dist-cmb [22.4s]                                               
+[ FAIL 0 | WARN 0 | SKIP 9 | PASS 1130 ]
+R CMB exit 0
+
+just js-build and just js-test, same 11-family scope
+JS build exit 0
+not ok 149 - CMB finite-size ties retain two distinct witnesses and nu-held census certifies
+  error: 'Missing expected exception.'
+not ok 188 - bbinom all held subsets
+  error: '{}: Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known.'
+# tests 273
+# pass 271
+# fail 2
+JS tests exit 1

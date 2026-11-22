@@ -664,3 +664,43 @@ TEST_CASE("bbinom: a fixed-size comparison keeps the enclosed finite shapes") {
     ll+=cppunivariate::distributions::dbbinom(v,3,finite.coef[1],finite.coef[2],true);
   CHECK(finite.loglik_lower==doctest::Approx(ll).epsilon(1e-12));
 }
+
+TEST_CASE("bbinom: zero atoms and exact constant-sample size ties") {
+  const std::vector<int> zero(4,0), one(4,1);
+  for (double n : {0.,kNaN}) for (double a : {1.,kNaN}) for (double b : {1.,kNaN}) {
+    const auto result = fit(zero,n,a,b);
+    const auto o = cppunivariate::outcome(result);
+    CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
+    CHECK(o.certified);
+    const bool shapes_held = std::isfinite(a) && std::isfinite(b);
+    CHECK(o.unique == shapes_held);
+    if (shapes_held) continue;
+    CHECK(result.maximizer_set.find("size = 0") != std::string::npos);
+    const auto& rows = result.stop_detail.candidates;
+    REQUIRE(rows.size() == 2);
+    CHECK(rows[0].coef == std::vector<double>{result.size,result.alpha,result.beta});
+    CHECK(rows[0].coef != rows[1].coef);
+    for (const auto& row : rows) {
+      CHECK(row.coef[0] == 0);
+      if (std::isfinite(a)) CHECK(row.coef[1] == a);
+      if (std::isfinite(b)) CHECK(row.coef[2] == b);
+      CHECK(bb_loglik(zero,row.coef[0],row.coef[1],row.coef[2]) == 0);
+    }
+  }
+  const auto tie = fit(one,kNaN,1,2);
+  const auto o = cppunivariate::outcome(tie);
+  CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
+  CHECK(o.certified);
+  CHECK_FALSE(o.unique);
+  CHECK(tie.maximizer_set.find("adjacent sizes") != std::string::npos);
+  const auto& rows = tie.stop_detail.candidates;
+  REQUIRE(rows.size() == 2);
+  CHECK(rows[0].coef == std::vector<double>{1,1,2});
+  CHECK(rows[1].coef == std::vector<double>{2,1,2});
+  for (const auto& row : rows)
+    CHECK(bb_loglik(one,row.coef[0],row.coef[1],row.coef[2]) == doctest::Approx(tie.logLik));
+  CHECK_FALSE(cppunivariate::bbinom_detail::equal_size_ratio(1,1,1,std::nextafter(2.,3.)));
+  const auto singleton = fit(one,kNaN,1,1.5);
+  CHECK(cppunivariate::outcome(singleton).unique);
+  CHECK(singleton.size == 1);
+}

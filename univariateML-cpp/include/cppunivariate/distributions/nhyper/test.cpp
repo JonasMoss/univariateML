@@ -360,3 +360,22 @@ TEST_CASE("nhyper: all-zero maximum sets by held counts") {
     }
   }
 }
+
+TEST_CASE("nhyper: exact adjacent populations with composition and stopping count held") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const std::vector<double> data(4,2);
+  const auto result = cppunivariate::nhyper_mle(mltest::as_span(data),1,nan,2);
+  const auto o = cppunivariate::outcome(result);
+  CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
+  CHECK(o.certified);
+  CHECK_FALSE(o.unique);
+  CHECK(result.N == 3);
+  CHECK(result.tie == 4);
+  const auto& rows = result.stop_detail.candidates;
+  REQUIRE(rows.size() == 2);
+  CHECK(rows[0].coef == std::vector<double>{2,3,1});
+  CHECK(rows[1].coef == std::vector<double>{2,4,1});
+  for (const auto& row : rows)
+    CHECK(4*cppunivariate::nhyper_log_pmf(2,row.coef[1]-row.coef[0],row.coef[0],1)
+          == doctest::Approx(result.logLik));
+}

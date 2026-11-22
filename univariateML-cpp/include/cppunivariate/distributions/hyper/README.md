@@ -145,7 +145,7 @@ flagged not unique where an exact tie is proved: the likelihood is symmetric
 in $(m,k)$, so a returned $m\ne k$ ties with $(k,m)$; a constant sample
 ties $(c,c,c)$ with $(N,N,c)$; with one draw only the success ratio $m/N$ enters.
 All counts must be
-below $2^{53}$, the exact whole-number range in double precision.
+below $2^{53}$, the exact whole-number range in double precision. With all observations zero, holding either design count at $2^{53}-1$ forces the same population and the other design count zero, giving a unique atom.
 To hold the failure count instead of the success count, fit `k - x`
 with `m` set to the known failure count. For the growing-population
 binomial limit use `mlbinom(x, size = k)`; fully free designs may also

@@ -338,8 +338,8 @@ inline void mark_exact_ties(span x, double k, double N, double m, HyperResult& r
     else if (constant && (free_N || N > lo)) reason = 2;
   } else if (free_N && (free_m != free_k)) {
     const double size = free_k ? m : k;
-    if (constant && (lo == 0 || lo == size)) reason = 2;
-    else if (size == 1) reason = 3;
+    if (constant && size < kMaxCount && (lo == 0 || lo == size)) reason = 2;
+    else if (!constant && size == 1) reason = 3;
   }
   if (reason != 0) { r.unique = false; r.non_unique_reason = reason; }
 }
@@ -693,8 +693,12 @@ inline HyperResult hyper_mle_search(span x, double k, double N, double m) {
     const double lo = static_cast<double>(lo_exact);
     if (c.sum == 0.0 && (m == 0.0 || k == 0.0)) {
       r.N = lo;
-      r.tie = kInf;
-      r.status = HyperStatus::Unidentified;
+      if (lo == hyper_detail::kMaxCount) {
+        r.status = HyperStatus::Ok;
+      } else {
+        r.tie = kInf;
+        r.status = HyperStatus::Unidentified;
+      }
     } else if (c.sum == 0.0) {
       r.N = kInf;
       r.logLik = 0.0;

@@ -73,6 +73,7 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
         return done(stopped_fail("No finite maximum was certified above the limiting faces; a larger finite maximum is not excluded."));
       return done(stopped_fail("No finite maximum was found in the exploratory search; a larger finite maximum is not excluded. The Conway-Maxwell-Poisson limit is available: use mlcmp with nu held fixed."));
     case cppunivariate::CmbStatus::FaceTie:
+      if(!res.maximizer_set.empty())return done(stopped_fail(res.maximizer_set));
       if(res.stop_detail.comparison_tie)
         return done(stopped_fail("Distinct finite sizes have likelihoods indistinguishable within the certificate margin; the maximizing size is not resolved."));
       if (res.bernoulli_face_tie)
@@ -93,8 +94,23 @@ inline FitResult fit_cmb(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   if(size.supplied)fixed.push_back("size");
   if (prob.supplied) fixed.push_back("prob");
   if (nu.supplied || (trials==1 && (res.unidentified&2u))) fixed.push_back("nu");
-  if (trials==1 && (res.unidentified&2u) && res.prob>0 && res.prob<1) warnings.push_back(binding_message("nu is not identified with size = 1; returning nu = 1."));
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",trials},{"prob",res.prob},{"nu",res.nu}}; if(res.unidentified&1u)out.extra.emplace_back("prob_unidentified",1); if(res.unidentified&2u)out.extra.emplace_back("nu_unidentified",1); if(res.unidentified&4u)out.extra.emplace_back("size_unidentified",1); out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  if (res.maximizer_set.empty() && trials==1 && (res.unidentified&2u) && res.prob>0 && res.prob<1) warnings.push_back(binding_message("nu is not identified with size = 1; returning nu = 1."));
+  FitResult out;
+  out.warnings = warnings;
+  out.estimates = {{"size",trials},{"prob",res.prob},{"nu",res.nu}};
+  if(res.unidentified&1u)out.extra.emplace_back("prob_unidentified",1);
+  if(res.unidentified&2u)out.extra.emplace_back("nu_unidentified",1);
+  if(res.unidentified&4u)out.extra.emplace_back("size_unidentified",1);
+  out.logLik = res.logLik;
+  out.iterations = res.iterations;
+  out.has_iterations = true;
+  out.fixed = fixed;
+  out.has_fixed = true;
+  if (!res.maximizer_set.empty()) {
+    out.error = res.maximizer_set;
+    out = stop_failure(std::move(out),res.stop_detail,PayloadKind::Comparison,{"size","prob","nu"});
+  }
+  return done(std::move(out));
 
 }
 }

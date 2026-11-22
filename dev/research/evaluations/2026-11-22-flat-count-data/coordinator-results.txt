@@ -1,0 +1,17 @@
+Workstation, GCC 15.2.0, four reserved slots
+just test-changed --no-long-double
+Shared effects: running ordinary recipes without family filters.
++ just cpp-test
+100% tests passed, 0 tests failed out of 134
++ just cpp-test-no-long-double
+100% tests passed, 0 tests failed out of 179
++ just test
+[ FAIL 0 | WARN 0 | SKIP 157 | PASS 37060 ]
++ just js-build
++ just js-test
+ok 317 - CMB finite-size ties retain two distinct witnesses and nu-held census certifies
+ok 408 - bbinom all held subsets
+# tests 587
+# pass 587
+# fail 0
+Results: [{"command": ["just", "cpp-test"], "exit": 0, "seconds": 362.03}, {"command": ["just", "cpp-test-no-long-double"], "exit": 0, "seconds": 386.29}, {"command": ["just", "test"], "exit": 0, "seconds": 317.0}, {"command": ["just", "js-build"], "exit": 0, "seconds": 79.32}, {"command": ["just", "js-test"], "exit": 0, "seconds": 189.02}]

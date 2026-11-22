@@ -1,0 +1,3 @@
+CMB exact tie confirmed through JavaScript.
+Beta-binomial zero estimate and nonzero unsupported outcome confirmed through JavaScript.
+Direct JS probe exit 0

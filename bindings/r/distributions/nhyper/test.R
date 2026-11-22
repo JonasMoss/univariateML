@@ -283,3 +283,15 @@ test_that("nhyper reports the all-zero maximum set for every hold pattern", {
     }
   }
 })
+
+test_that("negative hypergeometric adjacent populations are an exact tie", {
+  f <- mlnhyper(rep(2, 4), m = 2, N = NULL, r = 1)
+  expect_true(attr(f, "certified"))
+  expect_false(attr(f, "unique"))
+  rows <- attr(f, "maximizers")
+  expect_equal(rows$N, c(3, 4))
+  expect_equal(rows$m, c(2, 2))
+  expect_equal(rows$r, c(1, 1))
+  expect_equal(attr(f, "logLik"), -4 * log(3))
+  expect_match(attr(f, "outcome_message"), "adjacent population sizes")
+})

@@ -36,6 +36,7 @@ for(const c of cases) {
    const r=fit(held);
    if(r.error) {
     if(c.id==='cmb' && !('size' in held) && !('nu' in held) && /not implemented for this sample|not excluded|work budget/i.test(r.error)) continue;
+    if(c.id==='bbinom' && mask===0 && c.g.data.some(x=>x!==0) && r.kind==='unsupported' && r.error.startsWith('Estimating size together with both shapes is not implemented.')) continue;
     if(c.id==='hyper' && (!Object.keys(held).length || (Object.keys(held).length===1 && ('m' in held || 'k' in held))) && /numerical failure|not excluded/i.test(r.error)) continue;
     const exceptions=c.holds.filter(h=>h.held.every(k=>k in held)&&(h.held.length===Object.keys(held).length||h.held.length&&!h.reason.includes('Estimating')));
     const reasons=[...exceptions.map(h=>h.reason),...c.limits.map(l=>l.message||l.model&&`ml${l.model}`||l.name&&l.name.replace(/^shifted /,'').split(';')[0]||'')].filter(Boolean);

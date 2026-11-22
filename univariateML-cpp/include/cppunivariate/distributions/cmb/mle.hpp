@@ -4,6 +4,8 @@
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "dpqr.hpp"
+#include "../binom/mle.hpp"
+#include <string>
 #include "acceptance.hpp"
 #include "../../core/span.hpp"
 #include "../../special/cmp.hpp"
@@ -18,6 +20,7 @@ struct CmbResult { double prob,nu,logLik; int iterations; CmbStatus status;   St
  bool bernoulli_face_tie=false;
  bool unique=true;
  unsigned unidentified=0;
+ std::string maximizer_set{};
 };
 
 // Candidates are (size, prob, nu).
@@ -57,7 +60,7 @@ inline FitOutcome outcome(const CmbResult& r) {
     case CmbStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
     case CmbStatus::FaceTie:
       // The saturated Bernoulli law is attained at size one for every nu.
-      if(r.bernoulli_face_tie)return nonunique_outcome_of(r,true);
+      if(r.bernoulli_face_tie || !r.maximizer_set.empty())return nonunique_outcome_of(r,true);
       return zero_count_maxima(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
     case CmbStatus::NotImplemented: return FitOutcome::failure(OutcomeReason::Unsupported);
   }
@@ -486,12 +489,35 @@ inline CmbResult cmb_finish_work(ispan x,int N,CmbResult proposed,double tol,int
   return out;
 }
 
+namespace cmb_detail {
+inline void mark_constant_flat(CmbResult& fit, double size, bool free_prob, bool free_nu) {
+  if (fit.status != CmbStatus::Ok) return;
+  const bool prob_flat = size==0 && free_prob;
+  const bool nu_flat = free_nu && (size<=1 || fit.prob==0 || fit.prob==1);
+  if (!prob_flat && !nu_flat) return;
+  fit.unique = false;
+  const double p = prob_flat ? (fit.prob==0 ? 1 : 0) : fit.prob;
+  const double nu = !prob_flat && nu_flat ? (fit.nu==0 ? 1 : 0) : fit.nu;
+  const double ll = fit.logLik;
+  fit.stop_detail = comparison_detail({{size,fit.prob,fit.nu},ll,ll},{{size,p,nu},ll,ll});
+  if (size==0)
+    fit.maximizer_set = "The maximizers have size = 0 and every admissible value of each free parameter.";
+  else if (size==1 && fit.prob>0 && fit.prob<1)
+    fit.maximizer_set = "With size = 1 every finite nu gives the same Bernoulli likelihood at the maximizing prob.";
+  else
+    fit.maximizer_set = "At the fitted endpoint probability and size, every finite nu gives the point mass on the observations.";
+}
+} // namespace cmb_detail
+
 inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=2000,
                         double prob=std::numeric_limits<double>::quiet_NaN(),
                         double nu=std::numeric_limits<double>::quiet_NaN()) {
   std::uint64_t work=0;
   const auto proposed=cmb_mle_work(x,N,tol,maxit,prob,nu,work,enumeration_budget(maxit));
-  return cmb_finish_work(x,N,proposed,tol,maxit,prob,nu,work);
+  auto result = cmb_finish_work(x,N,proposed,tol,maxit,prob,nu,work);
+  if (!x.empty() && std::all_of(x.begin(),x.end(),[&](int v){return v==x[0];}))
+    cmb_detail::mark_constant_flat(result,N,std::isnan(prob),std::isnan(nu));
+  return result;
 }
 
 struct CmbSizeResult { double size; CmbResult fit; };
@@ -561,10 +587,11 @@ inline CmbSizeResult accept_exact_size(ispan x,CmbSizeResult best,double prob,do
 // at every size. Exhibit two distinct finite global maximizers explicitly.
 inline CmbSizeResult zero_size_tie(double prob,double nu) {
   const double p=std::isnan(prob)?0:prob,v=std::isnan(nu)?1:nu;
-  CmbSizeResult out{NAN,{p,v,0,0,CmbStatus::FaceTie}};
+  CmbSizeResult out{0,{p,v,0,0,CmbStatus::FaceTie}};
   out.fit.unique=false;
   out.fit.unidentified=(std::isnan(prob)?1u:0u)|(std::isnan(nu)?2u:0u)|4u;
   out.fit.stop_detail=comparison_detail({{0,p,v},0,0},{{1,0,v},0,0});
+  out.fit.maximizer_set = "Distinct finite sizes attain the maximum. Every admissible pair with size = 0 or prob = 0 maximizes the likelihood at every allowed nu, subject to held values.";
   return out;
 }
 // A likelihood superlevel also bounds the probability of every observed
@@ -1263,6 +1290,8 @@ inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
     if(r.size==0 && std::isnan(prob))r.fit.unidentified|=1u;
     if(r.size<=1 || r.fit.prob==0 || r.fit.prob==1)r.fit.unidentified|=2u;
     r.fit.unique=r.fit.unidentified==0;
+    if (!x.empty() && std::all_of(x.begin(),x.end(),[&](int v){return v==x[0];}))
+      cmb_detail::mark_constant_flat(r.fit,r.size,std::isnan(prob),true);
   }
   return r;
 }
@@ -1419,6 +1448,19 @@ inline CmbSizeResult cmb_size_mle(ispan x,double prob,double nu,
     return {double(mx),{prob,nu,0,0,CmbStatus::Ok}};
   }
   if(mx==0)return {0,{prob,nu,0,0,CmbStatus::Ok}};
+  // nu = 1 reduces the normalized masses exactly to the binomial law.
+  if (nu==1 && std::all_of(x.begin(),x.end(),[&](int v){return v==mx;})) {
+    const double size = binom_detail::constant_tie_size(mx,prob,1e7);
+    if (std::isfinite(size)) {
+      const double ll = double(x.size()) * distributions::dbinom(mx,size,prob,true);
+      CmbSizeResult tied{size,{prob,nu,ll,0,CmbStatus::FaceTie}};
+      tied.fit.unique = false;
+      tied.fit.maximizer_set = "Exactly the two listed adjacent sizes maximize the likelihood.";
+      tied.fit.stop_detail = comparison_detail({{size,prob,nu},ll,ll},{{size+1,prob,nu},ll,ll});
+      tied.fit.stop_detail.loglik_upper = ll;
+      return tied;
+    }
+  }
   const double eta=std::log(prob)-std::log1p(-prob),n=double(x.size());
   CmbSizeResult best{nan,{prob,nu,-INFINITY,0,CmbStatus::IterationFailure}};
   // Work budget counts enumerated normalizer terms, not size magnitude.

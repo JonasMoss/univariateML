@@ -42,6 +42,8 @@
 #include "../../special/special.hpp"
 
 #include <algorithm>
+#include <array>
+#include <string>
 #include <cmath>
 #include <cstddef>
 #include <limits>
@@ -76,6 +78,7 @@ struct BbinomResult {
   std::vector<std::vector<double>> accurate_fixed_points{};
   std::vector<double> maximizer_shape_ray{};
   std::vector<double> free_positive_shapes{};
+  std::string maximizer_set{};
 };
 
 namespace bbinom_detail {
@@ -375,6 +378,24 @@ inline std::vector<double> log_grid(double lo, double hi, double step) {
 
 #include "acceptance.hpp"
 
+// Test x*beta - alpha*gap - x exactly. FMA splits each product and
+// error-free sums accumulate the resulting five terms in an expansion.
+inline bool equal_size_ratio(double x, double gap, double alpha, double beta) {
+  const double xb = x * beta, ag = alpha * gap;
+  if (!std::isfinite(xb) || !std::isfinite(ag)) return false;
+  std::array<double,5> expansion{};
+  std::size_t length = 0;
+  for (double term : {xb,-ag,-x,std::fma(x,beta,-xb),-std::fma(alpha,gap,-ag)}) {
+    for (std::size_t i=0;i<length;++i) {
+      const double sum = term + expansion[i];
+      expansion[i] = special::addition_residual(term,expansion[i],sum);
+      term = sum;
+    }
+    expansion[length++] = term;
+  }
+  return std::all_of(expansion.begin(),expansion.end(),[](double v){return v==0;});
+}
+
 }  // namespace bbinom_detail
 
 inline bool family_point(const BbinomResult& r,const FitCandidate& c);
@@ -518,6 +539,21 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
   if (std::isnan(size) && fix_a && fix_b) {
     if (!(alpha_fixed>0 && beta_fixed>0) || !std::isfinite(alpha_fixed+beta_fixed)) return out;
     int mx=0; for(int v:x) {if(v<0)return out;mx=std::max(mx,v);}
+    if (mx > 0 && beta_fixed > 1 &&
+        std::all_of(x.begin(),x.end(),[&](int v){return v==mx;})) {
+      const double gap = std::round((beta_fixed-1)/alpha_fixed*mx);
+      // For constant counts the ratio minus one has the sign of
+      // x*(beta-1)-alpha*(size+1-x), strictly decreasing in size.
+      if (gap >= 1 && gap <= 1e7-mx && bbinom_detail::equal_size_ratio(mx,gap,alpha_fixed,beta_fixed)) {
+        const double n = mx + gap - 1;
+        auto tied = bbinom_mle_work(x,n,tol,maxit,alpha_fixed,beta_fixed,work);
+        if (tied.status != BbinomStatus::Ok) return tied;
+        tied.maximizer_set = "Exactly the two listed adjacent sizes maximize the likelihood.";
+        tied.stop_detail = comparison_detail({{n,alpha_fixed,beta_fixed},tied.logLik,tied.logLik},
+                                             {{n+1,alpha_fixed,beta_fixed},tied.logLik,tied.logLik});
+        return tied;
+      }
+    }
     // Each pmf is decreasing once size+1 >= x*(alpha+beta-1)/alpha.
     const double end=std::max(double(mx),std::ceil(mx*std::max(0.,alpha_fixed+beta_fixed-1)/alpha_fixed));
     const bool partial=end-mx+1>enumeration_budget(maxit);
@@ -887,7 +923,24 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
     double alpha_fixed=std::numeric_limits<double>::quiet_NaN(),
     double beta_fixed=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
-  if(std::isnan(size) && std::isnan(alpha_fixed) && std::isnan(beta_fixed))return {NAN,NAN,NAN,NAN,0,BbinomStatus::Unsupported};
+  const bool free_a=std::isnan(alpha_fixed),free_b=std::isnan(beta_fixed);
+  const bool unrestricted=std::isnan(size) && free_a && free_b;
+  const bool zero_atom=(std::isnan(size) || size==0) && !x.empty() &&
+    std::all_of(x.begin(),x.end(),[](int v){return v==0;});
+  if (zero_atom && tol>0 && std::isfinite(tol) && maxit>0 &&
+      (free_a || (alpha_fixed>0 && std::isfinite(alpha_fixed))) &&
+      (free_b || (beta_fixed>0 && std::isfinite(beta_fixed)))) {
+    const double a=free_a?1:alpha_fixed, b=free_b?1:beta_fixed;
+    BbinomResult result{0,a,b,0,0,BbinomStatus::Ok};
+    if (free_a || free_b) {
+      result.status=BbinomStatus::Unidentified;
+      result.free_positive_shapes={free_a?1.:0.,free_b?1.:0.};
+      result.maximizer_set="With size = 0 every positive value of each free shape maximizes the likelihood.";
+      result.stop_detail=comparison_detail({{0,a,b},0,0},{{0,free_a?2:a,free_a?b:2},0,0});
+    }
+    return result;
+  }
+  if(unrestricted)return {NAN,NAN,NAN,NAN,0,BbinomStatus::Unsupported};
   const bbinom_detail::CellWork work(enumeration_budget(maxit));
   auto out=bbinom_mle_work(x,size,tol,maxit,alpha_fixed,beta_fixed,work,!std::isnan(size));
   if(out.status==BbinomStatus::Unidentified) {
@@ -945,7 +998,7 @@ inline FitOutcome outcome(const BbinomResult& r) {
   if (r.status != BbinomStatus::Ok && r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
     case BbinomStatus::Unsupported:return FitOutcome::failure(OutcomeReason::Unsupported);
-    case BbinomStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BbinomStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizer_set.empty());
     case BbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BbinomStatus::SizeTooSmall: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BbinomStatus::BinomialLimit: return FitOutcome::limit(true);
