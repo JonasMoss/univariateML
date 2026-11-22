@@ -514,6 +514,14 @@
    "commit": "10caef8e",
    "dirty": true,
    "reason": "batch 9: mode-kind, strict-33, gb2-acc (TASK-214.13, TASK-214.33, TASK-214.44)"
+  },
+  {
+   "families": [
+    "tlambda"
+   ],
+   "commit": "175d507d",
+   "dirty": true,
+   "reason": "tlambda-ties (TASK-214.17): ties unbounded, pairs certified uniform"
   }
  ]
 }

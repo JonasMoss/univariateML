@@ -120,6 +120,29 @@
    "commit": "10caef8e",
    "dirty": true,
    "reason": "batch 9: gb2-acc nbinom certificate (zero-inflated nbinom iteration count)"
+  },
+  {
+   "families": [
+    "binom +truncate=tbinom",
+    "binom+zero=inflated",
+    "binom+zero=modified",
+    "binom+zero=truncated",
+    "geom+zero=modified",
+    "geom+zero=truncated",
+    "lgser+zero=modified",
+    "nbinom+zero=inflated",
+    "nbinom+zero=modified",
+    "nbinom+zero=truncated",
+    "norm +truncate=tnorm",
+    "pois +truncate=tpois",
+    "pois+zero=inflated",
+    "pois+zero=modified",
+    "pois+zero=truncated",
+    "zeta +truncate=zipf"
+   ],
+   "commit": "175d507d",
+   "dirty": true,
+   "reason": "loose-2 (TASK-150.8): zinb bracket, iteration count only"
   }
  ]
 }
