@@ -64,10 +64,11 @@ regen: gen
 	cd univariateML-r && PKG_BUILD_EXTRA_FLAGS=false Rscript -e "options(pkg.build_extra_flags = FALSE); roxygen2::roxygenise()"
 
 # Default development tier; reserve all four CPU slots before invoking.
-test: regen
+test:
+	MAKEFLAGS="-j${CMAKE_BUILD_PARALLEL_LEVEL:-1}" just regen
 	cd univariateML-r && \
 	  UMVL_DISTRIBUTIONS_DIR={{repo_root}}/univariateML-cpp/include/cppunivariate/distributions \
-	  UMVL_TEST_TIER=${UMVL_TEST_TIER:-dev} PKG_BUILD_EXTRA_FLAGS=false TESTTHAT_CPUS=4 \
+	  UMVL_TEST_TIER=${UMVL_TEST_TIER:-dev} PKG_BUILD_EXTRA_FLAGS=false TESTTHAT_CPUS=4 MAKEFLAGS=-j1 \
 	  Rscript ../bindings/r/scripts/test_local.R
 
 # Exhaustive pre-merge/release suite, including slow independent oracles.

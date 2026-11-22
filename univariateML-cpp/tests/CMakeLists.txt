@@ -52,20 +52,91 @@ target_compile_definitions(distribution_tests PRIVATE
 # Shard by source file and complementary expensive-case filters. No case is
 # dropped: full selects both shards, smaller tiers select the core shard.
 set(_slow_cases "*oracle*,*multistart*,*replication*,*large sample*,*large-sample*,*every held golden subset*,*slow*reference*,*240 seeded*")
+
+# Each pair gives an approximate CPU cost in seconds and an exact case name.
+# Keep the executable shared so scheduling cases independently adds no link work.
+set(distribution_genbeta_shards
+  60 "genbeta: exact gamma and effective-endpoint power face comparisons"
+  49 "genbeta all-free certificate: a shallow gamma-adjacent proposal retains its uncertified legacy fit"
+  46 "genbeta all-free: incomplete gamma certificates preserve the legacy payload"
+  33 "genbeta: structured face payloads"
+  27 "genbeta all-free: signed squared-power certificate selects a global gamma face")
+set(distribution_genbeta_slow_shards
+  87 "genbeta: large replication preserves conditional coefficient accuracy")
+set(distribution_bhatt_shards
+  24 "bhatt: free fit is affine equivariant"
+  10 "bhatt failed enclosure preserves the successful existing search as uncertified"
+  11 "bhatt: central density preserves the golden fit")
+set(distribution_bnbinom_shards
+  15 "bnbinom: insufficient certificate work preserves a successful finite legacy search"
+  10 "bnbinom: every held subset, scores and mirror fits"
+  10 "bnbinom: all-free proposals pass a parameter-uniform global inner certificate"
+   9 "bnbinom: all-free numerical candidates retain both labels and a diagonal witness")
+set(distribution_cmb_shards
+  96 "cmb: free-size endpoints, invalid controls and work exhaustion"
+  11 "cmb: million-count searches exhaust a shared cell ledger with witnesses")
+set(distribution_dgamma_shards
+  42 "dgamma: ordinary starts keep their allowance despite remote shape probes")
+set(distribution_hyper_shards
+  16 "hyper: fully free search, faces and work limit"
+   9 "hyper: held population joint finite grid")
+set(distribution_sged_shards
+  30 "sged: half-GED payload retains base scale and original-unit likelihood"
+  14 "sged constrained faces and shapes"
+  11 "sged translated exponential faces")
+set(distribution_st_shards
+  14 "st: native golden fit"
+  12 "st near-normal 55-digit coefficient reference is affine equivariant")
+set(distribution_trgamma_shards
+  29 "trgamma: seeded samples agree with a dense-grid profile reference"
+  11 "trgamma: interior close to the lognormal face and scale range")
+# Prioritize long indivisible cases and the remaining work in split targets.
+set(distribution_pig_cost 98)
+set(distribution_tlambda_slow_cost 56)
+set(distribution_pois_slow_cost 59)
+set(distribution_cmp_slow_cost 62)
+set(distribution_bhatt_cost 28)
+set(distribution_bnbinom_cost 32)
+set(distribution_sged_cost 27)
+set(modifier_ztpois_cost 36)
+
+function(cppuniv_distribution_shards name source labels included excluded)
+  set(remainder "${excluded}")
+  set(shards "${${name}_shards}")
+  set(part 0)
+  while(shards)
+    list(POP_FRONT shards cost case)
+    math(EXPR part "${part} + 1")
+    # doctest separates patterns at unescaped commas.
+    string(REPLACE "," "\\," pattern "${case}")
+    add_test(NAME ${name}_part${part} COMMAND distribution_tests
+      "--source-file=*${source}" "--test-case=${pattern}")
+    set_tests_properties(${name}_part${part} PROPERTIES
+      WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" LABELS "${labels}" COST "${cost}")
+    if(remainder)
+      string(APPEND remainder ",")
+    endif()
+    string(APPEND remainder "${pattern}")
+  endwhile()
+  add_test(NAME ${name} COMMAND distribution_tests "--source-file=*${source}"
+    "--test-case=${included}" "--test-case-exclude=${remainder}")
+  set_tests_properties(${name} PROPERTIES
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" LABELS "${labels}")
+  if(DEFINED ${name}_cost)
+    set_tests_properties(${name} PROPERTIES COST "${${name}_cost}")
+  endif()
+endfunction()
+
 foreach(source IN LISTS DISTRIBUTION_TEST_SOURCES)
   get_filename_component(folder "${source}" DIRECTORY)
   get_filename_component(id "${folder}" NAME)
-  add_test(NAME distribution_${id} COMMAND distribution_tests
-    "--source-file=*distributions/${id}/test.cpp" "--test-case-exclude=${_slow_cases}")
-  set_tests_properties(distribution_${id} PROPERTIES
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" LABELS "cran;dev;full")
+  cppuniv_distribution_shards(distribution_${id} "distributions/${id}/test.cpp"
+    "cran;dev;full" "" "${_slow_cases}")
   file(READ "${source}" contents)
   string(TOLOWER "${contents}" contents)
   if(contents MATCHES "test_case\\(\"[^\"]*(oracle|multistart|replication|large.sample|every held golden subset|slow[^\"]*reference|240 seeded)")
-    add_test(NAME distribution_${id}_slow COMMAND distribution_tests
-      "--source-file=*distributions/${id}/test.cpp" "--test-case=${_slow_cases}")
-    set_tests_properties(distribution_${id}_slow PROPERTIES
-      WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" LABELS "full")
+    cppuniv_distribution_shards(distribution_${id}_slow "distributions/${id}/test.cpp"
+      "full" "${_slow_cases}" "")
   endif()
 endforeach()
 add_test(NAME distribution_support COMMAND distribution_tests
@@ -117,12 +188,12 @@ endif()
 
 foreach(source IN LISTS MODIFIER_TEST_SOURCES)
   get_filename_component(id "${source}" NAME_WE)
-  add_test(NAME modifier_${id} COMMAND distribution_tests "--source-file=*modifiers/${id}.cpp" "--test-case-exclude=${_slow_cases}")
-  set_tests_properties(modifier_${id} PROPERTIES WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" LABELS "cran;dev;full")
+  cppuniv_distribution_shards(modifier_${id} "modifiers/${id}.cpp"
+    "cran;dev;full" "" "${_slow_cases}")
   file(READ "${source}" contents)
   string(TOLOWER "${contents}" contents)
   if(contents MATCHES "test_case\\(\"[^\"]*(oracle|multistart|replication|large.sample|every held golden subset|slow[^\"]*reference|240 seeded)")
-    add_test(NAME modifier_${id}_slow COMMAND distribution_tests "--source-file=*modifiers/${id}.cpp" "--test-case=${_slow_cases}")
-    set_tests_properties(modifier_${id}_slow PROPERTIES WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" LABELS "full")
+    cppuniv_distribution_shards(modifier_${id}_slow "modifiers/${id}.cpp"
+      "full" "${_slow_cases}" "")
   endif()
 endforeach()

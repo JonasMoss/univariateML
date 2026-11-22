@@ -1,0 +1,24 @@
+C++ native cran: 2772 matching doctest cases, 0 matching non-doctest registrations
+C++ native dev: 2772 matching doctest cases, 1 matching non-doctest registrations
+C++ native full: 2827 matching doctest cases, 1 matching non-doctest registrations
+C++ native: 2409269 matching assertions
+C++ double cran: 2773 matching doctest cases, 0 matching non-doctest registrations
+C++ double dev: 2773 matching doctest cases, 1 matching non-doctest registrations
+C++ double full: 2828 matching doctest cases, 1 matching non-doctest registrations
+C++ double: 2667497 matching assertions
+R dev: 130 matching files, 36637 events
+R full: 130 matching files, 65884 events
+Snapshot native: 11905 matching rows, SHA-256 0c5dbf9c138b10844ebbf33695f693fa46e2a7b5df47ffcf72c9cf5c9ff005ab
+Snapshot double: 11905 matching rows, SHA-256 37efe15309414921299ba385fb011eb3cafffd8254988929fbf5d3d97933c524
+Snapshot routes-native: 1950 matching rows, SHA-256 235d94ad899621c5d3841c8836ff0b83576d5713d0172cc30562cc8c1c22740d
+Snapshot routes-double: 1950 matching rows, SHA-256 c7dea0b033b1c9ff6044f8df54117d390356b456dd841c8035bdb4817f8d0762
+strict ratchet: 6 entries, SHA-256 4ad99acd17fc71bd6764c0971922c5ee30c0586e68a991c0cb2030d98e38be7a
+certificate records: 7152 entries, SHA-256 edbe4cfd2ccff0c9d13fd0482c74bd1ec89f6e9ad1ca868abb8ba9847e3c6024
+seam records after guard retries: 19388 entries, SHA-256 7ac32799bbce3f985ce2f178c640c1a146d456cd35ef8f3bc973ad0c49c5a76f
+full refinement records: 3848 entries, SHA-256 6310eab015061582f6de1f914bf72f96ebb748d394066a63a36d2ee401d9be53
+cache-only refinement records apart from the budget notes: 3822 entries, SHA-256 998b8d40589d1fbcc59ff58454085ef193a3bcab495aff1e4529f47150f7a8ea
+refinement work-budget exclusions: 26
+Stored master snapshot native: matching record bytes
+Stored master snapshot double: matching record bytes
+Stored master snapshot routes-native: matching record bytes
+Stored master snapshot routes-double: matching record bytes

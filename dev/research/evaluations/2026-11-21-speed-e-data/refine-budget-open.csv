@@ -1,0 +1,27 @@
+mode,family,source,case,status,reason
+native,pois +truncate=tpois,archive,007963,open,not attempted: two cases hit the case guard
+double,pois +truncate=tpois,archive,007963,open,not attempted: two cases hit the case guard
+native,cmb,archive,000887,open,not attempted: two cases hit the case guard
+double,cmb,archive,000887,open,not attempted: two cases hit the case guard
+native,cmp,archive,000966,open,not attempted: two cases hit the case guard
+double,cmp,archive,000966,open,not attempted: two cases hit the case guard
+native,pois +truncate=tpois,archive,007968,open,not attempted: two cases hit the case guard
+double,pois +truncate=tpois,archive,007968,open,not attempted: two cases hit the case guard
+native,cmb,archive,000890,open,not attempted: two cases hit the case guard
+double,cmb,archive,000890,open,not attempted: two cases hit the case guard
+native,cmp,archive,000968,open,not attempted: two cases hit the case guard
+double,cmp,archive,000968,open,not attempted: two cases hit the case guard
+native,pois +truncate=tpois,archive,011101,open,not attempted: two cases hit the case guard
+double,pois +truncate=tpois,archive,011101,open,not attempted: two cases hit the case guard
+native,cmb,archive,000891,open,not attempted: two cases hit the case guard
+double,cmb,archive,000891,open,not attempted: two cases hit the case guard
+native,cmp,archive,000970,open,not attempted: two cases hit the case guard
+double,cmp,archive,000970,open,not attempted: two cases hit the case guard
+native,pois +truncate=tpois,archive,011102,open,not attempted: two cases hit the case guard
+double,pois +truncate=tpois,archive,011102,open,not attempted: two cases hit the case guard
+native,cmb,archive,010923,open,not attempted: two cases hit the case guard
+double,cmb,archive,010923,open,not attempted: two cases hit the case guard
+native,cmp,archive,000971,open,not attempted: two cases hit the case guard
+double,cmp,archive,000971,open,not attempted: two cases hit the case guard
+native,pois +truncate=tpois,archive,011110,open,not attempted: two cases hit the case guard
+double,pois +truncate=tpois,archive,011110,open,not attempted: two cases hit the case guard
