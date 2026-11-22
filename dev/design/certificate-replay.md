@@ -145,9 +145,37 @@ usually has several, by hold subset).
 | C scalar root under a uniqueness theorem | signs of a monotone score at the ends of the final bracket (unpadded or padded) | re-derive: signs at the returned coefficient times $1\mp w$, $w$ the claimed width | interval (elementary scores) or numerical (digamma) | ms |
 | D inequality that selects a face | a moment or multiplicity inequality (variance against mean, $\overline{x^2}$ against $2\bar x^2$, half-mass) | re-derive exactly | exact | µs |
 | E face against interior with a likelihood margin | best interior value minus the face supremum, against a margin ($10^{-8}n$, $10^{-9}n$, `compare_face`) | re-derive both sides; whether the interior value is the interior supremum needs F | interval or numerical | ms |
-| F global cover | every cell of a compact domain closed by a chord, Lipschitz or score-sign bound, plus analytic tails | one-dimensional profile: an independent interval cover (prototype: lomax); two or more dimensions: trace, or an independent cover where affordable | interval | 0.01–5 s (1D); seconds to minutes (2D, 3D) |
+| F global cover | every cell of a compact domain closed by a chord, Lipschitz or score-sign bound, plus analytic tails | one-dimensional profile: an independent interval cover (prototype: lomax); two or more dimensions: trace, or an independent cover where affordable | interval or numerical | family and sample dependent |
 | G exhaustive integer search | profile values over an integer range and a tail bound against the incumbent | re-derive: high-precision profile at each integer, exact or interval tail bound | interval or exact | proportional to the range |
 | H ties and non-uniqueness | two candidates' values equal (proved by symmetry or exact data) or separated by a margin | re-derive both values | exact or interval | ms |
+
+Step 8d uses re-derived comparisons for the Lomax transfers (pareto2,
+invpareto, beta-prime held unit shape and Burr held power). The scalar
+profiles include GPD, half Student t, Skellam, slash, shifted Gompertz,
+discretized gamma, paralogis and its reciprocal, folded normal,
+Birnbaum–Saunders, held-scale Cauchy, transformed gamma and its reciprocal,
+and Huber's epsilon profile.
+
+- Shifted Gompertz uses interval endpoint shape roots, monotone shape
+  enclosures over rate cells, a curvature upper bound and analytic rate
+  tails. The likelihood allowance and the coefficient windows are separate
+  comparisons.
+- Transformed gamma uses numerical inverse digamma, the conjugate secant,
+  signed root neighborhoods and analytic seam and tail bounds. The reciprocal
+  uses the same profile with negated logs and reciprocal scale.
+- Huber evaluates endpoint nuisance supporting planes at high precision and
+  adds the normalizer chord error on each cell. It recomputes the Gaussian
+  and Laplace faces subject to the same holds. Numerical planes give
+  approximate evidence for the inequalities.
+- Discretized gamma uses numerical incomplete-gamma evaluations. With
+  joint estimation it bounds the inner log-rate optimum by score monotonicity
+  and uses conditional log-cell secants on the outer shape cells.
+
+For comparisons re-derived from a rounded public fit, an upper bound that
+overlaps the target remains open. A definite failure requires a witness on the
+wrong side. Reconstructing a scalar cover checks the outcome independently
+of the order in which the fitter split its cells. It does not recover those
+cells or test their individual floating-point pads.
 
 The replay must use the coordinates of the certificate, not the public ones:
 the claim is an enclosure in the certificate's coordinate ($\log\lambda$,

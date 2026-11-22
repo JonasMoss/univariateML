@@ -1,14 +1,13 @@
 """Certificate replay, mechanisms E and F: Lomax transfers and one-dimensional covers (step 8d, TASK-214.34).
 
-Companion of cert-replay.py (design: dev/design/certificate-replay.md; report:
-dev/research/evaluations/2026-11-15-replay-covers-report.md). Registered into
+Companion of cert-replay.py. See dev/design/certificate-replay.md and
+dev/research/evaluations/2026-11-22-replay-covers-report.md. Registered into
 cert-replay.py's REPLAYS; every function has the signature
 replay(record, data, budget) -> (comparisons, why_none) of the prototype.
 
-Code read at master b80a1831 (package code identical to the commit of the
-stored baselines). Claimed widths and margins are listed in CLAIMS with the
-source line they were read from; a change to a certificate must update this
-module in the same commit. The comparison names do not collide with the ones of
+The original comparisons and their source references in CLAIMS are preserved
+from the earlier replay. Additions read the certificates at master b6a00871.
+A change to a certificate must update the corresponding replay. The comparison names do not collide with the ones of
 the other modules (root, restore, moment, support, unique, face, gain, global,
 concave, dispersion, multiplicity, quartic, location): the Lomax transfers reuse
 the Lomax names because pareto2 and invpareto are replayed by no other module
@@ -20,11 +19,14 @@ Transfers (re-use of cert-replay.py's replay_lomax, bound at registration):
   pareto2    shape = kappa, scale = 1/lambda on y = x - min (binary64, as the core subtracts);
              shape held is the held-kappa root of the Lomax replay, scale held is closed form;
              samples with a value equal to min take pareto2's own branch (support); the
-             exponential limit is mapped to limit(true): comparison 'mapping' (information)
+             historical 'mapping' information is preserved for record comparison;
+             'transfer-flag' checks the current limit(false) mapping
   invpareto  shape = kappa, scale = lambda on y = 1/x (binary64, as the core divides);
              logLik differs from the Lomax value by the Jacobian -2 sum log x (double column only)
   both       coefficient: log(kappa_hat) + log A(z) within the certificate's 1e-8 over the root enclosure
              (the Lomax prototype does not check the shape coefficient)
+  betapr     held unit shape uses one of the two Lomax orientations
+  burr       fixed power transfers to Lomax on the powered observations
 
 One-dimensional covers. A generic interval branch and bound (cover) closes a cell by an upper
 bound of the value, by a one-signed derivative enclosure, or by two tangent lines; it never
@@ -38,6 +40,10 @@ uses a dossier bound that is not coded here as an interval:
   paralogis  shape held (scale root), scale held (shape cover), both free (shape profile over the intercept)   interval;
              invparalogis is paralogis on 1/x (binary64 reciprocals for a certified fit, exact for an uncertified one)
   slash      mu held (scale root), sigma held (location cover), both free (location profile over the scale; accuracy by Newton, numerical)
+  sgomp      rate cover with interval conditional shape roots and curvature
+  dgamma     numerical log-shape cover with held rate or profiled rate
+  trgamma    numerical power cover with a convex-conjugate secant, also used by invtrgamma
+  huber      numerical epsilon cover with supporting-plane nuisance values
 
 Every comparison reports a verdict (holds, fails, open) as in the prototype.
 """
@@ -138,6 +144,18 @@ def replay_invpareto(r, data, budget):
         c['note'] = ('invpareto as lomax on 1/x (logLik = lomax + %.6g); ' % jac + (c['note'] or '')).strip()
     return comps, why
 
+def replay_lomax_limit_transfer(r, data, budget):
+    result = r['result']
+    outcome = result.get('outcome') or {}
+    expected_model, expected_mask = {'pareto2': ('exp', 4), 'invpareto': ('invexp', 0)}[r['family']]
+    if r['mask'] != expected_mask or outcome.get('kind') != 'limit':
+        return [], None
+    model, certified = result.get('model'), outcome.get('certified')
+    verdict = 'holds' if model == expected_model and certified is False else 'fails'
+    return [comparison('transfer-flag', f'transfer the Lomax margin limit as {expected_model} with certified=false',
+                       verdict, f'model {model}, certified {certified}', rigor='exact')], None
+
+
 def lomax_shape(estimates_kappa, lam, y):
     """kappa_hat A(z) = 1 on the root enclosure z_hat -/+ 8e-7 widened by the certificate's 1e-8 (lomax/certificate.hpp:118-119): the shape
     coefficient the transfers return is kappa = 1/A(z) of the Lomax fit on y."""
@@ -209,6 +227,55 @@ def replay_burr_power(r, data, budget):
             comps.append(comparison('limit', 'Weibull limit (certified = %s): the exponential supremum is unattained, h(z) < 0 at every finite z' % certified, verdict,
                                     text, rigor='interval', note='strict face (burr/lomax_face.hpp), not the 1e-8 margin'))
     return comps, why
+
+# ------------------------------------------------------------ beta prime, unit held shape (E, F)
+
+def replay_betapr_unit(r, data, budget):
+    held = r['held']
+    if held.get('shape1') == 1:
+        shape, reflected = 'shape2', False
+    elif held.get('shape2') == 1:
+        shape, reflected = 'shape1', True
+    else:
+        return [], None
+    if 'scale' in held:
+        return [], 'unit shape and scale held: no profile cover'
+
+    result = r['result']
+    kind = (result.get('outcome') or {}).get('kind')
+    if kind not in ('estimate', 'limit'):
+        return [], None
+    x = [float(v) for v in data]
+    if not all(v > 0 and math.isfinite(v) for v in x):
+        return [], 'unit-shape transfer requires finite positive data'
+    y = [1/v for v in x] if reflected else x
+    if not all(v > 0 and math.isfinite(v) for v in y):
+        return [], 'unit-shape transfer has nonrepresentable reciprocals'
+
+    mask = 2 if shape in held else 0
+    lomax_held = {'kappa': held[shape]} if mask else {}
+    estimates = {}
+    if kind == 'estimate':
+        public = result['estimates']
+        scale = number(public['scale'])
+        estimates = {'kappa': number(public[shape]),
+                     'lambda': scale if reflected else 1/scale}
+    shift = 2 * math.fsum(map(math.log, x)) if reflected else 0
+    comps, why = LOMAX(lomax_record(r, mask, lomax_held, estimates, shift), y, budget)
+    if kind == 'estimate' and not mask:
+        comps.append(lomax_shape(estimates['kappa'], estimates['lambda'], y))
+    if kind == 'limit' and len(set(y)) > 1:
+        profile = LOMAX_PROFILE(y)
+        lo, hi, _ = profile.domain()
+        label, detail = LOMAX_FACE_CLASS(profile, lo, hi, budget)
+        verdict = {'none': 'holds', 'finite': 'fails'}.get(label, 'open')
+        comps.append(comparison('unit-face', 'strict exponential face on the Lomax scale',
+                                verdict, detail, note='betapr/mle.hpp unit-shape face gate'))
+    for comp in comps:
+        route = '1/x' if reflected else 'x'
+        comp['note'] = f'beta prime as Lomax on {route}. ' + comp['note']
+    return comps, why
+
 
 # ------------------------------------------------------------ generic one-dimensional cover
 
@@ -740,6 +807,119 @@ def replay_dgamma_run(r, data, budget):
         note='target is the mean log likelihood at the returned shape plus 1e-8; variable log a; derivative from the monotone conditional mean of log Y (numerical difference)'))
     return out, None
 
+def replay_dgamma_joint(r, data, budget):
+    """Joint cover in log shape with the concave rate optimum bounded at each point."""
+    result = r['result']
+    outcome = result.get('outcome') or {}
+    if r['mask'] or outcome.get('kind') != 'estimate' or not outcome.get('certified'):
+        return [], None
+    claim = 'joint shape profile within 1e-8 per observation of the returned likelihood'
+    try:
+        cells = DgammaCells(data)
+        shape = mp.mpf(number(result['estimates']['shape']))
+        rate = mp.mpf(number(result['estimates']['rate']))
+        cutoff = cells.n*cells.value(shape, rate)
+        target = cutoff/cells.n+mp.mpf('1e-8')
+        low, _ = dgamma_cutoffs(cells, cutoff, None)
+        high = mp.inf
+        for i, (l, w) in enumerate(cells.cells):
+            for h, count in cells.cells[i+1:]:
+                if h > l+1:
+                    logq = mp.log(mp.mpf(h)/(l+1))/2
+                    c = min(mp.expm1(logq)-logq, mp.expm1(-logq)+logq)
+                    high = min(high, -cutoff/(c*min(w, count)))
+        if not (0 < low < high < mp.inf):
+            raise ValueError('small and large shape bounds did not give a compact domain')
+        mean = mp.mpf(sum(k*w for k, w in cells.cells))/cells.n
+
+        def integral(a, rate):
+            return cells.value(a, rate)+mp.loggamma(a)-a*mp.log(rate)
+
+        def rate_terms(a, rate):
+            # Differentiate the two CDF endpoints with respect to log rate.
+            # Both score and curvature then need just one cell probability.
+            normalizer = mp.loggamma(a)
+            scores, slopes, values = [], [], []
+            endpoints = {0: mp.mpf(0)}
+
+            def endpoint(k):
+                if k not in endpoints:
+                    z = rate*k
+                    endpoints[k] = mp.exp(a*mp.log(z)-z-normalizer)
+                return endpoints[k]
+
+            for k, count in cells.cells:
+                probability = cells.prob(a, rate, k)
+                left, right = endpoint(k), endpoint(k+1)
+                score = (right-left)/probability
+                slope = ((a-rate*(k+1))*right-(a-rate*k)*left)/probability-score*score
+                scores.append(count*score)
+                slopes.append(count*slope)
+                values.append(count*mp.log(probability))
+            return tuple(mp.fsum(v)/cells.n for v in (scores, slopes, values))
+
+        pending = [(mp.log(low), mp.log(high))]
+        count = 0
+        while pending and count < budget:
+            count += 1
+            tl, th = pending.pop()
+            mid = (tl+th)/2
+            a, b, shape = mp.exp(tl), mp.exp(th), mp.exp(mid)
+            rl, rh = mp.log(shape/(mean+1)), mp.log(shape/mean)
+            u = (rl+rh)/2
+            for _ in range(96):
+                rate = mp.exp(u)
+                score, slope, value = rate_terms(shape, rate)
+                nuisance_error = max(score*(rl-u), score*(rh-u))
+                if nuisance_error < mp.mpf('1e-12'):
+                    break
+                if score > 0:
+                    rl = u
+                else:
+                    rh = u
+                newton = u-score/slope if slope < 0 else u
+                u = newton if rl < newton < rh else (rl+rh)/2
+            else:
+                raise ValueError('conditional rate bracket did not close')
+            if value > target:
+                return [comparison('joint-cover', claim, 'fails',
+                                   'shape %s, rate %s, likelihood %s, target %s' %
+                                   tuple(mp.nstr(x, 20) for x in (shape, rate, value, target)),
+                                   rigor='numerical')], None
+
+            rl, rh = mp.log(a/(mean+1)), mp.log(b/mean)
+            for _ in range(96):
+                rr = (rl+rh)/2
+                rate = mp.exp(rr)
+                if rate_terms(b, rate)[0] > b-a:
+                    rl = rr
+                elif rate_terms(a, rate)[0] < a-b:
+                    rh = rr
+                else:
+                    break
+            h = mp.mpf('1e-4')*a
+            rlo, rhi = mp.exp(rl), mp.exp(rh)
+            lower = rl-mp.digamma(b)+(integral(a, rhi)-integral(a-h, rhi))/h
+            upper = rh-mp.digamma(a)+(integral(b+h, rlo)-integral(b, rlo))/h
+            if lower > upper:
+                raise ValueError('conditional log-cell secants crossed')
+            rise = max(0, -b*lower*(mid-tl), b*upper*(th-mid))
+            if value+nuisance_error+rise < target:
+                continue
+            if not tl < mid < th:
+                raise ValueError('shape interval collapsed at working precision')
+            pending.extend(((tl, mid), (mid, th)))
+        if not pending:
+            return [comparison('joint-cover', claim, 'holds',
+                               f'target {mp.nstr(target, 20)}. {count} cells closed',
+                               rigor='numerical')], None
+        detail = f'{count} cells checked without closing the cover. Target {mp.nstr(target, 20)}'
+    except (mp.libmp.libhyper.NoConvergence, ValueError, ZeroDivisionError, OverflowError) as error:
+        detail = str(error)
+    return [comparison('joint-cover', claim, 'open', detail, rigor='numerical',
+                       note='mpmath incomplete gamma with analytic shape and rate brackets')], None
+
+
 # ------------------------------------------------------------ ht, shape free (F, numerical)
 
 HT_MARGIN = mp.mpf('1e-8')
@@ -913,6 +1093,101 @@ def replay_ht_run(r, data, budget):
         extra='; nu range [%s, %s], half-normal face %s' % (mp.nstr(mp.exp(t_lo), 6), mp.nstr(mp.exp(t_hi), 6), mp.nstr(l_hn/n, 12)),
         note='variable log nu; profile score enclosed per cell by the dossier bounds; values by mpmath loggamma at 50 digits'))
     return out, None
+
+def replay_ht_face(r, data, budget):
+    result = r['result']
+    outcome = result.get('outcome') or {}
+    mask = r['mask']
+    normal = outcome.get('kind') == 'limit' and result.get('model') == 'hnorm'
+    collapse = outcome.get('kind') == 'nonexistence' and outcome.get('reason') == 'unattained'
+    if mask not in (0, 1, 4, 5) or not (normal or collapse):
+        return [], None
+    claim = 'selected half-t face within 2.5e-9 per observation of the entire shape profile'
+    free_endpoint = not mask & 1
+    x = [float(v) for v in data]
+    if not x:
+        return [], None
+    endpoint = min(x) if free_endpoint else r['held']['mu']
+    data = [v-endpoint for v in x]
+    if min(data) < 0 or not max(data) > 0:
+        return [], 'degenerate sample or outside support'
+    unit = max(data)
+    held_scale = r['held'].get('sigma')
+    try:
+        # Center the scale coordinate so the shape tail bounds do not depend
+        # on the physical units of the observations.
+        p = HtProfile([mp.mpf(v)/unit for v in data],
+                      None if held_scale is None else mp.mpf(held_scale)/unit)
+        tie = free_endpoint and held_scale is None and 2*p.k == p.n
+        if collapse and not tie:
+            return [], 'unattained outcome is outside the equal-mass face cover'
+        collapse_value = p.n*mp.log(2/mp.pi)-2*p.sumlog if tie else mp.ninf
+        m2 = mp.fsum(v*v for v in p.pos)
+        variance = m2/p.n if held_scale is None else mp.exp(2*p.held_u)
+        normal_value = p.n*(mp.log(2)-mp.log(2*mp.pi*variance)/2)-m2/(2*variance)
+        base, rival = (normal_value, collapse_value) if normal else (collapse_value, normal_value)
+        allowance = mp.mpf('2.5e-9')*p.n
+        target = base+allowance
+        if rival > target:
+            return [comparison('face-cover', claim, 'fails',
+                               f'competing face {mp.nstr(rival, 20)} above target {mp.nstr(target, 20)}',
+                               rigor='numerical')], None
+
+        if not free_endpoint:
+            fixed_term = p.k*p.held_u if held_scale is not None else 0
+            lo = min(-4, 2*(base-1+p.sumlog+fixed_term)/p.n-mp.log(2/mp.pi)-1)
+        elif tie:
+            delta = mp.mpf('0.5')
+            for _ in range(100):
+                bound = (collapse_value+(p.n+p.p*(2+delta))*mp.log1p(delta)/2
+                         +delta*abs(p.sumlog)+p.p*delta*max(p.logs[-1], 0))
+                if bound < target:
+                    break
+                delta /= 2
+            else:
+                raise ValueError('scale-zero neighborhood overlaps the face threshold')
+            lo = mp.log1p(delta)
+        else:
+            lo = mp.mpf(0)
+
+        aa = 64
+        if held_scale is not None:
+            scale_floor = mp.exp(p.held_u)
+        else:
+            c = (3*p.p+3)//4
+            if (aa+1)*c <= p.n:
+                raise ValueError('no positive lower scale bound in the normal tail')
+            scale_floor = p.pos[-c]*mp.sqrt(mp.mpf((aa+1)*c-p.n)/(aa*p.n))
+        tail = (1+mp.mpf(1)/aa)*mp.fsum((v/scale_floor)**4 for v in p.pos)/4
+        if normal_value >= target:
+            raise ValueError('normal tail overlaps the face threshold')
+        hi = mp.log(max(aa, 2*tail/(target-normal_value)))
+        if not -700 <= lo < hi <= 90:
+            raise ValueError(f'compact log-shape interval {mp.nstr(lo, 8)}, {mp.nstr(hi, 8)} exceeds the numerical range')
+
+        def value(t):
+            likelihood = p.profile(mp.exp(t))
+            if likelihood is None:
+                raise ValueError('conditional scale score has no interior root')
+            return iv.mpf(likelihood)
+
+        def derivative(a, b):
+            pair = p.score_enclosure(mp.exp(a), mp.exp(b))
+            return iv.mpf(pair if pair else [-mp.inf, mp.inf])
+
+        verdict, detail = cover(value, derivative, None, lo, hi, target, budget=budget)
+        witness, where = detail['best']
+        hp = f'target {mp.nstr(target, 20)}. Best witness {mp.nstr(witness, 20)} at log shape {mp.nstr(where, 16)}'
+        if verdict == 'open':
+            hp += '. ' + detail['reason']
+        if verdict == 'holds' and collapse and normal_value >= base-allowance:
+            verdict = 'open'
+            hp += '. Normal-face priority within the comparison margin depends on the missing interior maximizer'
+        return [comparison('face-cover', claim, verdict, hp, rigor='numerical',
+                           note=f'{detail["evaluations"]} evaluations. Likelihood in max-excess units')], None
+    except (ValueError, ZeroDivisionError, OverflowError, mp.libmp.libhyper.NoConvergence) as error:
+        return [comparison('face-cover', claim, 'open', str(error), rigor='numerical')], None
+
 
 # ------------------------------------------------------------ foldnorm, joint (F)
 
@@ -1708,6 +1983,267 @@ def replay_slash_run(r, data, budget):
                                 verdict, info, target, note='profile over the scale (root enclosed by interval sign checks); |P\'\'| <= A + C^2/B per cell; residual bound where no uniform scale bound exists'))
     return out, None
 
+# ------------------------------------------------------------ shifted Gompertz (F)
+
+def sgomp_cover_comparison(name, claim, verdict, info, target):
+    best, location = info['best']
+    detail = f'target {mp.nstr(target, 20)}. '
+    if verdict == 'fails':
+        detail += f'profile witness {show(info["value"], 20)} at rate {mp.nstr(info["point"], 18)}'
+    else:
+        detail += f'largest lower bound {mp.nstr(best, 20)} at rate {mp.nstr(location, 18)}'
+        if verdict == 'open':
+            detail += '. ' + info['reason']
+    return comparison(name, claim, verdict, detail,
+                      note=f'{info["evaluations"]} evaluations. Rate in max(x) units')
+
+
+def replay_sgomp(r, data, budget):
+    from cert_replay_sgomp import Profile
+
+    result = r['result']
+    outcome = result.get('outcome') or {}
+    if r['mask'] or outcome.get('kind') != 'estimate' or not outcome.get('certified'):
+        return [], None
+
+    claim = 'joint rate profile within eight arithmetic margins of the returned likelihood'
+    comps = []
+    phase = 'rate-cover'
+    try:
+        p = Profile([float(x) for x in data])
+        estimates = result['estimates']
+        rate = iv.mpf(number(estimates['b'])) * max(data)
+        eta = iv.mpf(number(estimates['eta']))
+        incumbent = p.likelihood(rate, eta)
+        margin = 4096 * iv.mpf(2)**-52 * (p.n + abs(incumbent))
+        threshold = incumbent + margin
+        target = lo_(threshold)
+
+        low = min(mp.mpf('0.5'), mp.exp(target / p.n - 2))
+        high = max(2 * p.n / lo_(p.gap), 2 * hi_(rate))
+        for _ in range(256):
+            bound = p.n * iv.log(iv.mpf(high) * p.n) - iv.mpf(high) * p.gap
+            if bound.b < target and (p.n / iv.mpf(high) - p.gap).b < 0:
+                break
+            high *= 2
+        else:
+            raise ValueError('could not close large-rate envelope')
+        if (p.n * (iv.log(iv.mpf(low)) + 1)).b >= target:
+            raise ValueError('could not close small-rate envelope')
+
+        verdict, info = cover(p.value, p.derivative, p.upper, low, high, target,
+                              budget=budget)
+        if verdict == 'fails' and lo_(info['value']) <= hi_(threshold):
+            verdict = 'open'
+            info['reason'] = 'witness overlaps likelihood threshold ' + show(threshold)
+        comps.append(sgomp_cover_comparison(phase, claim, verdict, info, target))
+        if verdict == 'fails':
+            return comps, None
+
+        phase = 'rate-enclosure'
+        width = iv.mpf('1e-7')
+        wl = hi_(rate * (1-width))
+        wr = lo_(rate * (1+width))
+        enclosure_claim = 'all global maximizers are within the rate and shape windows'
+        if not low < wl < wr < high:
+            comps.append(comparison('rate-enclosure', enclosure_claim, 'open',
+                                    'compact rate bounds do not contain the returned window'))
+            return comps, None
+
+        # The tail bounds must also exclude competitors at the unpadded value.
+        witness = lo_(incumbent)
+        small_bound = p.n * (iv.log(iv.mpf(low)) + 1)
+        large_bound = p.n * iv.log(iv.mpf(high)*p.n) - iv.mpf(high)*p.gap
+        if max(small_bound.b, large_bound.b) >= witness:
+            comps.append(comparison('rate-enclosure', enclosure_claim, 'open',
+                                    'tail bound overlaps the unpadded likelihood'))
+            return comps, None
+        verdict, info = cover(p.value, p.derivative, p.upper, low, high,
+                              witness, [(wl, wr)], budget=budget)
+        if verdict == 'fails':
+            inside_bound = p.upper(wl, wr)
+            if inside_bound is None or info['value'].a <= inside_bound.b:
+                verdict = 'open'
+                info['reason'] = 'competitor above returned likelihood overlaps the rate-window upper bound'
+        comps.append(sgomp_cover_comparison(phase, enclosure_claim, verdict, info, witness))
+        if verdict != 'holds':
+            return comps, None
+
+        phase = 'shape-enclosure'
+        shape = p.shape_range(*p.root_window(wl, wr))
+        radius = width * max(iv.mpf(1), eta)
+        shape_lo, shape_hi = eta-radius, eta+radius
+        if shape.a > shape_lo.b and shape.b < shape_hi.a:
+            verdict = 'holds'
+        elif shape.b < shape_lo.a or shape.a > shape_hi.b:
+            verdict = 'fails'
+        else:
+            verdict = 'open'
+        comps.append(comparison('shape-enclosure', enclosure_claim, verdict,
+                                f'conditional shape {show(shape)}. Window {show(shape_lo)}, {show(shape_hi)}',
+                                margin='1e-7 max(1, eta)', note='monotone endpoint shape enclosure'))
+        return comps, None
+    except (ValueError, ZeroDivisionError, OverflowError) as error:
+        return comps+[comparison(phase, claim, 'open', str(error))], None
+    finally:
+        Profile.shape.cache_clear()
+
+
+# ------------------------------------------------------------ transformed gamma (E, F)
+
+def replay_trgamma(r, data, budget):
+    from cert_replay_trgamma import Profile
+
+    result = r['result']
+    kind = (result.get('outcome') or {}).get('kind')
+    if r['mask'] not in (0, 4) or kind not in ('estimate', 'limit'):
+        return [], None
+    if kind == 'estimate' and not result['outcome'].get('certified'):
+        return [], 'uncertified estimate has no power-cover claim'
+    if kind == 'limit' and r['mask']:
+        return [], 'held-scale limit has no closed global certificate'
+    logs = [mp.log(mp.mpf(float(v))) for v in data if float(v) > 0]
+    if len(logs) != len(data) or len(set(logs)) < 2:
+        return [], 'degenerate sample or outside support'
+    reflected = r['family'] == 'invtrgamma'
+    if reflected:
+        logs = [-x for x in logs]
+    logscale = mp.log(mp.mpf(r['held']['scale'])) if r['mask'] else None
+    if reflected and logscale is not None:
+        logscale = -logscale
+    claim = 'convex-conjugate cover of the standardized power profile'
+    comps = []
+    try:
+        p = Profile(logs, logscale)
+        basin = None
+        eps = mp.mpf(2)**-52
+        if kind == 'estimate':
+            coeff = result['estimates']
+            shape, power, scale = (mp.mpf(number(coeff[k])) for k in ('shape1', 'shape2', 'scale'))
+            t = power*p.unit
+            estimate_logscale = (-1 if reflected else 1)*mp.log(scale)
+            value = p.returned(t, shape, estimate_logscale)
+            radius = min(mp.mpf('2e-4'), max(mp.mpf('1e-6'), t*t/100)) if p.free_scale else mp.mpf('1e-4')
+            for _ in range(12):
+                basin = t*(1-radius), t*(1+radius)
+                sl, sr = (p.point(b)[1] for b in basin)
+                upper_curvature = p.curvature(*basin)
+                if upper_curvature < 0 or not sl > 0 > sr:
+                    break
+                radius /= 2
+            if not (sl > 0 > sr and upper_curvature < 0):
+                comps.append(comparison('power-basin', 'signed and concave root neighborhood', 'open',
+                                        'scores %s, %s, curvature bound %s' % tuple(mp.nstr(v, 18) for v in (sl, sr, upper_curvature)),
+                                        rigor='numerical'))
+                return comps, None
+            comps.append(comparison('power-basin', 'signed and concave root neighborhood', 'holds',
+                                    'scores %s, %s, curvature bound %s' % tuple(mp.nstr(v, 18) for v in (sl, sr, upper_curvature)),
+                                    rigor='numerical'))
+            target = max(value, p.point(t)[0])
+            if mp.isfinite(p.face):
+                gap = target-p.face
+                upper = p.upper(*basin)-p.face
+                margin = mp.mpf('1e-8')
+                guard = mp.eps**mp.mpf('0.4')*(1+abs(target))
+                verdict = 'holds' if gap > margin+guard else 'fails' if upper < margin-guard else 'open'
+                comps.append(comparison('power-face-gap', 'interior optimum exceeds both available faces by 1e-8 per observation',
+                                        verdict, f'gap from {mp.nstr(gap, 20)} to {mp.nstr(upper, 20)}',
+                                        margin='1e-8', rigor='numerical'))
+                if verdict == 'fails':
+                    return comps, None
+        else:
+            model = result.get('model')
+            if model not in ('lnorm', 'power', 'pareto'):
+                raise ValueError(f'unknown limit model {model!r}')
+            chosen = mp.mpf(0) if model == 'lnorm' else p.constant-mp.mpf('0.5')-mp.log(p.maximum)
+            if chosen < p.face:
+                gap = p.face-chosen
+                verdict = 'fails' if gap > mp.eps**mp.mpf('0.4') else 'open'
+                return [comparison('power-face-gap', 'chosen face maximizes the two face likelihoods',
+                                   verdict, f'chosen {mp.nstr(chosen, 20)}, best {mp.nstr(p.face, 20)}',
+                                   rigor='numerical')], None
+            target = chosen + 64*eps*(1+2*abs(chosen))
+        lo, hi = p.tails(target)
+        if basin and not lo < basin[0] < basin[1] < hi:
+            raise ValueError('root neighborhood extends beyond compact domain')
+        verdict, detail = p.cover(lo, hi, target, budget, basin)
+        if verdict == 'fails' and basin:
+            # A profile witness above the returned point can still be below the
+            # local maximizer. Bound that maximizer by the secant on its basin.
+            verdict2, detail2 = p.cover(lo, hi, p.upper(*basin), budget, basin)
+            if verdict2 == 'fails':
+                detail = detail2
+            else:
+                verdict = 'open'
+                detail += '; witness lies within the local basin value bound'
+        comps.append(comparison('power-cover', claim, verdict,
+                                f'target {mp.nstr(target, 20)} per observation. {detail}',
+                                rigor='numerical', note='mpmath inverse digamma and secant tangents'))
+        return comps, None
+    except (ValueError, ZeroDivisionError, OverflowError) as error:
+        return comps+[comparison('power-cover', claim, 'open', str(error), rigor='numerical')], None
+    finally:
+        Profile.point.cache_clear()
+
+
+# ------------------------------------------------------------ Huber epsilon profile (E, F)
+
+def replay_huber(r, data, budget):
+    from cert_replay_huber import Profile
+
+    result = r['result']
+    outcome = result.get('outcome') or {}
+    kind = outcome.get('kind')
+    if r['mask'] & 4 or kind not in ('estimate', 'limit') or not outcome.get('certified'):
+        return [], None
+    claim = 'epsilon profile bounded by nuisance supporting planes and the log normalizer chord error'
+    held = r['held']
+    mu = mp.mpf(held['mu']) if 'mu' in held else None
+    sigma = mp.mpf(held['sigma']) if 'sigma' in held else None
+    comps = []
+    try:
+        profile = Profile([mp.mpf(float(v)) for v in data], mu, sigma)
+        if kind == 'estimate':
+            coeff = result['estimates']
+            m, s, c = (mp.mpf(number(coeff[k])) for k in ('mu', 'sigma', 'epsilon'))
+            incumbent = profile.likelihood((m-profile.origin)/profile.unit, s/profile.unit, c)
+            other = max(profile.normal, profile.laplace)
+            target = incumbent + mp.mpf('1e-8')*profile.n
+        else:
+            model = result.get('model')
+            if model not in ('norm', 'laplace'):
+                raise ValueError(f'unknown limit model {model!r}')
+            normal = model == 'norm'
+            if not normal and sigma is not None:
+                return [comparison('epsilon-face', 'a Laplace face needs free scale',
+                                   'fails', f'held sigma {sigma}', rigor='exact')], None
+            incumbent = profile.normal if normal else profile.laplace
+            other = profile.laplace if normal else profile.normal
+            target = incumbent-1024*mp.mpf(2)**-52*(1+abs(incumbent)+profile.n)
+        pad = 1024*mp.mpf(2)**-52*(1+abs(incumbent)+profile.n)
+        if kind == 'limit' and model == 'norm' and all(x == profile.normal_mu for x in profile.x):
+            return [comparison('epsilon-cover', 'all Gaussian residuals vanish with scale held',
+                               'holds', 'normal tail starts at epsilon = 0', rigor='exact')], None
+        gap = incumbent-other
+        if mp.isfinite(other):
+            guard = mp.eps**mp.mpf('0.4')*(1+abs(incumbent))
+            face_pad = pad + 128*mp.mpf(2)**-52*(1+abs(other)+profile.n)
+            verdict = 'holds' if gap > face_pad+guard else 'fails' if gap < face_pad-guard else 'open'
+            comps.append(comparison('epsilon-face', 'winner above the competing faces by the arithmetic pad',
+                                    verdict, f'gap {mp.nstr(gap, 20)}, pad {mp.nstr(face_pad, 20)}',
+                                    rigor='numerical'))
+            if verdict == 'fails':
+                return comps, None
+        verdict, detail = profile.cover(incumbent, target, budget, result.get('model') == 'laplace')
+        comps.append(comparison('epsilon-cover', claim, verdict, f'target {mp.nstr(target, 20)}. {detail}',
+                                rigor='numerical', note='mpmath nuisance solve and supporting plane'))
+        return comps, None
+    except (ValueError, ZeroDivisionError, OverflowError) as error:
+        return comps+[comparison('epsilon-cover', claim, 'open', str(error), rigor='numerical')], None
+    finally:
+        Profile.point.cache_clear()
+
+
 # ------------------------------------------------------------ registry
 
 def both(first, second):
@@ -1717,9 +2253,17 @@ def both(first, second):
     return run
 
 REPLAYS = {
-    'pareto2': replay_pareto2, 'invpareto': replay_invpareto, 'cauchy': replay_cauchy_scale,
+    'pareto2': both(replay_pareto2, replay_lomax_limit_transfer),
+    'invpareto': both(replay_invpareto, replay_lomax_limit_transfer),
+    'cauchy': replay_cauchy_scale,
     'foldnorm': replay_foldnorm, 'fatigue': replay_fatigue, 'skellam': replay_skellam,
-    'burr': replay_burr_power, 'dgamma': replay_dgamma, 'ht': replay_ht, 'slash': replay_slash,
+    'trgamma': replay_trgamma, 'invtrgamma': replay_trgamma, 'huber': replay_huber,
+    'sgomp': replay_sgomp,
+    'betapr': replay_betapr_unit,
+    'burr': replay_burr_power,
+    'dgamma': both(replay_dgamma, replay_dgamma_joint),
+    'ht': both(replay_ht, replay_ht_face),
+    'slash': replay_slash,
     'paralogis': replay_paralogis, 'invparalogis': replay_invparalogis,
     'gpd': both(both(replay_gpd, replay_gpd_coefficient), replay_gpd_xi_held),
 }

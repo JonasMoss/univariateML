@@ -1,0 +1,435 @@
+cert-replay: 3967.2 wall s, 50 digits, 0/13054 records cached
+  bbinom  search      holds  100
+  bbinom  support     holds  210
+  bbinom  tail        holds  100
+  bbinom  tie         holds  100
+  beta    root        holds  168
+  binom   coef        holds  62
+  binom   moment      holds  70
+  binom   search      holds  96
+  binom   support     holds  4
+  binom   tail        holds  96
+  binom   tie         holds  96
+  binom   unique      holds  2
+  burr    coefficient holds  20
+  burr    concave     holds  20
+  burr    face        holds  28
+  burr    gain        holds  20
+  burr    global      holds  20
+  burr    limit       holds  28
+  burr    root        holds  20
+  cauchy  bracket     holds  32
+  cauchy  cover       holds  32
+  cauchy  curvature   holds  32
+  cauchy  multiplicity holds  122
+  cauchy  tie         holds  2
+  cauchy  unique      holds  4
+  cmb     search      holds  72
+  cmb     search      open   2
+  cmb     support     holds  112
+  cmb     tail        holds  28
+  cmb     tail        info   46
+  cmb     tie         holds  74
+  cmp     support     holds  114
+  cmp     unique      holds  2
+  dgamma  bracket     holds  54
+  dgamma  cover       holds  26
+  dgamma  cover       open   2
+  dgamma  support     holds  120
+  dlaplace support     holds  128
+  dlaplace unique      holds  84
+  dnorm   root        holds  96
+  dnorm   support     holds  128
+  dweibull root        holds  84
+  dweibull support     holds  120
+  fatigue bracket     holds  126
+  fatigue cover       holds  116
+  fatigue cover       open   10
+  foldnorm bracket     holds  80
+  foldnorm cover       holds  84
+  foldnorm location    holds  48
+  foldnorm quartic     holds  4
+  foldnorm support     holds  54
+  frechet restore     holds  88
+  frechet root        holds  130
+  frechet root        info   44
+  gamma   root        holds  134
+  gamma   root-tol    info   60
+  genbeta root        info   158
+  gompertz moment      holds  104
+  gompertz support     holds  6
+  gpd     bracket     holds  40
+  gpd     coefficient holds  22
+  gpd     cover       holds  102
+  gpd     curvature   holds  40
+  gpd     gain        holds  22
+  gpd     root        holds  40
+  gumbel  root        holds  124
+  hcauchy multiplicity holds  146
+  hcauchy root        holds  140
+  ht      bracket     holds  58
+  ht      cover       holds  62
+  ht      cover       open   2
+  hyper   search      holds  204
+  hyper   tail        holds  90
+  hyper   tie         holds  204
+  invgamma restore     holds  80
+  invgamma restore     info   4
+  invgamma root        holds  48
+  invgamma root        info   84
+  invparalogis bracket     holds  126
+  invparalogis constant    holds  4
+  invparalogis cover       holds  124
+  invparalogis cover       open   2
+  invparalogis scale-root  holds  126
+  invpareto coefficient holds  16
+  invpareto concave     holds  16
+  invpareto face        holds  70
+  invpareto gain        holds  16
+  invpareto global      holds  16
+  invpareto root        holds  60
+  invweibull restore     holds  118
+  invweibull restore     info   4
+  invweibull root        holds  42
+  invweibull root        info   80
+  kumar   root        holds  94
+  kumar   root-b      info   54
+  lgamma  restore     holds  70
+  lgamma  restore     info   4
+  lgamma  root        holds  40
+  lgamma  root        info   74
+  lgser   root        holds  66
+  lgser   support     holds  68
+  lgser+zero=modified moment      holds  46
+  llogis  restore     holds  122
+  llogis  restore     info   4
+  llogis  root        holds  44
+  llogis  root        info   82
+  lnorm   restore     holds  136
+  lnorm   restore     info   4
+  logis   root        holds  138
+  logis   root        open   12
+  logitnorm restore     holds  124
+  logitnorm restore     info   2
+  lomax   concave     holds  22
+  lomax   face        holds  58
+  lomax   gain        holds  22
+  lomax   global      holds  22
+  lomax   root        holds  60
+  naka    restore     holds  76
+  naka    restore     info   4
+  naka    root        holds  46
+  naka    root        info   80
+  nbinom  dispersion  holds  72
+  nbinom  root        holds  60
+  nhyper  search      holds  222
+  nhyper  search      open   6
+  nhyper  tail        holds  108
+  nhyper  tail        open   2
+  nhyper  tie         holds  222
+  norm +truncate=tnorm support     holds  6
+  norm +truncate=tnorm window      holds  128
+  nsbeta  root        holds  152
+  paralogis bracket     holds  114
+  paralogis constant    holds  4
+  paralogis cover       holds  114
+  paralogis scale-root  holds  114
+  pareto2 coefficient holds  44
+  pareto2 concave     holds  44
+  pareto2 face        holds  42
+  pareto2 gain        holds  44
+  pareto2 global      holds  44
+  pareto2 mapping     info   42
+  pareto2 root        holds  88
+  pareto2 support     holds  2
+  pareto3 restore     holds  108
+  pareto3 restore     info   4
+  pareto3 restore     open   2
+  pareto3 root        holds  38
+  pareto3 root        info   76
+  pig     moment      holds  92
+  pig     root        holds  44
+  pig     root-polish info   18
+  pig     support     holds  26
+  pig     unique      holds  2
+  pois+zero=inflated support     holds  6
+  pois+zero=inflated unique      holds  18
+  pois+zero=inflated zero-fraction holds  52
+  pois+zero=modified moment      holds  64
+  pois+zero=truncated moment      holds  68
+  sgomp   face-score  holds  42
+  sgomp   support     holds  106
+  skellam cover       holds  52
+  skellam cover       open   4
+  slash   accuracy    holds  58
+  slash   bracket     holds  88
+  slash   collapse    holds  6
+  slash   cover       holds  88
+  slash   multiplicity holds  104
+  slash   scale-bracket holds  32
+  triang  search      holds  208
+  triang  tie         holds  208
+  weibull root        holds  134
+  yulesimon root        holds  40
+  yulesimon support     holds  56
+  zeta    root        holds  46
+  zeta    support     holds  56
+  zeta +truncate=zipf support     holds  96
+  zeta +truncate=zipf unique      holds  2
+  burr    face        supremum none: 28
+  invpareto face        supremum none: 66
+  lomax   face        supremum none: 54
+  pareto2 face        supremum none: 38
+not replayed (no certificate comparison):
+  bbinom: no certified estimate: 4
+  bbinom: shapes held: size enumeration or evaluation; no certified estimate: 2
+  bbinom: shapes held: size enumeration or evaluation; size held or all held: not an integer search: 34
+  bbinom: size held or all held: not an integer search: 10
+  beta: evaluation only: 44
+  beta: no certified outcome (invalid): 12
+  beta: no certified outcome (nomle): 4
+  beta: no certified outcome (numerical): 2
+  binom: no certified estimate: 4
+  binom: size or prob held: closed form or integer search (no face inequality); size held: closed form: 60
+  burr: no certified outcome (invalid): 12
+  burr: no certified outcome (limit): 98
+  burr: no certified outcome (nomle): 4
+  burr: no certified outcome (numerical): 8
+  burr: no certified outcome (ok): 266
+  burr: no certified outcome (unresolved): 4
+  cauchy: evaluation only: 36
+  cauchy: no certified outcome (invalid): 8
+  cauchy: scale held: location search (no face inequality): 4
+  cmb: no certified estimate: 30
+  cmb: no exact support predicate for this hold subset; size held: not an integer search: 52
+  cmb: size held: not an integer search: 10
+  cmp: no certified outcome (budget): 2
+  cmp: no certified outcome (invalid): 4
+  cmp: no certified outcome (numerical): 10
+  cmp: no exact support predicate for this hold subset: 28
+  dgamma: no certified outcome (conditioning): 4
+  dgamma: no certified outcome (invalid): 4
+  dgamma: no certified outcome (numerical): 2
+  dgamma: no exact support predicate for this hold subset: 28
+  dlaplace: no certified outcome (invalid): 2
+  dlaplace: no exact support predicate for this hold subset: 28
+  dnorm: evaluation only; no exact support predicate for this hold subset: 28
+  dnorm: no certified outcome (invalid): 2
+  dweibull: evaluation only; no exact support predicate for this hold subset: 28
+  dweibull: no certified outcome (invalid): 4
+  dweibull: no certified outcome (numerical): 6
+  fatigue: no certified outcome (invalid): 12
+  fatigue: no certified outcome (nomle): 4
+  fatigue: no certified outcome (numerical): 2
+  fatigue: no certified outcome (ok): 88
+  foldnorm: evaluation only: 48
+  foldnorm: no certified outcome (conditioning): 2
+  foldnorm: no certified outcome (invalid): 10
+  foldnorm: no certified outcome (tolerance): 2
+  frechet: evaluation only: 44
+  frechet: no certified outcome (invalid): 14
+  frechet: no certified outcome (limit): 36
+  frechet: no certified outcome (nomle): 14
+  frechet: no certified outcome (numerical): 24
+  frechet: not a scalar root of this job (held scale with free shape: cover; all free: cover): 66
+  gamma: closed form or evaluation: 96
+  gamma: no certified outcome (invalid): 12
+  gamma: no certified outcome (nomle): 4
+  gamma: no certified outcome (tolerance): 2
+  genbeta: no certified outcome (invalid): 18
+  genbeta: no certified outcome (limit): 54
+  genbeta: no certified outcome (nomle): 10
+  genbeta: no certified outcome (numerical): 104
+  genbeta: not a scalar root (cover or evaluation): 96
+  gev: no certified outcome (invalid): 12
+  gev: no certified outcome (nomle): 12
+  gev: no certified outcome (numerical): 18
+  gev: not a held-scale scalar root (subset handled elsewhere): 284
+  gev: open: held-scale root with xi 0.308436 outside (-1, 0): golden-section search (gev/mle.hpp:292-300), no bracket claim: 36
+  gompertz: b held: analytic: 42
+  gompertz: evaluation only: 42
+  gompertz: no certified outcome (invalid): 10
+  gompertz: no certified outcome (numerical): 20
+  gpd: no certified outcome (invalid): 10
+  gpd: no certified outcome (nomle): 2
+  gpd: no certified outcome (numerical): 2
+  gpd: no certified outcome (ok): 40
+  gpd: sigma held at or above the maximum excess: uniform member (exact predicate): 20
+  gumbel: closed form or evaluation (sigma held): 82
+  gumbel: no certified outcome (invalid): 8
+  gumbel: no certified outcome (nomle): 6
+  gumbel: no certified outcome (numerical): 6
+  hcauchy: no root comparison: 10
+  hcauchy: no root comparison; evaluation only: 50
+  hcauchy: no root comparison; sigma held: endpoint is the minimum: 50
+  ht: no certified outcome (invalid): 10
+  ht: no certified outcome (limit): 168
+  ht: no certified outcome (nomle): 2
+  ht: no certified outcome (numerical): 12
+  ht: no certified outcome (ok): 200
+  hyper: a zero count: unidentified: 2
+  hyper: all held: evaluation only: 26
+  hyper: no certified estimate: 46
+  invgamma: closed form or evaluation: 96
+  invgamma: no certified outcome (invalid): 12
+  invgamma: no certified outcome (nomle): 4
+  invgamma: no certified outcome (numerical): 4
+  invparalogis: evaluation only: 44
+  invparalogis: no certified outcome (invalid): 12
+  invparalogis: no certified outcome (numerical): 2
+  invpareto: closed form (scale held): 44
+  invpareto: evaluation only: 44
+  invpareto: no certified outcome (invalid): 14
+  invweibull: evaluation only: 40
+  invweibull: no certified outcome (invalid): 12
+  invweibull: no certified outcome (nomle): 4
+  invweibull: no certified outcome (numerical): 4
+  kumar: closed form or evaluation (a held): 78
+  kumar: no certified outcome (invalid): 12
+  kumar: no certified outcome (nomle): 4
+  kumar: no certified outcome (numerical): 26
+  lgamma: closed form or evaluation: 80
+  lgamma: no certified outcome (invalid): 18
+  lgamma: no certified outcome (nomle): 4
+  lgser+zero=modified: all zero: 2
+  lgser+zero=modified: mean one: closed form: 50
+  lgser+zero=modified: no certified outcome (invalid): 4
+  lgser+zero=modified: prob held: 56
+  lgser: no root comparison: 6
+  lgser: no root comparison; no exact support predicate for this hold subset: 28
+  llogis: evaluation only: 44
+  llogis: no certified outcome (invalid): 12
+  llogis: no certified outcome (nomle): 4
+  llogis: no certified outcome (numerical): 2
+  lnorm: mean held: no restoration check: 100
+  lnorm: no certified outcome (invalid): 12
+  lnorm: no certified outcome (nomle): 4
+  logis: evaluation only: 36
+  logis: no certified outcome (invalid): 8
+  logis: no certified outcome (nomle): 6
+  logis: no certified outcome (numerical): 2
+  logitnorm: mean held: no restoration check: 88
+  logitnorm: no certified outcome (invalid): 12
+  logitnorm: no certified outcome (nomle): 4
+  lomax: closed form (lambda held): 38
+  lomax: evaluation only: 38
+  lomax: no certified outcome (invalid): 12
+  lomax: no certified outcome (numerical): 2
+  naka: closed form or evaluation: 94
+  naka: no certified outcome (invalid): 12
+  naka: no certified outcome (nomle): 4
+  naka: no certified outcome (numerical): 12
+  nbinom: closed form (size held): 32
+  nbinom: degenerate (all zero): no comparison: 2
+  nbinom: empty: 2
+  nbinom: evaluation only: 32
+  nbinom: no certified outcome (invalid): 2
+  nhyper: all held: evaluation only: 30
+  nhyper: no certified estimate: 36
+  norm +truncate=tnorm: mean and sd held: evaluation: 128
+  norm +truncate=tnorm: mean held, one-sided window: no face: 94
+  norm +truncate=tnorm: no certified outcome (invalid): 8
+  norm +truncate=tnorm: no certified outcome (numerical): 14
+  norm +truncate=tnorm: no truncation: normal closed form: 76
+  norm +truncate=tnorm: sd held: location solve (no face): 116
+  nsbeta: evaluation only: 40
+  nsbeta: no certified outcome (invalid): 58
+  nsbeta: no certified outcome (nomle): 4
+  nsbeta: no certified outcome (numerical): 2
+  paralogis: evaluation only: 38
+  paralogis: no certified outcome (invalid): 12
+  paralogis: no certified outcome (numerical): 2
+  pareto2: closed form (scale held): 44
+  pareto2: min free or all held: no certificate comparison: 44
+  pareto2: no certified outcome (invalid): 10
+  pareto2: no certified outcome (numerical): 2
+  pareto3: evaluation only: 38
+  pareto3: no certified outcome (invalid): 12
+  pareto3: no certified outcome (nomle): 4
+  pareto3: no certified outcome (numerical): 2
+  pig: evaluation only; evaluation only: 28
+  pig: no certified outcome (invalid): 4
+  pig: no certified outcome (numerical): 6
+  pois+zero=inflated: lambda held: closed form or evaluation: 56
+  pois+zero=inflated: no certified outcome (invalid): 4
+  pois+zero=inflated: pi held: held-rate certificate (not mechanism D): 22
+  pois+zero=modified: all zero: 14
+  pois+zero=modified: mean one: closed form: 20
+  pois+zero=modified: no root comparison: 60
+  pois+zero=truncated: no root comparison: 34
+  sgomp: evaluation only: 44
+  sgomp: no certified outcome (invalid): 10
+  sgomp: no certified outcome (numerical): 28
+  sgomp: no certified outcome (unresolved): 2
+  skellam: constant sample (closed form): 12
+  skellam: no certified outcome (budget): 4
+  skellam: no certified outcome (invalid): 2
+  skellam: no certified outcome (ok): 84
+  slash: evaluation only: 32
+  slash: no certified outcome (budget): 2
+  slash: no certified outcome (invalid): 8
+  slash: no certified outcome (numerical): 8
+  slash: sigma held: location search (no face inequality): 2
+  triang: mode held: one mode, no enumeration: 168
+  triang: no certified estimate: 16
+  weibull: closed form or evaluation (shape held): 94
+  weibull: no certified outcome (invalid): 12
+  weibull: no certified outcome (nomle): 4
+  weibull: no certified outcome (numerical): 4
+  yulesimon: no root comparison: 6
+  yulesimon: no root comparison; no exact support predicate for this hold subset: 16
+  zeta +truncate=zipf: N free (plain zeta fit) or s held: no window root; no exact support predicate for this hold subset: 56
+  zeta +truncate=zipf: no certified outcome (invalid): 6
+  zeta: no root comparison: 6
+  zeta: no root comparison; no exact support predicate for this hold subset: 16
+open (not judged):
+  OPEN  cert-replay:search|native|cmb|archive|000838: size 1 maximizes the profile over the sizes 1..41; hp profile at 1 = -2.5020121176909393977; best other size none; no finite maximum at sizes [2, 3, 4, 5, 6, 7]; double None; margin None; profile maxima by damped Newton on the concave exponential-family log likelihood (40 digits); sizes with no finite maximum are escapes to a limit, listed
+  OPEN  cert-replay:search|double|cmb|archive|000838: size 1 maximizes the profile over the sizes 1..41; hp profile at 1 = -2.5020121176909393977; best other size none; no finite maximum at sizes [2, 3, 4, 5, 6, 7]; double None; margin None; profile maxima by damped Newton on the concave exponential-family log likelihood (40 digits); sizes with no finite maximum are escapes to a limit, listed
+  OPEN  cert-replay:cover|native|dgamma|archive|001025: evaluation raised; hp mpmath incomplete gamma: ValueError: cell probability below the absolute precision of the difference of lower tails; double None; margin None; the 50-digit evaluation failed at these coefficients
+  OPEN  cert-replay:cover|double|dgamma|archive|001025: evaluation raised; hp mpmath incomplete gamma: ValueError: cell probability below the absolute precision of the difference of lower tails; double None; margin None; the 50-digit evaluation failed at these coefficients
+  OPEN  cert-replay:cover|native|fatigue|archive|001458: l(b) < l(b_hat) for every b in [0.150673, 5.43095] outside the log window 1e-9 (score points inward outside); hp f(5.43094493075) = [3.11257048898755, 3.11257048898755] > target 3.11257048898755; double None; margin None; 120 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094493075, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5); uncertified outcome (unique = False): listed, not judged
+  OPEN  cert-replay:cover|native|fatigue|archive|001459: l(b) < l(b_hat) for every b in [0.150673, 5.43094] outside the log window 1e-9 (score points inward outside); hp f(5.43094491989) = [3.11257048398805, 3.11257048398805] > target 3.11257048398805; double None; margin None; 97 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094491989, l - l(b_hat) = 1.68e-26 (total log-likelihood units; n = 5); uncertified outcome (unique = False): listed, not judged
+  OPEN  cert-replay:cover|native|fatigue|archive|001461: l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370453225) = [3.36322939284092, 3.36322939284092] > target 3.36322939284092; double None; margin None; 120 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370453225, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5); uncertified outcome (unique = False): listed, not judged
+  OPEN  cert-replay:cover|native|fatigue|archive|001462: l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370452025) = [3.36322938784142, 3.36322938784142] > target 3.36322938784142; double None; margin None; 97 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370452025, l - l(b_hat) = 1.681e-26 (total log-likelihood units; n = 5); uncertified outcome (unique = False): listed, not judged
+  OPEN  cert-replay:cover|native|fatigue|archive|009817: l(b) < l(b_hat) for every b in [0.166564, 6.00371] outside the log window 1e-9 (score points inward outside); hp f(0.166563826822) = [8.07175053081683, 8.07175053081683] > target 8.07175053081683; double None; margin None; 145 evaluations; exclusion window half width 6.004e-9; numerical local maximum of the competitor: b = 0.166563826822, l - l(b_hat) = 4.927e-26 (total log-likelihood units; n = 12); uncertified outcome (unique = False): listed, not judged
+  OPEN  cert-replay:cover|double|fatigue|archive|001458: l(b) < l(b_hat) for every b in [0.150673, 5.43095] outside the log window 1e-9 (score points inward outside); hp f(5.43094493075) = [3.11257048898755, 3.11257048898755] > target 3.11257048898755; double None; margin None; 120 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094493075, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5); uncertified outcome (unique = False): listed, not judged
+  OPEN  cert-replay:cover|double|fatigue|archive|001459: l(b) < l(b_hat) for every b in [0.150673, 5.43094] outside the log window 1e-9 (score points inward outside); hp f(5.43094491989) = [3.11257048398805, 3.11257048398805] > target 3.11257048398805; double None; margin None; 97 evaluations; exclusion window half width 1.507e-10; numerical local maximum of the competitor: b = 5.43094491989, l - l(b_hat) = 1.68e-26 (total log-likelihood units; n = 5); uncertified outcome (unique = False): listed, not judged
+  OPEN  cert-replay:cover|double|fatigue|archive|001461: l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370453225) = [3.36322939284092, 3.36322939284092] > target 3.36322939284092; double None; margin None; 120 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370453225, l - l(b_hat) = 1.518e-24 (total log-likelihood units; n = 5); uncertified outcome (unique = False): listed, not judged
+  OPEN  cert-replay:cover|double|fatigue|archive|001462: l(b) < l(b_hat) for every b in [0.166564, 6.0037] outside the log window 1e-9 (score points inward outside); hp f(6.00370452025) = [3.36322938784142, 3.36322938784142] > target 3.36322938784142; double None; margin None; 97 evaluations; exclusion window half width 1.666e-10; numerical local maximum of the competitor: b = 6.00370452025, l - l(b_hat) = 1.681e-26 (total log-likelihood units; n = 5); uncertified outcome (unique = False): listed, not judged
+  OPEN  cert-replay:cover|double|fatigue|archive|009817: l(b) < l(b_hat) for every b in [0.166564, 6.00371] outside the log window 1e-9 (score points inward outside); hp f(0.166563826822) = [8.07175053081683, 8.07175053081683] > target 8.07175053081683; double None; margin None; 145 evaluations; exclusion window half width 6.004e-9; numerical local maximum of the competitor: b = 0.166563826822, l - l(b_hat) = 4.927e-26 (total log-likelihood units; n = 12); uncertified outcome (unique = False): listed, not judged
+  OPEN  cert-replay:cover|native|ht|class|wide: global shape maximum; hp large-shape cutoff exp(142.22) beyond the evaluated range; double None; margin None
+  OPEN  cert-replay:cover|double|ht|class|wide: global shape maximum; hp large-shape cutoff exp(142.22) beyond the evaluated range; double None; margin None
+  OPEN  cert-replay:cover|native|invparalogis|class|near-constant: L(a, .) < max(L(returned), P(a_hat)) for every a in [4.52779e+15, 3.04094e+17] outside the window of relative half width 1e-6 (profile over the intercept; cutoffs of the dossier tails); hp target 108.147030537476; sup outside the window below it; largest value seen 108.147030537474 at 37.7280961936; shape range [4.52779e+15, 3.04094e+17]; open: budget of 2000 evaluations; double None; margin None; 2001 evaluations; variable log a; the fit is flagged uncertified: no certificate claim, this is an independent check
+  OPEN  cert-replay:cover|double|invparalogis|class|near-constant: L(a, .) < max(L(returned), P(a_hat)) for every a in [4.52779e+15, 3.04094e+17] outside the window of relative half width 1e-6 (profile over the intercept; cutoffs of the dossier tails); hp target 108.147030537476; sup outside the window below it; largest value seen 108.147030537474 at 37.7280961936; shape range [4.52779e+15, 3.04094e+17]; open: budget of 2000 evaluations; double None; margin None; 2001 evaluations; variable log a; the fit is flagged uncertified: no certificate claim, this is an independent check
+  OPEN  cert-replay:root|native|logis|archive|004685: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|native|logis|archive|004686: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|native|logis|class|huge: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|native|logis|class|subnormal: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|native|logis|class|subnormal-signed: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|native|logis|class|tiny: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|archive|004685: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|archive|004686: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|class|huge: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|class|subnormal: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|class|subnormal-signed: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:root|double|logis|class|tiny: evaluation raised; hp evaluation error: ZeroDivisionError: matrix is numerically singular; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:search|native|nhyper|archive|005175: returned (1000011, 20, 20) maximizes the likelihood over the 20 line(s) r = [1, 2, 3, 4, 5, 6]; hp 51955190 grid points exceed the cap 300000; double None; margin None
+  OPEN  cert-replay:tail|native|nhyper|archive|005217: B_r - sum c_N(x_i) < l* beyond a cutoff; hp l* [-63.5846103459, -63.5846103459], largest face [-71.0641198627, -71.0641198627]; double None; margin None
+  OPEN  cert-replay:search|native|nhyper|archive|005217: every population below the cutoff; hp no cutoff; double None; margin None
+  OPEN  cert-replay:search|native|nhyper|archive|005230: returned (6666697, 20, 3) maximizes the likelihood over the 1 line(s) r = [3]; hp 5666713 grid points exceed the cap 300000; double None; margin None
+  OPEN  cert-replay:search|double|nhyper|archive|005175: returned (1000011, 20, 20) maximizes the likelihood over the 20 line(s) r = [1, 2, 3, 4, 5, 6]; hp 51955190 grid points exceed the cap 300000; double None; margin None
+  OPEN  cert-replay:tail|double|nhyper|archive|005217: B_r - sum c_N(x_i) < l* beyond a cutoff; hp l* [-63.5846103459, -63.5846103459], largest face [-71.0641198627, -71.0641198627]; double None; margin None
+  OPEN  cert-replay:search|double|nhyper|archive|005217: every population below the cutoff; hp no cutoff; double None; margin None
+  OPEN  cert-replay:search|double|nhyper|archive|005230: returned (6666697, 20, 3) maximizes the likelihood over the 1 line(s) r = [3]; hp 5666713 grid points exceed the cap 300000; double None; margin None
+  OPEN  cert-replay:restore|native|pareto3|archive|005612: evaluation raised; hp evaluation error: OverflowError: too many digits in integer; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:restore|double|pareto3|archive|005612: evaluation raised; hp evaluation error: OverflowError: too many digits in integer; double None; margin None; the high-precision evaluation failed at the returned coefficients (typically unrepresentable or degenerate coefficients)
+  OPEN  cert-replay:cover|native|skellam|archive|006309: global profile maximum; hp orders above 5000 or rates above 1e5: mpmath Bessel series not run; double None; margin None
+  OPEN  cert-replay:cover|native|skellam|class|large: global profile maximum; hp orders above 5000 or rates above 1e5: mpmath Bessel series not run; double None; margin None
+  OPEN  cert-replay:cover|double|skellam|archive|006309: global profile maximum; hp orders above 5000 or rates above 1e5: mpmath Bessel series not run; double None; margin None
+  OPEN  cert-replay:cover|double|skellam|class|large: global profile maximum; hp orders above 5000 or rates above 1e5: mpmath Bessel series not run; double None; margin None
+7152 cases judged
+cert-replay: failures by check: none
+cert-replay: 0 listed as known, 0 new, 0 listed but passing
+real 3967.70
+user 14717.94
+sys 9.19

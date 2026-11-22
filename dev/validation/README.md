@@ -731,6 +731,13 @@ recorded input hash.
   mpmath intervals, or high-precision numerical evaluation, as marked in
   the replay records. A comparison on the other side fails. An enclosure
   that contains the threshold gives an open comparison.
+  The scalar cover replays include Lomax transfers, shifted Gompertz,
+  discretized gamma, transformed gamma and its reciprocal, and Huber's
+  epsilon profile. Use `--family` and `--case` to isolate a comparison.
+  The output identifies the numerical special-function and nuisance-solve
+  comparisons separately from interval evidence. When a snapshot lacks the
+  held subset or the certificate evidence needed to reconstruct a claim,
+  that scope is documented in the evaluation report.
   `build/strict/cert-replay.sqlite3` stores results keyed by the complete
   snapshot record, precision mode, replay and input-reconstruction sources,
   archive contents, and replay precision and budget. The script checks the
