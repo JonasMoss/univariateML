@@ -2,8 +2,8 @@
 """Strict layer: the same phenomenon ends in the same outcome in every family.
 
 Reads the shared outcome (kind and reason) that a snapshot records for the
-degenerate and invalid classes of fit-snapshot.py (default holds, the golden
-fit's), tabulates it per family, and checks rules that hold for every family:
+degenerate and invalid classes of fit-snapshot.py, tabulates the golden-hold
+classes per family, and checks their rules and the explicit flat-maximum cases:
 
   empty           an empty sample ends in failure(invalid-input)
   non-finite      a sample with a NaN or infinite observation ends in
@@ -26,6 +26,8 @@ fit's), tabulates it per family, and checks rules that hold for every family:
                   density for every admissible coefficient vector): the
                   declared endpoint_log_density, or where none is declared the
                   SymPy limit of the dossier's log_density
+  flat-maximum    hold-aware samples in flat_maxima.py check the exact maximizer
+                  set, uniqueness, and the non-unique estimate payload
   collapse        constant valid data in a continuous family whose location
                   and scale are both free end in nonexistence(unbounded): at
                   location m - scale * mode the density grows like 1/scale
@@ -91,6 +93,7 @@ CHECK = 'phenomenon'
 spec = importlib.util.spec_from_file_location('fit_density', HERE/'fit-density.py')
 fd = importlib.util.module_from_spec(spec); spec.loader.exec_module(fd)
 fs = fd.fs
+FLAT_CASES = fs.FLAT_CASES
 
 def code(o):
     if o is None: return '?'
@@ -201,13 +204,73 @@ class Equivariance:
             self.done[ident] = None if r['ok'] else '; '.join(r['problems'])
         return self.done[ident]
 
+def flat_maximum(record, expected, names, ident):
+    """Membership in the proved set establishes equality of witness likelihoods."""
+    if record['held'] != expected.held or tuple(record['data']) != expected.data:
+        return 'snapshot inputs disagree with the maximizer table'
+    result = record['result']
+    outcome = result.get('outcome')
+    if not outcome or outcome['kind'] != 'estimate' or result['kind'] != 'ok':
+        return 'expected an estimate, got '+code(outcome)
+    problems = []
+    if outcome.get('unique') is not expected.unique or result.get('unique') is not expected.unique:
+        problems.append('expected unique = '+str(expected.unique))
+    if expected.certified and (outcome.get('certified') is not True or result.get('certified') is not True):
+        problems.append('expected a certified estimate')
+    if not math.isclose(number(result['logLik']), expected.loglik, rel_tol=1e-9, abs_tol=1e-10):
+        problems.append('expected log likelihood %.16g, got %s' % (expected.loglik, result['logLik']))
+
+    def coefficients(values):
+        if ident == 'zmlogarithmic' and 'theta' in values:
+            values = dict(values)
+            values['prob'] = values.pop('theta')
+        if values.keys() != names:
+            return None
+        decoded = {k: number(v) for k, v in values.items()}
+        if not all(math.isfinite(v) for v in decoded.values()):
+            return None
+        full = expected.held | decoded
+        if any(full[k] != v for k, v in expected.held.items()) or not expected.member(**decoded):
+            return None
+        if expected.witness_key is not None:
+            return expected.witness_key(**decoded)
+        return tuple(sorted(decoded.items()))
+
+    if coefficients(result['estimates']) is None:
+        problems.append('estimate lies outside the proved maximizer set')
+    if not expected.unique:
+        witnesses = {coefficients(c['estimates']) for c in result.get('candidates', []) if c.get('model') in ('', ident)}
+        if None in witnesses:
+            problems.append('candidate lies outside the proved maximizer set')
+        if len(witnesses - {None}) < 2:
+            problems.append('expected at least two distinct admissible maximizer witnesses')
+        if not result.get('outcome_message', '').strip():
+            problems.append('missing outcome diagnostic')
+    return ', '.join(problems)
+
+
 def judge(rows, mode, table, probe, index):
     failures = {}; outcomes = collections.defaultdict(dict); judged = set()
     routes = fd.route_ids()
     equivariant = Equivariance(probe, index, table)
     by_family = collections.defaultdict(dict)
     for (family, source, case), r in rows.items():
-        if source == 'class' and case in CLASSES: by_family[family][case] = r
+        if source != 'class':
+            continue
+        if case in CLASSES:
+            by_family[family][case] = r
+        ident = routes.get(family, family)
+        expected = FLAT_CASES.get(ident, {}).get(case)
+        if expected is None:
+            continue
+        judged.add((mode, family, source, case))
+        names = set(table[ident][2])
+        # Fixed window bounds are passed separately by the modifier seam.
+        if ident in ('tbinom', 'tpois', 'zipf'):
+            names -= {'a', 'b', 'N'}
+        problem = flat_maximum(r, expected, names, ident)
+        if problem:
+            failures['|'.join((CHECK+':flat-maximum', mode, family, source, case))] = problem
     for family, cases in sorted(by_family.items()):
         ident = routes.get(family, family)
         fs.ROUTE_MODE = family in routes

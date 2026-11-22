@@ -1,0 +1,20 @@
+Machine: workstation, GCC 15.2.0. Four slots for the shared suite.
+Simbox test-full returned 75.
+Selected 85 families: bbinom, beta, betapr, bhatt, binom, bnbinom, burr, cauchy, cmb, cmp, dgamma, dlaplace, dnorm, dunif, dweibull, emg, exp, expweibull, fatigue, foldnorm, fpareto, frechet, gamma, gb2, ged, genbeta, gengamma, geom, gev, gompertz, gpd, gumbel, hcauchy, hnorm, ht, huber, hyper, invburr, invexp, invgamma, invgauss, invparalogis, invpareto, invtrgamma, invweibull, kumar, laplace, lgamma, lgser, llogis, lnorm, logis, logitnorm, lomax, lst, naka, nbinom, nhyper, norm, nsbeta, paralogis, pareto, pareto2, pareto3, pareto4, pig, pois, power, rayleigh, sged, sgomp, skellam, slash, sn, snorm, sstd, st, std, tlambda, trgamma, triang, unif, weibull, yulesimon, zeta
+Shared effects: running ordinary recipes without family filters.
++ just cpp-test
+100% tests passed, 0 tests failed out of 134
+Total Test time (real) = 251.38 sec
++ just cpp-test-no-long-double
+100% tests passed, 0 tests failed out of 179
+Total Test time (real) = 287.33 sec
++ just test
+Ran 36 tests in 20.166s
+• no reference values (1): 'test-modifier-kernel-zipf.R:115:3'
+[ FAIL 0 | WARN 0 | SKIP 1 | PASS 66181 ]
++ just js-build
++ just js-test
+# tests 587
+# pass 587
+# fail 0
+Results: [{"command": ["just", "cpp-test"], "exit": 0, "seconds": 671.69}, {"command": ["just", "cpp-test-no-long-double"], "exit": 0, "seconds": 697.46}, {"command": ["just", "test"], "exit": 0, "seconds": 770.11}, {"command": ["just", "js-build"], "exit": 0, "seconds": 98.79}, {"command": ["just", "js-test"], "exit": 0, "seconds": 178.85}]

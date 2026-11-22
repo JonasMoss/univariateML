@@ -1,0 +1,378 @@
+current-native existing: 68 new: 112 changed: 1
+  existing result difference triang|class|two candidates,warnings
+routes-native existing: 64 new: 53 changed: 0
+native all new keys
+  bbinom|class|constant-flat-adjacent-sizes
+  bbinom|class|zeros-flat-alpha
+  bbinom|class|zeros-flat-beta
+  bbinom|class|zeros-flat-free
+  bbinom|class|zeros-flat-shapes
+  bbinom|class|zeros-flat-size-alpha
+  bbinom|class|zeros-flat-size-beta
+  bbinom|class|zeros-flat-size-zero
+  binom|class|constant-flat-adjacent-sizes
+  binom|class|constant-flat-free
+  binom|class|zeros-flat-free
+  binom|class|zeros-flat-prob
+  binom|class|zeros-flat-prob-zero
+  binom|class|zeros-flat-size
+  binom|class|zeros-flat-size-zero
+  binom +truncate=tbinom|class|constant-flat-singleton-window
+  binom +truncate=tbinom|class|constant-flat-singleton-window-free-size
+  binom +truncate=tbinom|class|zeros-flat-singleton-window
+  binom +truncate=tbinom|class|zeros-flat-singleton-window-free-size
+  binom+zero=inflated|class|zeros-flat-free
+  binom+zero=inflated|class|zeros-flat-pi
+  binom+zero=inflated|class|zeros-flat-pi-one
+  binom+zero=inflated|class|zeros-flat-prob
+  binom+zero=inflated|class|zeros-flat-prob-zero
+  binom+zero=inflated|class|zeros-flat-size
+  binom+zero=inflated|class|zeros-flat-size-prob
+  binom+zero=inflated|class|zeros-flat-size-zero
+  binom+zero=modified|class|constant-flat-one
+  binom+zero=modified|class|constant-flat-prob-half
+  binom+zero=modified|class|constant-flat-prob-zero
+  binom+zero=modified|class|constant-flat-size-one
+  binom+zero=modified|class|zeros-flat-free
+  binom+zero=modified|class|zeros-flat-p0-interior
+  binom+zero=modified|class|zeros-flat-p0-one
+  binom+zero=truncated|class|constant-flat-one
+  binom+zero=truncated|class|constant-flat-prob-half
+  binom+zero=truncated|class|constant-flat-prob-zero
+  binom+zero=truncated|class|constant-flat-size-one
+  cmb|class|constant-flat-adjacent-sizes
+  cmb|class|constant-flat-bernoulli
+  cmb|class|constant-flat-free
+  cmb|class|constant-flat-nu
+  cmb|class|constant-flat-prob-one
+  cmb|class|constant-flat-size
+  cmb|class|zeros-flat-bernoulli
+  cmb|class|zeros-flat-free
+  cmb|class|zeros-flat-nu
+  cmb|class|zeros-flat-prob
+  cmb|class|zeros-flat-prob-nu
+  cmb|class|zeros-flat-prob-zero
+  cmb|class|zeros-flat-size
+  cmb|class|zeros-flat-size-nu
+  cmb|class|zeros-flat-size-zero
+  cmb|class|zeros-flat-size-zero-nu
+  cmb|class|zeros-flat-size-zero-prob
+  cmp|class|zeros-flat-free
+  cmp|class|zeros-flat-lambda-zero
+  cmp|class|zeros-flat-nu
+  dweibull|class|zeros-flat-q
+  genbeta|class|constant-flat-power-product
+  geom+zero=modified|class|zeros-flat-free
+  geom+zero=modified|class|zeros-flat-p0-interior
+  geom+zero=modified|class|zeros-flat-p0-one
+  gev|class|zeros-flat-location-scale
+  gompertz|class|zeros-flat-a
+  gpd|class|zeros-flat-scale
+  gpd|class|zeros-flat-threshold-scale
+  gpd|class|zeros-flat-uniform-translation
+  hyper|class|constant-flat-N
+  hyper|class|constant-flat-N-four
+  hyper|class|constant-flat-N-k
+  hyper|class|constant-flat-N-m
+  hyper|class|constant-flat-adjacent-compositions
+  hyper|class|constant-flat-adjacent-draws
+  hyper|class|constant-flat-adjacent-populations
+  hyper|class|constant-flat-free
+  hyper|class|constant-flat-k-five
+  hyper|class|constant-flat-k-four
+  hyper|class|constant-flat-m-five
+  hyper|class|constant-flat-m-four
+  hyper|class|constant-flat-m-k
+  hyper|class|zeros-flat-N
+  hyper|class|zeros-flat-N-k
+  hyper|class|zeros-flat-N-k-zero
+  hyper|class|zeros-flat-N-m
+  hyper|class|zeros-flat-N-m-zero
+  hyper|class|zeros-flat-N-zero
+  hyper|class|zeros-flat-free
+  hyper|class|zeros-flat-k
+  hyper|class|zeros-flat-k-max
+  hyper|class|zeros-flat-k-zero
+  hyper|class|zeros-flat-m
+  hyper|class|zeros-flat-m-k-zero
+  hyper|class|zeros-flat-m-max
+  hyper|class|zeros-flat-m-zero
+  hyper|class|zeros-flat-m-zero-k
+  lgser+zero=modified|class|zeros-flat-free
+  lgser+zero=modified|class|zeros-flat-p0-interior
+  lgser+zero=modified|class|zeros-flat-p0-one
+  nbinom|class|zeros-flat-free
+  nbinom|class|zeros-flat-prob
+  nbinom|class|zeros-flat-prob-one
+  nbinom|class|zeros-flat-size
+  nbinom|class|zeros-flat-size-zero
+  nbinom+zero=inflated|class|zeros-flat-free
+  nbinom+zero=inflated|class|zeros-flat-pi
+  nbinom+zero=inflated|class|zeros-flat-pi-one
+  nbinom+zero=inflated|class|zeros-flat-prob
+  nbinom+zero=inflated|class|zeros-flat-prob-one
+  nbinom+zero=inflated|class|zeros-flat-size
+  nbinom+zero=inflated|class|zeros-flat-size-prob
+  nbinom+zero=inflated|class|zeros-flat-size-zero
+  nbinom+zero=modified|class|constant-flat-one
+  nbinom+zero=modified|class|constant-flat-prob-one
+  nbinom+zero=modified|class|zeros-flat-free
+  nbinom+zero=modified|class|zeros-flat-p0-interior
+  nbinom+zero=modified|class|zeros-flat-p0-one
+  nbinom+zero=truncated|class|constant-flat-one
+  nbinom+zero=truncated|class|constant-flat-prob-one
+  nhyper|class|constant-flat-N
+  nhyper|class|constant-flat-N-r
+  nhyper|class|constant-flat-adjacent-compositions
+  nhyper|class|constant-flat-adjacent-populations
+  nhyper|class|constant-flat-adjacent-stops
+  nhyper|class|constant-flat-free
+  nhyper|class|constant-flat-m
+  nhyper|class|constant-flat-m-N
+  nhyper|class|constant-flat-m-N-r
+  nhyper|class|constant-flat-m-r
+  nhyper|class|constant-flat-r
+  nhyper|class|zeros-flat-N
+  nhyper|class|zeros-flat-N-r
+  nhyper|class|zeros-flat-N-zero
+  nhyper|class|zeros-flat-N-zero-r
+  nhyper|class|zeros-flat-free
+  nhyper|class|zeros-flat-free-r
+  nhyper|class|zeros-flat-m
+  nhyper|class|zeros-flat-m-N
+  nhyper|class|zeros-flat-m-N-r
+  nhyper|class|zeros-flat-m-max
+  nhyper|class|zeros-flat-m-max-r
+  nhyper|class|zeros-flat-m-r
+  pig|class|zeros-flat-free
+  pig|class|zeros-flat-mean
+  pig|class|zeros-flat-shape-zero
+  pois +truncate=tpois|class|constant-flat-singleton-window
+  pois +truncate=tpois|class|zeros-flat-singleton-window
+  pois+zero=inflated|class|zeros-flat-free
+  pois+zero=inflated|class|zeros-flat-lambda
+  pois+zero=inflated|class|zeros-flat-pi-one
+  pois+zero=modified|class|zeros-flat-free
+  pois+zero=modified|class|zeros-flat-p0-interior
+  pois+zero=modified|class|zeros-flat-p0-one
+  sged|class|zeros-flat-reciprocal-skews
+  skellam|class|constant-flat-free
+  skellam|class|zeros-flat-free
+  sn|class|zeros-flat-location-scale
+  st|class|zeros-flat-location-scale-df
+  tlambda|class|zeros-flat-scale
+  tlambda|class|zeros-flat-support-contacts
+  tlambda|class|zeros-flat-uniform-1
+  tlambda|class|zeros-flat-uniform-2
+  triang|class|pair-flat-free
+  triang|class|pair-flat-held-endpoints
+  zeta +truncate=zipf|class|constant-flat-singleton-window
+current-double existing: 68 new: 112 changed: 1
+  existing result difference triang|class|two candidates,warnings
+routes-double existing: 64 new: 53 changed: 0
+double all new keys
+  bbinom|class|constant-flat-adjacent-sizes
+  bbinom|class|zeros-flat-alpha
+  bbinom|class|zeros-flat-beta
+  bbinom|class|zeros-flat-free
+  bbinom|class|zeros-flat-shapes
+  bbinom|class|zeros-flat-size-alpha
+  bbinom|class|zeros-flat-size-beta
+  bbinom|class|zeros-flat-size-zero
+  binom|class|constant-flat-adjacent-sizes
+  binom|class|constant-flat-free
+  binom|class|zeros-flat-free
+  binom|class|zeros-flat-prob
+  binom|class|zeros-flat-prob-zero
+  binom|class|zeros-flat-size
+  binom|class|zeros-flat-size-zero
+  binom +truncate=tbinom|class|constant-flat-singleton-window
+  binom +truncate=tbinom|class|constant-flat-singleton-window-free-size
+  binom +truncate=tbinom|class|zeros-flat-singleton-window
+  binom +truncate=tbinom|class|zeros-flat-singleton-window-free-size
+  binom+zero=inflated|class|zeros-flat-free
+  binom+zero=inflated|class|zeros-flat-pi
+  binom+zero=inflated|class|zeros-flat-pi-one
+  binom+zero=inflated|class|zeros-flat-prob
+  binom+zero=inflated|class|zeros-flat-prob-zero
+  binom+zero=inflated|class|zeros-flat-size
+  binom+zero=inflated|class|zeros-flat-size-prob
+  binom+zero=inflated|class|zeros-flat-size-zero
+  binom+zero=modified|class|constant-flat-one
+  binom+zero=modified|class|constant-flat-prob-half
+  binom+zero=modified|class|constant-flat-prob-zero
+  binom+zero=modified|class|constant-flat-size-one
+  binom+zero=modified|class|zeros-flat-free
+  binom+zero=modified|class|zeros-flat-p0-interior
+  binom+zero=modified|class|zeros-flat-p0-one
+  binom+zero=truncated|class|constant-flat-one
+  binom+zero=truncated|class|constant-flat-prob-half
+  binom+zero=truncated|class|constant-flat-prob-zero
+  binom+zero=truncated|class|constant-flat-size-one
+  cmb|class|constant-flat-adjacent-sizes
+  cmb|class|constant-flat-bernoulli
+  cmb|class|constant-flat-free
+  cmb|class|constant-flat-nu
+  cmb|class|constant-flat-prob-one
+  cmb|class|constant-flat-size
+  cmb|class|zeros-flat-bernoulli
+  cmb|class|zeros-flat-free
+  cmb|class|zeros-flat-nu
+  cmb|class|zeros-flat-prob
+  cmb|class|zeros-flat-prob-nu
+  cmb|class|zeros-flat-prob-zero
+  cmb|class|zeros-flat-size
+  cmb|class|zeros-flat-size-nu
+  cmb|class|zeros-flat-size-zero
+  cmb|class|zeros-flat-size-zero-nu
+  cmb|class|zeros-flat-size-zero-prob
+  cmp|class|zeros-flat-free
+  cmp|class|zeros-flat-lambda-zero
+  cmp|class|zeros-flat-nu
+  dweibull|class|zeros-flat-q
+  genbeta|class|constant-flat-power-product
+  geom+zero=modified|class|zeros-flat-free
+  geom+zero=modified|class|zeros-flat-p0-interior
+  geom+zero=modified|class|zeros-flat-p0-one
+  gev|class|zeros-flat-location-scale
+  gompertz|class|zeros-flat-a
+  gpd|class|zeros-flat-scale
+  gpd|class|zeros-flat-threshold-scale
+  gpd|class|zeros-flat-uniform-translation
+  hyper|class|constant-flat-N
+  hyper|class|constant-flat-N-four
+  hyper|class|constant-flat-N-k
+  hyper|class|constant-flat-N-m
+  hyper|class|constant-flat-adjacent-compositions
+  hyper|class|constant-flat-adjacent-draws
+  hyper|class|constant-flat-adjacent-populations
+  hyper|class|constant-flat-free
+  hyper|class|constant-flat-k-five
+  hyper|class|constant-flat-k-four
+  hyper|class|constant-flat-m-five
+  hyper|class|constant-flat-m-four
+  hyper|class|constant-flat-m-k
+  hyper|class|zeros-flat-N
+  hyper|class|zeros-flat-N-k
+  hyper|class|zeros-flat-N-k-zero
+  hyper|class|zeros-flat-N-m
+  hyper|class|zeros-flat-N-m-zero
+  hyper|class|zeros-flat-N-zero
+  hyper|class|zeros-flat-free
+  hyper|class|zeros-flat-k
+  hyper|class|zeros-flat-k-max
+  hyper|class|zeros-flat-k-zero
+  hyper|class|zeros-flat-m
+  hyper|class|zeros-flat-m-k-zero
+  hyper|class|zeros-flat-m-max
+  hyper|class|zeros-flat-m-zero
+  hyper|class|zeros-flat-m-zero-k
+  lgser+zero=modified|class|zeros-flat-free
+  lgser+zero=modified|class|zeros-flat-p0-interior
+  lgser+zero=modified|class|zeros-flat-p0-one
+  nbinom|class|zeros-flat-free
+  nbinom|class|zeros-flat-prob
+  nbinom|class|zeros-flat-prob-one
+  nbinom|class|zeros-flat-size
+  nbinom|class|zeros-flat-size-zero
+  nbinom+zero=inflated|class|zeros-flat-free
+  nbinom+zero=inflated|class|zeros-flat-pi
+  nbinom+zero=inflated|class|zeros-flat-pi-one
+  nbinom+zero=inflated|class|zeros-flat-prob
+  nbinom+zero=inflated|class|zeros-flat-prob-one
+  nbinom+zero=inflated|class|zeros-flat-size
+  nbinom+zero=inflated|class|zeros-flat-size-prob
+  nbinom+zero=inflated|class|zeros-flat-size-zero
+  nbinom+zero=modified|class|constant-flat-one
+  nbinom+zero=modified|class|constant-flat-prob-one
+  nbinom+zero=modified|class|zeros-flat-free
+  nbinom+zero=modified|class|zeros-flat-p0-interior
+  nbinom+zero=modified|class|zeros-flat-p0-one
+  nbinom+zero=truncated|class|constant-flat-one
+  nbinom+zero=truncated|class|constant-flat-prob-one
+  nhyper|class|constant-flat-N
+  nhyper|class|constant-flat-N-r
+  nhyper|class|constant-flat-adjacent-compositions
+  nhyper|class|constant-flat-adjacent-populations
+  nhyper|class|constant-flat-adjacent-stops
+  nhyper|class|constant-flat-free
+  nhyper|class|constant-flat-m
+  nhyper|class|constant-flat-m-N
+  nhyper|class|constant-flat-m-N-r
+  nhyper|class|constant-flat-m-r
+  nhyper|class|constant-flat-r
+  nhyper|class|zeros-flat-N
+  nhyper|class|zeros-flat-N-r
+  nhyper|class|zeros-flat-N-zero
+  nhyper|class|zeros-flat-N-zero-r
+  nhyper|class|zeros-flat-free
+  nhyper|class|zeros-flat-free-r
+  nhyper|class|zeros-flat-m
+  nhyper|class|zeros-flat-m-N
+  nhyper|class|zeros-flat-m-N-r
+  nhyper|class|zeros-flat-m-max
+  nhyper|class|zeros-flat-m-max-r
+  nhyper|class|zeros-flat-m-r
+  pig|class|zeros-flat-free
+  pig|class|zeros-flat-mean
+  pig|class|zeros-flat-shape-zero
+  pois +truncate=tpois|class|constant-flat-singleton-window
+  pois +truncate=tpois|class|zeros-flat-singleton-window
+  pois+zero=inflated|class|zeros-flat-free
+  pois+zero=inflated|class|zeros-flat-lambda
+  pois+zero=inflated|class|zeros-flat-pi-one
+  pois+zero=modified|class|zeros-flat-free
+  pois+zero=modified|class|zeros-flat-p0-interior
+  pois+zero=modified|class|zeros-flat-p0-one
+  sged|class|zeros-flat-reciprocal-skews
+  skellam|class|constant-flat-free
+  skellam|class|zeros-flat-free
+  sn|class|zeros-flat-location-scale
+  st|class|zeros-flat-location-scale-df
+  tlambda|class|zeros-flat-scale
+  tlambda|class|zeros-flat-support-contacts
+  tlambda|class|zeros-flat-uniform-1
+  tlambda|class|zeros-flat-uniform-2
+  triang|class|pair-flat-free
+  triang|class|pair-flat-held-endpoints
+  zeta +truncate=zipf|class|constant-flat-singleton-window
+native existing: 2271 new: 94 changed: 39
+  existing result difference hyper|archive|003454 candidates,warnings
+  existing result difference hyper|archive|003455 candidates,warnings
+  existing result difference hyper|archive|003456 candidates,warnings
+  existing result difference hyper|archive|003457 candidates,warnings
+  existing result difference hyper|archive|003458 candidates,warnings
+  existing result difference hyper|archive|003459 candidates,warnings
+  existing result difference hyper|archive|003460 candidates,warnings
+  existing result difference hyper|archive|003461 candidates,warnings
+  existing result difference hyper|archive|003462 candidates,warnings
+  existing result difference hyper|archive|003463 candidates,warnings
+  existing result difference hyper|archive|003464 candidates,warnings
+  existing result difference hyper|archive|003465 candidates,warnings
+  existing result difference hyper|archive|003466 candidates,warnings
+  existing result difference hyper|archive|003467 candidates,warnings
+  existing result difference hyper|archive|003482 candidates,warnings
+  existing result difference hyper|archive|003483 candidates,warnings
+  existing result difference hyper|archive|003484 candidates,warnings
+  existing result difference hyper|archive|003485 candidates,warnings
+  existing result difference hyper|archive|003486 candidates,warnings
+  existing result difference hyper|archive|003487 candidates,warnings
+  existing result difference hyper|archive|003488 candidates,warnings
+  existing result difference hyper|archive|003489 candidates,warnings
+  existing result difference hyper|archive|003490 candidates,warnings
+  existing result difference hyper|archive|003491 candidates,warnings
+  existing result difference hyper|archive|003492 candidates,warnings
+  existing result difference hyper|archive|003494 candidates,warnings
+  existing result difference hyper|archive|003525 candidates,warnings
+  existing result difference hyper|archive|010971 candidates,warnings
+  existing result difference hyper|archive|010973 candidates,warnings
+  existing result difference nhyper|archive|005151 candidates,warnings
+  existing result difference nhyper|archive|005152 candidates,warnings
+  existing result difference nhyper|archive|005154 candidates,warnings
+  existing result difference triang|archive|008159 candidates,warnings
+  existing result difference triang|archive|008178 warnings
+  existing result difference triang|archive|008215 candidates,certified,outcome,unique,warnings
+  existing result difference triang|archive|008224 warnings
+  existing result difference triang|archive|008227 warnings
+  existing result difference triang|class|subnormal candidates,warnings
+  existing result difference triang|class|two candidates,warnings
