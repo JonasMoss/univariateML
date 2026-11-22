@@ -1,0 +1,31 @@
+Workstation, one slot, just site-check (exit 0)
+PASS inference browser: {"rows":286,"families":85,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 272 limits, 85 families, 9 fit domains.
+PASS: inference: 286 unique scopes, 85 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 85 unique nodes, 266 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 85 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 85 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, norm, pois, unif, pareto
+
+Workstation, four slots, just test-changed --no-long-double (exit 0)
+Base master; merge base 7a57d011661763b5f633445887d657a16a8296ec; tier dev
+Selected 1 families: nhyper
++ ctest --test-dir univariateML-cpp/build --output-on-failure --no-tests=error -L dev -R ^distribution_(nhyper)(_slow)?(_part[0-9]+)?$
+100% tests passed, 0 tests failed out of 1
++ ctest --test-dir build/cpp-no-long-double --output-on-failure --no-tests=error -L dev -R ^distribution_(nhyper)(_slow)?(_part[0-9]+)?$
+100% tests passed, 0 tests failed out of 1
++ just test
+[ FAIL 0 | WARN 0 | SKIP 6 | PASS 992 ]
++ just js-build
++ just js-test
+# tests 230
+# pass 230
+# fail 0
+# skipped 0
+Results: [{"command": ["cmake", "-S", "univariateML-cpp", "-B", "univariateML-cpp/build", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"], "exit": 0, "seconds": 0.5}, {"command": ["cmake", "--build", "univariateML-cpp/build", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 458.37}, {"command": ["ctest", "--test-dir", "univariateML-cpp/build", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(nhyper)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 0.23}, {"command": ["cmake", "-S", "univariateML-cpp", "-B", "build/cpp-no-long-double", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache", "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"], "exit": 0, "seconds": 0.63}, {"command": ["cmake", "--build", "build/cpp-no-long-double", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 445.97}, {"command": ["ctest", "--test-dir", "build/cpp-no-long-double", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(nhyper)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 0.18}, {"command": ["just", "test"], "exit": 0, "seconds": 147.83}, {"command": ["just", "js-build"], "exit": 0, "seconds": 81.43}, {"command": ["just", "js-test"], "exit": 0, "seconds": 63.49}]

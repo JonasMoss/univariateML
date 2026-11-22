@@ -309,3 +309,54 @@ TEST_CASE("nhyper: large waiting counts follow the population likelihood ratios"
   const auto exhausted = cppunivariate::nhyper_mle(data, 3, NAN, 20, 1);
   CHECK(exhausted.status == cppunivariate::NhyperStatus::NumericalFailure);
 }
+
+TEST_CASE("nhyper: all-zero maximum sets by held counts") {
+  const double free = std::numeric_limits<double>::quiet_NaN();
+  const double cap = cppunivariate::hyper_detail::kMaxCount;
+  const std::vector<double> data{0, 0};
+  struct Route {
+    const char* name;
+    double m, N, r;
+    double first_m, first_N, last_m, last_N;
+  };
+  const Route routes[] = {
+    {"none", free, free, free, 0, 0, cap, cap},
+    {"r", free, free, 0, 0, 0, cap, cap},
+    {"m", 2, free, free, 2, 2, 2, cap},
+    {"m and r", 2, free, 0, 2, 2, 2, cap},
+    {"N", free, 5, free, 0, 5, 5, 5},
+    {"N and r", free, 5, 0, 0, 5, 5, 5},
+    {"m and N", 2, 5, free, 2, 5, 2, 5},
+    {"all", 2, 5, 0, 2, 5, 2, 5},
+    {"N = 0", free, 0, free, 0, 0, 0, 0},
+    {"N = 0 and r", free, 0, 0, 0, 0, 0, 0},
+    {"m at count limit", cap, free, free, cap, cap, cap, cap},
+    {"m at count limit and r", cap, free, 0, cap, cap, cap, cap},
+  };
+  for (const auto& route : routes) {
+    CAPTURE(route.name);
+    const auto fit = cppunivariate::nhyper_mle(mltest::as_span(data), route.r, route.N, route.m);
+    const auto result = cppunivariate::outcome(fit);
+    const bool singleton = route.first_m == route.last_m && route.first_N == route.last_N;
+    CHECK(result.kind == cppunivariate::OutcomeKind::Estimate);
+    CHECK(result.certified);
+    CHECK(result.unique == singleton);
+    CHECK(fit.unique == singleton);
+    CHECK(fit.m == route.first_m);
+    CHECK(fit.N == route.first_N);
+    CHECK(fit.r == 0);
+    CHECK(fit.logLik == 0);
+
+    const auto endpoint = cppunivariate::nhyper_mle(mltest::as_span(data), 0, route.last_N, route.last_m);
+    CHECK(cppunivariate::outcome(endpoint).kind == cppunivariate::OutcomeKind::Estimate);
+    CHECK(endpoint.logLik == fit.logLik);
+  }
+  for (int N = 0; N <= 5; ++N) {
+    for (int m = 0; m <= N; ++m) {
+      CHECK(cppunivariate::nhyper_log_pmf(0, N - m, m, 0) == 0);
+      for (int r = 1; r <= m; ++r)
+        CHECK(cppunivariate::nhyper_log_pmf(0, N - m, m, r) ==
+              -std::numeric_limits<double>::infinity());
+    }
+  }
+}
