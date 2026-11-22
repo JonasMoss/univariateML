@@ -179,12 +179,10 @@ inline bool cover(ispan x,double first,double end,double& best,Work& work,Evalua
   return true;
 }
 inline void witness(StopDetail& d,std::vector<double> coef,double ll,bool budget,bool comparison=false) {
-  if(!std::isfinite(ll)||!valid_stop_coefficients(StopModel::None,coef)) {
-    d.loglik_upper=INFINITY;d.budget_exhausted=budget;return;
-  }
+  d.loglik_upper=INFINITY;d.budget_exhausted=budget;d.comparison_tie=comparison;
+  if(!std::isfinite(ll)||!valid_stop_coefficients(StopModel::None,coef))return;
   d.candidates.push_back({coef,ll,ll});
   d.loglik_lower=std::isnan(d.loglik_lower)?ll:std::max(d.loglik_lower,ll);
-  d.loglik_upper=INFINITY;d.budget_exhausted=budget;d.comparison_tie=comparison;
 }
 } // namespace binomial_certificate_detail
 } // namespace cppunivariate

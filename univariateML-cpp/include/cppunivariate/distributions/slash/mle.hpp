@@ -404,10 +404,9 @@ inline SlashResult slash_mle(span x,double tol=1e-10,int maxit=500,double sigma=
   }
   if(best.status!=SlashStatus::Ok || !std::isfinite(best.logLik)){bad.status=SlashStatus::IterationFailure;return bad;}
   // A half-mass collapse is preferred when no interior value exceeds it by 1e-8 n.
-  // That is a margin, not a proof: the supremum over the interior equals the
-  // collapse value at the corner (m to v, s to 0), so no finite cover can show
-  // sup L < B, and an interior maximum with gain below the margin (the sample
-  // (0,0,-1,1.0001) gains 4e-10) is an MLE. The outcome is therefore unresolved.
+  // A uniform upper bound over a corner neighborhood is at least the
+  // collapse value. The dossier's local strict bound leaves a separate
+  // comparison away from the corner, which this margin does not settle.
   if(boundary>=best.logLik-1e-8*n){bad.status=SlashStatus::CollapseLimit;bad.margin_decided=true;return bad;}
   {
     const double accuracy_center=std::isnan(sigma)?0:best.mu,accuracy_scale=std::isnan(sigma)?1:best.sigma;

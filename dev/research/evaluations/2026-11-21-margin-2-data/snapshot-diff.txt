@@ -1,0 +1,54 @@
+=== native ===
+bbinom: 148 compared, 0 changed, 122 estimate pairs, max relative coefficient move 0
+binom: 87 compared, 0 changed, 81 estimate pairs, max relative coefficient move 0
+cmb: 135 compared, 0 changed, 90 estimate pairs, max relative coefficient move 0
+geom: 51 compared, 0 changed, 49 estimate pairs, max relative coefficient move 0
+gompertz: 112 compared, 0 changed, 86 estimate pairs, max relative coefficient move 0
+lgser: 51 compared, 0 changed, 47 estimate pairs, max relative coefficient move 0
+nbinom: 87 compared, 0 changed, 63 estimate pairs, max relative coefficient move 0
+pois: 51 compared, 0 changed, 49 estimate pairs, max relative coefficient move 0
+slash: 93 compared, 0 changed, 76 estimate pairs, max relative coefficient move 0
+=== double ===
+bbinom: 148 compared, 0 changed, 122 estimate pairs, max relative coefficient move 0
+binom: 87 compared, 0 changed, 81 estimate pairs, max relative coefficient move 0
+cmb: 135 compared, 0 changed, 90 estimate pairs, max relative coefficient move 0
+geom: 51 compared, 0 changed, 49 estimate pairs, max relative coefficient move 0
+gompertz: 112 compared, 0 changed, 86 estimate pairs, max relative coefficient move 0
+lgser: 51 compared, 0 changed, 47 estimate pairs, max relative coefficient move 0
+nbinom: 87 compared, 0 changed, 63 estimate pairs, max relative coefficient move 0
+pois: 51 compared, 0 changed, 49 estimate pairs, max relative coefficient move 0
+slash: 93 compared, 0 changed, 76 estimate pairs, max relative coefficient move 0
+=== routes-native ===
+binom +truncate=tbinom: 263 compared, 0 changed, 237 estimate pairs, max relative coefficient move 0
+binom+zero=inflated: 151 compared, 0 changed, 149 estimate pairs, max relative coefficient move 0
+binom+zero=modified: 151 compared, 0 changed, 143 estimate pairs, max relative coefficient move 0
+binom+zero=truncated: 87 compared, 0 changed, 80 estimate pairs, max relative coefficient move 0
+geom+zero=modified: 79 compared, 0 changed, 77 estimate pairs, max relative coefficient move 0
+geom+zero=truncated: 39 compared, 0 changed, 36 estimate pairs, max relative coefficient move 0
+lgser+zero=modified: 79 compared, 0 changed, 77 estimate pairs, max relative coefficient move 0
+nbinom+zero=inflated: 151 compared, 0 changed, 101 estimate pairs, max relative coefficient move 0
+nbinom+zero=modified: 151 compared, 0 changed, 109 estimate pairs, max relative coefficient move 0
+nbinom+zero=truncated: 87 compared, 0 changed, 56 estimate pairs, max relative coefficient move 0
+norm +truncate=tnorm: 285 compared, 0 changed, 242 estimate pairs, max relative coefficient move 0
+pois +truncate=tpois: 139 compared, 0 changed, 133 estimate pairs, max relative coefficient move 0
+pois+zero=inflated: 79 compared, 0 changed, 74 estimate pairs, max relative coefficient move 0
+pois+zero=modified: 79 compared, 0 changed, 77 estimate pairs, max relative coefficient move 0
+pois+zero=truncated: 51 compared, 0 changed, 48 estimate pairs, max relative coefficient move 0
+zeta +truncate=zipf: 79 compared, 0 changed, 73 estimate pairs, max relative coefficient move 0
+=== routes-double ===
+binom +truncate=tbinom: 263 compared, 0 changed, 237 estimate pairs, max relative coefficient move 0
+binom+zero=inflated: 151 compared, 0 changed, 149 estimate pairs, max relative coefficient move 0
+binom+zero=modified: 151 compared, 0 changed, 143 estimate pairs, max relative coefficient move 0
+binom+zero=truncated: 87 compared, 0 changed, 80 estimate pairs, max relative coefficient move 0
+geom+zero=modified: 79 compared, 0 changed, 77 estimate pairs, max relative coefficient move 0
+geom+zero=truncated: 39 compared, 0 changed, 36 estimate pairs, max relative coefficient move 0
+lgser+zero=modified: 79 compared, 0 changed, 77 estimate pairs, max relative coefficient move 0
+nbinom+zero=inflated: 151 compared, 0 changed, 101 estimate pairs, max relative coefficient move 0
+nbinom+zero=modified: 151 compared, 0 changed, 109 estimate pairs, max relative coefficient move 0
+nbinom+zero=truncated: 87 compared, 0 changed, 56 estimate pairs, max relative coefficient move 0
+norm +truncate=tnorm: 285 compared, 0 changed, 242 estimate pairs, max relative coefficient move 0
+pois +truncate=tpois: 139 compared, 0 changed, 133 estimate pairs, max relative coefficient move 0
+pois+zero=inflated: 79 compared, 0 changed, 74 estimate pairs, max relative coefficient move 0
+pois+zero=modified: 79 compared, 0 changed, 77 estimate pairs, max relative coefficient move 0
+pois+zero=truncated: 51 compared, 0 changed, 48 estimate pairs, max relative coefficient move 0
+zeta +truncate=zipf: 79 compared, 0 changed, 73 estimate pairs, max relative coefficient move 0

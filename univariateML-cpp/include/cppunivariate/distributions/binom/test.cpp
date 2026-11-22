@@ -684,3 +684,35 @@ TEST_CASE("large-count tbinom free window keeps its better Poisson face") {
   REQUIRE(held.status==cppunivariate::TbinomStatus::Ok);
   CHECK(held.logLik<=free.stop_detail.limit_loglik);
 }
+
+TEST_CASE("zib: an invalid finite-size witness preserves the unresolved comparison") {
+  const auto check_invalid_witness = [](double size, double ll) {
+    cppunivariate::ZibResult result{size, .1, .25, ll, 0, cppunivariate::ZibStatus::ZipLimit};
+    result.stop_detail = cppunivariate::discrete_face(cppunivariate::StopModel::Zip, {2., .25}, -10.);
+    cppunivariate::binomial_certificate_detail::witness(
+        result.stop_detail, {result.size, result.prob, result.pi}, result.logLik, false, true);
+    CHECK(result.stop_detail.comparison_tie);
+    CHECK(result.stop_detail.candidates.size() == 1);
+    const auto out = cppunivariate::outcome(result);
+    CHECK(out.kind == cppunivariate::OutcomeKind::Failure);
+    CHECK(out.reason == cppunivariate::OutcomeReason::Unresolved);
+    CHECK_FALSE(out.certified);
+
+    result.stop_detail.comparison_tie = false;
+    const auto missing_bound = cppunivariate::outcome(result);
+    CHECK(missing_bound.kind == cppunivariate::OutcomeKind::Failure);
+    CHECK(missing_bound.reason == cppunivariate::OutcomeReason::Unresolved);
+  };
+  check_invalid_witness(42, -INFINITY);
+  check_invalid_witness(INFINITY, -11.);
+
+  const std::vector<int> x{1, 8};
+  const auto certified = cppunivariate::zib_mle(as_ispan(x));
+  const auto certified_out = cppunivariate::outcome(certified);
+  REQUIRE(certified_out.kind == cppunivariate::OutcomeKind::Limit);
+  CHECK(certified_out.reason == cppunivariate::OutcomeReason::None);
+  CHECK(certified_out.certified);
+  CHECK(certified.stop_detail.limit_coef[0] == doctest::Approx(4.5).epsilon(mltest::kFitReferenceTol).scale(0));
+  CHECK(certified.stop_detail.limit_coef[1] == 0);
+  CHECK(std::isfinite(certified.stop_detail.loglik_upper));
+}

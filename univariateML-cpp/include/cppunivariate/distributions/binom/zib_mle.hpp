@@ -622,7 +622,14 @@ inline FitOutcome outcome(const ZibResult& r) {
     case ZibStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
     case ZibStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZibStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
-    case ZibStatus::ZipLimit: return FitOutcome::limit(true);
+    case ZibStatus::ZipLimit:
+      if(r.stop_detail.limit_model != StopModel::Zip ||
+         !valid_stop_coefficients(StopModel::Zip, r.stop_detail.limit_coef) ||
+         !std::isfinite(r.stop_detail.limit_loglik) ||
+         !std::isfinite(r.stop_detail.loglik_upper) ||
+         r.stop_detail.loglik_upper < r.stop_detail.limit_loglik)
+        return FitOutcome::failure(OutcomeReason::Unresolved);
+      return FitOutcome::limit(true);
     case ZibStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case ZibStatus::FaceTie: return comparison_outcome_of(r);
   }

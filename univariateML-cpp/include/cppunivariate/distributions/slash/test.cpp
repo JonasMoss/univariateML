@@ -303,3 +303,19 @@ TEST_CASE("slash: a margin-decided half-mass collapse is not a certified nonexis
   CHECK(o.kind==cppunivariate::OutcomeKind::Failure);
   CHECK(o.reason==cppunivariate::OutcomeReason::Unresolved);
 }
+
+TEST_CASE("slash: half multiplicity with zero reciprocal sum retains the free-location margin") {
+  const std::vector<double> x{0, 0, -1, 1};
+  const auto free = cppunivariate::slash_mle(mltest::as_span(x));
+  CHECK(free.margin_decided);
+  const auto free_out = cppunivariate::outcome(free);
+  CHECK(free_out.kind == cppunivariate::OutcomeKind::Failure);
+  CHECK(free_out.reason == cppunivariate::OutcomeReason::Unresolved);
+  CHECK_FALSE(free_out.certified);
+
+  const auto held = cppunivariate::slash_mle(mltest::as_span(x), mltest::kFitTol, 500, NAN, 0.);
+  const auto held_out = cppunivariate::outcome(held);
+  CHECK(held_out.kind == cppunivariate::OutcomeKind::Nonexistence);
+  CHECK(held_out.reason == cppunivariate::OutcomeReason::Unattained);
+  CHECK(held_out.certified);
+}
