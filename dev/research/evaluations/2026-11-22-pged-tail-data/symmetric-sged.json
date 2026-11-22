@@ -1,0 +1,12 @@
+{
+  "native": {
+    "checks": 8018,
+    "worst": 7.709485493946347e-13,
+    "failures": 0
+  },
+  "double": {
+    "checks": 8018,
+    "worst": 7.709485493946347e-13,
+    "failures": 0
+  }
+}

@@ -5,6 +5,8 @@ The route contains only mathematical definitions, no C++/R/reference calls.
 import mpmath as mp
 from quality.truth_reference import Reference, pair, complement, normal, gamma, beta, student, finite_pmf, geometric_sum, loggamma_ratio
 
+extreme_parameter_sets = [dict(nu=nu) for nu in (1e3, 1e4, 1e6)]
+
 def build(t):
     m,s,a=t['mean'],t['sd'],t['nu']
     scale=s*mp.sqrt(mp.gamma(1/a)/mp.gamma(3/a))

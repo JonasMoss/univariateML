@@ -457,26 +457,22 @@ spacing near the uniform edge. The [edge references](../../../../../dev/research
 use the exact binary64 observation. Affine or skew transforms that cannot
 resolve the relevant side of this edge return NaN.
 
+For $1\le\nu<10^6$, the CDF also uses the three-word radius when the bound on the induced log-tail error exceeds $10^{-11}$.
+
 For $\nu\ge10^6$, the physical difference and logarithmic scale ratio
 are retained in three words before the gamma power is formed. This removes
 rounding of $(x-\mathrm{mean})/\mathrm{sd}$ at the uniform edge. If $w$ is
 the log radius and $E_w$ its propagated error, the density bounds the power
 change by $e^{\nu w}\operatorname{expm1}(\nu E_w)$. Probabilities compare
 both $w-E_w$ and $w+E_w$ in the gamma tail, then compare the requested
-tail at both probability endpoints. A rounded-zero center does not certify
-underflow if an endpoint still has representable mass. Their reserved evaluator allowance
-is $2\cdot10^{-12}+16\epsilon|\log Q|$; natural tails require the total
-log-tail error below $10^{-10}$. A failed bound returns NaN rather than a
-rounded edge decision. For $\nu\ge10^{30}$ the log-scale replacement
-$\log(3)/2$ carries the explicit error bound $2/\nu$.
+tail at both probability endpoints. The reserved evaluator allowance is
+$2\cdot10^{-12}+16\epsilon|\log Q|$. For $\nu\ge10^{30}$ the log-scale
+replacement $\log(3)/2$ carries the explicit error bound $2/\nu$.
 
-Representable natural tails retain this relative-error test even below
-log probability $-700$. For the rounded output $\widehat p$ and computed
-log probability $\ell$, rounding adds
-$|\log\widehat p-\ell|+8\epsilon\max(1,|\log\widehat p|)$
-to the propagated log error. This admits aligned subnormals rather than
-rejecting them from a worst-case half-spacing bound. If the total error
-exceeds the natural relative-error contract, the result is NaN. A zero is accepted only
-when the entire propagated enclosure rounds to zero.
+A normal natural-scale CDF value requires a relative enclosure within
+$10^{-10}$. Below the normal range, `pged` can round the checked log tail
+with `exp` when the natural-scale enclosure fails. This preserves positive
+subnormals and rounds to zero below half the least positive subnormal.
+A failure of the applicable enclosure returns NaN.
 
 For a proved Laplace median interval or reflected knot tie, `coef()` uses the first listed GED witness, an exact sample location with its conditional scale, and `logLik` is evaluated there; the listed set is attached as `maximizers`. Unproved comparisons list search roots with likelihood bounds and stop as unresolved, or as an uncertified uniform limit when that face is the better candidate.
