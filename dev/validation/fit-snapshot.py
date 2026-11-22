@@ -13,7 +13,8 @@ Inputs, all deterministic:
             large offset, ties, half ties, one, two and constant samples, and
             invalid ones (empty, negative, zeros, NaN, infinite); tie3
             ([q50, q50, q75], the well-scaled preimage of near-constant under
-            an affine or power-scale map) comes last
+            an affine or power-scale map) ends the golden-hold classes.
+            The flat-maximum table adds classes with explicit held values.
   resample  seeded draws with replacement from the golden sample (n = 3, 7)
 
 Every case goes through the binding-neutral adapter umvl_binding::fit_<id> with
@@ -29,7 +30,7 @@ that uses more than --cpu-limit CPU seconds is recorded as kind "timeout";
 that is an audit guard, not a fitter status. Finished families are kept in
 <output>/<family>.jsonl and skipped on a rerun while the sources are unchanged.
 """
-import argparse, gzip, hashlib, json, math, os, random, re, select, shutil
+import argparse, gzip, hashlib, json, math, os, random, re, runpy, select, shutil
 import subprocess, sys, threading, time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -37,6 +38,11 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 DISTS = ROOT/'univariateML-cpp/include/cppunivariate/distributions'
+FLAT_TABLE = Path(__file__).resolve().with_name('flat_maxima.py')
+if not FLAT_TABLE.is_file():
+    # Historical replay layers copy this driver and symlink the source tree.
+    FLAT_TABLE = (ROOT/'univariateML-cpp').resolve().parent/'dev/validation/flat_maxima.py'
+FLAT_CASES = runpy.run_path(str(FLAT_TABLE))['CASES']
 COMMON = ROOT/'bindings/common'
 ARCHIVE = ROOT/'dev/research/evaluations/2026-11-07-fit-audit-data/cases.json.gz'
 ROUTES = json.loads((ROOT/'dev/research/evaluations/2026-11-13-retire-16-data/route-inputs.json').read_text())
@@ -138,6 +144,9 @@ def cases(ident, archive):
             draw = [golden['data'][int(rng.random()*len(golden['data']))] for _ in range(size)]
             yield case('resample', 'n%d-s%d' % (size, seed), [int(v) if integer else v for v in draw], held)
 
+    for label, flat in FLAT_CASES.get(ident, {}).items():
+        yield case('class', label, list(flat.data), flat.held)
+
 def line(case, names):
     holds = [case['held'].get(name, 0.0) for name in names]
     return ' '.join([str(case['mask']), str(len(case['data'])),
@@ -168,7 +177,8 @@ int main(){
     std::vector<double> holds(@K@);std::vector<@TYPE@> data;
     for(double&v:holds){std::cin>>token;v=std::strtod(token.c_str(),nullptr);}
     for(std::size_t i=0;i<n;++i){std::cin>>token;data.push_back(static_cast<@TYPE@>(std::strtod(token.c_str(),nullptr)));}
-    const auto r=umvl_binding::render_fit(umvl_binding::fit_@ID@(cppunivariate::@SPAN@{data.data(),data.size()},@ARGS@));
+    const auto raw=umvl_binding::fit_@ID@(cppunivariate::@SPAN@{data.data(),data.size()},@ARGS@);
+    const auto r=umvl_binding::render_fit(raw);
     std::string o="{\"kind\":"+str(r.error_kind.empty()?"ok":r.error_kind);
     o+=",\"estimates\":"+named(r.estimates)+",\"logLik\":"+num(r.logLik);
     o+=",\"iterations\":"+std::string(r.has_iterations?std::to_string(r.iterations):"null");
@@ -188,6 +198,7 @@ int main(){
       o+=(i?",":"")+std::string("{\"model\":")+str(c.model)+",\"estimates\":"+named(c.estimates)+
          ",\"loglik_lower\":"+num(c.loglik_lower)+",\"loglik_upper\":"+num(c.loglik_upper)+"}";}
     o+="]";
+    if(r.outcome.kind==cppunivariate::OutcomeKind::Estimate)o+=",\"outcome_message\":"+str(raw.error);
     o+=",\"reason\":"+str(cppunivariate::outcome_reason_name(r.outcome.reason));
     if(r.outcome.kind==cppunivariate::OutcomeKind::Estimate || r.outcome.kind==cppunivariate::OutcomeKind::Limit)
       o+=",\"certified\":"+std::string(r.outcome.certified?"true":"false");
@@ -235,7 +246,7 @@ def build(ident, work, double, boost):
         elif ident=='zipf': a,b='1',endpoint('N')
         call='umvl_binding::fit_modifier("%s",cppunivariate::span{data.data(),data.size()},{%s},"%s",%s,%s,%s)' % (route['base'],','.join(entries),route['zero'],'true' if route['zero']=='none' else 'false',a,b)
         text=text.replace('#include "bindings/common/distributions/'+ident+'/fit.hpp"','#include "bindings/common/modifiers.hpp"')
-        text=re.sub(r'umvl_binding::fit_'+ident+r'\(.*?;',''+call+');',text,count=1)
+        text=re.sub(r'umvl_binding::fit_'+ident+r'\(.*?;',call+';',text,count=1)
     source = work/(ident+'.cpp'); exe = work/ident
     source.write_text(text)
     env = dict(os.environ)
@@ -297,6 +308,8 @@ def run_family(ident, args, archive, work, boost, tag):
                       held=case['held'], n=len(case['data']),
                       input_sha256=hashlib.sha256(text.encode()).hexdigest()[:16])
         if case['source'] in ('class', 'resample'): record['data'] = case['data']
+        if case['source'] != 'class' or case['case'] not in FLAT_CASES.get(ident, {}):
+            result.pop('outcome_message', None)
         record['result'] = result
         rows.append(json.dumps(record, sort_keys=True))
     probe.close()
@@ -311,6 +324,8 @@ def fingerprint(args):
     digest = hashlib.sha256()
     for path in sources:
         digest.update(str(path.relative_to(ROOT)).encode()); digest.update(path.read_bytes())
+    digest.update(b'dev/validation/flat_maxima.py')
+    digest.update(FLAT_TABLE.read_bytes())
     git = lambda *a: subprocess.run(['git', *a], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     return dict(source_sha256=digest.hexdigest(), commit=git('rev-parse', 'HEAD'),
         dirty=bool(git('status', '--porcelain', '--', 'univariateML-cpp/include', 'bindings/common')),

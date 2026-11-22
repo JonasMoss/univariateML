@@ -689,7 +689,13 @@ recorded input hash.
   `endpoint_log_density` of `-Inf`, or else the SymPy limit of the dossier's
   `log_density`), end in `invalid-input`; constant data with free location and scale end in
   `nonexistence(unbounded)`; constant data with a free scale or rate never end
-  in a numerical failure. The rules adopted on 2026-11-14
+  in a numerical failure. The `flat-maximum` rule checks the hold-aware
+  samples in [flat_maxima.py](flat_maxima.py) against their proved maximizer
+  sets and log likelihoods. Singleton controls require `unique = TRUE`.
+  Other cases require `unique = FALSE`, at least two distinct admissible
+  candidate vectors in the set (hence of equal likelihood), and a nonempty
+  outcome diagnostic. The all-zero negative hypergeometric cases also
+  require certification. The rules adopted on 2026-11-14
   ([rule questions](../research/2026-11-14-strict-rule-questions.md)) read the
   dossiers' strict-layer keys under `existence` (validated by
   `existence_keys.py`): near-constant data never end in `no-convergence`,

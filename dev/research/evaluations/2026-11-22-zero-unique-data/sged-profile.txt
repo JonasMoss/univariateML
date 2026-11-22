@@ -1,0 +1,6 @@
+K > 0 lower margin 0.344825409809
+H(1) > K lower margin 0.00246861018095
+Q(1) < 0 lower margin 0.565882475013
+Q second derivative positive lower margin 0.853412790107
+root above .0008 lower margin 0.00887029162009
+root below .001 lower margin 0.0102972896592

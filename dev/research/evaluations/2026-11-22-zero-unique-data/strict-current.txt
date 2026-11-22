@@ -1,0 +1,186 @@
+fit-consistency: failures by check: {'phenomenon:flat-maximum': 184}
+fit-consistency: 0 listed as known, 184 new, 0 listed but passing
+  NEW   phenomenon:flat-maximum|double|bbinom|class|constant-flat-adjacent-sizes: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|bbinom|class|zeros-flat-alpha: expected at least two distinct admissible maximizer witnesses
+  NEW   phenomenon:flat-maximum|double|bbinom|class|zeros-flat-beta: expected at least two distinct admissible maximizer witnesses
+  NEW   phenomenon:flat-maximum|double|bbinom|class|zeros-flat-free: expected an estimate, got F:unsupported
+  NEW   phenomenon:flat-maximum|double|bbinom|class|zeros-flat-size-alpha: expected at least two distinct admissible maximizer witnesses
+  NEW   phenomenon:flat-maximum|double|bbinom|class|zeros-flat-size-beta: expected at least two distinct admissible maximizer witnesses
+  NEW   phenomenon:flat-maximum|double|bbinom|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses
+  NEW   phenomenon:flat-maximum|double|binom +truncate=tbinom|class|constant-flat-singleton-window: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom +truncate=tbinom|class|constant-flat-singleton-window-free-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom +truncate=tbinom|class|zeros-flat-singleton-window: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom +truncate=tbinom|class|zeros-flat-singleton-window-free-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=inflated|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=inflated|class|zeros-flat-pi: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=inflated|class|zeros-flat-pi-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=inflated|class|zeros-flat-prob: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=inflated|class|zeros-flat-prob-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=inflated|class|zeros-flat-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=inflated|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=modified|class|constant-flat-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=modified|class|constant-flat-prob-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=modified|class|constant-flat-size-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=modified|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=modified|class|zeros-flat-p0-interior: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=modified|class|zeros-flat-p0-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=truncated|class|constant-flat-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=truncated|class|constant-flat-prob-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom+zero=truncated|class|constant-flat-size-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom|class|constant-flat-adjacent-sizes: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom|class|zeros-flat-prob-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|binom|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmb|class|constant-flat-adjacent-sizes: expected an estimate, got F:unresolved
+  NEW   phenomenon:flat-maximum|double|cmb|class|constant-flat-bernoulli: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmb|class|constant-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmb|class|constant-flat-prob-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmb|class|constant-flat-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmb|class|zeros-flat-bernoulli: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmb|class|zeros-flat-prob: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmb|class|zeros-flat-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmb|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmb|class|zeros-flat-size-zero-nu: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmb|class|zeros-flat-size-zero-prob: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmp|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|cmp|class|zeros-flat-lambda-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|dweibull|class|zeros-flat-q: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|genbeta|class|constant-flat-power-product: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|geom+zero=modified|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|geom+zero=modified|class|zeros-flat-p0-interior: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|geom+zero=modified|class|zeros-flat-p0-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|gev|class|zeros-flat-location-scale: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|gompertz|class|zeros-flat-a: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|gpd|class|zeros-flat-scale: expected an estimate, got F:unsupported
+  NEW   phenomenon:flat-maximum|double|gpd|class|zeros-flat-threshold-scale: expected an estimate, got F:unresolved
+  NEW   phenomenon:flat-maximum|double|gpd|class|zeros-flat-uniform-translation: expected an estimate, got F:unsupported
+  NEW   phenomenon:flat-maximum|double|hyper|class|zeros-flat-k-max: expected unique = True
+  NEW   phenomenon:flat-maximum|double|hyper|class|zeros-flat-m-max: expected unique = True
+  NEW   phenomenon:flat-maximum|double|lgser+zero=modified|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|lgser+zero=modified|class|zeros-flat-p0-interior: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|lgser+zero=modified|class|zeros-flat-p0-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=inflated|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=inflated|class|zeros-flat-pi: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=inflated|class|zeros-flat-pi-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=inflated|class|zeros-flat-prob: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=inflated|class|zeros-flat-prob-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=inflated|class|zeros-flat-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=inflated|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=modified|class|constant-flat-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=modified|class|constant-flat-prob-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=modified|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=modified|class|zeros-flat-p0-interior: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=modified|class|zeros-flat-p0-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=truncated|class|constant-flat-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom+zero=truncated|class|constant-flat-prob-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom|class|zeros-flat-prob-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nbinom|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nhyper|class|constant-flat-adjacent-populations: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|pig|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|pig|class|zeros-flat-shape-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|pois +truncate=tpois|class|constant-flat-singleton-window: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|pois +truncate=tpois|class|zeros-flat-singleton-window: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|pois+zero=inflated|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|pois+zero=inflated|class|zeros-flat-pi-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|pois+zero=modified|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|pois+zero=modified|class|zeros-flat-p0-interior: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|pois+zero=modified|class|zeros-flat-p0-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|sged|class|zeros-flat-reciprocal-skews: expected an estimate, got F:unresolved
+  NEW   phenomenon:flat-maximum|double|tlambda|class|zeros-flat-scale: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|tlambda|class|zeros-flat-support-contacts: expected an estimate, got F:unresolved
+  NEW   phenomenon:flat-maximum|double|tlambda|class|zeros-flat-uniform-1: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|tlambda|class|zeros-flat-uniform-2: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|zeta +truncate=zipf|class|constant-flat-singleton-window: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|bbinom|class|constant-flat-adjacent-sizes: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|bbinom|class|zeros-flat-alpha: expected at least two distinct admissible maximizer witnesses
+  NEW   phenomenon:flat-maximum|native|bbinom|class|zeros-flat-beta: expected at least two distinct admissible maximizer witnesses
+  NEW   phenomenon:flat-maximum|native|bbinom|class|zeros-flat-free: expected an estimate, got F:unsupported
+  NEW   phenomenon:flat-maximum|native|bbinom|class|zeros-flat-size-alpha: expected at least two distinct admissible maximizer witnesses
+  NEW   phenomenon:flat-maximum|native|bbinom|class|zeros-flat-size-beta: expected at least two distinct admissible maximizer witnesses
+  NEW   phenomenon:flat-maximum|native|bbinom|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses
+  NEW   phenomenon:flat-maximum|native|binom +truncate=tbinom|class|constant-flat-singleton-window: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom +truncate=tbinom|class|constant-flat-singleton-window-free-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom +truncate=tbinom|class|zeros-flat-singleton-window: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom +truncate=tbinom|class|zeros-flat-singleton-window-free-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=inflated|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=inflated|class|zeros-flat-pi: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=inflated|class|zeros-flat-pi-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=inflated|class|zeros-flat-prob: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=inflated|class|zeros-flat-prob-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=inflated|class|zeros-flat-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=inflated|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=modified|class|constant-flat-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=modified|class|constant-flat-prob-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=modified|class|constant-flat-size-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=modified|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=modified|class|zeros-flat-p0-interior: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=modified|class|zeros-flat-p0-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=truncated|class|constant-flat-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=truncated|class|constant-flat-prob-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom+zero=truncated|class|constant-flat-size-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom|class|constant-flat-adjacent-sizes: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom|class|zeros-flat-prob-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|binom|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmb|class|constant-flat-adjacent-sizes: expected an estimate, got F:unresolved
+  NEW   phenomenon:flat-maximum|native|cmb|class|constant-flat-bernoulli: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmb|class|constant-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmb|class|constant-flat-prob-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmb|class|constant-flat-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmb|class|zeros-flat-bernoulli: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmb|class|zeros-flat-prob: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmb|class|zeros-flat-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmb|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmb|class|zeros-flat-size-zero-nu: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmb|class|zeros-flat-size-zero-prob: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmp|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|cmp|class|zeros-flat-lambda-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|dweibull|class|zeros-flat-q: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|genbeta|class|constant-flat-power-product: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|geom+zero=modified|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|geom+zero=modified|class|zeros-flat-p0-interior: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|geom+zero=modified|class|zeros-flat-p0-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|gev|class|zeros-flat-location-scale: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|gompertz|class|zeros-flat-a: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|gpd|class|zeros-flat-scale: expected an estimate, got F:unsupported
+  NEW   phenomenon:flat-maximum|native|gpd|class|zeros-flat-threshold-scale: expected an estimate, got F:unresolved
+  NEW   phenomenon:flat-maximum|native|gpd|class|zeros-flat-uniform-translation: expected an estimate, got F:unsupported
+  NEW   phenomenon:flat-maximum|native|hyper|class|zeros-flat-k-max: expected unique = True
+  NEW   phenomenon:flat-maximum|native|hyper|class|zeros-flat-m-max: expected unique = True
+  NEW   phenomenon:flat-maximum|native|lgser+zero=modified|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|lgser+zero=modified|class|zeros-flat-p0-interior: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|lgser+zero=modified|class|zeros-flat-p0-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=inflated|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=inflated|class|zeros-flat-pi: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=inflated|class|zeros-flat-pi-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=inflated|class|zeros-flat-prob: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=inflated|class|zeros-flat-prob-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=inflated|class|zeros-flat-size: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=inflated|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=modified|class|constant-flat-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=modified|class|constant-flat-prob-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=modified|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=modified|class|zeros-flat-p0-interior: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=modified|class|zeros-flat-p0-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=truncated|class|constant-flat-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom+zero=truncated|class|constant-flat-prob-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom|class|zeros-flat-prob-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nbinom|class|zeros-flat-size-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nhyper|class|constant-flat-adjacent-populations: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|pig|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|pig|class|zeros-flat-shape-zero: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|pois +truncate=tpois|class|constant-flat-singleton-window: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|pois +truncate=tpois|class|zeros-flat-singleton-window: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|pois+zero=inflated|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|pois+zero=inflated|class|zeros-flat-pi-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|pois+zero=modified|class|zeros-flat-free: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|pois+zero=modified|class|zeros-flat-p0-interior: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|pois+zero=modified|class|zeros-flat-p0-one: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|sged|class|zeros-flat-reciprocal-skews: expected an estimate, got F:unresolved
+  NEW   phenomenon:flat-maximum|native|tlambda|class|zeros-flat-scale: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|tlambda|class|zeros-flat-support-contacts: expected an estimate, got F:unresolved
+  NEW   phenomenon:flat-maximum|native|tlambda|class|zeros-flat-uniform-1: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|tlambda|class|zeros-flat-uniform-2: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|zeta +truncate=zipf|class|constant-flat-singleton-window: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic

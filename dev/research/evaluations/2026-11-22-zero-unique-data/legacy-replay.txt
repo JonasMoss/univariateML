@@ -1,0 +1,4 @@
+native hyper 29 raw differences reproduced by the original driver
+native nhyper 3 raw differences reproduced by the original driver
+native triang 7 raw differences reproduced by the original driver
+double triang 1 raw differences reproduced by the original driver

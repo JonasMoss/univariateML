@@ -1,0 +1,14 @@
+fit-consistency: failures by check: {'phenomenon:flat-maximum': 12}
+fit-consistency: 0 listed as known, 12 new, 0 listed but passing
+  NEW   phenomenon:flat-maximum|double|nhyper|class|zeros-flat-N: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nhyper|class|zeros-flat-N-r: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nhyper|class|zeros-flat-free: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nhyper|class|zeros-flat-free-r: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nhyper|class|zeros-flat-m: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|double|nhyper|class|zeros-flat-m-r: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nhyper|class|zeros-flat-N: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nhyper|class|zeros-flat-N-r: expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nhyper|class|zeros-flat-free: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nhyper|class|zeros-flat-free-r: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nhyper|class|zeros-flat-m: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
+  NEW   phenomenon:flat-maximum|native|nhyper|class|zeros-flat-m-r: expected unique = False, expected at least two distinct admissible maximizer witnesses, missing outcome diagnostic
