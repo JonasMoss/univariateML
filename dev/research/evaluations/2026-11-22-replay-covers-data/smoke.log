@@ -1,0 +1,20 @@
+cert-replay: 108.5 wall s, 50 digits, 0/6 records cached
+  dgamma  joint-cover holds  1
+  dgamma  support     holds  1
+  ht      face-cover  holds  1
+  huber   epsilon-cover holds  1
+  huber   epsilon-face holds  1
+  invtrgamma power-basin holds  1
+  invtrgamma power-cover holds  1
+  sgomp   rate-cover  holds  1
+  sgomp   rate-enclosure holds  1
+  sgomp   shape-enclosure holds  1
+  sgomp   support     holds  1
+  trgamma power-basin holds  1
+  trgamma power-cover holds  1
+6 cases judged
+cert-replay: failures by check: none
+cert-replay: 0 listed as known, 0 new, 0 listed but passing
+real 109.15
+user 109.02
+sys 0.09

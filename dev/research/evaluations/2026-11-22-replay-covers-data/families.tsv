@@ -1,0 +1,19 @@
+family	mechanism	records	holds	open	fails	informational	record CPU s
+pareto2	E/F	132	350	0	0	42	10.058
+invpareto	E/F	130	264	0	0	0	12.722
+betapr	E/F	0	0	0	0	0	0.000
+burr	E/F	48	156	0	0	0	5.851
+gpd	F	142	266	0	0	0	1315.766
+ht	E/F	232	288	2	0	0	6301.338
+skellam	F	56	52	4	0	0	10.131
+slash	F	134	376	0	0	0	2188.207
+sgomp	F	148	316	0	0	0	519.984
+dgamma	F	120	228	2	0	0	777.018
+paralogis	E/F	156	346	0	0	0	1085.708
+invparalogis	E/F	174	380	2	0	0	1296.527
+foldnorm	F	186	270	0	0	0	23.640
+fatigue	F	126	242	10	0	0	19.268
+cauchy	F	154	224	0	0	0	1.403
+trgamma	E/F	112	164	0	0	0	19.308
+invtrgamma	E/F	90	120	0	0	0	16.808
+huber	E/F	116	172	0	0	0	54.905

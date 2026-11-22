@@ -1,0 +1,20 @@
+UMVL_TEST_TIER=full /tmp/umvl-cpu/run4 just test-changed --no-long-double
+100% tests passed, 0 tests failed out of 179
+100% tests passed, 0 tests failed out of 179
+[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65860 ]
+# tests 587
+# pass 587
+# fail 0
+Results: [{"command": ["just", "cpp-test"], "exit": 0, "seconds": 885.94}, {"command": ["just", "cpp-test-no-long-double"], "exit": 0, "seconds": 777.75}, {"command": ["just", "test"], "exit": 0, "seconds": 823.46}, {"command": ["just", "js-build"], "exit": 0, "seconds": 105.36}, {"command": ["just", "js-test"], "exit": 0, "seconds": 185.96}]
+real 2779.89
+user 10381.44
+sys 177.46
+/tmp/umvl-cpu/run just truth-check
+....................................
+----------------------------------------------------------------------
+Ran 36 tests in 42.588s
+
+OK
+real 43.12
+user 42.91
+sys 0.24
