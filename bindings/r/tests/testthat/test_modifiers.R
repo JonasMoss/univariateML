@@ -215,10 +215,12 @@ test_that("generic conditional tails preserve tiny log complements and refuse un
   observed<-pml(250,f,log.p=TRUE)
   expect_lt(observed,0)
   expect_equal(observed/expected,1,tolerance=1e-12)
-  for(id in c("geom","nbinom")) {
-    args<-if(id=="geom")list(prob=.3) else list(size=2,prob=.3)
-    expect_error(do.call(get(paste0("ml",id)),c(args,list(truncate=c(1e9,1e9+10)))),"normalization.*floating-point accuracy")
-  }
+  expect_error(mlgeom(prob=.3,truncate=c(1e9,1e9+10)),"normalization.*floating-point accuracy")
+  # Short NB windows now resolve by direct summation. A wider window still
+  # exercises the generic path's resolution guard.
+  nb<-mlnbinom(size=2,prob=.3,truncate=c(1e9,1e9+10))
+  expect_equal(sum(dml(1e9+0:10,nb)),1,tolerance=1e-12)
+  expect_error(mlnbinom(size=2,prob=.3,truncate=c(1e9,1e9+256)),"normalization.*floating-point accuracy")
 })
 test_that("generic quantiles resolve endpoint atoms and refuse ill-conditioned transforms", {
   f<-mlgeom(prob=1e-9,truncate=c(1e9,Inf))
@@ -468,18 +470,6 @@ test_that("every discrete modifier configuration round trips in four modes", {
                      "zero or unresolved probability|evaluation failed|empty|invalid",info=case$label)
         next
       }
-    }
-    # These are inherited evaluator/domain refusals, recorded before the
-    # quantile change; do not count an unconstructed law as a round trip.
-    if(case$id=="nbinom" && !is.null(window) && is.finite(window[2]) &&
-       window[2]<=12 && case$args$size==1e8 && case$args$prob==.5) {
-      expect_error(do.call(mlnbinom,c(case$args,case$config)),
-                   "Conditional normalization cannot be resolved",info=case$label)
-      next
-    }
-    if(case$id=="lgser" && identical(case$config$zero,"none") && case$args$theta==0) {
-      expect_error(do.call(mllgser,c(case$args,case$config)),"held `theta`",info=case$label)
-      next
     }
     fit<-do.call(get(paste0("ml",case$id)),c(case$args,case$config))
     for(lower in c(TRUE,FALSE))for(log in c(FALSE,TRUE)) {

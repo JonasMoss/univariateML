@@ -157,3 +157,18 @@ TEST_CASE("zero-modified logarithmic replay retains its primary fit uncertified"
   CHECK(held.logLik==doctest::Approx(primary.logLik+2*std::log1p(-.2)).epsilon(1e-14));
   CHECK_FALSE(cppunivariate::outcome(held).certified);
 }
+
+TEST_CASE("lgser theta-zero evaluation is the point mass at one") {
+  CHECK(cppunivariate::distributions::dlgser(0, 0, false) == 0);
+  CHECK(cppunivariate::distributions::dlgser(1, 0, true) == 0);
+  CHECK(cppunivariate::distributions::dlgser(2, 0, false) == 0);
+  CHECK(cppunivariate::distributions::plgser(.5, 0, true, false) == 0);
+  CHECK(cppunivariate::distributions::plgser(1, 0, true, false) == 1);
+  CHECK(cppunivariate::distributions::plgser(1, 0, false, true) ==
+        -std::numeric_limits<double>::infinity());
+  for (const double p : {0., .5, 1.}) {
+    CHECK(cppunivariate::distributions::qlgser(p, 0, true, false) == 1);
+    CHECK(cppunivariate::distributions::qlgser(p, 0, false, false) == 1);
+  }
+  CHECK(std::isnan(cppunivariate::distributions::qlgser(-.5, 0, true, false)));
+}

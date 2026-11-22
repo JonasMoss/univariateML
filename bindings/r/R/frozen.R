@@ -71,6 +71,7 @@ ml_build_fixed_model <- function(name, supplied, call, frozen, x) {
   for (p in meta$params) {
     v <- values[[p$name]]
     domain <- p$domain
+    if (frozen && name == "mllgser" && p$name == "theta") domain <- "[0, 1)"
     ends <- strsplit(substr(domain, 2, nchar(domain)-1), ",", fixed = TRUE)[[1]]
     bounds <- vapply(ends, function(e) eval(parse(text = e), env), numeric(1))
     valid <- (if (substr(domain, 1, 1) == "[") v >= bounds[1] else v > bounds[1]) &&
