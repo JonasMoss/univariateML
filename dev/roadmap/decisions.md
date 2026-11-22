@@ -8,7 +8,17 @@ Active work lives on the board (`~/boards/univariateML`), not here.
 
 ## 2026-11-22
 
-- **Non-unique maxima are reported by the outcome flag only (Claude, for Jonas to confirm)**. Fits with established non-uniqueness return `unique = FALSE` without a warning. The fit carries its maximizers and the shared print method reports non-uniqueness. When a maximizing family is too large to enumerate, the fit carries representative points and describes the set in `outcome_message`.
+- **Non-unique maxima carry a typed maximizer set (Jonas)**. A fit whose maximizers are proved to form more than one
+  point returns an estimate with `unique = FALSE` and the whole set as a typed value: a union of pieces, each a finite
+  list of points (exact or enclosed), a box (fixed coefficients plus intervals with open or closed ends, integer
+  flags and linear constraints between integer coordinates), or a named relation (product or ratio level sets).
+  Representative rows in `maximizers` and the text of `outcome_message` are derived from the set, and strict compares
+  the returned set with the proved one. This refines the entry below (which stays: flag, no warning, maximizers);
+  free-text descriptions of the set are an interim form. Alternatives rejected: flag only (the set is unknown to the
+  user); refusing as unidentified (discards a valid estimate, against principle 1); listing every point (impossible
+  for intervals and rays). Design first: `dev/design/maximizer-sets.md` (TASK-234), then one implementation job
+  (TASK-229). Situations: [zero-unique inventory](../research/evaluations/2026-11-22-zero-unique-report.md).
+- **Non-unique maxima are reported by the outcome flag only (Claude, for Jonas to confirm; refined above)**. Fits with established non-uniqueness return `unique = FALSE` without a warning. The fit carries its maximizers and the shared print method reports non-uniqueness. When a maximizing family is too large to enumerate, the fit carries representative points and describes the set in `outcome_message`.
 
 ## 2026-11-20
 
