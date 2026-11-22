@@ -30,3 +30,12 @@ stopped all four job units. Since then every job and batch-check unit runs in `~
 (`MemoryHigh=14G`, `MemoryMax=16G`, `CPUWeight=20`), so a runaway build is killed inside the slice, and the job brief
 requires the recipes for builds and tests, a compiled package before any parallel testthat run, and `MAKEFLAGS` no
 larger than the slots held.
+
+**2026-11-22, run4 against run4.** With three jobs queueing several `run4` commands at once (one job had four
+waiting concurrently), five `run4` waiters raced on randomised backoff and qged-affine's `test-changed` waited over an
+hour while later arrivals got the slots. The wrapper now queues `run4` waiters first-come-first-served: each holds a
+flocked ticket file in `/tmp/umvl-cpu/queue4/` (arrival time + pid, renamed into place only once locked) and only the
+oldest live ticket tries for slots 0..3; a ticket whose owner died is unlocked and removed by the next waiter.
+Tested in a scratch pool (four staggered waiters start in arrival order; a killed waiter does not block the queue).
+Waiters started before the change keep the old loop until they get their slots. Backup of the previous wrapper:
+`~/.local/share/umvl-cpu/umvl-cpu-wrapper.py.bak-20261122`.
