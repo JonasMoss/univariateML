@@ -1,4 +1,5 @@
 #pragma once
+#include <string_view>
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -15,7 +16,7 @@ inline constexpr double kTlambdaLambdaLower = -1.0;
 inline constexpr double kTlambdaLambdaUpper = 1.0;
 
 enum class TlambdaStatus { Ok, InvalidData, InvalidShape, IterationFailure, Unbounded, CollapseLimit, InvalidSupport, CertificateFailure, TransformFailure };
-struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; bool certified=false; double certificate_lower=NAN,certificate_upper=NAN; StopDetail stop_detail={}; };
+struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; bool certified=false; double certificate_lower=NAN,certificate_upper=NAN; StopDetail stop_detail={}; std::string_view maximizer_set{}; };
 namespace tlambda_detail {
 inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int maxit,double tol=1e-10) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -39,6 +40,52 @@ inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int 
     out.stop_detail.loglik_lower=ll-pad;out.stop_detail.loglik_upper=INFINITY;
     out.stop_detail.segment_loglik_upper=ideal+pad;
   }
+  return out;
+}
+// A constant sample with held scale maximizes at translations of a uniform
+// member, or at both support contacts for a held shape strictly between 1 and 2.
+inline TlambdaResult constant_location(double value,std::size_t n,double sigma,double lambda,double tol) {
+  const bool free_shape=std::isnan(lambda);
+  if(free_shape)lambda=kTlambdaLambdaUpper;
+  const bool uniform=lambda==1 || lambda==2;
+  TlambdaResult out{value,sigma,lambda,NAN,0,TlambdaStatus::CertificateFailure};
+  if(!uniform && !(lambda>1 && lambda<2))return out;
+  const double width=sigma/lambda;
+  const double left=value-width,right=value+width;
+  double other;
+  if(uniform) {
+    other=value-width/2;
+    if(other==value || !std::isfinite(other))other=std::nextafter(value,-INFINITY);
+    if(!std::isfinite(other) || slack(value,other,sigma,lambda)<0)
+      other=std::nextafter(value,INFINITY);
+    if(!std::isfinite(other) || slack(value,other,sigma,lambda)<0)return out;
+  } else {
+    // Use the same rounded support contacts as the public density. When
+    // the affine residual is nonzero, also bound the coefficient error.
+    const auto contact=[&](double mu,double image) {
+      if(!std::isfinite(mu))return false;
+      if(slack(value,mu,sigma,lambda)==0)return true;
+      if(image!=value)return false;
+      const double distance=std::abs(value-mu);
+      const double delta=std::abs(std::fma(lambda,distance,-sigma))/lambda;
+      const double pad=4*std::numeric_limits<double>::epsilon()*distance;
+      return delta+pad<=tol*std::abs(mu);
+    };
+    if(!(left<value && value<right) || !contact(left,left+width) || !contact(right,right-width))return out;
+    out.mu=left;
+    other=right;
+  }
+  out.logLik=-static_cast<double>(n)*(std::log(sigma)+(lambda==1?std::log(2.):0));
+  out.status=TlambdaStatus::Ok;
+  out.certified=true;
+  if(free_shape)out.restricted|=32u;
+  out.maximizer_set=uniform
+    ? (free_shape
+      ? "All locations abs(mu - x[1]) <= sigma at lambda = 1 maximize the likelihood."
+      : "All locations abs(mu - x[1]) <= sigma / lambda maximize the likelihood.")
+    : "Exactly the two support contacts mu = x[1] +/- sigma / lambda maximize the likelihood.";
+  out.stop_detail.candidates={{{out.mu,sigma,lambda},out.logLik,out.logLik},
+                              {{other,sigma,lambda},out.logLik,out.logLik}};
   return out;
 }
 inline double likelihood(span x,double mu,double sigma,double lambda) {
@@ -82,6 +129,17 @@ inline TlambdaResult tlambda_mle(span x,double tol,int maxit,double lambda,doubl
     return {NAN,NAN,NAN,NAN,0,TlambdaStatus::Unbounded};
 
   maxit = static_cast<int>(solver_budget(maxit));
+  if(std::isnan(mu) && sigma>0 && std::isfinite(sigma) &&
+      std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
+    const auto flat=tlambda_detail::constant_location(x[0],x.size(),sigma,lambda,tol);
+    if(flat.status==TlambdaStatus::Ok)return flat;
+    // A uniform center is exact even when the second witness cannot be represented.
+    if(std::isnan(lambda) || lambda==1 || lambda==2) {
+      auto stop=flat;
+      stop.stop_detail.accuracy_stop=AccuracyStop::Conditioning;
+      return stop;
+    }
+  }
   auto r=tlambda_cert_detail::fit(x,tol,maxit,lambda,mu,sigma);
   if(r.status==TlambdaStatus::InvalidData && tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() &&
       std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))r.status=TlambdaStatus::TransformFailure;
@@ -107,7 +165,7 @@ inline FitOutcome outcome(const TlambdaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     case TlambdaStatus::TransformFailure:return FitOutcome::failure(OutcomeReason::Evaluation);
-    case TlambdaStatus::Ok: return FitOutcome::estimate(r.certified);
+    case TlambdaStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizer_set.empty());
     case TlambdaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TlambdaStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case TlambdaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

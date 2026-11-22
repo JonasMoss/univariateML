@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include <string_view>
 #include "../norm/dpqr.hpp"
 #include "../unif/dpqr.hpp"
 #include "../hnorm/dpqr.hpp"
@@ -56,6 +57,7 @@ struct SgedResult {
   StopDetail stop_detail{};
   bool certified = false;
   bool accuracy_failure=false;
+  std::string_view maximizer_set{};
 };
 
 #include "certificate.hpp"
@@ -547,6 +549,42 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
 }
 
 
+namespace sged_profile {
+inline SgedResult centered_reciprocal(span x,double mean,double sd,double tol,int maxit) {
+  // At nu = 9/4 the centered profile has derivative sign K - H(u).
+  // The interval bounds documented in the dossier prove exactly one crossing
+  // on [0,1], bracketed by .0008 and .001. Reflection preserves the likelihood.
+  constexpr double nu=2.25;
+  const double g1=std::tgamma(1/nu),g2=std::tgamma(2/nu),g3=std::tgamma(3/nu);
+  const double a=1-g2*g2/(g1*g3),c=std::pow(g2/g1,nu);
+  const double k=(4*a-1)/(2*nu*c);
+  const auto h=[&](double u) {return std::pow(u,nu-2)*(2-u)*(1-u+a*u*u);};
+  const auto skew=[](double u) {return 1/std::sqrt(1-u);};
+  double lo=.0008,hi=.001;
+  constexpr double pad=128*std::numeric_limits<double>::epsilon();
+  for(int i=0;i<maxit;++i) {
+    const double mid=lo+(hi-lo)/2;
+    // Bound the relative error for both the skew and its reciprocal.
+    if((hi-lo)/(2*(1-hi))+4*std::numeric_limits<double>::epsilon()<=tol) {
+      const double xi=skew(mid);
+      const double ll=x.size()*distributions::dsged(mean,mean,sd,nu,xi,true);
+      const double reflected=x.size()*distributions::dsged(mean,mean,sd,nu,1/xi,true);
+      if(!std::isfinite(ll) || !std::isfinite(reflected))break;
+      SgedResult out{mean,sd,nu,xi,ll,i,SgedStatus::Ok};
+      out.certified=true;
+      out.maximizer_set="Exactly two reciprocal skews maximize the likelihood, one on either side of xi = 1.";
+      out.stop_detail.candidates={{{mean,sd,nu,xi},ll,ll},{{mean,sd,nu,1/xi},reflected,reflected}};
+      return out;
+    }
+    const double value=h(mid);
+    if(value<k-pad)lo=mid;
+    else if(value>k+pad)hi=mid;
+    else break;
+  }
+  return {mean,sd,nu,NAN,NAN,0,SgedStatus::CertificateFailure};
+}
+} // namespace sged_profile
+
 inline SgedResult sged_mle(span x,double tol=1e-10,int maxit=200,double mean= std::numeric_limits<double>::quiet_NaN(),double sd= std::numeric_limits<double>::quiet_NaN(),double nu= std::numeric_limits<double>::quiet_NaN(),double xi= std::numeric_limits<double>::quiet_NaN()) {
   if((!std::isnan(mean)&&!std::isfinite(mean)) || (!std::isnan(sd)&&!(sd>0&&std::isfinite(sd))) || (!std::isnan(nu)&&!(nu>0&&std::isfinite(nu))) || (!std::isnan(xi)&&!(xi>0&&std::isfinite(xi))))return {NAN,NAN,NAN,NAN,NAN,0,SgedStatus::InvalidStart};
 
@@ -555,6 +593,12 @@ inline SgedResult sged_mle(span x,double tol=1e-10,int maxit=200,double mean= st
   if(tol>0 && std::isfinite(tol) && maxit>0 && !x.empty() && std::isfinite(x[0]) &&
       (std::isnan(sd) && (std::isnan(mean)||mean==x[0])) && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}))
     return {NAN,NAN,NAN,NAN,NAN,0,SgedStatus::Unbounded};
+
+  if(nu==2.25 && std::isfinite(mean) && std::isfinite(sd) && std::isnan(xi) &&
+      std::all_of(x.begin(),x.end(),[&](double v){return v==mean;})) {
+    const auto flat=sged_profile::centered_reciprocal(x,mean,sd,tol,static_cast<int>(solver_budget(maxit)));
+    if(flat.status==SgedStatus::Ok)return flat;
+  }
 
   auto result = [&]() -> SgedResult {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -633,7 +677,7 @@ inline FitOutcome outcome(const SgedResult& r) {
     if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   }
   switch (r.status) {
-    case SgedStatus::Ok: return FitOutcome::estimate(r.certified);
+    case SgedStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizer_set.empty());
     case SgedStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case SgedStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SgedStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

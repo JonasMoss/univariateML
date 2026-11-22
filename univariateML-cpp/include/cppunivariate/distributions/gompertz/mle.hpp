@@ -6,6 +6,7 @@
 // maximiser given b.
 
 #pragma once
+#include <string_view>
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -44,7 +45,9 @@ struct GompertzResult {
  StopDetail stop_detail{};
   // Overdispersed only: the sample lies inside the rounding pad of the
   // exponential boundary, so the limit is the preferred reading, not a proof.
-  bool margin_decided = false; };
+  bool margin_decided = false;
+  std::string_view maximizer_set{};
+};
 
 namespace gompertz_detail {
 constexpr double unit_roundoff = 0x1p-53;
@@ -246,7 +249,7 @@ inline FitOutcome outcome(const GompertzResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case GompertzStatus::Ok: return FitOutcome::estimate(true);
+    case GompertzStatus::Ok: return FitOutcome::estimate(true,r.maximizer_set.empty());
     case GompertzStatus::Overdispersed: return FitOutcome::limit(!r.margin_decided);
     case GompertzStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GompertzStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
@@ -422,7 +425,12 @@ inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b
   for(double v:x){if(!(v>=0 && std::isfinite(v)))return {nan,nan,nan,0,GompertzStatus::InvalidInput};big=std::max(big,v);}
   const double n=static_cast<double>(x.size());int iterations=0;
   if(std::isnan(b)) {
-    if(big==0) return {a,1.0,n*std::log(a),0,GompertzStatus::Ok}; // flat likelihood
+    if(big==0) {
+      GompertzResult out{a,1.0,n*std::log(a),0,GompertzStatus::Ok};
+      out.maximizer_set="Every b > 0 maximizes the likelihood at the held a.";
+      out.stop_detail.candidates={{{a,1},out.logLik,out.logLik},{{a,2},out.logLik,out.logLik}};
+      return out;
+    }
     double sumy = 0;
     for (double v : x) sumy += v / big;
     const auto exponential_limit = [&](bool margin_decided) {

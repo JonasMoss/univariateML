@@ -179,6 +179,11 @@ Held shapes above 1 are accepted when the tie condition allows them. A held shap
 
 With the shape held, holding the scale leaves a one-dimensional fit for the location (certified for nonpositive shape), and holding the location leaves one for the scale. With the shape free, the fit profiles over $\xi$ and compares interior maxima with both shape bounds. The shape-only search is certified as described below. The general all-free fit uses the global cover below. Conditional searches with a free shape and one held nuisance coefficient attempt the constrained cover described below; unresolved cases retain the numerical search result. The default fit needs three finite, non-constant observations.
 
+If all observations equal the held location and scale is held, the
+standardized residual vanishes and every fitted shape in $[-1,1]$ gives
+density $1/(e\sigma)$. Holding the shape as well leaves a single member.
+
+
 
 At fixed scale and $-1<\xi<0$, set
 $t_i=1+\xi(x_i-\mu)/\sigma$. The location score and curvature are

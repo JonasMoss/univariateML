@@ -37,7 +37,7 @@ params:
   domain: (-inf, inf)
   simulate: 0
   kind: design
-  advice: 'Supply a finite held mu. With sigma and xi free, threshold ties give unbounded likelihood, so choose mu strictly below the data. With mu free the unrestricted likelihood is unbounded; free-threshold fits with other coefficients held are not supported.'
+  advice: 'Supply a finite held mu. With sigma and xi free, threshold ties give unbounded likelihood, so choose mu strictly below the data. With mu free the unrestricted likelihood is unbounded. With sigma held, a constant sample admits a free-threshold fit when xi is held at -1 or free.'
 - name: sigma
   symbol: '\sigma'
   role: scale
@@ -125,8 +125,7 @@ existence:
     nonempty finite sample at or above the held threshold. It need not be
     unique, since all-zero excesses give a flat shape likelihood.
     With scale held and threshold free, a finite maximum exists within
-    $\xi\ge-1$ for every nonempty finite sample, but these fits are not supported.
-    Free-threshold subsets are not supported even when finite maxima exist.
+    $\xi\ge-1$ for every nonempty finite sample. The fitter implements the constant-sample slices when shape is free or held at the uniform member.
     Holding all coefficients leaves likelihood evaluation.
   reason: >-
     With $\xi<-1$, moving the upper endpoint onto the sample maximum creates
@@ -162,7 +161,7 @@ For strictly positive excesses, a finite MLE exists within $\xi\ge-1$. Maximizin
 
 For $k$ observations at the held threshold, each density factor equals $1/\sigma$. For a fixed $\xi>0$, every positive excess $d$ contributes asymptotically $\xi^{-1-1/\xi}d^{-1-1/\xi}\sigma^{1/\xi}$. Thus the likelihood has order $\sigma^{(n-k)/\xi-k}$. It diverges if $\xi k>n-k$. At equality its positive finite limit is the supremum for that fixed-shape scale problem: the scaled scale score is negative everywhere. If every observation equals the threshold, likelihood diverges as $\sigma^{-n}$. With both shape and scale free, any threshold tie allows a strictly negative exponent by choosing $\xi>(n-k)/k$.
 
-For held shape $\xi>-1$ and at least one positive excess, a strictly decreasing scaled scale score gives a unique root whenever collapse is excluded. At shape zero this is the mean excess. At $\xi=-1$ the uniform maximum is attained at the largest excess, provided it is positive. Constant positive excesses and single positive observations are allowed. Holding scale gives a scalar shape likelihood over its support-feasible interval within $\xi\ge-1$. If $\sigma\ge M=\max_i(x_i-\mu)>0$, the uniform member is the unique maximum: every density factor is at most $1/\sigma$, and any positive excess makes this inequality strict for $\xi>-1$. If $\sigma<M$, the global scalar certificate below applies. All-zero excesses with held scale give a flat shape likelihood and report an unresolved comparison with witnesses.
+For held shape $\xi>-1$ and at least one positive excess, a strictly decreasing scaled scale score gives a unique root whenever collapse is excluded. At shape zero this is the mean excess. At $\xi=-1$ the uniform maximum is attained at the largest excess, provided it is positive. Constant positive excesses and single positive observations are allowed. Holding scale gives a scalar shape likelihood over its support-feasible interval within $\xi\ge-1$. If $\sigma\ge M=\max_i(x_i-\mu)>0$, the uniform member is the unique maximum: every density factor is at most $1/\sigma$, and any positive excess makes this inequality strict for $\xi>-1$. If $\sigma<M$, the global scalar certificate below applies. All-zero excesses with held scale give a flat shape likelihood over every fitted shape $\xi\ge-1$.
 
 ## Certificate
 
@@ -246,9 +245,24 @@ With shape held, the strictly decreasing scaled scale score is bracketed in unit
 
 Budget, arithmetic, tie and threshold-collapse outcomes carry `core/stop_detail.hpp` records, with candidate coefficients and global likelihood bounds when available. The fixed-positive-shape threshold-collapse equality records its finite unattained supremum separately from unbounded cases and returns nonexistence with reason `unattained`; no named limit model realizes that joint density. No failed solve returns its last iterate. The global budget is $128\min(\texttt{iterlim},100000)$ subdivision evaluations; root refinements are separately bounded by `iterlim`. Closed-form held subsets need no iterative budget. A fully held model remains likelihood evaluation, including shapes below the fitting restriction.
 
-Free-threshold slices with other parameters held remain unsupported. This is stronger than a mathematical assertion of non-existence for those slices. For example, with exponential shape and scale held, the likelihood increases to a finite maximum at the sample minimum. With uniform shape and scale held, compatible thresholds form an attained plateau. The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-extreme.md) records the limiting paths; its older universal free-threshold claim does not cover these closed-support submodels.
+With scale held and threshold free, let $R=\max_i x_i-\min_i x_i$.
+At the uniform shape $\xi=-1$, every $\mu\in[\max_i x_i-\sigma,\min_i x_i]$
+is compatible when $\sigma\ge R$, and the interval is a singleton if $\sigma=R$.
+These thresholds attain the bound $\sigma^{-n}$. If shape is also free, a positive
+excess makes the density strictly less than $1/\sigma$ at any shape above
+$-1$. For a constant sample, the maximizer set therefore also includes all
+$\xi\ge-1$ at $\mu=x_1$. This constant-sample subset is implemented.
+The fitter checks the support of the uniform witness with an error-free
+subtraction residual when the rounded distance equals the held scale.
+Numerical inference is unavailable for these non-unique free-threshold fits.
 
-With scale held, estimating the threshold still permits a finite maximum within $\xi\ge-1$. Let $R=\max_i x_i-\min_i x_i$. If $\sigma\ge R$, a uniform member covers the sample and attains the joint density bound $\sigma^{-n}$. If $0<\sigma<R$, support feasibility requires $\xi\ge-\sigma/R>-1$. The density then increases as the threshold rises to the sample minimum. At that threshold the shape likelihood is continuous and positive on $(-\sigma/R,\infty)$ and tends to zero at both ends, so a finite maximum exists. This argument does not prove uniqueness, and the interface still requires a held threshold.
+For $0<\sigma<R$, support feasibility with free shape requires
+$\xi\ge-\sigma/R>-1$. The density then increases as the threshold rises to the
+sample minimum. At that threshold the shape likelihood is continuous and
+positive on $(-\sigma/R,\infty)$ and tends to zero at both ends, so a finite
+maximum exists. Nonconstant samples and nonuniform fixed shapes with free
+threshold remain unsupported. For example, the held-scale exponential has a finite
+maximum at the sample minimum.
 
 ## R notes
 
@@ -261,5 +275,4 @@ On 2026-11-05 (TASK-116.2), the 32-cell score scan with local-extremum refinemen
 With a free threshold, the unrestricted likelihood is unbounded for every
 nonempty finite sample. A minimum of multiplicity k contributes exp(k*t)
 along mu = min(x), sigma = exp(-t), xi = t, while the remaining observations
-contribute a factor of order t^(-(n-k)). Other held free-threshold slices
-remain unsupported; their existence is not decided by this path.
+contribute a factor of order t^(-(n-k)). The scale-held uniform slice has the separate attained solution above.

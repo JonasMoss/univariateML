@@ -1,4 +1,5 @@
 #pragma once
+#include <string_view>
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
@@ -20,6 +21,7 @@ struct GpdResult {
   GpdStatus status; unsigned restricted = 0;
   GpdCertificateFailure certificate_failure = GpdCertificateFailure::None;
   StopDetail stop_detail{};
+  std::string_view maximizer_set{};
 };
 // log1p(xi*z)/xi, including the interior exponential member.
 inline double gpd_log_ratio(double z, double xi) {
@@ -181,6 +183,37 @@ inline GpdResult gpd_mle(span x,double tol=1e-10,int maxit=200,double mu=0,doubl
     if(!std::isnan(xi)&&(!std::isfinite(xi)||(xi< -1&&std::isnan(sigma))))return {mu,sigma,xi,NAN,0,GpdStatus::InvalidShape};
     if(x.empty())return {mu,sigma,xi,NAN,0,GpdStatus::InvalidData};
     for(double v:x)if(!std::isfinite(v))return {mu,sigma,xi,NAN,0,GpdStatus::InvalidData};
+    const double value=x[0];
+    if(!std::isnan(sigma) && (std::isnan(xi) || xi==-1) &&
+        std::all_of(x.begin(),x.end(),[&](double v){return v==value;})) {
+      const double ll=-static_cast<double>(x.size())*std::log(sigma);
+      const bool free_shape=std::isnan(xi);
+      GpdResult out{value,sigma,free_shape ? 0. : -1.,ll,0,GpdStatus::Ok};
+      double witness_mu=value;
+      if(free_shape) {
+        out.maximizer_set="All xi >= -1 at mu = x[1], together with xi = -1 and x[1] - sigma <= mu <= x[1], maximize the likelihood.";
+      } else {
+        // Prefer an interior translation. When the span rounds to sigma,
+        // recover the sign of the subtraction error to check closed support.
+        const auto covers=[&](double threshold) {
+          if(!std::isfinite(threshold) || threshold>=value)return false;
+          const double width=value-threshold;
+          if(width!=sigma)return width<sigma;
+          const double shift=width-value;
+          return (value-(width-shift))-(threshold+shift)<=0;
+        };
+        witness_mu=value-sigma/2;
+        if(!covers(witness_mu))witness_mu=std::nextafter(value,-INFINITY);
+        if(!covers(witness_mu)) {
+          out.status=GpdStatus::IterationFailure;
+          out.stop_detail.accuracy_stop=AccuracyStop::Conditioning;
+          return out;
+        }
+        out.maximizer_set="At xi = -1, every x[1] - sigma <= mu <= x[1] maximizes the likelihood.";
+      }
+      out.stop_detail.candidates={{{value,sigma,out.xi},ll,ll},{{witness_mu,sigma,-1},ll,ll}};
+      return out;
+    }
     return {mu,sigma,xi,NAN,0,std::isnan(sigma)&&std::isnan(xi)?GpdStatus::Unbounded:GpdStatus::FreeThreshold};
   }
   constexpr double method_floor=4*std::numeric_limits<double>::epsilon();
@@ -209,6 +242,8 @@ inline bool family_point(const GpdResult&, const FitCandidate& c) {
 // floor on the restriction boundary; none is established as an accurate maximizer.
 inline bool accurate_point(const GpdResult&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const GpdResult& r) {
+  if (r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)
+    return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)
     return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.certificate_failure == GpdCertificateFailure::Budget) return FitOutcome::budget();
@@ -216,7 +251,7 @@ inline FitOutcome outcome(const GpdResult& r) {
   if (r.certificate_failure == GpdCertificateFailure::Tie) return comparison_outcome_of(r);
   if (r.certificate_failure == GpdCertificateFailure::ThresholdCollapse) return std::isfinite(r.stop_detail.limit_loglik) ? FitOutcome::nonexistence(OutcomeReason::Unattained) : FitOutcome::nonexistence(OutcomeReason::Unbounded);
   switch (r.status) {
-    case GpdStatus::Ok: return FitOutcome::estimate(true);
+    case GpdStatus::Ok: return FitOutcome::estimate(true,r.maximizer_set.empty());
     case GpdStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GpdStatus::FreeThreshold: return FitOutcome::failure(OutcomeReason::Unsupported);
     case GpdStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);

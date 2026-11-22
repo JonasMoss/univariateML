@@ -159,11 +159,12 @@ inline GpdResult fit(span y,double mu,double tol,int maxit,double sigma=NAN) {
     GpdResult out{mu,NAN,NAN,NAN,work,GpdStatus::IterationFailure};
     out.certificate_failure=reason;out.stop_detail.budget_exhausted=reason==GpdCertificateFailure::Budget;return out;
   };
-  if(!(M>0)) {
-    auto out=stop(GpdCertificateFailure::Tie);
-    out.stop_detail.loglik_lower=out.stop_detail.loglik_upper=-static_cast<double>(y.size())*std::log(sigma);
-    out.stop_detail.candidates={{{mu,sigma,-1},out.stop_detail.loglik_lower,out.stop_detail.loglik_upper},
-                                {{mu,sigma,0},out.stop_detail.loglik_lower,out.stop_detail.loglik_upper}};
+  if(M==0 && held) {
+    const double ll=-static_cast<double>(y.size())*std::log(sigma);
+    GpdResult out{mu,sigma,0,ll,0,GpdStatus::Ok};
+    out.maximizer_set="Every xi >= -1 maximizes the likelihood at the held threshold and scale.";
+    out.stop_detail.loglik_lower=out.stop_detail.loglik_upper=ll;
+    out.stop_detail.candidates={{{mu,sigma,0},ll,ll},{{mu,sigma,-1},ll,ll}};
     return out;
   }
   if(held && sigma>=M)return {mu,sigma,-1,gpd_loglik(y,sigma,-1),0,GpdStatus::Ok};

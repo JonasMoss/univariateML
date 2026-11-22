@@ -125,3 +125,21 @@ test_that("gompertz sampler avoids extreme intermediate overflow", {
     if (identical(p,c(1,1))) expect_identical(draws,log(1-log(u)))
   }
 })
+
+test_that("gompertz reports the proved non-unique set and the held singleton", {
+  x <- rep(0,4)
+  f <- mlgompertz(x, a=2)
+  fixed <- mlgompertz(x, a=2, b=1)
+  member <- function(w) w$a == 2 & w$b > 0
+  message <- "b > 0"
+  expect_true(attr(f,"certified"))
+  expect_false(attr(f,"unique"))
+  w <- attr(f,"maximizers")
+  expect_equal(nrow(w),2L)
+  expect_equal(nrow(unique(w[names(f)])),2L)
+  expect_true(all(member(w)))
+  expect_match(attr(f,"outcome_message"),message,fixed=TRUE)
+  expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-12)
+  expect_true(attr(fixed,"unique"))
+  expect_null(attr(fixed,"maximizers"))
+})

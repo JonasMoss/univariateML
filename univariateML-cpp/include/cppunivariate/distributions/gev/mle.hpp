@@ -1,4 +1,5 @@
 #pragma once
+#include <string_view>
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/likelihood_polish.hpp"
@@ -21,6 +22,7 @@ struct GevResult {
   double mu, sigma, xi, logLik;
   int iterations;
   GevStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = false; bool finite_collapse=false;
+  std::string_view maximizer_set{};
 };
 inline double gev_log_ratio(double z, double xi) {
   const double v=xi*z;
@@ -727,7 +729,7 @@ inline FitOutcome outcome(const GevResult& r) {
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
-    case GevStatus::Ok: return FitOutcome::estimate(r.certified);
+    case GevStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizer_set.empty());
     case GevStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GevStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case GevStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

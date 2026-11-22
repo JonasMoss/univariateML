@@ -294,3 +294,26 @@ TEST_CASE("gompertz: held hazard resolves a rate and two exponential-face compar
   CHECK(equal.kind == cppunivariate::OutcomeKind::Limit);
   CHECK_FALSE(equal.certified);
 }
+
+TEST_CASE("gompertz: structural non-uniqueness and the fully held singleton") {
+  const std::vector<double> x(4, 0.0);
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gompertz_mle(data,1e-10,100,2,NAN);
+  const auto singleton=cppunivariate::gompertz_mle(data,1e-10,100,2,1);
+  const auto outcome=cppunivariate::outcome(fit);
+  CHECK(outcome.kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(outcome.certified);
+  CHECK_FALSE(outcome.unique);
+  CHECK(fit.maximizer_set.find("b > 0")!=std::string_view::npos);
+  const auto& w=fit.stop_detail.candidates;
+  REQUIRE(w.size()==2);
+  CHECK(w[0].coef!=w[1].coef);
+  for(const auto& row:w) {
+    const auto& p=row.coef;
+    CHECK(p[0]==2);
+    CHECK(p[1]>0);
+    CHECK(4*cppunivariate::distributions::dgompertz(0,p[0],p[1],true)==doctest::Approx(fit.logLik));
+  }
+  CHECK(cppunivariate::outcome(singleton).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(cppunivariate::outcome(singleton).unique);
+}

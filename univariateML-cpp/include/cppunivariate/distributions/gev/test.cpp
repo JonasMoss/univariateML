@@ -1099,3 +1099,28 @@ TEST_CASE("gev: critical fixed-shape collapse has a finite unattained supremum")
   const std::vector<double> majority{0,0,0,0,0,3};
   CHECK(cppunivariate::outcome(cppunivariate::gev_mle(mltest::as_span(majority),1e-10,100,.5)).reason==cppunivariate::OutcomeReason::Unbounded);
 }
+
+TEST_CASE("gev: structural non-uniqueness and the fully held singleton") {
+  const std::vector<double> x(4, 2.0);
+  const auto data=mltest::as_span(x);
+  const auto fit=cppunivariate::gev_mle(data,1e-10,100,NAN,2,3);
+  const auto singleton=cppunivariate::gev_mle(data,1e-10,100,0,2,3);
+  const auto outcome=cppunivariate::outcome(fit);
+  CHECK(outcome.kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(outcome.certified);
+  CHECK_FALSE(outcome.unique);
+  CHECK(fit.maximizer_set.find("-1 <= xi <= 1")!=std::string_view::npos);
+  const auto& w=fit.stop_detail.candidates;
+  REQUIRE(w.size()==2);
+  CHECK(w[0].coef!=w[1].coef);
+  for(const auto& row:w) {
+    const auto& p=row.coef;
+    CHECK(p[0]==2);
+    CHECK(p[1]==3);
+    CHECK(p[2]>=-1);
+    CHECK(p[2]<=1);
+    CHECK(4*cppunivariate::distributions::dgev(2,p[0],p[1],p[2],true)==doctest::Approx(fit.logLik));
+  }
+  CHECK(cppunivariate::outcome(singleton).kind==cppunivariate::OutcomeKind::Estimate);
+  CHECK(cppunivariate::outcome(singleton).unique);
+}

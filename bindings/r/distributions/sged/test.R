@@ -1016,3 +1016,24 @@ test_that("loose tolerance retains the held-sd two-point public mean", {
   expect_true(attr(f,"certified"))
   expect_lte(abs(unname(f[["mean"]])-reference),1e-10*reference)
 })
+
+test_that("sged reports the proved non-unique set and the held singleton", {
+  x <- rep(0,4)
+  f <- mlsged(x, mean=0, sd=1, nu=2.25)
+  fixed <- mlsged(x, mean=0, sd=1, nu=2.25, xi=1)
+  member <- function(w) w$mean == 0 & w$sd == 1 & w$nu == 2.25
+  w <- attr(f,"maximizers")
+  expect_true(min(w$xi)<1 && max(w$xi)>1)
+  expect_equal(prod(w$xi),1,tolerance=1e-14)
+  message <- "two reciprocal skews"
+  expect_true(attr(f,"certified"))
+  expect_false(attr(f,"unique"))
+  w <- attr(f,"maximizers")
+  expect_equal(nrow(w),2L)
+  expect_equal(nrow(unique(w[names(f)])),2L)
+  expect_true(all(member(w)))
+  expect_match(attr(f,"outcome_message"),message,fixed=TRUE)
+  expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-12)
+  expect_true(attr(fixed,"unique"))
+  expect_null(attr(fixed,"maximizers"))
+})

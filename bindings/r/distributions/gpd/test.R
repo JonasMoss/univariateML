@@ -136,9 +136,9 @@ test_that("GPD exhausted tail bracket is a numerical stop", {
     expect_equal(err$kind,"numerical")
     expect_false(inherits(err,"univariateML_budget"))
   }
-  flat <- tryCatch(mlgpd(c(0,0,0),mu=0,sigma=2),error=identity)
-  expect_s3_class(flat,"univariateML_unresolved")
-  expect_equal(fit_payload(flat)$kind,"unresolved")
+  flat <- mlgpd(c(0,0,0),mu=0,sigma=2)
+  expect_true(attr(flat,"certified"))
+  expect_false(attr(flat,"unique"))
   collapse <- tryCatch(mlgpd(c(0,1,2),mu=0),error=identity)
   expect_s3_class(collapse,"univariateML_stop")
   expect_equal(collapse$kind,"nomle")
@@ -195,4 +195,32 @@ test_that("GPD finite collapse is nonexistence rather than a named limit model",
   expect_s3_class(err,"univariateML_nomle")
   expect_equal(err$reason,"unattained")
   expect_equal(err$limit_loglik,0,tolerance=1e-12)
+})
+
+test_that("GPD reports shape rays, uniform translations and their union", {
+  x <- rep(0,4)
+  for (args in list(list(mu=0),list(mu=NULL,xi=-1),list(mu=NULL))) {
+    f <- do.call(mlgpd,c(list(x=x,sigma=1),args))
+    fixed <- mlgpd(x,mu=0,sigma=1,xi=-1)
+    member <- function(w) {
+      shape <- w$mu == 0 & w$xi >= -1
+      uniform <- w$xi == -1 & w$mu >= -1 & w$mu <= 0
+      w$sigma == 1 & (if (!is.null(args$mu)) shape else if (!is.null(args$xi)) uniform else shape | uniform)
+    }
+    message <- if (!is.null(args$mu)) "Every xi >= -1" else "x[1] - sigma <= mu <= x[1]"
+    expect_true(attr(f,"certified"))
+    expect_false(attr(f,"unique"))
+    w <- attr(f,"maximizers")
+    expect_equal(nrow(w),2L)
+    expect_equal(nrow(unique(w[names(f)])),2L)
+    expect_true(all(member(w)))
+    expect_match(attr(f,"outcome_message"),message,fixed=TRUE)
+    expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-12)
+    expect_true(attr(fixed,"unique"))
+    expect_null(attr(fixed,"maximizers"))
+  }
+  singleton <- suppressWarnings(mlgpd(c(0,1),mu=0,sigma=1),classes="univariateML_restricted")
+  expect_true(attr(singleton,"unique"))
+  expect_equal(unname(singleton[["mu"]]),0)
+  expect_null(attr(singleton,"maximizers"))
 })

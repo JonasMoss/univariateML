@@ -258,6 +258,16 @@ public density evaluator.
 
 The log density uses $u=F(x)$, defined implicitly by the quantile function. The quality specification differentiates this inverse implicitly and uses independent SciPy and mpmath evaluations. The $\lambda=0$ member is logistic. Quantile inversion uses the smaller logarithmic tail in safeguarded Newton steps.
 
+For a constant sample at $x_1$ and held scale, each held uniform shape
+$\lambda\in\{1,2\}$ has maximizing locations
+$|\mu-x_1|\le\sigma/\lambda$. With shape free on $[-1,1]$,
+convexity of $u^{\lambda-1}$ bounds the peak density at every
+$\lambda<1$ by $2^{\lambda-2}/\sigma<1/(2\sigma)$, so only
+the uniform member at one maximizes. At a held $1<\lambda<2$, strict
+concavity of $u^{\lambda-1}+(1-u)^{\lambda-1}$ gives its minimum
+only at $u=0,1$, hence the two maximizing support contacts
+$\mu=x_1\pm\sigma/\lambda$.
+
 ## R notes
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`
