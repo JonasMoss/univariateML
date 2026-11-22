@@ -24,6 +24,7 @@
 #include <cstddef>
 #include <limits>
 #include <map>
+#include <string>
 #include <vector>
 
 namespace cppunivariate {
@@ -46,6 +47,7 @@ struct BinomResult {
 
   bool unique = true;
   bool evaluation_failure = false;
+  std::string maximizer_set{};
 };
 
 inline double binom_lchoose(double n, double k) {
@@ -54,6 +56,16 @@ inline double binom_lchoose(double n, double k) {
 }
 
 namespace binom_detail {
+// For a positive constant x, the adjacent ratio crosses one at p*(n+1)=x.
+// FMA checks equality of the represented p times the exact integer n+1.
+inline double constant_tie_size(int x, double p, double limit) {
+  if (x <= 0 || !(p > 0 && p < 1)) return NAN;
+  const double crossing = std::round(x / p);
+  if (crossing > x && crossing <= limit && std::fma(p, crossing, -double(x)) == 0)
+    return crossing - 1;
+  return NAN;
+}
+
 // The Poisson limit holds iff mean <= population variance, that is
 // delta = n S + S^2 - n Q <= 0 with S = sum x, Q = sum x^2 (integers; equality
 // selects the limit). The binary64 ratio x_bar / var_pop misdecides exact ties
@@ -128,6 +140,18 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
       if (held_prob==0) { if (max_x>0) return bad(); size=0; }
       else if (held_prob==1) { if (var_pop!=0) return bad(); size=max_x; }
       else {
+        if (std::all_of(x.begin(),x.end(),[&](int v){return v==max_x;})) {
+          const double tied = binom_detail::constant_tie_size(max_x, held_prob, 9007199254740992.);
+          if (std::isfinite(tied)) {
+            const double ll = dn * distributions::dbinom(max_x, tied, held_prob, true);
+            BinomResult result{tied, held_prob, ll, 0, BinomStatus::Ok};
+            result.unique = false;
+            result.maximizer_set = "Exactly the two listed adjacent sizes maximize the likelihood.";
+            result.stop_detail = comparison_detail({{tied,held_prob},ll,ll},
+                                                   {{tied+1,held_prob},ll,ll});
+            return result;
+          }
+        }
         // Adjacent log likelihood ratio decreases strictly in integer size.
         const auto delta=[&](double k) {
           double d=dn*std::log1p(-held_prob);
@@ -358,6 +382,13 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
      std::all_of(x.begin(),x.end(),[](int v){return v==0;})) {
     const bool fs=!std::isnan(size_or_nan),fp=!std::isnan(held_prob);
     stopped.unique=(fs || fp) && !((!fs && held_prob==0) || (!fp && size_or_nan==0));
+    if (!stopped.unique) {
+      const double second_size = fs ? 0 : 1;
+      const double second_prob = fs ? 1 : 0;
+      stopped.stop_detail = comparison_detail({{stopped.size,stopped.prob},0,0},
+                                             {{second_size,second_prob},0,0});
+      stopped.maximizer_set = "Every admissible pair with size = 0 or prob = 0 maximizes the likelihood, subject to held values.";
+    }
   }
   return stopped;
 }

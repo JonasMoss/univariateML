@@ -1,0 +1,2 @@
+Beta-binomial zero estimate and nonzero unsupported outcome confirmed through R.
+Direct R probe exit 0

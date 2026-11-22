@@ -70,7 +70,10 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
                                 out.logLik,out.logLik,"nhyper"});
     };
     add(fit.m, fit.N, fit.r);
-    if (fit.status == cppunivariate::NhyperStatus::Tie) {
+    if (!N.supplied && std::isfinite(fit.tie)) {
+      add(fit.m, fit.tie, fit.r);
+      out.error = "Exactly the two listed adjacent population sizes N maximize the likelihood.";
+    } else if (fit.status == cppunivariate::NhyperStatus::Tie) {
       add(r.supplied ? fit.tie : fit.m, fit.N, r.supplied ? fit.r : fit.tie);
       out.error = "Likelihood tied between adjacent counts; returning the smaller.";
     } else if (fit.r == 0) {

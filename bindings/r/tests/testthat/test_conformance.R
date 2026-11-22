@@ -83,6 +83,11 @@ test_that('every holdable subset fits golden data or gives a declared reason', {
           expect_true(TRUE, info=label)
           next
         }
+        if (id == 'mlbbinom' && length(held) == 0L && any(g$data != 0)) {
+          expect_s3_class(fit, 'univariateML_unsupported')
+          expect_match(conditionMessage(fit), 'Estimating size together with both shapes is not implemented.', fixed = TRUE)
+          next
+        }
         # Free-coordinate exceptions enumerate exact held sets. Only an
         # unsupported adapter coefficient covers supersets containing it.
         exceptions <- Filter(function(h) {

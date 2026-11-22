@@ -46,7 +46,7 @@ r:
   density: dbbinom
   sampler: rbbinom
   control:
-    size: "Required number of trials; NULL estimates size when either shape is held."
+    size: "Required number of trials; NULL estimates size when either shape is held or all counts are zero."
     alpha: "Optional fixed positive alpha; NULL estimates it."
     beta: "Optional fixed value of `beta`; `NULL` (the default) estimates it."
     tol: "Relative accuracy required in every free shape coefficient; a curvature and score enclosure must pass before acceptance."
@@ -73,10 +73,6 @@ references:
 - Griffiths, D. A. (1973). Maximum likelihood estimation for the beta-binomial distribution and an application to
   the household distribution of the total number of cases of a disease. Biometrics, 29(4), 637-648. doi:10.2307/2529131.
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
-holds:
-- held: []
-  status: not-implemented
-  reason: "Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known."
 fit_args:
   size: 10
 examples: |
@@ -102,7 +98,7 @@ relations:
 fit:
   method: profile-search
   certified: partial
-  note: "bbinom/mle.hpp and acceptance.hpp: Certified fixed-size finite fits require a negative-curvature region, score-based enclosures transported to every free public shape, and strict tangent/chord exclusion outside that region. Binomial-limit stops use a signed uniform near-face bound; size-two saturated fits are algebraic. Certificates are conditional on computed comparisons with practical floating-point margins. Unclosed finite or face comparisons, coefficient inclusion and certificate work limits return the successful finite search result uncertified; a failed local solve without a candidate stops. Supported free-size fits retain their integer tail certificates; the unrestricted free-size fit is unsupported. See Details, Fixed-size coefficient acceptance."
+  note: "bbinom/mle.hpp and acceptance.hpp: Certified fixed-size finite fits require a negative-curvature region, score-based enclosures transported to every free public shape, and strict tangent/chord exclusion outside that region. Binomial-limit stops use a signed uniform near-face bound; size-two saturated fits are algebraic. Certificates are conditional on computed comparisons with practical floating-point margins. Unclosed finite or face comparisons, coefficient inclusion and certificate work limits return the successful finite search result uncertified; a failed local solve without a candidate stops. Supported free-size fits retain their integer tail certificates; the unrestricted free-size fit is supported for all-zero samples. See Details, Fixed-size coefficient acceptance."
 areas:
 - counts and ecology
 classification: specialist
@@ -152,7 +148,7 @@ The mass factors as `Gamma(N+1)/Gamma(N+alpha+beta) * Gamma(x+alpha)/Gamma(x+1) 
 
 The limit and sample conditions are supported by the [existence analysis](../../../../../dev/research/evaluations/2026-10-31-open-existence-report.md). The number of trials $n$ is normally known. A binomial-limit declaration requires the signed certificate below; a small finite likelihood gain is never discarded in favour of that limit.
 
-With both shapes held it can also be estimated: each observed probability decreases in $n$ once $n + 1 \ge x(\alpha + \beta - 1)/\alpha$, so a finite search over $n$ finds the maximum. The search shares the enumeration-cell budget across candidate likelihoods. With $n$ also held, the likelihood is simply evaluated. Estimating $n$ with $\alpha$ held uses a negative-binomial face and a uniform tail bound; with both shapes free it remains unsupported. Holding $\beta$ is not equivalent to holding $\alpha$ after reflecting the counts, because the reflection $x \mapsto n - x$ depends on the unknown $n$.
+With both shapes held it can also be estimated: each observed probability decreases in $n$ once $n + 1 \ge x(\alpha + \beta - 1)/\alpha$, so a finite search over $n$ finds the maximum. For a positive constant count $x$, the adjacent ratio crosses one at $x(\alpha+\beta-1)=\alpha(n+1)$. Equality is checked with an error-free expansion for the supplied shape values. The search shares the enumeration-cell budget across candidate likelihoods. With $n$ also held, the likelihood is simply evaluated. Estimating $n$ with $\alpha$ held uses a negative-binomial face and a uniform tail bound; with both shapes free only the all-zero sample is supported. There the maximum requires size zero and every pair of positive shapes attains it. Holding $\beta$ is not equivalent to holding $\alpha$ after reflecting the counts, because the reflection $x \mapsto n - x$ depends on the unknown $n$.
 
 ## Signed binomial-face certificate
 

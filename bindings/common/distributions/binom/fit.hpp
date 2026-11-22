@@ -54,7 +54,19 @@ inline FitResult fit_binom(cppunivariate::ispan x, Held size_arg = {}, Held prob
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  FitResult out;
+  out.warnings = warnings;
+  out.estimates = {{"size",res.size},{"prob",res.prob}};
+  out.logLik = res.logLik;
+  out.iterations = res.iterations;
+  out.has_iterations = true;
+  out.fixed = fixed;
+  out.has_fixed = true;
+  if (!res.maximizer_set.empty()) {
+    out.error = res.maximizer_set;
+    out = stop_failure(std::move(out),res.stop_detail,PayloadKind::Comparison,{"size","prob"});
+  }
+  return out;
 
   }());
 }

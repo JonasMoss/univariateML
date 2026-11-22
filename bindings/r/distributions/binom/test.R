@@ -286,3 +286,27 @@ test_that("held binomial likelihood range failures remain numerical at the core 
   expect_s3_class(base,"univariateML_numerical")
   expect_s3_class(inflated,"univariateML_numerical")
 })
+
+test_that("binomial zero atoms and adjacent sizes report the whole maximizing set", {
+  for (holds in list(list(size = NULL), list(size = 0), list(size = NULL, prob = 0))) {
+    f <- do.call(mlbinom, c(list(x = rep(0, 4)), holds))
+    expect_true(attr(f, "certified"))
+    expect_false(attr(f, "unique"))
+    rows <- attr(f, "maximizers")
+    expect_equal(nrow(unique(rows[c("size", "prob")])), 2L)
+    expect_equal(unname(as.numeric(rows[1, c("size", "prob")])), as.numeric(f))
+    expect_true(all(rows$size == 0 | rows$prob == 0))
+    for (name in names(holds)) if (!is.null(holds[[name]]))
+      expect_true(all(rows[[name]] == holds[[name]]))
+    expect_match(attr(f, "outcome_message"), "size = 0 or prob = 0")
+  }
+  f <- mlbinom(rep(1, 4), size = NULL, prob = .5)
+  expect_true(attr(f, "certified"))
+  expect_false(attr(f, "unique"))
+  rows <- attr(f, "maximizers")
+  expect_equal(rows$size, c(1, 2))
+  expect_equal(rows$prob, c(.5, .5))
+  expect_match(attr(f, "outcome_message"), "adjacent sizes")
+  for (f in list(mlbinom(rep(0, 4), size = 12), mlbinom(rep(0, 4), size = NULL, prob = .5),
+                 mlbinom(rep(5, 4), size = NULL))) expect_true(attr(f, "unique"))
+})

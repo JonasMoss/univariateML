@@ -716,3 +716,38 @@ TEST_CASE("zib: an invalid finite-size witness preserves the unresolved comparis
   CHECK(certified.stop_detail.limit_coef[1] == 0);
   CHECK(std::isfinite(certified.stop_detail.loglik_upper));
 }
+
+TEST_CASE("binom: zero atoms and exact constant-sample size ties") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const std::vector<int> zero(4,0), one(4,1), five(4,5);
+  const auto check = [](const cppunivariate::BinomResult& result, int x,
+                        const std::vector<double>& second) {
+    const auto o = cppunivariate::outcome(result);
+    CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
+    CHECK(o.certified);
+    CHECK_FALSE(o.unique);
+    CHECK_FALSE(result.maximizer_set.empty());
+    const auto& rows = result.stop_detail.candidates;
+    REQUIRE(rows.size() == 2);
+    CHECK(rows[0].coef == std::vector<double>{result.size,result.prob});
+    CHECK(rows[1].coef == second);
+    CHECK(rows[0].coef != rows[1].coef);
+    for (const auto& row : rows)
+      CHECK(4*dist::dbinom(x,row.coef[0],row.coef[1],true) == doctest::Approx(result.logLik));
+  };
+  check(cppunivariate::binom_mle(as_ispan(zero),nan),0,{1,0});
+  check(cppunivariate::binom_mle(as_ispan(zero),0),0,{0,1});
+  check(cppunivariate::binom_mle(as_ispan(zero),nan,1e-10,100,0),0,{1,0});
+  check(cppunivariate::binom_mle(as_ispan(one),nan,1e-10,100,.5),1,{2,.5});
+  for (const auto& result : {
+      cppunivariate::binom_mle(as_ispan(zero),12),
+      cppunivariate::binom_mle(as_ispan(zero),nan,1e-10,100,.5),
+      cppunivariate::binom_mle(as_ispan(five),nan),
+      cppunivariate::binom_mle(as_ispan(one),nan,1e-10,100,std::nextafter(.5,1.))}) {
+    const auto o = cppunivariate::outcome(result);
+    CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
+    CHECK(o.certified);
+    CHECK(o.unique);
+    CHECK(result.stop_detail.candidates.empty());
+  }
+}

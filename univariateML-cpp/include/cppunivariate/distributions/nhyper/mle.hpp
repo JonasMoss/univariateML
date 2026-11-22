@@ -7,6 +7,7 @@
 #include "../hyper/mle.hpp"
 #include <cmath>
 #include <limits>
+#include <numeric>
 
 namespace cppunivariate {
 
@@ -89,12 +90,40 @@ inline hyper_detail::Sum population_increment(const hyper_detail::Counts& c,
 // relative to negative ones. The zero also moves right, so a nonpositive
 // aggregate ratio stays nonpositive. For m == r, every factor is <= 1.
 inline NhyperResult population_peak(const hyper_detail::Counts& c, double m,
-                                    double r, int maxit) {
+                                    double r, int maxit, bool fixed_r = false) {
   NhyperResult out{m, NAN, r, NAN, NAN, 0, NhyperStatus::Infeasible};
   const double excess = c.max - r;
   if (excess > hyper_detail::kMaxCount - m) return out;
 
   double lo = m + excess;
+  if (fixed_r && c.min == c.max) {
+    // For a constant count x the ratio crosses one at N+1=m*x/r.
+    // Cancel the denominator before multiplying to test this exactly.
+    const auto x = static_cast<std::uint64_t>(c.max);
+    const auto successes = static_cast<std::uint64_t>(m);
+    const auto target = static_cast<std::uint64_t>(r);
+    const auto divisor = std::gcd(x,target);
+    const auto denominator = target/divisor;
+    const auto factor = successes/denominator;
+    if (successes % denominator == 0 &&
+        x/divisor <= static_cast<std::uint64_t>(hyper_detail::kMaxCount)/factor) {
+      const double upper = static_cast<double>(factor*(x/divisor));
+      if (upper > lo) {
+        out.N = upper-1;
+        out.tie = upper;
+        out.logLik = log_likelihood(c,out.N,m,r);
+        if (!std::isfinite(out.logLik)) {
+          out.status = NhyperStatus::NumericalFailure;
+          return out;
+        }
+        out.status = NhyperStatus::Ok;
+        out.unique = false;
+        out.stop_detail = comparison_detail({{m,out.N,r},out.logLik,out.logLik},
+                                             {{m,upper,r},out.logLik,out.logLik});
+        return out;
+      }
+    }
+  }
   const ExtendedReal bound = static_cast<ExtendedReal>(m) * c.max / r;
   constexpr double epsilon = 64 * std::numeric_limits<double>::epsilon();
   // Pad the quotient upward for the product and division roundoff.
@@ -175,7 +204,7 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m, int 
       out.N = c.min; out.m = c.min; out.r = c.min; out.logLik = 0;
       // Constant sample c with r = c: m = N makes the first c draws white with
       // probability one, so (N, N, c) has likelihood one for every N >= c.
-      out.unique = false;
+      out.unique = c.min == hyper_detail::kMaxCount;
       out.status = NhyperStatus::Ok; return out;
     }
     const double rlo = std::isnan(r) ? 1 : r;
@@ -352,7 +381,8 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m, int 
         // If the allowance cannot cover every line, visit both ends
         // of the feasible stopping-count range.
         const double rr = !partial ? rlo + i : (i % 2 == 0 ? rhi - i/2 : rlo + i/2);
-        const auto line = nhyper_detail::population_peak(c, m, rr, maxit);
+        const auto line = nhyper_detail::population_peak(c, m, rr, maxit, !std::isnan(r));
+        if (line.status == NhyperStatus::Ok && !line.unique) return line;
         out.iterations += std::min(line.iterations, std::numeric_limits<int>::max() - out.iterations);
         if (line.status != NhyperStatus::Ok || !line.certified)
           unchecked = std::max(unchecked, nhyper_detail::log_upper(c, rr));

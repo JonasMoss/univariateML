@@ -784,3 +784,55 @@ TEST_CASE("cmb zero probability leaves free size unidentified with held dispersi
   CHECK_FALSE(cppunivariate::outcome(r).unique);
   CHECK((r.fit.unidentified&4u)!=0);CHECK((r.fit.unidentified&2u)==0);
 }
+
+TEST_CASE("cmb: structural constant-sample maximizers and singleton controls") {
+  const std::vector<int> zeros(4,0), ones(4,1), threes(4,3);
+  const cppunivariate::ispan zero{zeros.data(),zeros.size()}, one{ones.data(),ones.size()},
+    three{threes.data(),threes.size()};
+  const auto check = [](const cppunivariate::CmbResult& fit, int x, double ll) {
+    const auto o = cppunivariate::outcome(fit);
+    CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
+    CHECK(o.certified);
+    CHECK_FALSE(o.unique);
+    CHECK_FALSE(fit.maximizer_set.empty());
+    const auto& rows = fit.stop_detail.candidates;
+    REQUIRE(rows.size() == 2);
+    CHECK(rows[0].coef != rows[1].coef);
+    for (const auto& row : rows) {
+      CHECK(row.loglik_lower == doctest::Approx(ll));
+      CHECK(4*cppunivariate::distributions::dcmb(x,row.coef[0],row.coef[1],row.coef[2],true)
+            == doctest::Approx(ll));
+    }
+  };
+  for (const auto& fit : {
+      cppunivariate::cmb_mle(zero,10),
+      cppunivariate::cmb_size_free_nu_mle(zero).fit,
+      cppunivariate::cmb_mle(zero,0),
+      cppunivariate::cmb_size_free_nu_mle(zero,0).fit,
+      cppunivariate::cmb_size_free_nu_mle(zero,.5).fit,
+      cppunivariate::cmb_size_fixed_nu_mle(zero,1).fit,
+      cppunivariate::cmb_mle(zero,0,1e-10,2000,.5),
+      cppunivariate::cmb_mle(zero,0,1e-10,2000,NAN,1)}) check(fit,0,0);
+  for (const auto& fit : {cppunivariate::cmb_size_free_nu_mle(three).fit,
+      cppunivariate::cmb_mle(three,3),
+      cppunivariate::cmb_size_free_nu_mle(three,1).fit}) check(fit,3,0);
+  check(cppunivariate::cmb_mle(zero,1,1e-10,2000,.5),0,-4*std::log(2.));
+  check(cppunivariate::cmb_mle(one,1,1e-10,2000,.5),1,-4*std::log(2.));
+  CHECK(cppunivariate::cmb_size_free_nu_mle(zero).size == 0);
+  CHECK(cppunivariate::cmb_size_fixed_nu_mle(zero,1).size == 0);
+  CHECK(cppunivariate::cmb_size_mle(zero,0,1).size == 0);
+  const auto tie = cppunivariate::cmb_size_mle(one,.5,1);
+  CHECK(tie.size == 1);
+  check(tie.fit,1,-4*std::log(2.));
+  CHECK(tie.fit.stop_detail.candidates[0].coef == std::vector<double>{1,.5,1});
+  CHECK(tie.fit.stop_detail.candidates[1].coef == std::vector<double>{2,.5,1});
+  for (const auto& fit : {cppunivariate::cmb_mle(zero,10,1e-10,2000,NAN,1),
+      cppunivariate::cmb_size_mle(zero,.5,1).fit,
+      cppunivariate::cmb_size_fixed_nu_mle(three,1).fit}) {
+    const auto o = cppunivariate::outcome(fit);
+    CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
+    CHECK(o.certified);
+    CHECK(o.unique);
+    CHECK(fit.stop_detail.candidates.empty());
+  }
+}

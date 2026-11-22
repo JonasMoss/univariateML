@@ -364,23 +364,24 @@ test_that("CMB delegated CMP allowance increases with iterlim", {
   expect_identical(as.numeric(logLik(a)),as.numeric(logLik(b)))
 })
 
-test_that("CMB finite-size ties stop with both finite witnesses", {
+test_that("CMB finite-size ties return both finite witnesses", {
   for (args in list(list(x=c(1,1),prob=.5,nu=1),
                     list(x=c(0,0)),list(x=c(0,0),nu=2),
                     list(x=c(0,0),prob=0,nu=2))) {
-    e <- tryCatch(do.call(mlcmb,c(args,list(size=NULL))), error=identity)
-    if (identical(args$x,c(0,0))) {
-      # All-zero counts: both listed sizes attain the pmf supremum (log likelihood 0).
-      expect_s3_class(e,"univariateML")
-      expect_true(attr(e,"certified"))
-      expect_false(attr(e,"unique"))
-      expect_equal(as.numeric(logLik(e)),0)
-    } else expect_s3_class(e,"univariateML_unresolved")
-    expect_match(fit_diagnostic(e),"Distinct finite sizes")
-    expect_equal(nrow(fit_payload(e)$candidates),2L)
-    expect_equal(length(unique(fit_payload(e)$candidates$size)),2L)
-    expect_true(all(is.finite(fit_payload(e)$candidates$loglik_lower)))
-    expect_identical(fit_payload(e)$loglik_upper,Inf)
+    f <- do.call(mlcmb,c(args,list(size=NULL)))
+    zero <- identical(args$x,c(0,0))
+    ll <- if (zero) 0 else -2*log(2)
+    expect_s3_class(f,"univariateML")
+    expect_true(attr(f,"certified"))
+    expect_false(attr(f,"unique"))
+    expect_equal(as.numeric(logLik(f)),ll)
+    expect_match(fit_diagnostic(f),if (zero) "Distinct finite sizes" else "adjacent sizes")
+    payload <- fit_payload(f)
+    expect_equal(nrow(payload$candidates),2L)
+    expect_equal(payload$candidates$size,if (zero) c(0,1) else c(1,2))
+    expect_equal(payload$candidates$loglik_lower,rep(ll,2))
+    if (zero) expect_identical(payload$loglik_upper,Inf)
+    else expect_equal(payload$loglik_upper,ll)
   }
 })
 
@@ -427,5 +428,47 @@ test_that("free-size CMB returns the proved nonunique saturated Bernoulli maximu
     expect_equal(unname(f[["nu"]]), 1, tolerance = 1e-10)
     expect_equal(unname(f[["prob"]]), mean(x), tolerance = 1e-10)
     expect_equal(as.numeric(logLik(f)),sum(dbinom(x,1,mean(x),log=TRUE)),tolerance=1e-13)
+  }
+})
+
+test_that("constant CMB fits report exact maximizing sets and singleton controls", {
+  check <- function(f, x, message) {
+    expect_true(attr(f, "certified"))
+    expect_false(attr(f, "unique"))
+    rows <- attr(f, "maximizers")
+    cols <- c("size", "prob", "nu")
+    expect_equal(nrow(unique(rows[cols])), 2L)
+    expect_equal(as.numeric(rows[1, cols]), as.numeric(f))
+    ll <- vapply(seq_len(nrow(rows)), function(i) {
+      4 * dcmb(x, rows$size[i], rows$prob[i], rows$nu[i], log = TRUE)
+    }, 0.)
+    expect_equal(ll, rep(attr(f, "logLik"), nrow(rows)))
+    expect_match(attr(f, "outcome_message"), message)
+    invisible(rows)
+  }
+  z <- rep(0, 4)
+  for (held in list(list(size = 10), list(size = 0), list(size = 0, prob = .5),
+                    list(size = 0, nu = 1), list(size = NULL, prob = .5))) {
+    check(do.call(mlcmb, c(list(x = z), held)), 0, "every (admissible value|finite nu)")
+  }
+  for (held in list(list(), list(prob = 0), list(nu = 1))) {
+    rows <- check(do.call(mlcmb, c(list(x = z, size = NULL), held)), 0,
+                  "size = 0 or prob = 0")
+    expect_equal(rows$size, c(0, 1))
+  }
+  for (held in list(list(size = NULL), list(size = 3), list(size = NULL, prob = 1))) {
+    check(do.call(mlcmb, c(list(x = rep(3, 4)), held)), 3, "every finite nu")
+  }
+  for (x in 0:1) {
+    expect_no_warning(f <- mlcmb(rep(x, 4), size = 1, prob = .5))
+    check(f, x, "Bernoulli likelihood")
+  }
+  rows <- check(mlcmb(rep(1, 4), size = NULL, prob = .5, nu = 1), 1, "adjacent sizes")
+  expect_equal(rows$size, c(1, 2))
+  for (f in list(mlcmb(z, size = 10, nu = 1), mlcmb(z, size = NULL, prob = .5, nu = 1),
+                 mlcmb(rep(3, 4), size = NULL, nu = 1))) {
+    expect_true(attr(f, "certified"))
+    expect_true(attr(f, "unique"))
+    expect_null(attr(f, "maximizers"))
   }
 })

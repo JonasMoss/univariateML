@@ -1,0 +1,152 @@
+Frozen to branch base: 656 before, 739 after
+  hyper archive 003454 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003455 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003456 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003457 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003458 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003459 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003460 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003461 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003462 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003463 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003464 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003465 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003466 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003467 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003482 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003483 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003484 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003485 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003486 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003487 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003488 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003489 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003490 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003491 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003492 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003494 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003525 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 010971 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 010973 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  nhyper archive 005151 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  nhyper archive 005152 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  nhyper archive 005154 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+32 changed, 83 added flat cases
+
+Branch base to job: 739 before, 739 after
+  bbinom class constant-flat-adjacent-sizes | certified unique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome, outcome_message, unique
+  bbinom class zeros-flat-alpha | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  bbinom class zeros-flat-beta | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  bbinom class zeros-flat-free | failure/unsupported -> certified nonunique estimate | candidates, certified, core_status, estimates, extra_vectors, kind, logLik, loglik_lower, loglik_upper, message, outcome, outcome_message, reason, unique
+  bbinom class zeros-flat-size-alpha | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  bbinom class zeros-flat-size-beta | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  bbinom class zeros-flat-size-zero | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  binom class constant-flat-adjacent-sizes | certified unique estimate -> certified nonunique estimate | candidates, estimates, iterations, loglik_lower, loglik_upper, outcome, outcome_message, unique
+  binom class zeros | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper
+  binom class zeros-flat-free | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  binom class zeros-flat-prob-zero | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  binom class zeros-flat-size-zero | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  cmb class constant-flat-adjacent-sizes | failure/unresolved -> certified nonunique estimate | candidates, certified, estimates, fixed, kind, logLik, loglik_lower, loglik_upper, message, outcome, outcome_message, reason, unique
+  cmb class constant-flat-bernoulli | certified nonunique estimate -> certified nonunique estimate | candidates, fixed, loglik_lower, loglik_upper, outcome_message, warnings
+  cmb class constant-flat-free | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  cmb class constant-flat-prob-one | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  cmb class constant-flat-size | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  cmb class zeros | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper
+  cmb class zeros-flat-bernoulli | certified nonunique estimate -> certified nonunique estimate | candidates, fixed, loglik_lower, loglik_upper, outcome_message, warnings
+  cmb class zeros-flat-free | certified nonunique estimate -> certified nonunique estimate | outcome_message
+  cmb class zeros-flat-nu | certified nonunique estimate -> certified nonunique estimate | outcome_message
+  cmb class zeros-flat-prob | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  cmb class zeros-flat-prob-zero | certified nonunique estimate -> certified nonunique estimate | outcome_message
+  cmb class zeros-flat-size | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  cmb class zeros-flat-size-zero | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  cmb class zeros-flat-size-zero-nu | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  cmb class zeros-flat-size-zero-prob | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper, outcome_message
+  hyper class zeros-flat-k-max | certified nonunique estimate -> certified unique estimate | candidates, outcome, outcome_message, unique
+  hyper class zeros-flat-m-max | certified nonunique estimate -> certified unique estimate | candidates, outcome, outcome_message, unique
+  nhyper class constant-flat-adjacent-populations | uncertified unique estimate -> certified nonunique estimate | candidates, certified, iterations, outcome, outcome_message, unique
+30 changed, 0 added flat cases
+
+Frozen to job: 656 before, 739 after
+  binom class zeros | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper
+  cmb class zeros | certified nonunique estimate -> certified nonunique estimate | candidates, loglik_lower, loglik_upper
+  hyper archive 003454 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003455 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003456 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003457 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003458 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003459 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003460 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003461 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003462 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003463 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003464 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003465 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003466 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003467 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 003482 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003483 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003484 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003485 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003486 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003487 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003488 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003489 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003490 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003491 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003492 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003494 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 003525 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  hyper archive 010971 | uncertified nonunique estimate -> uncertified nonunique estimate | candidates, warnings
+  hyper archive 010973 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  nhyper archive 005151 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  nhyper archive 005152 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+  nhyper archive 005154 | certified nonunique estimate -> certified nonunique estimate | candidates, warnings
+34 changed, 83 added flat cases
+
+
+Frozen snapshot helper
+differs ('binom', 'zeros', '{}') ['candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'zeros', '{"size": 10.0}') ['candidates', 'loglik_lower', 'loglik_upper']
+differs ('hyper', '003454', '{}') ['candidates', 'warnings']
+differs ('hyper', '003455', '{}') ['candidates', 'warnings']
+differs ('hyper', '003456', '{}') ['candidates', 'warnings']
+differs ('hyper', '003457', '{}') ['candidates', 'warnings']
+differs ('hyper', '003458', '{}') ['candidates', 'warnings']
+differs ('hyper', '003459', '{}') ['candidates', 'warnings']
+differs ('hyper', '003460', '{}') ['candidates', 'warnings']
+differs ('hyper', '003461', '{}') ['candidates', 'warnings']
+differs ('hyper', '003462', '{}') ['candidates', 'warnings']
+differs ('hyper', '003463', '{}') ['candidates', 'warnings']
+differs ('hyper', '003464', '{}') ['candidates', 'warnings']
+differs ('hyper', '003465', '{}') ['candidates', 'warnings']
+differs ('hyper', '003466', '{}') ['candidates', 'warnings']
+differs ('hyper', '003467', '{}') ['candidates', 'warnings']
+differs ('hyper', '003482', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003483', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003484', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003485', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003486', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003487', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003488', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003489', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003490', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003491', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003492', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003494', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('hyper', '003525', '{"k": 10.0, "m": 20.0}') ['candidates', 'warnings']
+differs ('hyper', '010971', '{}') ['candidates', 'warnings']
+differs ('hyper', '010973', '{"N": 50.0}') ['candidates', 'warnings']
+differs ('nhyper', '005151', '{}') ['candidates', 'warnings']
+differs ('nhyper', '005152', '{}') ['candidates', 'warnings']
+differs ('nhyper', '005154', '{}') ['candidates', 'warnings']
+only in snapshot ('bbinom', 'zeros-flat-free', '{}')
+only in snapshot ('bbinom', 'zeros-flat-alpha', '{"alpha": 1.0}')
+only in snapshot ('bbinom', 'zeros-flat-beta', '{"beta": 1.0}')
+only in snapshot ('bbinom', 'zeros-flat-size-zero', '{"size": 0.0}')
+only in snapshot ('bbinom', 'zeros-flat-size-alpha', '{"alpha": 1.0, "size": 0.0}')
+only in snapshot ('bbinom', 'zeros-flat-size-beta', '{"beta": 1.0, "size": 0.0}')
+only in snapshot ('bbinom', 'zeros-flat-shapes', '{"alpha": 1.0, "beta": 1.0}')
+only in snapshot ('bbinom', 'constant-flat-adjacent-sizes', '{"alpha": 1.0, "beta": 2.0}')
+only in snapshot ('binom', 'zeros-flat-free', '{}')
+only in snapshot ('binom', 'zeros-flat-size-zero', '{"size": 0.0}')
+flat-after-native cases 739 differing 34 only-new 83 only-old 0

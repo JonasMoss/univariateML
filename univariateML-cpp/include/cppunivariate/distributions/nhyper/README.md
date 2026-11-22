@@ -181,7 +181,7 @@ Bisection locates the first nonpositive adjacent ratio for each feasible
 $r$. A population line is certified conditional on the computed signs
 of the neighboring ratios, separated by $64\epsilon(1+\sum_i|\log R_i|)$
 with $\epsilon$ the double machine epsilon. The product difference in the
-numerator is compensated before taking logs. A line with an unresolved
+numerator is compensated before taking logs. For a positive constant count $x$ with $m,r$ held, $mx=r(N+1)$ proves an exact tie at the two feasible populations $N,N+1$. A line with an unresolved
 sign has the log-likelihood upper bound $\sum_i\log(r/x_i)$ from
 $P(T=x)=(r/x)P(H_x=r)$. The final comparison uses a margin of
 $10^{-9}(1+|\ell|)$. An unresolved order returns the best evaluated
@@ -190,7 +190,7 @@ line with its certification flag withdrawn.
 With only $N$ held, the finite grid retains the lexicographically first
 point within 64 double-precision ulps of the best log likelihood.
 A constant sample with all coefficients free ties $(c,c,c)$ with
-$(N,N,c)$ and is flagged nonunique.
+$(N,N,c)$ for every admissible $N\ge c$, with a unique maximizer at the upper endpoint of the supported count domain.
 
 ### Growing-population bound
 

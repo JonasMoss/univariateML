@@ -639,4 +639,4 @@ independently of probability and dispersion. At size one dispersion drops
 out because both binomial coefficients are one. Likewise, at probability
 zero or one dispersion has no effect on the attained endpoint atom. These
 identities prove non-uniqueness whenever an affected coordinate is free;
-the returned proper representative is flagged accordingly.
+the fit supplies two witnesses, with the full set determined by the holds. For size free and both probability and dispersion held, $\nu=1$ reduces the normalized law to the binomial. At a positive constant count $x$, the adjacent sizes $n,n+1$ are both maximizers exactly when $p(n+1)=x$.

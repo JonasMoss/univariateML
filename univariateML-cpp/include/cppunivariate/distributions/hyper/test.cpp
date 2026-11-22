@@ -721,3 +721,23 @@ TEST_CASE("hyper: grid winners with exact ties are not unique") {
   // A one-coordinate fit without a tie stays unique.
   CHECK(cppunivariate::outcome(cppunivariate::hyper_mle(mltest::as_span(held),38,50,nan)).unique);
 }
+
+TEST_CASE("hyper: holding the largest design count forces a singleton zero atom") {
+  const double bound = cppunivariate::hyper_detail::kMaxCount;
+  const std::vector<double> zero(4,0);
+  for (const auto& result : {
+      cppunivariate::hyper_mle(as_span(zero),bound,kNaN,kNaN),
+      cppunivariate::hyper_mle(as_span(zero),kNaN,kNaN,bound),
+      cppunivariate::hyper_mle(as_span(zero),bound,kNaN,0),
+      cppunivariate::hyper_mle(as_span(zero),0,kNaN,bound)}) {
+    const auto o = cppunivariate::outcome(result);
+    CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
+    CHECK(o.certified);
+    CHECK(o.unique);
+    CHECK(result.N == bound);
+    CHECK(std::min(result.m,result.k) == 0);
+    CHECK(std::max(result.m,result.k) == bound);
+    CHECK(result.logLik == 0);
+    CHECK(result.stop_detail.candidates.empty());
+  }
+}

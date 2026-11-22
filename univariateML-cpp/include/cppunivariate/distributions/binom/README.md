@@ -380,11 +380,11 @@ Journal of the American Statistical Association, 78(381), 181–183,
 [doi:10.1080/01621459.1983.10477949](https://doi.org/10.1080/01621459.1983.10477949).
 Bracketing and bisection locate the first nonpositive adjacent profile
 increment. This selects the smaller size if two adjacent sizes tie.
-All-zero data have many maximizers, represented by $n=0,p=0$.
+For all-zero data the maximum is attained exactly on $n=0$ or $p=0$, intersected with the holds.
 Constant positive counts give $n=\bar x,p=1$.
 
 A held probability is preserved exactly. For $0<p<1$, adjacent likelihood
-ratios bound the remaining integer tail before the fit returns. Boundary
+ratios bound the remaining integer tail before the fit returns. For a positive constant count $x$, a fused product tests the exact crossing $p(n+1)=x$. When both sizes are admissible, $n$ and $n+1$ are the only maximizers. Boundary
 probabilities require positive likelihood for the observations. Holding
 $p=0$ requires all-zero data and leaves the trial count unidentified,
 represented by zero. Holding $p=1$ requires constant counts and sets the

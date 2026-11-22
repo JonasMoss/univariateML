@@ -30,6 +30,14 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
       return overridden(std::move(out), static_cast<int>(res.status));
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"size",size_arg.supplied},{"alpha",alpha_arg.supplied},{"beta",beta_arg.supplied}});
   };
+  if (!res.maximizer_set.empty()) {
+    auto out = stop_failure(failure(res.maximizer_set),res.stop_detail,PayloadKind::Comparison,
+                            {"size","alpha","beta"});
+    out = comparison_payload(std::move(out),o,0,{{"size",size},{"alpha",alpha},{"beta",beta}});
+    out.iterations = res.iterations;
+    out.has_iterations = res.status == cppunivariate::BbinomStatus::Ok;
+    return done(std::move(out));
+  }
   if(res.status==cppunivariate::BbinomStatus::Unsupported)return done(failure("Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known."));
   if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("bbinom numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"size","alpha","beta"}));
   if(res.accuracy_failure)return done(stop_failure(failure("bbinom numerical accuracy failure: the returned coefficients cannot be resolved to the requested tolerance in the local refinement."),res.stop_detail,outcome_payload(o),{"size","alpha","beta"}));
