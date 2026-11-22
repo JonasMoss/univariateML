@@ -1,25 +1,4 @@
 {
  "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, cert-replay.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
- "known": {
-  "phenomenon:tie-collapse|double|tlambda|class|ties": {
-   "ref": "TASK-214.17",
-   "detail": "collapse at any, n = 6, k = 4: e* = -2 (attained) requires N:unbounded; ends in F:evaluation",
-   "finding": "tlambda-collapse-and-two-point-evaluation-failure"
-  },
-  "phenomenon:tie-collapse|native|tlambda|class|ties": {
-   "ref": "TASK-214.17",
-   "detail": "collapse at any, n = 6, k = 4: e* = -2 (attained) requires N:unbounded; ends in F:evaluation",
-   "finding": "tlambda-collapse-and-two-point-evaluation-failure"
-  },
-  "phenomenon:two-point|double|tlambda|class|two": {
-   "ref": "TASK-214.17",
-   "detail": "two observations: declared E, ends in F:evaluation",
-   "finding": "tlambda-collapse-and-two-point-evaluation-failure"
-  },
-  "phenomenon:two-point|native|tlambda|class|two": {
-   "ref": "TASK-214.17",
-   "detail": "two observations: declared E, ends in F:evaluation",
-   "finding": "tlambda-collapse-and-two-point-evaluation-failure"
-  }
- }
+ "known": {}
 }

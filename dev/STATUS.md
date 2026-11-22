@@ -109,14 +109,32 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   154/154; `just test-full` `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65854 ]`;
   `just js-test` 587/587; `just relations` and `just site-check` green. The
   known list has 4 entries (tlambda, TASK-214.17).
+- Batch check of master 175d507d (2026-11-22, workstation, GCC 15.2, after
+  [tlambda-ties](research/evaluations/2026-11-21-tlambda-ties-report.md),
+  [loose-2](research/evaluations/2026-11-21-loose-2-report.md),
+  [margin-2](research/evaluations/2026-11-21-margin-2-report.md) and
+  [speed-e](research/evaluations/2026-11-21-speed-e-report.md)): fresh
+  snapshots differ from the stored baselines only in 4 tlambda records per
+  base mode (ties now `N:unbounded`, distinct pairs a certified uniform
+  estimate) and one zinb route iteration count, and the baselines were
+  patched from them (40e7d731). `just strict` passes with **no known entry
+  left**: the 4 tlambda entries are fixed and pruned, none new. Its replay
+  and seam caches were cold (speed-e changed modules in the replay key and
+  the seam grouping), 75 min. `just cpp-test` 134/134 and
+  `just cpp-test-no-long-double` 179/179 (speed-e registers expensive cases
+  as their own tests; same cases and assertions); `just test-full`
+  `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65860 ]`; `just js-test` 587/587;
+  `just relations` and `just site-check` green.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
-- Known wrong answers on master, each with a card: tlambda's tie-collapse
-  and two-point strict findings (TASK-214.17); zinb's inflation-only hold
-  misses a requested `tol = 1e-12` by 1.1e-10 (TASK-150.8).
+- Known wrong answers on master: none listed by the strict layer (its known
+  list is empty since 2026-11-22). Open, flagged rather than wrong: fpareto
+  archive 001625/001628 end `unresolved` pending a global bound (TASK-214.44
+  report); sged's held-sd two-point location stops numerically although the
+  optimum is finite (TASK-150.9).
 - Nothing is published to CRAN, and `origin/master` is the old published
   tree (about 1,300 commits behind). The backup branch `origin/cpp-core`
   mirrors master; pushed by Claude after each validated batch (allowed by Jonas, 2026-11-20).
