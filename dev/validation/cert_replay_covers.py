@@ -150,6 +150,9 @@ def replay_lomax_limit_transfer(r, data, budget):
     expected_model, expected_mask = {'pareto2': ('exp', 4), 'invpareto': ('invexp', 0)}[r['family']]
     if r['mask'] != expected_mask or outcome.get('kind') != 'limit':
         return [], None
+    if r['family'] == 'pareto2' and float(r['held'].get('min', 0)) != 0:
+        # nonzero held threshold: the limit is the exponential on x - min (shift-payload 896d9dee, fixtures a529330e)
+        expected_model = 'unavailable:shifted-exp'
     model, certified = result.get('model'), outcome.get('certified')
     verdict = 'holds' if model == expected_model and certified is False else 'fails'
     return [comparison('transfer-flag', f'transfer the Lomax margin limit as {expected_model} with certified=false',
