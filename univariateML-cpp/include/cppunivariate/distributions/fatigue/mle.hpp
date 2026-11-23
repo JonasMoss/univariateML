@@ -55,7 +55,7 @@ inline FitOutcome outcome(const FatigueResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status == FatigueStatus::SearchFailure && r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.status == FatigueStatus::SearchFailure && r.stop_detail.comparison_tie) {
-    if (r.proved_tie) return nonunique_outcome_of(r, false);
+    if (r.maximizers.size) return FitOutcome::estimate(false, false);
     const auto selected = comparison_outcome_of(r);
     return selected.kind == OutcomeKind::Estimate ? FitOutcome::undetermined() : selected;
   }

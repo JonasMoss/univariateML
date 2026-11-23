@@ -722,7 +722,7 @@ inline FitOutcome outcome(const TbinomDesignResult& r) {
     case TbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TbinomStatus::LowerPointMass: return FitOutcome::limit(true);
     case TbinomStatus::UpperPointMass: return FitOutcome::limit(true);
-    case TbinomStatus::Unidentified: return nonunique_outcome_of(r, r.certified);
+    case TbinomStatus::Unidentified: return FitOutcome::failure(OutcomeReason::Unresolved);
     case TbinomStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case TbinomStatus::TpoisLimit: return FitOutcome::limit(r.certified);
   }

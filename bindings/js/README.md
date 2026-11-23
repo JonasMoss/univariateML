@@ -116,6 +116,12 @@ covariances at identical JS estimates against the native C++ entry point.
 
 ## Structured fit stops
 
+`fit.unique` is `true` for a unique estimate, `false` when a versioned
+`maximizer_set` describes established multiplicity, and `null` when uniqueness
+remains undetermined. The first row of `maximizers` repeats the returned
+estimate. Additional rows illustrate the set. `candidates` holds comparison
+evidence, including comparisons with limiting models.
+
 Cauchy, Burr, inverse Burr and Lomax attach `kind` (`tie`, `limit`, `budget`,
 `nomle`) to selected thrown `Error`s. `model`, `estimates` and `limit_loglik`
 describe a selected fitted limit. `candidates` contains row objects with named

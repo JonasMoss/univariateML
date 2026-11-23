@@ -1,11 +1,11 @@
 #' Fit outcomes and conditions
 #'
 #' Every estimate carries logical `certified` and `unique` attributes. The
-#' `unique` attribute can be `TRUE`, `FALSE`, or `NA` when the comparison
-#' leaves uniqueness undetermined. A versioned `maximizer_set` describes
-#' the complete set for fitters that publish typed sets. The first row of
-#' `maximizers` repeats the returned estimate. Additional rows illustrate the
-#' set. `candidates` records comparison evidence. Inference requires known
+#' `unique` attribute is `TRUE` for a unique estimate, `FALSE` for established
+#' multiplicity with a versioned `maximizer_set`, or `NA` when uniqueness
+#' remains undetermined. The first row of `maximizers` repeats the returned
+#' estimate. Additional rows illustrate the set. `candidates` records
+#' comparison evidence. Inference requires known
 #' uniqueness. Model selection accepts estimates with any uniqueness flag.
 #'
 #' A limit names a limiting model; `nomle` records proved nonexistence.

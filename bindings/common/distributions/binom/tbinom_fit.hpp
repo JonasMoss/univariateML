@@ -1,9 +1,37 @@
 #pragma once
-#include "../../fit.hpp"
+#include "../../count_maximizers.hpp"
 #include "cppunivariate/distributions/binom/tbinom_mle.hpp"
 #include <algorithm>
 #include <sstream>
 namespace umvl_binding {
+inline void attach_tbinom_window_set(FitResult& out, double lo, double hi, Held size, Held prob) {
+  if (out.outcome.kind != cppunivariate::OutcomeKind::Estimate ||
+      out.outcome.unique || !out.outcome.uniqueness_known || out.estimates.empty()) return;
+  const bool include_design = out.estimates.size() == 4;
+  if (include_design && keep_infinite_window_comparison(out)) return;
+
+  // Interior probabilities retain the parent support [0, size].
+  // At the endpoints only the corresponding parent atom survives.
+  const auto sizes = count_sizes(lo, size);
+  const auto realized = lo == hi ? sizes : cppunivariate::fixed(lo, true);
+  cppunivariate::MaximizerSet set;
+  set.dimension = out.estimates.size();
+  const auto add = [&](cppunivariate::Axis n, cppunivariate::Axis p) {
+    if (include_design)
+      set.add_box({{p, cppunivariate::fixed(out.estimates[1].second),
+                       cppunivariate::fixed(out.estimates[2].second), n}});
+    else
+      set.add_box({{n, p}});
+  };
+  add(realized, cppunivariate::interval(0, 1, lo == 0, false));
+  if (lo == 0 && lo != hi) add(sizes, cppunivariate::fixed(0));
+  add(cppunivariate::fixed(lo, true), cppunivariate::fixed(1));
+  if (include_design)
+    attach_count_set(out, out.outcome, set, "tbinom", {prob, {}, {}, size});
+  else
+    attach_count_set(out, out.outcome, set, "tbinom", {size, prob});
+}
+
 inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, Held a_arg, Held b_arg, Held size_arg, double tol,int maxit,bool legacy_default=false) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };

@@ -203,16 +203,17 @@ inline FitResult render_fit(FitResult out) {
     // Adapters build every estimate payload (comparison_payload for comparisons).
     // An estimate without coefficients is an adapter defect: stop, visibly
     // disagreeing with the outcome, rather than return an empty estimate.
-    if(out.estimates.empty()) {
+    const bool nonunique = out.outcome.uniqueness_known && !out.outcome.unique;
+    if(out.estimates.empty() && !nonunique && !out.maximizer_set) {
       out.error_kind="unresolved";
       if(out.error.empty())out.error="The fit returned no coefficients.";
       return out;
     }
     out.outcome_message = out.error;
-    if (out.maximizer_set) {
-      const auto& set = *out.maximizer_set;
-      bool valid = set.valid_dimension() && set.dimension == out.estimates.size() &&
-                   out.outcome.uniqueness_known && !out.outcome.unique && !out.maximizers.empty();
+    if (nonunique || out.maximizer_set) {
+      bool valid = nonunique && out.maximizer_set && out.maximizer_set->valid_dimension() &&
+                   out.maximizer_set->dimension == out.estimates.size() &&
+                   !out.maximizers.empty() && out.maximizers.front().estimates == out.estimates;
       for (std::size_t i = 0; i < out.estimates.size(); ++i) {
         const auto& name = out.estimates[i].first;
         valid = valid && !name.empty();
@@ -227,7 +228,7 @@ inline FitResult render_fit(FitResult out) {
         out.maximizers.clear();
         return out;
       }
-      out.outcome_message = maxset_message(set, out.estimates);
+      out.outcome_message = maxset_message(*out.maximizer_set, out.estimates);
     }
     out.error.clear();
   } else if(out.outcome.kind==cppunivariate::OutcomeKind::Limit && !out.outcome.certified) {
@@ -426,8 +427,7 @@ inline std::string comparison_limit_sentence(const std::string& model) {
 // Payload of a comparison outcome (dev/design/consolidation.md, "Outcome
 // model"), on the candidates stop_failure attached. `chosen` is the core's
 // choice (cppunivariate::better_candidate with the family's point predicate),
-// so payload and outcome agree; a proved non-unique estimate takes the first
-// listed maximizer. An estimate takes the chosen family point with
+// so payload and outcome agree. An estimate takes the chosen family point with
 // held coefficients filled from the request, in the request's public order, and
 // its point log likelihood (the core's accuracy predicate requires one). A
 // limit names the chosen face with its coefficients and, when the candidate
@@ -436,8 +436,6 @@ inline std::string comparison_limit_sentence(const std::string& model) {
 inline FitResult comparison_payload(FitResult out,const cppunivariate::FitOutcome& o,std::size_t chosen,
     const std::vector<std::pair<std::string,Held>>& request) {
   if(out.payload_kind!=PayloadKind::Comparison || chosen>=out.candidates.size())return out;
-  // Proved non-uniqueness: the canonical representative is the first listed maximizer.
-  if(o.kind==cppunivariate::OutcomeKind::Estimate && o.uniqueness_known && !o.unique)chosen=0;
   const NamedCandidate c=out.candidates[chosen];
   if(o.kind==cppunivariate::OutcomeKind::Estimate) {
     out.estimates.clear();out.fixed.clear();out.has_fixed=true;

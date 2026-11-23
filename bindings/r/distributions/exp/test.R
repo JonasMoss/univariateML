@@ -108,6 +108,15 @@ test_that("right-censoring bounds below support carry no exposure", {
     uninformative <- fits[[i]](flat)
     expect_equal(as.numeric(logLik(uninformative)), 0)
     expect_false(attr(uninformative,"unique"))
+    set <- attr(uninformative, "maximizer_set")
+    expect_identical(set$coordinates, names(coef(uninformative)))
+    expect_identical(set$pieces[[1]]$kind, "box")
+    rows <- attr(uninformative, "maximizers")
+    expect_equal(unlist(rows[1, set$coordinates, drop = FALSE]), coef(uninformative))
+    free <- setdiff(set$coordinates, attr(uninformative, "fixed"))
+    expect_length(free, 1L)
+    expect_gt(length(unique(rows[[free]])), 1L)
+    expect_true(all(rows$loglik_lower == 0 & rows$loglik_upper == 0))
   }
   p <- mlpareto(cbind(c(.5,2),c(Inf,2)), b=1)
   expect_equal(unname(p[["a"]]), 1/log(2), tolerance=1e-13)
@@ -119,6 +128,16 @@ test_that("right-censoring bounds below support carry no exposure", {
 
 test_that("held-scale censored Weibull owns its point limit and small interior root", {
   right <- function(x) cbind(x,rep(Inf,length(x)))
+  flat <- mlweibull(right(c(0, 1, 1)), scale = 1)
+  expect_false(attr(flat, "unique"))
+  expect_equal(as.numeric(logLik(flat)), -2)
+  set <- attr(flat, "maximizer_set")
+  piece <- set$pieces[[1]]
+  axes <- setNames(piece$axes, set$coordinates)
+  expect_identical(piece$kind, "box")
+  expect_equal(c(axes$shape$lower, axes$shape$upper), c(0, Inf))
+  expect_identical(axes$shape$closed, c(FALSE, FALSE))
+  expect_equal(c(axes$scale$lower, axes$scale$upper), c(1, 1))
   e <- tryCatch(mlweibull(right(c(.25,.5)),scale=1),error=identity)
   expect_s3_class(e,"univariateML_limit")
   expect_identical(e$model,"unavailable:point-mass")

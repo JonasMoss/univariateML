@@ -49,7 +49,7 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   // A comparison estimate is a proved tie's exact-location witness; its point
   // log likelihood is evaluated as an Ok conditional fit evaluates it.
   const auto comparison=[&](FitResult out) {
-    out=comparison_payload(std::move(out),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg}});
+    out=comparison_payload(std::move(out),o,res.maximizers.size ? 0 : cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg}});
     if(o.kind==cppunivariate::OutcomeKind::Estimate && out.estimates.size()==3) {
       out.logLik=res.comparison_logLik;
       if (res.maximizers.size) out.candidates.clear();

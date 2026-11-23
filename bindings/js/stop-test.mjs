@@ -9,8 +9,7 @@ function comparisonFit(run, check) {
   const fit=run();
   assert.equal(fit.status,'Ok');
   assert.ok(!fit.certified || !fit.unique);
-  const payload={...fit,candidates:fit.candidates ?? fit.maximizers,message:fit.outcome_message};
-  assert.equal(check(payload),true);
+  assert.equal(check(fit),true);
 }
 // A comparison the certificate cannot separate that ends as a limit or an
 // unresolved stop (its better candidate is a face or not an accurate maximizer).
@@ -31,7 +30,19 @@ test('structured stops survive the JS Error facade', () => {
       assert.ok(Math.abs(Math.abs(c.location)-Math.sqrt(3))<1e-7);
       assert.equal(c.scale,1);assert.ok(c.loglik_lower<=c.loglik_upper);
     }
-    return /Maximum is not unique/.test(e.message);
+    assert.equal(e.unique, false);
+    assert.equal(e.maximizer_set.version, 1);
+    assert.deepEqual(e.maximizer_set.coordinates, ['location', 'scale']);
+    const [piece] = e.maximizer_set.pieces;
+    assert.equal(piece.kind, 'points');
+    assert.equal(piece.points.length, 2);
+    for (const {estimate: [location, scale]} of piece.points) {
+      assert.ok(Math.abs(Math.abs(location) - Math.sqrt(3)) < 1e-7);
+      assert.equal(scale, 1);
+    }
+    assert.equal(e.maximizers[0].location, e.estimates.location);
+    assert.equal(e.maximizers[0].scale, e.estimates.scale);
+    return /Maximum is not unique/.test(e.outcome_message);
   });
   assert.throws(() => api.cauchy.fit([1,1,2]), e => e.kind==='nomle' && e.candidates.length===0);
   assert.throws(() => api.lomax.fit([1,1,1]), e => {
@@ -627,6 +638,15 @@ test('censored estimates attach their shared outcome',()=>{
   assert.equal(fit.status,'Ok');assert.equal(fit.certified,true);assert.equal(fit.unique,true);
   assert.equal(fit.estimates.rate,2/10);
   assert.ok(Math.abs(fit.logLik-(2*Math.log(.2)-2))<1e-12);
+  const flat = api.exp.fit({lower: [-1, 0], upper: [Infinity, Infinity]});
+  assert.equal(flat.unique, false);
+  assert.equal(flat.logLik, 0);
+  assert.deepEqual(flat.maximizer_set.coordinates, ['rate']);
+  const [piece] = flat.maximizer_set.pieces;
+  assert.equal(piece.kind, 'box');
+  assert.deepEqual(piece.axes[0], {lower: 0, upper: 'inf', closed: [false, false], integer: false});
+  assert.equal(flat.maximizers[0].rate, flat.estimates.rate);
+  assert.ok(flat.maximizers.every(row => row.rate > 0 && row.loglik_lower === 0 && row.loglik_upper === 0));
   assert.throws(()=>api.exp.fit({lower:[0,1],upper:[2,3]}),e=>e.kind==='unsupported' && e.reason==='unsupported');
 });
 

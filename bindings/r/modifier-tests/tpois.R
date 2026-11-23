@@ -113,3 +113,15 @@ test_that("the Poisson window returns the controlled conditional root", {
     expect_lte(abs(fit[["lambda"]] - ref), tol * ref)
   }
 })
+
+test_that("private truncated Poisson fits expose typed singleton-window maxima", {
+  f <- .modifier_tpois(rep(1, 3), a = 0, b = 1)
+  expect_false(attr(f, "unique"))
+  set <- attr(f, "maximizer_set")
+  expect_identical(set$coordinates, names(coef(f)))
+  expect_identical(set$pieces[[1]]$kind, "box")
+  rows <- attr(f, "maximizers")
+  expect_equal(unlist(rows[1, set$coordinates, drop = FALSE]), coef(f))
+  expect_true(all(rows$a == 0 & rows$b == 1 & rows$lambda > 0))
+  expect_gt(length(unique(rows$lambda)), 1L)
+})

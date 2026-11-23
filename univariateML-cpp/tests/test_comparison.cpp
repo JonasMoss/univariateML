@@ -3,6 +3,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 #include "cppunivariate/core/stop_detail.hpp"
+#include "../../bindings/common/fit.hpp"
 #include <cmath>
 #include <limits>
 #include <vector>
@@ -45,12 +46,51 @@ TEST_CASE("comparison outcomes: estimate, limit or unresolved by the better cand
   CHECK(cppunivariate::comparison_outcome(detail({}), family, exact).kind == cu::OutcomeKind::Failure);
 }
 
-TEST_CASE("proved non-uniqueness: estimate only for accurate family points") {
-  auto o = cppunivariate::nonunique_outcome(detail({{{0, 1}, 0, 0}, {{1, 1}, 0, 0}}), true, family, exact);
-  CHECK(o.kind == cu::OutcomeKind::Estimate); CHECK(o.certified); CHECK_FALSE(o.unique);
-  o = cppunivariate::nonunique_outcome(detail({{{0, 1}, -1, -1, StopModel::Hnorm}, {{0, 1}, -1, -1, StopModel::ReflectedHnorm}}), true, family, exact);
-  CHECK(o.kind == cu::OutcomeKind::Limit); CHECK(o.certified);
-  o = cppunivariate::nonunique_outcome(detail({{{0, 1}, -1.1, -0.9}, {{1, 1}, -1.1, -0.9}}), true, family, exact);
-  CHECK(o.kind == cu::OutcomeKind::Failure); CHECK(o.reason == cppunivariate::OutcomeReason::Unresolved);
-  CHECK(cppunivariate::nonunique_outcome(detail({}), true, family, exact).kind == cu::OutcomeKind::Failure);
+TEST_CASE("equal limiting suprema require at least two valid faces") {
+  const auto o = cppunivariate::equal_faces_outcome(
+      detail({{{0, 1}, -1, -1, StopModel::Hnorm}, {{0, 1}, -1, -1, StopModel::ReflectedHnorm}}), true);
+  CHECK(o.kind == cu::OutcomeKind::Limit);
+  CHECK(o.certified);
+  for (const auto& d : {detail({{{0, 1}, 0, 0}, {{1, 1}, 0, 0}}),
+                        detail({{{0, 1}, -1.1, -0.9}, {{1, 1}, -1.1, -0.9}}),
+                        detail({})}) {
+    const auto stopped = cppunivariate::equal_faces_outcome(d, true);
+    CHECK(stopped.kind == cu::OutcomeKind::Failure);
+    CHECK(stopped.reason == cu::OutcomeReason::Unresolved);
+  }
+}
+
+TEST_CASE("rendering refuses non-unique estimates without a typed set") {
+  umvl_binding::FitResult fit;
+  fit.estimates = {{"location", 0.}};
+  fit.logLik = -2.;
+  fit.candidates = {{fit.estimates, -2., -2., ""}, {{{"location", 1.}}, -2., -2., ""}};
+  fit.outcome = cu::FitOutcome::estimate(true, false);
+  const auto rejected = umvl_binding::render_fit(fit);
+  CHECK(rejected.error_kind == "numerical");
+  CHECK(rejected.error == "The fit returned an invalid maximizer set.");
+  CHECK(rejected.outcome.kind == cu::OutcomeKind::Failure);
+  CHECK(rejected.outcome.reason == cu::OutcomeReason::Evaluation);
+  CHECK(rejected.outcome_override);
+  CHECK(rejected.maximizers.empty());
+  CHECK(rejected.candidates.size() == 2);
+
+  fit.outcome = cu::FitOutcome::undetermined();
+  const auto comparison = umvl_binding::render_fit(fit);
+  CHECK(comparison.error_kind.empty());
+  CHECK(comparison.estimates == fit.estimates);
+  CHECK(comparison.candidates.size() == 2);
+  CHECK(comparison.maximizers.empty());
+
+  cu::MaximizerSet set;
+  set.dimension = 1;
+  REQUIRE(set.add_box({{cu::interval(0., 1., true, true)}}) == cu::MaxsetStatus::Ok);
+  fit.outcome = cu::FitOutcome::estimate(true, false);
+  umvl_binding::attach_maximizer_set(fit, set, "example", [&](const auto&) { return fit.logLik; });
+  const auto rendered = umvl_binding::render_fit(fit);
+  REQUIRE(rendered.error_kind.empty());
+  REQUIRE(rendered.maximizer_set);
+  REQUIRE(rendered.maximizers.size() == 2);
+  CHECK(rendered.maximizers.front().estimates == fit.estimates);
+  CHECK(rendered.candidates.size() == 2);
 }

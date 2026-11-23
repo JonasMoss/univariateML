@@ -712,7 +712,7 @@ inline FitOutcome outcome(const GedResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status != GedStatus::Ok && r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.status != GedStatus::Ok && r.status != GedStatus::UniformUnresolved && r.stop_detail.comparison_tie) {
-    if (r.maximizers.size) return nonunique_outcome_of(r, r.certified);
+    if (r.maximizers.size) return FitOutcome::estimate(r.certified, false);
     const auto selected = comparison_outcome_of(r);
     return selected.kind == OutcomeKind::Estimate ? FitOutcome::undetermined() : selected;
   }

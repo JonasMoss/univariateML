@@ -254,20 +254,13 @@ inline FitOutcome comparison_outcome(const StopDetail& d,Point point,Accurate ac
   if(face_candidate(c,own))return FitOutcome::limit(false);
   return FitOutcome::failure(OutcomeReason::Unresolved);
 }
-// Proved non-uniqueness: an estimate only when every listed maximizer is an
-// accurate family point; equal limiting suprema are a limit naming the first
-// face; witnesses that do not meet the accuracy contract are unresolved.
-template <class Point,class Accurate>
-inline FitOutcome nonunique_outcome(const StopDetail& d,bool certified,Point point,Accurate accurate,
-    StopModel own=StopModel::None) {
-  if(d.candidates.size()<2)return FitOutcome::failure(OutcomeReason::Unresolved);
-  bool points=true,faces=true;
-  for(const auto& c:d.candidates) {
-    points=points && point(c) && accurate(c);
-    faces=faces && face_candidate(c,own);
-  }
-  if(points)return FitOutcome::estimate(certified,false);
-  if(faces)return FitOutcome::limit(certified);
+// A proved tie between limiting suprema uses the comparison's selected face.
+inline FitOutcome equal_faces_outcome(const StopDetail& detail, bool certified,
+                                      StopModel own = StopModel::None) {
+  if (detail.candidates.size() >= 2 &&
+      std::all_of(detail.candidates.begin(), detail.candidates.end(),
+                  [&](const FitCandidate& candidate) { return face_candidate(candidate, own); }))
+    return FitOutcome::limit(certified);
   return FitOutcome::failure(OutcomeReason::Unresolved);
 }
 // The same rules for a family result. A family declares, next to its
@@ -281,11 +274,6 @@ inline std::size_t comparison_choice(const Result& r) {
 template <class Result>
 inline FitOutcome comparison_outcome_of(const Result& r,StopModel own=StopModel::None) {
   return comparison_outcome(r.stop_detail,[&](const FitCandidate& c){return family_point(r,c);},
-    [&](const FitCandidate& c){return accurate_point(r,c);},own);
-}
-template <class Result>
-inline FitOutcome nonunique_outcome_of(const Result& r,bool certified,StopModel own=StopModel::None) {
-  return nonunique_outcome(r.stop_detail,certified,[&](const FitCandidate& c){return family_point(r,c);},
     [&](const FitCandidate& c){return accurate_point(r,c);},own);
 }
 } // namespace cppunivariate

@@ -134,7 +134,7 @@ inline Rcpp::List common_result(const umvl_binding::FitResult& input, bool itera
     estimates.attr("outcome_message") = fit.outcome_message;
   }
   if(!fit.candidates.empty()) {
-    estimates.attr((fit.maximizer_set || fit.outcome.unique || !fit.outcome.uniqueness_known) ? "candidates" : "maximizers")=candidates;
+    estimates.attr("candidates")=candidates;
     estimates.attr("rendered_names")=names;
     estimates.attr("outcome_message")=fit.outcome_message;
     estimates.attr("comparison_model")=fit.model;

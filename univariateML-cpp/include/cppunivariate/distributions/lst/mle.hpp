@@ -760,7 +760,7 @@ inline FitOutcome outcome(const LstResult& r) {
     case LstStatus::CertificateBudget: return FitOutcome::budget();
     case LstStatus::CertificateTie: return comparison_outcome_of(r, StopModel::Lst);
     case LstStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case LstStatus::NonUniqueSymmetry: return nonunique_outcome_of(r, r.certified, StopModel::Lst);
+    case LstStatus::NonUniqueSymmetry: return equal_faces_outcome(r.stop_detail, r.certified, StopModel::Lst);
   }
   return {};
 }

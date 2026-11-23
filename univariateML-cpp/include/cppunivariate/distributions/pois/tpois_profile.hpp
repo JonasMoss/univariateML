@@ -77,7 +77,7 @@ inline FitOutcome outcome(const truncated_detail::Result& r) {
     case truncated_detail::Status::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case truncated_detail::Status::LowerPointMass: return FitOutcome::limit(true);
     case truncated_detail::Status::UpperPointMass: return FitOutcome::limit(true);
-    case truncated_detail::Status::Unidentified: return nonunique_outcome_of(r, true);
+    case truncated_detail::Status::Unidentified: return FitOutcome::failure(OutcomeReason::Unresolved);
     case truncated_detail::Status::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }
   return {};

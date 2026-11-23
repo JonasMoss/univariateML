@@ -26,6 +26,9 @@ classes per family, and checks their rules and the explicit flat-maximum cases:
                   density for every admissible coefficient vector): the
                   declared endpoint_log_density, or where none is declared the
                   SymPy limit of the dossier's log_density
+  unique-false-needs-set
+                  every non-unique estimate carries a decodable set and its
+                  first representative equals the returned estimate
   flat-maximum    hold-aware samples in flat_maxima.py check the exact maximizer
                   set, uniqueness, and the non-unique estimate payload
   collapse        constant valid data in a continuous family whose location
@@ -214,6 +217,31 @@ def count_route_holds(ident, holds):
     return holds
 
 
+def unique_false_needs_set(result):
+    outcome = result.get('outcome') or {}
+    if result.get('kind') != 'ok' and outcome.get('kind') != 'estimate':
+        return ''
+    if result.get('unique') is not False and outcome.get('unique') is not False:
+        return ''
+    try:
+        estimate = result['estimates']
+        wire = result['maximizer_set']
+        if not wire:
+            raise ValueError('missing typed maximizer set')
+        order = wire['coordinates']
+        if set(order) != set(estimate):
+            raise ValueError('maximizer set coordinates differ from the estimate')
+        decoded = maxsets.normalize(wire, order)
+        if not maxsets.member(tuple(number(estimate[k]) for k in order), decoded):
+            raise ValueError('estimate lies outside the decoded set')
+        rows = result['maximizers']
+        if not rows or rows[0]['estimates'] != estimate:
+            raise ValueError('first representative differs from selected estimate')
+    except (ValueError, KeyError, TypeError, OverflowError, ZeroDivisionError) as error:
+        return str(error)
+    return ''
+
+
 def flat_maximum(record, expected, names, ident):
     """Membership in the proved set establishes equality of witness likelihoods."""
     if record['held'] != expected.held or tuple(record['data']) != expected.data:
@@ -247,7 +275,7 @@ def flat_maximum(record, expected, names, ident):
         return tuple(sorted(decoded.items()))
 
     typed = typed_expected(ident, expected)
-    if typed is not None and 'maximizer_set' in result:
+    if typed is not None:
         try:
             order = typed['coordinates']
             coefficient_holds = count_route_holds(ident, expected.held)
@@ -256,7 +284,7 @@ def flat_maximum(record, expected, names, ident):
                 raise ValueError('coefficient names differ from the fixture')
             estimate = result['estimates']
             selected = tuple(number(estimate[k]) for k in order)
-            wire = result['maximizer_set']
+            wire = result.get('maximizer_set')
             if any(selected[order.index(k)] != v for k, v in coefficient_holds.items()):
                 raise ValueError('selected estimate changes a hold')
             if expected.unique:
@@ -298,7 +326,7 @@ def flat_maximum(record, expected, names, ident):
     if coefficients(result['estimates']) is None:
         problems.append('estimate lies outside the proved maximizer set')
     if not expected.unique:
-        witnesses = {coefficients(c['estimates']) for c in result.get('candidates', []) if c.get('model') in ('', ident)}
+        witnesses = {coefficients(c['estimates']) for c in result.get('maximizers', []) if c.get('model') in ('', ident)}
         if None in witnesses:
             problems.append('candidate lies outside the proved maximizer set')
         if len(witnesses - {None}) < 2:
@@ -315,6 +343,10 @@ def judge(rows, mode, table, probe, index):
     by_family = collections.defaultdict(dict)
     typed_by_sample = collections.defaultdict(list)
     for (family, source, case), r in rows.items():
+        problem = unique_false_needs_set(r['result'])
+        if problem:
+            key = '|'.join((CHECK+':unique-false-needs-set', mode, family, source, case))
+            failures[key] = problem
         if source != 'class':
             continue
         if case in CLASSES:

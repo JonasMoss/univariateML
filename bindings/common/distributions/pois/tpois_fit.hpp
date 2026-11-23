@@ -1,7 +1,26 @@
 #pragma once
-#include "../../fit.hpp"
+#include "../../count_maximizers.hpp"
 #include "cppunivariate/distributions/pois/tpois_mle.hpp"
 namespace umvl_binding {
+inline void attach_tpois_window_set(FitResult& out, double lo) {
+  if (out.outcome.kind != cppunivariate::OutcomeKind::Estimate ||
+      out.outcome.unique || !out.outcome.uniqueness_known) return;
+  const bool include_design = out.estimates.size() == 3;
+  if (include_design && keep_infinite_window_comparison(out)) return;
+
+  // The singleton retains every positive rate, and the rate-zero atom
+  // exactly when the count is zero.
+  const auto rate = cppunivariate::interval(0, INFINITY, lo <= 0, false);
+  cppunivariate::MaximizerSet set;
+  set.dimension = out.estimates.size();
+  if (include_design)
+    set.add_box({{rate, cppunivariate::fixed(out.estimates[1].second),
+                        cppunivariate::fixed(out.estimates[2].second)}});
+  else
+    set.add_box({{rate}});
+  attach_count_set(out, out.outcome, set, "tpois", {});
+}
+
 inline FitResult fit_tpois(cppunivariate::ispan x, Held lambda_arg = {}, Held a_arg = {}, Held b_arg = {}, double tol=1e-10,int maxit=200) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };

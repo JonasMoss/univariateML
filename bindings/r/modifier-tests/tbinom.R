@@ -277,3 +277,21 @@ test_that("the held-size binomial window meets the requested tolerance", {
     expect_lte(abs(fit[["prob"]] - 0.31216987986618986013), tol)
   }
 })
+
+test_that("private truncated binomial fits expose typed singleton-window maxima", {
+  f <- .modifier_tbinom(rep(1, 3), a = 0, b = 1, size = 12)
+  expect_false(attr(f, "unique"))
+  set <- attr(f, "maximizer_set")
+  expect_identical(set$coordinates, names(coef(f)))
+  expect_identical(set$pieces[[1]]$kind, "box")
+  rows <- attr(f, "maximizers")
+  expect_equal(unlist(rows[1, set$coordinates, drop = FALSE]), coef(f))
+  expect_true(all(rows$a == 0 & rows$b == 1 & rows$size == 12))
+  expect_gt(length(unique(rows$prob)), 1L)
+  wide <- .modifier_tbinom(rep(1, 3), a = 0, b = Inf, size = 1)
+  expect_true(is.na(attr(wide, "unique")))
+  expect_null(attr(wide, "maximizer_set"))
+  expect_equal(as.numeric(logLik(wide)), 0)
+  candidates <- attr(wide, "candidates")
+  expect_equal(unlist(candidates[1, names(coef(wide)), drop = FALSE]), coef(wide))
+})
