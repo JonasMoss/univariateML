@@ -166,6 +166,29 @@
    "commit": "89b214ed",
    "dirty": true,
    "reason": "batch 11 (89b214ed): hyper-flags candidates/warnings (hyper 29, nhyper 3, triang 7), sged-loc held-location moves (15), flat-count witnesses (binom, cmb zeros), and the zero-unique flat-maximum records (112 public, 53 route per mode)"
+  },
+  {
+   "families": [
+    "binom +truncate=tbinom",
+    "binom+zero=inflated",
+    "binom+zero=modified",
+    "binom+zero=truncated",
+    "geom+zero=modified",
+    "geom+zero=truncated",
+    "lgser+zero=modified",
+    "nbinom+zero=inflated",
+    "nbinom+zero=modified",
+    "nbinom+zero=truncated",
+    "norm +truncate=tnorm",
+    "pois +truncate=tpois",
+    "pois+zero=inflated",
+    "pois+zero=modified",
+    "pois+zero=truncated",
+    "zeta +truncate=zipf"
+   ],
+   "commit": "83ed77a9",
+   "dirty": true,
+   "reason": "batch 12: maxset-core nullable field, typed pilot payloads, 11 unproved FALSE -> NA, 2 cauchy fixtures"
   }
  ]
 }
