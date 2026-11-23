@@ -245,13 +245,13 @@ test_that("beta-binomial size-zero maxima honor holds and return two shape witne
     if (attr(f, "unique")) next
     rows <- attr(f, "maximizers")
     cols <- c("size", "alpha", "beta")
-    expect_equal(nrow(unique(rows[cols])), 2L)
+    expect_gte(nrow(unique(rows[cols])), 2L)
     expect_equal(as.numeric(rows[1, cols]), as.numeric(f))
-    expect_equal(rows$size, c(0, 0))
+    expect_true(all(rows$size == 0))
     expect_true(all(rows$alpha > 0 & rows$beta > 0))
     if (!is.null(alpha)) expect_true(all(rows$alpha == alpha))
     if (!is.null(beta)) expect_true(all(rows$beta == beta))
-    expect_match(attr(f, "outcome_message"), "every positive value of each free shape")
+    expect_identical(attr(f, "maximizer_set")$pieces[[1]]$kind, "box")
   }
   f <- mlbbinom(rep(1, 4), size = NULL, alpha = 1, beta = 2)
   expect_true(attr(f, "certified"))
@@ -261,5 +261,16 @@ test_that("beta-binomial size-zero maxima honor holds and return two shape witne
   expect_equal(rows$alpha, c(1, 1))
   expect_equal(rows$beta, c(2, 2))
   expect_equal(attr(f, "logLik"), -4 * log(3))
-  expect_match(attr(f, "outcome_message"), "adjacent sizes")
+  expect_identical(attr(f, "maximizer_set")$pieces[[1]]$kind, "points")
+})
+
+test_that("the size-one beta-binomial shape ray retains every positive total shape", {
+  x <- c(0, 1, 1)
+  f <- mlbbinom(x, size = 1)
+  relation <- attr(f, "maximizer_set")$pieces[[1]]
+  expect_identical(relation$form, "part_over_sum")
+  rows <- attr(f, "maximizers")
+  expect_gte(nrow(rows), 2L)
+  expect_equal(rows$alpha / (rows$alpha + rows$beta), rep(mean(x), nrow(rows)))
+  expect_true(all(rows$alpha > 0 & rows$beta > 0))
 })

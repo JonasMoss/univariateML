@@ -246,7 +246,9 @@ test_that("CMB free dispersion handles constant free-size samples", {
 })
 
 test_that("CMB free size and dispersion handle adjacent observations", {
-  expect_match(attr(mlcmb(c(0, 0, 1), size = NULL),"outcome_message"),"matched a limiting face")
+  fit <- mlcmb(c(0, 0, 1), size = NULL)
+  expect_match(attr(fit, "outcome_message"), "Maximum is not unique", fixed = TRUE)
+  expect_identical(attr(fit, "candidates")$model, "binom")
   expect_error(mlcmb(c(2, 2, 3), size = NULL), "adjacent two-point law")
   expect_error(mlcmb(c(0, 0, 4), size = NULL), "endpoint two-point law")
 })
@@ -375,13 +377,13 @@ test_that("CMB finite-size ties return both finite witnesses", {
     expect_true(attr(f,"certified"))
     expect_false(attr(f,"unique"))
     expect_equal(as.numeric(logLik(f)),ll)
-    expect_match(fit_diagnostic(f),if (zero) "Distinct finite sizes" else "adjacent sizes")
     payload <- fit_payload(f)
-    expect_equal(nrow(payload$candidates),2L)
-    expect_equal(payload$candidates$size,if (zero) c(0,1) else c(1,2))
-    expect_equal(payload$candidates$loglik_lower,rep(ll,2))
-    if (zero) expect_identical(payload$loglik_upper,Inf)
-    else expect_equal(payload$loglik_upper,ll)
+    rows <- payload$maximizers
+    expect_gte(nrow(rows), 2L)
+    if (zero) expect_true(all(rows$size == 0 | rows$prob == 0))
+    else expect_equal(rows$size, c(1, 2))
+    expect_equal(rows$loglik_lower, rep(ll, nrow(rows)))
+    expect_match(fit_diagnostic(f), "Maximum is not unique", fixed = TRUE)
   }
 })
 
@@ -432,38 +434,38 @@ test_that("free-size CMB returns the proved nonunique saturated Bernoulli maximu
 })
 
 test_that("constant CMB fits report exact maximizing sets and singleton controls", {
-  check <- function(f, x, message) {
+  check <- function(f, x, kind) {
     expect_true(attr(f, "certified"))
     expect_false(attr(f, "unique"))
     rows <- attr(f, "maximizers")
     cols <- c("size", "prob", "nu")
-    expect_equal(nrow(unique(rows[cols])), 2L)
+    expect_gte(nrow(unique(rows[cols])), 2L)
     expect_equal(as.numeric(rows[1, cols]), as.numeric(f))
     ll <- vapply(seq_len(nrow(rows)), function(i) {
       4 * dcmb(x, rows$size[i], rows$prob[i], rows$nu[i], log = TRUE)
     }, 0.)
     expect_equal(ll, rep(attr(f, "logLik"), nrow(rows)))
-    expect_match(attr(f, "outcome_message"), message)
+    expect_identical(attr(f, "maximizer_set")$pieces[[1]]$kind, kind)
     invisible(rows)
   }
   z <- rep(0, 4)
   for (held in list(list(size = 10), list(size = 0), list(size = 0, prob = .5),
                     list(size = 0, nu = 1), list(size = NULL, prob = .5))) {
-    check(do.call(mlcmb, c(list(x = z), held)), 0, "every (admissible value|finite nu)")
+    check(do.call(mlcmb, c(list(x = z), held)), 0, "box")
   }
   for (held in list(list(), list(prob = 0), list(nu = 1))) {
     rows <- check(do.call(mlcmb, c(list(x = z, size = NULL), held)), 0,
-                  "size = 0 or prob = 0")
-    expect_equal(rows$size, c(0, 1))
+                  "box")
+    expect_true(any(rows$size > 0 & rows$prob == 0))
   }
   for (held in list(list(size = NULL), list(size = 3), list(size = NULL, prob = 1))) {
-    check(do.call(mlcmb, c(list(x = rep(3, 4)), held)), 3, "every finite nu")
+    check(do.call(mlcmb, c(list(x = rep(3, 4)), held)), 3, "box")
   }
   for (x in 0:1) {
     expect_no_warning(f <- mlcmb(rep(x, 4), size = 1, prob = .5))
-    check(f, x, "Bernoulli likelihood")
+    check(f, x, "box")
   }
-  rows <- check(mlcmb(rep(1, 4), size = NULL, prob = .5, nu = 1), 1, "adjacent sizes")
+  rows <- check(mlcmb(rep(1, 4), size = NULL, prob = .5, nu = 1), 1, "points")
   expect_equal(rows$size, c(1, 2))
   for (f in list(mlcmb(z, size = 10, nu = 1), mlcmb(z, size = NULL, prob = .5, nu = 1),
                  mlcmb(rep(3, 4), size = NULL, nu = 1))) {

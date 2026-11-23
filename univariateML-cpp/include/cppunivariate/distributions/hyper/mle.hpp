@@ -33,6 +33,7 @@
 
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
 
@@ -77,6 +78,7 @@ struct HyperResult {
   bool unique = true;
   int non_unique_reason = 0;
   bool uniqueness_known = true;
+  MaximizerSet maximizers{};
 };
 
 namespace hyper_detail {
@@ -605,6 +607,15 @@ inline HyperResult hyper_mle_search(span x, double k, double N, double m) {
     r.status = HyperStatus::NumericalFailure;
     const bool partial=width*(width+1)>hyper_detail::kGridBudget;
     CPPUNIV_EXTENDED_REAL best = -kInf;
+    // The existing grid visits both orientations. Retain the two highest
+    // unordered designs during its first pass to detect an unresolved orbit
+    // comparison even when the selected vector lies on the diagonal.
+    struct Orbit {
+      double m = 0, k = 0;
+      CPPUNIV_EXTENDED_REAL loglik = -maxset_inf;
+    };
+    Orbit best_orbit, runner;
+    const bool compare_orbits = !partial && c.min != c.max;
     for (int pass = 0; pass < 2; ++pass) {
       for (double mm = c.max; mm <= N - c.max + c.min; ++mm) {
         for (double kk = c.max; kk <= N - mm + c.min; ++kk) {
@@ -628,10 +639,29 @@ inline HyperResult hyper_mle_search(span x, double k, double N, double m) {
               r.status=HyperStatus::Ok;r.certified=false;r.stop_detail=discrete_budget(r.stop_detail);return r;
             }
           }
-          if (pass == 0) best = std::max(best, ll.value());
-          else if (hyper_detail::grid_tied(ll.value(), best)) {
+          if (pass == 0) {
+            best = std::max(best, ll.value());
+            if (compare_orbits && mm <= kk) {
+              const Orbit current{mm, kk, ll.value()};
+              if (current.loglik > best_orbit.loglik) {
+                runner = best_orbit;
+                best_orbit = current;
+              } else if (current.loglik > runner.loglik) {
+                runner = current;
+              }
+            }
+          } else if (hyper_detail::grid_tied(ll.value(), best)) {
             r.m = mm; r.k = kk; r.logLik = static_cast<double>(ll.value());
             r.status = HyperStatus::Ok;
+            if (compare_orbits && std::isfinite(runner.loglik) &&
+                hyper_detail::grid_tied(runner.loglik, best_orbit.loglik)) {
+              r.unique = false;
+              r.uniqueness_known = false;
+              const auto& other = std::min(mm, kk) == best_orbit.m &&
+                                  std::max(mm, kk) == best_orbit.k ? runner : best_orbit;
+              const double other_loglik = static_cast<double>(other.loglik);
+              r.stop_detail.candidates.push_back({{other.m, N, other.k}, other_loglik, other_loglik});
+            }
             return r; // lexicographic (m, N, k) traversal
           }
         }
@@ -644,6 +674,7 @@ inline HyperResult hyper_mle_search(span x, double k, double N, double m) {
   if (std::isnan(k) && !std::isnan(N) && !std::isnan(m)) {
     HyperResult swapped = hyper_mle(x, m, N, kNaN);
     r = swapped;
+    r.maximizers = {}; // Rebuild the set after restoring the public count order.
     r.m = m;
     r.k = swapped.m;
     return r;
@@ -754,6 +785,83 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     });
   }
   hyper_detail::mark_exact_ties(x, k, N, m, out);
+  if (out.uniqueness_known && (!out.unique || out.status == HyperStatus::Tie ||
+                              out.status == HyperStatus::Unidentified) &&
+      (out.status == HyperStatus::Ok || out.status == HyperStatus::Tie ||
+       out.status == HyperStatus::Unidentified)) {
+    auto& set = out.maximizers;
+    set.dimension = 3;
+    const auto counts = interval(0, maxset_count, true, true, true);
+    const auto count = [](double value) { return fixed(value, true); };
+    const Box designs{{counts, counts, counts}, {{{0, 1}, {2, 1}}}, 2};
+    const double observed = x[0];
+    const bool atom = observed == 0 ? out.m == 0 || out.k == 0 :
+        (out.m == out.N && out.k == observed) || (out.k == out.N && out.m == observed);
+    if (atom && std::all_of(x.begin(), x.end(), [&](double v) { return v == observed; })) {
+      // The support runs from max(0,m+k-N) to min(m,k). A singleton
+      // at zero needs a zero count, and a positive singleton needs a full count.
+      auto first = designs;
+      auto second = designs;
+      if (observed == 0) {
+        first.axes[0] = count(0);
+        second.axes[2] = count(0);
+      } else {
+        first.axes[2] = count(observed);
+        first.order[first.order_size++] = {1, 0};
+        second.axes[0] = count(observed);
+        second.order[second.order_size++] = {1, 2};
+      }
+      set.add_box(first);
+      set.add_box(second);
+    } else if (out.status == HyperStatus::Tie ||
+               out.status == HyperStatus::Unidentified) {
+      const std::size_t free = std::isnan(m) ? 0 : (std::isnan(N) ? 1 : 2);
+      const Coordinates chosen{{out.m, out.N, out.k}};
+      if (out.status == HyperStatus::Tie) {
+        // The scalar ratio certificate proves an exact adjacent tie.
+        auto other = chosen;
+        other.values[free] = out.tie;
+        const std::array<Point, 2> points{{{chosen, {}}, {other, {}}}};
+        set.add_points({points.data(), points.size()});
+      } else {
+        auto box = designs;
+        for (std::size_t j = 0; j < 3; ++j)
+          box.axes[j] = count(chosen.values[j]);
+        box.axes[free] = interval(chosen.values[free],
+            std::min(out.tie, maxset_count), true, true, true);
+        set.add_box(box);
+      }
+    } else if (out.non_unique_reason == 3) {
+      // A one-draw law is Bernoulli, whose maximum fixes its success ratio.
+      const auto positive = interval(1, maxset_count, true, true, true);
+      Relation ratio;
+      ratio.form = RelationForm::CountRatio;
+      ratio.dependent = 1;
+      ratio.driver = !std::isnan(k) ? 0 : 2;
+      ratio.axes = {positive, positive, positive};
+      ratio.axes[!std::isnan(k) ? 2 : 0] = count(1);
+      ratio.level.numerator = static_cast<std::uint64_t>(!std::isnan(k) ? out.m : out.k);
+      ratio.level.denominator = static_cast<std::uint64_t>(out.N);
+      set.add_relation(ratio);
+    } else {
+      // The swap has equal likelihood. Additional orbits can survive the comparison.
+      out.uniqueness_known = false;
+    }
+    if (set.size) {
+      std::array<std::optional<double>, maxset_dim> holds{};
+      if (!std::isnan(m)) holds[0] = m;
+      if (!std::isnan(N)) holds[1] = N;
+      if (!std::isnan(k)) holds[2] = k;
+      if (set.slice(holds) != MaxsetStatus::Ok) {
+        set = {};
+        out.uniqueness_known = false;
+      } else if (set.singleton()) {
+        set = {};
+        out.unique = true;
+        out.status = HyperStatus::Ok;
+      }
+    }
+  }
   return out;
 }
 }  // namespace cppunivariate
@@ -770,10 +878,12 @@ inline FitOutcome outcome(const HyperResult& r) {
   if (r.stop_detail.budget_exhausted && r.status != HyperStatus::Ok &&
       r.status != HyperStatus::Tie && r.status != HyperStatus::Unidentified) return FitOutcome::budget();
   switch (r.status) {
-    case HyperStatus::Ok: return FitOutcome::estimate(r.certified, r.unique);
+    case HyperStatus::Ok: return r.uniqueness_known ? FitOutcome::estimate(r.certified, r.unique)
+                                                     : FitOutcome::undetermined();
     case HyperStatus::Tie: return r.uniqueness_known ? FitOutcome::estimate(r.certified, false)
                                                      : FitOutcome::undetermined();
-    case HyperStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
+    case HyperStatus::Unidentified: return r.uniqueness_known ? FitOutcome::estimate(r.certified, false)
+                                                               : FitOutcome::undetermined();
     case HyperStatus::AllZero: return FitOutcome::limit();
     case HyperStatus::BothFree: return FitOutcome::failure(OutcomeReason::Unsupported);
     case HyperStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);

@@ -49,18 +49,43 @@ inline FitResult held_window_result(FitResult out,const cppunivariate::HeldWindo
   out.logLik=r.logLik;out.has_fixed=true;return with_outcome(std::move(out),o,static_cast<int>(r.status));
 }
 template<class Traits> inline FitResult truncate_counts(cppunivariate::ispan x,double a,double b,
-    Traits traits,Held held,const std::string& name,double tol,int maxit) {
-  const auto r=cppunivariate::count_window_mle(x,a,b,traits,held.supplied?held.value:NAN,tol,maxit);
-  const auto o=cppunivariate::outcome(r);
+    Traits traits, Held prob, const std::string& model, double tol, int maxit,
+    Held size = {}) {
+  const auto r=cppunivariate::count_window_mle(x,a,b,traits,prob.supplied?prob.value:NAN,tol,maxit);
+  auto o=cppunivariate::outcome(r);
   if(r.status!=cppunivariate::TruncationStatus::Ok) {
     const std::string reason=r.status==cppunivariate::TruncationStatus::LowerLimit?"lower point-mass limit: no finite parent MLE":
       r.status==cppunivariate::TruncationStatus::UpperLimit?"upper boundary limit: no finite parent MLE":
       r.status==cppunivariate::TruncationStatus::NumericalFailure?"truncation solve failed to certify coefficient accuracy":"invalid truncation window, observations or held coefficients";
     return with_outcome(stop_failure(failure(reason),r.stop_detail,outcome_payload(o),{"min","max"},r.model==cppunivariate::CountWindowModel::Uniform?"dunif":""),o,static_cast<int>(r.status));
   }
-  FitResult out;out.estimates={{name,r.parameter}};out.logLik=r.logLik;
-  out.iterations=r.iterations;out.has_iterations=true;out.has_fixed=true;
-  if(held.supplied)out.fixed.push_back(name);return with_outcome(std::move(out),o,static_cast<int>(r.status));
+  FitResult out;
+  if (size.supplied) {
+    out.estimates.push_back({"size", size.value});
+    out.fixed.push_back("size");
+  }
+  out.estimates.push_back({"prob", r.parameter});
+  if (prob.supplied) out.fixed.push_back("prob");
+  out.logLik = r.logLik;
+  out.iterations = r.iterations;
+  out.has_iterations = true;
+  out.has_fixed = true;
+  if (!o.unique) {
+    // On singleton support the conditional probability is one for every
+    // interior probability. The prob-one atom survives exactly at zero.
+    const auto domain = cppunivariate::interval(0, 1, false, std::ceil(a) <= 0);
+    cppunivariate::MaximizerSet set;
+    if (size.supplied) {
+      set.dimension = 2;
+      set.add_box({{cppunivariate::fixed(size.value), domain}});
+      attach_count_set(out, o, set, model, {size, prob});
+    } else {
+      set.dimension = 1;
+      set.add_box({{domain}});
+      attach_count_set(out, o, set, model, {prob});
+    }
+  }
+  return with_outcome(std::move(out),o,static_cast<int>(r.status));
 }
 inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     const std::vector<std::pair<std::string,Held>>& holds,const std::string& zero,
@@ -94,11 +119,14 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     auto out=fit_zmlogarithmic(ix,h("theta"),h("p0"),tol,maxit);
     for(auto& p:out.estimates)if(p.first=="prob")p.first="theta";
     for(auto& p:out.fixed)if(p=="prob")p="theta";
+    for (auto& row : out.maximizers)
+      for (auto& coefficient : row.estimates)
+        if (coefficient.first == "prob") coefficient.first = "theta";
     return out;
   }
   if(family=="zeta" && window) {
     const auto r=cppunivariate::zeta_window_mle(ix,a,b,value("s"),tol,maxit);
-    const auto o=cppunivariate::outcome(r);
+    auto o=cppunivariate::outcome(r);
     if(r.status!=cppunivariate::ZetaWindowStatus::Ok) {
       if(r.status==cppunivariate::ZetaWindowStatus::LowerLimit || r.status==cppunivariate::ZetaWindowStatus::UpperLimit) {
         return with_outcome(stop_failure(failure("No finite exponent: point-mass supremum at a window endpoint."),
@@ -107,19 +135,27 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
       return with_outcome(failure(r.status==cppunivariate::ZetaWindowStatus::InvalidInput ? "finite zeta window requires [1,N], integer N >= max(x), and finite s" : "finite zeta exponent solve failed to certify coefficient accuracy"),o,static_cast<int>(r.status));
     }
     FitResult out;out.estimates={{"s",r.s}};out.logLik=r.logLik;out.has_fixed=true;
-    if(r.unidentified)out.warnings.push_back("All observations are equal to 1. The maximum likelihood estimator is not unique.");
+    if (r.unidentified) {
+      // Every finite exponent gives mass one to 1 on the window [1, 1].
+      cppunivariate::MaximizerSet set;
+      set.dimension = 1;
+      set.add_box({{cppunivariate::Axis{}}});
+      attach_count_set(out, o, set, "zipf", {h("s")});
+      out.warnings.push_back("All observations are equal to 1. The maximum likelihood estimator is not unique.");
+    }
     if(h("s").supplied)out.fixed={"s"};
     return with_outcome(std::move(out),o,static_cast<int>(r.status));
   }
   if(family=="lgser" || family=="zeta")return modifier_not_implemented(family,window?"`truncate`":"`zero`");
   if(window && a==1 && b==INFINITY){window=false;return fit_modifier(family,x,holds,"truncated",false,NAN,NAN,tol,maxit);}
   if(window) {
-    FitResult out;
     if(family=="pois" && h("lambda").supplied) {
+      FitResult out;
       out.estimates={{"lambda",value("lambda")}};out.fixed={"lambda"};
       return held_window_result(std::move(out),cppunivariate::held_pois_window_mle(ix,value("lambda"),a,b));
     }
     if(family=="binom" && h("size").supplied && h("prob").supplied) {
+      FitResult out;
       out.estimates={{"size",value("size")},{"prob",value("prob")}};out.fixed={"size","prob"};
       return held_window_result(std::move(out),cppunivariate::held_binom_window_mle(ix,value("size"),value("prob"),a,b));
     }
@@ -130,19 +166,42 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
       if(out.core_status==static_cast<int>(cppunivariate::truncated_detail::Status::InvalidInput))
         out.error="invalid truncation window, observations or held coefficients";
       out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
-      out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());return out;
+      out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());
+      if (!out.outcome.unique && out.outcome.uniqueness_known) {
+        // The singleton retains every positive rate. It also retains the
+        // rate-zero atom exactly when the count is zero.
+        cppunivariate::MaximizerSet set;
+        set.dimension = 1;
+        set.add_box({{cppunivariate::interval(0, INFINITY, std::ceil(a) <= 0, false)}});
+        attach_count_set(out, out.outcome, set, "tpois", {h("lambda")});
+      }
+      return out;
     }
-    if(family=="geom")return truncate_counts(ix,a,b,cppunivariate::GeomTruncationTraits{},h("prob"),"prob",tol,maxit);
+    if(family=="geom")return truncate_counts(ix,a,b,cppunivariate::GeomTruncationTraits{},h("prob"),"geom",tol,maxit);
     if(family=="binom") {
       auto out=fit_tbinom_controlled(ix,h("prob"),{true,std::max(-1.0,std::ceil(a)-1)}, {true,std::floor(b)},h("size"),tol,maxit);
       out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
       std::reverse(out.estimates.begin(),out.estimates.end());
-      out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());return out;
+      out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());
+      if (!out.outcome.unique && out.outcome.uniqueness_known && !out.estimates.empty()) {
+        // Interior probabilities retain the parent support [0, size].
+        // At the two endpoints only the corresponding parent atom survives.
+        const double lo = std::max(0., std::ceil(a)), hi = std::floor(b);
+        const auto sizes = count_sizes(lo, h("size"));
+        const auto realized = lo == hi ? sizes : cppunivariate::fixed(lo, true);
+        cppunivariate::MaximizerSet set;
+        set.dimension = 2;
+        set.add_box({{realized, cppunivariate::interval(0, 1, lo == 0, false)}});
+        if (lo == 0 && lo != hi)
+          set.add_box({{sizes, cppunivariate::fixed(0)}});
+        set.add_box({{cppunivariate::fixed(lo, true), cppunivariate::fixed(1)}});
+        attach_count_set(out, out.outcome, set, "tbinom", {h("size"), h("prob")});
+      }
+      return out;
     }
     if(!h("size").supplied)return modifier_not_implemented(family,"`truncate` with size free");
-    if(family=="binom")out=truncate_counts(ix,a,b,cppunivariate::BinomTruncationTraits{value("size")},h("prob"),"prob",tol,maxit);
-    else out=truncate_counts(ix,a,b,cppunivariate::NbinomTruncationTraits{value("size")},h("prob"),"prob",tol,maxit);
-    out.estimates.insert(out.estimates.begin(),{"size",value("size")});out.fixed.insert(out.fixed.begin(),"size");return out;
+    return truncate_counts(ix, a, b, cppunivariate::NbinomTruncationTraits{value("size")},
+                           h("prob"), "nbinom", tol, maxit, h("size"));
   }
   if(zero=="truncated") {
     if(family=="pois")return fit_ztpois(ix,h("lambda"),tol,maxit);
@@ -163,6 +222,20 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     if(family=="geom") {
       out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="size";}),out.estimates.end());
       out.fixed.erase(std::remove(out.fixed.begin(),out.fixed.end(),"size"),out.fixed.end());
+      if (out.maximizer_set) {
+        // A negative binomial with size one is geometric at every prob,
+        // so dropping the held size preserves the likelihood and coverage.
+        const auto original = *out.maximizer_set;
+        out.maximizer_set.reset();
+        out.maximizers.clear();
+        cppunivariate::MaximizerSet projected;
+        projected.dimension = 2;
+        for (std::size_t i = 0; i < original.size; ++i) {
+          const auto& box = std::get<cppunivariate::Box>(original.pieces[i].value);
+          projected.add_box({{box.axes[1], box.axes[2]}});
+        }
+        attach_count_set(out, out.outcome, projected, "zigeom", {h("prob"), h("pi")});
+      }
     }
     return out;
   }

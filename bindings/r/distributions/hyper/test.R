@@ -41,12 +41,12 @@ test_that("hyper reports ties and unidentified designs in the outcome", {
   expect_no_warning(z <- mlhyper(c(0, 0), k = 0, N = 7))
   expect_false(attr(z, "unique"))
   expect_equal(attr(z, "maximizers")$m, c(0, 7))
-  expect_match(attr(z, "outcome_message"), "Every `m` from 0 to 7")
+  expect_match(attr(z, "outcome_message"), "Maximum is not unique", fixed = TRUE)
   expect_equal(unname(z["m"]), 0)
   expect_no_warning(z <- mlhyper(0, k = 3, N = NULL, m = 0))
   expect_false(attr(z, "unique"))
-  expect_equal(attr(z, "maximizers")$N, c(3, 4))
-  expect_match(attr(z, "outcome_message"), "Every admissible `N` from 3")
+  expect_true(all(attr(z, "maximizers")$N >= 3))
+  expect_match(attr(z, "outcome_message"), "Maximum is not unique", fixed = TRUE)
   fit <- mlhyper(c(0, 1, 1), k = 1, N = 10)
   grid <- 0:10
   ll <- vapply(grid, function(m) sum(dhyper(c(0, 1, 1), m, 10-m, 1, log=TRUE)), 0)
@@ -113,14 +113,15 @@ test_that("free draws match the reference finite grid", {
 
 test_that("fully free hyper fits and reports boundary outcomes", {
   expect_no_warning(f <- mlhyper(c(2,2,2,3,3,3), N=NULL, k=NULL, m=NULL))
-  expect_false(attr(f, "unique"))
-  witnesses <- attr(f, "maximizers")
+  expect_identical(attr(f, "unique"), NA)
+  expect_null(attr(f, "maximizer_set"))
+  witnesses <- attr(f, "candidates")
   expect_equal(nrow(witnesses), 2L)
   expect_equal(witnesses$m, rev(witnesses$k))
   expect_equal(witnesses$N, rep(f[["N"]], 2))
   expect_match(attr(f, "outcome_message"), "symmetric")
-  expect_output(print(f), "Maximum is not unique")
-  expect_output(summary(f), "Maximum is not unique")
+  expect_output(print(f), "Uniqueness is undetermined")
+  expect_output(summary(f), "Uniqueness is undetermined")
   expect_equal(as.numeric(logLik(f)), 6*log(.5), tolerance=1e-9)
   expect_length(attr(f, "fixed"), 0)
   expect_identical(attr(mlhyper(c(0,1),N=NULL,k=NULL,m=NULL), "certified"), FALSE)
@@ -160,8 +161,9 @@ test_that("fully free seeded fits agree with independent population grids", {
     expect_equal(as.numeric(logLik(f)),best,tolerance=1e-10)
     expect_identical(attr(f,"fixed"),"N")
     if (z$m != z$k || (length(unique(x)) == 1L && x[1] < N)) {
-      expect_false(attr(f, "unique"))
-      witnesses <- attr(f, "maximizers")
+      deterministic <- best == 0
+      expect_identical(attr(f, "unique"), if (deterministic) FALSE else NA)
+      witnesses <- attr(f, if (deterministic) "maximizers" else "candidates")
       expect_gte(nrow(witnesses), 2L)
       expect_equal(witnesses$N, rep(N, nrow(witnesses)))
       for (j in seq_len(nrow(witnesses))) {
@@ -186,9 +188,10 @@ test_that("joint population fits agree with a finite reference grid", {
   expect_no_warning(one_draw <- mlhyper(c(0,1), k=1, N=NULL, m=NULL))
   expect_equal(as.numeric(logLik(one_draw)), 2*log(.5))
   expect_false(attr(one_draw, "unique"))
-  expect_equal(attr(one_draw, "maximizers")$m, c(1, 2))
-  expect_equal(attr(one_draw, "maximizers")$N, c(2, 4))
-  expect_match(attr(one_draw, "outcome_message"), "success ratio")
+  rows <- attr(one_draw, "maximizers")
+  expect_gte(nrow(rows), 2L)
+  expect_equal(rows$m / rows$N, rep(.5, nrow(rows)))
+  expect_identical(attr(one_draw, "maximizer_set")$pieces[[1]]$form, "count_ratio")
   expect_identical(attr(mlhyper(c(0,1),k=100001,N=NULL,m=NULL), "certified"), FALSE)
 })
 
@@ -210,10 +213,10 @@ test_that("constant hyper samples describe the point-mass maximizing set", {
   expect_no_warning(fit <- mlhyper(c(2, 2), k = NULL, N = NULL, m = NULL))
   expect_false(attr(fit, "unique"))
   witnesses <- attr(fit, "maximizers")
-  expect_equal(witnesses$m, c(2, 3, 2))
-  expect_equal(witnesses$N, c(2, 3, 3))
-  expect_equal(witnesses$k, c(2, 2, 3))
-  expect_match(attr(fit, "outcome_message"), "point-mass")
+  expect_equal(as.numeric(witnesses[1, c("m", "N", "k")]), as.numeric(fit))
+  expect_true(any(witnesses$m == 2 & witnesses$k == witnesses$N))
+  expect_true(any(witnesses$k == 2 & witnesses$m == witnesses$N))
+  expect_length(attr(fit, "maximizer_set")$pieces, 2L)
 })
 
 test_that("holding the largest urn count makes the zero maximizer unique", {
@@ -235,4 +238,17 @@ test_that("overlapping adjacent likelihoods preserve comparison evidence", {
   expect_false(attr(f, "certified"))
   expect_null(attr(f, "maximizer_set"))
   expect_equal(attr(f, "candidates")$m, c(2, 3))
+})
+
+test_that("the held-population comparison sees other orbits even on the diagonal", {
+  x <- c(0L, 1L)
+  for (N in c(3, 5)) {
+    f <- mlhyper(x, m = NULL, N = N, k = NULL)
+    expect_identical(attr(f, "unique"), NA)
+    expect_null(attr(f, "maximizer_set"))
+    rows <- attr(f, "candidates")
+    orbit <- paste(pmin(rows$m, rows$k), pmax(rows$m, rows$k))
+    expect_gte(length(unique(orbit)), 2L)
+    expect_equal(as.numeric(logLik(f)), log(floor(N / 2) * ceiling(N / 2) / N^2))
+  }
 })

@@ -269,3 +269,14 @@ test_that("size-zero negative binomial draws the point mass without consuming RN
   set.seed(219)
   expect_identical(draws, stats::rnbinom(16, size = 2, prob = .5))
 })
+
+test_that("a held-size negative-binomial window publishes its feasible probability interval", {
+  for (x in c(0, 2)) {
+    fit <- mlnbinom(rep(x, 4), size = 3, truncate = c(x, x))
+    set <- attr(fit, "maximizer_set")
+    expect_identical(set$coordinates, c("size", "prob"))
+    expect_equal(set$pieces[[1]]$axes[[1]]$lower, 3)
+    expect_identical(set$pieces[[1]]$axes[[2]]$closed, c(FALSE, x == 0))
+    expect_equal(as.numeric(logLik(fit)), 0)
+  }
+})

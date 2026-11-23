@@ -1,5 +1,5 @@
 #pragma once
-#include "../../fit.hpp"
+#include "../../count_maximizers.hpp"
 #include "cppunivariate/distributions/nbinom/zinb_mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held pi_arg = {}, double tol = 1e-10, int iterlim = 200) {
@@ -16,7 +16,7 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
     return invalid_argument(fail("size must be a finite nonnegative number"));
   const auto fit = cppunivariate::zinb_mle(x, tol, iterlim,
       size.supplied ? size.value : NAN,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN());
-  const auto o=cppunivariate::outcome(fit);
+  auto o =cppunivariate::outcome(fit);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(fit.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"pi",pi_arg.supplied}});
   };
@@ -43,7 +43,21 @@ inline FitResult fit_zinb(cppunivariate::ispan x, Held size_arg = {}, Held prob_
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");
   if(pi.supplied)fixed.push_back("pi");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",fit.size},{"prob",fit.prob},{"pi",fit.pi}}; out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",fit.size},{"prob",fit.prob},{"pi",fit.pi}}; out.logLik = fit.logLik; out.iterations = fit.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
+    const bool all_zero = std::all_of(x.begin(), x.end(), [](int v) { return v == 0; });
+    if (all_zero && (fit.pi == 1 || fit.size == 0 || fit.prob == 1)) {
+      // The mixture is a zero atom exactly when inflation is one or the parent is a zero atom.
+      cppunivariate::MaximizerSet set;
+      set.dimension = 3;
+      const auto nonnegative = cppunivariate::interval(0, INFINITY, true, false);
+      const auto probability = cppunivariate::interval(0, 1, true, true);
+      const auto positive_prob = cppunivariate::interval(0, 1, false, true);
+      set.add_box({{nonnegative, positive_prob, cppunivariate::fixed(1)}});
+      set.add_box({{cppunivariate::fixed(0), positive_prob, probability}});
+      set.add_box({{nonnegative, cppunivariate::fixed(1), probability}});
+      attach_count_set(out, o, set, "zinb", {size, prob, pi});
+    }
+    return out; }();
 
   }());
 }

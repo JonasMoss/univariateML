@@ -1,5 +1,5 @@
 #pragma once
-#include "../../fit.hpp"
+#include "../../count_maximizers.hpp"
 #include "cppunivariate/distributions/geom/zmgeom_mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_zmgeom(cppunivariate::ispan x, Held prob_arg = {}, Held p0_arg = {}) {
@@ -12,7 +12,7 @@ inline FitResult fit_zmgeom(cppunivariate::ispan x, Held prob_arg = {}, Held p0_
   if(p0.supplied && !std::isfinite(p0.value))return invalid_argument(fail("`p0` must be finite and in its parameter domain."));
 
   const auto res=cppunivariate::zmgeom_mle(x,1e-10,200,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN(),p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN());
-  const auto o=cppunivariate::outcome(res);
+  auto o =cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"prob",prob_arg.supplied},{"p0",p0_arg.supplied}});
   };
@@ -24,7 +24,18 @@ inline FitResult fit_zmgeom(cppunivariate::ispan x, Held prob_arg = {}, Held p0_
   std::vector<std::string> fixed;
   if(prob.supplied)fixed.push_back("prob");
   if(p0.supplied)fixed.push_back("p0");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"prob",res.prob},{"p0",res.p0}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"prob",res.prob},{"p0",res.p0}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
+    const bool all_zero = std::all_of(x.begin(), x.end(), [](int v) { return v == 0; });
+    if (all_zero) {
+      // With no positive observations the likelihood is p0^n, independent of the positive component.
+      cppunivariate::MaximizerSet set;
+      set.dimension = 2;
+      const auto positive_prob = cppunivariate::interval(0, 1, false, true);
+      const auto mass = cppunivariate::fixed(res.p0);
+      set.add_box({{positive_prob, mass}});
+      attach_count_set(out, o, set, "zmgeom", {prob, p0});
+    }
+    return out; }();
 
   }());
 }

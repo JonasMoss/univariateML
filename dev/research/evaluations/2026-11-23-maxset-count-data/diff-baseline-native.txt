@@ -1,0 +1,54 @@
+differs ('bbinom', 'zeros-flat-free', '{}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('bbinom', 'zeros-flat-alpha', '{"alpha": 1.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('bbinom', 'zeros-flat-beta', '{"beta": 1.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('bbinom', 'zeros-flat-size-zero', '{"size": 0.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('bbinom', 'zeros-flat-size-alpha', '{"alpha": 1.0, "size": 0.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('bbinom', 'zeros-flat-size-beta', '{"beta": 1.0, "size": 0.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('bbinom', 'constant-flat-adjacent-sizes', '{"alpha": 1.0, "beta": 2.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', '000838', '{}') ['maximizer_set', 'maximizers', 'candidates']
+differs ('cmb', 'zeros', '{"size": 10.0}') ['maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'zeros-flat-size', '{"size": 10.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'zeros-flat-free', '{}') ['extra', 'outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower']
+differs ('cmb', 'zeros-flat-size-zero', '{"size": 0.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'zeros-flat-prob-zero', '{"prob": 0.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'zeros-flat-prob', '{"prob": 0.5}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'zeros-flat-nu', '{"nu": 1.0}') ['extra', 'outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower']
+differs ('cmb', 'zeros-flat-size-zero-prob', '{"prob": 0.5, "size": 0.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'zeros-flat-size-zero-nu', '{"nu": 1.0, "size": 0.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'constant-flat-free', '{}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'constant-flat-size', '{"size": 3.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'constant-flat-prob-one', '{"prob": 1.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'constant-flat-adjacent-sizes', '{"nu": 1.0, "prob": 0.5}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'zeros-flat-bernoulli', '{"prob": 0.5, "size": 1.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmb', 'constant-flat-bernoulli', '{"prob": 0.5, "size": 1.0}') ['outcome_message', 'maximizer_set', 'maximizers', 'candidates', 'loglik_lower', 'loglik_upper']
+differs ('cmp', 'zeros', '{}') ['maximizer_set', 'maximizers']
+differs ('cmp', 'zeros-flat-free', '{}') ['outcome_message', 'maximizer_set', 'maximizers']
+differs ('cmp', 'zeros-flat-lambda-zero', '{"lambda": 0.0}') ['outcome_message', 'maximizer_set', 'maximizers']
+differs ('dweibull', 'zeros-flat-q', '{"shape1": 0.5}') ['outcome_message', 'maximizer_set', 'maximizers']
+differs ('hyper', '003454', '{}') ['candidates', 'unique', 'outcome']
+differs ('hyper', '003455', '{}') ['maximizer_set', 'maximizers', 'candidates']
+differs ('hyper', '003456', '{}') ['candidates', 'unique', 'outcome']
+differs ('hyper', '003457', '{}') ['candidates', 'unique', 'outcome']
+differs ('hyper', '003458', '{}') ['candidates', 'unique', 'outcome']
+differs ('hyper', '003459', '{}') ['unique', 'outcome', 'certified']
+differs ('hyper', '003460', '{}') ['unique', 'outcome', 'certified']
+differs ('hyper', '003461', '{}') ['unique', 'outcome', 'certified']
+differs ('hyper', '003462', '{}') ['unique', 'outcome', 'certified']
+differs ('hyper', '003463', '{}') ['unique', 'outcome', 'certified']
+differs ('hyper', '003464', '{}') ['unique', 'outcome', 'certified']
+differs ('hyper', '003465', '{}') ['candidates', 'unique', 'outcome']
+differs ('hyper', '003466', '{}') ['candidates', 'unique', 'outcome']
+only in snapshot ('bbinom', 'pair-flat-shape-ray', '{"size": 1.0}')
+only in snapshot ('hyper', 'pair-flat-one-draw-m', '{"m": 1.0}')
+only in snapshot ('hyper', 'pair-flat-one-draw-k', '{"k": 1.0}')
+only in baseline ('beta', '000090', '{}')
+only in baseline ('beta', '000091', '{}')
+only in baseline ('beta', '000092', '{}')
+only in baseline ('beta', '000093', '{}')
+only in baseline ('beta', '000094', '{}')
+only in baseline ('beta', '000095', '{}')
+only in baseline ('beta', '000096', '{}')
+only in baseline ('beta', '000097', '{}')
+only in baseline ('beta', '000098', '{}')
+only in baseline ('beta', '000099', '{}')
+count-native cases 967 differing 80 only-new 3 only-old 11055

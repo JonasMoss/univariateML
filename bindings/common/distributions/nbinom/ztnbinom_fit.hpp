@@ -1,5 +1,5 @@
 #pragma once
-#include "../../fit.hpp"
+#include "../../count_maximizers.hpp"
 #include "cppunivariate/distributions/nbinom/ztnbinom_mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_ztnbinom(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, double tol = 1e-10, int iterlim = 200) {
@@ -13,7 +13,7 @@ inline FitResult fit_ztnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
   const double fixed_size=size.supplied?size.value:std::numeric_limits<double>::quiet_NaN();
   if(size.supplied && !std::isfinite(fixed_size))return invalid_argument(fail("`size` must be finite and in its parameter domain."));
   const auto res=cppunivariate::ztnbinom_mle(x, tol, iterlim, fixed_size,prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN());
-  const auto o=cppunivariate::outcome(res);
+  auto o =cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied}});
   };
@@ -33,7 +33,17 @@ inline FitResult fit_ztnbinom(cppunivariate::ispan x, Held size_arg = {}, Held p
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
+    const bool all_one = std::all_of(x.begin(), x.end(), [](int v) { return v == 1; });
+    if (all_one) {
+      // The positive component must give probability one to 1.
+      cppunivariate::MaximizerSet set;
+      set.dimension = 2;
+      const auto nonnegative = cppunivariate::interval(0, INFINITY, true, false);
+      set.add_box({{nonnegative, cppunivariate::fixed(1)}});
+      attach_count_set(out, o, set, "ztnbinom", {size, prob});
+    }
+    return out; }();
 
   }());
 }

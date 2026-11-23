@@ -1,5 +1,5 @@
 #pragma once
-#include "../../fit.hpp"
+#include "../../count_maximizers.hpp"
 #include "cppunivariate/distributions/binom/zmbinom_mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held p0_arg = {}, double tol = 1e-10, int iterlim = 200) {
@@ -16,7 +16,7 @@ inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   const double held_p0=p0.supplied?p0.value:std::numeric_limits<double>::quiet_NaN();
   if(p0.supplied && (!std::isfinite(held_p0)||held_p0<0||held_p0>1))return invalid_argument(fail("`p0` must be finite and in [0, 1]."));
   const auto res=cppunivariate::zmbinom_mle(x, tol, iterlim, fixed_size, held_prob, held_p0);
-  const auto o=cppunivariate::outcome(res);
+  auto o =cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"p0",p0_arg.supplied}});
   };
@@ -49,7 +49,27 @@ inline FitResult fit_zmbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");
   if(p0.supplied)fixed.push_back("p0");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob},{"p0",res.p0}};  out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob},{"p0",res.p0}};  out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
+    const bool all_zero = std::all_of(x.begin(), x.end(), [](int v) { return v == 0; });
+    const bool only_zero_or_one = std::all_of(x.begin(), x.end(), [](int v) { return v <= 1; });
+    if (only_zero_or_one) {
+      // Zero mass contributes a separate Bernoulli likelihood. With no
+      // positives the other factor is one throughout its domain. When every
+      // positive is one, its maximum requires mass one at 1 in the positive component.
+      cppunivariate::MaximizerSet set;
+      set.dimension = 3;
+      const auto probability = cppunivariate::interval(0, 1, true, true);
+      const auto mass = cppunivariate::fixed(res.p0);
+      // The conditional binomial has mass above 1 unless size is one or prob is zero.
+      const auto sizes = count_sizes(1, size);
+      if (all_zero) set.add_box({{sizes, probability, mass}});
+      else {
+        set.add_box({{cppunivariate::fixed(1, true), probability, mass}});
+        set.add_box({{sizes, cppunivariate::fixed(0), mass}});
+      }
+      attach_count_set(out, o, set, "zmbinom", {size, prob, p0});
+    }
+    return out; }();
 
   }());
 }

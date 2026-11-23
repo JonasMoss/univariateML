@@ -43,7 +43,9 @@ inline FitResult fit_pig(cppunivariate::ispan x, Held mean_arg = {}, Held shape_
  std::vector<std::string> fixed;
  if (mean.supplied) fixed.push_back("mean");
  if (shape.supplied) fixed.push_back("shape");
- return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",r.mean},{"shape",r.shape}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+ return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"mean",r.mean},{"shape",r.shape}}; out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
+    attach_maximizer_set(out, r.maximizers, "pig", [&](const auto&) { return out.logLik; });
+    return out; }());
 
 }
 }

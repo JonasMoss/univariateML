@@ -1,5 +1,5 @@
 #pragma once
-#include "../../fit.hpp"
+#include "../../count_maximizers.hpp"
 #include "cppunivariate/distributions/binom/zib_mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_zib(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, Held pi_arg = {}, double tol = 1e-10, int iterlim = 200) {
@@ -16,7 +16,7 @@ inline FitResult fit_zib(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   const double held_pi=pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN();
   if(pi.supplied && (!std::isfinite(held_pi)||held_pi<0||held_pi>1))return invalid_argument(fail("`pi` must be finite and in [0, 1]."));
   const auto res=cppunivariate::zib_mle(x, tol, iterlim, fixed_size, held_prob, held_pi);
-  const auto o=cppunivariate::outcome(res);
+  auto o =cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied},{"pi",pi_arg.supplied}});
   };
@@ -52,7 +52,38 @@ inline FitResult fit_zib(cppunivariate::ispan x, Held size_arg = {}, Held prob_a
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");
   if(pi.supplied)fixed.push_back("pi");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob},{"pi",res.pi}};  out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob},{"pi",res.pi}};  out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
+    const bool all_zero = std::all_of(x.begin(), x.end(), [](int v) { return v == 0; });
+    if (all_zero && (res.size == 0 || res.prob == 0 || res.pi == 1)) {
+      // The mixture is a zero atom exactly when inflation is one or the parent is a zero atom.
+      cppunivariate::MaximizerSet set;
+      set.dimension = 3;
+      const auto probability = cppunivariate::interval(0, 1, true, true);
+      const auto sizes = count_sizes(0, size);
+      set.add_box({{sizes, probability, cppunivariate::fixed(1)}});
+      set.add_box({{cppunivariate::fixed(0, true), probability, probability}});
+      set.add_box({{sizes, cppunivariate::fixed(0), probability}});
+      attach_count_set(out, o, set, "zib", {size, prob, pi});
+    }
+    else if (!o.unique && o.uniqueness_known && res.size == 1 &&
+             std::all_of(x.begin(), x.end(), [](int v) { return v == 0 || v == 1; })) {
+      // The saturated Bernoulli law fixes P(1) = prob * (1 - pi).
+      // Any size above one with P(1) > 0 also gives positive mass above one.
+      const auto ones = std::count(x.begin(), x.end(), 1);
+      cppunivariate::Relation relation;
+      relation.axes = {cppunivariate::fixed(1, true),
+          cppunivariate::interval(0, 1, false, true), cppunivariate::interval(0, 1, true, false)};
+      relation.driver = 1;
+      relation.dependent = 2;
+      relation.complement_dependent = true;
+      relation.level.numerator = static_cast<std::uint64_t>(ones);
+      relation.level.denominator = x.size();
+      cppunivariate::MaximizerSet set;
+      set.dimension = 3;
+      set.add_relation(relation);
+      attach_count_set(out, o, set, "zib", {size, prob, pi});
+    }
+    return out; }();
 
   }());
 }

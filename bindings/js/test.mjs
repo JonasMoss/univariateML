@@ -1479,7 +1479,7 @@ test('SGED weighted median and smooth reflected half-GED ties retain their witne
 
 test('CMB finite-size ties retain two distinct witnesses and nu-held census certifies',async()=>{
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
-  // Each fit reports two finite sizes that attain the maximum.
+  // The zero-count cases admit a plateau over the supported sizes.
   for(const [data,held] of [[[1,1],{prob:.5,nu:1}],[[0,0],{}],[[0,0],{nu:2}],[[0,0],{prob:0,nu:2}]])
     comparisonFit(()=>api.cmb.fit(new Float64Array(data),held),e=>{
       const zero=data[0]===0;
@@ -1488,9 +1488,13 @@ test('CMB finite-size ties retain two distinct witnesses and nu-held census cert
       assert.equal(e.certified,true);
       assert.equal(e.unique,false);
       assert.equal(e.logLik,ll);
-      assert.match(e.message,zero?/Distinct finite sizes/:/^Exactly the two listed adjacent sizes maximize the likelihood\.$/);
-      assert.deepEqual(e.candidates.map(c=>c.size),zero?[0,1]:[1,2]);
-      assert.equal(e.loglik_upper,zero?Infinity:ll);
+      assert.match(e.message, /^Maximum is not unique\./);
+      assert.ok(e.maximizers.length >= 2);
+      if (zero) {
+        assert.ok(e.maximizers.every(row => row.size === 0 || row.prob === 0));
+        assert.ok(e.maximizers.some(row => row.size > 0));
+      } else assert.deepEqual(e.maximizers.map(row => row.size), [1, 2]);
+      assert.ok(e.maximizers.every(row => row.loglik_upper === ll));
       return true;
     });
   const g=read('cmb','golden');

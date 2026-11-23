@@ -1,5 +1,5 @@
 #pragma once
-#include "../../fit.hpp"
+#include "../../count_maximizers.hpp"
 #include "cppunivariate/distributions/pois/zip_mle.hpp"
 #include <cmath>
 #include <limits>
@@ -16,7 +16,7 @@ inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_a
 
   auto res = cppunivariate::zip_mle(x,lambda.supplied?lambda.value:std::numeric_limits<double>::quiet_NaN(),pi.supplied?pi.value:std::numeric_limits<double>::quiet_NaN(),iterlim,tol);
   if(res.all_zero)warnings.push_back(binding_message("all observations are zero"));
-  const auto o=cppunivariate::outcome(res);
+  auto o =cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"lambda",lambda_arg.supplied},{"pi",pi_arg.supplied}});
   };
@@ -46,7 +46,17 @@ inline FitResult fit_zip(cppunivariate::ispan x, Held lambda_arg = {}, Held pi_a
   std::vector<std::string> fixed;
   if(lambda.supplied)fixed.push_back("lambda");
   if(pi.supplied)fixed.push_back("pi");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",res.lambda},{"pi",res.pi}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",res.lambda},{"pi",res.pi}}; out.logLik = res.logLik; out.fixed = fixed; out.has_fixed = true;
+    const bool all_zero = std::all_of(x.begin(), x.end(), [](int v) { return v == 0; });
+    if (all_zero && res.pi == 1) {
+      // The mixture is a zero atom exactly when inflation is one or the parent is a zero atom.
+      cppunivariate::MaximizerSet set;
+      set.dimension = 2;
+      const auto positive = cppunivariate::interval(0, INFINITY, false, false);
+      set.add_box({{positive, cppunivariate::fixed(1)}});
+      attach_count_set(out, o, set, "zip", {lambda, pi});
+    }
+    return out; }();
 
   }());
 }

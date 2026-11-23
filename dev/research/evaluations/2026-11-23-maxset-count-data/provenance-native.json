@@ -1,0 +1,25 @@
+{
+  "source_sha256": "df2322dedcc27d9ae27612318077d3bdccfd1bce5b4888f907ea92190a481b1f",
+  "commit": "33a473f41c0be928499c0456dee9ab2a6d9dc644",
+  "dirty": true,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    "-std=gnu++17",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "no_long_double": false,
+  "cpu_limit": 300,
+  "families": [
+    "bbinom",
+    "cmb",
+    "cmp",
+    "dweibull",
+    "geom",
+    "hyper",
+    "lgser",
+    "nbinom",
+    "pig",
+    "pois"
+  ]
+}

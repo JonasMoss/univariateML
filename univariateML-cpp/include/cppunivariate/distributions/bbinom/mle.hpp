@@ -34,6 +34,7 @@
 #pragma once
 #include "dpqr.hpp"
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "accuracy.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
@@ -78,7 +79,7 @@ struct BbinomResult {
   std::vector<std::vector<double>> accurate_fixed_points{};
   std::vector<double> maximizer_shape_ray{};
   std::vector<double> free_positive_shapes{};
-  std::string maximizer_set{};
+  MaximizerSet maximizers{};
 };
 
 namespace bbinom_detail {
@@ -548,7 +549,10 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
         const double n = mx + gap - 1;
         auto tied = bbinom_mle_work(x,n,tol,maxit,alpha_fixed,beta_fixed,work);
         if (tied.status != BbinomStatus::Ok) return tied;
-        tied.maximizer_set = "Exactly the two listed adjacent sizes maximize the likelihood.";
+        tied.maximizers.dimension = 3;
+        const std::array<Point, 2> points{{{{{n, alpha_fixed, beta_fixed}}, {}},
+                                           {{{n + 1, alpha_fixed, beta_fixed}}, {}}}};
+        tied.maximizers.add_points({points.data(), points.size()});
         tied.stop_detail = comparison_detail({{n,alpha_fixed,beta_fixed},tied.logLik,tied.logLik},
                                              {{n+1,alpha_fixed,beta_fixed},tied.logLik,tied.logLik});
         return tied;
@@ -935,7 +939,11 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
     if (free_a || free_b) {
       result.status=BbinomStatus::Unidentified;
       result.free_positive_shapes={free_a?1.:0.,free_b?1.:0.};
-      result.maximizer_set="With size = 0 every positive value of each free shape maximizes the likelihood.";
+      // A positive size with positive shapes gives positive probability to 1.
+      const auto positive = interval(0, maxset_inf, false, false);
+      result.maximizers.dimension = 3;
+      result.maximizers.add_box({{fixed(0, true), free_a ? positive : fixed(a),
+                                                free_b ? positive : fixed(b)}});
       result.stop_detail=comparison_detail({{0,a,b},0,0},{{0,free_a?2:a,free_a?b:2},0,0});
     }
     return result;
@@ -950,8 +958,26 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
     out.beta=std::isnan(beta_fixed)?(out.size==1?1-mean:1):beta_fixed;
     out.logLik=0;
     if(out.size==1)for(int v:x)out.logLik+=v?std::log(mean):std::log1p(-mean);
-    if(out.size==1)out.maximizer_shape_ray={mean,1-mean};
-    else out.free_positive_shapes={std::isnan(alpha_fixed)?1.:0.,std::isnan(beta_fixed)?1.:0.};
+    if (out.size == 1) {
+      // For size one the Bernoulli likelihood fixes alpha/(alpha+beta)
+      // at the empirical success fraction and leaves the total shape free.
+      Relation relation;
+      relation.form = RelationForm::PartOverSum;
+      relation.driver = 1;
+      relation.dependent = 2;
+      const auto positive = interval(0, maxset_inf, false, false);
+      relation.axes = {fixed(1, true), positive, positive};
+      relation.level.numerator = static_cast<std::uint64_t>(std::count(x.begin(), x.end(), 1));
+      relation.level.denominator = x.size();
+      out.maximizers.dimension = 3;
+      out.maximizers.add_relation(relation);
+      // Subtracting the empirical fraction from one can lose relative
+      // accuracy for a rare zero. Keep the legacy representative when it
+      // lies on the encoded ray and recover the small component otherwise.
+      if (!out.maximizers.contains({{out.size, out.alpha, out.beta}}))
+        out.beta = relation_solve(relation, out.alpha);
+      out.maximizer_shape_ray = {out.alpha, out.beta};
+    } else out.free_positive_shapes={std::isnan(alpha_fixed)?1.:0.,std::isnan(beta_fixed)?1.:0.};
     out.stop_detail={};out.stop_detail.candidates.push_back({{out.size,out.alpha,out.beta},out.logLik,out.logLik});
   }
   if(out.status==BbinomStatus::Ok && !out.certified) {
@@ -998,7 +1024,9 @@ inline FitOutcome outcome(const BbinomResult& r) {
   if (r.status != BbinomStatus::Ok && r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
     case BbinomStatus::Unsupported:return FitOutcome::failure(OutcomeReason::Unsupported);
-    case BbinomStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizer_set.empty());
+    case BbinomStatus::Ok:
+      if (!r.certified && r.size_profiles) return FitOutcome::undetermined();
+      return FitOutcome::estimate(r.certified, r.maximizers.size == 0);
     case BbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BbinomStatus::SizeTooSmall: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BbinomStatus::BinomialLimit: return FitOutcome::limit(true);
@@ -1006,7 +1034,11 @@ inline FitOutcome outcome(const BbinomResult& r) {
     case BbinomStatus::PointMass: return FitOutcome::limit(true);
     case BbinomStatus::Unidentified: return r.stop_detail.candidates.empty()?FitOutcome::failure(OutcomeReason::Unresolved):FitOutcome::estimate(true,false);
     case BbinomStatus::SizeBudget: return FitOutcome::budget();
-    case BbinomStatus::ProfileTie: return comparison_outcome_of(r);
+    case BbinomStatus::ProfileTie: {
+      const auto comparison = comparison_outcome_of(r);
+      return comparison.kind == OutcomeKind::Estimate && r.size_profiles ?
+          FitOutcome::undetermined() : comparison;
+    }
     case BbinomStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case BbinomStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
   }
