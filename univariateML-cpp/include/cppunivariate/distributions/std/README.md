@@ -317,15 +317,29 @@ in standardized coordinates.
 The [constrained-shape derivation](../../../../../dev/research/evaluations/2026-11-08-std-free-data/derivation.md)
 gives the actual-hold normal-tail bounds and relative collapse-face inequality.
 
-With standard deviation held, equally weighted observations at two distinct
-atoms separated by more than $30\,\mathrm{sd}$ have at least two distinct
-finite global maximizers. After centering and rescaling, a variance bound
-$ f(b)\le 3/(2b^3)$ excludes every centered Student fit, and an off-center
-shape-three witness beats that bound for $b>15$. The normal face is also
-excluded and the shape-two face vanishes uniformly. Reflection then proves
-nonuniqueness. The returned candidates are likelihood witnesses, not estimates
-of the maximizing coefficients. This sufficient condition does not decide
-less separated or unequally weighted samples.
+With standard deviation held, consider equally weighted atoms separated by
+more than $30\,\mathrm{sd}$. Let $d$ be their half-gap, $u$ the displacement
+of the mean from their midpoint, and $h=(\nu-2)\,\mathrm{sd}^2$. The product
+of the two density denominators is
+\[
+  (u^2-d^2+h)^2+4d^2h.
+\]
+The centered maximum for $h\ge d^2$ is excluded by the variance bound
+$f(b)\le 3/(2b^3)$ at standardized distance $b>15$, which a shape-three
+off-center witness exceeds. For $h<d^2$ the maximizing locations satisfy
+$u=\pm\sqrt{d^2-h}$. In $t=\nu-2$ the off-center profile's score, multiplied
+by $4/n$, is
+\[
+  2\{\psi((t+3)/2)-\psi((t+2)/2)\}+1+1/t-\log(4d^2/(t\,\mathrm{sd}^2)).
+\]
+It tends to positive infinity at zero and decreases strictly up to $t=1$.
+The bound $\psi_1(z)\le 1/z+1/z^2$ gives a negative score on $[1,8]$
+and on $[8,d^2/\mathrm{sd}^2]$, using the respective logarithm lower
+bounds $\log(900/8)$ and $\log 4$. Thus there is one shape root and
+exactly two maximizing coefficient vectors. Signed bisection and interval
+transport enclose both at the requested tolerance. If either enclosure
+cannot meet that tolerance, the symmetry proof still supplies the two
+likelihood witnesses for an unresolved stop.
 
 With mean held and sd free, the conditional normal profile has first
 coefficient $n(b_2-3)/4$, with kurtosis measured about the held mean.
@@ -346,5 +360,3 @@ cover densities where the observation's square overflows but its ratio to
 shape remains finite.
 
 With held standard deviation, shape refinement differentiates the ordinary scale factor $\sqrt{(\nu-2)/\nu}$ as well as the Student kernel; treating that factor as constant solves a different likelihood.
-
-For balanced separated atoms with held sd, the witnesses do not establish coefficient accuracy at the actual maximizers, so the proved non-uniqueness stops as unresolved with both witnesses attached.

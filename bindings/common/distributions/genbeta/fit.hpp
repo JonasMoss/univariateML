@@ -48,9 +48,15 @@ const std::string name = "shape3";
   const double a=checked_value_0,b=checked_value_1,t=checked_value_2;
   fixed.push_back("scale");
   const auto r=cppunivariate::genbeta_mle(x,scale,tol,iterlim,a,b,t);
+  // Preserve the representative's effective dimension for R likelihood criteria.
   if(r.product_ridge)fixed.insert(fixed.end()-1,"shape3");
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, r.maximizers, "genbeta", [&](const auto& c) {
+        return cppunivariate::genbeta_detail::public_loglik(x,c[0],c[1],c[2],c[3]);
+      });
+
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"shape3",shape3_arg.supplied},{"scale",scale_arg.supplied}});

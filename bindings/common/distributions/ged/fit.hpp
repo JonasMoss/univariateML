@@ -30,6 +30,14 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::GedStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
+    if (res.status == cppunivariate::GedStatus::Ok && !o.uniqueness_known) {
+      out.error = "The likelihood comparison between GED candidates could not be resolved.";
+      out = stop_failure(std::move(out), res.stop_detail, PayloadKind::Comparison, {"mean","sd","nu"});
+    }
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, res.maximizers, "ged", [&](const auto& c) {
+        return cppunivariate::ged_detail::conditional_loglik(x, c[0], c[1], c[2]);
+      });
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied}});
   };
   if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("ged numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));
@@ -44,6 +52,7 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
     out=comparison_payload(std::move(out),o,cppunivariate::comparison_choice(res),{{"mean",mean_arg},{"sd",sd_arg},{"nu",nu_arg}});
     if(o.kind==cppunivariate::OutcomeKind::Estimate && out.estimates.size()==3) {
       out.logLik=res.comparison_logLik;
+      if (res.maximizers.size) out.candidates.clear();
     }
     return out;
   };

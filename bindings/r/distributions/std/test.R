@@ -475,7 +475,17 @@ test_that("std free-shape held solver stops retain a finite witness", {
 
 
 test_that("std symmetry proves distinct global maximizers", {
-  e <- tryCatch(mlstd(c(-100,100),sd=1),error=identity)
+  x <- c(-100,100)
+  f <- mlstd(x,sd=1)
+  expect_true(attr(f,"certified"))
+  expect_false(attr(f,"unique"))
+  branches <- attr(f,"maximizer_set")$pieces[[1]]$points
+  expect_length(branches,2L)
+  expect_true(all(vapply(branches,function(p) !is.null(p$enclosure),logical(1))))
+  w <- attr(f,"maximizers")
+  expect_equal(w$mean[1],-w$mean[2])
+  expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-10)
+  e <- tryCatch(mlstd(x,sd=1,tol=1e-20),error=identity)
   expect_s3_class(e,"univariateML_unresolved")
   expect_true(is.finite(fit_payload(e)$loglik_lower))
   expect_identical(fit_payload(e)$loglik_upper,Inf)

@@ -565,6 +565,7 @@ TEST_CASE("triang: symmetric samples with free coefficients tie with the reflect
     CHECK(r.status==cppunivariate::TriangStatus::Ok);
     CHECK(r.not_unique);
     CHECK(r.reflection_tie);
+    CHECK(r.maximizers.size==1);
     CHECK_FALSE(cppunivariate::outcome(r).unique);
     const double s=x[0]+x[1];
     CHECK(std::abs(r.c-(s-r.c))>1e-3);

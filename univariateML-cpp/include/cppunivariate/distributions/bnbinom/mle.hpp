@@ -48,7 +48,13 @@ inline FitOutcome outcome(const BnbinomResult& r) {
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case BnbinomStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
+    case BnbinomStatus::Ok: {
+      auto result = FitOutcome::estimate(r.certified, r.unique);
+      // Reflection establishes another global branch. The existing
+      // coefficient cover does not isolate every branch to the fit tolerance.
+      result.uniqueness_known = r.unique;
+      return result;
+    }
     case BnbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BnbinomStatus::NegativeBinomialLimit: return FitOutcome::limit(r.certified);
     case BnbinomStatus::PoissonLimit: return FitOutcome::limit(r.certified);

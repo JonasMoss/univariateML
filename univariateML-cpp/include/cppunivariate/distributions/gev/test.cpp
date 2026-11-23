@@ -1109,12 +1109,12 @@ TEST_CASE("gev: structural non-uniqueness and the fully held singleton") {
   CHECK(outcome.kind==cppunivariate::OutcomeKind::Estimate);
   CHECK(outcome.certified);
   CHECK_FALSE(outcome.unique);
-  CHECK(fit.maximizer_set.find("-1 <= xi <= 1")!=std::string_view::npos);
-  const auto& w=fit.stop_detail.candidates;
-  REQUIRE(w.size()==2);
-  CHECK(w[0].coef!=w[1].coef);
-  for(const auto& row:w) {
-    const auto& p=row.coef;
+  REQUIRE(fit.maximizers.size==1);
+  CHECK(std::holds_alternative<cppunivariate::Box>(fit.maximizers.pieces[0].value));
+  for(double shape:{-1.,1.}) {
+    const cppunivariate::Coordinates point{{2,3,shape}};
+    CHECK(fit.maximizers.contains(point));
+    const auto& p=point.values;
     CHECK(p[0]==2);
     CHECK(p[1]==3);
     CHECK(p[2]>=-1);

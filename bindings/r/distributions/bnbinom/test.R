@@ -297,12 +297,13 @@ test_that("signed face cover certifies new faces and preserves budget fallback",
   expect_match(conditionMessage(e),"Uncertified legacy comparison")
 })
 
-test_that("certified separated BNB labels are reported as nonunique", {
+test_that("certified separated BNB labels retain undetermined set coverage", {
   root <- Sys.getenv("UMVL_DISTRIBUTIONS_DIR")
   skip_if(!nzchar(root),"no distribution goldens")
   x <- jsonlite::fromJSON(file.path(root,"bnbinom","golden.json"))$data
   f <- mlbnbinom(as.integer(x))
   expect_true(attr(f,"certified"))
-  expect_false(attr(f,"unique"))
-  expect_equal(nrow(fit_payload(f)$candidates),2L)
+  expect_identical(attr(f,"unique"),NA)
+  expect_null(attr(f,"maximizer_set"))
+  expect_equal(nrow(attr(f,"candidates")),2L)
 })

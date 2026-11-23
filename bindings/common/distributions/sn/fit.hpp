@@ -20,15 +20,14 @@ inline FitResult fit_sn(cppunivariate::span x, Held xi_arg = {}, Held omega_arg 
   const auto fit=cppunivariate::sn_mle(x,tol,iterlim,c,w,a);
   const auto o = cppunivariate::outcome(fit);
   const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, fit.maximizers, "sn", [&](const auto&) { return fit.logLik; });
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(fit.status));
     return with_outcome(std::move(out), o, static_cast<int>(fit.status),{{"xi",xi_arg.supplied},{"omega",omega_arg.supplied},{"alpha",alpha_arg.supplied}});
   };
 
   if(fit.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("sn numerical accuracy failure: requested coefficient accuracy cannot be established."),fit.stop_detail,outcome_payload(o),{"xi","omega","alpha"}));
-  if(fit.stop_detail.comparison_tie && std::isfinite(fit.stop_detail.loglik_upper) &&
-     fit.stop_detail.loglik_lower==fit.stop_detail.loglik_upper)
-    return done(comparison_payload(stop_failure(fail("Skew-normal shape is not identifiable when every observation equals the held location."),fit.stop_detail,PayloadKind::Comparison,{"xi","omega","alpha"}),o,cppunivariate::comparison_choice(fit),{{"xi",xi_arg},{"omega",omega_arg},{"alpha",alpha_arg}}));
   if(fit.stop_detail.comparison_tie)return done(comparison_payload(stop_failure(fail("Skew-normal search did not converge or could not certify the maximum; increase iterlim."),fit.stop_detail,PayloadKind::Comparison,{"xi","omega","alpha"}),o,cppunivariate::comparison_choice(fit),{{"xi",xi_arg},{"omega",omega_arg},{"alpha",alpha_arg}}));
   if(fit.status==cppunivariate::SnStatus::AccuracyFailure)return done(stop_failure(fail("sn numerical accuracy failure: coefficients cannot be represented at the requested accuracy."),fit.stop_detail,outcome_payload(o),{"xi","omega","alpha"}));
   if(fit.status==cppunivariate::SnStatus::RightHalfNormalBoundary)

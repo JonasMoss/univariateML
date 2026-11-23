@@ -11,6 +11,8 @@ inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},H
  const auto r=cppunivariate::st_mle(x,tol,iterlim,xi,omega,alpha,nu);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, r.maximizers, "st", [&](const auto&) { return r.logLik; });
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"xi",xi_arg.supplied},{"omega",omega_arg.supplied},{"alpha",alpha_arg.supplied},{"nu",nu_arg.supplied}});
@@ -20,7 +22,7 @@ inline FitResult fit_st(cppunivariate::span x,Held xi_arg={},Held omega_arg={},H
   if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("st numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"xi","omega","alpha","nu"}));
   if(r.accuracy_failure)return done(stop_failure(fail("st numerical accuracy failure: final Newton refinement did not converge to the requested coefficient tolerance; increase iterlim or inspect conditioning."),r.stop_detail,outcome_payload(o),{"xi","omega","alpha","nu"}));
  if(r.stop_detail.comparison_tie || r.budget_exhausted) {
-  const std::string message=r.reason==7?"Skew-t shape is unidentified when every observation equals the held location; every finite alpha maximizes the likelihood.":r.certified&&r.stop_detail.comparison_tie?"Skew-t constant-data supremum is tied between the two limiting faces.":r.budget_exhausted?"Skew-t certificate budget exhausted; increase `iterlim`.":r.reason==2?"Skew-normal limiting-face comparison failed.":r.reason==3?"Half-t limiting-face comparison failed.":"Skew-t numerical search reached an unresolved limiting region.";
+  const std::string message=r.certified&&r.stop_detail.comparison_tie?"Skew-t constant-data supremum is tied between the two limiting faces.":r.budget_exhausted?"Skew-t certificate budget exhausted; increase `iterlim`.":r.reason==2?"Skew-normal limiting-face comparison failed.":r.reason==3?"Half-t limiting-face comparison failed.":"Skew-t numerical search reached an unresolved limiting region.";
   return done(comparison_payload(stop_failure(fail(message),r.stop_detail,r.stop_detail.comparison_tie?PayloadKind::Comparison:outcome_payload(o),{"xi","omega","alpha","nu"}),o,cppunivariate::comparison_choice(r),{{"xi",xi_arg},{"omega",omega_arg},{"alpha",alpha_arg},{"nu",nu_arg}}));
  }
  switch(r.status){

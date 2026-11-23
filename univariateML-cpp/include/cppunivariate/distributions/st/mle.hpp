@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include "../../core/outcome.hpp"
 #include "local_accuracy.hpp"
 #include "../../core/work_budget.hpp"
@@ -20,19 +21,15 @@
 #include <vector>
 namespace cppunivariate {
 enum class StStatus {Ok, InvalidInput, Unbounded, ScaleBoundary, NumericalFailure, SkewNormalBoundary, RightHalfTBoundary, LeftHalfTBoundary, RightHalfNormalBoundary, LeftHalfNormalBoundary, UnsupportedSample};
-struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;bool certified=false;bool accuracy_failure=false;};
+struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;bool certified=false;bool accuracy_failure=false;MaximizerSet maximizers{};};
 
 inline bool family_point(const StResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 4 && std::isfinite(c.coef[0]) &&
          std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && std::isfinite(c.coef[3]) &&
          c.coef[1] > 0 && c.coef[3] > 0;
 }
-// Certificate ties list faces and finite points with likelihood bounds; the
-// certified constant-location tie lists two equal limiting faces. Reason 7
-// instead marks the exact flat alpha line with every observation at held xi.
-inline bool accurate_point(const StResult& r, const FitCandidate& c) {
-  return r.reason==7 && family_point(r,c) && point_value(c);
-}
+// Certificate comparisons retain finite or limiting witnesses.
+inline bool accurate_point(const StResult&, const FitCandidate&) { return false; }
 
 inline FitOutcome outcome(const StResult& r) {
   if (r.reason == 9) return FitOutcome::nonexistence(OutcomeReason::Unattained);
@@ -42,7 +39,7 @@ inline FitOutcome outcome(const StResult& r) {
   if (r.stop_detail.comparison_tie) return r.certified ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
   if (r.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case StStatus::Ok: return FitOutcome::estimate(r.certified);
+    case StStatus::Ok: return FitOutcome::estimate(r.certified, r.maximizers.size == 0);
     case StStatus::UnsupportedSample: return FitOutcome::failure(OutcomeReason::Unsupported);
     case StStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case StStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

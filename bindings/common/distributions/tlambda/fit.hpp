@@ -21,13 +21,10 @@ inline FitResult fit_tlambda(cppunivariate::span x, Held mu_arg = {}, Held sigma
   const auto done = [&](FitResult out) {
     if (f.status == cppunivariate::TlambdaStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(f.status));
-    if (!o.unique && !f.maximizer_set.empty()) {
-      out.error=f.maximizer_set;
-      const std::vector<std::string> names{"mu", "sigma", "lambda"};
-      for(const auto& witness:f.stop_detail.candidates)
-        out.candidates.push_back({named_coefficients(witness.coef,names),
-                                  witness.loglik_lower,witness.loglik_upper,"tlambda"});
-    }
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, f.maximizers, "tlambda", [&](const auto& c) {
+        return cppunivariate::tlambda_detail::likelihood(x, c[0], c[1], c[2]);
+      });
     return with_outcome(std::move(out), o, static_cast<int>(f.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"lambda",lambda_arg.supplied}});
   };
 

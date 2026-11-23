@@ -131,12 +131,12 @@ test_that("gompertz reports the proved non-unique set and the held singleton", {
   f <- mlgompertz(x, a=2)
   fixed <- mlgompertz(x, a=2, b=1)
   member <- function(w) w$a == 2 & w$b > 0
-  message <- "b > 0"
+  message <- "b in (0, Inf)"
   expect_true(attr(f,"certified"))
   expect_false(attr(f,"unique"))
   w <- attr(f,"maximizers")
-  expect_equal(nrow(w),2L)
-  expect_equal(nrow(unique(w[names(f)])),2L)
+  expect_gte(nrow(w),2L)
+  expect_equal(nrow(unique(w[names(f)])),nrow(w))
   expect_true(all(member(w)))
   expect_match(attr(f,"outcome_message"),message,fixed=TRUE)
   expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-12)

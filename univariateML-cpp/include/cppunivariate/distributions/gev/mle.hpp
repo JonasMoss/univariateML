@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include <string_view>
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
@@ -22,7 +23,7 @@ struct GevResult {
   double mu, sigma, xi, logLik;
   int iterations;
   GevStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = false; bool finite_collapse=false;
-  std::string_view maximizer_set{};
+  MaximizerSet maximizers{};
 };
 inline double gev_log_ratio(double z, double xi) {
   const double v=xi*z;
@@ -729,7 +730,7 @@ inline FitOutcome outcome(const GevResult& r) {
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
-    case GevStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizer_set.empty());
+    case GevStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizers.size == 0);
     case GevStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GevStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case GevStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

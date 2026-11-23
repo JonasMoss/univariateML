@@ -149,7 +149,14 @@ of endpoints and observations. Other close comparisons with both endpoints
 held enclose a likelihood ratio. With free endpoints, feasible likelihoods
 and profile upper bounds distinguish separated competitors. When the
 comparison remains unresolved, the fit exposes the surviving modes and
-withdraws certification. With the mode free and both endpoints free or held symmetrically, and a sample symmetric about its midrange $s/2$, $s=\min+\max$, the reflection $(a,b,c)\mapsto(s-b,s-a,s-c)$ maps maximizers to maximizers; a returned $c\ne s/2$ then ties with its reflection, and the outcome is flagged not unique.
+withdraws certification. For a symmetric sample with midrange $s/2$, reflection maps each fit to
+$(s-b,s-a,s-c)$ when both endpoints are free or held symmetrically. An
+off-center mode and its reflection form the complete maximizing pair when
+the profile excludes every other mode. With free endpoints, each active
+reciprocal width $p$ has an extreme observation contributing $\log(1-p)$.
+The remaining profile is concave, so the score norm bounds the root distance
+in these coordinates. Physical enclosures must also meet the endpoint
+accuracy contract before the pair is returned.
 
 ## Decision history
 

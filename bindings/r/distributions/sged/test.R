@@ -1025,7 +1025,7 @@ test_that("sged reports the proved non-unique set and the held singleton", {
   w <- attr(f,"maximizers")
   expect_true(min(w$xi)<1 && max(w$xi)>1)
   expect_equal(prod(w$xi),1,tolerance=1e-14)
-  message <- "two reciprocal skews"
+  message <- "approximately"
   expect_true(attr(f,"certified"))
   expect_false(attr(f,"unique"))
   w <- attr(f,"maximizers")

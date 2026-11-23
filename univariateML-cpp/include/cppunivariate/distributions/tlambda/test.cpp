@@ -409,13 +409,12 @@ TEST_CASE("tlambda: constant sample with held scale has uniform or support-conta
     CHECK(outcome.kind==cppunivariate::OutcomeKind::Estimate);
     CHECK(outcome.certified);
     CHECK_FALSE(outcome.unique);
-    CHECK(fit.maximizer_set.find(shape==1.5 ? "two support contacts" : "All locations")!=std::string_view::npos);
-    const auto& witnesses=fit.stop_detail.candidates;
-    REQUIRE(witnesses.size()==2);
-    CHECK(witnesses[0].coef!=witnesses[1].coef);
-    for(const auto& row:witnesses) {
-      const auto& p=row.coef;
-      CHECK(p[1]==sigma);
+    REQUIRE(fit.maximizers.size==1);
+    for(double mu:{-sigma/fitted_shape,sigma/fitted_shape}) {
+      const cppunivariate::Coordinates point{{mu,sigma,fitted_shape}};
+      CHECK(fit.maximizers.contains(point));
+      const auto& p=point.values;
+    CHECK(p[1]==sigma);
       CHECK(p[2]==fitted_shape);
       CHECK(std::abs(p[0])<=sigma/fitted_shape);
       if(shape==1.5)CHECK(std::abs(p[0])==2);

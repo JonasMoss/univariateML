@@ -374,5 +374,12 @@ test_that("held unit shape2 retains the proved product-ridge identification", {
   f <- mlgenbeta(c(.5,.25,.125),scale=1,shape2=1)
   expect_true(attr(f,"certified"))
   expect_false(attr(f,"unique"))
+  expect_identical(attr(logLik(f),"df"),1L)
+  p <- attr(f,"maximizer_set")$pieces[[1]]
+  expect_identical(p$form,"product")
+  expect_true(p$level_rounded)
+  w <- attr(f,"maximizers")
+  expect_gte(nrow(w),2L)
+  expect_equal(w$shape1*w$shape3,rep(p$level,nrow(w)))
   expect_equal(unname(f[["shape1"]]*f[["shape3"]]),1/(2*log(2)),tolerance=1e-13)
 })

@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include <string_view>
 #include "../norm/dpqr.hpp"
 #include "../unif/dpqr.hpp"
@@ -57,7 +58,7 @@ struct SgedResult {
   StopDetail stop_detail{};
   bool certified = false;
   bool accuracy_failure=false;
-  std::string_view maximizer_set{};
+  MaximizerSet maximizers{};
 };
 
 #include "certificate.hpp"
@@ -572,8 +573,18 @@ inline SgedResult centered_reciprocal(span x,double mean,double sd,double tol,in
       if(!std::isfinite(ll) || !std::isfinite(reflected))break;
       SgedResult out{mean,sd,nu,xi,ll,i,SgedStatus::Ok};
       out.certified=true;
-      out.maximizer_set="Exactly two reciprocal skews maximize the likelihood, one on either side of xi = 1.";
-      out.stop_detail.candidates={{{mean,sd,nu,xi},ll,ll},{{mean,sd,nu,1/xi},reflected,reflected}};
+      const double lower = skew(lo), upper = skew(hi);
+      const auto point = [&](double estimate, double left, double right) {
+        const double roundoff = 2*std::numeric_limits<double>::epsilon()*estimate;
+        return Point{{{mean, sd, nu, estimate}},
+                     Enclosure{{{mean, sd, nu, left-roundoff}},
+                               {{mean, sd, nu, right+roundoff}}}};
+      };
+      const std::array<Point, 2> points{point(xi, lower, upper),
+                                      point(1/xi, 1/upper, 1/lower)};
+      out.maximizers.dimension = 4;
+      if (out.maximizers.add_points({points.data(), points.size()}) != MaxsetStatus::Ok)
+        break;
       return out;
     }
     const double value=h(mid);
@@ -677,7 +688,8 @@ inline FitOutcome outcome(const SgedResult& r) {
     if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   }
   switch (r.status) {
-    case SgedStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizer_set.empty());
+    case SgedStatus::Ok: return r.stop_detail.comparison_tie ? FitOutcome::undetermined()
+        : FitOutcome::estimate(r.certified, r.maximizers.size == 0);
     case SgedStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case SgedStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SgedStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

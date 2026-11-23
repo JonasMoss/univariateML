@@ -100,8 +100,12 @@ inline GevResult gev_shape_certificate(span x,double mu,double sigma,double tol,
   if(all_zero && std::isfinite(out.logLik)) {
     out.status=GevStatus::Ok;
     out.certified=true;
-    out.maximizer_set="Every shape -1 <= xi <= 1 maximizes the likelihood at the held location and scale.";
-    out.stop_detail.candidates.push_back({{mu,sigma,1},out.logLik,out.logLik});
+    // At zero residual the density is 1/(e*sigma) throughout the fitted shape domain.
+    cppunivariate::Box piece;
+    piece.axes = {fixed(mu), fixed(sigma), interval(-1, 1, true, true)};
+    out.maximizers.dimension = 3;
+    out.maximizers.add_box(piece);
+    out.stop_detail = {};
     return out;
   }
   bool at_reverse_endpoint=true;

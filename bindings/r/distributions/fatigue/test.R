@@ -94,7 +94,10 @@ test_that("fatigue: P3 unfinished optimizer stops", {
 test_that("fatigue certificate exposes both reciprocal maxima", {
   e <- tryCatch(mlfatigue(1,mu=0,alpha=3),error=identity)
   expect_s3_class(e,"univariateML")
-  expect_equal(nrow(fit_payload(e)$candidates),2L)
+  expect_false(attr(e,"unique"))
+  expect_equal(nrow(attr(e,"maximizers")),2L)
+  expect_length(attr(e,"maximizer_set")$pieces[[1]]$points,2L)
+  expect_null(attr(e,"candidates"))
   expect_error(mlfatigue(1:3,mu=0,alpha=1,iterlim=1),class="univariateML_numerical")
 })
 

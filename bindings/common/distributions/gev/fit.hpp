@@ -26,15 +26,10 @@ inline FitResult fit_gev(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   const auto r=cppunivariate::gev_mle(x,tol,iterlim,shape,location,scale);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, r.maximizers, "gev", [&](const auto&) { return r.logLik; });
     if (r.status == cppunivariate::GevStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
-    if (!o.unique && !r.maximizer_set.empty()) {
-      out.error=r.maximizer_set;
-      const std::vector<std::string> names{"mu", "sigma", "xi"};
-      for(const auto& witness:r.stop_detail.candidates)
-        out.candidates.push_back({named_coefficients(witness.coef,names),
-                                  witness.loglik_lower,witness.loglik_upper,"gev"});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
   };
   if(r.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("gev numerical accuracy failure: requested coefficient accuracy cannot be established."),r.stop_detail,outcome_payload(o),{"mu","sigma","xi"}));

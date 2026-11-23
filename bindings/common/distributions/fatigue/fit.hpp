@@ -1,6 +1,7 @@
 #pragma once
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/fatigue/mle.hpp"
+#include "cppunivariate/distributions/fatigue/dpqr.hpp"
 #include <cmath>
 #include <algorithm>
 #include <limits>
@@ -41,6 +42,15 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
   if (res.status == cppunivariate::FatigueStatus::SearchFailure) {
     for(auto& candidate:res.stop_detail.candidates)candidate.coef.push_back(threshold);
     if(res.stop_detail.budget_exhausted)return done(stop_failure(fail("Fatigue optimizer SearchFailure: certificate budget exhausted; increase iterlim."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
+    if(res.maximizers.size) {
+      auto out = comparison_payload(stop_failure(fail("Fatigue has two reciprocal scale maximizers."),res.stop_detail,
+          PayloadKind::Comparison,{"alpha","beta","mu"}),o,chosen,{{"alpha",alpha_arg},{"beta",beta_arg},{"mu",mu_arg}});
+      out.candidates.clear();
+      attach_maximizer_set(out, res.maximizers, "fatigue", [&](const auto& c) {
+        return x.size()*cppunivariate::distributions::dfatigue(x[0],c[0],c[1],c[2],true);
+      });
+      return done(std::move(out));
+    }
     if(res.stop_detail.comparison_tie)return done(comparison_payload(stop_failure(fail("Fatigue optimizer SearchFailure: competing global maxima cannot be distinguished."),res.stop_detail,PayloadKind::Comparison,{"alpha","beta","mu"}),o,chosen,{{"alpha",alpha_arg},{"beta",beta_arg},{"mu",mu_arg}}));
     return done(stop_failure(fail("Fatigue optimizer SearchFailure: profile search did not converge or floating-point coefficient resolution failed; increase iterlim for unresolved searches."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
   }

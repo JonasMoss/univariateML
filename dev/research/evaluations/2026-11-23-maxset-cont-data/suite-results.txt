@@ -1,0 +1,49 @@
+Workstation, GCC 15.2.0, R 4.6.1
+Selected 85 families: bbinom, beta, betapr, bhatt, binom, bnbinom, burr, cauchy, cmb, cmp, dgamma, dlaplace, dnorm, dunif, dweibull, emg, exp, expweibull, fatigue, foldnorm, fpareto, frechet, gamma, gb2, ged, genbeta, gengamma, geom, gev, gompertz, gpd, gumbel, hcauchy, hnorm, ht, huber, hyper, invburr, invexp, invgamma, invgauss, invparalogis, invpareto, invtrgamma, invweibull, kumar, laplace, lgamma, lgser, llogis, lnorm, logis, logitnorm, lomax, lst, naka, nbinom, nhyper, norm, nsbeta, paralogis, pareto, pareto2, pareto3, pareto4, pig, pois, power, rayleigh, sged, sgomp, skellam, slash, sn, snorm, sstd, st, std, tlambda, trgamma, triang, unif, weibull, yulesimon, zeta
++ just cpp-test
+100% tests passed, 0 tests failed out of 135
++ just cpp-test-no-long-double
+100% tests passed, 0 tests failed out of 180
++ just test
+Failure ('test-dist-ged.R:310:3'): ged small held sd returns the proved Laplace maximum or a median tie
+Failure ('test-dist-ged.R:311:3'): ged small held sd returns the proved Laplace maximum or a median tie
+Failure ('test-dist-ged.R:312:3'): ged small held sd returns the proved Laplace maximum or a median tie
+Error ('test-dist-ged.R:313:3'): ged small held sd returns the proved Laplace maximum or a median tie
+Failure ('test-dist-ged.R:372:3'): ged globally selected Laplace faces expose their whole median interval
+Failure ('test-dist-ged.R:373:3'): ged globally selected Laplace faces expose their whole median interval
+Failure ('test-dist-ged.R:417:3'): ged Laplace median intervals retain original observations
+[ FAIL 7 | WARN 0 | SKIP 157 | PASS 37395 ]
+Results: [{"command": ["just", "cpp-test"], "exit": 0, "seconds": 843.77}, {"command": ["just", "cpp-test-no-long-double"], "exit": 0, "seconds": 814.4}, {"command": ["just", "test"], "exit": 1, "seconds": 472.02}]
+
+Targeted GED R rerun
+R family filter: ged; shared loops: conformance, golden_regression, generated-dpqr, scale_equivariance, frozen, diagnostics, audit-input, input_checks, restricted
+[ FAIL 0 | WARN 0 | SKIP 8 | PASS 529 ]
+
+JavaScript build and first test run
+not ok 505 - GED analytic held-sd shape fits and median ties agree across bindings
+not ok 584 - Student held subsets expose proved symmetry nonuniqueness
+# tests 593
+# pass 591
+# fail 2
+
+Focused JavaScript rerun
+ok 1 - GED analytic held-sd shape fits and median ties agree across bindings
+ok 2 - Student held subsets expose proved symmetry nonuniqueness
+# tests 2
+# pass 2
+# fail 0
+
+Site check
+PASS inference browser: {"rows":286,"families":85,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 272 limits, 85 families, 9 fit domains.
+PASS: inference: 286 unique scopes, 85 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 85 unique nodes, 266 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 85 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 85 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, norm, pois, unif, pareto

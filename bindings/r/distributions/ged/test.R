@@ -307,10 +307,11 @@ test_that("ged small held sd returns the proved Laplace maximum or a median tie"
   expect_equal(unname(f["nu"]), 1, tolerance = 1e-10)
   e <- tryCatch(mlged(c(-1,1),sd=.1,iterlim=1L),error=identity)
   expect_s3_class(e,"univariateML")
-  expect_match(fit_diagnostic(e),"median interval")
-  expect_equal(fit_payload(e)$candidates$mean,c(-1,1))
-  expect_true(is.finite(fit_payload(e)$loglik_upper))
-  expect_lte(fit_payload(e)$loglik_lower,fit_payload(e)$loglik_upper)
+  expect_match(fit_diagnostic(e),"mean in [-1, 1]",fixed=TRUE)
+  w <- attr(e,"maximizers")
+  expect_equal(w$mean,c(-1,1))
+  expect_equal(w$loglik_lower,rep(as.numeric(logLik(e)),2L))
+  expect_equal(w$loglik_upper,w$loglik_lower)
   h <- suppressWarnings(mlged(c(-1,1),mean=.3,sd=.1,iterlim=1L),
                         classes="univariateML_restricted")
   expect_equal(unname(h["mean"]),.3)
@@ -369,8 +370,10 @@ test_that("ged globally selected Laplace faces expose their whole median interva
   x <- c(seq(-.02,.02,length.out=18),-10,10)
   e <- tryCatch(mlged(x),error=identity)
   expect_s3_class(e,"univariateML")
-  expect_equal(fit_payload(e)$candidates$nu,c(1,1))
-  expect_true(diff(fit_payload(e)$candidates$mean)!=0)
+  w <- attr(e,"maximizers")
+  expect_equal(w$nu,c(1,1))
+  expect_equal(sort(w$mean),sort(x)[10:11])
+  expect_equal(unname(coef(e)),unname(unlist(w[1,names(e)])))
 })
 
 
@@ -414,7 +417,9 @@ test_that("ged uniform witnesses contain the original observations", {
 test_that("ged Laplace median intervals retain original observations", {
   e <- tryCatch(mlged(c(1:19,1e308)),error=identity)
   expect_s3_class(e,"univariateML")
-  expect_equal(fit_payload(e)$candidates$mean,c(10,11))
+  interval <- attr(e,"maximizer_set")$pieces[[1]]$axes[[1]]
+  expect_equal(c(interval$lower,interval$upper),c(10,11))
+  expect_equal(sort(attr(e,"maximizers")$mean),c(10,11))
 })
 
 test_that("held GED shape arithmetic losses stop numerically", {
