@@ -1,0 +1,15 @@
+native 623 7a1ceb97a1611a2c742a93fdeb6fa0834038a6007e67a526d971a61bbbd6d3d2
+native cmp 000957 {'lambda': 4.8929110545673415} {'lambda': '0x1.3925746866a17p+2', 'nu': '0x1.61e0b7f417fa6p-2'}
+native dgamma 001027 {'rate': 0.9720518551425348} {'rate': '0x1.f1b0c7dfb4e5ep-1', 'shape': '0x1.8988d4bba6a6dp+6'}
+native nhyper 005161 {} {'N': '0x1.ffffffffffffep+51', 'm': '0x1.fffdd2ffbddfcp+51', 'r': '0x1.e8468p+19'}
+native nhyper 005217 {'r': 3.0} {'N': '0x1.e8496p+19', 'm': '0x1.8p+1', 'r': '0x1.8p+1'}
+double 623 9d579689a72117a619e862fc24c4744533229a39afdebbe3d1cd0f9546cc9c05
+double cmp 000957 {'lambda': 4.8929110545673415} {'lambda': '0x1.3925746866a17p+2', 'nu': '0x1.61e0b7f417fa6p-2'}
+double dgamma 001027 {'rate': 0.9720518551425348} {'rate': '0x1.f1b0c7dfb4e5ep-1', 'shape': '0x1.8988d4bba6adp+6'}
+double nhyper 005161 {} {'N': '0x1.ffffffffffffep+51', 'm': '0x1.fffdd2ffbddfcp+51', 'r': '0x1.e8468p+19'}
+double nhyper 005217 {'r': 3.0} {'N': '0x1.e8496p+19', 'm': '0x1.8p+1', 'r': '0x1.8p+1'}
+routes-native 158 81f4fa4f3a8f85273bb638e463bc72942a0ce8fb424c6e0a818e01a8a37bdae6
+routes-double 158 3ba972c26586b3062ba71974965d1b8291ba93b0811fc6de9c40c0692723d26c
+CMP 000957: ratio 0.912392522914 relative tail bound 0.0708516448211
+dgamma 001027: cell 100 ratio 0.600900108337 relative tail bound 5.00367925623e-8
+dgamma 001027: cell 101 ratio 0.606849614361 relative tail bound 9.59103070669e-8

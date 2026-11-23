@@ -1,0 +1,124 @@
+nhyper 005161 {} [1000000, 1000001, 1000003, 1000008, 1000011] {'N': '0x1.e849600000000p+19', 'm': '0x1.0000000000000p+0', 'r': '0x1.0000000000000p+0'}
+Traceback (most recent call last):
+  File "build/scratch/trace_refine.py", line 11, in traced
+    try: return original(ident)
+                ~~~~~~~~^^^^^^^
+  File "dev/validation/quality/reference.py", line 182, in reference
+    f = sp.lambdify([*fs, x], e, 'mpmath', cse=True)
+  File "site-packages/sympy/utilities/lambdify.py", line 894, in lambdify
+    funcstr = funcprinter.doprint(funcname, iterable_args, _expr, cses=cses)
+  File "site-packages/sympy/utilities/lambdify.py", line 1201, in doprint
+    str_expr = _recursive_to_string(self._exprrepr, expr)
+  File "site-packages/sympy/utilities/lambdify.py", line 989, in _recursive_to_string
+    return doprint(arg)
+  File "site-packages/sympy/printing/codeprinter.py", line 172, in doprint
+    lines = self._print(expr).splitlines()
+            ~~~~~~~~~~~^^^^^^
+  File "site-packages/sympy/printing/printer.py", line 332, in _print
+    return printmethod(expr, **kwargs)
+  File "site-packages/sympy/printing/str.py", line 58, in _print_Add
+    t = self._print(term)
+  File "site-packages/sympy/printing/printer.py", line 332, in _print
+    return printmethod(expr, **kwargs)
+  File "site-packages/sympy/printing/codeprinter.py", line 591, in _print_Mul
+    a_str = [self.parenthesize(a[0], 0.5*(PRECEDENCE["Pow"]+PRECEDENCE["Mul"]))]
+             ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "site-packages/sympy/printing/str.py", line 39, in parenthesize
+    return self._print(item)
+           ~~~~~~~~~~~^^^^^^
+  File "site-packages/sympy/printing/printer.py", line 332, in _print
+    return printmethod(expr, **kwargs)
+  File "site-packages/sympy/printing/pycode.py", line 71, in _print_known_func
+    args=', '.join((self._print(arg) for arg in expr.args)))
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "site-packages/sympy/printing/pycode.py", line 71, in <genexpr>
+    args=', '.join((self._print(arg) for arg in expr.args)))
+                    ~~~~~~~~~~~^^^^^
+  File "site-packages/sympy/printing/printer.py", line 332, in _print
+    return printmethod(expr, **kwargs)
+ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit
+({'error': 'ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit'}, 21.78819356)
+dgamma 001027 {'rate': 0.9720518551425348} [100, 100, 100, 101, 100] {'rate': '0x1.f1b0c7dfb4e5ep-1', 'shape': '0x1.8988d4bba6a6dp+6'}
+Traceback (most recent call last):
+  File "build/scratch/trace_refine.py", line 11, in traced
+    try: return original(ident)
+                ~~~~~~~~^^^^^^^
+  File "dev/validation/quality/reference.py", line 67, in reference
+    syms, x, expr = density_expression(folder, meta, domains)
+                    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "dev/validation/quality/density.py", line 28, in density_expression
+    expr = module.log_density(dict(zip([p['name'] for p in params], syms)), x)
+  File "build/strict/refine/shadow/e5c20f222f12549ba7cd/dgamma/spec.py", line 24, in log_density
+    assert remainder/mass < mp.mpf('1e-20')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+({'error': 'AssertionError: '}, 0.014900477999997719)
+binom+zero=modified 008799 {} [3, 3, 4, 4, 4] {'p0': '0x0.0p+0', 'prob': '0x1.ccc0f5f9b1258p-1', 'size': '0x1.0000000000000p+2'}
+Traceback (most recent call last):
+  File "build/scratch/trace_refine.py", line 11, in traced
+    try: return original(ident)
+                ~~~~~~~~^^^^^^^
+  File "dev/validation/quality/reference.py", line 182, in reference
+    f = sp.lambdify([*fs, x], e, 'mpmath', cse=True)
+  File "site-packages/sympy/utilities/lambdify.py", line 894, in lambdify
+    funcstr = funcprinter.doprint(funcname, iterable_args, _expr, cses=cses)
+  File "site-packages/sympy/utilities/lambdify.py", line 1201, in doprint
+    str_expr = _recursive_to_string(self._exprrepr, expr)
+  File "site-packages/sympy/utilities/lambdify.py", line 989, in _recursive_to_string
+    return doprint(arg)
+  File "site-packages/sympy/printing/codeprinter.py", line 172, in doprint
+    lines = self._print(expr).splitlines()
+            ~~~~~~~~~~~^^^^^^
+  File "site-packages/sympy/printing/printer.py", line 332, in _print
+    return printmethod(expr, **kwargs)
+  File "site-packages/sympy/printing/pycode.py", line 216, in _print_Piecewise
+    result.append(self._print(e))
+                  ~~~~~~~~~~~^^^
+  File "site-packages/sympy/printing/printer.py", line 332, in _print
+    return printmethod(expr, **kwargs)
+  File "site-packages/sympy/printing/pycode.py", line 75, in _print_known_const
+    known = self.known_constants[expr.__class__.__name__]
+            ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'ComplexInfinity'
+({'estimates': {'size': '4.0', 'prob': '0.8999096743869570024537593', 'p0': '0.0'}, 'not_refined': {'size': 'integer', 'p0': 'at domain bound'}, 'logLik': '-3.728569817484070895917127', 'method': 'scaled damped Newton at 50 digits (fit-refine.py fallback)', 'first_method': "reference.py: KeyError: 'ComplexInfinity'", 'relative_step': '1.25e-62'}, 0.13963250200000132)
+triang 008159 {} [0.21270091277547182, 0.556117281364277] {'a': '0x1.b39c89419999ap-3', 'b': '0x1.74a58a1866666p-1', 'c': '0x1.b39c89419999ap-3'}
+Traceback (most recent call last):
+  File "build/scratch/trace_refine.py", line 11, in traced
+    try: return original(ident)
+                ~~~~~~~~^^^^^^^
+  File "dev/validation/quality/reference.py", line 205, in reference
+    H = mp.matrix([[mp.fsum(hij(*t, xi) for xi in xs) for hij in row] for row in h])
+                    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "site-packages/mpmath/ctx_mp_python.py", line 851, in fsum
+    for term in terms:
+                ^^^^^
+  File "dev/validation/quality/reference.py", line 205, in <genexpr>
+    H = mp.matrix([[mp.fsum(hij(*t, xi) for xi in xs) for hij in row] for row in h])
+                            ~~~^^^^^^^^
+  File "<lambdifygenerated-40>", line 3, in _lambdifygenerated
+    x1 = 1/x0
+         ~^~~
+  File "site-packages/mpmath/ctx_mp_python.py", line 205, in __rdiv__
+    v._mpf_ = mpf_rdiv_int(t, s._mpf_, prec, rounding)
+              ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "site-packages/mpmath/libmp/libmpf.py", line 991, in mpf_rdiv_int
+    return mpf_div(from_int(n), t, prec, rnd)
+  File "site-packages/mpmath/libmp/libmpf.py", line 960, in mpf_div
+    raise ZeroDivisionError
+ZeroDivisionError
+({'error': 'ZeroDivisionError: '}, 0.18838641800000033)
+cmp 000957 {'lambda': 4.8929110545673415} [100, 100, 100, 101, 100] {'lambda': '0x1.3925746866a17p+2', 'nu': '0x1.61e0b7f417fa6p-2'}
+Traceback (most recent call last):
+  File "build/scratch/trace_refine.py", line 11, in traced
+    try: return original(ident)
+                ~~~~~~~~^^^^^^^
+  File "dev/validation/quality/reference.py", line 67, in reference
+    syms, x, expr = density_expression(folder, meta, domains)
+                    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "dev/validation/quality/density.py", line 28, in density_expression
+    expr = module.log_density(dict(zip([p['name'] for p in params], syms)), x)
+  File "build/strict/refine/shadow/d7401e0d9be5b4c14b01/cmp/spec.py", line 12, in log_density
+    assert ratio < 1 and weights[128]/(1-ratio)/sum(weights[:128]) < 1e-25
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+({'error': 'AssertionError: '}, 0.011270024000001655)

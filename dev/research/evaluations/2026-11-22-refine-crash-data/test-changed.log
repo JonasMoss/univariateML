@@ -1,0 +1,24 @@
+Base master; merge base 896d9deeb02f631d56fafeb1288701a2e7d6e811; tier dev
+Selected 85 families: bbinom, beta, betapr, bhatt, binom, bnbinom, burr, cauchy, cmb, cmp, dgamma, dlaplace, dnorm, dunif, dweibull, emg, exp, expweibull, fatigue, foldnorm, fpareto, frechet, gamma, gb2, ged, genbeta, gengamma, geom, gev, gompertz, gpd, gumbel, hcauchy, hnorm, ht, huber, hyper, invburr, invexp, invgamma, invgauss, invparalogis, invpareto, invtrgamma, invweibull, kumar, laplace, lgamma, lgser, llogis, lnorm, logis, logitnorm, lomax, lst, naka, nbinom, nhyper, norm, nsbeta, paralogis, pareto, pareto2, pareto3, pareto4, pig, pois, power, rayleigh, sged, sgomp, skellam, slash, sn, snorm, sstd, st, std, tlambda, trgamma, triang, unif, weibull, yulesimon, zeta
+Shared effects: running ordinary recipes without family filters.
+  shared: dev/validation/fit-refine.py
+  shared: dev/validation/refine_profiles.py
+  shared: dev/validation/strict-refine.jsonl.gz
++ just cpp-test
+100% tests passed, 0 tests failed out of 134
+Total Test time (real) = 480.78 sec
++ just cpp-test-no-long-double
+100% tests passed, 0 tests failed out of 179
+Total Test time (real) = 515.19 sec
++ just test
+Duration: 316.8 s
+[ FAIL 0 | WARN 0 | SKIP 157 | PASS 37329 ]
++ just js-build
++ just js-test
+1..591
+# tests 591
+# pass 591
+# fail 0
+# skipped 0
+# duration_ms 226712.453431
+Results: [{"command": ["just", "cpp-test"], "exit": 0, "seconds": 1066.0}, {"command": ["just", "cpp-test-no-long-double"], "exit": 0, "seconds": 1274.81}, {"command": ["just", "test"], "exit": 0, "seconds": 347.51}, {"command": ["just", "js-build"], "exit": 0, "seconds": 117.96}, {"command": ["just", "js-test"], "exit": 0, "seconds": 226.98}]

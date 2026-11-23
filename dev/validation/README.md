@@ -715,21 +715,29 @@ recorded input hash.
   one-held per family and route, drawn from the cases that are estimates in
   the stored baseline of `c167a975`), the returned estimate is refined at 50
   digits with the dossier's symbolic density by `quality/reference.py`
-  unchanged (each case is handed to it as a golden in a shadow folder),
+  (each case is handed to it as a golden in a shadow folder),
   falling back to Newton in coordinates scaled by each coefficient's size, at
-  50, 100 or 200 digits, where `reference()` stops on scale alone. A free
+  50, 100 or 200 digits, where `reference()` stops on scale alone. Separate
+  profiles check triangular endpoints conditional on an endpoint mode, negative
+  hypergeometric composition conditional on the population and stopping count,
+  and the zero-modified binomial zero mass and positive-count probability conditional
+  on size, with an exact size check in the identified constant-positive case. A free
   coefficient fails when `|theta_hat - theta_star| > 1e-10 * max(|theta_star|, s)`,
   `s` the fitted scale for a location, 1 for another coefficient that can be
   zero or change sign, 0 for a strictly positive one. References are cached
-  in `strict-refine.jsonl.gz`, keyed by input and density source; `--cache-only`
-  (as in `just strict`) judges from the cache and lists cases without an
-  entry. It derives work-budget exclusions from the current ledger and
-  reports them as open. Coefficients the refinement does not determine (integer, kink,
-  support bound without a closed form, on a domain bound) and cases it cannot
-  settle are listed, with the reason, not failed. Refilling the cache is a
-  separate, budgeted run: `/tmp/umvl-cpu/run python3 dev/validation/fit-refine.py
-  NATIVE DOUBLE --budget 450` (repeat until nothing is left; about 46 CPU
-  minutes from empty).
+  in `strict-refine.jsonl.gz`, keyed by input, density source and fitted
+  coordinates that define the profile. The `--cache-only` option (used by
+  `just strict`) judges from the cache and lists cases without an entry.
+  It derives work-budget exclusions from the current ledger and
+  reports them as open. Cases with no independently checked coefficient,
+  singular information, or an inapplicable series oracle are also open with
+  a reason. Unexpected reference exceptions are listed by precision mode,
+  family and case, and fail the checker separately from the fitter failure
+  ratchet. Refilling the cache is a separate, budgeted run using
+  `/tmp/umvl-cpu/run python3 dev/validation/fit-refine.py NATIVE DOUBLE --budget 450`.
+  Use `run4` with `--jobs 4` for concurrent refinements of different families.
+  Budget checks run before dispatch, so in-flight work can carry a parallel run
+  past the global budget.
 - `cert-replay.py` (`cert-replay:<comparison>`): certificate replay, step 8
   ([design](../design/certificate-replay.md)). For families whose certificate
   comparisons it knows, the script re-derives those comparisons from the

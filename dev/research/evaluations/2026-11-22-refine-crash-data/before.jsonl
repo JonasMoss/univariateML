@@ -1,0 +1,252 @@
+{"mode": "native", "family": "binom", "source": "golden", "case": "golden", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "double", "family": "binom", "source": "golden", "case": "golden", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "golden", "case": "golden", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "double", "family": "binom+zero=modified", "source": "golden", "case": "golden", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "native", "family": "cmp", "source": "golden", "case": "golden", "status": "checked", "worst": {"ratio": 1.8152351632696148e-06, "name": "lambda"}}
+{"mode": "double", "family": "cmp", "source": "golden", "case": "golden", "status": "checked", "worst": {"ratio": 9.076175816348074e-06, "name": "lambda"}}
+{"mode": "native", "family": "dgamma", "source": "golden", "case": "golden", "status": "open", "reason": "case guard of 120 s"}
+{"mode": "double", "family": "dgamma", "source": "golden", "case": "golden", "status": "open", "reason": "case guard of 120 s"}
+{"mode": "native", "family": "nhyper", "source": "golden", "case": "golden", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "golden", "case": "golden", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "golden", "case": "golden", "status": "checked", "worst": {"ratio": 2.210442443577397e-06, "name": "b"}}
+{"mode": "double", "family": "triang", "source": "golden", "case": "golden", "status": "checked", "worst": {"ratio": 2.210442443577397e-06, "name": "b"}}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000447", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000447", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008794", "status": "checked", "worst": {"ratio": 2.7755575615628914e-07, "name": "prob"}}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008794", "status": "checked", "worst": {"ratio": 2.7755575615628914e-07, "name": "prob"}}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000930", "status": "checked", "worst": {"ratio": 0.00023301146399187442, "name": "lambda"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000930", "status": "checked", "worst": {"ratio": 0.00023301146399187442, "name": "lambda"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "000986", "status": "checked", "worst": {"ratio": 0.0, "name": "shape"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "000986", "status": "checked", "worst": {"ratio": 4.330395817391647e-06, "name": "shape"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005150", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005150", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008158", "status": "checked", "worst": {"ratio": 0.0007194245199571014, "name": "a"}}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008158", "status": "checked", "worst": {"ratio": 0.0007194245199571014, "name": "a"}}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000448", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000448", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008795", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008795", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000931", "status": "checked", "worst": {"ratio": 0.0034042950810264892, "name": "lambda"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000931", "status": "checked", "worst": {"ratio": 0.0034042950810264892, "name": "lambda"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001000", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001000", "status": "checked", "worst": {"ratio": 2.0473662470786662e-06, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005151", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005151", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008159", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008159", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000449", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000449", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008796", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008796", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000932", "status": "checked", "worst": {"ratio": 0.9549195642895468, "name": "lambda"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000932", "status": "checked", "worst": {"ratio": 0.9549234499067275, "name": "lambda"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001001", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001001", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005153", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005153", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008160", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008160", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000452", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000452", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008798", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008798", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000933", "status": "checked", "worst": {"ratio": 0.000741941718126593, "name": "lambda"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000933", "status": "checked", "worst": {"ratio": 0.000741941718126593, "name": "lambda"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001003", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001003", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005154", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005154", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008161", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008161", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000453", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000453", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008799", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008799", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000934", "status": "checked", "worst": {"ratio": 0.258012324315118, "name": "lambda"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000934", "status": "checked", "worst": {"ratio": 0.258012324315118, "name": "lambda"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001004", "status": "checked", "worst": {"ratio": 1.2496058990524095e-06, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001004", "status": "checked", "worst": {"ratio": 1.2496058990524095e-06, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005155", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005155", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008162", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008162", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000454", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000454", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008800", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008800", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000944", "status": "checked", "worst": {"ratio": 0.10123152940916333, "name": "nu"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000944", "status": "checked", "worst": {"ratio": 0.10123279670422354, "name": "nu"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001005", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001005", "status": "checked", "worst": {"ratio": 3.5340200337328344e-06, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005159", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005159", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008164", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008164", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000456", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000456", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008802", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008802", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000945", "status": "checked", "worst": {"ratio": 6.430079914600416e-05, "name": "nu"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000945", "status": "checked", "worst": {"ratio": 6.430079914600416e-05, "name": "nu"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001006", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001006", "status": "checked", "worst": {"ratio": 3.5340200337328344e-06, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005161", "status": "open", "reason": "ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit"}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005161", "status": "open", "reason": "ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit"}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008167", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008167", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000457", "status": "open", "reason": "ValueError: integer enumeration budget exhausted: tail needs 1000037 cells"}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000457", "status": "open", "reason": "ValueError: integer enumeration budget exhausted: tail needs 1000037 cells"}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008803", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008803", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000946", "status": "checked", "worst": {"ratio": 7.670015747986527e-05, "name": "nu"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000946", "status": "checked", "worst": {"ratio": 7.670015747986527e-05, "name": "nu"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001007", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001007", "status": "checked", "worst": {"ratio": 3.5340200337328344e-06, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005163", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005163", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008174", "status": "checked", "worst": {"ratio": 7.203887304544532e-154, "name": "a"}}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008174", "status": "checked", "worst": {"ratio": 7.203887304544532e-154, "name": "a"}}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000458", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000458", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008805", "status": "open", "reason": "ValueError: integer enumeration budget exhausted: tail needs 1000037 cells"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008805", "status": "open", "reason": "ValueError: integer enumeration budget exhausted: tail needs 1000037 cells"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000948", "status": "checked", "worst": {"ratio": 0.0, "name": "nu"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000948", "status": "checked", "worst": {"ratio": 0.0, "name": "nu"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001009", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001009", "status": "checked", "worst": {"ratio": 3.5340200337328344e-06, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005168", "status": "checked", "worst": null}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005168", "status": "checked", "worst": null}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008177", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008177", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000459", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000459", "status": "checked", "worst": {"ratio": 0.0, "name": "size"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008808", "status": "checked", "worst": {"ratio": 0.0, "name": "prob"}}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008808", "status": "checked", "worst": {"ratio": 0.0, "name": "prob"}}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000949", "status": "checked", "worst": {"ratio": 0.0, "name": "nu"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000949", "status": "checked", "worst": {"ratio": 0.0, "name": "nu"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001010", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001010", "status": "checked", "worst": {"ratio": 3.5340200337328344e-06, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005174", "status": "checked", "worst": null}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005174", "status": "checked", "worst": null}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008178", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008178", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000461", "status": "checked", "worst": {"ratio": 0.0, "name": "prob"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000461", "status": "checked", "worst": {"ratio": 0.0, "name": "prob"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008809", "status": "checked", "worst": {"ratio": 0.0, "name": "prob"}}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008809", "status": "checked", "worst": {"ratio": 0.0, "name": "prob"}}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000950", "status": "checked", "worst": {"ratio": 0.0, "name": "nu"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000950", "status": "checked", "worst": {"ratio": 0.0, "name": "nu"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001011", "status": "checked", "worst": {"ratio": 2.1132796951831796e-06, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001011", "status": "checked", "worst": {"ratio": 2.1132796951831796e-06, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005184", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005184", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008195", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008195", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000464", "status": "checked", "worst": {"ratio": 0.0, "name": "prob"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000464", "status": "checked", "worst": {"ratio": 0.0, "name": "prob"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008814", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008814", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000952", "status": "checked", "worst": {"ratio": 0.0, "name": "nu"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000952", "status": "checked", "worst": {"ratio": 0.0, "name": "nu"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001013", "status": "checked", "worst": {"ratio": 0.0, "name": "rate"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001013", "status": "checked", "worst": {"ratio": 6.101528651187801e-05, "name": "rate"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005186", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005186", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008201", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008201", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000467", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000467", "status": "checked", "worst": {"ratio": 1.1102230246251565e-06, "name": "prob"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008817", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008817", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000954", "status": "checked", "worst": {"ratio": 0.0, "name": "nu"}}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000954", "status": "checked", "worst": {"ratio": 0.0, "name": "nu"}}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001014", "status": "checked", "worst": {"ratio": 0.0, "name": "shape"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001014", "status": "checked", "worst": {"ratio": 2.7599795723606334e-06, "name": "shape"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005188", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005188", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008207", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008207", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000476", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000476", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008826", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008826", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000957", "status": "open", "reason": "AssertionError: "}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000957", "status": "open", "reason": "AssertionError: "}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001018", "status": "checked", "worst": {"ratio": 0.0, "name": "shape"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001018", "status": "checked", "worst": {"ratio": 4.90839688877509e-06, "name": "shape"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005209", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005209", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008214", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008214", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000477", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000477", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008832", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008832", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000962", "status": "open", "reason": "case guard of 120 s"}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000962", "status": "open", "reason": "case guard of 120 s"}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001019", "status": "checked", "worst": {"ratio": 0.0, "name": "shape"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001019", "status": "checked", "worst": {"ratio": 1.7729255042993054e-06, "name": "shape"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005211", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005211", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008240", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008240", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000483", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000483", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008853", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008853", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000964", "status": "open", "reason": "case guard of 120 s"}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000964", "status": "open", "reason": "case guard of 120 s"}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001020", "status": "checked", "worst": {"ratio": 0.0, "name": "shape"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001020", "status": "checked", "worst": {"ratio": 1.7729255042993054e-06, "name": "shape"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005214", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005214", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008242", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008242", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "000484", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom", "source": "archive", "case": "000484", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "008859", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "008859", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000966", "status": "open", "reason": "not attempted: two cases hit the case guard"}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000966", "status": "open", "reason": "not attempted: two cases hit the case guard"}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001021", "status": "checked", "worst": {"ratio": 0.0, "name": "shape"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001021", "status": "checked", "worst": {"ratio": 1.7729255042993054e-06, "name": "shape"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "005217", "status": "open", "reason": "ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit"}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "005217", "status": "open", "reason": "ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit"}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008246", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008246", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "009646", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom", "source": "archive", "case": "009646", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "009657", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "009657", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000968", "status": "open", "reason": "not attempted: two cases hit the case guard"}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000968", "status": "open", "reason": "not attempted: two cases hit the case guard"}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001023", "status": "checked", "worst": {"ratio": 0.0, "name": "shape"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001023", "status": "checked", "worst": {"ratio": 1.7729255042993054e-06, "name": "shape"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "010993", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "010993", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008247", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008247", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "010105", "status": "checked", "worst": {"ratio": 0.0, "name": "prob"}}
+{"mode": "double", "family": "binom", "source": "archive", "case": "010105", "status": "checked", "worst": {"ratio": 0.0, "name": "prob"}}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "011161", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "011161", "status": "open", "reason": "KeyError: 'ComplexInfinity'"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000970", "status": "open", "reason": "not attempted: two cases hit the case guard"}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000970", "status": "open", "reason": "not attempted: two cases hit the case guard"}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001026", "status": "checked", "worst": {"ratio": 0.0, "name": "shape"}}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001026", "status": "checked", "worst": {"ratio": 6.041554770489068e-06, "name": "shape"}}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "010994", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "010994", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "008248", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "008248", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "native", "family": "binom", "source": "archive", "case": "010917", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom", "source": "archive", "case": "010917", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "binom+zero=modified", "source": "archive", "case": "011165", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "double", "family": "binom+zero=modified", "source": "archive", "case": "011165", "status": "open", "reason": "ValueError: integer profile with held probability requires a separate tail envelope"}
+{"mode": "native", "family": "cmp", "source": "archive", "case": "000971", "status": "open", "reason": "not attempted: two cases hit the case guard"}
+{"mode": "double", "family": "cmp", "source": "archive", "case": "000971", "status": "open", "reason": "not attempted: two cases hit the case guard"}
+{"mode": "native", "family": "dgamma", "source": "archive", "case": "001027", "status": "open", "reason": "AssertionError: "}
+{"mode": "double", "family": "dgamma", "source": "archive", "case": "001027", "status": "open", "reason": "AssertionError: "}
+{"mode": "native", "family": "nhyper", "source": "archive", "case": "010998", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "double", "family": "nhyper", "source": "archive", "case": "010998", "status": "checked", "worst": {"ratio": 0.0, "name": "m"}}
+{"mode": "native", "family": "triang", "source": "archive", "case": "011121", "status": "open", "reason": "ZeroDivisionError: "}
+{"mode": "double", "family": "triang", "source": "archive", "case": "011121", "status": "open", "reason": "ZeroDivisionError: "}

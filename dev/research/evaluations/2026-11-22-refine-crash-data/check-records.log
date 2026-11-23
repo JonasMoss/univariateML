@@ -1,0 +1,12 @@
+252 matching case keys, 216 comparisons passed, 36 open, cold and warm identical
+Triangular near-constant, offset and subnormal class endpoints agree in both modes
+Two sizes on the same modifier sample produce distinct reference keys and probabilities
+reference exceptions (harness failures): 1
+  refine|native|triang|golden|golden: ArithmeticError: injected reference exception
+coefficients not refined (no independent value; not judged):
+  triang c: kink: 2
+  triang c: mode held at reported kink for endpoint profile: 13
+20 cases judged: 20 passed, 0 failed
+fit-refine: failures by check: none
+fit-refine: 0 listed as known, 0 new, 0 listed but passing
+Injected reference exception was recorded and warm strict check exited 1

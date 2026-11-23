@@ -1,0 +1,16 @@
+{
+  "source_sha256": "5bf5f31f38b9835f943fe2c98b2656b7befa6606a2e9577d30d5abaae36c46f3",
+  "commit": "896d9deeb02f631d56fafeb1288701a2e7d6e811",
+  "dirty": false,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    "-std=gnu++17",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "no_long_double": false,
+  "cpu_limit": 300,
+  "families": [
+    "zmbinom"
+  ]
+}
