@@ -1,4 +1,269 @@
 {
  "note": "Known failures of the strict layer (fit-judge.py, fit-density.py, fit-consistency.py, fit-refine.py, cert-replay.py, strict-seam.py), keyed check|mode|family|source|case. Entries leave when fixed (--prune); adding one (--add) is a reviewed decision with a card.",
- "known": {}
+ "known": {
+  "density:candidate#0|double|bhatt|archive|000334": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-20.904298225903737, -20.904298225888773]"
+  },
+  "density:candidate#0|double|bhatt|archive|000337": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-8.7101242607932221, -8.7101242607869871]"
+  },
+  "density:candidate#0|double|bhatt|archive|000341": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [3.7722558545039755, 3.7722558545079643]"
+  },
+  "density:candidate#0|double|bhatt|archive|000345": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [58.555068951432212, 58.5550689514643]"
+  },
+  "density:candidate#0|double|bhatt|archive|000346": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-4165.5414796054501, -4165.5414796035511]"
+  },
+  "density:candidate#0|double|bhatt|archive|000347": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-229.36593543673609, -229.36593543662633]"
+  },
+  "density:candidate#0|double|cmb|archive|000889": {
+   "ref": "TASK-236",
+   "detail": "cmp summed density -37.831221301521218 outside stated [-37.831221297383308, -37.831221297383308]"
+  },
+  "density:candidate#0|double|ged|archive|002362": {
+   "ref": "TASK-236",
+   "detail": "unif summed density 103.29215997651195 outside stated [103.29215996025371, 103.29215996025371]"
+  },
+  "density:candidate#0|double|ged|archive|002363": {
+   "ref": "TASK-236",
+   "detail": "unif summed density 149.34396821512658 outside stated [149.34380563200594, 149.34380563200594]"
+  },
+  "density:candidate#0|double|ged|archive|002365": {
+   "ref": "TASK-236",
+   "detail": "unif summed density 84.056214154671977 outside stated [84.056214143569761, 84.056214143569761]"
+  },
+  "density:candidate#0|double|ged|class|offset": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -6.0696054700708792 outside stated [-6.5916737320086582, -6.5916737320086582]"
+  },
+  "density:candidate#0|double|ht|class|subnormal": {
+   "ref": "TASK-236",
+   "detail": "hnorm summed density 2228.8134001645299 outside stated [2228.832174144789, 2228.832174144789]"
+  },
+  "density:candidate#0|double|invtrgamma|archive|004067": {
+   "ref": "TASK-236",
+   "detail": "pareto summed density 136.83410255939168 outside stated [136.83404653523652, 136.83404653523652]"
+  },
+  "density:candidate#0|double|invtrgamma|class|near-constant": {
+   "ref": "TASK-236",
+   "detail": "pareto summed density 112.58448226184579 outside stated [112.50050200608815, 112.50050200608815]"
+  },
+  "density:candidate#0|double|lst|class|offset": {
+   "ref": "TASK-236",
+   "detail": "norm summed density -8.7538214899674518 outside stated [-8.7344666512596927, -8.7344666512558558]"
+  },
+  "density:candidate#0|double|lst|class|subnormal": {
+   "ref": "TASK-236",
+   "detail": "norm summed density 2229.5634001645294 outside stated [2229.6715978266589, 2229.6715978267243]"
+  },
+  "density:candidate#0|double|lst|class|subnormal-signed": {
+   "ref": "TASK-236",
+   "detail": "norm summed density 2228.0634001645294 outside stated [2228.4006510360782, 2228.4006510361437]"
+  },
+  "density:candidate#0|double|sged|archive|005966": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-13.351816139659453, -13.351816139659453]"
+  },
+  "density:candidate#0|double|sged|archive|005968": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [1.8565774085250986, 1.8565774085250986]"
+  },
+  "density:candidate#0|double|sged|archive|005969": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [3.094295680875164, 3.094295680875164]"
+  },
+  "density:candidate#0|double|sged|archive|005978": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-4158.004983528941, -4158.004983528941]"
+  },
+  "density:candidate#0|double|sged|archive|006121": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [32.801573444689822, 32.801573444689822]"
+  },
+  "density:candidate#0|double|sged|resample|n3-s0": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-2.9062715305732327, -2.9062715305732327]"
+  },
+  "density:candidate#0|double|sged|resample|n3-s3": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [0.22948831057490926, 0.22948831057490926]"
+  },
+  "density:candidate#0|double|sged|resample|n7-s0": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-6.7002440998806829, -6.7002440998806829]"
+  },
+  "density:candidate#0|native|bhatt|archive|000334": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-20.904298225903737, -20.904298225888773]"
+  },
+  "density:candidate#0|native|bhatt|archive|000337": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-8.7101242607932221, -8.7101242607869871]"
+  },
+  "density:candidate#0|native|bhatt|archive|000341": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [3.7722558545039755, 3.7722558545079643]"
+  },
+  "density:candidate#0|native|bhatt|archive|000345": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [58.555068951432212, 58.5550689514643]"
+  },
+  "density:candidate#0|native|bhatt|archive|000346": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-4165.5414796054501, -4165.5414796035511]"
+  },
+  "density:candidate#0|native|bhatt|archive|000347": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-229.36593543673609, -229.36593543662633]"
+  },
+  "density:candidate#0|native|cmb|archive|000889": {
+   "ref": "TASK-236",
+   "detail": "cmp summed density -37.831221301521218 outside stated [-37.831221297383308, -37.831221297383308]"
+  },
+  "density:candidate#0|native|ged|archive|002362": {
+   "ref": "TASK-236",
+   "detail": "unif summed density 103.29215997651195 outside stated [103.29215996025371, 103.29215996025371]"
+  },
+  "density:candidate#0|native|ged|archive|002363": {
+   "ref": "TASK-236",
+   "detail": "unif summed density 149.34396821512658 outside stated [149.34380563200594, 149.34380563200594]"
+  },
+  "density:candidate#0|native|ged|archive|002365": {
+   "ref": "TASK-236",
+   "detail": "unif summed density 84.056214154671977 outside stated [84.056214143569761, 84.056214143569761]"
+  },
+  "density:candidate#0|native|ged|class|offset": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -6.0696054700708792 outside stated [-6.5916737320086582, -6.5916737320086582]"
+  },
+  "density:candidate#0|native|ht|class|subnormal": {
+   "ref": "TASK-236",
+   "detail": "hnorm summed density 2228.8134001645299 outside stated [2228.832174144789, 2228.832174144789]"
+  },
+  "density:candidate#0|native|invtrgamma|archive|004067": {
+   "ref": "TASK-236",
+   "detail": "pareto summed density 136.83410255939168 outside stated [136.83404653523652, 136.83404653523652]"
+  },
+  "density:candidate#0|native|invtrgamma|class|near-constant": {
+   "ref": "TASK-236",
+   "detail": "pareto summed density 112.58448226184579 outside stated [112.50050200608815, 112.50050200608815]"
+  },
+  "density:candidate#0|native|lst|class|offset": {
+   "ref": "TASK-236",
+   "detail": "norm summed density -8.7538214899674518 outside stated [-8.7344666512596927, -8.7344666512558558]"
+  },
+  "density:candidate#0|native|lst|class|subnormal": {
+   "ref": "TASK-236",
+   "detail": "norm summed density 2229.5634001645294 outside stated [2229.6715978266589, 2229.6715978267243]"
+  },
+  "density:candidate#0|native|lst|class|subnormal-signed": {
+   "ref": "TASK-236",
+   "detail": "norm summed density 2228.0634001645294 outside stated [2228.4006510360782, 2228.4006510361437]"
+  },
+  "density:candidate#0|native|sged|archive|005966": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-13.351816139659453, -13.351816139659453]"
+  },
+  "density:candidate#0|native|sged|archive|005968": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [1.8565774085250986, 1.8565774085250986]"
+  },
+  "density:candidate#0|native|sged|archive|005969": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [3.094295680875164, 3.094295680875164]"
+  },
+  "density:candidate#0|native|sged|archive|005978": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-4158.004983528941, -4158.004983528941]"
+  },
+  "density:candidate#0|native|sged|archive|006121": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [32.801573444689822, 32.801573444689822]"
+  },
+  "density:candidate#0|native|sged|resample|n3-s0": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-2.9062715305732327, -2.9062715305732327]"
+  },
+  "density:candidate#0|native|sged|resample|n3-s3": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [0.22948831057490926, 0.22948831057490926]"
+  },
+  "density:candidate#0|native|sged|resample|n7-s0": {
+   "ref": "TASK-236",
+   "detail": "unif summed density -inf outside stated [-6.7002440998806829, -6.7002440998806829]"
+  },
+  "density:candidate#1|double|burr|class|near-constant": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density 104.27496958907595 outside stated [107.87500719189261, 107.87500719189546]"
+  },
+  "density:candidate#1|double|burr|class|offset": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density -8.1687139894168901 outside stated [-8.152818807753123, -8.152818807746403]"
+  },
+  "density:candidate#1|double|burr|class|subnormal": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density 2229.5775362373784 outside stated [2229.7639642239105, 2229.7639642241534]"
+  },
+  "density:candidate#1|double|invburr|class|near-constant": {
+   "ref": "TASK-236",
+   "detail": "invweibull summed density 106.37980040170855 outside stated [106.57628879312155, 106.57628879312477]"
+  },
+  "density:candidate#1|double|invburr|class|offset": {
+   "ref": "TASK-236",
+   "detail": "invweibull summed density -6.874574386648808 outside stated [-6.5150247866438917, -6.5150247866364452]"
+  },
+  "density:candidate#1|double|pareto4|class|near-constant": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density 93.877761880676786 outside stated [97.477799483493428, 97.477799483496284]"
+  },
+  "density:candidate#1|double|pareto4|class|offset": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density -71.380130938001997 outside stated [-71.380113096215226, -71.38011309620866]"
+  },
+  "density:candidate#1|double|pareto4|class|subnormal": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density 2229.5775362373784 outside stated [2229.7639642239105, 2229.7639642241534]"
+  },
+  "density:candidate#1|native|burr|class|near-constant": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density 104.27496958907595 outside stated [107.87500719189261, 107.87500719189546]"
+  },
+  "density:candidate#1|native|burr|class|offset": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density -8.1687139894168901 outside stated [-8.152818807753123, -8.152818807746403]"
+  },
+  "density:candidate#1|native|burr|class|subnormal": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density 2229.5775362373784 outside stated [2229.7639642239105, 2229.7639642241534]"
+  },
+  "density:candidate#1|native|invburr|class|near-constant": {
+   "ref": "TASK-236",
+   "detail": "invweibull summed density 106.37980040170855 outside stated [106.57628879312155, 106.57628879312477]"
+  },
+  "density:candidate#1|native|invburr|class|offset": {
+   "ref": "TASK-236",
+   "detail": "invweibull summed density -6.874574386648808 outside stated [-6.5150247866438917, -6.5150247866364452]"
+  },
+  "density:candidate#1|native|pareto4|class|near-constant": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density 93.877761880676786 outside stated [97.477799483493428, 97.477799483496284]"
+  },
+  "density:candidate#1|native|pareto4|class|offset": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density -71.380130938001997 outside stated [-71.380113096215226, -71.38011309620866]"
+  },
+  "density:candidate#1|native|pareto4|class|subnormal": {
+   "ref": "TASK-236",
+   "detail": "weibull summed density 2229.5775362373784 outside stated [2229.7639642239105, 2229.7639642241534]"
+  }
+ }
 }
