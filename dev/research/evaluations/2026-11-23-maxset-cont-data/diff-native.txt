@@ -1,0 +1,51 @@
+differs ('bnbinom', 'golden', '{}') ['unique', 'outcome']
+differs ('dlaplace', 'two', '{}') ['maximizers', 'warnings', 'maximizer_set']
+differs ('dlaplace', 'negative', '{}') ['maximizers', 'warnings', 'maximizer_set']
+differs ('dlaplace', 'wide', '{}') ['maximizers', 'warnings', 'maximizer_set']
+differs ('ged', '002399', '{"sd": 1.0178559902092952}') ['candidates', 'maximizers', 'maximizer_set']
+differs ('ged', '002400', '{"sd": 1.0178559902092952}') ['candidates', 'maximizers', 'maximizer_set']
+differs ('genbeta', 'constant-flat-power-product', '{"scale": 1.0, "shape2": 1.0}') ['outcome_message', 'maximizers', 'maximizer_set']
+differs ('gev', 'zeros-flat-location-scale', '{"mu": 0.0, "sigma": 1.0}') ['candidates', 'outcome_message', 'maximizers', 'maximizer_set']
+differs ('gompertz', 'zeros-flat-a', '{"a": 1.0}') ['candidates', 'outcome_message', 'maximizers', 'maximizer_set']
+differs ('laplace', '004364', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', '004365', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', '004375', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', '004376', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', '004377', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', '004396', '{"sigma": 0.9715523982885687}') ['maximizers', 'maximizer_set']
+differs ('laplace', '004397', '{"sigma": 0.9715523982885687}') ['maximizers', 'maximizer_set']
+differs ('laplace', '004407', '{"sigma": 0.9715523982885687}') ['maximizers', 'maximizer_set']
+differs ('laplace', '004408', '{"sigma": 0.9715523982885687}') ['maximizers', 'maximizer_set']
+differs ('laplace', '004409', '{"sigma": 0.9715523982885687}') ['maximizers', 'maximizer_set']
+differs ('laplace', '009772', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', '009774', '{"sigma": 0.9715523982885687}') ['maximizers', 'maximizer_set']
+differs ('laplace', '010232', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', '010234', '{"sigma": 0.9715523982885687}') ['maximizers', 'maximizer_set']
+differs ('laplace', 'golden', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', 'base6', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', 'two', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', 'negative', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', 'tiny', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', 'offset', '{}') ['maximizers', 'maximizer_set']
+differs ('laplace', 'wide', '{}') ['maximizers', 'maximizer_set']
+differs ('sged', 'zeros-flat-reciprocal-skews', '{"mean": 0.0, "nu": 2.25, "sd": 1.0}') ['candidates', 'outcome_message', 'maximizers', 'maximizer_set']
+differs ('sn', 'zeros-flat-location-scale', '{"omega": 1.0, "xi": 0.0}') ['iterations', 'core_status', 'candidates', 'outcome_message', 'loglik_lower', 'maximizers']
+differs ('st', 'zeros-flat-location-scale-df', '{"nu": 1.0, "omega": 1.0, "xi": 0.0}') ['iterations', 'core_status', 'candidates', 'outcome_message', 'loglik_lower', 'maximizers']
+differs ('tlambda', 'zeros-flat-uniform-1', '{"lambda": 1.0, "sigma": 2.0}') ['candidates', 'outcome_message', 'maximizers', 'maximizer_set']
+differs ('tlambda', 'zeros-flat-uniform-2', '{"lambda": 2.0, "sigma": 2.0}') ['candidates', 'outcome_message', 'maximizers', 'maximizer_set']
+differs ('tlambda', 'zeros-flat-scale', '{"sigma": 2.0}') ['candidates', 'outcome_message', 'maximizers', 'maximizer_set']
+differs ('tlambda', 'zeros-flat-support-contacts', '{"lambda": 1.5, "sigma": 3.0}') ['candidates', 'outcome_message', 'maximizers', 'maximizer_set']
+differs ('triang', '008159', '{}') ['candidates', 'maximizers', 'maximizer_set']
+differs ('triang', 'two', '{}') ['candidates', 'maximizers', 'maximizer_set']
+differs ('triang', 'subnormal', '{}') ['unique', 'certified', 'outcome']
+only in snapshot ('dlaplace', 'pair-flat-median-lattice', '{}')
+only in snapshot ('fatigue', 'constant-flat-reciprocal-scales', '{"alpha": 3.0, "mu": 1.0}')
+only in snapshot ('ged', 'pair-flat-laplace-median', '{"nu": 1.0, "sd": 1.0}')
+only in snapshot ('ged', 'pair-flat-subunit-knots', '{"nu": 0.5, "sd": 1.0}')
+only in snapshot ('laplace', 'pair-flat-median', '{}')
+only in snapshot ('laplace', 'pair-flat-held-scale-median', '{"sigma": 2.0}')
+only in snapshot ('std', 'pair-flat-held-sd-reflection', '{"sd": 1.0}')
+only in snapshot ('tlambda', 'zeros-flat-rounded-contacts', '{"lambda": 1.5, "sigma": 1.0}')
+only in snapshot ('tlambda', 'constant-flat-rounded-uniform', '{"lambda": 1.0, "sigma": 0.2}')
+only in snapshot ('triang', 'pair-flat-free-three-knots', '{}')
+native cases 12029 differing 42 only-new 10 only-old 0

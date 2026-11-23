@@ -6,6 +6,7 @@
 // maximiser given b.
 
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include <string_view>
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
@@ -46,7 +47,7 @@ struct GompertzResult {
   // Overdispersed only: the sample lies inside the rounding pad of the
   // exponential boundary, so the limit is the preferred reading, not a proof.
   bool margin_decided = false;
-  std::string_view maximizer_set{};
+  MaximizerSet maximizers{};
 };
 
 namespace gompertz_detail {
@@ -249,7 +250,7 @@ inline FitOutcome outcome(const GompertzResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case GompertzStatus::Ok: return FitOutcome::estimate(true,r.maximizer_set.empty());
+    case GompertzStatus::Ok: return FitOutcome::estimate(true,r.maximizers.size == 0);
     case GompertzStatus::Overdispersed: return FitOutcome::limit(!r.margin_decided);
     case GompertzStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GompertzStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
@@ -427,8 +428,11 @@ inline GompertzResult gompertz_mle(span x,double tol,int maxit,double a,double b
   if(std::isnan(b)) {
     if(big==0) {
       GompertzResult out{a,1.0,n*std::log(a),0,GompertzStatus::Ok};
-      out.maximizer_set="Every b > 0 maximizes the likelihood at the held a.";
-      out.stop_detail.candidates={{{a,1},out.logLik,out.logLik},{{a,2},out.logLik,out.logLik}};
+      // At zero the density equals a for every admissible positive b.
+      Box piece;
+      piece.axes = {fixed(a), interval(0, maxset_inf, false, false)};
+      out.maximizers.dimension = 2;
+      out.maximizers.add_box(piece);
       return out;
     }
     double sumy = 0;

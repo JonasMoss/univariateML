@@ -1,0 +1,4 @@
+fit-consistency: failures by check: {'phenomenon:flat-maximum': 112}
+fit-consistency: 112 listed as known, 0 new, 2 listed but passing
+  FIXED phenomenon:flat-maximum|double|genbeta|class|constant-flat-power-product (TASK-229)
+  FIXED phenomenon:flat-maximum|native|genbeta|class|constant-flat-power-product (TASK-229)

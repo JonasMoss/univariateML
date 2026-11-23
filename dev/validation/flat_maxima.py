@@ -4,6 +4,8 @@ Derivations: dev/research/evaluations/2026-11-22-zero-unique-report.md.
 Predicates receive finite named coefficients with the holds already enforced.
 """
 from dataclasses import dataclass
+import decimal
+from fractions import Fraction
 import math
 from typing import Callable
 
@@ -208,29 +210,32 @@ add('tlambda', 'scale', {'sigma': 2},
 add('tlambda', 'support-contacts', {'sigma': 3, 'lambda': 1.5},
     lambda mu, **p: mu in (-2, 2), loglik=-4*math.log(3))
 
+add('tlambda', 'rounded-contacts', {'sigma': 1, 'lambda': 1.5},
+    lambda mu, **p: math.isclose(abs(mu), 2/3, rel_tol=1e-14))
+add('tlambda', 'rounded-uniform', {'sigma': .2, 'lambda': 1},
+    lambda mu, **p: math.isclose(abs(mu-.5), .2) or abs(mu-.5) < .2,
+    x=.5, loglik=-4*math.log(.4))
+
 
 def sged_at_held_mean():
     """The two reciprocal peaks for the centered, variance-one shape 9/4."""
-    nu = 2.25
-    g1, g2, g3 = (math.gamma(i/nu) for i in (1, 2, 3))
-    a = 1 - g2*g2/(g1*g3)
-    c = (g2/g1)**nu
-    target = (4*a - 1)/(2*nu*c)
-    lo, hi = .0008, .001
-    for _ in range(53):
-        u = (lo + hi)/2
-        if u**(nu-2)*(2-u)*(1-u+a*u*u) < target:
-            lo = u
-        else:
-            hi = u
-    u = (lo + hi)/2
-    xi = 1/math.sqrt(1-u)
-    normalizer = math.log(nu/(2*g1*math.sqrt(g1/g3)))
-    log_density = normalizer + .5*math.log1p(-u+a*u*u) - math.log1p(-u/2) - c*u**nu
-    return xi, 4*log_density
+    import mpmath as mp
+
+    with mp.workdps(70):
+        nu = mp.mpf(9)/4
+        g1, g2, g3 = (mp.gamma(i/nu) for i in (1, 2, 3))
+        a = 1 - g2*g2/(g1*g3)
+        c = (g2/g1)**nu
+        target = (4*a - 1)/(2*nu*c)
+        u = mp.findroot(lambda u: u**(nu-2)*(2-u)*(1-u+a*u*u)-target,
+                        (mp.mpf('.0008'), mp.mpf('.001')))
+        xi = 1/mp.sqrt(1-u)
+        normalizer = mp.log(nu/(2*g1*mp.sqrt(g1/g3)))
+        log_density = normalizer + mp.log1p(-u+a*u*u)/2 - mp.log1p(-u/2) - c*u**nu
+        return float(xi), float(1/xi), float(4*log_density)
 
 
-_SGED_XI, _SGED_LL = sged_at_held_mean()
+_SGED_XI, _SGED_INV_XI, _SGED_LL = sged_at_held_mean()
 add('sged', 'reciprocal-skews', {'mean': 0, 'sd': 1, 'nu': 2.25},
     lambda mean, sd, nu, xi: xi > 0 and
     math.isclose(max(xi, 1/xi), _SGED_XI, rel_tol=1e-9), loglik=_SGED_LL,
@@ -247,6 +252,84 @@ add('triang', 'free', {}, lambda a, b, c: triang_member(a, b, c, ((0, 1.5, 0), (
     data=(0., 1.), loglik=math.log(16/27), witness_key=lambda c, **p: c)
 add('triang', 'held-endpoints', {'a': 0, 'b': 1}, lambda a, b, c: c in (.25, .75),
     data=(.25, .75), loglik=math.log(4/3), witness_key=lambda c, **p: c)
+
+
+def triang_three_knots(data):
+    """Free extreme modes for this reflected three-knot fixture."""
+    lo, midpoint, hi = sorted(set(data))
+    extreme, center = data.count(lo), data.count(midpoint)
+    n = len(data)
+    # At the mode lo the likelihood in reciprocal right width q has
+    # score n/q - center/(2-q) - extreme/(1-q).
+    with decimal.localcontext() as ctx:
+        ctx.prec = 70
+        a, b, c = map(decimal.Decimal, (n+extreme+center, 3*n+2*extreme+center, 2*n))
+        q = (b-(b*b-4*a*c).sqrt())/(2*a)
+        width = (decimal.Decimal(hi)-decimal.Decimal(lo))/q
+        likelihood = (n*(decimal.Decimal(2)/width).ln() + center*(1-q/2).ln()
+                      + extreme*(1-q).ln())
+        return float(decimal.Decimal(hi)-width), float(decimal.Decimal(lo)+width), float(likelihood)
+
+
+_TRIANG_THREE = (0., 0., 0., .5, 1., 1., 1.)
+_TRIANG_LEFT, _TRIANG_RIGHT, _TRIANG_LL = triang_three_knots(_TRIANG_THREE)
+add('triang', 'free-three-knots', {},
+    lambda a, b, c: triang_member(a, b, c, ((0., _TRIANG_RIGHT, 0.), (_TRIANG_LEFT, 1., 1.))),
+    data=_TRIANG_THREE, loglik=_TRIANG_LL, certified=True)
+
+add('laplace', 'median', {},
+    lambda mu, sigma: -1 <= mu <= 1 and sigma == 1,
+    data=(-1., 1.), loglik=-2*(1+math.log(2)), certified=True)
+add('laplace', 'held-scale-median', {'sigma': 2},
+    lambda mu, sigma: -1 <= mu <= 1,
+    data=(-1., 1.), loglik=-1-2*math.log(4), certified=True)
+_dlaplace_scale = 1/(math.sqrt(2)+1)
+add('dlaplace', 'median-lattice', {},
+    lambda location, scale: integer(location, 0, 2) and scale == _dlaplace_scale,
+    data=(0, 2), loglik=2*math.log(_dlaplace_scale*(1-_dlaplace_scale)/(1+_dlaplace_scale)),
+    certified=True)
+add('ged', 'laplace-median', {'nu': 1, 'sd': 1},
+    lambda mean, sd, nu: -1 <= mean <= 1,
+    data=(-1., 1.), loglik=-math.log(2)-2*math.sqrt(2))
+add('ged', 'subunit-knots', {'nu': .5, 'sd': 1},
+    lambda mean, sd, nu: mean in (-1, 1),
+    data=(-1., 1.), loglik=2*math.log(math.sqrt(120)/4)-math.sqrt(2*math.sqrt(120)))
+add('fatigue', 'reciprocal-scales', {'alpha': 3, 'mu': 1},
+    lambda alpha, beta, mu: beta > 0 and math.isclose(beta+4/beta, 14, rel_tol=1e-9),
+    x=3, loglik=4*(math.log(1/(4*math.sqrt(2*math.pi)))-5/18))
+
+
+def std_balanced_pair(data, sd):
+    """High-precision profile over the off-center location extrema."""
+    import mpmath as mp
+
+    with mp.workdps(70):
+        low, high = mp.mpf(min(data)), mp.mpf(max(data))
+        radius = (high-low)/2
+        z = radius/sd
+        lo, hi = mp.mpf(0), mp.mpf(1)
+        for _ in range(230):
+            t = (lo+hi)/2
+            derivative = 2*(mp.digamma((t+3)/2)-mp.digamma((t+2)/2))+1+1/t-mp.log(4*z*z/t)
+            if derivative > 0:
+                lo = t
+            else:
+                hi = t
+        t = (lo+hi)/2
+        nu = t+2
+        center = (low+high)/2
+        delta = mp.sqrt(radius**2-t*sd**2)
+        constant = mp.loggamma((nu+1)/2)-mp.loggamma(nu/2)-mp.log(mp.pi)/2
+        profile = constant-mp.log(t*sd**2)/2-(nu+1)*mp.log(4*z*z/t)/4
+        return float(center-delta), float(center+delta), float(nu), float(len(data)*profile)
+
+
+_STD_PAIR = (-100., 100.)
+_STD_LL = std_balanced_pair(_STD_PAIR, 1)[-1]
+add('std', 'held-sd-reflection', {'sd': 1},
+    lambda mean, sd, nu: 99 < abs(mean) < 100 and 2 < nu < 3,
+    data=_STD_PAIR, loglik=_STD_LL, certified=True)
+
 
 # Historical route IDs are the source-table keys, before the snapshot adds
 # the public base name and modifier configuration to each record.
@@ -389,6 +472,84 @@ def typed_expected(family, case):
         else:
             pieces = [dict(kind='relation', form='semicircle', anchors=[lo, hi],
                            axes=[axis(lo, hi), axis(0)], driver=0, dependent=1)]
+    elif family == 'gev':
+        names = ('mu', 'sigma', 'xi')
+        pieces = [box(fixed_axis(held['mu']), fixed_axis(held['sigma']),
+                      axis(-1, 1, (True, True)))]
+    elif family == 'gompertz':
+        names = ('a', 'b')
+        pieces = [box(fixed_axis(held['a']), axis(0))]
+    elif family in ('sn', 'st'):
+        names = ('xi', 'omega', 'alpha') + (('nu',) if family == 'st' else ())
+        pieces = [box(*(fixed_axis(held[k]) if k in held else axis() for k in names))]
+    elif family == 'ged' and held.get('nu', 1) < 1:
+        names = ('mean', 'sd', 'nu')
+        pieces = [points(*((v, held['sd'], held['nu']) for v in sorted(set(case.data))))]
+    elif family in ('laplace', 'dlaplace', 'ged'):
+        discrete = family == 'dlaplace'
+        names = {'laplace': ('mu', 'sigma'), 'dlaplace': ('location', 'scale'),
+                 'ged': ('mean', 'sd', 'nu')}[family]
+        ordered = sorted(case.data)
+        lo, hi = ordered[(len(ordered)-1)//2], ordered[len(ordered)//2]
+        deviation = math.fsum(abs(v-hi) for v in ordered)/len(ordered)
+        if names[1] in held:
+            scale = fixed_axis(held[names[1]])
+        else:
+            if discrete:
+                value = deviation/(math.hypot(1,deviation)+1)
+            else:
+                value = math.sqrt(2)*deviation if family == 'ged' else deviation
+            scale = fixed_axis(value) | {'rounded': [True, True]}
+        pieces = [box(axis(lo, hi, (True, True), discrete), scale,
+                      *((fixed_axis(1),) if family == 'ged' else ()))]
+    elif family == 'genbeta':
+        names = ('shape1', 'shape2', 'shape3', 'scale')
+        mean = math.fsum(math.log(held['scale']/v) for v in case.data)/len(case.data)
+        pieces = [dict(kind='relation', form='product', driver=0, dependent=2,
+                       axes=[axis(0), fixed_axis(1), axis(0), fixed_axis(held['scale'])],
+                       complement=[False, False], level=1/mean, level_rounded=True)]
+    elif family == 'tlambda':
+        names = ('mu', 'sigma', 'lambda')
+        sigma, shape = held['sigma'], held.get('lambda', 1)
+        width = sigma/shape
+        if shape in (1, 2):
+            bounds = axis(x-width, x+width, (True, True))
+            exact = Fraction(sigma)/Fraction(shape)
+            rounded = [Fraction(bounds['lower']) != Fraction(x)-exact,
+                       Fraction(bounds['upper']) != Fraction(x)+exact]
+            if any(rounded):
+                bounds['rounded'] = rounded
+            pieces = [box(bounds, fixed_axis(sigma), fixed_axis(shape))]
+        else:
+            pieces = [points((x-width, sigma, shape), (x+width, sigma, shape))]
+    elif family == 'triang':
+        names = ('a', 'b', 'c')
+        lo, hi = min(case.data), max(case.data)
+        if 'a' in held:
+            pieces = [points((held['a'], held['b'], lo), (held['a'], held['b'], hi))]
+        elif len(set(case.data)) == 2:
+            half_gap = (hi-lo)/2
+            pieces = [points((lo, hi+half_gap, lo), (lo-half_gap, hi, hi))]
+        else:
+            left_end, right_end, _ = triang_three_knots(case.data)
+            pieces = [points((lo, right_end, lo), (left_end, hi, hi))]
+    elif family == 'sged':
+        names = ('mean', 'sd', 'nu', 'xi')
+        common = tuple(held[k] for k in names[:-1])
+        pieces = [points((*common, _SGED_INV_XI), (*common, _SGED_XI))]
+    elif family == 'std':
+        names = ('mean', 'sd', 'nu')
+        lo, hi, nu, _ = std_balanced_pair(case.data, held['sd'])
+        pieces = [points((lo, held['sd'], nu), (hi, held['sd'], nu))]
+    elif family == 'fatigue':
+        names = ('alpha', 'beta', 'mu')
+        with decimal.localcontext() as ctx:
+            ctx.prec = 70
+            alpha, mu = decimal.Decimal(held['alpha']), decimal.Decimal(held['mu'])
+            z = (alpha + (alpha**2-4).sqrt())/2
+            y = decimal.Decimal(x)-mu
+            pieces = [points((float(alpha), float(y/z**2), float(mu)),
+                             (float(alpha), float(y*z**2), float(mu)))]
     else:
         return None
     return dict(version=1, coordinates=list(names), pieces=pieces)

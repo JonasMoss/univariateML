@@ -276,13 +276,13 @@ TEST_CASE("sn: held-location certified root and nonunique constant shape") {
   }
   const std::vector<double> constant(5,3);
   const auto tie=cppunivariate::sn_mle(mltest::as_span(constant),1e-9,100,3,2);
-  REQUIRE(tie.stop_detail.comparison_tie);
-  REQUIRE(tie.stop_detail.candidates.size()==2);
-  CHECK(tie.stop_detail.candidates[0].coef[2]!=tie.stop_detail.candidates[1].coef[2]);
-  CHECK(tie.stop_detail.loglik_lower==tie.stop_detail.loglik_upper);
+  REQUIRE(tie.maximizers.size==1);
+  CHECK_FALSE(cppunivariate::outcome(tie).unique);
+  CHECK(tie.maximizers.contains({{3,2,-5}}));
+  CHECK(tie.maximizers.contains({{3,2,7}}));
   const auto fixed=cppunivariate::sn_mle(mltest::as_span(constant),1e-9,100,3,2,7);
   CHECK(fixed.status==cppunivariate::SnStatus::Ok);
-  CHECK(fixed.logLik==doctest::Approx(tie.stop_detail.loglik_lower));
+  CHECK(fixed.logLik==doctest::Approx(tie.logLik));
 }
 
 TEST_CASE("sn: loose user tolerance cannot bypass certificate accuracy") {

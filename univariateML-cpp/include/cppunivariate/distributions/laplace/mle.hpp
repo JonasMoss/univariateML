@@ -1,6 +1,7 @@
 // Laplace MLE: median for location, mean absolute deviation for scale.
 
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include "../../core/precision.hpp"
 
 #include "../../core/span.hpp"
@@ -22,7 +23,22 @@ struct LaplaceResult {
   double logLik;
   LaplaceStatus status = LaplaceStatus::Ok;
   bool unique = true;
+  MaximizerSet maximizers{};
 };
+
+// The absolute-deviation sum is minimized exactly on the median interval.
+// Its constant value there also gives the same profiled scale at every median.
+inline LaplaceResult laplace_with_median_set(LaplaceResult result, double lower, double upper,
+                                           bool held_scale) {
+  if (result.status == LaplaceStatus::Ok && !result.unique) {
+    Box piece;
+    piece.axes = {interval(lower, upper, true, true), fixed(result.sigma)};
+    piece.axes[1].range.lower_rounded = piece.axes[1].range.upper_rounded = !held_scale;
+    result.maximizers.dimension = 2;
+    result.maximizers.add_box(piece);
+  }
+  return result;
+}
 
 inline LaplaceResult laplace_mle(span x) {
   const std::size_t n = x.size();
@@ -39,8 +55,8 @@ inline LaplaceResult laplace_mle(span x) {
   const double sigma = abs_sum / static_cast<double>(n);
   const double logLik =
       -static_cast<double>(n) * (std::log(2.0) + std::log(sigma)) - abs_sum / sigma;
-  return {mu, sigma, logLik, abs_sum==0 ? LaplaceStatus::Unbounded : std::isfinite(mu) && std::isfinite(sigma) && std::isfinite(logLik) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure,
-          sorted[(n - 1) / 2] == sorted[n / 2]};
+  return laplace_with_median_set({mu, sigma, logLik, abs_sum==0 ? LaplaceStatus::Unbounded : std::isfinite(mu) && std::isfinite(sigma) && std::isfinite(logLik) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure,
+          sorted[(n - 1) / 2] == sorted[n / 2]}, sorted[(n - 1) / 2], mu, false);
 }
 
 
@@ -57,8 +73,8 @@ inline LaplaceResult laplace_mle(span x,double mu,double sigma) {
   CPPUNIV_EXTENDED_REAL a=0;for(double v:x)a+=std::abs(static_cast<CPPUNIV_EXTENDED_REAL>(v)-m);
   const double s=std::isnan(sigma)?static_cast<double>(a/x.size()):sigma;
   const double ll=-static_cast<double>(x.size())*(std::log(2.0)+std::log(s))-static_cast<double>(a/s);
-  return {m,s,ll,std::isnan(sigma) && a==0 ? LaplaceStatus::Unbounded : std::isfinite(m) && std::isfinite(s) && std::isfinite(ll) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure,
-          !std::isnan(mu) || y[(y.size()-1)/2]==y[y.size()/2]};
+  return laplace_with_median_set({m,s,ll,std::isnan(sigma) && a==0 ? LaplaceStatus::Unbounded : std::isfinite(m) && std::isfinite(s) && std::isfinite(ll) ? LaplaceStatus::Ok : LaplaceStatus::IterationFailure,
+          !std::isnan(mu) || y[(y.size()-1)/2]==y[y.size()/2]}, y[(y.size()-1)/2], y[y.size()/2], !std::isnan(sigma));
 }
 
 // Every point of the median interval maximizes the likelihood; `unique` says

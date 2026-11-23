@@ -1,0 +1,35 @@
+
+native: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  dlaplace                        4          0          0          0          0
+  fatigue                         1    1.7e-16    1.7e-16    1.7e-16          0
+  ged                             4      2e-16    3.4e-14    3.4e-14          0
+  genbeta                         1    2.2e-16    2.2e-16    2.2e-16          0
+  gev                             1          0          0          0          0
+  gompertz                        1          0          0          0          0
+  laplace                        23    1.1e-16    5.5e-16    5.5e-16          0
+  sged                            1          0          0          0          0
+  sn                              1          0          0          0          0
+  st                              1          0          0          0          0
+  std                             1    1.9e-16    1.9e-16    1.9e-16          0
+  tlambda                         6          0          0          0          0
+  triang                          5          0          0          0          0
+
+double: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  dlaplace                        4          0          0          0          0
+  fatigue                         1    1.7e-16    1.7e-16    1.7e-16          0
+  ged                             4      2e-16    3.4e-14    3.4e-14          0
+  genbeta                         1    2.2e-16    2.2e-16    2.2e-16          0
+  gev                             1          0          0          0          0
+  gompertz                        1          0          0          0          0
+  laplace                        23          0    5.5e-16    5.5e-16          0
+  sged                            1          0          0          0          0
+  sn                              1          0          0          0          0
+  st                              1          0          0          0          0
+  std                             1    1.9e-16    1.9e-16    1.9e-16          0
+  tlambda                         6          0          0          0          0
+  triang                          5          0          0          0          0
+
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing

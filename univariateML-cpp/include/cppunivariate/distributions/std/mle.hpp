@@ -8,6 +8,7 @@
 // where f_unit is the standardised t (mean 0, sd 1) used by dstd().
 
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/face_compare.hpp"
@@ -47,6 +48,7 @@ struct StudentTResult {
   StopDetail stop_detail{};
   bool certified = true;
   bool accuracy_failure = false;
+  MaximizerSet maximizers{};
 };
 
 // Per-obs nll in phi-space (with z = (x - mu)/sigma, m = nu - 2,
@@ -190,6 +192,71 @@ inline double student_t_held_loglik(span x,double mu,double sd,double nu) {
   }
   return ll;
 }
+// For a balanced pair with midpoint m and half-gap d, minimize the
+// product of the two denominators at fixed shape. With u = mean-m and
+// h = (nu-2)*sd^2 the product is (u^2-d^2+h)^2+4*d^2*h.
+// If h < d^2 the two optima have u = +/-sqrt(d^2-h). Otherwise only
+// the midpoint optimizes, and the existing variance bound excludes it.
+inline bool student_t_held_sd_pair(span x, double low, double high, double sd,
+                                    double tol, int maxit, StudentTResult& out) {
+  // The symmetry proof establishes d/sd > 15. With t = nu-2, the
+  // off-center profile has score proportional to
+  // 2*(psi((t+3)/2)-psi((t+2)/2)) + 1 + 1/t - log(4*d^2/(sd^2*t)).
+  // It decreases strictly on (0,1]. For t in [1,8] the positive
+  // terms are bounded by 2+2/3+4/9 < log(900/8), using the integral
+  // bound psi1(z) <= 1/z+1/z^2. For 8 <= t < d^2/sd^2 they are
+  // bounded by 1+1/8+2/10+4/100 < log(4). Only one root remains.
+  const auto half = std::isfinite(high-low) ? (t_cert_detail::I(high)-low)*.5
+      : t_cert_detail::I(high)*.5-t_cert_detail::I(low)*.5;
+  const auto log_ratio = t_cert_detail::log(half)-t_cert_detail::log(t_cert_detail::I(sd));
+  if (!log_ratio.valid()) return false;
+  const auto log_four_z2 = t_cert_detail::I(std::log(4.))+log_ratio*2;
+  double left=0, right=1;
+  const double target=std::min(tol,1e-10)/4;
+  int iterations=0;
+  for (;iterations<solver_budget(maxit) && right-left>target;++iterations) {
+    const double mid=left+(right-left)/2;
+    if (!(left<mid && mid<right)) break;
+    const double p=special::digamma((mid+3)/2), q=special::digamma((mid+2)/2);
+    const auto gamma=t_cert_detail::pad(2*(p-q),2*(p-q));
+    const double gamma_pad=t_cert_detail::eps*(1+std::abs(p)+std::abs(q));
+    const auto score=t_cert_detail::I(gamma.lo-gamma_pad,gamma.hi+gamma_pad)+1+
+        t_cert_detail::I(1)/mid+t_cert_detail::log(t_cert_detail::I(mid))-log_four_z2;
+    if (score.valid() && score.lo>0) left=mid;
+    else if (score.valid() && score.hi<0) right=mid;
+    else break;
+  }
+  if (!(left>0 && right-left<=target)) return false;
+  const t_cert_detail::I t(left,right);
+  const auto nu=t+2;
+  const auto ratio=t_cert_detail::exp(-log_ratio);
+  const auto relative_width=t*t_cert_detail::sq(ratio);
+  // Work from the two observations, avoiding cancellation from adding
+  // the signed root displacement to a potentially large midpoint.
+  const auto inward=half*relative_width/(1+t_cert_detail::root(1-relative_width));
+  const std::array<t_cert_detail::I,2> means{t_cert_detail::I(low)+inward,
+                                           t_cert_detail::I(high)-inward};
+  const auto accurate=[&](const t_cert_detail::I& bounds, double unit) {
+    return bounds.valid() && std::max(bounds.mid()-bounds.lo,bounds.hi-bounds.mid())<=tol*unit;
+  };
+  if (nu.lo<=2 || !accurate(nu,nu.mid())) return false;
+  std::array<Point,2> points;
+  for (std::size_t i=0;i<means.size();++i) {
+    const auto& mean=means[i];
+    if (!accurate(mean,std::max(sd,std::abs(mean.mid())))) return false;
+    points[i]=Point{{{mean.mid(),sd,nu.mid()}},
+                   Enclosure{{{mean.lo,sd,nu.lo}},{{mean.hi,sd,nu.hi}}}};
+    if (!std::isfinite(student_t_held_loglik(x,mean.mid(),sd,nu.mid()))) return false;
+  }
+  const double mean=means[0].mid(), shape=nu.mid();
+  StudentTResult result{mean,sd,shape,student_t_held_loglik(x,mean,sd,shape),
+                        iterations,StudentTStatus::Ok};
+  result.maximizers.dimension=3;
+  if (result.maximizers.add_points({points.data(),points.size()})!=MaxsetStatus::Ok) return false;
+  out=std::move(result);
+  return true;
+}
+
 inline bool student_t_scale_accurate(double ordinary,double sd,double nu) {
   return ordinary>0&&sd>0&&std::isfinite(sd)&&
     std::abs(std::log(sd)-std::log(ordinary)-.5*(std::log(nu)-std::log(nu-2)))<=5e-9;
@@ -490,6 +557,8 @@ inline StudentTResult student_t_mle_held(span x,double tol,int maxit,double mean
     const auto proof=t_symmetry_detail::held_sd(x,sd);
     if(proof.outcome==1){
       StudentTResult tied{NAN,NAN,NAN,NAN,proof.evaluations,StudentTStatus::NonUniqueHeldSd};
+      if (student_t_held_sd_pair(x,proof.detail.candidates[0].coef[0],
+                                 proof.detail.candidates[1].coef[0],sd,tol,maxit,tied)) return tied;
       tied.stop_detail=proof.detail;return tied;
     }
   }
@@ -597,7 +666,7 @@ inline FitOutcome outcome(const StudentTResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
   switch (r.status) {
-    case StudentTStatus::Ok: return FitOutcome::estimate(r.certified);
+    case StudentTStatus::Ok: return FitOutcome::estimate(r.certified, r.maximizers.size == 0);
     case StudentTStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case StudentTStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case StudentTStatus::NormalBoundary: return FitOutcome::limit(r.certified);

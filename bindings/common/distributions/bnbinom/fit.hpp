@@ -90,7 +90,7 @@ inline FitResult fit_bnbinom(cppunivariate::ispan x, Held size_arg = {}, Held al
     }
     if(fit.swap_symmetry) {
       out.extra_vectors.emplace_back("swap_maximum",std::vector<double>{fit.beta,fit.alpha,fit.size});
-      if(!o.unique) {
+      if(!o.uniqueness_known) {
         out.candidates.push_back({out.estimates,fit.logLik,fit.logLik,""});
         out.candidates.push_back({{{"size",fit.beta},{"alpha",fit.alpha},{"beta",fit.size}},fit.logLik,fit.logLik,""});
       }

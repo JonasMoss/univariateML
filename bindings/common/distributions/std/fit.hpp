@@ -28,6 +28,10 @@ inline FitResult fit_std(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   auto res=cppunivariate::student_t_mle(x,tol,iterlim,held_mean,held_sd,nu.supplied?nu.value:nan);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, res.maximizers, "std", [&](const auto& c) {
+        return cppunivariate::student_t_held_loglik(x,c[0],c[1],c[2]);
+      });
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"nu",nu_arg.supplied}});
   };
   if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("std numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"mean","sd","nu"}));

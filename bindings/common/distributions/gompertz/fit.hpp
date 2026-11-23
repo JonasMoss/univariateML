@@ -27,15 +27,10 @@ inline FitResult fit_gompertz(cppunivariate::span x, Held a_arg = {}, Held b_arg
   auto res = cppunivariate::gompertz_mle(x, tol, iterlim, a_held, b_held);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, res.maximizers, "gompertz", [&](const auto&) { return res.logLik; });
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    if (!o.unique && !res.maximizer_set.empty()) {
-      out.error=res.maximizer_set;
-      const std::vector<std::string> names{"a", "b"};
-      for(const auto& witness:res.stop_detail.candidates)
-        out.candidates.push_back({named_coefficients(witness.coef,names),
-                                  witness.loglik_lower,witness.loglik_upper,"gompertz"});
-    }
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"a",a_arg.supplied},{"b",b_arg.supplied}});
   };
 

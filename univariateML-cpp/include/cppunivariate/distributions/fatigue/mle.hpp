@@ -3,6 +3,7 @@
 // Complete rational-score inclusion in beta; alpha profiles analytically.
 
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -32,6 +33,7 @@ struct FatigueResult {
   bool transformation_failure=false;
   bool certified=true;
   bool proved_tie=false;
+  MaximizerSet maximizers{};
 };
 
 // Comparison candidates are (alpha, beta); the adapter appends the held mu.
@@ -167,6 +169,32 @@ inline FatigueResult fatigue_proposal_impl(span x, double tol, int maxit, bool s
   return {alpha, beta, logLik, nr.iterations};
 }
 
+inline void fatigue_reciprocal_set(FatigueResult& result, double alpha, double mu,
+                                    double tol, std::uint8_t dimension) {
+  result.maximizers = {};
+  if (result.proved_tie) {
+    // For a constant shifted observation y and held alpha > 2 the
+    // density is proportional to w*exp(-w*w/(2*alpha*alpha)),
+    // where w = sqrt(beta/y) + sqrt(y/beta). Its unique optimal
+    // w = alpha has exactly two inverse branches.
+    std::array<Point, 2> points;
+    const auto& candidates = result.stop_detail.candidates;
+    constexpr double margin = 12*std::numeric_limits<double>::epsilon();
+    bool accurate = candidates.size() == points.size();
+    for (std::size_t i=0; accurate && i<points.size(); ++i) {
+      const double b = candidates[i].coef[1];
+      const double lower = std::nextafter(b*(1-margin),0.);
+      const double upper = std::nextafter(b*(1+margin),INFINITY);
+      accurate = lower > 0 && std::isfinite(upper) &&
+          std::max(b-lower,upper-b) <= tol*b;
+      points[i] = Point{{{alpha,b,mu}}, Enclosure{{{alpha,lower,mu}},{{alpha,upper,mu}}}};
+    }
+    result.maximizers.dimension = dimension;
+    if (!accurate || result.maximizers.add_points({points.data(),points.size()}) != MaxsetStatus::Ok)
+      result.proved_tie = false;
+  }
+}
+
 // With beta held, alpha has its exact RMS solution. With alpha held,
 // certify every beta-profile maximum (the profile can be multimodal).
 inline FatigueResult fatigue_mle(span x, double tol, int maxit,
@@ -183,7 +211,9 @@ inline FatigueResult fatigue_mle(span x, double tol, int maxit,
   if (x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0 ||
       (fa && (!(held_alpha>0)||!std::isfinite(held_alpha))) ||
       (fb && (!(held_beta>0)||!std::isfinite(held_beta)))) return {nan,nan,nan,0,FatigueStatus::InvalidInput};
-  return fatigue_certificate::fit(x,tol,maxit,held_alpha,held_beta);
+  auto result = fatigue_certificate::fit(x,tol,maxit,held_alpha,held_beta);
+  fatigue_reciprocal_set(result, held_alpha, 0, tol, 2);
+  return result;
 }
 
 }  // namespace cppunivariate
@@ -233,6 +263,9 @@ inline FatigueResult fatigue_mle_shifted(span x, double mu, double tol, int maxi
     }
     if(distinct||rounded)return transform_failure();
   }
+  if (constant && result.maximizers.size)
+    fatigue_reciprocal_set(result, alpha, mu, tol, 3);
+  else result.maximizers = {};
   return result;
 }
 } // namespace cppunivariate

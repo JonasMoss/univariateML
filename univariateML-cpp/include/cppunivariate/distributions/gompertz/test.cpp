@@ -304,12 +304,12 @@ TEST_CASE("gompertz: structural non-uniqueness and the fully held singleton") {
   CHECK(outcome.kind==cppunivariate::OutcomeKind::Estimate);
   CHECK(outcome.certified);
   CHECK_FALSE(outcome.unique);
-  CHECK(fit.maximizer_set.find("b > 0")!=std::string_view::npos);
-  const auto& w=fit.stop_detail.candidates;
-  REQUIRE(w.size()==2);
-  CHECK(w[0].coef!=w[1].coef);
-  for(const auto& row:w) {
-    const auto& p=row.coef;
+  REQUIRE(fit.maximizers.size==1);
+  CHECK(std::holds_alternative<cppunivariate::Box>(fit.maximizers.pieces[0].value));
+  for(double shape:{1.,2.}) {
+    const cppunivariate::Coordinates point{{2,shape}};
+    CHECK(fit.maximizers.contains(point));
+    const auto& p=point.values;
     CHECK(p[0]==2);
     CHECK(p[1]>0);
     CHECK(4*cppunivariate::distributions::dgompertz(0,p[0],p[1],true)==doctest::Approx(fit.logLik));

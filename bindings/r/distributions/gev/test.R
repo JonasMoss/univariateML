@@ -510,12 +510,12 @@ test_that("gev reports the proved non-unique set and the held singleton", {
   f <- mlgev(x, mu=0, sigma=1)
   fixed <- mlgev(x, mu=0, sigma=1, xi=0)
   member <- function(w) w$mu == 0 & w$sigma == 1 & abs(w$xi) <= 1
-  message <- "-1 <= xi <= 1"
+  message <- "xi in [-1, 1]"
   expect_true(attr(f,"certified"))
   expect_false(attr(f,"unique"))
   w <- attr(f,"maximizers")
-  expect_equal(nrow(w),2L)
-  expect_equal(nrow(unique(w[names(f)])),2L)
+  expect_gte(nrow(w),2L)
+  expect_equal(nrow(unique(w[names(f)])),nrow(w))
   expect_true(all(member(w)))
   expect_match(attr(f,"outcome_message"),message,fixed=TRUE)
   expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-12)

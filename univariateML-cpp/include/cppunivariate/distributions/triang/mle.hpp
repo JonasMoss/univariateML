@@ -1,5 +1,6 @@
 // Exact finite mode enumeration with concave endpoint solves and interval bounds.
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/span.hpp"
@@ -27,6 +28,7 @@ struct TriangResult {
   StopDetail stop_detail{};
   // Other modes whose likelihood comparison remains unresolved.
   std::vector<TriangModeCandidate> unresolved_modes{};
+  MaximizerSet maximizers{};
 };
 namespace triang_detail {
 struct Profile { double a, b, value, upper; int iterations; bool converged; };
@@ -194,6 +196,56 @@ inline Profile profile(const std::vector<double>& x, double l, double u,
   upper+=1e-11*n*(1+std::abs(v[0])/n);
   return {fa?a:l-L/p,fb?b:u+R/q,v[0],upper,it,done};
 }
+// In the free reciprocal distances p=(c-min)/(c-a), q=(max-c)/(b-c),
+// the concave profile has a log(1-p) or log(1-q) term for each
+// active coordinate, from an extreme observation. Its negative Hessian
+// dominates the identity, so the score norm bounds distance to the root.
+inline bool enclose_free_mode(span x, double minimum, double maximum, double tol, Point& point) {
+  const double a = point.estimate.values[0], b = point.estimate.values[1];
+  const double c = point.estimate.values[2], width = b-a;
+  const double eps = std::numeric_limits<double>::epsilon();
+  const auto score = [&](bool lower) {
+    const double length = lower ? c-minimum : maximum-c;
+    const double distance = lower ? c-a : b-c;
+    if (length == 0) return distance == 0 ? 0. : INFINITY;
+    if (!(length > 0 && distance > length && std::isfinite(distance) &&
+          std::isfinite(width))) return maxset_inf;
+    const double base = static_cast<double>(x.size())*(distance/width);
+    double sum = 0, correction = 0;
+    for (double v : x) if (lower ? v < c : v > c) {
+      const double term = lower ? (c-v)/(v-a) : (v-c)/(b-v);
+      const double adjusted = term-correction, next = sum+adjusted;
+      correction = (next-sum)-adjusted;
+      sum = next;
+    }
+    return (std::abs(base-sum)+32*eps*(std::abs(base)+sum))*(distance/length);
+  };
+  const double radius = std::hypot(score(true),score(false));
+  if (!std::isfinite(radius)) return false;
+  Enclosure bounds{point.estimate, point.estimate};
+  for (std::size_t i=0;i<2;++i) {
+    const bool lower = i == 0;
+    const double length = lower ? c-minimum : maximum-c;
+    if (length == 0) continue;
+    const double endpoint = point.estimate.values[i];
+    const double distance = lower ? c-endpoint : endpoint-c;
+    const double reciprocal = length/distance;
+    const double pad = radius+8*eps*reciprocal;
+    if (!(reciprocal > pad)) return false;
+    const double far = length/(reciprocal-pad), near = length/(reciprocal+pad);
+    const double left = lower ? c-far : c+near, right = lower ? c-near : c+far;
+    const double affine_pad = 4*eps*far;
+    const double lo = std::min(endpoint,std::nextafter(left-affine_pad,-INFINITY));
+    const double hi = std::max(endpoint,std::nextafter(right+affine_pad,INFINITY));
+    if (!std::isfinite(lo) || !std::isfinite(hi) ||
+        std::max(endpoint-lo,hi-endpoint) > tol*std::max(width,std::abs(endpoint))) return false;
+    bounds.lower.values[i] = lo;
+    bounds.upper.values[i] = hi;
+  }
+  point.enclosure = bounds;
+  return true;
+}
+
 // For an observation endpoint mode only one endpoint remains to optimize.
 // In reciprocal distance its objective is strictly concave. Signed scores at
 // the two public neighbours bracket its root; log1p differences then identify
@@ -478,6 +530,70 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
       for(double z:input) logLik+=distributions::dtriang(z,rival[0],rival[1],rival[2],true);
       out.unresolved_modes.push_back({rival[0],rival[1],rival[2],logLik});
     }
+    const bool merged_knots = std::adjacent_find(observations.begin(), observations.end(),
+        [&](double left, double right) {
+          return left != right && (left-origin)/scale == (right-origin)/scale;
+        }) != observations.end();
+    if (out.reflection_tie && out.unresolved_modes.empty() && !merged_knots) {
+      // The mode enumeration excludes all other knots. With both ends held
+      // the remaining modes are exact. For a balanced two-point sample with
+      // free ends, each extreme mode sits on the adjacent endpoint, and
+      // the other endpoint is a distance 3/2 of the sample gap away.
+      const auto rival_mode = std::find_if(public_modes.begin(), public_modes.end(),
+          [&](double c) { return c != out.c && triang_detail::sum_parts(out.c,c) == center; });
+      const auto rival_index = static_cast<std::size_t>(rival_mode-public_modes.begin());
+      bool complete = rival_index < profiles.size();
+      for (std::size_t i=0; complete && i<profiles.size(); ++i) {
+        if (i == chosen || i == rival_index || !std::isfinite(profiles[i].value)) continue;
+        if (fa) {
+          complete = compare(chosen,i)>0;
+        } else {
+          // Restore the inflation removed for candidate ranking. Pruned
+          // blocks already used the inflated tangent bounds.
+          const auto& other = profiles[i];
+          const double inflation = 1e-11*(x.size()+std::abs(other.value));
+          complete = profiles[chosen].value > other.upper+inflation;
+        }
+      }
+      if (complete) {
+        const auto rival = coefficients(rival_index);
+        std::array<Point, 2> points{Point{{{selected[0],selected[1],selected[2]}}, {}},
+                                   Point{{{rival[0],rival[1],rival[2]}}, {}}};
+        bool accurate = true;
+        if (!fa && public_modes.size() == 2) for (auto& point : points) {
+          const double gap = maximum-minimum;
+          const double mode = point.estimate.values[2];
+          const std::size_t free_end = mode == minimum ? 1 : 0;
+          const double anchor = mode == minimum ? maximum : minimum;
+          const double offset = mode == minimum ? gap/2 : -gap/2;
+          const double endpoint = anchor+offset;
+          const double estimate = point.estimate.values[free_end];
+          const bool exact = triang_detail::sum_parts(anchor,offset).second == 0 &&
+              triang_detail::sum_parts(maximum,-minimum).second == 0 &&
+              std::abs(offset)*2 == gap;
+          if (exact && endpoint == estimate) continue;
+          const double pad = 4*std::numeric_limits<double>::epsilon()*gap;
+          Enclosure bounds{point.estimate, point.estimate};
+          bounds.lower.values[free_end] = std::min(estimate,std::nextafter(endpoint-pad,-INFINITY));
+          bounds.upper.values[free_end] = std::max(estimate,std::nextafter(endpoint+pad,INFINITY));
+          const double error = std::max(estimate-bounds.lower.values[free_end], bounds.upper.values[free_end]-estimate);
+          accurate = accurate && error <= requested_tol*std::max(1.5*gap,std::abs(estimate));
+          point.enclosure = bounds;
+        }
+        if (!fa && public_modes.size() > 2) {
+          for (auto& point : points)
+            accurate = triang_detail::enclose_free_mode(input, minimum, maximum, requested_tol, point) && accurate;
+        }
+        // A finite two-point enclosure in either branch keeps the pair on
+        // the same representation. The other branch can be exact.
+        if (points[0].enclosure || points[1].enclosure) for (auto& point : points)
+          if (!point.enclosure) point.enclosure = Enclosure{point.estimate,point.estimate};
+        if (accurate) {
+          out.maximizers.dimension = 3;
+          out.maximizers.add_points({points.data(), points.size()});
+        }
+      }
+    }
     out.not_unique=out.reflection_tie || !out.unresolved_modes.empty();
   }
   return out;
@@ -489,7 +605,7 @@ inline FitOutcome outcome(const TriangResult& r) {
   if (r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)
     return FitOutcome::failure(OutcomeReason::Tolerance);
   switch (r.status) {
-    case TriangStatus::Ok: return r.unresolved_modes.empty() ? FitOutcome::estimate(true,!r.not_unique)
+    case TriangStatus::Ok: return (!r.not_unique || r.maximizers.size) ? FitOutcome::estimate(true,!r.not_unique)
                                        : FitOutcome::undetermined();
     case TriangStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TriangStatus::Incompatible: return FitOutcome::failure(OutcomeReason::InvalidInput);

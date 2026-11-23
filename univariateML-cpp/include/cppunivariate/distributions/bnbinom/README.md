@@ -560,9 +560,12 @@ The final observed-information Newton correction supplies the requested
 local coefficient accuracy. The exported global coefficient box retains the
 cover center and radius; it is not recentered on the polished estimate. The
 swapped box supplies the other label. Disjoint certified intervals for size
-and beta separate these two global maximizers and prove non-uniqueness; the
-fit then carries `unique = FALSE`. If this cover cannot close, the successful
-legacy result is retained as uncertified. A proved strict advantage overrides a
+and beta prove that at least two labeled maximizers exist. The public
+`unique` flag is `NA` on this path, with both labels retained as comparison
+candidates. A complete set needs a uniqueness proof within the canonical
+box and a contract-sized enclosure for all three coefficients, including
+alpha. If the global cover cannot close, the successful search result is
+retained as uncertified. A proved strict advantage overrides a
 legacy face choice; an actually failed legacy solve still stops. The diagonal
 witness remains available independently of selection.
 

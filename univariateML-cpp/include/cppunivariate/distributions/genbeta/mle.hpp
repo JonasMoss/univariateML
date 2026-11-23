@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -39,7 +40,7 @@ struct GenbetaResult {
  GenbetaConditionalBounds conditional_bounds{};
  GenbetaTailBounds tail_bounds{};
  bool allfree_certified=false;
- bool product_ridge=false; };
+ bool product_ridge=false; MaximizerSet maximizers{}; };
 
 inline bool family_point(const GenbetaResult&, const FitCandidate& c) {
   if (c.model != StopModel::None || c.coef.size() != 4) return false;
@@ -191,6 +192,18 @@ inline GenbetaResult genbeta_accuracy_search(span x,double scale,double tol=1e-7
     const double value=n*(std::log(a*t)-a*t*mean)+static_cast<double>(jac);
     GenbetaResult out{a,b,t,scale,value,0,std::isfinite(value)&&std::isfinite(a)&&std::isfinite(t)?GenbetaStatus::Ok:GenbetaStatus::SearchUnresolved};
     out.product_ridge=ridge;out.allfree_certified=std::isnormal(a)&&std::isnormal(t);
+    if (ridge && out.status == GenbetaStatus::Ok) {
+      // For shape2 = 1 the transformed exponential likelihood depends only
+      // on shape1*shape3 and is strictly concave in that product.
+      Relation piece;
+      piece.axes = {interval(0, maxset_inf, false, false), fixed(b),
+                    interval(0, maxset_inf, false, false), fixed(scale)};
+      piece.driver = 0;
+      piece.dependent = 2;
+      piece.level = {rate, 0, 0, true};
+      out.maximizers.dimension = 4;
+      out.maximizers.add_relation(piece);
+    }
     return out;
   }
   // Held p=1 is exactly Kumaraswamy, not a numerical free-power profile.

@@ -14,6 +14,8 @@ inline FitResult fit_dlaplace(cppunivariate::ispan x, Held location_arg = {}, He
   auto r=cppunivariate::dlaplace_mle(x,mu,p);
   const auto o = cppunivariate::outcome(r);
   const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, r.maximizers, "dlaplace", [&](const auto&) { return r.logLik; });
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"location",location_arg.supplied},{"scale",scale_arg.supplied}});
@@ -31,7 +33,6 @@ inline FitResult fit_dlaplace(cppunivariate::ispan x, Held location_arg = {}, He
 
   if(r.status==cppunivariate::DlaplaceStatus::PointMass) return done(stopped_fail("MLE escapes to a point mass (scale tends to zero)."));
   if(r.status!=cppunivariate::DlaplaceStatus::Ok)return done(stopped_fail("Require integer location and scale strictly between zero and one."));
-  if(r.not_unique)warnings.push_back(binding_message("Discrete Laplace location MLE is not unique; returning the smallest integer median."));
   std::vector<std::string> fixed;if(location.supplied)fixed.push_back("location");if(scale.supplied)fixed.push_back("scale");
   return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"location",r.location},{"scale",r.scale}}; out.logLik = r.logLik; out.fixed = fixed; out.has_fixed = true; return out; }());
 

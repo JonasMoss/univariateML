@@ -166,9 +166,13 @@ TEST_CASE("st: conditional skew certificate and exact endpoint factors") {
  }
  const std::vector<double> flat{2,2,2};
  const auto f=cppunivariate::st_mle(mltest::as_span(flat),1e-6,200,2,1,NAN,.5);
- CHECK(f.status==cppunivariate::StStatus::NumericalFailure);CHECK(f.stop_detail.comparison_tie);
- REQUIRE(f.stop_detail.candidates.size()==2);
- CHECK(f.stop_detail.candidates[0].loglik_lower==f.stop_detail.candidates[1].loglik_lower);
+ CHECK(f.status==cppunivariate::StStatus::Ok);
+ CHECK_FALSE(cppunivariate::outcome(f).unique);
+ REQUIRE(f.maximizers.size==1);
+ for(double alpha:{-1.,1.}) {
+  CHECK(f.maximizers.contains({{2,1,alpha,.5}}));
+  CHECK(3*cppunivariate::distributions::dst(2,2,1,alpha,.5,true)==doctest::Approx(f.logLik));
+ }
 }
 
 TEST_CASE("st: conditional skew searches both signs without concavity") {
@@ -499,10 +503,11 @@ TEST_CASE("st exact held-location skew nonidentification is an estimate") {
   const auto o=cppunivariate::outcome(r);
   CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
   CHECK(o.certified);CHECK_FALSE(o.unique);
-  for(const auto& c:r.stop_detail.candidates) {
-    CHECK(cppunivariate::accurate_point(r,c));
-    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dst(v,c.coef[0],c.coef[1],c.coef[2],c.coef[3],true);
-    CHECK(c.loglik_lower==doctest::Approx(ll).epsilon(1e-14));
+  REQUIRE(r.maximizers.size==1);
+  for(double alpha:{-2.,2.}) {
+    CHECK(r.maximizers.contains({{2,1,alpha,.5}}));
+    double ll=0;for(double v:x)ll+=cppunivariate::distributions::dst(v,2,1,alpha,.5,true);
+    CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-14));
   }
 }
 

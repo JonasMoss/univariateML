@@ -638,7 +638,10 @@ test('st flat conditional alpha line returns exact finite maximizers',()=>{
   comparisonFit(()=>api.st.fit([2,2,2],{xi:2,omega:1,nu:.5}),e=>{
     assert.equal(e.certified,true);assert.equal(e.unique,false);
     assert.deepEqual(e.estimates,{xi:2,omega:1,alpha:-1,nu:.5});
-    assert.deepEqual(e.candidates.map(c=>c.alpha),[-1,1]);return true;
+    const alpha = e.maximizer_set.pieces[0].axes[2];
+    assert.deepEqual([alpha.lower, alpha.upper, alpha.closed], ['-inf', 'inf', [false, false]]);
+    assert.equal(e.maximizers[0].alpha, -1);
+    assert.ok(e.maximizers.some(c => c.alpha !== -1));return true;
   });
 });
 

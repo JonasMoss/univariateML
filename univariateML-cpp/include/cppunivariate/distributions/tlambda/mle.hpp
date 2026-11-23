@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include <string_view>
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
@@ -16,7 +17,8 @@ inline constexpr double kTlambdaLambdaLower = -1.0;
 inline constexpr double kTlambdaLambdaUpper = 1.0;
 
 enum class TlambdaStatus { Ok, InvalidData, InvalidShape, IterationFailure, Unbounded, CollapseLimit, InvalidSupport, CertificateFailure, TransformFailure };
-struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; bool certified=false; double certificate_lower=NAN,certificate_upper=NAN; StopDetail stop_detail={}; std::string_view maximizer_set{}; };
+struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; bool certified=false; double certificate_lower=NAN,certificate_upper=NAN; StopDetail stop_detail={};
+  MaximizerSet maximizers{}; };
 namespace tlambda_detail {
 inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int maxit,double tol=1e-10) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -52,14 +54,7 @@ inline TlambdaResult constant_location(double value,std::size_t n,double sigma,d
   if(!uniform && !(lambda>1 && lambda<2))return out;
   const double width=sigma/lambda;
   const double left=value-width,right=value+width;
-  double other;
-  if(uniform) {
-    other=value-width/2;
-    if(other==value || !std::isfinite(other))other=std::nextafter(value,-INFINITY);
-    if(!std::isfinite(other) || slack(value,other,sigma,lambda)<0)
-      other=std::nextafter(value,INFINITY);
-    if(!std::isfinite(other) || slack(value,other,sigma,lambda)<0)return out;
-  } else {
+  if(!uniform) {
     // Use the same rounded support contacts as the public density. When
     // the affine residual is nonzero, also bound the coefficient error.
     const auto contact=[&](double mu,double image) {
@@ -73,19 +68,48 @@ inline TlambdaResult constant_location(double value,std::size_t n,double sigma,d
     };
     if(!(left<value && value<right) || !contact(left,left+width) || !contact(right,right-width))return out;
     out.mu=left;
-    other=right;
   }
   out.logLik=-static_cast<double>(n)*(std::log(sigma)+(lambda==1?std::log(2.):0));
   out.status=TlambdaStatus::Ok;
   out.certified=true;
   if(free_shape)out.restricted|=32u;
-  out.maximizer_set=uniform
-    ? (free_shape
-      ? "All locations abs(mu - x[1]) <= sigma at lambda = 1 maximize the likelihood."
-      : "All locations abs(mu - x[1]) <= sigma / lambda maximize the likelihood.")
-    : "Exactly the two support contacts mu = x[1] +/- sigma / lambda maximize the likelihood.";
-  out.stop_detail.candidates={{{out.mu,sigma,lambda},out.logLik,out.logLik},
-                              {{other,sigma,lambda},out.logLik,out.logLik}};
+  // A uniform member attains its peak on its entire closed support.
+  // For 1 < lambda < 2 strict concavity of the quantile derivative
+  // gives equality only at the two support contacts.
+  const auto rounded = [&](double endpoint, double offset) {
+    const double back = endpoint - value;
+    const double residual = (value - (endpoint - back)) + (offset - back);
+    return !std::isfinite(endpoint) || residual != 0 ||
+        std::fma(width, lambda, -sigma) != 0 ||
+        (lambda != 1 && width+width != sigma && lambda == 2);
+  };
+  out.maximizers.dimension = 3;
+  if (uniform) {
+    Box piece;
+    piece.axes = {interval(left, right, std::isfinite(left), std::isfinite(right)), fixed(sigma), fixed(lambda)};
+    piece.axes[0].range.lower_rounded = rounded(left, -width);
+    piece.axes[0].range.upper_rounded = rounded(right, width);
+    if (out.maximizers.add_box(piece) != MaxsetStatus::Ok) out.status = TlambdaStatus::CertificateFailure;
+  } else {
+    const auto point = [&](double endpoint, double offset) {
+      Point result{{{endpoint, sigma, lambda}}, {}};
+      if (rounded(endpoint, offset)) {
+        const double error = 4*std::numeric_limits<double>::epsilon()*width;
+        const double lower = std::nextafter(endpoint-error, -INFINITY);
+        const double upper = std::nextafter(endpoint+error, INFINITY);
+        result.enclosure = Enclosure{{{lower, sigma, lambda}}, {{upper, sigma, lambda}}};
+      }
+      return result;
+    };
+    const std::array<Point, 2> points{point(left, -width), point(right, width)};
+    for (const auto& p : points) if (p.enclosure) {
+      const double m = p.estimate.values[0];
+      const double error = std::max(m-p.enclosure->lower.values[0], p.enclosure->upper.values[0]-m);
+      if (!(error <= tol*std::abs(m))) out.status = TlambdaStatus::CertificateFailure;
+    }
+    if (out.maximizers.add_points({points.data(), points.size()}) != MaxsetStatus::Ok)
+      out.status = TlambdaStatus::CertificateFailure;
+  }
   return out;
 }
 inline double likelihood(span x,double mu,double sigma,double lambda) {
@@ -165,7 +189,7 @@ inline FitOutcome outcome(const TlambdaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     case TlambdaStatus::TransformFailure:return FitOutcome::failure(OutcomeReason::Evaluation);
-    case TlambdaStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizer_set.empty());
+    case TlambdaStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizers.size == 0);
     case TlambdaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TlambdaStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case TlambdaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

@@ -835,7 +835,7 @@ TEST_CASE("bnbinom disjoint certified label boxes prove nonunique maxima") {
   const auto r=cppunivariate::bnbinom_mle(cppunivariate::ispan{x.data(),x.size()});
   REQUIRE(r.status==cppunivariate::BnbinomStatus::Ok);
   REQUIRE(r.certified);CHECK(r.swap_symmetry);
-  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  CHECK_FALSE(cppunivariate::outcome(r).uniqueness_known);
   double swapped=0;for(int v:x)swapped+=cppunivariate::distributions::dbnbinom(v,r.beta,r.alpha,r.size,true);
   CHECK(swapped==doctest::Approx(r.logLik).epsilon(1e-12));
 }

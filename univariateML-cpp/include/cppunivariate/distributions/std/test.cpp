@@ -416,9 +416,9 @@ TEST_CASE("std: shape-only certificate refuses unjustifiable requested coefficie
   CHECK(std::isfinite(r.stop_detail.loglik_lower));
 }
 
-TEST_CASE("std: balanced separated atoms have proved distinct held-sd global maximizers") {
+TEST_CASE("std: separated held-sd witnesses survive an unrepresentable tolerance") {
   for(const std::vector<double>& x:{std::vector<double>{-100,100},std::vector<double>{-100,-100,100,100}}){
-    const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-8,200,NAN,1,NAN);
+    const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-20,200,NAN,1,NAN);
     REQUIRE(r.status==cppunivariate::StudentTStatus::NonUniqueHeldSd);
     REQUIRE(r.stop_detail.candidates.size()==2);
     CHECK(r.stop_detail.comparison_tie);
@@ -541,4 +541,27 @@ TEST_CASE("std near-constant sample reaches the normal limit as its tie3 preimag
   const auto r=cppunivariate::student_t_mle(mltest::as_span(near),1e-10,1000);
   CHECK(r.stop_detail.limit_coef.at(1)>0);
   CHECK(r.stop_detail.limit_coef.at(1)<1e-17);
+}
+
+
+TEST_CASE("std: the separated held-sd profile isolates both global maxima") {
+  const std::vector<double> x{-100,100};
+  const auto data=mltest::as_span(x);
+  const auto r=cppunivariate::student_t_mle(data,1e-10,200,NAN,1,NAN);
+  REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(cppunivariate::outcome(r).certified);
+  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  REQUIRE(r.maximizers.size==1);
+  const auto& points=std::get<cppunivariate::Points>(r.maximizers.pieces[0].value);
+  REQUIRE(points.size==2);
+  CHECK(points.values[0].estimate.values[0]==-points.values[1].estimate.values[0]);
+  for (std::size_t i=0;i<points.size;++i) {
+    const auto& point=points.values[i];
+    REQUIRE(point.enclosure.has_value());
+    CHECK(point.estimate.values[1]==1);
+    CHECK(point.estimate.values[2]>2);
+    CHECK(point.estimate.values[2]<3);
+    CHECK(cppunivariate::student_t_held_loglik(data,point.estimate.values[0],1,
+          point.estimate.values[2])==doctest::Approx(r.logLik));
+  }
 }

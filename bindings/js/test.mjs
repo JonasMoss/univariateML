@@ -966,12 +966,17 @@ test('GED analytic held-sd shape fits and median ties agree across bindings', as
   const odd=api.ged.fit(new Float64Array([-3,-1,0,1,4]),{sd:.1},{iterlim:1});
   assert.equal(odd.estimates.mean,0);
   assert.equal(odd.estimates.nu,1);
-  comparisonFit(()=>api.ged.fit(new Float64Array([-1,1]),{sd:.1},{iterlim:1}),error=>{
-    assert.equal(error.status,'Ok');
-    assert.match(error.message,/median interval/);
-    assert.deepEqual(error.candidates.map(c=>c.mean),[-1,1]);
-    assert.ok(Number.isFinite(error.loglik_upper));
-    assert.ok(error.loglik_lower<=error.loglik_upper);
+  comparisonFit(()=>api.ged.fit(new Float64Array([-1,1]),{sd:.1},{iterlim:1}),fit=>{
+    assert.equal(fit.unique,false);
+    assert.match(fit.message,/mean in \[-1, 1\]/);
+    const [mean,sd,nu]=fit.maximizer_set.pieces[0].axes;
+    assert.deepEqual([mean.lower,mean.upper,mean.closed],[-1,1,[true,true]]);
+    assert.deepEqual([sd.lower,sd.upper,nu.lower,nu.upper],[.1,.1,1,1]);
+    assert.deepEqual(fit.maximizers.map(c=>c.mean),[-1,1]);
+    for (const row of fit.maximizers) {
+      assert.ok(Math.abs(row.loglik_lower-fit.logLik)<1e-12);
+      assert.equal(row.loglik_upper,row.loglik_lower);
+    }
     return true;
   });
 });
@@ -2069,9 +2074,19 @@ test('std and lst held free-shape solver caps preserve finite diagnostic witness
 test('Student held subsets expose proved symmetry nonuniqueness', async () => {
   const {default:createApi}=await import('./index.mjs');
   const api=await createApi();
-  for(const [family,x,held] of [['std',[-100,100],{sd:1}],['lst',[-100,-99,0,99,100],{df:.5}]]){
-    // Proved non-uniqueness whose witnesses lack coefficient accuracy: unresolved.
-    comparisonStop(()=>modifierRoute(api,family).fit(new Float64Array(x),held),'unresolved',error=>{
+  const fit=modifierRoute(api,'std').fit(new Float64Array([-100,100]),{sd:1});
+  assert.equal(fit.certified,true);
+  assert.equal(fit.unique,false);
+  const {points}=fit.maximizer_set.pieces[0];
+  assert.equal(points.length,2);
+  assert.ok(points.every(p=>p.enclosure && p.estimate[1]===1));
+  assert.equal(fit.maximizers[0].mean,fit.estimates.mean);
+  assert.equal(fit.maximizers[0].mean,-fit.maximizers[1].mean);
+  for(const [family,x,held,controls] of [
+    ['std',[-100,100],{sd:1},{tol:1e-20}],
+    ['lst',[-100,-99,0,99,100],{df:.5},{}]
+  ]){
+    comparisonStop(()=>modifierRoute(api,family).fit(new Float64Array(x),held,controls),'unresolved',error=>{
       assert.ok(Number.isFinite(error.loglik_lower));
       assert.equal(error.loglik_upper,Infinity);
       assert.equal(error.candidates.length,2);

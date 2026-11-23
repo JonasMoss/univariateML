@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -10,31 +11,24 @@
 #include <limits>
 namespace cppunivariate {
 enum class SnStatus { Ok, InvalidInput, IterationFailure, RightHalfNormalBoundary, LeftHalfNormalBoundary, AccuracyFailure };
-struct SnResult { double xi,omega,alpha,logLik; int iterations; SnStatus status;  StopDetail stop_detail{}; bool budget_exhausted=false; };
+struct SnResult { double xi,omega,alpha,logLik; int iterations; SnStatus status;  StopDetail stop_detail{}; bool budget_exhausted=false; MaximizerSet maximizers{}; };
 
 inline bool family_point(const SnResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
          std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1] > 0;
 }
-// Proved non-identification (every observation at the held location, global
-// bounds equal): exact closed-form maxima. A face tie lists the unpolished
-// search point, which is not checked.
-inline bool sn_shape_unidentified(const SnResult& r) {
-  return std::isfinite(r.stop_detail.loglik_upper) && r.stop_detail.loglik_lower == r.stop_detail.loglik_upper;
-}
-inline bool accurate_point(const SnResult& r, const FitCandidate& c) {
-  return sn_shape_unidentified(r) && family_point(r, c) && point_value(c);
-}
+// Search and face comparisons carry witnesses without a coefficient enclosure.
+inline bool accurate_point(const SnResult&, const FitCandidate&) { return false; }
 
 inline FitOutcome outcome(const SnResult& r) {
   // The analytic collapse witness is produced by the core, before any binding.
   if(r.status==SnStatus::InvalidInput && r.logLik==INFINITY)return FitOutcome::nonexistence(OutcomeReason::Unbounded);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
-  if (r.stop_detail.comparison_tie) return sn_shape_unidentified(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
+  if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   if (r.status == SnStatus::IterationFailure && r.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case SnStatus::Ok: return FitOutcome::estimate(true);
+    case SnStatus::Ok: return FitOutcome::estimate(true, r.maximizers.size == 0);
     case SnStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SnStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case SnStatus::RightHalfNormalBoundary: return FitOutcome::limit(false);
@@ -272,11 +266,13 @@ inline SnResult sn_accuracy_search(span data,double tol=1e-9,int maxit=100,
   const auto consider=[&](double a,const sn_detail::Inner& v) { if(v.converged && v.ll>best.ll) {best=v; besta=a;} };
   if(constant && xi==low && std::isfinite(omega) && !std::isfinite(alpha)) {
     const double ll=-n*(std::log(omega)+.5*std::log(2*cppunivariate::pi));
-    bad.status=SnStatus::IterationFailure;
-    bad.stop_detail=comparison_detail({{xi,omega,0},ll,ll,StopModel::None},
-                                      {{xi,omega,1},ll,ll,StopModel::None});
-    bad.stop_detail.loglik_upper=ll;
-    return bad;
+    // At zero residual the skew CDF is 1/2 for every finite alpha.
+    SnResult flat{xi, omega, 0, ll, 0, SnStatus::Ok};
+    Box piece;
+    piece.axes = {fixed(xi), fixed(omega), Axis{}};
+    flat.maximizers.dimension = 3;
+    flat.maximizers.add_box(piece);
+    return flat;
   }
   if(std::isfinite(alpha)) {
     besta=std::isfinite(alpha) ? alpha : 0;
@@ -525,7 +521,7 @@ inline SnResult sn_accuracy_search(span data,double tol=1e-9,int maxit=100,
 namespace cppunivariate {
 inline SnResult sn_mle(span x,double tol=1e-10,int maxit=100,double xi=NAN,double omega=NAN,double alpha=NAN,std::int64_t work_budget=-2) {
   auto r=sn_accuracy_search(x,tol,maxit,xi,omega,alpha,work_budget);
-  if(r.status!=SnStatus::Ok)return r;
+  if(r.status!=SnStatus::Ok || r.maximizers.size)return r;
   const double center=r.xi,unit=r.omega,shape_unit=std::max(1.0,std::abs(r.alpha));
   std::array<double,3> q{{0,0,r.alpha/shape_unit}};
   const std::array<bool,3> free{{std::isnan(xi),std::isnan(omega),std::isnan(alpha)}};

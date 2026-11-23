@@ -7,6 +7,7 @@
 // where f_unit is the standardised GED used by dged().
 
 #pragma once
+#include "../../core/maximizer_set.hpp"
 #include "../norm/dpqr.hpp"
 #include "../unif/dpqr.hpp"
 #include "../hnorm/dpqr.hpp"
@@ -53,7 +54,9 @@ struct GedResult {
   // Internal distinction between an exact tie and overlapping numerical bounds.
   bool proved_tie = false;
   bool search_failed = false;
-  double comparison_logLik=NAN; };
+  double comparison_logLik=NAN;
+  MaximizerSet maximizers{};
+};
 
 #include "free_shape_bounds.hpp"
 
@@ -561,6 +564,38 @@ inline GedResult ged_uncertified(GedResult certificate,span x,double tol,int max
   searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;return searched;
 }
 
+inline void ged_tie_payload(GedResult& result, span x, double held_sd) {
+  if (!result.proved_tie || result.stop_detail.candidates.size() != 2) return;
+  const auto& first = result.stop_detail.candidates[0].coef;
+  const auto& second = result.stop_detail.candidates[1].coef;
+  std::vector<double> sorted(x.begin(),x.end());
+  std::sort(sorted.begin(),sorted.end());
+  if (first[2] == 1) {
+    // At the certified Laplace shape the absolute-deviation objective has
+    // exactly the closed median interval and its profile is constant there.
+    Box piece;
+    piece.axes = {interval(sorted[(sorted.size()-1)/2],sorted[sorted.size()/2],true,true),
+                  fixed(first[1]),fixed(1)};
+    piece.axes[1].range.lower_rounded = piece.axes[1].range.upper_rounded = std::isnan(held_sd);
+    result.maximizers.dimension = 3;
+    result.maximizers.add_box(piece);
+  } else if (first[2] < 1 && std::isfinite(held_sd) && sorted.front() < sorted.back() &&
+      sorted.size()%2 == 0 && sorted[sorted.size()/2-1] == sorted.front() &&
+      sorted[sorted.size()/2] == sorted.back()) {
+    // For two equally frequent knots the power loss is strictly concave
+    // between the knots and strictly increases away from them.
+    const std::array<Point,2> points{Point{{{first[0],held_sd,first[2]}},{}},
+                                      Point{{{second[0],held_sd,second[2]}},{}}};
+    result.maximizers.dimension = 3;
+    result.maximizers.add_points({points.data(),points.size()});
+  }
+  const std::size_t selected = result.maximizers.size ? 0 :
+      better_candidate(result.stop_detail, [](const FitCandidate&) { return true; });
+  const auto& c = result.stop_detail.candidates[selected].coef;
+  result.comparison_logLik = ged_detail::conditional_loglik(
+      {sorted.data(),sorted.size()}, c[0], c[1], c[2]);
+}
+
 inline GedResult ged_mle(span x,double tol=1e-10,int maxit=200) {
   if(!(tol>0 && std::isfinite(tol)) || maxit<1 || x.empty() || !std::all_of(x.begin(),x.end(),[](double v){return std::isfinite(v);}))return {NAN,NAN,NAN,NAN,0,GedStatus::InvalidStart};
 
@@ -578,14 +613,7 @@ inline GedResult ged_mle(span x,double tol=1e-10,int maxit=200) {
   return r;
 
   }();
-  if(result.proved_tie && !result.stop_detail.candidates.empty()) {
-    const auto preferred=[](const FitCandidate& c){return c.model==StopModel::None && c.coef.size()==3 && std::isfinite(c.coef[0]) && std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1]>0 && c.coef[2]>0;};
-    const auto& c=result.stop_detail.candidates[better_candidate(result.stop_detail,preferred)];
-    if(preferred(c)) {
-      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
-      result.comparison_logLik=ged_detail::conditional_loglik({y.data(),y.size()},c.coef[0],c.coef[1],c.coef[2]);
-    }
-  }
+  ged_tie_payload(result, x, NAN);
   auto& detail=result.stop_detail;
   auto& coef=detail.limit_coef;
   if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
@@ -638,14 +666,7 @@ inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,doubl
   return r;
 
   }();
-  if(result.proved_tie && !result.stop_detail.candidates.empty()) {
-    const auto preferred=[](const FitCandidate& c){return c.model==StopModel::None && c.coef.size()==3 && std::isfinite(c.coef[0]) && std::isfinite(c.coef[1]) && std::isfinite(c.coef[2]) && c.coef[1]>0 && c.coef[2]>0;};
-    const auto& c=result.stop_detail.candidates[better_candidate(result.stop_detail,preferred)];
-    if(preferred(c)) {
-      std::vector<double> y(x.begin(),x.end());std::sort(y.begin(),y.end());
-      result.comparison_logLik=ged_detail::conditional_loglik({y.data(),y.size()},c.coef[0],c.coef[1],c.coef[2]);
-    }
-  }
+  ged_tie_payload(result, x, sd);
   auto& detail=result.stop_detail;
   auto& coef=detail.limit_coef;
   if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
@@ -690,15 +711,20 @@ inline FitOutcome outcome(const GedResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status != GedStatus::Ok && r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.status != GedStatus::Ok && r.status != GedStatus::UniformUnresolved && r.stop_detail.comparison_tie) return r.proved_tie ? nonunique_outcome_of(r, r.certified) : comparison_outcome_of(r);
+  if (r.status != GedStatus::Ok && r.status != GedStatus::UniformUnresolved && r.stop_detail.comparison_tie) {
+    if (r.maximizers.size) return nonunique_outcome_of(r, r.certified);
+    const auto selected = comparison_outcome_of(r);
+    return selected.kind == OutcomeKind::Estimate ? FitOutcome::undetermined() : selected;
+  }
   switch (r.status) {
-    case GedStatus::Ok: return FitOutcome::estimate(r.certified);
+    case GedStatus::Ok: return r.stop_detail.comparison_tie ? FitOutcome::undetermined()
+                                                               : FitOutcome::estimate(r.certified);
     case GedStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GedStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GedStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GedStatus::UniformBoundary: return FitOutcome::limit(r.certified);
     case GedStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
-    case GedStatus::Nonunique: return r.proved_tie ? nonunique_outcome_of(r, r.certified) : comparison_outcome_of(r);
+    case GedStatus::Nonunique: return FitOutcome::failure(OutcomeReason::Unresolved);
     case GedStatus::UniformUnresolved: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GedStatus::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

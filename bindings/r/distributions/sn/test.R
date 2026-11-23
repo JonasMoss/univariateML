@@ -159,7 +159,7 @@ test_that('sn free-shape fit dominates fixed-shape fits on seeded samples', {
   }
 })
 
-test_that('sn quantitative acceptance and nonunique shape stops are public', {
+test_that('sn quantitative acceptance and the flat shape line are public', {
   for (w in list(NULL, 1.7)) {
     f <- mlsn(c(-2,-1,0,1,2), xi=0, omega=w)
     expect_lt(abs(f[['alpha']]), 1e-9)
@@ -167,8 +167,13 @@ test_that('sn quantitative acceptance and nonunique shape stops are public', {
   }
   e <- tryCatch(mlsn(rep(3,5), xi=3, omega=2), error=identity)
   expect_s3_class(e,"univariateML")
-  expect_equal(nrow(fit_payload(e)$candidates), 2L)
-  expect_equal(fit_payload(e)$loglik_lower, fit_payload(e)$loglik_upper)
+  expect_false(attr(e,"unique"))
+  alpha <- attr(e,"maximizer_set")$pieces[[1]]$axes[[3]]
+  expect_identical(c(alpha$lower,alpha$upper),c(-Inf,Inf))
+  w <- attr(e,"maximizers")
+  expect_equal(nrow(w),2L)
+  expect_equal(w$loglik_lower,rep(as.numeric(logLik(e)),2L))
+  expect_equal(w$loglik_upper,w$loglik_lower)
   e <- tryCatch(mlsn(c(-2,-.3,.1,.8,4), alpha=2, iterlim=1), error=identity)
   expect_s3_class(e, 'univariateML_numerical')
   f <- mlsn(c(-2,-.3,.1,.8,4), alpha=2, tol=10)

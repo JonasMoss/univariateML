@@ -15,7 +15,9 @@ test_that("discrete Laplace exact median profile and fixed subsets", {
   h<-mldlaplace(x,location=2,scale=.4)
   expect_equal(attr(h,"logLik"),sum(ddlaplace(x = x, location = 2, scale = 0.4, log = TRUE)))
  }
- expect_warning(f<-mldlaplace(c(-3,4)),"smallest integer median")
+ expect_silent(f<-mldlaplace(c(-3,4)))
+ expect_false(attr(f,"unique"))
+ expect_true(attr(f,"maximizer_set")$pieces[[1]]$axes[[1]]$integer)
  expect_equal(f[[1]], -3, tolerance = 0)
  expect_error(mldlaplace(rep(2,4)),"point mass")
  expect_silent(mldlaplace(rep(2,4),location=0))

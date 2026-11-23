@@ -21,7 +21,10 @@ inline FitResult fit_laplace(cppunivariate::span x, Held mu_arg = {}, Held sigma
 
   auto res = cppunivariate::laplace_mle(x,held_mu,held_sigma);
   const auto o = cppunivariate::outcome(res);
-  const auto done = [&](FitResult out) { return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}}); };
+  const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, res.maximizers, "laplace", [&](const auto&) { return res.logLik; });
+    return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied}}); };
   if (res.status == cppunivariate::LaplaceStatus::Unbounded)
     return done(stop_failure(fail("The Laplace maximum likelihood estimator does not exist for constant data; other data may exceed double precision."), {}, outcome_payload(o), {}));
   if (res.status == cppunivariate::LaplaceStatus::InvalidInput) return done(fail("Laplace requires nonempty finite data and valid held parameters."));

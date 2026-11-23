@@ -70,8 +70,13 @@ const Held z = c;
   out.has_iterations = true;
   out.fixed = fixed;
   out.has_fixed = true;
-  if (!o.unique) out.candidates.push_back({out.estimates,r.logLik,r.logLik,"triang"});
-  if (r.reflection_tie) {
+  attach_maximizer_set(out, r.maximizers, "triang", [&](const auto& c) {
+    double ll = 0;
+    for (double v : x) ll += cppunivariate::distributions::dtriang(v,c[0],c[1],c[2],true);
+    return ll;
+  });
+  if (!o.uniqueness_known) out.candidates.push_back({out.estimates,r.logLik,r.logLik,"triang"});
+  if (r.reflection_tie && !r.maximizers.size) {
     const double minimum = *std::min_element(x.begin(), x.end());
     const double maximum = *std::max_element(x.begin(), x.end());
     const auto reflect = [&](double value) {
@@ -81,7 +86,7 @@ const Held z = c;
     out.candidates.push_back({{{"a",a.supplied ? r.a : reflect(r.b)},
                                {"b",b.supplied ? r.b : reflect(r.a)},
                                {"c",reflect(r.c)}},r.logLik,r.logLik,"triang"});
-    out.error = "Triangular maximum likelihood estimate is not unique: the sample is symmetric about its midrange, so the reflected fit has the same likelihood.";
+    out.error = "The reflected triangular fit has the same likelihood by symmetry, with completeness or coefficient accuracy unresolved.";
   }
   for (const auto& rival : r.unresolved_modes)
     out.candidates.push_back({{{"a",rival.a},{"b",rival.b},{"c",rival.c}},
