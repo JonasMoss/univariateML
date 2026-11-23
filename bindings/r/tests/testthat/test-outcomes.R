@@ -26,10 +26,9 @@ test_that("ties select existing witnesses and attach their complete set", {
   expect_identical(attr(fit,"unique"),FALSE)
   expect_identical(attr(fit,"fixed"),"scale")
   expect_identical(attr(logLik(fit),"df"),1L)
-  # The better candidate: the first whose lower bound is within 8 ulps of the largest.
-  top <- max(witnesses$loglik_lower)
-  chosen <- which(witnesses$loglik_lower >= top-8*.Machine$double.eps*abs(top))[1]
-  expect_identical(unname(coef(fit)),unname(unlist(witnesses[chosen,names(fit)])))
+  expect_identical(unname(coef(fit)),unname(unlist(witnesses[1,names(fit)])))
+  expect_equal(length(attr(fit,"maximizer_set")$pieces[[1]]$points), 2L)
+  expect_equal(nrow(attr(fit,"candidates")), 2L)
   # Its log likelihood is a point value at the returned coefficients, not a bound.
   expect_equal(as.numeric(logLik(fit)),sum(dcauchy(c(-2,2),coef(fit)[["location"]],1,log=TRUE)),tolerance=1e-14)
   expect_output(print(fit),"Maximum is not unique")

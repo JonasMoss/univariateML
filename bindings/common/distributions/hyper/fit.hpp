@@ -113,12 +113,26 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
       const bool adjacent = res.status == cppunivariate::HyperStatus::Tie;
       const double chosen = !k.supplied ? res.k : (!N.supplied ? res.N : res.m);
       const double other = std::isinf(res.tie) ? chosen+1 : res.tie;
-      if (other != chosen && cppunivariate::hyper_detail::is_count(other))
-        add(estimated == "m" ? other : res.m, estimated == "N" ? other : res.N,
-            estimated == "k" ? other : res.k);
+      if (other != chosen && cppunivariate::hyper_detail::is_count(other)) {
+        if (o.uniqueness_known) {
+          add(estimated == "m" ? other : res.m, estimated == "N" ? other : res.N,
+              estimated == "k" ? other : res.k);
+        } else {
+          const double m_value = estimated == "m" ? other : res.m;
+          const double N_value = estimated == "N" ? other : res.N;
+          const double k_value = estimated == "k" ? other : res.k;
+          cppunivariate::hyper_detail::Sum sum;
+          for (double v : x) sum.add(cppunivariate::hyper_log_pmf(v, N_value, m_value, k_value));
+          const double ll = static_cast<double>(sum.value());
+          if (std::isfinite(ll))
+            out.candidates.push_back({{{"m",m_value},{"N",N_value},{"k",k_value}},ll,ll,"hyper"});
+        }
+      }
       if (adjacent)
-        out.error = binding_message("The likelihood is tied (to rounding) between `%s` = %s and %s; returning the smaller.",
-                                    estimated, whole(chosen), whole(other));
+        out.error = binding_message(o.uniqueness_known ?
+            "The likelihood is tied (to rounding) between `%s` = %s and %s; returning the smaller." :
+            "The likelihood comparison between `%s` = %s and %s could not be resolved.",
+            estimated, whole(chosen), whole(other));
       else if (std::isinf(res.tie))
         out.error = binding_message("Every admissible `N` from %s upwards attains the maximum likelihood.", whole(chosen));
       else

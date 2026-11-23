@@ -1,0 +1,320 @@
+{
+  "binom": {
+    "constant-flat-adjacent-sizes": {
+      "maximizer_set": {
+        "coordinates": [
+          "size",
+          "prob"
+        ],
+        "pieces": [
+          {
+            "kind": "points",
+            "points": [
+              {
+                "estimate": [
+                  1,
+                  0.5
+                ]
+              },
+              {
+                "estimate": [
+                  2,
+                  0.5
+                ]
+              }
+            ]
+          }
+        ],
+        "version": 1
+      },
+      "outcome_message": "Maximum is not unique. size = 1 and prob = 0.5 or size = 2 and prob = 0.5."
+    },
+    "zeros-flat-free": {
+      "maximizer_set": {
+        "coordinates": [
+          "size",
+          "prob"
+        ],
+        "pieces": [
+          {
+            "axes": [
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": true,
+                "lower": 0,
+                "upper": 0
+              },
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": false,
+                "lower": 0,
+                "upper": 1
+              }
+            ],
+            "kind": "box",
+            "order": []
+          },
+          {
+            "axes": [
+              {
+                "closed": [
+                  true,
+                  false
+                ],
+                "integer": true,
+                "lower": 0,
+                "upper": "inf"
+              },
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": false,
+                "lower": 0,
+                "upper": 0
+              }
+            ],
+            "kind": "box",
+            "order": []
+          }
+        ],
+        "version": 1
+      },
+      "outcome_message": "Maximum is not unique. size = 0 and prob in [0, 1] or size in [0, Inf) (integer) and prob = 0."
+    }
+  },
+  "cauchy": {
+    "pair-flat-reflected": {
+      "maximizer_set": {
+        "coordinates": [
+          "location",
+          "scale"
+        ],
+        "pieces": [
+          {
+            "kind": "points",
+            "points": [
+              {
+                "enclosure": {
+                  "lower": [
+                    1.2679491923995438,
+                    1
+                  ],
+                  "upper": [
+                    1.2679491924577804,
+                    1
+                  ]
+                },
+                "estimate": [
+                  1.267949192428662,
+                  1
+                ]
+              },
+              {
+                "enclosure": {
+                  "lower": [
+                    4.732050807544373,
+                    1
+                  ],
+                  "upper": [
+                    4.732050807602611,
+                    1
+                  ]
+                },
+                "estimate": [
+                  4.732050807573492,
+                  1
+                ]
+              }
+            ]
+          }
+        ],
+        "version": 1
+      },
+      "outcome_message": "Maximum is not unique. location = approximately 1.2679491924286621 in [1.2679491923995438, 1.2679491924577804] and scale = 1 or location = approximately 4.7320508075734917 in [4.7320508075443728, 4.7320508076026107] and scale = 1."
+    },
+    "pair-flat-semicircle": {
+      "maximizer_set": {
+        "coordinates": [
+          "location",
+          "scale"
+        ],
+        "pieces": [
+          {
+            "anchors": [
+              1,
+              5
+            ],
+            "axes": [
+              {
+                "closed": [
+                  false,
+                  false
+                ],
+                "integer": false,
+                "lower": 1,
+                "upper": 5
+              },
+              {
+                "closed": [
+                  false,
+                  false
+                ],
+                "integer": false,
+                "lower": 0,
+                "upper": "inf"
+              }
+            ],
+            "dependent": 1,
+            "driver": 0,
+            "form": "semicircle",
+            "kind": "relation"
+          }
+        ],
+        "version": 1
+      },
+      "outcome_message": "Maximum is not unique. location in (1, 5) and scale in (0, Inf) and scale^2 = (location - 1) * (5 - location)."
+    }
+  },
+  "gpd": {
+    "zeros-flat-scale": {
+      "maximizer_set": {
+        "coordinates": [
+          "mu",
+          "sigma",
+          "xi"
+        ],
+        "pieces": [
+          {
+            "axes": [
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": false,
+                "lower": -1,
+                "upper": 0
+              },
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": false,
+                "lower": 1,
+                "upper": 1
+              },
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": false,
+                "lower": -1,
+                "upper": -1
+              }
+            ],
+            "kind": "box",
+            "order": []
+          },
+          {
+            "axes": [
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": false,
+                "lower": 0,
+                "upper": 0
+              },
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": false,
+                "lower": 1,
+                "upper": 1
+              },
+              {
+                "closed": [
+                  true,
+                  false
+                ],
+                "integer": false,
+                "lower": -1,
+                "upper": "inf"
+              }
+            ],
+            "kind": "box",
+            "order": []
+          }
+        ],
+        "version": 1
+      },
+      "outcome_message": "Maximum is not unique. mu in [-1, 0] and sigma = 1 and xi = -1 or mu = 0 and sigma = 1 and xi in [-1, Inf)."
+    }
+  },
+  "nhyper": {
+    "zeros-flat-free": {
+      "maximizer_set": {
+        "coordinates": [
+          "m",
+          "N",
+          "r"
+        ],
+        "pieces": [
+          {
+            "axes": [
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": true,
+                "lower": 0,
+                "upper": 9007199254740991
+              },
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": true,
+                "lower": 0,
+                "upper": 9007199254740991
+              },
+              {
+                "closed": [
+                  true,
+                  true
+                ],
+                "integer": true,
+                "lower": 0,
+                "upper": 0
+              }
+            ],
+            "kind": "box",
+            "order": [
+              [
+                0,
+                1
+              ]
+            ]
+          }
+        ],
+        "version": 1
+      },
+      "outcome_message": "Maximum is not unique. m in [0, 9007199254740991] (integer) and N in [0, 9007199254740991] (integer) and r = 0 and m <= N."
+    }
+  }
+}

@@ -489,7 +489,8 @@ inline FitOutcome outcome(const TriangResult& r) {
   if (r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)
     return FitOutcome::failure(OutcomeReason::Tolerance);
   switch (r.status) {
-    case TriangStatus::Ok: return FitOutcome::estimate(r.unresolved_modes.empty(),!r.not_unique);
+    case TriangStatus::Ok: return r.unresolved_modes.empty() ? FitOutcome::estimate(true,!r.not_unique)
+                                       : FitOutcome::undetermined();
     case TriangStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TriangStatus::Incompatible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TriangStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

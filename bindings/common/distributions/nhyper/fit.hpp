@@ -64,35 +64,11 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   out.has_iterations = true;
   out.fixed = fixed;
   out.has_fixed = true;
-  if (!o.unique) {
-    const auto add = [&](double m_value, double N_value, double r_value) {
-      out.candidates.push_back({{{"m",m_value},{"N",N_value},{"r",r_value}},
-                                out.logLik,out.logLik,"nhyper"});
-    };
-    add(fit.m, fit.N, fit.r);
-    if (!N.supplied && std::isfinite(fit.tie)) {
-      add(fit.m, fit.tie, fit.r);
-      out.error = "Exactly the two listed adjacent population sizes N maximize the likelihood.";
-    } else if (fit.status == cppunivariate::NhyperStatus::Tie) {
-      add(r.supplied ? fit.tie : fit.m, fit.N, r.supplied ? fit.r : fit.tie);
-      out.error = "Likelihood tied between adjacent counts; returning the smaller.";
-    } else if (fit.r == 0) {
-      if (N.supplied) {
-        add(fit.N, fit.N, 0);
-        out.error = "With r = 0 every composition from 0 to N is unidentified; returning m = 0.";
-      } else if (m.supplied) {
-        add(fit.m, fit.N + 1, 0);
-        out.error = "With r = 0 every integer population size m <= N <= 2^53 - 1 maximizes the likelihood.";
-      } else {
-        add(0, 1, 0);
-        out.error = "With r = 0 every integer pair 0 <= m <= N <= 2^53 - 1 maximizes the likelihood.";
-      }
-    } else {
-      if (cppunivariate::hyper_detail::is_count(fit.N+1))
-        add(fit.N+1, fit.N+1, fit.r);
-      out.error = "The observations are constant, so with m = N every admissible population size N >= r gives the same (point-mass) likelihood; the maximum is not unique.";
-    }
+  if (!o.uniqueness_known) {
+    out.error = "The adjacent negative-hypergeometric likelihood comparison could not be resolved.";
+    out = stop_failure(std::move(out), fit.stop_detail, PayloadKind::Comparison, {"m","N","r"});
   }
+  attach_maximizer_set(out, fit.maximizers, "nhyper", [&](const auto&) { return fit.logLik; });
   return done(std::move(out));
 }
 }

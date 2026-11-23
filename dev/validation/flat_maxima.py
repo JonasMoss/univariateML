@@ -320,3 +320,88 @@ add('tbinom', 'singleton-window', {'a': -1, 'b': 0, 'size': 12},
 add('tbinom', 'singleton-window-free-size', {'a': -1, 'b': 0},
     lambda size, prob: integer(size) and probability(prob) and (size == 0 or prob < 1))
 add('tpois', 'singleton-window', {'a': -1, 'b': 0}, lambda **p: p['lambda'] >= 0)
+
+
+# Typed pilot expectations. Their constants come from the sample and holds,
+# independently of the fitter's returned representative or coefficients.
+def axis(lower='-inf', upper='inf', closed=(False, False), integer=False):
+    return dict(lower=lower, upper=upper, closed=list(closed), integer=integer)
+
+
+def fixed_axis(value, integer=False):
+    return axis(value, value, (True, True), integer)
+
+
+def box(*axes, order=()):
+    return dict(kind='box', axes=list(axes), order=[list(pair) for pair in order])
+
+
+def points(*estimates):
+    return dict(kind='points', points=[dict(estimate=list(x)) for x in estimates])
+
+
+def typed_expected(family, case):
+    held = case.held
+    x = case.data[0]
+    if family == 'binom':
+        names = ('size', 'prob')
+        if x == 0:
+            pieces = [box(fixed_axis(0, True), axis(0, 1, (True, True))),
+                      box(axis(0, 'inf', (True, False), True), fixed_axis(0))]
+        elif 'prob' in held:
+            upper = x / held['prob']
+            pieces = [points((upper - 1, held['prob']), (upper, held['prob']))]
+        else:
+            pieces = [points((x, 1))]
+    elif family == 'nhyper':
+        names = ('m', 'N', 'r')
+        count = axis(x, COUNT_MAX, (True, True), True)
+        if all(t == x for t in case.data) and (x == 0 or case.loglik == 0):
+            order = [(0, 1)] if x == 0 else [(0, 1), (1, 0)]
+            pieces = [box(count, count, fixed_axis(x, True), order=order)]
+        else:
+            # The per-observation exact ratios at the crossing are one.
+            if 'N' not in held:
+                upper = held['m'] * x // held['r']
+                pieces = [points((held['m'], upper - 1, held['r']), (held['m'], upper, held['r']))]
+            elif 'm' not in held:
+                upper = held['r'] * (held['N'] + 1) // x
+                pieces = [points((upper - 1, held['N'], held['r']), (upper, held['N'], held['r']))]
+            else:
+                upper = 1 + x * held['m'] // (held['N'] + 1)
+                pieces = [points((held['m'], held['N'], upper - 1), (held['m'], held['N'], upper))]
+    elif family == 'gpd':
+        names = ('mu', 'sigma', 'xi')
+        sigma = held['sigma']
+        pieces = [box(fixed_axis(x), fixed_axis(sigma), axis(-1, 'inf', (True, False))),
+                  box(axis(x - sigma, x, (True, True)), fixed_axis(sigma), fixed_axis(-1))]
+    elif family == 'cauchy':
+        names = ('location', 'scale')
+        lo, hi = min(case.data), max(case.data)
+        radius, mid = (hi - lo) / 2, (hi + lo) / 2
+        if 'scale' in held:
+            from decimal import Decimal, localcontext
+            with localcontext() as ctx:
+                ctx.prec = 70
+                delta = (Decimal(radius)**2 - Decimal(held['scale'])**2).sqrt()
+                pieces = [points(*((float(Decimal(mid) + sign * delta), held['scale'])
+                                   for sign in (-1, 1)))]
+        else:
+            pieces = [dict(kind='relation', form='semicircle', anchors=[lo, hi],
+                           axes=[axis(lo, hi), axis(0)], driver=0, dependent=1)]
+    else:
+        return None
+    return dict(version=1, coordinates=list(names), pieces=pieces)
+
+
+def cauchy_flat(location, scale):
+    return 1 < location < 5 and scale > 0 and math.isclose(
+        scale**2, (location - 1) * (5 - location), rel_tol=1e-12)
+
+
+_cauchy_ll = -2 * math.log(16 * math.pi**2)
+add('cauchy', 'semicircle', {}, cauchy_flat, data=(1., 1., 5., 5.),
+    loglik=_cauchy_ll, certified=True)
+add('cauchy', 'reflected', {'scale': 1.}, lambda location, scale: (
+    scale == 1 and math.isclose(abs(location - 3), math.sqrt(3), rel_tol=1e-10)),
+    data=(1., 1., 5., 5.), loglik=_cauchy_ll, certified=True)

@@ -58,17 +58,31 @@ emscripten::val fit_output(const umvl_binding::FitResult& input_result) {
   for(const auto& item:result.restricted) restricted.set(item.first,item.second);
   for(const auto& item:result.extra) out.set(item.first,item.second);
   for(const auto& item:result.extra_vectors) out.set(item.first,output(item.second));
-  out.set("certified",result.outcome.certified);out.set("unique",result.outcome.unique);
-  if(!result.candidates.empty()) {
-    auto candidates=emscripten::val::array();
-    for(const auto& candidate:result.candidates) {
-      auto row=emscripten::val::object();row.set("model",candidate.model);
-      for(const auto& item:candidate.estimates)row.set(item.first,item.second);
-      row.set("loglik_lower",candidate.loglik_lower);row.set("loglik_upper",candidate.loglik_upper);
-      candidates.call<void>("push",row);
+  out.set("certified",result.outcome.certified);
+  if(result.outcome.uniqueness_known) out.set("unique",result.outcome.unique);
+  else out.set("unique",emscripten::val::null());
+  const auto rows = [](const std::vector<umvl_binding::NamedCandidate>& entries) {
+    auto rows = emscripten::val::array();
+    for (const auto& entry : entries) {
+      auto row = emscripten::val::object();
+      row.set("model", entry.model);
+      for (const auto& item : entry.estimates) row.set(item.first, item.second);
+      row.set("loglik_lower", entry.loglik_lower);
+      row.set("loglik_upper", entry.loglik_upper);
+      rows.call<void>("push", row);
     }
-    out.set(result.outcome.unique ? "candidates" : "maximizers",candidates);
-    out.set("outcome_message",input_result.error);out.set("model",result.model);
+    return rows;
+  };
+  if (result.maximizer_set) {
+    const auto wire = umvl_binding::maxset_json(*result.maximizer_set, result.estimates);
+    out.set("maximizer_set", emscripten::val::global("JSON").call<emscripten::val>("parse", wire));
+    out.set("maximizers", rows(result.maximizers));
+    out.set("outcome_message", result.outcome_message);
+  }
+  if(!result.candidates.empty()) {
+    out.set((result.maximizer_set || result.outcome.unique || !result.outcome.uniqueness_known)
+              ? "candidates" : "maximizers", rows(result.candidates));
+    out.set("outcome_message",result.outcome_message);out.set("model",result.model);
     out.set("loglik_lower",result.loglik_lower);out.set("loglik_upper",result.loglik_upper);
     out.set("segment_loglik_upper",result.segment_loglik_upper);out.set("limit_loglik",result.limit_loglik);
   }

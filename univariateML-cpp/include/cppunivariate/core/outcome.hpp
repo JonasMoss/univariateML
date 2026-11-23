@@ -30,11 +30,16 @@ struct FitOutcome {
   OutcomeReason reason = OutcomeReason::Evaluation;
   // Estimate: the global-optimality claim. Limit: proved, not decided by a margin.
   bool certified = false;
-  // Estimate: false when the fitter has established more than one maximizer.
+  // Estimate: inference requires both uniqueness flags.
   bool unique = true;
+  bool uniqueness_known = true;
 
   static constexpr FitOutcome estimate(bool certified = true, bool unique = true) {
     return {OutcomeKind::Estimate, OutcomeReason::None, certified, unique};
+  }
+  // A candidate survived the accuracy gate, but cardinality is undetermined.
+  static constexpr FitOutcome undetermined() {
+    return {OutcomeKind::Estimate, OutcomeReason::None, false, false, false};
   }
   static constexpr FitOutcome limit(bool certified = true) {
     return {OutcomeKind::Limit, OutcomeReason::None, certified, true};

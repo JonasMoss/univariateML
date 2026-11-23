@@ -1,6 +1,7 @@
 #pragma once
 #include "../../fit.hpp"
 #include "cppunivariate/distributions/gpd/mle.hpp"
+#include "cppunivariate/distributions/gpd/dpqr.hpp"
 #include <cmath>
 #include <limits>
 namespace umvl_binding {
@@ -25,13 +26,16 @@ inline FitResult fit_gpd(cppunivariate::span x, Held mu_arg = {}, Held sigma_arg
   auto res = cppunivariate::gpd_mle(x, tol, iterlim, threshold, shape, scale);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
-    if (!o.unique && !res.maximizer_set.empty()) {
-      out.error=res.maximizer_set;
-      const std::vector<std::string> names{"mu", "sigma", "xi"};
-      for(const auto& witness:res.stop_detail.candidates)
-        out.candidates.push_back({named_coefficients(witness.coef,names),
-                                  witness.loglik_lower,witness.loglik_upper,"gpd"});
-    }
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, res.maximizers, "gpd", [&](const auto& coefficients) {
+        if (coefficients[2] == -1 && x[0] - coefficients[0] == coefficients[1]) {
+          const double shift = coefficients[1] - x[0];
+          if ((x[0] - (coefficients[1] - shift)) - (coefficients[0] + shift) > 0)
+            return -cppunivariate::maxset_inf;
+        }
+        return static_cast<double>(x.size()) * cppunivariate::distributions::dgpd(
+            x[0], coefficients[0], coefficients[1], coefficients[2], true);
+      });
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"xi",xi_arg.supplied}});
   };
   if (res.status==cppunivariate::GpdStatus::Unbounded)

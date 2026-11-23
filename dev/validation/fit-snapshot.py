@@ -171,6 +171,30 @@ template<class Fit> static auto root_radius(const Fit& r,int) -> decltype(r.root
   return r.root_radius;
 }
 template<class Fit> static double root_radius(const Fit&,long) {return NAN;}
+template<class Outcome> static auto uniqueness_known(const Outcome& o,int) -> decltype(o.uniqueness_known) {
+  return o.uniqueness_known;
+}
+template<class Outcome> static bool uniqueness_known(const Outcome&,long) {return true;}
+template<class Outcome> static const char* unique_flag(const Outcome& o) {
+  return !uniqueness_known(o,0)?"null":o.unique?"true":"false";
+}
+template<class Fit> static auto typed_fields(const Fit& r,int) -> decltype(r.maximizer_set,std::string()) {
+  std::string o=",\"maximizer_set\":";
+  o+=r.maximizer_set?fit_maxset_json(r):"null";
+  if (!r.maximizers.empty()) {
+    o+=",\"maximizers\":[";
+    for(std::size_t i=0;i<r.maximizers.size();++i){const auto& c=r.maximizers[i];
+      o+=(i?",":"")+std::string("{\"model\":")+str(c.model)+",\"estimates\":"+named(c.estimates)+
+         ",\"loglik_lower\":"+num(c.loglik_lower)+",\"loglik_upper\":"+num(c.loglik_upper)+"}";}
+    o+="]";
+  }
+  return o;
+}
+template<class Fit> static std::string typed_fields(const Fit&,long) {return "";}
+template<class Fit> static auto fitted_message(const Fit& fit,const Fit&,int) -> decltype(fit.outcome_message) {
+  return fit.outcome_message;
+}
+template<class Fit> static std::string fitted_message(const Fit&,const Fit& raw,long) {return raw.error;}
 int main(){
   std::string token;unsigned mask;std::size_t n;
   while(std::cin>>mask>>n){
@@ -198,16 +222,17 @@ int main(){
       o+=(i?",":"")+std::string("{\"model\":")+str(c.model)+",\"estimates\":"+named(c.estimates)+
          ",\"loglik_lower\":"+num(c.loglik_lower)+",\"loglik_upper\":"+num(c.loglik_upper)+"}";}
     o+="]";
-    if(r.outcome.kind==cppunivariate::OutcomeKind::Estimate)o+=",\"outcome_message\":"+str(raw.error);
+    if(r.outcome.kind==cppunivariate::OutcomeKind::Estimate)o+=",\"outcome_message\":"+str(fitted_message(r,raw,0));
+    o+=typed_fields(r,0);
     o+=",\"reason\":"+str(cppunivariate::outcome_reason_name(r.outcome.reason));
     if(r.outcome.kind==cppunivariate::OutcomeKind::Estimate || r.outcome.kind==cppunivariate::OutcomeKind::Limit)
       o+=",\"certified\":"+std::string(r.outcome.certified?"true":"false");
-    if(r.outcome.kind==cppunivariate::OutcomeKind::Estimate)o+=",\"unique\":"+std::string(r.outcome.unique?"true":"false");
+    if(r.outcome.kind==cppunivariate::OutcomeKind::Estimate)o+=",\"unique\":"+std::string(unique_flag(r.outcome));
 #if __has_include("cppunivariate/core/outcome.hpp")
     o+=",\"outcome\":";
     if(r.outcome_set)o+=std::string("{\"kind\":")+str(cppunivariate::outcome_kind_name(r.outcome.kind))+",\"reason\":"+
       str(cppunivariate::outcome_reason_name(r.outcome.reason))+",\"certified\":"+(r.outcome.certified?"true":"false")+
-      ",\"unique\":"+(r.outcome.unique?"true":"false")+"}";
+      ",\"unique\":"+unique_flag(r.outcome)+"}";
     else o+="null";
     o+=",\"core_status\":"+std::to_string(r.core_status)+",\"outcome_override\":"+(r.outcome_override?"true":"false");
 #endif

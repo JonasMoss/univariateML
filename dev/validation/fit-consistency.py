@@ -79,6 +79,8 @@ from pathlib import Path
 from strict_common import HERE, add_arguments, load, mode_of, number, ratchet
 import existence_keys as ek
 import equivariance as eqv
+from flat_maxima import typed_expected
+import maximizer_sets as maxsets
 
 CLASSES = ['empty', 'nan', 'inf', 'neginf', 'negative', 'zeros', 'one', 'two', 'constant', 'ties', 'half-ties',
            'tie3', 'near-constant']
@@ -98,7 +100,7 @@ FLAT_CASES = fs.FLAT_CASES
 def code(o):
     if o is None: return '?'
     s = {'estimate': 'E', 'limit': 'L', 'nonexistence': 'N', 'budget': 'B', 'failure': 'F'}[o['kind']]
-    if o['kind'] == 'estimate': return s+('' if o['certified'] else 'u')+('' if o['unique'] else 'm')
+    if o['kind'] == 'estimate': return s+('' if o['certified'] else 'u')+('m' if o['unique'] is False else '?' if o['unique'] is None else '')
     if o['kind'] == 'limit': return s+('' if o['certified'] else 'm')
     return s+(':'+o['reason'] if o['reason'] != 'none' else '')
 
@@ -236,6 +238,53 @@ def flat_maximum(record, expected, names, ident):
             return expected.witness_key(**decoded)
         return tuple(sorted(decoded.items()))
 
+    typed = typed_expected(ident, expected)
+    if typed is not None and 'maximizer_set' in result:
+        try:
+            order = typed['coordinates']
+            if set(order) != names:
+                raise ValueError('coefficient names differ from the fixture')
+            estimate = result['estimates']
+            selected = tuple(number(estimate[k]) for k in order)
+            wire = result['maximizer_set']
+            if any(selected[order.index(k)] != v for k, v in expected.held.items()):
+                raise ValueError('selected estimate changes a hold')
+            if expected.unique:
+                if wire is not None or result.get('maximizers'):
+                    raise ValueError('singleton estimate carries a maximizer set')
+                reference = maxsets.normalize(typed, order, expected.held)
+                if not maxsets.equal_boxes(reference[0], [(tuple(map(maxsets.fixed, selected)), ())],
+                                           len(order)):
+                    raise ValueError('singleton differs from expected coefficients')
+            else:
+                if not wire:
+                    raise ValueError('missing typed maximizer set')
+                decoded = maxsets.compare(wire, typed, expected.held,
+                                          location_scale=expected.held.get('scale'))
+                if not maxsets.member(selected, decoded):
+                    raise ValueError('selected estimate lies outside the decoded set')
+                rows = result.get('maximizers', [])
+                if not rows or rows[0]['estimates'] != estimate:
+                    raise ValueError('first representative differs from selected estimate')
+                seen = set()
+                for row in rows:
+                    if set(row['estimates']) != names or row['model'] != ident:
+                        raise ValueError('invalid representative schema or owner')
+                    point = tuple(number(row['estimates'][k]) for k in order)
+                    if point in seen or not maxsets.member(point, decoded):
+                        raise ValueError('duplicate representative or point outside the set')
+                    seen.add(point)
+                    if any(point[order.index(k)] != v for k, v in expected.held.items()):
+                        raise ValueError('representative changes a hold')
+                    for key in ('loglik_lower', 'loglik_upper'):
+                        if not math.isclose(number(row[key]), expected.loglik, rel_tol=1e-9, abs_tol=1e-10):
+                            raise ValueError('representative likelihood disagrees with reference')
+                if not result.get('outcome_message', '').strip():
+                    raise ValueError('missing outcome diagnostic')
+        except (ValueError, KeyError, TypeError, OverflowError, ZeroDivisionError) as error:
+            problems.append(str(error))
+        return ', '.join(problems)
+
     if coefficients(result['estimates']) is None:
         problems.append('estimate lies outside the proved maximizer set')
     if not expected.unique:
@@ -254,6 +303,7 @@ def judge(rows, mode, table, probe, index):
     routes = fd.route_ids()
     equivariant = Equivariance(probe, index, table)
     by_family = collections.defaultdict(dict)
+    typed_by_sample = collections.defaultdict(list)
     for (family, source, case), r in rows.items():
         if source != 'class':
             continue
@@ -271,6 +321,30 @@ def judge(rows, mode, table, probe, index):
         problem = flat_maximum(r, expected, names, ident)
         if problem:
             failures['|'.join((CHECK+':flat-maximum', mode, family, source, case))] = problem
+        if typed_expected(ident, expected) and 'maximizer_set' in r['result'] and not problem:
+            typed_by_sample[family, expected.data].append((case, expected, r['result']))
+    for (family, _), fixtures in typed_by_sample.items():
+        ident = routes.get(family, family)
+        for less_name, less, less_result in fixtures:
+            less_wire = less_result.get('maximizer_set')
+            if not less_wire:
+                continue
+            for more_name, more, more_result in fixtures:
+                if not (less.held.items() < more.held.items() and
+                        math.isclose(less.loglik, more.loglik, rel_tol=1e-9, abs_tol=1e-10)):
+                    continue
+                more_wire = more_result.get('maximizer_set')
+                if more_wire is None:
+                    order = less_wire['coordinates']
+                    selected = [number(more_result['estimates'][k]) for k in order]
+                    more_wire = dict(version=1, coordinates=order, pieces=[
+                        dict(kind='points', points=[dict(estimate=selected)])])
+                try:
+                    maxsets.compare(more_wire, less_wire, more.held,
+                                    location_scale=more.held.get('scale'))
+                except (ValueError, KeyError, TypeError, OverflowError, ZeroDivisionError) as error:
+                    key = '|'.join((CHECK+':flat-maximum', mode, family, 'class', more_name))
+                    failures[key] = f'hold slice from {less_name}: {error}'
     for family, cases in sorted(by_family.items()):
         ident = routes.get(family, family)
         fs.ROUTE_MODE = family in routes

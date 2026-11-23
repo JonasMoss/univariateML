@@ -224,6 +224,9 @@ def items(r, family_law, table):
     num = lambda d: {k: number(v) for k, v in d.items()}
     if res['kind'] == 'ok':
         out.append(('estimate', family_law, num(res['estimates']), number(res['logLik']), None, True))
+        for i, row in enumerate(res.get('maximizers', [])):
+            out.append((f'maximizer#{i}', family_law, num(row['estimates']), None,
+                        (number(row['loglik_lower']), number(row['loglik_upper'])), True))
     elif res['kind'] == 'limit' and res['limit_loglik'] != 'nan' and res['limit_estimates']:
         model = res['model']
         out.append(('limit', model, num(res['limit_estimates']),

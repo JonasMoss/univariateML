@@ -21,7 +21,7 @@ test_that("nhyper design, fixed subsets and errors are explicit", {
   expect_no_warning(z <- mlnhyper(c(0,0),r=0,N=20))
   expect_false(attr(z, "unique"))
   expect_equal(attr(z, "maximizers")$m, c(0, 20))
-  expect_match(attr(z, "outcome_message"), "unidentified")
+  expect_match(attr(z, "outcome_message"), "Maximum is not unique")
   expect_equal(as.numeric(z),c(0,20,0))
   expect_equal(attr(z,"logLik"),0)
   expect_equal(attr(mlnhyper(0,r=0,N=0),"logLik"),0)
@@ -238,48 +238,50 @@ test_that("constant nhyper samples describe the point-mass maximizing set", {
   expect_no_warning(fit <- mlnhyper(c(2, 2), r = NULL, N = NULL, m = NULL))
   expect_false(attr(fit, "unique"))
   witnesses <- attr(fit, "maximizers")
-  expect_equal(witnesses$m, c(2, 3))
-  expect_equal(witnesses$N, c(2, 3))
-  expect_equal(witnesses$r, c(2, 2))
-  expect_match(attr(fit, "outcome_message"), "point-mass")
+  expect_gte(nrow(witnesses), 2L)
+  expect_equal(as.numeric(witnesses[1, names(fit)]), as.numeric(fit))
+  expect_true(all(witnesses$m == witnesses$N & witnesses$r == 2 &
+                    witnesses$N >= 2 & witnesses$N <= 2^53 - 1))
+  expect_match(attr(fit, "outcome_message"), "Maximum is not unique")
 })
 
 test_that("nhyper reports the all-zero maximum set for every hold pattern", {
   cap <- 2^53 - 1
-  joint <- "every integer pair 0 <= m <= N <= 2^53 - 1"
-  population <- "every integer population size m <= N <= 2^53 - 1"
-  composition <- "every composition from 0 to N"
   cases <- list(
-    list(NULL, NULL, NULL, c(0, 0, 0), c(0, 1, 0), joint),
-    list(NULL, NULL, 0, c(0, 0, 0), c(0, 1, 0), joint),
-    list(2, NULL, NULL, c(2, 2, 0), c(2, 3, 0), population),
-    list(2, NULL, 0, c(2, 2, 0), c(2, 3, 0), population),
-    list(NULL, 5, NULL, c(0, 5, 0), c(5, 5, 0), composition),
-    list(NULL, 5, 0, c(0, 5, 0), c(5, 5, 0), composition),
-    list(2, 5, NULL, c(2, 5, 0), NULL, NULL),
-    list(2, 5, 0, c(2, 5, 0), NULL, NULL),
-    list(NULL, 0, NULL, c(0, 0, 0), NULL, NULL),
-    list(NULL, 0, 0, c(0, 0, 0), NULL, NULL),
-    list(cap, NULL, NULL, c(cap, cap, 0), NULL, NULL),
-    list(cap, NULL, 0, c(cap, cap, 0), NULL, NULL)
+    list(NULL, NULL, NULL, c(0, 0, 0), TRUE),
+    list(NULL, NULL, 0, c(0, 0, 0), TRUE),
+    list(2, NULL, NULL, c(2, 2, 0), TRUE),
+    list(2, NULL, 0, c(2, 2, 0), TRUE),
+    list(NULL, 5, NULL, c(0, 5, 0), TRUE),
+    list(NULL, 5, 0, c(0, 5, 0), TRUE),
+    list(2, 5, NULL, c(2, 5, 0), FALSE),
+    list(2, 5, 0, c(2, 5, 0), FALSE),
+    list(NULL, 0, NULL, c(0, 0, 0), FALSE),
+    list(NULL, 0, 0, c(0, 0, 0), FALSE),
+    list(cap, NULL, NULL, c(cap, cap, 0), FALSE),
+    list(cap, NULL, 0, c(cap, cap, 0), FALSE)
   )
   for (case in cases) {
     expect_no_warning(fit <- mlnhyper(c(0, 0), m = case[[1]], N = case[[2]], r = case[[3]]))
     expect_s3_class(fit, "univariateML")
     expect_true(attr(fit, "certified"))
-    expect_identical(attr(fit, "unique"), is.null(case[[5]]))
+    expect_identical(attr(fit, "unique"), !case[[5]])
     expect_equal(as.numeric(fit), case[[4]], tolerance = 0)
     expect_equal(attr(fit, "logLik"), 0)
     rows <- attr(fit, "maximizers")
     message <- attr(fit, "outcome_message")
-    if (is.null(case[[5]])) {
+    if (!case[[5]]) {
       expect_null(rows)
       expect_null(message)
     } else {
-      expect_match(message, case[[6]], fixed = TRUE)
-      expect_equal(unname(as.matrix(rows[c("m", "N", "r")])),
-                   rbind(case[[4]], case[[5]]), tolerance = 0)
-      expect_equal(dnhyper(c(0, 0), m = rows$m, N = rows$N, r = rows$r), c(1, 1))
+      expect_match(message, "Maximum is not unique", fixed = TRUE)
+      expect_gte(nrow(rows), 2L)
+      expect_equal(as.numeric(rows[1, names(fit)]), case[[4]], tolerance = 0)
+      expect_true(all(rows$r == 0 & rows$m >= 0 & rows$m <= rows$N & rows$N <= cap))
+      for (i in seq_len(3L))
+        if (!is.null(case[[i]])) expect_true(all(rows[[names(fit)[i]]] == case[[i]]))
+      expect_equal(dnhyper(rep(0, nrow(rows)), m = rows$m, N = rows$N, r = rows$r),
+                   rep(1, nrow(rows)))
     }
   }
 })
@@ -293,5 +295,25 @@ test_that("negative hypergeometric adjacent populations are an exact tie", {
   expect_equal(rows$m, c(2, 2))
   expect_equal(rows$r, c(1, 1))
   expect_equal(attr(f, "logLik"), -4 * log(3))
-  expect_match(attr(f, "outcome_message"), "adjacent population sizes")
+  expect_match(attr(f, "outcome_message"), "N = 3.*or.*N = 4")
+})
+
+test_that("maximizer sets serialize the integer count cap exactly", {
+  z <- mlnhyper(c(0, 0), r = NULL, m = NULL, N = NULL)
+  set <- attr(z, "maximizer_set")
+  expect_identical(set$version, 1L)
+  expect_identical(set$coordinates, c("m", "N", "r"))
+  expect_identical(set$pieces[[1]]$axes[[2]]$upper, 2^53 - 1)
+  expect_identical(set$pieces[[1]]$order[[1]], c(0L, 1L))
+  expect_identical(attr(unserialize(serialize(z, NULL)), "maximizer_set"), set)
+})
+
+test_that("an exhausted adjacent-tie proof retains the fit and comparison candidates", {
+  f <- mlnhyper(rep(c(1, 7), 50), N = 9, r = 1, iterlim = 1)
+  expect_identical(attr(f, "unique"), NA)
+  expect_false(attr(f, "certified"))
+  expect_null(attr(f, "maximizer_set"))
+  expect_equal(attr(f, "candidates")$m, c(1, 2))
+  expect_equal(unname(coef(f)[["m"]]), 1)
+  expect_error(vcov(f), "Uniqueness is undetermined", class = "univariateML_unsupported")
 })

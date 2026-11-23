@@ -27,6 +27,13 @@ inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held 
     if(!res.maximizer_support.empty())out.extra_vectors.push_back({"maximizer_support",res.maximizer_support});
     if (res.status == cppunivariate::CauchyStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, res.maximizers, "cauchy", [&](const auto& coefficients) {
+        double ll = 0;
+        for (double observation : x)
+          ll += cppunivariate::distributions::dcauchy(observation, coefficients[0], coefficients[1], true);
+        return ll;
+      });
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"location",location_arg.supplied},{"scale",scale_arg.supplied}});
   };
   if(res.status==cppunivariate::CauchyStatus::NumericalFailure)return done(fail("Cauchy likelihood cannot be evaluated at the represented coefficients."));
@@ -37,12 +44,12 @@ inline FitResult fit_cauchy(cppunivariate::span x, Held location_arg = {}, Held 
     return done(stop_failure(fail("Cauchy MLE does not exist: a sample atom has at least half the mass, except for balanced two-point samples"),res.stop_detail,outcome_payload(o),{"location","scale"},""));
   if(res.status==cppunivariate::CauchyStatus::AmbiguousMaximum) {
     std::string message="Held-scale Cauchy global maxima are tied or numerically indistinguishable.";
-    if(o.kind==cppunivariate::OutcomeKind::Estimate && !o.unique)
+    if(o.kind==cppunivariate::OutcomeKind::Estimate && o.uniqueness_known && !o.unique)
       message+=" The two reflected locations are global maximizers.";
     auto out=comparison_payload(stop_failure(fail(message),res.stop_detail,PayloadKind::Comparison,{"location","scale"},""),
       o,res.selected_candidate,{{"location",location_arg},{"scale",scale_arg}});
     if(o.kind==cppunivariate::OutcomeKind::Estimate) {
-      out.logLik=res.candidate_evaluations[o.unique?res.selected_candidate:0].loglik;
+      out.logLik=res.candidate_evaluations[o.uniqueness_known && !o.unique ? 0 : res.selected_candidate].loglik;
     }
     return done(out);
   }

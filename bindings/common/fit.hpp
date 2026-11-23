@@ -5,10 +5,12 @@
 #include <cmath>
 #include <sstream>
 #include <iomanip>
+#include <memory>
 #include <algorithm>
 #include "cppunivariate/core/span.hpp"
 #include "cppunivariate/core/stop_detail.hpp"
 #include "cppunivariate/core/outcome.hpp"
+#include "maximizer_set.hpp"
 namespace umvl_binding {
 // Payload tags retain adapter validation context; they never decide a rendered stop.
 enum class PayloadKind { None, Comparison, Limit, Nonexistence, Budget, Numerical, Unresolved, Tolerance, Conditioning };
@@ -56,6 +58,11 @@ struct FitResult {
   bool outcome_set=false, outcome_override=false;
   int core_status=-1;
   std::vector<NamedCandidate> candidates;
+  // Allocate only when a typed set is present. Keep ordinary and nested
+  // adapter results small, including on the WebAssembly stack.
+  std::shared_ptr<const cppunivariate::MaximizerSet> maximizer_set;
+  std::vector<NamedCandidate> maximizers;
+  std::string outcome_message;
   std::vector<std::pair<std::string,double>> limit_estimates;
   double limit_loglik=NAN,loglik_lower=NAN,loglik_upper=NAN,segment_loglik_upper=NAN;
   double root_radius=NAN;  // Optional scalar-root certificate evidence for replay.
@@ -110,6 +117,83 @@ inline std::string outcome_kind(const cppunivariate::FitOutcome& o) {
     default:return "numerical";
   }
 }
+inline std::string fit_maxset_json(const FitResult& out) {
+  return out.error_kind.empty() && out.maximizer_set ? maxset_json(*out.maximizer_set, out.estimates) : "null";
+}
+// Sample the certified pieces while the adapter still has its data to score rows.
+template <class Likelihood>
+inline void attach_maximizer_set(FitResult& out, const cppunivariate::MaximizerSet& source,
+                                 const std::string& model, Likelihood likelihood) {
+  if (!source.size) return;
+  auto storage = std::make_shared<cppunivariate::MaximizerSet>(source);
+  out.maximizer_set = storage;
+  auto& set = *storage;
+  if (set.seal() != cppunivariate::MaxsetStatus::Ok || set.dimension != out.estimates.size() ||
+      set.singleton()) return;
+  cppunivariate::Coordinates selected;
+  for (std::size_t i = 0; i < set.dimension; ++i) selected.values[i] = out.estimates[i].second;
+  const auto add = [&](const cppunivariate::Coordinates& x, double ll) {
+    if (!std::isfinite(ll)) return;
+    auto values = out.estimates;
+    for (std::size_t i = 0; i < values.size(); ++i) values[i].second = x.values[i];
+    for (const auto& row : out.maximizers) if (row.estimates == values) return;
+    out.maximizers.push_back({values, ll, ll, model});
+  };
+  if (!set.contains(selected)) return;
+  add(selected, out.logLik);
+  for (std::size_t k = 0; k < set.size; ++k) {
+    const auto& piece = set.pieces[k].value;
+    if (const auto* points = std::get_if<cppunivariate::Points>(&piece)) {
+      for (std::size_t i = 0; i < points->size; ++i) {
+        const auto& point = points->values[i].estimate;
+        add(point, likelihood(point.values));
+      }
+    } else if (const auto* box = std::get_if<cppunivariate::Box>(&piece)) {
+      const auto first = cppunivariate::box_witness(*box, set.dimension, false);
+      const auto last = cppunivariate::box_witness(*box, set.dimension, true);
+      if (first) add(*first, likelihood(first->values));
+      if (last) add(*last, likelihood(last->values));
+      if (first && last && first->values == last->values) {
+        for (std::size_t i = 0; i < set.dimension; ++i) {
+          const auto& axis = box->axes[i];
+          if (std::isfinite(axis.range.upper) && std::isfinite(axis.range.lower)) continue;
+          auto neighbor = *first;
+          const double v = neighbor.values[i];
+          const double direction = std::isfinite(axis.range.upper) ? -1 : 1;
+          neighbor.values[i] = axis.integer ? v + direction : v + direction * std::max(1., std::abs(v) * .5);
+          if (!cppunivariate::contains(*box, neighbor, set.dimension)) continue;
+          add(neighbor, likelihood(neighbor.values));
+          break;
+        }
+      }
+    } else if (const auto* relation = std::get_if<cppunivariate::Relation>(&piece)) {
+      const auto& range = relation->axes[relation->driver].range;
+      std::array<double, 2> drivers{};
+      if (relation->form == cppunivariate::RelationForm::CountRatio)
+        drivers = {range.lower, range.upper};
+      else if (std::isfinite(range.lower) && std::isfinite(range.upper)) {
+        drivers = {.5 * range.lower + .5 * range.upper,
+                   .75 * range.lower + .25 * range.upper};
+        if (relation->form != cppunivariate::RelationForm::Semicircle) {
+          if (range.lower_closed) drivers[0] = range.lower;
+          if (range.upper_closed) drivers[1] = range.upper;
+        }
+      } else {
+        cppunivariate::Box domain;
+        domain.axes = relation->axes;
+        const auto first = cppunivariate::box_witness(domain, set.dimension, false);
+        const auto last = cppunivariate::box_witness(domain, set.dimension, true);
+        if (first) drivers[0] = first->values[relation->driver];
+        if (last) drivers[1] = last->values[relation->driver];
+      }
+      for (double driver : drivers) {
+        const auto witness = cppunivariate::relation_witness(*relation, set.dimension, driver);
+        if (witness) add(*witness, likelihood(witness->values));
+      }
+    }
+  }
+}
+
 // Render once at the host boundary; adapters retain numerical payloads and diagnostics.
 inline FitResult render_fit(FitResult out) {
   out.error_kind=outcome_kind(out.outcome);
@@ -123,6 +207,27 @@ inline FitResult render_fit(FitResult out) {
       out.error_kind="unresolved";
       if(out.error.empty())out.error="The fit returned no coefficients.";
       return out;
+    }
+    out.outcome_message = out.error;
+    if (out.maximizer_set) {
+      const auto& set = *out.maximizer_set;
+      bool valid = set.valid_dimension() && set.dimension == out.estimates.size() &&
+                   out.outcome.uniqueness_known && !out.outcome.unique && !out.maximizers.empty();
+      for (std::size_t i = 0; i < out.estimates.size(); ++i) {
+        const auto& name = out.estimates[i].first;
+        valid = valid && !name.empty();
+        for (std::size_t j = 0; j < i; ++j) valid = valid && out.estimates[j].first != name;
+      }
+      if (!valid) {
+        out.error_kind = "numerical";
+        out.error = "The fit returned an invalid maximizer set.";
+        out.outcome = cppunivariate::FitOutcome::failure(cppunivariate::OutcomeReason::Evaluation);
+        out.outcome_override = true;
+        out.maximizer_set.reset();
+        out.maximizers.clear();
+        return out;
+      }
+      out.outcome_message = maxset_message(set, out.estimates);
     }
     out.error.clear();
   } else if(out.outcome.kind==cppunivariate::OutcomeKind::Limit && !out.outcome.certified) {
@@ -332,7 +437,7 @@ inline FitResult comparison_payload(FitResult out,const cppunivariate::FitOutcom
     const std::vector<std::pair<std::string,Held>>& request) {
   if(out.payload_kind!=PayloadKind::Comparison || chosen>=out.candidates.size())return out;
   // Proved non-uniqueness: the canonical representative is the first listed maximizer.
-  if(o.kind==cppunivariate::OutcomeKind::Estimate && !o.unique)chosen=0;
+  if(o.kind==cppunivariate::OutcomeKind::Estimate && o.uniqueness_known && !o.unique)chosen=0;
   const NamedCandidate c=out.candidates[chosen];
   if(o.kind==cppunivariate::OutcomeKind::Estimate) {
     out.estimates.clear();out.fixed.clear();out.has_fixed=true;
