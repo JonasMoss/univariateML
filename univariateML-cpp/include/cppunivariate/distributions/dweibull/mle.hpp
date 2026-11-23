@@ -15,6 +15,7 @@
 
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 
@@ -48,6 +49,7 @@ struct DweibullResult {
   int iterations;
   DweibullStatus status;
   StopDetail stop_detail{};
+  MaximizerSet maximizers{};
 };
 
 inline FitOutcome outcome(const DweibullResult& r) {
@@ -418,8 +420,11 @@ inline DweibullResult dweibull_mle(
       // p_0 = 1 - shape1 for every shape2: shape2 is not identified.
       P.centre(0);
       P.set_beta(1);
-      return {shape1, 1, dweibull_detail::loglik(P, std::log(-std::log(shape1))), 0,
-              DweibullStatus::ShapeUnidentified};
+      DweibullResult out{shape1, 1, dweibull_detail::loglik(P, std::log(-std::log(shape1))), 0,
+                         DweibullStatus::ShapeUnidentified};
+      out.maximizers.dimension = 2;
+      out.maximizers.add_box({{fixed(shape1), interval(0, maxset_inf, false, false)}});
+      return out;
     }
     if (P.max == 1) return {shape1, nan, nan, 0, DweibullStatus::HeldBernoulliLimit};
     return dweibull_detail::held_q_fit(P, shape1, tol, maxit);

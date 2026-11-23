@@ -794,7 +794,7 @@ TEST_CASE("cmb: structural constant-sample maximizers and singleton controls") {
     CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
     CHECK(o.certified);
     CHECK_FALSE(o.unique);
-    CHECK_FALSE(fit.maximizer_set.empty());
+    CHECK(fit.maximizers.size > 0);
     const auto& rows = fit.stop_detail.candidates;
     REQUIRE(rows.size() == 2);
     CHECK(rows[0].coef != rows[1].coef);

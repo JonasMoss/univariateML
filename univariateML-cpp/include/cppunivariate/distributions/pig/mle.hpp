@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
@@ -21,6 +22,7 @@ struct PigResult {
   PigStatus status;
   StopDetail stop_detail{};
   bool unique=true;
+  MaximizerSet maximizers{};
 };
 namespace pig_detail {
 struct Sum {
@@ -371,17 +373,15 @@ inline PigResult pig_mle(ispan x, double tol=1e-10, int maxit=200,
       (fs && (!(shape>=0)||!std::isfinite(shape)))) return invalid;
   for (int k:x) if (k<0) return invalid;
   const pig_detail::Counts data(x);
-  if (shape==0) {
-    if (data.average!=0) return invalid;
-    PigResult out{fm?mean:1,0,0,0,PigStatus::Ok};
-    // Shape held at 0, mean free: every mu has the same (zero) likelihood.
-    out.unique=fm;
-    return out;
-  }
-  if (data.average==0 && !fs) {
-    PigResult out{fm?mean:1,0,0,0,PigStatus::Ok};
-    // Mean free: (mu, 0) attains the maximum for every mu.
-    out.unique=fm;
+  if (shape == 0 && data.average != 0) return invalid;
+  if (data.average == 0 && (shape == 0 || !fs)) {
+    PigResult out{fm ? mean : 1, 0, 0, 0, PigStatus::Ok};
+    // Only shape zero gives probability one to zero for a positive mean.
+    out.unique = fm;
+    if (!fm) {
+      out.maximizers.dimension = 2;
+      out.maximizers.add_box({{interval(0, maxset_inf, false, false), fixed(0)}});
+    }
     return out;
   }
   if(fs && static_cast<std::int64_t>(data.frequencies.rbegin()->first)>100000LL*std::min(maxit,100000)) {

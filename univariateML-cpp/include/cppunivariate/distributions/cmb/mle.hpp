@@ -1,11 +1,11 @@
 // Full finite exponential family in (logit(prob), nu).
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "dpqr.hpp"
 #include "../binom/mle.hpp"
-#include <string>
 #include "acceptance.hpp"
 #include "../../core/span.hpp"
 #include "../../special/cmp.hpp"
@@ -20,7 +20,7 @@ struct CmbResult { double prob,nu,logLik; int iterations; CmbStatus status;   St
  bool bernoulli_face_tie=false;
  bool unique=true;
  unsigned unidentified=0;
- std::string maximizer_set{};
+ MaximizerSet maximizers{};
 };
 
 // Candidates are (size, prob, nu).
@@ -36,15 +36,6 @@ inline bool family_point(const CmbResult&, const FitCandidate& c) {
 inline bool accurate_point(const CmbResult& r, const FitCandidate& c) {
   return family_point(r, c) && point_value(c);
 }
-// All-zero counts: listed family points with log likelihood 0 attain the
-// supremum of any pmf likelihood, so the maxima are proved and not unique.
-inline bool zero_count_maxima(const CmbResult& r) {
-  if (r.stop_detail.candidates.size() < 2) return false;
-  for (const auto& c : r.stop_detail.candidates)
-    if (!family_point(r, c) || c.loglik_lower != 0 || c.loglik_upper != 0) return false;
-  return true;
-}
-
 inline FitOutcome outcome(const CmbResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
@@ -58,10 +49,12 @@ inline FitOutcome outcome(const CmbResult& r) {
     case CmbStatus::Unidentified: return FitOutcome::failure(OutcomeReason::Unresolved);
     case CmbStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case CmbStatus::FaceUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
-    case CmbStatus::FaceTie:
-      // The saturated Bernoulli law is attained at size one for every nu.
-      if(r.bernoulli_face_tie || !r.maximizer_set.empty())return nonunique_outcome_of(r,true);
-      return zero_count_maxima(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
+    case CmbStatus::FaceTie: {
+      if (r.maximizers.size) return FitOutcome::estimate(true, false);
+      const auto comparison = comparison_outcome_of(r);
+      return comparison.kind == OutcomeKind::Estimate && r.stop_detail.comparison_tie ?
+          FitOutcome::undetermined() : comparison;
+    }
     case CmbStatus::NotImplemented: return FitOutcome::failure(OutcomeReason::Unsupported);
   }
   return {};
@@ -500,12 +493,13 @@ inline void mark_constant_flat(CmbResult& fit, double size, bool free_prob, bool
   const double nu = !prob_flat && nu_flat ? (fit.nu==0 ? 1 : 0) : fit.nu;
   const double ll = fit.logLik;
   fit.stop_detail = comparison_detail({{size,fit.prob,fit.nu},ll,ll},{{size,p,nu},ll,ll});
-  if (size==0)
-    fit.maximizer_set = "The maximizers have size = 0 and every admissible value of each free parameter.";
-  else if (size==1 && fit.prob>0 && fit.prob<1)
-    fit.maximizer_set = "With size = 1 every finite nu gives the same Bernoulli likelihood at the maximizing prob.";
-  else
-    fit.maximizer_set = "At the fitted endpoint probability and size, every finite nu gives the point mass on the observations.";
+  // At size zero the mass is one for every proportion. At size one
+  // the binomial coefficient is one, and endpoint masses at any size
+  // are deterministic. Dispersion is absent from all three likelihoods.
+  fit.maximizers.dimension = 3;
+  fit.maximizers.add_box({{fixed(size, true),
+      prob_flat ? interval(0, 1, true, true) : fixed(fit.prob),
+      nu_flat ? Axis{} : fixed(fit.nu)}});
 }
 } // namespace cmb_detail
 
@@ -515,8 +509,7 @@ inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=2000,
   std::uint64_t work=0;
   const auto proposed=cmb_mle_work(x,N,tol,maxit,prob,nu,work,enumeration_budget(maxit));
   auto result = cmb_finish_work(x,N,proposed,tol,maxit,prob,nu,work);
-  if (!x.empty() && std::all_of(x.begin(),x.end(),[&](int v){return v==x[0];}))
-    cmb_detail::mark_constant_flat(result,N,std::isnan(prob),std::isnan(nu));
+  cmb_detail::mark_constant_flat(result,N,std::isnan(prob),std::isnan(nu));
   return result;
 }
 
@@ -591,7 +584,13 @@ inline CmbSizeResult zero_size_tie(double prob,double nu) {
   out.fit.unique=false;
   out.fit.unidentified=(std::isnan(prob)?1u:0u)|(std::isnan(nu)?2u:0u)|4u;
   out.fit.stop_detail=comparison_detail({{0,p,v},0,0},{{1,0,v},0,0});
-  out.fit.maximizer_set = "Distinct finite sizes attain the maximum. Every admissible pair with size = 0 or prob = 0 maximizes the likelihood at every allowed nu, subject to held values.";
+  // A positive size and a positive probability put mass above zero.
+  auto& set = out.fit.maximizers;
+  set.dimension = 3;
+  const auto dispersion = std::isnan(nu) ? Axis{} : fixed(nu);
+  const auto probability = std::isnan(prob) ? interval(0, 1, true, true) : fixed(prob);
+  set.add_box({{fixed(0, true), probability, dispersion}});
+  set.add_box({{interval(0, 1e7, true, true, true), fixed(0), dispersion}});
   return out;
 }
 // A likelihood superlevel also bounds the probability of every observed
@@ -1184,10 +1183,17 @@ inline CmbSizeResult cmb_size_free_nu_mle_impl(ispan x,
     if(out.fit.bernoulli_face_tie) {
       out.fit.unique=false;out.fit.unidentified=2u;
       const double p=evidence.limit_coef[1],ll=evidence.limit_loglik;
-      // Proved non-uniqueness renders the first listed family point. The
-      // equivalent binomial law stays in limit_model/limit_coef.
+      out.size = 1;
+      out.fit.prob = p;
+      out.fit.nu = 1;
+      out.fit.logLik = ll;
+      // The equivalent binomial law stays in limit_model/limit_coef.
       out.fit.stop_detail.candidates={{{1,p,1},ll,ll,StopModel::None},{{1,p,-1},ll,ll,StopModel::None}};
       out.fit.stop_detail.loglik_lower=ll;out.fit.stop_detail.loglik_upper=ll;
+      // The empirical Bernoulli law saturates the likelihood, and positive
+      // probabilities at both zero and one exclude every finite size above one.
+      out.fit.maximizers.dimension = 3;
+      out.fit.maximizers.add_box({{fixed(1, true), fixed(p), Axis{}}});
     }
     if(!out.fit.bernoulli_face_tie && (s==CmbStatus::FaceTie || s==CmbStatus::FaceUnresolved)) out.fit.stop_detail.loglik_upper=INFINITY;
     return out;
@@ -1290,8 +1296,7 @@ inline CmbSizeResult cmb_size_free_nu_mle(ispan x,
     if(r.size==0 && std::isnan(prob))r.fit.unidentified|=1u;
     if(r.size<=1 || r.fit.prob==0 || r.fit.prob==1)r.fit.unidentified|=2u;
     r.fit.unique=r.fit.unidentified==0;
-    if (!x.empty() && std::all_of(x.begin(),x.end(),[&](int v){return v==x[0];}))
-      cmb_detail::mark_constant_flat(r.fit,r.size,std::isnan(prob),true);
+    cmb_detail::mark_constant_flat(r.fit,r.size,std::isnan(prob),true);
   }
   return r;
 }
@@ -1455,7 +1460,10 @@ inline CmbSizeResult cmb_size_mle(ispan x,double prob,double nu,
       const double ll = double(x.size()) * distributions::dbinom(mx,size,prob,true);
       CmbSizeResult tied{size,{prob,nu,ll,0,CmbStatus::FaceTie}};
       tied.fit.unique = false;
-      tied.fit.maximizer_set = "Exactly the two listed adjacent sizes maximize the likelihood.";
+      tied.fit.maximizers.dimension = 3;
+      const std::array<Point, 2> points{{{{{size, prob, nu}}, {}},
+                                         {{{size + 1, prob, nu}}, {}}}};
+      tied.fit.maximizers.add_points({points.data(), points.size()});
       tied.fit.stop_detail = comparison_detail({{size,prob,nu},ll,ll},{{size+1,prob,nu},ll,ll});
       tied.fit.stop_detail.loglik_upper = ll;
       return tied;

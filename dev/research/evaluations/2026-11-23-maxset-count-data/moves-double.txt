@@ -1,0 +1,85 @@
+count-double 967 records, 10 families
+bbinom	constant-flat-adjacent-sizes	{"alpha": 1.0, "beta": 2.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+bbinom	pair-flat-shape-ray	{"size": 1.0}	added fixture	
+bbinom	zeros-flat-alpha	{"alpha": 1.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+bbinom	zeros-flat-beta	{"beta": 1.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+bbinom	zeros-flat-free	{}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+bbinom	zeros-flat-size-alpha	{"alpha": 1.0, "size": 0.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+bbinom	zeros-flat-size-beta	{"beta": 1.0, "size": 0.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+bbinom	zeros-flat-size-zero	{"size": 0.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	000838	{}	typed maximum	candidates,maximizer_set,maximizers
+cmb	constant-flat-adjacent-sizes	{"nu": 1.0, "prob": 0.5}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	constant-flat-bernoulli	{"prob": 0.5, "size": 1.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	constant-flat-free	{}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	constant-flat-prob-one	{"prob": 1.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	constant-flat-size	{"size": 3.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	zeros	{"size": 10.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers
+cmb	zeros-flat-bernoulli	{"prob": 0.5, "size": 1.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	zeros-flat-free	{}	typed maximum	candidates,extra,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	zeros-flat-nu	{"nu": 1.0}	typed maximum	candidates,extra,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	zeros-flat-prob	{"prob": 0.5}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	zeros-flat-prob-zero	{"prob": 0.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	zeros-flat-size	{"size": 10.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	zeros-flat-size-zero	{"size": 0.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	zeros-flat-size-zero-nu	{"nu": 1.0, "size": 0.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmb	zeros-flat-size-zero-prob	{"prob": 0.5, "size": 0.0}	typed maximum	candidates,loglik_lower,loglik_upper,maximizer_set,maximizers,outcome_message
+cmp	zeros	{}	typed maximum	maximizer_set,maximizers
+cmp	zeros-flat-free	{}	typed maximum	maximizer_set,maximizers,outcome_message
+cmp	zeros-flat-lambda-zero	{"lambda": 0.0}	typed maximum	maximizer_set,maximizers,outcome_message
+dweibull	zeros-flat-q	{"shape1": 0.5}	typed maximum	maximizer_set,maximizers,outcome_message
+hyper	003454	{}	undetermined uniqueness	candidates,outcome,unique
+hyper	003455	{}	typed maximum	candidates,maximizer_set,maximizers
+hyper	003456	{}	undetermined uniqueness	candidates,outcome,unique
+hyper	003457	{}	undetermined uniqueness	candidates,outcome,unique
+hyper	003458	{}	undetermined uniqueness	candidates,outcome,unique
+hyper	003459	{}	undetermined uniqueness	certified,outcome,unique
+hyper	003460	{}	undetermined uniqueness	certified,outcome,unique
+hyper	003461	{}	undetermined uniqueness	certified,outcome,unique
+hyper	003462	{}	undetermined uniqueness	certified,outcome,unique
+hyper	003463	{}	undetermined uniqueness	certified,outcome,unique
+hyper	003464	{}	undetermined uniqueness	certified,outcome,unique
+hyper	003465	{}	undetermined uniqueness	candidates,outcome,unique
+hyper	003466	{}	undetermined uniqueness	candidates,outcome,unique
+hyper	003467	{}	undetermined uniqueness	candidates,outcome,unique
+hyper	003482	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003483	{"N": 50.0}	typed maximum	candidates,maximizer_set,maximizers
+hyper	003484	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003485	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003486	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003487	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003488	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003489	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003490	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003491	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003492	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003494	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	003525	{"k": 10.0, "m": 20.0}	typed maximum	candidates,maximizer_set,maximizers
+hyper	010971	{}	undetermined uniqueness	candidates,outcome,unique
+hyper	010973	{"N": 50.0}	undetermined uniqueness	certified,outcome,unique
+hyper	constant-flat-N	{"N": 50.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	constant-flat-adjacent-compositions	{"N": 5.0, "k": 2.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	constant-flat-adjacent-draws	{"N": 5.0, "m": 2.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	constant-flat-adjacent-populations	{"k": 2.0, "m": 2.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	constant-flat-free	{}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	constant-flat-k-four	{"k": 4.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	constant-flat-m-four	{"m": 4.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	pair-flat-one-draw-k	{"k": 1.0}	added fixture	
+hyper	pair-flat-one-draw-m	{"m": 1.0}	added fixture	
+hyper	zeros-flat-N	{"N": 50.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	zeros-flat-N-k-zero	{"N": 50.0, "k": 0.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	zeros-flat-N-m-zero	{"N": 50.0, "m": 0.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	zeros-flat-free	{}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	zeros-flat-k	{"k": 4.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	zeros-flat-k-zero	{"k": 0.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	zeros-flat-m	{"m": 4.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	zeros-flat-m-k-zero	{"k": 0.0, "m": 4.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	zeros-flat-m-zero	{"m": 0.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+hyper	zeros-flat-m-zero-k	{"k": 4.0, "m": 0.0}	typed maximum	candidates,maximizer_set,maximizers,outcome_message
+nbinom	zeros	{}	typed maximum	maximizer_set,maximizers
+nbinom	zeros-flat-free	{}	typed maximum	maximizer_set,maximizers,outcome_message
+nbinom	zeros-flat-prob-one	{"prob": 1.0}	typed maximum	maximizer_set,maximizers,outcome_message
+nbinom	zeros-flat-size-zero	{"size": 0.0}	typed maximum	maximizer_set,maximizers,outcome_message
+pig	zeros	{}	typed maximum	maximizer_set,maximizers
+pig	zeros-flat-free	{}	typed maximum	maximizer_set,maximizers,outcome_message
+pig	zeros-flat-shape-zero	{"shape": 0.0}	typed maximum	maximizer_set,maximizers,outcome_message
+Totals {'typed maximum': 54, 'added fixture': 3, 'undetermined uniqueness': 26}

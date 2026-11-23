@@ -239,8 +239,10 @@ test_that("discrete limit stops expose fitted faces without changing messages", 
   expect_false(attr(e,"unique"))
   expect_equal(unname(coef(e)),c(1,.5,1))
   expect_equal(as.numeric(logLik(e)),sum(dbinom(c(0,1),1,.5,log=TRUE)))
-  expect_equal(nrow(attr(e,"maximizers")),2L)
-  expect_setequal(attr(e,"maximizers")$nu,c(-1,1))
+  expect_gte(nrow(attr(e, "maximizers")), 2L)
+  dispersion <- attr(e, "maximizer_set")$pieces[[1]]$axes[[3]]
+  expect_equal(c(dispersion$lower, dispersion$upper), c(-Inf, Inf))
+  expect_identical(dispersion$closed, c(FALSE, FALSE))
   e <- tryCatch(mlbinom(c(1,1,1,2,3,7,12),size=NULL,zero="truncated"),error=identity)
   expect_s3_class(e,"univariateML_limit")
   expect_identical(fit_payload(e)$model,"ztpois")
@@ -309,4 +311,23 @@ test_that("binomial zero atoms and adjacent sizes report the whole maximizing se
   expect_match(attr(f, "outcome_message"), "size = 1.*or size = 2")
   for (f in list(mlbinom(rep(0, 4), size = 12), mlbinom(rep(0, 4), size = NULL, prob = .5),
                  mlbinom(rep(5, 4), size = NULL))) expect_true(attr(f, "unique"))
+})
+
+test_that("zero modifiers publish the full Bernoulli and positive-component sets", {
+  x <- c(0, 1, 1)
+  inflated <- mlbinom(x, size = 1, zero = "inflated")
+  relation <- attr(inflated, "maximizer_set")$pieces[[1]]
+  expect_identical(relation$form, "product")
+  expect_identical(relation$complement, c(FALSE, TRUE))
+  rows <- attr(inflated, "maximizers")
+  expect_gte(nrow(rows), 2L)
+  expect_equal(rows$prob * (1 - rows$pi), rep(mean(x), nrow(rows)))
+
+  hurdle <- suppressWarnings(mlbinom(x, size = NULL, p0 = .4, zero = "modified"))
+  set <- attr(hurdle, "maximizer_set")
+  expect_identical(set$coordinates, c("size", "prob", "p0"))
+  expect_length(set$pieces, 2L)
+  rows <- attr(hurdle, "maximizers")
+  expect_true(all(rows$size == 1 | rows$prob == 0))
+  expect_true(all(rows$p0 == .4))
 })

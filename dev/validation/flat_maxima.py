@@ -105,6 +105,10 @@ add('hyper', 'adjacent-draws', {'N': 5, 'm': 2},
     lambda m, N, k: k in (2, 3), x=1, loglik=4*math.log(.6))
 add('hyper', 'adjacent-populations', {'m': 2, 'k': 2},
     lambda m, N, k: N in (3, 4), x=1, loglik=4*math.log(2/3))
+for draw in ('m', 'k'):
+    add('hyper', 'one-draw-' + draw, {draw: 1},
+        lambda m, N, k, draw=draw: 3*m*k == 2*N,
+        data=(0, 1, 1), loglik=math.log(1/3) + 2*math.log(2/3))
 add('nhyper', 'adjacent-compositions', {'N': 5, 'r': 1},
     lambda m, N, r: m in (2, 3), x=2, loglik=4*math.log(.3))
 add('nhyper', 'adjacent-populations', {'m': 2, 'r': 1},
@@ -135,6 +139,10 @@ patterns('bbinom', lambda size, alpha, beta: size == 0 and alpha > 0 and beta > 
 
 add('bbinom', 'adjacent-sizes', {'alpha': 1, 'beta': 2},
     lambda size, alpha, beta: size in (1, 2), x=1, loglik=-4*math.log(3))
+
+add('bbinom', 'shape-ray', {'size': 1},
+    lambda size, alpha, beta: alpha > 0 and beta > 0 and math.isclose(alpha, 2*beta),
+    data=(0, 1, 1), loglik=math.log(1/3) + 2*math.log(2/3))
 
 patterns('cmb', lambda size, prob, nu: integer(size, 0, 10_000_000) and
          probability(prob) and (size == 0 or prob == 0), (
@@ -340,6 +348,9 @@ patterns('zib', lambda size, prob, pi: integer(size) and probability(prob) and p
     ('size', {'size': 3}, False), ('prob', {'prob': .5}, False),
     ('size-prob', {'size': 3, 'prob': .5}, True),
 ))
+add('zib', 'bernoulli-product', {'size': 1},
+    lambda size, prob, pi: math.isclose(prob*(1-pi), 2/3),
+    data=(0, 1, 1), loglik=math.log(1/3) + 2*math.log(2/3))
 patterns('zinb', lambda size, prob, pi: size >= 0 and 0 < prob <= 1 and probability(pi)
          and (nb_zero(size, prob) or pi == 1), (
     ('free', {}, False), ('pi-one', {'pi': 1}, False), ('pi', {'pi': .5}, False),
@@ -365,6 +376,14 @@ for family, base_domain in HURDLES.items():
     add(family, 'free', {}, lambda p0, domain=base_domain, **base: p0 == 1 and domain(**base))
     add(family, 'p0-one', {'p0': 1}, hurdle_zero)
     add(family, 'p0-interior', {'p0': .5}, hurdle_zero, loglik=-4*math.log(2))
+
+for family in ('zmbinom', 'zmnbinom'):
+    def mixed_one(size, prob, p0, family=family):
+        if family == 'zmbinom':
+            return integer(size, 1) and probability(prob) and (size == 1 or prob == 0)
+        return size >= 0 and prob == 1
+    add(family, 'one-held-mass', {'p0': .4}, mixed_one, data=(0, 1, 1),
+        loglik=math.log(.4) + 2*math.log1p(-.4))
 
 for family in ('ztbinom', 'zmbinom'):
     for label, held, unique in (
@@ -405,7 +424,26 @@ add('tbinom', 'singleton-window-free-size', {'a': -1, 'b': 0},
 add('tpois', 'singleton-window', {'a': -1, 'b': 0}, lambda **p: p['lambda'] >= 0)
 
 
-# Typed pilot expectations. Their constants come from the sample and holds,
+# The geometric and held-size negative-binomial windows have no retired
+# alias in the frozen route snapshots. The bounds below are inclusive.
+patterns('zigeom', lambda prob, pi: 0 < prob <= 1 and probability(pi) and
+         (prob == 1 or pi == 1), (
+    ('free', {}, False), ('prob-one', {'prob': 1}, False),
+    ('pi-one', {'pi': 1}, False), ('prob-interior', {'prob': .5}, True),
+))
+for value in (0, 2):
+    for family in ('geom-window', 'nbinom-window'):
+        holds = {'a': value, 'b': value}
+        if family == 'nbinom-window':
+            holds['size'] = 3
+        def window_member(prob, value=value, **params):
+            return 0 < prob <= 1 if value == 0 else 0 < prob < 1
+        add(family, 'singleton-window', holds, window_member, x=value)
+add('nbinom-window', 'held-zero-size', {'a': -2, 'b': 3, 'size': 0},
+    lambda size, prob: size == 0 and 0 < prob <= 1)
+
+
+# Typed expectations. Their constants come from the sample and holds,
 # independently of the fitter's returned representative or coefficients.
 def axis(lower='-inf', upper='inf', closed=(False, False), integer=False):
     return dict(lower=lower, upper=upper, closed=list(closed), integer=integer)
@@ -423,7 +461,148 @@ def points(*estimates):
     return dict(kind='points', points=[dict(estimate=list(x)) for x in estimates])
 
 
+def count_relation(form, axes, driver, dependent, numerator, denominator, complement=None):
+    piece = dict(kind='relation', form=form, axes=list(axes), driver=driver,
+                 dependent=dependent, level=dict(numerator=str(numerator), denominator=str(denominator)))
+    if complement is not None:
+        piece['complement'] = complement
+    return piece
+
+
+def typed_count_expected(family, case):
+    held = case.held
+    x = case.data[0]
+    if family == 'hyper':
+        names = ('m', 'N', 'k')
+        counts = axis(x, COUNT_MAX, (True, True), True)
+        order = [(0, 1), (2, 1)]
+        if len(set(case.data)) > 1:
+            driver = 2 if 'm' in held else 0
+            domain = axis(1, COUNT_MAX, (True, True), True)
+            axes = [domain, domain, domain]
+            axes[2 - driver] = fixed_axis(1, True)
+            pieces = [count_relation('count_ratio', axes, driver, 1, sum(case.data), len(case.data))]
+        elif case.loglik == 0:
+            left = order + ([(1, 2)] if x else [])
+            right = order + ([(1, 0)] if x else [])
+            pieces = [box(fixed_axis(x, True), counts, counts, order=left),
+                      box(counts, counts, fixed_axis(x, True), order=right)]
+        else:
+            # At the exact crossing the consecutive mass ratio is one.
+            if 'N' not in held:
+                # For N -> N+1 the literal ratio is
+                # (N+1-m)(N+1-k) / ((N+1)(N+1-m-k+x)).
+                upper = held['m'] * held['k'] // x
+                pairs = [(held['m'], n, held['k']) for n in (upper - 1, upper)]
+            elif 'm' not in held:
+                upper = (held['N'] + 1) * x // held['k']
+                pairs = [(m, held['N'], held['k']) for m in (upper - 1, upper)]
+            else:
+                upper = (held['N'] + 1) * x // held['m']
+                pairs = [(held['m'], held['N'], k) for k in (upper - 1, upper)]
+            pieces = [points(*pairs)]
+    elif family in ('bbinom', 'cmb'):
+        is_cmb = family == 'cmb'
+        names = ('size', 'prob', 'nu') if is_cmb else ('size', 'alpha', 'beta')
+        positive = axis(0)
+        if case.loglik == 0:
+            if not is_cmb:
+                pieces = [box(fixed_axis(0, True), positive, positive)]
+            elif x == 0:
+                pieces = [box(fixed_axis(0, True), axis(0, 1, (True, True)), axis()),
+                          box(axis(0, 10_000_000, (True, True), True), fixed_axis(0), axis())]
+            else:
+                pieces = [box(fixed_axis(x, True), fixed_axis(1), axis())]
+        elif not is_cmb and held.get('size') == 1:
+            pieces = [count_relation('part_over_sum', [fixed_axis(1, True), positive, positive],
+                               1, 2, sum(case.data), len(case.data))]
+        elif is_cmb and held.get('size') == 1:
+            pieces = [box(fixed_axis(1, True), fixed_axis(held['prob']), axis())]
+        else:
+            # These fixture shapes give the exact adjacent crossing at 1 and 2.
+            pieces = [points(*((size, held[names[1]], held[names[2]]) for size in (1, 2)))]
+    elif family == 'cmp':
+        names = ('lambda', 'nu')
+        pieces = [box(fixed_axis(0), axis(0, 'inf', (True, False)))]
+    elif family == 'pig':
+        names = ('mean', 'shape')
+        pieces = [box(axis(0), fixed_axis(0))]
+    elif family == 'dweibull':
+        names = ('shape1', 'shape2')
+        pieces = [box(fixed_axis(held['shape1']), axis(0))]
+    elif family in ('nbinom', 'zib', 'zinb', 'zip'):
+        prob = axis(0, 1, (True, True))
+        nbprob = axis(0, 1, (False, True))
+        size = axis(0, 'inf', (True, False), family == 'zib')
+        if family == 'nbinom':
+            names = ('size', 'prob')
+            pieces = [box(fixed_axis(0), nbprob), box(size, fixed_axis(1))]
+        elif family == 'zip':
+            names = ('lambda', 'pi')
+            pieces = [box(axis(0), fixed_axis(1))]
+        elif family == 'zib' and len(set(case.data)) > 1:
+            names = ('size', 'prob', 'pi')
+            pieces = [count_relation('product', [fixed_axis(1, True), axis(0, 1, (False, True)),
+                                           axis(0, 1, (True, False))],
+                               1, 2, sum(case.data), len(case.data), [False, True])]
+        else:
+            names = ('size', 'prob', 'pi')
+            baseprob = prob if family == 'zib' else nbprob
+            endpoint = 0 if family == 'zib' else 1
+            pieces = [box(size, baseprob, fixed_axis(1)),
+                      box(fixed_axis(0, family == 'zib'), baseprob, prob),
+                      box(size, fixed_axis(endpoint), prob)]
+    elif family in HURDLES or family in ('ztbinom', 'ztnbinom'):
+        domains = {
+            'zmpois': (('lambda',), (axis(0, 'inf', (True, False)),)),
+            'zmgeom': (('prob',), (axis(0, 1, (False, True)),)),
+            'zmlogarithmic': (('theta',), (axis(0, 1, (True, False)),)),
+        }
+        p0 = (fixed_axis(held.get('p0', float(x == 0))),) if family in HURDLES else ()
+        if family in domains:
+            names, domain = domains[family]
+            pieces = [box(*domain, *p0)]
+        elif family.endswith('nbinom'):
+            names = ('size', 'prob')
+            size = axis(0, 'inf', (True, False))
+            prob = axis(0, 1, (False, True)) if x == 0 else fixed_axis(1)
+            pieces = [box(size, prob, *p0)]
+        else:
+            names = ('size', 'prob')
+            size = axis(1, 'inf', (True, False), True)
+            prob = axis(0, 1, (True, True))
+            pieces = ([box(size, prob, *p0)] if x == 0 else
+                      [box(fixed_axis(1, True), prob, *p0), box(size, fixed_axis(0), *p0)])
+        names += ('p0',) if p0 else ()
+    elif family == 'zigeom':
+        names = ('prob', 'pi')
+        pieces = [box(fixed_axis(1), axis(0, 1, (True, True))),
+                  box(axis(0, 1, (False, True)), fixed_axis(1))]
+    elif family in ('geom-window', 'nbinom-window'):
+        parent = (fixed_axis(held['size']),) if family.startswith('nbinom') else ()
+        names = ('size', 'prob') if parent else ('prob',)
+        # The p=1 parent atom is feasible exactly when zero is retained.
+        pieces = [box(*parent, axis(0, 1, (False, held['a'] <= 0 <= held['b'])))]
+    elif family in ('tbinom', 'tpois', 'zipf'):
+        if family == 'tbinom':
+            names = ('size', 'prob')
+            pieces = [box(axis(x, 'inf', (True, False), True), axis(0, 1, (x == 0, False))),
+                      box(fixed_axis(x, True), fixed_axis(1))]
+        elif family == 'tpois':
+            names = ('lambda',)
+            pieces = [box(axis(0, 'inf', (x == 0, False)))]
+        else:
+            names = ('s',)
+            pieces = [box(axis())]
+    else:
+        return None
+    return dict(version=1, coordinates=list(names), pieces=pieces)
+
+
 def typed_expected(family, case):
+    count = typed_count_expected(family, case)
+    if count is not None:
+        return count
     held = case.held
     x = case.data[0]
     if family == 'binom':

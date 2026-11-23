@@ -45,7 +45,9 @@ inline FitResult fit_cmp(cppunivariate::span x, Held lambda_arg = {}, Held nu_ar
  std::vector<std::string> fixed;
  if(lambda.supplied) fixed.push_back("lambda");
  if(nu.supplied) fixed.push_back("nu");
- return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",lambda.supplied?ctl.fixed_lambda:std::exp(res.eta)},{"nu",res.nu}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+ return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"lambda",lambda.supplied?ctl.fixed_lambda:std::exp(res.eta)},{"nu",res.nu}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
+    attach_maximizer_set(out, res.maximizers, "cmp", [&](const auto&) { return out.logLik; });
+    return out; }());
 
 }
 }

@@ -675,7 +675,8 @@ TEST_CASE("bbinom: zero atoms and exact constant-sample size ties") {
     const bool shapes_held = std::isfinite(a) && std::isfinite(b);
     CHECK(o.unique == shapes_held);
     if (shapes_held) continue;
-    CHECK(result.maximizer_set.find("size = 0") != std::string::npos);
+    REQUIRE(result.maximizers.size == 1);
+    CHECK(std::holds_alternative<cppunivariate::Box>(result.maximizers.pieces[0].value));
     const auto& rows = result.stop_detail.candidates;
     REQUIRE(rows.size() == 2);
     CHECK(rows[0].coef == std::vector<double>{result.size,result.alpha,result.beta});
@@ -692,7 +693,8 @@ TEST_CASE("bbinom: zero atoms and exact constant-sample size ties") {
   CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
   CHECK(o.certified);
   CHECK_FALSE(o.unique);
-  CHECK(tie.maximizer_set.find("adjacent sizes") != std::string::npos);
+  REQUIRE(tie.maximizers.size == 1);
+  CHECK(std::holds_alternative<cppunivariate::Points>(tie.maximizers.pieces[0].value));
   const auto& rows = tie.stop_detail.candidates;
   REQUIRE(rows.size() == 2);
   CHECK(rows[0].coef == std::vector<double>{1,1,2});

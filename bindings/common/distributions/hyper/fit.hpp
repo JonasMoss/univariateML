@@ -4,7 +4,6 @@
 #include <cmath>
 #include <iomanip>
 #include <limits>
-#include <numeric>
 #include <sstream>
 #include <string>
 namespace umvl_binding {
@@ -102,80 +101,39 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
   out.has_iterations = true;
   out.fixed = fixed;
   out.has_fixed = true;
-  if (!o.unique) {
-    const auto add = [&](double m_value, double N_value, double k_value) {
-      out.candidates.push_back({{{"m",m_value},{"N",N_value},{"k",k_value}},
-                                out.logLik,out.logLik,"hyper"});
-    };
-    add(res.m, res.N, res.k);
-    if (res.status == cppunivariate::HyperStatus::Tie ||
-        res.status == cppunivariate::HyperStatus::Unidentified) {
-      const bool adjacent = res.status == cppunivariate::HyperStatus::Tie;
+  if (res.maximizers.size) {
+    attach_maximizer_set(out, res.maximizers, "hyper", [&](const auto&) { return res.logLik; });
+    return done(std::move(out));
+  }
+  if (!o.uniqueness_known) {
+    out.candidates.push_back({out.estimates, out.logLik, out.logLik, "hyper"});
+    for (const auto& candidate : res.stop_detail.candidates)
+      out.candidates.push_back({named_coefficients(candidate.coef, {"m","N","k"}),
+          candidate.loglik_lower, candidate.loglik_upper, "hyper"});
+    if (!res.stop_detail.candidates.empty())
+      out.error = "The hypergeometric design comparison leaves multiple count orbits unresolved.";
+    if (res.status == cppunivariate::HyperStatus::Tie) {
       const double chosen = !k.supplied ? res.k : (!N.supplied ? res.N : res.m);
-      const double other = std::isinf(res.tie) ? chosen+1 : res.tie;
+      const double other = res.tie;
       if (other != chosen && cppunivariate::hyper_detail::is_count(other)) {
-        if (o.uniqueness_known) {
-          add(estimated == "m" ? other : res.m, estimated == "N" ? other : res.N,
-              estimated == "k" ? other : res.k);
-        } else {
-          const double m_value = estimated == "m" ? other : res.m;
-          const double N_value = estimated == "N" ? other : res.N;
-          const double k_value = estimated == "k" ? other : res.k;
-          cppunivariate::hyper_detail::Sum sum;
-          for (double v : x) sum.add(cppunivariate::hyper_log_pmf(v, N_value, m_value, k_value));
-          const double ll = static_cast<double>(sum.value());
-          if (std::isfinite(ll))
-            out.candidates.push_back({{{"m",m_value},{"N",N_value},{"k",k_value}},ll,ll,"hyper"});
-        }
+        const double m_value = estimated == "m" ? other : res.m;
+        const double N_value = estimated == "N" ? other : res.N;
+        const double k_value = estimated == "k" ? other : res.k;
+        cppunivariate::hyper_detail::Sum sum;
+        for (double v : x) sum.add(cppunivariate::hyper_log_pmf(v, N_value, m_value, k_value));
+        const double ll = static_cast<double>(sum.value());
+        if (std::isfinite(ll))
+          out.candidates.push_back({{{"m",m_value},{"N",N_value},{"k",k_value}},ll,ll,"hyper"});
       }
-      if (adjacent)
-        out.error = binding_message(o.uniqueness_known ?
-            "The likelihood is tied (to rounding) between `%s` = %s and %s; returning the smaller." :
-            "The likelihood comparison between `%s` = %s and %s could not be resolved.",
-            estimated, whole(chosen), whole(other));
-      else if (std::isinf(res.tie))
-        out.error = binding_message("Every admissible `N` from %s upwards attains the maximum likelihood.", whole(chosen));
-      else
-        out.error = binding_message("Every `%s` from %s to %s attains the maximum likelihood.",
-                                    estimated, whole(chosen), whole(other));
+      out.error = binding_message(
+          "The likelihood comparison between `%s` = %s and %s could not be resolved.",
+          estimated, whole(chosen), whole(other));
     } else if (res.non_unique_reason == 1) {
-      add(res.k, res.N, res.m);
-      out.error = binding_message("The likelihood is symmetric in `m` and `k`: (`m`, `k`) = (%s, %s) and (%s, %s) attain the same maximum; returning the first.",
-                                  whole(res.m), whole(res.k), whole(res.k), whole(res.m));
-      if (res.logLik == 0) {
-        out.error += " For constant observations c, (m, N, k) = (N, N, c) and (c, N, N) attain it at each admissible N >= c, subject to held values.";
-        if (x[0] == 0) out.error += " Any admissible triple with m = 0 or k = 0 attains it.";
-      }
-    } else if (res.non_unique_reason == 2) {
-      const double value = x[0];
-      if (!m.supplied && !k.supplied) {
-        const double population = N.supplied ? res.N : res.N+1;
-        if (cppunivariate::hyper_detail::is_count(population)) {
-          add(population, population, value);
-          add(value, population, population);
-        }
-      } else if (cppunivariate::hyper_detail::is_count(res.N+1)) {
-        add(m.supplied ? res.m : (value == 0 ? 0 : res.N+1), res.N+1,
-            k.supplied ? res.k : (value == 0 ? 0 : res.N+1));
-      }
-      out.error = "The observations are constant, so other count vectors give the same (point-mass) likelihood; the maximum is not unique.";
-      if (!m.supplied && !k.supplied)
-        out.error += " For observations c, the maximizing triples (m, N, k) are (N, N, c) and (c, N, N) at every admissible N, together with every admissible triple with m = 0 or k = 0 when c = 0.";
-      else if ((m.supplied ? res.m : res.k) == 0)
-        out.error += " Every admissible free count and population size attains the maximum.";
-      else
-        out.error += " The free design count is zero when the observation is zero and equals N otherwise, for every admissible N.";
-    } else if (res.non_unique_reason == 3) {
-      const double successes = k.supplied ? res.m : res.k;
-      // Reduce the ratio first, so a second representation can fit even when
-      // doubling the returned population would exceed the count domain.
-      const auto divisor = std::gcd(static_cast<long long>(successes), static_cast<long long>(res.N));
-      const double multiplier = res.N == res.N/divisor ? 2 : 1;
-      const double population = multiplier*(res.N/divisor);
-      const double count = multiplier*(successes/divisor);
-      if (cppunivariate::hyper_detail::is_count(population))
-        add(k.supplied ? count : res.m, population, k.supplied ? res.k : count);
-      out.error = "With sample size one only the success ratio enters the likelihood. Every admissible count pair with that ratio attains the maximum.";
+      out.candidates.push_back({{{"m",res.k},{"N",res.N},{"k",res.m}},
+                                out.logLik,out.logLik,"hyper"});
+      if (out.error.empty()) out.error = binding_message(
+          "The likelihood is symmetric in `m` and `k`: (%s, %s) and (%s, %s) have equal likelihood.",
+          whole(res.m), whole(res.k), whole(res.k), whole(res.m));
     }
   }
   return done(std::move(out));

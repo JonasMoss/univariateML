@@ -53,8 +53,20 @@ inline NbinomResult nbinom_mle(ispan x,double tol,int maxit,
   auto candidate=nbinom_candidate_mle(x,tol,maxit,fixed_size,fixed_prob);
   if(candidate.status==NbinomStatus::Ok && !x.empty() &&
      std::all_of(x.begin(),x.end(),[](int v){return v==0;})) {
-    const bool fs=!std::isnan(fixed_size),fp=!std::isnan(fixed_prob);
-    candidate.unique=(fs || fp) && !((!fs && fixed_prob==1) || (!fp && fixed_size==0));
+    // Otherwise a negative binomial has positive probability at 1.
+    auto& set = candidate.maximizers;
+    set.dimension = 2;
+    set.add_box({{fixed(0), interval(0, 1, false, true)}});
+    set.add_box({{interval(0, maxset_inf, true, false), fixed(1)}});
+    std::array<std::optional<double>, maxset_dim> holds{};
+    if (!std::isnan(fixed_size)) holds[0] = fixed_size;
+    if (!std::isnan(fixed_prob)) holds[1] = fixed_prob;
+    if (set.slice(holds) == MaxsetStatus::Ok) {
+      candidate.unique = set.singleton();
+      if (candidate.unique) set = {};
+    } else {
+      set = {};
+    }
   }
   if(std::isfinite(candidate.logLik)) {
     const double pad=1024*std::numeric_limits<double>::epsilon()*(1+std::abs(candidate.logLik))*(1+x.size());

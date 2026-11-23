@@ -30,12 +30,18 @@ inline FitResult fit_bbinom(cppunivariate::ispan x, Held size_arg = {}, Held alp
       return overridden(std::move(out), static_cast<int>(res.status));
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"size",size_arg.supplied},{"alpha",alpha_arg.supplied},{"beta",beta_arg.supplied}});
   };
-  if (!res.maximizer_set.empty()) {
-    auto out = stop_failure(failure(res.maximizer_set),res.stop_detail,PayloadKind::Comparison,
-                            {"size","alpha","beta"});
-    out = comparison_payload(std::move(out),o,0,{{"size",size},{"alpha",alpha},{"beta",beta}});
+  if (o.kind == cppunivariate::OutcomeKind::Estimate && !o.unique &&
+      res.maximizers.size) {
+    FitResult out;
+    out.estimates = {{"size", res.size}, {"alpha", res.alpha}, {"beta", res.beta}};
+    out.logLik = res.logLik;
+    out.has_fixed = true;
+    if (size.supplied) out.fixed.push_back("size");
+    if (alpha.supplied) out.fixed.push_back("alpha");
+    if (beta.supplied) out.fixed.push_back("beta");
     out.iterations = res.iterations;
     out.has_iterations = res.status == cppunivariate::BbinomStatus::Ok;
+    attach_maximizer_set(out, res.maximizers, "bbinom", [&](const auto&) { return out.logLik; });
     return done(std::move(out));
   }
   if(res.status==cppunivariate::BbinomStatus::Unsupported)return done(failure("Estimating size together with both shapes is not implemented. It would require comparing the fits at every finite size, including their binomial and two-point limits, with the negative binomial and Poisson limits, and no usable bound on large sizes is known."));

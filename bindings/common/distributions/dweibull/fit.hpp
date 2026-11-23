@@ -93,7 +93,9 @@ inline FitResult fit_dweibull(cppunivariate::span x, Held shape1_arg = {}, Held 
   std::vector<std::string> fixed;
   if (shape1.supplied) fixed.push_back("shape1");
   if (shape2.supplied) fixed.push_back("shape2");
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
+    attach_maximizer_set(out, res.maximizers, "dweibull", [&](const auto&) { return out.logLik; });
+    return out; }());
 
 }
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../fit.hpp"
+#include "../../count_maximizers.hpp"
 #include "cppunivariate/distributions/binom/ztbinom_mle.hpp"
 namespace umvl_binding {
 inline FitResult fit_ztbinom(cppunivariate::ispan x, Held size_arg = {}, Held prob_arg = {}, double tol = 1e-10, int iterlim = 200) {
@@ -13,7 +13,7 @@ inline FitResult fit_ztbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   const double held_prob=prob.supplied?prob.value:std::numeric_limits<double>::quiet_NaN();
   if(prob.supplied && (!std::isfinite(held_prob)||held_prob<0||held_prob>1))return invalid_argument(fail("`prob` must be finite and in [0, 1]."));
   const auto res=cppunivariate::ztbinom_mle(x, tol, iterlim, fixed_size, held_prob);
-  const auto o=cppunivariate::outcome(res);
+  auto o =cppunivariate::outcome(res);
   const auto done=[&](FitResult out) {
     return with_outcome(std::move(out),o,static_cast<int>(res.status),{{"size",size_arg.supplied},{"prob",prob_arg.supplied}});
   };
@@ -44,7 +44,19 @@ inline FitResult fit_ztbinom(cppunivariate::ispan x, Held size_arg = {}, Held pr
   std::vector<std::string> fixed;
   if(size.supplied)fixed.push_back("size");
   if(prob.supplied)fixed.push_back("prob");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob}};  out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"size",res.size},{"prob",res.prob}};  out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true;
+    const bool all_one = std::all_of(x.begin(), x.end(), [](int v) { return v == 1; });
+    if (all_one) {
+      // The positive component must give probability one to 1.
+      cppunivariate::MaximizerSet set;
+      set.dimension = 2;
+      const auto probability = cppunivariate::interval(0, 1, true, true);
+      const auto sizes = count_sizes(1, size);
+      set.add_box({{cppunivariate::fixed(1, true), probability}});
+      set.add_box({{sizes, cppunivariate::fixed(0)}});
+      attach_count_set(out, o, set, "ztbinom", {size, prob});
+    }
+    return out; }();
 
   }());
 }

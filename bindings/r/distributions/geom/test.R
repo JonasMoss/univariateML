@@ -80,3 +80,20 @@ test_that("geometric hurdle identification follows the held parent", {
   expect_false(attr(suppressWarnings(mlgeom(z, zero="modified")), "unique"))
   expect_true(attr(mlgeom(z, prob=.5, zero="modified"), "unique"))
 })
+
+test_that("geometric modifiers apply their support and remove the implicit size", {
+  inflated <- mlgeom(rep(0, 4), zero = "inflated")
+  set <- attr(inflated, "maximizer_set")
+  expect_identical(set$coordinates, c("prob", "pi"))
+  expect_length(set$pieces, 2L)
+  rows <- attr(inflated, "maximizers")
+  expect_true(all(rows$prob == 1 | rows$pi == 1))
+
+  for (x in c(0, 2)) {
+    fit <- mlgeom(rep(x, 4), truncate = c(x, x))
+    expect_false(attr(fit, "unique"))
+    expect_identical(attr(fit, "maximizer_set")$pieces[[1]]$axes[[1]]$closed,
+                     c(FALSE, x == 0))
+    expect_equal(as.numeric(logLik(fit)), 0)
+  }
+})

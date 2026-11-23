@@ -175,7 +175,12 @@ test('discrete stops retain fitted package and non-package faces', () => {
     assert.equal(e.certified,true);assert.equal(e.unique,false);
     assert.deepEqual(e.estimates,{size:1,prob:.5,nu:1});
     assert.equal(e.logLik,-2*Math.log(2));
-    assert.deepEqual(e.candidates.map(c=>c.nu),[1,-1]);return true;
+    const [piece] = e.maximizer_set.pieces;
+    assert.equal(piece.kind, 'box');
+    assert.deepEqual(piece.axes[2], {lower:'-inf', upper:'inf', closed:[false,false], integer:false});
+    assert.deepEqual(e.candidates.map(row => row.model), ['binom']);
+    assert.ok(e.maximizers.length >= 2);
+    return true;
   });
 });
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../special/cmp.hpp"
 #include "dpqr.hpp"
@@ -7,7 +8,7 @@
 
 namespace cppunivariate {
 // Compatibility family entry point; the shared public solver owns closure.
-struct CmpDomainResult : CmpResult {};
+struct CmpDomainResult : CmpResult { MaximizerSet maximizers{}; };
 inline CmpDomainResult cmp_domain_mle(span x, const CmpFitControl& ctl = {}) {
   if(std::isfinite(ctl.fixed_lambda) && std::isfinite(ctl.fixed_nu)) {
     std::uint64_t used=0;
@@ -29,6 +30,11 @@ inline CmpDomainResult cmp_domain_mle(span x, const CmpFitControl& ctl = {}) {
   if(out.status==CmpStatus::Ok && (!std::isfinite(out.logLik) || !std::isfinite(out.nu) ||
      !std::isfinite(std::exp(out.eta)) || (std::isfinite(out.eta) && std::exp(out.eta)==0))) {
     out.status=CmpStatus::IterationFailure;out.stop_detail.loglik_upper=INFINITY;return out;
+  }
+  if (out.status == CmpStatus::Ok && !out.unique && out.eta == -maxset_inf) {
+    // Lambda zero is a point mass. Every positive rate gives positive mass at 1.
+    out.maximizers.dimension = 2;
+    out.maximizers.add_box({{fixed(0), interval(0, maxset_inf, true, false)}});
   }
   if(out.status==CmpStatus::Ok && std::isfinite(out.eta) &&
      !(std::isfinite(ctl.fixed_lambda) && std::isfinite(ctl.fixed_nu)) &&

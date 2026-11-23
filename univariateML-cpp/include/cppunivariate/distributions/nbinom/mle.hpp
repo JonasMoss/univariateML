@@ -11,6 +11,7 @@
 
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 
@@ -42,6 +43,7 @@ struct NbinomResult {
   NbinomCertificateFailure certificate_failure = NbinomCertificateFailure::None;
 
   bool unique = true;
+  MaximizerSet maximizers{};
 };
 
 inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
