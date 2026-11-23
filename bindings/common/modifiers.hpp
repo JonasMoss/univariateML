@@ -167,14 +167,7 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
         out.error="invalid truncation window, observations or held coefficients";
       out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
       out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());
-      if (!out.outcome.unique && out.outcome.uniqueness_known) {
-        // The singleton retains every positive rate. It also retains the
-        // rate-zero atom exactly when the count is zero.
-        cppunivariate::MaximizerSet set;
-        set.dimension = 1;
-        set.add_box({{cppunivariate::interval(0, INFINITY, std::ceil(a) <= 0, false)}});
-        attach_count_set(out, out.outcome, set, "tpois", {h("lambda")});
-      }
+      attach_tpois_window_set(out, std::ceil(a));
       return out;
     }
     if(family=="geom")return truncate_counts(ix,a,b,cppunivariate::GeomTruncationTraits{},h("prob"),"geom",tol,maxit);
@@ -183,20 +176,8 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
       out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
       std::reverse(out.estimates.begin(),out.estimates.end());
       out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());
-      if (!out.outcome.unique && out.outcome.uniqueness_known && !out.estimates.empty()) {
-        // Interior probabilities retain the parent support [0, size].
-        // At the two endpoints only the corresponding parent atom survives.
-        const double lo = std::max(0., std::ceil(a)), hi = std::floor(b);
-        const auto sizes = count_sizes(lo, h("size"));
-        const auto realized = lo == hi ? sizes : cppunivariate::fixed(lo, true);
-        cppunivariate::MaximizerSet set;
-        set.dimension = 2;
-        set.add_box({{realized, cppunivariate::interval(0, 1, lo == 0, false)}});
-        if (lo == 0 && lo != hi)
-          set.add_box({{sizes, cppunivariate::fixed(0)}});
-        set.add_box({{cppunivariate::fixed(lo, true), cppunivariate::fixed(1)}});
-        attach_count_set(out, out.outcome, set, "tbinom", {h("size"), h("prob")});
-      }
+      attach_tbinom_window_set(out, std::max(0., std::ceil(a)), std::floor(b),
+                               h("size"), h("prob"));
       return out;
     }
     if(!h("size").supplied)return modifier_not_implemented(family,"`truncate` with size free");
@@ -260,6 +241,22 @@ template<class Result> inline FitResult censored_result(const std::string& famil
   FitResult out;out.estimates=estimates;out.logLik=r.logLik;out.has_fixed=true;
 
   for(const auto& p:holds)if(p.second.supplied)out.fixed.push_back(p.first);
+  if (!o.unique && o.uniqueness_known) {
+    // At or below the support origin the survival contribution is one
+    // throughout the free positive parameter's domain. The held-scale
+    // Weibull also has shape-independent survival at its scale.
+    cppunivariate::Box box;
+    for (std::size_t i = 0; i < estimates.size(); ++i) {
+      const auto& coefficient = estimates[i];
+      const bool fixed = std::find(out.fixed.begin(), out.fixed.end(), coefficient.first) != out.fixed.end();
+      box.axes[i] = fixed ? cppunivariate::fixed(coefficient.second) :
+                           cppunivariate::interval(0, INFINITY, false, false);
+    }
+    cppunivariate::MaximizerSet set;
+    set.dimension = estimates.size();
+    set.add_box(box);
+    attach_maximizer_set(out, set, family, [&](const auto&) { return r.logLik; });
+  }
   return done(out);
 }
 inline FitResult fit_censored(const std::string& family,cppunivariate::CensoredData x,

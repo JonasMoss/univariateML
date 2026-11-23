@@ -1032,7 +1032,10 @@ inline FitOutcome outcome(const BbinomResult& r) {
     case BbinomStatus::BinomialLimit: return FitOutcome::limit(true);
     case BbinomStatus::TwoPointLimit: return FitOutcome::limit(true);
     case BbinomStatus::PointMass: return FitOutcome::limit(true);
-    case BbinomStatus::Unidentified: return r.stop_detail.candidates.empty()?FitOutcome::failure(OutcomeReason::Unresolved):FitOutcome::estimate(true,false);
+    case BbinomStatus::Unidentified:
+      if (r.maximizers.size) return FitOutcome::estimate(true, false);
+      return r.stop_detail.candidates.empty() ? FitOutcome::failure(OutcomeReason::Unresolved)
+                                              : FitOutcome::undetermined();
     case BbinomStatus::SizeBudget: return FitOutcome::budget();
     case BbinomStatus::ProfileTie: {
       const auto comparison = comparison_outcome_of(r);

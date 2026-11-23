@@ -13,8 +13,7 @@ export const read=(f,n)=>JSON.parse(readFileSync(new URL(`${f}/${n}.json`,dossie
 function comparisonFit(run, check) {
   const fit=run();
   assert.equal(fit.status,'Ok');assert.ok(!fit.certified || !fit.unique);
-  const payload={...fit,candidates:fit.candidates ?? fit.maximizers,message:fit.outcome_message};
-  assert.equal(check(payload),true);
+  assert.equal(check(fit),true);
 }
 // A comparison the certificate cannot separate that ends as a limit or an
 // unresolved stop (its better candidate is a face or not an accurate maximizer).
@@ -267,9 +266,14 @@ test('sn conditional certificates and nonunique shape have shared stops', async 
   }
   comparisonFit(() => api.sn.fit(new Float64Array([3,3,3,3,3]), {xi: 3, omega: 2}), e => {
     assert.equal(e.status,'Ok');
-    assert.equal(e.candidates.length, 2);
-    assert.equal(e.loglik_lower, e.loglik_upper);
-    assert.notEqual(e.candidates[0].alpha, e.candidates[1].alpha);
+    assert.equal(e.unique, false);
+    const [piece] = e.maximizer_set.pieces;
+    assert.equal(piece.kind, 'box');
+    const [, , alpha] = piece.axes;
+    assert.deepEqual([alpha.lower, alpha.upper, alpha.closed], ['-inf', 'inf', [false, false]]);
+    assert.equal(e.maximizers.length, 2);
+    assert.ok(e.maximizers.every(row => row.loglik_lower === e.logLik && row.loglik_upper === e.logLik));
+    assert.notEqual(e.maximizers[0].alpha, e.maximizers[1].alpha);
     return true;
   });
   assert.throws(() => api.sn.fit(new Float64Array([-2,-.3,.1,.8,4]), {alpha: 2}, {iterlim: 1}), e => {
@@ -405,9 +409,14 @@ test('trgamma unrepresentable scales retain numerical stop details', async () =>
 test('scalar-trio certificates expose fatigue ties and solve held scalar roots', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
-  comparisonFit(() => api.fatigue.fit(new Float64Array([1]), {alpha: 3, mu: 0}), error => {
-    assert.equal(error.status,'Ok');
-    assert.equal(error.candidates.length, 2);
+  comparisonFit(() => api.fatigue.fit(new Float64Array([1]), {alpha: 3, mu: 0}), fit => {
+    assert.equal(fit.status,'Ok');
+    assert.equal(fit.unique, false);
+    const [piece] = fit.maximizer_set.pieces;
+    assert.equal(piece.kind, 'points');
+    assert.equal(piece.points.length, 2);
+    assert.ok(Math.abs(piece.points[0].estimate[1] * piece.points[1].estimate[1] - 1) < 1e-12);
+    assert.equal(fit.maximizers.length, 2);
     return true;
   });
   assert.throws(() => api.fatigue.fit(new Float64Array([1,2,3]), {alpha: 1, mu: 0}, {iterlim: 1}), error => {
@@ -968,7 +977,7 @@ test('GED analytic held-sd shape fits and median ties agree across bindings', as
   assert.equal(odd.estimates.nu,1);
   comparisonFit(()=>api.ged.fit(new Float64Array([-1,1]),{sd:.1},{iterlim:1}),fit=>{
     assert.equal(fit.unique,false);
-    assert.match(fit.message,/mean in \[-1, 1\]/);
+    assert.match(fit.outcome_message,/mean in \[-1, 1\]/);
     const [mean,sd,nu]=fit.maximizer_set.pieces[0].axes;
     assert.deepEqual([mean.lower,mean.upper,mean.closed],[-1,1,[true,true]]);
     assert.deepEqual([sd.lower,sd.upper,nu.lower,nu.upper],[.1,.1,1,1]);
@@ -1094,9 +1103,12 @@ test('GED rounded residual ties cannot select an invalid uniform support', async
 test('GED Laplace median intervals retain the original observation endpoints', async () => {
   const {default:createApi}=await import('./index.mjs');const api=await createApi();
   const x=Float64Array.from([...Array.from({length:19},(_,j)=>j+1),1e308]);
-  comparisonFit(()=>api.ged.fit(x),error=>{
-    assert.equal(error.status,'Ok');
-    assert.deepEqual(error.candidates.map(c=>c.mean),[10,11]);
+  comparisonFit(()=>api.ged.fit(x),fit=>{
+    assert.equal(fit.status,'Ok');
+    assert.equal(fit.unique, false);
+    const [mean] = fit.maximizer_set.pieces[0].axes;
+    assert.deepEqual([mean.lower, mean.upper, mean.closed], [10, 11, [true, true]]);
+    assert.deepEqual(fit.maximizers.map(c=>c.mean),[10,11]);
     return true;
   });
 });
@@ -1493,7 +1505,7 @@ test('CMB finite-size ties retain two distinct witnesses and nu-held census cert
       assert.equal(e.certified,true);
       assert.equal(e.unique,false);
       assert.equal(e.logLik,ll);
-      assert.match(e.message, /^Maximum is not unique\./);
+      assert.match(e.outcome_message, /^Maximum is not unique\./);
       assert.ok(e.maximizers.length >= 2);
       if (zero) {
         assert.ok(e.maximizers.every(row => row.size === 0 || row.prob === 0));

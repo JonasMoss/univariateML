@@ -12,6 +12,19 @@ inline cppunivariate::Axis count_sizes(double minimum, Held size) {
   return cppunivariate::interval(minimum, cppunivariate::maxset_inf, true, false, true);
 }
 
+// The private R kernels return design bounds as coefficients. Version 1
+// represents finite coordinates, so an infinite design is kept as comparison
+// evidence alongside the existing fit.
+inline bool keep_infinite_window_comparison(FitResult& out) {
+  if (std::isfinite(out.estimates[1].second) && std::isfinite(out.estimates[2].second))
+    return false;
+  out.outcome = cppunivariate::FitOutcome::undetermined();
+  out.candidates.push_back({out.estimates, out.logLik, out.logLik, ""});
+  out.loglik_lower = out.loglik_upper = out.logLik;
+  out.error = "The truncation comparison includes an infinite design bound.";
+  return true;
+}
+
 inline void attach_count_set(FitResult& out, cppunivariate::FitOutcome& outcome,
     cppunivariate::MaximizerSet set, const std::string& model,
     std::initializer_list<Held> held) {

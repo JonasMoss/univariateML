@@ -30,7 +30,8 @@ struct FitOutcome {
   OutcomeReason reason = OutcomeReason::Evaluation;
   // Estimate: the global-optimality claim. Limit: proved, not decided by a margin.
   bool certified = false;
-  // Estimate: inference requires both uniqueness flags.
+  // Estimate: inference requires both uniqueness flags. Known multiplicity
+  // requires a typed maximizer set at the public binding boundary.
   bool unique = true;
   bool uniqueness_known = true;
 

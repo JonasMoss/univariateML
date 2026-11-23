@@ -36,7 +36,7 @@ inline FitOutcome outcome(const StResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
-  if (r.stop_detail.comparison_tie) return r.certified ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
+  if (r.stop_detail.comparison_tie) return r.certified ? equal_faces_outcome(r.stop_detail, true) : comparison_outcome_of(r);
   if (r.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
     case StStatus::Ok: return FitOutcome::estimate(r.certified, r.maximizers.size == 0);

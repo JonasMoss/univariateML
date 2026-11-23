@@ -487,9 +487,9 @@ ml_require_unique <- function(object) {
 ml_print_outcome <- function(object) {
   if (identical(attr(object, "certified"), FALSE)) cat("Global maximum is not certified.\n")
   if (identical(attr(object, "unique"), FALSE)) {
-    description <- if (is.null(attr(object, "maximizer_set"))) NULL else attr(object, "outcome_message")
-    cat(if (is.null(description)) "Maximum is not unique." else description, "\n", sep = "")
     set <- attr(object, "maximizer_set")
+    description <- if (is.null(set)) "Maximum is not unique." else attr(object, "outcome_message")
+    cat(description, "\n", sep = "")
     if (!is.null(set) && any(vapply(set$pieces, function(piece) {
       !is.null(piece$axes) && any(vapply(piece$axes, function(axis) axis$lower != axis$upper, logical(1)))
     }, logical(1)))) {

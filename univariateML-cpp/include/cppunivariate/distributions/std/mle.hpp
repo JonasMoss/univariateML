@@ -678,7 +678,7 @@ inline FitOutcome outcome(const StudentTResult& r) {
     case StudentTStatus::CertificateBudget: return FitOutcome::budget();
     case StudentTStatus::CertificateTie: return comparison_outcome_of(r);
     case StudentTStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case StudentTStatus::NonUniqueHeldSd: return nonunique_outcome_of(r, r.certified);
+    case StudentTStatus::NonUniqueHeldSd: return equal_faces_outcome(r.stop_detail, r.certified);
   }
   return {};
 }

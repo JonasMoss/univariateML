@@ -43,8 +43,8 @@ inline FitResult fit_fatigue(cppunivariate::span x, Held alpha_arg = {}, Held be
     for(auto& candidate:res.stop_detail.candidates)candidate.coef.push_back(threshold);
     if(res.stop_detail.budget_exhausted)return done(stop_failure(fail("Fatigue optimizer SearchFailure: certificate budget exhausted; increase iterlim."),res.stop_detail,outcome_payload(o),{"alpha","beta","mu"}));
     if(res.maximizers.size) {
-      auto out = comparison_payload(stop_failure(fail("Fatigue has two reciprocal scale maximizers."),res.stop_detail,
-          PayloadKind::Comparison,{"alpha","beta","mu"}),o,chosen,{{"alpha",alpha_arg},{"beta",beta_arg},{"mu",mu_arg}});
+      auto out = comparison_payload(stop_failure(failure(""),res.stop_detail,
+          PayloadKind::Comparison,{"alpha","beta","mu"}),o,0,{{"alpha",alpha_arg},{"beta",beta_arg},{"mu",mu_arg}});
       out.candidates.clear();
       attach_maximizer_set(out, res.maximizers, "fatigue", [&](const auto& c) {
         return x.size()*cppunivariate::distributions::dfatigue(x[0],c[0],c[1],c[2],true);

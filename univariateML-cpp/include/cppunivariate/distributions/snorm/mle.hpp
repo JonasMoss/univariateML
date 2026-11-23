@@ -292,7 +292,7 @@ inline FitOutcome outcome(const SnormResult& r) {
     }
   }
   if (r.status != SnormStatus::Unbounded && r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.status != SnormStatus::Unbounded && r.stop_detail.comparison_tie) return snorm_equal_faces(r) ? nonunique_outcome_of(r, true) : comparison_outcome_of(r);
+  if (r.status != SnormStatus::Unbounded && r.stop_detail.comparison_tie) return snorm_equal_faces(r) ? FitOutcome::limit(true) : comparison_outcome_of(r);
   switch (r.status) {
     case SnormStatus::Ok: return FitOutcome::estimate(true);
     case SnormStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

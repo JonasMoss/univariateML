@@ -80,8 +80,7 @@ emscripten::val fit_output(const umvl_binding::FitResult& input_result) {
     out.set("outcome_message", result.outcome_message);
   }
   if(!result.candidates.empty()) {
-    out.set((result.maximizer_set || result.outcome.unique || !result.outcome.uniqueness_known)
-              ? "candidates" : "maximizers", rows(result.candidates));
+    out.set("candidates", rows(result.candidates));
     out.set("outcome_message",result.outcome_message);out.set("model",result.model);
     out.set("loglik_lower",result.loglik_lower);out.set("loglik_upper",result.loglik_upper);
     out.set("segment_loglik_upper",result.segment_loglik_upper);out.set("limit_loglik",result.limit_loglik);
