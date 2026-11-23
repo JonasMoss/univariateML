@@ -160,14 +160,31 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   `just cpp-test-no-long-double` 180/180; `just test-full`
   `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 66915 ]`; `just js-test` 593/593;
   `just relations` and `just site-check` green.
+- Batch check of master 2d3a806d (2026-11-23, workstation, GCC 15.2, after
+  [maxset-cont](research/evaluations/2026-11-23-maxset-cont-report.md) and
+  [maxset-count](research/evaluations/2026-11-23-maxset-count-report.md),
+  typed maximizer sets part B): per base mode 122 records changed and 13
+  new (typed payloads replacing legacy rows; `unique` FALSE -> NA for 26
+  hyper swap fits, 18 of them also uncertified, the triang subnormal class
+  and the bnbinom golden), routes 84 changed and 3 new; no estimate, limit
+  or outcome kind changed. Baselines patched (789cfc68). `just strict`:
+  all 114 TASK-229 entries pass, none new; **the known list is empty**
+  (6b9d3b2c). `just cpp-test` 135/135; `just cpp-test-no-long-double`
+  180/180; `just test-full` `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 66973 ]`;
+  `just js-test` 593/593; `just relations` and `just site-check` green.
+  The follow-up [maxset-legacy](research/evaluations/2026-11-23-maxset-legacy-report.md)
+  (f7cf7045, after this check) removes the legacy non-uniqueness path;
+  its snapshots equal these baselines in all four modes and its own
+  `just test-full` passed (67,025).
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
-- Known wrong answers on master: none listed by the strict layer. Its known
-  list holds 114 `phenomenon:flat-maximum` entries (TASK-229): flat maxima
-  returned without the maximizer payload, not wrong estimates. Open, flagged rather than wrong: fpareto
+- Known wrong answers on master: none listed by the strict layer; its known
+  list is empty since 2026-11-23 (batch 13). Every `unique = FALSE` fit
+  carries a typed maximizer set (rule `unique-false-needs-set`); fits whose
+  maximizer count is not proved report `unique = NA` with candidates. Open, flagged rather than wrong: fpareto
   archive 001625/001628 end `unresolved` pending a global bound (TASK-214.44
   report); sged's held-sd two-point location stops numerically although the
   optimum is finite (TASK-150.9).
