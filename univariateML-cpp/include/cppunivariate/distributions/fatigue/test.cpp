@@ -206,7 +206,7 @@ TEST_CASE("fatigue: alpha held above 2 with a near-constant sample lists both re
     const auto o=cppunivariate::outcome(r);
     CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
     CHECK_FALSE(o.certified);
-    CHECK_FALSE(o.unique);
+    CHECK_FALSE(o.uniqueness_known);
     // Both roots are listed and are reciprocal twins up to the sample scale.
     REQUIRE(r.stop_detail.candidates.size()==2);
     const double b0=r.stop_detail.candidates[0].coef[1],b1=r.stop_detail.candidates[1].coef[1];

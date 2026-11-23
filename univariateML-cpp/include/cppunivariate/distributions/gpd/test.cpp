@@ -375,8 +375,8 @@ TEST_CASE("gpd: exhausted tail bracket is a numerical stop") {
   const auto flat=cppunivariate::gpd_mle(mltest::as_span(zero),1e-12,200,0,nan,2);
   CHECK(cppunivariate::outcome(flat).kind==cppunivariate::OutcomeKind::Estimate);
   CHECK_FALSE(cppunivariate::outcome(flat).unique);
-  CHECK(flat.stop_detail.candidates.size()==2);
-  CHECK(flat.stop_detail.loglik_lower==flat.stop_detail.loglik_upper);
+  CHECK(flat.maximizers.size==1);
+  CHECK(flat.logLik==doctest::Approx(-3*std::log(2.)));
 }
 
 TEST_CASE("gpd: held-scale uniform bound and coefficient restoration") {
@@ -495,15 +495,18 @@ TEST_CASE("gpd: held scale flat shapes, translations and their union") {
     CHECK(outcome.kind==cppunivariate::OutcomeKind::Estimate);
     CHECK(outcome.certified);
     CHECK_FALSE(outcome.unique);
-    CHECK_FALSE(fit.maximizer_set.empty());
-    const auto& witnesses=fit.stop_detail.candidates;
-    REQUIRE(witnesses.size()==2);
-    CHECK(witnesses[0].coef!=witnesses[1].coef);
-    for(const auto& row:witnesses) {
-      const auto& p=row.coef;
-      CHECK(p[1]==1);
-      CHECK(((p[0]==0 && p[2]>=-1)||(p[2]==-1 && p[0]>=-1 && p[0]<=0)));
-      CHECK(cppunivariate::distributions::dgpd(0,p[0],p[1],p[2],true)==0);
+    REQUIRE(fit.maximizers.size > 0);
+    for (std::size_t i = 0; i < fit.maximizers.size; ++i) {
+      const auto* piece = std::get_if<cppunivariate::Box>(&fit.maximizers.pieces[i].value);
+      REQUIRE(piece != nullptr);
+      for (bool upper : {false, true}) {
+        const auto row = cppunivariate::box_witness(*piece, 3, upper);
+        REQUIRE(row.has_value());
+        const auto& p = row->values;
+        CHECK(p[1]==1);
+        CHECK(((p[0]==0 && p[2]>=-1)||(p[2]==-1 && p[0]>=-1 && p[0]<=0)));
+        CHECK(cppunivariate::distributions::dgpd(0,p[0],p[1],p[2],true)==0);
+      }
     }
   }
   const auto exact=cppunivariate::gpd_mle(mltest::as_span(positive),1e-10,100,0,NAN,1);

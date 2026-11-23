@@ -1,6 +1,7 @@
 #pragma once
 #include <string_view>
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/span.hpp"
@@ -21,7 +22,7 @@ struct GpdResult {
   GpdStatus status; unsigned restricted = 0;
   GpdCertificateFailure certificate_failure = GpdCertificateFailure::None;
   StopDetail stop_detail{};
-  std::string_view maximizer_set{};
+  MaximizerSet maximizers{};
 };
 // log1p(xi*z)/xi, including the interior exponential member.
 inline double gpd_log_ratio(double z, double xi) {
@@ -189,10 +190,7 @@ inline GpdResult gpd_mle(span x,double tol=1e-10,int maxit=200,double mu=0,doubl
       const double ll=-static_cast<double>(x.size())*std::log(sigma);
       const bool free_shape=std::isnan(xi);
       GpdResult out{value,sigma,free_shape ? 0. : -1.,ll,0,GpdStatus::Ok};
-      double witness_mu=value;
-      if(free_shape) {
-        out.maximizer_set="All xi >= -1 at mu = x[1], together with xi = -1 and x[1] - sigma <= mu <= x[1], maximize the likelihood.";
-      } else {
+      if(!free_shape) {
         // Prefer an interior translation. When the span rounds to sigma,
         // recover the sign of the subtraction error to check closed support.
         const auto covers=[&](double threshold) {
@@ -202,16 +200,33 @@ inline GpdResult gpd_mle(span x,double tol=1e-10,int maxit=200,double mu=0,doubl
           const double shift=width-value;
           return (value-(width-shift))-(threshold+shift)<=0;
         };
-        witness_mu=value-sigma/2;
+        double witness_mu=value-sigma/2;
         if(!covers(witness_mu))witness_mu=std::nextafter(value,-INFINITY);
         if(!covers(witness_mu)) {
           out.status=GpdStatus::IterationFailure;
           out.stop_detail.accuracy_stop=AccuracyStop::Conditioning;
           return out;
         }
-        out.maximizer_set="At xi = -1, every x[1] - sigma <= mu <= x[1] maximizes the likelihood.";
       }
-      out.stop_detail.candidates={{{value,sigma,out.xi},ll,ll},{{witness_mu,sigma,-1},ll,ll}};
+      auto& set = out.maximizers;
+      set.dimension = 3;
+      Box uniform;
+      const double endpoint = value - sigma;
+      uniform.axes[0] = interval(endpoint, value, std::isfinite(endpoint), true);
+      if (std::isfinite(endpoint)) {
+        const double shift = endpoint - value;
+        uniform.axes[0].range.lower_rounded =
+            (value - (endpoint - shift)) - (sigma + shift) != 0;
+      } else uniform.axes[0].range.lower_rounded = true;
+      uniform.axes[1] = fixed(sigma);
+      uniform.axes[2] = fixed(-1);
+      if (set.add_box(uniform) != MaxsetStatus::Ok) out.status = GpdStatus::IterationFailure;
+      if (free_shape) {
+        Box at_observation = uniform;
+        at_observation.axes[0] = fixed(value);
+        at_observation.axes[2] = interval(-1, maxset_inf, true, false);
+        if (set.add_box(at_observation) != MaxsetStatus::Ok) out.status = GpdStatus::IterationFailure;
+      }
       return out;
     }
     return {mu,sigma,xi,NAN,0,std::isnan(sigma)&&std::isnan(xi)?GpdStatus::Unbounded:GpdStatus::FreeThreshold};
@@ -251,7 +266,7 @@ inline FitOutcome outcome(const GpdResult& r) {
   if (r.certificate_failure == GpdCertificateFailure::Tie) return comparison_outcome_of(r);
   if (r.certificate_failure == GpdCertificateFailure::ThresholdCollapse) return std::isfinite(r.stop_detail.limit_loglik) ? FitOutcome::nonexistence(OutcomeReason::Unattained) : FitOutcome::nonexistence(OutcomeReason::Unbounded);
   switch (r.status) {
-    case GpdStatus::Ok: return FitOutcome::estimate(true,r.maximizer_set.empty());
+    case GpdStatus::Ok: return FitOutcome::estimate(true,r.maximizers.size == 0);
     case GpdStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GpdStatus::FreeThreshold: return FitOutcome::failure(OutcomeReason::Unsupported);
     case GpdStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);

@@ -62,10 +62,7 @@ inline FitResult fit_binom(cppunivariate::ispan x, Held size_arg = {}, Held prob
   out.has_iterations = true;
   out.fixed = fixed;
   out.has_fixed = true;
-  if (!res.maximizer_set.empty()) {
-    out.error = res.maximizer_set;
-    out = stop_failure(std::move(out),res.stop_detail,PayloadKind::Comparison,{"size","prob"});
-  }
+  attach_maximizer_set(out, res.maximizers, "binom", [&](const auto&) { return res.logLik; });
   return out;
 
   }());

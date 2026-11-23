@@ -244,9 +244,12 @@ test_that("held-scale Cauchy roots are certified or fail explicitly", {
     expect_identical(unname(f["scale"]),s)
     expect_equal(as.numeric(logLik(f)),sum(dcauchy(c(-2,2),0,s,log=TRUE)),tolerance=1e-12)
   }
-  for (x in list(c(-2,2),c(-2,-2,2,2),c(-3,-2,2,3))) {
-    expect_match(attr(mlcauchy(x,scale=1),"outcome_message"),"global maxima are tied or numerically indistinguishable")
+  for (x in list(c(-2,2),c(-2,-2,2,2))) {
+    expect_match(attr(mlcauchy(x,scale=1),"outcome_message"),"Maximum is not unique")
   }
+  ambiguous <- mlcauchy(c(-3,-2,2,3),scale=1)
+  expect_identical(attr(ambiguous,"unique"), NA)
+  expect_match(attr(ambiguous,"outcome_message"),"global maxima are tied or numerically indistinguishable")
   expect_error(mlcauchy(c(-1,1),scale=1),"numerical certificate")
   expect_error(mlcauchy(c(-2,-.5,0,.7,3),scale=1,iterlim=1),"converge")
   expect_error(mlcauchy(c(-1e308,1e308),scale=1e-308),"numerical certificate")
@@ -287,7 +290,7 @@ test_that("structured Cauchy stops can be caught by class", {
   expect_s3_class(e,"univariateML")
   expect_true(attr(e,"certified"))
   expect_false(attr(e,"unique"))
-  expect_match(fit_diagnostic(e),"Held-scale Cauchy global maxima are tied")
+  expect_match(fit_diagnostic(e),"Maximum is not unique")
   expect_true(is.nan(fit_payload(e)$segment_loglik_upper))
   expect_equal(nrow(fit_payload(e)$candidates),2L)
   expected <- c(-sqrt(3),sqrt(3))
@@ -312,5 +315,19 @@ test_that("held-scale non-uniqueness reports both reflected maximizers", {
                tolerance = 1e-10)
   expect_equal(as.numeric(logLik(f)), sum(dcauchy(x, f[1], f[2], log = TRUE)),
                tolerance = 1e-12)
-  expect_match(attr(f, "outcome_message"), "global maxima are tied")
+  expect_match(attr(f, "outcome_message"), "Maximum is not unique")
+})
+
+test_that("free balanced Cauchy fits publish the anchored semicircle", {
+  f <- mlcauchy(c(1, 1, 5, 5))
+  set <- attr(f, "maximizer_set")
+  expect_false(attr(f, "unique"))
+  expect_identical(set$coordinates, c("location", "scale"))
+  expect_identical(set$pieces[[1]]$form, "semicircle")
+  expect_identical(set$pieces[[1]]$anchors, c(1, 5))
+  expect_identical(set$pieces[[1]]$axes[[2]]$upper, Inf)
+  expect_identical(attr(unserialize(serialize(f, NULL)), "maximizer_set"), set)
+  rows <- attr(f, "maximizers")
+  expect_equal(as.numeric(rows[1, set$coordinates]), as.numeric(f))
+  expect_true(all(abs(rows$scale^2 - (rows$location - 1) * (5 - rows$location)) < 1e-12))
 })

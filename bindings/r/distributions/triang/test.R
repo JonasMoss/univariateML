@@ -78,9 +78,11 @@ expect_null(attr(near_tie, "maximizers"))
 test_that("unresolved held-endpoint comparisons expose both modes silently", {
   y <- (1 + sqrt(5)) / 4
   expect_no_warning(fit <- mltriang(c(.5, .5, y), a = 0, b = 1))
-  expect_false(attr(fit, "unique"))
+  expect_identical(attr(fit, "unique"), NA)
+  expect_null(attr(fit, "maximizer_set"))
+  expect_null(attr(fit, "maximizers"))
   expect_false(attr(fit, "certified"))
-  expect_equal(attr(fit, "maximizers")$c, c(.5, y))
+  expect_equal(attr(fit, "candidates")$c, c(.5, y))
   expect_match(attr(fit, "outcome_message"), "could not be resolved")
 })
 

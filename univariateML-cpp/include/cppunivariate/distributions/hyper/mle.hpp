@@ -76,6 +76,7 @@ struct HyperResult {
   // continuum of vectors), 3 = size one (only m / N enters). Set by hyper_mle.
   bool unique = true;
   int non_unique_reason = 0;
+  bool uniqueness_known = true;
 };
 
 namespace hyper_detail {
@@ -741,6 +742,17 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     }
     if(!out.certified)out.status=HyperStatus::Ok;
   }
+  if (out.status == HyperStatus::Tie) {
+    // Test the exact per-observation adjacent ratio before calling a
+    // rounding-margin comparison a tie. The scalar likelihood is unimodal.
+    const double population = std::isnan(N) ? out.tie : N;
+    const double composition = std::isnan(m) ? out.tie : m;
+    const double draws = std::isnan(k) ? out.tie : k;
+    const double factor = std::isnan(N) ? population : population + 1;
+    out.uniqueness_known = std::all_of(x.begin(), x.end(), [&](double v) {
+      return hyper_detail::product_difference(v, factor, composition, draws) == 0;
+    });
+  }
   hyper_detail::mark_exact_ties(x, k, N, m, out);
   return out;
 }
@@ -759,7 +771,8 @@ inline FitOutcome outcome(const HyperResult& r) {
       r.status != HyperStatus::Tie && r.status != HyperStatus::Unidentified) return FitOutcome::budget();
   switch (r.status) {
     case HyperStatus::Ok: return FitOutcome::estimate(r.certified, r.unique);
-    case HyperStatus::Tie: return FitOutcome::estimate(r.certified, false);
+    case HyperStatus::Tie: return r.uniqueness_known ? FitOutcome::estimate(r.certified, false)
+                                                     : FitOutcome::undetermined();
     case HyperStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
     case HyperStatus::AllZero: return FitOutcome::limit();
     case HyperStatus::BothFree: return FitOutcome::failure(OutcomeReason::Unsupported);

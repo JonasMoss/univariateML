@@ -1,0 +1,8 @@
+maxset-native cases 12019 differing 12017 only-new 2 only-old 0
+{"baseline": 12017, "common": 12017, "differing_fields": {"candidates": 22, "loglik_lower": 5, "loglik_upper": 5, "maximizer_set": 25, "maximizers": 25, "outcome": 11, "outcome_message": 18, "schema only": 11981, "unique": 11}, "fresh": 12019}
+maxset-double cases 12019 differing 12017 only-new 2 only-old 0
+{"baseline": 12017, "common": 12017, "differing_fields": {"candidates": 22, "loglik_lower": 5, "loglik_upper": 5, "maximizer_set": 25, "maximizers": 25, "outcome": 11, "outcome_message": 18, "schema only": 11981, "unique": 11}, "fresh": 12019}
+maxset-routes-native cases 2003 differing 2003 only-new 0 only-old 0
+{"baseline": 2003, "common": 2003, "differing_fields": {"schema only": 2003}, "fresh": 2003}
+maxset-routes-double cases 2003 differing 2003 only-new 0 only-old 0
+{"baseline": 2003, "common": 2003, "differing_fields": {"schema only": 2003}, "fresh": 2003}

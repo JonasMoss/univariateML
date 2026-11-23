@@ -726,14 +726,26 @@ TEST_CASE("binom: zero atoms and exact constant-sample size ties") {
     CHECK(o.kind == cppunivariate::OutcomeKind::Estimate);
     CHECK(o.certified);
     CHECK_FALSE(o.unique);
-    CHECK_FALSE(result.maximizer_set.empty());
-    const auto& rows = result.stop_detail.candidates;
-    REQUIRE(rows.size() == 2);
-    CHECK(rows[0].coef == std::vector<double>{result.size,result.prob});
-    CHECK(rows[1].coef == second);
-    CHECK(rows[0].coef != rows[1].coef);
-    for (const auto& row : rows)
-      CHECK(4*dist::dbinom(x,row.coef[0],row.coef[1],true) == doctest::Approx(result.logLik));
+    const auto& set = result.maximizers;
+    REQUIRE(set.size > 0);
+    const cppunivariate::Coordinates first{{result.size, result.prob}}, rival{{second[0], second[1]}};
+    const auto contains = [&](const cppunivariate::Coordinates& value) {
+      for (std::size_t i = 0; i < set.size; ++i) {
+        const auto& piece = set.pieces[i].value;
+        if (const auto* box = std::get_if<cppunivariate::Box>(&piece)) {
+          if (cppunivariate::contains(*box, value, set.dimension)) return true;
+        } else if (const auto* points = std::get_if<cppunivariate::Points>(&piece)) {
+          for (std::size_t j = 0; j < points->size; ++j)
+            if (points->values[j].estimate.values == value.values) return true;
+        }
+      }
+      return false;
+    };
+    CHECK(contains(first));
+    CHECK(contains(rival));
+    CHECK(first.values != rival.values);
+    for (const auto& row : {first, rival})
+      CHECK(4*dist::dbinom(x,row.values[0],row.values[1],true) == doctest::Approx(result.logLik));
   };
   check(cppunivariate::binom_mle(as_ispan(zero),nan),0,{1,0});
   check(cppunivariate::binom_mle(as_ispan(zero),0),0,{0,1});

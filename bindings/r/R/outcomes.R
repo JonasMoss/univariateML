@@ -1,10 +1,12 @@
 #' Fit outcomes and conditions
 #'
-#' Every estimate carries logical `certified` and `unique` attributes. An
-#' uncertified estimate lacks a global certificate; a non-unique estimate has
-#' multiple maximizers. `maximizers` describes listed non-unique solutions;
-#' `candidates` records comparisons the certificate could not separate.
-#' Inference refuses non-unique estimates; model selection accepts them.
+#' Every estimate carries logical `certified` and `unique` attributes. The
+#' `unique` attribute can be `TRUE`, `FALSE`, or `NA` when the comparison
+#' leaves uniqueness undetermined. A versioned `maximizer_set` describes
+#' the complete set for fitters that publish typed sets. The first row of
+#' `maximizers` repeats the returned estimate. Additional rows illustrate the
+#' set. `candidates` records comparison evidence. Inference requires known
+#' uniqueness. Model selection accepts estimates with any uniqueness flag.
 #'
 #' A limit names a limiting model; `nomle` records proved nonexistence.
 #' A budget stop exhausts the work cap. An unresolved stop has no candidate

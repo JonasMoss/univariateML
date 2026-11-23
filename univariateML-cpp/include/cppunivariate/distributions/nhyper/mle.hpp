@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
 #include "../../core/work_budget.hpp"
@@ -20,6 +21,8 @@ struct NhyperResult {
   bool certified = true;
   // False when another (m, N, r) attains the same likelihood exactly.
   bool unique = true;
+  MaximizerSet maximizers{};
+  bool uniqueness_known = true;
 };
 
 // Total draws until the r-th white ball. P(T=x) = r/x P(H_x=r).
@@ -520,6 +523,50 @@ inline NhyperResult nhyper_mle_search(span x, double r, double N, double m, int 
   out.logLik = static_cast<double>(ll);
   return out;
 }
+// The scalar search's tie margin nominates adjacent candidates. Cancel the
+// integer factors exactly before admitting an isolated pair to the set.
+inline bool nhyper_exact_adjacent_tie(span x, double m, double N, double r,
+                                      double upper, bool varies_m, int maxit) {
+  const auto ratio_factors = [&](double v) {
+    return varies_m ? std::array<double, 4>{upper, N - upper + 1 - (v - r),
+                                           upper - r, N - upper + 1} :
+                     std::array<double, 4>{v - upper + 1, m - upper + 1,
+                                           upper - 1, N - m - v + upper};
+  };
+  if (std::all_of(x.begin(), x.end(), [&](double v) {
+        const auto f = ratio_factors(v);
+        return hyper_detail::product_difference(f[0], f[1], f[2], f[3]) == 0;
+      })) return true;
+  const auto budget = certificate_budget(maxit);
+  if (x.size() > static_cast<std::size_t>(budget) / 2) return false;
+  std::vector<std::uint64_t> denominator;
+  denominator.reserve(2 * x.size());
+  for (double v : x) {
+    const auto f = ratio_factors(v);
+    if (!(f[2] >= 1 && f[3] >= 1)) return false;
+    denominator.push_back(static_cast<std::uint64_t>(f[2]));
+    denominator.push_back(static_cast<std::uint64_t>(f[3]));
+  }
+  std::int64_t work = 0;
+  std::size_t first = 0;
+  for (double v : x) {
+    const auto f = ratio_factors(v);
+    for (double factor : {f[0], f[1]}) {
+      if (!(factor >= 1)) return false;
+      auto numerator = static_cast<std::uint64_t>(factor);
+      for (std::size_t j = first; j < denominator.size() && numerator > 1; ++j) {
+        if (++work > budget) return false;
+        const auto divisor = std::gcd(numerator, denominator[j]);
+        numerator /= divisor;
+        denominator[j] /= divisor;
+        if (j == first && denominator[j] == 1) ++first;
+      }
+      if (numerator != 1) return false;
+    }
+  }
+  return std::all_of(denominator.begin(), denominator.end(), [](auto factor) { return factor == 1; });
+}
+
 inline NhyperResult nhyper_mle(span x, double r, double N, double m, int maxit) {
   auto out=nhyper_mle_search(x, r, N, m, static_cast<int>(solver_budget(maxit)));
   if(out.status==NhyperStatus::FaceUnresolved || out.status==NhyperStatus::FaceTie ||
@@ -542,6 +589,44 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m, int maxit) 
     for(double v:x)ll.add(nhyper_log_pmf(v,out.N-out.m,out.m,out.r));
     out.logLik=static_cast<double>(ll.value());
   }
+  if (out.status == NhyperStatus::Tie && !nhyper_exact_adjacent_tie(
+      x, out.m, out.N, out.r, out.tie, std::isnan(m), maxit)) {
+    const double second_m = std::isnan(m) ? out.tie : out.m;
+    const double second_r = std::isnan(r) ? out.tie : out.r;
+    const double second_ll = nhyper_detail::log_likelihood(hyper_detail::tabulate(x),
+                                                          out.N, second_m, second_r);
+    out.stop_detail = comparison_detail({{out.m, out.N, out.r}, out.logLik, out.logLik},
+                                        {{second_m, out.N, second_r}, second_ll, second_ll});
+    out.uniqueness_known = false;
+    return out;
+  }
+  if (out.status == NhyperStatus::Tie ||
+      out.status == NhyperStatus::Unidentified ||
+      (out.status == NhyperStatus::Ok && !out.unique)) {
+    auto& set = out.maximizers;
+    set.dimension = 3;
+    MaxsetStatus status;
+    if (out.status == NhyperStatus::Tie || (out.r > 0 && std::isfinite(out.tie))) {
+      Point first{{{out.m, out.N, out.r}}, {}}, second = first;
+      const std::size_t axis = std::isnan(N) ? 1 : std::isnan(r) ? 2 : 0;
+      second.estimate.values[axis] = out.tie;
+      const std::array<Point, 2> points{first, second};
+      status = set.add_points({points.data(), points.size()});
+    } else {
+      Box box;
+      box.axes[0] = box.axes[1] = interval(out.r, maxset_count, true, true, true);
+      box.axes[2] = fixed(out.r, true);
+      box.order[box.order_size++] = {0, 1};
+      if (out.r > 0) box.order[box.order_size++] = {1, 0};
+      std::array<std::optional<double>, maxset_dim> holds{};
+      if (!std::isnan(m)) holds[0] = m;
+      if (!std::isnan(N)) holds[1] = N;
+      if (!std::isnan(r)) holds[2] = r;
+      status = set.add_box(box);
+      if (status == MaxsetStatus::Ok) status = set.slice(holds);
+    }
+    if (status != MaxsetStatus::Ok) out.status = NhyperStatus::NumericalFailure;
+  }
   return out;
 }
 }  // namespace cppunivariate
@@ -559,7 +644,8 @@ inline FitOutcome outcome(const NhyperResult& r) {
       r.status != NhyperStatus::Tie && r.status != NhyperStatus::Unidentified) return FitOutcome::budget();
   switch (r.status) {
     case NhyperStatus::Ok: return FitOutcome::estimate(r.certified, r.unique);
-    case NhyperStatus::Tie: return FitOutcome::estimate(r.certified, false);
+    case NhyperStatus::Tie: return r.uniqueness_known ? FitOutcome::estimate(r.certified, false)
+                                                      : FitOutcome::undetermined();
     case NhyperStatus::Unidentified: return FitOutcome::estimate(r.certified, false);
     case NhyperStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case NhyperStatus::Infeasible: return FitOutcome::failure(OutcomeReason::InvalidInput);

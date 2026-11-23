@@ -162,9 +162,13 @@ inline GpdResult fit(span y,double mu,double tol,int maxit,double sigma=NAN) {
   if(M==0 && held) {
     const double ll=-static_cast<double>(y.size())*std::log(sigma);
     GpdResult out{mu,sigma,0,ll,0,GpdStatus::Ok};
-    out.maximizer_set="Every xi >= -1 maximizes the likelihood at the held threshold and scale.";
-    out.stop_detail.loglik_lower=out.stop_detail.loglik_upper=ll;
-    out.stop_detail.candidates={{{mu,sigma,0},ll,ll},{{mu,sigma,-1},ll,ll}};
+    out.maximizers.dimension = 3;
+    Box box;
+    box.axes[0] = fixed(mu);
+    box.axes[1] = fixed(sigma);
+    box.axes[2] = interval(-1, maxset_inf, true, false);
+    if (out.maximizers.add_box(box) != MaxsetStatus::Ok) out.status = GpdStatus::IterationFailure;
+
     return out;
   }
   if(held && sigma>=M)return {mu,sigma,-1,gpd_loglik(y,sigma,-1),0,GpdStatus::Ok};

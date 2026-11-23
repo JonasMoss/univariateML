@@ -31,7 +31,7 @@ test('structured stops survive the JS Error facade', () => {
       assert.ok(Math.abs(Math.abs(c.location)-Math.sqrt(3))<1e-7);
       assert.equal(c.scale,1);assert.ok(c.loglik_lower<=c.loglik_upper);
     }
-    return /Held-scale Cauchy global maxima are tied/.test(e.message);
+    return /Maximum is not unique/.test(e.message);
   });
   assert.throws(() => api.cauchy.fit([1,1,2]), e => e.kind==='nomle' && e.candidates.length===0);
   assert.throws(() => api.lomax.fit([1,1,1]), e => {
@@ -653,4 +653,40 @@ test('fit rejects unknown and unavailable options', () => {
   assert.throws(() => api.exp.fit([1, 2, 3], {}, {iterlim: 100}), invalid);
   assert.throws(() => api.gamma.fit([1, 2, 3], {}, {typo: 1}), invalid);
   assert.throws(() => api.pois.fit([1, 2, 3], {}, {truncate: [1, 5], typo: 1}), invalid);
+});
+
+test('typed maximizer sets preserve wire constants and comparison rows', () => {
+  const n = api.nhyper.fit([0, 0], {r: null, m: null, N: null});
+  const wire = JSON.parse(JSON.stringify(n.maximizer_set));
+  assert.deepEqual(wire, n.maximizer_set);
+  assert.equal(wire.version, 1);
+  assert.equal(wire.pieces[0].axes[1].upper, Number.MAX_SAFE_INTEGER);
+  assert.deepEqual(wire.pieces[0].order, [[0, 1]]);
+  const c = api.cauchy.fit([1, 1, 5, 5]);
+  assert.equal(c.maximizer_set.pieces[0].axes[1].upper, 'inf');
+  assert.equal(c.maximizers[0].location, c.estimates.location);
+  assert.equal(c.maximizers[0].scale, c.estimates.scale);
+  const y = (1 + Math.sqrt(5)) / 4;
+  const t = api.triang.fit([.5, .5, y], {a: 0, b: 1});
+  assert.equal(t.unique, null);
+  assert.equal(t.maximizer_set, undefined);
+  assert.deepEqual(t.candidates.map(row => row.c), [.5, y]);
+});
+
+test('typed GPD wire values preserve a subnormal and the next binary64 number after one', () => {
+  const edge = 1 + Number.EPSILON;
+  const f = api.gpd.fit([edge, edge], {mu: null, sigma: Number.MIN_VALUE});
+  const wire = JSON.parse(JSON.stringify(f.maximizer_set));
+  assert.deepEqual(wire, f.maximizer_set);
+  assert.ok(wire.pieces.some(piece => piece.axes[0].upper === edge));
+  assert.ok(wire.pieces.every(piece => piece.axes[1].lower === Number.MIN_VALUE));
+  const adjacent = api.gpd.fit([edge, edge], {mu: null, sigma: Number.EPSILON});
+  const interval = adjacent.maximizer_set.pieces.find(piece => piece.axes[0].lower < edge).axes[0];
+  assert.equal(interval.lower, 1);
+  assert.equal(interval.upper, edge);
+  const overflow = api.gpd.fit([-Number.MAX_VALUE, -Number.MAX_VALUE],
+    {mu: null, sigma: Number.MAX_VALUE});
+  const extremes = JSON.parse(JSON.stringify(overflow.maximizer_set));
+  assert.ok(extremes.pieces.some(piece => piece.axes[0].lower === '-inf' && piece.axes[0].rounded[0]));
+  assert.ok(extremes.pieces.some(piece => piece.axes[2].upper === 'inf'));
 });

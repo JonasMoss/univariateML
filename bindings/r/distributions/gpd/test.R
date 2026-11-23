@@ -207,12 +207,12 @@ test_that("GPD reports shape rays, uniform translations and their union", {
       uniform <- w$xi == -1 & w$mu >= -1 & w$mu <= 0
       w$sigma == 1 & (if (!is.null(args$mu)) shape else if (!is.null(args$xi)) uniform else shape | uniform)
     }
-    message <- if (!is.null(args$mu)) "Every xi >= -1" else "x[1] - sigma <= mu <= x[1]"
+    message <- if (!is.null(args$mu)) "xi in [-1, Inf)" else "mu in [-1, 0]"
     expect_true(attr(f,"certified"))
     expect_false(attr(f,"unique"))
     w <- attr(f,"maximizers")
-    expect_equal(nrow(w),2L)
-    expect_equal(nrow(unique(w[names(f)])),2L)
+    expect_gte(nrow(w),2L)
+    expect_equal(nrow(unique(w[names(f)])),nrow(w))
     expect_true(all(member(w)))
     expect_match(attr(f,"outcome_message"),message,fixed=TRUE)
     expect_equal(sum(dml(x,f,log=TRUE)),as.numeric(logLik(f)),tolerance=1e-12)
@@ -223,4 +223,24 @@ test_that("GPD reports shape rays, uniform translations and their union", {
   expect_true(attr(singleton,"unique"))
   expect_equal(unname(singleton[["mu"]]),0)
   expect_null(attr(singleton,"maximizers"))
+})
+
+test_that("GPD rounded analytic thresholds are labelled and preserve binary64", {
+  x <- 1 + .Machine$double.eps
+  f <- mlgpd(rep(x, 2), mu = NULL, sigma = .Machine$double.xmin * .Machine$double.eps)
+  expect_match(attr(f, "outcome_message"), "approximately")
+  ranges <- attr(f, "maximizer_set")$pieces
+  rounded <- Filter(function(p) !is.null(p$axes[[1]]$rounded), ranges)
+  expect_length(rounded, 1L)
+  expect_identical(rounded[[1]]$axes[[1]]$lower, x)
+  expect_identical(rounded[[1]]$axes[[2]]$lower, .Machine$double.xmin * .Machine$double.eps)
+  adjacent <- mlgpd(rep(x, 2), mu = NULL, sigma = .Machine$double.eps)
+  intervals <- lapply(attr(adjacent, "maximizer_set")$pieces, function(p) p$axes[[1]])
+  expect_true(any(vapply(intervals, function(a) a$lower == 1 && a$upper == x, logical(1))))
+  overflow <- mlgpd(rep(-.Machine$double.xmax, 2), mu = NULL, sigma = .Machine$double.xmax)
+  extremes <- attr(unserialize(serialize(overflow, NULL)), "maximizer_set")
+  expect_true(any(vapply(extremes$pieces, function(p) identical(p$axes[[1]]$lower, -Inf), logical(1))))
+  expect_true(any(vapply(extremes$pieces, function(p) identical(p$axes[[3]]$upper, Inf), logical(1))))
+  expect_identical(attr(unserialize(serialize(f, NULL)), "maximizer_set"),
+                   attr(f, "maximizer_set"))
 })

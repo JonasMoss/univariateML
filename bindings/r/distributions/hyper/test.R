@@ -228,3 +228,11 @@ test_that("holding the largest urn count makes the zero maximizer unique", {
     expect_null(attr(f, "outcome_message"))
   }
 })
+
+test_that("overlapping adjacent likelihoods preserve comparison evidence", {
+  f <- mlhyper(c(0, 2), N = 5, k = 2, m = NULL)
+  expect_identical(attr(f, "unique"), NA)
+  expect_false(attr(f, "certified"))
+  expect_null(attr(f, "maximizer_set"))
+  expect_equal(attr(f, "candidates")$m, c(2, 3))
+})

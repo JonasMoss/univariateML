@@ -621,6 +621,6 @@ TEST_CASE("triang: overlapping held-endpoint likelihood bounds keep both modes")
   CHECK(r.c==0.5);
   REQUIRE(r.unresolved_modes.size()==1);
   CHECK(r.unresolved_modes[0].c==y);
-  CHECK_FALSE(cppunivariate::outcome(r).unique);
+  CHECK_FALSE(cppunivariate::outcome(r).uniqueness_known);
   CHECK_FALSE(cppunivariate::outcome(r).certified);
 }

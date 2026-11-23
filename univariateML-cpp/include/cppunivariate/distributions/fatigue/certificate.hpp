@@ -94,6 +94,7 @@ inline FatigueResult fit(span x,double tol,int maxit,double alpha,double beta) {
     const auto first=value(lo),second=value(hi);
     if(first.status!=FatigueStatus::Ok||second.status!=FatigueStatus::Ok)return failure;
     failure.stop_detail=comparison_detail({{first.alpha,first.beta},first.logLik,first.logLik,StopModel::None},{{second.alpha,second.beta},second.logLik,second.logLik,StopModel::None});
+    failure.proved_tie = true;
     return failure;
   }
   const auto witness=value(std::sqrt(lo)*std::sqrt(hi));

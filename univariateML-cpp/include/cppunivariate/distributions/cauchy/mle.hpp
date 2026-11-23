@@ -7,6 +7,7 @@
 #pragma once
 #include "dpqr.hpp"
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
 #include "cppunivariate/core/constants.hpp"
@@ -36,6 +37,7 @@ struct CauchyResult {
   std::vector<CandidateEvaluation> candidate_evaluations{};
   std::size_t selected_candidate=0;
   std::vector<double> maximizer_support{};
+  MaximizerSet maximizers{};
 };
 
 // Negative log-likelihood of Cauchy(mu, scale=s):
@@ -249,7 +251,18 @@ inline CauchyResult fit_cauchy(span x, double tol, int maxit) {
     const auto bounds=std::minmax_element(x.begin(),x.end());
     const double lo=*bounds.first,hi=*bounds.second;
     if(lo<hi && std::count(x.begin(),x.end(),lo)*2==static_cast<long>(x.size()) &&
-        std::count(x.begin(),x.end(),hi)*2==static_cast<long>(x.size())) {result.unique=false;result.maximizer_support={lo,hi};}
+        std::count(x.begin(),x.end(),hi)*2==static_cast<long>(x.size())) {
+      result.unique = false;
+      result.maximizer_support = {lo, hi};
+      result.maximizers.dimension = 2;
+      Relation relation;
+      relation.form = RelationForm::Semicircle;
+      relation.anchors = {lo, hi};
+      relation.axes[0] = interval(lo, hi, false, false);
+      relation.axes[1] = interval(0, maxset_inf, false, false);
+      if (result.maximizers.add_relation(relation) != MaxsetStatus::Ok)
+        result.status = CauchyStatus::NumericalFailure;
+    }
   }
   if(result.status==CauchyStatus::Ok) {
     double sum=0,carry=0;
@@ -411,6 +424,7 @@ inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double 
       };
       const double midpoint=y.front()/2+y.back()/2;
       bool left=false,right=false;
+      std::array<Point, 2> point_set{};
       for (const auto& r : roots) {
         const double width=r.b-r.a;
         const double bound=r.ll+1e-7*width+n*width*width+ll_margin;
@@ -422,6 +436,14 @@ inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double 
         const double ll=cauchy_location_detail::likelihood(y,t)-offset;
         const bool accurate=std::isfinite(mu)&&std::isfinite(ll)&&std::isfinite(error)&&
           error<=target&&std::abs(cauchy_location_detail::score(y,t))<1e-7;
+        const auto index = out.candidate_evaluations.size();
+        if (index < point_set.size()) {
+          auto& point = point_set[index];
+          point.estimate = {{{mu, scale}}};
+          const double lower = std::nextafter(std::fma(-scale, error, mu), -maxset_inf);
+          const double upper = std::nextafter(std::fma(scale, error, mu), maxset_inf);
+          point.enclosure = Enclosure{{{lower, scale}}, {{upper, scale}}};
+        }
         out.stop_detail.candidates.push_back({{mu,scale},r.ll-offset-ll_margin,bound-offset});
         out.candidate_evaluations.push_back({ll,accurate});
         left=left||r.b<midpoint;
@@ -434,6 +456,13 @@ inline CauchyResult fit_cauchy_location(const std::vector<double>& data, double 
       // displacement from the midpoint and d is the half-gap. Two isolated
       // maxima on opposite sides must be the two equal minima of this product.
       out.unique=!(balanced&&out.candidate_evaluations.size()==2&&left&&right);
+      if (!out.unique) {
+        out.maximizers.dimension = 2;
+        if (out.maximizers.add_points({point_set.data(), point_set.size()}) != MaxsetStatus::Ok) {
+          out.unique = true;
+          out.maximizers = {};
+        }
+      }
       for(std::size_t i=1;i<out.candidate_evaluations.size();++i) {
         const int order=compare_lower(out.stop_detail.candidates[i].loglik_lower,
           out.stop_detail.candidates[out.selected_candidate].loglik_lower);
@@ -554,7 +583,7 @@ inline FitOutcome outcome(const CauchyResult& r) {
           (!r.unique && !std::all_of(r.candidate_evaluations.begin(),r.candidate_evaluations.end(),
             [](const auto& point){return point.accurate;})))
         return FitOutcome::failure(OutcomeReason::Unresolved);
-      return FitOutcome::estimate(!r.unique,r.unique);
+      return r.unique ? FitOutcome::undetermined() : FitOutcome::estimate(true, false);
   }
   return {};
 }

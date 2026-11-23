@@ -125,6 +125,10 @@ $N-K+r$. The likelihood ratio at consecutive composition counts decreases,
 so bisection locates a maximum, including attained boundaries. Adjacent
 counts can tie. When $r=0$, sampling stops immediately and the law is the
 point mass at zero, regardless of composition.
+An adjacent composition or stopping-count pair found within the comparison
+margin is a proved tie only if the integer factors of its exact likelihood
+ratio cancel. An unresolved comparison retains the two evaluated candidates.
+
 
 A known population permits joint estimation of composition and stopping
 count on a finite feasible grid. With composition held and population free,

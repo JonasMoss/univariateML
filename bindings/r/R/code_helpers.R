@@ -474,6 +474,10 @@ univariateML_closed_call <- function(fun, obj, type, args) {
 
 # Inference requires an identified maximizer.
 ml_require_unique <- function(object) {
+  if (identical(attr(object, "unique"), NA))
+    stop(structure(list(message = "Inference requires a unique maximizer. Uniqueness is undetermined.",
+                        call = NULL, kind = "unsupported", reason = "uniqueness-undetermined"),
+                   class = c("univariateML_unsupported", "univariateML_stop", "error", "condition")))
   if (identical(attr(object, "unique"), FALSE))
     stop(structure(list(message = "Inference requires a unique maximizer; this fit has multiple maximizers.",
                         call = NULL, kind = "unsupported", reason = "non-unique"),
@@ -482,7 +486,21 @@ ml_require_unique <- function(object) {
 
 ml_print_outcome <- function(object) {
   if (identical(attr(object, "certified"), FALSE)) cat("Global maximum is not certified.\n")
-  if (identical(attr(object, "unique"), FALSE)) cat("Maximum is not unique.\n")
+  if (identical(attr(object, "unique"), FALSE)) {
+    description <- if (is.null(attr(object, "maximizer_set"))) NULL else attr(object, "outcome_message")
+    cat(if (is.null(description)) "Maximum is not unique." else description, "\n", sep = "")
+    set <- attr(object, "maximizer_set")
+    if (!is.null(set) && any(vapply(set$pieces, function(piece) {
+      !is.null(piece$axes) && any(vapply(piece$axes, function(axis) axis$lower != axis$upper, logical(1)))
+    }, logical(1)))) {
+      rows <- attr(object, "maximizers")
+      if (nrow(rows) > 0L) {
+        cat("Representative maximizers\n")
+        print(rows[set$coordinates], row.names = FALSE)
+      }
+    }
+  }
+  if (identical(attr(object, "unique"), NA)) cat("Uniqueness is undetermined.\n")
 }
 
 # Preserve established diagnostics when R validation precedes the core call.

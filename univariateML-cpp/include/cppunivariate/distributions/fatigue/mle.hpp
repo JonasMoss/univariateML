@@ -31,6 +31,7 @@ struct FatigueResult {
   StopDetail stop_detail{};
   bool transformation_failure=false;
   bool certified=true;
+  bool proved_tie=false;
 };
 
 // Comparison candidates are (alpha, beta); the adapter appends the held mu.
@@ -52,12 +53,9 @@ inline FitOutcome outcome(const FatigueResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.status == FatigueStatus::SearchFailure && r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.status == FatigueStatus::SearchFailure && r.stop_detail.comparison_tie) {
-    // Two separated roots (the reciprocal-scale twins, exact for a constant
-    // sample) within the certificate's tie margin: every listed root is an
-    // accurate point, so the outcome is an uncertified estimate that is not
-    // unique and the payload lists both roots. Otherwise the comparison rule.
-    const auto tied = nonunique_outcome_of(r, false);
-    return tied.kind == OutcomeKind::Estimate ? tied : comparison_outcome_of(r);
+    if (r.proved_tie) return nonunique_outcome_of(r, false);
+    const auto selected = comparison_outcome_of(r);
+    return selected.kind == OutcomeKind::Estimate ? FitOutcome::undetermined() : selected;
   }
   switch (r.status) {
     case FatigueStatus::Unsupported: return FitOutcome::failure(OutcomeReason::Unsupported);
@@ -219,6 +217,7 @@ inline FatigueResult fatigue_mle_shifted(span x, double mu, double tol, int maxi
     if(!std::isfinite(shifted[i]))return transform_failure();
   }
   auto result=fatigue_mle(span{shifted.data(),shifted.size()},tol,maxit,alpha,beta);
+  if (!constant) result.proved_tie = false;
   if(result.status==FatigueStatus::Unbounded) {
     bool distinct=false,rounded=false;
     for(std::size_t i=0;i<x.size();++i) {

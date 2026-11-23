@@ -11,6 +11,7 @@
 
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/precision.hpp"
@@ -47,7 +48,7 @@ struct BinomResult {
 
   bool unique = true;
   bool evaluation_failure = false;
-  std::string maximizer_set{};
+  MaximizerSet maximizers{};
 };
 
 inline double binom_lchoose(double n, double k) {
@@ -146,9 +147,11 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
             const double ll = dn * distributions::dbinom(max_x, tied, held_prob, true);
             BinomResult result{tied, held_prob, ll, 0, BinomStatus::Ok};
             result.unique = false;
-            result.maximizer_set = "Exactly the two listed adjacent sizes maximize the likelihood.";
-            result.stop_detail = comparison_detail({{tied,held_prob},ll,ll},
-                                                   {{tied+1,held_prob},ll,ll});
+            result.maximizers.dimension = 2;
+            const std::array<Point, 2> points{{{{{tied, held_prob}}, {}},
+                                                {{{tied + 1, held_prob}}, {}}}};
+            if (result.maximizers.add_points({points.data(), points.size()}) != MaxsetStatus::Ok)
+              result.status = BinomStatus::IterationFailure;
             return result;
           }
         }
@@ -383,11 +386,19 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
     const bool fs=!std::isnan(size_or_nan),fp=!std::isnan(held_prob);
     stopped.unique=(fs || fp) && !((!fs && held_prob==0) || (!fp && size_or_nan==0));
     if (!stopped.unique) {
-      const double second_size = fs ? 0 : 1;
-      const double second_prob = fs ? 1 : 0;
-      stopped.stop_detail = comparison_detail({{stopped.size,stopped.prob},0,0},
-                                             {{second_size,second_prob},0,0});
-      stopped.maximizer_set = "Every admissible pair with size = 0 or prob = 0 maximizes the likelihood, subject to held values.";
+      auto& set = stopped.maximizers;
+      set.dimension = 2;
+      Box zero_size, zero_prob;
+      zero_size.axes[0] = fixed(0, true);
+      zero_size.axes[1] = interval(0, 1, true, true);
+      zero_prob.axes[0] = interval(0, maxset_inf, true, false, true);
+      zero_prob.axes[1] = fixed(0);
+      std::array<std::optional<double>, maxset_dim> holds{};
+      if (fs) holds[0] = size_or_nan;
+      if (fp) holds[1] = held_prob;
+      if (set.add_box(zero_size) != MaxsetStatus::Ok ||
+          set.add_box(zero_prob) != MaxsetStatus::Ok || set.slice(holds) != MaxsetStatus::Ok)
+        stopped.status = BinomStatus::IterationFailure;
     }
   }
   return stopped;

@@ -25,6 +25,7 @@ export default async function create(options = {}) {
     },
     ...(fitFamilies.includes(id) ? {vcov: (x, fit, type = 'sandwich') => {
       if(fit?.unique===false) throw Object.assign(new Error('Inference requires a unique maximizer; this fit has multiple maximizers.'),{kind:'unsupported',reason:'non-unique'});
+      if(fit?.unique===null) throw Object.assign(new Error("Inference requires a unique maximizer. Uniqueness is undetermined."),{kind:"unsupported",reason:"uniqueness-undetermined"});
       if(fit?.censored || fit?.truncate || fit?.zero && fit.zero!=='none') throw new Error('Covariance for modified or censored fits is not implemented');
       if (!['sandwich', 'observed'].includes(type)) throw new Error('type must be "sandwich" or "observed"');
       if (x == null) throw new Error('Covariance requires the observations from a fitted model');
