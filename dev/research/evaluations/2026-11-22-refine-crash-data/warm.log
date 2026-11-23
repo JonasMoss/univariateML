@@ -1,0 +1,21 @@
+open (refinement could not settle the case; not a failure):
+  binom: integer enumeration budget exhausted: tail needs 1000037 cells: 2
+  binom: integer profile with held probability requires a separate tail envelope: 12
+  cmp: CMP series guard: 128-term normalizer remainder is not below 1e-25: 2
+  cmp: case guard of 120 s: 4
+  cmp: not attempted: two cases hit the case guard: 8
+  dgamma: case guard of 120 s: 2
+  dgamma: discrete-gamma series guard: 64-term remainder is not below 1e-20 of cell mass: 2
+  nhyper: no independently refinable coefficient: 4
+reference exceptions (harness failures): 0
+coefficients not refined (no independent value; not judged):
+  binom+zero=modified size: free integer size: no global positive-count tail envelope: 26
+  nhyper N: integer: 4
+  nhyper N: population conditioned on reported value: 28
+  nhyper r: integer: 4
+  nhyper r: stopping count conditioned on reported value: 28
+  triang c: kink: 6
+  triang c: mode held at reported kink for endpoint profile: 26
+216 cases judged: 216 passed, 0 failed
+fit-refine: failures by check: none
+fit-refine: 0 listed as known, 0 new, 0 listed but passing

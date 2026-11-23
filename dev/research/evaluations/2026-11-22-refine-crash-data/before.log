@@ -1,0 +1,20 @@
+open (refinement could not settle the case; not a failure):
+  binom+zero=modified: KeyError: 'ComplexInfinity': 22
+  binom+zero=modified: ValueError: integer enumeration budget exhausted: tail needs 1000037 cells: 2
+  binom+zero=modified: ValueError: integer profile with held probability requires a separate tail envelope: 10
+  binom: ValueError: integer enumeration budget exhausted: tail needs 1000037 cells: 2
+  binom: ValueError: integer profile with held probability requires a separate tail envelope: 12
+  cmp: AssertionError: : 2
+  cmp: case guard of 120 s: 4
+  cmp: not attempted: two cases hit the case guard: 8
+  dgamma: AssertionError: : 2
+  dgamma: case guard of 120 s: 2
+  nhyper: ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int: 4
+  triang: ZeroDivisionError: : 36
+coefficients not refined (no independent value; not judged):
+  nhyper N: integer: 28
+  nhyper r: integer: 30
+  triang c: kink: 6
+244 cases judged
+fit-refine: failures by check: none
+fit-refine: 0 listed as known, 0 new, 0 listed but passing
