@@ -177,8 +177,7 @@ inline FitOutcome outcome(const FparetoResult& r) {
 
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
-  // The generic face search returns no coefficients and compares by a
-  // likelihood margin; exact delegate faces retain held/limit coefficients.
+  // Exploratory comparisons remain uncertified even with a face witness.
   switch (r.status) {
     case FparetoStatus::FaceRefuted:return FitOutcome::failure(OutcomeReason::NoConvergence);
     case FparetoStatus::Unbounded:return FitOutcome::nonexistence(OutcomeReason::Unbounded);

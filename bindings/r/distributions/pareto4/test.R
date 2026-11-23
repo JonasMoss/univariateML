@@ -246,3 +246,16 @@ test_that("Pareto IV payload carries the pointwise factor at a tied endpoint", {
   expect_equal(e$candidates$min, p[["min"]])
   expect_equal(e$candidates$endpoint_log_factor, p[["endpoint_log_factor"]])
 })
+
+test_that("zero-threshold Pareto IV preserves held-endpoint density factors", {
+  x <- c(1, 1, 2, 3)
+  e <- tryCatch(mlpareto4(x, min = 0, scale = 1), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  expect_identical(e$model, "pareto")
+  p <- e$estimates
+  expect_equal(p[["endpoint_log_factor"]], -log(2))
+  parent <- mlpareto(a = p[["a"]], b = p[["b"]])
+  ll <- sum(dml(x, parent, log = TRUE)) + sum(x == p[["b"]]) * p[["endpoint_log_factor"]]
+  expect_equal(ll, e$limit_loglik, tolerance = 1e-12)
+  expect_equal(e$candidates$endpoint_log_factor, p[["endpoint_log_factor"]])
+})

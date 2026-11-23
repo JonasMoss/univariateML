@@ -248,7 +248,7 @@ test_that("inverse Burr refuses reciprocal overflow and artificial ties", {
 test_that("structured invburr endpoint limit uses public model names", {
   e <- tryCatch(mlinvburr(c(1,.5,.25),scale=1),univariateML_limit=identity)
   expect_identical(e$model,"power")
-  expect_equal(e$estimates,c(alpha=1,beta=1/log(2)),tolerance=1e-12)
+  expect_equal(e$estimates,c(alpha=1,beta=1/log(2),endpoint_log_factor=-log(2)),tolerance=1e-12)
   expect_true(is.finite(e$limit_loglik))
 })
 

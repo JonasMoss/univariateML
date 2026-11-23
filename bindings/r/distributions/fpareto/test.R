@@ -205,3 +205,32 @@ test_that("Feller Pareto evaluates its transformed gamma face using the payload 
   parent <- mltrgamma(shape1 = p[["shape1"]], shape2 = p[["shape2"]], scale = p[["scale"]])
   expect_equal(sum(dml(x - p[["min"]], parent, log = TRUE)), e$limit_loglik, tolerance = 1e-12)
 })
+
+test_that("zero-threshold Feller-Pareto preserves held-endpoint density factors", {
+  x <- c(1, 1, .5, .25)
+  e <- tryCatch(mlfpareto(x, min = 0, shape1 = .4, scale = 1), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  expect_identical(e$model, "power")
+  p <- e$estimates
+  expect_equal(p[["endpoint_log_factor"]], -.4 * log(2))
+  parent <- mlpower(alpha = p[["alpha"]], beta = p[["beta"]])
+  ll <- sum(dml(x, parent, log = TRUE)) + sum(x == p[["alpha"]]) * p[["endpoint_log_factor"]]
+  expect_equal(ll, e$limit_loglik, tolerance = 1e-12)
+  expect_equal(e$candidates$endpoint_log_factor, p[["endpoint_log_factor"]])
+})
+
+test_that("exploratory transformed gamma faces carry their density coefficients", {
+  u <- (seq_len(200) - .5) / 200
+  y <- qnorm((1 + u) / 2) / sqrt(2)
+  for (inverse in c(FALSE, TRUE)) {
+    x <- 2 + if (inverse) 1 / y else y
+    e <- tryCatch(mlfpareto(x, min = 2), error = identity)
+    law <- if (inverse) "invtrgamma" else "trgamma"
+    expect_s3_class(e, "univariateML_limit")
+    expect_identical(e$model, paste0("unavailable:shifted-", law))
+    p <- e$estimates
+    parent <- do.call(get(paste0("ml", law)), as.list(p[c("shape1", "shape2", "scale")]))
+    ll <- sum(dml(x - p[["min"]], parent, log = TRUE))
+    expect_equal(ll, e$limit_loglik, tolerance = 1e-10)
+  }
+})

@@ -24,7 +24,10 @@ inline Gb2Result fit(span x,double q,double p,double b,double tol,bool inverse) 
   out.status=inverse?Gb2Status::ParetoBoundary:Gb2Status::PowerBoundary;
   out.logLik=ll;
   out.stop_detail=limit_detail(inverse?std::vector<double>{rate,b}:std::vector<double>{b,rate},ll,inverse?StopModel::Pareto:StopModel::Power);
-  if(ties)out.stop_detail.endpoint_log_factor=-(inverse?p:q)*std::log(2.);
+  // For the vanishing beta shape h, 1/B(h, held) tends to h in ratio
+  // and power*h tends to rate. At x = b both softplus terms are log(2),
+  // so the density tends to (rate/b)*2^(-held), with base density rate/b.
+  if(ties)attach_endpoint_factor(out.stop_detail,-(inverse?p:q)*std::log(2.));
   out.stop_detail.loglik_lower=ll-error;out.stop_detail.loglik_upper=ll+error;
   out.stop_detail.candidates[0].loglik_lower=ll-error;
   out.stop_detail.candidates[0].loglik_upper=ll+error;

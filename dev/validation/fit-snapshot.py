@@ -124,6 +124,36 @@ def original_classes(meta, golden):
             'subnormal-signed': [-DENORM, DENORM, 2*DENORM]})
     return out
 
+def threshold_fixtures(ident):
+    u = [(i + .5)/200 for i in range(200)]
+    if ident == 'fpareto':
+        yield 'weibull', [1, 2, 3, 4], {'shape2': 2, 'shape3': 1}
+        yield 'invweibull', [1, .5, 1/3, .25], {'shape1': 1, 'shape2': 2}
+        yield 'trgamma-delegate', [2]*8, {'shape2': 2, 'shape3': 2}
+        yield 'invtrgamma-delegate', [.5]*8, {'shape1': 2, 'shape2': 2}
+        # Shape1 of 1/2 gives the square of a half-normal quantile as
+        # the unit-scale gamma quantile. Shape2 of 2 cancels the square.
+        from statistics import NormalDist
+        normal = NormalDist()
+        gamma = [normal.inv_cdf((1+v)/2)/math.sqrt(2) for v in u]
+        yield 'trgamma-search', gamma, {}
+        yield 'invtrgamma-search', [1/v for v in gamma], {}
+        yield 'lognormal', [math.exp(normal.inv_cdf(v)) for v in u], {}
+        yield 'double-pareto', [math.sqrt(2*v) if v < .5 else 1/math.sqrt(2*(1-v)) for v in u], {}
+        yield 'pareto-search', [1/math.sqrt(1-v) for v in u], {}
+        yield 'power-search', [math.sqrt(v) for v in u], {}
+        yield 'tied-power', [1, 1, .5, .25], {'shape1': .4, 'scale': 1}
+        yield 'tied-pareto', [1, 1, 2, 4], {'shape3': .4, 'scale': 1}
+    elif ident == 'pareto2':
+        yield 'exp', list(range(1, 11)), {}
+        yield 'exp-budget', [1, 1, 40, 59], {}
+    elif ident == 'pareto4':
+        yield 'weibull', [1, 2, 3, 4], {'shape2': 2}
+        yield 'weibull-joint', [math.sqrt(-math.log1p(-v)) for v in u], {}
+        yield 'pareto-joint', [1/math.sqrt(1-v) for v in u], {}
+        yield 'tied-pareto', [1, 1, 2, 3], {'scale': 1}
+
+
 def cases(ident, archive):
     meta, golden = read(ident)
     names = [p['name'] for p in meta['params']]
@@ -147,10 +177,27 @@ def cases(ident, archive):
     for label, flat in FLAT_CASES.get(ident, {}).items():
         yield case('class', label, list(flat.data), flat.held)
 
+    for label, data, holds in threshold_fixtures(ident):
+        offset = -3 if label == 'exp-budget' else 2
+        fixture = case('class', 'threshold-'+label, [v+offset for v in data], dict(holds, min=offset))
+        if label == 'exp-budget':
+            fixture['controls'] = (1e-8, 1)
+        yield fixture
+        if label in ('tied-power', 'tied-pareto'):
+            yield case('class', 'zero-'+label, data, dict(holds, min=0))
+
+
 def line(case, names):
     holds = [case['held'].get(name, 0.0) for name in names]
-    return ' '.join([str(case['mask']), str(len(case['data'])),
-                     *(float(v).hex() for v in holds), *(float(v).hex() for v in case['data'])])+'\n'
+    mask = case['mask']
+    controls = case.get('controls')
+    suffix = []
+    if controls:
+        mask |= 1 << 31
+        tol, iterlim = controls
+        suffix = [tol.hex(), str(iterlim)]
+    return ' '.join([str(mask), str(len(case['data'])),
+                     *(float(v).hex() for v in holds), *(float(v).hex() for v in case['data']), *suffix])+'\n'
 
 # ---------------------------------------------------------------- probe
 
@@ -254,6 +301,16 @@ def build(ident, work, double, boost):
     args = ','.join('umvl_binding::Held{bool(mask&%du),holds[%d]}' % (1 << i, i) for i in range(k))
     text = (PROBE.replace('@ID@', ident).replace('@K@', str(k)).replace('@ARGS@', args)
             .replace('@TYPE@', 'int' if integer else 'double').replace('@SPAN@', 'ispan' if integer else 'span'))
+    if ident == 'pareto2' and not ROUTE_MODE:
+        # Preserve the default call and the byte representation of frozen rows.
+        call = f'umvl_binding::fit_pareto2(cppunivariate::span{{data.data(),data.size()}},{args}'
+        text = text.replace(f'const auto raw={call});', f"""
+    const auto raw=[&]() {{
+      if(!(mask & (1u << 31)))return {call});
+      int iterlim;
+      std::cin>>token>>iterlim;
+      return {call},std::strtod(token.c_str(),nullptr),iterlim);
+    }}();""")
     if ROUTE_MODE:
         route = ROUTES[ident]
         names = [p['name'] for p in meta['params']]
@@ -333,6 +390,7 @@ def run_family(ident, args, archive, work, boost, tag):
                       held=case['held'], n=len(case['data']),
                       input_sha256=hashlib.sha256(text.encode()).hexdigest()[:16])
         if case['source'] in ('class', 'resample'): record['data'] = case['data']
+        if 'controls' in case: record['controls'] = case['controls']
         if case['source'] != 'class' or case['case'] not in FLAT_CASES.get(ident, {}):
             result.pop('outcome_message', None)
         record['result'] = result

@@ -1,0 +1,14 @@
+100% tests passed, 0 tests failed out of 180
+100% tests passed, 0 tests failed out of 180
+[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67041 ]
+# tests 593
+# pass 593
+# fail 0
+Results: [{"command": ["just", "cpp-test"], "exit": 0, "seconds": 568.11}, {"command": ["just", "cpp-test-no-long-double"], "exit": 0, "seconds": 837.09}, {"command": ["just", "test"], "exit": 0, "seconds": 901.12}, {"command": ["just", "js-build"], "exit": 0, "seconds": 87.39}, {"command": ["just", "js-test"], "exit": 0, "seconds": 184.53}]
+Ran 36 tests in 20.748s
+OK
+changed 8
+full-simbox 75
+full-local 1
+js-build 0
+js-test 0
