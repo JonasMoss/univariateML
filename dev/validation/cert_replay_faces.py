@@ -305,7 +305,12 @@ def replay_pig(r, data, budget=None):
     if not judged(r): return [], None
     x = ints(data); n = len(x); S = sum(x); Q = sum(v*v for v in x); F = Q-S
     if mask == 2:
-        if S == 0: return [support(r, {'limit:pois'}, 'all zero with shape held: unattained mean-zero supremum', 'pig README existence')], None
+        if S == 0:
+            if r['held']['shape'] == 0:
+                # shape 0 is the zero-mass member for every mean (flat-maximum records, zero-unique 72523133)
+                return [support(r, {'estimate'}, 'all zero with shape held at 0: likelihood one for every mean', 'pig README existence and Zero member'),
+                        unique(r, False, 'all zero with shape held at 0: mean unidentified', 'pig README existence and Zero member')], None
+            return [support(r, {'limit:pois'}, 'all zero with positive shape held: unattained mean-zero supremum', 'pig README existence')], None
         return [support(r, {'estimate'}, 'some positive count with shape held: unique mean maximum', 'pig README existence')], None
     if S == 0:
         if mask == 0:
@@ -391,6 +396,11 @@ def replay_bbinom(r, data, budget=None):
     if mask in (6, 7): return [], 'shapes held: size enumeration or evaluation'
     if not judged(r): return [], None
     x = ints(data); n = len(x)
+    if mask == 0:          # nothing held: fitted only for all-zero counts (flat-count, 89b214ed)
+        if max(x) == 0:
+            return [unique(r, False, 'all-zero counts with nothing held: size 0 gives likelihood one for every shape pair',
+                           'bbinom README; mle.hpp all-free zero branch')], None
+        return [], 'nothing held: nonzero counts are unsupported'
     if mask in (2, 4):     # size free, one shape held
         if max(x) == 0:
             return [unique(r, False, 'all-zero counts with free size: likelihood one for every positive free shape',
@@ -622,6 +632,11 @@ def rule_cmp(r, x, mask):
         if U[-1]-U[0] == 1: return [one({'two-point@%d,%d' % (U[0], U[-1])}, 'two adjacent integers', src)]
         return [one({'estimate'}, 'other samples: unique finite maximum (possibly nu = 0)', src)]
     if mask == 1:
+        if r['held']['lambda'] == 0:
+            # lambda = 0 is the point mass at 0 for every nu (flat-maximum records, zero-unique 72523133)
+            if U[-1] == 0: return [one({'estimate'}, 'lambda held at 0, all zero: likelihood one for every nu', src),
+                                   ('unique', False, 'lambda held at 0, all zero: nu unidentified', src)]
+            return None
         if U[-1] <= 1: return [one({'two-point@0,1'}, 'lambda held, counts in {0, 1}: supremum as nu -> inf', src)]
         return [one({'estimate'}, 'lambda held, some count > 1', src)]
     if mask == 2: return [one({'estimate'}, 'nu held: the rate maximum exists', src)]

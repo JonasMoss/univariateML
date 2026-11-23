@@ -1171,6 +1171,9 @@ def replay_cmb(r, data, budget=None):
         if not (0 < p < 1): return [], 'prob at an endpoint: exact reduction'
         if nu == 0: return [], 'nu = 0: smallest feasible size (not replayed)'
         return cmb_both_held(counts, n, mx, N, p, nu, unique), None
+    if mask == 2 and not (0 < est['prob'] < 1):
+        # flat-maximum cases (zero-unique, 72523133) hold prob at 1; the logit profile is undefined there
+        return [], 'prob held at an endpoint: exact reduction (fit-consistency flat-maximum)'
     return cmb_profile(counts, n, mx, N, est, mask, unique), None
 
 def cmb_both_held(counts, n, mx, N, p, nu, unique):
