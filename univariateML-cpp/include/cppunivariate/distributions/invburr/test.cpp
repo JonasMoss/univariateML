@@ -362,8 +362,9 @@ TEST_CASE("Inverse Burr held-scale direct and delegated certificates agree") {
  const std::vector<double> face{1,1,.5,.25};
  const auto p=cppunivariate::invburr_mle_fixed_scale(mltest::as_span(face),1);
  CHECK(p.status==cppunivariate::InvBurrStatus::AllLeOne);
- REQUIRE(p.stop_detail.limit_coef.size()==2);
+ REQUIRE(p.stop_detail.limit_coef.size()==3);
  CHECK(p.stop_detail.limit_coef[0]==1);
+ CHECK(p.stop_detail.limit_coef[2]==-std::log(2.));
  CHECK(cppunivariate::invburr_mle_fixed_scale(mltest::as_span(x),NAN).status==cppunivariate::InvBurrStatus::InvalidInit);
 }
 

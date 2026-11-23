@@ -57,7 +57,9 @@ test('structured stops survive the JS Error facade', () => {
     ['burr',[1,2,4],'pareto',['a','b']],['invburr',[1,.5,.25],'power',['alpha','beta']]]) {
     assert.throws(() => modifierRoute(api,family).fit(x, {scale:1}), e => {
       assert.equal(e.kind,'limit');assert.equal(e.model,model);
-      assert.deepEqual(Object.keys(e.estimates),names);assert.ok(Number.isFinite(e.limit_loglik));return true;
+      assert.deepEqual(Object.keys(e.estimates),[...names,'endpoint_log_factor']);
+      assert.equal(e.estimates.endpoint_log_factor,-Math.log(2));
+      assert.ok(Number.isFinite(e.limit_loglik));return true;
     });
   }
 });

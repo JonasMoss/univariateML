@@ -326,6 +326,16 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       if(r.status==InvBurrStatus::InvWeibullBoundary)out.status=Gb2Status::InvWeibullBoundary;
       for(auto& c:out.stop_detail.candidates)if(c.model==StopModel::None && c.coef.size()==3)c.coef={1,c.coef[1],c.coef[0],c.coef[2]};
     }
+    auto& detail=out.stop_detail;
+    if(!detail.limit_coef.empty()) {
+      switch(out.status) {
+        case Gb2Status::WeibullBoundary:detail.limit_model=StopModel::Weibull;break;
+        case Gb2Status::InvWeibullBoundary:detail.limit_model=StopModel::InvWeibull;break;
+        case Gb2Status::ParetoBoundary:detail.limit_model=StopModel::Pareto;break;
+        case Gb2Status::PowerBoundary:detail.limit_model=StopModel::Power;break;
+        default:break;
+      }
+    }
     return out;
   }
   if(!std::isnan(a) && std::isnan(b) && (std::isnan(p)!=std::isnan(q)))
@@ -411,10 +421,17 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   std::vector<double> double_pareto_coef;
   Gb2Status fs=Gb2Status::SearchUnresolved;
   bool face_failure=false;
-  auto consider=[&](double ll,Gb2Status s) {
+  StopDetail selected_face;
+  auto consider=[&](double ll,Gb2Status s,StopModel model=StopModel::None,
+                    std::vector<double> coef={},double endpoint_factor=0) {
     if(ll>face || (fs==Gb2Status::DoubleParetoBoundary &&
         (s==Gb2Status::ParetoBoundary||s==Gb2Status::PowerBoundary) &&
-        ll>=face-1e-11*d.n)) {face=ll;fs=s;}
+        ll>=face-1e-11*d.n)) {
+      face=ll;fs=s;
+      selected_face=limit_detail(coef,ll,model);
+      if(endpoint_factor<0 && !selected_face.limit_coef.empty())
+        attach_endpoint_factor(selected_face,endpoint_factor);
+    }
   };
   if(std::isnan(b)) {
     if(std::isnan(q)) {
@@ -425,8 +442,13 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
         return out;
       }
       face_failure=face_failure||gg.status==TrGammaStatus::IterationFailure;
-      consider(gg.logLik,gg.status==TrGammaStatus::LognormalBoundary?Gb2Status::LognormalBoundary:
-        gg.status==TrGammaStatus::PowerBoundary?Gb2Status::PowerBoundary:Gb2Status::TrGammaBoundary);
+      if(gg.status==TrGammaStatus::PowerBoundary)
+        consider(gg.logLik,Gb2Status::PowerBoundary,StopModel::Power,
+          {*std::max_element(x.begin(),x.end()),gg.stop_detail.limit_coef.size()==2?gg.stop_detail.limit_coef[1]:NAN});
+      else if(gg.status==TrGammaStatus::LognormalBoundary)
+        consider(gg.logLik,Gb2Status::LognormalBoundary);
+      else
+        consider(gg.logLik,Gb2Status::TrGammaBoundary,StopModel::Trgamma,{gg.shape1,gg.shape2,gg.scale});
     }
     if(std::isnan(p)) {
       std::vector<double> neg=logs;for(double &v:neg)v=-v;
@@ -445,8 +467,14 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
         return out;
       }
       face_failure=face_failure||gg.status==TrGammaStatus::IterationFailure;
-      consider(gg.logLik-2*d.sum,gg.status==TrGammaStatus::LognormalBoundary?Gb2Status::LognormalBoundary:
-        gg.status==TrGammaStatus::PowerBoundary?Gb2Status::ParetoBoundary:Gb2Status::InvTrGammaBoundary);
+      const double ll=gg.logLik-2*d.sum;
+      if(gg.status==TrGammaStatus::PowerBoundary)
+        consider(ll,Gb2Status::ParetoBoundary,StopModel::Pareto,
+          {gg.stop_detail.limit_coef.size()==2?gg.stop_detail.limit_coef[1]:NAN,*std::min_element(x.begin(),x.end())});
+      else if(gg.status==TrGammaStatus::LognormalBoundary)
+        consider(ll,Gb2Status::LognormalBoundary);
+      else
+        consider(ll,Gb2Status::InvTrGammaBoundary,StopModel::InvTrgamma,{gg.shape1,gg.shape2,1/gg.scale});
     }
   }
   if(std::isnan(a)&&std::isnan(p)&&std::isnan(q)) {
@@ -455,8 +483,14 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   }
   // Endpoint faces also apply with a positive held opposite beta shape.
   if(std::isnan(a)&&std::isnan(b)) {
-    if(std::isnan(p))consider(power_mle(x).logLik,Gb2Status::PowerBoundary);
-    if(std::isnan(q))consider(pareto_mle(x).logLik,Gb2Status::ParetoBoundary);
+    if(std::isnan(p)) {
+      const auto power=power_mle(x);
+      consider(power.logLik,Gb2Status::PowerBoundary,StopModel::Power,{power.alpha,power.beta});
+    }
+    if(std::isnan(q)) {
+      const auto pareto=pareto_mle(x);
+      consider(pareto.logLik,Gb2Status::ParetoBoundary,StopModel::Pareto,{pareto.shape,pareto.min});
+    }
   }
   if(std::isnan(a)&&!std::isnan(b)) {
     const double gap=std::log(b)-d.mean;
@@ -464,11 +498,15 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     // at the held endpoint. With both shapes free that penalty vanishes.
     if(std::isnan(p)&&gap>=d.sd*d.umax) {
       const double penalty=!std::isnan(q) ? q*std::log(2.0)*std::count(logs.begin(),logs.end(),std::log(b)) : 0;
-      consider(d.n*(-std::log(gap)-1)-d.sum-penalty,Gb2Status::PowerBoundary);
+      // The endpoint density is (rate/b)*2^(-q), as in endpoint_certificate.hpp.
+      consider(d.n*(-std::log(gap)-1)-d.sum-penalty,Gb2Status::PowerBoundary,
+        StopModel::Power,{b,1/gap},penalty>0?-q*std::log(2.):0);
     }
     if(std::isnan(q)&&gap<=d.sd*d.umin) {
       const double penalty=!std::isnan(p) ? p*std::log(2.0)*std::count(logs.begin(),logs.end(),std::log(b)) : 0;
-      consider(d.n*(-std::log(-gap)-1)-d.sum-penalty,Gb2Status::ParetoBoundary);
+      // The reflected path has the same factor with held shape p.
+      consider(d.n*(-std::log(-gap)-1)-d.sum-penalty,Gb2Status::ParetoBoundary,
+        StopModel::Pareto,{-1/gap,b},penalty>0?-p*std::log(2.):0);
     }
   }
   std::vector<std::array<double,2>> starts;
@@ -650,8 +688,34 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     }
     auto out=retain_witness({nan,nan,nan,nan,face,evals,
       face_numerical_tie(face,best.ll,1e-8*d.n)?Gb2Status::SearchUnresolved:fs});
+    out.certified=false;
     if(!endpoint_face.limit_coef.empty()) {
-      out.stop_detail=endpoint_face;out.certified=false;
+      out.stop_detail=endpoint_face;
+    } else if(!selected_face.limit_coef.empty()) {
+      auto& candidate=selected_face.candidates.front();
+      const bool pareto=candidate.model==StopModel::Pareto;
+      if(pareto || candidate.model==StopModel::Power) {
+        // The search compares in standardized log coordinates. A narrow
+        // sample can magnify their rounding error. Evaluate the literal
+        // endpoint and rate for the payload, leaving the comparison intact.
+        const auto& coef=candidate.coef;
+        const double endpoint=coef[pareto?1:0];
+        const double factor=coef.size()==3?coef[2]:0;
+        betapr_cert_detail::Sum total;
+        for(double v:x) {
+          const double term=pareto?distributions::dpareto(v,coef[0],coef[1],true):
+            distributions::dpower(v,coef[0],coef[1],true);
+          total.add(term+(v==endpoint?factor:0));
+        }
+        selected_face.limit_loglik=candidate.loglik_lower=candidate.loglik_upper=total.value;
+      }
+      if(std::isfinite(selected_face.limit_loglik)) {
+        // Keep the existing family witness first and append the selected face.
+        out.stop_detail.limit_coef=selected_face.limit_coef;
+        out.stop_detail.limit_model=selected_face.limit_model;
+        out.stop_detail.limit_loglik=selected_face.limit_loglik;
+        out.stop_detail.candidates.push_back(candidate);
+      }
     }
     return out;
   }
@@ -763,16 +827,14 @@ inline FitOutcome outcome(const Gb2Result& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
-  // Delegated/endpoint certificates carry a limit witness. The exploratory
-  // face-versus-search comparison carries no limit coefficients and uses a margin.
   if(r.status==Gb2Status::LognormalBoundary || r.status==Gb2Status::DoubleParetoBoundary) {
     if(r.stop_detail.limit_coef.empty() || !std::isfinite(r.stop_detail.limit_loglik))return FitOutcome::failure(OutcomeReason::Evaluation);
     for(double v:r.stop_detail.limit_coef)if(!(v>0) && r.status==Gb2Status::DoubleParetoBoundary)return FitOutcome::failure(OutcomeReason::Evaluation);
   }
   switch (r.status) {
     case Gb2Status::Ok: return FitOutcome::estimate(r.certified);
-    case Gb2Status::TrGammaBoundary: return FitOutcome::limit(!r.stop_detail.limit_coef.empty());
-    case Gb2Status::InvTrGammaBoundary: return FitOutcome::limit(!r.stop_detail.limit_coef.empty());
+    case Gb2Status::TrGammaBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
+    case Gb2Status::InvTrGammaBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
     case Gb2Status::LognormalBoundary: return FitOutcome::limit(false);
     case Gb2Status::ParetoBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
     case Gb2Status::PowerBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());

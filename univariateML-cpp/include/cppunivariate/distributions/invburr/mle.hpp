@@ -138,7 +138,9 @@ inline StopDetail invburr_stop_detail(StopDetail detail,double jacobian,double e
   for(auto& candidate:detail.candidates) {
     if(candidate.model==StopModel::Pareto) {
       candidate.model=StopModel::Power;
-      candidate.coef={std::isfinite(endpoint)?endpoint:1/candidate.coef[1],candidate.coef[0]};
+      const double b=std::isfinite(endpoint)?endpoint:1/candidate.coef[1];
+      std::swap(candidate.coef[0],candidate.coef[1]);
+      candidate.coef[0]=b;
     } else if(candidate.model==StopModel::Weibull) {
       candidate.model=StopModel::InvWeibull;candidate.coef[1]=1/candidate.coef[1];
     } else if(candidate.coef.size()==3)candidate.coef[2]=1/candidate.coef[2];
@@ -280,6 +282,9 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
      auto detail=root.stop_detail;
      detail.limit_coef={s,detail.limit_coef[0]};detail.limit_model=StopModel::Power;
      detail.candidates[0].coef=detail.limit_coef;detail.candidates[0].model=StopModel::Power;
+     // Reciprocity preserves the ratio of the endpoint densities.
+     if(std::find(x.begin(),x.end(),s)!=x.end())
+       attach_endpoint_factor(detail,-std::log(2.));
      return {NAN,NAN,s,detail.limit_loglik,root.profiles,InvBurrStatus::AllLeOne,detail};
    }
  }

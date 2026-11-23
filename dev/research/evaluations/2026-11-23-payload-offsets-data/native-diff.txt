@@ -1,0 +1,51 @@
+differs ('fpareto', '001589', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001590', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001591', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001593', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001594', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001595', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001596', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001597', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001598', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001601', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001602', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001604', '{"min": 0.0, "shape1": 0.3}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001605', '{"min": 0.0, "shape1": 0.3}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001606', '{"min": 0.0, "shape1": 0.3}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001607', '{"min": 0.0, "shape1": 0.3}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001608', '{"min": 0.0, "shape1": 0.3}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001611', '{"min": 0.0, "shape1": 0.3}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001616', '{"min": 0.0, "shape1": 0.3}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001617', '{"min": 0.0, "shape1": 0.3}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001619', '{"min": 0.0, "shape2": 1.9802932530684678}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001620', '{"min": 0.0, "shape2": 1.9802932530684678}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001621', '{"min": 0.0, "shape2": 1.9802932530684678}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001622', '{"min": 0.0, "shape2": 1.9802932530684678}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001623', '{"min": 0.0, "shape2": 1.9802932530684678}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001626', '{"min": 0.0, "shape2": 1.9802932530684678}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001631', '{"min": 0.0, "shape2": 1.9802932530684678}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001649', '{"min": 0.0, "shape3": 0.4}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001650', '{"min": 0.0, "shape3": 0.4}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001651', '{"min": 0.0, "shape3": 0.4}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001652', '{"min": 0.0, "shape3": 0.4}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001661', '{"min": 0.0, "shape3": 0.4}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '001662', '{"min": 0.0, "shape3": 0.4}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '009532', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '009534', '{"min": 0.0, "shape2": 1.9802932530684678}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '009548', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '009550', '{"min": 0.0, "shape2": 1.9802932530684678}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '009580', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '009581', '{"min": 0.0, "shape1": 0.3}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '009582', '{"min": 0.0, "shape2": 1.9802932530684678}') ['limit_loglik', 'candidates', 'limit_estimates']
+differs ('fpareto', '009596', '{"min": 0.0}') ['limit_loglik', 'candidates', 'limit_estimates']
+only in snapshot ('fpareto', 'threshold-weibull', '{"min": 2.0, "shape2": 2.0, "shape3": 1.0}')
+only in snapshot ('fpareto', 'threshold-invweibull', '{"min": 2.0, "shape1": 1.0, "shape2": 2.0}')
+only in snapshot ('fpareto', 'threshold-trgamma-delegate', '{"min": 2.0, "shape2": 2.0, "shape3": 2.0}')
+only in snapshot ('fpareto', 'threshold-invtrgamma-delegate', '{"min": 2.0, "shape1": 2.0, "shape2": 2.0}')
+only in snapshot ('fpareto', 'threshold-trgamma-search', '{"min": 2.0}')
+only in snapshot ('fpareto', 'threshold-invtrgamma-search', '{"min": 2.0}')
+only in snapshot ('fpareto', 'threshold-lognormal', '{"min": 2.0}')
+only in snapshot ('fpareto', 'threshold-double-pareto', '{"min": 2.0}')
+only in snapshot ('fpareto', 'threshold-pareto-search', '{"min": 2.0}')
+only in snapshot ('fpareto', 'threshold-power-search', '{"min": 2.0}')
+native cases 12053 differing 150 only-new 21 only-old 0

@@ -1,0 +1,31 @@
+{
+  "source_sha256": "71eb2a43c6797a2be85f9380e67a483ef2a971c097d6e9a6b329a57bc1e4e25f",
+  "commit": "73e8c07758318519d0fed6ce56b09fd1a72689d7",
+  "dirty": true,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    "-std=gnu++17",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "no_long_double": true,
+  "cpu_limit": 300,
+  "families": [
+    "tbinom",
+    "tnorm",
+    "tpois",
+    "zib",
+    "zinb",
+    "zip",
+    "zipf",
+    "zmbinom",
+    "zmgeom",
+    "zmlogarithmic",
+    "zmnbinom",
+    "zmpois",
+    "ztbinom",
+    "ztgeom",
+    "ztnbinom",
+    "ztpois"
+  ]
+}

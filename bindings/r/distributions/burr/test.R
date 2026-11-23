@@ -254,7 +254,7 @@ test_that("Burr global certificate stops preserve their diagnostics", {
 test_that("structured burr endpoint limit uses public model names", {
   e <- tryCatch(mlburr(c(1,2,4),scale=1),univariateML_limit=identity)
   expect_identical(e$model,"pareto")
-  expect_equal(e$estimates,c(a=1/log(2),b=1),tolerance=1e-12)
+  expect_equal(e$estimates,c(a=1/log(2),b=1,endpoint_log_factor=-log(2)),tolerance=1e-12)
   expect_true(is.finite(e$limit_loglik))
 })
 
@@ -315,7 +315,7 @@ test_that("held-scale Burr certifies finite fits and refuses exhausted budgets",
   expect_s3_class(e,"univariateML")
   expect_equal(as.numeric(e),as.numeric(a),tolerance=1e-6)
   p <- tryCatch(mlburr(c(1,1,2,4),scale=1),univariateML_limit=identity)
-  expect_equal(p$estimates,c(a=4/log(8),b=1),tolerance=1e-12)
+  expect_equal(p$estimates,c(a=4/log(8),b=1,endpoint_log_factor=-log(2)),tolerance=1e-12)
   expect_equal(p$limit_loglik,4*log(4/log(8))-4-log(8)-2*log(2),tolerance=1e-12)
 })
 

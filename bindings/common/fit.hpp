@@ -315,8 +315,8 @@ inline std::string stop_model(cppunivariate::StopModel model) {
 }
 inline std::vector<std::string> stop_names(const std::string& model,const std::vector<std::string>& names) {
   if(model=="weibull"||model=="invweibull")return {"shape","scale"};
-  if(model=="pareto")return {"a","b"};
-  if(model=="power")return {"alpha","beta"};
+  if(model=="pareto")return {"a","b","endpoint_log_factor"};
+  if(model=="power")return {"alpha","beta","endpoint_log_factor"};
   if(model=="exp")return {"rate"};
   if(model=="invexp")return {"scale"};
   if(model=="pois")return {"lambda"};

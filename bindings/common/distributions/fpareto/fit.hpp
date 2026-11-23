@@ -22,6 +22,8 @@ inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held s
  auto res=cppunivariate::fpareto_mle(x,min,tol,iterlim,shape1.supplied ? shape1.value : std::numeric_limits<double>::quiet_NaN(),shape2.supplied ? shape2.value : std::numeric_limits<double>::quiet_NaN(),shape3.supplied ? shape3.value : std::numeric_limits<double>::quiet_NaN(),scale.supplied ? scale.value : std::numeric_limits<double>::quiet_NaN());
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
+    if(o.kind==cppunivariate::OutcomeKind::Limit && out.limit_estimates.empty())
+      out.error+=" The limiting coefficients are outside the representable range.";
     if (res.status == cppunivariate::FparetoStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"shape3",shape3_arg.supplied},{"scale",scale_arg.supplied},{"min",min_arg.supplied}});

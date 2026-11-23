@@ -3,9 +3,9 @@
 
 For every snapshot case whose result is an estimate, every limit stop that
 states limit_loglik with limit_estimates for a model whose density is in the
-C++ library (a family of ours or a modifier law), and every candidate of a
-tie stop, this recomputes sum_i d<id>(x_i; theta, log = TRUE) with the
-family's dpqr.hpp at the returned coefficients, on the same input (rebuilt
+density table, every candidate of an estimate tie, and every finite face
+candidate with bounds in a limit, budget or unresolved stop, this recomputes
+sum_i d<id>(x_i; theta, log = TRUE) at the returned coefficients on the same input (rebuilt
 with fit-snapshot.py's own cases()), compiled in the snapshot's precision
 mode with the shipped flags. A shifted face uses the base density at x
 minus the offset in that payload. Pointwise endpoint log factors apply at
@@ -18,7 +18,7 @@ A = sum_i |log f(x_i)|:
 
 TOL = 1e-10 is the accuracy contract's logLik tolerance
 (dev/design/accuracy-contract.md); the second term is a bound on the
-rounding of a naive n-term sum of terms of total magnitude A. A tie
+rounding of a naive n-term sum of terms of total magnitude A. A
 candidate passes when S lies in its stated [lower, upper] widened by the
 same margin. A non-finite S where R is finite fails ("support" when S is
 -Inf: the returned coefficients put an observation outside the support).
@@ -79,6 +79,11 @@ def laws():
             call = "cppunivariate::zeta_window_eval('d', x, static_cast<int>(p[0]), p[1], true, true)"
             header = 'cppunivariate/distributions/zeta/truncation.hpp'
         out[ident] = (header, call, names, meta['support']['type'] == 'integer')
+    # In log coordinates this is asymmetric Laplace. Subtract log(x) for
+    # the Jacobian. Compute the harmonic-rate normalizer without a product.
+    double_pareto = (
+        None, 'double_pareto(x, p)', ['kink', 'left_rate', 'right_rate'], False)
+    out['unavailable:double-pareto'] = double_pareto
     return out
 
 def attribute(law, values, data):
@@ -115,6 +120,15 @@ PROBE = r'''#include <cmath>
 @INCLUDES@
 static std::string num(double v){if(v!=v)return "\"nan\"";if(v==INFINITY)return "\"inf\"";if(v==-INFINITY)return "\"-inf\"";
   char b[64];std::snprintf(b,sizeof b,"\"%a\"",v);return b;}
+static double double_pareto(double x, const std::vector<double>& p) {
+  if (x <= 0) return -INFINITY;
+  const double left=std::log(p[1]), right=std::log(p[2]);
+  const double logx=std::log(x);
+  const double z=(x >= p[0]/2 && x/2 <= p[0])
+    ? std::log1p((x-p[0])/p[0]) : logx-std::log(p[0]);
+  return std::fmin(left,right)-std::log1p(std::exp(-std::abs(left-right)))
+    +(z<0?p[1]:-p[2])*z-logx;
+}
 static double density(int law,double x,const std::vector<double>&p){
   const bool log=true;(void)log;
   switch(law){
@@ -137,7 +151,7 @@ int main(){
 
 def build(table, double):
     order = sorted(table)
-    includes = '\n'.join(sorted({'#include "%s"' % table[i][0] for i in order}))
+    includes = '\n'.join(sorted({'#include "%s"' % table[i][0] for i in order if table[i][0] is not None}))
     cases = '\n'.join('  case %d: return %s;' % (j, table[i][1]) for j, i in enumerate(order))
     text = PROBE.replace('@INCLUDES@', includes).replace('@CASES@', cases)
     tag = hashlib.sha256((text+str(double)).encode()).hexdigest()[:12]
@@ -202,6 +216,7 @@ SHIFTED_LAWS = {
                        ('trgamma', 'trgamma'), ('invtrgamma', 'invtrgamma')]
 }
 SHIFTED_LAWS.update({
+    'unavailable:shifted-double-pareto': ('unavailable:double-pareto', 'min'),
     'unavailable:translated-exponential': ('exp', 'mu'),
     'unavailable:translated-negative-binomial': ('nbinom', 'shift'),
 })
@@ -209,13 +224,13 @@ SHIFTED_LAWS.update({
 
 def payload_data(model, values, data):
     """Base law and observations in its coordinates, with a pointwise endpoint adjustment."""
-    if model not in SHIFTED_LAWS:
-        return model, data, None, 0.
-    law, coord = SHIFTED_LAWS[model]
-    offset = values.get(coord, math.nan)
+    law, coord = SHIFTED_LAWS.get(model, (model, None))
+    if model == 'unavailable:double-pareto' and 'scale' in values:
+        values.update(kink=values['scale'], left_rate=values['left'], right_rate=values['right'])
+    observations = [v-values.get(coord, math.nan) for v in data] if coord else data
     endpoint = values.get({'pareto': 'b', 'power': 'alpha'}.get(law))
     factor = values.get('endpoint_log_factor', 0.)
-    return law, [v-offset for v in data], endpoint, factor
+    return law, observations, endpoint, factor
 
 
 def items(r, family_law, table):
@@ -231,11 +246,19 @@ def items(r, family_law, table):
         model = res['model']
         out.append(('limit', model, num(res['limit_estimates']),
                     number(res['limit_loglik']), None, False))
-    if res['kind'] == 'tie' and (res.get('outcome') or {}).get('kind', 'estimate') == 'estimate':
+    estimate_tie = res['kind'] == 'tie' and (res.get('outcome') or {}).get('kind', 'estimate') == 'estimate'
+    face_stop = res['kind'] in ('limit', 'budget', 'unresolved')
+    if estimate_tie or face_stop:
         for i, c in enumerate(res['candidates']):
             model = c['model'] or family_law
-            out.append(('candidate#%d' % i, model, num(c['estimates']), None,
-                        (number(c['loglik_lower']), number(c['loglik_upper'])), model == family_law))
+            values = num(c['estimates'])
+            bounds = number(c['loglik_lower']), number(c['loglik_upper'])
+            if face_stop:
+                if model == family_law or not values or not all(map(math.isfinite, values.values())):
+                    continue
+                if not (bounds[0] <= bounds[1] and any(map(math.isfinite, bounds))):
+                    continue
+            out.append(('candidate#%d' % i, model, values, None, bounds, model == family_law))
     return out
 
 def evaluate(rows, mode, table, archive, records, attributions=True):
@@ -300,7 +323,8 @@ def evaluate(rows, mode, table, archive, records, attributions=True):
                         stats[family].append(rel)
                     else:
                         lo, hi = bounds
-                        margin = TOL*max(1, abs(lo), abs(hi))+SUM_EPS*len(data)*magnitude if math.isfinite(magnitude) else 0
+                        scale = max([1] + [abs(b) for b in bounds if math.isfinite(b)])
+                        margin = TOL*scale + SUM_EPS*len(data)*magnitude if math.isfinite(magnitude) else 0
                         ok = math.isfinite(total) and lo-margin <= total <= hi+margin
                         rec.update(relative=0.0 if ok else math.inf)
                         if not ok:
