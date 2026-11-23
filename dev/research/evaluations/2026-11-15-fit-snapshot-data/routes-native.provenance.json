@@ -189,6 +189,29 @@
    "commit": "83ed77a9",
    "dirty": true,
    "reason": "batch 12: maxset-core nullable field, typed pilot payloads, 11 unproved FALSE -> NA, 2 cauchy fixtures"
+  },
+  {
+   "families": [
+    "binom +truncate=tbinom",
+    "binom+zero=inflated",
+    "binom+zero=modified",
+    "binom+zero=truncated",
+    "geom+zero=modified",
+    "geom+zero=truncated",
+    "lgser+zero=modified",
+    "nbinom+zero=inflated",
+    "nbinom+zero=modified",
+    "nbinom+zero=truncated",
+    "norm +truncate=tnorm",
+    "pois +truncate=tpois",
+    "pois+zero=inflated",
+    "pois+zero=modified",
+    "pois+zero=truncated",
+    "zeta +truncate=zipf"
+   ],
+   "commit": "2d3a806d",
+   "dirty": true,
+   "reason": "batch 13: typed maximizer sets part B (count and continuous families, routes)"
   }
  ]
 }
