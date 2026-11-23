@@ -145,6 +145,21 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   TASK-232. `just cpp-test` 134/134; `just cpp-test-no-long-double`
   179/179; `just test-full` `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 66848 ]`;
   `just js-test` 588/588; `just relations` and `just site-check` green.
+- Batch check of master 83ed77a9 (2026-11-23, workstation, GCC 15.2, after
+  shift-payload (TASK-214.30),
+  [refine-crash](research/evaluations/2026-11-22-refine-crash-report.md)
+  and [maxset-core](research/evaluations/2026-11-22-maxset-core-report.md),
+  typed maximizer sets part A): fresh snapshots differ only by the new
+  nullable `maximizer_set` field, typed payloads on 25 pilot records per
+  base mode, 11 unproved `unique = FALSE` now `NA` (fatigue 10, triang 1)
+  and two new cauchy fixtures; no estimate, limit or kind changed.
+  Baselines patched (33a473f4). `just strict` passes: 114 known
+  (TASK-229, unchanged), none new; fit-refine judges 3274 with no
+  reference exception (the 42 gpd references were refilled, 7cf212f8);
+  cert-replay 7752 cases. `just cpp-test` 135/135;
+  `just cpp-test-no-long-double` 180/180; `just test-full`
+  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 66915 ]`; `just js-test` 593/593;
+  `just relations` and `just site-check` green.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
