@@ -125,13 +125,34 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   as their own tests; same cases and assertions); `just test-full`
   `[ FAIL 0 | WARN 29 | SKIP 1 | PASS 65860 ]`; `just js-test` 587/587;
   `just relations` and `just site-check` green.
+- Batch check of master 89b214ed (2026-11-22/23, workstation, GCC 15.2, after
+  [nhyper-zero](research/evaluations/2026-11-22-nhyper-zero-report.md),
+  [mod-gaps](research/evaluations/2026-11-22-mod-gaps-report.md),
+  render-fu (TASK-214.18), zero-unique (TASK-227), short-window (TASK-228),
+  flat-cont, [qged-affine](research/evaluations/2026-11-22-qged-affine-report.md)
+  and flat-count): fresh snapshots differ in 56 records per base mode, all
+  explained (hyper 29, nhyper 3, triang 7, sged 15, binom 1, cmb 1), plus
+  112 new flat-maximum records per base mode and 53 per route mode; routes
+  otherwise unchanged. Baselines patched (7ce38eb0). `just strict`:
+  fit-consistency 70 known entries fixed and pruned (db70789a), none new;
+  114 `phenomenon:flat-maximum` entries remain, all TASK-229 (flat maxima
+  without a maximizer payload, mostly zero-modified and inflated count
+  routes; the typed maximizer set fixes them). The certificate replay
+  failed on new records only on the replay side (bbinom nothing held,
+  cmb prob held at 1, cmp lambda held at 0, pig shape held at 0; fixed in
+  049256a8, 7748 cases, none new). fit-refine still has pre-existing
+  reference crashes (triang, zero-modified binom, nhyper, cmp, dgamma),
+  TASK-232. `just cpp-test` 134/134; `just cpp-test-no-long-double`
+  179/179; `just test-full` `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 66848 ]`;
+  `just js-test` 588/588; `just relations` and `just site-check` green.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
-- Known wrong answers on master: none listed by the strict layer (its known
-  list is empty since 2026-11-22). Open, flagged rather than wrong: fpareto
+- Known wrong answers on master: none listed by the strict layer. Its known
+  list holds 114 `phenomenon:flat-maximum` entries (TASK-229): flat maxima
+  returned without the maximizer payload, not wrong estimates. Open, flagged rather than wrong: fpareto
   archive 001625/001628 end `unresolved` pending a global bound (TASK-214.44
   report); sged's held-sd two-point location stops numerically although the
   optimum is finite (TASK-150.9).
