@@ -212,13 +212,26 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   136/136; `just cpp-test-no-long-double` 181/181; `just test-full`
   `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67514 ]`; `just js-test` 599/599;
   `just relations` and `just site-check` green.
+- Batch check of master c27bef30 (2026-11-24, workstation, GCC 15.2, after
+  [claims inventory](research/evaluations/2026-11-24-claims-inventory-report.md),
+  TASK-237, and [label-fixes](research/evaluations/2026-11-24-label-fixes-report.md),
+  TASK-238): 25 records per base mode, all flags: Skellam joint interior
+  estimates and near-face selections no longer certified by a likelihood gap
+  (16 + 2), fatigue's analytic constant pair and six constant-sample
+  lomax/invpareto/pareto2 exponential limits now certified; routes
+  unchanged. Baselines patched (bc13fd40). `just strict`: the pareto2/
+  invpareto transfer-flag replay rule still expected certified=false on
+  constant samples (8 NEW, rule fixed); rerun clean, known list still empty.
+  `just cpp-test` 136/136; `just cpp-test-no-long-double` 181/181;
+  `just test-full` `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67528 ]`;
+  `just js-test` 599/599; `just relations` and `just site-check` green.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
 - Known wrong answers on master: none listed by the strict layer; its known
-  list is empty since 2026-11-24 (batches 15 and 16). Every `unique = FALSE` fit
+  list is empty since 2026-11-24 (batches 15 to 17). Every `unique = FALSE` fit
   carries a typed maximizer set (rule `unique-false-needs-set`); fits whose
   maximizer count is not proved report `unique = NA` with candidates. Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`
