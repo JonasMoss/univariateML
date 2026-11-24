@@ -1,0 +1,43 @@
+version: 1
+# Draft extension to a family dossier, with one record per distinct decision.
+outcome_claims:
+  - id: stable-route-id
+    when:
+      held: []
+      free: []
+      fitted_domain: null
+      data_predicate: null
+      branch: null
+    kind: estimate  # estimate | limit | nonexistence | budget | failure
+    reason: null
+    flags:
+      certified: true
+      unique: null  # true | false | null
+    boundary:
+      model: null
+      path_firmness: null  # proved | argued | numerical | conjecture
+      detection: null  # exact_predicate | conditional_comparison | search
+    global:
+      claim: optimal  # optimal | likelihood_gap | strict_face | unattained | unbounded | undecided
+      backing: proof_practical_margin
+      comparison_margin: null
+      likelihood_gap: null  # quantity, units, scaling, and hypothesis
+      no_finite_maximizer: null  # proved | refuted | undecided | null
+    local:
+      target: null  # formula, public coordinate scales and free-coordinate exclusions
+      backing: null  # rounded_formula | signed_enclosure | newton_contraction | score_gate | none
+      proof_conditional_on: null
+    uniqueness:
+      basis: null  # universal_proof | per_input_certificate | typed_set | not_addressed
+      scope: null
+      set_encoding: null
+    evidence:
+      - fields: [global.backing]
+        source: code  # code | dossier | replay
+        location: null
+        confidence: inferred  # read-and-verified | inferred
+        replay:
+          level: null  # exact | interval | numerical | mirror
+          cases: null
+          verdict: null
+    open: []
