@@ -101,7 +101,30 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
     InvTrGammaResult out{shape1,shape2,nan,nan,nan,0,InvTrGammaStatus::IterationFailure};
     out.transformation_failure=true;out.stop_detail.loglik_upper=INFINITY;return out;
   }
-  TrGammaResult r = trgamma_fit_log(span{y.data(), y.size()}, tol, maxit, shape1, shape2);
+  // Standardize reflected relative logs before comparing the faces.
+  // Subtracting absolute logs can distort the Pareto gap even when distinct
+  // original observations still have distinct rounded logarithms.
+  trgamma_detail::LogData relative;
+  std::vector<double> reflected;
+  bool use_relative=false;
+  if(std::isnan(shape1) && std::isnan(shape2) && trgamma_detail::relative_log_regime(x)) {
+    const auto logs=transformed_detail::logs(x);
+    if(logs.valid) {
+      reflected.reserve(x.size());
+      for(double v:logs.delta)reflected.push_back(-v);
+      use_relative=trgamma_detail::standardize({reflected.data(),reflected.size()},relative);
+      if(use_relative) {
+        relative.rmean=relative.mean;
+        relative.mean=-transformed_detail::value(logs.mean);
+        relative.sum=-logs.sum;
+        relative.anchor=1/x[0];
+        relative.relative=std::isfinite(relative.anchor);
+        jacobian=2*relative.sum;
+      }
+    }
+  }
+  TrGammaResult r = trgamma_fit_log(span{y.data(), y.size()}, tol, maxit, shape1, shape2,
+                                     use_relative?&relative:nullptr);
   const double log_scale = -r.log_scale;
   const TrGammaStatus status = trgamma_range_status(r.status, log_scale);
   InvTrGammaResult out={r.shape1,r.shape2,std::exp(log_scale),log_scale,r.logLik+jacobian,r.iterations,invtrgamma_status(status)};
@@ -112,7 +135,7 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
       (out.stop_detail.limit_model==StopModel::None && std::isfinite(r.stop_detail.limit_loglik)))) {
     // The reciprocal endpoint can overflow even though the original Pareto
     // endpoint is a proper represented value. Rebuild only that face payload.
-    const auto faces=trgamma_faces_log({y.data(),y.size()});
+    const auto faces=use_relative?trgamma_faces_data(relative):trgamma_faces_log({y.data(),y.size()});
     const double endpoint=*std::min_element(x.begin(),x.end());
     if(faces.valid && faces.power_logLik>faces.lognormal_logLik) {
       if(out.status==InvTrGammaStatus::ParetoBoundary) {
@@ -158,6 +181,14 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
         default:evaluated=false;break;
       }
       term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated && detail.limit_model==StopModel::Pareto && std::isfinite(sum)) {
+      for(auto& candidate:detail.candidates) {
+        if(candidate.model!=detail.limit_model || candidate.coef!=coef)continue;
+        const double roundoff=16*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(sum));
+        if(sum<candidate.loglik_lower-roundoff || sum>candidate.loglik_upper+roundoff)
+          candidate.loglik_lower=candidate.loglik_upper=sum;
+      }
     }
     if(evaluated) {detail.limit_loglik=sum;
       if(!std::isfinite(sum))result.status=InvTrGammaStatus::IterationFailure;}
@@ -227,6 +258,14 @@ inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=
         default:evaluated=false;break;
       }
       term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated && detail.limit_model==StopModel::Pareto && std::isfinite(sum)) {
+      for(auto& candidate:detail.candidates) {
+        if(candidate.model!=detail.limit_model || candidate.coef!=coef)continue;
+        const double roundoff=16*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(sum));
+        if(sum<candidate.loglik_lower-roundoff || sum>candidate.loglik_upper+roundoff)
+          candidate.loglik_lower=candidate.loglik_upper=sum;
+      }
     }
     if(evaluated) {detail.limit_loglik=sum;
       if(!std::isfinite(sum))result.status=InvTrGammaStatus::IterationFailure;}

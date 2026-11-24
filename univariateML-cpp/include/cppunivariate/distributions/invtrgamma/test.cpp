@@ -284,3 +284,25 @@ TEST_CASE("invtrgamma: held endpoint retains the delegate concentration proof") 
   CHECK(r.status==cppunivariate::InvTrGammaStatus::Unbounded);
   CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Unbounded);
 }
+
+TEST_CASE("invtrgamma: public Pareto candidate at class near-constant") {
+  const std::vector<double> x{
+      0x1.075f696afbc74p-2, 0x1.075f696afbc74p-2, 0x1.075f696afbc75p-2};
+  const cppunivariate::span sample{x.data(),x.size()};
+  const auto fit=cppunivariate::invtrgamma_mle(sample);
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto c=std::find_if(candidates.begin(),candidates.end(),[](const auto& candidate) {
+    return candidate.model==cppunivariate::StopModel::Pareto;
+  });
+  REQUIRE(c!=candidates.end());
+  REQUIRE(c->coef.size()==2);
+  double ll=0;
+  for(auto v:x)ll+=cppunivariate::distributions::dpareto(v,c->coef[0],c->coef[1],true);
+  REQUIRE(std::isfinite(ll));
+  const double margin=1e-12*(x.size()+std::abs(ll));
+  CHECK(ll >= c->loglik_lower - margin);
+  CHECK(ll <= c->loglik_upper + margin);
+  double gaps=0;
+  for(double v:x)gaps+=std::log1p((v-c->coef[1])/c->coef[1]);
+  CHECK(c->coef[0] == doctest::Approx(x.size()/gaps).epsilon(1e-12));
+}

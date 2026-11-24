@@ -593,3 +593,22 @@ TEST_CASE("invburr near-constant and tied samples reach the inverse Weibull face
  CHECK(rel(r.scale,1.1124033140563543)<1e-10);
  CHECK(rel(r.logLik,0.044108219131140165)<1e-10);
 }
+
+TEST_CASE("invburr: public InvWeibull candidate at class near-constant") {
+  const std::vector<double> x{
+      0x1.0cdc5767e3becp+0, 0x1.0cdc5767e3becp+0, 0x1.0cdc5767e3bedp+0};
+  const cppunivariate::span sample{x.data(),x.size()};
+  const auto fit=cppunivariate::invburr_mle(sample);
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto c=std::find_if(candidates.begin(),candidates.end(),[](const auto& candidate) {
+    return candidate.model==cppunivariate::StopModel::InvWeibull;
+  });
+  REQUIRE(c!=candidates.end());
+  REQUIRE(c->coef.size()==2);
+  double ll=0;
+  for(auto v:x)ll+=cppunivariate::distributions::dinvweibull(v,c->coef[0],c->coef[1],true);
+  REQUIRE(std::isfinite(ll));
+  const double margin=1e-12*(x.size()+std::abs(ll));
+  CHECK(ll >= c->loglik_lower - margin);
+  CHECK(ll <= c->loglik_upper + margin);
+}

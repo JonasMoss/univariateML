@@ -618,6 +618,11 @@ conditional on computed comparisons, with practical floating-point margins.
 
 At the selected integer size, a final canonical Newton solve uses the covariance matrix of (X, log choose(size, X)). Its inverse maps both moment residuals to errors in log odds and nu; the probability error includes the logistic derivative. Positive definiteness and contraction of the full corrections are checked before the existing global acceptance check. Held-coordinate fits use the corresponding scalar information.
 
+For positive held dispersion, the CMP face likelihood is summed relative
+to the CMP mode. This preserves the likelihood comparison at large count
+locations, where subtracting the full log normalizer from the sufficient
+statistic terms loses digits.
+
 ### Extreme d/p/q arithmetic
 
 For the symmetric overdispersed law, each interior binomial coefficient is at least N. Thus its total interior probability is bounded by (N-1) N^nu / 2. This bound can distinguish a log-probability input from the exact half even when all computed interior masses underflow; exact half inputs use symmetry.

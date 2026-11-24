@@ -370,3 +370,22 @@ TEST_CASE("pareto4: held-endpoint face carries both translation and tie factor")
   CHECK(fit.stop_detail.candidates[0].model==fit.stop_detail.limit_model);
   CHECK(fit.stop_detail.candidates[0].coef==p);
 }
+
+TEST_CASE("pareto4: public Weibull candidate at class near-constant") {
+  const std::vector<double> x{
+      0x1.80bf4e03c3912p+4, 0x1.80bf4e03c3912p+4, 0x1.80bf4e03c3913p+4};
+  const cppunivariate::span sample{x.data(),x.size()};
+  const auto fit=cppunivariate::pareto4_mle(sample,0,1e-10,1000);
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto c=std::find_if(candidates.begin(),candidates.end(),[](const auto& candidate) {
+    return candidate.model==cppunivariate::StopModel::Weibull;
+  });
+  REQUIRE(c!=candidates.end());
+  REQUIRE(c->coef.size()==2);
+  double ll=0;
+  for(auto v:x)ll+=cppunivariate::distributions::dweibull(v,c->coef[0],c->coef[1],true);
+  REQUIRE(std::isfinite(ll));
+  const double margin=1e-12*(x.size()+std::abs(ll));
+  CHECK(ll >= c->loglik_lower - margin);
+  CHECK(ll <= c->loglik_upper + margin);
+}

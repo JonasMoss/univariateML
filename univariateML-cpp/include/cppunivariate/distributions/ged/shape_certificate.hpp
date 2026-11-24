@@ -309,7 +309,12 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
     const auto r=evaluate(p);if(r.status==GedStatus::Ok && r.logLik>best.logLik)best=r;
   }
   double cutoff=2;
-  const double face=std::isnan(sd)?-n*ged_shape_detail::log2:-INFINITY;
+  // A rounded midpoint need not bisect the range. Use the original
+  // range for the face incumbent, expressed in the normalized objective.
+  const double original_face=-n*(std::isfinite(mean)
+      ? ged_shape_detail::log2+std::log(unit)
+      : distributions::unif_log_distance(*mm.second,*mm.first));
+  const double face=std::isnan(sd)?original_face+offset:-INFINITY;
   double tail_upper=INFINITY;
   bool tail_face=false;
   for(;;) {
@@ -435,7 +440,7 @@ inline GedResult ged_shape_certificate(span x,double tol,int maxit,double mean,d
         {{finite.mu,finite.sigma,finite.nu},finite.logLik-pad,finite.logLik+pad});
       r.stop_detail.loglik_upper=std::max(face,finite_upper)-offset;return r;
     }
-    r.logLik=face-offset;r.stop_detail=limit_detail(endpoints,r.logLik,StopModel::Unif);
+    r.logLik=original_face;r.stop_detail=limit_detail(endpoints,r.logLik,StopModel::Unif);
     if(r.stop_detail.limit_coef.empty())return stop(false,INFINITY);
     r.stop_detail.loglik_lower=r.logLik-pad;r.stop_detail.loglik_upper=r.logLik+pad;return r;
   }

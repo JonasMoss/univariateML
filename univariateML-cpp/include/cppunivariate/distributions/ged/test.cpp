@@ -883,3 +883,34 @@ TEST_CASE("GED quantile scaling handles cancellation and the binary64 range") {
   CHECK(cppunivariate::distributions::qged(.03125,10*smallest,8*smallest,1.,true,false)==-6*smallest);
   CHECK(cppunivariate::distributions::qged(1e-300,1e100,1e-100,1e6,true,false)==1e100);
 }
+
+TEST_CASE("ged: public Unif candidate at class offset") {
+  const std::vector<double> x{
+      0x1.6204f2f10e2f9p+50, 0x1.6204f2f10e2fcp+50, 0x1.6204f2f10e2ffp+50,
+      0x1.6204f2f10e300p+50, 0x1.6204f2f10e302p+50, 0x1.6204f2f10e304p+50};
+  const cppunivariate::span sample{x.data(),x.size()};
+  const auto fit=cppunivariate::ged_mle(sample,1e-10,200,NAN,NAN,NAN);
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto c=std::find_if(candidates.begin(),candidates.end(),[](const auto& candidate) {
+    return candidate.model==cppunivariate::StopModel::Unif;
+  });
+  REQUIRE(c!=candidates.end());
+  REQUIRE(c->coef.size()==2);
+  double ll=0;
+  for(auto v:x)ll+=cppunivariate::distributions::dunif(v,c->coef[0],c->coef[1],true);
+  REQUIRE(std::isfinite(ll));
+  const double margin=1e-12*(x.size()+std::abs(ll));
+  CHECK(ll >= c->loglik_lower - margin);
+  CHECK(ll <= c->loglik_upper + margin);
+  CHECK(ll >= fit.stop_detail.loglik_lower - margin);
+  CHECK(ll <= fit.stop_detail.loglik_upper + margin);
+
+  const double lo=-0x1.cbc45c868485p-9;
+  const double hi=std::nextafter(lo,0.);
+  const std::vector<double> adjacent{lo,lo,hi};
+  const auto narrow=cppunivariate::ged_mle(mltest::as_span(adjacent));
+  CHECK(narrow.status==cppunivariate::GedStatus::UniformBoundary);
+  CHECK(narrow.certified);
+  CHECK(narrow.stop_detail.limit_loglik==doctest::Approx(-3*std::log(hi-lo)).epsilon(1e-12));
+
+}

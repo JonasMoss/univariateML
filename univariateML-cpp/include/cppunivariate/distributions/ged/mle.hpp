@@ -468,7 +468,9 @@ inline void ged_uniform_certificate(GedResult& r,span x,double mean,double tol,i
     coefficients={*mm.first,*mm.second};
   }
   const double n=static_cast<double>(x.size());
-  const double face=-n*(ged_shape_detail::log2+std::log(radius));
+  const double face=-n*(std::isfinite(mean)
+      ? ged_shape_detail::log2+std::log(radius)
+      : distributions::unif_log_distance(coefficients[1],coefficients[0]));
   const double pad=ged_shape_detail::margin(std::abs(face),n)*(1+n);
   // Recover endpoints directly from observations, not a rounded inverse of
   // the optimizer's normalization. A selected uniform must contain the data.
@@ -635,6 +637,14 @@ inline GedResult ged_mle(span x,double tol=1e-10,int maxit=200) {
       }
       term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
     }
+    if(evaluated && detail.limit_model==StopModel::Unif && std::isfinite(sum)) {
+      for(auto& candidate:detail.candidates) {
+        if(candidate.model!=detail.limit_model)continue;
+        candidate.coef=coef;
+        if(sum<candidate.loglik_lower || sum>candidate.loglik_upper)
+          candidate.loglik_lower=candidate.loglik_upper=sum;
+      }
+    }
     if(evaluated) {detail.limit_loglik=sum;
       if(!std::isfinite(sum))result.status=GedStatus::TransformFailure;}
   }
@@ -687,6 +697,14 @@ inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,doubl
         default:evaluated=false;break;
       }
       term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated && detail.limit_model==StopModel::Unif && std::isfinite(sum)) {
+      for(auto& candidate:detail.candidates) {
+        if(candidate.model!=detail.limit_model)continue;
+        candidate.coef=coef;
+        if(sum<candidate.loglik_lower || sum>candidate.loglik_upper)
+          candidate.loglik_lower=candidate.loglik_upper=sum;
+      }
     }
     if(evaluated) {detail.limit_loglik=sum;
       if(!std::isfinite(sum))result.status=GedStatus::TransformFailure;}
