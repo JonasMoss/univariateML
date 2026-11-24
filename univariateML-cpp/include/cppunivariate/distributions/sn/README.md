@@ -45,12 +45,14 @@ limits:
   - model: hnorm
     firmness: proved
     when: 'The shape $\alpha$ tends to $+\infty$, giving a right translated half-normal limit.'
-    detect: 'With shape free, the right half-normal supremum is at least as large as the best finite-shape likelihood, within the comparison tolerance. Any held location or scale is retained.'
+    detect: 'With shape free, the search selects the right half-normal by comparing its likelihood with the finite candidate at tolerance $10^{-8}n$. A difference at the comparison threshold takes a separate route. Any held location or scale is retained.'
+    numerical: true
     status: RightHalfNormalBoundary
   - name: reflected translated half-normal
     firmness: proved
     when: 'The shape $\alpha$ tends to $-\infty$, giving a reflected translated half-normal limit.'
-    detect: 'With shape free, the reflected half-normal supremum is at least as large as the best finite-shape likelihood, within the comparison tolerance. Any held location or scale is retained.'
+    detect: 'With shape free, the search selects the reflected half-normal by comparing its likelihood with the finite candidate at tolerance $10^{-8}n$. A difference at the comparison threshold takes a separate route. Any held location or scale is retained.'
+    numerical: true
     status: LeftHalfNormalBoundary
 references:
 - Azzalini, A. (1985). A class of distributions which includes the normal ones. Scandinavian Journal of Statistics

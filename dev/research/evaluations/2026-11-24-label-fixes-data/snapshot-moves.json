@@ -1,0 +1,1552 @@
+{
+  "native": {
+    "baseline_cases": 12081,
+    "fresh_cases": 12081,
+    "changed_by_family": {
+      "fatigue": 1,
+      "invpareto": 2,
+      "lomax": 2,
+      "pareto2": 2,
+      "skellam": 18
+    },
+    "only_in_baseline": [],
+    "only_in_fresh": [],
+    "changes": [
+      {
+        "family": "fatigue",
+        "source": "class",
+        "case": "constant-flat-reciprocal-scales",
+        "held": {
+          "alpha": 3.0,
+          "mu": 1.0
+        },
+        "mask": 5,
+        "input_sha256": "01b4926e424b9721",
+        "before": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": false
+          }
+        },
+        "after": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": false
+          }
+        }
+      },
+      {
+        "family": "invpareto",
+        "source": "class",
+        "case": "constant",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "55c56d1b2f875682",
+        "before": {
+          "certified": false,
+          "message": "The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "invpareto",
+        "source": "class",
+        "case": "one",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "21c525c5c44a5aa6",
+        "before": {
+          "certified": false,
+          "message": "The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "lomax",
+        "source": "class",
+        "case": "constant",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "2d59723a1857bcf5",
+        "before": {
+          "certified": false,
+          "message": "The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "lomax",
+        "source": "class",
+        "case": "one",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "3e245655dd1c5837",
+        "before": {
+          "certified": false,
+          "message": "The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "pareto2",
+        "source": "class",
+        "case": "constant",
+        "held": {
+          "min": 0.0
+        },
+        "mask": 4,
+        "input_sha256": "f9e825c927166099",
+        "before": {
+          "certified": false,
+          "message": "The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "pareto2",
+        "source": "class",
+        "case": "one",
+        "held": {
+          "min": 0.0
+        },
+        "mask": 4,
+        "input_sha256": "8ad918cad730e9fc",
+        "before": {
+          "certified": false,
+          "message": "The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "archive",
+        "case": "006298",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "0d6e03ab7c90c9be",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "archive",
+        "case": "006300",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "b38d92a3ac9c073d",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "archive",
+        "case": "006301",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "6f091b226d2a4a7f",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "archive",
+        "case": "006302",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "a0a61c153ed21a4d",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "base6",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "13d965f0534b6b66",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "half-ties",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "e25f6e56baf8ae4f",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "huge",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "57ca4d80383e81b3",
+        "before": {
+          "candidates": [
+            {
+              "estimates": {
+                "mu1": "0x1.ffffffe99999ap+30",
+                "mu2": "0x1.6833a4ffe84bbp-26"
+              },
+              "loglik_lower": "-0x1.d28240489e7a1p+5",
+              "loglik_upper": "-0x1.d28240489e2ffp+5",
+              "model": ""
+            }
+          ],
+          "core_status": 3,
+          "estimates": {},
+          "iterations": null,
+          "kind": "budget",
+          "logLik": "nan",
+          "loglik_lower": "-0x1.d28240489e7a1p+5",
+          "loglik_upper": "inf",
+          "message": "Skellam search did not converge; increase iterlim. Raising iterlim may resolve this stop.",
+          "outcome": {
+            "certified": false,
+            "kind": "budget",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "candidates": [],
+          "certified": false,
+          "core_status": 0,
+          "estimates": {
+            "mu1": "0x1.ffffffe99999ap+30",
+            "mu2": "0x0p+0"
+          },
+          "iterations": 48,
+          "kind": "ok",
+          "logLik": "-0x1.d28240489e552p+5",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "message": "",
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "ties",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "dc8adfe4c2c683c1",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "two",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "14211f0bebdf7d18",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "wide",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "40b4b85c3b3fa3fa",
+        "before": {
+          "candidates": [
+            {
+              "estimates": {
+                "mu1": "0x1.5d0384aae46afp+36",
+                "mu2": "0x1.5d034792c06afp+36"
+              },
+              "loglik_lower": "-0x1.ccb544eed30d9p+5",
+              "loglik_upper": "-0x1.ccb544eed2d2fp+5",
+              "model": ""
+            }
+          ],
+          "kind": "budget",
+          "loglik_lower": "-0x1.ccb544eed30d9p+5",
+          "loglik_upper": "inf",
+          "message": "Skellam search did not converge; increase iterlim. Raising iterlim may resolve this stop.",
+          "outcome": {
+            "certified": false,
+            "kind": "budget",
+            "reason": "none",
+            "unique": true
+          },
+          "reason": "none"
+        },
+        "after": {
+          "candidates": [],
+          "kind": "numerical",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "message": "Skellam search did not converge; increase iterlim.",
+          "outcome": {
+            "certified": false,
+            "kind": "failure",
+            "reason": "no-convergence",
+            "unique": true
+          },
+          "reason": "no-convergence"
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "golden",
+        "case": "golden",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "d6671c13691e2a34",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n3-s0",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "bd1188967e328d03",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n3-s1",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "3647c25a03c2c141",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n3-s2",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "e8fcd180b8e9990b",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n3-s3",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "2aaaa6987e062c6c",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n7-s0",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "77e30e9a72a41744",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n7-s1",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "ef472eba062ffcfc",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n7-s3",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "87a99222d347217f",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      }
+    ]
+  },
+  "double": {
+    "baseline_cases": 12081,
+    "fresh_cases": 12081,
+    "changed_by_family": {
+      "fatigue": 1,
+      "invpareto": 2,
+      "lomax": 2,
+      "pareto2": 2,
+      "skellam": 18
+    },
+    "only_in_baseline": [],
+    "only_in_fresh": [],
+    "changes": [
+      {
+        "family": "fatigue",
+        "source": "class",
+        "case": "constant-flat-reciprocal-scales",
+        "held": {
+          "alpha": 3.0,
+          "mu": 1.0
+        },
+        "mask": 5,
+        "input_sha256": "01b4926e424b9721",
+        "before": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": false
+          }
+        },
+        "after": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": false
+          }
+        }
+      },
+      {
+        "family": "invpareto",
+        "source": "class",
+        "case": "constant",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "55c56d1b2f875682",
+        "before": {
+          "certified": false,
+          "message": "The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "invpareto",
+        "source": "class",
+        "case": "one",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "21c525c5c44a5aa6",
+        "before": {
+          "certified": false,
+          "message": "The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The certified profile bound places every improvement over the inverse exponential limit within its tolerance. Use `mlinvexp` to fit that limit model.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "lomax",
+        "source": "class",
+        "case": "constant",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "2d59723a1857bcf5",
+        "before": {
+          "certified": false,
+          "message": "The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "lomax",
+        "source": "class",
+        "case": "one",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "3e245655dd1c5837",
+        "before": {
+          "certified": false,
+          "message": "The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The certified profile bound places every improvement over the exponential limit within its tolerance (1e-8 per observation). Use `mlexp` to fit that limit model.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "pareto2",
+        "source": "class",
+        "case": "constant",
+        "held": {
+          "min": 0.0
+        },
+        "mask": 4,
+        "input_sha256": "f9e825c927166099",
+        "before": {
+          "certified": false,
+          "message": "The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "pareto2",
+        "source": "class",
+        "case": "one",
+        "held": {
+          "min": 0.0
+        },
+        "mask": 4,
+        "input_sha256": "8ad918cad730e9fc",
+        "before": {
+          "certified": false,
+          "message": "The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution. No improvement above the likelihood margin was found.",
+          "outcome": {
+            "certified": false,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "certified": true,
+          "message": "The Lomax maximum likelihood estimator does not exist for data whose likelihood is maximized on the exponential face. Use `mlexp(x - min)` to fit an exponential distribution.",
+          "outcome": {
+            "certified": true,
+            "kind": "limit",
+            "reason": "none",
+            "unique": true
+          }
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "archive",
+        "case": "006298",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "0d6e03ab7c90c9be",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "archive",
+        "case": "006300",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "b38d92a3ac9c073d",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "archive",
+        "case": "006301",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "6f091b226d2a4a7f",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "archive",
+        "case": "006302",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "a0a61c153ed21a4d",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "base6",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "13d965f0534b6b66",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "half-ties",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "e25f6e56baf8ae4f",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "huge",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "57ca4d80383e81b3",
+        "before": {
+          "candidates": [
+            {
+              "estimates": {
+                "mu1": "0x1.ffffffe99999ap+30",
+                "mu2": "0x1.6833a4ffe84bbp-26"
+              },
+              "loglik_lower": "-0x1.d28240489e7a1p+5",
+              "loglik_upper": "-0x1.d28240489e2ffp+5",
+              "model": ""
+            }
+          ],
+          "core_status": 3,
+          "estimates": {},
+          "iterations": null,
+          "kind": "budget",
+          "logLik": "nan",
+          "loglik_lower": "-0x1.d28240489e7a1p+5",
+          "loglik_upper": "inf",
+          "message": "Skellam search did not converge; increase iterlim. Raising iterlim may resolve this stop.",
+          "outcome": {
+            "certified": false,
+            "kind": "budget",
+            "reason": "none",
+            "unique": true
+          }
+        },
+        "after": {
+          "candidates": [],
+          "certified": false,
+          "core_status": 0,
+          "estimates": {
+            "mu1": "0x1.ffffffe99999ap+30",
+            "mu2": "0x0p+0"
+          },
+          "iterations": 48,
+          "kind": "ok",
+          "logLik": "-0x1.d28240489e551p+5",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "message": "",
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "ties",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "dc8adfe4c2c683c1",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "two",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "14211f0bebdf7d18",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "class",
+        "case": "wide",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "40b4b85c3b3fa3fa",
+        "before": {
+          "candidates": [
+            {
+              "estimates": {
+                "mu1": "0x1.5d038590856ebp+36",
+                "mu2": "0x1.5d034878616ebp+36"
+              },
+              "loglik_lower": "-0x1.ccb544eed30d9p+5",
+              "loglik_upper": "-0x1.ccb544eed2d2fp+5",
+              "model": ""
+            }
+          ],
+          "kind": "budget",
+          "loglik_lower": "-0x1.ccb544eed30d9p+5",
+          "loglik_upper": "inf",
+          "message": "Skellam search did not converge; increase iterlim. Raising iterlim may resolve this stop.",
+          "outcome": {
+            "certified": false,
+            "kind": "budget",
+            "reason": "none",
+            "unique": true
+          },
+          "reason": "none"
+        },
+        "after": {
+          "candidates": [],
+          "kind": "numerical",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "message": "Skellam search did not converge; increase iterlim.",
+          "outcome": {
+            "certified": false,
+            "kind": "failure",
+            "reason": "no-convergence",
+            "unique": true
+          },
+          "reason": "no-convergence"
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "golden",
+        "case": "golden",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "d6671c13691e2a34",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n3-s0",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "bd1188967e328d03",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n3-s1",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "3647c25a03c2c141",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n3-s2",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "e8fcd180b8e9990b",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n3-s3",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "2aaaa6987e062c6c",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n7-s0",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "77e30e9a72a41744",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n7-s1",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "ef472eba062ffcfc",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      },
+      {
+        "family": "skellam",
+        "source": "resample",
+        "case": "n7-s3",
+        "held": {},
+        "mask": 0,
+        "input_sha256": "87a99222d347217f",
+        "before": {
+          "certified": true,
+          "outcome": {
+            "certified": true,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": true
+          },
+          "unique": true
+        },
+        "after": {
+          "certified": false,
+          "outcome": {
+            "certified": false,
+            "kind": "estimate",
+            "reason": "none",
+            "unique": null
+          },
+          "unique": null
+        }
+      }
+    ]
+  },
+  "routes-native": {
+    "baseline_cases": 2006,
+    "fresh_cases": 2006,
+    "changed_by_family": {},
+    "only_in_baseline": [],
+    "only_in_fresh": [],
+    "changes": []
+  },
+  "routes-double": {
+    "baseline_cases": 2006,
+    "fresh_cases": 2006,
+    "changed_by_family": {},
+    "only_in_baseline": [],
+    "only_in_fresh": [],
+    "changes": []
+  }
+}

@@ -284,3 +284,9 @@ test_that("structured Lomax limits and budgets retain core diagnostics", {
   expect_true(is.finite(b$loglik_lower))
   expect_true(b$loglik_upper>=b$loglik_lower)
 })
+
+test_that("only the exact constant sample certifies the exponential limit", {
+  stop_for <- function(x) tryCatch(mllomax(x), error = identity)
+  expect_identical(stop_for(rep(1, 5))$certified, TRUE)
+  expect_identical(stop_for(c(1, 28))$certified, FALSE)
+})

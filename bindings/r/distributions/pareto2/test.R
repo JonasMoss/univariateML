@@ -133,3 +133,8 @@ test_that("Pareto II evaluates its exponential face using the payload offset", {
   expect_equal(sum(dexp(x - e$estimates[["min"]], e$estimates[["rate"]], log = TRUE)),
                e$limit_loglik, tolerance = 1e-12)
 })
+
+test_that("constant positive excesses certify the shifted exponential limit", {
+  err <- tryCatch(mlpareto2(rep(2, 5), min = 1), error = identity)
+  expect_identical(err$certified, TRUE)
+})

@@ -165,3 +165,67 @@ TEST_CASE("skellam: cached CDF preserves uncached large-rate tail values") {
     CHECK(cppunivariate::distributions::pskellam(999998,1e6,1,lower,log)==expected);
   }
 }
+
+TEST_CASE("skellam: strict, unresolved, and refuted Poisson faces") {
+  const std::vector<double> strict{1,2}, stationary{0,3,3};
+  for(double sign:{1.,-1.}) {
+    auto reflected_strict=strict;
+    auto reflected_stationary=stationary;
+    for(double& k:reflected_strict) k*=sign;
+    for(double& k:reflected_stationary) k*=sign;
+    const auto proved=cppunivariate::skellam_mle(mltest::as_span(reflected_strict));
+    REQUIRE(proved.status==cppunivariate::SkellamStatus::Ok);
+    CHECK(std::min(proved.mu1,proved.mu2)==0.);
+    CHECK(cppunivariate::outcome(proved).certified);
+
+    const auto unresolved=cppunivariate::skellam_mle(mltest::as_span(reflected_stationary));
+    REQUIRE(unresolved.status==cppunivariate::SkellamStatus::Ok);
+    CHECK(std::min(unresolved.mu1,unresolved.mu2)==0.);
+    CHECK_FALSE(cppunivariate::outcome(unresolved).certified);
+    CHECK_FALSE(cppunivariate::outcome(unresolved).uniqueness_known);
+
+    // Both faces have positive inward score. Their improvements fall on
+    // opposite sides of the old selection margin, within the total gap.
+    for(const std::pair<int,int> counts: {std::pair<int,int>{17,161}, {15,142}}) {
+      std::vector<double> x(counts.first,0.);
+      x.insert(x.end(),counts.second,4*sign);
+      const auto fit=cppunivariate::skellam_mle(mltest::as_span(x));
+      REQUIRE(fit.status==cppunivariate::SkellamStatus::Ok);
+      CHECK(std::min(fit.mu1,fit.mu2)>0.);
+      const double mean=4.*counts.second/x.size();
+      const double face=counts.first*cppunivariate::distributions::dskellam(0,mean,0,true)+
+                        counts.second*cppunivariate::distributions::dskellam(4,mean,0,true);
+      const double gain=(fit.logLik-face)/x.size();
+      CHECK(gain>0.);
+      CHECK(gain<1e-8);
+      CHECK((gain<5e-9)==(counts.first==17));
+      CHECK_FALSE(cppunivariate::outcome(fit).certified);
+      CHECK_FALSE(cppunivariate::outcome(fit).uniqueness_known);
+    }
+  }
+}
+
+TEST_CASE("skellam: a negative inward score does not exclude a better interior") {
+  std::vector<double> x(20,0.);
+  x.back()=20.;
+  // The face score is -1/21 per observation, but (1.5, 0.5) improves
+  // its likelihood. A local face maximum cannot be certified on its sign.
+  const auto fit=cppunivariate::skellam_mle(mltest::as_span(x));
+  REQUIRE(fit.status==cppunivariate::SkellamStatus::Ok);
+  CHECK(fit.mu2>0.);
+  CHECK_FALSE(cppunivariate::outcome(fit).certified);
+}
+
+TEST_CASE("skellam: a positive held-rate face score selects the interior root") {
+  const std::vector<double> x{0,0};
+  const auto fit=cppunivariate::skellam_mle(mltest::as_span(x),1e-10,150,1.00005);
+  REQUIRE(fit.status==cppunivariate::SkellamStatus::Ok);
+  CHECK(fit.mu2>0.);
+  CHECK((fit.logLik+2*fit.mu1)/x.size()<1e-8);
+  CHECK(cppunivariate::outcome(fit).certified);
+
+  const auto boundary=cppunivariate::skellam_mle(mltest::as_span(x),1e-10,150,1.);
+  REQUIRE(boundary.status==cppunivariate::SkellamStatus::Ok);
+  CHECK(boundary.mu2==0.);
+  CHECK(cppunivariate::outcome(boundary).certified);
+}

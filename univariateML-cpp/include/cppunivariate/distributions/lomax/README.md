@@ -123,9 +123,11 @@ Holding either coefficient removes the exponential escape and gives a unique fin
 
 ## R notes
 
+For constant positive data, writing $z=\lambda x$ gives an exact per-observation profile loss of $\log((1+z)\log(1+z)/z)$ relative to the exponential. It is strictly positive for $z>0$ because $\log(1+z)>z/(1+z)$. The constant-sample limit is certified.
+
 The implementation prefers the exponential limit when the certified upper bound on every profile improvement is at most $10^{-8}n$ log-likelihood units and stops with a recommendation to use `mlexp`. This tolerance can reject a mathematical MLE that ties or only slightly improves on the limit. An unresolved comparison returns a numerical failure, never an unchecked fit.
 
-With $\kappa$ held, the total log-rate score is $n-(\kappa+1)\sum_i\operatorname{logistic}(\log\lambda+\log x_i)$. It strictly decreases from $n$ to $-n\kappa$, so its unique root is the global conditional maximum. The solver expands a log-rate bracket within the representable positive range, verifies both signs, and requires absolute total score below $10^{-3}$ at the represented rate. Log probabilities avoid overflow and underflow in the weighted logistic terms. If the root cannot be represented or certified numerically, fitting returns `IterationFailure`.
+With $\kappa$ held, the total log-rate score is $n-(\kappa+1)\sum_i\operatorname{logistic}(\log\lambda+\log x_i)$. It strictly decreases from $n$ to $-n\kappa$, so its unique root is the global conditional maximum. The solver expands a log-rate bracket within the representable positive range, and verifies opposite score signs at the ends of a bracket of width at most `tol/2`. Converting the selected log-rate to a positive finite rate must change the log-rate by at most `tol/4`. Log probabilities avoid overflow and underflow in the weighted logistic terms. Failure to obtain the initial signed bracket or exhaustion of the solver returns `IterationFailure`. A rounding-limited bracket or failed restoration check returns `AccuracyFailure`.
 
 
 ## Global profile certificate

@@ -5,11 +5,12 @@
 #include "../burr/mle.hpp"
 #include "../lomax/mle.hpp"
 #include <vector>
+#include <algorithm>
 #include <cmath>
 namespace cppunivariate {
 enum class Pareto2Status { Ok, ExponentialLimit, InvalidStart, IterationFailure, AccuracyFailure,
   Unbounded, Unattained, UnsupportedThreshold, LimitRepresentationFailure };
-struct Pareto2Result { double shape,scale,min,logLik; int iterations; Pareto2Status status; StopDetail stop_detail{}; LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None; };
+struct Pareto2Result { double shape,scale,min,logLik; int iterations; Pareto2Status status; StopDetail stop_detail{}; LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None; bool limit_certified = false; };
 
 inline Pareto2Result pareto2_mle(span x, double min, double tol, int maxit, double shape=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
   if(std::isnan(min)) {return {NAN,NAN,min,NAN,0,Pareto2Status::UnsupportedThreshold};}
@@ -113,7 +114,8 @@ inline Pareto2Result pareto2_mle(span x, double min, double tol, int maxit, doub
     Pareto2Result out{r.kappa,fitted_scale,min,r.logLik,r.iterations,Pareto2Status::IterationFailure,{},LomaxCertificateFailure::Arithmetic};
     out.status=Pareto2Status::LimitRepresentationFailure;return out;
   }
-  Pareto2Result out{r.kappa,fitted_scale,min,r.logLik,r.iterations,static_cast<Pareto2Status>(r.status),detail,r.certificate_failure};
+  Pareto2Result out{r.kappa,fitted_scale,min,r.logLik,r.iterations,static_cast<Pareto2Status>(r.status),detail,r.certificate_failure,
+    r.limit_certified && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})};
   if(out.stop_detail.accuracy_stop!=AccuracyStop::None && out.shape>0 && out.scale>0)
     record_accuracy(out,tol,{out.shape,out.scale,min},{std::isnan(shape)?out.shape:0,std::isnan(scale)?out.scale:0,0});
   return out;
@@ -128,7 +130,7 @@ inline FitOutcome outcome(const Pareto2Result& r) {
     case Pareto2Status::UnsupportedThreshold:return FitOutcome::failure(OutcomeReason::Unsupported);
     case Pareto2Status::LimitRepresentationFailure:return FitOutcome::failure(OutcomeReason::Evaluation);
     case Pareto2Status::Ok: return FitOutcome::estimate(true);
-    case Pareto2Status::ExponentialLimit: return FitOutcome::limit(false); // lomax decides its stop by a 1e-8 n margin (lomax/certificate.hpp), as lomax and invpareto report
+    case Pareto2Status::ExponentialLimit: return FitOutcome::limit(r.limit_certified);
     case Pareto2Status::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case Pareto2Status::IterationFailure: return r.certificate_failure == LomaxCertificateFailure::Budget ? FitOutcome::budget() : FitOutcome::failure(r.certificate_failure==LomaxCertificateFailure::Arithmetic?OutcomeReason::Evaluation:OutcomeReason::NoConvergence);
     case Pareto2Status::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

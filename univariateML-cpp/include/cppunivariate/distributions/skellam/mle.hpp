@@ -8,7 +8,7 @@
 #include <vector>
 namespace cppunivariate {
 enum class SkellamStatus { Ok, InvalidInput, Impossible, IterationFailure };
-struct SkellamResult { double mu1,mu2,logLik; int iterations; SkellamStatus status; StopDetail stop_detail{}; };
+struct SkellamResult { double mu1,mu2,logLik; int iterations; SkellamStatus status; StopDetail stop_detail{}; bool certified=true; bool uniqueness_known=true; };
 inline SkellamResult skellam_accuracy_search(span x,double tol=1e-9,int maxit=150,
     double mu1=special::kNaN,double mu2=special::kNaN) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -42,10 +42,22 @@ inline SkellamResult skellam_accuracy_search(span x,double tol=1e-9,int maxit=15
     // Conditional J has (j+1)*p(j+1)/p(j)=a*b/(j+|k|+1), decreasing.
     // Hence Var(J)<E(J) and d2 log p(k)/d a2=(Var(Y)-E(Y))/a2<0.
     // The likelihood is strictly concave in either single free rate.
-    double face_score=0;
     if(std::isfinite(face)) {
-      for(double v:x) face_score+=(f1 ? mu1/(v+1) : mu2/(1-v))-1;
-      if(face_score<=0) return {f1?mu1:0,f2?mu2:0,face,0,SkellamStatus::Ok};
+      CPPUNIV_EXTENDED_REAL face_score=0, compensation=0;
+      const CPPUNIV_EXTENDED_REAL held=f1?mu1:mu2;
+      for(double v:x) {
+        const CPPUNIV_EXTENDED_REAL denominator=1+static_cast<CPPUNIV_EXTENDED_REAL>(f1?v:-v);
+        const auto term=(held-denominator)/denominator-compensation;
+        const auto next=face_score+term;
+        compensation=(next-face_score)-term;
+        face_score=next;
+      }
+      if(face_score<=0) {
+        const double pad=16*std::numeric_limits<double>::epsilon()*x.size();
+        const bool exact_zero=xmin==xmax && (f1?xmin:-xmax)<0x1p53 &&
+                              held==1+(f1?xmin:-xmax);
+        return {f1?mu1:0,f2?mu2:0,face,0,SkellamStatus::Ok,{},face_score< -pad || exact_zero};
+      }
     }
     double lo=0,hi=std::max(1.0,(f1?mu1:mu2)+std::abs(m)+1);
     int iterations=0;
@@ -61,15 +73,15 @@ inline SkellamResult skellam_accuracy_search(span x,double tol=1e-9,int maxit=15
     if(iterations==maxit) return fail(SkellamStatus::IterationFailure);
     const double t=lo+(hi-lo)/2,l=value(t);
     if(!std::isfinite(l)) return fail(SkellamStatus::IterationFailure);
-    if(std::isfinite(face) && l<=face+1e-8*x.size())
-      return {f1?mu1:0,f2?mu2:0,face,iterations,SkellamStatus::Ok};
     return {f1?mu1:t,f2?mu2:t,l,iterations,SkellamStatus::Ok};
   }
   // The theta score at fixed product gives mu1-mu2=sample mean.
   // In the joint fit, t is the smaller rate.
   const auto rates=[&](double t) {return std::vector<double>{f1?mu1:(f2?t:t+std::max(m,0.0)),f2?mu2:(f1?t:t+std::max(-m,0.0))};};
   const auto value=[&](double t) {const auto r=rates(t);return ll(r[0],r[1]);};
-  double best=value(0),best_t=0;
+  const double face=value(0);
+  double best=face,best_t=0;
+  double interior=-INFINITY,interior_t=0;
   std::int64_t checked=0;
   const auto budget_stop=[&]() {
       auto out=fail(SkellamStatus::IterationFailure);
@@ -87,19 +99,20 @@ inline SkellamResult skellam_accuracy_search(span x,double tol=1e-9,int maxit=15
   // attained zero-rate face exactly. No uniqueness assumption is used.
   constexpr double upper=709;
   std::vector<double> grid,values;
-  bool certified=false;
+  bool tail_closed=false;
   for(double u=-32;u<=upper;u+=0.5) {
     if(++checked>certificate_budget(maxit))return budget_stop();
     const double t=std::exp(u),v=value(t);
     grid.push_back(u);values.push_back(v);
+    if(v>interior) {interior=v;interior_t=t;}
     if(v>best) {best=v;best_t=t;}
     // A convolution mass cannot exceed the largest mass of its Poisson
     // factor of rate >= t. Stirling bounds that mode by
     // 1/sqrt(2*pi*floor(t)). This certifies exclusion of the far tail.
     const double candidate=std::max(best,*std::max_element(values.begin(),values.end()));
-    if(t>=2 && -0.5*x.size()*(1.8378770664093454836+std::log(std::floor(t)))<candidate-1e-8*x.size()) {certified=true;break;}
+    if(t>=2 && -0.5*x.size()*(1.8378770664093454836+std::log(std::floor(t)))<candidate-1e-8*x.size()) {tail_closed=true;break;}
   }
-  if(!certified) return fail(SkellamStatus::IterationFailure);
+  if(!tail_closed) return fail(SkellamStatus::IterationFailure);
   int iterations=0;
   for(std::size_t i=1;i+1<grid.size();++i) {
     if(!(values[i]>=values[i-1] && values[i]>=values[i+1])) continue;
@@ -114,49 +127,105 @@ inline SkellamResult skellam_accuracy_search(span x,double tol=1e-9,int maxit=15
     iterations=std::max(iterations,it);
     if(it==maxit) return fail(SkellamStatus::IterationFailure);
     const double t=std::exp(fa>fb?a:b),l=std::max(fa,fb);
+    if(l>interior) {interior=l;interior_t=t;}
     if(l>best) {best=l;best_t=t;}
   }
-  // Certify the entire finite interval, not just the grid nominations.
-  // The profile's second derivative is at most 2 sum 1/(|x_i|+1).
-  // See the dossier for the conditional-count argument and error margin.
-  double curvature=0;
-  for(double v:x) curvature+=2/(std::abs(v)+1);
-  // Half the total budget is reserved for a possible face tie.
-  const double margin=0.5e-8*x.size();
+  // The loose cover bounds the likelihood gap. A strict face proof also
+  // needs a decreasing neighborhood, and strict exclusion everywhere else.
+  double curvature=0, compensation=0;
+  for(double v:x) {
+    const double term=2/(std::abs(v)+1)-compensation;
+    const double next=curvature+term;
+    compensation=(next-curvature)-term;
+    curvature=next;
+  }
+  const double n=static_cast<double>(x.size());
+  const double margin=0.5e-8*n;
   const double first=std::exp(grid.front()),last=std::exp(grid.back());
-  const double low=value(first)+2*x.size()*first;
-  if(!std::isfinite(low) || low>best+margin) return fail(SkellamStatus::IterationFailure);
+  const double low=value(first)+2*n*first;
+  const double eps=std::numeric_limits<double>::epsilon();
+  const double face_sum=0.5*std::abs(m)*curvature;
+  const double face_score=face_sum-n;
+  const double score_pad=32*eps*(n+face_sum);
+  const double face_radius=std::isfinite(face) && face_score< -score_pad
+      ? (-face_score-score_pad)/(2*curvature) : 0;
+  const auto likelihood_pad=[&](double l) {
+    // Log masses have the same sign, and the raw likelihood sum is sequential.
+    return 64*eps*(n+std::abs(l))+2*n*eps*std::abs(l);
+  };
+  const auto face_refuted=[&]() {
+    return std::isfinite(face) && (face_score>score_pad ||
+           (std::isfinite(interior) &&
+            interior>face+likelihood_pad(face)+likelihood_pad(interior)));
+  };
   struct Interval { double lo,hi; };
-  std::vector<Interval> pending{{first,last}};
-  while(!pending.empty()) {
-    if(++checked>certificate_budget(maxit))return budget_stop();
-    const Interval interval=pending.back();pending.pop_back();
+  const auto envelope=[&](Interval interval, double& bound, double& padded) {
+    if(++checked>certificate_budget(maxit)) return false;
     const double mid=interval.lo+(interval.hi-interval.lo)/2;
-    if(!(mid>interval.lo && mid<interval.hi)) return fail(SkellamStatus::IterationFailure);
+    if(!(mid>interval.lo && mid<interval.hi)) return false;
     const auto r=rates(mid);
-    double l=0,g=0;
+    double l=0,g=0,magnitude=0;
     for(double v:x) {
-      if(v-1==v || v+1==v) return fail(SkellamStatus::IterationFailure);
+      if(v-1==v || v+1==v) return false;
       const double p=skellam_detail::logmass(v,r[0],r[1]);
       const double pminus=skellam_detail::logmass(v-1,r[0],r[1]);
       const double pplus=skellam_detail::logmass(v+1,r[0],r[1]);
       l+=p;g+=std::expm1(pminus-p)+std::expm1(pplus-p);
+      magnitude+=std::abs(p)+std::abs(pminus)+std::abs(pplus);
     }
-    if(!std::isfinite(l) || !std::isfinite(g)) return fail(SkellamStatus::IterationFailure);
+    if(l>interior) {interior=l;interior_t=mid;}
     if(l>best) {best=l;best_t=mid;}
     const double h=(interval.hi-interval.lo)/2;
-    const double bound=l+std::abs(g)*h+0.5*curvature*h*h;
-    if(!std::isfinite(bound)) return fail(SkellamStatus::IterationFailure);
+    bound=l+std::abs(g)*h+0.5*curvature*h*h;
+    // The neighboring log masses are used in a subtraction before exp().
+    // Allow for that error in the score used for strict comparisons.
+    padded=bound+likelihood_pad(bound)+64*eps*h*(1+std::abs(g)+2*n)*(n+magnitude);
+    return std::isfinite(bound);
+  };
+  std::vector<Interval> pending{{first,last}}, overlap;
+  bool cover_closed=std::isfinite(low) && low<=best+margin;
+  while(cover_closed && !pending.empty()) {
+    const Interval interval=pending.back();pending.pop_back();
+    double padded,bound;
+    cover_closed=envelope(interval,bound,padded);
+    if(!cover_closed) break;
     if(bound>best+margin) {
+      const double mid=interval.lo+(interval.hi-interval.lo)/2;
       pending.push_back({interval.lo,mid});
       pending.push_back({mid,interval.hi});
+    } else if(best<=face+margin && face_radius>=first && interval.hi>face_radius &&
+              padded>=face-likelihood_pad(face)) {
+      overlap.push_back({std::max(interval.lo,face_radius),interval.hi});
     }
   }
-  const double face=value(0);
-  if(std::isfinite(face) && best<=face+margin) {best=face;best_t=0;}
-  if(!std::isfinite(best)) return fail(SkellamStatus::Impossible);
+  bool proved_face=false;
+  if(cover_closed && std::isfinite(face) && best<=face+margin && !face_refuted() &&
+     face_radius>=first &&
+     -0.5*n*(1.8378770664093454836+std::log(std::floor(last)))<face-likelihood_pad(face)) {
+    proved_face=true;
+    while(!overlap.empty()) {
+      const Interval interval=overlap.back();overlap.pop_back();
+      double padded,bound;
+      if(!envelope(interval,bound,padded) || face_refuted()) {
+        proved_face=false;
+        break;
+      }
+      if(padded>=face-likelihood_pad(face)) {
+        const double mid=interval.lo+(interval.hi-interval.lo)/2;
+        overlap.push_back({interval.lo,mid});
+        overlap.push_back({mid,interval.hi});
+      }
+    }
+  }
+  if(std::isfinite(face) && best<=face+margin && !face_refuted()) {
+    best=face;best_t=0;
+  } else if(best_t==0 && face_refuted()) {
+    best=interior;best_t=interior_t;
+  }
+  if(!std::isfinite(best) || (best_t==0 && face_refuted()))
+    return fail(SkellamStatus::IterationFailure);
   const auto r=rates(best_t);
-  return {r[0],r[1],best,iterations,SkellamStatus::Ok};
+  return {r[0],r[1],best,iterations,SkellamStatus::Ok,{},proved_face,proved_face};
 }
 }
 
@@ -186,7 +255,8 @@ inline FitOutcome outcome(const SkellamResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case SkellamStatus::Ok: return FitOutcome::estimate(true);
+    case SkellamStatus::Ok:
+      return r.uniqueness_known ? FitOutcome::estimate(r.certified) : FitOutcome::undetermined();
     case SkellamStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SkellamStatus::Impossible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SkellamStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
