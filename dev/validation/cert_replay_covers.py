@@ -153,9 +153,13 @@ def replay_lomax_limit_transfer(r, data, budget):
     if r['family'] == 'pareto2' and float(r['held'].get('min', 0)) != 0:
         # nonzero held threshold: the limit is the exponential on x - min (shift-payload 896d9dee, fixtures a529330e)
         expected_model = 'unavailable:shifted-exp'
+    # A constant original sample has an analytic escape proof (lomax/certificate.hpp, TASK-238): the transfer
+    # carries certified=true. Otherwise the margin-based limit stays certified=false.
+    expected_certified = len({float(v) for v in data}) == 1
     model, certified = result.get('model'), outcome.get('certified')
-    verdict = 'holds' if model == expected_model and certified is False else 'fails'
-    return [comparison('transfer-flag', f'transfer the Lomax margin limit as {expected_model} with certified=false',
+    verdict = 'holds' if model == expected_model and certified is expected_certified else 'fails'
+    flag = 'true (constant sample)' if expected_certified else 'false'
+    return [comparison('transfer-flag', f'transfer the Lomax margin limit as {expected_model} with certified={flag}',
                        verdict, f'model {model}, certified {certified}', rigor='exact')], None
 
 
