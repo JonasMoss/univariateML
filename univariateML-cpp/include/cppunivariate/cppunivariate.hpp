@@ -57,6 +57,7 @@
 #include "distributions/norm/mle.hpp"
 #include "distributions/paralogis/mle.hpp"
 #include "distributions/pareto/mle.hpp"
+#include "distributions/dblpareto/mle.hpp"
 #include "distributions/pois/mle.hpp"
 #include "distributions/power/mle.hpp"
 #include "distributions/rayleigh/mle.hpp"

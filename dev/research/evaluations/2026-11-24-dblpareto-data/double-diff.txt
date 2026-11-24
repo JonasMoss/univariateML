@@ -1,0 +1,22 @@
+differs ('fpareto', '001588', '{"min": 0.0}') ['message', 'limit_loglik', 'model', 'candidates', 'limit_estimates']
+differs ('fpareto', '001592', '{"min": 0.0}') ['message', 'limit_loglik', 'model', 'candidates', 'limit_estimates']
+differs ('fpareto', '001599', '{"min": 0.0}') ['message', 'model', 'candidates', 'limit_estimates']
+differs ('fpareto', '001600', '{"min": 0.0}') ['message', 'limit_loglik', 'model', 'candidates', 'limit_estimates']
+differs ('fpareto', '009612', '{"min": 0.0}') ['message', 'limit_loglik', 'model', 'candidates', 'limit_estimates']
+differs ('fpareto', 'threshold-double-pareto', '{"min": 2.0}') ['message', 'model', 'candidates', 'limit_estimates']
+differs ('gb2', '009516', '{}') ['message', 'limit_loglik', 'model', 'candidates', 'limit_estimates']
+differs ('gb2', 'ties', '{}') ['message', 'limit_loglik', 'model', 'candidates', 'limit_estimates']
+differs ('gb2', 'half-ties', '{}') ['message', 'limit_loglik', 'model', 'candidates', 'limit_estimates']
+differs ('gb2', 'n7-s0', '{}') ['message', 'limit_loglik', 'model', 'candidates', 'limit_estimates']
+differs ('gb2', 'n7-s2', '{}') ['message', 'model', 'candidates', 'limit_estimates']
+only in snapshot ('dblpareto', 'golden', '{}')
+only in snapshot ('dblpareto', 'base6', '{}')
+only in snapshot ('dblpareto', 'one', '{}')
+only in snapshot ('dblpareto', 'two', '{}')
+only in snapshot ('dblpareto', 'constant', '{}')
+only in snapshot ('dblpareto', 'ties', '{}')
+only in snapshot ('dblpareto', 'half-ties', '{}')
+only in snapshot ('dblpareto', 'empty', '{}')
+only in snapshot ('dblpareto', 'negative', '{}')
+only in snapshot ('dblpareto', 'near-constant', '{}')
+double cases 12081 differing 11 only-new 28 only-old 0

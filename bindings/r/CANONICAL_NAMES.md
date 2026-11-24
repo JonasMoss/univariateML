@@ -106,6 +106,7 @@ field names remain internal.
 | nbinom with `zero="modified"` | Configured nbinom | size, prob, p0 | `dml` | Base support intersected with the configured law |
 | genbeta | Generalized beta of the first kind | shape1, shape2, shape3, scale | dgenbeta | (0, scale), scale required |
 | gb2 | Transformed beta (GB2) | shape1, shape2, shape3, scale | dgb2 | (0, ∞) |
+| dblpareto | Double Pareto | scale, left_rate, right_rate | ddblpareto | (0, ∞) open |
 | binom with `zero="modified"` | Configured binom | size, prob, p0 | `dml` | Base support intersected with the configured law |
 | lgser with `zero="modified"` | Configured lgser | theta, p0 | `dml` | Base support intersected with the configured law |
 | binom with `zero="inflated"` | Configured binom | size, prob, pi | `dml` | Base support intersected with the configured law |

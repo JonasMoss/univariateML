@@ -1,0 +1,20 @@
+Workstation GCC 15.2.0 and R 4.6.1. simbox-run exited 75.
+Ran 36 tests in 24.024s
+OK
+100% tests passed, 0 tests failed out of 181
+100% tests passed, 0 tests failed out of 181
+[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67514 ]
+# tests 599
+# pass 599
+# fail 0
+Results: [{"command": ["just", "cpp-test"], "exit": 0, "seconds": 847.0}, {"command": ["just", "cpp-test-no-long-double"], "exit": 0, "seconds": 772.32}, {"command": ["just", "test"], "exit": 0, "seconds": 706.11}, {"command": ["just", "js-build"], "exit": 0, "seconds": 104.98}, {"command": ["just", "js-test"], "exit": 0, "seconds": 180.36}]
+PASS: four articles; dossier catalogues: 275 limits, 86 families, 9 fit domains.
+PASS: inference: 288 unique scopes, 86 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 86 unique nodes, 270 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 86 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 86 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, norm, pois, unif, pareto
+158 edges; 0 failed
+Quantile rows: 792 failures: 0 worst forward relative: 7.138734e-14 

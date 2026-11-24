@@ -11,6 +11,7 @@ export interface GeneratedAPI {
   cauchy: Family<{location: number; scale: number}, [location: number, scale: number], {tol?: number; iterlim?: number}>;
   cmb: Family<{size: number; prob: number; nu: number}, [size: number, prob: number, nu: number], {tol?: number; iterlim?: number}>;
   cmp: Family<{lambda: number; nu: number}, [lambda: number, nu: number], {tol?: number; iterlim?: number}>;
+  dblpareto: Family<{scale: number; left_rate: number; right_rate: number}, [scale: number, left_rate: number, right_rate: number], Record<string, never>>;
   dgamma: Family<{shape: number; rate: number}, [shape: number, rate: number], {tol?: number; iterlim?: number}>;
   dlaplace: Family<{location: number; scale: number}, [location: number, scale: number], Record<string, never>>;
   dnorm: Family<{mean: number; sd: number}, [mean: number, sd: number], {tol?: number; iterlim?: number}>;

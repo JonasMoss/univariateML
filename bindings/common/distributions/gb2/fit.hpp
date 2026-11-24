@@ -36,7 +36,11 @@ inline FitResult fit_gb2(cppunivariate::span x, Held shape1_arg = {}, Held shape
     case cppunivariate::Gb2Status::PowerBoundary:
       if(scale_arg.supplied && (r.stop_detail.limit_coef.empty() || r.stop_detail.limit_coef[0]==scale)) return done(stop_failure(failure("GB2 selects a power limit. Use `mlpower(x, alpha = scale)` with the upper endpoint held."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},"power"));
       return done(stop_failure(failure("GB2 selects a limiting model. Use `mlpower`."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"},"power"));
-    case cppunivariate::Gb2Status::DoubleParetoBoundary: return done(stop_failure(failure("GB2 selects the double Pareto limit; this package has no double Pareto fitter."),r.stop_detail,outcome_payload(o),{"scale","left","right"},"unavailable:double-pareto"));
+    case cppunivariate::Gb2Status::DoubleParetoBoundary:
+      return done(stop_failure(failure(scale_arg.supplied
+          ? "GB2 selects the double Pareto limit. Use `mldblpareto(x, scale = scale)`."
+          : "GB2 selects the double Pareto limit. Use `mldblpareto`."),
+          r.stop_detail,outcome_payload(o),{}));
     case cppunivariate::Gb2Status::InvalidData: return done(failure("GB2 requires positive finite nonconstant observations; constant data have an unbounded free likelihood."));
     case cppunivariate::Gb2Status::InvalidFixed: return done(failure("GB2 fixed parameters must be positive and finite."));
     case cppunivariate::Gb2Status::ScaleOutOfRange: return done(stop_failure(failure("GB2 scale is outside the representable range."),r.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale"}));

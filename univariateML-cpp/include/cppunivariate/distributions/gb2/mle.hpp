@@ -1,5 +1,6 @@
 // GB2 in actuar order (q,a,p,b). All optimisation uses standardized logs.
 #pragma once
+#include "../dblpareto/dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "local_accuracy.hpp"
 #include "../beta/mle.hpp"
@@ -609,12 +610,10 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
         double ll=0;for(double v:x)ll+=pareto?distributions::dpareto(v,right,endpoint,true):distributions::dpower(v,endpoint,left,true);
         out.stop_detail.limit_loglik=ll;
       } else {
-      double ll=0;
-      for(double v:x) {
-        const double z=gb2_accuracy::log_ratio(v,endpoint);
-        ll+=std::log(left)+std::log(right)-std::log(left+right)-std::log(v)+(z<0?left:-right)*z;
-      }
-      out.stop_detail.limit_loglik=ll;
+        out.stop_detail.limit_model=StopModel::Dblpareto;
+        double ll=0;
+        for(double v:x)ll+=distributions::ddblpareto(v,endpoint,left,right,true);
+        out.stop_detail.limit_loglik=ll;
       }
       bool represented=std::isfinite(out.stop_detail.limit_loglik);
       for(double v:out.stop_detail.limit_coef)represented=represented&&v>0&&std::isfinite(v);

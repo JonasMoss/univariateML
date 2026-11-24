@@ -39,7 +39,7 @@ enum class StopModel { None, Weibull, Pareto, InvWeibull, Power, Exp, InvExp,
   ReflectedHalfGed,
   Trgamma, InvTrgamma, ShiftedTrgamma, ShiftedInvTrgamma
   , Gamma, InvGamma, ShiftedExp, ShiftedWeibull, ShiftedInvWeibull,
-  ShiftedPareto, ShiftedPower, ShiftedLnorm
+  ShiftedPareto, ShiftedPower, ShiftedLnorm, Dblpareto, ShiftedDblpareto
 };
 struct FitCandidate {
   std::vector<double> coef;
@@ -137,6 +137,8 @@ inline bool valid_stop_coefficients(StopModel model,const std::vector<double>& v
     case StopModel::TruncatedExp:return v.size()==3 && v[0]<v[1];
     case StopModel::Trgamma:
     case StopModel::InvTrgamma:return v.size()==3 && v[0]>0 && v[1]>0 && v[2]>0;
+    case StopModel::Dblpareto:return v.size()==3 && v[0]>0 && v[1]>0 && v[2]>0;
+    case StopModel::ShiftedDblpareto:return v.size()==4 && v[0]>0 && v[1]>0 && v[2]>0;
     case StopModel::ShiftedExp:return v.size()==2 && v[0]>0;
     case StopModel::ShiftedWeibull:
     case StopModel::ShiftedInvWeibull:return v.size()==3 && v[0]>0 && v[1]>0;
@@ -160,6 +162,7 @@ inline void translate_stop_faces(StopDetail& detail, double offset) {
   const auto translate=[&](StopModel& model, std::vector<double>& coef) {
     if(!valid_stop_coefficients(model,coef))return;
     switch(model) {
+      case StopModel::Dblpareto:model=StopModel::ShiftedDblpareto;break;
       case StopModel::Exp:model=StopModel::ShiftedExp;break;
       case StopModel::Weibull:model=StopModel::ShiftedWeibull;break;
       case StopModel::InvWeibull:model=StopModel::ShiftedInvWeibull;break;

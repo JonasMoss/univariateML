@@ -47,7 +47,11 @@ inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held s
     case cppunivariate::FparetoStatus::PowerBoundary:
       if(scale.supplied) return done(stop_failure(fail("Feller-Pareto selects a shifted power distribution. Use `mlpower(x - min, alpha = scale)` to retain both endpoints held."),res.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale","min"},res.stop_detail.limit_model==cppunivariate::StopModel::None?"power":""));
       return done(stop_failure(fail("GB2 selects a limiting model. Use `mlpower(x - min)`."),res.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale","min"},res.stop_detail.limit_model==cppunivariate::StopModel::None?"power":""));
-    case cppunivariate::FparetoStatus::DoubleParetoBoundary: return done(stop_failure(fail("GB2 selects the double Pareto limit; this package has no double Pareto fitter."),res.stop_detail,outcome_payload(o),{"kink","left_rate","right_rate","min"},"unavailable:shifted-double-pareto"));
+    case cppunivariate::FparetoStatus::DoubleParetoBoundary:
+      return done(stop_failure(fail(scale.supplied
+          ? "GB2 selects the double Pareto limit. Subtract min before fitting with `mldblpareto(x - min, scale = scale)`."
+          : "GB2 selects the double Pareto limit. Subtract min before fitting with `mldblpareto(x - min)`."),
+          res.stop_detail,outcome_payload(o),{}));
     case cppunivariate::FparetoStatus::InvalidData: return done(fail("Feller-Pareto fitting requires nonempty finite observations strictly inside the held support and valid controls."));
     case cppunivariate::FparetoStatus::InvalidFixed: return done(fail("GB2 fixed parameters must be positive and finite."));
     case cppunivariate::FparetoStatus::ScaleOutOfRange: return done(fail("GB2 scale is outside the representable range."));

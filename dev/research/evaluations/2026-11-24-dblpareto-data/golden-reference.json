@@ -1,0 +1,31 @@
+{
+  "id": "dblpareto",
+  "method": "exhaustive knot profiling and endpoint comparison at 50 digits",
+  "knots": 500,
+  "runner_up_gap": "0.0007661645482943955282993511",
+  "free": [],
+  "not_refined": {
+    "scale": "closed form or exhaustive enumeration (independently checked)",
+    "left_rate": "closed form or exhaustive enumeration (independently checked)",
+    "right_rate": "closed form or exhaustive enumeration (independently checked)"
+  },
+  "iterations": 0,
+  "estimates": {
+    "scale": "0.9091476301355816413973798",
+    "left_rate": "2.057712443244283047542653",
+    "right_rate": "0.9906860422987013439000688"
+  },
+  "logLik": "-915.2781250507746942907025",
+  "relative_difference": {
+    "scale": 0.0,
+    "left_rate": 3.47117255654295e-18,
+    "right_rate": 4.238333627385308e-17
+  },
+  "logLik_difference": -5.2960422994843635e-14,
+  "global": {
+    "kind": "dossier optimality/uniqueness proof",
+    "statement": "A finite all-free fit exists for nonconstant data when an interior knot attains the best profile value including both endpoint limits. Interior knot ties give distinct maximizers. With one rate free the same comparison applies among finite knots and the relevant one-sided limit. A held kink gives a unique finite fit if each free rate has positive total deviation on its side. Holding both rates always gives a finite fit, with a possible kink interval.",
+    "reason": "Conditional rate optima are explicit. The profiled likelihood is strictly convex between distinct observation knots with at least one free rate. At fixed rates the kink criterion is weighted absolute deviation in log observations."
+  },
+  "input_sha256": "8004e0c8b204dfa5f9dd47132bdc4e4c7bc233a823b277f913feee34c91c57ce"
+}

@@ -71,6 +71,26 @@ def reference(id, dps=DPS):
     evidence = {}
     with mp.workdps(dps + 10):
         xs = sorted(mp.mpf(v) for v in golden['data'])
+        if id == 'dblpareto' and not held_names:
+            logs = [mp.log(v) for v in xs]
+            n = len(xs)
+            candidates = []
+            for b in sorted(set(xs)):
+                c = mp.log(b)
+                l = mp.sqrt(mp.fsum(c - z for z in logs if z < c))
+                r = mp.sqrt(mp.fsum(z - c for z in logs if z > c))
+                rate_l = n / (l * (l + r)) if l else mp.inf
+                rate_r = n / (r * (l + r)) if r else mp.inf
+                candidates.append((n * (mp.log(n) - 2 * mp.log(l + r) - 1),
+                                   b, rate_l, rate_r))
+            ranked = sorted(candidates, reverse=True)
+            _, b, rate_l, rate_r = ranked[0]
+            if not (mp.isfinite(rate_l) and mp.isfinite(rate_r)):
+                raise ValueError('double Pareto golden selects a one-sided limit')
+            closed.update(scale=b, left_rate=rate_l, right_rate=rate_r)
+            evidence['knots'] = len(ranked)
+            evidence['runner_up_gap'] = mp.nstr(ranked[0][0] - ranked[1][0], 25)
+            method = 'exhaustive knot profiling and endpoint comparison at 50 digits'
         if id == 'laplace':
             lower, upper = xs[(len(xs)-1)//2], xs[len(xs)//2]
             mu = mp.mpf(theta[0]) if 'mu' in held_names else upper

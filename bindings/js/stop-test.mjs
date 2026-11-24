@@ -720,3 +720,36 @@ test('typed GPD wire values preserve a subnormal and the next binary64 number af
   assert.ok(extremes.pieces.some(piece => piece.axes[0].lower === '-inf' && piece.axes[0].rounded[0]));
   assert.ok(extremes.pieces.some(piece => piece.axes[2].upper === 'inf'));
 });
+
+test('Double Pareto escapes replay through the public density', () => {
+  const y = Array.from({length:200}, (_, i) => {
+    const p = (i + .5) / 200;
+    return p < .5 ? Math.sqrt(2*p) : 1 / Math.sqrt(2*(1-p));
+  });
+  for (const [family, min, model] of [
+    ['gb2', 0, 'dblpareto'], ['fpareto', 2, 'unavailable:shifted-dblpareto']
+  ]) {
+    const x = y.map(v => v + min);
+    const held = family === 'fpareto' ? {min} : {};
+    comparisonStop(() => api[family].fit(x, held), 'limit', e => {
+      assert.equal(e.model, model);
+      assert.match(e.message, /mldblpareto/);
+      const {scale, left_rate, right_rate} = e.estimates;
+      if (min) assert.equal(e.estimates.min, min);
+      const terms = api.dblpareto.d(x.map(v => v-min), [scale, left_rate, right_rate], {log:true});
+      assert.ok(Math.abs(terms.reduce((a, b) => a+b, 0) - e.limit_loglik) < 1e-9);
+      return true;
+    });
+  }
+});
+
+test('Double Pareto exposes the full held-rate kink interval', () => {
+  const fit = api.dblpareto.fit([1, 2, 2, 4], {left_rate:3, right_rate:1});
+  assert.equal(fit.unique, false);
+  assert.deepEqual(fit.maximizer_set.coordinates, ['scale', 'left_rate', 'right_rate']);
+  const [piece] = fit.maximizer_set.pieces;
+  assert.equal(piece.kind, 'box');
+  assert.equal(piece.axes[0].lower, 1);
+  assert.equal(piece.axes[0].upper, 2);
+  assert.deepEqual(piece.axes[0].closed, [true, true]);
+});

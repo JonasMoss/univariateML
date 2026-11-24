@@ -86,7 +86,8 @@ limits:
   status: PowerBoundary
   name: shifted power; subtract min before fitting
   numerical: true
-- name: shifted double Pareto; subtract min before fitting
+- model: dblpareto
+  name: shifted double Pareto; subtract min before fitting
   firmness: proved
   when: The power $\gamma$ tends to infinity with both $\alpha\gamma$ and $\tau\gamma$ positive and fixed, while $\sigma$ stays fixed.
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
@@ -277,7 +278,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-28-gb2.md)
 With `min = 0`, estimates agree with `mlgb2(x)` for the same holds.
 A stalled held-power fit on concentrated excesses can retain the
 conditional two-shape solution at a trial scale as a finite likelihood
-witness while the joint search remains unresolved. Faces are compared within $10^{-8}n$ log-likelihood units; this numerical tolerance can reject a tied or slightly better finite fit. Errors name the shifted limiting fit where available. No double-Pareto fitter is provided. All-held fits evaluate the supplied density.
+witness while the joint search remains unresolved. Faces are compared within $10^{-8}n$ log-likelihood units; this numerical tolerance can reject a tied or slightly better finite fit. Errors name the shifted limiting fit where available. All-held fits evaluate the supplied density.
 
 ## Decision history
 
