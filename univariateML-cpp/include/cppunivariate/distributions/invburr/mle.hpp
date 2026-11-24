@@ -6,6 +6,7 @@
 #include "../../core/transformed_location.hpp"
 #include "../burr/mle.hpp"
 #include "../invweibull/mle.hpp"
+#include "../invweibull/dpqr.hpp"
 #include "../power/mle.hpp"
 namespace cppunivariate {
 namespace burr_fixed_detail {
@@ -238,6 +239,14 @@ inline InvBurrResult invburr_mle(span x, double tol=1e-10, int maxit=1000) {
   if(accuracy_failed)record_accuracy(out,tol,{out.shape1,out.shape2,out.scale},{out.shape1,out.shape2,out.scale},accuracy_noise);
   if(status==InvBurrStatus::PowerBoundary)out.stop_detail.limit_coef={maximum,r.stop_detail.limit_coef[0]};
   if(status==InvBurrStatus::InvWeibullBoundary)out.stop_detail.limit_coef={r.stop_detail.limit_coef[0],1/r.stop_detail.limit_coef[1]};
+  for(auto& c:out.stop_detail.candidates) {
+    if(c.model!=StopModel::InvWeibull || !valid_stop_coefficients(c.model,c.coef))continue;
+    transformed_detail::Sum ll;
+    for(double v:x)ll.push(distributions::dinvweibull(v,c.coef[0],c.coef[1],true));
+    const double value=ll.get();
+    if(std::isfinite(value) && (value<c.loglik_lower || value>c.loglik_upper))
+      c.loglik_lower=c.loglik_upper=value;
+  }
   return out;
 }
 

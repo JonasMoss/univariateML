@@ -836,3 +836,25 @@ TEST_CASE("cmb: structural constant-sample maximizers and singleton controls") {
     CHECK(fit.stop_detail.candidates.empty());
   }
 }
+
+#include "cppunivariate/distributions/cmp/dpqr.hpp"
+
+TEST_CASE("cmb: public Cmp candidate at archive 000889") {
+  const std::vector<int> x{
+      1000000, 1000001, 1000003,
+      1000008, 1000011};
+  const cppunivariate::ispan sample{x.data(),x.size()};
+  const auto fit=cppunivariate::cmb_size_fixed_nu_mle(sample,0x1.af005fe800000p+0).fit;
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto c=std::find_if(candidates.begin(),candidates.end(),[](const auto& candidate) {
+    return candidate.model==cppunivariate::StopModel::Cmp;
+  });
+  REQUIRE(c!=candidates.end());
+  REQUIRE(c->coef.size()==2);
+  double ll=0;
+  for(auto v:x)ll+=cppunivariate::distributions::dcmp(v,c->coef[0],c->coef[1],true);
+  REQUIRE(std::isfinite(ll));
+  const double margin=1e-12*(x.size()+std::abs(ll));
+  CHECK(ll >= c->loglik_lower - margin);
+  CHECK(ll <= c->loglik_upper + margin);
+}

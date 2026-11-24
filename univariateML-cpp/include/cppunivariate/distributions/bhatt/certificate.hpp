@@ -660,6 +660,14 @@ inline BhattResult bhatt_mle(span x,double tol=1e-10,int maxit=500,double sigma=
     d.limit_coef[0]=std::min(d.limit_coef[0],*std::min_element(x.begin(),x.end()));
     d.limit_coef[1]=std::max(d.limit_coef[1],*std::max_element(x.begin(),x.end()));
     d.limit_loglik=0;for(double v:x)d.limit_loglik+=distributions::dunif(v,d.limit_coef[0],d.limit_coef[1],true);
+    for(auto& candidate:d.candidates) {
+      if(candidate.model!=StopModel::Unif)continue;
+      candidate.coef=d.limit_coef;
+      // Held-width paths can have an endpoint penalty. The candidate row
+      // describes the closed uniform law, so it uses its point likelihood.
+      if(d.limit_loglik<candidate.loglik_lower || d.limit_loglik>candidate.loglik_upper)
+        candidate.loglik_lower=candidate.loglik_upper=d.limit_loglik;
+    }
   }
   return r;
 }

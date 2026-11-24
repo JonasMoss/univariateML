@@ -601,6 +601,14 @@ inline LstResult lst_mle(span x,double tol=1e-10,int maxit=200) {
       }
       term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
     }
+    if(evaluated && detail.limit_model==StopModel::Norm && std::isfinite(sum)) {
+      for(auto& candidate:detail.candidates) {
+        if(candidate.model!=detail.limit_model || candidate.coef!=coef)continue;
+        const double roundoff=16*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(sum));
+        if(sum<candidate.loglik_lower-roundoff || sum>candidate.loglik_upper+roundoff)
+          candidate.loglik_lower=candidate.loglik_upper=sum;
+      }
+    }
     if(evaluated) {detail.limit_loglik=sum;if(result.status==LstStatus::NormalBoundary)result.logLik=sum;
       if(!std::isfinite(sum))result.status=LstStatus::NumericalFailure;}
   }
@@ -727,6 +735,14 @@ inline LstResult lst_mle(span x,double tol,int maxit,double mu,double sigma,doub
         default:evaluated=false;break;
       }
       term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
+    }
+    if(evaluated && detail.limit_model==StopModel::Norm && std::isfinite(sum)) {
+      for(auto& candidate:detail.candidates) {
+        if(candidate.model!=detail.limit_model || candidate.coef!=coef)continue;
+        const double roundoff=16*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(sum));
+        if(sum<candidate.loglik_lower-roundoff || sum>candidate.loglik_upper+roundoff)
+          candidate.loglik_lower=candidate.loglik_upper=sum;
+      }
     }
     if(evaluated) {detail.limit_loglik=sum;if(result.status==LstStatus::NormalBoundary)result.logLik=sum;
       if(!std::isfinite(sum))result.status=LstStatus::NumericalFailure;}

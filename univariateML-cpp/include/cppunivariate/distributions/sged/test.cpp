@@ -1477,3 +1477,22 @@ TEST_CASE("sged: structural non-uniqueness and the fully held singleton") {
   CHECK(cppunivariate::outcome(singleton).kind==cppunivariate::OutcomeKind::Estimate);
   CHECK(cppunivariate::outcome(singleton).unique);
 }
+
+TEST_CASE("sged: public Unif candidate at resample n3-s0") {
+  const std::vector<double> x{
+      0x1.7f34061d9b1edp-1, 0x1.a343c861d88dbp+0, -0x1.fe6ba3657b903p-1};
+  const cppunivariate::span sample{x.data(),x.size()};
+  const auto fit=cppunivariate::sged_mle(sample,1e-10,200,NAN,NAN,NAN,NAN);
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto c=std::find_if(candidates.begin(),candidates.end(),[](const auto& candidate) {
+    return candidate.model==cppunivariate::StopModel::Unif;
+  });
+  REQUIRE(c!=candidates.end());
+  REQUIRE(c->coef.size()==2);
+  double ll=0;
+  for(auto v:x)ll+=cppunivariate::distributions::dunif(v,c->coef[0],c->coef[1],true);
+  REQUIRE(std::isfinite(ll));
+  const double margin=1e-12*(x.size()+std::abs(ll));
+  CHECK(ll >= c->loglik_lower - margin);
+  CHECK(ll <= c->loglik_upper + margin);
+}

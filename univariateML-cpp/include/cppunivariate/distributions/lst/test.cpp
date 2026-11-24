@@ -902,3 +902,23 @@ TEST_CASE("lst near-constant and tied samples end in scale collapse") {
     CHECK(r.stop_detail.loglik_lower==INFINITY);
   }
 }
+
+TEST_CASE("lst: public Norm candidate at class offset") {
+  const std::vector<double> x{
+      0x1.66c0460f7b00ep+50, 0x1.66c0460f7b011p+50, 0x1.66c0460f7b014p+50,
+      0x1.66c0460f7b015p+50, 0x1.66c0460f7b017p+50, 0x1.66c0460f7b01bp+50};
+  const cppunivariate::span sample{x.data(),x.size()};
+  const auto fit=cppunivariate::lst_mle(sample,1e-10,200,NAN,NAN,NAN);
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto c=std::find_if(candidates.begin(),candidates.end(),[](const auto& candidate) {
+    return candidate.model==cppunivariate::StopModel::Norm;
+  });
+  REQUIRE(c!=candidates.end());
+  REQUIRE(c->coef.size()==2);
+  double ll=0;
+  for(auto v:x)ll+=cppunivariate::distributions::dnorm(v,c->coef[0],c->coef[1],true);
+  REQUIRE(std::isfinite(ll));
+  const double margin=1e-12*(x.size()+std::abs(ll));
+  CHECK(ll >= c->loglik_lower - margin);
+  CHECK(ll <= c->loglik_upper + margin);
+}

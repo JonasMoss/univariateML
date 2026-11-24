@@ -263,3 +263,22 @@ TEST_CASE("ht: unrepresentable subnormal scale reports an accuracy failure") {
   const auto r=cppunivariate::ht_mle(mltest::as_span(x),0,1,NAN);
   CHECK(r.status==cppunivariate::HtStatus::AccuracyFailure);
 }
+
+TEST_CASE("ht: public Hnorm candidate at class subnormal") {
+  const std::vector<double> x{
+      0x0.0000000000001p-1022, 0x0.0000000000002p-1022, 0x0.0000000000003p-1022};
+  const cppunivariate::span sample{x.data(),x.size()};
+  const auto fit=cppunivariate::ht_mle(sample,0,NAN,NAN);
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto c=std::find_if(candidates.begin(),candidates.end(),[](const auto& candidate) {
+    return candidate.model==cppunivariate::StopModel::Hnorm;
+  });
+  REQUIRE(c!=candidates.end());
+  REQUIRE(c->coef.size()==2);
+  double ll=0;
+  for(auto v:x)ll+=cppunivariate::distributions::dhnorm(v,c->coef[0],c->coef[1],true);
+  REQUIRE(std::isfinite(ll));
+  const double margin=1e-12*(x.size()+std::abs(ll));
+  CHECK(ll >= c->loglik_lower - margin);
+  CHECK(ll <= c->loglik_upper + margin);
+}

@@ -188,6 +188,11 @@ the transformed-gamma floating-point comparison margin. Fits very close to that 
 
 Held-scale fits use the reciprocal transformed gamma profile. With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the reciprocal certificate compares the interior with the fixed-endpoint Pareto limit.
 
+For narrowly spaced data with both shapes free, the comparison uses
+reflected relative logs $-\log(x_i/x_0)$. Subtracting independently
+rounded absolute logs can distort the Pareto shape
+$n/\sum_i\log(x_i/\min x)$ even when the absolute logs are distinct.
+
 ## R notes
 
 A detected limiting model stops with advice to fit that model. When the fitted

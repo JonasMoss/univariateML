@@ -799,3 +799,25 @@ TEST_CASE("bhatt: held-scale and held-width fits with a distant outlier") {
   CHECK(location.a==width);
   CHECK(location.sigma==sigma);
 }
+
+TEST_CASE("bhatt: public Unif candidate at archive 000334") {
+  const std::vector<double> x{
+      0x1.d9c5c5c0703b4p-3, -0x1.3d0133eaa4d58p+1, 0x1.0561e77d1ffb5p+1,
+      0x1.6ce1f4b3f0f4ep+1, 0x1.e59b31f8fafd1p+0, -0x1.623946545fe78p-5,
+      -0x1.08320ec084a84p-1, -0x1.336519382a214p+0, 0x1.ad520aa1f9e79p+0,
+      -0x1.d6cdc33eca043p-1, 0x1.1103b31494e24p+1, -0x1.edb5d66519bb8p-2};
+  const cppunivariate::span sample{x.data(),x.size()};
+  const auto fit=cppunivariate::bhatt_mle(sample,1e-10,500,NAN,NAN,-0x1.f2152173e57a0p-9);
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto c=std::find_if(candidates.begin(),candidates.end(),[](const auto& candidate) {
+    return candidate.model==cppunivariate::StopModel::Unif;
+  });
+  REQUIRE(c!=candidates.end());
+  REQUIRE(c->coef.size()==2);
+  double ll=0;
+  for(auto v:x)ll+=cppunivariate::distributions::dunif(v,c->coef[0],c->coef[1],true);
+  REQUIRE(std::isfinite(ll));
+  const double margin=1e-12*(x.size()+std::abs(ll));
+  CHECK(ll >= c->loglik_lower - margin);
+  CHECK(ll <= c->loglik_upper + margin);
+}

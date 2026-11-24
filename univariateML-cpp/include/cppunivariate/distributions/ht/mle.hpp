@@ -302,6 +302,14 @@ inline HtResult ht_mle(span x,double mu,double nu,double sigma) {
       }
       term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
     }
+    if(evaluated && detail.limit_model==StopModel::Hnorm && std::isfinite(sum)) {
+      for(auto& candidate:detail.candidates) {
+        if(candidate.model!=detail.limit_model || candidate.coef!=coef)continue;
+        const double roundoff=16*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(sum));
+        if(sum<candidate.loglik_lower-roundoff || sum>candidate.loglik_upper+roundoff)
+          candidate.loglik_lower=candidate.loglik_upper=sum;
+      }
+    }
     if(evaluated) {detail.limit_loglik=sum;
       if(!std::isfinite(sum))result.status=HtStatus::SearchFailure;}
   }

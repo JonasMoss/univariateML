@@ -675,3 +675,22 @@ TEST_CASE("burr: held scale returns the signed profile root at default tolerance
   CHECK(std::abs(fit.shape1/0.7828332927297214502562086-1)<1e-10);
   CHECK(std::abs(fit.shape2/1.648477699037690462091168-1)<1e-10);
 }
+
+TEST_CASE("burr: public Weibull candidate at class near-constant") {
+  const std::vector<double> x{
+      0x1.f6db6d114fd0dp-1, 0x1.f6db6d114fd0dp-1, 0x1.f6db6d114fd0ep-1};
+  const cppunivariate::span sample{x.data(),x.size()};
+  const auto fit=cppunivariate::burr_mle(sample);
+  const auto& candidates=fit.stop_detail.candidates;
+  const auto c=std::find_if(candidates.begin(),candidates.end(),[](const auto& candidate) {
+    return candidate.model==cppunivariate::StopModel::Weibull;
+  });
+  REQUIRE(c!=candidates.end());
+  REQUIRE(c->coef.size()==2);
+  double ll=0;
+  for(auto v:x)ll+=cppunivariate::distributions::dweibull(v,c->coef[0],c->coef[1],true);
+  REQUIRE(std::isfinite(ll));
+  const double margin=1e-12*(x.size()+std::abs(ll));
+  CHECK(ll >= c->loglik_lower - margin);
+  CHECK(ll <= c->loglik_upper + margin);
+}

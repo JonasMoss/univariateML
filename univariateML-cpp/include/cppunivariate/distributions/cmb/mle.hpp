@@ -1316,10 +1316,10 @@ inline CmbSizeResult cmb_size_fixed_nu_mle(ispan x,double nu,
   };
   if(x.size()==0 || !std::isfinite(nu) || !(tol>0) || !std::isfinite(tol) || maxit<1)
     return fail(CmbStatus::InvalidInput);
-  int mn=10000001,mx=0; double sx=0,sh=0;
+  int mn=10000001,mx=0; double sx=0;
   for(int v:x) {
     if(v<0 || v>10000000)return fail(CmbStatus::InvalidInput);
-    mn=std::min(mn,v);mx=std::max(mx,v);sx+=v;sh+=std::lgamma(v+1.0);
+    mn=std::min(mn,v);mx=std::max(mx,v);sx+=v;
   }
   if(mx==0)return cmb_detail::zero_size_tie(NAN,nu);
   if(mn==mx) return {double(mx),{mx==0?0.:1.,nu,0.,0,CmbStatus::Ok}};
@@ -1368,9 +1368,23 @@ inline CmbSizeResult cmb_size_fixed_nu_mle(ispan x,double nu,
   if(face_mom.status==CmpStatus::BudgetLimit)evidence=discrete_budget(evidence);
   if(face_mom.status!=CmpStatus::Ok || !std::isfinite(face_mom.log_z))
     return fail(CmbStatus::IterationFailure);
-  const double face=sx*eta-n*face_mom.log_z-nu*sh;
-  evidence.limit_model=StopModel::Cmp;evidence.limit_coef={std::exp(eta),nu};evidence.limit_loglik=face;
-  evidence.candidates.push_back({evidence.limit_coef,face,face,StopModel::Cmp});
+  // Subtract the modal log weight before summing. The uncentred
+  // sufficient-statistic expression cancels at large count locations.
+  const double lambda=std::exp(eta);
+  const double public_eta=std::log(lambda);
+  CPPUNIV_EXTENDED_REAL centred=0;
+  for(int v:x)
+    centred+=(v-face_mom.center)*(eta-nu*face_mom.slope)
+      -nu*cmp_detail::residual(v,face_mom.center,face_mom.slope)-face_mom.log_scaled_z;
+  const double face=static_cast<double>(centred);
+  // A one-ulp eta round trip changes the point likelihood by the
+  // mean-matching residual at first order and the variance at second order.
+  const double eta_step=public_eta-eta;
+  const double point=face+eta_step*(sx-n*face_mom.mean)
+    -0.5*eta_step*eta_step*n*face_mom.variance;
+  evidence.limit_model=StopModel::Cmp;evidence.limit_coef={lambda,nu};evidence.limit_loglik=point;
+  const double pad=128*std::numeric_limits<double>::epsilon()*(n+std::abs(point));
+  evidence.candidates.push_back({evidence.limit_coef,point-pad,point+pad,StopModel::Cmp});
   if(!std::isfinite(face))return fail(CmbStatus::IterationFailure);
   const double margin=1e-9*(1+std::abs(face));
   bool tie=std::abs(best.fit.logLik-face)<=margin;

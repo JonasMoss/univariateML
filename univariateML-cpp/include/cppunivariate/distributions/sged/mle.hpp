@@ -664,6 +664,14 @@ inline SgedResult sged_mle(span x,double tol=1e-10,int maxit=200,double mean= st
       }
       term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
     }
+    if(evaluated && detail.limit_model==StopModel::Unif && std::isfinite(sum)) {
+      for(auto& candidate:detail.candidates) {
+        if(candidate.model!=detail.limit_model)continue;
+        candidate.coef=coef;
+        if(sum<candidate.loglik_lower || sum>candidate.loglik_upper)
+          candidate.loglik_lower=candidate.loglik_upper=sum;
+      }
+    }
     if(evaluated) {detail.limit_loglik=sum;
       if(!std::isfinite(sum))result.status=SgedStatus::BfgsFailure;}
   }

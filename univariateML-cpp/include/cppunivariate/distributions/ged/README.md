@@ -443,6 +443,12 @@ not imply unbounded likelihood. Density evaluation retains the logarithm of
 nonzero residuals even when their standardized quotient underflows; this does not relax the fitter's
 normalization certificate.
 
+The free-location uniform face uses the original extrema for its width.
+On a sample spanning one floating-point spacing, a rounded midpoint can
+coincide with one endpoint. Twice the farthest residual then overstates
+the width by a factor of two and understates the face likelihood by
+$n\log 2$.
+
 ## d/p/q/r
 
 Gamma inversion retains $\log(G)/\nu$ through the GED power transform.

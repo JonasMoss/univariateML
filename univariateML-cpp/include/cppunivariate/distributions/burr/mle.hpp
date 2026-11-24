@@ -299,7 +299,17 @@ inline BurrMLE burr_mle(span x, double tol=1e-10, int maxit=1000) {
   if(x.size()==1 && x[0]>0 && std::isfinite(x[0]) &&
       burr_valid_controls(tol,maxit))
     return {NAN,NAN,NAN,INFINITY,0,BurrStatus::Unbounded};
-  return burr_mle_certified(x,tol,maxit);
+  auto out=burr_mle_certified(x,tol,maxit);
+  for(auto& c:out.stop_detail.candidates) {
+    if(c.model!=StopModel::Weibull || !valid_stop_coefficients(c.model,c.coef))continue;
+    double ll=0;
+    for(double v:x)ll+=distributions::dweibull(v,c.coef[0],c.coef[1],true);
+    // The certificate bounds the ideal face optimum. The row describes the
+    // public point after rounding its scale.
+    if(std::isfinite(ll) && (ll<c.loglik_lower || ll>c.loglik_upper))
+      c.loglik_lower=c.loglik_upper=ll;
+  }
+  return out;
 }
 
 // Held-scale likelihood has a strictly concave scalar profile.
