@@ -1,0 +1,127 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  us/call  us/call  name    
+ 28.57      0.04     0.04 40479840     0.00     0.00  cppunivariate::special::addition_residual(double, double, double)
+ 28.57      0.08     0.04                             _init
+ 14.29      0.10     0.02 81171168     0.00     0.00  std::abs(double)
+ 14.29      0.12     0.02  8095968     0.00     0.01  cppunivariate::special::three_word::add_scalar(cppunivariate::special::three_word::Number, double)
+ 14.29      0.14     0.02   519552     0.04     0.16  cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number)
+  0.00      0.14     0.00  6234624     0.00     0.00  std::array<double, 3ul>::operator[](unsigned long) const
+  0.00      0.14     0.00   527552     0.00     0.03  cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number)
+  0.00      0.14     0.00   299680     0.00     0.00  std::isfinite(double)
+  0.00      0.14     0.00   285888     0.00     0.00  cppunivariate::special::three_word::negative(cppunivariate::special::three_word::Number)
+  0.00      0.14     0.00    92896     0.00     0.59  cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number)
+  0.00      0.14     0.00    30400     0.00     0.00  std::array<cppunivariate::special::three_word::Number, 20ul>::operator[](unsigned long) const
+  0.00      0.14     0.00     6400     0.00    10.52  cppunivariate::special::three_word::twice_atanh(cppunivariate::special::three_word::Number)
+  0.00      0.14     0.00     6400     0.00     0.00  cppunivariate::special::three_word::log_two()
+  0.00      0.14     0.00     6400     0.00    11.35  cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number)
+  0.00      0.14     0.00     5664     0.00     0.00  std::isnan(double)
+  0.00      0.14     0.00     4032     0.00     0.00  cppunivariate::special::lgamma1p(double)
+  0.00      0.14     0.00     3200     0.00     0.00  boost::math::rounding_error::~rounding_error()
+  0.00      0.14     0.00     2432     0.00     0.00  cppunivariate::ged_detail::gamma_power_log(double, double, bool)
+  0.00      0.14     0.00     2400     0.00     0.00  cppunivariate::special::tails_from_log(double, bool)
+
+                0.00    0.10     800/800         cppunivariate::ged_detail::physical_radius(double, double, double, double) [3]
+[3]    100.0    0.00    0.10     800         cppunivariate::ged_detail::physical_radius(double, double, double, double) [3]
+                0.00    0.02    1600/6400        cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number) [9]
+                0.00    0.00    2400/527552      cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [14]
+                0.00    0.00    1600/285888      cppunivariate::special::three_word::negative(cppunivariate::special::three_word::Number) [30]
+                0.00    0.00     800/800         cppunivariate::special::three_word::margin(double) [48]
+                0.00    0.08     800/800         cppunivariate::ged_detail::physical_radius(double, double, double, double) [3]
+                0.00    0.08     800/800         cppunivariate::ged_detail::logscale_uncached(double) [5]
+[5]     81.8    0.00    0.08     800         cppunivariate::ged_detail::logscale_uncached(double) [5]
+                0.00    0.08    1600/1600        cppunivariate::special::three_word::log_gamma(cppunivariate::special::three_word::Number) [7]
+                0.00    0.00     800/92896       cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [12]
+                0.00    0.00    1600/519552      cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [6]
+                0.00    0.00     800/527552      cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [14]
+                0.00    0.00     800/285888      cppunivariate::special::three_word::negative(cppunivariate::special::three_word::Number) [30]
+                0.00    0.00    1600/519552      cppunivariate::ged_detail::logscale_uncached(double) [5]
+                0.00    0.00    6400/519552      cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number) [9]
+                0.00    0.00   33600/519552      cppunivariate::special::three_word::stirling(cppunivariate::special::three_word::Number) [15]
+                0.00    0.01   96896/519552      cppunivariate::special::three_word::twice_atanh(cppunivariate::special::three_word::Number) [10]
+                0.00    0.01  102368/519552      cppunivariate::special::three_word::log_gamma(cppunivariate::special::three_word::Number) [7]
+                0.01    0.03  278688/519552      cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [12]
+[6]     81.6    0.02    0.06  519552         cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [6]
+                0.02    0.05 6234624/8095968     cppunivariate::special::three_word::add_scalar(cppunivariate::special::three_word::Number, double) [8]
+                0.00    0.08    1600/1600        cppunivariate::ged_detail::logscale_uncached(double) [5]
+[7]     81.0    0.00    0.08    1600         cppunivariate::special::three_word::log_gamma(cppunivariate::special::three_word::Number) [7]
+                0.00    0.05    4800/6400        cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number) [9]
+                0.00    0.01  102368/519552      cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [6]
+                0.00    0.01    1600/1600        cppunivariate::special::three_word::stirling(cppunivariate::special::three_word::Number) [15]
+                0.00    0.00  111968/527552      cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [14]
+                0.00    0.00    4800/285888      cppunivariate::special::three_word::negative(cppunivariate::special::three_word::Number) [30]
+                0.00    0.00    1600/1600        cppunivariate::special::three_word::log_sqrt_two_pi() [39]
+                0.00    0.00  278688/8095968     cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [12]
+                0.00    0.01 1582656/8095968     cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [14]
+                0.02    0.05 6234624/8095968     cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [6]
+[8]     79.9    0.02    0.06 8095968         cppunivariate::special::three_word::add_scalar(cppunivariate::special::three_word::Number, double) [8]
+                0.00    0.02    1600/6400        cppunivariate::ged_detail::physical_radius(double, double, double, double) [3]
+                0.00    0.05    4800/6400        cppunivariate::special::three_word::log_gamma(cppunivariate::special::three_word::Number) [7]
+[9]     72.7    0.00    0.07    6400         cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number) [9]
+                0.00    0.07    6400/6400        cppunivariate::special::three_word::twice_atanh(cppunivariate::special::three_word::Number) [10]
+                0.00    0.00    6400/92896       cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [12]
+                0.00    0.00    6400/519552      cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [6]
+                0.00    0.00   19200/527552      cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [14]
+                0.00    0.00    6400/6400        cppunivariate::special::three_word::log_two() [32]
+                0.00    0.07    6400/6400        cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number) [9]
+[10]    67.3    0.00    0.07    6400         cppunivariate::special::three_word::twice_atanh(cppunivariate::special::three_word::Number) [10]
+                0.00    0.05   84096/92896       cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [12]
+                0.00    0.01   96896/519552      cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [6]
+                0.00    0.00   84096/527552      cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [14]
+                0.04    0.02 40479840/40479840     cppunivariate::special::three_word::add_scalar(cppunivariate::special::three_word::Number, double) [8]
+                0.00    0.00     800/92896       cppunivariate::ged_detail::logscale_uncached(double) [5]
+                0.00    0.00    1600/92896       cppunivariate::special::three_word::stirling(cppunivariate::special::three_word::Number) [15]
+                0.00    0.00    6400/92896       cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number) [9]
+                0.00    0.05   84096/92896       cppunivariate::special::three_word::twice_atanh(cppunivariate::special::three_word::Number) [10]
+[12]    54.8    0.00    0.05   92896         cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [12]
+                0.01    0.03  278688/519552      cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [6]
+                0.00    0.01  278688/527552      cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [14]
+                0.00    0.00  278688/8095968     cppunivariate::special::three_word::add_scalar(cppunivariate::special::three_word::Number, double) [8]
+                0.00    0.00  278688/285888      cppunivariate::special::three_word::negative(cppunivariate::special::three_word::Number) [30]
+                0.00    0.00    4000/81171168     cppunivariate::ged_detail::physical_radius(double, double, double, double) [3]
+                0.00    0.00  168192/81171168     cppunivariate::special::three_word::twice_atanh(cppunivariate::special::three_word::Number) [10]
+                0.00    0.00     800/527552      cppunivariate::ged_detail::logscale_uncached(double) [5]
+                0.00    0.00    2400/527552      cppunivariate::ged_detail::physical_radius(double, double, double, double) [3]
+                0.00    0.00   19200/527552      cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number) [9]
+                0.00    0.00   30400/527552      cppunivariate::special::three_word::stirling(cppunivariate::special::three_word::Number) [15]
+                0.00    0.00   84096/527552      cppunivariate::special::three_word::twice_atanh(cppunivariate::special::three_word::Number) [10]
+                0.00    0.00  111968/527552      cppunivariate::special::three_word::log_gamma(cppunivariate::special::three_word::Number) [7]
+                0.00    0.01  278688/527552      cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [12]
+[14]    15.6    0.00    0.02  527552         cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [14]
+                0.00    0.01 1582656/8095968     cppunivariate::special::three_word::add_scalar(cppunivariate::special::three_word::Number, double) [8]
+                0.00    0.01    1600/1600        cppunivariate::special::three_word::log_gamma(cppunivariate::special::three_word::Number) [7]
+[15]     7.1    0.00    0.01    1600         cppunivariate::special::three_word::stirling(cppunivariate::special::three_word::Number) [15]
+                0.00    0.00   33600/519552      cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [6]
+                0.00    0.00    1600/92896       cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [12]
+                0.00    0.00   30400/527552      cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [14]
+                0.00    0.00   30400/30400       std::array<cppunivariate::special::three_word::Number, 20ul>::operator[](unsigned long) const [31]
+                0.00    0.00    1600/1600        std::array<cppunivariate::special::three_word::Number, 20ul>::back() const [40]
+                0.00    0.00 6234624/6234624     cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [6]
+                0.00    0.00     800/299680      cppunivariate::ged_detail::physical_radius(double, double, double, double) [3]
+                0.00    0.00    1600/299680      cppunivariate::special::three_word::log_gamma(cppunivariate::special::three_word::Number) [7]
+                0.00    0.00    6400/299680      cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number) [9]
+                0.00    0.00  278688/299680      cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [12]
+                0.00    0.00     800/285888      cppunivariate::ged_detail::logscale_uncached(double) [5]
+                0.00    0.00    1600/285888      cppunivariate::ged_detail::physical_radius(double, double, double, double) [3]
+                0.00    0.00    4800/285888      cppunivariate::special::three_word::log_gamma(cppunivariate::special::three_word::Number) [7]
+                0.00    0.00  278688/285888      cppunivariate::special::three_word::divide(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [12]
+[30]     0.0    0.00    0.00  285888         cppunivariate::special::three_word::negative(cppunivariate::special::three_word::Number) [30]
+                0.00    0.00   30400/30400       cppunivariate::special::three_word::stirling(cppunivariate::special::three_word::Number) [15]
+[31]     0.0    0.00    0.00   30400         std::array<cppunivariate::special::three_word::Number, 20ul>::operator[](unsigned long) const [31]
+                0.00    0.00    6400/6400        cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number) [9]
+[32]     0.0    0.00    0.00    6400         cppunivariate::special::three_word::log_two() [32]
+                0.00    0.00    1600/1600        cppunivariate::special::three_word::log_gamma(cppunivariate::special::three_word::Number) [7]
+[39]     0.0    0.00    0.00    1600         cppunivariate::special::three_word::log_sqrt_two_pi() [39]
+                0.00    0.00    1600/1600        cppunivariate::special::three_word::stirling(cppunivariate::special::three_word::Number) [15]
+[40]     0.0    0.00    0.00    1600         std::array<cppunivariate::special::three_word::Number, 20ul>::back() const [40]
+                0.00    0.00     800/800         cppunivariate::ged_detail::physical_radius(double, double, double, double) [3]
+[48]     0.0    0.00    0.00     800         cppunivariate::special::three_word::margin(double) [48]
+  [20] cppunivariate::ged_detail::gamma_log_margin(double) [7] cppunivariate::special::three_word::log_gamma(cppunivariate::special::three_word::Number) [56] std::vector<main::Input, std::allocator<main::Input> >::end()
+   [4] cppunivariate::ged_detail::logscale_precise(double) [9] cppunivariate::special::three_word::logarithm(cppunivariate::special::three_word::Number) [57] std::vector<main::Input, std::allocator<main::Input> >::begin()
+   [5] cppunivariate::ged_detail::logscale_uncached(double) [18] cppunivariate::special::skew_probability::interval(double, double, double, bool) [63] std::vector<main::Input, std::allocator<main::Input> >::vector()
+  [14] cppunivariate::special::three_word::add(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [28] std::array<double, 3ul>::operator[](unsigned long) const [33] std::isnan(double)
+  [48] cppunivariate::special::three_word::margin(double) [60] std::_Vector_base<main::Input, std::allocator<main::Input> >::_Vector_impl::_Vector_impl() (205) _init
+  [32] cppunivariate::special::three_word::log_two() [61] std::_Vector_base<main::Input, std::allocator<main::Input> >::_Vector_impl_data::_Vector_impl_data()
+   [6] cppunivariate::special::three_word::multiply(cppunivariate::special::three_word::Number, cppunivariate::special::three_word::Number) [62] std::_Vector_base<main::Input, std::allocator<main::Input> >::_Vector_base()

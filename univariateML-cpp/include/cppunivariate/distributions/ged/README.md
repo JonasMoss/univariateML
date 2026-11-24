@@ -475,6 +475,13 @@ tail at both probability endpoints. The reserved evaluator allowance is
 $2\cdot10^{-12}+16\epsilon|\log Q|$. For $\nu\ge10^{30}$ the log-scale
 replacement $\log(3)/2$ carries the explicit error bound $2/\nu$.
 
+For smaller shapes the precise scale uses the log-Gamma recurrence in
+product form. Summing the logarithms of all recurrence factors would
+repeat the three-word series on each shape change. The first factor is
+handled in logs so the product starts with factors at least one even
+when $1/\nu$ is tiny. The recurrence and series share the practical
+three-word rounding allowance used in the radius enclosure.
+
 A normal natural-scale CDF value requires a relative enclosure within
 $10^{-10}$. Below the normal range, `pged` can round the checked log tail
 with `exp` when the natural-scale enclosure fails. This preserves positive
