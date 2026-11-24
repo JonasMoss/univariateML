@@ -1,0 +1,559 @@
+family,mask,record_kind,comparison,level,verdict,archive,records,example_margins
+bbinom,1,limit,support,exact,holds,2026-11-15-replay-faces-data,36,
+bbinom,1,limit,support,exact,holds,2026-11-15-replay-integer-data,38,
+bbinom,1,ok,support,exact,holds,2026-11-15-replay-faces-data,32,
+bbinom,1,ok,support,exact,holds,2026-11-15-replay-integer-data,32,
+bbinom,2,ok,search,numerical,holds,2026-11-15-replay-integer-data,30,
+bbinom,2,ok,support,exact,holds,2026-11-15-replay-faces-data,36,
+bbinom,2,ok,support,exact,holds,2026-11-15-replay-integer-data,36,
+bbinom,2,ok,tail,interval,holds,2026-11-15-replay-integer-data,30,
+bbinom,2,ok,tie,numerical,holds,2026-11-15-replay-integer-data,30,
+bbinom,3,ok,support,exact,holds,2026-11-15-replay-faces-data,34,
+bbinom,3,ok,support,exact,holds,2026-11-15-replay-integer-data,34,
+bbinom,4,ok,search,numerical,holds,2026-11-15-replay-integer-data,34,
+bbinom,4,ok,support,exact,holds,2026-11-15-replay-faces-data,36,
+bbinom,4,ok,support,exact,holds,2026-11-15-replay-integer-data,36,
+bbinom,4,ok,tail,exact,holds,2026-11-15-replay-integer-data,34,
+bbinom,4,ok,tie,numerical,holds,2026-11-15-replay-integer-data,34,
+bbinom,5,ok,support,exact,holds,2026-11-15-replay-faces-data,34,
+bbinom,5,ok,support,exact,holds,2026-11-15-replay-integer-data,34,
+bbinom,6,ok,search,interval,holds,2026-11-15-replay-integer-data,36,
+bbinom,6,ok,tail,exact,holds,2026-11-15-replay-integer-data,36,
+bbinom,6,ok,tie,interval,holds,2026-11-15-replay-integer-data,36,
+beta,0,ok,root,numerical,holds,2026-11-14-replay-roots-data,78,
+beta,1,ok,root,numerical,holds,2026-11-14-replay-roots-data,44,
+beta,2,ok,root,numerical,holds,2026-11-14-replay-roots-data,44,
+binom,0,limit,moment,exact,holds,2026-11-15-replay-faces-data,8,none (unpadded)
+binom,0,limit,moment,exact,holds,2026-11-15-replay-integer-data,8,none (unpadded)
+binom,0,ok,coef,exact,holds,2026-11-15-replay-integer-data,62,
+binom,0,ok,moment,exact,holds,2026-11-15-replay-faces-data,60,none (unpadded)
+binom,0,ok,moment,exact,holds,2026-11-15-replay-integer-data,62,none (unpadded)
+binom,0,ok,search,exact,holds,2026-11-15-replay-integer-data,54,
+binom,0,ok,search,interval,holds,2026-11-15-replay-integer-data,8,
+binom,0,ok,support,exact,holds,2026-11-15-replay-faces-data,4,
+binom,0,ok,support,exact,holds,2026-11-15-replay-integer-data,4,
+binom,0,ok,tail,interval,holds,2026-11-15-replay-integer-data,62,
+binom,0,ok,tie,interval,holds,2026-11-15-replay-integer-data,62,
+binom,0,ok,unique,exact,holds,2026-11-15-replay-faces-data,2,
+binom,0,ok,unique,exact,holds,2026-11-15-replay-integer-data,2,
+binom,2,ok,search,exact,holds,2026-11-15-replay-integer-data,34,
+binom,2,ok,tail,exact,holds,2026-11-15-replay-integer-data,34,
+binom,2,ok,tie,exact,holds,2026-11-15-replay-integer-data,34,
+burr,2,limit,face,interval,holds,2026-11-15-replay-covers-2-data,28,1e-08
+burr,2,limit,face,interval,holds,2026-11-22-replay-covers-data,28,1e-08
+burr,2,limit,limit,interval,holds,2026-11-15-replay-covers-2-data,28,
+burr,2,limit,limit,interval,holds,2026-11-22-replay-covers-data,28,
+burr,2,ok,coefficient,interval,holds,2026-11-15-replay-covers-2-data,20,1e-8
+burr,2,ok,coefficient,interval,holds,2026-11-22-replay-covers-data,20,1e-8
+burr,2,ok,concave,interval,holds,2026-11-15-replay-covers-2-data,20,4 eta = 1.03e-12 | 4 eta = 1.16e-12 | 4 eta = 1.29e-12
+burr,2,ok,concave,interval,holds,2026-11-22-replay-covers-data,20,4 eta = 1.03e-12 | 4 eta = 1.16e-12 | 4 eta = 1.29e-12
+burr,2,ok,gain,interval,holds,2026-11-15-replay-covers-2-data,20,1e-8 + core error 1.12e-12 | 1e-8 + core error 1.67e-12 | 1e-8 + core error 6.56e-11
+burr,2,ok,gain,interval,holds,2026-11-22-replay-covers-data,20,1e-8 + core error 1.12e-12 | 1e-8 + core error 1.67e-12 | 1e-8 + core error 6.56e-11
+burr,2,ok,global,interval,holds,2026-11-15-replay-covers-2-data,20,
+burr,2,ok,global,interval,holds,2026-11-22-replay-covers-data,20,
+burr,2,ok,root,interval,holds,2026-11-15-replay-covers-2-data,20,4 eta = 1.03e-12 | 4 eta = 1.16e-12 | 4 eta = 1.29e-12
+burr,2,ok,root,interval,holds,2026-11-22-replay-covers-data,20,4 eta = 1.03e-12 | 4 eta = 1.16e-12 | 4 eta = 1.29e-12
+cauchy,0,nomle,multiplicity,exact,holds,2026-11-15-replay-covers-data,16,
+cauchy,0,nomle,multiplicity,exact,holds,2026-11-15-replay-faces-data,14,
+cauchy,0,nomle,multiplicity,exact,holds,2026-11-22-replay-covers-data,16,
+cauchy,0,ok,multiplicity,exact,holds,2026-11-15-replay-covers-data,70,
+cauchy,0,ok,multiplicity,exact,holds,2026-11-15-replay-faces-data,70,
+cauchy,0,ok,multiplicity,exact,holds,2026-11-22-replay-covers-data,70,
+cauchy,0,ok,unique,exact,holds,2026-11-15-replay-covers-data,4,
+cauchy,0,ok,unique,exact,holds,2026-11-15-replay-faces-data,4,
+cauchy,0,ok,unique,exact,holds,2026-11-22-replay-covers-data,4,
+cauchy,1,ok,multiplicity,exact,holds,2026-11-15-replay-covers-data,36,
+cauchy,1,ok,multiplicity,exact,holds,2026-11-15-replay-faces-data,36,
+cauchy,1,ok,multiplicity,exact,holds,2026-11-22-replay-covers-data,36,
+cauchy,2,ok,bracket,interval,holds,2026-11-15-replay-covers-data,32,128 eps n = 1.42e-13 | 128 eps n = 1.71e-13 | 128 eps n = 3.41e-13
+cauchy,2,ok,bracket,interval,holds,2026-11-22-replay-covers-data,32,128 eps n = 1.42e-13 | 128 eps n = 1.71e-13 | 128 eps n = 3.41e-13
+cauchy,2,ok,cover,interval,holds,2026-11-15-replay-covers-data,32,
+cauchy,2,ok,cover,interval,holds,2026-11-22-replay-covers-data,32,
+cauchy,2,ok,curvature,interval,holds,2026-11-15-replay-covers-data,32,128 eps n
+cauchy,2,ok,curvature,interval,holds,2026-11-22-replay-covers-data,32,128 eps n
+cauchy,2,ok,tie,interval,holds,2026-11-15-replay-covers-data,2,
+cauchy,2,ok,tie,interval,holds,2026-11-22-replay-covers-data,2,
+cmb,0,limit,support,exact,holds,2026-11-15-replay-faces-data,16,
+cmb,0,limit,support,exact,holds,2026-11-15-replay-integer-data,16,
+cmb,0,ok,search,numerical,holds,2026-11-15-replay-integer-data,8,
+cmb,0,ok,search,numerical,open,2026-11-15-replay-integer-data,2,
+cmb,0,ok,support,exact,holds,2026-11-15-replay-faces-data,8,
+cmb,0,ok,support,exact,holds,2026-11-15-replay-integer-data,8,
+cmb,0,ok,tail,none,info,2026-11-15-replay-integer-data,10,
+cmb,0,ok,tie,exact,holds,2026-11-15-replay-integer-data,2,
+cmb,0,ok,tie,numerical,holds,2026-11-15-replay-integer-data,8,
+cmb,1,limit,support,exact,holds,2026-11-15-replay-faces-data,32,
+cmb,1,limit,support,exact,holds,2026-11-15-replay-integer-data,34,
+cmb,1,ok,support,exact,holds,2026-11-15-replay-faces-data,28,
+cmb,1,ok,support,exact,holds,2026-11-15-replay-integer-data,28,
+cmb,2,ok,search,numerical,holds,2026-11-15-replay-integer-data,8,
+cmb,2,ok,tail,none,info,2026-11-15-replay-integer-data,8,
+cmb,2,ok,tie,numerical,holds,2026-11-15-replay-integer-data,8,
+cmb,3,ok,support,exact,holds,2026-11-15-replay-faces-data,26,
+cmb,3,ok,support,exact,holds,2026-11-15-replay-integer-data,26,
+cmb,4,ok,search,numerical,holds,2026-11-15-replay-integer-data,28,
+cmb,4,ok,tail,none,info,2026-11-15-replay-integer-data,28,
+cmb,4,ok,tie,numerical,holds,2026-11-15-replay-integer-data,28,
+cmb,6,ok,search,interval,holds,2026-11-15-replay-integer-data,28,
+cmb,6,ok,tail,interval,holds,2026-11-15-replay-integer-data,28,
+cmb,6,ok,tie,interval,holds,2026-11-15-replay-integer-data,28,
+cmp,0,limit,support,exact,holds,2026-11-15-replay-faces-data,26,
+cmp,0,ok,support,exact,holds,2026-11-15-replay-faces-data,32,
+cmp,0,ok,unique,exact,fails,2026-11-15-replay-faces-data,2,
+cmp,1,limit,support,exact,holds,2026-11-15-replay-faces-data,2,
+cmp,1,ok,support,exact,holds,2026-11-15-replay-faces-data,24,
+cmp,2,ok,support,exact,holds,2026-11-15-replay-faces-data,28,
+dgamma,0,limit,support,exact,holds,2026-11-15-replay-covers-2-data,36,
+dgamma,0,limit,support,exact,holds,2026-11-15-replay-faces-data,34,
+dgamma,0,limit,support,exact,holds,2026-11-22-replay-covers-data,36,
+dgamma,0,ok,joint-cover,numerical,holds,2026-11-22-replay-covers-data,28,
+dgamma,0,ok,support,exact,holds,2026-11-15-replay-covers-2-data,27,
+dgamma,0,ok,support,exact,holds,2026-11-15-replay-faces-data,27,
+dgamma,0,ok,support,exact,holds,2026-11-22-replay-covers-data,28,
+dgamma,1,ok,bracket,numerical,holds,2026-11-15-replay-covers-2-data,28,"1e-11 min(1, a) per observation (solver)"
+dgamma,1,ok,bracket,numerical,holds,2026-11-22-replay-covers-data,28,"1e-11 min(1, a) per observation (solver)"
+dgamma,1,ok,support,exact,holds,2026-11-15-replay-covers-2-data,28,
+dgamma,1,ok,support,exact,holds,2026-11-15-replay-faces-data,28,
+dgamma,1,ok,support,exact,holds,2026-11-22-replay-covers-data,28,
+dgamma,2,ok,bracket,numerical,holds,2026-11-15-replay-covers-2-data,26,1e-15 numerical-difference allowance
+dgamma,2,ok,bracket,numerical,holds,2026-11-22-replay-covers-data,26,1e-15 numerical-difference allowance
+dgamma,2,ok,cover,numerical,holds,2026-11-15-replay-covers-2-data,26,
+dgamma,2,ok,cover,numerical,holds,2026-11-22-replay-covers-data,26,
+dgamma,2,ok,cover,numerical,open,2026-11-15-replay-covers-2-data,1,
+dgamma,2,ok,cover,numerical,open,2026-11-22-replay-covers-data,2,
+dgamma,2,ok,support,exact,holds,2026-11-15-replay-covers-2-data,27,
+dgamma,2,ok,support,exact,holds,2026-11-15-replay-faces-data,27,
+dgamma,2,ok,support,exact,holds,2026-11-22-replay-covers-data,28,
+dlaplace,0,limit,support,exact,holds,2026-11-15-replay-faces-data,14,
+dlaplace,0,ok,support,exact,holds,2026-11-15-replay-faces-data,56,
+dlaplace,0,ok,unique,exact,holds,2026-11-15-replay-faces-data,56,
+dlaplace,1,limit,support,exact,holds,2026-11-15-replay-faces-data,8,
+dlaplace,1,ok,support,exact,holds,2026-11-15-replay-faces-data,20,
+dlaplace,2,ok,support,exact,holds,2026-11-15-replay-faces-data,28,
+dlaplace,2,ok,unique,exact,holds,2026-11-15-replay-faces-data,28,
+dnorm,0,limit,support,exact,holds,2026-11-15-replay-faces-data,30,
+dnorm,0,ok,root,numerical,holds,2026-11-14-replay-roots-data,40,
+dnorm,0,ok,root,numerical,holds,2026-11-15-replay-faces-data,40,
+dnorm,0,ok,support,exact,holds,2026-11-15-replay-faces-data,40,
+dnorm,1,ok,root,numerical,holds,2026-11-14-replay-roots-data,28,
+dnorm,1,ok,root,numerical,holds,2026-11-15-replay-faces-data,28,
+dnorm,1,ok,support,exact,holds,2026-11-15-replay-faces-data,28,
+dnorm,2,ok,root,numerical,holds,2026-11-14-replay-roots-data,28,
+dnorm,2,ok,root,numerical,holds,2026-11-15-replay-faces-data,28,
+dnorm,2,ok,support,exact,holds,2026-11-15-replay-faces-data,28,
+dweibull,0,limit,support,exact,holds,2026-11-15-replay-faces-data,26,
+dweibull,0,ok,root,numerical,holds,2026-11-14-replay-roots-data,34,
+dweibull,0,ok,root,numerical,holds,2026-11-15-replay-faces-data,34,
+dweibull,0,ok,support,exact,holds,2026-11-15-replay-faces-data,36,
+dweibull,1,limit,support,exact,holds,2026-11-15-replay-faces-data,2,
+dweibull,1,ok,root,interval,holds,2026-11-14-replay-roots-data,24,
+dweibull,1,ok,root,interval,holds,2026-11-15-replay-faces-data,24,
+dweibull,1,ok,support,exact,holds,2026-11-15-replay-faces-data,26,
+dweibull,2,ok,root,interval,holds,2026-11-14-replay-roots-data,26,
+dweibull,2,ok,root,interval,holds,2026-11-15-replay-faces-data,26,
+dweibull,2,ok,support,exact,holds,2026-11-15-replay-faces-data,28,
+fatigue,4,ok,bracket,interval,holds,2026-11-15-replay-covers-data,68,16 eps per interval operation
+fatigue,4,ok,bracket,interval,holds,2026-11-22-replay-covers-data,82,16 eps per interval operation
+fatigue,4,ok,cover,interval,holds,2026-11-15-replay-covers-data,68,
+fatigue,4,ok,cover,interval,holds,2026-11-22-replay-covers-data,82,
+fatigue,5,ok,bracket,interval,holds,2026-11-15-replay-covers-data,44,16 eps per interval operation
+fatigue,5,ok,bracket,interval,holds,2026-11-22-replay-covers-data,44,16 eps per interval operation
+fatigue,5,ok,cover,interval,fails,2026-11-15-replay-covers-data,10,
+fatigue,5,ok,cover,interval,holds,2026-11-15-replay-covers-data,34,
+fatigue,5,ok,cover,interval,holds,2026-11-22-replay-covers-data,34,
+fatigue,5,ok,cover,interval,open,2026-11-22-replay-covers-data,10,
+foldnorm,0,nomle,support,exact,holds,2026-11-15-replay-covers-data,6,
+foldnorm,0,nomle,support,exact,holds,2026-11-15-replay-faces-data,6,
+foldnorm,0,nomle,support,exact,holds,2026-11-22-replay-covers-data,6,
+foldnorm,0,ok,bracket,interval,holds,2026-11-15-replay-covers-data,80,32 eps
+foldnorm,0,ok,bracket,interval,holds,2026-11-22-replay-covers-data,80,32 eps
+foldnorm,0,ok,cover,interval,holds,2026-11-15-replay-covers-data,84,
+foldnorm,0,ok,cover,interval,holds,2026-11-22-replay-covers-data,84,
+foldnorm,0,ok,quartic,exact,holds,2026-11-15-replay-covers-data,4,32 eps
+foldnorm,0,ok,quartic,exact,holds,2026-11-15-replay-faces-data,4,32 eps
+foldnorm,0,ok,quartic,exact,holds,2026-11-22-replay-covers-data,4,32 eps
+foldnorm,1,ok,support,exact,holds,2026-11-15-replay-covers-data,48,
+foldnorm,1,ok,support,exact,holds,2026-11-15-replay-faces-data,48,
+foldnorm,1,ok,support,exact,holds,2026-11-22-replay-covers-data,48,
+foldnorm,2,ok,location,exact,holds,2026-11-15-replay-covers-data,48,none (unpadded)
+foldnorm,2,ok,location,exact,holds,2026-11-15-replay-faces-data,48,none (unpadded)
+foldnorm,2,ok,location,exact,holds,2026-11-22-replay-covers-data,48,none (unpadded)
+frechet,1,ok,root,interval,holds,2026-11-14-replay-roots-data,42,
+frechet,2,ok,restore,numerical,holds,2026-11-14-replay-roots-data,44,1.1806e-10 | 1.2828e-8 | 1.2829e-8
+frechet,2,ok,root,numerical,info,2026-11-14-replay-roots-data,44,
+frechet,3,ok,restore,numerical,holds,2026-11-14-replay-roots-data,44,1.0008e-10 | 1.3962e-10 | 2.1178e-10
+frechet,5,ok,root,interval,holds,2026-11-14-replay-roots-data,44,
+frechet,6,ok,root,numerical,fails,2026-11-14-replay-roots-data,8,
+frechet,6,ok,root,numerical,holds,2026-11-14-replay-roots-data,36,
+gamma,0,ok,root,numerical,fails,2026-11-14-replay-roots-data,6,
+gamma,0,ok,root,numerical,holds,2026-11-14-replay-roots-data,78,
+gamma,0,ok,root-tol,numerical,info,2026-11-14-replay-roots-data,58,
+gamma,2,ok,root,numerical,holds,2026-11-14-replay-roots-data,48,
+genbeta,11,ok,root,interval,info,2026-11-14-replay-roots-data,48,
+genbeta,12,ok,root,numerical,info,2026-11-14-replay-roots-data,24,
+genbeta,13,ok,root,numerical,info,2026-11-14-replay-roots-data,38,
+genbeta,14,ok,root,numerical,info,2026-11-14-replay-roots-data,48,
+gompertz,0,limit,moment,exact,fails,2026-11-15-replay-faces-data,1,none (unpadded)
+gompertz,0,limit,moment,exact,holds,2026-11-15-replay-faces-data,4,none (unpadded)
+gompertz,0,nomle,support,exact,holds,2026-11-15-replay-faces-data,6,
+gompertz,0,ok,moment,exact,holds,2026-11-15-replay-faces-data,55,none (unpadded)
+gompertz,1,limit,moment,exact,holds,2026-11-15-replay-faces-data,4,none (unpadded)
+gompertz,1,ok,moment,exact,holds,2026-11-15-replay-faces-data,38,none (unpadded)
+gpd,1,ok,bracket,interval,holds,2026-11-15-replay-covers-2-data,22,"32 eta (1 + |t|), eta = 2.71e-13 | 32 eta (1 + |t|), eta = 3.17e-13 | 32 eta (1 + |t|), eta = 3.35e-13"
+gpd,1,ok,bracket,interval,holds,2026-11-15-replay-covers-data,22,"32 eta (1 + |t|), eta = 2.71e-13 | 32 eta (1 + |t|), eta = 3.17e-13 | 32 eta (1 + |t|), eta = 3.35e-13"
+gpd,1,ok,bracket,interval,holds,2026-11-22-replay-covers-data,22,"32 eta (1 + |t|), eta = 2.71e-13 | 32 eta (1 + |t|), eta = 3.17e-13 | 32 eta (1 + |t|), eta = 3.35e-13"
+gpd,1,ok,coefficient,interval,holds,2026-11-15-replay-covers-2-data,22,1e-8
+gpd,1,ok,coefficient,interval,holds,2026-11-15-replay-covers-data,22,1e-8
+gpd,1,ok,coefficient,interval,holds,2026-11-22-replay-covers-data,22,1e-8
+gpd,1,ok,cover,interval,holds,2026-11-15-replay-covers-2-data,84,
+gpd,1,ok,cover,interval,holds,2026-11-15-replay-covers-data,84,
+gpd,1,ok,cover,interval,holds,2026-11-22-replay-covers-data,84,
+gpd,1,ok,curvature,interval,holds,2026-11-15-replay-covers-2-data,22,32 eta (1 + |h_tt|)
+gpd,1,ok,curvature,interval,holds,2026-11-15-replay-covers-data,22,32 eta (1 + |h_tt|)
+gpd,1,ok,curvature,interval,holds,2026-11-22-replay-covers-data,22,32 eta (1 + |h_tt|)
+gpd,1,ok,gain,interval,holds,2026-11-15-replay-covers-2-data,22,1e-08
+gpd,1,ok,gain,interval,holds,2026-11-15-replay-covers-data,22,1e-08
+gpd,1,ok,gain,interval,holds,2026-11-22-replay-covers-data,22,1e-08
+gpd,3,ok,bracket,interval,holds,2026-11-15-replay-covers-2-data,18,"32 eta (1 + |t|), eta = 2.71e-13 | 32 eta (1 + |t|), eta = 3.17e-13 | 32 eta (1 + |t|), eta = 3.35e-13"
+gpd,3,ok,bracket,interval,holds,2026-11-15-replay-covers-data,18,"32 eta (1 + |t|), eta = 2.71e-13 | 32 eta (1 + |t|), eta = 3.17e-13 | 32 eta (1 + |t|), eta = 3.35e-13"
+gpd,3,ok,bracket,interval,holds,2026-11-22-replay-covers-data,18,"32 eta (1 + |t|), eta = 2.71e-13 | 32 eta (1 + |t|), eta = 3.17e-13 | 32 eta (1 + |t|), eta = 3.35e-13"
+gpd,3,ok,cover,interval,holds,2026-11-15-replay-covers-2-data,18,
+gpd,3,ok,cover,interval,holds,2026-11-15-replay-covers-data,18,
+gpd,3,ok,cover,interval,holds,2026-11-22-replay-covers-data,18,
+gpd,3,ok,curvature,interval,holds,2026-11-15-replay-covers-2-data,18,32 eta (1 + |h_tt|)
+gpd,3,ok,curvature,interval,holds,2026-11-15-replay-covers-data,18,32 eta (1 + |h_tt|)
+gpd,3,ok,curvature,interval,holds,2026-11-22-replay-covers-data,18,32 eta (1 + |h_tt|)
+gpd,5,ok,root,interval,holds,2026-11-15-replay-covers-2-data,40,32 eta (score allowance)
+gpd,5,ok,root,interval,holds,2026-11-22-replay-covers-data,40,32 eta (score allowance)
+gumbel,0,ok,root,interval,holds,2026-11-14-replay-roots-data,80,
+gumbel,1,ok,root,interval,holds,2026-11-14-replay-roots-data,42,
+hcauchy,0,nomle,multiplicity,exact,holds,2026-11-15-replay-faces-data,4,
+hcauchy,0,ok,multiplicity,exact,holds,2026-11-15-replay-faces-data,46,
+hcauchy,0,ok,root,interval,holds,2026-11-14-replay-roots-data,46,
+hcauchy,0,ok,root,interval,holds,2026-11-15-replay-faces-data,46,
+hcauchy,1,nomle,multiplicity,exact,holds,2026-11-15-replay-faces-data,2,
+hcauchy,1,ok,multiplicity,exact,holds,2026-11-15-replay-faces-data,92,
+hcauchy,1,ok,root,interval,holds,2026-11-14-replay-roots-data,92,
+hcauchy,1,ok,root,interval,holds,2026-11-15-replay-faces-data,92,
+ht,0,limit,face-cover,numerical,holds,2026-11-22-replay-covers-data,30,
+ht,0,ok,bracket,numerical,holds,2026-11-15-replay-covers-2-data,16,accuracy contract tol 1e-10
+ht,0,ok,bracket,numerical,holds,2026-11-22-replay-covers-data,16,accuracy contract tol 1e-10
+ht,0,ok,cover,numerical,holds,2026-11-15-replay-covers-2-data,20,
+ht,0,ok,cover,numerical,holds,2026-11-22-replay-covers-data,20,
+ht,1,limit,face-cover,numerical,holds,2026-11-22-replay-covers-data,74,
+ht,1,ok,bracket,numerical,holds,2026-11-15-replay-covers-2-data,20,accuracy contract tol 1e-10
+ht,1,ok,bracket,numerical,holds,2026-11-22-replay-covers-data,20,accuracy contract tol 1e-10
+ht,1,ok,cover,interval,open,2026-11-15-replay-covers-2-data,2,
+ht,1,ok,cover,interval,open,2026-11-22-replay-covers-data,2,
+ht,1,ok,cover,numerical,holds,2026-11-15-replay-covers-2-data,18,
+ht,1,ok,cover,numerical,holds,2026-11-22-replay-covers-data,18,
+ht,4,limit,face-cover,numerical,holds,2026-11-22-replay-covers-data,40,
+ht,4,ok,bracket,numerical,holds,2026-11-15-replay-covers-2-data,4,accuracy contract tol 1e-10
+ht,4,ok,bracket,numerical,holds,2026-11-22-replay-covers-data,4,accuracy contract tol 1e-10
+ht,4,ok,cover,numerical,holds,2026-11-15-replay-covers-2-data,6,
+ht,4,ok,cover,numerical,holds,2026-11-22-replay-covers-data,6,
+ht,5,limit,face-cover,numerical,holds,2026-11-22-replay-covers-data,24,
+ht,5,ok,bracket,numerical,holds,2026-11-15-replay-covers-2-data,18,accuracy contract tol 1e-10
+ht,5,ok,bracket,numerical,holds,2026-11-22-replay-covers-data,18,accuracy contract tol 1e-10
+ht,5,ok,cover,numerical,holds,2026-11-15-replay-covers-2-data,18,
+ht,5,ok,cover,numerical,holds,2026-11-22-replay-covers-data,18,
+huber,0,limit,epsilon-cover,numerical,holds,2026-11-22-replay-covers-data,24,
+huber,0,limit,epsilon-face,numerical,holds,2026-11-22-replay-covers-data,24,
+huber,1,limit,epsilon-cover,numerical,holds,2026-11-22-replay-covers-data,32,
+huber,1,limit,epsilon-face,numerical,holds,2026-11-22-replay-covers-data,32,
+huber,2,limit,epsilon-cover,numerical,holds,2026-11-22-replay-covers-data,30,
+huber,3,limit,epsilon-cover,numerical,holds,2026-11-22-replay-covers-data,30,
+hyper,0,ok,search,exact,holds,2026-11-15-replay-integer-data,2,
+hyper,0,ok,search,interval,holds,2026-11-15-replay-integer-data,12,
+hyper,0,ok,tail,interval,holds,2026-11-15-replay-integer-data,12,
+hyper,0,ok,tie,exact,fails,2026-11-15-replay-integer-data,14,
+hyper,1,ok,search,interval,holds,2026-11-15-replay-integer-data,26,
+hyper,1,ok,tail,interval,holds,2026-11-15-replay-integer-data,26,
+hyper,1,ok,tie,interval,holds,2026-11-15-replay-integer-data,26,
+hyper,2,ok,search,interval,holds,2026-11-15-replay-integer-data,26,
+hyper,2,ok,tie,exact,fails,2026-11-15-replay-integer-data,26,
+hyper,3,ok,search,exact,holds,2026-11-15-replay-integer-data,26,
+hyper,3,ok,tie,exact,holds,2026-11-15-replay-integer-data,26,
+hyper,4,ok,search,interval,holds,2026-11-15-replay-integer-data,26,
+hyper,4,ok,tail,interval,holds,2026-11-15-replay-integer-data,26,
+hyper,4,ok,tie,interval,holds,2026-11-15-replay-integer-data,26,
+hyper,5,ok,search,exact,holds,2026-11-15-replay-integer-data,26,
+hyper,5,ok,tail,exact,holds,2026-11-15-replay-integer-data,26,
+hyper,5,ok,tie,exact,holds,2026-11-15-replay-integer-data,26,
+hyper,6,ok,search,exact,holds,2026-11-15-replay-integer-data,60,
+hyper,6,ok,tie,exact,holds,2026-11-15-replay-integer-data,60,
+invgamma,0,ok,restore,numerical,holds,2026-11-14-replay-roots-data,78,0.00024703 | 0.00025042 | 0.00032731
+invgamma,0,ok,restore,numerical,info,2026-11-14-replay-roots-data,4,0.0010443 | 0.012955
+invgamma,0,ok,root,numerical,info,2026-11-14-replay-roots-data,82,
+invgamma,2,ok,root,numerical,holds,2026-11-14-replay-roots-data,48,
+invparalogis,0,nomle,constant,exact,holds,2026-11-15-replay-covers-3-data,4,
+invparalogis,0,nomle,constant,exact,holds,2026-11-22-replay-covers-data,4,
+invparalogis,0,ok,bracket,interval,holds,2026-11-15-replay-covers-3-data,68,accuracy contract tol 1e-10
+invparalogis,0,ok,bracket,interval,holds,2026-11-22-replay-covers-data,82,accuracy contract tol 1e-10
+invparalogis,0,ok,cover,interval,holds,2026-11-15-replay-covers-3-data,68,
+invparalogis,0,ok,cover,interval,holds,2026-11-22-replay-covers-data,80,
+invparalogis,0,ok,cover,interval,open,2026-11-22-replay-covers-data,2,
+invparalogis,0,ok,scale-root,interval,holds,2026-11-15-replay-covers-3-data,68,accuracy contract tol 1e-10
+invparalogis,0,ok,scale-root,interval,holds,2026-11-22-replay-covers-data,82,accuracy contract tol 1e-10
+invparalogis,1,ok,scale-root,interval,holds,2026-11-15-replay-covers-3-data,44,accuracy contract tol 1e-10
+invparalogis,1,ok,scale-root,interval,holds,2026-11-22-replay-covers-data,44,accuracy contract tol 1e-10
+invparalogis,2,ok,bracket,interval,holds,2026-11-15-replay-covers-3-data,44,accuracy contract tol 1e-10
+invparalogis,2,ok,bracket,interval,holds,2026-11-22-replay-covers-data,44,accuracy contract tol 1e-10
+invparalogis,2,ok,cover,interval,holds,2026-11-15-replay-covers-3-data,44,
+invparalogis,2,ok,cover,interval,holds,2026-11-22-replay-covers-data,44,
+invpareto,0,limit,face,exact,holds,2026-11-15-replay-covers-data,4,
+invpareto,0,limit,face,exact,holds,2026-11-22-replay-covers-data,4,
+invpareto,0,limit,face,interval,holds,2026-11-15-replay-covers-data,66,1e-08
+invpareto,0,limit,face,interval,holds,2026-11-22-replay-covers-data,66,1e-08
+invpareto,0,limit,transfer-flag,exact,holds,2026-11-22-replay-covers-data,70,
+invpareto,0,ok,coefficient,interval,holds,2026-11-15-replay-covers-data,16,1e-8
+invpareto,0,ok,coefficient,interval,holds,2026-11-22-replay-covers-data,16,1e-8
+invpareto,0,ok,concave,interval,holds,2026-11-15-replay-covers-data,16,4 eta = 1.02e-12 | 4 eta = 1.23e-12 | 4 eta = 1.26e-11
+invpareto,0,ok,concave,interval,holds,2026-11-22-replay-covers-data,16,4 eta = 1.02e-12 | 4 eta = 1.23e-12 | 4 eta = 1.26e-11
+invpareto,0,ok,gain,interval,holds,2026-11-15-replay-covers-data,16,1e-8 + core error 1.01e-12 | 1e-8 + core error 1.12e-12 | 1e-8 + core error 1.56e-12
+invpareto,0,ok,gain,interval,holds,2026-11-22-replay-covers-data,16,1e-8 + core error 1.01e-12 | 1e-8 + core error 1.12e-12 | 1e-8 + core error 1.56e-12
+invpareto,0,ok,global,interval,holds,2026-11-15-replay-covers-data,16,
+invpareto,0,ok,global,interval,holds,2026-11-22-replay-covers-data,16,
+invpareto,0,ok,root,interval,holds,2026-11-15-replay-covers-data,16,4 eta = 1.02e-12 | 4 eta = 1.23e-12 | 4 eta = 1.26e-11
+invpareto,0,ok,root,interval,holds,2026-11-22-replay-covers-data,16,4 eta = 1.02e-12 | 4 eta = 1.23e-12 | 4 eta = 1.26e-11
+invpareto,1,ok,root,interval,holds,2026-11-15-replay-covers-data,44,"left 1.29e-14, right 1.29e-14 | left 1.47e-14, right 1.47e-14 | left 1.53e-14, right 1.53e-14"
+invpareto,1,ok,root,interval,holds,2026-11-22-replay-covers-data,44,"left 1.29e-14, right 1.29e-14 | left 1.47e-14, right 1.47e-14 | left 1.53e-14, right 1.53e-14"
+invtrgamma,0,limit,power-cover,numerical,holds,2026-11-22-replay-covers-data,68,
+invtrgamma,0,ok,power-basin,numerical,holds,2026-11-22-replay-covers-data,6,
+invtrgamma,0,ok,power-cover,numerical,holds,2026-11-22-replay-covers-data,6,
+invtrgamma,0,ok,power-face-gap,numerical,holds,2026-11-22-replay-covers-data,6,1e-8
+invtrgamma,4,ok,power-basin,numerical,holds,2026-11-22-replay-covers-data,16,
+invtrgamma,4,ok,power-cover,numerical,holds,2026-11-22-replay-covers-data,16,
+invtrgamma,4,ok,power-face-gap,numerical,holds,2026-11-22-replay-covers-data,2,1e-8
+invweibull,0,ok,restore,numerical,holds,2026-11-14-replay-roots-data,74,0.00012207 | 0.0001249 | 0.00022305
+invweibull,0,ok,restore,numerical,info,2026-11-14-replay-roots-data,4,0.013199 | 0.024631
+invweibull,0,ok,root,numerical,info,2026-11-14-replay-roots-data,78,
+invweibull,1,ok,restore,numerical,holds,2026-11-14-replay-roots-data,42,0.00012207 | 0.00020941 | 0.00031135
+invweibull,2,ok,root,numerical,fails,2026-11-14-replay-roots-data,6,
+invweibull,2,ok,root,numerical,holds,2026-11-14-replay-roots-data,36,
+kumar,0,ok,root,interval,holds,2026-11-14-replay-roots-data,52,
+kumar,0,ok,root-b,interval,info,2026-11-14-replay-roots-data,52,
+kumar,2,ok,root,interval,holds,2026-11-14-replay-roots-data,40,
+lgamma,0,ok,restore,numerical,holds,2026-11-14-replay-roots-data,68,0.00012207 | 0.00017723 | 0.00017863
+lgamma,0,ok,restore,numerical,info,2026-11-14-replay-roots-data,4,0.00089197 | 0.012955
+lgamma,0,ok,root,numerical,info,2026-11-14-replay-roots-data,72,
+lgamma,2,ok,root,numerical,holds,2026-11-14-replay-roots-data,40,
+lgser,0,limit,support,exact,holds,2026-11-15-replay-faces-data,2,
+lgser,0,ok,root,interval,holds,2026-11-14-replay-roots-data,64,
+lgser,0,ok,root,interval,holds,2026-11-15-replay-faces-data,64,
+lgser,0,ok,support,exact,holds,2026-11-15-replay-faces-data,64,
+lgser+zero=modified,0,ok,moment,interval,holds,2026-11-14-replay-roots-data,32,
+lgser+zero=modified,2,ok,moment,interval,holds,2026-11-14-replay-roots-data,14,
+llogis,0,ok,restore,numerical,holds,2026-11-14-replay-roots-data,78,0.00012207 | 0.00041679 | 0.00051915
+llogis,0,ok,restore,numerical,info,2026-11-14-replay-roots-data,2,0.013168
+llogis,0,ok,root,numerical,info,2026-11-14-replay-roots-data,80,
+llogis,1,ok,restore,numerical,holds,2026-11-14-replay-roots-data,44,0.0003638 | 0.00081219 | 0.00089209
+llogis,2,ok,root,numerical,fails,2026-11-14-replay-roots-data,14,
+llogis,2,ok,root,numerical,holds,2026-11-14-replay-roots-data,30,
+lnorm,0,ok,restore,interval,holds,2026-11-14-replay-roots-data,84,1.0006e-10 | 1.0008e-10 | 1.176e-9
+lnorm,0,ok,restore,interval,info,2026-11-14-replay-roots-data,4,1.0619e-8 | 9.4638e-10
+lnorm,2,ok,restore,interval,holds,2026-11-14-replay-roots-data,50,1.1174e-9 | 1.2659e-8 | 1.6302e-9
+logis,0,ok,root,numerical,holds,2026-11-14-replay-roots-data,66,
+logis,0,ok,root,numerical,open,2026-11-14-replay-roots-data,12,
+logis,1,ok,root,interval,holds,2026-11-14-replay-roots-data,36,
+logis,2,ok,root,interval,holds,2026-11-14-replay-roots-data,34,
+logitnorm,0,ok,restore,interval,holds,2026-11-14-replay-roots-data,78,1.0005e-10 | 1.026e-10 | 1.1272e-10
+logitnorm,0,ok,restore,interval,info,2026-11-14-replay-roots-data,2,1.0827e-8
+logitnorm,2,ok,restore,interval,holds,2026-11-14-replay-roots-data,44,1.0003e-10 | 1.1295e-9 | 1.224e-8
+lomax,0,limit,face,exact,holds,2026-11-14-cert-replay-data,4,
+lomax,0,limit,face,exact,holds,2026-11-14-replay-roots-data,4,
+lomax,0,limit,face,interval,holds,2026-11-14-cert-replay-data,54,1e-08
+lomax,0,limit,face,interval,holds,2026-11-14-replay-roots-data,54,1e-08
+lomax,0,ok,concave,interval,holds,2026-11-14-cert-replay-data,22,4 eta = 1.26e-11 | 4 eta = 2.02e-12 | 4 eta = 2.26e-12
+lomax,0,ok,concave,interval,holds,2026-11-14-replay-roots-data,22,4 eta = 1.26e-11 | 4 eta = 2.02e-12 | 4 eta = 2.26e-12
+lomax,0,ok,gain,interval,holds,2026-11-14-cert-replay-data,22,1e-8 + core error 1.14e-11 | 1e-8 + core error 1.18e-12 | 1e-8 + core error 1.57e-12
+lomax,0,ok,gain,interval,holds,2026-11-14-replay-roots-data,22,1e-8 + core error 1.14e-11 | 1e-8 + core error 1.18e-12 | 1e-8 + core error 1.57e-12
+lomax,0,ok,global,interval,holds,2026-11-14-cert-replay-data,22,
+lomax,0,ok,global,interval,holds,2026-11-14-replay-roots-data,22,
+lomax,0,ok,root,interval,holds,2026-11-14-cert-replay-data,22,4 eta = 1.26e-11 | 4 eta = 2.02e-12 | 4 eta = 2.26e-12
+lomax,0,ok,root,interval,holds,2026-11-14-replay-roots-data,22,4 eta = 1.26e-11 | 4 eta = 2.02e-12 | 4 eta = 2.26e-12
+lomax,2,ok,root,interval,holds,2026-11-14-cert-replay-data,38,"left 1.37e-13, right 1.37e-13 | left 1.6e-14, right 1.6e-14 | left 1.77e-13, right 1.77e-13"
+lomax,2,ok,root,interval,holds,2026-11-14-replay-roots-data,38,"left 1.37e-13, right 1.37e-13 | left 1.6e-14, right 1.6e-14 | left 1.77e-13, right 1.77e-13"
+naka,0,ok,restore,numerical,holds,2026-11-14-replay-roots-data,76,0.00012207 | 0.00021393 | 0.00028797
+naka,0,ok,restore,numerical,info,2026-11-14-replay-roots-data,2,0.012955
+naka,0,ok,root,numerical,info,2026-11-14-replay-roots-data,78,
+naka,2,ok,root,numerical,fails,2026-11-14-replay-roots-data,2,
+naka,2,ok,root,numerical,holds,2026-11-14-replay-roots-data,44,
+nbinom,0,limit,dispersion,exact,holds,2026-11-14-cert-replay-data,42,0.0 | 0.00012207031325260702
+nbinom,0,limit,dispersion,exact,holds,2026-11-14-replay-roots-data,42,0.0 | 0.00012207031325260702
+nbinom,0,ok,dispersion,exact,holds,2026-11-14-cert-replay-data,28,0.0
+nbinom,0,ok,dispersion,exact,holds,2026-11-14-replay-roots-data,28,0.0
+nbinom,0,ok,root,interval,holds,2026-11-14-cert-replay-data,26,"left 1.06e-12, right 1.06e-12 | left 1.16e-12, right 1.16e-12 | left 1.29e-12, right 1.29e-12"
+nbinom,0,ok,root,interval,holds,2026-11-14-replay-roots-data,26,"left 1.06e-12, right 1.06e-12 | left 1.16e-12, right 1.16e-12 | left 1.29e-12, right 1.29e-12"
+nbinom,0,ok,root,numerical,holds,2026-11-14-cert-replay-data,2,"left 1.49e-13, right 1.49e-13"
+nbinom,0,ok,root,numerical,holds,2026-11-14-replay-roots-data,2,"left 1.49e-13, right 1.49e-13"
+nbinom,2,ok,root,interval,holds,2026-11-14-cert-replay-data,30,"left 1.04e-13, right 1.04e-13 | left 3.04e-12, right 3.04e-12 | left 3.8e-13, right 3.8e-13"
+nbinom,2,ok,root,interval,holds,2026-11-14-replay-roots-data,30,"left 1.04e-13, right 1.04e-13 | left 3.04e-12, right 3.04e-12 | left 3.8e-13, right 3.8e-13"
+nbinom,2,ok,root,numerical,holds,2026-11-14-cert-replay-data,2,"left 2.97e-08, right 2.97e-08"
+nbinom,2,ok,root,numerical,holds,2026-11-14-replay-roots-data,2,"left 2.97e-08, right 2.97e-08"
+nhyper,0,ok,search,exact,holds,2026-11-15-replay-integer-data,6,
+nhyper,0,ok,search,interval,holds,2026-11-15-replay-integer-data,20,
+nhyper,0,ok,tail,interval,holds,2026-11-15-replay-integer-data,20,
+nhyper,0,ok,tie,exact,fails,2026-11-15-replay-integer-data,6,
+nhyper,0,ok,tie,interval,holds,2026-11-15-replay-integer-data,20,
+nhyper,1,ok,search,interval,holds,2026-11-15-replay-integer-data,28,
+nhyper,1,ok,tail,exact,holds,2026-11-15-replay-integer-data,28,
+nhyper,1,ok,tie,interval,holds,2026-11-15-replay-integer-data,28,
+nhyper,2,ok,search,interval,holds,2026-11-15-replay-integer-data,26,
+nhyper,2,ok,tie,interval,holds,2026-11-15-replay-integer-data,26,
+nhyper,3,ok,search,exact,holds,2026-11-15-replay-integer-data,26,
+nhyper,3,ok,tie,exact,holds,2026-11-15-replay-integer-data,26,
+nhyper,4,ok,search,interval,holds,2026-11-15-replay-integer-data,28,
+nhyper,4,ok,tail,interval,holds,2026-11-15-replay-integer-data,28,
+nhyper,4,ok,tie,interval,holds,2026-11-15-replay-integer-data,28,
+nhyper,5,ok,search,interval,holds,2026-11-15-replay-integer-data,28,
+nhyper,5,ok,tail,exact,holds,2026-11-15-replay-integer-data,28,
+nhyper,5,ok,tie,interval,holds,2026-11-15-replay-integer-data,28,
+nhyper,6,ok,search,exact,holds,2026-11-15-replay-integer-data,60,
+nhyper,6,ok,tie,exact,holds,2026-11-15-replay-integer-data,60,
+norm +truncate=tnorm,0,limit,window,interval,holds,2026-11-15-replay-faces-data,32,
+norm +truncate=tnorm,1,limit,window,exact,holds,2026-11-15-replay-faces-data,16,
+norm +truncate=tnorm,1,ok,window,exact,holds,2026-11-15-replay-faces-data,12,
+norm +truncate=tnorm,12,nomle,support,exact,holds,2026-11-15-replay-faces-data,6,
+norm +truncate=tnorm,4,limit,window,exact,holds,2026-11-15-replay-faces-data,6,
+norm +truncate=tnorm,4,ok,window,exact,holds,2026-11-15-replay-faces-data,16,
+norm +truncate=tnorm,8,limit,window,exact,holds,2026-11-15-replay-faces-data,4,
+norm +truncate=tnorm,8,ok,window,exact,holds,2026-11-15-replay-faces-data,18,
+nsbeta,12,ok,root,numerical,holds,2026-11-14-replay-roots-data,70,
+nsbeta,13,ok,root,numerical,holds,2026-11-14-replay-roots-data,40,
+nsbeta,14,ok,root,numerical,holds,2026-11-14-replay-roots-data,40,
+paralogis,0,nomle,constant,exact,holds,2026-11-15-replay-covers-3-data,4,
+paralogis,0,nomle,constant,exact,holds,2026-11-22-replay-covers-data,4,
+paralogis,0,ok,bracket,interval,holds,2026-11-15-replay-covers-3-data,68,accuracy contract tol 1e-10
+paralogis,0,ok,bracket,interval,holds,2026-11-22-replay-covers-data,76,accuracy contract tol 1e-10
+paralogis,0,ok,cover,interval,holds,2026-11-15-replay-covers-3-data,68,
+paralogis,0,ok,cover,interval,holds,2026-11-22-replay-covers-data,76,
+paralogis,0,ok,scale-root,interval,holds,2026-11-15-replay-covers-3-data,68,accuracy contract tol 1e-10
+paralogis,0,ok,scale-root,interval,holds,2026-11-22-replay-covers-data,76,accuracy contract tol 1e-10
+paralogis,1,ok,scale-root,interval,holds,2026-11-15-replay-covers-3-data,38,accuracy contract tol 1e-10
+paralogis,1,ok,scale-root,interval,holds,2026-11-22-replay-covers-data,38,accuracy contract tol 1e-10
+paralogis,2,ok,bracket,interval,holds,2026-11-15-replay-covers-3-data,38,accuracy contract tol 1e-10
+paralogis,2,ok,bracket,interval,holds,2026-11-22-replay-covers-data,38,accuracy contract tol 1e-10
+paralogis,2,ok,cover,interval,holds,2026-11-15-replay-covers-3-data,38,
+paralogis,2,ok,cover,interval,holds,2026-11-22-replay-covers-data,38,
+pareto2,4,limit,face,exact,holds,2026-11-15-replay-covers-data,4,
+pareto2,4,limit,face,exact,holds,2026-11-22-replay-covers-data,4,
+pareto2,4,limit,face,interval,holds,2026-11-15-replay-covers-data,38,1e-08
+pareto2,4,limit,face,interval,holds,2026-11-22-replay-covers-data,38,1e-08
+pareto2,4,limit,mapping,interval,info,2026-11-15-replay-covers-data,42,
+pareto2,4,limit,mapping,interval,info,2026-11-22-replay-covers-data,42,
+pareto2,4,limit,transfer-flag,exact,holds,2026-11-22-replay-covers-data,42,
+pareto2,4,nomle,support,exact,holds,2026-11-15-replay-covers-data,2,
+pareto2,4,nomle,support,exact,holds,2026-11-22-replay-covers-data,2,
+pareto2,4,ok,coefficient,interval,holds,2026-11-15-replay-covers-data,44,1e-8
+pareto2,4,ok,coefficient,interval,holds,2026-11-22-replay-covers-data,44,1e-8
+pareto2,4,ok,concave,interval,holds,2026-11-15-replay-covers-data,44,4 eta = 1.12e-11 | 4 eta = 1.31e-11 | 4 eta = 1.59e-10
+pareto2,4,ok,concave,interval,holds,2026-11-22-replay-covers-data,44,4 eta = 1.12e-11 | 4 eta = 1.31e-11 | 4 eta = 1.59e-10
+pareto2,4,ok,gain,interval,holds,2026-11-15-replay-covers-data,44,1e-8 + core error 1.04e-12 | 1e-8 + core error 1.05e-12 | 1e-8 + core error 1.47e-12
+pareto2,4,ok,gain,interval,holds,2026-11-22-replay-covers-data,44,1e-8 + core error 1.04e-12 | 1e-8 + core error 1.05e-12 | 1e-8 + core error 1.47e-12
+pareto2,4,ok,global,interval,holds,2026-11-15-replay-covers-data,44,
+pareto2,4,ok,global,interval,holds,2026-11-22-replay-covers-data,44,
+pareto2,4,ok,root,interval,holds,2026-11-15-replay-covers-data,44,4 eta = 1.12e-11 | 4 eta = 1.31e-11 | 4 eta = 1.59e-10
+pareto2,4,ok,root,interval,holds,2026-11-22-replay-covers-data,44,4 eta = 1.12e-11 | 4 eta = 1.31e-11 | 4 eta = 1.59e-10
+pareto2,5,ok,root,interval,holds,2026-11-15-replay-covers-data,44,"left 1.04e-14, right 1.04e-14 | left 1.05e-13, right 1.05e-13 | left 1.13e-13, right 1.13e-13"
+pareto2,5,ok,root,interval,holds,2026-11-22-replay-covers-data,44,"left 1.04e-14, right 1.04e-14 | left 1.05e-13, right 1.05e-13 | left 1.13e-13, right 1.13e-13"
+pareto3,4,ok,restore,numerical,holds,2026-11-14-replay-roots-data,70,1.0004e-10 | 1.0008e-10 | 1.0074e-9
+pareto3,4,ok,restore,numerical,info,2026-11-14-replay-roots-data,4,1.0804e-8 | 2.0014e-8
+pareto3,4,ok,root,numerical,info,2026-11-14-replay-roots-data,74,
+pareto3,5,ok,restore,numerical,holds,2026-11-14-replay-roots-data,36,1.5033e-10 | 2.4742e-10 | 3.455e-10
+pareto3,5,ok,restore,numerical,open,2026-11-14-replay-roots-data,2,
+pareto3,6,ok,root,numerical,holds,2026-11-14-replay-roots-data,38,
+pig,0,limit,moment,exact,holds,2026-11-15-replay-faces-data,52,exact path: none; padded path: 256 eps (mean + 2 xbar + F/(n mean))
+pig,0,ok,moment,exact,holds,2026-11-15-replay-faces-data,12,exact path: none; padded path: 256 eps (mean + 2 xbar + F/(n mean))
+pig,0,ok,root,numerical,holds,2026-11-14-replay-roots-data,12,
+pig,0,ok,root,numerical,holds,2026-11-15-replay-faces-data,12,
+pig,0,ok,root-polish,numerical,info,2026-11-14-replay-roots-data,12,
+pig,0,ok,root-polish,numerical,info,2026-11-15-replay-faces-data,12,
+pig,0,ok,unique,exact,fails,2026-11-15-replay-faces-data,2,
+pig,1,limit,moment,exact,holds,2026-11-15-replay-faces-data,12,exact path: none; padded path: 256 eps (mean + 2 xbar + F/(n mean))
+pig,1,ok,moment,exact,holds,2026-11-15-replay-faces-data,14,exact path: none; padded path: 256 eps (mean + 2 xbar + F/(n mean))
+pig,1,ok,root,numerical,holds,2026-11-14-replay-roots-data,6,
+pig,1,ok,root,numerical,holds,2026-11-15-replay-faces-data,6,
+pig,1,ok,root-polish,numerical,info,2026-11-14-replay-roots-data,6,
+pig,1,ok,root-polish,numerical,info,2026-11-15-replay-faces-data,6,
+pig,2,ok,root,numerical,holds,2026-11-14-replay-roots-data,26,
+pig,2,ok,root,numerical,holds,2026-11-15-replay-faces-data,26,
+pig,2,ok,support,exact,holds,2026-11-15-replay-faces-data,26,
+pois+zero=inflated,0,ok,unique,exact,holds,2026-11-15-replay-faces-data,18,
+pois+zero=inflated,0,ok,zero-fraction,interval,holds,2026-11-15-replay-faces-data,50,none (unpadded)
+pois+zero=inflated,2,limit,support,exact,holds,2026-11-15-replay-faces-data,6,
+pois+zero=modified,0,ok,moment,interval,holds,2026-11-14-replay-roots-data,48,
+pois+zero=modified,2,ok,moment,interval,holds,2026-11-14-replay-roots-data,14,
+pois+zero=truncated,0,ok,moment,interval,holds,2026-11-14-replay-roots-data,66,
+sgomp,0,nomle,support,exact,holds,2026-11-15-replay-faces-data,6,
+sgomp,0,nomle,support,exact,holds,2026-11-22-replay-covers-data,6,
+sgomp,0,ok,rate-cover,interval,holds,2026-11-22-replay-covers-data,56,
+sgomp,0,ok,rate-enclosure,interval,holds,2026-11-22-replay-covers-data,56,
+sgomp,0,ok,shape-enclosure,interval,holds,2026-11-22-replay-covers-data,56,"1e-7 max(1, eta)"
+sgomp,0,ok,support,exact,holds,2026-11-15-replay-faces-data,56,
+sgomp,0,ok,support,exact,holds,2026-11-22-replay-covers-data,56,
+sgomp,1,ok,face-score,interval,holds,2026-11-15-replay-faces-data,42,none (unpadded)
+sgomp,1,ok,face-score,interval,holds,2026-11-22-replay-covers-data,42,none (unpadded)
+sgomp,2,ok,support,exact,holds,2026-11-15-replay-faces-data,44,
+sgomp,2,ok,support,exact,holds,2026-11-22-replay-covers-data,44,
+skellam,0,ok,cover,numerical,holds,2026-11-15-replay-covers-data,52,
+skellam,0,ok,cover,numerical,holds,2026-11-22-replay-covers-data,52,
+skellam,0,ok,cover,numerical,open,2026-11-15-replay-covers-data,4,
+skellam,0,ok,cover,numerical,open,2026-11-22-replay-covers-data,4,
+slash,0,nomle,multiplicity,exact,holds,2026-11-15-replay-covers-3-data,14,
+slash,0,nomle,multiplicity,exact,holds,2026-11-15-replay-faces-data,12,
+slash,0,nomle,multiplicity,exact,holds,2026-11-22-replay-covers-data,14,
+slash,0,ok,accuracy,numerical,holds,2026-11-15-replay-covers-3-data,58,accuracy contract tol 1e-10
+slash,0,ok,accuracy,numerical,holds,2026-11-22-replay-covers-data,58,accuracy contract tol 1e-10
+slash,0,ok,bracket,interval,holds,2026-11-15-replay-covers-3-data,58,accuracy contract tol 1e-10
+slash,0,ok,bracket,interval,holds,2026-11-22-replay-covers-data,58,accuracy contract tol 1e-10
+slash,0,ok,collapse,interval,holds,2026-11-15-replay-covers-3-data,6,1e-8 n
+slash,0,ok,collapse,interval,holds,2026-11-22-replay-covers-data,6,1e-8 n
+slash,0,ok,cover,interval,holds,2026-11-15-replay-covers-3-data,58,
+slash,0,ok,cover,interval,holds,2026-11-22-replay-covers-data,58,
+slash,0,ok,multiplicity,exact,holds,2026-11-15-replay-covers-3-data,58,
+slash,0,ok,multiplicity,exact,holds,2026-11-15-replay-faces-data,58,
+slash,0,ok,multiplicity,exact,holds,2026-11-22-replay-covers-data,58,
+slash,1,ok,multiplicity,exact,holds,2026-11-15-replay-covers-3-data,32,
+slash,1,ok,multiplicity,exact,holds,2026-11-15-replay-faces-data,32,
+slash,1,ok,multiplicity,exact,holds,2026-11-22-replay-covers-data,32,
+slash,1,ok,scale-bracket,interval,holds,2026-11-15-replay-covers-3-data,32,accuracy contract tol 1e-10; gate |score| < 1e-3
+slash,1,ok,scale-bracket,interval,holds,2026-11-22-replay-covers-data,32,accuracy contract tol 1e-10; gate |score| < 1e-3
+slash,2,ok,bracket,interval,holds,2026-11-15-replay-covers-3-data,30,accuracy contract tol 1e-10
+slash,2,ok,bracket,interval,holds,2026-11-22-replay-covers-data,30,accuracy contract tol 1e-10
+slash,2,ok,cover,interval,holds,2026-11-15-replay-covers-3-data,30,
+slash,2,ok,cover,interval,holds,2026-11-22-replay-covers-data,30,
+trgamma,0,limit,power-cover,numerical,holds,2026-11-22-replay-covers-data,80,
+trgamma,0,ok,power-basin,numerical,holds,2026-11-22-replay-covers-data,4,
+trgamma,0,ok,power-cover,numerical,holds,2026-11-22-replay-covers-data,4,
+trgamma,0,ok,power-face-gap,numerical,holds,2026-11-22-replay-covers-data,4,1e-8
+trgamma,4,ok,power-basin,numerical,holds,2026-11-22-replay-covers-data,28,
+trgamma,4,ok,power-cover,numerical,holds,2026-11-22-replay-covers-data,28,
+trgamma,4,ok,power-face-gap,numerical,holds,2026-11-22-replay-covers-data,16,1e-8
+triang,0,ok,search,numerical,holds,2026-11-15-replay-integer-data,70,
+triang,0,ok,tie,numerical,fails,2026-11-15-replay-integer-data,4,
+triang,0,ok,tie,numerical,holds,2026-11-15-replay-integer-data,66,
+triang,1,ok,search,numerical,holds,2026-11-15-replay-integer-data,40,
+triang,1,ok,tie,numerical,holds,2026-11-15-replay-integer-data,40,
+triang,2,ok,search,numerical,holds,2026-11-15-replay-integer-data,38,
+triang,2,ok,tie,numerical,holds,2026-11-15-replay-integer-data,38,
+triang,3,ok,search,interval,holds,2026-11-15-replay-integer-data,38,
+triang,3,ok,tie,interval,holds,2026-11-15-replay-integer-data,38,
+weibull,0,ok,root,interval,fails,2026-11-14-replay-roots-data,4,
+weibull,0,ok,root,interval,holds,2026-11-14-replay-roots-data,80,
+weibull,2,ok,root,interval,holds,2026-11-14-replay-roots-data,48,
+yulesimon,0,limit,support,exact,holds,2026-11-15-replay-faces-data,16,
+yulesimon,0,ok,root,interval,holds,2026-11-14-replay-roots-data,30,
+yulesimon,0,ok,root,interval,holds,2026-11-15-replay-faces-data,30,
+yulesimon,0,ok,root,numerical,holds,2026-11-14-replay-roots-data,8,
+yulesimon,0,ok,root,numerical,holds,2026-11-15-replay-faces-data,8,
+yulesimon,0,ok,support,exact,holds,2026-11-15-replay-faces-data,38,
+zeta +truncate=zipf,0,limit,support,exact,holds,2026-11-15-replay-faces-data,4,
+zeta +truncate=zipf,0,ok,support,exact,holds,2026-11-15-replay-faces-data,64,
+zeta +truncate=zipf,0,ok,unique,exact,holds,2026-11-15-replay-faces-data,2,
+zeta +truncate=zipf,1,limit,support,exact,holds,2026-11-15-replay-faces-data,2,
+zeta +truncate=zipf,1,ok,support,exact,holds,2026-11-15-replay-faces-data,24,
+zeta,0,limit,support,exact,holds,2026-11-15-replay-faces-data,10,
+zeta,0,ok,root,numerical,holds,2026-11-14-replay-roots-data,44,
+zeta,0,ok,root,numerical,holds,2026-11-15-replay-faces-data,44,
+zeta,0,ok,support,exact,holds,2026-11-15-replay-faces-data,44,
