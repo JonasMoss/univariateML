@@ -72,40 +72,75 @@ inline Number stirling(Number x) {
  for(int i=18;i>=0;--i)v=add(c[i],multiply(t2,v));
  return multiply(t,v);
 }
+inline Number twice_atanh(Number z) {
+ const auto z2=multiply(z,z);
+ auto power=z,total=z;
+ // Both reductions give |z| <= 1/3 (allow 0.334 for rounding).
+ // After including z^(2k+1)/(2k+1), the remaining doubled series
+ // is bounded by 2 |z^(2k+1)| |z|^2 / ((2k+3)(1-|z|^2)).
+ // With the practical factor-of-two allowance on the leading word
+ // of the power, the early exit costs less than 1e-47 |z.high|.
+ // The 64-term cap gives an absolute truncation bound below 1e-62.
+ for(int k=1;k<64;++k) {
+  power=multiply(power,z2);
+  total=add(total,divide(power,{double(2*k+1)}));
+  if(std::abs(power.high)<=1e-47*std::abs(z.high))break;
+ }
+ return multiply({2},total);
+}
 inline Number logarithm(Number x) {
  if(!(x.high>0) || !std::isfinite(x.high))return {std::log(x.high)};
  int exponent=0;std::frexp(x.high,&exponent);--exponent;
+ // The balanced binade gives |(m-1)/(m+1)| < 0.172.
+ if(std::scalbn(x.high,-exponent)>1.4142135623730951)++exponent;
  const Number m{std::scalbn(x.high,-exponent),std::scalbn(x.low,-exponent),std::scalbn(x.tiny,-exponent)};
- const auto z=divide(add(m,{-1}),add(m,{1})),z2=multiply(z,z);
- auto power=z,total=z;
- // |z|<=1/3; the tail after 64 terms is < 2e-63.
- for(int k=1;k<64;++k){power=multiply(power,z2);total=add(total,divide(power,{double(2*k+1)}));}
- return add(multiply(total,{2}),multiply(log_two(),{double(exponent)}));
+ const auto z=divide(add(m,{-1}),add(m,{1}));
+ return add(twice_atanh(z),multiply(log_two(),{double(exponent)}));
 }
 inline Number log1p(Number x) {
  if(std::abs(x.high)>.5)return logarithm(add({1},x));
- const auto z=divide(x,add({2},x)),z2=multiply(z,z);auto power=z,total=z;
- for(int k=1;k<64;++k){power=multiply(power,z2);total=add(total,divide(power,{double(2*k+1)}));}
- return multiply({2},total);
+ return twice_atanh(divide(x,add({2},x)));
 }
 inline Number exponential(Number x) {
  if(!std::isfinite(x.high) || x.high>709 || x.high<-745)return {std::exp(x.high)};
  const int exponent=static_cast<int>(std::floor(x.high/.6931471805599453+.5));
  const auto r=add(x,negative(multiply(log_two(),{double(exponent)})));
  Number term{1},total{1};
- for(int k=1;k<=48;++k){term=divide(multiply(term,r),{double(k)});total=add(total,term);}
+ // |r| < 0.347. After term k the omitted terms have successive
+ // ratios bounded by 0.347/(k+1). Even allowing twice |term.high|
+ // in practice, the early exit omits less than 1e-47 before scaling
+ // by 2^exponent. The 48-term cap omits less than 1e-85.
+ for(int k=1;k<=48;++k) {
+  term=divide(multiply(term,r),{double(k)});
+  total=add(total,term);
+  if(std::abs(term.high)<=1e-47)break;
+ }
  return {std::scalbn(total.high,exponent),std::scalbn(total.low,exponent),std::scalbn(total.tiny,exponent)};
 }
 inline Number log_gamma(Number x) {
  if(!(x.high>0) || !std::isfinite(x.high))return {kNaN};
  Number correction{0};
- while(x.high<64){correction=add(correction,negative(logarithm(x)));x=add(x,{1});}
+ if(x.high<64) {
+  // Keep the first factor separate since x can be subnormal. The
+  // remaining factors lie in [1,64] up to expansion rounding. Their
+  // product is at most 64^63, safely within the binary64 exponent range.
+  correction=negative(logarithm(x));
+  x=add(x,{1});
+  Number product{1};
+  while(x.high<64) {
+   product=multiply(product,x);
+   x=add(x,{1});
+  }
+  correction=add(correction,negative(logarithm(product)));
+ }
  return add(correction,add(add(multiply(add(x,{-.5}),logarithm(x)),negative(x)),add(log_sqrt_two_pi(),stirling(x))));
 }
 inline double margin(double magnitude) {
  const double eps=std::numeric_limits<double>::epsilon();
  // Practical floating-point margin, conditional on normal intermediates.
- // Covers the fixed series, <=64 recurrences and expansion truncations.
+ // Covers the series remainders, <=63 recurrence products and expansion
+ // truncations. Logarithm converts relative product error to absolute
+ // error with derivative 1 in the log-product coordinate.
  return 32768*eps*eps*eps*(1+magnitude)+128*std::numeric_limits<double>::denorm_min();
 }
 } } }

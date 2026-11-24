@@ -1,0 +1,100 @@
+{
+  "summary": {
+    "native": {
+      "sged/log": {
+        "checks": 13667,
+        "changed": 0,
+        "before_failures": 1,
+        "after_failures": 1,
+        "new_failures": 0
+      },
+      "sged/natural": {
+        "checks": 13626,
+        "changed": 0,
+        "before_failures": 0,
+        "after_failures": 0,
+        "new_failures": 0
+      },
+      "sstd/log": {
+        "checks": 6700,
+        "changed": 0,
+        "before_failures": 0,
+        "after_failures": 0,
+        "new_failures": 0
+      },
+      "sstd/natural": {
+        "checks": 6666,
+        "changed": 0,
+        "before_failures": 0,
+        "after_failures": 0,
+        "new_failures": 0
+      }
+    },
+    "double": {
+      "sged/log": {
+        "checks": 13667,
+        "changed": 0,
+        "before_failures": 1,
+        "after_failures": 1,
+        "new_failures": 0
+      },
+      "sged/natural": {
+        "checks": 13626,
+        "changed": 0,
+        "before_failures": 0,
+        "after_failures": 0,
+        "new_failures": 0
+      },
+      "sstd/log": {
+        "checks": 6700,
+        "changed": 0,
+        "before_failures": 0,
+        "after_failures": 0,
+        "new_failures": 0
+      },
+      "sstd/natural": {
+        "checks": 6666,
+        "changed": 0,
+        "before_failures": 0,
+        "after_failures": 0,
+        "new_failures": 0
+      }
+    }
+  },
+  "failures": {
+    "native": [
+      {
+        "family": "sged",
+        "theta": [
+          0.0,
+          1.0,
+          100000000.0,
+          100000000.0
+        ],
+        "x": -1.7320508075688814,
+        "lower": true,
+        "log": true,
+        "reference": "-3.3892355864084934250602304704e+116238544",
+        "master": "-inf",
+        "optimized": "-inf"
+      }
+    ],
+    "double": [
+      {
+        "family": "sged",
+        "theta": [
+          0.0,
+          1.0,
+          100000000.0,
+          100000000.0
+        ],
+        "x": -1.7320508075688814,
+        "lower": true,
+        "log": true,
+        "reference": "-3.3892355864084934250602304704e+116238544",
+        "master": "-inf",
+        "optimized": "-inf"
+      }
+    ]
+  }
+}
