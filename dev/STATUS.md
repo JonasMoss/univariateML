@@ -188,19 +188,31 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   135/135; `just cpp-test-no-long-double` 180/180; `just test-full`
   `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67041 ]`; `just js-test` 593/593;
   `just relations` and `just site-check` green.
+- Batch check of master 55463f6c (2026-11-24, workstation, GCC 15.2, after
+  [cand-bounds](research/evaluations/2026-11-24-cand-bounds-report.md),
+  TASK-236): **one certified wrong outcome fixed**: GED class near-constant
+  returned a certified Laplace-shape estimate (logLik 125.0623) though the
+  uniform limit attains 126.8459 (the rounded midpoint fell on an endpoint
+  and doubled the face width); it now returns the certified uniform limit.
+  Otherwise candidate likelihoods and supports at their published
+  coefficients: native 94, double 93 records; routes unchanged. Baselines
+  patched (a9581049). `just strict`: all 66 TASK-236 entries pass, none
+  new; the known list is empty again (9ea18e5e). `just cpp-test` 135/135;
+  `just cpp-test-no-long-double` 180/180; `just test-full`
+  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67041 ]`; `just js-test` 593/593;
+  `just relations` and `just site-check` green.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
-- Known wrong answers on master: none among selected estimates and limits.
-  The strict known list holds 66 entries (TASK-236): losing face candidates
-  whose shown coefficients do not reproduce their reported bounds. Every `unique = FALSE` fit
+- Known wrong answers on master: none listed by the strict layer; its known
+  list is empty since 2026-11-24 (batch 15). Every `unique = FALSE` fit
   carries a typed maximizer set (rule `unique-false-needs-set`); fits whose
-  maximizer count is not proved report `unique = NA` with candidates. Open, flagged rather than wrong: fpareto
-  archive 001625/001628 end `unresolved` pending a global bound (TASK-214.44
-  report); sged's held-sd two-point location stops numerically although the
-  optimum is finite (TASK-150.9).
+  maximizer count is not proved report `unique = NA` with candidates. Open,
+  flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`
+  pending a global bound (TASK-214.44 report); sged's held-sd two-point
+  location stops numerically although the optimum is finite (TASK-150.9).
 - Nothing is published to CRAN, and `origin/master` is the old published
   tree (about 1,300 commits behind). The backup branch `origin/cpp-core`
   mirrors master; pushed by Claude after each validated batch (allowed by Jonas, 2026-11-20).
