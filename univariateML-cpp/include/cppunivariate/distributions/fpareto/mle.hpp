@@ -1,4 +1,5 @@
 #pragma once
+#include "../../core/transformed_data.hpp"
 #include "dpqr.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
@@ -143,12 +144,20 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
         const double term=normalizer+(v<public_c?a*(v-public_c):-b*(v-public_c))-v-carry;
         const double next=ll+term;carry=(next-ll)-term;ll=next;
       }
-      if(std::isfinite(ll)&&ll>best){best=ll;coefficients={kink,a,b,min};}
+      if(std::isfinite(ll)&&ll>best){best=ll;coefficients={kink,a,b};}
     };
     if(std::isnan(scale))for(std::size_t k=0;k<logs.size();++k){at(logs[k],prefix,k);prefix+=logs[k];}
     else {const double c=std::log(scale);std::size_t k=0;for(double v:logs)if(v<c){prefix+=v;++k;}at(c,prefix,k);}
     if(coefficients.empty())r.status=Gb2Status::NumericalFailure;
-    else {attach_limit(limit_detail(coefficients,best));r.logLik=best;}
+    else {
+      transformed_detail::Sum ll;
+      for(double v:y)
+        ll.push(distributions::ddblpareto(v,coefficients[0],coefficients[1],coefficients[2],true));
+      if(std::isfinite(ll.get())) {
+        attach_limit(limit_detail(coefficients,ll.get(),StopModel::Dblpareto));
+        r.logLik=ll.get();
+      } else r.status=Gb2Status::NumericalFailure;
+    }
   }
   if(detail.limit_model==StopModel::None && !detail.limit_coef.empty()) {
     switch(r.status) {

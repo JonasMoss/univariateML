@@ -297,6 +297,8 @@ inline std::string stop_model(cppunivariate::StopModel model) {
     case cppunivariate::StopModel::ReflectedHt:return "unavailable:reflected-half-t";
     case cppunivariate::StopModel::Trgamma:return "trgamma";
     case cppunivariate::StopModel::InvTrgamma:return "invtrgamma";
+    case cppunivariate::StopModel::Dblpareto:return "dblpareto";
+    case cppunivariate::StopModel::ShiftedDblpareto:return "unavailable:shifted-dblpareto";
     case cppunivariate::StopModel::ShiftedExp:return "unavailable:shifted-exp";
     case cppunivariate::StopModel::ShiftedWeibull:return "unavailable:shifted-weibull";
     case cppunivariate::StopModel::ShiftedInvWeibull:return "unavailable:shifted-invweibull";
@@ -317,6 +319,8 @@ inline std::vector<std::string> stop_names(const std::string& model,const std::v
   if(model=="weibull"||model=="invweibull")return {"shape","scale"};
   if(model=="pareto")return {"a","b","endpoint_log_factor"};
   if(model=="power")return {"alpha","beta","endpoint_log_factor"};
+  if(model=="dblpareto")return {"scale","left_rate","right_rate"};
+  if(model=="unavailable:shifted-dblpareto")return {"scale","left_rate","right_rate","min"};
   if(model=="exp")return {"rate"};
   if(model=="invexp")return {"scale"};
   if(model=="pois")return {"lambda"};

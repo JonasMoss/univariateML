@@ -234,3 +234,20 @@ test_that("exploratory transformed gamma faces carry their density coefficients"
     expect_equal(ll, e$limit_loglik, tolerance = 1e-10)
   }
 })
+
+test_that("Feller Pareto double Pareto escape replays on excesses", {
+  skip_unless_tier("dev")
+  u <- (seq_len(200) - .5) / 200
+  y <- ifelse(u < .5, sqrt(2 * u), 1 / sqrt(2 * (1 - u)))
+  for (min in c(0, 2)) {
+    x <- y + min
+    e <- tryCatch(mlfpareto(x, min = min), error = identity)
+    expect_s3_class(e, "univariateML_limit")
+    expect_match(conditionMessage(e), "mldblpareto(x - min)", fixed = TRUE)
+    expect_identical(e$model, if (min == 0) "dblpareto" else "unavailable:shifted-dblpareto")
+    p <- e$estimates
+    if (min != 0) expect_equal(p[["min"]], min)
+    face <- do.call(mldblpareto, as.list(p[c("scale", "left_rate", "right_rate")]))
+    expect_equal(sum(dml(x - min, face, log = TRUE)), e$limit_loglik, tolerance = 1e-12)
+  }
+})

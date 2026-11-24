@@ -62,6 +62,7 @@ constexpr double kGolden_burr = 2e-14;
 constexpr double kGolden_cauchy = 3e-12;
 constexpr double kGolden_cmb = 2e-13;
 constexpr double kGolden_cmp = 1e-15;
+constexpr double kGolden_dblpareto = 1e-13;
 // dgamma: analytic Newton correction; measured native/double/R/WASM reference checks.
 constexpr double kGolden_dgamma = 5e-15;
 constexpr double kGolden_dlaplace = 2e-16;

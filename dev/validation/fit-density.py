@@ -79,11 +79,6 @@ def laws():
             call = "cppunivariate::zeta_window_eval('d', x, static_cast<int>(p[0]), p[1], true, true)"
             header = 'cppunivariate/distributions/zeta/truncation.hpp'
         out[ident] = (header, call, names, meta['support']['type'] == 'integer')
-    # In log coordinates this is asymmetric Laplace. Subtract log(x) for
-    # the Jacobian. Compute the harmonic-rate normalizer without a product.
-    double_pareto = (
-        None, 'double_pareto(x, p)', ['kink', 'left_rate', 'right_rate'], False)
-    out['unavailable:double-pareto'] = double_pareto
     return out
 
 def attribute(law, values, data):
@@ -120,15 +115,6 @@ PROBE = r'''#include <cmath>
 @INCLUDES@
 static std::string num(double v){if(v!=v)return "\"nan\"";if(v==INFINITY)return "\"inf\"";if(v==-INFINITY)return "\"-inf\"";
   char b[64];std::snprintf(b,sizeof b,"\"%a\"",v);return b;}
-static double double_pareto(double x, const std::vector<double>& p) {
-  if (x <= 0) return -INFINITY;
-  const double left=std::log(p[1]), right=std::log(p[2]);
-  const double logx=std::log(x);
-  const double z=(x >= p[0]/2 && x/2 <= p[0])
-    ? std::log1p((x-p[0])/p[0]) : logx-std::log(p[0]);
-  return std::fmin(left,right)-std::log1p(std::exp(-std::abs(left-right)))
-    +(z<0?p[1]:-p[2])*z-logx;
-}
 static double density(int law,double x,const std::vector<double>&p){
   const bool log=true;(void)log;
   switch(law){
@@ -216,7 +202,8 @@ SHIFTED_LAWS = {
                        ('trgamma', 'trgamma'), ('invtrgamma', 'invtrgamma')]
 }
 SHIFTED_LAWS.update({
-    'unavailable:shifted-double-pareto': ('unavailable:double-pareto', 'min'),
+    'unavailable:shifted-dblpareto': ('dblpareto', 'min'),
+    'unavailable:shifted-double-pareto': ('dblpareto', 'min'),  # archived snapshots
     'unavailable:translated-exponential': ('exp', 'mu'),
     'unavailable:translated-negative-binomial': ('nbinom', 'shift'),
 })
@@ -225,8 +212,11 @@ SHIFTED_LAWS.update({
 def payload_data(model, values, data):
     """Base law and observations in its coordinates, with a pointwise endpoint adjustment."""
     law, coord = SHIFTED_LAWS.get(model, (model, None))
-    if model == 'unavailable:double-pareto' and 'scale' in values:
-        values.update(kink=values['scale'], left_rate=values['left'], right_rate=values['right'])
+    if model == 'unavailable:double-pareto':
+        law = 'dblpareto'
+        values.update(left_rate=values['left'], right_rate=values['right'])
+    elif model == 'unavailable:shifted-double-pareto':
+        values['scale'] = values['kink']
     observations = [v-values.get(coord, math.nan) for v in data] if coord else data
     endpoint = values.get({'pareto': 'b', 'power': 'alpha'}.get(law))
     factor = values.get('endpoint_log_factor', 0.)

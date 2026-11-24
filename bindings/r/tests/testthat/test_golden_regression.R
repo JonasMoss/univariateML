@@ -24,6 +24,7 @@ GOLDEN_TOLERANCE <- c(
   cauchy = 3e-12,
   cmb = 2e-13,
   cmp = 1e-15,
+  dblpareto = 1e-13, # independent 50-digit knot profile
   dgamma = 5e-15, # analytic Newton refinement
   dlaplace = 2e-16,
   dnorm = 1e-12,
@@ -129,6 +130,7 @@ GOLDEN_STOP_TOLERANCE <- c(
   cauchy = 0.0001220703,
   cmb = 1e-10,
   cmp = 1e-10,
+  dblpareto = 1e-13, # independent 50-digit knot profile
   dgamma = 1e-10,
   dlaplace = 0,
   dnorm = 1e-09,

@@ -270,3 +270,16 @@ test_that("held GB2 power does not turn rounded log equality into nonexistence",
   expect_equal(log(x[[1]]),log(x[[2]]),tolerance=0)
   expect_error(mlgb2(x,shape2=2,scale=1e300),class="univariateML_numerical")
 })
+
+test_that("GB2 double Pareto escape carries the public family coefficients", {
+  skip_unless_tier("dev")
+  u <- (seq_len(200) - .5) / 200
+  x <- ifelse(u < .5, sqrt(2 * u), 1 / sqrt(2 * (1 - u)))
+  e <- tryCatch(mlgb2(x), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  expect_match(conditionMessage(e), "mldblpareto")
+  expect_identical(e$model, "dblpareto")
+  expect_identical(names(e$estimates), c("scale", "left_rate", "right_rate"))
+  face <- do.call(mldblpareto, as.list(e$estimates))
+  expect_equal(sum(dml(x, face, log = TRUE)), e$limit_loglik, tolerance = 1e-12)
+})
