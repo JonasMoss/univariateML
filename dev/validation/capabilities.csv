@@ -2569,10 +2569,10 @@ sgomp,sgomp,none,,,censor=interval,true,not-implemented,unknown,0,
 sgomp,sgomp,none,,b,censor=interval,true,not-implemented,unknown,0,
 sgomp,sgomp,none,,eta,censor=interval,true,not-implemented,unknown,0,
 sgomp,sgomp,none,,b;eta,censor=interval,true,not-implemented,unknown,0,
-skellam,skellam,none,,,none,true,implemented,yes,0,skellam/golden.json
-skellam,skellam,none,,mu1,none,true,implemented,yes,0,skellam/golden.json
-skellam,skellam,none,,mu2,none,true,implemented,yes,0,skellam/golden.json
-skellam,skellam,none,,mu1;mu2,none,true,implemented,yes,0,skellam/golden.json
+skellam,skellam,none,,,none,true,implemented,partial,0,skellam/golden.json
+skellam,skellam,none,,mu1,none,true,implemented,partial,0,skellam/golden.json
+skellam,skellam,none,,mu2,none,true,implemented,partial,0,skellam/golden.json
+skellam,skellam,none,,mu1;mu2,none,true,implemented,partial,0,skellam/golden.json
 skellam,skellam,none,,,truncate=closed-window,true,not-implemented,unknown,0,
 skellam,skellam,none,,mu1,truncate=closed-window,true,not-implemented,unknown,0,
 skellam,skellam,none,,mu2,truncate=closed-window,true,not-implemented,unknown,0,

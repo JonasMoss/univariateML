@@ -58,9 +58,8 @@ relations:
     when: mu1 > 0 && mu2 > 0
 fit:
   method: profile-search
-  certified: 'yes'
-  note: 'skellam/README.md, Details; one held rate has a strictly concave bracketed solve; the joint profile uses
-    branch-and-bound with a tail bound, conditional on computed comparisons and a practical likelihood margin.'
+  certified: 'partial'
+  note: 'skellam/README.md, Details. Conditional fits use strict concavity. Joint certification covers constant samples and Poisson faces with a strictly decreasing neighborhood and strict global exclusion. The interior search and unresolved faces return uncertified estimates.'
 areas:
 - counts and ecology
 classification: specialist
@@ -110,7 +109,7 @@ Supply `mu1` or `mu2` to hold the corresponding rate. Holding both evaluates the
 
 ### Joint-search certificate (recorded 2026-11-02)
 
-For a joint interior fit, writing $s=\sqrt{\mu_1\mu_2}$ and $\theta=\log(\mu_1/\mu_2)/2$ gives the score equation $\mu_1-\mu_2=\bar x$. The remaining equation is $n^{-1}\sum_i I'_{|x_i|}(2s)/I_{|x_i|}(2s)=\cosh\theta$, with $I'_v(z)=I_{v+1}(z)+vI_v(z)/z$. The fitter searches the resulting scalar profile and compares the exact zero-rate face. Faces win computed log likelihood ties within $0.5\cdot10^{-8}n$. A logarithmic grid and local refinements nominate candidates; a separate branch-and-bound pass bounds the remaining finite interval. The Poisson-mode bound excludes the far tail, and the positive series bounds the interval adjacent to zero. Uniqueness is not assumed. If comparisons are exact, the returned likelihood is within $10^{-8}n$ of the global maximum. In floating point this is a practical margin, conditional on the computed masses, scores and comparisons, not a directed-rounding guarantee. Nonfinite values, representational stagnation or an exhausted search return iteration failure.
+For a joint interior fit, writing $s=\sqrt{\mu_1\mu_2}$ and $\theta=\log(\mu_1/\mu_2)/2$ gives the score equation $\mu_1-\mu_2=\bar x$. The remaining equation is $n^{-1}\sum_i I'_{|x_i|}(2s)/I_{|x_i|}(2s)=\cosh\theta$, with $I'_v(z)=I_{v+1}(z)+vI_v(z)/z$. The fitter searches the resulting scalar profile and compares the exact zero-rate face. The search can retain a face within $0.5\cdot10^{-8}n$ of the incumbent when neither a positive inward score nor a separated interior likelihood refutes it. A logarithmic grid and local refinements nominate candidates; a separate branch-and-bound pass bounds the remaining finite interval. The Poisson-mode bound excludes the far tail, and the positive series bounds the interval adjacent to zero. Uniqueness is not assumed. A completed gap cover bounds the profile gain over the selected candidate by $10^{-8}n$ in exact arithmetic. Joint interior candidates pass a local Newton accuracy check and are returned as uncertified with unknown uniqueness. If the cover cannot establish the global claim, the search can still return its candidate.
 
 The following curvature bound does not require concavity or unimodality.
 Put $t=\min(\mu_1,\mu_2)$, $d=|\bar x|$, and $q=t(t+d)$.
@@ -135,8 +134,14 @@ same amount for a possible face tie. On $[0,\epsilon]$, the positive
 series bounds the profile by $\ell(\epsilon)+2n\epsilon$. Above the
 finite search interval, a convolution mass is bounded by the maximal
 Poisson mass, at most $1/\sqrt{2\pi\lfloor t\rfloor}$ for $t\ge2$.
-This establishes a bound, not profile unimodality. The computed masses
-and comparisons are not outward rounded.
+A face with negative inward score $g_0$ strictly dominates a neighborhood
+of zero, since the profile score there is at most $g_0+Mt$. A face is
+certified only if this neighborhood covers the interval adjacent to zero
+and every remaining upper bound, including the tail, is strictly below
+the face likelihood. The score and likelihood comparisons include practical
+floating-point margins conditional on the computed masses. An unrefuted
+face selected without these strict inequalities has unknown uniqueness and
+is returned uncertified.
 
 ### Probability evaluation
 

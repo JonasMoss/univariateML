@@ -1,0 +1,58 @@
+{
+  "precision_decimal_digits": 80,
+  "joint_strict_face": {
+    "counts": {
+      "1": 1,
+      "2": 1
+    },
+    "face_rate": "1.5",
+    "face_inward_score_per_observation": "-0.375"
+  },
+  "joint_stationary_face": {
+    "counts": {
+      "0": 1,
+      "3": 2
+    },
+    "face_rate": "2.0",
+    "face_inward_score_per_observation": "0.0"
+  },
+  "joint_inside_margin": {
+    "counts": {
+      "0": 17,
+      "4": 161
+    },
+    "face_rate": "3.61797752808988764044943820225",
+    "face_inward_score_per_observation": "0.000025249337204898371417750284055",
+    "stationary_smaller_rate": "0.0000590583369088085369610604752995",
+    "stationary_gain_per_observation": "7.45557036114795802278619384675e-10"
+  },
+  "joint_outside_margin": {
+    "counts": {
+      "0": 15,
+      "4": 142
+    },
+    "face_rate": "3.61783439490445859872611464968",
+    "face_inward_score_per_observation": "0.0000892531137165807943527120775691",
+    "stationary_smaller_rate": "0.000208774811533573451891580813289",
+    "stationary_gain_per_observation": "0.00000000931535984882832269099593973766"
+  },
+  "joint_negative_score_refuted": {
+    "counts": {
+      "0": 19,
+      "20": 1
+    },
+    "face_rate": "1.0",
+    "face_inward_score_per_observation": "-0.047619047619047619047619047619",
+    "interior_witness_rates": [
+      1.5,
+      0.5
+    ],
+    "interior_witness_gain_per_observation": "0.0184644020692081236431527697074"
+  },
+  "held_rate": {
+    "value": "1.00005000000000010551559626037",
+    "face_inward_score_per_observation": "0.0000500000000001055155962603748776",
+    "stationary_free_rate": "0.0000999966668474241657248178508931",
+    "stationary_gain_per_observation": "0.0000000024998611185865502374162273693"
+  }
+}

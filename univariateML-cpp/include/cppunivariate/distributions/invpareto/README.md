@@ -118,4 +118,6 @@ Holding either shape or scale removes the inverse exponential escape and gives a
 
 ## R notes
 
+Constant original data inherit the exact constant-sample Lomax limit proof under reciprocation. The held-shape solve uses the signed log-rate bracket of width at most `tol/2` and log-rate restoration allowance `tol/4` on reciprocal observations.
+
 The implementation prefers the inverse exponential limit when the largest profile improvement it finds is at most $10^{-8}n$ log-likelihood units and stops with a recommendation to use `mlinvexp`. This tolerance can reject a mathematical MLE that ties or only slightly improves on the limit.

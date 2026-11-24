@@ -183,3 +183,19 @@ test_that("Skellam tail-cover exhaustion preserves its witness", {
   expect_equal(err$loglik_upper,Inf)
   expect_match(conditionMessage(err),"Raising iterlim may resolve")
 })
+
+test_that("Skellam outcome flags distinguish evidence for zero rates", {
+  proved <- mlskellam(c(1, 2))
+  expect_identical(attr(proved, "certified"), TRUE)
+  expect_identical(attr(proved, "unique"), TRUE)
+
+  unresolved <- mlskellam(c(0, 3, 3))
+  expect_equal(unname(unresolved[2]), 0)
+  expect_identical(attr(unresolved, "certified"), FALSE)
+  expect_identical(attr(unresolved, "unique"), NA)
+
+  interior <- mlskellam(c(rep(0, 17), rep(4, 161)))
+  expect_gt(unname(interior[2]), 0)
+  expect_identical(attr(interior, "certified"), FALSE)
+  expect_identical(attr(interior, "unique"), NA)
+})

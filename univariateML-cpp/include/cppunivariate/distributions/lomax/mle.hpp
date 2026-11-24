@@ -35,6 +35,7 @@ struct LomaxResult {
   LomaxStatus status;
   LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None;
   StopDetail stop_detail{};
+  bool limit_certified = false;
 };
 
 namespace lomax_detail {
@@ -324,7 +325,7 @@ inline FitOutcome outcome(const LomaxResult& r) {
   if (r.status != LomaxStatus::ExponentialLimit && r.certificate_failure == LomaxCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
   switch (r.status) {
     case LomaxStatus::Ok: return FitOutcome::estimate(true);
-    case LomaxStatus::ExponentialLimit: return FitOutcome::limit(false);
+    case LomaxStatus::ExponentialLimit: return FitOutcome::limit(r.limit_certified);
     case LomaxStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case LomaxStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case LomaxStatus::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Tolerance);

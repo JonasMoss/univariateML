@@ -110,3 +110,9 @@ test_that("rounded fatigue threshold shifts stop numerically rather than claimin
 test_that("fatigue refuses inaccurate subnormal coefficient reconstruction", {
   expect_error(mlfatigue(c(1,3,4)*1e-320,mu=0),class="univariateML_numerical")
 })
+
+test_that("the proved constant-sample reciprocal set is certified", {
+  fit <- mlfatigue(rep(2, 3), alpha = 3, mu = 0)
+  expect_identical(attr(fit, "certified"), TRUE)
+  expect_identical(attr(fit, "unique"), FALSE)
+})

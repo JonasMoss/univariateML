@@ -150,7 +150,13 @@ inline LomaxResult fit(span x,double tol,int maxit) {
     }
     return out;
   };
-  if(constant)return exponential(0);
+  if(constant) {
+    // At z=lambda*x>0, the constant-sample profile loses
+    // log(log1p(z)*(1+z)/z) per observation to the exponential.
+    auto out=exponential(0);
+    out.limit_certified=out.status==LomaxStatus::ExponentialLimit;
+    return out;
+  }
   const double n=static_cast<double>(x.size());
   Sum mean;
   for(double v:x)mean.add((v/largest)/n);

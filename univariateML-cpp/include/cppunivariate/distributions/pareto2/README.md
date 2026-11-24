@@ -149,6 +149,8 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genb
 
 ## R notes
 
+Constant original data strictly above the held threshold inherit the exact constant-sample Lomax limit proof after translation. For positive excesses the held-shape solve delegates to the signed Lomax log-rate bracket of width at most `tol/2` with log-rate restoration allowance `tol/4` before converting rate to scale.
+
 With `min = 0`, the fit agrees with `mllomax(x)` after reciprocal conversion of the rate. Numerical comparisons prefer the exponential face within $10^{-8}n$ log-likelihood units, so a tied or slightly better finite maximum can be rejected. A detected face stops with a recommendation to use `mlexp(x - min)`. Unresolved searches stop.
 
 The held lower endpoint is included in the support. If $k>0$ observations

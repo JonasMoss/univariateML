@@ -123,3 +123,8 @@ test_that("invpareto delegate follow-up preserves the accepted fit", {
   f <- mlinvpareto(1/c(.03,.1,.4,.7,1,2,4,12),tol=1e-8,iterlim=1000)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+test_that("constant original data certify the inverse exponential limit", {
+  err <- tryCatch(mlinvpareto(rep(2, 5)), error = identity)
+  expect_identical(err$certified, TRUE)
+})
