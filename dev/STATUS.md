@@ -176,13 +176,26 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   (f7cf7045, after this check) removes the legacy non-uniqueness path;
   its snapshots equal these baselines in all four modes and its own
   `just test-full` passed (67,025).
+- Batch check of master a529330e (2026-11-24, workstation, GCC 15.2, after
+  maxset-legacy and [payload-offsets](research/evaluations/2026-11-23-payload-offsets-report.md),
+  TASK-233): per base mode 150 fpareto/gb2 records gain face payloads in
+  fields that were empty and 21 nonzero-threshold fixtures are new; routes
+  unchanged; baselines patched (e807ef23). `just strict`: fit-density now
+  evaluates face candidates and finds 66 findings that already existed
+  (TASK-236, added to the known list, dd86aea1; 36 are uniform candidates whose
+  support excludes observations); the pareto2 transfer rule did not know the
+  shifted exponential at nonzero `min` (replay fixed). `just cpp-test`
+  135/135; `just cpp-test-no-long-double` 180/180; `just test-full`
+  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67041 ]`; `just js-test` 593/593;
+  `just relations` and `just site-check` green.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
-- Known wrong answers on master: none listed by the strict layer; its known
-  list is empty since 2026-11-23 (batch 13). Every `unique = FALSE` fit
+- Known wrong answers on master: none among selected estimates and limits.
+  The strict known list holds 66 entries (TASK-236): losing face candidates
+  whose shown coefficients do not reproduce their reported bounds. Every `unique = FALSE` fit
   carries a typed maximizer set (rule `unique-false-needs-set`); fits whose
   maximizer count is not proved report `unique = NA` with candidates. Open, flagged rather than wrong: fpareto
   archive 001625/001628 end `unresolved` pending a global bound (TASK-214.44
