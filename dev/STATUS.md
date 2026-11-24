@@ -201,13 +201,24 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   `just cpp-test-no-long-double` 180/180; `just test-full`
   `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67041 ]`; `just js-test` 593/593;
   `just relations` and `just site-check` green.
+- Batch check of master c8381ffa (2026-11-24, workstation, GCC 15.2, after
+  [ged-speed](research/evaluations/2026-11-24-ged-speed-report.md), TASK-225,
+  and [dblpareto](research/evaluations/2026-11-24-dblpareto-report.md),
+  TASK-235): 86 families. New family dblpareto (28 cases per base mode); 11
+  gb2/fpareto double-Pareto escapes per base mode now carry dblpareto
+  payloads (names only; outcome, certification and values unchanged); routes
+  unchanged; the GED speed-up moves nothing. Baselines patched (61e8589f).
+  `just strict`: nothing new, known list still empty. `just cpp-test`
+  136/136; `just cpp-test-no-long-double` 181/181; `just test-full`
+  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67514 ]`; `just js-test` 599/599;
+  `just relations` and `just site-check` green.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
   days were validated on the workstation only. `dev/tools/simbox-test.sh <label> [tree]`
   runs the suite there when it is back.
 - Known wrong answers on master: none listed by the strict layer; its known
-  list is empty since 2026-11-24 (batch 15). Every `unique = FALSE` fit
+  list is empty since 2026-11-24 (batches 15 and 16). Every `unique = FALSE` fit
   carries a typed maximizer set (rule `unique-false-needs-set`); fits whose
   maximizer count is not proved report `unique = NA` with candidates. Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`
