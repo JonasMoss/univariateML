@@ -32,3 +32,4 @@ public import UnivariateML.Family.BurrHeld
 public import UnivariateML.Family.Transfers2
 public import UnivariateML.Family.Triangular
 public import UnivariateML.Family.Discrete2
+public import UnivariateML.Family.GEV
