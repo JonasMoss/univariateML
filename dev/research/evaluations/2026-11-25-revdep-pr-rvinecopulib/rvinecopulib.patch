@@ -1,0 +1,60 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Moss
+Date: Wed, 25 Nov 2026 09:55:48 +0100
+Subject: [PATCH] Test non-finite margin log-likelihoods without univariateML
+
+Return a custom fitted margin with a non-finite log-likelihood so the
+selection test exercises the same validation path with either version
+of univariateML. A Rayleigh fit with a zero observation now raises an
+input error before returning a fit.
+
+---
+ tests/testthat/test_margins.R | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/tests/testthat/test_margins.R b/tests/testthat/test_margins.R
+index 5d7484672d14edf268fbdfb4566d190c4bba4fbd..9c35cfb9d654f3517575ba2f81ceb60c4966f891 100644
+--- a/tests/testthat/test_margins.R
++++ b/tests/testthat/test_margins.R
+@@ -594,25 +594,32 @@ test_that("selection handles incompatibility, candidate failures, and bad fits",
+ })
+ 
+ test_that("selection rejects non-finite fitted log-likelihoods", {
+-  skip_if_not_installed("univariateML")
+-  x <- c(0, seq(0.1, 2, length.out = 30))
+-  rayleigh <- univariateML_family("rayleigh")
++  x <- c(-1, 0, 1)
++  nonfinite <- margin_family(
++    function(x, weights, type) {
++      fit <- margin_dist(dnorm, pnorm, qnorm, family = "nonfinite", npars = 1)
++      # Supply invalid metadata after the constructor has validated the fit.
++      fit$info$loglik <- -Inf
++      fit
++    },
++    family_name = "nonfinite"
++  )
+   good <- scored_margin_family("good", -100, 1)
+ 
+   expect_error(
+-    select_margin(x, list(rayleigh), "c", numeric(), "aic", 1),
+-    "could not fit.*rayleigh failed.*loglik.*finite or NA"
++    select_margin(x, list(nonfinite), "c", numeric(), "aic", 1),
++    "could not fit.*nonfinite failed.*loglik.*finite or NA"
+   )
+   expect_warning(
+     selected <- select_margin(
+       x,
+-      list(rayleigh, good),
++      list(nonfinite, good),
+       "c",
+       numeric(),
+       "aic",
+       1
+     ),
+-    "rayleigh failed.*loglik.*finite or NA"
++    "nonfinite failed.*loglik.*finite or NA"
+   )
+   expect_identical(margin_info(selected)$family_name, "good")
+ })
+
+base-commit: 2ac9d35c1bc25ba310f9e65f32579229b2dbcfd0
