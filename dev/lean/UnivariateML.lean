@@ -11,3 +11,7 @@ public import UnivariateML.Family.Lomax
 public import UnivariateML.Family.Weibull
 public import UnivariateML.Family.GPD
 public import UnivariateML.Family.Laplace
+public import UnivariateML.Family.BetaBinomial
+public import UnivariateML.Family.FoldedNormal
+public import UnivariateML.Family.Frechet
+public import UnivariateML.Family.Gamma
