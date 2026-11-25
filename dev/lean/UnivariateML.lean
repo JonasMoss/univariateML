@@ -36,3 +36,4 @@ public import UnivariateML.Family.GEV
 public import UnivariateML.Family.NegHypergeometric
 public import UnivariateML.Family.LogLogistic
 public import UnivariateML.Family.GenGammaTwoPoint
+public import UnivariateML.Family.Misc
