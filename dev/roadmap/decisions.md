@@ -6,6 +6,18 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-25
+
+- **Certified value, unproved cardinality: `unique = NA` (Jonas)**. A fit whose global maximum value is certified
+  but whose number of maximizers is not proved keeps `certified = TRUE` and reports `unique = NA`. `unique = TRUE`
+  requires a singleton proof on the route taken (a universal theorem or a per-input certificate, e.g. one strictly
+  concave root region beating every other cell, face and limit strictly). This settles question (b) of the
+  [claims inventory](../research/evaluations/2026-11-24-claims-inventory-report.md) in favour of per-input evidence;
+  the outcome type needs a state for it, since `FitOutcome::undetermined()` also clears `certified`. Which routes
+  prove uniqueness: [uniqueness from certificates](../research/evaluations/2026-11-25-uniq-cover-math-report.md).
+  Rejected: keeping the default `TRUE` (claims more than the evidence; the sn and snorm reflected ties of TASK-254
+  showed it is sometimes false). Implementation: TASK-255.
+
 ## 2026-11-22
 
 - **Non-unique maxima carry a typed maximizer set (Jonas)**. A fit whose maximizers are proved to form more than one
