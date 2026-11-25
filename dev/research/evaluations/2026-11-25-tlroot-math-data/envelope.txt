@@ -1,0 +1,19 @@
+largest binary64 sample error versus 70 digits 5.7150471e-16
+70-digit inverse audit 93 pairs, largest adjusted shortfall 6.70885e-14
+fixed negative True, incumbent -61.86007985417714, lower [-5.719189571964223, -8.769472023682829, -1], upper [5.719189571964224, -0.08395499477089574, -1]
+point (0, -1.1082259776925427, -1), 70-digit log likelihood -61.860079854177122578077, shared bound -49.085656949728
+method            boxes   pending inverse cheap_prune gap wall
+shared             127999   63982       0      18 12.85813456 2.147s budget
+inverse            127999   51548  127999       0 0.01729140406 2.501s budget
+historical C++ gap 0.01729140387, Python difference +1.960103191e-10
+cascade            127999   51607  127925      74 0.01727628662 3.824s budget
+negative profiled   26359       0       0       2 3.1e-06 17.735s gap
+uniform depth bound 39, at most 1099511627775 boxes if the incumbent is the global optimum
+fixed negative False, incumbent -54.76031470298833, lower [-7.255186470688409, -8.57245578954252, -1], upper [7.25518647068841, 1.0733146840525816, 1]
+point (0, 0.07, 0.22), 70-digit log likelihood -54.803553553885152217043, shared bound -40.417861423098
+method            boxes   pending inverse cheap_prune gap wall
+shared             115175   57576       0      12 39.26115717 2.099s precision
+inverse            127999   52094  127999       0 0.6452584193 47.603s budget
+historical C++ gap 0.6452584116, Python difference +7.698830018e-09
+cascade            127999   52538  127563     436 0.6412907129 30.414s budget
+All envelope checks passed in 108.436s
