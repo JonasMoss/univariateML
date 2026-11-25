@@ -1,0 +1,231 @@
+From: Jonas Moss
+Subject: [PATCH] Keep marginal finite differences inside the support
+
+Base-commit: eb57cd592fa9844249d8b29b6e1916fb06e70801
+
+diff --git a/R/standard_errors.R b/R/standard_errors.R
+index 7083db2..d59f6eb 100644
+--- a/R/standard_errors.R
++++ b/R/standard_errors.R
+@@ -205,7 +205,11 @@ svine_bootstrap_par <- function(n_models, model) {
+ 
+   par <- svine_get_pars(model)
+   phi <- svine_scores(model$data, model)
+-  Hi <- solve(svine_hessian(model$data, model))
++  H <- svine_hessian(model$data, model)
++  if (any(!is.finite(phi)) || any(!is.finite(H))) {
++    stop("Non-finite scores or Hessian in the parametric bootstrap.", call. = FALSE)
++  }
++  Hi <- solve(H)
+ 
+   model$data <- NULL
+   models <- replicate(n_models, model, simplify = FALSE)
+@@ -213,6 +217,9 @@ svine_bootstrap_par <- function(n_models, model) {
+     xi <- sim_multipliers(n, ell)
+     phi_tilde <- c(xi[seq_len(np)]) * phi
+     par_b <- par - Hi %*% colMeans(phi_tilde)
++    if (any(!is.finite(par_b))) {
++      stop("Non-finite parameter update in the parametric bootstrap.", call. = FALSE)
++    }
+     models[[b]] <- svine_set_pars(models[[b]], par_b)
+   }
+   models
+@@ -302,19 +309,43 @@ with_parameters_mrg <- function(margins, parameters) {
+   margins
+ }
+ 
+-scores_mrg_1 <- function(x, model) {
++with_margin_steps <- function(model, calculate) {
++  # Scale down the original step for small nonzero coefficients.
++  steps <- 1e-3 * pmin(1, ifelse(model == 0, 1, abs(model)))
++  for (i in seq_len(10)) {
++    result <- tryCatch(calculate(steps), error = identity)
++    if (!inherits(result, "error") && all(is.finite(result))) {
++      return(result)
++    }
++    steps <- steps / 2
++  }
++  detail <- if (inherits(result, "error")) conditionMessage(result) else "non-finite values"
++  stop(
++    "Cannot compute finite differences for margin ", attr(model, "model"),
++    ": ", detail, ".", call. = FALSE
++  )
++}
++
++margin_difference <- function(model, p, step, evaluate) {
++  lower <- upper <- model
++  lower[p] <- model[p] - step
++  upper[p] <- model[p] + step
++  if (lower[p] == model[p] || upper[p] == model[p]) {
++    stop("step too small to change the coefficient", call. = FALSE)
++  }
++  (evaluate(upper) - evaluate(lower)) / (upper[p] - lower[p])
++}
++
++scores_mrg_1 <- function(x, model, steps = NULL) {
++  if (is.null(steps)) {
++    return(with_margin_steps(model, function(h) scores_mrg_1(x, model, h)))
++  }
+   npars <- length(model)
+   scores <- matrix(NA, length(x), npars)
+   for (p in seq_len(npars)) {
+-    tmp_model <- model
+-
+-    tmp_model[p] <- model[p] - 1e-3
+-    f_lwr <- univariateML::dml(x, tmp_model, log = TRUE)
+-
+-    tmp_model[p] <- model[p] + 1e-3
+-    f_upr <- univariateML::dml(x, tmp_model, log = TRUE)
+-
+-    scores[, p] <- (f_upr - f_lwr) / 2e-3
++    scores[, p] <- margin_difference(model, p, steps[p], function(m) {
++      univariateML::dml(x, m, log = TRUE)
++    })
+   }
+   scores
+ }
+@@ -326,20 +357,17 @@ scores_mrg <- function(x, model) {
+ }
+ 
+ hessian_mrg_1 <- function(x, model) {
+-  npars <- length(model)
+-  hessian <- matrix(NA, npars, npars)
+-  for (p in seq_len(npars)) {
+-    tmp_model <- model
+-
+-    tmp_model[p] <- model[p] - 1e-3
+-    s_lwr <- scores_mrg_1(x, tmp_model)
+-
+-    tmp_model[p] <- model[p] + 1e-3
+-    s_upr <- scores_mrg_1(x, tmp_model)
+-
+-    hessian[p, ] <- colMeans(s_upr - s_lwr) / 2e-3
+-  }
+-  hessian
++  with_margin_steps(model, function(steps) {
++    npars <- length(model)
++    hessian <- matrix(NA, npars, npars)
++    for (p in seq_len(npars)) {
++      # Use the same inner steps on both sides of the outer difference.
++      hessian[p, ] <- colMeans(margin_difference(model, p, steps[p], function(m) {
++        scores_mrg_1(x, m, steps)
++      }))
++    }
++    hessian
++  })
+ }
+ 
+ bdiag <- function(blocks) {
+@@ -369,29 +397,38 @@ hessian_mxd <- function(x, model, cores = 1) {
+   var_types <- model$copula$var_types
+   d <- length(model$margins)
+   disc_rank <- cumsum(var_types == "d")
+-  i_p <- 1
++  if (model$copula$npars == 0) {
++    return(hessian)
++  }
++
++  offset <- 0
+   for (m in seq_along(model$margins)) {
+-    is_disc <- var_types[m] == "d"
+-    for (p in seq_along(model$margins[[m]])) {
+-      tmp_model <- model$margins[[m]]
+-      tmp_u <- u
+-
+-      tmp_model[p] <- model$margins[[m]][p] - 1e-3
+-      tmp_u[, m] <- univariateML::pml(x[, m], tmp_model)
+-      # For discrete margins, to_unif produces a doubled matrix: F(x) columns
+-      # first, then F(x-) columns. Both halves of each discrete pair
+-      # must be updated when perturbing a marginal parameter.
+-      if (is_disc) tmp_u[, d + disc_rank[m]] <- univariateML::pml(x[, m] - 1, tmp_model)
+-      s_lwr <- svinecop_scores(tmp_u, model$copula, cores = cores)
+-
+-      tmp_model[p] <- model$margins[[m]][p] + 1e-3
+-      tmp_u[, m] <- univariateML::pml(x[, m], tmp_model)
+-      if (is_disc) tmp_u[, d + disc_rank[m]] <- univariateML::pml(x[, m] - 1, tmp_model)
+-      s_upr <- svinecop_scores(tmp_u, model$copula, cores = cores)
+-
+-      hessian[i_p, ] <- colMeans(s_upr - s_lwr) / 2e-3
+-      i_p <- i_p + 1
+-    }
++    margin <- model$margins[[m]]
++    x_m <- x[, m]
++    block <- with_margin_steps(margin, function(steps) {
++      block <- matrix(NA, length(margin), model$copula$npars)
++      for (p in seq_along(margin)) {
++        block[p, ] <- colMeans(margin_difference(margin, p, steps[p], function(perturbed) {
++          # A CDF can return 0 or 1 outside the support without an error.
++          if (any(!is.finite(univariateML::dml(x_m, perturbed, log = TRUE)))) {
++            stop("non-finite marginal log density", call. = FALSE)
++          }
++          tmp_u <- u
++          tmp_u[, m] <- univariateML::pml(x_m, perturbed)
++          # Update both F(x) and F(x-) for discrete margins.
++          if (var_types[m] == "d") {
++            tmp_u[, d + disc_rank[m]] <- univariateML::pml(x_m - 1, perturbed)
++          }
++          if (any(!is.finite(tmp_u))) {
++            stop("non-finite marginal probabilities", call. = FALSE)
++          }
++          svinecop_scores(tmp_u, model$copula, cores = cores)
++        }))
++      }
++      block
++    })
++    hessian[offset + seq_along(margin), ] <- block
++    offset <- offset + length(margin)
+   }
+ 
+   hessian
+diff --git a/tests/testthat/test-svine.R b/tests/testthat/test-svine.R
+index 5b79589..edd537d 100644
+--- a/tests/testthat/test-svine.R
++++ b/tests/testthat/test-svine.R
+@@ -129,3 +129,47 @@ test_that("print/summary", {
+   expect_equal(nrow(sm[[1]]), 2)
+   expect_equal(nrow(sm[[2]]), 1)
+ })
++
++test_that("margin derivatives handle small scale coefficients", {
++  x <- 1e-4 * c(-2, -1, 0, 1, 2)
++  margin <- univariateML::mlnorm(x)
++  sigma <- margin[[2]]
++  expect_equal(scores_mrg_1(x, margin) * sigma,
++               cbind(x / sigma, (x / sigma)^2 - 1), tolerance = 1e-5)
++  expect_equal(unname(hessian_mrg_1(x, margin) * sigma^2),
++               diag(c(-1, -2)), tolerance = 1e-5)
++})
++
++test_that("parametric bootstrap handles a GEV margin with a finite endpoint", {
++  skip_if(!"mlgev" %in% getNamespaceExports("univariateML"),
++          "GEV is unavailable in this version of univariateML")
++  data(returns)
++  x <- returns[1:100, 1:2]
++  fit <- svine(x, p = 1, family_set = "gaussian",
++               margin_families = list("gev", "norm"))
++
++  expect_gt(fit$copula$npars, 0)
++  expect_true(all(is.finite(svine_scores(x, fit))))
++  expect_true(all(is.finite(svine_hessian(x, fit))))
++  set.seed(1)
++  models <- svine_bootstrap_models(2, fit)
++  expect_length(models, 2)
++  for (model in models) {
++    expect_true(all(is.finite(svine_get_pars(model))))
++    expect_true(all(is.finite(svine_sim(20, 1, model, past = x))))
++  }
++
++  margin <- fit$margins[[1]]
++  endpoint <- unname(margin["mu"] - margin["sigma"] / margin["xi"])
++  expect_lt(margin[["xi"]], 0)
++  # Bring one observation close enough that the initial stencil crosses
++  # the endpoint even with coefficient-scaled steps.
++  near <- replace(x[, 1], which.max(x[, 1]), endpoint - 1e-5)
++  perturbed <- margin
++  perturbed[["sigma"]] <- 0.999 * margin[["sigma"]]
++  expect_identical(univariateML::dml(max(near), perturbed, log = TRUE), -Inf)
++  expect_true(all(is.finite(hessian_mrg_1(near, margin))))
++  expect_true(all(is.finite(hessian_mxd(cbind(near, x[, 2]), fit))))
++  outside <- replace(near, which.max(near), endpoint + 0.01)
++  expect_error(scores_mrg_1(outside, margin), "Cannot compute finite differences")
++})
