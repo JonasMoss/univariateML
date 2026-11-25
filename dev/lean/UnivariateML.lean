@@ -19,3 +19,6 @@ public import UnivariateML.Family.Endpoint
 public import UnivariateML.Family.Fatigue
 public import UnivariateML.Family.LomaxTwoPoint
 public import UnivariateML.Family.ClosedForm
+public import UnivariateML.Family.Beta
+public import UnivariateML.Family.Cauchy
+public import UnivariateML.Family.NegBinomial
