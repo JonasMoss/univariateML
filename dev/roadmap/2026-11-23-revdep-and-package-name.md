@@ -54,3 +54,23 @@ Tally: 5 unchanged, 3 fixed or mostly fixed by two metadata shims (support `type
 kdensity (Jonas's) needs a choice, 2 upstream test changes caused by deliberate contract changes (bifrost,
 rvinecopulib's message match). The breakage is mild for the size of the change; it does not by itself argue for a
 new package name.
+
+### Rerun with the support `type` shim (2026-11-25, master 19b2fb7b)
+
+Same setup, this tree only (`build/scratch/revdep-new.sh`, logs in `build/revdep/check-new2/`). Unchanged:
+ale, autogam, EBcoBART, peppwR, RealSurvSim OK; kdensity install error; piecenorms 2 ERRORs (`core_dunif`); bifrost
+1 ERROR (PR proposal TASK-247).
+
+- **svines: tests now pass; one example fails.** With `family_set = "parametric"` svines offers every continuous
+  family to `model_select`. On `returns[1:100, 1]` the new `mlgev` wins by AIC (logLik 293.42 against logistic
+  292.39; 1.5.0 had no GEV), with $\xi=-0.403$, so the upper support end $0.0316$ lies just above the sample
+  maximum $0.0282$. `svine_bootstrap_models()` then takes finite differences of `dml(log = TRUE)` with absolute
+  steps of $10^{-3}$ in every coefficient (7% of $\sigma$), twice nested for the Hessian. Perturbed fits put the
+  sample maximum outside the support, the Hessian gets $-\infty$ entries, the one-step update is NaN, and the
+  bootstrap margins carry NaN coefficients (with the original `certified`/`unique` attributes, copied by
+  `with_parameters_mrg`). The NaN then fails in our support expression. Not a univariateML defect: the same
+  happens for any selected family whose support depends on its coefficients. Upstream options: relative steps,
+  dropping families with coefficient-dependent support from the bootstrap, or a non-finite check. A PR proposal
+  would be svines-side; nothing is drafted.
+- **rvinecopulib: 3 failures left**, all known: the two Rayleigh message tests (PR proposal TASK-248) and the
+  `binom` adapter calling `mlbinom(x)` without `size` (question for Jonas in TASK-248).
