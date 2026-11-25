@@ -1,0 +1,10 @@
+U witness interior point = -63457199/64481201
+U witness / junction = 1.4505376834691068628004585560321804
+minimum of 45 anchored log-density shape scores = 1.5494502802414874698648280552366541e-30
+minimum of 45 negative-shape score slacks = 3.3068807735812772880709951109505163
+collapse example L/B at sigma/epsilon=0.1 = 0.80388386486181596807422976653863091
+collapse example L/B at sigma/epsilon=0.01 = 0.98000399880039986005018552606166689
+collapse example L/B at sigma/epsilon=0.0001 = 0.99980000000399999987999800439999985
+shared-scale envelope = 0.48498407488789267791553111255476614
+observation-wise independent-scale envelope = 30.864197530864197530864197530864198
+All checks passed.
