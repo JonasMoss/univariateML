@@ -240,6 +240,19 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   [Student t](research/evaluations/2026-11-25-tcert-math-report.md),
   [Tukey lambda roots](research/evaluations/2026-11-25-tlroot-math-report.md);
   TASK-249 to TASK-253) and the bifrost PR proposal (TASK-247).
+- Batch check of master c02f9e81 plus 4c1e8658 (2026-11-25, workstation,
+  GCC 15.2, after [uniq-na](research/evaluations/2026-11-25-uniq-na-report.md)
+  (TASK-255), sn-ties (TASK-254), wasm-leak (TASK-266), the Lean library and
+  the day's math reports): the only snapshot changes are the intended
+  `unique` TRUE to NA moves (native and double-only 1,222 each, modifier
+  routes 337 each; checker `2026-11-25-uniq-na-data/compare.py`, 0
+  unexpected). `just strict` first flagged the snorm singleton site changed
+  by sn-ties after uniq-na branched; its TASK-254 exemption was updated
+  (4c1e8658) and the rerun is clean. `just cpp-test` 136/136;
+  `just cpp-test-no-long-double` 181/181; `just test-full`
+  `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67773 ]`; `just js-test` 601/601;
+  `just relations` and `just site-check` green. The 2026-11-15 snapshot
+  baselines predate the NA moves; refresh them before the next batch.
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
