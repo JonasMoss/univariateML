@@ -15,6 +15,7 @@ struct DgammaResult { double shape, rate, logLik; int iterations; DgammaStatus s
   std::int64_t large_shape_iterations=0;
   double failed_shape=NAN,failed_rate=NAN;
   double rate_score_roundoff=NAN;
+  bool singleton_proved = false;
 };
 namespace dgamma_detail {
 // Searches initialized at large shape share one rate-solver allowance,
@@ -419,6 +420,7 @@ namespace cppunivariate {
 inline DgammaResult dgamma_mle(span x,double tol=1e-10,int maxit=400,double shape=NAN,double rate=NAN) {
   auto r=dgamma_accuracy_search(x,tol,maxit,shape,rate);
   if(r.status!=DgammaStatus::Ok)return r;
+  r.singleton_proved=!std::isnan(shape) || !std::isnan(rate);
   std::array<double,3> q{{std::log(r.shape),std::log(r.rate),0}};
   const std::array<bool,3> free{{std::isnan(shape),std::isnan(rate),false}};
   dnorm_detail::Cells cells;if(!cells.init(x)){r.status=DgammaStatus::IterationFailure;return r;}
@@ -463,7 +465,7 @@ inline FitOutcome outcome(const DgammaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case DgammaStatus::Ok: return FitOutcome::estimate(true);
+    case DgammaStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case DgammaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case DgammaStatus::InvalidControl: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case DgammaStatus::PointMass: return FitOutcome::limit(true);

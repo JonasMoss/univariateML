@@ -28,7 +28,7 @@ struct Gb2Result {
   StopDetail stop_detail{};
   bool certified=true;
   bool accuracy_failure=false;
-  std::int64_t profile_evaluations=0;
+  std::int64_t profile_evaluations=0; bool singleton_proved = false;
 };
 } // namespace cppunivariate
 #include "transport_accuracy.hpp"
@@ -303,7 +303,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     if(p==1) {
       const auto r=burr_mle_holds(x,q,a,b,tol,maxit);
       out={r.shape1,r.shape2,1,r.scale,r.logLik,r.iterations,Gb2Status::SearchUnresolved,r.stop_detail};
-      out.certified=r.certified;
+      out.certified=r.certified;out.singleton_proved=r.singleton_proved;
       if(r.status==BurrStatus::Ok)out.status=Gb2Status::Ok;
       if(r.status==BurrStatus::InvalidInit)out.status=Gb2Status::InvalidData;
       if(r.status==BurrStatus::Unbounded)out.status=Gb2Status::Unbounded;
@@ -316,7 +316,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     } else {
       const auto r=invburr_mle_holds(x,p,a,b,tol,maxit);
       out={1,r.shape2,r.shape1,r.scale,r.logLik,r.iterations,Gb2Status::SearchUnresolved,r.stop_detail};
-      out.certified=r.certified;
+      out.certified=r.certified;out.singleton_proved=r.singleton_proved;
       if(r.status==InvBurrStatus::Ok)out.status=Gb2Status::Ok;
       if(r.status==InvBurrStatus::InvalidInit)out.status=Gb2Status::InvalidData;
       if(r.status==InvBurrStatus::Unbounded)out.status=Gb2Status::Unbounded;
@@ -345,7 +345,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     return gb2_shape_power_detail::fit(x,span{logs.data(),logs.size()},q,p,b,tol,maxit);
   if(std::isnan(p) && std::isnan(q) && !std::isnan(a) && !std::isnan(b)) {
     const auto concentrated=gb2_concave_detail::concentrated_beta(x,a,b,tol,maxit);
-    if(concentrated.status==Gb2Status::Ok)return concentrated;
+    if(concentrated.status==Gb2Status::Ok) {auto fit=concentrated;fit.singleton_proved=true;return fit;}
   }
   const auto solve_root=[&](auto score){return burr_hold_detail::root(score,maxit);};
   // Constant samples still have a finite constrained maximum when only
@@ -399,6 +399,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
   }
   if(!std::isnan(p)&&!std::isnan(q)&&(std::isnan(a)||std::isnan(b))) {
     auto out=gb2_concave_detail::fit(d,q,a,p,b,tol,maxit);
+    out.singleton_proved=true;
     if(d.relative&&out.status==Gb2Status::Ok) {
       // logLik is the log likelihood at the returned coefficients. On a
       // near-constant sample the rounded scale can lie measurably below the
@@ -799,6 +800,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     std::isnan(p)?best.p:p,std::isnan(b)?std::exp(logb):b,best.ll,evals,status};
   if(out.status==Gb2Status::Ok&&std::isnan(b)&&!local_accuracy::represented(out.scale,out.scale,tol)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;{if(out.shape1>0 && out.shape2>0 && out.shape3>0 && out.scale>0)record_accuracy(out,tol,{out.shape1,out.shape2,out.shape3,out.scale},{std::isnan(q)?out.shape1:0,std::isnan(a)?out.shape2:0,std::isnan(p)?out.shape3:0,std::isnan(b)?out.scale:0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}
   out.profile_evaluations=work.used;
+  out.singleton_proved=!std::isnan(a) && !std::isnan(b);
   if(work.exhausted) {
     // A successful locally checked nomination survives an unclosed search.
     if(out.status==Gb2Status::Ok)out.certified=false;
@@ -831,7 +833,7 @@ inline FitOutcome outcome(const Gb2Result& r) {
     for(double v:r.stop_detail.limit_coef)if(!(v>0) && r.status==Gb2Status::DoubleParetoBoundary)return FitOutcome::failure(OutcomeReason::Evaluation);
   }
   switch (r.status) {
-    case Gb2Status::Ok: return FitOutcome::estimate(r.certified);
+    case Gb2Status::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case Gb2Status::TrGammaBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
     case Gb2Status::InvTrGammaBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
     case Gb2Status::LognormalBoundary: return FitOutcome::limit(false);

@@ -18,7 +18,7 @@ inline constexpr double kTlambdaLambdaUpper = 1.0;
 
 enum class TlambdaStatus { Ok, InvalidData, InvalidShape, IterationFailure, Unbounded, CollapseLimit, InvalidSupport, CertificateFailure, TransformFailure };
 struct TlambdaResult { double mu,sigma,lambda,logLik; int iterations; TlambdaStatus status; unsigned restricted = 0; bool certified=false; double certificate_lower=NAN,certificate_upper=NAN; StopDetail stop_detail={};
-  MaximizerSet maximizers{}; };
+  MaximizerSet maximizers{}; bool singleton_proved = false; };
 namespace tlambda_detail {
 inline TlambdaResult uniform_fit(double lo,double hi,double n,double lambda,int maxit,double tol=1e-10) {
   maxit = static_cast<int>(solver_budget(maxit));
@@ -189,7 +189,8 @@ inline FitOutcome outcome(const TlambdaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     case TlambdaStatus::TransformFailure:return FitOutcome::failure(OutcomeReason::Evaluation);
-    case TlambdaStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizers.size == 0);
+    case TlambdaStatus::Ok: return r.maximizers.size ? FitOutcome::estimate(r.certified, false) :
+        (r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified));
     case TlambdaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TlambdaStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case TlambdaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

@@ -48,7 +48,7 @@ struct BinomResult {
 
   bool unique = true;
   bool evaluation_failure = false;
-  MaximizerSet maximizers{};
+  MaximizerSet maximizers{}; bool singleton_proved = false;
 };
 
 inline double binom_lchoose(double n, double k) {
@@ -135,13 +135,15 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
     if (!(held_prob>=0 && held_prob<=1) || !std::isfinite(held_prob) || maxit<1 || !(tol>0) || !std::isfinite(tol)) return bad();
     for (int v:x) if (v<0) return bad();
     double size=size_or_nan;
+    bool singleton_proved=std::isfinite(size) || held_prob==1;
     int iterations=0;
     if (!std::isnan(size) && (!std::isfinite(size) || size<max_x || size!=std::floor(size))) return bad();
     if (std::isnan(size)) {
       if (held_prob==0) { if (max_x>0) return bad(); size=0; }
       else if (held_prob==1) { if (var_pop!=0) return bad(); size=max_x; }
       else {
-        if (std::all_of(x.begin(),x.end(),[&](int v){return v==max_x;})) {
+        const bool constant = std::all_of(x.begin(),x.end(),[&](int v){return v==max_x;});
+        if (constant) {
           const double tied = binom_detail::constant_tie_size(max_x, held_prob, 9007199254740992.);
           if (std::isfinite(tied)) {
             const double ll = dn * distributions::dbinom(max_x, tied, held_prob, true);
@@ -177,6 +179,16 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
           if (delta(mid)>0) lo=mid+1; else hi=mid;
         }
         size=lo;
+        const double margin=32*std::numeric_limits<double>::epsilon()*dn*
+            (1+std::abs(std::log1p(-held_prob)));
+        if (constant) {
+          // The adjacent ratio has the sign of x - p*(k+1) for a
+          // constant sample. FMA resolves even the neighbor of an exact tie.
+          singleton_proved=std::fma(held_prob,lo+1,-max_x)>0 &&
+              (lo==max_x || std::fma(held_prob,lo,-max_x)<0);
+        } else {
+          singleton_proved=delta(lo)<-margin && (lo==max_x || delta(lo-1)>margin);
+        }
       }
     }
     double ll=0;
@@ -186,7 +198,9 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
       if (v>0) ll+=v*std::log(held_prob);
       if (size>v) ll+=(size-v)*std::log1p(-held_prob);
     }
-    return {size,held_prob,ll,iterations,BinomStatus::Ok};
+    BinomResult result{size,held_prob,ll,iterations,BinomStatus::Ok};
+    result.singleton_proved=singleton_proved;
+    return result;
   }
 
   // Build sorted unique values + counts (replaces arma::unique + match).
@@ -279,7 +293,11 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
   // All-zero data: size is not identifiable; choose size=0, prob=0.
   if (x_bar == 0.0) return {0.0, 0.0, 0.0, 0, BinomStatus::Ok};
 
-  if (uniq.size() == 1) return {static_cast<double>(max_x),1.0,0.0,0,BinomStatus::Ok};
+  if (uniq.size() == 1) {
+    BinomResult result{static_cast<double>(max_x),1.0,0.0,0,BinomStatus::Ok};
+    result.singleton_proved=true;
+    return result;
+  }
 
   if (binom_detail::poisson_face(x, x_bar, var_pop)) {
     return {kNaN, kNaN, kNaN, 0, BinomStatus::Underdispersed};
@@ -360,7 +378,11 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
     if(increment(mid)>0) lo=mid+1; else hi=mid;
   }
   const double best_size=static_cast<double>(hi);
-  return {best_size,x_bar/best_size,log_likelihood(best_size),iterations,BinomStatus::Ok};
+  BinomResult result{best_size,x_bar/best_size,log_likelihood(best_size),iterations,BinomStatus::Ok};
+  const auto margin=32*std::numeric_limits<CPPUNIV_EXTENDED_REAL>::epsilon()*n;
+  result.singleton_proved=hi<=maxset_count && increment(hi)<-margin &&
+      (hi==max_x || increment(hi-1)>margin);
+  return result;
 
   }();
   if(stopped.status==BinomStatus::Underdispersed) {
@@ -369,6 +391,8 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
     stopped.stop_detail=discrete_face(StopModel::Pois,{m},ll);
   }
   if(stopped.status==BinomStatus::Ok) {
+    // Held size gives strict binomial concavity for positive size.
+    if (size_or_nan>0) stopped.singleton_proved=true;
     double ll=0,correction=0;
     for(int v:x) {
       const double value=distributions::dbinom(v,stopped.size,stopped.prob,true)-correction;
@@ -385,6 +409,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
      std::all_of(x.begin(),x.end(),[](int v){return v==0;})) {
     const bool fs=!std::isnan(size_or_nan),fp=!std::isnan(held_prob);
     stopped.unique=(fs || fp) && !((!fs && held_prob==0) || (!fp && size_or_nan==0));
+    stopped.singleton_proved=stopped.unique;
     if (!stopped.unique) {
       auto& set = stopped.maximizers;
       set.dimension = 2;
@@ -409,7 +434,8 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
 namespace cppunivariate {
 inline FitOutcome outcome(const BinomResult& r) {
   switch(r.status) {
-    case BinomStatus::Ok: return FitOutcome::estimate(true,r.unique);
+    case BinomStatus::Ok: return !r.unique ? FitOutcome::estimate(true, false) :
+        (r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true));
     case BinomStatus::SizeTooSmall: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BinomStatus::Underdispersed: return FitOutcome::limit(true);
     case BinomStatus::IterationFailure: return FitOutcome::failure(r.evaluation_failure?OutcomeReason::Evaluation:OutcomeReason::NoConvergence);

@@ -180,7 +180,7 @@ inline FitOutcome outcome(const EmgResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.comparison_tie && r.status == EmgStatus::IterationFailure) return comparison_outcome_of(r);
   switch (r.status) {
-    case EmgStatus::Ok: return FitOutcome::estimate(true);
+    case EmgStatus::Ok: return FitOutcome::singleton(true);
     case EmgStatus::NormalLimit: return FitOutcome::limit();
     case EmgStatus::TranslatedExponentialLimit: return FitOutcome::limit();
     case EmgStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

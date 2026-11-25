@@ -75,7 +75,7 @@ const Held z = c;
     for (double v : x) ll += cppunivariate::distributions::dtriang(v,c[0],c[1],c[2],true);
     return ll;
   });
-  if (!o.uniqueness_known) out.candidates.push_back({out.estimates,r.logLik,r.logLik,"triang"});
+  if (r.not_unique && !o.uniqueness_known) out.candidates.push_back({out.estimates,r.logLik,r.logLik,"triang"});
   if (r.reflection_tie && !r.maximizers.size) {
     const double minimum = *std::min_element(x.begin(), x.end());
     const double maximum = *std::max_element(x.begin(), x.end());

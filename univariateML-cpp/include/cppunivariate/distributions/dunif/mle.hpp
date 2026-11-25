@@ -50,7 +50,7 @@ inline DiscreteUnifResult dunif_mle(ispan x, double held_min=std::numeric_limits
 
 inline FitOutcome outcome(const DiscreteUnifResult& r) {
   switch (r.status) {
-    case DiscreteUnifStatus::Ok: return FitOutcome::estimate(true);
+    case DiscreteUnifStatus::Ok: return FitOutcome::singleton(true);
     case DiscreteUnifStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
   }
   return {};

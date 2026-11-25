@@ -28,6 +28,7 @@ struct BnbinomResult {
   std::array<double,2> profile_alpha{{NAN,NAN}};
   std::array<double,4> profile_mode{{NAN,NAN,NAN,NAN}};
   bool certified=false;
+  bool singleton_proved=false;
   bool accuracy_failure=false;
   bool local_accuracy_fallback=false;
   bool swap_symmetry=false;
@@ -48,13 +49,9 @@ inline FitOutcome outcome(const BnbinomResult& r) {
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case BnbinomStatus::Ok: {
-      auto result = FitOutcome::estimate(r.certified, r.unique);
-      // Reflection establishes another global branch. The existing
-      // coefficient cover does not isolate every branch to the fit tolerance.
-      result.uniqueness_known = r.unique;
-      return result;
-    }
+    case BnbinomStatus::Ok:
+      return r.singleton_proved ? FitOutcome::singleton(r.certified)
+                                : FitOutcome::unknown_cardinality(r.certified);
     case BnbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BnbinomStatus::NegativeBinomialLimit: return FitOutcome::limit(r.certified);
     case BnbinomStatus::PoissonLimit: return FitOutcome::limit(r.certified);
@@ -241,7 +238,7 @@ inline BnbinomResult scalar_fit(const Cost &c, double tol, int maxit) {
       const double ll=likelihood(c.d,p);
       if(!std::isfinite(ll))return stop(false);
       out.size=p[0];out.alpha=p[1];out.beta=p[2];out.logLik=ll;
-      out.status=BnbinomStatus::Ok;return out;
+      out.status=BnbinomStatus::Ok;out.singleton_proved=true;return out;
     }
     if (evaluations+3>cap) return stop(true);
     const double mid=lo+(hi-lo)/2;

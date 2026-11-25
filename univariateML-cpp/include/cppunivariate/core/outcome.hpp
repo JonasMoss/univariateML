@@ -35,12 +35,22 @@ struct FitOutcome {
   bool unique = true;
   bool uniqueness_known = true;
 
-  static constexpr FitOutcome estimate(bool certified = true, bool unique = true) {
+  // Retained for snorm until TASK-254 migrates its outcome mapping.
+  static constexpr FitOutcome estimate(bool certified) {
+    return singleton(certified);
+  }
+  static constexpr FitOutcome estimate(bool certified, bool unique) {
     return {OutcomeKind::Estimate, OutcomeReason::None, certified, unique};
+  }
+  static constexpr FitOutcome singleton(bool certified) {
+    return estimate(certified, true);
+  }
+  static constexpr FitOutcome unknown_cardinality(bool certified) {
+    return {OutcomeKind::Estimate, OutcomeReason::None, certified, false, false};
   }
   // A candidate survived the accuracy gate, but cardinality is undetermined.
   static constexpr FitOutcome undetermined() {
-    return {OutcomeKind::Estimate, OutcomeReason::None, false, false, false};
+    return unknown_cardinality(false);
   }
   static constexpr FitOutcome limit(bool certified = true) {
     return {OutcomeKind::Limit, OutcomeReason::None, certified, true};

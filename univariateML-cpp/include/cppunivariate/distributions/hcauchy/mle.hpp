@@ -18,7 +18,7 @@ struct HcauchyResult { double mu, sigma, logLik; int iterations; HcauchyStatus s
 
 inline FitOutcome outcome(const HcauchyResult& r) {
   switch (r.status) {
-    case HcauchyStatus::Ok: return FitOutcome::estimate(true);
+    case HcauchyStatus::Ok: return FitOutcome::singleton(true);
     case HcauchyStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case HcauchyStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case HcauchyStatus::ScaleBoundary: return FitOutcome::nonexistence(OutcomeReason::Unattained);

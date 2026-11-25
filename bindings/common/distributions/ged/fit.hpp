@@ -30,7 +30,7 @@ inline FitResult fit_ged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg 
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::GedStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    if (res.status == cppunivariate::GedStatus::Ok && !o.uniqueness_known) {
+    if (res.status == cppunivariate::GedStatus::Ok && res.stop_detail.comparison_tie) {
       out.error = "The likelihood comparison between GED candidates could not be resolved.";
       out = stop_failure(std::move(out), res.stop_detail, PayloadKind::Comparison, {"mean","sd","nu"});
     }

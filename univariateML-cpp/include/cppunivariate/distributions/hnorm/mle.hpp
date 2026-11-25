@@ -55,7 +55,7 @@ inline HnormResult hnorm_mle(span x, double held_mu = std::numeric_limits<double
 namespace cppunivariate {
 inline FitOutcome outcome(const HnormResult& r) {
   switch (r.status) {
-    case HnormStatus::Ok: return FitOutcome::estimate(true);
+    case HnormStatus::Ok: return FitOutcome::singleton(true);
     case HnormStatus::DegenerateData: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case HnormStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case HnormStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);

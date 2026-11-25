@@ -655,7 +655,7 @@ TEST_CASE("bbinom: a fixed-size comparison keeps the enclosed finite shapes") {
   const auto o=cppunivariate::outcome(r);
   CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
   CHECK_FALSE(o.certified);
-  CHECK(o.unique);
+  CHECK_FALSE(o.uniqueness_known);
   const auto& finite=r.stop_detail.candidates[cppunivariate::comparison_choice(r)];
   REQUIRE(cppunivariate::accurate_point(r,finite));
   REQUIRE(finite.coef.size()==3);

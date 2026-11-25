@@ -10,7 +10,7 @@
 namespace cppunivariate {
 enum class Pareto2Status { Ok, ExponentialLimit, InvalidStart, IterationFailure, AccuracyFailure,
   Unbounded, Unattained, UnsupportedThreshold, LimitRepresentationFailure };
-struct Pareto2Result { double shape,scale,min,logLik; int iterations; Pareto2Status status; StopDetail stop_detail{}; LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None; bool limit_certified = false; };
+struct Pareto2Result { double shape,scale,min,logLik; int iterations; Pareto2Status status; StopDetail stop_detail{}; LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None; bool limit_certified = false; bool singleton_proved = false; };
 
 inline Pareto2Result pareto2_mle(span x, double min, double tol, int maxit, double shape=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
   if(std::isnan(min)) {return {NAN,NAN,min,NAN,0,Pareto2Status::UnsupportedThreshold};}
@@ -32,6 +32,7 @@ inline Pareto2Result pareto2_mle(span x, double min, double tol, int maxit, doub
         for(double v:x){const double term=distributions::dpareto2(v,a,b,min,true)-carry;
           const double next=ll+term;carry=(next-ll)-term;ll=next;}
         Pareto2Result out{a,b,min,ll,iterations,std::isfinite(ll)&&a>0&&b>0&&std::isfinite(a)&&std::isfinite(b)?Pareto2Status::Ok:Pareto2Status::IterationFailure};
+        out.singleton_proved=true;
         if(out.status!=Pareto2Status::Ok)out.certificate_failure=LomaxCertificateFailure::Arithmetic;
         if(out.status==Pareto2Status::Ok)record_accuracy(out,tol,{a,b,min},{free_shape?a:0,free_scale?b:0,0},input_error);
         if(out.stop_detail.accuracy_stop!=AccuracyStop::None)out.status=Pareto2Status::AccuracyFailure;
@@ -115,7 +116,7 @@ inline Pareto2Result pareto2_mle(span x, double min, double tol, int maxit, doub
     out.status=Pareto2Status::LimitRepresentationFailure;return out;
   }
   Pareto2Result out{r.kappa,fitted_scale,min,r.logLik,r.iterations,static_cast<Pareto2Status>(r.status),detail,r.certificate_failure,
-    r.limit_certified && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})};
+    r.limit_certified && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}),r.singleton_proved};
   if(out.stop_detail.accuracy_stop!=AccuracyStop::None && out.shape>0 && out.scale>0)
     record_accuracy(out,tol,{out.shape,out.scale,min},{std::isnan(shape)?out.shape:0,std::isnan(scale)?out.scale:0,0});
   return out;
@@ -129,7 +130,7 @@ inline FitOutcome outcome(const Pareto2Result& r) {
     case Pareto2Status::Unattained:return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case Pareto2Status::UnsupportedThreshold:return FitOutcome::failure(OutcomeReason::Unsupported);
     case Pareto2Status::LimitRepresentationFailure:return FitOutcome::failure(OutcomeReason::Evaluation);
-    case Pareto2Status::Ok: return FitOutcome::estimate(true);
+    case Pareto2Status::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case Pareto2Status::ExponentialLimit: return FitOutcome::limit(r.limit_certified);
     case Pareto2Status::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case Pareto2Status::IterationFailure: return r.certificate_failure == LomaxCertificateFailure::Budget ? FitOutcome::budget() : FitOutcome::failure(r.certificate_failure==LomaxCertificateFailure::Arithmetic?OutcomeReason::Evaluation:OutcomeReason::NoConvergence);

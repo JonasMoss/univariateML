@@ -57,7 +57,7 @@ inline FitOutcome outcome(const ParalogisResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case ParalogisStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ParalogisStatus::Ok: return r.certified ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case ParalogisStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case ParalogisStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ParalogisStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

@@ -63,7 +63,7 @@ inline ExpResult exp_mle(span x,double rate) {
 
 inline FitOutcome outcome(const ExpResult& r) {
   switch (r.status) {
-    case ExpStatus::Ok: return FitOutcome::estimate();
+    case ExpStatus::Ok: return FitOutcome::singleton(true);
     case ExpStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case ExpStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ExpStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

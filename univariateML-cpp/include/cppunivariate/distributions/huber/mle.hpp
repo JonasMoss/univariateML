@@ -22,7 +22,7 @@ struct HuberResult {
   // Standardized optimum before the public coefficients were rounded:
   // y=(x-std_center)/std_unit, location std_m and scale std_s in those units.
   double std_center=std::numeric_limits<double>::quiet_NaN(),std_unit=std::numeric_limits<double>::quiet_NaN(),
-      std_m=std::numeric_limits<double>::quiet_NaN(),std_s=std::numeric_limits<double>::quiet_NaN(); };
+      std_m=std::numeric_limits<double>::quiet_NaN(),std_s=std::numeric_limits<double>::quiet_NaN(); bool singleton_proved = false; };
 
 inline bool family_point(const HuberResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
@@ -39,7 +39,7 @@ inline FitOutcome outcome(const HuberResult& r) {
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
-    case HuberStatus::Ok: return FitOutcome::estimate(true);
+    case HuberStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case HuberStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case HuberStatus::UnboundedLikelihood: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case HuberStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
@@ -991,6 +991,14 @@ inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
            static_cast<double>(offset+q[0]),fitted_scale,tol)) ||
       (free_scale && !accuracy_detail::scale_projection(fitted_scale,unit,q[1],tol)))
     return failed_accuracy();
+  // For held epsilon, the log inverse-scale term is strictly concave
+  // in inverse scale. A quadratic residual supplies strict location
+  // curvature at the solution. A held location removes that direction.
+  const auto cut=fitted_shape*(fitted_scale/unit);
+  result.singleton_proved=!free_shape && (!std::isnan(mu) ||
+    (!flat && std::any_of(sample.begin(),sample.end(),[&](ExtendedReal residual) {
+      return std::abs(residual-q[0])<cut*(1-8*tol);
+    })));
   result.mu=fitted_location;
   result.sigma=fitted_scale;
   result.epsilon=fitted_shape;

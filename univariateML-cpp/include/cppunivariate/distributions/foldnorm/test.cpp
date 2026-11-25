@@ -3,6 +3,7 @@
 #include "cppunivariate/distributions/rng_std.hpp"
 #include <vector>
 #include <limits>
+#include <array>
 TEST_CASE("foldnorm golden and second moment identity") {
   const auto g=mltest::load_distribution_golden("foldnorm");
   const auto r=cppunivariate::foldnorm_mle({g.data.data(),g.data.size()});
@@ -149,4 +150,18 @@ TEST_CASE("foldnorm underflow does not fabricate a positive-scale accuracy witne
     REQUIRE(c.coef.size()==2);
     CHECK(c.coef[1]>0);
   }
+}
+
+TEST_CASE("foldnorm separates value certification from joint cardinality") {
+  const std::array<double, 3> sample{2.0576829946725703, 2.0576829946725703,
+                                     2.7624976490504753};
+  const cppunivariate::span x{sample.data(), sample.size()};
+  const auto joint = cppunivariate::outcome(cppunivariate::foldnorm_mle(x));
+  CHECK(joint.kind == cppunivariate::OutcomeKind::Estimate);
+  CHECK(joint.certified);
+  CHECK_FALSE(joint.uniqueness_known);
+  const auto held = cppunivariate::outcome(cppunivariate::foldnorm_mle(x, 1e-10, 200, 2.));
+  CHECK(held.kind == cppunivariate::OutcomeKind::Estimate);
+  CHECK(held.uniqueness_known);
+  CHECK(held.unique);
 }

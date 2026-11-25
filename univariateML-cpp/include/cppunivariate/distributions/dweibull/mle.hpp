@@ -56,7 +56,8 @@ inline FitOutcome outcome(const DweibullResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case DweibullStatus::Ok: return FitOutcome::estimate(true);
+    // Strict log-likelihood concavity on the identified slices (README.md).
+    case DweibullStatus::Ok: return FitOutcome::singleton(true);
     case DweibullStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case DweibullStatus::InvalidControl: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case DweibullStatus::PointMass: return FitOutcome::limit(true);

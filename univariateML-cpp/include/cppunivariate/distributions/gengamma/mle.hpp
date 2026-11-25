@@ -18,7 +18,7 @@ struct GengammaResult {
   int iterations;
   GengammaStatus status;
   bool certified=false;
-  StopDetail stop_detail{};
+  StopDetail stop_detail{}; bool singleton_proved = false;
 };
 namespace gengamma_fit_detail {
 inline double mean_loglik(span y,double mu,double sigma,double q) {
@@ -117,7 +117,7 @@ inline GengammaResult gengamma_mle_core(span x,double tol,int maxit,
       return accuracy_failure(mu,sigma,q,800*std::numeric_limits<double>::epsilon()*(1+std::abs(mu))/sigma);
     const double ll=gengamma_fit_detail::mean_loglik(logs,mu,sigma,q)*y.size();
     if (!std::isfinite(ll)) {out.status=GengammaStatus::IterationFailure;return out;}
-    out.mu=mu;out.sigma=sigma;out.Q=q;out.logLik=ll;out.status=GengammaStatus::Ok;
+    out.mu=mu;out.sigma=sigma;out.Q=q;out.logLik=ll;out.status=GengammaStatus::Ok;out.singleton_proved=true;
     out.certified=true;return out;
   }
   if (!fs && constant && (fm || at_mu)) {
@@ -295,7 +295,7 @@ inline FitOutcome outcome(const GengammaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case GengammaStatus::Ok: return FitOutcome::estimate(r.certified);
+    case GengammaStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case GengammaStatus::TiedPowerPareto: return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case GengammaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GengammaStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);

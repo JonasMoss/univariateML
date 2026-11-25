@@ -77,7 +77,7 @@ struct HyperResult {
   // continuum of vectors), 3 = size one (only m / N enters). Set by hyper_mle.
   bool unique = true;
   int non_unique_reason = 0;
-  bool uniqueness_known = true;
+  bool uniqueness_known = true; bool singleton_proved = false;
   MaximizerSet maximizers{};
 };
 
@@ -760,6 +760,7 @@ inline HyperResult hyper_mle_search(span x, double k, double N, double m) {
 
 inline HyperResult hyper_mle(span x, double k, double N, double m) {
   auto out=hyper_mle_search(x, k, N, m);
+  out.singleton_proved=false;
   if(out.status==HyperStatus::FaceUnresolved || out.status==HyperStatus::FaceTie ||
      out.status==HyperStatus::NumericalFailure) {
     for(const auto& candidate:out.stop_detail.candidates) {
@@ -858,9 +859,24 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
       } else if (set.singleton()) {
         set = {};
         out.unique = true;
+        out.singleton_proved = true;
         out.status = HyperStatus::Ok;
       }
     }
+  }
+  const int free_counts=int(std::isnan(k))+int(std::isnan(N))+int(std::isnan(m));
+  if (out.status==HyperStatus::Ok && out.certified && out.unique) {
+    // A deterministic sample identifies a singleton when its forced
+    // support point and the holds pin both free counts.
+    const bool atom=out.logLik==0 && !x.empty() &&
+        std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];});
+    const double size=std::isnan(k)?m:k;
+    const bool pinned_atom=atom &&
+        ((!std::isnan(N) && x[0]==N) ||
+         (std::isnan(N) && std::isfinite(size) &&
+          (size==maxset_count || (x[0]>0 && x[0]<size))));
+    // An untied scalar integer profile has one crossing.
+    out.singleton_proved=out.singleton_proved || free_counts<=1 || pinned_atom;
   }
   return out;
 }
@@ -878,8 +894,10 @@ inline FitOutcome outcome(const HyperResult& r) {
   if (r.stop_detail.budget_exhausted && r.status != HyperStatus::Ok &&
       r.status != HyperStatus::Tie && r.status != HyperStatus::Unidentified) return FitOutcome::budget();
   switch (r.status) {
-    case HyperStatus::Ok: return r.uniqueness_known ? FitOutcome::estimate(r.certified, r.unique)
-                                                     : FitOutcome::undetermined();
+    case HyperStatus::Ok: return !r.uniqueness_known ? FitOutcome::undetermined()
+        : !r.unique ? FitOutcome::estimate(r.certified, false)
+        : r.singleton_proved ? FitOutcome::singleton(r.certified)
+                             : FitOutcome::unknown_cardinality(r.certified);
     case HyperStatus::Tie: return r.uniqueness_known ? FitOutcome::estimate(r.certified, false)
                                                      : FitOutcome::undetermined();
     case HyperStatus::Unidentified: return r.uniqueness_known ? FitOutcome::estimate(r.certified, false)

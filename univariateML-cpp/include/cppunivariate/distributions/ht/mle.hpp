@@ -20,7 +20,7 @@ enum class HtStatus { Ok, InvalidData, InvalidParameter, Unbounded, ScaleBoundar
 // `mu` defaults to NaN: `ht_mle_zero` and the search helpers below never set
 // it (they operate on already-translated data); the public `ht_mle` entry
 // point at the bottom of this file always fills it in before returning.
-struct HtResult { double nu, sigma, logLik; int iterations; HtStatus status; unsigned restricted = 0; double mu = std::numeric_limits<double>::quiet_NaN();  StopDetail stop_detail{}; bool budget_exhausted=false; };
+struct HtResult { double nu, sigma, logLik; int iterations; HtStatus status; unsigned restricted = 0; double mu = std::numeric_limits<double>::quiet_NaN();  StopDetail stop_detail{}; bool budget_exhausted=false; bool singleton_proved = false; };
 namespace ht_detail {
 constexpr double inf = std::numeric_limits<double>::infinity();
 inline double log_mode(double nu) {
@@ -255,6 +255,7 @@ inline HtResult ht_mle(span x,double mu,double nu,double sigma) {
   auto result = [&]() -> HtResult {
   auto r=ht_accuracy_search(x,mu,nu,sigma);
   if(r.status!=HtStatus::Ok)return r;
+  r.singleton_proved=!std::isnan(nu);
   const double unit=r.sigma;
   std::array<double,3> q{{std::log(r.nu),0,0}};
   const std::array<bool,3> free{{std::isnan(nu)&&!(r.restricted&4u),std::isnan(sigma),false}};
@@ -321,7 +322,7 @@ inline FitOutcome outcome(const HtResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.budget_exhausted && r.status != HtStatus::Unbounded && r.status != HtStatus::ScaleBoundary && r.status != HtStatus::NormalLimit) return FitOutcome::budget();
   switch (r.status) {
-    case HtStatus::Ok: return FitOutcome::estimate(true);
+    case HtStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case HtStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case HtStatus::InvalidParameter: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case HtStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

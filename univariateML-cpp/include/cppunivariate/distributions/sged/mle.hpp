@@ -58,7 +58,7 @@ struct SgedResult {
   StopDetail stop_detail{};
   bool certified = false;
   bool accuracy_failure=false;
-  MaximizerSet maximizers{};
+  MaximizerSet maximizers{}; bool singleton_proved = false;
 };
 
 #include "certificate.hpp"
@@ -639,6 +639,9 @@ inline SgedResult sged_mle(span x,double tol=1e-10,int maxit=200,double mean= st
       if((std::isnan(mean)&&!local_accuracy::represented(r.mu,std::max(std::abs(r.mu),r.sigma),tol))||(std::isnan(sd)&&!local_accuracy::represented(r.sigma,r.sigma,tol))){r.status=SgedStatus::BfgsFailure;r.accuracy_failure=true;{if(r.sigma>0 && r.nu>0 && r.xi>0)record_accuracy(r,tol,{r.mu,r.sigma,r.nu,r.xi},{std::isnan(mean)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sd)?r.sigma:0,std::isnan(nu)?r.nu:0,std::isnan(xi)?r.xi:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}
     }else{r.status=SgedStatus::BfgsFailure;r.accuracy_failure=true;{if(r.sigma>0 && r.nu>0 && r.xi>0)record_accuracy(r,tol,{r.mu,r.sigma,r.nu,r.xi},{std::isnan(mean)?std::max(std::abs(r.mu),r.sigma):0,std::isnan(sd)?r.sigma:0,std::isnan(nu)?r.nu:0,std::isnan(xi)?r.xi:0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}
   }
+  if (r.status==SgedStatus::Ok && std::isfinite(nu) && std::isfinite(xi))
+    r.singleton_proved=(std::isfinite(mean) && std::isfinite(sd)) ||
+        (r.certified && (std::isnan(mean) || nu>=1));
   if(r.status==SgedStatus::Ok && (std::isnan(nu)) && r.nu==kSgedNuLower) r.restricted|=16u;
   return r;
 
@@ -697,7 +700,8 @@ inline FitOutcome outcome(const SgedResult& r) {
   }
   switch (r.status) {
     case SgedStatus::Ok: return r.stop_detail.comparison_tie ? FitOutcome::undetermined()
-        : FitOutcome::estimate(r.certified, r.maximizers.size == 0);
+        : r.maximizers.size ? FitOutcome::estimate(r.certified, false) :
+        (r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified));
     case SgedStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case SgedStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SgedStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

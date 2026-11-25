@@ -46,7 +46,7 @@ inline LgammaResult lgamma_mle(span x, double tol, int maxit,
 
 inline FitOutcome outcome(const LgammaResult& r) {
   switch (r.status) {
-    case LgammaStatus::Ok: return FitOutcome::estimate(r.certified);
+    case LgammaStatus::Ok: return FitOutcome::singleton(r.certified);
     case LgammaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case LgammaStatus::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case LgammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

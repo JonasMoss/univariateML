@@ -375,7 +375,7 @@ inline FitOutcome outcome(const BhattResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.comparison_tie && r.status != BhattStatus::BudgetExhausted && r.status != BhattStatus::Unresolved && r.status != BhattStatus::NumericalFailure && r.status != BhattStatus::IterationFailure) return comparison_outcome_of(r);
   switch (r.status) {
-    case BhattStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BhattStatus::Ok: return r.certified ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case BhattStatus::NormalLimit: return FitOutcome::limit(r.certified);
     case BhattStatus::UniformLimit: return FitOutcome::limit(r.certified);
     case BhattStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

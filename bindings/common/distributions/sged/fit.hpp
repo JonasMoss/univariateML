@@ -28,7 +28,7 @@ inline FitResult fit_sged(cppunivariate::span x, Held mean_arg = {}, Held sd_arg
   const auto done = [&](FitResult out) {
     if (res.status == cppunivariate::SgedStatus::Ok && o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(res.status));
-    if (res.status == cppunivariate::SgedStatus::Ok && !o.uniqueness_known) {
+    if (res.status == cppunivariate::SgedStatus::Ok && res.stop_detail.comparison_tie) {
       out.error = "The likelihood comparison between SGED candidates could not be resolved.";
       out = stop_failure(std::move(out), res.stop_detail, PayloadKind::Comparison, {"mean","sd","nu","xi"});
     }

@@ -343,6 +343,8 @@ search and reports the finite supremum. If scale is also held at the
 attaining value, the same finite member remains a certified maximum.
 
 
+A closed joint cover identifies a singleton when it separates the winning root or upper endpoint. At the lower endpoint, the inward-face coefficient must be strictly negative after padding. The held-location and held-scale covers can also isolate one maximizer. The shape-only fit uses the signed, strictly concave root bracket when there is no distinct overlapping bracket.
+
 ### General all-free shape cover
 
 For a nonconstant sample with fewer than half its observations at the minimum,

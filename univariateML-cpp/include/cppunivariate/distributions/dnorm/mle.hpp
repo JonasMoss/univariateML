@@ -170,7 +170,7 @@ inline DnormResult dnorm_mle(span x,double tol=1e-10,int maxit=200,
 namespace cppunivariate {
 inline FitOutcome outcome(const DnormResult& r) {
   switch (r.status) {
-    case DnormStatus::Ok: return FitOutcome::estimate(true);
+    case DnormStatus::Ok: return FitOutcome::singleton(true);
     case DnormStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case DnormStatus::InvalidControl: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case DnormStatus::PointMass: return FitOutcome::limit();

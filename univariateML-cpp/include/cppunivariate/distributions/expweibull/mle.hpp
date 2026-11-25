@@ -20,7 +20,7 @@ struct ExpweibullResult {
   int iterations=0;
   ExpweibullStatus status=ExpweibullStatus::InvalidData;
   bool certified=false;
-  StopDetail stop_detail{};
+  StopDetail stop_detail{}; bool singleton_proved = false;
 };
 namespace expweibull_fit_detail {
 inline double public_loglik(span x,double a,double b,double c) {
@@ -279,7 +279,7 @@ inline ExpweibullResult expweibull_mle(span x,double tol=1e-10,int maxit=100,
       out.scale=value;out.shape=shape;out.exponent=1;
       out.logLik=expweibull_fit_detail::public_loglik(x,value,shape,1);
       out.status=verified && std::isfinite(out.logLik)?ExpweibullStatus::Ok:ExpweibullStatus::AccuracyFailure;
-      out.certified=out.status==ExpweibullStatus::Ok;
+      out.certified=out.status==ExpweibullStatus::Ok;out.singleton_proved=out.certified;
       if(!out.certified)record_accuracy(out,tol,{out.scale,out.shape,1},{out.scale,0,0});
       return out;
     };
@@ -300,7 +300,7 @@ inline ExpweibullResult expweibull_mle(span x,double tol=1e-10,int maxit=100,
       const double ll=expweibull_fit_detail::public_loglik(x,out.scale,out.shape,1);
       if(std::isfinite(ll) && std::isfinite(out.logLik) &&
          std::abs(ll-out.logLik)<=1e-10*std::max(1.,std::abs(out.logLik))) {
-        out.status=ExpweibullStatus::Ok;out.certified=true;return out;
+        out.status=ExpweibullStatus::Ok;out.certified=true;out.singleton_proved=true;return out;
       }
       out.logLik=ll;out.status=ExpweibullStatus::AccuracyFailure;
       record_accuracy(out,tol,{out.scale,out.shape,1},{free[0]?out.scale:0,free[1]?out.shape:0,0});
@@ -488,6 +488,7 @@ inline ExpweibullResult expweibull_mle(span x,double tol=1e-10,int maxit=100,
   }
   out.status=ExpweibullStatus::Ok;
   out.certified=(!free[2] || (!free[0] && !free[1])) && winner_margin;
+  out.singleton_proved=out.certified;
   return out;
 }
 
@@ -495,7 +496,7 @@ inline FitOutcome outcome(const ExpweibullResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case ExpweibullStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ExpweibullStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case ExpweibullStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ExpweibullStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case ExpweibullStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

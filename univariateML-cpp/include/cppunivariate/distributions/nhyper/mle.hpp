@@ -22,7 +22,7 @@ struct NhyperResult {
   // False when another (m, N, r) attains the same likelihood exactly.
   bool unique = true;
   MaximizerSet maximizers{};
-  bool uniqueness_known = true;
+  bool uniqueness_known = true; bool singleton_proved = false;
 };
 
 // Total draws until the r-th white ball. P(T=x) = r/x P(H_x=r).
@@ -627,6 +627,14 @@ inline NhyperResult nhyper_mle(span x, double r, double N, double m, int maxit) 
     }
     if (status != MaxsetStatus::Ok) out.status = NhyperStatus::NumericalFailure;
   }
+  // A scalar integer profile has one crossing. The Tie path handles
+  // adjacent overlaps and the typed sets handle exact flat cases.
+  const bool pinned_atom=out.status==NhyperStatus::Ok && out.logLik==0 &&
+      !x.empty() && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}) &&
+      (N==0 || m==maxset_count || (x[0]>0 && out.r==x[0] && out.m==out.N &&
+                                  (std::isfinite(m) || std::isfinite(N) || x[0]==maxset_count)));
+  out.singleton_proved=out.certified && out.unique &&
+      (pinned_atom || int(std::isnan(r))+int(std::isnan(N))+int(std::isnan(m))<=1);
   return out;
 }
 }  // namespace cppunivariate
@@ -643,7 +651,9 @@ inline FitOutcome outcome(const NhyperResult& r) {
   if (r.stop_detail.budget_exhausted && r.status != NhyperStatus::Ok &&
       r.status != NhyperStatus::Tie && r.status != NhyperStatus::Unidentified) return FitOutcome::budget();
   switch (r.status) {
-    case NhyperStatus::Ok: return FitOutcome::estimate(r.certified, r.unique);
+    case NhyperStatus::Ok: return !r.unique ? FitOutcome::estimate(r.certified, false)
+        : r.singleton_proved ? FitOutcome::singleton(r.certified)
+                             : FitOutcome::unknown_cardinality(r.certified);
     case NhyperStatus::Tie: return r.uniqueness_known ? FitOutcome::estimate(r.certified, false)
                                                       : FitOutcome::undetermined();
     case NhyperStatus::Unidentified: return FitOutcome::estimate(r.certified, false);

@@ -68,7 +68,7 @@ inline GevResult frechet_gev_mle(span x, double tol=1e-10, int maxit=100,
 }
 
 enum class FrechetStatus { Ok, InvalidData, GumbelLimit, IterationFailure, NoMLE, NumericalFailure, SearchContradicted };
-struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified=true; bool minimum_majority=false; bool shape_collapse=false; double root_radius=NAN; };
+struct FrechetResult { double lambda, mu, sigma, logLik; int iterations; FrechetStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified=true; bool minimum_majority=false; bool shape_collapse=false; double root_radius=NAN; bool singleton_proved = false; };
 
 inline bool family_point(const FrechetResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
@@ -85,7 +85,7 @@ inline FitOutcome outcome(const FrechetResult& r) {
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
-    case FrechetStatus::Ok: return FitOutcome::estimate(r.certified);
+    case FrechetStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case FrechetStatus::InvalidData: return !std::isnan(r.stop_detail.loglik_upper) ? FitOutcome::nonexistence(r.stop_detail.loglik_upper == INFINITY ? OutcomeReason::Unbounded : OutcomeReason::Unattained) : FitOutcome::failure(OutcomeReason::InvalidInput);
     case FrechetStatus::GumbelLimit: return FitOutcome::limit(true);
     case FrechetStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
@@ -207,7 +207,7 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
    FrechetResult out{r.shape,mu,r.scale,r.logLik,r.iterations,
      r.status==InvWeibullStatus::Ok?FrechetStatus::Ok:
      r.status==InvWeibullStatus::IterationFailure?FrechetStatus::IterationFailure:FrechetStatus::InvalidData};
-   out.certified=r.certified;
+   out.certified=r.certified;out.singleton_proved=true;
    out.root_radius=r.root_radius;
    if(r.status==InvWeibullStatus::Unbounded) {
      if(m==M && (!hs || exact)) {out.shape_collapse=true;out.stop_detail.loglik_upper=INFINITY;}
@@ -302,7 +302,7 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
    {fit.status=FrechetStatus::NumericalFailure;record_accuracy(fit,tol,{fit.lambda,fit.mu,fit.sigma},{hl?0:std::max(1.,fit.lambda),std::max(std::abs(fit.mu),fit.sigma),hs?0:fit.sigma});}
  if(hs && !hl && fit.status==FrechetStatus::Ok) {
    // The search result is uncertified unless the held-scale cover closes.
-   fit.certified=false;
+   fit.certified=false;fit.singleton_proved=false;
    auto fallback=standardized_search;fallback.certified=false;
    auto candidate=frechet_held_scale_certificate(data,tol,maxit,fallback);
    if(candidate.status==FrechetStatus::SearchContradicted) {
@@ -401,7 +401,7 @@ inline FrechetResult frechet_mle_impl(span x, double tol=1e-10, int maxit=100,
    return bad;
  }
  FrechetResult answer{shape,location,scale,ll,r.iterations,FrechetStatus::Ok};
- answer.certified=r.certified;return answer;
+ answer.certified=r.certified;answer.singleton_proved=r.singleton_proved;return answer;
 }
 
 inline FrechetResult frechet_mle(span x,double tol=1e-10,int maxit=100,double mu=std::numeric_limits<double>::quiet_NaN(),double lambda=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {

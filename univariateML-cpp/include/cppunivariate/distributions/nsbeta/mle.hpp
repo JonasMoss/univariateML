@@ -51,7 +51,7 @@ inline NsbetaResult nsbeta_mle(span x, double min, double max, double tol, int m
 inline FitOutcome outcome(const NsbetaResult& r) {
   if(r.unsupported_bounds)return FitOutcome::failure(OutcomeReason::Unsupported);
   switch (r.status) {
-    case BetaStatus::Ok: return FitOutcome::estimate(true);
+    case BetaStatus::Ok: return FitOutcome::singleton(true);
     case BetaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case BetaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case BetaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

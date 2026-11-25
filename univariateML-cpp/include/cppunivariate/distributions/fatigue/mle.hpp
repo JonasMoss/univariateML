@@ -33,7 +33,7 @@ struct FatigueResult {
   bool transformation_failure=false;
   bool certified=true;
   bool proved_tie=false;
-  MaximizerSet maximizers{};
+  MaximizerSet maximizers{}; bool singleton_proved = false;
 };
 
 // Comparison candidates are (alpha, beta); the adapter appends the held mu.
@@ -61,7 +61,7 @@ inline FitOutcome outcome(const FatigueResult& r) {
   }
   switch (r.status) {
     case FatigueStatus::Unsupported: return FitOutcome::failure(OutcomeReason::Unsupported);
-    case FatigueStatus::Ok: return FitOutcome::estimate(r.certified);
+    case FatigueStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case FatigueStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case FatigueStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case FatigueStatus::SearchFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

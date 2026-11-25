@@ -492,7 +492,7 @@ inline BetaPrimeResult fit(span x,double tol,int maxit) {
   const double sl=std::exp(e.lm+p.t.lo-se),su=std::exp(e.lm+p.t.hi+se);
   if(!(sl>0)||!std::isfinite(su)||std::max(std::abs(std::log(scale/sl)),std::abs(std::log(su/scale)))>std::log1p(1e-6)) {out.certificate_failure=LomaxCertificateFailure::Arithmetic;return out;}
   out.joint_exterior.coefficient_lower={p.p.lo,p.q.lo,sl};out.joint_exterior.coefficient_upper={p.p.hi,p.q.hi,su};out.joint_exterior.global_certified=true;
-  out.alpha=p.point.p;out.beta=p.point.q;out.scale=scale;out.logLik=original(p.point.ll);out.status=BetaPrimeStatus::Ok;
+  out.alpha=p.point.p;out.beta=p.point.q;out.scale=scale;out.logLik=original(p.point.ll);out.status=BetaPrimeStatus::Ok;out.singleton_proved=true;
   out.stop_detail.loglik_lower=original(p.point.ll-p.point.error);return out;
 }
 } // namespace betapr_joint_cert

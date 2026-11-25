@@ -52,7 +52,7 @@ inline GeomResult geom_mle(ispan x, double fixed=std::numeric_limits<double>::qu
 namespace cppunivariate {
 inline FitOutcome outcome(const GeomResult& r) {
   switch(r.status) {
-    case GeomStatus::Ok: return FitOutcome::estimate(true);
+    case GeomStatus::Ok: return FitOutcome::singleton(true);
     case GeomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GeomStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

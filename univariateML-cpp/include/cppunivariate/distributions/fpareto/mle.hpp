@@ -12,7 +12,7 @@ enum class FparetoStatus { Ok, TrGammaBoundary, InvTrGammaBoundary,
   LognormalBoundary, ParetoBoundary, PowerBoundary, DoubleParetoBoundary,
   InvalidData, InvalidFixed, SearchUnresolved, ScaleOutOfRange,
   WeibullBoundary, InvWeibullBoundary, CertificateTie, CertificateBudget, NumericalFailure , Unbounded, UnsupportedThreshold, FaceRefuted };
-struct FparetoResult { double shape1,shape2,shape3,scale,min,logLik; int iterations; FparetoStatus status; StopDetail stop_detail{}; bool certified=true; std::int64_t profile_evaluations=0; };
+struct FparetoResult { double shape1,shape2,shape3,scale,min,logLik; int iterations; FparetoStatus status; StopDetail stop_detail{}; bool certified=true; std::int64_t profile_evaluations=0; bool singleton_proved=false; };
 
 inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, double shape1=std::numeric_limits<double>::quiet_NaN(), double shape2=std::numeric_limits<double>::quiet_NaN(), double shape3=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
   if(std::isnan(min))return {NAN,NAN,NAN,NAN,min,NAN,0,FparetoStatus::UnsupportedThreshold};
@@ -170,7 +170,11 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   }
   translate_stop_faces(detail,min);
   for(auto& c:detail.candidates)if(c.model==StopModel::None && c.coef.size()==4)c.coef.push_back(min);
-  return {r.shape1,r.shape2,r.shape3,r.scale,min,r.logLik,r.iterations,face_refuted?FparetoStatus::FaceRefuted:static_cast<FparetoStatus>(r.status),detail,r.certified,r.profile_evaluations};
+  FparetoResult out{r.shape1,r.shape2,r.shape3,r.scale,min,r.logLik,r.iterations,
+    face_refuted?FparetoStatus::FaceRefuted:static_cast<FparetoStatus>(r.status),detail,r.certified,r.profile_evaluations};
+  out.singleton_proved=r.singleton_proved && (min==0 ||
+      (!std::isnan(shape1) && !std::isnan(shape3)) || (!std::isnan(shape2) && !std::isnan(scale)));
+  return out;
 }
 
 inline bool family_point(const FparetoResult&, const FitCandidate& c) {
@@ -191,7 +195,7 @@ inline FitOutcome outcome(const FparetoResult& r) {
     case FparetoStatus::FaceRefuted:return FitOutcome::failure(OutcomeReason::NoConvergence);
     case FparetoStatus::Unbounded:return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case FparetoStatus::UnsupportedThreshold:return FitOutcome::failure(OutcomeReason::Unsupported);
-    case FparetoStatus::Ok: return FitOutcome::estimate(r.certified);
+    case FparetoStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case FparetoStatus::TrGammaBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
     case FparetoStatus::InvTrGammaBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
     case FparetoStatus::LognormalBoundary: return r.stop_detail.limit_coef.empty()?FitOutcome::failure(OutcomeReason::Evaluation):FitOutcome::limit(false);

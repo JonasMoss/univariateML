@@ -9,5 +9,5 @@ Rcpp::List ml_evaluated_result_(const Rcpp::NumericVector& coefficients, double 
   for(R_xlen_t i=0;i<coefficients.size();++i)
     result.estimates.push_back({Rcpp::as<std::string>(names[i]),coefficients[i]});
   result.logLik=loglik;
-  return common_result(umvl_binding::with_outcome(std::move(result),cppunivariate::FitOutcome::estimate(),-1));
+  return common_result(umvl_binding::with_outcome(std::move(result),cppunivariate::FitOutcome::singleton(true),-1));
 }

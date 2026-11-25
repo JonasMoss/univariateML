@@ -3,7 +3,8 @@
 #' Every estimate carries logical `certified` and `unique` attributes. The
 #' `unique` attribute is `TRUE` for a unique estimate, `FALSE` for established
 #' multiplicity with a versioned `maximizer_set`, or `NA` when uniqueness
-#' remains undetermined. The first row of `maximizers` repeats the returned
+#' remains undetermined. A certified global value can have unknown
+#' cardinality. The first row of `maximizers` repeats the returned
 #' estimate. Additional rows illustrate the set. `candidates` records
 #' comparison evidence. Inference requires known
 #' uniqueness. Model selection accepts estimates with any uniqueness flag.

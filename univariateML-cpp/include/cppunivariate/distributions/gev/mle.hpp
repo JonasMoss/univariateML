@@ -23,7 +23,7 @@ struct GevResult {
   double mu, sigma, xi, logLik;
   int iterations;
   GevStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = false; bool finite_collapse=false;
-  MaximizerSet maximizers{};
+  MaximizerSet maximizers{}; bool singleton_proved = false;
 };
 inline double gev_log_ratio(double z, double xi) {
   const double v=xi*z;
@@ -359,7 +359,7 @@ inline GevResult gev_held_mle(span x,double tol,int maxit,double xi,double mu,do
         const double ll=gev_loglik(x,mu,endpoint_scale,-1);
         GevResult result{mu,endpoint_scale,-1,ll,0,GevStatus::NumericalFailure};
         if(endpoint_scale>0 && std::isfinite(endpoint_scale) && std::isfinite(ll) &&
-           std::abs(ll-face)<=1e-7*x.size()) {result.status=GevStatus::Ok;result.certified=true;}
+           std::abs(ll-face)<=1e-7*x.size()) {result.status=GevStatus::Ok;result.certified=true;result.singleton_proved=true;}
         return result;
       }
       if(!hs) {
@@ -589,13 +589,13 @@ inline GevResult gev_two_point_certificate(span x,double minimum,double maximum,
   GevResult result{location,scale,-1,ll,0,GevStatus::NumericalFailure};
   result.stop_detail.loglik_lower=face;result.stop_detail.loglik_upper=face;
   if(precise && std::isfinite(location) && std::isfinite(ll) &&
-     std::abs(ll-face)<=1e-7*n) {result.status=GevStatus::Ok;result.certified=true;result.stop_detail={};}
+     std::abs(ll-face)<=1e-7*n) {result.status=GevStatus::Ok;result.certified=true;result.singleton_proved=true;result.stop_detail={};}
   else if(2*k!=x.size() && std::isnormal(scale) && precision_tol>=16*margin &&
           std::isfinite(location) && std::isfinite(ll) && std::abs(ll-face)<=1e-7*n &&
           margin*(std::abs(maximum)+scale)<=precision_tol*.25*std::max(std::abs(location),scale)) {
     // Cancellation near zero defeats the relative-location inclusion, but
     // does not invalidate the finite analytic search result.
-    result.status=GevStatus::Ok;result.certified=false;result.stop_detail={};
+    result.status=GevStatus::Ok;result.certified=false;result.singleton_proved=true;result.stop_detail={};
   }
   return result;
 }
@@ -688,6 +688,10 @@ inline GevResult gev_mle_impl(span x, double tol=1e-10, int maxit=100,
 inline GevResult gev_mle(span x,double tol=1e-10,int maxit=100,double xi=std::numeric_limits<double>::quiet_NaN(),double mu=std::numeric_limits<double>::quiet_NaN(),double sigma=std::numeric_limits<double>::quiet_NaN()) {
   maxit = static_cast<int>(solver_budget(maxit));
   auto r=gev_mle_impl(x,tol,maxit,xi,mu,sigma);
+  // The fixed nonpositive shape theorem covers the held nuisance slices.
+  if (r.status==GevStatus::Ok && std::isfinite(xi) &&
+      ((xi>=-1 && xi<=0) || (std::isfinite(mu) && std::isfinite(sigma))))
+    r.singleton_proved=true;
   if(r.status==GevStatus::Ok) {
     if(!gev_restore_support(x,r,!std::isnan(mu),!std::isnan(sigma),tol,maxit))
       r.status=GevStatus::NumericalFailure;
@@ -730,7 +734,8 @@ inline FitOutcome outcome(const GevResult& r) {
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
-    case GevStatus::Ok: return FitOutcome::estimate(r.certified,r.maximizers.size == 0);
+    case GevStatus::Ok: return r.maximizers.size ? FitOutcome::estimate(r.certified, false) :
+        (r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified));
     case GevStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GevStatus::InvalidShape: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case GevStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

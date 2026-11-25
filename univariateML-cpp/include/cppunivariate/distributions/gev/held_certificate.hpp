@@ -532,5 +532,5 @@ inline GevResult gev_held_certificate(span data,double mu,double sigma,double to
   fallback.logLik=gev_loglik(data,fallback.mu,fallback.sigma,fallback.xi);
   if(std::isfinite(face_value)&&(!std::isfinite(fallback.logLik)||
      std::abs(fallback.logLik-n*face_value)>1e-7*n))return search;
-  fallback.certified=true;return fallback;
+  fallback.certified=true;fallback.singleton_proved=true;return fallback;
 }

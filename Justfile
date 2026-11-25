@@ -175,6 +175,7 @@ strict native="build/snapshots/native,build/snapshots/routes-native" double="bui
     double=(); seam=(native)
     if [ "{{double}}" != none ]; then double=("{{double}}"); seam+=(double); fi
     status=0
+    python3 $v/strict-uniqueness.py || status=1
     python3 $v/fit-judge.py "{{native}}" "${double[@]}" || status=1
     python3 $v/fit-density.py --quiet "{{native}}" "${double[@]}" || status=1
     python3 $v/fit-consistency.py "{{native}}" "${double[@]}" || status=1

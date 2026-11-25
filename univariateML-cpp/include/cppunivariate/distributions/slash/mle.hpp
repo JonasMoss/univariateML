@@ -11,7 +11,7 @@
 #include <vector>
 namespace cppunivariate {
 enum class SlashStatus { Ok, Unbounded, CollapseLimit, InvalidInput, IterationFailure };
-struct SlashResult {double mu,sigma,logLik;int iterations;SlashStatus status;StopDetail stop_detail{};bool budget_exhausted=false;bool accuracy_failure=false;bool margin_decided=false;};
+struct SlashResult {double mu,sigma,logLik;int iterations;SlashStatus status;StopDetail stop_detail{};bool budget_exhausted=false;bool accuracy_failure=false;bool margin_decided=false;bool singleton_proved=false;};
 namespace slash_detail {
 // A scale-score pass uses only log distances. Keep their subtraction and
 // summation order identical to the uncached expression, including zeros and
@@ -64,7 +64,9 @@ struct Profile {
     }
     const double log_s=std::log(s);
     double ll=0;for(double v:x)ll+=distributions::slash_log_density_cached(v,m,s,log_s);
-    return {m,s,ll,0,SlashStatus::Ok};
+    SlashResult out{m,s,ll,0,SlashStatus::Ok};
+    out.singleton_proved=true;
+    return out;
   }
 };
 
@@ -439,7 +441,7 @@ inline FitOutcome outcome(const SlashResult& r) {
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
   if (r.budget_exhausted && r.status != SlashStatus::Unbounded && r.status != SlashStatus::CollapseLimit) return FitOutcome::budget();
   switch (r.status) {
-    case SlashStatus::Ok: return FitOutcome::estimate(true);
+    case SlashStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case SlashStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     // Held location: proved unattained (the scale likelihood lies below the collapse for every
     // positive scale). Free location: decided by the 1e-8 n margin, never certified.

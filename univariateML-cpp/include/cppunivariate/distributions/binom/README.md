@@ -433,6 +433,8 @@ accuracy even after the integer maximizer is found. Final values sum the
 stable binomial log mass at the returned size and probability in both
 precision modes.
 
+The integer size fit reports a singleton if the computed increments on either side of the winner have strict signs with a roundoff margin. At the smallest admissible size only the outgoing increment is needed. Exact atom and adjacent-size sets use their analytic cardinality.
+
 After positive conditioning, size one gives a point mass at one for every prob, and prob zero gives that same law at every positive size. In the inflated size-one law only the product (1-pi)*prob is observed; when both coordinates are free and the empirical success probability is below one, their maximum is not unique.
 
 On a finite window whose upper endpoint is the sample maximum, every feasible

@@ -16,7 +16,7 @@ inline FitOutcome outcome(const Pareto3Result& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     case Pareto3Status::Unsupported: return FitOutcome::failure(OutcomeReason::Unsupported);
-    case Pareto3Status::Ok: return FitOutcome::estimate(r.certified);
+    case Pareto3Status::Ok: return FitOutcome::singleton(r.certified);
     case Pareto3Status::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case Pareto3Status::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case Pareto3Status::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

@@ -55,7 +55,7 @@ struct GedResult {
   bool proved_tie = false;
   bool search_failed = false;
   double comparison_logLik=NAN;
-  MaximizerSet maximizers{};
+  MaximizerSet maximizers{}; bool singleton_proved = false;
 };
 
 #include "free_shape_bounds.hpp"
@@ -361,7 +361,7 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
       (std::isnan(mean) || mean==x[0]) &&
       std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})) {
     GedResult r{x[0],sd,1,-static_cast<double>(x.size())*(std::log(sd)+std::log(2.)/2),0,GedStatus::Ok};
-    r.certified=std::isfinite(r.logLik);
+    r.certified=std::isfinite(r.logLik);r.singleton_proved=r.certified;
     if(!r.certified)r.status=GedStatus::BfgsFailure;
     return r;
   }
@@ -393,7 +393,7 @@ inline GedResult ged_mle_impl(span x,double tol,int maxit,double mean,double sd,
           return r;
         }
       }
-      r.certified=true;return r;
+      r.certified=true;r.singleton_proved=true;return r;
     }
   }
   std::vector<double> grid;for(double t=-12;t<=12;t+=.4)grid.push_back(t);
@@ -672,6 +672,7 @@ inline GedResult ged_mle(span x,double tol,int maxit,double mean,double sd,doubl
   if(std::isnan(nu) && std::isnan(sd))ged_uniform_certificate(r,x,mean,tol,maxit);
   if(std::isnan(nu))ged_failure_bounds(r,x,mean,sd,tol,maxit);
   r=ged_uncertified(r,x,tol,maxit,mean,sd,nu);
+  if (r.status==GedStatus::Ok && !std::isnan(nu)) r.singleton_proved=r.certified;
   if(r.status==GedStatus::Ok && (std::isnan(nu)) && r.nu==kGedNuLower) r.restricted|=16u;
   return r;
 
@@ -736,7 +737,7 @@ inline FitOutcome outcome(const GedResult& r) {
   }
   switch (r.status) {
     case GedStatus::Ok: return r.stop_detail.comparison_tie ? FitOutcome::undetermined()
-                                                               : FitOutcome::estimate(r.certified);
+                                                               : r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case GedStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GedStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GedStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);

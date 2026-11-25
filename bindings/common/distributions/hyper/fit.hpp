@@ -105,7 +105,7 @@ inline FitResult fit_hyper(cppunivariate::span x, Held m_arg = {}, Held N_arg = 
     attach_maximizer_set(out, res.maximizers, "hyper", [&](const auto&) { return res.logLik; });
     return done(std::move(out));
   }
-  if (!o.uniqueness_known) {
+  if (!res.uniqueness_known) {
     out.candidates.push_back({out.estimates, out.logLik, out.logLik, "hyper"});
     for (const auto& candidate : res.stop_detail.candidates)
       out.candidates.push_back({named_coefficients(candidate.coef, {"m","N","k"}),

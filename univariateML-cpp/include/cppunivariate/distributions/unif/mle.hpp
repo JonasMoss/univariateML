@@ -56,7 +56,7 @@ inline UnifResult unif_mle(span x,
 
 inline FitOutcome outcome(const UnifResult& r) {
   switch (r.status) {
-    case UnifStatus::Ok: return FitOutcome::estimate(true);
+    case UnifStatus::Ok: return FitOutcome::singleton(true);
     case UnifStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case UnifStatus::Incompatible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case UnifStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

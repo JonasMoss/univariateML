@@ -115,7 +115,7 @@ inline StResult symmetric_joint_fit(span data,double tol,int maxit) {
  out.stop_detail=r.stop_detail;
  for(auto& c:out.stop_detail.candidates)if(c.model==StopModel::None)c.model=StopModel::Lst;
  switch(r.status) {
-  case LstStatus::Ok:out.status=StStatus::Ok;out.restricted=r.restricted&16u?64u:0u;out.certified=true;break;
+  case LstStatus::Ok:out.status=StStatus::Ok;out.restricted=r.restricted&16u?64u:0u;out.certified=true;out.singleton_proved=r.singleton_proved;break;
   case LstStatus::NormalBoundary:
    out.status=StStatus::SkewNormalBoundary;out.certified=true;
    out.stop_detail.limit_model=StopModel::Sn;out.stop_detail.limit_coef={r.mu,r.sigma,0};break;
@@ -311,7 +311,7 @@ inline StResult symmetric_scale_fit(span data,double xi,double nu,int maxit) {
  if(!resolved || out.stop_detail.candidates.empty())return out;
  out.omega=std::exp(mid);out.logLik=0;for(double x:data)out.logLik+=st_detail::logdensity(x,xi,out.omega,0,nu);
  if(!(out.omega>0)||!std::isfinite(out.omega)||!std::isfinite(out.logLik)||std::abs(std::log(out.omega)-mid)>2e-11)return out;
- out.status=StStatus::Ok;out.certified=true;out.stop_detail={};return out;
+ out.status=StStatus::Ok;out.certified=true;out.singleton_proved=true;out.stop_detail={};return out;
 }
 inline StResult one_sign_scale_fit(span data,double xi,double nu,int maxit) {
  int pos=0,neg=0;for(double x:data){if(x>xi)++pos;if(x<xi)++neg;}

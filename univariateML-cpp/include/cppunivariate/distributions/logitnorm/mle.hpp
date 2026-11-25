@@ -29,7 +29,7 @@ struct LogitnormResult {
 
 inline FitOutcome outcome(const LogitnormResult& r) {
   switch (r.status) {
-    case LogitnormStatus::Ok: return FitOutcome::estimate(r.certified);
+    case LogitnormStatus::Ok: return FitOutcome::singleton(r.certified);
     case LogitnormStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case LogitnormStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case LogitnormStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

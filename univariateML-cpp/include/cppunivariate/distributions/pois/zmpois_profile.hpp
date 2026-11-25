@@ -12,12 +12,12 @@ inline FitOutcome outcome(const zero_detail::ModifiedResult& r) {
   if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   switch(r.status) {
-    case zero_detail::ModifiedStatus::Ok: return FitOutcome::estimate(!r.stop_detail.budget_exhausted);
+    case zero_detail::ModifiedStatus::Ok: return FitOutcome::singleton(!r.stop_detail.budget_exhausted);
     case zero_detail::ModifiedStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case zero_detail::ModifiedStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case zero_detail::ModifiedStatus::PoissonLimit: return FitOutcome::limit(true);
     case zero_detail::ModifiedStatus::AllZero: return FitOutcome::estimate(true,false);
-    case zero_detail::ModifiedStatus::TwoPoint: return FitOutcome::estimate(true);
+    case zero_detail::ModifiedStatus::TwoPoint: return FitOutcome::singleton(true);
     case zero_detail::ModifiedStatus::IterationFailure:
       // At interior parent coefficients every positive count has positive
       // mass. A nonfinite point likelihood is an evaluation failure,

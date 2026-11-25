@@ -568,5 +568,5 @@ TEST_CASE("emg: comparison point values require public-coordinate accuracy") {
   const auto o=cppunivariate::outcome(comparison);
   CHECK(o.kind==cppunivariate::OutcomeKind::Estimate);
   CHECK_FALSE(o.certified);
-  CHECK(o.unique);
+  CHECK_FALSE(o.uniqueness_known);
 }

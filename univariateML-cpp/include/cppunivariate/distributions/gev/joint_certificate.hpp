@@ -432,7 +432,7 @@ inline bool precise(span data,Range xi,Range nuisance,int maxit,bool gap,double 
 // Bounding e<=eA leaves k log(eA), hence excludes a full neighbourhood
 // of a=1 without evaluating a derivative at the moving support endpoint.
 template<class F>
-inline double face_upper(span data,double xi,int,double face,F& get) {
+inline double face_upper(span data,double xi,int,double face,F& get,bool& strictly_inward) {
   const auto root=get(xi);
   if(!root.ok)return INFINITY;
   const double e=std::max(0.,root.v.hi/(-xi)-1);
@@ -451,6 +451,7 @@ inline double face_upper(span data,double xi,int,double face,F& get) {
   const double denominator=w<0?s:s+n*e;
   const double C=n+logs.value().hi+k*std::log(e)-n*w/denominator;
   const double margin=4096*std::numeric_limits<double>::epsilon()*n*(1+std::abs(C));
+  strictly_inward=C+margin<0;
   return face+std::max(0.,(-1/xi-1)*(C+margin))/n;
 }
 } // namespace gev_joint_detail
@@ -549,10 +550,10 @@ inline GevResult gev_joint_certificate_impl(span data,double tol,int maxit,bool 
     proposal=p;
   }
   double left=-.9375;
-  bool face_done=frechet;
+  bool face_done=frechet,strictly_inward=false;
   while(!frechet && evaluations<cap) {
     ++evaluations;
-    const double upper=gev_joint_detail::face_upper(data,left,maxit,candidates[0].upper,get);
+    const double upper=gev_joint_detail::face_upper(data,left,maxit,candidates[0].upper,get,strictly_inward);
     // Equality is allowed here: the face itself is retained as a candidate.
     if(upper<=candidates[0].upper) {face_done=true;break;}
     if(upper<incumbent-margin) {face_done=true;break;}
@@ -661,7 +662,7 @@ inline GevResult gev_joint_certificate_impl(span data,double tol,int maxit,bool 
     bool separated=true;
     for(const auto& c:candidates)if(&c!=&*winner && !(c.lo<=winner->hi&&c.hi>=winner->lo) && c.upper>=winner->ll-margin)separated=false;
     if(separated && winner->fit.status==GevStatus::Ok) {
-      const int work=out.iterations;out=winner->fit;out.iterations=work;out.stop_detail={};out.certified=true;
+      const int work=out.iterations;out=winner->fit;out.iterations=work;out.stop_detail={};out.certified=true;out.singleton_proved=out.xi!=-1 || strictly_inward;
       if(frechet) {out.stop_detail.loglik_lower=winner->ll*n;out.stop_detail.loglik_upper=winner->upper*n;}
     }
     else if(!separated) {

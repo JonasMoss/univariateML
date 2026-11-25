@@ -311,7 +311,7 @@ inline LogisticResult logistic_mle(span x,double tol,int maxit,double location,d
 inline FitOutcome outcome(const LogisticResult& r) {
   switch (r.status) {
     case LogisticStatus::NumericalFailure:return FitOutcome::failure(OutcomeReason::Evaluation);
-    case LogisticStatus::Ok: return FitOutcome::estimate(true);
+    case LogisticStatus::Ok: return FitOutcome::singleton(true);
     case LogisticStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case LogisticStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case LogisticStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

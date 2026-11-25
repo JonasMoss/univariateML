@@ -92,3 +92,14 @@ test_that("uncertified limits describe the likelihood margin", {
   expect_identical(e$certified,FALSE)
   expect_match(conditionMessage(e)," No improvement above the likelihood margin was found\\.$")
 })
+
+test_that("a certified value can have unknown cardinality", {
+  x <- c(2.0576829946725703, 2.0576829946725703, 2.7624976490504753)
+  fit <- mlfoldnorm(x)
+  expect_identical(attr(fit, "certified"), TRUE)
+  expect_identical(attr(fit, "unique"), NA)
+  expect_identical(attr(mlfoldnorm(x, sigma = 2), "unique"), TRUE)
+  expect_null(attr(fit, "maximizer_set"))
+  expect_identical(model_select(x, "foldnorm", return = "all")$unique, NA)
+  expect_error(vcov(fit), "Uniqueness is undetermined", class = "univariateML_unsupported")
+})

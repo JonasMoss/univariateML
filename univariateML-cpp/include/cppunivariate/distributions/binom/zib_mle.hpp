@@ -14,6 +14,7 @@ struct ZibResult {double size, prob, pi, logLik;int iterations;ZibStatus status;
 
   bool unique = true;
   bool evaluation_failure = false;
+  bool singleton_proved=false;
 };
 namespace zib_fit_detail {
 inline ZibResult zib_mle_proposal(ispan x,double tol=1e-10,int maxit=200,
@@ -586,6 +587,14 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
   if(std::isfinite(r.logLik))r.evaluation_failure=false;
   if(r.status==ZibStatus::Ok && !std::isfinite(r.logLik)) {r.status=ZibStatus::IterationFailure;r.evaluation_failure=true;r.stop_detail.loglik_upper=INFINITY;}
   if(r.status!=ZibStatus::Ok)return r;
+  // With size held, a free inflation parameter profiles to either the
+  // ordinary binomial or the strictly concave positive-count likelihood.
+  // Holding prob instead leaves a Bernoulli zero-indicator equation.
+  r.singleton_proved=std::isfinite(fixed_size) &&
+      (std::isfinite(fixed_prob) || std::isnan(fixed_pi) || fixed_pi==0);
+  if(r.size==1 && r.prob==1 &&
+      std::all_of(x.begin(),x.end(),[](int v){return v==1;}))
+    r.singleton_proved=true;
   if(!x.empty() && std::all_of(x.begin(),x.end(),[](int v){return v==0;})) {
     const bool fs=std::isnan(fixed_size),fp=std::isnan(fixed_prob),fi=std::isnan(fixed_pi);
     const int free_count=int(fs)+int(fp)+int(fi);
@@ -593,6 +602,7 @@ inline ZibResult zib_mle(ispan x,double tol=1e-10,int maxit=200,
       !(fs && (fixed_prob==0 || fixed_pi==1)) &&
       !(fp && (fixed_size==0 || fixed_pi==1)) &&
       !(fi && (fixed_size==0 || fixed_prob==0)));
+    r.singleton_proved=r.unique;
   }
   if(r.size==1 && std::isnan(fixed_prob) && std::isnan(fixed_pi) &&
      std::all_of(x.begin(),x.end(),[](int v){return v<=1;}) &&
@@ -619,7 +629,10 @@ inline FitOutcome outcome(const ZibResult& r) {
     if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
   }
   switch(r.status) {
-    case ZibStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
+    case ZibStatus::Ok:
+      if (!r.unique) return FitOutcome::estimate(r.certified, false);
+      return r.singleton_proved ? FitOutcome::singleton(r.certified)
+                                : FitOutcome::unknown_cardinality(r.certified);
     case ZibStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZibStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZibStatus::ZipLimit:

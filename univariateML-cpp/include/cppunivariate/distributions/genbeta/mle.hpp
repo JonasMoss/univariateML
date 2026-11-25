@@ -40,7 +40,7 @@ struct GenbetaResult {
  GenbetaConditionalBounds conditional_bounds{};
  GenbetaTailBounds tail_bounds{};
  bool allfree_certified=false;
- bool product_ridge=false; MaximizerSet maximizers{}; };
+ bool product_ridge=false; MaximizerSet maximizers{}; bool singleton_proved = false; };
 
 inline bool family_point(const GenbetaResult&, const FitCandidate& c) {
   if (c.model != StopModel::None || c.coef.size() != 4) return false;
@@ -58,7 +58,8 @@ inline FitOutcome outcome(const GenbetaResult& r) {
   if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
     case GenbetaStatus::Unsupported: return FitOutcome::failure(OutcomeReason::Unsupported);
-    case GenbetaStatus::Ok: return FitOutcome::estimate(r.allfree_certified,!r.product_ridge);
+    case GenbetaStatus::Ok: return r.product_ridge ? FitOutcome::estimate(r.allfree_certified, false) :
+        (r.singleton_proved ? FitOutcome::singleton(r.allfree_certified) : FitOutcome::unknown_cardinality(r.allfree_certified));
     case GenbetaStatus::UnitGammaBoundary: return FitOutcome::limit(r.allfree_certified);
     case GenbetaStatus::PowerBoundary: return FitOutcome::limit(r.allfree_certified);
     case GenbetaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
@@ -484,6 +485,13 @@ inline GenbetaResult genbeta_mle(span x,double scale,double tol=1e-10,int maxit=
      r.certificate_failure!=GenbetaCertificateFailure::Budget&&!r.stop_detail.budget_exhausted&&
      r.stop_detail.accuracy_stop==AccuracyStop::None)
     genbeta_detail::near_constant_limit(x,scale,r);
+  // Held power reduces to the strict beta likelihood. At alpha=1 the
+  // Kumaraswamy profile supplies the singleton proof. A product ridge
+  // retains its typed multiplicity even when a coordinate happens to be one.
+  if (r.status==GenbetaStatus::Ok && !r.product_ridge)
+    r.singleton_proved=r.singleton_proved || std::isfinite(t) ||
+        (a==1 && std::isnan(b) && std::isnan(t)) ||
+        (std::isfinite(a) && std::isfinite(b));
   if(r.status!=GenbetaStatus::Ok||r.shape2==1)return r;
   const auto accuracy_failure=[&]() {
     r.status=GenbetaStatus::SearchUnresolved;r.allfree_certified=false;

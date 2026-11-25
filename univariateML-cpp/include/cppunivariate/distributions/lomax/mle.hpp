@@ -35,7 +35,7 @@ struct LomaxResult {
   LomaxStatus status;
   LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None;
   StopDetail stop_detail{};
-  bool limit_certified = false;
+  bool limit_certified = false; bool singleton_proved = false;
 };
 
 namespace lomax_detail {
@@ -312,7 +312,9 @@ inline LomaxResult lomax_mle(span x,double tol,int maxit,double lambda,double ka
   const double ll=n*(std::log(lambda)+std::log(kappa))-(kappa+1)*s;
   if(!(lambda>0 && std::isfinite(lambda) && kappa>0 && std::isfinite(kappa) && std::isfinite(ll)))
     return {lambda,kappa,ll,iterations,LomaxStatus::IterationFailure};
-  return {lambda,kappa,ll,iterations,LomaxStatus::Ok};
+  LomaxResult out{lambda,kappa,ll,iterations,LomaxStatus::Ok};
+  out.singleton_proved=true;
+  return out;
 }
 
 }  // namespace cppunivariate
@@ -324,7 +326,7 @@ inline FitOutcome outcome(const LomaxResult& r) {
   if (r.status != LomaxStatus::ExponentialLimit && r.certificate_failure == LomaxCertificateFailure::Budget) return FitOutcome::budget();
   if (r.status != LomaxStatus::ExponentialLimit && r.certificate_failure == LomaxCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
   switch (r.status) {
-    case LomaxStatus::Ok: return FitOutcome::estimate(true);
+    case LomaxStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case LomaxStatus::ExponentialLimit: return FitOutcome::limit(r.limit_certified);
     case LomaxStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case LomaxStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

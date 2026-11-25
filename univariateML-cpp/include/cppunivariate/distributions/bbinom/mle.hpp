@@ -79,7 +79,7 @@ struct BbinomResult {
   std::vector<std::vector<double>> accurate_fixed_points{};
   std::vector<double> maximizer_shape_ray{};
   std::vector<double> free_positive_shapes{};
-  MaximizerSet maximizers{};
+  MaximizerSet maximizers{}; bool singleton_proved = false;
 };
 
 namespace bbinom_detail {
@@ -379,22 +379,29 @@ inline std::vector<double> log_grid(double lo, double hi, double step) {
 
 #include "acceptance.hpp"
 
-// Test x*beta - alpha*gap - x exactly. FMA splits each product and
+// Determine the sign of x*beta - alpha*gap - x exactly. FMA splits each product and
 // error-free sums accumulate the resulting five terms in an expansion.
-inline bool equal_size_ratio(double x, double gap, double alpha, double beta) {
+inline double size_ratio_sign(double x, double gap, double alpha, double beta) {
   const double xb = x * beta, ag = alpha * gap;
-  if (!std::isfinite(xb) || !std::isfinite(ag)) return false;
+  if (!std::isfinite(xb) || !std::isfinite(ag)) return NAN;
   std::array<double,5> expansion{};
   std::size_t length = 0;
   for (double term : {xb,-ag,-x,std::fma(x,beta,-xb),-std::fma(alpha,gap,-ag)}) {
     for (std::size_t i=0;i<length;++i) {
       const double sum = term + expansion[i];
+      if (!std::isfinite(sum)) return NAN;
       expansion[i] = special::addition_residual(term,expansion[i],sum);
       term = sum;
     }
     expansion[length++] = term;
   }
-  return std::all_of(expansion.begin(),expansion.end(),[](double v){return v==0;});
+  for (std::size_t i=length;i>0;--i)
+    if (expansion[i-1]!=0) return expansion[i-1];
+  return 0;
+}
+
+inline bool equal_size_ratio(double x, double gap, double alpha, double beta) {
+  return size_ratio_sign(x,gap,alpha,beta)==0;
 }
 
 }  // namespace bbinom_detail
@@ -569,6 +576,11 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
       if(candidate.logLik>out.logLik)out=candidate;
     }
     if(partial){out.certified=false;out.stop_detail=discrete_budget(out.stop_detail);}
+    if (out.certified && mx>0 && std::all_of(x.begin(),x.end(),[&](int v){return v==mx;})) {
+      const double gap=out.size-mx;
+      out.singleton_proved=bbinom_detail::size_ratio_sign(mx,gap+1,alpha_fixed,beta_fixed)<0 &&
+          (gap==0 || bbinom_detail::size_ratio_sign(mx,gap,alpha_fixed,beta_fixed)>0);
+    }
     return out;
   }
   if (!std::isfinite(size) || size < 0 || size != std::floor(size) || size > 1e7) return out;
@@ -936,6 +948,7 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
       (free_b || (beta_fixed>0 && std::isfinite(beta_fixed)))) {
     const double a=free_a?1:alpha_fixed, b=free_b?1:beta_fixed;
     BbinomResult result{0,a,b,0,0,BbinomStatus::Ok};
+    result.singleton_proved=!free_a && !free_b;
     if (free_a || free_b) {
       result.status=BbinomStatus::Unidentified;
       result.free_positive_shapes={free_a?1.:0.,free_b?1.:0.};
@@ -951,6 +964,10 @@ inline BbinomResult bbinom_mle(ispan x,double size,double tol=1e-10,int maxit=50
   if(unrestricted)return {NAN,NAN,NAN,NAN,0,BbinomStatus::Unsupported};
   const bbinom_detail::CellWork work(enumeration_budget(maxit));
   auto out=bbinom_mle_work(x,size,tol,maxit,alpha_fixed,beta_fixed,work,!std::isnan(size));
+  // An all-held fit is a singleton. At size one with one shape held,
+  // the Bernoulli mean gives a bijection to the remaining shape.
+  out.singleton_proved=out.singleton_proved || (!std::isnan(size) &&
+      ((!free_a && !free_b) || (size==1 && free_a!=free_b)));
   if(out.status==BbinomStatus::Unidentified) {
     out.size=std::isnan(size)?0:size;
     double mean=0;for(int v:x)mean+=v;mean/=x.size();
@@ -1026,7 +1043,8 @@ inline FitOutcome outcome(const BbinomResult& r) {
     case BbinomStatus::Unsupported:return FitOutcome::failure(OutcomeReason::Unsupported);
     case BbinomStatus::Ok:
       if (!r.certified && r.size_profiles) return FitOutcome::undetermined();
-      return FitOutcome::estimate(r.certified, r.maximizers.size == 0);
+      return r.maximizers.size ? FitOutcome::estimate(r.certified, false) :
+        (r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified));
     case BbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BbinomStatus::SizeTooSmall: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BbinomStatus::BinomialLimit: return FitOutcome::limit(true);
