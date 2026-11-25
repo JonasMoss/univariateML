@@ -1,5 +1,5 @@
 #pragma once
-#include "../../core/maximizer_set.hpp"
+#include "reflection.hpp"
 #include "../../core/outcome.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -540,6 +540,14 @@ inline SnResult sn_mle(span x,double tol=1e-10,int maxit=100,double xi=NAN,doubl
     {r.status=SnStatus::AccuracyFailure;{if(r.omega>0)record_accuracy(r,tol,{r.xi,r.omega,r.alpha},{std::isnan(xi)?std::max(std::abs(r.xi),r.omega):0,std::isnan(omega)?r.omega:0,std::isnan(alpha)?std::max(1.,std::abs(r.alpha)):0});else{r.stop_detail.accuracy_stop=AccuracyStop::None;r.stop_detail.attainable_tol=NAN;}}}return r;
   }
   r.logLik=0;for(double v:x)r.logLik+=distributions::dsn(v,r.xi,r.omega,r.alpha,true);
+  // At a held symmetry center the strictly concave shape score has its
+  // root at zero. A small numerical residual there is not a second mode.
+  if (std::isnan(xi) && std::isnan(alpha) && r.alpha != 0) {
+    const auto center = skew_reflection_detail::symmetric_center_unsorted(x,xi);
+    if (std::isfinite(center.high))
+      r.maximizers = skew_reflection_detail::reflected_pair(
+          r.xi,r.omega,r.alpha,center.reflect(r.xi),-r.alpha);
+  }
   return r;
 }
 }

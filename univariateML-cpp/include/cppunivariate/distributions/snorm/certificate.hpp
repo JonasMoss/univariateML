@@ -566,12 +566,31 @@ inline SnormResult fit(span x,double tol,int maxit,double mean,double sd,double 
       best.stop_detail=limit_detail(face.coef,face.loglik_lower,face.model);
     }
   }
-  // Report distinct equal closure maximizers, including opposite faces.
+  MaximizerSet reflected;
+  double reflected_mean=NAN, reflected_xi=NAN;
+  if (best.status==SnormStatus::Ok && !hx && best.xi!=1) {
+    const auto center=skew_reflection_detail::symmetric_center({raw.data(),raw.size()},mean);
+    if (std::isfinite(center.high)) {
+      reflected_mean=hm?mean:center.reflect(best.mu);
+      reflected_xi=1/best.xi;
+      reflected=skew_reflection_detail::reflected_pair(
+          best.mu,best.sigma,best.xi,reflected_mean,reflected_xi);
+    }
+  }
+  // Coefficient proximity associates a computed contender with the
+  // reflected root. The exact data symmetry supplies likelihood equality.
+  // Keep numerical comparison stops for contenders outside that pair.
+  const double match=std::min(2*tol,1e-6);
   const double tiepad=1e-9*(static_cast<double>(n)+std::abs(best.logLik));
   std::vector<FitCandidate> tied;
   for(const auto& candidate:candidates)if(candidate.loglik_upper>=best.logLik-tiepad)tied.push_back(candidate);
   if(best.status==SnormStatus::Ok) {
     for(const auto& candidate:finite)if(candidate.loglik_upper>=best.logLik-tiepad) {
+      const auto& c=candidate.coef;
+      if (reflected.size && (c[2]>1)!=(best.xi>1) &&
+          std::abs(c[0]-reflected_mean)<=match*std::max(std::abs(reflected_mean),best.sigma) &&
+          std::abs(c[1]-best.sigma)<=match*best.sigma &&
+          std::abs(c[2]-reflected_xi)<=match*reflected_xi) continue;
       bool duplicate=false;
       for(const auto& previous:tied)if(previous.model==StopModel::None) {
         double distance=0;for(std::size_t j=0;j<3;++j)distance=std::max(distance,std::abs(candidate.coef[j]-previous.coef[j])/(1+std::abs(previous.coef[j])));
@@ -587,6 +606,7 @@ inline SnormResult fit(span x,double tol,int maxit,double mean,double sd,double 
       {hm?0:std::max(std::abs(best.mu),best.sigma),hs?0:best.sigma,hx?0:best.xi});
     return failure;
   }
+  best.maximizers=reflected;
   best.iterations=static_cast<int>(std::min(work,static_cast<std::int64_t>(2147483647)));return best;
 }
 } // namespace snorm_certificate

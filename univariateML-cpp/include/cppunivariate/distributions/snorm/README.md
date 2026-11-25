@@ -98,8 +98,8 @@ existence:
     With all coefficients free, nonconstant samples have a finite MLE exactly
     when the two-piece profile described below attains its global minimum at
     an interior mode. Otherwise the supremum is a translated half-normal
-    limit. Constant samples have unbounded likelihood. Joint uniqueness is
-    not established. Holding any finite $\xi>0$ gives a unique conditional
+    limit. Constant samples have unbounded likelihood. Joint fits can
+    have distinct reflected maxima. Holding any finite $\xi>0$ gives a unique conditional
     finite maximum unless free scale collapses on constant data at the fitted
     or held mean. With skewness free under moment holds, attainment is decided
     by comparing the finite stationary candidates and constrained half-normal
@@ -268,13 +268,17 @@ with standard deviation held and mean free, both the right and reflected
 half-normal faces have the same maximal density $mh/\sigma$ per observation;
 these are equal limiting suprema, reported as a certified limit naming the first face with both attached. Fixed skewness
 has a unique finite maximum unless the scale-collapse condition applies.
-Finite non-uniqueness also occurs: for $x=(-1,0,1)$ with $\mu=0$ and
-$\sigma=151/200$, both half-normal endpoints are infeasible,
-$\ell(6)>\ell(1)$, and reflection gives $\ell(\xi)=\ell(1/\xi)$.
-The two tails tend to minus infinity, so at least two distinct finite
-maximizers exist. An [exact rational check](../../../../../dev/research/evaluations/2026-11-07-snorm-held-data/nonunique.py)
-verifies the strict inequalities. The certificate compares all candidates
-without assuming unimodality.
+Finite non-uniqueness also occurs. For $x=(-2,-1^{[10]},1^{[10]},2)$,
+with multiplicities in brackets, the symmetric mode is a strict local
+maximum of the profiled loss and both limiting faces have higher loss
+than the center. Hence finite off-center maxima occur in reflected pairs.
+For $x=(-1,0,1)$ with $\mu=0$ and $\sigma=151/200$, both half-normal
+endpoints are infeasible and $\ell(6)>\ell(1)$, again forcing a finite
+reflected pair. With an exactly symmetric sample about $c$ and invariant
+holds, a finite winner at $\xi\ne1$ has the partner
+$(2c-\mu,\sigma,1/\xi)$. The fit reports the pair with `unique = FALSE`
+when the finite winner is established.
+[Exact profile comparisons](../../../../../dev/research/evaluations/2026-11-25-sn-math-report.md#exact-profile-counterexamples)
 
 For a constant sample $x$ with mean held at $\mu\ne x$ and standard deviation
 free, the sharp bound is $f(x)\le m^2/|x-\mu|$. It is approached only by the
