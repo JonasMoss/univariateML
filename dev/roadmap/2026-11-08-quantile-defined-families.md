@@ -98,3 +98,7 @@ independent comparisons with `gld`/GLDEX (GLD) and `gk` (g-and-k, g-and-h).
 Check full-rank information at interior points before any inference claim.
 References above are from memory or a brief search; verify them before
 citing.
+
+**2026-11-25:** the [TASK-241 math report](../research/evaluations/2026-11-25-gld-math-report.md) gives the FKML
+existence theory (fitted branch $[-1,1]^2$ under the strict tie condition, GPD faces of a separated extension,
+regularity iff both shapes $<1/2$) and a fitter outline; still no implementation authorized.
