@@ -413,6 +413,25 @@ test('snorm reflected finite modes are a proved two-point maximizer set', () => 
   assert.ok(Math.abs(fit.maximizers[0].xi*fit.maximizers[1].xi-1)<1e-15);
 });
 
+test('structured stops preserve a later snorm maximizer set in the same WASM instance', async () => {
+  const isolated = await create();
+  const fitSnorm = () => isolated.snorm.fit([-1, 0, 1], {mean: 0, sd: .755});
+  const fresh = fitSnorm();
+  assert.equal(fresh.certified, true);
+  assert.equal(fresh.unique, false);
+  assert.equal(fresh.maximizers.length, 2);
+
+  assert.throws(() => isolated.tlambda.fit([-.25, .25], {sigma: 1, lambda: 1.5}),
+    {kind: 'unresolved'});
+  assert.deepEqual(fitSnorm(), fresh);
+
+  assert.throws(() => isolated.cauchy.fit([1, 1, 2]), {kind: 'nomle'});
+  assert.throws(() => isolated.lomax.fit([1, 1, 1]), {kind: 'limit'});
+  assert.throws(() => isolated.tlambda.fit([-80 / 9, 80 / 9], {sigma: 1, lambda: -1},
+    {tol: 1e-12, iterlim: 64}), {kind: 'budget'});
+  assert.deepEqual(fitSnorm(), fresh);
+});
+
 test('snorm constant sample with held mean has a constrained half-normal supremum', () => {
   const m=Math.sqrt(2/Math.PI);
   for(const value of [-2,2])assert.throws(()=>api.snorm.fit([value,value],{mean:0},{iterlim:1}),e=> {
