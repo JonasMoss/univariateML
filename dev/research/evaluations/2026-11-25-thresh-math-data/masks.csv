@@ -1,0 +1,40 @@
+family,mask,condition,outcome,proof section
+pareto2,shape,E<0 | E=0 | E>0,Unbounded | Unattained scale-zero supremum | Attained at sample minimum,Fixed shapes and free scale
+pareto2,scale,Constant | nonconstant,Unbounded | Attained at sample minimum,Fixed scale and free upper-tail shape
+pareto2,shape+scale,All samples,Attained at sample minimum,Fixed regular coefficients
+pareto3,shape,a<1 or E<0 | a>=1 and E=0 | a=1 and E>0 | a>1 and E>0,Unbounded | Unattained scale-zero supremum | Attained at sample minimum | Attained below sample minimum,Fixed shapes and free scale
+pareto3,scale,All samples,Unbounded (free c),Structural spikes
+pareto3,shape+scale,a<1 | a=1 | a>1,Unbounded | Attained at sample minimum | Attained below sample minimum,Fixed regular coefficients
+pareto4,shape1,All samples,Unbounded (free c),Structural spikes
+pareto4,shape2,All samples,Unbounded (free q and s),Structural spikes
+pareto4,scale,All samples,Unbounded (free c),Structural spikes
+pareto4,shape1+shape2,a<1 or E<0 | a>=1 and E=0 | a=1 and E>0 | a>1 and E>0,Unbounded | Unattained scale-zero supremum | Attained at sample minimum | Attained below sample minimum,Fixed shapes and free scale
+pareto4,shape1+scale,All samples,Unbounded (free c),Structural spikes
+pareto4,shape2+scale,a<1 or constant | a=1 and nonconstant | a>1 and nonconstant,Unbounded | Attained at sample minimum | Attained below sample minimum,Fixed scale and free upper-tail shape
+pareto4,shape1+shape2+scale,a<1 | a=1 | a>1,Unbounded | Attained at sample minimum | Attained below sample minimum,Fixed regular coefficients
+fpareto,shape1,All samples,Unbounded (free c or p),Structural spikes
+fpareto,shape2,All samples,Unbounded (free p),Structural spikes
+fpareto,shape3,All samples,Unbounded (free c),Structural spikes
+fpareto,scale,All samples,Unbounded (free c or p),Structural spikes
+fpareto,shape1+shape2,All samples,Unbounded (free p),Structural spikes
+fpareto,shape1+shape3,All samples,Unbounded (free c),Structural spikes
+fpareto,shape1+scale,All samples,Unbounded (free c or p),Structural spikes
+fpareto,shape2+shape3,All samples,Unbounded (free q and s),Structural spikes
+fpareto,shape2+scale,All samples,Unbounded (free p),Structural spikes
+fpareto,shape3+scale,All samples,Unbounded (free c),Structural spikes
+fpareto,shape1+shape2+shape3,a<1 or E<0 | a>=1 and E=0 | a=1 and E>0 | a>1 and E>0,Unbounded | Unattained scale-zero supremum | Attained at sample minimum | Attained below sample minimum,Fixed shapes and free scale
+fpareto,shape1+shape2+scale,All samples,Unbounded (free p),Structural spikes
+fpareto,shape1+shape3+scale,All samples,Unbounded (free c),Structural spikes
+fpareto,shape2+shape3+scale,a<1 or constant | a=1 and nonconstant | a>1 and nonconstant,Unbounded | Attained at sample minimum | Attained below sample minimum,Fixed scale and free upper-tail shape
+fpareto,shape1+shape2+shape3+scale,a<1 | a=1 | a>1,Unbounded | Attained at sample minimum | Attained below sample minimum,Fixed regular coefficients
+nsbeta,shape1,All samples,Unbounded (free upper-end shape),Beta with both endpoints free
+nsbeta,shape2,All samples,Unbounded (free lower-end shape),Beta with both endpoints free
+nsbeta,shape1+shape2,Either shape <1 or constant | both shapes >=1 and nonconstant,Unbounded | Attained (an endpoint touches iff its shape is 1),Beta with both endpoints free
+nsbeta,min,Compatible held endpoint (apply held-endpoint rules first),Unbounded (free upper-end shape or held-end singularity),Beta with one endpoint held
+nsbeta,shape1+min,Compatible held endpoint (apply held-endpoint rules first),Unbounded (free upper-end shape or held-end singularity),Beta with one endpoint held
+nsbeta,shape2+min,Strict held support: a<1 or constant | a=1 and nonconstant | a>1 and nonconstant,Unbounded | Attained at sample maximum | Attained beyond sample maximum,Beta with one endpoint held
+nsbeta,shape1+shape2+min,Strict held support: a<1 | a=1 | a>1,Unbounded | Attained at sample maximum | Attained beyond sample maximum,Beta with one endpoint held
+nsbeta,max,Compatible held endpoint (apply held-endpoint rules first),Unbounded (free lower-end shape or held-end singularity),Beta with one endpoint held
+nsbeta,shape1+max,Strict held support: a<1 or constant | a=1 and nonconstant | a>1 and nonconstant,Unbounded | Attained at sample minimum | Attained below sample minimum,Beta with one endpoint held
+nsbeta,shape2+max,Compatible held endpoint (apply held-endpoint rules first),Unbounded (free lower-end shape or held-end singularity),Beta with one endpoint held
+nsbeta,shape1+shape2+max,Strict held support: a<1 | a=1 | a>1,Unbounded | Attained at sample minimum | Attained below sample minimum,Beta with one endpoint held
