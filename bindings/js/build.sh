@@ -12,7 +12,9 @@ if command -v taskset >/dev/null; then
   js_build_cpus=$(python3 -c 'import os; print(",".join(map(str, sorted(os.sched_getaffinity(0))[:4])))')
   affinity=(taskset -c "$js_build_cpus")
 fi
-"${affinity[@]}" em++ bindings/js/bindings.cpp -std=c++17 "-${1:-O2}" -Ibindings -Ibuild/js -IunivariateML-cpp/include -I"$boost" --bind -sMODULARIZE -sEXPORT_ES6 -sALLOW_MEMORY_GROWTH -sENVIRONMENT=web,node --emit-tsd "${2:-univariateML}.d.ts" "${@:3}" -o "build/js/${2:-univariateML}.mjs"
+# Nested certificate fits with inline maximizer sets can exceed the default
+# 64 KiB stack. Check stack adjustments before they can overwrite static data.
+"${affinity[@]}" em++ bindings/js/bindings.cpp -std=c++17 "-${1:-O2}" -Ibindings -Ibuild/js -IunivariateML-cpp/include -I"$boost" --bind -sMODULARIZE -sEXPORT_ES6 -sALLOW_MEMORY_GROWTH -sSTACK_SIZE=262144 -sSTACK_OVERFLOW_CHECK=2 -sENVIRONMENT=web,node --emit-tsd "${2:-univariateML}.d.ts" "${@:3}" -o "build/js/${2:-univariateML}.mjs"
 # Native reference for Node covariance parity checks (same source estimates).
 mkdir -p build/scratch
 c++ -std=c++17 -O2 -IunivariateML-cpp/include -I"$boost" bindings/js/validation/vcov-native.cpp -o build/scratch/vcov-native

@@ -494,3 +494,32 @@ TEST_CASE("snorm exact reflection returns two finite maximizers with free or hel
     }
   }
 }
+
+TEST_CASE("snorm reflected maximizers are unchanged after an unresolved Tukey lambda fit") {
+  const double skew[] = {-1, 0, 1};
+  const double tukey[] = {-.25, .25};
+  const auto fit = [&] { return cppunivariate::snorm_mle({skew, 3}, 1e-10, 200, 0, .755); };
+  const auto before = fit();
+  const auto stop = cppunivariate::outcome(
+      cppunivariate::tlambda_mle({tukey, 2}, 1e-10, 1000, 1.5, NAN, 1));
+  CHECK(stop.kind == cppunivariate::OutcomeKind::Failure);
+  CHECK(stop.reason == cppunivariate::OutcomeReason::Unresolved);
+  const auto after = fit();
+
+  for (const auto& result : {before, after}) {
+    REQUIRE(result.status == cppunivariate::SnormStatus::Ok);
+    CHECK(cppunivariate::outcome(result).certified);
+    CHECK_FALSE(cppunivariate::outcome(result).unique);
+    REQUIRE(result.maximizers.size == 1);
+    REQUIRE(std::get<cppunivariate::Points>(result.maximizers.pieces[0].value).size == 2);
+  }
+  CHECK(after.mu == before.mu);
+  CHECK(after.sigma == before.sigma);
+  CHECK(after.xi == before.xi);
+  CHECK(after.logLik == before.logLik);
+  CHECK(after.iterations == before.iterations);
+  const auto& fresh = std::get<cppunivariate::Points>(before.maximizers.pieces[0].value);
+  const auto& repeated = std::get<cppunivariate::Points>(after.maximizers.pieces[0].value);
+  for (std::size_t i = 0; i < fresh.size; ++i)
+    CHECK(repeated.values[i].estimate.values == fresh.values[i].estimate.values);
+}
