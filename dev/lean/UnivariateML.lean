@@ -22,3 +22,9 @@ public import UnivariateML.Family.ClosedForm
 public import UnivariateML.Family.Beta
 public import UnivariateML.Family.Cauchy
 public import UnivariateML.Family.NegBinomial
+public import UnivariateML.Family.Discrete
+public import UnivariateML.Family.Kumaraswamy
+public import UnivariateML.Generic.LocationScale
+public import UnivariateML.Family.LocScaleInstances
+public import UnivariateML.Outcome
+public import UnivariateML.Family.Transfers
