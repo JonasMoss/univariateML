@@ -104,3 +104,6 @@ site/src/data/binding.json
 
 # Personal literature and other local-only material (not tracked)
 local/
+
+# Lean build products (Mathlib is hard-linked or fetched into .lake)
+dev/lean/.lake/
