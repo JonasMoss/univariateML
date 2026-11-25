@@ -201,3 +201,25 @@ test_that('sn checks likelihood after restoring large held shapes', {
     expect_lt(abs(as.numeric(logLik(f))-sum(dsn(x, 1+1e-15, 1.3, 1e16, log=TRUE))), 3e-9)
   }
 })
+
+test_that("sn exposes both exact reflected finite maximizers", {
+  x <- c(-1, rep(0, 5), 1)
+  f <- mlsn(x)
+  expect_true(attr(f, "certified"))
+  expect_false(attr(f, "unique"))
+  expect_length(attr(f, "maximizer_set")$pieces, 1L)
+  w <- attr(f, "maximizers")
+  expect_equal(nrow(w), 2L)
+  expect_equal(w$xi[1], -w$xi[2])
+  expect_equal(w$omega[1], w$omega[2])
+  expect_equal(w$alpha[1], -w$alpha[2])
+  expect_gt(abs(w$alpha[1]), 0)
+  for (i in 1:2) {
+    ll <- sum(dsn(x, w$xi[i], w$omega[i], w$alpha[i], log = TRUE))
+    expect_equal(ll, as.numeric(logLik(f)), tolerance = 1e-12)
+  }
+  x[2] <- .Machine$double.eps
+  near <- mlsn(x)
+  expect_true(attr(near, "unique"))
+  expect_null(attr(near, "maximizer_set"))
+})

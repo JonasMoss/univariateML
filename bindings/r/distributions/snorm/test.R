@@ -312,14 +312,6 @@ test_that("snorm certificate ties and numerical stops are structured", {
   expect_error(mlsnorm(c(-1,0,1),iterlim=0),"iterlim")
 })
 
-test_that("snorm finite reflected modes retain both witnesses", {
-  e <- tryCatch(mlsnorm(c(-1,0,1),mean=0,sd=.755),error=identity)
-  expect_s3_class(e,"univariateML_unresolved")
-  expect_equal(nrow(fit_payload(e)$candidates),2L)
-  expect_true(all(fit_payload(e)$candidates$model==""))
-  expect_equal(prod(fit_payload(e)$candidates$xi),1,tolerance=1e-7)
-})
-
 test_that("snorm constant data away from a held mean stop on the constrained face", {
   m <- sqrt(2/pi)
   for (value in c(-2,2)) {
@@ -336,4 +328,35 @@ test_that("snorm refitted likelihood seam agrees at returned coefficients", {
   f <- mlsnorm(x,mean=-0.020798452221064478,xi=3.394979982095818)
   ll <- sum(dsnorm(x,mean=f[["mean"]],sd=f[["sd"]],xi=f[["xi"]],log=TRUE))
   expect_lte(abs(as.numeric(logLik(f))-ll),1e-10*max(1,abs(ll)))
+})
+
+test_that("snorm exposes both exact reflected finite maximizers", {
+  x_free <- c(-2, rep(-1, 10), rep(1, 10), 2)
+  x_held <- c(-1, 0, 1)
+  sd_held <- 151/200
+  for (held in c(FALSE, TRUE)) {
+    x <- if (held) x_held else x_free
+    f <- if (held) mlsnorm(x, mean = 0, sd = sd_held) else mlsnorm(x)
+    expect_true(attr(f, "certified"))
+    expect_false(attr(f, "unique"))
+    expect_length(attr(f, "maximizer_set")$pieces, 1L)
+    w <- attr(f, "maximizers")
+    expect_equal(nrow(w), 2L)
+    expect_equal(w$mean[1], -w$mean[2])
+    expect_equal(w$sd[1], w$sd[2])
+    expect_equal(prod(w$xi), 1, tolerance = 1e-15)
+    expect_gt(abs(diff(w$xi)), 0)
+    if (held) {
+      expect_equal(w$mean, rep(0, 2))
+      expect_equal(w$sd, rep(sd_held, 2))
+    }
+    for (i in 1:2) {
+      ll <- sum(dsnorm(x, w$mean[i], w$sd[i], w$xi[i], log = TRUE))
+      expect_equal(ll, as.numeric(logLik(f)), tolerance = 1e-12)
+    }
+  }
+  x_free[2] <- -1 + .Machine$double.eps / 2
+  near <- mlsnorm(x_free)
+  expect_true(attr(near, "unique"))
+  expect_null(attr(near, "maximizer_set"))
 })

@@ -307,19 +307,6 @@ TEST_CASE("snorm algebraic certificate exhaustion never returns an iterate") {
   CHECK(r.stop_detail.loglik_upper==INFINITY);
 }
 
-TEST_CASE("snorm held moments can have two distinct finite global maxima") {
-  const std::vector<double> x{-1,0,1};
-  const auto r=cppunivariate::snorm_mle(mltest::as_span(x),1e-9,200,0,.755,NAN);
-  REQUIRE(r.status==cppunivariate::SnormStatus::BfgsFailure);
-  REQUIRE(r.stop_detail.comparison_tie);
-  REQUIRE(r.stop_detail.candidates.size()==2);
-  for(const auto& candidate:r.stop_detail.candidates) {
-    CHECK(candidate.model==cppunivariate::StopModel::None);
-    CHECK(candidate.coef[0]==0);CHECK(candidate.coef[1]==.755);
-  }
-  CHECK(r.stop_detail.candidates[0].coef[2]*r.stop_detail.candidates[1].coef[2]==doctest::Approx(1).epsilon(1e-7));
-}
-
 TEST_CASE("snorm Bernstein roots on subdivision seams are retained") {
   namespace cert=cppunivariate::snorm_certificate;
   const cert::Poly t{{-.5,.5}};
@@ -463,4 +450,47 @@ TEST_CASE("snorm: a full range above DBL_MAX can have a representable half-norma
   REQUIRE(r.stop_detail.limit_coef.size()==2);
   CHECK(r.stop_detail.limit_coef[0]==x.front());
   CHECK(r.stop_detail.limit_coef[1]==doctest::Approx(1.67541691818979874e308).epsilon(mltest::kFitReferenceTol).scale(0));
+}
+
+TEST_CASE("snorm exact reflection returns two finite maximizers with free or held moments") {
+  for (bool held : {false,true}) {
+    std::vector<double> x{-1,0,1};
+    if (!held) {
+      x.assign(10,-1);
+      x.insert(x.end(),10,1);
+      x.insert(x.end(),{-2,2});
+    }
+    const auto fit=cppunivariate::snorm_mle(
+        mltest::as_span(x),1e-10,200,held?0.:NAN,held?151./200:NAN);
+    REQUIRE(fit.status==cppunivariate::SnormStatus::Ok);
+    CHECK(cppunivariate::outcome(fit).certified);
+    CHECK_FALSE(cppunivariate::outcome(fit).unique);
+    REQUIRE(fit.maximizers.size==1);
+    const auto& points=std::get<cppunivariate::Points>(fit.maximizers.pieces[0].value);
+    REQUIRE(points.size==2);
+    const auto& left=points.values[0].estimate.values;
+    const auto& right=points.values[1].estimate.values;
+    CHECK(left[0]==-right[0]);
+    CHECK(left[1]==right[1]);
+    CHECK(left[2]*right[2]==doctest::Approx(1).epsilon(1e-15));
+    CHECK(left[2]!=right[2]);
+    if (held) {
+      CHECK(left[0]==0);
+      CHECK(left[1]==151./200);
+    }
+    for (const auto& c : {left,right}) {
+      double ll=0;
+      for (double v:x) ll+=cppunivariate::distributions::dsnorm(v,c[0],c[1],c[2],true);
+      CHECK(ll==doctest::Approx(fit.logLik).epsilon(1e-12));
+    }
+
+    if (!held) {
+      // Move one observation by one ulp, keeping the extremes unchanged.
+      x[0]=std::nextafter(-1.,0.);
+      const auto near=cppunivariate::snorm_mle(mltest::as_span(x));
+      REQUIRE(near.status==cppunivariate::SnormStatus::Ok);
+      CHECK(cppunivariate::outcome(near).unique);
+      CHECK(near.maximizers.size==0);
+    }
+  }
 }

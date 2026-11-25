@@ -3,6 +3,7 @@
 
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../sn/reflection.hpp"
 #include "../hnorm/dpqr.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -32,7 +33,9 @@ struct SnormResult {
   double logLik;
   int iterations;
   SnormStatus status;
- StopDetail stop_detail{}; };
+  StopDetail stop_detail{};
+  MaximizerSet maximizers{};
+};
 
 #include "certificate.hpp"
 
@@ -248,6 +251,12 @@ inline SnormResult snorm_mle(span x,double tol=1e-10,int maxit=200,
     record_accuracy(r,tol,{r.mu,r.sigma,r.xi},
         {hm?0:std::max(std::abs(r.mu),r.sigma),hs?0:r.sigma,hx?0:r.xi});
   }
+  if (r.status==SnormStatus::Ok && !hm && !hs && !hx && r.xi!=1) {
+    const auto center=skew_reflection_detail::symmetric_center_unsorted(x,fixed_mean);
+    if (std::isfinite(center.high))
+      r.maximizers=skew_reflection_detail::reflected_pair(
+          r.mu,r.sigma,r.xi,center.reflect(r.mu),1/r.xi);
+  }
   return r;
 }
 
@@ -294,7 +303,7 @@ inline FitOutcome outcome(const SnormResult& r) {
   if (r.status != SnormStatus::Unbounded && r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.status != SnormStatus::Unbounded && r.stop_detail.comparison_tie) return snorm_equal_faces(r) ? FitOutcome::limit(true) : comparison_outcome_of(r);
   switch (r.status) {
-    case SnormStatus::Ok: return FitOutcome::estimate(true);
+    case SnormStatus::Ok: return FitOutcome::estimate(true, r.maximizers.size == 0);
     case SnormStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case SnormStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case SnormStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);

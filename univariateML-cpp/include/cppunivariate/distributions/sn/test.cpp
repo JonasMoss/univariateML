@@ -414,3 +414,51 @@ TEST_CASE("sn near-constant sample reaches the half-normal face as its tie3 prei
   const auto r=cppunivariate::sn_mle(mltest::as_span(near));
   CHECK(r.omega<1e-15);
 }
+
+TEST_CASE("sn exact reflection returns two finite maximizers") {
+  std::vector<double> x{1,0,0,-1,0,0,0};
+  const auto fit=cppunivariate::sn_mle(mltest::as_span(x));
+  REQUIRE(fit.status==cppunivariate::SnStatus::Ok);
+  CHECK(cppunivariate::outcome(fit).certified);
+  CHECK_FALSE(cppunivariate::outcome(fit).unique);
+  REQUIRE(fit.maximizers.size==1);
+  const auto& points=std::get<cppunivariate::Points>(fit.maximizers.pieces[0].value);
+  REQUIRE(points.size==2);
+  const auto& left=points.values[0].estimate.values;
+  const auto& right=points.values[1].estimate.values;
+  CHECK(left[0]==-right[0]);
+  CHECK(left[1]==right[1]);
+  CHECK(left[2]==-right[2]);
+  CHECK(left[2]!=0);
+  for (const auto& c : {left,right}) {
+    double ll=0;
+    for (double v:x) ll+=cppunivariate::distributions::dsn(v,c[0],c[1],c[2],true);
+    CHECK(ll==doctest::Approx(fit.logLik).epsilon(1e-12));
+  }
+
+  x[1]=std::numeric_limits<double>::epsilon();
+  const auto near=cppunivariate::sn_mle(mltest::as_span(x));
+  REQUIRE(near.status==cppunivariate::SnStatus::Ok);
+  CHECK(cppunivariate::outcome(near).unique);
+  CHECK(near.maximizers.size==0);
+}
+
+TEST_CASE("skew reflection compares the exact binary64 pair sums") {
+  const std::vector<double> overflows{1e308,1e308,1e308};
+  const auto large=cppunivariate::skew_reflection_detail::symmetric_center(
+      mltest::as_span(overflows),1e308);
+  CHECK(large.reflect(1e308)==1e308);
+
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  const std::vector<double> half_subnormal{0,tiny};
+  const auto fractional=cppunivariate::skew_reflection_detail::symmetric_center(
+      mltest::as_span(half_subnormal),NAN);
+  CHECK(fractional.reflect(0)==tiny);
+  CHECK(std::isnan(cppunivariate::skew_reflection_detail::symmetric_center(
+      mltest::as_span(half_subnormal),0).high));
+
+  const std::vector<double> rounded{0,.25,std::nextafter(.75,1.),1};
+  REQUIRE(rounded[1]+rounded[2]==1);
+  CHECK(std::isnan(cppunivariate::skew_reflection_detail::symmetric_center(
+      mltest::as_span(rounded),NAN).high));
+}

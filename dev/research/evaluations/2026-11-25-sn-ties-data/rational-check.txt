@@ -1,0 +1,8 @@
+rational 151/200
+sn squared witness/normal ratio: 1.0009750815939868 1.0009750815939868
+snorm held log-likelihood gain: 0.07685316053712524 0.07685316053712524
+snorm free curvature and endpoint inequalities: exact
+binary64 151/200
+sn squared witness/normal ratio: 1.0009750815939868 1.0009750815939868
+snorm held log-likelihood gain: 0.07685316053712542 0.07685316053712542
+snorm free curvature and endpoint inequalities: exact

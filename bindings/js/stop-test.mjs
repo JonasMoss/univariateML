@@ -404,12 +404,13 @@ test('snorm held certificate preserves opposite-face ties and root failures', ()
   });
 });
 
-test('snorm reflected finite modes remain a comparison tie', () => {
-  comparisonStop(()=>api.snorm.fit([-1,0,1],{mean:0,sd:.755}),'unresolved',e=> {
-    assert.equal(e.candidates.length,2);
-    assert.ok(e.candidates.every(c=>c.model===''));
-    assert.ok(Math.abs(e.candidates[0].xi*e.candidates[1].xi-1)<1e-7);return true;
-  });
+// Exact symmetry proves the two reflected finite modes tie (TASK-254); before, the held
+// certificate stopped with an unresolved comparison between them.
+test('snorm reflected finite modes are a proved two-point maximizer set', () => {
+  const fit=api.snorm.fit([-1,0,1],{mean:0,sd:.755});
+  assert.equal(fit.certified,true);assert.equal(fit.unique,false);
+  assert.equal(fit.maximizers.length,2);
+  assert.ok(Math.abs(fit.maximizers[0].xi*fit.maximizers[1].xi-1)<1e-15);
 });
 
 test('snorm constant sample with held mean has a constrained half-normal supremum', () => {

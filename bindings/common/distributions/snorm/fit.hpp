@@ -24,6 +24,8 @@ inline FitResult fit_snorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
   auto res=cppunivariate::snorm_mle(x,tol,iterlim,held_mean,held_sd,held_xi);
   const auto o = cppunivariate::outcome(res);
   const auto done = [&](FitResult out) {
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, res.maximizers, "snorm", [&](const auto&) { return res.logLik; });
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"mean",mean_arg.supplied},{"sd",sd_arg.supplied},{"xi",xi_arg.supplied}});
   };
   const auto nomle = [&](const std::string& format, const auto&... arguments) { return stop_failure(failure(binding_message(format, arguments...), warnings), {}, outcome_payload(o), {}); };

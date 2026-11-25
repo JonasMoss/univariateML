@@ -89,7 +89,7 @@ existence:
     With all three coefficients free, a finite MLE need not exist: the
     supremum can lie at either half-normal limit. A finite point strictly
     above both limiting suprema ensures attainment for nonconstant data,
-    but uniqueness of the joint fit is not established here. Constant data
+    but a joint fit can have distinct reflected maxima. Constant data
     have unbounded likelihood when location and scale are free. Holding
     scale still permits a half-normal escape when shape is free. With a
     finite shape held, the remaining fit exists and is unique for
@@ -150,6 +150,14 @@ $n\log b+\sum_i\log[2\phi(bx_i-u)\Phi(\alpha(bx_i-u))]$ is strictly
 concave in $(u,b)$ for nonconstant data. At $\alpha=0$ this is the normal
 member; as $\alpha\to\pm\infty$ the corresponding translated half-normal
 is a separate limiting face. The Newton inner solve uses this concavity. Its acceptance check bounds both likelihood loss and coordinate error using the Gaussian curvature minorant below; the outer search bounds the shape-search gap separately.
+
+For an exactly reflection-symmetric sample about $c$, any finite
+nonzero-shape maximum has a distinct partner $(2c-\xi,\omega,-\alpha)$
+when location and shape are free. A held scale preserves the symmetry.
+For $x=(-1,0,0,0,0,0,1)$, a finite nonzero-shape witness strictly beats
+the fitted normal and both half-normal faces, proving that a reflected
+pair exists. The fit returns both members with `unique = FALSE`.
+[Exact likelihood comparison](../../../../../dev/research/evaluations/2026-11-25-sn-math-report.md#exact-finite-global-tie)
 
 ## R notes
 

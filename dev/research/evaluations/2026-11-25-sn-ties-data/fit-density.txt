@@ -1,0 +1,83 @@
+
+not checked (no C++ density for the model, or coefficients missing):
+  double bbinom: candidate#0 model has no C++ density: 3
+  double bbinom: limit model has no C++ density: 3
+  double cmb: candidate#0 model has no C++ density: 25
+  double cmb: limit model has no C++ density: 24
+  double cmp: candidate#0 model has no C++ density: 13
+  double cmp: limit model has no C++ density: 13
+  double dgamma: candidate#0 model has no C++ density: 6
+  double dgamma: limit model has no C++ density: 6
+  double dlaplace: candidate#0 model has no C++ density: 12
+  double dlaplace: limit model has no C++ density: 12
+  double dnorm: candidate#0 model has no C++ density: 11
+  double dnorm: limit model has no C++ density: 11
+  double dweibull: candidate#0 model has no C++ density: 13
+  double dweibull: limit model has no C++ density: 13
+  double genbeta: candidate#0 model has no C++ density: 6
+  double genbeta: candidate#1 model has no C++ density: 1
+  double genbeta: limit model has no C++ density: 6
+  double lgser: candidate#0 model has no C++ density: 1
+  double lgser: limit model has no C++ density: 1
+  double norm +truncate=tnorm: candidate#0 model has no C++ density: 19
+  double norm +truncate=tnorm: limit model has no C++ density: 19
+  double sged: candidate#0 model has no C++ density: 95
+  double sged: candidate#1 model has no C++ density: 2
+  double sged: limit model has no C++ density: 93
+  double sn: candidate#0 model has no C++ density: 20
+  double sn: limit model has no C++ density: 20
+  double snorm: candidate#0 model has no C++ density: 16
+  double snorm: limit model has no C++ density: 16
+  double sstd: candidate#0 model has no C++ density: 25
+  double sstd: candidate#1 model has no C++ density: 2
+  double sstd: limit model has no C++ density: 38
+  double st: candidate#0 model has no C++ density: 30
+  double st: limit model has no C++ density: 30
+  double yulesimon: candidate#0 model has no C++ density: 8
+  double yulesimon: limit model has no C++ density: 8
+  double zeta +truncate=zipf: candidate#0 model has no C++ density: 3
+  double zeta +truncate=zipf: limit model has no C++ density: 3
+  double zeta: candidate#0 model has no C++ density: 5
+  double zeta: limit model has no C++ density: 5
+  native bbinom: candidate#0 model has no C++ density: 3
+  native bbinom: limit model has no C++ density: 3
+  native cmb: candidate#0 model has no C++ density: 25
+  native cmb: limit model has no C++ density: 24
+  native cmp: candidate#0 model has no C++ density: 13
+  native cmp: limit model has no C++ density: 13
+  native dgamma: candidate#0 model has no C++ density: 6
+  native dgamma: limit model has no C++ density: 6
+  native dlaplace: candidate#0 model has no C++ density: 12
+  native dlaplace: limit model has no C++ density: 12
+  native dnorm: candidate#0 model has no C++ density: 11
+  native dnorm: limit model has no C++ density: 11
+  native dweibull: candidate#0 model has no C++ density: 13
+  native dweibull: limit model has no C++ density: 13
+  native genbeta: candidate#0 model has no C++ density: 6
+  native genbeta: candidate#1 model has no C++ density: 1
+  native genbeta: limit model has no C++ density: 6
+  native lgser: candidate#0 model has no C++ density: 1
+  native lgser: limit model has no C++ density: 1
+  native norm +truncate=tnorm: candidate#0 model has no C++ density: 19
+  native norm +truncate=tnorm: limit model has no C++ density: 19
+  native sged: candidate#0 model has no C++ density: 95
+  native sged: candidate#1 model has no C++ density: 2
+  native sged: limit model has no C++ density: 93
+  native sn: candidate#0 model has no C++ density: 20
+  native sn: limit model has no C++ density: 20
+  native snorm: candidate#0 model has no C++ density: 16
+  native snorm: limit model has no C++ density: 16
+  native sstd: candidate#0 model has no C++ density: 25
+  native sstd: candidate#1 model has no C++ density: 2
+  native sstd: limit model has no C++ density: 38
+  native st: candidate#0 model has no C++ density: 30
+  native st: limit model has no C++ density: 30
+  native yulesimon: candidate#0 model has no C++ density: 8
+  native yulesimon: limit model has no C++ density: 8
+  native zeta +truncate=zipf: candidate#0 model has no C++ density: 3
+  native zeta +truncate=zipf: limit model has no C++ density: 3
+  native zeta: candidate#0 model has no C++ density: 5
+  native zeta: limit model has no C++ density: 5
+
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing
