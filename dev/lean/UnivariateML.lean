@@ -15,3 +15,6 @@ public import UnivariateML.Family.BetaBinomial
 public import UnivariateML.Family.FoldedNormal
 public import UnivariateML.Family.Frechet
 public import UnivariateML.Family.Gamma
+public import UnivariateML.Family.Endpoint
+public import UnivariateML.Family.Fatigue
+public import UnivariateML.Family.LomaxTwoPoint
