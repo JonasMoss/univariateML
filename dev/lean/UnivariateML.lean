@@ -37,3 +37,7 @@ public import UnivariateML.Family.NegHypergeometric
 public import UnivariateML.Family.LogLogistic
 public import UnivariateML.Family.GenGammaTwoPoint
 public import UnivariateML.Family.Misc
+public import UnivariateML.Generic.ExpFamily
+public import UnivariateML.Family.CMP
+public import UnivariateML.Family.Huber
+public import UnivariateML.Family.Paralogistic
