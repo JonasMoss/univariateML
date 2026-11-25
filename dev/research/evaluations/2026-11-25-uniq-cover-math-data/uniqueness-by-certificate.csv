@@ -1,0 +1,66 @@
+family,hold mask,certificate file:line,proves-uniqueness,condition,proof section
+gev,none; general interior or xi=1,gev/joint_certificate.hpp:661,yes,Exhausted cover; one strictly dominating root class or upper endpoint with unique nuisance optimum.,joint-shape-covers
+gev,none; general xi=-1 winner,gev/joint_certificate.hpp:552,with condition,"Retain strict pointwise inward-face exclusion via the signed coefficient C plus its pad, or a strictly smaller tail upper bound than the uniform lower witness.",joint-shape-covers
+gev,none; two-point finite member; exact compatible single nuisance hold,gev/mle.hpp:548,yes,Exact two-point theorem and strict winner; exact compatible held values only.,joint-shape-covers
+gev,mu or sigma,gev/held_certificate.hpp:430,yes,Closed constrained cover and unique isolated box or certified endpoint; successful public restoration.,joint-shape-covers
+gev,mu+sigma,gev/shape_certificate.hpp:236,with condition,Verify one retained root or attained endpoint using the full score or curvature enclosure over the winning region.,joint-shape-covers
+gev,mu+sigma; all residuals zero,gev/shape_certificate.hpp:100,no,Exact shape interval; known nonunique.,joint-shape-covers
+frechet,none; general,frechet/mle.hpp:67,yes,"Finite positive-shape winner from the GEV cover, with strict comparison to Gumbel and unique nuisance profile.",joint-shape-covers
+frechet,none or sigma; two-point selected route,frechet/certificate.hpp:124,yes,Strict domination of Gumbel by the finite endpoint; exact compatibility for held sigma.,joint-shape-covers
+frechet,lambda or lambda+sigma,frechet/certificate.hpp:6,yes,"Strict ratio-score monotonicity gives one location; if free, scale is profiled uniquely.",joint-shape-covers
+frechet,sigma; general,frechet/certificate.hpp:212,yes,Closed held-scale GEV cover and public coefficient restoration.,joint-shape-covers
+gpd,mu; interior,gpd/certificate.hpp:279,yes,"One isolated feasible maximum, all other root uppers and applicable tail upper and uniform value strictly below its lower witness.",gpd
+gpd,mu; uniform,gpd/certificate.hpp:287,yes,All competing root uppers strictly negative; negative tail discarded only by strict pointwise constrained-uniform inequality.,gpd
+gpd,mu+sigma; positive maximum excess,gpd/certificate.hpp:174,yes,Sigma at least maximum excess gives exact unique uniform winner; otherwise an isolated root wins all comparisons.,gpd
+gpd,mu+sigma; all zero excesses,gpd/certificate.hpp:161,no,Exact shape interval of maximizers.,gpd
+gpd,sigma or sigma+xi; supported constant sample,gpd/mle.hpp:186,no,Exact interval or union of interval boxes; known nonunique.,gpd
+gpd,mu+xi,gpd/mle.hpp:56,yes,"Unique scale by monotone score, exponential mean or closed uniform endpoint.",gpd
+lomax,none; finite,lomax/certificate.hpp:237,with condition,"Any displaced root must have a maximum-value upper bound strictly below the new lower witness, or be the same proved root.",one-winning-region
+invpareto,none; finite,invpareto/mle.hpp:34,with condition,Carry Lomax provenance; verify likelihood equivalence for the input data if the reciprocal was rounded.,one-winning-region
+pareto2,mu; strictly positive shifts,pareto2/mle.hpp:95,with condition,Carry Lomax provenance; verify shift arithmetic for the original data.,one-winning-region
+lomax,none; exponential margin,lomax/certificate.hpp:249,no,Gap guarantee; no finite-maximizer decision from the margin.,value-gap-covers
+fatigue,"mu; general, or mu+alpha; nonconstant",fatigue/certificate.hpp:123,with condition,Cover closes and either one decreasing-score crossing exists or its root value lower bound strictly dominates every other root's maximum-value upper bound.,fatigue
+fatigue,mu+beta,fatigue/certificate.hpp:81,yes,Positive RMS gives unique alpha.,fatigue
+fatigue,mu+alpha; constant,fatigue/certificate.hpp:90,with condition,Alpha at most 2 gives a singleton; larger alpha gives an exact reciprocal pair.,fatigue
+fatigue,mu; offset rescue,fatigue/certificate.hpp:49,no,Local offset search.,fatigue
+burr,none,burr/certificate.hpp:450,yes,"Finite winning slab with nuisance inclusion, negative-definite joint Hessian and strict exterior and face exclusion.",one-winning-region
+invburr,none,invburr/mle.hpp:196,with condition,Transport Burr certificate through exact reflection in log data or exact reciprocal input; propagate input error for rounded reciprocals.,one-winning-region
+burr,scale,burr/scale_certificate.hpp:98,yes,Strict concavity of the power profile and unique conditional shape1.,one-winning-region
+invburr,scale,invburr/mle.hpp:285,yes,Reflected fixed-scale certificate with original log-ratio bounds.,one-winning-region
+burr,shape2; free scale and shape1,burr/mle.hpp:426,with condition,Lomax delegation on powered observations; carry root provenance and validate transformation bounds.,one-winning-region
+betapr,alpha or beta; nonunit held shape,betapr/certificate.hpp:215,yes,Every surviving cell lies in one strictly concave shape hull; strict gamma comparison and unique scale.,one-winning-region
+betapr,none,betapr/joint_certificate.hpp:469,yes,Exactly one finite root patch survives strict comparison with other patches and both faces.,one-winning-region
+bhatt,a>0; mu or sigma optionally also held,bhatt/certificate.hpp:138,yes,Globally concave conditional problem with isolated root or unique scalar optimizer.,one-winning-region
+bhatt,free a; mu and sigma each optional,bhatt/certificate.hpp:418,yes,"One surviving width region with unique conditional optimum, after normal and uniform comparisons.",one-winning-region
+emg,none; mu; sigma; mu+sigma,emg/certificate.hpp:280,yes,"One surviving exponential-shape region with unique conditional optimum, after both faces and tails.",one-winning-region
+emg,lambda; mu or sigma optionally also held,emg/mle.hpp:27,yes,Fixed-rate conditional location/scale concavity or monotone score on the closed applicable route.,one-winning-region
+kumar,none or beta,kumar/certificate.hpp:97,yes,Global strict profile concavity or monotone conditional score; signed root enclosure closes.,scalar-and-knot-covers
+kumar,alpha or alpha+beta,kumar/certificate.hpp:118,yes,Conditional closed-form unique shape or singleton.,scalar-and-knot-covers
+nbinom,none or prob,nbinom/certificate.hpp:21,yes,Nondegenerate successful scalar root under the dossier uniqueness theorem; exact degenerate sets handled separately.,scalar-and-knot-covers
+nbinom,size; degenerate point mass,nbinom/certificate.hpp:65,no,"Use exact set cardinality, including singleton evaluation when applicable.",scalar-and-knot-covers
+lst,none; interior or Cauchy member,lst/certificate.hpp:478,yes,One local profile tube or strictly decreasing strip from the floor; all other shape intervals excluded.,joint-shape-covers
+sstd,xi=1; other coefficients free,sstd/mle.hpp:743,yes,Transfer Student-t certificate with floor 2 for finite interior member; t2 is a limit in these coordinates.,joint-shape-covers
+st,alpha=0; other coefficients free,st/certificate.hpp:112,yes,Transfer finite and Cauchy Student-t certificate.,joint-shape-covers
+paralogis,none or scale,paralogis/certificate.hpp:292,yes,Contraction box is the only possible stationary-root region after tail and compact exclusions.,one-winning-region
+invparalogis,none or scale,paralogis/certificate.hpp:292,with condition,Carry Paralogistic proof through reciprocal chart with original-input error control.,one-winning-region
+sged,nu+xi; sd optionally held; mean free,sged/certificate.hpp:125,yes,"Unique knot by strict likelihood dominance below unit shape, strict weighted median at one, strict convexity above one.",scalar-and-knot-covers
+sged,mean+nu+xi; sd free,sged/certificate.hpp:229,with condition,At or above unit shape strict inverse-scale convexity suffices; below one isolate each surviving smooth region or cusp and separate their scores in likelihood.,scalar-and-knot-covers
+snorm,none; or any implemented free-skew held-moment mask,snorm/certificate.hpp:570,with condition,Prove root counts in winning polynomial/cell enclosure and coalesce only candidates proved identical; rigorously compare contact and half-normal face candidates.,scalar-and-knot-covers
+snorm,xi; mean or sd optionally also held,snorm/README.md:142,yes,Strict conditional optimization on fixed-skew chart.,scalar-and-knot-covers
+sstd,xi+nu and exactly one of mean or sd,sstd/certificate.hpp:141,with condition,"One survivor must have a proved single root or exact knot, including possible constant and boundary branches.",scalar-and-knot-covers
+st,xi+omega+nu; or omega+alpha+nu,st/certificate.hpp:100,with condition,Carry a one-root witness for the surviving skew or location interval; location comparison at line 260.,scalar-and-knot-covers
+st,xi+alpha+nu; alpha=0,st/certificate.hpp:272,yes,Strictly decreasing log-scale score with a finite root.,scalar-and-knot-covers
+tlambda,lambda; or lambda+mu; or lambda+sigma; scalar-box routes,tlambda/certificate.hpp:539,no,Gap cover; re-cover with root and endpoint isolation below a strict incumbent.,value-gap-covers
+tlambda,mu+sigma; shape free,tlambda/certificate.hpp:647,no,Gap cover with support endpoints; certify each possible endpoint or stationary region.,value-gap-covers
+tlambda,lambda; nonnegative concave or uniform route with optional mu or sigma hold,tlambda/certificate.hpp:332,with condition,Verify negative definite curvature on the feasible tangent space or select exact uniform singleton; slack held-scale location can be an interval.,scalar-and-knot-covers
+tlambda,none; distinct two observations,tlambda/certificate.hpp:668,yes,Equality in the quantile chord bound forces the fitted uniform endpoint/contact pair.,scalar-and-knot-covers
+ht,none or mu or sigma or mu+sigma; free nu,ht/cert.hpp:217,no,"Positive value tolerance in cover, including limit and collapse comparisons; add root and attained floor isolation.",value-gap-covers
+cauchy,scale,cauchy/mle.hpp:408,yes,Closed strict-curvature cover with Taylor upper bounds on losing roots; balanced exact tied pair maps separately.,scalar-and-knot-covers
+cauchy,none; ordinary joint fit,cauchy/mle.hpp:246,with condition,Strict atom inequality and applicable geodesic-convexity uniqueness theorem; exact balanced sample exception handled separately.,scalar-and-knot-covers
+binom,none; nonconstant finite crossing,binom/mle.hpp:348,with condition,Verify strictly positive incoming increment when present and strictly negative outgoing increment at the maximizing integer.,scalar-and-knot-covers
+genbeta,scale; other parameters free,genbeta/allfree_certificate.hpp:189,yes,Exhausted power cover and strictly separated root with uniquely determined conditional beta fit.,one-winning-region
+bnbinom,none,bnbinom/joint_certificate.hpp:250,no,All global maximizers enclosed in one canonical box and its swap; add unique-root inclusion and determine exact label orbit.,one-winning-region
+gengamma,none; finite,gengamma/free_certificate.hpp:16,with condition,Prove exactly one root throughout the retained winning shape region and strict exclusion of any other attainable member.,one-winning-region
+skellam,none,skellam/mle.hpp:145,no,Likelihood-gap cover and near-tie face selection; need separate proofs of attained face dominance and local cardinality.,value-gap-covers
+sn,none or supported held subset using half-normal cover,sn/mle.hpp:34,no,Half-normal gap bounds alone do not decide attained finite uniqueness.,value-gap-covers
+trgamma,none or supported held subset using face cover,trgamma/mle.hpp:87,no,Face margin alone does not decide attained finite uniqueness.,value-gap-covers
