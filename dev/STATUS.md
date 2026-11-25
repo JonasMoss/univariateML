@@ -284,7 +284,12 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   scale held far from the data: `mlpareto4(c(-5, 10), min = -2^54, scale =
   2^54)` certifies the root of the rounded excesses, 25% from the true root
   ([report](research/evaluations/2026-11-25-pareto34-math-report.md); confirmed
-  on the 19b2fb7b build; TASK-367). Open,
+  on the 19b2fb7b build; TASK-367). Discretized normal: `mldnorm(0, mean =
+  -2^-100)` certifies sd $0.1052$ against $0.0849$ (24% off; also 4% at
+  $-2^{-60}$, $1.2\times10^{-7}$ at $-2^{-52}$), and `mldnorm(0, sd = 2^-1074)`
+  returns a certified NaN location
+  ([report](research/evaluations/2026-11-25-dnorm-math-report.md); confirmed on
+  the 19b2fb7b build; TASK-368). Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`;
   they are now proved to have no finite MLE (inverse transformed-gamma limit,
   [report](research/evaluations/2026-11-25-fpareto-math-report.md)), and the
