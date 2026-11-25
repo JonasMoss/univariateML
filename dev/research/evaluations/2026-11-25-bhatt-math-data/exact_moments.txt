@@ -1,0 +1,6 @@
+Hermite coefficients 1 - t**4/180 + t**6/2835 - t**8/90720 + O(t**10)
+fourth equality {0: 4, 1: 2} standardized sixth Hermite -6
+fourth equality {0: 8, 1: 27, 3: 1} standardized sixth Hermite 6
+fourth and sixth equality {0: 70, 1: 90, 2: 18, 3: 2} eighth moment 99 coefficient of eta^8 -1/4725
+fourth and sixth equality {Fraction(1, 2): 57798, Fraction(3, 4): 1069472, Fraction(9, 4): 89440, Fraction(5, 2): 28170} eighth moment 335079/4096 coefficient of eta^8 37657/154828800
+crossing proof constant checks passed
