@@ -1,0 +1,49 @@
+{
+  "digits": 80,
+  "exclusions": [
+    {
+      "family": "student",
+      "sample": [
+        0,
+        1
+      ],
+      "witness": "-1.823920973574109",
+      "comparisons": [
+        {
+          "contact_enclosure": false,
+          "boxes": 1,
+          "depth": 0,
+          "least_margin": "20.9527289512"
+        },
+        {
+          "contact_enclosure": true,
+          "boxes": 1,
+          "depth": 0,
+          "least_margin": "25.7829191121"
+        }
+      ]
+    },
+    {
+      "family": "ged",
+      "sample": [
+        0,
+        3
+      ],
+      "witness": "-4.337777076409345",
+      "comparisons": [
+        {
+          "contact_enclosure": false,
+          "boxes": 119,
+          "depth": 7,
+          "least_margin": "47.2448264391"
+        },
+        {
+          "contact_enclosure": true,
+          "boxes": 1,
+          "depth": 0,
+          "least_margin": "498.477662203"
+        }
+      ]
+    }
+  ]
+}
