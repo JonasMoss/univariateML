@@ -29,10 +29,12 @@ emit_support <- function(s) {
   closed <- paste0("c(", paste(ifelse(check_closed, "TRUE", "FALSE"), collapse = ", "), ")")
   expr <- paste(deparse(bounds), collapse = " ")
   limits <- paste(deparse(s$endpoint_log_density), collapse = " ")
-  line("list(bounds = c(", lower, ", ", upper, "), closed = ", closed,
+  # The `type` attribute repeats `$type` for callers written against 1.x, whose support was an
+  # intervals::Intervals object read with attr(support, "type") (svines, rvinecopulib).
+  line("structure(list(bounds = c(", lower, ", ", upper, "), closed = ", closed,
        ", type = \"", s$type, "\", expressions = ", expr,
        ", endpoint_closed = ", paste(deparse(closed_vals), collapse = " "),
-       ", endpoint_log_density = ", limits, ")")
+       ", endpoint_log_density = ", limits, "), type = \"", s$type, "\")")
 }
 
 emit_params <- function(params) {
