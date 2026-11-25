@@ -6,7 +6,7 @@ rvinecopulib 1.0.0.1.0. All runs used the workstation, R 4.6.1,
 GCC 15.2.0 and testthat 3.3.2. Both installed univariateML copies declare
 version 1.5.0. The library path distinguishes the CRAN copy (`lib-old`)
 from the upcoming build (`lib-new`, recorded at univariateML
-`3fe10413` in the [reverse-dependency results](../../roadmap/2026-11-23-revdep-and-package-name.md)).
+`3fe10413` in the [reverse-dependency results](../../../roadmap/2026-11-23-revdep-and-package-name.md)).
 
 | Test files | univariateML | Before patch, pass / fail | After patch, pass / fail | After patch, elapsed |
 |---|---|---:|---:|---:|
