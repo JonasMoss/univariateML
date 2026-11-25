@@ -225,6 +225,21 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   `just cpp-test` 136/136; `just cpp-test-no-long-double` 181/181;
   `just test-full` `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67528 ]`;
   `just js-test` 599/599; `just relations` and `just site-check` green.
+- Batch check of master 19b2fb7b (2026-11-25, workstation, GCC 15.2, after
+  [select-cond](research/evaluations/2026-11-24-select-cond-report.md),
+  TASK-239, the 1.x `attr(support, "type")` shim (68550caa), the
+  cert-replay transfer-rule fix and the revdep PR proposals): no record moves
+  in any snapshot mode. `just strict`: nothing new, known list still empty.
+  `just cpp-test` 136/136; `just cpp-test-no-long-double` 181/181;
+  `just test-full` `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67733 ]`;
+  `just js-test` 599/599; `just relations` and `just site-check` green.
+  Merged afterwards, documents only: five math reports of 2026-11-25
+  ([transfers](research/evaluations/2026-11-25-transfer-math-report.md),
+  [uniqueness from certificates](research/evaluations/2026-11-25-uniq-cover-math-report.md),
+  [skew-normal](research/evaluations/2026-11-25-sn-math-report.md),
+  [Student t](research/evaluations/2026-11-25-tcert-math-report.md),
+  [Tukey lambda roots](research/evaluations/2026-11-25-tlroot-math-report.md);
+  TASK-249 to TASK-253) and the bifrost PR proposal (TASK-247).
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
@@ -233,7 +248,10 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
 - Known wrong answers on master: none listed by the strict layer; its known
   list is empty since 2026-11-24 (batches 15 to 17). Every `unique = FALSE` fit
   carries a typed maximizer set (rule `unique-false-needs-set`); fits whose
-  maximizer count is not proved report `unique = NA` with candidates. Open,
+  maximizer count is not proved report `unique = NA` with candidates.
+  Exception found 2026-11-25 (TASK-254): free sn and snorm fits report
+  `unique = TRUE` on samples with an exact reflected global tie, e.g. sn on
+  (-1, 0, 0, 0, 0, 0, 1) ([proof](research/evaluations/2026-11-25-sn-math-report.md)). Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`
   pending a global bound (TASK-214.44 report); sged's held-sd two-point
   location stops numerically although the optimum is finite (TASK-150.9).
