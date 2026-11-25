@@ -270,7 +270,12 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   $(0.2249709, 0.1785104)$, 1.1% off in both coefficients, because the Jensen
   gap is formed from a rounded sum
   ([report](research/evaluations/2026-11-25-lgamma-math-report.md); confirmed
-  on the 19b2fb7b build; TASK-363). Open,
+  on the 19b2fb7b build; TASK-363). Huber with scale held:
+  `mlhuber(c(-10, -9, 9, 10), sigma = 1, epsilon = 1.345)` reports
+  `unique = TRUE` at $\mu=0$, but every location in the central interval
+  maximizes (equal log-likelihood at $-5$, $0$, $5$)
+  ([Lean report](research/evaluations/2026-11-25-lean-huber-report.md); confirmed
+  on the 19b2fb7b build; TASK-364). Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`;
   they are now proved to have no finite MLE (inverse transformed-gamma limit,
   [report](research/evaluations/2026-11-25-fpareto-math-report.md)), and the
