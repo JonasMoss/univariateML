@@ -28,3 +28,5 @@ public import UnivariateML.Generic.LocationScale
 public import UnivariateML.Family.LocScaleInstances
 public import UnivariateML.Outcome
 public import UnivariateML.Family.Transfers
+public import UnivariateML.Family.BurrHeld
+public import UnivariateML.Family.Transfers2
