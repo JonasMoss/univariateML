@@ -1,0 +1,26 @@
+{
+  "kernel": {
+    "points": 165,
+    "worst_scaled_error": [
+      "1.31329888495e-18",
+      "1.13957166757e-19"
+    ]
+  },
+  "special_functions": {
+    "points": 29,
+    "worst_scaled_error": [
+      "1.39087479947e-18",
+      "1.80354871195e-17",
+      "7.83984154862e-19",
+      "9.25990163287e-19"
+    ]
+  },
+  "height": {
+    "points": 36,
+    "worst_scaled_error": [
+      "8.17453868137e-19",
+      "7.83984154862e-19"
+    ]
+  },
+  "precision": 85
+}
