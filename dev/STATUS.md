@@ -260,7 +260,12 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   size = NULL, prob = 0.5)` returns size 7, but sizes 7 and 8 tie exactly
   (found by the Lean discrete module,
   [report](research/evaluations/2026-11-25-lean-discrete-report.md); confirmed
-  on the 19b2fb7b build; TASK-330). Open,
+  on the 19b2fb7b build; TASK-330). Discrete Weibull: `mldweibull(c(8, 10))`
+  is certified but its shape is $11.5970271$ against the joint MLE
+  $11.5970192$ (relative error $6.9\times10^{-7}$, tolerance $10^{-10}$); the fit
+  rounds the probability and refits the shape
+  ([report](research/evaluations/2026-11-25-dweibull-math-report.md); confirmed
+  on the 19b2fb7b build; TASK-349). Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`;
   they are now proved to have no finite MLE (inverse transformed-gamma limit,
   [report](research/evaluations/2026-11-25-fpareto-math-report.md)), and the
