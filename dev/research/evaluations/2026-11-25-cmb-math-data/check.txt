@@ -1,0 +1,22 @@
+Exact checks: binomial tie grid 6..32, binary comparisons 1..30, held-odds saturation
+Held-p crossing neighbor 0x1.65881e52d3418p-1 log likelihood gap -1.34808526574389854e-16
+Held-p crossing neighbor 0x1.65881e52d3419p-1 log likelihood gap 2.39983830260223773e-16
+Held-p crossing root: 0.69830412636804610301150755193879
+native 0 000827 [4, 2] {} 4 0x1.5c700580f6afdp-1 0x1.ba591460925e6p-2 4.00565e-16 4.44055e-18
+native 1 000840 [4, 2, 4, 5, 3, 2, 2, 5, 3, 7, 5, 5] {'size': 10.0} 10 0x1.88152f94f3561p-2 0x1.1832db52d1aep+0 1.42353e-15 1.50269e-16
+native 2 000853 [4, 2] {'prob': 0.2777362750324292} 8 0x1.1c66e5e8b5657p-2 0x1.02c968181f437p+1 1.11078e-15 2.87215e-16
+native 3 000866 [4, 2, 4, 5, 3, 2, 2, 5, 3, 7, 5, 5] {'size': 10.0, 'prob': 0.2777362750324292} 10 0x1.1c66e5e8b5657p-2 0x1.b8e2c580a4025p+0 2.20665e-15 1.35558e-16
+native 4 000878 [4, 2, 4, 5, 3, 2, 2, 5, 3, 7, 5, 5] {'nu': 1.683599466457963} 46 0x1.3f8cb7f69f265p-6 0x1.af005fe8p+0 2.20236e-15 1.29282e-15
+native 5 000892 [4, 2, 4, 5, 3, 2, 2, 5, 3, 7, 5, 5] {'size': 10.0, 'nu': 1.683599466457963} 10 0x1.51918c6cab6d6p-2 0x1.af005fe8p+0 2.67851e-17 1.63965e-16
+native a1166cbf2cec937fe0748d2b33eaf9a96cb80b35 {'0': 4, '1': 5, '2': 4, '3': 13, '4': 13, '5': 13} worst coefficient / likelihood 9.2776877e-15 1.0937813e-14
+double 0 000827 [4, 2] {} 4 0x1.5c700580f6afep-1 0x1.ba591460925edp-2 7.89143e-16 4.44055e-18
+double 1 000840 [4, 2, 4, 5, 3, 2, 2, 5, 3, 7, 5, 5] {'size': 10.0} 10 0x1.88152f94f355fp-2 0x1.1832db52d1ae2p+0 1.01779e-15 1.32737e-17
+double 2 000853 [4, 2] {'prob': 0.2777362750324292} 8 0x1.1c66e5e8b5657p-2 0x1.02c968181f436p+1 8.91127e-16 2.80066e-17
+double 3 000866 [4, 2, 4, 5, 3, 2, 2, 5, 3, 7, 5, 5] {'size': 10.0, 'prob': 0.2777362750324292} 10 0x1.1c66e5e8b5657p-2 0x1.b8e2c580a402dp+0 1.17521e-15 1.35558e-16
+double 4 000878 [4, 2, 4, 5, 3, 2, 2, 5, 3, 7, 5, 5] {'nu': 1.683599466457963} 46 0x1.3f8cb7f69f262p-6 0x1.af005fe8p+0 2.73601e-15 1.12895e-15
+double 5 000892 [4, 2, 4, 5, 3, 2, 2, 5, 3, 7, 5, 5] {'size': 10.0, 'nu': 1.683599466457963} 10 0x1.51918c6cab6d8p-2 0x1.af005fe8p+0 3.09996e-16 1.63965e-16
+double a1166cbf2cec937fe0748d2b33eaf9a96cb80b35 {'0': 4, '1': 5, '2': 4, '3': 13, '4': 13, '5': 13} worst coefficient / likelihood 1.0343682e-14 1.3477285e-15
+Poisson dominance grid: gap at size 1e7 = 2.00000043333e-7
+High constant likelihood ratio: 4976773.04312
+Extreme public-probability likelihood loss: 31.1916231252
+Geometric path grid: max cell errors at size 16384 = ['0.032962', '3.16266e-81', '0.011023', '0.00666231']
