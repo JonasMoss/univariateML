@@ -1,1 +1,4 @@
--- Root of the univariateML Lean library; import each finished module here.
+-- Root of the univariateML Lean library.
+module
+
+public import UnivariateML.Family.Lomax
