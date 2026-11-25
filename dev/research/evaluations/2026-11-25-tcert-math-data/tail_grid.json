@@ -1,0 +1,51 @@
+{
+  "lst_all_free": {
+    "normal": 10,
+    "location_and_scale": 54
+  },
+  "lst_held_mean": {
+    "normal": 10,
+    "lower_shape": 15
+  },
+  "lst_held_scale": {
+    "normal": 10
+  },
+  "std_all_free": {
+    "normal": 10,
+    "location_and_scale": 54
+  },
+  "std_held_mean": {
+    "normal": 10
+  },
+  "std_held_scale": {
+    "normal": 10,
+    "lower_shape": {
+      "accepted_cells": 9,
+      "probes": 81
+    }
+  },
+  "two_interior_modes": {
+    "normal": 10,
+    "location_and_scale": 54
+  },
+  "two_interior_modes_lst": {
+    "normal": 10,
+    "location_and_scale": 54
+  },
+  "normal_local_and_finite_or_lower": {
+    "normal": 10,
+    "location_and_scale": 54
+  },
+  "normal_local_and_finite_or_lower_lst": {
+    "normal": 10,
+    "location_and_scale": 54
+  },
+  "ht_golden": {
+    "normal": 10,
+    "lower_shape": 15
+  },
+  "ht_two_modes": {
+    "normal": 10,
+    "lower_shape": 15
+  }
+}
