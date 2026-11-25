@@ -378,43 +378,30 @@ The vector-parameter tier (`dcat`, `dmixpois`, `dmixnorm`) was dropped on
 
 ## Open mathematics (from the job reports)
 
-Cards: TASK-113 to TASK-117 (TASK-98 for hyper/nhyper).
+Refreshed 2026-11-25 from the [claims ledger refresh](research/evaluations/2026-11-25-ledger-refresh-report.md) (TASK-281), which also lists the fitter changes the reports call for.
 
-- Global-search certification: most new fitters use grids plus local
-  refinement (half-t df, dgamma shape, Skellam, slash, Bhattacharjee,
-  Tukey lambda, generalized beta, GB2); none is a certified global
-  optimum.
-- dgamma (discretised gamma): is the shape profile unimodal? Reduced to
-  the rate-profiled shape curve; conjectured, unproved (TASK-117 report).
-- Skellam: uniqueness of the joint maximum. Reduced to a scalar
-  Bessel-ratio equation; conjectured, unproved (TASK-117 report).
-- Slash: a closed sample condition for the exactly-half-tied case. A
-  sufficient condition is proved (nonzero reciprocal sum at the
-  largest-collapse tie, TASK-117 report); a zero sum remains undecided.
-- Generalized beta: is the list of limit models complete for maximising
-  sequences? Conjectured; mixed weak limits exist but do not win on the
-  paths checked (TASK-117 report).
-- Tukey lambda: the U-shaped branch 1 < lambda < 2 is not fitted. Proved
-  (TASK-117 report): as lambda decreases to 1 the endpoint density is twice
-  the uniform one, so with sample extremes on the support endpoints the
-  branch supremum can be unattained; a fitter needs a junction status.
-- Negative hypergeometric: the inverse-sampling design (estimate the
-  population size) is unsupported.
-- Truncated binomial with free size and free probability: a numerical
-  profile search compared with the truncated-Poisson face; not certified
-  unimodal.
-- sstd and sged hold subsets: global optimality is numerical; equality
-  in the Student-t collapse criterion is uncertified, and a held uniform
-  width equal to the sample range (sged, mean free) stops with
-  `ScaleBoundary`.
-- Free-threshold fits with another parameter held (Pareto II-IV,
-  Feller-Pareto, nonstandard beta) stop as "not supported"; each subset
-  is its own existence question.
-- Translated half-t: with `mu` free the fit uses the restriction
-  nu >= 1 (P4); the nu search is numerical.
-- Beta-binomial with fixed size: overdispersion is sufficient for every
-  size and necessary for size 2 (proved); necessity for size >= 3 is
-  conjectured (TASK-117 report). The fitter could use the rule.
+- **Discretised gamma (TASK-278).** General free-fit quasi-concavity and uniqueness need a stationary curvature inequality or a certified valley. Extend the sufficient positive-count check to cells containing zero. [Open](research/evaluations/2026-11-25-dgamma-math-report.md#open)
+- **Fixed-size beta-binomial (TASK-275).** For asymmetric histograms with size at least four and positive dispersion, prove the stationary three-cell curvature inequality or find a feasible violating histogram. Equality needs higher-order analysis. [Open](research/evaluations/2026-11-25-bbinom2-math-report.md#open)
+- **Free-size beta-binomial.** Bound the integer tail and order maxima and faces across sizes. Fixed-size existence, including zero dispersion, is settled. [Open](research/evaluations/2026-11-25-bbinom-math-report.md#open)
+- **Skellam (TASK-246).** Global ties for rational histograms need an exact equality example or a separation theorem for interior/interior and interior/Poisson competitors. Degenerate stationary roots and zero first and second face derivatives need higher-order tests. [Integer ties](research/evaluations/2026-11-25-skellam2-math-report.md#open) · [Degenerate certificates](research/evaluations/2026-11-25-skellam-math-report.md#open)
+- **Slash.** The stationary-value criterion covers zero reciprocal sum, with examples of all three outcomes. A sample-only inequality or practical exact equality certificate for a general half tie remains open. [Open](research/evaluations/2026-11-25-slash-math-report.md#open)
+- **Generalized beta (TASK-280 for faces).** The held-endpoint candidate face list is complete. Supply a signed held-`q` gamma neighborhood and higher-order bounds on the all-free cancellation seam. Resolve general finite/face equality and finite root cardinality. [Open](research/evaluations/2026-11-25-genbeta-limits-math-report.md#open) Separated finite power maxima are proved; simultaneous quadratic and quartic seam zeros need further expansion. [Outer power profiles](research/evaluations/2026-11-25-gbshape-math-report.md#open)
+- **GB2, Feller–Pareto and generalized gamma (TASK-261).** Exhaust the outer profiles and isolate or compare roots on general inputs. For held-power GB2 and fixed-threshold Feller–Pareto, broad or nearly symmetric log samples, vanishing tail coefficients and exact finite/face ties remain outside the narrow-skew test. [Transfer](research/evaluations/2026-11-25-transfer-math-report.md#open) · [Held power](research/evaluations/2026-11-25-fpareto-math-report.md#open) The all-free GB2 power profile is not unimodal (exact trough), and generalized gamma has separated finite power maxima; balanced two-point generalized-gamma data have no finite MLE (dispatch: TASK-285). [Outer power profiles](research/evaluations/2026-11-25-gbshape-math-report.md#open)
+- **Free threshold (TASK-268).** Most previously unsupported Pareto and beta masks now have existence decisions. The bounded fixed-scale/free-upper-tail-shape comparison needs an exact tie and degenerate-root procedure, plus a practical cover budget. A different closure for simultaneous zero/infinite beta endpoint factors would need its own definition. [Open](research/evaluations/2026-11-25-thresh-math-report.md#open)
+- **Tukey lambda U branch.** The free-scale scalar isolator has explicit multiple-root and equal-junction witnesses. General exact multiple roots, finite critical-value ties and equality with the junction still need exact predicates. [Open](research/evaluations/2026-11-25-tlroot-math-report.md#open)
+- **Tukey lambda fitted branch (TASK-259 for the cutoff).** Exact half-tie equality with the collapse value needs a critical-value comparison. Free shape needs a correlated location/scale bound or a quantitative modulus. General cardinality and nonuniform positive-dimensional sets remain open. [Open](research/evaluations/2026-11-25-tl-math-report.md#open) · [Follow-up](research/evaluations/2026-11-25-tlroot-math-report.md#open)
+- **FKML GLD on the fitted square.** Resolve arbitrary exact half-tie equalities and tighten interior-tie cutoffs and measured cover budgets. Secondary shape maxima are proved, including on the distinct pair. [Open](research/evaluations/2026-11-25-gld2-math-report.md#open)
+- **FKML GLD outside the square.** Classify the full fixed-shape log-concavity locus and broader negative-shape escapes. For the separated extension, settle its tie boundary and whether a nonuniform GPD face can win alone. Moving two-endpoint mixed rates and held-parameter calibration outside DQM remain open. [Open](research/evaluations/2026-11-25-gld-math-report.md#open)
+- **Student shape covers and translated half-t (TASK-257 for Student holds).** Resolve exact mode and face equalities, degenerate roots, moving-location subunit fixed-shape equality, asymmetric nuisance preconditioning and extreme public-coordinate restoration. Translated half-t with free location still needs isolation beyond the positive-gap certificate on its restricted domain. [Student](research/evaluations/2026-11-25-tcert-math-report.md#open) · [Half-t](research/evaluations/2026-11-25-uniq-cover-math-report.md#value-gap-covers)
+- **Skew Student and skew GED (TASK-270).** Critical Student collapse and SGED held-width contact values are known. Uniform signed normal and half-face comparisons, moving exact half contacts, and practical joint skew/df or SGED near-contact covers remain open. [Open](research/evaluations/2026-11-25-sstdsged-math-report.md#open) · [Student variants](research/evaluations/2026-11-25-tcert-math-report.md#5-variants)
+- **Azzalini skew-normal and two-piece normal (TASK-255 for flags).** Count roots at singular cells and clustered joins, compare accidental equal finite/face values, and verify whether any unrelated branch can tie a reflected pair. [Mathematics](research/evaluations/2026-11-25-sn-math-report.md#open) · [Reflected pairs](research/evaluations/2026-11-25-sn-ties-report.md#open)
+- **Azzalini skew-t.** Validate the fixed-df collar and equality-layer comparisons. At free df, settle signed normal-tail dominance uniformly through cancellation and certify constrained half-t faces. [Open](research/evaluations/2026-11-25-sn-math-report.md#open)
+- **Paralogistic and inverse paralogistic.** Exact real joint and held-scale ties refute universal uniqueness. An exact joint tie in binary64’s finite positive range, broader cheap singleton tests, and exact tie checks on represented inputs remain open. [Open](research/evaluations/2026-11-25-paralogis-math-report.md#open)
+- **Burr, inverse Burr, shifted Burr, folded normal and Fréchet.** Free-shape comparisons still need universal root ordering or exhaustive strict exclusion against relevant faces. Fixed physical folded-normal location also needs its own profile proof. [Open](research/evaluations/2026-11-25-transfer-math-report.md#open)
+- **Singleton provenance and typed sets (TASK-255, TASK-256).** Bound displaced Lomax roots, transport comparisons to original input, count all GPD roots tied with the uniform in the exact example, and establish canonical root count and label orbit for beta-negative-binomial. Trace mixed held/fallback rows to their actual producers. [Open](research/evaluations/2026-11-25-uniq-cover-math-report.md#open)
+- **Negative hypergeometric (TASK-98).** The inverse-sampling design with unknown population size remains unsupported.
+- **Truncated binomial (TASK-279).** Exhaust the integer-size profile with free probability and prove the comparison with truncated Poisson, including equality.
+- **Nonregular inference (TASK-269 for dispatch).** Prove localization and negligible optimization error for fitted endpoints, cusps, cones and singular charts. Resolve SGED named-mean holds, Tukey boundary faces, singular-ridge nuisance, transition calibration, refit failure atoms and post-limit selection. [Open](research/evaluations/2026-11-25-infer-math-report.md#open)
 
 ## Deferred families (roadmap)
 
