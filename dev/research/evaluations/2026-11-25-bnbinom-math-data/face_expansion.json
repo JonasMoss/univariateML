@@ -1,0 +1,46 @@
+{
+  "dps": 90,
+  "grid_cases": 108,
+  "samples": [
+    {
+      "sample": [
+        0,
+        2
+      ],
+      "mean": "1",
+      "equidispersed": true
+    },
+    {
+      "sample": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "mean": "2",
+      "equidispersed": true
+    },
+    {
+      "sample": [
+        0,
+        3,
+        3
+      ],
+      "mean": "2",
+      "equidispersed": true
+    },
+    {
+      "sample": [
+        0,
+        0,
+        1,
+        7
+      ],
+      "mean": "2",
+      "equidispersed": false
+    }
+  ],
+  "second_order_polynomial": "-f2*rate*u*v/2 + mean*rate**2*(u + v)**2/2 - rate**3*(u**2/3 + u*v/2 + v**2/3) - rate**2*u*v/2 - (f2/2 + f3/3)*(u**2 + v**2)/2",
+  "maximum_error_bound_fraction": "0.40089996099"
+}
