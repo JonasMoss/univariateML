@@ -1,0 +1,61 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonas Moss
+Date: Wed, 25 Nov 2026 09:57:27 +0100
+Subject: [PATCH] Make rate-fit fallback test independent of constant-data fits
+
+Exercise the non-finite statistics guard with a mocked Normal result.
+Use an ordinary rate sample and keep the Cauchy fit real.
+
+---
+ tests/testthat/test-shift-distributions.R | 36 ++++++++++++++++++++-----------
+ 1 file changed, 23 insertions(+), 13 deletions(-)
+
+diff --git a/tests/testthat/test-shift-distributions.R b/tests/testthat/test-shift-distributions.R
+index 41752bad04d3e7a56927e5b42a4fa0416d076415..0bfbbec8d4868eaa99f225348cba2a9672474d66 100644
+--- a/tests/testthat/test-shift-distributions.R
++++ b/tests/testthat/test-shift-distributions.R
+@@ -1122,19 +1122,29 @@ test_that("rate-distribution helpers validate rate, bootstrap, and plotting cont
+   testthat::expect_error(.rate_distribution_from_data_frame(data.frame(x = 1)), "Rate data frames")
+   testthat::expect_error(.distribution_fit_models(c(1, NA), models = "norm"), "`values`")
+   testthat::expect_error(.distribution_fit_models(c(1, 2, 3), models = "notamodel"), "No candidate")
+-  finite_constant_fit <- fit_rate_distribution(
+-    rep(2, 8),
+-    log = FALSE,
+-    models = c("norm", "cauchy")
+-  )
+-  testthat::expect_equal(finite_constant_fit$selected_model, "cauchy")
+-  testthat::expect_equal(finite_constant_fit$rankings$ml, "cauchy")
+-  testthat::expect_equal(finite_constant_fit$failed$model, "norm")
+-  testthat::expect_match(finite_constant_fit$failed$reason, "non-finite")
+-  testthat::expect_error(
+-    fit_rate_distribution(rep(2, 8), log = FALSE, models = "norm"),
+-    "No candidate distributions produced finite fit statistics"
+-  )
++  local({
++    original_model_select <- univariateML::model_select
++    testthat::local_mocked_bindings(
++      model_select = function(x, models, ...) {
++        if (identical(models, "norm")) {
++          return(data.frame(ml = "norm", logLik = Inf, AIC = -Inf, BIC = -Inf))
++        }
++        original_model_select(x = x, models = models, ...)
++      },
++      .package = "univariateML"
++    )
++
++    values <- raw$lineage_rate
++    fit <- fit_rate_distribution(values, log = FALSE, models = c("norm", "cauchy"))
++    testthat::expect_equal(fit$selected_model, "cauchy")
++    testthat::expect_equal(fit$rankings$ml, "cauchy")
++    testthat::expect_equal(fit$failed$model, "norm")
++    testthat::expect_match(fit$failed$reason, "non-finite")
++    testthat::expect_error(
++      fit_rate_distribution(values, log = FALSE, models = "norm"),
++      "No candidate distributions produced finite fit statistics"
++    )
++  })
+ 
+   gumbel <- fit_rate_distribution(c(1, 1.4, 1.9, 2.8, 4.1, 6.5), models = "gumbel")
+   testthat::expect_equal(nrow(as.data.frame(gumbel, component = "goodness")), 0L)
+
+base-commit: 6df4b209e7014b815db2b9455292469df6ccc4e4
