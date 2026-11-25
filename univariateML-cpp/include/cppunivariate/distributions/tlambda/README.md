@@ -268,6 +268,8 @@ concavity of $u^{\lambda-1}+(1-u)^{\lambda-1}$ gives its minimum
 only at $u=0,1$, hence the two maximizing support contacts
 $\mu=x_1\pm\sigma/\lambda$.
 
+A fixed uniform shape yields a singleton with scale free, or with scale held and zero width slack. The fixed-shape concave chart for $0\le\lambda<1$ also isolates one maximum. The likelihood-gap scalar and shape covers leave cardinality unknown.
+
 ## R notes
 
 Estimated coefficients on an applicable `fit_domain` bound carry `restricted`

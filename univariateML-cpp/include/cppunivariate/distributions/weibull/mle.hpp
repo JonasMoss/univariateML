@@ -35,7 +35,7 @@ inline FitOutcome outcome(const WeibullResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case WeibullStatus::Ok: return FitOutcome::estimate(true);
+    case WeibullStatus::Ok: return FitOutcome::singleton(true);
     case WeibullStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case WeibullStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case WeibullStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

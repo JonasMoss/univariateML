@@ -58,7 +58,7 @@ inline FrechetResult frechet_fixed_shape_certificate(span g,double a,bool held_s
     if(mid==lo || mid==hi)return stopped(false);
     if(s>0)lo=mid;else hi=mid;
     if(hi-lo<=tol*(1+std::abs(mid))) {
-      out.status=FrechetStatus::Ok;out.iterations=j+1;return finish((lo+hi)/2);
+      out.status=FrechetStatus::Ok;out.singleton_proved=true;out.iterations=j+1;return finish((lo+hi)/2);
     }
   }
   return stopped(true);
@@ -128,7 +128,7 @@ inline FrechetResult frechet_two_point_certificate(span x,double m,double M,
          !std::isfinite(out.mu) || !std::isfinite(out.logLik) ||
          eps*(std::abs(m)+d*h)>tol*.25*std::abs(out.mu) ||
          std::abs(out.logLik-l1)>margin) {finite_fallback();return out;}
-      out.status=FrechetStatus::Ok;out.stop_detail={};return out;
+      out.status=FrechetStatus::Ok;out.singleton_proved=true;out.stop_detail={};return out;
     }
     if(l0>l1+2*margin && hi-lo<=std::min(tol,1e-8)*t) {
       const double scale=d/t;
@@ -241,6 +241,6 @@ inline FrechetResult frechet_held_scale_certificate(span data,double tol,int max
   fallback.lambda=(result.root.x.lo+result.root.x.hi)/2;
   fallback.mu=-std::exp((result.root.y.lo+result.root.y.hi)/2);
   fallback.logLik=frechet_loglik(data,fallback.lambda,fallback.mu,1);
-  fallback.certified=true;return fallback;
+  fallback.certified=true;fallback.singleton_proved=true;return fallback;
 }
 } // namespace cppunivariate

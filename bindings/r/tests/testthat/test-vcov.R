@@ -124,6 +124,7 @@ vcov_regime_object <- function(id, theta, free, x) {
   attr(theta, "model") <- univariateML:::univariateML_metadata[[paste0("ml", id)]]$model
   attr(theta, "inference_free") <- free
   attr(theta, "inference_data") <- x
+  attr(theta, "unique") <- NULL
   theta
 }
 
@@ -157,6 +158,10 @@ test_that("join-aware covariance reaches all six public family adapters", {
   for (id in c("snorm", "sstd", "huber", "pig", "gpd", "gev")) {
     x <- vcov_golden(id)
     fit <- do.call(get(paste0("ml", id)), c(list(x), if (id=="huber") list(epsilon=NULL) else if (id=="gpd") list(mu=0) else list()))
+    if (id %in% c("sstd", "huber") && identical(attr(fit, "unique"), NA)) {
+      expect_error(vcov(fit), "Uniqueness is undetermined", info = id)
+      fit <- vcov_regime_object(id, as.numeric(fit), attr(fit, "inference_free"), x)
+    }
     for (type in c("observed", "sandwich")) {
       v <- vcov(fit, type)
       expect_true(all(is.finite(v)), info=id)
@@ -176,8 +181,11 @@ test_that("free skew at symmetry and held subsets use analytic derivatives", {
       expect_true(all(is.finite(vcov(fit,type))))
   }
   for (id in c("snorm", "sstd", "huber", "pig", "gpd", "gev")) {
-    fit <- do.call(get(paste0("ml",id)), c(list(vcov_golden(id)), if (id=="huber") list(epsilon=NULL) else if (id=="gpd") list(mu=0) else list()))
-    fit[2] <- 0
+    x <- vcov_golden(id)
+    fit <- do.call(get(paste0("ml",id)), c(list(x), if (id=="huber") list(epsilon=NULL) else if (id=="gpd") list(mu=0) else list()))
+    theta <- as.numeric(fit)
+    theta[2] <- 0
+    fit <- vcov_regime_object(id, theta, attr(fit, "inference_free"), x)
     expect_error(vcov(fit), "boundary or limit", info=id)
   }
 })

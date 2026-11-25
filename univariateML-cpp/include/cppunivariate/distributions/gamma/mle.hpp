@@ -345,7 +345,7 @@ inline FitOutcome outcome(const GammaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case GammaStatus::Ok: return FitOutcome::estimate();
+    case GammaStatus::Ok: return FitOutcome::singleton(true);
     case GammaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GammaStatus::IterationFailure: return FitOutcome::failure(r.evaluation_failure?OutcomeReason::Evaluation:OutcomeReason::NoConvergence);
     case GammaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

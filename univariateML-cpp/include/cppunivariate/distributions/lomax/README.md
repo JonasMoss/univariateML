@@ -121,6 +121,8 @@ The moment condition $\overline{x^2}<2\bar x^2$ decides only local behaviour at 
 
 Holding either coefficient removes the exponential escape and gives a unique finite fit, even for constant data. Holding both evaluates the likelihood at the supplied coefficients.
 
+The joint fit leaves cardinality unknown because a displaced root may have a larger value upper bound than the replacement witness. With one shape held, the monotone score or closed-form profile identifies a singleton.
+
 ## R notes
 
 For constant positive data, writing $z=\lambda x$ gives an exact per-observation profile loss of $\log((1+z)\log(1+z)/z)$ relative to the exponential. It is strictly positive for $z>0$ because $\log(1+z)>z/(1+z)$. The constant-sample limit is certified.

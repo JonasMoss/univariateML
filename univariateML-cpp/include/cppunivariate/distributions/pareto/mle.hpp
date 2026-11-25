@@ -76,7 +76,7 @@ inline ParetoResult pareto_mle(span x,double a,double b) {
 namespace cppunivariate {
 inline FitOutcome outcome(const ParetoResult& r) {
   switch (r.status) {
-    case ParetoStatus::Ok: return FitOutcome::estimate(true);
+    case ParetoStatus::Ok: return FitOutcome::singleton(true);
     case ParetoStatus::Incompatible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ParetoStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ParetoStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

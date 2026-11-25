@@ -110,7 +110,7 @@ inline InvGaussResult invgauss_mle(span x) {
 
 inline FitOutcome outcome(const InvGaussResult& r) {
   switch (r.status) {
-    case InvGaussStatus::Ok: return FitOutcome::estimate(true);
+    case InvGaussStatus::Ok: return FitOutcome::singleton(true);
     case InvGaussStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case InvGaussStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case InvGaussStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

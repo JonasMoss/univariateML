@@ -6,6 +6,10 @@ import {fileURLToPath} from 'node:url';
 import {execFileSync} from 'node:child_process';
 import create from './index.mjs';
 const api=await create();
+// Explicit parameter points exercise information calculations independently
+// of the fitted route's global cardinality claim.
+const parameterPoint = (estimates, fixed, restricted = {}) =>
+  ({status: 'Ok', estimates, fixed, restricted});
 const golden=id=>JSON.parse(readFileSync(new URL(`../../univariateML-cpp/include/cppunivariate/distributions/${id}/golden.json`,import.meta.url)));
 for(const id of ['norm','gamma','beta','pois','exp','lnorm','betapr','binom','snorm','sstd','huber','pig','gpd','gev']) {
  if(!selectedFamily(id)) continue;
@@ -16,19 +20,24 @@ for(const id of ['norm','gamma','beta','pois','exp','lnorm','betapr','binom','sn
   if(id==='binom') holds.splice(0,holds.length,{size:Math.max(...x)+2});
   for(const held of holds) {
    const fit=api[id].fit(x,{...(id==='huber'?{epsilon:null}:id==='gpd'?{mu:0}:{}),...held}), names=Object.keys(fit.estimates);
+   let point=fit;
+   if (['sstd','huber'].includes(id) && fit.unique===null) {
+    assert.throws(()=>api[id].vcov(x,fit),e=>e.reason==='uniqueness-undetermined');
+    point=parameterPoint(fit.estimates,fit.fixed,fit.restricted);
+   }
    const mask=names.reduce((m,k,i)=>m|(fit.fixed.includes(k)?0:1<<i),0);
    const input=[id,names.length,mask,x.length,...Object.values(fit.estimates),...x].join(' ');
    const rows=execFileSync(fileURLToPath(new URL('../../build/scratch/vcov-native',import.meta.url)),{input,encoding:'utf8'}).trim().split('\n');
    for(const [i,type] of ['sandwich','observed'].entries()) {
     const [status,dim,...expected]=rows[i].split(' ').map(Number);
     assert.equal(status,0);
-    const v=api[id].vcov(x,fit,type);
+    const v=api[id].vcov(x,point,type);
     assert.deepEqual(v.names,names.filter(k=>!fit.fixed.includes(k)));
     assert.deepEqual(v.held,fit.fixed); assert.equal(v.matrix.length,dim);
     assert.equal(v.type,type); assert.ok(v.validity.length>0);
     v.matrix.flatMap(row=>[...row]).forEach((z,j)=>assert.ok(Math.abs(z-expected[j])<=2e-4*Math.max(1e-6,Math.abs(expected[j])),`${id} ${type} ${j}: ${z} vs ${expected[j]}`));
    }
-   assert.deepEqual(api[id].vcov(x,fit),api[id].vcov(x,fit,'sandwich'));
+   assert.deepEqual(api[id].vcov(x,point),api[id].vcov(x,point,'sandwich'));
   }
  });
 }
@@ -62,7 +71,7 @@ test('join family held-subset covariance parity at the same parameter point',()=
   const x=new Float64Array(golden(id).data),fit=api[id].fit(x,id==='huber'?{epsilon:null}:id==='gpd'?{mu:0}:{}),names=Object.keys(fit.estimates);
   for(let mask=1;mask<(1<<names.length);++mask) {
    if(id==='gpd' && (mask&1))continue;
-   const held=names.filter((_,i)=>!(mask&(1<<i))),point={...fit,fixed:held};
+   const held=names.filter((_,i)=>!(mask&(1<<i))),point=parameterPoint(fit.estimates,held,fit.restricted);
    const input=[id,names.length,mask,x.length,...Object.values(fit.estimates),...x].join(' ');
    const rows=execFileSync(fileURLToPath(new URL('../../build/scratch/vcov-native',import.meta.url)),{input,encoding:'utf8'}).trim().split('\n');
    for(const [i,type] of ['sandwich','observed'].entries()) {
@@ -83,7 +92,7 @@ test('join regimes: free symmetric skew, negative shape and free shape zero',()=
   const x=api[id].q(probabilities,parameters);
   const template=api[id].fit(new Float64Array(golden(id).data),id==='gpd'?{mu:0}:{});
   const names=Object.keys(template.estimates),estimates=Object.fromEntries(names.map((name,i)=>[name,parameters[i]]));
-  const fit={...template,estimates,fixed:held,restricted:{}};
+  const fit=parameterPoint(estimates,held);
   const mask=names.reduce((m,name,i)=>m|(held.includes(name)?0:1<<i),0);
   const input=[id,names.length,mask,x.length,...parameters,...x].join(' ');
   const rows=execFileSync(fileURLToPath(new URL('../../build/scratch/vcov-native',import.meta.url)),{input,encoding:'utf8'}).trim().split('\n');

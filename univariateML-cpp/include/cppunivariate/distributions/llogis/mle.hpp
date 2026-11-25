@@ -31,7 +31,7 @@ struct LogLogisticResult {
 
 inline FitOutcome outcome(const LogLogisticResult& r) {
   switch (r.status) {
-    case LogLogisticStatus::Ok: return FitOutcome::estimate(r.certified);
+    case LogLogisticStatus::Ok: return FitOutcome::singleton(r.certified);
     case LogLogisticStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case LogLogisticStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case LogLogisticStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

@@ -35,7 +35,7 @@ struct BetaPrimeResult {
   bool search_failed=false;
   // A gamma or inverse-gamma limit chosen by the leading-order comparison of the faces on a near-constant
   // sample (near_constant.hpp); the finite members are not excluded by a bound.
-  bool margin_decided=false;
+  bool margin_decided=false; bool singleton_proved = false;
 };
 // Negative log-likelihood in the two shapes at a supplied scale.
 // Default scale 1 also preserves the legacy validation-harness seam.
@@ -156,6 +156,7 @@ inline BetaPrimeResult betapr_mle_fixed_scale(
   const double ll=r.logLik+jacobian;
   BetaPrimeResult result{r.alpha,r.beta,scale,ll,r.iterations,
       r.status==BetaStatus::Ok && std::isfinite(ll) ? BetaPrimeStatus::Ok : BetaPrimeStatus::BfgsFailure};
+  result.singleton_proved=true;
   if(arithmetic_failure || (r.status==BetaStatus::Ok && !std::isfinite(ll)))
     result.certificate_failure=LomaxCertificateFailure::Arithmetic;
   return result;
@@ -205,10 +206,12 @@ inline BetaPrimeResult betapr_mle_holds_certificate(span x, double held_a, doubl
     }
     auto d=r.stop_detail;
     for(auto& c:d.candidates)if(c.model==StopModel::None && c.coef.size()==2)c.coef={1,c.coef[1],1/c.coef[0]};
-    return {1,r.kappa,fs?held_s:1/r.lambda,r.logLik,r.iterations,
+    BetaPrimeResult out{1,r.kappa,fs?held_s:1/r.lambda,r.logLik,r.iterations,
       r.status==LomaxStatus::Ok?BetaPrimeStatus::Ok:
       r.status==LomaxStatus::ExponentialLimit?BetaPrimeStatus::ExpBoundary:
       r.status==LomaxStatus::InvalidStart?BetaPrimeStatus::InvalidStart:BetaPrimeStatus::BfgsFailure,d,r.certificate_failure};
+    out.singleton_proved=r.singleton_proved;
+    return out;
   }
   if(held_b==1) {
     auto r=invpareto_mle(x,tol,maxit,held_a,held_s);
@@ -221,10 +224,12 @@ inline BetaPrimeResult betapr_mle_holds_certificate(span x, double held_a, doubl
     }
     auto d=r.stop_detail;
     for(auto& c:d.candidates)if(c.model==StopModel::None && c.coef.size()==2)c.coef={c.coef[0],1,c.coef[1]};
-    return {r.shape,1,r.scale,r.logLik,r.iterations,
+    BetaPrimeResult out{r.shape,1,r.scale,r.logLik,r.iterations,
       r.status==LomaxStatus::Ok?BetaPrimeStatus::Ok:
       r.status==LomaxStatus::ExponentialLimit?BetaPrimeStatus::InvExpBoundary:
       r.status==LomaxStatus::InvalidStart?BetaPrimeStatus::InvalidStart:BetaPrimeStatus::BfgsFailure,d,r.certificate_failure};
+    out.singleton_proved=r.singleton_proved;
+    return out;
   }
   double lm=0;
   for(double v:x) {
@@ -254,6 +259,7 @@ inline BetaPrimeResult betapr_mle_holds_certificate(span x, double held_a, doubl
       (bad_a||bad_b||!std::isfinite(ll))
       ?BetaPrimeStatus::BfgsFailure:BetaPrimeStatus::Ok};
     const double resolution=128*std::numeric_limits<double>::denorm_min()/1e-10;
+    out.singleton_proved=true;
     if((!fa && !(ta>resolution)) || (!fb && !(tb>resolution)))out.search_failed=true;
     return out;
   };
@@ -358,7 +364,7 @@ inline FitOutcome outcome(const BetaPrimeResult& r) {
   if (r.status == BetaPrimeStatus::BfgsFailure && r.certificate_failure == LomaxCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
   if ((r.status == BetaPrimeStatus::GammaBoundary || r.status == BetaPrimeStatus::InvGammaBoundary) && r.stop_detail.limit_coef.empty()) return FitOutcome::failure(OutcomeReason::Evaluation);
   switch (r.status) {
-    case BetaPrimeStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BetaPrimeStatus::Ok: return r.certified && r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case BetaPrimeStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::Unresolved);
     case BetaPrimeStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case BetaPrimeStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);

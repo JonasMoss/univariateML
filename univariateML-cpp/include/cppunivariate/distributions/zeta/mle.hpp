@@ -71,7 +71,7 @@ inline ZetaResult zeta_mle(ispan x,double tol=1e-10,int maxit=200, double held=s
 namespace cppunivariate {
 inline FitOutcome outcome(const ZetaResult& r) {
   switch(r.status) {
-    case ZetaStatus::Ok: return FitOutcome::estimate(true);
+    case ZetaStatus::Ok: return FitOutcome::singleton(true);
     case ZetaStatus::PointMass: return FitOutcome::limit(true);
     case ZetaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZetaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

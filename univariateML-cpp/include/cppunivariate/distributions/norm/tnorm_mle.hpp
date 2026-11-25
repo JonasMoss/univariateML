@@ -830,7 +830,7 @@ inline FitOutcome outcome(const TnormResult& r) {
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   if(r.status!=TnormStatus::Ok && r.stop_detail.comparison_tie)return comparison_outcome_of(r);
   switch(r.status) {
-    case TnormStatus::Ok: return FitOutcome::estimate(r.certified);
+    case TnormStatus::Ok: return FitOutcome::singleton(r.certified);
     case TnormStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TnormStatus::InvalidBounds: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TnormStatus::OutsideBounds: return FitOutcome::failure(OutcomeReason::InvalidInput);

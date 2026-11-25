@@ -7,7 +7,7 @@
 #include <vector>
 namespace cppunivariate {
 enum class SgompStatus { Ok, InvalidInput, Collapse, IterationFailure, ShapeOverflow };
-struct SgompResult { double b,eta,logLik; int iterations; SgompStatus status; StopDetail stop_detail{}; };
+struct SgompResult { double b,eta,logLik; int iterations; SgompStatus status; StopDetail stop_detail{}; bool singleton_proved = false; };
 
 inline bool family_point(const SgompResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 2 && std::isfinite(c.coef[0]) &&
@@ -23,7 +23,7 @@ inline FitOutcome outcome(const SgompResult& r) {
   if (r.status == SgompStatus::IterationFailure && r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.status == SgompStatus::IterationFailure && r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
-    case SgompStatus::Ok: return FitOutcome::estimate(true);
+    case SgompStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case SgompStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SgompStatus::Collapse: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case SgompStatus::ShapeOverflow: return FitOutcome::failure(OutcomeReason::Evaluation);
@@ -353,6 +353,7 @@ inline SgompResult sgomp_mle(span x,double tol=1e-10,int maxit=200,double b=NAN,
     return exponential(SgompResult{NAN,0,NAN,0,SgompStatus::Ok});
   auto r=sgomp_accuracy_search(x,tol,maxit,b,eta);
   if(r.status==SgompStatus::Ok&&r.eta==0&&std::isnan(b))return exponential(r);
+  r.singleton_proved=!std::isnan(b) || !std::isnan(eta);
   if(r.status!=SgompStatus::Ok||r.eta==0)return r;
   const double unit=r.b;std::array<double,3> q{{0,std::log(r.eta),0}};
   const std::array<bool,3> free{{std::isnan(b),std::isnan(eta),false}};

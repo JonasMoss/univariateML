@@ -37,7 +37,7 @@ namespace cppunivariate {
 // statuses retain the seam's existing plain-error rendering.
 inline FitOutcome outcome(const TruncationResult& r) {
   switch(r.status) {
-    case TruncationStatus::Ok: return FitOutcome::estimate(true);
+    case TruncationStatus::Ok: return FitOutcome::singleton(true);
     case TruncationStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TruncationStatus::NotImplemented: return FitOutcome::failure(OutcomeReason::Unsupported);
     case TruncationStatus::LowerLimit: return FitOutcome::failure(OutcomeReason::NoConvergence);
@@ -108,7 +108,7 @@ namespace cppunivariate {
 enum class HeldWindowStatus { Ok, InvalidInput, NumericalFailure, Empty, Nonfinite, Unbounded, EvaluationFailure };
 struct HeldWindowResult { double logLik=NAN; HeldWindowStatus status=HeldWindowStatus::InvalidInput; };
 inline FitOutcome outcome(const HeldWindowResult& r) {
-  return r.status==HeldWindowStatus::Unbounded?FitOutcome::nonexistence(OutcomeReason::Unbounded):r.status==HeldWindowStatus::Ok?FitOutcome::estimate():
+  return r.status==HeldWindowStatus::Unbounded?FitOutcome::nonexistence(OutcomeReason::Unbounded):r.status==HeldWindowStatus::Ok?FitOutcome::singleton(true):
     FitOutcome::failure(r.status!=HeldWindowStatus::NumericalFailure && r.status!=HeldWindowStatus::EvaluationFailure?OutcomeReason::InvalidInput:OutcomeReason::Evaluation);
 }
 template<class Sample,class Density> inline HeldWindowResult held_window_likelihood(Sample x,Density density,bool validated_support=false) {

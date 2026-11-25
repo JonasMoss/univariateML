@@ -21,7 +21,7 @@
 #include <vector>
 namespace cppunivariate {
 enum class StStatus {Ok, InvalidInput, Unbounded, ScaleBoundary, NumericalFailure, SkewNormalBoundary, RightHalfTBoundary, LeftHalfTBoundary, RightHalfNormalBoundary, LeftHalfNormalBoundary, UnsupportedSample};
-struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;bool certified=false;bool accuracy_failure=false;MaximizerSet maximizers{};};
+struct StResult {double xi,omega,alpha,nu,logLik;int iterations;StStatus status;unsigned restricted=0;unsigned reason=0;StopDetail stop_detail{};bool budget_exhausted=false;bool certified=false;bool accuracy_failure=false;MaximizerSet maximizers{}; bool singleton_proved = false;};
 
 inline bool family_point(const StResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 4 && std::isfinite(c.coef[0]) &&
@@ -39,7 +39,8 @@ inline FitOutcome outcome(const StResult& r) {
   if (r.stop_detail.comparison_tie) return r.certified ? equal_faces_outcome(r.stop_detail, true) : comparison_outcome_of(r);
   if (r.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case StStatus::Ok: return FitOutcome::estimate(r.certified, r.maximizers.size == 0);
+    case StStatus::Ok: return r.maximizers.size ? FitOutcome::estimate(r.certified, false) :
+        (r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified));
     case StStatus::UnsupportedSample: return FitOutcome::failure(OutcomeReason::Unsupported);
     case StStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case StStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
@@ -133,7 +134,7 @@ inline StResult st_mle_impl(span data,double tol=1e-10,int maxit=200,double xi=s
  std::vector<double> sorted(data.begin(),data.end());for(double v:sorted)if(!std::isfinite(v))return bad;std::sort(sorted.begin(),sorted.end());
  if(std::isfinite(xi)&&std::isfinite(omega)&&std::isfinite(alpha)&&std::isfinite(nu)) {
   StResult out{xi,omega,alpha,nu,0,0,StStatus::Ok};for(double v:data)out.logLik+=st_detail::logdensity(v,xi,omega,alpha,nu);
-  out.certified=std::isfinite(out.logLik);if(!out.certified)out.status=StStatus::NumericalFailure;return out;
+  out.certified=std::isfinite(out.logLik);out.singleton_proved=out.certified;if(!out.certified)out.status=StStatus::NumericalFailure;return out;
  }
  if(sorted.size()==2 && sorted.front()!=sorted.back() &&
     std::isnan(xi) && std::isnan(omega) && std::isnan(alpha) && std::isnan(nu)) {

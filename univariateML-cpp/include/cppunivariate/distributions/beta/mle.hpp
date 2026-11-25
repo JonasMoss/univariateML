@@ -58,7 +58,7 @@ struct BetaResult {
 
 inline FitOutcome outcome(const BetaResult& r) {
   switch (r.status) {
-    case BetaStatus::Ok: return FitOutcome::estimate(true);
+    case BetaStatus::Ok: return FitOutcome::singleton(true);
     case BetaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case BetaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case BetaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

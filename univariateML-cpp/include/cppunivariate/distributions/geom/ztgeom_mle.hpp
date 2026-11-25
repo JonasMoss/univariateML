@@ -22,7 +22,7 @@ inline ZtgeomResult ztgeom_mle(ispan x, double fixed=std::numeric_limits<double>
 namespace cppunivariate {
 inline FitOutcome outcome(const ZtgeomResult& r) {
   switch(r.status) {
-    case ZtgeomStatus::Ok: return FitOutcome::estimate(true);
+    case ZtgeomStatus::Ok: return FitOutcome::singleton(true);
     case ZtgeomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZtgeomStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
   }

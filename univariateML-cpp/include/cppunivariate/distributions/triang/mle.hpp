@@ -29,6 +29,7 @@ struct TriangResult {
   // Other modes whose likelihood comparison remains unresolved.
   std::vector<TriangModeCandidate> unresolved_modes{};
   MaximizerSet maximizers{};
+  bool singleton_proved=false;
 };
 namespace triang_detail {
 struct Profile { double a, b, value, upper; int iterations; bool converged; };
@@ -378,7 +379,7 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
     if(q.value>p.upper+margin) return -1;
     return 0;
   };
-  bool success=true;
+  bool success=true, unbounded_profile_value=false;
   double certificate_upper=-INFINITY;
   std::vector<double> known_ll;
   if(fa&&fb) {
@@ -411,7 +412,10 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
     // below supplies its own operand-scaled floating-point margin.
     certificate_upper=std::max(certificate_upper,p.upper-
         ((fa&&fb)?0:1e-11*x.size()*(1+std::abs(p.value)/x.size())));
-    if(!std::isfinite(p.value)) return;
+    if(!std::isfinite(p.value)) {
+      unbounded_profile_value=unbounded_profile_value || p.upper!=-INFINITY;
+      return;
+    }
     success=success&&p.converged;
     auto& saved=profiles[k];
     saved=p;
@@ -521,10 +525,17 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
         symmetric=triang_detail::sum_parts(observations[i],observations[observations.size()-1-i])==center;
       out.reflection_tie=symmetric && triang_detail::sum_parts(out.c,out.c)!=center;
     }
+    bool separated=!out.reflection_tie && !unbounded_profile_value;
     for(std::size_t i=0;i<profiles.size();++i) {
       if(i==chosen || !std::isfinite(profiles[i].value)) continue;
       if(out.reflection_tie && triang_detail::sum_parts(out.c,public_modes[i])==center) continue;
-      if(compare(chosen,i)>0) continue;
+      if(compare(chosen,i)>0) {
+        const auto& other=profiles[i];
+        const double inflation=1e-11*(x.size()+std::abs(other.value));
+        separated=separated && ((fa && fb) || profiles[chosen].value>other.upper+inflation);
+        continue;
+      }
+      separated=false;
       const auto rival=coefficients(i);
       double logLik=0;
       for(double z:input) logLik+=distributions::dtriang(z,rival[0],rival[1],rival[2],true);
@@ -595,6 +606,9 @@ inline TriangResult triang_mle(span input, double tol=1e-10, int maxit=100,
       }
     }
     out.not_unique=out.reflection_tie || !out.unresolved_modes.empty();
+    // Pruning uses strict padded bounds. Each remaining mode has at most
+    // one optimum in the strict reciprocal-endpoint profile.
+    out.singleton_proved=separated && !merged_knots;
   }
   return out;
 }
@@ -605,8 +619,11 @@ inline FitOutcome outcome(const TriangResult& r) {
   if (r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)
     return FitOutcome::failure(OutcomeReason::Tolerance);
   switch (r.status) {
-    case TriangStatus::Ok: return (!r.not_unique || r.maximizers.size) ? FitOutcome::estimate(true,!r.not_unique)
-                                       : FitOutcome::undetermined();
+    case TriangStatus::Ok:
+      if (r.not_unique)
+        return r.maximizers.size ? FitOutcome::estimate(true, false) : FitOutcome::undetermined();
+      return r.singleton_proved ? FitOutcome::singleton(true)
+                                : FitOutcome::unknown_cardinality(true);
     case TriangStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TriangStatus::Incompatible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TriangStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

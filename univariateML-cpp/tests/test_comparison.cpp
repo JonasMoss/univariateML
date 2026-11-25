@@ -34,7 +34,7 @@ TEST_CASE("the better candidate has the larger lower bound at rounding resolutio
 TEST_CASE("comparison outcomes: estimate, limit or unresolved by the better candidate") {
   // An accurate family point: an uncertified estimate.
   auto o = cppunivariate::comparison_outcome(detail({{{1, 1}, -2, -2}, {{1, 1}, -3, -3, StopModel::Norm}}), family, exact);
-  CHECK(o.kind == cu::OutcomeKind::Estimate); CHECK_FALSE(o.certified); CHECK(o.unique);
+  CHECK(o.kind == cu::OutcomeKind::Estimate); CHECK_FALSE(o.certified); CHECK_FALSE(o.uniqueness_known);
   // A family point without a point log likelihood is not returned.
   o = cppunivariate::comparison_outcome(detail({{{1, 1}, -2, -1.9}, {{1, 1}, -3, -3, StopModel::Norm}}), family, exact);
   CHECK(o.kind == cu::OutcomeKind::Failure); CHECK(o.reason == cppunivariate::OutcomeReason::Unresolved);
@@ -93,4 +93,19 @@ TEST_CASE("rendering refuses non-unique estimates without a typed set") {
   REQUIRE(rendered.maximizers.size() == 2);
   CHECK(rendered.maximizers.front().estimates == fit.estimates);
   CHECK(rendered.candidates.size() == 2);
+}
+
+TEST_CASE("certification and cardinality are independent at the fit boundary") {
+  umvl_binding::FitResult fit;
+  fit.estimates = {{"scale", 1.}};
+  fit.logLik = -2.;
+  fit.outcome = cu::FitOutcome::unknown_cardinality(true);
+  const auto rendered = umvl_binding::render_fit(fit);
+  CHECK(rendered.error_kind.empty());
+  CHECK(rendered.outcome.kind == cu::OutcomeKind::Estimate);
+  CHECK(rendered.outcome.certified);
+  CHECK_FALSE(rendered.outcome.uniqueness_known);
+  CHECK_FALSE(rendered.maximizer_set);
+  CHECK_FALSE(cu::FitOutcome::undetermined().certified);
+  CHECK(cu::FitOutcome::singleton(true).uniqueness_known);
 }

@@ -64,7 +64,7 @@ struct TrGammaResult {
   TrGammaStatus status;
  StopDetail stop_detail{};
  bool reconstruction_failure=false;
- bool transformation_failure=false; };
+ bool transformation_failure=false; bool singleton_proved=false; };
 
 inline bool family_point(const TrGammaResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
@@ -83,7 +83,7 @@ inline FitOutcome outcome(const TrGammaResult& r) {
   if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   if (r.transformation_failure || r.reconstruction_failure) return FitOutcome::failure(OutcomeReason::Evaluation);
   switch (r.status) {
-    case TrGammaStatus::Ok: return FitOutcome::estimate(true);
+    case TrGammaStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case TrGammaStatus::LognormalBoundary: return FitOutcome::limit(false);
     case TrGammaStatus::PowerBoundary: return FitOutcome::limit(false);
     case TrGammaStatus::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
@@ -885,6 +885,7 @@ inline TrGammaResult trgamma_fit_log(span y, double tol, int maxit,
         trgamma_detail::kHalfLog2Pi - trgamma_detail::stirling_remainder(shape1) - shape1 * K) -
         static_cast<double>(sum_y);
     TrGammaResult result{shape1,shape2,std::exp(log_scale),log_scale,ll,0,TrGammaStatus::Ok};
+    result.singleton_proved=true;
     return trgamma_detail::check_represented(y,result,TrGammaStatus::Ok,TrGammaStatus::IterationFailure);
   }
   if (!standardized) {
@@ -900,9 +901,11 @@ inline TrGammaResult trgamma_fit_log(span y, double tol, int maxit,
     auto result = trgamma_detail::make_result(d, a, t, c.K, trgamma_detail::delta_at(t, a, c.K),
                                        iterations, TrGammaStatus::Ok);
     result.shape2 = shape2;
+    result.singleton_proved=true;
     return trgamma_detail::check_represented(y,result,TrGammaStatus::Ok,TrGammaStatus::IterationFailure);
   }
   auto result=!std::isnan(shape1) ? trgamma_detail::fit_fixed_shape1(d,shape1,tol,maxit) : trgamma_detail::fit_free(d,tol,maxit);
+  result.singleton_proved=!std::isnan(shape1);
   return trgamma_detail::check_represented(y,result,TrGammaStatus::Ok,TrGammaStatus::IterationFailure);
 }
 
@@ -1236,6 +1239,7 @@ inline TrGammaResult trgamma_mle_fixed_scale(span x,double scale,double a=std::n
   }
   auto out=trgamma_fixed_scale_log({y.data(),y.size()},std::log(scale),a,b,tol,maxit);
   out.scale=scale;
+  out.singleton_proved=!std::isnan(a) || !std::isnan(b);
   if(!std::isnan(b))out.shape2=b;
   if(out.stop_detail.limit_model==StopModel::Power && out.stop_detail.limit_coef.size()==2)out.stop_detail.limit_coef[0]=scale;
   for(auto& c:out.stop_detail.candidates) {

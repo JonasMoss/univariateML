@@ -29,7 +29,7 @@ struct NakaResult {
 
 inline FitOutcome outcome(const NakaResult& r) {
   switch (r.status) {
-    case GammaStatus::Ok: return FitOutcome::estimate(r.certified);
+    case GammaStatus::Ok: return FitOutcome::singleton(r.certified);
     case GammaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GammaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

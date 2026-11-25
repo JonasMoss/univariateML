@@ -252,7 +252,7 @@ inline FitOutcome comparison_outcome(const StopDetail& d,Point point,Accurate ac
     StopModel own=StopModel::None) {
   if(d.candidates.empty())return FitOutcome::failure(OutcomeReason::Unresolved);
   const FitCandidate& c=d.candidates[better_candidate(d,[&](const FitCandidate& x){return point(x) && accurate(x);})];
-  if(point(c))return accurate(c)?FitOutcome::estimate(false):FitOutcome::failure(OutcomeReason::Unresolved);
+  if(point(c))return accurate(c)?FitOutcome::undetermined():FitOutcome::failure(OutcomeReason::Unresolved);
   if(face_candidate(c,own))return FitOutcome::limit(false);
   return FitOutcome::failure(OutcomeReason::Unresolved);
 }

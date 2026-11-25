@@ -213,7 +213,7 @@ inline FitOutcome outcome(const GumbelResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case GumbelStatus::Ok: return FitOutcome::estimate(true);
+    case GumbelStatus::Ok: return FitOutcome::singleton(true);
     case GumbelStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GumbelStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GumbelStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

@@ -63,6 +63,7 @@ struct SstdResult {
   bool certified=false;
   unsigned certificate_reason=0;
   bool accuracy_failure=false;
+  bool singleton_proved = false;
 };
 
 #include "certificate.hpp"
@@ -763,6 +764,7 @@ inline SstdResult sstd_mle(span x, double tol=1e-10, int maxit=200,
     if(r.status==StudentTStatus::DfTwoBoundary)out.stop_detail.limit_model=StopModel::Lst;
     if(r.status==StudentTStatus::ScaleBoundary)out.stop_detail.limit_model=StopModel::TCollapsePath;
     out.certified=r.certified && cppunivariate::outcome(r).certified;
+    out.singleton_proved=r.singleton_proved;
     return out;
   }
   if(hm && hs && hn && !hx) return sstd_skew_cert::fit(x,maxit,fixed_mean,fixed_sd,fixed_nu);
@@ -790,7 +792,7 @@ inline SstdResult sstd_mle(span x, double tol=1e-10, int maxit=200,
   if(hm && hs) {
     SstdCost cost{x};const double phi[]={fixed_mean,std::log(fixed_sd),std::log(fixed_nu-2),std::log(fixed_xi)};
     out={fixed_mean,fixed_sd,fixed_nu,fixed_xi,-cost(phi),0,SstdStatus::Ok};
-    out.certified=std::isfinite(out.logLik);if(!out.certified)out.status=SstdStatus::CertificateFailure;
+    out.certified=std::isfinite(out.logLik);out.singleton_proved=out.certified;if(!out.certified)out.status=SstdStatus::CertificateFailure;
     return out;
   }
   return sstd_cert_detail::fit(x,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
@@ -861,7 +863,7 @@ inline FitOutcome outcome(const SstdResult& r) {
     if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   }
   switch (r.status) {
-    case SstdStatus::Ok: return FitOutcome::estimate(r.certified);
+    case SstdStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case SstdStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case SstdStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SstdStatus::UnsupportedHold: return FitOutcome::failure(OutcomeReason::Unsupported);

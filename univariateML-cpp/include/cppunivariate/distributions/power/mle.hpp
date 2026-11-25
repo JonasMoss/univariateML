@@ -29,7 +29,7 @@ struct PowerResult {
 
 inline FitOutcome outcome(const PowerResult& r) {
   switch (r.status) {
-    case PowerStatus::Ok: return FitOutcome::estimate(true);
+    case PowerStatus::Ok: return FitOutcome::singleton(true);
     case PowerStatus::OutsideSupport: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case PowerStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case PowerStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);

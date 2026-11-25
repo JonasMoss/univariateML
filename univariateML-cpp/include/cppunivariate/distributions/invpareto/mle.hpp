@@ -19,7 +19,7 @@ inline StopDetail invpareto_stop_detail(StopDetail d,double jac) {
  return d;
 }
 
-struct InvParetoResult { double shape, scale; double logLik; int iterations; LomaxStatus status; StopDetail stop_detail{}; LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None; bool limit_certified = false; };
+struct InvParetoResult { double shape, scale; double logLik; int iterations; LomaxStatus status; StopDetail stop_detail{}; LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None; bool limit_certified = false; bool singleton_proved = false; };
 inline InvParetoResult invpareto_mle(span x, double tol, int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   for (double v : x) {
@@ -43,7 +43,7 @@ inline InvParetoResult invpareto_mle(span x,double tol,int maxit,double shape,do
   for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
   const auto r=lomax_mle(span{y.data(),y.size()},tol,maxit,scale,shape);
   return {r.kappa,r.lambda,r.logLik+jac,r.iterations,r.status,invpareto_stop_detail(r.stop_detail,jac),r.certificate_failure,
-    r.limit_certified && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];})};
+    r.limit_certified && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}),r.singleton_proved};
 }
 
 } // namespace cppunivariate
@@ -55,7 +55,7 @@ inline FitOutcome outcome(const InvParetoResult& r) {
   if (r.status == LomaxStatus::IterationFailure && r.certificate_failure == LomaxCertificateFailure::Budget) return FitOutcome::budget();
   if (r.status == LomaxStatus::IterationFailure && r.certificate_failure == LomaxCertificateFailure::Arithmetic) return FitOutcome::failure(OutcomeReason::Evaluation);
   switch (r.status) {
-    case LomaxStatus::Ok: return FitOutcome::estimate(true);
+    case LomaxStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case LomaxStatus::ExponentialLimit: return FitOutcome::limit(r.limit_certified);
     case LomaxStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case LomaxStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

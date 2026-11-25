@@ -132,7 +132,7 @@ struct InvBurrResult {
   int iterations;
   InvBurrStatus status;
   StopDetail stop_detail{};
-  bool certified=true;
+  bool certified=true; bool singleton_proved = false;
 };
 // Reciprocal transport applies to diagnostics as well as successful fits.
 inline StopDetail invburr_stop_detail(StopDetail detail,double jacobian,double endpoint=NAN) {
@@ -230,6 +230,8 @@ inline InvBurrResult invburr_mle(span x, double tol=1e-10, int maxit=1000) {
   }
   InvBurrResult out{r.shape1,r.shape2,scale,logLik,r.iterations,status};
   out.certified=r.certified;
+  out.singleton_proved=r.singleton_proved && (reflect ||
+      std::all_of(x.begin(),x.end(),[](double v){return std::fma(v,1/v,-1.)==0;}));
   bool accuracy_failed=false;
   if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{true,true,true}},tol,maxit,true,0,out.stop_detail)){out.status=InvBurrStatus::NumericalFailure;accuracy_failed=true;}
   if(out.status==InvBurrStatus::Ok&&!out.certified){out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,true);if(!std::isfinite(out.logLik))out.status=InvBurrStatus::NumericalFailure;}
@@ -269,7 +271,7 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
    const auto r=transformed_detail::location_fit(x,b,s,a,false,-1,tol,maxit);
    InvBurrResult out{a,r.shape,r.scale,r.ll,0,r.status==0?InvBurrStatus::Ok:
      r.status==1?InvBurrStatus::InvalidInit:r.status==2?InvBurrStatus::Unbounded:InvBurrStatus::NumericalFailure};
-   out.certified=r.certified;
+   out.certified=r.certified;out.singleton_proved=true;
    if(out.status==InvBurrStatus::Ok&&!out.certified) {
      if(!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{false,std::isnan(b),std::isnan(s)}},tol,maxit,true,0,out.stop_detail)){out.status=InvBurrStatus::NumericalFailure;record_accuracy(out,tol,{out.shape1,out.shape2,out.scale},{0,std::isnan(b)?out.shape2:0,std::isnan(s)?out.scale:0});}
      else {out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,true);if(!std::isfinite(out.logLik))out.status=InvBurrStatus::NumericalFailure;}
@@ -284,7 +286,7 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
    // checking the signed profile bracket and the coefficient enclosure.
    const auto root=burr_cert_detail::scale_fit(x,s,tol,maxit,true);
    if(root.outcome==burr_cert_detail::Outcome::Finite)
-     return {root.k,root.c,s,root.logLik,root.profiles,InvBurrStatus::Ok,root.stop_detail};
+     return {root.k,root.c,s,root.logLik,root.profiles,InvBurrStatus::Ok,root.stop_detail,true,true};
    if(root.outcome==burr_cert_detail::Outcome::Unbounded)
      return {NAN,NAN,s,INFINITY,0,InvBurrStatus::Unbounded,root.stop_detail};
    if(root.outcome==burr_cert_detail::Outcome::Pareto) {
@@ -328,10 +330,11 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
  if(r.status==BurrStatus::AllGeOne)st=InvBurrStatus::AllLeOne;
  InvBurrResult out{r.shape1,r.shape2,std::isnan(s)?1/r.scale:s,r.logLik+jac,r.iterations,st};
  out.certified=r.certified;
+ out.singleton_proved=r.singleton_proved && !scale_only;
  out.stop_detail=invburr_stop_detail(r.stop_detail,jac,std::isnan(s)?NAN:s);
  // A solve on rounded reciprocals is only a proposal when the signed
  // bracket on the original data did not meet the requested accuracy.
- if(scale_only)out.certified=false;
+ if(scale_only) {out.certified=false;out.singleton_proved=false;}
  if(out.status==InvBurrStatus::Ok&&!out.certified&&!burr_local_accuracy(x,out.shape1,out.shape2,out.scale,{{std::isnan(a),std::isnan(b),std::isnan(s)}},tol,maxit,true,0,out.stop_detail)){out.status=InvBurrStatus::NumericalFailure;record_accuracy(out,tol,{out.shape1,out.shape2,out.scale},{std::isnan(a)?out.shape1:0,std::isnan(b)?out.shape2:0,std::isnan(s)?out.scale:0});}
  if(out.status==InvBurrStatus::Ok&&!out.certified){out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,true);if(!std::isfinite(out.logLik))out.status=InvBurrStatus::NumericalFailure;}
  if(!std::isnan(s))for(auto& candidate:out.stop_detail.candidates)
@@ -356,7 +359,7 @@ inline FitOutcome outcome(const InvBurrResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case InvBurrStatus::Ok: return FitOutcome::estimate(r.certified);
+    case InvBurrStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case InvBurrStatus::InvWeibullBoundary: return FitOutcome::limit(true);
     case InvBurrStatus::PowerBoundary: return FitOutcome::limit(true);
     case InvBurrStatus::InvalidInit: return FitOutcome::failure(OutcomeReason::InvalidInput);

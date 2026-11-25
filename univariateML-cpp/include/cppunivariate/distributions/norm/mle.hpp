@@ -183,7 +183,7 @@ inline NormResult norm_mle(span x, double mean, double sd) {
 
 inline FitOutcome outcome(const NormResult& r) {
   switch (r.status) {
-    case NormStatus::Ok: return FitOutcome::estimate();
+    case NormStatus::Ok: return FitOutcome::singleton(true);
     case NormStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case NormStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case NormStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

@@ -14,7 +14,7 @@ struct InvExpResult { double scale; double logLik; int iterations;    InvExpStat
 
 inline FitOutcome outcome(const InvExpResult& r) {
   switch (r.status) {
-    case InvExpStatus::Ok: return FitOutcome::estimate(true);
+    case InvExpStatus::Ok: return FitOutcome::singleton(true);
     case InvExpStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case InvExpStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case InvExpStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

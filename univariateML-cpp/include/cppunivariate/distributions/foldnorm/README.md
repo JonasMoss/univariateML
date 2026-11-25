@@ -52,7 +52,7 @@ relations:
 fit:
   method: profile-search
   certified: 'yes'
-  note: "foldnorm/mle.hpp, foldnorm_mle: Joint and held-positive-location profiles use analytic bounds and convex-chord upper bounds to certify the retained likelihood within tol per observation in exact arithmetic, conditional on computed comparisons. Held scale has a unique monotone location equation; held zero location gives analytic scale. Work-budget exhaustion stops; floating-point comparisons are not outward rounded."
+  note: "foldnorm/mle.hpp, foldnorm_mle: Joint and held-positive-location profiles use analytic bounds and convex-chord upper bounds to certify the retained likelihood within tol per observation in exact arithmetic, conditional on computed comparisons. Held scale has a unique monotone location equation; with location held the log likelihood is strictly concave in inverse variance. Work-budget exhaustion stops; floating-point comparisons are not outward rounded."
 areas:
 - reliability and survival
 classification: specialist
@@ -79,8 +79,7 @@ existence:
     nonnegative sample, including a possible maximum at $\mu=0$. Constant
     samples have unbounded likelihood. With $\mu$ held and scale free, a
     finite maximum exists unless every observation equals $\mu$. With positive
-    $\sigma$ held, the location maximum exists and is unique. Joint uniqueness
-    and uniqueness with positive $\mu$ held are not established here.
+    $\sigma$ held, the location maximum exists and is unique. With $\mu$ held, the attained scale maximum is unique by strict inverse-variance concavity. Joint uniqueness remains open.
   reason: >-
     For a nonconstant sample, the likelihood tends to zero as scale vanishes
     or as the coefficients escape to infinity, so a maximum is attained.
@@ -100,7 +99,7 @@ The coefficients $\mu$ and $\sigma$ are the parent normal location and scale. Th
 
 For nonconstant nonnegative data a maximum is attained, possibly at the half-normal boundary. Constant data have unbounded likelihood when both coefficients are free. Holding location prevents this collapse unless all observations equal that location. Holding positive scale permits constant data and gives a unique location fit.
 
-Boundary and interior candidates can compete. The joint fitter compares the half-normal boundary with candidates from an analytically bounded scalar profile. Convex-chord upper bounds certify the joint search to a likelihood tolerance. With positive location held, similar bounds check the scale search. Exhausted bounds report numerical failure. These comparisons do not prove uniqueness of the joint or held-location maximum.
+Boundary and interior candidates can compete. The joint fitter compares the half-normal boundary with candidates from an analytically bounded scalar profile. Convex-chord upper bounds certify the joint search to a likelihood tolerance. With positive location held, similar bounds check the scale search. Exhausted bounds report numerical failure. Joint fits report unknown cardinality. For fixed $\mu$, write $u=1/\sigma^2$ and $t_i=x_i\mu u$. The log likelihood as a function of $u>0$ is $\frac{n}{2}\log u-\frac{u}{2}\sum_i(x_i^2+\mu^2)+\sum_i\log\cosh t_i$ up to a constant. Multiplying its second derivative by $u^2$ gives $-n/2+\sum_i t_i^2/\cosh^2 t_i<0$, since $\cosh t>\sqrt{2}t$ for $t\ge0$. The latter inequality follows from $1+t^2/2\ge\sqrt{2}t$ and the positive higher terms for $t>0$.
 
 At constant $x_0=\mu>0$, the positive normal component alone is $1/(\sqrt{2\pi}\sigma)$; at $x_0=\mu=0$ the density is twice this. This proves the declared scale-collapse paths.
 

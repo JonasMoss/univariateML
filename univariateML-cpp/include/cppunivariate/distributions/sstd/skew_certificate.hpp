@@ -62,6 +62,47 @@ inline Bounds bounds(span d,double sd,double nu,double m,double l,double h){
  if(std::isfinite(se)){score.lo-=se;score.hi+=se;}
  return {val,score};
 }
+// The retained skew hull may contain several stationary points. Bound the
+// derivative of the score on that hull to distinguish a single maximum.
+// The branch scores agree at zero residual, so strict decrease on both
+// sides of a contact is sufficient.
+inline bool strictly_concave(span d, double nu, double m, double lo, double hi) {
+ const Interval q{lo,hi}, one{1-hi,1-lo};
+ const double c=4*m*m-3;
+ const auto H=add({1-m*m,1-m*m},scale(mul(q,one),c));
+ if(!(H.lo>0) || !(lo>0 && hi<1))return false;
+ const auto Hp=scale({1-2*hi,1-2*lo},c);
+ const Interval Hpp{-2*c,-2*c}, root{std::sqrt(H.lo),std::sqrt(H.hi)};
+ const auto rp=scale(divide(Hp,root),.5);
+ const auto rpp=scale(divide(add(Hpp,scale(square(rp),-2)),root),.5);
+ const auto base=scale(add(divide(Hpp,H),scale(square(divide(Hp,H)),-1)),.5);
+ Interval total{0,0};
+ double magnitude=0;
+ for(double v:d) {
+  const auto N=add(scale(root,v),scale({2*lo-1,2*hi-1},m));
+  const auto Np=add(scale(rp,v),{2*m,2*m});
+  const auto Npp=scale(rpp,v);
+  Interval both{INFINITY,-INFINITY};
+  for(int side=0;side<2;++side) {
+   if((side==0 && N.hi<0) || (side==1 && N.lo>0))continue;
+   const auto D=side==0?q:one;
+   const double Dp=side==0?1:-1;
+   const auto A=add(mul(Np,D),scale(N,-Dp));
+   const auto B=add(scale(square(D),nu-2),square(N));
+   const auto K=mul(D,B);
+   const auto Kp=add(scale(B,Dp),mul(D,add(scale(D,2*(nu-2)*Dp),scale(mul(N,Np),2))));
+   const auto value=divide(mul(N,A),K);
+   const auto derivative=divide(add(add(mul(Np,A),mul(N,mul(Npp,D))),
+                                    scale(mul(value,Kp),-1)),K);
+   const auto term=add(base,scale(derivative,-(nu+1)));
+   both.lo=std::min(both.lo,term.lo);
+   both.hi=std::max(both.hi,term.hi);
+  }
+  total=add(total,both);
+  magnitude+=std::max(std::abs(both.lo),std::abs(both.hi));
+ }
+ return std::isfinite(magnitude) && total.hi < -skew_scalar_detail::margin(magnitude);
+}
 inline SstdResult fit(span x,int maxit,double mean,double sd,double nu){
  SstdResult out{mean,sd,nu,NAN,NAN,0,SstdStatus::CertificateFailure};
  out.stop_detail.loglik_upper=INFINITY;
@@ -161,6 +202,9 @@ inline SstdResult fit(span x,int maxit,double mean,double sd,double nu){
  double shift=0;const double su=dens::sstd_sigma(nu,out.xi,shift);double ll=0;
  for(double v:x){const double z=(v-mean)/sd*su+shift,w=z/(z>0?out.xi:1/out.xi);ll+=std::log(su/sd)+std::log(2/(out.xi+1/out.xi))+dens::log_dstd_unit_const(nu)-.5*(nu+1)*std::log1p(w*w/(nu-2));}
  if(!std::isfinite(ll)||std::abs(ll-out.logLik)>4*best->error){out.stop_detail.loglik_upper=INFINITY;return out;}
- out.logLik=ll;out.status=SstdStatus::Ok;out.certified=true;out.stop_detail={};return out;
+ out.logLik=ll;out.status=SstdStatus::Ok;out.certified=true;
+ out.singleton_proved=out.iterations<certificate_budget(maxit) &&
+     strictly_concave(d,nu,m,best->lo,best->hi);
+ out.stop_detail={};return out;
 }
 } // namespace sstd_skew_cert

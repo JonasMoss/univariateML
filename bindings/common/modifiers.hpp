@@ -70,7 +70,7 @@ template<class Traits> inline FitResult truncate_counts(cppunivariate::ispan x,d
   out.iterations = r.iterations;
   out.has_iterations = true;
   out.has_fixed = true;
-  if (!o.unique) {
+  if (o.uniqueness_known && !o.unique) {
     // On singleton support the conditional probability is one for every
     // interior probability. The prob-one atom survives exactly at zero.
     const auto domain = cppunivariate::interval(0, 1, false, std::ceil(a) <= 0);

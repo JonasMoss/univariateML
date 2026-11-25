@@ -11,6 +11,7 @@ struct ZmbinomResult : zero_detail::ModifiedResult {
 
   bool unique = true;
   bool evaluation_failure = false;
+  bool singleton_proved=false;
 };
 inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double fixed_size=std::numeric_limits<double>::quiet_NaN(),
  double fixed_prob=std::numeric_limits<double>::quiet_NaN(),double fixed_p0=std::numeric_limits<double>::quiet_NaN()) {
@@ -32,10 +33,10 @@ inline ZmbinomResult zmbinom_mle(ispan x, double tol=1e-10,int maxit=200,double 
  if(k>0)out.logLik+=k*std::log1p(-out.p0);
  if(!std::isfinite(out.logLik))return out;
  out.status=ZmbinomStatus::Ok;
- if(k==0) {out.unique=fs && !std::isnan(fixed_prob);out.status=out.unique?ZmbinomStatus::Ok:ZmbinomStatus::AllZero;return out;}
+ if(k==0) {out.unique=fs && !std::isnan(fixed_prob);out.singleton_proved=out.unique;out.status=out.unique?ZmbinomStatus::Ok:ZmbinomStatus::AllZero;return out;}
  const auto fit=ztbinom_mle({pos.data(),pos.size()},tol,maxit,fixed_size,fixed_prob);
  if(std::isnan(fixed_prob)&&std::isnan(fixed_p0)&&fit.prob==0)out.status=ZmbinomStatus::TwoPoint;
- out.certified=fit.certified;out.accuracy_failure=fit.accuracy_failure;out.unique=fit.unique;out.evaluation_failure=fit.evaluation_failure;
+ out.certified=fit.certified;out.accuracy_failure=fit.accuracy_failure;out.unique=fit.unique;out.singleton_proved=fit.singleton_proved;out.evaluation_failure=fit.evaluation_failure;
  const double zero_shift=out.logLik;
  out.size=fit.size;out.prob=fit.prob;out.logLik+=fit.logLik;
  if(fit.status==ZtbinomStatus::PoissonLimit) {
@@ -92,7 +93,9 @@ inline FitOutcome outcome(const ZmbinomResult& r) {
     if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
   }
   switch(r.status) {
-    case ZmbinomStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
+    case ZmbinomStatus::Ok: return !r.unique ? FitOutcome::estimate(r.certified,false)
+        : r.singleton_proved ? FitOutcome::singleton(r.certified)
+                             : FitOutcome::unknown_cardinality(r.certified);
     case ZmbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZmbinomStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZmbinomStatus::PoissonLimit: return FitOutcome::limit(true);

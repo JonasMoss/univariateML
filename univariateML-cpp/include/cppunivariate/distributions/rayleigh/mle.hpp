@@ -69,7 +69,7 @@ inline RayleighResult rayleigh_mle(span x,double sigma) {
 namespace cppunivariate {
 inline FitOutcome outcome(const RayleighResult& r) {
   switch (r.status) {
-    case RayleighStatus::Ok: return FitOutcome::estimate(true);
+    case RayleighStatus::Ok: return FitOutcome::singleton(true);
     case RayleighStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case RayleighStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case RayleighStatus::ZeroLikelihood: return FitOutcome::failure(OutcomeReason::InvalidInput);

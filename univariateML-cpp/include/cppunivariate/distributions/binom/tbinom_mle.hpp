@@ -224,6 +224,7 @@ struct TbinomDesignResult {
   StopDetail stop_detail{};
   bool certified = true;
   bool unique = true;
+  bool singleton_proved=false;
 };
 namespace tbinom_detail {
 inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,double size,
@@ -690,6 +691,7 @@ inline TbinomDesignResult tbinom_identification(TbinomDesignResult r,double size
   if(r.status==TbinomStatus::Ok) {
     const double lo=std::max(0.,std::floor(r.a)+1),hi=std::min(r.size,std::floor(r.b));
     if((std::isnan(prob) && lo==hi) || (std::isnan(size) && lo==std::floor(r.b)))r.unique=false;
+    r.singleton_proved=std::isfinite(size);
   }
   return r;
 }
@@ -718,7 +720,9 @@ inline FitOutcome outcome(const TbinomDesignResult& r) {
     if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
   }
   switch(r.status) {
-    case TbinomStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
+    case TbinomStatus::Ok: return !r.unique ? FitOutcome::estimate(r.certified,false)
+        : r.singleton_proved ? FitOutcome::singleton(r.certified)
+                             : FitOutcome::unknown_cardinality(r.certified);
     case TbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TbinomStatus::LowerPointMass: return FitOutcome::limit(true);
     case TbinomStatus::UpperPointMass: return FitOutcome::limit(true);

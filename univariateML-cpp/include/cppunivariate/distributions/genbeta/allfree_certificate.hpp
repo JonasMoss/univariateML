@@ -211,7 +211,7 @@ inline GenbetaResult verify(const std::vector<double>& y,double mean,double jac,
   }
   out.iterations=static_cast<int>(std::min<std::int64_t>(work,INT_MAX));
   out.certificate_failure=GenbetaCertificateFailure::None;
-  out.allfree_certified=true;
+  out.allfree_certified=true;out.singleton_proved=true;
   return out;
 }
 } // namespace genbeta_allfree_cert

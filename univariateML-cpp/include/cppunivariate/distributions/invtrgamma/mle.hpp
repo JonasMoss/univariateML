@@ -41,7 +41,7 @@ struct InvTrGammaResult {
   InvTrGammaStatus status;
  StopDetail stop_detail{};
  bool reconstruction_failure=false;
- bool transformation_failure=false; };
+ bool transformation_failure=false; bool singleton_proved=false; };
 
 inline InvTrGammaStatus invtrgamma_status(TrGammaStatus s) {
   switch (s) {
@@ -130,6 +130,7 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
   InvTrGammaResult out={r.shape1,r.shape2,std::exp(log_scale),log_scale,r.logLik+jacobian,r.iterations,invtrgamma_status(status)};
   out.stop_detail=invtrgamma_transport_detail(r.stop_detail,jacobian);
   out.reconstruction_failure=r.reconstruction_failure;
+  out.singleton_proved=r.singleton_proved;
   out.transformation_failure=r.transformation_failure;
   if(!x.empty() && (out.status==InvTrGammaStatus::ParetoBoundary ||
       (out.stop_detail.limit_model==StopModel::None && std::isfinite(r.stop_detail.limit_loglik)))) {
@@ -223,6 +224,7 @@ inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=
   if(r.status==TrGammaStatus::InvalidData && r.logLik==INFINITY)out.status=InvTrGammaStatus::Unbounded;
   out.stop_detail=invtrgamma_transport_detail(r.stop_detail,jac);
   out.reconstruction_failure=r.reconstruction_failure;
+  out.singleton_proved=!std::isnan(a) || !std::isnan(b);
   out.transformation_failure=r.transformation_failure;
   if(!std::isnan(b))out.shape2=b;
   // The held endpoint is already represented in original coordinates;
@@ -290,7 +292,7 @@ inline FitOutcome outcome(const InvTrGammaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case InvTrGammaStatus::Ok: return FitOutcome::estimate(true);
+    case InvTrGammaStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case InvTrGammaStatus::LognormalBoundary: return FitOutcome::limit(true);
     case InvTrGammaStatus::ParetoBoundary: return FitOutcome::limit(true);
     case InvTrGammaStatus::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);

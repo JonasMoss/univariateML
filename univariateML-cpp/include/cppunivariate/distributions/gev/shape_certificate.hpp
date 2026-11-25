@@ -250,7 +250,16 @@ inline GevResult gev_shape_certificate(span x,double mu,double sigma,double tol,
     if(separated) {
       out.xi=winner->lo+(winner->hi-winner->lo)/2;
       out.logLik=gev_loglik(x,mu,sigma,out.xi);
-      if(std::isfinite(out.logLik) && std::abs(out.logLik-(winner->ll-jac))<=1e-7*x.size())out.status=GevStatus::Ok;
+      if(std::isfinite(out.logLik) && std::abs(out.logLik-(winner->ll-jac))<=1e-7*x.size()) {
+        out.status=GevStatus::Ok;
+        // Positive-width candidates come from the signed, strictly
+        // concave root path. Leave overlapping distinct brackets open.
+        out.singleton_proved=winner->lo<winner->hi &&
+            std::none_of(candidates.begin(),candidates.end(),[&](const auto& c) {
+              return c.lo<c.hi && c.hi>=winner->lo && c.lo<=winner->hi &&
+                     (c.lo!=winner->lo || c.hi!=winner->hi);
+            });
+      }
     }
   }
   out.iterations=static_cast<int>(evaluations);

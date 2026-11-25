@@ -147,6 +147,8 @@ and each root solve permits $\min(\mathrm{iterlim},100000)$ iterations.
 
 The threshold is not estimated even when $\alpha$ or $\beta$ is held. This is a design choice rather than a mathematical necessity: in some of these cases an MLE exists.
 
+A completed cover with one decreasing score crossing identifies a singleton. With several retained crossings, the point likelihood comparison can select an estimate while leaving cardinality unknown. For held alpha on constant data, alpha at most two gives one fitted scale and alpha above two gives a reciprocal pair.
+
 ## R notes
 
 `mu = NULL` stops with the reason above. Both held coefficients are used as given.

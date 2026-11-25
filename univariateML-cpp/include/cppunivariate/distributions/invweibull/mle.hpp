@@ -31,7 +31,7 @@ struct InvWeibullResult {
 
 inline FitOutcome outcome(const InvWeibullResult& r) {
   switch (r.status) {
-    case InvWeibullStatus::Ok: return FitOutcome::estimate(r.certified);
+    case InvWeibullStatus::Ok: return FitOutcome::singleton(r.certified);
     case InvWeibullStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case InvWeibullStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case InvWeibullStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

@@ -14,6 +14,7 @@ struct ZtbinomResult { double size, prob, logLik; int iterations; ZtbinomStatus 
 
   bool unique = true;
   bool evaluation_failure = false;
+  bool singleton_proved=false;
 };
 namespace ztbinom_detail {
 template <typename F>
@@ -294,6 +295,7 @@ inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
   if(std::isfinite(r.logLik))r.evaluation_failure=false;
   if(r.status==ZtbinomStatus::Ok && !std::isfinite(r.logLik)) {r.status=ZtbinomStatus::IterationFailure;r.evaluation_failure=true;r.stop_detail.loglik_upper=INFINITY;}
   if(r.evaluation_failure)r.stop_detail.loglik_upper=INFINITY;
+  r.singleton_proved=std::isfinite(fixed_size) || fixed_prob==1;
   if(r.status==ZtbinomStatus::Ok)
     r.unique=!((std::isnan(fixed_prob) && r.size==1) ||
                (std::isnan(fixed_size) && r.prob==0));
@@ -313,7 +315,9 @@ inline FitOutcome outcome(const ZtbinomResult& r) {
     if(r.stop_detail.comparison_tie)return FitOutcome::failure(OutcomeReason::Unresolved);
   }
   switch(r.status) {
-    case ZtbinomStatus::Ok: return FitOutcome::estimate(r.certified,r.unique);
+    case ZtbinomStatus::Ok: return !r.unique ? FitOutcome::estimate(r.certified,false)
+        : r.singleton_proved ? FitOutcome::singleton(r.certified)
+                             : FitOutcome::unknown_cardinality(r.certified);
     case ZtbinomStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZtbinomStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZtbinomStatus::PoissonLimit: return FitOutcome::limit(true);

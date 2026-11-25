@@ -101,7 +101,7 @@ struct BurrMLE {
   int iterations;
   BurrStatus status;
   StopDetail stop_detail{};
-  bool certified=true;
+  bool certified=true; bool singleton_proved = false;
 };
 // theta = (log shape2, log scale relative to geometric mean).
 // shape1 = n / sum softplus(shape2 * log(x/scale)).
@@ -224,7 +224,7 @@ inline BurrMLE burr_uncertified(BurrMLE certificate, BurrMLE searched, span x, d
   const double margin=1024*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(ll)+std::abs(searched.logLik));
   if(!std::isfinite(ll) ||
       certificate.stop_detail.loglik_lower>ll+margin)return certificate;
-  searched.logLik=ll;searched.certified=false;searched.stop_detail=certificate.stop_detail;
+  searched.logLik=ll;searched.certified=false;searched.singleton_proved=false;searched.stop_detail=certificate.stop_detail;
   return searched;
 }
 inline bool burr_valid_controls(double tol,int maxit) {
@@ -254,7 +254,7 @@ inline BurrMLE burr_mle_certified(span x, double tol, int maxit,
     case burr_cert_detail::Outcome::Unbounded:status=BurrStatus::Unbounded;break;
     case burr_cert_detail::Outcome::Numerical:break;
   }
-  BurrMLE out{r.k,r.c,r.scale,r.logLik,r.profiles,status};
+  BurrMLE out{r.k,r.c,r.scale,r.logLik,r.profiles,status};out.singleton_proved=status==BurrStatus::Ok;
   if(status!=BurrStatus::Ok)out.stop_detail=r.stop_detail;
   out.stop_detail.budget_exhausted=r.outcome==burr_cert_detail::Outcome::Budget;
   if(status==BurrStatus::Ok&&!r.accurate) {
@@ -326,6 +326,7 @@ inline BurrMLE burr_mle_fixed_scale(span x, double scale,
   if(r.outcome==burr_cert_detail::Outcome::Tie)status=BurrStatus::CertificateTie;
   auto detail=r.stop_detail;detail.budget_exhausted=status==BurrStatus::CertificateBudget;
   BurrMLE out{r.k,r.c,scale,r.logLik,r.profiles,status,detail};
+  out.singleton_proved=status==BurrStatus::Ok;
   if(status!=BurrStatus::CertificateTie && status!=BurrStatus::CertificateBudget &&
       status!=BurrStatus::NumericalFailure)return out;
   BurrMLE searched{NAN,NAN,scale,NAN,0,BurrStatus::IterationFailure};
@@ -470,7 +471,7 @@ inline BurrMLE burr_mle_holds(span x,double a,double b,double s,double tol=1e-10
  BurrMLE out{a,b,s,ll,0,std::isfinite(ll)&&a>0&&b>0&&s>0&&std::isfinite(s)?BurrStatus::Ok:BurrStatus::IterationFailure};
  // The transformed score solve is unchanged. Report the likelihood at the
  // public coefficients without subtracting rounded logarithms near x=s.
- if(out.status==BurrStatus::Ok)out.logLik=burr_local_loglik(x,a,b,s);
+ if(out.status==BurrStatus::Ok) {out.singleton_proved=true;out.logLik=burr_local_loglik(x,a,b,s);}
  return out;
 }
 
@@ -491,7 +492,7 @@ inline FitOutcome outcome(const BurrMLE& r) {
     if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   }
   switch (r.status) {
-    case BurrStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BurrStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case BurrStatus::WeibullBoundary: return FitOutcome::limit();
     case BurrStatus::ParetoBoundary: return FitOutcome::limit();
     case BurrStatus::InvalidInit: return FitOutcome::failure(OutcomeReason::InvalidInput);

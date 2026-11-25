@@ -75,7 +75,7 @@ inline YulesimonResult yulesimon_mle(ispan x,double tol=1e-10,int maxit=200, dou
 namespace cppunivariate {
 inline FitOutcome outcome(const YulesimonResult& r) {
   switch (r.status) {
-    case YulesimonStatus::Ok: return FitOutcome::estimate(true);
+    case YulesimonStatus::Ok: return FitOutcome::singleton(true);
     case YulesimonStatus::PointMass: return FitOutcome::limit();
     case YulesimonStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case YulesimonStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

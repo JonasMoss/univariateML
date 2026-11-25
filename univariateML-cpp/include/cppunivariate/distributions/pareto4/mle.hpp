@@ -5,7 +5,7 @@
 #include <vector>
 #include <cmath>
 namespace cppunivariate {
-struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; bool certified=true; bool incompatible_support=false; bool unsupported_threshold=false; };
+struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; bool certified=true; bool incompatible_support=false; bool unsupported_threshold=false; bool singleton_proved=false; };
 } // namespace cppunivariate
 #include "centered.hpp"
 namespace cppunivariate {
@@ -67,7 +67,9 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
   }
   translate_stop_faces(detail,min);
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);
-  return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
+  Pareto4Result out{r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
+  out.singleton_proved=r.singleton_proved && (min==0 || std::isfinite(shape1));
+  return out;
 }
 // Certified joint excess fit shared by the public all-free regular path.
 inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit) {
@@ -105,7 +107,9 @@ inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int m
   }
   translate_stop_faces(detail,min);
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);
-  return {r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
+  Pareto4Result out{r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
+  out.singleton_proved=r.singleton_proved && min==0;
+  return out;
 }
 
 }
@@ -124,7 +128,7 @@ inline FitOutcome outcome(const Pareto4Result& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case BurrStatus::Ok: return FitOutcome::estimate(r.certified);
+    case BurrStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case BurrStatus::WeibullBoundary: return FitOutcome::limit();
     case BurrStatus::ParetoBoundary: return FitOutcome::limit();
     case BurrStatus::InvalidInit: return FitOutcome::failure(OutcomeReason::InvalidInput);

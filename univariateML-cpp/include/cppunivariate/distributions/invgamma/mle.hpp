@@ -35,7 +35,7 @@ inline InvGammaResult invgamma_mle(span x,double tol,int maxit) {return invgamma
 namespace cppunivariate {
 inline FitOutcome outcome(const InvGammaResult& r) {
   switch (r.status) {
-    case GammaStatus::Ok: return FitOutcome::estimate(r.certified);
+    case GammaStatus::Ok: return FitOutcome::singleton(r.certified);
     case GammaStatus::Degenerate: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case GammaStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

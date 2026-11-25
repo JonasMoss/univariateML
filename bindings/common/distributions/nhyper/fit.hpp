@@ -64,7 +64,7 @@ inline FitResult fit_nhyper(cppunivariate::span x, Held m_arg = {}, Held N_arg =
   out.has_iterations = true;
   out.fixed = fixed;
   out.has_fixed = true;
-  if (!o.uniqueness_known) {
+  if (!fit.uniqueness_known) {
     out.error = "The adjacent negative-hypergeometric likelihood comparison could not be resolved.";
     out = stop_failure(std::move(out), fit.stop_detail, PayloadKind::Comparison, {"m","N","r"});
   }

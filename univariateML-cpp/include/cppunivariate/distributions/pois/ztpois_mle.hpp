@@ -101,7 +101,7 @@ inline FitOutcome outcome(const ZtpoisResult& r) {
   if(r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)return FitOutcome::failure(OutcomeReason::Tolerance);
   if(r.stop_detail.accuracy_stop==AccuracyStop::Conditioning)return FitOutcome::failure(OutcomeReason::Conditioning);
   switch(r.status) {
-    case ZtpoisStatus::Ok: return FitOutcome::estimate(true);
+    case ZtpoisStatus::Ok: return FitOutcome::singleton(true);
     case ZtpoisStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZtpoisStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case ZtpoisStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

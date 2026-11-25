@@ -48,7 +48,7 @@ struct StudentTResult {
   StopDetail stop_detail{};
   bool certified = true;
   bool accuracy_failure = false;
-  MaximizerSet maximizers{};
+  MaximizerSet maximizers{}; bool singleton_proved = false;
 };
 
 // Per-obs nll in phi-space (with z = (x - mu)/sigma, m = nu - 2,
@@ -275,7 +275,7 @@ inline StudentTResult student_t_mle_fixed_nu(span x, double nu, double tol, int 
   if (r.status == LstStatus::IterationFailure) status = StudentTStatus::IterationFailure;
   if (r.status == LstStatus::NumericalFailure) status = StudentTStatus::NumericalFailure;
   auto result=StudentTResult{r.mu,r.sigma*std::sqrt(nu/(nu-2.0)),nu,r.logLik,r.iterations,status};
-  result.stop_detail=r.stop_detail;result.certified=r.certified;result.accuracy_failure=r.accuracy_failure;
+  result.stop_detail=r.stop_detail;result.certified=r.certified;result.singleton_proved=r.singleton_proved;result.accuracy_failure=r.accuracy_failure;
   if(status==StudentTStatus::Ok&&(!std::isfinite(result.mu)||!std::isfinite(result.sigma)||!(result.sigma>0)||!std::isfinite(result.logLik)||!student_t_scale_accurate(r.sigma,result.sigma,nu))) {
     result.status=StudentTStatus::NumericalFailure;result.mu=NAN;result.sigma=NAN;result.logLik=NAN;
     result.stop_detail.loglik_upper=INFINITY;
@@ -447,7 +447,7 @@ inline StudentTResult student_t_mle_certified(span x, double tol, int maxit,std:
     else sd=box.mid();
   }
   if(status==StudentTStatus::DfTwoBoundary)sd=INFINITY;
-  StudentTResult r{c.mu,sd,c.nu,c.logLik,c.profiles,status};r.stop_detail=c.stop_detail;
+  StudentTResult r{c.mu,sd,c.nu,c.logLik,c.profiles,status};r.stop_detail=c.stop_detail;r.singleton_proved=status==StudentTStatus::Ok;
   if(status==StudentTStatus::NormalBoundary && r.stop_detail.limit_coef.size()==2) {
     double ll=0;for(double v:x)ll+=distributions::dnorm(v,r.stop_detail.limit_coef[0],r.stop_detail.limit_coef[1],true);
     r.logLik=ll;r.stop_detail.limit_loglik=ll;
@@ -501,7 +501,7 @@ inline StudentTResult student_t_mle_held(span x,double tol,int maxit,double mean
     if(r.status==LstStatus::CertificateTie)status=StudentTStatus::CertificateTie;
     if(r.status==LstStatus::NumericalFailure)status=StudentTStatus::NumericalFailure;
     auto result=StudentTResult{r.mu,std::isnan(sd)?r.sigma*std::sqrt(d/(d-2)):sd,d,r.logLik,r.iterations,status};
-    result.stop_detail=r.stop_detail;result.certified=r.certified;result.accuracy_failure=r.accuracy_failure;
+    result.stop_detail=r.stop_detail;result.certified=r.certified;result.singleton_proved=r.singleton_proved;result.accuracy_failure=r.accuracy_failure;
     if(status==StudentTStatus::Ok&&(!std::isfinite(result.mu)||!std::isfinite(result.sigma)||!(result.sigma>0)||!std::isfinite(result.logLik)||(std::isnan(sd)&&!student_t_scale_accurate(r.sigma,result.sigma,d)))) {
       result.status=StudentTStatus::NumericalFailure;result.mu=NAN;result.sigma=NAN;result.logLik=NAN;
       result.stop_detail.loglik_upper=INFINITY;
@@ -666,7 +666,8 @@ inline FitOutcome outcome(const StudentTResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
   switch (r.status) {
-    case StudentTStatus::Ok: return FitOutcome::estimate(r.certified, r.maximizers.size == 0);
+    case StudentTStatus::Ok: return r.maximizers.size ? FitOutcome::estimate(r.certified, false) :
+        (r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified));
     case StudentTStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case StudentTStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case StudentTStatus::NormalBoundary: return FitOutcome::limit(r.certified);

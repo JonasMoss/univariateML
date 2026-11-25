@@ -237,7 +237,7 @@ inline TlambdaResult fixed_nonnegative(span x,double tol,int maxit,double l,doub
     }
     if(!std::isfinite(out.logLik))return stopped(out);
     if(out.logLik<v.lower-margin(v.lower) || out.logLik>v.upper+margin(v.upper))return stopped(out);
-    out.certified=true;out.status=TlambdaStatus::Ok;
+    out.certified=true;out.singleton_proved=true;out.status=TlambdaStatus::Ok;
     out.certificate_lower=v.lower;out.certificate_upper=v.upper;return out;
   }
   if(!hs && lo==hi && (!hm || lo==0)){out.status=TlambdaStatus::Unbounded;return out;}
@@ -276,7 +276,12 @@ inline TlambdaResult fixed_nonnegative(span x,double tol,int maxit,double l,doub
       out.certificate_lower=actual.lower;out.certificate_upper=std::max(actual.upper,ideal+margin(n+std::abs(ideal)));
       if(!std::isfinite(ideal) || out.certificate_upper-out.certificate_lower>n*gap_tol)return stopped(out);
     }
-    out.certified=true;out.status=TlambdaStatus::Ok;return out;
+    out.certified=true;out.status=TlambdaStatus::Ok;
+    // The minimal covering interval is unique when its width is free.
+    // With width held, zero exact slack pins the only feasible location.
+    if (l==1 || l==2)
+      out.singleton_proved=!hs || width_slack(raw.front(),raw.back(),sigma,l)==0;
+    return out;
   }
   if(l>1) {
     // Held scale: convex log likelihood, hence only the two contacts compete.
@@ -315,7 +320,9 @@ inline TlambdaResult fixed_nonnegative(span x,double tol,int maxit,double l,doub
     out.certificate_lower=std::max(va.lower,vb.lower);
     out.certificate_upper=std::max(va.upper,vb.upper);
     if(out.certificate_upper-out.certificate_lower>n*gap_tol)return stopped(out);
-    out.certified=true;out.status=TlambdaStatus::Ok;return out;
+    out.certified=true;out.status=TlambdaStatus::Ok;
+    out.singleton_proved=feasible==0 || va.lower>vb.upper || vb.lower>va.upper;
+    return out;
   }
 
   if(hs && l>0) {
@@ -376,7 +383,11 @@ inline TlambdaResult fixed_nonnegative(span x,double tol,int maxit,double l,doub
       const double lower=actual.lower,upper=std::max(actual.upper,v.upper+gap-shift+shift_pad);
       if(!std::isfinite(out.logLik) || out.logLik<lower-margin(lower) || out.logLik>upper+margin(upper))return stopped(out);
       if(upper-lower>gap_tol*n)return stopped(out);
-      out.certificate_lower=lower;out.certificate_upper=upper;out.certified=true;out.status=TlambdaStatus::Ok;return out;
+      out.certificate_lower=lower;out.certificate_upper=upper;out.certified=true;out.status=TlambdaStatus::Ok;
+      // On this branch 0<=lambda<1 the loss is strictly convex in each
+      // residual, and log inverse scale supplies strict scale curvature.
+      out.singleton_proved=l>=0 && l<1;
+      return out;
     }
     bool accepted=false;
     double step=1;
@@ -672,7 +683,7 @@ inline TlambdaResult pair_fit(double lo,double hi,double tol,int maxit) {
   const double halfwidth=std::isfinite(gap)?gap/2:hi/2-lo/2;
   if(std::abs(out.sigma-halfwidth)/halfwidth>tol)return stopped(out);
   const double ideal=-2*tlambda_detail::logstandard(hi,lo,1);
-  out.certified=true;
+  out.certified=true;out.singleton_proved=true;
   out.certificate_lower=out.logLik-margin(out.logLik);
   out.certificate_upper=ideal+margin(ideal);
   return out;

@@ -76,7 +76,7 @@ inline FatigueResult fit(span x,double tol,int maxit,double alpha,double beta) {
     if(!fb&&std::abs((physical_beta/unit-b)/b)>2e-13)result.status=FatigueStatus::SearchFailure;
     return result;
   };
-  if(fb){auto r=value(beta/unit);r.beta=beta;if(!fa&&r.alpha==0)r.status=FatigueStatus::Unbounded;else if(!std::isfinite(r.logLik))return failure;return r;}
+  if(fb){auto r=value(beta/unit);r.beta=beta;r.singleton_proved=true;if(!fa&&r.alpha==0)r.status=FatigueStatus::Unbounded;else if(!std::isfinite(r.logLik))return failure;return r;}
   if(!fa&&mn==1){failure.status=FatigueStatus::Unbounded;return failure;}
   double lo=H,hi=A;
   if(fa){double r=1;if(alpha>2){r=std::pow(alpha/2+std::sqrt((alpha/2-1)*(alpha/2+1)),2);}lo=mn/r;hi=r;}
@@ -89,7 +89,7 @@ inline FatigueResult fit(span x,double tol,int maxit,double alpha,double beta) {
     if(witness.status==FatigueStatus::Ok)failure.stop_detail.candidates={{{witness.alpha,witness.beta},witness.logLik,witness.logLik,StopModel::None}};
     return failure;
   }
-  if(lo==hi)return value(lo);
+  if(lo==hi) { auto r=value(lo); r.singleton_proved=fa && alpha<=2 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}); return r; }
   if(fa&&mn==1) {
     const auto first=value(lo),second=value(hi);
     if(first.status!=FatigueStatus::Ok||second.status!=FatigueStatus::Ok)return failure;
@@ -152,6 +152,6 @@ inline FatigueResult fit(span x,double tol,int maxit,double alpha,double beta) {
   failure.stop_detail.loglik_lower=best.logLik;failure.stop_detail.loglik_upper=INFINITY;
   if(failure.stop_detail.budget_exhausted)return failure;
   for(std::size_t i=1;i<candidates.size();++i)if(std::abs(std::log(candidates[i].beta/best.beta))>1e-9&&best.logLik-candidates[i].logLik<=1e-10*n){failure.stop_detail.comparison_tie=true;return failure;}
-  auto result=best;result.iterations=static_cast<int>(used);return result;
+  auto result=best;result.singleton_proved=candidates.size()==1;result.iterations=static_cast<int>(used);return result;
 }
 }

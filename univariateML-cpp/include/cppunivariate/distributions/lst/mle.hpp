@@ -33,7 +33,7 @@ enum class LstStatus { Ok, BfgsFailure, InvalidStart, NoProposal, NormalBoundary
 struct LstResult {
   double mu, sigma, df, logLik;
   int iterations;
-  LstStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = true; bool accuracy_failure = false;
+  LstStatus status; unsigned restricted = 0; StopDetail stop_detail{}; bool certified = true; bool accuracy_failure = false; bool singleton_proved = false;
 };
 
 // Coordinates are location, log(scale), log(df-1); fixed_df includes Cauchy.
@@ -215,6 +215,7 @@ inline LstResult lst_mle_fixed_df(span x, double df, double tol, int maxit) {
                           it,LstStatus::Ok};
       candidate.certified=df>=1 &&
           t_location_detail::joint_inclusion(x,df,maxit,candidate.mu,candidate.sigma);
+      candidate.singleton_proved=candidate.certified;
       if (!t_local_accuracy::refine(candidate,x,NAN,NAN,df,tol,maxit,false,candidate.df)) {
         candidate.status=LstStatus::NumericalFailure;
         candidate.accuracy_failure=true;
@@ -476,7 +477,9 @@ inline LstResult conditional(span x,double df,double mu,double sigma,double tol,
   }
   const double value=ll(m,s);
   if(!std::isfinite(value)){bad.status=LstStatus::NumericalFailure;return bad;}
-  return {m,s,df,value,0,LstStatus::Ok};
+  LstResult out{m,s,df,value,0,LstStatus::Ok};
+  out.singleton_proved=certify_location;
+  return out;
 }
 }
 inline LstResult lst_mle_impl(span x,double tol,int maxit,double mu,double sigma,double df) {
@@ -559,7 +562,7 @@ inline LstResult lst_mle_certified(span x,double tol,int maxit,std::int64_t budg
     case TCertificateStatus::InvalidData:status=LstStatus::InvalidStart;break;
     default:break;
   }
-  LstResult r{c.mu,c.scale,c.nu,c.logLik,c.profiles,status};r.stop_detail=c.stop_detail;
+  LstResult r{c.mu,c.scale,c.nu,c.logLik,c.profiles,status};r.stop_detail=c.stop_detail;r.singleton_proved=status==LstStatus::Ok;
   if(status==LstStatus::Ok&&r.df==1)r.restricted=16u;
   // The global enclosure identifies the maximizer's basin. Refine its
   // representative with a positive-definite observed-information correction.
@@ -674,7 +677,7 @@ inline LstResult lst_mle_held(span x,double tol,int maxit,double mu,double sigma
         else if(location.failure==2)certified.status=LstStatus::CertificateTie;
         else if(location.failure==0) {
           const auto value=lst_detail::conditional(x,1,location.location,sigma,tol,maxit);
-          if(value.status==LstStatus::Ok){certified.status=LstStatus::Ok;certified.logLik=value.logLik;certified.restricted=16u;}
+          if(value.status==LstStatus::Ok){certified.status=LstStatus::Ok;certified.logLik=value.logLik;certified.restricted=16u;certified.singleton_proved=true;}
         }
         if(certified.status==LstStatus::NumericalFailure||certified.status==LstStatus::CertificateBudget) {
           const auto numerical=lst_mle_impl(x,tol,maxit,mu,sigma,df);
@@ -764,7 +767,7 @@ inline FitOutcome outcome(const LstResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.accuracy_failure) return FitOutcome::failure(OutcomeReason::NoConvergence);
   switch (r.status) {
-    case LstStatus::Ok: return FitOutcome::estimate(r.certified);
+    case LstStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case LstStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case LstStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case LstStatus::NoProposal: return FitOutcome::failure(OutcomeReason::NoConvergence);

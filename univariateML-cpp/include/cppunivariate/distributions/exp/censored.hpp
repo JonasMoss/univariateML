@@ -14,7 +14,7 @@ struct ExpCensoredResult {
 // Collapse with exact events instead has an unbounded density likelihood.
 template<class Status> inline FitOutcome censored_outcome(Status status) {
   switch(status) {
-    case Status::Ok: return FitOutcome::estimate();
+    case Status::Ok: return FitOutcome::singleton(true);
     case Status::AllCensored: return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case Status::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case Status::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);

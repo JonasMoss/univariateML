@@ -165,6 +165,11 @@ Estimate 4–6 engineering days plus suite time, spanning the shared value and t
 | Free text or representative rows alone | Easy to display. A half-open interval and its closed counterpart, or one arm of a union and the entire union, can share the same displayed rows. |
 | Reuse StopDetail or add a new outcome kind | Comparison and limit candidates mix laws and carry a different likelihood contract. Cardinality is a property of a successful estimate, so existing outcome dispatch can continue to handle it. |
 
+An estimate with a certified global value can have unknown cardinality. This
+estimate retains `certified = TRUE` and reports `unique = NA` in R and `null` in JS.
+Its cardinality needs a separate proof before it can enable inference.
+[Decision](../roadmap/decisions.md#2026-11-25)
+
 ## Decisions (2026-11-22)
 
 - **Relations (Jonas):** v1 supports the closed list of four forms: product (with complement bits), part over sum,

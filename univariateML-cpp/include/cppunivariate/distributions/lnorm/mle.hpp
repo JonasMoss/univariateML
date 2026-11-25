@@ -38,7 +38,7 @@ inline LognormalResult lognormal_mle(span x) { return lognormal_mle(x,NAN,NAN); 
 namespace cppunivariate {
 inline FitOutcome outcome(const LognormalResult& r) {
   switch (r.status) {
-    case LognormalStatus::Ok: return FitOutcome::estimate(r.certified);
+    case LognormalStatus::Ok: return FitOutcome::singleton(r.certified);
     case LognormalStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case LognormalStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case LognormalStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

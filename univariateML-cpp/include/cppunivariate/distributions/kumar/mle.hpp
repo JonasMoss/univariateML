@@ -228,7 +228,7 @@ namespace cppunivariate {
 inline FitOutcome outcome(const KumarResult& r) {
   if (r.certificate_failure == KumarCertificateFailure::Budget) return FitOutcome::budget();
   switch (r.status) {
-    case KumarStatus::Ok: return FitOutcome::estimate(true);
+    case KumarStatus::Ok: return FitOutcome::singleton(true);
     case KumarStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case KumarStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case KumarStatus::ShapeOverflow: return FitOutcome::failure(OutcomeReason::Evaluation);

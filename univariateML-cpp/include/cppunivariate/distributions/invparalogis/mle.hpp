@@ -8,13 +8,13 @@
 #include <limits>
 #include <vector>
 namespace cppunivariate {
-struct InvParalogisResult { double shape, scale; double logLik; int iterations; ParalogisStatus status; StopDetail stop_detail = {}; bool certified=true; bool unrepresentable_search=false; };
+struct InvParalogisResult { double shape, scale; double logLik; int iterations; ParalogisStatus status; StopDetail stop_detail = {}; bool certified=true; bool unrepresentable_search=false; bool singleton_proved=false; };
 
 inline FitOutcome outcome(const InvParalogisResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case ParalogisStatus::Ok: return FitOutcome::estimate(r.certified);
+    case ParalogisStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case ParalogisStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case ParalogisStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ParalogisStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
@@ -92,7 +92,11 @@ inline InvParalogisResult invparalogis_mle(span x, double tol=1e-10, int maxit=1
     if(!std::isfinite(actual))r.status=ParalogisStatus::NumericalFailure;
     else if(std::abs(actual-ll)>margin)ll=actual;
   }
-  return invparalogis_checked({r.shape,physical,ll,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified});
+  InvParalogisResult out{r.shape,physical,ll,r.iterations,r.status,
+      invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
+  out.singleton_proved=r.certified && std::all_of(x.begin(),x.end(),
+      [](double v){return std::fma(v,1/v,-1.)==0;});
+  return invparalogis_checked(out);
 }
 inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
     double tol=1e-10, int maxit=100) {
@@ -125,7 +129,11 @@ inline InvParalogisResult invparalogis_mle_fixed_scale(span x, double scale,
     if(!std::isfinite(actual))r.status=ParalogisStatus::NumericalFailure;
     else if(std::abs(actual-ll)>margin)ll=actual;
   }
-  return invparalogis_checked({r.shape,scale,ll,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jacobian),r.certified});
+  InvParalogisResult out{r.shape,scale,ll,r.iterations,r.status,
+      invparalogis_stop_detail(r.stop_detail,jacobian),r.certified};
+  out.singleton_proved=r.certified && std::fma(scale,1/scale,-1.)==0 &&
+      std::all_of(x.begin(),x.end(),[](double v){return std::fma(v,1/v,-1.)==0;});
+  return invparalogis_checked(out);
 }
 } // namespace cppunivariate
 
@@ -136,7 +144,10 @@ inline InvParalogisResult invparalogis_mle_holds(span x,double shape,double scal
  if(std::isnan(shape)) return std::isnan(scale)?invparalogis_mle(x,tol,maxit):invparalogis_mle_fixed_scale(x,scale,tol,maxit);
  std::vector<double> y;double jac=0;for(double v:x){y.push_back(1/v);jac-=2*std::log(v);}
  auto r=paralogis_mle_holds(span{y.data(),y.size()},shape,std::isnan(scale)?scale:1/scale,tol,maxit);
- return invparalogis_checked({shape,std::isnan(scale)?1/r.scale:scale,r.logLik+jac,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jac),r.certified});
+ InvParalogisResult out{shape,std::isnan(scale)?1/r.scale:scale,
+     r.logLik+jac,r.iterations,r.status,invparalogis_stop_detail(r.stop_detail,jac),r.certified};
+ out.singleton_proved=true; // Held shape gives strict log-location concavity.
+ return invparalogis_checked(out);
 }
 
 }

@@ -256,7 +256,7 @@ inline FitOutcome outcome(const SkellamResult& r) {
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
     case SkellamStatus::Ok:
-      return r.uniqueness_known ? FitOutcome::estimate(r.certified) : FitOutcome::undetermined();
+      return r.uniqueness_known ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case SkellamStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SkellamStatus::Impossible: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SkellamStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

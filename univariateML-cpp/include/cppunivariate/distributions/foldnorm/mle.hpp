@@ -8,7 +8,7 @@
 #include <limits>
 namespace cppunivariate {
 enum class FoldnormStatus { Ok, InvalidInput, Unbounded, IterationFailure, AccuracyFailure };
-struct FoldnormResult { double mu,sigma,logLik; int iterations; FoldnormStatus status; StopDetail stop_detail{}; };
+struct FoldnormResult { double mu,sigma,logLik; int iterations; FoldnormStatus status; StopDetail stop_detail{}; bool singleton_proved = false; };
 namespace foldnorm_detail {
 // Search every sampled local maximum, including both endpoints. Log spacing
 // resolves the weakly identified half-normal face as well as narrow normal fits.
@@ -78,6 +78,9 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
   maxit = static_cast<int>(solver_budget(maxit));
   FoldnormResult out{special::kNaN,special::kNaN,special::kNaN,0,FoldnormStatus::InvalidInput};
   const bool fm=!std::isnan(fixed_mu),fs=!std::isnan(fixed_sigma);
+  // For fixed location, each likelihood term has strictly negative
+  // curvature in inverse variance: cosh(t) > sqrt(2)*t for t>=0.
+  out.singleton_proved=fs || fm;
   if (x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0 ||
       (fm && (!std::isfinite(fixed_mu) || fixed_mu<0)) ||
       (fs && (!std::isfinite(fixed_sigma) || fixed_sigma<=0))) return out;
@@ -306,7 +309,7 @@ inline FitOutcome outcome(const FoldnormResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case FoldnormStatus::Ok: return FitOutcome::estimate(true);
+    case FoldnormStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case FoldnormStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case FoldnormStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case FoldnormStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

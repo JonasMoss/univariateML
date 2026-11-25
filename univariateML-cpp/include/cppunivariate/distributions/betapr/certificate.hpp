@@ -218,7 +218,7 @@ inline BetaPrimeResult fit(span x,double a,double tol,int maxit) {
     if(best.ll-best.error<=face+face_error) {out.stop_detail.comparison_tie=true;goto stopped;}
     out.beta=best.b;out.scale=best.s*mean;out.logLik=n*(best.ll-std::log(mean));
     if(!(out.scale>0)||!std::isfinite(out.scale)||std::abs(out.scale/mean/best.s-1)>1e-6)goto stopped;
-    out.status=BetaPrimeStatus::Ok;out.certificate_failure=LomaxCertificateFailure::None;
+    out.status=BetaPrimeStatus::Ok;out.certificate_failure=LomaxCertificateFailure::None;out.singleton_proved=true;
     out.stop_detail.loglik_lower=out.logLik-n*best.error;
     out.stop_detail.loglik_upper=n*(global_upper-std::log(mean));
     out.stop_detail.candidates.push_back({{a,out.beta,out.scale},out.logLik-n*best.error,out.logLik+n*best.error});

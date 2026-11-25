@@ -515,7 +515,12 @@ inline CmbResult cmb_mle(ispan x,int N,double tol=1e-10,int maxit=2000,
 
 struct CmbSizeResult { double size; CmbResult fit; };
 inline FitOutcome outcome(const CmbSizeResult& r) {
-  return outcome(r.fit);
+  const auto fit=outcome(r.fit);
+  // The integer-size search may close a likelihood-value bound without
+  // strict separation among all finite size candidates.
+  if (fit.kind==OutcomeKind::Estimate && fit.unique && r.size>0 && r.fit.prob!=1)
+    return FitOutcome::unknown_cardinality(fit.certified);
+  return fit;
 }
 
 namespace cmb_detail {
