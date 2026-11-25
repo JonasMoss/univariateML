@@ -280,7 +280,11 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   nonexistence for non-constant data, and with `shape2 = 1` held certifies a
   shape 6.25% below the exact MLE; the affine transform collapses the two
   observations ([report](research/evaluations/2026-11-25-nsbeta-math-report.md);
-  confirmed on the 19b2fb7b build; TASK-365). Open,
+  confirmed on the 19b2fb7b build; TASK-365). Pareto IV with threshold and
+  scale held far from the data: `mlpareto4(c(-5, 10), min = -2^54, scale =
+  2^54)` certifies the root of the rounded excesses, 25% from the true root
+  ([report](research/evaluations/2026-11-25-pareto34-math-report.md); confirmed
+  on the 19b2fb7b build; TASK-367). Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`;
   they are now proved to have no finite MLE (inverse transformed-gamma limit,
   [report](research/evaluations/2026-11-25-fpareto-math-report.md)), and the
