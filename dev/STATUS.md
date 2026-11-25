@@ -265,7 +265,12 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   $11.5970192$ (relative error $6.9\times10^{-7}$, tolerance $10^{-10}$); the fit
   rounds the probability and refits the shape
   ([report](research/evaluations/2026-11-25-dweibull-math-report.md); confirmed
-  on the 19b2fb7b build; TASK-349). Open,
+  on the 19b2fb7b build; TASK-349). Log-gamma: `mllgamma(c(1 + 2^-52,
+  rep(4, 10)))` is certified at $(0.2224635, 0.1765209)$ against the exact MLE
+  $(0.2249709, 0.1785104)$, 1.1% off in both coefficients, because the Jensen
+  gap is formed from a rounded sum
+  ([report](research/evaluations/2026-11-25-lgamma-math-report.md); confirmed
+  on the 19b2fb7b build; TASK-363). Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`;
   they are now proved to have no finite MLE (inverse transformed-gamma limit,
   [report](research/evaluations/2026-11-25-fpareto-math-report.md)), and the
