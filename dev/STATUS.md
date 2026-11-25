@@ -251,7 +251,11 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   maximizer count is not proved report `unique = NA` with candidates.
   Exception found 2026-11-25 (TASK-254): free sn and snorm fits report
   `unique = TRUE` on samples with an exact reflected global tie, e.g. sn on
-  (-1, 0, 0, 0, 0, 0, 1) ([proof](research/evaluations/2026-11-25-sn-math-report.md)). Open,
+  (-1, 0, 0, 0, 0, 0, 1) ([proof](research/evaluations/2026-11-25-sn-math-report.md));
+  fixed in a1b53b58. `confint` gives percentile intervals for uniform, Pareto
+  and power endpoints that exclude the true endpoint by construction (zero
+  coverage, [proof and simulations](research/evaluations/2026-11-25-infer-math-report.md);
+  confirmed on master; TASK-269). Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`
   pending a global bound (TASK-214.44 report); sged's held-sd two-point
   location stops numerically although the optimum is finite (TASK-150.9).
