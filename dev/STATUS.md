@@ -275,7 +275,12 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   `unique = TRUE` at $\mu=0$, but every location in the central interval
   maximizes (equal log-likelihood at $-5$, $0$, $5$)
   ([Lean report](research/evaluations/2026-11-25-lean-huber-report.md); confirmed
-  on the 19b2fb7b build; TASK-364). Open,
+  on the 19b2fb7b build; TASK-364). Nonstandard beta with a far held
+  endpoint: `mlnsbeta(c(0, 1/8), min = -2^50, max = 1)` reports constant-data
+  nonexistence for non-constant data, and with `shape2 = 1` held certifies a
+  shape 6.25% below the exact MLE; the affine transform collapses the two
+  observations ([report](research/evaluations/2026-11-25-nsbeta-math-report.md);
+  confirmed on the 19b2fb7b build; TASK-365). Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`;
   they are now proved to have no finite MLE (inverse transformed-gamma limit,
   [report](research/evaluations/2026-11-25-fpareto-math-report.md)), and the
