@@ -1,0 +1,39 @@
+version: 1
+extends: ../2026-11-24-claims-inventory-data/schema.yaml
+csv:
+  base: ../2026-11-24-claims-inventory-data/ledger.csv
+  refreshed: ledger-2026-11-25.csv
+  row_identity: original row order, return expression, outcome source, and held-mask fields
+  refreshed_fields:
+    - global_backing
+    - uniqueness_basis
+  appended_fields:
+    evidence_source:
+      type: string
+      empty: no new evidence attached
+      separator: ' || '
+      entry: 'report filename § section heading — scope and applicability'
+      report_path: relative to the evaluations directory
+      meaning: >
+        Evidence for a classification, restriction of an existing claim, or
+        proved or proposed subroute inside a mixed static row. A clause states
+        the applicable producer, hold or sample predicate. The inventory's
+        archived flag expressions and original cites retain their historical meaning.
+  global_backing:
+    estimate_scope: >
+      A proof-class backing for an estimate means global optimality on the
+      scoped route. A positive mathematical gap is evidence about value only;
+      where it is the sole support for selecting an estimate, numerical-selection
+      records that selection and evidence_source records the proved gap.
+  uniqueness_basis:
+    universal-proof: exact-likelihood singleton theorem covering the stated slice
+    per-input-certificate: singleton proof requiring successful comparisons on the input
+    typed-set: proof of cardinality via a typed maximizing set
+    not-addressed: no singleton or complete-set proof for the stated return
+  selection_table:
+    file: evidence-rules.csv
+    delimiter: '|'
+    wildcard: '*'
+    alternatives: comma-separated values
+    held_value: '+' separates coefficients within one hold mask
+    blank_assignment: preserve the prior classification and attach the scoped citation
