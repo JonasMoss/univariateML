@@ -255,7 +255,12 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   fixed in a1b53b58. `confint` gives percentile intervals for uniform, Pareto
   and power endpoints that exclude the true endpoint by construction (zero
   coverage, [proof and simulations](research/evaluations/2026-11-25-infer-math-report.md);
-  confirmed on master; TASK-269). Open,
+  confirmed on master; TASK-269). Binomial with probability held and size
+  free reports `unique = TRUE` on exact adjacent-size ties: `mlbinom(c(0, 6),
+  size = NULL, prob = 0.5)` returns size 7, but sizes 7 and 8 tie exactly
+  (found by the Lean discrete module,
+  [report](research/evaluations/2026-11-25-lean-discrete-report.md); confirmed
+  on the 19b2fb7b build; TASK-330). Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`;
   they are now proved to have no finite MLE (inverse transformed-gamma limit,
   [report](research/evaluations/2026-11-25-fpareto-math-report.md)), and the
