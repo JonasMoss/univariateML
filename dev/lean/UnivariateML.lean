@@ -33,3 +33,4 @@ public import UnivariateML.Family.Transfers2
 public import UnivariateML.Family.Triangular
 public import UnivariateML.Family.Discrete2
 public import UnivariateML.Family.GEV
+public import UnivariateML.Family.NegHypergeometric
