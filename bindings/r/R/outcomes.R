@@ -25,5 +25,12 @@
 #' `invalid-argument`, `unsupported`, `no-convergence`, `evaluation`,
 #' `tolerance`, `conditioning`, and `unresolved`. Non-unique inference refusals
 #' use reason `non-unique` and class `univariateML_unsupported`.
+#'
+#' [model_select()] signals `univariateML_select_failed` when no candidate can
+#' be fitted. It inherits from `univariateML_stop` and carries kind
+#' `"select_failed"`. Its reason is `"all-fits-failed"` when fitting was
+#' attempted and `"no-eligible-models"` otherwise. The named `failures` list
+#' carries the original fit conditions and diagnostic strings for skipped
+#' candidates.
 #' @name univariateML_outcomes
 NULL

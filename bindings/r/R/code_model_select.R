@@ -15,6 +15,14 @@
 #'   of all results should be returned, sorted by decreasing model performance.
 #' @param ... Additional fitting arguments, such as a required size. Numerical
 #'   controls are passed only to fitters that accept them.
+#' @section Selection failures:
+#' If no candidate can be fitted, an `univariateML_select_failed` error
+#' inherits from `univariateML_stop`. Its `failures` list is named by fitter
+#' (such as `mlnorm`) and contains the original condition for each failed
+#' fit and a diagnostic string for each candidate skipped before fitting.
+#' The `kind` is `"select_failed"`. The `reason` is `"all-fits-failed"` when
+#' at least one fit was attempted and `"no-eligible-models"` otherwise.
+#' See [univariateML_outcomes].
 #' @return A `skipped` attribute lists families skipped for missing required
 #'   coefficients, with their reasons. The return value depends on the `return` argument.
 #'    For `return = "best"` (default), `model_select` returns
@@ -89,12 +97,19 @@ model_select <- function(
              if (!is.null(info$advice)) paste0(" ", info$advice))
     }, ""), collapse=" ")
   })
-  names(reasons) <- paste0("ml", models)
-  skipped <- unlist(reasons[!vapply(reasons, is.null, logical(1))])
-  models <- models[vapply(reasons, is.null, logical(1))]
-  if (!length(models)) stop("Couldn't fit any model. Missing required coefficients:\n",
-                            paste(names(skipped), skipped, collapse="\n"))
-  fit_names <- paste0("ml", models)
+  names(reasons) <- sprintf("ml%s", models)
+  eligible <- vapply(reasons, is.null, logical(1))
+  skipped <- unlist(reasons[!eligible])
+  if (!any(eligible)) {
+    heading <- "Couldn't fit any model."
+    if (any(startsWith(as.character(skipped), "Missing required `"))) {
+      heading <- paste(heading, "Missing required coefficients:")
+    }
+    details <- if (length(skipped)) paste(names(skipped), skipped, collapse = "\n")
+    ml_select_stop(paste(c(heading, details), collapse = "\n"),
+                   "no-eligible-models", reasons)
+  }
+  fit_names <- names(reasons)[eligible]
   arg_names <- if (is.null(supplied)) rep.int("", length(dots)) else supplied
   controls <- arg_names %in% c(ml_fit_controls, ml_legacy_fit_controls)
   zero <- if ("zero" %in% supplied) dots[["zero"]] else "none"
@@ -114,9 +129,14 @@ model_select <- function(
 
   error_inds <- sapply(fits, function(fit) inherits(fit, "try-error"))
   if (all(error_inds)) {
-    error_msgs <- sapply(fits[error_inds], as.character)
+    error_msgs <- vapply(fits, as.character, "")
     details <- paste0("(", names(error_msgs), ") ", error_msgs)
-    stop("Couldn't fit any model.\n", details)
+    if (length(skipped)) {
+      details <- c(details, paste0("(", names(skipped), ") ", skipped, "\n"))
+    }
+    reasons[eligible] <- lapply(fits, attr, "condition")
+    ml_select_stop(paste0("Couldn't fit any model.\n", paste0(details, collapse = "")),
+                   "all-fits-failed", reasons)
   }
 
   if (is.matrix(x) || inherits(x,"Surv")) skipped <- c(skipped, vapply(fits[error_inds],as.character,""))
@@ -161,6 +181,14 @@ model_select <- function(
 
   attr(fits, "skipped") <- skipped
   fits
+}
+
+ml_select_stop <- function(message, reason, failures) {
+  stop(structure(
+    list(message = message, call = NULL, kind = "select_failed",
+         reason = reason, failures = failures),
+    class = c("univariateML_select_failed", "univariateML_stop", "error", "condition")
+  ))
 }
 
 filter_models <- function(models, type) {
