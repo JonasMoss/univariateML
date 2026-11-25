@@ -9,3 +9,4 @@ public import UnivariateML.Generic.Escape
 public import UnivariateML.Generic.Demo
 public import UnivariateML.Family.Lomax
 public import UnivariateML.Family.Weibull
+public import UnivariateML.Family.GPD
