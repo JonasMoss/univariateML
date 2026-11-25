@@ -18,3 +18,4 @@ public import UnivariateML.Family.Gamma
 public import UnivariateML.Family.Endpoint
 public import UnivariateML.Family.Fatigue
 public import UnivariateML.Family.LomaxTwoPoint
+public import UnivariateML.Family.ClosedForm
