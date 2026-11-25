@@ -1,0 +1,40 @@
+mpmath 1.3.0, interval dps 70
+two contacts
+  roots 0, pending 0, evaluations 2
+witness
+  root 1.2620033648705084242617 width 6.78e-21, log(P/J) in [0.732785029827, 0.732785029827]
+  roots 1, pending 0, evaluations 98
+balanced half tie
+  roots 0, pending 0, evaluations 2
+separated half tie
+  root 1.0525749992107842185807 width 6.78e-21, log(P/J) in [0.400668338371, 0.400668338371]
+  roots 1, pending 0, evaluations 92
+half tie sweep endpoint
+  roots 0, pending 0, evaluations 2
+held-scale pair as free-scale U
+  roots 0, pending 0, evaluations 2
+held-scale triple as free-scale U
+  roots 0, pending 0, evaluations 2
+envelope illustration
+  roots 0, pending 0, evaluations 2
+  fold collar log(P/J) upper -1.3790710042 score derivative in t sign -1
+  roots 0, pending 0, evaluations 92
+exact double root t in (1856362565735828256957946989/2500000000000000000000000000, 7425450262943313027831787957/10000000000000000000000000000), shape collar (477966/262144, 478031/262144) event signs [1, -1]
+near double 1856362565735828254457946989/2500000000000000000000000000
+  root 1.8234190290185371362298 width 6.78e-21, log(P/J) in [-1.37907100421, -1.37907100421]
+  root 1.8234190325377539143967 width 6.78e-21, log(P/J) in [-1.37907100421, -1.37907100421]
+  roots 2, pending 0, evaluations 232
+near double 7425450262943313037831787957/10000000000000000000000000000
+  roots 0, pending 0, evaluations 142
+  root 1.2459749597499855970743 width 5.2e-19, log(P/J) in [-0.21591699721, -0.21591699721]
+  roots 1, pending 0, evaluations 125
+exact junction equality t in (7500888321531553476973054941/10000000000000000000000000000, 3750444160765776738486527471/5000000000000000000000000000), shape collar (419455/262144, 419520/262144) event signs [-1, 1]
+near junction equality 7500888321531553466973054941/10000000000000000000000000000
+  root 1.2459749597499856043905 width 6.78e-21, log(P/J) in [-0.21591699721, -0.21591699721]
+  root 1.6002177840529176373116 width 6.78e-21, log(P/J) in [-3.22334842109e-17, -3.22334842109e-17]
+  roots 2, pending 0, evaluations 189
+near junction equality 3750444160765776743486527471/5000000000000000000000000000
+  root 1.2459749597499855895437 width 6.78e-21, log(P/J) in [-0.21591699721, -0.21591699721]
+  root 1.6002177840529176295732 width 6.78e-21, log(P/J) in [3.22334842101e-17, 3.22334842101e-17]
+  roots 2, pending 0, evaluations 189
+All interval checks passed in 108.954s
