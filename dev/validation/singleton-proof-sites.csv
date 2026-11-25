@@ -185,7 +185,7 @@ univariateML-cpp/include/cppunivariate/distributions/skellam/mle.hpp,FitOutcome:
 univariateML-cpp/include/cppunivariate/distributions/slash/mle.hpp,out.singleton_proved=true,univariateML-cpp/include/cppunivariate/distributions/slash/README.md
 univariateML-cpp/include/cppunivariate/distributions/slash/mle.hpp,FitOutcome::singleton(true),univariateML-cpp/include/cppunivariate/distributions/slash/README.md
 univariateML-cpp/include/cppunivariate/distributions/sn/mle.hpp,"FitOutcome::estimate(true, r.maximizers.size == 0)","TASK-254 (temporary exemption, owned by the sn-ties worktree)"
-univariateML-cpp/include/cppunivariate/distributions/snorm/mle.hpp,FitOutcome::estimate(true),"TASK-254 (temporary exemption, owned by the sn-ties worktree)"
+univariateML-cpp/include/cppunivariate/distributions/snorm/mle.hpp,"FitOutcome::estimate(true, r.maximizers.size == 0)","TASK-254 (temporary exemption; expression updated after the sn-ties merge a1b53b58)"
 univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp,out.singleton_proved=r.singleton_proved,univariateML-cpp/include/cppunivariate/distributions/sstd/README.md; dev/research/evaluations/2026-11-25-uniq-cover-math-report.md#joint-shape-covers
 univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp,out.singleton_proved=out.certified,univariateML-cpp/include/cppunivariate/distributions/sstd/README.md; dev/research/evaluations/2026-11-25-uniq-cover-math-report.md#joint-shape-covers
 univariateML-cpp/include/cppunivariate/distributions/sstd/mle.hpp,FitOutcome::singleton(r.certified),univariateML-cpp/include/cppunivariate/distributions/sstd/README.md; dev/research/evaluations/2026-11-25-uniq-cover-math-report.md#joint-shape-covers
