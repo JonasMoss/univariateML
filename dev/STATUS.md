@@ -256,9 +256,12 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   and power endpoints that exclude the true endpoint by construction (zero
   coverage, [proof and simulations](research/evaluations/2026-11-25-infer-math-report.md);
   confirmed on master; TASK-269). Open,
-  flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`
-  pending a global bound (TASK-214.44 report); sged's held-sd two-point
-  location stops numerically although the optimum is finite (TASK-150.9).
+  flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`;
+  they are now proved to have no finite MLE (inverse transformed-gamma limit,
+  [report](research/evaluations/2026-11-25-fpareto-math-report.md)), and the
+  fitter change is a To Do card. The sged held-sd two-point location is solved
+  in closed form since TASK-150.9
+  ([check](research/evaluations/2026-11-25-sstdsged-math-report.md)).
 - Nothing is published to CRAN, and `origin/master` is the old published
   tree (about 1,300 commits behind). The backup branch `origin/cpp-core`
   mirrors master; pushed by Claude after each validated batch (allowed by Jonas, 2026-11-20).
