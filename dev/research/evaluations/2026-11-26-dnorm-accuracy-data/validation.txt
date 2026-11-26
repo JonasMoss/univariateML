@@ -1,0 +1,39 @@
+Workstation, GCC 15.2.0. Two native modes and the frozen modifier routes.
+dnorm-native cases 79 differing 0 only-new 0 only-old 0
+dnorm-double cases 79 differing 0 only-new 0 only-old 0
+routes-native: no frozen dnorm modifier routes
+dnorm-routes-native cases 0 differing 0 only-new 0 only-old 0
+routes-double: no frozen dnorm modifier routes
+dnorm-routes-double cases 0 differing 0 only-new 0 only-old 0
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing
+fit-consistency: failures by check: none
+fit-consistency: 0 listed as known, 0 new, 0 listed but passing
+Singleton proof inventory covers 218 source sites
+
+Site build and checker (browser checks retried against the built site with installed Brave).
+19:55:07 [build] 185 page(s) built in 12.63s
+19:55:07 [build] Complete!
+PASS inference browser: {"rows":288,"families":86,"desktop":[1280,1100],"mobile":[390,1000],"checks":["covariance and combined filters with follow-up evidence","all status filters","combined family/status/regime filters","empty state","reset","native evidence disclosure","no horizontal overflow","all rows and evidence without JavaScript","no page errors"]}
+PASS theory numerical: 5 static/live profiles, 4 escape messages and limit approaches, analytic normal held fits, static/live contours, parser and failed-fit gaps.
+PASS nice linear/log ticks; Gompertz free/held fits, conditional escape, fixed-rate boundary, static/live equality and build-time MathML.
+PASS likelihood windows: 15-unit clipping, low-marker expansion, constant likelihoods, marker clearance, finite SVG coordinates.
+PASS theory browser: desktop/mobile, live profiles and held faces, seeded data, errors, no-JS figures and diagnostics.
+PASS: four articles; dossier catalogues: 275 limits, 86 families, 9 fit domains.
+PASS: inference: 288 unique scopes, 86 families; implementation symbols, evidence anchors, calibration and checks resolve; full static table.
+PASS: graph: 86 unique nodes, 270 edges, resolving family links; SVG generated twice byte-identically and matches built HTML.
+PASS: explorer coverage matches binding registry; optional build assets agree.
+PASS: every declared and inverted relation and limit link is rendered and resolves.
+PASS: 86 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 86 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).
+PASS: pilot and ten additional HTML spot checks: exp, gamma, gb2, binom, beta, hyper, sstd, gev, gpd, norm, pois, unif, pareto
+
+Workstation, just test-changed --no-long-double, exit 0.
+Selected 2 families: dgamma, dnorm
+100% tests passed, 0 tests failed out of 3
+100% tests passed, 0 tests failed out of 3
+[ FAIL 0 | WARN 0 | SKIP 8 | PASS 632 ]
+# tests 241
+# pass 241
+# fail 0
+Results: [{"command": ["cmake", "-S", "univariateML-cpp", "-B", "univariateML-cpp/build", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"], "exit": 0, "seconds": 0.5}, {"command": ["cmake", "--build", "univariateML-cpp/build", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 477.72}, {"command": ["ctest", "--test-dir", "univariateML-cpp/build", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(dgamma|dnorm)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 29.37}, {"command": ["cmake", "-S", "univariateML-cpp", "-B", "build/cpp-no-long-double", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache", "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"], "exit": 0, "seconds": 0.44}, {"command": ["cmake", "--build", "build/cpp-no-long-double", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 433.68}, {"command": ["ctest", "--test-dir", "build/cpp-no-long-double", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(dgamma|dnorm)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 29.95}, {"command": ["just", "test"], "exit": 0, "seconds": 152.46}, {"command": ["just", "js-build"], "exit": 0, "seconds": 81.95}, {"command": ["just", "js-test"], "exit": 0, "seconds": 75.42}]
