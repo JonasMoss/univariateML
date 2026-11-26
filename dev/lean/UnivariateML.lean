@@ -43,3 +43,4 @@ public import UnivariateML.Family.Huber
 public import UnivariateML.Family.Paralogistic
 public import UnivariateML.Family.Ged
 public import UnivariateML.Family.TransformedGamma
+public import UnivariateML.Family.Hypergeometric
