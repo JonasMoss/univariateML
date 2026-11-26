@@ -44,3 +44,4 @@ public import UnivariateML.Family.Paralogistic
 public import UnivariateML.Family.Ged
 public import UnivariateML.Family.TransformedGamma
 public import UnivariateML.Family.Hypergeometric
+public import UnivariateML.Family.DoublePareto
