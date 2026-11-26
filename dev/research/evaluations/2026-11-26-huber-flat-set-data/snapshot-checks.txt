@@ -1,0 +1,20 @@
+huber          173  (17 s)
+native cases 173 differing 0 only-new 0 only-old 0
+huber          173  (17 s)
+double cases 173 differing 0 only-new 0 only-old 0
+routes-native: Huber absent from the modifier roster and stored baseline (0 rows)
+routes-double: Huber absent from the modifier roster and stored baseline (0 rows)
+
+native: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  huber                         153          0    2.2e-16    3.1e-16          0
+
+double: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  huber                         153          0    3.1e-16    5.4e-16          0
+
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing
+fit-consistency: failures by check: none
+fit-consistency: 0 listed as known, 0 new, 0 listed but passing
+Singleton proof inventory covers 218 source sites

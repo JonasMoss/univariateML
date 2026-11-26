@@ -26,6 +26,8 @@ inline FitResult fit_huber(cppunivariate::span x, Held mu_arg = {}, Held sigma_a
   const auto done = [&](FitResult out) {
     if (o.kind == cppunivariate::OutcomeKind::Estimate && !out.error.empty() && out.payload_kind != PayloadKind::Comparison)
       return overridden(std::move(out), static_cast<int>(r.status));
+    if (o.kind == cppunivariate::OutcomeKind::Estimate)
+      attach_maximizer_set(out, r.maximizers, "huber", [&](const auto&) { return r.logLik; });
     return with_outcome(std::move(out), o, static_cast<int>(r.status),{{"mu",mu_arg.supplied},{"sigma",sigma_arg.supplied},{"epsilon",epsilon_arg.supplied}});
   };
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "../../core/likelihood_polish.hpp"
 #include "../../core/work_budget.hpp"
 #include "../../core/stop_detail.hpp"
@@ -22,7 +23,11 @@ struct HuberResult {
   // Standardized optimum before the public coefficients were rounded:
   // y=(x-std_center)/std_unit, location std_m and scale std_s in those units.
   double std_center=std::numeric_limits<double>::quiet_NaN(),std_unit=std::numeric_limits<double>::quiet_NaN(),
-      std_m=std::numeric_limits<double>::quiet_NaN(),std_s=std::numeric_limits<double>::quiet_NaN(); bool singleton_proved = false; };
+      std_m=std::numeric_limits<double>::quiet_NaN(),std_s=std::numeric_limits<double>::quiet_NaN(); bool singleton_proved = false;
+  MaximizerSet maximizers{};
+  bool set_unresolved = false;
+  bool held_gap_equality = false;
+};
 
 inline bool family_point(const HuberResult&, const FitCandidate& c) {
   return c.model == StopModel::None && c.coef.size() == 3 && std::isfinite(c.coef[0]) &&
@@ -39,7 +44,11 @@ inline FitOutcome outcome(const HuberResult& r) {
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
-    case HuberStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
+    case HuberStatus::Ok:
+      if (r.set_unresolved) return FitOutcome::undetermined();
+      if (r.maximizers.size) return FitOutcome::estimate(true, false);
+      return r.singleton_proved || r.held_gap_equality ?
+          FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case HuberStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case HuberStatus::UnboundedLikelihood: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case HuberStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
@@ -928,13 +937,170 @@ inline HuberResult huber_global_search(span x,double tol=1e-10,int maxit=200,
   }
   return stop(false,std::max({incumbent,normal_upper,laplace_upper,tail}));
 }
+// Compare b-a to 2*c*s for binary64 inputs. Scaling by the larger
+// endpoint's exponent prevents overflow, including for opposite signs.
+// The difference of distinct endpoints is at least 2^-54 in these units.
+inline int huber_gap_sign(double a, double b, double c, double s) {
+  if (a == b) return -1;
+  int ea, eb, ec, es;
+  std::frexp(a, &ea);
+  std::frexp(b, &eb);
+  const double fc=std::frexp(c, &ec), fs=std::frexp(s, &es);
+  const int exponent=std::max(a == 0 ? eb : ea, b == 0 ? ea : eb);
+  const int shift=ec+es+1-exponent;
+  if (shift < -54) return 1;
+  if (shift > 3) return -1;
+  const bool tiny_a=a != 0 && ea-exponent < -200;
+  const bool tiny_b=b != 0 && eb-exponent < -200;
+  double large=tiny_b ? 0 : std::ldexp(b,-exponent);
+  double small=tiny_a ? 0 : -std::ldexp(a,-exponent);
+  if (std::abs(large)<std::abs(small)) std::swap(large,small);
+  const double gap=large+small;
+  const double gap_error=small-(gap-large);  // FastTwoSum
+  const double product=fc*fs;
+  const double cut=std::ldexp(product,shift);
+  const double cut_error=std::ldexp(std::fma(fc,fs,-product),shift);
+  if (gap != cut) return gap > cut ? 1 : -1;
+  // The normalized product has at most 106 bits. A discarded endpoint is
+  // smaller than its least possible bit, so it can only break an exact tie.
+  if (gap_error != cut_error) return gap_error > cut_error ? 1 : -1;
+  if (tiny_a) return a < 0 ? 1 : -1;
+  if (tiny_b) return b > 0 ? 1 : -1;
+  return 0;
+}
+
+inline double huber_midpoint(double a, double b) {
+  const double sum=a+b;
+  return std::isfinite(sum) ? sum/2 : a/2+b/2;
+}
+
+inline void huber_location_box(HuberResult& r, double a, double b,
+                               bool free_scale, bool free_shape) {
+  Box box;
+  box.axes={interval(std::fma(r.epsilon,r.sigma,a),
+                     std::fma(-r.epsilon,r.sigma,b),true,true),
+            fixed(r.sigma),fixed(r.epsilon)};
+  auto& location=box.axes[0].range;
+  location.lower_rounded=location.upper_rounded=true;
+  box.axes[1].range.lower_rounded=box.axes[1].range.upper_rounded=free_scale;
+  box.axes[2].range.lower_rounded=box.axes[2].range.upper_rounded=free_shape;
+  r.maximizers.dimension=3;
+  r.maximizers.add_box(box);
+}
+
+// With held scale, a strict all-tail solution has profile
+// n*(-log(sigma Z(c))-c*T+c*c/2), where T is the standardized
+// median absolute deviation sum divided by n. Isolate its shape
+// from all other possible global optima before publishing the box.
+inline bool huber_isolate_tail_shape(span x, const std::vector<double>& sorted,
+                                     const HuberResult& result, double tol, int maxit) {
+  const double n=x.size(), s=result.sigma, c=result.epsilon;
+  const std::size_t mid=sorted.size()/2;
+  const double a=sorted[mid-1], b=sorted[mid];
+  const double gap=(b/2-a/2)/s;
+  const double guard=64*std::numeric_limits<double>::epsilon();
+  double edge=c+(std::min(gap, std::max(1.,1.25*c))-c)/2;
+  double tail_mass=0;
+  bool concave=false;
+  for (int i=0; i<solver_budget(maxit) && edge>c*(1+8*tol+guard); ++i) {
+    const double q=2*std::exp(-edge*edge/2)/(edge*huber_z(edge));
+    // (log Z)'' decreases: q decreases and 2q-q*q increases in q.
+    if (q+(2*q-q*q)/(edge*edge)>1+guard) {
+      tail_mass=q;
+      concave=true;
+      break;
+    }
+    edge=c+(edge-c)/2;
+  }
+  if (!concave || huber_gap_sign(a,b,edge,s)<=0) return false;
+  ExtendedReal distance=0;
+  const double midpoint=huber_midpoint(a,b);
+  for (double v:x) distance+=std::abs((static_cast<ExtendedReal>(v)-midpoint)/s)/n;
+  const double boundary_score=edge+tail_mass/edge;
+  if (!(std::isfinite(distance) && distance>boundary_score*(1+guard*(1+n)))) return false;
+
+  const auto normal=norm_mle(x,NAN,s);
+  if (normal.status!=NormStatus::Ok || !std::isfinite(normal.logLik)) return false;
+  ExtendedReal normal_score=0;
+  for (double v:x) normal_score+=(static_cast<ExtendedReal>(v)-normal.mean)/s;
+  if (!(std::abs(normal_score/n)<=1e-7)) return false;
+  const double margin=1e-8*n+1024*std::numeric_limits<double>::epsilon()*
+      (1+n+std::abs(result.logLik));
+  const double target=result.logLik-margin;
+  if (!(normal.logLik<target)) return false;
+  double upper=0;
+  for (double v:x) upper=std::max(upper,std::abs((v-normal.mean)/s));
+  upper=(upper+1e-6)*(1+1e-6);
+  if (!(std::isfinite(upper) && upper>edge)) return false;
+
+  const span data{sorted.data(),sorted.size()};
+  auto bound=[&](double shape) {
+    auto fit=huber_fixed_mle(data,std::min(tol,1e-12),maxit,shape,NAN,s,true);
+    if (fit.status!=HuberStatus::Ok) return INFINITY+0.;
+    fit.logLik=huber_point_loglik(x,fit.mu,s,shape);
+    return huber_nuisance_upper(x,fit,false,true);
+  };
+  struct Segment { double left,right, left_upper,right_upper; };
+  std::vector<Segment> pending{{edge,upper,bound(edge),bound(upper)}};
+  const auto budget=certificate_budget(maxit);
+  for (std::int64_t work=2; !pending.empty() && work<=budget; ) {
+    const auto part=pending.back();
+    pending.pop_back();
+    const double width=part.right-part.left;
+    if (std::max(part.left_upper,part.right_upper)+
+        n*(1+2/(part.left*part.left))*width*width/8<target) continue;
+    if (work==budget || !std::isfinite(part.left_upper) ||
+        !std::isfinite(part.right_upper)) return false;
+    const double split=part.left+width/2;
+    if (!(split>part.left && split<part.right)) return false;
+    const double split_upper=bound(split);
+    ++work;
+    pending.push_back({split,part.right,split_upper,part.right_upper});
+    pending.push_back({part.left,split,part.left_upper,split_upper});
+  }
+  return pending.empty();
+}
+
+// In the all-tail sector the fixed-shape scale score vanishes at
+// sigma=c*D, with D the mean absolute deviation from the central midpoint.
+// Scale the pair differences by a power of two before accumulating.
+inline bool huber_free_scale_flat(const std::vector<double>& sorted, double c) {
+  if (c>=1) return false;
+  int exponent;
+  std::frexp(std::max(std::abs(sorted.front()),std::abs(sorted.back())),&exponent);
+  const std::size_t mid=sorted.size()/2;
+  const auto scaled=[&](double value) { return std::ldexp(value,-exponent); };
+  const double gap=(scaled(sorted[mid])-scaled(sorted[mid-1]))/2;
+  double sum=0;
+  for (std::size_t i=0; i<mid; ++i)
+    sum+=(scaled(sorted[i+mid])-scaled(sorted[i]))/2;
+  const double cut=(c*(sum/mid))*c;
+  const double guard=32*std::numeric_limits<double>::epsilon()*(1+mid);
+  return gap>cut*(1+guard) && gap>std::numeric_limits<double>::min();
+}
+
 inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
     double epsilon=1.345,
     double mu=std::numeric_limits<double>::quiet_NaN(),
     double sigma=std::numeric_limits<double>::quiet_NaN(),bool exact_scan=false) {
   auto result=huber_global_search(x,tol,maxit,epsilon,mu,sigma,exact_scan);
   if (result.status!=HuberStatus::Ok) return result;
-  const bool free_shape=std::isnan(epsilon);
+  const bool free_shape=std::isnan(epsilon), free_scale=std::isnan(sigma);
+  std::vector<double> sorted(x.begin(),x.end());
+  std::sort(sorted.begin(),sorted.end());
+  const std::size_t mid=sorted.size()/2;
+  const bool interval_possible=std::isnan(mu) && sorted.size()%2==0;
+  const double a=interval_possible ? sorted[mid-1] : 0;
+  const double b=interval_possible ? sorted[mid] : 0;
+  const int held_gap=interval_possible && !free_scale && !free_shape ?
+      huber_gap_sign(a,b,epsilon,sigma) : -1;
+  if (held_gap>=0) {
+    result.mu=huber_midpoint(a,b);
+    result.held_gap_equality=held_gap==0;
+    if (held_gap>0) huber_location_box(result,a,b,false,false);
+    result.logLik=huber_point_loglik(x,result.mu,sigma,epsilon);
+    return result;
+  }
   const double unit=result.sigma, origin=result.mu;
   const bool standardized=!free_shape && result.std_unit>0;
   const double center=standardized ? result.std_center : origin;
@@ -942,12 +1108,9 @@ inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
       static_cast<ExtendedReal>(result.std_unit)*result.std_m/unit : 0;
   std::vector<ExtendedReal> sample;
   sample.reserve(x.size());
-  for (double value:x) sample.push_back((static_cast<ExtendedReal>(value)-center)/unit-offset);
-  std::sort(sample.begin(),sample.end());
-  const std::size_t mid=sample.size()/2;
-  const bool flat=sample.size()%2==0 && (sample[mid]-sample[mid-1])/2>=result.epsilon;
+  for (double value:sorted) sample.push_back((static_cast<ExtendedReal>(value)-center)/unit-offset);
+  const bool flat=sorted.size()%2==0 && (sample[mid]-sample[mid-1])/2>=result.epsilon;
   const bool free_location=std::isnan(mu) && !flat;
-  const bool free_scale=std::isnan(sigma);
   const auto objective=[&](const std::array<accuracy_detail::Jet,3>& q) {
     const auto c=accuracy_detail::exp(q[2]);
     const auto inv=accuracy_detail::exp(-q[1]);
@@ -1003,6 +1166,18 @@ inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
   result.sigma=fitted_scale;
   result.epsilon=fitted_shape;
   result.logLik=huber_point_loglik(x,result.mu,result.sigma,result.epsilon);
+  if (interval_possible && free_shape!=free_scale && (free_shape || fitted_shape<1) &&
+      huber_gap_sign(a,b,fitted_shape,fitted_scale)>0) {
+    const bool proved=free_shape ? huber_isolate_tail_shape(x,sorted,result,tol,maxit) :
+        free_scale && huber_free_scale_flat(sorted,fitted_shape);
+    if (proved) {
+      result.mu=huber_midpoint(a,b);
+      huber_location_box(result,a,b,free_scale,free_shape);
+      result.logLik=huber_point_loglik(x,result.mu,result.sigma,result.epsilon);
+    } else {
+      result.set_unresolved=true;
+    }
+  }
   return result;
 }
 } // namespace cppunivariate

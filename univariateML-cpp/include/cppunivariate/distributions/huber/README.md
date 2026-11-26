@@ -119,7 +119,10 @@ see the [free-shape analysis](../../../../../dev/research/evaluations/2026-10-29
 
 The scale is the joint maximum-likelihood scale, not Huber's
 Proposal 2 scale. When the maximising location is an interval (the sample
-lies in the linear tails), its midpoint is returned. For held $\epsilon$ and nonconstant data
+lies in the linear tails), its midpoint represents the closed maximizer box
+and `unique` is false. The interval is the central sample gap eroded at each
+end by $\epsilon\sigma$. At equality the eroded gap is a singleton. See the
+[exact maximizer-set analysis](../../../../../dev/research/evaluations/2026-11-25-lean-huber-report.md). For held $\epsilon$ and nonconstant data
 the maximum is attained, ties included; constant data have an unbounded
 likelihood unless $\mu$ is held at a different value or $\sigma$ is held.
 
@@ -154,9 +157,10 @@ $10^{-8}n$, or the certificate allowance is exhausted. This is a value
 certificate for the supremum value. A finite solution is refined jointly in
 scale-standardized location, log standard deviation and log shape. The observed
 information must be positive definite on the free coordinates, with the
-relative correction meeting `tol` after contraction. For a flat location
-interval the midpoint is retained and the interval is checked at the refined
-scale and shape.
+relative correction meeting `tol` after contraction. With held scale, a strict
+flat interval at an estimated shape is published when the shape lies in the
+strictly concave all-tail profile and subdivision excludes competing shapes.
+If that comparison is unresolved, the fitted point is returned uncertified.
 
 Above $\max_i|x_i-\mu_N|/\sigma_N$, the exact constrained normal solution is
 inside the quadratic core and solves the concave nuisance problem; only the
