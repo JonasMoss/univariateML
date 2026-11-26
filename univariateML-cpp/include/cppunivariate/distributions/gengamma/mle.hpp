@@ -47,23 +47,39 @@ inline GengammaResult gengamma_mle_core(span x,double tol,int maxit,
     out.status=GengammaStatus::InvalidFixed;return out;
   }
   if (x.empty()) return out;
-  if (fm && fs && fq && x.size() == 2 && x[0] != x[1] &&
-      std::all_of(x.begin(), x.end(), [](double v) { return v > 0 && std::isfinite(v); })) {
-    const double lo = std::min(x[0],x[1]), hi = std::max(x[0],x[1]);
-    const double gap = special::log_positive_ratio(hi,lo);
-    const double exponent = 2/gap;
-    const double ll = 2*(std::log(exponent)-1) - std::log(lo) - std::log(hi);
-    // The two signed log-gamma profiles are reflections on a pair.
-    // The optimized product decreases strictly in gamma shape 1/Q^2.
-    out.status = GengammaStatus::TiedPowerPareto;
-    out.certified = true;
-    out.logLik = ll;
-    out.stop_detail.candidates = {
-      {{hi,exponent},ll,ll,StopModel::Power},
-      {{exponent,lo},ll,ll,StopModel::Pareto}
-    };
-    out.stop_detail.loglik_lower = out.stop_detail.loglik_upper = ll;
-    return out;
+  if (fm && fs && fq && x.size() % 2 == 0) {
+    const double first = x[0];
+    double second = first;
+    std::size_t first_count = 0, second_count = 0;
+    for (double v : x) {
+      if (v == first) {
+        ++first_count;
+      } else {
+        if (second_count == 0) second = v;
+        if (v != second) break;
+        ++second_count;
+      }
+    }
+    const std::size_t half = x.size()/2;
+    if (first_count == half && second_count == half &&
+        first > 0 && std::isfinite(first) && second > 0 && std::isfinite(second)) {
+      const double lo = std::min(first,second), hi = std::max(first,second);
+      const double gap = special::log_positive_ratio(hi,lo);
+      const double exponent = 2/gap;
+      const double pair_ll = 2*(std::log(exponent)-1) - std::log(lo) - std::log(hi);
+      const double ll = half*pair_ll;
+      // GenGammaTwoPoint.lean: every finite fit lies strictly below both
+      // equal face values, and replication preserves the mean log likelihood.
+      out.status = GengammaStatus::TiedPowerPareto;
+      out.certified = true;
+      out.logLik = ll;
+      out.stop_detail.candidates = {
+        {{hi,exponent},ll,ll,StopModel::Power},
+        {{exponent,lo},ll,ll,StopModel::Pareto}
+      };
+      out.stop_detail.loglik_lower = out.stop_detail.loglik_upper = ll;
+      return out;
+    }
   }
   std::vector<double> y; y.reserve(x.size());
   CPPUNIV_EXTENDED_REAL total=0;
@@ -268,13 +284,12 @@ inline GengammaResult gengamma_mle(span x,double tol=1e-10,int maxit=100,
   double mu=NAN,double sigma=NAN,double q=NAN) {
   // Free mu and a small relative spread: fit the relative logs (the held-mu
   // paths compare logs with mu and keep the binary64 logs).
-  if(x.size()==2 && x[0]!=x[1] && std::isnan(mu) && std::isnan(sigma) && std::isnan(q))
-    return gengamma_mle_core(x,tol,maxit,mu,sigma,q,nullptr);
   if(!(std::isnan(mu) && trgamma_detail::relative_log_regime(x)))
     return gengamma_mle_core(x,tol,maxit,mu,sigma,q,nullptr);
   const auto l=transformed_detail::logs(x);
   if(!l.valid)return gengamma_mle_core(x,tol,maxit,mu,sigma,q,nullptr);
   auto out=gengamma_mle_core(x,tol,maxit,mu,sigma,q,&l.delta);
+  if(out.status==GengammaStatus::TiedPowerPareto)return out; // Already in raw units.
   // y = delta + log(x_0): mu shifts by the anchor, logLik by -n log(x_0).
   const double shift=-static_cast<double>(x.size())*transformed_detail::value(l.anchor);
   const auto restore=[&](double m){return transformed_detail::value(transformed_detail::add(l.anchor,{m,0}));};

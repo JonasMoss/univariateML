@@ -690,3 +690,53 @@ TEST_CASE("gengamma: the unattained pair supremum has tied power and Pareto face
     CHECK(fit.logLik == doctest::Approx(2*(std::log(exponent)-1)-std::log(lo)-std::log(hi)));
   }
 }
+
+TEST_CASE("gengamma: balanced replicated pairs retain both unattained faces") {
+  // Independent 80-decimal-digit references in the TASK-285 evidence.
+  const std::vector<double> four{1.,1.,2.,2.};
+  const std::vector<double> six{8.+0x1p-20,8.,8.+0x1p-20,8.,8.+0x1p-20,8.};
+  const auto check = [](const std::vector<double>& x, double exponent, double ll) {
+    const auto fit = cppunivariate::gengamma_mle(mltest::as_span(x), 1e-10, 1);
+    const auto result = cppunivariate::outcome(fit);
+    CHECK(result.kind == cppunivariate::OutcomeKind::Nonexistence);
+    CHECK(result.reason == cppunivariate::OutcomeReason::Unattained);
+    CHECK(result.certified);
+    CHECK(fit.iterations == 0);
+    CHECK(fit.logLik == doctest::Approx(ll).epsilon(1e-13));
+    const auto& d = fit.stop_detail;
+    CHECK(d.loglik_lower == fit.logLik);
+    CHECK(d.loglik_upper == fit.logLik);
+    REQUIRE(d.candidates.size() == 2);
+    const auto& power = d.candidates[0];
+    const auto& pareto = d.candidates[1];
+    CHECK(power.model == cppunivariate::StopModel::Power);
+    CHECK(pareto.model == cppunivariate::StopModel::Pareto);
+    REQUIRE(power.coef.size() == 2);
+    REQUIRE(pareto.coef.size() == 2);
+    const auto endpoints = std::minmax_element(x.begin(),x.end());
+    CHECK(power.coef[0] == *endpoints.second);
+    CHECK(power.coef[1] == doctest::Approx(exponent).epsilon(1e-13));
+    CHECK(pareto.coef[0] == doctest::Approx(exponent).epsilon(1e-13));
+    CHECK(pareto.coef[1] == *endpoints.first);
+    for (const auto& candidate : d.candidates) {
+      CHECK(candidate.loglik_lower == fit.logLik);
+      CHECK(candidate.loglik_upper == fit.logLik);
+    }
+  };
+  check(four, 2.8853900817779268, -1.147653956553452);
+  check(six, 16777216.99999998, 81.33654475055312);
+}
+
+TEST_CASE("gengamma: a three-to-one split keeps the Pareto limit") {
+  // Independent 80-decimal-digit reference in the TASK-285 evidence.
+  const std::vector<double> x{1.,1.,1.,2.};
+  const auto fit = cppunivariate::gengamma_mle(mltest::as_span(x));
+  CHECK(fit.status == cppunivariate::GengammaStatus::ParetoBoundary);
+  CHECK(cppunivariate::outcome(fit).kind == cppunivariate::OutcomeKind::Limit);
+  CHECK(fit.certified);
+  CHECK(fit.stop_detail.limit_model == cppunivariate::StopModel::Pareto);
+  REQUIRE(fit.stop_detail.limit_coef.size() == 2);
+  CHECK(fit.stop_detail.limit_coef[0] == doctest::Approx(5.7707801635558535).epsilon(1e-13));
+  CHECK(fit.stop_detail.limit_coef[1] == 1.);
+  CHECK(fit.logLik == doctest::Approx(2.3180819462462745).epsilon(1e-13));
+}
