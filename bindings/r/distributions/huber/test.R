@@ -154,3 +154,37 @@ test_that("huber numerical stops report a nonrepresentable objective", {
   expect_true(is.na(e$loglik_lower))
   expect_equal(e$loglik_upper,Inf)
 })
+
+test_that("Huber exposes flat location maxima and a singleton at the kink", {
+  x <- c(-10, -9, 9, 10)
+  check_box <- function(fit, upper, ll) {
+    expect_identical(attr(fit, "certified"), TRUE)
+    expect_identical(attr(fit, "unique"), FALSE)
+    expect_identical(unname(fit["mu"]), 0)
+    piece <- attr(fit, "maximizer_set")$pieces[[1]]
+    expect_identical(piece$kind, "box")
+    expect_equal(c(piece$axes[[1]]$lower, piece$axes[[1]]$upper), c(-upper, upper))
+    expect_equal(as.numeric(logLik(fit)), ll, tolerance = 1e-13)
+    for (mu in c(-5, 0, 5)) {
+      expect_equal(sum(dhuber(x, mu = mu, sigma = fit[["sigma"]],
+                             epsilon = fit[["epsilon"]], log = TRUE)), ll,
+                   tolerance = 1e-13)
+    }
+  }
+  # 100-digit mpmath, reference.txt: upper 7.65500000000000002664535259,
+  # logLik -51.40634277828734697004501652.
+  check_box(mlhuber(x, sigma = 1, epsilon = 1.345), 7.655, -51.40634277828734697004501652)
+  # Exact upper 6.625, logLik -15.73984499887975643758677333.
+  check_box(mlhuber(x, epsilon = .5), 6.625, -15.73984499887975643758677333)
+  # Upper 8.89472828053528152359114613, logLik -15.77767441526718239258782387.
+  check_box(mlhuber(x, sigma = 1, epsilon = NULL), 8.89472828053528152359114613,
+            -15.77767441526718239258782387)
+
+  # Exact midpoint 0 at epsilon*sigma=9, logLik -183.6757541328186909671322059.
+  fit <- mlhuber(x, sigma = 1, epsilon = 9)
+  expect_identical(attr(fit, "certified"), TRUE)
+  expect_identical(attr(fit, "unique"), TRUE)
+  expect_identical(unname(fit["mu"]), 0)
+  expect_null(attr(fit, "maximizer_set"))
+  expect_equal(as.numeric(logLik(fit)), -183.6757541328186909671322059, tolerance = 1e-13)
+})

@@ -549,3 +549,57 @@ TEST_CASE("huber near-constant sample is an estimate at the rounded optimum, as 
   CHECK(r.logLik==doctest::Approx(122.14).epsilon(1e-4));
   CHECK(r.logLik==cppunivariate::huber_point_loglik(mltest::as_span(near),r.mu,r.sigma,r.epsilon));
 }
+
+TEST_CASE("huber: joint maximizer sets on both sides of the central gap") {
+  const std::vector<double> x{-10,-9,9,10};
+  const auto data=mltest::as_span(x);
+  const auto check_box=[&](double epsilon, double sigma, double expected_epsilon,
+                           double expected_sigma, double endpoint, double loglik) {
+    const auto fit=cppunivariate::huber_mle(data,1e-10,200,epsilon,NAN,sigma);
+    const auto o=cppunivariate::outcome(fit);
+    REQUIRE(o.kind==cppunivariate::OutcomeKind::Estimate);
+    CHECK(o.certified);
+    CHECK(o.uniqueness_known);
+    CHECK_FALSE(o.unique);
+    CHECK(fit.mu==0);
+    CHECK(fit.logLik==doctest::Approx(loglik).epsilon(1e-13));
+    CHECK(fit.sigma==doctest::Approx(expected_sigma).epsilon(1e-13));
+    CHECK(fit.epsilon==doctest::Approx(expected_epsilon).epsilon(1e-13));
+    REQUIRE(fit.maximizers.size==1);
+    const auto& box=std::get<cppunivariate::Box>(fit.maximizers.pieces[0].value);
+    CHECK(box.axes[0].range.lower==doctest::Approx(-endpoint).epsilon(1e-13));
+    CHECK(box.axes[0].range.upper==doctest::Approx(endpoint).epsilon(1e-13));
+    CHECK(box.axes[0].range.lower_closed);
+    CHECK(box.axes[0].range.upper_closed);
+    CHECK(box.axes[1].range.lower==fit.sigma);
+    CHECK(box.axes[2].range.lower==fit.epsilon);
+    for (double mu : {-5.,0.,5.})
+      CHECK(cppunivariate::huber_point_loglik(data,mu,fit.sigma,fit.epsilon)
+          ==doctest::Approx(loglik).epsilon(1e-13));
+  };
+  // 100-digit mpmath, reference.txt: upper 7.65500000000000002664535259,
+  // logLik -51.40634277828734697004501652.
+  check_box(1.345,1,1.345,1,7.655,-51.40634277828734697004501652);
+  // Exact scale 4.75 and upper 6.625, logLik -15.73984499887975643758677333.
+  check_box(.5,NAN,.5,4.75,6.625,-15.73984499887975643758677333);
+  // epsilon 0.10527171946471847640885387, upper 8.89472828053528152359114613,
+  // logLik -15.77767441526718239258782387.
+  check_box(NAN,1,0.10527171946471847640885387,1,8.89472828053528152359114613,
+            -15.77767441526718239258782387);
+
+  // Exact midpoint 0 at epsilon*sigma=9, logLik -183.6757541328186909671322059.
+  const auto equality=cppunivariate::huber_mle(data,1e-10,200,9,NAN,1);
+  CHECK(equality.mu==0);
+  CHECK(equality.logLik==doctest::Approx(-183.6757541328186909671322059).epsilon(1e-13));
+  CHECK(cppunivariate::outcome(equality).certified);
+  CHECK(cppunivariate::outcome(equality).unique);
+  CHECK(equality.maximizers.size==0);
+}
+
+TEST_CASE("huber: the exact held cutoff resolves a rounded product tie") {
+  const double step=std::numeric_limits<double>::epsilon();
+  // Exact products are 1-2^-104 and 1+2^-53-2^-105, both round to 1.
+  CHECK(cppunivariate::huber_gap_sign(-1,1,1+step,1-step)==1);
+  CHECK(cppunivariate::huber_gap_sign(-1,1,1+step,1-step/2)==-1);
+  CHECK(cppunivariate::huber_gap_sign(-1,1,1,1)==0);
+}
