@@ -203,14 +203,26 @@ TEST_CASE("dweibull: n = 1e6 with few distinct counts, and many distinct counts"
 
 TEST_CASE("dweibull: peaked counts near the double-precision limit of shape1") {
   // Scale 40, shape 8: -log(shape1) ~ 1e-13 is resolved to ~1e-3 by the
-  // double nearest 1; shape2 is refitted with that shape1 held.
+  // double nearest 1. The free fit keeps the shape from the joint profile.
   const auto peaked = sample(5000, std::exp(-std::pow(40.0, -8.0)), 8, 9);
   const auto r = fit(peaked);
   REQUIRE(r.status == cppunivariate::DweibullStatus::Ok);
   CHECK(r.logLik == doctest::Approx(dweibull_loglik(peaked, r.shape1, r.shape2)).epsilon(1e-12));
+  cppunivariate::dweibull_detail::Problem p;
+  REQUIRE(p.tabulate(mltest::as_span(peaked)));
+  p.centre(std::log(p.median_plus_half()));
+  p.set_beta(r.shape2);
+  double a = std::log(std::log(2.0));
+  int evals = 0;
+  REQUIRE(cppunivariate::dweibull_detail::inner_root(p, a, 200, evals));
+  CHECK(std::abs(cppunivariate::dweibull_detail::beta_score(p, a)) < 1e-9);
+
+  // A held-q fit still solves the score at the rounded probability.
+  const auto held = fit(peaked, r.shape1);
+  REQUIRE(held.status == cppunivariate::DweibullStatus::Ok);
   const double h = 1e-6;
-  CHECK(std::abs(dweibull_loglik(peaked, r.shape1, r.shape2 + h) -
-                 dweibull_loglik(peaked, r.shape1, r.shape2 - h)) / (2 * h) < 1e-3);
+  CHECK(std::abs(dweibull_loglik(peaked, held.shape1, held.shape2 + h) -
+                 dweibull_loglik(peaked, held.shape1, held.shape2 - h)) / (2 * h) < 1e-3);
   // Shape 12 at scale 40: shape1 rounds to 1 and cannot be returned.
   cppunivariate::distributions::StdRng<> rng(10);
   std::vector<double> sharper;
@@ -373,4 +385,48 @@ TEST_CASE("dweibull: large inverse samples retain the unfuzzed log crossing") {
   CHECK(cppunivariate::distributions::pdweibull(draw,.9,.05,false,true)<=target);
   CHECK(cppunivariate::distributions::pdweibull(std::nextafter(draw,-INFINITY),.9,.05,false,true)>target);
   CHECK(draw>cppunivariate::distributions::qdweibull(target,.9,.05,false,true));
+}
+
+TEST_CASE("dweibull: rounding shape1 preserves the joint shape2") {
+  struct Reference { double k, q, beta; };
+  // 90-decimal-digit mpmath replay, q rounded to binary64 and beta
+  // rounded here to 17 significant decimal digits (TASK-349 replay.py).
+  const Reference grid[] = {
+    {5, 0x1.fffff8bf6269ep-1, 7.9369416340898969},
+    {6, 0x1.ffffffcdc4de6p-1, 9.1594685331321826},
+    {7, 0x1.fffffffed60fcp-1, 10.379193015081321},
+    {8, 0x1.fffffffff9fc1p-1, 11.597019166943809},
+    {9, 0x1.ffffffffffe48p-1, 12.813498283847933},
+    {10, 0x1.ffffffffffff9p-1, 14.028986273267453},
+    {12, 1, 16.457877990879498},
+    {15, 1, 20.097911333009296},
+  };
+  for (const auto &ref : grid) {
+    CAPTURE(ref.k);
+    const std::vector<double> x{ref.k, ref.k + 2};
+    const auto r = cppunivariate::dweibull_mle(mltest::as_span(x));
+    CHECK(r.shape1 == ref.q);
+    CHECK(std::abs(r.shape2 - ref.beta) <= 1e-10 * ref.beta);
+    if (ref.q == 1) {
+      CHECK(r.status == cppunivariate::DweibullStatus::Unrepresentable);
+    } else {
+      REQUIRE(r.status == cppunivariate::DweibullStatus::Ok);
+      CHECK(cppunivariate::outcome(r).certified);
+      CHECK(r.logLik == doctest::Approx(dweibull_loglik(x, r.shape1, r.shape2)).epsilon(1e-13));
+    }
+  }
+}
+
+
+TEST_CASE("dweibull: unclosed coefficient brackets keep the search fit") {
+  const std::vector<double> x{8, 10};
+  const auto r = cppunivariate::dweibull_mle(mltest::as_span(x), 1e-13);
+  REQUIRE(r.status == cppunivariate::DweibullStatus::Ok);
+  const auto o = cppunivariate::outcome(r);
+  CHECK_FALSE(o.certified);
+  CHECK(o.uniqueness_known);
+  CHECK(o.unique);
+  // Same 90-digit reference (17 significant digits) as the grid.
+  CHECK(r.shape1 == 0x1.fffffffff9fc1p-1);
+  CHECK(std::abs(r.shape2 - 11.597019166943809) <= 1e-13 * 11.597019166943809);
 }
