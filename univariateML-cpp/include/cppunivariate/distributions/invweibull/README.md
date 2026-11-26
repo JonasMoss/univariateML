@@ -50,6 +50,13 @@ limits:
   detect: 'Every observation equals the held scale $\lambda$.'
   status: Unbounded
   message: unbounded
+- name: unbounded likelihood
+  firmness: proved
+  kind: nonexistence
+  when: 'The shape $k$ tends to infinity with the scale $\lambda$ at the common observation value.'
+  detect: 'Both parameters are free and every observation equals the same positive value.'
+  status: Unbounded
+  message: unbounded
 examples: |
   set.seed(1)
   x <- rml(200, mlinvweibull())

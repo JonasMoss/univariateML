@@ -69,7 +69,7 @@ fit:
   method: profile-search
   certified: 'yes'
   note: 'gompertz/README.md, Details; gompertz/mle.hpp (public fitter and held overloads); gompertz/test.cpp: Held
-    b gives analytic a; held a has a strictly concave b likelihood; profiling a leaves a strictly decreasing shape
+    b gives analytic a; held a has a strictly concave log likelihood in b; profiling a leaves a strictly decreasing shape
     score. Exponential boundary comparisons precede return.'
 areas:
 - reliability and survival
@@ -116,11 +116,11 @@ The Gompertz distribution models lifetimes with an exponentially increasing haza
 
 ## Details
 
-The hazard is $a\exp(bx)$, with both coefficients positive. The exponential law is an excluded limit as $b$ decreases to zero. Profiling the initial hazard leaves a strictly concave scalar likelihood in $b$. Its derivative at zero determines whether a finite maximum exists or the exponential face has the supremum.
+The hazard is $a\exp(bx)$, with both coefficients positive. The exponential law is an excluded limit as $b$ decreases to zero. For a positive sample sum, profiling the initial hazard leaves a strictly concave scalar log likelihood in $b$. Its derivative at zero determines whether a finite maximum exists or the exponential face has the supremum.
 
 The free-fit decision is the sign of $T=nQ-2S^2$ with $S=\sum x_i$, $Q=\sum x_i^2$. The data are scaled by an exact power of two, $S$ and $Q$ are accumulated as unevaluated pairs with TwoSum and FMA products, and $T$ is formed without rounding the cancelling leading terms. With $u=2^{-53}$, $\gamma_k=ku/(1-ku)$ and $nQ$ computed upward as $N$, the pad is $(6\gamma_{2n}^2N+16uW+16n^22^{-1074})(1+10^{-6})$, where $W$ is the sum of the magnitudes of the correction terms. The two Sum2 bounds are the cited ones (Ogita, Rump and Oishi, 2005); the factor 6, the evaluation bound $16uW$ and the underflow term are derived in `mle.hpp` and checked on constructed samples, not proved independently. Relative to $nQ$ the pad is about $5\times10^{-30}$ for $n=3$ and $3\times10^{-25}$ for $n=1000$, against binary64 comparisons that fail within about $10u\approx10^{-15}$. $T>$ pad is a certified limit, $T<-$ pad a finite fit, and anything between is the limit with `numerical: true` semantics (uncertified). With $a$ held, the corresponding score is $S-\alpha Q/2$ in the scaled data, where $\alpha$ is the initial hazard in those units. It uses the same moment pairs and a product residual for $\alpha Q/2$. The pad accounts for both moment errors and the roundoff in the low-word calculation. A negative score outside the pad certifies the exponential face. The pad itself selects an uncertified limit.
 
-Holding $a$ also leaves a strictly concave likelihood in $b$ whenever the sample sum is positive. For all-zero data with $a$ held the likelihood is flat in $b$. Holding $b$ gives an explicit estimate of $a$ when the sample sum is positive, and unbounded likelihood otherwise. Holding both evaluates the likelihood. With both free, a constant positive sample has unbounded likelihood as $b$ increases and $a$ decreases to concentrate the density at its common value.
+Holding $a$ also leaves a strictly concave log likelihood in $b$ whenever the sample sum is positive. For all-zero data with $a$ held the likelihood is flat in $b$. Holding $b$ gives an explicit estimate of $a$ when the sample sum is positive, and unbounded likelihood otherwise. Holding both evaluates the likelihood. With both free, a constant positive sample has unbounded likelihood as $b$ increases and $a$ decreases to concentrate the density at its common value.
 
 Near the exponential face, write $z_i=x_i/2^e$, $\beta=b2^e$, and $H(\beta)=\sum_i z_i\int_0^1\exp(\beta z_i t)\,dt$. The free profile score has the sign of $SH/n-H'$, while the held-hazard score is $S-\alpha H'$. The boundary comparison supplies the constant term and a Taylor polynomial supplies the remaining terms. The fitter requires opposite padded signs within half the requested relative tolerance of the represented rate. Strict concavity makes this a global bracket. The free hazard follows as $n/(2^e H)$, and $0<H'/H\le1$ bounds the propagation of the rate error into it.
 

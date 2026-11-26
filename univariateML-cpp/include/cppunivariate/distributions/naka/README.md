@@ -49,6 +49,13 @@ limits:
   detect: 'Every squared observation equals the held scale $\Omega$.'
   status: Degenerate
   message: unbounded
+- name: unbounded likelihood
+  firmness: proved
+  kind: nonexistence
+  when: 'The shape $m$ tends to infinity with $\Omega$ at the common squared observation value.'
+  detect: 'Both parameters are free and every observation equals the same positive value.'
+  status: Degenerate
+  message: unbounded
 examples: |
   set.seed(1)
   x <- rml(200, mlnaka())

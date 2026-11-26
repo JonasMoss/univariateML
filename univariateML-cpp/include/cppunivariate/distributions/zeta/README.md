@@ -91,7 +91,7 @@ modifiers:
     status: implemented
     certified: "yes"
     domain_bounded: "finite [1,N], integer N >= 1: every finite real s"
-    note: "Finite harmonic normalizer; strict concavity in s, endpoint point-mass escapes."
+    note: "For N > 1 the finite-window log likelihood is strictly concave in s, with endpoint point-mass escapes. For N = 1 it is constant and s is unidentified."
 ---
 
 The zeta distribution models unbounded positive integer frequencies following a pure power law. Its exponent $s>1$ controls tail decay, with larger values concentrating probability closer to one.

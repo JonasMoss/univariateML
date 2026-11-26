@@ -84,9 +84,10 @@ existence:
     therefore supplied. With $\mu$ known, the likelihood is unbounded only
     when all shifted observations $x - \mu$ are equal (or, with $\beta$ also
     held, all equal to $\beta$).
-    For two equal shifted observations and a third larger by the relative amount
-    $\varepsilon$, $\hat\alpha=(\sqrt2/3)\varepsilon$ and $\hat\beta=t_{(1)}e^{\varepsilon/3}$,
-    a point between $t_{(1)}$ and $t_{(3)}$. For $\varepsilon\approx2^{-52}$ no double represents
+    For a shifted sample $t_{(1)}=t_{(2)}<t_{(3)}$ with small log gap
+    $\varepsilon=\log(t_{(3)}/t_{(1)})$, the leading-order approximations are
+    $\hat\alpha\approx(\sqrt2/3)\varepsilon$ and $\log(\hat\beta/t_{(1)})\approx\varepsilon/3$.
+    For $\varepsilon\approx2^{-52}$ no double represents
     $\hat\beta$ and its rounding is within the accuracy contract, but the log likelihood at
     the returned coefficients is 0.75 below the supremum. Samples this concentrated are solved
     in an offset coordinate and returned uncertified, with $\alpha$ the maximizer's and not

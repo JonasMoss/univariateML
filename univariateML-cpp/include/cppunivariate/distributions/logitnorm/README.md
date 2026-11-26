@@ -40,7 +40,7 @@ limits:
   firmness: proved
   when: 'The free scale $\sigma$ tends to zero at the fitted or held logit location.'
   detect: 'Scale is free and every logit equals the fitted or held location $\mu$.'
-  status: zero scale
+  status: Unbounded
   message: does not exist
 examples: |
   set.seed(1)
@@ -68,7 +68,7 @@ relations:
 fit:
   method: delegation
   certified: 'yes'
-  note: 'loginorm/README.md, Details; loginorm/tnorm_mle.hpp (public fitter and held overloads); logitnorm/test.cpp:
+  note: 'logitnorm/README.md, Details; logitnorm/mle.hpp (public fitter and held overloads); logitnorm/test.cpp:
     Closed-form maximum for every supported free/held subset; degenerate or incompatible samples stop as documented.'
 areas:
 - proportions
