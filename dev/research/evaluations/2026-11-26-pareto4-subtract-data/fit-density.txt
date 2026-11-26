@@ -1,0 +1,13 @@
+
+native: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  pareto3                        95          0    2.2e-16    5.2e-16          0
+  pareto4                       197          0    6.7e-16    7.8e-16          0
+
+double: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  pareto3                        95          0    2.2e-16    5.2e-16          0
+  pareto4                       197          0    3.4e-16    7.8e-16          0
+
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing

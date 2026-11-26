@@ -238,7 +238,22 @@ practical floating-point margins and uncertified fallback. Both joint and
 held-scale excess fits transport Burr's per-fit flag with the held threshold.
 Subtracting the held threshold transports the certificate to excess data with Jacobian one; artificial ties or overflow in this subtraction stop.
 
-Arithmetic that rounds a distinct observation onto a held scale stops numerically: reciprocation checks equality against the original scale, and threshold subtraction checks its error-free sum residual. This protects the exact endpoint classification and its tied-observation penalty.
+For inexact threshold differences the held-scale certificate uses the
+error-free subtraction residual in the numerator of the log ratio. It
+normalizes the resulting log intervals before bounding the power score and
+the Pareto exponent. A rounded equality in a nonconstant sample still triggers the
+endpoint arithmetic guard on the two-free-shape route. The [subtraction counterexamples
+and centered-log derivation](../../../../../dev/research/evaluations/2026-11-25-pareto34-math-report.md#what-this-changes-for-the-fitter)
+show why the endpoint and tie guards alone are insufficient.
+
+For a joint fit on two distinct support values, the affine map between
+the exact and rounded log excesses preserves the ordering of the Burr
+profile and its face heights. When subtraction materially changes the
+log spacing, the selected Pareto face uses the original spacing for its
+exponent. With power held, a material amplified residual instead calls
+for the Lomax search on powers centered at the largest excess. The
+finite result on this route is flagged uncertified after checking its
+coefficients on the original inputs.
 
 ### Extreme d/p/q arithmetic
 

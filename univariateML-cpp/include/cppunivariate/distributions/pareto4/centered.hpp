@@ -27,13 +27,12 @@ inline Pareto4Result centered_shape(span x,double min,double a,double tol,int ma
   const double anchor=x[0]-min,n=static_cast<double>(x.size());
   // Error-free subtraction residual: the centered spacings refer to the
   // exact excess, even when its absolute anchor needs two doubles.
-  const double virtual_b=anchor-x[0];
-  const double residual=(x[0]-(anchor-virtual_b))+(-min-virtual_b);
+  const double residual=excess_residual(x[0],min,anchor);
   if(!std::isfinite(residual))
     return {a,NAN,NAN,min,NAN,0,BurrStatus::NumericalFailure};
   std::vector<double> logs; double unit=0;
   for(double v:x) {
-    const double l=std::log1p((v-x[0])/anchor);
+    const double l=centered_log(v,x[0],min);
     logs.push_back(l);unit=std::max(unit,std::abs(l));
   }
   if(!(unit>0))return {a,NAN,NAN,min,NAN,0,BurrStatus::Unbounded};
@@ -58,11 +57,10 @@ inline Pareto4Result centered_shape(span x,double min,double a,double tol,int ma
     return {a,NAN,NAN,min,NAN,0,BurrStatus::IterationFailure};
   // Re-evaluate at the represented scale, rather than at the latent root.
   // Differences from x[0] remain centered until after division by scale.
-  const double shift=((anchor-scale)+residual)/scale;
   const double log_anchor=std::log(anchor)+std::log1p(residual/anchor);
   double ll=n*(std::log(a)+std::log(b)),quality=ll,ideal=ll,magnitude=std::abs(ll);
   for(std::size_t i=0;i<x.size();++i) {
-    const double u=b*std::log1p(shift+(x[i]-x[0])/scale);
+    const double u=b*shifted_log(x[i],min,scale);
     const double tail=burr_softplus(-u)+a*burr_softplus(u);
     const double term=log_anchor+unit*logs[i]+tail;
     const double optimal_u=k*logs[i]-c;

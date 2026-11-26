@@ -1,0 +1,48 @@
+IV -5 10 mask 0 status 2 cert 1 0 inf 18014398509481980 face 3002399751580331
+IV -5 10 mask 1 status 0 cert 1 0.75384272585238243 0.28471276275114127 18014398509481984 face nan
+IV -5 10 mask 2 status 9 cert 1 1 nan nan face nan
+IV -5 10 mask 3 status 0 cert 1 1 0.25114061049066178 18014398509481984 face nan
+IV -5 10 mask 4 status 1 cert 1 nan 0.25 nan face 4503599627370496
+IV -5 10 mask 5 status 0 cert 1 0.81960841043598232 0.25 18014398509481984 face nan
+IV -5 10 mask 6 status 0 cert 1 1 0.25 18014398509481984 face nan
+IV -5 10 mask 7 status 0 cert 1 1 0.25 18014398509481984 face nan
+III -5 10 mask 0 status 0 cert 0 0.2057872851224278 18014398509481988
+III -5 10 mask 1 status 0 cert 0 0.25 18014398509481984
+III -5 10 mask 2 status 0 cert 1 0.20091248839253104 18014398509481984
+III -5 10 mask 3 status 0 cert 1 0.25 18014398509481984
+IV 5 9 mask 0 status 2 cert 1 0 inf 18014398509481988 face 9007199254740996
+IV 5 9 mask 1 status 9 cert 1 nan nan 18014398509481984 face nan
+IV 5 9 mask 2 status 9 cert 1 1 nan nan face nan
+IV 5 9 mask 3 status 0 cert 1 1 0.25114061049066178 18014398509481984 face nan
+IV 5 9 mask 4 status 1 cert 1 nan 0.25 nan face 4503599627370496
+IV 5 9 mask 5 status 0 cert 1 0.58136328959896266 0.25 18014398509481984 face nan
+IV 5 9 mask 6 status 0 cert 1 1 0.25 18014398509481988 face nan
+IV 5 9 mask 7 status 0 cert 1 1 0.25 18014398509481984 face nan
+III 5 9 mask 0 status 0 cert 0 0.77170231920910715 18014398509481992
+III 5 9 mask 1 status 0 cert 0 0.25 18014398509481988
+III 5 9 mask 2 status 0 cert 1 0.21668799835208427 18014398509481984
+III 5 9 mask 3 status 0 cert 1 0.25 18014398509481984
+IV 1 5 mask 0 status 2 cert 1 0 inf 18014398509481984 face 9007199254740994
+IV 1 5 mask 1 status 9 cert 1 nan nan 18014398509481984 face nan
+IV 1 5 mask 2 status 9 cert 1 1 nan nan face nan
+IV 1 5 mask 3 status 9 cert 1 1 nan 18014398509481984 face nan
+IV 1 5 mask 4 status 1 cert 1 nan 0.25 nan face 4503599627370496
+IV 1 5 mask 5 status 0 cert 1 0.99680580155912757 0.25 18014398509481984 face nan
+IV 1 5 mask 6 status 0 cert 1 1 0.25 18014398509481984 face nan
+IV 1 5 mask 7 status 0 cert 1 1 0.25 18014398509481984 face nan
+III 1 5 mask 0 status 0 cert 0 0.77170231920910715 18014398509481988
+III 1 5 mask 1 status 0 cert 0 0.25 18014398509481988
+III 1 5 mask 2 status 0 cert 1 0.46235927319814984 18014398509481984
+III 1 5 mask 3 status 0 cert 1 0.25 18014398509481984
+IV -1 1 mask 0 status 9 cert 1 nan nan nan face nan
+IV -1 1 mask 1 status 9 cert 1 nan nan 18014398509481984 face nan
+IV -1 1 mask 2 status 0 cert 1 1 1.5434046384182087 18014398509481984 face nan
+IV -1 1 mask 3 status 6 cert 1 1 nan 18014398509481984 face nan
+IV -1 1 mask 4 status 1 cert 1 nan 0.25 nan face 4503599627370496
+IV -1 1 mask 5 status 0 cert 1 1.4426950408889634 0.25 18014398509481984 face nan
+IV -1 1 mask 6 status 0 cert 1 1 0.25 18014398509481984 face nan
+IV -1 1 mask 7 status 0 cert 1 1 0.25 18014398509481984 face nan
+III -1 1 mask 0 status 6 cert 1 nan nan
+III -1 1 mask 1 status 0 cert 1 0.25 18014398509481984
+III -1 1 mask 2 status 6 cert 1 nan nan
+III -1 1 mask 3 status 0 cert 1 0.25 18014398509481984

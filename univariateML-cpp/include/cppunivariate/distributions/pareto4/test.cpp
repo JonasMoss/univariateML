@@ -389,3 +389,38 @@ TEST_CASE("pareto4: public Weibull candidate at class near-constant") {
   CHECK(ll >= c->loglik_lower - margin);
   CHECK(ll <= c->loglik_upper + margin);
 }
+
+TEST_CASE("pareto4: held-scale certificate retains threshold subtraction residuals") {
+  constexpr double u=0x1p54;
+  const std::vector<double> mixed{-5,10}, above{5,9};
+  const auto finite=cppunivariate::pareto4_mle(mltest::as_span(mixed),-u,1e-10,1000,u);
+  REQUIRE(finite.status==cppunivariate::BurrStatus::Ok);
+  CHECK(finite.certified);
+  // 100-digit original-input profile: power/U = 0.22777021020090577982701159805039.
+  CHECK(std::abs(finite.shape2/u/0.22777021020090578-1)<1e-10);
+  const auto face=cppunivariate::pareto4_mle(mltest::as_span(above),-u,1e-10,1000,u);
+  REQUIRE(face.status==cppunivariate::BurrStatus::AllGeOne);
+  REQUIRE(face.stop_detail.limit_coef.size()==3);
+  // 100-digit original-input face: exponent = 2573485501354569.683673469387755.
+  CHECK(std::abs(face.stop_detail.limit_coef[0]/2573485501354569.683673469387755-1)<1e-10);
+  CHECK(face.stop_detail.limit_coef[1]==u);
+  const auto held_power=cppunivariate::pareto4_mle(mltest::as_span(mixed),-u,1e-10,1000,u,NAN,u/4);
+  REQUIRE(held_power.status==cppunivariate::BurrStatus::Ok);
+  // 100-digit original-input held-power and scale shape1 = 0.70650936363417601918601929544356.
+  CHECK(std::abs(held_power.shape1/0.706509363634176019-1)<1e-10);
+}
+
+TEST_CASE("pareto4: centered log spacings retain joint and held-power outcomes") {
+  constexpr double u=0x1p54;
+  const std::vector<double> x{-5,10};
+  const auto joint=cppunivariate::pareto4_mle(mltest::as_span(x),-u,1e-10,1000);
+  REQUIRE(joint.status==cppunivariate::BurrStatus::ParetoBoundary);
+  REQUIRE(joint.stop_detail.limit_coef.size()==3);
+  // 100-digit original-input Pareto exponent = 2401919801264264.866666666666667.
+  CHECK(std::abs(joint.stop_detail.limit_coef[0]/2401919801264264.866666666666667-1)<1e-10);
+  const auto power=cppunivariate::pareto4_mle(mltest::as_span(x),-u,1e-10,1000,NAN,NAN,u/4);
+  REQUIRE(power.status==cppunivariate::BurrStatus::Ok);
+  CHECK_FALSE(power.certified);
+  // The 100-digit finite Lomax maximum has shape1 = 0.60616327990857864798230917816382.
+  CHECK(std::abs(power.shape1/0.606163279908578648-1)<1e-10);
+}

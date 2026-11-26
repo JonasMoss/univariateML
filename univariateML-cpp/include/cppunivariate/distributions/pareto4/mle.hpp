@@ -7,7 +7,9 @@
 namespace cppunivariate {
 struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; bool certified=true; bool incompatible_support=false; bool unsupported_threshold=false; bool singleton_proved=false; };
 } // namespace cppunivariate
+#include "shifted_scale.hpp"
 #include "centered.hpp"
+#include "shifted_faces.hpp"
 namespace cppunivariate {
 
 inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit);
@@ -35,13 +37,16 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
   bool valid=tol>0 && std::isfinite(tol) && maxit>0 && std::isfinite(min);
   for(double v:x) valid=valid && std::isfinite(v) && v>min;
   if(!valid) y.clear();
+  bool inexact=false;
+  if(valid)for(std::size_t i=0;i<x.size();++i)
+    inexact=inexact || pareto4_detail::excess_residual(x[i],min,y[i])!=0;
   if(valid && std::isnan(shape1) && std::isnan(shape2) && !std::isnan(scale)) {
     for(double v:y)if(!std::isfinite(v))return {NAN,NAN,scale,min,NAN,0,BurrStatus::NumericalFailure};
     // A rounded equality at held scale must be an exact subtraction.
     // Error-free TwoSum residual for x[i] + (-min).
-    for(std::size_t i=0;i<x.size();++i)if(y[i]==scale) {
-      const double virtual_b=y[i]-x[i];
-      const double residual=(x[i]-(y[i]-virtual_b))+(-min-virtual_b);
+    const bool constant=std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];});
+    for(std::size_t i=0;i<x.size();++i)if(!constant && y[i]==scale) {
+      const double residual=pareto4_detail::excess_residual(x[i],min,y[i]);
       if(!std::isfinite(residual)||residual!=0)return {NAN,NAN,scale,min,NAN,0,BurrStatus::NumericalFailure};
     }
     std::vector<std::size_t> order;
@@ -57,9 +62,29 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
     if(relative_spread>0 && relative_spread<=1e-3)
       return pareto4_detail::centered_shape(x,min,shape1,tol,maxit);
   }
-  auto r=(!std::isnan(shape1)||!std::isnan(shape2)) ? burr_mle_holds(span{y.data(),y.size()},shape1,shape2,scale,tol,maxit) : std::isnan(scale) ? burr_mle_legacy(span{y.data(),y.size()},tol,maxit) : burr_mle_fixed_scale(span{y.data(),y.size()},scale,tol,maxit);
+  const bool shifted_scale=valid && !x.empty() && inexact && scale>0 && std::isfinite(scale) &&
+    (std::isnan(shape1) || (shape1>0 && std::isfinite(shape1))) &&
+    (std::isnan(shape2) || (shape2>0 && std::isfinite(shape2)));
+  const bool shifted_power=valid && inexact && !x.empty() && std::isnan(scale) && std::isnan(shape1) &&
+     shape2>0 && std::isfinite(shape2) &&
+     std::any_of(x.begin(),x.end(),[&](double v) {
+       const double y=v-min;
+       return std::isfinite(y) && std::abs(pareto4_detail::excess_residual(v,min,y)/y)*shape2>tol/64;
+     });
+  BurrMLE r{shape1,shape2,scale,NAN,0,BurrStatus::NumericalFailure};
+  if(shifted_scale)r=pareto4_detail::shifted_scale_fit(x,min,scale,shape1,shape2,tol,maxit);
+  if(shifted_power)r=pareto4_detail::shifted_power_fit(x,min,shape2,tol,maxit);
+  if(!shifted_power && (!shifted_scale || r.status==BurrStatus::NumericalFailure)) {
+    r=(!std::isnan(shape1)||!std::isnan(shape2)) ? burr_mle_holds(span{y.data(),y.size()},shape1,shape2,scale,tol,maxit) : std::isnan(scale) ? burr_mle_legacy(span{y.data(),y.size()},tol,maxit) : burr_mle_fixed_scale(span{y.data(),y.size()},scale,tol,maxit);
+    if(shifted_scale) {
+      if(r.status!=BurrStatus::Ok)
+        return {shape1,shape2,scale,min,NAN,r.iterations,BurrStatus::NumericalFailure};
+      r.certified=false;
+      r.stop_detail={};
+    }
+  }
   if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{std::isnan(shape1),std::isnan(shape2),std::isnan(scale)}},tol,maxit,false,min,r.stop_detail)){r.status=BurrStatus::NumericalFailure;record_accuracy(r,tol,{r.shape1,r.shape2,r.scale},{std::isnan(shape1)?r.shape1:0,std::isnan(shape2)?r.shape2:0,std::isnan(scale)?r.scale:0});}
-  if(r.status==BurrStatus::Ok&&!r.certified){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
+  if(r.status==BurrStatus::Ok && (!r.certified || inexact)){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
   auto detail=r.stop_detail;
   if(detail.limit_model==StopModel::None && !detail.limit_coef.empty()) {
     if(r.status==BurrStatus::AllGeOne)detail.limit_model=StopModel::Pareto;
@@ -68,7 +93,7 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
   translate_stop_faces(detail,min);
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);
   Pareto4Result out{r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
-  out.singleton_proved=r.singleton_proved && (min==0 || std::isfinite(shape1));
+  out.singleton_proved=r.status==BurrStatus::Ok && (shifted_scale ? r.certified : r.singleton_proved && (min==0 || std::isfinite(shape1)));
   return out;
 }
 // Certified joint excess fit shared by the public all-free regular path.
@@ -98,6 +123,16 @@ inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int m
     if(x[order[i]]!=x[order[i-1]] && y[order[i]]==y[order[i-1]])
       return {nan,nan,nan,min,nan,0,BurrStatus::NumericalFailure};
   auto r=burr_mle(span{y.data(),y.size()},tol,maxit);
+  if(r.status==BurrStatus::ParetoBoundary && !x.empty()) {
+    const double anchor=*std::min_element(x.begin(),x.end());
+    const double largest=*std::max_element(x.begin(),x.end());
+    const double gap=pareto4_detail::centered_log(largest,anchor,min);
+    const double relative_error=std::abs(pareto4_detail::excess_residual(anchor,min,anchor-min)/(anchor-min))+
+        std::abs(pareto4_detail::excess_residual(largest,min,largest-min)/(largest-min));
+    if(relative_error>tol*gap/64)
+      r=pareto4_detail::shifted_two_support_pareto(x,min,r);
+  }
+
   if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{true,true,true}},tol,maxit,false,min,r.stop_detail)){r.status=BurrStatus::NumericalFailure;record_accuracy(r,tol,{r.shape1,r.shape2,r.scale},{r.shape1,r.shape2,r.scale});}
   if(r.status==BurrStatus::Ok&&!r.certified){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
   auto detail=r.stop_detail;

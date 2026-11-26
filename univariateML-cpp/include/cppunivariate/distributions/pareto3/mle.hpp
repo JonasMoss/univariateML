@@ -75,7 +75,9 @@ inline Pareto3Result pareto3_mle(span x,double min,double tol,int maxit,double s
     std::nth_element(ordered.begin(),median,ordered.end());
     ref=*median;
   }
-  const ExtendedReal excess=static_cast<ExtendedReal>(ref)-min;
+  const double anchor=ref-min, virtual_min=anchor-ref;
+  const double residual=(ref-(anchor-virtual_min))+(-min-virtual_min);
+  const ExtendedReal excess=anchor;
   const ExtendedReal offset=free[1]?burr_excess_log_ratio(ref,min,unit):0;
   // A held scale already gives a fixed origin. With scale free, work in
   // log excess relative to a sample point and translate the fitted location.
@@ -83,10 +85,12 @@ inline Pareto3Result pareto3_mle(span x,double min,double tol,int maxit,double s
   std::vector<ExtendedReal> logs;
   logs.reserve(x.size());
   for(double v:x) {
-    const ExtendedReal delta=static_cast<ExtendedReal>(v)-ref;
+    const double delta=v-ref, virtual_ref=delta-v;
+    const double delta_residual=(v-(delta-virtual_ref))+(-ref-virtual_ref);
     const ExtendedReal relative=delta/excess;
+    const ExtendedReal correction=delta_residual/excess-relative*(residual/excess);
     logs.push_back(free[1] && std::fabs(relative)<0.5
-      ? std::log1p(relative)
+      ? std::log1p(relative+correction)
       : burr_excess_log_ratio(v,min,unit)-offset);
   }
   const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
