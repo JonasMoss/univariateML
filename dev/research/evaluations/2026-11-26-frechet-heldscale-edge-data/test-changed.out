@@ -1,0 +1,14 @@
+Base master; merge base 2d89fd4a117a7ee7850558e6a04b4c4d74b87589; tier dev
+Selected 1 families: frechet
+-- The CXX compiler identification is GNU 15.2.0
+1/1 Test #49: distribution_frechet .............   Passed    0.43 sec
+100% tests passed, 0 tests failed out of 1
+-- The CXX compiler identification is GNU 15.2.0
+1/1 Test #49: distribution_frechet .............   Passed    0.39 sec
+100% tests passed, 0 tests failed out of 1
+[ FAIL 0 | WARN 0 | SKIP 7 | PASS 398 ]
+# tests 237
+# pass 237
+# fail 0
+# skipped 0
+Results: [{"command": ["cmake", "-S", "univariateML-cpp", "-B", "univariateML-cpp/build", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"], "exit": 0, "seconds": 0.47}, {"command": ["cmake", "--build", "univariateML-cpp/build", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 452.93}, {"command": ["ctest", "--test-dir", "univariateML-cpp/build", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(frechet)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 0.44}, {"command": ["cmake", "-S", "univariateML-cpp", "-B", "build/cpp-no-long-double", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache", "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"], "exit": 0, "seconds": 0.45}, {"command": ["cmake", "--build", "build/cpp-no-long-double", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 445.06}, {"command": ["ctest", "--test-dir", "build/cpp-no-long-double", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(frechet)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 0.4}, {"command": ["just", "test"], "exit": 0, "seconds": 84.68}, {"command": ["just", "js-build"], "exit": 0, "seconds": 84.42}, {"command": ["just", "js-test"], "exit": 0, "seconds": 68.71}]

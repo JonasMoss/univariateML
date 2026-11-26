@@ -401,7 +401,8 @@ TEST_CASE("frechet: held public scale has a constrained global certificate") {
   CHECK(std::abs(ga)<1e-3);CHECK(std::abs(gm)<1e-3);
   const double minimum=x.front();for(double& v:x)v-=minimum;
   auto fallback=r;fallback.mu-=minimum;fallback.certified=false;
-  const auto result=cppunivariate::frechet_held_scale_certificate(mltest::as_span(x),1e-25,1,fallback);
+  auto edge=fallback;
+  const auto result=cppunivariate::frechet_held_scale_certificate(mltest::as_span(x),1e-25,1,fallback,edge);
   CHECK(result.status==fallback.status);CHECK_FALSE(result.certified);
   CHECK(result.lambda==fallback.lambda);CHECK(result.mu==fallback.mu);
   CHECK_FALSE(result.stop_detail.budget_exhausted);
@@ -635,4 +636,30 @@ TEST_CASE("frechet underflowed normalization cannot prove a new minimum majority
   const auto r=cppunivariate::frechet_mle(mltest::as_span(x));
   CHECK(cppunivariate::outcome(r).kind!=cppunivariate::OutcomeKind::Nonexistence);
   CHECK(cppunivariate::outcome(r).reason!=cppunivariate::OutcomeReason::InvalidInput);
+}
+
+TEST_CASE("frechet: held scale compares the attained edge and interior") {
+  // Independent 80-decimal-digit solve on binary64 inputs, rounded to 17
+  // significant digits in reference.py under the TASK-299 evaluation data.
+  const std::vector<double> x39{0,0,0,.05,.05,.05,.05,39};
+  const auto interior=cppunivariate::frechet_mle(mltest::as_span(x39),1e-10,100,NAN,NAN,1);
+  REQUIRE(interior.status==cppunivariate::FrechetStatus::Ok);
+  CHECK(interior.restricted==0);
+  CHECK(interior.sigma==1);
+  CHECK(interior.lambda==doctest::Approx(1.5749138895275251).epsilon(1e-10).scale(0));
+  CHECK(interior.mu==doctest::Approx(-0.70401871932422438).epsilon(1e-10).scale(0));
+  CHECK(interior.logLik==doctest::Approx(-11.683597333939747).epsilon(1e-12));
+
+  const std::vector<double> x40{0,0,0,.05,.05,.05,.05,40};
+  const auto edge=cppunivariate::frechet_mle(mltest::as_span(x40),1e-10,100,NAN,NAN,1);
+  REQUIRE(edge.status==cppunivariate::FrechetStatus::Ok);
+  const auto outcome=cppunivariate::outcome(edge);
+  CHECK(outcome.certified);
+  CHECK(outcome.uniqueness_known);
+  CHECK(outcome.unique);
+  CHECK(edge.restricted==1);
+  CHECK(edge.sigma==1);
+  CHECK(edge.lambda==1);
+  CHECK(edge.mu==doctest::Approx(-0.47304591074665926).epsilon(1e-10).scale(0));
+  CHECK(edge.logLik==doctest::Approx(-11.739306349287975).epsilon(1e-12));
 }

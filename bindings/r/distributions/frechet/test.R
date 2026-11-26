@@ -318,3 +318,23 @@ test_that("an unordered Frechet Gumbel comparison retains the finite search", {
   expect_gt(f[["lambda"]],1e5)
   expect_true(is.finite(as.numeric(logLik(f))))
 })
+
+test_that("Frechet held scale returns the winning shape-one edge", {
+  # Independent 80-decimal-digit solve on binary64 inputs, rounded to 17
+  # significant digits in reference.py under the TASK-299 evaluation data.
+  x <- c(0, 0, 0, rep(1/20, 4))
+  interior <- mlfrechet(c(x, 39), mu = NULL, sigma = 1)
+  expect_identical(interior[["sigma"]], 1)
+  expect_equal(interior[["lambda"]], 1.5749138895275251, tolerance = 1e-10)
+  expect_equal(interior[["mu"]], -0.70401871932422438, tolerance = 1e-10)
+  expect_equal(as.numeric(logLik(interior)), -11.683597333939747, tolerance = 1e-12)
+
+  expect_warning(edge <- mlfrechet(c(x, 40), mu = NULL, sigma = 1),
+                 class = "univariateML_restricted")
+  expect_identical(edge[["sigma"]], 1)
+  expect_identical(edge[["lambda"]], 1)
+  expect_equal(edge[["mu"]], -0.47304591074665926, tolerance = 1e-10)
+  expect_equal(as.numeric(logLik(edge)), -11.739306349287975, tolerance = 1e-12)
+  expect_identical(attr(edge, "certified"), TRUE)
+  expect_identical(attr(edge, "unique"), TRUE)
+})

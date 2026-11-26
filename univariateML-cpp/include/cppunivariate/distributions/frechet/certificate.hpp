@@ -209,38 +209,77 @@ inline gev_held_detail::Evaluation evaluate(span data,gev_held_detail::Box b) {
 // Public scale is one in these minimum-pivot coordinates. The fixed-shape
 // location root lies in k/(2n)<=e<=1 for every lambda>=1. The shape tail
 // envelope below excludes lambda=infinity without a free-scale Gumbel face.
-inline FrechetResult frechet_held_scale_certificate(span data,double tol,int maxit,FrechetResult fallback) {
-  if(fallback.status!=FrechetStatus::Ok||!std::isfinite(fallback.logLik)||
-     tol<1024*std::numeric_limits<double>::epsilon())return fallback;
+inline FrechetResult frechet_held_scale_certificate(span data,double tol,int maxit,FrechetResult search,
+                                                       FrechetResult& edge) {
+  if(search.status!=FrechetStatus::Ok||!std::isfinite(search.logLik)||
+     tol<1024*std::numeric_limits<double>::epsilon())return search;
   const double n=static_cast<double>(data.size());
   double D=0,k=0;for(double v:data) {D=std::max(D,v);if(v==0)++k;}
-  const double c=std::asinh(D/2);if(!(c>0)||!std::isfinite(c))return fallback;
+  const double c=std::asinh(D/2);if(!(c>0)||!std::isfinite(c))return search;
   double upper=std::max({2.,2*n/c,2*std::sqrt(n)/c});bool tail=false;
   for(int it=0;it<maxit;++it) {
     const double t=upper*c;
     const double envelope=n*std::log1p(upper)+std::max(-(upper+1)*c,c-1-t*t/2);
-    if(envelope<fallback.logLik-1e-8*(n+std::abs(fallback.logLik))) {tail=true;break;}
+    if(envelope<search.logLik-1e-8*(n+std::abs(search.logLik))) {tail=true;break;}
     upper*=2;if(!std::isfinite(upper))break;
   }
-  if(!tail)return fallback;
+  if(!tail)return search;
   // Strictly outward bounds; neither location edge can be a maximum.
   const gev_held_detail::Box domain{{1,upper},{std::log(k/(2*n))-1e-8,1e-8}};
-  auto eval=[&](gev_held_detail::Box b) {return frechet_held_detail::evaluate(data,b);};
+  const auto cap=certificate_budget(maxit);
+  std::int64_t evaluations=0;
+  auto eval=[&](gev_held_detail::Box b) {
+    if(evaluations>=cap)return gev_held_detail::Evaluation{};
+    ++evaluations;
+    return frechet_held_detail::evaluate(data,b);
+  };
   auto precise=[&](gev_held_detail::Box b,double t) {
     return b.x.hi-b.x.lo<=t*.25*(b.x.lo+b.x.hi)/2&&std::expm1(b.y.hi-b.y.lo)<=t*.25;
   };
-  // The profile already covers the attained shape-one edge cheaply; the
-  // piecewise growth is useful for interior roots and unnecessary at this edge.
-  const auto result=gev_held_detail::cover(domain,fallback.lambda,std::log(-fallback.mu),std::min(tol,.01),maxit,eval,precise,true,{},NAN,std::log(k/n),{-INFINITY,INFINITY},NAN,false);
-  if(result.contradicted) {
-    fallback.lambda=result.competitor.x.lo;fallback.mu=-std::exp(result.competitor.y.lo);
+  // The edge uses the profile cover directly, without basin enlargement.
+  auto cover=[&](const FrechetResult& fit) {
+    return gev_held_detail::cover(domain,fit.lambda,std::log(-fit.mu),std::min(tol,.01),
+      maxit,eval,precise,true,{},NAN,std::log(k/n),{-INFINITY,INFINITY},NAN,false);
+  };
+  auto certify=[&](FrechetResult& fallback,const gev_held_detail::Cover& result) {
+    fallback.lambda=(result.root.x.lo+result.root.x.hi)/2;
+    fallback.mu=-std::exp((result.root.y.lo+result.root.y.hi)/2);
     fallback.logLik=frechet_loglik(data,fallback.lambda,fallback.mu,1);
-    fallback.status=FrechetStatus::SearchContradicted;return fallback;
+    fallback.certified=true;fallback.singleton_proved=true;
+  };
+  const auto result=cover(search);
+  if(!result.contradicted) {
+    if(result.certified)certify(search,result);
+    return search;
   }
-  if(!result.certified)return fallback;
-  fallback.lambda=(result.root.x.lo+result.root.x.hi)/2;
-  fallback.mu=-std::exp((result.root.y.lo+result.root.y.hi)/2);
-  fallback.logLik=frechet_loglik(data,fallback.lambda,fallback.mu,1);
-  fallback.certified=true;fallback.singleton_proved=true;return fallback;
+  const bool interior=search.lambda>1;
+  search.lambda=result.competitor.x.lo;search.mu=-std::exp(result.competitor.y.lo);
+  search.logLik=frechet_loglik(data,search.lambda,search.mu,1);
+  search.status=FrechetStatus::SearchContradicted;
+  if(!interior)return search;
+
+  // A slab midpoint can refute the search even when its slab contains the
+  // attained shape-one maximum. Solve the edge itself before trying a cover.
+  const auto root=frechet_fixed_shape_certificate(data,1,true,tol,maxit);
+  FrechetResult trial{1,root.mu,1,root.logLik,root.iterations,root.status};
+  if(trial.status!=FrechetStatus::Ok || !frechet_held_detail::polish(data,trial,tol,maxit))return search;
+  const double u=std::log(-trial.mu);
+  const auto point=eval({{1,1},{u,u}});
+  const auto witness=eval(result.competitor);
+  const auto isolated=eval(result.root);
+  if(!point.ok||!witness.ok||!isolated.ok)return search;
+  const double margin=4096*std::numeric_limits<double>::epsilon()*
+    (1+std::max(std::abs(witness.jet.v.hi),std::abs(isolated.jet.v.hi))+std::abs(point.jet.v.lo));
+  if(!(point.jet.v.lo>isolated.jet.v.hi+margin))return search;
+  const auto retry=cover(trial);
+  if(retry.certified && retry.root.x.hi==1) {
+    certify(trial,retry);
+    edge=trial;
+  } else if(!retry.certified && !retry.contradicted &&
+            (search.lambda==1 || point.jet.v.lo>witness.jet.v.hi+margin)) {
+    trial.certified=false;
+    edge=trial;
+  }
+  return search;
 }
 } // namespace cppunivariate
