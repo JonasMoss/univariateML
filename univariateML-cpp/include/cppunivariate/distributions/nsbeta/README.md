@@ -40,7 +40,7 @@ r:
   control:
     min: Known finite lower endpoint.
     max: Known finite upper endpoint larger than min.
-    tol: Delegate fitting tolerance.
+    tol: Requested relative shape accuracy.
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
     shape1: Known positive finite coefficient; NULL estimates it.
     shape2: Known positive finite coefficient; NULL estimates it.
@@ -118,7 +118,7 @@ relations:
     shift: min
     scale: max-min
 fit:
-  method: delegation
+  method: profile-search
   certified: 'yes'
   note: 'nsbeta/README.md, Details; nsbeta/mle.hpp (public fitter and held overloads); nsbeta/test.cpp: Strictly
     concave beta likelihood in its two shapes; held-shape digamma scores decrease strictly. nsbeta uses supplied
@@ -181,15 +181,15 @@ $\sqrt{t/(2\pi u(1-u))}/(b-a)$. Its $n$th power diverges.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
-For at least two finite, nonconstant observations strictly between the held bounds, the MLE is unique and attained: the transformed beta log likelihood is strictly concave in its two shapes. Constant transformed data have unbounded likelihood as both shapes grow.
+For at least two finite, nonconstant observations strictly between the held bounds, the MLE is unique and attained: the transformed beta log likelihood is strictly concave in its two shapes. If both shapes are free, the constant-sample test uses the observations on their original scale.
 
 Observations must be strictly inside the held support. Endpoint estimation with held shapes is not implemented. It is not always a mathematical failure: with both shapes equal to one, the uniform likelihood is maximized by placing free endpoints at the sample extremes, provided the fitted interval has positive width. The fit retains the beta model's sample restrictions and limiting comparisons.
 
-Hold the opposite endpoint beyond the sample. If the shape $s$ associated with the free endpoint satisfies $s<1$, moving that endpoint to within $\varepsilon$ of the corresponding sample extreme gives $k$ factors proportional to $\varepsilon^{s-1}$, where $k$ observations equal that extreme. All other factors approach positive constants, so the likelihood diverges. The held-bounds fit transforms to beta and subtracts $n\log(b-a)$ from the log likelihood.
+Hold the opposite endpoint beyond the sample. If the shape $s$ associated with the free endpoint satisfies $s<1$, moving that endpoint to within $\varepsilon$ of the corresponding sample extreme gives $k$ factors proportional to $\varepsilon^{s-1}$, where $k$ observations equal that extreme. All other factors approach positive constants, so the likelihood diverges.
 
 With both bounds held, either held beta shape leaves a strictly decreasing score with one root for the other shape, even on constant samples strictly inside the bounds.
 
-With one shape held, the free shape uses the same monotone beta score solve as the unit-interval family, with the caller’s iteration budget. This matters near a held endpoint: the free shape may exceed $10^{150}$ while the observations remain finite. The score uses a digamma increment, and the normalizer uses a log-beta difference, so neither is recovered by subtracting nearly equal special-function values. The [endpoint reference cases](../../../../../dev/research/evaluations/2026-11-09-audit-beta-data/reference.json) cover both tails and include a free shape above $10^{150}$.
+With either shape free, distances to the two supplied endpoints determine the log coordinates. Forming the smaller distance directly preserves the score when the other coordinate rounds to one. The two-shape fit also retains differences between the original observations when checking the precision score, whose leading data term is quadratic in those differences. See the [fixed-endpoint accuracy analysis](../../../../../dev/research/evaluations/2026-11-25-nsbeta-math-report.md#public-coefficient-and-restoration-checks).
 
 ## R notes
 

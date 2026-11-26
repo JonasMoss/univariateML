@@ -162,3 +162,42 @@ TEST_CASE("nsbeta: concentrated delegated beta logLik evaluates the public shape
   for(double v:x)ll+=cppunivariate::distributions::dnsbeta(v,r.shape1,r.shape2,r.min,r.max,true);
   CHECK(std::abs(r.logLik-ll)<=1e-10*std::max(1.,std::abs(ll)));
 }
+
+TEST_CASE("nsbeta: distinct data near a far endpoint retain their beta scores") {
+  const std::vector<double> x{0, .125};
+  const double lower = -std::ldexp(1.,50);
+  // Physical score roots at 100 and 150 decimal digits:
+  // a=269815063111301675.625417045340009664, b=224.666171592642622251376564805833.
+  const auto joint = cppunivariate::nsbeta_mle(mltest::as_span(x),lower,1,1e-10,1000);
+  REQUIRE(joint.status==cppunivariate::BetaStatus::Ok);
+  CHECK(joint.shape1==doctest::Approx(269815063111301675.625417).epsilon(1e-10));
+  CHECK(joint.shape2==doctest::Approx(224.666171592642622251377).epsilon(1e-10));
+  CHECK(joint.logLik==doctest::Approx(2.70878626402832708632147).epsilon(1e-10));
+
+  // With b=1 the exact root -1/mean(log(y)) is 1200959900632132.83111111111111104.
+  const auto held = cppunivariate::nsbeta_mle(mltest::as_span(x),lower,1,1e-10,1000,NAN,1);
+  REQUIRE(held.status==cppunivariate::BetaStatus::Ok);
+  CHECK(held.shape1==doctest::Approx(1200959900632132.83111111).epsilon(1e-10));
+  CHECK(held.shape2==1);
+  CHECK(held.logLik==doctest::Approx(-1.87092295772485682768763).epsilon(1e-10));
+
+  // With a=1, the other score gives b=0.028798422075126459895898121273204.
+  const auto other = cppunivariate::nsbeta_mle(mltest::as_span(x),lower,1,1e-10,1000,1,NAN);
+  REQUIRE(other.status==cppunivariate::BetaStatus::Ok);
+  CHECK(other.shape2==doctest::Approx(0.0287984220751264598958981).epsilon(1e-10).scale(0));
+
+  // Evaluated at the exact binary64 held coefficient and physical sample.
+  const auto fixed = cppunivariate::nsbeta_mle(mltest::as_span(x),lower,1,1e-10,1000,held.shape1,1);
+  REQUIRE(fixed.status==cppunivariate::BetaStatus::Ok);
+  CHECK(fixed.logLik==doctest::Approx(-1.87092295772485682768763).epsilon(1e-10));
+}
+
+TEST_CASE("nsbeta: physical score check preserves diffuse fits with subnormal data") {
+  for (const std::vector<double>& x : {std::vector<double>{1e-320,.5},
+                                      std::vector<double>{.5,1e-320}}) {
+    const auto r = cppunivariate::nsbeta_mle(mltest::as_span(x),0,1,1e-10,1000);
+    REQUIRE(r.status==cppunivariate::BetaStatus::Ok);
+    CHECK(r.shape1>0);
+    CHECK(r.shape2>0);
+  }
+}

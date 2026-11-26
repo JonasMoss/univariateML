@@ -160,3 +160,23 @@ test_that("concentrated nonstandard beta retains its delegated public logLik", {
   ll <- sum(dml(x,fit,log=TRUE))
   expect_lte(abs(as.numeric(logLik(fit))-ll),1e-10*max(1,abs(ll)))
 })
+
+test_that("nsbeta retains distinct observations and shape scores at a far endpoint", {
+  x <- c(0, 1/8)
+  joint <- mlnsbeta(x, min = -2^50, max = 1)
+  # Physical roots at 100 and 150 decimal digits:
+  # a=269815063111301675.625417045340009664, b=224.666171592642622251376564805833.
+  expect_lt(max(abs(as.numeric(joint[1:2]) /
+                     c(269815063111301675.625417, 224.666171592642622251377) - 1)), 1e-10)
+  expect_equal(as.numeric(logLik(joint)), 2.70878626402832708632147, tolerance = 1e-10)
+  expect_true(attr(joint, "certified"))
+  expect_true(attr(joint, "unique"))
+
+  held <- mlnsbeta(x, min = -2^50, max = 1, shape2 = 1)
+  # Exact -1/mean(log(y)) = 1200959900632132.83111111111111104.
+  expect_lt(abs(held[["shape1"]] / 1200959900632132.83111111 - 1), 1e-10)
+  expect_identical(held[["shape2"]], 1)
+  expect_equal(as.numeric(logLik(held)), -1.87092295772485682768763, tolerance = 1e-10)
+  expect_true(attr(held, "certified"))
+  expect_true(attr(held, "unique"))
+})
