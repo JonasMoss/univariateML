@@ -763,3 +763,63 @@ TEST_CASE("binom: zero atoms and exact constant-sample size ties") {
     CHECK(result.stop_detail.candidates.empty());
   }
 }
+
+TEST_CASE("binom: held probability checks both neighbors by exact ratios") {
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const auto check_pair = [&](const std::vector<int>& x, double p, double lower, double ll) {
+    const auto result = cppunivariate::binom_mle(as_ispan(x), nan, 1e-10, 100, p);
+    const auto o = cppunivariate::outcome(result);
+    REQUIRE(result.status == cppunivariate::BinomStatus::Ok);
+    CHECK(o.certified);
+    CHECK(o.uniqueness_known);
+    CHECK_FALSE(o.unique);
+    CHECK(result.size == lower);
+    CHECK(result.prob == p);
+    REQUIRE(result.maximizers.size == 1);
+    const auto* pair = std::get_if<cppunivariate::Points>(&result.maximizers.pieces[0].value);
+    REQUIRE(pair != nullptr);
+    REQUIRE(pair->size == 2);
+    for (std::size_t i = 0; i < pair->size; ++i) {
+      CHECK(pair->values[i].estimate.values[0] == lower + i);
+      CHECK(pair->values[i].estimate.values[1] == p);
+      double value = 0;
+      for (int v : x) value += dist::dbinom(v, lower + i, p, true);
+      CHECK(value == doctest::Approx(ll).epsilon(1e-13));
+    }
+    CHECK(result.logLik == doctest::Approx(ll).epsilon(1e-13));
+  };
+  // Exact masses, mpmath 100 dps. Digits shown at the two tied sizes.
+  check_pair({0, 6}, .5, 7, -7.758150378783921026735896956971292);
+  check_pair({0, 0, 7}, .5, 7, -14.556090791758851497761874550621708);
+  check_pair({0, 7}, .25, 15, -7.551241074199968625436606011670816);
+  check_pair({1, 1, 1, 1}, .5, 1, -2.772588722239781237668928485832706);
+  std::vector<int> repeated;
+  for (int i = 0; i < 64; ++i) {
+    repeated.push_back(0);
+    repeated.push_back(6);
+  }
+  check_pair(repeated, .5, 7, 64 * -7.758150378783921026735896956971292);
+  const auto unresolved = cppunivariate::binom_mle(as_ispan(repeated), nan, 1e-10, 5, .5);
+  const auto pending = cppunivariate::outcome(unresolved);
+  REQUIRE(unresolved.status == cppunivariate::BinomStatus::Ok);
+  CHECK_FALSE(pending.certified);
+  CHECK_FALSE(pending.uniqueness_known);
+  CHECK((unresolved.size == 7 || unresolved.size == 8));
+
+  const auto check_single = [&](const std::vector<int>& x, double p, double size, double ll) {
+    const auto result = cppunivariate::binom_mle(as_ispan(x), nan, 1e-10, 100, p);
+    const auto o = cppunivariate::outcome(result);
+    REQUIRE(result.status == cppunivariate::BinomStatus::Ok);
+    CHECK(o.certified);
+    CHECK(o.uniqueness_known);
+    CHECK(o.unique);
+    CHECK(result.size == size);
+    CHECK(result.prob == p);
+    CHECK(result.maximizers.size == 0);
+    CHECK(result.logLik == doctest::Approx(ll).epsilon(1e-13));
+  };
+  // Winners from exact binary64 rational holds, mpmath 100 dps.
+  check_single({0, 6}, std::nextafter(.5, 0.), 8, -7.758150378783920582646687106908775);
+  check_single({0, 6}, std::nextafter(.5, 1.), 7, -7.758150378783921470825106807034254);
+  check_single({0, 1, 6}, 1. / 3., 9, -9.171546806660522314667972576844090);
+}

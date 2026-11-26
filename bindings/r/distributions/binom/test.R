@@ -331,3 +331,38 @@ test_that("zero modifiers publish the full Bernoulli and positive-component sets
   expect_true(all(rows$size == 1 | rows$prob == 0))
   expect_true(all(rows$p0 == .4))
 })
+
+test_that("ordinary binomial held probability reports exact adjacent winners", {
+  check_pair <- function(x, prob, size, ll) {
+    f <- mlbinom(x, size = NULL, prob = prob)
+    rows <- attr(f, "maximizers")
+    expect_true(attr(f, "certified"))
+    expect_false(attr(f, "unique"))
+    expect_equal(unname(as.numeric(f)), c(size, prob))
+    expect_identical(rows$size, c(size, size + 1))
+    expect_identical(rows$prob, rep(prob, 2))
+    expect_identical(rows$loglik_lower, rep(as.numeric(logLik(f)), 2))
+    expect_identical(rows$loglik_upper, rows$loglik_lower)
+    expect_equal(as.numeric(logLik(f)), ll, tolerance = 1e-13)
+    for (n in rows$size)
+      expect_equal(sum(stats::dbinom(x, n, prob, log = TRUE)), ll, tolerance = 1e-13)
+  }
+  # Exact masses, mpmath 100 dps. Digits shown at both tied sizes.
+  check_pair(c(0, 6), .5, 7, -7.758150378783921026735896956971292)
+  check_pair(c(0, 0, 7), .5, 7, -14.556090791758851497761874550621708)
+  check_pair(c(0, 7), .25, 15, -7.551241074199968625436606011670816)
+  check_pair(rep(1, 4), .5, 1, -2.772588722239781237668928485832706)
+
+  check_single <- function(x, prob, size, ll) {
+    f <- mlbinom(x, size = NULL, prob = prob)
+    expect_true(attr(f, "certified"))
+    expect_true(attr(f, "unique"))
+    expect_identical(unname(as.numeric(f)), c(size, prob))
+    expect_null(attr(f, "maximizers"))
+    expect_equal(as.numeric(logLik(f)), ll, tolerance = 1e-13)
+  }
+  # Winners from exact binary64 rational holds, mpmath 100 dps.
+  check_single(c(0, 6), .5 - 2^-54, 8, -7.758150378783920582646687106908775)
+  check_single(c(0, 6), .5 + 2^-53, 7, -7.758150378783921470825106807034254)
+  check_single(c(0, 1, 6), 1 / 3, 9, -9.171546806660522314667972576844090)
+})

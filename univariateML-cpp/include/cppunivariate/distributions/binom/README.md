@@ -169,10 +169,10 @@ relations:
         prob: prob
 fit:
   method: integer-search
-  certified: 'yes'
-  note: 'binom/README.md, Details; binom/mle.hpp (public fitter and held overloads); binom/test.cpp: Free-size profile
-    is unimodal (DeRiggi result cited in Details); held-probability search excludes the entire integer tail. Fixed-size
-    probability is analytic; work-budget exhaustion stops.'
+  certified: partial
+  note: 'binom/README.md, Details; binom/mle.hpp; binom/test.cpp: Fixed-size probability is analytic. The both-free
+    profile is unimodal (DeRiggi result cited in Details). Held-probability comparisons certify a pair or a strict
+    winner when resolved. An unresolved comparison leaves a successful search candidate uncertified.'
 areas:
 - counts and ecology
 existence:
@@ -384,7 +384,15 @@ For all-zero data the maximum is attained exactly on $n=0$ or $p=0$, intersected
 Constant positive counts give $n=\bar x,p=1$.
 
 A held probability is preserved exactly. For $0<p<1$, adjacent likelihood
-ratios bound the remaining integer tail before the fit returns. For a positive constant count $x$, a fused product tests the exact crossing $p(n+1)=x$. When both sizes are admissible, $n$ and $n+1$ are the only maximizers. Boundary
+ratios decrease strictly when any count is positive. An exact adjacent
+ratio of one therefore identifies the full maximizing pair. The fitter
+checks both feasible neighbors of the proposed size using the dyadic
+value of the held probability and reports the smaller size with both
+maximizers. A singleton requires strict signs on the feasible sides.
+When exact ordering and the floating-point margin both leave a sign
+unresolved, the search candidate is flagged uncertified.
+[Exact size-tie derivation](../../../../../dev/research/evaluations/2026-11-25-binom-ties-math-report.md).
+Boundary
 probabilities require positive likelihood for the observations. Holding
 $p=0$ requires all-zero data and leaves the trial count unidentified,
 represented by zero. Holding $p=1$ requires constant counts and sets the
