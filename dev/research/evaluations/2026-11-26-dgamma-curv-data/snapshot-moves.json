@@ -1,0 +1,815 @@
+{
+  "native": {
+    "rows": 79,
+    "changes": 14,
+    "by_route": {
+      "Certified unique via the curvature proof and coefficient brackets": 11,
+      "Checked multistart fit with inconclusive curvature certificate": 3
+    },
+    "moves": [
+      {
+        "source": "archive",
+        "case": "000986",
+        "held": {},
+        "input_sha256": "a503cabea92c0e79",
+        "changed_fields": [
+          "iterations",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 0.0,
+          "shape": 0.0
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "golden",
+        "case": "golden",
+        "held": {},
+        "input_sha256": "dcafd96f0c65ddef",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 2.284287656191311e-16,
+          "shape": 2.215923073192771e-16
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "class",
+        "case": "base6",
+        "held": {},
+        "input_sha256": "4b153affbbbc0334",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 1.8354340565964948e-16,
+          "shape": 1.9971164076255905e-16
+        },
+        "logLik_change": 1.7763568394002505e-15
+      },
+      {
+        "source": "class",
+        "case": "two",
+        "held": {},
+        "input_sha256": "b9527779d18b2539",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 1.1239641161036016e-16,
+          "shape": 0.0
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "class",
+        "case": "ties",
+        "held": {},
+        "input_sha256": "7e8e4aec8eab4752",
+        "changed_fields": [
+          "certified",
+          "outcome"
+        ],
+        "route": "Checked multistart fit with inconclusive curvature certificate",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": false,
+          "unique": null
+        },
+        "relative_coefficient_change": {
+          "rate": 0.0,
+          "shape": 0.0
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "class",
+        "case": "half-ties",
+        "held": {},
+        "input_sha256": "bd41c00c887730f1",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 0.0,
+          "shape": 1.8644296506056833e-16
+        },
+        "logLik_change": 1.7763568394002505e-15
+      },
+      {
+        "source": "class",
+        "case": "wide",
+        "held": {},
+        "input_sha256": "36f4948675d1d54b",
+        "changed_fields": [
+          "estimates",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 1.7915158924185386e-15,
+          "shape": 3.4121075915380206e-16
+        },
+        "logLik_change": -5.57555779323593e-10
+      },
+      {
+        "source": "resample",
+        "case": "n3-s0",
+        "held": {},
+        "input_sha256": "a1c442fba052c637",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 3.740495882179293e-16,
+          "shape": 3.9097692161153323e-16
+        },
+        "logLik_change": 1.7763568394002505e-15
+      },
+      {
+        "source": "resample",
+        "case": "n3-s2",
+        "held": {},
+        "input_sha256": "a0502041af5d3c05",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 1.5746752208035628e-15,
+          "shape": 1.672822916220947e-15
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "resample",
+        "case": "n3-s3",
+        "held": {},
+        "input_sha256": "b3c6b73a66fc5b1f",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 2.6002790458372787e-15,
+          "shape": 2.9387202059982783e-15
+        },
+        "logLik_change": 4.440892098500626e-16
+      },
+      {
+        "source": "resample",
+        "case": "n7-s0",
+        "held": {},
+        "input_sha256": "700f078f2e760b20",
+        "changed_fields": [
+          "certified",
+          "outcome"
+        ],
+        "route": "Checked multistart fit with inconclusive curvature certificate",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": false,
+          "unique": null
+        },
+        "relative_coefficient_change": {
+          "rate": 0.0,
+          "shape": 0.0
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "resample",
+        "case": "n7-s1",
+        "held": {},
+        "input_sha256": "36ce8803ca72c843",
+        "changed_fields": [
+          "certified",
+          "outcome"
+        ],
+        "route": "Checked multistart fit with inconclusive curvature certificate",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": false,
+          "unique": null
+        },
+        "relative_coefficient_change": {
+          "rate": 0.0,
+          "shape": 0.0
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "resample",
+        "case": "n7-s2",
+        "held": {},
+        "input_sha256": "83eab30eafbcd8da",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 1.3479409036971438e-15,
+          "shape": 1.3963372933965434e-15
+        },
+        "logLik_change": -1.7763568394002505e-15
+      },
+      {
+        "source": "resample",
+        "case": "n7-s3",
+        "held": {},
+        "input_sha256": "d15438ba47538afc",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 1.2079373368956646e-16,
+          "shape": 2.3283376144012513e-16
+        },
+        "logLik_change": 0.0
+      }
+    ]
+  },
+  "double": {
+    "rows": 79,
+    "changes": 14,
+    "by_route": {
+      "Certified unique via the curvature proof and coefficient brackets": 11,
+      "Checked multistart fit with inconclusive curvature certificate": 3
+    },
+    "moves": [
+      {
+        "source": "archive",
+        "case": "000986",
+        "held": {},
+        "input_sha256": "a503cabea92c0e79",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 3.4865547111675423e-15,
+          "shape": 4.113876026522067e-15
+        },
+        "logLik_change": 7.105427357601002e-15
+      },
+      {
+        "source": "golden",
+        "case": "golden",
+        "held": {},
+        "input_sha256": "dcafd96f0c65ddef",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 4.568575312382613e-16,
+          "shape": 2.2159230731927665e-16
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "class",
+        "case": "base6",
+        "held": {},
+        "input_sha256": "4b153affbbbc0334",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 2.202520867915796e-15,
+          "shape": 1.997116407625592e-15
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "class",
+        "case": "two",
+        "held": {},
+        "input_sha256": "b9527779d18b2539",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 1.910738997376111e-15,
+          "shape": 2.4329297693337793e-15
+        },
+        "logLik_change": 1.3322676295501878e-15
+      },
+      {
+        "source": "class",
+        "case": "ties",
+        "held": {},
+        "input_sha256": "7e8e4aec8eab4752",
+        "changed_fields": [
+          "certified",
+          "outcome"
+        ],
+        "route": "Checked multistart fit with inconclusive curvature certificate",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": false,
+          "unique": null
+        },
+        "relative_coefficient_change": {
+          "rate": 0.0,
+          "shape": 0.0
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "class",
+        "case": "half-ties",
+        "held": {},
+        "input_sha256": "bd41c00c887730f1",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 0.0,
+          "shape": 1.8644296506056819e-16
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "class",
+        "case": "wide",
+        "held": {},
+        "input_sha256": "36f4948675d1d54b",
+        "changed_fields": [
+          "estimates",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 1.589888921983224e-12,
+          "shape": 6.537598145385363e-13
+        },
+        "logLik_change": -5.619149590074812e-10
+      },
+      {
+        "source": "resample",
+        "case": "n3-s0",
+        "held": {},
+        "input_sha256": "a1c442fba052c637",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 7.480991764358594e-16,
+          "shape": 7.81953843223067e-16
+        },
+        "logLik_change": -4.440892098500626e-15
+      },
+      {
+        "source": "resample",
+        "case": "n3-s2",
+        "held": {},
+        "input_sha256": "a0502041af5d3c05",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 2.785963852190878e-15,
+          "shape": 2.341952082709289e-15
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "resample",
+        "case": "n3-s3",
+        "held": {},
+        "input_sha256": "b3c6b73a66fc5b1f",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 1.462656963283471e-14,
+          "shape": 1.422959257641271e-14
+        },
+        "logLik_change": 4.440892098500626e-16
+      },
+      {
+        "source": "resample",
+        "case": "n7-s0",
+        "held": {},
+        "input_sha256": "700f078f2e760b20",
+        "changed_fields": [
+          "certified",
+          "outcome"
+        ],
+        "route": "Checked multistart fit with inconclusive curvature certificate",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": false,
+          "unique": null
+        },
+        "relative_coefficient_change": {
+          "rate": 0.0,
+          "shape": 0.0
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "resample",
+        "case": "n7-s1",
+        "held": {},
+        "input_sha256": "36ce8803ca72c843",
+        "changed_fields": [
+          "certified",
+          "outcome"
+        ],
+        "route": "Checked multistart fit with inconclusive curvature certificate",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": false,
+          "unique": null
+        },
+        "relative_coefficient_change": {
+          "rate": 0.0,
+          "shape": 0.0
+        },
+        "logLik_change": 0.0
+      },
+      {
+        "source": "resample",
+        "case": "n7-s2",
+        "held": {},
+        "input_sha256": "83eab30eafbcd8da",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "logLik",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 3.8512597248489815e-15,
+          "shape": 2.676313145676707e-15
+        },
+        "logLik_change": 1.7763568394002505e-15
+      },
+      {
+        "source": "resample",
+        "case": "n7-s3",
+        "held": {},
+        "input_sha256": "d15438ba47538afc",
+        "changed_fields": [
+          "estimates",
+          "iterations",
+          "outcome",
+          "unique"
+        ],
+        "route": "Certified unique via the curvature proof and coefficient brackets",
+        "before": {
+          "kind": "ok",
+          "certified": true,
+          "unique": null
+        },
+        "after": {
+          "kind": "ok",
+          "certified": true,
+          "unique": true
+        },
+        "relative_coefficient_change": {
+          "rate": 1.3287310705852313e-15,
+          "shape": 1.5134194493608138e-15
+        },
+        "logLik_change": 0.0
+      }
+    ]
+  },
+  "routes-native": {
+    "rows": 0,
+    "changes": 0,
+    "by_route": {},
+    "moves": []
+  },
+  "routes-double": {
+    "rows": 0,
+    "changes": 0,
+    "by_route": {},
+    "moves": []
+  }
+}

@@ -44,8 +44,9 @@ univariateML-cpp/include/cppunivariate/distributions/cmb/mle.hpp,"FitOutcome::es
 univariateML-cpp/include/cppunivariate/distributions/cmp/mle.hpp,"FitOutcome::estimate(true, r.unique)",univariateML-cpp/include/cppunivariate/distributions/cmp/README.md
 univariateML-cpp/include/cppunivariate/distributions/cmp/mle.hpp,"FitOutcome::estimate(true, r.unique)",univariateML-cpp/include/cppunivariate/distributions/cmp/README.md
 univariateML-cpp/include/cppunivariate/distributions/dblpareto/mle.hpp,"FitOutcome::estimate(true, !r.maximizers.size)",univariateML-cpp/include/cppunivariate/distributions/dblpareto/README.md
+univariateML-cpp/include/cppunivariate/distributions/dgamma/mle.hpp,out.singleton_proved = true,dev/research/evaluations/2026-11-25-dgamma2-math-report.md
 univariateML-cpp/include/cppunivariate/distributions/dgamma/mle.hpp,r.singleton_proved=!std::isnan(shape) || !std::isnan(rate),univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md; dev/research/evaluations/2026-11-25-transfer-math-report.md
-univariateML-cpp/include/cppunivariate/distributions/dgamma/mle.hpp,FitOutcome::singleton(true),univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md; dev/research/evaluations/2026-11-25-transfer-math-report.md
+univariateML-cpp/include/cppunivariate/distributions/dgamma/mle.hpp,FitOutcome::singleton(true),univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md; dev/research/evaluations/2026-11-25-transfer-math-report.md; dev/research/evaluations/2026-11-25-dgamma2-math-report.md
 univariateML-cpp/include/cppunivariate/distributions/dlaplace/mle.hpp,"FitOutcome::estimate(true, !r.not_unique)",univariateML-cpp/include/cppunivariate/distributions/dlaplace/README.md
 univariateML-cpp/include/cppunivariate/distributions/dnorm/mle.hpp,FitOutcome::singleton(true),univariateML-cpp/include/cppunivariate/distributions/dnorm/README.md; dev/research/evaluations/2026-11-25-transfer-math-report.md
 univariateML-cpp/include/cppunivariate/distributions/dunif/mle.hpp,FitOutcome::singleton(true),univariateML-cpp/include/cppunivariate/distributions/dunif/README.md

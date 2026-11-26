@@ -53,8 +53,9 @@ existence:
     integer sample range is at least two. Constant samples and samples on
     two adjacent integers have unattained suprema. With either coefficient
     held, a finite MLE exists if and only if at least one observation is
-    positive. With shape held this maximum is unique. Uniqueness with
-    rate held or both coefficients free has not been established.
+    positive. With either coefficient held, the maximum is unique. With both coefficients
+    free, the curvature certificate establishes uniqueness for samples on
+    which its comparisons close.
     Holding both coefficients evaluates the likelihood without fitting.
   reason: >-
     At small shape, every positive cell probability vanishes uniformly in
@@ -83,10 +84,10 @@ relations:
       shape: shape
       scale: 1/rate
 fit:
-  method: multistart
-  certified: 'yes'
-  note: 'dgamma/README.md, Details; held shape uses a strictly concave rate solve; free shape uses finite tail bounds
-    and branch-and-bound, conditional on computed comparisons and a practical 1e-8 n likelihood margin.'
+  method: profile-search
+  certified: "partial"
+  note: 'Free fits use a sample curvature bound or an interval cover to certify a unique profile root.
+    An inconclusive curvature check leaves a checked multistart estimate uncertified.'
 areas:
 - counts and ecology
 classification: specialist
@@ -120,7 +121,7 @@ The [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-d
 With both parameters free, constant samples and samples on two adjacent integers have no finite maximum likelihood estimate. The limiting adjacent-cell probabilities equal the observed proportions.
 Both held parameters evaluate the likelihood without fitting. With one parameter held the fitter handles its distinct boundary conditions explicitly.
 
-Every unrestricted sample with range at least two has an attained maximum. Holding either parameter gives an attained maximum if any observation is positive; all-zero data escape to a point mass. The fitter initializes from a 41-point logarithmic shape grid with improving-edge expansion and Nelder–Mead refinement. It then subdivides the finite shape interval using the documented score bounds; exhaustion or nonfinite calculations report numerical failure. Joint uniqueness and uniqueness with rate held have not been established. No additional proper limit model occurs as shape tends to zero: every positive fixed cell loses its probability uniformly over rate. Some mass can escape to infinity, but that does not give a positive limiting likelihood for a sample containing a positive count.
+Every unrestricted sample with range at least two has an attained maximum. Holding either parameter gives an attained maximum if any observation is positive; all-zero data escape to a point mass. The free fit uses the curvature checks below before falling back to multistart search and local coefficient refinement. No additional proper limit model occurs as shape tends to zero: every positive fixed cell loses its probability uniformly over rate. Some mass can escape to infinity, but that does not give a positive limiting likelihood for a sample containing a positive count.
 
 ## Existence and identification
 
@@ -165,8 +166,9 @@ and shape tending to zero loses any positive cell. This proves the stated
 held-subset existence conditions. In an all-zero sample, rate increasing or
 shape decreasing makes its cell probability tend to one, strictly exceeding
 every finite fit. All log likelihoods are bounded above by zero.
-These arguments establish existence, not joint uniqueness or absence of local
-maxima. The outer subdivision does not assume uniqueness.
+For held rate, strict concavity in shape follows from contraction of the
+conditional log-gamma quantile spacings under truncation.
+[Proof for held rate](../../../../../dev/research/evaluations/2026-11-25-dgamma-math-report.md#held-rate)
 
 With shape held, put $T=\log Y$ and $u=\log r$. Its density is proportional
 to $\exp(a(t+u)-e^{t+u})$, strictly log-concave in the location coordinate.
@@ -179,9 +181,31 @@ tails of a narrow cell from cancelling. Near a large shape, the midpoint
 log density uses the centered gamma deviance and the Stirling correction.
 The tail formulas cover small counts and rapidly varying cells.
 
-## Search certificate
+## Curvature certificate for free fits
 
-This is **discretized** gamma, not the continuous double-gamma family.
+An extreme occupied pair bounds the shape above which the profile score
+is negative. The small-shape bound gives a positive score below a second
+cutoff. The sample-only test bounds the trace of the weighted conditional
+covariance after standardizing by the full covariance. A trace strictly
+below one gives strictly negative profile curvature between the cutoffs.
+The zero cell uses its exponential hazard bound for the conditional
+variance of $\log Y-Y/m$, where $m$ is the profiled latent mean.
+
+When the trace test is inconclusive, the interval cover uses increasing
+profiled rate to bound it by endpoint brackets. Each shape box must exclude
+zero from the profiled score or establish negative curvature by covariance
+domination. The score bounds combine the singular $1/a$ terms for the zero
+cell before comparing signs. Together with the score tails, a completed cover
+proves exactly one score root. The fit is certified once the shape bracket and
+the rate brackets at its ends enclose both coefficients to the requested
+relative tolerance. These comparisons use practical arithmetic margins.
+If they remain unresolved, a successful locally checked multistart fit is
+returned with unknown uniqueness and `certified = FALSE`.
+[Curvature and score proofs](../../../../../dev/research/evaluations/2026-11-25-dgamma2-math-report.md#what-this-changes-for-the-fitter)
+
+## Likelihood comparison for multistart fits
+
+
 Write $a$ for shape and $r$ for rate. For a cell $[k,k+1)$,
 differentiating under the integral gives
 $$
@@ -277,15 +301,15 @@ g(B,r)-(B-A)\leq g(a,r)\leq g(A,r)+(B-A).
 $$
 Strict concavity in log rate then lets signs of these two expressions discard
 parts of the rate interval containing no optimum for any $a\in[A,B]$.
-The implementation subdivides log shape, uses these bounds to enclose the
-profile slope, and applies the midpoint likelihood plus its rate-solve
-allowance and the worst permitted slope over each half interval. It discards
+The implementation subdivides log shape and applies the midpoint likelihood,
+its rate-solve allowance when rate is free, and the worst permitted slope
+over each half interval. It discards
 an interval only when this upper bound is within $5\times10^{-9}$ per
 observation of the best candidate. The returned parameter's recomputed
 likelihood must be within another $5\times10^{-9}$ per observation of that
 candidate. The subdivision budget is 128 times the capped iteration limit in intervals. Invalid or
-nonfinite bounds, collapsed secants and an exhausted budget report
-numerical failure. The secant step is $10^{-4}A$; its computed bounds are
+nonfinite bounds, collapsed secants and an exhausted budget are inconclusive
+for a free fit. The secant step is $10^{-4}A$; its computed bounds are
 widened by 64 machine epsilons times the magnitude of the summed terms,
 divided by that step. These are exact-arithmetic bounds conditional on the
 computed comparisons, with a practical $10^{-8}n$ likelihood allowance,
@@ -294,7 +318,7 @@ guarantee.
 
 ## R notes
 
-For adjacent values `j` and `j + 1`, `mlbinom(x - j, size = 1)` fits the limiting Bernoulli probabilities. Passing `NULL` estimates a coefficient; supplying a positive finite value holds it. Supplying both coefficients evaluates the likelihood without optimization. The subdivision budget is `128 * min(iterlim, 100000)` intervals, and numerical failure stops the fit rather than returning an unchecked candidate.
+For adjacent values `j` and `j + 1`, `mlbinom(x - j, size = 1)` fits the limiting Bernoulli probabilities. Passing `NULL` estimates a coefficient; supplying a positive finite value holds it. Supplying both coefficients evaluates the likelihood without optimization. For a free fit, an inconclusive curvature certificate leaves the checked fit available with `certified = FALSE` and `unique = NA`.
 
 ## Decision history
 
@@ -317,7 +341,7 @@ prove special-function error bounds.
 | Inner log-rate | Strict concavity and uniqueness are proved above. The numerical solver accepts a score below $10^{-11}\min(1,a)$ per observation or a relative log-rate bracket width below $10^{-12}$. |
 | Shape on bounded intervals | The bounds above include the zero cell and the profiled rate. Convex secants provide the score enclosure used by subdivision. |
 | Shape faces | Finite cutoffs are proved above for the unrestricted and held-rate existence regimes. |
-| Global certificate | The subdivision uses the stated practical margin and returns numerical failure when it cannot complete. It is conditional on computed comparisons, not outward-rounded arithmetic. |
+| Likelihood comparison | The subdivision uses the stated practical margin. For free fits it can refine the multistart seed before the local accuracy check. |
 
 The shape score differentiates the incomplete-gamma integral over the whole
 unit cell. The gamma density at a cell midpoint is not a substitute, and an

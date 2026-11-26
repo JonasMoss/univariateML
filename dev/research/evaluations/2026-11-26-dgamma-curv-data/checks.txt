@@ -1,0 +1,29 @@
+Workstation, GCC 15.2.0. Baseline 2d89fd4a117a7ee7850558e6a04b4c4d74b87589.
+
+Selected 1 families: dgamma
+100% tests passed, 0 tests failed out of 2
+100% tests passed, 0 tests failed out of 2
+[ FAIL 0 | WARN 0 | SKIP 8 | PASS 362 ]
+# tests 237
+# pass 237
+# fail 0
+# skipped 0
+Results: [{"command": ["cmake", "-S", "univariateML-cpp", "-B", "univariateML-cpp/build", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"], "exit": 0, "seconds": 0.04}, {"command": ["cmake", "--build", "univariateML-cpp/build", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 63.92}, {"command": ["ctest", "--test-dir", "univariateML-cpp/build", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(dgamma)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 47.94}, {"command": ["cmake", "-S", "univariateML-cpp", "-B", "build/cpp-no-long-double", "-DCPPUNIV_TEST_OPTIMIZE=ON", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache", "-DCMAKE_CXX_FLAGS=-DBOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS"], "exit": 0, "seconds": 0.43}, {"command": ["cmake", "--build", "build/cpp-no-long-double", "--target", "distribution_tests", "-j", "4"], "exit": 0, "seconds": 426.33}, {"command": ["ctest", "--test-dir", "build/cpp-no-long-double", "--output-on-failure", "--no-tests=error", "-L", "dev", "-R", "^distribution_(dgamma)(_slow)?(_part[0-9]+)?$"], "exit": 0, "seconds": 43.77}, {"command": ["just", "test"], "exit": 0, "seconds": 131.07}, {"command": ["just", "js-build"], "exit": 0, "seconds": 79.29}, {"command": ["just", "js-test"], "exit": 0, "seconds": 72.58}]
+
+native trace certified True unique True max relative difference 1.787459069646502e-14
+native cover certified True unique True max relative difference 4.440892098500626e-16
+native fallback certified False unique None max relative difference 2.90878432451791e-14
+double trace certified True unique True max relative difference 1.6568968419505836e-12
+double cover certified True unique True max relative difference 3.774758283725532e-15
+double fallback certified False unique None max relative difference 4.518607710224387e-14
+native cases 79 differing 14 only-new 0 only-old 0
+double cases 79 differing 14 only-new 0 only-old 0
+routes-native cases 0 differing 0 only-new 0 only-old 0
+routes-double cases 0 differing 0 only-new 0 only-old 0
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing
+fit-consistency: failures by check: none
+fit-consistency: 0 listed as known, 0 new, 0 listed but passing
+Singleton proof inventory covers 219 source sites
+PASS: 86 family pages; MathML on every family; no math runtime or external runtime assets; internal links and fragments resolve.
+PASS: 86 generated C++ snippets compile and link as C++17 (including exp, gamma, gb2).

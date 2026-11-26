@@ -519,10 +519,10 @@ dblpareto,dblpareto,none,,scale;left_rate,censor=interval,true,not-implemented,u
 dblpareto,dblpareto,none,,scale;right_rate,censor=interval,true,not-implemented,unknown,0,
 dblpareto,dblpareto,none,,left_rate;right_rate,censor=interval,true,not-implemented,unknown,0,
 dblpareto,dblpareto,none,,scale;left_rate;right_rate,censor=interval,true,not-implemented,unknown,0,
-dgamma,dgamma,none,,,none,true,implemented,yes,3,dgamma/golden.json
-dgamma,dgamma,none,,shape,none,true,implemented,yes,3,dgamma/golden.json
-dgamma,dgamma,none,,rate,none,true,implemented,yes,3,dgamma/golden.json
-dgamma,dgamma,none,,shape;rate,none,true,implemented,yes,3,dgamma/golden.json
+dgamma,dgamma,none,,,none,true,implemented,partial,3,dgamma/golden.json
+dgamma,dgamma,none,,shape,none,true,implemented,partial,3,dgamma/golden.json
+dgamma,dgamma,none,,rate,none,true,implemented,partial,3,dgamma/golden.json
+dgamma,dgamma,none,,shape;rate,none,true,implemented,partial,3,dgamma/golden.json
 dgamma,dgamma,none,,,zero=truncated,true,not-implemented,unknown,0,
 dgamma,dgamma,none,,shape,zero=truncated,true,not-implemented,unknown,0,
 dgamma,dgamma,none,,rate,zero=truncated,true,not-implemented,unknown,0,
