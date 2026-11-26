@@ -90,10 +90,11 @@ existence:
   two_point:
     outcome: nonexistence(unattained)
     evidence: >-
-      For a distinct pair the optimized log-gamma likelihood decreases
-      strictly in gamma shape $1/Q^2$. The power and Pareto endpoints tie,
-      with exponent $2/\log(x_{\max}/x_{\min})$. Both models are reported
-      without selecting a single replacement.
+      With all coefficients free and equal counts at two distinct values,
+      every finite fit lies strictly below the common power and Pareto
+      supremum. Both limiting models have exponent
+      $2/\log(x_{\max}/x_{\min})$.
+      [Proof](../../../../../dev/research/evaluations/2026-11-25-gbshape-math-report.md).
 relations: {}
 fit:
   method: profile-search

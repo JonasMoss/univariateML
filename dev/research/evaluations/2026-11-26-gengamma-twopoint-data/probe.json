@@ -1,0 +1,2086 @@
+{
+  "native": {
+    "baseline": [
+      {
+        "sample": "four",
+        "held": {},
+        "result": {
+          "kind": "numerical",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood search failed its numerical accuracy or candidate comparison.",
+          "model": "",
+          "attainable_tol": "0x1.71547652b8e8bp-53",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "",
+              "estimates": {
+                "mu": "0x1.62e42fefa39eep-2",
+                "sigma": "0x1.62e42fefa2ed6p-2",
+                "Q": "-0x1.4ff632b6a83e4p-52"
+              },
+              "loglik_lower": "-0x1.69656faf8ebecp+1",
+              "loglik_upper": "-0x1.69656faf8ebecp+1"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "no-convergence",
+          "outcome": {
+            "kind": "failure",
+            "reason": "no-convergence",
+            "certified": false,
+            "unique": true
+          },
+          "core_status": 4,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1.4f9d80d85ca2bp-2",
+            "Q": "-0x1.27a9e31cbed3bp-1"
+          },
+          "logLik": "-0x1.690e9ff50e5b4p+1",
+          "iterations": 243,
+          "fixed": [
+            "mu"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "sigma": 1.0
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.62e42fefa39efp-2",
+            "sigma": "0x1p+0",
+            "Q": "0x0p+0"
+          },
+          "logLik": "-0x1.5358793ed0403p+2",
+          "iterations": 669,
+          "fixed": [
+            "sigma"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "sigma": 1.0
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1p+0",
+            "Q": "-0x1.2164dbf3d7788p-5"
+          },
+          "logLik": "-0x1.5483320dcde69p+2",
+          "iterations": 53,
+          "fixed": [
+            "mu",
+            "sigma"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.a9da9404e1b01p-2",
+            "sigma": "0x1.5967dc002e613p-2",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.69515a5d43035p+1",
+          "iterations": 0,
+          "fixed": [
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1.8f159b9064ca4p-2",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.9e75efec62f33p+1",
+          "iterations": 0,
+          "fixed": [
+            "mu",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "sigma": 1.0,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.7b698359b6f4dp-2",
+            "sigma": "0x1p+0",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.56b50113960c6p+2",
+          "iterations": 0,
+          "fixed": [
+            "sigma",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "sigma": 1.0,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1p+0",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.5898b3593eb94p+2",
+          "iterations": 0,
+          "fixed": [
+            "mu",
+            "sigma",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "six",
+        "held": {},
+        "result": {
+          "kind": "numerical",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood search failed its numerical accuracy or candidate comparison.",
+          "model": "",
+          "attainable_tol": "0x1.000014dc17a8fp-53",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "",
+              "estimates": {
+                "mu": "0x1.0a2b2473e9069p+1",
+                "sigma": "0x1.ffffd647d4146p-25",
+                "Q": "0x1.727f0385f769p-9"
+              },
+              "loglik_lower": "0x1.3b4aa9d9998a4p+6",
+              "loglik_upper": "0x1.3b4aa9d9998a4p+6"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "no-convergence",
+          "outcome": {
+            "kind": "failure",
+            "reason": "no-convergence",
+            "certified": false,
+            "unique": true
+          },
+          "core_status": 4,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "near_miss",
+        "held": {},
+        "result": {
+          "kind": "limit",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood has a Pareto limit. Use `mlpareto`.",
+          "model": "pareto",
+          "attainable_tol": "nan",
+          "limit_estimates": {
+            "a": "0x1.71547652b82fep+2",
+            "b": "0x1p+0"
+          },
+          "limit_loglik": "0x1.28b6e8c249b32p+1",
+          "loglik_lower": "0x1.28b6e8c2492e6p+1",
+          "loglik_upper": "0x1.28b6e8c24a37ep+1",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "pareto",
+              "estimates": {
+                "a": "0x1.71547652b82fep+2",
+                "b": "0x1p+0"
+              },
+              "loglik_lower": "0x1.28b6e8c249b32p+1",
+              "loglik_upper": "0x1.28b6e8c249b32p+1"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "outcome": {
+            "kind": "limit",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 6,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.0
+        },
+        "result": {
+          "kind": "numerical",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood search failed its numerical accuracy or candidate comparison.",
+          "model": "",
+          "attainable_tol": "0x1.5d39f370d4ddp-53",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "",
+              "estimates": {
+                "mu": "0x0p+0",
+                "sigma": "0x1.77522ecb4bc2dp-61",
+                "Q": "-0x1.e4216ba3619edp+58"
+              },
+              "loglik_lower": "-0x1.25cca65285a4p+0",
+              "loglik_upper": "-0x1.25cca65285a4p+0"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "no-convergence",
+          "outcome": {
+            "kind": "failure",
+            "reason": "no-convergence",
+            "certified": false,
+            "unique": true
+          },
+          "core_status": 4,
+          "outcome_override": false
+        }
+      }
+    ],
+    "current": [
+      {
+        "sample": "four",
+        "held": {},
+        "result": {
+          "kind": "nomle",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood has no finite maximum. Its power and Pareto limits tie. Use `mlpower` or `mlpareto`.",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "-0x1.25cca65285a73p+0",
+          "loglik_upper": "-0x1.25cca65285a73p+0",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "power",
+              "estimates": {
+                "alpha": "0x1p+1",
+                "beta": "0x1.71547652b82fep+1"
+              },
+              "loglik_lower": "-0x1.25cca65285a73p+0",
+              "loglik_upper": "-0x1.25cca65285a73p+0"
+            },
+            {
+              "model": "pareto",
+              "estimates": {
+                "a": "0x1.71547652b82fep+1",
+                "b": "0x1p+0"
+              },
+              "loglik_lower": "-0x1.25cca65285a73p+0",
+              "loglik_upper": "-0x1.25cca65285a73p+0"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "unattained",
+          "outcome": {
+            "kind": "nonexistence",
+            "reason": "unattained",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 7,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1.4f9d80d85ca2bp-2",
+            "Q": "-0x1.27a9e31cbed3bp-1"
+          },
+          "logLik": "-0x1.690e9ff50e5b4p+1",
+          "iterations": 243,
+          "fixed": [
+            "mu"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "sigma": 1.0
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.62e42fefa39efp-2",
+            "sigma": "0x1p+0",
+            "Q": "0x0p+0"
+          },
+          "logLik": "-0x1.5358793ed0403p+2",
+          "iterations": 669,
+          "fixed": [
+            "sigma"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "sigma": 1.0
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1p+0",
+            "Q": "-0x1.2164dbf3d7788p-5"
+          },
+          "logLik": "-0x1.5483320dcde69p+2",
+          "iterations": 53,
+          "fixed": [
+            "mu",
+            "sigma"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.a9da9404e1b01p-2",
+            "sigma": "0x1.5967dc002e613p-2",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.69515a5d43035p+1",
+          "iterations": 0,
+          "fixed": [
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1.8f159b9064ca4p-2",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.9e75efec62f33p+1",
+          "iterations": 0,
+          "fixed": [
+            "mu",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "sigma": 1.0,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.7b698359b6f4dp-2",
+            "sigma": "0x1p+0",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.56b50113960c6p+2",
+          "iterations": 0,
+          "fixed": [
+            "sigma",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "sigma": 1.0,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1p+0",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.5898b3593eb94p+2",
+          "iterations": 0,
+          "fixed": [
+            "mu",
+            "sigma",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "six",
+        "held": {},
+        "result": {
+          "kind": "nomle",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood has no finite maximum. Its power and Pareto limits tie. Use `mlpower` or `mlpareto`.",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "0x1.45589f2fe5109p+6",
+          "loglik_upper": "0x1.45589f2fe5109p+6",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "power",
+              "estimates": {
+                "alpha": "0x1.000002p+3",
+                "beta": "0x1.000000ffffffap+24"
+              },
+              "loglik_lower": "0x1.45589f2fe5109p+6",
+              "loglik_upper": "0x1.45589f2fe5109p+6"
+            },
+            {
+              "model": "pareto",
+              "estimates": {
+                "a": "0x1.000000ffffffap+24",
+                "b": "0x1p+3"
+              },
+              "loglik_lower": "0x1.45589f2fe5109p+6",
+              "loglik_upper": "0x1.45589f2fe5109p+6"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "unattained",
+          "outcome": {
+            "kind": "nonexistence",
+            "reason": "unattained",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 7,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "near_miss",
+        "held": {},
+        "result": {
+          "kind": "limit",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood has a Pareto limit. Use `mlpareto`.",
+          "model": "pareto",
+          "attainable_tol": "nan",
+          "limit_estimates": {
+            "a": "0x1.71547652b82fep+2",
+            "b": "0x1p+0"
+          },
+          "limit_loglik": "0x1.28b6e8c249b32p+1",
+          "loglik_lower": "0x1.28b6e8c2492e6p+1",
+          "loglik_upper": "0x1.28b6e8c24a37ep+1",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "pareto",
+              "estimates": {
+                "a": "0x1.71547652b82fep+2",
+                "b": "0x1p+0"
+              },
+              "loglik_lower": "0x1.28b6e8c249b32p+1",
+              "loglik_upper": "0x1.28b6e8c249b32p+1"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "outcome": {
+            "kind": "limit",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 6,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.0
+        },
+        "result": {
+          "kind": "numerical",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood search failed its numerical accuracy or candidate comparison.",
+          "model": "",
+          "attainable_tol": "0x1.5d39f370d4ddp-53",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "",
+              "estimates": {
+                "mu": "0x0p+0",
+                "sigma": "0x1.77522ecb4bc2dp-61",
+                "Q": "-0x1.e4216ba3619edp+58"
+              },
+              "loglik_lower": "-0x1.25cca65285a4p+0",
+              "loglik_upper": "-0x1.25cca65285a4p+0"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "no-convergence",
+          "outcome": {
+            "kind": "failure",
+            "reason": "no-convergence",
+            "certified": false,
+            "unique": true
+          },
+          "core_status": 4,
+          "outcome_override": false
+        }
+      }
+    ]
+  },
+  "double": {
+    "baseline": [
+      {
+        "sample": "four",
+        "held": {},
+        "result": {
+          "kind": "numerical",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood search failed its numerical accuracy or candidate comparison.",
+          "model": "",
+          "attainable_tol": "0x1.7195b9ec2fbb2p-53",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "",
+              "estimates": {
+                "mu": "0x1.56c7bf2f0d4bbp-2",
+                "sigma": "0x1.62a58493ca353p-2",
+                "Q": "-0x1.179817fb01454p-4"
+              },
+              "loglik_lower": "-0x1.69656be1e38ap+1",
+              "loglik_upper": "-0x1.69656be1e38ap+1"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "no-convergence",
+          "outcome": {
+            "kind": "failure",
+            "reason": "no-convergence",
+            "certified": false,
+            "unique": true
+          },
+          "core_status": 4,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1.4f9d80d85ca2cp-2",
+            "Q": "-0x1.27a9e31cbed37p-1"
+          },
+          "logLik": "-0x1.690e9ff50e5b6p+1",
+          "iterations": 243,
+          "fixed": [
+            "mu"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "sigma": 1.0
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.62e42fefa39efp-2",
+            "sigma": "0x1p+0",
+            "Q": "0x0p+0"
+          },
+          "logLik": "-0x1.5358793ed0403p+2",
+          "iterations": 669,
+          "fixed": [
+            "sigma"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "sigma": 1.0
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1p+0",
+            "Q": "-0x1.2164dbf3d7789p-5"
+          },
+          "logLik": "-0x1.5483320dcde69p+2",
+          "iterations": 53,
+          "fixed": [
+            "mu",
+            "sigma"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.a9da9404e1b01p-2",
+            "sigma": "0x1.5967dc002e613p-2",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.69515a5d43035p+1",
+          "iterations": 0,
+          "fixed": [
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1.8f159b9064ca4p-2",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.9e75efec62f34p+1",
+          "iterations": 0,
+          "fixed": [
+            "mu",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "sigma": 1.0,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.7b698359b6f5p-2",
+            "sigma": "0x1p+0",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.56b50113960c6p+2",
+          "iterations": 0,
+          "fixed": [
+            "sigma",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "sigma": 1.0,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1p+0",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.5898b3593eb94p+2",
+          "iterations": 0,
+          "fixed": [
+            "mu",
+            "sigma",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "six",
+        "held": {},
+        "result": {
+          "kind": "numerical",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood search failed its numerical accuracy or candidate comparison.",
+          "model": "",
+          "attainable_tol": "0x1.e073cc825e7b5p-53",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "",
+              "estimates": {
+                "mu": "0x1.0a2b246b5315fp+1",
+                "sigma": "0x1.feb1b6a6366d2p-25",
+                "Q": "-0x1.0d11b1540ecfap-3"
+              },
+              "loglik_lower": "0x1.3b4aac4e9ec7cp+6",
+              "loglik_upper": "0x1.3b4aac4e9ec7cp+6"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "no-convergence",
+          "outcome": {
+            "kind": "failure",
+            "reason": "no-convergence",
+            "certified": false,
+            "unique": true
+          },
+          "core_status": 4,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "near_miss",
+        "held": {},
+        "result": {
+          "kind": "limit",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood has a Pareto limit. Use `mlpareto`.",
+          "model": "pareto",
+          "attainable_tol": "nan",
+          "limit_estimates": {
+            "a": "0x1.71547652b82fep+2",
+            "b": "0x1p+0"
+          },
+          "limit_loglik": "0x1.28b6e8c249b32p+1",
+          "loglik_lower": "0x1.28b6e8c2492e6p+1",
+          "loglik_upper": "0x1.28b6e8c24a37ep+1",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "pareto",
+              "estimates": {
+                "a": "0x1.71547652b82fep+2",
+                "b": "0x1p+0"
+              },
+              "loglik_lower": "0x1.28b6e8c249b32p+1",
+              "loglik_upper": "0x1.28b6e8c249b32p+1"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "outcome": {
+            "kind": "limit",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 6,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.0
+        },
+        "result": {
+          "kind": "numerical",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood search failed its numerical accuracy or candidate comparison.",
+          "model": "",
+          "attainable_tol": "0x1.5d39f370d4ddp-53",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "",
+              "estimates": {
+                "mu": "0x0p+0",
+                "sigma": "0x1.77522ecb4bc2dp-61",
+                "Q": "-0x1.e4216ba3619edp+58"
+              },
+              "loglik_lower": "-0x1.25cca65285a4p+0",
+              "loglik_upper": "-0x1.25cca65285a4p+0"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "no-convergence",
+          "outcome": {
+            "kind": "failure",
+            "reason": "no-convergence",
+            "certified": false,
+            "unique": true
+          },
+          "core_status": 4,
+          "outcome_override": false
+        }
+      }
+    ],
+    "current": [
+      {
+        "sample": "four",
+        "held": {},
+        "result": {
+          "kind": "nomle",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood has no finite maximum. Its power and Pareto limits tie. Use `mlpower` or `mlpareto`.",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "-0x1.25cca65285a73p+0",
+          "loglik_upper": "-0x1.25cca65285a73p+0",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "power",
+              "estimates": {
+                "alpha": "0x1p+1",
+                "beta": "0x1.71547652b82fep+1"
+              },
+              "loglik_lower": "-0x1.25cca65285a73p+0",
+              "loglik_upper": "-0x1.25cca65285a73p+0"
+            },
+            {
+              "model": "pareto",
+              "estimates": {
+                "a": "0x1.71547652b82fep+1",
+                "b": "0x1p+0"
+              },
+              "loglik_lower": "-0x1.25cca65285a73p+0",
+              "loglik_upper": "-0x1.25cca65285a73p+0"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "unattained",
+          "outcome": {
+            "kind": "nonexistence",
+            "reason": "unattained",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 7,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1.4f9d80d85ca2cp-2",
+            "Q": "-0x1.27a9e31cbed37p-1"
+          },
+          "logLik": "-0x1.690e9ff50e5b6p+1",
+          "iterations": 243,
+          "fixed": [
+            "mu"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "sigma": 1.0
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.62e42fefa39efp-2",
+            "sigma": "0x1p+0",
+            "Q": "0x0p+0"
+          },
+          "logLik": "-0x1.5358793ed0403p+2",
+          "iterations": 669,
+          "fixed": [
+            "sigma"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "sigma": 1.0
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1p+0",
+            "Q": "-0x1.2164dbf3d7789p-5"
+          },
+          "logLik": "-0x1.5483320dcde69p+2",
+          "iterations": 53,
+          "fixed": [
+            "mu",
+            "sigma"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": false,
+          "unique": null,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": false,
+            "unique": null
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.a9da9404e1b01p-2",
+            "sigma": "0x1.5967dc002e613p-2",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.69515a5d43035p+1",
+          "iterations": 0,
+          "fixed": [
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1.8f159b9064ca4p-2",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.9e75efec62f34p+1",
+          "iterations": 0,
+          "fixed": [
+            "mu",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "sigma": 1.0,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1.7b698359b6f5p-2",
+            "sigma": "0x1p+0",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.56b50113960c6p+2",
+          "iterations": 0,
+          "fixed": [
+            "sigma",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.25,
+          "sigma": 1.0,
+          "Q": 0.4
+        },
+        "result": {
+          "kind": "ok",
+          "estimates": {
+            "mu": "0x1p-2",
+            "sigma": "0x1p+0",
+            "Q": "0x1.999999999999ap-2"
+          },
+          "logLik": "-0x1.5898b3593eb94p+2",
+          "iterations": 0,
+          "fixed": [
+            "mu",
+            "sigma",
+            "Q"
+          ],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [],
+          "outcome_message": "",
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "unique": true,
+          "outcome": {
+            "kind": "estimate",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 0,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "six",
+        "held": {},
+        "result": {
+          "kind": "nomle",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood has no finite maximum. Its power and Pareto limits tie. Use `mlpower` or `mlpareto`.",
+          "model": "",
+          "attainable_tol": "nan",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "0x1.45589f2fe5109p+6",
+          "loglik_upper": "0x1.45589f2fe5109p+6",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "power",
+              "estimates": {
+                "alpha": "0x1.000002p+3",
+                "beta": "0x1.000000ffffffap+24"
+              },
+              "loglik_lower": "0x1.45589f2fe5109p+6",
+              "loglik_upper": "0x1.45589f2fe5109p+6"
+            },
+            {
+              "model": "pareto",
+              "estimates": {
+                "a": "0x1.000000ffffffap+24",
+                "b": "0x1p+3"
+              },
+              "loglik_lower": "0x1.45589f2fe5109p+6",
+              "loglik_upper": "0x1.45589f2fe5109p+6"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "unattained",
+          "outcome": {
+            "kind": "nonexistence",
+            "reason": "unattained",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 7,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "near_miss",
+        "held": {},
+        "result": {
+          "kind": "limit",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood has a Pareto limit. Use `mlpareto`.",
+          "model": "pareto",
+          "attainable_tol": "nan",
+          "limit_estimates": {
+            "a": "0x1.71547652b82fep+2",
+            "b": "0x1p+0"
+          },
+          "limit_loglik": "0x1.28b6e8c249b32p+1",
+          "loglik_lower": "0x1.28b6e8c2492e6p+1",
+          "loglik_upper": "0x1.28b6e8c24a37ep+1",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "pareto",
+              "estimates": {
+                "a": "0x1.71547652b82fep+2",
+                "b": "0x1p+0"
+              },
+              "loglik_lower": "0x1.28b6e8c249b32p+1",
+              "loglik_upper": "0x1.28b6e8c249b32p+1"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "none",
+          "certified": true,
+          "outcome": {
+            "kind": "limit",
+            "reason": "none",
+            "certified": true,
+            "unique": true
+          },
+          "core_status": 6,
+          "outcome_override": false
+        }
+      },
+      {
+        "sample": "four",
+        "held": {
+          "mu": 0.0
+        },
+        "result": {
+          "kind": "numerical",
+          "estimates": {},
+          "logLik": "nan",
+          "iterations": null,
+          "fixed": [],
+          "restricted": {},
+          "extra": {},
+          "extra_vectors": {},
+          "warnings": [],
+          "message": "The gengamma likelihood search failed its numerical accuracy or candidate comparison.",
+          "model": "",
+          "attainable_tol": "0x1.5d39f370d4ddp-53",
+          "limit_estimates": {},
+          "limit_loglik": "nan",
+          "loglik_lower": "nan",
+          "loglik_upper": "nan",
+          "segment_loglik_upper": "nan",
+          "candidates": [
+            {
+              "model": "",
+              "estimates": {
+                "mu": "0x0p+0",
+                "sigma": "0x1.77522ecb4bc2dp-61",
+                "Q": "-0x1.e4216ba3619edp+58"
+              },
+              "loglik_lower": "-0x1.25cca65285a4p+0",
+              "loglik_upper": "-0x1.25cca65285a4p+0"
+            }
+          ],
+          "maximizer_set": null,
+          "reason": "no-convergence",
+          "outcome": {
+            "kind": "failure",
+            "reason": "no-convergence",
+            "certified": false,
+            "unique": true
+          },
+          "core_status": 4,
+          "outcome_override": false
+        }
+      }
+    ]
+  }
+}

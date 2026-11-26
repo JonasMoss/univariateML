@@ -132,3 +132,32 @@ test_that("internal gengamma conditional brackets retain public accuracy detail"
   expect_true(all(e$candidates$sigma>0))
   expect_true(all(is.finite(e$candidates$loglik_lower)))
 })
+
+test_that("balanced replicated pairs report both unattained limits", {
+  # Independent 80-decimal-digit references in the TASK-285 evidence.
+  check <- function(x, exponent, ll) {
+    e <- tryCatch(mlgengamma(x), error = identity)
+    expect_s3_class(e, "univariateML_nomle")
+    expect_identical(e$reason, "unattained")
+    expect_identical(e$candidates$model, c("power", "pareto"))
+    expect_identical(e$candidates$alpha[1], max(x))
+    expect_identical(e$candidates$b[2], min(x))
+    expect_equal(c(e$candidates$beta[1], e$candidates$a[2]),
+                 rep(exponent, 2), tolerance = 1e-13)
+    expect_equal(c(e$loglik_lower, e$loglik_upper,
+                   e$candidates$loglik_lower, e$candidates$loglik_upper),
+                 rep(ll, 6), tolerance = 1e-13)
+  }
+  check(c(1, 1, 2, 2), 2.8853900817779268, -1.147653956553452)
+  check(rep(c(8 + 2^-20, 8), 3), 16777216.99999998, 81.33654475055312)
+})
+
+test_that("a three-to-one split keeps the Pareto limit", {
+  # Independent 80-decimal-digit reference in the TASK-285 evidence.
+  e <- tryCatch(mlgengamma(c(1, 1, 1, 2)), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  expect_identical(e$model, "pareto")
+  expect_true(e$certified)
+  expect_equal(e$estimates, c(a = 5.7707801635558535, b = 1), tolerance = 1e-13)
+  expect_equal(e$limit_loglik, 2.3180819462462745, tolerance = 1e-13)
+})
