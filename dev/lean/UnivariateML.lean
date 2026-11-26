@@ -41,3 +41,4 @@ public import UnivariateML.Generic.ExpFamily
 public import UnivariateML.Family.CMP
 public import UnivariateML.Family.Huber
 public import UnivariateML.Family.Paralogistic
+public import UnivariateML.Family.Ged
