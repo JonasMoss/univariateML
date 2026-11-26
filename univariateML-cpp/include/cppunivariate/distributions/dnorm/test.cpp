@@ -231,3 +231,66 @@ TEST_CASE("dnorm: slow reference discrete quantile round trips on every truth po
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::pdnorm(x,t[0], t[1],l,g);},
     [](double x,const std::vector<double>& t,bool l,bool g) {return cppunivariate::distributions::qdnorm(x,t[0], t[1],l,g);});
 }
+
+TEST_CASE("dnorm: held mean near a cell edge gives the closed-form scale") {
+  const std::vector<double> x{0};
+  const double free=std::numeric_limits<double>::quiet_NaN();
+  // mpmath, 820 digits. The scales below are rounded from the 45-digit
+  // references recorded in 2026-11-26-dnorm-accuracy-data/master-reference.txt.
+  const double means[]{-0x1p-52,-0x1p-60,-0x1p-100,-std::numeric_limits<double>::denorm_min()};
+  const double scales[]{0.117779742319532281499,0.109646972936213314698,
+                        0.0849321800288019042722,0.0259161288772421900792};
+  for (int j=0; j<4; ++j) {
+    const auto fit=cppunivariate::dnorm_mle({x.data(),x.size()},1e-10,200,means[j],free);
+    REQUIRE(fit.status==cppunivariate::DnormStatus::Ok);
+    CHECK(cppunivariate::outcome(fit).certified);
+    CHECK(fit.mean==means[j]);
+    CHECK(std::abs(fit.sd/scales[j]-1)<=1e-10);
+  }
+}
+
+TEST_CASE("dnorm: subnormal fixed scale preserves the exact midpoint") {
+  const std::vector<double> x{0};
+  const double sd=std::numeric_limits<double>::denorm_min();
+  const double free=std::numeric_limits<double>::quiet_NaN();
+  const auto fit=cppunivariate::dnorm_mle({x.data(),x.size()},1e-10,200,free,sd);
+  REQUIRE(fit.status==cppunivariate::DnormStatus::Ok);
+  CHECK(cppunivariate::outcome(fit).certified);
+  CHECK(fit.mean==0.5); // Exact by reflection, also reproduced at 820 digits.
+  CHECK(fit.sd==sd);
+  CHECK(fit.logLik==0);
+  const auto seam=cppunivariate::dnorm_mle({x.data(),x.size()},1e-10,200,0,sd);
+  REQUIRE(seam.status==cppunivariate::DnormStatus::Ok);
+  CHECK(seam.logLik==doctest::Approx(-std::log(2.0)));
+}
+
+TEST_CASE("dnorm: adjacent cells resolve the seam score and location rounding") {
+  const std::vector<double> balanced{-1,0}, unbalanced{-1,-1,0};
+  const double free=std::numeric_limits<double>::quiet_NaN();
+  // 820-digit independent scores, with references recorded to 45 digits.
+  const auto fit=cppunivariate::dnorm_mle({balanced.data(),balanced.size()},1e-10,200,-0x1p-100,free);
+  REQUIRE(fit.status==cppunivariate::DnormStatus::Ok);
+  CHECK(std::abs(fit.sd/0.0606222877745911967260-1)<=1e-10);
+  const auto scale=cppunivariate::dnorm_mle({unbalanced.data(),unbalanced.size()},1e-10,200,-0x1p-100,free);
+  REQUIRE(scale.status==cppunivariate::DnormStatus::Ok);
+  CHECK(std::abs(scale.sd/1.83146252051206182243e-30-1)<=1e-10);
+  const auto location=cppunivariate::dnorm_mle({unbalanced.data(),unbalanced.size()},1e-10,200,free,0x1p-100);
+  REQUIRE(location.status==cppunivariate::DnormStatus::Ok);
+  CHECK(std::abs(location.mean-(-3.39783927225616276170e-31))<=1e-10*location.sd);
+  const auto limited=cppunivariate::dnorm_mle({unbalanced.data(),unbalanced.size()},1e-10,200,free,
+                                             std::numeric_limits<double>::denorm_min());
+  CHECK(cppunivariate::outcome(limited).reason==cppunivariate::OutcomeReason::Tolerance);
+}
+
+TEST_CASE("dnorm: a subnormal held scale keeps the separated-cell location finite") {
+  const std::vector<double> x{-2,-2,0};
+  const double sd=std::numeric_limits<double>::denorm_min();
+  const double free=std::numeric_limits<double>::quiet_NaN();
+  const auto fit=cppunivariate::dnorm_mle({x.data(),x.size()},1e-10,200,free,sd);
+  REQUIRE(fit.status==cppunivariate::DnormStatus::Ok);
+  // In the gap, the projected score is -2-3*mean and the true scaled
+  // score differs by at most 3*sd. The optimum is within sd of -2/3.
+  CHECK(std::abs(fit.mean+2.0/3.0)<=1e-10*(2.0/3.0));
+  CHECK(fit.sd==sd);
+  CHECK(fit.logLik==-std::numeric_limits<double>::infinity());
+}

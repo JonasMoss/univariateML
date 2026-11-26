@@ -118,3 +118,32 @@ test_that("discretized normal vector wrappers retain extreme translated probabil
   }
   expect_equal(ddnorm(x,mean=-x,sd=1e308,log=TRUE),rep(-712.11514717537074343,2),tolerance=2e-13)
 })
+
+test_that("mldnorm certifies coefficients at held-mean and held-scale seams", {
+  # Independent 820-digit mpmath references, recorded to 45 digits in
+  # 2026-11-26-dnorm-accuracy-data/master-reference.txt.
+  means <- -2^c(-52, -60, -100)
+  scales <- c(0.117779742319532281499, 0.109646972936213314698,
+              0.0849321800288019042722)
+  for (i in seq_along(means)) {
+    f <- mldnorm(0, mean = means[i])
+    expect_true(attr(f, "certified"))
+    expect_identical(unname(f["mean"]), means[i])
+    expect_lte(abs(unname(f["sd"]) / scales[i] - 1), 1e-10)
+  }
+  f <- mldnorm(0, sd = 2^-1074)
+  expect_true(attr(f, "certified"))
+  expect_identical(unname(f["mean"]), 0.5) # Exact by reflection.
+  expect_identical(unname(f["sd"]), 2^-1074)
+  expect_identical(as.numeric(logLik(f)), 0)
+
+  f <- mldnorm(c(-1, 0), mean = -2^-100)
+  expect_true(attr(f, "certified"))
+  expect_lte(abs(unname(f["sd"]) / 0.0606222877745911967260 - 1), 1e-10)
+  f <- mldnorm(c(-1, -1, 0), sd = 2^-100)
+  expect_true(attr(f, "certified"))
+  expect_lte(abs(unname(f["mean"]) - (-3.39783927225616276170e-31)),
+             1e-10 * 2^-100)
+  expect_error(mldnorm(c(-1, -1, 0), sd = 2^-1074), "binary64 location resolution",
+               class = "univariateML_tolerance")
+})

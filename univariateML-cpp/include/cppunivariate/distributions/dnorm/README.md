@@ -26,7 +26,7 @@ r:
   control:
     mean: "Optional held value; NULL estimates it."
     sd: "Optional positive held value; NULL estimates it."
-    tol: "Requested relative accuracy (default 1e-10): stop when the Newton decrement is at most `tol^2 n`, then apply the step."
+    tol: "Requested relative accuracy of the free coefficients (default 1e-10)."
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "log((erf((x + 1 - mean)/(sqrt(2)*sd)) - erf((x - mean)/(sqrt(2)*sd)))/2)"
 limits:
@@ -64,9 +64,9 @@ relations:
 fit:
   method: convex-solve
   certified: 'yes'
-  note: 'dnorm/README.md, Details; dnorm/mle.hpp (public fitter and held overloads); dnorm/test.cpp: The grouped-normal
-    likelihood is strictly concave in centred mean/sd and inverse sd. Held mean is a linear restriction in these
-    coordinates, held sd fixes inverse sd; damped Newton targets the unique maximum.'
+  note: 'dnorm/README.md, Details; dnorm/certificate.hpp and dnorm/held.hpp: The grouped-normal likelihood
+    is strictly concave in centred mean/sd and inverse sd. A score enclosure or closed form checks the
+    accuracy of the reported coefficients.'
 areas:
 - counts and ecology
 classification: specialist
@@ -112,7 +112,18 @@ The [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-d
 With both parameters free, constant samples and samples on two adjacent integers have no finite maximum likelihood estimate. The limiting adjacent-cell probabilities equal their observed proportions.
 Both held parameters evaluate the likelihood without fitting. With one parameter held the fitter handles its distinct boundary conditions explicitly.
 
-The grouped normal log likelihood is strictly concave in $(\mu/\sigma,1/\sigma)$; the fitter uses damped Newton iteration in centred versions of these coordinates. It stops when the Newton decrement is at most $\texttt{tol}^2 n$ and applies that last Newton step, so the returned point is within order $\texttt{tol}^2$ of the maximizer. With both parameters free, every sample with range at least two has a unique finite maximum. Holding $\sigma$ gives a unique finite location fit even for constant data. Holding $\mu$ gives a finite scale fit unless every observed cell closure contains that mean, in which case the zero-scale limit wins.
+With one observed cell and a held location outside its closure, the scale is
+$\sqrt{(1/2+\delta)/\log(1+1/\delta)}$, where $\delta$ is the distance to the
+nearer edge. With scale held, the cell midpoint is the exact optimum even
+at subnormal scales. For adjacent cells and a location held near their common
+edge, separating the common-edge score from the two outer-edge terms retains
+the contribution that identifies the scale.
+
+The grouped-normal score encloses the unique stationary point in centred
+location divided by scale and inverse scale. For location the accuracy floor
+is the fitted scale. At very small held scales a finite location can lie
+between representable values too far apart for the requested tolerance.
+[Existence and score-enclosure analysis](../../../../../dev/research/evaluations/2026-11-25-dnorm-math-report.md).
 
 Reference: Burridge, J. (1981). A Note on Maximum Likelihood Estimation for Regression Models Using Grouped Data. Journal of the Royal Statistical Society, Series B (Methodological), 43(1), 41–45. https://doi.org/10.1111/j.2517-6161.1981.tb01146.x.
 
