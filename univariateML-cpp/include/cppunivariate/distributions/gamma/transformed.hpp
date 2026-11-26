@@ -63,7 +63,17 @@ inline RawGammaResult gamma_raw(span x,double tol,int maxit,double shape,double 
   // At concentration the centered deviations carry the whole Jensen gap;
   // no absolute transformed observation or cancelling pair of logs is used.
   if(std::abs(md)<.1){
-    Sum gap;for(double d:delta){const double u=(d-md)/mean_ratio;gap.push(gamma_detail::phi(u,1+u)/n);}s=gap.get();
+    const double log_mean_ratio=std::log1p(md);
+    Sum gap;
+    for(std::size_t i=0;i<delta.size();++i){
+      const double u=(delta[i]-md)/mean_ratio;
+      // Near the lower endpoint, 1+u can round to zero. Use the
+      // independently computed log(Y/Yref) outside the local series.
+      const double term=map==GammaMap::Log && std::abs(u)>=.1
+          ? u-(logdelta[i]-log_mean_ratio) : gamma_detail::phi(u,1+u);
+      gap.push(term/n);
+    }
+    s=gap.get();
   } else s=std::log(mean_ratio)-ls.get();
   const double meanlog=log_yref+ls.get();
   Pair modelmean=yref;
