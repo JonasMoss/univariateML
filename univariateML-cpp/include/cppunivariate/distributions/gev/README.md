@@ -348,10 +348,12 @@ A closed joint cover identifies a singleton when it separates the winning root o
 ### General all-free shape cover
 
 For a nonconstant sample with fewer than half its observations at the minimum,
-the all-free fit covers the fitted shape interval $[-1,1]$. At each nonzero
-shape, scale profiling leaves a unique monotone endpoint-gap root. Its gap
-increases with reciprocal absolute shape, so brackets at two shape endpoints
-enclose all nuisance optima between them. The cover uses reflected-Weibull
+the all-free fit covers the fitted shape interval $[-1,1]$. At $\xi=-1$,
+the profiled maximum occurs at zero gap, with upper endpoint at the sample
+maximum. For $-1<\xi<0$ or $0<\xi\le1$, scale profiling leaves a unique
+monotone endpoint-gap root. On each branch the optimal gap increases with
+reciprocal absolute shape, so brackets at two shape endpoints enclose all
+nuisance optima between them. The cover uses reflected-Weibull
 gap coordinates near the upper endpoint and minimum-pivot coordinates around
 zero and on the positive branch. The pivot form keeps all exponential terms
 at most one and permits power-of-radius Taylor bounds through the Gumbel seam.

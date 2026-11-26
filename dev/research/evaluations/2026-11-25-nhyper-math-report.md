@@ -2,6 +2,13 @@
 
 TASK-325 · 2026-11-25 · worktree base `a2f9a313`
 
+> **Correction (2026-11-26).** The singleton-or-adjacent-pair conclusion below
+> applies to nonflat scalar likelihoods that attain their supremum. With a
+> positive held black count and every observation at the earliest possible
+> draw, the likelihood is nonflat and the maximizing set is empty. With a
+> held black count of zero and those same observations, the likelihood is
+> flat on the feasible ray. [Lean verification](2026-11-25-lean-nhyper-report.md#source-check)
+
 **Proved.** With a positive stopping count and the white count held, every feasible sample has a finite integer MLE. With the black count held, the only escape is when the urn has black balls but all observations stop at the earliest possible draw. In both nonflat scalar problems the likelihood ratio crosses one at most once, and the full maximizing set is a singleton or two consecutive integers. With both counts unknown there is a finite exact test of attainment, equality with the negative-binomial face, and strict escape. The joint profile in population size can have multiple local peaks.
 
 The [October nhyper report](2026-10-29-nhyper-report.md) establishes the stopped-draw density and the translated negative-binomial limit. The current [nhyper dossier](../../../univariateML-cpp/include/cppunivariate/distributions/nhyper/README.md) already proves the single crossing with the white count held and documents the growing-urn upper bound. Those routes postdate the wording of the [STATUS item](../../STATUS.md). The [hyper dossier](../../../univariateML-cpp/include/cppunivariate/distributions/hyper/README.md), [held-size certificates](2026-11-01-hyper-certs-report.md), and [fully free hyper analysis](2026-11-01-hyper-free-report.md) establish the upper-envelope approach used here when a finite witness beats the face. The new joint argument supplies a tail comparison even when no finite witness above the face has been found.

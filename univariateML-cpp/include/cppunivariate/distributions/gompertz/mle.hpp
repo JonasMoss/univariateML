@@ -1,9 +1,8 @@
 // Gompertz MLE.
 //
-// Up-front overdispersion check: mean(x) < sd(x) ⇒ data is consistent
-// with an exponential and the Gompertz b MLE doesn't exist. Otherwise
-// 1D Newton on b with hybrid convergence; a is the closed-form
-// maximiser given b.
+// For nonconstant data, sd(x) >= mean(x) with divisor n gives an
+// unattained exponential supremum. Below that cutoff, solve in b
+// by 1D Newton with hybrid convergence and profile a in closed form.
 
 #pragma once
 #include "../../core/maximizer_set.hpp"

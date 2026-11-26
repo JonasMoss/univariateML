@@ -139,7 +139,7 @@ At shape one the translated inverse uses the log-logistic member with a compensa
 
 ## Details
 
-Fitting holds the threshold fixed and requires finite observations strictly above it. Subtracting the threshold reduces the fit to [Lomax](../lomax/README.md), with shape $\kappa=\alpha$ and rate $\lambda=1/\sigma$.
+Fitting holds the threshold fixed and accepts finite observations at or above it. Threshold ties follow the endpoint rules above. For strictly positive excesses, subtracting the threshold reduces the fit to [Lomax](../lomax/README.md), with shape $\kappa=\alpha$ and rate $\lambda=1/\sigma$.
 
 For the joint excess fit, put $y_i=x_i-\mu$, $z_i=y_i/\bar y$, $\bar u=\bar y/(\prod_i y_i)^{1/n}$ and $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uz_i)$. A finite maximum exists exactly when $\psi(u)\le0$ somewhere in $0<u<\bar u$. Otherwise the supremum is the shifted exponential limit. This profile comparison does not establish uniqueness. The certified Lomax search bounds the entire existence interval and stops if its comparison cannot be resolved; see [Lomax](../lomax/README.md) for the practical floating-point margin.
 

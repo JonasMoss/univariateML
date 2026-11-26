@@ -38,7 +38,7 @@ limits:
 - name: zero-width collapse
   firmness: proved
   when: The free width $b-a$ tends to zero around the common observation.
-  detect: The sample is constant, at least one endpoint is free, and no held endpoint lies strictly outside the observation.
+  detect: At least one endpoint is free, the sample is compatible with every held endpoint, and the candidate interval has zero width after setting any free lower endpoint to the sample minimum and any free upper endpoint to the sample maximum.
   status: Unbounded
   message: does not exist
 - name: incompatible held endpoints

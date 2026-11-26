@@ -244,8 +244,8 @@ stop. Constant positive data return `Unbounded`. The explicit final work
 allowance of `burr_mle_certified` controls certification independently of
 the search allowance.
 
-With only scale held at $s$ and nonconstant observations all at least $s$,
-the supremum is the endpoint-$s$ Pareto log-likelihood minus $Z\log 2$,
+With only scale held at $s$, if all observations are at least $s$ and
+at least one exceeds $s$, the supremum is the endpoint-$s$ Pareto log-likelihood minus $Z\log 2$,
 where $Z$ counts observations equal to $s$. This endpoint penalty must be
 retained when comparing likelihoods. If every observation equals $s$, the
 likelihood is unbounded. For nonconstant data, if any observation is below $s$, a finite maximum
@@ -312,8 +312,8 @@ solving. The native scale projection retains the latent, unrounded shape.
 ## R notes
 
 Supply `scale = s` to estimate only the shapes. The fixed-scale path profiles `shape1` exactly and certifies the unique
-`shape2` maximum using strict scalar concavity and signed endpoint bounds. Detected
-limits stop with a recommendation to fit `mlweibull` or `mlpareto`.
+`shape2` maximum using strict scalar concavity and signed endpoint bounds. A
+detected Pareto limit on this path stops with a recommendation to fit `mlpareto`.
 Refuted candidates and failed searches have distinct error messages
 and return no coefficient vector. The returned iteration count on the
 all-free path is the number of attempted cached conditional profiles.

@@ -117,8 +117,8 @@ existence:
     exactly when some beta-binomial fits at least as well as the best
     binomial. Overdispersion, $S^2 > n\hat p(1-\hat p)$ with
     $\hat p = \bar x/n$ and $S^2$ the sample variance with the number of
-    observations as divisor, is sufficient. For $n = 2$ it is also necessary;
-    for $n \ge 3$ that is a conjecture. Holding one shape leaves only the
+    observations as divisor, is necessary and sufficient for $n \ge 2$
+    when at least one count is interior. Holding one shape leaves only the
     point-mass case. With $n = 1$ the shapes are not identified, because the
     model is a Bernoulli distribution. At $n=0$ both shapes are also
     unidentified. With beta held and size free,

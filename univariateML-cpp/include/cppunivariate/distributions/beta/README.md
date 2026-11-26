@@ -138,8 +138,9 @@ $$
 
 where the logit difference is averaged per observation with `log1p`. The
 leading terms cancel analytically, so the scores keep their information for
-nearly constant data and for data near zero or one. Along a ray of fixed
-$\mu$ the likelihood is concave in $t$, so its score has one root. The
+nearly constant data and for data near zero or one. For nonconstant data,
+the log likelihood along each ray of fixed $\mu$ is strictly concave in $t$
+and its score has one root. The
 superlevel sets of a concave function are convex, so the profile over $\mu$
 is unimodal. Both levels are bracketed, safeguarded Newton root-finds in
 $\log t$ and $\operatorname{logit}\mu$, with exact profile derivatives;

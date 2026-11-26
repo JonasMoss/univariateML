@@ -135,8 +135,8 @@ inline NbinomResult nbinom_candidate_mle(ispan x, double tol, int maxit,
     if (var_hat > x_bar)
       return {kNaN, kNaN, kNaN, 0, false, NbinomStatus::PrecisionFailure};
   }
-  // At var_hat == x_bar the profile score is negative for all finite sizes
-  // too: the supremum is the Poisson limit, not a finite size.
+  // At var_hat == x_bar the profile score is positive at every finite
+  // positive size. The Poisson limit is the unattained supremum.
   if (var_hat <= x_bar) {
     return {kNaN, kNaN, kNaN, 0, true, NbinomStatus::Underdispersed};
   }
