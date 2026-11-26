@@ -133,3 +133,36 @@ test_that("dweibull: P3 unfinished optimizer stops", {
   expect_error(mldweibull(x, iterlim=1, tol=1e-10),
                "[Ff]ail|converge|unresolved|exhausted|score check")
 })
+
+test_that("rounding shape1 preserves the joint shape2", {
+  # 90-decimal-digit mpmath replay (TASK-349 replay.py), q rounded to
+  # binary64 and beta quoted to 17 significant decimal digits.
+  k <- c(5, 6, 7, 8, 9, 10)
+  q <- c(0x1.fffff8bf6269ep-1, 0x1.ffffffcdc4de6p-1,
+         0x1.fffffffed60fcp-1, 0x1.fffffffff9fc1p-1,
+         0x1.ffffffffffe48p-1, 0x1.ffffffffffff9p-1)
+  beta <- c(7.9369416340898969, 9.1594685331321826, 10.379193015081321,
+            11.597019166943809, 12.813498283847933, 14.028986273267453)
+  for (i in seq_along(k)) {
+    x <- c(k[i], k[i] + 2)
+    fit <- mldweibull(x)
+    expect_identical(fit[["shape1"]], q[i])
+    expect_lte(abs(fit[["shape2"]] - beta[i]), 1e-10 * beta[i])
+    expect_true(attr(fit, "certified"))
+    expect_equal(attr(fit, "logLik"), sum(dml(x, fit, log = TRUE)), tolerance = 1e-13)
+  }
+  # The corresponding reference shapes are 16.457877990879498 and
+  # 20.097911333009296. Both reference probabilities round to one.
+  expect_error(mldweibull(c(12, 14)), "rounds to 1")
+  expect_error(mldweibull(c(15, 17)), "rounds to 1")
+})
+
+test_that("an unclosed coefficient bracket keeps the search fit", {
+  fit <- mldweibull(c(8, 10), tol = 1e-13)
+  expect_false(attr(fit, "certified"))
+  expect_true(attr(fit, "unique"))
+  # Same 90-decimal-digit reference, with 17 significant digits for beta.
+  expect_identical(fit[["shape1"]], 0x1.fffffffff9fc1p-1)
+  beta <- 11.597019166943809
+  expect_lte(abs(fit[["shape2"]] - beta), 1e-13 * beta)
+})

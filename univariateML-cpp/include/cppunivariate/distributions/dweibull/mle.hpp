@@ -50,6 +50,7 @@ struct DweibullResult {
   DweibullStatus status;
   StopDetail stop_detail{};
   MaximizerSet maximizers{};
+  bool certified = false;
 };
 
 inline FitOutcome outcome(const DweibullResult& r) {
@@ -57,7 +58,11 @@ inline FitOutcome outcome(const DweibullResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     // Strict log-likelihood concavity on the identified slices (README.md).
-    case DweibullStatus::Ok: return FitOutcome::singleton(true);
+    case DweibullStatus::Ok: {
+      auto fit = FitOutcome::singleton(true);
+      fit.certified = r.certified;
+      return fit;
+    }
     case DweibullStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case DweibullStatus::InvalidControl: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case DweibullStatus::PointMass: return FitOutcome::limit(true);
@@ -197,17 +202,18 @@ inline void inner_eval(const Problem &P, double a, double &f, double &df) {
   }
 }
 
-// Derivative in beta at fixed a (the profile derivative at the inner root).
-inline double beta_score(const Problem &P, double a) {
+// Derivative in beta at fixed a, or at fixed raw alpha for certification.
+inline double beta_score(const Problem &P, double a, bool raw = false) {
   double g = 0, r, c;
-  if (P.n0 > 0) {
+  if (P.n0 > 0 && !raw) {
     ratio(std::exp(a + P.bl0), r, c);
     g -= P.n0 * r * P.logc;
   }
   for (std::size_t j = 0; j < P.w.size(); ++j) {
     const double A = std::exp(a + P.bl[j]);
     ratio(std::exp(a + P.bl[j] + P.logE[j]), r, c);
-    g += P.w[j] * (P.l[j] * (r - A) + r * P.dinv[j]);
+    const double l = raw ? P.l[j] + P.logc : P.l[j];
+    g += P.w[j] * (l * (r - A) + r * P.dinv[j]);
   }
   return g;
 }
@@ -342,6 +348,102 @@ inline bool decreasing_root(G &&g, const Narrow& narrow, double tol, int maxit, 
   return brent_root(g, narrow, u, prev, gu, gprev, tol, maxit, root, iter);
 }
 
+// Practical sign margin for double score arithmetic, including the scale of
+// log hazards before cancellation and the accumulation over occupied cells.
+inline double score_margin(const Problem &P, double a) {
+  constexpr double eps = std::numeric_limits<double>::epsilon();
+  return 8 * eps * (1 + P.w.size() + std::abs(a) +
+                    P.beta * (P.logc + std::log1p(P.max)));
+}
+
+struct AlphaBracket {
+  double lo;
+  double hi;
+};
+
+// Validate a local bracket independently of the search's stopping rule.
+inline bool enclose_alpha(const Problem &P, double a, AlphaBracket &bounds) {
+  double f, df;
+  inner_eval(P, a, f, df);
+  const double margin = score_margin(P, a) * P.n;
+  const double radius = 2 * (std::abs(f) + margin) / -df;
+  if (!(radius > 0 && std::isfinite(radius))) return false;
+  bounds = {a - radius, a + radius};
+  double lower, upper;
+  inner_eval(P, bounds.lo, lower, df);
+  inner_eval(P, bounds.hi, upper, df);
+  return std::isfinite(lower) && lower > score_margin(P, bounds.lo) * P.n &&
+         std::isfinite(upper) && upper < -score_margin(P, bounds.hi) * P.n;
+}
+
+// At fixed beta the raw shape score decreases in alpha. Its sign at
+// the adverse end of the inner bracket certifies the profile score sign.
+inline bool signed_beta(const Problem &P, double a, double sign) {
+  const double g = beta_score(P, a, true);
+  const double margin = score_margin(P, a) * P.n *
+                        (1 / P.beta + 2 * std::log1p(P.max));
+  return std::isfinite(g) && sign * g > margin;
+}
+
+// Endpoint q values are represented on the log scale, avoiding rounding
+// the enclosures to zero or one. The inequalities bound q_returned/q_*.
+inline bool probability_in_tolerance(double q, double log_lo, double log_hi, double tol) {
+  constexpr double eps = std::numeric_limits<double>::epsilon();
+  const double log_q = std::log(q);
+  const double margin = 8 * eps * (1 + std::abs(log_q));
+  return log_q - log_lo + margin <= std::log1p(tol) &&
+         (tol >= 1 || log_q - log_hi - margin >= std::log1p(-tol));
+}
+
+inline double log_probability_endpoint(const Problem &P, double a, double direction) {
+  constexpr double eps = std::numeric_limits<double>::epsilon();
+  const double offset = P.beta * P.logc;
+  const double margin = 4 * eps * (1 + std::abs(a) + std::abs(offset));
+  return -std::exp(a - offset + direction * margin);
+}
+
+inline bool certify(Problem &P, const DweibullResult &fit, double a,
+                    bool hold_q, bool hold_beta, double tol, int maxit) {
+  if (fit.status != DweibullStatus::Ok) return false;
+  if (hold_beta) {
+    AlphaBracket bracket{};
+    if (!enclose_alpha(P, a, bracket)) return false;
+    return probability_in_tolerance(fit.shape1,
+        log_probability_endpoint(P, bracket.hi, 1),
+        log_probability_endpoint(P, bracket.lo, -1), tol);
+  }
+
+  // For tol < 1 these shape endpoints lie inside
+  // [beta_returned/(1+tol), beta_returned/(1-tol)], with rounding slack.
+  const double delta = std::min(0.5, 0.875 * tol);
+  const double lo = fit.shape2 / (1 + delta);
+  const double hi = fit.shape2 / (1 - delta);
+  if (!(0 < lo && lo < fit.shape2 && fit.shape2 < hi && std::isfinite(hi))) return false;
+  if (hold_q) {
+    P.set_beta(lo);
+    if (!signed_beta(P, a, 1)) return false;
+    P.set_beta(hi);
+    return signed_beta(P, a, -1);
+  }
+
+  // The profiled q increases in beta. Bound its lower endpoint at lo
+  // and its upper endpoint at hi using the signed inner brackets.
+  const auto profile_endpoint = [&](double b, double sign, double &log_q) {
+    P.set_beta(b);
+    double inner = a;
+    int evals = 0;
+    AlphaBracket bracket{};
+    if (!inner_root(P, inner, maxit, evals) || !enclose_alpha(P, inner, bracket)) return false;
+    const double adverse = sign > 0 ? bracket.hi : bracket.lo;
+    if (!signed_beta(P, adverse, sign)) return false;
+    log_q = log_probability_endpoint(P, adverse, sign);
+    return true;
+  };
+  double log_lo, log_hi;
+  return profile_endpoint(lo, 1, log_lo) && profile_endpoint(hi, -1, log_hi) &&
+         probability_in_tolerance(fit.shape1, log_lo, log_hi, tol);
+}
+
 // Fit beta with alpha = log(-log q) held: strictly concave in beta, and
 // the score changes sign when max(x) >= 2. Uncentred (logc = 0).
 inline DweibullResult held_q_fit(Problem &P, double q, double tol, int maxit) {
@@ -362,26 +464,18 @@ inline DweibullResult held_q_fit(Problem &P, double q, double tol, int maxit) {
   }
   const double beta = std::exp(u);
   P.set_beta(beta);
-  return {q, beta, loglik(P, alpha), evals, DweibullStatus::Ok};
+  DweibullResult fit{q, beta, loglik(P, alpha), evals, DweibullStatus::Ok};
+  fit.certified = certify(P, fit, alpha, true, false, tol, maxit);
+  return fit;
 }
 
-// shape1 = exp(-t) from (a, beta) at the current centring. The log-likelihood
-// is recomputed at the returned (rounded) shape1. Doubles near 1 resolve t
-// only to about 1.1e-16/t relative; below t = 1e-6 beta is refitted with
-// that representable shape1 held, the best fit the parametrization can
-// return. shape1 == 1 cannot be returned at all.
-inline DweibullResult finish(Problem &P, double a, double beta, int iterations,
-                             bool refit, double tol, int maxit) {
-  maxit = static_cast<int>(solver_budget(maxit));
+// Keep the joint shape when restoring q. Evaluate the likelihood at the
+// public pair, since rounding q can shift the latent scale substantially.
+inline DweibullResult finish(const Problem &P, double a, double beta, int iterations) {
   const double nan = std::numeric_limits<double>::quiet_NaN();
   const double t = std::exp(a - beta * P.logc);
   const double q = std::exp(-t);
   if (!(q > 0 && q < 1)) return {q, beta, nan, iterations, DweibullStatus::Unrepresentable};
-  if (refit && t < 1e-6) {
-    DweibullResult out = held_q_fit(P, q, tol, maxit);
-    out.iterations += iterations;
-    return out;
-  }
   const double alpha = std::log(-std::log(q));
   return {q, beta, loglik(P, alpha + beta * P.logc), iterations, DweibullStatus::Ok};
 }
@@ -389,7 +483,7 @@ inline DweibullResult finish(Problem &P, double a, double beta, int iterations,
 }  // namespace dweibull_detail
 
 // shape1 / shape2 NaN: estimate; finite: hold fixed at that value.
-// tol: absolute tolerance on log(shape2) in the shape2 root search.
+// tol: relative accuracy requested for the free public coefficients.
 inline DweibullResult dweibull_mle(
     span x, double tol = 1e-10, int maxit = 200,
     double shape1 = std::numeric_limits<double>::quiet_NaN(),
@@ -414,8 +508,10 @@ inline DweibullResult dweibull_mle(
     if (hold_b) {
       P.centre(0);
       P.set_beta(shape2);
-      return {shape1, shape2, dweibull_detail::loglik(P, std::log(-std::log(shape1))),
-              0, DweibullStatus::Ok};
+      DweibullResult fit{shape1, shape2, dweibull_detail::loglik(P, std::log(-std::log(shape1))),
+                         0, DweibullStatus::Ok};
+      fit.certified = true;
+      return fit;
     }
     if (P.max == 0) {
       // p_0 = 1 - shape1 for every shape2: shape2 is not identified.
@@ -442,7 +538,9 @@ inline DweibullResult dweibull_mle(
     if (!dweibull_detail::inner_root(P, a, maxit, evals)) {
       return {nan, shape2, nan, evals, DweibullStatus::IterationFailure};
     }
-    return dweibull_detail::finish(P, a, shape2, evals, false, tol, maxit);
+    auto fit = dweibull_detail::finish(P, a, shape2, evals);
+    fit.certified = dweibull_detail::certify(P, fit, a, false, true, tol, maxit);
+    return fit;
   }
 
   const double range = P.max - P.min;
@@ -494,8 +592,9 @@ inline DweibullResult dweibull_mle(
   }
   g(u);  // inner root at the returned beta
   if (!inner_ok) return {nan, nan, nan, 0, DweibullStatus::IterationFailure};
-  return dweibull_detail::finish(P, a, std::exp(u), static_cast<int>(seen_u.size()),
-                                 true, tol, maxit);
+  auto fit = dweibull_detail::finish(P, a, std::exp(u), static_cast<int>(seen_u.size()));
+  fit.certified = dweibull_detail::certify(P, fit, a, false, false, tol, maxit);
+  return fit;
 
   }();
   // A rounded zero of the profile score does not resolve sub-epsilon

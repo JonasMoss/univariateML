@@ -178,7 +178,7 @@ existence criterion, separately from numerical checks.
 
 With `shape1` held and all observations zero, the fitter warns that the estimate is not unique and returns `shape2 = 1`.
 
-Doubles close to 1 resolve $-\log \mathrm{shape1}$ only coarsely. When the fitted `shape1` is within `1e-6` of 1, `shape2` is refitted with that representable `shape1` held; when it rounds to 1 (the Weibull scale to the power `shape2` exceeds about $2^{53}$, e.g. counts near 40 with `shape2 = 10`) the fit stops with an error.
+Doubles close to 1 resolve $-\log \mathrm{shape1}$ only coarsely. The fitter rounds `shape1` and keeps the joint `shape2`. It evaluates `logLik` at this public pair. Certification compares the returned coefficients with bounds from signed score evaluations, using the monotonicity of the profiled probability in shape. If the comparisons are inconclusive, the fit carries `certified = FALSE`. When the probability rounds to an excluded endpoint, the fit stops. [Score bounds and coefficient restoration](../../../../../dev/research/evaluations/2026-11-25-dweibull-math-report.md#quantitative-localization-and-signed-brackets)
 
 ## Stop details
 
