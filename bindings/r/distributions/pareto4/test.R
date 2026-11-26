@@ -259,3 +259,16 @@ test_that("zero-threshold Pareto IV preserves held-endpoint density factors", {
   expect_equal(ll, e$limit_loglik, tolerance = 1e-12)
   expect_equal(e$candidates$endpoint_log_factor, p[["endpoint_log_factor"]])
 })
+
+test_that("Pareto IV held-scale fits retain exact threshold subtraction residuals", {
+  u <- 2^54
+  f <- mlpareto4(c(-5, 10), min = -u, scale = u)
+  expect_identical(attr(f, "certified"), TRUE)
+  # 100-digit profile power/U = 0.22777021020090577982701159805039.
+  expect_lt(abs(unname(f["shape2"]) / u / 0.22777021020090578 - 1), 1e-10)
+  e <- tryCatch(mlpareto4(c(5, 9), min = -u, scale = u), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  # 100-digit face exponent = 2573485501354569.683673469387755.
+  expect_lt(abs(e$estimates[["a"]] / 2573485501354569.683673469387755 - 1), 1e-10)
+  expect_equal(e$estimates[["b"]], u)
+})

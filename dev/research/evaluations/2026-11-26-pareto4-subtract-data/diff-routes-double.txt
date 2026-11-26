@@ -1,0 +1,1 @@
+Modifier mode double: neither pareto3 nor pareto4 is registered in route-inputs.json, and the stored modifier snapshot has zero rows for both families.
