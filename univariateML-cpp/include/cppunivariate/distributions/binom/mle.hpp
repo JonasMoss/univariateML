@@ -21,10 +21,13 @@
 #include "../../special/special.hpp"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
 #include <limits>
 #include <map>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -48,7 +51,9 @@ struct BinomResult {
 
   bool unique = true;
   bool evaluation_failure = false;
-  MaximizerSet maximizers{}; bool singleton_proved = false;
+  MaximizerSet maximizers{};
+  bool singleton_proved = false;
+  bool certified = true;
 };
 
 inline double binom_lchoose(double n, double k) {
@@ -65,6 +70,133 @@ inline double constant_tie_size(int x, double p, double limit) {
   if (crossing > x && crossing <= limit && std::fma(p, crossing, -double(x)) == 0)
     return crossing - 1;
   return NAN;
+}
+
+enum class AdjacentSign { Negative, Zero, Positive, Unresolved };
+
+// The checked products give an ordering for small samples even when
+// the logarithms round to a tie. Digits are little-endian in base 2^32.
+struct AdjacentProduct {
+  std::array<std::uint32_t, 8> digits{{1}};
+
+  bool multiply(std::uint64_t factor) {
+    const auto old = digits;
+    digits.fill(0);
+    for (std::size_t shift = 0; factor != 0; ++shift, factor >>= 32) {
+      const auto digit = static_cast<std::uint32_t>(factor);
+      if (digit == 0) continue;
+      std::uint64_t carry = 0;
+      for (std::size_t i = 0; i + shift < digits.size(); ++i) {
+        const std::uint64_t word = std::uint64_t(old[i]) * digit + digits[i + shift] + carry;
+        digits[i + shift] = static_cast<std::uint32_t>(word);
+        carry = word >> 32;
+      }
+      if (carry != 0 || (shift != 0 && old.back() != 0)) return false;
+    }
+    return true;
+  }
+};
+
+inline AdjacentSign adjacent_product_sign(ispan x, std::uint64_t t, std::uint64_t complement,
+                                          std::uint64_t denominator, std::int64_t& budget) {
+  AdjacentProduct numerator, divisor;
+  const auto common = std::gcd(t, denominator);
+  denominator /= common;
+  for (int v : x) {
+    if (budget == 0) return AdjacentSign::Unresolved;
+    --budget;
+    if (!numerator.multiply(t / common) || !numerator.multiply(complement) ||
+        !divisor.multiply(t - v) || !divisor.multiply(denominator))
+      return AdjacentSign::Unresolved;
+  }
+  for (std::size_t i = numerator.digits.size(); i > 0; --i) {
+    if (numerator.digits[i - 1] != divisor.digits[i - 1])
+      return numerator.digits[i - 1] < divisor.digits[i - 1] ?
+          AdjacentSign::Negative : AdjacentSign::Positive;
+  }
+  return AdjacentSign::Zero;
+}
+
+// Equality requires q*t to be an integer, since its nth power is the
+// integer product of (t-x_i). Cancel its n copies against those factors.
+inline bool adjacent_products_equal(ispan x, std::uint64_t t, std::uint64_t scaled_q,
+                                    std::int64_t budget) {
+  if (x.size() > static_cast<std::size_t>(budget)) return false;
+  budget -= static_cast<std::int64_t>(x.size());
+  std::vector<std::uint64_t> factors;
+  factors.reserve(x.size());
+  for (int v : x) factors.push_back(t - v);
+  std::size_t first = 0;
+  for (std::size_t i = 0; i < x.size(); ++i) {
+    auto remaining = scaled_q;
+    for (std::size_t j = first; j < factors.size() && remaining != 1; ++j) {
+      if (budget == 0) return false;
+      --budget;
+      const auto g = std::gcd(factors[j], remaining);
+      factors[j] /= g;
+      remaining /= g;
+      if (j == first && factors[j] == 1) ++first;
+    }
+    if (remaining != 1) return false;
+  }
+  return std::all_of(factors.begin() + first, factors.end(), [](auto v) { return v == 1; });
+}
+
+inline AdjacentSign held_adjacent_sign(ispan x, double k, double p, bool constant,
+                                       std::int64_t budget) {
+  if (k > maxset_count) return AdjacentSign::Unresolved;
+  const double next = k + 1;
+  if (constant) {
+    const double difference = std::fma(-p, next, x[0]);
+    if (difference == 0) return AdjacentSign::Zero;
+    return difference < 0 ? AdjacentSign::Negative : AdjacentSign::Positive;
+  }
+
+  // p = odd / 2^shift exactly, including subnormals. Its complement has
+  // the same reduced denominator. Never obtain that complement by 1-p.
+  int exponent;
+  const double fraction = std::frexp(p, &exponent);
+  auto odd = static_cast<std::uint64_t>(std::ldexp(fraction, 53));
+  int shift = 53 - exponent;
+  while (odd % 2 == 0) {
+    odd /= 2;
+    --shift;
+  }
+  const auto t = static_cast<std::uint64_t>(next);
+  if (shift < 64) {
+    const std::uint64_t denominator = std::uint64_t{1} << shift;
+    const auto complement = denominator - odd;
+    const auto sign = adjacent_product_sign(x, t, complement, denominator, budget);
+    if (sign != AdjacentSign::Unresolved) return sign;
+    if (t % denominator == 0 &&
+        adjacent_products_equal(x, t, complement * (t / denominator), budget))
+      return AdjacentSign::Zero;
+  }
+
+  // t-x_i is an exact integer. Sum nonnegative log terms with
+  // compensation, then compare to the magnitude of n*log(1-p).
+  double sum = 0, correction = 0;
+  for (int v : x) {
+    const double term = std::log1p(v / (next - v)) - correction;
+    const double updated = sum + term;
+    correction = (updated - sum) - term;
+    sum = updated;
+  }
+  const double loss = -static_cast<double>(x.size()) * std::log1p(-p);
+  const double margin = 32 * std::numeric_limits<double>::epsilon() * std::max(sum, loss);
+  if (sum - loss < -margin) return AdjacentSign::Negative;
+  if (sum - loss > margin) return AdjacentSign::Positive;
+  return AdjacentSign::Unresolved;
+}
+
+inline BinomResult held_size_tie(double lower, double p, int iterations) {
+  BinomResult result{lower, p, 0, iterations, BinomStatus::Ok};
+  result.unique = false;
+  result.maximizers.dimension = 2;
+  const std::array<Point, 2> points{{{{{lower, p}}, {}}, {{{lower + 1, p}}, {}}}};
+  if (result.maximizers.add_points({points.data(), points.size()}) != MaxsetStatus::Ok)
+    result.status = BinomStatus::IterationFailure;
+  return result;
 }
 
 // The Poisson limit holds iff mean <= population variance, that is
@@ -136,6 +268,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
     for (int v:x) if (v<0) return bad();
     double size=size_or_nan;
     bool singleton_proved=std::isfinite(size) || held_prob==1;
+    bool certified = true;
     int iterations=0;
     if (!std::isnan(size) && (!std::isfinite(size) || size<max_x || size!=std::floor(size))) return bad();
     if (std::isnan(size)) {
@@ -145,17 +278,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
         const bool constant = std::all_of(x.begin(),x.end(),[&](int v){return v==max_x;});
         if (constant) {
           const double tied = binom_detail::constant_tie_size(max_x, held_prob, 9007199254740992.);
-          if (std::isfinite(tied)) {
-            const double ll = dn * distributions::dbinom(max_x, tied, held_prob, true);
-            BinomResult result{tied, held_prob, ll, 0, BinomStatus::Ok};
-            result.unique = false;
-            result.maximizers.dimension = 2;
-            const std::array<Point, 2> points{{{{{tied, held_prob}}, {}},
-                                                {{{tied + 1, held_prob}}, {}}}};
-            if (result.maximizers.add_points({points.data(), points.size()}) != MaxsetStatus::Ok)
-              result.status = BinomStatus::IterationFailure;
-            return result;
-          }
+          if (std::isfinite(tied)) return binom_detail::held_size_tie(tied, held_prob, 0);
         }
         // Adjacent log likelihood ratio decreases strictly in integer size.
         const auto delta=[&](double k) {
@@ -179,16 +302,37 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
           if (delta(mid)>0) lo=mid+1; else hi=mid;
         }
         size=lo;
-        const double margin=32*std::numeric_limits<double>::epsilon()*dn*
-            (1+std::abs(std::log1p(-held_prob)));
-        if (constant) {
-          // The adjacent ratio has the sign of x - p*(k+1) for a
-          // constant sample. FMA resolves even the neighbor of an exact tie.
-          singleton_proved=std::fma(held_prob,lo+1,-max_x)>0 &&
-              (lo==max_x || std::fma(held_prob,lo,-max_x)<0);
-        } else {
-          singleton_proved=delta(lo)<-margin && (lo==max_x || delta(lo-1)>margin);
+        // A one-step repair reuses the sign that moves the candidate.
+        const auto budget = certificate_budget(maxit) / 3;
+        const auto sign = [&](double k) {
+          return binom_detail::held_adjacent_sign(x, k, held_prob, constant, budget);
+        };
+        const auto incoming = [&]() {
+          return size == max_x ? binom_detail::AdjacentSign::Positive : sign(size - 1);
+        };
+        auto left = incoming();
+        auto right = sign(size);
+        const bool refuted = left == binom_detail::AdjacentSign::Negative ||
+            right == binom_detail::AdjacentSign::Positive;
+        if (refuted) {
+          if (left == binom_detail::AdjacentSign::Negative) {
+            --size;
+            right = left;
+            left = incoming();
+          } else {
+            ++size;
+            left = right;
+            right = sign(size);
+          }
         }
+        if (left == binom_detail::AdjacentSign::Zero || right == binom_detail::AdjacentSign::Zero)
+          return binom_detail::held_size_tie(
+              left == binom_detail::AdjacentSign::Zero ? size - 1 : size, held_prob, iterations);
+        singleton_proved = left == binom_detail::AdjacentSign::Positive &&
+            right == binom_detail::AdjacentSign::Negative;
+        if (refuted && !singleton_proved)
+          return {kNaN,kNaN,kNaN,iterations,BinomStatus::IterationFailure};
+        certified = singleton_proved;
       }
     }
     double ll=0;
@@ -200,6 +344,7 @@ inline BinomResult binom_mle(ispan x, double size_or_nan, double tol=1e-10,
     }
     BinomResult result{size,held_prob,ll,iterations,BinomStatus::Ok};
     result.singleton_proved=singleton_proved;
+    result.certified = certified;
     return result;
   }
 
@@ -435,7 +580,7 @@ namespace cppunivariate {
 inline FitOutcome outcome(const BinomResult& r) {
   switch(r.status) {
     case BinomStatus::Ok: return !r.unique ? FitOutcome::estimate(true, false) :
-        (r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true));
+        (r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(r.certified));
     case BinomStatus::SizeTooSmall: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BinomStatus::Underdispersed: return FitOutcome::limit(true);
     case BinomStatus::IterationFailure: return FitOutcome::failure(r.evaluation_failure?OutcomeReason::Evaluation:OutcomeReason::NoConvergence);

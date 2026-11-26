@@ -1,0 +1,836 @@
+{
+  "precision": 100,
+  "fixtures": [
+    {
+      "data": [
+        0,
+        6
+      ],
+      "prob": "0x1.0000000000000p-1",
+      "winners": [
+        7,
+        8
+      ],
+      "logLik": {
+        "7": "-7.758150378783921026735896956971292223419917151461712369230129982969930844823656750694",
+        "8": "-7.758150378783921026735896956971292223419917151461712369230129982969930844823656750694"
+      },
+      "increment": "0.0",
+      "fit": {
+        "kind": "ok",
+        "estimates": {
+          "size": "0x1.cp+2",
+          "prob": "0x1p-1"
+        },
+        "logLik": "-0x1.f085892a94eccp+2",
+        "iterations": 4,
+        "fixed": [
+          "prob"
+        ],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "outcome_message": "Maximum is not unique. size = 7 and prob = 0.5 or size = 8 and prob = 0.5.",
+        "maximizer_set": {
+          "version": 1,
+          "coordinates": [
+            "size",
+            "prob"
+          ],
+          "pieces": [
+            {
+              "kind": "points",
+              "points": [
+                {
+                  "estimate": [
+                    7,
+                    0.5
+                  ]
+                },
+                {
+                  "estimate": [
+                    8,
+                    0.5
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "maximizers": [
+          {
+            "model": "binom",
+            "estimates": {
+              "size": "0x1.cp+2",
+              "prob": "0x1p-1"
+            },
+            "loglik_lower": "-0x1.f085892a94eccp+2",
+            "loglik_upper": "-0x1.f085892a94eccp+2"
+          },
+          {
+            "model": "binom",
+            "estimates": {
+              "size": "0x1p+3",
+              "prob": "0x1p-1"
+            },
+            "loglik_lower": "-0x1.f085892a94eccp+2",
+            "loglik_upper": "-0x1.f085892a94eccp+2"
+          }
+        ],
+        "reason": "none",
+        "certified": true,
+        "unique": false,
+        "outcome": {
+          "kind": "estimate",
+          "reason": "none",
+          "certified": true,
+          "unique": false
+        },
+        "core_status": 0,
+        "outcome_override": false
+      }
+    },
+    {
+      "data": [
+        0,
+        0,
+        7
+      ],
+      "prob": "0x1.0000000000000p-1",
+      "winners": [
+        7,
+        8
+      ],
+      "logLik": {
+        "7": "-14.55609079175885149776187455062170792958550282156536033653428019936126606136358902772",
+        "8": "-14.55609079175885149776187455062170792958550282156536033653428019936126606136358902772"
+      },
+      "increment": "0.0",
+      "fit": {
+        "kind": "ok",
+        "estimates": {
+          "size": "0x1.cp+2",
+          "prob": "0x1p-1"
+        },
+        "logLik": "-0x1.d1cb7eea86c0ap+3",
+        "iterations": 0,
+        "fixed": [
+          "prob"
+        ],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "outcome_message": "Maximum is not unique. size = 7 and prob = 0.5 or size = 8 and prob = 0.5.",
+        "maximizer_set": {
+          "version": 1,
+          "coordinates": [
+            "size",
+            "prob"
+          ],
+          "pieces": [
+            {
+              "kind": "points",
+              "points": [
+                {
+                  "estimate": [
+                    7,
+                    0.5
+                  ]
+                },
+                {
+                  "estimate": [
+                    8,
+                    0.5
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "maximizers": [
+          {
+            "model": "binom",
+            "estimates": {
+              "size": "0x1.cp+2",
+              "prob": "0x1p-1"
+            },
+            "loglik_lower": "-0x1.d1cb7eea86c0ap+3",
+            "loglik_upper": "-0x1.d1cb7eea86c0ap+3"
+          },
+          {
+            "model": "binom",
+            "estimates": {
+              "size": "0x1p+3",
+              "prob": "0x1p-1"
+            },
+            "loglik_lower": "-0x1.d1cb7eea86c0ap+3",
+            "loglik_upper": "-0x1.d1cb7eea86c0ap+3"
+          }
+        ],
+        "reason": "none",
+        "certified": true,
+        "unique": false,
+        "outcome": {
+          "kind": "estimate",
+          "reason": "none",
+          "certified": true,
+          "unique": false
+        },
+        "core_status": 0,
+        "outcome_override": false
+      }
+    },
+    {
+      "data": [
+        0,
+        7
+      ],
+      "prob": "0x1.0000000000000p-2",
+      "winners": [
+        15,
+        16
+      ],
+      "logLik": {
+        "15": "-7.551241074199968625436606011670815924190167963080436940323181117398042708771154107407",
+        "16": "-7.551241074199968625436606011670815924190167963080436940323181117398042708771154107407"
+      },
+      "increment": "0.0",
+      "fit": {
+        "kind": "ok",
+        "estimates": {
+          "size": "0x1.ep+3",
+          "prob": "0x1p-2"
+        },
+        "logLik": "-0x1.e34788a479a62p+2",
+        "iterations": 6,
+        "fixed": [
+          "prob"
+        ],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "outcome_message": "Maximum is not unique. size = 15 and prob = 0.25 or size = 16 and prob = 0.25.",
+        "maximizer_set": {
+          "version": 1,
+          "coordinates": [
+            "size",
+            "prob"
+          ],
+          "pieces": [
+            {
+              "kind": "points",
+              "points": [
+                {
+                  "estimate": [
+                    15,
+                    0.25
+                  ]
+                },
+                {
+                  "estimate": [
+                    16,
+                    0.25
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "maximizers": [
+          {
+            "model": "binom",
+            "estimates": {
+              "size": "0x1.ep+3",
+              "prob": "0x1p-2"
+            },
+            "loglik_lower": "-0x1.e34788a479a62p+2",
+            "loglik_upper": "-0x1.e34788a479a62p+2"
+          },
+          {
+            "model": "binom",
+            "estimates": {
+              "size": "0x1p+4",
+              "prob": "0x1p-2"
+            },
+            "loglik_lower": "-0x1.e34788a479a62p+2",
+            "loglik_upper": "-0x1.e34788a479a62p+2"
+          }
+        ],
+        "reason": "none",
+        "certified": true,
+        "unique": false,
+        "outcome": {
+          "kind": "estimate",
+          "reason": "none",
+          "certified": true,
+          "unique": false
+        },
+        "core_status": 0,
+        "outcome_override": false
+      }
+    },
+    {
+      "data": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "prob": "0x1.0000000000000p-1",
+      "winners": [
+        1,
+        2
+      ],
+      "logLik": {
+        "1": "-2.772588722239781237668928485832706272302000537441021016482720037973574487878778862423",
+        "2": "-2.772588722239781237668928485832706272302000537441021016482720037973574487878778862423"
+      },
+      "increment": "0.0",
+      "fit": {
+        "kind": "ok",
+        "estimates": {
+          "size": "0x1p+0",
+          "prob": "0x1p-1"
+        },
+        "logLik": "-0x1.62e42fefa39efp+1",
+        "iterations": 0,
+        "fixed": [
+          "prob"
+        ],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "outcome_message": "Maximum is not unique. size = 1 and prob = 0.5 or size = 2 and prob = 0.5.",
+        "maximizer_set": {
+          "version": 1,
+          "coordinates": [
+            "size",
+            "prob"
+          ],
+          "pieces": [
+            {
+              "kind": "points",
+              "points": [
+                {
+                  "estimate": [
+                    1,
+                    0.5
+                  ]
+                },
+                {
+                  "estimate": [
+                    2,
+                    0.5
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "maximizers": [
+          {
+            "model": "binom",
+            "estimates": {
+              "size": "0x1p+0",
+              "prob": "0x1p-1"
+            },
+            "loglik_lower": "-0x1.62e42fefa39efp+1",
+            "loglik_upper": "-0x1.62e42fefa39efp+1"
+          },
+          {
+            "model": "binom",
+            "estimates": {
+              "size": "0x1p+1",
+              "prob": "0x1p-1"
+            },
+            "loglik_lower": "-0x1.62e42fefa39efp+1",
+            "loglik_upper": "-0x1.62e42fefa39efp+1"
+          }
+        ],
+        "reason": "none",
+        "certified": true,
+        "unique": false,
+        "outcome": {
+          "kind": "estimate",
+          "reason": "none",
+          "certified": true,
+          "unique": false
+        },
+        "core_status": 0,
+        "outcome_override": false
+      }
+    },
+    {
+      "data": [
+        0,
+        6
+      ],
+      "prob": "0x1.fffffffffffffp-2",
+      "winners": [
+        8
+      ],
+      "logLik": {
+        "7": "-7.758150378783920804691292031940070420355092081462954473354246318798337175759257817382",
+        "8": "-7.758150378783920582646687106908774661580402541607439227925367392961924391795097073285"
+      },
+      "increment": "0.0000000000000002220446049250312957587746895398555152454288789258364127839641607440974067971044894794",
+      "fit": {
+        "kind": "ok",
+        "estimates": {
+          "size": "0x1p+3",
+          "prob": "0x1.fffffffffffffp-2"
+        },
+        "logLik": "-0x1.f085892a94eccp+2",
+        "iterations": 4,
+        "fixed": [
+          "prob"
+        ],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "outcome_message": "",
+        "maximizer_set": null,
+        "reason": "none",
+        "certified": true,
+        "unique": true,
+        "outcome": {
+          "kind": "estimate",
+          "reason": "none",
+          "certified": true,
+          "unique": true
+        },
+        "core_status": 0,
+        "outcome_override": false
+      }
+    },
+    {
+      "data": [
+        0,
+        6
+      ],
+      "prob": "0x1.0000000000001p-1",
+      "winners": [
+        7
+      ],
+      "logLik": {
+        "7": "-7.758150378783921470825106807034253519518618580462003429979132966031169331086098488416",
+        "8": "-7.758150378783921914914316657096918992777862130035265092516154896963684336191848904452"
+      },
+      "increment": "-0.0000000000000004440892098500626654732592435495732616625370219309325150051057504160356717279121927909",
+      "fit": {
+        "kind": "ok",
+        "estimates": {
+          "size": "0x1.cp+2",
+          "prob": "0x1.0000000000001p-1"
+        },
+        "logLik": "-0x1.f085892a94ecdp+2",
+        "iterations": 4,
+        "fixed": [
+          "prob"
+        ],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "outcome_message": "",
+        "maximizer_set": null,
+        "reason": "none",
+        "certified": true,
+        "unique": true,
+        "outcome": {
+          "kind": "estimate",
+          "reason": "none",
+          "certified": true,
+          "unique": true
+        },
+        "core_status": 0,
+        "outcome_override": false
+      }
+    },
+    {
+      "data": [
+        0,
+        1,
+        6
+      ],
+      "prob": "0x1.5555555555555p-2",
+      "winners": [
+        9
+      ],
+      "logLik": {
+        "8": "-9.171546806660522397934699423730829485838810080549942096349646501219828453606226981492",
+        "9": "-9.171546806660522314667972576844090109624401606079909110318731314611495556913561189426"
+      },
+      "increment": "0.00000000000000008326672684688673937621440847447003298603091518660833289669266579206570887995215639901",
+      "fit": {
+        "kind": "ok",
+        "estimates": {
+          "size": "0x1.2p+3",
+          "prob": "0x1.5555555555555p-2"
+        },
+        "logLik": "-0x1.257d4fba8ae2cp+3",
+        "iterations": 4,
+        "fixed": [
+          "prob"
+        ],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "outcome_message": "",
+        "maximizer_set": null,
+        "reason": "none",
+        "certified": true,
+        "unique": true,
+        "outcome": {
+          "kind": "estimate",
+          "reason": "none",
+          "certified": true,
+          "unique": true
+        },
+        "core_status": 0,
+        "outcome_override": false
+      }
+    }
+  ],
+  "grid": {
+    "all_free_finite": 7,
+    "all_free_poisson": 35,
+    "all_free_tie": 0,
+    "held_size": 42,
+    "held_pair": 42,
+    "held_prob_endpoint": 5
+  },
+  "findings": [],
+  "endpoints": [
+    {
+      "data": [
+        0,
+        6
+      ],
+      "prob": 0.0,
+      "fit": {
+        "kind": "invalid",
+        "estimates": {},
+        "logLik": "nan",
+        "iterations": null,
+        "fixed": [],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "Held parameters are incompatible with the observations.",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "maximizer_set": null,
+        "reason": "invalid-input",
+        "outcome": {
+          "kind": "failure",
+          "reason": "invalid-input",
+          "certified": false,
+          "unique": true
+        },
+        "core_status": 4,
+        "outcome_override": false
+      }
+    },
+    {
+      "data": [
+        0,
+        6
+      ],
+      "prob": 1.0,
+      "fit": {
+        "kind": "invalid",
+        "estimates": {},
+        "logLik": "nan",
+        "iterations": null,
+        "fixed": [],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "Held parameters are incompatible with the observations.",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "maximizer_set": null,
+        "reason": "invalid-input",
+        "outcome": {
+          "kind": "failure",
+          "reason": "invalid-input",
+          "certified": false,
+          "unique": true
+        },
+        "core_status": 4,
+        "outcome_override": false
+      }
+    },
+    {
+      "data": [
+        0,
+        0
+      ],
+      "prob": 0.0,
+      "fit": {
+        "kind": "ok",
+        "estimates": {
+          "size": "0x0p+0",
+          "prob": "0x0p+0"
+        },
+        "logLik": "0x0p+0",
+        "iterations": 0,
+        "fixed": [
+          "prob"
+        ],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "outcome_message": "Maximum is not unique. size in [0, Inf) (integer) and prob = 0.",
+        "maximizer_set": {
+          "version": 1,
+          "coordinates": [
+            "size",
+            "prob"
+          ],
+          "pieces": [
+            {
+              "kind": "box",
+              "axes": [
+                {
+                  "lower": 0,
+                  "upper": "inf",
+                  "closed": [
+                    true,
+                    false
+                  ],
+                  "integer": true
+                },
+                {
+                  "lower": 0,
+                  "upper": 0,
+                  "closed": [
+                    true,
+                    true
+                  ],
+                  "integer": false
+                }
+              ],
+              "order": []
+            }
+          ]
+        },
+        "maximizers": [
+          {
+            "model": "binom",
+            "estimates": {
+              "size": "0x0p+0",
+              "prob": "0x0p+0"
+            },
+            "loglik_lower": "0x0p+0",
+            "loglik_upper": "0x0p+0"
+          },
+          {
+            "model": "binom",
+            "estimates": {
+              "size": "0x1p+0",
+              "prob": "0x0p+0"
+            },
+            "loglik_lower": "0x0p+0",
+            "loglik_upper": "0x0p+0"
+          }
+        ],
+        "reason": "none",
+        "certified": true,
+        "unique": false,
+        "outcome": {
+          "kind": "estimate",
+          "reason": "none",
+          "certified": true,
+          "unique": false
+        },
+        "core_status": 0,
+        "outcome_override": false
+      }
+    },
+    {
+      "data": [
+        6,
+        6
+      ],
+      "prob": 1.0,
+      "fit": {
+        "kind": "ok",
+        "estimates": {
+          "size": "0x1.8p+2",
+          "prob": "0x1p+0"
+        },
+        "logLik": "0x0p+0",
+        "iterations": 0,
+        "fixed": [
+          "prob"
+        ],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "outcome_message": "",
+        "maximizer_set": null,
+        "reason": "none",
+        "certified": true,
+        "unique": true,
+        "outcome": {
+          "kind": "estimate",
+          "reason": "none",
+          "certified": true,
+          "unique": true
+        },
+        "core_status": 0,
+        "outcome_override": false
+      }
+    },
+    {
+      "data": [
+        0,
+        0
+      ],
+      "prob": 0.5,
+      "fit": {
+        "kind": "ok",
+        "estimates": {
+          "size": "0x0p+0",
+          "prob": "0x1p-1"
+        },
+        "logLik": "0x0p+0",
+        "iterations": 1,
+        "fixed": [
+          "prob"
+        ],
+        "restricted": {},
+        "extra": {},
+        "extra_vectors": {},
+        "warnings": [],
+        "message": "",
+        "model": "",
+        "attainable_tol": "nan",
+        "limit_estimates": {},
+        "limit_loglik": "nan",
+        "loglik_lower": "nan",
+        "loglik_upper": "nan",
+        "segment_loglik_upper": "nan",
+        "candidates": [],
+        "outcome_message": "",
+        "maximizer_set": null,
+        "reason": "none",
+        "certified": true,
+        "unique": true,
+        "outcome": {
+          "kind": "estimate",
+          "reason": "none",
+          "certified": true,
+          "unique": true
+        },
+        "core_status": 0,
+        "outcome_override": false
+      }
+    }
+  ]
+}
