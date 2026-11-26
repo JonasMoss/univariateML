@@ -5,6 +5,7 @@
 #include "../../core/span.hpp"
 #include "../dnorm/mle.hpp"
 #include "dpqr.hpp"
+#include "curvature.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -304,6 +305,16 @@ inline DgammaResult dgamma_accuracy_search(span x,double tol=1e-8,int maxit=400,
     for (std::size_t j=0;j<p.x.size();++j) out.logLik+=p.w[j]*distributions::ddgamma(p.x[j],shape,r,true);
     out.iterations=1; out.status=DgammaStatus::Ok; return out;
   }
+  if (!hr && dgamma_detail::solve_curvature(p,tol,maxit,out.shape,out.rate,out.iterations)) {
+    out.logLik=0;
+    for (double v:x) out.logLik+=distributions::ddgamma(v,out.shape,out.rate,true);
+    if (std::isfinite(out.logLik)) {
+      out.singleton_proved = true;
+      out.status=DgammaStatus::Ok;
+      return out;
+    }
+    out={nan,nan,nan,0,DgammaStatus::InvalidData};
+  }
   const double mean=p.centre,var=std::max(0.1,p.variance);
   const double a0=hr ? mean*rate:mean*mean/var;
   dgamma_detail::Cost cost{p,hr,rate,maxit};
@@ -386,14 +397,18 @@ inline DgammaResult dgamma_accuracy_search(span x,double tol=1e-8,int maxit=400,
   }
   if (best_t.empty()) { out.status=DgammaStatus::IterationFailure; return out; }
   bool budget_exhausted=false;
-  if (!dgamma_detail::certify(p,hr,rate,best,best_t[0],maxit,budget_exhausted)) { out.status=DgammaStatus::IterationFailure; if(budget_exhausted) {
-    double witness_rate=rate;
-    if(hr || dgamma_detail::profile_rate(p,std::exp(best_t[0]),witness_rate,maxit)) {
-      out.stop_detail.candidates.push_back({{std::exp(best_t[0]),witness_rate},-p.n*best,-p.n*best});
+  // The legacy comparison can improve a feasible seed. On the free
+  // route its likelihood allowance cannot certify a unique coefficient
+  // pair, and an inconclusive comparison still goes to the accuracy gate.
+  if (!dgamma_detail::certify(p,hr,rate,best,best_t[0],maxit,budget_exhausted) && hr) {
+    out.status=DgammaStatus::IterationFailure;
+    if(budget_exhausted) {
+      out.stop_detail.candidates.push_back({{std::exp(best_t[0]),rate},-p.n*best,-p.n*best});
       out.stop_detail.loglik_lower=-p.n*best;
+      out.stop_detail=discrete_budget(out.stop_detail);
     }
-    out.stop_detail=discrete_budget(out.stop_detail);
-  } return out; }
+    return out;
+  }
   out.shape=std::exp(best_t[0]); out.rate=rate;
   if (!hr && !dgamma_detail::profile_rate(p,out.shape,out.rate,maxit)) { out.status=DgammaStatus::IterationFailure; return out; }
   out.logLik=0;
@@ -415,21 +430,16 @@ inline DgammaResult dgamma_accuracy_search(span x,double tol=1e-8,int maxit=400,
 }
 }
 
-#include "accuracy.hpp"
 namespace cppunivariate {
 inline DgammaResult dgamma_mle(span x,double tol=1e-10,int maxit=400,double shape=NAN,double rate=NAN) {
   auto r=dgamma_accuracy_search(x,tol,maxit,shape,rate);
-  if(r.status!=DgammaStatus::Ok)return r;
+  if(r.status!=DgammaStatus::Ok || r.singleton_proved)return r;
   r.singleton_proved=!std::isnan(shape) || !std::isnan(rate);
   std::array<double,3> q{{std::log(r.shape),std::log(r.rate),0}};
   const std::array<bool,3> free{{std::isnan(shape),std::isnan(rate),false}};
   dnorm_detail::Cells cells;if(!cells.init(x)){r.status=DgammaStatus::IterationFailure;return r;}
   const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
-    const auto a=accuracy_detail::exp(z[0]),ratev=accuracy_detail::exp(z[1]);accuracy_detail::JetSum f;
-    for(std::size_t i=0;i<cells.x.size();++i) {
-      f.add(accuracy_detail::Jet(cells.w[i])*dgamma_detail::cell_logprob(a,ratev,cells.x[i],maxit));
-    }
-    return f.value;
+    return dgamma_detail::fit_likelihood(cells,z,maxit);
   };
   if(!accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail)) {
     r.status=DgammaStatus::IterationFailure;
@@ -465,7 +475,7 @@ inline FitOutcome outcome(const DgammaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
-    case DgammaStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
+    case DgammaStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::undetermined();
     case DgammaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case DgammaStatus::InvalidControl: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case DgammaStatus::PointMass: return FitOutcome::limit(true);

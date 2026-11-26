@@ -297,3 +297,37 @@ TEST_CASE("dgamma: smooth narrow cells retain their likelihood derivatives") {
   CHECK(free.shape==approx(0.0813443740298880101));
   CHECK(free.rate==approx(3.25051624549745014e-7));
 }
+
+TEST_CASE("dgamma: sample trace, interval cover and uncertified fallback") {
+  // Cell-integral reference at 70 and 100 decimal digits, agreeing to
+  // 55 digits in 2026-11-26-dgamma-curv-data/references.json.
+  struct Fixture {
+    std::vector<double> data;
+    bool trace, certified;
+    double shape, rate, logLik;
+  };
+  const Fixture fixtures[]{
+    {{0, 1000}, true, true, 0.10960112723365823, 0.00021907110238480158, -10.320485285814486},
+    {{0, 2}, false, true, 1.4602615018243366, 0.98777443934235178, -2.7473039618812719},
+    {{6, 7, 8}, false, false, 97.099210667563159, 12.945326740553260, -3.6448028515761808}
+  };
+  for (const auto& fixture : fixtures) {
+    CAPTURE(fixture.data.back());
+    const auto sample=mltest::as_span(fixture.data);
+    cppunivariate::dnorm_detail::Cells cells;
+    REQUIRE(cells.init(sample));
+    CHECK(cppunivariate::dgamma_detail::trace_curvature(
+        cells,cppunivariate::dgamma_detail::curvature_upper(cells),
+        cppunivariate::dgamma_detail::curvature_mean(cells))==fixture.trace);
+    const auto fit=cppunivariate::dgamma_mle(sample);
+    REQUIRE(fit.status==cppunivariate::DgammaStatus::Ok);
+    const auto outcome=cppunivariate::outcome(fit);
+    CHECK(outcome.kind==cppunivariate::OutcomeKind::Estimate);
+    CHECK(outcome.certified==fixture.certified);
+    CHECK(outcome.uniqueness_known==fixture.certified);
+    CHECK(outcome.unique==fixture.certified);
+    CHECK(fit.shape==doctest::Approx(fixture.shape).epsilon(1e-10).scale(0));
+    CHECK(fit.rate==doctest::Approx(fixture.rate).epsilon(1e-10).scale(0));
+    CHECK(fit.logLik==doctest::Approx(fixture.logLik).epsilon(1e-10).scale(0));
+  }
+}

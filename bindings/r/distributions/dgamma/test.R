@@ -135,3 +135,26 @@ test_that("dgamma transports the polish floor and large-shape conditioning", {
   expect_s3_class(e,"univariateML_numerical")
   expect_gt(nrow(e$candidates),0L)
 })
+
+test_that("mldgamma publishes the curvature certificate and keeps checked fallbacks", {
+  # Cell-integral reference at 70 and 100 decimal digits, agreeing to
+  # 55 digits in 2026-11-26-dgamma-curv-data/references.json.
+  fixtures <- list(
+    trace = list(x = c(0, 1000), unique = TRUE,
+                 coef = c(0.10960112723365823, 0.00021907110238480158),
+                 logLik = -10.320485285814486),
+    cover = list(x = c(0, 2), unique = TRUE,
+                 coef = c(1.4602615018243366, 0.98777443934235178),
+                 logLik = -2.7473039618812719),
+    fallback = list(x = c(6, 7, 8), unique = NA,
+                    coef = c(97.099210667563159, 12.945326740553260),
+                    logLik = -3.6448028515761808)
+  )
+  for (fixture in fixtures) {
+    fit <- mldgamma(fixture$x)
+    expect_identical(attr(fit, "unique"), fixture$unique)
+    expect_identical(attr(fit, "certified"), isTRUE(fixture$unique))
+    expect_lt(max(abs(as.numeric(fit) / fixture$coef - 1)), 1e-10)
+    expect_equal(as.numeric(logLik(fit)), fixture$logLik, tolerance = 1e-10)
+  }
+})
