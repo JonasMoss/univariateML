@@ -212,6 +212,29 @@
    "commit": "2d3a806d",
    "dirty": true,
    "reason": "batch 13: typed maximizer sets part B (count and continuous families, routes)"
+  },
+  {
+   "families": [
+    "tbinom",
+    "tnorm",
+    "tpois",
+    "zib",
+    "zinb",
+    "zip",
+    "zipf",
+    "zmbinom",
+    "zmgeom",
+    "zmlogarithmic",
+    "zmnbinom",
+    "zmpois",
+    "ztbinom",
+    "ztgeom",
+    "ztnbinom",
+    "ztpois"
+   ],
+   "commit": "c02f9e81",
+   "dirty": false,
+   "reason": "batch 19: TASK-255 unique TRUE to NA for certified values with unproved cardinality"
   }
  ]
 }
