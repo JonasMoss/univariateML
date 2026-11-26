@@ -304,10 +304,26 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
    // The search result is uncertified unless the held-scale cover closes.
    fit.certified=false;fit.singleton_proved=false;
    auto fallback=standardized_search;fallback.certified=false;
-   auto candidate=frechet_held_scale_certificate(data,tol,maxit,fallback);
+   auto restore=[&](FrechetResult& candidate) {
+     const double certificate_tol=std::min(tol,.01);
+     const double expected=candidate.logLik-x.size()*std::log(unit);
+     const double error=256*std::numeric_limits<double>::epsilon()*(std::abs(m)+unit*std::abs(candidate.mu));
+     candidate.mu=m+unit*candidate.mu;candidate.sigma=sigma;
+     candidate.logLik=frechet_loglik(x,candidate.lambda,candidate.mu,candidate.sigma);
+     return std::isnormal(std::max(std::abs(candidate.mu),sigma))&&
+        error<=certificate_tol*.25*std::max(std::abs(candidate.mu),sigma)&&std::isfinite(candidate.logLik)&&
+        std::abs(candidate.logLik-expected)<=1e-7*x.size();
+   };
+   FrechetResult edge{NAN,NAN,NAN,NAN,0,FrechetStatus::NumericalFailure};
+   auto candidate=frechet_held_scale_certificate(data,tol,maxit,fallback,edge);
    if(candidate.status==FrechetStatus::SearchContradicted) {
      candidate.mu=m+unit*candidate.mu;candidate.sigma=sigma;
      candidate.logLik=frechet_loglik(x,candidate.lambda,candidate.mu,candidate.sigma);
+     if(edge.status==FrechetStatus::Ok && restore(edge)) {
+       const double margin=4096*std::numeric_limits<double>::epsilon()*
+         (x.size()+std::abs(edge.logLik)+std::max(std::abs(fit.logLik),std::abs(candidate.logLik)));
+       if(edge.logLik>fit.logLik+2*margin && edge.logLik>=candidate.logLik-2*margin)return edge;
+     }
      const double error=4096*std::numeric_limits<double>::epsilon()*
        (x.size()+std::abs(candidate.logLik)+std::abs(fit.logLik));
      if(std::isfinite(candidate.logLik)&&candidate.logLik>fit.logLik+2*error) {
@@ -318,16 +334,7 @@ inline FrechetResult frechet_held_mle(span x,double tol,int maxit,double mu,
        return candidate;
      }
    }
-   if(candidate.certified) {
-     const double certificate_tol=std::min(tol,.01);
-     const double expected=candidate.logLik-x.size()*std::log(unit);
-     const double error=256*std::numeric_limits<double>::epsilon()*(std::abs(m)+unit*std::abs(candidate.mu));
-     candidate.mu=m+unit*candidate.mu;candidate.sigma=sigma;
-     candidate.logLik=frechet_loglik(x,candidate.lambda,candidate.mu,candidate.sigma);
-     if(std::isnormal(std::max(std::abs(candidate.mu),sigma))&&
-        error<=certificate_tol*.25*std::max(std::abs(candidate.mu),sigma)&&std::isfinite(candidate.logLik)&&
-        std::abs(candidate.logLik-expected)<=1e-7*x.size())fit=candidate;
-   }
+   if(candidate.certified && restore(candidate))fit=candidate;
  }
  return fit;
 }

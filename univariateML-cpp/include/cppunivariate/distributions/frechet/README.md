@@ -400,11 +400,16 @@ work, and hence computing time, still grows with sample size. The
 compare this profile cover with the box cover.
 The [proof and arithmetic margins](../../../../../dev/research/evaluations/2026-11-10-gev-held-data/proof.md)
 state the tail bound and root-existence conditions. A completed cover sets the
-C++ result's `certified` field for this route. If coverage, coefficient inclusion or a comparison remains unresolved,
-the locally refined search is returned uncertified. A strictly better
-feasible point, rechecked in public coordinates, instead reports a numerical failure with both point
-witnesses because it disproves the search. Existing search failures retain their
-status. The catalogue flag remains partial.
+C++ result's `certified` field for this route. If coverage, coefficient inclusion
+or a comparison remains unresolved, the locally refined search is returned
+uncertified. When a witness refutes an interior fit, the fitter solves the
+attained shape-one edge and checks whether it beats the enclosed interior solution
+and the witness. A second cover can certify the edge and its uniqueness.
+If that cover is inconclusive, a locally accurate edge that survives the
+likelihood comparisons is returned uncertified. A refutation without a
+validated replacement retains both witnesses in a numerical stop.
+The [held-scale nonuniqueness examples](../../../../../dev/research/evaluations/2026-11-25-frechet-math-report.md#fréchet-single-holds)
+show why both the edge and the interior can win. The catalogue flag remains partial.
 
 Uncertified results meet the same local coefficient tolerance as certified
 ones. Analytic-jet Newton refinement checks the full inverse-information

@@ -1,0 +1,20 @@
+frechet        208  (16 s)
+native cases 208 differing 0 only-new 0 only-old 0
+frechet        208  (18 s)
+double cases 208 differing 0 only-new 0 only-old 0
+routes-native: 0 stored Fréchet rows; family absent from frozen route registry
+routes-double: 0 stored Fréchet rows; family absent from frozen route registry
+
+native: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  frechet                       182    1.7e-16      2e-15    3.7e-14          0
+
+double: relative difference |reported - summed| / max(1, |reported|) per family
+  family                      items     median        p99        max     >1e-10
+  frechet                       182    1.7e-16      2e-15    3.7e-14          0
+
+fit-density: failures by check: none
+fit-density: 0 listed as known, 0 new, 0 listed but passing
+fit-consistency: failures by check: none
+fit-consistency: 0 listed as known, 0 new, 0 listed but passing
+Singleton proof inventory covers 218 source sites
