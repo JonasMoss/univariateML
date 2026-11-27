@@ -11,7 +11,7 @@ Lean checked 67 public theorems across the six family modules. The [atlas fragme
 - The positive-excess hypotheses in the Pareto IV and Feller–Pareto transfers are essential for the likelihood interpretation. Pareto IV's held-scale Pareto face also holds the threshold. At equality with the held scale, the inherited Burr envelope includes the endpoint factor of one half per tied observation. The inverse Burr transfer carries that same factor at its upper endpoint. [Atlas audit, sections 1–3](2026-11-27-atlas-audit-report.md)
 - The exponentiated Weibull detector records describe comparisons stronger than the one-sided paths alone establish. The mathematical all-free criterion needs the common-point likelihood envelope and a finite equality rule. Across the exponentiated Weibull and Pareto IV records, a limit path alone gives a lower bound on the available envelope value. [Exponentiated Weibull report](2026-11-25-expweibull-math-report.md) · [Pareto IV report](2026-11-25-pareto34-math-report.md)
 - The PGW dossier lacks an existence block. The eight-mask statement comes from the mathematical report. The Weibull identity covers exponent one. The affine proof covers fixed positive exponent in general, and the scalar results cover every pair of fixed positive coefficients. [PGW report](2026-11-25-pgw-math-report.md)
-- The Feller–Pareto narrow-span exclusion holds threshold and power, with scale and both beta shapes free. The atlas has a `min+scale+shape2` row for the fixed-scale problem and no separate `min+shape2` row. The fragment uses the latter hold label for the powered-excess and narrow-span results, since they allow the scale to vary. The checked narrow-span theorem excludes finite MLEs. The global signed face choice also needs the face comparison and compactness in the report. [Feller–Pareto report](2026-11-25-fpareto-math-report.md)
+- The Feller–Pareto narrow-span exclusion holds threshold and power, with scale and both beta shapes free. The atlas has a `min+scale+shape2` row for the fixed-scale problem and no separate `min+shape2` row. The fragment uses `generic` for the powered-excess and narrow-span results, since they allow the scale to vary. The checked narrow-span theorem excludes finite MLEs. The global signed face choice also needs the face comparison and compactness in the report. [Feller–Pareto report](2026-11-25-fpareto-math-report.md)
 
 ## Proof effort and open entries
 
@@ -28,7 +28,9 @@ The singleton domains require no likelihood comparison. No family-specific singl
 
 ## Verification
 
-All six modules passed `/tmp/umvl-cpu/run nice -n 10 /home/jonas/.elan/bin/lake env lean <file>` on the workstation. Each was checked directly because the root import file is reserved for the coordinator. The final workstation `lake build` included the root target and all six new modules by name. It succeeded with 7,480 jobs and linter warnings. The six new modules contain no proof placeholders.
+- With temporary `public import` lines for all six modules in `dev/lean/UnivariateML.lean`, ran `/tmp/umvl-cpu/run nice -n 10 env LEAN_NUM_THREADS=1 /home/jonas/.elan/bin/lake build` from `dev/lean/`. The root build passed with 7,480 jobs and linter warnings. All 67 theorems remain free of proof placeholders.
+- Restored the root file and ran `git diff --exit-code dev/lean/UnivariateML.lean`. It returned zero with no diff.
+- The checker in this branch predates `--check`. Ran `python3 dev/tools/existence_atlas.py --check` in a worktree-local scratch copy of the checker and atlas data from TASK-391 commit `68fcd92b`, with this job's fragment and the worktree's dossier and proof sources. It returned zero with no diagnostics.
 
 ## Public theorem statements
 

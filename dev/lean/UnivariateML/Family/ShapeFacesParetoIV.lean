@@ -1,6 +1,11 @@
-import UnivariateML.Family.BurrHeld
-import UnivariateML.Family.Transfers
-import UnivariateML.Family.ShapeFacesInverseBurr
+module
+
+public import UnivariateML.Family.BurrHeld
+public import UnivariateML.Family.Transfers
+public import UnivariateML.Family.ShapeFacesInverseBurr
+
+-- The repository license applies to this downstream module.
+set_option linter.style.header false
 
 /-! Pareto IV at a held threshold.
 
@@ -9,6 +14,8 @@ import UnivariateML.Family.ShapeFacesInverseBurr
 The likelihood transfers use strictly positive excesses. Endpoint contact and
 the free-threshold problem require separate arguments.
 -/
+
+@[expose] public section
 
 open Real Set
 namespace UnivariateML.ShapeFacesParetoIV
@@ -261,3 +268,5 @@ theorem held_scale_constant_unbounded (hn : 0 < n) {v μ s : ℝ}
 
 end
 end UnivariateML.ShapeFacesParetoIV
+
+end

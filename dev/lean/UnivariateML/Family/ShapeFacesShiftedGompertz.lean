@@ -1,5 +1,10 @@
-import UnivariateML.Family.Weibull
-import UnivariateML.Generic.Score
+module
+
+public import UnivariateML.Family.Weibull
+public import UnivariateML.Generic.Score
+
+-- The repository license applies to this downstream module.
+set_option linter.style.header false
 
 /-! Shifted Gompertz attainment and the included exponential member.
 
@@ -9,6 +14,8 @@ The local result uses
 the strict inward-score condition directly, with a separate implication
 from the crossing-rate condition.
 -/
+
+@[expose] public section
 
 open Real Set Filter
 open scoped Topology
@@ -385,7 +392,8 @@ private theorem sum_log_le {x : Fin n → ℝ} (hx : ∀ i, 0 ≤ x i)
 
 private theorem survival_ge {x : Fin n → ℝ} (b : ℝ) (i : Fin n) :
     exp (-b * x i) ≤ survivalSum x b :=
-  Finset.single_le_sum (fun _ _ ↦ (exp_pos _).le) (Finset.mem_univ i)
+  Finset.single_le_sum (f := fun k ↦ exp (-b * x k))
+    (fun _ _ ↦ (exp_pos _).le) (Finset.mem_univ i)
 
 private theorem joint_rate_bound (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 ≤ x i) (j : Fin n) {b η : ℝ} (hb : 0 < b) (hη : 0 ≤ η) :
@@ -514,3 +522,5 @@ theorem joint_constant_unbounded (hn : 0 < n) (v : ℝ) (_hv : 0 ≤ v) :
 
 end
 end UnivariateML.ShapeFacesShiftedGompertz
+
+end

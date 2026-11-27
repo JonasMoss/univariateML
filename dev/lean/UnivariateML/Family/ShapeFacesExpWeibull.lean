@@ -1,7 +1,12 @@
-import UnivariateML.Family.Weibull
+module
+
+public import UnivariateML.Family.Weibull
 import Mathlib.Analysis.Calculus.Deriv.Slope
-import UnivariateML.Generic.Escape
-import UnivariateML.Family.Transfers
+public import UnivariateML.Generic.Escape
+public import UnivariateML.Family.Transfers
+
+-- The repository license applies to this downstream module.
+set_option linter.style.header false
 
 /-! Exponentiated Weibull likelihood and its Weibull subfamily.
 
@@ -11,6 +16,8 @@ The held-exponent and held-shape results cover nonconstant positive data.
 The two common paths approach the optimized face values. Exhaustiveness
 over arbitrary escaping sequences is a separate claim.
 -/
+
+@[expose] public section
 
 open Real Set
 namespace UnivariateML.ShapeFacesExpWeibull
@@ -634,7 +641,9 @@ private theorem logLik_logData {x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
 private theorem logQ_error_tendsto {z : ℝ → ℝ}
     (hz : Tendsto (fun t ↦ exp (z t)) atTop (𝓝 0)) :
     Tendsto (fun t ↦ logQ (exp (z t)) - z t) atTop (𝓝 0) := by
-  apply tendsto_of_tendsto_of_tendsto_of_le_of_le hz.neg tendsto_const_nhds
+  have hneg : Tendsto (fun t ↦ -exp (z t)) atTop (𝓝 0) :=
+    by simpa only [neg_zero] using hz.neg
+  apply tendsto_of_tendsto_of_tendsto_of_le_of_le hneg tendsto_const_nhds
   · intro t
     have h := (logQ_bounds (exp_pos (z t))).1
     rw [log_exp] at h
@@ -864,3 +873,5 @@ theorem optimized_inverse_weibull_face (hn : 0 < n) {x : Fin n → ℝ}
 
 end
 end UnivariateML.ShapeFacesExpWeibull
+
+end

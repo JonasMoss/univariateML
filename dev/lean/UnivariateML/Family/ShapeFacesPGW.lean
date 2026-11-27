@@ -1,7 +1,12 @@
-import UnivariateML.Family.Weibull
-import UnivariateML.Generic.Score
-import UnivariateML.Generic.Escape
-import UnivariateML.Family.Transfers
+module
+
+public import UnivariateML.Family.Weibull
+public import UnivariateML.Generic.Score
+public import UnivariateML.Generic.Escape
+public import UnivariateML.Family.Transfers
+
+-- The repository license applies to this downstream module.
+set_option linter.style.header false
 
 /-! Power generalized Weibull.
 
@@ -10,6 +15,8 @@ import UnivariateML.Family.Transfers
 The affine chart and the scalar results work for every positive exponent.
 The two-face comparison for free exponent and scale is outside these results.
 -/
+
+@[expose] public section
 
 open Real Set Filter
 namespace UnivariateML.ShapeFacesPGW
@@ -66,6 +73,7 @@ private def exponentScore (L : Fin n → ℝ) (c : ℝ) : ℝ :=
   (n : ℝ) / c + ∑ i, L i * (1 - exp (c * L i))
 
 set_option maxHeartbeats 400000 in
+-- Differentiating and bounding the finite score sum uses the additional heartbeats.
 theorem held_scale_shape_unique (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) {b a : ℝ} (_hb : 0 < b) (ha : 0 < a) :
     ∃! c, c ∈ Ioi (0 : ℝ) ∧ IsMaxOn (logLik x b a) (Ioi 0) c := by
@@ -161,7 +169,7 @@ theorem held_scale_shape_unique (hn : 0 < n) {x : Fin n → ℝ}
   exact ⟨r, ⟨hr.1, (hm r hr.1).2 hr.2⟩, fun q hq ↦ hu q ⟨hq.1, (hm q hq.1).1 hq.2⟩⟩
 
 
-private def softplus (z : ℝ) : ℝ := log (1 + exp z)
+def softplus (z : ℝ) : ℝ := log (1 + exp z)
 
 private def logistic (z : ℝ) : ℝ := exp z / (1 + exp z)
 
@@ -181,7 +189,7 @@ private theorem logistic_deriv (z : ℝ) :
   · rfl
   · ring_nf
 
-private def logKernel (c z : ℝ) : ℝ :=
+def logKernel (c z : ℝ) : ℝ :=
   z + (c - 1) * softplus z - exp (c * softplus z)
 
 private def kernelSlope (c z : ℝ) : ℝ :=
@@ -577,3 +585,5 @@ theorem held_exponent_scale_unbounded (hn : 0 < n) {x : Fin n → ℝ}
 
 end
 end UnivariateML.ShapeFacesPGW
+
+end

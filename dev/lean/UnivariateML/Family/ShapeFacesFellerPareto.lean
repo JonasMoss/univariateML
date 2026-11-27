@@ -1,6 +1,11 @@
-import UnivariateML.Family.Transfers3
-import UnivariateML.Family.Transfers
-import UnivariateML.Family.Gamma
+module
+
+public import UnivariateML.Family.Transfers3
+public import UnivariateML.Family.Transfers
+public import UnivariateML.Family.Gamma
+
+-- The repository license applies to this downstream module.
+set_option linter.style.header false
 
 /-! Feller–Pareto with held threshold and power.
 
@@ -11,6 +16,8 @@ The narrow-span moment inequality excludes finite stationary points and
 hence finite MLEs. The comparison and attainment of the boundary
 supremum require a separate face compactness argument.
 -/
+
+@[expose] public section
 
 open Real Set
 namespace UnivariateML.ShapeFacesFellerPareto
@@ -284,7 +291,7 @@ private theorem log_linear_error {u : ℝ} (hu : |u| ≤ 1 / 50) :
   change |E| ≤ _
   linarith only [htri, hs.trans htail]
 
-private def avg (x : Fin n → ℝ) : ℝ := (∑ i, x i) / n
+def avg (x : Fin n → ℝ) : ℝ := (∑ i, x i) / n
 
 private theorem avg_abs_le (hn : 0 < n) {f : Fin n → ℝ} {M : ℝ}
     (h : ∀ i, |f i| ≤ M) : |avg f| ≤ M := by
@@ -893,3 +900,5 @@ theorem held_power_narrow_span_no_mle (hn : 0 < n) {x : Fin n → ℝ} {μ a D L
 
 end
 end UnivariateML.ShapeFacesFellerPareto
+
+end

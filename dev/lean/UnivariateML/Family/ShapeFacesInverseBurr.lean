@@ -1,8 +1,15 @@
-import UnivariateML.Family.BurrHeld
-import UnivariateML.Generic.Escape
-import UnivariateML.Family.Transfers
+module
+
+public import UnivariateML.Family.BurrHeld
+public import UnivariateML.Generic.Escape
+public import UnivariateML.Family.Transfers
+
+-- The repository license applies to this downstream module.
+set_option linter.style.header false
 
 /-! Inverse Burr on strictly positive data, with the exact reciprocal Jacobian. -/
+
+@[expose] public section
 
 open Real Set
 namespace UnivariateML.ShapeFacesInverseBurr
@@ -423,3 +430,5 @@ theorem held_scale_constant_unbounded (hn : 0 < n) {v s : ℝ}
 
 end
 end UnivariateML.ShapeFacesInverseBurr
+
+end
