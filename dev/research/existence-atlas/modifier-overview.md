@@ -8,7 +8,7 @@ complete or one-sided. The remaining regimes for each question are open.
 
 | Modifier | Eligible | Implemented | Criterion complete / one-sided | Failure complete / one-sided | Uniqueness complete / one-sided |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| truncate:known | 520 | 15 | 181 / 2 | 177 / 6 | 90 / 6 |
+| truncate:known | 520 | 15 | 249 / 2 | 239 / 12 | 125 / 10 |
 | truncate:lower-estimated | 520 | 15 | 29 / 1 | 29 / 1 | 29 / 1 |
 | truncate:upper-estimated | 520 | 15 | 30 / 0 | 30 / 0 | 30 / 0 |
 | truncate:both-estimated | 520 | 15 | 29 / 1 | 29 / 1 | 29 / 1 |
