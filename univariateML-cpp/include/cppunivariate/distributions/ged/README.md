@@ -89,9 +89,10 @@ limits:
   - model: unif
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
-    detect: With free sd, finite-interval subdivision and a signed tail bound exclude every finite shape. With held sd, unresolved uniform comparisons try the finite-shape fallback.
+    detect: With shape and sd free, either the sample is constant away from a held mean or a finite-interval cover and the signed tail bound exclude all finite shapes. With sd held, unresolved uniform proposals try the finite-shape fallback and carry no limit certificate.
     status: UniformBoundary
-    detect_firmness: numerical
+    detect_firmness: proved
+    detect_proof: ["dev/research/evaluations/2026-11-25-ged-math-report.md#free-standard-deviation", "univariateML-cpp/include/cppunivariate/distributions/ged/README.md#free-shape-bounds"]
     proof: ["dev/research/evaluations/2026-11-25-ged-math-report.md#free-standard-deviation"]
 references:
 - Nelson, D. B. (1991). Conditional Heteroscedasticity in Asset Returns, A New Approach. Econometrica, 59, 347–370.
@@ -136,7 +137,7 @@ key_references:
 existence:
   uniqueness: unknown
   statement: >-
-    With all coefficients free, fitting restricts $\nu\ge1$; constant data have unbounded scale likelihood, and nonconstant data may select the unattained uniform limit. Without the fitting restriction, the all-free likelihood is unbounded for every sample. Global uniqueness with free shape in the restricted domain is unknown. For held $\nu>1$, nonconstant data have a unique location-scale maximum; at $\nu=1$, median intervals can give nonunique locations. With shape held, holding $\mu$ gives a unique scale maximum unless all residuals vanish. Holding $\sigma$ removes scale collapse; with shape held above one its location maximum is unique, while shape one permits median intervals. Free shape retains its fitting restriction and conditional uniform comparison. Held positive shapes below one also admit a location maximum at an observation and an explicit scale profile when residual spread is positive, but locations can tie. Holding all coefficients leaves likelihood evaluation.
+    With all coefficients free, fitting restricts $\nu\ge1$; constant data have unbounded scale likelihood, and nonconstant data may select the unattained uniform limit. Without the fitting restriction, the all-free likelihood is unbounded for every sample. Global uniqueness with free shape in the restricted domain is unknown. For held $\nu>1$, nonconstant data have a unique location-scale maximum; at $\nu=1$, median intervals can give nonunique locations. With shape held, holding $\mu$ gives a unique scale maximum unless all residuals vanish. Holding $\sigma$ removes scale collapse; with shape held above one its location maximum is unique, while shape one permits median intervals. Free shape retains its fitting restriction. The fitter certifies a uniform winner only with free standard deviation and strict exclusion of finite competitors. Held positive shapes below one also admit a location maximum at an observation and an explicit scale profile when residual spread is positive, but locations can tie. Holding all coefficients leaves likelihood evaluation.
   reason: >-
     At fixed shape, location minimizes $\sum_i|x_i-\mu|^\nu$, strictly convex for $\nu>1$ and minimized by medians for $\nu=1$. The free scale is an explicit positive multiple of the residual power mean. For nonconstant data this yields a unique location and scale when $\nu>1$. It does not prove uniqueness in shape.
 ---

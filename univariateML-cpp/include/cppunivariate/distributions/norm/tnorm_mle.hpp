@@ -343,9 +343,12 @@ inline double endpoint_mean(double t) {
   return 1 / t - tail / (-std::expm1(-t));
 }
 
+constexpr double face_moment_margin = 128 * std::numeric_limits<double>::epsilon();
+
 struct ExponentialFace {
   double rate, loglik, variance_ratio;
   bool accurate;
+  double variance_ratio_upper = INFINITY;
 };
 
 // Detect an exact zero score when rounding margins obscure it. The
@@ -442,8 +445,22 @@ inline ExponentialFace finite_exponential_face(span x, double a, double b,
   const double ll = t <= 1 ? std::log(factor) - std::log(w) - t * d -
       (t == 0 ? 0 : std::log(normalization / t)) :
       std::log(std::abs(rate)) - t * d - std::log(normalization);
-  const double ratio = face_sd / ((sd * factor) / w);
-  return {rate, double(x.size()) * ll, ratio * ratio, accurate};
+  const double empirical_sd = (sd * factor) / w;
+  const double ratio = face_sd / empirical_sd;
+  // A narrow signed bracket is needed in unit-window coordinates. An
+  // accurate public rate can allow a much wider tilt on a large window.
+  const double radius = face_moment_margin * (1 + t);
+  const double left = t - radius, right = t + radius;
+  double ratio_upper = INFINITY;
+  if (accurate && score(left) > margin(left) && score(right) < -margin(right)) {
+    // At small t the density ratio throughout the bracket is at most
+    // exp(radius), so this also bounds the variance ratio about the center.
+    // At large t the exponential variance 1/left^2 bounds the truncated one.
+    const double sd_upper = t <= 4 ? face_sd * std::exp(radius / 2) : 1 / left;
+    const double upper = sd_upper / empirical_sd;
+    ratio_upper = upper * upper;
+  }
+  return {rate, double(x.size()) * ll, ratio * ratio, accurate, ratio_upper};
 }
 
 }  // namespace tnorm_detail
@@ -572,8 +589,10 @@ inline TnormResult tnorm_mle_impl(span x,
       // Uniform face at t2 = 0; E u^2 under the uniform is (lo^2+lo*hi+hi^2)/3.
       res.limit_rate = 0;
       res.limit_logLik = -n * std::log(b - a);
-      if ((lo * lo + lo * hi + hi * hi) / 3 <= 1) {
+      const double face_second = (lo * lo + lo * hi + hi * hi) / 3;
+      if (face_second <= 1) {
         res.status = TnormStatus::UniformBoundary;
+        res.certified = face_second < 1 - tnorm_detail::face_moment_margin;
         return res;
       }
     }
@@ -588,8 +607,10 @@ inline TnormResult tnorm_mle_impl(span x,
     res.sd = s / std::sqrt(-2 * t2);
     res.logLik = n * (t2 - m.log_mass) - n * std::log(s);
     res.status = m.ok ? TnormStatus::Ok : TnormStatus::IterationFailure;
-    if (lower && upper && res.logLik - res.limit_logLik <= 1e-8 * n)
+    if (lower && upper && res.logLik - res.limit_logLik <= 1e-8 * n) {
       res.status = TnormStatus::UniformBoundary;
+      res.certified = false;
+    }
     return res;
   }
 
@@ -630,13 +651,14 @@ inline TnormResult tnorm_mle_impl(span x,
     const double ratio = d / (face_sd * factor);
     limit = {lower ? -rate : rate, n * (std::log(rate) - 1), ratio * ratio,
              rate > 0 && std::abs(std::fma(rate, d, -factor)) <= tol * factor / 2 &&
-             tol >= 8 * std::numeric_limits<double>::epsilon()};
+             tol >= 8 * std::numeric_limits<double>::epsilon(), ratio * ratio};
   }
   res.limit_rate = limit.rate;
   res.limit_logLik = limit.loglik;
   const bool face_ok = limit.accurate && std::isfinite(limit.rate) && std::isfinite(limit.loglik);
   if (limit.variance_ratio <= 1) {
     res.status = face_ok ? face : TnormStatus::IterationFailure;
+    res.certified = limit.variance_ratio_upper < 1 - tnorm_detail::face_moment_margin;
     return res;
   }
   double t1 = 0, t2 = -0.5;
@@ -651,8 +673,10 @@ inline TnormResult tnorm_mle_impl(span x,
   res.logLik = n * (t2 - m.log_mass) - n * std::log(s);
   res.status = m.ok ? TnormStatus::Ok : TnormStatus::IterationFailure;
   // Faces win ties within 1e-8 n.
-  if (res.status == TnormStatus::Ok && res.logLik - res.limit_logLik <= 1e-8 * n)
+  if (res.status == TnormStatus::Ok && res.logLik - res.limit_logLik <= 1e-8 * n) {
     res.status = face_ok ? face : TnormStatus::IterationFailure;
+    res.certified = false;
+  }
   return res;
 }
 
@@ -836,10 +860,10 @@ inline FitOutcome outcome(const TnormResult& r) {
     case TnormStatus::OutsideBounds: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TnormStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case TnormStatus::DegenerateData: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
-    case TnormStatus::ExponentialBoundary: return FitOutcome::limit(true);
-    case TnormStatus::ReflectedExponentialBoundary: return FitOutcome::limit(true);
-    case TnormStatus::TruncatedExponentialBoundary: return FitOutcome::limit(true);
-    case TnormStatus::UniformBoundary: return FitOutcome::limit(true);
+    case TnormStatus::ExponentialBoundary: return FitOutcome::limit(r.certified);
+    case TnormStatus::ReflectedExponentialBoundary: return FitOutcome::limit(r.certified);
+    case TnormStatus::TruncatedExponentialBoundary: return FitOutcome::limit(r.certified);
+    case TnormStatus::UniformBoundary: return FitOutcome::limit(r.certified);
     case TnormStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case TnormStatus::UnboundedLocation: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
   }

@@ -22,6 +22,7 @@ struct ZinbResult {
   ZinbCertificateFailure certificate_failure=ZinbCertificateFailure::None;
 
   bool unique = true;
+  bool limit_proved = false;
 };
 struct ZinbCertificateResult {
   ZinbResult fit;
@@ -253,8 +254,8 @@ inline FitOutcome outcome(const ZinbResult& r) {
     case ZinbStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZinbStatus::InvalidSize: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case ZinbStatus::IterationFailure: return FitOutcome::failure(r.certificate_failure==ZinbCertificateFailure::Arithmetic ? OutcomeReason::Evaluation : OutcomeReason::NoConvergence);
-    case ZinbStatus::ZipLimit: return FitOutcome::limit(true);
-    case ZinbStatus::PoissonLimit: return FitOutcome::limit(true);
+    case ZinbStatus::ZipLimit: return FitOutcome::limit(r.limit_proved);
+    case ZinbStatus::PoissonLimit: return FitOutcome::limit(r.limit_proved);
     case ZinbStatus::ZeroLimit: return FitOutcome::failure(OutcomeReason::NoConvergence);
   }
   return {};

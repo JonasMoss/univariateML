@@ -612,3 +612,11 @@ TEST_CASE("invburr: public InvWeibull candidate at class near-constant") {
   CHECK(ll >= c->loglik_lower - margin);
   CHECK(ll <= c->loglik_upper + margin);
 }
+
+TEST_CASE("invburr: held-power face on rounded reciprocals has numerical provenance") {
+  const std::vector<double> x{1., 0.5, 1. / 3., 0.25};
+  const auto fit = cppunivariate::invburr_mle_holds(mltest::as_span(x), NAN, 2., NAN);
+  REQUIRE(fit.status == cppunivariate::InvBurrStatus::InvWeibullBoundary);
+  CHECK(cppunivariate::outcome(fit).kind == cppunivariate::OutcomeKind::Limit);
+  CHECK_FALSE(cppunivariate::outcome(fit).certified);
+}

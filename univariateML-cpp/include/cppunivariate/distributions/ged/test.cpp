@@ -914,3 +914,21 @@ TEST_CASE("ged: public Unif candidate at class offset") {
   CHECK(narrow.stop_detail.limit_loglik==doctest::Approx(-3*std::log(hi-lo)).epsilon(1e-12));
 
 }
+
+TEST_CASE("ged: uniform proposal and completed cover have distinct grades") {
+  std::vector<double> x;
+  for (int i = 0; i < 40; ++i) x.push_back(-1. + 2. * i / 39.);
+  const auto data = mltest::as_span(x);
+  const auto proposal = cppunivariate::ged_mle_impl(data, 1e-6, 200);
+  REQUIRE(proposal.status == cppunivariate::GedStatus::UniformBoundary);
+  CHECK_FALSE(cppunivariate::outcome(proposal).certified);
+
+  const auto fit = cppunivariate::ged_mle(data, 1e-6, 200);
+  REQUIRE(cppunivariate::outcome(fit).kind == cppunivariate::OutcomeKind::Limit);
+  CHECK(cppunivariate::outcome(fit).certified);
+
+  const std::vector<double> endpoint{-std::sqrt(3.), std::sqrt(3.)};
+  const auto held_sd = cppunivariate::ged_mle(mltest::as_span(endpoint), 1e-6, 200, 0., 1., NAN);
+  CHECK(cppunivariate::outcome(held_sd).kind != cppunivariate::OutcomeKind::Limit);
+  CHECK_FALSE(cppunivariate::outcome(held_sd).certified);
+}

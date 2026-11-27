@@ -202,7 +202,6 @@ inline InvTrGammaResult invtrgamma_mle(span x, double tol = 1e-10, int maxit = 1
 namespace cppunivariate {
 
 inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=std::numeric_limits<double>::quiet_NaN(),double b=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=100) {
-  auto result = [&]() -> InvTrGammaResult {
   std::vector<double> y;
   double jac=0;
   for(double v:x) {
@@ -227,6 +226,7 @@ inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=
   out.singleton_proved=!std::isnan(a) || !std::isnan(b);
   out.transformation_failure=r.transformation_failure;
   if(!std::isnan(b))out.shape2=b;
+  // Preserve the transported trace likelihood, including the endpoint penalty.
   // The held endpoint is already represented in original coordinates;
   // its reciprocal need not be a representable double.
   if(out.stop_detail.limit_model==StopModel::Pareto && out.stop_detail.limit_coef.size()==2)
@@ -238,42 +238,6 @@ inline InvTrGammaResult invtrgamma_mle_fixed_scale(span x,double scale,double a=
     if(c.model==StopModel::Pareto && c.coef.size()==2)c.coef[1]=scale;
   }
   return trgamma_detail::check_represented({y.data(),y.size()},out,InvTrGammaStatus::Ok,InvTrGammaStatus::IterationFailure,true,jac);
-
-  }();
-  auto& detail=result.stop_detail;
-  auto& coef=detail.limit_coef;
-  if(coef.size()==2 && std::isfinite(detail.limit_loglik)) {
-    if(detail.limit_model==StopModel::Unif && !x.empty()) {
-      // Endpoints are public coordinates; round outwards to retain sample support.
-      coef[0]=std::min(coef[0],*std::min_element(x.begin(),x.end()));
-      coef[1]=std::max(coef[1],*std::max_element(x.begin(),x.end()));
-    }
-    double sum=0,carry=0;bool evaluated=true;
-    for(double v:x) {
-      double term=0;
-      switch(detail.limit_model) {
-        case StopModel::Norm:term=distributions::dnorm(v,coef[0],coef[1],true);break;
-        case StopModel::Unif:term=distributions::dunif(v,coef[0],coef[1],true);break;
-        case StopModel::Hnorm:term=distributions::dhnorm(v,coef[0],coef[1],true);break;
-        case StopModel::Lnorm:term=distributions::dlnorm(v,coef[0],coef[1],true);break;
-        case StopModel::Pareto:term=distributions::dpareto(v,coef[0],coef[1],true);break;
-        default:evaluated=false;break;
-      }
-      term-=carry;const double next=sum+term;carry=(next-sum)-term;sum=next;
-    }
-    if(evaluated && detail.limit_model==StopModel::Pareto && std::isfinite(sum)) {
-      for(auto& candidate:detail.candidates) {
-        if(candidate.model!=detail.limit_model || candidate.coef!=coef)continue;
-        const double roundoff=16*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(sum));
-        if(sum<candidate.loglik_lower-roundoff || sum>candidate.loglik_upper+roundoff)
-          candidate.loglik_lower=candidate.loglik_upper=sum;
-      }
-    }
-    if(evaluated) {detail.limit_loglik=sum;
-      if(!std::isfinite(sum))result.status=InvTrGammaStatus::IterationFailure;}
-  }
-
-  return result;
 }
 
 
@@ -293,8 +257,8 @@ inline FitOutcome outcome(const InvTrGammaResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     case InvTrGammaStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
-    case InvTrGammaStatus::LognormalBoundary: return FitOutcome::limit(true);
-    case InvTrGammaStatus::ParetoBoundary: return FitOutcome::limit(true);
+    case InvTrGammaStatus::LognormalBoundary: return FitOutcome::limit(false);
+    case InvTrGammaStatus::ParetoBoundary: return FitOutcome::limit(false);
     case InvTrGammaStatus::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
     case InvTrGammaStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case InvTrGammaStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);

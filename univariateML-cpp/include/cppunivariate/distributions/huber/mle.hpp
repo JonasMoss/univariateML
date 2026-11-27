@@ -27,6 +27,7 @@ struct HuberResult {
   MaximizerSet maximizers{};
   bool set_unresolved = false;
   bool held_gap_equality = false;
+  bool limit_proved = false;
 };
 
 inline bool family_point(const HuberResult&, const FitCandidate& c) {
@@ -45,15 +46,15 @@ inline FitOutcome outcome(const HuberResult& r) {
   if (r.stop_detail.comparison_tie) return comparison_outcome_of(r);
   switch (r.status) {
     case HuberStatus::Ok:
-      if (r.set_unresolved) return FitOutcome::undetermined();
+      if (r.set_unresolved) return FitOutcome::unknown_cardinality(false);
       if (r.maximizers.size) return FitOutcome::estimate(true, false);
       return r.singleton_proved || r.held_gap_equality ?
           FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
     case HuberStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case HuberStatus::UnboundedLikelihood: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case HuberStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
-    case HuberStatus::NormalLimit: return FitOutcome::limit(true);
-    case HuberStatus::LaplaceLimit: return FitOutcome::limit(true);
+    case HuberStatus::NormalLimit: return FitOutcome::limit(r.limit_proved);
+    case HuberStatus::LaplaceLimit: return FitOutcome::limit(r.limit_proved);
   }
   return {};
 }
@@ -827,6 +828,7 @@ inline HuberResult huber_global_search(span x,double tol=1e-10,int maxit=200,
   // problem exactly. Avoid a rounded zero interval for zero residuals.
   if(upper==0 && std::isfinite(normal)) {
     best.status=HuberStatus::NormalLimit;
+    best.limit_proved=true;
     evidence.limit_coef={nm,ns};evidence.limit_loglik=normal;
     evidence.limit_model=StopModel::Norm;evidence.loglik_lower=normal;
     evidence.loglik_upper=normal;best.stop_detail=evidence;return best;
@@ -905,6 +907,7 @@ inline HuberResult huber_global_search(span x,double tol=1e-10,int maxit=200,
     const bool tail_closed=normal_wins ? tail<normal-arithmetic : laplace_wins && tail<=laplace_upper;
     if(current.bound<face-arithmetic && tail_closed && (normal_wins || laplace_wins)) {
       best.status=normal_wins ? HuberStatus::NormalLimit : HuberStatus::LaplaceLimit;
+      best.limit_proved=true;
       evidence.limit_coef=normal>=laplace ? std::vector<double>{nm,ns} : std::vector<double>{lm,b};
       evidence.limit_loglik=face;evidence.limit_model=normal>=laplace ? StopModel::Norm : StopModel::Laplace;
       evidence.loglik_lower=face;evidence.loglik_upper=global;best.stop_detail=evidence;return best;
@@ -930,6 +933,7 @@ inline HuberResult huber_global_search(span x,double tol=1e-10,int maxit=200,
   const bool tail_closed=normal_wins ? tail<normal-arithmetic : laplace_wins && tail<=laplace_upper;
   if(tail_closed && incumbent<=face+arithmetic && (normal_wins || laplace_wins)) {
     best.status=normal>=laplace ? HuberStatus::NormalLimit : HuberStatus::LaplaceLimit;
+    best.limit_proved=true;
     evidence.limit_coef=normal>=laplace ? std::vector<double>{nm,ns} : std::vector<double>{lm,b};
     evidence.limit_loglik=face;evidence.limit_model=normal>=laplace ? StopModel::Norm : StopModel::Laplace;
     evidence.loglik_lower=face;evidence.loglik_upper=std::max(normal_upper,laplace_upper);
@@ -975,10 +979,14 @@ inline double huber_midpoint(double a, double b) {
 }
 
 inline void huber_location_box(HuberResult& r, double a, double b,
-                               bool free_scale, bool free_shape) {
+                               bool free_scale, bool free_shape, double half_gap=NAN) {
+  const double weight=std::fma(-r.epsilon,r.epsilon,1.);
+  const double lower=std::isnan(half_gap) ? std::fma(r.epsilon,r.sigma,a) :
+      std::fma(-weight,half_gap,r.mu);
+  const double upper=std::isnan(half_gap) ? std::fma(-r.epsilon,r.sigma,b) :
+      std::fma(weight,half_gap,r.mu);
   Box box;
-  box.axes={interval(std::fma(r.epsilon,r.sigma,a),
-                     std::fma(-r.epsilon,r.sigma,b),true,true),
+  box.axes={interval(lower,upper,true,true),
             fixed(r.sigma),fixed(r.epsilon)};
   auto& location=box.axes[0].range;
   location.lower_rounded=location.upper_rounded=true;
@@ -1084,14 +1092,35 @@ inline HuberResult huber_mle(span x,double tol=1e-10,int maxit=200,
     double mu=std::numeric_limits<double>::quiet_NaN(),
     double sigma=std::numeric_limits<double>::quiet_NaN(),bool exact_scan=false) {
   auto result=huber_global_search(x,tol,maxit,epsilon,mu,sigma,exact_scan);
-  if (result.status!=HuberStatus::Ok) return result;
+  const bool balanced_candidate=std::isnan(mu) && std::isnan(sigma) &&
+      epsilon>0 && epsilon<1 && result.status==HuberStatus::IterationFailure &&
+      tol>=8*std::numeric_limits<double>::epsilon();
+  if (result.status!=HuberStatus::Ok && !balanced_candidate) return result;
   const bool free_shape=std::isnan(epsilon), free_scale=std::isnan(sigma);
   std::vector<double> sorted(x.begin(),x.end());
   std::sort(sorted.begin(),sorted.end());
   const std::size_t mid=sorted.size()/2;
-  const bool interval_possible=std::isnan(mu) && sorted.size()%2==0;
+  const bool interval_possible=std::isnan(mu) && !sorted.empty() && sorted.size()%2==0;
   const double a=interval_possible ? sorted[mid-1] : 0;
   const double b=interval_possible ? sorted[mid] : 0;
+  // With two equally populated levels D=(b-a)/2 exactly. The all-tail
+  // scale is c*D and the half-width is (1-c^2)*D, strictly positive for c<1.
+  // Compute the width independently of the rounded scale near the cutoff.
+  if (interval_possible && free_scale && epsilon>0 && epsilon<1 &&
+      a<b && sorted.front()==a && sorted.back()==b &&
+      tol>=8*std::numeric_limits<double>::epsilon()) {
+    const double difference=b-a;
+    const double gap=std::isfinite(difference) ? difference/2 : b/2-a/2;
+    const double scale=epsilon*gap;
+    const double midpoint=huber_midpoint(a,b);
+    const double ll=std::isnormal(scale) ? huber_point_loglik(x,midpoint,scale,epsilon) : NAN;
+    if (std::isfinite(ll)) {
+      result={midpoint,scale,epsilon,ll,result.iterations,HuberStatus::Ok};
+      huber_location_box(result,a,b,true,false,gap);
+      return result;
+    }
+  }
+  if (result.status!=HuberStatus::Ok) return result;
   const int held_gap=interval_possible && !free_scale && !free_shape ?
       huber_gap_sign(a,b,epsilon,sigma) : -1;
   if (held_gap>=0) {

@@ -49,11 +49,11 @@ limits:
     firmness: proved
     fixed: [shape2]
     when: With $c$ held, $k$ tends to infinity and $s k^{1/c}$ stays at a positive inverse Weibull scale.
-    detect: With $c$ held, the certified Lomax comparison for the transformed observations selects the exponential limit of the Lomax likelihood. This is not an exact sample criterion.
+    detect: With only $c$ held, the signed Lomax cover can select the exponential limit on the rounded powered reciprocals. Selection on this mask carries a numerical grade because the cover lacks original-data enclosures.
     status: InvWeibullBoundary
     detect_firmness: numerical
     proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
-    detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#face-comparisons-and-equality"]
+    detect_proof: [UnivariateML.ShapeFacesInverseBurr.held_power_face]
   - model: 'invweibull'
     firmness: proved
     when: The shape $k$ tends to infinity while $s k^{1/c}$ tends to a positive inverse Weibull scale.
@@ -141,7 +141,9 @@ existence:
     With all coefficients free, constant positive data have unbounded likelihood.
     For nonconstant data, the inverse Weibull and power limits can compete with finite
     fits. Each certified finite fit is unique and global for that sample;
-    each accepted limit is certified globally optimal. A universal joint sample
+    each accepted all-free limit is certified globally optimal. With only
+    power held, a limit selected on rounded powered reciprocals carries a
+    numerical grade. A universal joint sample
     criterion and universal joint uniqueness theorem are not established.
     With only scale $s$ held, a unique finite maximum exists for nonconstant data if some observation is
     above $s$. Constant data above $s$ have unbounded likelihood.

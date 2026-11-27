@@ -394,6 +394,7 @@ inline ZinbCertificateResult zinb_zip_certificate(ispan x,double fixed_pi=NAN,
     }
   }
   out.fit.status=face.pi>0?ZinbStatus::ZipLimit:ZinbStatus::PoissonLimit;out.fit.iterations=work;
+  out.fit.limit_proved=true;
   out.stop_detail.limit_model=face.pi>0?StopModel::Zip:StopModel::Pois;
   out.stop_detail.limit_coef=face.pi>0?std::vector<double>{face.lambda,face.pi}:std::vector<double>{face.lambda};
   out.stop_detail.limit_loglik=face.ll;out.stop_detail.loglik_lower=face.lower;out.stop_detail.loglik_upper=face.upper;
@@ -437,6 +438,7 @@ inline ZinbCertificateResult zinb_certified_mle(ispan x,double tol=1e-10,int max
       auto base=d;base.pi=pi;const auto evaluated=base.zip_at(std::log(mean));const double ll=evaluated.ll;
       out.fit={NAN,NAN,NAN,NAN,nb.iterations,pi>0?ZinbStatus::ZipLimit:ZinbStatus::PoissonLimit};
       out.stop_detail=limit_detail(pi>0?std::vector<double>{mean,pi}:std::vector<double>{mean},ll,pi>0?StopModel::Zip:StopModel::Pois);
+      out.fit.limit_proved=!out.stop_detail.limit_coef.empty() && std::isfinite(evaluated.error);
       out.stop_detail.loglik_lower=ll-evaluated.error;out.stop_detail.loglik_upper=ll+evaluated.error;return out;
     }
     out.fit.iterations=nb.iterations;
@@ -503,6 +505,7 @@ inline ZinbCertificateResult zinb_certified_mle(ispan x,double tol=1e-10,int max
   }
   if(face.lower>nb_upper+margin) {
     out.fit={NAN,NAN,NAN,NAN,total_work,face.pi>0?ZinbStatus::ZipLimit:ZinbStatus::PoissonLimit};
+    out.fit.limit_proved=true;
     out.failure=ZinbCertificateFailure::None;
     out.stop_detail.limit_coef=face.pi>0?std::vector<double>{face.lambda,face.pi}:std::vector<double>{face.lambda};
     out.stop_detail.limit_model=face.pi>0?StopModel::Zip:StopModel::Pois;

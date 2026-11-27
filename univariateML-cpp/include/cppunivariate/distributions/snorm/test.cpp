@@ -523,3 +523,20 @@ TEST_CASE("snorm reflected maximizers are unchanged after an unresolved Tukey la
   for (std::size_t i = 0; i < fresh.size; ++i)
     CHECK(repeated.values[i].estimate.values == fresh.values[i].estimate.values);
 }
+
+TEST_CASE("snorm: half-normal limits carry the evidence of their return path") {
+  const std::vector<double> skewed{-1., -1., -1., 1.};
+  const auto numerical = cppunivariate::snorm_mle(mltest::as_span(skewed));
+  REQUIRE(numerical.status == cppunivariate::SnormStatus::RightHalfNormalBoundary);
+  REQUIRE(cppunivariate::outcome(numerical).kind == cppunivariate::OutcomeKind::Limit);
+  CHECK_FALSE(cppunivariate::outcome(numerical).certified);
+
+  const std::vector<double> constant(3, 2.);
+  const auto held_mean = cppunivariate::snorm_mle(mltest::as_span(constant), 1e-10, 200, 0.);
+  REQUIRE(held_mean.status == cppunivariate::SnormStatus::LeftHalfNormalBoundary);
+  CHECK(cppunivariate::outcome(held_mean).certified);
+  const auto held_scale = cppunivariate::snorm_mle(mltest::as_span(constant), 1e-10, 200, NAN, 1.);
+  REQUIRE(cppunivariate::outcome(held_scale).kind == cppunivariate::OutcomeKind::Limit);
+  CHECK(cppunivariate::outcome(held_scale).certified);
+  CHECK(held_scale.stop_detail.candidates.size() == 2);
+}

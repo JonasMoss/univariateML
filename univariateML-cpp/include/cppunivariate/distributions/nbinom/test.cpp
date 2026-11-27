@@ -1124,3 +1124,30 @@ TEST_CASE("nbinom: a signed bracket resolves size 3330 at two tolerances") {
     CHECK(r.prob==doctest::Approx(0.9993998379719266).epsilon(tol).scale(0));
   }
 }
+
+TEST_CASE("nbinom: inflation limits carry the certificate for the eligible hold mask") {
+  cppunivariate::ZinbResult proposal{};
+  for (auto status : {cppunivariate::ZinbStatus::ZipLimit, cppunivariate::ZinbStatus::PoissonLimit}) {
+    proposal.status = status;
+    CHECK(cppunivariate::outcome(proposal).kind == cppunivariate::OutcomeKind::Limit);
+    CHECK_FALSE(cppunivariate::outcome(proposal).certified);
+  }
+
+  const std::vector<int> positive{1, 1, 1};
+  const auto poisson = cppunivariate::zinb_mle(as_ispan(positive));
+  REQUIRE(poisson.status == cppunivariate::ZinbStatus::PoissonLimit);
+  CHECK(cppunivariate::outcome(poisson).certified);
+  const auto held_positive = cppunivariate::zinb_mle(as_ispan(positive), 1e-10, 200, NAN, NAN, .25);
+  REQUIRE(held_positive.status == cppunivariate::ZinbStatus::ZipLimit);
+  CHECK(cppunivariate::outcome(held_positive).certified);
+  REQUIRE(held_positive.stop_detail.limit_coef.size() == 2);
+  CHECK(held_positive.stop_detail.limit_coef[1] == .25);
+
+  std::vector<int> with_zeros(50, 0);
+  with_zeros.insert(with_zeros.end(), 50, 4);
+  const auto held = cppunivariate::zinb_mle(as_ispan(with_zeros), 1e-10, 200, NAN, NAN, .5);
+  REQUIRE(held.status == cppunivariate::ZinbStatus::ZipLimit);
+  CHECK(cppunivariate::outcome(held).certified);
+  REQUIRE(held.stop_detail.limit_coef.size() == 2);
+  CHECK(held.stop_detail.limit_coef[1] == .5);
+}
