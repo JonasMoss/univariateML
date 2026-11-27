@@ -1,0 +1,17 @@
+two-level block: 1 2 normal -0.09816786385635484
+two-level block: 4 9 normal -0.05456385187597585
+two-level block: 3 8 two 0.03915867222715888
+sged half bound, head: -0.09998344643739551
+std four-level witness gaps: 0.0014611624970307516 0.007086881649217718
+lst clustered sample, witness minus fitted normal: 0.49187090749846724
+sstd rational witness, mean log likelihood: 0.11909451998595752
+sstd normal bound margin: 0.03171160703655437
+sstd t2 cover: 697 least accepted margin: 2.1288244187372007e-07
+sstd half cover: 49 least accepted margin: 0.12937321349869255
+sstd t2 lower minus all pilot stencil uppers: 1.0174749630294221e-05
+compact cover 13 12 smallest outward gap 0.20347396625591901
+Pareto reference or gap q: 0.015625 P-W lower: 1.005831009175559
+compact cover 13 12 smallest outward gap 0.18571129820923732
+Pareto reference or gap q: 0.03125 P-W lower: 0.9867057900150622
+compact cover 572 571 smallest outward gap 2.9162664684348815e-08
+finite/Weibull upper seam slope -0.006943070917190856 endpoint finite gap lower 0.00905391811372091
