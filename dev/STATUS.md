@@ -251,8 +251,23 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   (4c1e8658) and the rerun is clean. `just cpp-test` 136/136;
   `just cpp-test-no-long-double` 181/181; `just test-full`
   `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 67773 ]`; `just js-test` 601/601;
-  `just relations` and `just site-check` green. The 2026-11-15 snapshot
-  baselines predate the NA moves; refresh them before the next batch.
+  `just relations` and `just site-check` green. Snapshot baselines
+  refreshed from this run (2d89fd4a).
+- Batch check of master a452bccb plus dc119bc3 (2026-11-27, workstation,
+  GCC 15.2, two lanes on a temporary 12-slot pool, after the seven
+  wrong-answer fixes TASK-330, 349, 363, 364, 365, 367, 368, the outcome
+  fixes TASK-285, 299, 315, the Lean modules TASK-369 to 372 and the dossier
+  wording pass TASK-320/296): the only snapshot moves are the intended ones,
+  17 records in each ordinary mode (dgamma 14: 11 gain `unique = TRUE` from
+  the curvature certificate, `ties`, `n7-s0` and `n7-s1` lose `certified`
+  because the legacy likelihood comparison no longer certifies the free fit;
+  nsbeta 3: corrected shapes, the near-constant class was 33% off) and none
+  in the modifier-route modes. `just strict`: no failure outside the known
+  list. `just cpp-test` 136/136; `just cpp-test-no-long-double` 181/181;
+  `just test-full` `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 68060 ]`;
+  `just js-test` 601/601; `just relations` and `just site-check` green. The
+  run regenerated `bindings/js/modifier-metadata.mjs` (stale zeta note,
+  committed as dc119bc3).
 - GitHub Actions run only on manual dispatch since 2026-11-06 (quota spent);
   there is no macOS or Windows result for anything merged after that date.
 - simbox was unreachable on 2026-11-12 and 2026-11-13; the jobs of those
@@ -268,41 +283,16 @@ Validation methods and coverage limits: [validation guide](validation/README.md)
   fixed in a1b53b58. `confint` gives percentile intervals for uniform, Pareto
   and power endpoints that exclude the true endpoint by construction (zero
   coverage, [proof and simulations](research/evaluations/2026-11-25-infer-math-report.md);
-  confirmed on master; TASK-269). Binomial with probability held and size
-  free reports `unique = TRUE` on exact adjacent-size ties: `mlbinom(c(0, 6),
-  size = NULL, prob = 0.5)` returns size 7, but sizes 7 and 8 tie exactly
-  (found by the Lean discrete module,
-  [report](research/evaluations/2026-11-25-lean-discrete-report.md); confirmed
-  on the 19b2fb7b build; TASK-330). Discrete Weibull: `mldweibull(c(8, 10))`
-  is certified but its shape is $11.5970271$ against the joint MLE
-  $11.5970192$ (relative error $6.9\times10^{-7}$, tolerance $10^{-10}$); the fit
-  rounds the probability and refits the shape
-  ([report](research/evaluations/2026-11-25-dweibull-math-report.md); confirmed
-  on the 19b2fb7b build; TASK-349). Log-gamma: `mllgamma(c(1 + 2^-52,
-  rep(4, 10)))` is certified at $(0.2224635, 0.1765209)$ against the exact MLE
-  $(0.2249709, 0.1785104)$, 1.1% off in both coefficients, because the Jensen
-  gap is formed from a rounded sum
-  ([report](research/evaluations/2026-11-25-lgamma-math-report.md); confirmed
-  on the 19b2fb7b build; TASK-363). Huber with scale held:
-  `mlhuber(c(-10, -9, 9, 10), sigma = 1, epsilon = 1.345)` reports
-  `unique = TRUE` at $\mu=0$, but every location in the central interval
-  maximizes (equal log-likelihood at $-5$, $0$, $5$)
-  ([Lean report](research/evaluations/2026-11-25-lean-huber-report.md); confirmed
-  on the 19b2fb7b build; TASK-364). Nonstandard beta with a far held
-  endpoint: `mlnsbeta(c(0, 1/8), min = -2^50, max = 1)` reports constant-data
-  nonexistence for non-constant data, and with `shape2 = 1` held certifies a
-  shape 6.25% below the exact MLE; the affine transform collapses the two
-  observations ([report](research/evaluations/2026-11-25-nsbeta-math-report.md);
-  confirmed on the 19b2fb7b build; TASK-365). Pareto IV with threshold and
-  scale held far from the data: `mlpareto4(c(-5, 10), min = -2^54, scale =
-  2^54)` certifies the root of the rounded excesses, 25% from the true root
-  ([report](research/evaluations/2026-11-25-pareto34-math-report.md); confirmed
-  on the 19b2fb7b build; TASK-367). Discretized normal: `mldnorm(0, mean =
-  -2^-100)` certifies sd $0.1052$ against $0.0849$ (24% off; also 4% at
-  $-2^{-60}$, $1.2\times10^{-7}$ at $-2^{-52}$), and `mldnorm(0, sd = 2^-1074)`
-  returns a certified NaN location
-  ([report](research/evaluations/2026-11-25-dnorm-math-report.md); confirmed on
-  the 19b2fb7b build; TASK-368). Open,
+  confirmed on master; TASK-269). The seven certified wrong answers found on 2026-11-25 are fixed and
+  validated in batch 20: binomial exact adjacent-size ties (TASK-330,
+  9203f7bf), discrete Weibull refit at a rounded probability (TASK-349,
+  6e25dfb8), log-gamma Jensen gap (TASK-363, 2ad515f3), Huber flat location
+  interval (TASK-364, 952b9ef4), nonstandard beta far endpoint (TASK-365,
+  66be68a8), Pareto IV/III distant threshold (TASK-367, 1f4be3b5) and
+  discretized normal scale and subnormal location (TASK-368, 6f9bd655); see
+  the 2026-11-26 job reports. Their route sweeps fixed further certified
+  errors on the same families (dnorm adjacent cells, five Pareto IV hold
+  masks, dweibull grid). Open,
   flagged rather than wrong: fpareto archive 001625/001628 end `unresolved`;
   they are now proved to have no finite MLE (inverse transformed-gamma limit,
   [report](research/evaluations/2026-11-25-fpareto-math-report.md)), and the
