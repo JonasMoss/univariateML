@@ -51,6 +51,10 @@ limits:
     detect: All observations equal one point strictly between the held endpoints, and both shapes are free.
     status: Degenerate
     message: unbounded
+    detect_firmness: proved
+    proof: ["UnivariateML.Beta.constant_unbounded", "UnivariateML.NonstandardBeta.logLik_transfer"]
+    detect_proof: ["UnivariateML.NonstandardBeta.joint_unbounded", "univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md#details"]
+    fixed: [min, max]
 log_density: (shape1-1)*log(((x-min)/(max-min))) + (shape2-1)*log(1-((x-min)/(max-min))) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)-log(max-min)
 holds:
 - held: []
@@ -181,7 +185,7 @@ $\sqrt{t/(2\pi u(1-u))}/(b-a)$. Its $n$th power diverges.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and the scope of the boundary comparisons.
 
-For at least two finite, nonconstant observations strictly between the held bounds, the MLE is unique and attained: the transformed beta log likelihood is strictly concave in its two shapes. If both shapes are free, the constant-sample test uses the observations on their original scale.
+For at least two finite, nonconstant observations strictly between the held bounds, the MLE is unique and attained: the transformed sufficient-statistic mean is interior, giving coercivity, and the beta log likelihood is strictly concave in its two shapes. If both shapes are free, the constant-sample test uses the observations on their original scale.
 
 Observations must be strictly inside the held support. Endpoint estimation with held shapes is not implemented. It is not always a mathematical failure: with both shapes equal to one, the uniform likelihood is maximized by placing free endpoints at the sample extremes, provided the fitted interval has positive width. The fit retains the beta model's sample restrictions and limiting comparisons.
 

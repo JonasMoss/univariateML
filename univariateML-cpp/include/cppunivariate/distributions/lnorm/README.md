@@ -43,6 +43,9 @@ limits:
   detect: 'both coefficients are free and all observations are equal'
   status: Unbounded
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.Lognormal.constant_unbounded"]
+  detect_proof: ["UnivariateML.Lognormal.constant_unbounded"]
 - name: unbounded likelihood
   firmness: proved
   fixed: [meanlog]
@@ -50,6 +53,9 @@ limits:
   detect: 'every $\log x_i$ equals the held $\mu$ and $\sigma$ is free'
   status: Unbounded
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.Lognormal.heldMean_unbounded"]
+  detect_proof: ["UnivariateML.Lognormal.heldMean_unbounded"]
 examples: |
   x <- datasets::precip
   mllnorm(x)

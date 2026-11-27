@@ -48,6 +48,9 @@ limits:
       held, at least $n/2$ observations equal that location.
     status: NoMLE
     message: "does not exist"
+    detect_firmness: proved
+    proof: ["UnivariateML.Cauchy.half_collapse", "UnivariateML.Cauchy.majority_collapse"]
+    detect_proof: ["UnivariateML.Cauchy.half_no_jointMLE", "UnivariateML.Cauchy.heldLocation_iff", "UnivariateML.Cauchy.majority_collapse", "UnivariateML.Cauchy.heldLocation_noMLE"]
 examples: |
   set.seed(1)
   x <- rml(200, mlcauchy())

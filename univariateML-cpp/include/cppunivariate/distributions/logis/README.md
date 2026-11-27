@@ -45,6 +45,9 @@ limits:
     detect: '$s$ is free and every observation equals the fitted or held location $\mu$'
     status: Unbounded
     message: "unbounded"
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/logis/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/logis/README.md#details"]
 examples: |
   set.seed(1)
   x <- rml(200, mllogis())

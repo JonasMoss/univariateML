@@ -56,7 +56,9 @@ limits:
   status: Degenerate
   message: does not exist
   kind: nonexistence
-
+  detect_firmness: proved
+  proof: ["UnivariateML.Gamma.constant_unbounded"]
+  detect_proof: ["UnivariateML.Gamma.constant_unbounded"]
 group: gamma and Weibull
 construction:
 - base
@@ -114,6 +116,8 @@ For shape at least 16, probabilities integrate the centered log-gamma density wi
 The inverse can return the mean when Chernoff bounds put the requested quantile within relative 1e-10 of it; a factor-two exponent margin reserves floating-point error. This shortcut returns NaN if that bracket intersects the binary64 overflow boundary. It is confined to the gamma inverse, since further power or exponential transforms can amplify its relative allowance.
 
 ## Details
+
+At fixed gamma shape the log-data location criterion is strictly concave. The physical standard gamma density is log-concave when shape is at least one. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 

@@ -52,6 +52,17 @@ SYMBOLS = {'n', 'k'}
 class SchemaError(ValueError):
     pass
 
+def limit_groups(meta):
+    """Yield base and modifier limits with their dossier key paths."""
+    yield 'limits', meta.get('limits', [])
+    modifiers = meta.get('modifiers') or {}
+    if 'truncate' in modifiers:
+        yield 'modifiers.truncate.limits', modifiers['truncate'].get('limits', [])
+    for kind in ('zero', 'censor'):
+        for scheme, config in (modifiers.get(kind) or {}).items():
+            if isinstance(config, dict) and 'limits' in config:
+                yield f'modifiers.{kind}.{scheme}.limits', config['limits']
+
 def outcome(text, where):
     """'failure(evaluation)' -> ('failure', 'evaluation'); 'estimate' -> ('estimate', 'none')."""
     m = re.fullmatch(r'(estimate|limit|budget|nonexistence|failure)(?:\((\S+)\))?', str(text).strip())

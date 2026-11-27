@@ -35,17 +35,26 @@ limits:
     when: 'The latent shape satisfies $k\to\infty$ while the latent mean $k/\lambda$ is fixed strictly inside the observed cell, so the latent variance $k/\lambda^2$ tends to zero.'
     detect: 'Both coefficients are free and all observations are equal.'
     status: PointMass
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#details"]
   - model: binom
     firmness: proved
     name: shifted Bernoulli
     when: 'The latent shape satisfies $k\to\infty$ and the latent mean approaches the shared integer boundary of two adjacent cells at a rate that preserves their observed proportions.'
     detect: 'Both coefficients are free and the integer sample range is one.'
     status: TwoPointLimit
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#details"]
   - name: point mass at zero
     firmness: proved
     when: 'The rate satisfies $\lambda\to\infty$ with shape held, or shape satisfies $k\to0$ with rate held.'
     detect: 'All observations are zero and exactly one coefficient is free.'
     status: PointMass
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#details"]
 existence:
   uniqueness: unknown
   statement: >-

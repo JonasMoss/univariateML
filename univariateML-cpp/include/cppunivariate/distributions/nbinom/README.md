@@ -35,6 +35,9 @@ limits:
     when: 'the size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p=\bar x>0$ fixed'
     detect: 'both coefficients are free, $\bar x>0$, and $S^2=n^{-1}\sum_i(x_i-\bar x)^2\le\bar x$'
     status: Underdispersed
+    detect_firmness: proved
+    proof: ["UnivariateML.NegBinomial.profile_tendsto_poisson"]
+    detect_proof: ["UnivariateML.NegBinomial.poisson_supremum"]
 references:
 - Johnson, N. L., Kemp, A. W. and Kotz, S. (2005). Univariate Discrete Distributions, third edition. Wiley. doi:10.1002/0471715816.
 - Brøns, H. and Jensen, S. T. (1988). Maximum Likelihood Estimation in the Negative Binomial Distribution. University of Copenhagen, Institute of Mathematical Statistics, Preprint 1988 No. 8.
@@ -203,6 +206,7 @@ modifiers:
         detect: With both coefficients free and some count above one, the certificate proves that the finite-size
           profile increases throughout its domain and approaches the fitted zero-truncated Poisson law.
         status: PoissonLimit
+        detect_firmness: proved
     modified:
       status: implemented
       certified: partial
@@ -216,6 +220,7 @@ modifiers:
         detect: Size and probability are free and the delegated positive-count certificate proves that its finite-size
           profile increases throughout the domain to the zero-truncated Poisson limit.
         status: PoissonLimit
+        detect_firmness: proved
     inflated:
       status: implemented
       certified: partial
@@ -229,7 +234,7 @@ modifiers:
           select the same-inflation ZIP face, or certified positive-count and NB comparisons select the free-inflation
           face. Unresolved comparisons stop without selecting a limit.
         status: ZipLimit
-        numerical: true
+        detect_firmness: numerical
       - model: pois
         firmness: proved
         when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed, while inflation tends to
@@ -237,7 +242,7 @@ modifiers:
         detect: A certified ordinary-NB reduction or complete global comparison selects the zero-inflation Poisson
           face. An unresolved global comparison is a numerical stop, not a non-existence report.
         status: PoissonLimit
-        numerical: true
+        detect_firmness: numerical
   truncate:
     status: implemented
     certified: 'yes'
@@ -254,12 +259,13 @@ modifiers:
       detect: sample mean is at or above the limiting conditional mean
       name: finite-window negative-binomial zero-probability limit, with weights (size)_k/k!
       status: UpperLimit
+      detect_firmness: proved
     - when: all observations equal the lowest retained integer above zero, outside the declared positive-truncation
         extension
       detect: sample is constant at the retained lower bound
       name: point mass at the lowest retained integer
       status: LowerLimit
-
+      detect_firmness: proved
 ---
 
 The negative binomial distribution models nonnegative counts with overdispersion relative to a Poisson distribution. The size $r$ need not be an integer. The probability $p$ determines the mean together with $r$, through $r(1-p)/p$.

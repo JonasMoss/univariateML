@@ -28,6 +28,9 @@ limits:
     when: 'The shape satisfies $\rho\to\infty$.'
     detect: 'The shape is free and every observation equals one.'
     status: PointMass
+    detect_firmness: proved
+    proof: ["UnivariateML.YuleSimon.allOnes_boundary"]
+    detect_proof: ["UnivariateML.YuleSimon.allOnes_boundary"]
 holds: []
 examples: |
   set.seed(1)

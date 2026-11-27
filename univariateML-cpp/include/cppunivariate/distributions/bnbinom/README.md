@@ -44,16 +44,25 @@ limits:
     when: 'The shapes satisfy $\alpha,\beta\to\infty$ with their ratio and $r>0$ fixed. Exchanging $r$ and $\beta$ gives the corresponding path with $\beta>0$ fixed.'
     detect: 'With $r$ or $\beta$ held and the other shapes free, a supporting-polynomial test proves the negative binomial face wins. Otherwise the pair must beat the face and complete its finite cover, or stop numerically. With all shapes free, a signed concentration bound and complete stationary cover can prove the negative binomial face wins. An unresolved comparison retains the legacy numerical face or finite result, explicitly uncertified'
     status: NegativeBinomialLimit
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-bnbinom-math-report.md#faces-and-the-finite-versus-face-test"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-bnbinom-math-report.md#faces-and-the-finite-versus-face-test"]
   - model: pois
     firmness: proved
     when: 'All three shapes tend to infinity with $r\beta/\alpha$ tending to a finite positive mean.'
     detect: 'All coefficients are free. Supporting-polynomial tests, the compound-Poisson bound for equal frequencies at 0,...,4, or a signed mixed-Poisson bound with a complete stationary cover prove the Poisson face wins for some samples. Other unresolved all-free faces retain explicitly uncertified legacy comparisons'
     status: PoissonLimit
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-bnbinom-math-report.md#faces-and-the-finite-versus-face-test"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-bnbinom-math-report.md#faces-and-the-finite-versus-face-test"]
   - model: pois
     firmness: proved
     when: 'A free shape satisfies $r\to0$, $\beta\to0$, or $\alpha\to\infty$, while the other two coefficients stay fixed and positive.'
     detect: 'Every observation is zero and at least one coefficient is free.'
     status: PointMass
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/bnbinom/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/bnbinom/README.md#details"]
 references:
 - Irwin, J. O. (1975). The Generalized Waring Distribution. Part I. JRSS A 138(1), 18-31. doi:10.2307/2345247.
 - Xekalaki, E. (1984). The Bivariate Generalized Waring Distribution and its Application to Accident Theory. JRSS

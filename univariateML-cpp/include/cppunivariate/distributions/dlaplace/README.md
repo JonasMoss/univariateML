@@ -34,6 +34,9 @@ limits:
   when: 'The geometric probability $b$ tends to zero with integer location $\mu$ fixed.'
   detect: Scale is free and all observations equal the estimated or held location.
   status: PointMass
+  detect_firmness: proved
+  proof: ["UnivariateML.DiscreteLaplace.heldLocation_boundary", "UnivariateML.DiscreteLaplace.joint_constant_boundary"]
+  detect_proof: ["UnivariateML.DiscreteLaplace.heldLocation_boundary", "UnivariateML.DiscreteLaplace.joint_constant_boundary"]
 holds: []
 examples: |
   x <- diff(datasets::discoveries)

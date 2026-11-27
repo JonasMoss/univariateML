@@ -36,8 +36,8 @@ r:
     iterlim: "Default 2000. Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: (shape1-1)*log(x/scale) - log(scale) - (shape1+shape2)*log(1+x/scale) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)
 limits:
-  - {firmness: proved, model: exp, when: 'With shape1 held at one, shape2 and scale diverge at fixed ratio.', status: ExpBoundary, fixed: [shape1], numerical: true}
-  - {firmness: proved, model: invexp, when: 'With shape2 held at one, shape1 diverges and scale vanishes at fixed product.', status: InvExpBoundary, fixed: [shape2], numerical: true}
+  - {firmness: proved, model: exp, when: 'With shape1 held at one, shape2 and scale diverge at fixed ratio.', status: ExpBoundary, fixed: [shape1], detect_firmness: numerical, proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#one-shape-held"]}
+  - {firmness: proved, model: invexp, when: 'With shape2 held at one, shape1 diverges and scale vanishes at fixed product.', status: InvExpBoundary, fixed: [shape2], detect_firmness: numerical, proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#one-shape-held"]}
   - firmness: proved
     kind: nonexistence
     name: unbounded likelihood
@@ -45,32 +45,43 @@ limits:
     detect: All observations are equal and both shapes are free.
     status: Unbounded
     message: unbounded
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#hold-masks-and-likelihood-closure"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#hold-masks-and-likelihood-closure"]
   - firmness: proved
     model: gamma
     fixed: [shape1]
     when: With $p$ held, $q$ and $b$ tend to infinity while $b/q$ tends to a positive gamma scale.
     detect: Constant data select this limit analytically; nonconstant data require the signed gamma-tail and interior profile certificate. Unresolved comparisons retain a successful finite search as uncertified.
     status: GammaBoundary
-    numerical: true
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#one-shape-held"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#exact-threshold-and-a-sufficient-face-test"]
   - firmness: proved
     model: invgamma
     fixed: [shape2]
     when: With $q$ held, $p$ tends to infinity and $b$ tends to zero while $bp$ tends to a positive inverse-gamma scale.
     detect: Constant data select this limit analytically; nonconstant data use the reciprocal signed gamma-tail and interior certificate. Unresolved comparisons retain a successful finite search as uncertified.
     status: InvGammaBoundary
-    numerical: true
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#one-shape-held"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#exact-threshold-and-a-sufficient-face-test"]
   - model: gamma
     firmness: proved
     when: The shape $q$ tends to infinity while $p$ tends to a positive finite shape and $b/q$ tends to a positive gamma scale.
     detect: The signed joint gamma tail and compact interior cover exclude finite competitors; likelihood bounds separate this face from the inverse-gamma face. Unresolved comparisons retain a successful finite search as uncertified. For a sample of relative spread at most $10^{-6}$ whose search ends unresolved (for example $[c,c,c^+]$, shapes about $10^{12}$ to $10^{32}$), the face with the higher leading-order likelihood is returned as an uncertified limit (the gamma face for a left-skewed sample (two high, one low)). The skewness decides, since $L_{\mathrm{inv}}-L_{\mathrm{gamma}}=n s_3/(3 s_2)(1+O(\rho))$ with $s_2,s_3$ the second and third central moments of the relative offsets (numerical on the segment between the faces, below double resolution, $\delta/3\approx 6\cdot10^{-17}$ for $n=3$). Symmetric samples are left unresolved.
     status: GammaBoundary
-    numerical: true
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#compact-scalar-decision-for-all-free-data"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#compact-scalar-decision-for-all-free-data"]
   - model: invgamma
     firmness: proved
     when: The shape $p$ tends to infinity while $q$ tends to a positive finite shape and $bp$ tends to a positive inverse-gamma scale.
-    detect: Reciprocal signed tails and the compact interior cover exclude finite competitors; likelihood bounds separate this face from the gamma face. Unresolved comparisons retain a successful finite search as uncertified. For near-constant samples the sign of the skewness selects this face when the sample is right-skewed (two low, one high); see the gamma face above.
+    detect: Reciprocal signed tails and the compact interior cover exclude finite competitors; likelihood bounds separate this face from the gamma face. Unresolved comparisons retain a successful finite search as uncertified. For near-constant samples the sign of the skewness selects this face as an uncertified limit when the sample is right-skewed (two low, one high); see the gamma face above.
     status: InvGammaBoundary
-    numerical: true
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#compact-scalar-decision-for-all-free-data"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-betapr-math-report.md#compact-scalar-decision-for-all-free-data"]
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995). Continuous Univariate Distributions, Volume 2, Chapter 25.
   Wiley, New York.
@@ -119,7 +130,7 @@ existence:
     when a finite witness exceeds both computed face upper bounds.
     A closed-form joint sample criterion and joint uniqueness are
     not established. A certified compact cover determines finite fits and winning faces when computed comparisons resolve; otherwise a successful finite search is uncertified. With scale held, a unique finite MLE exists exactly when
-    the sample is nonconstant if both shapes are free. With scale and either
+    the sample is nonconstant if both shapes are free. Constant data with both shapes free give unbounded likelihood at held scale. With scale and either
     shape held, the remaining shape has a unique finite maximum even for
     constant data. With both shapes held, scale has a unique finite maximum
     for every positive sample. With just $p$ held, the gamma limit remains;
@@ -178,7 +189,7 @@ sending only $p$ to infinity sends mass to infinity. Sending both to infinity
 with finite positive ratio gives a point mass, rather than gamma or inverse gamma.
 
 At held scale, holding one shape leaves a strictly decreasing digamma score.
-Holding both shapes gives a strictly decreasing log-scale score with a unique
+With scale free and both shapes held, the log-scale score is strictly decreasing and has a unique
 root, even for constant data. Holding just one shape leaves the corresponding
 gamma or inverse-gamma escape. The limit comparison retains that shape and
 optimizes the limit scale. For constant data, profiling scale gives a likelihood

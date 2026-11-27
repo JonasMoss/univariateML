@@ -26,10 +26,34 @@ limits:
 - name: power-transformed Gompertz
   firmness: proved
   when: '$c\to\infty$, $a=s c^{1/b}$, with $b,s>0$ fixed: $H(x)\to\exp\{(x/s)^b\}-1$.'
+  proof: ["dev/research/evaluations/2026-11-25-pgw-math-report.md#bounds-and-exhaustive-competitive-escapes"]
 - name: lower-threshold conditional Weibull
   firmness: proved
   when: '$a=s$, $b\to\infty$, $c=k/b$, with $s,k>0$ fixed: $H(x)\to0$ below $s$ and $(x/s)^k-1$ above $s$.'
+  proof: ["dev/research/evaluations/2026-11-25-pgw-math-report.md#bounds-and-exhaustive-competitive-escapes"]
 relations: {}
+
+existence:
+  uniqueness: unknown
+  statement: >-
+    For positive data, holding all three coefficients gives evaluation. With
+    two held, exponent and scale estimation are unique. Shape estimation
+    is unique except for a sample constant at the held scale, where the
+    likelihood is unbounded. At held exponent the joint fit is unique
+    exactly for nonconstant data, with divergence on constants. With only
+    scale held, nonconstant data attain exactly when that scale exceeds the
+    sample minimum. At equality the threshold limit incurs a factor $2^{-m}$
+    for $m$ tied minima. Constant data at or below held scale are unbounded;
+    constants above it select the threshold. At held shape, constant data
+    select the Gompertz face. Nonconstant data attain exactly when a retained
+    stationary value at least equals that face; the face strictly wins when
+    $(x_{\min}/x_{\max})^b\ge1/2$, where $b$ is the held shape. All-free
+    constant samples are unbounded. Other all-free samples attain exactly
+    when a retained stationary value ties or exceeds both optimized faces.
+  reason: >-
+    Log-scale compactness bounds exhaust competitive nonconstant escapes in
+    the threshold and power-transformed Gompertz charts. Their tail cutoffs
+    reduce the exact comparison to finitely many stationary profile values.
 ---
 
 The ordinary power generalized Weibull has cumulative hazard
@@ -58,6 +82,4 @@ The threshold boundary is Weibull conditioned on exceeding its own scale,
 not an unrestricted truncated Weibull.
 The pointwise endpoint density depends on the path to this law.
 These are proved distributional limits, not implemented likelihood escape
-detectors. Their reachability as likelihood suprema and exhaustiveness over
-joint parameter paths remain open in the
-[PGW analysis](../../../../../dev/research/evaluations/2026-11-11-pgw-theory-report.md#proved-boundary-paths).
+detectors. The [attainment proof](../../../../../dev/research/evaluations/2026-11-25-pgw-math-report.md#bounds-and-exhaustive-competitive-escapes) exhausts the competitive nonconstant escapes.

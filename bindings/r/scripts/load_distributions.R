@@ -128,10 +128,25 @@ if (!requireNamespace("yaml", quietly = TRUE)) {
   if (length(keys) && (length(keys) > 3L || !is.numeric(keys) || anyNA(keys) ||
       any(keys != floor(keys) | keys < 1 | keys > length(f$references)) || anyDuplicated(keys)))
     stop("load_distributions: invalid key_references for ", id)
-  for (lim in f$limits %||% list()) {
-    if (!is.null(lim$firmness) && (!scalar_text(lim$firmness) ||
-        !lim$firmness %in% c("proved", "argued", "numerical", "conjecture")))
-      stop("load_distributions: invalid limit firmness for ", id)
+  modifiers <- c(list(f$modifiers$truncate), f$modifiers$zero, f$modifiers$censor)
+  limits <- c(f$limits, unlist(lapply(Filter(is.list, modifiers), function(config) {
+    config$limits
+  }), recursive = FALSE))
+  for (lim in limits) {
+    for (field in c("firmness", "detect_firmness")) {
+      grade <- lim[[field]]
+      if (!is.null(grade) && (!scalar_text(grade) ||
+          !grade %in% c("proved", "argued", "numerical", "conjecture")))
+        stop("load_distributions: invalid limit ", field, " for ", id)
+    }
+    for (field in c("proof", "detect_proof")) {
+      refs <- lim[[field]]
+      if (!is.null(refs) && (!is.null(names(refs)) ||
+          !(is.list(refs) || is.character(refs)) || !all(vapply(refs, scalar_text, TRUE))))
+        stop("load_distributions: invalid limit ", field, " for ", id)
+    }
+    # Validate the old input type for callers of the low-level reader.
+    # Generated documentation uses detect_firmness.
     if (!is.null(lim$numerical) && (!is.logical(lim$numerical) || length(lim$numerical) != 1L || is.na(lim$numerical)))
       stop("load_distributions: invalid numerical detection flag for ", id)
   }

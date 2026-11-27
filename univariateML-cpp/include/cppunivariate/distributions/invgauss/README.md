@@ -45,6 +45,9 @@ limits:
   detect: 'both coefficients are free and all observations are equal'
   status: Unbounded
   message: constant data
+  detect_firmness: proved
+  proof: ["UnivariateML.InverseGaussian.constant_unbounded"]
+  detect_proof: ["UnivariateML.InverseGaussian.constant_unbounded"]
 - name: unbounded likelihood
   firmness: proved
   fixed: [mean]
@@ -52,6 +55,9 @@ limits:
   detect: 'every observation equals the held $\mu$ and $\lambda$ is free'
   status: Unbounded
   message: constant data
+  detect_firmness: proved
+  proof: ["UnivariateML.InverseGaussian.heldMean_unbounded"]
+  detect_proof: ["UnivariateML.InverseGaussian.heldMean_unbounded"]
 examples: |
   x <- datasets::airquality$Wind[!is.na(datasets::airquality$Wind)]
   mlinvgauss(x)
@@ -101,6 +107,9 @@ existence:
 The inverse Gaussian (Wald) distribution models positive quantities, including first-passage times of Brownian motion with positive drift.
 
 ## Details
+
+At fixed positive shape-to-mean ratio $\lambda/\mu$, the log-data likelihood is strictly log-concave in log mean, with a unique maximum for every positive sample. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 

@@ -49,6 +49,9 @@ limits:
   detect: 'Every squared observation equals the held scale $\Omega$.'
   status: Degenerate
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.Nakagami.constant_unbounded"]
+  detect_proof: ["UnivariateML.Nakagami.constant_unbounded"]
 - name: unbounded likelihood
   firmness: proved
   kind: nonexistence
@@ -56,6 +59,9 @@ limits:
   detect: 'Both parameters are free and every observation equals the same positive value.'
   status: Degenerate
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.Nakagami.constant_unbounded"]
+  detect_proof: ["UnivariateML.Nakagami.constant_unbounded"]
 examples: |
   set.seed(1)
   x <- rml(200, mlnaka())

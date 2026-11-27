@@ -42,6 +42,9 @@ limits:
     detect: sd is free and every observation equals the fitted or held location
     status: Unbounded
     message: "unbounded"
+    detect_firmness: proved
+    proof: ["UnivariateML.Normal.constant_unbounded", "UnivariateML.Normal.heldMean_unbounded"]
+    detect_proof: ["UnivariateML.Normal.constant_unbounded", "UnivariateML.Normal.heldMean_unbounded"]
 examples: |
   x <- datasets::trees$Height
   mlnorm(x)
@@ -149,6 +152,7 @@ modifiers:
       status: DegenerateData
       message: unbounded
       kind: nonexistence
+      detect_firmness: proved
     - name: endpoint location escape
       firmness: proved
       fixed:
@@ -159,6 +163,7 @@ modifiers:
       status: UnboundedLocation
       message: unbounded
       kind: nonexistence
+      detect_firmness: proved
     - model: exp
       firmness: proved
       when: As $\sigma\to\infty$ and $\mu/\sigma^2\to-1/(\bar x-a)$ with $a$ finite and $b=\infty$, the distribution
@@ -166,7 +171,8 @@ modifiers:
       detect: The sample is nonconstant, both parent coefficients are free, $a$ is finite, $b=\infty$, and the empirical
         variance is at least $(\bar x-a)^2$.
       status: ExponentialBoundary
-      numerical: true
+      detect_firmness: numerical
+      proof: ["dev/research/evaluations/2026-11-21-tnorm-limit-report.md#coefficient-rule-and-comparison"]
     - model: exp
       firmness: proved
       when: As $\sigma\to\infty$ and $\mu/\sigma^2\to1/(b-\bar x)$ with $a=-\infty$ and $b$ finite, the distribution
@@ -174,7 +180,8 @@ modifiers:
       detect: The sample is nonconstant, both parent coefficients are free, $a=-\infty$, $b$ is finite, and the
         empirical variance is at least $(b-\bar x)^2$.
       status: ReflectedExponentialBoundary
-      numerical: true
+      detect_firmness: numerical
+      proof: ["dev/research/evaluations/2026-11-21-tnorm-limit-report.md#coefficient-rule-and-comparison"]
     - name: truncated exponential
       firmness: proved
       when: As $\sigma\to\infty$ and $\mu/\sigma^2\to r$ with both bounds finite, the distribution tends to the
@@ -182,7 +189,8 @@ modifiers:
       detect: The sample is nonconstant, both parent coefficients are free, both bounds are finite, and the empirical
         variance is at least that of the exponential tilt with the same empirical mean.
       status: TruncatedExponentialBoundary
-      numerical: true
+      detect_firmness: numerical
+      proof: ["dev/research/evaluations/2026-11-21-tnorm-limit-report.md#coefficient-rule-and-comparison"]
     - name: uniform
       firmness: proved
       fixed:
@@ -191,8 +199,7 @@ modifiers:
       detect: The parent mean $\mu$ is held, scale is free, both bounds are finite, and the empirical squared distance
         from $\mu$ is at least $((b-\mu)^3-(a-\mu)^3)/(3(b-a))$.
       status: UniformBoundary
-      numerical: true
-
+      detect_firmness: numerical
 ---
 
 The normal (Gaussian) distribution is a symmetric distribution on the real line, used to model continuous measurements and errors.

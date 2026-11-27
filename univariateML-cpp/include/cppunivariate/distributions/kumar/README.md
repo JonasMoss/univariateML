@@ -44,6 +44,9 @@ limits:
   detect: 'every observation equals $c$ and neither shape is held'
   status: Unbounded
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.Kumaraswamy.constant_unbounded"]
+  detect_proof: ["UnivariateML.Kumaraswamy.constant_unbounded"]
 examples: |
   set.seed(1)
   x <- rml(200, mlkumar())
@@ -110,6 +113,9 @@ existence:
 The Kumaraswamy distribution models continuous proportions strictly between zero and one. Its two shapes control behaviour near the lower and upper ends of the interval. It offers an elementary quantile function as an alternative to the beta distribution.
 
 ## Details
+
+The fixed-shape curvature calculation is the generalized-beta case with its first beta shape fixed at one. At second beta shape one the upper endpoint has positive density. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.
 

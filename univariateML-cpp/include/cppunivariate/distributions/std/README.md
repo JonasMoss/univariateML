@@ -43,34 +43,52 @@ limits:
     detect: The collapse exponent is negative at an attainable location; critical equality uses the separate fixed-shape analysis.
     status: Unbounded
     message: "collapse"
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons"]
   - name: scale collapse
     firmness: proved
     fixed: [nu]
     when: "The ordinary t scale tends to zero at the free or held location."
     detect: 'The location has multiplicity $k>\nu(n-k)$ in a sample of size $n$.'
     status: Unbounded
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons"]
+    detect_proof: ["UnivariateML.TDist.std_heldLocation", "UnivariateML.TDist.std_joint_unbounded", "UnivariateML.TDist.exponent_all_tied"]
   - name: tie equality boundary
     firmness: proved
     fixed: [nu]
     when: "The ordinary t scale tends to zero at the free or held location."
     detect: 'Exact equality $k=\nu(n-k)$ gives a finite unattained scale-zero supremum.'
     status: ScaleBoundary
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons"]
+    detect_proof: ["UnivariateML.TDist.std_heldLocation", "dev/research/evaluations/2026-11-07-std-held-data/derivation.md#joint-critical-atom-at-held-shape-at-least-one"]
   - name: fixed-sd collapse
     firmness: proved
     fixed: [mean, sd]
     when: 'Shape decreases to two with supplied mean and standard deviation held.'
     detect: 'At critical multiplicity k=2(n-k), exhaustive scalar certificates compare the finite unattained collapse supremum to every interior maximum and the normal face.'
     status: ScaleBoundary
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons", "dev/research/evaluations/2026-11-25-tcert-math-report.md#cover-and-inclusion"]
   - model: 'norm'
     firmness: proved
     when: 'The shape $\nu$ tends to infinity with mean and sd fixed.'
     detect: All-free and shape-only held fits use exhaustive finite-interval and tail certificates. Joint held profiles can certify normal with a strictly negative first-order term, a uniform tail remainder and a complete compact cover; unresolved profiles retain legacy finite or limit decisions marked uncertified.
     status: 'NormalBoundary'
+    detect_firmness: proved
+    proof: ["UnivariateML.TDist.std_density_tendsto_normal"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#normal-face", "dev/research/evaluations/2026-11-25-tcert-math-report.md#cover-and-inclusion"]
   - model: lst
     firmness: proved
     when: 'The shape $\nu$ decreases to two with mean and ordinary t scale fixed; sd diverges.'
     detect: All-free fits use exhaustive profile and tail bounds; held-location/free-scale shape profiles retain converged numerical fits marked uncertified if the constrained comparison is unresolved.
     status: 'DfTwoBoundary'
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#normal-face"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons", "dev/research/evaluations/2026-11-25-tcert-math-report.md#cover-and-inclusion"]
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, Chapter 13.
   Wiley, New York.
@@ -131,8 +149,8 @@ existence:
     attained: false
     evidence: >-
       This dossier (existence reason): collapse contributes $a^{\nu(n-k)-k}$
-      for the ordinary t scale $a$; on the domain $\nu > 2$ the infimum
-      $2n-3k$ is approached only as $\nu \downarrow 2$.
+      for the ordinary t scale $a$; for $k<n$, on the domain $\nu > 2$ the infimum
+      $2n-3k$ is approached only as $\nu \downarrow 2$. At $k=n$ the exponent is $-n$ at every admissible shape.
 ---
 
 The Student-t distribution is a symmetric, heavy-tailed alternative to the normal distribution.

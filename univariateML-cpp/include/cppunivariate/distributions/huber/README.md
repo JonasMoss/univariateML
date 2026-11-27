@@ -44,18 +44,21 @@ limits:
     detect: Scale is free and every observation equals the fitted or held location.
     status: UnboundedLikelihood
     message: "unbounded"
+    detect_firmness: proved
+    proof: ["UnivariateML.Huber.joint_constant_unbounded", "UnivariateML.Huber.heldLocation_unbounded"]
+    detect_proof: ["UnivariateML.Huber.joint_constant_unbounded", "UnivariateML.Huber.heldLocation_unbounded"]
   - model: norm
     firmness: proved
     when: 'The free shape satisfies $\epsilon\to\infty$, leaving the normal law at the eligible fitted or held location and scale.'
     fixed: []
     status: NormalLimit
-    numerical: true
+    detect_firmness: numerical
   - model: laplace
     firmness: proved
     when: 'The free shape and scale tend to zero with $b=\sigma/\epsilon$ fixed, giving a Laplace law.'
     fixed: []
     status: LaplaceLimit
-    numerical: true
+    detect_firmness: numerical
 holds: []
 fit_args:
   epsilon: 1.345
@@ -117,11 +120,11 @@ eligible with any held location or scale. Both faces require free $\epsilon$.
 For two distinct observations the free location-scale-shape MLE does not exist;
 see the [free-shape analysis](../../../../../dev/research/evaluations/2026-10-29-huber-free-epsilon-report.md).
 
-The scale is the joint maximum-likelihood scale, not Huber's
-Proposal 2 scale. When the maximising location is an interval (the sample
-lies in the linear tails), its midpoint represents the closed maximizer box
-and `unique` is false. The interval is the central sample gap eroded at each
-end by $\epsilon\sigma$. At equality the eroded gap is a singleton. See the
+The scale is the joint maximum-likelihood scale. When the fitter certifies a
+nontrivial maximizing location interval, it returns the closed interval at
+the common scale and uses its midpoint as representative. For held tuning and nonconstant data, a nontrivial interval requires equal
+tail counts and a central gap wider than twice the transition width. The
+interval is the central gap eroded at each end by $\epsilon\sigma$. At equality the eroded gap is a singleton. See the
 [exact maximizer-set analysis](../../../../../dev/research/evaluations/2026-11-25-lean-huber-report.md). For held $\epsilon$ and nonconstant data
 the maximum is attained, ties included; constant data have an unbounded
 likelihood unless $\mu$ is held at a different value or $\sigma$ is held.

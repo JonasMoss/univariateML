@@ -49,7 +49,9 @@ limits:
   status: Unbounded
   message: unbounded
   kind: nonexistence
-
+  detect_firmness: proved
+  proof: ["UnivariateML.Exponential.allZero_unbounded"]
+  detect_proof: ["UnivariateML.Exponential.allZero_unbounded"]
 group: gamma and Weibull
 construction:
 - base
@@ -107,6 +109,8 @@ modifiers:
 The exponential distribution models nonnegative waiting times with a constant hazard rate.
 
 ## Details
+
+The standard log density is affine on its positive support. The anchored log likelihood is strictly concave in inverse scale and has a unique maximum for positive total exposure. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 

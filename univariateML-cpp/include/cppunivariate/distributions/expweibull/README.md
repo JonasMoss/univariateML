@@ -31,6 +31,9 @@ limits:
     detect: 'Constant data with scale free and either shape or exponent free, or shape free at the held scale, or both shapes free above the held scale'
     status: Unbounded
     message: unbounded
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-expweibull-math-report.md#held-masks-and-sample-predicates"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-expweibull-math-report.md#held-masks-and-sample-predicates"]
   - model: power
     firmness: proved
     fixed: [scale]
@@ -38,6 +41,9 @@ limits:
     detect: 'Both shapes free and all observations strictly below the held scale'
     status: PowerBoundary
     message: power
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-expweibull-math-report.md#held-masks-and-sample-predicates"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-expweibull-math-report.md#held-masks-and-sample-predicates"]
   - name: power envelope with endpoint ties
     firmness: proved
     fixed: [scale]
@@ -45,20 +51,25 @@ limits:
     detect: 'Both shapes free, all observations at or below held scale, with observations both below and equal to it'
     status: PowerBoundaryTied
     message: endpoint
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-expweibull-math-report.md#held-masks-and-sample-predicates"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-expweibull-math-report.md#held-masks-and-sample-predicates"]
   - model: invweibull
     firmness: proved
-    numerical: true
     when: 'Exponent tends to infinity, shape times log exponent tends to a positive constant $k$, and scale times $(\log c)^{1/b}$ tends to $s$'
     detect: 'All coefficients free, finite search falls below the faces within the comparison rule, and the inverse-Weibull face is at least as high as power'
     status: InvweibullBoundary
     message: invweibull
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-expweibull-math-report.md#faces-and-finite-attainment"]
   - model: power
     firmness: proved
-    numerical: true
     when: 'Shape tends to infinity, shape times exponent tends to $n/\sum_i\log(x_{\max}/x_i)$, and scale approaches the maximum from above with $b\log(a/x_{\max})$ diverging'
     detect: 'All coefficients free, finite search falls below the faces within the comparison rule, and the power face is higher'
     status: PowerBoundary
     message: power
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-expweibull-math-report.md#faces-and-finite-attainment"]
 summary: A Weibull CDF raised to a positive power permits a second shape coordinate.
 classification: specialist
 classification_reason: Flexible lifetime model with both inverse-Weibull and power closure faces.

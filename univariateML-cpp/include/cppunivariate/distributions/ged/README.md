@@ -83,12 +83,16 @@ limits:
     detect: Every observation equals the fitted or held location.
     status: InvalidStart
     message: "unbounded"
+    detect_firmness: proved
+    proof: ["UnivariateML.Ged.collapse"]
+    detect_proof: ["UnivariateML.Ged.collapse"]
   - model: unif
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
     detect: With free sd, finite-interval subdivision and a signed tail bound exclude every finite shape. With held sd, unresolved uniform comparisons try the finite-shape fallback.
     status: UniformBoundary
-    numerical: true
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-ged-math-report.md#free-standard-deviation"]
 references:
 - Nelson, D. B. (1991). Conditional Heteroscedasticity in Asset Returns, A New Approach. Econometrica, 59, 347–370.
 - Tumlinson, S. E. (2015). On the non-existence of maximum likelihood estimates for the extended exponential power
@@ -140,6 +144,8 @@ existence:
 The generalized error (exponential power) distribution is a symmetric location-scale family whose shape controls tail thickness.
 
 ## Details
+
+At held standard deviation every valid binary64 sample attains. At exact real uniform-width contact, the finite fit and the limiting value can win separately or tie. With shape held below one, the maximizing locations are all data knots minimizing the residual-power sum. [Proof](../../../../../dev/research/evaluations/2026-11-25-ged-math-report.md#held-standard-deviation).
 
 The coefficients $\mu$ and $\sigma$ are the mean and standard deviation. Shape $\nu=1$ gives Laplace tails and $\nu=2$ gives the normal distribution. Larger shape gives lighter tails and approaches a uniform distribution. Holding a coefficient preserves its value while the remaining coefficients are estimated.
 

@@ -43,7 +43,10 @@ limits:
   detect: With threshold held and both other coefficients free, the certified profile bound excludes improvement over the best shifted exponential greater than $10^{-8}n$ log-likelihood units.
   status: ExponentialLimit
   name: shifted exp; subtract min before fitting
-  numerical: true
+  detect_firmness: numerical
+  proof: ["UnivariateML.Transfer.ParetoII.face_path"]
+  detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#details"]
+  fixed: [min]
 holds:
 - held: []
   status: no-mle

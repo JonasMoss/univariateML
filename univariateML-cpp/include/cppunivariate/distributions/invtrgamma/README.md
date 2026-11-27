@@ -40,26 +40,33 @@ limits:
   - name: fixed-endpoint Pareto face
     firmness: proved
     fixed: [scale]
-    when: The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held.
+    when: The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held. The reachable trace has a loss of one log-likelihood unit per endpoint observation and is strictly beaten at a finite parameter in every bounded held-scale case.
     status: IterationFailure
     message: fixed-endpoint Pareto face
-    numerical: true
+    detect: The held-scale cover can report this numerical comparison diagnostic. The reachable trace loses on the bounded branch.
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#held-scale-and-both-shapes-free"]
   - name: unbounded likelihood
     firmness: proved
     when: The free coefficients concentrate the distribution at the common positive observation.
     detect: All observations are equal and the free coefficients allow concentration. With scale free, either free shape suffices. With scale held, a free power suffices at the common observation $a$; with both shapes free, concentration is also possible below $a$.
     status: InvalidData
     message: unbounded
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks"]
   - model: lnorm
     firmness: proved
     when: 'The gamma shape $k$ tends to infinity with $p\sqrt{k}\to1/\sigma$ and $\log a - \log(k)/p\to\mu$, for fixed $\sigma>0$ and $\mu$.'
     status: LognormalBoundary
-    numerical: true
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#free-scale-and-both-shapes-free"]
   - model: pareto
     firmness: proved
     when: 'The power $p$ tends to infinity with $kp\to d>0$ and $a$ converging to a positive endpoint.'
     status: ParetoBoundary
-    numerical: true
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#free-scale-and-both-shapes-free"]
 references:
 - Stacy, E. W. (1962). A generalization of the gamma distribution. The Annals of Mathematical Statistics 33(3),
   1187-1192. doi:10.1214/aoms/1177704481.
@@ -120,9 +127,9 @@ existence:
     power held, the remaining gamma shape has a unique finite MLE.
     With scale and gamma shape held, the power MLE is unique unless
     every observation equals the held scale, when likelihood is unbounded.
-    With only scale held, the reciprocal transformed-gamma certificate
-    assesses attainment against the fixed-endpoint Pareto limit. Constant
-    samples below scale have unbounded likelihood when both shapes are free.
+    With only scale held, a finite fit strictly beats the reachable
+    fixed-endpoint Pareto trace whenever the likelihood is bounded. Constant
+    samples at or below the held scale give unbounded likelihood with both shapes free.
   reason: >-
     Holding the power reduces fitting to the gamma family. Holding the
     gamma shape gives a strictly concave profile in log-power after
@@ -186,7 +193,7 @@ sample skewness of the logarithms. A positive finite improvement within $10^{-8}
 stops as an unresolved comparison with both witnesses. Face selection uses
 the transformed-gamma floating-point comparison margin. Fits very close to that limit can have a scale outside the numerical representation range.
 
-Held-scale fits use the reciprocal transformed gamma profile. With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the reciprocal certificate compares the interior with the fixed-endpoint Pareto limit.
+Held-scale fits use the reciprocal transformed gamma profile. With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the bounded profile strictly beats the reachable Pareto trace. The numerical comparison can still report the trace as a diagnostic.
 
 For narrowly spaced data with both shapes free, the comparison uses
 reflected relative logs $-\log(x_i/x_0)$. Subtracting independently

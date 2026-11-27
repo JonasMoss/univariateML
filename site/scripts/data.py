@@ -6,6 +6,7 @@ import sympy as sp
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'dev/validation'))
 from quality.density import density_expression
+from existence_keys import limit_groups
 FAMILIES = ROOT / 'univariateML-cpp/include/cppunivariate/distributions'
 # Match R's YAML 1.1 treatment, except ambiguous single-letter names are quoted
 # in the canonical dossiers. JSON cannot represent infinite floating values.
@@ -142,9 +143,16 @@ for folder in sorted(FAMILIES.iterdir()):
     if not (folder/'README.md').exists() or not (folder/'mle.hpp').exists(): continue
     _, front, body = (folder/'README.md').read_text().split('---',2)
     m=yaml.safe_load(front)
-    for lim in m.get('limits', []):
-        if 'firmness' in lim and lim['firmness'] not in ('proved','argued','numerical','conjecture'): raise ValueError(f'{folder.name}: invalid limit firmness')
-        if 'numerical' in lim and not isinstance(lim['numerical'], bool): raise ValueError(f'{folder.name}: invalid numerical flag')
+    for lim in (limit for _, group in limit_groups(m) for limit in group):
+        for field in ('firmness', 'detect_firmness'):
+            if field in lim and lim[field] not in ('proved', 'argued', 'numerical', 'conjecture'):
+                raise ValueError(f'{folder.name}: invalid limit {field}')
+        if 'numerical' in lim:
+            raise ValueError(f'{folder.name}: use detect_firmness for the detector grade')
+        for field in ('proof', 'detect_proof'):
+            if field in lim and (not isinstance(lim[field], list) or not all(
+                    isinstance(ref, str) and ref.strip() for ref in lim[field])):
+                raise ValueError(f'{folder.name}: invalid limit {field}')
     for edge in m.get('relations', {}).get('closure_point', []):
         if not all(isinstance(edge.get(k), str) and edge[k].strip() for k in ('name','path','reason')) or edge.get('reachability') != 'never': raise ValueError(f'{folder.name}: invalid closure point')
     # Neutral real assumptions avoid treating design-dependent domains as numbers.

@@ -34,6 +34,9 @@ limits:
     detect: All observations are equal and both coefficients are free.
     status: Unbounded
     message: unbounded
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/paralogis/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/paralogis/README.md#details"]
 log_density: 2*log(shape) + shape*log(x/scale) - log(x) - (shape + 1)*log(1 + (x/scale)^shape)
 references:
 - Kleiber, C. and Kotz, S. (2003). Statistical Size Distributions in Economics and Actuarial Sciences. Wiley.
@@ -105,6 +108,8 @@ The upper-tail exponent is $\alpha^2$ and the
 lower-tail power is $\alpha$.
 
 ## Details
+
+Exact real observations can give two global maximizers both in the all-free problem and at held scale one. At fixed positive shape the log-scale likelihood is strictly concave, including on constant samples. [Proof](../../../../../dev/research/evaluations/2026-11-25-paralogis-math-report.md#held-scale).
 
 Fitting requires a nonempty positive finite sample. The
 [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md)

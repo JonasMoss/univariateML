@@ -51,6 +51,9 @@ limits:
   detect: 'both coefficients are free and all observations are equal'
   status: Degenerate
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.Transfer.InvGamma.constant_unbounded"]
+  detect_proof: ["UnivariateML.Transfer.InvGamma.constant_unbounded"]
 examples: |
   set.seed(1)
   x <- rml(200, mlinvgamma())

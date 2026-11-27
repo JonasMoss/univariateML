@@ -39,11 +39,17 @@ limits:
     when: 'As $\nu\to\infty$, adjusting $\lambda$ can retain mass on two adjacent integers.'
     detect: With both coefficients free, both of two adjacent integers are observed. With positive $\lambda$ held and $\nu$ free, all observations lie in $\{0,1\}$, including constant samples.
     status: TwoPointLimit
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#details"]
   - name: point mass
     firmness: proved
     when: 'As $\nu\to\infty$, a suitable path of $\lambda$ concentrates mass at a positive integer.'
     detect: With both coefficients free, all observations equal the same positive integer.
     status: PointMassLimit
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#details"]
 holds: []
 examples: |
   set.seed(1)

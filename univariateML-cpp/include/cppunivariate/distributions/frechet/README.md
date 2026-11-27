@@ -60,6 +60,9 @@ limits:
     message: "unattained collapse face"
     when: 'With shape $\lambda$ held, $\mu=m-\varepsilon$ approaches the sample minimum $m$ and $\sigma=c\varepsilon$ decreases to zero for a positive constant $c$.'
     detect: 'Location and scale are free, and the minimum occurs $k$ times with $\lambda(n-k)\le k$. The strict inequality gives divergence. Equality gives a finite, unattained collapse face.'
+    detect_firmness: proved
+    proof: ["UnivariateML.Frechet.heldShape_collapse_eq", "UnivariateML.Frechet.heldShape_unbounded"]
+    detect_proof: ["UnivariateML.Frechet.heldShape_collapse_eq", "UnivariateML.Frechet.heldShape_unbounded"]
   - firmness: proved
     name: shape divergence
     fixed: [sigma]
@@ -67,17 +70,26 @@ limits:
     message: "unbounded shape likelihood"
     when: 'With scale $\sigma$ held, the free shape $\lambda$ tends to infinity and $\mu$ equals the common observation minus $\sigma$.'
     detect: 'The sample is constant and location is free, or every observation minus the held location equals $\sigma$.'
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-frechet-math-report.md#fréchet-single-holds"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-frechet-math-report.md#fréchet-single-holds"]
   - firmness: proved
     model: gumbel
     when: 'The shape $\lambda$ tends to infinity with $\sigma/\lambda=a>0$ and $\mu+\sigma=b$ fixed.'
     detect: 'A certified global comparison selects the Gumbel face over the finite candidates when location, scale and shape are free.'
     status: GumbelLimit
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-frechet-math-report.md#collapse-and-the-gumbel-comparison"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-frechet-math-report.md#collapse-and-the-gumbel-comparison"]
   - firmness: proved
     name: free collapse
     status: NoMLE
     message: "minimum multiplicity permits scale collapse"
     when: 'The location $\mu$ approaches the sample minimum from below, $\lambda$ tends to one, and $\sigma$ decreases proportionally to the location gap.'
     detect: 'All coefficients are free and the minimum occurs exactly $n/2$ times. A global pair bound proves that no finite competitor attains the collapse supremum.'
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-frechet-math-report.md#collapse-and-the-gumbel-comparison"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-frechet-math-report.md#collapse-and-the-gumbel-comparison"]
 fit_args:
   mu: ~
 examples: |
@@ -124,9 +136,10 @@ existence:
     With all coefficients free and unrestricted shape, the likelihood is
     unbounded for every sample. The fitted model therefore restricts $\lambda\ge1$.
     A minimum repeated more than $n/2$ times gives unbounded likelihood.
-    At exactly $n/2$ repeats, a finite collapse face must be compared with
-    finite candidates. A Gumbel limit can also prevent attainment.
-    A complete existence criterion and joint uniqueness are not established.
+    At exactly $n/2$ repeats, collapse has a finite unattained supremum.
+    With less mass at the minimum, a Gumbel limit can prevent attainment.
+    With only physical scale held, each nonconstant sample attains on the fitted
+    shape range and exact real samples can have distinct finite co-winners.
     With $\mu$ held and observations strictly above it, both remaining
     coefficients have a unique finite MLE exactly for nonconstant data.
     Holding $\mu$ and $\lambda$ gives a unique finite scale estimate even
@@ -180,6 +193,8 @@ existence:
 The Fréchet distribution models extreme maxima with heavy right tails. The threshold $\mu$ sets the lower endpoint, $\sigma$ sets the scale above it, and $\lambda$ controls the tail decay.
 
 ## Details
+
+The free-scale Gumbel face is unavailable at held physical scale. At held scale one, an exact real sample has two finite maximizing shapes. [Proof](../../../../../dev/research/evaluations/2026-11-25-frechet-math-report.md#fréchet-single-holds).
 
 Near the Gumbel limit, separate logarithms of the distance and scale incur
 an absolute rounding error that is multiplied by $\lambda$. When

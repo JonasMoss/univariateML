@@ -8,16 +8,22 @@ fields use JSON so each distinct boundary path retains its own provenance.
 import argparse
 import csv
 import json
+import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'dev/validation'))
+from existence_keys import limit_groups
+
 DIST = ROOT / 'univariateML-cpp/include/cppunivariate/distributions'
 ATLAS = ROOT / 'dev/research/existence-atlas'
 QUESTIONS = ('criterion', 'failure', 'uniqueness')
 PROVED = {'lean', 'written', 'cited'}
+LIMIT_GRADES = {'proved', 'numerical', 'argued', 'conjecture'}
 PROOF_RANK = {'lean': 2, 'written': 1, 'cited': 1, 'unproved': 0}
 START = '<!-- BEGIN GENERATED ATLAS -->'
 END = '<!-- END GENERATED ATLAS -->'
@@ -46,12 +52,83 @@ def dossiers():
         yield path, yaml.safe_load(front), yaml.compose(front)
 
 
-def limit_grade(limit):
-    grade = limit.get('firmness', 'missing')
-    detector = limit.get('detect', '').lower()
-    if limit.get('numerical') or 'uncertified' in detector or 'numerically' in detector:
-        return 'numerical'
-    return 'unknown' if grade == 'proved' else grade
+def proof_reference_kind(ref):
+    if ref.startswith('UnivariateML.'):
+        return 'lean'
+    if ref.startswith('cite: '):
+        return 'cited'
+    return 'written'
+
+
+def proof_anchors(path):
+    anchors = set()
+    counts = defaultdict(int)
+    fence = ''
+    for line in path.read_text(encoding='utf-8').splitlines():
+        marker = re.match(r'^\s{0,3}(`{3,}|~{3,})', line)
+        if marker:
+            if not fence:
+                fence = marker[1]
+            elif marker[1].startswith(fence):
+                fence = ''
+            continue
+        if fence:
+            continue
+        anchors.update(re.findall(r'''\b(?:id|name)=["']([^"']+)["']''', line))
+        heading = re.match(r'^\s{0,3}#{1,6}\s+(.+?)(?:\s+#+)?$', line)
+        if heading:
+            explicit = re.search(r'\{#([^}]+)\}$', heading[1])
+            if explicit:
+                anchors.add(explicit[1])
+                continue
+            slug = re.sub(r'[^\w -]', '', heading[1].lower()).replace(' ', '-')
+            count = counts[slug]
+            anchors.add(f'{slug}-{count}' if count else slug)
+            counts[slug] += 1
+    return anchors
+
+
+def check_proof_references(entries):
+    declarations = {row['theorem'] for _, row in entries if not row['proof_marker']}
+    anchors = {}
+    issues = []
+    for path, meta, _ in dossiers():
+        records = ((scope, index, record) for scope, group in limit_groups(meta)
+                   for index, record in enumerate(group, 1))
+        for scope, index, record in records:
+            location = f'{path.relative_to(ROOT)}: {scope}[{index}]'
+            for field in ('firmness', 'detect_firmness'):
+                if field in record and (not isinstance(record[field], str) or
+                                        record[field] not in LIMIT_GRADES):
+                    issues.append(f'{location}.{field}: unknown proof grade')
+            if 'numerical' in record:
+                issues.append(f'{location}: use detect_firmness for the detector grade')
+            for field in ('proof', 'detect_proof'):
+                refs = record.get(field, [])
+                field_location = f'{location}.{field}'
+                if not isinstance(refs, list) or any(
+                        not isinstance(ref, str) or not ref.strip() for ref in refs):
+                    issues.append(f'{field_location}: expected a list of proof references')
+                    continue
+                for ref in refs:
+                    kind = proof_reference_kind(ref)
+                    if kind == 'lean':
+                        if ref not in declarations:
+                            issues.append(f'{field_location}: unmapped declaration {ref}')
+                    elif kind == 'cited':
+                        if not ref.removeprefix('cite: ').strip():
+                            issues.append(f'{field_location}: empty citation')
+                    else:
+                        file, _, anchor = ref.partition('#')
+                        target = (ROOT / file).resolve()
+                        if Path(file).is_absolute() or not target.is_relative_to(ROOT) or not target.is_file():
+                            issues.append(f'{field_location}: missing proof file {file}')
+                            continue
+                        if target not in anchors:
+                            anchors[target] = proof_anchors(target)
+                        if anchor not in anchors[target]:
+                            issues.append(f'{field_location}: missing proof anchor {ref}')
+    return issues
 
 
 def lean_map():
@@ -220,7 +297,7 @@ def audit(coverage):
                               name=limit.get('name'), kind=limit.get('kind', 'limit'),
                               path=limit.get('when'), detector=limit.get('detect'),
                               dossier_grade=limit.get('firmness', 'missing'),
-                              numerical_detection=limit.get('numerical', False))
+                              detect_firmness=limit.get('detect_firmness', 'missing'))
                 for label, purpose in [('path', 'Construct an eventually feasible path and derive its joint sample limit.'),
                                        ('limit', 'Show the stated detector implies global dominance and nonattainment.')]:
                     proof_key = f'{label}:{index}'
@@ -230,13 +307,23 @@ def audit(coverage):
                         consumed.add((family, proof_mask, proof_key))
                         if label == 'path' and override['claim'] != limit.get('when'):
                             raise ValueError(f'{location}: reviewed path has changed')
+                    field = 'proof' if label == 'path' else 'detect_proof'
+                    refs = limit.get(field, [])
+                    grade = (record['dossier_grade'] if label == 'path' else
+                             record['detect_firmness'])
                     proof = override or dict(
                         status='unproved', direction='open',
                         claim=(limit.get('when') if label == 'path' else limit.get('detect')) or '',
-                        evidence=limit_grade(limit) if label == 'limit' else
-                        ('unknown' if record['dossier_grade'] == 'proved' else record['dossier_grade']),
+                        evidence='unknown' if grade == 'proved' else grade,
                         frontier=purpose)
-                    record[label + '_proof'] = apply_lean(proof, held, proof_key)
+                    result = apply_lean(proof, held, proof_key)
+                    if not override and result['status'] == 'unproved' and grade == 'proved' and refs:
+                        kinds = {proof_reference_kind(ref) for ref in refs}
+                        status = 'written' if 'written' in kinds else 'cited' if 'cited' in kinds else 'lean'
+                        result.update(status=status, direction='exact', evidence='; '.join(refs),
+                                      frontier='')
+                    result['dossier_references'] = refs
+                    record[label + '_proof'] = result
                 cases.append(record)
             yield dict(family=family, held=held or 'all free',
                        free='+'.join(sorted(params.keys() - mask)), origin=' | '.join(sorted(origin)),
@@ -246,6 +333,9 @@ def audit(coverage):
                        dossier=ex_source, dossier_statement=ex.get('statement', ''),
                        dossier_uniqueness=ex.get('uniqueness', 'missing'),
                        structural=encode(structural), limits=encode(cases),
+                       modifier_limits=encode({
+                           scope: group for scope, group in limit_groups(meta)
+                           if not held and scope != 'limits' and group}),
                        proved_cases=encode({question.removeprefix('case:'): apply_lean(proof, held, question)
                                             for question, proof in evidence.items()
                                             if question.startswith('case:')}),
@@ -316,6 +406,7 @@ def check(entries, rows):
     families = {row['family'] for row in rows}
     regimes = {(row['family'], row['held']) for row in rows}
     mapped = defaultdict(set)
+    declarations = {row['theorem'] for _, row in entries if not row['proof_marker']}
     generic_coverage = lean_coverage(
         (location, row) for location, row in entries if row['regime'] == 'generic')
     issues = []
@@ -332,7 +423,8 @@ def check(entries, rows):
             generic = generic_coverage.get(
                 (family, '' if held == 'all free' else held, question), {}).get('full', ())
             for theorem in proof['evidence'].split('; '):
-                if theorem not in mapped[family, held] and theorem not in generic:
+                if (theorem not in mapped[family, held] and theorem not in generic and
+                        not (theorem in proof.get('dossier_references', ()) and theorem in declarations)):
                     issues.append(f'{family} / {held} / {question}: unmapped theorem {theorem}')
     return issues
 
@@ -366,10 +458,10 @@ def main():
     entries = list(lean_map())
     if args.check:
         saved = read_csv('atlas.csv')
-        issues = check(entries, saved) + check_regressions(saved)
+        issues = check_proof_references(entries) + check(entries, saved) + check_regressions(saved)
         if not issues:
             regenerated = list(audit(lean_coverage(entries)))
-            issues = check_regressions(regenerated)
+            issues = check(entries, regenerated) + check_regressions(regenerated)
             if not issues and regenerated != saved:
                 issues.append('atlas.csv is stale; regenerate the atlas')
         for issue in issues:

@@ -54,18 +54,25 @@ limits:
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
     detect: The numerically compared limiting face is selected over the retained finite candidates.
     status: NormalLimit
-    numerical: true
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-halft-math-report.md#half-normal"]
   - name: unbounded scale collapse
     firmness: proved
     when: 'The free scale $\sigma$ tends to zero at the free or held endpoint.'
     detect: 'With held shape, $k>\nu(n-k)$ endpoint observations cause collapse. With free shape and a held endpoint, any endpoint tie suffices. With both endpoint and shape free, $2k>n$ suffices under the fitting restriction.'
     status: Unbounded
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-halft-math-report.md#scale-zero"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-halft-math-report.md#scale-zero"]
   - name: finite unattained scale-zero supremum
     firmness: proved
     fixed: [nu]
     when: 'The free scale $\sigma$ tends to zero at fixed positive shape.'
     detect: 'The endpoint multiplicity satisfies $k=\nu(n-k)$ in a sample of size $n$. The scale supremum is finite and unattained.'
     status: ScaleBoundary
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-halft-math-report.md#scale-zero"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-halft-math-report.md#scale-zero"]
 references:
 - extraDistr package, HalfT documentation (density and parameterization).
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package

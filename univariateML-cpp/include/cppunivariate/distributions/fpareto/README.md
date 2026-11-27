@@ -48,44 +48,53 @@ r:
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape2)-log((x-min))-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log((x-min)/scale)-(shape3+shape1)*log(1+((x-min)/scale)**shape2)
 limits:
-- {firmness: proved, model: weibull, when: 'With shape3 held at one, the Burr submodel tends to its Weibull face.', status: WeibullBoundary, fixed: [shape3], numerical: true}
-- {firmness: proved, model: invweibull, when: 'With shape1 held at one, the inverse Burr submodel tends to its inverse-Weibull face.', status: InvWeibullBoundary, fixed: [shape1], numerical: true}
+- {firmness: proved, model: weibull, when: 'With shape3 held at one, the Burr submodel tends to its Weibull face.', status: WeibullBoundary, detect_firmness: numerical, fixed: [min, shape3]}
+- {firmness: proved, model: invweibull, when: 'With shape1 held at one, the inverse Burr submodel tends to its inverse-Weibull face.', status: InvWeibullBoundary, detect_firmness: numerical, fixed: [min, shape1]}
 - name: unbounded likelihood
   firmness: proved
   when: With $\alpha$ and $\tau$ positive and fixed, the power $\gamma$ tends to infinity and scale places the concentrating distribution at the common excess.
   detect: The threshold is held and the excesses are constant, with both power and scale free. Other held subsets require their own concentration check.
   status: InvalidData
   message: unbounded
+  detect_firmness: proved
+  proof: ["univariateML-cpp/include/cppunivariate/distributions/fpareto/README.md#details"]
+  detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/fpareto/README.md#details"]
+  fixed: [min]
 - when: The upper beta shape $\alpha$ tends to infinity with $\gamma$ and $\tau$ fixed and $\sigma\alpha^{-1/\gamma}$ fixed at a positive scale.
   firmness: proved
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: TrGammaBoundary
   name: shifted trgamma; subtract min before fitting
-  numerical: true
+  detect_firmness: numerical
+  fixed: [min]
 - when: The lower beta shape $\tau$ tends to infinity with $\alpha$ and $\gamma$ fixed and $\sigma\tau^{1/\gamma}$ fixed at a positive scale.
   firmness: proved
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: InvTrGammaBoundary
   name: shifted invtrgamma; subtract min before fitting
-  numerical: true
+  detect_firmness: numerical
+  fixed: [min]
 - when: Both beta shapes equal $K\to\infty$, the power is $\gamma=\sqrt{2\psi_1(K)}/s$, and scale is $\sigma=e^m$, with lognormal log-scale $s>0$ and log-location $m$ fixed. Here $\psi_1$ is the trigamma function.
   firmness: proved
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: LognormalBoundary
   name: shifted lnorm; subtract min before fitting
-  numerical: true
+  detect_firmness: numerical
+  fixed: [min]
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ positive and fixed, while $\tau$ and $\sigma$ stay fixed.
   firmness: proved
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
-  numerical: true
+  detect_firmness: numerical
+  fixed: [min]
 - when: The power $\gamma$ tends to infinity with $\tau\gamma$ positive and fixed, while $\alpha$ and $\sigma$ stay fixed.
   firmness: proved
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: PowerBoundary
   name: shifted power; subtract min before fitting
-  numerical: true
+  detect_firmness: numerical
+  fixed: [min]
 - model: dblpareto
   name: shifted double Pareto; subtract min before fitting
   firmness: proved
@@ -93,7 +102,8 @@ limits:
   detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
   status: DoubleParetoBoundary
   message: GB2 selects the double Pareto limit
-  numerical: true
+  detect_firmness: numerical
+  fixed: [min]
 holds:
 - held: []
   status: no-mle

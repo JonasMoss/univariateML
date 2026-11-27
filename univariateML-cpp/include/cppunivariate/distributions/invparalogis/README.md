@@ -34,6 +34,9 @@ limits:
     detect: All observations are equal and both coefficients are free.
     status: Unbounded
     message: unbounded
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/invparalogis/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/invparalogis/README.md#details"]
 log_density: 2*log(shape) + shape*log(scale/x) - log(x) - (shape+1)*log(1+(scale/x)**shape)
 references:
 - Klugman, S. A., Panjer, H. H. and Willmot, G. E. (2012), Loss Models, From Data to Decisions, Fourth Edition,
@@ -112,6 +115,8 @@ The upper-tail exponent is $\alpha$ and the
 lower-tail power is $\alpha^2$.
 
 ## Details
+
+Reciprocation transports both exact real-sample global ties, with all coefficients free or with scale held at one. It inverts each maximizing scale and preserves the shape hold. [Proof](../../../../../dev/research/evaluations/2026-11-25-paralogis-math-report.md#reciprocal-transfer-and-verification).
 
 Fitting requires a nonempty positive finite sample. The
 [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md)

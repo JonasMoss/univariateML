@@ -179,7 +179,7 @@ const toc=[['definition','Definition'],relations.length||seeAlso.length||closure
     <td set:html={g.pathHtml}/>
     <td set:html={g.detectHtml || '–'}/>
     <td>{g.free && 'all free'}{g.free && g.held.length>0 && '; '}{g.held.length>0 && <>held {g.heldHtml.map((h,i)=><>{i>0 && '; '}<span set:html={h}/></>)}</>}</td>
-   <td>{g.firmness || 'unassessed'}{g.numerical ? ' (numerical detection)' : ''}</td></tr>)}
+   <td>{g.firmness || 'unassessed'}{g.detect_firmness === 'numerical' ? ' (numerical detection)' : g.detect_firmness && g.detect_firmness !== 'proved' ? ' (' + g.detect_firmness + ' detection)' : ''}</td></tr>)}
   </tbody></table>}
   {restrRows.length>0 && <table><thead><tr><th>Fit restriction</th><th>Reason</th><th>Exempt when held</th></tr></thead><tbody>{restrRows.map(r=><tr><td set:html={r.boundHtml}/><td set:html={r.reasonHtml}/><td>{r.exemptHtml.length ? r.exemptHtml.map(h=><span set:html={h}/>) : 'none'}</td></tr>)}</tbody></table>}
   {otherHolds.length>0 && <table><thead><tr><th>Held</th><th>Status</th><th>Reason</th></tr></thead><tbody>

@@ -44,9 +44,11 @@ limits:
   - model: unif
     firmness: proved
     when: 'The normal scale satisfies $\sigma\to0$ with positive half-width $a$ fixed or approaching a positive limit.'
-    detect: 'Positive held a uses proved covering and endpoint bounds. Free a uses a global width certificate with a whole-neighbourhood small-sigma bound and compatible normal and uniform comparisons.'
+    detect: 'Positive held a uses proved covering and endpoint bounds. Free a uses a global width certificate with a whole-neighbourhood small-sigma bound and compatible normal and uniform comparisons. A numerical fallback can select the uniform face by a likelihood margin, with the limit marked uncertified.'
     status: UniformLimit
-    numerical: true
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-bhatt-math-report.md#existence-and-the-faces"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-bhatt-math-report.md#finite-stationary-width-criterion-proved", "dev/research/evaluations/2026-11-25-bhatt-math-report.md#existence-and-the-faces"]
 holds: []
 examples: |
   set.seed(1)
@@ -120,6 +122,13 @@ physical value, rather than a dimensionless shape ratio.
 Near an edge of the uniform convolution, subtract its physical half-width before dividing by the Gaussian scale. Subtracting two separately standardized coordinates loses the edge distance when the Gaussian scale is small.
 
 ## Details
+
+With dimensionless width held, the Gaussian convolution kernel is strictly log-concave. A nonconstant sample then has one joint location–scale optimum. A physical half-width hold links dimensionless width to scale. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
+
+Real-sample crossings give an attained normal/positive-width tie with both scales free and exactly two optimizing widths in another sample at held Gaussian scale one. [Proof](../../../../../dev/research/evaluations/2026-11-25-bhatt-math-report.md#exact-crossings).
+
+When both scales vary and the residual radius is positive, compare the normal fit and all stationary widths on the compact dimensionless-width interval with the uniform envelope. A finite fit exists exactly when the largest finite candidate ties or exceeds that envelope. With half-width held, endpoint factors enter the path likelihood, including a factor of one half per observation at a held endpoint with location held. At range equal to the full held width and free location, the endpoint factors are their relative multiplicities. [Proof](../../../../../dev/research/evaluations/2026-11-25-bhatt-math-report.md#finite-stationary-width-criterion-proved).
 
 At $a=0$ fitting reduces to the conditional normal problem. Positive held
 $a$ has an additional concavity structure: in $(u,b)=(\mu/\sigma,1/\sigma)$,

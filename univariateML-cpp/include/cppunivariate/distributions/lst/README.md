@@ -52,23 +52,35 @@ limits:
     detect: The collapse exponent is negative at an attainable location; critical equality uses the separate fixed-shape analysis.
     status: Unbounded
     message: "scale"
+    detect_firmness: proved
+    proof: ["UnivariateML.TDist.collapse_power", "UnivariateML.TDist.collapse_unbounded"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons"]
   - name: scale collapse
     firmness: proved
     fixed: [df]
     when: "The scale tends to zero at the free or held location."
     detect: 'The location has multiplicity $k>\nu(n-k)$ in a sample of size $n$.'
     status: Unbounded
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons"]
+    detect_proof: ["UnivariateML.TDist.collapse_unbounded", "UnivariateML.TDist.joint_unbounded"]
   - name: tie equality boundary
     firmness: proved
     fixed: [df]
     when: "The scale tends to zero at the free or held location."
-    detect: 'At $k=\nu(n-k)$, held location gives an unattained supremum. With free location and shape at least one, equality is unattained except for the balanced two-point Cauchy maximum curve; joint equality below shape one stops numerically.'
+    detect: 'At $k=\nu(n-k)$, held location gives an unattained supremum. With free location, $k$ counts the largest atom. At shape at least one equality is unattained except for the attained balanced two-point Cauchy curve. Below shape one, joint equality can return an uncertified finite result or a proved symmetry outcome. The equality-specific numerical stop applies if the search has no successful candidate.'
     status: ScaleBoundary
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons"]
+    detect_proof: ["UnivariateML.TDist.heldLocation_equality", "dev/research/evaluations/2026-11-07-std-held-data/derivation.md#joint-critical-atom-at-held-shape-at-least-one"]
   - model: norm
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
     detect: All-free and shape-only held fits use exhaustive finite-interval and tail certificates. Joint held profiles can certify normal with a strictly negative first-order term, a uniform tail remainder and a complete compact cover; unresolved profiles retain legacy finite or limit decisions marked uncertified.
     status: NormalBoundary
+    detect_firmness: proved
+    proof: ["UnivariateML.TDist.density_tendsto_normal"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#normal-face", "dev/research/evaluations/2026-11-25-tcert-math-report.md#cover-and-inclusion"]
 holds: []
 examples: |
   x <- diff(log(datasets::EuStockMarkets[, "DAX"]))
@@ -119,8 +131,9 @@ existence:
     attained: true
     evidence: >-
       This dossier (existence statement and reason) gives the collapse
-      exponent $\nu(n-k)-k$; the fit domain $\nu \ge 1$ of df puts its infimum
-      at the attained member $\nu = 1$.
+      exponent $\nu(n-k)-k$. With location free, estimated shape ranges over
+      $\nu\ge1$ and the infimum is attained at $\nu=1$. With location held and
+      $k<n$, free shape ranges over $\nu>0$ and gives infimum $-k$ as $\nu\downarrow0$.
 ---
 
 The location-scale Student t includes heavy-tailed distributions with infinite variance.

@@ -45,6 +45,9 @@ limits:
     detect: Scale is free and every observation equals the estimated or held location.
     status: Unbounded
     message: "does not exist"
+    detect_firmness: proved
+    proof: ["UnivariateML.Laplace.heldLocation_unbounded", "UnivariateML.Laplace.joint_unbounded"]
+    detect_proof: ["UnivariateML.Laplace.heldLocation_unbounded", "UnivariateML.Laplace.joint_unbounded"]
 examples: |
   set.seed(1)
   x <- rml(200, mllaplace())
@@ -100,7 +103,7 @@ The Laplace (double exponential) distribution models symmetric errors with a sha
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) derives the boundary conditions for free and held coefficients.
 
-The location estimates are the sample medians. Scale is the mean absolute deviation from any such median, with the same value throughout the median interval. For an even sample size, the maximizing locations fill the closed interval between the two central order statistics when scale is held positive or the sample is nonconstant. The fit selects the upper endpoint of that interval.
+The location estimates are the sample medians. Scale is the mean absolute deviation from any such median, with the same value throughout the median interval. For an even sample size, the maximizing locations fill the closed interval between the two central order statistics when scale is held positive or the sample is nonconstant. A successful non-unique fit returns the closed location interval at its common scale, using the upper endpoint as representative.
 
 Holding location estimates scale from absolute residuals about the supplied value. Collapse occurs only when all those residuals vanish. Holding positive scale permits constant samples and leaves the same median rule for location. Holding both coefficients evaluates the likelihood.
 

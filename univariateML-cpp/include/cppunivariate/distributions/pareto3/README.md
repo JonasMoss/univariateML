@@ -43,6 +43,10 @@ limits:
     detect: The threshold is held, shape is free, and the sample is constant. Scale must be free or held at that common excess.
     status: Unbounded
     message: unbounded
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/pareto3/README.md#details"]
+    detect_proof: ["UnivariateML.ParetoIII.joint_unbounded", "UnivariateML.ParetoIII.heldScale_unbounded", "univariateML-cpp/include/cppunivariate/distributions/pareto3/README.md#details"]
+    fixed: [min]
 log_density: log(shape) + log((1/scale)) + (shape - 1)*log((1/scale)*(x-min)) - 2*log(1 + ((1/scale)*(x-min))**shape)
 holds:
 - held: []
@@ -108,7 +112,7 @@ existence:
   statement: >-
     With all coefficients free, every nonempty sample has unbounded likelihood.
     With $\mu$ held, a unique finite MLE exists for nonconstant observations
-    strictly above $\mu$. Constant excesses have unbounded likelihood.
+    strictly above $\mu$ with shape and scale free. Constant excesses then give unbounded likelihood.
     Holding shape gives a unique scale estimate even for constant data.
     Holding scale gives a unique shape estimate unless every excess equals
     that scale, when the likelihood is unbounded. Free-threshold subsets
@@ -124,7 +128,7 @@ existence:
     Its Hessian is negative definite. For nonconstant data its profiled
     maximum tends to $-\infty$ as $b$ tends to zero or infinity.
     Holding shape fixes $b$; holding scale restricts $a=b\log\sigma$.
-    Strict concavity gives the stated conditional results.
+    Coercivity on the eligible logistic slices gives attainment, and strict concavity gives uniqueness.
 ---
 
 Pareto type III models sizes above a threshold $\mu$ with log-logistic excesses. The scale $\sigma$ is the median excess. The shape $\gamma$ controls the spread of log excesses and the polynomial tail.

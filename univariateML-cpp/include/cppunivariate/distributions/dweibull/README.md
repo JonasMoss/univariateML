@@ -35,28 +35,43 @@ limits:
     when: 'The shape $\beta$ tends to infinity with $(-\log q)^{-1/\beta}$ fixed between the common positive count and the next integer. For a common count of zero, $q$ tends to zero.'
     detect: 'Both coefficients are free and all observations are equal.'
     status: PointMass
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-dweibull-math-report.md#attainment-and-maximizer-sets"]
+    detect_proof: ["UnivariateML.DiscreteWeibull.constant_sup"]
   - name: degenerate
     firmness: proved
     when: 'The free probability $q$ tends to zero with $\beta$ held fixed.'
     detect: 'All observations are zero.'
     status: PointMass
     fixed: [shape2]
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-dweibull-math-report.md#attainment-and-maximizer-sets"]
+    detect_proof: ["UnivariateML.DiscreteWeibull.fixedShape_all_zero_no_max"]
   - model: binom
     firmness: proved
     when: 'The shape $\beta$ tends to infinity and $q$ tends to the sample fraction of ones, giving a binomial law with size one.'
     detect: 'Both coefficients are free and the sample contains both zero and one, with no other counts.'
     status: BernoulliLimit
+    detect_firmness: proved
+    proof: ["UnivariateML.DiscreteWeibull.adjacent_path_mass"]
+    detect_proof: ["UnivariateML.DiscreteWeibull.adjacent_sup"]
   - name: adjacent two-point
     firmness: proved
     when: 'The shape $\beta$ tends to infinity while $q^{(k+1)^\beta}$ tends to the sample fraction of observations equal to $k+1$.'
     detect: 'Both coefficients are free and the sample takes exactly two adjacent values $k$ and $k+1$, with $k\ge1$.'
     status: TwoPointLimit
+    detect_firmness: proved
+    proof: ["UnivariateML.DiscreteWeibull.adjacent_path_mass"]
+    detect_proof: ["UnivariateML.DiscreteWeibull.adjacent_sup"]
   - name: Bernoulli(shape1)
     firmness: proved
     when: 'The free shape $\beta$ tends to infinity with $q$ held fixed, giving a Bernoulli law with success probability $q$.'
     detect: 'All observations are zero or one, and at least one is one.'
     status: HeldBernoulliLimit
     fixed: [shape1]
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-dweibull-math-report.md#attainment-and-maximizer-sets"]
+    detect_proof: ["UnivariateML.DiscreteWeibull.fixedProbability_zero_one_no_max"]
 references:
 - Nakagawa, T. and Osaki, S. (1975). The discrete Weibull distribution. IEEE Transactions on Reliability, R-24(5),
   300–301. doi:10.1109/TR.1975.5214915.

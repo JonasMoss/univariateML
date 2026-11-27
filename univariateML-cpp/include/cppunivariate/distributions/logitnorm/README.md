@@ -42,6 +42,9 @@ limits:
   detect: 'Scale is free and every logit equals the fitted or held location $\mu$.'
   status: Unbounded
   message: does not exist
+  detect_firmness: proved
+  proof: ["UnivariateML.LogitNormal.constant_unbounded", "UnivariateML.LogitNormal.heldLocation_unbounded"]
+  detect_proof: ["UnivariateML.LogitNormal.constant_unbounded", "UnivariateML.LogitNormal.heldLocation_unbounded"]
 examples: |
   set.seed(1)
   x <- rml(200, mllogitnorm())

@@ -41,12 +41,18 @@ limits:
   detect: At least one endpoint is free, the sample is compatible with every held endpoint, and the candidate interval has zero width after setting any free lower endpoint to the sample minimum and any free upper endpoint to the sample maximum.
   status: Unbounded
   message: does not exist
+  detect_firmness: proved
+  proof: ["UnivariateML.Endpoint.Uniform.collapse_unbounded"]
+  detect_proof: ["UnivariateML.Endpoint.Uniform.collapse_unbounded"]
 - name: incompatible held endpoints
   firmness: proved
   when: A held endpoint excludes an observation.
   detect: The held lower endpoint exceeds the sample minimum or the held upper endpoint is below the sample maximum.
   status: Incompatible
   message: held uniform
+  detect_firmness: proved
+  proof: ["univariateML-cpp/include/cppunivariate/distributions/unif/README.md#details"]
+  detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/unif/README.md#details"]
 examples: |
   set.seed(1)
   x <- rml(200, mlunif())
