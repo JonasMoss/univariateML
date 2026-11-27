@@ -10,7 +10,7 @@ burr,all free,UnivariateML.BurrFree.small_shape_lt_pareto,dev/lean/UnivariateML/
 burr,all free,UnivariateML.BurrFree.pareto_path,dev/lean/UnivariateML/Family/BurrFree.lean,147,"Increasing power, decreasing first shape and moving the endpoint upwards from below reaches the full Pareto likelihood trace.","(hn : 0 < n) {y : Fin n → ℝ}
     (hy : ∀ i, 0 ≤ y i) (hmean : 0 < BurrHeld.avg y) :
     Tendsto (fun t : ℝ ↦ likelihood y ((avg y)⁻¹ / t^2, t^2, t))
-      atTop (𝓝 (paretoValue y))",,,,"{""path:4"":""full""}"
+      atTop (𝓝 (paretoValue y))",,,,"{""path:4"":""partial""}"
 burr,all free,UnivariateML.BurrFree.weibull_path,dev/lean/UnivariateML/Family/BurrFree.lean,238,"With power and adjusted intercept fixed, the Burr likelihood converges to the Weibull likelihood as the first shape diverges.","(hn : 0 < n) (y : Fin n → ℝ) (c b : ℝ) :
     Tendsto (fun k : ℝ ↦ likelihood y (k, c, b - log k)) atTop (𝓝 (weibullLik y c b))",,,,"{""path:3"":""full""}"
 burr,all free,UnivariateML.BurrFree.weibull_profile_value,dev/lean/UnivariateML/Family/BurrFree.lean,267,"At fixed Weibull power the intercept is minus the log mean powered observation, yielding the closed-form profile.","(hn : 0 < n) (y : Fin n → ℝ) (c : ℝ) :
@@ -25,7 +25,7 @@ burr,all free,UnivariateML.BurrFree.large_shape_le_weibull,dev/lean/UnivariateML
     (hne : ∃ i j, y i ≠ y j) {W : ℝ}
     (hW : ∀ c > 0, ∀ b, weibullLik y c b ≤ W)
     {k c b : ℝ} (hk : 0 < k) (hc : 0 < c) (hlarge : 2 * (n : ℝ) ≤ k) :
-    likelihood y (k,c,b) ≤ W + 2 * (n : ℝ)^2/k",,,,
+    likelihood y (k,c,b) ≤ W + 2 * (n : ℝ)^2/k",,,,"{""limit:3"":""partial""}"
 burr,all free,UnivariateML.BurrFree.bounded_shape_escape,dev/lean/UnivariateML/Family/BurrFree.lean,488,"If the first shape stays in a positive compact interval, every escaping net has likelihood tending to minus infinity.","(hn : 0 < n) {y : Fin n → ℝ}
     (hne : ∃ i j, y i ≠ y j) {a b : ℝ} (ha : 0 < a) (hab : a ≤ b)
     {ι : Type*} {l : Filter ι} {p : ι → ℝ × ℝ × ℝ}
@@ -38,7 +38,7 @@ burr,all free,UnivariateML.BurrFree.competitive_superlevel_compact,dev/lean/Univ
     {W M : ℝ} (hW : ∀ c > 0, ∀ b, weibullLik y c b ≤ W)
     (hP : paretoValue y < M) (hWM : W < M) :
     ∃ K : Set (ℝ × ℝ × ℝ), IsCompact K ∧ K ⊆ domain ∧
-      ∀ p ∈ domain, M ≤ likelihood y p → p ∈ K",,,,"{""failure"":""partial""}"
+      ∀ p ∈ domain, M ≤ likelihood y p → p ∈ K",,,,"{""criterion"":""partial"",""failure"":""partial""}"
 burr,all free,UnivariateML.BurrFree.escape_eventually_lt,dev/lean/UnivariateML/Family/BurrFree.lean,537,Every escaping net is eventually below each number strictly greater than the better optimized face.,"(hn : 0 < n) {y : Fin n → ℝ}
     (hne : ∃ i j, y i ≠ y j) (hmean : 0 < BurrHeld.avg y) {j : Fin n} (hj : y j = 0)
     {W : ℝ} (hW : ∀ c > 0, ∀ b, weibullLik y c b ≤ W)
@@ -103,13 +103,13 @@ paralogis,all free,UnivariateML.BurrFree.paralogistic_MLE_and_escape,dev/lean/Un
     let f := fun p : ℝ × ℝ ↦ Paralogistic.logLik x p.1 p.2
     (∃ p ∈ Weibull.domain, IsMaxOn f Weibull.domain p) ∧
     ∀ M : ℝ, ∃ K : Set (ℝ × ℝ), IsCompact K ∧ K ⊆ Weibull.domain ∧
-      ∀ p ∈ Weibull.domain, M ≤ f p → p ∈ K",,,,"{""criterion"":""partial"",""failure"":""partial""}"
+      ∀ p ∈ Weibull.domain, M ≤ f p → p ∈ K",,,,"{""criterion"":""partial""}"
 invparalogis,all free,UnivariateML.BurrFree.inverse_paralogistic_MLE_and_escape,dev/lean/UnivariateML/Family/BurrFree.lean,1077,"On every nonconstant positive sample, inverse paralogistic has a finite maximizer and compact containment at every finite likelihood level.","(hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) (hne : ∃ i j, x i ≠ x j) :
     let f := fun p : ℝ × ℝ ↦ InvParalogistic.logLik x p.1 p.2
     (∃ p ∈ Weibull.domain, IsMaxOn f Weibull.domain p) ∧
     ∀ M : ℝ, ∃ K : Set (ℝ × ℝ), IsCompact K ∧ K ⊆ Weibull.domain ∧
-      ∀ p ∈ Weibull.domain, M ≤ f p → p ∈ K",,,,"{""criterion"":""partial"",""failure"":""partial""}"
+      ∀ p ∈ Weibull.domain, M ≤ f p → p ∈ K",,,,"{""criterion"":""partial""}"
 burr,all free,UnivariateML.BurrFree.constant_unbounded,dev/lean/UnivariateML/Family/BurrFree.lean,1101,A nonempty positive constant Burr sample has unbounded likelihood.,"(hn : 0 < n) {v : ℝ} (hv : 0 < v) :
     ¬ BddAbove ((fun p : ℝ × ℝ × ℝ ↦
       BurrHeld.logLik (fun _ : Fin n ↦ v) p.1 p.2.1 p.2.2) '' physicalDomain)",,,,"{""criterion"":""partial"",""failure"":""partial"",""limit:1"":""full""}"
@@ -123,12 +123,12 @@ burr,all free,UnivariateML.BurrFree.majority_minimum_lt_pareto,dev/lean/Univaria
     (hy : ∀ i, 0 ≤ y i) (hmean : 0 < BurrHeld.avg y)
     (hw : (n : ℝ) / 2 ≤ ((Finset.univ.filter (fun i ↦ y i = 0)).card : ℝ))
     {p : ℝ × ℝ × ℝ} (hp : p ∈ domain) :
-    likelihood y p < paretoValue y",,,,"{""failure"":""partial"",""limit:4"":""partial""}"
+    likelihood y p < paretoValue y",,,,"{""criterion"":""partial"",""failure"":""partial"",""limit:4"":""partial""}"
 burr,all free,UnivariateML.BurrFree.two_level_lt_pareto,dev/lean/UnivariateML/Family/BurrFree.lean,1444,"For two distinct log levels, a majority at the lower level, including equality, strictly excludes all finite Burr points.","(hn : 0 < n) {y : Fin n → ℝ} {r : ℝ} (hr : 0 < r)
     (hy : ∀ i, y i = 0 ∨ y i = r) (hmean : 0 < BurrHeld.avg y)
     (hw : (n : ℝ) / 2 ≤ ((Finset.univ.filter (fun i ↦ y i = 0)).card : ℝ))
     {p : ℝ × ℝ × ℝ} (hp : p ∈ domain) :
-    likelihood y p < paretoValue y",,,,"{""failure"":""partial"",""limit:4"":""partial""}"
+    likelihood y p < paretoValue y",,,,"{""criterion"":""partial"",""failure"":""partial"",""limit:4"":""partial""}"
 burr,all free,UnivariateML.BurrFree.majority_minimum_physical,dev/lean/UnivariateML/Family/BurrFree.lean,1493,"At least half the nonconstant sample at the minimum gives the optimized Pareto supremum in physical likelihood units, strictly above every finite point.","(hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) (hne : ∃ i j, x i ≠ x j)
     {j : Fin n} (hj : ∀ i, x j ≤ x i)

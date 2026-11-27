@@ -1,12 +1,20 @@
 family,held,question,status,reason
 bbinom,size,path:3,written,The endpoint theorems give the strict supremum but do not state a feasible path for the endpoint proportion.
+burr,all free,path:1,written,first_constant_unbounded proves an unbounded image in a fixed-shape chart. Its statement has no parameter path or limit. The written collapse proof supplies the path.
+burr,all free,path:4,written,pareto_path gives the optimized upper trace with an endpoint approaching the sample minimum from below. The atlas wording specifies the endpoint stays fixed.
 burr,scale+shape1,path:1,written,The first-shape theorem varies scale and the fixed-scale theorem varies the first shape. The written proof fixes both and gives collapse only at scale contact.
+cmb,size,criterion,written,held_size_closed_criterion assumes size at least two. Size zero and Bernoulli size one require separate Lean declarations.
 cmp,all free,path:1,written,The adjacent-support theorem proves nonattainment without giving a rate-dispersion path to the two-point law.
 cmp,lambda,path:1,written,The adjacent-support theorem compares free rates and dispersions. The written held-rate specialization takes dispersion to infinity at constant rate.
 dblpareto,left_rate,limit:2,written,The Lean scan optimizes both rates. The written held-left-rate crossing gives the relevant face comparison.
 dblpareto,left_rate,path:2,written,The Lean power path fixes the surviving rate at its face optimum. The written limit allows an arbitrary positive held left rate.
 dblpareto,right_rate,limit:1,written,The Lean scan optimizes both rates. The reflected written crossing gives the held-right-rate face comparison.
 dblpareto,right_rate,path:1,written,The Lean Pareto path fixes the surviving rate at its face optimum. The written limit allows an arbitrary positive held right rate.
+emg,all free,criterion,written,all_free_criterion assumes a nonconstant sample. The constant branch is proved in a separate declaration.
+emg,all free,failure,written,unattained_face_supremum assumes nonconstant data and nonattainment. The constant divergence branch is separate.
 gev,all free,path:2,written,The positive-collapse theorem fixes shape while the recorded all-free path varies shape toward one.
+ht,all free,failure,written,unattained_face_supremum assumes at most half the sample is at the minimum. Majority divergence is proved in a separate declaration.
 nhyper,m+r,uniqueness,written,The Lean crossing assumes positive stopping count. The written cardinality claim includes the flat feasible set at zero.
 pareto2,min,criterion,written,The Lean transfer assumes positive excesses. The written criterion also refers to the separate threshold-contact rule.
+sn,all free,criterion,written,The finite-witness and stationary criteria assume nonconstant data. Constant divergence is proved in a separate declaration.
+sn,all free,failure,written,unattained_face_supremum assumes nonconstant data and nonattainment. The constant divergence branch is separate.
