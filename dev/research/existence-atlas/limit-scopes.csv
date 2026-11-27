@@ -1,0 +1,69 @@
+family,index,held_masks,note
+bbinom,1,size,Known size at least two and both beta shapes free.
+bbinom,2,size,Known size at least two.
+bbinom,3,size,Known size in the endpoint-only assertion.
+bhatt,1,all free;a;a+mu;mu,Different trace at a held positive width because endpoint penalties apply.
+bnbinom,1,all free;beta;size,The NB path is compatible with either held symmetric shape.
+bnbinom,3,all free;alpha;beta;size;alpha+beta;alpha+size;beta+size,One or more shapes must remain free.
+burr,1,all free;scale;shape1;scale+shape1,The specific collapse predicate depends on the held mask.
+cauchy,1,all free;location,Held location uses the number of atoms at that location.
+cmb,2,size;prob;prob+size,The detector mentions held size or held probability.
+cmb,3,all free;size;prob;prob+size,Several hold regimes are stated in the detector.
+cmb,4,all free;size;prob;prob+size,Several hold regimes are stated in the detector.
+cmp,1,all free;lambda,Positive held rate permits only a zero-one limiting law.
+dblpareto,1,all free;right_rate,The left rate must remain free.
+dblpareto,2,all free;left_rate,The right rate must remain free.
+dblpareto,3,all free;scale,Both rates remain free.
+dgamma,3,rate;shape,Exactly one coefficient is free.
+dlaplace,1,all free;location,Held location must equal the common observation.
+expweibull,1,all free;scale;exponent;shape;exponent+scale,Constant-data path depends on the constrained coordinates.
+foldnorm,1,all free;mu,Held location must equal the common observation.
+fpareto,1,min+shape3,The Burr submodel has the threshold held and upper condition on the supplied lower beta shape.
+fpareto,2,min+shape1,The inverse Burr submodel has the threshold held and shape1 set to one.
+fpareto,3,min;min+shape1+shape3,Positive constant excesses with free power and scale.
+fpareto,4,min,Threshold remains finite and held on this fitted face.
+fpareto,5,min,Threshold remains finite and held on this fitted face.
+fpareto,6,min,Threshold remains finite and held on this fitted face.
+fpareto,7,min,Threshold remains finite and held on this fitted face.
+fpareto,8,min,Threshold remains finite and held on this fitted face.
+fpareto,9,min,Threshold remains finite and held on this fitted face.
+frechet,2,sigma;mu+sigma,All excesses equal held scale in the latter mask.
+ged,1,all free;mean;nu;mean+nu,Scale must be free and all residuals vanish.
+ged,2,all free;mean;sd;mean+sd,Held-SD contact changes the envelope.
+genbeta,1,scale;scale+shape1;scale+shape3,Constant sample strictly inside the held endpoint.
+genbeta,2,scale;scale+shape2,The displayed path fixes upper shape and endpoint.
+genbeta,3,scale,The detector concerns the held-endpoint fit.
+gumbel,1,all free;mu,Held location must equal the common observation.
+hcauchy,1,all free;mu,Endpoint count uses the fitted or held endpoint.
+hcauchy,2,all free;mu,Endpoint count uses the fitted or held endpoint.
+hnorm,1,all free;mu,Held endpoint must equal the common observation.
+ht,2,all free;mu;nu;mu+nu,The collapse condition depends on free or held shape.
+ht,3,nu;mu+nu,Fixed-shape criterion for a fitted or held endpoint.
+huber,1,all free;mu;epsilon;epsilon+mu,The displayed constant-data path is compatible with fixed positive epsilon.
+hyper,1,k+m,The detector fixes both marked count and draw count although fixed lists only m.
+invburr,1,all free;scale;shape1;scale+shape1,The specific collapse predicate depends on the held mask.
+invtrgamma,2,all free;shape1;shape2;scale;scale+shape1,The concentration path depends on the held coordinates.
+laplace,1,all free;mu,Held location must equal the common observation.
+logis,1,all free;location,Held location must equal the common observation.
+logitnorm,1,all free;mu,The held-location check uses constant logits at the held value.
+norm,1,all free;mean,Held mean must equal the common observation.
+nsbeta,1,max+min,The detector explicitly requires both endpoints held.
+pareto2,1,min,The detector explicitly requires held threshold and both other coefficients free.
+pareto3,1,min;min+scale,Held scale must equal the common excess.
+pareto4,2,min;min+shape1;min+scale;min+scale+shape1,The concentration path depends on the held coordinates.
+pareto4,3,min;min+shape2,The Weibull detector describes the free regular parameters and the held-power fit.
+pareto4,4,min;min+scale,The Pareto detector describes the free regular parameters and held-scale fit.
+pareto4,5,min+scale,The detector explicitly includes the threshold missing from fixed.
+pig,1,all free;mean,The variance condition depends on whether mean is fitted or held.
+slash,1,all free;mu,Held location admits an exact scalar argument. The all-free detector alone is numerical.
+snorm,1,all free;xi;mean;mean+xi,Scale must be free and all observations equal the fitted or held mean.
+std,2,nu;mean+nu,Scale remains free.
+std,3,nu;mean+nu,The held-location scalar equality differs from the moving-location case.
+st,6,all free;alpha;nu;alpha+nu;xi;alpha+xi;nu+xi;alpha+nu+xi,Scale remains free and the df restriction changes the exponent.
+st,7,all free;alpha;nu;alpha+nu;xi;alpha+xi;nu+xi;alpha+nu+xi,A path limit distinct from its dominance.
+tlambda,1,lambda+mu,The detector explicitly fixes both negative shape and location.
+trgamma,2,all free;shape1;shape2;scale;scale+shape1,The concentration path depends on the held coordinates.
+triang,1,all free;a;b;c;a+c;b+c,At least one endpoint must remain free.
+triang,2,a;b;a+b;a+c;b+c,Support incompatibilities involve held coefficients.
+unif,1,all free;min;max,One or both endpoints may be free.
+unif,2,min;max;max+min,One or both endpoints may be held.
