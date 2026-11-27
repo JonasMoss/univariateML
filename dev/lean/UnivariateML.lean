@@ -89,3 +89,16 @@ public import UnivariateML.Family.FinishEMG
 public import UnivariateML.Family.FinishHalfT
 public import UnivariateML.Family.FinishSkellam
 public import UnivariateML.Family.FinishSN
+public import UnivariateML.Family.JoinsBinomialSize
+public import UnivariateML.Family.JoinsBurr
+public import UnivariateML.Family.JoinsBurrTransfers
+public import UnivariateML.Family.JoinsCMB
+public import UnivariateML.Family.JoinsCMP
+public import UnivariateML.Family.JoinsDiscreteWeibull
+public import UnivariateML.Family.JoinsDNorm
+public import UnivariateML.Family.JoinsDoublePareto
+public import UnivariateML.Family.JoinsEMG
+public import UnivariateML.Family.JoinsGEV
+public import UnivariateML.Family.JoinsHalfT
+public import UnivariateML.Family.JoinsPIG
+public import UnivariateML.Family.JoinsSN
