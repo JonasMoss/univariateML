@@ -61,7 +61,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | betapr | scale+shape1 | lean (iff) | lean (exact) | lean (exact) |
 | betapr | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | betapr | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
-| betapr | shape1+shape2 | written (iff) | written (exact) | written (exact) |
+| betapr | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | bhatt | a | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
 | bhatt | a+mu | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
 | bhatt | a+mu+sigma | lean (iff) | lean (exact) | lean (exact) |
@@ -75,7 +75,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | bnbinom | alpha+size | lean (iff) | lean (exact) | lean (exact) |
 | bnbinom | beta+size | lean (iff) | lean (exact) | lean (exact) |
 | burr | scale | lean (iff) | lean (exact) | lean (exact) |
-| burr | scale+shape1 | written (iff) | written (exact) | written (exact) |
+| burr | scale+shape1 | lean (iff) | lean (exact) | lean (exact) |
 | burr | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | burr | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | burr | shape1 | lean (iff) | lean (exact) | lean (exact) |
@@ -124,67 +124,67 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | emg | lambda+sigma | lean (iff) | lean (exact) | lean (exact) |
 | exp | all free | lean (iff) | lean (exact) | lean (exact) |
 | exp | rate | lean (iff) | lean (exact) | lean (exact) |
-| expweibull | exponent | written (iff) · partial Lean | written (exact) | lean (exact) |
-| expweibull | exponent+scale | written (iff) | written (exact) | written (exact) |
-| expweibull | exponent+shape | written (iff) | written (exact) | written (exact) |
+| expweibull | exponent | lean (iff) | lean (exact) | lean (exact) |
+| expweibull | exponent+scale | lean (iff) | lean (exact) | lean (exact) |
+| expweibull | exponent+shape | lean (iff) | lean (exact) | lean (exact) |
 | expweibull | scale+shape | lean (iff) | lean (exact) | lean (exact) |
-| expweibull | shape | written (iff) · partial Lean | written (exact) | written (exact) |
-| fatigue | all free | written (iff) | written (exact) | written (exact) |
+| expweibull | shape | lean (iff) | lean (exact) | written (exact) |
+| fatigue | all free | lean (iff) | lean (exact) | lean (exact) |
 | fatigue | beta+mu | lean (iff) | lean (exact) | lean (exact) |
 | fatigue | mu | lean (iff) | lean (exact) | lean (exact) |
 | foldnorm | mu | lean (iff) | lean (exact) | lean (exact) |
 | foldnorm | mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | foldnorm | sigma | lean (iff) | lean (exact) | lean (exact) |
-| fpareto | all free | written (iff) | written (exact) | written (exact) |
+| fpareto | all free | lean (iff) | lean (exact) | lean (exact) |
 | fpareto | min+scale+shape1+shape2+shape3 | lean (iff) | lean (exact) | lean (exact) |
-| fpareto | min+scale+shape2 | written (iff) · partial Lean | written (exact) | lean (exact) |
-| fpareto | min+shape1+shape3 | written (iff) | written (exact) | written (exact) |
-| fpareto | scale | written (iff) | written (exact) | written (exact) |
-| fpareto | scale+shape1 | written (iff) | written (exact) | written (exact) |
-| fpareto | scale+shape1+shape2 | written (iff) | written (exact) | written (exact) |
-| fpareto | scale+shape1+shape2+shape3 | written (iff) | written (exact) | written (exact) |
-| fpareto | scale+shape1+shape3 | written (iff) | written (exact) | written (exact) |
-| fpareto | scale+shape2 | written (iff) | written (exact) | written (exact) |
-| fpareto | scale+shape3 | written (iff) | written (exact) | written (exact) |
-| fpareto | shape1 | written (iff) | written (exact) | written (exact) |
-| fpareto | shape1+shape2 | written (iff) | written (exact) | written (exact) |
-| fpareto | shape1+shape2+shape3 | written (iff) | written (exact) | written (exact) |
-| fpareto | shape1+shape3 | written (iff) | written (exact) | written (exact) |
-| fpareto | shape2 | written (iff) | written (exact) | written (exact) |
-| fpareto | shape2+shape3 | written (iff) | written (exact) | written (exact) |
-| fpareto | shape3 | written (iff) | written (exact) | written (exact) |
+| fpareto | min+scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | min+shape1+shape3 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | scale | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | scale+shape1 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | scale+shape1+shape2+shape3 | lean (iff) | lean (exact) | written (exact) · partial Lean |
+| fpareto | scale+shape1+shape3 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | scale+shape3 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | shape1 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | shape1+shape2+shape3 | lean (iff) | written (exact) · partial Lean | written (exact) |
+| fpareto | shape1+shape3 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | shape2 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | shape2+shape3 | lean (iff) | lean (exact) | lean (exact) |
+| fpareto | shape3 | lean (iff) | lean (exact) | lean (exact) |
 | frechet | lambda | lean (iff) | lean (exact) | lean (exact) |
 | frechet | lambda+mu | lean (iff) | lean (exact) | lean (exact) |
 | frechet | lambda+mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | frechet | lambda+sigma | written (iff) | written (exact) | written (exact) |
-| frechet | mu | written (iff) | written (exact) | written (exact) |
-| frechet | mu+sigma | written (iff) | written (exact) | written (exact) |
+| frechet | mu | lean (iff) | lean (exact) | lean (exact) |
+| frechet | mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | gamma | all free | lean (iff) | lean (exact) | lean (exact) |
 | gamma | scale | lean (iff) | lean (exact) | lean (exact) |
 | gamma | shape | lean (iff) | lean (exact) | lean (exact) |
-| gb2 | scale+shape1+shape2 | written (iff) | written (exact) | written (exact) |
-| gb2 | scale+shape2 | written (iff) | written (exact) | written (exact) |
-| gb2 | scale+shape2+shape3 | written (iff) | written (exact) | written (exact) |
-| gb2 | shape1+shape3 | written (iff) | written (exact) | written (exact) |
+| gb2 | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
+| gb2 | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
+| gb2 | scale+shape2+shape3 | lean (iff) | lean (exact) | lean (exact) |
+| gb2 | shape1+shape3 | written (iff) · partial Lean | lean (exact) | lean (exact) |
 | ged | mean+nu | lean (iff) | lean (exact) | lean (exact) |
 | ged | mean+nu+sd | lean (iff) | lean (exact) | lean (exact) |
 | ged | nu | lean (iff) | lean (exact) | written (exact) · partial Lean |
 | ged | nu+sd | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
-| genbeta | all free | written (iff) | written (exact) | written (exact) |
+| genbeta | all free | lean (iff) | lean (exact) | lean (exact) |
 | genbeta | scale+shape1 | written (iff) | written (exact) | written (exact) |
 | genbeta | scale+shape1+shape2+shape3 | lean (iff) | lean (exact) | lean (exact) |
-| genbeta | scale+shape1+shape3 | written (iff) | written (exact) | written (exact) |
-| genbeta | scale+shape2+shape3 | written (iff) | written (exact) | written (exact) |
-| genbeta | scale+shape3 | written (iff) | written (exact) | written (exact) |
-| genbeta | shape1 | written (iff) | written (exact) | written (exact) |
-| genbeta | shape1+shape2 | written (iff) | written (exact) | written (exact) |
-| genbeta | shape1+shape2+shape3 | written (iff) | written (exact) | written (exact) |
-| genbeta | shape1+shape3 | written (iff) | written (exact) | written (exact) |
-| genbeta | shape2+shape3 | written (iff) | written (exact) | written (exact) |
-| genbeta | shape3 | written (iff) | written (exact) | written (exact) |
-| gengamma | Q | written (iff) | written (exact) | written (exact) |
-| gengamma | Q+mu | written (iff) | written (exact) | written (exact) |
-| gengamma | Q+sigma | written (iff) | written (exact) | written (exact) |
+| genbeta | scale+shape1+shape3 | lean (iff) | lean (exact) | lean (exact) |
+| genbeta | scale+shape2+shape3 | lean (iff) | lean (exact) | lean (exact) |
+| genbeta | scale+shape3 | lean (iff) | lean (exact) | lean (exact) |
+| genbeta | shape1 | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| genbeta | shape1+shape2 | lean (iff) | written (exact) · partial Lean | written (exact) · partial Lean |
+| genbeta | shape1+shape2+shape3 | lean (iff) | written (exact) · partial Lean | written (exact) · partial Lean |
+| genbeta | shape1+shape3 | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| genbeta | shape2+shape3 | written (iff) | written (exact) · partial Lean | written (exact) |
+| genbeta | shape3 | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| gengamma | Q | lean (iff) | lean (exact) | lean (exact) |
+| gengamma | Q+mu | lean (iff) | lean (exact) | lean (exact) |
+| gengamma | Q+sigma | lean (iff) | written (exact) · partial Lean | lean (exact) |
 | geom | all free | lean (iff) | lean (exact) | lean (exact) |
 | geom | prob | lean (iff) | lean (exact) | lean (exact) |
 | gev | xi | lean (iff) | lean (exact) | lean (exact) |
@@ -221,11 +221,11 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | hyper | N+k | lean (iff) | lean (exact) | lean (exact) |
 | hyper | N+m | lean (iff) | lean (exact) | lean (exact) |
 | hyper | k+m | lean (iff) | lean (exact) | lean (exact) |
-| invburr | scale | written (iff) · partial Lean | written (exact) · partial Lean | lean (exact) |
-| invburr | scale+shape1 | written (iff) · partial Lean | lean (exact) | lean (exact) |
+| invburr | scale | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| invburr | scale+shape1 | lean (iff) | lean (exact) | lean (exact) |
 | invburr | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | invburr | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
-| invburr | shape1 | written (iff) · partial Lean | lean (exact) | lean (exact) |
+| invburr | shape1 | lean (iff) | lean (exact) | lean (exact) |
 | invburr | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | invexp | all free | lean (iff) | lean (exact) | lean (exact) |
 | invexp | scale | lean (iff) | lean (exact) | lean (exact) |
@@ -303,59 +303,59 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | norm | all free | lean (iff) | lean (exact) | lean (exact) |
 | norm | mean | lean (iff) | lean (exact) | lean (exact) |
 | norm | sd | lean (iff) | lean (exact) | lean (exact) |
-| nsbeta | all free | written (iff) | written (exact) | written (exact) |
-| nsbeta | max | written (iff) | written (exact) | written (exact) |
+| nsbeta | all free | lean (iff) | lean (exact) | lean (exact) |
+| nsbeta | max | lean (iff) | written (exact) · partial Lean | lean (exact) |
 | nsbeta | max+min | lean (iff) | lean (exact) | lean (exact) |
 | nsbeta | max+min+shape1 | lean (iff) | lean (exact) | lean (exact) |
 | nsbeta | max+min+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | nsbeta | max+min+shape2 | lean (iff) | lean (exact) | lean (exact) |
-| nsbeta | max+shape1 | written (iff) | written (exact) | written (exact) |
-| nsbeta | max+shape1+shape2 | written (iff) | written (exact) | written (exact) |
-| nsbeta | max+shape2 | written (iff) | written (exact) | written (exact) |
-| nsbeta | min | written (iff) | written (exact) | written (exact) |
-| nsbeta | min+shape1 | written (iff) | written (exact) | written (exact) |
-| nsbeta | min+shape1+shape2 | written (iff) | written (exact) | written (exact) |
-| nsbeta | min+shape2 | written (iff) | written (exact) | written (exact) |
-| nsbeta | shape1 | written (iff) | written (exact) | written (exact) |
-| nsbeta | shape1+shape2 | written (iff) | written (exact) | written (exact) |
-| nsbeta | shape2 | written (iff) | written (exact) | written (exact) |
+| nsbeta | max+shape1 | written (iff) | written (exact) · partial Lean | written (exact) |
+| nsbeta | max+shape1+shape2 | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| nsbeta | max+shape2 | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| nsbeta | min | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| nsbeta | min+shape1 | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| nsbeta | min+shape1+shape2 | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| nsbeta | min+shape2 | written (iff) | written (exact) · partial Lean | written (exact) |
+| nsbeta | shape1 | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| nsbeta | shape1+shape2 | written (iff) · partial Lean | written (exact) · partial Lean | lean (exact) |
+| nsbeta | shape2 | lean (iff) | written (exact) · partial Lean | lean (exact) |
 | paralogis | scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | paralogis | shape | lean (iff) | lean (exact) | lean (exact) |
 | pareto | all free | lean (iff) | lean (exact) | lean (exact) |
 | pareto | a | lean (iff) | lean (exact) | lean (exact) |
 | pareto | a+b | lean (iff) | lean (exact) | lean (exact) |
 | pareto | b | lean (iff) | lean (exact) | lean (exact) |
-| pareto2 | all free | written (iff) | written (exact) | written (exact) |
+| pareto2 | all free | lean (iff) | lean (exact) | lean (exact) |
 | pareto2 | min+scale | lean (iff) | lean (exact) | lean (exact) |
 | pareto2 | min+scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | pareto2 | min+shape | lean (iff) | lean (exact) | lean (exact) |
-| pareto2 | scale | written (iff) | written (exact) | written (exact) |
-| pareto2 | scale+shape | written (iff) | written (exact) | written (exact) |
-| pareto2 | shape | written (iff) | written (exact) | written (exact) |
-| pareto3 | all free | written (iff) | written (exact) | written (exact) |
+| pareto2 | scale | lean (iff) | lean (exact) | lean (exact) |
+| pareto2 | scale+shape | lean (iff) | written (exact) | written (exact) · partial Lean |
+| pareto2 | shape | lean (iff) | lean (exact) | lean (exact) |
+| pareto3 | all free | lean (iff) | lean (exact) | lean (exact) |
 | pareto3 | min | lean (iff) | lean (exact) | lean (exact) |
 | pareto3 | min+scale | lean (iff) | lean (exact) | lean (exact) |
 | pareto3 | min+scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | pareto3 | min+shape | lean (iff) | lean (exact) | lean (exact) |
-| pareto3 | scale | written (iff) | written (exact) | written (exact) |
-| pareto3 | scale+shape | written (iff) | written (exact) | written (exact) |
-| pareto3 | shape | written (iff) | written (exact) | written (exact) |
-| pareto4 | all free | written (iff) | written (exact) | written (exact) |
-| pareto4 | min+scale | written (iff) · partial Lean | written (exact) · partial Lean | lean (exact) |
-| pareto4 | min+scale+shape1 | written (iff) · partial Lean | lean (exact) | lean (exact) |
+| pareto3 | scale | lean (iff) | written (exact) · partial Lean | lean (exact) |
+| pareto3 | scale+shape | lean (iff) | lean (exact) | written (exact) · partial Lean |
+| pareto3 | shape | lean (iff) | written (exact) · partial Lean | written (exact) |
+| pareto4 | all free | lean (iff) | lean (exact) | lean (exact) |
+| pareto4 | min+scale | lean (iff) | lean (exact) | lean (exact) |
+| pareto4 | min+scale+shape1 | lean (iff) | lean (exact) | lean (exact) |
 | pareto4 | min+scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | pareto4 | min+scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
-| pareto4 | min+shape1 | written (iff) · partial Lean | lean (exact) | lean (exact) |
+| pareto4 | min+shape1 | lean (iff) | lean (exact) | lean (exact) |
 | pareto4 | min+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
-| pareto4 | scale | written (iff) | written (exact) | written (exact) |
-| pareto4 | scale+shape1 | written (iff) | written (exact) | written (exact) |
-| pareto4 | scale+shape1+shape2 | written (iff) | written (exact) | written (exact) |
-| pareto4 | shape1 | written (iff) | written (exact) | written (exact) |
-| pareto4 | shape1+shape2 | written (iff) | written (exact) | written (exact) |
-| pareto4 | shape2 | written (iff) | written (exact) | written (exact) |
+| pareto4 | scale | lean (iff) | lean (exact) | lean (exact) |
+| pareto4 | scale+shape1 | lean (iff) | lean (exact) | lean (exact) |
+| pareto4 | scale+shape1+shape2 | lean (iff) | lean (exact) | written (exact) · partial Lean |
+| pareto4 | shape1 | lean (iff) | lean (exact) | lean (exact) |
+| pareto4 | shape1+shape2 | lean (iff) | written (exact) · partial Lean | written (exact) |
+| pareto4 | shape2 | lean (iff) | lean (exact) | lean (exact) |
 | pgw | all free | written (iff) | written (exact) | written (exact) |
-| pgw | exponent | written (iff) · partial Lean | lean (exact) | lean (exact) |
-| pgw | exponent+scale | written (iff) · partial Lean | lean (exact) | lean (exact) |
+| pgw | exponent | lean (iff) | lean (exact) | lean (exact) |
+| pgw | exponent+scale | lean (iff) | lean (exact) | lean (exact) |
 | pgw | exponent+scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | pgw | exponent+shape | lean (iff) | lean (exact) | lean (exact) |
 | pgw | scale+shape | lean (iff) | lean (exact) | lean (exact) |
@@ -437,8 +437,8 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | bbinom | alpha | written (iff) | written (exact) | written (one-sided) |
 | bbinom | size | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | betapr | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| betapr | shape1 | written (iff) | written (exact) | written (one-sided) |
-| betapr | shape2 | written (iff) | written (exact) | written (one-sided) |
+| betapr | shape1 | written (iff) | written (exact) · partial Lean | written (one-sided) |
+| betapr | shape2 | written (iff) | written (exact) · partial Lean | written (one-sided) |
 | bhatt | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | bhatt | mu | written (iff) | written (exact) | written (one-sided) |
 | bhatt | mu+sigma | lean (iff) | lean (exact) | written (one-sided) |
@@ -448,7 +448,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | bnbinom | beta | written (iff) | written (exact) | written (one-sided) |
 | bnbinom | size | written (iff) | written (exact) | written (one-sided) |
 | burr | all free | lean (iff) | lean (exact) | written (one-sided) |
-| burr | shape2 | lean (iff) | lean (exact) | written (one-sided) |
+| burr | shape2 | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | cauchy | scale | lean (iff) | lean (exact) | lean (one-sided) |
 | cmb | all free | written (iff) | written (exact) | written (one-sided) |
 | cmb | nu | written (iff) | written (exact) | written (one-sided) |
@@ -459,31 +459,31 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | emg | mu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | emg | mu+sigma | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | emg | sigma | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| expweibull | all free | written (iff) | written (exact) | written (one-sided) |
-| expweibull | scale | written (iff) | written (exact) | written (one-sided) |
-| fatigue | alpha | written (iff) | written (exact) | written (one-sided) |
-| fatigue | alpha+beta | written (iff) | written (exact) | written (one-sided) |
-| fatigue | alpha+mu | written (iff) | written (exact) | written (one-sided) |
+| expweibull | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| expweibull | scale | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| fatigue | alpha | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| fatigue | alpha+beta | lean (iff) | lean (exact) | written (one-sided) |
+| fatigue | alpha+mu | lean (iff) | lean (exact) | written (one-sided) |
 | fatigue | beta | written (iff) | written (exact) | written (one-sided) |
 | foldnorm | all free | written (iff) | lean (exact) | lean (one-sided) |
-| fpareto | min | written (iff) | written (exact) | written (one-sided) |
-| fpareto | min+shape1 | written (iff) | written (exact) | written (one-sided) |
-| fpareto | min+shape3 | written (iff) | written (exact) | written (one-sided) |
-| fpareto | scale+shape2+shape3 | written (iff) | written (exact) | written (one-sided) |
+| fpareto | min | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| fpareto | min+shape1 | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| fpareto | min+shape3 | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| fpareto | scale+shape2+shape3 | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | frechet | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| frechet | sigma | written (iff) | written (exact) | written (one-sided) |
-| gb2 | all free | written (iff) | written (exact) | written (one-sided) |
+| frechet | sigma | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| gb2 | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | gb2 | shape1 | written (iff) | written (exact) | written (one-sided) |
 | gb2 | shape3 | written (iff) | written (exact) | written (one-sided) |
 | ged | all free | written (iff) | written (exact) | written (one-sided) |
 | ged | mean | written (iff) | written (exact) · partial Lean | written (one-sided) |
 | ged | mean+sd | written (iff) | written (exact) | written (one-sided) |
 | ged | sd | written (iff) | written (exact) | written (one-sided) |
-| genbeta | scale | written (iff) | written (exact) | written (one-sided) |
-| genbeta | scale+shape2 | written (iff) | written (exact) | written (one-sided) |
-| genbeta | shape2 | written (iff) | written (exact) | written (one-sided) |
+| genbeta | scale | written (iff) | written (exact) · partial Lean | written (one-sided) |
+| genbeta | scale+shape2 | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| genbeta | shape2 | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | gengamma | all free | lean (iff) | lean (exact) | written (one-sided) |
-| gengamma | mu | written (iff) · partial Lean | lean (exact) | written (one-sided) |
+| gengamma | mu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | gengamma | mu+sigma | written (iff) | written (exact) | written (one-sided) |
 | gengamma | sigma | written (iff) | written (exact) | written (one-sided) |
 | gev | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
@@ -502,12 +502,12 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | hyper | k | written (iff) | written (exact) | written (one-sided) |
 | hyper | m | written (iff) | written (exact) | written (one-sided) |
 | invburr | all free | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
-| invburr | shape2 | lean (iff) | lean (exact) | written (one-sided) |
+| invburr | shape2 | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | invparalogis | all free | lean (iff) | lean (exact) | lean (one-sided) |
 | invparalogis | scale | lean (iff) | lean (exact) | lean (one-sided) |
 | invpareto | all free | lean (iff) | written (exact) | written (one-sided) · partial Lean |
 | invtrgamma | all free | written (iff) | written (exact) | written (one-sided) |
-| invtrgamma | scale | written (iff) | written (exact) | written (one-sided) |
+| invtrgamma | scale | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | lomax | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | lst | all free | written (iff) · partial Lean | lean (exact) | written (one-sided) |
 | lst | df | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
@@ -517,12 +517,12 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | nhyper | all free | written (iff) | written (exact) | written (one-sided) |
 | paralogis | all free | lean (iff) | lean (exact) | lean (one-sided) |
 | paralogis | scale | lean (iff) | lean (exact) | lean (one-sided) |
-| pareto2 | min | written (iff) · partial Lean | lean (one-sided) | written (one-sided) · partial Lean |
-| pareto4 | min | lean (iff) | written (exact) · partial Lean | written (one-sided) |
-| pareto4 | min+shape2 | lean (iff) | lean (exact) | written (one-sided) |
-| pareto4 | scale+shape2 | written (iff) | written (exact) | written (one-sided) |
+| pareto2 | min | lean (iff) | lean (one-sided) | written (one-sided) · partial Lean |
+| pareto4 | min | lean (iff) | lean (exact) | written (one-sided) |
+| pareto4 | min+shape2 | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| pareto4 | scale+shape2 | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | pgw | scale | lean (iff) | written (exact) · partial Lean | written (one-sided) |
-| pgw | shape | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| pgw | shape | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
 | sged | all free | written (iff) | written (exact) | written (one-sided) |
 | sged | mean | written (iff) | written (exact) | written (one-sided) |
 | sged | mean+nu | written (iff) | written (exact) | written (one-sided) |
@@ -575,7 +575,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | tlambda | mu | written (iff) | written (exact) | written (one-sided) |
 | tlambda | sigma | written (iff) | written (exact) | written (one-sided) |
 | trgamma | all free | written (iff) | written (exact) | written (one-sided) |
-| trgamma | scale | written (iff) | written (exact) | written (one-sided) |
+| trgamma | scale | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 
 <!-- END GENERATED ATLAS -->
 

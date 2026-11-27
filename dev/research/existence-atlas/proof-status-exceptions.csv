@@ -18,3 +18,4 @@ nhyper,m+r,uniqueness,written,The Lean crossing assumes positive stopping count.
 pareto2,min,criterion,written,The Lean transfer assumes positive excesses. The written criterion also refers to the separate threshold-contact rule.
 sn,all free,criterion,written,The finite-witness and stationary criteria assume nonconstant data. Constant divergence is proved in a separate declaration.
 sn,all free,failure,written,unattained_face_supremum assumes nonconstant data and nonattainment. The constant divergence branch is separate.
+gengamma,mu,failure,written,"held_location_face_path proves convergence along the fixed-location path for one supported orientation; the claim also asserts these are the only bounded escapes, which needs exhaustion over all compatible sequences (atlas-coverage4a, open records)."

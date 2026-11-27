@@ -112,7 +112,7 @@ gengamma,mu,UnivariateML.AllFreeGenGamma.held_location_face_path,dev/lean/Univar
     (hx : ∀ i, ε * (log (x i) - μ) ≤ 0) :
     Tendsto (fun q : ℝ ↦ GenGammaTwoPoint.sampleLogLik x
       (μ, d * sqrt q, ε / sqrt q)) (𝓝[>] 0)
-      (𝓝 ((∑ i, (-log d + ε * (log (x i) - μ) / d - log (x i))) / n))",,,,"{""failure"":""full""}"
+      (𝓝 ((∑ i, (-log d + ε * (log (x i) - μ) / d - log (x i))) / n))",,,,"{""failure"":""partial""}"
 gengamma,mu,UnivariateML.AllFreeGenGamma.held_location_fixed_shape_scale,dev/lean/UnivariateML/Family/AllFreeGenGamma.lean,158,"At fixed location and fixed real shape, any nonzero log residual gives a unique positive scale maximizer, including the normal shape.","{n : ℕ} (hn : 0 < n) {x : Fin n → ℝ} (μ Q : ℝ)
     (hne : ∃ i, log (x i) ≠ μ) :
     ∃! σ, σ ∈ Ioi (0 : ℝ) ∧
