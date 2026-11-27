@@ -1,0 +1,86 @@
+{
+  "mpmath_decimal_digits": 70,
+  "bisection_steps": 200,
+  "normal": {
+    "sample": [
+      "-1",
+      "-d",
+      "-d",
+      "-d",
+      "d",
+      "d",
+      "d",
+      "1"
+    ],
+    "d": "349525/1048576",
+    "variance_gap_exact": "2097151/13194139533312",
+    "quadratic_tilt": "-0.0000017881387951286370733685685275739872",
+    "likelihood_gain_per_observation": "1.421084277607256148670958356605046e-13",
+    "gain_upper_bound_exact": "109951057920025/696341272098026404630757376"
+  },
+  "gamma_corner": {
+    "sample": [
+      1,
+      4
+    ],
+    "model_mean": "2.1640425613334451110398870215028382"
+  },
+  "beta_corner": {
+    "sample": [
+      "1/4",
+      "3/4"
+    ],
+    "model_log_mean": "-0.74200075454072505809153704404032825",
+    "sample_log_mean": "-0.83698821678583577313684162445509028"
+  },
+  "invgauss_corner": {
+    "sample": [
+      1,
+      4
+    ],
+    "model_mean_X": "2.0",
+    "model_mean_reciprocal": "0.58333333333333333333333333333333333"
+  },
+  "nbinom_weighted_boundary": {
+    "sample": [
+      1,
+      2,
+      2
+    ],
+    "size": 2,
+    "boundary_mean_exact": "8/5"
+  },
+  "binom_plateau": {
+    "sample": [
+      1,
+      1,
+      2
+    ],
+    "sizes_replayed": [
+      2,
+      3,
+      4,
+      17,
+      100
+    ],
+    "odds_exact": "1/2"
+  },
+  "nbinom_size_zero_alias": [
+    {
+      "sample": [
+        1,
+        2
+      ],
+      "prob": "0.4664107660800051532493400425387584",
+      "log_likelihood": "-2.035723046940415852720005757903399"
+    },
+    {
+      "sample": [
+        2,
+        3
+      ],
+      "prob": "0.19813867289691731522008936082714993",
+      "log_likelihood": "-3.8592130407544264752454426430661563"
+    }
+  ]
+}
