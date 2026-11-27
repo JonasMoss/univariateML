@@ -115,3 +115,15 @@ public import UnivariateML.Family.TiesLomax
 public import UnivariateML.Family.TiesParalogistic
 public import UnivariateML.Family.TiesParalogisticJoint
 public import UnivariateML.Family.TiesShiftedGompertz
+public import UnivariateML.Family.Shape2BetaPrime
+public import UnivariateML.Family.Shape2Burr
+public import UnivariateML.Family.Shape2ExpWeibull
+public import UnivariateML.Family.Shape2Fatigue
+public import UnivariateML.Family.Shape2Frechet
+public import UnivariateML.Family.Shape2GB2
+public import UnivariateML.Family.Shape2GenGamma
+public import UnivariateML.Family.Shape2GEV
+public import UnivariateML.Family.Shape2InvBurr
+public import UnivariateML.Family.Shape2InvTrGamma
+public import UnivariateML.Family.Shape2PGW
+public import UnivariateML.Family.Shape2TrGamma
