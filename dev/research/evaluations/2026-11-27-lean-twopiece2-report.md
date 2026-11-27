@@ -1,0 +1,512 @@
+# TASK-430 · Two-piece likelihoods in Lean
+
+The second pass adds 20 checked declarations in five modules. 14 of the 105 requested main claims have a joined statement at their written scope. The atlas fragment leaves every coverage cell blank for independent review. [Atlas fragment](../existence-atlas/lean-map.d/lean-twopiece2.csv)
+
+**Atlas scope discrepancy.** The skew Student records `limit:55` and `limit:60` appear in the all-free regime. Their detector text requires skew held at one and refers to the symmetric Student certificate. An unrestricted certificate would additionally have to compare the free-skew fits and faces. [Skew Student dossier](../../../univariateML-cpp/include/cppunivariate/distributions/sstd/README.md)
+
+All likelihood comparisons use log likelihood, except where a theorem also states the product limit. The skew fraction is the left width divided by the total width. The fixed-mean Student result uses the Student denominator width. At fixed shape and skew, total width differs from standard deviation by a positive constant.
+
+## Main-question ledger
+
+A name means the corresponding statement is checked. Open cells share the proof obligation in the last column. Stationary-set descriptions and almost-everywhere uniqueness are separate obligations in the atlas statement. The open entries were scoped against the round-five results, both coverage reviews and the written family arguments. [Round-five report](2026-11-27-lean-twopiece-report.md) · [Review 4a](2026-11-27-atlas-coverage4a-report.md) · [Review 4b](2026-11-27-atlas-coverage4b-report.md)
+
+The generic cardinality entries require a countable cover by compact parameter pieces, locally Lipschitz height envelopes on fixed-count level strata and the family-specific equality test for composed gradients. For Laplace joins the gradient along a moving knot differs from the component derivative at a fixed join. [Generic uniqueness argument](2026-11-27-uniq-generic-math-report.md) · [Family separation arguments](2026-11-27-uniq-skew2-math-report.md)
+
+| Family | Held | Criterion | Failure | Uniqueness | Remaining proof obligation |
+|---|---|---|---|---|---|
+| snorm | all free | — | `allFree_failure` | `allFree_maximizers` | — |
+| snorm | mean | Open | Open | Open | Optimize both support-clipped half-width quadratics and localize positive-width joint skew and width paths. The varying-skew collapse bound is checked. The constant-away strict half comparison and the stationary branches, joins and flat intervals still need proofs. |
+| snorm | mean+sd | `heldMeanSd_criterion` | `heldMeanSd_halfTraces` | Open | Stationary skew and both penalized traces are checked. Split the score into algebraic pieces, keep knots and flat intervals, and prove that the highest stationary components give the whole maximizing set. |
+| snorm | sd | Open | Open | Open | The constant two-face tie was checked in round five. Derive the weighted join optimum on each skew interval and prove both optimized half traces and exclusion of runaway location. Retain all winning stationary branches and joins. |
+| ged | all free | `allFree_criterion_failure` | `allFree_criterion_failure` | Open | Prove the almost-everywhere shape comparison and the eight-observation open median-interval example, including the finite–uniform equality comparison. Each fixed-shape set is already classified. |
+| ged | mean | `heldMean_criterion_failure` | `heldMean_criterion_failure` | Open | The retained compact candidate comparison is checked. Prove that its analytic score is nonzero as a function and has finitely many roots on the compact interval. Separate the winner gradients at two unequal residual radii and prove the separated-shape crossing at the stated multiplicities. |
+| ged | mean+sd | Open | Open | Open | The high-shape trace and contact penalty are checked. A strict finite witness for every strictly supported sample needs a positive quadratic peak excess dominating the exponentially small loss. Prove distinct-radius separation and the two-band finite crossing. |
+| ged | nu | — | — | `heldShape_maximizers` | — |
+| ged | nu+sd | — | — | `heldSd_maximizers` | — |
+| ged | sd | Open | Open | Open | The earlier rational contact exclusion applies to binary64. For real data, optimize the two-extreme trace, prove strict finite dominance in the interior-support case and the signed contact tail. The median interval and generic shape separation require global comparisons. |
+| sged | all free | Open | Open | Open | Derive both optimized finite-shape half envelopes and join their corners to the range uniform. The reflected witness needs strict comparisons with all faces and the best reflection-fixed fit. Generic score separation must include shape-one knot charts. |
+| sged | mean | Open | Open | Open | Optimize the two constrained half widths and prove full moving-contact height. Combine the centered uniform with collapse bounds uniform in fitted shape and both face orientations. For uniqueness, prove the reflected witness and generic separation of superunit winners. |
+| sged | mean+nu | Open | Open | Open | Varying-skew collapse is checked. At positive width, prove sharp half values by a support-preserving width adjustment and optimize each half width, including a binding support ceiling. The exact reflected Laplace comparison and generic smooth/subunit score separation remain. |
+| sged | mean+nu+sd | Open | Open | Open | Derive the contact ratio from the SGED variance equation in both orientations. Compare the penalized ends with the finite score roots and the join knots. The finite-root count and exact two-winner example require the stationary equation in squared asymmetry. |
+| sged | mean+nu+xi | — | — | Open | Round five gives the superunit uniqueness theorem and a subunit existence-of-tie theorem. The atlas names the optimizing slope ratio and its skew explicitly. The joined statement with that exact parameter remains open. |
+| sged | mean+sd | Open | Open | Open | Prove the uniform contact expansion jointly in shape and skew, and show that a finite-shape half contact can move into support at fixed moments. Then compare the reflected witness with both half profiles, the uniform and the reflection-fixed fit. |
+| sged | mean+sd+xi | Open | Open | Open | Derive the contact expansion with held skew from the SGED moment factors, and the signed strict interior-support comparison. Generic separation needs the moving join as shape varies. The unit-skew separated-shape example also needs the held-sd GED crossing. |
+| sged | mean+xi | Open | Open | Open | Extend collapse coercivity uniformly over the fitted shape domain and derive the centered uniform and its strict shape cutoff under the moving held-mean constraint. For uniqueness, compare composed sample scores and prove the unit-skew GED tie. |
+| sged | nu | Open | Open | Open | Profile width and skew jointly at each join. For the skew solve the power split needs the two endpoint cases where a side has zero count. Prove that the best finite-shape half endpoints are the sample extremes and compare the reflected witness with both. |
+| sged | nu+sd | Open | Open | Open | Localize the join and derive both fixed-variance half traces, including equal excluded peaks on constants. Compare those bounds with the reflected finite witness and prove generic separation, including Laplace knot switches. |
+| sged | nu+sd+xi | — | — | `heldWidth_maximizers` | — |
+| sged | nu+xi | — | — | `heldSkew_maximizers` | — |
+| sged | sd | Open | Open | Open | Prove the smaller-extreme-count optimized uniform contact penalty and localize the finite-shape half faces when skew and shape move together. The reflected witness and generic finite separation still require proofs. |
+| sged | sd+xi | Open | Open | Open | Derive the held-weight two-extreme contact formula and the strict finite witness away from contact. To complete uniqueness, prove the shape-one interval can win on an open set and separate generic finite winners with a superunit shape. |
+| sged | xi | `heldSkew_freeShape_criterion` | Open | Open | The sharp range-uniform height, compact finite comparison and constant collapse are checked. Exhaustion of maximizing parameter paths, including convergence of the profiled join and width at infinite shape, remains. The exact eight-observation interval and generic mixed-shape separation remain. |
+| sstd | all free | Open | Open | Open | Prove compactification jointly in shape, join and both widths. Derive the normal and t2 corners, the half-family support caps, and the optimized collapse envelope at the largest atom. The six-level witness needs exact global boundary and symmetry comparisons, and the generic theorem needs score-intersection counts, the separate three-equally-replicated width-score argument and exclusion of finite winners at one and two levels. |
+| sstd | mean | Open | Open | Open | Retain the held-mean shift in N, D and both half profiles. Prove zero half-contact loss by moving width, the sharp critical envelope across skews, and exhaustion of coupled θ, shape and width paths. The six-level witness needs exact comparison with every admissible face. |
+| sstd | mean+nu | Open | Open | Open | The moving-collapse power is bounded in round five. The sharp critical value across skew, the two mean-constrained half profiles and the exact shape-31 reflected comparison still require proofs. Both half-width support constraints must be enforced. |
+| sstd | mean+nu+sd | Open | Open | Open | Derive the Student moment equation in fixed-shape skew coordinates and its forced thin-side correction at both exact contacts. Exhaust stationary components and compare the exact shape-31, sd-9/8 witness. |
+| sstd | mean+nu+xi | — | `heldMeanShapeSkew` | Open | The stationary set and critical height are checked. The outward-residual theorem proves a pointwise singleton including all unit-skew samples. The three-level almost-everywhere assertion requires comparing scale scores across mixed-sign residuals and a measure-zero tie argument. |
+| sstd | mean+sd | Open | Open | Open | Show contact can move into support on both finite-shape half faces while both moments stay fixed. At the normal corner prove the forced contact penalty. Analyze width proportional to sqrt(ν−2) and separate the reflected witness and generic finite winners. |
+| sstd | mean+sd+xi | Open | Open | Open | Derive the held-moment normal face and the exact critical lower-shape collapse with the skew kept fixed. Control rates using the variance equation, then apply the finite score comparison. For uniqueness, two radii at unit skew and the moving-join score comparisons at general skew remain. |
+| sstd | mean+xi | Open | Open | Open | Derive both held-skew shape-end profiles with the held mean and control simultaneous concentration at ν down to 2. The four-level generic comparison and the special unit-skew two-radius separation remain. |
+| sstd | nu | Open | Open | Open | Optimize the strength of the fixed-shape critical atom envelope in the skew fraction and derive the supported-extreme half profiles. The critical extreme winner is checked in both orientations. Prove the shape-31 reflected witness and generic branch separation. |
+| sstd | nu+sd | Open | Open | Open | Analyze both extreme half profiles in the fixed variance equation, exhaust the finite stationary components and compare the replicated exact witness. Generic uniqueness needs the held-shape score separation. |
+| sstd | nu+xi | Open | Open | Open | Round five checks the exact-join expansion and a moving-join power bound. The critical broad-side extreme is checked. Prove the general sharp critical envelope, the semialgebraic finite component comparison, and generic and unit-skew cardinality. |
+| sstd | sd | Open | Open | Open | Prove the admissible normal and both half-family traces with sd fixed and exclude positive-width t2. Control critical atoms at the variance-imposed shrinking rate and compare the replicated sample with all admissible ends. |
+| sstd | sd+xi | Open | Open | Open | Keep both supplied holds in the normal profile and derive the lower-shape critical atom envelope. The two-point example needs exclusion of all faces and strict improvement over the centered fit. The generic comparison needs distinct finite score gradients. |
+| sstd | xi | Open | Open | Open | The normal, t2 and critical atom envelopes with fixed skew require a joint shape-width compactification. Prove nontrivial finite score-intersection bounds and almost-everywhere uniqueness on the stated count strata. |
+
+## Limit-path and face-comparison ledger
+
+The keys follow reviews 4a and 4b and the current atlas. A scalar likelihood trace records the height. The weak law and exhaustiveness of parameter paths require their own conclusions.
+
+| Family | Held | Key | Result or remaining step |
+|---|---|---|---|
+| snorm | all free | `limit:1` | The constant branch is checked in allFree_failure, using the fixed-skew collapse ray. |
+| snorm | all free | `path:1` | The constant branch is checked in allFree_failure, using the fixed-skew collapse ray. |
+| snorm | all free | `path:2` | Open. The prior profiled trace has the required orientation. Prove weak convergence for the general positive-width path with its limiting moments. |
+| snorm | all free | `path:3` | Open. The prior profiled trace has the required orientation. Prove weak convergence for the general positive-width path with its limiting moments. |
+| snorm | mean | `limit:1` | The fixed-skew collapse ray and the varying-skew necessity bound are checked in heldMean_collapse. |
+| snorm | mean | `path:1` | The fixed-skew collapse ray and the varying-skew necessity bound are checked in heldMean_collapse. |
+| snorm | mean+xi | `limit:1` | Round five checks the fixed-skew collapse ray. A single theorem exhausting approach to collapse with the remaining free moments is open. |
+| snorm | mean+xi | `path:1` | Round five checks the fixed-skew collapse ray. A single theorem exhausting approach to collapse with the remaining free moments is open. |
+| snorm | xi | `limit:1` | Round five checks the fixed-skew collapse ray. A single theorem exhausting approach to collapse with the remaining free moments is open. |
+| snorm | xi | `path:1` | Round five checks the fixed-skew collapse ray. A single theorem exhausting approach to collapse with the remaining free moments is open. |
+| ged | all free | `path:2` | Open. The widening likelihood paths are checked. Prove the optimal location and sd limits and weak convergence to the uniform. |
+| ged | mean | `path:2` | Open. The widening likelihood paths are checked. Prove the optimal location and sd limits and weak convergence to the uniform. |
+| ged | mean+sd | `path:2` | Likelihood trace checked, including exact contact. Open for weak convergence to the uniform. |
+| ged | sd | `path:2` | Open. Optimize the moving join at exact width contact, derive the two-extreme penalty and prove weak convergence. |
+| sged | all free | `limit:25` | Open. Prove the balanced-two-site uniform upper bound against all finite shapes and skew fractions. |
+| sged | mean | `limit:4` | Open. Fixed-shape collapse rays are checked. The separated-residual estimate must be uniform over free fitted shape. |
+| sged | mean+nu | `limit:16` | Checked in heldMeanShape_collapse, including skew varying to a half boundary. |
+| sged | mean+nu+sd | `limit:22` | Open. Prove the exact fixed-shape and fixed-moment contact ratio in this orientation, then compare with every retained finite root and the opposite face. |
+| sged | mean+nu+sd | `limit:23` | Open. Prove the exact fixed-shape and fixed-moment contact ratio in this orientation, then compare with every retained finite root and the opposite face. |
+| sged | mean+nu+xi | `limit:24` | The round-five held-mean fixed-shape, fixed-skew end theorem and collapse ray supply the two cases. |
+| sged | mean+xi | `limit:18` | Open. Fixed-shape collapse rays are checked. The separated-residual estimate must be uniform over free fitted shape. |
+| sged | nu | `limit:9` | Open. Extend the fixed-skew rays to arbitrary moving joins and skew fractions. |
+| sged | nu+xi | `limit:21` | The fitted-domain supremum comparison and constant collapse branch are checked. Exhaustion of parameter paths at shrinking width remains open. |
+| sged | sd | `case:two-observations` | Open. Derive the signed two-observation held-variance comparison, including the exact-width penalty and possible skew-end competitors. |
+| sged | xi | `limit:11` | The fitted-domain supremum comparison and constant collapse branch are checked. Exhaustion of parameter paths at shrinking width remains open. |
+| sstd | all free | `limit:55` | Open. The detector text concerns the skew-held unit-skew subproblem. Prove the applicable Student certificate boundary comparison with that hold. |
+| sstd | all free | `limit:56` | Open. Prove the exact optimizing-face comparison for the named boundary model against every admissible finite and boundary competitor. The two-observation half-normal claims also require the reflected tie. |
+| sstd | all free | `limit:57` | Open. Prove the exact optimizing-face comparison for the named boundary model against every admissible finite and boundary competitor. The two-observation half-normal claims also require the reflected tie. |
+| sstd | all free | `limit:60` | Open. The detector text concerns the skew-held unit-skew subproblem. Prove the applicable Student certificate boundary comparison with that hold. |
+| sstd | mean | `limit:7` | Open. The free-shape lower-end threshold needs a uniform coupled expansion as ν decreases to two, with the variance-imposed width rate in held-sd masks. |
+| sstd | mean+nu | `limit:31` | The round-five moving-join exponent upper bound and strict fixed-shape collapse rays cover the power test. The sharp critical envelope is a separate comparison. |
+| sstd | mean+nu+sd | `limit:46` | Open. Prove the fixed-shape and fixed-moment half contact penalty and exclude every other finite or face winner for this orientation. |
+| sstd | mean+nu+sd | `limit:47` | Open. Prove the fixed-shape and fixed-moment half contact penalty and exclude every other finite or face winner for this orientation. |
+| sstd | mean+nu+xi | `limit:51` | Checked in heldMeanShapeSkew. The strict multiplicity is exactly unbounded collapse. |
+| sstd | mean+nu+xi | `limit:52` | Checked in heldMeanShapeSkew_outward. Unit skew makes the directional condition automatic. |
+| sstd | mean+nu+xi | `limit:53` | The outward critical branch and precise finite-root comparison are checked. The explicit global least-upper-bound theorem for the general asymmetric rational-cover branch remains open. |
+| sstd | mean+sd | `limit:26` | Open. The free-shape lower-end threshold needs a uniform coupled expansion as ν decreases to two, with the variance-imposed width rate in held-sd masks. |
+| sstd | mean+sd+xi | `limit:48` | Open. The free-shape lower-end threshold needs a uniform coupled expansion as ν decreases to two, with the variance-imposed width rate in held-sd masks. |
+| sstd | mean+xi | `limit:35` | Open. The free-shape lower-end threshold needs a uniform coupled expansion as ν decreases to two, with the variance-imposed width rate in held-sd masks. |
+| sstd | nu | `limit:18` | The round-five moving-join exponent upper bound and strict fixed-shape collapse rays cover the power test. The sharp critical envelope is a separate comparison. |
+| sstd | nu | `limit:19` | Checked in criticalExtreme_freeSkew. All finite modes and widths lose to the critical extreme supremum. |
+| sstd | nu+xi | `limit:44` | The round-five moving-join exponent upper bound and strict fixed-shape collapse rays cover the power test. The sharp critical envelope is a separate comparison. |
+| sstd | nu+xi | `limit:45` | Checked in criticalExtreme_fixedSkew. A critical extreme supported on the broad side wins over all finite modes and widths, in both orientations. |
+| sstd | sd | `limit:13` | Open. The free-shape lower-end threshold needs a uniform coupled expansion as ν decreases to two, with the variance-imposed width rate in held-sd masks. |
+| sstd | sd+xi | `limit:41` | Open. The free-shape lower-end threshold needs a uniform coupled expansion as ν decreases to two, with the variance-imposed width rate in held-sd masks. |
+| sstd | xi | `limit:22` | Open. The free-shape lower-end threshold needs a uniform coupled expansion as ν decreases to two, with the variance-imposed width rate in held-sd masks. |
+
+## Checked declarations
+
+Effort is recorded as standalone Lean check iterations for each proof, including its corrections. The aggregate build checks every declaration again.
+
+### `UnivariateML.TwoPiece2GED.heldSd_maximizers`
+
+The complete fixed-shape location set is a singleton above shape one, the median interval at one, or all least-loss sample knots below one. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2GED.lean#L28)
+
+Standalone check iterations **2**.
+
+```lean
+theorem heldSd_maximizers {ν σ : ℝ} (hν : 0 < ν) (hσ : 0 < σ)
+    (hn : 0 < n) (x : Fin n → ℝ) :
+    let M := {μ | IsMaxOn (fun m ↦ Ged.logLik ν x (m, σ)) univ μ}
+    (1 < ν → ∃ μ, M = {μ}) ∧
+    (ν = 1 → M = Laplace.medianSet x hn) ∧
+    (ν < 1 → M = {m | ∃ i, m = x i ∧
+      ∀ j, Ged.residualSum ν x (x i) ≤ Ged.residualSum ν x (x j)})
+```
+
+### `UnivariateML.TwoPiece2GED.heldShape_maximizers`
+
+Constant samples have no joint maximizer. On nonconstant data the fixed-shape maximizing set is a singleton above one, the median interval at one, or all least-loss sample knots below one, with a common positive fitted scale. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2GED.lean#L47)
+
+Standalone check iterations **2**.
+
+```lean
+theorem heldShape_maximizers {ν : ℝ} (hν : 0 < ν) (hn : 0 < n) (x : Fin n → ℝ) :
+    (¬ LocationScale.Nonconstant x → Ged.jointMaximizers ν x = ∅) ∧
+    (LocationScale.Nonconstant x →
+      (1 < ν → ∃ p, Ged.jointMaximizers ν x = {p}) ∧
+      (ν = 1 → Ged.jointMaximizers ν x =
+        Laplace.medianSet x hn ×ˢ {Real.sqrt 2 * Laplace.meanAbsDev x (Laplace.lowerMedian x hn)}) ∧
+      (ν < 1 → ∃ s > 0, Ged.jointMaximizers ν x =
+        {m | ∃ i, m = x i ∧
+          ∀ j, Ged.residualSum ν x (x i) ≤ Ged.residualSum ν x (x j)} ×ˢ {s}))
+```
+
+### `UnivariateML.TwoPiece2GED.heldMeanSd_uniformTrace`
+
+At fixed mean and sd the high-shape trace has a penalty exp of minus Euler’s constant per contact. Any strictly outside observation makes the trace lose. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2GED.lean#L162)
+
+Standalone check iterations **4**.
+
+Likelihood path at fixed mean. Finite versus boundary dominance is a separate comparison.
+
+```lean
+theorem heldMeanSd_uniformTrace {σ : ℝ} (hσ : 0 < σ) (x : Fin n → ℝ) (μ : ℝ) :
+    let ρ := sqrt 3 * σ
+    let k := (Finset.univ.filter fun i ↦ |x i-μ| = ρ).card
+    let f := fun p ↦ Ged.logLik p x (μ,σ)
+    ((∀ i, |x i-μ| ≤ ρ) →
+      Tendsto f atTop (𝓝 (-(n : ℝ)*log (2*ρ) - k*exp (-eulerMascheroniConstant)))) ∧
+    ((∃ i, ρ < |x i-μ|) → Tendsto f atTop atBot)
+```
+
+### `UnivariateML.TwoPiece2GED.allFree_criterion_failure`
+
+The unrestricted problem is unbounded. In the fitted domain constants collapse and on nonconstant data the compact profile decides exactly against the range uniform. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2GED.lean#L241)
+
+Standalone check iterations **1**.
+
+```lean
+theorem allFree_criterion_failure (hn : 0 < n) (x : Fin n → ℝ) :
+    let V := TwoPieceGED.freeSdValues x univ
+    (¬ BddAbove {L : ℝ | ∃ ν μ σ : ℝ, 0 < ν ∧ 0 < σ ∧ L = Ged.logLik ν x (μ, σ)}) ∧
+    (¬ LocationScale.Nonconstant x → ¬ BddAbove V) ∧
+    (LocationScale.Nonconstant x →
+      ∃ l r : Fin n, (∀ i, x l ≤ x i ∧ x i ≤ x r) ∧
+        let K := Icc 1 (TwoPieceGED.uniformCutoff n) ×ˢ Icc (x l) (x r)
+        let F := -(n : ℝ) * log (x r - x l)
+        ∃ y ∈ K, IsMaxOn (TwoPieceGED.freeSdProfile x) K y ∧
+          ((∃ L, IsGreatest V L) ↔ F ≤ TwoPieceGED.freeSdProfile x y) ∧
+          (TwoPieceGED.freeSdProfile x y < F → IsLUB V F))
+```
+
+### `UnivariateML.TwoPiece2GED.heldMean_criterion_failure`
+
+All-zero residuals give collapse, otherwise a stationary shape or a compact search endpoint must reach the centered uniform. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2GED.lean#L330)
+
+Standalone check iterations **3**.
+
+The statement gives the exact retained-candidate comparison. Finiteness of the stationary root set and generic winner separation are separate.
+
+```lean
+theorem heldMean_criterion_failure (hn : 0 < n) (x : Fin n → ℝ) (μ : ℝ) :
+    let V := TwoPieceGED.freeSdValues x ({μ} : Set ℝ)
+    let f := fun p ↦ TwoPieceGED.freeSdProfile x (p,μ)
+    let P := TwoPieceGED.uniformCutoff n
+    ((∀ i, x i = μ) → ¬ BddAbove V) ∧
+    ((∃ i, x i ≠ μ) → BddAbove V ∧
+      ∃ i : Fin n, (∀ j, |x j-μ| ≤ |x i-μ|) ∧
+        let F := -(n : ℝ)*log (2*|x i-μ|)
+        let S := {p ∈ Icc 1 P | p = 1 ∨ p = P ∨ deriv f p = 0}
+        DifferentiableOn ℝ f (Ioi 0) ∧
+        ((∃ L, IsGreatest V L) ↔ ∃ p ∈ S, F ≤ f p) ∧
+        ((∀ p ∈ S, f p < F) → IsLUB V F))
+```
+
+### `UnivariateML.TwoPiece2Normal.heldMean_collapse`
+
+All-zero residuals give scale collapse. A nonzero residual makes every vanishing-width path lose, uniformly over skew. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2Normal.lean#L32)
+
+Standalone check iterations **2**.
+
+Width is inverse total kernel width. Half-normal comparisons are separate.
+
+```lean
+theorem heldMean_collapse (hn : 0 < n) (x : Fin n → ℝ) (μ : ℝ) :
+    ((∃ i, x i ≠ μ) →
+      ∀ {ι : Type*} {l : Filter ι} {u w : ι → ℝ},
+        Tendsto u l atTop → (∀ᶠ t in l, w t ∈ Ioo (0 : ℝ) 1) →
+        Tendsto (fun t ↦ heldMeanSkew x μ (w t) (u t)) l atBot) ∧
+    ((∀ i, x i = μ) →
+      ∀ w ∈ Ioo (0 : ℝ) 1, Tendsto (heldMeanSkew x μ w) atTop atTop)
+```
+
+### `UnivariateML.TwoPiece2Normal.allFree_failure`
+
+Constants give unbounded likelihood. Without finite attainment on nonconstant data, an extreme half-normal trace gives the supremum. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2Normal.lean#L96)
+
+Standalone check iterations **1**.
+
+```lean
+theorem allFree_failure (hn : 0 < n) (x : Fin n → ℝ) :
+    (¬ LocationScale.Nonconstant x → ¬ BddAbove (allFreeValues x)) ∧
+    (LocationScale.Nonconstant x →
+      (¬ ∃ L, IsGreatest (allFreeValues x) L) →
+      ∃ (i : Fin n) (left : Bool),
+        (if left then ∀ j, x j ≤ x i else ∀ j, x i ≤ x j) ∧
+        IsLUB (allFreeValues x)
+          (halfLogLik x (x i) (sqrt (endpointSquares x (x i) / n))))
+```
+
+### `UnivariateML.TwoPiece2Normal.heldMeanSd_halfTraces`
+
+Both compatible half-normal faces have the exact contact penalty and both unsupported faces lose. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2Normal.lean#L252)
+
+Standalone check iterations **3**.
+
+Likelihood boundary traces with both moments retained.
+
+```lean
+theorem heldMeanSd_halfTraces (x : Fin n → ℝ) (μ : ℝ) {σ : ℝ} (hσ : 0 < σ)
+    (left : Bool) :
+    let y := if left then fun i ↦ -x i else x
+    let m := if left then -μ else μ
+    let H := 1 - halfMean^2
+    let b := σ / sqrt H
+    let z := m - halfMean*b
+    let C := halfLogLik y z b -
+      ((Finset.univ.filter fun i ↦ y i = z).card : ℝ) * (halfMean^2/(8*H^2))
+    let L := 𝓝[Ioo (0 : ℝ) 1] (if left then 1 else 0)
+    ((∀ i, z ≤ y i) → Tendsto (heldMeanSd x μ σ) L (𝓝 C)) ∧
+    ((∃ i, y i < z) → Tendsto (heldMeanSd x μ σ) L atBot)
+```
+
+### `UnivariateML.TwoPiece2Normal.heldMeanSd_criterion`
+
+A finite maximizing skew exists exactly when a stationary skew reaches every feasible penalized half trace. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2Normal.lean#L389)
+
+Standalone check iterations **3**.
+
+An algebraic decomposition of the finite stationary set remains open.
+
+```lean
+theorem heldMeanSd_criterion (x : Fin n → ℝ) (μ : ℝ) {σ : ℝ} (hσ : 0 < σ) :
+    let f := heldMeanSd x μ σ
+    let y := fun (left : Bool) ↦ if left then fun i ↦ -x i else x
+    let H := 1 - halfMean^2
+    let b := σ / sqrt H
+    let z := fun (left : Bool) ↦ (if left then -μ else μ) - halfMean*b
+    let C := fun (left : Bool) ↦ halfLogLik (y left) (z left) b -
+      ((Finset.univ.filter fun i ↦ y left i = z left).card : ℝ) * (halfMean^2/(8*H^2))
+    (∃ w ∈ Ioo (0 : ℝ) 1, IsMaxOn f (Ioo 0 1) w) ↔
+      ∃ w ∈ Ioo (0 : ℝ) 1, deriv f w = 0 ∧
+        ∀ left : Bool, (∀ i, z left ≤ y left i) → C left ≤ f w
+```
+
+### `UnivariateML.TwoPiece2Normal.allFree_maximizers`
+
+The finite maximizing graph comprises all interior minimizing modes with profiled parameters. The replicated symmetric sample gives two distinct actual finite fits. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2Normal.lean#L459)
+
+Standalone check iterations **1**.
+
+```lean
+theorem allFree_maximizers (hn : 0 < n) (x : Fin n → ℝ) :
+    let M := fun {k : ℕ} (y : Fin k → ℝ) (c w s : ℝ) ↦
+      w ∈ Ioo 0 1 ∧ 0 < s ∧
+        ∀ (d v t : ℝ), v ∈ Ioo 0 1 → 0 < t → heldSkew y v (d,t) ≤ heldSkew y w (c,s)
+    (∀ c w s, M x c w s ↔
+      LocationScale.Nonconstant x ∧
+      IsMinOn (modeProfile x) univ c ∧
+      w ∈ Ioo 0 1 ∧ w = modeFraction x c ∧ s = sqrt (modeProfile x c / n)) ∧
+    (∃ c w w' s s', c ≠ 0 ∧ M reflectedSample c w s ∧ M reflectedSample (-c) w' s')
+```
+
+### `UnivariateML.TwoPiece2SGED.minimizingKnots`
+
+At held subunit shape the asymmetric location loss is minimized exactly at the least-loss sample knots. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2SGED.lean#L152)
+
+Standalone check iterations **2**.
+
+Only the subunit location-loss branch.
+
+```lean
+theorem minimizingKnots {ν w : ℝ} (hν : 0 < ν) (hν' : ν < 1) (hw : w ∈ Ioo (0 : ℝ) 1) (hn : 0 < n)
+    (x : Fin n → ℝ) (m : ℝ) :
+    IsMinOn (loss x ν w) univ m ↔
+      ∃ i, m = x i ∧ ∀ j, loss x ν w (x i) ≤ loss x ν w (x j)
+```
+
+### `UnivariateML.TwoPiece2SGED.minimizingWeightedMedians`
+
+At shape one the weighted count inequalities characterize all minimizing locations. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2SGED.lean#L257)
+
+Standalone check iterations **2**.
+
+Only the shape-one location-loss branch.
+
+```lean
+theorem minimizingWeightedMedians (hn : 0 < n) (x : Fin n → ℝ)
+    {w : ℝ} (hw : w ∈ Ioo (0 : ℝ) 1) (m : ℝ) :
+    IsMinOn (loss x 1 w) univ m ↔
+      ((Finset.univ.filter fun i ↦ x i < m).card : ℝ) ≤ (n : ℝ) * w ∧
+      (n : ℝ) * w ≤ ((Finset.univ.filter fun i ↦ x i ≤ m).card : ℝ)
+```
+
+### `UnivariateML.TwoPiece2SGED.heldWidth_maximizers`
+
+The complete fixed-width maximizing set is a singleton, the weighted median set, or the least-loss knots according to shape. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2SGED.lean#L332)
+
+Standalone check iterations **2**.
+
+Positive held shape and skew turn held sd into a fixed total width.
+
+```lean
+theorem heldWidth_maximizers (hn : 0 < n) (x : Fin n → ℝ) {p w s : ℝ}
+    (hp : 0 < p) (hw : w ∈ Ioo (0 : ℝ) 1) (hs : 0 < s) :
+    let M := {c | IsMaxOn (fun d ↦ fixedSkewLogLik x p w (d,s)) univ c}
+    (1 < p → ∃ c, M = {c}) ∧
+    (p = 1 → M = {c |
+      ((Finset.univ.filter fun i ↦ x i < c).card : ℝ) ≤ (n : ℝ) * w ∧
+      (n : ℝ) * w ≤ ((Finset.univ.filter fun i ↦ x i ≤ c).card : ℝ)}) ∧
+    (p < 1 → M = {c | ∃ i, c = x i ∧ ∀ j, loss x p w (x i) ≤ loss x p w (x j)})
+```
+
+### `UnivariateML.TwoPiece2SGED.heldSkew_maximizers`
+
+Constants collapse. On nonconstant data all maximizing modes share an explicit profiled width, and are classified in all three shape regimes. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2SGED.lean#L407)
+
+Standalone check iterations **2**.
+
+```lean
+theorem heldSkew_maximizers (hn : 0 < n) (x : Fin n → ℝ) {p w : ℝ}
+    (hp : 0 < p) (hw : w ∈ Ioo (0 : ℝ) 1) :
+    let M := {cs ∈ LocationScale.domain |
+      IsMaxOn (fixedSkewLogLik x p w) LocationScale.domain cs}
+    (¬ LocationScale.Nonconstant x → M = ∅) ∧
+    (LocationScale.Nonconstant x → ∃ s > 0,
+      (∀ c, IsMinOn (loss x p w) univ c → s = (p * loss x p w c / n)^p⁻¹) ∧
+      (1 < p → ∃ c, M = {c} ×ˢ {s}) ∧
+      (p = 1 → M = {c |
+        ((Finset.univ.filter fun i ↦ x i < c).card : ℝ) ≤ (n : ℝ) * w ∧
+        (n : ℝ) * w ≤ ((Finset.univ.filter fun i ↦ x i ≤ c).card : ℝ)} ×ˢ {s}) ∧
+      (p < 1 → M = {c | ∃ i, c = x i ∧ ∀ j, loss x p w (x i) ≤ loss x p w (x j)} ×ˢ {s}))
+```
+
+### `UnivariateML.TwoPiece2SGED.heldMeanShape_collapse`
+
+Any nonzero held-mean residual rules out vanishing total width even if skew degenerates. All-zero residuals admit unbounded collapse. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2SGED.lean#L509)
+
+Standalone check iterations **1**.
+
+The two positive-width half faces are outside this collapse theorem.
+
+```lean
+theorem heldMeanShape_collapse (hn : 0 < n) (x : Fin n → ℝ) (μ : ℝ) {p : ℝ}
+    (hp : 0 < p) :
+    ((∃ i, x i ≠ μ) →
+      ∀ {ι : Type*} {l : Filter ι} {u w : ι → ℝ},
+        Tendsto u l atTop → (∀ᶠ t in l, w t ∈ Ioo (0 : ℝ) 1) →
+        Tendsto (fun t ↦ heldMeanSkew x μ p (w t) (u t)) l atBot) ∧
+    ((∀ i, x i = μ) →
+      ∀ w ∈ Ioo (0 : ℝ) 1, Tendsto (heldMeanSkew x μ p w) atTop atTop)
+```
+
+### `UnivariateML.TwoPiece2SGED.heldSkew_freeShape_criterion`
+
+Constants collapse. On nonconstant data, attainment is equivalent to a finite witness meeting the range uniform, which is the supremum when all finite values are lower. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2SGED.lean#L653)
+
+Standalone check iterations **2**.
+
+The likelihood height comparison uses a strict shape cutoff.
+
+```lean
+theorem heldSkew_freeShape_criterion (hn : 0 < n) (x : Fin n → ℝ) {w : ℝ}
+    (hw : w ∈ Ioo (0 : ℝ) 1) :
+    let V := {L : ℝ | ∃ p c s : ℝ, 1 ≤ p ∧ 0 < s ∧ L = freeShapeLogLik x w p c s}
+    (¬ LocationScale.Nonconstant x → ¬ BddAbove V) ∧
+    (LocationScale.Nonconstant x →
+      ∃ l r : Fin n, (∀ i, x l ≤ x i ∧ x i ≤ x r) ∧
+        let F := -(n : ℝ) * log (x r - x l)
+        ((∃ L, IsGreatest V L) ↔ ∃ L ∈ V, F ≤ L) ∧
+        ((∀ L ∈ V, L < F) → IsLUB V F))
+```
+
+### `UnivariateML.TwoPiece2Student.heldMeanShapeSkew`
+
+Both width ends and the finite stationary comparison are joined in held-mean coordinates, including sharp collapse heights and the complete stationary maximizing set. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2Student.lean#L35)
+
+Standalone check iterations **1**.
+
+The almost-everywhere cardinality claim requires a separate proof.
+
+```lean
+theorem heldMeanShapeSkew (hn : 0 < n) (x : Fin n → ℝ) (μ ν w : ℝ)
+    (hν : 2 < ν) (hw : w ∈ Ioo (0 : ℝ) 1) :
+    let e := halfMoment ν * (1 - 2*w)
+    let f := logAlongAtom x μ ν w e
+    let E := TDist.exponent x μ ν
+    let C := collapseLogHeight x μ ν w e
+    let R := {u : ℝ | 0 < u ∧ scaleScore x μ ν w e u = 0}
+    Tendsto f (𝓝[>] 0) atBot ∧
+    (¬ BddAbove (f '' Ioi 0) ↔ E < 0) ∧
+    (E < 0 → Tendsto f atTop atTop) ∧
+    (0 < E → Tendsto f atTop atBot) ∧
+    (E = 0 → Tendsto f atTop (𝓝 C) ∧
+      Tendsto (fun u ↦ exp (f u)) atTop (𝓝 (exp C))) ∧
+    ((∃ u ∈ Ioi (0 : ℝ), IsMaxOn f (Ioi 0) u) ↔
+      ∃ u ∈ R, 0 < E ∨ E = 0 ∧ C ≤ f u) ∧
+    R.Finite ∧
+    {u ∈ Ioi (0 : ℝ) | IsMaxOn f (Ioi 0) u} =
+      {u ∈ R | (0 < E ∨ E = 0 ∧ C ≤ f u) ∧ ∀ v ∈ R, f v ≤ f u}
+```
+
+### `UnivariateML.TwoPiece2Student.heldMeanShapeSkew_outward`
+
+On outward residuals, including all unit-skew samples, there is a unique finite maximizer exactly for positive collapse exponent. At critical count the collapse height is unattained. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2Student.lean#L126)
+
+Standalone check iterations **3**.
+
+The directional hypothesis restricts this cardinality theorem.
+
+```lean
+theorem heldMeanShapeSkew_outward (hn : 0 < n) (x : Fin n → ℝ) (μ ν w : ℝ)
+    (hν : 2 < ν) (hw : w ∈ Ioo (0 : ℝ) 1)
+    (hout : ∀ i, (x i - μ) * (halfMoment ν * (1 - 2 * w)) ≥ 0) :
+    let f := logAlongAtom x μ ν w (halfMoment ν * (1 - 2*w))
+    let E := TDist.exponent x μ ν
+    let C := collapseLogHeight x μ ν w (halfMoment ν * (1 - 2*w))
+    ((∃! u, 0 < u ∧ IsMaxOn f (Ioi 0) u) ↔ 0 < E) ∧
+    (E ≤ 0 → StrictMonoOn f (Ioi 0)) ∧
+    (E = 0 → IsLUB (f '' Ioi 0) C ∧ ∀ u > 0, f u < C)
+```
+
+### `UnivariateML.TwoPiece2StudentExtreme.criticalExtreme_fixedSkew`
+
+A critical supporting sample extreme gives a finite unattained joint supremum. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2StudentExtreme.lean#L101)
+
+Standalone check iterations **3**.
+
+Both orientations are included. The sample must lie on the broad side for this critical extreme comparison.
+
+```lean
+theorem criticalExtreme_fixedSkew (hn : 0 < n) (x : Fin n → ℝ) (y ν w : ℝ)
+    (hν : 2 < ν) (hw : w ∈ Ioo (0 : ℝ) 1) (hE : TDist.exponent x y ν = 0)
+    (left : Bool)
+    (hs : if left then (∀ i, x i ≤ y) ∧ 1-w ≤ w else (∀ i, y ≤ x i) ∧ w ≤ 1-w) :
+    let W := if left then w else 1-w
+    let C := collapseLogHeight x y ν w 0
+    let V := {L : ℝ | ∃ c u : ℝ, 0 < u ∧ L = logAlongAtom x y ν w ((y-c)*u) u}
+    C = TDist.collapseLogValue x y ν + n*log (2*W) ∧
+    IsLUB V C ∧ ∀ L ∈ V, L < C
+```
+
+### `UnivariateML.TwoPiece2StudentExtreme.criticalExtreme_freeSkew`
+
+A critical supporting sample extreme gives a finite unattained joint supremum. [Lean source](../../../dev/lean/UnivariateML/Family/TwoPiece2StudentExtreme.lean#L166)
+
+Standalone check iterations **1**.
+
+Both orientations are included. The finite and two-sided width domain is compared against the critical extreme limit.
+
+```lean
+theorem criticalExtreme_freeSkew (hn : 0 < n) (x : Fin n → ℝ) (y ν : ℝ)
+    (hν : 2 < ν) (hE : TDist.exponent x y ν = 0) (left : Bool)
+    (hs : if left then ∀ i, x i ≤ y else ∀ i, y ≤ x i) :
+    let C := TDist.collapseLogValue x y ν + n * log 2
+    let V := {L : ℝ | ∃ c u w : ℝ, 0 < u ∧ w ∈ Ioo 0 1 ∧
+      L = logAlongAtom x y ν w ((y-c)*u) u}
+    IsLUB V C ∧ ∀ L ∈ V, L < C
+```
+
+## Source precision
+
+The fixed-shape SGED weighted median statement uses the strict count on the left and the inclusive count on the right. This includes atoms and balanced gaps. The earlier one-observation subunit SGED counterexample remains relevant to the held mean, shape and skew mask. The atlas already distinguishes that case from the shape-at-least-one singleton result. [SGED cardinality proof](2026-11-27-uniq-skew2-math-report.md#sged-held-nusdxi) · [Round-five counterexample](2026-11-27-lean-twopiece-report.md#heldmeanskew_subunittie)
+
+At fixed mean and standard deviation the GED log likelihood at exact interval contact differs from the density evaluated at the closed uniform endpoint. The Lean trace subtracts the contact count times `exp (-eulerMascheroniConstant)`. The analogous two-piece normal theorem also carries its forced contact loss in both orientations.
+
+## Verification
+
+All five modules passed standalone Lean checks. The final workstation `lake build` completed successfully with 8086 jobs, using the shared one-slot lock and CPU affinity to one core. Mathlib was already cached. The temporary aggregate imports were removed and `git diff --exit-code -- dev/lean/UnivariateML.lean` passed. All 20 mapped theorems are free of proof placeholders. Lake emitted style warnings.
