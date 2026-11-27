@@ -202,3 +202,15 @@ public import UnivariateML.Family.Shape3InvBurr
 public import UnivariateML.Family.Shape3Lomax
 public import UnivariateML.Family.Shape3PGW
 public import UnivariateML.Family.Shape3TrGamma
+public import UnivariateML.Generic.UniqueAE
+public import UnivariateML.Family.LocScaleBhatt
+public import UnivariateML.Family.LocScaleCommon
+public import UnivariateML.Family.LocScaleDoublePareto
+public import UnivariateML.Family.LocScaleEMG
+public import UnivariateML.Family.LocScaleFoldedNormal
+public import UnivariateML.Family.LocScaleGPD
+public import UnivariateML.Family.LocScaleHuber
+public import UnivariateML.Family.LocScaleShiftedGompertz
+public import UnivariateML.Family.LocScaleSN
+public import UnivariateML.Family.LocScaleTriangular
+public import UnivariateML.Family.LocScaleTukeyLambda
