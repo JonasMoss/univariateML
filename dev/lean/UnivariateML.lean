@@ -109,3 +109,9 @@ public import UnivariateML.Family.AllFreeGEV
 public import UnivariateML.Family.AllFreeGenGamma
 public import UnivariateML.Family.AllFreePGW
 public import UnivariateML.Family.AllFreeTransformedGamma
+public import UnivariateML.Family.TiesBNBinom
+public import UnivariateML.Family.TiesFoldedNormal
+public import UnivariateML.Family.TiesLomax
+public import UnivariateML.Family.TiesParalogistic
+public import UnivariateML.Family.TiesParalogisticJoint
+public import UnivariateML.Family.TiesShiftedGompertz
