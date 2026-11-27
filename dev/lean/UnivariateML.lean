@@ -48,3 +48,4 @@ public import UnivariateML.Family.DoublePareto
 public import UnivariateML.Family.Transfers3
 public import UnivariateML.Family.DiscreteWeibull
 public import UnivariateML.Family.TDist
+public import UnivariateML.Family.BinomialSize
