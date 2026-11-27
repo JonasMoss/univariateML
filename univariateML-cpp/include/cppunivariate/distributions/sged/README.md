@@ -64,13 +64,10 @@ r:
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: "log(sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)) - log(sd) + log(2/(xi + 1/xi)) + log(nu/(sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu))*2**(1 + 1/nu)*gamma(1/nu))) - Abs(Piecewise(((sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi))/xi, (sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi)) > 0), ((sqrt((1 - (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2)*(xi**2 + xi**(-2)) + 2*(gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))**2 - 1)*(x - mean)/sd + (gamma(2/nu)/sqrt(gamma(1/nu)*gamma(3/nu)))*(xi - 1/xi))*xi, True)))**nu/(2*(sqrt(2**(-2/nu)*gamma(1/nu)/gamma(3/nu)))**nu)"
 limits:
-  - {firmness: numerical, name: unresolved constrained uniform endpoint rates, fixed: [sd], when: "The shape $\\nu$ tends to infinity at fixed standard deviation, with a limiting uniform endpoint on an observation.", detect: "The constrained uniform width equals the sample range and its numerically compared endpoint face would win; its approach rate is unresolved.", status: ScaleBoundary, detect_firmness: numerical}
-  - {firmness: numerical, name: unresolved constrained uniform endpoint rates, fixed: [sd, xi], when: "The shape $\\nu$ tends to infinity at fixed standard deviation, with a limiting uniform endpoint on an observation.", detect: "The constrained uniform width equals the sample range and its numerically compared endpoint face would win; its approach rate is unresolved.", status: ScaleBoundary, detect_firmness: numerical}
   - {firmness: proved, model: unif, fixed: [mean], when: "The shape $\\nu$ tends to infinity while any held mean and standard deviation are retained.", detect: "The numerically compared limiting face wins among retained candidates while satisfying held constraints.", status: UniformBoundary, detect_firmness: numerical}
   - {firmness: proved, name: right translated half-family, fixed: [mean], when: "The skew $\\xi$ tends to infinity, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: RightHalfGedBoundary, detect_firmness: numerical}
   - {firmness: proved, name: left translated half-family, fixed: [mean], when: "The skew $\\xi$ tends to zero, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: LeftHalfGedBoundary, detect_firmness: numerical}
   - {firmness: proved, name: constant sample scale collapse, fixed: [mean], when: "The standard deviation $\\sigma$ tends to zero at the free or held mean.", detect: "Every observation equals the free or held mean and standard deviation is free.", status: Unbounded, detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/sged/README.md#density-limits"]}
-  - {firmness: proved, model: unif, fixed: [sd], when: "The shape $\\nu$ tends to infinity while any held mean and standard deviation are retained.", detect: "The numerically compared limiting face wins among retained candidates while satisfying held constraints.", status: UniformBoundary, detect_firmness: numerical}
   - {firmness: proved, name: right translated half-family, fixed: [sd], when: "The skew $\\xi$ tends to infinity, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: RightHalfGedBoundary, detect_firmness: numerical}
   - {firmness: proved, name: left translated half-family, fixed: [sd], when: "The skew $\\xi$ tends to zero, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: LeftHalfGedBoundary, detect_firmness: numerical}
   - {firmness: proved, name: right translated half-family, fixed: [nu], when: "The skew $\\xi$ tends to infinity, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: RightHalfGedBoundary, detect_firmness: numerical}
@@ -78,7 +75,6 @@ limits:
   - {firmness: proved, name: constant sample scale collapse, fixed: [nu], when: "The standard deviation $\\sigma$ tends to zero at the free or held mean.", detect: "Every observation equals the free or held mean and standard deviation is free.", status: Unbounded, detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/sged/README.md#density-limits"]}
   - {firmness: proved, model: unif, fixed: [xi], when: "The shape $\\nu$ tends to infinity while any held mean and standard deviation are retained.", detect: "The numerically compared limiting face wins among retained candidates while satisfying held constraints.", status: UniformBoundary, detect_firmness: numerical}
   - {firmness: proved, name: constant sample scale collapse, fixed: [xi], when: "The standard deviation $\\sigma$ tends to zero at the free or held mean.", detect: "Every observation equals the free or held mean and standard deviation is free.", status: Unbounded, detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/sged/README.md#density-limits"]}
-  - {firmness: proved, model: unif, fixed: [mean, sd], when: "The shape $\\nu$ tends to infinity while any held mean and standard deviation are retained.", detect: "The numerically compared limiting face wins among retained candidates while satisfying held constraints.", status: UniformBoundary, detect_firmness: numerical}
   - {firmness: proved, name: right translated half-family, fixed: [mean, sd], when: "The skew $\\xi$ tends to infinity, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: RightHalfGedBoundary, detect_firmness: numerical}
   - {firmness: proved, name: left translated half-family, fixed: [mean, sd], when: "The skew $\\xi$ tends to zero, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: LeftHalfGedBoundary, detect_firmness: numerical}
   - {firmness: proved, name: right translated half-family, fixed: [mean, nu], when: "The skew $\\xi$ tends to infinity, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: RightHalfGedBoundary, detect_firmness: numerical}
@@ -88,18 +84,17 @@ limits:
   - {firmness: proved, name: constant sample scale collapse, fixed: [mean, xi], when: "The standard deviation $\\sigma$ tends to zero at the free or held mean.", detect: "Every observation equals the free or held mean and standard deviation is free.", status: Unbounded, detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/sged/README.md#density-limits"]}
   - {firmness: proved, name: right translated half-family, fixed: [sd, nu], when: "The skew $\\xi$ tends to infinity, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: RightHalfGedBoundary, detect_firmness: numerical}
   - {firmness: proved, name: left translated half-family, fixed: [sd, nu], when: "The skew $\\xi$ tends to zero, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: LeftHalfGedBoundary, detect_firmness: numerical}
-  - {firmness: proved, model: unif, fixed: [sd, xi], when: "The shape $\\nu$ tends to infinity while any held mean and standard deviation are retained.", detect: "The numerically compared limiting face wins among retained candidates while satisfying held constraints.", status: UniformBoundary, detect_firmness: numerical}
   - {firmness: proved, name: constant sample scale collapse, fixed: [nu, xi], when: "The standard deviation $\\sigma$ tends to zero at the free or held mean.", detect: "Every observation equals the free or held mean and standard deviation is free.", status: Unbounded, detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/sged/README.md#density-limits"]}
-  - {firmness: proved, name: right translated half-family, fixed: [mean, sd, nu], when: "The skew $\\xi$ tends to infinity, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: RightHalfGedBoundary, detect_firmness: numerical}
-  - {firmness: proved, name: left translated half-family, fixed: [mean, sd, nu], when: "The skew $\\xi$ tends to zero, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "The numerically compared half-family face wins among retained candidates while satisfying held constraints.", status: LeftHalfGedBoundary, detect_firmness: numerical}
-  - {firmness: proved, model: unif, fixed: [mean, sd, xi], when: "The shape $\\nu$ tends to infinity while any held mean and standard deviation are retained.", detect: "The numerically compared limiting face wins among retained candidates while satisfying held constraints.", status: UniformBoundary, detect_firmness: numerical}
+  - {firmness: proved, name: right translated half-family, fixed: [mean, sd, nu], when: "The skew $\\xi$ tends to infinity, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "With free skew the constrained skew cover or the shape-two delegate can separate a half-family winner. Wider numerical comparisons carry no global certificate.", status: RightHalfGedBoundary, detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/sged/README.md#fixed-shape-with-both-moments-held", "univariateML-cpp/include/cppunivariate/distributions/sged/README.md#fixed-shape-free-skew-certificates"]}
+  - {firmness: proved, name: left translated half-family, fixed: [mean, sd, nu], when: "The skew $\\xi$ tends to zero, with endpoint and one-sided scale chosen to retain any held mean and standard deviation.", detect: "With free skew the constrained skew cover or the shape-two delegate can separate a half-family winner. Wider numerical comparisons carry no global certificate.", status: LeftHalfGedBoundary, detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/sged/README.md#fixed-shape-with-both-moments-held", "univariateML-cpp/include/cppunivariate/distributions/sged/README.md#fixed-shape-free-skew-certificates"]}
   - {firmness: proved, name: scale collapse, fixed: [mean, nu, xi], when: "The standard deviation $\\sigma$ tends to zero at the held mean.", detect: "Every observation equals the free or held mean and standard deviation is free.", status: Unbounded, message: "Scale collapse", detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/sged/README.md#density-limits"]}
   - model: unif
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
-    detect: The numerically compared uniform log likelihood exceeds all retained finite candidates; this comparison does not certify the global supremum.
+    detect: With free moments, equal counts at two distinct sites prove the uniform supremum. Held-skew profile certificates can also establish the uniform supremum. Other numerical face preferences remain uncertified.
     status: UniformBoundary
-    detect_firmness: numerical
+    detect_firmness: proved
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/sged/README.md#balanced-two-point-uniform-supremum", "univariateML-cpp/include/cppunivariate/distributions/sged/README.md#asymmetric-held-skew-free-shape-certificate"]
   - name: right translated half-GED
     firmness: proved
     when: 'The skew $\xi$ tends to infinity with finite endpoint and right-side scale.'
@@ -267,11 +262,18 @@ positive shapes below one are accepted for these conditional fits; the
 $\nu\ge1$ restriction applies to estimated shape. With scale and both shapes held,
 location maxima exist even with ties.
 
-When both mean and standard deviation are held, data exactly at a limiting uniform
-endpoint retain the GED endpoint density penalty. If only the standard deviation is held
-and its limiting uniform width equals the sample range exactly, a winning
-endpoint face is reported as uncertified rather than returning a uniform
-proxy for its constrained likelihood.
+With standard deviation fixed, the uniform support is either translated
+freely or centered at the held mean. For binary64 inputs the range cannot
+equal $2\sqrt{3}\sigma$, and a residual about a held mean cannot equal
+$\sqrt{3}\sigma$ in magnitude. The differences are dyadic and the
+thresholds are irrational multiples of a positive dyadic. An exterior
+observation gives zero limiting likelihood. For strictly interior data a
+finite shape beats the uniform height. Both strict orders exclude the
+uniform face from selection. Squared distances are compared as exact
+dyadic integers. When the sample is strictly interior, the uniform height
+also supplies a lower likelihood witness that can refute a retained finite or half-face nomination.
+[Width and contact proof](../../../../../dev/research/evaluations/2026-11-25-sstdsged-math-report.md#2-sged-held-width-and-a-free-mean)
+and [both-held result](../../../../../dev/research/evaluations/2026-11-25-sstdsged-math-report.md#additional-signed-shape-tails).
 
 ### Held-shape certificate
 
@@ -612,6 +614,8 @@ retain the existing uncertified numerical searches, including the default fit. T
 scope](../../../../../dev/research/evaluations/2026-11-08-sged-free-report.md)
 give the constrained objective, tail reductions and missing bounds.
 
+
+### Balanced two-point uniform supremum
 
 With both moments free and equal numbers of observations at two distinct
 values $l<h$, a global face comparison is analytic even for asymmetric held

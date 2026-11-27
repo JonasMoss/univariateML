@@ -44,11 +44,12 @@ inline t_cert_detail::I scaled_gamma(t_cert_detail::I v,bool sd){
 struct Engine {
   std::vector<t_cert_detail::I> y,q;
   bool free_scale=false,variance=false; int maxit=0;
+  std::int64_t evaluation_limit=-1;
   double n=0,minimum=INFINITY,range=0,normal_mu=NAN,normal_scale=NAN;
   t_cert_detail::I normal,constant;
   Result out;
   bool spend(){
-    if(out.evaluations>=certificate_budget(maxit)){out.budget_exhausted=true;return false;}
+    if(out.evaluations>=(evaluation_limit<0?certificate_budget(maxit):evaluation_limit)){out.budget_exhausted=true;return false;}
     ++out.evaluations;return true;
   }
   // Positive location score; for free scale, the strictly decreasing
@@ -305,6 +306,49 @@ inline Result solve(span x,double mu,double scale,bool variance,int maxit){
   e.out.detail=t_shape_detail::normal_point(x,e.normal_mu,e.normal_scale);
   e.out.detail.limit_model=StopModel::Norm;e.out.detail.limit_coef={e.normal_mu,e.normal_scale};
   e.out.detail.limit_loglik=e.normal.mid();e.out.detail.loglik_upper=e.normal.hi;
+  return e.out;
+}
+// Complete the held-location domain below the df=1 restriction of the
+// unrestricted-location certificate. The B(df)<=df/2 envelope is uniform
+// over scale, and above that tail the monotone score encloses every scale root.
+inline Result exclude_subunit(span x,double mu,double target,int maxit,std::int64_t budget) {
+  Engine e;e.n=x.size();e.maxit=maxit;e.evaluation_limit=budget;e.free_scale=true;
+  double unit=0;
+  for(double v:x)unit=std::max(unit,std::abs(v-mu));
+  if(!(unit>0) || !std::isfinite(unit) || !std::isfinite(target))return e.out;
+  t_cert_detail::Sum logs;
+  for(double v:x) {
+    const auto q=t_cert_detail::sq((t_cert_detail::I(v)-mu)/unit);
+    if(!q.valid() || !(q.lo>0))return e.out;
+    e.q.push_back(q);logs.add(t_cert_detail::log(q)*.5);
+  }
+  const auto log_unit=t_cert_detail::log(t_cert_detail::I(unit));
+  const auto distance_logs=logs.get()+log_unit*e.n;
+  e.constant=-(log_unit+.5*std::log(2*pi))*e.n;
+  const double lower=std::min(.5,std::exp((target+distance_logs.lo-1)/e.n)*2);
+  if(!(lower>0))return e.out;
+  const auto tail=t_cert_detail::log(t_cert_detail::I(lower)/2)*e.n-distance_logs;
+  if(!tail.valid() || !(tail.hi<target))return e.out;
+  struct Box {t_cert_detail::I shape,scale;bool bracketed=false;};
+  std::vector<Box> pending{{{lower,1},{}}};
+  while(!pending.empty()) {
+    if(!e.spend())return e.out;
+    auto box=pending.back();pending.pop_back();
+    const auto previous=box;
+    if(e.scale_box(box.shape,box.scale,box.bracketed)) {
+      box.bracketed=true;
+      if(!e.spend())return e.out;
+      const auto bound=e.value(box.shape,box.scale);
+      if(bound.valid() && bound.hi<target)continue;
+    } else {
+      box=previous;
+    }
+    const double mid=std::sqrt(box.shape.lo)*std::sqrt(box.shape.hi);
+    if(!(mid>box.shape.lo && mid<box.shape.hi))return e.out;
+    pending.push_back({{mid,box.shape.hi},box.scale,box.bracketed});
+    pending.push_back({{box.shape.lo,mid},box.scale,box.bracketed});
+  }
+  e.out.proved=true;
   return e.out;
 }
 } // namespace t_signed_detail

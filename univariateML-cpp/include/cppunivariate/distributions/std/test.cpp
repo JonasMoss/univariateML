@@ -433,7 +433,7 @@ TEST_CASE("std: separated held-sd witnesses survive an unrepresentable tolerance
   CHECK(cppunivariate::t_symmetry_detail::held_sd(mltest::as_span(unbalanced),1).outcome==0);
 }
 
-TEST_CASE("std: default budget distinguishes scalar certificates and joint numerical fits") {
+TEST_CASE("std: default-budget certificates at the regression tolerance") {
   const auto g=mltest::load_distribution_golden("std");
   const double nan=std::numeric_limits<double>::quiet_NaN();
   for(int mask=1;mask<=3;++mask) {
@@ -442,7 +442,7 @@ TEST_CASE("std: default budget distinguishes scalar certificates and joint numer
       mask&1?g.estimates.at("mean"):nan,
       mask&2?g.estimates.at("sd"):nan,nan);
     REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
-    CHECK(r.certified==(mask==3));
+    CHECK(r.certified==(mask!=2));
     CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
   }
 }
@@ -564,4 +564,38 @@ TEST_CASE("std: the separated held-sd profile isolates both global maxima") {
     CHECK(cppunivariate::student_t_held_loglik(data,point.estimate.values[0],1,
           point.estimate.values[2])==doctest::Approx(r.logLik));
   }
+}
+
+TEST_CASE("std: exact reflection permits transporting a finite certificate to held mean") {
+  std::vector<double> x;
+  for(int i=0;i<2000;++i) {
+    const double radius=-cppunivariate::special::qt((i+.5)/4000,300,true,false);
+    x.push_back(-radius);x.push_back(radius);
+  }
+  const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-7,500,0,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(r.certified);
+  CHECK(r.mu==0);
+  CHECK(r.nu==doctest::Approx(539.460572974731).epsilon(mltest::kFitReferenceTol).scale(0));
+}
+
+TEST_CASE("std: held sd closes an interior cover in the actual moment coordinates") {
+  std::vector<double> x{-5,5};
+  for(int i=0;i<10;++i){x.push_back(-1);x.push_back(1);}
+  const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-7,500,NAN,2,NAN);
+  REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(r.certified);
+  CHECK(r.nu>2);
+  CHECK(std::abs(r.mu)<1e-7);
+  CHECK(r.sigma==2);
+}
+
+TEST_CASE("std: held-mean scale tubes compare the positive-scale t-two face") {
+  std::vector<double> x{-5,5,-1};
+  for(int i=0;i<9;++i){x.push_back(-1);x.push_back(1);}
+  const auto r=cppunivariate::student_t_mle(mltest::as_span(x),1e-7,500,0,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::StudentTStatus::Ok);
+  CHECK(r.certified);
+  CHECK(r.mu==0);
+  CHECK(r.nu>2);
 }

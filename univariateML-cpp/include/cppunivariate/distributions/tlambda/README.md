@@ -74,12 +74,12 @@ limits:
   - name: scale collapse
     firmness: proved
     when: The free scale $\sigma$ tends to zero at a location occupied by observations.
-    detect: With held location $\mu$, held negative shape $\lambda$, and free scale, the tie count $k$ satisfies $(n-k)/|\lambda|-k=0$. A strict majority tie with all coefficients free gives unbounded likelihood at $\lambda=-1$.
+    detect: With held location $\mu$, held negative shape $\lambda$, and free scale, the tie count $k$ satisfies $(n-k)/|\lambda|-k=0$. With all coefficients free and exactly half ties, a strict exclusion of the eligible scales and the compact location, scale and shape box proves nonattainment. Other free-shape half ties can retain a numerical stop with comparison witnesses.
     status: CollapseLimit
     message: "collapse"
     detect_firmness: proved
     proof: ["univariateML-cpp/include/cppunivariate/distributions/tlambda/README.md#details"]
-    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/tlambda/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/tlambda/README.md#details", "dev/research/evaluations/2026-11-25-tlroot-math-report.md#sample-dependent-cutoff"]
   - name: infeasible held support
     firmness: proved
     fixed: [sigma, lambda]
@@ -221,10 +221,15 @@ feasible likelihood. With held location, collapse exponent zero is an
 unattained supremum. With free location and held $\lambda=-1$, pairing a
 half-tie with the other observations proves strict domination by the
 collapse face; other held negative-shape equality comparisons stop
-numerically with a face witness. For samples of more than two observations, free-shape half ties retain
-the collapse face and a uniform incumbent but stop numerically because the global comparison
-is not implemented. A tolerance tie is never used to declare
-nonattainment in these certificate routes.
+numerically with a face witness. For samples of more than two observations, the free-shape half-tie
+certificate combines disjoint-pair score and density bounds for the lower
+scale cutoff. If this cutoff exceeds the upper scale bound from the extreme
+pair, the collapse face strictly dominates every finite fit. Otherwise a
+compact cover can exclude every remaining box using an upper density bound
+from the smaller residual, lower shape inverse, and upper shape derivative.
+An unresolved cover retains the collapse face and a feasible uniform witness.
+[Tukey lambda cutoff proof](../../../../../dev/research/evaluations/2026-11-25-tlroot-math-report.md#sample-dependent-cutoff).
+
 
 Certification is in exact arithmetic conditional on the computed comparisons.
 The practical padding is $512\epsilon(1+|v|)$, with compensated per-observation likelihood

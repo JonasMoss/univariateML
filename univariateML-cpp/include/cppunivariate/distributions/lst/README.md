@@ -68,7 +68,7 @@ limits:
     firmness: proved
     fixed: [df]
     when: "The scale tends to zero at the free or held location."
-    detect: 'At $k=\nu(n-k)$, held location gives an unattained supremum. With free location, $k$ counts the largest atom. At shape at least one equality is unattained except for the attained balanced two-point Cauchy curve. Below shape one, joint equality can return an uncertified finite result or a proved symmetry outcome. The equality-specific numerical stop applies if the search has no successful candidate.'
+    detect: 'At $k=\nu(n-k)$, held location gives an unattained supremum. With free location, $k$ counts the largest atom. At shape at least one equality is unattained except for the attained balanced two-point Cauchy curve. Below shape one, joint equality can return an uncertified finite result. The equality-specific numerical stop applies if the search has no successful candidate.'
     status: ScaleBoundary
     detect_firmness: proved
     proof: ["dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons"]
@@ -93,7 +93,7 @@ relations: {}
 fit:
   method: profile-search
   certified: partial
-  note: 'lst/certificate.hpp; lst/shape_certificate.hpp; lst/signed_face_certificate.hpp: All-free, fixed-shape scalar and closed shape-only fits use global certificates conditional on practical arithmetic bounds. Joint held-shape fits at shape >= 1 and a held-scale Cauchy regime retain their certificates. Constrained normal limits use signed profile tails and compact covers. Unresolved finite or limit nominations retain converged legacy decisions marked uncertified. Symmetric subunit samples can prove global nonuniqueness; generic subunit joint fits use a locally accurate search without a global certificate.'
+  note: 'lst/certificate.hpp; lst/shape_certificate.hpp; lst/signed_face_certificate.hpp; lst/held_profile_certificate.hpp: All-free, fixed-shape scalar and closed shape-only fits use global certificates conditional on practical arithmetic bounds. Joint held-shape fits at shape >= 1 and a held-scale Cauchy regime retain their certificates. Joint held profiles can certify finite winners by covering the conditional scale tube or the full location and shape box. Constrained normal limits use signed profile tails and compact covers. Unresolved finite or limit nominations retain converged legacy decisions marked uncertified. Symmetric subunit samples can prove global nonuniqueness; generic subunit joint fits use a locally accurate search without a global certificate.'
 areas:
 - measurement and errors
 classification: classical
@@ -113,7 +113,7 @@ key_references:
 existence:
   uniqueness: unknown
   statement: >-
-    With all coefficients free, fitting is restricted to $\nu\ge1$; a finite MLE is not guaranteed because scale collapse or the normal limit can intervene. Global uniqueness is unknown. Holding positive $\nu$ removes the normal escape; collapse has exponent $\nu(n-k)-k$ at a location with $k$ ties. With $\mu$ and $\nu$ held, a unique positive scale maximum exists exactly when $\nu(n-k)>k$; equality gives a finite unattained scale-zero supremum. Holding $\mu$ exempts estimated $\nu$ from the lower fitting bound, and any observation at that location then makes the free-scale, free-$\nu$ likelihood unbounded. Holding $\sigma$ removes scale collapse. Remaining location and shape searches have no general uniqueness proof. Holding all coefficients leaves likelihood evaluation.
+    With all coefficients free, fitting is restricted to $\nu\ge1$; a finite MLE is not guaranteed because scale collapse or the normal limit can intervene. Global uniqueness is unknown. Holding positive $\nu$ removes the normal escape; collapse has exponent $\nu(n-k)-k$ at a location with $k$ ties. With $\mu$ and $\nu$ held, a unique positive scale maximum exists exactly when $\nu(n-k)>k$; equality gives a finite unattained scale-zero supremum. Holding $\mu$ exempts estimated $\nu$ from the lower fitting bound, and any observation at that location then makes the free-scale, free-$\nu$ likelihood unbounded. Holding $\sigma$ removes scale collapse. A joint held profile can certify a finite winner when its boundary and stationary-point comparisons close. Global uniqueness across generic free-shape samples remains open. Holding all coefficients leaves likelihood evaluation.
   reason: >-
     The scale score at fixed location and shape is $\sum_i(\nu+1)d_i^2/(\nu\sigma^2+d_i^2)-n$. It decreases strictly from $\nu(n-k)-k$ to $-n$ when any residual is nonzero. Its equality case is strictly negative at every positive scale. Free location or shape lacks this monotonicity argument.
   equivariance:
@@ -160,7 +160,7 @@ can have nonunique attained fits). Strictly positive exponents for every tie
 permit the regular fixed-parameter fit.
 
 
-Conditional fits preserve held location $\mu$ and scale $\sigma$. With location held and scale free, only ties at that location contribute to collapse: the exponent is $\nu(n-k)-k$. A negative exponent is unbounded; at equality and fixed shape the collapse supremum is not attained. Free shape has lower bound one with location free; held location exempts that bound. The conditional normal face requires an actual-hold tail certificate. Holding scale removes scale collapse. Held-scale/free-location/free-shape fits can certify the Cauchy face using a uniform shape-score bound. Shape-only fits use exhaustive scalar certificates. Other two-dimensional held profiles retain successful numerical results marked uncertified. At fixed shape, held-scale location fits use exhaustive stationary-point isolation.
+Conditional fits preserve held location $\mu$ and scale $\sigma$. With location held and scale free, only ties at that location contribute to collapse: the exponent is $\nu(n-k)-k$. A negative exponent is unbounded; at equality and fixed shape the collapse supremum is not attained. Free shape has lower bound one with location free; held location exempts that bound. The conditional normal face requires an actual-hold tail certificate. Holding scale removes scale collapse. Held-scale/free-location/free-shape fits can certify the Cauchy face using a uniform shape-score bound. Shape-only fits use exhaustive scalar certificates. Unclosed two-dimensional held profiles retain successful numerical results marked uncertified. At fixed shape, held-scale location fits use exhaustive stationary-point isolation.
 
 With shape free, any observation equal to the held location permits scale collapse
 through sufficiently small positive shape when scale is free, and fitting stops.
@@ -370,3 +370,11 @@ calculations return NaN. The
 cover the half-t, standardized-t and skew-t consumers as well.
 
 The symmetry proof's candidates are likelihood witnesses, not maximizers within `tol`, so the proved non-uniqueness stops as unresolved with both witnesses attached.
+
+## Finite joint free-shape profiles
+
+At a held location equal to the exact center of sample reflection, the unique fixed-shape nuisance optimum for $\nu\ge1$ lies at that center under strict atom mass. The all-free finite certificate covers those shapes. A monotone scale tube and the uniform $B(\nu)\le\nu/2$ tail bound can exclude the additional held-location shapes below one before certifying the joint fit.
+
+With ordinary scale held and an interior shape proposal, a joint interval cover can exclude other location and shape branches. The finite witness must beat both eligible shape tails, and contraction must enclose the root at the requested coefficient accuracy. An unclosed cover leaves the checked search flagged uncertified.
+
+For other held-location interior nominations with a separated positive normal-face coefficient, the monotone scale score encloses the full conditional scale tube at each shape. A finite certificate needs the entire shape cover and a joint root inclusion in the two free coordinates.

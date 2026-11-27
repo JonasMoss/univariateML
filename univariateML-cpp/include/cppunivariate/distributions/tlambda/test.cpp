@@ -425,3 +425,22 @@ TEST_CASE("tlambda: constant sample with held scale has uniform or support-conta
     CHECK(cppunivariate::outcome(fixed).unique);
   }
 }
+
+TEST_CASE("tlambda: separated half-tie tails prove collapse across all fitted shapes") {
+  const std::vector<double> x{0,0,1e-20,1};
+  const auto r=cppunivariate::tlambda_mle(mltest::as_span(x),1e-7,200);
+  CHECK(r.status==cppunivariate::TlambdaStatus::CollapseLimit);
+  CHECK(cppunivariate::outcome(r).certified);
+  CHECK(r.stop_detail.limit_loglik==doctest::Approx(-std::log(64.)-2*std::log(x[2])));
+}
+
+TEST_CASE("tlambda: disjoint pairs shrink the compact half-tie scale range") {
+  const std::vector<double> x{-1,0,0,1};
+  const double face=-std::log(64.);
+  std::int64_t work=0;
+  const double cutoff=cppunivariate::tlambda_cert_detail::half_tie_log_cutoff(x,face,200,work);
+  const double width=-face/x.size()-cutoff;
+  CHECK(width>11);
+  CHECK(width<12);
+  CHECK(work<=cppunivariate::certificate_budget(200));
+}

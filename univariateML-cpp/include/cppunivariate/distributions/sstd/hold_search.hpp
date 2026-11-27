@@ -147,7 +147,7 @@ struct Result {
 };
 
 inline Result fit(span x, bool student, double fm, double fs, double fn, double fx,
-                  double tol, int maxit) {
+                  double tol, int maxit, bool inside_uniform=false) {
   maxit = static_cast<int>(solver_budget(maxit));
   const bool hm=!std::isnan(fm), hs=!std::isnan(fs), hn=!std::isnan(fn), hx=!std::isnan(fx);
   Result out;
@@ -161,9 +161,22 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
   if(hm) { for(double v:x) if(v==fm) ++k; } else k=collapse_multiplicity(x);
   // With held sd, nu -> 2 still shrinks the effective t scale. P0b's
   // table incorrectly excludes this path (its own experiment exhibits it).
+  double critical_loglik=NAN;
   if(student && (!hs || !hn)) {
-    const double exponent=(hn ? fn : 2)*(x.size()-k)-k;
-    if(exponent<=0) { out.status=exponent<0 ? 3 : 4; return out; }
+    const double exponent=std::fma(hn?fn:2.,static_cast<double>(x.size()-k),-static_cast<double>(k));
+    if(exponent<0){out.status=3;return out;}
+    if(exponent==0) {
+      if(!(hm && hs && hx && !hn)){out.status=4;return out;}
+      // At the held-mean t2 collapse the tied residual lies on the
+      // broad side. Its dimensionless displacement is 1-small/large.
+      const double log_xi=std::log(fx),ratio=-std::expm1(-2*std::abs(log_xi));
+      const double log_left=-special::log_sum_exp(0,2*log_xi);
+      const double log_right=-special::log_sum_exp(0,-2*log_xi);
+      critical_loglik=-1.5*k*std::log1p(ratio*ratio);
+      for(double v:x)if(v!=fm)
+        critical_loglik+=3*((v<fm?log_left:log_right)-special::log_abs_difference(v,fm));
+      if(!std::isfinite(critical_loglik)){out.status=4;return out;}
+    }
   }
   if(!student && !hs && lo==hi && (!hm || fm==lo)) { out.status=3; return out; }
   const double origin=hm ? fm : lo+(hi-lo)/2;
@@ -258,6 +271,17 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
   if(!interior.theta.empty() || free.empty()) {
     auto p=unpack(interior.theta,0);
     out={p[0],p[1],p[2],p[3],interior.f,interior.ok ? 0 : 1,interior.iterations};
+  }
+  if(std::isfinite(critical_loglik)) {
+    const auto profile=[&](double t) { return objective(std::vector<double>{t},0); };
+    const double t=scan(profile,lower.front(),upper.front(),maxit,maxit);
+    const double f=profile(t);
+    if(std::isfinite(f) && (out.status!=0 || f<out.f)) {
+      const auto p=unpack(std::vector<double>{t},0);
+      // Nomination only. The public fitter still requires its observed-
+      // information and coefficient-accuracy check on the free shape.
+      out={p[0],p[1],p[2],p[3],f,0,0};
+    }
   }
   if(!student && !hn) {
     // The attained Laplace restriction is solved separately, without a
@@ -365,7 +389,17 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
     // estimate. It can refute a face after an unfinished finite search.
     finite_witness=density_cost(z,true,mean-base*m*q,base/xi,base*xi,nu);
   }
+  // In held-sd units, strictly interior SGED data admit a finite
+  // shape whose likelihood exceeds the uniform height.
+  const double uniform_cost=n*.5*std::log(12.);
+  const auto uniform_margin=[&](double f) {
+    return 128*std::numeric_limits<double>::epsilon()*(n+std::abs(f)+uniform_cost);
+  };
+  const auto below_uniform=[&](double f) {
+    return inside_uniform && f>uniform_cost+uniform_margin(f);
+  };
   auto accept=[&](double f,int status,double nu) {
+    if((status==7 || status==8) && below_uniform(f))return false;
     if(out.status==1 && interior.iterations>=maxit) {
       if(!student)return false;
       const double margin=1024*std::numeric_limits<double>::epsilon()*(n+std::abs(f)+std::abs(finite_witness));
@@ -386,18 +420,13 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
       if(out.face_detail.limit_coef.size()==2) {out.face_detail.limit_coef[0]=hm?origin+unit*out.face_detail.limit_coef[0]:hi;out.face_detail.limit_coef[1]*=unit;out.face_detail.limit_loglik-=n*std::log(unit);}
     }
   }
-  if(!hn && !student) {
-    double width=hs ? std::sqrt(12.0)*fs/unit : hm ? 2*std::max(-yl,yh) : yh-yl;
-    const bool feasible=width>0 && (hm ? yl>=-width/2 && yh<=width/2 : yh-yl<=width);
-    if(feasible) {
-      double f=n*std::log(width);
-      if(hm && hs) for(double a:y)
-        if(a==-width/2 || a==width/2) f+=std::exp(-0.5772156649015328606);
-      // When a held width equals the sample range and mean is free,
-      // endpoint penalties require a coupled rate comparison. Stop if
-      // that unresolved face would win rather than use a uniform proxy.
-      accept(f,hs && !hm && width==yh-yl ? 4 : 6,inf);
-    }
+  if(!hn && !student && !hs) {
+    // A fixed sd precludes a winning SGED uniform limit for binary64
+    // data. Even an exact difference of dyadics cannot equal sqrt(3)*sd
+    // (held mean) or sqrt(12)*sd (free mean). Strictly interior data have
+    // a superior finite shape; exterior data have zero limiting likelihood.
+    const double width=hm ? 2*std::max(-yl,yh) : yh-yl;
+    if(width>0)accept(n*std::log(width),6,inf);
   }
   if(!hx) for(int side:std::vector<int>{1,-1}) {
     // Half family in ordinary base coordinates: mean=c+side*m*t,
@@ -499,7 +528,24 @@ inline Result fit(span x, bool student, double fm, double fs, double fn, double 
       out.face_detail=limit_detail({origin+unit*(mean-std::sqrt(2.)*scale*(xi-1/xi)),unit*scale,xi,2},-r.f-n*std::log(unit));
     }
   }
-  if(out.status==0 && hits_guard(out)) out.status=1;
+  if(std::isfinite(critical_loglik)) {
+    const double offset=n*std::log(unit),candidate=-out.f-offset;
+    const double margin=1024*std::numeric_limits<double>::epsilon()*
+      (n+std::abs(offset)+std::abs(critical_loglik)+
+       (std::isfinite(candidate)?std::abs(candidate):0));
+    if(out.status==1 || !std::isfinite(candidate) || !(candidate>critical_loglik+margin)) {
+      out.status=4;out.f=-critical_loglik-offset;out.face_detail={};
+      out.face_detail.limit_loglik=critical_loglik;
+      out.face_detail.loglik_lower=critical_loglik-margin;
+      out.face_detail.loglik_upper=INFINITY;
+    }
+  }
+  if(out.status==0 && hits_guard(out))out.status=1;
+  if(out.status==0 && below_uniform(out.f)) {
+    out.status=10;
+    out.face_detail.loglik_lower=-uniform_cost-n*std::log(unit)-uniform_margin(out.f);
+    out.face_detail.loglik_upper=INFINITY;
+  }
   out.mean=hm ? fm : origin+unit*out.mean;
   out.sd=hs ? fs : unit*out.sd;
   if(hn) out.nu=fn;

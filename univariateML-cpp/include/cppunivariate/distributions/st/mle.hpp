@@ -44,7 +44,7 @@ inline FitOutcome outcome(const StResult& r) {
     case StStatus::UnsupportedSample: return FitOutcome::failure(OutcomeReason::Unsupported);
     case StStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case StStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
-    case StStatus::ScaleBoundary: return r.reason == 6 ? FitOutcome::nonexistence(OutcomeReason::Unattained) : FitOutcome::failure(OutcomeReason::NoConvergence);
+    case StStatus::ScaleBoundary: return r.reason == 6 && r.certified ? FitOutcome::nonexistence(OutcomeReason::Unattained) : FitOutcome::failure(OutcomeReason::Unresolved);
     case StStatus::NumericalFailure: return FitOutcome::failure(r.reason >= 1 && r.reason <= 4 ? OutcomeReason::NoConvergence : OutcomeReason::Evaluation);
     case StStatus::SkewNormalBoundary: return FitOutcome::limit(r.certified);
     case StStatus::RightHalfTBoundary: return FitOutcome::limit(r.certified);
@@ -153,8 +153,9 @@ inline StResult st_mle_impl(span data,double tol=1e-10,int maxit=200,double xi=s
  if(std::isnan(omega)) {
   std::size_t k=std::isnan(xi)?maxrun:std::count(sorted.begin(),sorted.end(),xi);
   double floor=std::isnan(nu)?1:nu;
-  if(k>floor*(n-k)){bad.status=StStatus::Unbounded;return bad;}
-  if(k==floor*(n-k)){bad.status=StStatus::ScaleBoundary;return bad;}
+  const double exponent=std::fma(floor,static_cast<double>(n-k),-static_cast<double>(k));
+  if(exponent<0){bad.status=StStatus::Unbounded;return bad;}
+  if(exponent==0){bad.status=StStatus::ScaleBoundary;return bad;}
  }
  double origin=sorted[n/2],unit=sorted.back()-sorted.front();
  if(!(unit>0)||!std::isfinite(unit)){if(std::isfinite(omega))unit=omega;else {bad.status=StStatus::NumericalFailure;bad.reason=8;return bad;}}

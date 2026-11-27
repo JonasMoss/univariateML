@@ -118,7 +118,7 @@ relations:
 fit:
   method: profile-search
   certified: partial
-  note: 'lst/certificate.hpp; lst/shape_certificate.hpp; lst/signed_face_certificate.hpp: All-free, fixed-shape and closed shape-only fits use global certificates conditional on practical arithmetic comparisons. Constrained normal limits use signed profile tails and complete compact covers. Balanced separated atoms with sd held can prove global nonuniqueness. Unresolved finite or limit nominations retain converged legacy decisions marked uncertified; failed searches and unsupported sub-epsilon precision requests stop. Coverage remains partial.'
+  note: 'lst/certificate.hpp; lst/shape_certificate.hpp; lst/signed_face_certificate.hpp; lst/held_profile_certificate.hpp: All-free, fixed-shape and closed shape-only fits use global certificates conditional on practical arithmetic comparisons. Joint held profiles can certify finite winners by covering the conditional scale tube or the full location and shape box. Constrained normal limits use signed profile tails and complete compact covers. Balanced separated atoms with sd held can prove global nonuniqueness. Unresolved finite or limit nominations retain converged legacy decisions marked uncertified; failed searches and unsupported sub-epsilon precision requests stop. Coverage remains partial.'
 areas:
 - finance
 - measurement and errors
@@ -131,7 +131,7 @@ key_references:
 existence:
   uniqueness: unknown
   statement: >-
-    With all coefficients free, a finite MLE is not guaranteed: scale collapse, a normal limit or a location-scale $t_2$ limit can prevent attainment. Global uniqueness is unknown. Holding $\nu>2$ removes both shape limits; a tie of multiplicity $k$ gives unbounded likelihood if $k>\nu(n-k)$, while exact equality gives an unattained scale-zero supremum. With $\mu$ and shape held, a unique positive scale maximum exists exactly when $\nu(n-k)>k$, where $k$ counts observations at that location. Holding $\sigma$ removes scale collapse only when shape is also held; free shape can still collapse as $\nu\downarrow2$. Shape-only held fits isolate every maximum and compare the actual-hold faces; unresolved two-dimensional free-shape held profiles retain converged numerical fits marked uncertified. Holding all coefficients leaves likelihood evaluation.
+    With all coefficients free, a finite MLE is not guaranteed: scale collapse, a normal limit or a location-scale $t_2$ limit can prevent attainment. Global uniqueness is unknown. Holding $\nu>2$ removes both shape limits; a tie of multiplicity $k$ gives unbounded likelihood if $k>\nu(n-k)$, while exact equality gives an unattained scale-zero supremum. With $\mu$ and shape held, a unique positive scale maximum exists exactly when $\nu(n-k)>k$, where $k$ counts observations at that location. Holding $\sigma$ removes scale collapse only when shape is also held; free shape can still collapse as $\nu\downarrow2$. Shape-only held fits isolate every maximum and compare the actual-hold faces. Joint held profiles can certify a finite winner when the compact cover and the applicable face comparisons close. Holding all coefficients leaves likelihood evaluation.
   reason: >-
     For ordinary t scale $a$, collapse contributes $a^{\nu(n-k)-k}$. With location and shape held, the log-scale score $\sum_i(\nu+1)d_i^2/(\nu a^2+d_i^2)-n$ decreases strictly from $\nu(n-k)-k$ to $-n$ when any residual is nonzero. The density limits in Details establish the shape faces, not global profile optimality.
   equivariance:
@@ -378,3 +378,11 @@ cover densities where the observation's square overflows but its ratio to
 shape remains finite.
 
 With held standard deviation, shape refinement differentiates the ordinary scale factor $\sqrt{(\nu-2)/\nu}$ as well as the Student kernel; treating that factor as constant solves a different likelihood.
+
+## Finite joint free-shape profiles
+
+With mean held at the exact center of reflection of the sample, the unique fixed-shape nuisance maximum shares that center under strict atom mass. A finite all-free global certificate then also covers the held-mean likelihood. The constrained refinement checks the returned standard deviation and degrees of freedom in public units.
+
+With standard deviation held and an interior shape proposal, a joint interval cover can exclude other location and shape branches. The finite witness must beat both eligible shape tails, and contraction must enclose the root at the requested coefficient accuracy. An unclosed cover leaves the checked search flagged uncertified.
+
+For other held-mean interior nominations with a separated positive normal-face coefficient, the monotone scale score encloses the full conditional scale tube at each shape. A finite certificate needs the entire shape cover and a joint root inclusion in the two free coordinates.

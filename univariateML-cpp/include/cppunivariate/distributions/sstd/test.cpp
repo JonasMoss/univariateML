@@ -394,9 +394,11 @@ TEST_CASE("sstd: symmetric equality is a monotone unattained scale supremum") {
  const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,NAN,3,1);
  CHECK(r.status==cppunivariate::SstdStatus::ScaleBoundary);CHECK(r.certified);
  CHECK(std::isfinite(r.stop_detail.loglik_lower));CHECK(std::isfinite(r.stop_detail.loglik_upper));
- const auto unresolved=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,NAN,3,2);
- CHECK(unresolved.status==cppunivariate::SstdStatus::CertificateFailure);
- CHECK_FALSE(unresolved.certified);
+ const auto skewed=cppunivariate::sstd_mle(mltest::as_span(x),1e-6,200,0,NAN,3,2);
+ CHECK(skewed.status==cppunivariate::SstdStatus::ScaleBoundary);
+ CHECK(skewed.certified);
+ CHECK(std::isfinite(skewed.stop_detail.loglik_lower));
+ CHECK(std::isfinite(skewed.stop_detail.loglik_upper));
 }
 
 TEST_CASE("sstd: rational score ranges include extrema and seam crossings") {
@@ -798,4 +800,51 @@ TEST_CASE("sstd: a distinct pair has two certified endpoint half-normal limits")
     CHECK(d.candidates[1].coef == std::vector<double>{hi,scale});
     CHECK(d.limit_loglik == doctest::Approx(std::log(4/std::acos(-1.))-1-2*std::log(hi-lo)));
   }
+}
+
+TEST_CASE("sstd: critical held-mean scale compares collapse with the finite maximum") {
+  const std::vector<double> x{0,0,0,1};
+  const auto collapse=cppunivariate::sstd_mle(mltest::as_span(x),1e-10,200,0,NAN,3,10);
+  CHECK(collapse.status==cppunivariate::SstdStatus::ScaleBoundary);
+  CHECK(cppunivariate::outcome(collapse).certified);
+  CHECK(std::isfinite(collapse.logLik));
+  const auto finite=cppunivariate::sstd_mle(mltest::as_span(x),1e-10,200,0,NAN,3,.1);
+  REQUIRE(finite.status==cppunivariate::SstdStatus::Ok);
+  CHECK(cppunivariate::outcome(finite).certified);
+  CHECK(finite.sigma>0);
+  double expected=0;
+  for(double v:x)expected+=cppunivariate::distributions::dsstd(v,0,finite.sigma,3,.1,true);
+  CHECK(finite.logLik==doctest::Approx(expected));
+}
+
+TEST_CASE("sstd: critical asymmetric scale isolates stationary roots across joins") {
+  const std::vector<double> x{0,0,0,0,0,0,-1,2};
+  const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-7,500,0,NAN,3,10);
+  REQUIRE(r.status==cppunivariate::SstdStatus::Ok);
+  CHECK(r.certified);
+  CHECK(r.sigma>0);
+  double ll=0;
+  for(double v:x)ll+=cppunivariate::distributions::dsstd(v,0,r.sigma,3,10,true);
+  CHECK(r.logLik==doctest::Approx(ll));
+}
+
+TEST_CASE("sstd: a critical extreme atom with free skew selects collapse") {
+  for(double sign:{-1.,1.}) {
+    const std::vector<double> x{0,0,0,sign};
+    const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-10,200,NAN,NAN,3,NAN);
+    REQUIRE(r.status==cppunivariate::SstdStatus::ScaleBoundary);
+    CHECK(cppunivariate::outcome(r).certified);
+    CHECK(r.logLik==doctest::Approx(4*std::log(4/cppunivariate::pi)));
+  }
+}
+
+TEST_CASE("sstd: held moments and skew compare a free-shape fit against critical collapse") {
+  const std::vector<double> x{0,0,1};
+  const auto r=cppunivariate::sstd_mle(mltest::as_span(x),1e-7,500,0,.01,NAN,.1);
+  REQUIRE(r.status==cppunivariate::SstdStatus::Ok);
+  const double weight=.01/1.01;
+  const double collapse=3*std::log(weight)-3*std::log1p(.99*.99);
+  CHECK(r.logLik>collapse);
+  CHECK_FALSE(r.certified);
+  CHECK(r.nu>2);
 }
