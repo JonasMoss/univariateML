@@ -1,0 +1,89 @@
+family,regime,theorem,file,line,statement,hypotheses_and_conclusion,scope,proof_marker,dossier_scope_note,coverage
+ged,mean,UnivariateML.AE1GED.held_mean_ae_unique,dev/lean/UnivariateML/Family/AE1GED.lean,225,The attained finite GED shape and scale are almost everywhere unique at held mean.,"(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (m : ℝ)
+    (hn : 2 ≤ n) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, ∀ p q : ℝ × ℝ,
+      p ∈ Ici 1 ×ˢ Ioi 0 → q ∈ Ici 1 ×ˢ Ioi 0 →
+      IsMaxOn (fun r ↦ logLik w m r x) (Ici 1 ×ˢ Ioi 0) p →
+      IsMaxOn (fun r ↦ logLik w m r x) (Ici 1 ×ˢ Ioi 0) q → p = q",Positive counts and at least two free levels. Fitted shape at least one and kernel scale.,,"Exact shape-root comparison, uniform face and exceptional crossing are outside the theorem.","{""uniqueness"":""partial""}"
+ged,mean+sd,UnivariateML.AE1GED.held_mean_sd_ae_unique,dev/lean/UnivariateML/Family/AE1GED.lean,254,The attained finite GED shape is almost everywhere unique at held mean and standard deviation.,"(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (m sd : ℝ)
+    (hsd : 0 < sd) (hn : 2 ≤ n) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, ∀ p q : ℝ, p ∈ Ici 1 → q ∈ Ici 1 →
+      IsMaxOn (fun a ↦ heldSdLogLik w m sd a x) (Ici 1) p →
+      IsMaxOn (fun a ↦ heldSdLogLik w m sd a x) (Ici 1) q → p = q",Positive counts and at least two free levels. Fitted shape at least one and positive standard deviation.,,Exact crossing is outside the theorem.,"{""uniqueness"":""partial""}"
+sstd,nu,UnivariateML.AE1SSTD.held_nu_ae_unique,dev/lean/UnivariateML/Family/AE1SSTD.lean,236,An attained finite two-piece Student fit at fixed shape is almost everywhere unique on a locally closed positive-width domain.,"(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) {ν : ℝ} (hν : 2 < ν)
+    (hn : 3 ≤ n) (A : Set (ℝ × ℝ × ℝ)) (hA : IsLocallyClosed A)
+    (hwidth : ∀ p ∈ A, 0 < p.2.1 ∧ 0 < p.2.2) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
+      ∀ p ∈ A, ∀ q ∈ A, IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) A p →
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) A q → p = q",Positive counts and at least three distinct free levels. Denominator-width coordinates.,,Abstract nuisance domain and finite winners only.,"{""uniqueness"":""partial""}"
+sstd,nu,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,dev/lean/UnivariateML/Family/AE1SSTD.lean,327,"At fixed shape, attained two-piece Student fits are almost everywhere unique under held public coefficients.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) {ν : ℝ} (hν : 2 < ν)
+    (hn : 3 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V)
+    (hK : IsClosed K) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
+      ∀ p ∈ heldNuDomain ν M V K, ∀ q ∈ heldNuDomain ν M V K,
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) p →
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) q → p = q",Positive counts and at least three distinct free levels. Singleton constraints select holds.,,"Component comparisons, boundary cases and exact counterexamples are outside the theorem.","{""uniqueness"":""partial""}"
+sstd,mean+nu,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,dev/lean/UnivariateML/Family/AE1SSTD.lean,327,"At fixed shape, attained two-piece Student fits are almost everywhere unique under held public coefficients.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) {ν : ℝ} (hν : 2 < ν)
+    (hn : 3 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V)
+    (hK : IsClosed K) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
+      ∀ p ∈ heldNuDomain ν M V K, ∀ q ∈ heldNuDomain ν M V K,
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) p →
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) q → p = q",Positive counts and at least three distinct free levels. Singleton constraints select holds.,,"Component comparisons, boundary cases and exact counterexamples are outside the theorem.","{""uniqueness"":""partial""}"
+sstd,mean+nu+sd,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,dev/lean/UnivariateML/Family/AE1SSTD.lean,327,"At fixed shape, attained two-piece Student fits are almost everywhere unique under held public coefficients.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) {ν : ℝ} (hν : 2 < ν)
+    (hn : 3 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V)
+    (hK : IsClosed K) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
+      ∀ p ∈ heldNuDomain ν M V K, ∀ q ∈ heldNuDomain ν M V K,
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) p →
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) q → p = q",Positive counts and at least three distinct free levels. Singleton constraints select holds.,,"Component comparisons, boundary cases and exact counterexamples are outside the theorem.","{""uniqueness"":""partial""}"
+sstd,mean+nu+xi,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,dev/lean/UnivariateML/Family/AE1SSTD.lean,327,"At fixed shape, attained two-piece Student fits are almost everywhere unique under held public coefficients.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) {ν : ℝ} (hν : 2 < ν)
+    (hn : 3 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V)
+    (hK : IsClosed K) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
+      ∀ p ∈ heldNuDomain ν M V K, ∀ q ∈ heldNuDomain ν M V K,
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) p →
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) q → p = q",Positive counts and at least three distinct free levels. Singleton constraints select holds.,,"Component comparisons, boundary cases and exact counterexamples are outside the theorem.","{""uniqueness"":""partial""}"
+sstd,nu+sd,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,dev/lean/UnivariateML/Family/AE1SSTD.lean,327,"At fixed shape, attained two-piece Student fits are almost everywhere unique under held public coefficients.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) {ν : ℝ} (hν : 2 < ν)
+    (hn : 3 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V)
+    (hK : IsClosed K) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
+      ∀ p ∈ heldNuDomain ν M V K, ∀ q ∈ heldNuDomain ν M V K,
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) p →
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) q → p = q",Positive counts and at least three distinct free levels. Singleton constraints select holds.,,"Component comparisons, boundary cases and exact counterexamples are outside the theorem.","{""uniqueness"":""partial""}"
+sstd,nu+xi,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,dev/lean/UnivariateML/Family/AE1SSTD.lean,327,"At fixed shape, attained two-piece Student fits are almost everywhere unique under held public coefficients.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) {ν : ℝ} (hν : 2 < ν)
+    (hn : 3 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V)
+    (hK : IsClosed K) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
+      ∀ p ∈ heldNuDomain ν M V K, ∀ q ∈ heldNuDomain ν M V K,
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) p →
+        IsMaxOn (fun r ↦ fixedShapeLogLik w ν r x) (heldNuDomain ν M V K) q → p = q",Positive counts and at least three distinct free levels. Singleton constraints select holds.,,"Component comparisons, boundary cases and exact counterexamples are outside the theorem.","{""uniqueness"":""partial""}"
+sged,mean+xi,UnivariateML.AE1SGED.held_mean_unit_skew_ae_unique,dev/lean/UnivariateML/Family/AE1SGED.lean,73,An attained finite SGED fit is almost everywhere unique at held mean and unit skew.,"(w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
+    (m : ℝ) (hn : 2 ≤ n) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, ∀ p ∈ Ici 1 ×ˢ Ioi 0, ∀ q ∈ Ici 1 ×ˢ Ioi 0,
+      IsMaxOn (fun r ↦ unitSkewLogLik w m r x) (Ici 1 ×ˢ Ioi 0) p →
+      IsMaxOn (fun r ↦ unitSkewLogLik w m r x) (Ici 1 ×ˢ Ioi 0) q → p = q",Positive counts and at least two free levels. Fitted shape at least one and inverse total kernel width.,,Unit skew only.,"{""uniqueness"":""partial""}"
+sged,mean+sd+xi,UnivariateML.AE1SGED.held_mean_sd_unit_skew_ae_unique,dev/lean/UnivariateML/Family/AE1SGED.lean,99,"An attained finite SGED shape is almost everywhere unique at held mean, standard deviation and unit skew.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
+    (m sd : ℝ) (hsd : 0 < sd) (hn : 2 ≤ n) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, ∀ p q : ℝ, p ∈ Ici 1 → q ∈ Ici 1 →
+      IsMaxOn (fun a ↦ unitSkewHeldSdLogLik w m sd a x) (Ici 1) p →
+      IsMaxOn (fun a ↦ unitSkewHeldSdLogLik w m sd a x) (Ici 1) q → p = q",Positive counts and at least two free levels. Fitted shape at least one.,,Unit skew only.,"{""uniqueness"":""partial""}"
+tlambda,lambda+sigma,UnivariateML.AE1TukeyLambda.held_uniform_shape_scale_locations,dev/lean/UnivariateML/Family/AE1TukeyLambda.lean,48,"At uniform shape and held scale, the maximizing locations are exactly the support-compatible locations.","{n : ℕ} (x : Fin n → ℝ)
+    {lam s : ℝ} (hlam : lam = 1 ∨ lam = 2) (hs : 0 < s) (m : ℝ) :
+    (∃ p : Fin n → ℝ, (m, p) ∈ heldScaleGraph x lam s ∧
+      IsMaxOn (graphLikelihood lam s) (heldScaleGraph x lam s) (m, p)) ↔
+      ∀ j, m ∈ Icc (x j - s / lam) (x j + s / lam)",Held shape one or two and positive scale.,,Uniform branches only.,"{""uniqueness"":""partial""}"
+huber,mu+sigma,UnivariateML.AE1Huber.held_mu_sigma_ae_unique,dev/lean/UnivariateML/Family/AE1Huber.lean,196,An attained finite Huber cutoff is almost everywhere unique at held location and scale.,"(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 0 < n)
+    (m : ℝ) {s : ℝ} (hs : 0 < s) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, ∀ c d : ℝ, 0 < c → 0 < d →
+      IsMaxOn (fun t ↦ logLik w m s t x) (Ioi 0) c →
+      IsMaxOn (fun t ↦ logLik w m s t x) (Ioi 0) d → c = d",Positive counts and at least one free level.,,Pinned observations and the weighted stationary inventory are outside the theorem.,"{""uniqueness"":""partial""}"
+huber,sigma,UnivariateML.AE1Huber.held_sigma_ae_unique_cutoff,dev/lean/UnivariateML/Family/AE1Huber.lean,309,An attained finite Huber cutoff is almost everywhere unique at held scale.,"(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 3 ≤ n)
+    {s : ℝ} (hs : 0 < s) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
+      ∀ p q : ℝ × ℝ, scaleWinner w s x p → scaleWinner w s x q → p.1 = q.1",Positive counts and at least three distinct free levels.,,The cutoff is unique. Multiple locations at that cutoff are possible.,"{""uniqueness"":""partial""}"
+emg,mu+sigma,UnivariateML.AE1EMG.held_mu_sigma_ae_unique,dev/lean/UnivariateML/Family/AE1EMG.lean,221,An attained finite EMG rate is almost everywhere unique at held location and Gaussian scale.,"(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 0 < n)
+    (m : ℝ) {s : ℝ} (hs : 0 < s) :
+    ∀ᵐ x : Fin n → ℝ ∂volume, ∀ p ∈ Ioi 0, ∀ q ∈ Ioi 0,
+      IsMaxOn (fun r ↦ logLik w m s r x) (Ioi 0) p →
+      IsMaxOn (fun r ↦ logLik w m s r x) (Ioi 0) q → p = q",Positive counts and at least one free level.,,"Pinned observations, the constant-positive case and stationary inventory are outside the theorem.","{""uniqueness"":""partial""}"
