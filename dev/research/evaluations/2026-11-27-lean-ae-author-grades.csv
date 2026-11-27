@@ -1,0 +1,130 @@
+fragment,family,regime,theorem,author_coverage
+lean-ae1,ged,mean,UnivariateML.AE1GED.held_mean_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,ged,mean+sd,UnivariateML.AE1GED.held_mean_sd_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,sstd,nu,UnivariateML.AE1SSTD.held_nu_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,sstd,nu,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,sstd,mean+nu,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,sstd,mean+nu+sd,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,sstd,mean+nu+xi,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,sstd,nu+sd,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,sstd,nu+xi,UnivariateML.AE1SSTD.held_nu_with_holds_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,sged,mean+xi,UnivariateML.AE1SGED.held_mean_unit_skew_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,sged,mean+sd+xi,UnivariateML.AE1SGED.held_mean_sd_unit_skew_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,tlambda,lambda+sigma,UnivariateML.AE1TukeyLambda.held_uniform_shape_scale_locations,"{""uniqueness"":""partial""}"
+lean-ae1,huber,mu+sigma,UnivariateML.AE1Huber.held_mu_sigma_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae1,huber,sigma,UnivariateML.AE1Huber.held_sigma_ae_unique_cutoff,"{""uniqueness"":""partial""}"
+lean-ae1,emg,mu+sigma,UnivariateML.AE1EMG.held_mu_sigma_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae2,fatigue,alpha+mu,UnivariateML.AE2Fatigue.held_alpha_mu_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,fatigue,alpha+beta,UnivariateML.AE2Fatigue.held_alpha_beta_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,fatigue,alpha+mu,UnivariateML.AE2Fatigue.held_alpha_mu_two_level_tie,"{""uniqueness"": ""partial""}"
+lean-ae2,lomax,all free,UnivariateML.AE2Lomax.lomax_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,pareto2,min,UnivariateML.AE2Lomax.pareto2_held_min_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,invpareto,all free,UnivariateML.AE2Lomax.invpareto_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,burr,shape2,UnivariateML.AE2Lomax.burr_held_shape2_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,invburr,shape2,UnivariateML.AE2Lomax.invburr_held_shape2_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,pareto4,min+shape2,UnivariateML.AE2Lomax.pareto4_held_min_shape2_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,betapr,all free,UnivariateML.AE2BetaPrime.all_free_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,betapr,shape1,UnivariateML.AE2BetaPrime.held_shape1_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,betapr,shape2,UnivariateML.AE2BetaPrime.held_shape2_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae2,genbeta,scale+shape2,UnivariateML.AE2GenBetaUnit.held_scale_unit_ridge,"{""uniqueness"": ""partial""}"
+lean-ae2,genbeta,shape2,UnivariateML.AE2GenBetaUnit.unit_ridge_at_max,"{""uniqueness"": ""partial""}"
+lean-ae3,betapr,shape1,UnivariateML.AE3LomaxTies.betapr_held_shape1_unit_tie,"{""uniqueness"": ""full""}"
+lean-ae3,betapr,shape2,UnivariateML.AE3LomaxTies.betapr_held_shape2_unit_tie,"{""uniqueness"": ""full""}"
+lean-ae3,burr,all free,UnivariateML.AE3GB2.burr_all_free_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,expweibull,all free,UnivariateML.AE3ExpWeibull.all_free_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,expweibull,scale,UnivariateML.AE3ExpWeibull.held_scale_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,fatigue,alpha,UnivariateML.AE3Fatigue.held_alpha_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,fatigue,beta,UnivariateML.AE3Fatigue.held_beta_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,fatigue,beta,UnivariateML.AE3FatigueCritical.held_beta_critical_sample_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,fpareto,min,UnivariateML.AE3GB2.fpareto_held_min_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,fpareto,min+shape1,UnivariateML.AE3GB2.fpareto_held_min_shape1_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,fpareto,min+shape3,UnivariateML.AE3GB2.fpareto_held_min_shape3_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,fpareto,scale+shape2+shape3,UnivariateML.AE3GB2.fpareto_held_scale_shape2_shape3_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,fpareto,scale+shape2+shape3,UnivariateML.AE3GB2.fpareto_unit_lower_end_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,frechet,all free,UnivariateML.AE3Frechet.all_free_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,frechet,sigma,UnivariateML.AE3Frechet.held_sigma_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,gb2,all free,UnivariateML.AE3GB2.gb2_all_free_ae_unique,"{""uniqueness"": ""full""}"
+lean-ae3,gb2,shape1,UnivariateML.AE3GB2.gb2_held_shape1_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,gb2,shape3,UnivariateML.AE3GB2.gb2_held_shape3_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,genbeta,scale,UnivariateML.AE3GenBeta.held_scale_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,genbeta,scale+shape2,UnivariateML.AE3GenBeta.held_scale_shape2_ae_unique,"{""uniqueness"": ""full""}"
+lean-ae3,genbeta,shape2,UnivariateML.AE3GenBeta.held_shape2_ae_unique,"{""uniqueness"": ""full""}"
+lean-ae3,generic,generic,UnivariateML.AE3AnalyticIncidence.ae_no_analytic_incidence,
+lean-ae3,generic,generic,UnivariateML.AE3AnalyticIncidence.ae_no_identified_score_ties,
+lean-ae3,generic,generic,UnivariateML.AE3AnalyticIncidence.exists_derivative_before_nonzero,
+lean-ae3,generic,generic,UnivariateML.AE3WeightedChart.ae_unique_class_of_analytic_score,
+lean-ae3,generic,generic,UnivariateML.AE3WeightedChart.ae_unique_of_analytic_score,
+lean-ae3,generic,generic,UnivariateML.AE3WeightedChart.ae_winning_class,
+lean-ae3,generic,generic,UnivariateML.AE3WeightedChart.ae_winning_class_analytic,
+lean-ae3,gengamma,all free,UnivariateML.AE3GenGamma.all_free_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,gengamma,mu,UnivariateML.AE3GenGamma.held_mu_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,gengamma,mu+sigma,UnivariateML.AE3GenGamma.held_mu_sigma_ae_unique,"{""uniqueness"": ""full""}"
+lean-ae3,gengamma,sigma,UnivariateML.AE3GenGamma.held_sigma_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,gev,all free,UnivariateML.AE3GEV.reverseLikelihood_eq_gev,
+lean-ae3,gev,all free,UnivariateML.AE3GEV.reverse_all_free_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,gev,all free,UnivariateML.AE3GEV.reverse_contact_hasDeriv,
+lean-ae3,gev,mu,UnivariateML.AE3GEV.reverse_held_mu_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,gev,sigma,UnivariateML.AE3GEV.reverse_held_sigma_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,invburr,all free,UnivariateML.AE3GB2.invburr_all_free_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,invtrgamma,all free,UnivariateML.AE3TrGamma.invtrgamma_all_free_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,invtrgamma,scale,UnivariateML.AE3TrGamma.invtrgamma_held_scale_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,pareto4,min,UnivariateML.AE3GB2.pareto4_held_min_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,pareto4,min+shape2,UnivariateML.AE3LomaxTies.pareto4_held_min_unit_power_tie,"{""uniqueness"": ""full""}"
+lean-ae3,pareto4,scale+shape2,UnivariateML.AE3GB2.pareto4_held_scale_shape2_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,pareto4,scale+shape2,UnivariateML.AE3GB2.pareto4_unit_power_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,pgw,scale,UnivariateML.AE3PGW.held_scale_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,pgw,shape,UnivariateML.AE3PGW.held_shape_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,trgamma,all free,UnivariateML.AE3TrGamma.trgamma_all_free_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae3,trgamma,scale,UnivariateML.AE3TrGamma.trgamma_held_scale_ae_unique,"{""uniqueness"": ""partial""}"
+lean-ae4,emg,all free,UnivariateML.AE4Analytic.ae_no_analytic_incidence,
+lean-ae4,emg,all free,UnivariateML.AE4Analytic.ae_unique_analytic_scores,
+lean-ae4,emg,all free,UnivariateML.AE4Analytic.ae_unique_analytic_scores_with_offset,
+lean-ae4,sn,all free,UnivariateML.AE4Gaussian.analyticAt_phi,
+lean-ae4,sn,all free,UnivariateML.AE4Gaussian.analyticAt_Phi,
+lean-ae4,sstd,all free,UnivariateML.AE4SSTD.ae_unique_four_levels,
+lean-ae4,sstd,all free,UnivariateML.AE4SSTD.ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sstd,mean,UnivariateML.AE4SSTD.ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sstd,mean+sd,UnivariateML.AE4SSTD.ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sstd,mean+sd+xi,UnivariateML.AE4SSTD.ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sstd,mean+xi,UnivariateML.AE4SSTD.ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sstd,sd,UnivariateML.AE4SSTD.ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sstd,sd+xi,UnivariateML.AE4SSTD.ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sstd,xi,UnivariateML.AE4SSTD.ae_unique_with_holds,"{""uniqueness"":""full""}"
+lean-ae4,sstd,mean+xi,UnivariateML.AE4SSTD.held_mean_unit_skew_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,sstd,mean+sd+xi,UnivariateML.AE4SSTD.held_mean_unit_skew_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,sstd,all free,UnivariateML.AE4SSTD.constant_nonattainment,"{""failure"":""partial""}"
+lean-ae4,sged,all free,UnivariateML.AE4SGED.join_eq_of_four_scores,
+lean-ae4,sged,all free,UnivariateML.AE4SGED.superunit_ae_unique,
+lean-ae4,sged,nu,UnivariateML.AE4SGED.held_nu_superunit_ae_unique,
+lean-ae4,sged,all free,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sged,mean,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sged,mean+sd,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sged,mean+sd+xi,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sged,mean+xi,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sged,sd,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sged,sd+xi,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sged,xi,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sged,mean+nu,UnivariateML.AE4SGED.held_nu_superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sged,nu,UnivariateML.AE4SGED.held_nu_superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,sged,nu+sd,UnivariateML.AE4SGED.held_nu_superunit_ae_unique_with_holds,"{""uniqueness"":""partial""}"
+lean-ae4,ged,all free,UnivariateML.AE4GED.superunit_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,ged,sd,UnivariateML.AE4GED.superunit_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,emg,all free,UnivariateML.AE4EMG.all_free_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,emg,lambda,UnivariateML.AE4EMG.held_lambda_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,emg,mu,UnivariateML.AE4EMG.held_mu_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,emg,sigma,UnivariateML.AE4EMG.held_sigma_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,emg,lambda+mu,UnivariateML.AE4EMG.held_lambda_mu_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,sn,all free,UnivariateML.AE4SN.all_free_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,sn,omega,UnivariateML.AE4SN.held_omega_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,bhatt,mu+sigma,UnivariateML.AE4Bhatt.tiltedMean_strictMono,
+lean-ae4,bhatt,mu+sigma,UnivariateML.AE4Bhatt.spatialScore_strictMono,
+lean-ae4,bhatt,mu+sigma,UnivariateML.AE4Bhatt.held_mu_sigma_ae_unique,"{""uniqueness"":""partial""}"
+lean-ae4,bhatt,mu+sigma,UnivariateML.AE4Bhatt.held_mu_sigma_all_center_unique,"{""uniqueness"":""partial""}"
+lean-ae4,huber,all free,UnivariateML.AE4Huber.parameters_eq_of_scores,
+lean-ae4,huber,mu,UnivariateML.AE4Huber.held_mu_parameters_eq_of_scores,
+lean-ae4,huber,all free,UnivariateML.AE4Huber.pathReciprocal_strictMono,
+lean-ae4,huber,mu,UnivariateML.AE4Huber.pathReciprocal_strictMono,
+lean-ae4,tlambda,lambda,UnivariateML.AE4TukeyLambda.quantile_analytic,
+lean-ae4,tlambda,lambda,UnivariateML.AE4TukeyLambda.exists_analytic_inverse,
+lean-ae4,tlambda,lambda+sigma,UnivariateML.AE4TukeyLambda.exists_analytic_inverse,
+lean-ae4,tlambda,all free,UnivariateML.AE4TukeyLambda.quantileExtended_analytic,

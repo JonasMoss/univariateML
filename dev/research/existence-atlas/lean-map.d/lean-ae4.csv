@@ -40,67 +40,67 @@ sstd,all free,UnivariateML.AE4SSTD.ae_unique_with_holds,dev/lean/UnivariateML/Fa
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ domain M V K, ∀ q ∈ domain M V K,
         IsMaxOn (fun r ↦ logLik w r x) (domain M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.","{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.",
 sstd,mean,UnivariateML.AE4SSTD.ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SSTD.lean,520,"With shape free and any combination of mean, variance or skew held, four distinct levels suffice for a.e. finite uniqueness.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 4 ≤ n)
     (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ domain M V K, ∀ q ∈ domain M V K,
         IsMaxOn (fun r ↦ logLik w r x) (domain M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.","{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.",
 sstd,mean+sd,UnivariateML.AE4SSTD.ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SSTD.lean,520,"With shape free and any combination of mean, variance or skew held, four distinct levels suffice for a.e. finite uniqueness.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 4 ≤ n)
     (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ domain M V K, ∀ q ∈ domain M V K,
         IsMaxOn (fun r ↦ logLik w r x) (domain M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.","{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.",
 sstd,mean+sd+xi,UnivariateML.AE4SSTD.ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SSTD.lean,520,"With shape free and any combination of mean, variance or skew held, four distinct levels suffice for a.e. finite uniqueness.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 4 ≤ n)
     (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ domain M V K, ∀ q ∈ domain M V K,
         IsMaxOn (fun r ↦ logLik w r x) (domain M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.","{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.",
 sstd,mean+xi,UnivariateML.AE4SSTD.ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SSTD.lean,520,"With shape free and any combination of mean, variance or skew held, four distinct levels suffice for a.e. finite uniqueness.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 4 ≤ n)
     (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ domain M V K, ∀ q ∈ domain M V K,
         IsMaxOn (fun r ↦ logLik w r x) (domain M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.","{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.",
 sstd,sd,UnivariateML.AE4SSTD.ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SSTD.lean,520,"With shape free and any combination of mean, variance or skew held, four distinct levels suffice for a.e. finite uniqueness.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 4 ≤ n)
     (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ domain M V K, ∀ q ∈ domain M V K,
         IsMaxOn (fun r ↦ logLik w r x) (domain M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.","{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.",
 sstd,sd+xi,UnivariateML.AE4SSTD.ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SSTD.lean,520,"With shape free and any combination of mean, variance or skew held, four distinct levels suffice for a.e. finite uniqueness.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 4 ≤ n)
     (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ domain M V K, ∀ q ∈ domain M V K,
         IsMaxOn (fun r ↦ logLik w r x) (domain M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.","{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.",
 sstd,xi,UnivariateML.AE4SSTD.ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SSTD.lean,520,"With shape free and any combination of mean, variance or skew held, four distinct levels suffice for a.e. finite uniqueness.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 4 ≤ n)
     (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ domain M V K, ∀ q ∈ domain M V K,
         IsMaxOn (fun r ↦ logLik w r x) (domain M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.","{""uniqueness"":""full""}"
+        IsMaxOn (fun r ↦ logLik w r x) (domain M V K) q → p = q",uniqueness,,"Use singleton sets for held values, including variance and squared skew. Auxiliary and exact exceptional-sample claims are separate.",
 sstd,mean+xi,UnivariateML.AE4SSTD.held_mean_unit_skew_ae_unique,dev/lean/UnivariateML/Family/AE4SSTD.lean,531,"At a held mean and unit skew, two unequal nonzero residual radii suffice for a.e. finite uniqueness.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (m : ℝ)
     (V : Set ℝ) (hV : IsClosed V) :
     ∀ᵐ x : Fin n → ℝ ∂volume,
       (∃ i j, x i ≠ m ∧ x j ≠ m ∧ (x i-m)^2 ≠ (x j-m)^2) →
       ∀ p ∈ domain {m} V {1}, ∀ q ∈ domain {m} V {1},
         IsMaxOn (fun r ↦ logLik w r x) (domain {m} V {1}) p →
-        IsMaxOn (fun r ↦ logLik w r x) (domain {m} V {1}) q → p = q",uniqueness,,Variance can be held or free.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (domain {m} V {1}) q → p = q",uniqueness,,Variance can be held or free.,
 sstd,mean+sd+xi,UnivariateML.AE4SSTD.held_mean_unit_skew_ae_unique,dev/lean/UnivariateML/Family/AE4SSTD.lean,531,"At a held mean and unit skew, two unequal nonzero residual radii suffice for a.e. finite uniqueness.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (m : ℝ)
     (V : Set ℝ) (hV : IsClosed V) :
     ∀ᵐ x : Fin n → ℝ ∂volume,
       (∃ i j, x i ≠ m ∧ x j ≠ m ∧ (x i-m)^2 ≠ (x j-m)^2) →
       ∀ p ∈ domain {m} V {1}, ∀ q ∈ domain {m} V {1},
         IsMaxOn (fun r ↦ logLik w r x) (domain {m} V {1}) p →
-        IsMaxOn (fun r ↦ logLik w r x) (domain {m} V {1}) q → p = q",uniqueness,,Variance can be held or free.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (domain {m} V {1}) q → p = q",uniqueness,,Variance can be held or free.,
 sstd,all free,UnivariateML.AE4SSTD.constant_nonattainment,dev/lean/UnivariateML/Family/AE4SSTD.lean,582,All-free skew-Student fits cannot attain at a single level of positive count.,"{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 0 < n)
     (x : Fin n → ℝ) (c : ℝ) (hx : ∀ i, x i = c) (p : Parameter)
     (hp : p ∈ domain univ univ univ) :
-    ¬ IsMaxOn (fun q ↦ logLik w q x) (domain univ univ univ) p",failure,,One-level branch. Two-level nonattainment is separate.,"{""failure"":""partial""}"
+    ¬ IsMaxOn (fun q ↦ logLik w q x) (domain univ univ univ) p",failure,,One-level branch. Two-level nonattainment is separate.,
 sged,all free,UnivariateML.AE4SGED.join_eq_of_four_scores,dev/lean/UnivariateML/Family/AE4SGED.lean,185,Equal scores at four distinct levels identify the join of a positive-width superunit two-piece generalized-error law.,"{p q : Parameter}
     (hp : 1 < p.1 ∧ 0 < p.2.2.1 ∧ 0 < p.2.2.2)
     (hq : 1 < q.1 ∧ 0 < q.2.2.1 ∧ 0 < q.2.2.2)
@@ -125,82 +125,82 @@ sged,all free,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,dev/lean/Univa
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain univ M V K, ∀ q ∈ momentDomain univ M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,
 sged,mean,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SGED.lean,589,Four-level a.e. uniqueness among superunit SGED fits with any combination of the indicated holds.,"{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 4 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain univ M V K, ∀ q ∈ momentDomain univ M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,
 sged,mean+sd,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SGED.lean,589,Four-level a.e. uniqueness among superunit SGED fits with any combination of the indicated holds.,"{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 4 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain univ M V K, ∀ q ∈ momentDomain univ M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,
 sged,mean+sd+xi,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SGED.lean,589,Four-level a.e. uniqueness among superunit SGED fits with any combination of the indicated holds.,"{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 4 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain univ M V K, ∀ q ∈ momentDomain univ M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,
 sged,mean+xi,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SGED.lean,589,Four-level a.e. uniqueness among superunit SGED fits with any combination of the indicated holds.,"{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 4 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain univ M V K, ∀ q ∈ momentDomain univ M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,
 sged,sd,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SGED.lean,589,Four-level a.e. uniqueness among superunit SGED fits with any combination of the indicated holds.,"{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 4 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain univ M V K, ∀ q ∈ momentDomain univ M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,
 sged,sd+xi,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SGED.lean,589,Four-level a.e. uniqueness among superunit SGED fits with any combination of the indicated holds.,"{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 4 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain univ M V K, ∀ q ∈ momentDomain univ M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,
 sged,xi,UnivariateML.AE4SGED.superunit_ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SGED.lean,589,Four-level a.e. uniqueness among superunit SGED fits with any combination of the indicated holds.,"{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 4 ≤ n) (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain univ M V K, ∀ q ∈ momentDomain univ M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain univ M V K) q → p = q",uniqueness,,Use singleton sets for held population moments and squared skew. Mixed shape-one comparisons are separate.,
 sged,mean+nu,UnivariateML.AE4SGED.held_nu_superunit_ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SGED.lean,600,"Three-level a.e. uniqueness at a held superunit shape, with optional additional holds.","{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 3 ≤ n) {shape : ℝ} (hs : 1 < shape)
     (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain {shape} M V K, ∀ q ∈ momentDomain {shape} M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain {shape} M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain {shape} M V K) q → p = q",uniqueness,,The moment constraints are explicit. Shape one and subunit charts are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain {shape} M V K) q → p = q",uniqueness,,The moment constraints are explicit. Shape one and subunit charts are separate.,
 sged,nu,UnivariateML.AE4SGED.held_nu_superunit_ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SGED.lean,600,"Three-level a.e. uniqueness at a held superunit shape, with optional additional holds.","{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 3 ≤ n) {shape : ℝ} (hs : 1 < shape)
     (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain {shape} M V K, ∀ q ∈ momentDomain {shape} M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain {shape} M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain {shape} M V K) q → p = q",uniqueness,,The moment constraints are explicit. Shape one and subunit charts are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain {shape} M V K) q → p = q",uniqueness,,The moment constraints are explicit. Shape one and subunit charts are separate.,
 sged,nu+sd,UnivariateML.AE4SGED.held_nu_superunit_ae_unique_with_holds,dev/lean/UnivariateML/Family/AE4SGED.lean,600,"Three-level a.e. uniqueness at a held superunit shape, with optional additional holds.","{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 3 ≤ n) {shape : ℝ} (hs : 1 < shape)
     (M V K : Set ℝ) (hM : IsClosed M) (hV : IsClosed V) (hK : IsClosed K) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ momentDomain {shape} M V K, ∀ q ∈ momentDomain {shape} M V K,
         IsMaxOn (fun r ↦ logLik w r x) (momentDomain {shape} M V K) p →
-        IsMaxOn (fun r ↦ logLik w r x) (momentDomain {shape} M V K) q → p = q",uniqueness,,The moment constraints are explicit. Shape one and subunit charts are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w r x) (momentDomain {shape} M V K) q → p = q",uniqueness,,The moment constraints are explicit. Shape one and subunit charts are separate.,
 ged,all free,UnivariateML.AE4GED.superunit_ae_unique,dev/lean/UnivariateML/Family/AE4GED.lean,36,"At four distinct levels GED has a.e. at most one superunit winner, with variance either held or free.","{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 4 ≤ n) (V : Set ℝ) (hV : IsClosed V) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ domain V, ∀ q ∈ domain V,
         IsMaxOn (fun r ↦ AE4SGED.logLik w r x) (domain V) p →
-        IsMaxOn (fun r ↦ AE4SGED.logLik w r x) (domain V) q → p = q",uniqueness,,Comparison of two superunit candidates only. Leaves shape-one median comparisons and exact ties open.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ AE4SGED.logLik w r x) (domain V) q → p = q",uniqueness,,Comparison of two superunit candidates only. Leaves shape-one median comparisons and exact ties open.,
 ged,sd,UnivariateML.AE4GED.superunit_ae_unique,dev/lean/UnivariateML/Family/AE4GED.lean,36,"At four distinct levels GED has a.e. at most one superunit winner, with variance either held or free.","{n : ℕ} (w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (hn : 4 ≤ n) (V : Set ℝ) (hV : IsClosed V) :
     ∀ᵐ x : Fin n → ℝ ∂volume, Function.Injective x →
       ∀ p ∈ domain V, ∀ q ∈ domain V,
         IsMaxOn (fun r ↦ AE4SGED.logLik w r x) (domain V) p →
-        IsMaxOn (fun r ↦ AE4SGED.logLik w r x) (domain V) q → p = q",uniqueness,,Comparison of two superunit candidates only. Leaves shape-one median comparisons and exact ties open.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ AE4SGED.logLik w r x) (domain V) q → p = q",uniqueness,,Comparison of two superunit candidates only. Leaves shape-one median comparisons and exact ties open.,
 emg,all free,UnivariateML.AE4EMG.all_free_ae_unique,dev/lean/UnivariateML/Family/AE4EMG.lean,212,"At seven freely varying levels, an attained finite EMG fit is almost everywhere unique.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (v : Fin kfixed → ℕ) (y : Fin kfixed → ℝ) (hn : 7 ≤ n) :
     ∀ᵐ x : Fin n → ℝ ∂volume,
@@ -209,7 +209,7 @@ emg,all free,UnivariateML.AE4EMG.all_free_ae_unique,dev/lean/UnivariateML/Family
         IsMaxOn (fun r ↦ logLik w v y (r 0) (r 1) (r 2) x)
           (domain (fun p : Fin 3 → ℝ ↦ p 1) (fun p ↦ p 2)) p →
         IsMaxOn (fun r ↦ logLik w v y (r 0) (r 1) (r 2) x)
-          (domain (fun p : Fin 3 → ℝ ↦ p 1) (fun p ↦ p 2)) q → p = q",uniqueness,,"Finite location, Gaussian scale and rate. The exact crossing is separate.","{""uniqueness"":""partial""}"
+          (domain (fun p : Fin 3 → ℝ ↦ p 1) (fun p ↦ p 2)) q → p = q",uniqueness,,"Finite location, Gaussian scale and rate. The exact crossing is separate.",
 emg,lambda,UnivariateML.AE4EMG.held_lambda_ae_unique,dev/lean/UnivariateML/Family/AE4EMG.lean,231,"At held rate, at five freely varying levels, an attained finite EMG fit is almost everywhere unique.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (v : Fin kfixed → ℕ) (y : Fin kfixed → ℝ)
     (r : ℝ) (hn : 5 ≤ n) :
@@ -219,7 +219,7 @@ emg,lambda,UnivariateML.AE4EMG.held_lambda_ae_unique,dev/lean/UnivariateML/Famil
         IsMaxOn (fun p ↦ logLik w v y (p 0) (p 1) r x)
           (domain (fun p : Fin 2 → ℝ ↦ p 1) (fun _ ↦ r)) p →
         IsMaxOn (fun p ↦ logLik w v y (p 0) (p 1) r x)
-          (domain (fun p : Fin 2 → ℝ ↦ p 1) (fun _ ↦ r)) q → p = q",uniqueness,,Stationary scale inventory is separate.,"{""uniqueness"":""partial""}"
+          (domain (fun p : Fin 2 → ℝ ↦ p 1) (fun _ ↦ r)) q → p = q",uniqueness,,Stationary scale inventory is separate.,
 emg,mu,UnivariateML.AE4EMG.held_mu_ae_unique,dev/lean/UnivariateML/Family/AE4EMG.lean,250,"At held location, at five freely varying levels, an attained finite EMG fit is almost everywhere unique.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (v : Fin kfixed → ℕ) (y : Fin kfixed → ℝ)
     (m : ℝ) (hn : 5 ≤ n) :
@@ -229,7 +229,7 @@ emg,mu,UnivariateML.AE4EMG.held_mu_ae_unique,dev/lean/UnivariateML/Family/AE4EMG
         IsMaxOn (fun p ↦ logLik w v y m (p 0) (p 1) x)
           (domain (fun p : Fin 2 → ℝ ↦ p 0) (fun p ↦ p 1)) p →
         IsMaxOn (fun p ↦ logLik w v y m (p 0) (p 1) x)
-          (domain (fun p : Fin 2 → ℝ ↦ p 0) (fun p ↦ p 1)) q → p = q",uniqueness,,The constant-positive class and stationary inventory are separate.,"{""uniqueness"":""partial""}"
+          (domain (fun p : Fin 2 → ℝ ↦ p 0) (fun p ↦ p 1)) q → p = q",uniqueness,,The constant-positive class and stationary inventory are separate.,
 emg,sigma,UnivariateML.AE4EMG.held_sigma_ae_unique,dev/lean/UnivariateML/Family/AE4EMG.lean,269,"At held Gaussian scale, at five freely varying levels, an attained finite EMG fit is almost everywhere unique.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (v : Fin kfixed → ℕ) (y : Fin kfixed → ℝ)
     (s : ℝ) (hn : 5 ≤ n) :
@@ -239,7 +239,7 @@ emg,sigma,UnivariateML.AE4EMG.held_sigma_ae_unique,dev/lean/UnivariateML/Family/
         IsMaxOn (fun p ↦ logLik w v y (p 0) s (p 1) x)
           (domain (fun _ : Fin 2 → ℝ ↦ s) (fun p ↦ p 1)) p →
         IsMaxOn (fun p ↦ logLik w v y (p 0) s (p 1) x)
-          (domain (fun _ : Fin 2 → ℝ ↦ s) (fun p ↦ p 1)) q → p = q",uniqueness,,The finite stationary rate list is separate.,"{""uniqueness"":""partial""}"
+          (domain (fun _ : Fin 2 → ℝ ↦ s) (fun p ↦ p 1)) q → p = q",uniqueness,,The finite stationary rate list is separate.,
 emg,lambda+mu,UnivariateML.AE4EMG.held_lambda_mu_ae_unique,dev/lean/UnivariateML/Family/AE4EMG.lean,288,"At held rate and location, at three freely varying levels, an attained finite EMG fit is almost everywhere unique.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i)
     (v : Fin kfixed → ℕ) (y : Fin kfixed → ℝ)
     (r m : ℝ) (hn : 3 ≤ n) :
@@ -249,17 +249,17 @@ emg,lambda+mu,UnivariateML.AE4EMG.held_lambda_mu_ae_unique,dev/lean/UnivariateML
         IsMaxOn (fun p ↦ logLik w v y m (p 0) r x)
           (domain (fun p : Fin 1 → ℝ ↦ p 0) (fun _ ↦ r)) p →
         IsMaxOn (fun p ↦ logLik w v y m (p 0) r x)
-          (domain (fun p : Fin 1 → ℝ ↦ p 0) (fun _ ↦ r)) q → p = q",uniqueness,,The weighted likelihood also allows any fixed observations. The nonpositive pointwise class is separate.,"{""uniqueness"":""partial""}"
+          (domain (fun p : Fin 1 → ℝ ↦ p 0) (fun _ ↦ r)) q → p = q",uniqueness,,The weighted likelihood also allows any fixed observations. The nonpositive pointwise class is separate.,
 sn,all free,UnivariateML.AE4SN.all_free_ae_unique,dev/lean/UnivariateML/Family/AE4SN.lean,250,"At seven freely varying levels, an attained finite skew-normal fit is almost everywhere unique.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 7 ≤ n) :
     ∀ᵐ x : Fin n → ℝ ∂volume,
       ∀ p ∈ domain (fun p : Fin 3 → ℝ ↦ p 1), ∀ q ∈ domain (fun p : Fin 3 → ℝ ↦ p 1),
         IsMaxOn (fun r ↦ logLik w (r 0) (r 1) (r 2) x) (domain (fun p ↦ p 1)) p →
-        IsMaxOn (fun r ↦ logLik w (r 0) (r 1) (r 2) x) (domain (fun p ↦ p 1)) q → p = q",uniqueness,,Finite fits only. Exact reflected sample and half-normal comparison are separate.,"{""uniqueness"":""partial""}"
+        IsMaxOn (fun r ↦ logLik w (r 0) (r 1) (r 2) x) (domain (fun p ↦ p 1)) q → p = q",uniqueness,,Finite fits only. Exact reflected sample and half-normal comparison are separate.,
 sn,omega,UnivariateML.AE4SN.held_omega_ae_unique,dev/lean/UnivariateML/Family/AE4SN.lean,268,"At held positive scale and five freely varying levels, an attained finite skew-normal fit is almost everywhere unique.","(w : Fin n → ℕ) (hw : ∀ i, 0 < w i) (hn : 5 ≤ n)
     {s : ℝ} (hs : 0 < s) :
     ∀ᵐ x : Fin n → ℝ ∂volume, ∀ p q : Fin 2 → ℝ,
       IsMaxOn (fun r ↦ logLik w (r 0) s (r 1) x) univ p →
-      IsMaxOn (fun r ↦ logLik w (r 0) s (r 1) x) univ q → p = q",uniqueness,,Finite fits only. Exact reflected sample and half-normal comparison are separate.,"{""uniqueness"":""partial""}"
+      IsMaxOn (fun r ↦ logLik w (r 0) s (r 1) x) univ q → p = q",uniqueness,,Finite fits only. Exact reflected sample and half-normal comparison are separate.,
 bhatt,mu+sigma,UnivariateML.AE4Bhatt.tiltedMean_strictMono,dev/lean/UnivariateML/Family/AE4Bhatt.lean,129,At a positive residual the conditional mean of the uniform displacement is strictly increasing in positive width.,"{d s : ℝ} (hd : 0 < d) (hs : 0 < s) :
     StrictMonoOn (tiltedMean d s) (Ioi 0)",,,Strict weighted integral comparison.,
 bhatt,mu+sigma,UnivariateML.AE4Bhatt.spatialScore_strictMono,dev/lean/UnivariateML/Family/AE4Bhatt.lean,193,At a positive residual the spatial score is strictly increasing in positive width.,"{d s : ℝ} (hd : 0 < d) (hs : 0 < s) :
@@ -268,11 +268,11 @@ bhatt,mu+sigma,UnivariateML.AE4Bhatt.held_mu_sigma_ae_unique,dev/lean/Univariate
     (hn : 0 < n) (m : ℝ) {s : ℝ} (hs : 0 < s) :
     ∀ᵐ x : Fin n → ℝ ∂volume, ∀ a ∈ Ici 0, ∀ b ∈ Ici 0,
       IsMaxOn (fun r ↦ logLik w m s r x) (Ici 0) a →
-      IsMaxOn (fun r ↦ logLik w m s r x) (Ici 0) b → a = b",uniqueness,,"Fixed residual atoms, the normal threshold and two-width witness are separate.","{""uniqueness"":""partial""}"
+      IsMaxOn (fun r ↦ logLik w m s r x) (Ici 0) b → a = b",uniqueness,,"Fixed residual atoms, the normal threshold and two-width witness are separate.",
 bhatt,mu+sigma,UnivariateML.AE4Bhatt.held_mu_sigma_all_center_unique,dev/lean/UnivariateML/Family/AE4Bhatt.lean,432,"At a held positive Gaussian scale with every observation at the held center, the normal is the unique width.","{n : ℕ} (w : Fin n → ℕ)
     (hw : ∀ i, 0 < w i) (hn : 0 < n) (m : ℝ) {s : ℝ} (hs : 0 < s)
     (x : Fin n → ℝ) (hx : ∀ i, x i = m) :
-    ∃! a : ℝ, a ∈ Ici 0 ∧ IsMaxOn (fun r ↦ logLik w m s r x) (Ici 0) a",uniqueness,,Exact on the all-center stratum.,"{""uniqueness"":""partial""}"
+    ∃! a : ℝ, a ∈ Ici 0 ∧ IsMaxOn (fun r ↦ logLik w m s r x) (Ici 0) a",uniqueness,,Exact on the all-center stratum.,
 huber,all free,UnivariateML.AE4Huber.parameters_eq_of_scores,dev/lean/UnivariateML/Family/AE4Huber.lean,86,Two equal Huber score vectors with a tail in each candidate and two distinct strict core levels identify all three coordinates.,"{n : ℕ} {x : Fin n → ℝ} {m B K m' B' K' : ℝ}
     (hB : 0 < B) (hK : 0 < K) (hK' : 0 < K')
     (ht : ∃ i, K ≤ |B * (m - x i)|) (ht' : ∃ i, K' ≤ |B'*(m'-x i)|)
