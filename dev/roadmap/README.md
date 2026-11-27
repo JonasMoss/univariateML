@@ -183,3 +183,7 @@ the queue.
   *(landed 2026-10-30)*: `mlX()` and `mlX(coef = ...)` without
   data build a fixed model at README defaults; replaces `simulate_default`
   and `:::` in examples; no densities exported.
+- [2026-11-27 — Sample-checkable existence conditions](2026-11-27-sample-checkable-existence.md)
+  *(not scheduled)*: for the ~100 comparison-form atlas criteria, prove sufficient
+  conditions on both sides and measure the gap; also the 15 regimes with a
+  one-sided criterion (hypergeometric has a variance-versus-mean procedure already).
