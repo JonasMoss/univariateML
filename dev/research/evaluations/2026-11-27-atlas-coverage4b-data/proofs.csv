@@ -1,0 +1,2 @@
+family,held,question,claim,direction,status,evidence,frontier,origin
+sged,mean+nu+xi,uniqueness,"Unique for held shape at least 1 when attained; not unique in general: the one-observation sample (-1) at held mean 0, shape 1/2 and skew xi = sqrt(1 + A^2/6), where A = max_{t>0} log(1+t^2)/t, has distinct positive global scale maximizers.",one-sided,written,dev/research/evaluations/2026-11-27-lean-twopiece-report.md#heldmeanskew_subunittie,Classify the full maximizing set at arbitrary subunit held shapes.,TASK-429
