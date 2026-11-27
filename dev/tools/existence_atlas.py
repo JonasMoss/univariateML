@@ -22,6 +22,14 @@ from existence_keys import limit_groups
 DIST = ROOT / 'univariateML-cpp/include/cppunivariate/distributions'
 ATLAS = ROOT / 'dev/research/existence-atlas'
 QUESTIONS = ('criterion', 'failure', 'uniqueness')
+TRUNCATE_MODIFIERS = tuple(f'truncate:{value}' for value in
+                           ('known', 'lower-estimated', 'upper-estimated', 'both-estimated'))
+ZERO_MODIFIERS = tuple(f'zero:{value}' for value in ('truncated', 'modified', 'inflated'))
+ZERO_ATOMS = {'zero:modified': 'p0', 'zero:inflated': 'pi'}
+MODIFIER_PROOF_FIELDS = ('family', 'held', 'modifier', 'question', 'claim', 'direction',
+                         'status', 'evidence', 'frontier', 'origin')
+MODIFIER_DIRECTIONS = {'iff', 'exact', 'one-sided', 'open'}
+MODIFIER_STATUSES = {'written', 'cited', 'unproved'}
 PROVED = {'lean', 'written', 'cited'}
 LIMIT_GRADES = {'proved', 'numerical', 'argued', 'conjecture'}
 PROOF_RANK = {'lean': 2, 'written': 1, 'cited': 1, 'unproved': 0}
@@ -353,6 +361,158 @@ def audit(coverage):
         raise ValueError(f'Lean coverage without atlas claim: {sorted(coverage.keys() - used_coverage)}')
 
 
+def modifier_regimes(base_rows):
+    metadata = {meta['id']: meta for _, meta, _ in dossiers()}
+    for base in base_rows:
+        family, held = base['family'], base['held']
+        meta = metadata[family]
+        declared = meta.get('modifiers', {})
+        support = meta['support']
+        zero_eligible = (
+            support['type'] == 'integer' and str(support['lower']) in ('0', '0.0')
+            and not set(meta.get('construction', [])) & {'truncation', 'modification'}
+        ) or declared.get('zero_exception', False)
+        mask = set() if held == 'all free' else set(held.split('+'))
+        modifiers = TRUNCATE_MODIFIERS + (ZERO_MODIFIERS if zero_eligible else ())
+        for modifier in modifiers:
+            kind, value = modifier.split(':')
+            if kind == 'zero':
+                capability = declared.get('zero', {}).get(value, {})
+                exceptions = capability.get('holds', meta.get('holds', []))
+            else:
+                capability = declared.get('truncate', {})
+                exceptions = capability.get('holds', [])
+            status = capability.get('status', 'not-implemented')
+            if (base['stage'] != 'fit' or
+                    not set(capability.get('requires_held', ())) <= mask or
+                    set(capability.get('requires_free', ())) & mask):
+                status = 'not-implemented'
+            if status == 'implemented':
+                status = next((entry['status'] for entry in exceptions
+                               if set(entry['held']) == mask), status)
+            regime = dict(family=family, held=held, modifier=modifier,
+                          implemented=str(status == 'implemented').lower(),
+                          implementation_status=status,
+                          implementation_domain=capability.get('domain_bounded', ''))
+            yield regime
+            if modifier in ZERO_ATOMS:
+                yield dict(regime, held='+'.join(sorted(mask | {ZERO_ATOMS[modifier]})))
+
+
+def read_modifier_proofs(path, regimes):
+    families = {row['family'] for row in regimes}
+    base_masks = {(row['family'], row['held']) for row in regimes
+                  if row['modifier'] == 'truncate:known'}
+    keys = {(row['family'], row['held'], row['modifier']) for row in regimes}
+    reviewed = defaultdict(dict)
+    seen = set()
+    anchors = {}
+    issues = []
+    with path.open(newline='', encoding='utf-8') as stream:
+        reader = csv.DictReader(stream, strict=True)
+        try:
+            if tuple(reader.fieldnames or ()) != MODIFIER_PROOF_FIELDS:
+                return reviewed, [f'{path}: expected header {",".join(MODIFIER_PROOF_FIELDS)}']
+            for row in reader:
+                location = f'{path}:{reader.line_num}'
+                if None in row or None in row.values():
+                    issues.append(f'{location}: wrong number of fields')
+                    continue
+                family, held, modifier, question = (row[field] for field in MODIFIER_PROOF_FIELDS[:4])
+                regime = family, held or 'all free', modifier
+                label = f'{location}: {" / ".join((*regime, question))}'
+                errors = []
+                if family not in families:
+                    errors.append('unknown family')
+                if modifier not in TRUNCATE_MODIFIERS + ZERO_MODIFIERS:
+                    errors.append('unknown modifier')
+                elif family in families and regime not in keys:
+                    mask = set(regime[1].split('+'))
+                    atom = ZERO_ATOMS.get(modifier)
+                    parent_held = '+'.join(sorted(mask - {atom})) or 'all free'
+                    if ((family, parent_held) in base_masks
+                            and regime[1] == '+'.join(sorted(mask))
+                            and (family, parent_held, modifier) not in keys):
+                        errors.append('ineligible modifier')
+                    else:
+                        errors.append('no modifier regime for held mask')
+                if question not in QUESTIONS and not (
+                        question.startswith('case:') and question.removeprefix('case:').strip()):
+                    errors.append('unknown question')
+                if row['status'] not in MODIFIER_STATUSES:
+                    errors.append('unknown proof status')
+                if row['direction'] not in MODIFIER_DIRECTIONS:
+                    errors.append('unknown proof direction')
+                if row['status'] in PROVED and (row['direction'] == 'open' or not row['claim'].strip()):
+                    errors.append('proved claim requires wording and a non-open direction')
+                if row['status'] == 'written':
+                    for ref in row['evidence'].split('; '):
+                        file, _, anchor = ref.partition('#')
+                        target = (ROOT / file).resolve()
+                        if not target.is_file():
+                            target = (ATLAS / file).resolve()
+                        if (Path(file).is_absolute() or not target.is_relative_to(ROOT)
+                                or not target.is_file()):
+                            errors.append(f'missing written proof file {file!r}')
+                            continue
+                        if target not in anchors:
+                            anchors[target] = proof_anchors(target)
+                        if anchor not in anchors[target]:
+                            errors.append(f'missing proof anchor {ref!r}')
+                if row['status'] == 'cited' and not row['evidence'].strip():
+                    errors.append('empty citation')
+                claim_key = (*regime, question)
+                if claim_key in seen:
+                    errors.append('duplicate proof key')
+                seen.add(claim_key)
+                if errors:
+                    issues.append(f'{label}: {"; ".join(errors)}')
+                else:
+                    reviewed[regime][question] = {
+                        field: row[field] for field in MODIFIER_PROOF_FIELDS[4:]
+                    }
+        except csv.Error as error:
+            issues.append(f'{path}:{reader.line_num}: {error}')
+    return reviewed, issues
+
+
+def modifier_atlas(regimes, reviewed):
+    for regime in regimes:
+        proofs = reviewed.get(tuple(regime[field] for field in MODIFIER_PROOF_FIELDS[:3]), {})
+        row = dict(regime)
+        for question in QUESTIONS:
+            proof = proofs.get(question, dict(claim='', direction='open', status='unproved',
+                                              evidence='', frontier='', origin=''))
+            row.update({f'{question}_{field}': value for field, value in proof.items()})
+        row['proved_cases'] = encode({question.removeprefix('case:'): proof
+                                      for question, proof in proofs.items()
+                                      if question.startswith('case:')})
+        yield row
+
+
+def modifier_overview(rows):
+    lines = [
+        '# Modifier existence atlas', '',
+        'Generated by `python3 dev/tools/existence_atlas.py`.',
+        'See the [format](README.md) and [regime data](modifier-atlas.csv).', '',
+        f'{len(rows)} eligible regimes. The question columns count proved directions as',
+        'complete or one-sided. The remaining regimes for each question are open.', '',
+        '| Modifier | Eligible | Implemented | Criterion complete / one-sided | '
+        'Failure complete / one-sided | Uniqueness complete / one-sided |',
+        '| --- | ---: | ---: | ---: | ---: | ---: |',
+    ]
+    for modifier in TRUNCATE_MODIFIERS + ZERO_MODIFIERS:
+        subset = [row for row in rows if row['modifier'] == modifier]
+        cells = [modifier, str(len(subset)), str(sum(row['implemented'] == 'true' for row in subset))]
+        for question in QUESTIONS:
+            proved = [row[f'{question}_direction'] for row in subset
+                      if row[f'{question}_status'] in PROVED]
+            complete = sum(direction in {'iff', 'exact'} for direction in proved)
+            cells.append(f"{complete} / {proved.count('one-sided')}")
+        lines.append('| ' + ' | '.join(cells) + ' |')
+    return '\n'.join(lines) + '\n'
+
+
 def group(row):
     if row['criterion_status'] not in PROVED or row['criterion_direction'] != 'iff':
         return 'Criterion open'
@@ -449,11 +609,21 @@ def check_regressions(rows):
     return issues
 
 
+def write_atlas(name, rows):
+    with (ATLAS / name).open('w', newline='', encoding='utf-8') as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator='\n')
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--overview', action='store_true')
-    parser.add_argument('--check', action='store_true',
-                        help='validate Lean map scopes and the saved atlas without rewriting it')
+    checks = parser.add_mutually_exclusive_group()
+    checks.add_argument('--check', action='store_true',
+                        help='validate Lean map scopes and both saved atlases without rewriting them')
+    checks.add_argument('--check-modifier-proofs', metavar='PATH', type=Path,
+                        help='validate an alternate modifier proof file without writing outputs')
     args = parser.parse_args()
     entries = list(lean_map())
     if args.check:
@@ -464,14 +634,35 @@ def main():
             issues = check(entries, regenerated) + check_regressions(regenerated)
             if not issues and regenerated != saved:
                 issues.append('atlas.csv is stale; regenerate the atlas')
+        if issues:
+            for issue in issues:
+                print(issue)
+            return 1
+        rows = regenerated
+    else:
+        rows = list(audit(lean_coverage(entries)))
+    regimes = list(modifier_regimes(rows))
+    proof_path = args.check_modifier_proofs or ATLAS / 'modifier-proofs.csv'
+    reviewed, issues = read_modifier_proofs(proof_path, regimes)
+    if issues:
+        for issue in issues:
+            print(issue)
+        return 1
+    if args.check_modifier_proofs:
+        return 0
+    modified = list(modifier_atlas(regimes, reviewed))
+    summary = modifier_overview(modified)
+    if args.check:
+        if read_csv('modifier-atlas.csv') != modified:
+            issues.append('modifier-atlas.csv is stale; regenerate the atlas')
+        if (ATLAS / 'modifier-overview.md').read_text(encoding='utf-8') != summary:
+            issues.append('modifier-overview.md is stale; regenerate the atlas')
         for issue in issues:
             print(issue)
         return int(bool(issues))
-    rows = list(audit(lean_coverage(entries)))
-    with (ATLAS / 'atlas.csv').open('w', newline='', encoding='utf-8') as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator='\n')
-        writer.writeheader()
-        writer.writerows(rows)
+    write_atlas('atlas.csv', rows)
+    write_atlas('modifier-atlas.csv', modified)
+    (ATLAS / 'modifier-overview.md').write_text(summary, encoding='utf-8')
     table = overview(rows)
     if args.overview:
         target = ATLAS / 'overview.md'
