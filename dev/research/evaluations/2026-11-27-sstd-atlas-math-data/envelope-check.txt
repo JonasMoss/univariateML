@@ -1,0 +1,14 @@
+contact 3.0 fixed 3.4241e-24
+contact 3.0 matched 5.4611e-24
+contact +inf 0 3.1077e-24
+contact +inf 1 2.1064e-24
+contact +inf 10 7.1412e-21
+collapse 0.5 False False 9.375e-13
+collapse 0.5 False True 5.5989e-23
+collapse 0.5 True False 9.375e-13
+collapse 0.5 True True 5.5989e-23
+collapse 0.2 False False 6.0e-13
+collapse 0.2 False True 5.587e-23
+collapse 0.2 True False 1.2728e-6
+collapse 0.2 True True 1.2481e-12
+atlas row audit 39 rows
