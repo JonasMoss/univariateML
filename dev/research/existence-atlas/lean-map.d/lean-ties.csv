@@ -63,14 +63,14 @@ sgomp,all free,UnivariateML.TiesShiftedGompertz.exponential_positive_shape_tie,d
       let p₀ := (exponentialRate x, 0)
       p₀ ∈ jointDomain ∧ IsMaxOn f jointDomain p₀ ∧
         ∃ b > (117 / 200 : ℝ), ∃ η > (0 : ℝ),
-          (b, η) ∈ jointDomain ∧ IsMaxOn f jointDomain (b, η)",,,"The outlier is proved to exist in (8.1, 128). The number of positive-shape winners is open.","{""uniqueness"":""full""}"
+          (b, η) ∈ jointDomain ∧ IsMaxOn f jointDomain (b, η)",,,"The outlier is proved to exist in (8.1, 128). The number of positive-shape winners is open.","{""uniqueness"":""partial""}"
 foldnorm,all free,UnivariateML.TiesFoldedNormal.half_normal_positive_location_tie,dev/lean/UnivariateML/Family/TiesFoldedNormal.lean,756,There is a unique transition in the sample path with 99 repeated observations and one 1 where the half-normal ties a positive-location fit.,":
     ∃! e, e ∈ Ioo (0 : ℝ) (1 / 5) ∧
       let x : Fin 100 → ℝ := fun i ↦ if i = 0 then 1 else e
       let S : Set (ℝ × ℝ) := Ici 0 ×ˢ Ioi 0
       let f := fun p : ℝ × ℝ ↦ logLik x p.1 p.2
       (0, m₂ x) ∈ S ∧ IsMaxOn f S (0, m₂ x) ∧
-        ∃ μ > (0 : ℝ), ∃ t > (0 : ℝ), IsMaxOn f S (μ, t)",,,Variance is the second coordinate. The theorem does not count the positive-location winners.,"{""uniqueness"":""full""}"
+        ∃ μ > (0 : ℝ), ∃ t > (0 : ℝ), IsMaxOn f S (μ, t)",,,Variance is the second coordinate. The theorem does not count the positive-location winners.,"{""uniqueness"":""partial""}"
 bnbinom,alpha,UnivariateML.TiesBNBinom.explicit_diagonal_exclusion,dev/lean/UnivariateML/Family/TiesBNBinom.lean,353,"At held alpha 2 the shapes (1, 100) beat every diagonal point on counts (0, 200).",":
     let p (r b : ℝ) (k : ℕ) :=
       (Gamma (2 + r) * Gamma (2 + b) * Gamma (r + k) * Gamma (b + k)) /

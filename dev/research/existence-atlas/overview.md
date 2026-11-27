@@ -464,7 +464,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | fatigue | alpha+beta | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | fatigue | alpha+mu | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | fatigue | beta | written (iff) | written (exact) | written (one-sided) |
-| foldnorm | all free | lean (iff) | lean (exact) | lean (one-sided) |
+| foldnorm | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | fpareto | min | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | fpareto | min+shape1 | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | fpareto | min+shape3 | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
@@ -508,7 +508,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | invtrgamma | all free | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | invtrgamma | scale | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | lomax | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| lst | all free | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
+| lst | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | lst | df | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | lst | df+sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | lst | mu | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
@@ -535,7 +535,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | sged | sd | written (iff) | written (exact) | written (one-sided) |
 | sged | sd+xi | written (iff) | written (exact) | written (one-sided) |
 | sged | xi | lean (iff) | lean (exact) | written (one-sided) |
-| sgomp | all free | lean (iff) | lean (exact) | lean (one-sided) |
+| sgomp | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | skellam | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | slash | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | slash | sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |

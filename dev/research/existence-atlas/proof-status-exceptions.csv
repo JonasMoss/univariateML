@@ -19,3 +19,6 @@ pareto2,min,criterion,written,The Lean transfer assumes positive excesses. The w
 sn,all free,criterion,written,The finite-witness and stationary criteria assume nonconstant data. Constant divergence is proved in a separate declaration.
 sn,all free,failure,written,unattained_face_supremum assumes nonconstant data and nonattainment. The constant divergence branch is separate.
 gengamma,mu,failure,written,"held_location_face_path proves convergence along the fixed-location path for one supported orientation; the claim also asserts these are the only bounded escapes, which needs exhaustion over all compatible sequences (atlas-coverage4a, open records)."
+lst,all free,failure,written,"TDist.collapse_power gives a fixed-location, fixed-shape collapse asymptotic; the claim is the whole moving-boundary escape classification with its sufficient tests (atlas-coverage6a, earlier grade lowered)."
+foldnorm,all free,uniqueness,written,"half_normal_positive_location_tie proves only the stated tie sample; the a.e. uniqueness and exact singleton components are not in Lean (atlas-coverage6a, earlier grade lowered)."
+sgomp,all free,uniqueness,written,"exponential_positive_shape_tie proves only the stated tie sample; the a.e. uniqueness and stationary-height comparison components are not in Lean (atlas-coverage6a, earlier grade lowered)."
