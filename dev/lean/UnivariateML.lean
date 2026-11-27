@@ -68,3 +68,4 @@ public import UnivariateML.Family.Discrete3DNorm
 public import UnivariateML.Family.Discrete3DGamma
 public import UnivariateML.Family.Discrete3Skellam
 public import UnivariateML.Family.Discrete3BNBinom
+public import UnivariateML.Family.BurrFree
