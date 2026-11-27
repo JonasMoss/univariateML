@@ -46,3 +46,4 @@ public import UnivariateML.Family.TransformedGamma
 public import UnivariateML.Family.Hypergeometric
 public import UnivariateML.Family.DoublePareto
 public import UnivariateML.Family.Transfers3
+public import UnivariateML.Family.DiscreteWeibull
