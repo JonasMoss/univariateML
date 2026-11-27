@@ -1,0 +1,1761 @@
+family,held,question,status
+bbinom,all free,criterion,written
+bbinom,all free,failure,written
+bbinom,all free,uniqueness,written
+bbinom,alpha+size,criterion,written
+bbinom,alpha+size,failure,written
+bbinom,beta+size,criterion,written
+bbinom,beta+size,failure,written
+bbinom,size,case:cardinality-four-to-eight,written
+bbinom,size,case:cardinality-small-size,written
+bbinom,size,case:criterion-interior,lean
+bbinom,size,criterion,written
+bbinom,size,failure,written
+bbinom,size,limit:1,lean
+bbinom,size,limit:2,written
+bbinom,size,limit:3,lean
+bbinom,size,path:1,lean
+bbinom,size,path:2,written
+bbinom,size,path:3,lean
+bbinom,size,uniqueness,written
+beta,all free,criterion,lean
+beta,all free,failure,lean
+beta,all free,limit:1,lean
+beta,all free,path:1,lean
+beta,all free,uniqueness,lean
+beta,shape1,criterion,lean
+beta,shape1,failure,lean
+beta,shape1,uniqueness,lean
+beta,shape2,criterion,lean
+beta,shape2,failure,lean
+beta,shape2,uniqueness,lean
+betapr,all free,criterion,written
+betapr,all free,failure,written
+betapr,all free,limit:3,written
+betapr,all free,path:3,written
+betapr,all free,path:6,written
+betapr,all free,path:7,written
+betapr,all free,uniqueness,written
+betapr,scale,criterion,written
+betapr,scale,failure,written
+betapr,scale,uniqueness,written
+betapr,scale+shape1,criterion,written
+betapr,scale+shape1,failure,written
+betapr,scale+shape1,uniqueness,written
+betapr,scale+shape1+shape2,criterion,written
+betapr,scale+shape1+shape2,failure,written
+betapr,scale+shape1+shape2,uniqueness,written
+betapr,scale+shape2,criterion,written
+betapr,scale+shape2,failure,written
+betapr,scale+shape2,uniqueness,written
+betapr,shape1,criterion,written
+betapr,shape1,failure,written
+betapr,shape1,path:1,written
+betapr,shape1,path:4,written
+betapr,shape1,uniqueness,written
+betapr,shape1+shape2,criterion,written
+betapr,shape1+shape2,failure,written
+betapr,shape1+shape2,uniqueness,written
+betapr,shape2,criterion,written
+betapr,shape2,failure,written
+betapr,shape2,path:2,written
+betapr,shape2,path:5,written
+betapr,shape2,uniqueness,written
+bhatt,a,criterion,written
+bhatt,a,failure,written
+bhatt,a,path:1,written
+bhatt,a,uniqueness,written
+bhatt,a+mu,criterion,written
+bhatt,a+mu,failure,written
+bhatt,a+mu,path:1,written
+bhatt,a+mu,uniqueness,written
+bhatt,a+mu+sigma,criterion,written
+bhatt,a+mu+sigma,failure,written
+bhatt,a+mu+sigma,uniqueness,written
+bhatt,a+sigma,criterion,written
+bhatt,a+sigma,failure,written
+bhatt,a+sigma,uniqueness,written
+bhatt,all free,criterion,written
+bhatt,all free,failure,written
+bhatt,all free,path:1,written
+bhatt,all free,uniqueness,written
+bhatt,mu,criterion,written
+bhatt,mu,failure,written
+bhatt,mu,path:1,written
+bhatt,mu+sigma,criterion,written
+bhatt,mu+sigma,failure,written
+bhatt,mu+sigma,uniqueness,written
+bhatt,sigma,criterion,written
+bhatt,sigma,failure,written
+bhatt,sigma,uniqueness,written
+binom,all free,criterion,cited
+binom,all free,failure,cited
+binom,all free,limit:1,cited
+binom,all free,path:1,written
+binom,all free,uniqueness,cited
+binom,prob,case:adjacent-pair,lean
+binom,prob,criterion,written
+binom,prob,failure,written
+binom,prob,uniqueness,written
+binom,prob+size,criterion,written
+binom,prob+size,failure,written
+binom,prob+size,uniqueness,written
+binom,size,criterion,lean
+binom,size,failure,lean
+binom,size,uniqueness,lean
+bnbinom,all free,criterion,written
+bnbinom,all free,failure,written
+bnbinom,all free,limit:3,written
+bnbinom,all free,path:1,written
+bnbinom,all free,path:2,written
+bnbinom,all free,path:3,written
+bnbinom,all free,uniqueness,written
+bnbinom,alpha,criterion,written
+bnbinom,alpha,failure,written
+bnbinom,alpha,limit:3,written
+bnbinom,alpha,path:3,written
+bnbinom,alpha+beta,criterion,written
+bnbinom,alpha+beta,failure,written
+bnbinom,alpha+beta,limit:3,written
+bnbinom,alpha+beta,path:3,written
+bnbinom,alpha+beta,uniqueness,written
+bnbinom,alpha+beta+size,criterion,written
+bnbinom,alpha+beta+size,failure,written
+bnbinom,alpha+beta+size,uniqueness,written
+bnbinom,alpha+size,criterion,written
+bnbinom,alpha+size,failure,written
+bnbinom,alpha+size,limit:3,written
+bnbinom,alpha+size,path:3,written
+bnbinom,alpha+size,uniqueness,written
+bnbinom,beta,limit:3,written
+bnbinom,beta,path:1,written
+bnbinom,beta,path:3,written
+bnbinom,beta+size,criterion,written
+bnbinom,beta+size,failure,written
+bnbinom,beta+size,limit:3,written
+bnbinom,beta+size,path:3,written
+bnbinom,beta+size,uniqueness,written
+bnbinom,size,limit:3,written
+bnbinom,size,path:1,written
+bnbinom,size,path:3,written
+burr,all free,criterion,written
+burr,all free,failure,written
+burr,all free,limit:1,written
+burr,all free,limit:3,written
+burr,all free,limit:4,written
+burr,all free,path:1,lean
+burr,all free,path:3,written
+burr,all free,path:4,written
+burr,all free,uniqueness,written
+burr,scale,criterion,lean
+burr,scale,failure,lean
+burr,scale,limit:1,written
+burr,scale,limit:5,lean
+burr,scale,path:1,lean
+burr,scale,path:5,lean
+burr,scale,uniqueness,lean
+burr,scale+shape1,criterion,written
+burr,scale+shape1,failure,written
+burr,scale+shape1,limit:1,written
+burr,scale+shape1,path:1,lean
+burr,scale+shape1,uniqueness,written
+burr,scale+shape1+shape2,criterion,written
+burr,scale+shape1+shape2,failure,written
+burr,scale+shape1+shape2,uniqueness,written
+burr,scale+shape2,criterion,written
+burr,scale+shape2,failure,written
+burr,scale+shape2,uniqueness,written
+burr,shape1,criterion,lean
+burr,shape1,failure,lean
+burr,shape1,limit:1,written
+burr,shape1,path:1,lean
+burr,shape1,uniqueness,lean
+burr,shape1+shape2,criterion,written
+burr,shape1+shape2,failure,written
+burr,shape1+shape2,uniqueness,written
+burr,shape2,case:criterion-powered,lean
+burr,shape2,case:failure-powered,lean
+burr,shape2,criterion,written
+burr,shape2,failure,written
+burr,shape2,limit:2,written
+burr,shape2,path:2,written
+burr,shape2,uniqueness,written
+cauchy,all free,criterion,lean
+cauchy,all free,failure,lean
+cauchy,all free,limit:1,lean
+cauchy,all free,path:1,lean
+cauchy,all free,uniqueness,lean
+cauchy,location,criterion,lean
+cauchy,location,failure,written
+cauchy,location,limit:1,lean
+cauchy,location,path:1,lean
+cauchy,location,uniqueness,lean
+cauchy,location+scale,criterion,written
+cauchy,location+scale,failure,written
+cauchy,location+scale,uniqueness,written
+cauchy,scale,case:nonunique-location,lean
+cauchy,scale,criterion,lean
+cauchy,scale,failure,lean
+cauchy,scale,uniqueness,lean
+cmb,all free,criterion,written
+cmb,all free,failure,written
+cmb,all free,path:3,written
+cmb,all free,path:4,written
+cmb,all free,uniqueness,written
+cmb,nu,criterion,written
+cmb,nu,failure,written
+cmb,nu,path:1,written
+cmb,nu,uniqueness,written
+cmb,nu+prob,criterion,written
+cmb,nu+prob,failure,written
+cmb,nu+prob,uniqueness,written
+cmb,nu+prob+size,criterion,written
+cmb,nu+prob+size,failure,written
+cmb,nu+prob+size,uniqueness,written
+cmb,nu+size,criterion,written
+cmb,nu+size,failure,written
+cmb,nu+size,uniqueness,written
+cmb,prob,criterion,written
+cmb,prob,failure,written
+cmb,prob,path:2,written
+cmb,prob,path:3,written
+cmb,prob,path:4,written
+cmb,prob,uniqueness,written
+cmb,prob+size,criterion,written
+cmb,prob+size,failure,written
+cmb,prob+size,path:2,written
+cmb,prob+size,path:3,written
+cmb,prob+size,path:4,written
+cmb,prob+size,uniqueness,written
+cmb,size,criterion,written
+cmb,size,failure,written
+cmb,size,path:2,written
+cmb,size,path:3,written
+cmb,size,path:4,written
+cmb,size,uniqueness,written
+cmp,all free,case:two-adjacent,lean
+cmp,all free,criterion,written
+cmp,all free,failure,written
+cmp,all free,limit:1,written
+cmp,all free,limit:2,written
+cmp,all free,path:1,lean
+cmp,all free,path:2,written
+cmp,all free,uniqueness,written
+cmp,lambda,criterion,written
+cmp,lambda,failure,written
+cmp,lambda,limit:1,written
+cmp,lambda,path:1,lean
+cmp,lambda,uniqueness,written
+cmp,lambda+nu,criterion,written
+cmp,lambda+nu,failure,written
+cmp,lambda+nu,uniqueness,written
+cmp,nu,criterion,written
+cmp,nu,failure,written
+cmp,nu,uniqueness,written
+dblpareto,all free,criterion,lean
+dblpareto,all free,failure,lean
+dblpareto,all free,limit:1,lean
+dblpareto,all free,limit:2,lean
+dblpareto,all free,limit:3,lean
+dblpareto,all free,path:1,lean
+dblpareto,all free,path:2,lean
+dblpareto,all free,path:3,lean
+dblpareto,all free,uniqueness,lean
+dblpareto,left_rate,criterion,written
+dblpareto,left_rate,failure,written
+dblpareto,left_rate,limit:2,lean
+dblpareto,left_rate,path:2,lean
+dblpareto,left_rate,uniqueness,written
+dblpareto,left_rate+right_rate,criterion,lean
+dblpareto,left_rate+right_rate,failure,lean
+dblpareto,left_rate+right_rate,uniqueness,lean
+dblpareto,left_rate+right_rate+scale,criterion,written
+dblpareto,left_rate+right_rate+scale,failure,written
+dblpareto,left_rate+right_rate+scale,uniqueness,written
+dblpareto,left_rate+scale,criterion,written
+dblpareto,left_rate+scale,failure,written
+dblpareto,left_rate+scale,uniqueness,written
+dblpareto,right_rate,criterion,written
+dblpareto,right_rate,failure,written
+dblpareto,right_rate,limit:1,lean
+dblpareto,right_rate,path:1,lean
+dblpareto,right_rate,uniqueness,written
+dblpareto,right_rate+scale,criterion,written
+dblpareto,right_rate+scale,failure,written
+dblpareto,right_rate+scale,uniqueness,written
+dblpareto,scale,criterion,lean
+dblpareto,scale,failure,lean
+dblpareto,scale,limit:3,lean
+dblpareto,scale,path:3,lean
+dblpareto,scale,uniqueness,lean
+dgamma,all free,criterion,written
+dgamma,all free,failure,written
+dgamma,all free,limit:1,written
+dgamma,all free,limit:2,written
+dgamma,all free,path:1,written
+dgamma,all free,path:2,written
+dgamma,all free,uniqueness,written
+dgamma,rate,criterion,written
+dgamma,rate,failure,written
+dgamma,rate,limit:3,written
+dgamma,rate,path:3,written
+dgamma,rate,uniqueness,written
+dgamma,rate+shape,criterion,written
+dgamma,rate+shape,failure,written
+dgamma,rate+shape,uniqueness,written
+dgamma,shape,criterion,written
+dgamma,shape,failure,written
+dgamma,shape,limit:3,written
+dgamma,shape,path:3,written
+dgamma,shape,uniqueness,written
+dlaplace,all free,criterion,lean
+dlaplace,all free,failure,lean
+dlaplace,all free,limit:1,lean
+dlaplace,all free,path:1,lean
+dlaplace,all free,uniqueness,lean
+dlaplace,location,criterion,lean
+dlaplace,location,failure,lean
+dlaplace,location,limit:1,lean
+dlaplace,location,path:1,lean
+dlaplace,location,uniqueness,lean
+dlaplace,location+scale,criterion,written
+dlaplace,location+scale,failure,written
+dlaplace,location+scale,uniqueness,written
+dlaplace,scale,criterion,lean
+dlaplace,scale,failure,lean
+dlaplace,scale,uniqueness,lean
+dnorm,all free,criterion,written
+dnorm,all free,failure,written
+dnorm,all free,limit:1,written
+dnorm,all free,limit:2,written
+dnorm,all free,path:1,written
+dnorm,all free,path:2,written
+dnorm,all free,uniqueness,written
+dnorm,mean,criterion,written
+dnorm,mean,failure,written
+dnorm,mean,limit:3,written
+dnorm,mean,path:3,written
+dnorm,mean,uniqueness,written
+dnorm,mean+sd,criterion,written
+dnorm,mean+sd,failure,written
+dnorm,mean+sd,uniqueness,written
+dnorm,sd,criterion,written
+dnorm,sd,failure,written
+dnorm,sd,uniqueness,written
+dunif,all free,criterion,written
+dunif,all free,failure,written
+dunif,all free,uniqueness,written
+dunif,max,criterion,written
+dunif,max,failure,written
+dunif,max,uniqueness,written
+dunif,max+min,criterion,written
+dunif,max+min,failure,written
+dunif,max+min,uniqueness,written
+dunif,min,criterion,written
+dunif,min,failure,written
+dunif,min,uniqueness,written
+dweibull,all free,criterion,written
+dweibull,all free,failure,written
+dweibull,all free,limit:1,written
+dweibull,all free,limit:3,written
+dweibull,all free,limit:4,written
+dweibull,all free,path:1,written
+dweibull,all free,path:3,written
+dweibull,all free,path:4,written
+dweibull,all free,uniqueness,written
+dweibull,shape1,criterion,written
+dweibull,shape1,failure,written
+dweibull,shape1,limit:5,written
+dweibull,shape1,path:5,written
+dweibull,shape1,uniqueness,written
+dweibull,shape1+shape2,criterion,written
+dweibull,shape1+shape2,failure,written
+dweibull,shape1+shape2,uniqueness,written
+dweibull,shape2,criterion,written
+dweibull,shape2,failure,written
+dweibull,shape2,limit:2,written
+dweibull,shape2,path:2,written
+dweibull,shape2,uniqueness,written
+emg,all free,criterion,written
+emg,all free,failure,written
+emg,all free,path:1,written
+emg,all free,path:2,written
+emg,all free,uniqueness,written
+emg,lambda+mu+sigma,criterion,written
+emg,lambda+mu+sigma,failure,written
+emg,lambda+mu+sigma,uniqueness,written
+emg,lambda+sigma,criterion,written
+emg,lambda+sigma,failure,written
+emg,lambda+sigma,uniqueness,written
+exp,all free,criterion,lean
+exp,all free,failure,lean
+exp,all free,limit:1,lean
+exp,all free,path:1,lean
+exp,all free,uniqueness,lean
+exp,rate,criterion,written
+exp,rate,failure,written
+exp,rate,uniqueness,written
+expweibull,all free,criterion,written
+expweibull,all free,failure,written
+expweibull,all free,limit:1,written
+expweibull,all free,path:1,written
+expweibull,all free,path:4,written
+expweibull,all free,path:5,written
+expweibull,all free,uniqueness,written
+expweibull,exponent,criterion,written
+expweibull,exponent,failure,written
+expweibull,exponent,limit:1,written
+expweibull,exponent,path:1,written
+expweibull,exponent,uniqueness,written
+expweibull,exponent+scale,criterion,written
+expweibull,exponent+scale,failure,written
+expweibull,exponent+scale,limit:1,written
+expweibull,exponent+scale,path:1,written
+expweibull,exponent+scale,uniqueness,written
+expweibull,exponent+shape,criterion,written
+expweibull,exponent+shape,failure,written
+expweibull,exponent+shape,uniqueness,written
+expweibull,scale,criterion,written
+expweibull,scale,failure,written
+expweibull,scale,limit:1,written
+expweibull,scale,limit:2,written
+expweibull,scale,limit:3,written
+expweibull,scale,path:1,written
+expweibull,scale,path:2,written
+expweibull,scale,path:3,written
+expweibull,scale+shape,criterion,written
+expweibull,scale+shape,failure,written
+expweibull,scale+shape,uniqueness,written
+expweibull,shape,criterion,written
+expweibull,shape,failure,written
+expweibull,shape,limit:1,written
+expweibull,shape,path:1,written
+expweibull,shape,uniqueness,written
+fatigue,all free,criterion,written
+fatigue,all free,failure,written
+fatigue,all free,uniqueness,written
+fatigue,alpha+mu,criterion,written
+fatigue,alpha+mu,failure,written
+fatigue,alpha+mu,uniqueness,written
+fatigue,beta+mu,criterion,lean
+fatigue,beta+mu,failure,lean
+fatigue,beta+mu,limit:2,lean
+fatigue,beta+mu,path:2,lean
+fatigue,beta+mu,uniqueness,lean
+fatigue,mu,criterion,lean
+fatigue,mu,failure,lean
+fatigue,mu,limit:1,lean
+fatigue,mu,path:1,lean
+fatigue,mu,uniqueness,lean
+foldnorm,all free,criterion,written
+foldnorm,all free,failure,written
+foldnorm,all free,limit:1,written
+foldnorm,all free,path:1,lean
+foldnorm,all free,uniqueness,written
+foldnorm,mu,criterion,written
+foldnorm,mu,failure,lean
+foldnorm,mu,limit:1,written
+foldnorm,mu,path:1,lean
+foldnorm,mu,uniqueness,lean
+foldnorm,mu+sigma,criterion,written
+foldnorm,mu+sigma,failure,written
+foldnorm,mu+sigma,uniqueness,written
+foldnorm,sigma,criterion,lean
+foldnorm,sigma,failure,lean
+foldnorm,sigma,uniqueness,lean
+fpareto,all free,criterion,written
+fpareto,all free,failure,written
+fpareto,all free,uniqueness,written
+fpareto,min,limit:3,written
+fpareto,min,path:3,written
+fpareto,min+scale+shape1+shape2+shape3,criterion,written
+fpareto,min+scale+shape1+shape2+shape3,failure,written
+fpareto,min+scale+shape1+shape2+shape3,uniqueness,written
+fpareto,min+scale+shape2,criterion,written
+fpareto,min+scale+shape2,failure,written
+fpareto,min+scale+shape2,uniqueness,written
+fpareto,min+shape1+shape3,criterion,written
+fpareto,min+shape1+shape3,failure,written
+fpareto,min+shape1+shape3,limit:3,written
+fpareto,min+shape1+shape3,path:3,written
+fpareto,min+shape1+shape3,uniqueness,written
+fpareto,scale,criterion,written
+fpareto,scale,failure,written
+fpareto,scale,uniqueness,written
+fpareto,scale+shape1,criterion,written
+fpareto,scale+shape1,failure,written
+fpareto,scale+shape1,uniqueness,written
+fpareto,scale+shape1+shape2,criterion,written
+fpareto,scale+shape1+shape2,failure,written
+fpareto,scale+shape1+shape2,uniqueness,written
+fpareto,scale+shape1+shape2+shape3,criterion,written
+fpareto,scale+shape1+shape2+shape3,failure,written
+fpareto,scale+shape1+shape2+shape3,uniqueness,written
+fpareto,scale+shape1+shape3,criterion,written
+fpareto,scale+shape1+shape3,failure,written
+fpareto,scale+shape1+shape3,uniqueness,written
+fpareto,scale+shape2,criterion,written
+fpareto,scale+shape2,failure,written
+fpareto,scale+shape2,uniqueness,written
+fpareto,scale+shape2+shape3,criterion,written
+fpareto,scale+shape2+shape3,failure,written
+fpareto,scale+shape2+shape3,uniqueness,written
+fpareto,scale+shape3,criterion,written
+fpareto,scale+shape3,failure,written
+fpareto,scale+shape3,uniqueness,written
+fpareto,shape1,criterion,written
+fpareto,shape1,failure,written
+fpareto,shape1,uniqueness,written
+fpareto,shape1+shape2,criterion,written
+fpareto,shape1+shape2,failure,written
+fpareto,shape1+shape2,uniqueness,written
+fpareto,shape1+shape2+shape3,criterion,written
+fpareto,shape1+shape2+shape3,failure,written
+fpareto,shape1+shape2+shape3,uniqueness,written
+fpareto,shape1+shape3,criterion,written
+fpareto,shape1+shape3,failure,written
+fpareto,shape1+shape3,uniqueness,written
+fpareto,shape2,criterion,written
+fpareto,shape2,failure,written
+fpareto,shape2,uniqueness,written
+fpareto,shape2+shape3,criterion,written
+fpareto,shape2+shape3,failure,written
+fpareto,shape2+shape3,uniqueness,written
+fpareto,shape3,criterion,written
+fpareto,shape3,failure,written
+fpareto,shape3,uniqueness,written
+frechet,all free,case:strict-minimum-witness,written
+frechet,all free,criterion,written
+frechet,all free,failure,written
+frechet,all free,path:3,written
+frechet,all free,path:4,written
+frechet,all free,uniqueness,written
+frechet,lambda,criterion,written
+frechet,lambda,failure,lean
+frechet,lambda,limit:1,lean
+frechet,lambda,path:1,lean
+frechet,lambda,uniqueness,lean
+frechet,lambda+mu,criterion,written
+frechet,lambda+mu,failure,written
+frechet,lambda+mu,uniqueness,written
+frechet,lambda+mu+sigma,criterion,written
+frechet,lambda+mu+sigma,failure,written
+frechet,lambda+mu+sigma,uniqueness,written
+frechet,lambda+sigma,criterion,written
+frechet,lambda+sigma,failure,written
+frechet,lambda+sigma,uniqueness,written
+frechet,mu,criterion,written
+frechet,mu,failure,written
+frechet,mu,uniqueness,written
+frechet,mu+sigma,criterion,written
+frechet,mu+sigma,failure,written
+frechet,mu+sigma,path:2,written
+frechet,mu+sigma,uniqueness,written
+frechet,sigma,criterion,written
+frechet,sigma,failure,written
+frechet,sigma,path:2,written
+frechet,sigma,uniqueness,written
+gamma,all free,criterion,written
+gamma,all free,failure,lean
+gamma,all free,limit:1,lean
+gamma,all free,path:1,lean
+gamma,all free,uniqueness,lean
+gamma,scale,criterion,lean
+gamma,scale,failure,lean
+gamma,scale,uniqueness,lean
+gamma,shape,criterion,lean
+gamma,shape,failure,lean
+gamma,shape,uniqueness,lean
+gb2,all free,criterion,written
+gb2,all free,failure,written
+gb2,all free,limit:3,written
+gb2,all free,path:3,written
+gb2,scale+shape1+shape2,criterion,written
+gb2,scale+shape1+shape2,failure,written
+gb2,scale+shape1+shape2,uniqueness,written
+gb2,scale+shape2,criterion,written
+gb2,scale+shape2,failure,written
+gb2,scale+shape2,uniqueness,written
+gb2,scale+shape2+shape3,criterion,written
+gb2,scale+shape2+shape3,failure,written
+gb2,scale+shape2+shape3,uniqueness,written
+gb2,shape1+shape3,criterion,written
+gb2,shape1+shape3,failure,written
+gb2,shape1+shape3,uniqueness,written
+ged,all free,criterion,written
+ged,all free,failure,written
+ged,all free,limit:1,lean
+ged,all free,path:1,lean
+ged,all free,path:2,written
+ged,all free,uniqueness,written
+ged,mean,criterion,written
+ged,mean,failure,written
+ged,mean,limit:1,lean
+ged,mean,path:1,lean
+ged,mean,path:2,written
+ged,mean+nu,criterion,lean
+ged,mean+nu,failure,lean
+ged,mean+nu,limit:1,lean
+ged,mean+nu,path:1,lean
+ged,mean+nu,uniqueness,lean
+ged,mean+nu+sd,criterion,written
+ged,mean+nu+sd,failure,written
+ged,mean+nu+sd,uniqueness,written
+ged,mean+sd,criterion,written
+ged,mean+sd,failure,written
+ged,mean+sd,path:2,written
+ged,nu,criterion,written
+ged,nu,failure,lean
+ged,nu,limit:1,lean
+ged,nu,path:1,lean
+ged,nu,uniqueness,written
+ged,nu+sd,criterion,written
+ged,nu+sd,failure,written
+ged,nu+sd,uniqueness,written
+ged,sd,criterion,written
+ged,sd,failure,written
+ged,sd,path:2,written
+genbeta,all free,criterion,written
+genbeta,all free,failure,written
+genbeta,all free,uniqueness,written
+genbeta,scale,criterion,written
+genbeta,scale,failure,written
+genbeta,scale,limit:1,written
+genbeta,scale,path:1,written
+genbeta,scale,path:2,written
+genbeta,scale,path:3,written
+genbeta,scale+shape1,limit:1,written
+genbeta,scale+shape1,path:1,written
+genbeta,scale+shape1+shape2+shape3,criterion,written
+genbeta,scale+shape1+shape2+shape3,failure,written
+genbeta,scale+shape1+shape2+shape3,uniqueness,written
+genbeta,scale+shape1+shape3,criterion,written
+genbeta,scale+shape1+shape3,failure,written
+genbeta,scale+shape1+shape3,uniqueness,written
+genbeta,scale+shape2,path:2,written
+genbeta,scale+shape2+shape3,criterion,written
+genbeta,scale+shape2+shape3,failure,written
+genbeta,scale+shape2+shape3,uniqueness,written
+genbeta,scale+shape3,criterion,written
+genbeta,scale+shape3,failure,written
+genbeta,scale+shape3,limit:1,written
+genbeta,scale+shape3,path:1,written
+genbeta,scale+shape3,uniqueness,written
+gengamma,Q,criterion,written
+gengamma,Q,failure,written
+gengamma,Q,uniqueness,written
+gengamma,Q+mu,criterion,written
+gengamma,Q+mu,failure,written
+gengamma,Q+mu,uniqueness,written
+gengamma,Q+sigma,criterion,written
+gengamma,Q+sigma,failure,written
+gengamma,Q+sigma,uniqueness,written
+gengamma,all free,criterion,written
+gengamma,all free,failure,lean
+gengamma,all free,limit:3,written
+gengamma,all free,path:1,written
+gengamma,all free,path:2,written
+gengamma,all free,path:3,written
+gengamma,mu,criterion,written
+gengamma,mu,failure,written
+gengamma,mu,limit:4,written
+gengamma,mu,path:4,written
+gengamma,mu+sigma,criterion,written
+gengamma,mu+sigma,failure,written
+gengamma,mu+sigma,uniqueness,written
+gengamma,sigma,criterion,written
+gengamma,sigma,failure,written
+geom,all free,criterion,lean
+geom,all free,failure,lean
+geom,all free,uniqueness,lean
+geom,prob,criterion,written
+geom,prob,failure,written
+geom,prob,uniqueness,written
+gev,all free,criterion,written
+gev,all free,failure,written
+gev,all free,limit:2,written
+gev,all free,path:2,lean
+gev,all free,uniqueness,written
+gev,mu,case:held-minimum-half,written
+gev,mu,criterion,written
+gev,mu,failure,written
+gev,mu,uniqueness,written
+gev,sigma,criterion,written
+gev,sigma,failure,written
+gev,sigma,uniqueness,written
+gev,xi,criterion,written
+gev,xi,failure,written
+gev,xi,uniqueness,written
+gompertz,a,criterion,written
+gompertz,a,failure,written
+gompertz,a,limit:2,written
+gompertz,a,path:2,written
+gompertz,a,uniqueness,written
+gompertz,a+b,criterion,written
+gompertz,a+b,failure,written
+gompertz,a+b,uniqueness,written
+gompertz,all free,criterion,written
+gompertz,all free,failure,lean
+gompertz,all free,limit:3,lean
+gompertz,all free,path:3,lean
+gompertz,all free,uniqueness,written
+gompertz,b,criterion,written
+gompertz,b,failure,written
+gompertz,b,limit:1,written
+gompertz,b,path:1,written
+gompertz,b,uniqueness,written
+gpd,all free,criterion,lean
+gpd,all free,failure,lean
+gpd,all free,limit:1,lean
+gpd,all free,path:1,lean
+gpd,all free,uniqueness,lean
+gpd,mu,case:positive-excess-existence,lean
+gpd,mu,criterion,written
+gpd,mu,failure,written
+gpd,mu,limit:2,written
+gpd,mu,path:2,written
+gpd,mu,uniqueness,lean
+gpd,mu+sigma+xi,criterion,written
+gpd,mu+sigma+xi,failure,written
+gpd,mu+sigma+xi,uniqueness,written
+gpd,mu+xi,criterion,lean
+gpd,mu+xi,failure,lean
+gpd,mu+xi,uniqueness,lean
+gumbel,all free,criterion,written
+gumbel,all free,failure,written
+gumbel,all free,limit:1,written
+gumbel,all free,path:1,written
+gumbel,all free,uniqueness,lean
+gumbel,mu,criterion,written
+gumbel,mu,failure,written
+gumbel,mu,limit:1,written
+gumbel,mu,path:1,written
+gumbel,mu,uniqueness,written
+gumbel,mu+sigma,criterion,written
+gumbel,mu+sigma,failure,written
+gumbel,mu+sigma,uniqueness,written
+gumbel,sigma,criterion,written
+gumbel,sigma,failure,written
+gumbel,sigma,uniqueness,written
+hcauchy,all free,criterion,lean
+hcauchy,all free,failure,lean
+hcauchy,all free,limit:1,written
+hcauchy,all free,limit:2,written
+hcauchy,all free,path:1,lean
+hcauchy,all free,path:2,lean
+hcauchy,all free,uniqueness,written
+hcauchy,mu,criterion,written
+hcauchy,mu,failure,written
+hcauchy,mu,limit:1,written
+hcauchy,mu,limit:2,written
+hcauchy,mu,path:1,lean
+hcauchy,mu,path:2,lean
+hcauchy,mu,uniqueness,written
+hcauchy,mu+sigma,criterion,written
+hcauchy,mu+sigma,failure,written
+hcauchy,mu+sigma,uniqueness,written
+hcauchy,sigma,criterion,lean
+hcauchy,sigma,failure,lean
+hcauchy,sigma,uniqueness,lean
+hnorm,all free,criterion,lean
+hnorm,all free,failure,lean
+hnorm,all free,limit:1,lean
+hnorm,all free,path:1,lean
+hnorm,all free,uniqueness,lean
+hnorm,mu,criterion,lean
+hnorm,mu,failure,lean
+hnorm,mu,limit:1,lean
+hnorm,mu,path:1,lean
+hnorm,mu,uniqueness,lean
+hnorm,mu+sigma,criterion,written
+hnorm,mu+sigma,failure,written
+hnorm,mu+sigma,uniqueness,written
+hnorm,sigma,criterion,lean
+hnorm,sigma,failure,lean
+hnorm,sigma,uniqueness,lean
+ht,all free,criterion,written
+ht,all free,failure,written
+ht,all free,limit:2,written
+ht,all free,path:1,written
+ht,all free,path:2,written
+ht,all free,uniqueness,written
+ht,mu,limit:2,written
+ht,mu,path:2,written
+ht,mu+nu,criterion,written
+ht,mu+nu,failure,written
+ht,mu+nu,limit:2,written
+ht,mu+nu,limit:3,written
+ht,mu+nu,path:2,written
+ht,mu+nu,path:3,written
+ht,mu+nu,uniqueness,written
+ht,mu+nu+sigma,criterion,written
+ht,mu+nu+sigma,failure,written
+ht,mu+nu+sigma,uniqueness,written
+ht,nu,criterion,written
+ht,nu,failure,written
+ht,nu,limit:2,written
+ht,nu,limit:3,written
+ht,nu,path:2,written
+ht,nu,path:3,written
+ht,nu,uniqueness,written
+huber,all free,criterion,written
+huber,all free,failure,written
+huber,all free,limit:1,lean
+huber,all free,path:1,lean
+huber,epsilon,case:cardinality-flat,lean
+huber,epsilon,criterion,lean
+huber,epsilon,failure,lean
+huber,epsilon,limit:1,lean
+huber,epsilon,path:1,lean
+huber,epsilon,uniqueness,lean
+huber,epsilon+mu,criterion,lean
+huber,epsilon+mu,failure,lean
+huber,epsilon+mu,limit:1,lean
+huber,epsilon+mu,path:1,lean
+huber,epsilon+mu,uniqueness,lean
+huber,epsilon+sigma,criterion,lean
+huber,epsilon+sigma,failure,lean
+huber,epsilon+sigma,uniqueness,lean
+huber,mu,limit:1,lean
+huber,mu,path:1,lean
+hyper,N,criterion,written
+hyper,N,failure,written
+hyper,N,uniqueness,lean
+hyper,N+k,criterion,lean
+hyper,N+k,failure,lean
+hyper,N+k,uniqueness,lean
+hyper,N+m,criterion,lean
+hyper,N+m,failure,lean
+hyper,N+m,uniqueness,lean
+hyper,all free,criterion,written
+hyper,all free,failure,written
+hyper,k,criterion,written
+hyper,k,failure,written
+hyper,k+m,criterion,lean
+hyper,k+m,failure,lean
+hyper,k+m,limit:1,lean
+hyper,k+m,path:1,lean
+hyper,k+m,uniqueness,lean
+hyper,m,criterion,written
+hyper,m,failure,written
+invburr,all free,criterion,written
+invburr,all free,failure,written
+invburr,all free,limit:1,written
+invburr,all free,limit:3,written
+invburr,all free,limit:4,written
+invburr,all free,path:1,written
+invburr,all free,path:3,written
+invburr,all free,path:4,written
+invburr,all free,uniqueness,written
+invburr,scale,criterion,written
+invburr,scale,failure,written
+invburr,scale,limit:1,written
+invburr,scale,limit:5,written
+invburr,scale,path:1,written
+invburr,scale,path:5,written
+invburr,scale,uniqueness,written
+invburr,scale+shape1,criterion,written
+invburr,scale+shape1,failure,written
+invburr,scale+shape1,limit:1,written
+invburr,scale+shape1,path:1,written
+invburr,scale+shape1,uniqueness,written
+invburr,scale+shape1+shape2,criterion,written
+invburr,scale+shape1+shape2,failure,written
+invburr,scale+shape1+shape2,uniqueness,written
+invburr,scale+shape2,criterion,written
+invburr,scale+shape2,failure,written
+invburr,scale+shape2,uniqueness,written
+invburr,shape1,criterion,written
+invburr,shape1,failure,written
+invburr,shape1,limit:1,written
+invburr,shape1,path:1,written
+invburr,shape1,uniqueness,written
+invburr,shape1+shape2,criterion,written
+invburr,shape1+shape2,failure,written
+invburr,shape1+shape2,uniqueness,written
+invburr,shape2,criterion,written
+invburr,shape2,failure,written
+invburr,shape2,limit:2,written
+invburr,shape2,path:2,written
+invexp,all free,criterion,lean
+invexp,all free,failure,lean
+invexp,all free,uniqueness,lean
+invexp,scale,criterion,written
+invexp,scale,failure,written
+invexp,scale,uniqueness,written
+invgamma,all free,criterion,written
+invgamma,all free,failure,lean
+invgamma,all free,limit:1,lean
+invgamma,all free,path:1,lean
+invgamma,all free,uniqueness,written
+invgamma,alpha,criterion,lean
+invgamma,alpha,failure,lean
+invgamma,alpha,uniqueness,lean
+invgamma,alpha+beta,criterion,written
+invgamma,alpha+beta,failure,written
+invgamma,alpha+beta,uniqueness,written
+invgamma,beta,criterion,lean
+invgamma,beta,failure,lean
+invgamma,beta,uniqueness,lean
+invgauss,all free,criterion,lean
+invgauss,all free,failure,lean
+invgauss,all free,limit:1,lean
+invgauss,all free,path:1,lean
+invgauss,all free,uniqueness,lean
+invgauss,mean,criterion,lean
+invgauss,mean,failure,lean
+invgauss,mean,limit:2,lean
+invgauss,mean,path:2,lean
+invgauss,mean,uniqueness,lean
+invgauss,mean+shape,criterion,written
+invgauss,mean+shape,failure,written
+invgauss,mean+shape,uniqueness,written
+invgauss,shape,criterion,lean
+invgauss,shape,failure,lean
+invgauss,shape,uniqueness,lean
+invparalogis,all free,criterion,written
+invparalogis,all free,failure,written
+invparalogis,all free,limit:1,written
+invparalogis,all free,path:1,written
+invparalogis,all free,uniqueness,written
+invparalogis,scale,criterion,written
+invparalogis,scale,failure,written
+invparalogis,scale,uniqueness,written
+invparalogis,scale+shape,criterion,written
+invparalogis,scale+shape,failure,written
+invparalogis,scale+shape,uniqueness,written
+invparalogis,shape,criterion,written
+invparalogis,shape,failure,written
+invparalogis,shape,uniqueness,written
+invpareto,all free,case:small-support,written
+invpareto,all free,criterion,lean
+invpareto,all free,failure,written
+invpareto,all free,limit:1,written
+invpareto,all free,path:1,lean
+invpareto,all free,uniqueness,written
+invpareto,scale,criterion,lean
+invpareto,scale,failure,lean
+invpareto,scale,uniqueness,lean
+invpareto,scale+shape,criterion,written
+invpareto,scale+shape,failure,written
+invpareto,scale+shape,uniqueness,written
+invpareto,shape,criterion,lean
+invpareto,shape,failure,lean
+invpareto,shape,uniqueness,lean
+invtrgamma,all free,criterion,written
+invtrgamma,all free,failure,written
+invtrgamma,all free,limit:2,written
+invtrgamma,all free,path:2,written
+invtrgamma,all free,path:3,written
+invtrgamma,all free,path:4,written
+invtrgamma,scale,criterion,written
+invtrgamma,scale,failure,written
+invtrgamma,scale,limit:2,written
+invtrgamma,scale,path:1,written
+invtrgamma,scale,path:2,written
+invtrgamma,scale,uniqueness,written
+invtrgamma,scale+shape1,criterion,lean
+invtrgamma,scale+shape1,failure,lean
+invtrgamma,scale+shape1,limit:2,written
+invtrgamma,scale+shape1,path:2,written
+invtrgamma,scale+shape1,uniqueness,lean
+invtrgamma,scale+shape1+shape2,criterion,written
+invtrgamma,scale+shape1+shape2,failure,written
+invtrgamma,scale+shape1+shape2,uniqueness,written
+invtrgamma,scale+shape2,criterion,written
+invtrgamma,scale+shape2,failure,written
+invtrgamma,scale+shape2,uniqueness,lean
+invtrgamma,shape1,criterion,written
+invtrgamma,shape1,failure,written
+invtrgamma,shape1,limit:2,written
+invtrgamma,shape1,path:2,written
+invtrgamma,shape1,uniqueness,written
+invtrgamma,shape1+shape2,criterion,written
+invtrgamma,shape1+shape2,failure,written
+invtrgamma,shape1+shape2,uniqueness,written
+invtrgamma,shape2,criterion,written
+invtrgamma,shape2,failure,written
+invtrgamma,shape2,limit:2,written
+invtrgamma,shape2,path:2,written
+invtrgamma,shape2,uniqueness,written
+invweibull,all free,criterion,written
+invweibull,all free,failure,lean
+invweibull,all free,limit:2,lean
+invweibull,all free,path:2,lean
+invweibull,all free,uniqueness,lean
+invweibull,scale,criterion,written
+invweibull,scale,failure,lean
+invweibull,scale,limit:1,lean
+invweibull,scale,path:1,lean
+invweibull,scale,uniqueness,lean
+invweibull,scale+shape,criterion,written
+invweibull,scale+shape,failure,written
+invweibull,scale+shape,uniqueness,written
+invweibull,shape,criterion,written
+invweibull,shape,failure,written
+invweibull,shape,uniqueness,written
+kumar,a,criterion,lean
+kumar,a,failure,lean
+kumar,a,uniqueness,lean
+kumar,all free,criterion,written
+kumar,all free,failure,lean
+kumar,all free,limit:1,lean
+kumar,all free,path:1,lean
+kumar,all free,uniqueness,lean
+kumar,b,criterion,lean
+kumar,b,failure,lean
+kumar,b,uniqueness,lean
+laplace,all free,criterion,lean
+laplace,all free,failure,lean
+laplace,all free,limit:1,lean
+laplace,all free,path:1,lean
+laplace,all free,uniqueness,lean
+laplace,mu,criterion,written
+laplace,mu,failure,lean
+laplace,mu,limit:1,lean
+laplace,mu,path:1,lean
+laplace,mu,uniqueness,lean
+laplace,mu+sigma,criterion,written
+laplace,mu+sigma,failure,written
+laplace,mu+sigma,uniqueness,written
+laplace,sigma,criterion,lean
+laplace,sigma,failure,lean
+laplace,sigma,uniqueness,lean
+lgamma,all free,criterion,lean
+lgamma,all free,failure,lean
+lgamma,all free,limit:1,lean
+lgamma,all free,path:1,lean
+lgamma,all free,uniqueness,lean
+lgamma,ratelog,criterion,lean
+lgamma,ratelog,failure,lean
+lgamma,ratelog,uniqueness,lean
+lgamma,ratelog+shapelog,criterion,written
+lgamma,ratelog+shapelog,failure,written
+lgamma,ratelog+shapelog,uniqueness,written
+lgamma,shapelog,criterion,lean
+lgamma,shapelog,failure,lean
+lgamma,shapelog,uniqueness,lean
+lgser,all free,criterion,lean
+lgser,all free,failure,lean
+lgser,all free,uniqueness,lean
+lgser,theta,criterion,written
+lgser,theta,failure,written
+lgser,theta,uniqueness,written
+llogis,all free,criterion,written
+llogis,all free,failure,lean
+llogis,all free,limit:1,lean
+llogis,all free,path:1,lean
+llogis,all free,uniqueness,lean
+llogis,scale,criterion,written
+llogis,scale,failure,lean
+llogis,scale,limit:2,lean
+llogis,scale,path:2,lean
+llogis,scale,uniqueness,lean
+llogis,scale+shape,criterion,written
+llogis,scale+shape,failure,written
+llogis,scale+shape,uniqueness,written
+llogis,shape,criterion,lean
+llogis,shape,failure,lean
+llogis,shape,uniqueness,lean
+lnorm,all free,criterion,lean
+lnorm,all free,failure,lean
+lnorm,all free,limit:1,lean
+lnorm,all free,path:1,lean
+lnorm,all free,uniqueness,lean
+lnorm,meanlog,criterion,lean
+lnorm,meanlog,failure,lean
+lnorm,meanlog,limit:2,lean
+lnorm,meanlog,path:2,lean
+lnorm,meanlog,uniqueness,lean
+lnorm,meanlog+sdlog,criterion,written
+lnorm,meanlog+sdlog,failure,written
+lnorm,meanlog+sdlog,uniqueness,written
+lnorm,sdlog,criterion,lean
+lnorm,sdlog,failure,lean
+lnorm,sdlog,uniqueness,lean
+logis,all free,criterion,written
+logis,all free,failure,written
+logis,all free,limit:1,written
+logis,all free,path:1,written
+logis,all free,uniqueness,lean
+logis,location,criterion,written
+logis,location,failure,written
+logis,location,limit:1,written
+logis,location,path:1,written
+logis,location,uniqueness,written
+logis,location+scale,criterion,written
+logis,location+scale,failure,written
+logis,location+scale,uniqueness,written
+logis,scale,criterion,written
+logis,scale,failure,written
+logis,scale,uniqueness,written
+logitnorm,all free,criterion,lean
+logitnorm,all free,failure,lean
+logitnorm,all free,limit:1,lean
+logitnorm,all free,path:1,lean
+logitnorm,all free,uniqueness,lean
+logitnorm,mu,criterion,lean
+logitnorm,mu,failure,lean
+logitnorm,mu,limit:1,lean
+logitnorm,mu,path:1,lean
+logitnorm,mu,uniqueness,lean
+logitnorm,mu+sigma,criterion,written
+logitnorm,mu+sigma,failure,written
+logitnorm,mu+sigma,uniqueness,written
+logitnorm,sigma,criterion,lean
+logitnorm,sigma,failure,lean
+logitnorm,sigma,uniqueness,lean
+lomax,all free,case:small-support,lean
+lomax,all free,criterion,lean
+lomax,all free,failure,lean
+lomax,all free,limit:1,lean
+lomax,all free,path:1,lean
+lomax,all free,uniqueness,written
+lomax,kappa,criterion,lean
+lomax,kappa,failure,lean
+lomax,kappa,uniqueness,lean
+lomax,kappa+lambda,criterion,written
+lomax,kappa+lambda,failure,written
+lomax,kappa+lambda,uniqueness,written
+lomax,lambda,criterion,lean
+lomax,lambda,failure,lean
+lomax,lambda,uniqueness,lean
+lst,all free,criterion,written
+lst,all free,failure,written
+lst,all free,path:1,written
+lst,all free,path:4,written
+lst,df,path:2,written
+lst,df,path:3,written
+lst,df+mu,criterion,written
+lst,df+mu,failure,written
+lst,df+mu,uniqueness,written
+lst,df+mu+sigma,criterion,written
+lst,df+mu+sigma,failure,written
+lst,df+mu+sigma,uniqueness,written
+naka,all free,criterion,written
+naka,all free,failure,lean
+naka,all free,limit:2,lean
+naka,all free,path:2,lean
+naka,all free,uniqueness,lean
+naka,scale,criterion,written
+naka,scale,failure,lean
+naka,scale,limit:1,lean
+naka,scale,path:1,lean
+naka,scale,uniqueness,lean
+naka,scale+shape,criterion,written
+naka,scale+shape,failure,written
+naka,scale+shape,uniqueness,written
+naka,shape,criterion,lean
+naka,shape,failure,lean
+naka,shape,uniqueness,lean
+nbinom,all free,criterion,written
+nbinom,all free,failure,lean
+nbinom,all free,limit:1,lean
+nbinom,all free,path:1,lean
+nbinom,all free,uniqueness,written
+nbinom,prob,criterion,written
+nbinom,prob,failure,written
+nbinom,prob,uniqueness,written
+nbinom,prob+size,criterion,written
+nbinom,prob+size,failure,written
+nbinom,prob+size,uniqueness,written
+nbinom,size,criterion,written
+nbinom,size,failure,written
+nbinom,size,uniqueness,written
+nhyper,N,criterion,written
+nhyper,N,failure,written
+nhyper,N+m,criterion,written
+nhyper,N+m,failure,written
+nhyper,N+r,criterion,written
+nhyper,N+r,failure,written
+nhyper,all free,criterion,written
+nhyper,m,criterion,written
+nhyper,m,failure,written
+nhyper,m+r,criterion,written
+nhyper,m+r,failure,written
+nhyper,m+r,uniqueness,lean
+nhyper,r,criterion,written
+nhyper,r,failure,written
+nhyper,r,uniqueness,written
+norm,all free,criterion,lean
+norm,all free,failure,lean
+norm,all free,limit:1,lean
+norm,all free,path:1,lean
+norm,all free,uniqueness,lean
+norm,mean,criterion,lean
+norm,mean,failure,lean
+norm,mean,limit:1,lean
+norm,mean,path:1,lean
+norm,mean,uniqueness,lean
+norm,sd,criterion,lean
+norm,sd,failure,lean
+norm,sd,uniqueness,lean
+nsbeta,all free,criterion,written
+nsbeta,all free,failure,written
+nsbeta,all free,uniqueness,written
+nsbeta,max,criterion,written
+nsbeta,max,failure,written
+nsbeta,max,uniqueness,written
+nsbeta,max+min,criterion,written
+nsbeta,max+min,failure,lean
+nsbeta,max+min,limit:1,written
+nsbeta,max+min,path:1,lean
+nsbeta,max+min,uniqueness,lean
+nsbeta,max+min+shape1,criterion,written
+nsbeta,max+min+shape1,failure,written
+nsbeta,max+min+shape1,uniqueness,written
+nsbeta,max+min+shape1+shape2,criterion,written
+nsbeta,max+min+shape1+shape2,failure,written
+nsbeta,max+min+shape1+shape2,uniqueness,written
+nsbeta,max+min+shape2,criterion,written
+nsbeta,max+min+shape2,failure,written
+nsbeta,max+min+shape2,uniqueness,written
+nsbeta,max+shape1,criterion,written
+nsbeta,max+shape1,failure,written
+nsbeta,max+shape1,uniqueness,written
+nsbeta,max+shape1+shape2,criterion,written
+nsbeta,max+shape1+shape2,failure,written
+nsbeta,max+shape1+shape2,uniqueness,written
+nsbeta,max+shape2,criterion,written
+nsbeta,max+shape2,failure,written
+nsbeta,max+shape2,uniqueness,written
+nsbeta,min,criterion,written
+nsbeta,min,failure,written
+nsbeta,min,uniqueness,written
+nsbeta,min+shape1,criterion,written
+nsbeta,min+shape1,failure,written
+nsbeta,min+shape1,uniqueness,written
+nsbeta,min+shape1+shape2,criterion,written
+nsbeta,min+shape1+shape2,failure,written
+nsbeta,min+shape1+shape2,uniqueness,written
+nsbeta,min+shape2,criterion,written
+nsbeta,min+shape2,failure,written
+nsbeta,min+shape2,uniqueness,written
+nsbeta,shape1,criterion,written
+nsbeta,shape1,failure,written
+nsbeta,shape1,uniqueness,written
+nsbeta,shape1+shape2,criterion,written
+nsbeta,shape1+shape2,failure,written
+nsbeta,shape1+shape2,uniqueness,written
+nsbeta,shape2,criterion,written
+nsbeta,shape2,failure,written
+nsbeta,shape2,uniqueness,written
+paralogis,all free,criterion,written
+paralogis,all free,failure,written
+paralogis,all free,limit:1,written
+paralogis,all free,path:1,written
+paralogis,all free,uniqueness,written
+paralogis,scale,case:band-tie,written
+paralogis,scale,criterion,lean
+paralogis,scale,failure,lean
+paralogis,scale,uniqueness,written
+paralogis,scale+shape,criterion,written
+paralogis,scale+shape,failure,written
+paralogis,scale+shape,uniqueness,written
+paralogis,shape,criterion,lean
+paralogis,shape,failure,lean
+paralogis,shape,uniqueness,lean
+pareto,a,criterion,written
+pareto,a,failure,written
+pareto,a,uniqueness,written
+pareto,a+b,criterion,written
+pareto,a+b,failure,written
+pareto,a+b,uniqueness,written
+pareto,all free,criterion,written
+pareto,all free,failure,written
+pareto,all free,uniqueness,written
+pareto,b,criterion,written
+pareto,b,failure,written
+pareto,b,limit:1,written
+pareto,b,limit:2,written
+pareto,b,path:1,written
+pareto,b,path:2,written
+pareto,b,uniqueness,written
+pareto2,all free,criterion,written
+pareto2,all free,failure,written
+pareto2,all free,uniqueness,written
+pareto2,min,case:positive-excess-exponential,lean
+pareto2,min,criterion,lean
+pareto2,min,failure,written
+pareto2,min,limit:1,written
+pareto2,min,path:1,lean
+pareto2,min+scale,criterion,written
+pareto2,min+scale,failure,written
+pareto2,min+scale,uniqueness,written
+pareto2,min+scale+shape,criterion,written
+pareto2,min+scale+shape,failure,written
+pareto2,min+scale+shape,uniqueness,written
+pareto2,min+shape,criterion,written
+pareto2,min+shape,failure,written
+pareto2,min+shape,uniqueness,written
+pareto2,scale,criterion,written
+pareto2,scale,failure,written
+pareto2,scale,uniqueness,written
+pareto2,scale+shape,criterion,written
+pareto2,scale+shape,failure,written
+pareto2,scale+shape,uniqueness,written
+pareto2,shape,criterion,written
+pareto2,shape,failure,written
+pareto2,shape,uniqueness,written
+pareto3,all free,criterion,written
+pareto3,all free,failure,written
+pareto3,all free,uniqueness,written
+pareto3,min,criterion,written
+pareto3,min,failure,written
+pareto3,min,limit:1,written
+pareto3,min,path:1,written
+pareto3,min,uniqueness,written
+pareto3,min+scale,criterion,written
+pareto3,min+scale,failure,written
+pareto3,min+scale,limit:1,written
+pareto3,min+scale,path:1,written
+pareto3,min+scale,uniqueness,written
+pareto3,min+scale+shape,criterion,written
+pareto3,min+scale+shape,failure,written
+pareto3,min+scale+shape,uniqueness,written
+pareto3,min+shape,criterion,written
+pareto3,min+shape,failure,written
+pareto3,min+shape,uniqueness,written
+pareto3,scale,criterion,written
+pareto3,scale,failure,written
+pareto3,scale,uniqueness,written
+pareto3,scale+shape,criterion,written
+pareto3,scale+shape,failure,written
+pareto3,scale+shape,uniqueness,written
+pareto3,shape,criterion,written
+pareto3,shape,failure,written
+pareto3,shape,uniqueness,written
+pareto4,all free,criterion,written
+pareto4,all free,failure,written
+pareto4,all free,limit:1,written
+pareto4,all free,path:1,written
+pareto4,all free,uniqueness,written
+pareto4,min,criterion,written
+pareto4,min,failure,written
+pareto4,min,limit:2,written
+pareto4,min,path:2,written
+pareto4,min,path:3,written
+pareto4,min,path:4,written
+pareto4,min,uniqueness,written
+pareto4,min+scale,criterion,written
+pareto4,min+scale,failure,written
+pareto4,min+scale,limit:2,written
+pareto4,min+scale,path:2,written
+pareto4,min+scale,path:4,written
+pareto4,min+scale,path:5,written
+pareto4,min+scale,uniqueness,written
+pareto4,min+scale+shape1,criterion,written
+pareto4,min+scale+shape1,failure,written
+pareto4,min+scale+shape1,limit:2,written
+pareto4,min+scale+shape1,path:2,written
+pareto4,min+scale+shape1,uniqueness,written
+pareto4,min+scale+shape1+shape2,criterion,written
+pareto4,min+scale+shape1+shape2,failure,written
+pareto4,min+scale+shape1+shape2,uniqueness,written
+pareto4,min+scale+shape2,criterion,written
+pareto4,min+scale+shape2,failure,written
+pareto4,min+scale+shape2,uniqueness,written
+pareto4,min+shape1,criterion,written
+pareto4,min+shape1,failure,written
+pareto4,min+shape1,limit:2,written
+pareto4,min+shape1,path:2,written
+pareto4,min+shape1,uniqueness,written
+pareto4,min+shape1+shape2,criterion,written
+pareto4,min+shape1+shape2,failure,written
+pareto4,min+shape1+shape2,uniqueness,written
+pareto4,min+shape2,criterion,written
+pareto4,min+shape2,failure,written
+pareto4,min+shape2,path:3,written
+pareto4,scale,criterion,written
+pareto4,scale,failure,written
+pareto4,scale,uniqueness,written
+pareto4,scale+shape1,criterion,written
+pareto4,scale+shape1,failure,written
+pareto4,scale+shape1,uniqueness,written
+pareto4,scale+shape1+shape2,criterion,written
+pareto4,scale+shape1+shape2,failure,written
+pareto4,scale+shape1+shape2,uniqueness,written
+pareto4,scale+shape2,criterion,written
+pareto4,scale+shape2,failure,written
+pareto4,scale+shape2,uniqueness,written
+pareto4,shape1,criterion,written
+pareto4,shape1,failure,written
+pareto4,shape1,uniqueness,written
+pareto4,shape1+shape2,criterion,written
+pareto4,shape1+shape2,failure,written
+pareto4,shape1+shape2,uniqueness,written
+pareto4,shape2,criterion,written
+pareto4,shape2,failure,written
+pareto4,shape2,uniqueness,written
+pgw,all free,criterion,written
+pgw,all free,failure,written
+pgw,all free,path:1,written
+pgw,all free,path:2,written
+pgw,all free,uniqueness,written
+pgw,exponent,criterion,written
+pgw,exponent,failure,written
+pgw,exponent,uniqueness,written
+pgw,exponent+scale,criterion,written
+pgw,exponent+scale,failure,written
+pgw,exponent+scale,uniqueness,written
+pgw,exponent+scale+shape,criterion,written
+pgw,exponent+scale+shape,failure,written
+pgw,exponent+scale+shape,uniqueness,written
+pgw,exponent+shape,criterion,written
+pgw,exponent+shape,failure,written
+pgw,exponent+shape,uniqueness,written
+pgw,scale,criterion,written
+pgw,scale,failure,written
+pgw,scale+shape,criterion,written
+pgw,scale+shape,failure,written
+pgw,scale+shape,uniqueness,written
+pgw,shape,criterion,written
+pgw,shape,failure,written
+pgw,shape,uniqueness,written
+pig,all free,criterion,written
+pig,all free,failure,written
+pig,all free,limit:1,written
+pig,all free,path:1,written
+pig,all free,uniqueness,written
+pig,mean,criterion,written
+pig,mean,failure,written
+pig,mean,limit:1,written
+pig,mean,path:1,written
+pig,mean,uniqueness,written
+pig,mean+shape,criterion,written
+pig,mean+shape,failure,written
+pig,mean+shape,uniqueness,written
+pig,shape,criterion,written
+pig,shape,failure,written
+pig,shape,limit:2,written
+pig,shape,path:2,written
+pig,shape,uniqueness,written
+pois,all free,criterion,lean
+pois,all free,failure,lean
+pois,all free,uniqueness,lean
+pois,lambda,criterion,written
+pois,lambda,failure,written
+pois,lambda,uniqueness,written
+power,all free,criterion,written
+power,all free,failure,written
+power,all free,uniqueness,written
+power,alpha,criterion,written
+power,alpha,failure,written
+power,alpha,limit:1,written
+power,alpha,path:1,written
+power,alpha,uniqueness,written
+power,alpha+beta,criterion,written
+power,alpha+beta,failure,written
+power,alpha+beta,uniqueness,written
+power,beta,criterion,written
+power,beta,failure,written
+power,beta,uniqueness,written
+rayleigh,all free,criterion,lean
+rayleigh,all free,failure,lean
+rayleigh,all free,uniqueness,lean
+rayleigh,sigma,criterion,written
+rayleigh,sigma,failure,written
+rayleigh,sigma,uniqueness,written
+sged,all free,criterion,written
+sged,all free,failure,written
+sged,mean+nu+sd+xi,criterion,written
+sged,mean+nu+sd+xi,failure,written
+sged,mean+nu+sd+xi,uniqueness,written
+sged,mean+nu+xi,criterion,written
+sged,mean+nu+xi,failure,written
+sged,mean+nu+xi,uniqueness,written
+sged,nu+sd+xi,criterion,written
+sged,nu+sd+xi,failure,written
+sged,nu+sd+xi,uniqueness,written
+sged,nu+xi,criterion,written
+sged,nu+xi,failure,written
+sged,nu+xi,uniqueness,written
+sged,sd,case:two-observations,written
+sgomp,all free,criterion,written
+sgomp,all free,failure,written
+sgomp,all free,uniqueness,written
+sgomp,b,criterion,written
+sgomp,b,failure,written
+sgomp,b,uniqueness,written
+sgomp,b+eta,criterion,written
+sgomp,b+eta,failure,written
+sgomp,b+eta,uniqueness,written
+sgomp,eta,criterion,written
+sgomp,eta,failure,written
+sgomp,eta,uniqueness,written
+skellam,all free,criterion,written
+skellam,all free,failure,written
+skellam,all free,uniqueness,written
+skellam,mu1,criterion,written
+skellam,mu1,failure,written
+skellam,mu1,uniqueness,written
+skellam,mu1+mu2,criterion,written
+skellam,mu1+mu2,failure,written
+skellam,mu1+mu2,uniqueness,written
+skellam,mu2,criterion,written
+skellam,mu2,failure,written
+skellam,mu2,uniqueness,written
+slash,all free,criterion,written
+slash,all free,failure,written
+slash,all free,path:1,written
+slash,all free,uniqueness,written
+slash,mu,criterion,written
+slash,mu,failure,written
+slash,mu,limit:1,written
+slash,mu,path:1,written
+slash,mu,uniqueness,written
+slash,sigma,criterion,written
+slash,sigma,failure,written
+slash,sigma,uniqueness,written
+sn,all free,criterion,written
+sn,all free,failure,written
+sn,all free,path:1,written
+sn,all free,path:2,written
+sn,all free,uniqueness,written
+sn,alpha,criterion,written
+sn,alpha,failure,written
+sn,alpha,uniqueness,written
+sn,alpha+omega,criterion,written
+sn,alpha+omega,failure,written
+sn,alpha+omega,uniqueness,written
+sn,alpha+omega+xi,criterion,written
+sn,alpha+omega+xi,failure,written
+sn,alpha+omega+xi,uniqueness,written
+sn,alpha+xi,criterion,written
+sn,alpha+xi,failure,written
+sn,alpha+xi,uniqueness,written
+sn,omega,criterion,written
+sn,omega,failure,written
+sn,omega+xi,criterion,written
+sn,omega+xi,failure,written
+sn,omega+xi,uniqueness,written
+sn,xi,criterion,written
+sn,xi,failure,written
+sn,xi,uniqueness,written
+snorm,all free,criterion,written
+snorm,all free,failure,written
+snorm,all free,limit:1,written
+snorm,all free,limit:2,written
+snorm,all free,limit:3,written
+snorm,all free,path:1,written
+snorm,all free,path:2,written
+snorm,all free,path:3,written
+snorm,all free,uniqueness,written
+snorm,mean,criterion,written
+snorm,mean,failure,written
+snorm,mean,limit:1,written
+snorm,mean,path:1,written
+snorm,mean,uniqueness,written
+snorm,mean+sd,criterion,written
+snorm,mean+sd,failure,written
+snorm,mean+sd,uniqueness,written
+snorm,mean+sd+xi,criterion,written
+snorm,mean+sd+xi,failure,written
+snorm,mean+sd+xi,uniqueness,written
+snorm,mean+xi,criterion,written
+snorm,mean+xi,failure,written
+snorm,mean+xi,limit:1,written
+snorm,mean+xi,path:1,written
+snorm,mean+xi,uniqueness,written
+snorm,sd,criterion,written
+snorm,sd,failure,written
+snorm,sd,uniqueness,written
+snorm,sd+xi,criterion,written
+snorm,sd+xi,failure,written
+snorm,sd+xi,uniqueness,written
+snorm,xi,criterion,written
+snorm,xi,failure,written
+snorm,xi,limit:1,written
+snorm,xi,path:1,written
+snorm,xi,uniqueness,written
+sstd,all free,criterion,written
+sstd,all free,failure,written
+sstd,mean+nu+sd+xi,criterion,written
+sstd,mean+nu+sd+xi,failure,written
+sstd,mean+nu+sd+xi,uniqueness,written
+sstd,mean+nu+xi,criterion,written
+sstd,mean+nu+xi,failure,written
+st,all free,criterion,written
+st,all free,failure,written
+st,all free,path:1,written
+st,all free,path:2,written
+st,all free,path:3,written
+st,all free,path:4,written
+st,all free,path:5,written
+st,all free,path:6,written
+st,all free,path:7,written
+st,alpha,path:6,written
+st,alpha,path:7,written
+st,alpha+nu,path:6,written
+st,alpha+nu,path:7,written
+st,alpha+nu+xi,criterion,written
+st,alpha+nu+xi,failure,written
+st,alpha+nu+xi,path:6,written
+st,alpha+nu+xi,path:7,written
+st,alpha+xi,path:6,written
+st,alpha+xi,path:7,written
+st,nu,path:6,written
+st,nu,path:7,written
+st,nu+xi,path:6,written
+st,nu+xi,path:7,written
+st,xi,path:6,written
+st,xi,path:7,written
+std,all free,criterion,written
+std,all free,failure,written
+std,all free,path:1,written
+std,all free,path:5,written
+std,all free,path:6,written
+std,mean+nu,criterion,written
+std,mean+nu,failure,written
+std,mean+nu,path:2,written
+std,mean+nu,path:3,written
+std,mean+nu,uniqueness,written
+std,mean+nu+sd,criterion,written
+std,mean+nu+sd,failure,written
+std,mean+nu+sd,uniqueness,written
+std,mean+sd,path:4,written
+std,nu,path:2,written
+std,nu,path:3,written
+tlambda,all free,criterion,written
+tlambda,all free,failure,written
+tlambda,all free,uniqueness,written
+tlambda,lambda+mu,path:1,written
+tlambda,lambda+mu+sigma,criterion,written
+tlambda,lambda+mu+sigma,failure,written
+tlambda,lambda+mu+sigma,uniqueness,written
+tlambda,lambda+sigma,path:2,written
+trgamma,all free,criterion,written
+trgamma,all free,failure,written
+trgamma,all free,limit:2,written
+trgamma,all free,path:2,written
+trgamma,all free,path:3,written
+trgamma,all free,path:4,written
+trgamma,all free,uniqueness,written
+trgamma,scale,criterion,written
+trgamma,scale,failure,written
+trgamma,scale,limit:2,written
+trgamma,scale,path:1,written
+trgamma,scale,path:2,written
+trgamma,scale,uniqueness,written
+trgamma,scale+shape1,criterion,lean
+trgamma,scale+shape1,failure,lean
+trgamma,scale+shape1,limit:2,written
+trgamma,scale+shape1,path:2,written
+trgamma,scale+shape1,uniqueness,lean
+trgamma,scale+shape1+shape2,criterion,written
+trgamma,scale+shape1+shape2,failure,written
+trgamma,scale+shape1+shape2,uniqueness,written
+trgamma,scale+shape2,criterion,written
+trgamma,scale+shape2,failure,written
+trgamma,scale+shape2,uniqueness,lean
+trgamma,shape1,criterion,written
+trgamma,shape1,failure,written
+trgamma,shape1,limit:2,written
+trgamma,shape1,path:2,written
+trgamma,shape1,uniqueness,written
+trgamma,shape1+shape2,criterion,written
+trgamma,shape1+shape2,failure,written
+trgamma,shape1+shape2,uniqueness,written
+trgamma,shape2,criterion,written
+trgamma,shape2,failure,written
+trgamma,shape2,limit:2,written
+trgamma,shape2,path:2,written
+trgamma,shape2,uniqueness,written
+triang,a,criterion,written
+triang,a,failure,written
+triang,a,limit:1,written
+triang,a,limit:2,written
+triang,a,path:1,written
+triang,a,path:2,written
+triang,a+b,case:held-endpoint-tie,lean
+triang,a+b,criterion,lean
+triang,a+b,failure,written
+triang,a+b,limit:2,written
+triang,a+b,path:2,written
+triang,a+b,uniqueness,lean
+triang,a+b+c,criterion,written
+triang,a+b+c,failure,written
+triang,a+b+c,uniqueness,written
+triang,a+c,criterion,written
+triang,a+c,failure,written
+triang,a+c,limit:1,written
+triang,a+c,limit:2,written
+triang,a+c,path:1,written
+triang,a+c,path:2,written
+triang,all free,criterion,written
+triang,all free,failure,written
+triang,all free,limit:1,written
+triang,all free,path:1,written
+triang,all free,uniqueness,written
+triang,b,criterion,written
+triang,b,failure,written
+triang,b,limit:1,written
+triang,b,limit:2,written
+triang,b,path:1,written
+triang,b,path:2,written
+triang,b+c,criterion,written
+triang,b+c,failure,written
+triang,b+c,limit:1,written
+triang,b+c,limit:2,written
+triang,b+c,path:1,written
+triang,b+c,path:2,written
+triang,c,criterion,written
+triang,c,failure,written
+triang,c,limit:1,written
+triang,c,path:1,written
+unif,all free,criterion,written
+unif,all free,failure,lean
+unif,all free,limit:1,lean
+unif,all free,path:1,lean
+unif,all free,uniqueness,lean
+unif,max,criterion,written
+unif,max,failure,lean
+unif,max,limit:1,lean
+unif,max,limit:2,written
+unif,max,path:1,lean
+unif,max,path:2,written
+unif,max,uniqueness,lean
+unif,max+min,criterion,written
+unif,max+min,failure,written
+unif,max+min,limit:2,written
+unif,max+min,path:2,written
+unif,max+min,uniqueness,written
+unif,min,criterion,written
+unif,min,failure,lean
+unif,min,limit:1,lean
+unif,min,limit:2,written
+unif,min,path:1,lean
+unif,min,path:2,written
+unif,min,uniqueness,lean
+weibull,all free,criterion,written
+weibull,all free,failure,lean
+weibull,all free,limit:1,lean
+weibull,all free,path:1,lean
+weibull,all free,uniqueness,lean
+weibull,scale,criterion,written
+weibull,scale,failure,lean
+weibull,scale,limit:2,lean
+weibull,scale,path:2,lean
+weibull,scale,uniqueness,lean
+weibull,scale+shape,criterion,written
+weibull,scale+shape,failure,written
+weibull,scale+shape,uniqueness,written
+weibull,shape,criterion,written
+weibull,shape,failure,written
+weibull,shape,uniqueness,written
+yulesimon,all free,criterion,lean
+yulesimon,all free,failure,lean
+yulesimon,all free,limit:1,lean
+yulesimon,all free,path:1,lean
+yulesimon,all free,uniqueness,lean
+yulesimon,rho,criterion,written
+yulesimon,rho,failure,written
+yulesimon,rho,uniqueness,written
+zeta,all free,criterion,lean
+zeta,all free,failure,lean
+zeta,all free,limit:1,lean
+zeta,all free,path:1,lean
+zeta,all free,uniqueness,lean
+zeta,s,criterion,written
+zeta,s,failure,written
+zeta,s,uniqueness,written

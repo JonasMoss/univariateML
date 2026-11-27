@@ -1,12 +1,8 @@
 family,held,question,claim,direction,status,evidence,frontier,origin
 bbinom,,criterion,Certain free-size samples attain and certain samples escape.,one-sided,written,dev/research/evaluations/2026-11-25-bbinomfree-math-report.md#fixed-size-ordering-and-the-active-face,"Extend the exact block bounds to a complete free-size criterion, including equality.",
 bbinom,,failure,Negative binomial and Poisson are compared as infinite-size faces in the evidence.,one-sided,written,dev/research/evaluations/2026-11-25-bbinomfree-math-report.md#fixed-size-ordering-and-the-active-face,Settle all transition and degeneracy cases.,
-bbinom,,limit:1,signed uniform near-face exclusion and strict tangent/chord bounds exclude every finite shape pair,one-sided,lean,UnivariateML.BetaBinomial.binomial_sup_of_nonpos; UnivariateML.BetaBinomial.necessity,,
 bbinom,,limit:2,"$n \ge 2$, every observation is 0 or $n$, and both values occur",one-sided,written,dev/research/evaluations/2026-11-25-bbinom-math-report.md#global-necessity-proof,,
-bbinom,,limit:3,"all observations are 0, or all equal $n$",one-sided,lean,UnivariateML.BetaBinomial.allZero_sup; UnivariateML.BetaBinomial.allSize_sup,,
-bbinom,,path:1,$\alpha + \beta \to \infty$ with $\alpha/(\alpha + \beta)$ fixed,one-sided,lean,UnivariateML.BetaBinomial.logLik_tendsto,,
 bbinom,,path:2,"$\alpha, \beta \to 0$ with $\alpha/(\alpha + \beta)$ fixed",one-sided,written,dev/research/evaluations/2026-11-25-bbinom-math-report.md#global-necessity-proof,,
-bbinom,,path:3,$\alpha/(\alpha + \beta) \to 0$ or $1$,one-sided,lean,UnivariateML.BetaBinomial.allZero_sup; UnivariateML.BetaBinomial.allSize_sup,,
 bbinom,,uniqueness,The integer size profile can have tied global modes on specified examples.,one-sided,written,dev/research/evaluations/2026-11-25-bbinomfree-math-report.md#nonunimodality-and-exact-ties,Characterize all co-winners.,
 bbinom,alpha,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 bbinom,alpha+size,criterion,"For known size ≥1 and positive held alpha, a finite beta exists exactly when neither endpoint is the common count. At size zero attainment is automatic.",iff,written,dev/research/evaluations/2026-11-25-bbinom-math-report.md#held-shapes,,existence.statement
@@ -16,21 +12,25 @@ bbinom,beta+size,criterion,"For known size ≥1 and positive held beta, a finite
 bbinom,beta+size,failure,Constant endpoint selects the corresponding point mass; at size zero all alpha values tie.,exact,written,dev/research/evaluations/2026-11-25-bbinom-math-report.md#held-shapes,,existence.statement
 bbinom,size,case:cardinality-four-to-eight,At trial sizes four through eight the stationary curvature test applies to the exact histogram regions established in the report.,one-sided,written,dev/research/evaluations/2026-11-25-bbinom3-math-report.md#exact-proof-for-sizes-four-through-eight,,existence.statement
 bbinom,size,case:cardinality-small-size,Attained maxima for known size three are unique.,one-sided,written,dev/research/evaluations/2026-11-25-bbinom2-math-report.md#universal-uniqueness-at-size-three,,existence.statement
-bbinom,size,case:criterion-interior,"At a known trial count at least two, with both shapes free and an interior observed count, attainment holds iff the sample is overdispersed relative to the binomial.",one-sided,lean,UnivariateML.BetaBinomial.exists_max_iff,,existence.statement
+bbinom,size,case:criterion-interior,"At a known trial count at least two, with both shapes free and an interior observed count, attainment holds iff the sample is overdispersed relative to the binomial.",one-sided,,,,existence.statement
 bbinom,size,criterion,"At known size ≥2 with an interior count, attainment iff empirical variance exceeds binomial variance. Endpoint-only samples do not attain. Size 0 gives a flat likelihood and size 1 reduces to Bernoulli.",iff,written,dev/research/evaluations/2026-11-25-bbinom-math-report.md#global-necessity-proof,,existence.statement
 bbinom,size,failure,With an interior count and nonpositive dispersion the binomial strictly wins; endpoint-only data attain the saturated value only on the two-point or point-mass boundary.,exact,written,dev/research/evaluations/2026-11-25-bbinom-math-report.md#global-necessity-proof,,existence.statement
+bbinom,size,limit:1,signed uniform near-face exclusion and strict tangent/chord bounds exclude every finite shape pair,one-sided,,,,
+bbinom,size,limit:3,"all observations are 0, or all equal $n$",one-sided,,,,
+bbinom,size,path:1,$\alpha + \beta \to \infty$ with $\alpha/(\alpha + \beta)$ fixed,one-sided,,,,
+bbinom,size,path:3,$\alpha/(\alpha + \beta) \to 0$ or $1$,one-sided,written,dev/research/evaluations/2026-11-25-bbinom-math-report.md#global-necessity-proof,,
 bbinom,size,uniqueness,At known size 2 or 3 the attained interior maximum is unique.,one-sided,written,dev/research/evaluations/2026-11-25-bbinom2-math-report.md#universal-uniqueness-at-size-three,Prove global curvature or give a crossing at arbitrary known size.,existence.statement
-beta,,criterion,Exists exactly for nonconstant interior data.,iff,lean,UnivariateML.Beta.jointMLE_iff,,
-beta,,failure,Constant interior data concentrate with both shapes growing.,exact,lean,UnivariateML.Beta.constant_unbounded,,
-beta,,limit:1,All observations equal the same value $c$ and both shapes are free,one-sided,lean,UnivariateML.Beta.constant_unbounded,,
-beta,,path:1,Both shapes grow as $\alpha=tc$ and $\beta=t(1-c)$ with $t\to\infty$ and $0<c<1$,one-sided,lean,UnivariateML.Beta.constant_unbounded,,
-beta,,uniqueness,Unique on attainment.,exact,lean,UnivariateML.Beta.jointMLE_iff,,
-beta,shape1,criterion,Every nonempty interior sample attains.,iff,lean,UnivariateML.Beta.heldFirst,,existence.statement
-beta,shape1,failure,No escape beats the finite root.,exact,lean,UnivariateML.Beta.heldFirst,,existence.statement
-beta,shape1,uniqueness,Unique.,exact,lean,UnivariateML.Beta.heldFirst,,existence.statement
-beta,shape2,criterion,Every nonempty interior sample attains.,iff,lean,UnivariateML.Beta.heldSecond,,existence.statement
-beta,shape2,failure,No escape beats the finite root.,exact,lean,UnivariateML.Beta.heldSecond,,existence.statement
-beta,shape2,uniqueness,Unique.,exact,lean,UnivariateML.Beta.heldSecond,,existence.statement
+beta,,criterion,Exists exactly for nonconstant interior data.,iff,,,,
+beta,,failure,Constant interior data concentrate with both shapes growing.,exact,,,,
+beta,,limit:1,All observations equal the same value $c$ and both shapes are free,one-sided,,,,
+beta,,path:1,Both shapes grow as $\alpha=tc$ and $\beta=t(1-c)$ with $t\to\infty$ and $0<c<1$,one-sided,,,,
+beta,,uniqueness,Unique on attainment.,exact,,,,
+beta,shape1,criterion,Every nonempty interior sample attains.,iff,,,,existence.statement
+beta,shape1,failure,No escape beats the finite root.,exact,,,,existence.statement
+beta,shape1,uniqueness,Unique.,exact,,,,existence.statement
+beta,shape2,criterion,Every nonempty interior sample attains.,iff,,,,existence.statement
+beta,shape2,failure,No escape beats the finite root.,exact,,,,existence.statement
+beta,shape2,uniqueness,Unique.,exact,,,,existence.statement
 betapr,,criterion,Nonconstant samples attain iff a finite ratio profile reaches the higher gamma-face value. Constants do not attain.,iff,written,dev/research/evaluations/2026-11-25-betapr-math-report.md#compact-scalar-decision-for-all-free-data,,
 betapr,,failure,Constants diverge; the gamma and inverse-gamma faces exhaust competitive escapes for nonconstant samples.,exact,written,dev/research/evaluations/2026-11-25-betapr-math-report.md#compact-scalar-decision-for-all-free-data,,
 betapr,,limit:3,All observations are equal and both shapes are free.,one-sided,written,dev/research/evaluations/2026-11-25-betapr-math-report.md#hold-masks-and-likelihood-closure,,
@@ -88,14 +88,14 @@ binom,,failure,Poisson supremum is unattained at positive mean with variance at 
 binom,,limit:1,"Both $n$ and $p$ are free and $0<\bar x\le m^{-1}\sum_i(x_i-\bar x)^2$, where $m$ is sample size",one-sided,cited,"D. F. DeRiggi (1983), doi:10.1080/01621459.1983.10477949",,
 binom,,path:1,The trial count tends to infinity and the probability tends to zero with $np=\bar x>0$ fixed,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/binom/README.md#existence.reason,,
 binom,,uniqueness,"There can be more than one integer size at a maximum, and all zeros are unidentified.",one-sided,cited,"D. F. DeRiggi (1983), Unimodality of Likelihood Functions for the Binomial Distribution, doi:10.1080/01621459.1983.10477949",Characterize the full set of tying sizes on the positive-mean attained branch.,
-binom,prob,case:adjacent-pair,"On counts (0,1,2) and at the held probability in the theorem, exactly the displayed neighboring sizes maximize.",one-sided,lean,UnivariateML.Discrete.Binomial.nonconstant_tie_maximizers,,existence.statement
+binom,prob,case:adjacent-pair,"On counts (0,1,2) and at the held probability in the theorem, exactly the displayed neighboring sizes maximize.",one-sided,,,,existence.statement
 binom,prob,criterion,"A finite maximum exists at interior probability; at p=0 only zeros are compatible, and at p=1 only constant data are compatible.",iff,written,univariateML-cpp/include/cppunivariate/distributions/binom/README.md#existence.reason,,existence.statement
 binom,prob,failure,No escape on compatible data.,exact,written,univariateML-cpp/include/cppunivariate/distributions/binom/README.md#existence.reason,,existence.statement
 binom,prob,uniqueness,"One or two adjacent sizes at interior probability; at p=1 the common count is the size, and at p=0 all sizes fit zeros.",exact,written,univariateML-cpp/include/cppunivariate/distributions/binom/README.md#existence.reason,,existence.statement
 binom,prob+size,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-binom,size,criterion,Always on counts compatible with the held size.,iff,lean,UnivariateML.Discrete.Binomial.sample_fixed_size_mle,,existence.statement
-binom,size,failure,No escape with held compatible size.,exact,lean,UnivariateML.Discrete.Binomial.sample_fixed_size_mle,,existence.statement
-binom,size,uniqueness,Unique empirical proportion for positive size; at size 0 all probabilities maximize.,exact,lean,UnivariateML.Discrete.Binomial.sample_fixed_size_mle,,existence.statement
+binom,size,criterion,Always on counts compatible with the held size.,iff,,,,existence.statement
+binom,size,failure,No escape with held compatible size.,exact,,,,existence.statement
+binom,size,uniqueness,Unique empirical proportion for positive size; at size 0 all probabilities maximize.,exact,,,,existence.statement
 bnbinom,,criterion,Positive finite candidates can beat all proved face bounds on some samples.,one-sided,written,dev/research/evaluations/2026-11-25-bnbinom-math-report.md#faces-and-the-finite-versus-face-test,Exhaust joint scale and shape combinations and establish a universal comparison.,
 bnbinom,,failure,All zeros approach one without attaining; NB and Poisson paths can be certified only on subcases.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/bnbinom/README.md#existence.reason,Extend global supporting-polynomial comparisons and handle face equality.,
 bnbinom,,limit:3,Every observation is zero and at least one coefficient is free.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/bnbinom/README.md#existence.reason,,
@@ -122,48 +122,49 @@ burr,,failure,Unbounded concentration for constants; otherwise nonattainment at 
 burr,,limit:1,"All observations are equal and $c$ and $s$ are free. With $s$ held, $c$ is free and either every observation equals $s$, or both shapes are free and the common observation is below $s$.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/burr/README.md#existence.reason,,
 burr,,limit:3,"All-free search strictly excludes every finite profile interval using dual/chord bounds, small-k exclusion and a signed seam bound relative to the exact Weibull optimum. Computed enclosures use the stated practical arithmetic margin.",one-sided,written,dev/research/evaluations/2026-11-25-burr-math-report.md#face-comparisons-and-equality,,
 burr,,limit:4,"All-free search strictly excludes every finite profile interval using dual/chord bounds, small-k exclusion and a signed or unsigned Weibull tail bound. Computed enclosures use the stated practical arithmetic margin.",one-sided,written,dev/research/evaluations/2026-11-25-burr-math-report.md#face-comparisons-and-equality,,
-burr,,path:1,"The free power $c$ tends to infinity while the free scale follows a concentrating path at the common observation. With scale held, concentration is also possible at a common observation below $s$ by letting $k$ grow, or at $s$ itself.",one-sided,lean,UnivariateML.BurrHeld.first_constant_unbounded; UnivariateML.BurrHeld.scale_constant_unbounded,,
+burr,,path:1,"The free power $c$ tends to infinity while the free scale follows a concentrating path at the common observation. With scale held, concentration is also possible at a common observation below $s$ by letting $k$ grow, or at $s$ itself.",one-sided,,,,
 burr,,path:3,The shape $k$ tends to infinity while $s k^{-1/c}$ tends to a positive Weibull scale.,one-sided,written,dev/research/evaluations/2026-11-25-burr-math-report.md#all-free-burr-xii,,
 burr,,path:4,The power $c$ tends to infinity while $kc$ tends to a positive Pareto shape and $s$ stays at its endpoint.,one-sided,written,dev/research/evaluations/2026-11-25-burr-math-report.md#all-free-burr-xii,,
 burr,,uniqueness,Exact samples can have two finite co-winners above both faces.,one-sided,written,dev/research/evaluations/2026-11-25-burr2-math-report.md#two-finite-global-maximizers-above-both-faces,"Classify all stationary co-winners, including equality with a face.",
-burr,scale,criterion,Exactly when the sample is nonconstant and at least one observation lies below scale.,iff,lean,UnivariateML.BurrHeld.scale_existsUnique; UnivariateML.BurrHeld.scale_pareto_no_max; UnivariateML.BurrHeld.scale_constant_unbounded,,existence.statement
-burr,scale,failure,"Constants at or below scale give divergence; with all observations at or above scale and some strictly above, Pareto is the unattained supremum.",exact,lean,UnivariateML.BurrHeld.scale_pareto_supremum; UnivariateML.BurrHeld.scale_constant_unbounded,,existence.statement
-burr,scale,limit:5,Only scale is held and all observations are at least $s$. The all-equal-to-$s$ case has unbounded likelihood instead.,one-sided,lean,UnivariateML.BurrHeld.scale_pareto_supremum,,
-burr,scale,path:5,The power $c$ tends to infinity while $kc$ tends to a positive Pareto shape and $s$ stays at its endpoint.,one-sided,lean,UnivariateML.BurrHeld.scale_pareto_limit,,
-burr,scale,uniqueness,Unique.,exact,lean,UnivariateML.BurrHeld.scale_existsUnique,,existence.statement
+burr,scale,criterion,Exactly when the sample is nonconstant and at least one observation lies below scale.,iff,,,,existence.statement
+burr,scale,failure,"Constants at or below scale give divergence; with all observations at or above scale and some strictly above, Pareto is the unattained supremum.",exact,,,,existence.statement
+burr,scale,limit:5,Only scale is held and all observations are at least $s$. The all-equal-to-$s$ case has unbounded likelihood instead.,one-sided,,,,
+burr,scale,path:5,The power $c$ tends to infinity while $kc$ tends to a positive Pareto shape and $s$ stays at its endpoint.,one-sided,,,,
+burr,scale,uniqueness,Unique.,exact,,,,existence.statement
 burr,scale+shape1,criterion,Exactly when some observation differs from held scale.,iff,written,univariateML-cpp/include/cppunivariate/distributions/burr/README.md#existence.reason,,existence.statement
 burr,scale+shape1,failure,Otherwise divergence.,exact,written,univariateML-cpp/include/cppunivariate/distributions/burr/README.md#existence.reason,,existence.statement
+burr,scale+shape1,path:1,"The free power $c$ tends to infinity while the free scale follows a concentrating path at the common observation. With scale held, concentration is also possible at a common observation below $s$ by letting $k$ grow, or at $s$ itself.",one-sided,written,dev/research/evaluations/2026-11-02-burr-collapse-report.md#mathematical-scope,,
 burr,scale+shape1,uniqueness,Unique free power.,exact,written,univariateML-cpp/include/cppunivariate/distributions/burr/README.md#existence.reason,,existence.statement
 burr,scale+shape1+shape2,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 burr,scale+shape2,criterion,Always on positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/burr/README.md#existence.reason,,existence.statement
 burr,scale+shape2,failure,No failure.,exact,written,univariateML-cpp/include/cppunivariate/distributions/burr/README.md#existence.reason,,existence.statement
 burr,scale+shape2,uniqueness,Unique first shape.,exact,written,univariateML-cpp/include/cppunivariate/distributions/burr/README.md#existence.reason,,existence.statement
-burr,shape1,criterion,Exactly for nonconstant positive data.,iff,lean,UnivariateML.BurrHeld.first_existsUnique; UnivariateML.BurrHeld.first_constant_unbounded,,existence.statement
-burr,shape1,failure,Constant samples give unbounded likelihood.,exact,lean,UnivariateML.BurrHeld.first_existsUnique; UnivariateML.BurrHeld.first_constant_unbounded,,existence.statement
-burr,shape1,uniqueness,Unique.,exact,lean,UnivariateML.BurrHeld.first_existsUnique; UnivariateML.BurrHeld.first_constant_unbounded,,existence.statement
+burr,shape1,criterion,Exactly for nonconstant positive data.,iff,,,,existence.statement
+burr,shape1,failure,Constant samples give unbounded likelihood.,exact,,,,existence.statement
+burr,shape1,uniqueness,Unique.,exact,,,,existence.statement
 burr,shape1+shape2,criterion,Always for positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/burr/README.md#existence.reason,,existence.statement
 burr,shape1+shape2,failure,No failure.,exact,written,univariateML-cpp/include/cppunivariate/distributions/burr/README.md#existence.reason,,existence.statement
 burr,shape1+shape2,uniqueness,Unique scale.,exact,written,univariateML-cpp/include/cppunivariate/distributions/burr/README.md#existence.reason,,existence.statement
-burr,shape2,case:criterion-powered,The Lomax witness on powered positive observations is necessary and sufficient with power held.,one-sided,lean,UnivariateML.Transfer.Burr.exists_max_iff,,existence.statement
-burr,shape2,case:failure-powered,"With power held and no Lomax witness, the Weibull supremum is strictly unattained.",one-sided,lean,UnivariateML.Transfer.Burr.exponential_sup_of_no_witness,,existence.statement
+burr,shape2,case:criterion-powered,The Lomax witness on powered positive observations is necessary and sufficient with power held.,one-sided,,,,existence.statement
+burr,shape2,case:failure-powered,"With power held and no Lomax witness, the Weibull supremum is strictly unattained.",one-sided,,,,existence.statement
 burr,shape2,criterion,Exactly when the powered sample meets the Lomax existence criterion.,iff,written,dev/research/evaluations/2026-11-25-burr-math-report.md#single-holds,,existence.statement
 burr,shape2,failure,Otherwise the Weibull face supplies the unattained supremum.,exact,written,dev/research/evaluations/2026-11-25-burr-math-report.md#single-holds,,existence.statement
 burr,shape2,limit:2,"With $c$ held, a strict transformed-profile bound selects the exponential limit; a likelihood-margin preference alone retains an uncertified finite search.",one-sided,written,dev/research/evaluations/2026-11-25-burr-math-report.md#single-holds,,
 burr,shape2,path:2,"With $c$ held, $k$ tends to infinity and $s k^{-1/c}$ stays at a positive Weibull scale.",one-sided,written,dev/research/evaluations/2026-11-25-burr-math-report.md#single-holds,,
 burr,shape2,uniqueness,Exact held-power samples can tie.,one-sided,written,dev/research/evaluations/2026-11-25-burr-math-report.md#held-power-has-an-exact-global-tie,Characterize all tied or isolated maxima of the Lomax profile.,existence.statement
-cauchy,,criterion,Exactly when all multiplicities are below half or there are two equally frequent distinct values.,iff,lean,UnivariateML.Cauchy.joint_exists_iff,,
-cauchy,,failure,Strict majority gives divergence; exact half outside the balanced two-value case gives a finite unattained collapse.,exact,lean,UnivariateML.Cauchy.majority_collapse; UnivariateML.Cauchy.half_no_jointMLE,,
-cauchy,,limit:1,"Scale is free. With location free, an atom occurs at least $n/2$ times, except in a sample of two equally frequent distinct values. With location held, at least $n/2$ observations equal that location.",one-sided,lean,UnivariateML.Cauchy.majority_collapse; UnivariateML.Cauchy.half_no_jointMLE; UnivariateML.Cauchy.heldLocation_iff,,
-cauchy,,path:1,The scale $\sigma$ tends to zero at the estimated or held location $\mu$.,one-sided,lean,UnivariateML.Cauchy.majority_collapse; UnivariateML.Cauchy.half_collapse,,
-cauchy,,uniqueness,Unique in strict regime; full semicircle in the balanced two-value case.,exact,lean,UnivariateML.Cauchy.jointMLE; UnivariateML.Cauchy.balanced_joint_argmax,,
-cauchy,location,criterion,Exactly when fewer than half the observations equal the held location.,iff,lean,UnivariateML.Cauchy.heldLocation_iff,,existence.statement
+cauchy,,criterion,Exactly when all multiplicities are below half or there are two equally frequent distinct values.,iff,,,,
+cauchy,,failure,Strict majority gives divergence; exact half outside the balanced two-value case gives a finite unattained collapse.,exact,,,,
+cauchy,,limit:1,"Scale is free. With location free, an atom occurs at least $n/2$ times, except in a sample of two equally frequent distinct values. With location held, at least $n/2$ observations equal that location.",one-sided,,,,
+cauchy,,path:1,The scale $\sigma$ tends to zero at the estimated or held location $\mu$.,one-sided,,,,
+cauchy,,uniqueness,Unique in strict regime; full semicircle in the balanced two-value case.,exact,,,,
+cauchy,location,criterion,Exactly when fewer than half the observations equal the held location.,iff,,,,existence.statement
 cauchy,location,failure,At half ties the scale-zero supremum is finite; above half it is unbounded.,exact,written,univariateML-cpp/include/cppunivariate/distributions/cauchy/README.md#existence.reason,,existence.statement
-cauchy,location,uniqueness,Unique on attainment.,exact,lean,UnivariateML.Cauchy.heldLocation_unique,,existence.statement
+cauchy,location,uniqueness,Unique on attainment.,exact,,,,existence.statement
 cauchy,location+scale,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-cauchy,scale,case:nonunique-location,The held-scale balanced two-value sample has the explicit maximizing location set in the theorem.,one-sided,lean,UnivariateML.Cauchy.balanced_heldScale_argmax,,existence.statement
-cauchy,scale,criterion,Always for positive held scale.,iff,lean,UnivariateML.Cauchy.heldScale_exists,,existence.statement
-cauchy,scale,failure,No failure.,exact,lean,UnivariateML.Cauchy.heldScale_exists,,existence.statement
-cauchy,scale,uniqueness,Two equally frequent points can give multiple maximizers.,one-sided,lean,UnivariateML.Cauchy.balanced_heldScale_argmax,Characterize the number of global location maxima for arbitrary samples.,existence.statement
+cauchy,scale,case:nonunique-location,The held-scale balanced two-value sample has the explicit maximizing location set in the theorem.,one-sided,,,,existence.statement
+cauchy,scale,criterion,Always for positive held scale.,iff,,,,existence.statement
+cauchy,scale,failure,No failure.,exact,,,,existence.statement
+cauchy,scale,uniqueness,Two equally frequent points can give multiple maximizers.,one-sided,,,Characterize the number of global location maxima for arbitrary samples.,existence.statement
 cmb,,criterion,"On the implemented capped size domain, all feasible samples attain except mixed adjacent positive counts and samples occupying only zero and one count at least two.",iff,written,dev/research/evaluations/2026-11-25-cmb-math-report.md#free-size,,
 cmb,,failure,Those two exceptions have strict unattained saturated suprema; mixed zeros and ones attain at size one even though the adjacent face ties.,exact,written,dev/research/evaluations/2026-11-25-cmb-math-report.md#free-size,,
 cmb,,path:2,"As $\nu$ diverges along an exposing direction, the law concentrates at an interior support point.",one-sided,written,dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size,,
@@ -190,12 +191,12 @@ cmb,prob+size,uniqueness,"Unique at interior score root. In the flat size-zero, 
 cmb,size,criterion,"For held N≥2 and free p and dispersion, iff the empirical moment pair lies strictly inside the finite moment hull or is an endpoint vertex. Sizes zero and one attain on compatible data.",iff,written,dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size,,existence.statement
 cmb,size,failure,"Inside a fixed-size face, interior constants and two occupied consecutive counts or two occupied endpoints give the stated excluded laws.",exact,written,dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size,,existence.statement
 cmb,size,uniqueness,"Unique on the identifiable interior; endpoint point masses, size one and size zero can leave dispersion or probability unidentified.",exact,written,dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size,,existence.statement
-cmp,,case:two-adjacent,A positive sample supported on two adjacent counts with both counts observed has an unattained saturated likelihood.,one-sided,lean,UnivariateML.CMP.adjacent_full_unattained_supremum,,
+cmp,,case:two-adjacent,A positive sample supported on two adjacent counts with both counts observed has an unattained saturated likelihood.,one-sided,,,,
 cmp,,criterion,Always except positive constants or adjacent two-cell samples; all zeros attain.,iff,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,
 cmp,,failure,Excluded point-mass and adjacent two-point limiting suprema; the geometric and all-zero boundaries can be attained.,exact,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,
 cmp,,limit:1,"With both coefficients free, both of two adjacent integers are observed. With positive $\lambda$ held and $\nu$ free, all observations lie in $\{0,1\}$, including constant samples.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,
 cmp,,limit:2,"With both coefficients free, all observations equal the same positive integer.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,
-cmp,,path:1,"As $\nu\to\infty$, adjusting $\lambda$ can retain mass on two adjacent integers.",one-sided,lean,UnivariateML.CMP.adjacent_full_unattained_supremum,,
+cmp,,path:1,"As $\nu\to\infty$, adjusting $\lambda$ can retain mass on two adjacent integers.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,
 cmp,,path:2,"As $\nu\to\infty$, a suitable path of $\lambda$ concentrates mass at a positive integer.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,
 cmp,,uniqueness,Singleton when the mean is positive and attainment holds; all zeros leave dispersion unidentified.,exact,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,
 cmp,lambda,criterion,"With positive held lambda, iff a count exceeds one; held zero is compatible with all-zero data.",iff,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,existence.statement
@@ -205,34 +206,38 @@ cmp,lambda+nu,criterion,Singleton feasible domain.,iff,written,overview.md#exist
 cmp,nu,criterion,Always for admissible data and held finite dispersion.,iff,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,existence.statement
 cmp,nu,failure,No escape.,exact,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,existence.statement
 cmp,nu,uniqueness,"Unique rate, including zero if all observations are zero.",exact,written,univariateML-cpp/include/cppunivariate/distributions/cmp/README.md#existence.reason,,existence.statement
-dblpareto,,criterion,Exactly when an interior knot reaches the envelope of endpoint and knot profile values; constants do not attain.,iff,lean,UnivariateML.DoublePareto.joint_exists_iff,,
-dblpareto,,failure,Nonconstant samples with no winning interior knot select excluded Pareto or power. Constants diverge.,exact,lean,UnivariateML.DoublePareto.scan_supremum; UnivariateML.DoublePareto.constant_unbounded,,
-dblpareto,,limit:1,The left rate is free and its one-sided profile wins at a kink at or below the sample minimum.,one-sided,lean,UnivariateML.DoublePareto.scan_supremum,,
-dblpareto,,limit:2,The right rate is free and its one-sided profile wins at a kink at or above the sample maximum.,one-sided,lean,UnivariateML.DoublePareto.scan_supremum,,
-dblpareto,,limit:3,"Both rates are free, all observations coincide, and the kink is free or held at the common value.",one-sided,lean,UnivariateML.DoublePareto.constant_unbounded; UnivariateML.DoublePareto.zero_distances_unbounded,,
-dblpareto,,path:1,The left rate tends to infinity with the right rate and kink fixed.,one-sided,lean,UnivariateML.DoublePareto.pareto_face,,
-dblpareto,,path:2,The right rate tends to infinity with the left rate and kink fixed.,one-sided,lean,UnivariateML.DoublePareto.power_face,,
-dblpareto,,path:3,Both rates grow without bound at the common observation.,one-sided,lean,UnivariateML.DoublePareto.constant_unbounded; UnivariateML.DoublePareto.zero_distances_unbounded,,
-dblpareto,,uniqueness,All winning interior knots and their unique conditional rates.,exact,lean,UnivariateML.DoublePareto.joint_maximizers,,
+dblpareto,,criterion,Exactly when an interior knot reaches the envelope of endpoint and knot profile values; constants do not attain.,iff,,,,
+dblpareto,,failure,Nonconstant samples with no winning interior knot select excluded Pareto or power. Constants diverge.,exact,,,,
+dblpareto,,limit:1,The left rate is free and its one-sided profile wins at a kink at or below the sample minimum.,one-sided,,,,
+dblpareto,,limit:2,The right rate is free and its one-sided profile wins at a kink at or above the sample maximum.,one-sided,,,,
+dblpareto,,limit:3,"Both rates are free, all observations coincide, and the kink is free or held at the common value.",one-sided,,,,
+dblpareto,,path:1,The left rate tends to infinity with the right rate and kink fixed.,one-sided,,,,
+dblpareto,,path:2,The right rate tends to infinity with the left rate and kink fixed.,one-sided,,,,
+dblpareto,,path:3,Both rates grow without bound at the common observation.,one-sided,,,,
+dblpareto,,uniqueness,All winning interior knots and their unique conditional rates.,exact,,,,
 dblpareto,left_rate,criterion,"Exactly when a finite eligible kink beats or ties the one remaining excluded power face, with constant data selecting the power face.",iff,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#one-held-rate,,existence.statement
 dblpareto,left_rate,failure,"When every finite eligible kink loses, the power face is the unattained supremum, including constants.",exact,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#one-held-rate,,existence.statement
+dblpareto,left_rate,limit:2,The right rate is free and its one-sided profile wins at a kink at or above the sample maximum.,one-sided,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#one-held-rate,,
+dblpareto,left_rate,path:2,The right rate tends to infinity with the left rate and kink fixed.,one-sided,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#exhaustion-of-the-boundary,,
 dblpareto,left_rate,uniqueness,All winning finite kink knots with their conditional right rates.,exact,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#one-held-rate,,existence.statement
-dblpareto,left_rate+right_rate,criterion,Always for positive held rates and positive data.,iff,lean,UnivariateML.DoublePareto.held_rates_exists,,existence.statement
-dblpareto,left_rate+right_rate,failure,No escape.,exact,lean,UnivariateML.DoublePareto.held_rates_exists,,existence.statement
-dblpareto,left_rate+right_rate,uniqueness,"All weighted log-data medians at the specified quantile, including possible interval.",exact,lean,UnivariateML.DoublePareto.held_rates_interval,,existence.statement
+dblpareto,left_rate+right_rate,criterion,Always for positive held rates and positive data.,iff,,,,existence.statement
+dblpareto,left_rate+right_rate,failure,No escape.,exact,,,,existence.statement
+dblpareto,left_rate+right_rate,uniqueness,"All weighted log-data medians at the specified quantile, including possible interval.",exact,,,,existence.statement
 dblpareto,left_rate+right_rate+scale,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 dblpareto,left_rate+scale,criterion,Exactly when total deviation above the held kink is positive.,iff,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#all-eight-masks,,existence.statement
 dblpareto,left_rate+scale,failure,"If zero, the free right rate goes to infinity at a finite unattained power face.",exact,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#all-eight-masks,,existence.statement
 dblpareto,left_rate+scale,uniqueness,Unique free rate.,exact,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#all-eight-masks,,existence.statement
 dblpareto,right_rate,criterion,"Exactly when a finite eligible kink beats or ties the one remaining excluded Pareto face, with constant data selecting the Pareto face.",iff,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#one-held-rate,,existence.statement
 dblpareto,right_rate,failure,"When every finite eligible kink loses, the Pareto face is the unattained supremum, including constants.",exact,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#one-held-rate,,existence.statement
+dblpareto,right_rate,limit:1,The left rate is free and its one-sided profile wins at a kink at or below the sample minimum.,one-sided,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#one-held-rate,,
+dblpareto,right_rate,path:1,The left rate tends to infinity with the right rate and kink fixed.,one-sided,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#exhaustion-of-the-boundary,,
 dblpareto,right_rate,uniqueness,All winning finite kink knots with their conditional left rates.,exact,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#one-held-rate,,existence.statement
 dblpareto,right_rate+scale,criterion,Exactly when total deviation below the held kink is positive.,iff,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#all-eight-masks,,existence.statement
 dblpareto,right_rate+scale,failure,"If zero, the free left rate goes to infinity at a finite unattained Pareto face.",exact,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#all-eight-masks,,existence.statement
 dblpareto,right_rate+scale,uniqueness,Unique free rate.,exact,written,dev/research/evaluations/2026-11-25-dblpareto-math-report.md#all-eight-masks,,existence.statement
-dblpareto,scale,criterion,Exactly when the total deviation is positive on each side whose rate is free.,iff,lean,UnivariateML.DoublePareto.held_kink_exists_iff; UnivariateML.DoublePareto.zero_distances_unbounded,,existence.statement
-dblpareto,scale,failure,Two zero deviations give divergence; exactly one zero deviation gives the corresponding finite unattained one-sided face.,exact,lean,UnivariateML.DoublePareto.zero_distances_unbounded; UnivariateML.DoublePareto.pareto_face; UnivariateML.DoublePareto.power_face,,existence.statement
-dblpareto,scale,uniqueness,Unique free rates.,exact,lean,UnivariateML.DoublePareto.held_kink_unique_iff,,existence.statement
+dblpareto,scale,criterion,Exactly when the total deviation is positive on each side whose rate is free.,iff,,,,existence.statement
+dblpareto,scale,failure,Two zero deviations give divergence; exactly one zero deviation gives the corresponding finite unattained one-sided face.,exact,,,,existence.statement
+dblpareto,scale,uniqueness,Unique free rates.,exact,,,,existence.statement
 dgamma,,criterion,Exactly when integer range is at least two.,iff,written,univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#existence.reason,,
 dgamma,,failure,One or two adjacent occupied cells have excluded saturated suprema.,exact,written,univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#existence.reason,,
 dgamma,,limit:1,Both coefficients are free and all observations are equal.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#existence.reason,,
@@ -249,18 +254,18 @@ dgamma,rate+shape,criterion,Singleton feasible domain.,iff,written,overview.md#e
 dgamma,shape,criterion,Exactly when some count is positive.,iff,written,univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#existence.reason,,existence.statement
 dgamma,shape,failure,All zeros approach point mass under diverging rate.,exact,written,univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#existence.reason,,existence.statement
 dgamma,shape,uniqueness,Unique with a positive count.,exact,written,univariateML-cpp/include/cppunivariate/distributions/dgamma/README.md#existence.reason,,existence.statement
-dlaplace,,criterion,Exactly nonconstant integer data.,iff,lean,UnivariateML.DiscreteLaplace.joint_exists_iff,,
-dlaplace,,failure,Constant data approach the excluded zero-scale mass.,exact,lean,UnivariateML.DiscreteLaplace.joint_constant_boundary,,
-dlaplace,,limit:1,Scale is free and all observations equal the estimated or held location.,one-sided,lean,UnivariateML.DiscreteLaplace.joint_constant_boundary; UnivariateML.DiscreteLaplace.heldLocation_boundary,,
-dlaplace,,path:1,The geometric probability $b$ tends to zero with integer location $\mu$ fixed.,one-sided,lean,UnivariateML.DiscreteLaplace.joint_constant_boundary; UnivariateML.DiscreteLaplace.heldLocation_boundary,,
-dlaplace,,uniqueness,All integer medians with the same scale and unique iff the median interval is a singleton.,exact,lean,UnivariateML.DiscreteLaplace.joint; UnivariateML.DiscreteLaplace.joint_unique_iff,,
-dlaplace,location,criterion,Exactly when some observation differs from the held location.,iff,lean,UnivariateML.DiscreteLaplace.heldLocation_existsUnique_iff,,existence.statement
-dlaplace,location,failure,All observations at the held location give excluded point mass.,exact,lean,UnivariateML.DiscreteLaplace.heldLocation_boundary,,existence.statement
-dlaplace,location,uniqueness,Unique on attainment.,exact,lean,UnivariateML.DiscreteLaplace.heldLocation_existsUnique_iff,,existence.statement
+dlaplace,,criterion,Exactly nonconstant integer data.,iff,,,,
+dlaplace,,failure,Constant data approach the excluded zero-scale mass.,exact,,,,
+dlaplace,,limit:1,Scale is free and all observations equal the estimated or held location.,one-sided,,,,
+dlaplace,,path:1,The geometric probability $b$ tends to zero with integer location $\mu$ fixed.,one-sided,,,,
+dlaplace,,uniqueness,All integer medians with the same scale and unique iff the median interval is a singleton.,exact,,,,
+dlaplace,location,criterion,Exactly when some observation differs from the held location.,iff,,,,existence.statement
+dlaplace,location,failure,All observations at the held location give excluded point mass.,exact,,,,existence.statement
+dlaplace,location,uniqueness,Unique on attainment.,exact,,,,existence.statement
 dlaplace,location+scale,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-dlaplace,scale,criterion,"Always for a held scale in (0,1).",iff,lean,UnivariateML.DiscreteLaplace.heldScale,,existence.statement
-dlaplace,scale,failure,No failure.,exact,lean,UnivariateML.DiscreteLaplace.heldScale,,existence.statement
-dlaplace,scale,uniqueness,The integer medians exactly.,exact,lean,UnivariateML.DiscreteLaplace.heldScale,,existence.statement
+dlaplace,scale,criterion,"Always for a held scale in (0,1).",iff,,,,existence.statement
+dlaplace,scale,failure,No failure.,exact,,,,existence.statement
+dlaplace,scale,uniqueness,The integer medians exactly.,exact,,,,existence.statement
 dnorm,,criterion,Exactly when integer range is at least two.,iff,written,dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws,,
 dnorm,,failure,Concentration in one cell or across adjacent cells is unattained.,exact,written,dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws,,
 dnorm,,limit:1,Both coefficients are free and all observations are equal.,one-sided,written,dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws,,
@@ -321,11 +326,11 @@ emg,lambda+sigma,uniqueness,Unique location.,exact,written,univariateML-cpp/incl
 emg,mu,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 emg,mu+sigma,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 emg,sigma,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
-exp,,criterion,Exactly when the nonnegative sample has positive sum.,iff,lean,UnivariateML.Exponential.existsUnique_mle_iff,,
-exp,,failure,All zeros give divergence as rate increases.,exact,lean,UnivariateML.Exponential.allZero_unbounded,,
-exp,,limit:1,All observations are zero and the rate is free,one-sided,lean,UnivariateML.Exponential.allZero_unbounded,,
-exp,,path:1,"The rate grows without bound, $\lambda \to \infty$",one-sided,lean,UnivariateML.Exponential.allZero_unbounded,,
-exp,,uniqueness,Unique.,exact,lean,UnivariateML.Exponential.existsUnique_mle_iff,,
+exp,,criterion,Exactly when the nonnegative sample has positive sum.,iff,,,,
+exp,,failure,All zeros give divergence as rate increases.,exact,,,,
+exp,,limit:1,All observations are zero and the rate is free,one-sided,,,,
+exp,,path:1,"The rate grows without bound, $\lambda \to \infty$",one-sided,,,,
+exp,,uniqueness,Unique.,exact,,,,
 exp,rate,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 expweibull,,criterion,On nonconstant positive data iff an interior point reaches the best power and inverse Weibull face value. Constants have unbounded likelihood.,iff,written,dev/research/evaluations/2026-11-25-expweibull-math-report.md#faces-and-finite-attainment,,
 expweibull,,failure,Unbounded concentration on constants; otherwise power or inverse Weibull wins when every finite point loses.,exact,written,dev/research/evaluations/2026-11-25-expweibull-math-report.md#faces-and-finite-attainment,,
@@ -361,28 +366,28 @@ fatigue,,uniqueness,No attained branch.,exact,written,univariateML-cpp/include/c
 fatigue,alpha+mu,criterion,"For every nonempty strictly positive excess sample at finite positive held alpha, scale attains.",iff,written,univariateML-cpp/include/cppunivariate/distributions/fatigue/README.md#details,,existence.statement
 fatigue,alpha+mu,failure,The scale-end penalties in the positive excess likelihood rule out both scale escapes.,exact,written,univariateML-cpp/include/cppunivariate/distributions/fatigue/README.md#details,,existence.statement
 fatigue,alpha+mu,uniqueness,For constant samples a singleton occurs at alpha at most two and a reciprocal pair at alpha above two.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/fatigue/README.md#details,Classify all stationary co-winners for nonconstant samples.,existence.statement
-fatigue,beta+mu,criterion,Exactly when some strictly positive excess differs from held beta.,iff,lean,UnivariateML.Fatigue.heldScale_unique; UnivariateML.Fatigue.heldScale_unbounded,,existence.statement
-fatigue,beta+mu,failure,At zero residual shape concentration diverges.,exact,lean,UnivariateML.Fatigue.heldScale_unique; UnivariateML.Fatigue.heldScale_unbounded,,existence.statement
-fatigue,beta+mu,limit:2,every shifted observation $x - \mu$ equals the held $\beta$,one-sided,lean,UnivariateML.Fatigue.heldScale_unbounded,,
-fatigue,beta+mu,path:2,$\alpha \to 0$,one-sided,lean,UnivariateML.Fatigue.heldScale_unbounded,,
-fatigue,beta+mu,uniqueness,Unique.,exact,lean,UnivariateML.Fatigue.heldScale_unique; UnivariateML.Fatigue.heldScale_unbounded,,existence.statement
-fatigue,mu,criterion,Exactly when the strictly positive shifted sample is nonconstant.,iff,lean,UnivariateML.Fatigue.jointMLE; UnivariateML.Fatigue.constant_unbounded,,existence.statement
-fatigue,mu,failure,Constant shifted samples collapse.,exact,lean,UnivariateML.Fatigue.jointMLE; UnivariateML.Fatigue.constant_unbounded,,existence.statement
-fatigue,mu,limit:1,all shifted observations $x - \mu$ are equal and $\alpha$ and $\beta$ are free,one-sided,lean,UnivariateML.Fatigue.constant_unbounded,,
-fatigue,mu,path:1,$\alpha \to 0$ with $\beta$ equal to the common value of $x - \mu$,one-sided,lean,UnivariateML.Fatigue.constant_unbounded,,
-fatigue,mu,uniqueness,Unique on nonconstant data.,exact,lean,UnivariateML.Fatigue.jointMLE; UnivariateML.Fatigue.constant_unbounded,,existence.statement
+fatigue,beta+mu,criterion,Exactly when some strictly positive excess differs from held beta.,iff,,,,existence.statement
+fatigue,beta+mu,failure,At zero residual shape concentration diverges.,exact,,,,existence.statement
+fatigue,beta+mu,limit:2,every shifted observation $x - \mu$ equals the held $\beta$,one-sided,,,,
+fatigue,beta+mu,path:2,$\alpha \to 0$,one-sided,,,,
+fatigue,beta+mu,uniqueness,Unique.,exact,,,,existence.statement
+fatigue,mu,criterion,Exactly when the strictly positive shifted sample is nonconstant.,iff,,,,existence.statement
+fatigue,mu,failure,Constant shifted samples collapse.,exact,,,,existence.statement
+fatigue,mu,limit:1,all shifted observations $x - \mu$ are equal and $\alpha$ and $\beta$ are free,one-sided,,,,
+fatigue,mu,path:1,$\alpha \to 0$ with $\beta$ equal to the common value of $x - \mu$,one-sided,,,,
+fatigue,mu,uniqueness,Unique on nonconstant data.,exact,,,,existence.statement
 foldnorm,,criterion,Exactly for nonconstant nonnegative samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/foldnorm/README.md#existence.reason,,
 foldnorm,,failure,Constant samples have unbounded likelihood at vanishing variance.,exact,written,univariateML-cpp/include/cppunivariate/distributions/foldnorm/README.md#existence.reason,,
 foldnorm,,limit:1,Scale is free and all observations equal $x_0$; location is free or held at $x_0$.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/foldnorm/README.md#existence.reason,,
-foldnorm,,path:1,"As $\sigma\to0$ with $\mu=x_0\ge0$, the density at $x_0$ diverges.",one-sided,lean,UnivariateML.FoldedNormal.heldLocation_unbounded,,
+foldnorm,,path:1,"As $\sigma\to0$ with $\mu=x_0\ge0$, the density at $x_0$ diverges.",one-sided,,,,
 foldnorm,,uniqueness,Some exact real data give an interior fit tied with half-normal at mu=0.,one-sided,written,dev/research/evaluations/2026-11-25-foldnorm-math-report.md#exact-and-near-ties,Characterize all intersections of the finite stationary profile and the attained mu=0 member.,
 foldnorm,mu,criterion,Exactly when the residual second moment about held location is positive.,iff,written,univariateML-cpp/include/cppunivariate/distributions/foldnorm/README.md#existence.reason,,existence.statement
-foldnorm,mu,failure,Otherwise likelihood diverges as variance vanishes.,exact,lean,UnivariateML.FoldedNormal.heldLocation_unbounded,,existence.statement
-foldnorm,mu,uniqueness,Unique.,exact,lean,UnivariateML.FoldedNormal.heldLocation,,existence.statement
+foldnorm,mu,failure,Otherwise likelihood diverges as variance vanishes.,exact,,,,existence.statement
+foldnorm,mu,uniqueness,Unique.,exact,,,,existence.statement
 foldnorm,mu+sigma,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-foldnorm,sigma,criterion,Always for positive held scale.,iff,lean,UnivariateML.FoldedNormal.heldScale_zero; UnivariateML.FoldedNormal.heldScale_positive,,existence.statement
-foldnorm,sigma,failure,No failure.,exact,lean,UnivariateML.FoldedNormal.heldScale_zero; UnivariateML.FoldedNormal.heldScale_positive,,existence.statement
-foldnorm,sigma,uniqueness,"Unique, at zero iff empirical second moment does not exceed held variance.",exact,lean,UnivariateML.FoldedNormal.heldScale_zero; UnivariateML.FoldedNormal.heldScale_positive,,existence.statement
+foldnorm,sigma,criterion,Always for positive held scale.,iff,,,,existence.statement
+foldnorm,sigma,failure,No failure.,exact,,,,existence.statement
+foldnorm,sigma,uniqueness,"Unique, at zero iff empirical second moment does not exceed held variance.",exact,,,,existence.statement
 fpareto,,criterion,Never on unrestricted free-threshold domain.,iff,written,univariateML-cpp/include/cppunivariate/distributions/fpareto/README.md#existence.reason,,
 fpareto,,failure,Moving threshold to minimum at power times lower beta shape below one is unbounded.,exact,written,univariateML-cpp/include/cppunivariate/distributions/fpareto/README.md#existence.reason,,
 fpareto,,limit:3,"The threshold is held and the excesses are constant, with both power and scale free. Other held subsets require their own concentration check.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/fpareto/README.md#existence.reason,,
@@ -447,10 +452,10 @@ frechet,,path:3,The shape $\lambda$ tends to infinity with $\sigma/\lambda=a>0$ 
 frechet,,path:4,"The location $\mu$ approaches the sample minimum from below, $\lambda$ tends to one, and $\sigma$ decreases proportionally to the location gap.",one-sided,written,dev/research/evaluations/2026-11-25-frechet-math-report.md#collapse-and-the-gumbel-comparison,,
 frechet,,uniqueness,"On two-level samples below half, both profile endpoints can compete and a winning finite shape one is unique. Some multi-level real samples have two finite global maxima.",one-sided,written,dev/research/evaluations/2026-11-25-frechet-math-report.md#finite-nonuniqueness,Bound and classify all winning roots on the compact nuisance profile.,
 frechet,lambda,criterion,Exactly when lambda times the number above minimum exceeds the minimum multiplicity.,iff,written,univariateML-cpp/include/cppunivariate/distributions/frechet/README.md#existence.reason,,existence.statement
-frechet,lambda,failure,Negative exponent gives divergence; zero gives an unattained collapse face.,exact,lean,UnivariateML.Frechet.heldShape_unbounded; UnivariateML.Frechet.heldShape_collapse_eq,,existence.statement
-frechet,lambda,limit:1,"Location and scale are free, and the minimum occurs $k$ times with $\lambda(n-k)\le k$. The strict inequality gives divergence. Equality gives a finite, unattained collapse face.",one-sided,lean,UnivariateML.Frechet.heldShape_unbounded; UnivariateML.Frechet.heldShape_collapse_eq,,
-frechet,lambda,path:1,"With shape $\lambda$ held, $\mu=m-\varepsilon$ approaches the sample minimum $m$ and $\sigma=c\varepsilon$ decreases to zero for a positive constant $c$.",one-sided,lean,UnivariateML.Frechet.heldShape_unbounded; UnivariateML.Frechet.heldShape_collapse_eq,,
-frechet,lambda,uniqueness,Unique.,exact,lean,UnivariateML.Frechet.heldShape_joint_unique,,existence.statement
+frechet,lambda,failure,Negative exponent gives divergence; zero gives an unattained collapse face.,exact,,,,existence.statement
+frechet,lambda,limit:1,"Location and scale are free, and the minimum occurs $k$ times with $\lambda(n-k)\le k$. The strict inequality gives divergence. Equality gives a finite, unattained collapse face.",one-sided,,,,
+frechet,lambda,path:1,"With shape $\lambda$ held, $\mu=m-\varepsilon$ approaches the sample minimum $m$ and $\sigma=c\varepsilon$ decreases to zero for a positive constant $c$.",one-sided,,,,
+frechet,lambda,uniqueness,Unique.,exact,,,,existence.statement
 frechet,lambda+mu,criterion,Always on strictly positive excesses.,iff,written,univariateML-cpp/include/cppunivariate/distributions/frechet/README.md#existence.reason,,existence.statement
 frechet,lambda+mu,failure,No escape.,exact,written,univariateML-cpp/include/cppunivariate/distributions/frechet/README.md#existence.reason,,existence.statement
 frechet,lambda+mu,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/frechet/README.md#existence.reason,,existence.statement
@@ -469,16 +474,16 @@ frechet,sigma,failure,Constant data diverge; on nonconstant data free shape and 
 frechet,sigma,path:2,"With scale $\sigma$ held, the free shape $\lambda$ tends to infinity and $\mu$ equals the common observation minus $\sigma$.",one-sided,written,dev/research/evaluations/2026-11-25-frechet-math-report.md#fréchet-single-holds,,
 frechet,sigma,uniqueness,Exact real data can tie shape one with an interior shape.,one-sided,written,dev/research/evaluations/2026-11-25-frechet-math-report.md#fréchet-single-holds,Characterize all globally tied shape roots with physical scale held.,existence.statement
 gamma,,criterion,Exactly nonconstant positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/gamma/README.md#existence.reason,,
-gamma,,failure,Constant positive data have unbounded likelihood.,exact,lean,UnivariateML.Gamma.constant_unbounded,,
-gamma,,limit:1,all observations are equal and both shape and scale are free,one-sided,lean,UnivariateML.Gamma.constant_unbounded,,
-gamma,,path:1,The free shape tends to infinity while scale tends to zero at fixed mean,one-sided,lean,UnivariateML.Gamma.constant_unbounded,,
-gamma,,uniqueness,Unique.,exact,lean,UnivariateML.Gamma.jointMLE,,
-gamma,scale,criterion,Always on positive samples.,iff,lean,UnivariateML.Gamma.heldRate,,existence.statement
-gamma,scale,failure,No failure.,exact,lean,UnivariateML.Gamma.heldRate,,existence.statement
-gamma,scale,uniqueness,Unique.,exact,lean,UnivariateML.Gamma.heldRate,,existence.statement
-gamma,shape,criterion,Always on positive samples.,iff,lean,UnivariateML.Gamma.heldShape,,existence.statement
-gamma,shape,failure,No failure.,exact,lean,UnivariateML.Gamma.heldShape,,existence.statement
-gamma,shape,uniqueness,Unique.,exact,lean,UnivariateML.Gamma.heldShape,,existence.statement
+gamma,,failure,Constant positive data have unbounded likelihood.,exact,,,,
+gamma,,limit:1,all observations are equal and both shape and scale are free,one-sided,,,,
+gamma,,path:1,The free shape tends to infinity while scale tends to zero at fixed mean,one-sided,,,,
+gamma,,uniqueness,Unique.,exact,,,,
+gamma,scale,criterion,Always on positive samples.,iff,,,,existence.statement
+gamma,scale,failure,No failure.,exact,,,,existence.statement
+gamma,scale,uniqueness,Unique.,exact,,,,existence.statement
+gamma,shape,criterion,Always on positive samples.,iff,,,,existence.statement
+gamma,shape,failure,No failure.,exact,,,,existence.statement
+gamma,shape,uniqueness,Unique.,exact,,,,existence.statement
 gb2,,criterion,Constant positive samples do not attain.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gb2/README.md#existence.reason,Exhaust joint escapes on nonconstant data and compare finite candidates against all faces.,
 gb2,,failure,Positive constants permit unbounded concentration.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gb2/README.md#existence.reason,Establish global dominance and tie rules for the nonconstant cases.,
 gb2,,limit:3,"All observations are equal, and the held coefficients still permit concentration at that value.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gb2/README.md#existence.reason,,
@@ -497,20 +502,20 @@ gb2,shape1+shape3,failure,Constant data concentrate unboundedly.,exact,written,u
 gb2,shape1+shape3,uniqueness,Unique power and scale.,exact,written,univariateML-cpp/include/cppunivariate/distributions/gb2/README.md#existence.reason,,existence.statement
 ged,,criterion,"On fitted nu≥1, a nonconstant sample attains iff its compact profile maximum reaches the uniform value. Constants and unrestricted free small shape can give unbounded likelihood.",iff,written,dev/research/evaluations/2026-11-25-ged-math-report.md#free-standard-deviation,,
 ged,,failure,Unrestricted likelihood is unbounded on every finite nonempty sample; on fitted nu≥1 constants collapse and the uniform strictly wins exactly when the finite compact maximum is lower.,exact,written,dev/research/evaluations/2026-11-25-ged-math-report.md#excluded-small-shape,,
-ged,,limit:1,Every observation equals the fitted or held location.,one-sided,lean,UnivariateML.Ged.collapse,,
-ged,,path:1,The free scale tends to zero at the fitted or held location.,one-sided,lean,UnivariateML.Ged.collapse,,
+ged,,limit:1,Every observation equals the fitted or held location.,one-sided,,,,
+ged,,path:1,The free scale tends to zero at the fitted or held location.,one-sided,,,,
 ged,,path:2,"The shape $\nu$ tends to infinity, retaining finite location and scale.",one-sided,written,dev/research/evaluations/2026-11-25-ged-math-report.md#free-standard-deviation,,
 ged,,uniqueness,Proof gives all locations at each fixed shape and exact joint ties on specified samples.,one-sided,written,dev/research/evaluations/2026-11-25-ged-math-report.md#separated-and-tied-maximizers,Control the remaining shape crossings and equality predicates.,
 ged,mean,criterion,"If some residual is nonzero, iff a retained finite candidate reaches the uniform face. Zero residuals do not attain.",iff,written,dev/research/evaluations/2026-11-25-ged-math-report.md#free-standard-deviation,,existence.statement
 ged,mean,failure,"Constant at held mean diverges, otherwise an excluded uniform can win.",exact,written,dev/research/evaluations/2026-11-25-ged-math-report.md#free-standard-deviation,,existence.statement
-ged,mean+nu,criterion,Exactly when residuals are not all zero.,iff,lean,UnivariateML.Ged.heldLocation; UnivariateML.Ged.collapse,,existence.statement
-ged,mean+nu,failure,All residuals zero give unbounded scale collapse.,exact,lean,UnivariateML.Ged.heldLocation; UnivariateML.Ged.collapse,,existence.statement
-ged,mean+nu,uniqueness,Unique.,exact,lean,UnivariateML.Ged.heldLocation; UnivariateML.Ged.collapse,,existence.statement
+ged,mean+nu,criterion,Exactly when residuals are not all zero.,iff,,,,existence.statement
+ged,mean+nu,failure,All residuals zero give unbounded scale collapse.,exact,,,,existence.statement
+ged,mean+nu,uniqueness,Unique.,exact,,,,existence.statement
 ged,mean+nu+sd,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 ged,mean+sd,criterion,Off exact real width contact a maximum exists; at contact compare all finite candidates against the held-mean endpoint trace.,iff,written,dev/research/evaluations/2026-11-25-ged-math-report.md#held-standard-deviation,,existence.statement
 ged,mean+sd,failure,The uniform can win only at exact contact.,exact,written,dev/research/evaluations/2026-11-25-ged-math-report.md#held-standard-deviation,,existence.statement
 ged,nu,criterion,Exactly for nonconstant data at positive held shape on the fitted domain.,iff,written,dev/research/evaluations/2026-11-25-ged-math-report.md#existence-on-the-eight-masks,,existence.statement
-ged,nu,failure,Constant data give unbounded scale collapse.,exact,lean,UnivariateML.Ged.collapse,,existence.statement
+ged,nu,failure,Constant data give unbounded scale collapse.,exact,,,,existence.statement
 ged,nu,uniqueness,At nu>1 the optimum is unique; nu=1 gives the median interval. Below one all minimizing data knots share the same scale.,exact,written,dev/research/evaluations/2026-11-25-ged-math-report.md#existence-on-the-eight-masks,,existence.statement
 ged,nu+sd,criterion,Always for positive held scale and shape.,iff,written,dev/research/evaluations/2026-11-25-ged-math-report.md#existence-on-the-eight-masks,,existence.statement
 ged,nu+sd,failure,No escape.,exact,written,dev/research/evaluations/2026-11-25-ged-math-report.md#existence-on-the-eight-masks,,existence.statement
@@ -538,7 +543,7 @@ genbeta,scale+shape3,criterion,Exactly for nonconstant data strictly within the 
 genbeta,scale+shape3,failure,Constant data give beta concentration.,exact,written,univariateML-cpp/include/cppunivariate/distributions/genbeta/README.md#existence.reason,,existence.statement
 genbeta,scale+shape3,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/genbeta/README.md#existence.reason,,existence.statement
 gengamma,,criterion,Constant data have unbounded likelihood with location and scale free.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gengamma/README.md#existence.reason,Compare the interior profile with power and Pareto for general joint samples.,
-gengamma,,failure,Equal-multiplicity two-level positive samples approach the best power and Pareto values without attaining.,one-sided,lean,UnivariateML.GenGammaTwoPoint.balanced_sample_noMLE,Exhaust all remaining multi-level boundary competitions.,
+gengamma,,failure,Equal-multiplicity two-level positive samples approach the best power and Pareto values without attaining.,one-sided,,,Exhaust all remaining multi-level boundary competitions.,
 gengamma,,limit:3,All observations are equal and both $\mu$ and $\sigma$ are free,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gengamma/README.md#existence.reason,,
 gengamma,,path:1,"$Q\to+\infty$ and $\sigma Q\to d>0$, with $\mu$ tending to a finite endpoint",one-sided,written,dev/research/evaluations/2026-11-10-gg-theory-report.md#free-fit-signed-profile-and-certificate,,
 gengamma,,path:2,"$Q\to-\infty$ and $\sigma|Q|\to d>0$, with $\mu$ tending to a finite endpoint",one-sided,written,dev/research/evaluations/2026-11-10-gg-theory-report.md#free-fit-signed-profile-and-certificate,,
@@ -561,14 +566,14 @@ gengamma,mu+sigma,failure,No escape: the likelihood tends to zero at both signed
 gengamma,mu+sigma,uniqueness,"If every log observation equals held mu, the unique shape is Q=0.",one-sided,written,dev/research/evaluations/2026-11-10-gg-theory-report.md#mu-and-sigma-held-q-free,Compare all roots over the compact signed shape profile.,existence.statement
 gengamma,sigma,criterion,Always for nonempty positive samples and positive held scale.,iff,written,univariateML-cpp/include/cppunivariate/distributions/gengamma/README.md#existence.reason,,existence.statement
 gengamma,sigma,failure,Large absolute shape loses likelihood.,exact,written,univariateML-cpp/include/cppunivariate/distributions/gengamma/README.md#existence.reason,,existence.statement
-geom,,criterion,Every nonempty sample of nonnegative counts attains.,iff,lean,UnivariateML.Discrete.Geometric.unique_mle,,
-geom,,failure,All zeros attain the included endpoint.,exact,lean,UnivariateML.Discrete.Geometric.unique_mle,,
-geom,,uniqueness,Unique.,exact,lean,UnivariateML.Discrete.Geometric.unique_mle,,
+geom,,criterion,Every nonempty sample of nonnegative counts attains.,iff,,,,
+geom,,failure,All zeros attain the included endpoint.,exact,,,,
+geom,,uniqueness,Unique.,exact,,,,
 geom,prob,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 gev,,criterion,"On the fitted branch, strict sub-half minimum multiplicity attains. A half tie attains only at the balanced two-value sample; a majority does not attain.",iff,written,univariateML-cpp/include/cppunivariate/distributions/gev/README.md#existence.reason,,
 gev,,failure,"On fitted branch, majority minimum ties diverge and nonbalanced half ties give finite collapse; unrestricted shape below −1 allows an endpoint spike.",exact,written,univariateML-cpp/include/cppunivariate/distributions/gev/README.md#existence.reason,,
 gev,,limit:2,"All coefficients are free and exactly half of the observations equal the minimum, except two distinct values with equal counts: that case attains the supremum at xi=-1.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gev/README.md#existence.reason,,
-gev,,path:2,"$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum",one-sided,lean,UnivariateML.GEV.positive_collapse_path,,
+gev,,path:2,"$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gev/README.md#existence.reason,,
 gev,,uniqueness,A nonconstant sample can have two distinct all-free maxima.,one-sided,written,dev/research/evaluations/2026-11-25-gev-math-report.md#exactly-two-all-free-global-maxima,Control shape-profile crossings to give cardinality on general data.,
 gev,mu,case:held-minimum-half,"At a half tie at a held minimum, the pair bound gives the exact supremum; the compatible balanced two-value sample attains it.",one-sided,written,dev/research/evaluations/2026-11-25-gev-math-report.md#location-held,,existence.statement
 gev,mu,criterion,"On fitted shapes, attainment holds if some residual is negative or zero multiplicity is below half. At exact half with all residuals nonnegative it holds iff positive residuals are all equal.",iff,written,dev/research/evaluations/2026-11-25-gev-math-report.md#location-held,,existence.statement
@@ -581,9 +586,9 @@ gev,xi,criterion,"For nonconstant samples, held xi from −1 to zero always atta
 gev,xi,failure,"At positive held shape, a negative collapse exponent gives divergence and equality gives finite nonattainment. Constants and held xi below −1 give divergence.",exact,written,dev/research/evaluations/2026-11-25-gev-math-report.md#shape-held,,existence.statement
 gev,xi,uniqueness,A singleton in every attained branch.,exact,written,dev/research/evaluations/2026-11-25-gev-math-report.md#shape-held,,existence.statement
 gompertz,,criterion,Exactly for nonconstant nonnegative data with second moment below twice mean squared.,iff,written,univariateML-cpp/include/cppunivariate/distributions/gompertz/README.md#existence.reason,,
-gompertz,,failure,Nonconstant data failing the criterion select the exponential face; constant data diverge.,exact,lean,UnivariateML.Gompertz.exponential_face; UnivariateML.Gompertz.constant_unbounded,,
-gompertz,,limit:3,"Both coefficients are free, the sample is nonconstant, and $\overline{x^2}\ge 2\bar x^2$, decided in double-double arithmetic with a rounding pad; a sample inside the pad, including every exact tie, returns the limit uncertified.",one-sided,lean,UnivariateML.Gompertz.exponential_face,,
-gompertz,,path:3,The growth coefficient $b$ decreases to zero and $a$ tends to $1/\bar x$.,one-sided,lean,UnivariateML.Gompertz.exponential_face,,
+gompertz,,failure,Nonconstant data failing the criterion select the exponential face; constant data diverge.,exact,,,,
+gompertz,,limit:3,"Both coefficients are free, the sample is nonconstant, and $\overline{x^2}\ge 2\bar x^2$, decided in double-double arithmetic with a rounding pad; a sample inside the pad, including every exact tie, returns the limit uncertified.",one-sided,,,,
+gompertz,,path:3,The growth coefficient $b$ decreases to zero and $a$ tends to $1/\bar x$.,one-sided,,,,
 gompertz,,uniqueness,Unique when attained.,exact,written,univariateML-cpp/include/cppunivariate/distributions/gompertz/README.md#existence.reason,,
 gompertz,a,criterion,"With positive sum, iff sum x exceeds held a times sum of squares divided by two; zeros always attain.",iff,written,univariateML-cpp/include/cppunivariate/distributions/gompertz/README.md#existence.reason,,existence.statement
 gompertz,a,failure,"With positive sum and a nonpositive score at b=0, the supremum is at b=0.",exact,written,univariateML-cpp/include/cppunivariate/distributions/gompertz/README.md#existence.reason,,existence.statement
@@ -596,29 +601,29 @@ gompertz,b,failure,All zeros diverge with increasing a.,exact,written,univariate
 gompertz,b,limit:1,All observations are zero.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gompertz/README.md#existence.reason,,
 gompertz,b,path:1,The free initial hazard $a$ tends to infinity with $b$ held fixed.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gompertz/README.md#existence.reason,,
 gompertz,b,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/gompertz/README.md#existence.reason,,existence.statement
-gpd,,criterion,Never for unrestricted all-free fits.,iff,lean,UnivariateML.GPD.freeThreshold_unbounded,,
-gpd,,failure,Unbounded moving-threshold path.,exact,lean,UnivariateML.GPD.freeThreshold_unbounded,,
-gpd,,limit:1,"Every nonempty finite sample; a threshold minimum contributes an exponentially growing density along sigma = exp(-t), xi = t.",one-sided,lean,UnivariateML.GPD.freeThreshold_unbounded,,
-gpd,,path:1,"Threshold, scale and shape are all free.",one-sided,lean,UnivariateML.GPD.freeThreshold_unbounded,,
-gpd,,uniqueness,No attained branch.,exact,lean,UnivariateML.GPD.freeThreshold_unbounded,,
-gpd,mu,case:positive-excess-existence,"For strictly positive excesses, a finite maximum exists on shape at least minus one.",one-sided,lean,UnivariateML.GPD.joint_exists,,existence.statement
+gpd,,criterion,Never for unrestricted all-free fits.,iff,,,,
+gpd,,failure,Unbounded moving-threshold path.,exact,,,,
+gpd,,limit:1,"Every nonempty finite sample; a threshold minimum contributes an exponentially growing density along sigma = exp(-t), xi = t.",one-sided,,,,
+gpd,,path:1,"Threshold, scale and shape are all free.",one-sided,,,,
+gpd,,uniqueness,No attained branch.,exact,,,,
+gpd,mu,case:positive-excess-existence,"For strictly positive excesses, a finite maximum exists on shape at least minus one.",one-sided,,,,existence.statement
 gpd,mu,criterion,With strictly positive excesses shape ≥−1 always attains; threshold ties with scale and shape free are unbounded.,iff,written,univariateML-cpp/include/cppunivariate/distributions/gpd/README.md#existence.reason,,existence.statement
 gpd,mu,failure,"Threshold ties permit scale collapse, and unrestricted shape below −1 permits upper-endpoint spikes.",exact,written,univariateML-cpp/include/cppunivariate/distributions/gpd/README.md#existence.reason,,existence.statement
 gpd,mu,limit:2,"Scale is free and either all observations equal $\mu$, or $k>0$ and shape is free, or held $\xi>0$ satisfies $\xi k\ge n-k$. Equality gives a finite unattained supremum for the fixed-shape scale fit.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gpd/README.md#existence.reason,,
 gpd,mu,path:2,"Scale $\sigma$ tends to zero with $\mu$ held. For held $\xi>0$ the likelihood has order $\sigma^{(n-k)/\xi-k}$, where $k$ counts threshold ties.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gpd/README.md#existence.reason,,
-gpd,mu,uniqueness,An exact sample ties an interior shape with the attained uniform.,one-sided,lean,UnivariateML.GPD.exact_joint_tie,Bound all possible global profile co-winners.,existence.statement
+gpd,mu,uniqueness,An exact sample ties an interior shape with the attained uniform.,one-sided,,,Bound all possible global profile co-winners.,existence.statement
 gpd,mu+sigma,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 gpd,mu+sigma+xi,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-gpd,mu+xi,criterion,Strictly positive excesses attain uniquely at fixed xi≥−1.,one-sided,lean,UnivariateML.GPD.heldShape_scale_unique; UnivariateML.GPD.uniform_scale_unique,Include threshold contacts in the scale classification.,existence.statement
-gpd,mu+xi,failure,At fixed xi<−1 and positive excesses the likelihood is unbounded at the finite upper endpoint.,one-sided,lean,UnivariateML.GPD.shapeBelow_unbounded,Include degenerate threshold-only inputs.,existence.statement
-gpd,mu+xi,uniqueness,Unique for positive excesses and fixed xi≥−1.,one-sided,lean,UnivariateML.GPD.heldShape_scale_unique; UnivariateML.GPD.uniform_scale_unique,Characterize boundary ties.,existence.statement
+gpd,mu+xi,criterion,Strictly positive excesses attain uniquely at fixed xi≥−1.,one-sided,,,Include threshold contacts in the scale classification.,existence.statement
+gpd,mu+xi,failure,At fixed xi<−1 and positive excesses the likelihood is unbounded at the finite upper endpoint.,one-sided,,,Include degenerate threshold-only inputs.,existence.statement
+gpd,mu+xi,uniqueness,Unique for positive excesses and fixed xi≥−1.,one-sided,,,Characterize boundary ties.,existence.statement
 gpd,sigma,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 gpd,xi,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 gumbel,,criterion,Exactly nonconstant finite samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#existence.reason,,
 gumbel,,failure,Constant data permit unbounded scale collapse.,exact,written,univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#existence.reason,,
 gumbel,,limit:1,Scale is free and every observation equals the estimated or held location.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#existence.reason,,
 gumbel,,path:1,The scale $\sigma$ tends to zero at the estimated or held location $\mu$.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#existence.reason,,
-gumbel,,uniqueness,Unique.,exact,lean,UnivariateML.LocScaleInstances.gumbel_existsUnique_mle,,
+gumbel,,uniqueness,Unique.,exact,,,,
 gumbel,mu,criterion,Exactly when some observation differs from held location.,iff,written,univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#existence.reason,,existence.statement
 gumbel,mu,failure,All equal to location yields unbounded collapse.,exact,written,univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#existence.reason,,existence.statement
 gumbel,mu,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#existence.reason,,existence.statement
@@ -626,32 +631,32 @@ gumbel,mu+sigma,criterion,Singleton feasible domain.,iff,written,overview.md#exi
 gumbel,sigma,criterion,Every finite nonempty sample attains.,iff,written,univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#existence.reason,,existence.statement
 gumbel,sigma,failure,No failure.,exact,written,univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#existence.reason,,existence.statement
 gumbel,sigma,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#existence.reason,,existence.statement
-hcauchy,,criterion,Exactly when minimum multiplicity is below half.,iff,lean,UnivariateML.HalfCauchy.joint_iff,,
-hcauchy,,failure,Equality gives unattained collapse and a majority gives divergence.,exact,lean,UnivariateML.HalfCauchy.joint_half_collapse; UnivariateML.HalfCauchy.joint_majority_unbounded,,
+hcauchy,,criterion,Exactly when minimum multiplicity is below half.,iff,,,,
+hcauchy,,failure,Equality gives unattained collapse and a majority gives divergence.,exact,,,,
 hcauchy,,limit:1,Scale is free and more than half the observations equal the endpoint.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/hcauchy/README.md#existence.reason,,
 hcauchy,,limit:2,Scale is free and exactly half the observations equal the endpoint.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/hcauchy/README.md#existence.reason,,
-hcauchy,,path:1,The scale $\sigma$ tends to zero at the estimated or held endpoint $\mu$.,one-sided,lean,UnivariateML.HalfCauchy.joint_majority_unbounded,,
-hcauchy,,path:2,The scale $\sigma$ tends to zero at the estimated or held endpoint $\mu$.,one-sided,lean,UnivariateML.HalfCauchy.joint_half_collapse,,
+hcauchy,,path:1,The scale $\sigma$ tends to zero at the estimated or held endpoint $\mu$.,one-sided,,,,
+hcauchy,,path:2,The scale $\sigma$ tends to zero at the estimated or held endpoint $\mu$.,one-sided,,,,
 hcauchy,,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/hcauchy/README.md#existence.reason,,
 hcauchy,mu,criterion,Exactly when fewer than half the observations equal the compatible held endpoint.,iff,written,univariateML-cpp/include/cppunivariate/distributions/hcauchy/README.md#existence.reason,,existence.statement
 hcauchy,mu,failure,Exact half ties give finite nonattainment; majority ties diverge.,exact,written,univariateML-cpp/include/cppunivariate/distributions/hcauchy/README.md#existence.reason,,existence.statement
 hcauchy,mu,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/hcauchy/README.md#existence.reason,,existence.statement
 hcauchy,mu+sigma,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-hcauchy,sigma,criterion,Always for positive scale.,iff,lean,UnivariateML.HalfCauchy.heldScale,,existence.statement
-hcauchy,sigma,failure,No failure.,exact,lean,UnivariateML.HalfCauchy.heldScale,,existence.statement
-hcauchy,sigma,uniqueness,Unique endpoint equal to the sample minimum.,exact,lean,UnivariateML.HalfCauchy.heldScale,,existence.statement
-hnorm,,criterion,Exactly nonconstant samples on the fitted support.,iff,lean,UnivariateML.HalfNormal.existsUnique_mle_iff,,
-hnorm,,failure,Constant samples have unbounded likelihood.,exact,lean,UnivariateML.HalfNormal.constant_unbounded,,
-hnorm,,limit:1,Scale is free and every observation equals the fitted or held endpoint.,one-sided,lean,UnivariateML.HalfNormal.constant_unbounded; UnivariateML.HalfNormal.heldLocation_unbounded,,
-hnorm,,path:1,The scale tends to zero at the fitted or held endpoint $\mu$.,one-sided,lean,UnivariateML.HalfNormal.constant_unbounded; UnivariateML.HalfNormal.heldLocation_unbounded,,
-hnorm,,uniqueness,Unique.,exact,lean,UnivariateML.HalfNormal.existsUnique_mle_iff,,
-hnorm,mu,criterion,Exactly with compatible endpoint and nonzero residual second moment.,iff,lean,UnivariateML.HalfNormal.existsUnique_heldLocation_iff,,existence.statement
-hnorm,mu,failure,Zero residual moment gives unbounded scale collapse.,exact,lean,UnivariateML.HalfNormal.heldLocation_unbounded,,existence.statement
-hnorm,mu,uniqueness,Unique.,exact,lean,UnivariateML.HalfNormal.existsUnique_heldLocation_iff,,existence.statement
+hcauchy,sigma,criterion,Always for positive scale.,iff,,,,existence.statement
+hcauchy,sigma,failure,No failure.,exact,,,,existence.statement
+hcauchy,sigma,uniqueness,Unique endpoint equal to the sample minimum.,exact,,,,existence.statement
+hnorm,,criterion,Exactly nonconstant samples on the fitted support.,iff,,,,
+hnorm,,failure,Constant samples have unbounded likelihood.,exact,,,,
+hnorm,,limit:1,Scale is free and every observation equals the fitted or held endpoint.,one-sided,,,,
+hnorm,,path:1,The scale tends to zero at the fitted or held endpoint $\mu$.,one-sided,,,,
+hnorm,,uniqueness,Unique.,exact,,,,
+hnorm,mu,criterion,Exactly with compatible endpoint and nonzero residual second moment.,iff,,,,existence.statement
+hnorm,mu,failure,Zero residual moment gives unbounded scale collapse.,exact,,,,existence.statement
+hnorm,mu,uniqueness,Unique.,exact,,,,existence.statement
 hnorm,mu+sigma,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-hnorm,sigma,criterion,Always for positive scale.,iff,lean,UnivariateML.HalfNormal.heldScale,,existence.statement
-hnorm,sigma,failure,No failure.,exact,lean,UnivariateML.HalfNormal.heldScale,,existence.statement
-hnorm,sigma,uniqueness,Unique at the sample minimum.,exact,lean,UnivariateML.HalfNormal.heldScale,,existence.statement
+hnorm,sigma,criterion,Always for positive scale.,iff,,,,existence.statement
+hnorm,sigma,failure,No failure.,exact,,,,existence.statement
+hnorm,sigma,uniqueness,Unique at the sample minimum.,exact,,,,existence.statement
 ht,,criterion,"On fitted shape≥1 with free endpoint and scale, a strict minimum majority does not attain. Otherwise attainment iff the largest finite stationary or feasible shape-floor value reaches all excluded faces.",iff,written,dev/research/evaluations/2026-11-25-halft-math-report.md#finite-root-list-for-general-inputs,,
 ht,,failure,"Majority gives divergence; otherwise half-normal, and possibly the exact half-tie scale-zero trace, can win strictly. Equality with a finite winner gives attainment.",exact,written,dev/research/evaluations/2026-11-25-halft-math-report.md#profile-and-the-two-faces,,
 ht,,limit:2,"With held shape, $k>\nu(n-k)$ endpoint observations cause collapse. With free shape and a held endpoint, any endpoint tie suffices. With both endpoint and shape free, $2k>n$ suffices under the fitting restriction.",one-sided,written,dev/research/evaluations/2026-11-25-halft-math-report.md#scale-zero,,
@@ -673,18 +678,18 @@ ht,nu+sigma,criterion,"The dossier discusses this hold, with the conditions reco
 ht,sigma,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 huber,,criterion,Holding neither location nor scale on constant data yields divergence even at a fixed positive epsilon.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/huber/README.md#existence.reason,Exhaust the free-epsilon profile and its endpoint contacts.,
 huber,,failure,Normal and Laplace limiting paths exist; constant data have unbounded collapse.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/huber/README.md#existence.reason,Prove global winning conditions for both excluded faces.,
-huber,,limit:1,Scale is free and every observation equals the fitted or held location.,one-sided,lean,UnivariateML.Huber.joint_constant_unbounded; UnivariateML.Huber.heldLocation_unbounded,,
-huber,,path:1,The free scale $\sigma$ tends to zero at the fitted or held location.,one-sided,lean,UnivariateML.Huber.joint_constant_unbounded; UnivariateML.Huber.heldLocation_unbounded,,
-huber,epsilon,case:cardinality-flat,"At positive held tuning, the set of joint maximizing locations is an interval at a common scale.",one-sided,lean,UnivariateML.Huber.joint_interval,,existence.statement
-huber,epsilon,criterion,Exactly for nonconstant samples with positive held tuning constant.,iff,lean,UnivariateML.Huber.joint_exists; UnivariateML.Huber.joint_constant_unbounded,,existence.statement
-huber,epsilon,failure,Constant data give unbounded collapse.,exact,lean,UnivariateML.Huber.joint_constant_unbounded,,existence.statement
-huber,epsilon,uniqueness,A closed interval of locations at a common scale; criterion for singleton is that the interval degenerates.,exact,lean,UnivariateML.Huber.joint_interval; UnivariateML.Huber.joint_unique_iff,,existence.statement
-huber,epsilon+mu,criterion,Exactly when some residual is nonzero.,iff,lean,UnivariateML.Huber.heldLocation_existsUnique; UnivariateML.Huber.heldLocation_unbounded,,existence.statement
-huber,epsilon+mu,failure,At zero residuals scale collapse is unbounded.,exact,lean,UnivariateML.Huber.heldLocation_existsUnique; UnivariateML.Huber.heldLocation_unbounded,,existence.statement
-huber,epsilon+mu,uniqueness,Unique.,exact,lean,UnivariateML.Huber.heldLocation_existsUnique; UnivariateML.Huber.heldLocation_unbounded,,existence.statement
-huber,epsilon+sigma,criterion,Always for positive held scale and tuning.,iff,lean,UnivariateML.Huber.heldScale_exists,,existence.statement
-huber,epsilon+sigma,failure,No escape.,exact,lean,UnivariateML.Huber.heldScale_exists,,existence.statement
-huber,epsilon+sigma,uniqueness,"The closed location interval from the clipped-score roots, singleton iff the eroded gap criterion gives no interval.",exact,lean,UnivariateML.Huber.heldScale_interval; UnivariateML.Huber.heldScale_unique_iff,,existence.statement
+huber,,limit:1,Scale is free and every observation equals the fitted or held location.,one-sided,,,,
+huber,,path:1,The free scale $\sigma$ tends to zero at the fitted or held location.,one-sided,,,,
+huber,epsilon,case:cardinality-flat,"At positive held tuning, the set of joint maximizing locations is an interval at a common scale.",one-sided,,,,existence.statement
+huber,epsilon,criterion,Exactly for nonconstant samples with positive held tuning constant.,iff,,,,existence.statement
+huber,epsilon,failure,Constant data give unbounded collapse.,exact,,,,existence.statement
+huber,epsilon,uniqueness,A closed interval of locations at a common scale; criterion for singleton is that the interval degenerates.,exact,,,,existence.statement
+huber,epsilon+mu,criterion,Exactly when some residual is nonzero.,iff,,,,existence.statement
+huber,epsilon+mu,failure,At zero residuals scale collapse is unbounded.,exact,,,,existence.statement
+huber,epsilon+mu,uniqueness,Unique.,exact,,,,existence.statement
+huber,epsilon+sigma,criterion,Always for positive held scale and tuning.,iff,,,,existence.statement
+huber,epsilon+sigma,failure,No escape.,exact,,,,existence.statement
+huber,epsilon+sigma,uniqueness,"The closed location interval from the clipped-score roots, singleton iff the eroded gap criterion gives no interval.",exact,,,,existence.statement
 huber,mu,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 huber,mu+sigma,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 huber,sigma,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
@@ -692,22 +697,22 @@ hyper,,criterion,Constant samples attain saturated likelihood.,one-sided,written
 hyper,,failure,Limit tail bounds exclude portions of the parameter domain.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/hyper/README.md#existence.reason,Decide all binomial and Poisson cases without relying on the search budget.,
 hyper,N,criterion,Exactly when the population admits the observed counts.,iff,written,univariateML-cpp/include/cppunivariate/distributions/hyper/README.md#existence.reason,,existence.statement
 hyper,N,failure,Finite feasible grid ensures no escape.,exact,written,univariateML-cpp/include/cppunivariate/distributions/hyper/README.md#existence.reason,,existence.statement
-hyper,N,uniqueness,Transposing equal-status counts can give distinct maxima.,one-sided,lean,UnivariateML.Hypergeometric.distinct_swap_maximizers,Classify labeled maximizers on arbitrary feasible grids.,existence.statement
-hyper,N+k,criterion,Exactly when the finite held population and draws admit the data.,iff,lean,UnivariateML.Hypergeometric.composition_maximizers,,existence.statement
-hyper,N+k,failure,No escape on a finite grid.,exact,lean,UnivariateML.Hypergeometric.composition_maximizers,,existence.statement
-hyper,N+k,uniqueness,The exact feasible maximizing interval or adjacent tie from the composition ratios.,exact,lean,UnivariateML.Hypergeometric.composition_maximizers,,existence.statement
-hyper,N+m,criterion,Exactly when the finite population and marked count admit the data.,iff,lean,UnivariateML.Hypergeometric.draws_maximizers,,existence.statement
-hyper,N+m,failure,No escape on a finite grid.,exact,lean,UnivariateML.Hypergeometric.draws_maximizers,,existence.statement
-hyper,N+m,uniqueness,The exact set from the draw-count ratio comparison.,exact,lean,UnivariateML.Hypergeometric.draws_maximizers,,existence.statement
+hyper,N,uniqueness,Transposing equal-status counts can give distinct maxima.,one-sided,,,Classify labeled maximizers on arbitrary feasible grids.,existence.statement
+hyper,N+k,criterion,Exactly when the finite held population and draws admit the data.,iff,,,,existence.statement
+hyper,N+k,failure,No escape on a finite grid.,exact,,,,existence.statement
+hyper,N+k,uniqueness,The exact feasible maximizing interval or adjacent tie from the composition ratios.,exact,,,,existence.statement
+hyper,N+m,criterion,Exactly when the finite population and marked count admit the data.,iff,,,,existence.statement
+hyper,N+m,failure,No escape on a finite grid.,exact,,,,existence.statement
+hyper,N+m,uniqueness,The exact set from the draw-count ratio comparison.,exact,,,,existence.statement
 hyper,k,criterion,A finite witness strictly above the compatible binomial face guarantees attainment.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/hyper/README.md#existence.reason,Prove exhaustive finite versus face comparison for both population and successes free.,existence.statement
 hyper,k,failure,The infinite-population binomial path is compatible.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/hyper/README.md#existence.reason,Determine its winning region.,existence.statement
-hyper,k+m,criterion,Positive held counts: exactly when some observation is positive. A zero held count leaves all zeros feasible.,iff,lean,UnivariateML.Hypergeometric.population_nonattainment_iff,,existence.statement
-hyper,k+m,failure,"With positive held counts and all zero observations, likelihood approaches one as population diverges.",exact,lean,UnivariateML.Hypergeometric.population_zero_escape,,existence.statement
-hyper,k+m,uniqueness,The positive branch has an interval or adjacent crossing described by population_maximizers.,one-sided,lean,UnivariateML.Hypergeometric.population_maximizers,Include all feasible capped and degenerate cases in one rule.,existence.statement
+hyper,k+m,criterion,Positive held counts: exactly when some observation is positive. A zero held count leaves all zeros feasible.,iff,,,,existence.statement
+hyper,k+m,failure,"With positive held counts and all zero observations, likelihood approaches one as population diverges.",exact,,,,existence.statement
+hyper,k+m,limit:1,"All observations are zero, only $N$ is free, and the held counts $K$ and $n$ are positive.",one-sided,,,,
+hyper,k+m,path:1,"As $N\to\infty$ with positive $K$ and $n$ held, the law tends to a point mass at zero.",one-sided,,,,
+hyper,k+m,uniqueness,The positive branch has an interval or adjacent crossing described by population_maximizers.,one-sided,,,Include all feasible capped and degenerate cases in one rule.,existence.statement
 hyper,m,criterion,A uniform finite witness strictly above the compatible binomial face guarantees attainment.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/hyper/README.md#existence.reason,Close equality and strict boundary dominance when only marked count is held.,existence.statement
 hyper,m,failure,The compatible infinite-population binomial path limits exist.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/hyper/README.md#existence.reason,Determine their winning region.,existence.statement
-hyper,m,limit:1,"All observations are zero, only $N$ is free, and the held counts $K$ and $n$ are positive.",one-sided,lean,UnivariateML.Hypergeometric.population_zero_escape,,
-hyper,m,path:1,"As $N\to\infty$ with positive $K$ and $n$ held, the law tends to a point mass at zero.",one-sided,lean,UnivariateML.Hypergeometric.population_zero_escape,,
 invburr,,criterion,"For nonconstant positive data, iff a finite parameter reaches the larger of the optimized power and inverse Weibull values by reciprocity; constants do not attain.",iff,written,dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr,,
 invburr,,failure,Constants diverge; otherwise power or inverse Weibull can strictly beat every finite fit.,exact,written,dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr,,
 invburr,,limit:1,"All observations are equal and $c$ and $s$ are free. With $s$ held, $c$ is free and either every observation equals $s$, or both shapes are free and the common observation is above $s$.",one-sided,written,dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr,,
@@ -739,36 +744,36 @@ invburr,shape2,criterion,Exactly when inversely powered data meet the Lomax exis
 invburr,shape2,failure,Otherwise inverse Weibull gives the unattained supremum.,exact,written,dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr,,existence.statement
 invburr,shape2,limit:2,"With $c$ held, the certified Lomax comparison for the transformed observations selects the exponential limit of the Lomax likelihood. This is not an exact sample criterion.",one-sided,written,dev/research/evaluations/2026-11-25-burr-math-report.md#face-comparisons-and-equality,,
 invburr,shape2,path:2,"With $c$ held, $k$ tends to infinity and $s k^{1/c}$ stays at a positive inverse Weibull scale.",one-sided,written,dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr,,
-invexp,,criterion,Every nonempty positive sample attains.,iff,lean,UnivariateML.InverseExponential.mle,,
-invexp,,failure,No failure on admissible data.,exact,lean,UnivariateML.InverseExponential.mle,,
-invexp,,uniqueness,Unique.,exact,lean,UnivariateML.InverseExponential.mle,,
+invexp,,criterion,Every nonempty positive sample attains.,iff,,,,
+invexp,,failure,No failure on admissible data.,exact,,,,
+invexp,,uniqueness,Unique.,exact,,,,
 invexp,scale,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 invgamma,,criterion,Exactly nonconstant positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/invgamma/README.md#existence.reason,,
-invgamma,,failure,Constant positive data yield unbounded likelihood.,exact,lean,UnivariateML.Transfer.InvGamma.constant_unbounded,,
-invgamma,,limit:1,both coefficients are free and all observations are equal,one-sided,lean,UnivariateML.Transfer.InvGamma.constant_unbounded,,
-invgamma,,path:1,$\alpha$ tends to infinity with $\beta/\alpha$ equal to the common observation,one-sided,lean,UnivariateML.Transfer.InvGamma.constant_unbounded,,
+invgamma,,failure,Constant positive data yield unbounded likelihood.,exact,,,,
+invgamma,,limit:1,both coefficients are free and all observations are equal,one-sided,,,,
+invgamma,,path:1,$\alpha$ tends to infinity with $\beta/\alpha$ equal to the common observation,one-sided,,,,
 invgamma,,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/invgamma/README.md#existence.reason,,
-invgamma,alpha,criterion,Always on positive samples.,iff,lean,UnivariateML.Transfer.InvGamma.heldShape_unique,,existence.statement
-invgamma,alpha,failure,No failure.,exact,lean,UnivariateML.Transfer.InvGamma.heldShape_unique,,existence.statement
-invgamma,alpha,uniqueness,Unique.,exact,lean,UnivariateML.Transfer.InvGamma.heldShape_unique,,existence.statement
+invgamma,alpha,criterion,Always on positive samples.,iff,,,,existence.statement
+invgamma,alpha,failure,No failure.,exact,,,,existence.statement
+invgamma,alpha,uniqueness,Unique.,exact,,,,existence.statement
 invgamma,alpha+beta,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-invgamma,beta,criterion,Always on positive samples.,iff,lean,UnivariateML.Transfer.InvGamma.heldScale_unique,,existence.statement
-invgamma,beta,failure,No failure.,exact,lean,UnivariateML.Transfer.InvGamma.heldScale_unique,,existence.statement
-invgamma,beta,uniqueness,Unique.,exact,lean,UnivariateML.Transfer.InvGamma.heldScale_unique,,existence.statement
-invgauss,,criterion,Exactly nonconstant positive samples.,iff,lean,UnivariateML.InverseGaussian.existsUnique_mle_iff,,
-invgauss,,failure,Constant positive data yield unbounded likelihood.,exact,lean,UnivariateML.InverseGaussian.constant_unbounded,,
-invgauss,,limit:1,both coefficients are free and all observations are equal,one-sided,lean,UnivariateML.InverseGaussian.constant_unbounded,,
-invgauss,,path:1,$\mu$ equals the common observation and $\lambda$ tends to infinity,one-sided,lean,UnivariateML.InverseGaussian.constant_unbounded,,
-invgauss,,uniqueness,Unique.,exact,lean,UnivariateML.InverseGaussian.existsUnique_mle_iff,,
-invgauss,mean,criterion,Exactly when a positive observation differs from the held mean.,iff,lean,UnivariateML.InverseGaussian.existsUnique_heldMean_iff,,existence.statement
-invgauss,mean,failure,All residuals zero gives unbounded likelihood.,exact,lean,UnivariateML.InverseGaussian.heldMean_unbounded,,existence.statement
-invgauss,mean,limit:2,every observation equals the held $\mu$ and $\lambda$ is free,one-sided,lean,UnivariateML.InverseGaussian.heldMean_unbounded,,
-invgauss,mean,path:2,the free shape $\lambda$ tends to infinity with mean $\mu$ held,one-sided,lean,UnivariateML.InverseGaussian.heldMean_unbounded,,
-invgauss,mean,uniqueness,Unique.,exact,lean,UnivariateML.InverseGaussian.existsUnique_heldMean_iff,,existence.statement
+invgamma,beta,criterion,Always on positive samples.,iff,,,,existence.statement
+invgamma,beta,failure,No failure.,exact,,,,existence.statement
+invgamma,beta,uniqueness,Unique.,exact,,,,existence.statement
+invgauss,,criterion,Exactly nonconstant positive samples.,iff,,,,
+invgauss,,failure,Constant positive data yield unbounded likelihood.,exact,,,,
+invgauss,,limit:1,both coefficients are free and all observations are equal,one-sided,,,,
+invgauss,,path:1,$\mu$ equals the common observation and $\lambda$ tends to infinity,one-sided,,,,
+invgauss,,uniqueness,Unique.,exact,,,,
+invgauss,mean,criterion,Exactly when a positive observation differs from the held mean.,iff,,,,existence.statement
+invgauss,mean,failure,All residuals zero gives unbounded likelihood.,exact,,,,existence.statement
+invgauss,mean,limit:2,every observation equals the held $\mu$ and $\lambda$ is free,one-sided,,,,
+invgauss,mean,path:2,the free shape $\lambda$ tends to infinity with mean $\mu$ held,one-sided,,,,
+invgauss,mean,uniqueness,Unique.,exact,,,,existence.statement
 invgauss,mean+shape,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-invgauss,shape,criterion,Always on positive samples.,iff,lean,UnivariateML.InverseGaussian.heldShape,,existence.statement
-invgauss,shape,failure,No failure.,exact,lean,UnivariateML.InverseGaussian.heldShape,,existence.statement
-invgauss,shape,uniqueness,Unique.,exact,lean,UnivariateML.InverseGaussian.heldShape,,existence.statement
+invgauss,shape,criterion,Always on positive samples.,iff,,,,existence.statement
+invgauss,shape,failure,No failure.,exact,,,,existence.statement
+invgauss,shape,uniqueness,Unique.,exact,,,,existence.statement
 invparalogis,,criterion,Exactly for nonconstant positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/invparalogis/README.md#existence.reason,,
 invparalogis,,failure,Constant data collapse without bound.,exact,written,univariateML-cpp/include/cppunivariate/distributions/invparalogis/README.md#existence.reason,,
 invparalogis,,limit:1,All observations are equal and both coefficients are free.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/invparalogis/README.md#existence.reason,,
@@ -782,18 +787,18 @@ invparalogis,shape,criterion,Always for positive samples.,iff,written,univariate
 invparalogis,shape,failure,No escape.,exact,written,univariateML-cpp/include/cppunivariate/distributions/invparalogis/README.md#existence.reason,,existence.statement
 invparalogis,shape,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/invparalogis/README.md#existence.reason,,existence.statement
 invpareto,,case:small-support,Reciprocal data inherit the Lomax at-most-two-value uniqueness theorem whenever they attain.,one-sided,written,dev/research/evaluations/2026-11-25-lomax-uniq-math-report.md#transfer-and-lean,,
-invpareto,,criterion,Exactly when reciprocal observations satisfy the Lomax criterion.,iff,lean,UnivariateML.Transfer.InvPareto.exists_max_iff,,
+invpareto,,criterion,Exactly when reciprocal observations satisfy the Lomax criterion.,iff,,,,
 invpareto,,failure,Otherwise the inverse exponential face gives unattained supremum.,exact,written,univariateML-cpp/include/cppunivariate/distributions/invpareto/README.md#existence.reason,,
 invpareto,,limit:1,both coefficients are free and the certified profile bound on the reciprocals excludes improvement over the best inverse exponential larger than $10^{-8}n$ log-likelihood units,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/invpareto/README.md#existence.reason,,
-invpareto,,path:1,$\alpha$ tends to infinity while $\alpha\theta$ tends to a positive inverse exponential scale,one-sided,lean,UnivariateML.Transfer.InvPareto.face_path,,
+invpareto,,path:1,$\alpha$ tends to infinity while $\alpha\theta$ tends to a positive inverse exponential scale,one-sided,,,,
 invpareto,,uniqueness,Reciprocity transfers the Lomax two-level uniqueness and the three-level tie.,one-sided,written,dev/research/evaluations/2026-11-25-lomax-uniq-math-report.md#transfer-and-lean,Classify arbitrary reciprocal data.,
-invpareto,scale,criterion,Always on positive samples.,iff,lean,UnivariateML.Transfer.InvPareto.heldScale_unique,,existence.statement
-invpareto,scale,failure,No failure.,exact,lean,UnivariateML.Transfer.InvPareto.heldScale_unique,,existence.statement
-invpareto,scale,uniqueness,Unique.,exact,lean,UnivariateML.Transfer.InvPareto.heldScale_unique,,existence.statement
+invpareto,scale,criterion,Always on positive samples.,iff,,,,existence.statement
+invpareto,scale,failure,No failure.,exact,,,,existence.statement
+invpareto,scale,uniqueness,Unique.,exact,,,,existence.statement
 invpareto,scale+shape,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-invpareto,shape,criterion,Always on positive samples.,iff,lean,UnivariateML.Transfer.InvPareto.heldShape_unique,,existence.statement
-invpareto,shape,failure,No failure.,exact,lean,UnivariateML.Transfer.InvPareto.heldShape_unique,,existence.statement
-invpareto,shape,uniqueness,Unique.,exact,lean,UnivariateML.Transfer.InvPareto.heldShape_unique,,existence.statement
+invpareto,shape,criterion,Always on positive samples.,iff,,,,existence.statement
+invpareto,shape,failure,No failure.,exact,,,,existence.statement
+invpareto,shape,uniqueness,Unique.,exact,,,,existence.statement
 invtrgamma,,criterion,On nonconstant data iff a finite stationary profile reaches the better excluded face after reciprocity. Constants diverge.,iff,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,
 invtrgamma,,failure,Lognormal and Pareto are competitive escapes on nonconstant data; constant data concentrate without bound.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,
 invtrgamma,,limit:2,"All observations are equal and the free coefficients allow concentration. With scale free, either free shape suffices. With scale held, a free power suffices at the common observation $a$; with both shapes free, concentration is also possible below $a$.",one-sided,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,
@@ -804,13 +809,13 @@ invtrgamma,scale,criterion,Exactly except constant observations at or below the 
 invtrgamma,scale,failure,The held-endpoint trace is strictly below a finite witness on every bounded sample. The remaining constants diverge.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#held-scale-and-both-shapes-free,,existence.statement
 invtrgamma,scale,path:1,The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held.,one-sided,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#held-scale-and-both-shapes-free,,
 invtrgamma,scale,uniqueness,"When mean oriented log excess is zero, the scale-held profile has a unique maximum.",one-sided,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#held-scale-and-both-shapes-free,Establish cardinality on the remaining held-scale data.,existence.statement
-invtrgamma,scale+shape1,criterion,Exactly when some observation differs from held scale.,iff,lean,UnivariateML.InverseTransformedGamma.heldScaleShape_exists_iff,,existence.statement
-invtrgamma,scale+shape1,failure,Otherwise unbounded power concentration.,exact,lean,UnivariateML.InverseTransformedGamma.heldScaleShape_unbounded,,existence.statement
-invtrgamma,scale+shape1,uniqueness,Unique free power.,exact,lean,UnivariateML.InverseTransformedGamma.heldScaleShape,,existence.statement
+invtrgamma,scale+shape1,criterion,Exactly when some observation differs from held scale.,iff,,,,existence.statement
+invtrgamma,scale+shape1,failure,Otherwise unbounded power concentration.,exact,,,,existence.statement
+invtrgamma,scale+shape1,uniqueness,Unique free power.,exact,,,,existence.statement
 invtrgamma,scale+shape1+shape2,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 invtrgamma,scale+shape2,criterion,Always on positive samples.,iff,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
 invtrgamma,scale+shape2,failure,No failure.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
-invtrgamma,scale+shape2,uniqueness,Unique free gamma shape.,exact,lean,UnivariateML.InverseTransformedGamma.heldScalePower,,existence.statement
+invtrgamma,scale+shape2,uniqueness,Unique free gamma shape.,exact,,,,existence.statement
 invtrgamma,shape1,criterion,Exactly for nonconstant positive samples.,iff,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
 invtrgamma,shape1,failure,Constants concentrate without bound.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
 invtrgamma,shape1,uniqueness,Unique.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
@@ -821,91 +826,91 @@ invtrgamma,shape2,criterion,Exactly for nonconstant positive samples.,iff,writte
 invtrgamma,shape2,failure,Constants concentrate without bound.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
 invtrgamma,shape2,uniqueness,Unique.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
 invweibull,,criterion,Exactly nonconstant positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/invweibull/README.md#existence.reason,,
-invweibull,,failure,Constant data concentrate without bound.,exact,lean,UnivariateML.Weibull.Inverse.constant_unbounded,,
-invweibull,,limit:2,Both parameters are free and every observation equals the same positive value.,one-sided,lean,UnivariateML.Weibull.Inverse.constant_unbounded,,
-invweibull,,path:2,The shape $k$ tends to infinity with the scale $\lambda$ at the common observation value.,one-sided,lean,UnivariateML.Weibull.Inverse.constant_unbounded,,
-invweibull,,uniqueness,Unique.,exact,lean,UnivariateML.Weibull.Inverse.jointMLE,,
+invweibull,,failure,Constant data concentrate without bound.,exact,,,,
+invweibull,,limit:2,Both parameters are free and every observation equals the same positive value.,one-sided,,,,
+invweibull,,path:2,The shape $k$ tends to infinity with the scale $\lambda$ at the common observation value.,one-sided,,,,
+invweibull,,uniqueness,Unique.,exact,,,,
 invweibull,scale,criterion,Exactly when some observation differs from held scale.,iff,written,univariateML-cpp/include/cppunivariate/distributions/invweibull/README.md#existence.reason,,existence.statement
-invweibull,scale,failure,All equal to held scale gives unbounded shape concentration.,exact,lean,UnivariateML.Weibull.Inverse.heldScale_unbounded,,existence.statement
-invweibull,scale,limit:1,Every observation equals the held scale $\lambda$.,one-sided,lean,UnivariateML.Weibull.Inverse.heldScale_unbounded,,
-invweibull,scale,path:1,The free shape $k$ tends to infinity while scale $\lambda$ is held at the common observation value.,one-sided,lean,UnivariateML.Weibull.Inverse.heldScale_unbounded,,
-invweibull,scale,uniqueness,Unique.,exact,lean,UnivariateML.Weibull.Inverse.heldScale,,existence.statement
+invweibull,scale,failure,All equal to held scale gives unbounded shape concentration.,exact,,,,existence.statement
+invweibull,scale,limit:1,Every observation equals the held scale $\lambda$.,one-sided,,,,
+invweibull,scale,path:1,The free shape $k$ tends to infinity while scale $\lambda$ is held at the common observation value.,one-sided,,,,
+invweibull,scale,uniqueness,Unique.,exact,,,,existence.statement
 invweibull,scale+shape,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 invweibull,shape,criterion,Always on positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/invweibull/README.md#existence.reason,,existence.statement
 invweibull,shape,failure,No failure.,exact,written,univariateML-cpp/include/cppunivariate/distributions/invweibull/README.md#existence.reason,,existence.statement
 invweibull,shape,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/invweibull/README.md#existence.reason,,existence.statement
 kumar,,criterion,"Exactly nonconstant observations in (0,1).",iff,written,univariateML-cpp/include/cppunivariate/distributions/kumar/README.md#existence.reason,,
-kumar,,failure,Constant interior data give unbounded concentration.,exact,lean,UnivariateML.Kumaraswamy.constant_unbounded,,
-kumar,,limit:1,every observation equals $c$ and neither shape is held,one-sided,lean,UnivariateML.Kumaraswamy.constant_unbounded,,
-kumar,,path:1,$a$ tends to infinity and $b=c^{-a}$ for a fixed $0<c<1$,one-sided,lean,UnivariateML.Kumaraswamy.constant_unbounded,,
-kumar,,uniqueness,Unique.,exact,lean,UnivariateML.Kumaraswamy.existsUnique_joint,,
-kumar,a,criterion,Always on interior data.,iff,lean,UnivariateML.Kumaraswamy.held_a,,existence.statement
-kumar,a,failure,No failure.,exact,lean,UnivariateML.Kumaraswamy.held_a,,existence.statement
-kumar,a,uniqueness,Unique.,exact,lean,UnivariateML.Kumaraswamy.held_a,,existence.statement
-kumar,b,criterion,Always on interior data.,iff,lean,UnivariateML.Kumaraswamy.held_b,,existence.statement
-kumar,b,failure,No failure.,exact,lean,UnivariateML.Kumaraswamy.held_b,,existence.statement
-kumar,b,uniqueness,Unique.,exact,lean,UnivariateML.Kumaraswamy.held_b,,existence.statement
-laplace,,criterion,Exactly nonconstant samples.,iff,lean,UnivariateML.Laplace.joint_exists_iff,,
-laplace,,failure,Constant samples have unbounded scale collapse.,exact,lean,UnivariateML.Laplace.joint_unbounded,,
-laplace,,limit:1,Scale is free and every observation equals the estimated or held location.,one-sided,lean,UnivariateML.Laplace.joint_unbounded; UnivariateML.Laplace.heldLocation_unbounded,,
-laplace,,path:1,The scale $b$ tends to zero at the estimated or held location $\mu$.,one-sided,lean,UnivariateML.Laplace.joint_unbounded; UnivariateML.Laplace.heldLocation_unbounded,,
-laplace,,uniqueness,All medians paired with a common positive scale; singleton iff median interval degenerates.,exact,lean,UnivariateML.Laplace.joint_graph; UnivariateML.Laplace.joint_unique_iff,,
+kumar,,failure,Constant interior data give unbounded concentration.,exact,,,,
+kumar,,limit:1,every observation equals $c$ and neither shape is held,one-sided,,,,
+kumar,,path:1,$a$ tends to infinity and $b=c^{-a}$ for a fixed $0<c<1$,one-sided,,,,
+kumar,,uniqueness,Unique.,exact,,,,
+kumar,a,criterion,Always on interior data.,iff,,,,existence.statement
+kumar,a,failure,No failure.,exact,,,,existence.statement
+kumar,a,uniqueness,Unique.,exact,,,,existence.statement
+kumar,b,criterion,Always on interior data.,iff,,,,existence.statement
+kumar,b,failure,No failure.,exact,,,,existence.statement
+kumar,b,uniqueness,Unique.,exact,,,,existence.statement
+laplace,,criterion,Exactly nonconstant samples.,iff,,,,
+laplace,,failure,Constant samples have unbounded scale collapse.,exact,,,,
+laplace,,limit:1,Scale is free and every observation equals the estimated or held location.,one-sided,,,,
+laplace,,path:1,The scale $b$ tends to zero at the estimated or held location $\mu$.,one-sided,,,,
+laplace,,uniqueness,All medians paired with a common positive scale; singleton iff median interval degenerates.,exact,,,,
 laplace,mu,criterion,Exactly when some residual is nonzero.,iff,written,univariateML-cpp/include/cppunivariate/distributions/laplace/README.md#existence.reason,,existence.statement
-laplace,mu,failure,Zero residuals give unbounded scale collapse.,exact,lean,UnivariateML.Laplace.heldLocation_unbounded,,existence.statement
-laplace,mu,uniqueness,Unique.,exact,lean,UnivariateML.Laplace.heldLocation,,existence.statement
+laplace,mu,failure,Zero residuals give unbounded scale collapse.,exact,,,,existence.statement
+laplace,mu,uniqueness,Unique.,exact,,,,existence.statement
 laplace,mu+sigma,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-laplace,sigma,criterion,Always for positive held scale.,iff,lean,UnivariateML.Laplace.heldScale,,existence.statement
-laplace,sigma,failure,No failure.,exact,lean,UnivariateML.Laplace.heldScale,,existence.statement
-laplace,sigma,uniqueness,The whole median interval.,exact,lean,UnivariateML.Laplace.heldScale,,existence.statement
-lgamma,,criterion,Exactly nonconstant observations above one.,iff,lean,UnivariateML.LogGamma.joint_exists_iff,,
-lgamma,,failure,Constant data above one concentrate without bound.,exact,lean,UnivariateML.LogGamma.constant_unbounded,,
-lgamma,,limit:1,Both coefficients are free and every observation equals $x_0>1$.,one-sided,lean,UnivariateML.LogGamma.constant_unbounded,,
-lgamma,,path:1,"As shape and rate grow to infinity with shape/rate fixed at $\log(x_0)$, the density at $x_0>1$ diverges.",one-sided,lean,UnivariateML.LogGamma.constant_unbounded,,
-lgamma,,uniqueness,Unique.,exact,lean,UnivariateML.LogGamma.jointMLE,,
-lgamma,ratelog,criterion,Always on data above one.,iff,lean,UnivariateML.LogGamma.heldRate,,existence.statement
-lgamma,ratelog,failure,No failure.,exact,lean,UnivariateML.LogGamma.heldRate,,existence.statement
-lgamma,ratelog,uniqueness,Unique.,exact,lean,UnivariateML.LogGamma.heldRate,,existence.statement
+laplace,sigma,criterion,Always for positive held scale.,iff,,,,existence.statement
+laplace,sigma,failure,No failure.,exact,,,,existence.statement
+laplace,sigma,uniqueness,The whole median interval.,exact,,,,existence.statement
+lgamma,,criterion,Exactly nonconstant observations above one.,iff,,,,
+lgamma,,failure,Constant data above one concentrate without bound.,exact,,,,
+lgamma,,limit:1,Both coefficients are free and every observation equals $x_0>1$.,one-sided,,,,
+lgamma,,path:1,"As shape and rate grow to infinity with shape/rate fixed at $\log(x_0)$, the density at $x_0>1$ diverges.",one-sided,,,,
+lgamma,,uniqueness,Unique.,exact,,,,
+lgamma,ratelog,criterion,Always on data above one.,iff,,,,existence.statement
+lgamma,ratelog,failure,No failure.,exact,,,,existence.statement
+lgamma,ratelog,uniqueness,Unique.,exact,,,,existence.statement
 lgamma,ratelog+shapelog,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-lgamma,shapelog,criterion,Always on data above one.,iff,lean,UnivariateML.LogGamma.heldShape,,existence.statement
-lgamma,shapelog,failure,No failure.,exact,lean,UnivariateML.LogGamma.heldShape,,existence.statement
-lgamma,shapelog,uniqueness,Unique.,exact,lean,UnivariateML.LogGamma.heldShape,,existence.statement
-lgser,,criterion,Exactly when mean exceeds one.,iff,lean,UnivariateML.LogSeries.existsUnique_mle_iff,,
-lgser,,failure,All ones approach the excluded point-mass limit at zero parameter.,exact,lean,UnivariateML.LogSeries.allOnes_boundary,,
-lgser,,uniqueness,Unique.,exact,lean,UnivariateML.LogSeries.existsUnique_mle_iff,,
+lgamma,shapelog,criterion,Always on data above one.,iff,,,,existence.statement
+lgamma,shapelog,failure,No failure.,exact,,,,existence.statement
+lgamma,shapelog,uniqueness,Unique.,exact,,,,existence.statement
+lgser,,criterion,Exactly when mean exceeds one.,iff,,,,
+lgser,,failure,All ones approach the excluded point-mass limit at zero parameter.,exact,,,,
+lgser,,uniqueness,Unique.,exact,,,,
 lgser,theta,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 llogis,,criterion,Exactly nonconstant positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/llogis/README.md#existence.reason,,
-llogis,,failure,Constant data give unbounded collapse.,exact,lean,UnivariateML.LogLogistic.constant_unbounded,,
-llogis,,limit:1,Both coefficients are free and every observation equals $x_0>0$.,one-sided,lean,UnivariateML.LogLogistic.constant_unbounded,,
-llogis,,path:1,"As shape $\beta\to\infty$ with scale $\alpha=x_0>0$, the density at $x_0$ is $\beta/(4x_0)$ and diverges.",one-sided,lean,UnivariateML.LogLogistic.constant_unbounded,,
-llogis,,uniqueness,Unique.,exact,lean,UnivariateML.LogLogistic.jointMLE,,
+llogis,,failure,Constant data give unbounded collapse.,exact,,,,
+llogis,,limit:1,Both coefficients are free and every observation equals $x_0>0$.,one-sided,,,,
+llogis,,path:1,"As shape $\beta\to\infty$ with scale $\alpha=x_0>0$, the density at $x_0$ is $\beta/(4x_0)$ and diverges.",one-sided,,,,
+llogis,,uniqueness,Unique.,exact,,,,
 llogis,scale,criterion,Exactly when some observation differs from the held scale.,iff,written,univariateML-cpp/include/cppunivariate/distributions/llogis/README.md#existence.reason,,existence.statement
-llogis,scale,failure,All observations at the held scale give unbounded collapse.,exact,lean,UnivariateML.LogLogistic.heldScale_unbounded,,existence.statement
-llogis,scale,limit:2,Shape is free and every observation equals the held scale $\alpha$.,one-sided,lean,UnivariateML.LogLogistic.heldScale_unbounded,,
-llogis,scale,path:2,The free shape $\beta$ tends to infinity while scale $\alpha$ is held at the common observation.,one-sided,lean,UnivariateML.LogLogistic.heldScale_unbounded,,
-llogis,scale,uniqueness,Unique.,exact,lean,UnivariateML.LogLogistic.heldScale_unique,,existence.statement
+llogis,scale,failure,All observations at the held scale give unbounded collapse.,exact,,,,existence.statement
+llogis,scale,limit:2,Shape is free and every observation equals the held scale $\alpha$.,one-sided,,,,
+llogis,scale,path:2,The free shape $\beta$ tends to infinity while scale $\alpha$ is held at the common observation.,one-sided,,,,
+llogis,scale,uniqueness,Unique.,exact,,,,existence.statement
 llogis,scale+shape,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-llogis,shape,criterion,Always on positive samples.,iff,lean,UnivariateML.LogLogistic.heldShape_unique,,existence.statement
-llogis,shape,failure,No failure.,exact,lean,UnivariateML.LogLogistic.heldShape_unique,,existence.statement
-llogis,shape,uniqueness,Unique.,exact,lean,UnivariateML.LogLogistic.heldShape_unique,,existence.statement
-lnorm,,criterion,Exactly nonconstant positive samples.,iff,lean,UnivariateML.Lognormal.existsUnique_mle_iff,,
-lnorm,,failure,Constant data give unbounded collapse in log coordinates.,exact,lean,UnivariateML.Lognormal.constant_unbounded,,
-lnorm,,limit:1,both coefficients are free and all observations are equal,one-sided,lean,UnivariateML.Lognormal.constant_unbounded,,
-lnorm,,path:1,$\mu$ equals the common log observation and $\sigma$ tends to zero,one-sided,lean,UnivariateML.Lognormal.constant_unbounded,,
-lnorm,,uniqueness,Unique.,exact,lean,UnivariateML.Lognormal.existsUnique_mle_iff,,
-lnorm,meanlog,criterion,Exactly when not all logs equal the held mean.,iff,lean,UnivariateML.Lognormal.existsUnique_heldMean_iff,,existence.statement
-lnorm,meanlog,failure,Zero residual scatter in log data gives unbounded collapse.,exact,lean,UnivariateML.Lognormal.heldMean_unbounded,,existence.statement
-lnorm,meanlog,limit:2,every $\log x_i$ equals the held $\mu$ and $\sigma$ is free,one-sided,lean,UnivariateML.Lognormal.heldMean_unbounded,,
-lnorm,meanlog,path:2,the free log scale $\sigma$ tends to zero with log mean $\mu$ held,one-sided,lean,UnivariateML.Lognormal.heldMean_unbounded,,
-lnorm,meanlog,uniqueness,Unique.,exact,lean,UnivariateML.Lognormal.existsUnique_heldMean_iff,,existence.statement
+llogis,shape,criterion,Always on positive samples.,iff,,,,existence.statement
+llogis,shape,failure,No failure.,exact,,,,existence.statement
+llogis,shape,uniqueness,Unique.,exact,,,,existence.statement
+lnorm,,criterion,Exactly nonconstant positive samples.,iff,,,,
+lnorm,,failure,Constant data give unbounded collapse in log coordinates.,exact,,,,
+lnorm,,limit:1,both coefficients are free and all observations are equal,one-sided,,,,
+lnorm,,path:1,$\mu$ equals the common log observation and $\sigma$ tends to zero,one-sided,,,,
+lnorm,,uniqueness,Unique.,exact,,,,
+lnorm,meanlog,criterion,Exactly when not all logs equal the held mean.,iff,,,,existence.statement
+lnorm,meanlog,failure,Zero residual scatter in log data gives unbounded collapse.,exact,,,,existence.statement
+lnorm,meanlog,limit:2,every $\log x_i$ equals the held $\mu$ and $\sigma$ is free,one-sided,,,,
+lnorm,meanlog,path:2,the free log scale $\sigma$ tends to zero with log mean $\mu$ held,one-sided,,,,
+lnorm,meanlog,uniqueness,Unique.,exact,,,,existence.statement
 lnorm,meanlog+sdlog,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-lnorm,sdlog,criterion,Always for positive held scale and positive data.,iff,lean,UnivariateML.Lognormal.heldSd,,existence.statement
-lnorm,sdlog,failure,No failure on admissible data.,exact,lean,UnivariateML.Lognormal.heldSd,,existence.statement
-lnorm,sdlog,uniqueness,Unique mean of logs.,exact,lean,UnivariateML.Lognormal.heldSd,,existence.statement
+lnorm,sdlog,criterion,Always for positive held scale and positive data.,iff,,,,existence.statement
+lnorm,sdlog,failure,No failure on admissible data.,exact,,,,existence.statement
+lnorm,sdlog,uniqueness,Unique mean of logs.,exact,,,,existence.statement
 logis,,criterion,Exactly nonconstant finite samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/logis/README.md#existence.reason,,
 logis,,failure,Constant data permit unbounded scale collapse.,exact,written,univariateML-cpp/include/cppunivariate/distributions/logis/README.md#existence.reason,,
 logis,,limit:1,$s$ is free and every observation equals the fitted or held location $\mu$,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/logis/README.md#existence.reason,,
 logis,,path:1,$s$ tends to zero at the fitted or held location $\mu$,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/logis/README.md#existence.reason,,
-logis,,uniqueness,Unique.,exact,lean,UnivariateML.LocScaleInstances.logistic_existsUnique_mle,,
+logis,,uniqueness,Unique.,exact,,,,
 logis,location,criterion,Exactly when some observation differs from held location.,iff,written,univariateML-cpp/include/cppunivariate/distributions/logis/README.md#existence.reason,,existence.statement
 logis,location,failure,All equal to location yields unbounded collapse.,exact,written,univariateML-cpp/include/cppunivariate/distributions/logis/README.md#existence.reason,,existence.statement
 logis,location,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/logis/README.md#existence.reason,,existence.statement
@@ -913,31 +918,31 @@ logis,location+scale,criterion,Singleton feasible domain.,iff,written,overview.m
 logis,scale,criterion,Every finite nonempty sample attains.,iff,written,univariateML-cpp/include/cppunivariate/distributions/logis/README.md#existence.reason,,existence.statement
 logis,scale,failure,No failure.,exact,written,univariateML-cpp/include/cppunivariate/distributions/logis/README.md#existence.reason,,existence.statement
 logis,scale,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/logis/README.md#existence.reason,,existence.statement
-logitnorm,,criterion,Exactly nonconstant interior data.,iff,lean,UnivariateML.LogitNormal.existsUnique_mle_iff,,
-logitnorm,,failure,Constant interior data give unbounded scale collapse on logits.,exact,lean,UnivariateML.LogitNormal.constant_unbounded,,
-logitnorm,,limit:1,Scale is free and every logit equals the fitted or held location $\mu$.,one-sided,lean,UnivariateML.LogitNormal.constant_unbounded; UnivariateML.LogitNormal.heldLocation_unbounded,,
-logitnorm,,path:1,The free scale $\sigma$ tends to zero at the fitted or held logit location.,one-sided,lean,UnivariateML.LogitNormal.constant_unbounded; UnivariateML.LogitNormal.heldLocation_unbounded,,
-logitnorm,,uniqueness,Unique.,exact,lean,UnivariateML.LogitNormal.existsUnique_mle_iff,,
-logitnorm,mu,criterion,Exactly when some logit differs from the held location.,iff,lean,UnivariateML.LogitNormal.existsUnique_heldLocation_iff,,existence.statement
-logitnorm,mu,failure,A zero logit residual moment gives unbounded likelihood.,exact,lean,UnivariateML.LogitNormal.heldLocation_unbounded,,existence.statement
-logitnorm,mu,uniqueness,Unique.,exact,lean,UnivariateML.LogitNormal.existsUnique_heldLocation_iff,,existence.statement
+logitnorm,,criterion,Exactly nonconstant interior data.,iff,,,,
+logitnorm,,failure,Constant interior data give unbounded scale collapse on logits.,exact,,,,
+logitnorm,,limit:1,Scale is free and every logit equals the fitted or held location $\mu$.,one-sided,,,,
+logitnorm,,path:1,The free scale $\sigma$ tends to zero at the fitted or held logit location.,one-sided,,,,
+logitnorm,,uniqueness,Unique.,exact,,,,
+logitnorm,mu,criterion,Exactly when some logit differs from the held location.,iff,,,,existence.statement
+logitnorm,mu,failure,A zero logit residual moment gives unbounded likelihood.,exact,,,,existence.statement
+logitnorm,mu,uniqueness,Unique.,exact,,,,existence.statement
 logitnorm,mu+sigma,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-logitnorm,sigma,criterion,Always for positive held scale.,iff,lean,UnivariateML.LogitNormal.heldScale,,existence.statement
-logitnorm,sigma,failure,No failure.,exact,lean,UnivariateML.LogitNormal.heldScale,,existence.statement
-logitnorm,sigma,uniqueness,Unique.,exact,lean,UnivariateML.LogitNormal.heldScale,,existence.statement
-lomax,,case:small-support,"With at most two distinct values in a nonempty positive sample, an existing joint maximum is unique.",one-sided,lean,UnivariateML.LomaxTwoPoint.joint_unique,,
-lomax,,criterion,"Exactly when some u in (0,uBar) has psi(u) ≤ 0.",iff,lean,UnivariateML.Lomax.exists_max_iff,,
-lomax,,failure,Otherwise the exponential likelihood is the strict unattained supremum.,exact,lean,UnivariateML.Lomax.exponential_sup_of_no_witness,,
-lomax,,limit:1,both coefficients are free and the global profile upper bounds certify that no improvement over the best exponential exceeds $10^{-8}n$ log-likelihood units,one-sided,lean,UnivariateML.Lomax.exponential_sup_of_no_witness,,
-lomax,,path:1,$\kappa$ tends to infinity while $\lambda\kappa$ tends to a positive exponential rate,one-sided,lean,UnivariateML.Lomax.logLik_tendsto,,
+logitnorm,sigma,criterion,Always for positive held scale.,iff,,,,existence.statement
+logitnorm,sigma,failure,No failure.,exact,,,,existence.statement
+logitnorm,sigma,uniqueness,Unique.,exact,,,,existence.statement
+lomax,,case:small-support,"With at most two distinct values in a nonempty positive sample, an existing joint maximum is unique.",one-sided,,,,
+lomax,,criterion,"Exactly when some u in (0,uBar) has psi(u) ≤ 0.",iff,,,,
+lomax,,failure,Otherwise the exponential likelihood is the strict unattained supremum.,exact,,,,
+lomax,,limit:1,both coefficients are free and the global profile upper bounds certify that no improvement over the best exponential exceeds $10^{-8}n$ log-likelihood units,one-sided,,,,
+lomax,,path:1,$\kappa$ tends to infinity while $\lambda\kappa$ tends to a positive exponential rate,one-sided,,,,
 lomax,,uniqueness,Two-level samples attain uniquely when a fit exists; some three-level samples have two global winners.,one-sided,written,dev/research/evaluations/2026-11-25-lomax-uniq-math-report.md#exact-tie-construction,Classify the maximizer set for arbitrary supports.,
-lomax,kappa,criterion,Always for positive held shape and positive samples.,iff,lean,UnivariateML.Lomax.heldShape_unique,,existence.statement
-lomax,kappa,failure,No failure.,exact,lean,UnivariateML.Lomax.heldShape_unique,,existence.statement
-lomax,kappa,uniqueness,Unique.,exact,lean,UnivariateML.Lomax.heldShape_unique,,existence.statement
+lomax,kappa,criterion,Always for positive held shape and positive samples.,iff,,,,existence.statement
+lomax,kappa,failure,No failure.,exact,,,,existence.statement
+lomax,kappa,uniqueness,Unique.,exact,,,,existence.statement
 lomax,kappa+lambda,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-lomax,lambda,criterion,Always for positive held rate and positive samples.,iff,lean,UnivariateML.Lomax.heldRate_unique,,existence.statement
-lomax,lambda,failure,No failure.,exact,lean,UnivariateML.Lomax.heldRate_unique,,existence.statement
-lomax,lambda,uniqueness,Unique.,exact,lean,UnivariateML.Lomax.heldRate_unique,,existence.statement
+lomax,lambda,criterion,Always for positive held rate and positive samples.,iff,,,,existence.statement
+lomax,lambda,failure,No failure.,exact,,,,existence.statement
+lomax,lambda,uniqueness,Unique.,exact,,,,existence.statement
 lst,,criterion,Strict majority ties in the fitted model permit divergence.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/lst/README.md#existence.reason,Exhaust remaining candidates against the normal and collapse faces.,
 lst,,failure,Fixed-shape collapse exponent is nu times the off-atom count minus the atom count.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/lst/README.md#existence.reason,Bound simultaneous scale and shape changes.,
 lst,,path:1,The free scale tends to zero at the fitted or held location.,one-sided,written,dev/research/evaluations/2026-11-25-tcert-math-report.md#2-compactness-and-face-comparisons,,
@@ -953,23 +958,23 @@ lst,df+sigma,criterion,"The dossier discusses this hold, with the conditions rec
 lst,mu,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 lst,sigma,criterion,"The dossier discusses this hold, with the conditions recorded in its statement.",open,unproved,unknown,Derive an exact attainment criterion on the constrained parameter space.,existence.statement
 naka,,criterion,Exactly nonconstant positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/naka/README.md#existence.reason,,
-naka,,failure,Constant data give unbounded concentration.,exact,lean,UnivariateML.Nakagami.constant_unbounded,,
-naka,,limit:2,Both parameters are free and every observation equals the same positive value.,one-sided,lean,UnivariateML.Nakagami.constant_unbounded,,
-naka,,path:2,The shape $m$ tends to infinity with $\Omega$ at the common squared observation value.,one-sided,lean,UnivariateML.Nakagami.constant_unbounded,,
-naka,,uniqueness,Unique.,exact,lean,UnivariateML.Nakagami.jointMLE,,
+naka,,failure,Constant data give unbounded concentration.,exact,,,,
+naka,,limit:2,Both parameters are free and every observation equals the same positive value.,one-sided,,,,
+naka,,path:2,The shape $m$ tends to infinity with $\Omega$ at the common squared observation value.,one-sided,,,,
+naka,,uniqueness,Unique.,exact,,,,
 naka,scale,criterion,Exactly when at least one squared observation differs from held scale.,iff,written,univariateML-cpp/include/cppunivariate/distributions/naka/README.md#existence.reason,,existence.statement
-naka,scale,failure,Constant squared observations at held scale give unbounded concentration.,exact,lean,UnivariateML.Nakagami.constant_unbounded,,existence.statement
-naka,scale,limit:1,Every squared observation equals the held scale $\Omega$.,one-sided,lean,UnivariateML.Nakagami.constant_unbounded,,
-naka,scale,path:1,The free shape $m$ tends to infinity with $\Omega$ held at the common squared observation value.,one-sided,lean,UnivariateML.Nakagami.constant_unbounded,,
-naka,scale,uniqueness,Unique.,exact,lean,UnivariateML.Nakagami.heldScale,,existence.statement
+naka,scale,failure,Constant squared observations at held scale give unbounded concentration.,exact,,,,existence.statement
+naka,scale,limit:1,Every squared observation equals the held scale $\Omega$.,one-sided,,,,
+naka,scale,path:1,The free shape $m$ tends to infinity with $\Omega$ held at the common squared observation value.,one-sided,,,,
+naka,scale,uniqueness,Unique.,exact,,,,existence.statement
 naka,scale+shape,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-naka,shape,criterion,Every positive sample attains.,iff,lean,UnivariateML.Nakagami.heldShape,,existence.statement
-naka,shape,failure,No failure.,exact,lean,UnivariateML.Nakagami.heldShape,,existence.statement
-naka,shape,uniqueness,Unique.,exact,lean,UnivariateML.Nakagami.heldShape,,existence.statement
+naka,shape,criterion,Every positive sample attains.,iff,,,,existence.statement
+naka,shape,failure,No failure.,exact,,,,existence.statement
+naka,shape,uniqueness,Unique.,exact,,,,existence.statement
 nbinom,,criterion,Positive mean: iff variance exceeds mean. All zeros: attained.,iff,written,univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md#existence.reason,,
-nbinom,,failure,Positive mean with variance at most the mean selects unattained Poisson.,exact,lean,UnivariateML.NegBinomial.poisson_supremum,,
-nbinom,,limit:1,"both coefficients are free, $\bar x>0$, and $S^2=n^{-1}\sum_i(x_i-\bar x)^2\le\bar x$",one-sided,lean,UnivariateML.NegBinomial.poisson_supremum,,
-nbinom,,path:1,the size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p=\bar x>0$ fixed,one-sided,lean,UnivariateML.NegBinomial.profile_tendsto_poisson,,
+nbinom,,failure,Positive mean with variance at most the mean selects unattained Poisson.,exact,,,,
+nbinom,,limit:1,"both coefficients are free, $\bar x>0$, and $S^2=n^{-1}\sum_i(x_i-\bar x)^2\le\bar x$",one-sided,,,,
+nbinom,,path:1,the size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p=\bar x>0$ fixed,one-sided,,,,
 nbinom,,uniqueness,Unique at positive mean when attained; all-zero maximizers are r=0 or p=1.,exact,written,univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md#existence.reason,,
 nbinom,prob,criterion,Always for compatible counts.,iff,written,univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md#existence.reason,,existence.statement
 nbinom,prob,failure,No escape.,exact,written,univariateML-cpp/include/cppunivariate/distributions/nbinom/README.md#existence.reason,,existence.statement
@@ -991,32 +996,32 @@ nhyper,m,criterion,All feasible samples attain with held composition count.,iff,
 nhyper,m,failure,No escape beats a finite candidate; positive-count branches have an eventual cutoff.,exact,written,univariateML-cpp/include/cppunivariate/distributions/nhyper/README.md#existence.reason,,existence.statement
 nhyper,m+r,criterion,Always on feasible data.,iff,written,dev/research/evaluations/2026-11-25-nhyper-math-report.md#white-count-held,,existence.statement
 nhyper,m+r,failure,No escape; for positive held stopping count the likelihood along the ray goes to zero.,exact,written,dev/research/evaluations/2026-11-25-nhyper-math-report.md#white-count-held,,existence.statement
-nhyper,m+r,uniqueness,"For positive held stopping count, the crossing yields one or two adjacent integers. With r=0 all feasible urns maximize.",exact,lean,UnivariateML.NegHypergeometric.white_maximizers,,existence.statement
+nhyper,m+r,uniqueness,"For positive held stopping count, the crossing yields one or two adjacent integers. With r=0 all feasible urns maximize.",exact,written,dev/research/evaluations/2026-11-25-nhyper-math-report.md#white-count-held,,existence.statement
 nhyper,r,criterion,"For positive held stopping count and feasible data, the finite population tail test decides attainment including equality. Holding zero requires all zero data and gives attainment.",iff,written,dev/research/evaluations/2026-11-25-nhyper-math-report.md#an-exact-finite-test-including-equality-and-escape,,existence.statement
 nhyper,r,failure,Compare the exact finite candidate list with the shifted negative-binomial supremum; if strictly better than finite candidates it wins.,exact,written,dev/research/evaluations/2026-11-25-nhyper-math-report.md#an-exact-finite-test-including-equality-and-escape,,existence.statement
 nhyper,r,uniqueness,"The maximizing set is all of the winning finite population/composition pairs in the exact search, with a flat family on compatible zeros when r=0.",exact,written,dev/research/evaluations/2026-11-25-nhyper-math-report.md#an-exact-finite-test-including-equality-and-escape,,existence.statement
-norm,,criterion,Exactly nonconstant samples.,iff,lean,UnivariateML.Normal.existsUnique_mle_iff,,
-norm,,failure,Constant data have unbounded likelihood at vanishing scale.,exact,lean,UnivariateML.Normal.constant_unbounded,,
-norm,,limit:1,sd is free and every observation equals the fitted or held location,one-sided,lean,UnivariateML.Normal.constant_unbounded; UnivariateML.Normal.heldMean_unbounded,,
-norm,,path:1,Scale tends to zero at the fitted or held location,one-sided,lean,UnivariateML.Normal.constant_unbounded; UnivariateML.Normal.heldMean_unbounded,,
-norm,,uniqueness,Unique.,exact,lean,UnivariateML.Normal.existsUnique_mle_iff,,
-norm,mean,criterion,Exactly when residual sum of squares is positive.,iff,lean,UnivariateML.Normal.existsUnique_heldMean_iff,,existence.statement
-norm,mean,failure,Zero residual sum gives unbounded scale collapse.,exact,lean,UnivariateML.Normal.heldMean_unbounded,,existence.statement
-norm,mean,uniqueness,Unique.,exact,lean,UnivariateML.Normal.existsUnique_heldMean_iff,,existence.statement
-norm,sd,criterion,Always for positive held scale.,iff,lean,UnivariateML.Normal.heldSd,,existence.statement
-norm,sd,failure,No failure on admissible data.,exact,lean,UnivariateML.Normal.heldSd,,existence.statement
-norm,sd,uniqueness,Unique sample mean.,exact,lean,UnivariateML.Normal.heldSd,,existence.statement
+norm,,criterion,Exactly nonconstant samples.,iff,,,,
+norm,,failure,Constant data have unbounded likelihood at vanishing scale.,exact,,,,
+norm,,limit:1,sd is free and every observation equals the fitted or held location,one-sided,,,,
+norm,,path:1,Scale tends to zero at the fitted or held location,one-sided,,,,
+norm,,uniqueness,Unique.,exact,,,,
+norm,mean,criterion,Exactly when residual sum of squares is positive.,iff,,,,existence.statement
+norm,mean,failure,Zero residual sum gives unbounded scale collapse.,exact,,,,existence.statement
+norm,mean,uniqueness,Unique.,exact,,,,existence.statement
+norm,sd,criterion,Always for positive held scale.,iff,,,,existence.statement
+norm,sd,failure,No failure on admissible data.,exact,,,,existence.statement
+norm,sd,uniqueness,Unique sample mean.,exact,,,,existence.statement
 nsbeta,,criterion,Never on unrestricted free-endpoint domain.,iff,written,univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md#existence.reason,,
 nsbeta,,failure,A free shape below one creates an unbounded endpoint spike.,exact,written,univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md#existence.reason,,
 nsbeta,,limit:1,"All observations equal one point strictly between the held endpoints, and both shapes are free.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md#existence.reason,,
-nsbeta,,path:1,"The shapes satisfy $\alpha=tu$ and $\beta=t(1-u)$ with $t\to\infty$, where $u=(x-a)/(b-a)$ is the common transformed observation and the endpoints are held.",one-sided,lean,UnivariateML.Beta.constant_unbounded,,
 nsbeta,,uniqueness,No attained branch.,exact,written,univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md#existence.reason,,
 nsbeta,max,criterion,The free-end shape is shape1 and the held-end shape is shape2. There is no positive finite MLE: a free endpoint shape admits a spike whenever held-end factors are positive.,iff,written,dev/research/evaluations/2026-11-25-thresh-math-report.md#beta-with-one-endpoint-held,,existence.statement
 nsbeta,max,failure,"Check held-end compatibility first. A held-end shape above one with contact gives zero likelihood, while a shape below one or a free held-end shape at contact can diverge. With positive held-end factors the free endpoint admits a spike.",exact,written,dev/research/evaluations/2026-11-25-thresh-math-report.md#beta-with-one-endpoint-held,,existence.statement
 nsbeta,max,uniqueness,No positive finite attained branch.,exact,written,dev/research/evaluations/2026-11-25-thresh-math-report.md#beta-with-one-endpoint-held,,existence.statement
 nsbeta,max+min,criterion,Exactly nonconstant strictly interior data.,iff,written,univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md#existence.reason,,existence.statement
-nsbeta,max+min,failure,Constant interior data give unbounded beta concentration.,exact,lean,UnivariateML.Beta.constant_unbounded,,existence.statement
-nsbeta,max+min,uniqueness,Unique.,exact,lean,UnivariateML.Beta.jointMLE,,existence.statement
+nsbeta,max+min,failure,Constant interior data give unbounded beta concentration.,exact,,,,existence.statement
+nsbeta,max+min,path:1,"The shapes satisfy $\alpha=tu$ and $\beta=t(1-u)$ with $t\to\infty$, where $u=(x-a)/(b-a)$ is the common transformed observation and the endpoints are held.",one-sided,,,,
+nsbeta,max+min,uniqueness,Unique.,exact,,,,existence.statement
 nsbeta,max+min+shape1,criterion,Always for strictly interior observations.,iff,written,univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md#existence.reason,,existence.statement
 nsbeta,max+min+shape1,failure,No failure.,exact,written,univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md#existence.reason,,existence.statement
 nsbeta,max+min+shape1,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md#existence.reason,,existence.statement
@@ -1060,13 +1065,13 @@ paralogis,,limit:1,All observations are equal and both coefficients are free.,on
 paralogis,,path:1,The free shape $\alpha$ tends to infinity while the free scale $\theta$ follows a concentrating path at the common observation.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/paralogis/README.md#existence.reason,,
 paralogis,,uniqueness,Exact all-free samples can have distinct global maxima.,one-sided,written,dev/research/evaluations/2026-11-25-paralogis-math-report.md#strict-curvature-and-the-tie,Extend the two-band profile comparison and characterize all ties.,
 paralogis,scale,case:band-tie,"At the exact real crossing, one shape in each band is globally optimal; the written cover excludes the complement.",one-sided,written,dev/research/evaluations/2026-11-25-paralogis-math-report.md#held-scale,,existence.statement
-paralogis,scale,criterion,Always for positive samples and positive held scale.,iff,lean,UnivariateML.Paralogistic.heldScale_exists,,existence.statement
-paralogis,scale,failure,No escape.,exact,lean,UnivariateML.Paralogistic.heldScale_exists,,existence.statement
+paralogis,scale,criterion,Always for positive samples and positive held scale.,iff,,,,existence.statement
+paralogis,scale,failure,No escape.,exact,,,,existence.statement
 paralogis,scale,uniqueness,A real two-point sample with integer multiplicities has two distinct maximizing shape bands for the fixed held scale.,one-sided,written,dev/research/evaluations/2026-11-25-paralogis-math-report.md#held-scale,Determine all global shape co-winners on arbitrary samples.,existence.statement
 paralogis,scale+shape,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-paralogis,shape,criterion,Always for positive samples and positive held shape.,iff,lean,UnivariateML.Paralogistic.heldShape,,existence.statement
-paralogis,shape,failure,No escape.,exact,lean,UnivariateML.Paralogistic.heldShape,,existence.statement
-paralogis,shape,uniqueness,Unique.,exact,lean,UnivariateML.Paralogistic.heldShape,,existence.statement
+paralogis,shape,criterion,Always for positive samples and positive held shape.,iff,,,,existence.statement
+paralogis,shape,failure,No escape.,exact,,,,existence.statement
+paralogis,shape,uniqueness,Unique.,exact,,,,existence.statement
 pareto,,criterion,Exactly nonconstant positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/pareto/README.md#existence.reason,,
 pareto,,failure,Constant data give unbounded likelihood at the fitted endpoint.,exact,written,univariateML-cpp/include/cppunivariate/distributions/pareto/README.md#existence.reason,,
 pareto,,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/pareto/README.md#existence.reason,,
@@ -1084,11 +1089,11 @@ pareto,b,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate
 pareto2,,criterion,"Never for nonempty finite data with unrestricted threshold, shape and scale.",iff,written,univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#existence.reason,,
 pareto2,,failure,Unbounded at a moving threshold by choosing shape small enough.,exact,written,univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#existence.reason,,
 pareto2,,limit:1,"With threshold held and both other coefficients free, the certified profile bound excludes improvement over the best shifted exponential greater than $10^{-8}n$ log-likelihood units.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#existence.reason,,
-pareto2,,path:1,The shape $\alpha$ and scale $\sigma$ tend to infinity with $\alpha/\sigma$ fixed at a positive rate.,one-sided,lean,UnivariateML.Transfer.ParetoII.face_path,,
 pareto2,,uniqueness,No attained branch.,exact,written,univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#existence.reason,,
-pareto2,min,case:positive-excess-exponential,With strictly positive excesses and no Lomax witness the translated exponential face is the strict unattained supremum.,one-sided,lean,UnivariateML.Transfer.ParetoII.exponential_sup_of_no_witness,,existence.statement
-pareto2,min,criterion,Exactly when strictly positive excesses satisfy the Lomax criterion; threshold ties require their separate endpoint rule.,iff,lean,UnivariateML.Transfer.ParetoII.exists_max_iff,,existence.statement
+pareto2,min,case:positive-excess-exponential,With strictly positive excesses and no Lomax witness the translated exponential face is the strict unattained supremum.,one-sided,,,,existence.statement
+pareto2,min,criterion,Exactly when strictly positive excesses satisfy the Lomax criterion; threshold ties require their separate endpoint rule.,iff,written,univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#existence.reason,,existence.statement
 pareto2,min,failure,Positive excesses without a Lomax witness select the translated exponential face.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#existence.reason,Verify the threshold-contact branch separately.,existence.statement
+pareto2,min,path:1,The shape $\alpha$ and scale $\sigma$ tend to infinity with $\alpha/\sigma$ fixed at a positive rate.,one-sided,,,,
 pareto2,min+scale,criterion,Always for strictly positive excesses.,iff,written,univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#existence.reason,,existence.statement
 pareto2,min+scale,failure,No failure on positive excesses.,exact,written,univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#existence.reason,,existence.statement
 pareto2,min+scale,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#existence.reason,,existence.statement
@@ -1219,9 +1224,9 @@ pig,shape,failure,All-zero sample selects unattained zero-mean limit.,exact,writ
 pig,shape,limit:2,"All observations are zero, $\mu$ is free, and $\lambda>0$ is held.",one-sided,written,dev/research/evaluations/2026-11-25-pig-math-report.md#existence-and-uniqueness-by-held-mask,,
 pig,shape,path:2,The mean $\mu$ tends to zero with positive concentration $\lambda$ held.,one-sided,written,dev/research/evaluations/2026-11-25-pig-math-report.md#joint-paths-to-the-boundary,,
 pig,shape,uniqueness,Unique when attained.,exact,written,dev/research/evaluations/2026-11-25-pig-math-report.md#existence-and-uniqueness-by-held-mask,,existence.statement
-pois,,criterion,Every nonempty sample of nonnegative counts attains.,iff,lean,UnivariateML.Discrete.Poisson.unique_mle,,
-pois,,failure,All zeros attain the included endpoint.,exact,lean,UnivariateML.Discrete.Poisson.unique_mle,,
-pois,,uniqueness,Unique.,exact,lean,UnivariateML.Discrete.Poisson.unique_mle,,
+pois,,criterion,Every nonempty sample of nonnegative counts attains.,iff,,,,
+pois,,failure,All zeros attain the included endpoint.,exact,,,,
+pois,,uniqueness,Unique.,exact,,,,
 pois,lambda,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 power,,criterion,Exactly nonconstant positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/power/README.md#existence.reason,,
 power,,failure,Constant data at fitted endpoint give unbounded likelihood.,exact,written,univariateML-cpp/include/cppunivariate/distributions/power/README.md#existence.reason,,
@@ -1235,9 +1240,9 @@ power,alpha+beta,criterion,Singleton feasible domain.,iff,written,overview.md#ex
 power,beta,criterion,Every positive sample attains.,iff,written,univariateML-cpp/include/cppunivariate/distributions/power/README.md#existence.reason,,existence.statement
 power,beta,failure,No failure.,exact,written,univariateML-cpp/include/cppunivariate/distributions/power/README.md#existence.reason,,existence.statement
 power,beta,uniqueness,Unique endpoint at sample maximum.,exact,written,univariateML-cpp/include/cppunivariate/distributions/power/README.md#existence.reason,,existence.statement
-rayleigh,,criterion,Every nonempty positive sample attains.,iff,lean,UnivariateML.Rayleigh.mle,,
-rayleigh,,failure,Zero observations give an identically zero likelihood on the mathematical domain and are rejected by the fit.,exact,lean,UnivariateML.Rayleigh.zero_ties,,
-rayleigh,,uniqueness,Unique on the positive-sample domain.,exact,lean,UnivariateML.Rayleigh.mle,,
+rayleigh,,criterion,Every nonempty positive sample attains.,iff,,,,
+rayleigh,,failure,Zero observations give an identically zero likelihood on the mathematical domain and are rejected by the fit.,exact,,,,
+rayleigh,,uniqueness,Unique on the positive-sample domain.,exact,,,,
 rayleigh,sigma,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 sged,,criterion,Unrestricted all-free shape permits unbounded likelihood.,one-sided,written,dev/research/evaluations/2026-11-25-sstdsged-math-report.md#4-held-subset-certificate-map,Compare all finite candidates against the uniform and both half-GED faces on the fitted domain.,
 sged,,failure,Scale collapse on constants and multiple compatible proper limiting paths.,one-sided,written,dev/research/evaluations/2026-11-25-sstdsged-math-report.md#4-held-subset-certificate-map,Prove global face dominance and endpoint-contact rules for arbitrary fitted samples.,
@@ -1401,13 +1406,13 @@ trgamma,scale,criterion,Exactly except constant observations at or above the hel
 trgamma,scale,failure,The held-endpoint trace is strictly below a finite witness on every bounded sample. The remaining constants diverge.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#held-scale-and-both-shapes-free,,existence.statement
 trgamma,scale,path:1,The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held.,one-sided,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#held-scale-and-both-shapes-free,,
 trgamma,scale,uniqueness,"When mean oriented log excess is zero, the scale-held profile has a unique maximum.",one-sided,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#held-scale-and-both-shapes-free,Establish cardinality on the remaining held-scale data.,existence.statement
-trgamma,scale+shape1,criterion,Exactly when some observation differs from held scale.,iff,lean,UnivariateML.TransformedGamma.heldScaleShape_exists_iff,,existence.statement
-trgamma,scale+shape1,failure,Otherwise unbounded power concentration.,exact,lean,UnivariateML.TransformedGamma.heldScaleShape_unbounded,,existence.statement
-trgamma,scale+shape1,uniqueness,Unique free power.,exact,lean,UnivariateML.TransformedGamma.heldScaleShape,,existence.statement
+trgamma,scale+shape1,criterion,Exactly when some observation differs from held scale.,iff,,,,existence.statement
+trgamma,scale+shape1,failure,Otherwise unbounded power concentration.,exact,,,,existence.statement
+trgamma,scale+shape1,uniqueness,Unique free power.,exact,,,,existence.statement
 trgamma,scale+shape1+shape2,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 trgamma,scale+shape2,criterion,Always on positive samples.,iff,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
 trgamma,scale+shape2,failure,No failure.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
-trgamma,scale+shape2,uniqueness,Unique free gamma shape.,exact,lean,UnivariateML.TransformedGamma.heldScalePower,,existence.statement
+trgamma,scale+shape2,uniqueness,Unique free gamma shape.,exact,,,,existence.statement
 trgamma,shape1,criterion,Exactly for nonconstant positive samples.,iff,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
 trgamma,shape1,failure,Constants concentrate without bound.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
 trgamma,shape1,uniqueness,Unique.,exact,written,dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks,,existence.statement
@@ -1426,10 +1431,10 @@ triang,,path:2,A valid held endpoint excludes an observation or forces zero dens
 triang,,uniqueness,"On x=(0,1), two reflected all-free parameter triples attain the same global maximum.",one-sided,written,univariateML-cpp/include/cppunivariate/distributions/triang/README.md#details,Classify maximizing knots and endpoint choices globally when endpoints are free.,
 triang,a,criterion,Exactly on compatible data except a constant at the held endpoint.,iff,written,univariateML-cpp/include/cppunivariate/distributions/triang/README.md#existence.reason,,existence.statement
 triang,a,failure,Constant at the held endpoint allows unbounded width collapse.,exact,written,univariateML-cpp/include/cppunivariate/distributions/triang/README.md#existence.reason,,existence.statement
-triang,a+b,case:held-endpoint-tie,"For the exact sample in Lean, two observation modes are global maximizers with both endpoints held.",one-sided,lean,UnivariateML.Triangular.rational_tie,,existence.statement
-triang,a+b,criterion,Always when held endpoints permit positive likelihood.,iff,lean,UnivariateML.Triangular.exists_isMaxOn; UnivariateML.Triangular.isMaxOn_iff_observation,,existence.statement
+triang,a+b,case:held-endpoint-tie,"For the exact sample in Lean, two observation modes are global maximizers with both endpoints held.",one-sided,,,,existence.statement
+triang,a+b,criterion,Always when held endpoints permit positive likelihood.,iff,,,,existence.statement
 triang,a+b,failure,No escape in the closed mode interval. If both held endpoints are occupied every mode has zero likelihood and the fitting API rejects the data.,exact,written,univariateML-cpp/include/cppunivariate/distributions/triang/README.md#existence.reason,,existence.statement
-triang,a+b,uniqueness,The winning observation knots on the positive-likelihood domain. If both endpoints are occupied all feasible modes tie at zero on the mathematical domain.,exact,lean,UnivariateML.Triangular.isMaxOn_iff_observation; UnivariateML.Triangular.likelihood_zero_of_both_endpoints,,existence.statement
+triang,a+b,uniqueness,The winning observation knots on the positive-likelihood domain. If both endpoints are occupied all feasible modes tie at zero on the mathematical domain.,exact,,,,existence.statement
 triang,a+b+c,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 triang,a+c,criterion,Exactly on compatible data except a constant at the common held endpoint and mode.,iff,written,univariateML-cpp/include/cppunivariate/distributions/triang/README.md#existence.reason,,existence.statement
 triang,a+c,failure,Compatible collapse at a common held endpoint and mode can diverge.,exact,written,univariateML-cpp/include/cppunivariate/distributions/triang/README.md#existence.reason,,existence.statement
@@ -1440,42 +1445,42 @@ triang,b+c,failure,Compatible collapse at a common held endpoint and mode can di
 triang,c,criterion,Exactly on compatible data except a constant at the held mode.,iff,written,univariateML-cpp/include/cppunivariate/distributions/triang/README.md#existence.reason,,existence.statement
 triang,c,failure,Constant at the held mode allows unbounded width collapse.,exact,written,univariateML-cpp/include/cppunivariate/distributions/triang/README.md#existence.reason,,existence.statement
 unif,,criterion,Exactly when the sample has positive range.,iff,written,univariateML-cpp/include/cppunivariate/distributions/unif/README.md#existence.reason,,
-unif,,failure,At zero range width can shrink without bound on the likelihood scale.,exact,lean,UnivariateML.Endpoint.Uniform.constant_unbounded,,
-unif,,limit:1,"At least one endpoint is free, the sample is compatible with every held endpoint, and the candidate interval has zero width after setting any free lower endpoint to the sample minimum and any free upper endpoint to the sample maximum.",one-sided,lean,UnivariateML.Endpoint.Uniform.collapse_unbounded,,
+unif,,failure,At zero range width can shrink without bound on the likelihood scale.,exact,,,,
+unif,,limit:1,"At least one endpoint is free, the sample is compatible with every held endpoint, and the candidate interval has zero width after setting any free lower endpoint to the sample minimum and any free upper endpoint to the sample maximum.",one-sided,,,,
 unif,,limit:2,The held lower endpoint exceeds the sample minimum or the held upper endpoint is below the sample maximum.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/unif/README.md#existence.reason,,
-unif,,path:1,The free width $b-a$ tends to zero around the common observation.,one-sided,lean,UnivariateML.Endpoint.Uniform.collapse_unbounded,,
+unif,,path:1,The free width $b-a$ tends to zero around the common observation.,one-sided,,,,
 unif,,path:2,A held endpoint excludes an observation.,one-sided,written,univariateML-cpp/include/cppunivariate/distributions/unif/README.md#existence.reason,,
-unif,,uniqueness,Unique extreme endpoints.,exact,lean,UnivariateML.Endpoint.Uniform.jointMLE,,
+unif,,uniqueness,Unique extreme endpoints.,exact,,,,
 unif,max,criterion,Exactly when the resulting interval is compatible and of positive width.,iff,written,univariateML-cpp/include/cppunivariate/distributions/unif/README.md#existence.reason,,existence.statement
-unif,max,failure,A compatible zero-width candidate yields unbounded collapse.,exact,lean,UnivariateML.Endpoint.Uniform.collapse_unbounded,,existence.statement
-unif,max,uniqueness,Unique free lower endpoint.,exact,lean,UnivariateML.Endpoint.Uniform.heldUpper,,existence.statement
+unif,max,failure,A compatible zero-width candidate yields unbounded collapse.,exact,,,,existence.statement
+unif,max,uniqueness,Unique free lower endpoint.,exact,,,,existence.statement
 unif,max+min,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 unif,min,criterion,Exactly when the resulting interval is compatible and of positive width.,iff,written,univariateML-cpp/include/cppunivariate/distributions/unif/README.md#existence.reason,,existence.statement
-unif,min,failure,A compatible zero-width candidate yields unbounded collapse.,exact,lean,UnivariateML.Endpoint.Uniform.collapse_unbounded,,existence.statement
-unif,min,uniqueness,Unique free upper endpoint.,exact,lean,UnivariateML.Endpoint.Uniform.heldLower,,existence.statement
+unif,min,failure,A compatible zero-width candidate yields unbounded collapse.,exact,,,,existence.statement
+unif,min,uniqueness,Unique free upper endpoint.,exact,,,,existence.statement
 weibull,,criterion,Exactly nonconstant positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/weibull/README.md#existence.reason,,
-weibull,,failure,Constant data concentrate without bound.,exact,lean,UnivariateML.Weibull.constant_unbounded,,
-weibull,,limit:1,both coefficients are free and all observations are equal,one-sided,lean,UnivariateML.Weibull.constant_unbounded,,
-weibull,,path:1,$\lambda$ equals the common observation and $k$ tends to infinity,one-sided,lean,UnivariateML.Weibull.constant_unbounded,,
-weibull,,uniqueness,Unique.,exact,lean,UnivariateML.Weibull.jointMLE,,
+weibull,,failure,Constant data concentrate without bound.,exact,,,,
+weibull,,limit:1,both coefficients are free and all observations are equal,one-sided,,,,
+weibull,,path:1,$\lambda$ equals the common observation and $k$ tends to infinity,one-sided,,,,
+weibull,,uniqueness,Unique.,exact,,,,
 weibull,scale,criterion,Exactly when at least one observation differs from the held scale.,iff,written,univariateML-cpp/include/cppunivariate/distributions/weibull/README.md#existence.reason,,existence.statement
-weibull,scale,failure,All observations at the held scale give unbounded shape concentration.,exact,lean,UnivariateML.Weibull.heldScale_unbounded,,existence.statement
-weibull,scale,limit:2,$k$ is free and every observation equals the held scale $\lambda$,one-sided,lean,UnivariateML.Weibull.heldScale_unbounded,,
-weibull,scale,path:2,$k$ tends to infinity with scale $\lambda$ held at the common observation value,one-sided,lean,UnivariateML.Weibull.heldScale_unbounded,,
-weibull,scale,uniqueness,Unique.,exact,lean,UnivariateML.Weibull.heldScale,,existence.statement
+weibull,scale,failure,All observations at the held scale give unbounded shape concentration.,exact,,,,existence.statement
+weibull,scale,limit:2,$k$ is free and every observation equals the held scale $\lambda$,one-sided,,,,
+weibull,scale,path:2,$k$ tends to infinity with scale $\lambda$ held at the common observation value,one-sided,,,,
+weibull,scale,uniqueness,Unique.,exact,,,,existence.statement
 weibull,scale+shape,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
 weibull,shape,criterion,Always on positive samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/weibull/README.md#existence.reason,,existence.statement
 weibull,shape,failure,No failure.,exact,written,univariateML-cpp/include/cppunivariate/distributions/weibull/README.md#existence.reason,,existence.statement
 weibull,shape,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/weibull/README.md#existence.reason,,existence.statement
-yulesimon,,criterion,Exactly when some observation exceeds one.,iff,lean,UnivariateML.YuleSimon.existsUnique_mle_iff,,
-yulesimon,,failure,All ones reach the point-mass bound only at infinite parameter.,exact,lean,UnivariateML.YuleSimon.allOnes_boundary,,
-yulesimon,,limit:1,The shape is free and every observation equals one.,one-sided,lean,UnivariateML.YuleSimon.allOnes_boundary,,
-yulesimon,,path:1,The shape satisfies $\rho\to\infty$.,one-sided,lean,UnivariateML.YuleSimon.allOnes_boundary,,
-yulesimon,,uniqueness,Unique.,exact,lean,UnivariateML.YuleSimon.existsUnique_mle_iff,,
+yulesimon,,criterion,Exactly when some observation exceeds one.,iff,,,,
+yulesimon,,failure,All ones reach the point-mass bound only at infinite parameter.,exact,,,,
+yulesimon,,limit:1,The shape is free and every observation equals one.,one-sided,,,,
+yulesimon,,path:1,The shape satisfies $\rho\to\infty$.,one-sided,,,,
+yulesimon,,uniqueness,Unique.,exact,,,,
 yulesimon,rho,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
-zeta,,criterion,"For the untruncated law, exactly when some observation exceeds one.",iff,lean,UnivariateML.Zeta.existsUnique_mle_iff,,
-zeta,,failure,"For the untruncated law, all ones approach the excluded point-mass limit.",exact,lean,UnivariateML.Zeta.allOnes_boundary,,
-zeta,,limit:1,The exponent is free and every observation equals one.,one-sided,lean,UnivariateML.Zeta.allOnes_boundary,,
-zeta,,path:1,The exponent satisfies $s\to\infty$.,one-sided,lean,UnivariateML.Zeta.allOnes_boundary,,
-zeta,,uniqueness,Unique in the untruncated attained case.,exact,lean,UnivariateML.Zeta.existsUnique_mle_iff,,
+zeta,,criterion,"For the untruncated law, exactly when some observation exceeds one.",iff,,,,
+zeta,,failure,"For the untruncated law, all ones approach the excluded point-mass limit.",exact,,,,
+zeta,,limit:1,The exponent is free and every observation equals one.,one-sided,,,,
+zeta,,path:1,The exponent satisfies $s\to\infty$.,one-sided,,,,
+zeta,,uniqueness,Unique in the untruncated attained case.,exact,,,,
 zeta,s,criterion,Singleton feasible domain.,iff,written,overview.md#existence-atlas,,existence.statement
