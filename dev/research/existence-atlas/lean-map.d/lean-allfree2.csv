@@ -1,0 +1,201 @@
+family,regime,theorem,file,line,statement,hypotheses_and_conclusion,scope,proof_marker,dossier_scope_note,coverage
+pgw,scale,UnivariateML.AllFreePGW.held_scale_threshold_path,dev/lean/UnivariateML/Family/AllFreePGW.lean,74,A fixed scale at or below every observation gives the threshold limit. Each observation equal to the scale contributes a factor of one half.,"{x : Fin n → ℝ} {a k : ℝ} (ha : 0 < a)
+    (hk : 0 < k) (hx : ∀ i, a ≤ x i) :
+    Tendsto (fun b : ℝ ↦ ShapeFacesPGW.logLik x b a (k / b)) atTop
+      (𝓝 (thresholdLogLik x a k))",,,,
+pgw,scale,UnivariateML.AllFreePGW.held_scale_logDensity_lt_threshold,dev/lean/UnivariateML/Family/AllFreePGW.lean,94,"At or below the minimum, each finite density loses to the threshold density at the same product of shape and exponent.","{a x b k : ℝ} (ha : 0 < a)
+    (hx : a ≤ x) (hb : 0 < b) (hk : 0 < k) :
+    ShapeFacesPGW.logDensity b a (k / b) x <
+      log k - log x - (if x = a then log 2 else 0) +
+        k * log (x / a) - (exp (k * log (x / a)) - 1)",,,,
+pgw,scale,UnivariateML.AllFreePGW.held_scale_no_max_of_le_all,dev/lean/UnivariateML/Family/AllFreePGW.lean,122,A positive held scale at or below all observations has no finite maximizer. This includes constant samples and ties at the scale.,"(hn : 0 < n) {x : Fin n → ℝ} {a : ℝ}
+    (ha : 0 < a) (hx : ∀ i, a ≤ x i) :
+    ¬ ∃ p ∈ Weibull.domain,
+      IsMaxOn (fun q : ℝ × ℝ ↦ ShapeFacesPGW.logLik x q.1 a q.2) Weibull.domain p",,,,
+pgw,all free,UnivariateML.AllFreePGW.gompertz_path,dev/lean/UnivariateML/Family/AllFreePGW.lean,147,The power-transformed Gompertz face along a path with fixed shape.,"{x : Fin n → ℝ} {b r : ℝ} (hb : 0 < b) (hr : 0 < r)
+    (hx : ∀ i, 0 < x i) :
+    Tendsto (fun h : ℝ ↦ ShapeFacesPGW.logLik x b ((h * r) ^ (-1 / b)) h⁻¹)
+      (𝓝[>] 0) (𝓝 (gompertzLogLik x b r))",,,,
+pgw,all free,UnivariateML.AllFreePGW.threshold_hazard_path,dev/lean/UnivariateML/Family/AllFreePGW.lean,188,"The cumulative hazard on the fixed-scale threshold path, on both sides of the threshold and at equality.","{x a k : ℝ} (hx : 0 < x) (ha : 0 < a) (hk : 0 < k) :
+    Tendsto (fun b : ℝ ↦ (1 + (x / a) ^ b) ^ (k / b) - 1) atTop
+      (𝓝 (if a ≤ x then (x / a) ^ k - 1 else 0))",,,,
+pgw,scale,UnivariateML.AllFreePGW.held_scale_constant_below,dev/lean/UnivariateML/Family/AllFreePGW.lean,227,Constants strictly below the held scale concentrate by sending the shape to infinity and taking the reciprocal powered ratio as exponent.,"{a x : ℝ} (hn : 0 < n) (hx : 0 < x) (ha : x < a) :
+    Tendsto (fun b : ℝ ↦ ShapeFacesPGW.logLik (fun _ : Fin n ↦ x)
+      b a ((x / a) ^ b)⁻¹) atTop atTop",,,,
+pgw,shape,UnivariateML.AllFreePGW.held_shape_narrow_no_max,dev/lean/UnivariateML/Family/AllFreePGW.lean,332,"At a held positive shape, a powered observation-to-maximum ratio at least one half for every observation excludes every finite maximizer.","(hn : 0 < n) {x : Fin n → ℝ} {b X : ℝ}
+    (hb : 0 < b) (hx : ∀ i, 0 < x i) (hX : ∀ i, x i ≤ X)
+    (hnarrow : ∀ i, 1 / 2 ≤ (x i / X) ^ b) :
+    ¬ ∃ p ∈ Weibull.domain,
+      IsMaxOn (fun q : ℝ × ℝ ↦ ShapeFacesPGW.logLik x b q.1 q.2) Weibull.domain p",,,,
+pgw,scale,UnivariateML.AllFreePGW.held_scale_attains,dev/lean/UnivariateML/Family/AllFreePGW.lean,408,"For nonconstant data with a held scale above some observation, joint optimization over the shape and exponent attains a finite maximum.","{x : Fin n → ℝ} {a : ℝ} (ha : 0 < a)
+    (hx : ∀ i, 0 < x i) {i j : Fin n} (hij : x i < x j) (hia : x i < a) :
+    ∃ p ∈ Weibull.domain,
+      IsMaxOn (fun q : ℝ × ℝ ↦ ShapeFacesPGW.logLik x q.1 a q.2) Weibull.domain p",,,,
+pgw,scale,UnivariateML.AllFreePGW.held_scale_exists_iff,dev/lean/UnivariateML/Family/AllFreePGW.lean,546,Holding the scale leaves a finite maximizer exactly for nonconstant positive data with an observation strictly below the scale.,"(hn : 0 < n) {x : Fin n → ℝ} {a : ℝ}
+    (ha : 0 < a) (hx : ∀ i, 0 < x i) :
+    (∃ p ∈ Weibull.domain,
+      IsMaxOn (fun q : ℝ × ℝ ↦ ShapeFacesPGW.logLik x q.1 a q.2) Weibull.domain p) ↔
+      (∃ i j, x i ≠ x j) ∧ ∃ i, x i < a",,,,
+pgw,shape,UnivariateML.AllFreePGW.held_shape_attains_iff_face,dev/lean/UnivariateML/Family/AllFreePGW.lean,750,"With shape held, a finite fit attains exactly when some finite witness ties or beats every Gompertz likelihood. The witness need not beat the face strictly.","{x : Fin n → ℝ} (hn : 0 < n)
+    (hx : ∀ i, 0 < x i) {b : ℝ} (hb : 0 < b) :
+    (∃ p ∈ Weibull.domain,
+      IsMaxOn (fun q : ℝ × ℝ ↦ ShapeFacesPGW.logLik x b q.1 q.2) Weibull.domain p) ↔
+      ∃ a > 0, ∃ c > 0, ∀ r > 0, gompertzLogLik x b r ≤ ShapeFacesPGW.logLik x b a c",,,,
+pgw,shape,UnivariateML.AllFreePGW.held_shape_attains_iff_stationary,dev/lean/UnivariateML/Family/AllFreePGW.lean,810,The held-shape criterion can be tested at finite stationary points. The nonstrict face comparison preserves finite equality.,"{x : Fin n → ℝ} (hn : 0 < n)
+    (hx : ∀ i, 0 < x i) {b : ℝ} (hb : 0 < b) :
+    (∃ p ∈ Weibull.domain,
+      IsMaxOn (fun q : ℝ × ℝ ↦ ShapeFacesPGW.logLik x b q.1 q.2) Weibull.domain p) ↔
+      ∃ a > 0, ∃ c > 0,
+        deriv (fun s ↦ ShapeFacesPGW.logLik x b s c) a = 0 ∧
+        deriv (ShapeFacesPGW.logLik x b a) c = 0 ∧
+        ∀ r > 0, gompertzLogLik x b r ≤ ShapeFacesPGW.logLik x b a c",,,,
+pgw,scale,UnivariateML.AllFreePGW.threshold_unique,dev/lean/UnivariateML/Family/AllFreePGW.lean,909,The threshold face has a unique positive exponent whenever at least one observation lies strictly above the held threshold.,"{x : Fin n → ℝ} {a : ℝ} (ha : 0 < a)
+    (hx : ∀ i, a ≤ x i) (hne : ∃ i, a < x i) :
+    ∃! k, k ∈ Ioi (0 : ℝ) ∧ IsMaxOn (thresholdLogLik x a) (Ioi 0) k",,,,
+pgw,shape,UnivariateML.AllFreePGW.gompertz_unique,dev/lean/UnivariateML/Family/AllFreePGW.lean,927,"The power-transformed Gompertz face has a unique optimizing scale at each positive held shape, even on constant data.","(hn : 0 < n) {x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
+    {b : ℝ} :
+    ∃! r, r ∈ Ioi (0 : ℝ) ∧ IsMaxOn (gompertzLogLik x b) (Ioi 0) r",,,,
+pgw,scale,UnivariateML.AllFreePGW.held_scale_threshold_supremum,dev/lean/UnivariateML/Family/AllFreePGW.lean,947,The optimized threshold likelihood is the strict all-free-in-shape-and- exponent supremum when the fixed scale is at or below the minimum and some observation is strictly above the scale.,"(hn : 0 < n) {x : Fin n → ℝ} {a : ℝ}
+    (ha : 0 < a) (hx : ∀ i, a ≤ x i) (hne : ∃ i, a < x i) :
+    ∃ k > 0,
+      IsLUB ((fun p : ℝ × ℝ ↦ ShapeFacesPGW.logLik x p.1 a p.2) '' Weibull.domain)
+        (thresholdLogLik x a k) ∧
+      ∀ p ∈ Weibull.domain, ShapeFacesPGW.logLik x p.1 a p.2 < thresholdLogLik x a k",,,,
+pgw,all free,UnivariateML.AllFreePGW.gompertz_hazard_path,dev/lean/UnivariateML/Family/AllFreePGW.lean,975,The cumulative hazard on the fixed-shape Gompertz path converges at every positive observation.,"{b r x : ℝ} (hb : 0 < b) (hr : 0 < r) (hx : 0 < x) :
+    Tendsto (fun h : ℝ ↦ (1 + (x / (h * r) ^ (-1 / b)) ^ b) ^ h⁻¹ - 1)
+      (𝓝[>] 0) (𝓝 (exp (r * x ^ b) - 1))",,,,
+pgw,all free,UnivariateML.AllFreePGW.free_threshold_path,dev/lean/UnivariateML/Family/AllFreePGW.lean,998,"With scale free, approaching the threshold from below at log distance `h` while shape grows as `h⁻²` attains the unpenalized endpoint likelihood.","{x : Fin n → ℝ} {a k : ℝ} (ha : 0 < a)
+    (hk : 0 < k) (hx : ∀ i, a ≤ x i) :
+    Tendsto (fun h : ℝ ↦ ShapeFacesPGW.logLik x (h^2)⁻¹ (a * exp (-h)) (k * h^2))
+      (𝓝[>] 0) (𝓝 (∑ i, (log k - log (x i) + k * log (x i / a) -
+        (exp (k * log (x i / a)) - 1))))",,,,
+trgamma,all free,UnivariateML.AllFreeTransformedGamma.power_path,dev/lean/UnivariateML/Family/AllFreeTransformedGamma.lean,29,The free scale approaches the endpoint while leaving zero exponential loss even for observations tied at the endpoint.,"{x : Fin n → ℝ} {A d : ℝ} (hd : 0 < d) (_hA : 0 < A)
+    (hx : ∀ i, 0 < x i ∧ x i ≤ A) :
+    Tendsto (fun q : ℝ ↦ TransformedGamma.logLik x (d * q) q⁻¹
+      (exp (log A - q * log q))) (𝓝[>] 0)
+      (𝓝 (log d - Gamma.avgLog x + Gamma.avg (fun i ↦ d * (log (x i) - log A))))",,,,
+invtrgamma,all free,UnivariateML.AllFreeTransformedGamma.inverse_power_path,dev/lean/UnivariateML/Family/AllFreeTransformedGamma.lean,86,"The reciprocal path gives the Pareto log likelihood, including lower-endpoint ties.","{x : Fin n → ℝ} {A d : ℝ} (hd : 0 < d) (hA : 0 < A)
+    (hx : ∀ i, A ≤ x i) :
+    Tendsto (fun q : ℝ ↦ InverseTransformedGamma.logLik x (d * q) q⁻¹
+      (exp (log A⁻¹ - q * log q))⁻¹) (𝓝[>] 0)
+      (𝓝 (log d - Gamma.avgLog x + Gamma.avg (fun i ↦ d * (log A - log (x i)))))",,,,
+trgamma,all free,UnivariateML.AllFreeTransformedGamma.lognormal_path,dev/lean/UnivariateML/Family/AllFreeTransformedGamma.lean,139,Integer gamma shapes tending to infinity give a lognormal likelihood path at any fixed log location and positive log scale.,"(hn : 0 < n) (x : Fin n → ℝ) (μ : ℝ) {σ : ℝ} (hσ : 0 < σ) :
+    Tendsto (fun j : ℕ ↦ TransformedGamma.logLik x j (1 / (σ * sqrt j))
+      (exp (μ - log j * (σ * sqrt j)))) atTop
+      (𝓝 (Gamma.avg (fun i ↦ -log σ - log (2 * π) / 2 - log (x i) -
+        ((log (x i) - μ) / σ)^2 / 2)))",,,,
+invtrgamma,all free,UnivariateML.AllFreeTransformedGamma.inverse_lognormal_path,dev/lean/UnivariateML/Family/AllFreeTransformedGamma.lean,191,Reciprocation gives the lognormal likelihood at reflected log location.,"(hn : 0 < n) (x : Fin n → ℝ) (μ : ℝ)
+    {σ : ℝ} (hσ : 0 < σ) :
+    Tendsto (fun j : ℕ ↦ InverseTransformedGamma.logLik x j (1 / (σ * sqrt j))
+      (exp (-μ - log j * (σ * sqrt j)))⁻¹) atTop
+      (𝓝 (Gamma.avg (fun i ↦ -log σ - log (2 * π) / 2 - log (x i) -
+        ((log (x i) - μ) / σ)^2 / 2)))",,,,
+trgamma,all free,UnivariateML.AllFreeTransformedGamma.face_rate_optimized,dev/lean/UnivariateML/Family/AllFreeTransformedGamma.lean,213,"When the mean gap to the supported endpoint in oriented log units is positive, its reciprocal is the unique rate optimizing the face.","{D : ℝ} (hD : 0 < D) :
+    ∃! d, d ∈ Set.Ioi (0 : ℝ) ∧
+      IsMaxOn (fun r ↦ log r - r * D) (Set.Ioi 0) d",,,,
+gengamma,all free,UnivariateML.AllFreeGenGamma.constant_concentration,dev/lean/UnivariateML/Family/AllFreeGenGamma.lean,19,"With location equal to the common log observation, taking scale to zero makes log likelihood unbounded for every fixed shape, including zero.","{n : ℕ} (hn : 0 < n) (μ Q : ℝ)
+    {x : Fin n → ℝ} (hx : ∀ i, x i = exp μ) :
+    Tendsto (fun σ : ℝ ↦ GenGammaTwoPoint.sampleLogLik x (μ, σ, Q))
+      (𝓝[>] 0) atTop",,,,
+gengamma,mu,UnivariateML.AllFreeGenGamma.constant_concentration,dev/lean/UnivariateML/Family/AllFreeGenGamma.lean,19,"With location equal to the common log observation, taking scale to zero makes log likelihood unbounded for every fixed shape, including zero.","{n : ℕ} (hn : 0 < n) (μ Q : ℝ)
+    {x : Fin n → ℝ} (hx : ∀ i, x i = exp μ) :
+    Tendsto (fun σ : ℝ ↦ GenGammaTwoPoint.sampleLogLik x (μ, σ, Q))
+      (𝓝[>] 0) atTop",,,,
+gengamma,all free,UnivariateML.AllFreeGenGamma.held_location_face_path,dev/lean/UnivariateML/Family/AllFreeGenGamma.lean,44,"For either orientation, the fixed-location path tends to the power or Pareto log likelihood when all observations are on the supported side. At zero residual the exponential loss still vanishes.","{n : ℕ} {x : Fin n → ℝ} {μ d : ℝ}
+    (hd : 0 < d) (ε : ℝ) (hε : |ε| = 1)
+    (hx : ∀ i, ε * (log (x i) - μ) ≤ 0) :
+    Tendsto (fun q : ℝ ↦ GenGammaTwoPoint.sampleLogLik x
+      (μ, d * sqrt q, ε / sqrt q)) (𝓝[>] 0)
+      (𝓝 ((∑ i, (-log d + ε * (log (x i) - μ) / d - log (x i))) / n))",,,,
+gengamma,mu,UnivariateML.AllFreeGenGamma.held_location_face_path,dev/lean/UnivariateML/Family/AllFreeGenGamma.lean,44,"For either orientation, the fixed-location path tends to the power or Pareto log likelihood when all observations are on the supported side. At zero residual the exponential loss still vanishes.","{n : ℕ} {x : Fin n → ℝ} {μ d : ℝ}
+    (hd : 0 < d) (ε : ℝ) (hε : |ε| = 1)
+    (hx : ∀ i, ε * (log (x i) - μ) ≤ 0) :
+    Tendsto (fun q : ℝ ↦ GenGammaTwoPoint.sampleLogLik x
+      (μ, d * sqrt q, ε / sqrt q)) (𝓝[>] 0)
+      (𝓝 ((∑ i, (-log d + ε * (log (x i) - μ) / d - log (x i))) / n))",,,,
+gengamma,mu,UnivariateML.AllFreeGenGamma.held_location_fixed_shape_scale,dev/lean/UnivariateML/Family/AllFreeGenGamma.lean,158,"At fixed location and fixed real shape, any nonzero log residual gives a unique positive scale maximizer, including the normal shape.","{n : ℕ} (hn : 0 < n) {x : Fin n → ℝ} (μ Q : ℝ)
+    (hne : ∃ i, log (x i) ≠ μ) :
+    ∃! σ, σ ∈ Ioi (0 : ℝ) ∧
+      IsMaxOn (fun s ↦ GenGammaTwoPoint.sampleLogLik x (μ, s, Q)) (Ioi 0) σ",,,,
+betapr,all free,UnivariateML.AllFreeBetaPrime.reciprocal_logLik,dev/lean/UnivariateML/Family/AllFreeBetaPrime.lean,18,Inversion exchanges the two shapes and inverts the scale.,"{x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
+    {b : ℝ} (hb : 0 < b) (p q : ℝ) :
+    BetaPrime.logLik x b (p, q) =
+      BetaPrime.logLik (fun i ↦ (x i)⁻¹) b⁻¹ (q, p) - ∑ i, 2 * log (x i)",,,,
+betapr,all free,UnivariateML.AllFreeBetaPrime.constant_unbounded,dev/lean/UnivariateML/Family/AllFreeBetaPrime.lean,37,Constant data have unbounded beta-prime likelihood even at any fixed positive scale.,"(hn : 0 < n) {x : Fin n → ℝ}
+    (hx : ∀ i, 0 < x i) (he : ∀ i j, x i = x j) :
+    ¬ BddAbove {v | ∃ b > 0, ∃ p ∈ Beta.domain, BetaPrime.logLik x b p = v}",,,,
+betapr,all free,UnivariateML.AllFreeBetaPrime.gamma_path,dev/lean/UnivariateML/Family/AllFreeBetaPrime.lean,111,"At any fixed positive first shape, sending the second shape and scale to infinity at fixed ratio gives the corresponding gamma likelihood.","{x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
+    {s p : ℝ} (hs : 0 < s) (hp : 0 < p) :
+    Tendsto (fun h : ℝ ↦ BetaPrime.logLik x (s / h) (p, h⁻¹))
+      (𝓝[>] 0) (𝓝 (∑ i, Gamma.logDensity p s⁻¹ (x i)))",,,,
+betapr,all free,UnivariateML.AllFreeBetaPrime.inverse_gamma_path,dev/lean/UnivariateML/Family/AllFreeBetaPrime.lean,154,"At any fixed positive second shape, reciprocal symmetry gives the inverse-gamma likelihood as the first shape diverges and scale decreases.","{x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
+    {s q : ℝ} (hs : 0 < s) (hq : 0 < q) :
+    Tendsto (fun h : ℝ ↦ BetaPrime.logLik x (h / s) (h⁻¹, q))
+      (𝓝[>] 0)
+      (𝓝 ((∑ i, Gamma.logDensity q s⁻¹ (x i)⁻¹) - ∑ i, 2 * log (x i)))",,,,
+gev,all free,UnivariateML.AllFreeGEV.unrestricted_unbounded,dev/lean/UnivariateML/Family/AllFreeGEV.lean,19,Every nonempty sample has unbounded likelihood if shapes below minus one are allowed. An attained sample maximum may have any multiplicity.,"(hn : 0 < n) (x : Fin n → ℝ) :
+    ¬ BddAbove {v | ∃ ξ : ℝ, ∃ p ∈ GEV.domain x ξ, GEV.logLik x ξ p = v}",,,,
+gev,all free,UnivariateML.AllFreeGEV.majority_unbounded,dev/lean/UnivariateML/Family/AllFreeGEV.lean,32,"On the fitted branch, a strict majority at the minimum suffices for unboundedness along shape one. Constants are included.","(hn : 0 < n) {x : Fin n → ℝ} {m : ℝ}
+    (hm : ∀ i, m ≤ x i) (hz : ∃ i, x i = m)
+    (hc : n < 2 * Frechet.minimumCount (GEV.lowerGaps x m)) :
+    ¬ BddAbove {v | ∃ ξ ∈ Icc (-1 : ℝ) 1, ∃ p ∈ GEV.domain x ξ, GEV.logLik x ξ p = v}",,,,
+gev,all free,UnivariateML.AllFreeGEV.half_minimum_collapse_path,dev/lean/UnivariateML/Family/AllFreeGEV.lean,50,"At equal minimum and nonminimum counts, the shape-one path tends to the stated finite total log likelihood. The lower endpoint stays strictly below the minimum at finite parameters.","(hn : 0 < n) {x : Fin n → ℝ} {m : ℝ}
+    (hm : ∀ i, m ≤ x i) (hz : ∃ i, x i = m)
+    (hc : n = 2 * Frechet.minimumCount (GEV.lowerGaps x m)) :
+    (∀ e > 0, GEV.collapsePath x m 1 e ∈ GEV.domain x 1) ∧
+    Tendsto (GEV.collapsePath x m 1) (𝓝[>] 0) (𝓝 (m, 0)) ∧
+    Tendsto (fun e ↦ GEV.logLik x 1 (GEV.collapsePath x m 1 e)) (𝓝[>] 0)
+      (𝓝 ((n : ℝ) * (log 2 - 1) - 2 * ∑ i, log (x i - m)))",,,,
+frechet,all free,UnivariateML.AllFreeFrechet.gumbel_path,dev/lean/UnivariateML/Family/AllFreeFrechet.lean,20,Keep `σ / λ = a` and `μ + σ = b` as shape diverges. The Fréchet log likelihood converges to Gumbel at the same location and scale.,"(x : Fin n → ℝ) (m b : ℝ) {a : ℝ} (ha : 0 < a) :
+    Tendsto (fun h : ℝ ↦ Frechet.logLik (GEV.lowerGaps x m) h⁻¹ (m - b + a / h) (a / h))
+      (𝓝[>] 0) (𝓝 (GEV.logLik x 0 (b, a)))",,,,
+frechet,all free,UnivariateML.AllFreeFrechet.unrestricted_unbounded,dev/lean/UnivariateML/Family/AllFreeFrechet.lean,56,Allowing all positive shapes makes the likelihood unbounded whenever the nonnegative gaps include a zero. A small fixed shape already suffices.,"(hn : 0 < n) {g : Fin n → ℝ}
+    (hg : ∀ i, 0 ≤ g i) (hz : ∃ i, g i = 0) :
+    ¬ BddAbove {v | ∃ lam > 0, ∃ p ∈ Frechet.domain, Frechet.logLik g lam p.1 p.2 = v}",,,,
+frechet,all free,UnivariateML.AllFreeFrechet.pair_logLik_lt,dev/lean/UnivariateML/Family/AllFreeFrechet.lean,103,The product of two Fréchet densities at distance `d` is strictly below the half-minimum collapse bound on the fitted shape branch.,"{a s e d : ℝ} (ha : 1 ≤ a) (hs : 0 < s)
+    (he : 0 < e) (hd : 0 < d) :
+    Frechet.logDensity a s e + Frechet.logDensity a s (e + d) <
+      2 * (log 2 - 1 - log d)",,,,
+frechet,all free,UnivariateML.AllFreeFrechet.half_minimum_supremum,dev/lean/UnivariateML/Family/AllFreeFrechet.lean,160,"At exactly half minimum multiplicity the fitted Fréchet likelihood has a finite strict supremum, approached along shape one.","{g : Fin n → ℝ} (hn : 0 < n)
+    (hg : ∀ i, 0 ≤ g i) (hc : n = 2 * Frechet.minimumCount g) :
+    let A := (n : ℝ) * (log 2 - 1) - 2 * ∑ i, log (g i)
+    IsLUB {v | ∃ a ≥ 1, ∃ p ∈ Frechet.domain, Frechet.logLik g a p.1 p.2 = v} A ∧
+    (∀ a ≥ 1, ∀ p ∈ Frechet.domain, Frechet.logLik g a p.1 p.2 < A) ∧
+    Tendsto (Frechet.profile g 1) (𝓝[>] 0) (𝓝 A)",,,,
+frechet,all free,UnivariateML.AllFreeFrechet.majority_unbounded,dev/lean/UnivariateML/Family/AllFreeFrechet.lean,238,"A strict majority of minimum observations causes divergence on the fitted branch, already at Fréchet shape one.","{g : Fin n → ℝ} (hn : 0 < n)
+    (hg : ∀ i, 0 ≤ g i) (hz : ∃ i, g i = 0)
+    (hc : n < 2 * Frechet.minimumCount g) :
+    ¬ BddAbove {v | ∃ a ≥ 1, ∃ p ∈ Frechet.domain, Frechet.logLik g a p.1 p.2 = v}",,,,
+dgamma,all free,UnivariateML.AllFreeDGamma.all_zero_supremum,dev/lean/UnivariateML/Family/AllFreeDGamma.lean,25,"With both coefficients free, the all-zero likelihood has supremum one, which no positive finite parameter pair reaches.","{n : ℕ} (hn : 0 < n) :
+    IsLUB {v | ∃ a > 0, ∃ r > 0,
+      Discrete3DGamma.likelihood (fun _ : Fin n ↦ 0) a r = v} 1 ∧
+    ∀ a > 0, ∀ r > 0, Discrete3DGamma.likelihood (fun _ : Fin n ↦ 0) a r < 1",,,,
+dgamma,all free,UnivariateML.AllFreeDGamma.adjacent_mass_lt_one,dev/lean/UnivariateML/Family/AllFreeDGamma.lean,47,"Two adjacent cells together have strictly less than unit probability at every finite positive parameter pair, including the cells zero and one.","{a r : ℝ} (ha : 0 < a) (hr : 0 < r) (j : ℕ) :
+    Discrete3DGamma.cellProb a r j + Discrete3DGamma.cellProb a r (j + 1) < 1",,,,
+dgamma,all free,UnivariateML.AllFreeDGamma.cell_concentration,dev/lean/UnivariateML/Family/AllFreeDGamma.lean,141,Keep the latent mean strictly inside a specified cell as shape tends to infinity. The fitted mass of that cell converges to one.,"(j : ℕ) {m : ℝ} (hm : (j : ℝ) < m) (hm' : m < j + 1) :
+    Tendsto (fun a : ℝ ↦ Discrete3DGamma.cellProb a (a / m) j) atTop (𝓝 1)",,,,
+dgamma,all free,UnivariateML.AllFreeDGamma.constant_supremum,dev/lean/UnivariateML/Family/AllFreeDGamma.lean,195,"The all-free supremum for a constant count is one, including when the common count is positive. No finite shape and rate attain it.","{n : ℕ} (hn : 0 < n) (j : ℕ) :
+    IsLUB {v | ∃ a > 0, ∃ r > 0,
+      Discrete3DGamma.likelihood (fun _ : Fin n ↦ j) a r = v} 1 ∧
+    ∀ a > 0, ∀ r > 0, Discrete3DGamma.likelihood (fun _ : Fin n ↦ j) a r < 1",,,,
+dgamma,all free,UnivariateML.AllFreeDGamma.adjacent_collapse_path,dev/lean/UnivariateML/Family/AllFreeDGamma.lean,224,"For two adjacent cells, a rate chosen to give the prescribed CDF at their shared endpoint realizes arbitrary positive limiting proportions.","(j : ℕ) {w : ℝ} (hw : w ∈ Ioo (0 : ℝ) 1) :
+    ∃ r : ℝ → ℝ, (∀ᶠ a in atTop, 0 < r a) ∧
+      Tendsto (fun a ↦ a / r a) atTop (𝓝 ((j : ℝ) + 1)) ∧
+      Tendsto (fun a ↦ Discrete3DGamma.cellProb a (r a) j) atTop (𝓝 w) ∧
+      Tendsto (fun a ↦ Discrete3DGamma.cellProb a (r a) (j + 1)) atTop (𝓝 (1 - w))",,,,
+dgamma,all free,UnivariateML.AllFreeDGamma.adjacent_supremum,dev/lean/UnivariateML/Family/AllFreeDGamma.lean,402,"The excluded saturated supremum for counts from two adjacent cells is the product of the empirical cell proportions, with their multiplicities.","{n : ℕ} (x : Fin n → ℕ) (j : ℕ)
+    (hx : ∀ i, x i = j ∨ x i = j + 1)
+    (hl : ∃ i, x i = j) (hu : ∃ i, x i = j + 1) :
+    let m := (Finset.univ.filter fun i ↦ x i = j).card
+    let k := (Finset.univ.filter fun i ↦ x i ≠ j).card
+    let w := (m : ℝ) / (m + k)
+    IsLUB {v | ∃ a > 0, ∃ r > 0, Discrete3DGamma.likelihood x a r = v}
+      (w ^ m * (1 - w) ^ k) ∧
+    ∀ a > 0, ∀ r > 0, Discrete3DGamma.likelihood x a r < w ^ m * (1 - w) ^ k",,,,
+dgamma,all free,UnivariateML.AllFreeDGamma.separated_attains,dev/lean/UnivariateML/Family/AllFreeDGamma.lean,730,"Two occupied cells separated by at least one cell force a compact positive-likelihood superlevel, yielding a finite joint maximizer.","{n : ℕ} {x : Fin n → ℕ} {i j : Fin n} (hij : x i + 1 < x j) :
+    ∃ a > 0, ∃ r > 0, ∀ b > 0, ∀ t > 0,
+      Discrete3DGamma.likelihood x b t ≤ Discrete3DGamma.likelihood x a r",,,,
+dgamma,all free,UnivariateML.AllFreeDGamma.all_free_exists_iff,dev/lean/UnivariateML/Family/AllFreeDGamma.lean,829,A nonempty count sample has a finite all-free fit exactly when its integer range is at least two. Zero counts and multiplicities are retained.,"{n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) :
+    (∃ a > 0, ∃ r > 0, ∀ b > 0, ∀ t > 0,
+      Discrete3DGamma.likelihood x b t ≤ Discrete3DGamma.likelihood x a r) ↔
+      ∃ i j, x i + 1 < x j",,,,
