@@ -147,3 +147,16 @@ public import UnivariateML.Family.StudentHeldShape
 public import UnivariateML.Family.StudentLocation
 public import UnivariateML.Family.StudentSkew
 public import UnivariateML.Family.StudentSlash
+public import UnivariateML.Generic.Endpoint2BetaWidth
+public import UnivariateML.Family.Endpoint2FellerParetoFreeScale
+public import UnivariateML.Family.Endpoint2FellerParetoHeld
+public import UnivariateML.Family.Endpoint2FellerPareto
+public import UnivariateML.Family.Endpoint2FellerParetoRegular
+public import UnivariateML.Family.Endpoint2GeneralizedBetaJoint
+public import UnivariateML.Family.Endpoint2GeneralizedBeta
+public import UnivariateML.Family.Endpoint2NonstandardBetaAffine
+public import UnivariateML.Family.Endpoint2NonstandardBetaContacts
+public import UnivariateML.Family.Endpoint2NonstandardBeta
+public import UnivariateML.Family.Endpoint2ParetoIII
+public import UnivariateML.Family.Endpoint2ParetoII
+public import UnivariateML.Family.Endpoint2ParetoIV
