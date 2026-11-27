@@ -61,3 +61,10 @@ public import UnivariateML.Family.SkewLSSN
 public import UnivariateML.Family.SkewLSEMG
 public import UnivariateML.Family.SkewLSSlash
 public import UnivariateML.Family.SkewLSHalfT
+public import UnivariateML.Family.Discrete3PIG
+public import UnivariateML.Family.Discrete3CMP
+public import UnivariateML.Family.Discrete3CMB
+public import UnivariateML.Family.Discrete3DNorm
+public import UnivariateML.Family.Discrete3DGamma
+public import UnivariateML.Family.Discrete3Skellam
+public import UnivariateML.Family.Discrete3BNBinom
