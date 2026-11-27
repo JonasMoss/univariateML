@@ -29,6 +29,16 @@ restricted to $p_0 \ge f(0 \mid \theta)$: the zero-modified fit answers it when
 it satisfies the constraint, and otherwise the zero-inflated MLE lies on
 $\pi = 0$, which is the base family. It is part of the knob, but each family needs that boundary step.
 
+> **Correction (2026-11-27).** The "otherwise $\pi = 0$" step is not true in general. For CMB with
+> $\nu = 1$ and $p = 317/500$ held and size free, the sample (one 0, seven 2s) has its zero-modified
+> winner at size 2, which violates the constraint, yet size 3 with positive inflation beats every fit
+> with $\pi = 0$ (exact rational comparison). The step needs a proof per family, for example concavity
+> of the inflated likelihood in suitable coordinates, which the truncation report gives for
+> exponential families with a fixed carrier.
+> [Counterexample](../research/evaluations/2026-11-27-zero-mod-math-report.md) ·
+> [independent check](../research/evaluations/2026-11-27-mod-rev2-report.md#proof-errors-and-scope-corrections) ·
+> [exponential-family certificate](../research/evaluations/2026-11-27-trunc-expfam-math-report.md#what-this-changes-for-the-fitter)
+
 ## Proposed knobs
 
 Two modifiers, each a property of the fit rather than a new family.
