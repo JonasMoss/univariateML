@@ -56,70 +56,70 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | beta | shape2 | lean (iff) | lean (exact) | lean (exact) |
 | betapr | scale | lean (iff) | lean (exact) | lean (exact) |
 | betapr | scale+shape1 | lean (iff) | lean (exact) | lean (exact) |
-| betapr | scale+shape1+shape2 | written (iff) | written (exact) | written (exact) |
+| betapr | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | betapr | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | betapr | shape1+shape2 | written (iff) | written (exact) | written (exact) |
 | bhatt | a | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
-| bhatt | a+mu | written (iff) | written (exact) | written (exact) |
-| bhatt | a+mu+sigma | written (iff) | written (exact) | written (exact) |
+| bhatt | a+mu | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
+| bhatt | a+mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | bhatt | a+sigma | written (iff) | written (exact) | written (exact) |
 | binom | prob | lean (iff) | lean (exact) | lean (exact) |
-| binom | prob+size | written (iff) | written (exact) | written (exact) |
+| binom | prob+size | lean (iff) | lean (exact) | lean (exact) |
 | binom | size | lean (iff) | lean (exact) | lean (exact) |
-| bnbinom | alpha+beta | written (iff) · partial Lean | lean (exact) | lean (exact) |
+| bnbinom | alpha+beta | lean (iff) | lean (exact) | lean (exact) |
 | bnbinom | alpha+beta+size | lean (iff) | lean (exact) | lean (exact) |
-| bnbinom | alpha+size | written (iff) · partial Lean | lean (exact) | lean (exact) |
-| bnbinom | beta+size | written (iff) · partial Lean | lean (exact) | lean (exact) |
+| bnbinom | alpha+size | lean (iff) | lean (exact) | lean (exact) |
+| bnbinom | beta+size | lean (iff) | lean (exact) | lean (exact) |
 | burr | scale | lean (iff) | lean (exact) | lean (exact) |
 | burr | scale+shape1 | written (iff) | written (exact) | written (exact) |
-| burr | scale+shape1+shape2 | written (iff) | written (exact) | written (exact) |
+| burr | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | burr | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | burr | shape1 | lean (iff) | lean (exact) | lean (exact) |
 | burr | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | cauchy | all free | lean (iff) | lean (exact) | lean (exact) |
 | cauchy | location | lean (iff) | lean (exact) | lean (exact) |
-| cauchy | location+scale | written (iff) | written (exact) | written (exact) |
+| cauchy | location+scale | lean (iff) | lean (exact) | lean (exact) |
 | cmb | nu+prob | written (iff) | written (exact) | written (exact) |
-| cmb | nu+prob+size | written (iff) | written (exact) | written (exact) |
+| cmb | nu+prob+size | lean (iff) | lean (exact) | lean (exact) |
 | cmb | nu+size | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
 | cmb | prob | written (iff) | written (exact) | written (exact) |
 | cmb | prob+size | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
 | cmb | size | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
 | cmp | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
-| cmp | lambda | written (iff) | written (exact) | written (exact) |
-| cmp | lambda+nu | written (iff) | written (exact) | written (exact) |
+| cmp | lambda | written (iff) · partial Lean | lean (exact) | written (exact) · partial Lean |
+| cmp | lambda+nu | lean (iff) | lean (exact) | lean (exact) |
 | cmp | nu | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
 | dblpareto | all free | lean (iff) | lean (exact) | lean (exact) |
 | dblpareto | left_rate | written (iff) | written (exact) | written (exact) |
 | dblpareto | left_rate+right_rate | lean (iff) | lean (exact) | lean (exact) |
-| dblpareto | left_rate+right_rate+scale | written (iff) | written (exact) | written (exact) |
-| dblpareto | left_rate+scale | written (iff) | written (exact) | written (exact) |
+| dblpareto | left_rate+right_rate+scale | lean (iff) | lean (exact) | lean (exact) |
+| dblpareto | left_rate+scale | written (iff) · partial Lean | lean (exact) | lean (exact) |
 | dblpareto | right_rate | written (iff) | written (exact) | written (exact) |
-| dblpareto | right_rate+scale | written (iff) | written (exact) | written (exact) |
+| dblpareto | right_rate+scale | written (iff) · partial Lean | lean (exact) | lean (exact) |
 | dblpareto | scale | lean (iff) | lean (exact) | lean (exact) |
 | dgamma | rate | lean (iff) | lean (exact) | lean (exact) |
 | dgamma | rate+shape | lean (iff) | lean (exact) | lean (exact) |
 | dgamma | shape | lean (iff) | lean (exact) | lean (exact) |
 | dlaplace | all free | lean (iff) | lean (exact) | lean (exact) |
 | dlaplace | location | lean (iff) | lean (exact) | lean (exact) |
-| dlaplace | location+scale | written (iff) | written (exact) | written (exact) |
+| dlaplace | location+scale | lean (iff) | lean (exact) | lean (exact) |
 | dlaplace | scale | lean (iff) | lean (exact) | lean (exact) |
 | dnorm | all free | lean (iff) | written (exact) · partial Lean | lean (exact) |
-| dnorm | mean | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
-| dnorm | mean+sd | written (iff) | written (exact) | written (exact) |
-| dnorm | sd | written (iff) · partial Lean | written (exact) | written (exact) · partial Lean |
+| dnorm | mean | written (iff) · partial Lean | lean (exact) | written (exact) · partial Lean |
+| dnorm | mean+sd | lean (iff) | lean (exact) | lean (exact) |
+| dnorm | sd | lean (iff) | written (exact) · partial Lean | written (exact) · partial Lean |
 | dunif | all free | lean (iff) | lean (exact) | lean (exact) |
 | dunif | max | lean (iff) | lean (exact) | lean (exact) |
-| dunif | max+min | written (iff) | written (exact) | written (exact) |
+| dunif | max+min | lean (iff) | lean (exact) | lean (exact) |
 | dunif | min | lean (iff) | lean (exact) | lean (exact) |
 | dweibull | all free | lean (iff) | lean (exact) | lean (exact) |
 | dweibull | shape1 | lean (iff) | written (exact) · partial Lean | lean (exact) |
-| dweibull | shape1+shape2 | written (iff) | written (exact) | written (exact) |
+| dweibull | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | dweibull | shape2 | lean (iff) | written (exact) · partial Lean | lean (exact) |
-| emg | lambda+mu+sigma | written (iff) | written (exact) | written (exact) |
+| emg | lambda+mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | emg | lambda+sigma | lean (iff) | lean (exact) | lean (exact) |
 | exp | all free | lean (iff) | lean (exact) | lean (exact) |
-| exp | rate | written (iff) | written (exact) | written (exact) |
+| exp | rate | lean (iff) | lean (exact) | lean (exact) |
 | expweibull | exponent | written (iff) · partial Lean | written (exact) | lean (exact) |
 | expweibull | exponent+scale | written (iff) | written (exact) | written (exact) |
 | expweibull | exponent+shape | written (iff) | written (exact) | written (exact) |
@@ -129,10 +129,10 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | fatigue | beta+mu | lean (iff) | lean (exact) | lean (exact) |
 | fatigue | mu | lean (iff) | lean (exact) | lean (exact) |
 | foldnorm | mu | lean (iff) | lean (exact) | lean (exact) |
-| foldnorm | mu+sigma | written (iff) | written (exact) | written (exact) |
+| foldnorm | mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | foldnorm | sigma | lean (iff) | lean (exact) | lean (exact) |
 | fpareto | all free | written (iff) | written (exact) | written (exact) |
-| fpareto | min+scale+shape1+shape2+shape3 | written (iff) | written (exact) | written (exact) |
+| fpareto | min+scale+shape1+shape2+shape3 | lean (iff) | lean (exact) | lean (exact) |
 | fpareto | min+scale+shape2 | written (iff) · partial Lean | written (exact) | lean (exact) |
 | fpareto | min+shape1+shape3 | written (iff) | written (exact) | written (exact) |
 | fpareto | scale | written (iff) | written (exact) | written (exact) |
@@ -151,7 +151,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | fpareto | shape3 | written (iff) | written (exact) | written (exact) |
 | frechet | lambda | lean (iff) | lean (exact) | lean (exact) |
 | frechet | lambda+mu | lean (iff) | lean (exact) | lean (exact) |
-| frechet | lambda+mu+sigma | written (iff) | written (exact) | written (exact) |
+| frechet | lambda+mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | frechet | lambda+sigma | written (iff) | written (exact) | written (exact) |
 | frechet | mu | written (iff) | written (exact) | written (exact) |
 | frechet | mu+sigma | written (iff) | written (exact) | written (exact) |
@@ -163,11 +163,11 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | gb2 | scale+shape2+shape3 | written (iff) | written (exact) | written (exact) |
 | gb2 | shape1+shape3 | written (iff) | written (exact) | written (exact) |
 | ged | mean+nu | lean (iff) | lean (exact) | lean (exact) |
-| ged | mean+nu+sd | written (iff) | written (exact) | written (exact) |
+| ged | mean+nu+sd | lean (iff) | lean (exact) | lean (exact) |
 | ged | nu | lean (iff) | lean (exact) | written (exact) · partial Lean |
 | ged | nu+sd | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
 | genbeta | all free | written (iff) | written (exact) | written (exact) |
-| genbeta | scale+shape1+shape2+shape3 | written (iff) | written (exact) | written (exact) |
+| genbeta | scale+shape1+shape2+shape3 | lean (iff) | lean (exact) | lean (exact) |
 | genbeta | scale+shape1+shape3 | written (iff) | written (exact) | written (exact) |
 | genbeta | scale+shape2+shape3 | written (iff) | written (exact) | written (exact) |
 | genbeta | scale+shape3 | written (iff) | written (exact) | written (exact) |
@@ -175,29 +175,29 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | gengamma | Q+mu | written (iff) | written (exact) | written (exact) |
 | gengamma | Q+sigma | written (iff) | written (exact) | written (exact) |
 | geom | all free | lean (iff) | lean (exact) | lean (exact) |
-| geom | prob | written (iff) | written (exact) | written (exact) |
+| geom | prob | lean (iff) | lean (exact) | lean (exact) |
 | gev | xi | lean (iff) | lean (exact) | lean (exact) |
 | gompertz | all free | lean (iff) | lean (exact) | lean (exact) |
 | gompertz | a | lean (iff) | lean (exact) | lean (exact) |
-| gompertz | a+b | written (iff) | written (exact) | written (exact) |
+| gompertz | a+b | lean (iff) | lean (exact) | lean (exact) |
 | gompertz | b | lean (iff) | lean (exact) | lean (exact) |
 | gpd | all free | lean (iff) | lean (exact) | lean (exact) |
-| gpd | mu+sigma+xi | written (iff) | written (exact) | written (exact) |
+| gpd | mu+sigma+xi | lean (iff) | lean (exact) | lean (exact) |
 | gumbel | all free | lean (iff) | lean (exact) | lean (exact) |
-| gumbel | mu | written (iff) | written (exact) | written (exact) |
-| gumbel | mu+sigma | written (iff) | written (exact) | written (exact) |
-| gumbel | sigma | written (iff) | written (exact) | written (exact) |
+| gumbel | mu | lean (iff) | lean (exact) | lean (exact) |
+| gumbel | mu+sigma | lean (iff) | lean (exact) | lean (exact) |
+| gumbel | sigma | lean (iff) | lean (exact) | lean (exact) |
 | hcauchy | all free | lean (iff) | lean (exact) | lean (exact) |
 | hcauchy | mu | lean (iff) | lean (exact) | lean (exact) |
-| hcauchy | mu+sigma | written (iff) | written (exact) | written (exact) |
+| hcauchy | mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | hcauchy | sigma | lean (iff) | lean (exact) | lean (exact) |
 | hnorm | all free | lean (iff) | lean (exact) | lean (exact) |
 | hnorm | mu | lean (iff) | lean (exact) | lean (exact) |
-| hnorm | mu+sigma | written (iff) | written (exact) | written (exact) |
+| hnorm | mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | hnorm | sigma | lean (iff) | lean (exact) | lean (exact) |
-| ht | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
+| ht | all free | lean (iff) | written (exact) · partial Lean | written (exact) · partial Lean |
 | ht | mu+nu | written (iff) · partial Lean | written (exact) · partial Lean | lean (exact) |
-| ht | mu+nu+sigma | written (iff) | written (exact) | written (exact) |
+| ht | mu+nu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | ht | nu | written (iff) · partial Lean | written (exact) · partial Lean | lean (exact) |
 | huber | epsilon | lean (iff) | lean (exact) | lean (exact) |
 | huber | epsilon+mu | lean (iff) | lean (exact) | lean (exact) |
@@ -206,76 +206,76 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | hyper | N+m | lean (iff) | lean (exact) | lean (exact) |
 | invburr | scale | written (iff) · partial Lean | written (exact) · partial Lean | lean (exact) |
 | invburr | scale+shape1 | written (iff) · partial Lean | lean (exact) | lean (exact) |
-| invburr | scale+shape1+shape2 | written (iff) | written (exact) | written (exact) |
+| invburr | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | invburr | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | invburr | shape1 | written (iff) · partial Lean | lean (exact) | lean (exact) |
 | invburr | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | invexp | all free | lean (iff) | lean (exact) | lean (exact) |
-| invexp | scale | written (iff) | written (exact) | written (exact) |
+| invexp | scale | lean (iff) | lean (exact) | lean (exact) |
 | invgamma | all free | lean (iff) | lean (exact) | lean (exact) |
 | invgamma | alpha | lean (iff) | lean (exact) | lean (exact) |
 | invgamma | alpha+beta | lean (iff) | lean (exact) | lean (exact) |
 | invgamma | beta | lean (iff) | lean (exact) | lean (exact) |
 | invgauss | all free | lean (iff) | lean (exact) | lean (exact) |
 | invgauss | mean | lean (iff) | lean (exact) | lean (exact) |
-| invgauss | mean+shape | written (iff) | written (exact) | written (exact) |
+| invgauss | mean+shape | lean (iff) | lean (exact) | lean (exact) |
 | invgauss | shape | lean (iff) | lean (exact) | lean (exact) |
-| invparalogis | scale+shape | written (iff) | written (exact) | written (exact) |
+| invparalogis | scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | invparalogis | shape | lean (iff) | lean (exact) | lean (exact) |
 | invpareto | scale | lean (iff) | lean (exact) | lean (exact) |
-| invpareto | scale+shape | written (iff) | written (exact) | written (exact) |
+| invpareto | scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | invpareto | shape | lean (iff) | lean (exact) | lean (exact) |
 | invtrgamma | scale+shape1 | lean (iff) | lean (exact) | lean (exact) |
-| invtrgamma | scale+shape1+shape2 | written (iff) | written (exact) | written (exact) |
+| invtrgamma | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | invtrgamma | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | invtrgamma | shape1 | lean (iff) | lean (exact) | lean (exact) |
 | invtrgamma | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | invtrgamma | shape2 | lean (iff) | lean (exact) | lean (exact) |
 | invweibull | all free | lean (iff) | lean (exact) | lean (exact) |
 | invweibull | scale | lean (iff) | lean (exact) | lean (exact) |
-| invweibull | scale+shape | written (iff) | written (exact) | written (exact) |
+| invweibull | scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | invweibull | shape | lean (iff) | lean (exact) | lean (exact) |
 | kumar | all free | lean (iff) | lean (exact) | lean (exact) |
 | kumar | a | lean (iff) | lean (exact) | lean (exact) |
 | kumar | b | lean (iff) | lean (exact) | lean (exact) |
 | laplace | all free | lean (iff) | lean (exact) | lean (exact) |
 | laplace | mu | lean (iff) | lean (exact) | lean (exact) |
-| laplace | mu+sigma | written (iff) | written (exact) | written (exact) |
+| laplace | mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | laplace | sigma | lean (iff) | lean (exact) | lean (exact) |
 | lgamma | all free | lean (iff) | lean (exact) | lean (exact) |
 | lgamma | ratelog | lean (iff) | lean (exact) | lean (exact) |
-| lgamma | ratelog+shapelog | written (iff) | written (exact) | written (exact) |
+| lgamma | ratelog+shapelog | lean (iff) | lean (exact) | lean (exact) |
 | lgamma | shapelog | lean (iff) | lean (exact) | lean (exact) |
 | lgser | all free | lean (iff) | lean (exact) | lean (exact) |
-| lgser | theta | written (iff) | written (exact) | written (exact) |
+| lgser | theta | lean (iff) | lean (exact) | lean (exact) |
 | llogis | all free | lean (iff) | lean (exact) | lean (exact) |
 | llogis | scale | lean (iff) | lean (exact) | lean (exact) |
-| llogis | scale+shape | written (iff) | written (exact) | written (exact) |
+| llogis | scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | llogis | shape | lean (iff) | lean (exact) | lean (exact) |
 | lnorm | all free | lean (iff) | lean (exact) | lean (exact) |
 | lnorm | meanlog | lean (iff) | lean (exact) | lean (exact) |
-| lnorm | meanlog+sdlog | written (iff) | written (exact) | written (exact) |
+| lnorm | meanlog+sdlog | lean (iff) | lean (exact) | lean (exact) |
 | lnorm | sdlog | lean (iff) | lean (exact) | lean (exact) |
 | logis | all free | lean (iff) | lean (exact) | lean (exact) |
-| logis | location | written (iff) | written (exact) | written (exact) |
-| logis | location+scale | written (iff) | written (exact) | written (exact) |
-| logis | scale | written (iff) | written (exact) | written (exact) |
+| logis | location | lean (iff) | lean (exact) | lean (exact) |
+| logis | location+scale | lean (iff) | lean (exact) | lean (exact) |
+| logis | scale | lean (iff) | lean (exact) | lean (exact) |
 | logitnorm | all free | lean (iff) | lean (exact) | lean (exact) |
 | logitnorm | mu | lean (iff) | lean (exact) | lean (exact) |
-| logitnorm | mu+sigma | written (iff) | written (exact) | written (exact) |
+| logitnorm | mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | logitnorm | sigma | lean (iff) | lean (exact) | lean (exact) |
 | lomax | kappa | lean (iff) | lean (exact) | lean (exact) |
-| lomax | kappa+lambda | written (iff) | written (exact) | written (exact) |
+| lomax | kappa+lambda | lean (iff) | lean (exact) | lean (exact) |
 | lomax | lambda | lean (iff) | lean (exact) | lean (exact) |
 | lst | df+mu | lean (iff) | lean (exact) | lean (exact) |
-| lst | df+mu+sigma | written (iff) | written (exact) | written (exact) |
+| lst | df+mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | naka | all free | lean (iff) | lean (exact) | lean (exact) |
 | naka | scale | lean (iff) | lean (exact) | lean (exact) |
-| naka | scale+shape | written (iff) | written (exact) | written (exact) |
+| naka | scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | naka | shape | lean (iff) | lean (exact) | lean (exact) |
 | nbinom | all free | lean (iff) | lean (exact) | lean (exact) |
 | nbinom | prob | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
-| nbinom | prob+size | written (iff) | written (exact) | written (exact) |
+| nbinom | prob+size | lean (iff) | lean (exact) | lean (exact) |
 | nbinom | size | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
 | nhyper | m+r | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
 | nhyper | r | written (iff) | written (exact) | written (exact) |
@@ -286,7 +286,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | nsbeta | max | written (iff) | written (exact) | written (exact) |
 | nsbeta | max+min | lean (iff) | lean (exact) | lean (exact) |
 | nsbeta | max+min+shape1 | lean (iff) | lean (exact) | lean (exact) |
-| nsbeta | max+min+shape1+shape2 | written (iff) | written (exact) | written (exact) |
+| nsbeta | max+min+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | nsbeta | max+min+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | nsbeta | max+shape1 | written (iff) | written (exact) | written (exact) |
 | nsbeta | max+shape1+shape2 | written (iff) | written (exact) | written (exact) |
@@ -298,7 +298,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | nsbeta | shape1 | written (iff) | written (exact) | written (exact) |
 | nsbeta | shape1+shape2 | written (iff) | written (exact) | written (exact) |
 | nsbeta | shape2 | written (iff) | written (exact) | written (exact) |
-| paralogis | scale+shape | written (iff) | written (exact) | written (exact) |
+| paralogis | scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | paralogis | shape | lean (iff) | lean (exact) | lean (exact) |
 | pareto | all free | lean (iff) | lean (exact) | lean (exact) |
 | pareto | a | lean (iff) | lean (exact) | lean (exact) |
@@ -306,7 +306,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | pareto | b | lean (iff) | lean (exact) | lean (exact) |
 | pareto2 | all free | written (iff) | written (exact) | written (exact) |
 | pareto2 | min+scale | lean (iff) | lean (exact) | lean (exact) |
-| pareto2 | min+scale+shape | written (iff) | written (exact) | written (exact) |
+| pareto2 | min+scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | pareto2 | min+shape | lean (iff) | lean (exact) | lean (exact) |
 | pareto2 | scale | written (iff) | written (exact) | written (exact) |
 | pareto2 | scale+shape | written (iff) | written (exact) | written (exact) |
@@ -314,7 +314,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | pareto3 | all free | written (iff) | written (exact) | written (exact) |
 | pareto3 | min | lean (iff) | lean (exact) | lean (exact) |
 | pareto3 | min+scale | lean (iff) | lean (exact) | lean (exact) |
-| pareto3 | min+scale+shape | written (iff) | written (exact) | written (exact) |
+| pareto3 | min+scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | pareto3 | min+shape | lean (iff) | lean (exact) | lean (exact) |
 | pareto3 | scale | written (iff) | written (exact) | written (exact) |
 | pareto3 | scale+shape | written (iff) | written (exact) | written (exact) |
@@ -322,7 +322,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | pareto4 | all free | written (iff) | written (exact) | written (exact) |
 | pareto4 | min+scale | written (iff) · partial Lean | written (exact) · partial Lean | lean (exact) |
 | pareto4 | min+scale+shape1 | written (iff) · partial Lean | lean (exact) | lean (exact) |
-| pareto4 | min+scale+shape1+shape2 | written (iff) | written (exact) | written (exact) |
+| pareto4 | min+scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | pareto4 | min+scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | pareto4 | min+shape1 | written (iff) · partial Lean | lean (exact) | lean (exact) |
 | pareto4 | min+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
@@ -335,68 +335,68 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | pgw | all free | written (iff) | written (exact) | written (exact) |
 | pgw | exponent | written (iff) · partial Lean | lean (exact) | lean (exact) |
 | pgw | exponent+scale | written (iff) · partial Lean | lean (exact) | lean (exact) |
-| pgw | exponent+scale+shape | written (iff) | written (exact) | written (exact) |
+| pgw | exponent+scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | pgw | exponent+shape | lean (iff) | lean (exact) | lean (exact) |
 | pgw | scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | pig | all free | written (iff) · partial Lean | lean (exact) | written (exact) · partial Lean |
 | pig | mean | written (iff) · partial Lean | lean (exact) | written (exact) · partial Lean |
-| pig | mean+shape | written (iff) | written (exact) | written (exact) |
-| pig | shape | written (iff) | written (exact) | written (exact) |
+| pig | mean+shape | lean (iff) | lean (exact) | lean (exact) |
+| pig | shape | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) · partial Lean |
 | pois | all free | lean (iff) | lean (exact) | lean (exact) |
-| pois | lambda | written (iff) | written (exact) | written (exact) |
+| pois | lambda | lean (iff) | lean (exact) | lean (exact) |
 | power | all free | lean (iff) | lean (exact) | lean (exact) |
 | power | alpha | lean (iff) | lean (exact) | lean (exact) |
 | power | alpha+beta | lean (iff) | lean (exact) | lean (exact) |
 | power | beta | lean (iff) | lean (exact) | lean (exact) |
 | rayleigh | all free | lean (iff) | lean (exact) | lean (exact) |
-| rayleigh | sigma | written (iff) | written (exact) | written (exact) |
-| sged | mean+nu+sd+xi | written (iff) | written (exact) | written (exact) |
+| rayleigh | sigma | lean (iff) | lean (exact) | lean (exact) |
+| sged | mean+nu+sd+xi | lean (iff) | lean (exact) | lean (exact) |
 | sged | mean+nu+xi | written (iff) | written (exact) | written (exact) |
 | sgomp | b | lean (iff) | lean (exact) | lean (exact) |
-| sgomp | b+eta | written (iff) | written (exact) | written (exact) |
+| sgomp | b+eta | lean (iff) | lean (exact) | lean (exact) |
 | sgomp | eta | written (iff) · partial Lean | lean (exact) | lean (exact) |
-| skellam | mu1 | written (iff) | written (exact) | written (exact) |
-| skellam | mu1+mu2 | written (iff) | written (exact) | written (exact) |
-| skellam | mu2 | written (iff) | written (exact) | written (exact) |
+| skellam | mu1 | written (iff) · partial Lean | written (exact) | written (exact) · partial Lean |
+| skellam | mu1+mu2 | lean (iff) | lean (exact) | lean (exact) |
+| skellam | mu2 | written (iff) · partial Lean | written (exact) | written (exact) · partial Lean |
 | slash | mu | lean (iff) | written (exact) · partial Lean | lean (exact) |
 | sn | alpha | lean (iff) | written (exact) | lean (exact) |
 | sn | alpha+omega | written (iff) | written (exact) | written (exact) |
-| sn | alpha+omega+xi | written (iff) | written (exact) | written (exact) |
+| sn | alpha+omega+xi | lean (iff) | lean (exact) | lean (exact) |
 | sn | alpha+xi | written (iff) | written (exact) | written (exact) |
 | sn | omega+xi | written (iff) | written (exact) · partial Lean | written (exact) |
 | sn | xi | written (iff) | written (exact) | written (exact) |
 | snorm | all free | written (iff) | written (exact) | written (exact) |
 | snorm | mean | written (iff) | written (exact) | written (exact) |
 | snorm | mean+sd | written (iff) | written (exact) | written (exact) |
-| snorm | mean+sd+xi | written (iff) | written (exact) | written (exact) |
+| snorm | mean+sd+xi | lean (iff) | lean (exact) | lean (exact) |
 | snorm | mean+xi | written (iff) | written (exact) | written (exact) |
 | snorm | sd | written (iff) | written (exact) | written (exact) |
 | snorm | sd+xi | written (iff) | written (exact) | written (exact) |
 | snorm | xi | written (iff) | written (exact) | written (exact) |
-| sstd | mean+nu+sd+xi | written (iff) | written (exact) | written (exact) |
+| sstd | mean+nu+sd+xi | lean (iff) | lean (exact) | lean (exact) |
 | std | mean+nu | lean (iff) | lean (exact) | lean (exact) |
-| std | mean+nu+sd | written (iff) | written (exact) | written (exact) |
-| tlambda | lambda+mu+sigma | written (iff) | written (exact) | written (exact) |
+| std | mean+nu+sd | lean (iff) | lean (exact) | lean (exact) |
+| tlambda | lambda+mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | scale+shape1 | lean (iff) | lean (exact) | lean (exact) |
-| trgamma | scale+shape1+shape2 | written (iff) | written (exact) | written (exact) |
+| trgamma | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | shape1 | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | shape2 | lean (iff) | lean (exact) | lean (exact) |
 | triang | a+b | lean (iff) | written (exact) | lean (exact) |
-| triang | a+b+c | written (iff) | written (exact) | written (exact) |
+| triang | a+b+c | lean (iff) | lean (exact) | lean (exact) |
 | unif | all free | lean (iff) | lean (exact) | lean (exact) |
 | unif | max | lean (iff) | lean (exact) | lean (exact) |
 | unif | max+min | lean (iff) | lean (exact) | lean (exact) |
 | unif | min | lean (iff) | lean (exact) | lean (exact) |
 | weibull | all free | lean (iff) | lean (exact) | lean (exact) |
 | weibull | scale | lean (iff) | lean (exact) | lean (exact) |
-| weibull | scale+shape | written (iff) | written (exact) | written (exact) |
+| weibull | scale+shape | lean (iff) | lean (exact) | lean (exact) |
 | weibull | shape | lean (iff) | lean (exact) | lean (exact) |
 | yulesimon | all free | lean (iff) | lean (exact) | lean (exact) |
-| yulesimon | rho | written (iff) | written (exact) | written (exact) |
+| yulesimon | rho | lean (iff) | lean (exact) | lean (exact) |
 | zeta | all free | lean (iff) | lean (exact) | lean (exact) |
-| zeta | s | written (iff) | written (exact) | written (exact) |
+| zeta | s | lean (iff) | lean (exact) | lean (exact) |
 
 ### Criterion proved, uniqueness open (73)
 
@@ -411,8 +411,8 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | bhatt | mu+sigma | lean (iff) | lean (exact) | written (one-sided) |
 | bhatt | sigma | lean (iff) | lean (exact) | written (one-sided) |
 | binom | all free | lean (iff) | lean (exact) | cited (one-sided) · partial Lean |
-| bnbinom | alpha | written (iff) · partial Lean | lean (exact) | unproved (open) |
-| burr | all free | written (iff) | written (exact) | written (one-sided) |
+| bnbinom | alpha | written (iff) · partial Lean | lean (exact) | unproved (open) · partial Lean |
+| burr | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | burr | shape2 | lean (iff) | lean (exact) | written (one-sided) |
 | cauchy | scale | lean (iff) | lean (exact) | lean (one-sided) |
 | cmb | all free | written (iff) | written (exact) | written (one-sided) |
@@ -433,14 +433,14 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | gengamma | mu+sigma | written (iff) | written (exact) | written (one-sided) |
 | gengamma | sigma | written (iff) | written (exact) | unproved (open) |
 | gev | all free | written (iff) | written (exact) · partial Lean | written (one-sided) |
-| gev | mu | written (iff) | written (exact) | written (one-sided) |
-| gev | sigma | written (iff) | written (exact) | written (one-sided) |
+| gev | mu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| gev | sigma | written (iff) · partial Lean | written (exact) | written (one-sided) |
 | gpd | mu | written (iff) · partial Lean | written (exact) · partial Lean | lean (one-sided) |
 | hyper | N | written (iff) | written (exact) | lean (one-sided) |
 | hyper | k+m | lean (iff) | lean (exact) | lean (one-sided) |
 | invburr | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | invburr | shape2 | lean (iff) | lean (exact) | unproved (open) |
-| invparalogis | all free | written (iff) | written (exact) | written (one-sided) |
+| invparalogis | all free | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
 | invparalogis | scale | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | invpareto | all free | lean (iff) | written (exact) | written (one-sided) |
 | invtrgamma | all free | written (iff) | written (exact) | unproved (open) |
@@ -450,7 +450,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | nhyper | N+m | written (iff) | written (exact) | unproved (open) |
 | nhyper | N+r | written (iff) | written (exact) | unproved (open) |
 | nhyper | m | written (iff) | written (exact) | unproved (open) |
-| paralogis | all free | written (iff) | written (exact) | written (one-sided) |
+| paralogis | all free | written (iff) · partial Lean | lean (exact) | lean (one-sided) |
 | paralogis | scale | lean (iff) | lean (exact) | written (one-sided) |
 | pareto2 | min | written (iff) · partial Lean | lean (one-sided) | unproved (open) |
 | pareto4 | min | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
