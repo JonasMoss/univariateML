@@ -164,3 +164,11 @@ public import UnivariateML.Family.TwoPieceGED
 public import UnivariateML.Family.TwoPieceNormal
 public import UnivariateML.Family.TwoPieceSGED
 public import UnivariateML.Family.TwoPieceStudent
+public import UnivariateML.Family.Discrete5BBinom
+public import UnivariateML.Family.Discrete5BNBinom
+public import UnivariateML.Family.Discrete5CMB
+public import UnivariateML.Family.Discrete5CMP
+public import UnivariateML.Family.Discrete5Hyper
+public import UnivariateML.Family.Discrete5HyperResidue
+public import UnivariateML.Family.Discrete5NBinom
+public import UnivariateML.Family.Discrete5NHyper
