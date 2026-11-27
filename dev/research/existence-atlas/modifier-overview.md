@@ -13,5 +13,5 @@ complete or one-sided. The remaining regimes for each question are open.
 | truncate:upper-estimated | 520 | 15 | 0 / 0 | 0 / 0 | 0 / 0 |
 | truncate:both-estimated | 520 | 15 | 0 / 0 | 0 / 0 | 0 / 0 |
 | zero:truncated | 52 | 12 | 46 / 0 | 40 / 6 | 7 / 5 |
-| zero:modified | 104 | 28 | 46 / 0 | 40 / 6 | 6 / 2 |
-| zero:inflated | 104 | 24 | 44 / 0 | 40 / 4 | 5 / 1 |
+| zero:modified | 104 | 28 | 54 / 0 | 48 / 6 | 12 / 4 |
+| zero:inflated | 104 | 24 | 50 / 0 | 46 / 4 | 6 / 5 |
