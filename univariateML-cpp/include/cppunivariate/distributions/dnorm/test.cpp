@@ -294,3 +294,35 @@ TEST_CASE("dnorm: a subnormal held scale keeps the separated-cell location finit
   CHECK(fit.sd==sd);
   CHECK(fit.logLik==-std::numeric_limits<double>::infinity());
 }
+
+TEST_CASE("dnorm: subnormal public density uses the exact cell edges") {
+  const double sd=std::numeric_limits<double>::denorm_min();
+  for (double mean:{0.,1.}) {
+    CHECK(cppunivariate::distributions::ddnorm(0,mean,sd)==0.5);
+    CHECK(cppunivariate::distributions::ddnorm(0,mean,sd,true)==doctest::Approx(-std::log(2.0)));
+  }
+  CHECK(cppunivariate::distributions::ddnorm(0,0.5,sd)==1.);
+  CHECK(cppunivariate::distributions::ddnorm(0,-1,sd)==0.);
+  CHECK(cppunivariate::distributions::ddnorm(0x1p54,0x1p54,sd)==0.5);
+}
+
+TEST_CASE("dnorm: separated-cell location near zero resolves on the scale of sd") {
+  const double free=std::numeric_limits<double>::quiet_NaN();
+  const double sd=1e-151;
+  for(double sign:{1.,-1.}) {
+    std::vector<double> x{-2,-1,1};
+    if(sign<0) for (double& cell:x) cell=-1-cell;
+    const auto fit=cppunivariate::dnorm_mle(mltest::as_span(x),1e-10,200,free,sd);
+    REQUIRE(fit.status==cppunivariate::DnormStatus::Ok);
+    CHECK(cppunivariate::outcome(fit).certified);
+    // The limiting score is -2q - phi(q)/Phi(-q).
+    const double reference=-0.306713042463949369;
+    CHECK(std::abs(fit.mean/sd-sign*reference)<1e-10);
+    CHECK(fit.logLik==cppunivariate::distributions::ddnorm(x[0],fit.mean,sd,true)+
+                     cppunivariate::distributions::ddnorm(x[1],fit.mean,sd,true)+
+                     cppunivariate::distributions::ddnorm(x[2],fit.mean,sd,true));
+    const auto limited=cppunivariate::dnorm_mle(mltest::as_span(x),1e-10,200,free,
+                                                std::numeric_limits<double>::denorm_min());
+    CHECK(cppunivariate::outcome(limited).reason==cppunivariate::OutcomeReason::Tolerance);
+  }
+}

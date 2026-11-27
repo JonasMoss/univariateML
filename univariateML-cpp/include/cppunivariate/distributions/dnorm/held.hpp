@@ -6,15 +6,8 @@ inline DnormResult at_pair(const Cells& p, double mean, double sd, int iteration
   if (!std::isfinite(mean) || !std::isfinite(sd) || !(sd>0))
     return {mean,sd,NAN,iterations,DnormStatus::IterationFailure};
   double ll=0;
-  for (std::size_t j=0; j<p.x.size(); ++j) {
-    double lp=distributions::ddnorm(p.x[j],mean,sd,true);
-    if (std::isnan(lp)) {
-      // Infinite standardized endpoints are valid even when the public
-      // density's midpoint and width calculation encounters inf - inf.
-      lp=distributions::dnorm_interval((p.x[j]-mean)/sd,(p.x[j]+1-mean)/sd);
-    }
-    ll+=p.w[j]*lp;
-  }
+  for (std::size_t j=0; j<p.x.size(); ++j)
+    ll+=p.w[j]*distributions::ddnorm(p.x[j],mean,sd,true);
   if (std::isnan(ll))
     return {mean,sd,ll,iterations,DnormStatus::IterationFailure,{},OutcomeReason::Evaluation};
   return {mean,sd,ll,iterations,DnormStatus::Ok};
@@ -113,19 +106,9 @@ inline bool symmetric(const Cells& p) {
   return p.x.size()%2==0 || 2*p.x[p.x.size()/2]==sum;
 }
 
-inline DnormResult adjacent_location(const Cells& p, double sd, double tol, int maxit) {
-  const double seam=p.x.back();
-  const double target=std::log(p.w[0])-std::log(p.w[1]);
-  // For |q|<=12 and sd<=1/40 the omitted outer tails and their
-  // densities are <= exp(-392). This is negligible even at the
-  // smallest inner tail on the bracket, Phi(-12).
-  const auto sign=[&](double q) {
-    const double left=special::fs_normal_p(-q,true,true);
-    const double right=special::fs_normal_p(q,true,true);
-    const double difference=right-left+target;
-    return std::abs(difference)>score_margin*(1+std::abs(left)+std::abs(right)+std::abs(target))
-        ? (difference>0 ? 1 : -1) : 0;
-  };
+template <typename Sign>
+inline DnormResult seam_location(const Cells& p, double seam, double sd, double tol,
+                                 int maxit, Sign sign) {
   double lo=-12, hi=12;
   int it=0;
   for (; it<maxit; ++it) {
@@ -161,10 +144,76 @@ inline DnormResult adjacent_location(const Cells& p, double sd, double tol, int 
   return {seam,sd,NAN,it,DnormStatus::IterationFailure};
 }
 
+inline DnormResult adjacent_location(const Cells& p, double sd, double tol, int maxit) {
+  const double target=std::log(p.w[0])-std::log(p.w[1]);
+  // For |q|<=12 and sd<=1/40 the omitted outer tails and their
+  // densities are <= exp(-392). This is negligible even at the
+  // smallest inner tail on the bracket, Phi(-12).
+  const auto sign=[&](double q) {
+    const double left=special::fs_normal_p(-q,true,true);
+    const double right=special::fs_normal_p(q,true,true);
+    const double difference=right-left+target;
+    return std::abs(difference)>score_margin*(1+std::abs(left)+std::abs(right)+std::abs(target))
+        ? (difference>0 ? 1 : -1) : 0;
+  };
+  return seam_location(p,p.x.back(),sd,tol,maxit,sign);
+}
+
+// The remote cells contribute their projected edge minus mean, with a
+// conditional inward displacement at most sd^2 / distance. This follows
+// by bounding the normal excess's survival function by an exponential.
+inline bool balanced_at_origin(const Cells& p, double& remote, double& left, double& right) {
+  if (p.n>=0x1p52) return false;
+  constexpr auto cap=std::numeric_limits<std::uint64_t>::max();
+  std::uint64_t positive=0, negative=0;
+  for (std::size_t j=0; j<p.x.size(); ++j) {
+    const double cell=p.x[j], count=p.w[j];
+    if (cell==-1) left=count;
+    else if (cell==0) right=count;
+    else {
+      const auto edge=static_cast<std::uint64_t>(cell<0 ? -(cell+1) : cell);
+      const auto multiplicity=static_cast<std::uint64_t>(count);
+      auto& total=cell<0 ? negative : positive;
+      if (multiplicity>(cap-total)/edge) return false;
+      total+=multiplicity*edge;
+      remote+=count;
+    }
+  }
+  return positive==negative && remote>0;
+}
+
+inline DnormResult projected_origin(const Cells& p, double remote, double left,
+                                    double right, double sd, double tol, int maxit) {
+  // In q=mean/sd, remote projections sum to -remote*q. The two cells
+  // at zero have half-line scores with exponentially small truncation
+  // error on [-12,12]. Remote edges stay at least 1/2 from the trial mean.
+  const auto sign=[&](double q) {
+    const double lp=-0.5*q*q-0.91893853320467274178;
+    const double log_left=special::fs_normal_p(-q,true,true);
+    const double log_right=special::fs_normal_p(q,true,true);
+    const double a=left*std::exp(lp-log_left), b=right*std::exp(lp-log_right);
+    const double projected=-remote*q;
+    const double score=projected+(b-a);
+    const double error=p.n*(2*sd+1e-130)+score_margin*
+        (std::abs(projected)+a*(1+std::abs(lp)+std::abs(log_left))+
+         b*(1+std::abs(lp)+std::abs(log_right)));
+    return score>error ? 1 : score<-error ? -1 : 0;
+  };
+  if (sign(-12)!=1 || sign(12)!=-1)
+    return {0,sd,NAN,0,DnormStatus::IterationFailure};
+  return seam_location(p,0,sd,tol,maxit,[&](double q) { return -sign(q); });
+}
+
 // At tiny fixed scales the conditional normal mean in each observed cell
 // is within sd of the projection of the public location onto that cell.
 // The projected score stays finite even when standardized squares overflow.
 inline DnormResult projected_location(const Cells& p, double sd, double tol, int maxit) {
+  double remote=0, left=0, right=0;
+  if (balanced_at_origin(p,remote,left,right)) {
+    const auto origin=projected_origin(p,remote,left,right,sd,tol,maxit);
+    if (origin.status==DnormStatus::Ok || origin.failure_reason==OutcomeReason::Tolerance)
+      return origin;
+  }
   const auto sign=[&](double mean) {
     double score=0, error=p.n*sd;
     for (std::size_t j=0; j<p.x.size(); ++j) {

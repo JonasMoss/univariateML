@@ -59,7 +59,7 @@ relations:
 fit:
   method: profile-search
   certified: 'partial'
-  note: 'skellam/README.md, Details. Conditional fits use strict concavity. Joint certification covers constant samples and Poisson faces with a strictly decreasing neighborhood and strict global exclusion. The interior search and unresolved faces return uncertified estimates.'
+  note: 'skellam/README.md, Details. Conditional fits use strict concavity. Joint certification isolates profile maxima and strictly compares competing candidates, including attainable zero-rate faces.'
 areas:
 - counts and ecology
 classification: specialist
@@ -73,7 +73,7 @@ existence:
   statement: >-
     With both rates free, every nonempty finite integer sample has an
     attained finite MLE in the closed nonnegative quadrant. General joint
-    uniqueness remains open for integer samples. A single observed magnitude gives a unique fit, including samples that contain both signs. A constant sample $k$ has the maximum
+    uniqueness remains open for integer samples. A mean-zero sample with a single positive magnitude has a unique fit. A constant sample $k$ has the maximum
     $(\mu_1,\mu_2)=(\max(k,0),\max(-k,0))$. With one rate held,
     the remaining rate has a unique finite MLE whenever the held model
     permits the observations. A held zero rate restricts the observations
@@ -88,7 +88,10 @@ existence:
     is strictly less than its mean, giving strict concavity in the free
     rate. With a zero rate held, the problem is an ordinary signed Poisson
     fit. These arguments prove existence and conditional uniqueness,
-    not joint uniqueness.
+    while general joint uniqueness remains open. Lean proves closed-quadrant
+    attainment and the mean-zero single-magnitude case in
+    `UnivariateML.Discrete3Skellam.joint_attained` and
+    `UnivariateML.Discrete3Skellam.joint_unique_one_magnitude`, respectively.
 ---
 
 The Skellam distribution describes the difference between two independent Poisson counts. The rates $\mu_1$ and $\mu_2$ describe the positive and subtracted counts, respectively. Their difference is the mean of the observed difference.
@@ -109,41 +112,29 @@ Supply `mu1` or `mu2` to hold the corresponding rate. Holding both evaluates the
 
 2026-10-30 (TASK-125): the large-order expression divides before multiplying and uses log coordinates when the order/argument ratio overflows. The independent truth rows at count 1e300 exercise the change.
 
-### Joint-search certificate (recorded 2026-11-02)
+### Joint profile certificate
 
-For a joint interior fit, writing $s=\sqrt{\mu_1\mu_2}$ and $\theta=\log(\mu_1/\mu_2)/2$ gives the score equation $\mu_1-\mu_2=\bar x$. The remaining equation is $n^{-1}\sum_i I'_{|x_i|}(2s)/I_{|x_i|}(2s)=\cosh\theta$, with $I'_v(z)=I_{v+1}(z)+vI_v(z)/z$. The fitter searches the resulting scalar profile and compares the exact zero-rate face. The search can retain a face within $0.5\cdot10^{-8}n$ of the incumbent when neither a positive inward score nor a separated interior likelihood refutes it. A logarithmic grid and local refinements nominate candidates; a separate branch-and-bound pass bounds the remaining finite interval. The Poisson-mode bound excludes the far tail, and the positive series bounds the interval adjacent to zero. Uniqueness is not assumed. A completed gap cover bounds the profile gain over the selected candidate by $10^{-8}n$ in exact arithmetic. Joint interior candidates pass a local Newton accuracy check and are returned as uncertified with unknown uniqueness. If the cover cannot establish the global claim, the search can still return its candidate.
+Strict maximization over the rate ratio at fixed product leaves the profile
+with rate difference equal to the sample mean. With $t$ the smaller rate
+and $d$ the absolute sample mean, the moderate-rate score and curvature are
+bounded by continued fractions for the paired-count series. For
+$z=2\sqrt{t(t+d)}$ above the transition, centered Riccati bounds on
+$z I_k'(z)/I_k(z)$ and its derivative cover large rates without enumerating
+paired counts. The upper score bound also excludes the infinite tail.
 
-The following curvature bound does not require concavity or unimodality.
-Put $t=\min(\mu_1,\mu_2)$, $d=|\bar x|$, and $q=t(t+d)$.
-Conditional on a difference $k$, the paired count $J$ has weights
-proportional to $q^j/[j!(j+|k|)!]$. Its successive ratios satisfy
-$(j+1)p_{j+1}/p_j=q/(j+|k|+1)$, which decreases in $j$.
-Consequently the size-biased $J-1$ is stochastically dominated by $J$,
-so $\operatorname{Var}(J)\leq E J$; also
-$E J\leq q/(|k|+1)$. Differentiating the positive series along the
-mean-constrained line and discarding nonpositive terms gives
-$$
-  {d^2\over dt^2}\log p_k(t)\leq {2 E J\over t(t+d)}
-  \leq {2\over |k|+1}.
-$$
-Thus the sum of these bounds supplies a quadratic upper envelope for
-branch-and-bound intervals. The midpoint score is computed from the two
-neighboring mass ratios. For an interval of half-width $h$, the midpoint
-likelihood plus $|\ell'|h+Mh^2/2$ is an upper bound, where $M$ is the sum
-of the per-observation curvature bounds. The search bisects until every
-bound is within $0.5\cdot10^{-8}n$ of the best candidate, reserving the
-same amount for a possible face tie. On $[0,\epsilon]$, the positive
-series bounds the profile by $\ell(\epsilon)+2n\epsilon$. Above the
-finite search interval, a convolution mass is bounded by the maximal
-Poisson mass, at most $1/\sqrt{2\pi\lfloor t\rfloor}$ for $t\ge2$.
-A face with negative inward score $g_0$ strictly dominates a neighborhood
-of zero, since the profile score there is at most $g_0+Mt$. A face is
-certified only if this neighborhood covers the interval adjacent to zero
-and every remaining upper bound, including the tail, is strictly below
-the face likelihood. The score and likelihood comparisons include practical
-floating-point margins conditional on the computed masses. An unrefuted
-face selected without these strict inequalities has unknown uniqueness and
-is returned uncertified.
+A cell with strict score sign contains no stationary point. Strict
+curvature and endpoint signs distinguish a local minimum from an isolated
+maximum. The maximum's bracket must meet the relative tolerance in both
+rates. Strict likelihood comparisons between the remaining candidates use
+the positive paired-count series and a geometric remainder. A feasible
+Poisson face with exactly zero inward score can be classified locally by
+the curvature on a cell reaching zero. Both faces are attained members.
+[Score, curvature and strict comparisons](../../../../../dev/research/evaluations/2026-11-25-skellam-math-report.md#2-an-interior-certificate).
+
+If the profile bounds cannot settle a comparison, a logarithmic grid and
+local refinements can still return an unrefuted candidate. A joint interior
+candidate on this route must pass the local Newton accuracy check and has
+unknown global cardinality.
 
 ### Probability evaluation
 

@@ -37,7 +37,7 @@ limits:
     status: PointMass
     detect_firmness: proved
     proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
-    detect_proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
+    detect_proof: [UnivariateML.Discrete3DNorm.constant_supremum]
   - model: binom
     firmness: proved
     name: shifted Bernoulli
@@ -46,7 +46,7 @@ limits:
     status: TwoPointLimit
     detect_firmness: proved
     proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
-    detect_proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
+    detect_proof: [UnivariateML.Discrete3DNorm.adjacent_supremum]
   - name: zero-scale limit
     firmness: proved
     when: 'Scale satisfies $\sigma\to0$ with location fixed.'
@@ -55,7 +55,7 @@ limits:
     status: ScaleLimit
     detect_firmness: proved
     proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
-    detect_proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
+    detect_proof: [UnivariateML.Discrete3DNorm.cell_mass_strictMono_of_mem]
 holds: []
 examples: |
   x <- diff(datasets::discoveries)
@@ -104,7 +104,8 @@ existence:
     $(\mu/\sigma,1/\sigma)$. Holding either coefficient imposes an affine
     constraint in these coordinates. Away from the stated zero-scale
     exceptions, escaping parameters lose likelihood, so continuity and
-    compactness give attainment. The direct boundary argument is given below.
+    compactness give attainment. Lean establishes the joint criterion and
+    singleton in `UnivariateML.Discrete3DNorm.joint_range_criterion`.
 ---
 
 The discretized normal distribution is the floor of a continuous normal variable. Each observation records the latent variable in an interval from the observed integer to the next integer. The coefficients $\mu$ and $\sigma$ describe the latent normal location and standard deviation, rather than the moments of the observed integers.
@@ -112,7 +113,9 @@ The discretized normal distribution is the floor of a continuous normal variable
 Opposite extreme lattice points and locations can have a difference outside
 binary64 range while their standardized difference is finite. Density and CDF
 evaluation halve those operands before scaling when direct subtraction
-overflows; quantile inversion uses the same CDF.
+overflows; quantile inversion uses the same CDF. At tiny scales, direct
+standardization of each edge preserves the half-cell mass when the location
+equals an edge, including at subnormal scale.
 
 ## Details
 
@@ -135,6 +138,10 @@ The grouped-normal score encloses the unique stationary point in centred
 location divided by scale and inverse scale. For location the accuracy floor
 is the fitted scale. At very small held scales a finite location can lie
 between representable values too far apart for the requested tolerance.
+For separated cells at tiny scale with balanced projections away from zero,
+the location score uses units of the held scale near zero. The remote
+conditional means differ from their projected cell edges by at most
+$\sigma^2$ divided by the distance to the corresponding edge.
 [Existence and score-enclosure analysis](../../../../../dev/research/evaluations/2026-11-25-dnorm-math-report.md).
 
 Reference: Burridge, J. (1981). A Note on Maximum Likelihood Estimation for Regression Models Using Grouped Data. Journal of the Royal Statistical Society, Series B (Methodological), 43(1), 41–45. https://doi.org/10.1111/j.2517-6161.1981.tb01146.x.

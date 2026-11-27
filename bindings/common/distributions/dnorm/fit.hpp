@@ -40,7 +40,10 @@ inline FitResult fit_dnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
     case cppunivariate::DnormStatus::TwoPointLimit:
       return done(stopped_fail("The maximum likelihood estimator does not exist on two adjacent integers; use `mlbinom(x - k, size = 1)` with k = min(x)."));
     case cppunivariate::DnormStatus::ScaleLimit: return done(stopped_fail("With mean held the likelihood approaches its zero-scale limit; the maximum likelihood estimator does not exist."));
-    case cppunivariate::DnormStatus::IterationFailure: return done(stopped_fail("MLE failed to converge; increase iterlim."));
+    case cppunivariate::DnormStatus::IterationFailure:
+      if (o.reason == cppunivariate::OutcomeReason::Tolerance)
+        return done(stopped_fail("Requested tolerance exceeds binary64 location resolution at the held scale."));
+      return done(stopped_fail("MLE failed to converge; increase iterlim."));
   }
   std::vector<std::string> fixed;
   if (mean.supplied) fixed.push_back("mean");

@@ -6,6 +6,7 @@
 #include "dpqr.hpp"
 #include "../../core/span.hpp"
 #include <vector>
+#include "certificate.hpp"
 namespace cppunivariate {
 enum class SkellamStatus { Ok, InvalidInput, Impossible, IterationFailure };
 struct SkellamResult { double mu1,mu2,logLik; int iterations; SkellamStatus status; StopDetail stop_detail{}; bool certified=true; bool uniqueness_known=true; };
@@ -79,6 +80,14 @@ inline SkellamResult skellam_accuracy_search(span x,double tol=1e-9,int maxit=15
   // In the joint fit, t is the smaller rate.
   const auto rates=[&](double t) {return std::vector<double>{f1?mu1:(f2?t:t+std::max(m,0.0)),f2?mu2:(f1?t:t+std::max(-m,0.0))};};
   const auto value=[&](double t) {const auto r=rates(t);return ll(r[0],r[1]);};
+  double certified_t, certified_ll;
+  int certified_iterations=0;
+  bool profile_refutes_face=false;
+  if (skellam_detail::certify_profile(x,m,std::min(tol,1.0)/2,maxit,value,certified_t,certified_ll,
+                                     certified_iterations,profile_refutes_face)) {
+    const auto r=rates(certified_t);
+    return {r[0],r[1],certified_ll,certified_iterations,SkellamStatus::Ok};
+  }
   const double face=value(0);
   double best=face,best_t=0;
   double interior=-INFINITY,interior_t=0;
@@ -154,7 +163,7 @@ inline SkellamResult skellam_accuracy_search(span x,double tol=1e-9,int maxit=15
     return 64*eps*(n+std::abs(l))+2*n*eps*std::abs(l);
   };
   const auto face_refuted=[&]() {
-    return std::isfinite(face) && (face_score>score_pad ||
+    return std::isfinite(face) && (profile_refutes_face || face_score>score_pad ||
            (std::isfinite(interior) &&
             interior>face+likelihood_pad(face)+likelihood_pad(interior)));
   };
@@ -234,6 +243,7 @@ namespace cppunivariate {
 inline SkellamResult skellam_mle(span x,double tol=1e-10,int maxit=150,double mu1=NAN,double mu2=NAN) {
   auto r=skellam_accuracy_search(x,tol,maxit,mu1,mu2);
   if(r.status!=SkellamStatus::Ok||r.mu1==0||r.mu2==0)return r;
+  const bool certified_joint=std::isnan(mu1) && std::isnan(mu2) && r.certified;
   std::array<double,3> q{{std::log(r.mu1),std::log(r.mu2),0}};
   const std::array<bool,3> free{{std::isnan(mu1),std::isnan(mu2),false}};
   const auto objective=[&](const std::array<accuracy_detail::Jet,3>& z) {
@@ -241,10 +251,27 @@ inline SkellamResult skellam_mle(span x,double tol=1e-10,int maxit=150,double mu
     for(double v:x)f.add(skellam_detail::differentiable_mass(v,a,b,maxit));
     return f.value;
   };
-  if(!accuracy_detail::polish(q,free,tol,maxit,objective,r.stop_detail)){r.status=SkellamStatus::IterationFailure;return r;}
-  if(free[0])r.mu1=std::exp(q[0]);
-  if(free[1])r.mu2=std::exp(q[1]);
-  r.logLik=0;for(double v:x)r.logLik+=skellam_detail::logmass(v,r.mu1,r.mu2);
+  StopDetail polish_detail;
+  if(!accuracy_detail::polish(q,free,tol,maxit,objective,polish_detail)) {
+    if (!certified_joint) {
+      r.stop_detail=std::move(polish_detail);
+      r.status=SkellamStatus::IterationFailure;
+    }
+    return r;
+  }
+  const double a=free[0] ? std::exp(q[0]) : r.mu1;
+  const double b=free[1] ? std::exp(q[1]) : r.mu2;
+  // The profile bracket uses half the error allowance. Accept a polish
+  // only when its displacement fits within the remaining allowance.
+  const double room=std::min(tol,1.0)/4;
+  if (certified_joint &&
+      !(std::abs(a-r.mu1)<=room*r.mu1 && std::abs(b-r.mu2)<=room*r.mu2)) return r;
+  double refined_loglik=0;
+  for(double v:x) refined_loglik+=skellam_detail::logmass(v,a,b);
+  if (certified_joint && !std::isfinite(refined_loglik)) return r;
+  r.mu1=a;
+  r.mu2=b;
+  r.logLik=refined_loglik;
   return r;
 }
 }

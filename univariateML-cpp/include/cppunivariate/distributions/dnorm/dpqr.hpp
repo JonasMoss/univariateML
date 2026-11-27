@@ -21,7 +21,7 @@ inline double dnorm_interval(double a, double b) {
   const bool lower = a+b < 0;
   const double hi = special::fs_normal_p(lower ? b : a, lower, true);
   const double lo = special::fs_normal_p(lower ? a : b, lower, true);
-  return hi + special::fs_log1mexp(lo-hi);
+  return hi == -INFINITY ? hi : hi + special::fs_log1mexp(lo-hi);
 }
 inline double ddnorm(double x, double mean, double sd, bool log = false) {
   if (!std::isfinite(mean) || !std::isfinite(sd) || sd <= 0 || std::isnan(x))
@@ -29,7 +29,13 @@ inline double ddnorm(double x, double mean, double sd, bool log = false) {
   double lp = -std::numeric_limits<double>::infinity();
   if (std::isfinite(x) && x == std::floor(x)) {
     const double mid=dnorm_standardize(x,0.5,mean,sd), w=1/sd;
-    if (w*(1+std::abs(mid))<1e-5)
+    if (!std::isfinite(mid) || (w>1e16 && std::abs(mid)<=w)) {
+      // A tiny scale can overflow the midpoint and width, or round their
+      // difference to zero at a cell edge. Standardize the edges first.
+      const double upper=x+1;
+      const double b=upper-x==1 ? dnorm_standardize(x,1,mean,sd) : ((x-mean)+1)/sd;
+      lp=dnorm_interval(dnorm_standardize(x,0,mean,sd),b);
+    } else if (w*(1+std::abs(mid))<1e-5)
       lp=-0.5*mid*mid-0.91893853320467274178-std::log(sd)+std::log1p(((mid*w)*(mid*w)-w*w)/24);
     else if (std::abs(mid)>1e16) {
       const double near=std::abs(mid)-0.5*w;

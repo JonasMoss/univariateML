@@ -166,7 +166,7 @@ TEST_CASE("skellam: cached CDF preserves uncached large-rate tail values") {
   }
 }
 
-TEST_CASE("skellam: strict, unresolved, and refuted Poisson faces") {
+TEST_CASE("skellam: strict, stationary, and refuted Poisson faces") {
   const std::vector<double> strict{1,2}, stationary{0,3,3};
   for(double sign:{1.,-1.}) {
     auto reflected_strict=strict;
@@ -178,11 +178,11 @@ TEST_CASE("skellam: strict, unresolved, and refuted Poisson faces") {
     CHECK(std::min(proved.mu1,proved.mu2)==0.);
     CHECK(cppunivariate::outcome(proved).certified);
 
-    const auto unresolved=cppunivariate::skellam_mle(mltest::as_span(reflected_stationary));
-    REQUIRE(unresolved.status==cppunivariate::SkellamStatus::Ok);
-    CHECK(std::min(unresolved.mu1,unresolved.mu2)==0.);
-    CHECK_FALSE(cppunivariate::outcome(unresolved).certified);
-    CHECK_FALSE(cppunivariate::outcome(unresolved).uniqueness_known);
+    const auto stationary_fit=cppunivariate::skellam_mle(mltest::as_span(reflected_stationary));
+    REQUIRE(stationary_fit.status==cppunivariate::SkellamStatus::Ok);
+    CHECK(std::min(stationary_fit.mu1,stationary_fit.mu2)==0.);
+    CHECK(cppunivariate::outcome(stationary_fit).certified);
+    CHECK(cppunivariate::outcome(stationary_fit).uniqueness_known);
 
     // Both faces have positive inward score. Their improvements fall on
     // opposite sides of the old selection margin, within the total gap.
@@ -199,8 +199,8 @@ TEST_CASE("skellam: strict, unresolved, and refuted Poisson faces") {
       CHECK(gain>0.);
       CHECK(gain<1e-8);
       CHECK((gain<5e-9)==(counts.first==17));
-      CHECK_FALSE(cppunivariate::outcome(fit).certified);
-      CHECK_FALSE(cppunivariate::outcome(fit).uniqueness_known);
+      CHECK(cppunivariate::outcome(fit).certified);
+      CHECK(cppunivariate::outcome(fit).uniqueness_known);
     }
   }
 }
@@ -213,7 +213,7 @@ TEST_CASE("skellam: a negative inward score does not exclude a better interior")
   const auto fit=cppunivariate::skellam_mle(mltest::as_span(x));
   REQUIRE(fit.status==cppunivariate::SkellamStatus::Ok);
   CHECK(fit.mu2>0.);
-  CHECK_FALSE(cppunivariate::outcome(fit).certified);
+  CHECK(cppunivariate::outcome(fit).certified);
 }
 
 TEST_CASE("skellam: a positive held-rate face score selects the interior root") {
@@ -228,4 +228,52 @@ TEST_CASE("skellam: a positive held-rate face score selects the interior root") 
   REQUIRE(boundary.status==cppunivariate::SkellamStatus::Ok);
   CHECK(boundary.mu2==0.);
   CHECK(cppunivariate::outcome(boundary).certified);
+}
+
+TEST_CASE("skellam: profile isolation certifies both a competing face and large rates") {
+  const std::vector<double> examples[]={{0,3,3},{-3,0,-3},{-2,2},{-8,-7,992,999992}};
+  for (const auto& x : examples) {
+    const auto fit=cppunivariate::skellam_mle(mltest::as_span(x));
+    REQUIRE(fit.status==cppunivariate::SkellamStatus::Ok);
+    CHECK(cppunivariate::outcome(fit).certified);
+    CHECK(cppunivariate::outcome(fit).uniqueness_known);
+  }
+  const auto wide=cppunivariate::skellam_mle(mltest::as_span(examples[3]));
+  CHECK(wide.mu1==doctest::Approx(93687656308.46).epsilon(1e-10));
+  CHECK(wide.mu1-wide.mu2==doctest::Approx(250242.25).epsilon(1e-10));
+}
+
+TEST_CASE("skellam: strict likelihood comparison resolves two interior maxima") {
+  std::vector<double> x(1899,0);
+  x.push_back(-1);
+  x.insert(x.end(),100,20);
+  const auto fit=cppunivariate::skellam_mle(mltest::as_span(x));
+  REQUIRE(fit.status==cppunivariate::SkellamStatus::Ok);
+  CHECK(cppunivariate::outcome(fit).certified);
+  CHECK(cppunivariate::outcome(fit).uniqueness_known);
+  // Independent 60-decimal Bessel-ratio solve at the larger peak.
+  constexpr double reference=6.330794545801920663;
+  CHECK(std::abs(fit.mu2-reference)<=1e-10*reference);
+}
+
+TEST_CASE("skellam: positive curvature refutes a stationary Poisson face") {
+  std::vector<double> x(7,0);
+  x.insert(x.end(),40,1);
+  x.insert(x.end(),9,8);
+  // Mean 2, exact inward score zero, inward curvature 1/90 per observation.
+  const auto fit=cppunivariate::skellam_mle(mltest::as_span(x));
+  REQUIRE(fit.status==cppunivariate::SkellamStatus::Ok);
+  CHECK(fit.mu2>0);
+  CHECK(cppunivariate::outcome(fit).certified);
+}
+
+TEST_CASE("skellam: unresolved global comparison retains the search's face") {
+  const double k=0x1p31-1;
+  const std::vector<double> x{k,k-1,k-3,k-8,k-11};
+  const auto fit=cppunivariate::skellam_mle(mltest::as_span(x));
+  REQUIRE(fit.status==cppunivariate::SkellamStatus::Ok);
+  CHECK(fit.mu1==(5*k-23)/5);
+  CHECK(fit.mu2==0);
+  CHECK_FALSE(cppunivariate::outcome(fit).certified);
+  CHECK_FALSE(cppunivariate::outcome(fit).uniqueness_known);
 }
