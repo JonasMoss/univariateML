@@ -8,19 +8,19 @@ lomax,all free,UnivariateML.TiesLomax.three_level_global_tie,dev/lean/Univariate
         IsMaxOn (fun v : ℝ × ℝ ↦ Lomax.logLik x v.1 v.2) Lomax.domain q ∧
         (∀ b ∈ Lomax.domain,
           IsMaxOn (fun v : ℝ × ℝ ↦ Lomax.logLik x v.1 v.2) Lomax.domain b → b = p ∨ b = q) ∧
-        bestExp x < Lomax.logLik x p.1 p.2",,,The other observations are ten copies each of 1 and 100. The two rates straddle 1024.,
+        bestExp x < Lomax.logLik x p.1 p.2",,,The other observations are ten copies each of 1 and 100. The two rates straddle 1024.,"{""uniqueness"":""partial""}"
 invpareto,all free,UnivariateML.TiesLomax.inverse_pareto_global_tie,dev/lean/UnivariateML/Family/TiesLomax.lean,1090,The reciprocal Lomax sample has exactly two inverse Pareto maximizers above the inverse-exponential limit.,":
     ∃ x : Fin 21 → ℝ, (∀ i, 0 < x i) ∧
       ∃ p q : ℝ × ℝ, p.2 < q.2 ∧
         {v ∈ Lomax.domain | IsMaxOn (fun b : ℝ × ℝ ↦
           Transfer.InvPareto.logLik x b.1 b.2) Lomax.domain v} = {p, q} ∧
-        Transfer.InvPareto.bestInvExp x < Transfer.InvPareto.logLik x p.1 p.2",,,The reciprocal data map preserves both maximizing parameter pairs in shape and scale.,
+        Transfer.InvPareto.bestInvExp x < Transfer.InvPareto.logLik x p.1 p.2",,,The reciprocal data map preserves both maximizing parameter pairs in shape and scale.,"{""uniqueness"":""partial""}"
 pareto2,min,UnivariateML.TiesLomax.pareto_ii_global_tie,dev/lean/UnivariateML/Family/TiesLomax.lean,1126,For every held threshold there is a Pareto II sample with exactly two global maximizers above the shifted exponential limit.,"(μ : ℝ) :
     ∃ x : Fin 21 → ℝ, (∀ i, μ < x i) ∧
       ∃ p q : ℝ × ℝ, p.2 < q.2 ∧
         {v ∈ Lomax.domain | IsMaxOn (fun b : ℝ × ℝ ↦
           Transfer.ParetoII.logLik x μ b.1 b.2) Lomax.domain v} = {p, q} ∧
-        Transfer.ParetoII.bestShiftedExp x μ < Transfer.ParetoII.logLik x μ q.1 q.2",,,This sample has strictly positive excesses. Its two scales are reciprocals of the two Lomax rates.,
+        Transfer.ParetoII.bestShiftedExp x μ < Transfer.ParetoII.logLik x μ q.1 q.2",,,This sample has strictly positive excesses. Its two scales are reciprocals of the two Lomax rates.,"{""uniqueness"":""partial""}"
 invparalogis,all free,UnivariateML.TiesParalogistic.reciprocal_joint_maximizers,dev/lean/UnivariateML/Family/TiesParalogistic.lean,29,Reciprocation is a bijection of the complete joint maximizing sets on all positive samples.,"{n : ℕ} {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) :
     BijOn (fun p : ℝ × ℝ ↦ (p.1, p.2⁻¹))
@@ -28,34 +28,34 @@ invparalogis,all free,UnivariateML.TiesParalogistic.reciprocal_joint_maximizers,
         (fun q : ℝ × ℝ ↦ InvParalogistic.logLik x q.1 q.2) Weibull.domain p}
       {p ∈ Weibull.domain | IsMaxOn
         (fun q : ℝ × ℝ ↦ Paralogistic.logLik (Transfer.reciprocal x) q.1 q.2)
-        Weibull.domain p}",,,The shape is preserved and scale is inverted. The theorem also applies when both maximizing sets are empty.,
+        Weibull.domain p}",,,The shape is preserved and scale is inverted. The theorem also applies when both maximizing sets are empty.,"{""uniqueness"":""full""}"
 invparalogis,scale,UnivariateML.TiesParalogistic.reciprocal_held_scale_maximizers,dev/lean/UnivariateML/Family/TiesParalogistic.lean,51,Reciprocal data and reciprocal held scale preserve the complete maximizing set of shapes.,"{n : ℕ} {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) {s : ℝ} (_hs : 0 < s) :
     {a ∈ Ioi 0 | IsMaxOn (fun b ↦ InvParalogistic.logLik x b s) (Ioi 0) a} =
       {a ∈ Ioi 0 | IsMaxOn
-        (fun b ↦ Paralogistic.logLik (Transfer.reciprocal x) b s⁻¹) (Ioi 0) a}",,,The statement is for every positive held scale and positive sample.,
+        (fun b ↦ Paralogistic.logLik (Transfer.reciprocal x) b s⁻¹) (Ioi 0) a}",,,The statement is for every positive held scale and positive sample.,"{""uniqueness"":""partial""}"
 paralogis,scale,UnivariateML.TiesParalogistic.held_scale_global_tie,dev/lean/UnivariateML/Family/TiesParalogistic.lean,440,The held-scale two-observation construction has a unique crossing and two global maximizers in the specified shape bands.,":
     ∃! r, r ∈ Ioo (3 / 1000 : ℝ) (5 / 1000) ∧
       ∃ a ∈ Icc (2 : ℝ) 4, ∃ b ∈ Icc (6500 : ℝ) 10000,
         {k ∈ Ioi 0 | IsMaxOn (fun t ↦ Paralogistic.logLik
-          (fun i ↦ exp (tieLogs r i)) t 1) (Ioi 0) k} = {a, b}",,,The held scale is one. The complement of the bands is excluded by exact rational inequalities.,
+          (fun i ↦ exp (tieLogs r i)) t 1) (Ioi 0) k} = {a, b}",,,The held scale is one. The complement of the bands is excluded by exact rational inequalities.,"{""uniqueness"":""full"",""case:band-tie"":""full""}"
 invparalogis,scale,UnivariateML.TiesParalogistic.inverse_held_scale_global_tie,dev/lean/UnivariateML/Family/TiesParalogistic.lean,464,The reciprocal two-observation sample has the same unique crossing and the same two maximizing shapes.,":
     ∃! r, r ∈ Ioo (3 / 1000 : ℝ) (5 / 1000) ∧
       ∃ a ∈ Icc (2 : ℝ) 4, ∃ b ∈ Icc (6500 : ℝ) 10000,
         {k ∈ Ioi 0 | IsMaxOn (fun t ↦ InvParalogistic.logLik
-          (fun i ↦ exp (-(tieLogs r i))) t 1) (Ioi 0) k} = {a, b}",,,The held scale is one.,
+          (fun i ↦ exp (-(tieLogs r i))) t 1) (Ioi 0) k} = {a, b}",,,The held scale is one.,"{""uniqueness"":""full""}"
 paralogis,all free,UnivariateML.TiesParalogisticJoint.joint_global_tie,dev/lean/UnivariateML/Family/TiesParalogisticJoint.lean,1127,The source two-level all-free sample has a unique crossing with exactly two global maximizers.,":
     ∃! K, K ∈ Ioo (7 / 5 : ℝ) (8 / 5) ∧
       let x : Fin 10000 → ℝ := fun i ↦ if i = 0 then 1 else exp (100000000 * K)
       ∃ p q : ℝ × ℝ, p.1 < 1 / 10000 ∧ 1 / 10000 < q.1 ∧
         {v ∈ Weibull.domain | IsMaxOn (fun b : ℝ × ℝ ↦
-          Paralogistic.logLik x b.1 b.2) Weibull.domain v} = {p, q}",,,The complete maximizing set is a pair whose shapes straddle 1/10000.,
+          Paralogistic.logLik x b.1 b.2) Weibull.domain v} = {p, q}",,,The complete maximizing set is a pair whose shapes straddle 1/10000.,"{""uniqueness"":""full""}"
 invparalogis,all free,UnivariateML.TiesParalogisticJoint.inverse_joint_global_tie,dev/lean/UnivariateML/Family/TiesParalogisticJoint.lean,1176,The reciprocal all-free sample has exactly two global maximizers at its unique crossing.,":
     ∃! K, K ∈ Ioo (7 / 5 : ℝ) (8 / 5) ∧
       let x : Fin 10000 → ℝ := fun i ↦ if i = 0 then 1 else exp (-(100000000 * K))
       ∃ p q : ℝ × ℝ, p.1 < 1 / 10000 ∧ 1 / 10000 < q.1 ∧
         {v ∈ Weibull.domain | IsMaxOn (fun b : ℝ × ℝ ↦
-          InvParalogistic.logLik x b.1 b.2) Weibull.domain v} = {p, q}",,,The forward and inverse joint maximizing sets correspond under inversion of scale.,
+          InvParalogistic.logLik x b.1 b.2) Weibull.domain v} = {p, q}",,,The forward and inverse joint maximizing sets correspond under inversion of scale.,"{""uniqueness"":""partial""}"
 sgomp,all free,UnivariateML.TiesShiftedGompertz.exponential_positive_shape_tie,dev/lean/UnivariateML/Family/TiesShiftedGompertz.lean,324,Nine ones and one outlier yield a global tie between the exponential member and a separated positive-shape fit.,":
     ∃ m ∈ Ioo (81 / 10 : ℝ) 128,
       let x : Fin 10 → ℝ := fun i ↦ if i = 0 then m else 1
@@ -63,14 +63,14 @@ sgomp,all free,UnivariateML.TiesShiftedGompertz.exponential_positive_shape_tie,d
       let p₀ := (exponentialRate x, 0)
       p₀ ∈ jointDomain ∧ IsMaxOn f jointDomain p₀ ∧
         ∃ b > (117 / 200 : ℝ), ∃ η > (0 : ℝ),
-          (b, η) ∈ jointDomain ∧ IsMaxOn f jointDomain (b, η)",,,"The outlier is proved to exist in (8.1, 128). The number of positive-shape winners is open.",
+          (b, η) ∈ jointDomain ∧ IsMaxOn f jointDomain (b, η)",,,"The outlier is proved to exist in (8.1, 128). The number of positive-shape winners is open.","{""uniqueness"":""full""}"
 foldnorm,all free,UnivariateML.TiesFoldedNormal.half_normal_positive_location_tie,dev/lean/UnivariateML/Family/TiesFoldedNormal.lean,756,There is a unique transition in the sample path with 99 repeated observations and one 1 where the half-normal ties a positive-location fit.,":
     ∃! e, e ∈ Ioo (0 : ℝ) (1 / 5) ∧
       let x : Fin 100 → ℝ := fun i ↦ if i = 0 then 1 else e
       let S : Set (ℝ × ℝ) := Ici 0 ×ˢ Ioi 0
       let f := fun p : ℝ × ℝ ↦ logLik x p.1 p.2
       (0, m₂ x) ∈ S ∧ IsMaxOn f S (0, m₂ x) ∧
-        ∃ μ > (0 : ℝ), ∃ t > (0 : ℝ), IsMaxOn f S (μ, t)",,,Variance is the second coordinate. The theorem does not count the positive-location winners.,
+        ∃ μ > (0 : ℝ), ∃ t > (0 : ℝ), IsMaxOn f S (μ, t)",,,Variance is the second coordinate. The theorem does not count the positive-location winners.,"{""uniqueness"":""full""}"
 bnbinom,alpha,UnivariateML.TiesBNBinom.explicit_diagonal_exclusion,dev/lean/UnivariateML/Family/TiesBNBinom.lean,353,"At held alpha 2 the shapes (1, 100) beat every diagonal point on counts (0, 200).",":
     let p (r b : ℝ) (k : ℕ) :=
       (Gamma (2 + r) * Gamma (2 + b) * Gamma (r + k) * Gamma (b + k)) /
@@ -82,4 +82,4 @@ bnbinom,alpha,UnivariateML.TiesBNBinom.explicit_labeled_global_tie,dev/lean/Univ
         (Gamma (2 + r + b + k) * Gamma r * Gamma b * k.factorial)
     let S : Set (ℝ × ℝ) := Ioi 0 ×ˢ Ioi 0
     let f := fun p : ℝ × ℝ ↦ mass p.1 p.2 0 * mass p.1 p.2 200
-    ∃ p ∈ S, p.1 ≠ p.2 ∧ IsMaxOn f S p ∧ p.swap ∈ S ∧ IsMaxOn f S p.swap",,,Uses the explicit probability product. It proves at least two labeled fits to the same distribution.,
+    ∃ p ∈ S, p.1 ≠ p.2 ∧ IsMaxOn f S p ∧ p.swap ∈ S ∧ IsMaxOn f S p.swap",,,Uses the explicit probability product. It proves at least two labeled fits to the same distribution.,"{""uniqueness"":""partial""}"
