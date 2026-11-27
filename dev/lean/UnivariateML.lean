@@ -160,3 +160,7 @@ public import UnivariateML.Family.Endpoint2NonstandardBeta
 public import UnivariateML.Family.Endpoint2ParetoIII
 public import UnivariateML.Family.Endpoint2ParetoII
 public import UnivariateML.Family.Endpoint2ParetoIV
+public import UnivariateML.Family.TwoPieceGED
+public import UnivariateML.Family.TwoPieceNormal
+public import UnivariateML.Family.TwoPieceSGED
+public import UnivariateML.Family.TwoPieceStudent
