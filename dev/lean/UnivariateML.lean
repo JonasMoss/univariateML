@@ -227,3 +227,17 @@ public import UnivariateML.Family.AE1SSTD
 public import UnivariateML.Family.AE1TukeyLambda
 public import UnivariateML.Generic.ExpSum
 public import UnivariateML.Family.ExpSumSeparation
+public import UnivariateML.Family.Student2Crossing
+public import UnivariateML.Family.Student2FixedMeanSd
+public import UnivariateML.Family.Student2Free
+public import UnivariateML.Family.Student2Half
+public import UnivariateML.Family.Student2HeldDf
+public import UnivariateML.Family.Student2Inward
+public import UnivariateML.Family.Student2LocationScaleHeldDf
+public import UnivariateML.Family.Student2LocationScore
+public import UnivariateML.Family.Student2MovingCollapse
+public import UnivariateML.Family.Student2Normal
+public import UnivariateML.Family.Student2Skew
+public import UnivariateML.Family.Student2SkewWitness
+public import UnivariateML.Family.Student2Slash
+public import UnivariateML.Family.Student2WidthWitness
