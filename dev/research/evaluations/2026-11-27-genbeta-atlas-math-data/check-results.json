@@ -1,0 +1,29 @@
+{
+  "decimal_digits": 80,
+  "shape_pairs": 64,
+  "minimum_curvature_margin": "5.00032833288e-11",
+  "contact_traces": [
+    {
+      "power": 1000,
+      "genbeta_finite_contact": "-0.00128116061161",
+      "genbeta_full_contact": "-0.0107564341355",
+      "gb2_finite_contact": "-0.00139398551031",
+      "gb2_full_contact": "-0.0112563227464"
+    },
+    {
+      "power": 1000000,
+      "genbeta_finite_contact": "-1.27933994799e-6",
+      "genbeta_full_contact": "-2.3034692426e-5",
+      "gb2_finite_contact": "-1.39216484669e-6",
+      "gb2_full_contact": "-2.35346923149e-5"
+    },
+    {
+      "power": 1000000000,
+      "genbeta_finite_contact": "-1.2793381253e-9",
+      "genbeta_full_contact": "-3.5315144058e-8",
+      "gb2_finite_contact": "-1.392163024e-9",
+      "gb2_full_contact": "-3.58151440579e-8"
+    }
+  ],
+  "gamma_face_checks": 3
+}
