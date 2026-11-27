@@ -568,6 +568,27 @@ inline StudentTResult student_t_mle_held(span x,double tol,int maxit,double mean
     StudentTResult result{c[0],c[1],INFINITY,normal_proof.detail.limit_loglik,normal_proof.evaluations,StudentTStatus::NormalBoundary};
     result.stop_detail=normal_proof.detail;return result;
   }
+  auto joint_budget=certificate_budget(maxit)-normal_proof.evaluations;
+  if(std::isfinite(mean) && std::isnan(sd) && normal_proof.coefficient_lower>0 &&
+     k<2*(x.size()-k)) {
+    std::vector<double> sorted(x.begin(),x.end());
+    std::sort(sorted.begin(),sorted.end());
+    if(t_symmetry_detail::symmetric({sorted.data(),sorted.size()},mean)) {
+      // At each fixed shape the unique joint nuisance optimum is fixed
+      // by reflection. The full-domain finite certificate thus also
+      // covers the held-mean domain.
+      const auto budget=joint_budget;
+      joint_budget=0;
+      auto joint=student_t_mle_certified(x,tol,maxit,budget);
+      if(joint.status==StudentTStatus::Ok && joint.certified) {
+        joint.mu=mean;
+        if(t_local_accuracy::refine(joint,x,mean,NAN,NAN,tol,maxit,true,joint.nu)) {
+          joint.iterations+=normal_proof.evaluations;
+          return joint;
+        }
+      }
+    }
+  }
   std::vector<double> grid;for(double t=-18;t<=16;t+=.5)grid.push_back(t);
   StopDetail nomination;nomination.loglik_upper=INFINITY;
   const auto optimum=lst_detail::maximize([&](double a){
@@ -641,8 +662,20 @@ inline StudentTResult student_t_mle_held(span x,double tol,int maxit,double mean
     if(!wrong)wrong=t_shape_detail::dominated(point,normal_proof.detail);
     if(wrong){best.status=StudentTStatus::NumericalFailure;best.stop_detail=point;return best;}
   }
-  // No constrained joint root coverage is available yet. Preserve a
-  // converged admissible legacy point, explicitly without certification.
+  const bool held_location=std::isfinite(mean)&&std::isnan(sd)&&normal_proof.coefficient_lower>0;
+  const bool held_scale=std::isnan(mean)&&std::isfinite(sd);
+  if(best.status==StudentTStatus::Ok && joint_budget>0 && (held_location || held_scale)) {
+    auto verified=best;
+    if(t_local_accuracy::refine(verified,x,mean,sd,nu,tol,maxit,true,verified.nu)) {
+      const int work=held_location?
+        t_cert_detail::held_profile::certify_location(x,mean,verified.sigma,verified.nu,
+          true,tol,maxit,joint_budget):
+        t_cert_detail::held_profile::certify(x,verified.mu,sd,verified.nu,
+          true,tol,maxit,joint_budget);
+      if(work>0){verified.certified=true;verified.iterations+=work;return verified;}
+    }
+  }
+  // Unclosed comparisons retain the checked numerical nomination.
   best.certified=false;
   return best;
 }

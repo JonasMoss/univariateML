@@ -767,6 +767,33 @@ inline SstdResult sstd_mle(span x, double tol=1e-10, int maxit=200,
     out.singleton_proved=r.singleton_proved;
     return out;
   }
+  if(hn && !hm && !hs) {
+    const auto extremes=std::minmax_element(x.begin(),x.end());
+    for(double atom:{*extremes.first,*extremes.second}) {
+      const double count=std::count(x.begin(),x.end(),atom);
+      if(std::fma(fixed_nu,x.size()-count,-count)!=0)continue;
+      const bool right=atom==*extremes.first;
+      if(hx && (right?fixed_xi<1:fixed_xi>1))continue;
+      // Replacing both widths by the larger one bounds the finite
+      // likelihood by a rescaled symmetric Student model. At an extreme
+      // atom, sending the width to zero with all separated data on the
+      // broad side attains that model's sharp critical bound in the limit.
+      const double log_weight=hx?-std::log1p(std::exp(-2*std::abs(std::log(fixed_xi)))):0;
+      const double log_height=std::log(2.)+.5*std::log(fixed_nu)+special::log_t_mode(fixed_nu);
+      double ll=x.size()*log_height,magnitude=std::abs(ll);
+      for(double v:x)if(v!=atom) {
+        const double term=(fixed_nu+1)*(log_weight-special::log_abs_difference(v,atom));
+        ll+=term;magnitude+=std::abs(term);
+      }
+      if(!std::isfinite(ll) || !std::isfinite(magnitude))continue;
+      out.nu=fixed_nu;out.xi=fixed_xi;
+      out.status=SstdStatus::ScaleBoundary;out.certified=true;out.logLik=ll;
+      const double error=skew_scalar_detail::margin(magnitude);
+      out.stop_detail.limit_loglik=ll;
+      out.stop_detail.loglik_lower=ll-error;out.stop_detail.loglik_upper=ll+error;
+      return out;
+    }
+  }
   if(hm && hs && hn && !hx) return sstd_skew_cert::fit(x,maxit,fixed_mean,fixed_sd,fixed_nu);
   if(!(hn && hx && (hm || hs))) {
     const auto r=skew_hold_detail::fit(x,true,fixed_mean,fixed_sd,fixed_nu,fixed_xi,tol,maxit);
@@ -795,7 +822,7 @@ inline SstdResult sstd_mle(span x, double tol=1e-10, int maxit=200,
     out.certified=std::isfinite(out.logLik);out.singleton_proved=out.certified;if(!out.certified)out.status=SstdStatus::CertificateFailure;
     return out;
   }
-  return sstd_cert_detail::fit(x,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
+  return sstd_cert_detail::fit(x,tol,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
 
   }();
   auto& d=result.stop_detail;

@@ -9,6 +9,7 @@
 //   z = (x - mu)/sigma * sigma_u + mu_u.
 
 #pragma once
+#include "width_order.hpp"
 #include "../../core/maximizer_set.hpp"
 #include <string_view>
 #include "../norm/dpqr.hpp"
@@ -495,8 +496,19 @@ inline SgedResult sged_mle_impl(span x, double tol, int maxit,
   if(hn && hx && (!hm || !hs))
     return sged_cert_detail::fit(x,tol,maxit,fixed_mean,fixed_sd,fixed_nu,fixed_xi);
   if(!(hn && hx && (hm || hs))) {
-    const auto r=skew_hold_detail::fit(x,false,fixed_mean,fixed_sd,fixed_nu,fixed_xi,tol,maxit);
-    const std::vector<SgedStatus> statuses{SgedStatus::Ok,SgedStatus::BfgsFailure,SgedStatus::InvalidStart,SgedStatus::Unbounded,SgedStatus::ScaleBoundary,SgedStatus::UniformBoundary,SgedStatus::UniformBoundary,SgedStatus::RightHalfGedBoundary,SgedStatus::LeftHalfGedBoundary,SgedStatus::UniformBoundary};
+    bool interior=false;
+    if(!hn && hs) {
+      const auto mm=std::minmax_element(x.begin(),x.end());
+      const auto residual_order=[&](double endpoint) {
+        return sged_width_detail::compare(std::min(endpoint,fixed_mean),
+          std::max(endpoint,fixed_mean),fixed_sd,3);
+      };
+      interior=hm?(residual_order(*mm.first)<0 && residual_order(*mm.second)<0):
+        sged_width_detail::compare(*mm.first,*mm.second,fixed_sd,12)<0;
+    }
+    const auto r=skew_hold_detail::fit(x,false,fixed_mean,fixed_sd,fixed_nu,fixed_xi,
+      tol,maxit,interior);
+    const std::vector<SgedStatus> statuses{SgedStatus::Ok,SgedStatus::BfgsFailure,SgedStatus::InvalidStart,SgedStatus::Unbounded,SgedStatus::ScaleBoundary,SgedStatus::UniformBoundary,SgedStatus::UniformBoundary,SgedStatus::RightHalfGedBoundary,SgedStatus::LeftHalfGedBoundary,SgedStatus::UniformBoundary,SgedStatus::CertificateFailure};
     auto status=statuses[r.status];
     SgedResult out={r.mean,r.sd,r.nu,r.xi,-r.f,r.iterations,status};
     sged_face_payload(x,fixed_mean,fixed_sd,out,maxit);return out;

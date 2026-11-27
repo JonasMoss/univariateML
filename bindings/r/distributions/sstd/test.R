@@ -484,7 +484,7 @@ test_that("sstd scalar certificates preserve ties, holds and nonunit scale branc
   expect_equal(unname(coef(f)[c("mean","nu","xi")]),c(0,3,10))
   expect_error(mlsstd(c(-2,2),sd=1,nu=3,xi=1,iterlim=1),class="univariateML_budget")
   expect_error(mlsstd(c(0,0,0,1),mean=0,nu=3,xi=1),class="univariateML_nomle")
-  expect_error(mlsstd(c(0,0,0,1),mean=0,nu=3,xi=2),class="univariateML_numerical")
+  expect_error(mlsstd(c(0,0,0,1),mean=0,nu=3,xi=2),class="univariateML_nomle")
 })
 
 test_that("sstd held unit skew retains the certified symmetric closure", {

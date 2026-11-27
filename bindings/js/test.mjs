@@ -508,7 +508,7 @@ test('lst and std fixed-scale location certificates transport equal maxima', asy
   }
 });
 
-test('lst and std uncertified held free-shape searches preserve golden fits', async () => {
+test('lst and std held free-shape searches preserve golden fits', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for (const family of ['lst','std']) {
@@ -2040,7 +2040,7 @@ test('GEV and Frechet held nuisance certificate markers cross the common seam',(
  const f=m.fitfrechet(new Float64Array(p.map(v=>Math.pow(-Math.log(v),-.5))),{sigma:1},{});
  assert.equal(f.status,'Ok');assert.equal(f.certified,true);assert.equal(f.estimates.sigma,1);
 });
-test('std and lst shape certificates distinguish uncertified joint fits', async () => {
+test('std and lst shape certificates preserve the held-route grades', async () => {
   const {default: createApi} = await import('./index.mjs');
   const api = await createApi();
   for (const family of ['lst','std']) {
@@ -2054,7 +2054,7 @@ test('std and lst shape certificates distinguish uncertified joint fits', async 
     for (const key of names.slice(0,2)) {
       const joint=modifierRoute(api,family).fit(new Float64Array(g.data),{[key]:g.estimates[key]});
       assert.equal(joint.status,'Ok');
-      assert.equal(joint.certified,false);
+      assert.equal(joint.certified,family === 'lst' || key === 'mean');
       assert.equal(joint.estimates[key],g.estimates[key]);
     }
   }

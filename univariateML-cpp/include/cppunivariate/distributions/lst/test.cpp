@@ -612,7 +612,7 @@ TEST_CASE("lst: shape-only certificate refuses unjustifiable requested coefficie
   CHECK(std::isfinite(r.stop_detail.loglik_lower));
 }
 
-TEST_CASE("lst: default budget distinguishes scalar certificates and joint numerical fits") {
+TEST_CASE("lst: default-budget certificates at the regression tolerance") {
   const auto g=mltest::load_distribution_golden("lst");
   const double nan=std::numeric_limits<double>::quiet_NaN();
   for(int mask=1;mask<=3;++mask) {
@@ -621,7 +621,7 @@ TEST_CASE("lst: default budget distinguishes scalar certificates and joint numer
       mask&1?g.estimates.at("mu"):nan,
       mask&2?g.estimates.at("sigma"):nan,nan);
     REQUIRE(r.status==cppunivariate::LstStatus::Ok);
-    CHECK(r.certified==(mask==3));
+    CHECK(r.certified);
     CHECK(r.logLik>=g.logLik-1e-6*g.data.size());
   }
 }
@@ -885,7 +885,7 @@ TEST_CASE("lst corner and near restriction accuracy 33000") {
  const std::vector<double> x{-27.022272533573503,-6.313751514675043,-3.732050807568877,-2.6050890646938014,-1.9626105055051506,-1.539864963814583,-1.2348971565350515,-1.0,-0.8097840331950071,-0.6494075931975106,-0.5095254494944288,-0.3838640350354158,-0.2679491924311227,-0.1583844403245363,-0.0524077792830412,0.0524077792830412,0.1583844403245363,0.2679491924311227,0.3838640350354158,0.5095254494944288,0.6494075931975106,0.8097840331950071,1.0,1.2348971565350515,1.539864963814583,1.9626105055051506,2.6050890646938014,3.732050807568877,6.313751514675043,27.022272533573503};
  const auto r=cppunivariate::lst_mle({x.data(),x.size()},1e-10,200,NAN,1.0,NAN);
  REQUIRE(r.status==cppunivariate::LstStatus::Ok);
- CHECK_FALSE(r.certified);
+ CHECK(r.certified);
  CHECK(std::abs(r.mu-(0.0))<=1e-10*1.0);
  CHECK(r.sigma==1.0);
  CHECK(std::abs(r.df-(1.0001))<=1e-10*1.0001);
@@ -921,4 +921,52 @@ TEST_CASE("lst: public Norm candidate at class offset") {
   const double margin=1e-12*(x.size()+std::abs(ll));
   CHECK(ll >= c->loglik_lower - margin);
   CHECK(ll <= c->loglik_upper + margin);
+}
+
+TEST_CASE("lst: reflection does not prove joint attainment at critical subunit mass") {
+  const std::vector<double> x{-1,0,1};
+  const auto data=mltest::as_span(x);
+  const auto proof=cppunivariate::t_symmetry_detail::subunit(data,data,.5,200,.25,.05);
+  CHECK(proof.outcome==0);
+}
+
+TEST_CASE("lst: reflected held-location certificate also excludes free shapes below one") {
+  std::vector<double> x;
+  for(int i=0;i<2000;++i) {
+    const double radius=-cppunivariate::special::qt((i+.5)/4000,300,true,false);
+    x.push_back(-radius);x.push_back(radius);
+  }
+  const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-7,500,0,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+  CHECK(r.certified);
+  CHECK(r.mu==0);
+  CHECK(r.df==doctest::Approx(539.460572974731).epsilon(mltest::kFitReferenceTol).scale(0));
+}
+
+TEST_CASE("lst: held ordinary scale closes an interior location-shape cover") {
+  std::vector<double> x{-5,5};
+  for(int i=0;i<10;++i){x.push_back(-1);x.push_back(1);}
+  const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-7,500,NAN,1,NAN);
+  REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+  CHECK(r.certified);
+  CHECK(r.df>1);
+  CHECK(std::abs(r.mu)<1e-7);
+  CHECK(r.sigma==1);
+}
+
+TEST_CASE("lst: held-location scale tubes cover asymmetric data with free df") {
+  std::vector<double> x{-5,5,-1};
+  for(int i=0;i<9;++i){x.push_back(-1);x.push_back(1);}
+  const auto r=cppunivariate::lst_mle(mltest::as_span(x),1e-7,500,0,NAN,NAN);
+  REQUIRE(r.status==cppunivariate::LstStatus::Ok);
+  CHECK(r.certified);
+  CHECK(r.mu==0);
+  CHECK(r.df>2);
+}
+
+TEST_CASE("lst: free-location criticality uses the largest atom") {
+  const std::vector<double> x{0,1,1};
+  const auto fit=cppunivariate::lst_mle_fixed_df(mltest::as_span(x),.5,1e-7,200);
+  CHECK(fit.status==cppunivariate::LstStatus::Unbounded);
+  CHECK(cppunivariate::outcome(fit).reason==cppunivariate::OutcomeReason::Unbounded);
 }

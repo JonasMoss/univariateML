@@ -1496,3 +1496,28 @@ TEST_CASE("sged: public Unif candidate at resample n3-s0") {
   CHECK(ll >= c->loglik_lower - margin);
   CHECK(ll <= c->loglik_upper + margin);
 }
+
+TEST_CASE("sged: rounded held-width contact cannot select a uniform face") {
+  const double endpoint=std::sqrt(3.);
+  for(double high:{std::nextafter(endpoint,0.),endpoint,std::nextafter(endpoint,INFINITY)}) {
+    const std::vector<double> x{-high,high};
+    for(double mean:{double(NAN),0.}) {
+      const auto r=cppunivariate::sged_mle(mltest::as_span(x),1e-7,200,mean,1,NAN,2);
+      CHECK(r.status!=cppunivariate::SgedStatus::ScaleBoundary);
+      CHECK(r.status!=cppunivariate::SgedStatus::UniformBoundary);
+    }
+  }
+}
+
+TEST_CASE("sged: squared width order uses the exact binary64 endpoints") {
+  const double endpoint=std::sqrt(3.);
+  const double exterior=std::nextafter(endpoint,INFINITY);
+  CHECK(cppunivariate::sged_width_detail::compare(-endpoint,endpoint,1,12)<0);
+  CHECK(cppunivariate::sged_width_detail::compare(-exterior,exterior,1,12)>0);
+  CHECK(cppunivariate::sged_width_detail::compare(0,endpoint,1,3)<0);
+  CHECK(cppunivariate::sged_width_detail::compare(0,exterior,1,3)>0);
+  const double tiny=std::numeric_limits<double>::denorm_min();
+  CHECK(cppunivariate::sged_width_detail::compare(-tiny,tiny,tiny,12)<0);
+  const double large=std::numeric_limits<double>::max();
+  CHECK(cppunivariate::sged_width_detail::compare(-large,large,large/2,12)>0);
+}

@@ -689,6 +689,105 @@ inline TlambdaResult pair_fit(double lo,double hi,double tol,int maxit) {
   return out;
 }
 
+// Log scale below which all finite fits lose to the collapse face.
+inline double half_tie_log_cutoff(const std::vector<double>& sorted,double face_lower,int maxit,std::int64_t& work) {
+  const std::size_t k=sorted.size()/2;
+  const double n=sorted.size(),log_two=std::log(2.);
+  const double extreme=tlambda_detail::logstandard(sorted.back(),sorted.front(),1)-log_two;
+  std::vector<double> distances;
+  distances.reserve(k);
+  double spacing=INFINITY;
+  for(std::size_t j=0;j<k;++j)
+    distances.push_back(tlambda_detail::logstandard(sorted[j+k],sorted[j],1)-log_two);
+  for(std::size_t j=1;j<sorted.size();++j)
+    if(sorted[j]>sorted[j-1])
+      spacing=std::min(spacing,tlambda_detail::logstandard(sorted[j],sorted[j-1],1)-log_two);
+  std::sort(distances.rbegin(),distances.rend());
+  double cutoff=std::min(extreme-2*log_two-8*n,3*spacing+face_lower/k-3*log_two);
+  cutoff-=margin(std::abs(extreme)+3*std::abs(spacing)+std::abs(face_lower)+8*n);
+  for(int grid=50;grid<100;++grid) {
+    const double a=grid/100.,alpha=191./289.,b=480./(289.*a);
+    const auto score=[&](double least,double sum,double m) {
+      return std::min(least-std::log(std::expm1(4.)),sum/m-(b+4*(n-m)/m)/alpha);
+    };
+    double score_cutoff=score(extreme,extreme,1),tail_cutoff=-INFINITY,sum=0,magnitude=0;
+    const double gamma=1+1/a;
+    for(std::size_t j=0;j<k;++j) {
+      if(work>=certificate_budget(maxit))return cutoff;
+      ++work;
+      const double m=j+1;
+      sum+=distances[j];magnitude+=std::abs(distances[j]);
+      const double pad=margin(magnitude+std::abs(extreme)+n);
+      score_cutoff=std::max(score_cutoff,score(distances[j],sum,m)-pad);
+      const double exponent=m/a-(n-m);
+      if(exponent>margin(n)) {
+        const double numerator=face_lower+(n-m-1)*log_two+gamma*(m*std::log(a)+sum);
+        const double tail=numerator/exponent;
+        tail_cutoff=std::max(tail_cutoff,tail-(pad*gamma+margin(n+std::abs(face_lower)+m*gamma*std::abs(std::log(a))+std::abs(tail)*n))/exponent);
+      }
+    }
+    score_cutoff-=margin(std::abs(extreme)+std::abs(score_cutoff)+n);
+    cutoff=std::max(cutoff,std::min(score_cutoff,tail_cutoff));
+  }
+  return cutoff;
+}
+
+// For lambda <= 1, the quantile magnitude decreases with lambda at
+// fixed tail probability. The inverse at the lower shape therefore gives
+// an upper bound on the tail probability throughout the box. At fixed
+// probability the quantile derivative decreases with lambda, and for
+// lambda <= 1 it decreases toward the median.
+inline bool half_tie_cover(const std::vector<double>& sorted,double face_lower,
+    double scale_lower,double scale_upper,double location_pad,int maxit,std::int64_t& work) {
+  const double location_lower=std::nextafter(sorted.front()-location_pad,-INFINITY);
+  const double location_upper=std::nextafter(sorted.back()+location_pad,INFINITY);
+  if(!std::isfinite(location_lower) || !std::isfinite(location_upper))return false;
+  struct Box {double ml,mh,sl,sh,ll,lh;};
+  std::vector<Box> pending{{location_lower,location_upper,scale_lower,scale_upper,-1,1}};
+  while(!pending.empty() && work<certificate_budget(maxit)) {
+    ++work;
+    const Box b=pending.back();pending.pop_back();
+    Sum bound;
+    double magnitude=0;
+    bool outside=false;
+    for(double v:sorted) {
+      const double log_distance=v<b.ml?tlambda_detail::logstandard(v,b.ml,1):
+        v>b.mh?tlambda_detail::logstandard(v,b.mh,1):-INFINITY;
+      double y=std::log(2.);
+      if(std::isfinite(log_distance)) {
+        const double log_z=log_distance-b.sh-margin(std::abs(log_distance)+std::abs(b.sh));
+        if(b.ll>0 && log_z>-std::log(b.ll)+margin(log_z)){outside=true;break;}
+        const double z=std::exp(log_z);
+        if(z>0 && std::isfinite(z)) {
+          const auto root=inverse(z,b.ll,maxit);
+          if(root.ok && std::isfinite(root.lo))y=std::max(y,root.lo-margin(root.lo));
+        }
+      }
+      const double density=-b.sl-tlambda_detail::logderiv(-y,b.lh);
+      if(!std::isfinite(density))return false;
+      bound.add(density);magnitude+=1+std::abs(density)+std::abs(b.sl)+y;
+    }
+    if(outside || bound.value+margin(magnitude)<face_lower)continue;
+    const double location_fraction=b.mh/location_pad-b.ml/location_pad;
+    Box left=b,right=b;
+    if(location_fraction>=b.sh-b.sl && location_fraction>=b.lh-b.ll) {
+      const double mid=b.ml/2+b.mh/2;
+      if(!(mid>b.ml&&mid<b.mh))return false;
+      left.mh=right.ml=mid;
+    } else if(b.sh-b.sl>=b.lh-b.ll) {
+      const double mid=b.sl/2+b.sh/2;
+      if(!(mid>b.sl&&mid<b.sh))return false;
+      left.sh=right.sl=mid;
+    } else {
+      const double mid=b.ll/2+b.lh/2;
+      if(!(mid>b.ll&&mid<b.lh))return false;
+      left.lh=right.ll=mid;
+    }
+    pending.push_back(right);pending.push_back(left);
+  }
+  return pending.empty();
+}
+
 inline TlambdaResult fit(span x,double tol,int maxit,double l,double mu=NAN,double sigma=NAN) {
   const bool hl=std::isfinite(l),hm=std::isfinite(mu),hs=std::isfinite(sigma);
   if((!std::isnan(mu) && !hm) || (!std::isnan(sigma) && (!hs || sigma<=0)))
@@ -716,8 +815,38 @@ inline TlambdaResult fit(span x,double tol,int maxit,double l,double mu=NAN,doub
         // The l=-1 face is only a lower bound when shape is free. It must
         // never be promoted to a nonattainment decision from a tolerance tie.
         auto out=collapse_check(x,tol,maxit,-1);
+        const double face=out.stop_detail.limit_loglik,n=y.size(),log_two=std::log(2.);
+        const double extreme=tlambda_detail::logstandard(y.back(),y.front(),1)-log_two;
+        double magnitude=n*(1+std::abs(extreme));
+        // The two possible half-tie atoms are the central order statistics.
+        for(double atom:{y[y.size()/2-1],y[y.size()/2]})
+          for(double v:y)if(v!=atom)magnitude+=2*std::abs(tlambda_detail::logstandard(v,atom,1));
+        const double face_pad=margin(magnitude);
+        const double face_lower=face-face_pad;
+        // One extreme residual supplies the d^-2 bound, the others
+        // the modal bound. Thus L <= (2*s)^(1-n)*s/d^2.
+        const double upper=((1-n)*log_two-2*extreme-face_lower)/(n-2);
+        const double upper_pad=margin(n+std::abs(face_lower)+std::abs(extreme)+std::abs(upper));
+        const double log_smax=-face_lower/n;
+        const double log_location_pad=log_smax+log_two*.5;
+        const double location_pad=std::exp(log_location_pad+margin(log_location_pad));
+        std::int64_t work=0;
+        const double cutoff=half_tie_log_cutoff(y,face_lower,maxit,work);
+        const auto uniform=tlambda_detail::uniform_fit(y.front(),y.back(),n,1,maxit,tol);
+        const double uniform_pad=margin(n*(1+std::abs(extreme)));
+        if(std::isfinite(upper) && std::isfinite(cutoff) && std::isfinite(face_lower) &&
+           (cutoff>upper+upper_pad ||
+            (uniform.status==TlambdaStatus::Ok && uniform.logLik+uniform_pad<face_lower &&
+             location_pad>=std::numeric_limits<double>::min() && std::isfinite(location_pad) &&
+             half_tie_cover(y,face_lower,cutoff,std::min(upper+upper_pad,log_smax+margin(log_smax)),
+               location_pad,maxit,work)))) {
+          out.iterations=static_cast<int>(work);
+          out.certified=true;
+          out.stop_detail.loglik_lower=face_lower;
+          out.stop_detail.loglik_upper=face+face_pad;
+          return out;
+        }
         out.status=TlambdaStatus::CertificateFailure;out.stop_detail.loglik_upper=INFINITY;
-        const auto uniform=tlambda_detail::uniform_fit(y.front(),y.back(),static_cast<double>(y.size()),1,maxit,tol);
         if(uniform.status==TlambdaStatus::Ok) {
           const double pad=margin(uniform.logLik);
           out.stop_detail.candidates.push_back({{uniform.mu,uniform.sigma,1},uniform.logLik-pad,uniform.logLik+pad});

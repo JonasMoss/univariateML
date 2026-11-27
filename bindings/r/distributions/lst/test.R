@@ -215,7 +215,7 @@ test_that("held-scale location certificates retain both equal maxima", {
 })
 
 
-test_that("shape-only held fits certify while joint numerical fits remain available", {
+test_that("held free-shape certification preserves the golden fit", {
   g <- jsonlite::fromJSON(file.path(Sys.getenv("UMVL_DISTRIBUTIONS_DIR"),"lst","golden.json"))
   for (held in list("mu","sigma",c("mu","sigma"))) {
     args <- g$estimates[held]
@@ -223,7 +223,7 @@ test_that("shape-only held fits certify while joint numerical fits remain availa
     expect_s3_class(f,"univariateML")
     expect_identical(unname(as.numeric(f[held])),unname(as.numeric(unlist(args))))
     expect_setequal(attr(f,"fixed"),held)
-    expect_identical(attr(f,"certified"),length(held)==2L)
+    expect_identical(attr(f,"certified"),TRUE)
     expect_true(all(is.finite(f)))
     expect_gte(as.numeric(logLik(f)),g$logLik-1e-6*length(g$data))
     expect_error(do.call(mllst,c(list(x=g$data,iterlim=1),args)),

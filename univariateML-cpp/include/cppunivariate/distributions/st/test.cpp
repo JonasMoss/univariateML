@@ -562,3 +562,13 @@ TEST_CASE("st: two distinct observations are below the free fitter's minimum") {
   const auto held=cppunivariate::st_mle(mltest::as_span(x),1e-10,200,0,1,0,1);
   CHECK(cppunivariate::outcome(held).kind==cppunivariate::OutcomeKind::Estimate);
 }
+
+TEST_CASE("st: mixed-sign critical scale collapse remains unresolved") {
+  const std::vector<double> x{-1,0,0,1};
+  const auto fit=cppunivariate::st_mle(mltest::as_span(x),1e-7,200,0,NAN,NAN,1);
+  REQUIRE(fit.status==cppunivariate::StStatus::ScaleBoundary);
+  const auto result=cppunivariate::outcome(fit);
+  CHECK(result.kind==cppunivariate::OutcomeKind::Failure);
+  CHECK(result.reason==cppunivariate::OutcomeReason::Unresolved);
+  CHECK_FALSE(result.certified);
+}

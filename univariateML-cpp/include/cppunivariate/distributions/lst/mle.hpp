@@ -13,6 +13,7 @@
 #include "shape_certificate.hpp"
 #include "symmetry_certificate.hpp"
 #include "signed_face_certificate.hpp"
+#include "held_profile_certificate.hpp"
 #include "../../core/face_compare.hpp"
 #include "cppunivariate/core/constants.hpp"
 #include "../../core/multistart.hpp"
@@ -620,6 +621,7 @@ inline LstResult lst_mle(span x,double tol=1e-10,int maxit=200) {
 inline LstResult lst_mle_held(span x,double tol,int maxit,double mu,double sigma,double df) {
   maxit = static_cast<int>(solver_budget(maxit));
   StopDetail face_witness;double normal_coefficient=NAN;
+  std::int64_t joint_budget=0;
   const auto checked=[&](LstResult result){
     const bool normal=result.status==LstStatus::NormalBoundary;
     if(!normal&&result.status!=LstStatus::Ok)return result;
@@ -662,13 +664,35 @@ inline LstResult lst_mle_held(span x,double tol,int maxit,double mu,double sigma
     }
     const auto normal_proof=t_signed_detail::solve(x,mu,sigma,false,maxit);
     face_witness=normal_proof.detail;normal_coefficient=normal_proof.coefficient_lower;
+    joint_budget=certificate_budget(maxit)-normal_proof.evaluations;
     if(normal_proof.proved){
       const auto& c=normal_proof.detail.limit_coef;
       LstResult result{c[0],c[1],INFINITY,normal_proof.detail.limit_loglik,normal_proof.evaluations,LstStatus::NormalBoundary};
       result.stop_detail=normal_proof.detail;return result;
     }
+    if(std::isfinite(mu) && std::isnan(sigma) && normal_coefficient>0) {
+      std::vector<double> sorted(x.begin(),x.end());std::sort(sorted.begin(),sorted.end());
+      const auto largest=collapse_multiplicity(x);
+      if(largest<x.size()-largest && t_symmetry_detail::symmetric({sorted.data(),sorted.size()},mu)) {
+        const auto budget=joint_budget;
+        joint_budget=0;
+        auto joint=lst_mle_certified(x,tol,maxit,budget);
+        if(joint.status==LstStatus::Ok && joint.certified && joint.df>1) {
+          joint.mu=mu;
+          StopDetail witness;
+          t_shape_detail::retain_point(x,mu,joint.sigma,joint.df,false,witness);
+          const auto excluded=t_signed_detail::exclude_subunit(x,mu,witness.loglik_lower,
+            maxit,std::max<std::int64_t>(0,budget-joint.iterations));
+          if(excluded.proved && t_local_accuracy::refine(joint,x,mu,NAN,NAN,tol,maxit,false,joint.df)) {
+            joint.iterations+=normal_proof.evaluations+excluded.evaluations;
+            return joint;
+          }
+        }
+      }
+    }
     if(std::isnan(mu)&&!std::isnan(sigma)) {
       const auto shape=t_location_detail::decreasing_shape(x,sigma,maxit);
+      joint_budget-=shape.evaluations;
       if(shape.result==1) {
         const auto location=t_location_detail::solve(x,sigma,1,maxit,certificate_budget(maxit)-shape.evaluations);
         LstResult certified{location.location,sigma,1,NAN,shape.evaluations+location.evaluations,LstStatus::NumericalFailure};
@@ -703,7 +727,22 @@ inline LstResult lst_mle_held(span x,double tol,int maxit,double mu,double sigma
     // numerical fits explicitly marked uncertified.
   }
   auto r=checked(lst_mle_impl(x,tol,maxit,mu,sigma,df));
-  if(std::isnan(df) && r.status==LstStatus::Ok)r.certified=false;
+  if(std::isnan(df) && r.status==LstStatus::Ok) {
+    r.certified=false;
+    const bool held_location=std::isfinite(mu)&&std::isnan(sigma)&&normal_coefficient>0;
+    const bool held_scale=std::isnan(mu)&&std::isfinite(sigma)&&r.df>1;
+    if(joint_budget>0 && (held_location || held_scale)) {
+      auto verified=r;
+      if(t_local_accuracy::refine(verified,x,mu,sigma,df,tol,maxit,false,verified.df)) {
+        const int work=held_location?
+          t_cert_detail::held_profile::certify_location(x,mu,verified.sigma,verified.df,
+            false,tol,maxit,joint_budget):
+          t_cert_detail::held_profile::certify(x,verified.mu,sigma,verified.df,
+            false,tol,maxit,joint_budget);
+        if(work>0){verified.certified=true;verified.iterations+=work;return verified;}
+      }
+    }
+  }
   if(r.status==LstStatus::Ok && (std::isnan(df) && std::isnan(mu)) && r.df==kLstDfLower) r.restricted|=16u;
   return r;
 }
