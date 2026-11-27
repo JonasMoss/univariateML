@@ -4,17 +4,17 @@ betapr,shape1,UnivariateML.Endpoint3BetaPrime.gamma_of_shape_rate_limit,dev/lean
     {q s : ι → ℝ} (hq : Tendsto q l atTop) (hs : ∀ᶠ j in l, 0 < s j)
     (hrate : Tendsto (fun j ↦ q j / s j) l (𝓝 r)) :
     Tendsto (fun j ↦ BetaPrime.logLik x (s j) (p, q j)) l
-      (𝓝 (∑ i, Gamma.logDensity p r (x i)))","path:1, path:4",,Any joint path with converging positive gamma rate.,
+      (𝓝 (∑ i, Gamma.logDensity p r (x i)))","path:1, path:4",,Any joint path with converging positive gamma rate.,"{""path:1"":""full"",""path:4"":""full""}"
 betapr,shape2,UnivariateML.Endpoint3BetaPrime.inverse_gamma_of_shape_rate_limit,dev/lean/UnivariateML/Family/Endpoint3BetaPrime.lean,100,"With second shape held, the reciprocal path with diverging first shape and first shape times scale tending to a positive rate gives the inverse-gamma likelihood, including the data Jacobian."," {ι : Type*} {l : Filter ι}
     {x : Fin n → ℝ} (hx : ∀ i, 0 < x i) {q r : ℝ} (hq : 0 < q) (hr : 0 < r)
     {p s : ι → ℝ} (hp : Tendsto p l atTop) (hs : ∀ᶠ j in l, 0 < s j)
     (hrate : Tendsto (fun j ↦ p j * s j) l (𝓝 r)) :
     Tendsto (fun j ↦ BetaPrime.logLik x (s j) (p j, q)) l
-      (𝓝 ((∑ i, Gamma.logDensity q r (x i)⁻¹) - ∑ i, 2 * log (x i)))","path:2, path:5",,Any joint path with converging positive inverse-gamma parameter.,
+      (𝓝 ((∑ i, Gamma.logDensity q r (x i)⁻¹) - ∑ i, 2 * log (x i)))","path:2, path:5",,Any joint path with converging positive inverse-gamma parameter.,"{""path:2"":""full"",""path:5"":""full""}"
 betapr,shape1,UnivariateML.Endpoint3BetaPrime.held_first_superlevel_bounds,dev/lean/UnivariateML/Family/Endpoint3BetaPrime.lean,151,"At any fixed finite likelihood level for a held first shape, the second shape is bounded below and its ratio to scale lies in a compact positive interval. This holds for every nonempty positive sample."," (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) {p : ℝ} (hp : 0 < p) (M : ℝ) :
     ∃ ε > 0, ∃ lo > 0, ∃ hi > 0, ∀ q > 0, ∀ s > 0,
-      M ≤ BetaPrime.logLik x s (p, q) → ε ≤ q ∧ q / s ∈ Icc lo hi",failure,,Uniform physical bounds at an arbitrary finite competitive level.,
+      M ≤ BetaPrime.logLik x s (p, q) → ε ≤ q ∧ q / s ∈ Icc lo hi",failure,,Uniform physical bounds at an arbitrary finite competitive level.,"{""failure"":""partial""}"
 betapr,shape1,UnivariateML.Endpoint3BetaPrime.held_first_maximizing_escape,dev/lean/UnivariateML/Family/Endpoint3BetaPrime.lean,277,"For a maximizing sequence escaping every compact subset of the positive shape and scale domain at held first shape, the second shape must diverge and its ratio to scale must converge to the fitted gamma rate. Consequently the sequence has exactly the fitted gamma value."," (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) {p : ℝ} (hp : 0 < p) {q s : ℕ → ℝ}
     (hq : ∀ j, 0 < q j) (hs : ∀ j, 0 < s j)
@@ -24,7 +24,7 @@ betapr,shape1,UnivariateML.Endpoint3BetaPrime.held_first_maximizing_escape,dev/l
     (hlim : Tendsto (fun j ↦ BetaPrime.logLik x (s j) (p, q j)) atTop (𝓝 M)) :
     let r := Gamma.rate x p
     Tendsto q atTop atTop ∧ Tendsto (fun j ↦ q j / s j) atTop (𝓝 r) ∧
-      M = ∑ i, Gamma.logDensity p r (x i)",failure,,Every escaping maximizing sequence converges in scaled rate to the fitted gamma.,
+      M = ∑ i, Gamma.logDensity p r (x i)",failure,,Every escaping maximizing sequence converges in scaled rate to the fitted gamma.,"{""failure"":""full""}"
 betapr,shape2,UnivariateML.Endpoint3BetaPrime.held_second_maximizing_escape,dev/lean/UnivariateML/Family/Endpoint3BetaPrime.lean,353,"At held second shape, every maximizing escape is the inverse-gamma face on the reciprocal sample. The first shape diverges and its product with scale converges to the fitted inverse-gamma parameter."," (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) {q : ℝ} (hq : 0 < q) {p s : ℕ → ℝ}
     (hp : ∀ j, 0 < p j) (hs : ∀ j, 0 < s j)
@@ -34,83 +34,83 @@ betapr,shape2,UnivariateML.Endpoint3BetaPrime.held_second_maximizing_escape,dev/
     (hlim : Tendsto (fun j ↦ BetaPrime.logLik x (s j) (p j, q)) atTop (𝓝 M)) :
     let r := Gamma.rate (fun i ↦ (x i)⁻¹) q
     Tendsto p atTop atTop ∧ Tendsto (fun j ↦ p j * s j) atTop (𝓝 r) ∧
-      M = (∑ i, Gamma.logDensity q r (x i)⁻¹) - ∑ i, 2 * log (x i)",failure,,Every escaping maximizing sequence converges in scaled rate to the fitted inverse gamma.,
+      M = (∑ i, Gamma.logDensity q r (x i)⁻¹) - ∑ i, 2 * log (x i)",failure,,Every escaping maximizing sequence converges in scaled rate to the fitted inverse gamma.,"{""failure"":""full""}"
 betapr,shape1,UnivariateML.Endpoint3BetaPrime.held_first_face_comparison,dev/lean/UnivariateML/Family/Endpoint3BetaPrime.lean,429,"At held first shape, a finite maximum exists if and only if a finite point reaches the fitted gamma value. This includes finite equality and all constant samples. The conclusion uses a finite point as witness and does not require a finite stationary list."," (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) {p : ℝ} (hp : 0 < p) :
     let L := fun v : ℝ × ℝ ↦ BetaPrime.logLik x v.2 (p, v.1)
     let G := ∑ i, Gamma.logDensity p (Gamma.rate x p) (x i)
     (∃ v ∈ Beta.domain, IsMaxOn L Beta.domain v) ↔
-      ∃ v ∈ Beta.domain, G ≤ L v","criterion, limit:4",,Exact finite witness comparison including equality. Finite stationary list and numerical certificate remain open.,
+      ∃ v ∈ Beta.domain, G ≤ L v","criterion, limit:4",,Exact finite witness comparison including equality. Finite stationary list and numerical certificate remain open.,"{""criterion"":""partial"",""limit:4"":""partial""}"
 betapr,shape2,UnivariateML.Endpoint3BetaPrime.held_second_face_comparison,dev/lean/UnivariateML/Family/Endpoint3BetaPrime.lean,497,"At held second shape, finite attainment is equivalent to a finite point reaching the fitted inverse-gamma value. Equality is included. The comparison uses the exact reciprocal parameter map."," (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) {q : ℝ} (hq : 0 < q) :
     let L := fun v : ℝ × ℝ ↦ BetaPrime.logLik x v.2 (v.1, q)
     let r := Gamma.rate (fun i ↦ (x i)⁻¹) q
     let G := (∑ i, Gamma.logDensity q r (x i)⁻¹) - ∑ i, 2 * log (x i)
     (∃ v ∈ Beta.domain, IsMaxOn L Beta.domain v) ↔
-      ∃ v ∈ Beta.domain, G ≤ L v","criterion, limit:5",,Exact reciprocal finite witness comparison including equality. Finite stationary list and numerical certificate remain open.,
+      ∃ v ∈ Beta.domain, G ≤ L v","criterion, limit:5",,Exact reciprocal finite witness comparison including equality. Finite stationary list and numerical certificate remain open.,"{""criterion"":""partial"",""limit:5"":""partial""}"
 betapr,all free,UnivariateML.Endpoint3BetaPrime.constant_both_shapes_path,dev/lean/UnivariateML/Family/Endpoint3BetaPrime.lean,539,"Both beta-prime shapes diverge on the symmetric fixed-scale ray at a constant positive observation, and the sample likelihood diverges."," (hn : 0 < n) {v : ℝ} (hv : 0 < v) :
     let x : Fin n → ℝ := fun _ ↦ v
-    Tendsto (fun t : ℝ ↦ BetaPrime.logLik x v (t / 2, t / 2)) atTop atTop",path:3,,Both shapes diverge at equal rate. The sample likelihood tends to infinity.,
+    Tendsto (fun t : ℝ ↦ BetaPrime.logLik x v (t / 2, t / 2)) atTop atTop",path:3,,Both shapes diverge at equal rate. The sample likelihood tends to infinity.,"{""path:3"":""full"",""limit:3"":""full""}"
 fpareto,shape1+shape2+shape3,UnivariateML.Endpoint3FellerPareto.fixed_shapes_failure,dev/lean/UnivariateML/Family/Endpoint3FellerPareto.lean,26,The strict-interior threshold spike and the negative scale exponent give unbounded likelihood. At regular lower power and zero exponent the sharp finite envelope is the strictly unattained supremum.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {a b c K : ℝ} (hb : 0 < b) (hc : 0 < c) :
     let L := logLik d a b c K
     let D := domain a
     ((a < 1 ∨ exponent d b < 0) → ¬ BddAbove (L '' D)) ∧
       ((1 ≤ a ∧ exponent d b = 0) →
-        ∃ C : ℝ, IsLUB (L '' D) C ∧ ∀ v ∈ D, L v < C)",failure,,,
+        ∃ C : ℝ, IsLUB (L '' D) C ∧ ∀ v ∈ D, L v < C)",failure,,,"{""failure"":""full""}"
 fpareto,scale+shape2+shape3,UnivariateML.Endpoint3FellerPareto.constant_upper_shape_path,dev/lean/UnivariateML/Family/Endpoint3FellerPareto.lean,48,"With scale, lower beta shape and power fixed, a constant sample concentrates as the upper beta shape increases and the threshold gap shrinks."," (hn : 0 < n) {p c s : ℝ}
     (hp : 0 < p) (hc : 0 < c) (hs : 0 < s) :
     Tendsto (fun q ↦ Endpoint2FellerPareto.interiorLogLik (fun _ : Fin n ↦ 0)
-      p q c s (s * (q⁻¹) ^ c⁻¹)) atTop atTop",failure,,Explicit constant-sample branch.,
+      p q c s (s * (q⁻¹) ^ c⁻¹)) atTop atTop",failure,,Explicit constant-sample branch.,"{""failure"":""partial""}"
 fpareto,scale+shape2+shape3,UnivariateML.Endpoint3FellerPareto.held_scale_lower_shape_power_failure,dev/lean/UnivariateML/Family/Endpoint3FellerPareto.lean,92,"With fixed scale, lower beta shape and power, the subunit lower power and constant-data branches both have unbounded likelihood."," {d : Fin n → ℝ}
     (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0) {p c s : ℝ}
     (hp : 0 < p) (hc : 0 < c) (hs : 0 < s)
     (h : c * p < 1 ∨ ∀ i, d i = 0) :
-    ∀ B : ℝ, ∃ t > 0, ∃ q > 0, B < Endpoint2FellerPareto.interiorLogLik d p q c s t",failure,,,
+    ∀ B : ℝ, ∃ t > 0, ∃ q > 0, B < Endpoint2FellerPareto.interiorLogLik d p q c s t",failure,,,"{""failure"":""full""}"
 fpareto,scale+shape1+shape2+shape3,UnivariateML.Endpoint3FellerPareto.fixed_regular_threshold_uniqueness,dev/lean/UnivariateML/Family/Endpoint3FellerPareto.lean,114,"The unique closed threshold at lower power one, and the unique positive score root above one, in the common threshold kernel. Pareto II uses lower power one, Pareto III sets both powers equal, and Pareto IV sets the lower power equal to the transformation power."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {a b c s K : ℝ} (hb : 0 < b) (hc : 0 < c) (hs : 0 < s) :
     let L := Endpoint2FellerPareto.logLik d a b c s K
     let S := Endpoint2FellerParetoRegular.normalizedScore d a b c s
     (a = 1 → IsMaxOn L (Ici 0) 0 ∧ ∀ t ∈ Ici 0, IsMaxOn L (Ici 0) t → t = 0) ∧
     (1 < a → (∃! t, t ∈ Ioi 0 ∧ S t = 0) ∧
-      ∀ t ∈ Ioi 0, IsMaxOn L (Ioi 0) t ↔ S t = 0)",uniqueness,,,
+      ∀ t ∈ Ioi 0, IsMaxOn L (Ioi 0) t ↔ S t = 0)",uniqueness,,,"{""uniqueness"":""full""}"
 fpareto,shape1+shape2+shape3,UnivariateML.Endpoint3FellerParetoFreeScale.fixed_shapes_unique,dev/lean/UnivariateML/Family/Endpoint3FellerParetoFreeScale.lean,263,"At attained fixed shapes, the joint scale and threshold are unique. At lower power one the threshold is closed contact, and at strictly larger lower power the threshold gap is positive."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {a b c K : ℝ} (hb : 0 < b) (hc : 0 < c)
     (ha : 1 ≤ a) (hE : 0 < exponent d b) :
     ∃! v, v ∈ domain a ∧ IsMaxOn (logLik d a b c K) (domain a) v ∧
-      (v.2 = 0 ↔ a = 1)",uniqueness,,,
+      (v.2 = 0 ↔ a = 1)",uniqueness,,,"{""uniqueness"":""full""}"
 pareto3,shape,UnivariateML.Endpoint3FellerParetoFreeScale.fixed_shapes_unique,dev/lean/UnivariateML/Family/Endpoint3FellerParetoFreeScale.lean,263,"At attained fixed shapes, the joint scale and threshold are unique. At lower power one the threshold is closed contact, and at strictly larger lower power the threshold gap is positive."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {a b c K : ℝ} (hb : 0 < b) (hc : 0 < c)
     (ha : 1 ≤ a) (hE : 0 < exponent d b) :
     ∃! v, v ∈ domain a ∧ IsMaxOn (logLik d a b c K) (domain a) v ∧
-      (v.2 = 0 ↔ a = 1)",uniqueness,,"Specialize the common kernel to equal lower, upper and transformation powers.",
+      (v.2 = 0 ↔ a = 1)",uniqueness,,"Specialize the common kernel to equal lower, upper and transformation powers.","{""uniqueness"":""full""}"
 pareto4,shape1+shape2,UnivariateML.Endpoint3FellerParetoFreeScale.fixed_shapes_unique,dev/lean/UnivariateML/Family/Endpoint3FellerParetoFreeScale.lean,263,"At attained fixed shapes, the joint scale and threshold are unique. At lower power one the threshold is closed contact, and at strictly larger lower power the threshold gap is positive."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {a b c K : ℝ} (hb : 0 < b) (hc : 0 < c)
     (ha : 1 ≤ a) (hE : 0 < exponent d b) :
     ∃! v, v ∈ domain a ∧ IsMaxOn (logLik d a b c K) (domain a) v ∧
-      (v.2 = 0 ↔ a = 1)",uniqueness,,Specialize to lower power c and upper power c times shape1.,
+      (v.2 = 0 ↔ a = 1)",uniqueness,,Specialize to lower power c and upper power c times shape1.,"{""uniqueness"":""full""}"
 fpareto,scale+shape2+shape3,UnivariateML.Endpoint3FellerParetoHeldScale.regular_fit,dev/lean/UnivariateML/Family/Endpoint3FellerParetoHeldScale.lean,90,"If the sample is nonconstant and the lower power is at least one, the threshold and upper shape have a finite maximizer. The unit lower power allows closed threshold contact."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
     (hne : ∃ i, 0 < d i) {p c s : ℝ} (hp : 0 < p) (hc : 0 < c) (hs : 0 < s)
     (ha : 1 ≤ c * p) :
     let D := Ioi (0 : ℝ) ×ˢ (if c * p = 1 then Ici (0 : ℝ) else Ioi 0)
     let L := fun v : ℝ × ℝ ↦ Endpoint2FellerPareto.interiorLogLik d p v.1 c s v.2
-    ∃ v ∈ D, IsMaxOn L D v",criterion,,The regular nonconstant implication.,
+    ∃ v ∈ D, IsMaxOn L D v",criterion,,The regular nonconstant implication.,"{""criterion"":""partial""}"
 fpareto,scale+shape2+shape3,UnivariateML.Endpoint3FellerParetoHeldScale.criterion,dev/lean/UnivariateML/Family/Endpoint3FellerParetoHeldScale.lean,264,"At held scale, lower shape and power, attainment holds exactly at regular lower power on a nonconstant sample."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
     {p c s : ℝ} (hp : 0 < p) (hc : 0 < c) (hs : 0 < s) :
     let D := Ioi (0 : ℝ) ×ˢ (if c * p = 1 then Ici (0 : ℝ) else Ioi 0)
     let L := fun v : ℝ × ℝ ↦ Endpoint2FellerPareto.interiorLogLik d p v.1 c s v.2
-    (∃ v ∈ D, IsMaxOn L D v) ↔ 1 ≤ c * p ∧ ∃ i, 0 < d i",criterion,,,
+    (∃ v ∈ D, IsMaxOn L D v) ↔ 1 ≤ c * p ∧ ∃ i, 0 < d i",criterion,,,"{""criterion"":""full""}"
 fpareto,scale+shape2+shape3,UnivariateML.Endpoint3FellerParetoHeldScale.unit_lower_power_unique,dev/lean/UnivariateML/Family/Endpoint3FellerParetoHeldScale.lean,289,"When the held lower power is one, every nonconstant sample has one maximizing upper shape and threshold. The threshold is closed contact at the sample minimum."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) (hne : ∃ i, 0 < d i) {p c s : ℝ}
     (hp : 0 < p) (hc : 0 < c) (hs : 0 < s) (hunit : c * p = 1) :
     let D := Ioi (0 : ℝ) ×ˢ Ici (0 : ℝ)
     let L := fun v : ℝ × ℝ ↦ Endpoint2FellerPareto.interiorLogLik d p v.1 c s v.2
-    ∃! v, v ∈ D ∧ IsMaxOn L D v ∧ v.2 = 0",uniqueness,,The pointwise unit lower-power branch.,
+    ∃! v, v ∈ D ∧ IsMaxOn L D v ∧ v.2 = 0",uniqueness,,The pointwise unit lower-power branch.,"{""uniqueness"":""partial""}"
 gb2,shape1+shape3,UnivariateML.Endpoint3GB2.held_beta_shapes_criterion,dev/lean/UnivariateML/Family/Endpoint3GB2.lean,31,"With positive held beta shapes and a positive nonempty sample, the free power and scale attain exactly on nonconstant data. On constants the same held-shape likelihood is unbounded."," {n : ℕ} (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) {p q : ℝ} (hp : 0 < p) (hq : 0 < q) :
     let L := fun v : ℝ × ℝ ↦ Shape2GB2.logLik x v.2 v.1 (p, q)
     ((∃ v ∈ Beta.domain, IsMaxOn L Beta.domain v) ↔ ∃ i j, x i ≠ x j) ∧
-      ((∀ i j, x i = x j) → ¬ BddAbove (L '' Beta.domain))","criterion, failure",,,
+      ((∀ i j, x i = x j) → ¬ BddAbove (L '' Beta.domain))","criterion, failure",,,"{""criterion"":""full"",""failure"":""full""}"
 fpareto,min,UnivariateML.Endpoint3GB2.feller_pareto_gamma_face_paths,dev/lean/UnivariateML/Family/Endpoint3GB2.lean,60,"Both transformed-gamma likelihood faces of Feller–Pareto, expressed on the powered positive excesses. The upper shape can diverge while the lower shape is held, and the reciprocal ray holds the upper shape while the lower shape diverges."," {n : ℕ} {x : Fin n → ℝ} {μ c p q r : ℝ}
     (hx : ∀ i, μ < x i) (hc : 0 < c) (hp : 0 < p) (hq : 0 < q) (hr : 0 < r) :
     let y := ShapeFacesFellerPareto.poweredExcess x μ c
@@ -118,7 +118,7 @@ fpareto,min,UnivariateML.Endpoint3GB2.feller_pareto_gamma_face_paths,dev/lean/Un
     (Tendsto (fun t : ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ c ((t / r) ^ c⁻¹) (p, t))
       atTop (𝓝 ((∑ i, Gamma.logDensity p r (y i)) + J))) ∧
     (Tendsto (fun t : ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ c ((r / t) ^ c⁻¹) (t, q))
-      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))","path:4, path:5",,Both sample log-likelihood limits at fixed power.,
+      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))","path:4, path:5",,Both sample log-likelihood limits at fixed power.,"{""path:4"":""partial"",""path:5"":""partial"",""failure"":""partial""}"
 fpareto,min+shape3,UnivariateML.Endpoint3GB2.feller_pareto_gamma_face_paths,dev/lean/UnivariateML/Family/Endpoint3GB2.lean,60,"Both transformed-gamma likelihood faces of Feller–Pareto, expressed on the powered positive excesses. The upper shape can diverge while the lower shape is held, and the reciprocal ray holds the upper shape while the lower shape diverges."," {n : ℕ} {x : Fin n → ℝ} {μ c p q r : ℝ}
     (hx : ∀ i, μ < x i) (hc : 0 < c) (hp : 0 < p) (hq : 0 < q) (hr : 0 < r) :
     let y := ShapeFacesFellerPareto.poweredExcess x μ c
@@ -126,7 +126,7 @@ fpareto,min+shape3,UnivariateML.Endpoint3GB2.feller_pareto_gamma_face_paths,dev/
     (Tendsto (fun t : ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ c ((t / r) ^ c⁻¹) (p, t))
       atTop (𝓝 ((∑ i, Gamma.logDensity p r (y i)) + J))) ∧
     (Tendsto (fun t : ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ c ((r / t) ^ c⁻¹) (t, q))
-      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))",failure,,"The transformed-gamma likelihood path, holding the lower shape.",
+      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))",failure,,"The transformed-gamma likelihood path, holding the lower shape.","{""failure"":""partial""}"
 fpareto,min+shape1,UnivariateML.Endpoint3GB2.feller_pareto_gamma_face_paths,dev/lean/UnivariateML/Family/Endpoint3GB2.lean,60,"Both transformed-gamma likelihood faces of Feller–Pareto, expressed on the powered positive excesses. The upper shape can diverge while the lower shape is held, and the reciprocal ray holds the upper shape while the lower shape diverges."," {n : ℕ} {x : Fin n → ℝ} {μ c p q r : ℝ}
     (hx : ∀ i, μ < x i) (hc : 0 < c) (hp : 0 < p) (hq : 0 < q) (hr : 0 < r) :
     let y := ShapeFacesFellerPareto.poweredExcess x μ c
@@ -134,7 +134,7 @@ fpareto,min+shape1,UnivariateML.Endpoint3GB2.feller_pareto_gamma_face_paths,dev/
     (Tendsto (fun t : ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ c ((t / r) ^ c⁻¹) (p, t))
       atTop (𝓝 ((∑ i, Gamma.logDensity p r (y i)) + J))) ∧
     (Tendsto (fun t : ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ c ((r / t) ^ c⁻¹) (t, q))
-      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))",failure,,"The inverse transformed-gamma likelihood path, holding the upper shape.",
+      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))",failure,,"The inverse transformed-gamma likelihood path, holding the upper shape.","{""failure"":""partial""}"
 gb2,all free,UnivariateML.Endpoint3GB2.gamma_face_paths,dev/lean/UnivariateML/Family/Endpoint3GB2.lean,109,"At any fixed positive power, GB2 has both transformed-gamma likelihood limits, with either beta shape fixed along the appropriate joint ray. The Jacobian restores the original data coordinates."," {n : ℕ} {x : Fin n → ℝ} {c p q r : ℝ}
     (hx : ∀ i, 0 < x i) (hc : 0 < c) (hp : 0 < p) (hq : 0 < q) (hr : 0 < r) :
     let y := fun i ↦ (x i) ^ c
@@ -142,7 +142,7 @@ gb2,all free,UnivariateML.Endpoint3GB2.gamma_face_paths,dev/lean/UnivariateML/Fa
     (Tendsto (fun t : ℝ ↦ Shape2GB2.logLik x ((t / r) ^ c⁻¹) c (p,t))
       atTop (𝓝 ((∑ i, Gamma.logDensity p r (y i)) + J))) ∧
     (Tendsto (fun t : ℝ ↦ Shape2GB2.logLik x ((r / t) ^ c⁻¹) c (t,q))
-      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))","path:4, path:5",,Both sample log-likelihood limits at fixed power.,
+      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))","path:4, path:5",,Both sample log-likelihood limits at fixed power.,"{""path:4"":""partial"",""path:5"":""partial"",""failure"":""partial""}"
 gb2,shape1,UnivariateML.Endpoint3GB2.gamma_face_paths,dev/lean/UnivariateML/Family/Endpoint3GB2.lean,109,"At any fixed positive power, GB2 has both transformed-gamma likelihood limits, with either beta shape fixed along the appropriate joint ray. The Jacobian restores the original data coordinates."," {n : ℕ} {x : Fin n → ℝ} {c p q r : ℝ}
     (hx : ∀ i, 0 < x i) (hc : 0 < c) (hp : 0 < p) (hq : 0 < q) (hr : 0 < r) :
     let y := fun i ↦ (x i) ^ c
@@ -150,7 +150,7 @@ gb2,shape1,UnivariateML.Endpoint3GB2.gamma_face_paths,dev/lean/UnivariateML/Fami
     (Tendsto (fun t : ℝ ↦ Shape2GB2.logLik x ((t / r) ^ c⁻¹) c (p,t))
       atTop (𝓝 ((∑ i, Gamma.logDensity p r (y i)) + J))) ∧
     (Tendsto (fun t : ℝ ↦ Shape2GB2.logLik x ((r / t) ^ c⁻¹) c (t,q))
-      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))",failure,,"The inverse transformed-gamma likelihood path, holding the upper shape.",
+      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))",failure,,"The inverse transformed-gamma likelihood path, holding the upper shape.","{""failure"":""partial""}"
 gb2,shape3,UnivariateML.Endpoint3GB2.gamma_face_paths,dev/lean/UnivariateML/Family/Endpoint3GB2.lean,109,"At any fixed positive power, GB2 has both transformed-gamma likelihood limits, with either beta shape fixed along the appropriate joint ray. The Jacobian restores the original data coordinates."," {n : ℕ} {x : Fin n → ℝ} {c p q r : ℝ}
     (hx : ∀ i, 0 < x i) (hc : 0 < c) (hp : 0 < p) (hq : 0 < q) (hr : 0 < r) :
     let y := fun i ↦ (x i) ^ c
@@ -158,12 +158,12 @@ gb2,shape3,UnivariateML.Endpoint3GB2.gamma_face_paths,dev/lean/UnivariateML/Fami
     (Tendsto (fun t : ℝ ↦ Shape2GB2.logLik x ((t / r) ^ c⁻¹) c (p,t))
       atTop (𝓝 ((∑ i, Gamma.logDensity p r (y i)) + J))) ∧
     (Tendsto (fun t : ℝ ↦ Shape2GB2.logLik x ((r / t) ^ c⁻¹) c (t,q))
-      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))",failure,,"The transformed-gamma likelihood path, holding the lower shape.",
+      atTop (𝓝 ((∑ i, Gamma.logDensity q r (y i)⁻¹) - ∑ i, 2 * log (y i) + J)))",failure,,"The transformed-gamma likelihood path, holding the lower shape.","{""failure"":""partial""}"
 genbeta,shape1+shape2+shape3,UnivariateML.Endpoint3GeneralizedBeta.subunit_divergence_requires_contact,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBeta.lean,34,"At fixed shapes, every divergent strict-interior subunit-shape sequence approaches the sample maximum. Away from that endpoint the positive spike terms have a common finite upper bound."," {ι : Type*} {l : Filter ι}
     {x : Fin n → ℝ} {M p q c : ℝ} (hx : ∀ i, 0 < x i) (hle : ∀ i, x i ≤ M)
     (hp : 0 < p) (hq : q < 1) (hc : 0 < c) {b : ι → ℝ}
     (hb : ∀ᶠ j in l, M < b j) (hdiv : Tendsto (fun j ↦ logLik x (b j) p q c) l atTop) :
-    Tendsto b l (𝓝 M)",failure,,Subunit branch for arbitrary strict-interior divergent paths.,
+    Tendsto b l (𝓝 M)",failure,,Subunit branch for arbitrary strict-interior divergent paths.,"{""failure"":""partial""}"
 genbeta,shape1+shape2+shape3,UnivariateML.Endpoint3GeneralizedBeta.fixed_shapes_endpoint_uniqueness,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBeta.lean,71,"The sole finite endpoint fit is sample contact at unit upper shape. Above one, a unique interior endpoint solves the normalized score."," (hn : 0 < n) {x : Fin n → ℝ} {M p q c : ℝ}
     (hx : ∀ i, 0 < x i) (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M)
     (hp : 0 < p) (hc : 0 < c) :
@@ -171,48 +171,48 @@ genbeta,shape1+shape2+shape3,UnivariateML.Endpoint3GeneralizedBeta.fixed_shapes_
     (q = 1 → IsMaxOn L (Ici M) M ∧ ∀ b ∈ Ici M, IsMaxOn L (Ici M) b → b = M) ∧
     (1 < q → (∃! b, b ∈ Ioi M ∧ IsMaxOn L (Ioi M) b) ∧
       ∀ b ∈ Ioi M, IsMaxOn L (Ioi M) b ↔
-        Endpoint2BetaWidth.score (unitData x M c) q p ((M / b) ^ c) = 0)",uniqueness,,,
+        Endpoint2BetaWidth.score (unitData x M c) q p ((M / b) ^ c) = 0)",uniqueness,,,"{""uniqueness"":""full""}"
 genbeta,scale+shape1,UnivariateML.Endpoint3GeneralizedBeta.held_scale_first_shape_constant_path,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBeta.lean,90,A constant positive sample strictly below the held endpoint concentrates along the written joint upper-shape and power ray with first shape fixed.," (hn : 0 < n) {v b p : ℝ}
     (hv : 0 < v) (hb : v < b) (hp : 0 < p) :
     Tendsto (fun c ↦ logLik (fun _ : Fin n ↦ v) b p
-      (p * exp (c * log (b / v))) c) atTop atTop","failure, path:1, limit:1",,Coupled shape-power ray gives likelihood divergence on every constant interior sample.,
+      (p * exp (c * log (b / v))) c) atTop atTop","failure, path:1, limit:1",,Coupled shape-power ray gives likelihood divergence on every constant interior sample.,"{""failure"":""partial"",""path:1"":""full"",""limit:1"":""full""}"
 genbeta,scale,UnivariateML.Endpoint3GeneralizedBeta.held_scale_first_shape_constant_path,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBeta.lean,90,A constant positive sample strictly below the held endpoint concentrates along the written joint upper-shape and power ray with first shape fixed.," (hn : 0 < n) {v b p : ℝ}
     (hv : 0 < v) (hb : v < b) (hp : 0 < p) :
     Tendsto (fun c ↦ logLik (fun _ : Fin n ↦ v) b p
-      (p * exp (c * log (b / v))) c) atTop atTop",path:1,,The same ray with first shape fixed is feasible in this larger mask.,
+      (p * exp (c * log (b / v))) c) atTop atTop",path:1,,The same ray with first shape fixed is feasible in this larger mask.,"{""path:1"":""partial"",""failure"":""partial""}"
 genbeta,scale,UnivariateML.Endpoint3GeneralizedBeta.held_endpoint_gamma_path,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBeta.lean,187,"At a held endpoint, increasing the first shape while keeping its product with power equal to the rate gives the gamma face on log distances. The right side includes the Jacobian on the original data."," {x : Fin n → ℝ} {b q r : ℝ}
     (hx : ∀ i, 0 < x i ∧ x i < b) (hq : 0 < q) (hr : 0 < r) :
     let d := fun i ↦ log (b / x i)
     Tendsto (fun p ↦ logLik x b p q (r / p)) atTop
       (𝓝 (∑ i, (q * log r + (q - 1) * log (d i) -
-        r * d i - log (Gamma q) - log (x i))))",path:2,,Likelihood convergence on the fixed-product joint ray. Law convergence remains open.,
+        r * d i - log (Gamma q) - log (x i))))",path:2,,Likelihood convergence on the fixed-product joint ray. Law convergence remains open.,"{""path:2"":""partial""}"
 genbeta,scale+shape2,UnivariateML.Endpoint3GeneralizedBeta.held_endpoint_gamma_path,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBeta.lean,187,"At a held endpoint, increasing the first shape while keeping its product with power equal to the rate gives the gamma face on log distances. The right side includes the Jacobian on the original data."," {x : Fin n → ℝ} {b q r : ℝ}
     (hx : ∀ i, 0 < x i ∧ x i < b) (hq : 0 < q) (hr : 0 < r) :
     let d := fun i ↦ log (b / x i)
     Tendsto (fun p ↦ logLik x b p q (r / p)) atTop
       (𝓝 (∑ i, (q * log r + (q - 1) * log (d i) -
-        r * d i - log (Gamma q) - log (x i))))",path:2,,Likelihood convergence on the fixed-product joint ray. Law convergence remains open.,
+        r * d i - log (Gamma q) - log (x i))))",path:2,,Likelihood convergence on the fixed-product joint ray. Law convergence remains open.,"{""path:2"":""partial""}"
 genbeta,shape1+shape2,UnivariateML.Endpoint3GeneralizedBeta.fixed_beta_shapes_joint_uniqueness,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBeta.lean,234,At fixed beta shapes every attained endpoint and power fit is unique. Its endpoint is sample contact at unit upper shape and is strictly above the sample at greater upper shape.," (hn : 0 < n) {x : Fin n → ℝ} {M p q : ℝ}
     (hx : ∀ i, 0 < x i) (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M)
     (hp : 0 < p) :
     let D := Ioi (0 : ℝ) ×ˢ (if q = 1 then Ici M else Ioi M)
     let L := fun v : ℝ × ℝ ↦ logLik x v.2 p q v.1
     (∃ v ∈ D, IsMaxOn L D v) →
-      ∃! v, v ∈ D ∧ IsMaxOn L D v ∧ (v.2 = M ↔ q = 1)",uniqueness,,,
+      ∃! v, v ∈ D ∧ IsMaxOn L D v ∧ (v.2 = M ↔ q = 1)",uniqueness,,,"{""uniqueness"":""full""}"
 genbeta,shape2+shape3,UnivariateML.Endpoint3GeneralizedBetaHeldPower.regular_superlevel_compact,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBetaHeldPower.lean,112,"With held regular upper shape and held power, every finite superlevel is compact in first-shape and physical endpoint coordinates on nonconstant positive data. Unit upper shape includes closed contact."," (hn : 0 < n) {x : Fin n → ℝ} {M q c : ℝ}
     (hx : ∀ i, 0 < x i) (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M)
     (hne : ∃ i, x i < M) (hq : 1 ≤ q) (hc : 0 < c) (C : ℝ) :
     let D := Ioi (0 : ℝ) ×ˢ (if q = 1 then Ici M else Ioi M)
     let L := fun v : ℝ × ℝ ↦ logLik x v.2 v.1 q c
-    IsCompact {v ∈ D | C ≤ L v}","criterion, failure",,Regular nonconstant branch in physical coordinates.,
+    IsCompact {v ∈ D | C ≤ L v}","criterion, failure",,Regular nonconstant branch in physical coordinates.,"{""criterion"":""partial"",""failure"":""partial""}"
 genbeta,shape2+shape3,UnivariateML.Endpoint3GeneralizedBetaHeldPower.constant_first_shape_path,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBetaHeldPower.lean,270,"On constant positive samples, a held upper shape and power allow concentration as the first shape increases and the endpoint approaches the common value from above."," (hn : 0 < n) {v q c : ℝ}
     (hv : 0 < v) (hq : 0 < q) (hc : 0 < c) :
     Tendsto (fun p ↦ logLik (fun _ : Fin n ↦ v) (v / (1 - p⁻¹) ^ c⁻¹) p q c)
-      atTop atTop",failure,,Explicit regular constant branch.,
+      atTop atTop",failure,,Explicit regular constant branch.,"{""failure"":""partial""}"
 genbeta,shape3,UnivariateML.Endpoint3GeneralizedBetaHeldPower.constant_first_shape_path,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBetaHeldPower.lean,270,"On constant positive samples, a held upper shape and power allow concentration as the first shape increases and the endpoint approaches the common value from above."," (hn : 0 < n) {v q c : ℝ}
     (hv : 0 < v) (hq : 0 < q) (hc : 0 < c) :
     Tendsto (fun p ↦ logLik (fun _ : Fin n ↦ v) (v / (1 - p⁻¹) ^ c⁻¹) p q c)
-      atTop atTop",failure,,Constant branch with the upper shape and power fixed along the ray.,
+      atTop atTop",failure,,Constant branch with the upper shape and power fixed along the ray.,"{""failure"":""partial""}"
 genbeta,shape2+shape3,UnivariateML.Endpoint3GeneralizedBetaHeldPower.criterion,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBetaHeldPower.lean,319,"With fixed upper shape and power, a finite positive maximum exists exactly for nonconstant positive data and upper shape at least one. The regular nonconstant branch has compact finite superlevels."," {x : Fin n → ℝ} {M q c : ℝ}
     (hx : ∀ i, 0 < x i) (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M)
     (hq : 0 < q) (hc : 0 < c) :
@@ -220,14 +220,14 @@ genbeta,shape2+shape3,UnivariateML.Endpoint3GeneralizedBetaHeldPower.criterion,d
     let L := fun v : ℝ × ℝ ↦ logLik x v.2 v.1 q c
     ((∃ v ∈ D, IsMaxOn L D v) ↔ 1 ≤ q ∧ ∃ i, x i < M) ∧
       ((q < 1 ∨ ∀ i, x i = M) → ¬ BddAbove (L '' D)) ∧
-      ((1 ≤ q ∧ ∃ i, x i < M) → ∀ C, IsCompact {v ∈ D | C ≤ L v})","criterion, failure",,,
+      ((1 ≤ q ∧ ∃ i, x i < M) → ∀ C, IsCompact {v ∈ D | C ≤ L v})","criterion, failure",,,"{""criterion"":""full"",""failure"":""full""}"
 genbeta,shape1+shape3,UnivariateML.Endpoint3GeneralizedBetaSingular.divergent_sequences_require_subunit_contact,dev/lean/UnivariateML/Family/Endpoint3GeneralizedBetaSingular.lean,90,"At fixed positive first shape and power, any divergent interior likelihood sequence eventually has subunit upper shape and approaches the sample maximum. The bounds are uniform over upper shape and apply also to constants and samples with ties at the maximum."," {ι : Type*} {l : Filter ι}
     {n : ℕ} {x : Fin n → ℝ} {M p c : ℝ} (hx : ∀ i, 0 < x i)
     (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M)
     (hp : 0 < p) (hc : 0 < c) {b q : ι → ℝ}
     (hb : ∀ᶠ j in l, M < b j) (hq : ∀ᶠ j in l, 0 < q j)
     (hdiv : Tendsto (fun j ↦ logLik x (b j) p (q j) c) l atTop) :
-    (∀ᶠ j in l, q j < 1) ∧ Tendsto b l (𝓝 M)",failure,,All divergent strictly containing paths eventually have subunit upper shape and converge to contact. Joint rate and weak-law classifications remain open.,
+    (∀ᶠ j in l, q j < 1) ∧ Tendsto b l (𝓝 M)",failure,,All divergent strictly containing paths eventually have subunit upper shape and converge to contact. Joint rate and weak-law classifications remain open.,"{""failure"":""full""}"
 invpareto,all free,UnivariateML.Endpoint3InversePareto.inverse_exponential_failure,dev/lean/UnivariateML/Family/Endpoint3InversePareto.lean,22,"When the finite inverse Pareto witness test fails, the fitted inverse exponential value is a strict least upper bound, reached in the limit along the fitted-rate path. This includes constant positive samples."," {n : ℕ} (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i)
     (hw : ¬ ∃ u ∈ Ioo 0 (Lomax.uBar (Transfer.reciprocal x)),
@@ -237,32 +237,32 @@ invpareto,all free,UnivariateML.Endpoint3InversePareto.inverse_exponential_failu
     let C := Transfer.InvPareto.bestInvExp x
     IsLUB (L '' Lomax.domain) C ∧
       (∀ p ∈ Lomax.domain, L p < C) ∧
-      Tendsto (fun k ↦ L (k, r / k)) atTop (𝓝 C)","failure, limit:1",,Exact reciprocal Lomax no-witness predicate. The numerical margin is a separate detector.,
+      Tendsto (fun k ↦ L (k, r / k)) atTop (𝓝 C)","failure, limit:1",,Exact reciprocal Lomax no-witness predicate. The numerical margin is a separate detector.,"{""failure"":""full"",""limit:1"":""partial""}"
 pareto2,min,UnivariateML.Endpoint3LomaxTransfer.paretoII_two_level_unique,dev/lean/UnivariateML/Family/Endpoint3LomaxTransfer.lean,51,An attained two-level Pareto II fit at a held threshold is unique.," (hn : 0 < n) {x : Fin n → ℝ} {μ : ℝ}
     (hx : ∀ i, μ < x i) (h2 : ∃ a b : ℝ, ∀ i, x i = a ∨ x i = b) :
     let L := fun v : ℝ × ℝ ↦ Transfer.ParetoII.logLik x μ v.1 v.2
     (∃ v ∈ Lomax.domain, IsMaxOn L Lomax.domain v) →
-      ∃! v, v ∈ Lomax.domain ∧ IsMaxOn L Lomax.domain v",uniqueness,,Pointwise two-level branch.,
+      ∃! v, v ∈ Lomax.domain ∧ IsMaxOn L Lomax.domain v",uniqueness,,Pointwise two-level branch.,"{""uniqueness"":""partial""}"
 invpareto,all free,UnivariateML.Endpoint3LomaxTransfer.inverse_pareto_two_level_unique,dev/lean/UnivariateML/Family/Endpoint3LomaxTransfer.lean,67,An attained two-level inverse Pareto fit is unique.," (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) (h2 : ∃ a b : ℝ, ∀ i, x i = a ∨ x i = b) :
     let L := fun v : ℝ × ℝ ↦ Transfer.InvPareto.logLik x v.1 v.2
     (∃ v ∈ Lomax.domain, IsMaxOn L Lomax.domain v) →
-      ∃! v, v ∈ Lomax.domain ∧ IsMaxOn L Lomax.domain v",uniqueness,,Pointwise two-level branch.,
+      ∃! v, v ∈ Lomax.domain ∧ IsMaxOn L Lomax.domain v",uniqueness,,Pointwise two-level branch.,"{""uniqueness"":""partial"",""case:small-support"":""full""}"
 pareto4,min+shape2,UnivariateML.Endpoint3LomaxTransfer.paretoIV_two_level_unique,dev/lean/UnivariateML/Family/Endpoint3LomaxTransfer.lean,81,An attained two-level Pareto IV fit at held threshold and power is unique. Raising the positive excesses to the held power preserves the two levels and transfers to the Lomax singleton.," (hn : 0 < n) {x : Fin n → ℝ} {μ c : ℝ}
     (hx : ∀ i, μ < x i) (hc : 0 < c) (h2 : ∃ a b : ℝ, ∀ i, x i = a ∨ x i = b) :
     let L := fun v : ℝ × ℝ ↦ ShapeFacesParetoIV.logLik x μ v.1 c v.2
     (∃ v ∈ Lomax.domain, IsMaxOn L Lomax.domain v) →
-      ∃! v, v ∈ Lomax.domain ∧ IsMaxOn L Lomax.domain v",uniqueness,,Pointwise two-level branch.,
+      ∃! v, v ∈ Lomax.domain ∧ IsMaxOn L Lomax.domain v",uniqueness,,Pointwise two-level branch.,"{""uniqueness"":""partial""}"
 nsbeta,shape1+shape2,UnivariateML.Endpoint3NonstandardBeta.fixed_shapes_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,26,"With both endpoints free, a subunit shape permits a spike and a constant sample permits concentration. The two mechanisms both give unbounded likelihood using strictly containing endpoints."," (hn : 0 < n) (x : Fin n → ℝ) {a b : ℝ}
     (h : (a < 1 ∨ b < 1) ∨ ∃ v, ∀ i, x i = v) :
     let D : Set (ℝ × ℝ) := {p | p.1 < p.2 ∧ ∀ i, x i ∈ Ioo p.1 p.2}
     let L : ℝ × ℝ → ℝ := fun p ↦ NonstandardBeta.logLik x p.1 p.2 (a, b)
-    ¬ BddAbove (L '' D)",failure,,,
+    ¬ BddAbove (L '' D)",failure,,,"{""failure"":""full""}"
 nsbeta,shape1+shape2,UnivariateML.Endpoint3NonstandardBeta.fixed_shapes_criterion,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,45,A positive finite endpoint fit exists exactly for nonconstant data with both shapes at least one. Endpoints may touch their sample extremes at the corresponding unit shape.," (hn : 0 < n) {x : Fin n → ℝ} {m M a b : ℝ}
     (hx : ∀ i, x i ∈ Icc m M) (hmin : ∃ i, x i = m) (hmax : ∃ i, x i = M) :
     let D := {v ∈ Endpoint2NonstandardBetaAffine.endpointDomain m M a b | v.1 < v.2}
     let L := fun v : ℝ × ℝ ↦ NonstandardBeta.logLik x v.1 v.2 (a, b)
-    (∃ v ∈ D, IsMaxOn L D v) ↔ m < M ∧ 1 ≤ a ∧ 1 ≤ b",criterion,,,
+    (∃ v ∈ D, IsMaxOn L D v) ↔ m < M ∧ 1 ≤ a ∧ 1 ≤ b",criterion,,,"{""criterion"":""full""}"
 nsbeta,min+shape1+shape2,UnivariateML.Endpoint3NonstandardBeta.fixed_width_shapes_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,78,"When one end and both shapes are held, the negative-distance and held-contact cases are tested before finite likelihood. With positive held-end factors, subunit free-end shape spikes at a positive maximum distance, and zero distances at held shape one concentrate by shrinking the width. Distances are measured inward from either held endpoint."," (hn : 0 < n) {z : Fin n → ℝ} {a b Z : ℝ}
     (hle : ∀ i, z i ≤ Z) (hmax : ∃ i, z i = Z) :
     let F := Endpoint2NonstandardBetaContacts.strictWidthLikelihood z a b
@@ -273,7 +273,7 @@ nsbeta,min+shape1+shape2,UnivariateML.Endpoint3NonstandardBeta.fixed_width_shape
       (b < 1 → F W = ⊤) ∧ (1 < b → F W = 0) ∧
       (b = 1 → 0 < F W ∧ F W < ⊤)) ∧
     (Endpoint2NonstandardBeta.heldCompatible z b →
-      ((a < 1 ∧ 0 < Z) ∨ Z = 0) → ¬ BddAbove (L '' D))",failure,,Inward distances from the held minimum.,
+      ((a < 1 ∧ 0 < Z) ∨ Z = 0) → ¬ BddAbove (L '' D))",failure,,Inward distances from the held minimum.,"{""failure"":""full""}"
 nsbeta,max+shape1+shape2,UnivariateML.Endpoint3NonstandardBeta.fixed_width_shapes_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,78,"When one end and both shapes are held, the negative-distance and held-contact cases are tested before finite likelihood. With positive held-end factors, subunit free-end shape spikes at a positive maximum distance, and zero distances at held shape one concentrate by shrinking the width. Distances are measured inward from either held endpoint."," (hn : 0 < n) {z : Fin n → ℝ} {a b Z : ℝ}
     (hle : ∀ i, z i ≤ Z) (hmax : ∃ i, z i = Z) :
     let F := Endpoint2NonstandardBetaContacts.strictWidthLikelihood z a b
@@ -284,7 +284,7 @@ nsbeta,max+shape1+shape2,UnivariateML.Endpoint3NonstandardBeta.fixed_width_shape
       (b < 1 → F W = ⊤) ∧ (1 < b → F W = 0) ∧
       (b = 1 → 0 < F W ∧ F W < ⊤)) ∧
     (Endpoint2NonstandardBeta.heldCompatible z b →
-      ((a < 1 ∧ 0 < Z) ∨ Z = 0) → ¬ BddAbove (L '' D))",failure,,"Inward distances from the held maximum, with shape labels reflected.",
+      ((a < 1 ∧ 0 < Z) ∨ Z = 0) → ¬ BddAbove (L '' D))",failure,,"Inward distances from the held maximum, with shape labels reflected.","{""failure"":""full""}"
 nsbeta,min+shape2,UnivariateML.Endpoint3NonstandardBeta.held_endpoint_fixed_free_shape_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,171,"With the free-end shape held, negative distances are incompatible, held-end contact permits infinite likelihood, and a positive constant sample or subunit free-end shape gives unbounded likelihood. The inward-distance formulation covers either held endpoint."," {z : Fin n → ℝ} {Z a : ℝ}
     (hle : ∀ i, z i ≤ Z) (hmax : ∃ i, z i = Z) (ha : 0 < a) :
     let D := {v : ℝ × ℝ | 0 < v.1 ∧
@@ -293,7 +293,7 @@ nsbeta,min+shape2,UnivariateML.Endpoint3NonstandardBeta.held_endpoint_fixed_free
     ((∃ i, z i < 0) → D = ∅) ∧
     ((∀ i, 0 ≤ z i) → (∃ i, z i = 0) → ∀ W > max Z 0,
       Endpoint2NonstandardBetaContacts.strictWidthLikelihood z a (1 / 2) W = ⊤) ∧
-    ((∀ i, 0 < z i) → (a < 1 ∨ ∀ i, z i = Z) → ¬ BddAbove (L '' D))",failure,,The fixed moving-end shape is shape2.,
+    ((∀ i, 0 < z i) → (a < 1 ∨ ∀ i, z i = Z) → ¬ BddAbove (L '' D))",failure,,The fixed moving-end shape is shape2.,"{""failure"":""full""}"
 nsbeta,max+shape1,UnivariateML.Endpoint3NonstandardBeta.held_endpoint_fixed_free_shape_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,171,"With the free-end shape held, negative distances are incompatible, held-end contact permits infinite likelihood, and a positive constant sample or subunit free-end shape gives unbounded likelihood. The inward-distance formulation covers either held endpoint."," {z : Fin n → ℝ} {Z a : ℝ}
     (hle : ∀ i, z i ≤ Z) (hmax : ∃ i, z i = Z) (ha : 0 < a) :
     let D := {v : ℝ × ℝ | 0 < v.1 ∧
@@ -302,7 +302,7 @@ nsbeta,max+shape1,UnivariateML.Endpoint3NonstandardBeta.held_endpoint_fixed_free
     ((∃ i, z i < 0) → D = ∅) ∧
     ((∀ i, 0 ≤ z i) → (∃ i, z i = 0) → ∀ W > max Z 0,
       Endpoint2NonstandardBetaContacts.strictWidthLikelihood z a (1 / 2) W = ⊤) ∧
-    ((∀ i, 0 < z i) → (a < 1 ∨ ∀ i, z i = Z) → ¬ BddAbove (L '' D))",failure,,The fixed moving-end shape is shape1.,
+    ((∀ i, 0 < z i) → (a < 1 ∨ ∀ i, z i = Z) → ¬ BddAbove (L '' D))",failure,,The fixed moving-end shape is shape1.,"{""failure"":""full""}"
 nsbeta,min+shape2,UnivariateML.Endpoint3NonstandardBeta.held_endpoint_fixed_free_shape_criterion,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,209,The free width and held-end shape admit a finite fit exactly when all inward distances are positive and nonconstant and the held free-end shape is at least one. The strict-width test excludes infinite held-end contact before comparison on the finite domain.," {z : Fin n → ℝ} {Z a : ℝ}
     (hle : ∀ i, z i ≤ Z) (hmax : ∃ i, z i = Z) (ha : 0 < a) :
     let D := {v : ℝ × ℝ | 0 < v.1 ∧
@@ -311,7 +311,7 @@ nsbeta,min+shape2,UnivariateML.Endpoint3NonstandardBeta.held_endpoint_fixed_free
     let FiniteContact := ∀ b > 0, ∀ W > max Z 0,
       Endpoint2NonstandardBetaContacts.strictWidthLikelihood z a b W < ⊤
     (FiniteContact ∧ ∃ v ∈ D, IsMaxOn L D v) ↔
-      (∀ i, 0 < z i) ∧ (∃ i, z i < Z) ∧ 1 ≤ a",criterion,,The fixed moving-end shape is shape2.,
+      (∀ i, 0 < z i) ∧ (∃ i, z i < Z) ∧ 1 ≤ a",criterion,,The fixed moving-end shape is shape2.,"{""criterion"":""full""}"
 nsbeta,max+shape1,UnivariateML.Endpoint3NonstandardBeta.held_endpoint_fixed_free_shape_criterion,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,209,The free width and held-end shape admit a finite fit exactly when all inward distances are positive and nonconstant and the held free-end shape is at least one. The strict-width test excludes infinite held-end contact before comparison on the finite domain.," {z : Fin n → ℝ} {Z a : ℝ}
     (hle : ∀ i, z i ≤ Z) (hmax : ∃ i, z i = Z) (ha : 0 < a) :
     let D := {v : ℝ × ℝ | 0 < v.1 ∧
@@ -320,20 +320,20 @@ nsbeta,max+shape1,UnivariateML.Endpoint3NonstandardBeta.held_endpoint_fixed_free
     let FiniteContact := ∀ b > 0, ∀ W > max Z 0,
       Endpoint2NonstandardBetaContacts.strictWidthLikelihood z a b W < ⊤
     (FiniteContact ∧ ∃ v ∈ D, IsMaxOn L D v) ↔
-      (∀ i, 0 < z i) ∧ (∃ i, z i < Z) ∧ 1 ≤ a",criterion,,The fixed moving-end shape is shape1.,
+      (∀ i, 0 < z i) ∧ (∃ i, z i < Z) ∧ 1 ≤ a",criterion,,The fixed moving-end shape is shape1.,"{""criterion"":""full""}"
 nsbeta,max+min,UnivariateML.Endpoint3NonstandardBeta.held_endpoints_constant_shape_ray,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,264,"With both endpoints held around a common interior observation, the fixed-mean two-shape ray has unbounded sample likelihood."," (hn : 0 < n) {l r x : ℝ}
     (hl : l < x) (hr : x < r) :
     let u := (x - l) / (r - l)
     Tendsto (fun t ↦ NonstandardBeta.logLik (fun _ : Fin n ↦ x) l r
-      (t * u, t * (1 - u))) atTop atTop","path:1, limit:1",,Strictly interior constants and both beta shapes free.,
+      (t * u, t * (1 - u))) atTop atTop","path:1, limit:1",,Strictly interior constants and both beta shapes free.,"{""path:1"":""full"",""limit:1"":""full"",""failure"":""full""}"
 nsbeta,shape1,UnivariateML.Endpoint3NonstandardBeta.one_shape_fixed_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,280,"With both endpoints free, holding either positive shape still leaves a subunit shape available at the other endpoint. It gives an unbounded likelihood on every nonempty sample."," (hn : 0 < n) (x : Fin n → ℝ) (b : ℝ) :
     let D : Set (ℝ × ℝ) := {p | p.1 < p.2 ∧ ∀ i, x i ∈ Ioo p.1 p.2}
     (¬ BddAbove ((fun p : ℝ × ℝ ↦ NonstandardBeta.logLik x p.1 p.2 (b, 1 / 2)) '' D)) ∧
-      (¬ BddAbove ((fun p : ℝ × ℝ ↦ NonstandardBeta.logLik x p.1 p.2 (1 / 2, b)) '' D))",failure,,Use the subunit shape2 slice.,
+      (¬ BddAbove ((fun p : ℝ × ℝ ↦ NonstandardBeta.logLik x p.1 p.2 (1 / 2, b)) '' D))",failure,,Use the subunit shape2 slice.,"{""failure"":""partial""}"
 nsbeta,shape2,UnivariateML.Endpoint3NonstandardBeta.one_shape_fixed_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,280,"With both endpoints free, holding either positive shape still leaves a subunit shape available at the other endpoint. It gives an unbounded likelihood on every nonempty sample."," (hn : 0 < n) (x : Fin n → ℝ) (b : ℝ) :
     let D : Set (ℝ × ℝ) := {p | p.1 < p.2 ∧ ∀ i, x i ∈ Ioo p.1 p.2}
     (¬ BddAbove ((fun p : ℝ × ℝ ↦ NonstandardBeta.logLik x p.1 p.2 (b, 1 / 2)) '' D)) ∧
-      (¬ BddAbove ((fun p : ℝ × ℝ ↦ NonstandardBeta.logLik x p.1 p.2 (1 / 2, b)) '' D))",failure,,Use the subunit shape1 slice.,
+      (¬ BddAbove ((fun p : ℝ × ℝ ↦ NonstandardBeta.logLik x p.1 p.2 (1 / 2, b)) '' D))",failure,,Use the subunit shape1 slice.,"{""failure"":""partial""}"
 nsbeta,min,UnivariateML.Endpoint3NonstandardBeta.free_end_shape_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,291,"If the moving-end shape is free, one subunit choice suffices. Negative distances give zero likelihood, a tied held endpoint has the zero, finite, or infinite factor dictated by its shape, and positive held-end factors permit an unbounded moving-end likelihood."," (hn : 0 < n) {z : Fin n → ℝ} {Z : ℝ}
     (hle : ∀ i, z i ≤ Z) (hmax : ∃ i, z i = Z) :
     let F := fun b W ↦ Endpoint2NonstandardBetaContacts.strictWidthLikelihood z (1 / 2) b W
@@ -343,7 +343,7 @@ nsbeta,min,UnivariateML.Endpoint3NonstandardBeta.free_end_shape_failure,dev/lean
         (b = 1 → 0 < F b W ∧ F b W < ⊤)) ∧
     (∀ b, Endpoint2NonstandardBeta.heldCompatible z b →
       ¬ BddAbove (Endpoint2NonstandardBeta.widthLogLik z (1 / 2) b ''
-        Endpoint2NonstandardBeta.finiteWidthDomain z (1 / 2) b))",failure,,A subunit moving-end shape and the extended held-end factor.,
+        Endpoint2NonstandardBeta.finiteWidthDomain z (1 / 2) b))",failure,,A subunit moving-end shape and the extended held-end factor.,"{""failure"":""full""}"
 nsbeta,max,UnivariateML.Endpoint3NonstandardBeta.free_end_shape_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,291,"If the moving-end shape is free, one subunit choice suffices. Negative distances give zero likelihood, a tied held endpoint has the zero, finite, or infinite factor dictated by its shape, and positive held-end factors permit an unbounded moving-end likelihood."," (hn : 0 < n) {z : Fin n → ℝ} {Z : ℝ}
     (hle : ∀ i, z i ≤ Z) (hmax : ∃ i, z i = Z) :
     let F := fun b W ↦ Endpoint2NonstandardBetaContacts.strictWidthLikelihood z (1 / 2) b W
@@ -353,7 +353,7 @@ nsbeta,max,UnivariateML.Endpoint3NonstandardBeta.free_end_shape_failure,dev/lean
         (b = 1 → 0 < F b W ∧ F b W < ⊤)) ∧
     (∀ b, Endpoint2NonstandardBeta.heldCompatible z b →
       ¬ BddAbove (Endpoint2NonstandardBeta.widthLogLik z (1 / 2) b ''
-        Endpoint2NonstandardBeta.finiteWidthDomain z (1 / 2) b))",failure,,A subunit moving-end shape and the extended held-end factor.,
+        Endpoint2NonstandardBeta.finiteWidthDomain z (1 / 2) b))",failure,,A subunit moving-end shape and the extended held-end factor.,"{""failure"":""full""}"
 nsbeta,min+shape1,UnivariateML.Endpoint3NonstandardBeta.free_end_shape_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,291,"If the moving-end shape is free, one subunit choice suffices. Negative distances give zero likelihood, a tied held endpoint has the zero, finite, or infinite factor dictated by its shape, and positive held-end factors permit an unbounded moving-end likelihood."," (hn : 0 < n) {z : Fin n → ℝ} {Z : ℝ}
     (hle : ∀ i, z i ≤ Z) (hmax : ∃ i, z i = Z) :
     let F := fun b W ↦ Endpoint2NonstandardBetaContacts.strictWidthLikelihood z (1 / 2) b W
@@ -363,7 +363,7 @@ nsbeta,min+shape1,UnivariateML.Endpoint3NonstandardBeta.free_end_shape_failure,d
         (b = 1 → 0 < F b W ∧ F b W < ⊤)) ∧
     (∀ b, Endpoint2NonstandardBeta.heldCompatible z b →
       ¬ BddAbove (Endpoint2NonstandardBeta.widthLogLik z (1 / 2) b ''
-        Endpoint2NonstandardBeta.finiteWidthDomain z (1 / 2) b))",failure,,A subunit moving-end shape and the extended held-end factor.,
+        Endpoint2NonstandardBeta.finiteWidthDomain z (1 / 2) b))",failure,,A subunit moving-end shape and the extended held-end factor.,"{""failure"":""full""}"
 nsbeta,max+shape2,UnivariateML.Endpoint3NonstandardBeta.free_end_shape_failure,dev/lean/UnivariateML/Family/Endpoint3NonstandardBeta.lean,291,"If the moving-end shape is free, one subunit choice suffices. Negative distances give zero likelihood, a tied held endpoint has the zero, finite, or infinite factor dictated by its shape, and positive held-end factors permit an unbounded moving-end likelihood."," (hn : 0 < n) {z : Fin n → ℝ} {Z : ℝ}
     (hle : ∀ i, z i ≤ Z) (hmax : ∃ i, z i = Z) :
     let F := fun b W ↦ Endpoint2NonstandardBetaContacts.strictWidthLikelihood z (1 / 2) b W
@@ -373,50 +373,50 @@ nsbeta,max+shape2,UnivariateML.Endpoint3NonstandardBeta.free_end_shape_failure,d
         (b = 1 → 0 < F b W ∧ F b W < ⊤)) ∧
     (∀ b, Endpoint2NonstandardBeta.heldCompatible z b →
       ¬ BddAbove (Endpoint2NonstandardBeta.widthLogLik z (1 / 2) b ''
-        Endpoint2NonstandardBeta.finiteWidthDomain z (1 / 2) b))",failure,,A subunit moving-end shape and the extended held-end factor.,
+        Endpoint2NonstandardBeta.finiteWidthDomain z (1 / 2) b))",failure,,A subunit moving-end shape and the extended held-end factor.,"{""failure"":""full""}"
 pareto2,scale+shape,UnivariateML.Endpoint3ParetoII.threshold_contact_iff,dev/lean/UnivariateML/Family/Endpoint3ParetoII.lean,28,"At held scale and shape the fitted Pareto II threshold is exactly the sample minimum, represented here by zero threshold gap."," {n : ℕ} {d : Fin n → ℝ}
     (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0) {q s : ℝ} (hq : 0 < q) (hs : 0 < s)
     {t : ℝ} (ht : 0 ≤ t) :
-    IsMaxOn (fun u ↦ Transfer.ParetoII.logLik d (-u) q s) (Ici 0) t ↔ t = 0",uniqueness,,Lower power is identically one.,
+    IsMaxOn (fun u ↦ Transfer.ParetoII.logLik d (-u) q s) (Ici 0) t ↔ t = 0",uniqueness,,Lower power is identically one.,"{""criterion"":""full"",""uniqueness"":""full""}"
 pareto3,scale+shape,UnivariateML.Endpoint3ParetoIII.held_scale_shape_threshold,dev/lean/UnivariateML/Family/Endpoint3ParetoIII.lean,36,"With both Pareto III regular coefficients held, the unique threshold is contact at unit shape and the unique normalized-score root is the maximizer above unit shape."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {c s : ℝ} (hc : 0 < c) (hs : 0 < s) :
     let L := fun t ↦ ParetoIII.logLik d (-t) (c, s)
     let S := Endpoint2FellerParetoRegular.normalizedScore d c c c s
     (c = 1 → IsMaxOn L (Ici 0) 0 ∧ ∀ t ∈ Ici 0, IsMaxOn L (Ici 0) t → t = 0) ∧
     (1 < c → (∃! t, t ∈ Ioi 0 ∧ S t = 0) ∧
-      ∀ t ∈ Ioi 0, IsMaxOn L (Ioi 0) t ↔ S t = 0)",uniqueness,,,
+      ∀ t ∈ Ioi 0, IsMaxOn L (Ioi 0) t ↔ S t = 0)",uniqueness,,,"{""uniqueness"":""full""}"
 pareto3,scale,UnivariateML.Endpoint3ParetoIII.held_scale_failure,dev/lean/UnivariateML/Family/Endpoint3ParetoIII.lean,50,"With Pareto III scale held and shape free, a feasible subunit shape gives unbounded likelihood along strictly containing thresholds."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {s : ℝ} (hs : 0 < s) :
-    ∀ B : ℝ, ∃ t > 0, ∃ c > 0, B < ParetoIII.logLik d (-t) (c, s)",failure,,The held scale permits the threshold spike.,
+    ∀ B : ℝ, ∃ t > 0, ∃ c > 0, B < ParetoIII.logLik d (-t) (c, s)",failure,,The held scale permits the threshold spike.,"{""failure"":""partial""}"
 pareto3,shape,UnivariateML.Endpoint3ParetoIII.held_shape_failure,dev/lean/UnivariateML/Family/Endpoint3ParetoIII.lean,63,"With Pareto III shape held, either the subunit spike or negative collapse exponent gives divergence. The regular zero-exponent face has a strictly unattained finite likelihood supremum."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {c : ℝ} (hc : 0 < c) :
     let D := Endpoint2FellerParetoFreeScale.domain c
     let L := fun v : ℝ × ℝ ↦ ParetoIII.logLik d (-v.2) (c, v.1)
     let E := Endpoint2FellerParetoFreeScale.exponent d c
     ((c < 1 ∨ E < 0) → ¬ BddAbove (L '' D)) ∧
-      ((1 ≤ c ∧ E = 0) → ∃ C : ℝ, IsLUB (L '' D) C ∧ ∀ v ∈ D, L v < C)",failure,,,
+      ((1 ≤ c ∧ E = 0) → ∃ C : ℝ, IsLUB (L '' D) C ∧ ∀ v ∈ D, L v < C)",failure,,,"{""failure"":""full""}"
 pareto3,shape,UnivariateML.Endpoint3ParetoIII.held_shape_unique,dev/lean/UnivariateML/Family/Endpoint3ParetoIII.lean,80,"When the held Pareto III shape admits a finite fit, its scale and threshold are unique. The threshold reaches the minimum exactly at unit shape."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {c : ℝ} (hc : 0 < c) (ha : 1 ≤ c)
     (hE : 0 < Endpoint2FellerParetoFreeScale.exponent d c) :
     let D := Endpoint2FellerParetoFreeScale.domain c
     let L := fun v : ℝ × ℝ ↦ ParetoIII.logLik d (-v.2) (c, v.1)
-    ∃! v, v ∈ D ∧ IsMaxOn L D v ∧ (v.2 = 0 ↔ c = 1)",uniqueness,,,
+    ∃! v, v ∈ D ∧ IsMaxOn L D v ∧ (v.2 = 0 ↔ c = 1)",uniqueness,,,"{""uniqueness"":""full""}"
 pareto4,scale+shape2,UnivariateML.Endpoint3ParetoIV.held_scale_power_failure,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,64,"At fixed scale and power, either a subunit power or a constant sample makes the objective unbounded. This holds on strictly positive threshold gaps, so including the finite unit-power contact gives the same conclusion."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {c s : ℝ} (hc : 0 < c) (hs : 0 < s)
     (h : c < 1 ∨ ∀ i, d i = 0) :
-    ∀ B : ℝ, ∃ t > 0, ∃ k > 0, B < ShapeFacesParetoIV.logLik d (-t) k c s",failure,,,
+    ∀ B : ℝ, ∃ t > 0, ∃ k > 0, B < ShapeFacesParetoIV.logLik d (-t) k c s",failure,,,"{""failure"":""full""}"
 pareto4,min,UnivariateML.Endpoint3ParetoIV.fixed_scale_pareto_trace,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,164,"At fixed scale and exactly fixed shape product, a Pareto IV density below cutoff tends to zero, at cutoff to half the Pareto density, and above cutoff to the Pareto density. Products retain every tied factor."," {x : Fin n → ℝ} {μ r s : ℝ}
     (hx : ∀ i, μ < x i) (hr : 0 < r) (hs : 0 < s) :
     let y := fun i ↦ x i - μ
     Tendsto (fun c : ℝ ↦ exp (ShapeFacesParetoIV.logLik x μ (r / c) c s)) atTop
       (𝓝 (∏ i, if y i < s then 0 else if y i = s then r / (2 * y i)
-        else r / y i * exp (-(r * log (y i / s)))))",path:4,,Exact fixed-product density trace.,
+        else r / y i * exp (-(r * log (y i / s)))))",path:4,,Exact fixed-product density trace.,"{""path:4"":""full""}"
 pareto4,min+scale,UnivariateML.Endpoint3ParetoIV.fixed_scale_pareto_trace,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,164,"At fixed scale and exactly fixed shape product, a Pareto IV density below cutoff tends to zero, at cutoff to half the Pareto density, and above cutoff to the Pareto density. Products retain every tied factor."," {x : Fin n → ℝ} {μ r s : ℝ}
     (hx : ∀ i, μ < x i) (hr : 0 < r) (hs : 0 < s) :
     let y := fun i ↦ x i - μ
     Tendsto (fun c : ℝ ↦ exp (ShapeFacesParetoIV.logLik x μ (r / c) c s)) atTop
       (𝓝 (∏ i, if y i < s then 0 else if y i = s then r / (2 * y i)
-        else r / y i * exp (-(r * log (y i / s)))))","path:4, path:5",,Exact fixed-product density trace.,
+        else r / y i * exp (-(r * log (y i / s)))))","path:4, path:5",,Exact fixed-product density trace.,"{""path:4"":""full"",""path:5"":""full""}"
 pareto4,scale+shape2,UnivariateML.Endpoint3ParetoIV.threshold_likelihood_transfer,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,195,On strictly containing thresholds the regular kernel agrees with the physical Pareto IV likelihood. At feasible unit-power contact the same kernel evaluates the continuous density from inside support.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     {k c s t : ℝ} (_hk : 0 < k) (hc : 0 < c) (hs : 0 < s) (ht : 0 < t) :
     ShapeFacesParetoIV.logLik d (-t) k c s = thresholdLogLik d k c s t",support,,Strict-interior equality to the common kernel. The kernel gives the finite unit-power contact.,
@@ -425,57 +425,57 @@ pareto4,all free,UnivariateML.Endpoint3ParetoIV.structural_spike_and_collapse,de
     (∀ k c s : ℝ, 0 < k → 0 < c → c < 1 → 0 < s →
       Tendsto (fun t ↦ ShapeFacesParetoIV.logLik d (-t) k c s) (𝓝[>] 0) atTop) ∧
     (∀ c : ℝ, 0 < c → Tendsto
-      (fun T ↦ ShapeFacesParetoIV.logLik d (-exp (-T)) T⁻¹ c (exp (-T))) atTop atTop)",path:1,,,
+      (fun T ↦ ShapeFacesParetoIV.logLik d (-exp (-T)) T⁻¹ c (exp (-T))) atTop atTop)",path:1,,,"{""path:1"":""full""}"
 pareto4,scale+shape2,UnivariateML.Endpoint3ParetoIV.held_scale_power_criterion,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,225,"At fixed scale and power, Pareto IV attains exactly on nonconstant samples with power at least one, including closed unit-power contact."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {c s : ℝ} (hc : 0 < c) (hs : 0 < s) :
     let D := Ioi (0 : ℝ) ×ˢ (if c = 1 then Ici (0 : ℝ) else Ioi 0)
     let L := fun v : ℝ × ℝ ↦ thresholdLogLik d v.1 c s v.2
-    (∃ v ∈ D, IsMaxOn L D v) ↔ 1 ≤ c ∧ ∃ i, 0 < d i",criterion,,,
+    (∃ v ∈ D, IsMaxOn L D v) ↔ 1 ≤ c ∧ ∃ i, 0 < d i",criterion,,,"{""criterion"":""full""}"
 pareto4,scale+shape1+shape2,UnivariateML.Endpoint3ParetoIV.held_scale_shapes_threshold,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,258,"With Pareto IV scale and shapes held, unit power maximizes at closed threshold contact. Higher power maximizes at the unique interior normalized-score root."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {k c s : ℝ} (hk : 0 < k) (hc : 0 < c) (hs : 0 < s) :
     let L := thresholdLogLik d k c s
     let S := Endpoint2FellerParetoRegular.normalizedScore d c (c * k) c s
     (c = 1 → IsMaxOn L (Ici 0) 0 ∧ ∀ t ∈ Ici 0, IsMaxOn L (Ici 0) t → t = 0) ∧
     (1 < c → (∃! t, t ∈ Ioi 0 ∧ S t = 0) ∧
-      ∀ t ∈ Ioi 0, IsMaxOn L (Ioi 0) t ↔ S t = 0)",uniqueness,,,
+      ∀ t ∈ Ioi 0, IsMaxOn L (Ioi 0) t ↔ S t = 0)",uniqueness,,,"{""uniqueness"":""full""}"
 pareto4,shape1+shape2,UnivariateML.Endpoint3ParetoIV.held_shapes_failure,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,270,"With the Pareto IV shapes held and scale free, subunit power or negative collapse exponent makes the likelihood unbounded. At regular power and zero exponent the finite envelope is strictly unattained."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {k c : ℝ} (hk : 0 < k) (hc : 0 < c) :
     let D := Endpoint2FellerParetoFreeScale.domain c
     let L := fun v : ℝ × ℝ ↦ thresholdLogLik d k c v.1 v.2
     let E := Endpoint2FellerParetoFreeScale.exponent d (c * k)
     ((c < 1 ∨ E < 0) → ¬ BddAbove (L '' D)) ∧
-      ((1 ≤ c ∧ E = 0) → ∃ C : ℝ, IsLUB (L '' D) C ∧ ∀ v ∈ D, L v < C)",failure,,,
+      ((1 ≤ c ∧ E = 0) → ∃ C : ℝ, IsLUB (L '' D) C ∧ ∀ v ∈ D, L v < C)",failure,,,"{""failure"":""full""}"
 pareto4,min+scale,UnivariateML.Endpoint3ParetoIV.held_scale_constant_power_path,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,282,"At a held threshold and scale, a constant positive excess at or below scale gives unbounded likelihood along diverging power and upper shape equal to the reciprocal powered excess ratio."," (hn : 0 < n) {μ x s : ℝ}
     (hx : μ < x) (hs : 0 < s) (hle : x - μ ≤ s) :
     Tendsto (fun c ↦ ShapeFacesParetoIV.logLik (fun _ : Fin n ↦ x) μ
-      (((x - μ) / s) ^ c)⁻¹ c s) atTop atTop",path:2,,The common positive excess is at or below held scale.,
+      (((x - μ) / s) ^ c)⁻¹ c s) atTop atTop",path:2,,The common positive excess is at or below held scale.,"{""path:2"":""partial""}"
 pareto4,min,UnivariateML.Endpoint3ParetoIV.constant_excess_fixed_upper_shape_path,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,317,"At a constant positive excess, a fixed positive upper shape permits divergence as the power grows with scale equal to the common excess. The scale may be fixed at that value or chosen on the ray."," (hn : 0 < n) {μ x k : ℝ}
     (hx : μ < x) :
     Tendsto (fun c ↦ ShapeFacesParetoIV.logLik (fun _ : Fin n ↦ x) μ k c (x - μ))
-      atTop atTop",path:2,,"The scale equals the common excess, either as a hold or by choice.",
+      atTop atTop",path:2,,"The scale equals the common excess, either as a hold or by choice.","{""path:2"":""partial""}"
 pareto4,min+scale,UnivariateML.Endpoint3ParetoIV.constant_excess_fixed_upper_shape_path,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,317,"At a constant positive excess, a fixed positive upper shape permits divergence as the power grows with scale equal to the common excess. The scale may be fixed at that value or chosen on the ray."," (hn : 0 < n) {μ x k : ℝ}
     (hx : μ < x) :
     Tendsto (fun c ↦ ShapeFacesParetoIV.logLik (fun _ : Fin n ↦ x) μ k c (x - μ))
-      atTop atTop",path:2,,"The scale equals the common excess, either as a hold or by choice.",
+      atTop atTop",path:2,,"The scale equals the common excess, either as a hold or by choice.","{""path:2"":""partial""}"
 pareto4,min+shape1,UnivariateML.Endpoint3ParetoIV.constant_excess_fixed_upper_shape_path,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,317,"At a constant positive excess, a fixed positive upper shape permits divergence as the power grows with scale equal to the common excess. The scale may be fixed at that value or chosen on the ray."," (hn : 0 < n) {μ x k : ℝ}
     (hx : μ < x) :
     Tendsto (fun c ↦ ShapeFacesParetoIV.logLik (fun _ : Fin n ↦ x) μ k c (x - μ))
-      atTop atTop",path:2,,"The scale equals the common excess, either as a hold or by choice.",
+      atTop atTop",path:2,,"The scale equals the common excess, either as a hold or by choice.","{""path:2"":""full""}"
 pareto4,min+scale+shape1,UnivariateML.Endpoint3ParetoIV.constant_excess_fixed_upper_shape_path,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,317,"At a constant positive excess, a fixed positive upper shape permits divergence as the power grows with scale equal to the common excess. The scale may be fixed at that value or chosen on the ray."," (hn : 0 < n) {μ x k : ℝ}
     (hx : μ < x) :
     Tendsto (fun c ↦ ShapeFacesParetoIV.logLik (fun _ : Fin n ↦ x) μ k c (x - μ))
-      atTop atTop",path:2,,"The scale equals the common excess, either as a hold or by choice.",
+      atTop atTop",path:2,,"The scale equals the common excess, either as a hold or by choice.","{""path:2"":""full""}"
 pareto4,shape1+shape2,UnivariateML.Endpoint3ParetoIV.held_shapes_joint_unique,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,336,"When a finite Pareto IV fit with both shapes held exists, the joint scale and threshold are unique. The threshold reaches sample contact exactly at unit power."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) {k c : ℝ} (hk : 0 < k) (hc : 0 < c) (ha : 1 ≤ c)
     (hE : 0 < Endpoint2FellerParetoFreeScale.exponent d (c * k)) :
     let D := Endpoint2FellerParetoFreeScale.domain c
     let L := fun v : ℝ × ℝ ↦ thresholdLogLik d k c v.1 v.2
-    ∃! v, v ∈ D ∧ IsMaxOn L D v ∧ (v.2 = 0 ↔ c = 1)",uniqueness,,,
+    ∃! v, v ∈ D ∧ IsMaxOn L D v ∧ (v.2 = 0 ↔ c = 1)",uniqueness,,,"{""uniqueness"":""full""}"
 pareto4,scale+shape2,UnivariateML.Endpoint3ParetoIV.held_scale_unit_power_unique,dev/lean/UnivariateML/Family/Endpoint3ParetoIV.lean,350,"At fixed scale and unit power, the Pareto IV optimum is unique on nonconstant data and has closed threshold contact."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
     (hz : ∃ i, d i = 0) (hne : ∃ i, 0 < d i) {s : ℝ} (hs : 0 < s) :
     let D := Ioi (0 : ℝ) ×ˢ Ici (0 : ℝ)
     let L := fun v : ℝ × ℝ ↦ thresholdLogLik d v.1 1 s v.2
-    ∃! v, v ∈ D ∧ IsMaxOn L D v ∧ v.2 = 0",uniqueness,,Unit-power branch.,
+    ∃! v, v ∈ D ∧ IsMaxOn L D v ∧ v.2 = 0",uniqueness,,Unit-power branch.,"{""uniqueness"":""partial""}"
 genbeta,scale+shape1,UnivariateML.Endpoint3GammaRatio.log_gamma_ratio,dev/lean/UnivariateML/Generic/Endpoint3GammaRatio.lean,27,The fixed positive increment of log Gamma is asymptotic to the increment times the log of the argument. The two neighboring unit secants bound the intermediate secant by log convexity.," (p : ℝ) (hp : 0 < p) :
     Tendsto (fun x ↦ log (Gamma (x + p)) - log (Gamma x) - p * log x)
       atTop (𝓝 0)",path:1,,Fixed-increment gamma ratio used in the coupled concentration ray.,

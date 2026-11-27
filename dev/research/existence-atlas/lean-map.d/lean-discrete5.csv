@@ -10,7 +10,7 @@ nhyper,N+m,UnivariateML.Discrete5NHyper.held_population_composition,dev/lean/Uni
         ∃ b ∈ D, (b < u → stoppingRatio x N m b ≤ 1) ∧
           (∀ j ∈ Ico l u, j < b → 1 < stoppingRatio x N m j) ∧
           ∀ j ∈ D, IsMaxOn (fun r ↦ totalLikelihood x N m r) D j ↔
-            j = b ∨ (j = b+1 ∧ b < u ∧ stoppingRatio x N m b = 1))",uniqueness,,,
+            j = b ∨ (j = b+1 ∧ b < u ∧ stoppingRatio x N m b = 1))",uniqueness,,,"{""uniqueness"":""full""}"
 nhyper,N+r,UnivariateML.Discrete5NHyper.held_population_stopping,dev/lean/UnivariateML/Family/Discrete5NHyper.lean,82,Compatible zero stop gives a flat composition interval. Positive stop gives the first crossing and exactly the tied successor.,"theorem held_population_stopping {h N r : ℕ} (hh : 0 < h) (x : Fin h → ℕ)
     (hf : ∃ m, ∀ i, Compatible N m r (x i)) :
     let D := {m | ∀ i, Compatible N m r (x i)}
@@ -22,7 +22,7 @@ nhyper,N+r,UnivariateML.Discrete5NHyper.held_population_stopping,dev/lean/Univar
       ∃ b ∈ D, (b < u → compositionRatio x N r b ≤ 1) ∧
         (∀ j ∈ Ico r u, j < b → 1 < compositionRatio x N r j) ∧
         ∀ j ∈ D, IsMaxOn (fun m ↦ totalLikelihood x N m r) D j ↔
-          j = b ∨ (j = b+1 ∧ b < u ∧ compositionRatio x N r b = 1))",uniqueness,,,
+          j = b ∨ (j = b+1 ∧ b < u ∧ compositionRatio x N r b = 1))",uniqueness,,,"{""uniqueness"":""full""}"
 nhyper,N,UnivariateML.Discrete5NHyper.held_population_maximizers,dev/lean/UnivariateML/Family/Discrete5NHyper.lean,140,Cross-slice comparisons of the first crossing and its tied successor give the full maximizing set. Compatible zeros give all compositions at stop zero.,"theorem held_population_maximizers {h N : ℕ} (hh : 0 < h) (x : Fin h → ℕ)
     (hf : ∃ m r, ∀ i, Compatible N m r (x i)) :
     let D := {p : ℕ × ℕ | ∀ i, Compatible N p.1 p.2 (x i)}
@@ -36,7 +36,7 @@ nhyper,N,UnivariateML.Discrete5NHyper.held_population_maximizers,dev/lean/Univar
       (∀ r ∈ feasibleStop, (b r,r) ∈ D ∧
         (b r < U r → compositionRatio x N r (b r) ≤ 1) ∧
         (∀ j ∈ Ico r (U r), j < b r → 1 < compositionRatio x N r j)) ∧
-      {p ∈ D | IsMaxOn L D p} = {p ∈ candidates | IsMaxOn L candidates p})",uniqueness,,,
+      {p ∈ D | IsMaxOn L D p} = {p ∈ candidates | IsMaxOn L candidates p})",uniqueness,,,"{""uniqueness"":""full""}"
 nhyper,m+r,UnivariateML.Discrete5NHyper.held_composition_stopping,dev/lean/UnivariateML/Family/Discrete5NHyper.lean,227,At positive stop the first crossing gives one or two winners and the population tail vanishes. Stop zero is flat.,"theorem held_composition_stopping {h m r : ℕ} (hh : 0 < h) (x : Fin h → ℕ)
     (hf : ∃ n, ∀ i, Compatible (m+n) m r (x i)) :
     let D := {n | ∀ i, Compatible (m+n) m r (x i)}
@@ -49,77 +49,77 @@ nhyper,m+r,UnivariateML.Discrete5NHyper.held_composition_stopping,dev/lean/Univa
       ∃ b ∈ D, NegHypergeometric.whiteRatio r m (m+b+1) y ≤ 1 ∧
         (∀ j ∈ D, j < b → 1 < NegHypergeometric.whiteRatio r m (m+j+1) y) ∧
         ∀ j, (IsMaxOn L D j ∧ j ∈ D) ↔ j = b ∨
-          (j = b+1 ∧ NegHypergeometric.whiteRatio r m (m+b+1) y = 1))",criterion; failure; uniqueness,,,
+          (j = b+1 ∧ NegHypergeometric.whiteRatio r m (m+b+1) y = 1))",criterion; failure; uniqueness,,,"{""criterion"":""full"",""failure"":""partial"",""uniqueness"":""full""}"
 nbinom,size,UnivariateML.Discrete5NBinom.held_size_boundary,dev/lean/UnivariateML/Family/Discrete5NBinom.lean,62,At positive size the probability-zero limit loses strictly to an attained fit. At size zero the compatible likelihood is flat.,"theorem held_size_boundary {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {r : ℝ}
     (hr : 0 ≤ r) (hc : r = 0 → ∀ i, x i = 0) :
     (r = 0 ∧ ∀ p ∈ Ioc (0 : ℝ) 1, likelihood x r p = 1) ∨
       (0 < r ∧ Tendsto (likelihood x r) (𝓝[>] 0) (𝓝 0) ∧
         ∃ p ∈ Ioc (0 : ℝ) 1, 0 < likelihood x r p ∧
-          IsMaxOn (likelihood x r) (Ioc 0 1) p)",failure,,,
+          IsMaxOn (likelihood x r) (Ioc 0 1) p)",failure,,,"{""failure"":""partial""}"
 nbinom,prob,UnivariateML.Discrete5NBinom.held_probability_boundary,dev/lean/UnivariateML/Family/Discrete5NBinom.lean,117,At interior probability the infinite-size limit loses strictly to an attained fit. At probability one the compatible size ray is flat.,"theorem held_probability_boundary {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     {p : ℝ} (hp : p ∈ Ioc 0 1) (hc : p = 1 → ∀ i, x i = 0) :
     (p = 1 ∧ ∀ r ∈ Ici (0 : ℝ), likelihood x r p = 1) ∨
       (p < 1 ∧ Tendsto (fun r ↦ likelihood x r p) atTop (𝓝 0) ∧
         ∃ r ∈ Ici (0 : ℝ), 0 < likelihood x r p ∧
-          IsMaxOn (fun s ↦ likelihood x s p) (Ici 0) r)",failure,,The probability-one ray has diverging maximizing sequences.,
+          IsMaxOn (fun s ↦ likelihood x s p) (Ici 0) r)",failure,,The probability-one ray has diverging maximizing sequences.,"{""failure"":""partial""}"
 hyper,k,UnivariateML.Discrete5Hyper.held_draw_escape_iff,dev/lean/UnivariateML/Family/Discrete5Hyper.lean,31,For fixed draws the convergent likelihoods of compatible diverging urns are exactly the closed binomial heights.,"theorem held_draw_escape_iff {h : ℕ} (hh : 0 < h) (x : Fin h → ℕ) (k : ℕ)
     (hx : ∀ i, x i ≤ k) (L : ℝ) :
     (∃ A N : ℕ → ℕ, (∀ t, A t ≤ N t) ∧
       (∀ t i, Compatible (A t) (N t) k (x i)) ∧ Tendsto N atTop atTop ∧
       Tendsto (fun t ↦ likelihood (A t) (N t) k x) atTop (𝓝 L)) ↔
-    ∃ p ∈ Icc (0 : ℝ) 1, L = ∏ i, binomialFace k (x i) p",failure,,,
+    ∃ p ∈ Icc (0 : ℝ) 1, L = ∏ i, binomialFace k (x i) p",failure,,,"{""failure"":""full""}"
 hyper,m,UnivariateML.Discrete5Hyper.held_mark_escape_iff,dev/lean/UnivariateML/Family/Discrete5Hyper.lean,49,For fixed marks the convergent likelihoods of compatible diverging urns are exactly the closed binomial heights.,"theorem held_mark_escape_iff {h : ℕ} (hh : 0 < h) (x : Fin h → ℕ) (m : ℕ)
     (hx : ∀ i, x i ≤ m) (L : ℝ) :
     (∃ A N : ℕ → ℕ, (∀ t, A t ≤ N t) ∧
       (∀ t i, Compatible m (N t) (A t) (x i)) ∧ Tendsto N atTop atTop ∧
       Tendsto (fun t ↦ likelihood m (N t) (A t) x) atTop (𝓝 L)) ↔
-    ∃ p ∈ Icc (0 : ℝ) 1, L = ∏ i, binomialFace m (x i) p",failure,,,
+    ∃ p ∈ Icc (0 : ℝ) 1, L = ∏ i, binomialFace m (x i) p",failure,,,"{""failure"":""full""}"
 bbinom,size,UnivariateML.Discrete5BBinom.endpoint_mixing_paths,dev/lean/UnivariateML/Family/Discrete5BBinom.lean,125,"The count masses converge to either corresponding atom as the mixing mean approaches the endpoint, uniformly over the total concentration.","theorem endpoint_mixing_paths {ι : Type*} {l : Filter ι} {a b : ι → ℝ}
     (hpos : ∀ᶠ t in l, 0 < a t ∧ 0 < b t) {m k : ℕ} (hk : k ≤ m) :
     (Tendsto (fun t ↦ a t/(a t+b t)) l (𝓝 0) →
       Tendsto (fun t ↦ countMass m k (a t) (b t)) l (𝓝 (if k = 0 then 1 else 0))) ∧
     (Tendsto (fun t ↦ a t/(a t+b t)) l (𝓝 1) →
-      Tendsto (fun t ↦ countMass m k (a t) (b t)) l (𝓝 (if k = m then 1 else 0)))",path:3,,Uses the explicit rising-factorial mass.,
+      Tendsto (fun t ↦ countMass m k (a t) (b t)) l (𝓝 (if k = m then 1 else 0)))",path:3,,Uses the explicit rising-factorial mass.,"{""path:3"":""full""}"
 bnbinom,all free,UnivariateML.Discrete5BNBinom.zero_atom_count_paths,dev/lean/UnivariateML/Family/Discrete5BNBinom.lean,43,"With the others fixed, shrinking size or beta or increasing alpha gives pointwise convergence to the zero atom.","theorem zero_atom_count_paths (k : ℕ) {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hb : 0 < b) :
     Tendsto (fun t ↦ countMass k t a b) (𝓝[>] 0) (𝓝 (if k = 0 then 1 else 0)) ∧
     Tendsto (fun t ↦ countMass k r a t) (𝓝[>] 0) (𝓝 (if k = 0 then 1 else 0)) ∧
-    Tendsto (fun t ↦ countMass k r t b) atTop (𝓝 (if k = 0 then 1 else 0))",path:3,,Uses the successive-count mass representation.,
+    Tendsto (fun t ↦ countMass k r t b) atTop (𝓝 (if k = 0 then 1 else 0))",path:3,,Uses the successive-count mass representation.,"{""path:3"":""full""}"
 bnbinom,beta,UnivariateML.Discrete5BNBinom.zero_atom_count_paths,dev/lean/UnivariateML/Family/Discrete5BNBinom.lean,43,"At held beta, shrinking size or increasing alpha gives pointwise convergence to the zero atom.","theorem zero_atom_count_paths (k : ℕ) {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hb : 0 < b) :
     Tendsto (fun t ↦ countMass k t a b) (𝓝[>] 0) (𝓝 (if k = 0 then 1 else 0)) ∧
     Tendsto (fun t ↦ countMass k r a t) (𝓝[>] 0) (𝓝 (if k = 0 then 1 else 0)) ∧
-    Tendsto (fun t ↦ countMass k r t b) atTop (𝓝 (if k = 0 then 1 else 0))",path:3,,Use the size or alpha limit.,
+    Tendsto (fun t ↦ countMass k r t b) atTop (𝓝 (if k = 0 then 1 else 0))",path:3,,Use the size or alpha limit.,"{""path:3"":""full""}"
 bnbinom,size,UnivariateML.Discrete5BNBinom.zero_atom_count_paths,dev/lean/UnivariateML/Family/Discrete5BNBinom.lean,43,"At held size, shrinking beta or increasing alpha gives pointwise convergence to the zero atom.","theorem zero_atom_count_paths (k : ℕ) {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hb : 0 < b) :
     Tendsto (fun t ↦ countMass k t a b) (𝓝[>] 0) (𝓝 (if k = 0 then 1 else 0)) ∧
     Tendsto (fun t ↦ countMass k r a t) (𝓝[>] 0) (𝓝 (if k = 0 then 1 else 0)) ∧
-    Tendsto (fun t ↦ countMass k r t b) atTop (𝓝 (if k = 0 then 1 else 0))",path:3,,Use the beta or alpha limit.,
+    Tendsto (fun t ↦ countMass k r t b) atTop (𝓝 (if k = 0 then 1 else 0))",path:3,,Use the beta or alpha limit.,"{""path:3"":""full""}"
 cmb,nu,UnivariateML.Discrete5CMB.held_dispersion_probability_endpoints,dev/lean/UnivariateML/Family/Discrete5CMB.lean,90,"At finite held dispersion, probability approaching either endpoint gives the corresponding atom on every cell, including size zero.","theorem held_dispersion_probability_endpoints {N : ℕ} (ν : ℝ) (j : Fin (N+1)) :
     Tendsto (fun p ↦ closedLikelihood (fun _ : Fin 1 ↦ j) p ν)
       (𝓝[Icc (0 : ℝ) 1] 0) (𝓝 (if j = 0 then 1 else 0)) ∧
     Tendsto (fun p ↦ closedLikelihood (fun _ : Fin 1 ↦ j) p ν)
-      (𝓝[Icc (0 : ℝ) 1] 1) (𝓝 (if j = Fin.last N then 1 else 0))",path:1,,,
+      (𝓝[Icc (0 : ℝ) 1] 1) (𝓝 (if j = Fin.last N then 1 else 0))",path:1,,,"{""failure"":""partial""}"
 cmp,nu,UnivariateML.Discrete5CMP.held_dispersion_tail,dev/lean/UnivariateML/Family/Discrete5CMP.lean,64,"The excluded rate end has limiting likelihood zero, at infinity with positive dispersion and at one with zero dispersion.","theorem held_dispersion_tail {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     {ν : ℝ} (hν : 0 ≤ ν) :
     if ν = 0 then Tendsto (fun r ↦ likelihood x r ν) (𝓝[<] 1) (𝓝 0)
-    else Tendsto (fun r ↦ likelihood x r ν) atTop (𝓝 0)",failure,,,
+    else Tendsto (fun r ↦ likelihood x r ν) atTop (𝓝 0)",failure,,,"{""failure"":""full""}"
 cmp,all free,UnivariateML.Discrete5CMP.adjacent_sharp_supremum,dev/lean/UnivariateML/Family/Discrete5CMP.lean,126,"On nonzero adjacent-supported samples, the maximized two-cell likelihood is the exact unattained supremum, including positive constants.","theorem adjacent_sharp_supremum {n c : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hx : ∀ i, x i = c ∨ x i = c+1) (hx0 : ∃ i, x i ≠ 0) :
     ∃ q ∈ Icc (0 : ℝ) 1, IsMaxOn (adjacentHeight x c) (Icc 0 1) q ∧
       IsLUB ((fun p : ℝ × ℝ ↦ likelihood x p.1 p.2) '' rateDomain) (adjacentHeight x c q) ∧
-      ∀ p ∈ rateDomain, likelihood x p.1 p.2 < adjacentHeight x c q",failure; limit:1; limit:2,,The failure claim is covered here on adjacent-supported positive-count data.,
+      ∀ p ∈ rateDomain, likelihood x p.1 p.2 < adjacentHeight x c q",failure; limit:1; limit:2,,The failure claim is covered here on adjacent-supported positive-count data.,"{""criterion"":""partial"",""failure"":""partial"",""case:two-adjacent"":""full"",""limit:1"":""partial"",""limit:2"":""full""}"
 hyper,k,UnivariateML.Discrete5HyperResidue.affine_face_tail,dev/lean/UnivariateML/Family/Discrete5HyperResidue.lean,152,"After a finite Cauchy cutoff, the exact comparison on a specified rational affine composition ray is decided by the leading sign or the zero polynomial.","theorem affine_face_tail {h : ℕ} (hh : 0 < h) (k : ℕ) (x : Fin h → ℕ)
     (a b face : ℚ) :
     ∃ (P : ℚ[X]) (B : ℕ), ∀ m N : ℕ, B ≤ N → (m : ℚ) = a*N+b →
       (∀ i, Compatible m N k (x i)) →
       (((face : ℝ) < likelihood m N k x ↔ 0 < P.leadingCoeff) ∧
        (likelihood m N k x = (face : ℝ) ↔ P = 0) ∧
-       (likelihood m N k x < (face : ℝ) ↔ P.leadingCoeff < 0))",criterion; uniqueness,,The theorem covers the comparison stage for specified affine offsets. The eventual offset bracketing and finite prefix procedure remain open.,
+       (likelihood m N k x < (face : ℝ) ↔ P.leadingCoeff < 0))",criterion; uniqueness,,The theorem covers the comparison stage for specified affine offsets. The eventual offset bracketing and finite prefix procedure remain open.,"{""criterion"":""partial"",""uniqueness"":""partial""}"
 hyper,m,UnivariateML.Discrete5HyperResidue.affine_face_tail_held_mark,dev/lean/UnivariateML/Family/Discrete5HyperResidue.lean,167,"After a finite Cauchy cutoff, the exact comparison on a specified rational affine composition ray is decided by the leading sign or the zero polynomial.","theorem affine_face_tail_held_mark {h : ℕ} (hh : 0 < h) (m : ℕ) (x : Fin h → ℕ)
     (a b face : ℚ) :
     ∃ (P : ℚ[X]) (B : ℕ), ∀ k N : ℕ, B ≤ N → (k : ℚ) = a*N+b →
       (∀ i, Compatible m N k (x i)) →
       (((face : ℝ) < likelihood m N k x ↔ 0 < P.leadingCoeff) ∧
        (likelihood m N k x = (face : ℝ) ↔ P = 0) ∧
-       (likelihood m N k x < (face : ℝ) ↔ P.leadingCoeff < 0))",criterion; uniqueness,,The theorem covers the comparison stage for specified affine offsets. The eventual offset bracketing and finite prefix procedure remain open.,
+       (likelihood m N k x < (face : ℝ) ↔ P.leadingCoeff < 0))",criterion; uniqueness,,The theorem covers the comparison stage for specified affine offsets. The eventual offset bracketing and finite prefix procedure remain open.,"{""criterion"":""partial"",""uniqueness"":""partial""}"
 nhyper,m,UnivariateML.Discrete5NHyper.held_composition_maximizers,dev/lean/UnivariateML/Family/Discrete5NHyper.lean,273,On positive data the full maximizing set is the exact comparison of the finite per-stop crossing candidates. On compatible zeros all zero-stop urns win.,"theorem held_composition_maximizers {h m : ℕ} (hh : 0 < h) (x : Fin h → ℕ)
     (hf : ∃ n r, ∀ i, Compatible (m+n) m r (x i)) :
     let D := {p : ℕ × ℕ | ∀ i, Compatible (m+p.1) m p.2 (x i)}
@@ -133,4 +133,4 @@ nhyper,m,UnivariateML.Discrete5NHyper.held_composition_maximizers,dev/lean/Univa
       (∀ r ∈ feasibleStop, (b r,r) ∈ D ∧ R r (b r) ≤ 1 ∧
         (∀ j, (j,r) ∈ D → j < b r → 1 < R r j)) ∧
       candidates.Finite ∧
-      {p ∈ D | IsMaxOn L D p} = {p ∈ candidates | IsMaxOn L candidates p})",uniqueness,,,
+      {p ∈ D | IsMaxOn L D p} = {p ∈ candidates | IsMaxOn L candidates p})",uniqueness,,,"{""uniqueness"":""full""}"
