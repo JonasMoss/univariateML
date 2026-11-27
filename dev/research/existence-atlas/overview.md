@@ -435,9 +435,9 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | bbinom | all free | written (iff) | written (exact) | written (one-sided) |
 | bbinom | alpha | written (iff) | written (exact) | written (one-sided) |
 | bbinom | size | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| betapr | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| betapr | shape1 | written (iff) · partial Lean | lean (exact) | written (one-sided) |
-| betapr | shape2 | written (iff) · partial Lean | lean (exact) | written (one-sided) |
+| betapr | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| betapr | shape1 | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
+| betapr | shape2 | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
 | bhatt | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | bhatt | mu | written (iff) | written (exact) | written (one-sided) |
 | bhatt | mu+sigma | lean (iff) | lean (exact) | written (one-sided) |

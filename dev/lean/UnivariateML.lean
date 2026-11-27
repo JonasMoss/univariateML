@@ -214,3 +214,7 @@ public import UnivariateML.Family.LocScaleShiftedGompertz
 public import UnivariateML.Family.LocScaleSN
 public import UnivariateML.Family.LocScaleTriangular
 public import UnivariateML.Family.LocScaleTukeyLambda
+public import UnivariateML.Family.AE2BetaPrime
+public import UnivariateML.Family.AE2Fatigue
+public import UnivariateML.Family.AE2GenBetaUnit
+public import UnivariateML.Family.AE2Lomax
