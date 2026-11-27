@@ -42,6 +42,14 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   // than evidence that the original finite observations violate support.
   if(valid)for(double v:y)if(!std::isfinite(v))
     return {NAN,NAN,NAN,scale,min,NAN,0,FparetoStatus::NumericalFailure};
+  if(valid && std::isfinite(shape2) && std::isnan(shape1) && std::isnan(shape3) && std::isnan(scale)) {
+    auto face=gb2_detail::narrow_skew_face(x,min,shape2,tol,maxit);
+    if(face.status!=Gb2Status::SearchUnresolved) {
+      translate_stop_faces(face.stop_detail,min);
+      return {NAN,shape2,NAN,NAN,min,face.logLik,face.iterations,
+        static_cast<FparetoStatus>(face.status),face.stop_detail,face.certified};
+    }
+  }
   const bool power_certificate=!std::isnan(shape2) && std::isnan(scale) &&
     (std::isnan(shape1)!=std::isnan(shape3)) && shape1!=1 && shape3!=1;
   if(valid && ((!std::isnan(shape1)&&!std::isnan(shape3)) || power_certificate || (!std::isnan(scale) && std::isnan(shape2) &&
@@ -62,7 +70,20 @@ inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, doub
   }
   // tol is the GB2 delegate's own tol (its default is also 1e-10): its local polish and transport accuracy check bound the
   // relative error of every free coefficient by tol or the fit is stopped, so no rule of its own is added here.
-  auto r=gb2_mle(span{y.data(),y.size()},tol,maxit,shape1,shape2,shape3,scale);
+  auto r=gb2_detail::search(span{y.data(),y.size()},tol,maxit,shape1,shape2,shape3,scale);
+  // A delegate may prove a comparison on the rounded excess sample.
+  // Carry the boundary proof only if subtraction preserved that sample.
+  const bool selected_face=r.status==Gb2Status::TrGammaBoundary ||
+    r.status==Gb2Status::InvTrGammaBoundary || r.status==Gb2Status::WeibullBoundary ||
+    r.status==Gb2Status::InvWeibullBoundary || r.status==Gb2Status::ParetoBoundary ||
+    r.status==Gb2Status::PowerBoundary;
+  if(selected_face && r.certified && min!=0) {
+    for(std::size_t i=0;i<x.size();++i) {
+      const double virtual_b=y[i]-x[i];
+      const double residual=(x[i]-(y[i]-virtual_b))+(-min-virtual_b);
+      if(residual!=0) {r.certified=false;break;}
+    }
+  }
   if(r.status==Gb2Status::Ok&&!r.certified&&!fpareto_transport_accuracy(x,min,r,{{std::isnan(shape1),std::isnan(shape2),std::isnan(shape3),std::isnan(scale)}},tol,maxit)){r.status=Gb2Status::NumericalFailure;record_accuracy(r,tol,{r.shape1,r.shape2,r.shape3,r.scale},{std::isnan(shape1)?r.shape1:0,std::isnan(shape2)?r.shape2:0,std::isnan(shape3)?r.shape3:0,std::isnan(scale)?r.scale:0});}
   // A narrow held-power profile can leave both the finite and the limit
   // model comparison unresolved. Retain the constrained fit as a witness
@@ -196,18 +217,18 @@ inline FitOutcome outcome(const FparetoResult& r) {
     case FparetoStatus::Unbounded:return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case FparetoStatus::UnsupportedThreshold:return FitOutcome::failure(OutcomeReason::Unsupported);
     case FparetoStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
-    case FparetoStatus::TrGammaBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
-    case FparetoStatus::InvTrGammaBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
+    case FparetoStatus::TrGammaBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
+    case FparetoStatus::InvTrGammaBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
     case FparetoStatus::LognormalBoundary: return r.stop_detail.limit_coef.empty()?FitOutcome::failure(OutcomeReason::Evaluation):FitOutcome::limit(false);
-    case FparetoStatus::ParetoBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
-    case FparetoStatus::PowerBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
+    case FparetoStatus::ParetoBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
+    case FparetoStatus::PowerBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
     case FparetoStatus::DoubleParetoBoundary: return FitOutcome::limit(false);
     case FparetoStatus::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case FparetoStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case FparetoStatus::SearchUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
     case FparetoStatus::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case FparetoStatus::WeibullBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
-    case FparetoStatus::InvWeibullBoundary: return FitOutcome::limit(r.certified && !(std::isnan(r.shape1) && std::isnan(r.shape2) && std::isnan(r.shape3) && std::isnan(r.scale)));
+    case FparetoStatus::WeibullBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
+    case FparetoStatus::InvWeibullBoundary: return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
     case FparetoStatus::CertificateTie: return comparison_outcome_of(r);
     case FparetoStatus::CertificateBudget: return FitOutcome::budget();
     case FparetoStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

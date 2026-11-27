@@ -303,3 +303,12 @@ TEST_CASE("expweibull: a steep finite maximum returns the rounded scale and its 
   for(double v:x)ll+=cppunivariate::distributions::dexpweibull(v,r.scale,r.shape,r.exponent,true);
   CHECK(r.logLik==doctest::Approx(ll).epsilon(1e-12));
 }
+
+TEST_CASE("expweibull: the tied endpoint limit transports its certified grade") {
+  const std::vector<double> x{.5,.75,1,1};
+  auto fit=cppunivariate::expweibull_mle(mltest::as_span(x),1e-10,100,1);
+  REQUIRE(fit.status==cppunivariate::ExpweibullStatus::PowerBoundaryTied);
+  CHECK(cppunivariate::outcome(fit).certified);
+  fit.certified=false;
+  CHECK_FALSE(cppunivariate::outcome(fit).certified);
+}

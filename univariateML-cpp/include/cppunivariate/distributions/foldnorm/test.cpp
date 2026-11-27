@@ -152,16 +152,52 @@ TEST_CASE("foldnorm underflow does not fabricate a positive-scale accuracy witne
   }
 }
 
-TEST_CASE("foldnorm separates value certification from joint cardinality") {
+TEST_CASE("foldnorm joint search keeps its checked candidate marked uncertified") {
   const std::array<double, 3> sample{2.0576829946725703, 2.0576829946725703,
                                      2.7624976490504753};
   const cppunivariate::span x{sample.data(), sample.size()};
   const auto joint = cppunivariate::outcome(cppunivariate::foldnorm_mle(x));
   CHECK(joint.kind == cppunivariate::OutcomeKind::Estimate);
-  CHECK(joint.certified);
+  CHECK_FALSE(joint.certified);
   CHECK_FALSE(joint.uniqueness_known);
   const auto held = cppunivariate::outcome(cppunivariate::foldnorm_mle(x, 1e-10, 200, 2.));
   CHECK(held.kind == cppunivariate::OutcomeKind::Estimate);
   CHECK(held.uniqueness_known);
   CHECK(held.unique);
+}
+
+TEST_CASE("foldnorm: moment inequalities certify a unique half-normal maximum") {
+  for (const std::vector<double>& x : {std::vector<double>{0,0,1},
+      std::vector<double>{1./64,1./64,1./64,1./64,1./64,1./64,1./64,1./64,1./64,1}}) {
+    const auto fit=cppunivariate::foldnorm_mle(mltest::as_span(x),1e-10,1);
+    REQUIRE(fit.status==cppunivariate::FoldnormStatus::Ok);
+    CHECK(fit.mu==0);
+    CHECK(fit.iterations==0);
+    CHECK(cppunivariate::outcome(fit).certified);
+    CHECK(cppunivariate::outcome(fit).uniqueness_known);
+    CHECK(cppunivariate::outcome(fit).unique);
+  }
+}
+
+TEST_CASE("foldnorm: exact fourth-moment equality can exclude the half-normal") {
+  std::vector<double> x(128,1);
+  x.resize(161,0);
+  x.push_back(4);
+  const auto fit=cppunivariate::foldnorm_mle(mltest::as_span(x));
+  REQUIRE(fit.status==cppunivariate::FoldnormStatus::Ok);
+  CHECK(fit.mu>0);
+}
+
+TEST_CASE("foldnorm: held-location variance preserves original residuals") {
+  const double mu=1.5e150;
+  const double above=std::nextafter(mu,INFINITY);
+  const std::vector<double> x{mu,above,above};
+  const auto fit=cppunivariate::foldnorm_mle(mltest::as_span(x),1e-10,100,mu);
+  REQUIRE(fit.status==cppunivariate::FoldnormStatus::Ok);
+  CHECK(fit.sigma==doctest::Approx((above-mu)*std::sqrt(2./3)).epsilon(1e-10));
+  CHECK(cppunivariate::outcome(fit).certified);
+  CHECK(cppunivariate::outcome(fit).unique);
+  double ll=0;
+  for(double z:x)ll+=cppunivariate::distributions::dfoldnorm(z,mu,fit.sigma,true);
+  CHECK(fit.logLik==doctest::Approx(ll).epsilon(1e-12));
 }

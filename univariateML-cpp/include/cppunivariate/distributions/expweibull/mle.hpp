@@ -501,8 +501,8 @@ inline FitOutcome outcome(const ExpweibullResult& r) {
     case ExpweibullStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidArgument);
     case ExpweibullStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case ExpweibullStatus::InvweibullBoundary:
-    case ExpweibullStatus::PowerBoundary: return FitOutcome::limit(r.certified);
-    case ExpweibullStatus::PowerBoundaryTied: return FitOutcome::limit(true);
+    case ExpweibullStatus::PowerBoundary:
+    case ExpweibullStatus::PowerBoundaryTied: return FitOutcome::limit(r.certified);
     case ExpweibullStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case ExpweibullStatus::AccuracyFailure:
     case ExpweibullStatus::ExponentOverflow: return FitOutcome::failure(OutcomeReason::Evaluation);

@@ -411,3 +411,18 @@ TEST_CASE("lomax: right censoring overflowing dimensional product") {
   REQUIRE(r.status==cppunivariate::LomaxCensoredStatus::Ok);
   CHECK(r.kappa==doctest::Approx(1/(800*std::log(10.))).epsilon(1e-14));
 }
+
+TEST_CASE("lomax: a higher point alone cannot displace an isolated maximum") {
+  namespace cert=cppunivariate::lomax_cert_detail;
+  const cert::Point center{0,1,.5,.25,.2,1e-5,1e-13};
+  cert::Root retained, trial;
+  retained.valid=true;
+  retained.h=center.h;retained.error=center.error;
+  retained.value_upper=cert::root_value_upper(center,-5e-7,5e-7,1e-13);
+  trial.valid=true;trial.error=1e-13;
+  trial.h=center.h+3e-12;
+  CHECK(trial.h-trial.error>retained.h+retained.error+1e-12);
+  CHECK_FALSE(cert::can_displace(trial,retained));
+  trial.h=center.h+8e-12;
+  CHECK(cert::can_displace(trial,retained));
+}

@@ -754,3 +754,23 @@ TEST_CASE("gb2: concentrated and extreme-scale archive fits") {
         .epsilon(mltest::kFitReferenceTol).scale(0));
   }
 }
+
+TEST_CASE("GB2 local search preserves its fit without claiming a global cover") {
+  const auto g=mltest::load_distribution_golden("gb2");
+  const auto fit=cppunivariate::gb2_mle(mltest::as_span(g.data));
+  REQUIRE(fit.status==cppunivariate::Gb2Status::Ok);
+  CHECK_FALSE(cppunivariate::outcome(fit).certified);
+}
+
+TEST_CASE("GB2 Weibull outcomes inherit the delegate's comparison grade") {
+  for(bool inverse:{false,true}) {
+    cppunivariate::Gb2Result fit{NAN,2,NAN,NAN,1,0,
+      inverse?cppunivariate::Gb2Status::InvWeibullBoundary:cppunivariate::Gb2Status::WeibullBoundary};
+    fit.stop_detail=cppunivariate::limit_detail({2,1},1,
+      inverse?cppunivariate::StopModel::InvWeibull:cppunivariate::StopModel::Weibull);
+    fit.certified=false;
+    CHECK_FALSE(cppunivariate::outcome(fit).certified);
+    fit.certified=true;
+    CHECK(cppunivariate::outcome(fit).certified);
+  }
+}

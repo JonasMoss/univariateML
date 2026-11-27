@@ -673,3 +673,19 @@ TEST_CASE("genbeta near-constant samples end at the power or log-gamma face, unc
     CHECK(r.stop_detail.limit_loglik==doctest::Approx(181.17076384173291807).epsilon(1e-12).scale(0));
   }
 }
+
+TEST_CASE("genbeta moving power retains each tied-maximum tail penalty") {
+  const std::vector<double> y{.5,.5,1.5,2.5};
+  const double power=1410, q=std::exp(705.), rate=4./3;
+  const auto penalized=cppunivariate::genbeta_detail::profile(y,power,rate/power,q,300);
+  const auto approaching=cppunivariate::genbeta_detail::profile(y,power,rate/power,q/power,300);
+  REQUIRE(penalized.ok);
+  REQUIRE(approaching.ok);
+  // At each of the two contacts q*exp(-power*y) = 1. The change in
+  // the beta normalizer contributes p*log(power) per observation.
+  CHECK(penalized.ll-approaching.ll==doctest::Approx(
+    4*(rate/power)*std::log(power)-2*(1-1/power)).epsilon(1e-11));
+  CHECK(penalized.score==doctest::Approx(1-rate*1.25+705./2).epsilon(1e-11));
+  const auto tail=cppunivariate::genbeta_power_face_cert::stats_sorted(y,power);
+  CHECK(tail.lr+705==doctest::Approx(-std::log(2.)).epsilon(1e-11));
+}

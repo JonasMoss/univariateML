@@ -81,7 +81,9 @@ inline Point profile(const std::vector<double>& y,double t,double aa,double bb,i
     const double z=t*v;
     ss+=z;
     rr-=z<.6931471805599453?std::log(-std::expm1(-z)):std::log1p(-std::exp(-z));
-    dd+=z>700?0:z/std::expm1(z);
+    // The small term is multiplied by q below. Keep it when expm1(z)
+    // would overflow but z*exp(-z) is still representable.
+    dd+=z>700 && std::isfinite(z)?std::exp(std::log(z)-z):z/std::expm1(z);
   }
   const double s=static_cast<double>(ss/n),r=static_cast<double>(rr/n);
   const bool fa=std::isnan(aa),fb=std::isnan(bb);
@@ -162,7 +164,7 @@ inline GenbetaResult genbeta_accuracy_search(span x,double scale,double tol=1e-7
   }
   double face=-std::numeric_limits<double>::infinity();
   GenbetaStatus fs=GenbetaStatus::SearchUnresolved;
-  double gamma_shape=nan,gamma_scale=nan;
+  double gamma_shape=nan,gamma_scale=nan,moving_gap=nan;
   auto consider=[&](double ll,GenbetaStatus s){if(std::isfinite(ll)&&ll>face){face=ll;fs=s;}};
   if(std::isnan(t)&&std::isnan(a)) {
     if(std::isnan(b)) {
@@ -171,8 +173,8 @@ inline GenbetaResult genbeta_accuracy_search(span x,double scale,double tol=1e-7
       gamma_shape=g.shape;gamma_scale=g.scale;
       consider(g.logLik,GenbetaStatus::UnitGammaBoundary);
       CPPUNIV_EXTENDED_REAL total_gap=0;for(double v:y)total_gap+=v-ymin;
-      const double gap=static_cast<double>(total_gap/n);
-      if(gap>0)consider(n*(-std::log(gap)-1),GenbetaStatus::PowerBoundary);
+      moving_gap=static_cast<double>(total_gap/n);
+      if(moving_gap>0)consider(n*(-std::log(moving_gap)-1),GenbetaStatus::PowerBoundary);
     } else {
       CPPUNIV_EXTENDED_REAL sl=0;for(double v:y)sl+=std::log(v);
       const double logmean=static_cast<double>(sl/n);
@@ -370,7 +372,7 @@ inline GenbetaResult genbeta_accuracy_search(span x,double scale,double tol=1e-7
       const bool ridge_excluded=out.status==GenbetaStatus::Ok&&
         best.b>=out.tail_bounds.ridge_shape2_lower&&best.b<=out.tail_bounds.ridge_shape2_upper;
       if(ridge_excluded) {
-        const double gap=certificate_mean-ymin,endpoint=*std::max_element(x.begin(),x.end());
+        const double gap=moving_gap,endpoint=*std::max_element(x.begin(),x.end());
         const double value=n*(-std::log(gap)-1)+certificate_shift;
         const double pad=4096*std::numeric_limits<double>::epsilon()*(1+std::abs(value));
         out.stop_detail=comparison_detail({{endpoint,1/gap},value-pad,value+pad,StopModel::Power},
@@ -443,13 +445,13 @@ inline GenbetaResult genbeta_accuracy_search(span x,double scale,double tol=1e-7
     FitCandidate face_candidate;
     face_candidate.loglik_lower=r.logLik;face_candidate.loglik_upper=r.logLik;
     if(fs==GenbetaStatus::UnitGammaBoundary){face_candidate.coef={gamma_shape,gamma_scale,scale};face_candidate.model=StopModel::UnitGamma;}
-    if(fs==GenbetaStatus::PowerBoundary){face_candidate.coef={std::isnan(b)?*std::max_element(x.begin(),x.end()):scale,1/(std::isnan(b)?mean-ymin:mean)};face_candidate.model=StopModel::Power;}
+    if(fs==GenbetaStatus::PowerBoundary){face_candidate.coef={std::isnan(b)?*std::max_element(x.begin(),x.end()):scale,1/(std::isnan(b)?moving_gap:mean)};face_candidate.model=StopModel::Power;}
     r.stop_detail=comparison_detail(face_candidate,{{best.a,best.b,best.t,scale},ll,ll,StopModel::None});return finish(r);
   }
   if(best.ok&&face>=best.ll-1e-8*n) {
     GenbetaResult r={nan,nan,nan,scale,face+static_cast<double>(jac),evals,fs};
     if(fs==GenbetaStatus::UnitGammaBoundary)r.stop_detail=limit_detail({gamma_shape,gamma_scale,scale},r.logLik,StopModel::UnitGamma);
-    if(fs==GenbetaStatus::PowerBoundary)r.stop_detail=limit_detail({std::isnan(b)?*std::max_element(x.begin(),x.end()):scale,1/(std::isnan(b)?mean-ymin:mean)},r.logLik,StopModel::Power);
+    if(fs==GenbetaStatus::PowerBoundary)r.stop_detail=limit_detail({std::isnan(b)?*std::max_element(x.begin(),x.end()):scale,1/(std::isnan(b)?moving_gap:mean)},r.logLik,StopModel::Power);
     return finish(r);
   }
   const bool allfree=std::isnan(a)&&std::isnan(b)&&std::isnan(t);

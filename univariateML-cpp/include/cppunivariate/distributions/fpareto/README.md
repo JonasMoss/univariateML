@@ -48,8 +48,8 @@ r:
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape2)-log((x-min))-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log((x-min)/scale)-(shape3+shape1)*log(1+((x-min)/scale)**shape2)
 limits:
-- {firmness: proved, model: weibull, when: 'With shape3 held at one, the Burr submodel tends to its Weibull face.', status: WeibullBoundary, detect_firmness: numerical, fixed: [min, shape3]}
-- {firmness: proved, model: invweibull, when: 'With shape1 held at one, the inverse Burr submodel tends to its inverse-Weibull face.', status: InvWeibullBoundary, detect_firmness: numerical, fixed: [min, shape1]}
+- {firmness: proved, model: weibull, when: 'With shape3 held at one, the Burr submodel tends to its Weibull face.', status: WeibullBoundary, detect: 'The delegate closes the signed Lomax comparison at held power or the signed exterior and compact profile comparisons at free power. With inexact excess subtraction the reported comparison is uncertified.', detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/burr/README.md#details"], fixed: [min, shape3]}
+- {firmness: proved, model: invweibull, when: 'With shape1 held at one, the inverse Burr submodel tends to its inverse-Weibull face.', status: InvWeibullBoundary, detect: 'The delegate closes the signed Lomax comparison at held power or the signed exterior and compact profile comparisons at free power. With inexact excess subtraction the reported comparison is uncertified.', detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/invburr/README.md#details"], fixed: [min, shape1]}
 - name: unbounded likelihood
   firmness: proved
   when: With $\alpha$ and $\tau$ positive and fixed, the power $\gamma$ tends to infinity and scale places the concentrating distribution at the common excess.
@@ -62,17 +62,19 @@ limits:
   fixed: [min]
 - when: The upper beta shape $\alpha$ tends to infinity with $\gamma$ and $\tau$ fixed and $\sigma\alpha^{-1/\gamma}$ fixed at a positive scale.
   firmness: proved
-  detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
+  detect: With only power held on the excess scale, the powered log span $D$ is at most $0.01$ and the normalized third central moment is negative with magnitude exceeding $69D$ by a floating-point margin. An exact excess transform can also carry the signed beta-prime ordinary gamma comparison at held power and held beta shape. The exploratory comparison uses a numerical likelihood margin. Exploratory selection and inexact transport report uncertified limits.
   status: TrGammaBoundary
   name: shifted trgamma; subtract min before fitting
-  detect_firmness: numerical
+  detect_firmness: proved
+  detect_proof: ["dev/research/evaluations/2026-11-25-fpareto-math-report.md#from-stationary-exclusion-to-a-global-face-bound", "UnivariateML.ShapeFacesFellerPareto.narrow_span_stationary_bound", "univariateML-cpp/include/cppunivariate/distributions/betapr/README.md#non-unit-held-shape-certificate"]
   fixed: [min]
 - when: The lower beta shape $\tau$ tends to infinity with $\alpha$ and $\gamma$ fixed and $\sigma\tau^{1/\gamma}$ fixed at a positive scale.
   firmness: proved
-  detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
+  detect: With only power held on the excess scale, the powered log span $D$ is at most $0.01$ and the normalized third central moment is positive with magnitude exceeding $69D$ by a floating-point margin. An exact excess transform can also carry the signed beta-prime inverse gamma comparison at held power and held beta shape. The exploratory comparison uses a numerical likelihood margin. Exploratory selection and inexact transport report uncertified limits.
   status: InvTrGammaBoundary
   name: shifted invtrgamma; subtract min before fitting
-  detect_firmness: numerical
+  detect_firmness: proved
+  detect_proof: ["dev/research/evaluations/2026-11-25-fpareto-math-report.md#from-stationary-exclusion-to-a-global-face-bound", "UnivariateML.ShapeFacesFellerPareto.narrow_span_stationary_bound", "univariateML-cpp/include/cppunivariate/distributions/betapr/README.md#non-unit-held-shape-certificate"]
   fixed: [min]
 - when: Both beta shapes equal $K\to\infty$, the power is $\gamma=\sqrt{2\psi_1(K)}/s$, and scale is $\sigma=e^m$, with lognormal log-scale $s>0$ and log-location $m$ fixed. Here $\psi_1$ is the trigamma function.
   firmness: proved
@@ -83,17 +85,19 @@ limits:
   fixed: [min]
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ positive and fixed, while $\tau$ and $\sigma$ stay fixed.
   firmness: proved
-  detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
+  detect: A subunit held beta shape and held scale can give a strict endpoint density bound. Unit-shape submodels can use a Burr signed global or held-scale comparison. Delegate certification requires exact excess subtraction. The exploratory comparison reports an uncertified limit.
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
-  detect_firmness: numerical
+  detect_firmness: proved
+  detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/gb2/README.md#details", "univariateML-cpp/include/cppunivariate/distributions/burr/README.md#held-scale-certificate-task-1164"]
   fixed: [min]
 - when: The power $\gamma$ tends to infinity with $\tau\gamma$ positive and fixed, while $\alpha$ and $\sigma$ stay fixed.
   firmness: proved
-  detect: The held coefficients permit this path, and the numerical comparison selects this limiting model within $10^{-8}n$ log-likelihood units of the best interior candidate found.
+  detect: A subunit held beta shape and held scale can give a strict endpoint density bound. Unit-shape submodels can use a Burr signed global or held-scale comparison. Delegate certification requires exact excess subtraction. The exploratory comparison reports an uncertified limit.
   status: PowerBoundary
   name: shifted power; subtract min before fitting
-  detect_firmness: numerical
+  detect_firmness: proved
+  detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/gb2/README.md#details", "univariateML-cpp/include/cppunivariate/distributions/burr/README.md#held-scale-certificate-task-1164"]
   fixed: [min]
 - model: dblpareto
   name: shifted double Pareto; subtract min before fitting
@@ -242,6 +246,12 @@ existence:
     free beta shapes can concentrate on constant data. Further holds can
     remove these concentration paths. Free-threshold fits are not supported.
     Holding all coefficients leaves likelihood evaluation.
+    With power held and both beta shapes and scale free, a sufficiently
+    narrow and skewed powered log sample has no finite maximum.
+    Positive skew selects the inverse transformed-gamma limit, and
+    negative skew selects the transformed-gamma limit.
+    A locally checked proposal from the general GB2 search is uncertified
+    unless the conditional beta enclosure applies.
   reason: >-
     With $\gamma\tau<1$, moving a free threshold to the sample minimum makes
     the density factors there diverge as $(x-\mu)^{\gamma\tau-1}$.

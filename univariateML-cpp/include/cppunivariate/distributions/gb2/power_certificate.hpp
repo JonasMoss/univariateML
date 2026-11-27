@@ -32,7 +32,7 @@ inline Gb2Result fit(span x,double q,double a,double p,double tol,int maxit) {
     if(x[order[i]]!=x[order[i-1]] && y[order[i]]==y[order[i-1]])return out;
   auto r=betapr_mle_holds(span{y.data(),y.size()},p,q,NAN,tol,maxit);
   out.iterations=r.iterations;out.logLik=r.logLik+jac_sum.value;
-  out.stop_detail=r.stop_detail;out.certified=r.certified;
+  out.stop_detail=r.stop_detail;out.certified=r.certified && !r.margin_decided;
   if(r.status==BetaPrimeStatus::Ok)out.status=Gb2Status::Ok;
   else if(r.status==BetaPrimeStatus::GammaBoundary)out.status=Gb2Status::TrGammaBoundary;
   else if(r.status==BetaPrimeStatus::InvGammaBoundary)out.status=Gb2Status::InvTrGammaBoundary;

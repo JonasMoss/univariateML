@@ -93,10 +93,10 @@ test_that("uncertified limits describe the likelihood margin", {
   expect_match(conditionMessage(e)," No improvement above the likelihood margin was found\\.$")
 })
 
-test_that("a certified value can have unknown cardinality", {
+test_that("folded-normal search reports its certification and cardinality separately", {
   x <- c(2.0576829946725703, 2.0576829946725703, 2.7624976490504753)
   fit <- mlfoldnorm(x)
-  expect_identical(attr(fit, "certified"), TRUE)
+  expect_identical(attr(fit, "certified"), FALSE)
   expect_identical(attr(fit, "unique"), NA)
   expect_identical(attr(mlfoldnorm(x, sigma = 2), "unique"), TRUE)
   expect_null(attr(fit, "maximizer_set"))

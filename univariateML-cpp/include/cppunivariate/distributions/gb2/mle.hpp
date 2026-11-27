@@ -36,12 +36,88 @@ struct Gb2Result {
 #include "endpoint_certificate.hpp"
 namespace cppunivariate {
 namespace gb2_detail {
+// Held-power stationary exclusion and face ordering from TASK-262.
+inline Gb2Result narrow_skew_face(span x, double threshold, double a,
+                                 double tol, int maxit) {
+  Gb2Result out{NAN,a,NAN,NAN,NAN,0,Gb2Status::SearchUnresolved};
+  if(x.empty() || !(tol>0 && std::isfinite(tol)) || maxit<1 ||
+     !(a>0 && std::isfinite(a)) ||
+     !std::all_of(x.begin(),x.end(),[&](double v){return v>threshold && std::isfinite(v);}))
+    return out;
+  const auto range=std::minmax_element(x.begin(),x.end());
+  const double anchor=*range.first;
+  const double excess=anchor-threshold;
+  const auto offset=[&](double v) {
+    return std::log1p((v-anchor)/excess);
+  };
+  const double width=offset(*range.second);
+  const double D=a*width;
+  const double margin=128*std::numeric_limits<double>::epsilon();
+  if(!(excess>0 && std::isfinite(excess) && width>=std::numeric_limits<double>::min() &&
+       D>0 && D<0.01*(1-margin))) return out;
+  const double n=static_cast<double>(x.size());
+  transformed_detail::Sum sum, cubic;
+  std::vector<double> relative;
+  relative.reserve(x.size());
+  for(double v:x) {
+    relative.push_back(offset(v)/width);
+    sum.push(relative.back());
+  }
+  const double mean=sum.get()/n;
+  for(double z:relative) {
+    const double v=z-mean;
+    cubic.push(v*v*v);
+  }
+  const double skew=cubic.get()/n;
+  if(!(std::abs(skew)>69*D*(1+margin)+margin)) return out;
+
+  const bool inverse=skew>0;
+  transformed_detail::Sum remainder;
+  for(double z:relative) {
+    const double v=(inverse?-D:D)*(z-mean);
+    remainder.push(trgamma_detail::expm1_minus(v));
+  }
+  const double gap=std::log1p(remainder.get()/n);
+  const double shape=trgamma_detail::gamma_shape(gap,out.iterations,maxit);
+  const double log_shape=std::log(shape);
+  const double log_mean=std::log(excess)+width*mean;
+  const double log_scale=log_mean+(inverse?-1:1)*(gap-log_shape)/a;
+  const double scale=std::exp(log_scale);
+  const double ll=n*(std::log(a)-log_mean+0.5*log_shape-
+    trgamma_detail::kHalfLog2Pi-shape*gap-trgamma_detail::stirling_remainder(shape));
+  // H(k) is decreasing and -k H'(k) >= 1/(2k), from the positive
+  // digamma remainder integral. Use the residual in log shape and
+  // propagate it through log scale with a practical arithmetic margin.
+  const double residual=std::abs(trgamma_detail::log_minus_digamma(shape)-gap);
+  const double shape_error=4*shape*residual+margin;
+  const double scale_error=shape_error/a+margin*(1+std::abs(log_mean)+
+    std::abs((gap-log_shape)/a));
+  if(!(shape_error<tol && scale_error<tol && std::isfinite(ll) &&
+       scale>=std::numeric_limits<double>::min() && std::isfinite(scale))) {
+    // The skew test already excludes every finite maximizer. A face whose
+    // coefficients cannot be resolved cannot justify a finite fallback.
+    out.status=Gb2Status::NumericalFailure;
+    out.certified=false;
+    return out;
+  }
+  out.status=inverse?Gb2Status::InvTrGammaBoundary:Gb2Status::TrGammaBoundary;
+  out.logLik=ll;
+  out.stop_detail=limit_detail({shape,a,scale},ll,
+    inverse?StopModel::InvTrgamma:StopModel::Trgamma);
+  return out;
+}
+
 // Shift both shapes to >= 10, then use a cancellation-resistant Stirling
 // expression. The recurrence is exact; only the Stirling remainder is numeric.
 inline double logbeta(double p,double q) {
+  const auto log1p_ratio=[](double num,double den) {
+    const double ratio=num/den;
+    return std::isfinite(ratio)?std::log1p(ratio):
+      std::log(num)-std::log(den)+std::log1p(den/num);
+  };
   double correction=0;
-  while(p<10){correction+=std::log1p(q/p);p+=1;}
-  while(q<10){correction+=std::log1p(p/q);q+=1;}
+  while(p<10){correction+=log1p_ratio(q,p);p+=1;}
+  while(q<10){correction+=log1p_ratio(p,q);q+=1;}
   const double s=p+q;
   return correction-(p-.5)*std::log1p(q/p)-(q-.5)*std::log1p(p/q)
     -.5*std::log(s)+trgamma_detail::kHalfLog2Pi+
@@ -268,11 +344,8 @@ inline Point refine(const trgamma_detail::LogData &d,std::array<double,2> v,
 #include "concentrated_beta.hpp"
 #include "shape_power_certificate.hpp"
 namespace cppunivariate {
-inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
-    double q=std::numeric_limits<double>::quiet_NaN(),
-    double a=std::numeric_limits<double>::quiet_NaN(),
-    double p=std::numeric_limits<double>::quiet_NaN(),
-    double b=std::numeric_limits<double>::quiet_NaN()) {
+namespace gb2_detail {
+inline Gb2Result search(span x,double tol,int maxit,double q,double a,double p,double b) {
   maxit = static_cast<int>(solver_budget(maxit));
   const double nan=std::numeric_limits<double>::quiet_NaN();
   Gb2Result bad{q,a,p,b,nan,0,Gb2Status::InvalidData};
@@ -719,7 +792,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     }
     return out;
   }
-  bool local_done=false;
+  bool local_done=false, beta_inclusion=false;
   if(best.ok && std::isnan(q)&&!std::isnan(a)&&std::isnan(p)&&!std::isnan(b)) {
     // With power and scale held, the logit transform is exactly beta. Its
     // mean/precision solve avoids the singular cancellation of two large
@@ -737,7 +810,7 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
       if(beta.status==BetaStatus::Ok&&gb2_accuracy::input_error(span{probability.data(),probability.size()},span{uncertainty.data(),uncertainty.size()},beta.alpha,beta.beta)<=tol*.5) {
         best.p=reflect?beta.beta:beta.alpha;best.q=reflect?beta.alpha:beta.beta;
         best.ll=beta.logLik;for(std::size_t i=0;i<logs.size();++i){double t=a*gb2_accuracy::log_ratio(x[i],b);best.ll+=std::log(a)-logs[i]-gb2_detail::softplus(-t)-gb2_detail::softplus(t);}
-        local_done=true;
+        local_done=beta_inclusion=true;
       } else if(beta.status==BetaStatus::Degenerate||(beta.status==BetaStatus::Ok&&std::min(beta.alpha,beta.beta)*std::numeric_limits<double>::epsilon()>tol*.125)) {
         const double propagated=beta.status==BetaStatus::Ok?gb2_accuracy::input_error({probability.data(),probability.size()},{uncertainty.data(),uncertainty.size()},beta.alpha,beta.beta):std::numeric_limits<double>::max();
         bad.stop_detail.conditioning_bound=std::isfinite(propagated)?2*propagated:std::numeric_limits<double>::max();
@@ -800,6 +873,8 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     std::isnan(p)?best.p:p,std::isnan(b)?std::exp(logb):b,best.ll,evals,status};
   if(out.status==Gb2Status::Ok&&std::isnan(b)&&!local_accuracy::represented(out.scale,out.scale,tol)){out.status=Gb2Status::NumericalFailure;out.accuracy_failure=true;{if(out.shape1>0 && out.shape2>0 && out.shape3>0 && out.scale>0)record_accuracy(out,tol,{out.shape1,out.shape2,out.shape3,out.scale},{std::isnan(q)?out.shape1:0,std::isnan(a)?out.shape2:0,std::isnan(p)?out.shape3:0,std::isnan(b)?out.scale:0});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}
   out.profile_evaluations=work.used;
+  // Local score and curvature checks alone do not cover the other basins.
+  out.certified=beta_inclusion;
   out.singleton_proved=!std::isnan(a) && !std::isnan(b);
   if(work.exhausted) {
     // A successful locally checked nomination survives an unclosed search.
@@ -811,6 +886,19 @@ inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
     }
   }
   return out;
+}
+} // namespace gb2_detail
+
+inline Gb2Result gb2_mle(span x,double tol=1e-10,int maxit=300,
+    double q=std::numeric_limits<double>::quiet_NaN(),
+    double a=std::numeric_limits<double>::quiet_NaN(),
+    double p=std::numeric_limits<double>::quiet_NaN(),
+    double b=std::numeric_limits<double>::quiet_NaN()) {
+  if(std::isnan(p) && std::isnan(q) && std::isnan(b)) {
+    const auto face=gb2_detail::narrow_skew_face(x,0,a,tol,maxit);
+    if(face.status!=Gb2Status::SearchUnresolved) return face;
+  }
+  return gb2_detail::search(x,tol,maxit,q,a,p,b);
 }
 } // namespace cppunivariate
 
@@ -845,8 +933,9 @@ inline FitOutcome outcome(const Gb2Result& r) {
     case Gb2Status::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case Gb2Status::SearchUnresolved: return FitOutcome::failure(OutcomeReason::Unresolved);
     case Gb2Status::ScaleOutOfRange: return FitOutcome::failure(OutcomeReason::Evaluation);
-    case Gb2Status::WeibullBoundary: return FitOutcome::limit();
-    case Gb2Status::InvWeibullBoundary: return FitOutcome::limit();
+    case Gb2Status::WeibullBoundary:
+    case Gb2Status::InvWeibullBoundary:
+      return FitOutcome::limit(r.certified && !r.stop_detail.limit_coef.empty());
     case Gb2Status::CertificateTie: return comparison_outcome_of(r);
     case Gb2Status::CertificateBudget: return FitOutcome::budget();
     case Gb2Status::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);

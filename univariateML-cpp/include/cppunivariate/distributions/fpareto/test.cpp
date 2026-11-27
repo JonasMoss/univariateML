@@ -475,18 +475,6 @@ TEST_CASE("fpareto: concentrated and extreme-scale archive fits") {
   }
 }
 
-TEST_CASE("fpareto: archive 001625 and 001628 retain a constrained witness") {
-  const std::vector<double> x{1.1125524337611379,1.1125524337622505,
-    1.112552433763363,1.1125524337644754,1.1125524337667005};
-  const auto r=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-10,1000,
-    NAN,1.9802932530684678);
-  REQUIRE(r.status==cppunivariate::FparetoStatus::SearchUnresolved);
-  REQUIRE(r.stop_detail.candidates.size()==1);
-  const auto& witness=r.stop_detail.candidates.front();
-  CHECK(witness.coef.size()==5);
-  CHECK(witness.loglik_lower>127.81);
-}
-
 TEST_CASE("fpareto: transformed gamma limit payload evaluates original observations") {
   const std::vector<double> x(8,4.);
   const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),2,1e-10,1000,NAN,2,2);
@@ -499,4 +487,44 @@ TEST_CASE("fpareto: transformed gamma limit payload evaluates original observati
   for(double v:x)ll+=cppunivariate::distributions::dtrgamma(v-p[3],p[0],p[1],p[2],true);
   CHECK(ll==doctest::Approx(detail.limit_loglik).epsilon(1e-12));
   CHECK(ll==doctest::Approx(fit.logLik).epsilon(1e-12));
+}
+
+TEST_CASE("fpareto: archive 001625 and 001628 select the inverse gamma face") {
+  const std::vector<double> x{0x1.1cd03c7e16dbfp+0, 0x1.1cd03c7e18152p+0,
+    0x1.1cd03c7e194e4p+0, 0x1.1cd03c7e1a876p+0, 0x1.1cd03c7e1cf9bp+0};
+  const double a=0x1.faf47fa66b243p+0;
+  const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-10,1000,NAN,a);
+  REQUIRE(fit.status==cppunivariate::FparetoStatus::InvTrGammaBoundary);
+  CHECK(cppunivariate::outcome(fit).certified);
+  REQUIRE(fit.stop_detail.limit_model==cppunivariate::StopModel::InvTrgamma);
+  const auto& coef=fit.stop_detail.limit_coef;
+  REQUIRE(coef.size()==3);
+  CHECK(coef[0]==doctest::Approx(8.615406571602086e22).epsilon(1e-10));
+  CHECK(coef[1]==a);
+  CHECK(coef[2]==doctest::Approx(424695594989.53754).epsilon(1e-10));
+  CHECK(fit.logLik==doctest::Approx(127.81430798409595).epsilon(1e-12));
+  const auto gb2=cppunivariate::gb2_mle(mltest::as_span(x),1e-10,1000,NAN,a);
+  CHECK(gb2.status==cppunivariate::Gb2Status::InvTrGammaBoundary);
+  CHECK(cppunivariate::outcome(gb2).certified);
+}
+
+TEST_CASE("fpareto: narrow skew uses observation differences before subtracting the threshold") {
+  const std::vector<double> x{0, 0, 0, -0x1p-55};
+  const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),-1,1e-10,1000,NAN,1);
+  REQUIRE(fit.status==cppunivariate::FparetoStatus::TrGammaBoundary);
+  CHECK(fit.certified);
+  CHECK(fit.stop_detail.limit_model==cppunivariate::StopModel::ShiftedTrgamma);
+  REQUIRE(fit.stop_detail.limit_coef.size()==4);
+  CHECK(fit.stop_detail.limit_coef[3]==-1);
+}
+
+TEST_CASE("fpareto: an inexact excess transform cannot carry a Burr face proof") {
+  const std::vector<double> x{1,2,3,4};
+  const auto exact=cppunivariate::fpareto_mle(mltest::as_span(x),0,1e-10,1000,NAN,2,1);
+  const auto rounded=cppunivariate::fpareto_mle(mltest::as_span(x),-0x1p-55,1e-10,1000,NAN,2,1);
+  REQUIRE(exact.status==cppunivariate::FparetoStatus::WeibullBoundary);
+  CHECK(cppunivariate::outcome(exact).certified);
+  REQUIRE(rounded.status==cppunivariate::FparetoStatus::WeibullBoundary);
+  CHECK(rounded.stop_detail.limit_model==cppunivariate::StopModel::ShiftedWeibull);
+  CHECK_FALSE(cppunivariate::outcome(rounded).certified);
 }
