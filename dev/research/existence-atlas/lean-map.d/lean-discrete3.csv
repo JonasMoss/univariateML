@@ -1,25 +1,25 @@
-family,regime,theorem,file,line,statement,hypotheses_and_conclusion,scope,proof_marker,dossier_scope_note
+family,regime,theorem,file,line,statement,hypotheses_and_conclusion,scope,proof_marker,dossier_scope_note,coverage
 pig,all free,UnivariateML.Discrete3PIG.fixedArgument_strict,dev/lean/UnivariateML/Family/Discrete3PIG.lean,33,"At fixed Bessel argument, the mean-profile root strictly beats every other feasible point.","{n S z t u : ℝ}  (hS : 0 < S)
     (ht : t ∈ Ioo 0 z) (hu : u ∈ Ioo 0 z)
     (hroot : n * (z ^ 2 - t ^ 2) = 2 * S * t) (hne : u ≠ t) :
-    fixedArgument n S z u < fixedArgument n S z t",Scoped result,,The parameter-independent terms on that slice are omitted.
+    fixedArgument n S z u < fixedArgument n S z t",Scoped result,,The parameter-independent terms on that slice are omitted.,
 pig,mean,UnivariateML.Discrete3PIG.binary_poisson_iff,dev/lean/UnivariateML/Family/Discrete3PIG.lean,86,"On positive binary data, all interior shape log likelihoods lie below Poisson exactly at a nonpositive boundary score.","{n S μ : ℝ} (hS : 0 < S) :
-    (∀ w ∈ Ioo (0 : ℝ) 1, binaryGain n S μ w < 0) ↔ n*μ ≤ 2*S",Scoped result,,The general profile theorem below includes the positive-score branch.
+    (∀ w ∈ Ioo (0 : ℝ) 1, binaryGain n S μ w < 0) ↔ n*μ ≤ 2*S",Scoped result,,The general profile theorem below includes the positive-score branch.,"{""failure"":""partial"",""limit:1"":""partial""}"
 pig,all free,UnivariateML.Discrete3PIG.bessel_variance_bound,dev/lean/UnivariateML/Family/Discrete3PIG.lean,421,The variance of the polynomial degree is strictly below the barrier at every positive inverse argument for counts at least two.,"{k : ℕ} (hk : 2 ≤ k) {y : ℝ} (hy : 0 < y) :
     degreeVariance k y <
-      degreeMean k y * ((k : ℝ)^2-(degreeMean k y)^2) / ((k : ℝ)^2+(degreeMean k y)^2)",Scoped result,,The mean and variance are computed from the Bessel polynomial and its first two derivatives.
+      degreeMean k y * ((k : ℝ)^2-(degreeMean k y)^2) / ((k : ℝ)^2+(degreeMean k y)^2)",Scoped result,,The mean and variance are computed from the Bessel polynomial and its first two derivatives.,
 pig,mean,UnivariateML.Discrete3PIG.bessel_variance_bound,dev/lean/UnivariateML/Family/Discrete3PIG.lean,421,The variance of the polynomial degree is strictly below the barrier at every positive inverse argument for counts at least two.,"{k : ℕ} (hk : 2 ≤ k) {y : ℝ} (hy : 0 < y) :
     degreeVariance k y <
-      degreeMean k y * ((k : ℝ)^2-(degreeMean k y)^2) / ((k : ℝ)^2+(degreeMean k y)^2)",Scoped result,,The mean and variance are computed from the Bessel polynomial and its first two derivatives.
+      degreeMean k y * ((k : ℝ)^2-(degreeMean k y)^2) / ((k : ℝ)^2+(degreeMean k y)^2)",Scoped result,,The mean and variance are computed from the Bessel polynomial and its first two derivatives.,
 pig,mean,UnivariateML.Discrete3PIG.cellGain_strictConcave,dev/lean/UnivariateML/Family/Discrete3PIG.lean,657,"For every positive count, the log likelihood relative to Poisson is strictly concave in compact shape.","{k : ℕ} (hk : 0 < k) {μ : ℝ} (hμ : 0 < μ) :
-    StrictConcaveOn ℝ (Ioo 0 1) (cellGain k μ)",Scoped result,,The result uses positive held mean.
+    StrictConcaveOn ℝ (Ioo 0 1) (cellGain k μ)",Scoped result,,The result uses positive held mean.,
 pig,mean,UnivariateML.Discrete3PIG.held_mean_profile,dev/lean/UnivariateML/Family/Discrete3PIG.lean,834,"For a positive sample and positive held mean, the inward score determines the unique interior optimum or the strict Poisson supremum.","{n : ℕ} {x : Fin n → ℕ} {μ : ℝ} (hμ : 0 < μ)
     (hx : ∃ i, 0 < x i) :
     if 0 < inwardScore x μ then
       ∃! w, w ∈ Ioo (0 : ℝ) 1 ∧ IsMaxOn (sampleGain x μ) (Ioo 0 1) w
     else
       IsLUB ((sampleGain x μ) '' Ioo 0 1) 0 ∧
-        ∀ w ∈ Ioo (0 : ℝ) 1, sampleGain x μ w < 0",Scoped result,,"The log likelihood is measured relative to the Poisson value, so its boundary value is zero."
+        ∀ w ∈ Ioo (0 : ℝ) 1, sampleGain x μ w < 0",Scoped result,,"The log likelihood is measured relative to the Poisson value, so its boundary value is zero.","{""criterion"":""partial"",""failure"":""full"",""uniqueness"":""partial"",""limit:1"":""partial""}"
 pig,all free,UnivariateML.Discrete3PIG.all_free_positive,dev/lean/UnivariateML/Family/Discrete3PIG.lean,1098,The all-free finite maximum exists exactly when the sample variance exceeds the sample mean. It is unique when it exists. Otherwise the Poisson value at the sample mean is an unattained supremum.,"{n : ℕ} {x : Fin n → ℕ} (hx : ∃ i, 0 < x i) :
     ((∃ p ∈ positiveChart, IsMaxOn (chartLogLik x) positiveChart p) ↔
       sampleMean x < sampleVariance x) ∧
@@ -27,241 +27,241 @@ pig,all free,UnivariateML.Discrete3PIG.all_free_positive,dev/lean/UnivariateML/F
       ∃! p, p ∈ positiveChart ∧ IsMaxOn (chartLogLik x) positiveChart p) ∧
     (sampleVariance x ≤ sampleMean x →
       IsLUB (chartLogLik x '' positiveChart) (poissonLogLik x (sampleMean x)) ∧
-        ∀ p ∈ positiveChart, chartLogLik x p < poissonLogLik x (sampleMean x))",Scoped result,,The sample contains a positive count. The log likelihood drops the common factorial term.
+        ∀ p ∈ positiveChart, chartLogLik x p < poissonLogLik x (sampleMean x))",Scoped result,,The sample contains a positive count. The log likelihood drops the common factorial term.,"{""criterion"":""partial"",""failure"":""full"",""uniqueness"":""partial"",""limit:1"":""partial""}"
 pig,all free,UnivariateML.Discrete3PIG.parameterChart_bijOn,dev/lean/UnivariateML/Family/Discrete3PIG.lean,1232,The Bessel argument and shape-to-mean ratio give a bijective chart on the positive parameter quadrant.,":
-    BijOn parameterChart (Ioi 0 ×ˢ Ioi 0) positiveChart",Scoped result,,The theorem identifies the domain used by the all-free result.
+    BijOn parameterChart (Ioi 0 ×ˢ Ioi 0) positiveChart",Scoped result,,The theorem identifies the domain used by the all-free result.,
 cmp,nu,UnivariateML.Discrete3CMP.held_zero_dispersion,dev/lean/UnivariateML/Family/Discrete3CMP.lean,55,"At zero dispersion the rate is the geometric ratio S/(n+S), including rate zero.","{n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     {r : ℝ} (hr : r ∈ Ico 0 1) :
     IsMaxOn (fun q ↦ CMP.likelihood x q 0) (Ico 0 1) r ↔
-      r = (∑ i, (x i : ℝ)) / (n + ∑ i, (x i : ℝ))",Scoped result,,The admissible rate interval at zero dispersion is half-open.
+      r = (∑ i, (x i : ℝ)) / (n + ∑ i, (x i : ℝ))",Scoped result,,The admissible rate interval at zero dispersion is half-open.,"{""criterion"":""partial"",""failure"":""partial"",""uniqueness"":""partial""}"
 cmp,nu,UnivariateML.Discrete3CMP.modelMean_strictMono,dev/lean/UnivariateML/Family/Discrete3CMP.lean,214,At positive dispersion the model mean is strictly increasing in log rate.,"{ν : ℝ} (hν : 0 < ν) :
-    StrictMono (modelMean ν)",Scoped result,,The proof differentiates the summable moment series.
+    StrictMono (modelMean ν)",Scoped result,,The proof differentiates the summable moment series.,
 cmp,nu,UnivariateML.Discrete3CMP.modelMean_atBot,dev/lean/UnivariateML/Family/Discrete3CMP.lean,219,The mean tends to zero as the log rate tends to minus infinity.,"{ν : ℝ} (hν : 0 < ν) :
-    Tendsto (modelMean ν) atBot (𝓝 0)",Scoped result,,The dispersion is held positive.
+    Tendsto (modelMean ν) atBot (𝓝 0)",Scoped result,,The dispersion is held positive.,
 cmp,nu,UnivariateML.Discrete3CMP.modelMean_atTop,dev/lean/UnivariateML/Family/Discrete3CMP.lean,311,The mean tends to infinity as the log rate tends to infinity.,"{ν : ℝ} (hν : 0 < ν) :
-    Tendsto (modelMean ν) atTop atTop",Scoped result,,The dispersion is held positive.
+    Tendsto (modelMean ν) atTop atTop",Scoped result,,The dispersion is held positive.,
 cmp,nu,UnivariateML.Discrete3CMP.held_positive_dispersion,dev/lean/UnivariateML/Family/Discrete3CMP.lean,378,The positive-dispersion CMP has one rate maximizer. It is zero on all-zero samples and matches the empirical mean otherwise.,"{n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     {ν : ℝ} (hν : 0 < ν) :
     (∃! r, r ∈ Ici (0 : ℝ) ∧ IsMaxOn (fun q ↦ CMP.likelihood x q ν) (Ici 0) r) ∧
     ∀ r ∈ Ici (0 : ℝ), IsMaxOn (fun q ↦ CMP.likelihood x q ν) (Ici 0) r ↔
       (r = 0 ∧ ∀ i, x i = 0) ∨
-        (0 < r ∧ modelMean ν (log r) = Discrete.avg x)",Scoped result,,The dispersion is held and the rate includes its atom at zero.
+        (0 < r ∧ modelMean ν (log r) = Discrete.avg x)",Scoped result,,The dispersion is held and the rate includes its atom at zero.,"{""criterion"":""partial"",""failure"":""partial"",""uniqueness"":""partial""}"
 cmb,size,UnivariateML.Discrete3CMB.exposed_mass,dev/lean/UnivariateML/Family/Discrete3CMB.lean,35,A normalized exponential ray converges to the conditional weights on its exposed face.,"{K : Type*} [Fintype K] [DecidableEq K]
     (base slope : K → ℝ) (F : Finset K) (k : K)
     (hk : k ∈ F) (hzero : ∀ j ∈ F, slope j = 0)
     (hneg : ∀ j ∉ F, slope j < 0) :
     Tendsto (fun t ↦ rayMass base slope t k) atTop
-      (𝓝 (exp (base k) / ∑ j ∈ F, exp (base j)))",Scoped result,,Uses finite support and the exposing signs.
+      (𝓝 (exp (base k) / ∑ j ∈ F, exp (base j)))",Scoped result,,Uses finite support and the exposing signs.,
 cmb,size,UnivariateML.Discrete3CMB.exposed_supremum,dev/lean/UnivariateML/Family/Discrete3CMB.lean,59,"The normalized face product is the strict, unattained supremum along the ray.","{K : Type*} [Fintype K] [DecidableEq K] {n : ℕ}
     (hn : 0 < n) (base slope : K → ℝ) (F : Finset K) (x : Fin n → K)
     (hx : ∀ i, x i ∈ F) (hzero : ∀ j ∈ F, slope j = 0)
     (hneg : ∀ j ∉ F, slope j < 0) (hout : ∃ j, j ∉ F) :
     let u := ∏ i, exp (base (x i)) / ∑ j ∈ F, exp (base j)
     IsLUB (range (fun t ↦ ∏ i, rayMass base slope t (x i))) u ∧
-      ∀ t, (∏ i, rayMass base slope t (x i)) < u",Scoped result,,The face weights are fixed and an excluded cell exists.
+      ∀ t, (∏ i, rayMass base slope t (x i)) < u",Scoped result,,The face weights are fixed and an excluded cell exists.,
 cmb,prob+size,UnivariateML.Discrete3CMB.endpoint_supremum,dev/lean/UnivariateML/Family/Discrete3CMB.lean,107,"At held size and interior probability, endpoint-only data have the exact strict endpoint-law supremum.","{N n : ℕ} (hN : 2 ≤ N) (hn : 0 < n)
     (η : ℝ) (x : Fin n → Fin (N+1))
     (hx : ∀ i, x i = 0 ∨ x i = Fin.last N) :
     let u := ∏ i, exp (η * (x i).val) / (1 + exp (η * N))
-    IsLUB (range (likelihood x η)) u ∧ ∀ ν, likelihood x η ν < u",Scoped result,,The upper-to-lower odds on the face are exp(Nη).
+    IsLUB (range (likelihood x η)) u ∧ ∀ ν, likelihood x η ν < u",Scoped result,,The upper-to-lower odds on the face are exp(Nη).,"{""criterion"":""partial"",""failure"":""partial"",""limit:4"":""partial""}"
 cmb,nu+size,UnivariateML.Discrete3CMB.held_dispersion_interior,dev/lean/UnivariateML/Family/Discrete3CMB.lean,173,An interior empirical mean at positive size gives a unique finite log-odds optimum for held dispersion.,"{N : ℕ} (hN : 0 < N) (ν m : ℝ)
     (hm : m ∈ Ioo (0 : ℝ) N) :
-    ∃! η, IsMaxOn (heldDispersionLogLik N ν m) univ η",Scoped result,,The objective is the per-observation parameter-dependent term.
+    ∃! η, IsMaxOn (heldDispersionLogLik N ν m) univ η",Scoped result,,The objective is the per-observation parameter-dependent term.,"{""criterion"":""partial"",""uniqueness"":""partial"",""failure"":""partial""}"
 cmb,size,UnivariateML.Discrete3CMB.adjacent_supremum,dev/lean/UnivariateML/Family/Discrete3CMB.lean,459,Two occupied adjacent cells at fixed size have the strict saturated face supremum at the empirical split.,"{N n : ℕ} (hN : 2 ≤ N) (x : Fin n → Fin (N+1))
     {l u : Fin (N+1)} (hlu : u.val = l.val+1)
     (hx : ∀ i, x i = l ∨ x i = u)
     (hz : 0 < multiplicity x l) (ho : 0 < multiplicity x u) :
     IsLUB (range (fun p : ℝ × ℝ ↦ likelihood x p.1 p.2))
         (pairHeight (multiplicity x l) (multiplicity x u)) ∧
-      ∀ p : ℝ × ℝ, likelihood x p.1 p.2 < pairHeight (multiplicity x l) (multiplicity x u)",Scoped result,,Size is at least two. Both free regular coefficients range over the interior probability chart.
+      ∀ p : ℝ × ℝ, likelihood x p.1 p.2 < pairHeight (multiplicity x l) (multiplicity x u)",Scoped result,,Size is at least two. Both free regular coefficients range over the interior probability chart.,"{""criterion"":""partial"",""failure"":""partial"",""limit:3"":""partial""}"
 cmb,size,UnivariateML.Discrete3CMB.endpoints_free_supremum,dev/lean/UnivariateML/Family/Discrete3CMB.lean,501,Both occupied endpoints at fixed size give the strict saturated endpoint supremum.,"{N n : ℕ} (hN : 2 ≤ N) (x : Fin n → Fin (N+1))
     (hx : ∀ i, x i = 0 ∨ x i = Fin.last N)
     (hz : 0 < multiplicity x 0) (ho : 0 < multiplicity x (Fin.last N)) :
     IsLUB (range (fun p : ℝ × ℝ ↦ likelihood x p.1 p.2))
         (pairHeight (multiplicity x 0) (multiplicity x (Fin.last N))) ∧
       ∀ p : ℝ × ℝ, likelihood x p.1 p.2 <
-        pairHeight (multiplicity x 0) (multiplicity x (Fin.last N))",Scoped result,,Size is at least two and the regular coefficients are free.
+        pairHeight (multiplicity x 0) (multiplicity x (Fin.last N))",Scoped result,,Size is at least two and the regular coefficients are free.,"{""criterion"":""partial"",""failure"":""partial"",""limit:4"":""partial""}"
 cmb,size,UnivariateML.Discrete3CMB.constant_interior_supremum,dev/lean/UnivariateML/Family/Discrete3CMB.lean,552,An interior constant count has an unattained point-mass supremum at fixed size.,"{N n : ℕ} (hn : 0 < n) (x : Fin n → Fin (N+1))
     {k : Fin (N+1)} (hk₀ : 0 < k.val) (hkN : k.val < N) (hx : ∀ i, x i = k) :
     IsLUB (range (fun p : ℝ × ℝ ↦ likelihood x p.1 p.2)) 1 ∧
-      ∀ p : ℝ × ℝ, likelihood x p.1 p.2 < 1",Scoped result,,Both regular coefficients are free.
+      ∀ p : ℝ × ℝ, likelihood x p.1 p.2 < 1",Scoped result,,Both regular coefficients are free.,"{""criterion"":""partial"",""failure"":""partial"",""limit:2"":""partial""}"
 cmb,prob+size,UnivariateML.Discrete3CMB.odd_center_supremum,dev/lean/UnivariateML/Family/Discrete3CMB.lean,619,An odd held size and held interior probability give the central-pair face on data supported there.,"{N n c : ℕ} (hN : N = 2*c+1) (hc : 0 < c)
     (hn : 0 < n) (η : ℝ) (x : Fin n → Fin (N+1))
     (hx : ∀ i, (x i).val = c ∨ (x i).val = c+1) :
     let u := ∏ i, exp (η*(x i).val)/(exp (η*c)+exp (η*(c+1 : ℕ)))
-    IsLUB (range (likelihood x η)) u ∧ ∀ ν, likelihood x η ν < u",Scoped result,,"The upper-cell mass is the held probability, including when only the upper cell is observed."
+    IsLUB (range (likelihood x η)) u ∧ ∀ ν, likelihood x η ν < u",Scoped result,,"The upper-cell mass is the held probability, including when only the upper cell is observed.","{""criterion"":""partial"",""failure"":""partial"",""limit:3"":""partial""}"
 cmb,prob+size,UnivariateML.Discrete3CMB.even_center_supremum,dev/lean/UnivariateML/Family/Discrete3CMB.lean,661,An even held size and held interior probability give the strict central point-mass supremum on the central singleton.,"{N n c : ℕ} (hN : N = 2*c) (hc : 0 < c)
     (hn : 0 < n) (η : ℝ) (x : Fin n → Fin (N+1)) (hx : ∀ i, (x i).val = c) :
-    IsLUB (range (likelihood x η)) 1 ∧ ∀ ν, likelihood x η ν < 1",Scoped result,,The size is positive.
+    IsLUB (range (likelihood x η)) 1 ∧ ∀ ν, likelihood x η ν < 1",Scoped result,,The size is positive.,"{""criterion"":""partial"",""failure"":""partial"",""limit:2"":""partial""}"
 cmb,size,UnivariateML.Discrete3CMB.size_zero_likelihood,dev/lean/UnivariateML/Family/Discrete3CMB.lean,711,Size zero gives likelihood one on the entire closed probability chart.,"{n : ℕ} (x : Fin n → Fin 1) (p ν : ℝ) :
-    closedLikelihood x p ν = 1",Scoped result,,Every observation is necessarily the zero cell.
+    closedLikelihood x p ν = 1",Scoped result,,Every observation is necessarily the zero cell.,"{""criterion"":""partial"",""uniqueness"":""partial""}"
 cmb,size,UnivariateML.Discrete3CMB.bernoulli_likelihood,dev/lean/UnivariateML/Family/Discrete3CMB.lean,763,At size one the exact likelihood is Bernoulli throughout the closed probability chart.,"{n : ℕ} (x : Fin n → Fin 2) {p : ℝ}
     (hp : p ∈ Icc (0 : ℝ) 1) (ν : ℝ) :
-    closedLikelihood x p ν = p^multiplicity x 1 * (1-p)^multiplicity x 0",Scoped result,,The dispersion drops out of the law.
+    closedLikelihood x p ν = p^multiplicity x 1 * (1-p)^multiplicity x 0",Scoped result,,The dispersion drops out of the law.,"{""uniqueness"":""partial""}"
 cmb,nu+size,UnivariateML.Discrete3CMB.bernoulli_fit,dev/lean/UnivariateML/Family/Discrete3CMB.lean,816,At size one the probability maximizer is the empirical success fraction.,"{n : ℕ} (hn : 0 < n) (x : Fin n → Fin 2)
     (ν : ℝ) {p : ℝ} (hp : p ∈ Icc (0 : ℝ) 1) :
     IsMaxOn (fun q ↦ closedLikelihood x q ν) (Icc 0 1) p ↔
-      p = (multiplicity x 1 : ℝ)/(multiplicity x 1 + (multiplicity x 0 : ℝ))",Scoped result,,This holds at any held dispersion and includes empirical endpoints.
+      p = (multiplicity x 1 : ℝ)/(multiplicity x 1 + (multiplicity x 0 : ℝ))",Scoped result,,This holds at any held dispersion and includes empirical endpoints.,"{""criterion"":""partial"",""uniqueness"":""partial"",""failure"":""partial""}"
 cmb,nu+size,UnivariateML.Discrete3CMB.modelMean_strictMono,dev/lean/UnivariateML/Family/Discrete3CMB.lean,873,The fixed-size mean is strictly increasing in log odds for any held real dispersion.,"{N : ℕ} (hN : 0 < N) (ν : ℝ) :
-    StrictMono (modelMean N ν)",Scoped result,,Size is positive.
+    StrictMono (modelMean N ν)",Scoped result,,Size is positive.,
 cmb,nu+size,UnivariateML.Discrete3CMB.modelMean_limits,dev/lean/UnivariateML/Family/Discrete3CMB.lean,968,The fixed-size means tend to zero and to the size at opposite ends of the log-odds chart.,"(N : ℕ) (ν : ℝ) :
-    Tendsto (modelMean N ν) atBot (𝓝 0) ∧ Tendsto (modelMean N ν) atTop (𝓝 (N : ℝ))",Scoped result,,Holds for every finite size and real dispersion.
+    Tendsto (modelMean N ν) atBot (𝓝 0) ∧ Tendsto (modelMean N ν) atTop (𝓝 (N : ℝ))",Scoped result,,Holds for every finite size and real dispersion.,
 dnorm,sd,UnivariateML.Discrete3DNorm.midpoint_strict,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,53,"With positive scale held and a constant cell observed, its midpoint strictly beats every other location.","{k B μ : ℝ} (hB : 0 < B) (hμ : μ ≠ k+1/2) :
-    mass k B μ < mass k B (k+1/2)",Scoped result,,The cell mass omits the common Gaussian normalization.
+    mass k B μ < mass k B (k+1/2)",Scoped result,,The cell mass omits the common Gaussian normalization.,"{""criterion"":""partial"",""uniqueness"":""partial""}"
 dnorm,mean,UnivariateML.Discrete3DNorm.cell_mass_strictMono_of_mem,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,84,A cell whose closure contains the held mean has mass strictly increasing with inverse scale.,"{k μ : ℝ} (hμ : μ ∈ Icc k (k+1)) :
-    StrictMonoOn (fun B ↦ mass k B μ) (Ioi 0)",Scoped result,,The result is per cell.
+    StrictMonoOn (fun B ↦ mass k B μ) (Ioi 0)",Scoped result,,The result is per cell.,"{""criterion"":""partial"",""failure"":""partial"",""limit:3"":""partial""}"
 dnorm,all free,UnivariateML.Discrete3DNorm.endpoint_information_identity,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,174,The cell directional information times mass is an integral of weighted squares.,"{a b va vb : ℝ} (hab : a < b) :
     let p := intervalMass a b
     let s := intervalScore a b va vb
     let w := directionField a b va vb
     s^2*p + (b*kernel b*vb^2-a*kernel a*va^2) =
-      ∫ z in a..b, ((s+z*w z)^2+(w z)^2)*kernel z",Scoped result,,The kernel is unnormalized. Affine endpoint velocities and an ordered interval are used.
+      ∫ z in a..b, ((s+z*w z)^2+(w z)^2)*kernel z",Scoped result,,The kernel is unnormalized. Affine endpoint velocities and an ordered interval are used.,
 dnorm,all free,UnivariateML.Discrete3DNorm.endpoint_information_pos,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,214,The cell directional information is strictly positive in every nonzero endpoint direction.,"{a b va vb : ℝ} (hab : a < b)
     (hne : va ≠ 0 ∨ vb ≠ 0) :
     (intervalScore a b va vb)^2 +
-      (b*kernel b*vb^2-a*kernel a*va^2)/intervalMass a b > 0",Scoped result,,The endpoints are finite and strictly ordered.
+      (b*kernel b*vb^2-a*kernel a*va^2)/intervalMass a b > 0",Scoped result,,The endpoints are finite and strictly ordered.,
 dnorm,all free,UnivariateML.Discrete3DNorm.workingCellLog_strictConcave,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,294,The log mass of any cell is strictly concave in inverse-scale coordinates.,"(k : ℝ) :
-    StrictConcaveOn ℝ workingDomain (workingCellLog k)",Scoped result,,The center in the source parameterization is taken to be zero.
+    StrictConcaveOn ℝ workingDomain (workingCellLog k)",Scoped result,,The center in the source parameterization is taken to be zero.,
 dnorm,all free,UnivariateML.Discrete3DNorm.workingLogLik_strictConcave,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,364,Every nonempty sample has a strictly concave log likelihood in inverse-scale coordinates.,"{n : ℕ} (hn : 0 < n) (x : Fin n → ℤ) :
-    StrictConcaveOn ℝ workingDomain (workingLogLik x)",Scoped result,,No range condition is needed for concavity.
+    StrictConcaveOn ℝ workingDomain (workingLogLik x)",Scoped result,,No range condition is needed for concavity.,
 dnorm,all free,UnivariateML.Discrete3DNorm.joint_of_gap,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,578,A pair of observed cells with a positive separation gives a unique finite maximum.,"{n : ℕ} {x : Fin n → ℤ} {i j : Fin n} (hgap : x i+1 < x j) :
-    ∃! p, p ∈ workingDomain ∧ IsMaxOn (workingLikelihood x) workingDomain p",Scoped result,,The condition is equivalent to integer range at least two.
+    ∃! p, p ∈ workingDomain ∧ IsMaxOn (workingLikelihood x) workingDomain p",Scoped result,,The condition is equivalent to integer range at least two.,"{""criterion"":""partial"",""uniqueness"":""full""}"
 dnorm,all free,UnivariateML.Discrete3DNorm.constant_supremum,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,636,"A nonempty constant sample has the strict, unattained point-mass supremum of one.","{n : ℕ} (hn : 0 < n) {x : Fin n → ℤ}
     {k : ℤ} (hx : ∀ i, x i = k) :
     IsLUB (workingLikelihood x '' workingDomain) 1 ∧
-      ∀ p ∈ workingDomain, workingLikelihood x p < 1",Scoped result,,This uses the product likelihood.
+      ∀ p ∈ workingDomain, workingLikelihood x p < 1",Scoped result,,This uses the product likelihood.,"{""failure"":""partial"",""limit:1"":""full""}"
 dnorm,all free,UnivariateML.Discrete3DNorm.adjacent_supremum,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,743,"Two occupied adjacent cells have the strict, unattained Bernoulli supremum at the empirical proportions.","{n : ℕ} {x : Fin n → ℤ} {k : ℤ}
     (hx : ∀ i, x i = k ∨ x i = k+1)
     (hz : 0 < cellCount x k) (ho : 0 < cellCount x (k+1)) :
     IsLUB (workingLikelihood x '' workingDomain)
         (adjacentHeight (cellCount x k) (cellCount x (k+1))) ∧
       ∀ p ∈ workingDomain, workingLikelihood x p <
-        adjacentHeight (cellCount x k) (cellCount x (k+1))",Scoped result,,The face height is the product likelihood with the observed multiplicities.
+        adjacentHeight (cellCount x k) (cellCount x (k+1))",Scoped result,,The face height is the product likelihood with the observed multiplicities.,"{""failure"":""partial"",""limit:2"":""full""}"
 dnorm,all free,UnivariateML.Discrete3DNorm.joint_range_criterion,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,820,"The discretized-normal maximum exists exactly when the integer range is at least two, and it is then unique.","{n : ℕ} (hn : 0 < n) (x : Fin n → ℤ) :
     ((∃ p ∈ workingDomain, IsMaxOn (workingLikelihood x) workingDomain p) ↔
       ∃ i j, x i+1 < x j) ∧
     ((∃ i j, x i+1 < x j) →
-      ∃! p, p ∈ workingDomain ∧ IsMaxOn (workingLikelihood x) workingDomain p)",Scoped result,,Constant and adjacent cases are exhausted in the nonattainment direction.
-dnorm,all free,UnivariateML.Discrete3DNorm.workingChart_bijOn,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,866,The working chart is bijective on positive scale.,: BijOn workingChart workingDomain workingDomain,Scoped result,,The same formula inverts the map.
+      ∃! p, p ∈ workingDomain ∧ IsMaxOn (workingLikelihood x) workingDomain p)",Scoped result,,Constant and adjacent cases are exhausted in the nonattainment direction.,"{""criterion"":""full"",""uniqueness"":""full""}"
+dnorm,all free,UnivariateML.Discrete3DNorm.workingChart_bijOn,dev/lean/UnivariateML/Family/Discrete3DNorm.lean,866,The working chart is bijective on positive scale.,: BijOn workingChart workingDomain workingDomain,Scoped result,,The same formula inverts the map.,
 dgamma,shape,UnivariateML.Discrete3DGamma.all_zero_held_shape,dev/lean/UnivariateML/Family/Discrete3DGamma.lean,54,At held shape the all-zero likelihood tends to one as rate increases and is strictly smaller at every finite positive rate.,"{a : ℝ} (ha : 0 < a) {n : ℕ} (hn : 0 < n) :
     Tendsto (fun r ↦ (cdf (gammaMeasure a 1) r)^n) atTop (𝓝 1) ∧
-      ∀ r > 0, (cdf (gammaMeasure a 1) r)^n < 1",Scoped result,,Uses the unit-rate CDF at the upper edge of the zero cell.
+      ∀ r > 0, (cdf (gammaMeasure a 1) r)^n < 1",Scoped result,,Uses the unit-rate CDF at the upper edge of the zero cell.,"{""failure"":""full"",""limit:3"":""full"",""path:3"":""full""}"
 dgamma,shape,UnivariateML.Discrete3DGamma.held_shape,dev/lean/UnivariateML/Family/Discrete3DGamma.lean,398,A positive count gives a unique finite rate maximizer at held positive shape.,"{n : ℕ} {x : Fin n → ℕ} (hx : ∃ i, 0 < x i) {a : ℝ} (ha : 0 < a) :
-    ∃! r, r ∈ Ioi 0 ∧ IsMaxOn (likelihood x a) (Ioi 0) r",Scoped result,,Uses strict concavity in log rate.
+    ∃! r, r ∈ Ioi 0 ∧ IsMaxOn (likelihood x a) (Ioi 0) r",Scoped result,,Uses strict concavity in log rate.,"{""criterion"":""partial"",""uniqueness"":""full""}"
 dgamma,rate,UnivariateML.Discrete3DGamma.all_zero_held_rate,dev/lean/UnivariateML/Family/Discrete3DGamma.lean,484,At held rate the all-zero likelihood tends to one as shape decreases to zero and is strictly smaller at every finite positive shape.,"{r : ℝ} (hr : 0 < r) {n : ℕ} (hn : 0 < n) :
     Tendsto (fun a ↦ (cdf (gammaMeasure a 1) r)^n) (𝓝[>] 0) (𝓝 1) ∧
-      ∀ a > 0, (cdf (gammaMeasure a 1) r)^n < 1",Scoped result,,Uses the unit-rate CDF at the upper edge of the zero cell.
+      ∀ a > 0, (cdf (gammaMeasure a 1) r)^n < 1",Scoped result,,Uses the unit-rate CDF at the upper edge of the zero cell.,"{""failure"":""full"",""limit:3"":""full"",""path:3"":""full""}"
 dgamma,rate,UnivariateML.Discrete3DGamma.held_rate_attained,dev/lean/UnivariateML/Family/Discrete3DGamma.lean,596,A positive count gives a finite shape maximizer at held positive rate.,"{n : ℕ} {x : Fin n → ℕ} (hx : ∃ i, 0 < x i) {r : ℝ} (hr : 0 < r) :
-    ∃ a ∈ Ioi 0, IsMaxOn (fun b ↦ likelihood x b r) (Ioi 0) a",Scoped result,,Unconditional attainment proved by compact positive levels.
+    ∃ a ∈ Ioi 0, IsMaxOn (fun b ↦ likelihood x b r) (Ioi 0) a",Scoped result,,Unconditional attainment proved by compact positive levels.,"{""criterion"":""partial""}"
 dgamma,shape,UnivariateML.Discrete3DGamma.held_shape_iff,dev/lean/UnivariateML/Family/Discrete3DGamma.lean,615,At held shape a finite rate maximizer exists exactly when the nonempty sample has a positive count.,"{n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {a : ℝ} (ha : 0 < a) :
-    (∃ r ∈ Ioi 0, IsMaxOn (likelihood x a) (Ioi 0) r) ↔ ∃ i, 0 < x i",Scoped result,,Includes all-zero nonattainment.
+    (∃ r ∈ Ioi 0, IsMaxOn (likelihood x a) (Ioi 0) r) ↔ ∃ i, 0 < x i",Scoped result,,Includes all-zero nonattainment.,"{""criterion"":""full""}"
 dgamma,rate,UnivariateML.Discrete3DGamma.held_rate_iff,dev/lean/UnivariateML/Family/Discrete3DGamma.lean,635,At held rate a finite shape maximizer exists exactly when the nonempty sample has a positive count.,"{n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {r : ℝ} (hr : 0 < r) :
-    (∃ a ∈ Ioi 0, IsMaxOn (fun b ↦ likelihood x b r) (Ioi 0) a) ↔ ∃ i, 0 < x i",Scoped result,,Includes all-zero nonattainment and is independent of the curvature admission.
+    (∃ a ∈ Ioi 0, IsMaxOn (fun b ↦ likelihood x b r) (Ioi 0) a) ↔ ∃ i, 0 < x i",Scoped result,,Includes all-zero nonattainment and is independent of the curvature admission.,"{""criterion"":""full""}"
 dgamma,rate+shape,UnivariateML.Discrete3DGamma.fully_held,dev/lean/UnivariateML/Family/Discrete3DGamma.lean,653,The supplied pair is the unique maximizer on its singleton domain.,"{n : ℕ} (x : Fin n → ℕ) (a r : ℝ) :
     ∃! p : ℝ × ℝ, p ∈ ({(a,r)} : Set (ℝ × ℝ)) ∧
-      IsMaxOn (fun q : ℝ × ℝ ↦ likelihood x q.1 q.2) {(a,r)} p",Scoped result,,The algebraic statement holds for any parameter pair.
+      IsMaxOn (fun q : ℝ × ℝ ↦ likelihood x q.1 q.2) {(a,r)} p",Scoped result,,The algebraic statement holds for any parameter pair.,"{""criterion"":""full"",""failure"":""full"",""uniqueness"":""full""}"
 dgamma,rate,UnivariateML.Discrete3DGamma.held_rate,dev/lean/UnivariateML/Family/Discrete3DGamma.lean,1362,A positive count gives a unique finite shape maximizer at held positive rate.,"{n : ℕ} {x : Fin n → ℕ} (hx : ∃ i, 0 < x i) {r : ℝ} (hr : 0 < r) :
-    ∃! a, a ∈ Ioi 0 ∧ IsMaxOn (fun b ↦ likelihood x b r) (Ioi 0) a",Scoped result,,Strict shape curvature follows from log-Gamma quantile spacing contraction.
+    ∃! a, a ∈ Ioi 0 ∧ IsMaxOn (fun b ↦ likelihood x b r) (Ioi 0) a",Scoped result,,Strict shape curvature follows from log-Gamma quantile spacing contraction.,"{""criterion"":""partial"",""uniqueness"":""full""}"
 skellam,all free,UnivariateML.Discrete3Skellam.fixedProduct_strict,dev/lean/UnivariateML/Family/Discrete3Skellam.lean,35,"At fixed positive rate product, the stationary log ratio strictly beats every other ratio.","{z d t u : ℝ} (hz : 0 < z)
     (hroot : d = (z/2) * (exp t - exp (-t))) (hne : u ≠ t) :
-    fixedProduct z d u < fixedProduct z d t",Scoped result,,The Bessel contribution is constant on the slice.
+    fixedProduct z d u < fixedProduct z d t",Scoped result,,The Bessel contribution is constant on the slice.,
 skellam,all free,UnivariateML.Discrete3Skellam.mean_zero_diagonal,dev/lean/UnivariateML/Family/Discrete3Skellam.lean,50,"For mean zero, unequal positive rates lose to equal rates at the same product in the fixed-product objective.","{z u : ℝ} (hz : 0 < z) (hu : u ≠ 0) :
-    fixedProduct z 0 u < fixedProduct z 0 0",Scoped result,,The full sample theorem below also proves uniqueness along the diagonal on its stated slice.
+    fixedProduct z 0 u < fixedProduct z 0 0",Scoped result,,The full sample theorem below also proves uniqueness along the diagonal on its stated slice.,
 skellam,all free,UnivariateML.Discrete3Skellam.attained_of_uniform_tail,dev/lean/UnivariateML/Family/Discrete3Skellam.lean,56,A continuous quadrant likelihood with a positive point and uniform vanishing tails attains.,"{L : ℝ × ℝ → ℝ}
     (hc : ContinuousOn L (Ici 0 ×ˢ Ici 0))
     {p : ℝ × ℝ} (hp : p ∈ Ici 0 ×ˢ Ici 0) (hpos : 0 < L p)
     (htail : ∀ ε > 0, ∃ R : ℝ, ∀ q ∈ Ici 0 ×ˢ Ici 0,
       (R < q.1 ∨ R < q.2) → L q < ε) :
-    ∃ q ∈ Ici 0 ×ˢ Ici 0, IsMaxOn L (Ici 0 ×ˢ Ici 0) q",Scoped result,,The generic compactness step is instantiated by the Skellam sample theorem.
+    ∃ q ∈ Ici 0 ×ˢ Ici 0, IsMaxOn L (Ici 0 ×ˢ Ici 0) q",Scoped result,,The generic compactness step is instantiated by the Skellam sample theorem.,
 skellam,all free,UnivariateML.Discrete3Skellam.mass_pos,dev/lean/UnivariateML/Family/Discrete3Skellam.lean,127,Every signed Skellam atom is strictly positive at positive rates.,"(k : ℤ) {p : ℝ × ℝ} (h₁ : 0 < p.1) (h₂ : 0 < p.2) :
-    0 < mass k p",Scoped result,,The atom is the Poisson convolution series.
-skellam,all free,UnivariateML.Discrete3Skellam.mass_continuousOn,dev/lean/UnivariateML/Family/Discrete3Skellam.lean,199,Skellam masses are continuous throughout the closed rate quadrant.,(k : ℤ) : ContinuousOn (mass k) domain,Scoped result,,The statement includes both axes and the origin.
+    0 < mass k p",Scoped result,,The atom is the Poisson convolution series.,
+skellam,all free,UnivariateML.Discrete3Skellam.mass_continuousOn,dev/lean/UnivariateML/Family/Discrete3Skellam.lean,199,Skellam masses are continuous throughout the closed rate quadrant.,(k : ℤ) : ContinuousOn (mass k) domain,Scoped result,,The statement includes both axes and the origin.,
 skellam,all free,UnivariateML.Discrete3Skellam.poisson_atoms_uniform_tail,dev/lean/UnivariateML/Family/Discrete3Skellam.lean,243,Poisson atoms vanish uniformly over their order when rate tends to infinity.,"{ε : ℝ} (hε : 0 < ε) :
-    ∃ R : ℝ, ∀ r > R, 0 ≤ r → ∀ j, poissonMass r j < ε",Scoped result,,This supplies the tail estimate for each convolution factor.
+    ∃ R : ℝ, ∀ r > R, 0 ≤ r → ∀ j, poissonMass r j < ε",Scoped result,,This supplies the tail estimate for each convolution factor.,
 skellam,all free,UnivariateML.Discrete3Skellam.likelihood_uniform_tail,dev/lean/UnivariateML/Family/Discrete3Skellam.lean,280,For a nonempty sample the Skellam likelihood is uniformly small when either rate is sufficiently large.,"{n : ℕ} (hn : 0 < n) (x : Fin n → ℤ)
     {ε : ℝ} (hε : 0 < ε) :
-    ∃ R : ℝ, ∀ q ∈ domain, (R < q.1 ∨ R < q.2) → likelihood x q < ε",Scoped result,,The sample likelihood is a finite product of convolution masses.
+    ∃ R : ℝ, ∀ q ∈ domain, (R < q.1 ∨ R < q.2) → likelihood x q < ε",Scoped result,,The sample likelihood is a finite product of convolution masses.,
 skellam,all free,UnivariateML.Discrete3Skellam.joint_attained,dev/lean/UnivariateML/Family/Discrete3Skellam.lean,295,Every nonempty signed integer sample has a Skellam maximum on the closed quadrant.,"{n : ℕ} (hn : 0 < n) (x : Fin n → ℤ) :
-    ∃ p ∈ domain, IsMaxOn (likelihood x) domain p",Scoped result,,The conclusion allows a zero rate.
+    ∃ p ∈ domain, IsMaxOn (likelihood x) domain p",Scoped result,,The conclusion allows a zero rate.,"{""criterion"":""full"",""failure"":""full""}"
 skellam,all free,UnivariateML.Discrete3Skellam.joint_unique_one_magnitude,dev/lean/UnivariateML/Family/Discrete3Skellam.lean,653,A mean-zero sample with one positive magnitude and both signs has exactly one maximizer.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℤ}
     {k : ℕ} (hk : 0 < k) (hx : ∀ i, x i = (k : ℤ) ∨ x i = -(k : ℤ))
     (hmean : ∑ i, x i = 0) (hpos : ∃ i, 0 < x i) (hneg : ∃ i, x i < 0) :
-    ∃! p, p ∈ domain ∧ IsMaxOn (likelihood x) domain p",Scoped result,,Both signs exclude the axes. The proof reduces to the equal-rate line.
+    ∃! p, p ∈ domain ∧ IsMaxOn (likelihood x) domain p",Scoped result,,Both signs exclude the axes. The proof reduces to the equal-rate line.,"{""uniqueness"":""partial""}"
 bnbinom,alpha+size,UnivariateML.Discrete3BNBinom.tilted_score_neg,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,30,A Laplace score with a single positive-to-negative crossing is strictly negative after a zero.,"{g : ℝ → ℝ} {c δ : ℝ} (hc : 0 < c) (hδ : 0 < δ)
     (hleft : ∀ t ∈ Ioo 0 c, g t < 0) (hright : ∀ t > c, 0 < g t)
     (hg : IntegrableOn g (Ioi 0))
     (ht : IntegrableOn (fun t ↦ exp (-δ*t) * g t) (Ioi 0))
     (hzero : ∫ t in Ioi 0, g t = 0) :
-    (∫ t in Ioi 0, exp (-δ*t) * g t) < 0",Scoped result,,Uses integrability and strict sign on an interval.
+    (∫ t in Ioi 0, exp (-δ*t) * g t) < 0",Scoped result,,Uses integrability and strict sign on an interval.,
 bnbinom,alpha+beta,UnivariateML.Discrete3BNBinom.tilted_score_neg,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,30,A Laplace score with a single positive-to-negative crossing is strictly negative after a zero.,"{g : ℝ → ℝ} {c δ : ℝ} (hc : 0 < c) (hδ : 0 < δ)
     (hleft : ∀ t ∈ Ioo 0 c, g t < 0) (hright : ∀ t > c, 0 < g t)
     (hg : IntegrableOn g (Ioi 0))
     (ht : IntegrableOn (fun t ↦ exp (-δ*t) * g t) (Ioi 0))
     (hzero : ∫ t in Ioi 0, g t = 0) :
-    (∫ t in Ioi 0, exp (-δ*t) * g t) < 0",Scoped result,,Uses integrability and strict sign on an interval.
+    (∫ t in Ioi 0, exp (-δ*t) * g t) < 0",Scoped result,,Uses integrability and strict sign on an interval.,
 bnbinom,beta+size,UnivariateML.Discrete3BNBinom.tilted_score_neg,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,30,A Laplace score with a single positive-to-negative crossing is strictly negative after a zero.,"{g : ℝ → ℝ} {c δ : ℝ} (hc : 0 < c) (hδ : 0 < δ)
     (hleft : ∀ t ∈ Ioo 0 c, g t < 0) (hright : ∀ t > c, 0 < g t)
     (hg : IntegrableOn g (Ioi 0))
     (ht : IntegrableOn (fun t ↦ exp (-δ*t) * g t) (Ioi 0))
     (hzero : ∫ t in Ioi 0, g t = 0) :
-    (∫ t in Ioi 0, exp (-δ*t) * g t) < 0",Scoped result,,Uses integrability and strict sign on an interval.
+    (∫ t in Ioi 0, exp (-δ*t) * g t) < 0",Scoped result,,Uses integrability and strict sign on an interval.,
 bnbinom,alpha+size,UnivariateML.Discrete3BNBinom.score_root_unique,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,67,A score with the tilted sign comparison has at most one zero.,"{g : ℝ → ℝ} {c : ℝ} (hc : 0 < c)
     (hleft : ∀ t ∈ Ioo 0 c, g t < 0) (hright : ∀ t > c, 0 < g t)
     (hint : ∀ a > 0, IntegrableOn (fun t ↦ exp (-a*t) * g t) (Ioi 0))
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
     (hza : ∫ t in Ioi 0, exp (-a*t) * g t = 0)
-    (hzb : ∫ t in Ioi 0, exp (-b*t) * g t = 0) : a = b",Scoped result,,The held-shape proofs instantiate the comparison for the normalized kernels.
+    (hzb : ∫ t in Ioi 0, exp (-b*t) * g t = 0) : a = b",Scoped result,,The held-shape proofs instantiate the comparison for the normalized kernels.,
 bnbinom,alpha+beta,UnivariateML.Discrete3BNBinom.score_root_unique,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,67,A score with the tilted sign comparison has at most one zero.,"{g : ℝ → ℝ} {c : ℝ} (hc : 0 < c)
     (hleft : ∀ t ∈ Ioo 0 c, g t < 0) (hright : ∀ t > c, 0 < g t)
     (hint : ∀ a > 0, IntegrableOn (fun t ↦ exp (-a*t) * g t) (Ioi 0))
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
     (hza : ∫ t in Ioi 0, exp (-a*t) * g t = 0)
-    (hzb : ∫ t in Ioi 0, exp (-b*t) * g t = 0) : a = b",Scoped result,,The held-shape proofs instantiate the comparison for the normalized kernels.
+    (hzb : ∫ t in Ioi 0, exp (-b*t) * g t = 0) : a = b",Scoped result,,The held-shape proofs instantiate the comparison for the normalized kernels.,
 bnbinom,beta+size,UnivariateML.Discrete3BNBinom.score_root_unique,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,67,A score with the tilted sign comparison has at most one zero.,"{g : ℝ → ℝ} {c : ℝ} (hc : 0 < c)
     (hleft : ∀ t ∈ Ioo 0 c, g t < 0) (hright : ∀ t > c, 0 < g t)
     (hint : ∀ a > 0, IntegrableOn (fun t ↦ exp (-a*t) * g t) (Ioi 0))
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
     (hza : ∫ t in Ioi 0, exp (-a*t) * g t = 0)
-    (hzb : ∫ t in Ioi 0, exp (-b*t) * g t = 0) : a = b",Scoped result,,The held-shape proofs instantiate the comparison for the normalized kernels.
+    (hzb : ∫ t in Ioi 0, exp (-b*t) * g t = 0) : a = b",Scoped result,,The held-shape proofs instantiate the comparison for the normalized kernels.,
 bnbinom,beta+size,UnivariateML.Discrete3BNBinom.held_beta_size,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,956,Free alpha has a unique positive maximizer on a positive sample.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℕ} (hx : ∃ i, 0 < x i)
     {r b : ℝ} (hr : 0 < r) (hb : 0 < b) :
-    ∃! a, a ∈ Ioi (0 : ℝ) ∧ IsMaxOn (fun t ↦ logLikelihood x r t b) (Ioi 0) a",Scoped result,,Size and beta are positive and fixed.
+    ∃! a, a ∈ Ioi (0 : ℝ) ∧ IsMaxOn (fun t ↦ logLikelihood x r t b) (Ioi 0) a",Scoped result,,Size and beta are positive and fixed.,"{""criterion"":""partial"",""uniqueness"":""full""}"
 bnbinom,alpha+beta,UnivariateML.Discrete3BNBinom.held_alpha_beta,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,973,Free size has a unique positive maximizer on a positive sample.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℕ} (hx : ∃ i, 0 < x i)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
-    ∃! r, r ∈ Ioi (0 : ℝ) ∧ IsMaxOn (fun t ↦ logLikelihood x t a b) (Ioi 0) r",Scoped result,,Both beta-prior shapes are positive and fixed.
+    ∃! r, r ∈ Ioi (0 : ℝ) ∧ IsMaxOn (fun t ↦ logLikelihood x t a b) (Ioi 0) r",Scoped result,,Both beta-prior shapes are positive and fixed.,"{""criterion"":""partial"",""uniqueness"":""full""}"
 bnbinom,all free,UnivariateML.Discrete3BNBinom.logLikelihood_swap,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,990,Swapping size and beta preserves the entire log likelihood.,"{n : ℕ} (x : Fin n → ℕ) (r a b : ℝ) :
-    logLikelihood x r a b = logLikelihood x b a r",Scoped result,,The symmetry yields the second held-alpha scalar result.
+    logLikelihood x r a b = logLikelihood x b a r",Scoped result,,The symmetry yields the second held-alpha scalar result.,"{""uniqueness"":""full""}"
 bnbinom,alpha+size,UnivariateML.Discrete3BNBinom.held_alpha_size,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,1002,Free beta has a unique positive maximizer on a positive sample.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℕ} (hx : ∃ i, 0 < x i)
     {a r : ℝ} (ha : 0 < a) (hr : 0 < r) :
-    ∃! b, b ∈ Ioi (0 : ℝ) ∧ IsMaxOn (fun t ↦ logLikelihood x r a t) (Ioi 0) b",Scoped result,,Alpha and size are positive and fixed.
+    ∃! b, b ∈ Ioi (0 : ℝ) ∧ IsMaxOn (fun t ↦ logLikelihood x r a t) (Ioi 0) b",Scoped result,,Alpha and size are positive and fixed.,"{""criterion"":""partial"",""uniqueness"":""full""}"
 bnbinom,alpha+size,UnivariateML.Discrete3BNBinom.all_zero_held_faces,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,1122,The three scalar held regimes have strict all-zero suprema approached by their zero-atom limits.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℕ} (hx : ∀ i, x i = 0)
     {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hb : 0 < b) :
     logLikelihood x r a b < 0 ∧
       Tendsto (fun t ↦ logLikelihood x t a b) (𝓝[>] (0 : ℝ)) (𝓝 0) ∧
       Tendsto (fun t ↦ logLikelihood x r a t) (𝓝[>] (0 : ℝ)) (𝓝 0) ∧
-      Tendsto (fun t ↦ logLikelihood x r t b) atTop (𝓝 0)",Scoped result,,These same limits supply paths when only alpha is held.
+      Tendsto (fun t ↦ logLikelihood x r t b) atTop (𝓝 0)",Scoped result,,These same limits supply paths when only alpha is held.,"{""criterion"":""partial"",""failure"":""full"",""limit:3"":""full"",""path:3"":""full""}"
 bnbinom,alpha+beta,UnivariateML.Discrete3BNBinom.all_zero_held_faces,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,1122,The three scalar held regimes have strict all-zero suprema approached by their zero-atom limits.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℕ} (hx : ∀ i, x i = 0)
     {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hb : 0 < b) :
     logLikelihood x r a b < 0 ∧
       Tendsto (fun t ↦ logLikelihood x t a b) (𝓝[>] (0 : ℝ)) (𝓝 0) ∧
       Tendsto (fun t ↦ logLikelihood x r a t) (𝓝[>] (0 : ℝ)) (𝓝 0) ∧
-      Tendsto (fun t ↦ logLikelihood x r t b) atTop (𝓝 0)",Scoped result,,These same limits supply paths when only alpha is held.
+      Tendsto (fun t ↦ logLikelihood x r t b) atTop (𝓝 0)",Scoped result,,These same limits supply paths when only alpha is held.,"{""criterion"":""partial"",""failure"":""full"",""limit:3"":""full"",""path:3"":""full""}"
 bnbinom,beta+size,UnivariateML.Discrete3BNBinom.all_zero_held_faces,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,1122,The three scalar held regimes have strict all-zero suprema approached by their zero-atom limits.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℕ} (hx : ∀ i, x i = 0)
     {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hb : 0 < b) :
     logLikelihood x r a b < 0 ∧
       Tendsto (fun t ↦ logLikelihood x t a b) (𝓝[>] (0 : ℝ)) (𝓝 0) ∧
       Tendsto (fun t ↦ logLikelihood x r a t) (𝓝[>] (0 : ℝ)) (𝓝 0) ∧
-      Tendsto (fun t ↦ logLikelihood x r t b) atTop (𝓝 0)",Scoped result,,These same limits supply paths when only alpha is held.
+      Tendsto (fun t ↦ logLikelihood x r t b) atTop (𝓝 0)",Scoped result,,These same limits supply paths when only alpha is held.,"{""criterion"":""partial"",""failure"":""full"",""limit:3"":""full"",""path:3"":""full""}"
 bnbinom,alpha,UnivariateML.Discrete3BNBinom.all_zero_held_faces,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,1122,The three scalar held regimes have strict all-zero suprema approached by their zero-atom limits.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℕ} (hx : ∀ i, x i = 0)
     {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hb : 0 < b) :
     logLikelihood x r a b < 0 ∧
       Tendsto (fun t ↦ logLikelihood x t a b) (𝓝[>] (0 : ℝ)) (𝓝 0) ∧
       Tendsto (fun t ↦ logLikelihood x r a t) (𝓝[>] (0 : ℝ)) (𝓝 0) ∧
-      Tendsto (fun t ↦ logLikelihood x r t b) atTop (𝓝 0)",Scoped result,,These same limits supply paths when only alpha is held.
+      Tendsto (fun t ↦ logLikelihood x r t b) atTop (𝓝 0)",Scoped result,,These same limits supply paths when only alpha is held.,"{""criterion"":""partial"",""failure"":""full"",""limit:3"":""full"",""path:3"":""full""}"
 bnbinom,alpha,UnivariateML.Discrete3BNBinom.held_alpha_attained,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,1389,"With positive alpha held, a positive sample has a finite size and beta maximizer.","{n : ℕ} (hn : 0 < n) {x : Fin n → ℕ} (hx : ∃ i, 0 < x i)
     {a : ℝ} (ha : 0 < a) :
     ∃ p ∈ Ioi (0 : ℝ) ×ˢ Ioi 0,
-      IsMaxOn (fun p : ℝ × ℝ ↦ logLikelihood x p.1 a p.2) (Ioi 0 ×ˢ Ioi 0) p",Scoped result,,The conclusion is attainment.
+      IsMaxOn (fun p : ℝ × ℝ ↦ logLikelihood x p.1 a p.2) (Ioi 0 ×ˢ Ioi 0) p",Scoped result,,The conclusion is attainment.,"{""criterion"":""partial""}"
 bnbinom,alpha+beta+size,UnivariateML.Discrete3BNBinom.fully_held,dev/lean/UnivariateML/Family/Discrete3BNBinom.lean,1472,A fixed parameter triple uniquely maximizes on its singleton domain.,"{n : ℕ} (x : Fin n → ℕ) (p : ℝ × ℝ × ℝ) :
     ∃! q, q ∈ ({p} : Set (ℝ × ℝ × ℝ)) ∧
-      IsMaxOn (fun q : ℝ × ℝ × ℝ ↦ logLikelihood x q.1 q.2.1 q.2.2) {p} q",Scoped result,,The algebraic singleton statement holds for any triple.
+      IsMaxOn (fun q : ℝ × ℝ × ℝ ↦ logLikelihood x q.1 q.2.1 q.2.2) {p} q",Scoped result,,The algebraic singleton statement holds for any triple.,"{""criterion"":""full"",""failure"":""full"",""uniqueness"":""full""}"
