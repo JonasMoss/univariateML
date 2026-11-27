@@ -225,3 +225,5 @@ public import UnivariateML.Family.AE1Huber
 public import UnivariateML.Family.AE1SGED
 public import UnivariateML.Family.AE1SSTD
 public import UnivariateML.Family.AE1TukeyLambda
+public import UnivariateML.Generic.ExpSum
+public import UnivariateML.Family.ExpSumSeparation
