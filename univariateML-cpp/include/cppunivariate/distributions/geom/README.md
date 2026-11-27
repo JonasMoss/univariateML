@@ -201,25 +201,7 @@ modifiers:
     inflated:
       status: implemented
       certified: 'yes'
-      note: Existing conditional/hurdle/mixture fitter; every hold is forwarded.
-      limits:
-      - model: pois
-        configuration: {zero: inflated}
-        firmness: proved
-        when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed and positive inflation.
-        detect: Size and probability are free; a signed Poisson-tail bound and complete finite-rectangle coverage
-          select the same-inflation ZIP face, or certified positive-count and NB comparisons select the free-inflation
-          face. Unresolved comparisons stop without selecting a limit.
-        status: ZipLimit
-        numerical: true
-      - model: pois
-        firmness: proved
-        when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed, while inflation tends to
-          zero.
-        detect: A certified ordinary-NB reduction or complete global comparison selects the zero-inflation Poisson
-          face. An unresolved global comparison is a numerical stop, not a non-existence report.
-        status: PoissonLimit
-        numerical: true
+      note: The inflated negative-binomial delegate holds size at one, which excludes its free-size Poisson faces.
   truncate:
     status: implemented
     certified: 'yes'
@@ -230,12 +212,13 @@ modifiers:
       detect: sample mean is at or above the limiting conditional mean
       name: uniform on the retained integer window
       status: UpperLimit
+      detect_firmness: proved
     - when: all observations equal the lowest retained integer above zero, outside the declared positive-truncation
         extension
       detect: sample is constant at the retained lower bound
       name: point mass at the lowest retained integer
       status: LowerLimit
-
+      detect_firmness: proved
 ---
 
 The geometric distribution models the number of failures before the first success in independent Bernoulli trials.

@@ -38,8 +38,8 @@ r:
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations."
 log_density: log(x-mu+beta) - 3*log(x-mu)/2 - log(beta)/2 - log(2*alpha) - log(2*pi)/2 - ((x-mu)/beta + beta/(x-mu)-2)/(2*alpha**2)
 limits:
-  - {firmness: proved, name: point mass, kind: nonexistence, fixed: [mu], status: Unbounded, when: '$\alpha \to 0$ with $\beta$ equal to the common value of $x - \mu$', detect: 'all shifted observations $x - \mu$ are equal and $\alpha$ and $\beta$ are free'}
-  - {firmness: proved, name: point mass, kind: nonexistence, fixed: [beta, mu], status: Unbounded, when: '$\alpha \to 0$', detect: 'every shifted observation $x - \mu$ equals the held $\beta$'}
+  - {firmness: proved, name: point mass, kind: nonexistence, fixed: [mu], status: Unbounded, when: '$\alpha \to 0$ with $\beta$ equal to the common value of $x - \mu$', detect: 'all shifted observations $x - \mu$ are equal and $\alpha$ and $\beta$ are free', detect_firmness: proved, proof: ["UnivariateML.Fatigue.constant_unbounded"], detect_proof: ["UnivariateML.Fatigue.constant_unbounded"]}
+  - {firmness: proved, name: point mass, kind: nonexistence, fixed: [beta, mu], status: Unbounded, when: '$\alpha \to 0$', detect: 'every shifted observation $x - \mu$ equals the held $\beta$', detect_firmness: proved, proof: ["UnivariateML.Fatigue.heldScale_unbounded"], detect_proof: ["UnivariateML.Fatigue.heldScale_unbounded"]}
 references:
 - From, S. G. and Li, L. (2006). Estimation of the parameters of the Birnbaum–Saunders distribution. Communications
   in Statistics, Theory and Methods, 35(12), 2157–2169. doi:10.1080/03610920600853563.
@@ -114,6 +114,9 @@ In d/p evaluation the Gaussian argument divides the square-root ratio difference
 If alpha z/2 underflows, the inverse multiplies beta and alpha before z. The omitted asinh correction is cubic in the underflowed argument, while the final location-plus-scale can cancel and leave a representable linear displacement.
 
 ## Details
+
+At fixed threshold and shape $\alpha\le2$, the likelihood is strictly log-concave in log scale. The reciprocal-scale pair at a constant excess requires $\alpha>2$. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-halfthreshold.md) describes the limiting paths and the scope of the boundary comparisons.
 

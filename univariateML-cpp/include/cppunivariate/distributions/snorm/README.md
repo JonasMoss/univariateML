@@ -44,16 +44,23 @@ limits:
     status: Unbounded
     message: "Scale collapse"
     kind: nonexistence
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/snorm/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/snorm/README.md#details"]
   - model: hnorm
     firmness: proved
     when: 'As $\xi\to\infty$, the distribution tends to a translated right half-normal with the limiting mean and standard deviation.'
     status: 'RightHalfNormalBoundary'
-    numerical: true
+    detect_firmness: numerical
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/snorm/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/snorm/README.md#details"]
   - name: 'reflected translated half-normal'
     firmness: proved
     when: 'As $\xi\to0$, the distribution tends to a reflected translated half-normal with the limiting mean and standard deviation.'
     status: 'LeftHalfNormalBoundary'
-    numerical: true
+    detect_firmness: numerical
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/snorm/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/snorm/README.md#details"]
 references:
 - Fernandez, C. and Steel, M. F. J. (1998). On Bayesian modeling of fat tails and skewness. Journal of the American
   Statistical Association, 93(441), 359–371.

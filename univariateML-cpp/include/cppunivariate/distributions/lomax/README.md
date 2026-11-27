@@ -35,7 +35,9 @@ limits:
     when: '$\kappa$ tends to infinity while $\lambda\kappa$ tends to a positive exponential rate'
     detect: 'both coefficients are free and the global profile upper bounds certify that no improvement over the best exponential exceeds $10^{-8}n$ log-likelihood units'
     status: ExponentialLimit
-    numerical: true
+    detect_firmness: numerical
+    proof: ["UnivariateML.Lomax.logLik_tendsto"]
+    detect_proof: ["UnivariateML.Lomax.exponential_sup_of_no_witness"]
 references:
 - del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability
   Letters 79(5), 684–688. doi:10.1016/j.spl.2008.10.021.
@@ -112,6 +114,8 @@ modifiers:
 The Lomax (Pareto type II) distribution models positive incomes, losses and waiting times with a heavy right tail.
 
 ## Details
+
+An attained joint fit is unique on samples with at most two support values. An exact three-value real sample gives two distinct finite global maximizers. [Proof](../../../../../dev/research/evaluations/2026-11-25-lomax-uniq-math-report.md#exact-tie-construction).
 
 The rate $\lambda$ sets the inverse scale, and the shape $\kappa$ controls the tail. Smaller $\kappa$ gives a heavier tail.
 

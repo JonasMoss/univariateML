@@ -46,14 +46,16 @@ limits:
     firmness: proved
     when: 'The shape $\alpha$ tends to $+\infty$, giving a right translated half-normal limit.'
     detect: 'With shape free, the search selects the right half-normal by comparing its likelihood with the finite candidate at tolerance $10^{-8}n$. A difference at the comparison threshold takes a separate route. Any held location or scale is retained.'
-    numerical: true
     status: RightHalfNormalBoundary
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-sn-math-report.md#strict-tail-exclusion-and-exact-sample-criterion"]
   - name: reflected translated half-normal
     firmness: proved
     when: 'The shape $\alpha$ tends to $-\infty$, giving a reflected translated half-normal limit.'
     detect: 'With shape free, the search selects the reflected half-normal by comparing its likelihood with the finite candidate at tolerance $10^{-8}n$. A difference at the comparison threshold takes a separate route. Any held location or scale is retained.'
-    numerical: true
     status: LeftHalfNormalBoundary
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-sn-math-report.md#strict-tail-exclusion-and-exact-sample-criterion"]
 references:
 - Azzalini, A. (1985). A class of distributions which includes the normal ones. Scandinavian Journal of Statistics
   12, 171-178.

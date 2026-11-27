@@ -51,12 +51,18 @@ limits:
   detect: The sample is constant, at least one endpoint is free, and every held coefficient equals the observation.
   status: Unbounded
   message: unbounded
+  detect_firmness: proved
+  proof: ["univariateML-cpp/include/cppunivariate/distributions/triang/README.md#details"]
+  detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/triang/README.md#details"]
 - name: incompatible held parameters
   firmness: proved
   when: A valid held endpoint excludes an observation or forces zero density there.
   detect: An observation lies outside a held endpoint, or an observed held endpoint cannot also be the mode.
   status: Incompatible
   message: incompatible
+  detect_firmness: proved
+  proof: ["univariateML-cpp/include/cppunivariate/distributions/triang/README.md#details"]
+  detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/triang/README.md#details"]
 examples: |
   set.seed(1)
   x <- rml(200, mltriang())
@@ -107,6 +113,9 @@ The triangular distribution describes bounded measurements between endpoints $a$
 On the right branch with a small lower probability, rationalizing the inverse gives a + ((c-a)+F(b-c))/(1+sqrt(S(b-c)/(b-a))). Its positive numerator avoids cancellation between a support width and its nearly equal square root.
 
 ## Details
+
+At fixed interior mode fraction the positive standardized density is strictly log-concave. The inverse-scale log likelihood gives a unique positive location–scale fit on a feasible, noncollapsing slice. A held physical endpoint gives an affine constraint in inverse scale and scaled location. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-bounded.md) derives these boundary conditions, including the relevant held parameters.
 

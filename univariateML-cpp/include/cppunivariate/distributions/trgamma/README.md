@@ -40,26 +40,33 @@ limits:
   - name: fixed-endpoint power face
     firmness: proved
     fixed: [scale]
-    when: The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held.
+    when: The gamma shape $k$ tends to zero and the power $p$ tends to infinity with $kp\to d>0$ and the scale $a$ held. The reachable trace has a loss of one log-likelihood unit per endpoint observation and is strictly beaten at a finite parameter in every bounded held-scale case.
     status: IterationFailure
     message: fixed-endpoint power face
-    numerical: true
+    detect: The held-scale cover can report this numerical comparison diagnostic. The reachable trace loses on the bounded branch.
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#held-scale-and-both-shapes-free"]
   - name: unbounded likelihood
     firmness: proved
     when: The free coefficients concentrate the distribution at the common positive observation.
     detect: All observations are equal and the free coefficients allow concentration. With scale free, either free shape suffices. With scale held, a free power suffices at the common observation $a$; with both shapes free, concentration is also possible above $a$.
     status: InvalidData
     message: unbounded
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#existence-on-all-eight-masks"]
   - model: lnorm
     firmness: proved
     when: 'The gamma shape $k$ tends to infinity with $p\sqrt{k}\to1/\sigma$ and $\log a + \log(k)/p\to\mu$, for fixed $\sigma>0$ and $\mu$.'
     status: LognormalBoundary
-    numerical: true
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#free-scale-and-both-shapes-free"]
   - model: power
     firmness: proved
     when: 'The power $p$ tends to infinity with $kp\to d>0$ and $a$ converging to a positive endpoint.'
     status: PowerBoundary
-    numerical: true
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#free-scale-and-both-shapes-free"]
 references:
 - Stacy, E. W. (1962). A generalization of the gamma distribution. The Annals of Mathematical Statistics 33(3),
   1187-1192. doi:10.1214/aoms/1177704481.
@@ -115,9 +122,9 @@ existence:
     power held, the remaining gamma shape has a unique finite MLE.
     With scale and gamma shape held, the power MLE is unique unless
     every observation equals the held scale, when likelihood is unbounded.
-    With only scale held, global profile bounds compare the interior with the
-    fixed-endpoint power limit; constant samples above scale additionally
-    have unbounded likelihood when both shapes are free.
+    With only scale held, a finite fit strictly beats the fixed-endpoint power
+    trace whenever the likelihood is bounded. Constant samples at or above
+    the held scale give unbounded likelihood with both shapes free.
   reason: >-
     Holding the power reduces fitting to the gamma family. Holding the
     gamma shape gives a strictly concave profile in log-power after
@@ -181,7 +188,7 @@ stops as an unresolved comparison, retaining both witnesses and a global upper
 bound. A face is selected only within the floating-point comparison margin;
 this does not assert exact finite-sample equality. Fits very close to the lognormal limit can have a scale outside the numerical representation range.
 
-With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the fixed-endpoint power limit is compared with the interior profile. The convex conjugate of log-gamma bounds the profile between evaluated powers, and analytic bounds close both tails.
+With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the bounded profile strictly beats the reachable power trace. The numerical comparison can still report the trace as a diagnostic. The convex conjugate of log-gamma bounds the profile between evaluated powers, and analytic bounds close both tails.
 
 When the sample's relative spread $(\max x-\min x)/\min x$ is below $10^{-6}$ (and not zero), the fit standardizes the relative logs $\log(x_i/x_1)$ instead of binary64 logs. Rounding each log moves it by about $10^{-16}$, which distorts the spread of the logs by the default tolerance at that relative spread; observations whose binary64 logs coincide stay distinct.
 

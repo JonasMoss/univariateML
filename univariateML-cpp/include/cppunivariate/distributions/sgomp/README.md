@@ -99,6 +99,10 @@ The shifted Gompertz distribution models nonnegative waiting times, including di
 
 ## Details
 
+At fixed shape $\eta$, the standard log density is concave. At positive total exposure the anchored inverse-scale fit is unique, including the exponential member. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
+For nine ones and one exact real outlier defined by a profile crossing, the maximizing set consists of the exponential member and one positive-shape fit. [Proof](../../../../../dev/research/evaluations/2026-11-25-sgomp-math-report.md#exact-separated-maxima-and-the-crossing).
+
 At a fixed rate, increasing $\eta$ shifts probability toward longer waiting times.
 
 The domain includes $\eta=0$, an attained exponential member with rate $b$. Zeros are valid observations. A maximum can occur at this member rather than at a positive shape. Holding the rate gives a unique shape estimate from a decreasing score, or the endpoint zero. Holding the shape leaves a strictly concave scalar rate likelihood, with an explicit exponential estimate when the held shape is zero.

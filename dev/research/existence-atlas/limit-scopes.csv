@@ -40,7 +40,7 @@ hnorm,1,all free;mu,Held endpoint must equal the common observation.
 ht,2,all free;mu;nu;mu+nu,The collapse condition depends on free or held shape.
 ht,3,nu;mu+nu,Fixed-shape criterion for a fitted or held endpoint.
 huber,1,all free;mu;epsilon;epsilon+mu,The displayed constant-data path is compatible with fixed positive epsilon.
-hyper,1,k+m,The detector fixes both marked count and draw count although fixed lists only m.
+hyper,1,k+m,The detector requires both marked count and draw count held.
 invburr,1,all free;scale;shape1;scale+shape1,The specific collapse predicate depends on the held mask.
 invtrgamma,2,all free;shape1;shape2;scale;scale+shape1,The concentration path depends on the held coordinates.
 laplace,1,all free;mu,Held location must equal the common observation.
@@ -53,7 +53,7 @@ pareto3,1,min;min+scale,Held scale must equal the common excess.
 pareto4,2,min;min+shape1;min+scale;min+scale+shape1,The concentration path depends on the held coordinates.
 pareto4,3,min;min+shape2,The Weibull detector describes the free regular parameters and the held-power fit.
 pareto4,4,min;min+scale,The Pareto detector describes the free regular parameters and held-scale fit.
-pareto4,5,min+scale,The detector explicitly includes the threshold missing from fixed.
+pareto4,5,min+scale,The detector requires both scale and threshold held.
 pig,1,all free;mean,The variance condition depends on whether mean is fitted or held.
 slash,1,all free;mu,Held location admits an exact scalar argument. The all-free detector alone is numerical.
 snorm,1,all free;xi;mean;mean+xi,Scale must be free and all observations equal the fitted or held mean.

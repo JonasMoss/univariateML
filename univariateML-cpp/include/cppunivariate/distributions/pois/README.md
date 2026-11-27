@@ -156,6 +156,7 @@ modifiers:
         fixed:
         - pi
         status: ZeroLimit
+        detect_firmness: proved
       - name: undefined zero-rate reference
         firmness: proved
         when: The rate $\lambda$ is held at zero, outside the declared domain.
@@ -177,6 +178,7 @@ modifiers:
       status: LowerPointMass
       fixed:
       - b
+      detect_firmness: proved
     - name: point mass at highest support point
       firmness: proved
       when: The rate satisfies $\lambda\to\infty$ on a fixed nonsingleton window with a finite upper edge.
@@ -185,7 +187,7 @@ modifiers:
       status: UpperPointMass
       fixed:
       - a
-
+      detect_firmness: proved
 ---
 
 The Poisson distribution models counts of independent events over a fixed observation interval.

@@ -73,7 +73,7 @@ existence:
   statement: >-
     With both rates free, every nonempty finite integer sample has an
     attained finite MLE in the closed nonnegative quadrant. General joint
-    uniqueness is not asserted. A constant sample $k$ has the maximum
+    uniqueness remains open for integer samples. A single observed magnitude gives a unique fit, including samples that contain both signs. A constant sample $k$ has the maximum
     $(\mu_1,\mu_2)=(\max(k,0),\max(-k,0))$. With one rate held,
     the remaining rate has a unique finite MLE whenever the held model
     permits the observations. A held zero rate restricts the observations
@@ -94,6 +94,8 @@ existence:
 The Skellam distribution describes the difference between two independent Poisson counts. The rates $\mu_1$ and $\mu_2$ describe the positive and subtracted counts, respectively. Their difference is the mean of the observed difference.
 
 ## Details
+
+Exact real weights on integer support can give two global winners, even at mean zero. Integer-sample ties remain open. [Proof](../../../../../dev/research/evaluations/2026-11-25-skellam2-math-report.md#weighted-coexistence-and-integer-near-ties).
 
 Zero rates are attained members, including the point mass at zero when both vanish. A positive or negative Poisson boundary may therefore be returned directly. Constant nonzero data need not give a point mass. With one positive rate fixed, the log likelihood is strictly concave in the other rate; a bracketed score solve finds its unique maximum, including the zero endpoint. Holding either or both rates fixed is supported; data outside a fixed zero-rate member's support are rejected.
 

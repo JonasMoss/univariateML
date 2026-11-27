@@ -72,8 +72,8 @@ r:
     iterlim: "Work limit per solve: min(iterlim, 100000) solver iterations; certificates allow 128 * min(iterlim, 100000) slab, box or profile evaluations."
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
 limits:
-- {firmness: proved, name: held-minimum half tie, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum and $\xi=1$', detect: 'Shape and scale are free and exactly half the observations equal held mu, except two distinct values with equal counts: that case attains the supremum at xi=-1.'}
-- {firmness: proved, name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum', detect: 'All coefficients are free and exactly half of the observations equal the minimum, except two distinct values with equal counts: that case attains the supremum at xi=-1.'}
+- {firmness: proved, name: held-minimum half tie, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum and $\xi=1$', detect: 'Shape and scale are free and exactly half the observations equal held mu, except two distinct values with equal counts: that case attains the supremum at xi=-1.', detect_firmness: proved, detect_proof: ["dev/research/evaluations/2026-11-25-gev-math-report.md#location-held"]}
+- {firmness: proved, name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum', detect: 'All coefficients are free and exactly half of the observations equal the minimum, except two distinct values with equal counts: that case attains the supremum at xi=-1.', detect_firmness: proved, proof: ["univariateML-cpp/include/cppunivariate/distributions/gev/README.md#details"], detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/gev/README.md#details"]}
 examples: |
   set.seed(1)
   x <- rml(200, mlgev())
@@ -148,6 +148,9 @@ existence:
 The generalized extreme value distribution models maxima. A positive shape $\xi$ gives a heavy right tail, a negative one a finite upper end point, and $\xi = 0$ is the Gumbel distribution.
 
 ## Details
+
+At fixed shape $-1<\xi\le0$, the standard log density is strictly concave. A positive feasible, noncollapsing location–scale slice has one maximizing point. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
 
 For the held-location collapse, put $\mu=m=\min x_i$, fix $\xi>0$
 and let $\sigma\downarrow0$. Each of the $k$ minimum terms is

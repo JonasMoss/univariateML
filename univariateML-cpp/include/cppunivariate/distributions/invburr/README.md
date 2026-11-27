@@ -42,31 +42,43 @@ limits:
     detect: All observations are equal and $c$ and $s$ are free. With $s$ held, $c$ is free and either every observation equals $s$, or both shapes are free and the common observation is above $s$.
     status: Unbounded
     message: unbounded
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
   - model: invweibull
     firmness: proved
     fixed: [shape2]
     when: With $c$ held, $k$ tends to infinity and $s k^{1/c}$ stays at a positive inverse Weibull scale.
     detect: With $c$ held, the certified Lomax comparison for the transformed observations selects the exponential limit of the Lomax likelihood. This is not an exact sample criterion.
     status: InvWeibullBoundary
-    numerical: true
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#face-comparisons-and-equality"]
   - model: 'invweibull'
     firmness: proved
     when: The shape $k$ tends to infinity while $s k^{1/c}$ tends to a positive inverse Weibull scale.
     detect: With all coefficients free, the reciprocal Burr certificate strictly excludes every finite competitor and the other face; unresolved comparisons retain a successful finite search as uncertified.
     status: 'InvWeibullBoundary'
-    numerical: true
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#face-comparisons-and-equality"]
   - model: 'power'
     firmness: proved
     when: The power $c$ tends to infinity while $kc$ tends to a positive power shape and $s$ stays at its endpoint.
     detect: With all coefficients free, the reciprocal Burr certificate strictly excludes every finite competitor and the other face; unresolved comparisons retain a successful finite search as uncertified.
     status: 'PowerBoundary'
-    numerical: true
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#face-comparisons-and-equality"]
   - model: 'power'
     firmness: proved
     fixed: [scale]
     when: The power $c$ tends to infinity while $kc$ tends to a positive power shape and $s$ stays at its endpoint.
     detect: Only scale is held and all observations are at most $s$. The all-equal-to-$s$ case has unbounded likelihood instead.
     status: 'AllLeOne'
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
 references:
 - Shao, Q. (2004). Notes on maximum likelihood estimation for the three-parameter Burr XII distribution. Computational
   Statistics & Data Analysis 45, 675-687. doi:10.1016/S0167-9473(02)00367-5.
@@ -168,6 +180,10 @@ lower and upper tails. The upper-tail exponent is $c$,
 and the lower-tail power is $kc$.
 
 ## Details
+
+All-free inverse Burr can also have two strict finite global maxima on exact real observations. Both limiting likelihoods are strictly below them. [Proof](../../../../../dev/research/evaluations/2026-11-25-burr2-math-report.md#two-finite-global-maximizers-above-both-faces).
+
+Reciprocating the exact real held-power Burr sample, and inverting fitted scale, gives two distinct finite global maxima. The power hold can be any fixed positive value. [Proof](../../../../../dev/research/evaluations/2026-11-25-burr-math-report.md#held-power-has-an-exact-global-tie).
 
 Fitting requires a nonempty positive finite sample. The
 [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md)

@@ -33,12 +33,18 @@ limits:
     when: 'The concentration $\lambda$ tends to infinity with $\mu>0$ fixed.'
     detect: 'For a sample containing a positive count, $v+(\bar x-\mu)^2\le\bar x$, with $v=n^{-1}\sum_i(x_i-\bar x)^2$ and $\mu$ the held mean or $\bar x$ when free. Equality selects the Poisson supremum; an unresolved floating-point sign returns an uncertified Poisson limit.'
     status: PoissonLimit
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-pig-math-report.md#joint-paths-to-the-boundary"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-pig-math-report.md#existence-and-uniqueness-by-held-mask"]
   - model: pois
     firmness: proved
     when: 'The mean $\mu$ tends to zero with positive concentration $\lambda$ held.'
     detect: All observations are zero, $\mu$ is free, and $\lambda>0$ is held.
     fixed: [shape]
     status: ZeroLimit
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-pig-math-report.md#joint-paths-to-the-boundary"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-pig-math-report.md#existence-and-uniqueness-by-held-mask"]
 references:
 - 'Willmot, G. E. (1987). The Poisson-inverse Gaussian distribution as an alternative to the negative binomial.
   Scandinavian Actuarial Journal, 1987(3-4), 113-127. DOI: 10.1080/03461238.1987.10413823.'

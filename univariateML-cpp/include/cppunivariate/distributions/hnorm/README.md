@@ -35,6 +35,9 @@ limits:
     when: 'The scale tends to zero at the fitted or held endpoint $\mu$.'
     detect: 'Scale is free and every observation equals the fitted or held endpoint.'
     status: DegenerateData
+    detect_firmness: proved
+    proof: ["UnivariateML.HalfNormal.constant_unbounded", "UnivariateML.HalfNormal.heldLocation_unbounded"]
+    detect_proof: ["UnivariateML.HalfNormal.constant_unbounded", "UnivariateML.HalfNormal.heldLocation_unbounded"]
 references:
 - Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). Continuous Univariate Distributions, Volume 1, second edition.
   Wiley.

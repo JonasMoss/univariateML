@@ -39,11 +39,17 @@ limits:
     when: 'The scale $\sigma$ tends to zero at the estimated or held endpoint $\mu$.'
     detect: 'Scale is free and more than half the observations equal the endpoint.'
     status: Unbounded
+    detect_firmness: proved
+    proof: ["UnivariateML.HalfCauchy.joint_majority_unbounded", "UnivariateML.HalfCauchy.majority_collapse"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/hcauchy/README.md#details"]
   - name: finite unattained scale-zero supremum
     firmness: proved
     when: 'The scale $\sigma$ tends to zero at the estimated or held endpoint $\mu$.'
     detect: 'Scale is free and exactly half the observations equal the endpoint.'
     status: ScaleBoundary
+    detect_firmness: proved
+    proof: ["UnivariateML.HalfCauchy.joint_half_collapse", "UnivariateML.HalfCauchy.half_collapse"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/hcauchy/README.md#details"]
 references:
 - extraDistr package, HalfCauchy documentation (density and parameterization).
 - 'Wolodzko, T. and Klinke, S. (2026). extraDistr: Additional Univariate and Multivariate Distributions. R package

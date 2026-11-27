@@ -80,18 +80,20 @@ limit_sentence <- function(lim, model) {
   stop_text <- nl("`ml", model$id, "()` stops with an error",
     if(!is.null(configured_call))nl("; use `",configured_call,"` to fit the limit model; see [ml",lim$model,"()].") else
     if (has_target) nl("; use [ml", lim$model, "()] to fit the limit model.") else ".")
-  lead <- if (identical(lim$kind, "nonexistence")) {
+  lead <- if (identical(lim$kind, "nonexistence") && identical(lim$detect_firmness, "proved")) {
     "The likelihood is unbounded and no finite maximum likelihood estimator exists. "
-  } else if (isTRUE(lim$numerical)) {
+  } else if (identical(lim$detect_firmness, "numerical")) {
     nl("The numerical search does not establish a finite maximum above its tolerance",
        if (!is.null(target_name)) nl(" relative to the limit (", target_name, ")") else "", ". ")
+  } else if (!identical(lim$detect_firmness, "proved")) {
+    "The fit checks this boundary condition. "
   } else {
     nl("The maximum likelihood estimator does not exist: the likelihood ",
        if (has_target) nl("increases toward the ", target_name, " distribution")
        else nl("approaches its supremum only in a limit (", target_name, ")"), ". ")
   }
   paste(c(nl(scope, lead, stop_text), rd_sentence(lim$when),
-          rd_sentence(lim$detect)), collapse = " ")
+          rd_sentence(lim[["detect"]])), collapse = " ")
 }
 
 # "Notation: \eqn{\alpha} is `alpha`, ..." so prose and limit sentences that

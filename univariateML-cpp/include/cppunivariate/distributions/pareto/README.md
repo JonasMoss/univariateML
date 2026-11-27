@@ -46,6 +46,9 @@ limits:
   detect: The held endpoint $b$ exceeds at least one observation.
   status: InvalidInput
   message: zero likelihood
+  detect_firmness: proved
+  proof: ["UnivariateML.Endpoint.ParetoPower.incompatible_zero"]
+  detect_proof: ["UnivariateML.Endpoint.ParetoPower.incompatible_zero"]
 - name: unbounded likelihood
   firmness: proved
   fixed: [b]
@@ -53,6 +56,9 @@ limits:
   detect: Shape is free and every observation equals the held endpoint $b$.
   status: Unbounded
   message: constant data
+  detect_firmness: proved
+  proof: ["UnivariateML.Endpoint.ParetoPower.constant_unbounded"]
+  detect_proof: ["UnivariateML.Endpoint.ParetoPower.constant_unbounded"]
 examples: |
   set.seed(1)
   x <- rml(200, mlpareto())

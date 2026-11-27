@@ -58,22 +58,32 @@ limits:
     status: FaceUnresolved
     fixed: [nu]
     firmness: proved
-    numerical: true
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-cmb-math-report.md#free-size"]
   - name: point mass
     firmness: proved
     when: 'As $\nu$ diverges along an exposing direction, the law concentrates at an interior support point.'
     detect: With $n$ held and $p,\nu$ free, the data are constant at an interior point. With $n\ge2$ even and interior $p$ held, all counts equal $n/2$. With $n,\nu$ free and interior $p$ held, a positive constant count has twice its value within the supported size range.
     status: PointMass
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size", "dev/research/evaluations/2026-11-25-cmb-math-report.md#free-size"]
   - name: adjacent two-point law
     firmness: proved
     when: 'As $\nu\to+\infty$, suitable canonical probabilities concentrate mass on two adjacent integers.'
     detect: With $n\ge2$ held and $p,\nu$ free, both of two adjacent integers are observed. With odd $n\ge3$ and interior $p$ held, only the two central integers occur. With $n,p,\nu$ free, both of two adjacent positive integers occur. With $p=1/2$ held and $n,\nu$ free, adjacent positive counts occur equally often and the central size is supported.
     status: AdjacentLimit
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size", "dev/research/evaluations/2026-11-25-cmb-math-report.md#free-size"]
   - name: endpoint two-point law
     firmness: proved
     when: 'As $\nu\to-\infty$, mass concentrates on the two support endpoints.'
     detect: With $n\ge2$ held and $p,\nu$ free, both endpoints are observed. With $n\ge2$ and interior $p$ held, all data lie at the endpoints. With $n,p,\nu$ free, the sample contains zero and an integer at least two and no other values. With $p=1/2$ held and $n,\nu$ free, zero and an integer at least two occur equally often and no other values occur.
     status: EndpointLimit
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size", "dev/research/evaluations/2026-11-25-cmb-math-report.md#free-size"]
 references:
 - 'Kadane, J. B. (2016). Sums of Possibly Associated Bernoulli Variables: The Conway-Maxwell-Binomial Distribution.
   Bayesian Analysis. doi:10.1214/15-BA955.'

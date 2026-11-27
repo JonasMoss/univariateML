@@ -35,18 +35,27 @@ limits:
     when: 'Scale satisfies $\sigma\to0$ with the latent normal centre inside one observed cell.'
     detect: 'Both coefficients are free and all observations are equal.'
     status: PointMass
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
   - model: binom
     firmness: proved
     name: shifted Bernoulli
     when: 'Scale satisfies $\sigma\to0$ and location approaches the shared boundary of two adjacent cells at a rate that preserves their observed proportions.'
     detect: 'Both coefficients are free and the integer sample range is one.'
     status: TwoPointLimit
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
   - name: zero-scale limit
     firmness: proved
     when: 'Scale satisfies $\sigma\to0$ with location fixed.'
     detect: 'Location is held and every observed cell closure $[x_i,x_i+1]$ contains that location.'
     fixed: [mean]
     status: ScaleLimit
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-dnorm-math-report.md#existence-and-limiting-laws"]
 holds: []
 examples: |
   x <- diff(datasets::discoveries)
@@ -106,6 +115,9 @@ evaluation halve those operands before scaling when direct subtraction
 overflows; quantile inversion uses the same CDF.
 
 ## Details
+
+Integrating the normal density over each observation cell preserves log concavity in inverse scale and scaled location. The joint scale-zero face for adjacent occupied cells is attainable only as a limit. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
 
 The [existence analysis](../../../../../dev/research/evaluations/2026-10-29-p0-discrete2.md) and the argument below establish the cell-collapse conditions. Strict concavity proves uniqueness of an attained maximum; a numerical iteration can still fail to reach it within its iteration budget.
 

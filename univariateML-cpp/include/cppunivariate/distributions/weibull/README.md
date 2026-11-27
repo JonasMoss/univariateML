@@ -45,6 +45,9 @@ limits:
   detect: 'both coefficients are free and all observations are equal'
   status: Unbounded
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.Weibull.constant_unbounded"]
+  detect_proof: ["UnivariateML.Weibull.constant_unbounded"]
 - name: unbounded likelihood
   firmness: proved
   fixed: [scale]
@@ -52,6 +55,9 @@ limits:
   detect: '$k$ is free and every observation equals the held scale $\lambda$'
   status: Unbounded
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.Weibull.heldScale_unbounded"]
+  detect_proof: ["UnivariateML.Weibull.heldScale_unbounded"]
 examples: |
   x <- datasets::precip
   mlweibull(x)

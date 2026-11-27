@@ -74,6 +74,9 @@ limits:
     when: 'Threshold, scale and shape are all free.'
     detect: 'Every nonempty finite sample; a threshold minimum contributes an exponentially growing density along sigma = exp(-t), xi = t.'
     message: 'unrestricted likelihood is unbounded'
+    detect_firmness: proved
+    proof: ["UnivariateML.GPD.freeThreshold_unbounded"]
+    detect_proof: ["UnivariateML.GPD.freeThreshold_unbounded"]
   - firmness: proved
     name: threshold scale collapse
     kind: nonexistence
@@ -82,6 +85,9 @@ limits:
     message: "scale collapse at the threshold"
     when: 'Scale $\sigma$ tends to zero with $\mu$ held. For held $\xi>0$ the likelihood has order $\sigma^{(n-k)/\xi-k}$, where $k$ counts threshold ties.'
     detect: 'Scale is free and either all observations equal $\mu$, or $k>0$ and shape is free, or held $\xi>0$ satisfies $\xi k\ge n-k$. Equality gives a finite unattained supremum for the fixed-shape scale fit.'
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/gpd/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/gpd/README.md#details"]
 references:
 - Grimshaw, S. D. (1993). Computing maximum likelihood estimates for the generalized Pareto distribution. Technometrics,
   35(2), 185–191. doi:10.1080/00401706.1993.10485040.
@@ -152,6 +158,9 @@ existence:
 The generalized Pareto distribution models exceedances above a chosen threshold $\mu$. Positive shape $\xi$ gives a heavy right tail, zero shape gives an exponential distribution with scale $\sigma$, and negative shape gives a finite upper endpoint $\mu-\sigma/\xi$.
 
 ## Details
+
+At fixed $-1<\xi<0$ the standard log density is strictly concave. At $\xi=-1$ with positive scale held, every support-compatible location maximizes the uniform likelihood on that slice. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
 
 Observations must be finite and at or above the held threshold. For negative shape they must also satisfy the upper support bound. At $\xi=-1$ the model is uniform on the closed interval $[\mu,\mu+\sigma]$, so the largest observation can equal the upper endpoint with positive density.
 

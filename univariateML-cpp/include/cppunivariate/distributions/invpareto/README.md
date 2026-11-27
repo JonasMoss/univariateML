@@ -35,7 +35,9 @@ limits:
     when: '$\alpha$ tends to infinity while $\alpha\theta$ tends to a positive inverse exponential scale'
     detect: 'both coefficients are free and the certified profile bound on the reciprocals excludes improvement over the best inverse exponential larger than $10^{-8}n$ log-likelihood units'
     status: ExponentialLimit
-    numerical: true
+    detect_firmness: numerical
+    proof: ["UnivariateML.Transfer.InvPareto.face_path"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/invpareto/README.md#details"]
 references:
 - del Castillo, J. and Daoudi, J. (2009). Estimation of the generalized Pareto distribution. Statistics & Probability
   Letters 79(5), 684–688. doi:10.1016/j.spl.2008.10.021.
@@ -105,6 +107,8 @@ existence:
 The inverse Pareto distribution models positive heavy-tailed data as the reciprocal of a Lomax variable.
 
 ## Details
+
+The reciprocal transformation preserves the entire maximizing set. Attained joint fits with at most two support values are unique, and exact three-value real samples can have two finite winners. [Proof](../../../../../dev/research/evaluations/2026-11-25-lomax-uniq-math-report.md#transfer-and-lean).
 
 The [positive-family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-positive.md) gives the boundary arguments and their held-parameter conditions.
 

@@ -50,6 +50,9 @@ limits:
   status: Unbounded
   message: does not exist
   kind: nonexistence
+  detect_firmness: proved
+  proof: ["UnivariateML.LogLogistic.constant_unbounded"]
+  detect_proof: ["UnivariateML.LogLogistic.constant_unbounded"]
 - name: unbounded likelihood
   firmness: proved
   fixed: [scale]
@@ -57,6 +60,9 @@ limits:
   detect: Shape is free and every observation equals the held scale $\alpha$.
   status: Unbounded
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.LogLogistic.heldScale_unbounded"]
+  detect_proof: ["UnivariateML.LogLogistic.heldScale_unbounded"]
 examples: |
   set.seed(1)
   x <- rml(200, mlllogis())

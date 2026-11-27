@@ -44,6 +44,9 @@ limits:
   detect: All observations equal the same value $c$ and both shapes are free
   status: Degenerate
   message: does not exist
+  detect_firmness: proved
+  proof: ["UnivariateML.Beta.constant_unbounded"]
+  detect_proof: ["UnivariateML.Beta.constant_unbounded"]
 examples: |
   set.seed(1)
   x <- rml(200, mlbeta())

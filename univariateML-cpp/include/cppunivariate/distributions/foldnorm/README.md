@@ -67,6 +67,9 @@ limits:
     status: Unbounded
     message: unbounded
     kind: nonexistence
+    detect_firmness: proved
+    proof: ["UnivariateML.FoldedNormal.heldLocation_unbounded"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/foldnorm/README.md#details"]
 references:
 - Leone, F. C., Nelson, L. S. and Nottingham, R. B. (1961). The Folded Normal Distribution. Technometrics, 3(4),
   543–550. doi:10.1080/00401706.1961.10489974.
@@ -79,7 +82,7 @@ existence:
     nonnegative sample, including a possible maximum at $\mu=0$. Constant
     samples have unbounded likelihood. With $\mu$ held and scale free, a
     finite maximum exists unless every observation equals $\mu$. With positive
-    $\sigma$ held, the location maximum exists and is unique. With $\mu$ held, the attained scale maximum is unique by strict inverse-variance concavity. Joint uniqueness remains open.
+    $\sigma$ held, the location maximum exists and is unique. With $\mu$ held, the attained scale maximum is unique by strict inverse-variance concavity. Joint cardinality is sample-dependent, with a proved real sample tying the half-normal and a positive-location fit.
   reason: >-
     For a nonconstant sample, the likelihood tends to zero as scale vanishes
     or as the coefficients escape to infinity, so a maximum is attained.
@@ -94,6 +97,9 @@ existence:
 The folded normal distribution models unsigned Gaussian measurements, obtained by taking the absolute value of a normal variable.
 
 ## Details
+
+At a fixed standardized location ratio $\mu/\sigma\le1$, inverse-scale fitting is strictly concave and has a unique maximum if any observation is positive. A held physical location instead uses the inverse-variance result. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
 
 The coefficients $\mu$ and $\sigma$ are the parent normal location and scale. The sign of the parent location is unidentifiable, so $\mu$ is restricted to nonnegative values. The attained member $\mu=0$ is the half-normal with endpoint zero. Zeros are allowed and use the density limit from above.
 

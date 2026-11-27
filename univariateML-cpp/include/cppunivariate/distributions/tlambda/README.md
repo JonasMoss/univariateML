@@ -77,6 +77,9 @@ limits:
     detect: With held location $\mu$, held negative shape $\lambda$, and free scale, the tie count $k$ satisfies $(n-k)/|\lambda|-k=0$. A strict majority tie with all coefficients free gives unbounded likelihood at $\lambda=-1$.
     status: CollapseLimit
     message: "collapse"
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/tlambda/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/tlambda/README.md#details"]
   - name: infeasible held support
     firmness: proved
     fixed: [sigma, lambda]
@@ -84,6 +87,9 @@ limits:
     detect: The smallest radius about an eligible location containing the data exceeds $\sigma/\lambda$, or equals it when $0<\lambda<1$ and endpoint density is zero.
     status: InvalidSupport
     message: support cannot contain
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/tlambda/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/tlambda/README.md#details"]
 examples: |
   set.seed(1)
   x <- rml(200, mltlambda())
@@ -153,6 +159,9 @@ existence:
 The Tukey lambda family describes symmetric measurements through location $\mu$, scale $\sigma$, and shape $\lambda$. Shape controls tail weight and whether support is bounded. Its quantile function spans heavy-tailed, logistic, approximately normal and uniform shapes.
 
 ## Details
+
+At held shape $2$ the density is uniform. At $2<\lambda\le8/3$ the standardized log density is strictly concave on the closed support. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-locscale.md) describes the limiting paths and the scope of the boundary comparisons.
 

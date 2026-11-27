@@ -41,6 +41,9 @@ limits:
     when: The trial count tends to infinity and the probability tends to zero with $np=\bar x>0$ fixed
     detect: Both $n$ and $p$ are free and $0<\bar x\le m^{-1}\sum_i(x_i-\bar x)^2$, where $m$ is sample size
     status: Underdispersed
+    detect_firmness: proved
+    proof: ["UnivariateML.BinomialSize.exp_profile_eq_sampleLikelihood", "UnivariateML.BinomialSize.profile_tendsto_poisson"]
+    detect_proof: ["UnivariateML.BinomialSize.joint_mle_iff_underdispersion", "UnivariateML.BinomialSize.profile_lt_poisson_of_overdispersion", "UnivariateML.BinomialSize.profile_sSup_eq_poisson"]
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley. doi:10.1002/0471715816."
   - "Olkin, I., Petkau, A. J., and Zidek, J. V. (1981). A comparison of n estimators for the binomial distribution. Journal of the American Statistical Association, 76(375), 637-642. doi:10.1080/01621459.1981.10477697."
@@ -182,7 +185,7 @@ existence:
     a finite MLE with both $n$ and $p$ free exists exactly when
     $\bar x>v$, where $v=m^{-1}\sum_i(x_i-\bar x)^2$ and $m$ is sample size.
     All-zero data also attain a maximum, but do not identify the parameters.
-    Integer maximizers need not be unique. With $n>0$ held at an integer
+    With probability held, integer maximizers need not be unique. Joint positive-mean multiplicity remains open. With $n>0$ held at an integer
     at least $\max_i x_i$, $\hat p=\bar x/n$ is unique.
     Holding $n=0$ requires all-zero data and leaves $p$ unidentified.
     With $0<p<1$ held, a finite integer maximum exists, possibly at two
@@ -220,6 +223,9 @@ modifiers:
           tail cutoff, and complete finite-prefix coverage excludes every smaller size. Comparisons not passing
           both checks return a finite search result with `certified = FALSE`.
         status: PoissonLimit
+        detect_firmness: proved
+        proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
+        detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
     modified:
       status: implemented
       certified: partial
@@ -233,6 +239,9 @@ modifiers:
         detect: The positive-count fit passes the signed-tail and complete finite-prefix face certificate in ztbinom;
           the Bernoulli zero-indicator likelihood is added with the same held or fitted zero probability.
         status: PoissonLimit
+        detect_firmness: proved
+        proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
+        detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
       - model: pois
         configuration: {zero: modified}
         firmness: proved
@@ -243,6 +252,9 @@ modifiers:
         status: PoissonLimit
         fixed:
         - p0
+        detect_firmness: proved
+        proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
+        detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
     inflated:
       status: implemented
       certified: partial
@@ -258,6 +270,7 @@ modifiers:
           a compact rate certificate that proves inflation is inactive near the Poisson optimum. Other comparisons
           remain unresolved.
         status: ZipLimit
+        detect_firmness: proved
       - model: pois
         configuration: {zero: inflated}
         firmness: proved
@@ -269,6 +282,7 @@ modifiers:
         status: ZipLimit
         fixed:
         - pi
+        detect_firmness: proved
       - model: pois
         configuration: {zero: inflated}
         firmness: proved
@@ -279,6 +293,7 @@ modifiers:
         status: FaceTie
         fixed:
         - pi
+        detect_firmness: proved
   truncate:
     status: implemented
     certified: 'partial'
@@ -292,12 +307,14 @@ modifiers:
       detect: Size is held, probability is free, and every observation equals the strictly positive lowest count
         of a nonsingleton retained window.
       status: LowerPointMass
+      detect_firmness: proved
     - name: point mass at highest support point
       firmness: proved
       when: With size fixed, $p\to1$ on a nonsingleton window whose highest retained count is below $n$.
       detect: Size is held, probability is free, and every observation equals the highest count of a nonsingleton
         retained window below $n$.
       status: UpperPointMass
+      detect_firmness: proved
     - name: point mass at highest support point
       firmness: proved
       when: The size satisfies $n\to\infty$ with $0<p<1$ held and a finite upper truncation bound.
@@ -306,6 +323,7 @@ modifiers:
       fixed:
       - prob
       status: UpperPointMass
+      detect_firmness: proved
     - model: pois
       configuration: {truncate: [a, b]}
       firmness: proved
@@ -316,6 +334,9 @@ modifiers:
         comparison remains unresolved.
       fixed: []
       status: TpoisLimit
+      detect_firmness: proved
+      proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
+      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
     - model: pois
       configuration: {truncate: [a, b]}
       firmness: proved
@@ -327,6 +348,9 @@ modifiers:
       fixed:
       - a
       status: TpoisLimit
+      detect_firmness: proved
+      proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
+      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
     - model: pois
       configuration: {truncate: [a, b]}
       firmness: proved
@@ -338,6 +362,9 @@ modifiers:
       fixed:
       - b
       status: TpoisLimit
+      detect_firmness: proved
+      proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
+      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
     - model: pois
       configuration: {truncate: [a, b]}
       firmness: proved
@@ -350,7 +377,9 @@ modifiers:
       - a
       - b
       status: TpoisLimit
-
+      detect_firmness: proved
+      proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
+      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
 ---
 
 The binomial distribution models the number of successes in a fixed number of independent Bernoulli trials.

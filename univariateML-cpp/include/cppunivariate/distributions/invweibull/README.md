@@ -50,6 +50,9 @@ limits:
   detect: 'Every observation equals the held scale $\lambda$.'
   status: Unbounded
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.Weibull.Inverse.heldScale_unbounded"]
+  detect_proof: ["dev/research/evaluations/2026-11-25-lean-weibull-report.md#6-inverse-weibull", "UnivariateML.Weibull.Inverse.heldScale_unbounded"]
 - name: unbounded likelihood
   firmness: proved
   kind: nonexistence
@@ -57,6 +60,9 @@ limits:
   detect: 'Both parameters are free and every observation equals the same positive value.'
   status: Unbounded
   message: unbounded
+  detect_firmness: proved
+  proof: ["UnivariateML.Weibull.Inverse.constant_unbounded"]
+  detect_proof: ["dev/research/evaluations/2026-11-25-lean-weibull-report.md#6-inverse-weibull", "UnivariateML.Weibull.Inverse.constant_unbounded"]
 examples: |
   set.seed(1)
   x <- rml(200, mlinvweibull())

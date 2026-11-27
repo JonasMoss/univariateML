@@ -30,14 +30,16 @@ limits:
     detect: 'With location and scale free, the power face strictly beats the Pareto face and both signed interiors'
     status: PowerBoundary
     message: power
-    numerical: true
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-10-gg-theory-report.md#free-fit-signed-profile-and-certificate"]
   - model: pareto
     firmness: proved
     when: '$Q\to-\infty$ and $\sigma|Q|\to d>0$, with $\mu$ tending to a finite endpoint'
     detect: 'With location and scale free, the Pareto face strictly beats the power face and both signed interiors'
     status: ParetoBoundary
     message: Pareto
-    numerical: true
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-10-gg-theory-report.md#free-fit-signed-profile-and-certificate"]
   - kind: nonexistence
     name: unbounded likelihood
     firmness: proved
@@ -45,6 +47,8 @@ limits:
     detect: 'All observations are equal and both $\mu$ and $\sigma$ are free'
     status: Unbounded
     message: unbounded
+    detect_firmness: proved
+    detect_proof: ["dev/research/evaluations/2026-11-10-gg-theory-report.md#free-fit-signed-profile-and-certificate"]
   - kind: nonexistence
     name: unbounded likelihood at held location
     firmness: proved
@@ -53,6 +57,8 @@ limits:
     detect: 'Every observation equals the held-location mode and $\sigma$ is free'
     status: Unbounded
     message: unbounded
+    detect_firmness: proved
+    detect_proof: ["dev/research/evaluations/2026-11-10-gg-theory-report.md#mu-held-sigma-and-q-free"]
 holds: []
 references:
 - 'Prentice, R. L. (1974). A log gamma model and its maximum likelihood estimation. Biometrika 61(3), 539–544. doi:10.1093/biomet/61.3.539.'
@@ -109,3 +115,9 @@ examples: |
 The Prentice generalized gamma family includes the lognormal at $Q=0$.
 
 With free $\mu$ and a relative spread $(\max x-\min x)/\min x$ below $10^{-6}$ (and not zero), the fit works on the relative logs $\log(x_i/x_1)$ and shifts $\mu$ and the log likelihood back by $\log x_1$ and $-n\log x_1$. Binary64 logs are too coarse for the spread there: their rounding error $8\epsilon\lvert\log x\rvert$ can exceed it.
+
+## Details
+
+At fixed finite $Q$, holding scale permits a unique location estimate even for
+constants. Holding location permits a unique scale unless every log
+observation equals that location. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).

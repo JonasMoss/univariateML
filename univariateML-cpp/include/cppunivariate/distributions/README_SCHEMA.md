@@ -24,6 +24,14 @@ firmness}` records without a detector or status. These assert distributional
 paths, not implemented fitter outcomes. A `closure_point` relation still
 requires its proved non-reachability scope.
 
+For a mixed detector, use `detect_firmness: proved` for the certified branch
+and cite its proof. Describe the fallback and its returned outcome in
+`detect`. The fallback must report an uncertified result or say that it
+decided by a numerical margin. A named limit has to match the reachable
+joint sample likelihood, including any endpoint density penalties. A
+delegate evaluated at a closed endpoint can have a different likelihood.
+
+
 | key | required | meaning |
 |---|:-:|---|
 | `id` | yes | must equal the folder name |
@@ -36,7 +44,7 @@ requires its proved non-reachability scope.
 | `fit_args` | when a parameter has kind `design` or `threshold` | map of arguments for the default fit `ml<id>(x, ...)` used by `just goldens` (recorded as `fit_args` in `golden.json` and replayed by the golden regression test); must name every required parameter (including explicit YAML `null` to estimate), and may add arguments the fitter needs, such as hyper's `N` |
 | `inference_numeric` | yes | list of numeric-inference regime claims; see below |
 | `log_density` | yes | log density or log pmf in the natural parameters, sympy syntax, variable `x`; a `spec.py` in the folder may replace it when a string is not enough |
-| `limits` | when the family is not Hellinger-closed | list of `{model, name, when, detect, status}`: `model` is the id of a package model the error message points to ("use `mlX`"); when the package has no such model, omit `model` and give `name` (e.g. `reflected translated half-normal`). `when` is the parameter path (math in `$...$`), `detect` the data condition if there is a simple one, `status` the C++ status that reports it; optional `fixed: [name]` restricts a limit to fits holding those parameters fixed; optional `firmness: proved|argued|numerical|conjecture` grades the evidence for the stated boundary claim, not the search algorithm. Missing means unassessed; `code` alone is not proof. Optional `numerical: true` independently marks a limit whose detection is a numerical search rather than an exact criterion (R help then says the search found no finite maximum above its tolerance, not that none exists); see `dev/research/ml-behaviour.tex` |
+| `limits` | when the family is not Hellinger-closed | list of `{model, name, when, detect, status}`: `model` is the id of a package model the error message points to ("use `mlX`"); when the package has no such model, omit `model` and give `name` (e.g. `reflected translated half-normal`). `when` is the parameter path (math in `$...$`), `detect` the data condition if there is a simple one, `status` the C++ status that reports it; optional `fixed: [name]` restricts a limit to fits holding those parameters fixed; optional `firmness: proved|numerical|argued|conjecture` grades the parameter path. A detector has its own `detect_firmness` on the same scale. It grades the claim that the detected boundary value is the supremum over all finite parameters and other boundaries. An absent grade is unassessed. Optional `proof` and `detect_proof` are lists of Lean declaration names, repository-relative Markdown links to proof sections, or published citations (use `cite: ` followed by the citation in a quoted string). See below. |
 | `references` | no | one bibliographic string per item; verified DOIs may be appended; strings pass to R help unchanged |
 | `summary` | no | one sentence for the catalog and page lead; does not replace the R description |
 | `classification` | yes | `classical`, `specialist`, or `uncommon`; requires `classification_reason`, a one-line account of use or standardness, never a popularity score |

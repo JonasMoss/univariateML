@@ -47,6 +47,9 @@ limits:
     detect: Scale is free and every observation equals the estimated or held location.
     status: Unbounded
     message: "unbounded"
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#details"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/gumbel/README.md#details"]
 examples: |
   set.seed(1)
   x <- rml(200, mlgumbel())

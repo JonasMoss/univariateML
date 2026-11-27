@@ -35,6 +35,9 @@ limits:
     when: 'Scale satisfies $\sigma\to0$ as location approaches a value occurring exactly half the time.'
     detect: 'A value occurs exactly half the time, and its collapse log likelihood is at least the best numerically found interior log likelihood minus $10^{-8}n$. With location held at that value, the collapse supremum is always unattained. With location free the comparison is decided by the margin, not proved, so the fit reports an unresolved failure rather than a nonexistence.'
     status: CollapseLimit
+    detect_firmness: numerical
+    proof: ["dev/research/evaluations/2026-11-25-slash2-math-report.md#correction-to-the-paired-collapse-proof"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/slash/README.md#details"]
 holds: []
 examples: |
   set.seed(1)

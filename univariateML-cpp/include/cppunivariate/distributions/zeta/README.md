@@ -33,6 +33,9 @@ limits:
     when: 'The exponent satisfies $s\to\infty$.'
     detect: 'The exponent is free and every observation equals one.'
     status: PointMass
+    detect_firmness: proved
+    proof: ["UnivariateML.Zeta.allOnes_boundary"]
+    detect_proof: ["UnivariateML.Zeta.allOnes_boundary"]
 holds: []
 examples: |
   set.seed(1)
@@ -75,7 +78,7 @@ existence:
   uniqueness: proved
   statement: >-
     A unique finite MLE exists exactly when at least one observation exceeds
-    one. All-ones samples have an unattained point-mass supremum as
+    one. On infinite support, all-ones samples have an unattained point-mass supremum as
     $s\to\infty$. Holding finite $s>1$ leaves only likelihood evaluation
     and permits all-ones samples.
   reason: >-
@@ -108,7 +111,7 @@ A free-exponent fit to all-ones data stops. Supplying `s` holds the exponent.
 
 The probability functions evaluate upper tails directly and use bounded-memory integer inversion. Beyond $2^{53}$, quantiles use the representable double grid, which cannot distinguish every adjacent integer. Quantiles exceeding the largest finite double are returned as infinity. Support starts at one and has no finite upper endpoint.
 
-Finite windows `truncate = c(1, N)` admit every real exponent, since the
+At `truncate = c(1, 1)`, every exponent maximizes. For $N>1$, finite windows `truncate = c(1, N)` admit every real exponent, since the
 normalizer is a finite positive sum. The score is
 $n(E_s[\log X]-\overline{\log x})$, strictly decreasing when $N>1$.
 Endpoint-only samples have an unattained point-mass supremum in the corresponding

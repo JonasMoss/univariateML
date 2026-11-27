@@ -1,5 +1,11 @@
 # Discrete Weibull existence, uniqueness and faces
 
+**2026-11-27 correction.** The coefficient-restoration example studies a
+conditional shape refit at rounded probability. The current fitter retains
+the joint shape, evaluates the likelihood at the rounded public pair, and
+returns `Unrepresentable` if the restored probability reaches an endpoint.
+The example measures sensitivity to a refit. [Source review](2026-11-27-lean-dweibull-report.md#source-discrepancy).
+
 TASK-345 · 2026-11-25 · Base `f25d97e2`
 
 **Proved.** The existing sample predicates exhaust attainment and multiplicity for every hold mask. The geometric law is attained at shape one. On integer observations, the sign of an exact product comparison determines whether the unrestricted optimum is geometric or on either side of shape one. An exact geometric fit is a single maximizer in the larger model. All-zero observations with the probability held give the only non-singleton set of finite maximizers.

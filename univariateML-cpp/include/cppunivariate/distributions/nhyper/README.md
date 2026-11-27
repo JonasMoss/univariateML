@@ -119,6 +119,8 @@ marked positions retains it without enumerating the position support.
 
 ## Details
 
+With a positive stopping count held and both urn counts free, the population-tail bound reduces the comparison with the negative-binomial face to finitely many eligible populations. A finite tie with the face gives attainment. Strict exclusion on the finite list and in the tail proves escape. [Proof](../../../../../dev/research/evaluations/2026-11-25-nhyper-math-report.md#an-exact-finite-test-including-equality-and-escape).
+
 Holding population and stopping count estimates the integer white-ball
 count. For positive $r$, the possible total draws run from $r$ to
 $N-K+r$. The likelihood ratio at consecutive composition counts decreases,

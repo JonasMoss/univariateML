@@ -26,17 +26,26 @@ limits:
     when: The left rate tends to infinity with the right rate and kink fixed.
     detect: The left rate is free and its one-sided profile wins at a kink at or below the sample minimum.
     status: ParetoLimit
+    detect_firmness: proved
+    proof: ["UnivariateML.DoublePareto.pareto_face", "dev/research/evaluations/2026-11-25-dblpareto-math-report.md#exhaustion-of-the-boundary"]
+    detect_proof: ["UnivariateML.DoublePareto.scan_supremum", "dev/research/evaluations/2026-11-25-dblpareto-math-report.md#one-held-rate"]
   - model: power
     firmness: proved
     when: The right rate tends to infinity with the left rate and kink fixed.
     detect: The right rate is free and its one-sided profile wins at a kink at or above the sample maximum.
     status: PowerLimit
+    detect_firmness: proved
+    proof: ["UnivariateML.DoublePareto.power_face", "dev/research/evaluations/2026-11-25-dblpareto-math-report.md#exhaustion-of-the-boundary"]
+    detect_proof: ["UnivariateML.DoublePareto.scan_supremum", "dev/research/evaluations/2026-11-25-dblpareto-math-report.md#one-held-rate"]
   - name: unbounded likelihood
     firmness: proved
     when: Both rates grow without bound at the common observation.
     detect: Both rates are free, all observations coincide, and the kink is free or held at the common value.
     status: Unbounded
     message: unbounded
+    detect_firmness: proved
+    proof: ["UnivariateML.DoublePareto.constant_unbounded", "UnivariateML.DoublePareto.zero_distances_unbounded"]
+    detect_proof: ["UnivariateML.DoublePareto.constant_unbounded", "UnivariateML.DoublePareto.zero_distances_unbounded"]
 group: Pareto and Lomax
 construction: [base]
 relations: {}
@@ -56,7 +65,11 @@ existence:
     give distinct maximizers. With one rate free the same comparison applies
     among finite knots and the relevant one-sided limit. A held kink gives a
     unique finite fit if each free rate has positive total deviation on its
-    side. Holding both rates always gives a finite fit, with a possible kink interval.
+    side. With both rates free, one zero deviation and one positive deviation
+    give a finite unattained one-sided limit, while two zero deviations give
+    unbounded likelihood. With one rate held, zero free-side deviation gives a
+    finite unattained supremum, including on constant data. Holding both rates
+    always gives a finite fit, with a possible kink interval.
   reason: >-
     Conditional rate optima are explicit. The profiled likelihood is strictly
     convex between distinct observation knots with at least one free rate.

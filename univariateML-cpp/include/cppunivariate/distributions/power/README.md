@@ -42,6 +42,9 @@ limits:
   detect: The sample maximum exceeds the held upper endpoint $a$.
   status: InvalidInput
   message: zero likelihood
+  detect_firmness: proved
+  proof: ["UnivariateML.Endpoint.ParetoPower.incompatible_zero"]
+  detect_proof: ["UnivariateML.Endpoint.ParetoPower.incompatible_zero"]
 examples: |
   set.seed(1)
   x <- rml(200, mlpower())

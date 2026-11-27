@@ -42,13 +42,17 @@ limits:
     when: 'The rate satisfies $\lambda\to\infty$ with $\mu$ and $\sigma>0$ fixed.'
     detect: 'Pointwise domination, or exhaustive exclusion of finite shape intervals and a signed normal-tail proof; otherwise an unexcluded normal face produces an unresolved stop.'
     status: NormalLimit
-    numerical: false
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/emg/README.md#details"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-emg-math-report.md#exact-finite-comparison-and-per-input-certificates"]
   - name: translated exponential
     firmness: proved
     when: 'The normal scale satisfies $\sigma\to0$ with location and positive rate fixed.'
     detect: 'Constant-data domination, or exhaustive exclusion of finite shape intervals and both tails using the compatible physical holds and endpoint half-density.'
     status: TranslatedExponentialLimit
-    numerical: false
+    detect_firmness: proved
+    proof: ["univariateML-cpp/include/cppunivariate/distributions/emg/README.md#details"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-emg-math-report.md#exact-finite-comparison-and-per-input-certificates"]
 holds: []
 examples: |
   set.seed(1)
@@ -126,6 +130,11 @@ The exponentially modified Gaussian is the sum of independent normal and exponen
 Write the centered exponential displacement in Gaussian units as delta, with t = 1/(lambda sigma). Its mean is zero, variance t², and third absolute moment is at most 16t³. Taylor expansion of Phi and a central convolution density lower bound of 0.23/sigma bound the quantile displacement from mu + 1/lambda + sigma z by 8 sigma t² (|z|+t), for |z| <= 0.01 and t <= 0.001. The inverse uses this approximation only when that bound is below 1e-11 times the returned magnitude.
 
 ## Details
+
+With the dimensionless rate held, Gaussian convolution gives a strictly log-concave location–scale kernel. A nonconstant sample has one joint nuisance fit. A held physical rate instead links the dimensionless rate to scale. [Proof](../../../../../dev/research/evaluations/2026-11-25-transfer-math-report.md#appendix-dossier-ready-existence-and-uniqueness-text).
+
+
+For nonconstant all-free data, the dimensionless shape profile has finitely many stationary values. A finite MLE exists exactly when one of them equals or exceeds both optimized boundary values. The shifted-exponential limit with threshold held at an observed value contributes a half-density factor at each observation there. On exact real samples with all coefficients free, two finite shapes can tie globally. [Proof](../../../../../dev/research/evaluations/2026-11-25-emg-math-report.md#exact-finite-comparison-and-per-input-certificates).
 
 With positive normal scale and exponential rate held, the free location has a
 unique finite global maximum, including for constant data. Its decreasing

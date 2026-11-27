@@ -42,29 +42,43 @@ limits:
     detect: All observations are equal and $c$ and $s$ are free. With $s$ held, $c$ is free and either every observation equals $s$, or both shapes are free and the common observation is below $s$.
     status: Unbounded
     message: unbounded
+    detect_firmness: proved
+    proof: ["UnivariateML.BurrHeld.first_constant_unbounded", "UnivariateML.BurrHeld.scale_constant_unbounded", "dev/research/evaluations/2026-11-02-burr-collapse-report.md#mathematical-scope"]
+    detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/burr/README.md#details"]
   - model: weibull
     firmness: proved
     fixed: [shape2]
     when: With $c$ held, $k$ tends to infinity and $s k^{-1/c}$ stays at a positive Weibull scale.
     detect: With $c$ held, a strict transformed-profile bound selects the exponential limit; a likelihood-margin preference alone retains an uncertified finite search.
     status: WeibullBoundary
-    numerical: true
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#single-holds"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#single-holds"]
   - model: 'weibull'
     firmness: proved
     when: The shape $k$ tends to infinity while $s k^{-1/c}$ tends to a positive Weibull scale.
     detect: All-free search strictly excludes every finite profile interval using dual/chord bounds, small-k exclusion and a signed seam bound relative to the exact Weibull optimum. Computed enclosures use the stated practical arithmetic margin.
     status: 'WeibullBoundary'
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#all-free-burr-xii"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#face-comparisons-and-equality"]
   - model: 'pareto'
     firmness: proved
     when: The power $c$ tends to infinity while $kc$ tends to a positive Pareto shape and $s$ stays at its endpoint.
     detect: All-free search strictly excludes every finite profile interval using dual/chord bounds, small-k exclusion and a signed or unsigned Weibull tail bound. Computed enclosures use the stated practical arithmetic margin.
     status: 'ParetoBoundary'
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#all-free-burr-xii"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#face-comparisons-and-equality"]
   - model: 'pareto'
     firmness: proved
     fixed: [scale]
     when: The power $c$ tends to infinity while $kc$ tends to a positive Pareto shape and $s$ stays at its endpoint.
     detect: Only scale is held and all observations are at least $s$. The all-equal-to-$s$ case has unbounded likelihood instead.
     status: 'AllGeOne'
+    detect_firmness: proved
+    proof: ["UnivariateML.BurrHeld.scale_pareto_limit"]
+    detect_proof: ["UnivariateML.BurrHeld.scale_pareto_supremum"]
 references:
 - Shao, Q. (2004). Notes on maximum likelihood estimation for the three-parameter Burr XII distribution. Computational
   Statistics & Data Analysis 45, 675-687. doi:10.1016/S0167-9473(02)00367-5.
@@ -174,6 +188,10 @@ and the lower-tail power is $c$.
 The shape1 = 1 inverse is the log-logistic inverse. Its centered log-odds calculation retains the difference between the exact log-probability input and log(1/2), which a subsequent division by a tiny shape amplifies.
 
 ## Details
+
+All-free Burr XII can also have two strict finite global maxima on exact real observations. Both limiting likelihoods are strictly below them. [Proof](../../../../../dev/research/evaluations/2026-11-25-burr2-math-report.md#two-finite-global-maximizers-above-both-faces).
+
+With a positive power held, an exact real sample constructed on the powered scale gives two distinct joint shape–scale maxima. Holding the first shape instead gives strict log-data concavity and a unique joint power–scale fit on nonconstant data. [Proof](../../../../../dev/research/evaluations/2026-11-25-burr-math-report.md#held-power-has-an-exact-global-tie).
 
 The all-free certificate requires at least two positive finite observations;
 constant samples have unbounded likelihood. Held subsets retain their

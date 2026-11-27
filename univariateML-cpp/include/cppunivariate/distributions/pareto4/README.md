@@ -51,30 +51,44 @@ limits:
   when: 'min is free and (shape2 is free or below 1, or both shape1 and scale are free).'
   detect: 'Every nonempty finite sample; endpoint spikes or a simultaneous shape1/scale collapse give an unbounded likelihood.'
   message: 'likelihood is unbounded'
+  detect_firmness: proved
+  proof: ["univariateML-cpp/include/cppunivariate/distributions/pareto4/README.md#details"]
+  detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/pareto4/README.md#details"]
 - name: unbounded likelihood
   firmness: proved
   when: A free power $\gamma$ tends to infinity while the other free coefficients concentrate the excess distribution at its common observed value.
   detect: With threshold held, the excesses are constant and the held coefficients permit concentration. In particular, this occurs with both shapes and scale free.
   status: Unbounded
   message: unbounded
+  detect_firmness: proved
+  proof: ["univariateML-cpp/include/cppunivariate/distributions/pareto4/README.md#details"]
+  detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/pareto4/README.md#details"]
+  fixed: [min]
 - when: The shape $\alpha$ tends to infinity with $\gamma$ fixed and $\sigma\alpha^{-1/\gamma}$ fixed at a positive scale.
   firmness: proved
   detect: With all regular coefficients free, the Burr certificate selects this face. Held power uses the certified Lomax comparison; held scale with both shapes free uses a strictly concave scalar certificate.
   status: WeibullBoundary
   name: shifted weibull; subtract min before fitting
-  numerical: true
+  detect_firmness: numerical
+  proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
+  fixed: [min]
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
   firmness: proved
   detect: With all regular coefficients free, the Burr certificate selects this face. Held power uses the certified Lomax comparison; held scale with both shapes free uses a strictly concave scalar certificate.
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
-  numerical: true
+  detect_firmness: numerical
+  proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
+  fixed: [min]
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
   firmness: proved
   detect: Scale and threshold are held, both shapes are free, and every excess is at least $\sigma$. If all excesses equal $\sigma$, the likelihood is instead unbounded.
   status: AllGeOne
-  fixed: [scale]
   name: shifted Pareto with its endpoint held at min + scale
+  detect_firmness: proved
+  proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
+  detect_proof: ["UnivariateML.BurrHeld.scale_pareto_supremum", "dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
+  fixed: [min, scale]
 fit_args:
   min: 0
 examples: |

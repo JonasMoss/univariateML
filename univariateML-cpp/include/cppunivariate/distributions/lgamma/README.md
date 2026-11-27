@@ -42,6 +42,9 @@ limits:
     status: Degenerate
     message: does not exist
     kind: nonexistence
+    detect_firmness: proved
+    proof: ["UnivariateML.LogGamma.constant_unbounded"]
+    detect_proof: ["UnivariateML.LogGamma.constant_unbounded"]
 references:
 - Hogg, R. V. and Klugman, S. A. (1984), Loss Distributions, Wiley.
 - 'Dutang, C., Goulet, V., & Pigeon, M. (2008). actuar: An R package for actuarial science. Journal of Statistical

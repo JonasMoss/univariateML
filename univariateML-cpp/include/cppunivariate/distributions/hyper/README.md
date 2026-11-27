@@ -46,7 +46,10 @@ limits:
     when: 'As $N\to\infty$ with positive $K$ and $n$ held, the law tends to a point mass at zero.'
     detect: All observations are zero, only $N$ is free, and the held counts $K$ and $n$ are positive.
     status: AllZero
-    fixed: [m]
+    detect_firmness: proved
+    proof: ["UnivariateML.Hypergeometric.population_zero_escape"]
+    detect_proof: ["UnivariateML.Hypergeometric.population_zero_escape"]
+    fixed: [k, m]
 references:
   - "Johnson, N. L., Kemp, A. W., and Kotz, S. (2005). Univariate Discrete Distributions (3rd ed.). Wiley. doi:10.1002/0471715816."
   - "Wang, W. (2015). Exact optimal confidence intervals for hypergeometric parameters. Journal of the American Statistical Association, 110(512), 1491-1499. doi:10.1080/01621459.2014.966191."

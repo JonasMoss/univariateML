@@ -58,17 +58,25 @@ limits:
     when: '$\alpha + \beta \to \infty$ with $\alpha/(\alpha + \beta)$ fixed'
     detect: signed uniform near-face exclusion and strict tangent/chord bounds exclude every finite shape pair
     status: BinomialLimit
-    numerical: true
+    detect_firmness: proved
+    proof: ["UnivariateML.BetaBinomial.logLik_tendsto"]
+    detect_proof: ["UnivariateML.BetaBinomial.binomial_sup_of_nonpos", "UnivariateML.BetaBinomial.necessity"]
   - name: two-point law on 0 and n
     firmness: proved
     when: '$\alpha, \beta \to 0$ with $\alpha/(\alpha + \beta)$ fixed'
     detect: '$n \ge 2$, every observation is 0 or $n$, and both values occur'
     status: TwoPointLimit
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-bbinom-math-report.md#global-necessity-proof"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-bbinom-math-report.md#global-necessity-proof"]
   - model: binom
     firmness: proved
     when: '$\alpha/(\alpha + \beta) \to 0$ or $1$'
     detect: 'all observations are 0, or all equal $n$'
     status: PointMass
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-bbinom-math-report.md#global-necessity-proof"]
+    detect_proof: ["UnivariateML.BetaBinomial.allSize_sup", "UnivariateML.BetaBinomial.allZero_sup"]
 references:
 - Griffiths, D. A. (1973). Maximum likelihood estimation for the beta-binomial distribution and an application to
   the household distribution of the total number of cases of a disease. Biometrics, 29(4), 637-648. doi:10.2307/2529131.
@@ -121,7 +129,7 @@ existence:
     when at least one count is interior. Holding one shape leaves only the
     point-mass case. With $n = 1$ the shapes are not identified, because the
     model is a Bernoulli distribution. At $n=0$ both shapes are also
-    unidentified. With beta held and size free,
+    unidentified. At known sizes two through eight with an interior count and positive dispersion sign, the attained two-shape fit is unique. With beta held and size free,
     constant positive data have only a point-mass supremum; all-zero data
     attain likelihood one at size zero with alpha unidentified. For other
     samples a finite maximum exists, though the numerical search may stop
@@ -130,6 +138,10 @@ existence:
     at size zero with beta unidentified. Other samples may remain unresolved
     against the negative-binomial face or the size budget.
   reason: >-
+    At size two the interior histogram is saturated when the fitted dispersion
+    is positive. At size three, and at sizes four through eight, every finite
+    stationary concentration has negative profile curvature, so the profile
+    has at most one stationary maximum.
     Write $p = \alpha/(\alpha+\beta)$ and $s = 1/(\alpha+\beta)$. A sample with
     a count strictly between 0 and $n$ loses all likelihood as $s \to \infty$
     or as $p$ tends to 0 or 1, so the binomial face $s = 0$ is its only
