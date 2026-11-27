@@ -102,3 +102,10 @@ public import UnivariateML.Family.JoinsGEV
 public import UnivariateML.Family.JoinsHalfT
 public import UnivariateML.Family.JoinsPIG
 public import UnivariateML.Family.JoinsSN
+public import UnivariateML.Family.AllFreeBetaPrime
+public import UnivariateML.Family.AllFreeDGamma
+public import UnivariateML.Family.AllFreeFrechet
+public import UnivariateML.Family.AllFreeGEV
+public import UnivariateML.Family.AllFreeGenGamma
+public import UnivariateML.Family.AllFreePGW
+public import UnivariateML.Family.AllFreeTransformedGamma
