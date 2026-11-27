@@ -82,7 +82,10 @@ existence:
     nonnegative sample, including a possible maximum at $\mu=0$. Constant
     samples have unbounded likelihood. With $\mu$ held and scale free, a
     finite maximum exists unless every observation equals $\mu$. With positive
-    $\sigma$ held, the location maximum exists and is unique. With $\mu$ held, the attained scale maximum is unique by strict inverse-variance concavity. Joint cardinality is sample-dependent, with a proved real sample tying the half-normal and a positive-location fit.
+    $\sigma$ held, the location maximum exists and is unique. With $\mu$ held, the attained scale maximum is unique.
+    Moment inequalities can certify a unique half-normal maximum or exclude
+    it in favor of a positive location. Joint cardinality is sample-dependent,
+    with a proved real sample tying the half-normal and a positive-location fit.
   reason: >-
     For a nonconstant sample, the likelihood tends to zero as scale vanishes
     or as the coefficients escape to infinity, so a maximum is attained.
@@ -105,7 +108,22 @@ The coefficients $\mu$ and $\sigma$ are the parent normal location and scale. Th
 
 For nonconstant nonnegative data a maximum is attained, possibly at the half-normal boundary. Constant data have unbounded likelihood when both coefficients are free. Holding location prevents this collapse unless all observations equal that location. Holding positive scale permits constant data and gives a unique location fit.
 
-Boundary and interior candidates can compete. The joint fitter compares the half-normal boundary with candidates from an analytically bounded scalar profile. Convex-chord upper bounds certify the joint search to a likelihood tolerance. With positive location held, similar bounds check the scale search. Exhausted bounds report numerical failure. Joint fits report unknown cardinality. For fixed $\mu$, write $u=1/\sigma^2$ and $t_i=x_i\mu u$. The log likelihood as a function of $u>0$ is $\frac{n}{2}\log u-\frac{u}{2}\sum_i(x_i^2+\mu^2)+\sum_i\log\cosh t_i$ up to a constant. Multiplying its second derivative by $u^2$ gives $-n/2+\sum_i t_i^2/\cosh^2 t_i<0$, since $\cosh t>\sqrt{2}t$ for $t\ge0$. The latter inequality follows from $1+t^2/2\ge\sqrt{2}t$ and the positive higher terms for $t>0$.
+Divide each observation by the square root of the sample second moment.
+Let $M$, $A$ and $B$ be the first, fourth and sixth moments of those values. A nonconstant sample has a
+unique half-normal maximum if $A\ge3$ and
+$A\ge3(1-M^2)^2+6BM^2/(5A)$. A strict $A<3$, established equality $A=3$
+with $B>15$, or $M^2\ge3/4$ excludes the half-normal. A feasible positive
+location with a separated likelihood advantage also excludes it.
+The compact profile search and local coefficient solve return an
+uncertified fit when more than the half-normal comparison needs proof.
+[Moment and profile proof](../../../../../dev/research/evaluations/2026-11-25-foldnorm-math-report.md#uniform-winner-tests).
+
+For held physical location put $D=\overline{(x-\mu)^2}$, $m_2=\overline{x^2}$
+and $v=\sigma^2$. For $D>0$ the variance score changes sign exactly once on
+$[D,m_2+\mu^2]$. Its numerator
+$T(v)=v-D-4\overline{\mu x/(1+\exp(2\mu x/v))}$ strictly increases with
+derivative greater than $0.07$. The score residual and this derivative
+bound control the scale enclosure. [Formal variance root](../../../../../dev/lean/UnivariateML/Family/FoldedNormal.lean).
 
 At constant $x_0=\mu>0$, the positive normal component alone is $1/(\sqrt{2\pi}\sigma)$; at $x_0=\mu=0$ the density is twice this. This proves the declared scale-collapse paths.
 
@@ -113,7 +131,7 @@ At constant $x_0=\mu>0$, the positive normal component alone is $1/(\sqrt{2\pi}\
 
 Either coefficient can be held by supplying its value. `mlhnorm` also allows the half-normal endpoint to be estimated, whereas `mlfoldnorm` keeps the folding point at zero.
 
-After the global likelihood comparison, positive-location fits solve the analytic score in a=mu/sigma^2. The joint profile has sigma^2+a^2 sigma^4=mean(x^2); differentiating this identity propagates the Newton error into both mu and sigma. With positive mu held, the scale correction uses its scalar observed curvature. Likelihood rounding therefore does not determine the final coefficients.
+After the global likelihood comparison, positive-location fits solve the analytic score in a=mu/sigma^2. The joint profile has sigma^2+a^2 sigma^4=mean(x^2); differentiating this identity propagates the Newton error into both mu and sigma. The local score solve controls the returned coefficients.
 
 For a positive mode with both the sample minimum and fitted location exceeding forty centered standard deviations, the reflected score correction is below a polynomial factor times exp(-3200). The normal mean and variance are then evaluated from original-data deviations, before normalization can round away the spread. This error bound is far below binary64 resolution at the supported tolerance.
 

@@ -167,7 +167,11 @@ likelihood difference at a neighborhood edge can be smaller than the
 floating-point allowance despite a well-resolved score. Candidate neighborhoods are removed only after a termwise bound
 proves $h''<0$ throughout and signed endpoint scores isolate their unique
 stationary maximum. Overlapping neighborhoods allow isolation when a
-root lies on a subdivision boundary with an uncertain score sign. A narrow signed bracket of width below $7\times10^{-7}$
+root lies on a subdivision boundary with an uncertain score sign.
+A retained root may be displaced only when a new feasible likelihood lower
+bound exceeds the padded tangent upper bound over the old root's signed
+bracket. The old point value alone cannot exclude the old bracket.
+A narrow signed bracket of width below $7\times10^{-7}$
 in $z$ encloses both coefficients to that relative accuracy, since
 $d\log A/dz=B/A\le1$. Newton refines the returned center using the analytic profile score and curvature. The relative rate correction and the induced log-kappa correction must both be below one quarter of the requested tolerance, with contraction across the last corrections or corrections at rounding level. A signed local bracket can instead establish both coefficient bounds when arithmetic noise prevents observable contraction. The local refinement runs after selection of the globally certified basin.
 Thus positive subnormal rates are accepted only when their relative

@@ -61,7 +61,22 @@ inline double curvature_upper(const Data& d,const Point& a,const Point& b) {
   if(!(al>0))return INFINITY;
   return bh*bh/(al*al)-cl/ah-cl+d.error;
 }
-struct Root { double lo=0,hi=0,rootlo=0,roothi=0,lambda=NAN,kappa=NAN,h=-INFINITY,error=0; bool valid=false; };
+struct Root {
+  double lo=0,hi=0,rootlo=0,roothi=0,lambda=NAN,kappa=NAN,h=-INFINITY,error=0;
+  double value_upper=INFINITY;
+  bool valid=false;
+};
+inline double root_value_upper(const Point& center,double left,double right,double error) {
+  // Concavity on the signed bracket bounds the profile by its tangent.
+  const double radius=std::max(center.z-left,right-center.z);
+  const double upper=center.h+center.error+radius*(std::abs(center.score)+4*error);
+  return upper+error*(1+std::abs(upper));
+}
+inline bool can_displace(const Root& trial,const Root& incumbent) {
+  const double lower=trial.h-trial.error;
+  return trial.valid && lower>margin &&
+    (!incumbent.valid || lower>incumbent.value_upper+1e-12);
+}
 inline Root isolate(const Data& d,Point a,Point b,int maxit) {
   maxit = static_cast<int>(solver_budget(maxit));
   Root r;
@@ -110,6 +125,7 @@ inline Root isolate(const Data& d,Point a,Point b,int maxit) {
       const Point center=evaluate(d,z);
       r.lambda=std::exp(center.z-d.logmean);r.kappa=1/center.A;
       r.h=center.h;r.error=center.error;
+      r.value_upper=root_value_upper(center,left.z,right.z,d.error);
       r.valid=std::isfinite(r.lambda)&&r.lambda>0&&std::isfinite(r.kappa)&&r.kappa>0;
       // Positive subnormal results can have large relative rounding error.
       // Certify the coordinates of the stored coefficients, not merely the
@@ -194,7 +210,7 @@ inline LomaxResult fit(span x,double tol,int maxit) {
     out.stop_detail.budget_exhausted=true;
     const double base=-d.logmean-1;
     out.stop_detail.loglik_lower=n*(base+(root.valid?std::max(0.,root.h-root.error):0.));
-    out.stop_detail.loglik_upper=n*(base+std::max({margin,upper_bound,queue.empty()?-INFINITY:queue.top().upper,root.valid?root.h+root.error:0.}));
+    out.stop_detail.loglik_upper=n*(base+std::max({margin,upper_bound,queue.empty()?-INFINITY:queue.top().upper,root.valid?root.value_upper:0.}));
     const double lambda=std::exp(best_point.z-d.logmean),kappa=1/best_point.A;
     if(lambda>0 && std::isfinite(lambda) && kappa>0 && std::isfinite(kappa)) {
       const double lower=n*(base+best_point.h-best_point.error),upper=n*(base+best_point.h+best_point.error);
@@ -202,7 +218,7 @@ inline LomaxResult fit(span x,double tol,int maxit) {
       out.stop_detail.loglik_lower=std::max(out.stop_detail.loglik_lower,lower);
     }
     out.stop_detail.candidates.push_back({{std::exp(-d.logmean)},n*base,n*base,StopModel::Exp});
-    if(root.valid)out.stop_detail.candidates.push_back({{root.lambda,root.kappa},n*(base+root.h-root.error),n*(base+root.h+root.error)});
+    if(root.valid)out.stop_detail.candidates.push_back({{root.lambda,root.kappa},n*(base+root.h-root.error),n*(base+root.value_upper)});
     return out;
   };
   const std::int64_t budget=certificate_budget(maxit);
@@ -232,7 +248,7 @@ inline LomaxResult fit(span x,double tol,int maxit) {
         work+=2;
         trial=isolate(d,left,right,maxit);
       }
-      if(trial.valid && trial.h-trial.error>margin && (!root.valid || trial.h-trial.error>root.h+root.error+1e-12)) {
+      if(can_displace(trial,root)) {
         root=trial;
         // This whole segment is strictly concave and has exactly one root.
         continue;

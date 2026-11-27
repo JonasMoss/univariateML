@@ -3,19 +3,67 @@
 #include "../../core/work_budget.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../../core/span.hpp"
+#include "../../core/transformed_data.hpp"
+#include <cstdint>
 #include "dpqr.hpp"
 #include <vector>
 #include <limits>
 namespace cppunivariate {
 enum class FoldnormStatus { Ok, InvalidInput, Unbounded, IterationFailure, AccuracyFailure };
-struct FoldnormResult { double mu,sigma,logLik; int iterations; FoldnormStatus status; StopDetail stop_detail{}; bool singleton_proved = false; };
+struct FoldnormResult { double mu,sigma,logLik; int iterations; FoldnormStatus status; StopDetail stop_detail{}; bool singleton_proved = false; bool certified = true; };
 namespace foldnorm_detail {
+// Exact equality for a bounded integer chart. A failed conversion leaves
+// the quartic comparison to the guarded floating-point moment test.
+inline bool quartic_equality(span x,double scale) {
+  if(x.size()>32768)return false;
+  const int shift=7-std::ilogb(scale);
+  std::uint64_t second=0,fourth=0;
+  for(double value:x) {
+    const double integer=std::scalbn(value,shift);
+    if(integer!=std::floor(integer) || std::scalbn(integer,-shift)!=value)return false;
+    const auto u=static_cast<std::uint64_t>(integer);
+    const auto square=u*u;
+    second+=square;fourth+=square*square;
+  }
+  return x.size()*fourth==3*second*second;
+}
+
+inline double held_variance(span y,double mu,double residual,double upper,
+                            double tol,int maxit,int& iterations) {
+  // T'(v) >= 1 - 1/(1/2+1/sqrt(3)) > .07. The absolute
+  // residual therefore gives a variance enclosure even at a rounded zero.
+  constexpr double slope_lower=.07;
+  double lo=residual,hi=std::max(residual,upper);
+  double v=lo;
+  for(int i=0;i<maxit;++i) {
+    ++iterations;
+    transformed_detail::Sum terms;
+    for(double x:y) {
+      const double product=2*mu*x;
+      const double e=std::exp(-product/v);
+      terms.push(2*product*e/(1+e));
+    }
+    const double correction=terms.get()/y.size();
+    const double t=(v-residual)-correction;
+    const double error=32*std::numeric_limits<double>::epsilon()*
+      (v+residual+correction);
+    if(std::abs(t)+error<.25*tol*v*slope_lower)return v;
+    if(t< -error)lo=v;
+    else if(t>error)hi=v;
+    else break;
+    const double next=std::sqrt(lo)*std::sqrt(hi);
+    if(!(next>lo && next<hi))break;
+    v=next;
+  }
+  return NAN;
+}
+
 // Search every sampled local maximum, including both endpoints. Log spacing
 // resolves the weakly identified half-normal face as well as narrow normal fits.
 template <typename Function>
 inline double maximize(Function f,double lo,double hi,double tol,int maxit,int &iterations) {
   maxit = static_cast<int>(solver_budget(maxit));
-  const int grids=512;
+  const int grids=static_cast<int>(std::min<std::int64_t>(512,certificate_budget(maxit)-1));
   std::vector<double> u(grids+1),v(grids+1);
   double best=lo,bestv=f(lo);
   for (int i=0;i<=grids;++i) {
@@ -78,8 +126,6 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
   maxit = static_cast<int>(solver_budget(maxit));
   FoldnormResult out{special::kNaN,special::kNaN,special::kNaN,0,FoldnormStatus::InvalidInput};
   const bool fm=!std::isnan(fixed_mu),fs=!std::isnan(fixed_sigma);
-  // For fixed location, each likelihood term has strictly negative
-  // curvature in inverse variance: cosh(t) > sqrt(2)*t for t>=0.
   out.singleton_proved=fs || fm;
   if (x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<=0 ||
       (fm && (!std::isfinite(fixed_mu) || fixed_mu<0)) ||
@@ -108,16 +154,61 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
       normal_mu=location;normal_sd=sd;
     }
   }
-  std::vector<double> y; double m=0,m2=0;
-  for (double z:x) { y.push_back(z/scale); m+=y.back()/x.size(); m2+=y.back()*y.back()/x.size(); }
+  std::vector<double> y;
+  y.reserve(x.size());
+  transformed_detail::Sum first,second;
+  for(double z:x) {
+    const double v=z/scale;
+    y.push_back(v);
+    first.push(v);second.push(v*v);
+  }
+  const double m=first.get()/x.size(),m2=second.get()/x.size();
   double variance=0;
   for (double z:y) variance+=(z-m)*(z-m)/y.size();
   const double mu0=fm ? fixed_mu/scale : 0, s0=fs ? fixed_sigma/scale : 0;
   double residual=0;
-  for (double z:y) residual+=(z-mu0)*(z-mu0)/y.size();
+  if(fm && !fs) {
+    transformed_detail::Sum squares;
+    for(double v:x) {
+      const double d=(v-fixed_mu)/scale;
+      squares.push(d*d);
+    }
+    residual=squares.get()/x.size();
+  }
   if (!fs && (fm ? residual==0 : variance==0)) {out.status=FoldnormStatus::Unbounded;return out;}
   const auto ll=[&](double mu,double s) { double value=0; for (double z:y) value+=distributions::dfoldnorm(z,mu,s,true); return value; };
   double mu=mu0,s=s0;
+  bool half_proved=false,positive_proved=false;
+  if(!fm && !fs) {
+    transformed_detail::Sum fourth,sixth;
+    for(double z:y) {
+      const double z2=z*z;
+      fourth.push(z2*z2);
+      sixth.push(z2*z2*z2);
+    }
+    const double A=(fourth.get()/y.size())/(m2*m2);
+    const double B=(sixth.get()/y.size())/(m2*m2*m2);
+    const double M2=m*m/m2;
+    const double Q=3*(1-M2)*(1-M2)+1.2*(B/A)*M2;
+    const double pad=256*std::numeric_limits<double>::epsilon()*(1+y.size()*
+      std::numeric_limits<double>::epsilon());
+    const double quartic_pad=pad*(1+A);
+    const bool equality=std::abs(A-3)<=quartic_pad && foldnorm_detail::quartic_equality(x,scale);
+    double atom=0;
+    std::size_t positives=0;
+    bool two_atoms=true;
+    for(double v:x)if(v>0) {
+      if(atom==0)atom=v;
+      two_atoms=two_atoms && v==atom;
+      ++positives;
+    }
+    half_proved=(two_atoms && positives<=x.size()/3) ||
+      ((A>3+quartic_pad || equality) && A>Q+pad*(1+A+Q));
+    positive_proved=A<3-quartic_pad || (equality && B>15+pad*(1+B)) ||
+      M2>.75+pad;
+    out.certified=half_proved;
+    out.singleton_proved=half_proved;
+  }
   if (fs && !fm) {
     // tanh(c*mu)/mu strictly decreases: at most one positive score root.
     if (m2>s*s) {
@@ -134,100 +225,66 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
   } else if (!fs && fm) {
     if (mu==0) s=std::sqrt(m2);
     else {
-      const double lo=.5*std::log(residual),hi=.5*std::log(m2+mu*mu);
-      s=std::exp(foldnorm_detail::maximize([&](double t){return ll(mu,std::exp(t));},lo,hi,tol,maxit,out.iterations));
-      // At fixed positive mu, a=mu/sigma^2 has a concave log(a) term
-      // plus the same convex correction, so chord bounds apply here too.
-      const auto correction=[&](double a) {double value=0;for (double z:y) value+=std::log1p(std::exp(-2*a*z));return value;};
-      struct Interval {double lo,hi;};
-      std::vector<Interval> pending{{mu/(m2+mu*mu),mu/residual}};
-      double best=ll(mu,s);int visited=0;
-      while (!pending.empty() && visited<certificate_budget(maxit)) {
-        const Interval iv=pending.back();pending.pop_back();++visited;
-        if (iv.lo==iv.hi) continue;
-        const double al=correction(iv.lo),ar=correction(iv.hi);
-        const double slope=(ar-al)/(iv.hi-iv.lo);
-        const double candidate=std::max(iv.lo,std::min(iv.hi,y.size()/(y.size()*residual/mu-2*slope)));
-        const double candidate_s=std::sqrt(mu/candidate),value=ll(mu,candidate_s);
-        if (value>best) {best=value;s=candidate_s;}
-        const double weight=(candidate-iv.lo)/(iv.hi-iv.lo);
-        const double upper=value+(1-weight)*al+weight*ar-correction(candidate);
-        if (upper<=best+tol*y.size()) continue;
-        const double mid=std::sqrt(iv.lo)*std::sqrt(iv.hi);
-        if (mid<=iv.lo || mid>=iv.hi) continue;
-        pending.push_back({iv.lo,mid});pending.push_back({mid,iv.hi});
-      }
-      if (!pending.empty()) {
-        out.status=FoldnormStatus::IterationFailure;
-        out.stop_detail=discrete_budget(out.stop_detail);
-        const double witness_ll=ll(mu,s)-x.size()*std::log(scale);
-        out.stop_detail.candidates.push_back({{mu*scale,s*scale},witness_ll,witness_ll});
-        out.stop_detail.loglik_lower=witness_ll;return out;
-      }
+      s=std::sqrt(foldnorm_detail::held_variance({y.data(),y.size()},mu,residual,
+        m2+mu*mu,tol,maxit,out.iterations));
+      if(!std::isfinite(s)) {out.status=FoldnormStatus::IterationFailure;return out;}
     }
   } else if (!fs) {
     s=std::sqrt(m2); mu=0;
-    // a=mu/sigma^2. Exact maximizer in sigma at fixed a.
-    const double amax=m/variance;
-    const auto sigma2=[&](double a){return 2*m2/(1+std::hypot(1.0,2*std::sqrt(m2)*a));};
-    const auto profile=[&](double t) { const double a=std::expm1(t),v=sigma2(a);return ll(a*v,std::sqrt(v)); };
-    double t=foldnorm_detail::maximize(profile,0,std::log1p(amax),tol,maxit,out.iterations);
-    double best=profile(t);
-    // Certify the grid incumbent to a per-observation likelihood tolerance.
-    // A(a)=sum log(1+exp(-2*a*x)) is convex. Replace A by its chord:
-    // the remaining profile is strictly concave, with derivative n*(mean-mu(a)).
-    // Its maximum under the chord occurs at mu=mean+chord_slope/n.
-    const auto correction=[&](double a) {
-      double value=0;for (double z:y) value+=std::log1p(std::exp(-2*a*z));return value;
-    };
-    struct Interval { double lo,hi; int depth; };
-    std::vector<Interval> pending{{0,amax,0}};
-    int visited=0;
-    while (!pending.empty() && visited<certificate_budget(maxit)) {
-      const Interval iv=pending.back();pending.pop_back();++visited;
-      const double al=correction(iv.lo),ar=correction(iv.hi);
-      const double target=std::max(0.0,std::min(m,m+(ar-al)/((iv.hi-iv.lo)*y.size())));
-      const double denominator=(m2-target*target);
-      const double candidate=std::max(iv.lo,std::min(iv.hi,target/denominator));
-      const double value=profile(std::log1p(candidate));
-      if (value>best) {best=value;t=std::log1p(candidate);}
-      const double weight=(candidate-iv.lo)/(iv.hi-iv.lo);
-      const double upper=value+(1-weight)*al+weight*ar-correction(candidate);
-      if (upper<=best+tol*y.size()) continue;
-      const double mid=std::expm1((std::log1p(iv.lo)+std::log1p(iv.hi))*.5);
-      if (mid<=iv.lo || mid>=iv.hi) continue;
-      pending.push_back({iv.lo,mid,iv.depth+1});pending.push_back({mid,iv.hi,iv.depth+1});
-    }
-    if (!pending.empty()) {
-        out.status=FoldnormStatus::IterationFailure;
-        out.stop_detail=discrete_budget(out.stop_detail);
-        const double witness_ll=ll(mu,s)-x.size()*std::log(scale);
-        out.stop_detail.candidates.push_back({{mu*scale,s*scale},witness_ll,witness_ll});
-        out.stop_detail.loglik_lower=witness_ll;return out;
+    if(!half_proved) {
+      // a=mu/sigma^2. Exact maximizer in sigma at fixed a.
+      const double amax=m/variance;
+      const auto sigma2=[&](double a){return 2*m2/(1+std::hypot(1.0,2*std::sqrt(m2)*a));};
+      const auto profile=[&](double t) { const double a=std::expm1(t),v=sigma2(a);return ll(a*v,std::sqrt(v)); };
+      double t=foldnorm_detail::maximize(profile,0,std::log1p(amax),tol,maxit,out.iterations);
+      double best=profile(t);
+      // Refine the grid incumbent using per-observation likelihood bounds.
+      // A(a)=sum log(1+exp(-2*a*x)) is convex. Replace A by its chord:
+      // the remaining profile is strictly concave, with derivative n*(mean-mu(a)).
+      // Its maximum under the chord occurs at mu=mean+chord_slope/n.
+      const auto correction=[&](double a) {
+        double value=0;for (double z:y) value+=std::log1p(std::exp(-2*a*z));return value;
+      };
+      struct Interval { double lo,hi; int depth; };
+      std::vector<Interval> pending{{0,amax,0}};
+      int visited=0;
+      while (!pending.empty() && visited<certificate_budget(maxit)) {
+        const Interval iv=pending.back();pending.pop_back();++visited;
+        const double al=correction(iv.lo),ar=correction(iv.hi);
+        const double target=std::max(0.0,std::min(m,m+(ar-al)/((iv.hi-iv.lo)*y.size())));
+        const double denominator=(m2-target*target);
+        const double candidate=std::max(iv.lo,std::min(iv.hi,target/denominator));
+        const double value=profile(std::log1p(candidate));
+        if (value>best) {best=value;t=std::log1p(candidate);}
+        const double weight=(candidate-iv.lo)/(iv.hi-iv.lo);
+        const double upper=value+(1-weight)*al+weight*ar-correction(candidate);
+        if (upper<=best+tol*y.size()) continue;
+        const double mid=std::expm1((std::log1p(iv.lo)+std::log1p(iv.hi))*.5);
+        if (mid<=iv.lo || mid>=iv.hi) continue;
+        pending.push_back({iv.lo,mid,iv.depth+1});pending.push_back({mid,iv.hi,iv.depth+1});
       }
-    const double a=std::expm1(t),v=sigma2(a);
-    if (best>ll(0,s)+1e-11*y.size()) { mu=a*v;s=std::sqrt(v); }
+      const double a=std::expm1(t),v=sigma2(a);
+      const double half_value=ll(0,s);
+      const double comparison_pad=128*std::numeric_limits<double>::epsilon()*
+        (y.size()+std::abs(best)+std::abs(half_value));
+      if(a>0 && best>half_value+comparison_pad) positive_proved=true;
+      if(a>0 && best>half_value+std::min(1e-11*y.size(),comparison_pad)) {
+        mu=a*v;
+        s=std::sqrt(v);
+      }
+    }
   }
   tol=std::min(tol,1e-10);
   // The global search chooses the basin; solve its analytic score rather
   // than comparing likelihood values at nearly identical coordinates.
   bool face_polish=false;
-  if(!fm && !fs && (mu==0 || mu<.1*s)) {
+  if(!fm && !fs && !half_proved && (mu==0 || mu<.1*s)) {
     const double h0=foldnorm_detail::face_score({y.data(),y.size()},m2,0,0,0).value;
     const double margin=32*std::numeric_limits<double>::epsilon();
-    if(mu==0 && std::abs(h0)<=margin) {
-      // Quartic identification is unresolved at the floating-point moment
-      // margin. A zero location can then miss a positive root by sqrt(eps).
-      // Exception: the {0,c} sample with at most one third positive mass
-      // has an exact half-normal maximum (see the dossier).
-      double atom=0;std::size_t positives=0;bool two_atoms=true;
-      for(double z:y)if(z>0) {
-        if(atom==0)atom=z;
-        two_atoms=two_atoms && z==atom;++positives;
-      }
-      if(!(two_atoms && positives<=y.size()/3)) {
-        {out.status=FoldnormStatus::AccuracyFailure;out.mu=fm?fixed_mu:mu*scale;out.sigma=fs?fixed_sigma:s*scale;out.logLik=ll(mu,s)-x.size()*std::log(scale);{if(out.sigma>0 && out.mu>=0)record_accuracy(out,tol,{out.mu,out.sigma},{fm?0:std::max(std::abs(out.mu),out.sigma),fs?0:out.sigma},std::sqrt(margin));else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}return out;
-      }
+    if(mu==0 && (std::abs(h0)<=margin || (positive_proved && h0<=margin))) {
+      // The incumbent is either refuted by a separate sign test or lies
+      // at an unresolved quartic comparison. Neither can justify mu=0.
+      {out.status=FoldnormStatus::AccuracyFailure;out.mu=mu*scale;out.sigma=s*scale;out.logLik=ll(mu,s)-x.size()*std::log(scale);{if(out.sigma>0)record_accuracy(out,tol,{out.mu,out.sigma},{out.sigma,out.sigma},std::sqrt(margin));else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}return out;
     }
     if(h0>margin || mu>0) {
       // Retain the global likelihood bound. A boundary with H(0)>0 is
@@ -258,25 +315,18 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
   }
   const bool normal_polish=!fs && !fm && mu>0 && std::isfinite(normal_sd);
   if(normal_polish) {mu=normal_mu/scale;s=normal_sd/scale;}
-  else if(!fs && mu>0 && !face_polish) {
+  else if(!fs && !fm && mu>0 && !face_polish) {
     double a=mu/(s*s),previous=INFINITY;
     bool accurate=false;
     for(int k=0;k<maxit;++k) {
-      double v=s*s,dm=0,ds=0,g=0,h=0;
-      if(!fm) {
-        v=2*m2/(1+std::hypot(1.0,2*std::sqrt(m2)*a));
-        mu=a*v;s=std::sqrt(v);
-        const double derivative=v/(1+2*a*a*v);
-        dm=derivative/mu;ds=-a*v/(1+2*a*a*v);
-        g=m-mu;h=-derivative;
-        for(double z:y) {
-          const double q=std::exp(-2*a*z),w=q/(1+q);
-          g-=2*z*w/y.size();h+=4*z*z*w*(1-w)/y.size();
-        }
-      } else {
-        g=.5/a-.5*(m2+mu*mu)/mu;h=-.5/(a*a);
-        for(double z:y) {const double t=std::tanh(a*z);g+=z*t/y.size();h+=z*z*(1-t*t)/y.size();}
-        ds=-.5/a;
+      const double v=2*m2/(1+std::hypot(1.0,2*std::sqrt(m2)*a));
+      mu=a*v;s=std::sqrt(v);
+      const double derivative=v/(1+2*a*a*v);
+      const double dm=derivative/mu,ds=-a*derivative;
+      double g=m-mu,h=-derivative;
+      for(double z:y) {
+        const double q=std::exp(-2*a*z),w=q/(1+q);
+        g-=2*z*w/y.size();h+=4*z*z*w*(1-w)/y.size();
       }
       const double step=g/h;
       const double error=std::abs(step)*std::max(std::abs(dm),std::abs(ds));
@@ -285,7 +335,6 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
       previous=error;a-=step;
     }
     if(!accurate) {out.status=FoldnormStatus::IterationFailure;return out;}
-    if(fm)s=std::sqrt(mu/a);
   }
   out.mu=fm ? fixed_mu : mu*scale;out.sigma=fs ? fixed_sigma : s*scale;
   out.logLik=ll(mu,s)-x.size()*std::log(scale);
@@ -293,12 +342,17 @@ inline FoldnormResult foldnorm_mle(span x,double tol=1e-10,int maxit=200,
     out.mu=normal_mu;out.sigma=normal_sd;out.logLik=0;
     for(double z:x)out.logLik+=distributions::dfoldnorm(z,normal_mu,normal_sd,true);
   }
+  if(fm && !fs && out.sigma>0 && std::isfinite(out.sigma)) {
+    transformed_detail::Sum value;
+    for(double z:x)value.push(distributions::dfoldnorm(z,out.mu,out.sigma,true));
+    out.logLik=value.get();
+  }
   if(!(out.sigma>0 && std::isfinite(out.sigma)) ||
      (!fs && std::abs(out.sigma/scale-s)>.25*tol*s) ||
      (!fm && std::abs(out.mu/scale-mu)>.25*tol*std::max(std::abs(mu),s))) {
     {out.status=FoldnormStatus::AccuracyFailure;{if(out.sigma>0 && out.mu>=0)record_accuracy(out,tol,{out.mu,out.sigma},{fm?0:std::max(std::abs(out.mu),out.sigma),fs?0:out.sigma});else{out.stop_detail.accuracy_stop=AccuracyStop::None;out.stop_detail.attainable_tol=NAN;}}}return out;
   }
-  out.status=out.iterations>=maxit ? FoldnormStatus::IterationFailure : FoldnormStatus::Ok;
+  out.status=!fm && out.iterations>=maxit ? FoldnormStatus::IterationFailure : FoldnormStatus::Ok;
   return out;
 }
 }
@@ -309,7 +363,7 @@ inline FitOutcome outcome(const FoldnormResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   if (r.stop_detail.budget_exhausted) return FitOutcome::budget();
   switch (r.status) {
-    case FoldnormStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(true) : FitOutcome::unknown_cardinality(true);
+    case FoldnormStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
     case FoldnormStatus::InvalidInput: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case FoldnormStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case FoldnormStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);

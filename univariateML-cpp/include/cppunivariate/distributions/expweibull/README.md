@@ -57,7 +57,7 @@ limits:
   - model: invweibull
     firmness: proved
     when: 'Exponent tends to infinity, shape times log exponent tends to a positive constant $k$, and scale times $(\log c)^{1/b}$ tends to $s$'
-    detect: 'All coefficients free, finite search falls below the faces within the comparison rule, and the inverse-Weibull face is at least as high as power'
+    detect: 'All coefficients free, finite search falls below the faces within the comparison rule, and the inverse-Weibull face is at least as high as power. The returned limit is uncertified.'
     status: InvweibullBoundary
     message: invweibull
     detect_firmness: numerical
@@ -65,7 +65,7 @@ limits:
   - model: power
     firmness: proved
     when: 'Shape tends to infinity, shape times exponent tends to $n/\sum_i\log(x_{\max}/x_i)$, and scale approaches the maximum from above with $b\log(a/x_{\max})$ diverging'
-    detect: 'All coefficients free, finite search falls below the faces within the comparison rule, and the power face is higher'
+    detect: 'All coefficients free, finite search falls below the faces within the comparison rule, and the power face is higher. The returned limit is uncertified.'
     status: PowerBoundary
     message: power
     detect_firmness: numerical

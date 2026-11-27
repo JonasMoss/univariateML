@@ -2202,12 +2202,12 @@ for (const {family, law, x, held, names} of [
   });
 }
 
-test('certified folded-normal value can have unknown cardinality', async () => {
+test('folded-normal search reports its certification and cardinality separately', async () => {
   const api = await (await import('./index.mjs')).default();
   const x = [2.0576829946725703, 2.0576829946725703, 2.7624976490504753];
   const fit = api.foldnorm.fit(x);
   assert.equal(fit.status, 'Ok');
-  assert.equal(fit.certified, true);
+  assert.equal(fit.certified, false);
   assert.equal(fit.unique, null);
   assert.equal(fit.maximizer_set, undefined);
   assert.equal(api.foldnorm.fit(x, {sigma: 2}).unique, true);

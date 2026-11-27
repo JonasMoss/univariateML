@@ -40,8 +40,8 @@ r:
     iterlim: "Work limit per solve: 1 * min(iterlim, 100000) solver iterations; per certificate: 128 * min(iterlim, 100000) certificate evaluations."
 log_density: log(shape2)-log(x)-loggamma(shape3)-loggamma(shape1)+loggamma(shape3+shape1)+shape3*shape2*log(x/scale)-(shape3+shape1)*log(1+(x/scale)**shape2)
 limits:
-  - {firmness: proved, model: weibull, when: 'With shape3 held at one, the Burr submodel tends to its Weibull face.', status: WeibullBoundary, fixed: [shape3], detect_firmness: numerical}
-  - {firmness: proved, model: invweibull, when: 'With shape1 held at one, the inverse Burr submodel tends to its inverse-Weibull face.', status: InvWeibullBoundary, fixed: [shape1], detect_firmness: numerical}
+  - {firmness: proved, model: weibull, when: 'With shape3 held at one, the Burr submodel tends to its Weibull face.', status: WeibullBoundary, fixed: [shape3], detect: 'The delegate closes the signed Lomax comparison at held power or the signed exterior and compact profile comparisons at free power.', detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/burr/README.md#details"]}
+  - {firmness: proved, model: invweibull, when: 'With shape1 held at one, the inverse Burr submodel tends to its inverse-Weibull face.', status: InvWeibullBoundary, fixed: [shape1], detect: 'The delegate closes the signed Lomax comparison at held power or the signed exterior and compact profile comparisons at free power.', detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/invburr/README.md#details"]}
   - kind: nonexistence
     name: unbounded likelihood
     firmness: proved
@@ -52,11 +52,11 @@ limits:
     detect_firmness: proved
     proof: ["univariateML-cpp/include/cppunivariate/distributions/gb2/README.md#details"]
     detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/gb2/README.md#details"]
-  - {firmness: proved, model: trgamma, when: 'The beta shape $q$ tends to infinity with $a,p$ and $b/q^{1/a}$ fixed.', status: TrGammaBoundary, detect_firmness: numerical}
-  - {firmness: proved, model: invtrgamma, when: 'The beta shape $p$ tends to infinity with $a,q$ and $bp^{1/a}$ fixed.', status: InvTrGammaBoundary, detect_firmness: numerical}
+  - {firmness: proved, model: trgamma, when: 'The beta shape $q$ tends to infinity with $a,p$ and $b/q^{1/a}$ fixed.', status: TrGammaBoundary, detect: 'With only power held on the observation scale, the powered log span $D$ is at most $0.01$ and the normalized third central moment is negative with magnitude exceeding $69D$ by a floating-point margin. A held power and held beta shape may also use the signed beta-prime ordinary gamma comparison. The exploratory route selects by a numerical likelihood margin and reports an uncertified limit.', detect_firmness: proved, detect_proof: ["dev/research/evaluations/2026-11-25-fpareto-math-report.md#from-stationary-exclusion-to-a-global-face-bound", "UnivariateML.ShapeFacesFellerPareto.narrow_span_stationary_bound", "univariateML-cpp/include/cppunivariate/distributions/betapr/README.md#non-unit-held-shape-certificate"]}
+  - {firmness: proved, model: invtrgamma, when: 'The beta shape $p$ tends to infinity with $a,q$ and $bp^{1/a}$ fixed.', status: InvTrGammaBoundary, detect: 'With only power held on the observation scale, the powered log span $D$ is at most $0.01$ and the normalized third central moment is positive with magnitude exceeding $69D$ by a floating-point margin. A held power and held beta shape may also use the signed beta-prime inverse gamma comparison. The exploratory route selects by a numerical likelihood margin and reports an uncertified limit.', detect_firmness: proved, detect_proof: ["dev/research/evaluations/2026-11-25-fpareto-math-report.md#from-stationary-exclusion-to-a-global-face-bound", "UnivariateML.ShapeFacesFellerPareto.narrow_span_stationary_bound", "univariateML-cpp/include/cppunivariate/distributions/betapr/README.md#non-unit-held-shape-certificate"]}
   - {firmness: proved, model: lnorm, when: 'The beta shapes satisfy $p=q=K\to\infty$, the power is $a=\sqrt{2\psi_1(K)}/\sigma$, and $b=e^\mu$, for fixed $\sigma>0$ and $\mu$. Here $\psi_1$ is the trigamma function.', status: LognormalBoundary, detect_firmness: numerical}
-  - {firmness: proved, model: pareto, when: 'The power $a$ tends to infinity with $qa>0$, $p$ and $b$ fixed.', status: ParetoBoundary, detect_firmness: numerical}
-  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa>0$, $q$ and $b$ fixed.', status: PowerBoundary, detect_firmness: numerical}
+  - {firmness: proved, model: pareto, when: 'The power $a$ tends to infinity with $qa>0$, $p$ and $b$ fixed.', status: ParetoBoundary, detect: 'A subunit held beta shape and held scale can give a strict endpoint density bound. Unit-shape submodels can use a Burr signed global or held-scale comparison. The exploratory comparison reports an uncertified limit.', detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/gb2/README.md#details", "univariateML-cpp/include/cppunivariate/distributions/burr/README.md#held-scale-certificate-task-1164"]}
+  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa>0$, $q$ and $b$ fixed.', status: PowerBoundary, detect: 'A subunit held beta shape and held scale can give a strict endpoint density bound. Unit-shape submodels can use a Burr signed global or held-scale comparison. The exploratory comparison reports an uncertified limit.', detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/gb2/README.md#details", "univariateML-cpp/include/cppunivariate/distributions/burr/README.md#held-scale-certificate-task-1164"]}
   - {firmness: proved, model: dblpareto, name: double Pareto, when: 'The power $a$ tends to infinity with $qa>0$, $pa>0$ and $b$ fixed.', status: DoubleParetoBoundary, detect_firmness: numerical}
 holds: []
 examples: |
@@ -117,6 +117,12 @@ existence:
     instead gives a unique finite maximum in the beta shapes. With power,
     scale and either beta shape held, the remaining shape has a unique
     finite maximum even for constant data.
+    With power held and both beta shapes and scale free, a sufficiently
+    narrow and skewed powered log sample has no finite maximum.
+    Positive skew selects the inverse transformed-gamma limit, and
+    negative skew selects the transformed-gamma limit.
+    A locally checked proposal from the general GB2 search is uncertified
+    unless the conditional beta enclosure applies.
   reason: >-
     On the log-observation scale, put $c=-a\log b$. At fixed $p,q$ the
     objective is $n\log a+p\sum_i(a\log x_i+c)

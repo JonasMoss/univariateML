@@ -57,7 +57,7 @@ limits:
     proof: ["dev/research/evaluations/2026-11-25-genbeta-limits-math-report.md#2-held-endpoint-constant-data"]
     detect_proof: ["dev/research/evaluations/2026-11-25-genbeta-limits-math-report.md#2-held-endpoint-constant-data"]
   - {firmness: proved, model: lgamma, name: log-gamma on scale / x, when: 'The shape $p$ tends to infinity and the power $a$ tends to zero with $pa\to\lambda>0$ and $q,b$ fixed. Then $-\log(X/b)$ tends to a gamma law with shape $q$ and rate $\lambda$.', detect: 'On a near-constant sample (relative spread of $-\log(x/b)$ at most $10^{-6}$) whose search ends unresolved, this face and the power face are compared by their log likelihoods evaluated from offsets; this face is returned when it is higher, which happens when $s/g<0.6577$ ($s$ the standard deviation of $-\log x$, $g$ its mean distance to the minimum), uncertified.', status: UnitGammaBoundary, detect_firmness: numerical, proof: ["dev/research/evaluations/2026-11-25-genbeta-limits-math-report.md#1-held-endpoint-nonconstant-data"]}
-  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa\to\lambda>0$, while $q$ stays bounded away from zero and $\log(q)/a\to c\ge0$. The limiting power law has upper endpoint $be^{-c}$.', detect: 'On a near-constant sample, such as $[c,c,c^+]$ with $s/g=0.707$, the power face is returned when $s/g>0.6577$, uncertified. The profile in $a$ is flat at the log-gamma level for $a\lesssim10^{12}$ (relative spread $10^{-16}$), dips, and rises to the power face as $a\to\infty$ (numerical, 60 digits); the finite points are not excluded by a bound.', status: PowerBoundary, detect_firmness: numerical, proof: ["dev/research/evaluations/2026-11-25-genbeta-limits-math-report.md#1-held-endpoint-nonconstant-data"]}
+  - {firmness: proved, model: power, when: 'The power $a$ tends to infinity with $pa\to\lambda>0$, while $\log(q)/a\to c>0$ and $q e^{-ac}\to0$. The moving power law has upper endpoint $be^{-c}$, with $c=\log(b/\max_i x_i)$ at the best face.', detect: 'A signed large-power neighborhood and a compact value cover can certify this face. On a near-constant sample, such as $[c,c,c^+]$ with $s/g=0.707$, the power face is returned when $s/g>0.6577$, uncertified. The profile in $a$ is flat at the log-gamma level for $a\lesssim10^{12}$ (relative spread $10^{-16}$), dips, and rises to the power face as $a\to\infty$ (numerical, 60 digits); the finite points are not excluded by a bound.', status: PowerBoundary, detect_firmness: proved, detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/genbeta/README.md#details"], proof: ["dev/research/evaluations/2026-11-25-genbeta-limits-math-report.md#1-held-endpoint-nonconstant-data"]}
 holds:
 - held: []
   status: no-mle
@@ -217,6 +217,11 @@ member against the face. A scalar gamma-conjugate envelope eliminates $q$
 analytically where its moving-endpoint values would otherwise be enormous.
 Incomplete optional coverage retains the legacy selected face, marked uncertified,
 with an infinite global upper bound; proved contradictions still stop.
+If $q e^{-ac}$ tends to a positive constant $L$, the same weak limit has a
+sample log likelihood lower by $kL$, where $k$ observations equal the sample
+maximum. The fitted face has rate $1/\overline{\log(M/x_i)}$ and
+uses $M=\max_i x_i$ and the path with vanishing contact penalty.
+
 
 An all-free gamma-boundary proposal is certified when a signed neighborhood,
 requested gamma coefficient enclosures, the large-power tail and every compact
