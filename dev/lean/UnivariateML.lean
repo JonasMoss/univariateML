@@ -218,3 +218,10 @@ public import UnivariateML.Family.AE2BetaPrime
 public import UnivariateML.Family.AE2Fatigue
 public import UnivariateML.Family.AE2GenBetaUnit
 public import UnivariateML.Family.AE2Lomax
+public import UnivariateML.Generic.AE1Incidence
+public import UnivariateML.Family.AE1EMG
+public import UnivariateML.Family.AE1GED
+public import UnivariateML.Family.AE1Huber
+public import UnivariateML.Family.AE1SGED
+public import UnivariateML.Family.AE1SSTD
+public import UnivariateML.Family.AE1TukeyLambda
