@@ -741,3 +741,18 @@ TEST_CASE("hyper: holding the largest design count forces a singleton zero atom"
     CHECK(result.stop_detail.candidates.empty());
   }
 }
+
+TEST_CASE("hyper certifies an adjacent tie from cancelling observation ratios") {
+  const std::vector<double> x{0, 2};
+  for (const auto held : {std::array<double, 2>{2, kNaN},
+                          std::array<double, 2>{kNaN, 2}}) {
+    const auto result = cppunivariate::hyper_mle(mltest::as_span(x), held[0], 5, held[1]);
+    const auto outcome = cppunivariate::outcome(result);
+    CHECK(outcome.kind == cppunivariate::OutcomeKind::Estimate);
+    CHECK(outcome.certified);
+    CHECK_FALSE(outcome.unique);
+    REQUIRE(result.maximizers.size == 1);
+    CHECK(std::holds_alternative<cppunivariate::Points>(result.maximizers.pieces[0].value));
+    CHECK(result.tie == 3);
+  }
+}

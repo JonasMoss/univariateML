@@ -364,13 +364,20 @@ TEST_CASE("pig: globally certified held-mean existence and Poisson boundaries") 
         CHECK(data.likelihood(mu,r.shape*factor)<=r.logLik+1e-10);
     }
   }
-  const std::vector<int> uncertain{0,1,2};
-  const auto tie=cppunivariate::pig_mle(pig_span(uncertain),1e-9,200,1+std::sqrt(1./3),NAN);
-  CHECK(tie.status==cppunivariate::PigStatus::SearchFailure);
-  CHECK(tie.stop_detail.comparison_tie);
-  REQUIRE(tie.stop_detail.candidates.size()==1);
-  CHECK(tie.stop_detail.candidates[0].model==cppunivariate::StopModel::Pois);
-  CHECK(std::isinf(tie.stop_detail.loglik_upper));
+  const std::vector<int> near_boundary{0,1,2};
+  // The binary64 rounding of 1 + sqrt(1/3) is below the upper root
+  // of 3*mean^2 - 6*mean + 2. The next binary64 value is above it.
+  const double below=0x1.93cd3a2c8198ep+0;
+  const auto face=cppunivariate::pig_mle(pig_span(near_boundary),1e-9,200,below,NAN);
+  CHECK(face.status==cppunivariate::PigStatus::PoissonLimit);
+  CHECK(cppunivariate::outcome(face).certified);
+  CHECK_FALSE(face.stop_detail.comparison_tie);
+  REQUIRE(face.stop_detail.candidates.size()==1);
+  CHECK(face.stop_detail.candidates[0].model==cppunivariate::StopModel::Pois);
+  CHECK(std::isfinite(face.stop_detail.loglik_upper));
+  const auto finite=cppunivariate::pig_mle(pig_span(near_boundary),1e-9,200,std::nextafter(below,2.),NAN);
+  CHECK(finite.status==cppunivariate::PigStatus::Ok);
+  CHECK(cppunivariate::outcome(finite).certified);
 }
 
 TEST_CASE("pig: analytic concavity retains small finite Poisson improvements") {
@@ -552,4 +559,20 @@ TEST_CASE("pig: shape held at 0 with a free mean leaves the mean unidentified") 
   CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
   CHECK_FALSE(cppunivariate::outcome(r).unique);
   CHECK(cppunivariate::outcome(cppunivariate::pig_mle(pig_span(x),1e-10,200,2.5,0.0)).unique);
+}
+
+TEST_CASE("pig separates a rounded held mean from exact all-free equality") {
+  const std::vector<int> counts{0, 0, 0, 0, 0, 1, 1, 2, 2};
+  const cppunivariate::ispan x{counts.data(), counts.size()};
+  const auto free = cppunivariate::pig_mle(x);
+  CHECK(free.status == cppunivariate::PigStatus::PoissonLimit);
+  CHECK(cppunivariate::outcome(free).certified);
+
+  const auto held = cppunivariate::pig_mle(x, 1e-10, 200, 0x1.5555555555555p-1);
+  CHECK(held.status == cppunivariate::PigStatus::Ok);
+  CHECK(cppunivariate::outcome(held).certified);
+  CHECK(cppunivariate::outcome(held).unique);
+  // The first-order root at this edge differs from the exact root by
+  // O(2^-106) relatively. Written as a ratio to check coefficient accuracy.
+  CHECK(std::abs(held.shape / std::ldexp(8.0 / 3, 106) - 1) < 1e-10);
 }

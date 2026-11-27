@@ -154,6 +154,24 @@ inline ZtbinomResult ztbinom_mle_search(ispan x,double tol=1e-10,int maxit=200,
     double fixed_size=NAN,double fixed_prob=NAN) {
   bool candidate_ready=false;
   auto checked = [&]() -> ZtbinomResult {
+  const int moment = std::isnan(fixed_size) && std::isnan(fixed_prob) ?
+      binomial_certificate_detail::positive_poisson_moment_sign(x) : 0;
+  if (moment > 0) {
+    const auto face = ztpois_mle(x, NAN, tol, maxit);
+    if (face.status == ZtpoisStatus::Ok) {
+      ZtbinomResult out{INFINITY, 0, face.logLik, face.iterations, ZtbinomStatus::PoissonLimit};
+      out.stop_detail = binomial_certificate_detail::moment_face(StopModel::Ztpois,
+          {face.lambda}, face.logLik);
+      // Retain one finite witness for the stop payload. The moment proof
+      // needs neither a profiled finite prefix nor a tail cutoff.
+      const double size = *std::max_element(x.begin(), x.end());
+      const double p = face.lambda / (size + face.lambda);
+      double ll = 0;
+      for (int v : x) ll += distributions::dztbinom(v, size, p, true);
+      if (std::isfinite(ll)) out.stop_detail.candidates.push_back({{size, p}, ll, ll});
+      return out;
+    }
+  }
   auto best=ztbinom_detail::ztbinom_mle_proposal(x,tol,maxit,fixed_size,fixed_prob);
   // Only a successful fixed-size solve can supply the finite fallback.
   if(std::isnan(fixed_size) && std::isnan(fixed_prob) && x.size()>0 &&
@@ -199,6 +217,34 @@ inline ZtbinomResult ztbinom_mle_search(ispan x,double tol=1e-10,int maxit=200,
     binomial_certificate_detail::witness(best.stop_detail,{best.size,best.prob},best.logLik,false);return best;
   }
   candidate_ready=candidate_ready && std::isfinite(best.logLik) && best.size>=1 && best.prob>=0 && best.prob<=1;
+  if (moment < 0 && best.status == ZtbinomStatus::PoissonLimit) {
+    best.status = candidate_ready ? ZtbinomStatus::Ok : ZtbinomStatus::IterationFailure;
+    best.certified = false;
+  }
+  if (candidate_ready && best.status == ZtbinomStatus::Ok && mx > 2 &&
+      tol >= 128 * std::numeric_limits<double>::epsilon() &&
+      binomial_certificate_detail::small_lower_only_rate(x, 1, maxit)) {
+    const double local_tol = std::min(1e-10, tol);
+    const auto peak = binomial_certificate_detail::strict_small_rate_peak(mx, best.size,
+        [&](double size) -> binomial_certificate_detail::SmallRateProfile {
+          auto fit = ztbinom_detail::ztbinom_mle_proposal(x, local_tol, maxit, size, NAN);
+          if (fit.status != ZtbinomStatus::Ok ||
+              !binomial_accuracy::positive_probability(fit.prob, size, sum, x.size(), local_tol, maxit))
+            return {};
+          const double ll = binomial_certificate_detail::small_rate_loglik(x,
+              [&](int v) { return distributions::dztbinom(v, size, fit.prob, true); });
+          return binomial_certificate_detail::small_rate_profile(fit.prob, ll, size - 1,
+              x.size(), local_tol);
+        });
+    if (std::isfinite(peak.loglik)) {
+      best.prob = peak.probability;
+      best.logLik = peak.loglik;
+      best.stop_detail = {};
+      best.certified = true;
+      best.singleton_proved = true;
+      return best;
+    }
+  }
   binomial_certificate_detail::Work work{0,0,maxit};
   if(best.status==ZtbinomStatus::PoissonLimit) {
     const double face=best.stop_detail.limit_loglik;
@@ -295,7 +341,7 @@ inline ZtbinomResult ztbinom_mle(ispan x,double tol=1e-10,int maxit=200,
   if(std::isfinite(r.logLik))r.evaluation_failure=false;
   if(r.status==ZtbinomStatus::Ok && !std::isfinite(r.logLik)) {r.status=ZtbinomStatus::IterationFailure;r.evaluation_failure=true;r.stop_detail.loglik_upper=INFINITY;}
   if(r.evaluation_failure)r.stop_detail.loglik_upper=INFINITY;
-  r.singleton_proved=std::isfinite(fixed_size) || fixed_prob==1;
+  r.singleton_proved=std::isfinite(fixed_size) || fixed_prob==1 || r.singleton_proved;
   if(r.status==ZtbinomStatus::Ok)
     r.unique=!((std::isnan(fixed_prob) && r.size==1) ||
                (std::isnan(fixed_size) && r.prob==0));

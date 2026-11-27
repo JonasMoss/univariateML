@@ -219,13 +219,13 @@ modifiers:
         firmness: proved
         when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated
           Poisson law.
-        detect: A strict positive factorial-moment gap at the mean-matched positive-Poisson face supplies a signed
-          tail cutoff, and complete finite-prefix coverage excludes every smaller size. Comparisons not passing
-          both checks return a finite search result with `certified = FALSE`.
+        detect: For free size and probability, a certified $\sum_i x_i(x_i-1)/\sum_i x_i>\lambda$ at the
+          mean-matched positive-Poisson rate proves the escape directly. If the sign is unresolved, the
+          signed-tail and finite-prefix certificate can still decide it.
         status: PoissonLimit
         detect_firmness: proved
         proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
-        detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
+        detect_proof: ["dev/research/evaluations/2026-11-25-tbinom2-math-report.md#the-moment-envelope-for-pure-zero-truncation", "dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
     modified:
       status: implemented
       certified: partial
@@ -236,25 +236,25 @@ modifiers:
         firmness: proved
         when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated
           Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
-        detect: The positive-count fit passes the signed-tail and complete finite-prefix face certificate in ztbinom;
-          the Bernoulli zero-indicator likelihood is added with the same held or fitted zero probability.
+        detect: The positive-count fit certifies escape by the factorial-moment comparison or the signed-tail
+          and finite-prefix comparison. The Bernoulli zero-indicator likelihood uses the same held or fitted zero probability.
         status: PoissonLimit
         detect_firmness: proved
         proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
-        detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
+        detect_proof: ["dev/research/evaluations/2026-11-25-tbinom2-math-report.md#the-moment-envelope-for-pure-zero-truncation", "dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
       - model: pois
         configuration: {zero: modified}
         firmness: proved
         when: As $n\to\infty$ and $p\to0$ with $np\to\lambda>0$, the positive-count law tends to a zero-truncated
           Poisson law. The zero probability $p_0$ remains fixed, giving a zero-modified Poisson law.
-        detect: The positive-count fit passes the signed-tail and complete finite-prefix face certificate in ztbinom;
-          the Bernoulli zero-indicator likelihood is added with the same held or fitted zero probability.
+        detect: The positive-count fit certifies escape by the factorial-moment comparison or the signed-tail
+          and finite-prefix comparison. The Bernoulli zero-indicator likelihood uses the same held or fitted zero probability.
         status: PoissonLimit
         fixed:
         - p0
         detect_firmness: proved
         proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
-        detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
+        detect_proof: ["dev/research/evaluations/2026-11-25-tbinom2-math-report.md#the-moment-envelope-for-pure-zero-truncation", "dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
     inflated:
       status: implemented
       certified: partial
@@ -298,7 +298,9 @@ modifiers:
     status: implemented
     certified: 'partial'
     domain_bounded: parent parameter domain
-    note: Fixed-size concavity; free-size retained-support and Poisson-face certificates, with uncertified search fallback.
+    note: Fixed-size concavity and free-size Poisson-face certificates. For a lower-only positive window
+      with matched Poisson rate at most $6/5$, strict adjacent step signs certify a unique winning size.
+      Unresolved comparisons retain the uncertified search fallback.
 
     limits:
     - name: point mass at lowest support point
@@ -329,57 +331,57 @@ modifiers:
       firmness: proved
       when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
         truncation window.
-      detect: A signed factorial-moment tail with complete finite-prefix exclusion, or an exact finite-window moment
-        certificate, proves the truncated-Poisson face wins on the held or profiled integer window; otherwise the
-        comparison remains unresolved.
+      detect: On effective window $[1,\infty)$, the positive-Poisson moment comparison can prove escape directly.
+        Otherwise a signed tail with finite-prefix exclusion or an exact finite-window moment certificate can
+        prove escape. An unresolved comparison can retain an uncertified finite fit.
       fixed: []
       status: TpoisLimit
       detect_firmness: proved
       proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
-      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
+      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom2-math-report.md#the-moment-envelope-for-pure-zero-truncation", "dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
     - model: pois
       configuration: {truncate: [a, b]}
       firmness: proved
       when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
         truncation window.
-      detect: A signed factorial-moment tail with complete finite-prefix exclusion, or an exact finite-window moment
-        certificate, proves the truncated-Poisson face wins on the held or profiled integer window; otherwise the
-        comparison remains unresolved.
+      detect: On effective window $[1,\infty)$, the positive-Poisson moment comparison can prove escape directly.
+        Otherwise a signed tail with finite-prefix exclusion or an exact finite-window moment certificate can
+        prove escape. An unresolved comparison can retain an uncertified finite fit.
       fixed:
       - a
       status: TpoisLimit
       detect_firmness: proved
       proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
-      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
+      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom2-math-report.md#the-moment-envelope-for-pure-zero-truncation", "dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
     - model: pois
       configuration: {truncate: [a, b]}
       firmness: proved
       when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
         truncation window.
-      detect: A signed factorial-moment tail with complete finite-prefix exclusion, or an exact finite-window moment
-        certificate, proves the truncated-Poisson face wins on the held or profiled integer window; otherwise the
-        comparison remains unresolved.
+      detect: On effective window $[1,\infty)$, the positive-Poisson moment comparison can prove escape directly.
+        Otherwise a signed tail with finite-prefix exclusion or an exact finite-window moment certificate can
+        prove escape. An unresolved comparison can retain an uncertified finite fit.
       fixed:
       - b
       status: TpoisLimit
       detect_firmness: proved
       proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
-      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
+      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom2-math-report.md#the-moment-envelope-for-pure-zero-truncation", "dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
     - model: pois
       configuration: {truncate: [a, b]}
       firmness: proved
       when: The size satisfies $n\to\infty$ and $p\to0$ with $np$ tending to a finite positive rate on the same
         truncation window.
-      detect: A signed factorial-moment tail with complete finite-prefix exclusion, or an exact finite-window moment
-        certificate, proves the truncated-Poisson face wins on the held or profiled integer window; otherwise the
-        comparison remains unresolved.
+      detect: On effective window $[1,\infty)$, the positive-Poisson moment comparison can prove escape directly.
+        Otherwise a signed tail with finite-prefix exclusion or an exact finite-window moment certificate can
+        prove escape. An unresolved comparison can retain an uncertified finite fit.
       fixed:
       - a
       - b
       status: TpoisLimit
       detect_firmness: proved
       proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#profile-and-limit"]
-      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
+      detect_proof: ["dev/research/evaluations/2026-11-25-tbinom2-math-report.md#the-moment-envelope-for-pure-zero-truncation", "dev/research/evaluations/2026-11-25-tbinom-math-report.md#a-finite-decision-certificate"]
 ---
 
 The binomial distribution models the number of successes in a fixed number of independent Bernoulli trials.

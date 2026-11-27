@@ -43,6 +43,8 @@
 #include <cfloat>
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
+#include <numeric>
 #include <limits>
 #include <vector>
 
@@ -233,6 +235,43 @@ inline Sum increment_N(const Counts &c, double m, double k, double N) {
     }
   }
   return d;
+}
+
+// Cancel the factors of each adjacent likelihood ratio against the running
+// rational product. An exhausted integer range leaves the tie unproved.
+inline bool exact_adjacent_tie(span x, double upper, const HyperResult& fit,
+                               bool free_population, bool free_draws) {
+  const std::uint64_t t = upper;
+  const std::uint64_t N = fit.N, m = fit.m, k = fit.k;
+  constexpr auto limit = std::numeric_limits<std::uint64_t>::max();
+  std::uint64_t numerator = 1, denominator = 1;
+  for (double observation : x) {
+    const std::uint64_t v = observation;
+    const auto held = free_draws ? m : k;
+    const auto available = free_population ? t - m : N - t + 1;
+    std::array<std::uint64_t, 3> top{numerator,
+        free_population ? t - k : t,
+        free_population ? available : available - (held - v)};
+    std::array<std::uint64_t, 3> bottom{denominator,
+        free_population ? t : t - v,
+        free_population ? available - (k - v) : available};
+    for (auto& a : top) {
+      if (a == 0) return false;
+      for (auto& b : bottom) {
+        if (b == 0) return false;
+        const auto divisor = std::gcd(a, b);
+        a /= divisor;
+        b /= divisor;
+      }
+    }
+    numerator = denominator = 1;
+    for (std::size_t j = 0; j < top.size(); ++j) {
+      if (top[j] > limit / numerator || bottom[j] > limit / denominator) return false;
+      numerator *= top[j];
+      denominator *= bottom[j];
+    }
+  }
+  return numerator == denominator;
 }
 
 // Rounding bound for D, relative to its summed term magnitudes: each term
@@ -775,15 +814,10 @@ inline HyperResult hyper_mle(span x, double k, double N, double m) {
     if(!out.certified)out.status=HyperStatus::Ok;
   }
   if (out.status == HyperStatus::Tie) {
-    // Test the exact per-observation adjacent ratio before calling a
-    // rounding-margin comparison a tie. The scalar likelihood is unimodal.
-    const double population = std::isnan(N) ? out.tie : N;
-    const double composition = std::isnan(m) ? out.tie : m;
-    const double draws = std::isnan(k) ? out.tie : k;
-    const double factor = std::isnan(N) ? population : population + 1;
-    out.uniqueness_known = std::all_of(x.begin(), x.end(), [&](double v) {
-      return hyper_detail::product_difference(v, factor, composition, draws) == 0;
-    });
+    // Scalar unimodality makes exact adjacent equality a two-point maximum.
+    out.uniqueness_known = out.tie <= hyper_detail::kMaxCount &&
+        hyper_detail::exact_adjacent_tie(x, out.tie, out, std::isnan(N), std::isnan(k));
+    if (out.uniqueness_known) out.unique = false;
   }
   hyper_detail::mark_exact_ties(x, k, N, m, out);
   if (out.uniqueness_known && (!out.unique || out.status == HyperStatus::Tie ||

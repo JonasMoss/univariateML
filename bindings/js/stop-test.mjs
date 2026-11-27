@@ -281,15 +281,16 @@ test('ZINB certified ZIP and Poisson stops name their limiting coefficients', ()
   });
 });
 
-test('PIG global certificate transports Poisson, tie, budget and numerical stops', () => {
+test('PIG global certificate transports Poisson, budget and numerical stops', () => {
   assert.throws(() => api.pig.fit([0,1,2,3],{mean:2}),e=>{
     assert.equal(e.kind,'limit');assert.equal(e.model,'pois');
     assert.equal(e.estimates.lambda,2);
     assert.ok(e.loglik_lower<=e.limit_loglik && e.limit_loglik<=e.loglik_upper);return true;
   });
-  comparisonStop(() => api.pig.fit([0,1,2],{mean:1+Math.sqrt(1/3)}),'limit',e=>{
-    assert.equal(e.certified,false);assert.equal(e.model,'pois');assert.equal(e.candidates[0].model,'pois');
-    assert.equal(e.loglik_upper,Infinity);return true;
+  assert.throws(() => api.pig.fit([0,1,2],{mean:1+Math.sqrt(1/3)}),e=>{
+    assert.equal(e.kind,'limit');assert.equal(e.certified,true);
+    assert.equal(e.model,'pois');assert.equal(e.candidates[0].model,'pois');
+    assert.ok(Number.isFinite(e.loglik_upper));return true;
   });
   assert.throws(() => api.pig.fit([0,0,2147483647],{},{iterlim:1}),e=>{
     assert.equal(e.kind,'budget');assert.equal(e.candidates.length,0);return true;

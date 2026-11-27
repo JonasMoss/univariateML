@@ -198,8 +198,67 @@ inline ShapeMoments shape_moments(const Counts& data,double logz) {
   out.scaled_degree=static_cast<double>(scaled_degree.value/data.n);
   out.scaled_difference=static_cast<double>(difference.value/data.n);return out;
 }
+// The normalized Poisson-edge score has numerator
+// nF-S^2 + (n*mean-S)^2 over 2*n^2. With a free mean only nF-S^2
+// remains. Evaluate the held-mean displacement at its exact dyadic value.
+inline double exact_shape_edge(const Counts& data, double mean, bool mean_free) {
+#if defined(__SIZEOF_INT128__)
+  typedef unsigned __int128 Integer;
+#else
+  typedef std::uint64_t Integer;
+#endif
+  constexpr int bits = sizeof(Integer) * 8;
+  constexpr Integer limit = ~Integer{0};
+  if (data.n >= 0x1p53) return NAN;
+  const Integer n = static_cast<Integer>(data.n);
+  const Integer largest = data.frequencies.rbegin()->first;
+  if (n > limit / largest) return NAN;
+  const Integer sum_bound = n * largest;
+  if (sum_bound > limit / sum_bound) return NAN;
+  Integer total = 0, factorial = 0;
+  for (const auto& kv : data.frequencies) {
+    const Integer k = kv.first, count = kv.second;
+    total += count * k;
+    if (k > 1) factorial += count * k * (k - 1);
+  }
+  const Integer left = n * factorial, right = total * total;
+  const bool over = left >= right;
+  const Integer gap = over ? left - right : right - left;
+  const double scale = 2 * data.n * data.n;
+  if (mean_free) return (over ? 1 : -1) * (static_cast<double>(gap) / scale);
+
+  int exponent;
+  const double fraction = std::frexp(mean, &exponent);
+  auto mantissa = static_cast<std::uint64_t>(std::ldexp(fraction, 53));
+  int shift = 53 - exponent;
+  while (mantissa % 2 == 0 && shift > 0) {
+    mantissa /= 2;
+    --shift;
+  }
+  if (n > limit / mantissa) return NAN;
+  Integer held = n * mantissa;
+  if (shift < 0) {
+    if (-shift >= bits || held > (limit >> -shift)) return NAN;
+    held <<= -shift;
+    shift = 0;
+  }
+  if (shift >= bits || total > (limit >> shift)) return NAN;
+  total <<= shift;
+  const Integer distance = held >= total ? held - total : total - held;
+  if (over) {
+    const double displacement = std::ldexp(static_cast<double>(distance), -shift);
+    return (static_cast<double>(gap) + displacement * displacement) / scale;
+  }
+  if (2 * shift >= bits || gap > (limit >> (2 * shift)) ||
+      (distance != 0 && distance > limit / distance)) return NAN;
+  const Integer a = distance * distance, b = gap << (2 * shift);
+  const Integer difference = a >= b ? a - b : b - a;
+  return (a >= b ? 1 : -1) * std::ldexp(static_cast<double>(difference) / scale, -2 * shift);
+}
+
 struct ShapeScore {double value,error;};
-inline ShapeScore shape_score(const Counts& data,double mean,double logshape) {
+inline ShapeScore shape_score(const Counts& data,double mean,double logshape,
+                              double edge,double factorial,bool exact_edge) {
   const double lm=std::log(mean),logratio=std::log(2.)+2*lm-logshape;
   const double logq=-.5*logadd(0,logratio),q=std::exp(logq);
   const double logz=.5*(std::log(2.)+logshape+logadd(0,-logratio));
@@ -215,24 +274,19 @@ inline ShapeScore shape_score(const Counts& data,double mean,double logshape) {
     second=data.average;
     third=(1+q*q)/(1-q*q)*moments.degree;
   }
-  const double scale=std::numeric_limits<double>::min()+std::abs(first)+std::abs(second)+std::abs(third);
-  const double error=256*std::numeric_limits<double>::epsilon()*
-    (1+std::sqrt(double(data.frequencies.rbegin()->first)))*scale;
+  double scale=std::numeric_limits<double>::min()+std::abs(first)+std::abs(second)+std::abs(third);
   double value=first-second+third;
   if(q>=.5 && logz>=0) {
-    Sum factorial,total;
-    for(const auto& kv:data.frequencies) {
-      factorial.add(static_cast<CPPUNIV_EXTENDED_REAL>(kv.second)*kv.first*(kv.first-1));
-      total.add(static_cast<CPPUNIV_EXTENDED_REAL>(kv.second)*kv.first);
-    }
-    const CPPUNIV_EXTENDED_REAL n=data.n,mu=mean;
-    const double edge=mean==data.average?
-      static_cast<double>((n*factorial.value-total.value*total.value)/(2*n*n)):
-      static_cast<double>((n*mu*mu-2*mu*total.value+factorial.value)/(2*n));
-    const double u=-std::expm1(logq),f=static_cast<double>(factorial.value/n);
-    value=edge-.5*mean*mean*(u/(1+q))*(u/(1+q))
-      +.5*(q+1/q)*moments.scaled_difference+u*u/(4*q)*f;
+    const double u=-std::expm1(logq);
+    const double quadratic=.5*mean*mean*(u/(1+q))*(u/(1+q));
+    const double difference=.5*(q+1/q)*moments.scaled_difference;
+    const double remainder=u*u/(4*q)*factorial;
+    value=edge-quadratic+difference+remainder;
+    if(exact_edge)scale=std::numeric_limits<double>::min()+std::abs(edge)+quadratic+
+        std::abs(difference)+remainder;
   }
+  const double error=256*std::numeric_limits<double>::epsilon()*
+    (1+std::sqrt(double(data.frequencies.rbegin()->first)))*scale;
   return {value,error};
 }
 inline PigResult poisson_face(const Counts& data,double mean,int iterations=0) {
@@ -259,24 +313,28 @@ inline PigResult free_shape(const Counts& data,double mean,bool mean_free,double
     const CPPUNIV_EXTENDED_REAL k=kv.first;
     total_sum.add(kv.second*k);factorial_sum.add(kv.second*k*(k-1));
   }
-  const double total=static_cast<double>(total_sum.value),factorial=static_cast<double>(factorial_sum.value);
+  const double factorial=static_cast<double>(factorial_sum.value);
+  const double f=factorial/data.n;
+  double edge=exact_shape_edge(data,mean,mean_free);
+  const bool exact_edge=std::isfinite(edge);
   bool positive=false,negative=false;
-  if(mean_free && data.n*factorial<=4503599627370496. && total*total<=4503599627370496.) {
-    // All nonnegative integer products and sums here are exact binary64.
-    positive=data.n*factorial>total*total;negative=!positive;
-  } else if(!mean_free && mean==std::floor(mean) &&
-      data.n*mean*mean+factorial<=4503599627370496. && 2*mean*total<=4503599627370496.) {
-    positive=data.n*mean*mean+factorial>2*mean*total;negative=!positive;
+  if(exact_edge) {
+    positive=edge>0;
+    negative=!positive;
   } else {
-    const double f=factorial/data.n;
-    if(mean>4*data.average || mean<f/(4*data.average))positive=true;
-    else {
-      const CPPUNIV_EXTENDED_REAL edge=static_cast<CPPUNIV_EXTENDED_REAL>(mean)-2*data.average+
-        static_cast<CPPUNIV_EXTENDED_REAL>(f)/mean;
-      const double pad=256*std::numeric_limits<double>::epsilon()*(mean+2*data.average+f/mean);
-      positive=edge>pad;negative=edge< -pad;
-    }
+    const CPPUNIV_EXTENDED_REAL n=data.n,mu=mean;
+    const auto s=total_sum.value,F=factorial_sum.value;
+    const auto joint=n*F-s*s;
+    const auto offset=n*mu-s;
+    edge=static_cast<double>((joint+(mean_free?0:offset*offset))/(2*n*n));
+    const double pad=256*std::numeric_limits<double>::epsilon()*
+        (.5*mean*mean+mean*data.average+.5*f);
+    positive=mean>4*data.average || mean<f/(4*data.average) || edge>pad;
+    negative=edge< -pad;
   }
+  const auto at_shape = [&](double logshape) {
+    return shape_score(data,mean,logshape,edge,f,exact_edge);
+  };
   if(negative)return poisson_face(data,mean);
   auto witness=[&](double logshape) {
     const double shape=std::exp(logshape);
@@ -304,7 +362,7 @@ inline PigResult free_shape(const Counts& data,double mean,bool mean_free,double
   double lo=std::max(lower,std::min(upper,2*std::log(mean))),hi=lo,step=1;
   bool bracketed=false;
   for(;out.iterations<cap;++out.iterations) {
-    const auto left=shape_score(data,mean,lo),right=shape_score(data,mean,hi);
+    const auto left=at_shape(lo),right=at_shape(hi);
     if(!std::isfinite(left.value)||!std::isfinite(right.value)) {witness(lo+(hi-lo)/2);return out;}
     if(left.value< -left.error && right.value>right.error) {bracketed=true;break;}
     const double next_lo=left.value< -left.error?lo:std::max(lower,lo-step);
@@ -324,13 +382,13 @@ inline PigResult free_shape(const Counts& data,double mean,bool mean_free,double
       for(;out.iterations<cap;++out.iterations) {
         const double mid=a+(b-a)/2;
         if(b-a<=.01*tol || mid==a || mid==b) {polished=true;break;}
-        const auto s=shape_score(data,mean,mid);
+        const auto s=at_shape(mid);
         if(!std::isfinite(s.value)) {witness(mid);return out;}
         if(s.value==0) {
           // A rounded zero is not a root enclosure. Keep independently
           // signed neighbours at the requested local coefficient resolution.
           const double left=std::max(a,mid-.004*tol),right=std::min(b,mid+.004*tol);
-          if(!(shape_score(data,mean,left).value<0 && shape_score(data,mean,right).value>0)) {witness(mid);return out;}
+          if(!(at_shape(left).value<0 && at_shape(right).value>0)) {witness(mid);return out;}
           a=left;b=right;polished=true;break;
         }
         if(s.value>0)b=mid;else a=mid;
@@ -345,13 +403,13 @@ inline PigResult free_shape(const Counts& data,double mean,bool mean_free,double
       out.status=PigStatus::Ok;out.stop_detail={};return out;
     }
     const double mid=lo+(hi-lo)/2;
-    const auto score=shape_score(data,mean,mid);
+    const auto score=at_shape(mid);
     if(!std::isfinite(score.value)) {witness(mid);return out;}
     if(score.value>score.error)hi=mid;
     else if(score.value< -score.error)lo=mid;
     else {
       const double left=std::max(lo,mid-resolution*.49),right=std::min(hi,mid+resolution*.49);
-      const auto sl=shape_score(data,mean,left),sr=shape_score(data,mean,right);
+      const auto sl=at_shape(left),sr=at_shape(right);
       if(!(sl.value< -sl.error && sr.value>sr.error)) {witness(mid);return out;}
       lo=left;hi=right;
     }

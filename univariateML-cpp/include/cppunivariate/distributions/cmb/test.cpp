@@ -858,3 +858,15 @@ TEST_CASE("cmb: public Cmp candidate at archive 000889") {
   CHECK(ll >= c->loglik_lower - margin);
   CHECK(ll <= c->loglik_upper + margin);
 }
+
+TEST_CASE("cmb held probability uses both central indices for an odd size") {
+  for (int observed : {1, 2}) {
+    const std::vector<int> x{observed, observed};
+    const auto fit = cppunivariate::cmb_mle({x.data(), x.size()}, 3, 1e-10, 2000, .75);
+    CHECK(fit.status == cppunivariate::CmbStatus::AdjacentLimit);
+    CHECK(cppunivariate::outcome(fit).certified);
+    CHECK(fit.stop_detail.limit_coef == std::vector<double>{1, 2, .75});
+    CHECK(fit.stop_detail.limit_loglik ==
+          doctest::Approx(2 * std::log(observed == 2 ? .75 : .25)));
+  }
+}

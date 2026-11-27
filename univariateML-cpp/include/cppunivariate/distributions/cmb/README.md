@@ -71,11 +71,11 @@ limits:
   - name: adjacent two-point law
     firmness: proved
     when: 'As $\nu\to+\infty$, suitable canonical probabilities concentrate mass on two adjacent integers.'
-    detect: With $n\ge2$ held and $p,\nu$ free, both of two adjacent integers are observed. With odd $n\ge3$ and interior $p$ held, only the two central integers occur. With $n,p,\nu$ free, both of two adjacent positive integers occur. With $p=1/2$ held and $n,\nu$ free, adjacent positive counts occur equally often and the central size is supported.
+    detect: With $n\ge2$ held and $p,\nu$ free, both of two adjacent integers are observed. With odd $n\ge3$ and interior $p$ held, every count lies in $\{(n-1)/2,(n+1)/2\}$. The limiting mass at the upper index is $p$. With $n,p,\nu$ free, both of two adjacent positive integers occur. With $p=1/2$ held and $n,\nu$ free, adjacent positive counts occur equally often and the central size is supported.
     status: AdjacentLimit
     detect_firmness: proved
     proof: ["dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size"]
-    detect_proof: ["dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size", "dev/research/evaluations/2026-11-25-cmb-math-report.md#free-size"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-cmb-math-report.md#held-size", "dev/research/evaluations/2026-11-25-cmb-math-report.md#free-size", "UnivariateML.Discrete3CMB.odd_center_supremum"]
   - name: endpoint two-point law
     firmness: proved
     when: 'As $\nu\to-\infty$, mass concentrates on the two support endpoints.'

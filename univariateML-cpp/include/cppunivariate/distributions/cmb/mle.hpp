@@ -332,8 +332,10 @@ inline CmbResult cmb_mle_work(ispan x,int N,double tol,int maxit,
     cmb_keep_accuracy_witness(stopped.stop_detail,N,work);
   if(stopped.status==CmbStatus::PointMass) stopped.stop_detail=discrete_point(x[0]);
   if(stopped.status==CmbStatus::AdjacentLimit || stopped.status==CmbStatus::EndpointLimit) {
-    const double lo=stopped.status==CmbStatus::EndpointLimit?0:*std::min_element(x.begin(),x.end());
-    const double hi=stopped.status==CmbStatus::EndpointLimit?N:lo+1;
+    const bool endpoints = stopped.status == CmbStatus::EndpointLimit;
+    const double lo = endpoints ? 0 :
+        std::isnan(prob) ? *std::min_element(x.begin(), x.end()) : N / 2;
+    const double hi = endpoints ? N : lo + 1;
     double p=NAN,eta=NAN;
     if(!std::isnan(prob)) {
       eta=(hi-lo)*(std::log(prob)-std::log1p(-prob));
