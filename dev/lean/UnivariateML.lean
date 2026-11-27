@@ -49,3 +49,9 @@ public import UnivariateML.Family.Transfers3
 public import UnivariateML.Family.DiscreteWeibull
 public import UnivariateML.Family.TDist
 public import UnivariateML.Family.BinomialSize
+public import UnivariateML.Family.ShapeFacesInverseBurr
+public import UnivariateML.Family.ShapeFacesParetoIV
+public import UnivariateML.Family.ShapeFacesExpWeibull
+public import UnivariateML.Family.ShapeFacesShiftedGompertz
+public import UnivariateML.Family.ShapeFacesPGW
+public import UnivariateML.Family.ShapeFacesFellerPareto
