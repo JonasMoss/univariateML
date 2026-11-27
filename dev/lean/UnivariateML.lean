@@ -192,3 +192,13 @@ public import UnivariateML.Family.TwoPiece2Normal
 public import UnivariateML.Family.TwoPiece2SGED
 public import UnivariateML.Family.TwoPiece2StudentExtreme
 public import UnivariateML.Family.TwoPiece2Student
+public import UnivariateML.Family.Shape3Burr
+public import UnivariateML.Family.Shape3ExpWeibull
+public import UnivariateML.Family.Shape3Fatigue
+public import UnivariateML.Family.Shape3Frechet
+public import UnivariateML.Family.Shape3GenGamma
+public import UnivariateML.Family.Shape3GEV
+public import UnivariateML.Family.Shape3InvBurr
+public import UnivariateML.Family.Shape3Lomax
+public import UnivariateML.Family.Shape3PGW
+public import UnivariateML.Family.Shape3TrGamma
