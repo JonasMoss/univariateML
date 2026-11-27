@@ -1,0 +1,36 @@
+family,alias,held
+beta,first held,shape1
+beta,second held,shape2
+bbinom,trial count held,size
+bbinom,"trial count held, joint",size
+burr,scale held,scale
+cauchy,location held,location
+cauchy,scale held,scale
+dblpareto,kink held,scale
+dblpareto,rates held,left_rate+right_rate
+dlaplace,location held,location
+dlaplace,scale held,scale
+dunif,lower held,min
+dunif,upper held,max
+fatigue,threshold held,mu
+frechet,shape held,lambda
+gev,shape held,xi
+hnorm,location held,mu
+huber,"tuning constant held, location held",epsilon+mu
+huber,"tuning constant held, scale held",epsilon+sigma
+laplace,location held,mu
+logitnorm,location held,mu
+norm,mean held,mean
+pareto,endpoint held,b
+pareto,shape held,a
+power,endpoint held,alpha
+power,shape held,beta
+unif,lower held,min
+unif,upper held,max
+bbinom,joint,size
+fatigue,joint,mu
+ged,joint,nu
+gpd,joint,mu
+huber,joint,epsilon
+nsbeta,joint,max+min
+pareto3,joint,min

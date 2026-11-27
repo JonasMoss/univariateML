@@ -5,7 +5,7 @@ bbinom,3,size,Known size in the endpoint-only assertion.
 bhatt,1,all free;a;a+mu;mu,Different trace at a held positive width because endpoint penalties apply.
 bnbinom,1,all free;beta;size,The NB path is compatible with either held symmetric shape.
 bnbinom,3,all free;alpha;beta;size;alpha+beta;alpha+size;beta+size,One or more shapes must remain free.
-burr,1,all free;scale;shape1;scale+shape1,The specific collapse predicate depends on the held mask.
+burr,1,all free;scale;shape1;scale+shape1,With scale and first shape held the common value must equal scale. With only scale held it may also lie below scale.
 cauchy,1,all free;location,Held location uses the number of atoms at that location.
 cmb,2,size;prob;prob+size,The detector mentions held size or held probability.
 cmb,3,all free;size;prob;prob+size,Several hold regimes are stated in the detector.

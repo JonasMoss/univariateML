@@ -2,7 +2,7 @@
 """Join dossier regimes to reviewed evidence and write the existence atlas.
 
 Run python3 dev/tools/existence_atlas.py --overview to refresh the overview's
-generated section. Claims absent from proofs.csv remain open. Nested CSV
+generated section. The Lean map records reviewed theorem coverage. Nested CSV
 fields use JSON so each distinct boundary path retains its own provenance.
 """
 import argparse
@@ -18,6 +18,7 @@ DIST = ROOT / 'univariateML-cpp/include/cppunivariate/distributions'
 ATLAS = ROOT / 'dev/research/existence-atlas'
 QUESTIONS = ('criterion', 'failure', 'uniqueness')
 PROVED = {'lean', 'written', 'cited'}
+PROOF_RANK = {'lean': 2, 'written': 1, 'cited': 1, 'unproved': 0}
 START = '<!-- BEGIN GENERATED ATLAS -->'
 END = '<!-- END GENERATED ATLAS -->'
 
@@ -53,27 +54,78 @@ def limit_grade(limit):
     return 'unknown' if grade == 'proved' else grade
 
 
-def audit():
-    lean_rows = read_csv('lean-map.csv')
-    lean = {row['theorem'] for row in lean_rows if not row['proof_marker']}
-    if len({row['theorem'] for row in lean_rows}) != len(lean_rows):
-        raise ValueError('duplicate Lean theorem name')
+def lean_map():
+    paths = [ATLAS / 'lean-map.csv', *sorted((ATLAS / 'lean-map.d').glob('*.csv'))]
+    aliases = {(row['family'], row['alias'].casefold()): row['held']
+               for row in read_csv('lean-regime-aliases.csv')}
+    canonical = {'joint': 'all free', 'all free': 'all free', 'generic': 'generic'}
+    for path in paths:
+        for line, row in enumerate(read_csv(path), 2):
+            label = row['regime'].strip()
+            regime = label.casefold()
+            row['regime'] = aliases.get((row['family'], regime), canonical.get(regime, label))
+            yield f'{path.relative_to(ROOT)}:{line}', row
+
+
+def lean_coverage(entries):
+    coverage = defaultdict(lambda: defaultdict(set))
+    for location, row in entries:
+        if row['proof_marker']:
+            continue
+        family, regime = row['family'], row['regime']
+        for target, grade in json.loads(row.get('coverage') or '{}').items():
+            mask, separator, question = target.partition('/')
+            if regime == 'generic' and separator:
+                held = '' if mask == 'all free' else mask
+            elif regime != 'generic' and not separator:
+                held = '' if regime == 'all free' else regime
+                question = target
+            else:
+                raise ValueError(f'{location}: invalid scope for Lean claim {target}')
+            if (question not in QUESTIONS and
+                    not question.startswith(('limit:', 'path:', 'case:'))):
+                raise ValueError(f'{location}: unknown Lean claim {question}')
+            if grade not in {'full', 'partial'}:
+                raise ValueError(f'{location}: invalid Lean coverage for {question}')
+            coverage[family, held, question][grade].add(row['theorem'])
+    return coverage
+
+
+def with_lean(proof, coverage):
+    proof = dict(proof)
+    full = sorted(coverage.get('full', ()))
+    partial = sorted(coverage.get('partial', ()))
+    if full:
+        if proof['direction'] == 'open':
+            raise ValueError(f'full Lean coverage needs an audited claim: {full}')
+        proof.update(status='lean', evidence='; '.join(full))
+    elif not proof['status']:
+        proof['status'] = 'unproved'
+    if partial:
+        proof['lean_partial'] = '; '.join(partial)
+    return proof
+
+
+def audit(coverage):
+    used_coverage = set()
+
+    def apply_lean(proof, held, question):
+        claim_key = family, held, question
+        used_coverage.add(claim_key)
+        return with_lean(proof, coverage.get(claim_key, {}))
+
     reviewed = defaultdict(dict)
     named = defaultdict(set)
     for row in read_csv('proofs.csv'):
         family, held, question = (row[field] for field in ('family', 'held', 'question'))
         if question not in QUESTIONS and not question.startswith(('limit:', 'path:', 'case:')):
             raise ValueError(f'{family} {held}: unknown question {question}')
-        if row['status'] not in PROVED | {'unproved'}:
+        if row['status'] not in {'written', 'cited', 'unproved', ''}:
             raise ValueError(f'{family} {held}: unknown proof status')
         if row['status'] == 'written':
             file = row['evidence'].partition('#')[0]
             if not ((ROOT / file).is_file() or (ATLAS / file).is_file()):
                 raise ValueError(f'{family} {held}: missing written proof source {file}')
-        if row['status'] == 'lean' and any(
-            name not in lean for name in row['evidence'].split('; ')
-        ):
-            raise ValueError(f'{family} {held}: unresolved Lean evidence {row["evidence"]}')
         if question in reviewed[family, held]:
             raise ValueError(f'duplicate proof key: {family} {held} {question}')
         reviewed[family, held][question] = {
@@ -158,6 +210,9 @@ def audit():
                         status='unproved', evidence=grade if question == 'uniqueness' else 'missing',
                         frontier=frontier,
                     ))
+            for question in QUESTIONS:
+                rows[question] = apply_lean(rows[question], held, question)
+                rows[question].setdefault('lean_partial', '')
             cases = []
             for index, limit, location, declared, scope in limits[held]:
                 record = dict(index=index, source=location, declared_fixed=declared or 'unspecified',
@@ -175,12 +230,13 @@ def audit():
                         consumed.add((family, proof_mask, proof_key))
                         if label == 'path' and override['claim'] != limit.get('when'):
                             raise ValueError(f'{location}: reviewed path has changed')
-                    record[label + '_proof'] = override or dict(
+                    proof = override or dict(
                         status='unproved', direction='open',
                         claim=(limit.get('when') if label == 'path' else limit.get('detect')) or '',
                         evidence=limit_grade(limit) if label == 'limit' else
                         ('unknown' if record['dossier_grade'] == 'proved' else record['dossier_grade']),
                         frontier=purpose)
+                    record[label + '_proof'] = apply_lean(proof, held, proof_key)
                 cases.append(record)
             yield dict(family=family, held=held or 'all free',
                        free='+'.join(sorted(params.keys() - mask)), origin=' | '.join(sorted(origin)),
@@ -190,7 +246,7 @@ def audit():
                        dossier=ex_source, dossier_statement=ex.get('statement', ''),
                        dossier_uniqueness=ex.get('uniqueness', 'missing'),
                        structural=encode(structural), limits=encode(cases),
-                       proved_cases=encode({question.removeprefix('case:'): proof
+                       proved_cases=encode({question.removeprefix('case:'): apply_lean(proof, held, question)
                                             for question, proof in evidence.items()
                                             if question.startswith('case:')}),
                        strict_layer=encode({name: ex[name] for name in ('collapse', 'two_point',
@@ -203,6 +259,8 @@ def audit():
         raise ValueError(f'limiting paths missing from dossiers: {sorted(scopes.keys() - consumed_scopes)}')
     if unused:
         raise ValueError(f'proof entries without dossier regime: {sorted(unused)}')
+    if coverage.keys() - used_coverage:
+        raise ValueError(f'Lean coverage without atlas claim: {sorted(coverage.keys() - used_coverage)}')
 
 
 def group(row):
@@ -234,16 +292,90 @@ def overview(rows):
             for question in QUESTIONS:
                 value = row[f'{question}_status']
                 direction = row[f'{question}_direction']
-                cells.append(f'{value} ({direction})')
+                partial = row[f'{question}_lean_partial']
+                suffix = ' · partial Lean' if partial and value != 'lean' else ''
+                cells.append(f'{value} ({direction}){suffix}')
             lines.append('| ' + ' | '.join(cells) + ' |')
     return '\n'.join(lines)
+
+
+def atlas_claims(rows):
+    for row in rows:
+        family, held = row['family'], row['held']
+        for question in QUESTIONS:
+            yield (family, held, question), {
+                field: row[f'{question}_{field}'] for field in ('status', 'evidence')}
+        for question, proof in json.loads(row['proved_cases']).items():
+            yield (family, held, f'case:{question}'), proof
+        for limit in json.loads(row['limits']):
+            for label in ('path', 'limit'):
+                yield (family, held, f"{label}:{limit['index']}"), limit[label + '_proof']
+
+
+def check(entries, rows):
+    families = {row['family'] for row in rows}
+    regimes = {(row['family'], row['held']) for row in rows}
+    mapped = defaultdict(set)
+    generic_coverage = lean_coverage(
+        (location, row) for location, row in entries if row['regime'] == 'generic')
+    issues = []
+    for location, row in entries:
+        family, regime = row['family'], row['regime']
+        if ((family, regime) not in regimes and
+                not (regime == 'generic' and family in families | {'generic'})):
+            issues.append(f'{location}: no atlas regime for {family} / {regime}')
+        if not row['proof_marker']:
+            mapped[family, regime].add(row['theorem'])
+
+    for (family, held, question), proof in atlas_claims(rows):
+        if proof['status'] == 'lean':
+            generic = generic_coverage.get(
+                (family, '' if held == 'all free' else held, question), {}).get('full', ())
+            for theorem in proof['evidence'].split('; '):
+                if theorem not in mapped[family, held] and theorem not in generic:
+                    issues.append(f'{family} / {held} / {question}: unmapped theorem {theorem}')
+    return issues
+
+
+def check_regressions(rows):
+    fields = ('family', 'held', 'question')
+    current = {key: proof['status'] for key, proof in atlas_claims(rows)}
+    exceptions = {}
+    for row in read_csv('proof-status-exceptions.csv'):
+        key = tuple(row[field] for field in fields)
+        if not row['reason'].strip() or key in exceptions or row['status'] not in PROOF_RANK:
+            raise ValueError(f'invalid or duplicate proof status exception: {key}')
+        exceptions[key] = row['status']
+
+    issues = []
+    for row in read_csv('proof-status-baseline.csv'):
+        key = tuple(row[field] for field in fields)
+        before = row['status']
+        after = current.get(key, 'absent')
+        if PROOF_RANK.get(after, 0) < PROOF_RANK[before] and exceptions.get(key) != after:
+            issues.append(f"{' / '.join(key)}: proof status regressed from {before} to {after}")
+    return issues
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--overview', action='store_true')
+    parser.add_argument('--check', action='store_true',
+                        help='validate Lean map scopes and the saved atlas without rewriting it')
     args = parser.parse_args()
-    rows = list(audit())
+    entries = list(lean_map())
+    if args.check:
+        saved = read_csv('atlas.csv')
+        issues = check(entries, saved) + check_regressions(saved)
+        if not issues:
+            regenerated = list(audit(lean_coverage(entries)))
+            issues = check_regressions(regenerated)
+            if not issues and regenerated != saved:
+                issues.append('atlas.csv is stale; regenerate the atlas')
+        for issue in issues:
+            print(issue)
+        return int(bool(issues))
+    rows = list(audit(lean_coverage(entries)))
     with (ATLAS / 'atlas.csv').open('w', newline='', encoding='utf-8') as stream:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator='\n')
         writer.writeheader()
@@ -261,4 +393,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())
