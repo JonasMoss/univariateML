@@ -1,0 +1,8 @@
+Exact t2 bulk cover: 35819 boxes, maximum depth 24
+80-digit intervals (displayed to 16 digits)
+  finite witness  -1.453080443543089
+  threshold       -1.456716825416436
+  t2              -1.468799809598644
+  symmetric       -1.469551766808389
+  normal          -1.573552315312178
+  half            -6.234349200138702
