@@ -74,6 +74,111 @@ inline BurrMLE shifted_power_fit(span x,double min,double b,double tol,int maxit
   return out;
 }
 
+inline double pareto_endpoint_low(span x,double min,double high) {
+  const double first=*std::min_element(x.begin(),x.end());
+  const double excess=first-min;
+  return (excess-high)+excess_residual(first,min,excess);
+}
+
+// Work directly on relative log excesses of the original observations.
+// The global comparison is made before projecting scale back to binary64.
+inline BurrMLE shifted_joint_fit(span x,double min,double tol,int maxit) {
+  namespace cert=burr_cert_detail;
+  BurrMLE out{NAN,NAN,NAN,NAN,0,BurrStatus::NumericalFailure};
+  if(x.empty() || maxit<=1 || !burr_valid_controls(tol,maxit))return out;
+  const double least=*std::min_element(x.begin(),x.end());
+  const double greatest=*std::max_element(x.begin(),x.end());
+  if(least==greatest) {
+    out.status=BurrStatus::Unbounded;
+    out.logLik=INFINITY;
+    return out;
+  }
+  std::vector<double> sorted(x.begin(),x.end());
+  std::nth_element(sorted.begin(),sorted.begin()+sorted.size()/2,sorted.end());
+  const double ref=sorted[sorted.size()/2];
+  cert::Data data;
+  data.maxit=maxit;
+  data.anchor=ref-min;
+  data.anchor_low=excess_residual(ref,min,data.anchor);
+  const double log_anchor=std::log(data.anchor)+std::log1p(data.anchor_low/data.anchor);
+  std::vector<std::pair<double,double>> logs;
+  int multiplicity=0;
+  double pareto_distance=0;
+  for(double v:x) {
+    const double z=centered_log(v,ref,min);
+    const double margin=32*std::numeric_limits<double>::epsilon();
+    const double mag=std::abs((v-ref)/data.anchor)<.5?std::abs(z):
+        std::abs(std::log(v-min))+std::abs(log_anchor)+std::abs(z);
+    const double error=margin*mag+std::numeric_limits<double>::denorm_min();
+    logs.emplace_back(z,error);
+    multiplicity+=v==least;
+    pareto_distance+=centered_log(v,least,min);
+  }
+  if(!cert::standardize(data,logs,log_anchor))return out;
+  const double endpoint=least-min;
+  const double low=excess_residual(least,min,endpoint);
+  const double supported=low<0?std::nextafter(endpoint,0.):endpoint;
+  const auto recenter=[&](const cert::Proposal& raw,const cert::Proposal& proposal,
+                          cert::Data& local,double& shift) {
+    shift=data.center-proposal.b/raw.c;
+    if(!std::isfinite(shift))return false;
+    for(const auto& p:logs) {
+      local.y.push_back(p.first-shift);
+      local.box.push_back(cert::padded(p.first-p.second,p.first+p.second)-shift);
+    }
+    return true;
+  };
+  const auto result=cert::fit_data(data,supported,multiplicity,
+      certificate_budget(maxit),tol,recenter);
+  out.iterations=result.profiles;
+  if(result.outcome==cert::Outcome::Finite) {
+    out.shape1=result.k;
+    out.shape2=result.c;
+    out.scale=result.scale;
+    out.logLik=burr_local_loglik(x,out.shape1,out.shape2,out.scale,false,min);
+    if(!std::isfinite(out.logLik))return out;
+    out.status=BurrStatus::Ok;
+    out.certified=result.accurate;
+    return out;
+  }
+  if(result.outcome==cert::Outcome::Pareto) {
+    const double exponent=x.size()/pareto_distance;
+    const double ll=x.size()*(std::log(exponent)-1-std::log(endpoint)-
+                              std::log1p(low/endpoint))-pareto_distance;
+    if(!std::isfinite(exponent) || !std::isfinite(ll))return out;
+    out={0,INFINITY,supported,ll,result.profiles,BurrStatus::ParetoBoundary};
+    out.stop_detail=limit_detail({exponent,supported},ll,StopModel::Pareto);
+    if(out.stop_detail.candidates.empty()) {
+      out.status=BurrStatus::NumericalFailure;
+      return out;
+    }
+    const auto& face=result.stop_detail.candidates[0];
+    const double margin=64*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(ll));
+    const double lower=std::min(ll,face.loglik_lower-margin);
+    const double upper=std::max(ll,face.loglik_upper+margin);
+    out.stop_detail.loglik_lower=lower;
+    out.stop_detail.loglik_upper=upper;
+    out.stop_detail.candidates[0].loglik_lower=lower;
+    out.stop_detail.candidates[0].loglik_upper=upper;
+    return out;
+  }
+  if(result.outcome==cert::Outcome::Weibull) {
+    const auto& face=result.stop_detail.candidates[1];
+    double ll=0;
+    for(double v:x) {
+      const double z=result.c*shifted_log(v,min,result.scale);
+      ll+=std::log(result.c)-std::log(result.scale)+z-z/result.c-std::exp(z);
+    }
+    if(!std::isfinite(ll))return out;
+    out={INFINITY,result.c,result.scale,ll,result.profiles,BurrStatus::WeibullBoundary};
+    out.stop_detail=limit_detail({result.c,result.scale},ll,StopModel::Weibull);
+    out.stop_detail.loglik_lower=face.loglik_lower;
+    out.stop_detail.loglik_upper=face.loglik_upper;
+    const double margin=64*std::numeric_limits<double>::epsilon()*(x.size()+std::abs(ll));
+    out.certified=ll>=face.loglik_lower-margin && ll<=face.loglik_upper+margin;
+  }
+  return out;
+}
 // With exactly two distinct log excesses there is an increasing affine map
 // between the exact and rounded logs. The full Burr profile, including
 // both limiting heights, is invariant up to its data Jacobian.

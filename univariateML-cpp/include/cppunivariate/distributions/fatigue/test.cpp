@@ -231,3 +231,19 @@ TEST_CASE("fatigue near-constant sample with mu held returns the rounded maximiz
   CHECK(r.beta==x[0]);
   CHECK(r.logLik==doctest::Approx(103.300819121222).epsilon(1e-10));  // value at the returned point; supremum 104.0508
 }
+
+TEST_CASE("fatigue: the joint fixed-threshold score has one certified maximum") {
+  const std::vector<double> x{2., 3., 8., 102.};
+  const auto fit = cppunivariate::fatigue_mle_shifted(mltest::as_span(x), 1., 1e-10, 100);
+  REQUIRE(fit.status == cppunivariate::FatigueStatus::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.singleton_proved);
+  const double harmonic = 4/(1. + 1./2 + 1./7 + 1./101);
+  const double arithmetic = (1. + 2 + 7 + 101)/4;
+  CHECK(fit.beta > harmonic);
+  CHECK(fit.beta < (harmonic + arithmetic)/2);
+  const double xi = 4/(1/(1 + fit.beta) + 1/(2 + fit.beta)
+                     + 1/(7 + fit.beta) + 1/(101 + fit.beta));
+  const double delta = fit.beta - harmonic;
+  CHECK(std::abs(harmonic*(arithmetic - harmonic) - delta*(xi - delta)) < 1e-8);
+}

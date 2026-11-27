@@ -528,3 +528,14 @@ TEST_CASE("fpareto: an inexact excess transform cannot carry a Burr face proof")
   CHECK(rounded.stop_detail.limit_model==cppunivariate::StopModel::ShiftedWeibull);
   CHECK_FALSE(cppunivariate::outcome(rounded).certified);
 }
+
+TEST_CASE("fpareto: free threshold routes distinguish fixed lower power from a free spike") {
+  const std::vector<double> x{0, 1, 2};
+  const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),NAN,1e-10,100,NAN,2,.5,1);
+  REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+  CHECK(fit.min==0);
+  CHECK(fit.shape1>0);
+  CHECK(cppunivariate::outcome(fit).certified);
+  const auto spike=cppunivariate::fpareto_mle(mltest::as_span(x),NAN,1e-10,100,2,2,NAN,1);
+  CHECK(cppunivariate::outcome(spike).reason==cppunivariate::OutcomeReason::Unbounded);
+}

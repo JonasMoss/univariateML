@@ -15,7 +15,8 @@ inline FitResult fit_pareto3(cppunivariate::span x, Held shape_arg = {}, Held sc
  if(scale.supplied && (!(scale.value>0)||!std::isfinite(scale.value))) return invalid_argument(fail("`scale` must be positive and finite."));
 
  if (min_arg.supplied && !std::isfinite(min)) return invalid_argument(fail("Held bounds must be finite and ordered."));
- std::vector<std::string> fixed{"min"};
+ std::vector<std::string> fixed;
+ if(min_arg.supplied)fixed.push_back("min");
  if(shape.supplied) fixed.push_back("shape");
  if(scale.supplied) fixed.push_back("scale");
  auto res=cppunivariate::pareto3_mle(x,min,tol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN);
@@ -31,13 +32,17 @@ inline FitResult fit_pareto3(cppunivariate::span x, Held shape_arg = {}, Held sc
   if(res.stop_detail.accuracy_stop!=cppunivariate::AccuracyStop::None)return done(stop_failure(failure("pareto3 numerical accuracy failure: requested coefficient accuracy cannot be established."),res.stop_detail,outcome_payload(o),{"shape","scale","min"}));
   if(res.status==cppunivariate::Pareto3Status::AccuracyFailure)return done(stop_failure(fail("pareto3 numerical accuracy failure: coefficients cannot be represented at the requested accuracy."),res.stop_detail,outcome_payload(o),{"shape","scale","min"}));
   if(res.status==cppunivariate::Pareto3Status::InvalidData) return done(fail("Observations must lie strictly inside the held support and be finite; controls must be positive."));
+  if(res.status==cppunivariate::Pareto3Status::Unattained)
+    return done(stop_failure(fail("Pareto III has a finite unattained supremum as scale decreases to zero at the critical endpoint multiplicity."),res.stop_detail,outcome_payload(o),{}));
+  if(res.status==cppunivariate::Pareto3Status::Unbounded && !min_arg.supplied)
+    return done(stop_failure(fail("The free-threshold Pareto III likelihood is unbounded."),res.stop_detail,outcome_payload(o),{}));
   if(res.status==cppunivariate::Pareto3Status::Unbounded) return done(stop_failure(fail("The log-logistic maximum likelihood estimator does not exist for constant data: the likelihood is unbounded."),res.stop_detail,outcome_payload(o),{}));
   if(res.status==cppunivariate::Pareto3Status::TransformFailure) return done(fail("Log-logistic MLE failed: data exceed double precision."));
   if(res.status==cppunivariate::Pareto3Status::IterationFailure) return done(fail("Pareto III delegate search failed to converge."));
   if (!(res.shape>0.0) || !((1/res.scale)>0.0) || !std::isfinite(res.shape) || !std::isfinite(res.scale) || !(res.scale>0) || !std::isfinite(res.logLik)) {
     return done(fail("Log-logistic MLE failed: data exceed double precision."));
   }
-  return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale},{"min",min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale},{"min",res.min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

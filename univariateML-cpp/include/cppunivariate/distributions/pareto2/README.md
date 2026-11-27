@@ -25,7 +25,7 @@ params:
   role: lower endpoint
   domain: (-inf, inf)
   simulate: 0
-  advice: 'With all coefficients free, letting min approach the sample minimum while scale shrinks can make the likelihood unbounded. Hold min, for example min = 0, to fit the shifted lomax family. Estimating min with other coefficients held is not supported.'
+  advice: 'The fully free likelihood is unbounded. Omitting min is not supported. Supply a finite threshold to hold it or NULL to estimate it.'
   kind: threshold
 r:
   density: dpareto2
@@ -47,23 +47,30 @@ limits:
   proof: ["UnivariateML.Transfer.ParetoII.face_path"]
   detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/pareto2/README.md#details"]
   fixed: [min]
+- name: critical scale collapse
+  status: Unattained
+  message: 'finite unattained supremum'
+  fixed: [shape]
+  when: 'The scale decreases to zero and the threshold gap stays at its density-maximizing ratio to scale.'
+  detect: 'With a free threshold and scale, the lower power is at least one and the collapse exponent is exactly zero.'
+  firmness: proved
+  detect_firmness: proved
+  proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale"]
+  detect_proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale"]
+- kind: nonexistence
+  name: unbounded free-threshold likelihood
+  status: Unbounded
+  message: unbounded
+  when: 'A free-endpoint spike or an allowed scale collapse increases the likelihood without bound.'
+  detect: 'The held mask permits a lower power below one, simultaneous free scale and upper shape, negative collapse exponent, or a constant sample with free upper shape.'
+  firmness: proved
+  detect_firmness: proved
+  proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale", "dev/research/evaluations/2026-11-25-thresh-math-report.md#structural-spikes", "dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-scale-and-free-upper-tail-shape"]
+  detect_proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale", "dev/research/evaluations/2026-11-25-thresh-math-report.md#structural-spikes", "dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-scale-and-free-upper-tail-shape"]
 holds:
 - held: []
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - scale
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape
-  - scale
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 fit_args:
   min: 0
 examples: |
@@ -119,8 +126,7 @@ existence:
     is exactly the Lomax existence criterion on the excesses. The exponential
     limit may supply the supremum, and joint uniqueness is not established.
     Holding either shape or scale as well gives a unique finite estimate of
-    the remaining coefficient. Free-threshold fits with held coefficients are
-    not supported, although some have finite maxima. Holding all coefficients
+    the remaining coefficient. A finite free-threshold fit places the threshold at the sample minimum. Holding all coefficients
     leaves likelihood evaluation.
   reason: >-
     If the sample minimum $m$ occurs $k$ times, set $\mu=m-\varepsilon$
@@ -146,7 +152,7 @@ Fitting holds the threshold fixed and accepts finite observations at or above it
 
 For the joint excess fit, put $y_i=x_i-\mu$, $z_i=y_i/\bar y$, $\bar u=\bar y/(\prod_i y_i)^{1/n}$ and $\psi(u)=n^{-1}\sum_i\log(e^{-u}+uz_i)$. A finite maximum exists exactly when $\psi(u)\le0$ somewhere in $0<u<\bar u$. Otherwise the supremum is the shifted exponential limit. This profile comparison does not establish uniqueness. The certified Lomax search bounds the entire existence interval and stops if its comparison cannot be resolved; see [Lomax](../lomax/README.md) for the practical floating-point margin.
 
-Holding scale gives $\hat\alpha=n/\sum_i\log(1+y_i/\sigma)$. Holding shape gives a unique scale-score root. Both cases permit constant positive excesses. If shape and scale are held while the threshold is free, the likelihood increases up to the sample minimum, giving a finite endpoint maximum. The interface nevertheless requires a held threshold for every subset.
+Holding scale gives $\hat\alpha=n/\sum_i\log(1+y_i/\sigma)$. Holding shape gives a unique scale-score root. Both cases permit constant positive excesses. If shape and scale are held while the threshold is free, the likelihood increases up to the sample minimum, giving a finite endpoint maximum. With shape held and scale free, the sign of the collapse exponent distinguishes divergence, finite nonattainment and a finite endpoint maximum.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) gives the endpoint-collapse argument and boundary comparisons.
 

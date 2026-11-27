@@ -5,17 +5,37 @@
 #include "../../core/work_budget.hpp"
 #include "../gb2/mle.hpp"
 #include "accuracy.hpp"
+#include "../pareto4/free_threshold.hpp"
 #include <vector>
 #include <cmath>
 namespace cppunivariate {
 enum class FparetoStatus { Ok, TrGammaBoundary, InvTrGammaBoundary,
   LognormalBoundary, ParetoBoundary, PowerBoundary, DoubleParetoBoundary,
   InvalidData, InvalidFixed, SearchUnresolved, ScaleOutOfRange,
-  WeibullBoundary, InvWeibullBoundary, CertificateTie, CertificateBudget, NumericalFailure , Unbounded, UnsupportedThreshold, FaceRefuted };
+  WeibullBoundary, InvWeibullBoundary, CertificateTie, CertificateBudget, NumericalFailure , Unbounded, UnsupportedThreshold, FaceRefuted, Unattained };
 struct FparetoResult { double shape1,shape2,shape3,scale,min,logLik; int iterations; FparetoStatus status; StopDetail stop_detail{}; bool certified=true; std::int64_t profile_evaluations=0; bool singleton_proved=false; };
 
 inline FparetoResult fpareto_mle(span x, double min, double tol, int maxit, double shape1=std::numeric_limits<double>::quiet_NaN(), double shape2=std::numeric_limits<double>::quiet_NaN(), double shape3=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
-  if(std::isnan(min))return {NAN,NAN,NAN,NAN,min,NAN,0,FparetoStatus::UnsupportedThreshold};
+  if(std::isnan(min)) {
+    const auto fit=gb2_threshold::fit(x,shape3,shape1,shape2,scale,tol,maxit);
+    FparetoResult out{fit.upper,shape2,shape3,fit.scale,fit.threshold,fit.logLik,fit.iterations,
+                      FparetoStatus::NumericalFailure,{},fit.certified};
+    switch(fit.status) {
+      case gb2_threshold::Status::Invalid: out.status=FparetoStatus::InvalidData;break;
+      case gb2_threshold::Status::Numerical: break;
+      case gb2_threshold::Status::Unbounded: out.status=FparetoStatus::Unbounded;break;
+      case gb2_threshold::Status::Unattained:
+        out.status=FparetoStatus::Unattained;
+        out.stop_detail.loglik_lower=fit.logLik-fit.loglik_error;
+      out.stop_detail.loglik_upper=fit.logLik+fit.loglik_error;
+        break;
+      case gb2_threshold::Status::Ok:
+        out.status=FparetoStatus::Ok;
+        out.singleton_proved=fit.certified;
+        break;
+    }
+    return out;
+  }
   maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   for (std::size_t i=0;i<x.size();++i) y[i]=(x[i]-min);
@@ -214,6 +234,7 @@ inline FitOutcome outcome(const FparetoResult& r) {
   // Exploratory comparisons remain uncertified even with a face witness.
   switch (r.status) {
     case FparetoStatus::FaceRefuted:return FitOutcome::failure(OutcomeReason::NoConvergence);
+    case FparetoStatus::Unattained:return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case FparetoStatus::Unbounded:return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case FparetoStatus::UnsupportedThreshold:return FitOutcome::failure(OutcomeReason::Unsupported);
     case FparetoStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);

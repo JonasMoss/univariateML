@@ -27,18 +27,20 @@ limits:
   - model: power
     firmness: proved
     when: '$Q\to+\infty$ and $\sigma Q\to d>0$, with $\mu$ tending to a finite endpoint'
-    detect: 'With location and scale free, the power face strictly beats the Pareto face and both signed interiors'
+    detect: 'With all coefficients free, a strict signed-profile comparison certifies the power face over the Pareto face and both signed interiors. With only location held at zero, the same limit holds for a balanced pair whose upper endpoint is exactly one.'
     status: PowerBoundary
     message: power
-    detect_firmness: numerical
+    detect_firmness: proved
+    detect_proof: ["dev/research/evaluations/2026-11-10-gg-theory-report.md#free-fit-signed-profile-and-certificate", "dev/research/evaluations/2026-11-26-gengamma-twopoint-report.md#held-coefficients"]
     proof: ["dev/research/evaluations/2026-11-10-gg-theory-report.md#free-fit-signed-profile-and-certificate"]
   - model: pareto
     firmness: proved
     when: '$Q\to-\infty$ and $\sigma|Q|\to d>0$, with $\mu$ tending to a finite endpoint'
-    detect: 'With location and scale free, the Pareto face strictly beats the power face and both signed interiors'
+    detect: 'With all coefficients free, a strict signed-profile comparison certifies the Pareto face over the power face and both signed interiors. With only location held at zero, the same limit holds for a balanced pair whose lower endpoint is exactly one.'
     status: ParetoBoundary
     message: Pareto
-    detect_firmness: numerical
+    detect_firmness: proved
+    detect_proof: ["dev/research/evaluations/2026-11-10-gg-theory-report.md#free-fit-signed-profile-and-certificate", "dev/research/evaluations/2026-11-26-gengamma-twopoint-report.md#held-coefficients"]
     proof: ["dev/research/evaluations/2026-11-10-gg-theory-report.md#free-fit-signed-profile-and-certificate"]
   - kind: nonexistence
     name: unbounded likelihood
@@ -77,7 +79,9 @@ existence:
     Constant positive data have unbounded likelihood when location and scale
     are free. For nonconstant data the free model can escape to power or
     Pareto. With $Q$ held the nonconstant-data conditional maximum is unique;
-    with $\sigma$ held a finite maximum exists. General uniqueness and the joint
+    with $\sigma$ held a finite maximum exists. For a balanced pair with
+    only location held at the exact log of a sample endpoint, the corresponding
+    power or Pareto path reaches the all-free supremum. General uniqueness and the joint
     corners with $\mu$ held remain open.
   reason: >-
     Fixed nonzero $Q$ gives a strictly concave profile in signed log-power;

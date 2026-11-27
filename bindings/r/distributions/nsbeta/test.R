@@ -180,3 +180,11 @@ test_that("nsbeta retains distinct observations and shape scores at a far endpoi
   expect_true(attr(held, "certified"))
   expect_true(attr(held, "unique"))
 })
+
+test_that("free beta bounds retain endpoint coordinates", {
+  fit <- mlnsbeta(c(1, 2), min=0, max=NULL, shape2=1)
+  expect_equal(unname(fit[c("shape1","shape2","min","max")]),
+               c(2/log(2), 1, 0, 2))
+  expect_false("max" %in% attr(fit,"fixed"))
+  expect_error(mlnsbeta(c(1,2), min=1.5, max=NULL), class="univariateML_invalid")
+})

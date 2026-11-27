@@ -15,7 +15,8 @@ inline FitResult fit_pareto2(cppunivariate::span x, Held shape_arg = {}, Held sc
  if(scale.supplied && (!(scale.value>0)||!std::isfinite(scale.value))) return invalid_argument(fail("`scale` must be positive and finite."));
 
  if (min_arg.supplied && !std::isfinite(min)) return invalid_argument(fail("Held bounds must be finite and ordered."));
- std::vector<std::string> fixed{"min"};
+ std::vector<std::string> fixed;
+ if(min_arg.supplied)fixed.push_back("min");
  if(shape.supplied) fixed.push_back("shape");
  if(scale.supplied) fixed.push_back("scale");
  auto res=cppunivariate::pareto2_mle(x,min,tol,iterlim,shape.supplied?shape.value:NAN,scale.supplied?scale.value:NAN);
@@ -26,6 +27,8 @@ inline FitResult fit_pareto2(cppunivariate::span x, Held shape_arg = {}, Held sc
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape",shape_arg.supplied},{"scale",scale_arg.supplied},{"min",min_arg.supplied}});
   };
   if(res.status==cppunivariate::Pareto2Status::UnsupportedThreshold)return done(fail("Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."));
+  if(res.status==cppunivariate::Pareto2Status::Unbounded && !min_arg.supplied)
+    return done(stop_failure(fail("The free-threshold Pareto II likelihood is unbounded."),res.stop_detail,outcome_payload(o),{}));
   if(res.status==cppunivariate::Pareto2Status::Unbounded)return done(stop_failure(fail("Pareto II likelihood is unbounded through concentration at its held lower endpoint."),res.stop_detail,outcome_payload(o),{}));
   if(res.status==cppunivariate::Pareto2Status::Unattained)return done(stop_failure(fail("Pareto II has a finite unattained supremum as scale decreases to zero at the critical endpoint multiplicity."),res.stop_detail,outcome_payload(o),{}));
   if(res.status==cppunivariate::Pareto2Status::LimitRepresentationFailure)return done(stop_failure(fail("The exponential limit rate or likelihood cannot be represented in binary64."),res.stop_detail,outcome_payload(o),{"shape","scale","min"}));
@@ -42,7 +45,7 @@ inline FitResult fit_pareto2(cppunivariate::span x, Held shape_arg = {}, Held sc
       !std::isfinite(res.shape)) {
     return done(fail("Lomax MLE failed to converge (check dispersion/inputs)"));
   }
-  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale},{"min",min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  return done([&]() { FitResult out; out.warnings = warnings; out.estimates = {{"shape",res.shape},{"scale",res.scale},{"min",res.min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }
