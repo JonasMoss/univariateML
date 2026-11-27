@@ -55,3 +55,9 @@ public import UnivariateML.Family.ShapeFacesExpWeibull
 public import UnivariateML.Family.ShapeFacesShiftedGompertz
 public import UnivariateML.Family.ShapeFacesPGW
 public import UnivariateML.Family.ShapeFacesFellerPareto
+public import UnivariateML.Family.SkewLSGaussian
+public import UnivariateML.Family.SkewLSBhatt
+public import UnivariateML.Family.SkewLSSN
+public import UnivariateML.Family.SkewLSEMG
+public import UnivariateML.Family.SkewLSSlash
+public import UnivariateML.Family.SkewLSHalfT
