@@ -1,0 +1,15 @@
+Skew-t normalization, witness and separating bounds: pass (exact).
+Student, Huber and folded-normal score identities: pass (symbolic).
+47 regime sections, summary rows, proposed atlas rows and report links: pass.
+Exact identities and inequalities passed.
+reflected example: exact witness/center lower bound 1.334244187054
+EMG: three exponential contacts and a strict finite witness
+Half-t: normal inward coefficient at three held-scale samples
+Huber: all-tail held-scale root 0.1000066286522483083705
+GPD: eight held-scale score integral checks
+Fatigue: both exact critical-exponent examples and zero positive crossings
+Feller–Pareto: large-power two-rate and moved-endpoint traces
+Scoped singleton proofs: EMG and fatigue identities, half-t score integral
+80 decimal digits: 245 elasticity identity and order checks
+80 decimal digits: 150 critical collapse collar checks
+Held location transition: likelihood at (shape, scale)=(-2, 2^-20) is 20.726893420706564387 > 1/4
