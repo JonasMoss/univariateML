@@ -14,7 +14,8 @@ inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held s
   const double min = min_arg.supplied?min_arg.value:NAN;
 
  if (min_arg.supplied && !std::isfinite(min)) return invalid_argument(fail("Held bounds must be finite and ordered."));
- std::vector<std::string> fixed{"min"};
+ std::vector<std::string> fixed;
+ if(min_arg.supplied)fixed.push_back("min");
  if(shape1.supplied) { if(!(shape1.value>0) || !std::isfinite(shape1.value)) return invalid_argument(fail("Held parameters must be positive and finite.")); fixed.push_back("shape1"); }
  if(shape2.supplied) { if(!(shape2.value>0) || !std::isfinite(shape2.value)) return invalid_argument(fail("Held parameters must be positive and finite.")); fixed.push_back("shape2"); }
  if(shape3.supplied) { if(!(shape3.value>0) || !std::isfinite(shape3.value)) return invalid_argument(fail("Held parameters must be positive and finite.")); fixed.push_back("shape3"); }
@@ -28,10 +29,14 @@ inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held s
       return overridden(std::move(out), static_cast<int>(res.status));
     return with_outcome(std::move(out), o, static_cast<int>(res.status),{{"shape1",shape1_arg.supplied},{"shape2",shape2_arg.supplied},{"shape3",shape3_arg.supplied},{"scale",scale_arg.supplied},{"min",min_arg.supplied}});
   };
+  if(res.status==cppunivariate::FparetoStatus::Unbounded && !min_arg.supplied)
+    return done(stop_failure(fail("The free-threshold Feller-Pareto likelihood is unbounded."),res.stop_detail,outcome_payload(o),{}));
   if(res.status==cppunivariate::FparetoStatus::Unbounded)return done(stop_failure(fail("Likelihood is unbounded for this constant sample; no MLE."),res.stop_detail,outcome_payload(o),{}));
   if(res.status==cppunivariate::FparetoStatus::UnsupportedThreshold)return done(fail("Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values."));
   switch(res.status) {
     case cppunivariate::FparetoStatus::FaceRefuted:return done(stop_failure(fail("A finite feasible Feller-Pareto point refutes the selected lognormal face; the search has no accepted maximum."),res.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale","min"}));
+    case cppunivariate::FparetoStatus::Unattained:
+      return done(stop_failure(fail("Feller-Pareto has a finite unattained supremum as scale decreases to zero at the critical endpoint multiplicity."),res.stop_detail,outcome_payload(o),{}));
     case cppunivariate::FparetoStatus::Ok: break;
     case cppunivariate::FparetoStatus::WeibullBoundary: return done(stop_failure(fail("GB2 selects a limiting model. Use `mlweibull(x - min)`."),res.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale","min"},res.stop_detail.limit_model==cppunivariate::StopModel::None?"weibull":""));
     case cppunivariate::FparetoStatus::InvWeibullBoundary: return done(stop_failure(fail("GB2 selects a limiting model. Use `mlinvweibull(x - min)`."),res.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale","min"},res.stop_detail.limit_model==cppunivariate::StopModel::None?"invweibull":""));
@@ -57,7 +62,7 @@ inline FitResult fit_fpareto(cppunivariate::span x, Held shape1_arg = {}, Held s
     case cppunivariate::FparetoStatus::ScaleOutOfRange: return done(fail("GB2 scale is outside the representable range."));
     default: return done(stop_failure(fail("GB2 search unresolved: no verified interior maximum; increase iterlim or inspect the limiting models."),res.stop_detail,outcome_payload(o),{"shape1","shape2","shape3","scale","min"},""));
   }
-  return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"shape3",res.shape3},{"scale",res.scale},{"min",min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
+  return done([&]() { FitResult out;  out.warnings = warnings; out.estimates = {{"shape1",res.shape1},{"shape2",res.shape2},{"shape3",res.shape3},{"scale",res.scale},{"min",res.min}}; out.logLik = res.logLik; out.iterations = res.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }());
 
 }
 }

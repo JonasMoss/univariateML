@@ -71,12 +71,40 @@ inline double rel_log(double v,double a,double& err){
 // reflections of the logs of x, without forming the reciprocals.
 struct Data {
   int maxit=120;std::vector<double> y;std::vector<Interval> box;
-  double center=0,unit=1,jacobian=0,x0=1,anchor=1;bool reflect=false;
+  double center=0,unit=1,jacobian=0,x0=1,anchor=1,anchor_low=0;bool reflect=false;
   // log(v/a) in the x domain, or log((1/v)/(1/a)) when reflected.
   double rel(double v,double a,double& err)const{const double l=rel_log(v,a,err);return reflect?-l:l;}
   // scale from the standardized log offset q = center - b / c.
-  double scale(double q)const{return anchor*std::exp(q);}
+  double scale(double q)const{
+    if(anchor_low==0)return anchor*std::exp(q);
+    if(std::abs(q)<.5)return anchor+std::fma(anchor,std::expm1(q),anchor_low*std::exp(q));
+    return anchor*std::exp(q+std::log1p(anchor_low/anchor));
+  }
 };
+// Standardization is an affine choice of log coordinates. Keep the
+// original relative-log boxes through this change of coordinates.
+inline bool standardize(Data& d,std::vector<std::pair<double,double>>& logs,
+                        double log_anchor) {
+  const double n=logs.size();
+  double total=0,maxabs=0,errsum=0;
+  for (const auto& p:logs) {
+    total+=p.first;maxabs=std::max(maxabs,std::abs(p.first));errsum+=p.second;
+  }
+  std::sort(logs.begin(),logs.end());
+  d.center=total/n;double variance=0;
+  for(const auto& p:logs)variance+=(p.first-d.center)*(p.first-d.center)/n;
+  d.unit=std::sqrt(variance);if(!(d.unit>0)||!std::isfinite(d.unit))return false;
+  const double eps=std::numeric_limits<double>::epsilon();
+  const double center_error=(n+2)*eps*maxabs+errsum/n;
+  d.jacobian=-(n*log_anchor+total)-n*std::log(d.unit);
+  for(const auto& p:logs){
+    const double s=(p.first-d.center)/d.unit;
+    const double e=64*eps*(1+std::abs(s))+2*(p.second+center_error)/d.unit;
+    d.y.push_back(s);d.box.push_back(Interval(s-e,s+e));
+    if(!d.box.back().valid())return false;
+  }
+  return std::isfinite(d.jacobian);
+}
 inline bool data(span x,Data& d,bool reflect=false){
   const std::size_t n=x.size();
   if(n<2)return false;
@@ -84,22 +112,9 @@ inline bool data(span x,Data& d,bool reflect=false){
   for(double v:sorted)if(!(v>0)||!std::isfinite(v)||(reflect&&!(std::isfinite(1/v)&&1/v>0)))return false;
   std::nth_element(sorted.begin(),sorted.begin()+n/2,sorted.end());
   d.reflect=reflect;d.x0=sorted[n/2];d.anchor=reflect?1/d.x0:d.x0;
-  std::vector<std::pair<double,double>> r;double total=0,maxabs=0,errsum=0;
-  for(double v:x){double e=0;const double l=d.rel(v,d.x0,e);r.push_back({l,e});total+=l;maxabs=std::max(maxabs,std::abs(l));errsum+=e;}
-  std::sort(r.begin(),r.end());
-  d.center=total/n;double variance=0;
-  for(const auto& p:r)variance+=(p.first-d.center)*(p.first-d.center)/n;
-  d.unit=std::sqrt(variance);if(!(d.unit>0)||!std::isfinite(d.unit))return false;
-  const double eps=std::numeric_limits<double>::epsilon();
-  const double center_error=(n+2)*eps*maxabs+errsum/n;
-  d.jacobian=-(n*(reflect?-std::log(d.x0):std::log(d.x0))+total)-n*std::log(d.unit);
-  for(const auto& p:r){
-    const double s=(p.first-d.center)/d.unit;
-    const double e=64*eps*(1+std::abs(s))+2*(p.second+center_error)/d.unit;
-    d.y.push_back(s);d.box.push_back(Interval(s-e,s+e));
-    if(!d.box.back().valid())return false;
-  }
-  return std::isfinite(d.jacobian);
+  std::vector<std::pair<double,double>> r;
+  for(double v:x){double e=0;const double l=d.rel(v,d.x0,e);r.push_back({l,e});}
+  return standardize(d,r,reflect?-std::log(d.x0):std::log(d.x0));
 }
 // Fixed-k strictly concave nuisance problem. Bracket the intercept, then
 // the decreasing profile power score. Newton proposals stay inside brackets.
@@ -347,22 +362,22 @@ struct Result {
   int roots=0,pruned=0;
   double cutoff=NAN,lower=NAN,remaining=NAN;
 };
-inline Result fit(span x,std::int64_t budget=-1,int maxit=120,bool reflect=false,double tol=1e-10) {
-  maxit = static_cast<int>(solver_budget(maxit));
+template<class Recenter>
+inline Result fit_data(const Data& d,double minimum,int multiplicity,
+                       std::int64_t budget,double tol,const Recenter& recenter) {
   Result result;
-  if(budget<0)budget=certificate_budget(maxit);
   if(budget<1){result.outcome=Outcome::Budget;return result;}
-  if(x.size()<2){result.outcome=Outcome::Invalid;return result;}
-  bool constant=true;
-  double minimum=INFINITY;
-  for(double v:x){if(!(v>0)||!std::isfinite(v)){result.outcome=Outcome::Invalid;return result;}if(v!=x[0])constant=false;minimum=std::min(minimum,reflect?1/v:v);}
-  if(constant){result.outcome=Outcome::Unbounded;result.logLik=INFINITY;return result;}
-  Data d;d.maxit=maxit;if(!data(x,d,reflect))return result;
-  const double n=x.size();int multiplicity=0;for(double v:x)if((reflect?1/v:v)==minimum)++multiplicity;
+  const double n=d.y.size();
+  const int maxit=d.maxit;
   const double k0=std::nextafter(multiplicity/(n-multiplicity),0.);
-  Sum distances;for(Interval y:d.box)distances.add(y-d.box.front());
-  // The selected minimum is the same exact data logarithm in every term.
-  // Dependency loss enlarges the sum and cannot sharpen the Pareto bound.
+  Interval minimum_log=d.box.front();
+  for(Interval y:d.box) {
+    minimum_log.lo=std::min(minimum_log.lo,y.lo);
+    minimum_log.hi=std::min(minimum_log.hi,y.hi);
+  }
+  Sum distances;for(Interval y:d.box)distances.add(y-minimum_log);
+  // The minimum of the log boxes encloses the exact minimum, even if
+  // overlapping boxes order very close point estimates differently.
   const Interval P=n*log(n/distances.get())-n;
   Weibull w;if(!P.valid()||!weibull(d,w))return result;
   double distance=0,e=0;
@@ -411,11 +426,8 @@ inline Result fit(span x,std::int64_t budget=-1,int maxit=120,bool reflect=false
       // This exact affine coordinate change avoids large correlated c,b boxes.
       Data original;original.maxit=maxit;
       Proposal raw=t;raw.c=t.c/d.unit;
-      const double proposed=d.scale(d.center-t.b/raw.c);
-      const double proposed_x=reflect?1/proposed:proposed;
-      if(!(proposed>0)||!std::isfinite(proposed)||!(proposed_x>0)||!std::isfinite(proposed_x)){previous=node;continue;}
-      double lerr=0;const double shift=d.rel(proposed_x,d.x0,lerr);
-      for(double v:x){double err=0;const double y=d.rel(v,proposed_x,err);original.y.push_back(y);original.box.push_back(Interval(y-err,y+err));}
+      double shift=0;
+      if(!recenter(raw,t,original,shift)){previous=node;continue;}
       raw.b=t.b+raw.c*(shift-d.center);
       if(isolate(original,raw,root,tol)){
         root.t.b+=root.t.c*(d.center-shift);root.t.c*=d.unit;
@@ -474,6 +486,28 @@ inline Result fit(span x,std::int64_t budget=-1,int maxit=120,bool reflect=false
   }else {result.k=0;result.c=INFINITY;result.scale=minimum;double distance=0;for(double y:d.y)distance+=y-d.y.front();result.logLik=n*std::log(n/distance)-n+d.jacobian;}
   if(!std::isfinite(result.scale)||!(result.scale>0)||!std::isfinite(result.logLik)){result.outcome=Outcome::Numerical;result.k=result.c=result.scale=result.logLik=NAN;}
   return result;
+}
+inline Result fit(span x,std::int64_t budget=-1,int maxit=120,bool reflect=false,double tol=1e-10) {
+  maxit = static_cast<int>(solver_budget(maxit));
+  Result result;
+  if(budget<0)budget=certificate_budget(maxit);
+  if(budget<1){result.outcome=Outcome::Budget;return result;}
+  if(x.size()<2){result.outcome=Outcome::Invalid;return result;}
+  bool constant=true;
+  double minimum=INFINITY;
+  for(double v:x){if(!(v>0)||!std::isfinite(v)){result.outcome=Outcome::Invalid;return result;}if(v!=x[0])constant=false;minimum=std::min(minimum,reflect?1/v:v);}
+  if(constant){result.outcome=Outcome::Unbounded;result.logLik=INFINITY;return result;}
+  Data d;d.maxit=maxit;if(!data(x,d,reflect))return result;
+  int multiplicity=0;for(double v:x)if((reflect?1/v:v)==minimum)++multiplicity;
+  const auto recenter=[&](const Proposal& raw,const Proposal& t,Data& original,double& shift) {
+    const double proposed=d.scale(d.center-t.b/raw.c);
+    const double proposed_x=reflect?1/proposed:proposed;
+    if(!(proposed>0)||!std::isfinite(proposed)||!(proposed_x>0)||!std::isfinite(proposed_x))return false;
+    double lerr=0;shift=d.rel(proposed_x,d.x0,lerr);
+    for(double v:x){double err=0;const double y=d.rel(v,proposed_x,err);original.y.push_back(y);original.box.push_back(Interval(y-err,y+err));}
+    return true;
+  };
+  return fit_data(d,minimum,multiplicity,budget,tol,recenter);
 }
 } // namespace burr_cert_detail
 } // namespace cppunivariate

@@ -37,7 +37,7 @@ params:
   role: lower endpoint
   domain: (-inf, inf)
   simulate: 0
-  advice: 'With all coefficients free, shape2 * shape3 below 1 makes the density singular as min approaches the sample minimum. The fully free likelihood is unbounded. Hold min, for example min = 0, to fit the shifted gb2 family. Estimating min with other coefficients held is not supported.'
+  advice: 'The fully free likelihood is unbounded. Omitting min is not supported. Supply a finite threshold to hold it or NULL to estimate it.'
   kind: threshold
 r:
   density: dfpareto
@@ -104,87 +104,88 @@ limits:
   message: GB2 selects the double Pareto limit
   detect_firmness: numerical
   fixed: [min]
+- name: critical scale collapse
+  status: Unattained
+  message: 'finite unattained supremum'
+  fixed: [shape1, shape2, shape3]
+  when: 'The scale decreases to zero and the threshold gap stays at its density-maximizing ratio to scale.'
+  detect: 'With a free threshold and scale, the lower power is at least one and the collapse exponent is exactly zero.'
+  firmness: proved
+  detect_firmness: proved
+  proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale"]
+  detect_proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale"]
+- kind: nonexistence
+  name: unbounded free-threshold likelihood
+  status: Unbounded
+  message: unbounded
+  when: 'A free-endpoint spike or an allowed scale collapse increases the likelihood without bound.'
+  detect: 'The held mask permits a lower power below one, simultaneous free scale and upper shape, negative collapse exponent, or a constant sample with free upper shape.'
+  firmness: proved
+  detect_firmness: proved
+  proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale", "dev/research/evaluations/2026-11-25-thresh-math-report.md#structural-spikes", "dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-scale-and-free-upper-tail-shape"]
+  detect_proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale", "dev/research/evaluations/2026-11-25-thresh-math-report.md#structural-spikes", "dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-scale-and-free-upper-tail-shape"]
 holds:
 - held: []
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape1
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape2
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape1
   - shape2
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape3
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape1
   - shape3
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape2
   - shape3
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape1
-  - shape2
-  - shape3
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - scale
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape1
   - scale
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape2
   - scale
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape1
   - shape2
   - scale
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape3
   - scale
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - shape1
   - shape3
   - scale
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape2
-  - shape3
-  - scale
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape1
-  - shape2
-  - shape3
-  - scale
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 fit_args:
   min: 0
   shape1: 0.3
@@ -211,7 +212,7 @@ relations:
 fit:
   method: delegation
   certified: partial
-  note: 'With min held, GB2 certificates transfer to positive excesses, including the non-unit one-held-beta-shape, held-power, free-scale certificate. Finite witnesses retain min; face witnesses remain in excess-data coordinates. Held beta shapes additionally use the power/scale strict-concavity coefficient enclosure. The held-scale one-free-beta-shape, free-power global profile certificates also transfer. Five larger mixed subsets still use numerical outer searches. Free min remains structurally unsupported; whole-family certification remains partial.'
+  note: 'With min held, GB2 certificates transfer to positive excesses, including the non-unit one-held-beta-shape, held-power, free-scale certificate. Finite witnesses retain min; face witnesses remain in excess-data coordinates. Held beta shapes additionally use the power/scale strict-concavity coefficient enclosure. The held-scale one-free-beta-shape, free-power global profile certificates also transfer. Five larger mixed subsets still use numerical outer searches. Free-threshold fits are certified on unique endpoint and interior routes when their coefficient brackets close.'
 areas:
 - actuarial
 - economics and income
@@ -240,7 +241,7 @@ existence:
     if both power and scale are free. With power and scale held, the free
     beta shapes have a unique finite fit for nonconstant excesses, but both
     free beta shapes can concentrate on constant data. Further holds can
-    remove these concentration paths. Free-threshold fits are not supported.
+    remove these concentration paths. With a free threshold and the lower shape and power held, the collapse exponent or held-scale profile decides the remaining cases.
     Holding all coefficients leaves likelihood evaluation.
   reason: >-
     With $\gamma\tau<1$, moving a free threshold to the sample minimum makes
@@ -270,6 +271,13 @@ existence:
 The Feller–Pareto distribution models sizes above a threshold $\mu$ with independently adjustable lower and upper tails. The scale $\sigma$ sets the size unit, the power $\gamma$ controls the transformation of excesses, and the beta shapes $\tau$ and $\alpha$ give lower and upper tail powers $\gamma\tau$ and $\gamma\alpha$.
 
 ## Details
+
+With threshold free and the lower power held, the scale-zero collapse exponent
+depends on the multiplicity of the sample minimum. With scale held and the upper
+shape free, an interior fit above lower power one can have competing local
+maxima. The bounded profile search reports a stationary candidate as uncertified.
+The endpoint fit at lower power one has a unique maximum.
+[Threshold analysis](../../../../../dev/research/evaluations/2026-11-25-thresh-math-report.md).
 
 Fitting requires finite observations strictly above a held threshold. Subtracting the threshold gives [GB2](../gb2/README.md). In the usual GB2 coordinates $(a,b,p,q)$, the mapping is $(\gamma,\sigma,\tau,\alpha)$. Identification and conditional existence results transfer through this shift.
 
@@ -319,8 +327,7 @@ observations stops numerically before invoking the parent. The existing
 held-scale endpoint subtraction guard is preserved.
 
 The remaining open mixed GB2 regimes stay open after translation.
-Free-threshold subsets remain structural unsupported stops; they are not all
-claims of universal nonexistence. Nonuniqueness of the conditional shape/scale
+Nonuniqueness of the conditional shape/scale
 profile transfers through the same fixed translation.
 
 The held-beta-shapes [GB2 coefficient enclosure](../gb2/README.md)

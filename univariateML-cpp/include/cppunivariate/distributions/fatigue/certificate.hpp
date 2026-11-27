@@ -89,6 +89,72 @@ inline FatigueResult fit(span x,double tol,int maxit,double alpha,double beta) {
     if(witness.status==FatigueStatus::Ok)failure.stop_detail.candidates={{{witness.alpha,witness.beta},witness.logLik,witness.logLik,StopModel::None}};
     return failure;
   }
+  if (!fa) {
+    // The profiled scale score has exactly one zero in (H, (H+A)/2).
+    // Enlarge the analytic bracket for rounding in the input ratios
+    // and moments, then retain only sign-confirmed updates.
+    const double round = (16 + 4*n)*std::numeric_limits<double>::epsilon();
+    const Interval harmonic(H*(1-round), H*(1+round));
+    const Interval arithmetic(A*(1-round), A*(1+round));
+    const auto sign = [&](double b) {
+      CPPUNIV_EXTENDED_REAL reciprocal = 0;
+      for (double v : y) reciprocal += 1/(static_cast<CPPUNIV_EXTENDED_REAL>(v)+b);
+      const double xi = n/static_cast<double>(reciprocal);
+      const auto delta = Interval(b)-harmonic;
+      return harmonic*(arithmetic-harmonic) - delta*(Interval(xi*(1-round),xi*(1+round))-delta);
+    };
+    double lower = harmonic.lo, upper = (harmonic.hi+arithmetic.hi)/2;
+    if (lower > 0 && sign(lower).lo > 0 && sign(upper).hi < 0) {
+      const auto enclosed = [&](const FatigueResult& r) {
+        if (r.status != FatigueStatus::Ok) return false;
+        const double beta_lo = lower*unit*(1-round), beta_hi = upper*unit*(1+round);
+        if (!(beta_lo > 0 && std::isfinite(beta_hi) && std::max(r.beta-beta_lo,beta_hi-r.beta) <= tol*beta_lo))
+          return false;
+        CPPUNIV_EXTENDED_REAL ss_lo = 0, ss_hi = 0;
+        const double root_n = std::sqrt(n);
+        for (double v : x) {
+          // Include the rounding in the public threshold subtraction,
+          // where present. The signed RMS residual increases in v
+          // and decreases in beta.
+          const double v_lo = v*(1-4*std::numeric_limits<double>::epsilon());
+          const double v_hi = v*(1+4*std::numeric_limits<double>::epsilon());
+          if (!(v_lo > 0 && std::isfinite(v_hi))) return false;
+          const double dl = (v_lo-beta_hi)/std::sqrt(v_lo)/std::sqrt(beta_hi);
+          const double dh = (v_hi-beta_lo)/std::sqrt(v_hi)/std::sqrt(beta_lo);
+          const double small = std::max({0.,dl,-dh})/root_n;
+          const double large = std::max(-dl,dh)/root_n;
+          ss_lo += small*small;
+          ss_hi += large*large;
+        }
+        const double a_lo = std::sqrt(static_cast<double>(ss_lo))*(1-round);
+        const double a_hi = std::sqrt(static_cast<double>(ss_hi))*(1+round);
+        return a_lo > 0 && std::max(r.alpha-a_lo,a_hi-r.alpha) <= tol*a_lo;
+      };
+      for (std::int64_t it=0; it<solver_budget(maxit); ++it) {
+        const double mid = std::sqrt(lower)*std::sqrt(upper);
+        const auto at = sign(mid);
+        const bool ambiguous = at.lo <= 0 && at.hi >= 0;
+        const double old_lower = lower, old_upper = upper;
+        if (at.lo > 0) lower = mid;
+        else if (at.hi < 0) upper = mid;
+        else {
+          const double left = std::sqrt(lower)*std::sqrt(mid);
+          const double right = std::sqrt(mid)*std::sqrt(upper);
+          if (sign(left).lo > 0) lower = left;
+          if (sign(right).hi < 0) upper = right;
+        }
+        if (upper-lower <= .01*tol*upper || ambiguous) {
+          auto joint = value(std::sqrt(lower)*std::sqrt(upper));
+          if (enclosed(joint)) {
+            joint.iterations = static_cast<int>(it+1);
+            joint.singleton_proved = true;
+            return joint;
+          }
+        }
+        if (lower == old_lower && upper == old_upper) break;
+      }
+    }
+  }
   if(lo==hi) { auto r=value(lo); r.singleton_proved=fa && alpha<=2 && std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];}); return r; }
   if(fa&&mn==1) {
     const auto first=value(lo),second=value(hi);
@@ -152,6 +218,6 @@ inline FatigueResult fit(span x,double tol,int maxit,double alpha,double beta) {
   failure.stop_detail.loglik_lower=best.logLik;failure.stop_detail.loglik_upper=INFINITY;
   if(failure.stop_detail.budget_exhausted)return failure;
   for(std::size_t i=1;i<candidates.size();++i)if(std::abs(std::log(candidates[i].beta/best.beta))>1e-9&&best.logLik-candidates[i].logLik<=1e-10*n){failure.stop_detail.comparison_tie=true;return failure;}
-  auto result=best;result.singleton_proved=candidates.size()==1;result.iterations=static_cast<int>(used);return result;
+  auto result=best;result.certified=fa;result.singleton_proved=fa && candidates.size()==1;result.iterations=static_cast<int>(used);return result;
 }
 }

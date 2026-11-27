@@ -5,22 +5,34 @@
 #include <vector>
 #include <cmath>
 namespace cppunivariate {
-struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; bool certified=true; bool incompatible_support=false; bool unsupported_threshold=false; bool singleton_proved=false; };
+struct Pareto4Result { double shape1,shape2,scale,min,logLik; int iterations; BurrStatus status; StopDetail stop_detail{}; bool certified=true; bool incompatible_support=false; bool unsupported_threshold=false; bool singleton_proved=false; double limit_endpoint_low=0; bool threshold_unattained=false; };
 } // namespace cppunivariate
 #include "shifted_scale.hpp"
 #include "centered.hpp"
 #include "shifted_faces.hpp"
+#include "free_threshold.hpp"
 namespace cppunivariate {
 
 inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int maxit);
 
 inline Pareto4Result pareto4_free_threshold(span x,double tol,int maxit,double scale=NAN,double shape1=NAN,double shape2=NAN) {
-  Pareto4Result out{shape1,shape2,scale,NAN,NAN,0,BurrStatus::InvalidInit};
-  if(x.empty() || !(tol>0) || !std::isfinite(tol) || maxit<1)return out;
-  for(double v:x)if(!std::isfinite(v))return out;
-  for(double v:{scale,shape1,shape2})if(!std::isnan(v)&&(!(v>0)||!std::isfinite(v)))return out;
-  if(std::isnan(shape2)||shape2<1||(std::isnan(shape1)&&std::isnan(scale)))out.status=BurrStatus::Unbounded;
-  else out.unsupported_threshold=true;
+  const auto fit=gb2_threshold::fit(x,1,shape1,shape2,scale,tol,maxit);
+  Pareto4Result out{fit.upper,shape2,fit.scale,fit.threshold,fit.logLik,fit.iterations,
+                    BurrStatus::NumericalFailure,{},fit.certified};
+  switch(fit.status) {
+    case gb2_threshold::Status::Invalid: out.status=BurrStatus::InvalidInit;break;
+    case gb2_threshold::Status::Numerical: break;
+    case gb2_threshold::Status::Unbounded: out.status=BurrStatus::Unbounded;break;
+    case gb2_threshold::Status::Unattained:
+      out.threshold_unattained=true;
+      out.stop_detail.loglik_lower=fit.logLik-fit.loglik_error;
+      out.stop_detail.loglik_upper=fit.logLik+fit.loglik_error;
+      break;
+    case gb2_threshold::Status::Ok:
+      out.status=BurrStatus::Ok;
+      out.singleton_proved=fit.certified;
+      break;
+  }
   return out;
 }
 inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, double scale=std::numeric_limits<double>::quiet_NaN(), double shape1=std::numeric_limits<double>::quiet_NaN(), double shape2=std::numeric_limits<double>::quiet_NaN()) {
@@ -40,22 +52,8 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
   bool inexact=false;
   if(valid)for(std::size_t i=0;i<x.size();++i)
     inexact=inexact || pareto4_detail::excess_residual(x[i],min,y[i])!=0;
-  if(valid && std::isnan(shape1) && std::isnan(shape2) && !std::isnan(scale)) {
+  if(valid && std::isnan(shape1) && std::isnan(shape2) && !std::isnan(scale))
     for(double v:y)if(!std::isfinite(v))return {NAN,NAN,scale,min,NAN,0,BurrStatus::NumericalFailure};
-    // A rounded equality at held scale must be an exact subtraction.
-    // Error-free TwoSum residual for x[i] + (-min).
-    const bool constant=std::all_of(x.begin(),x.end(),[&](double v){return v==x[0];});
-    for(std::size_t i=0;i<x.size();++i)if(!constant && y[i]==scale) {
-      const double residual=pareto4_detail::excess_residual(x[i],min,y[i]);
-      if(!std::isfinite(residual)||residual!=0)return {NAN,NAN,scale,min,NAN,0,BurrStatus::NumericalFailure};
-    }
-    std::vector<std::size_t> order;
-    for(std::size_t i=0;i<x.size();++i)order.push_back(i);
-    std::sort(order.begin(),order.end(),[&](std::size_t i,std::size_t j){return x[i]<x[j];});
-    for(std::size_t i=1;i<order.size();++i)
-      if(x[order[i]]!=x[order[i-1]]&&y[order[i]]==y[order[i-1]])
-        return {NAN,NAN,scale,min,NAN,0,BurrStatus::NumericalFailure};
-  }
   if(valid && shape1>0 && std::isfinite(shape1) && std::isnan(shape2) && std::isnan(scale) && !x.empty()) {
     double relative_spread=0;
     for(double v:x)relative_spread=std::max(relative_spread,std::abs((v-x[0])/y[0]));
@@ -85,6 +83,8 @@ inline Pareto4Result pareto4_mle(span x, double min, double tol, int maxit, doub
   }
   if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{std::isnan(shape1),std::isnan(shape2),std::isnan(scale)}},tol,maxit,false,min,r.stop_detail)){r.status=BurrStatus::NumericalFailure;record_accuracy(r,tol,{r.shape1,r.shape2,r.scale},{std::isnan(shape1)?r.shape1:0,std::isnan(shape2)?r.shape2:0,std::isnan(scale)?r.scale:0});}
   if(r.status==BurrStatus::Ok && (!r.certified || inexact)){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
+  if (r.status == BurrStatus::WeibullBoundary && inexact && !shifted_power)
+    r.certified = false;
   auto detail=r.stop_detail;
   if(detail.limit_model==StopModel::None && !detail.limit_coef.empty()) {
     if(r.status==BurrStatus::AllGeOne)detail.limit_model=StopModel::Pareto;
@@ -115,24 +115,34 @@ inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int m
       return {nan,nan,nan,min,nan,0,BurrStatus::NumericalFailure};
     y.push_back(v-min);
   }
-  // Translation must not create artificial ties in the certificate input.
-  std::vector<std::size_t> order;
-  for(std::size_t i=0;i<x.size();++i)order.push_back(i);
-  std::sort(order.begin(),order.end(),[&](std::size_t i,std::size_t j){return x[i]<x[j];});
-  for(std::size_t i=1;i<order.size();++i)
-    if(x[order[i]]!=x[order[i-1]] && y[order[i]]==y[order[i-1]])
-      return {nan,nan,nan,min,nan,0,BurrStatus::NumericalFailure};
-  auto r=burr_mle(span{y.data(),y.size()},tol,maxit);
-  if(r.status==BurrStatus::ParetoBoundary && !x.empty()) {
-    const double anchor=*std::min_element(x.begin(),x.end());
-    const double largest=*std::max_element(x.begin(),x.end());
-    const double gap=pareto4_detail::centered_log(largest,anchor,min);
-    const double relative_error=std::abs(pareto4_detail::excess_residual(anchor,min,anchor-min)/(anchor-min))+
-        std::abs(pareto4_detail::excess_residual(largest,min,largest-min)/(largest-min));
-    if(relative_error>tol*gap/64)
-      r=pareto4_detail::shifted_two_support_pareto(x,min,r);
+  const span excesses{y.data(),y.size()};
+  bool inexact=false;
+  for(std::size_t i=0;i<x.size();++i)
+    inexact=inexact || pareto4_detail::excess_residual(x[i],min,y[i])!=0;
+  auto r=inexact?pareto4_detail::shifted_joint_fit(x,min,tol,maxit):
+                  burr_mle(excesses,tol,maxit);
+  double endpoint_low=0;
+  if(inexact && r.status==BurrStatus::ParetoBoundary)
+    endpoint_low=pareto4_detail::pareto_endpoint_low(x,min,r.scale);
+  if(inexact && r.status==BurrStatus::NumericalFailure) {
+    std::vector<std::size_t> order;
+    for(std::size_t i=0;i<x.size();++i)order.push_back(i);
+    std::sort(order.begin(),order.end(),[&](std::size_t i,std::size_t j){return x[i]<x[j];});
+    for(std::size_t i=1;i<order.size();++i)
+      if(x[order[i]]!=x[order[i-1]] && y[order[i]]==y[order[i-1]])
+        return {nan,nan,nan,min,nan,0,BurrStatus::NumericalFailure};
+    r=burr_mle(excesses,tol,maxit);
+    bool transported=false;
+    if(r.status==BurrStatus::ParetoBoundary && !order.empty()) {
+      const double first=x[order.front()], last=x[order.back()];
+      if(first!=last && std::all_of(x.begin(),x.end(),[&](double v){return v==first || v==last;})) {
+        r=pareto4_detail::shifted_two_support_pareto(x,min,r);
+        transported=r.status==BurrStatus::ParetoBoundary;
+        if(transported)endpoint_low=pareto4_detail::pareto_endpoint_low(x,min,r.scale);
+      }
+    }
+    r.certified=r.certified && transported;
   }
-
   if(r.status==BurrStatus::Ok&&!r.certified&&!burr_local_accuracy(x,r.shape1,r.shape2,r.scale,{{true,true,true}},tol,maxit,false,min,r.stop_detail)){r.status=BurrStatus::NumericalFailure;record_accuracy(r,tol,{r.shape1,r.shape2,r.scale},{r.shape1,r.shape2,r.scale});}
   if(r.status==BurrStatus::Ok&&!r.certified){r.logLik=burr_local_loglik(x,r.shape1,r.shape2,r.scale,false,min);if(!std::isfinite(r.logLik))r.status=BurrStatus::NumericalFailure;}
   auto detail=r.stop_detail;
@@ -144,6 +154,7 @@ inline Pareto4Result pareto4_mle_certified(span x, double min, double tol, int m
   for(auto& c:detail.candidates) if(c.model==StopModel::None && c.coef.size()==3)c.coef.push_back(min);
   Pareto4Result out{r.shape1,r.shape2,r.scale,min,r.logLik,r.iterations,r.status,detail,r.certified};
   out.singleton_proved=r.singleton_proved && min==0;
+  out.limit_endpoint_low=endpoint_low;
   return out;
 }
 
@@ -159,16 +170,17 @@ inline bool family_point(const Pareto4Result&, const FitCandidate& c) {
 // likelihood bounds; an accurate converged search is already an uncertified Ok.
 inline bool accurate_point(const Pareto4Result&, const FitCandidate&) { return false; }
 inline FitOutcome outcome(const Pareto4Result& r) {
+  if(r.threshold_unattained)return FitOutcome::nonexistence(OutcomeReason::Unattained);
   if(r.unsupported_threshold)return FitOutcome::failure(OutcomeReason::Unsupported);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Tolerance) return FitOutcome::failure(OutcomeReason::Tolerance);
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     case BurrStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
-    case BurrStatus::WeibullBoundary: return FitOutcome::limit();
-    case BurrStatus::ParetoBoundary: return FitOutcome::limit();
+    case BurrStatus::WeibullBoundary: return FitOutcome::limit(r.certified);
+    case BurrStatus::ParetoBoundary: return FitOutcome::limit(r.certified);
     case BurrStatus::InvalidInit: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case BurrStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Unresolved);
-    case BurrStatus::AllGeOne: return FitOutcome::limit();
+    case BurrStatus::AllGeOne: return FitOutcome::limit(r.certified);
     case BurrStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case BurrStatus::CertificateTie: return comparison_outcome_of(r);
     case BurrStatus::CertificateBudget: return FitOutcome::budget();

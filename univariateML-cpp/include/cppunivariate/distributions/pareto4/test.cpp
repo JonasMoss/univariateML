@@ -141,11 +141,15 @@ TEST_CASE("pareto4: certified candidate rejects invalid thresholds and excesses"
   CHECK(cppunivariate::pareto4_mle_certified(mltest::as_span(constant),1,1e-8,1000).status==cppunivariate::BurrStatus::Unbounded);
 }
 
-TEST_CASE("pareto4: certified excess arithmetic cannot create ties or overflow") {
+TEST_CASE("pareto4: joint excess comparison retains original support and rejects overflow") {
   const std::vector<double> close={1,std::nextafter(1.,INFINITY),2};
   const auto r=cppunivariate::pareto4_mle_certified(mltest::as_span(close),-1e100,1e-8,1000);
-  CHECK(r.status==cppunivariate::BurrStatus::NumericalFailure);
-  CHECK(std::isnan(r.logLik));CHECK(std::isnan(r.shape1));
+  REQUIRE(r.status==cppunivariate::BurrStatus::ParetoBoundary);
+  CHECK(cppunivariate::outcome(r).certified);
+  REQUIRE(r.stop_detail.limit_coef.size()==3);
+  const double sum=std::log1p((close[1]-close[0])/1e100)+std::log1p(1/1e100);
+  CHECK(r.stop_detail.limit_coef[0]==doctest::Approx(3/sum).epsilon(1e-8));
+  CHECK(std::isfinite(r.logLik));
   const std::vector<double> large={1,std::numeric_limits<double>::max()};
   CHECK(cppunivariate::pareto4_mle_certified(mltest::as_span(large),-std::numeric_limits<double>::max(),1e-8,1000).status==cppunivariate::BurrStatus::NumericalFailure);
 }
@@ -187,12 +191,20 @@ TEST_CASE("Pareto IV held-scale inherits finite and budget certificates") {
  CHECK(budget.status==cppunivariate::BurrStatus::Ok);
  CHECK(std::isfinite(budget.shape1));CHECK(std::isfinite(budget.stop_detail.loglik_lower));
  const std::vector<double> close{1,std::nextafter(1.,INFINITY),2};
- CHECK(cppunivariate::pareto4_mle(mltest::as_span(close),-1e100,1e-10,1000,1e100).status==cppunivariate::BurrStatus::NumericalFailure);
+ const auto shifted=cppunivariate::pareto4_mle(mltest::as_span(close),-1e100,1e-10,1000,1e100);
+ REQUIRE(shifted.status==cppunivariate::BurrStatus::AllGeOne);
+ CHECK(cppunivariate::outcome(shifted).certified);
+ REQUIRE(shifted.stop_detail.limit_coef.size()==3);
+ CHECK(shifted.stop_detail.limit_coef[0]==doctest::Approx(.75e100).epsilon(1e-12));
 }
 
-TEST_CASE("Pareto IV refuses inexact threshold subtraction onto held scale") {
+TEST_CASE("Pareto IV retains positive log excess at a rounded held-scale equality") {
  const std::vector<double> x{1.1,2,3};
- CHECK(cppunivariate::pareto4_mle(mltest::as_span(x),.1,1e-9,1000,1).status==cppunivariate::BurrStatus::NumericalFailure);
+ const auto fit=cppunivariate::pareto4_mle(mltest::as_span(x),.1,1e-9,1000,1);
+ REQUIRE(fit.status==cppunivariate::BurrStatus::AllGeOne);
+ CHECK(cppunivariate::outcome(fit).certified);
+ REQUIRE(fit.stop_detail.limit_coef.size()==3);
+ CHECK(fit.stop_detail.limit_coef[0]==doctest::Approx(3/(std::log(1.9)+std::log(2.9))).epsilon(1e-12));
 }
 
 TEST_CASE("Pareto IV centered held-shape roots reject an exhausted search") {
@@ -325,14 +337,17 @@ TEST_CASE("pareto4: archived density seam 5669") {
   }
 }
 
-TEST_CASE("pareto4 core distinguishes free-threshold nonexistence from unsupported holds") {
+TEST_CASE("pareto4 core distinguishes structural nonexistence from an attained threshold") {
   const std::vector<double> x={-2,-1,1};
   const auto free=cppunivariate::pareto4_mle(mltest::as_span(x),NAN,1e-10,100);
   CHECK(cppunivariate::outcome(free).reason==cppunivariate::OutcomeReason::Unbounded);
   const auto power=cppunivariate::pareto4_mle(mltest::as_span(x),NAN,1e-10,100,NAN,NAN,2);
   CHECK(cppunivariate::outcome(power).reason==cppunivariate::OutcomeReason::Unbounded);
   const auto held=cppunivariate::pareto4_mle(mltest::as_span(x),NAN,1e-10,100,1,1,2);
-  CHECK(cppunivariate::outcome(held).reason==cppunivariate::OutcomeReason::Unsupported);
+  REQUIRE(held.status==cppunivariate::BurrStatus::Ok);
+  CHECK(cppunivariate::outcome(held).certified);
+  CHECK(held.min<-2);
+  CHECK(held.min>-2-std::sqrt(1./3));
 }
 
 // TASK-214.42: two logs of this sample are equal in binary64; the relative
@@ -423,4 +438,58 @@ TEST_CASE("pareto4: centered log spacings retain joint and held-power outcomes")
   CHECK_FALSE(power.certified);
   // The 100-digit finite Lomax maximum has shape1 = 0.60616327990857864798230917816382.
   CHECK(std::abs(power.shape1/0.606163279908578648-1)<1e-10);
+}
+
+TEST_CASE("pareto4: rounded equality at a held scale is not an endpoint observation") {
+  constexpr double u = 0x1p54;
+  const std::vector<double> x{1., 5.};
+  const auto fit = cppunivariate::pareto4_mle(mltest::as_span(x), -u, 1e-10, 1000, u);
+  REQUIRE(fit.status == cppunivariate::BurrStatus::AllGeOne);
+  CHECK(cppunivariate::outcome(fit).certified);
+  REQUIRE(fit.stop_detail.limit_coef.size() == 3);
+  CHECK(fit.stop_detail.limit_coef[0] ==
+        doctest::Approx(2/(std::log1p(1/u)+std::log1p(5/u))).epsilon(1e-12));
+}
+
+TEST_CASE("pareto4: a rounded tie at a held scale retains the original score signs") {
+  constexpr double u = 0x1p54;
+  const std::vector<double> x{-1., 1.};
+  const auto fit = cppunivariate::pareto4_mle(mltest::as_span(x), -u, 1e-10, 1000, u);
+  REQUIRE(fit.status == cppunivariate::BurrStatus::Ok);
+  CHECK(cppunivariate::outcome(fit).certified);
+  CHECK(fit.shape1 > 0);
+  CHECK(fit.shape2 > 0);
+}
+
+TEST_CASE("pareto4: the joint strict comparison uses original distinct support") {
+  constexpr double u = 0x1p54;
+  const std::vector<double> x{0., 1.};
+  const auto fit = cppunivariate::pareto4_mle(mltest::as_span(x), -u, 1e-10, 1000);
+  REQUIRE(fit.status == cppunivariate::BurrStatus::ParetoBoundary);
+  CHECK(cppunivariate::outcome(fit).certified);
+  REQUIRE(fit.stop_detail.limit_coef.size() == 3);
+  CHECK(fit.stop_detail.limit_coef[0] == doctest::Approx(2/std::log1p(1/u)));
+  CHECK(fit.stop_detail.limit_coef[1] == u);
+}
+
+TEST_CASE("pareto4: free threshold and scale distinguish critical and attained fits") {
+  const std::vector<double> x{0, 0, 1};
+  const auto critical=cppunivariate::pareto4_mle(mltest::as_span(x),NAN,1e-10,100,NAN,1,2);
+  CHECK(cppunivariate::outcome(critical).reason==cppunivariate::OutcomeReason::Unattained);
+  CHECK(critical.logLik==doctest::Approx(3*std::log(2.)+2*std::log(9./(16*std::sqrt(3.)))));
+  const std::vector<double> y{0, 1, 1};
+  const auto fit=cppunivariate::pareto4_mle(mltest::as_span(y),NAN,1e-10,100,NAN,1,1);
+  REQUIRE(fit.status==cppunivariate::BurrStatus::Ok);
+  CHECK(fit.min==0);
+  CHECK(fit.scale==doctest::Approx(1./3).epsilon(1e-10));
+}
+
+TEST_CASE("pareto4: free threshold and tail shape report the multimodal search uncertified") {
+  std::vector<double> x(22,.41);
+  x[0]=x[1]=0;
+  const auto fit=cppunivariate::pareto4_mle(mltest::as_span(x),NAN,1e-10,100,1,NAN,48);
+  REQUIRE(fit.status==cppunivariate::BurrStatus::Ok);
+  CHECK_FALSE(cppunivariate::outcome(fit).certified);
+  CHECK(fit.min>-.56);
+  CHECK(fit.min<-.5);
 }

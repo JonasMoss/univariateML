@@ -119,7 +119,7 @@ test_that('every holdable subset fits golden data or gives a declared reason', {
 test_that('required NULL offers follow the actual other holds', {
   diagnostic <- function(fn, ...) conditionMessage(tryCatch(fn(c(1,2,3), ...), error=identity))
   expect_false(grepl('or use `min = NULL`', diagnostic(mlpareto2), fixed=TRUE))
-  expect_false(grepl('or use `min = NULL`', diagnostic(mlpareto2, shape=2, scale=1), fixed=TRUE))
+  expect_match(diagnostic(mlpareto2, shape=2, scale=1), 'or use `min = NULL`', fixed=TRUE)
   expect_match(diagnostic(mlhnorm), 'or use `mu = NULL`', fixed=TRUE)
   # CMB supports free size for some samples with free dispersion as well.
   expect_match(diagnostic(mlcmb), 'or use `size = NULL`', fixed=TRUE)

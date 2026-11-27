@@ -126,12 +126,18 @@ TEST_CASE("pareto3 core distinguishes collapse from invalid observations") {
   CHECK(cppunivariate::outcome(cppunivariate::pareto3_mle(mltest::as_span(invalid),0,1e-10,1000)).reason==cppunivariate::OutcomeReason::InvalidInput);
 }
 
-TEST_CASE("pareto3 rounded threshold subtraction is not statistical nonexistence") {
+TEST_CASE("pareto3 rounded threshold subtraction retains the finite maximizer") {
   const std::vector<double> distinct{.1,.2},one{.1};
   for(const auto& x : {distinct,one}) {
     const auto r=cppunivariate::pareto3_mle(mltest::as_span(x),-1e16,1e-10,1000,NAN,x.size()==1?1e16:NAN);
-    CHECK(r.status==cppunivariate::Pareto3Status::TransformFailure);
-    CHECK(cppunivariate::outcome(r).reason==cppunivariate::OutcomeReason::Evaluation);
+    REQUIRE(r.status==cppunivariate::Pareto3Status::Ok);
+    CHECK(cppunivariate::outcome(r).kind==cppunivariate::OutcomeKind::Estimate);
+    // On the centered logistic scale, u*tanh(u/2)=1 at the maximum.
+    constexpr double root=1.5434046384182084;
+    const double expected=(x.size()==1?root:2*root)/std::log1p(.1/1e16);
+    CHECK(r.shape==doctest::Approx(expected).epsilon(1e-10));
+    CHECK(r.scale==1e16);
+    CHECK(std::isfinite(r.logLik));
   }
 }
 
@@ -143,4 +149,38 @@ TEST_CASE("pareto3: centered refinement retains the spread of archive 005591") {
   // 80-digit stationary solve treating each observation as exact binary64.
   CHECK(std::fabs(f.shape / 977351135434.3642976093662 - 1) < 1e-10);
   CHECK(std::fabs(f.scale / 0.6875776168653109690504518 - 1) < 1e-10);
+}
+
+TEST_CASE("pareto3: held shape and scale give the threshold at the sample mode offset") {
+  const std::vector<double> x{2, 2};
+  const auto fit=cppunivariate::pareto3_mle(mltest::as_span(x),NAN,1e-10,100,2,1);
+  REQUIRE(fit.status==cppunivariate::Pareto3Status::Ok);
+  CHECK(fit.min==doctest::Approx(2-std::sqrt(1./3)).epsilon(1e-10));
+  const auto unbounded=cppunivariate::pareto3_mle(mltest::as_span(x),NAN,1e-10,100,NAN,1);
+  CHECK(cppunivariate::outcome(unbounded).reason==cppunivariate::OutcomeReason::Unbounded);
+}
+
+TEST_CASE("pareto3: interior free threshold and scale satisfy both profile scores") {
+  const std::vector<double> x{0,1,1,1};
+  const auto fit=cppunivariate::pareto3_mle(mltest::as_span(x),NAN,1e-10,100,2);
+  REQUIRE(fit.status==cppunivariate::Pareto3Status::Ok);
+  CHECK(cppunivariate::outcome(fit).certified);
+  CHECK(fit.min<0);
+  double threshold_score=0,scale_score=0;
+  for(double v:x) {
+    const double y=v-fit.min, r=y/fit.scale, u=r*r/(1+r*r);
+    threshold_score+=(1-4*u)/y;
+    scale_score+=2*u-1;
+  }
+  CHECK(std::abs(threshold_score)<1e-8);
+  CHECK(std::abs(scale_score)<1e-8);
+}
+
+TEST_CASE("pareto3: signed scale and threshold brackets close on the golden sample") {
+  const auto golden=mltest::load_distribution_golden("pareto3");
+  const auto fit=cppunivariate::pareto3_mle(mltest::as_span(golden.data),
+      NAN,1e-10,1000,golden.estimates.at("shape"));
+  REQUIRE(fit.status==cppunivariate::Pareto3Status::Ok);
+  CHECK(fit.certified);
+  CHECK(fit.logLik>=golden.logLik-1e-8);
 }

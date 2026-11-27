@@ -740,3 +740,22 @@ TEST_CASE("gengamma: a three-to-one split keeps the Pareto limit") {
   CHECK(fit.stop_detail.limit_coef[1] == 1.);
   CHECK(fit.logLik == doctest::Approx(2.3180819462462745).epsilon(1e-13));
 }
+
+TEST_CASE("gengamma: a held exact endpoint retains the balanced-pair limit") {
+  for (const bool lower : {true, false}) {
+    const std::vector<double> x = lower ? std::vector<double>{1., 2., 2., 1.}
+                                        : std::vector<double>{1., 0.5, 0.5, 1.};
+    const auto fit = cppunivariate::gengamma_mle(mltest::as_span(x), 1e-10, 1, 0.);
+    const auto result = cppunivariate::outcome(fit);
+    CHECK(result.kind == cppunivariate::OutcomeKind::Limit);
+    CHECK(result.certified);
+    CHECK(fit.iterations == 0);
+    CHECK(fit.stop_detail.limit_model ==
+          (lower ? cppunivariate::StopModel::Pareto : cppunivariate::StopModel::Power));
+    const double exponent = 2/std::log(2.);
+    CHECK(fit.stop_detail.limit_coef ==
+          (lower ? std::vector<double>{exponent, 1.} : std::vector<double>{1., exponent}));
+    CHECK(fit.logLik == doctest::Approx(4*(std::log(exponent)-1)
+                                      + (lower ? -2 : 2)*std::log(2.)));
+  }
+}

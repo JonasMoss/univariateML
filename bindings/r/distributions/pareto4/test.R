@@ -141,9 +141,14 @@ test_that("P2 pareto4 validates new held values", {
   expect_error(mlpareto4(rep(2,3),min=0), "unbounded.*constant sample; no MLE")
 })
 
-test_that("pareto4 refuses excess overflow and artificial ties", {
+test_that("pareto4 rejects excess overflow and preserves distinct original support", {
   expect_error(mlpareto4(c(1,.Machine$double.xmax), min=-.Machine$double.xmax), "certificate numerical failure; no verified MLE")
-  expect_error(mlpareto4(c(1,1+.Machine$double.eps,2), min=-1e100), "certificate numerical failure; no verified MLE")
+  shifted <- tryCatch(mlpareto4(c(1,1+.Machine$double.eps,2), min=-1e100),
+                      error=identity)
+  expect_s3_class(shifted, "univariateML_limit")
+  expect_true(shifted$certified)
+  expect_equal(unname(shifted$estimates["a"]), 3e100, tolerance=1e-12)
+  expect_equal(unname(shifted$estimates["b_low"]), 1)
 })
 
 test_that("Pareto IV keeps numerical stops distinct from non-existence", {
@@ -216,7 +221,11 @@ test_that("pareto4 core decides the data outcome", {
 
 test_that("pareto4 passes a free threshold to the core", {
   expect_error(mlpareto4(1:5,min=NULL),class="univariateML_nomle")
-  expect_error(mlpareto4(1:5,min=NULL,shape1=1,shape2=2,scale=1),class="univariateML_unsupported")
+  fit <- mlpareto4(1:5,min=NULL,shape1=1,shape2=2,scale=1)
+  expect_true(attr(fit,"certified"))
+  expect_lt(unname(fit["min"]),1)
+  expect_gt(unname(fit["min"]),1-sqrt(1/3))
+  expect_false("min" %in% attr(fit,"fixed"))
 })
 
 
@@ -271,4 +280,17 @@ test_that("Pareto IV held-scale fits retain exact threshold subtraction residual
   # 100-digit face exponent = 2573485501354569.683673469387755.
   expect_lt(abs(e$estimates[["a"]] / 2573485501354569.683673469387755 - 1), 1e-10)
   expect_equal(e$estimates[["b"]], u)
+})
+
+test_that("the shifted Pareto limit carries the low part of its endpoint", {
+  u <- 2^54
+  x <- c(-5, 10)
+  e <- tryCatch(mlpareto4(x, min = -u), error = identity)
+  expect_s3_class(e, "univariateML_limit")
+  p <- e$estimates
+  expect_identical(unname((p["min"] + p["b"]) + p["b_low"]), -5)
+  spacing <- log1p((x - min(x)) / p["b"])
+  ll <- sum(log(p["a"]) - log(p["b"]) -
+              log1p(p["b_low"] / p["b"]) - (1 + p["a"]) * spacing)
+  expect_equal(ll, e$limit_loglik, tolerance = 1e-12)
 })

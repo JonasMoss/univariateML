@@ -500,3 +500,14 @@ TEST_CASE("fpareto: transformed gamma limit payload evaluates original observati
   CHECK(ll==doctest::Approx(detail.limit_loglik).epsilon(1e-12));
   CHECK(ll==doctest::Approx(fit.logLik).epsilon(1e-12));
 }
+
+TEST_CASE("fpareto: free threshold routes distinguish fixed lower power from a free spike") {
+  const std::vector<double> x{0, 1, 2};
+  const auto fit=cppunivariate::fpareto_mle(mltest::as_span(x),NAN,1e-10,100,NAN,2,.5,1);
+  REQUIRE(fit.status==cppunivariate::FparetoStatus::Ok);
+  CHECK(fit.min==0);
+  CHECK(fit.shape1>0);
+  CHECK(cppunivariate::outcome(fit).certified);
+  const auto spike=cppunivariate::fpareto_mle(mltest::as_span(x),NAN,1e-10,100,2,2,NAN,1);
+  CHECK(cppunivariate::outcome(spike).reason==cppunivariate::OutcomeReason::Unbounded);
+}

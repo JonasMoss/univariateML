@@ -25,14 +25,14 @@ params:
   role: lower endpoint
   domain: "(-inf, max)"
   simulate: 0
-  advice: 'With both endpoints and shapes free, the likelihood is unbounded because a shape below one creates an endpoint singularity. Supply min and max, for example mlnsbeta(x, min = 0, max = 1), equivalent to mlbeta(x). Estimating endpoints with shapes held is not supported.'
+  advice: 'The fully free likelihood is unbounded. Omitting an endpoint is not supported. Supply a finite value to hold it or NULL to estimate it.'
   kind: threshold
 - name: max
   symbol: 'b'
   role: upper endpoint
   domain: "(min, inf)"
   simulate: 1
-  advice: 'With both endpoints and shapes free, the likelihood is unbounded because a shape below one creates an endpoint singularity. Supply min and max, for example mlnsbeta(x, min = 0, max = 1), equivalent to mlbeta(x). Estimating endpoints with shapes held is not supported.'
+  advice: 'The fully free likelihood is unbounded. Omitting an endpoint is not supported. Supply a finite value to hold it or NULL to estimate it.'
   kind: threshold
 r:
   density: dnsbeta
@@ -55,44 +55,18 @@ limits:
     proof: ["UnivariateML.Beta.constant_unbounded", "UnivariateML.NonstandardBeta.logLik_transfer"]
     detect_proof: ["UnivariateML.NonstandardBeta.joint_unbounded", "univariateML-cpp/include/cppunivariate/distributions/nsbeta/README.md#details"]
     fixed: [min, max]
+  - kind: nonexistence
+    name: unbounded free-endpoint likelihood
+    status: Degenerate
+    message: unbounded
+    when: 'A singular free or held endpoint or shrinkage about a constant sample increases the likelihood without bound.'
+    detect: 'A free endpoint has a free shape or a shape below one, a compatible held endpoint has a singular factor, or constant data admit concentration.'
+    firmness: proved
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#beta-with-one-endpoint-held", "dev/research/evaluations/2026-11-25-thresh-math-report.md#beta-with-both-endpoints-free"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#beta-with-one-endpoint-held", "dev/research/evaluations/2026-11-25-thresh-math-report.md#beta-with-both-endpoints-free"]
 log_density: (shape1-1)*log(((x-min)/(max-min))) + (shape2-1)*log(1-((x-min)/(max-min))) - loggamma(shape1) - loggamma(shape2) + loggamma(shape1+shape2)-log(max-min)
-holds:
-- held: []
-  status: no-mle
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [shape1]
-  status: no-mle
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [shape2]
-  status: no-mle
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [shape1, shape2]
-  status: not-implemented
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [min]
-  status: no-mle
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [shape1, min]
-  status: no-mle
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [shape2, min]
-  status: not-implemented
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [shape1, shape2, min]
-  status: not-implemented
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [max]
-  status: no-mle
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [shape1, max]
-  status: not-implemented
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [shape2, max]
-  status: no-mle
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
-- held: [shape1, shape2, max]
-  status: not-implemented
-  reason: 'Estimating min or max is not supported. A free endpoint with its corresponding shape free or below one gives unbounded likelihood. Other held-shape cases may have a finite MLE but are not computed. Supply both min and max.'
+holds: []
 fit_args:
   min: 0
   max: 1
@@ -126,7 +100,7 @@ fit:
   certified: 'yes'
   note: 'nsbeta/README.md, Details; nsbeta/mle.hpp (public fitter and held overloads); nsbeta/test.cpp: Strictly
     concave beta likelihood in its two shapes; held-shape digamma scores decrease strictly. nsbeta uses supplied
-    endpoints; unsupported endpoint fits stop.'
+    endpoints. Free bounds use signed profiles on the feasible interval.'
 areas:
 - proportions
 classification: specialist
@@ -147,9 +121,7 @@ existence:
     With both endpoints held and observations strictly between them, the
     MLE of the two shapes exists and is unique exactly when the data are
     nonconstant. Holding either shape as well gives a unique finite MLE
-    for the other shape, including for constant samples. Estimating an
-    endpoint with shapes held is not implemented and need not imply
-    non-existence. No joint uniqueness claim is made for free endpoints.
+    for the other shape, including for constant samples. With free endpoints, the corresponding shapes must be held at least one for a finite maximum; the fitted interval is unique on the attained branches.
   reason: >-
     Moving a free endpoint toward its sample extreme gives an unbounded
     likelihood if its corresponding shape is below one. With endpoints
@@ -187,7 +159,7 @@ The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genb
 
 For at least two finite, nonconstant observations strictly between the held bounds, the MLE is unique and attained: the transformed sufficient-statistic mean is interior, giving coercivity, and the beta log likelihood is strictly concave in its two shapes. If both shapes are free, the constant-sample test uses the observations on their original scale.
 
-Observations must be strictly inside the held support. Endpoint estimation with held shapes is not implemented. It is not always a mathematical failure: with both shapes equal to one, the uniform likelihood is maximized by placing free endpoints at the sample extremes, provided the fitted interval has positive width. The fit retains the beta model's sample restrictions and limiting comparisons.
+With free endpoints, a shape of one gives exact contact at the corresponding sample extreme. Shapes above one require strict separation. With both shapes held, affine coordinates give a strictly concave objective on the feasible interval.
 
 Hold the opposite endpoint beyond the sample. If the shape $s$ associated with the free endpoint satisfies $s<1$, moving that endpoint to within $\varepsilon$ of the corresponding sample extreme gives $k$ factors proportional to $\varepsilon^{s-1}$, where $k$ observations equal that extreme. All other factors approach positive constants, so the likelihood diverges.
 
@@ -197,8 +169,7 @@ With either shape free, distances to the two supplied endpoints determine the lo
 
 ## R notes
 
-Supply min and max. Passing NULL for either stops with the endpoint
-explanation. With min = 0 and max = 1 this is the ordinary beta fit.
+Supply each endpoint as a finite held value or pass NULL to estimate it. With min = 0 and max = 1 this is the ordinary beta fit.
 
 ## Decision history
 

@@ -13,7 +13,12 @@ enum class Pareto2Status { Ok, ExponentialLimit, InvalidStart, IterationFailure,
 struct Pareto2Result { double shape,scale,min,logLik; int iterations; Pareto2Status status; StopDetail stop_detail{}; LomaxCertificateFailure certificate_failure = LomaxCertificateFailure::None; bool limit_certified = false; bool singleton_proved = false; };
 
 inline Pareto2Result pareto2_mle(span x, double min, double tol, int maxit, double shape=std::numeric_limits<double>::quiet_NaN(), double scale=std::numeric_limits<double>::quiet_NaN()) {
-  if(std::isnan(min)) {return {NAN,NAN,min,NAN,0,Pareto2Status::UnsupportedThreshold};}
+  if(std::isnan(min)) {
+    if(x.empty() || !(tol>0 && std::isfinite(tol)) || maxit<1 ||
+       std::any_of(x.begin(),x.end(),[](double v){return !std::isfinite(v);}))
+      return {shape,scale,min,NAN,0,Pareto2Status::InvalidStart};
+    min=*std::min_element(x.begin(),x.end());
+  }
   maxit = static_cast<int>(solver_budget(maxit));
   std::vector<double> y(x.size());
   for (std::size_t i=0;i<x.size();++i) y[i]=(x[i]-min);

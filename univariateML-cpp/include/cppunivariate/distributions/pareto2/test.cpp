@@ -156,3 +156,13 @@ TEST_CASE("pareto2: budget face candidates carry a negative held threshold") {
   CHECK(ll==doctest::Approx(face->loglik_lower).epsilon(1e-12));
   CHECK(ll==doctest::Approx(face->loglik_upper).epsilon(1e-12));
 }
+
+TEST_CASE("pareto2: free threshold uses the closed endpoint for held shape") {
+  const std::vector<double> x{0, 1};
+  const auto fit=cppunivariate::pareto2_mle(mltest::as_span(x),NAN,1e-10,100,2);
+  REQUIRE(fit.status==cppunivariate::Pareto2Status::Ok);
+  CHECK(fit.min==0);
+  CHECK(fit.scale==doctest::Approx(.5).epsilon(1e-10));
+  const auto critical=cppunivariate::pareto2_mle(mltest::as_span(x),NAN,1e-10,100,1);
+  CHECK(cppunivariate::outcome(critical).reason==cppunivariate::OutcomeReason::Unattained);
+}

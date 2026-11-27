@@ -25,7 +25,7 @@ params:
   role: lower endpoint
   domain: (-inf, inf)
   simulate: 0
-  advice: 'With all coefficients free, shape below 1 makes the density singular as min approaches the sample minimum. The fully free likelihood is unbounded. Hold min, for example min = 0, to fit the shifted llogis family. Estimating min with other coefficients held is not supported.'
+  advice: 'The fully free likelihood is unbounded. Omitting min is not supported. Supply a finite threshold to hold it or NULL to estimate it.'
   kind: threshold
 r:
   density: dpareto3
@@ -47,24 +47,35 @@ limits:
     proof: ["univariateML-cpp/include/cppunivariate/distributions/pareto3/README.md#details"]
     detect_proof: ["UnivariateML.ParetoIII.joint_unbounded", "UnivariateML.ParetoIII.heldScale_unbounded", "univariateML-cpp/include/cppunivariate/distributions/pareto3/README.md#details"]
     fixed: [min]
+  - name: critical scale collapse
+    status: Unattained
+    message: 'finite unattained supremum'
+    fixed: [shape]
+    when: 'The scale decreases to zero and the threshold gap stays at its density-maximizing ratio to scale.'
+    detect: 'With a free threshold and scale, the lower power is at least one and the collapse exponent is exactly zero.'
+    firmness: proved
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale"]
+  - kind: nonexistence
+    name: unbounded free-threshold likelihood
+    status: Unbounded
+    message: unbounded
+    when: 'A free-endpoint spike or an allowed scale collapse increases the likelihood without bound.'
+    detect: 'The held mask permits a lower power below one, simultaneous free scale and upper shape, negative collapse exponent, or a constant sample with free upper shape.'
+    firmness: proved
+    detect_firmness: proved
+    proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale", "dev/research/evaluations/2026-11-25-thresh-math-report.md#structural-spikes", "dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-scale-and-free-upper-tail-shape"]
+    detect_proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale", "dev/research/evaluations/2026-11-25-thresh-math-report.md#structural-spikes", "dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-scale-and-free-upper-tail-shape"]
 log_density: log(shape) + log((1/scale)) + (shape - 1)*log((1/scale)*(x-min)) - 2*log(1 + ((1/scale)*(x-min))**shape)
 holds:
 - held: []
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 - held:
   - scale
   status: no-mle
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
-- held:
-  - shape
-  - scale
-  status: not-implemented
-  reason: 'Estimating min is not supported. The fully free likelihood is unbounded. Hold min to fit this family; existence with other coefficients held depends on their values.'
+  reason: 'With these holds, a free endpoint permits likelihood divergence.'
 fit_args:
   min: 0
 examples: |
@@ -115,8 +126,7 @@ existence:
     strictly above $\mu$ with shape and scale free. Constant excesses then give unbounded likelihood.
     Holding shape gives a unique scale estimate even for constant data.
     Holding scale gives a unique shape estimate unless every excess equals
-    that scale, when the likelihood is unbounded. Free-threshold subsets
-    are not supported; their existence depends on the held values.
+    that scale, when the likelihood is unbounded. With threshold free and shape held, attainment follows the endpoint multiplicity and scale conditions below.
     Holding all coefficients leaves likelihood evaluation.
   reason: >-
     For $0<\gamma<1$ the density near $\mu$ is proportional to
@@ -143,9 +153,11 @@ When min=-scale, rounding an unshifted quantile and then adding min loses its le
 
 Fitting requires finite observations strictly above a held threshold. On $\log(x_i-\mu)$ the problem is a logistic location-scale fit, so existence and uniqueness transfer from [log-logistic](../llogis/README.md). The log-logistic shape and scale are unchanged; in rate coordinates the rate is $1/\sigma$.
 
-For constant observations at $x_0>\mu$, taking $\sigma=x_0-\mu$ and $\gamma\to\infty$ gives density $\gamma/[4(x_0-\mu)]$ at every observation. Holding shape removes this concentration path and gives one log-scale score root. Holding scale leaves unbounded likelihood only when all excesses equal it; otherwise there is a unique finite shape maximum. With scale free, the final score uses log excesses relative to the sample median and restores its log offset in the scale coefficient. The centered ratio carries the residuals of the anchor and raw spacing subtractions. This retains the spread when the observations are nearly equal.
+For constant observations at $x_0>\mu$, taking $\sigma=x_0-\mu$ and $\gamma\to\infty$ gives density $\gamma/[4(x_0-\mu)]$ at every observation. Holding shape removes this concentration path and gives one log-scale score root. Holding scale leaves unbounded likelihood only when all excesses equal it; otherwise there is a unique finite shape maximum. With scale free, the final score uses log excesses relative to the sample median and restores its log offset in the scale coefficient. The centered ratio carries the residuals of the anchor and raw spacing subtractions. This retains the spread when the observations are nearly equal. If the
+rounded excesses collapse, the fitter starts the same refinement from a
+logistic fit to centered, rescaled logs formed from the original observations.
 
-With a free threshold and $\gamma<1$, each of the $k$ observations at the sample minimum contributes an endpoint factor proportional to $\varepsilon^{\gamma-1}$ as the threshold approaches from below. The other factors tend to positive constants, so the product diverges. This is a proof for the fully free likelihood, not for every held-shape submodel. For example, with shape equal to one and scale held the threshold has a finite maximum at the sample minimum. The interface still requires the threshold to be held.
+With a free threshold and $\gamma<1$, each of the $k$ observations at the sample minimum contributes an endpoint factor proportional to $\varepsilon^{\gamma-1}$ as the threshold approaches from below. The other factors tend to positive constants, so the product diverges. This is a proof for the fully free likelihood, not for every held-shape submodel. For example, with shape equal to one and scale held the threshold has a finite maximum at the sample minimum. For held shape at least one, the maximum with scale held is unique. With scale free it exists exactly when the collapse exponent is positive.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) describes the limiting paths and boundary comparisons.
 

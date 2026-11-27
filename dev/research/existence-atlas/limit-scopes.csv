@@ -33,6 +33,8 @@ ged,2,all free;mean;sd;mean+sd,Held-SD contact changes the envelope.
 genbeta,1,scale;scale+shape1;scale+shape3,Constant sample strictly inside the held endpoint.
 genbeta,2,scale;scale+shape2,The displayed path fixes upper shape and endpoint.
 genbeta,3,scale,The detector concerns the held-endpoint fit.
+gengamma,1,all free;mu,A strict signed-profile comparison or a balanced pair with its upper endpoint at the exact held location.
+gengamma,2,all free;mu,A strict signed-profile comparison or a balanced pair with its lower endpoint at the exact held location.
 gumbel,1,all free;mu,Held location must equal the common observation.
 hcauchy,1,all free;mu,Endpoint count uses the fitted or held endpoint.
 hcauchy,2,all free;mu,Endpoint count uses the fitted or held endpoint.
@@ -52,7 +54,7 @@ pareto2,1,min,The detector explicitly requires held threshold and both other coe
 pareto3,1,min;min+scale,Held scale must equal the common excess.
 pareto4,2,min;min+shape1;min+scale;min+scale+shape1,The concentration path depends on the held coordinates.
 pareto4,3,min;min+shape2,The Weibull detector describes the free regular parameters and the held-power fit.
-pareto4,4,min;min+scale,The Pareto detector describes the free regular parameters and held-scale fit.
+pareto4,4,min;min+scale,The path is available on both masks. The joint detector concerns free regular parameters and AllGeOne is the held-scale detector.
 pareto4,5,min+scale,The detector requires both scale and threshold held.
 pig,1,all free;mean,The variance condition depends on whether mean is fitted or held.
 slash,1,all free;mu,Held location admits an exact scalar argument. The all-free detector alone is numerical.
@@ -67,3 +69,8 @@ triang,1,all free;a;b;c;a+c;b+c,At least one endpoint must remain free.
 triang,2,a;b;a+b;a+c;b+c,Support incompatibilities involve held coefficients.
 unif,1,all free;min;max,One or both endpoints may be free.
 unif,2,min;max;max+min,One or both endpoints may be held.
+pareto2,3,all free;scale;shape,Only the divergence branches of the free-endpoint hold mask are covered.
+pareto3,3,all free;scale;scale+shape;shape,Only the divergence branches of the free-endpoint hold mask are covered.
+pareto4,7,all free;scale;scale+shape1;scale+shape1+shape2;scale+shape2;shape1;shape1+shape2;shape2,Only the divergence branches of the free-endpoint hold mask are covered.
+fpareto,11,all free;scale;scale+shape1;scale+shape1+shape2;scale+shape1+shape2+shape3;scale+shape1+shape3;scale+shape2;scale+shape2+shape3;scale+shape3;shape1;shape1+shape2;shape1+shape2+shape3;shape1+shape3;shape2;shape2+shape3;shape3,Only the divergence branches of the free-endpoint hold mask are covered.
+nsbeta,2,all free;max;max+shape1;max+shape1+shape2;max+shape2;min;min+shape1;min+shape1+shape2;min+shape2;shape1;shape1+shape2;shape2,Only the divergence branches of the free-endpoint hold mask are covered.

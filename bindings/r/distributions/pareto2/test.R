@@ -138,3 +138,12 @@ test_that("constant positive excesses certify the shifted exponential limit", {
   err <- tryCatch(mlpareto2(rep(2, 5), min = 1), error = identity)
   expect_identical(err$certified, TRUE)
 })
+
+test_that("free Pareto II thresholds use the scale-collapse dispatch", {
+  fit <- mlpareto2(c(0,1), min=NULL, shape=2)
+  expect_equal(unname(fit[c("shape","scale","min")]), c(2,.5,0))
+  expect_false("min" %in% attr(fit,"fixed"))
+  critical <- tryCatch(mlpareto2(c(0,1), min=NULL, shape=1), error=identity)
+  expect_s3_class(critical, "univariateML_nomle")
+  expect_identical(critical$reason, "unattained")
+})

@@ -161,3 +161,23 @@ test_that("a three-to-one split keeps the Pareto limit", {
   expect_equal(e$estimates, c(a = 5.7707801635558535, b = 1), tolerance = 1e-13)
   expect_equal(e$limit_loglik, 2.3180819462462745, tolerance = 1e-13)
 })
+
+test_that("balanced pairs with an exact held endpoint report the reachable face", {
+  exponent <- 2 / log(2)
+  lower <- tryCatch(mlgengamma(c(1, 1, 2, 2), mu = 0, iterlim = 1),
+                    error = identity)
+  expect_s3_class(lower, "univariateML_limit")
+  expect_identical(lower$model, "pareto")
+  expect_true(lower$certified)
+  expect_equal(lower$estimates, c(a = exponent, b = 1))
+  expect_equal(lower$limit_loglik, -1.147653956553452, tolerance = 1e-13)
+
+  upper <- tryCatch(mlgengamma(c(1, 1, 0.5, 0.5), mu = 0, iterlim = 1),
+                    error = identity)
+  expect_s3_class(upper, "univariateML_limit")
+  expect_identical(upper$model, "power")
+  expect_true(upper$certified)
+  expect_equal(upper$estimates, c(alpha = 1, beta = exponent))
+  expect_equal(upper$limit_loglik, 4 * (log(exponent) - 1) + 2 * log(2),
+               tolerance = 1e-13)
+})

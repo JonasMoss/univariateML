@@ -4,11 +4,13 @@
 #include "../../core/work_budget.hpp"
 #include "../burr/mle.hpp"
 #include "../llogis/mle.hpp"
+#include "../logis/mle.hpp"
+#include "../pareto4/free_threshold.hpp"
 #include <algorithm>
 #include <vector>
 #include <cmath>
 namespace cppunivariate {
-enum class Pareto3Status { Ok, InvalidData, Unbounded, IterationFailure, AccuracyFailure, Unsupported, TransformFailure };
+enum class Pareto3Status { Ok, InvalidData, Unbounded, IterationFailure, AccuracyFailure, Unsupported, TransformFailure, Unattained };
 struct Pareto3Result { double shape,scale,min,logLik; int iterations; Pareto3Status status; bool certified=true;  StopDetail stop_detail{}; };
 
 inline FitOutcome outcome(const Pareto3Result& r) {
@@ -19,6 +21,7 @@ inline FitOutcome outcome(const Pareto3Result& r) {
     case Pareto3Status::Ok: return FitOutcome::singleton(r.certified);
     case Pareto3Status::TransformFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case Pareto3Status::InvalidData: return FitOutcome::failure(OutcomeReason::InvalidInput);
+    case Pareto3Status::Unattained: return FitOutcome::nonexistence(OutcomeReason::Unattained);
     case Pareto3Status::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case Pareto3Status::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
     case Pareto3Status::AccuracyFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
@@ -60,9 +63,56 @@ inline Pareto3Result pareto3_accuracy_search(span x, double min, double tol, int
 #include "dpqr.hpp"
 #include "../../core/likelihood_polish.hpp"
 namespace cppunivariate {
+// Seed the original-input refinement when rounding collapsed the parent
+// log-logistic data. Rescale the centered log coordinates before fitting.
+inline Pareto3Result pareto3_centered_proposal(span x,double min,double tol,int maxit,
+                                             double shape,double scale) {
+  Pareto3Result out{shape,scale,min,NAN,0,Pareto3Status::TransformFailure,false};
+  if (!std::isnan(shape)) return out;
+  const bool free_scale=std::isnan(scale);
+  const double ref=x[0], anchor=ref-min;
+  if (!(anchor>0 && std::isfinite(anchor))) return out;
+  std::vector<double> logs;
+  double radius=0;
+  for (double v:x) {
+    const double delta=v-ref;
+    const double log_ratio=free_scale?std::log1p(delta/anchor):
+        static_cast<double>(burr_excess_log_ratio(v,min,scale));
+    if (!std::isfinite(log_ratio)) return out;
+    logs.push_back(log_ratio);
+    radius=std::max(radius,std::abs(log_ratio));
+  }
+  if (!(radius>0)) return out;
+  for (double& v:logs) v/=radius;
+  const auto fit=logistic_mle({logs.data(),logs.size()},tol,maxit,free_scale?NAN:0.,NAN);
+  if (fit.status!=LogisticStatus::Ok) return out;
+  const double power=(1/fit.scale)/radius;
+  if (free_scale) scale=anchor*std::exp(radius*fit.mu);
+  if (!(power>0 && scale>0 && std::isfinite(power) && std::isfinite(scale))) return out;
+  return {power,scale,min,NAN,fit.iterations,Pareto3Status::Ok,false};
+}
+
 inline Pareto3Result pareto3_mle(span x,double min,double tol,int maxit,double shape=NAN,double scale=NAN) {
-  if(std::isnan(min))return {NAN,NAN,min,NAN,0,Pareto3Status::Unsupported};
+  if(std::isnan(min)) {
+    const auto fit=gb2_threshold::fit(x,1,1,shape,scale,tol,maxit);
+    Pareto3Status status=Pareto3Status::IterationFailure;
+    switch(fit.status) {
+      case gb2_threshold::Status::Invalid: status=Pareto3Status::InvalidData;break;
+      case gb2_threshold::Status::Numerical: break;
+      case gb2_threshold::Status::Unbounded: status=Pareto3Status::Unbounded;break;
+      case gb2_threshold::Status::Unattained: status=Pareto3Status::Unattained;break;
+      case gb2_threshold::Status::Ok: status=Pareto3Status::Ok;break;
+    }
+    Pareto3Result out{shape,fit.scale,fit.threshold,fit.logLik,fit.iterations,status,fit.certified};
+    if(status==Pareto3Status::Unattained) {
+      out.stop_detail.loglik_lower=fit.logLik-fit.loglik_error;
+      out.stop_detail.loglik_upper=fit.logLik+fit.loglik_error;
+    }
+    return out;
+  }
   auto r=pareto3_accuracy_search(x,min,tol,maxit,shape,scale);
+  if (r.status==Pareto3Status::TransformFailure)
+    r=pareto3_centered_proposal(x,min,tol,maxit,shape,scale);
   if(r.status!=Pareto3Status::Ok)return r;
   if(!r.certified)tol=std::min(tol,1e-10);
   const auto parent=r;

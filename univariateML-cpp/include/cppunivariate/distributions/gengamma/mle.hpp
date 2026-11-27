@@ -47,7 +47,7 @@ inline GengammaResult gengamma_mle_core(span x,double tol,int maxit,
     out.status=GengammaStatus::InvalidFixed;return out;
   }
   if (x.empty()) return out;
-  if (fm && fs && fq && x.size() % 2 == 0) {
+  if ((fm || mu == 0) && fs && fq && x.size() % 2 == 0) {
     const double first = x[0];
     double second = first;
     std::size_t first_count = 0, second_count = 0;
@@ -61,8 +61,11 @@ inline GengammaResult gengamma_mle_core(span x,double tol,int maxit,
       }
     }
     const std::size_t half = x.size()/2;
+    // Hermite–Lindemann excludes equality of the exact log of a
+    // positive binary64 endpoint and a nonzero binary64 location.
     if (first_count == half && second_count == half &&
-        first > 0 && std::isfinite(first) && second > 0 && std::isfinite(second)) {
+        first > 0 && std::isfinite(first) && second > 0 && std::isfinite(second) &&
+        (fm || first == 1 || second == 1)) {
       const double lo = std::min(first,second), hi = std::max(first,second);
       const double gap = special::log_positive_ratio(hi,lo);
       const double exponent = 2/gap;
@@ -70,9 +73,19 @@ inline GengammaResult gengamma_mle_core(span x,double tol,int maxit,
       const double ll = half*pair_ll;
       // GenGammaTwoPoint.lean: every finite fit lies strictly below both
       // equal face values, and replication preserves the mean log likelihood.
-      out.status = GengammaStatus::TiedPowerPareto;
       out.certified = true;
       out.logLik = ll;
+      if (!fm) {
+        if (lo == 1) {
+          out.status = GengammaStatus::ParetoBoundary;
+          out.stop_detail = limit_detail({exponent,lo},ll,StopModel::Pareto);
+        } else {
+          out.status = GengammaStatus::PowerBoundary;
+          out.stop_detail = limit_detail({hi,exponent},ll,StopModel::Power);
+        }
+        return out;
+      }
+      out.status = GengammaStatus::TiedPowerPareto;
       out.stop_detail.candidates = {
         {{hi,exponent},ll,ll,StopModel::Power},
         {{exponent,lo},ll,ll,StopModel::Pareto}
@@ -316,8 +329,8 @@ inline FitOutcome outcome(const GengammaResult& r) {
     case GengammaStatus::InvalidFixed: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case GengammaStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
     case GengammaStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::NoConvergence);
-    case GengammaStatus::PowerBoundary: return FitOutcome::limit();
-    case GengammaStatus::ParetoBoundary: return FitOutcome::limit();
+    case GengammaStatus::PowerBoundary: return FitOutcome::limit(r.certified);
+    case GengammaStatus::ParetoBoundary: return FitOutcome::limit(r.certified);
   }
   return {};
 }

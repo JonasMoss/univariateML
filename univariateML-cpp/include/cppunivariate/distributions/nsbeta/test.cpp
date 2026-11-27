@@ -201,3 +201,47 @@ TEST_CASE("nsbeta: physical score check preserves diffuse fits with subnormal da
     CHECK(r.shape2>0);
   }
 }
+
+TEST_CASE("nsbeta: two free endpoints with held shapes use the concave fit") {
+  const std::vector<double> x{0,1};
+  const auto fit=cppunivariate::nsbeta_mle(mltest::as_span(x),NAN,NAN,1e-10,100,2,2);
+  REQUIRE(fit.status==cppunivariate::BetaStatus::Ok);
+  CHECK(fit.min==doctest::Approx((1-std::sqrt(3.))/2).epsilon(1e-10));
+  CHECK(fit.max==doctest::Approx((1+std::sqrt(3.))/2).epsilon(1e-10));
+}
+
+TEST_CASE("nsbeta: one free endpoint checks held support and profiles the free shape") {
+  const std::vector<double> x{1,2};
+  const auto fit=cppunivariate::nsbeta_mle(mltest::as_span(x),0,NAN,1e-10,100,NAN,1);
+  REQUIRE(fit.status==cppunivariate::BetaStatus::Ok);
+  CHECK(fit.max==2);
+  CHECK(fit.shape1==doctest::Approx(2/std::log(2.)).epsilon(1e-10));
+  const auto outside=cppunivariate::nsbeta_mle(mltest::as_span(x),1.5,NAN,1e-10,100);
+  CHECK(cppunivariate::outcome(outside).reason==cppunivariate::OutcomeReason::InvalidInput);
+}
+
+TEST_CASE("nsbeta: the one-bound interior profile satisfies the shape and width scores") {
+  const std::vector<double> x{1,2};
+  const auto fit=cppunivariate::nsbeta_mle(mltest::as_span(x),0,NAN,1e-10,100,NAN,2);
+  REQUIRE(fit.status==cppunivariate::BetaStatus::Ok);
+  REQUIRE(fit.max>2);
+  const double b=fit.shape1,w=fit.max;
+  CHECK(std::abs(1/b+1/(b+1)-std::log(w/std::sqrt(2.)))<1e-10);
+  CHECK(std::abs(.5*(1/(w-1)+2/(w-2))-b)<1e-10);
+}
+
+TEST_CASE("nsbeta: two-endpoint sign brackets close on the golden sample") {
+  const auto golden=mltest::load_distribution_golden("nsbeta");
+  const auto fit=cppunivariate::nsbeta_mle(mltest::as_span(golden.data),NAN,NAN,
+      1e-10,1000,golden.estimates.at("shape1"),golden.estimates.at("shape2"));
+  REQUIRE(fit.status==cppunivariate::BetaStatus::Ok);
+  CHECK(fit.logLik>=golden.logLik-1e-8);
+}
+
+TEST_CASE("nsbeta: one-endpoint shape and width brackets close on the golden sample") {
+  const auto golden=mltest::load_distribution_golden("nsbeta");
+  const auto fit=cppunivariate::nsbeta_mle(mltest::as_span(golden.data),0,NAN,
+      1e-10,1000,NAN,golden.estimates.at("shape2"));
+  REQUIRE(fit.status==cppunivariate::BetaStatus::Ok);
+  CHECK(fit.logLik>=golden.logLik-1e-8);
+}

@@ -31,7 +31,7 @@ params:
   role: lower endpoint
   domain: (-inf, inf)
   simulate: 0
-  advice: 'With all coefficients free, shape2 below 1 makes the density singular as min approaches the sample minimum. The fully free likelihood is unbounded. Hold min, for example min = 0, to fit the shifted burr family. With min free, a free shape2 or a held shape2 below 1 gives unbounded likelihood, as do free shape1 and scale; the remaining held slices are not supported.'
+  advice: 'The fully free likelihood is unbounded. Omitting min is not supported. Supply a finite threshold to hold it or NULL to estimate it.'
   kind: threshold
 r:
   density: dpareto4
@@ -66,18 +66,20 @@ limits:
   fixed: [min]
 - when: The shape $\alpha$ tends to infinity with $\gamma$ fixed and $\sigma\alpha^{-1/\gamma}$ fixed at a positive scale.
   firmness: proved
-  detect: With all regular coefficients free, the Burr certificate selects this face. Held power uses the certified Lomax comparison; held scale with both shapes free uses a strictly concave scalar certificate.
+  detect: With all regular coefficients free, a strict Burr envelope on the original log excesses selects this face and its reported coefficients reproduce the face height. With power held, use the strict Lomax comparison. A comparison on rounded excesses alone reports an uncertified limit.
   status: WeibullBoundary
   name: shifted weibull; subtract min before fitting
-  detect_firmness: numerical
+  detect_firmness: proved
+  detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
   proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
   fixed: [min]
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
   firmness: proved
-  detect: With all regular coefficients free, the Burr certificate selects this face. Held power uses the certified Lomax comparison; held scale with both shapes free uses a strictly concave scalar certificate.
+  detect: With all regular coefficients free, a strict Burr envelope on the original log excesses selects this face. A comparison on rounded excesses alone reports an uncertified limit.
   status: ParetoBoundary
   name: shifted pareto; subtract min before fitting
-  detect_firmness: numerical
+  detect_firmness: proved
+  detect_proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
   proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
   fixed: [min]
 - when: The power $\gamma$ tends to infinity with $\alpha\gamma$ fixed at a positive tail exponent and $\sigma$ fixed.
@@ -89,6 +91,26 @@ limits:
   proof: ["dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
   detect_proof: ["UnivariateML.BurrHeld.scale_pareto_supremum", "dev/research/evaluations/2026-11-25-burr-math-report.md#inverse-and-shifted-burr"]
   fixed: [min, scale]
+- name: critical scale collapse
+  status: Unattained
+  message: 'finite unattained supremum'
+  fixed: [shape1, shape2]
+  when: 'The scale decreases to zero and the threshold gap stays at its density-maximizing ratio to scale.'
+  detect: 'With a free threshold and scale, the lower power is at least one and the collapse exponent is exactly zero.'
+  firmness: proved
+  detect_firmness: proved
+  proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale"]
+  detect_proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale"]
+- kind: nonexistence
+  name: unbounded free-threshold likelihood
+  status: Unbounded
+  message: unbounded
+  when: 'A free-endpoint spike or an allowed scale collapse increases the likelihood without bound.'
+  detect: 'The held mask permits a lower power below one, simultaneous free scale and upper shape, negative collapse exponent, or a constant sample with free upper shape.'
+  firmness: proved
+  detect_firmness: proved
+  proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale", "dev/research/evaluations/2026-11-25-thresh-math-report.md#structural-spikes", "dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-scale-and-free-upper-tail-shape"]
+  detect_proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale", "dev/research/evaluations/2026-11-25-thresh-math-report.md#structural-spikes", "dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-scale-and-free-upper-tail-shape"]
 fit_args:
   min: 0
 examples: |
@@ -145,7 +167,7 @@ existence:
     on powered excesses. Holding both shapes gives a unique scale estimate.
     Holding scale alone gives a unique finite maximum for nonconstant excesses if
     some excess is below it, by strict concavity of the shape profile. Other conditional
-    cases are described below. Free-threshold fits are not supported.
+    cases are described below. Free-threshold fits with the lower power held can attain a maximum or have a scale-zero supremum.
     Holding all coefficients leaves likelihood evaluation.
   reason: >-
     A free threshold approaching the sample minimum with $\gamma<1$ creates
@@ -180,13 +202,20 @@ high-precision regression at x = 999.9976974175579.
 
 ## Details
 
+With threshold free and the lower power held, the scale-zero collapse exponent
+depends on the multiplicity of the sample minimum. With scale held and the upper
+shape free, an interior fit above lower power one can have competing local
+maxima. The bounded profile search reports a stationary candidate as uncertified.
+The endpoint fit at lower power one has a unique maximum.
+[Threshold analysis](../../../../../dev/research/evaluations/2026-11-25-thresh-math-report.md).
+
 Fitting requires finite observations strictly above a held threshold. Subtracting that threshold gives [Burr](../burr/README.md) with unchanged shapes and scale. The joint fit uses the Burr global certificate, including root isolation, negative profile curvature, dual/chord envelopes and both tail exclusions. Certified finite results have a sample-specific unique global maximum certificate; unresolved comparisons retain a successful finite search as uncertified.
 
 With only scale held, nonconstant excesses all at least $\sigma$ have a supremum on the endpoint-$\sigma$ Pareto path. Its log-likelihood is the held-endpoint Pareto log-likelihood minus $Z\log2$, where $Z$ counts excesses equal to $\sigma$. The endpoint remains $\mu+\sigma$, so estimating it anew would change the constrained model. For nonconstant data with an excess below $\sigma$, a finite maximum exists. Constant excesses at or below $\sigma$ instead have unbounded likelihood with both shapes free. Constant excesses above it have a finite unattained Pareto path limit.
 
 Holding $\alpha$ permits a unique joint scale/power fit for nonconstant excesses, but constant data remain unbounded when power and scale are free. Holding $\gamma$ reduces to Lomax on powered excesses, whose exponential limit becomes a Weibull limit with that power held. Holding both shapes gives a unique scale maximum, even for constant data. Holding $\alpha$ and scale gives a unique power maximum unless every excess equals scale. Holding $\gamma$ and scale gives an explicit unique estimate of $\alpha$.
 
-For the fully free model, choose $\gamma<1$ and let the threshold approach the sample minimum. The $k$ minimum factors diverge as $\varepsilon^{k(\gamma-1)}$ while all other density factors have positive limits. Holding some coefficients can remove this path. For example, $\gamma=1$ with both other coefficients held gives a finite endpoint maximum. The interface nevertheless requires a held threshold for every subset.
+For the fully free model, choose $\gamma<1$ and let the threshold approach the sample minimum. The $k$ minimum factors diverge as $\varepsilon^{k(\gamma-1)}$ while all other density factors have positive limits. Holding some coefficients can remove this path. For example, $\gamma=1$ with both other coefficients held gives a finite endpoint maximum. For a fixed power above one, attained fits are interior in the threshold.
 
 The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-genbeta.md) gives the boundary arguments and their held-parameter conditions.
 
@@ -194,7 +223,10 @@ For tightly clustered excesses with $\alpha$ held and scale and power free, the 
 
 ## R notes
 
-With `min = 0`, the model is Burr. The concentrated held-first-shape profile retains centered raw-excess spacings. The joint regular fit attempts to certify the finite winner or limiting face; numerical near-ties leave a successful search uncertified. Held power inherits the certified Lomax face comparison; held scale with both shapes free uses a strictly concave scalar certificate. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces preserve `min + scale`. Unresolved searches stop.
+With `min = 0`, the model is Burr. The concentrated held-first-shape profile retains centered raw-excess spacings. The joint regular fit attempts to certify the finite winner or limiting face; numerical near-ties leave a successful search uncertified. Held power inherits the certified Lomax face comparison; held scale with both shapes free uses a strictly concave scalar certificate. Detected faces stop with a recommendation to use `mlweibull(x - min)` or `mlpareto(x - min)`, as applicable. Held-scale endpoint faces classify original excesses against the held scale and preserve `min + scale`.
+For the joint Pareto limit, a nonzero `b_low` in the diagnostic makes the excess
+endpoint the exact sum `b + b_low`. Recover its location on the observation axis
+as `(min + b) + b_low` when the shifted origin is distant. Unresolved searches stop.
 
 ## Decision history
 
@@ -283,4 +315,4 @@ For a free threshold, a power below one produces an endpoint spike. Even
 with a larger held power, letting shape1 = 1/t, scale = exp(-t), and
 min = min(x)-scale makes the likelihood unbounded when both shape1 and scale
 are free. The [free-threshold arguments](../../../../../dev/research/evaluations/2026-11-14-core5b-c-data/mathematics.md)
-do not decide the remaining held slices, which remain unsupported.
+describe the structural spikes. Fixed-shape fits use the collapse exponent and signed profile brackets.
