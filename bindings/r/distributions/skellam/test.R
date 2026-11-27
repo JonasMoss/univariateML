@@ -189,13 +189,21 @@ test_that("Skellam outcome flags distinguish evidence for zero rates", {
   expect_identical(attr(proved, "certified"), TRUE)
   expect_identical(attr(proved, "unique"), TRUE)
 
-  unresolved <- mlskellam(c(0, 3, 3))
-  expect_equal(unname(unresolved[2]), 0)
-  expect_identical(attr(unresolved, "certified"), FALSE)
-  expect_identical(attr(unresolved, "unique"), NA)
+  stationary <- mlskellam(c(0, 3, 3))
+  expect_equal(unname(stationary[2]), 0)
+  expect_identical(attr(stationary, "certified"), TRUE)
+  expect_identical(attr(stationary, "unique"), TRUE)
 
   interior <- mlskellam(c(rep(0, 17), rep(4, 161)))
   expect_gt(unname(interior[2]), 0)
-  expect_identical(attr(interior, "certified"), FALSE)
-  expect_identical(attr(interior, "unique"), NA)
+  expect_identical(attr(interior, "certified"), TRUE)
+  expect_identical(attr(interior, "unique"), TRUE)
+})
+
+test_that("Skellam preserves an unrefuted face when certification cannot close", {
+  x <- 2^31 - 1 - c(0, 1, 3, 8, 11)
+  fit <- mlskellam(x)
+  expect_equal(as.numeric(fit), c(mean(x), 0))
+  expect_identical(attr(fit, "certified"), FALSE)
+  expect_identical(attr(fit, "unique"), NA)
 })

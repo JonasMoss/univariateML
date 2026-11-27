@@ -1273,7 +1273,7 @@ sgomp,eta,failure,All-zero data diverge in free rate.,exact,written,dev/research
 sgomp,eta,uniqueness,Unique.,exact,written,dev/research/evaluations/2026-11-25-sgomp-math-report.md#existence-for-every-hold-mask,,existence.statement
 skellam,,criterion,Always on the closed nonnegative quadrant for nonempty integer samples.,iff,written,univariateML-cpp/include/cppunivariate/distributions/skellam/README.md#existence.reason,,
 skellam,,failure,No failure on admissible data.,exact,written,univariateML-cpp/include/cppunivariate/distributions/skellam/README.md#existence.reason,,
-skellam,,uniqueness,Unique on constant samples and when samples have both signs with empirical mean zero.,one-sided,written,dev/research/evaluations/2026-11-25-skellam2-math-report.md#reflection-and-a-uniqueness-theorem,"Decide cardinality at nonzero means, including possible exact integer weighted crossings.",
+skellam,,uniqueness,Unique on constant samples and on mean-zero samples with a single positive magnitude.,one-sided,written,dev/research/evaluations/2026-11-25-skellam2-math-report.md#reflection-and-a-uniqueness-theorem,"Decide cardinality for samples with multiple magnitudes, including possible exact integer ties.",
 skellam,mu1,criterion,Always for compatible data.,iff,written,univariateML-cpp/include/cppunivariate/distributions/skellam/README.md#existence.reason,,existence.statement
 skellam,mu1,failure,With held zero rate require the appropriate signed Poisson support.,exact,written,univariateML-cpp/include/cppunivariate/distributions/skellam/README.md#existence.reason,,existence.statement
 skellam,mu1,uniqueness,Unique.,exact,written,univariateML-cpp/include/cppunivariate/distributions/skellam/README.md#existence.reason,,existence.statement

@@ -147,3 +147,20 @@ test_that("mldnorm certifies coefficients at held-mean and held-scale seams", {
   expect_error(mldnorm(c(-1, -1, 0), sd = 2^-1074), "binary64 location resolution",
                class = "univariateML_tolerance")
 })
+
+test_that("dnorm uses endpoint densities and scaled location at tiny held scales", {
+  for (mean in c(0, 1)) {
+    f <- mldnorm(0, mean = mean, sd = 2^-1074)
+    expect_equal(dml(0, f), 0.5)
+    expect_equal(as.numeric(logLik(f)), -log(2))
+  }
+
+  x <- c(-2, -1, 1)
+  sd <- 1e-151
+  f <- mldnorm(x, sd = sd)
+  expect_true(attr(f, "certified"))
+  expect_lte(abs(unname(f["mean"]) / sd + 0.306713042463949369), 1e-10)
+  expect_equal(as.numeric(logLik(f)), sum(dml(x, f, log = TRUE)))
+  expect_error(mldnorm(x, sd = 2^-1074), "binary64 location resolution",
+               class = "univariateML_tolerance")
+})
